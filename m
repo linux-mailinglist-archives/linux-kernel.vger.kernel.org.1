@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D5429022B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78CE29022A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406322AbgJPJom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:44:42 -0400
-Received: from aclms1.advantech.com.tw ([61.58.41.199]:5768 "EHLO
-        ACLMS1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406064AbgJPJok (ORCPT
+        id S2406193AbgJPJok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:44:40 -0400
+Received: from aclms3.advantech.com.tw ([125.252.70.86]:23731 "EHLO
+        ACLMS3.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406087AbgJPJok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Oct 2020 05:44:40 -0400
-Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS1.advantech.com.tw
- (Clearswift SMTPRS 5.6.0) with ESMTP id <Te23eec3327ac14014b1a94@ACLMS1.advantech.com.tw>;
- Fri, 16 Oct 2020 17:44:35 +0800
+Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS3.advantech.com.tw
+ (Clearswift SMTPRS 5.6.0) with ESMTP id <Te23eec354fac1401c81d0c@ACLMS3.advantech.com.tw>;
+ Fri, 16 Oct 2020 17:44:36 +0800
 Received: from localhost (172.16.12.104) by taipei09.ADVANTECH.CORP
  (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Fri, 16 Oct
  2020 17:44:35 +0800
@@ -23,10 +23,12 @@ To:     Lee Jones <lee.jones@linaro.org>, <linux-kernel@vger.kernel.org>,
         Campion Kang <campion.kang@advantech.com.tw>,
         Shihlun Lin <shihlun.lin@advantech.com.tw>,
         AceLan Kao <chia-lin.kao@canonical.com>
-Subject: [PATCH v2 1/3] mfd: ahc1ec0: Add support for Advantech embedded controller
-Date:   Fri, 16 Oct 2020 17:44:32 +0800
-Message-ID: <20201016094434.25667-1-shihlun.lin@advantech.com.tw>
+Subject: [PATCH v2 2/3] mfd: ahc1ec0-hwmon: Add sub-device hwmon for Advantech embedded controller
+Date:   Fri, 16 Oct 2020 17:44:33 +0800
+Message-ID: <20201016094434.25667-2-shihlun.lin@advantech.com.tw>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201016094434.25667-1-shihlun.lin@advantech.com.tw>
+References: <20201016094434.25667-1-shihlun.lin@advantech.com.tw>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [172.16.12.104]
@@ -37,1820 +39,1566 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AHC1EC0 is the embedded controller driver for Advantech industrial
-products. This provides sub-devices such as hwmon and watchdog, and also
-expose functions for sud-devices to read/write the value to embedded
-controller.
+This is one of sub-device driver for Advantech embedded controller
+AHC1EC0. This driver provides sysfs ABI for Advantech related
+applications to monitor the system status.
 
 Signed-off-by: Shihlun Lin <shihlun.lin@advantech.com.tw>
 Reported-by: kernel test robot <lkp@intel.com>
 ---
- drivers/mfd/Kconfig         |    9 +
- drivers/mfd/Makefile        |    2 +
- drivers/mfd/ahc1ec0.c       | 1419 +++++++++++++++++++++++++++++++++++
- include/linux/mfd/ahc1ec0.h |  338 +++++++++
- 4 files changed, 1768 insertions(+)
- create mode 100644 drivers/mfd/ahc1ec0.c
- create mode 100644 include/linux/mfd/ahc1ec0.h
+ drivers/mfd/Kconfig         |    8 +
+ drivers/mfd/Makefile        |    1 +
+ drivers/mfd/ahc1ec0-hwmon.c | 1514 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 1523 insertions(+)
+ create mode 100644 drivers/mfd/ahc1ec0-hwmon.c
 
 diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 33df0837ab41..d0fc0c380b93 100644
+index d0fc0c380b93..4945638ca6cb 100644
 --- a/drivers/mfd/Kconfig
 +++ b/drivers/mfd/Kconfig
-@@ -2118,5 +2118,14 @@ config SGI_MFD_IOC3
- 	  If you have an SGI Origin, Octane, or a PCI IOC3 card,
- 	  then say Y. Otherwise say N.
+@@ -2127,5 +2127,13 @@ config MFD_AHC1EC0
+           provides expose functions for sub-devices to read/write the value
+           to embedded controller.
  
-+config MFD_AHC1EC0
-+	tristate "Advantech Embedded Controller Module"
-+	select MFD_CORE
++config MFD_AHC1EC0_HWMON
++	tristate "Advantech EC Hareware Monitor Function"
++	depends on MFD_AHC1EC0
 +	help
-+          This is the core function that for Advantech EC drivers. It
-+          includes the sub-devices such as hwmon, watchdog, etc. And also
-+          provides expose functions for sub-devices to read/write the value
-+          to embedded controller.
++	  This is sub-device for Advantech embedded controller AHC1EC0. This
++	  driver provides the sysfs attribues for applications to monitor
++	  the system status.
 +
  endmenu
  endif
 diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index a60e5f835283..643e6cdd3300 100644
+index 643e6cdd3300..46168ac64903 100644
 --- a/drivers/mfd/Makefile
 +++ b/drivers/mfd/Makefile
-@@ -264,3 +264,5 @@ obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
- obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
- 
+@@ -266,3 +266,4 @@ obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
  obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
-+
-+obj-$(CONFIG_MFD_AHC1EC0) 	+= ahc1ec0.o
-diff --git a/drivers/mfd/ahc1ec0.c b/drivers/mfd/ahc1ec0.c
+ 
+ obj-$(CONFIG_MFD_AHC1EC0) 	+= ahc1ec0.o
++obj-$(CONFIG_MFD_AHC1EC0_HWMON)	+= ahc1ec0-hwmon.o
+diff --git a/drivers/mfd/ahc1ec0-hwmon.c b/drivers/mfd/ahc1ec0-hwmon.c
 new file mode 100644
-index 000000000000..a6cda424d5d3
+index 000000000000..3e493b040b4a
 --- /dev/null
-+++ b/drivers/mfd/ahc1ec0.c
-@@ -0,0 +1,1419 @@
++++ b/drivers/mfd/ahc1ec0-hwmon.c
+@@ -0,0 +1,1514 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*****************************************************************************
-+ *                 Copyright (c) 2018, Advantech Automation Corp.
-+ *     THIS IS AN UNPUBLISHED WORK CONTAINING CONFIDENTIAL AND PROPRIETARY
-+ *              INFORMATION WHICH IS THE PROPERTY OF ADVANTECH AUTOMATION CORP.
++ * Copyright (c) 2018, Advantech Automation Corp.
++ * THIS IS AN UNPUBLISHED WORK CONTAINING CONFIDENTIAL AND PROPRIETARY
++ * INFORMATION WHICH IS THE PROPERTY OF ADVANTECH AUTOMATION CORP.
 + *
-+ *   ANY DISCLOSURE, USE, OR REPRODUCTION, WITHOUT WRITTEN AUTHORIZATION FROM
-+ *              ADVANTECH AUTOMATION CORP., IS STRICTLY PROHIBITED.
++ * ANY DISCLOSURE, USE, OR REPRODUCTION, WITHOUT WRITTEN AUTHORIZATION FROM
++ * ADVANTECH AUTOMATION CORP., IS STRICTLY PROHIBITED.
 + *****************************************************************************
 + *
-+ * File:        ahc1ec0.c
-+ * Version:     1.00  <10/10/2014>
-+ * Author:      Sun.Lang
++ * File:        ahc1ec0-hwmon.c
++ * Version:     1.00  <11/05/2015>
++ * Author:      Jiangwei.Zhu
 + *
-+ * Description: The ahc1ec0 is multifunctional driver for controlling EC chip.
-+ *
-+ *
-+ * Status:      working
++ * Description: The ahc1ec0-hwmon driver is for controlling EC hwmon.
 + *
 + * Change Log:
-+ *              Version 1.00 <10/10/2014> Sun.Lang
-+ *              - Initial version
-+ *              Version 1.01 <11/05/2015> Jiangwei.Zhu
-+ *              - Modify read_ad_value() function.
-+ *              - Add smbus_read_byte() function.
-+ *              - Add smbus_write_byte() function.
-+ *              - Add wait_smbus_protocol_finish() function.
-+ *              Version 1.02 <03/04/2016> Jiangwei.Zhu
-+ *              - Add smbus_read_word() function.
-+ *              Version 1.03 <01/22/2017> Ji.Xu
-+ *              - Add detect to Advantech porduct name "ECU".
-+ *              Version 1.04 <09/20/2017> Ji.Xu
-+ *              - Update to support detect Advantech product name in UEFI
-+ *                BIOS(DMI).
-+ *              Version 1.05 <11/02/2017> Ji.Xu
-+ *              - Fixed issue: Cache coherency error when exec 'ioremap_uncache()'
-+ *                in kernel-4.10.
-+ *              Version 1.06 <10/16/2020> Shihlun.Lin
-+ *              - Update: Replace ioremap_nocache() with ioremap_uc() since
-+ *                ioremap_uc() was used on the entire PCI BAR.
-+ ******************************************************************************/
++ *		Version 1.00 <11/05/2015> Jiangwei.Zhu
++ *		- Initial version
++ *		Version 1.01 <03/04/2016> Jiangwei.Zhu
++ *		- Support UNO-1372G-E3AE, TPC-1782H-433AE, APAX-5580-433AE
++ *		Version 1.02 <05/09/2016> Ji.Xu
++ *		- Support APAX-5580-473AE/4C3AE
++ *		- Modify the device name check method to fuzzy matching.
++ *		Version 1.03 <05/09/2017> Ji.Xu
++ *		- Support UNO-2271G-E2xAE
++ *		- Support UNO-2271G-E02xAE
++ *		- Support ECU-4784
++ *		- Support UNO-2473G-JxAE
++ *		Version 1.04 <09/20/2017> Ji.Xu
++ *		- Support UNO-2484G-633xAE
++ *		- Support UNO-2484G-653xAE
++ *		- Support UNO-2484G-673xAE
++ *		- Support UNO-2484G-733xAE
++ *		- Support UNO-2484G-753xAE
++ *		- Support UNO-2484G-773xAE
++ *		Version 1.05 <10/26/2017> Ji.Xu
++ *		- Support PR/VR4
++ *		- Support UNO-3283G-674AE
++ *		- Support UNO-3285G-674AE
++ *		Version 1.06 <11/16/2017> Zhang.Yang
++ *		- Support UNO-1372G-J021AE/J031AE
++ *		- Support UNO-2372G
++ *		Version 1.07 <02/02/2018> Ji.Xu
++ *		- Convert the driver to use new hwmon API after kernel version 4.10.0
++ *		- Support EC TPC-B500-6??AE
++ *		- Support EC TPC-5???T-6??AE
++ *		Version 1.08 <02/20/2019> Ji.Xu
++ *		- Support EC UNO-420
++ *		- Support EC TPC-B200-???AE
++ *		- Support EC TPC-2???T-???AE
++ *		- Support EC TPC-2???W-???AE
++ *		Version 1.09 <04/24/2020> Yao.Kang
++ *		- Support EC UNO-2473G
++ *****************************************************************************/
 +
-+#include <linux/kconfig.h>
++#include <linux/init.h>
 +#include <linux/module.h>
++#include <linux/types.h>
 +#include <linux/errno.h>
++#include <linux/kernel.h>
 +#include <linux/delay.h>
++#include <linux/interrupt.h>
++#include <linux/ioport.h>
++#include <linux/ioctl.h>
 +#include <linux/io.h>
 +#include <linux/wait.h>
++#include <linux/sched.h>
++#include <linux/fs.h>
++#include <linux/uaccess.h>
++#include <linux/string.h>
 +#include <linux/slab.h>
-+#include <linux/mutex.h>
-+#include <linux/mfd/ahc1ec0.h>
-+#include <linux/acpi.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/mfd/core.h>
-+#include <linux/of_platform.h>
++#include <linux/errno.h>
++#include <asm/msr.h>
++#include <asm/msr-index.h>
++#include <linux/version.h>
++#include <linux/i2c.h>
++#include <linux/device.h>
 +#include <linux/platform_device.h>
++#include <linux/hwmon.h>
++#include <linux/hwmon-sysfs.h>
++#include <linux/sysfs.h>
++#include <linux/mfd/ahc1ec0.h>
 +
-+#define ADVANTECH_EC_NAME      "ahc1ec0"
-+#define ADVANTECH_EC_MFD_VER    "2.0.0"
-+#define ADVANTECH_EC_MFD_DATE   "10/16/2020"
++#define ADVANTECH_EC_HWMON_VER     "1.09"
++#define ADVANTECH_EC_HWMON_DATE    "04/24/2020"
 +
-+struct mutex lock;
++/* Addresses to scan */
++static const unsigned short normal_i2c[] = { 0x2d, 0x2e, I2C_CLIENT_END };
 +
-+enum {
-+	ADVEC_SUBDEV_BRIGHTNESS = 0,
-+	ADVEC_SUBDEV_EEPROM,
-+	ADVEC_SUBDEV_GPIO,
-+	ADVEC_SUBDEV_HWMON,
-+	ADVEC_SUBDEV_LED,
-+	ADVEC_SUBDEV_WDT,
-+	ADVEC_SUBDEV_MAX,
++enum chips { f75373, f75375, f75387 };
++
++/* Fintek F75375 registers  */
++#define F75375_REG_CONFIG0		0x0
++#define F75375_REG_CONFIG1		0x1
++#define F75375_REG_CONFIG2		0x2
++#define F75375_REG_CONFIG3		0x3
++#define F75375_REG_ADDR			0x4
++#define F75375_REG_INTR			0x31
++#define F75375_CHIP_ID			0x5A
++#define F75375_REG_VERSION		0x5C
++#define F75375_REG_VENDOR		0x5D
++
++#define F75375_REG_TEMP(nr)		(0x14 + (nr))
++#define F75387_REG_TEMP11_LSB(nr)	(0x1c + (nr))
++#define F75375_REG_TEMP_HIGH(nr)	(0x28 + (nr) * 2)
++#define F75375_REG_TEMP_HYST(nr)	(0x29 + (nr) * 2)
++
++/*
++ * Data structures and manipulation thereof
++ */
++
++struct f75375_data {
++	unsigned short addr;
++	struct device *hwmon_dev;
++
++	const char *name;
++	int kind;
++	struct mutex update_lock; /* protect register access */
++	char valid;
++	unsigned long last_updated;	/* In jiffies */
++	unsigned long last_limits;	/* In jiffies */
++
++	/* Register values */
++	/*
++	 * f75387: For remote temperature reading, it uses signed 11-bit
++	 * values with LSB = 0.125 degree Celsius, left-justified in 16-bit
++	 * registers. For original 8-bit temp readings, the LSB just is 0.
++	 */
++	s16 temp11[2];
++	s8 temp_high[2];
++	s8 temp_max_hyst[2];
 +};
 +
-+static int wait_ibf(void)
++static int f75375_detect(struct i2c_client *client, struct i2c_board_info *info);
++static int f75375_probe(struct i2c_client *client, const struct i2c_device_id *id);
++static int f75375_remove(struct i2c_client *client);
++static int adspname_detect(const char *bios_product_name, const char *standard_name);
++
++static const struct i2c_device_id f75375_id[] = {
++	{ "f75387", f75387 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, f75375_id);
++
++struct adv_hwmon_profile {
++	int offset;
++	unsigned long resolution, resolution_vin, resolution_sys, resolution_curr, resolution_power;
++	unsigned long r1, r1_vin, r1_sys, r1_curr, r1_power;
++	unsigned long r2, r2_vin, r2_sys, r2_curr, r2_power;
++	const struct attribute_group ec_hwmon_group;
++};
++
++struct EC_HWMON_DATA {
++	uchar temperature[3];
++	uchar ec_current[5];
++	uchar power[5];
++	char *bios_product_name;
++	int voltage[7];
++
++	struct device *dev, *hwmon_dev;
++	struct HW_PIN_TBL pin_tbl;
++	struct EC_SMBOEM0 ec_smboem0;
++	struct adv_hwmon_profile *profile;
++};
++struct EC_HWMON_DATA lmsensor_data;
++
++static struct i2c_driver f75375_driver = {
++	.class = I2C_CLASS_HWMON,
++	.driver = {
++		.name = "f75375",
++	},
++	.probe = f75375_probe,
++	.remove = f75375_remove,
++	.id_table = f75375_id,
++	.detect = f75375_detect,
++	.address_list = normal_i2c,
++};
++
++static inline int f75375_read8(struct i2c_client *client, u8 reg)
 +{
-+	int i;
++	return i2c_smbus_read_byte_data(client, reg);
++}
 +
-+	for (i = 0; i < EC_MAX_TIMEOUT_COUNT; i++) {
-+		if ((inb(EC_COMMAND_PORT) & 0x02) == 0)
-+			return 0;
++/* in most cases, should be called while holding update_lock */
++static inline u16 f75375_read16(struct i2c_client *client, u8 reg)
++{
++	return (i2c_smbus_read_byte_data(client, reg) << 8)
++		| i2c_smbus_read_byte_data(client, reg + 1);
++}
 +
-+		udelay(EC_UDELAY_TIME);
++static inline void f75375_write8(struct i2c_client *client, u8 reg,
++		u8 value)
++{
++	i2c_smbus_write_byte_data(client, reg, value);
++}
++
++static inline void f75375_write16(struct i2c_client *client, u8 reg,
++		u16 value)
++{
++	int err = i2c_smbus_write_byte_data(client, reg, (value >> 8));
++
++	if (err)
++		return;
++	i2c_smbus_write_byte_data(client, reg + 1, (value & 0xFF));
++}
++
++
++static struct f75375_data *f75375_update_device(struct device *dev)
++{
++	struct i2c_client *client = to_i2c_client(dev);
++	struct f75375_data *data = i2c_get_clientdata(client);
++	int nr;
++
++	mutex_lock(&data->update_lock);
++
++	/* Limit registers cache is refreshed after 60 seconds */
++	if (time_after(jiffies, data->last_limits + 60 * HZ)
++			|| !data->valid) {
++		for (nr = 0; nr < 2; nr++) {
++			data->temp_high[nr] =
++				f75375_read8(client, F75375_REG_TEMP_HIGH(nr));
++			data->temp_max_hyst[nr] =
++				f75375_read8(client, F75375_REG_TEMP_HYST(nr));
++		}
++		data->last_limits = jiffies;
 +	}
 +
-+	return -ETIMEDOUT;
-+}
-+
-+/* Wait OBF (Output buffer full) set */
-+static int wait_obf(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < EC_MAX_TIMEOUT_COUNT; i++) {
-+		if ((inb(EC_COMMAND_PORT) & 0x01) != 0)
-+			return 0;
-+
-+		udelay(EC_UDELAY_TIME);
++	/* Measurement registers cache is refreshed after 2 second */
++	if (time_after(jiffies, data->last_updated + 2 * HZ)
++			|| !data->valid) {
++		for (nr = 0; nr < 2; nr++) {
++			/* assign MSB, therefore shift it by 8 bits */
++			data->temp11[nr] = f75375_read8(client, F75375_REG_TEMP(nr)) << 8;
++			if (data->kind == f75387)
++				/* merge F75387's temperature LSB (11-bit) */
++				data->temp11[nr] |= f75375_read8(client, F75387_REG_TEMP11_LSB(nr));
++		}
++		data->last_updated = jiffies;
++		data->valid = 1;
 +	}
 +
-+	return -ETIMEDOUT;
++	mutex_unlock(&data->update_lock);
++	return data;
 +}
 +
-+/* Read data from EC HW ram */
-+static int read_hw_ram(uchar addr, uchar *data)
++#define TEMP_FROM_REG(val) ((val) * 1000)
++#define TEMP_TO_REG(val) ((val) / 1000)
++#define TEMP11_FROM_REG(reg)	((reg) / 32 * 125)
++
++static ssize_t show_temp11(struct device *dev, struct device_attribute *attr,
++		char *buf)
 +{
-+	int ret;
++	int nr = to_sensor_dev_attr(attr)->index;
++	struct f75375_data *data = f75375_update_device(dev);
 +
-+	mutex_lock(&lock);
-+
-+	/* Step 0. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 1. Send "read EC HW ram" command to EC Command port */
-+	outb(EC_HW_RAM_READ, EC_COMMAND_PORT);
-+
-+	/* Step 2. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 3. Send "EC HW ram" address to EC Data port */
-+	outb(addr, EC_STATUS_PORT);
-+
-+	/* Step 4. Wait OBF set */
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 5. Get "EC HW ram" data from EC Data port */
-+	*data = inb(EC_STATUS_PORT);
-+
-+	mutex_unlock(&lock);
-+
-+	return ret;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_err("%s: Wait for IBF or OBF too long. line: %d", __func__, __LINE__);
-+	return ret;
++	return sprintf(buf, "%d\n", TEMP11_FROM_REG(data->temp11[nr]));
 +}
 +
-+/* Write data to EC HW ram */
-+int write_hw_ram(uchar addr, uchar data)
++static ssize_t show_temp_max(struct device *dev, struct device_attribute *attr,
++		char *buf)
++{
++	int nr = to_sensor_dev_attr(attr)->index;
++	struct f75375_data *data = f75375_update_device(dev);
++
++	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->temp_high[nr]));
++}
++
++static ssize_t show_temp_max_hyst(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	int nr = to_sensor_dev_attr(attr)->index;
++	struct f75375_data *data = f75375_update_device(dev);
++
++	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->temp_max_hyst[nr]));
++}
++
++static ssize_t set_temp_max(struct device *dev, struct device_attribute *attr,
++		const char *buf, size_t count)
++{
++	int nr = to_sensor_dev_attr(attr)->index;
++	struct i2c_client *client = to_i2c_client(dev);
++	struct f75375_data *data = i2c_get_clientdata(client);
++	unsigned long val;
++	int err;
++
++	err = kstrtoul(buf, 10, &val);
++	if (err < 0)
++		return err;
++
++	val = clamp_val(TEMP_TO_REG(val), 0, 127);
++	mutex_lock(&data->update_lock);
++	data->temp_high[nr] = val;
++	f75375_write8(client, F75375_REG_TEMP_HIGH(nr), data->temp_high[nr]);
++	mutex_unlock(&data->update_lock);
++	return count;
++}
++
++static ssize_t set_temp_max_hyst(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	int nr = to_sensor_dev_attr(attr)->index;
++	struct i2c_client *client = to_i2c_client(dev);
++	struct f75375_data *data = i2c_get_clientdata(client);
++	unsigned long val;
++	int err;
++
++	err = kstrtoul(buf, 10, &val);
++	if (err < 0)
++		return err;
++
++	val = clamp_val(TEMP_TO_REG(val), 0, 127);
++	mutex_lock(&data->update_lock);
++	data->temp_max_hyst[nr] = val;
++	f75375_write8(client, F75375_REG_TEMP_HYST(nr),
++			data->temp_max_hyst[nr]);
++	mutex_unlock(&data->update_lock);
++	return count;
++}
++
++static ssize_t get_ec_hwmon_name(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return	sprintf(buf, "advhwmon\n");
++}
++
++static ssize_t get_ec_in1_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return  sprintf(buf, "VBAT\n");
++}
++
++static ssize_t get_ec_in2_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return  sprintf(buf, "5VSB\n");
++}
++
++static ssize_t get_ec_in3_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return  sprintf(buf, "VIN\n");
++}
++
++static ssize_t get_ec_in4_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return  sprintf(buf, "VCORE\n");
++}
++
++static ssize_t get_ec_in5_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return  sprintf(buf, "VIN1\n");
++}
++
++static ssize_t get_ec_in6_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return  sprintf(buf, "VIN2\n");
++}
++
++static ssize_t get_ec_in7_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return  sprintf(buf, "System Voltage\n");
++}
++
++static ssize_t get_ec_in8_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return  sprintf(buf, "Vin\n");
++}
++
++static ssize_t get_ec_curr1_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "Current\n");
++}
++
++static ssize_t get_ec_curr2_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "Current\n");
++}
++
++static ssize_t get_ec_power1_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "Power\n");
++}
++
++static ssize_t get_ec_temp1_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "Temp Board\n");
++}
++
++static ssize_t get_ec_temp2_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "Temp CPU\n");
++}
++
++static ssize_t get_ec_temp2_crit(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "100000\n");
++}
++
++static ssize_t get_ec_temp2_crit_alarm(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "0\n");
++}
++
++static ssize_t get_ec_temp3_label(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "Temp System\n");
++}
++
++static ssize_t get_ec_temp3_crit(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "100000\n");
++}
++
++static ssize_t get_ec_temp3_crit_alarm(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "0\n");
++}
++
++static ssize_t get_ec_in1_input(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	uchar temp;
++	uchar voltage = 0;
++	struct HW_PIN_TBL *ptbl = &lmsensor_data.pin_tbl;
++	struct adv_hwmon_profile *profile = lmsensor_data.profile;
++
++	temp = read_ad_value(ptbl->vbat[0], ptbl->vbat[1]);
++
++	if (profile->r2 != 0)
++		voltage = temp * (profile->r1 + profile->r2) / profile->r2;
++
++	if (profile->resolution != 0)
++		voltage =  temp * profile->resolution / 1000 / 1000;
++
++	if (profile->offset != 0)
++		voltage += (int)profile->offset * 100;
++
++	lmsensor_data.voltage[0] = 10*voltage;
++
++	return sprintf(buf, "%d\n", lmsensor_data.voltage[0]);
++}
++
++static ssize_t get_ec_in2_input(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	uchar temp;
++	uchar voltage = 0;
++	struct HW_PIN_TBL *ptbl = &lmsensor_data.pin_tbl;
++	struct adv_hwmon_profile *profile = lmsensor_data.profile;
++
++	temp = read_ad_value(ptbl->v5[0], ptbl->v5[1]);
++
++	if (profile->r2 != 0)
++		voltage = temp * (profile->r1 + profile->r2) / profile->r2;
++
++	if (profile->resolution != 0)
++		voltage =  temp * profile->resolution / 1000 / 1000;
++
++	if (profile->offset != 0)
++		voltage += (int)profile->offset * 100;
++
++	lmsensor_data.voltage[1] = 10*voltage;
++
++	return sprintf(buf, "%d\n", lmsensor_data.voltage[1]);
++}
++
++static ssize_t get_ec_in3_input(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	uchar temp;
++	uchar voltage = 0;
++	struct HW_PIN_TBL *ptbl = &lmsensor_data.pin_tbl;
++	struct adv_hwmon_profile *profile = lmsensor_data.profile;
++
++	temp = read_ad_value(ptbl->v12[0], ptbl->v12[1]);
++	if (temp == -1)
++		temp  =  read_ad_value(ptbl->vdc[0], ptbl->vdc[1]);
++
++	if (profile->r2 != 0)
++		voltage = temp * (profile->r1 + profile->r2) / profile->r2;
++
++	if (profile->resolution != 0)
++		voltage =  temp * profile->resolution / 1000 / 1000;
++
++	if (profile->offset != 0)
++		voltage += (int)profile->offset * 100;
++
++	lmsensor_data.voltage[2] = 10*voltage;
++
++	return sprintf(buf, "%d\n", lmsensor_data.voltage[2]);
++}
++
++static ssize_t get_ec_in4_input(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	uchar temp;
++	uchar voltage = 0;
++	struct HW_PIN_TBL *ptbl = &lmsensor_data.pin_tbl;
++	struct adv_hwmon_profile *profile = lmsensor_data.profile;
++
++	temp = read_ad_value(ptbl->vcore[0], ptbl->vcore[1]);
++
++	if (profile->r2 != 0)
++		voltage = temp * (profile->r1 + profile->r2) / profile->r2;
++
++	if (profile->resolution != 0)
++		voltage = temp * profile->resolution / 1000 / 1000;
++
++	if (profile->offset != 0)
++		voltage += (int)profile->offset * 100;
++
++	lmsensor_data.voltage[3] = 10*voltage;
++
++	return sprintf(buf, "%d\n", lmsensor_data.voltage[3]);
++}
++
++static ssize_t get_ec_curr1_input(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	uchar temp;
++	struct HW_PIN_TBL *ptbl = &lmsensor_data.pin_tbl;
++	struct adv_hwmon_profile *profile = lmsensor_data.profile;
++
++	temp = read_ad_value(ptbl->ec_current[0], ptbl->ec_current[1]);
++
++	if (profile->r2 != 0)
++		temp = temp * (profile->r1 + profile->r2) / profile->r2;
++
++	if (profile->resolution != 0)
++		temp =  temp * profile->resolution / 1000 / 1000;
++
++	if (profile->offset != 0)
++		temp += (int)profile->offset * 100;
++
++	lmsensor_data.ec_current[3] = temp;
++	return sprintf(buf, "%d\n", 10*lmsensor_data.ec_current[3]);
++}
++
++static void get_temperaturedts(uchar *pvalue)
++{
++	u32 eax, edx;
++	uchar temp;
++
++	rdmsr_on_cpu(1, MSR_IA32_THERM_STATUS, &eax, &edx);
++	temp = 100000-((eax>>16)&0x7f) * 1000;
++	*pvalue = temp;
++}
++
++static void ec_get_temperature_value_via_lm96163_ec_smbus(uchar *temperature)
 +{
 +	int ret;
++	struct EC_SMBUS_READ_BYTE in_data = {
++		.Channel = NSLM96163_CHANNEL,
++		.Address = NSLM96163_ADDR,
++		.Register = NSLM96163_LOC_TEMP,
++		.Data = 0,
++	};
 +
-+	mutex_lock(&lock);
-+	/* Step 0. Wait IBF clear */
-+	ret = wait_ibf();
++	ret = smbus_read_byte(&in_data);
 +	if (ret)
-+		goto error;
++		dev_err(lmsensor_data.dev, "smbus_read_byte error.");
++	else
++		*temperature = (unsigned long)in_data.Data * 10;
++}
 +
-+	/* Step 1. Send "write EC HW ram" command to EC command port */
-+	outb(EC_HW_RAM_WRITE, EC_COMMAND_PORT);
++static ssize_t ec_get_sys_temperature_value_via_f75387_ec_smbus(uchar *temperature)
++{
++	int ret;
++	uchar Temp_MSB, Temp_LSB;
 +
-+	/* Step 2. Wait IBF clear */
-+	ret = wait_ibf();
++	struct EC_SMBUS_READ_BYTE in_data = {
++		.Channel = lmsensor_data.ec_smboem0.HWPinNumber & 0x03,
++		.Address = LMF75387_SMBUS_SLAVE_ADDRESS_5A,
++		.Register = F75387_REG_R_TEMP0_MSB,
++		.Data = 0,
++	};
++
++	ret = smbus_read_byte(&in_data);
 +	if (ret)
-+		goto error;
++		dev_err(lmsensor_data.dev, "smbus_read_byte error.\n");
 +
-+	/* Step 3. Send "EC HW ram" address to EC Data port */
-+	outb(addr, EC_STATUS_PORT);
++	Temp_MSB = in_data.Data;
++	if (Temp_MSB != 0xFF) {
++		in_data.Register = F75387_REG_R_TEMP0_LSB;
++		ret = smbus_read_byte(&in_data);
++		if (ret)
++			dev_err(lmsensor_data.dev, "smbus_read_byte error.\n");
 +
-+	/* Step 4. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 5. Send "EC HW ram" data to EC Data port */
-+	outb(data, EC_STATUS_PORT);
-+
-+	mutex_unlock(&lock);
++		Temp_LSB = in_data.Data;
++	} else {
++		Temp_MSB = 0;
++		Temp_LSB = 0;
++	}
++	*temperature = Temp_MSB + Temp_LSB/256;
 +
 +	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_err("%s: Wait for IBF too long. line: %d", __func__, __LINE__);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(write_hw_ram);
-+
-+static int wait_smbus_protocol_finish(void)
-+{
-+	uchar addr, data;
-+	int retry = 1000;
-+
-+	do {
-+		addr = EC_SMBUS_PROTOCOL;
-+		data = 0xFF;
-+		if (!read_hw_ram(addr, &data))
-+			return 0;
-+
-+		if (data == 0)
-+			return 0;
-+
-+		udelay(EC_UDELAY_TIME);
-+	} while (retry-- > 0);
-+
-+	return -ETIMEDOUT;
 +}
 +
-+/* Get dynamic control table */
-+static int adv_get_dynamic_tab(struct adv_ec_platform_data *pdata)
++static int ec_get_voltage_v1_value_via_f75387_ec_smbus(uchar *voltage)
 +{
-+	int i, ret;
-+	uchar pin_tmp, device_id;
++	int ret;
++	struct EC_SMBUS_READ_BYTE in_data = {
++		.Channel = lmsensor_data.ec_smboem0.HWPinNumber & 0x03,
++		.Address = LMF75387_SMBUS_SLAVE_ADDRESS_5A,
++		.Register = F75387_REG_R_V1,
++		.Data = 0,
++	};
 +
-+	mutex_lock(&lock);
++	ret = smbus_read_byte(&in_data);
++	if (ret)
++		dev_err(lmsensor_data.dev, "smbus_read_byte error.\n");
 +
-+	for (i = 0; i < EC_MAX_TBL_NUM; i++) {
-+		pdata->dym_tbl[i].DeviceID = 0xff;
-+		pdata->dym_tbl[i].HWPinNumber = 0xff;
-+	}
-+
-+	for (i = 0; i < EC_MAX_TBL_NUM; i++) {
-+		/* Step 0. Wait IBF clear */
-+		ret = wait_ibf();
-+		if (ret)
-+			goto error;
-+
-+		/*
-+		 *  Step 1. Write 0x20 to 0x29A
-+		 *  Send write item number into index command
-+		 */
-+		outb(EC_TBL_WRITE_ITEM, EC_COMMAND_PORT);
-+
-+		/* Step 2. Wait IBF clear */
-+		ret = wait_ibf();
-+		if (ret)
-+			goto error;
-+
-+		/*
-+		 *  Step 3. Write item number to 0x299
-+		 *  Write item number to index. Item number is limited in range 0 to 31
-+		 */
-+		outb(i, EC_STATUS_PORT);
-+
-+		/* Step 4. Wait OBF set */
-+		ret = wait_obf();
-+		if (ret)
-+			goto error;
-+
-+		/*
-+		 *  Step 5. Read 0x299 port
-+		 *  If item is defined, EC will return item number.
-+		 *  If table item is not defined, EC will return 0xFF.
-+		 */
-+		if (inb(EC_STATUS_PORT) == 0xff) {
-+			mutex_unlock(&lock);
-+			return -EINVAL;
-+		}
-+
-+		/* Step 6. Wait IBF clear */
-+		ret = wait_ibf();
-+		if (ret)
-+			goto error;
-+
-+		/*
-+		 *  Step 7. Write 0x21 to 0x29A
-+		 *  Send read HW pin number command
-+		 */
-+		outb(EC_TBL_GET_PIN, EC_COMMAND_PORT);
-+
-+		/* Step 8. Wait OBF set */
-+		ret = wait_obf();
-+		if (ret)
-+			goto error;
-+
-+		/*
-+		 *  Step 9. Read 0x299 port
-+		 *  EC will return current item HW pin number
-+		 */
-+		pin_tmp = inb(EC_STATUS_PORT) & 0xff;
-+
-+		/* Step 10. Wait IBF clear */
-+		ret = wait_ibf();
-+		if (ret)
-+			goto error;
-+
-+		if (pin_tmp == 0xff) {
-+			mutex_unlock(&lock);
-+			return -EINVAL;
-+		}
-+
-+		/*
-+		 *  Step 11. Write 0x22 to 0x29A
-+		 *  Send read device id command
-+		 */
-+		outb(EC_TBL_GET_DEVID, EC_COMMAND_PORT);
-+
-+		/* Step 12. Wait OBF set */
-+		ret = wait_obf();
-+		if (ret)
-+			goto error;
-+
-+		/*
-+		 *  Step 13. Read 0x299 port
-+		 *  EC will return current item Device ID
-+		 */
-+		device_id = inb(EC_STATUS_PORT) & 0xff;
-+
-+		/* Step 14. Save data to a database */
-+		pdata->dym_tbl[i].DeviceID = device_id;
-+		pdata->dym_tbl[i].HWPinNumber = pin_tmp;
-+	}
-+
-+	mutex_unlock(&lock);
++	*voltage = in_data.Data;
 +	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_err("%s: Wait for IBF or OBF too long. line: %d", __func__, __LINE__);
-+	return ret;
 +}
 +
-+int read_ad_value(uchar hwpin, uchar multi)
++static int ec_get_voltage_v2_value_via_f75387_ec_smbus(uchar *voltage)
 +{
 +	int ret;
-+	u32 ret_val;
-+	uchar LSB, MSB;
++	struct EC_SMBUS_READ_BYTE in_data = {
++		.Channel = lmsensor_data.ec_smboem0.HWPinNumber & 0x03,
++		.Address = LMF75387_SMBUS_SLAVE_ADDRESS_5A,
++		.Register = F75387_REG_R_V2,
++		.Data = 0,
++	};
 +
-+	mutex_lock(&lock);
-+	ret = wait_ibf();
++	ret = smbus_read_byte(&in_data);
 +	if (ret)
-+		goto error;
++		dev_err(lmsensor_data.dev, "smbus_read_byte error.\n");
 +
-+	outb(EC_AD_INDEX_WRITE, EC_COMMAND_PORT);
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(hwpin, EC_STATUS_PORT);
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
-+
-+	if (inb(EC_STATUS_PORT) == 0xff) {
-+		mutex_unlock(&lock);
-+		return -1;
-+	}
-+
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(EC_AD_LSB_READ, EC_COMMAND_PORT);
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
-+
-+	LSB = inb(EC_STATUS_PORT);
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(EC_AD_MSB_READ, EC_COMMAND_PORT);
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
-+
-+	MSB = inb(EC_STATUS_PORT);
-+	ret_val = ((MSB << 8) | LSB) & 0x03FF;
-+	ret_val = ret_val * multi * 100;
-+
-+	mutex_unlock(&lock);
-+	return ret_val;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_warn("%s: Wait for IBF or OBF too long. line: %d", __func__, __LINE__);
-+	return ret;
++	*voltage = in_data.Data;
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(read_ad_value);
 +
-+int read_acpi_value(uchar addr, uchar *pvalue)
++static int ec_get_voltage_system_value_via_ina226_ec_smbus(uchar *voltage)
 +{
 +	int ret;
++	struct EC_SMBUS_WORD_DATA in_data = {
++		.Channel = lmsensor_data.ec_smboem0.HWPinNumber & 0x03,
++		.Address = INA266_SMBUS_SLAVE_ADDRESS_8A,
++		.Register = INA266_REG_VOLTAGE,
++		.Value = 0,
++	};
++
++	ret = smbus_read_word(&in_data);
++	if (ret)
++		dev_err(lmsensor_data.dev, "smbus_read_word error.\n");
++
++	*voltage = in_data.Value;
++	return 0;
++}
++
++static int ec_get_current_value_via_ina226_ec_smbus(uchar *curr)
++{
++	int ret;
++	struct EC_SMBUS_WORD_DATA in_data = {
++		.Channel = lmsensor_data.ec_smboem0.HWPinNumber & 0x03,
++		.Address = INA266_SMBUS_SLAVE_ADDRESS_8A,
++		.Register = INA266_REG_CURRENT,
++		.Value = 0,
++	};
++
++	ret = smbus_read_word(&in_data);
++	if (ret)
++		dev_err(lmsensor_data.dev, "smbus_read_word error.\n");
++
++	*curr = in_data.Value;
++	return 0;
++}
++
++static int ec_get_power_value_via_ina226_ec_smbus(uchar *power)
++{
++	int ret;
++	struct EC_SMBUS_WORD_DATA in_data = {
++		.Channel = lmsensor_data.ec_smboem0.HWPinNumber & 0x03,
++		.Address = INA266_SMBUS_SLAVE_ADDRESS_8A,
++		.Register = INA266_REG_POWER,
++		.Value = 0,
++	};
++
++	ret = smbus_read_word(&in_data);
++	if (ret)
++		dev_err(lmsensor_data.dev, "smbus_read_word error.\n");
++
++	*power = in_data.Value;
++	return 0;
++}
++
++static ssize_t get_ec_temp2_input(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	uchar temp = 0;
 +	uchar value;
++	char *product = lmsensor_data.bios_product_name;
 +
-+	mutex_lock(&lock);
-+
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(EC_ACPI_RAM_READ, EC_COMMAND_PORT);
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(addr, EC_STATUS_PORT);
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
-+
-+	value = inb(EC_STATUS_PORT);
-+	*pvalue = value;
-+	mutex_unlock(&lock);
++	if (!adspname_detect(product, "TPC-8100TR")) {
++		get_temperaturedts(&temp);
++		return sprintf(buf, "%d\n", temp);
++	} else if (!adspname_detect(product, "TPC-*51T-E??E")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if ((!adspname_detect(product, "TPC-*51WP-E?AE"))
++			|| (!adspname_detect(product, "TPC-*81WP-4???E"))) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "TPC-1?82H-4???E")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if ((!adspname_detect(product, "TPC-B500-6??AE"))
++				|| (!adspname_detect(product, "TPC-5???T-6??AE"))
++				|| (!adspname_detect(product, "TPC-5???W-6??AE"))
++				|| (!adspname_detect(product, "TPC-B200-???AE"))
++				|| (!adspname_detect(product, "TPC-2???T-???AE"))
++				|| (!adspname_detect(product, "TPC-2???W-???AE"))) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-1172A")) {
++		ec_get_temperature_value_via_lm96163_ec_smbus(&temp);
++		return sprintf(buf, "%d\n", 100*temp);
++	} else if (!adspname_detect(product, "UNO-1372G-E?AE")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-1372G-J0?1AE")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-1483G-4??AE")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-2372G")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-2473G")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-2271G-E??AE")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-2271G-E???AE")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-420")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-2483G-4??AE")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-2484G-6???AE")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-2484G-7???AE")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-3283G/3285G-674AE")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "UNO-3483G-3??AE")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "PR/VR4")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "ECU-4784")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	} else if (!adspname_detect(product, "APAX-5580-4??AE")) {
++		read_acpi_value(0x61, &value);
++		return sprintf(buf, "%d\n", 1000*value);
++	}
 +
 +	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_warn("%s: Wait for IBF or OBF too long. line: %d", __func__, __LINE__);
-+	return ret;
 +}
-+EXPORT_SYMBOL_GPL(read_acpi_value);
 +
-+int write_acpi_value(uchar addr, uchar value)
++static ssize_t get_ec_temp3_input(struct device *dev, struct device_attribute *attr, char *buf)
 +{
-+	int ret;
++	uchar temp = 0;
++	char *product = lmsensor_data.bios_product_name;
 +
-+	mutex_lock(&lock);
++	if (!adspname_detect(product, "APAX-5580-4??AE")) {
++		ec_get_sys_temperature_value_via_f75387_ec_smbus(&temp);
++		return sprintf(buf, "%d\n", 1000*temp);
++	} else if (!adspname_detect(product, "PR/VR4")) {
++		read_acpi_value(0x60, &temp);
++		return sprintf(buf, "%d\n", 1000*temp);
++	}
 +
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(EC_ACPI_DATA_WRITE, EC_COMMAND_PORT);
-+
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(addr, EC_STATUS_PORT);
-+
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(value, EC_STATUS_PORT);
-+
-+	mutex_unlock(&lock);
 +	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_warn("%s: Wait for IBF  too long. line: %d", __func__, __LINE__);
-+	return ret;
 +}
 +
-+int read_gpio_status(uchar PinNumber, uchar *pvalue)
++static ssize_t get_ec_in5_input(struct device *dev, struct device_attribute *attr, char *buf)
 +{
-+	int ret;
++	uchar voltage = 0;
++	char *product = lmsensor_data.bios_product_name;
++	struct adv_hwmon_profile *profile = lmsensor_data.profile;
 +
-+	uchar gpio_status_value;
++	if (!adspname_detect(product, "APAX-5580-4??AE")) {
++		ec_get_voltage_v1_value_via_f75387_ec_smbus(&voltage);
 +
-+	mutex_lock(&lock);
++		if (profile->r2_vin != 0)
++			voltage = voltage * (profile->r1_vin + profile->r2_vin) / profile->r2_vin;
 +
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
++		if (profile->resolution_vin != 0)
++			voltage = voltage * profile->resolution_vin / 1000;
 +
-+	outb(EC_GPIO_INDEX_WRITE, EC_COMMAND_PORT);
++		if (profile->offset != 0)
++			voltage += (int)profile->offset * 100;
 +
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(PinNumber, EC_STATUS_PORT);
-+
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
-+
-+	if (inb(EC_STATUS_PORT) == 0xff) {
-+		pr_err("%s: Read Pin Number error!!", __func__);
-+		mutex_unlock(&lock);
-+		return -1;
++		lmsensor_data.voltage[4] = voltage;
++		return sprintf(buf, "%d\n", lmsensor_data.voltage[4]);
 +	}
 +
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(EC_GPIO_STATUS_READ, EC_COMMAND_PORT);
-+
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
-+
-+	gpio_status_value = inb(EC_STATUS_PORT);
-+	*pvalue = gpio_status_value;
-+	mutex_unlock(&lock);
 +	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_warn("%s: Wait for IBF or OBF too long. line: %d", __func__, __LINE__);
-+	return ret;
 +}
 +
-+int write_gpio_status(uchar PinNumber, uchar value)
++static ssize_t get_ec_in6_input(struct device *dev, struct device_attribute *attr, char *buf)
 +{
-+	int ret;
++	uchar voltage = 0;
++	char *product = lmsensor_data.bios_product_name;
++	struct adv_hwmon_profile *profile = lmsensor_data.profile;
 +
-+	mutex_lock(&lock);
++	if (!adspname_detect(product, "APAX-5580-4??AE")) {
++		ec_get_voltage_v2_value_via_f75387_ec_smbus(&voltage);
 +
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
++		if (profile->r2_vin != 0)
++			voltage = voltage * (profile->r1_vin + profile->r2_vin) / profile->r2_vin;
 +
-+	outb(EC_GPIO_INDEX_WRITE, EC_COMMAND_PORT);
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
++		if (profile->resolution_vin != 0)
++			voltage = voltage * profile->resolution_vin / 1000;
 +
-+	outb(PinNumber, EC_STATUS_PORT);
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
++		if (profile->offset != 0)
++			voltage += (int)profile->offset * 100;
 +
-+	if (inb(EC_STATUS_PORT) == 0xff) {
-+		pr_err("%s: Read Pin Number error!!", __func__);
-+		mutex_unlock(&lock);
-+		return -1;
++		lmsensor_data.voltage[5] = voltage;
++		return sprintf(buf, "%d\n", lmsensor_data.voltage[5]);
 +	}
 +
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(EC_GPIO_STATUS_WRITE, EC_COMMAND_PORT);
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(value, EC_STATUS_PORT);
-+	mutex_unlock(&lock);
 +	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_warn("%s: Wait for IBF or OBF too long. line: %d", __func__, __LINE__);
-+	return ret;
 +}
 +
-+int read_gpio_dir(uchar PinNumber, uchar *pvalue)
++static ssize_t get_ec_in7_input(struct device *dev, struct device_attribute *attr, char *buf)
 +{
-+	int ret;
-+	uchar gpio_dir_value;
++	uchar voltage = 0;
++	char *product = lmsensor_data.bios_product_name;
++	struct adv_hwmon_profile *profile = lmsensor_data.profile;
 +
-+	mutex_lock(&lock);
++	if (!adspname_detect(product, "APAX-5580-4??AE")) {
++		ec_get_voltage_system_value_via_ina226_ec_smbus(&voltage);
 +
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
++		if (profile->r2_sys != 0)
++			voltage = voltage * (profile->r1_sys + profile->r2_sys) / profile->r2_sys;
 +
-+	outb(EC_GPIO_INDEX_WRITE, EC_COMMAND_PORT);
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
++		if (profile->resolution_sys != 0)
++			voltage = voltage * profile->resolution_sys / 1000;
 +
-+	outb(PinNumber, EC_STATUS_PORT);
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
++		if (profile->offset != 0)
++			voltage += (int)profile->offset * 100;
 +
-+	if (inb(EC_STATUS_PORT) == 0xff) {
-+		pr_err("%s: Read Pin Number error!!", __func__);
-+		mutex_unlock(&lock);
-+		return -1;
++		lmsensor_data.voltage[5] = voltage;
++		return sprintf(buf, "%d\n", lmsensor_data.voltage[5]);
 +	}
 +
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(EC_GPIO_DIR_READ, EC_COMMAND_PORT);
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
-+
-+	gpio_dir_value = inb(EC_STATUS_PORT);
-+	*pvalue = gpio_dir_value;
-+	mutex_unlock(&lock);
 +	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_warn("%s: Wait for IBF or OBF too long. line: %d", __func__, __LINE__);
-+	return ret;
 +}
 +
-+int write_gpio_dir(uchar PinNumber, uchar value)
++static ssize_t get_ec_in8_input(struct device *dev, struct device_attribute *attr, char *buf)
 +{
-+	int ret;
++	uchar temp;
++	uchar voltage = 0;
++	struct HW_PIN_TBL *ptbl = &lmsensor_data.pin_tbl;
++	struct adv_hwmon_profile *profile = lmsensor_data.profile;
 +
-+	mutex_lock(&lock);
++	temp  =  read_ad_value(ptbl->v12[0], ptbl->v12[1]);
++	if (temp == -1)
++		temp  =  read_ad_value(ptbl->vdc[0], ptbl->vdc[1]);
 +
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
++	if (profile->r2 != 0)
++		voltage = temp * (profile->r1 + profile->r2) / profile->r2;
 +
-+	outb(EC_GPIO_INDEX_WRITE, EC_COMMAND_PORT);
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
++	if (profile->resolution != 0)
++		voltage =  temp * profile->resolution / 1000 / 1000;
 +
-+	outb(PinNumber, EC_STATUS_PORT);
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
++	if (profile->offset != 0)
++		voltage += (int)profile->offset * 100;
 +
-+	if (inb(EC_STATUS_PORT) == 0xff) {
-+		pr_err("%s: Read Pin Number error!!", __func__);
-+		mutex_unlock(&lock);
-+		return -1;
-+	}
-+
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(EC_GPIO_DIR_WRITE, EC_COMMAND_PORT);
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	outb(value, EC_STATUS_PORT);
-+	mutex_unlock(&lock);
-+	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_warn("%s: Wait for IBF or OBF too long. line: %d", __func__, __LINE__);
-+	return ret;
++	lmsensor_data.voltage[2] = 10*voltage;
++	return sprintf(buf, "%d\n", lmsensor_data.voltage[2]);
 +}
 +
-+/* Write data to EC HW ram */
-+int write_hw_extend_ram(uchar addr, uchar data)
++static ssize_t get_ec_curr2_input(struct device *dev, struct device_attribute *attr, char *buf)
 +{
-+	int ret;
++	uchar temp = 0;
++	struct adv_hwmon_profile *profile = lmsensor_data.profile;
 +
-+	mutex_lock(&lock);
-+	/* Step 0. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
++	ec_get_current_value_via_ina226_ec_smbus(&temp);
++	if (profile->r2_curr != 0)
++		temp = temp * (profile->r1_curr + profile->r2_curr) / profile->r2_curr;
 +
-+	/* Step 1. Send "write EC HW ram" command to EC command port */
-+	outb(EC_HW_EXTEND_RAM_WRITE, EC_COMMAND_PORT);
++	if (profile->resolution_curr != 0)
++		temp = temp * profile->resolution_curr / 1000;
 +
-+	/* Step 2. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
++	if (profile->offset != 0)
++		temp += (int)profile->offset * 100;
 +
-+	/* Step 3. Send "EC HW ram" address to EC Data port */
-+	outb(addr, EC_STATUS_PORT);
-+
-+	/* Step 4. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 5. Send "EC HW ram" data to EC Data port */
-+	outb(data, EC_STATUS_PORT);
-+
-+	mutex_unlock(&lock);
-+
-+	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_debug("%s: Wait for IBF too long. line: %d", __func__, __LINE__);
-+	return ret;
++	lmsensor_data.ec_current[4] = temp;
++	return sprintf(buf, "%d\n", lmsensor_data.ec_current[4]);
 +}
 +
-+int write_hwram_command(uchar data)
++static ssize_t get_ec_power1_input(struct device *dev, struct device_attribute *attr, char *buf)
 +{
-+	int ret;
++	uchar temp = 0;
++	struct adv_hwmon_profile *profile = lmsensor_data.profile;
 +
-+	mutex_lock(&lock);
++	ec_get_power_value_via_ina226_ec_smbus(&temp);
 +
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
++	if (profile->r2_power != 0)
++		temp = temp * (profile->r1_power + profile->r2_power) / profile->r2_power;
 +
-+	outb(data, EC_COMMAND_PORT);
-+	mutex_unlock(&lock);
-+	return 0;
++	if (profile->resolution_power != 0)
++		temp = temp * profile->resolution_power / 1000;
 +
-+error:
-+	mutex_unlock(&lock);
-+	pr_debug("%s: Wait for IBF too long. line: %d", __func__, __LINE__);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(write_hwram_command);
++	if (profile->offset != 0)
++		temp += (int)profile->offset * 100;
 +
-+int smbus_read_word(struct EC_SMBUS_WORD_DATA *ptr_ec_smbus_word_data)
-+{
-+	int ret;
-+
-+	uchar sm_ready, LSB, MSB, addr, data;
-+	unsigned short Value = 0;
-+
-+	/*  Step 1. Select SMBus channel */
-+	addr = EC_SMBUS_CHANNEL;
-+	data = ptr_ec_smbus_word_data->Channel;
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Select SMBus channel Failed");
-+		goto error;
-+	}
-+
-+	/* Step 2. Set SMBUS device address EX: 0x98 */
-+	addr = EC_SMBUS_SLV_ADDR;
-+	data = (ptr_ec_smbus_word_data->Address);
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Select SMBus dev addr:0x%02X Failed", ptr_ec_smbus_word_data->Address);
-+		goto error;
-+	}
-+
-+	/* Step 3. Set Chip (EX: INA266) Register Address */
-+	addr = EC_SMBUS_CMD;
-+	data = ptr_ec_smbus_word_data->Register;
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Select Chip Register Addr:0x%02X Failed", ptr_ec_smbus_word_data->Register);
-+		goto error;
-+	}
-+
-+	/* Step 4. Set EC SMBUS read word Mode */
-+	addr = EC_SMBUS_PROTOCOL;
-+	data = SMBUS_WORD_READ;
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Set EC SMBUS read Byte Mode Failed");
-+		goto error;
-+	}
-+
-+	/* Step 5. Check EC Smbus states */
-+	ret = wait_smbus_protocol_finish();
-+	if (ret) {
-+		pr_err("Wait SmBus Protocol Finish Failed!!");
-+		goto error;
-+	}
-+
-+	addr = EC_SMBUS_STATUS;
-+	ret = read_hw_ram(addr, &data);
-+	if (ret) {
-+		pr_err("Check EC Smbus states Failed");
-+		goto error;
-+	}
-+	sm_ready = data;
-+
-+	/* check no error */
-+	if (sm_ready != 0x80) {
-+		pr_err("SMBUS ERR:0x%02X", sm_ready);
-+		goto error;
-+	}
-+
-+	/* Step 6. Get Value */
-+	addr = EC_SMBUS_DAT_OFFSET(0);
-+	ret = read_hw_ram(addr, &data);
-+	if (ret) {
-+		pr_err("Get Value Failed");
-+		goto error;
-+	}
-+	MSB = data;
-+
-+	addr = EC_SMBUS_DAT_OFFSET(1);
-+	ret = read_hw_ram(addr, &data);
-+	if (ret) {
-+		pr_err("Get Value Failed");
-+		goto error;
-+	}
-+	LSB = data;
-+
-+	Value = (MSB << 8) | LSB;
-+	ptr_ec_smbus_word_data->Value = Value;
-+
-+	return 0;
-+
-+error:
-+	pr_err("%s: Exception!", __func__);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(smbus_read_word);
-+
-+int smbus_read_byte(struct EC_SMBUS_READ_BYTE *ptr_ec_smbus_read_byte)
-+{
-+	int ret;
-+	uchar sm_ready, addr, data;
-+
-+	/* CHECK_PARAMETER */
-+	if (ptr_ec_smbus_read_byte == NULL)
-+		return -EINVAL;
-+
-+	/* Step 1. Select SMBus channel */
-+	addr = EC_SMBUS_CHANNEL;
-+	data = ptr_ec_smbus_read_byte->Channel;
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Select SMBus channel Failed");
-+		goto error;
-+	}
-+
-+	/* Step 2. Set SMBUS device address EX: 0x98 */
-+	addr = EC_SMBUS_SLV_ADDR;
-+	data = (ptr_ec_smbus_read_byte->Address);
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Select SMBus dev addr:0x%02X Failed", ptr_ec_smbus_read_byte->Address);
-+		goto error;
-+	}
-+
-+	/* Step 3. Set Chip (EX: MCP23008) Register Address */
-+	addr = EC_SMBUS_CMD;
-+	data = ptr_ec_smbus_read_byte->Register;
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Select Chip Register Addr:0x%02X Failed", ptr_ec_smbus_read_byte->Register);
-+		goto error;
-+	}
-+
-+	/* Step 4. Set EC SMBUS read Byte Mode */
-+	addr = EC_SMBUS_PROTOCOL;
-+	data = SMBUS_BYTE_READ;
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Set EC SMBUS read Byte Mode Failed");
-+		goto error;
-+	}
-+
-+	/* Step 5. Check EC Smbus states */
-+	ret = wait_smbus_protocol_finish();
-+	if (ret) {
-+		pr_err("Wait SmBus Protocol Finish Failed!!");
-+		goto error;
-+	}
-+
-+	addr = EC_SMBUS_STATUS;
-+	ret = read_hw_ram(addr, &data);
-+	if (ret) {
-+		pr_err("Check EC Smbus states Failed");
-+		goto error;
-+	}
-+	sm_ready = data;
-+
-+	/* check no error */
-+	if (sm_ready != 0x80) {
-+		pr_err("SMBUS ERR:(0x%02X)", sm_ready);
-+		goto error;
-+	}
-+
-+	/* Step 6. Get Value */
-+	addr = EC_SMBUS_DATA;
-+	ret = read_hw_ram(addr, &data);
-+	if (ret) {
-+		pr_err("Get Value Failed");
-+		goto error;
-+	}
-+
-+	ptr_ec_smbus_read_byte->Data = (data & 0xFF);
-+	return 0;
-+
-+error:
-+	pr_err("%s: Exception!", __func__);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(smbus_read_byte);
-+
-+int smbus_write_byte(struct EC_SMBUS_WRITE_BYTE *ptr_ec_smbus_write_byte)
-+{
-+	int ret;
-+	uchar sm_ready, addr, data;
-+
-+	/* Step 1. Select SMBus channel */
-+	addr = EC_SMBUS_CHANNEL;
-+	data = ptr_ec_smbus_write_byte->Channel;
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Select SMBus channel Failed");
-+		goto error;
-+	}
-+
-+	/* Step 2. Set SMBUS device address EX: 0x98 */
-+	addr = EC_SMBUS_SLV_ADDR;
-+	data = (ptr_ec_smbus_write_byte->Address);
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Select SMBus dev addr:0x%02X Failed", ptr_ec_smbus_write_byte->Address);
-+		goto error;
-+	}
-+
-+	/* Step 3. Set Chip (EX: MCP23008) Register Address */
-+	addr = EC_SMBUS_CMD;
-+	data = ptr_ec_smbus_write_byte->Register;
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Select Chip reg addr:0x%02X Failed", ptr_ec_smbus_write_byte->Register);
-+		goto error;
-+	}
-+
-+	/* Step 4. Set Data to SMBUS */
-+	addr = EC_SMBUS_DATA;
-+	data = ptr_ec_smbus_write_byte->Data;
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Set Data 0x%02X to SMBUS Failed", ptr_ec_smbus_write_byte->Data);
-+		goto error;
-+	}
-+
-+	/* Step 5. Set EC SMBUS write Byte Mode */
-+	addr = EC_SMBUS_PROTOCOL;
-+	data = SMBUS_BYTE_WRITE;
-+	ret = write_hw_ram(addr, data);
-+	if (ret) {
-+		pr_err("Set EC SMBUS write Byte Mode Failed");
-+		goto error;
-+	}
-+
-+	/* Step 6. Check EC Smbus states */
-+	ret = wait_smbus_protocol_finish();
-+	if (ret) {
-+		pr_err("Wait SmBus Protocol Finish Failed!!");
-+		goto error;
-+	}
-+
-+	addr = EC_SMBUS_STATUS;
-+	ret = read_hw_ram(addr, &data);
-+	if (ret) {
-+		pr_err("Check EC Smbus states Failed");
-+		goto error;
-+	}
-+	sm_ready = data;
-+
-+	/* check no error */
-+	if (sm_ready != 0x80) {
-+		pr_err("SMBUS ERR:(0x%02X)", sm_ready);
-+		goto error;
-+	}
-+	mutex_unlock(&lock);
-+	return 0;
-+
-+error:
-+	pr_err("%s: Exception!", __func__);
-+	mutex_unlock(&lock);
-+	return ret;
++	lmsensor_data.power[1] = 1000*temp;
++	return sprintf(buf, "%d\n", lmsensor_data.power[1]);
 +}
 +
-+/* Get One Key Recovery status */
-+int read_onekey_status(uchar addr, uchar *pdata)
-+{
-+	int ret;
++static SENSOR_DEVICE_ATTR(name, 0444, get_ec_hwmon_name, NULL, 0);
++static SENSOR_DEVICE_ATTR(in1_input, 0444, get_ec_in1_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(in1_label, 0444, get_ec_in1_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(in2_input, 0444, get_ec_in2_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(in2_label, 0444, get_ec_in2_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(in3_input, 0444, get_ec_in3_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(in3_label, 0444, get_ec_in3_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(in4_input, 0444, get_ec_in4_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(in4_label, 0444, get_ec_in4_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(in5_input, 0444, get_ec_in5_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(in5_label, 0444, get_ec_in5_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(in6_input, 0444, get_ec_in6_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(in6_label, 0444, get_ec_in6_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(in7_input, 0444, get_ec_in7_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(in7_label, 0444, get_ec_in7_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(in8_input, 0444, get_ec_in8_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(in8_label, 0444, get_ec_in8_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(curr1_label, 0444, get_ec_curr1_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(curr1_input, 0444, get_ec_curr1_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(curr2_label, 0444, get_ec_curr2_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(curr2_input, 0444, get_ec_curr2_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(power1_label, 0444, get_ec_power1_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(power1_input, 0444, get_ec_power1_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(temp1_label, 0444, get_ec_temp1_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(temp1_input, 0444, show_temp11, NULL, 0);
++static SENSOR_DEVICE_ATTR(temp1_max_hyst, 0644, show_temp_max_hyst, set_temp_max_hyst, 0);
++static SENSOR_DEVICE_ATTR(temp1_max, 0644, show_temp_max, set_temp_max, 0);
++static SENSOR_DEVICE_ATTR(temp2_label, 0444, get_ec_temp2_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(temp2_input, 0444, get_ec_temp2_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(temp2_crit, 0400, get_ec_temp2_crit, NULL, 0);
++static SENSOR_DEVICE_ATTR(temp2_crit_alarm, 0400, get_ec_temp2_crit_alarm, NULL, 0);
++static SENSOR_DEVICE_ATTR(temp3_label, 0444, get_ec_temp3_label, NULL, 0);
++static SENSOR_DEVICE_ATTR(temp3_input, 0444, get_ec_temp3_input, NULL, 0);
++static SENSOR_DEVICE_ATTR(temp3_crit, 0400, get_ec_temp3_crit, NULL, 0);
++static SENSOR_DEVICE_ATTR(temp3_crit_alarm, 0400, get_ec_temp3_crit_alarm, NULL, 0);
 +
-+	mutex_lock(&lock);
-+
-+	/* Init return value */
-+	*pdata = 0;
-+
-+	/* Step 0. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 1. Send "One Key Recovery" command to EC Command port */
-+	outb(EC_ONE_KEY_FLAG, EC_COMMAND_PORT);
-+
-+	/* Step 2. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 3. Send "One Key Recovery function" address to EC Data port */
-+	outb(addr, EC_STATUS_PORT);
-+
-+	/* Step 4. Wait OBF set */
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 5. Get "One Key Recovery function" data from EC Data port */
-+	*pdata = inb(EC_STATUS_PORT);
-+
-+	pr_debug("%s: data= %d, line: %d", __func__, *pdata, __LINE__);
-+	mutex_unlock(&lock);
-+	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_warn("%s: Wait for IBF or OBF too long. line: %d", __func__, __LINE__);
-+	return ret;
-+}
-+
-+/* Set One Key Recovery status */
-+int write_onekey_status(uchar addr)
-+{
-+	int ret;
-+
-+	mutex_lock(&lock);
-+
-+	/* Step 0. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 1. Send "One Key Recovery" command to EC Command port */
-+	outb(EC_ONE_KEY_FLAG, EC_COMMAND_PORT);
-+
-+	/* Step 2. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 3. Send "One Key Recovery function" address to EC Data port */
-+	outb(addr, EC_STATUS_PORT);
-+
-+	mutex_unlock(&lock);
-+
-+	pr_debug("%s: addr= %d, line: %d", __func__, addr, __LINE__);
-+	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_debug("%s: Wait for IBF too long. line: %d", __func__, __LINE__);
-+	return ret;
-+}
-+
-+/* EC OEM get status */
-+int ec_oem_get_status(uchar addr, uchar *pdata)
-+{
-+	int ret;
-+
-+	mutex_lock(&lock);
-+
-+	/* Init return value */
-+	*pdata = 0;
-+
-+	/* Step 0. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 1. Send "ASG OEM" command to EC Command port */
-+	outb(EC_ASG_OEM, EC_COMMAND_PORT);
-+
-+	/* Step 2. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 3. Send "ASG OEM STATUS READ" address to EC Data port */
-+	outb(EC_ASG_OEM_READ, EC_STATUS_PORT);
-+
-+	/* Step 4. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 5. Send "OEM STATUS" address to EC Data port */
-+	outb(addr, EC_STATUS_PORT);
-+
-+	/* Step 6. Wait OBF set */
-+	ret = wait_obf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 7. Get "OEM STATUS" data from EC Data port */
-+	*pdata = inb(EC_STATUS_PORT);
-+
-+	pr_debug("%s: data= %d, line: %d", __func__, *pdata, __LINE__);
-+	mutex_unlock(&lock);
-+	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_warn("%s: Wait for IBF or OBF too long. line: %d", __func__, __LINE__);
-+	return ret;
-+}
-+
-+/* EC OEM set status */
-+int ec_oem_set_status(uchar addr, uchar pdata)
-+{
-+	int ret;
-+
-+	mutex_lock(&lock);
-+
-+	/* Step 0. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 1. Send "ASG OEM" command to EC Command port */
-+	outb(EC_ASG_OEM, EC_COMMAND_PORT);
-+
-+	/* Step 2. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 3. Send "ASG OEM STATUS WRITE" address to EC Data port */
-+	outb(EC_ASG_OEM_WRITE, EC_STATUS_PORT);
-+
-+	/* Step 4. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 5. Send "OEM STATUS" address to EC Data port */
-+	outb(addr, EC_STATUS_PORT);
-+
-+	/* Step 6. Wait IBF clear */
-+	ret = wait_ibf();
-+	if (ret)
-+		goto error;
-+
-+	/* Step 7. Send "OEM STATUS" status to EC Data port */
-+	outb(pdata, EC_STATUS_PORT);
-+
-+	pr_debug("%s: data= %d, line: %d", __func__, pdata, __LINE__);
-+	mutex_unlock(&lock);
-+	return 0;
-+
-+error:
-+	mutex_unlock(&lock);
-+	pr_warn("%s: Wait for IBF or OBF too long. line: %d", __func__, __LINE__);
-+
-+	return ret;
-+}
-+
-+static int adv_ec_get_productname(char *product)
-+{
-+	static unsigned char *uc_ptaddr;
-+	static unsigned char *uc_epsaddr;
-+	int index = 0, eps_table;
-+	int i = 0;
-+	int length = 0;
-+	int type0_str = 0;
-+	int type1_str = 0;
-+	int is_advantech = 0;
-+
-+	uc_ptaddr = ioremap(AMI_UEFI_ADVANTECH_BOARD_NAME_ADDRESS,
-+			AMI_UEFI_ADVANTECH_BOARD_NAME_LENGTH);
-+	if (!uc_ptaddr) {
-+		pr_err("Error: ioremap_uc()");
-+		return -ENXIO;
-+	}
-+
-+	/* Try to Read the product name from UEFI BIOS(DMI) EPS table */
-+	for (index = 0; index < AMI_UEFI_ADVANTECH_BOARD_NAME_LENGTH; index++) {
-+		if (uc_ptaddr[index] == '_'
-+				&& uc_ptaddr[index+0x1] == 'S'
-+				&& uc_ptaddr[index+0x2] == 'M'
-+				&& uc_ptaddr[index+0x3] == '_'
-+				&& uc_ptaddr[index+0x10] == '_'
-+				&& uc_ptaddr[index+0x11] == 'D'
-+				&& uc_ptaddr[index+0x12] == 'M'
-+				&& uc_ptaddr[index+0x13] == 'I'
-+				&& uc_ptaddr[index+0x14] == '_'
-+				) {
-+			eps_table = 1;
-+			break;
-+		}
-+	}
-+
-+	/* If EPS table exist, read type1(system information) */
-+	if (eps_table) {
-+		uc_epsaddr =
-+			(char *)ioremap(((unsigned int *)&uc_ptaddr[index+0x18])[0],
-+			((unsigned short *)&uc_ptaddr[index+0x16])[0]);
-+		if (!uc_epsaddr) {
-+			uc_epsaddr =
-+				(char *)ioremap_uc(((unsigned int *)&uc_ptaddr[index+0x18])[0],
-+				((unsigned short *)&uc_ptaddr[index+0x16])[0]);
-+			if (!uc_epsaddr) {
-+				pr_err("Error: both ioremap() and ioremap_uc() exec failed!");
-+				return -ENXIO;
-+			}
-+		}
-+
-+		type0_str = (int)uc_epsaddr[1];
-+		for (i = type0_str; i < (type0_str+512); i++) {
-+			if (uc_epsaddr[i] == 0 && uc_epsaddr[i+1] == 0 && uc_epsaddr[i+2] == 1) {
-+				type1_str = i + uc_epsaddr[i+3];
-+				break;
-+			}
-+		}
-+		for (i = type1_str; i < (type1_str+512); i++) {
-+			if (!strncmp(&uc_epsaddr[i], "Advantech", 9))
-+				is_advantech = 1;
-+
-+			if (uc_epsaddr[i] == 0) {
-+				i++;
-+				type1_str = i;
-+				break;
-+			}
-+		}
-+		length = 2;
-+		while ((uc_epsaddr[type1_str + length] != 0)
-+				&& (length < AMI_UEFI_ADVANTECH_BOARD_NAME_LENGTH)) {
-+			length += 1;
-+		}
-+		memmove(product, &uc_epsaddr[type1_str], length);
-+		iounmap((void *)uc_epsaddr);
-+		if (is_advantech) {
-+			iounmap((void *)uc_ptaddr);
-+			return 0;
-+		}
-+	}
-+
-+	/* It is an old BIOS, read from 0x000F0000 */
-+	for (index = 0; index < (AMI_UEFI_ADVANTECH_BOARD_NAME_LENGTH - 3); index++) {
-+		if (!strncmp(&uc_ptaddr[index], "TPC", 3)
-+				|| !strncmp(&uc_ptaddr[index], "UNO", 3)
-+				|| !strncmp(&uc_ptaddr[index], "ITA", 3)
-+				|| !strncmp(&uc_ptaddr[index], "MIO", 3)
-+				|| !strncmp(&uc_ptaddr[index], "ECU", 3)
-+				|| !strncmp(&uc_ptaddr[index], "APAX", 4))
-+			break;
-+	}
-+
-+	if (index == (AMI_UEFI_ADVANTECH_BOARD_NAME_LENGTH - 3)) {
-+		pr_err("%s: Can't find the product name, line: %d", __func__, __LINE__);
-+		product[0] = '\0';
-+		iounmap((void *)uc_ptaddr);
-+		return -ENODATA;
-+	}
-+
-+	/* Use char "Space" (ASCII code: 32) to check the end of the Product Name. */
-+	for (i = 0; (uc_ptaddr[index+i] != 32) && (i < 31); i++)
-+		product[i] = uc_ptaddr[index+i];
-+
-+	product[i] = '\0';
-+	pr_info("%s: BIOS Product Name = %s, line: %d", __func__, product, __LINE__);
-+
-+	iounmap((void *)uc_ptaddr);
-+
-+	return 0;
-+}
-+
-+static const struct mfd_cell adv_ec_sub_cells[] = {
-+	{ .name = "adv-ec-brightness", },
-+	{ .name = "adv-ec-eeprom", },
-+	{ .name = "adv-ec-gpio", },
-+	{ .name = "adv-ec-hwmon", },
-+	{ .name = "adv-ec-led", },
-+	{ .name = "adv-ec-wdt", },
++/*
++ * Support list:
++ * TPC-8100TR, TPC-651T-E3AE, TPC-1251T-E3AE, TPC-1551T-E3AE,
++ * TPC-1751T-E3AE, TPC-1051WP-E3AE, TPC-1551WP-E3AE, TPC-1581WP-433AE
++ * TPC-1782H-433AE,
++ * UNO-1483G-434AE, UNO-2483G-434AE, UNO-3483G-374AE, UNO-2473G
++ * UNO-2484G-6???AE, UNO-2484G-7???AE, UNO-3283G-674AE, UNO-3285G-674AE
++ */
++static const struct attribute *ec_hwmon_attrs_TEMPLATE[] = {
++	&sensor_dev_attr_name.dev_attr.attr,
++	&sensor_dev_attr_in1_input.dev_attr.attr,
++	&sensor_dev_attr_in1_label.dev_attr.attr,
++	&sensor_dev_attr_in2_input.dev_attr.attr,
++	&sensor_dev_attr_in2_label.dev_attr.attr,
++	&sensor_dev_attr_in3_input.dev_attr.attr,
++	&sensor_dev_attr_in3_label.dev_attr.attr,
++	&sensor_dev_attr_in4_input.dev_attr.attr,
++	&sensor_dev_attr_in4_label.dev_attr.attr,
++	&sensor_dev_attr_curr1_label.dev_attr.attr,
++	&sensor_dev_attr_curr1_input.dev_attr.attr,
++	&sensor_dev_attr_temp2_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_input.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit_alarm.dev_attr.attr,
++	NULL
 +};
 +
-+static int adv_ec_init_ec_data(struct adv_ec_platform_data *pdata)
++/*
++ * Support list:
++ * TPC-B500-6??AE
++ * TPC-5???T-6??AE
++ * TPC-5???W-6??AE
++ * TPC-B200-???AE
++ * TPC-2???T-???AE
++ * TPC-2???W-???AE
++ */
++static const struct attribute *ec_hwmon_attrs_TPC5XXX[] = {
++	&sensor_dev_attr_name.dev_attr.attr,
++	&sensor_dev_attr_in1_input.dev_attr.attr,
++	&sensor_dev_attr_in1_label.dev_attr.attr,
++	&sensor_dev_attr_in2_input.dev_attr.attr,
++	&sensor_dev_attr_in2_label.dev_attr.attr,
++	&sensor_dev_attr_in3_input.dev_attr.attr,
++	&sensor_dev_attr_in3_label.dev_attr.attr,
++	&sensor_dev_attr_in4_input.dev_attr.attr,
++	&sensor_dev_attr_in4_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_input.dev_attr.attr,
++	&sensor_dev_attr_temp2_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit_alarm.dev_attr.attr,
++	NULL
++};
++
++/*
++ * Support list:
++ * PR/VR4
++ */
++static const struct attribute *ec_hwmon_attrs_PRVR4[] = {
++	&sensor_dev_attr_name.dev_attr.attr,
++	&sensor_dev_attr_in1_input.dev_attr.attr,
++	&sensor_dev_attr_in1_label.dev_attr.attr,
++	&sensor_dev_attr_in2_input.dev_attr.attr,
++	&sensor_dev_attr_in2_label.dev_attr.attr,
++	&sensor_dev_attr_in3_input.dev_attr.attr,
++	&sensor_dev_attr_in3_label.dev_attr.attr,
++	&sensor_dev_attr_in4_input.dev_attr.attr,
++	&sensor_dev_attr_in4_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_input.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit_alarm.dev_attr.attr,
++	&sensor_dev_attr_temp3_label.dev_attr.attr,
++	&sensor_dev_attr_temp3_input.dev_attr.attr,
++	&sensor_dev_attr_temp3_crit.dev_attr.attr,
++	&sensor_dev_attr_temp3_crit_alarm.dev_attr.attr,
++	NULL
++};
++
++/*
++ * Support list:
++ * UNO-2271G-E22AE/E23AE/E022AE/E023AE, UNO-420
++ */
++static const struct attribute *ec_hwmon_attrs_UNO2271G[] = {
++	&sensor_dev_attr_name.dev_attr.attr,
++	&sensor_dev_attr_in1_input.dev_attr.attr,
++	&sensor_dev_attr_in1_label.dev_attr.attr,
++	&sensor_dev_attr_in2_input.dev_attr.attr,
++	&sensor_dev_attr_in2_label.dev_attr.attr,
++	&sensor_dev_attr_in3_input.dev_attr.attr,
++	&sensor_dev_attr_in3_label.dev_attr.attr,
++	&sensor_dev_attr_in4_input.dev_attr.attr,
++	&sensor_dev_attr_in4_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_input.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit_alarm.dev_attr.attr,
++	NULL
++};
++
++/*
++ * Support list:
++ * UNO-1172A
++ * ECU-4784
++ */
++static const struct attribute *ec_hwmon_attrs_UNO1172A[] = {
++	&sensor_dev_attr_name.dev_attr.attr,
++	&sensor_dev_attr_in1_input.dev_attr.attr,
++	&sensor_dev_attr_in1_label.dev_attr.attr,
++	&sensor_dev_attr_in2_input.dev_attr.attr,
++	&sensor_dev_attr_in2_label.dev_attr.attr,
++	&sensor_dev_attr_in3_input.dev_attr.attr,
++	&sensor_dev_attr_in3_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_input.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit_alarm.dev_attr.attr,
++	NULL
++};
++
++/*
++ * Support list:
++ * UNO-1372G
++ */
++static const struct attribute *ec_hwmon_attrs_UNO1372G[] = {
++	&sensor_dev_attr_name.dev_attr.attr,
++	&sensor_dev_attr_in1_input.dev_attr.attr,
++	&sensor_dev_attr_in1_label.dev_attr.attr,
++	&sensor_dev_attr_in2_input.dev_attr.attr,
++	&sensor_dev_attr_in2_label.dev_attr.attr,
++	&sensor_dev_attr_in4_input.dev_attr.attr,
++	&sensor_dev_attr_in4_label.dev_attr.attr,
++	&sensor_dev_attr_in8_input.dev_attr.attr,
++	&sensor_dev_attr_in8_label.dev_attr.attr,
++	&sensor_dev_attr_curr1_label.dev_attr.attr,
++	&sensor_dev_attr_curr1_input.dev_attr.attr,
++	&sensor_dev_attr_temp2_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_input.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit_alarm.dev_attr.attr,
++	NULL
++};
++
++/*
++ * Support list:
++ * UNO-2372G, UNO-1372G-J021AE/J031AE
++ */
++static const struct attribute *ec_hwmon_attrs_UNO2372G[] = {
++	//sor_dev_attr_name.dev_attr.attr,
++	&sensor_dev_attr_in1_input.dev_attr.attr,
++	&sensor_dev_attr_in1_label.dev_attr.attr,
++	&sensor_dev_attr_in2_input.dev_attr.attr,
++	&sensor_dev_attr_in2_label.dev_attr.attr,
++	&sensor_dev_attr_in4_input.dev_attr.attr,
++	&sensor_dev_attr_in4_label.dev_attr.attr,
++	&sensor_dev_attr_in8_input.dev_attr.attr,
++	&sensor_dev_attr_in8_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_input.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit_alarm.dev_attr.attr,
++	NULL
++};
++
++/*
++ * Support list:
++ * APAX-5580-433AE/473AE/4C3AE
++ */
++static const struct attribute *ec_hwmon_attrs_APAX5580[] = {
++	&sensor_dev_attr_name.dev_attr.attr,
++	&sensor_dev_attr_in1_input.dev_attr.attr,
++	&sensor_dev_attr_in1_label.dev_attr.attr,
++	&sensor_dev_attr_in2_input.dev_attr.attr,
++	&sensor_dev_attr_in2_label.dev_attr.attr,
++	&sensor_dev_attr_in5_input.dev_attr.attr,
++	&sensor_dev_attr_in5_label.dev_attr.attr,
++	&sensor_dev_attr_in6_input.dev_attr.attr,
++	&sensor_dev_attr_in6_label.dev_attr.attr,
++	&sensor_dev_attr_in7_input.dev_attr.attr,
++	&sensor_dev_attr_in7_label.dev_attr.attr,
++	&sensor_dev_attr_curr2_label.dev_attr.attr,
++	&sensor_dev_attr_curr2_input.dev_attr.attr,
++	&sensor_dev_attr_power1_label.dev_attr.attr,
++	&sensor_dev_attr_power1_input.dev_attr.attr,
++	&sensor_dev_attr_temp2_label.dev_attr.attr,
++	&sensor_dev_attr_temp2_input.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit.dev_attr.attr,
++	&sensor_dev_attr_temp2_crit_alarm.dev_attr.attr,
++	&sensor_dev_attr_temp3_label.dev_attr.attr,
++	&sensor_dev_attr_temp3_input.dev_attr.attr,
++	&sensor_dev_attr_temp3_crit.dev_attr.attr,
++	&sensor_dev_attr_temp3_crit_alarm.dev_attr.attr,
++	NULL
++};
++
++static struct attribute *f75375_attributes[] = {
++	&sensor_dev_attr_temp1_label.dev_attr.attr,
++	&sensor_dev_attr_temp1_input.dev_attr.attr,
++	&sensor_dev_attr_temp1_max.dev_attr.attr,
++	&sensor_dev_attr_temp1_max_hyst.dev_attr.attr,
++	NULL
++};
++
++static const struct attribute_group f75375_group = {
++	.attrs = f75375_attributes,
++};
++
++static struct adv_hwmon_profile advec_profile[] = {
++	/*
++	 * TPC-8100TR, TPC-651T-E3AE, TPC-1251T-E3AE, TPC-1551T-E3AE,
++	 * TPC-1751T-E3AE, TPC-1051WP-E3AE, TPC-1551WP-E3AE, TPC-1581WP-433AE,
++	 * TPC-1782H-433AE, UNO-1483G-434AE, UNO-2483G-434AE, UNO-3483G-374AE,
++	 * UNO-2473G, UNO-2484G-6???AE, UNO-2484G-7???AE, UNO-3283G-674AE,
++	 * UNO-3285G-674AE
++	 * (0)
++	 */
++	{
++		.resolution = 2929,
++		.r1 = 1912,
++		.r2 = 1000,
++		.offset = 0,
++		.ec_hwmon_group.attrs = (struct attribute **)ec_hwmon_attrs_TEMPLATE,
++	},
++	/*
++	 * TPC-B500-6??AE, TPC-5???T-6??AE, TPC-5???W-6??AE, TPC-B200-???AE,
++	 * TPC-2???T-???AE, TPC-2???W-???AE
++	 * (1)
++	 */
++	{
++		.resolution = 2929,
++		.r1 = 1912,
++		.r2 = 1000,
++		.offset = 0,
++		.ec_hwmon_group.attrs = (struct attribute **)ec_hwmon_attrs_TPC5XXX,
++	},
++	/* PR/VR4 (2) */
++	{
++		.resolution = 2929,
++		.r1 = 1912,
++		.r2 = 1000,
++		.offset = 0,
++		.ec_hwmon_group.attrs = (struct attribute **)ec_hwmon_attrs_PRVR4,
++	},
++	/* UNO-2271G-E22AE/E23AE/E022AE/E023AE,UNO-420 (3) */
++	{
++		.resolution = 2929,
++		.r1 = 1912,
++		.r2 = 1000,
++		.offset = 0,
++		.ec_hwmon_group.attrs = (struct attribute **)ec_hwmon_attrs_UNO2271G,
++	},
++	/* UNO-1172A, ECU-4784 (4) */
++	{
++		.resolution = 2929,
++		.r1 = 1912,
++		.r2 = 1000,
++		.offset = 0,
++		.ec_hwmon_group.attrs = (struct attribute **)ec_hwmon_attrs_UNO1172A,
++	},
++	/* UNO-1372G (5) */
++	{
++		.resolution = 2929,
++		.r1 = 1912,
++		.r2 = 1000,
++		.offset = 0,
++		.ec_hwmon_group.attrs = (struct attribute **)ec_hwmon_attrs_UNO1372G,
++	},
++	/* UNO-2372G, UNO-1372G-J021AE/J031AE (6) */
++	{
++		.resolution = 2929,
++		.r1 = 1912,
++		.r2 = 1000,
++		.offset = 0,
++		.ec_hwmon_group.attrs = (struct attribute **)ec_hwmon_attrs_UNO2372G,
++	},
++	/* APAX-5580-433AE, APAX-5580-473AE, APAX-5580-4C3AE (7) */
++	{
++		.resolution = 2929,
++		.resolution_sys = 1250,
++		.resolution_curr = 1000,
++		.resolution_power = 25000,
++		.r1 = 0,
++		.r1_vin = 1120,
++		.r1_sys = 0,
++		.r1_curr = 0,
++		.r1_power = 0,
++		.r2 = 0,
++		.r2_vin = 56,
++		.r2_sys = 0,
++		.r2_curr = 0,
++		.r2_power = 0,
++		.offset = 0,
++		.ec_hwmon_group.attrs = (struct attribute **)ec_hwmon_attrs_APAX5580,
++	},
++};
++
++static int adspname_detect(const char *bios_product_name, const char *standard_name)
 +{
-+	int ret;
++	int i, j;
 +
-+	pdata->sub_dev_mask = 0;
-+	pdata->sub_dev_nb = 0;
-+	pdata->dym_tbl = NULL;
-+	pdata->bios_product_name = NULL;
++	i = 0;
 +
-+	/* Get product name */
-+	pdata->bios_product_name = kmalloc(AMI_ADVANTECH_BOARD_ID_LENGTH, GFP_KERNEL);
-+	if (!pdata->bios_product_name)
-+		return -ENOMEM;
++	for (j = 0; j < strlen(bios_product_name); j++) {
++		if (standard_name[i] == '*') {
++			if (i) {
++				if (bios_product_name[j] == standard_name[(i + 1)])
++					i += 2;
 +
-+	memset(pdata->bios_product_name, 0, AMI_ADVANTECH_BOARD_ID_LENGTH);
-+	ret = adv_ec_get_productname(pdata->bios_product_name);
-+	if (ret)
-+		return ret;
++				if (i >= (strlen(standard_name) - 1))
++					return 0;
++			}
++		} else if (standard_name[i] == '?') {
++			if (i) {
++				i++;
++				if (i >= strlen(standard_name))
++					return 0;
++			}
++		} else if (bios_product_name[j] == standard_name[i]) {
++			i++;
++			if (i >= strlen(standard_name))
++				return 0;
++		}
++	}
 +
-+	/* Get pin table */
-+	pdata->dym_tbl = kmalloc(EC_MAX_TBL_NUM*sizeof(struct Dynamic_Tab), GFP_KERNEL);
-+	if (!pdata->dym_tbl)
-+		return -ENOMEM;
-+
-+	ret = adv_get_dynamic_tab(pdata);
-+
-+	return 0;
++	return 1;
 +}
 +
-+static int adv_ec_parse_prop(struct adv_ec_platform_data *pdata)
++static void adv_ec_init_hwmon_profile(u32 profile, struct adv_ec_platform_data *plat_data)
 +{
-+	int i, ret;
-+	u32 nb, sub_dev[ADVEC_SUBDEV_MAX];
++	int i;
++	struct HW_PIN_TBL *ptbl = &lmsensor_data.pin_tbl;
++	struct Dynamic_Tab *dym_tbl = plat_data->dym_tbl;
 +
-+	ret = device_property_read_u32(pdata->dev, "advantech,sub-dev-nb", &nb);
-+	if (ret < 0) {
-+		dev_err(pdata->dev, "get sub-dev-nb failed! (%d)", ret);
-+		return ret;
-+	}
-+	pdata->sub_dev_nb = nb;
++	lmsensor_data.bios_product_name = plat_data->bios_product_name;
++	lmsensor_data.profile = &advec_profile[profile];
 +
-+	ret = device_property_read_u32_array(pdata->dev, "advantech,sub-dev", sub_dev, nb);
-+	if (ret < 0) {
-+		dev_err(pdata->dev, "get sub-dev failed! (%d)", ret);
-+		return ret;
-+	}
-+
-+	for (i = 0; i < nb; i++) {
-+		switch (sub_dev[i]) {
-+		case ADVEC_SUBDEV_BRIGHTNESS:
-+		case ADVEC_SUBDEV_EEPROM:
-+		case ADVEC_SUBDEV_GPIO:
-+		case ADVEC_SUBDEV_HWMON:
-+		case ADVEC_SUBDEV_LED:
-+		case ADVEC_SUBDEV_WDT:
-+			pdata->sub_dev_mask |= BIT(sub_dev[i]);
++	for (i = 0; i < EC_MAX_TBL_NUM ; i++) {
++		switch (dym_tbl[i].DeviceID) {
++		case EC_DID_CMOSBAT:
++			ptbl->vbat[0] = dym_tbl[i].HWPinNumber;
++			ptbl->vbat[1] = 1;
++			break;
++		case EC_DID_CMOSBAT_X2:
++			ptbl->vbat[0] = dym_tbl[i].HWPinNumber;
++			ptbl->vbat[1] = 2;
++			break;
++		case EC_DID_CMOSBAT_X10:
++			ptbl->vbat[0] = dym_tbl[i].HWPinNumber;
++			ptbl->vbat[1] = 10;
++			break;
++		case EC_DID_5VS0:
++		case EC_DID_5VS5:
++			ptbl->v5[0] = dym_tbl[i].HWPinNumber;
++			ptbl->v5[1] = 1;
++			break;
++		case EC_DID_5VS0_X2:
++		case EC_DID_5VS5_X2:
++			ptbl->v5[0] = dym_tbl[i].HWPinNumber;
++			ptbl->v5[1] = 2;
++			break;
++		case EC_DID_5VS0_X10:
++		case EC_DID_5VS5_X10:
++			ptbl->v5[0] = dym_tbl[i].HWPinNumber;
++			ptbl->v5[1] = 10;
++			break;
++		case EC_DID_12VS0:
++			ptbl->v12[0] = dym_tbl[i].HWPinNumber;
++			ptbl->v12[1] = 1;
++			break;
++		case EC_DID_12VS0_X2:
++			ptbl->v12[0] = dym_tbl[i].HWPinNumber;
++			ptbl->v12[1] = 2;
++			break;
++		case EC_DID_12VS0_X10:
++			ptbl->v12[0] = dym_tbl[i].HWPinNumber;
++			ptbl->v12[1] = 10;
++			break;
++		case EC_DID_VCOREA:
++		case EC_DID_VCOREB:
++			ptbl->vcore[0] = dym_tbl[i].HWPinNumber;
++			ptbl->vcore[1] = 1;
++			break;
++		case EC_DID_VCOREA_X2:
++		case EC_DID_VCOREB_X2:
++			ptbl->vcore[0] = dym_tbl[i].HWPinNumber;
++			ptbl->vcore[1] = 2;
++			break;
++		case EC_DID_VCOREA_X10:
++		case EC_DID_VCOREB_X10:
++			ptbl->vcore[0] = dym_tbl[i].HWPinNumber;
++			ptbl->vcore[1] = 10;
++			break;
++		case EC_DID_DC:
++			ptbl->vdc[0] = dym_tbl[i].HWPinNumber;
++			ptbl->vdc[1] = 1;
++			break;
++		case EC_DID_DC_X2:
++			ptbl->vdc[0] = dym_tbl[i].HWPinNumber;
++			ptbl->vdc[1] = 2;
++			break;
++		case EC_DID_DC_X10:
++			ptbl->vdc[0] = dym_tbl[i].HWPinNumber;
++			ptbl->vdc[1] = 10;
++			break;
++		case EC_DID_CURRENT:
++			ptbl->ec_current[0] = dym_tbl[i].HWPinNumber;
++			ptbl->ec_current[1] = 1;
++			break;
++		case EC_DID_SMBOEM0:
++			lmsensor_data.ec_smboem0.HWPinNumber = dym_tbl[i].HWPinNumber;
 +			break;
 +		default:
-+			dev_err(pdata->dev, "invalid prop value(%d)!", sub_dev[i]);
++			break;
 +		}
 +	}
-+	dev_info(pdata->dev, "sub-dev mask = 0x%x", pdata->sub_dev_mask);
++}
++
++static int f75375_probe(struct i2c_client *client, const struct i2c_device_id *id)
++{
++	struct f75375_data *data;
++	int err;
++
++	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
++		return -EIO;
++	data = devm_kzalloc(&client->dev, sizeof(struct f75375_data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	i2c_set_clientdata(client, data);
++	mutex_init(&data->update_lock);
++	data->kind = id->driver_data;
++
++	err = sysfs_create_group(&client->dev.kobj, &f75375_group);
++	if (err)
++		return err;
++
++	data->hwmon_dev = hwmon_device_register(&client->dev);
++	if (IS_ERR(data->hwmon_dev)) {
++		err = PTR_ERR(data->hwmon_dev);
++		goto exit_remove;
++	}
++	return 0;
++
++exit_remove:
++	sysfs_remove_group(&client->dev.kobj, &f75375_group);
++	return err;
++}
++
++static int f75375_remove(struct i2c_client *client)
++{
++	struct f75375_data *data = i2c_get_clientdata(client);
++
++	hwmon_device_unregister(data->hwmon_dev);
++	sysfs_remove_group(&client->dev.kobj, &f75375_group);
++	return 0;
++}
++
++/* Return 0 if detection is successful, -ENODEV otherwise */
++static int f75375_detect(struct i2c_client *client, struct i2c_board_info *info)
++{
++	struct i2c_adapter *adapter = client->adapter;
++	u16 vendid, chipid;
++	u8 version;
++	const char *name;
++
++	vendid = f75375_read16(client, F75375_REG_VENDOR);
++	chipid = f75375_read16(client, F75375_CHIP_ID);
++	dev_info(&adapter->dev, "VendID: 0x%x, ChipID: 0x%x", vendid, chipid);
++
++	if (vendid != 0x1934)
++		return -ENODEV;
++
++	if (chipid == 0x0306)
++		name = "f75375";
++	else if (chipid == 0x0204)
++		name = "f75373";
++	else if (chipid == 0x0410)
++		name = "f75387";
++	else
++		return -ENODEV;
++
++	version = f75375_read8(client, F75375_REG_VERSION);
++	dev_info(&adapter->dev, "found %s version: %02X\n", name, version);
++	strlcpy(info->type, name, I2C_NAME_SIZE);
 +
 +	return 0;
 +}
 +
-+static int adv_ec_probe(struct platform_device *pdev)
++static int adv_ec_hwmon_probe(struct platform_device *pdev)
 +{
-+	int ret, i;
-+	struct device *dev = &pdev->dev;
-+	struct adv_ec_platform_data *adv_ec_data;
++	int ret = 0;
++	u32 profile;
++	struct adv_ec_platform_data *adv_ec_data = NULL;
 +
-+	adv_ec_data = kmalloc(sizeof(struct adv_ec_platform_data), GFP_KERNEL);
-+	if (!adv_ec_data) {
-+		ret = -ENOMEM;
-+		goto err_plat_data;
++	adv_ec_data = (struct adv_ec_platform_data *)dev_get_drvdata(pdev->dev.parent);
++
++	ret = device_property_read_u32(pdev->dev.parent, "advantech,hwmon-profile", &profile);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "get hwmon-profile failed! (%d)", ret);
++		return ret;
 +	}
 +
-+	dev_set_drvdata(dev, (void *)adv_ec_data);
-+	adv_ec_data->dev = dev;
++	adv_ec_init_hwmon_profile(profile, adv_ec_data);
 +
-+	mutex_init(&lock);
++	lmsensor_data.dev = &pdev->dev;
++	lmsensor_data.hwmon_dev = hwmon_device_register(NULL);
 +
-+	ret = adv_ec_init_ec_data(adv_ec_data);
-+	if (ret)
-+		goto err_init_data;
++	if (IS_ERR(lmsensor_data.hwmon_dev)) {
++		ret = -ENOMEM;
++		dev_err(lmsensor_data.dev, "hwmon_dev register failed\n");
++		goto fail_hwmon_device_register;
++	}
 +
-+	ret = adv_ec_parse_prop(adv_ec_data);
-+	if (ret)
-+		goto err_prop;
++	ret = sysfs_create_group(&lmsensor_data.hwmon_dev->kobj,
++			&lmsensor_data.profile->ec_hwmon_group);
++	if (ret) {
++		dev_err(lmsensor_data.dev, "failed to creat ec hwmon\n");
++		goto fail_create_group_hwmon;
++	}
 +
-+	for (i = 0; i < ARRAY_SIZE(adv_ec_sub_cells); i++) {
-+		if (adv_ec_data->sub_dev_mask & BIT(i)) {
-+			ret = mfd_add_hotplug_devices(dev, &adv_ec_sub_cells[i], 1);
-+			if (ret)
-+				dev_err(dev, "failed to add %s subdevice: %d",
-+					adv_ec_sub_cells[i].name, ret);
-+		}
++	if (!adspname_detect(adv_ec_data->bios_product_name, "UNO-1172A")) {
++		ret = i2c_add_driver(&f75375_driver);
++		if (ret)
++			dev_err(lmsensor_data.dev, "failed to register driver f75375.\n");
 +	}
 +
 +	dev_info(&pdev->dev, "Ver:%s, Data:%s, probe done",
-+			ADVANTECH_EC_MFD_VER, ADVANTECH_EC_MFD_DATE);
++			ADVANTECH_EC_HWMON_VER, ADVANTECH_EC_HWMON_DATE);
 +
-+	return 0;
++	return ret;
 +
-+err_prop:
-+err_init_data:
-+	kfree(adv_ec_data->dym_tbl);
-+	kfree(adv_ec_data->bios_product_name);
-+	kfree(adv_ec_data);
++fail_create_group_hwmon:
++	sysfs_remove_group(&lmsensor_data.hwmon_dev->kobj, &lmsensor_data.profile->ec_hwmon_group);
++fail_hwmon_device_register:
++	hwmon_device_unregister(lmsensor_data.hwmon_dev);
 +
-+err_plat_data:
 +	return ret;
 +}
 +
-+static int adv_ec_remove(struct platform_device *pdev)
++static int adv_ec_hwmon_remove(struct platform_device *pdev)
 +{
-+	struct adv_ec_platform_data *adv_ec_data;
-+
-+	adv_ec_data = (struct adv_ec_platform_data *)dev_get_drvdata(&pdev->dev);
-+
-+	kfree(adv_ec_data->dym_tbl);
-+	kfree(adv_ec_data->bios_product_name);
-+	kfree(adv_ec_data);
-+
-+	mfd_remove_devices(&pdev->dev);
-+	mutex_destroy(&lock);
++	sysfs_remove_group(&lmsensor_data.hwmon_dev->kobj, &lmsensor_data.profile->ec_hwmon_group);
++	hwmon_device_unregister(lmsensor_data.hwmon_dev);
++	if (!adspname_detect(lmsensor_data.bios_product_name, "UNO-1172A"))
++		i2c_del_driver(&f75375_driver);
 +
 +	return 0;
 +}
 +
-+#ifdef CONFIG_OF
-+static const struct of_device_id adv_ec_of_match[] = {
-+	{ .compatible = "advantech,ahc1ec0", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, adv_ec_of_match);
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id adv_ec_acpi_match[] = {
-+	{"AHC1EC0", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(acpi, adv_ec_acpi_match);
-+#endif
-+
-+static const struct platform_device_id adv_ec_id[] = {
-+	{ ADVANTECH_EC_NAME, },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(platform, adv_ec_id);
-+
-+static struct platform_driver adv_ec_driver = {
++static struct platform_driver adv_hwmon_drv = {
 +	.driver = {
-+		.name = ADVANTECH_EC_NAME,
-+#ifdef CONFIG_OF
-+		.of_match_table = of_match_ptr(adv_ec_of_match),
-+#endif
-+#ifdef CONFIG_ACPI
-+		.acpi_match_table = ACPI_PTR(adv_ec_acpi_match),
-+#endif
++		.name = "adv-ec-hwmon",
 +	},
-+	.id_table = adv_ec_id,
-+	.probe = adv_ec_probe,
-+	.remove = adv_ec_remove,
++	.probe = adv_ec_hwmon_probe,
++	.remove = adv_ec_hwmon_remove,
 +};
-+module_platform_driver(adv_ec_driver);
 +
++module_platform_driver(adv_hwmon_drv);
++
++MODULE_DESCRIPTION("Advantech EC Hwmon Driver.");
++MODULE_AUTHOR("Jiangwei.Zhu");
 +MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_AUTHOR("sun.lang");
-+MODULE_DESCRIPTION("Advantech EC MFD Driver.");
-+
-diff --git a/include/linux/mfd/ahc1ec0.h b/include/linux/mfd/ahc1ec0.h
-new file mode 100644
-index 000000000000..a5a6f49c53e9
---- /dev/null
-+++ b/include/linux/mfd/ahc1ec0.h
-@@ -0,0 +1,338 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef __LINUX_MFD_AHC1EC0_H
-+#define __LINUX_MFD_AHC1EC0_H
-+
-+#include <linux/device.h>
-+
-+#define uchar unsigned int
-+
-+#define EC_COMMAND_PORT             0x29A
-+#define EC_STATUS_PORT              0x299
-+
-+#define EC_UDELAY_TIME              200
-+#define EC_MAX_TIMEOUT_COUNT        5000
-+
-+/* AD command */
-+#define EC_AD_INDEX_WRITE   0x15
-+#define EC_AD_LSB_READ      0x16
-+#define EC_AD_MSB_READ      0x1F
-+
-+/* voltage device id */
-+#define EC_DID_CMOSBAT      0x50 /* CMOS coin battery voltage */
-+#define EC_DID_CMOSBAT_X2   0x51 /* CMOS coin battery voltage*2 */
-+#define EC_DID_CMOSBAT_X10  0x52 /* CMOS coin battery voltage*10 */
-+#define EC_DID_5VS0         0x56 /* 5VS0 voltage */
-+#define EC_DID_5VS0_X2      0x57 /* 5VS0 voltage*2 */
-+#define EC_DID_5VS0_X10     0x58 /* 5VS0 voltage*10 */
-+#define EC_DID_5VS5         0x59 /* 5VS5 voltage */
-+#define EC_DID_5VS5_X2      0x5A /* 5VS5 voltage*2 */
-+#define EC_DID_5VS5_X10     0x5B /* 5VS5 voltage*10 */
-+#define EC_DID_12VS0        0x62 /* 12VS0 voltage */
-+#define EC_DID_12VS0_X2     0x63 /* 12VS0 voltage*2 */
-+#define EC_DID_12VS0_X10    0x64 /* 12VS0 voltage*10 */
-+#define EC_DID_VCOREA       0x65 /* CPU A core voltage */
-+#define EC_DID_VCOREA_X2    0x66 /* CPU A core voltage*2 */
-+#define EC_DID_VCOREA_X10   0x67 /* CPU A core voltage*10 */
-+#define EC_DID_VCOREB       0x68 /* CPU B core voltage */
-+#define EC_DID_VCOREB_X2    0x69 /* CPU B core voltage*2 */
-+#define EC_DID_VCOREB_X10   0x6A /* CPU B core voltage*10 */
-+#define EC_DID_DC           0x6B /* ADC. onboard voltage */
-+#define EC_DID_DC_X2        0x6C /* ADC. onboard voltage*2 */
-+#define EC_DID_DC_X10       0x6D /* ADC. onboard voltage*10 */
-+#define EC_DID_SMBOEM0      0x28 /* SMBUS/I2C. Smbus channel 0 */
-+
-+/* Current device id */
-+#define EC_DID_CURRENT              0x74
-+
-+/* ACPI commands */
-+#define EC_ACPI_RAM_READ            0x80
-+#define EC_ACPI_RAM_WRITE           0x81
-+
-+/*
-+ *  Dynamic control table commands
-+ *  The table includes HW pin number,Device ID,and Pin polarity
-+ */
-+#define EC_TBL_WRITE_ITEM           0x20
-+#define EC_TBL_GET_PIN              0x21
-+#define EC_TBL_GET_DEVID            0x22
-+#define EC_MAX_TBL_NUM              32
-+
-+/* LED Device ID table */
-+#define EC_DID_LED_RUN              0xE1
-+#define EC_DID_LED_ERR              0xE2
-+#define EC_DID_LED_SYS_RECOVERY     0xE3
-+#define EC_DID_LED_D105_G           0xE4
-+#define EC_DID_LED_D106_G           0xE5
-+#define EC_DID_LED_D107_G           0xE6
-+
-+/* LED control HW ram address 0xA0-0xAF */
-+#define EC_HWRAM_LED_BASE_ADDR      0xA0
-+#define EC_HWRAM_LED_PIN(N)         (EC_HWRAM_LED_BASE_ADDR + (4 * (N))) // N:0-3
-+#define EC_HWRAM_LED_CTRL_HIBYTE(N) (EC_HWRAM_LED_BASE_ADDR + (4 * (N)) + 1)
-+#define EC_HWRAM_LED_CTRL_LOBYTE(N) (EC_HWRAM_LED_BASE_ADDR + (4 * (N)) + 2)
-+#define EC_HWRAM_LED_DEVICE_ID(N)   (EC_HWRAM_LED_BASE_ADDR + (4 * (N)) + 3)
-+
-+/* LED control bit */
-+#define LED_CTRL_ENABLE_BIT             (1 << 4)
-+#define LED_CTRL_INTCTL_BIT             (1 << 5)
-+#define LED_CTRL_LEDBIT_MASK            (0x03FF << 6)
-+#define LED_CTRL_POLARITY_MASK          (0x000F << 0)
-+#define LED_CTRL_INTCTL_EXTERNAL        0
-+#define LED_CTRL_INTCTL_INTERNAL        1
-+
-+#define LED_DISABLE  0x0
-+#define LED_ON       0x1
-+#define LED_FAST     0x3
-+#define LED_NORMAL   0x5
-+#define LED_SLOW     0x7
-+#define LED_MANUAL   0xF
-+
-+#define LED_CTRL_LEDBIT_DISABLE	(0x0000)
-+#define LED_CTRL_LEDBIT_ON		(0x03FF)
-+#define LED_CTRL_LEDBIT_FAST	(0x02AA)
-+#define LED_CTRL_LEDBIT_NORMAL	(0x0333)
-+#define LED_CTRL_LEDBIT_SLOW	(0x03E0)
-+
-+/* Get the device name */
-+#define AMI_BIOS_NAME                               "AMIBIOS"
-+#define AMI_BIOS_NAME_ADDRESS                       0x000FF400
-+#define AMI_BIOS_NAME_LENGTH                        strlen(AMI_BIOS_NAME)
-+#define AMI_ADVANTECH_BOARD_ID_ADDRESS              0x000FE840
-+#define AMI_ADVANTECH_BOARD_ID_LENGTH               32
-+#define AMI_ADVANTECH_BOARD_NAME_ADDRESS            0x000FF550
-+#define AMI_ADVANTECH_BOARD_NAME_LENGTH             _ADVANTECH_BOARD_NAME_LENGTH
-+#define AMI_UEFI_ADVANTECH_BOARD_NAME_ADDRESS       0x000F0000
-+#define AMI_UEFI_ADVANTECH_BOARD_NAME_LENGTH        0xFFFF
-+
-+/*
-+ *  EC WDT commands
-+ *  EC can send multistage watchdog event. System can setup watchdog event
-+ *  independently to makeup event sequence.
-+ */
-+#define	EC_WDT_START			0x28
-+#define	EC_WDT_STOP		        0x29
-+#define	EC_WDT_RESET			0x2A
-+#define	EC_WDT_BOOTTMEWDT_STOP		0x2B
-+#define EC_HW_RAM			0x89
-+#define EC_EVENT_FLAG			0x57
-+#define EC_RESET_EVENT			0x04
-+#define EC_COMMANS_PORT_IBF_MASK	0x02
-+#define EC_ENABLE_DELAY_L		0x59
-+#define EC_ENABLE_DELAY_H		0x58
-+#define EC_POWER_BTN_TIME_L		0x5B
-+#define EC_POWER_BTN_TIME_H		0x5A
-+#define EC_RESET_DELAY_TIME_L		0x5F
-+#define EC_RESET_DELAY_TIME_H		0x5E
-+#define EC_PIN_DELAY_TIME_L		0x61
-+#define EC_PIN_DELAY_TIME_H		0x60
-+#define EC_SCI_DELAY_TIME_H		0x62
-+#define EC_SCI_DELAY_TIME_L		0x63
-+
-+/* EC ACPI commands */
-+#define EC_ACPI_DATA_READ		0x80
-+#define EC_ACPI_DATA_WRITE		0x81
-+
-+/* Brightness ACPI Addr */
-+#define BRIGHTNESS_ACPI_ADDR		0x50
-+
-+/* EC HW Ram commands */
-+#define EC_HW_EXTEND_RAM_READ		0x86
-+#define EC_HW_EXTEND_RAM_WRITE		0x87
-+#define	EC_HW_RAM_READ			0x88
-+#define EC_HW_RAM_WRITE			0x89
-+
-+/* EC Smbus commands */
-+#define EC_SMBUS_CHANNEL_SET	0x8A	 /* Set selector number (SMBUS channel) */
-+#define EC_SMBUS_ENABLE_I2C	0x8C	 /* Enable channel I2C */
-+#define EC_SMBUS_DISABLE_I2C	0x8D	 /* Disable channel I2C */
-+
-+/* Smbus transmit protocol */
-+#define EC_SMBUS_PROTOCOL		0x00
-+
-+/* SMBUS status */
-+#define EC_SMBUS_STATUS			0x01
-+
-+/* SMBUS device slave address (bit0 must be 0) */
-+#define EC_SMBUS_SLV_ADDR		0x02
-+
-+/* SMBUS device command */
-+#define EC_SMBUS_CMD			0x03
-+
-+/* 0x04-0x24 Data In read process, return data are stored in this address */
-+#define EC_SMBUS_DATA			0x04
-+
-+#define EC_SMBUS_DAT_OFFSET(n)	(EC_SMBUS_DATA + (n))
-+
-+/* SMBUS channel selector (0-4) */
-+#define EC_SMBUS_CHANNEL		0x2B
-+
-+/* EC SMBUS transmit Protocol code */
-+#define SMBUS_QUICK_WRITE		0x02 /* Write Quick Command */
-+#define SMBUS_QUICK_READ		0x03 /* Read Quick Command */
-+#define SMBUS_BYTE_SEND			0x04 /* Send Byte */
-+#define SMBUS_BYTE_RECEIVE		0x05 /* Receive Byte */
-+#define SMBUS_BYTE_WRITE		0x06 /* Write Byte */
-+#define SMBUS_BYTE_READ			0x07 /* Read Byte */
-+#define SMBUS_WORD_WRITE		0x08 /* Write Word */
-+#define SMBUS_WORD_READ			0x09 /* Read Word */
-+#define SMBUS_BLOCK_WRITE		0x0A /* Write Block */
-+#define SMBUS_BLOCK_READ		0x0B /* Read Block */
-+#define SMBUS_PROC_CALL			0x0C /* Process Call */
-+#define SMBUS_BLOCK_PROC_CALL	0x0D /* Write Block-Read Block Process Call */
-+#define SMBUS_I2C_READ_WRITE	0x0E /* I2C block Read-Write */
-+#define SMBUS_I2C_WRITE_READ	0x0F /* I2C block Write-Read */
-+
-+/* GPIO control commands */
-+#define EC_GPIO_INDEX_WRITE		0x10
-+#define EC_GPIO_STATUS_READ		0x11
-+#define EC_GPIO_STATUS_WRITE		0x12
-+#define EC_GPIO_DIR_READ		0x1D
-+#define EC_GPIO_DIR_WRITE		0x1E
-+
-+/* One Key Recovery commands */
-+#define EC_ONE_KEY_FLAG         0x9C
-+
-+/* ASG OEM commands */
-+#define EC_ASG_OEM				0xEA
-+#define EC_ASG_OEM_READ			0x00
-+#define EC_ASG_OEM_WRITE		0x01
-+#define EC_OEM_POWER_STATUS_VIN1	0X10
-+#define EC_OEM_POWER_STATUS_VIN2	0X11
-+#define EC_OEM_POWER_STATUS_BAT1	0X12
-+#define EC_OEM_POWER_STATUS_BAT2	0X13
-+
-+/* GPIO DEVICE ID */
-+#define EC_DID_ALTGPIO_0        0x10    /* 0x10 AltGpio0 User define gpio */
-+#define EC_DID_ALTGPIO_1        0x11    /* 0x11 AltGpio1 User define gpio */
-+#define EC_DID_ALTGPIO_2        0x12    /* 0x12 AltGpio2 User define gpio */
-+#define EC_DID_ALTGPIO_3        0x13    /* 0x13 AltGpio3 User define gpio */
-+#define EC_DID_ALTGPIO_4        0x14    /* 0x14 AltGpio4 User define gpio */
-+#define EC_DID_ALTGPIO_5        0x15    /* 0x15 AltGpio5 User define gpio */
-+#define EC_DID_ALTGPIO_6        0x16    /* 0x16 AltGpio6 User define gpio */
-+#define EC_DID_ALTGPIO_7        0x17    /* 0x17 AltGpio7 User define gpio */
-+
-+/* Lmsensor Chip Register */
-+#define NSLM96163_CHANNEL		0x02
-+
-+/* NS_LM96163 address 0x98 */
-+#define NSLM96163_ADDR			0x98
-+
-+/* LM96163 index(0x00) Local Temperature (Signed MSB) */
-+#define NSLM96163_LOC_TEMP		0x00
-+
-+#define F75387_REG_R_MANU_ID	0x5D
-+#define F75387_REG_R_CHIP_ID	0x5A
-+
-+#define LMF75387_MANU_ID_FINTEK			0x1934 //VENDOR ID
-+#define LMF75387_CHIP_ID_F75387			0x0410 //CHIPID
-+
-+/* Lmsensor Chip SMUBS Slave Address */
-+#define	LMF75387_SMBUS_SLAVE_ADDRESS_5C		0x5c
-+#define	LMF75387_SMBUS_SLAVE_ADDRESS_5A		0x5A
-+#define	INA266_SMBUS_SLAVE_ADDRESS_8A		0x8A
-+
-+/* Temperature */
-+#define F75387_REG_R_TEMP0_MSB      0x14    /* 1 degree */
-+#define F75387_REG_R_TEMP0_LSB      0x1A    /* 1/256 degree */
-+
-+#define F75387_REG_R_TEMP1_MSB      0x15    /* 1 degree */
-+#define F75387_REG_R_TEMP1_LSB      0x1B    /* 1/256 degree */
-+
-+/* LOCAL Temperature */
-+#define F75387_REG_R_TEMP2_MSB      0x1C    /* local temp., 1 degree */
-+#define F75387_REG_R_TEMP2_LSB      0x1D    /*              1/256 degree */
-+
-+/* Voltage */
-+#define F75387_REG_R_V1             0x11    /* 8mV */
-+#define F75387_REG_R_V2             0x12    /* 8mV */
-+#define F75387_REG_R_V3             0x13    /* 8mV */
-+
-+/* HWMON registers */
-+#define INA266_REG_VOLTAGE          0x02    /* 1.25mV */
-+#define INA266_REG_POWER            0x03    /* 25mW */
-+#define INA266_REG_CURRENT          0x04    /* 1mA */
-+
-+struct HW_PIN_TBL {
-+	uchar vbat[2];
-+	uchar v5[2];
-+	uchar v12[2];
-+	uchar vcore[2];
-+	uchar vdc[2];
-+	uchar ec_current[2];
-+	uchar power[2];
-+};
-+
-+struct Dynamic_Tab {
-+	uchar DeviceID;
-+	uchar HWPinNumber;
-+};
-+
-+struct EC_SMBOEM0 {
-+	uchar HWPinNumber;
-+};
-+
-+struct EC_READ_HW_RAM {
-+	unsigned int addr;
-+	unsigned int data;
-+};
-+
-+struct EC_WRITE_HW_RAM {
-+	unsigned int addr;
-+	unsigned int data;
-+};
-+
-+struct EC_SMBUS_WORD_DATA {
-+	unsigned char   Channel;
-+	unsigned char   Address;
-+	unsigned char   Register;
-+	unsigned short  Value;
-+};
-+
-+struct EC_SMBUS_READ_BYTE {
-+	unsigned char Channel;
-+	unsigned char Address;
-+	unsigned char Register;
-+	unsigned char Data;
-+};
-+
-+struct EC_SMBUS_WRITE_BYTE {
-+	unsigned char Channel;
-+	unsigned char Address;
-+	unsigned char Register;
-+	unsigned char Data;
-+};
-+
-+struct pled_hw_pin_tbl {
-+	uchar pled[6];
-+};
-+
-+struct adv_ec_platform_data {
-+	char *bios_product_name;
-+	int sub_dev_nb;
-+	u32 sub_dev_mask;
-+
-+	struct device *dev;
-+	struct class *adv_ec_class;
-+
-+	struct Dynamic_Tab *dym_tbl;
-+};
-+
-+int read_ad_value(uchar hwpin, uchar multi);
-+int read_acpi_value(uchar addr, uchar *pvalue);
-+int write_hw_ram(uchar addr, uchar data);
-+int write_hwram_command(uchar data);
-+int smbus_read_word(struct EC_SMBUS_WORD_DATA *ptr_ec_smbus_word_data);
-+int smbus_read_byte(struct EC_SMBUS_READ_BYTE *ptr_ec_smbus_read_byte);
-+int write_acpi_value(uchar addr, uchar value);
-+int read_gpio_status(uchar PinNumber, uchar *pvalue);
-+int write_gpio_status(uchar PinNumber, uchar value);
-+int read_gpio_dir(uchar PinNumber, uchar *pvalue);
-+int write_gpio_dir(uchar PinNumber, uchar value);
-+int write_hw_extend_ram(uchar addr, uchar data);
-+int smbus_write_byte(struct EC_SMBUS_WRITE_BYTE *ptr_ec_smbus_write_byte);
-+int read_onekey_status(uchar addr, uchar *pdata);
-+int write_onekey_status(uchar addr);
-+int ec_oem_get_status(uchar addr, uchar *pdata);
-+int ec_oem_set_status(uchar addr, uchar pdata);
-+
-+#endif /*  __LINUX_MFD_AHC1EC0_H */
 -- 
 2.17.1
 
