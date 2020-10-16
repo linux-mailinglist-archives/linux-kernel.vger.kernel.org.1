@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1366290DFE
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8AA8290E00
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409430AbgJPXJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 19:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
+        id S2409703AbgJPXKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 19:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408340AbgJPXJs (ORCPT
+        with ESMTP id S2407010AbgJPXJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 19:09:48 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192F3C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:46 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id n6so4822058wrm.13
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:46 -0700 (PDT)
+        Fri, 16 Oct 2020 19:09:49 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83477C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:47 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t9so4833933wrq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZqE9YT9elxKHcuMev0eqxdSAa29MOpdvFBgbgr/Dw4c=;
-        b=LhDuPgReRaskA4lZJUuE4meGMw+AgSOBWcN0nqcL7KFy86acDGi8um3oRgd5CDOyyW
-         bJFG22PeRLjTWFTU0ukD0tLvCbDgdbDFYPyGitxBgX1xKbXiv598o0EuHa9yELSghqKw
-         VA4T4kdrHVqd88Cs852iMYBnFRMpkx301IXdoi39KfAj+zcBhsCDBtvTEc8dT3mQEW7T
-         7cylEg7GMWupAk7aZgn16x9jAZeU8zBSiMABrBnBpXTYtig7uF8ZJ7QptnUymL6udJDm
-         sSK7gfMVEBYedaoF17S5Y2Kt1jq2Ee3Ymywe0au8W2vWFh7Kb2xhY8Sfp9vAdq5IO04Z
-         rTDg==
+        bh=gdMs/4BkKI2uJNTjUP69TVUzfQ5T9+m8xYXEzWMRNr4=;
+        b=GEabQQbYPZdJBOj2BGbAAiir4cXarxTnRaOVXj4JRtZnmqkGa2CMArEAtTbi/+hATc
+         B3cLhuNPZmMDZZJ86auETwNS7l/UKxN72uloxbt8mov62APgfpCPMibJZymXO2u+hfYY
+         tWXoKpqkr2Qqiu4JCttGYfZAkH/ujpEvJ1ewfBPeR4HRYEvHCoGe/kRLeMDB/rCwR+td
+         NMmO7SkZilT2N5jpR4yiruA6rC3UNfH7boHds7qX9AyQpG3q9B/gPQRxlhOAm08sEyOa
+         5WtVENVcOyUP7EBHec33EsP8pE9FjCvAdNR+mwZMFo//3lJ7WJyRClrGRBrrLRzn4e2R
+         Z1Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZqE9YT9elxKHcuMev0eqxdSAa29MOpdvFBgbgr/Dw4c=;
-        b=rDAFlsBL9gnhueEfUlhHVK0gLMWaqL5W2jE+A+dp5Bt2JoYAcwpf8jg9SisjfkWfWS
-         5B756Qma4hF669FApJmMYP0X8W+Ux2vKdWBMMw5/0SbloTBJh+OMVnvBpoJ5HyZbOmLv
-         XWrNz7E6EHc2V6pFyWS3G0LApubsil2mqop3CbcCcAcbxeEvN+BG84bNzScgKsit1rei
-         rhM8fSMGAW6t2xjtGQuLU7g9Tu2EHW3v6/SYyloYEN15qCB4jaghvoDatXibH1wkKsK4
-         ayecmW+QM7e0YkvrJE24w1J0czbVNgPtUuVcE5AcMTSpBDJiER7umedyG0Ivw41lj4uI
-         APqw==
-X-Gm-Message-State: AOAM531hmw7StzltALHAvs/1FegldrgJnhNMaxTelPYd0QJDJQqAZL3a
-        +flsGEN5bUBDi3RR4fNIYKGReA==
-X-Google-Smtp-Source: ABdhPJxhjUYQmLunbOMgkbnTqMUJ/Am0yPCMEVT4RqDmKWTqbn4mCWM3hyiVNo2TJIXie6ukzbX0NA==
-X-Received: by 2002:a5d:4b49:: with SMTP id w9mr7015093wrs.41.1602889784661;
-        Fri, 16 Oct 2020 16:09:44 -0700 (PDT)
+        bh=gdMs/4BkKI2uJNTjUP69TVUzfQ5T9+m8xYXEzWMRNr4=;
+        b=DYlj1vgo42UxfOd/7GKm1hQTVB6LO6BG//JP6hg59ZliS8Nb44K5a6/2YV3jLi4zAC
+         eApxRPUQwK3fLBl05X1taT+M1I7JFj49z+9xP94dWlX+jalzMUPLhQrofsirT7iGRiBD
+         EeFZGeBOZMvLtIgiUzlB5bhncaBjAQHUjofLxeOjjR9XHFgbAep7JD9wXrzONC1Qj194
+         NKH5PyxDLiu/1txDXk88vHU2EJL5acugC6xp6gMYVX2l/dcQJyQfQeAE3Y4zg6jrNc9i
+         dGM3r2qIodVdc26klKE0zTSS2BgiytDHXnprdow/PACkuaBg+N9jxLn4a2NuQXcmBbm3
+         5ztg==
+X-Gm-Message-State: AOAM530MMm7iHM6fAIcbIvuMRaAOCL6VNRmmj6L+2JIsao4Q5fCa0FVg
+        2huSkk56FVBnfMeJbNetPIi81A==
+X-Google-Smtp-Source: ABdhPJxbfO8IUNwESku/fIzsOaLeXDX/vfAWxdZkmAezDlH0QNO6awB1LAUdwuJDWyVhjwRK4WO4nQ==
+X-Received: by 2002:adf:f810:: with SMTP id s16mr6374268wrp.424.1602889786072;
+        Fri, 16 Oct 2020 16:09:46 -0700 (PDT)
 Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
-        by smtp.gmail.com with ESMTPSA id v17sm6144214wrc.23.2020.10.16.16.09.43
+        by smtp.gmail.com with ESMTPSA id t19sm5148559wmi.26.2020.10.16.16.09.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 16:09:44 -0700 (PDT)
+        Fri, 16 Oct 2020 16:09:45 -0700 (PDT)
 From:   Jann Horn <jannh@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Eric Biederman <ebiederm@xmission.com>,
@@ -55,9 +55,9 @@ To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
 Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
         Kees Cook <keescook@chromium.org>,
         Ingo Molnar <mingo@kernel.org>
-Subject: [RFC PATCH resend 5/6] ptrace: Use mm_ref() for ->exit_mm
-Date:   Sat, 17 Oct 2020 01:09:14 +0200
-Message-Id: <20201016230915.1972840-6-jannh@google.com>
+Subject: [RFC PATCH resend 6/6] mm: remove now-unused mmdrop_async()
+Date:   Sat, 17 Oct 2020 01:09:15 +0200
+Message-Id: <20201016230915.1972840-7-jannh@google.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 In-Reply-To: <20201016230915.1972840-1-jannh@google.com>
 References: <20201016230915.1972840-1-jannh@google.com>
@@ -67,44 +67,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We only use ->exit_mm to look up dumpability and the ->user_mm; we don't
-need to keep the PGD alive for this.
-mmgrab() is also inconvenient here, because it means that we need to use
-mmdrop_async() when dropping the reference to the mm from an RCU callback.
-Use mm_ref() instead of mmgrab() to make things neater.
+The preceding patches have removed all users of mmdrop_async(); get rid of
+it.
+
+Note that on MMU, we still need async_put_work because mmput_async() uses
+it, which in turn is used by binder's shrinker callback. We could claw back
+those 4 words per mm if we made mmput_async() depend on
+CONFIG_ANDROID_BINDER_IPC.
 
 Signed-off-by: Jann Horn <jannh@google.com>
 ---
- kernel/exit.c | 2 +-
- kernel/fork.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/linux/mm_types.h |  2 ++
+ kernel/fork.c            | 16 ----------------
+ 2 files changed, 2 insertions(+), 16 deletions(-)
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 97253ef33486..03ba6d13ef1e 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -476,7 +476,7 @@ static void exit_mm(void)
- 	/* more a memory barrier than a real lock */
- 	task_lock(current);
- 	current->mm =3D NULL;
--	mmgrab(mm); /* for current->exit_mm */
-+	mm_ref(mm); /* for current->exit_mm */
- 	current->exit_mm =3D mm;
- 	mmap_read_unlock(mm);
- 	enter_lazy_tlb(mm, current);
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 764d251966c7..8fde2068bde1 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -560,7 +560,9 @@ struct mm_struct {
+ #ifdef CONFIG_HUGETLB_PAGE
+ 		atomic_long_t hugetlb_usage;
+ #endif
++#ifdef CONFIG_MMU
+ 		struct work_struct async_put_work;
++#endif
+ 	} __randomize_layout;
+=20
+ 	/*
 diff --git a/kernel/fork.c b/kernel/fork.c
-index 59c119b03351..4383bf055b40 100644
+index 4383bf055b40..c5f2ec544933 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -720,7 +720,7 @@ void free_task(struct task_struct *tsk)
- 	if (tsk->flags & PF_KTHREAD)
- 		free_kthread_struct(tsk);
- 	if (tsk->exit_mm)
--		mmdrop_async(tsk->exit_mm);
-+		mm_unref(tsk->exit_mm);
- 	free_task_struct(tsk);
+@@ -666,22 +666,6 @@ void __mmdrop(struct mm_struct *mm)
  }
- EXPORT_SYMBOL(free_task);
+ EXPORT_SYMBOL_GPL(__mmdrop);
+=20
+-static void mmdrop_async_fn(struct work_struct *work)
+-{
+-	struct mm_struct *mm;
+-
+-	mm =3D container_of(work, struct mm_struct, async_put_work);
+-	__mmdrop(mm);
+-}
+-
+-static void mmdrop_async(struct mm_struct *mm)
+-{
+-	if (unlikely(atomic_dec_and_test(&mm->mm_count))) {
+-		INIT_WORK(&mm->async_put_work, mmdrop_async_fn);
+-		schedule_work(&mm->async_put_work);
+-	}
+-}
+-
+ static inline void free_signal_struct(struct signal_struct *sig)
+ {
+ 	taskstats_tgid_free(sig);
 --=20
 2.29.0.rc1.297.gfa9743e501-goog
 
