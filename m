@@ -2,173 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108F8290738
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113AA290746
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408874AbgJPOd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405628AbgJPOd0 (ORCPT
+        id S2408937AbgJPOfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:35:06 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:39276 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408929AbgJPOfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:33:26 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FEFC061755;
-        Fri, 16 Oct 2020 07:33:26 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ds1so1487949pjb.5;
-        Fri, 16 Oct 2020 07:33:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KF2OHmi3Hm9dz3KRKT0p1ji0RuquRawxEOEyVtCtb1Q=;
-        b=oG8r9fSD1r5uk75/nEX/vkwm/k3p/5kLORFfo2evLdgBOPeDn8LSrGON2l4sFsLxSV
-         Cia2y6WmpLftleEKlPYfOPGG/7p6U9qKGw1Pc5NlykLHxeDaNnwG6cxw04SkB1bdxJfK
-         2Fbaww/iFyMcU1IchELefWf9kpdnFWXwevkoLGJnImO2vPHrhOx1ph6RGL6CyPzkdE5Q
-         GrVwPRDhvI4L1ISfk2khNOm35JPV0n+9T9O3csmRud+q7bMEDF9GLrOmAka3Q3OAW37r
-         c9eHYEMIrxSseNHxb9o1M6UVeVVUYt2tz8d3FxQ7+oZg5MeGLC3y94e4MEAtDiv/6i0Z
-         FTtA==
+        Fri, 16 Oct 2020 10:35:06 -0400
+Received: by mail-oi1-f193.google.com with SMTP id c13so2660367oiy.6;
+        Fri, 16 Oct 2020 07:35:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KF2OHmi3Hm9dz3KRKT0p1ji0RuquRawxEOEyVtCtb1Q=;
-        b=Er5mXmuqPyZcvTPwZfK3iXr0vv6463St5TkPGLu8DkuCdLwZ+I7ooiICRSYtsZoX1a
-         whGeX+cK6JYFt0imzU9ogHEBUbVsJfPwdl3pgMfqer2gjO/a7gLMubFFZKssiR6W0k2h
-         oEcXjMkFLE1wnM+Yj1nd9ziuNvB8cqm6PDqWmaFZ0w0ca7T1IxoAbXYjZOKSG4TMjfKJ
-         XKMH7Mk+Qqmc9evp7sm+aCWU4q72qQIh/cR0wWo4xzyRKNEo6JxcClZqOvYRYHrB3Yoj
-         iz8QdrxLa0l6a5dkNKcBwO4z2jkEQ37clBzhuG6cwqO7NpGI00SWSUfOPm7yl21Fx2Ki
-         yXaA==
-X-Gm-Message-State: AOAM533bOJbXnHUPCoaK2mEucNKEgLMzJ2M4h4TbXDIzxuF6hKl3BSdN
-        Kan08CTeI3VQy59Fn58GcsDmFMIVP0VcM6e2+F0=
-X-Google-Smtp-Source: ABdhPJwi6nosLW1r7DhD0+BQ2E58/G1wVWIMDf17j7lx+tE8z7JpCaVWixIXAx3UJ6NWpNSHxowrREox+LfbZ087j1Y=
-X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr4404555pjb.129.1602858806218;
- Fri, 16 Oct 2020 07:33:26 -0700 (PDT)
+        bh=BMrhIZD6r0of3W5tstYF8ZNKDB8ambJy+gjTSmYvPiw=;
+        b=tDsZee+FToTzIQZopfaC5WJ7U+RVCu0+fSgWYrebLaMi4zX4VTerGAAOMxsG6t3yit
+         HTlH4za27Wg7acWlb70vcmNNXaPIeZ/zzLkMinKRY1mpjct12KsrlzunN7Ac3nD1wiAg
+         0mpvZI56VEiR+GRPM9PwSvMsoS/xrpnNmnXT+AksKqOsA+ojEb25k+sF1EUnslGShXQG
+         yqwZihx7iVwq10K5L2ukCZ0bZ1SLc8HPysoE+54w5mqJMzy1WWQZGcqnb9BX6U/KRzDF
+         ATKDUIAne+EX3w/WpTOUbXpMYK9/XOcR3xI8VI0wf299ZEp9yAazSYdFLZH/Yn/emtmV
+         7g2g==
+X-Gm-Message-State: AOAM532Dla5nAbPlVXc6sgB7gGPj+PTYNZPaaDMt/R/GCBIkbQIOSjZ1
+        FbVEgvGy88NjZKMQJQYNUQpS2Md7fRM9OBGvxWw=
+X-Google-Smtp-Source: ABdhPJzwektfZX7s7ICU25OD4YqiBH+zmoJaUe0za277AGueUQMCvay8xkoH5mOrl2rYdv/ZEubJfU9OxKvlIpnvPeE=
+X-Received: by 2002:aca:724a:: with SMTP id p71mr2681753oic.157.1602858905300;
+ Fri, 16 Oct 2020 07:35:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201014100707.2728637-1-lars.povlsen@microchip.com> <20201014100707.2728637-3-lars.povlsen@microchip.com>
-In-Reply-To: <20201014100707.2728637-3-lars.povlsen@microchip.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 16 Oct 2020 17:34:15 +0300
-Message-ID: <CAHp75Vdd6ECJaWytYVz+5GYZrwybzZmviUOt3H=t-4LH=_idKg@mail.gmail.com>
-Subject: Re: [PATCH v6 2/3] pinctrl: pinctrl-microchip-sgpio: Add pinctrl
- driver for Microsemi Serial GPIO
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
+References: <20201009033038.23157-1-yu.c.chen@intel.com>
+In-Reply-To: <20201009033038.23157-1-yu.c.chen@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 16 Oct 2020 16:34:54 +0200
+Message-ID: <CAJZ5v0jcGWKz_LuWOaeZaNqJ0RX69Bw9wisZ=Ver7TKdJf8XNQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH] cpufreq: intel_pstate: Delete intel_pstate sysfs if
+ failed to register the driver
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 6:25 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+On Fri, Oct 9, 2020 at 5:29 AM Chen Yu <yu.c.chen@intel.com> wrote:
 >
-> This adds a pinctrl driver for the Microsemi/Microchip Serial GPIO
-> (SGPIO) device used in various SoC's.
-
-...
-
-> +#define PIN_NAM_SZ     (sizeof("SGPIO_D_pXXbY")+1)
-
-+1 for what?
-
-...
-
-> +#define __shf(x)               (__builtin_ffsll(x) - 1)
-> +#define __BF_PREP(bf, x)       (bf & ((x) << __shf(bf)))
-> +#define __BF_GET(bf, x)                (((x & bf) >> __shf(bf)))
-
-This smells like bitfield.h.
-
-...
-
-> +static int sgpio_input_get(struct sgpio_priv *priv,
-> +                          struct sgpio_port_addr *addr)
+> There is a corner case that if the intel_pstate driver failed to be
+> registered(might be due to invalid MSR access) and with the acpi_cpufreq
+> loaded, the intel_pstate sysfs might still be created, which makes the
+> user confusing(turbostat for example):
+>
+> grep . /sys/devices/system/cpu/cpu0/cpufreq/scaling_driver
+> acpi-cpufreq
+>
+> grep . /sys/devices/system/cpu/intel_pstate/*
+> /sys/devices/system/cpu/intel_pstate/max_perf_pct:0
+> /sys/devices/system/cpu/intel_pstate/min_perf_pct:0
+> grep: /sys/devices/system/cpu/intel_pstate/no_turbo: Resource temporarily unavailable
+> grep: /sys/devices/system/cpu/intel_pstate/num_pstates: Resource temporarily unavailable
+> /sys/devices/system/cpu/intel_pstate/status:off
+> grep: /sys/devices/system/cpu/intel_pstate/turbo_pct: Resource temporarily unavailable
+>
+> The existing of intel_pstate sysfs does not mean that the intel_pstate driver
+> has been successfully loaded(for example, echo off to status), but the
+> intel_pstate sysfs should not co-exist when acpi-cpufreq is also present.
+> Fix this issue by deleting the intel_pstate sysfs if the driver failed
+> to be loaded during bootup.
+>
+> Reported-by: Wendy Wang <wendy.wang@intel.com>
+> Suggested-by: Zhang Rui <rui.zhang@intel.com>
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+>  drivers/cpufreq/intel_pstate.c | 24 +++++++++++++++++++++++-
+>  1 file changed, 23 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> index 9a515c460a00..8c5f9680de83 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -1420,6 +1420,26 @@ static void __init intel_pstate_sysfs_expose_params(void)
+>         }
+>  }
+>
+> +static void __init intel_pstate_sysfs_clean(void)
 > +{
-
-> +       int ret;
+> +       if (!intel_pstate_kobject)
+> +               return;
 > +
-> +       ret = !!(sgpio_readl(priv, REG_INPUT_DATA, addr->bit) &
-> +                BIT(addr->port));
+> +       sysfs_remove_group(intel_pstate_kobject, &intel_pstate_attr_group);
 > +
-> +       return ret;
-
-Sounds like one line.
-
+> +       if (per_cpu_limits)
+> +               goto release_kobj;
+> +
+> +       sysfs_remove_file(intel_pstate_kobject, &max_perf_pct.attr);
+> +       sysfs_remove_file(intel_pstate_kobject, &min_perf_pct.attr);
+> +
+> +       if (x86_match_cpu(intel_pstate_cpu_ee_disable_ids))
+> +               sysfs_remove_file(intel_pstate_kobject, &energy_efficiency.attr);
+> +
+> +release_kobj:
+> +       kobject_put(intel_pstate_kobject);
 > +}
-
-> +static int sgpio_get_functions_count(struct pinctrl_dev *pctldev)
-> +{
-
-> +       return 1;
-
-I didn't get why it's not a pure GPIO driver?
-It has only one function (no pinmux).
-I didn't find any pin control features either.
-
-What did I miss?
-
-...
-
-> +static int microchip_sgpio_get_value(struct gpio_chip *gc, unsigned int gpio)
-> +{
-> +       struct sgpio_bank *bank = gpiochip_get_data(gc);
-> +       struct sgpio_priv *priv = bank->priv;
-> +       struct sgpio_port_addr addr;
-
-> +       int ret;
-
-No need.
-
 > +
-> +       sgpio_pin_to_addr(priv, gpio, &addr);
-> +
-> +       if (bank->is_input)
-> +               ret = sgpio_input_get(priv, &addr);
-> +       else
-> +               ret = sgpio_output_get(priv, &addr);
-> +
-> +       return ret;
-> +}
+>  static void intel_pstate_sysfs_expose_hwp_dynamic_boost(void)
+>  {
+>         int rc;
+> @@ -3063,8 +3083,10 @@ static int __init intel_pstate_init(void)
+>         mutex_lock(&intel_pstate_driver_lock);
+>         rc = intel_pstate_register_driver(default_driver);
+>         mutex_unlock(&intel_pstate_driver_lock);
+> -       if (rc)
+> +       if (rc) {
+> +               intel_pstate_sysfs_clean();
+>                 return rc;
+> +       }
+>
+>         if (hwp_active) {
+>                 const struct x86_cpu_id *id;
+> --
 
-
-...
-
-
-> +       ret = devm_gpiochip_add_data(dev, gc, bank);
-> +       if (ret == 0)
-
-> +               dev_info(dev, "Registered %d GPIOs\n", ngpios);
-
-No noise.
-
-> +       else
-> +               dev_err(dev, "Failed to register: ret %d\n", ret);
-> +
-
-...
-
-> +       /* Get register map */
-> +       regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       priv->regs = devm_ioremap_resource(dev, regs);
-
-devm_platform_ioremap_resource();
-
-> +       if (IS_ERR(priv->regs))
-> +               return PTR_ERR(priv->regs);
-
-> +       priv->properties = of_device_get_match_data(dev);
-
-It's interesting you have a mix between OF APIs and device property
-APIs. Choose one. If you stick with OF, use of_property_ and so,
-otherwise replace of_*() by corresponding device_*() or generic calls.
-
-Can you use gpio-regmap APIs?
-
--- 
-With Best Regards,
-Andy Shevchenko
+Applied as 5.10-rc material with some minor changes and the Srinivas'
+ACK, thanks!
