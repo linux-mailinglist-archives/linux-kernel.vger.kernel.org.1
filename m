@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795712906DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566252906DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408624AbgJPOLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        id S2408637AbgJPOL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408615AbgJPOL0 (ORCPT
+        with ESMTP id S2408629AbgJPOLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:11:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB88C061755;
-        Fri, 16 Oct 2020 07:11:26 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602857484;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CxpfhP4r+cT8NbbcIvpC4YffgKWMaBNfTxc0DHUwwGc=;
-        b=eK9gJiFjXBg+fMXP9Y7aTpgCZUbZfPcb/xaC21Rps0Xho4oZ/FC2+ycLes1xlXrsR/Mjaq
-        QdsLaDKiMnRUyK4CiR3Sr9ZSaatQ7Buwj+5tsUNjmOIQaWJ6slW3NANkz5KE+aR7aKq4JP
-        JYYOP4beyqDKyqOnXzMvBF45A7HzQdIiU0ROKTgHlSXY5o9D7O62t5xJQtmQEYo2a7S5EU
-        4EZ1D8WRM3OOu/qpDBupEM8YzNi3G7WbkUd7ONCO3O31sYK0m9RQAmcZSmJR2S5bxktFYa
-        r3d+M/HEcSldz8CwHZIS1Knw6qM66UnHw6P8ZuOpNILUf/165wOSajIsp0jJAQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602857484;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CxpfhP4r+cT8NbbcIvpC4YffgKWMaBNfTxc0DHUwwGc=;
-        b=ki5PSY69rO5yxxsHT4i5xRJKsjbdxshMIh8c8fUbCOG1vmWZIaRYlOz0xSVPS7vnCjl+3S
-        RCI2tUC5ODQOumAg==
-To:     Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org, Roman Gershman <romger@amazon.com>
-Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
-In-Reply-To: <c7da5280-f283-2c89-f6f2-be7d84c3675a@kernel.dk>
-References: <20201015131701.511523-1-axboe@kernel.dk> <20201015131701.511523-6-axboe@kernel.dk> <20201015154953.GM24156@redhat.com> <e17cd91e-97b2-1eae-964b-fc90f8f9ef31@kernel.dk> <87a6wmv93v.fsf@nanos.tec.linutronix.de> <c7da5280-f283-2c89-f6f2-be7d84c3675a@kernel.dk>
-Date:   Fri, 16 Oct 2020 16:11:24 +0200
-Message-ID: <87d01itg4z.fsf@nanos.tec.linutronix.de>
+        Fri, 16 Oct 2020 10:11:55 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A20C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:11:55 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id t12so2813242ilh.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:11:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HPXoxu79axlTDJVQIxIG8QUlu16nOKhGS3CzRhj1ZMc=;
+        b=KFS9cTK79o4EoRuF9ed5XQZZmdxqn9ICALvcpd94PNb3kt7mzqAXfVUE5u7MddmR+K
+         79K5QzhEqNUQprrChH3nLn/VCcN9uibrtaEoo6QjitkI6FDZIsqi9Mxc4PBp+OX3U2M6
+         25UhwAzyGUD+Pu1+jgM6CueaJjIyv8efWpooKqc6N5Uiq2aDwT8AyX+KrLGFH6Eji1lw
+         bHboEbG6CdHvMrdXA8g5KEr+5MiRiE8N3ngrrj16sBkLZgjC/wt2SWVOId1NKuPI/xpu
+         WB558S6pNvBpdWJnKbrlpkwNYTOCyKsuovYq+PT98cfiN3KCBvmutNhwv77NewC8Hhv9
+         0CPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HPXoxu79axlTDJVQIxIG8QUlu16nOKhGS3CzRhj1ZMc=;
+        b=WY+kTEYt+p0Epp3qnuppWiuwTZzr2FZZGOlseii46wHs1gw3eigZgzpxON8NTzd8d3
+         BSf1uapCm4uoBo/bTJtoYV5Ge6noq2iuDP1AThmHDTyGDrzFdcOrUU7ItRvLsH5idvZH
+         ex6bzwz0lg4WKuGo4AqAdhj1dqB0f+OuF/YU04RasitvJwtIRXj49cNx7PT2JKnv6jd1
+         ewl4n4+M0NEZxK+6mTSn0MUePNIuD8Hu03RBJDk9BJ6wZkN9s8p0OolSkyXKeaFDpJ3S
+         H9g5Vuapn6tLq8bjvb6N6aaxdIEVUbgJGNysMZ/quhqktJHe+zQj3bGvhUFf9YtWKziJ
+         F8gw==
+X-Gm-Message-State: AOAM531gMJ/kmMpjRZ5r0zVveopy+ptI+ZRrAl2SRGHNeLD0KIqyMt6J
+        XGV+3DbH7afYKLtFlmGkSYk9WQ==
+X-Google-Smtp-Source: ABdhPJz4tvYKJglbN1lonM9e4+1p0JSAq7kEAPmdSjLyzk2pt8NgXt3J56wCLkoUEt8wp4TerOcgQA==
+X-Received: by 2002:a05:6e02:13e8:: with SMTP id w8mr2969156ilj.139.1602857514321;
+        Fri, 16 Oct 2020 07:11:54 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id 69sm2350676iou.42.2020.10.16.07.11.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 07:11:53 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kTQSW-000VCO-IF; Fri, 16 Oct 2020 11:11:52 -0300
+Date:   Fri, 16 Oct 2020 11:11:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     Xianting Tian <tian.xianting@h3c.com>, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] IB/hfi1: Avoid allocing memory on memoryless numa node
+Message-ID: <20201016141152.GC36674@ziepe.ca>
+References: <20201010085732.20708-1-tian.xianting@h3c.com>
+ <9ba33073-044c-9da6-a90d-4626e6441793@cornelisnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ba33073-044c-9da6-a90d-4626e6441793@cornelisnetworks.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens,
+On Mon, Oct 12, 2020 at 08:36:57AM -0400, Dennis Dalessandro wrote:
+> On 10/10/2020 4:57 AM, Xianting Tian wrote:
+> > In architecture like powerpc, we can have cpus without any local memory
+> > attached to it. In such cases the node does not have real memory.
+> > 
+> > Use local_memory_node(), which is guaranteed to have memory.
+> > local_memory_node is a noop in other architectures that does not support
+> > memoryless nodes.
+> > 
+> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> >   drivers/infiniband/hw/hfi1/file_ops.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
+> > index 8ca51e43c..79fa22cc7 100644
+> > +++ b/drivers/infiniband/hw/hfi1/file_ops.c
+> > @@ -965,7 +965,7 @@ static int allocate_ctxt(struct hfi1_filedata *fd, struct hfi1_devdata *dd,
+> >   	 */
+> >   	fd->rec_cpu_num = hfi1_get_proc_affinity(dd->node);
+> >   	if (fd->rec_cpu_num != -1)
+> > -		numa = cpu_to_node(fd->rec_cpu_num);
+> > +		numa = local_memory_node(cpu_to_node(fd->rec_cpu_num));
+> >   	else
+> >   		numa = numa_node_id();
+> >   	ret = hfi1_create_ctxtdata(dd->pport, numa, &uctxt);
+> > 
+> 
+> The hfi1 driver depends on X86_64. I'm not sure what this patch buys, can
+> you expand a bit?
 
-On Fri, Oct 16 2020 at 07:33, Jens Axboe wrote:
-> On 10/16/20 3:00 AM, Thomas Gleixner wrote:
-> I totally agree, and we're on the same page. I think you'll find that in
-> the past I always carry through, the task_work notification was somewhat
-> of a rush due to a hang related to it. For this particular case, the
-> cleanups and arch additions are pretty much ready to go.
+Yikes, that is strongly discouraged.
 
-As we seem to be on the same page with this, let me suggest how this
-should go:
-
-1) A cleanup for the task_work_add() mess. This is trivial enough and
-   should go in before rc1.
-
-2) The TIF_NOTIFY_RESUME change is a nice cleanup on it's own and can go
-   before rc1 as well.
-
-This gets stuff out of the way and reduces conflict surface.
-
-3) Core infrastructure (patch 2 + 3 + 5) of this series
-
-   Please make the changes I asked for in the generic entry code and
-   moving the handling into get_signal() for everybody else.
-
-   So get_signal() gains:
-
-     if (!IS_ENABLED(CONFIG_GENERIC_ENTRY) {
-	 (test_thread_flag(TIF_NOTIFY_SIGNAL))
-		tracehook_notify_signal();
-
-         if (!task_sigpending(current))
- 		return 0;
-     }
-
-   And with that you don't have to touch do_signal() in any architecture
-   except x86 which becomes:
-
-   arch_do_signal_or_restart(bool sigpending)
-
-4) Conversion of all architectures which means adding the TIF bit.
-
-   If the architecture folks are happy, then this can be collected in
-   tip, which would be preferred because then 
-
-5) Cleanups
-
-   can just go on top.
-
-Hmm?
-
-Thanks,
-
-        tglx
+Jason
