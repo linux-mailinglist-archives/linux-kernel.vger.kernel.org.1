@@ -2,79 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1C629086F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6478F290868
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410204AbgJPPbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:31:52 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:45105 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2410185AbgJPPbs (ORCPT
+        id S2410163AbgJPPb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410076AbgJPPb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:31:48 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 4B798822E2;
-        Fri, 16 Oct 2020 18:31:46 +0300 (MSK)
+        Fri, 16 Oct 2020 11:31:29 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F40C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:31:28 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id c20so1697420pfr.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:31:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1602862306;
-        bh=WLeg7ys/KIsVt7u+TjM0PAK6kpSAzKg0Jy5Nt2l7ObA=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=dufhSUvd6i3mdP+wGZZwUlL9QpXcJGeZpUrdQDGTmreATSBnPU9nq4BJh4HiKv1me
-         L5kKbZc/94YO1nJ+1MlwzbBNIDo6M5+nazm0V+vIFQj4FgC4L1WZq+0UtriJl3A3YV
-         WbXNNM4z7T2sXGFsH31n/rI/n0VB8ls/xEJJhAYg=
-Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 16 Oct 2020 18:31:45 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <linux-fsdevel@vger.kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
-        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
-        <mark@harmstone.com>, <nborisov@suse.com>,
-        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v9 10/10] fs/ntfs3: Add MAINTAINERS
-Date:   Fri, 16 Oct 2020 18:29:37 +0300
-Message-ID: <20201016152937.4030001-11-almaz.alexandrovich@paragon-software.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20201016152937.4030001-1-almaz.alexandrovich@paragon-software.com>
-References: <20201016152937.4030001-1-almaz.alexandrovich@paragon-software.com>
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zS15kjcQSFfjJkxGcL/3p1Ft+qS0KeG9wSgM95IEois=;
+        b=b78fpOxWTlUgefWD0/2EXS6wg+MwU/PxFE8bTRumus+Y48AXJEgURgFkSGWvbsKOwT
+         VPq959RsYhvTZbJvTEmbonWjcwn5BP+PT1JlNQ3b6ab09ZZHcW0ILYb3w56sryfeCoLQ
+         bPCQhP4OAWmnr51JYXao2nnaPyL/f4A+rOqgGfrD1bPA0bqVPCj3RaAyWZNasIXAaVoM
+         JQufOGtsmTY82d1YX2pFS3hjWCgq8JyuClqODmMmeV2Tt47D2J7ck7ZSFEfr3pfkEnRi
+         l1Tamv+qAce0vst7geV5D4E2VeGCt37ulUVzE5fI8OPY/IgSTu13Zg9OifPNiPpb7kS1
+         wxnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zS15kjcQSFfjJkxGcL/3p1Ft+qS0KeG9wSgM95IEois=;
+        b=XfZYS5qZwIiIqbCOo83t00oAcJ3xax9vAyXPtt5Ro3EEC/XYzLnfvwDCR1MIwl++Ui
+         WlGLx/MeSrazPFyzQrCGnFbY44wypbFfuJVVBLmmk1cqZ3qbp+eegk/6nlR4g5SmxzwU
+         xj5zHAYTT20CxCTnIYiV0/UAOB2JP9hteEOSX+hKGwtaJEV+KcpLRbKPMTOjcZvawGoi
+         OZhQCMtVcmMjdA72OrPEIv6cLapoPFEsHvq+Gdgsmc1w/3Q1iL6QkCN6+n+zrRZ/ahH+
+         qIEmf9+DCvMWId041pV+4kpr6pkPYEDNz4OWs3/2QV+V6zx9++4KZ6FIahGARmek9b1v
+         2aBQ==
+X-Gm-Message-State: AOAM533gQa9oyG2u7zNPjuX8MDWoGBMIxx2I9DrjpZV5Ygv7p0uTnpvm
+        //z+JtBh3rg/QcZ9nAkN+FhGSQ==
+X-Google-Smtp-Source: ABdhPJzgoFPmSQuxSp+gptC0qkKC7alqeO1/G1n3fsDmMNyZWQkh5Skz8fv39JzRRu97FhSMTyfk/w==
+X-Received: by 2002:aa7:875a:0:b029:155:7c08:f2ed with SMTP id g26-20020aa7875a0000b02901557c08f2edmr4441795pfo.52.1602862288316;
+        Fri, 16 Oct 2020 08:31:28 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id f15sm3295008pfk.21.2020.10.16.08.31.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 08:31:27 -0700 (PDT)
+Subject: Re: [RESEND PATCH] sgl_alloc_order: fix memory leak
+To:     Douglas Gilbert <dgilbert@interlog.com>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     martin.petersen@oracle.com, bvanassche@acm.org
+References: <20201015185735.5480-1-dgilbert@interlog.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <f1a4c312-2fbf-b149-bd43-7190af75ca24@kernel.dk>
+Date:   Fri, 16 Oct 2020 09:31:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.30.114.105]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+In-Reply-To: <20201015185735.5480-1-dgilbert@interlog.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds MAINTAINERS
+On 10/15/20 12:57 PM, Douglas Gilbert wrote:
+> sgl_alloc_order() can fail when 'length' is large on a memory
+> constrained system. When order > 0 it will potentially be
+> making several multi-page allocations with the later ones more
+> likely to fail than the earlier one. So it is important that
+> sgl_alloc_order() frees up any pages it has obtained before
+> returning NULL. In the case when order > 0 it calls the wrong
+> free page function and leaks. In testing the leak was
+> sufficient to bring down my 8 GiB laptop with OOM.
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+I've picked this one up, thanks.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0f59b0412953..3020b6dcaadb 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12471,6 +12471,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
- F:	Documentation/filesystems/ntfs.rst
- F:	fs/ntfs/
- 
-+NTFS3 FILESYSTEM
-+M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-+S:	Supported
-+W:	http://www.paragon-software.com/
-+F:	Documentation/filesystems/ntfs3.rst
-+F:	fs/ntfs3/
-+
- NUBUS SUBSYSTEM
- M:	Finn Thain <fthain@telegraphics.com.au>
- L:	linux-m68k@lists.linux-m68k.org
 -- 
-2.25.4
+Jens Axboe
 
