@@ -2,166 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F0A290579
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5418629057C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407863AbgJPMq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 08:46:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38398 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407835AbgJPMqF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 08:46:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602852363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7wF22TtTg52My8GhCH0JEYZmjtj4vDtDc64Kh1Nwbn8=;
-        b=Q9aH34y8gGbejbvleKT6vXY9lbBca1XGinD/2Us08zh/jfwmPlOZrmXr5LkYwaNYQIS/B9
-        TYcfsN+gpT2Ox6+oqabvzbXvAYIzTiDR2nXo2PAZvyNYl9YkcSVAFmd2M/yfGCX/AKC/VZ
-        b5uO4Ei3TjCAEi82TrE/vxiewJevxD4=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-383-paHSCaWdPyexwK0cGcLYug-1; Fri, 16 Oct 2020 08:46:02 -0400
-X-MC-Unique: paHSCaWdPyexwK0cGcLYug-1
-Received: by mail-ej1-f70.google.com with SMTP id z18so933532eji.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:46:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7wF22TtTg52My8GhCH0JEYZmjtj4vDtDc64Kh1Nwbn8=;
-        b=ILhMFPN8bZHZrtLTBf7D5tP5SgBtroMxaOgIEpvcOaGaOZw+n8rThnmmOgZl1341hP
-         q2CpPN1HA+08sfL2Kwp2QIT6uRKSnNxcA1N2XtitNb9iV+Eh9G4HhsksZi9L/AsEZkaT
-         pNOaPl4vXbYBMmm0i4cZDOkQ8pZkqUJWQ5P032kQ9zL3ZAs9JXODwWl6HYB0HmsxegE+
-         oapJHB/A08+p4kVd3WWRWnwK0RjAF6OPcp2sZCdTOXMTdspgL8VlwU/9B3wfDzBeLGus
-         Twifk91tmEb4r2fcUR/U4fAXKQ1zdYJT4pAEPyw8/Nad++wXUxMLjyPFCkpRfjOEgsTa
-         1Xjg==
-X-Gm-Message-State: AOAM530wtRIEmZ7ig15fn6lv9KES7g25Oc/RV7qav31GGr6HhTSMHrhB
-        P0BD6FF8JqtwVO7PxKHilBoDvvn9iq89V13tQvJIRrUc5hQqiOF9yG/rWdVl5fGnimKWUWSZBz0
-        oUftHqGEFL4jbCwmrqWRxShPZ
-X-Received: by 2002:a50:a452:: with SMTP id v18mr3558750edb.143.1602852360550;
-        Fri, 16 Oct 2020 05:46:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxugyAIP9+8mi74NlTjuPZGUD97J50mq+5lrgMH6SXx3HSGmqYhS1uys0MlOWVLz+5l4KUX+g==
-X-Received: by 2002:a50:a452:: with SMTP id v18mr3558722edb.143.1602852360301;
-        Fri, 16 Oct 2020 05:46:00 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id t25sm1345815edt.24.2020.10.16.05.45.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 05:45:59 -0700 (PDT)
-Subject: Re: [PATCH v4] bluetooth: hci_h5: fix memory leak in h5_close
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201007034803.7554-1-anant.thazhemadam@gmail.com>
- <2a79ece2-c63b-a881-bc19-65b59952344f@redhat.com>
- <dfa15c3a-6081-1072-8c73-ecebc983643d@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <d07b1280-7b5f-f0fd-2892-a89a95712c9b@redhat.com>
-Date:   Fri, 16 Oct 2020 14:45:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S2407873AbgJPMqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 08:46:52 -0400
+Received: from elvis.franken.de ([193.175.24.41]:36071 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405811AbgJPMqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 08:46:51 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kTP8D-0001uD-00; Fri, 16 Oct 2020 14:46:49 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id E6D82C054D; Fri, 16 Oct 2020 14:46:17 +0200 (CEST)
+Date:   Fri, 16 Oct 2020 14:46:17 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     torvalds@linux-foundation.org
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] MIPS changes for v5.10
+Message-ID: <20201016124617.GA5035@alpha.franken.de>
 MIME-Version: 1.0
-In-Reply-To: <dfa15c3a-6081-1072-8c73-ecebc983643d@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-On 10/16/20 1:55 PM, Anant Thazhemadam wrote:
-> 
-> Hi,
-> 
-> On 16/10/20 4:58 pm, Hans de Goede wrote:
->> Hi,
->>
->> On 10/7/20 5:48 AM, Anant Thazhemadam wrote:
->>> If h5_close is called when !hu->serdev, h5 is directly freed.
->>> However, h5->rx_skb is not freed, which causes a memory leak.
->>>
->>> Freeing h5->rx_skb fixes this memory leak.
->>>
->>> In case hu->serdev exists, h5->rx_skb is then set to NULL,
->>> since we do not want to risk a potential NULL pointer 
->>> dereference.
->>>
->>> Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
->>> Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
->>> Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
->>> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>h5_close v4
->>> ---
->>> Changes in v4:
->>> 	* Free h5->rx_skb even when hu->serdev
->>> 	(Suggested by Hans de Goede <hdegoede@redhat.com>)
->>> 	* If hu->serdev, then assign h5->rx_skb = NULL
->>>
->>> Changes in v3:
->>> 	* Free h5->rx_skb when !hu->serdev, and fix the memory leak
->>> 	* Do not incorrectly and unnecessarily call serdev_device_close()
->>>
->>> Changes in v2:
->>> 	* Fixed the Fixes tag
->>>
->>>  drivers/bluetooth/hci_h5.c | 4 ++++
->>>  1 file changed, 4 insertions(+)
->>>
->>> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
->>> index e41854e0d79a..39f9553caa5c 100644
->>> --- a/drivers/bluetooth/hci_h5.c
->>> +++ b/drivers/bluetooth/hci_h5.c
->>> @@ -245,11 +245,15 @@ static int h5_close(struct hci_uart *hu)
->>>  	skb_queue_purge(&h5->rel);
->>>  	skb_queue_purge(&h5->unrel);
->>>  
->>> +	kfree_skb(h5->rx_skb);
->>> +
->>>  	if (h5->vnd && h5->vnd->close)
->>>  		h5->vnd->close(h5);
->>>  
->>>  	if (!hu->serdev)
->>>  		kfree(h5);
->>> +	else
->>> +		h5->rx_skb = NULL;
->> Please just do this unconditionally directly after
->> the kfree_skb()
-> 
-> Could you also please tell me why this might be necessary?
-> The pointer value stored at h5->rx_skb would be freed anyways when we free h5 (since rx_skb is
-> essentially a member of the structure that h5 points to).
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
 
-It is necessary in the path where the struct h5 points to is not
-free-ed and it is cleaner to just always do it then, as you
-indicate yourself 
+are available in the Git repository at:
 
-> Also since we're performing the *if* check, the *else* condition wouldn't exactly be taxing either,
-> right?
+  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.10
 
-For the computer it is not taxing, but for a human reading the code
-and trying to understand the flow it makes things extra complicated
-unnecessarily.
+for you to fetch changes up to cf3af0a4d3b62ab48e0b90180ea161d0f5d4953f:
 
-> Is there some performance metric that I'm missing where unconditionally setting it to NULL
-> in this manner would be better? (I couldn't find any resources that had any similar analysis
-> performed :/ )
-> Or is this in interest of code readability?
+  MIPS: DEC: Restore bootmem reservation for firmware working memory area (2020-10-14 23:57:57 +0200)
 
-Yes, it is in interest of code readability?
+----------------------------------------------------------------
+MIPS updates for v5.10:
 
-> Also, how about we introduce a h5 = NULL, after freeing h5 when !hu->serdev?
+- removed support for PNX833x alias NXT_STB22x
+- included Ingenic SoC support into generic MIPS kernels
+- added support for new Ingenic SoCs
+- converted workaround selection to use Kconfig
+- replaced old boot mem functions by memblock_*
+- enabled COP2 usage in kernel for Loongson64 to make usage
+  of usage of 16byte load/stores possible
+- cleanups and fixes
 
-That is not necessary, there is no reason to have that in either code path.
+----------------------------------------------------------------
+Aleksander Jan Bajkowski (1):
+      MIPS: lantiq: add missing GPHY clock aliases for ar10 and grx390
 
-Regards,
+Chuanhong Guo (1):
+      mips: ralink: enable zboot support
 
-Hans
+Davidlohr Bueso (1):
+      MIPS: Use rcu to lookup a task in mipsmt_sys_sched_setaffinity()
 
+Florian Fainelli (2):
+      firmware: bcm47xx_sprom: Fix -Wmissing-prototypes warnings
+      MIPS: BCM47xx: Include bcm47xx_sprom.h
+
+Huacai Chen (4):
+      MIPS: Loongson64: Increase NR_IRQS to 320
+      MIPS: context switch: Use save/restore instead of set/clear for Status.CU2
+      MIPS: Loongson-3: Enable COP2 usage in kernel
+      MIPS: Loongson-3: Calculate ra properly when unwinding the stack
+
+Jason Yan (1):
+      MIPS: Make setup_elfcorehdr and setup_elfcorehdr_size static
+
+Jinyang He (2):
+      MIPS: p5600: Discard UCA config selection
+      MIPS: Loongson64: Remove unused loongson_reboot.
+
+Maciej W. Rozycki (1):
+      MIPS: DEC: Restore bootmem reservation for firmware working memory area
+
+Mikhail Gusarov (1):
+      mips: octeon: Add Ubiquiti E200 and E220 boards
+
+Paul Cercueil (20):
+      lib: decompress_unzstd: Limit output size
+      MIPS: Add support for ZSTD-compressed kernels
+      MIPS: dts/ingenic: Cleanup qi_lb60.dts
+      MIPS: configs: lb60: Fix defconfig not selecting correct board
+      MIPS: cpu-probe: Set Ingenic's writecombine to _CACHE_CACHABLE_WA
+      MIPS: cpu-probe: Mark XBurst CPU as having vtagged caches
+      MIPS: cpu-probe: ingenic: Fix broken BUG_ON
+      MIPS: Kconfig: add MIPS_GENERIC_KERNEL symbol
+      MIPS: generic: Allow boards to set system type
+      MIPS: generic: Init command line with fw_init_cmdline()
+      MIPS: generic: Support booting with built-in or appended DTB
+      MIPS: generic: Add support for zboot
+      MIPS: generic: Increase NR_IRQS to 256
+      MIPS: generic: Add support for Ingenic SoCs
+      MIPS: jz4740: Drop all obsolete files
+      MIPS: jz4740: Rename jz4740 folders to ingenic
+      MIPS: configs: Regenerate configs of Ingenic boards
+      MAINTAINERS: Update paths to Ingenic platform code
+      MIPS: Increase range of CONFIG_FORCE_MAX_ZONEORDER
+      MIPS: ingenic: Remove CPU_SUPPORTS_HUGEPAGES
+
+Pujin Shi (4):
+      MIPS: kernel: include probes-common.h header in branch.c
+      MIPS: idle: Add prototype for function check_wait
+      MIPS: process: Add prototype for function arch_dup_task_struct
+      MIPS: process: include exec.h header in process.c
+
+Qinglang Miao (1):
+      MIPS: OCTEON: use devm_platform_ioremap_resource
+
+Randy Dunlap (1):
+      bcm963xx_tag.h: fix duplicated word
+
+Thomas Bogendoerfer (34):
+      MIPS: Paravirt: remove remaining pieces of paravirt
+      MIPS: Remove PNX833x alias NXP_STB22x
+      MIPS: SGI-IP27: No need for kmalloc.h
+      MIPS: Loongson2ef: Remove specific mc146818rtc.h
+      MIPS: Remove unused header file m48t37.h
+      MIPS: SGI-IP32: No need to include mc14818*.h
+      MIPS: Convert R4600_V1_INDEX_ICACHEOP into a config option
+      MIPS: Convert R4600_V1_HIT_CACHEOP into a config option
+      MIPS: Convert R4600_V2_HIT_CACHEOP into a config option
+      MIPS: Remove MIPS4K_ICACHE_REFILL_WAR and MIPS_CACHE_SYNC_WAR
+      MIPS: Convert TX49XX_ICACHE_INDEX_INV into a config option
+      MIPS: Convert ICACHE_REFILLS_WORKAROUND_WAR into a config option
+      MIPS: Convert R10000_LLSC_WAR info a config option
+      MIPS: Convert MIPS34K_MISSED_ITLB_WAR into a config option
+      MIPS: Replace SIBYTE_1956_WAR by CONFIG_SB1_PASS_2_WORKAROUNDS
+      MIPS: Get rid of BCM1250_M3_WAR
+      MIPS: Get rid of CAVIUM_OCTEON_DCACHE_PREFETCH_WAR
+      MIPS: Remove mach-*/war.h
+      MIPS: SGI-IP30: Move irq bits to better header files
+      MIPS: alchemy: remove unused ALCHEMY_GPIOINT_AU1300
+      MIPS: alchemy: remove unused ALCHEMY_GPIOINT_AU1000
+      MIPS: malta: remove unused header file
+      MIPS: malta: remove mach-malta/malta-dtshim.h header file
+      Revert "MIPS: OCTEON: use devm_platform_ioremap_resource"
+      MIPS: alchemy: Fix build breakage, if TOUCHSCREEN_WM97XX is disabled
+      MIPS: alchemy: Share prom_init implementation
+      MIPS: pgtable: Remove used PAGE_USERIO define
+      MIPS: tx49xx: move tx4939_add_memory_regions into only user
+      MIPS: SGI-IP28: disable use of ll/sc in kernel
+      MIPS: replace add_memory_region with memblock
+      MIPS: cpu-probe: move fpu probing/handling into its own file
+      MIPS: cpu-probe: introduce exclusive R3k CPU probe
+      MIPS: cpu-probe: remove MIPS_CPU_BP_GHIST option bit
+      MIPS: dec: fix section mismatch
+
+Tiezhu Yang (4):
+      MIPS: Loongson: Use default CONFIG_FRAME_WARN as 2048 for Loongson64 to fix build warnings
+      MIPS: Loongson64: Add UART node for LS7A PCH
+      MIPS: Loongson64: Select SMP in Kconfig to avoid build error
+      MIPS: Loongson64: Clean up numa.c
+
+Wei Li (1):
+      MIPS: Correct the header guard of r4k-timer.h
+
+Youling Tang (2):
+      MIPS: netlogic: Remove unused code
+      MIPS: kexec: Add crashkernel=YM handling
+
+Zejiang Tang (1):
+      MIPS: ftrace: Remove redundant #ifdef CONFIG_DYNAMIC_FTRACE
+
+Zhang Qilong (1):
+      MIPS: pci: use devm_platform_ioremap_resource_byname
+
+Álvaro Fernández Rojas (5):
+      MIPS: BCM63xx: remove duplicated new lines
+      MIPS: BCM63xx: remove EHCI from BCM6348 boards
+      MIPS: BCM63xx: enable EHCI for DWV-S0 board
+      MIPS: BCM63xx: refactor board declarations
+      MIPS: BCM63xx: switch to SPDX license identifier
+
+周琰杰 (Zhou Yanjie) (4):
+      MIPS: Ingenic: Add CPU nodes for Ingenic SoCs.
+      dt-bindings: MIPS: Add X2000E based CU2000-Neo.
+      MIPS: Ingenic: Add system type for new Ingenic SoCs.
+      MIPS: Ingenic: Fix bugs when detecting L2 cache of JZ4775 and X1000E.
+
+ .../devicetree/bindings/mips/ingenic/devices.yaml  |   5 +
+ MAINTAINERS                                        |   5 +-
+ arch/mips/Kbuild.platforms                         |   2 -
+ arch/mips/Kconfig                                  | 158 ++++--
+ arch/mips/alchemy/Kconfig                          |  11 -
+ arch/mips/alchemy/board-gpr.c                      |  17 -
+ arch/mips/alchemy/board-mtx1.c                     |  17 -
+ arch/mips/alchemy/board-xxs1500.c                  |  18 -
+ arch/mips/alchemy/common/prom.c                    |  21 +
+ arch/mips/alchemy/devboards/db1300.c               |   7 +
+ arch/mips/alchemy/devboards/platform.c             |  17 -
+ arch/mips/ar7/memory.c                             |   2 +-
+ arch/mips/ath25/ar2315.c                           |   3 +-
+ arch/mips/ath25/ar5312.c                           |   3 +-
+ arch/mips/bcm47xx/prom.c                           |   3 +-
+ arch/mips/bcm47xx/setup.c                          |   2 +-
+ arch/mips/bcm63xx/boards/board_bcm963xx.c          | 625 ++++++++++-----------
+ arch/mips/bcm63xx/setup.c                          |   2 +-
+ arch/mips/boot/compressed/Makefile                 |   8 +-
+ arch/mips/boot/compressed/decompress.c             |   4 +
+ arch/mips/boot/compressed/string.c                 |  17 +
+ arch/mips/boot/dts/ingenic/jz4725b.dtsi            |  14 +
+ arch/mips/boot/dts/ingenic/jz4740.dtsi             |  14 +
+ arch/mips/boot/dts/ingenic/jz4770.dtsi             |  15 +-
+ arch/mips/boot/dts/ingenic/jz4780.dtsi             |  23 +
+ arch/mips/boot/dts/ingenic/qi_lb60.dts             | 137 +++--
+ arch/mips/boot/dts/ingenic/x1000.dtsi              |  14 +
+ arch/mips/boot/dts/ingenic/x1830.dtsi              |  14 +
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi          |  39 ++
+ arch/mips/cavium-octeon/setup.c                    |  26 +-
+ arch/mips/cobalt/setup.c                           |   3 +-
+ arch/mips/configs/ci20_defconfig                   |   4 +-
+ arch/mips/configs/cu1000-neo_defconfig             |  15 +-
+ arch/mips/configs/cu1830-neo_defconfig             |  15 +-
+ arch/mips/configs/gcw0_defconfig                   |   2 +-
+ arch/mips/configs/loongson3_defconfig              |   2 -
+ arch/mips/configs/pnx8335_stb225_defconfig         |  77 ---
+ arch/mips/configs/qi_lb60_defconfig                |   7 +-
+ arch/mips/configs/rs90_defconfig                   |   4 +-
+ arch/mips/dec/prom/memory.c                        |  12 +-
+ arch/mips/dec/setup.c                              |   9 +-
+ arch/mips/fw/arc/memory.c                          |  28 +-
+ arch/mips/fw/sni/sniprom.c                         |   4 +-
+ arch/mips/generic/Kconfig                          |   8 +-
+ arch/mips/generic/Makefile                         |   1 +
+ arch/mips/generic/Platform                         |   4 +
+ arch/mips/generic/board-ingenic.c                  | 120 ++++
+ arch/mips/generic/init.c                           |  11 +-
+ arch/mips/generic/proc.c                           |   5 +
+ arch/mips/include/asm/bootinfo.h                   |   9 +-
+ arch/mips/include/asm/cpu-features.h               |   3 -
+ arch/mips/include/asm/cpu.h                        |   1 -
+ arch/mips/include/asm/futex.h                      |   4 +-
+ arch/mips/include/asm/idle.h                       |   2 +
+ arch/mips/include/asm/llsc.h                       |   2 +-
+ arch/mips/include/asm/local.h                      |   4 +-
+ arch/mips/include/asm/m48t37.h                     |  36 --
+ .../asm/mach-au1x00/cpu-feature-overrides.h        |   1 -
+ arch/mips/include/asm/mach-au1x00/gpio-au1300.h    | 137 -----
+ arch/mips/include/asm/mach-bcm47xx/bcm47xx.h       |   4 +-
+ arch/mips/include/asm/mach-cavium-octeon/war.h     |  27 -
+ arch/mips/include/asm/mach-generic/irq.h           |   2 +-
+ arch/mips/include/asm/mach-generic/war.h           |  23 -
+ .../cpu-feature-overrides.h                        |   0
+ arch/mips/include/asm/mach-ip22/war.h              |  27 -
+ arch/mips/include/asm/mach-ip27/kmalloc.h          |   8 -
+ arch/mips/include/asm/mach-ip27/war.h              |  23 -
+ .../include/asm/mach-ip28/cpu-feature-overrides.h  |   2 +-
+ arch/mips/include/asm/mach-ip28/war.h              |  23 -
+ arch/mips/include/asm/mach-ip30/irq.h              |  87 ---
+ arch/mips/include/asm/mach-ip30/war.h              |  24 -
+ arch/mips/include/asm/mach-ip32/war.h              |  23 -
+ arch/mips/include/asm/mach-jz4740/irq.h            |  13 -
+ .../include/asm/mach-loongson2ef/mc146818rtc.h     |  36 --
+ arch/mips/include/asm/mach-loongson64/irq.h        |   3 +-
+ arch/mips/include/asm/mach-loongson64/mmzone.h     |   6 +-
+ arch/mips/include/asm/mach-malta/malta-dtshim.h    |  25 -
+ arch/mips/include/asm/mach-malta/malta-pm.h        |  33 --
+ arch/mips/include/asm/mach-malta/war.h             |  23 -
+ .../asm/mach-paravirt/cpu-feature-overrides.h      |  35 --
+ arch/mips/include/asm/mach-paravirt/irq.h          |  19 -
+ .../include/asm/mach-paravirt/kernel-entry-init.h  |  52 --
+ arch/mips/include/asm/mach-pnx833x/gpio.h          | 159 ------
+ arch/mips/include/asm/mach-pnx833x/irq-mapping.h   | 112 ----
+ arch/mips/include/asm/mach-pnx833x/irq.h           |  40 --
+ arch/mips/include/asm/mach-pnx833x/pnx833x.h       | 189 -------
+ arch/mips/include/asm/mach-rc32434/war.h           |  23 -
+ arch/mips/include/asm/mach-rm/war.h                |  27 -
+ arch/mips/include/asm/mach-sibyte/war.h            |  38 --
+ arch/mips/include/asm/mach-tx49xx/war.h            |  23 -
+ arch/mips/include/asm/mips-boards/malta.h          |   2 +
+ arch/mips/include/asm/mipsregs.h                   |  23 +-
+ arch/mips/include/asm/netlogic/psb-bootinfo.h      |  16 +-
+ arch/mips/include/asm/octeon/cvmx-bootinfo.h       |   4 +
+ arch/mips/include/asm/pgtable-bits.h               |   5 -
+ arch/mips/include/asm/pgtable.h                    |   2 -
+ arch/mips/include/asm/processor.h                  |   1 +
+ arch/mips/include/asm/r4k-timer.h                  |   6 +-
+ arch/mips/include/asm/sgi/heart.h                  |  51 ++
+ arch/mips/include/asm/stackframe.h                 |   6 +-
+ arch/mips/include/asm/switch_to.h                  |   4 +-
+ arch/mips/include/asm/txx9/tx4939.h                |   1 -
+ arch/mips/include/asm/war.h                        | 150 -----
+ arch/mips/{jz4740 => ingenic}/Kconfig              |  16 +-
+ arch/mips/jz4740/Makefile                          |   9 -
+ arch/mips/jz4740/Platform                          |   3 -
+ arch/mips/jz4740/setup.c                           | 145 -----
+ arch/mips/kernel/Makefile                          |   9 +-
+ arch/mips/kernel/branch.c                          |   2 +
+ arch/mips/kernel/cpu-probe.c                       | 344 +-----------
+ arch/mips/kernel/cpu-r3k-probe.c                   | 171 ++++++
+ arch/mips/kernel/fpu-probe.c                       | 321 +++++++++++
+ arch/mips/kernel/fpu-probe.h                       |  40 ++
+ arch/mips/kernel/ftrace.c                          |   4 -
+ arch/mips/kernel/head.S                            |   2 +-
+ arch/mips/kernel/mips-mt-fpaff.c                   |   4 +-
+ arch/mips/kernel/process.c                         |  21 +-
+ arch/mips/kernel/prom.c                            |  25 -
+ arch/mips/kernel/setup.c                           |  76 +--
+ arch/mips/kernel/signal.c                          |   8 +-
+ arch/mips/kernel/syscall.c                         |   2 +-
+ arch/mips/kernel/traps.c                           |   2 +-
+ arch/mips/lantiq/xway/sysctrl.c                    |  10 +-
+ arch/mips/loongson2ef/common/mem.c                 |  12 +-
+ arch/mips/loongson32/common/prom.c                 |   4 +-
+ arch/mips/loongson64/numa.c                        |  29 +-
+ arch/mips/loongson64/reset.c                       |   5 -
+ arch/mips/mm/c-r4k.c                               |  17 +-
+ arch/mips/mm/page.c                                |  16 +-
+ arch/mips/mm/sc-mips.c                             |   2 +
+ arch/mips/mm/tlbex.c                               |   8 +-
+ arch/mips/mm/uasm.c                                |   2 +-
+ arch/mips/mti-malta/malta-setup.c                  |   1 -
+ arch/mips/netlogic/xlp/setup.c                     |   2 +-
+ arch/mips/netlogic/xlr/setup.c                     |   5 +-
+ arch/mips/pci/pci-ar2315.c                         |   5 +-
+ arch/mips/pci/pci-ar71xx.c                         |   4 +-
+ arch/mips/pci/pci-ar724x.c                         |   9 +-
+ arch/mips/pnx833x/Makefile                         |   4 -
+ arch/mips/pnx833x/Platform                         |   4 -
+ arch/mips/pnx833x/common/Makefile                  |   2 -
+ arch/mips/pnx833x/common/interrupts.c              | 303 ----------
+ arch/mips/pnx833x/common/platform.c                | 224 --------
+ arch/mips/pnx833x/common/prom.c                    |  51 --
+ arch/mips/pnx833x/common/reset.c                   |  31 -
+ arch/mips/pnx833x/common/setup.c                   |  48 --
+ arch/mips/pnx833x/stb22x/Makefile                  |   2 -
+ arch/mips/pnx833x/stb22x/board.c                   | 120 ----
+ arch/mips/ralink/of.c                              |   3 +-
+ arch/mips/rb532/prom.c                             |   2 +-
+ arch/mips/sgi-ip30/ip30-common.h                   |  14 +
+ arch/mips/sgi-ip30/ip30-irq.c                      |   2 +
+ arch/mips/sgi-ip32/ip32-memory.c                   |   3 +-
+ arch/mips/sgi-ip32/ip32-setup.c                    |   2 -
+ arch/mips/sibyte/common/cfe.c                      |  16 +-
+ arch/mips/txx9/generic/setup_tx4939.c              |  17 -
+ arch/mips/txx9/jmr3927/prom.c                      |   4 +-
+ arch/mips/txx9/rbtx4927/prom.c                     |   5 +-
+ arch/mips/txx9/rbtx4938/prom.c                     |   3 +-
+ arch/mips/txx9/rbtx4939/prom.c                     |  14 +-
+ drivers/firmware/broadcom/bcm47xx_sprom.c          |   1 +
+ drivers/tty/serial/sb1250-duart.c                  |   9 +-
+ include/linux/bcm47xx_sprom.h                      |  10 +
+ include/linux/bcm963xx_tag.h                       |   2 +-
+ lib/decompress_unzstd.c                            |   7 +-
+ 165 files changed, 1730 insertions(+), 3681 deletions(-)
+ delete mode 100644 arch/mips/configs/pnx8335_stb225_defconfig
+ create mode 100644 arch/mips/generic/board-ingenic.c
+ delete mode 100644 arch/mips/include/asm/m48t37.h
+ delete mode 100644 arch/mips/include/asm/mach-cavium-octeon/war.h
+ delete mode 100644 arch/mips/include/asm/mach-generic/war.h
+ rename arch/mips/include/asm/{mach-jz4740 => mach-ingenic}/cpu-feature-overrides.h (100%)
+ delete mode 100644 arch/mips/include/asm/mach-ip22/war.h
+ delete mode 100644 arch/mips/include/asm/mach-ip27/kmalloc.h
+ delete mode 100644 arch/mips/include/asm/mach-ip27/war.h
+ delete mode 100644 arch/mips/include/asm/mach-ip28/war.h
+ delete mode 100644 arch/mips/include/asm/mach-ip30/irq.h
+ delete mode 100644 arch/mips/include/asm/mach-ip30/war.h
+ delete mode 100644 arch/mips/include/asm/mach-ip32/war.h
+ delete mode 100644 arch/mips/include/asm/mach-jz4740/irq.h
+ delete mode 100644 arch/mips/include/asm/mach-loongson2ef/mc146818rtc.h
+ delete mode 100644 arch/mips/include/asm/mach-malta/malta-dtshim.h
+ delete mode 100644 arch/mips/include/asm/mach-malta/malta-pm.h
+ delete mode 100644 arch/mips/include/asm/mach-malta/war.h
+ delete mode 100644 arch/mips/include/asm/mach-paravirt/cpu-feature-overrides.h
+ delete mode 100644 arch/mips/include/asm/mach-paravirt/irq.h
+ delete mode 100644 arch/mips/include/asm/mach-paravirt/kernel-entry-init.h
+ delete mode 100644 arch/mips/include/asm/mach-pnx833x/gpio.h
+ delete mode 100644 arch/mips/include/asm/mach-pnx833x/irq-mapping.h
+ delete mode 100644 arch/mips/include/asm/mach-pnx833x/irq.h
+ delete mode 100644 arch/mips/include/asm/mach-pnx833x/pnx833x.h
+ delete mode 100644 arch/mips/include/asm/mach-rc32434/war.h
+ delete mode 100644 arch/mips/include/asm/mach-rm/war.h
+ delete mode 100644 arch/mips/include/asm/mach-sibyte/war.h
+ delete mode 100644 arch/mips/include/asm/mach-tx49xx/war.h
+ rename arch/mips/{jz4740 => ingenic}/Kconfig (91%)
+ delete mode 100644 arch/mips/jz4740/Makefile
+ delete mode 100644 arch/mips/jz4740/Platform
+ delete mode 100644 arch/mips/jz4740/setup.c
+ create mode 100644 arch/mips/kernel/cpu-r3k-probe.c
+ create mode 100644 arch/mips/kernel/fpu-probe.c
+ create mode 100644 arch/mips/kernel/fpu-probe.h
+ delete mode 100644 arch/mips/pnx833x/Makefile
+ delete mode 100644 arch/mips/pnx833x/Platform
+ delete mode 100644 arch/mips/pnx833x/common/Makefile
+ delete mode 100644 arch/mips/pnx833x/common/interrupts.c
+ delete mode 100644 arch/mips/pnx833x/common/platform.c
+ delete mode 100644 arch/mips/pnx833x/common/prom.c
+ delete mode 100644 arch/mips/pnx833x/common/reset.c
+ delete mode 100644 arch/mips/pnx833x/common/setup.c
+ delete mode 100644 arch/mips/pnx833x/stb22x/Makefile
+ delete mode 100644 arch/mips/pnx833x/stb22x/board.c
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
