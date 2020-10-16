@@ -2,94 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36C528FFBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C987828FF7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405038AbgJPIHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:07:19 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:45563 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404980AbgJPIHS (ORCPT
+        id S2404852AbgJPHwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404800AbgJPHwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:07:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602835637; x=1634371637;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=qqsPYb+YojkTxR2LP1DQbi/hkejGq+YSnwS/6E+Ba94=;
-  b=DhHzNqoSj0KssFTaydWyea+o61+pdndvDau8LHNzzmdwJeLBIoGS5ilP
-   RjRx7wLxzwt9YEzqUHGbRNiXAOUiG86oqCt6NOumWdVJWh8LRv1Mq0y/v
-   JFfM+bpVgbZB/A1014vJPYT/nXY2RDYYMSvrvl9IFXK75DvyiDHefoB0h
-   jNRg1gwqW3aAmN23Zd4dbGz6i4/pB88IzscMSyWYUqY68hIcRjxP2n/ZV
-   7WlXyCQTSHmttcEmpVE0Zqdlal3yP7IO/BbTqXXqx8soIwe0yB+fISA0B
-   AWIeCOgAS5Q+J/Dm4lTyTSgVmdhWcCJJjW/7p7oVlsR5TH3R9NxNG6K7P
-   A==;
-IronPort-SDR: AzjlipmcJ4RkFTmctisRXnvoN1p8Qzn9aXkoVaUQluwsIBSdueimY0hSVI9TzXT7Ho0MPDGu2i
- J7TtBCVTDy7sdtlb+aCj8oemJsLPxTu3aj+Xo3zWxqgnWdhe7PPgv2zdWtuDi5eUFj6LYKM97V
- mZrB7g0DKRy0L2TrSxCxmhYn8/EEUuIRKXfVePgLKOXmP3Fvo5OlLc2JPEXxphI2CCP1IVARdz
- IpSReykf/+psB7olZF14LU/ey6g8YcEVkBdrHKmFsP/pHSqgWU9GZmOfl/RoNH7gVtNgqKudQG
- cU8=
-X-IronPort-AV: E=Sophos;i="5.77,382,1596524400"; 
-   d="scan'208";a="30113890"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Oct 2020 01:07:17 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 16 Oct 2020 00:51:33 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 16 Oct 2020 00:51:31 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <alexandre.belloni@bootlin.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>,
-        <ludovic.desroches@microchip.com>,
-        "Eugen Hristev" <eugen.hristev@microchip.com>
-Subject: [PATCH] ARM: configs: at91: sama5: resync with media changes
-Date:   Fri, 16 Oct 2020 10:51:09 +0300
-Message-ID: <20201016075109.287506-1-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 16 Oct 2020 03:52:13 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71E4C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 00:52:12 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kTKWw-0008UC-IA; Fri, 16 Oct 2020 09:52:02 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kTKWv-0008E6-Om; Fri, 16 Oct 2020 09:52:01 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     mkl@pengutronix.de, Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH v1] ARM: dts: imx6/7: sync fsl,stop-mode with current flexcan driver
+Date:   Fri, 16 Oct 2020 09:51:58 +0200
+Message-Id: <20201016075158.31574-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The media tree Kconfig has changed recently, and a lot of modules were
-built unintentionally, like the dvb frontends and encoders.
-Resync the defconfig to build the sama5 drivers and tested sensors.
+After this patch we need 2 arguments less for the fsl,stop-mode
+property:
 
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+| commit d9b081e3fc4bdc33e672dcb7bb256394909432fc
+| Author: Marc Kleine-Budde <mkl@pengutronix.de>
+| Date:   Sun Jun 14 21:09:20 2020 +0200
+|
+| can: flexcan: remove ack_grp and ack_bit handling from driver
+|
+| Since commit:
+|
+|  048e3a34a2e7 can: flexcan: poll MCR_LPM_ACK instead of GPR ACK for stop mode acknowledgment
+|
+| the driver polls the IP core's internal bit MCR[LPM_ACK] as stop mode
+| acknowledge and not the acknowledgment on chip level.
+|
+| This means the 4th and 5th value of the property "fsl,stop-mode" isn't used
+| anymore. This patch removes the used "ack_gpr" and "ack_bit" from the driver.
+
+This patch removes the two last arguments, as they are not needed
+anymore.
+
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+
+ # Please enter the commit message for your changes. Lines starting
 ---
- arch/arm/configs/sama5_defconfig | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/arm/boot/dts/imx6qdl.dtsi | 4 ++--
+ arch/arm/boot/dts/imx6sx.dtsi  | 4 ++--
+ arch/arm/boot/dts/imx6ul.dtsi  | 4 ++--
+ arch/arm/boot/dts/imx7s.dtsi   | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
-index 037d3a718a60..2c8a621a8f1f 100644
---- a/arch/arm/configs/sama5_defconfig
-+++ b/arch/arm/configs/sama5_defconfig
-@@ -153,9 +153,18 @@ CONFIG_REGULATOR_ACT8945A=y
- CONFIG_REGULATOR_MCP16502=m
- CONFIG_REGULATOR_PWM=m
- CONFIG_MEDIA_SUPPORT=y
-+CONFIG_MEDIA_SUPPORT_FILTER=y
-+# CONFIG_MEDIA_SUBDRV_AUTOSELECT is not set
- CONFIG_MEDIA_CAMERA_SUPPORT=y
-+CONFIG_MEDIA_PLATFORM_SUPPORT=y
- CONFIG_V4L_PLATFORM_DRIVERS=y
-+CONFIG_VIDEO_ATMEL_ISC=y
- CONFIG_VIDEO_ATMEL_ISI=y
-+CONFIG_VIDEO_OV2640=m
-+CONFIG_VIDEO_OV5640=m
-+CONFIG_VIDEO_OV7670=m
-+CONFIG_VIDEO_OV7740=m
-+CONFIG_VIDEO_MT9V032=m
- CONFIG_DRM=y
- CONFIG_DRM_ATMEL_HLCDC=y
- CONFIG_DRM_PANEL_SIMPLE=y
+diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
+index 43edbf1156c7..5efb9b923bf9 100644
+--- a/arch/arm/boot/dts/imx6qdl.dtsi
++++ b/arch/arm/boot/dts/imx6qdl.dtsi
+@@ -549,7 +549,7 @@ can1: flexcan@2090000 {
+ 				clocks = <&clks IMX6QDL_CLK_CAN1_IPG>,
+ 					 <&clks IMX6QDL_CLK_CAN1_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x34 28 0x10 17>;
++				fsl,stop-mode = <&gpr 0x34 28>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -560,7 +560,7 @@ can2: flexcan@2094000 {
+ 				clocks = <&clks IMX6QDL_CLK_CAN2_IPG>,
+ 					 <&clks IMX6QDL_CLK_CAN2_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x34 29 0x10 18>;
++				fsl,stop-mode = <&gpr 0x34 29>;
+ 				status = "disabled";
+ 			};
+ 
+diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
+index b480dfa9e251..8770e522d21c 100644
+--- a/arch/arm/boot/dts/imx6sx.dtsi
++++ b/arch/arm/boot/dts/imx6sx.dtsi
+@@ -463,7 +463,7 @@ flexcan1: can@2090000 {
+ 				clocks = <&clks IMX6SX_CLK_CAN1_IPG>,
+ 					 <&clks IMX6SX_CLK_CAN1_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 1 0x10 17>;
++				fsl,stop-mode = <&gpr 0x10 1>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -474,7 +474,7 @@ flexcan2: can@2094000 {
+ 				clocks = <&clks IMX6SX_CLK_CAN2_IPG>,
+ 					 <&clks IMX6SX_CLK_CAN2_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 2 0x10 18>;
++				fsl,stop-mode = <&gpr 0x10 2>;
+ 				status = "disabled";
+ 			};
+ 
+diff --git a/arch/arm/boot/dts/imx6ul.dtsi b/arch/arm/boot/dts/imx6ul.dtsi
+index 2b088f210331..4a059708ff20 100644
+--- a/arch/arm/boot/dts/imx6ul.dtsi
++++ b/arch/arm/boot/dts/imx6ul.dtsi
+@@ -430,7 +430,7 @@ can1: flexcan@2090000 {
+ 				clocks = <&clks IMX6UL_CLK_CAN1_IPG>,
+ 					 <&clks IMX6UL_CLK_CAN1_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 1 0x10 17>;
++				fsl,stop-mode = <&gpr 0x10 1>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -441,7 +441,7 @@ can2: flexcan@2094000 {
+ 				clocks = <&clks IMX6UL_CLK_CAN2_IPG>,
+ 					 <&clks IMX6UL_CLK_CAN2_SERIAL>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 2 0x10 18>;
++				fsl,stop-mode = <&gpr 0x10 2>;
+ 				status = "disabled";
+ 			};
+ 
+diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
+index 1cfaf410aa43..837f0da08686 100644
+--- a/arch/arm/boot/dts/imx7s.dtsi
++++ b/arch/arm/boot/dts/imx7s.dtsi
+@@ -971,7 +971,7 @@ flexcan1: can@30a00000 {
+ 				clocks = <&clks IMX7D_CLK_DUMMY>,
+ 					<&clks IMX7D_CAN1_ROOT_CLK>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 1 0x10 17>;
++				fsl,stop-mode = <&gpr 0x10 1>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -982,7 +982,7 @@ flexcan2: can@30a10000 {
+ 				clocks = <&clks IMX7D_CLK_DUMMY>,
+ 					<&clks IMX7D_CAN2_ROOT_CLK>;
+ 				clock-names = "ipg", "per";
+-				fsl,stop-mode = <&gpr 0x10 2 0x10 18>;
++				fsl,stop-mode = <&gpr 0x10 2>;
+ 				status = "disabled";
+ 			};
+ 
 -- 
-2.25.1
+2.28.0
 
