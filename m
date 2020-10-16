@@ -2,95 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BAB290A78
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602AA290A7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390486AbgJPRSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390468AbgJPRSr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:18:47 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075F6C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:18:47 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id n18so3793261wrs.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:18:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=k8fZ83rbItOfrAada4wAXII59ZJKaeD2CQLTNkxUviM=;
-        b=oLs10XygoSh32dfOJxiPNMoPVi77vIwMWuVXgMucmKTPoqmhNFLucdxygXGUWgDGfS
-         pD2syNepnLwR/xMzjhvePY8UStVkv+XhBG9LBrMj6isWIQQWkeA4gYIDGhdgEdt/YlIS
-         LRP9Q4dplPZe/qZNT7pJnzJAMCYZdCT0yUeIj7ZtDmDqR9eeKlwo3d3kRrJEOsPsDAzv
-         p+ArSc+26s3TvZ3iC9MxeM1tmHIqvqMQixwelvS1IRNixA7fE0ySdn7jPNDcKPWbVCcM
-         IhEsNuKvp6n8WrmsX762gQ2AjHHl6e87f5YO2/zcn1GIVE/VlBGlPBF2IF5ApxOsAj1D
-         NFTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=k8fZ83rbItOfrAada4wAXII59ZJKaeD2CQLTNkxUviM=;
-        b=igfs4/8eYAfRmzpKt+R3FsvcOPi5LakNB0HjeAsFQHV8j7C98qtZV13jfxR83bOHJR
-         lZ7e+bFadFKzBH5du+buOCl7CV2+jc/QcvecLsav790PKVcopAkL/pLbd1nr86bNoWlS
-         UVsj+PG1hjxdInTnZ6n/ePxCH8oEpC2FhF2h5BAEufzPjRm30mhmX0jC7ORN+vuQ/Egg
-         Pa7B1uyIiI7ih3LNUEI9XO3FdkzVMRMR8as7GA+jEGmnE2VxnAonjTXjJrvnbCUxKukB
-         RRP5ejfN/0yMONv64S4MUkmcbkPGIpOmf6YqlOXF3XhcZonDEXqnwx9fPPnLhaBkLd+r
-         mzew==
-X-Gm-Message-State: AOAM532TVmvlFuhfPKh05qkOLS1DhJHhriSQ30QMLl6YcGnsYUhHwAEU
-        p6ioh4Joi98YPQz6lsfnhuStTRyYjgnV2Q==
-X-Google-Smtp-Source: ABdhPJzPV3iRxfbKZraJ0ZboKhAt324/xKTA7kt0xT/xD9dy/6SQ2FuelwK9uOcH8pouDe5RN1iUUQ==
-X-Received: by 2002:a5d:448b:: with SMTP id j11mr4993707wrq.129.1602868724237;
-        Fri, 16 Oct 2020 10:18:44 -0700 (PDT)
-Received: from localhost.localdomain (211.163.185.81.rev.sfr.net. [81.185.163.211])
-        by smtp.gmail.com with ESMTPSA id o6sm4177162wrm.69.2020.10.16.10.18.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 10:18:43 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org,
-        srinivas.kandagatla@linaro.org,
-        Fabien Parent <fparent@baylibre.com>
-Subject: [PATCH 2/2] arm64: dts: mediatek: mt8516: add efuse node
-Date:   Fri, 16 Oct 2020 19:18:37 +0200
-Message-Id: <20201016171837.3261310-2-fparent@baylibre.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201016171837.3261310-1-fparent@baylibre.com>
-References: <20201016171837.3261310-1-fparent@baylibre.com>
+        id S2390632AbgJPRTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:19:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390321AbgJPRTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 13:19:34 -0400
+Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D71520704;
+        Fri, 16 Oct 2020 17:19:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602868773;
+        bh=9kLpyiAYynL4fs7VkW+MjrLNVjELYDZXp4v/TfTQB2g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=GymZvpishaFRuNxpLri5eyNg1vnMIzZZtcMQGadqRjYDKQs+DBJ1aLYaseEKL1gQO
+         hNqmhOskfTjxrfMXWgm33lr9Wd7HotwEJp7g/xSjHEo0FGlxB9IshW0iVLHwophT1o
+         38xb4xJ++9sNO0L7GtvbDFXyimmnRV6TxCV8Auw8=
+Date:   Fri, 16 Oct 2020 12:19:31 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sean V Kelley <seanvk.dev@oregontracks.org>
+Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
+        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
+        qiuxu.zhuo@intel.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean V Kelley <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v9 09/15] PCI/ERR: Add pci_walk_bridge() to
+ pcie_do_recovery()
+Message-ID: <20201016171931.GA85196@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016001113.2301761-10-seanvk.dev@oregontracks.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add node to support e-fuses on MT8516
+On Thu, Oct 15, 2020 at 05:11:07PM -0700, Sean V Kelley wrote:
+> From: Sean V Kelley <sean.v.kelley@intel.com>
+> 
+> Consolidate subordinate bus checks with pci_walk_bus() into
+> pci_walk_bridge() for walking below potentially AER affected bridges.
+> 
+> [bhelgaas: fix kerneldoc]
+> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> Link: https://lore.kernel.org/r/20201002184735.1229220-7-seanvk.dev@oregontracks.org
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/pci/pcie/err.c | 30 +++++++++++++++++++++++-------
+>  1 file changed, 23 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index 931e75f2549d..8b53aecdb43d 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -146,13 +146,30 @@ static int report_resume(struct pci_dev *dev, void *data)
+>  	return 0;
+>  }
+>  
+> +/**
+> + * pci_walk_bridge - walk bridges potentially AER affected
+> + * @bridge:	bridge which may be a Port
+> + * @cb:		callback to be called for each device found
+> + * @userdata:	arbitrary pointer to be passed to callback
+> + *
+> + * If the device provided is a bridge, walk the subordinate bus, including
+> + * any bridged devices on buses under this bus.  Call the provided callback
+> + * on each device found.
+> + */
+> +static void pci_walk_bridge(struct pci_dev *bridge,
+> +			    int (*cb)(struct pci_dev *, void *),
+> +			    void *userdata)
+> +{
+> +	if (bridge->subordinate)
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
----
- arch/arm64/boot/dts/mediatek/mt8516.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+Remind me why we add this bridge->subordinate test?  I see that we're
+going to need it later, but I think we should add the test in the same
+patch that adds the case where "bridge->subordinate == NULL" becomes
+possible.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8516.dtsi b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-index 89af661e7f63..18ddea519be2 100644
---- a/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-@@ -237,6 +237,13 @@ pio: pinctrl@1000b000 {
- 			interrupts = <GIC_SPI 134 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		efuse: efuse@10009000 {
-+			compatible = "mediatek,mt8516-efuse", "mediatek,efuse";
-+			reg = <0 0x10009000 0 0x1000>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+		};
-+
- 		pwrap: pwrap@1000f000 {
- 			compatible = "mediatek,mt8516-pwrap";
- 			reg = <0 0x1000f000 0 0x1000>;
--- 
-2.28.0
+Or else a note in this commit log about what's happening.
 
+AFAICT, this test is literally the only possible functional change in
+this patch, so the commit log should mention it.
+
+> +		pci_walk_bus(bridge->subordinate, cb, userdata);
+> +}
+> +
+>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  		pci_channel_state_t state,
+>  		pci_ers_result_t (*reset_subordinates)(struct pci_dev *pdev))
+>  {
+>  	int type = pci_pcie_type(dev);
+>  	struct pci_dev *bridge;
+> -	struct pci_bus *bus;
+>  	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+>  
+>  	/*
+> @@ -165,23 +182,22 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  	else
+>  		bridge = pci_upstream_bridge(dev);
+>  
+> -	bus = bridge->subordinate;
+>  	pci_dbg(bridge, "broadcast error_detected message\n");
+>  	if (state == pci_channel_io_frozen) {
+> -		pci_walk_bus(bus, report_frozen_detected, &status);
+> +		pci_walk_bridge(bridge, report_frozen_detected, &status);
+>  		status = reset_subordinates(bridge);
+>  		if (status != PCI_ERS_RESULT_RECOVERED) {
+>  			pci_warn(bridge, "subordinate device reset failed\n");
+>  			goto failed;
+>  		}
+>  	} else {
+> -		pci_walk_bus(bus, report_normal_detected, &status);
+> +		pci_walk_bridge(bridge, report_normal_detected, &status);
+>  	}
+>  
+>  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>  		status = PCI_ERS_RESULT_RECOVERED;
+>  		pci_dbg(bridge, "broadcast mmio_enabled message\n");
+> -		pci_walk_bus(bus, report_mmio_enabled, &status);
+> +		pci_walk_bridge(bridge, report_mmio_enabled, &status);
+>  	}
+>  
+>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
+> @@ -192,14 +208,14 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  		 */
+>  		status = PCI_ERS_RESULT_RECOVERED;
+>  		pci_dbg(bridge, "broadcast slot_reset message\n");
+> -		pci_walk_bus(bus, report_slot_reset, &status);
+> +		pci_walk_bridge(bridge, report_slot_reset, &status);
+>  	}
+>  
+>  	if (status != PCI_ERS_RESULT_RECOVERED)
+>  		goto failed;
+>  
+>  	pci_dbg(bridge, "broadcast resume message\n");
+> -	pci_walk_bus(bus, report_resume, &status);
+> +	pci_walk_bridge(bridge, report_resume, &status);
+>  
+>  	if (pcie_aer_is_native(bridge))
+>  		pcie_clear_device_status(bridge);
+> -- 
+> 2.28.0
+> 
