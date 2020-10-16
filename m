@@ -2,136 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C03290889
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD6529088D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410279AbgJPPdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
+        id S2410107AbgJPPd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410067AbgJPPct (ORCPT
+        with ESMTP id S2404507AbgJPPd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:32:49 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F88C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:32:49 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id c6so1467798plr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:32:49 -0700 (PDT)
+        Fri, 16 Oct 2020 11:33:29 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EC0C061755;
+        Fri, 16 Oct 2020 08:33:29 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x13so1695456pfa.9;
+        Fri, 16 Oct 2020 08:33:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qGdeYT3MiQwKX79eLQ/b7rznlfvba/UsEutEjQXYcRw=;
-        b=BwNX2GgLB3+EPMYvB86xvOSo+D+yDOe6vQWybxXuycnnDbw09lPKB6ZNFRRn76EG1N
-         +a+FOf9PbCPumM4w1i7u3gv/SM0i4bIkRdp5TU/yRTKrnVGkQaoPC3U5wPaWExnnI690
-         PTnEFPfXgo5vqPNME5OPr10m2iAlzCJw5nAhL3CXv2iq9dxEOmv0kYwesfsMME4Ili0i
-         L94JvtSezyXy7B29nFfS1pOp+3WtggJE4Lv9GH187tGRePR2hU+QlMGygWjM1Zdv1B0p
-         31JZXa4Q27dgXy4sqGFWldTvpI+P8/3gilbfIiLd06tpssBIib2+m6h27W3UBRqo8y9t
-         6r4g==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gABW2KQ5ZiJTeAUlEXgZ7DFl25H1jBQV0yMaSjTf0Ew=;
+        b=e7qsBCmrw3wUcu9lLKmG7tEhmzh41fiigyyDOt8192HLNXv+l+v0qaTk/pV0oHJK8E
+         SuIrgrxbbk243Wnl3nWuDKUKLiTvq28NmNl+6XITIzV1pRO0218WY2AAcEPXIkW4ylSq
+         SCdpTXgr5hWeVDQxZq+0GTMcwQzVfvStZl3cvbredb3FTHv9kLEdtcIqq/T5li/vKjrS
+         m4RVtMwlq/Ni/F5sKK7IVdyZpber/0SbDACBa8gzKFIYOgtvIAz+881ZqGeK3oPNh0WS
+         D51wHa8vT6oY5jArASJUnuwe6OMJodqU/S4PDkdM7JnadSJsfAJ8vL8p+1z8QFs4Xk76
+         8hFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qGdeYT3MiQwKX79eLQ/b7rznlfvba/UsEutEjQXYcRw=;
-        b=a4JoULzBIntmmOFbyV71g2tfKhKvJp8km0jI0O2XW+L7RJRxWyQgH9SZ3q30EsDIWz
-         IW6bPpXmKbLd2PcubkORa+GgUgX5y8TH/ahpQhkBFxB42svb0Hou1WHwf+SpnQoDqxZo
-         pcsuxMdYhUiGIyolv63av5rqLGazcoC2gygPk/4ArE4A4i9RdkGC9aIYu6eDlFvNCgHx
-         U/kP2jwpHj2DZlLB3BqjKdqMhB2M4c/dOgKkXUudqMda3URLlBqLJ5n2r+6kkArkrMzf
-         iOwRgL5z8NN/X93o3l6kwsYj9BXA1TKSvfKl0WPTHDmN3xmscFeCQmDeZQsLF53V461S
-         zO2w==
-X-Gm-Message-State: AOAM532bGBQxCSnG1f3Zz0ICuqztNJxbBH+HynZ5tPEELNG1MfbI8Mx6
-        POhkxhCFnuVhU5DzGatC2B7XBw==
-X-Google-Smtp-Source: ABdhPJw2dgqLLhcauvMt2GOLvh+Ndd9jqu5UiMTATm0z7/s81PCLWvQUWsdVJtYomEFuLgMOx7E29w==
-X-Received: by 2002:a17:90a:fd0f:: with SMTP id cv15mr4439472pjb.161.1602862368712;
-        Fri, 16 Oct 2020 08:32:48 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id x26sm3177157pfn.178.2020.10.16.08.32.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 08:32:48 -0700 (PDT)
-Subject: Re: [PATCH v3] ata: sata_rcar: Fix DMA boundary mask
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-ide@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20200917130920.6689-1-geert+renesas@glider.be>
- <CAMuHMdWQapEyvd=rpdfW5XHbwLtaiyLsnAXn5dM8zGCpc9VSFA@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d7eefafb-5a63-8790-8d3e-6cb04edd5fdc@kernel.dk>
-Date:   Fri, 16 Oct 2020 09:32:46 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=gABW2KQ5ZiJTeAUlEXgZ7DFl25H1jBQV0yMaSjTf0Ew=;
+        b=DDv/O7ZOT+NWdzf0eO57HH6M77GV04H80ncGbBDnPnlumroiJGChEaze5iTBuCIk0Q
+         TJEfVoydFrw67LxF+nWyd8P8OUxaYkTA7Ian2puz4C41Ibjbz8doaVq1RZDD7PjCyY6n
+         iyH/BrKFjIfQV/hntUPYffJBPEiVYqRF41anmeVe31JmS/l4jbhHGYoeeIcNAErLSJ+p
+         5T+TIrNGCd9ka0bu/G1TW9uHMrMQWp+IjhjDtAES7y63Su9oV0fmh6HXHWKj/Hcb5Wjv
+         0I1m7jiq7gjf0wdkTfSemckhlWKiNcUTzp8kGqd89OxFFEJBnLC1k3JgDjlU2RvGMG/I
+         FBCA==
+X-Gm-Message-State: AOAM530X+lexC09Wvtwrmp3KpTkziHzBxZvhpzSnYra/CJzNKZ5W5DBg
+        dzQNcAN3zv6NCKR69m9aSVE=
+X-Google-Smtp-Source: ABdhPJw/7zCuRVADn2EVkiQosa8Zi2DucisTB0ZX9s95yH+EFV89V+qRrXAN6KVFuHbh9hdK50pBaQ==
+X-Received: by 2002:a62:7a53:0:b029:152:5482:8935 with SMTP id v80-20020a627a530000b029015254828935mr4338348pfc.31.1602862408483;
+        Fri, 16 Oct 2020 08:33:28 -0700 (PDT)
+Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id l14sm3034600pfc.170.2020.10.16.08.33.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 08:33:27 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 16 Oct 2020 08:33:24 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Mike Galbraith <umgwanakikbuti@gmail.com>, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, bigeasy@linutronix.de,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: swapon/913 is trying to acquire lock at
+ zcomp_stream_get+0x5/0x90 [zram] but task is already holding lock at
+ zs_map_object+0x7a/0x2e0
+Message-ID: <20201016153324.GA1976566@google.com>
+References: <CABXGCsOL0pW0Ghh-w5d12P75ve6FS9Rgmzm6DvsYbJY-jMTCdg@mail.gmail.com>
+ <20201016124009.GQ2611@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWQapEyvd=rpdfW5XHbwLtaiyLsnAXn5dM8zGCpc9VSFA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016124009.GQ2611@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/20 12:34 PM, Geert Uytterhoeven wrote:
-> Hi Jens,
+On Fri, Oct 16, 2020 at 02:40:09PM +0200, Peter Zijlstra wrote:
+> On Fri, Oct 16, 2020 at 11:21:47AM +0500, Mikhail Gavrilov wrote:
+> > Hi folks,
+> > today I joined to testing Kernel 5.10 and see that every boot happens
+> > this warning:
+> > 
+> > [    9.032096] ======================================================
+> > [    9.032097] WARNING: possible circular locking dependency detected
+> > [    9.032098] 5.10.0-0.rc0.20201014gitb5fc7a89e58b.41.fc34.x86_64 #1 Not tainted
+> > [    9.032099] ------------------------------------------------------
+> > [    9.032100] swapon/913 is trying to acquire lock:
+> > [    9.032101] ffffc984fda4f948 (&zstrm->lock){+.+.}-{2:2}, at: zcomp_stream_get+0x5/0x90 [zram]
+> > [    9.032106] but task is already holding lock:
+> > [    9.032107] ffff993c54cdceb0 (&zspage->lock){.+.+}-{2:2}, at: zs_map_object+0x7a/0x2e0
+> > [    9.032111] which lock already depends on the new lock.
+> > [    9.032112] the existing dependency chain (in reverse order) is:
 > 
-> On Thu, Sep 17, 2020 at 3:09 PM Geert Uytterhoeven
-> <geert+renesas@glider.be> wrote:
->> Before commit 9495b7e92f716ab2 ("driver core: platform: Initialize
->> dma_parms for platform devices"), the R-Car SATA device didn't have DMA
->> parameters.  Hence the DMA boundary mask supplied by its driver was
->> silently ignored, as __scsi_init_queue() doesn't check the return value
->> of dma_set_seg_boundary(), and the default value of 0xffffffff was used.
->>
->> Now the device has gained DMA parameters, the driver-supplied value is
->> used, and the following warning is printed on Salvator-XS:
->>
->>     DMA-API: sata_rcar ee300000.sata: mapping sg segment across boundary [start=0x00000000ffffe000] [end=0x00000000ffffefff] [boundary=0x000000001ffffffe]
->>     WARNING: CPU: 5 PID: 38 at kernel/dma/debug.c:1233 debug_dma_map_sg+0x298/0x300
->>
->> (the range of start/end values depend on whether IOMMU support is
->>  enabled or not)
->>
->> The issue here is that SATA_RCAR_DMA_BOUNDARY doesn't have bit 0 set, so
->> any typical end value, which is odd, will trigger the check.
->>
->> Fix this by increasing the DMA boundary value by 1.
->>
->> This also fixes the following WRITE DMA EXT timeout issue:
->>
->>     # dd if=/dev/urandom of=/mnt/de1/file1-1024M bs=1M count=1024
->>     ata1.00: exception Emask 0x0 SAct 0x0 SErr 0x0 action 0x6 frozen
->>     ata1.00: failed command: WRITE DMA EXT
->>     ata1.00: cmd 35/00:00:00:e6:0c/00:0a:00:00:00/e0 tag 0 dma 1310720 out
->>     res 40/00:01:00:00:00/00:00:00:00:00/00 Emask 0x4 (timeout)
->>     ata1.00: status: { DRDY }
->>
->> as seen by Shimoda-san since commit 429120f3df2dba2b ("block: fix
->> splitting segments on boundary masks").
->>
->> Fixes: 8bfbeed58665dbbf ("sata_rcar: correct 'sata_rcar_sht'")
->> Fixes: 9495b7e92f716ab2 ("driver core: platform: Initialize dma_parms for platform devices")
->> Fixes: 429120f3df2dba2b ("block: fix splitting segments on boundary masks")
->> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->> Reviewed-by: Christoph Hellwig <hch@lst.de>
->> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
->> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
->> Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->> Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
->> Cc: stable <stable@vger.kernel.org>
+> > [    9.032112] -> #1 (&zspage->lock){.+.+}-{2:2}:
+> > [    9.032116]        _raw_read_lock+0x3d/0xa0
+> > [    9.032118]        zs_map_object+0x7a/0x2e0
+> > [    9.032119]        zram_bvec_rw.constprop.0.isra.0+0x287/0x730 [zram]
+> > [    9.032121]        zram_submit_bio+0x189/0x35d [zram]
+> > [    9.032123]        submit_bio_noacct+0xff/0x650
+> > [    9.032124]        submit_bh_wbc+0x17d/0x1a0
+> > [    9.032126]        __block_write_full_page+0x227/0x580
+> > [    9.032128]        __writepage+0x1a/0x70
+> > [    9.032129]        write_cache_pages+0x21c/0x540
+> > [    9.032130]        generic_writepages+0x41/0x60
+> > [    9.032131]        do_writepages+0x28/0xb0
+> > [    9.032133]        __filemap_fdatawrite_range+0xa7/0xe0
+> > [    9.032134]        file_write_and_wait_range+0x67/0xb0
+> > [    9.032135]        blkdev_fsync+0x17/0x40
+> > [    9.032137]        __x64_sys_fsync+0x34/0x60
+> > [    9.032138]        do_syscall_64+0x33/0x40
+> > [    9.032140]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > [    9.032140]
+> >                -> #0 (&zstrm->lock){+.+.}-{2:2}:
 > 
-> Can you please apply this patch?
-> This is a fix for a regression in v5.7-rc5, and was first posted almost
-> 5 months ago.
+> 
+> > [    9.032169] 1 lock held by swapon/913:
+> > [    9.032170]  #0: ffff993c54cdceb0 (&zspage->lock){.+.+}-{2:2}, at: zs_map_object+0x7a/0x2e0
+> 
+> > [    9.032176] Call Trace:
+> > [    9.032179]  dump_stack+0x8b/0xb0
+> > [    9.032181]  check_noncircular+0xd0/0xf0
+> > [    9.032183]  __lock_acquire+0x11e3/0x21f0
+> > [    9.032185]  lock_acquire+0xc8/0x400
+> > [    9.032187]  ? zcomp_stream_get+0x5/0x90 [zram]
+> > [    9.032189]  zcomp_stream_get+0x38/0x90 [zram]
+> > [    9.032190]  ? zcomp_stream_get+0x5/0x90 [zram]
+> > [    9.032192]  zram_bvec_rw.constprop.0.isra.0+0x4c1/0x730 [zram]
+> > [    9.032194]  ? __part_start_io_acct+0x4d/0xf0
+> > [    9.032196]  zram_rw_page+0xa9/0x130 [zram]
+> > [    9.032197]  bdev_read_page+0x71/0xa0
+> > [    9.032199]  do_mpage_readpage+0x5a8/0x800
+> > [    9.032201]  ? xa_load+0xbf/0x140
+> > [    9.032203]  mpage_readahead+0xfb/0x230
+> > [    9.032205]  ? bdev_evict_inode+0x1a0/0x1a0
+> > [    9.032207]  read_pages+0x60/0x1e0
+> > [    9.032208]  page_cache_readahead_unbounded+0x1da/0x270
+> > [    9.032211]  generic_file_buffered_read+0x69c/0xe00
+> > [    9.032213]  new_sync_read+0x108/0x180
+> > [    9.032215]  vfs_read+0x12e/0x1c0
+> > [    9.032217]  ksys_read+0x58/0xd0
+> > [    9.032218]  do_syscall_64+0x33/0x40
+> > [    9.032219]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> 
+> Joy... __zram_bvec_write() and __zram_bvec_read() take these locks in
+> opposite order.
+> 
+> Does something like the (_completely_) untested below cure things?
 
-Applied, sorry that got missed.
 
--- 
-Jens Axboe
+[19f545b6e07f7, zram: Use local lock to protect per-CPU data] introduced
+new lock dependency and this patch looks good to me.
 
+Peter, do you mind sending this patch with fix tag to Andrew Morton?
+
+Thanks for your help.
+
+> 
+> ---
+> 
+> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> index 9100ac36670a..c1e2c2e1cde8 100644
+> --- a/drivers/block/zram/zram_drv.c
+> +++ b/drivers/block/zram/zram_drv.c
+> @@ -1216,10 +1216,11 @@ static void zram_free_page(struct zram *zram, size_t index)
+>  static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+>  				struct bio *bio, bool partial_io)
+>  {
+> -	int ret;
+> +	struct zcomp_strm *zstrm;
+>  	unsigned long handle;
+>  	unsigned int size;
+>  	void *src, *dst;
+> +	int ret;
+>  
+>  	zram_slot_lock(zram, index);
+>  	if (zram_test_flag(zram, index, ZRAM_WB)) {
+> @@ -1250,6 +1251,9 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+>  
+>  	size = zram_get_obj_size(zram, index);
+>  
+> +	if (size != PAGE_SIZE)
+> +		zstrm = zcomp_stream_get(zram->comp);
+> +
+>  	src = zs_map_object(zram->mem_pool, handle, ZS_MM_RO);
+>  	if (size == PAGE_SIZE) {
+>  		dst = kmap_atomic(page);
+> @@ -1257,8 +1261,6 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+>  		kunmap_atomic(dst);
+>  		ret = 0;
+>  	} else {
+> -		struct zcomp_strm *zstrm = zcomp_stream_get(zram->comp);
+> -
+>  		dst = kmap_atomic(page);
+>  		ret = zcomp_decompress(zstrm, src, size, dst);
+>  		kunmap_atomic(dst);
