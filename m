@@ -2,68 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524ED290AAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811DB290AB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391238AbgJPR0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:26:21 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:36359 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390753AbgJPR0V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:26:21 -0400
-Received: by mail-oi1-f194.google.com with SMTP id u17so3264485oie.3;
-        Fri, 16 Oct 2020 10:26:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=omBtvAFklWNlMUExD+4CJmUl79VsD9qGgMC2YooqDqQ=;
-        b=O3vyaTUN1322Q7xxUo+EDsOaHITA9I17aSGKABBfnKF41NjIGBVPtIPA6L2pycDJCF
-         0pHVjXGQ4wEnNfJ8gHLMg0k4fJ45hY5mViwFMeoEK+1OepYt3y/RynhqhnOyHEJcHQ14
-         aKCnuwIGngQASYV7jogmPXPQXy+enGMQoiaXcheTgEfHjXQLotc+kMWuvaKvKyGQetbJ
-         4WqGfXa6DVfie9a+TLkUwBVXr24EsfP6mjzVclQP0Vfr/1jEePdDc/Y+e4qPJp34GVfW
-         LeCMkKsOLtaWlGKtjRO1JWxl4ME/UWrufAL/KqkYDWNm7QtNDc5Zw9Joj8ItfbwmfmS6
-         470A==
-X-Gm-Message-State: AOAM533XOcrXqlAqAzXXIV+yluSw5diFwfxYVcI9w8U8U1/6M0TQCVX3
-        Ev36PUrYv0TfyxBDlRYTyg==
-X-Google-Smtp-Source: ABdhPJzPn9Z+rZQLCishbk/PK12xWXQbmx1o3tzrhz0RLIx7LPM64CTl4qb0i2NU5xp5XJ3dwvEfhg==
-X-Received: by 2002:aca:eb48:: with SMTP id j69mr3293005oih.149.1602869178902;
-        Fri, 16 Oct 2020 10:26:18 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r62sm1226958oih.12.2020.10.16.10.26.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 10:26:18 -0700 (PDT)
-Received: (nullmailer pid 1609608 invoked by uid 1000);
-        Fri, 16 Oct 2020 17:26:17 -0000
-Date:   Fri, 16 Oct 2020 12:26:17 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Amitesh Chandra <amitesh.chandra@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        robh+dt@kernel.org, ravi.nagarajan@broadcom.com,
-        cheneyni@google.com, amitesh.chandra@broadcom.com,
-        davem@davemloft.net, devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: net: bluetooth: Add broadcom BCM4389
- support
-Message-ID: <20201016172617.GA1609528@bogus>
-References: <20201014054543.2457-1-amitesh.chandra@gmail.com>
+        id S2391802AbgJPR01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:26:27 -0400
+Received: from verein.lst.de ([213.95.11.211]:36538 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391280AbgJPR00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 13:26:26 -0400
+Received: by verein.lst.de (Postfix, from userid 2005)
+        id 68CC068BEB; Fri, 16 Oct 2020 19:26:19 +0200 (CEST)
+Date:   Fri, 16 Oct 2020 19:26:19 +0200
+From:   Torsten Duwe <duwe@lst.de>
+To:     Stephan Mueller <smueller@chronox.de>
+Cc:     Willy Tarreau <w@1wt.eu>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-crypto@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>
+Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST
+ SP800-90B compliance
+Message-ID: <20201016172619.GA18410@lst.de>
+References: <20200921075857.4424-1-nstange@suse.de> <20201002123836.GA14807@lst.de> <20201002131555.GD3783@1wt.eu> <2961243.vtBmWVcJkq@tauon.chronox.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014054543.2457-1-amitesh.chandra@gmail.com>
+In-Reply-To: <2961243.vtBmWVcJkq@tauon.chronox.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 11:15:43 +0530, Amitesh Chandra wrote:
-> From: Amitesh Chandra <amitesh.chandra@broadcom.com>
+On Fri, Oct 02, 2020 at 03:56:28PM +0200, Stephan Mueller wrote:
+> Am Freitag, 2. Oktober 2020, 15:15:55 CEST schrieb Willy Tarreau:
 > 
-> Add bindings for BCM4389 bluetooth controller.
+> Hi Willy,
 > 
-> Signed-off-by: Amitesh Chandra <amitesh.chandra@broadcom.com>
-> ---
->  Documentation/devicetree/bindings/net/broadcom-bluetooth.txt | 1 +
->  1 file changed, 1 insertion(+)
+> > > And this is all ???
+> > 
+> > Possibly a lot of people got used to seeing the numerous versions
+> > and are less attentive to new series, it's possible that your message
+> > will wake everyone up.
 > 
+> I think that points to my patch series. My patch series which provide a 
+> complete separate, API and ABI compliant drop in replacement of /dev/random, 
+> nobody from the gatekeepers cared to even answer. It would not touch the 
+> existing code.
+> 
+> After waiting some time without changing the code (e.g. after Andi Lutomirski 
+> commented), I got no answer at all from the gatekeepers, not even any 
+> indication in what direction I should move if something was not desired in the 
+> patch series.
+> 
+> Thus I continued adding the features that I think are necessary and for which 
+> I received comments from mathematicians. What else should I do?
+> 
+> With the patch set v35 of my patch series, I see all my goals finally 
+> achieved at I expect the code to be stable from here on. The last one was the 
+> hardest: to get rid of all non-cryptographic conditioning operations and yet 
+> retain performance en par or even superior to the existing /dev/random 
+> implementation.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Would you mind to resend it here, for a comparison?
+
+	Torsten
+
