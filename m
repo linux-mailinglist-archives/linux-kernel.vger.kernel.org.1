@@ -2,179 +2,453 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE02B29071C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1637290723
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407335AbgJPO0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
+        id S2408810AbgJPO21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390724AbgJPO0T (ORCPT
+        with ESMTP id S2407408AbgJPO20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:26:19 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C02C061755;
-        Fri, 16 Oct 2020 07:26:18 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id x7so3174037wrl.3;
-        Fri, 16 Oct 2020 07:26:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RpHL2pmcG7XNMxRENeUpmnEYfg0F72pinXyJP1jJFB8=;
-        b=SmmMkUw2n6WZdR0N52P05/GmD5Oo5yyLda9sROnFISetU7nBx+EL+EYbxviRgOYD4w
-         XXlwaA4lzppI5vziBVE0+ISQVMnjzRMJe4pyVIx451NhcPj5nGB6XdPYKZbowidlCbQJ
-         0FjmiiPw8sWlNkZvDv58qzOIBsHuvsqPhQX6GVy18VygS/1rVJ+99xlMo9BSkWf/dpR1
-         xAtIIgx3m+Z8Z7FaxZpl6VmYO2MWNsfvOdO9R6VU0SA8zi+NpvAMkmz2eiN3YIfvAqkl
-         aMOtE++fnAt0vzpl4OjbjjtAHZkzyCwmt1cfMr4aF/P5Z/ym4sTo8/wYAJcR9x+1gn50
-         brhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RpHL2pmcG7XNMxRENeUpmnEYfg0F72pinXyJP1jJFB8=;
-        b=Bl8aPoggZKv/ivcnBBKM3YkO0nwyYILEYzzivkwboix61zPYx9eNu6MMIYE8M6tSBI
-         FERsrw1PyTMckCOVLYnVl7QffY1ZvLpxv18cBhuvdRWudm09L5IAg6t9WMHtxJa0PCVw
-         kYlths6ODhFAYE3soBEjfHPNDstDE9HSN+zXZuBh8Hrq1T4170IBm2dlgmhQvLeag/hs
-         ECG9Yu9Jt424yu9L/WFLuRuQQyO6TseUA4mq96zbr1bbd61yoeCgbUBlXAVPK/8Hekwr
-         euTTiClZ/MOWJZS2GS9BLwT1rVNN8rxngqPd8GHOvhGM9zSkRjX+ZLOURspFjucmmoYl
-         m13Q==
-X-Gm-Message-State: AOAM531kIWpzoqSrj05bWQAzZRv8GhWZIH0+h3UYmOx6eRC9DnEvNtpg
-        pUpgrmu4L8WpszavYd0X53o=
-X-Google-Smtp-Source: ABdhPJxOXM7pkhmb/DdXwtIspFFXCqiiNtkftB3jeaUYVxEHwrZdhEZr99bZiJuOICg0fa6LMZ3f6g==
-X-Received: by 2002:adf:ed07:: with SMTP id a7mr4443771wro.326.1602858376481;
-        Fri, 16 Oct 2020 07:26:16 -0700 (PDT)
-Received: from pce.localnet (host-80-117-125-178.retail.telecomitalia.it. [80.117.125.178])
-        by smtp.gmail.com with ESMTPSA id i33sm3823963wri.79.2020.10.16.07.26.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 07:26:15 -0700 (PDT)
-From:   Elia Devito <eliadevito@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Mark Pearson <mpearson@lenovo.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Subject: Re: [RFC] Documentation: Add documentation for new performance_profile sysfs class (Also Re: [PATCH 0/4] powercap/dtpm: Add the DTPM framework)
-Date:   Fri, 16 Oct 2020 16:26:13 +0200
-Message-ID: <4600468.GXAFRqVoOG@pce>
-In-Reply-To: <943531a7-74d6-7c7f-67bc-2645b3ba7b8a@redhat.com>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org> <CAJZ5v0iWmmu5WV7cX7uNb61NMYQ7s0dnhg1K+T0x90b3sBfU9w@mail.gmail.com> <943531a7-74d6-7c7f-67bc-2645b3ba7b8a@redhat.com>
+        Fri, 16 Oct 2020 10:28:26 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B559C061755;
+        Fri, 16 Oct 2020 07:28:26 -0700 (PDT)
+Received: from [IPv6:2003:c7:cf43:5b00:30b6:b06:27e6:9e70] (p200300c7cf435b0030b60b0627e69e70.dip0.t-ipconnect.de [IPv6:2003:c7:cf43:5b00:30b6:b06:27e6:9e70])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2D63B1F461D4;
+        Fri, 16 Oct 2020 15:28:24 +0100 (BST)
+Subject: Re: [PATCH] media: staging: rkisp1: cap: refactor enable/disable
+ stream to allow multistreaming
+To:     Helen Koike <helen.koike@collabora.com>,
+        linux-media@vger.kernel.org
+Cc:     laurent.pinchart@ideasonboard.com, hverkuil@xs4all.nl,
+        kernel@collabora.com, sakari.ailus@linux.intel.com,
+        linux-rockchip@lists.infradead.org, mchehab@kernel.org,
+        tfiga@chromium.org, linux-kernel@vger.kernel.org
+References: <20201015195746.264722-1-helen.koike@collabora.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <8b31c5a3-9b01-9536-384a-b06d9a0a2e1a@collabora.com>
+Date:   Fri, 16 Oct 2020 16:28:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+In-Reply-To: <20201015195746.264722-1-helen.koike@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-In data venerd=EC 16 ottobre 2020 13:10:54 CEST, Hans de Goede ha scritto:
-> <note folding the 2 threads we are having on this into one, adding every =
-one
-> from both threads to the Cc>
->=20
-> Hi,
->=20
-> On 10/14/20 5:42 PM, Rafael J. Wysocki wrote:
-> > On Wed, Oct 14, 2020 at 4:06 PM Hans de Goede <hdegoede@redhat.com> wro=
-te:
-> >> On 10/14/20 3:33 PM, Rafael J. Wysocki wrote:
-> <snip>
->=20
-> >>> First, a common place to register a DPTF system profile seems to be
-> >>> needed and, as I said above, I wouldn't expect more than one such
-> >>> thing to be present in the system at any given time, so it may be
-> >>> registered along with the list of supported profiles and user space
-> >>> will have to understand what they mean.
-> >>=20
-> >> Mostly Ack, I would still like to have an enum for DPTF system
-> >> profiles in the kernel and have a single piece of code map that
-> >> enum to profile names. This enum can then be extended as
-> >> necessary, but I want to avoid having one driver use
-> >> "Performance" and the other "performance" or one using
-> >> "performance-balanced" and the other "balanced-performance", etc.
-> >>=20
-> >> With the goal being that new drivers use existing values from
-> >> the enum as much as possible, but we extend it where necessary.
-> >=20
-> > IOW, just a table of known profile names with specific indices assigned=
- to
-> > them.
-> Yes.
->=20
-> > This sounds reasonable.
-> >=20
-> >>> Second, irrespective of the above, it may be useful to have a
-> >>> consistent way to pass performance-vs-power preference information
-> >>> from user space to different parts of the kernel so as to allow them
-> >>> to adjust their operation and this could be done with a system-wide
-> >>> power profile attribute IMO.
-> >>=20
-> >> I agree, which is why I tried to tackle both things in one go,
-> >> but as you said doing both in 1 API is probably not the best idea.
-> >> So I believe we should park this second issue for now and revisit it
-> >> when we find a need for it.
-> >=20
-> > Agreed.
-> >=20
-> >> Do you have any specific userspace API in mind for the
-> >> DPTF system profile selection?
-> >=20
-> > Not really.
->=20
-> So before /sys/power/profile was mentioned, but that seems more like
-> a thing which should have a set of fixed possible values, iow that is
-> out of scope for this discussion.
->=20
-> Since we all seem to agree that this is something which we need
-> specifically for DPTF profiles maybe just add:
->=20
-> /sys/power/dptf_current_profile    (rw)
-> /sys/power/dptf_available_profiles (ro)
->=20
-> (which will only be visible if a dptf-profile handler
->  has been registered) ?
->=20
-> Or more generic and thus better (in case other platforms
-> later need something similar) I think, mirror the:
->=20
-> /sys/bus/cpu/devices/cpu#/cpufreq/energy_performance_* bits
-> for a system-wide energy-performance setting, so we get:
->=20
-> /sys/power/energy_performance_preference
-> /sys/power/energy_performance_available_preferences
->=20
-> (again only visible when applicable) ?
->=20
-> I personally like the second option best.
->=20
-> Regards,
->=20
-> Hans
+Am 15.10.20 um 21:57 schrieb Helen Koike:
+> Allow streaming from self picture path and main picture path at the same
+> time.
+> 
+> Take care for s_stream() callbacks to not be called twice.
+> When starting a stream, s_stream(true) shouldn't be called for the isp
+> and the sensor if the other stream is already enabled (since it was
+> already called).
+> When stopping a stream, s_stream(false) shouldn't be called for isp and
+> the sensor if the other stream is still enabled.
+> 
+> Remove the callback function scheme for navigating through the topology,
+> simplifying the code, improving readability, while calling
+> media_pipeline_{start,stop}() in the right order.
+> 
+> Remove multistreaming item from the TODO list.
+> 
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> 
+> ---
+> Hello,
+> 
+> Since we didn't reach an agreement on the helpers in the core[1], I'm
+> sending this patch to fix this limitation only for rkisp1.
+> 
+> [1] https://patchwork.linuxtv.org/project/linux-media/cover/20200415013044.1778572-1-helen.koike@collabora.com/
+> 
+> If we decide to add the helpers in the future, we can clean up drivers
+> even more, but I don't want to block this feature.
+> 
+> Overview of the patch:
+> ======================
+> 
+> * Rename rkisp1_stream_{start,stop}() to
+>    rkisp1_cap_stream_{enable,disable}() to clarify the difference between
+>    other stream enable/disable functions
+> 
+> * Implement rkisp1_pipeline_stream_{enable,disable}() to replace
+>    rkisp1_pipeline_{enable,disable}_cb() and rkisp1_pipeline_sink_walk(),
+>    which were removed.
+> 
+> * Call rkisp1_cap_stream_{enable,disable}() from
+>    rkisp1_pipeline_stream_{enable,disable}() for better
+>    unwind handling and function name semantics.
+> 
+> * Call media_pipeline_{start,stop}() in the right order.
+> 
+> * Remove item from TODO list (I also reviewed the use of the
+>    is_streaming var in the code and lgtm).
+> 
+> This patch was tested on rockpi4 board with:
+> ============================================
+> 
+> "media-ctl" "-d" "platform:rkisp1" "-r"
+> "media-ctl" "-d" "platform:rkisp1" "-l" "'imx219 4-0010':0 -> 'rkisp1_isp':0 [1]"
+> "media-ctl" "-d" "platform:rkisp1" "-l" "'rkisp1_isp':2 -> 'rkisp1_resizer_selfpath':0 [1]"
+> "media-ctl" "-d" "platform:rkisp1" "-l" "'rkisp1_isp':2 -> 'rkisp1_resizer_mainpath':0 [1]"
+> 
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"imx219 4-0010":0 [fmt:SRGGB10_1X10/1640x1232]'
+> 
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_isp":0 [fmt:SRGGB10_1X10/1640x1232 crop: (0,0)/1600x1200]'
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_isp":2 [fmt:YUYV8_2X8/1600x1200 crop: (0,0)/1500x1100]'
+> 
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_selfpath":0 [fmt:YUYV8_2X8/1500x1100 crop: (300,400)/1400x1000]'
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_selfpath":1 [fmt:YUYV8_2X8/900x800]'
+> 
+> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_selfpath" "-v" "width=900,height=800,"
+> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_selfpath" "-v" "pixelformat=422P"
+> 
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_mainpath":0 [fmt:YUYV8_2X8/1500x1100 crop: (300,400)/1400x1000]'
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_mainpath":1 [fmt:YUYV8_2X8/900x800]'
+> 
+> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_mainpath" "-v" "width=900,height=800,"
+> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_mainpath" "-v" "pixelformat=422P"
+> 
+> sleep 1
+> 
+> time v4l2-ctl "-z" "platform:rkisp1" "-d" "rkisp1_mainpath" "--stream-mmap" "--stream-count" "100" &
+> time v4l2-ctl "-z" "platform:rkisp1" "-d" "rkisp1_selfpath" "--stream-mmap" "--stream-count" "100" &
+> 
+> wait
+> echo "Completed"
+> 
+> Thanks
+> Helen
+> ---
+>   drivers/staging/media/rkisp1/TODO             |   3 -
+>   drivers/staging/media/rkisp1/rkisp1-capture.c | 227 +++++++++---------
+>   2 files changed, 113 insertions(+), 117 deletions(-)
+> 
+> diff --git a/drivers/staging/media/rkisp1/TODO b/drivers/staging/media/rkisp1/TODO
+> index e7c8398fc2cef..a2dd0ad951c25 100644
+> --- a/drivers/staging/media/rkisp1/TODO
+> +++ b/drivers/staging/media/rkisp1/TODO
+> @@ -1,9 +1,6 @@
+>   * Fix pad format size for statistics and parameters entities.
+>   * Fix checkpatch errors.
+>   * Add uapi docs. Remember to add documentation of how quantization is handled.
+> -* streaming paths (mainpath and selfpath) check if the other path is streaming
+> -in several places of the code, review this, specially that it doesn't seem it
+> -supports streaming from both paths at the same time.
+>   
+>   NOTES:
+>   * All v4l2-compliance test must pass.
+> diff --git a/drivers/staging/media/rkisp1/rkisp1-capture.c b/drivers/staging/media/rkisp1/rkisp1-capture.c
+> index b6f497ce3e95c..254936873c6c1 100644
+> --- a/drivers/staging/media/rkisp1/rkisp1-capture.c
+> +++ b/drivers/staging/media/rkisp1/rkisp1-capture.c
+> @@ -830,71 +830,43 @@ static void rkisp1_return_all_buffers(struct rkisp1_capture *cap,
+>   }
+>   
+>   /*
+> - * rkisp1_pipeline_sink_walk - Walk through the pipeline and call cb
+> - * @from: entity at which to start pipeline walk
+> - * @until: entity at which to stop pipeline walk
+> - *
+> - * Walk the entities chain starting at the pipeline video node and stop
+> - * all subdevices in the chain.
+> - *
+> - * If the until argument isn't NULL, stop the pipeline walk when reaching the
+> - * until entity. This is used to disable a partially started pipeline due to a
+> - * subdev start error.
+> + * Most of registers inside rockchip ISP1 have shadow register since
+> + * they must be not be changed during processing a frame.
+> + * Usually, each sub-module updates its shadow register after
+> + * processing the last pixel of a frame.
+>    */
+> -static int rkisp1_pipeline_sink_walk(struct media_entity *from,
+> -				     struct media_entity *until,
+> -				     int (*cb)(struct media_entity *from,
+> -					       struct media_entity *curr))
+> +static void rkisp1_cap_stream_enable(struct rkisp1_capture *cap)
+>   {
+> -	struct media_entity *entity = from;
+> -	struct media_pad *pad;
+> -	unsigned int i;
+> -	int ret;
+> -
+> -	while (1) {
+> -		pad = NULL;
+> -		/* Find remote source pad */
+> -		for (i = 0; i < entity->num_pads; i++) {
+> -			struct media_pad *spad = &entity->pads[i];
+> -
+> -			if (!(spad->flags & MEDIA_PAD_FL_SINK))
+> -				continue;
+> -			pad = media_entity_remote_pad(spad);
+> -			if (pad && is_media_entity_v4l2_subdev(pad->entity))
+> -				break;
+> -		}
+> -		if (!pad || !is_media_entity_v4l2_subdev(pad->entity))
+> -			break;
+> +	struct rkisp1_device *rkisp1 = cap->rkisp1;
+> +	struct rkisp1_capture *other = &rkisp1->capture_devs[cap->id ^ 1];
+>   
+> -		entity = pad->entity;
+> -		if (entity == until)
+> -			break;
+> +	cap->ops->set_data_path(cap);
+> +	cap->ops->config(cap);
+>   
+> -		ret = cb(from, entity);
+> -		if (ret)
+> -			return ret;
+> +	/* Setup a buffer for the next frame */
+> +	spin_lock_irq(&cap->buf.lock);
+> +	rkisp1_set_next_buf(cap);
+> +	cap->ops->enable(cap);
+> +	/* It's safe to config ACTIVE and SHADOW regs for the
+> +	 * first stream. While when the second is starting, do NOT
+> +	 * force update because it also update the first one.
+> +	 *
+> +	 * The latter case would drop one more buf(that is 2) since
+> +	 * there's not buf in shadow when the second FE received. This's
+> +	 * also required because the second FE maybe corrupt especially
+> +	 * when run at 120fps.
+> +	 */
+> +	if (!other->is_streaming) {
+> +		/* force cfg update */
+> +		rkisp1_write(rkisp1,
+> +			     RKISP1_CIF_MI_INIT_SOFT_UPD, RKISP1_CIF_MI_INIT);
+> +		rkisp1_set_next_buf(cap);
+>   	}
+> -
+> -	return 0;
+> -}
+> -
+> -static int rkisp1_pipeline_disable_cb(struct media_entity *from,
+> -				      struct media_entity *curr)
+> -{
+> -	struct v4l2_subdev *sd = media_entity_to_v4l2_subdev(curr);
+> -
+> -	return v4l2_subdev_call(sd, video, s_stream, false);
+> -}
+> -
+> -static int rkisp1_pipeline_enable_cb(struct media_entity *from,
+> -				     struct media_entity *curr)
+> -{
+> -	struct v4l2_subdev *sd = media_entity_to_v4l2_subdev(curr);
+> -
+> -	return v4l2_subdev_call(sd, video, s_stream, true);
+> +	spin_unlock_irq(&cap->buf.lock);
+> +	cap->is_streaming = true;
+>   }
+>   
+> -static void rkisp1_stream_stop(struct rkisp1_capture *cap)
+> +static void rkisp1_cap_stream_disable(struct rkisp1_capture *cap)
+>   {
+>   	int ret;
+>   
+> @@ -911,6 +883,81 @@ static void rkisp1_stream_stop(struct rkisp1_capture *cap)
+>   	}
+>   }
+>   
+> +/*
+> + * rkisp1_pipeline_stream_disable - disable nodes in the pipeline
+> + *
+> + * Call s_stream(false) in the reverse order from
+> + * rkisp1_pipeline_stream_enable() and disable the DMA engine.
+> + * Should be called before media_pipeline_stop()
+> + */
+> +static void rkisp1_pipeline_stream_disable(struct rkisp1_capture *cap)
+> +	__must_hold(&cap->rkisp1->stream_lock)
+> +{
+> +	struct rkisp1_device *rkisp1 = cap->rkisp1;
+> +
+> +	rkisp1_cap_stream_disable(cap);
+> +
+> +	/*
+> +	 * If the other capture is streaming, isp and sensor nodes shouldn't
+> +	 * be disabled, skip them.
+> +	 */
+> +	if (rkisp1->pipe.streaming_count < 2) {
+> +		v4l2_subdev_call(rkisp1->active_sensor->sd, video, s_stream,
+> +				 false);
+> +		v4l2_subdev_call(&rkisp1->isp.sd, video, s_stream, false);
+> +	}
+> +
+> +	v4l2_subdev_call(&rkisp1->resizer_devs[cap->id].sd, video, s_stream,
+> +			 false);
 
-between the two, the second seems to me more appropriate.
-Considering that the various profiles interact with thermal behaviors what =
-do=20
-you think of something like:
+I wonder if the order of the disable matters. If it should be from the sensor up to the
+capture then we should call 'rkisp1_cap_stream_disable' at the end of this
+function.
 
-/sys/power/thermal_profile_available_profiles
-/sys/power/thermal_profile_profile
+> +}
+> +
+> +/*
+> + * rkisp1_pipeline_stream_enable - enable nodes in the pipeline
+> + *
+> + * Enable the DMA Engine and call s_stream(true) through the pipeline.
+> + * Should be called after media_pipeline_start()
+> + */
+> +static int rkisp1_pipeline_stream_enable(struct rkisp1_capture *cap)
+> +	__must_hold(&cap->rkisp1->stream_lock)
+> +{
+> +	struct rkisp1_device *rkisp1 = cap->rkisp1;
+> +	int ret;
+> +
+> +	rkisp1_cap_stream_enable(cap);
+> +
+> +	ret = v4l2_subdev_call(&rkisp1->resizer_devs[cap->id].sd, video,
+> +			       s_stream, true);
+> +	if (ret)
+> +		return ret;
 
-Regards,
-Elia
+In case of error here, shouldn't we call 'rkisp1_cap_stream_disable'?
 
+> +
+> +	/*
+> +	 * If the other capture is streaming, isp and sensor nodes are already
+> +	 * enabled, skip them.
+> +	 */
+> +	if (rkisp1->pipe.streaming_count > 1)
+> +		return 0;
+> +
+> +	ret = v4l2_subdev_call(&rkisp1->isp.sd, video, s_stream, true);
+> +	if (ret)
+> +		goto err_disable_rsz;
+> +
+> +	ret = v4l2_subdev_call(rkisp1->active_sensor->sd, video, s_stream,
+> +			       true);
+> +	if (ret)
+> +		goto err_disable_isp;
+> +
+> +	return 0;
+> +
+> +err_disable_isp:
+> +	v4l2_subdev_call(&rkisp1->isp.sd, video, s_stream, false);
+> +err_disable_rsz:
+> +	v4l2_subdev_call(&rkisp1->resizer_devs[cap->id].sd, video, s_stream,
+> +			 false);
+> +	rkisp1_cap_stream_disable(cap);
+> +
+> +	return ret;
+> +}
+> +
+>   static void rkisp1_vb2_stop_streaming(struct vb2_queue *queue)
+>   {
+>   	struct rkisp1_capture *cap = queue->drv_priv;
+> @@ -920,13 +967,8 @@ static void rkisp1_vb2_stop_streaming(struct vb2_queue *queue)
+>   
+>   	mutex_lock(&cap->rkisp1->stream_lock);
+>   
+> -	rkisp1_stream_stop(cap);
+> +	rkisp1_pipeline_stream_disable(cap);
+>   	media_pipeline_stop(&node->vdev.entity);
+> -	ret = rkisp1_pipeline_sink_walk(&node->vdev.entity, NULL,
+> -					rkisp1_pipeline_disable_cb);
+> -	if (ret)
+> -		dev_err(rkisp1->dev,
+> -			"pipeline stream-off failed error:%d\n", ret);
+>   
+>   	rkisp1_return_all_buffers(cap, VB2_BUF_STATE_ERROR);
+>   
+> @@ -940,43 +982,6 @@ static void rkisp1_vb2_stop_streaming(struct vb2_queue *queue)
+>   	mutex_unlock(&cap->rkisp1->stream_lock);
+>   }
+>   
+> -/*
+> - * Most of registers inside rockchip ISP1 have shadow register since
+> - * they must be not be changed during processing a frame.
+> - * Usually, each sub-module updates its shadow register after
+> - * processing the last pixel of a frame.
+> - */
+> -static void rkisp1_stream_start(struct rkisp1_capture *cap)
+> -{
+> -	struct rkisp1_device *rkisp1 = cap->rkisp1;
+> -	struct rkisp1_capture *other = &rkisp1->capture_devs[cap->id ^ 1];
+> -
+> -	cap->ops->set_data_path(cap);
+> -	cap->ops->config(cap);
+> -
+> -	/* Setup a buffer for the next frame */
+> -	spin_lock_irq(&cap->buf.lock);
+> -	rkisp1_set_next_buf(cap);
+> -	cap->ops->enable(cap);
+> -	/* It's safe to config ACTIVE and SHADOW regs for the
+> -	 * first stream. While when the second is starting, do NOT
+> -	 * force update because it also update the first one.
+> -	 *
+> -	 * The latter case would drop one more buf(that is 2) since
+> -	 * there's not buf in shadow when the second FE received. This's
+> -	 * also required because the second FE maybe corrupt especially
+> -	 * when run at 120fps.
+> -	 */
+> -	if (!other->is_streaming) {
+> -		/* force cfg update */
+> -		rkisp1_write(rkisp1,
+> -			     RKISP1_CIF_MI_INIT_SOFT_UPD, RKISP1_CIF_MI_INIT);
+> -		rkisp1_set_next_buf(cap);
+> -	}
+> -	spin_unlock_irq(&cap->buf.lock);
+> -	cap->is_streaming = true;
+> -}
+> -
+>   static int
+>   rkisp1_vb2_start_streaming(struct vb2_queue *queue, unsigned int count)
+>   {
+> @@ -1001,28 +1006,22 @@ rkisp1_vb2_start_streaming(struct vb2_queue *queue, unsigned int count)
+>   		goto err_pipe_pm_put;
+>   	}
+>  
 
+The previous code with the 'rkisp1_pipeline_sink_walk' only followed enabled links.
+We should probably first check if the link between the resizer and the isp is enabled
+and also between the isp to the sensor. and return -EPIPE if not.
+Actually I think that the code that set the 'active_sensor' (callingrkisp1_get_remote_sensor)
+should move to here since this also check if the link to the sensor is enabled.
 
+Thanks,
+Dafna
+
+> -	rkisp1_stream_start(cap);
+> -
+> -	/* start sub-devices */
+> -	ret = rkisp1_pipeline_sink_walk(entity, NULL,
+> -					rkisp1_pipeline_enable_cb);
+> -	if (ret)
+> -		goto err_stop_stream;
+> -
+>   	ret = media_pipeline_start(entity, &cap->rkisp1->pipe);
+>   	if (ret) {
+>   		dev_err(cap->rkisp1->dev, "start pipeline failed %d\n", ret);
+> -		goto err_pipe_disable;
+> +		goto err_v4l2_pm_put;
+>   	}
+> +	ret = rkisp1_pipeline_stream_enable(cap);
+> +	if (ret)
+> +		goto err_media_pipeline_stop;
+>   
+>   	mutex_unlock(&cap->rkisp1->stream_lock);
+>   
+>   	return 0;
+>   
+> -err_pipe_disable:
+> -	rkisp1_pipeline_sink_walk(entity, NULL, rkisp1_pipeline_disable_cb);
+> -err_stop_stream:
+> -	rkisp1_stream_stop(cap);
+> +err_media_pipeline_stop:
+> +	media_pipeline_stop(entity);
+> +err_v4l2_pm_put:
+>   	v4l2_pipeline_pm_put(entity);
+>   err_pipe_pm_put:
+>   	pm_runtime_put(cap->rkisp1->dev);
+> 
