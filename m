@@ -2,197 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EFD290732
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B51290736
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408857AbgJPOa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
+        id S2408868AbgJPObx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408849AbgJPOa6 (ORCPT
+        with ESMTP id S2408810AbgJPObw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:30:58 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA18C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:30:58 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id p15so3484528ejm.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:30:58 -0700 (PDT)
+        Fri, 16 Oct 2020 10:31:52 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B52C061755;
+        Fri, 16 Oct 2020 07:31:51 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id l15so1714149wmh.1;
+        Fri, 16 Oct 2020 07:31:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HxZxC2xN4lzCm1BeKzVFW4hqh8G5tGG2Mf0vSEc67QE=;
-        b=WolBLivptc2j3q5VW+rzCLNqYgcLsymVLZSXbYA1W9eKZbIb3fs+vYIVZKVzrlXQf2
-         3XBj2deyz3BslJy1VLkuU/yTfRtuxeQVMEXCP097u7RlUEnvDJjpaTxlz/nX2SV4aKys
-         /wUDhrxNrXNw2BF//sJRZaUQ65q/qLYZzdW+YHPGAkfvwTvhFFNnRtDLuNdffv4A7sH6
-         Xm2IKs+/o76ozGd0jQglT920M0xcczuEdLNpg8y/17x1H9oiLjrgrDP9cuV83jc/xcNR
-         t514WqznkHf5ef/k0yplz4mEFNb0JEm8GUV3QwUd2e3/9kxREoW//9Ye4IcTPsR38XIo
-         rGjg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=JhJ1ftA7kjox7P/4cVGornY0Zt3XCqMs1tOsZMwTst0=;
+        b=KEPwHDzp6CJaL7FjKD0mK27m1ukxtLaAKhBNXXMD8uJlCcLHRGzJ6mOqoWn2XZDMhu
+         6IkxoHJdwjpGZmS2rS9VFqV4Nu2YAFuLlqUlrds3/nOxwKiLj3lwp2e8NpjY9S5Kt77T
+         8v/G3+zAdoaCgE9Ois1Pa68YOeO7I5i2asdFcNOqhFyNfQBVxlcSrz6/sai+BF/Kk7GN
+         Ray8572RxXhuqtp0f1izXS8FoTubd85ze1WEmye6n70EtKbVcJGP7fR7DgOlnwWWf9xo
+         J4FXFbX8ONDUfDDTdWciZKJkul6VMH0rNh3NdGEMTzk1okJTiEX3+wEtJ0P5PYe4jvfF
+         E5JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HxZxC2xN4lzCm1BeKzVFW4hqh8G5tGG2Mf0vSEc67QE=;
-        b=dOLbcOyW4ZA+NtDKEwGNzOtmv0ghiydMo+uniT7oSLwJgO2Rx79L5Bp60DS4yWV4If
-         syc6gb50CShwrMCHw0x6ig11UAjqdlyfeAgrxkjgiM9RgVEocxWIz3I7ljZ9TkJp5TP9
-         2QQ7EALTF8F6e9ob6EeP6w3JpiZo1wGgbZSE0ku8iXjfGSlDtNcKUgA5PpG47YNHrED1
-         bpLOsQQMtK6W0NMZdXneRKnCH+HUssU2wMKVWlFdy/nFgPk/hSCko+otcR7FEDKCq5qT
-         ot5E2T4kD1FuSMsHs6VE2+WYgri5uUeDEZ9c7Dg2kk6hNUJooC4sWFrIkKjVCl265kFA
-         pFIQ==
-X-Gm-Message-State: AOAM533l23N1xgfF9WwXWM4gpXsnea4avZ6t3bFTcludQ7wQeMMgW3ae
-        wPj+Qi3EkYsrp2ZCG7b2X7K+sPcSyIkIcrZA
-X-Google-Smtp-Source: ABdhPJx2V+HcSA1WIXgjnYCYGn0asCept/3SyeD2e6uDLYsJfAay4Eg3WPyRsyoYMBqdVJQbyl6EVA==
-X-Received: by 2002:a17:906:ae48:: with SMTP id lf8mr3973233ejb.345.1602858656797;
-        Fri, 16 Oct 2020 07:30:56 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:62bb:2bf7:e8cf:a48e])
-        by smtp.gmail.com with ESMTPSA id e13sm1637007edc.9.2020.10.16.07.30.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 07:30:56 -0700 (PDT)
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Bob Moore <robert.moore@intel.com>
-References: <1748021.N9i9sLPJ40@kreacher> <9373262.piL2bvXoCD@kreacher>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: Re: [PATCH 4/6] ACPICA: Add support for using logical addresses of
- GPE blocks
-Message-ID: <3b69e0d0-fb8a-92b4-42fd-f2a8fcdd642b@tessares.net>
-Date:   Fri, 16 Oct 2020 16:30:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=JhJ1ftA7kjox7P/4cVGornY0Zt3XCqMs1tOsZMwTst0=;
+        b=E8JSqX09w7O9NMKRTuUQ+MwczGfQpRmOHCUTSzviNvoNvAsTyag98A22QM6N/hJObp
+         iYykjrilnRQQC6guKWQPIn0Wl2R+Gn5mnH+Zjh34JxiOCikEqqo5fXDRZT8ldZTFbYZs
+         mmH5oOKP+CzOF9k+xG1le8CE/rYmYCLciDHTH1/M+ASUamplaTyTe3dmD6Dgpi8lnquR
+         8DYBpZUHREoXsnKou1AGSWX5KFWQqI5pYS2v8UzBCxhO5NQwgGiGabcV6WMtVI5zvBc2
+         tR5QYBNT/3olPI4tUeNhnL4aVw72+EpS03FL+5hwYFSjK4WZzmg/82my5NEMlmszmcfq
+         FFqg==
+X-Gm-Message-State: AOAM531FNUt3K2m4xBRkYJejSR7/hpKj/SKiRdTH/BoKy+RKk7WPbyke
+        y3TX4wmwrFHp6wowxyCldgB988nS8x48Dv5qg+TBMDLby7iB70c+6yk=
+X-Google-Smtp-Source: ABdhPJwIKbSf8IbEycXdpFdcwwvFGNPnTgbIrkZfQgDb392Gm8Zqbih0ZVqRJTC/LZE836i5MKBWoLWZXwG+6O23j4A=
+X-Received: by 2002:a1c:68d5:: with SMTP id d204mr4147551wmc.100.1602858709682;
+ Fri, 16 Oct 2020 07:31:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9373262.piL2bvXoCD@kreacher>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <CABXGCsPd7Mz559CmUG0nLPGfKYZA-wp5vR8WJTd+xOOeeXEjuQ@mail.gmail.com>
+In-Reply-To: <CABXGCsPd7Mz559CmUG0nLPGfKYZA-wp5vR8WJTd+xOOeeXEjuQ@mail.gmail.com>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Fri, 16 Oct 2020 19:31:38 +0500
+Message-ID: <CABXGCsP1yoyO+hzma2RSZTqYk2YzAwByHVcZ76XkC5wQYaKQ7Q@mail.gmail.com>
+Subject: Re: [bugreport] [5.10] warning at net/netfilter/nf_tables_api.c:622
+To:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
-
-On 04/09/2020 19:24, Rafael J. Wysocki wrote:
-> From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-> 
-> The logical address of every GPE block in system memory must be
-> known before passing it to acpi_ev_initialize_gpe_block(), because
-> memory cannot be mapped on the fly from an interrupt handler.
-> Accordingly, the host OS must map every GPE block in system
-> memory upfront and it can store the logical addresses of GPE
-> blocks for future use.
-
-(...)
-
-> diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c
-> index a0e71f34c77a..37bb67ef3232 100644
-> --- a/drivers/acpi/acpica/hwgpe.c
-> +++ b/drivers/acpi/acpica/hwgpe.c
-> @@ -46,8 +46,13 @@ acpi_status acpi_hw_gpe_read(u64 *value, struct acpi_gpe_address *reg)
->   	u32 value32;
->   
->   	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
-> +#ifdef ACPI_GPE_USE_LOGICAL_ADDRESSES
-> +		*value = (u64)ACPI_GET8(reg->address);
-
-Thank you for the patch!
-
-When compiling net-next repo, recently sync with Linus repo, I got an 
-error when using i386 arch because of this line above.
-
-Here are the commands I used:
-
-
-================================================
-$ make defconfig KBUILD_DEFCONFIG=i386_defconfig
-*** Default configuration is based on 'i386_defconfig'
-#
-# configuration written to .config
-#
-$ scripts/config --disable DRM --disable PCCARD --disable ATA --disable 
-MD --disable PPS --disable SOUND --disable USB --disable IOMMU_SUPPORT 
---disable INPUT_LEDS --disable AGP --disable VGA_ARB --disable EFI 
---disable WLAN --disable WIRELESS --disable LOGO --disable NFS_FS 
---disable XFRM_USER --disable INET6_AH --disable INET6_ESP --disable 
-NETDEVICES -e KUNIT -d KUNIT_DEBUGFS -d KUNIT_TEST -d KUNIT_EXAMPLE_TEST 
--d EXT4_KUNIT_TESTS -d SYSCTL_KUNIT_TEST -d LIST_KUNIT_TEST -d 
-LINEAR_RANGES_TEST -d BITS_TEST -d KUNIT_ALL_TESTS -e INET_DIAG -d 
-INET_UDP_DIAG -d INET_RAW_DIAG -d INET_DIAG_DESTROY -e MPTCP -e 
-MPTCP_IPV6 -e MPTCP_KUNIT_TESTS
-$ KCFLAGS=-Werror make -j8 -l8
-scripts/kconfig/conf  --syncconfig Kconfig
-(...)
-   CC      drivers/acpi/acpica/hwgpe.o
-In file included from ./include/acpi/acpi.h:24,
-                  from drivers/acpi/acpica/hwgpe.c:10:
-drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_read':
-./include/acpi/actypes.h:501:48: error: cast to pointer from integer of 
-different size [-Werror=int-to-pointer-cast]
-   501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) 
-(p))
-       |                                                ^
-drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 
-'ACPI_CAST_PTR'
-    18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (ptr))
-       |                                         ^~~~~~~~~~~~~
-drivers/acpi/acpica/acmacros.h:22:43: note: in expansion of macro 
-'ACPI_CAST8'
-    22 | #define ACPI_GET8(ptr)                  (*ACPI_CAST8 (ptr))
-       |                                           ^~~~~~~~~~
-drivers/acpi/acpica/hwgpe.c:50:17: note: in expansion of macro 'ACPI_GET8'
-    50 |   *value = (u64)ACPI_GET8(reg->address);
-       |                 ^~~~~~~~~
-drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_write':
-./include/acpi/actypes.h:501:48: error: cast to pointer from integer of 
-different size [-Werror=int-to-pointer-cast]
-   501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) 
-(p))
-       |                                                ^
-drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 
-'ACPI_CAST_PTR'
-    18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (ptr))
-       |                                         ^~~~~~~~~~~~~
-drivers/acpi/acpica/acmacros.h:26:43: note: in expansion of macro 
-'ACPI_CAST8'
-    26 | #define ACPI_SET8(ptr, val)             (*ACPI_CAST8 (ptr) = 
-(u8) (val))
-       |                                           ^~~~~~~~~~
-drivers/acpi/acpica/hwgpe.c:85:3: note: in expansion of macro 'ACPI_SET8'
-    85 |   ACPI_SET8(reg->address, value);
-       |   ^~~~~~~~~
-cc1: all warnings being treated as errors
-make[3]: *** [scripts/Makefile.build:283: drivers/acpi/acpica/hwgpe.o] 
-Error 1
-make[2]: *** [scripts/Makefile.build:500: drivers/acpi/acpica] Error 2
-make[1]: *** [scripts/Makefile.build:500: drivers/acpi] Error 2
-make: *** [Makefile:1777: drivers] Error 2
-================================================
-
-
-> +		return_ACPI_STATUS(AE_OK);
-> +#else
->   		return acpi_os_read_memory((acpi_physical_address)reg->address,
->   					    value, ACPI_GPE_REGISTER_WIDTH);
+On Fri, 16 Oct 2020 at 12:11, Mikhail Gavrilov
+<mikhail.v.gavrilov@gmail.com> wrote:
+>
+> Hi folks,
+> today I joined to testing Kernel 5.10 and see that every boot happens
+> this warning:
+>
+> [   22.180180] ------------[ cut here ]------------
+> [   22.180193] WARNING: CPU: 28 PID: 1205 at
+> net/netfilter/nf_tables_api.c:622 nft_chain_parse_hook+0x224/0x330
+> [nf_tables]
+> [   22.180194] Modules linked in: nf_tables nfnetlink ip6table_filter
+> ip6_tables iptable_filter cmac bnep sunrpc vfat fat
+> snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio
+> snd_hda_codec_hdmi mt76x2u mt76x2_common mt76x02_usb iwlmvm mt76_usb
+> uvcvideo snd_hda_intel mt76x02_lib gspca_zc3xx snd_intel_dspcfg btusb
+> gspca_main videobuf2_vmalloc btrtl mt76 edac_mce_amd snd_hda_codec
+> btbcm videobuf2_memops btintel kvm_amd snd_usb_audio videobuf2_v4l2
+> snd_hda_core mac80211 kvm bluetooth snd_usbmidi_lib joydev
+> videobuf2_common iwlwifi snd_seq xpad snd_hwdep ff_memless videodev
+> snd_rawmidi snd_seq_device libarc4 eeepc_wmi snd_pcm ecdh_generic
+> irqbypass asus_wmi mc rapl sparse_keymap ecc snd_timer sp5100_tco
+> video cfg80211 wmi_bmof pcspkr snd k10temp i2c_piix4 soundcore rfkill
+> acpi_cpufreq binfmt_misc zram ip_tables hid_logitech_hidpp
+> hid_logitech_dj amdgpu iommu_v2 gpu_sched ttm drm_kms_helper
+> crct10dif_pclmul crc32_pclmul crc32c_intel cec drm ccp
+> ghash_clmulni_intel igb nvme dca nvme_core
+> [   22.180273]  i2c_algo_bit wmi pinctrl_amd fuse
+> [   22.180279] CPU: 28 PID: 1205 Comm: ebtables Not tainted
+> 5.10.0-0.rc0.20201014gitb5fc7a89e58b.41.fc34.x86_64 #1
+> [   22.180281] Hardware name: System manufacturer System Product
+> Name/ROG STRIX X570-I GAMING, BIOS 2606 08/13/2020
+> [   22.180289] RIP: 0010:nft_chain_parse_hook+0x224/0x330 [nf_tables]
+> [   22.180292] Code: a0 14 00 00 be ff ff ff ff e8 68 82 e1 e4 85 c0
+> 0f 85 21 fe ff ff 0f 0b bf 0a 00 00 00 e8 14 60 97 ff 84 c0 0f 84 1f
+> fe ff ff <0f> 0b e9 18 fe ff ff 48 85 f6 74 61 4c 89 ef e8 78 d0 ff ff
+> 48 89
+> [   22.180294] RSP: 0018:ffffa9850214f780 EFLAGS: 00010202
+> [   22.180296] RAX: 0000000000000001 RBX: ffffa9850214f810 RCX: 0000000000000000
+> [   22.180297] RDX: ffffa9850214f810 RSI: 00000000ffffffff RDI: ffffffffc0851c20
+> [   22.180299] RBP: 0000000000000007 R08: 0000000000000001 R09: ffffa9850214f847
+> [   22.180300] R10: 0000000000000000 R11: 0000000000000007 R12: ffffa9850214fa88
+> [   22.180301] R13: ffffffffa6fdfcc0 R14: ffffa9850214fa88 R15: ffff993c5c12c800
+> [   22.180304] FS:  00007ff92ed99540(0000) GS:ffff993c8a200000(0000)
+> knlGS:0000000000000000
+> [   22.180305] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   22.180307] CR2: 00007ff92ed1e000 CR3: 00000007d3714000 CR4: 0000000000350ee0
+> [   22.180308] Call Trace:
+> [   22.180319]  ? __rhashtable_lookup+0x11d/0x210 [nf_tables]
+> [   22.180329]  nf_tables_addchain.constprop.0+0xab/0x5e0 [nf_tables]
+> [   22.180337]  ? nft_chain_lookup.part.0+0x12c/0x1e0 [nf_tables]
+> [   22.180344]  ? get_order+0x20/0x20 [nf_tables]
+> [   22.180350]  ? nft_chain_hash+0x30/0x30 [nf_tables]
+> [   22.180356]  ? nft_dump_register+0x40/0x40 [nf_tables]
+> [   22.180368]  nf_tables_newchain+0x54d/0x730 [nf_tables]
+> [   22.180376]  nfnetlink_rcv_batch+0x2a4/0x950 [nfnetlink]
+> [   22.180385]  ? lock_acquire+0x175/0x400
+> [   22.180387]  ? lock_release+0x1e7/0x400
+> [   22.180391]  ? cred_has_capability.isra.0+0x68/0x100
+> [   22.180395]  ? __nla_validate_parse+0x4f/0x8d0
+> [   22.180401]  nfnetlink_rcv+0x115/0x130 [nfnetlink]
+> [   22.180407]  netlink_unicast+0x16d/0x230
+> [   22.180426]  netlink_sendmsg+0x23f/0x460
+> [   22.180431]  sock_sendmsg+0x5e/0x60
+> [   22.180434]  ____sys_sendmsg+0x231/0x270
+> [   22.180438]  ? import_iovec+0x17/0x20
+> [   22.180440]  ? sendmsg_copy_msghdr+0x5c/0x80
+> [   22.180444]  ___sys_sendmsg+0x75/0xb0
+> [   22.180450]  ? cred_has_capability.isra.0+0x68/0x100
+> [   22.180452]  ? lock_acquire+0x175/0x400
+> [   22.180454]  ? lock_acquire+0x93/0x400
+> [   22.180457]  ? lock_release+0x1e7/0x400
+> [   22.180459]  ? lock_release+0x1e7/0x400
+> [   22.180462]  ? trace_hardirqs_on+0x1b/0xe0
+> [   22.180465]  ? sock_setsockopt+0xdf/0x1010
+> [   22.180467]  ? __local_bh_enable_ip+0x82/0xd0
+> [   22.180470]  ? sock_setsockopt+0xdf/0x1010
+> [   22.180473]  __sys_sendmsg+0x49/0x80
+> [   22.180480]  do_syscall_64+0x33/0x40
+> [   22.180483]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   22.180486] RIP: 0033:0x7ff92efdb087
+> [   22.180488] Code: 0c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7
+> 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 2e 00 00
+> 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 89 54 24 1c 48 89 74
+> 24 10
+> [   22.180490] RSP: 002b:00007fff54436b38 EFLAGS: 00000246 ORIG_RAX:
+> 000000000000002e
+> [   22.180492] RAX: ffffffffffffffda RBX: 00007fff54436b40 RCX: 00007ff92efdb087
+> [   22.180494] RDX: 0000000000000000 RSI: 00007fff54437be0 RDI: 0000000000000003
+> [   22.180495] RBP: 00007fff544381e0 R08: 0000000000000004 R09: 000055b281bcf1d0
+> [   22.180496] R10: 00007fff54437bcc R11: 0000000000000246 R12: 0000000000007000
+> [   22.180497] R13: 0000000000000001 R14: 00007fff54436b50 R15: 00007fff54438200
+> [   22.180503] irq event stamp: 0
+> [   22.180505] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> [   22.180507] hardirqs last disabled at (0): [<ffffffffa50d7683>]
+> copy_process+0x723/0x1c80
+> [   22.180509] softirqs last  enabled at (0): [<ffffffffa50d7683>]
+> copy_process+0x723/0x1c80
+> [   22.180511] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> [   22.180512] ---[ end trace 6a0904ace1916b5d ]---
+>
+> reproductivity 100% reliable on my system
+>
+> $ /usr/src/kernels/`uname -r`/scripts/faddr2line
+> /lib/debug/lib/modules/`uname
+> -r`/kernel/net/netfilter/nf_tables.ko.debug nft_chain_parse_hook+0x224
+> nft_chain_parse_hook+0x224/0x330:
+> lockdep_nfnl_nft_mutex_not_held at
+> /usr/src/debug/kernel-20201014gitb5fc7a89e58b/linux-5.10.0-0.rc0.20201014gitb5fc7a89e58b.41.fc34.x86_64/net/netfilter/nf_tables_api.c:622
+> (inlined by) lockdep_nfnl_nft_mutex_not_held at
+> /usr/src/debug/kernel-20201014gitb5fc7a89e58b/linux-5.10.0-0.rc0.20201014gitb5fc7a89e58b.41.fc34.x86_64/net/netfilter/nf_tables_api.c:619
+> (inlined by) nft_chain_parse_hook at
+> /usr/src/debug/kernel-20201014gitb5fc7a89e58b/linux-5.10.0-0.rc0.20201014gitb5fc7a89e58b.41.fc34.x86_64/net/netfilter/nf_tables_api.c:1816
+>
+> $ git blame -L 617,627 net/netfilter/nf_tables_api.c
+> 452238e8d5ffd (Florian Westphal  2018-07-11 13:45:10 +0200 617) #endif
+> 452238e8d5ffd (Florian Westphal  2018-07-11 13:45:10 +0200 618)
+> f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 619) static
+> void lockdep_nfnl_nft_mutex_not_held(void)
+> f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 620) {
+> f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 621) #ifdef
+> CONFIG_PROVE_LOCKING
+> f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 622)
+>  WARN_ON_ONCE(lockdep_nfnl_is_held(NFNL_SUBSYS_NFTABLES));
+> f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 623) #endif
+> f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 624) }
+> f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 625)
+> 32537e91847a5 (Pablo Neira Ayuso 2018-03-27 11:53:05 +0200 626) static
+> const struct nft_chain_type *
+> 452238e8d5ffd (Florian Westphal  2018-07-11 13:45:10 +0200 627)
+> nf_tables_chain_type_lookup(struct net *net, const struct nlattr *nla,
+>
+> $ git show f102d66b335a4
+> commit f102d66b335a417d4848da9441f585695a838934
+> Author: Florian Westphal <fw@strlen.de>
+> Date:   Wed Jul 11 13:45:14 2018 +0200
+>
+>     netfilter: nf_tables: use dedicated mutex to guard transactions
+>
+>     Continue to use nftnl subsys mutex to protect (un)registration of
+> hook types,
+>     expressions and so on, but force batch operations to do their own
+>     locking.
+>
+>     This allows distinct net namespaces to perform transactions in parallel.
+>
+>     Signed-off-by: Florian Westphal <fw@strlen.de>
+>     Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+>
+> diff --git a/include/net/netns/nftables.h b/include/net/netns/nftables.h
+> index 94767ea3a490..286fd960896f 100644
+> --- a/include/net/netns/nftables.h
+> +++ b/include/net/netns/nftables.h
+> @@ -7,6 +7,7 @@
+>  struct netns_nftables {
+>         struct list_head        tables;
+>         struct list_head        commit_list;
+> +       struct mutex            commit_mutex;
+>         unsigned int            base_seq;
+>         u8                      gencursor;
+>         u8                      validate_state;
+> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> index 68436edd9cdf..c0fb2bcd30fe 100644
+> --- a/net/netfilter/nf_tables_api.c
+> +++ b/net/netfilter/nf_tables_api.c
+> @@ -480,12 +480,19 @@ static void nft_request_module(struct net *net,
+> const char *fmt, ...)
+>         if (WARN(ret >= MODULE_NAME_LEN, "truncated: '%s' (len %d)",
+> module_name, ret))
+>                 return;
+>
+> -       nfnl_unlock(NFNL_SUBSYS_NFTABLES);
+> +       mutex_unlock(&net->nft.commit_mutex);
+>         request_module("%s", module_name);
+> -       nfnl_lock(NFNL_SUBSYS_NFTABLES);
+> +       mutex_lock(&net->nft.commit_mutex);
+>  }
+>  #endif
+>
+> +static void lockdep_nfnl_nft_mutex_not_held(void)
+> +{
+> +#ifdef CONFIG_PROVE_LOCKING
+> +       WARN_ON_ONCE(lockdep_nfnl_is_held(NFNL_SUBSYS_NFTABLES));
 > +#endif
->   	}
->   
->   	status = acpi_os_read_port((acpi_io_address)reg->address,
-> @@ -76,8 +81,13 @@ acpi_status acpi_hw_gpe_read(u64 *value, struct acpi_gpe_address *reg)
->   acpi_status acpi_hw_gpe_write(u64 value, struct acpi_gpe_address *reg)
->   {
->   	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
-> +#ifdef ACPI_GPE_USE_LOGICAL_ADDRESSES
-> +		ACPI_SET8(reg->address, value);
+> +}
+> +
+>  static const struct nft_chain_type *
+>  nf_tables_chain_type_lookup(struct net *net, const struct nlattr *nla,
+>
+> The last changes were made by Florian. That is why I invited you here,
+> can you clarify the situation.
+>
+> Full dmesg output: https://pastebin.com/tZY3npHG
+>
 
-(and also because of this line)
+Here https://lkml.org/lkml/2020/10/16/494 attached the patch which
+cure also this problem.
+Sorry for the noise.
 
-By chance, do you already have a fix for that? I didn't see any other 
-email related to this issue, I am surprised no bot already reported the 
-problem but maybe I didn't look everywhere :)
-
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+--
+Best Regards,
+Mike Gavrilov.
