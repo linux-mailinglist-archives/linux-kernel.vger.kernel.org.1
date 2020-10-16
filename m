@@ -2,204 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6C628FF0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE2528FF13
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404597AbgJPH0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404590AbgJPH0N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:26:13 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6953C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 00:26:12 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x7so1554096wrl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 00:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7JhB+uTMSXGwv/Zvy2AcoTZEm8r9Ye2Mzb1+plL2aOg=;
-        b=S5BZ+N9X6GUZhWYBXaXnWS27CXZUucosbN31OjymxvfnIOEQDpKgYW8NlebbDn5knY
-         vEqIjA/lu/btA5iSbVA2jWjeqCKJ5wge/NuqEnO4SRlOx8NNhvuU0SxGQBtNpSFKFJMV
-         6MIOFDzQkaij/qYWBTvBkoHKkF//qb8EMvqNU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7JhB+uTMSXGwv/Zvy2AcoTZEm8r9Ye2Mzb1+plL2aOg=;
-        b=rhheYcullCFIWe1FMYGa/4orqy7oyhdXjn5BGktWun81p8I62wPjJonM5dRYM3iro+
-         5jqNXuATQYVHSWFLLoQpAPIhEyC6UofNHGDzKIvZwamHod/Nq/7tVTVN8qtiK8mG0eKe
-         hyAQ71gPgtLPMU43KCHQjr1OHXEjy4dGIdSrinUqTTcRJ9mnjd4C3qz88GsA21EOTHOK
-         x30lywbJDxTSOsxyu6qYqyHlpJ49sldOW+zcE1DskWxRLZG3QnhdhB1VjosRtI0jq/bD
-         cWjj7V41ndlVOARrDwoIj3pW30soeRptqjaIJohj5AtyWP2SDaMWsCXbN4ABtP9EvRbU
-         Q8dQ==
-X-Gm-Message-State: AOAM531aJCbRdEs0izJ35ycIrMHhs6pb4VLm1CT21fet1U2k8sZNRd9v
-        Td9vcTMXFJchODps2x4HOLGhAPFDaI32k+nHc2H0gA==
-X-Google-Smtp-Source: ABdhPJzIEprbY++U3q/gx3a9gP515w+Ry/lK7fgjrWZBwliOu8V+im+MOZdOZv01BkTnip9Se9FNSIy50omElJeqdiA=
-X-Received: by 2002:a5d:4fc5:: with SMTP id h5mr2149198wrw.145.1602833171301;
- Fri, 16 Oct 2020 00:26:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921151807.637905c0@canb.auug.org.au> <20201016084759.7070223e@canb.auug.org.au>
-In-Reply-To: <20201016084759.7070223e@canb.auug.org.au>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Fri, 16 Oct 2020 03:26:00 -0400
-Message-ID: <CA+-6iNymZzgaJrYJPsArWZHhOMOG3MKPf6nxZJ2z8c1VpvpyfA@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the usb tree with the pci tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Greg KH <greg@kroah.com>, Bjorn Helgaas <bhelgaas@google.com>,
+        id S2404582AbgJPH1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:27:32 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15303 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2404514AbgJPH1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 03:27:32 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 1BF5547CB1A9DC141914;
+        Fri, 16 Oct 2020 15:27:29 +0800 (CST)
+Received: from [10.174.179.182] (10.174.179.182) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 16 Oct 2020 15:27:22 +0800
+Subject: Re: [PATCH v3 7/8] arm64: mm: Set ZONE_DMA size based on early IORT
+ scan
+To:     Ard Biesheuvel <ardb@kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Jim Quinlan <jquinlan@broadcom.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000d41c7505b1c4ad3f"
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Len Brown" <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+References: <20201014191211.27029-1-nsaenzjulienne@suse.de>
+ <20201014191211.27029-8-nsaenzjulienne@suse.de>
+ <1a3df60a-4568-cb72-db62-36127d0ffb7e@huawei.com>
+ <20201015180340.GB2624@gaia>
+ <35faab1c-5c32-6cd3-0a14-77057dd223f5@huawei.com>
+ <CAMj1kXFzYbr_mYm-zhsio2XV+KGgDBjtgy_NWNYnanyfU-U-Nw@mail.gmail.com>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <89ed58a5-b3ca-e361-94d8-b6754ce5eb34@huawei.com>
+Date:   Fri, 16 Oct 2020 15:27:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAMj1kXFzYbr_mYm-zhsio2XV+KGgDBjtgy_NWNYnanyfU-U-Nw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.182]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000d41c7505b1c4ad3f
-Content-Type: text/plain; charset="UTF-8"
+Hi Ard,
 
-On Thu, Oct 15, 2020 at 5:48 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> On Mon, 21 Sep 2020 15:18:07 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Today's linux-next merge of the usb tree got a conflict in:
-> >
-> >   drivers/pci/controller/pcie-brcmstb.c
-> >
-> > between commit:
-> >
-> >   1cf1b0a6dd95 ("PCI: brcmstb: Add bcm7278 register info")
-> >
-> > from the pci tree and commit:
-> >
-> >   f48cc509c935 ("Revert "PCI: brcmstb: Wait for Raspberry Pi's firmware when present"")
-> >
-> > from the usb tree.
-> >
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> >
-> > diff --cc drivers/pci/controller/pcie-brcmstb.c
-> > index 6e7aa82a54a3,bac63d04297f..000000000000
-> > --- a/drivers/pci/controller/pcie-brcmstb.c
-> > +++ b/drivers/pci/controller/pcie-brcmstb.c
-> > @@@ -1213,8 -929,6 +1211,7 @@@ static int brcm_pcie_probe(struct platf
-> >   {
-> >       struct device_node *np = pdev->dev.of_node, *msi_np;
-> >       struct pci_host_bridge *bridge;
-> > -     struct device_node *fw_np;
-> >  +    const struct pcie_cfg_data *data;
-> >       struct brcm_pcie *pcie;
-> >       int ret;
-> >
->
-> This is now a conflict between the pci tree and Linus' tree.
-Hello,
-Sorry, I did not foresee a conflict.  Please keep both lines below.
+On 2020/10/16 14:54, Ard Biesheuvel wrote:
+> On Fri, 16 Oct 2020 at 08:51, Hanjun Guo <guohanjun@huawei.com> wrote:
+>>
+>> On 2020/10/16 2:03, Catalin Marinas wrote:
+>>> On Thu, Oct 15, 2020 at 10:26:18PM +0800, Hanjun Guo wrote:
+>>>> On 2020/10/15 3:12, Nicolas Saenz Julienne wrote:
+>>>>> From: Ard Biesheuvel <ardb@kernel.org>
+>>>>>
+>>>>> We recently introduced a 1 GB sized ZONE_DMA to cater for platforms
+>>>>> incorporating masters that can address less than 32 bits of DMA, in
+>>>>> particular the Raspberry Pi 4, which has 4 or 8 GB of DRAM, but has
+>>>>> peripherals that can only address up to 1 GB (and its PCIe host
+>>>>> bridge can only access the bottom 3 GB)
+>>>>>
+>>>>> Instructing the DMA layer about these limitations is straight-forward,
+>>>>> even though we had to fix some issues regarding memory limits set in
+>>>>> the IORT for named components, and regarding the handling of ACPI _DMA
+>>>>> methods. However, the DMA layer also needs to be able to allocate
+>>>>> memory that is guaranteed to meet those DMA constraints, for bounce
+>>>>> buffering as well as allocating the backing for consistent mappings.
+>>>>>
+>>>>> This is why the 1 GB ZONE_DMA was introduced recently. Unfortunately,
+>>>>> it turns out the having a 1 GB ZONE_DMA as well as a ZONE_DMA32 causes
+>>>>> problems with kdump, and potentially in other places where allocations
+>>>>> cannot cross zone boundaries. Therefore, we should avoid having two
+>>>>> separate DMA zones when possible.
+>>>>>
+>>>>> So let's do an early scan of the IORT, and only create the ZONE_DMA
+>>>>> if we encounter any devices that need it. This puts the burden on
+>>>>> the firmware to describe such limitations in the IORT, which may be
+>>>>> redundant (and less precise) if _DMA methods are also being provided.
+>>>>> However, it should be noted that this situation is highly unusual for
+>>>>> arm64 ACPI machines. Also, the DMA subsystem still gives precedence to
+>>>>> the _DMA method if implemented, and so we will not lose the ability to
+>>>>> perform streaming DMA outside the ZONE_DMA if the _DMA method permits
+>>>>> it.
+>>>>
+>>>> Sorry, I'm still a little bit confused. With this patch, if we have
+>>>> a device which set the right _DMA method (DMA size >= 32), but with the
+>>>> wrong DMA size in IORT, we still have the ZONE_DMA created which
+>>>> is actually not needed?
+>>>
+>>> With the current kernel, we get a ZONE_DMA already with an arbitrary
+>>> size of 1GB that matches what RPi4 needs. We are trying to eliminate
+>>> such unnecessary ZONE_DMA based on some heuristics (well, something that
+>>> looks "better" than a OEM ID based quirk). Now, if we learn that IORT
+>>> for platforms in the field is that broken as to describe few bits-wide
+>>> DMA masks, we may have to go back to the OEM ID quirk.
+>>
+>> Some platforms using 0 as the memory size limit, for example D05 [0] and
+>> D06 [1], I think we need to go back to the OEM ID quirk.
+>>
+>> For D05/D06, there are multi interrupt controllers named as mbigen,
+>> mbigen is using the named component to describe the mappings with
+>> the ITS controller, and mbigen is using 0 as the memory size limit.
+>>
+>> Also since the memory size limit for PCI RC was introduced by later
+>> IORT revision, so firmware people may think it's fine to set that
+>> as 0 because the system works without it.
+>>
+> 
+> Hello Hanjun,
+> 
+> The patch only takes the address limit field into account if its value > 0.
 
-     struct device_node *fw_np;
-     const struct pcie_cfg_data *data;
+Sorry I missed the if (*->memory_address_limit) check, thanks
+for the reminding.
 
-Thank you,
-Jim Quinlan
-Broadcom STB
+> 
+> Also, before commit 7fb89e1d44cb6aec ("ACPI/IORT: take _DMA methods
+> into account for named components"), the _DMA method was not taken
+> into account for named components at all, and only the IORT limit was
+> used, so I do not anticipate any problems with that.
 
+Then this patch is fine to me.
 
->
-> --
-> Cheers,
-> Stephen Rothwell
-
---000000000000d41c7505b1c4ad3f
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
-AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
-hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
-ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
-c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
-aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
-PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
-My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
-KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
-4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
-wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
-VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
-V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
-lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
-5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
-di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIKQNWxUOAzn
-VkM3/2+NbmqhDr2HSKC+WnX6jB8CwnGGMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMTAxNjA3MjYxMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAyzZKrRby5DZpDPwGohURbGetQb4vA
-Td2GDVEsp1ZPzW8yNn1zE6QW6qdtXirCm0mz4KHWBCYYfP/Eq/uLSF5hsmkEp2+1IjylpNbnTsfQ
-tgNvB/CNT36LIvyXnrpdXuhQlOjhfP2ByuyQz94ZSTD+/fYTabc3bOehhjcM/OnKWilkwKu6nwh5
-Gmkc9aBqztTGvK6D+RS5dVv7VHQNjPg9EW8bOdczKKMGS8/9EcR9bqD4/SkAxInqYQCeXM3NibcF
-OTg1hd+mtpVkBQK1TUViGlevcVaHUK5I+pJTUc94PVdXk1L5HLd0k9LUD64yHmk4U+M4GSsrKqHN
-MHjyssiO
---000000000000d41c7505b1c4ad3f--
+Thanks
+Hanjun
