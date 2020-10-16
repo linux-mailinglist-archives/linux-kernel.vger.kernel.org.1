@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE18290B40
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CA8290B41
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391638AbgJPSY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 14:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
+        id S2391665AbgJPSZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 14:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391390AbgJPSY2 (ORCPT
+        with ESMTP id S2391559AbgJPSZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 14:24:28 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B805C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:24:28 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id q9so5038593iow.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:24:28 -0700 (PDT)
+        Fri, 16 Oct 2020 14:25:09 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAC9C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:25:07 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id u19so5085668ion.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:25:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=D5NngvCZlpVByT++f7qE91SLdHEnOV1NRAu0YOMS/Lo=;
-        b=tfke49wMmVeEHZ47+rOE8ezeTppkX/1ALYR5HM/MCTLUJU9PtwVpKQm+5LKx1H5t/A
-         Z1S0sAV3EEiyUj8D4lhzFhbkIdluNTU3MSW1j3yUhcXDhmGfD6Pt8yGXs5WX5/rFoeRL
-         LPyZYHdK4082r/fSC2bXOL/TjzC+EK8fnWigQ=
+        bh=H94CcgSvoIFt4eb8xx+jgPXylVUqc01bZ1bzkG3yk18=;
+        b=pkd24YtztESI+PfUnD1xCEGpwDBledIKaA7zmnGVNDsCkXZFfBnhxGEe5IBDuKpR8x
+         TO9hO3LiOSl9qS5Y1mWNb2c7fxnr6TAOprB944NpsMlVre+AxvF460WPgPziM58YvsF/
+         mpALdX2yqj4rTSqrgWD/Ixg/1w9rHhHfE/DGsY+h+u1MiIuwR6I299roQEqAI4kDKcVd
+         aUxt51Yc/LLbd6cL7AnlMs2gfvX89WyU/hgci4tnl5bJbWrfL2LhMbyNz4TdLqviVUl7
+         +xeXxomOiOXwdKhEmJNb70KTvO7PwJhQgoqna4Bu0JDFPSDjs7ONFCNVy1ZOPwyQ0rNi
+         q6Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=D5NngvCZlpVByT++f7qE91SLdHEnOV1NRAu0YOMS/Lo=;
-        b=Jh9a9zXkQKyn97mJdKwmD/OzYjGF62ocuI7BRTEo4ivzijFaAu4ReLkSPGcTVMNAa2
-         +smOSY71kBtf5svg/qcwgQbVSsIxs5/aqKLL08FUGeu3A9Lr/qhBvhrYb1sCXc30KzAW
-         PWWbNWYiymuIP/mW0IC/Aix6Zv2WmOdoi14zxO2TvFjrp848pEXBhDVBpCsxpztLDQJn
-         pRNMluZGqGo9XqNwTv97PmBJHVL82wToXrS/3ZlXXoUqykrzfrF96/1VNWn4FOojvlpv
-         CUbHplP9gkPrv+TVucXd2rBGTbj2QmKeQTCqVUHH3Fx7Ouwzxtnz5lxzUawY5JmS+GW8
-         VQVA==
-X-Gm-Message-State: AOAM530Zdht7TWzldKN7JnBs9hk8+IX8QbwpeyC/7nfX61b/ZHPbds92
-        aGJxFflRLZ8RFipLm18sbjtuFyov9CXXJD+jeUNf
-X-Google-Smtp-Source: ABdhPJxp/UIgSj0aDdvVfswZDSxjOZfD1HWCnBxkYKJwU/swpzjmfUCncgyzEmR83S4Y4o6+E5hxvOhG/KuGSjsc9Uc=
-X-Received: by 2002:a02:6952:: with SMTP id e79mr3738592jac.24.1602872667636;
- Fri, 16 Oct 2020 11:24:27 -0700 (PDT)
+        bh=H94CcgSvoIFt4eb8xx+jgPXylVUqc01bZ1bzkG3yk18=;
+        b=NZW7KjMMGewDUc4xJ0zAEJMGBgwzg6+UynLzJaGQv8hcKiMa8J545ikDgOkd+J9jXw
+         TnPhYGSg/gF9zMHyPZcyIix2O/bqzFGCYRwRxyEis1AsCVrzrX3HrgS3X6//E6JPn+4a
+         t4QyvCJVdClE85ap6UmvT76k7LrpD2QWYWDTgki0aIQbbv4GFkIKp8nXqt4ZmjSPeYwv
+         pmL62wTUi6SHiJIt2NRmZhSIrxmjy9qKS9qBskbGUODiB2WznsGWjdS6W/ql+TG7PlfI
+         qssWr2MwuBT1EgBB5nNSljLwmPpEaJvqnVOPMw3PCqJo6ZQSFT/z3JyKAx5vvlQ3MtGi
+         fSLA==
+X-Gm-Message-State: AOAM532OK31L5LIRJjtaMI/zkhJET6bGVa3t6lHZtNwev2m5unabbck7
+        UyDPySfsAIJs/3TYGmEWEmgBrZMgXxJRp7K9cRw=
+X-Google-Smtp-Source: ABdhPJw5Y0eNTk6lBLN1SHs6VLBL/9EObUmdAu1lA/4RCMYltkLlgictyvVxBPeBodUqwt7bo+Q5eyTguzAXdz24nlY=
+X-Received: by 2002:a05:6638:14c5:: with SMTP id l5mr3562028jak.68.1602872706946;
+ Fri, 16 Oct 2020 11:25:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201009211344.2358688-1-atish.patra@wdc.com> <20201009211344.2358688-5-atish.patra@wdc.com>
- <CAHCEehJvMv=CYD1+QXb0uB36Hv4pvO36BAKSLOcxTXvmADZFbA@mail.gmail.com>
- <CAOnJCUKPjkm_=5eHn6=GjVGr67okZkVzqP7-ciphn986BQoc9w@mail.gmail.com>
- <CAOnJCULZMRu+sHmnjoBwtvaB3BjmCiZLzYxNOeWZmoYLKG+wTw@mail.gmail.com>
- <CAHCEehJJmLQ6W5AdH+hEZSJxpDC8HG0UN=EGt9M0Tp5NTfQnaw@mail.gmail.com>
- <CAOnJCUJN-XMZ+N5w+RbVhJag9D_dey7DAopb0Q35GDfXptyMjA@mail.gmail.com>
- <CAFyWVaYORWYZTXyXOWiY6xK-SFTvsUxDNDqKQnhVUwzc5N045Q@mail.gmail.com> <CAOnJCU+3xFyFW4ATCdYAv5zVyBSLE0mTevrJLCXW7HDgy4D4EQ@mail.gmail.com>
-In-Reply-To: <CAOnJCU+3xFyFW4ATCdYAv5zVyBSLE0mTevrJLCXW7HDgy4D4EQ@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Fri, 16 Oct 2020 11:24:16 -0700
-Message-ID: <CAOnJCUJWf9Hu4frFOJGQLUZ2BQ8qHBd7mvspgvfM1k6e4z5CcA@mail.gmail.com>
-Subject: Re: [PATCH 4/5] RISC-V: Protect .init.text & .init.data
-To:     Jim Wilson <jimw@sifive.com>
-Cc:     Greentime Hu <greentime.hu@sifive.com>,
-        Kito Cheng <kito.cheng@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Anup Patel <anup@brainfault.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Zong Li <zong.li@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Michel Lespinasse <walken@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
+References: <20201016173020.12686-1-jassisinghbrar@gmail.com> <20201016175039.7xs4cafoe2uq7zus@bogus>
+In-Reply-To: <20201016175039.7xs4cafoe2uq7zus@bogus>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Fri, 16 Oct 2020 13:24:56 -0500
+Message-ID: <CABb+yY0Mf_Nj=FoWkiVOQPFa9jay60u7+gpj-Q7bmm5EQqZWpA@mail.gmail.com>
+Subject: Re: [PATCH] mailbox: avoid timer start from callback
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Da Xue <da@libre.computer>,
+        Jassi Brar <jaswinder.singh@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 10:24 PM Atish Patra <atishp@atishpatra.org> wrote:
+On Fri, Oct 16, 2020 at 12:50 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
 >
-> On Tue, Oct 13, 2020 at 6:21 PM Jim Wilson <jimw@sifive.com> wrote:
+> On Fri, Oct 16, 2020 at 12:30:20PM -0500, jassisinghbrar@gmail.com wrote:
+> > From: Jassi Brar <jaswinder.singh@linaro.org>
 > >
-> > On Tue, Oct 13, 2020 at 3:25 PM Atish Patra <atishp@atishpatra.org> wrote:
-> > > This happens only when copy_from_user is called from function that is
-> > > annotated with __init.
-> > > Adding Kito & Jim for their input
-> > >
-> > > @kito, @Jim: Please let me know if I should create a issue in
-> > > riscv-gnu-toolchain repo or somewhere else.
+> > If the txdone is done by polling, it is possible for msg_submit() to start
+> > the timer while txdone_hrtimer() callback is running. If the timer needs
+> > recheduling, it could already be enqueued by the time hrtimer_forward_now()
+> > is called, leading hrtimer to loudly complain.
 > >
-> > I can't do anything useful without a testcase that I can use to
-> > reproduce the problem.  The interactions here are complex, so pointing
-> > at lines of code or kernel config options doesn't give me any useful
-> > info.
+> > WARNING: CPU: 3 PID: 74 at kernel/time/hrtimer.c:932 hrtimer_forward+0xc4/0x110
+> > CPU: 3 PID: 74 Comm: kworker/u8:1 Not tainted 5.9.0-rc2-00236-gd3520067d01c-dirty #5
+> > Hardware name: Libre Computer AML-S805X-AC (DT)
+> > Workqueue: events_freezable_power_ thermal_zone_device_check
+> > pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
+> > pc : hrtimer_forward+0xc4/0x110
+> > lr : txdone_hrtimer+0xf8/0x118
+> > [...]
 > >
-> > Relaxation can convert calls to a jal.  I don't know of any open bugs
-> > in this area that can generate relocation errors.  if it is a
-> > relaxation error then turning off relaxation should work around the
-> > problem as you suggested.
-> >
-> > A kernel build problem is serious.  I think this is worth a bug
-> > report.  FSF binutils or riscv-gnu-toolchain is fine.
+> > This can be fixed by not starting the timer from the callback path. Which
+> > requires the timer reloading as long as any message is queued on the
+> > channel, and not just when current tx is not done yet.
 > >
 >
-> I have created an issue with detailed descriptions and reproduction steps.
-> Please let me know if you need anything else.
+> I came to similar conclusion and was testing something similar. You bet
+> me. Since we have single timer and multiple channels, each time a message
+> is enqueued on any channel, timer gets added which is wrong.
 >
-
-It may be a toolchain issue. Here is the ongoing discussion in case
-anybody else is interested.
-
-https://github.com/riscv/riscv-gnu-toolchain/issues/738
-
-> > Jim
+> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
 >
+> I tested this patch too by reverting offending commit in -next, so
 >
+> Tested-by: Sudeep Holla <sudeep.holla@arm.com>
 >
-> --
-> Regards,
-> Atish
+> You seem to have dropped the Fixes tags. Is that intentional ? If so,
+> any particular reasons. I think it is stable material and better to have
+> fixes tag so that it gets added to stable trees.
+>
+Thanks for testing. I will decorate it appropriately once I have
+Jerome's tested-by too.
 
-
-
--- 
-Regards,
-Atish
+-jassi
