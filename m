@@ -2,83 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8574628FFA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC2328FFA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404977AbgJPICA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:02:00 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:48205 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404885AbgJPICA (ORCPT
+        id S2404954AbgJPIAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:00:53 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:49850 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404915AbgJPIAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:02:00 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09G7vQro012248;
-        Fri, 16 Oct 2020 10:01:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=FPlO1VgG+i/DE+Lhz4heZb30Y7T1Ybmq2rz3YZ0WyFo=;
- b=HyP7Iz/Ba3Wtks/G5Brv2Cz1rau7rjmjXV6yyhKdoxkxc2x/WdNP2K8Gva+6F5DPVN8x
- 9pZQq5BnIhzv3Xo+o4bImr4vTnwA9LceZly2Xqua8kZoMBDhmj8pbt90+q05fDC59X+u
- fTxo2+/GDlgdj3msXEO/M0++AtAGW7XnPfAoJokjyoLgJ+OnVXCy+YDHyStrEH4SdvnP
- BAt201NBjYuO2BQ/rUGIYCeOYGoqUWf6hh21ZIWvBBHAo1o9Tex7g5thVVOuajw8nxPy
- NZ6dPNCM9whPpJvGi4SuRTw4osE0sR8DJX+fhT9WsSzprDz0NF5npdGDSrBSfqdlNDXr aw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 343587hswq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Oct 2020 10:01:45 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EBCF810002A;
-        Fri, 16 Oct 2020 10:01:44 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CF6062D7BF1;
-        Fri, 16 Oct 2020 10:01:44 +0200 (CEST)
-Received: from localhost (10.75.127.46) by SFHDAG1NODE3.st.com (10.75.127.3)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct 2020 10:01:05
- +0200
-From:   Fabrice Gasnier <fabrice.gasnier@st.com>
-To:     <alexandre.torgue@st.com>
-CC:     <vilhelm.gray@gmail.com>, <arnd@arndb.de>, <linux@armlinux.org.uk>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>
-Subject: [PATCH] ARM: multi_v7_defconfig: enable counter subsystem and stm32 counter drivers
-Date:   Fri, 16 Oct 2020 10:00:29 +0200
-Message-ID: <1602835229-10903-1-git-send-email-fabrice.gasnier@st.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 16 Oct 2020 04:00:51 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UCAvZF5_1602835246;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCAvZF5_1602835246)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 16 Oct 2020 16:00:46 +0800
+Date:   Fri, 16 Oct 2020 16:00:46 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: Re: [PATCH v1 13/29] virtio-mem: factor out handling of fake-offline
+ pages in memory notifier
+Message-ID: <20201016080046.GA43862@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-14-david@redhat.com>
+ <20201016071502.GM86495@L-31X9LVDL-1304.local>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG6NODE2.st.com (10.75.127.17) To SFHDAG1NODE3.st.com
- (10.75.127.3)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-16_05:2020-10-16,2020-10-16 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016071502.GM86495@L-31X9LVDL-1304.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This enables the counter subsystem and drivers for the stm32 timer and LP
-timer.
+On Fri, Oct 16, 2020 at 03:15:03PM +0800, Wei Yang wrote:
+>On Mon, Oct 12, 2020 at 02:53:07PM +0200, David Hildenbrand wrote:
+>>Let's factor out the core pieces and place the implementation next to
+>>virtio_mem_fake_offline(). We'll reuse this functionality soon.
+>>
+>>Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>>Cc: Jason Wang <jasowang@redhat.com>
+>>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>>Signed-off-by: David Hildenbrand <david@redhat.com>
+>>---
+>> drivers/virtio/virtio_mem.c | 73 +++++++++++++++++++++++++------------
+>> 1 file changed, 50 insertions(+), 23 deletions(-)
+>>
+>>diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>>index d132bc54ef57..a2124892e510 100644
+>>--- a/drivers/virtio/virtio_mem.c
+>>+++ b/drivers/virtio/virtio_mem.c
+>>@@ -168,6 +168,10 @@ static LIST_HEAD(virtio_mem_devices);
+>> 
+>> static void virtio_mem_online_page_cb(struct page *page, unsigned int order);
+>> static void virtio_mem_retry(struct virtio_mem *vm);
+>>+static void virtio_mem_fake_offline_going_offline(unsigned long pfn,
+>>+						  unsigned long nr_pages);
+>>+static void virtio_mem_fake_offline_cancel_offline(unsigned long pfn,
+>>+						   unsigned long nr_pages);
+>> 
+>> /*
+>>  * Register a virtio-mem device so it will be considered for the online_page
+>>@@ -604,27 +608,15 @@ static void virtio_mem_notify_going_offline(struct virtio_mem *vm,
+>> 					    unsigned long mb_id)
+>> {
+>> 	const unsigned long nr_pages = PFN_DOWN(vm->subblock_size);
+>>-	struct page *page;
+>> 	unsigned long pfn;
+>>-	int sb_id, i;
+>>+	int sb_id;
+>> 
+>> 	for (sb_id = 0; sb_id < vm->nb_sb_per_mb; sb_id++) {
+>> 		if (virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id, 1))
+>> 			continue;
+>>-		/*
+>>-		 * Drop our reference to the pages so the memory can get
+>>-		 * offlined and add the unplugged pages to the managed
+>>-		 * page counters (so offlining code can correctly subtract
+>>-		 * them again).
+>>-		 */
+>> 		pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
+>> 			       sb_id * vm->subblock_size);
+>>-		adjust_managed_page_count(pfn_to_page(pfn), nr_pages);
+>
+>One question about the original code, why we want to adjust count here?
+>
+>The code flow is
+>
+>    __offline_pages()
+>        memory_notify(MEM_GOING_OFFLINE, &arg)
+>	    virtio_mem_notify_going_offline(vm, mb_id)
+>	        adjust_managed_page_count(pfn_to_page(pfn), nr_pages)
+>	adjust_managed_page_count(pfn_to_page(start_pfn), -offlined_pages)
+>
+>Do we adjust the count twice?
+>
 
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
----
- arch/arm/configs/multi_v7_defconfig | 3 +++
- 1 file changed, 3 insertions(+)
+Ah, I got the reason why we need to adjust count for *unplugged* sub-blocks.
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index e9e76e3..f052db3 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -1092,6 +1092,9 @@ CONFIG_FSI_MASTER_ASPEED=m
- CONFIG_FSI_SCOM=m
- CONFIG_FSI_SBEFIFO=m
- CONFIG_FSI_OCC=m
-+CONFIG_COUNTER=m
-+CONFIG_STM32_TIMER_CNT=m
-+CONFIG_STM32_LPTIMER_CNT=m
- CONFIG_EXT4_FS=y
- CONFIG_AUTOFS4_FS=y
- CONFIG_MSDOS_FS=y
+>>-		for (i = 0; i < nr_pages; i++) {
+>>-			page = pfn_to_page(pfn + i);
+>>-			if (WARN_ON(!page_ref_dec_and_test(page)))
+
+Another question is when we grab a refcount for the unpluged pages? The one
+you mentioned in virtio_mem_set_fake_offline().
+
+>>-				dump_page(page, "unplugged page referenced");
+>>-		}
+>>+		virtio_mem_fake_offline_going_offline(pfn, nr_pages);
+>> 	}
+>> }
+>> 
+>>@@ -633,21 +625,14 @@ static void virtio_mem_notify_cancel_offline(struct virtio_mem *vm,
+>> {
+>> 	const unsigned long nr_pages = PFN_DOWN(vm->subblock_size);
+>> 	unsigned long pfn;
+>>-	int sb_id, i;
+>>+	int sb_id;
+>> 
+>> 	for (sb_id = 0; sb_id < vm->nb_sb_per_mb; sb_id++) {
+>> 		if (virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id, 1))
+>> 			continue;
+>>-		/*
+>>-		 * Get the reference we dropped when going offline and
+>>-		 * subtract the unplugged pages from the managed page
+>>-		 * counters.
+>>-		 */
+>> 		pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
+>> 			       sb_id * vm->subblock_size);
+>>-		adjust_managed_page_count(pfn_to_page(pfn), -nr_pages);
+>>-		for (i = 0; i < nr_pages; i++)
+>>-			page_ref_inc(pfn_to_page(pfn + i));
+>>+		virtio_mem_fake_offline_cancel_offline(pfn, nr_pages);
+>> 	}
+>> }
+>> 
+>>@@ -853,6 +838,48 @@ static int virtio_mem_fake_offline(unsigned long pfn, unsigned long nr_pages)
+>> 	return 0;
+>> }
+>> 
+>>+/*
+>>+ * Handle fake-offline pages when memory is going offline - such that the
+>>+ * pages can be skipped by mm-core when offlining.
+>>+ */
+>>+static void virtio_mem_fake_offline_going_offline(unsigned long pfn,
+>>+						  unsigned long nr_pages)
+>>+{
+>>+	struct page *page;
+>>+	unsigned long i;
+>>+
+>>+	/*
+>>+	 * Drop our reference to the pages so the memory can get offlined
+>>+	 * and add the unplugged pages to the managed page counters (so
+>>+	 * offlining code can correctly subtract them again).
+>>+	 */
+>>+	adjust_managed_page_count(pfn_to_page(pfn), nr_pages);
+>>+	/* Drop our reference to the pages so the memory can get offlined. */
+>>+	for (i = 0; i < nr_pages; i++) {
+>>+		page = pfn_to_page(pfn + i);
+>>+		if (WARN_ON(!page_ref_dec_and_test(page)))
+>>+			dump_page(page, "fake-offline page referenced");
+>>+	}
+>>+}
+>>+
+>>+/*
+>>+ * Handle fake-offline pages when memory offlining is canceled - to undo
+>>+ * what we did in virtio_mem_fake_offline_going_offline().
+>>+ */
+>>+static void virtio_mem_fake_offline_cancel_offline(unsigned long pfn,
+>>+						   unsigned long nr_pages)
+>>+{
+>>+	unsigned long i;
+>>+
+>>+	/*
+>>+	 * Get the reference we dropped when going offline and subtract the
+>>+	 * unplugged pages from the managed page counters.
+>>+	 */
+>>+	adjust_managed_page_count(pfn_to_page(pfn), -nr_pages);
+>>+	for (i = 0; i < nr_pages; i++)
+>>+		page_ref_inc(pfn_to_page(pfn + i));
+>>+}
+>>+
+>> static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
+>> {
+>> 	const unsigned long addr = page_to_phys(page);
+>>-- 
+>>2.26.2
+>
+>-- 
+>Wei Yang
+>Help you, Help me
+
 -- 
-2.7.4
-
+Wei Yang
+Help you, Help me
