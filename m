@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DE4290833
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7E4290836
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409854AbgJPPSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:18:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395343AbgJPPSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:18:40 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E891C20897;
-        Fri, 16 Oct 2020 15:18:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602861520;
-        bh=rgeQjAZ0kzxnk8SwXsOvCKN7o5QSYlfcQcgpKjlVIBE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xOFC0xX1gIoo4Cbk07OV9cXGBwYcCa9MigKKW1zmacVlTi811BbqPB4d805bK3D7z
-         wEt5uMbXHm4huhSU6vgLL+2AtqkdgW1XoSV0iBeKGnzZ2ewKvOTR3rmYOHNW3rV/uQ
-         Kg90usJVdKnr6IvoZcAkhmQNdFzSxraX4Q7b587A=
-Date:   Fri, 16 Oct 2020 16:18:31 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     robh+dt@kernel.org, nsaenzjulienne@suse.de,
-        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/7] Add dts for Rpi4 + Cirrus Lochnagar and codecs
-Message-ID: <20201016151831.GE5274@sirena.org.uk>
-References: <20201014145418.31838-1-rf@opensource.cirrus.com>
- <20201014185632.GD4580@sirena.org.uk>
- <b3376cd4-010f-cf72-8c81-1f5d22cb6454@opensource.cirrus.com>
+        id S2409990AbgJPPTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409907AbgJPPTO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 11:19:14 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564DAC061755;
+        Fri, 16 Oct 2020 08:19:14 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id m17so4326885ioo.1;
+        Fri, 16 Oct 2020 08:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5uzY4OOb3UvbavqXm5V4tdWOcTYtU4wpNa2y2+cRQ1Q=;
+        b=feSB78azhkmYkuXprBajgH9IAfvW6of4LLbtyKbIEBXPjZhZD97FbFws1y9lA1+6R7
+         vvtkA7v9JBj/Q/E2JhQQY2POhqipHjBbwum1WJJ/2o/3QqfOZs2J1lCLvDWjcEvgLmjJ
+         x/2qblr9lnxq9BPBSNR1x8mXMUx9zyWAQHONy5iSLLdB60jhhW5DjeyknzJ0nCROwTVp
+         NrX00j6EhJFx3IY+T1Q7L0eEZkXxHBI1zekV20blcZODsYwG02jSKdWZaGSY/z6JREsh
+         TXe9205Yruhs/zO5HEO9VUkkCuuU2+fnheAwIAhoHq7+z3cvnXEWdUsGQ1MKJoNQdo6w
+         URMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5uzY4OOb3UvbavqXm5V4tdWOcTYtU4wpNa2y2+cRQ1Q=;
+        b=A6lonLf5iRhn7b1PPZF+Ia9T8fOO1VkPKSDH5Pk93m2noM3WVS9vjWWX72EVgEkKry
+         Z7zaGldeco4XjxU7VhxKJm/OI1xs064jv4JFuFlqq5G0DiPBO1tgCrBO22W3s3NRhd6W
+         qI/6BQHFRI70O7EvbsNXQ8UMjF+ilHY4q7sgTqhEj2RdZjCMwBQRmazwQdDpGi1vGWIg
+         ReTPnXbtXPSXjBUudz/5slC39xdZoQYdka3cDvs6Rgl8HVV3EN4SgWCcf6ZzTyt0HqOL
+         3QCiHcS017oETMVxI8rpp+YUELjUioyLpqzt6hQMAdCGWMVExPjFz3ZhnEhms58iTZW0
+         wdUA==
+X-Gm-Message-State: AOAM532b5AuoT4OGlqDYi7MKg2Co/YoLqXpUp5mGTWNIlHYe2bE3D1za
+        lKlyJCgV6xLN5sUBfIS0CcYiZdrvw3cY3IgP8bsbuckntc8=
+X-Google-Smtp-Source: ABdhPJwndVADzlpqImXEkf9NK79ppmutLLDJKDRairMA5GyxcR3JUoTxqMuzSuphacFTIveLPHgTZoMwDqiddLxTeO8=
+X-Received: by 2002:a6b:6a18:: with SMTP id x24mr2703475iog.92.1602861552956;
+ Fri, 16 Oct 2020 08:19:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="10jrOL3x2xqLmOsH"
-Content-Disposition: inline
-In-Reply-To: <b3376cd4-010f-cf72-8c81-1f5d22cb6454@opensource.cirrus.com>
-X-Cookie: Pournelle must die!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200911123157.759379-1-aford173@gmail.com> <20200911123157.759379-2-aford173@gmail.com>
+In-Reply-To: <20200911123157.759379-2-aford173@gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Fri, 16 Oct 2020 10:19:01 -0500
+Message-ID: <CAHCN7x+NxWbpaZ7j3=CTeVcvtLm5iMVymgTV=LWokZAx=wJA1w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: omap2plus_defconfig: Enable OMAP3_THERMAL
+To:     linux-pm@vger.kernel.org, Linux-OMAP <linux-omap@vger.kernel.org>
+Cc:     Adam Ford-BE <aford@beaconembedded.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 11, 2020 at 7:32 AM Adam Ford <aford173@gmail.com> wrote:
+>
+> With the additional power management options enabled,
+> this patch enables OMAP3_THERMAL by default.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V3:  No change
+> V2:  No change
 
---10jrOL3x2xqLmOsH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Tony,
 
-On Fri, Oct 16, 2020 at 02:30:08PM +0100, Richard Fitzgerald wrote:
-> On 14/10/2020 19:56, Mark Brown wrote:
+Can you apply [2/2] to the OMAP branch?
 
-> > Why extend simple-card and not the more modern and flexible
-> > audio-graph-card?
+It looks like 1/2 was applied to the linux-pm [1]
 
-> I'm struggling to understand how to use audio-graph-card where there are
-> multiple alternative codecs. The host I2S endpoint has to point back to
-> the codec endpoint, like this:
+thanks,
 
-OK, this seems like a more urgent problem to address given that the
-graph card is supposed to be able to support things like TDM.
-However...
+adam
+[1] - https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/commit/?h=thermal/linux-next&id=5093402e5b449b64f7bbaa09057ce40a8f3c1484
 
-> 	cpu_i2s_ep_cs47l15: endpoint {
-> 		remote-endpoint = <&cs47l15_aif1>;
-> 	};
 
-> But obviously that depends on which codec node was enabled. Listing
-> multiple endpoints makes the whole port node disabled if any remote
-> endpoint is in a disabled node. I've tried adding status="disabled"
-> to endpoints or multiple port definitions with status="disabled" but
-> I haven't figured out a solution.
 
-...it seems like the issue here is that you're essentially trying to
-define multiple cards at once in the same overlay.  TBH this feels like
-you want two nested levels of overlay, with the extra layer patching the
-CODEC compatible.  Or if this is mainly as an example for people you
-could just pick one and use that?
-
---10jrOL3x2xqLmOsH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+JuccACgkQJNaLcl1U
-h9AnaQf+LQ6dXnZyQXkJi780zdCEyQ12TcEOc3Mb5/WE51kiHuRDa4Luy5Xk97Gt
-XI6V2WO9lJyYVgZt5BgLjAJJohah5WBPo+ShXgwgZI1bo4Y6N+6jctbqC6/DPtHe
-yIKyeZMlemrwsqbuRJI937EZMfGRhdF5ba8JymF6N7K8xjjZyls0g/VE8KqOZjFr
-7MUpgcSaWVeazF8LLRcQkhA8f4YT0mnMuFtvy07u4plMMyxRTtNdF2szMHNY9rTu
-Lnhd8/OE6tNFNnoEeAzrREHbeuqtQ4NCSiTl3vEfO4yMR/cby7caXXdSqODGYhC9
-gPAU+bIAOvQQV6vzj+AX9zbuVE/C2w==
-=H9bK
------END PGP SIGNATURE-----
-
---10jrOL3x2xqLmOsH--
+>
+> diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
+> index fe383f5a92fb..efcc46305a47 100644
+> --- a/arch/arm/configs/omap2plus_defconfig
+> +++ b/arch/arm/configs/omap2plus_defconfig
+> @@ -303,6 +303,7 @@ CONFIG_THERMAL_GOV_FAIR_SHARE=y
+>  CONFIG_THERMAL_GOV_USER_SPACE=y
+>  CONFIG_CPU_THERMAL=y
+>  CONFIG_TI_THERMAL=y
+> +CONFIG_OMAP3_THERMAL=y
+>  CONFIG_OMAP4_THERMAL=y
+>  CONFIG_OMAP5_THERMAL=y
+>  CONFIG_DRA752_THERMAL=y
+> --
+> 2.25.1
+>
