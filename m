@@ -2,96 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED3429072B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EFD290732
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408827AbgJPO3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:29:22 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:53274 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408814AbgJPO3V (ORCPT
+        id S2408857AbgJPOa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408849AbgJPOa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:29:21 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id ABB1E80699;
-        Fri, 16 Oct 2020 16:29:17 +0200 (CEST)
-Date:   Fri, 16 Oct 2020 16:29:16 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] drm/panel: mantix panel reset fixes
-Message-ID: <20201016142916.GA1184974@ravnborg.org>
-References: <cover.1602584953.git.agx@sigxcpu.org>
+        Fri, 16 Oct 2020 10:30:58 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA18C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:30:58 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id p15so3484528ejm.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:30:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HxZxC2xN4lzCm1BeKzVFW4hqh8G5tGG2Mf0vSEc67QE=;
+        b=WolBLivptc2j3q5VW+rzCLNqYgcLsymVLZSXbYA1W9eKZbIb3fs+vYIVZKVzrlXQf2
+         3XBj2deyz3BslJy1VLkuU/yTfRtuxeQVMEXCP097u7RlUEnvDJjpaTxlz/nX2SV4aKys
+         /wUDhrxNrXNw2BF//sJRZaUQ65q/qLYZzdW+YHPGAkfvwTvhFFNnRtDLuNdffv4A7sH6
+         Xm2IKs+/o76ozGd0jQglT920M0xcczuEdLNpg8y/17x1H9oiLjrgrDP9cuV83jc/xcNR
+         t514WqznkHf5ef/k0yplz4mEFNb0JEm8GUV3QwUd2e3/9kxREoW//9Ye4IcTPsR38XIo
+         rGjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HxZxC2xN4lzCm1BeKzVFW4hqh8G5tGG2Mf0vSEc67QE=;
+        b=dOLbcOyW4ZA+NtDKEwGNzOtmv0ghiydMo+uniT7oSLwJgO2Rx79L5Bp60DS4yWV4If
+         syc6gb50CShwrMCHw0x6ig11UAjqdlyfeAgrxkjgiM9RgVEocxWIz3I7ljZ9TkJp5TP9
+         2QQ7EALTF8F6e9ob6EeP6w3JpiZo1wGgbZSE0ku8iXjfGSlDtNcKUgA5PpG47YNHrED1
+         bpLOsQQMtK6W0NMZdXneRKnCH+HUssU2wMKVWlFdy/nFgPk/hSCko+otcR7FEDKCq5qT
+         ot5E2T4kD1FuSMsHs6VE2+WYgri5uUeDEZ9c7Dg2kk6hNUJooC4sWFrIkKjVCl265kFA
+         pFIQ==
+X-Gm-Message-State: AOAM533l23N1xgfF9WwXWM4gpXsnea4avZ6t3bFTcludQ7wQeMMgW3ae
+        wPj+Qi3EkYsrp2ZCG7b2X7K+sPcSyIkIcrZA
+X-Google-Smtp-Source: ABdhPJx2V+HcSA1WIXgjnYCYGn0asCept/3SyeD2e6uDLYsJfAay4Eg3WPyRsyoYMBqdVJQbyl6EVA==
+X-Received: by 2002:a17:906:ae48:: with SMTP id lf8mr3973233ejb.345.1602858656797;
+        Fri, 16 Oct 2020 07:30:56 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:62bb:2bf7:e8cf:a48e])
+        by smtp.gmail.com with ESMTPSA id e13sm1637007edc.9.2020.10.16.07.30.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 07:30:56 -0700 (PDT)
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Bob Moore <robert.moore@intel.com>
+References: <1748021.N9i9sLPJ40@kreacher> <9373262.piL2bvXoCD@kreacher>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: Re: [PATCH 4/6] ACPICA: Add support for using logical addresses of
+ GPE blocks
+Message-ID: <3b69e0d0-fb8a-92b4-42fd-f2a8fcdd642b@tessares.net>
+Date:   Fri, 16 Oct 2020 16:30:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <9373262.piL2bvXoCD@kreacher>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1602584953.git.agx@sigxcpu.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=8nJEP1OIZ-IA:10 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=e5mUnYsNAAAA:8
-        a=4K8JB3y5jV4O36iYuCkA:9 a=wPNLvfGTeEIA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guido.
-On Tue, Oct 13, 2020 at 12:32:45PM +0200, Guido Günther wrote:
-> 
-> The first patch in this series fixes dereferencing a NULL mode in the error
-> path. The second one extends the resets to not only reset RESX but also TP_RSTN
-> since otherwise the display will stay completely blank. I didn't spot that
-> before initial submission since the reset line was bound to the touch
-> controller and although that failed to probe it came far enough to deassert the
-> reset line (at an arbitrary point in time during boot) and hence we got a
-> picture. Since touch and panel are on the same IC they're not completely
-> independent and i might have to turn the whole thing into an MFD at some point
-> but this series gets the panel to a reliably working state on boot and on fb
-> blank/unblank.
-> 
-> Since the reset-gpios are active low we can deassert in prepare and assert in
-> unprepare simplifying the code making sure lines are kept low when the
-> panel is off.
-> 
-> The binding were not part of a stable kernel so I hope it's okay to not worry
-> about backward compatibility.
-> 
-> Changes from v1:
->  - As per review comments by Fabio Estevam
->    https://lore.kernel.org/dri-devel/CAOMZO5B5ECcConvKej=RcaF8wvOxgq7nUzKJ-ad0aSAOzUqtbQ@mail.gmail.com/
->    - Fix typo in commit messages
->  - As per review comments by Rob Herring
->    https://lore.kernel.org/dri-devel/20200929174624.GA832332@bogus/
->    - Don't use an array of reset lines
-> 
-> Guido Günther (3):
->   drm/panel: mantix: Don't dereference NULL mode
->   drm/panel: mantix: Fix panel reset
->   dt-binding: display: Require two resets on mantix panel
+Hi Rafael,
 
-All applied to drm-misc-next and pushed out.
-And then I remembered you had commit right - sigh.
+On 04/09/2020 19:24, Rafael J. Wysocki wrote:
+> From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> 
+> The logical address of every GPE block in system memory must be
+> known before passing it to acpi_ev_initialize_gpe_block(), because
+> memory cannot be mapped on the fly from an interrupt handler.
+> Accordingly, the host OS must map every GPE block in system
+> memory upfront and it can store the logical addresses of GPE
+> blocks for future use.
 
-	Sam
+(...)
 
-> 
->  .../display/panel/mantix,mlaf057we51-x.yaml   |  4 +++
->  .../gpu/drm/panel/panel-mantix-mlaf057we51.c  | 25 +++++++++++++------
->  2 files changed, 21 insertions(+), 8 deletions(-)
-> 
-> -- 
-> 2.28.0
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c
+> index a0e71f34c77a..37bb67ef3232 100644
+> --- a/drivers/acpi/acpica/hwgpe.c
+> +++ b/drivers/acpi/acpica/hwgpe.c
+> @@ -46,8 +46,13 @@ acpi_status acpi_hw_gpe_read(u64 *value, struct acpi_gpe_address *reg)
+>   	u32 value32;
+>   
+>   	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
+> +#ifdef ACPI_GPE_USE_LOGICAL_ADDRESSES
+> +		*value = (u64)ACPI_GET8(reg->address);
+
+Thank you for the patch!
+
+When compiling net-next repo, recently sync with Linus repo, I got an 
+error when using i386 arch because of this line above.
+
+Here are the commands I used:
+
+
+================================================
+$ make defconfig KBUILD_DEFCONFIG=i386_defconfig
+*** Default configuration is based on 'i386_defconfig'
+#
+# configuration written to .config
+#
+$ scripts/config --disable DRM --disable PCCARD --disable ATA --disable 
+MD --disable PPS --disable SOUND --disable USB --disable IOMMU_SUPPORT 
+--disable INPUT_LEDS --disable AGP --disable VGA_ARB --disable EFI 
+--disable WLAN --disable WIRELESS --disable LOGO --disable NFS_FS 
+--disable XFRM_USER --disable INET6_AH --disable INET6_ESP --disable 
+NETDEVICES -e KUNIT -d KUNIT_DEBUGFS -d KUNIT_TEST -d KUNIT_EXAMPLE_TEST 
+-d EXT4_KUNIT_TESTS -d SYSCTL_KUNIT_TEST -d LIST_KUNIT_TEST -d 
+LINEAR_RANGES_TEST -d BITS_TEST -d KUNIT_ALL_TESTS -e INET_DIAG -d 
+INET_UDP_DIAG -d INET_RAW_DIAG -d INET_DIAG_DESTROY -e MPTCP -e 
+MPTCP_IPV6 -e MPTCP_KUNIT_TESTS
+$ KCFLAGS=-Werror make -j8 -l8
+scripts/kconfig/conf  --syncconfig Kconfig
+(...)
+   CC      drivers/acpi/acpica/hwgpe.o
+In file included from ./include/acpi/acpi.h:24,
+                  from drivers/acpi/acpica/hwgpe.c:10:
+drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_read':
+./include/acpi/actypes.h:501:48: error: cast to pointer from integer of 
+different size [-Werror=int-to-pointer-cast]
+   501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) 
+(p))
+       |                                                ^
+drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 
+'ACPI_CAST_PTR'
+    18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (ptr))
+       |                                         ^~~~~~~~~~~~~
+drivers/acpi/acpica/acmacros.h:22:43: note: in expansion of macro 
+'ACPI_CAST8'
+    22 | #define ACPI_GET8(ptr)                  (*ACPI_CAST8 (ptr))
+       |                                           ^~~~~~~~~~
+drivers/acpi/acpica/hwgpe.c:50:17: note: in expansion of macro 'ACPI_GET8'
+    50 |   *value = (u64)ACPI_GET8(reg->address);
+       |                 ^~~~~~~~~
+drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_write':
+./include/acpi/actypes.h:501:48: error: cast to pointer from integer of 
+different size [-Werror=int-to-pointer-cast]
+   501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) 
+(p))
+       |                                                ^
+drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 
+'ACPI_CAST_PTR'
+    18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (ptr))
+       |                                         ^~~~~~~~~~~~~
+drivers/acpi/acpica/acmacros.h:26:43: note: in expansion of macro 
+'ACPI_CAST8'
+    26 | #define ACPI_SET8(ptr, val)             (*ACPI_CAST8 (ptr) = 
+(u8) (val))
+       |                                           ^~~~~~~~~~
+drivers/acpi/acpica/hwgpe.c:85:3: note: in expansion of macro 'ACPI_SET8'
+    85 |   ACPI_SET8(reg->address, value);
+       |   ^~~~~~~~~
+cc1: all warnings being treated as errors
+make[3]: *** [scripts/Makefile.build:283: drivers/acpi/acpica/hwgpe.o] 
+Error 1
+make[2]: *** [scripts/Makefile.build:500: drivers/acpi/acpica] Error 2
+make[1]: *** [scripts/Makefile.build:500: drivers/acpi] Error 2
+make: *** [Makefile:1777: drivers] Error 2
+================================================
+
+
+> +		return_ACPI_STATUS(AE_OK);
+> +#else
+>   		return acpi_os_read_memory((acpi_physical_address)reg->address,
+>   					    value, ACPI_GPE_REGISTER_WIDTH);
+> +#endif
+>   	}
+>   
+>   	status = acpi_os_read_port((acpi_io_address)reg->address,
+> @@ -76,8 +81,13 @@ acpi_status acpi_hw_gpe_read(u64 *value, struct acpi_gpe_address *reg)
+>   acpi_status acpi_hw_gpe_write(u64 value, struct acpi_gpe_address *reg)
+>   {
+>   	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
+> +#ifdef ACPI_GPE_USE_LOGICAL_ADDRESSES
+> +		ACPI_SET8(reg->address, value);
+
+(and also because of this line)
+
+By chance, do you already have a fix for that? I didn't see any other 
+email related to this issue, I am surprised no bot already reported the 
+problem but maybe I didn't look everywhere :)
+
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
