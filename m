@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102122900FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4036B2900FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405758AbgJPJK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:10:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39754 "EHLO mail.kernel.org"
+        id S2395066AbgJPJKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:10:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405681AbgJPJKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:10:30 -0400
+        id S2405691AbgJPJKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:10:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E76120EDD;
-        Fri, 16 Oct 2020 09:10:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE7C020872;
+        Fri, 16 Oct 2020 09:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602839429;
-        bh=syjLSzmendo0AbDMiyl/OUAO6OADH87D9VyeZeX4l5A=;
+        s=default; t=1602839432;
+        bh=Yxa45sRhN4L8yAo3gP9bLI6rDVWShpsgSmf9UUutsAU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WpM4DGnnQ9C1usCbkUrdmwlpIGbJqphMEifvKydBcqFd5V9f37An6JwcEeqJbsARa
-         4way4x8ST/18MHFy71yclT+iswA2yWuE+TKzYr2+jeDOBFm0bm0ntu+KAJ1YN9zLjY
-         wibrY6/h1OeyE8n8cMd4zMpOy2n8jaLYSJ11+CIc=
+        b=I884bw8S0v8R5tyV7G5XR+XGKOBAfs2QM0j8uUknJrO3ZEkCOBg6zuAhi7A0E8lEg
+         a6d7qCrmbkD3vCi7mzFSXbyK3a/SS9WC8PDNULvTrGTtlbAzGCAXfxHXGv35d7P043
+         jueSnF4wI/BFx9pOtyClOpP4/ybPOJ8hgyyfLD/I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, =?UTF-8?q?kiyin ?= <kiyin@tencent.com>,
+        stable@vger.kernel.org,
+        Dominik Przychodni <dominik.przychodni@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
         Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.4 21/22] crypto: bcm - Verify GCM/CCM key length in setkey
-Date:   Fri, 16 Oct 2020 11:07:49 +0200
-Message-Id: <20201016090438.356365455@linuxfoundation.org>
+Subject: [PATCH 5.4 22/22] crypto: qat - check cipher length for aead AES-CBC-HMAC-SHA
+Date:   Fri, 16 Oct 2020 11:07:50 +0200
+Message-Id: <20201016090438.407282894@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201016090437.308349327@linuxfoundation.org>
 References: <20201016090437.308349327@linuxfoundation.org>
@@ -42,78 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+From: Dominik Przychodni <dominik.przychodni@intel.com>
 
-commit 10a2f0b311094ffd45463a529a410a51ca025f27 upstream.
+commit 45cb6653b0c355fc1445a8069ba78a4ce8720511 upstream.
 
-The setkey function for GCM/CCM algorithms didn't verify the key
-length before copying the key and subtracting the salt length.
+Return -EINVAL for authenc(hmac(sha1),cbc(aes)),
+authenc(hmac(sha256),cbc(aes)) and authenc(hmac(sha512),cbc(aes))
+if the cipher length is not multiple of the AES block.
+This is to prevent an undefined device behaviour.
 
-This patch delays the copying of the key til after the verification
-has been done.  It also adds checks on the key length to ensure
-that it's at least as long as the salt.
-
-Fixes: 9d12ba86f818 ("crypto: brcm - Add Broadcom SPU driver")
+Fixes: d370cec32194 ("crypto: qat - Intel(R) QAT crypto interface")
 Cc: <stable@vger.kernel.org>
-Reported-by: kiyin(尹亮) <kiyin@tencent.com>
+Signed-off-by: Dominik Przychodni <dominik.przychodni@intel.com>
+[giovanni.cabiddu@intel.com: reworded commit message]
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/crypto/bcm/cipher.c |   15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ drivers/crypto/qat/qat_common/qat_algs.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
---- a/drivers/crypto/bcm/cipher.c
-+++ b/drivers/crypto/bcm/cipher.c
-@@ -2937,7 +2937,6 @@ static int aead_gcm_ccm_setkey(struct cr
- 
- 	ctx->enckeylen = keylen;
- 	ctx->authkeylen = 0;
--	memcpy(ctx->enckey, key, ctx->enckeylen);
- 
- 	switch (ctx->enckeylen) {
- 	case AES_KEYSIZE_128:
-@@ -2953,6 +2952,8 @@ static int aead_gcm_ccm_setkey(struct cr
- 		goto badkey;
- 	}
- 
-+	memcpy(ctx->enckey, key, ctx->enckeylen);
+--- a/drivers/crypto/qat/qat_common/qat_algs.c
++++ b/drivers/crypto/qat/qat_common/qat_algs.c
+@@ -873,6 +873,11 @@ static int qat_alg_aead_dec(struct aead_
+ 	struct icp_qat_fw_la_bulk_req *msg;
+ 	int digst_size = crypto_aead_authsize(aead_tfm);
+ 	int ret, ctr = 0;
++	u32 cipher_len;
 +
- 	flow_log("  enckeylen:%u authkeylen:%u\n", ctx->enckeylen,
- 		 ctx->authkeylen);
- 	flow_dump("  enc: ", ctx->enckey, ctx->enckeylen);
-@@ -3013,6 +3014,10 @@ static int aead_gcm_esp_setkey(struct cr
- 	struct iproc_ctx_s *ctx = crypto_aead_ctx(cipher);
++	cipher_len = areq->cryptlen - digst_size;
++	if (cipher_len % AES_BLOCK_SIZE != 0)
++		return -EINVAL;
  
- 	flow_log("%s\n", __func__);
-+
-+	if (keylen < GCM_ESP_SALT_SIZE)
+ 	ret = qat_alg_sgl_to_bufl(ctx->inst, areq->src, areq->dst, qat_req);
+ 	if (unlikely(ret))
+@@ -887,7 +892,7 @@ static int qat_alg_aead_dec(struct aead_
+ 	qat_req->req.comn_mid.src_data_addr = qat_req->buf.blp;
+ 	qat_req->req.comn_mid.dest_data_addr = qat_req->buf.bloutp;
+ 	cipher_param = (void *)&qat_req->req.serv_specif_rqpars;
+-	cipher_param->cipher_length = areq->cryptlen - digst_size;
++	cipher_param->cipher_length = cipher_len;
+ 	cipher_param->cipher_offset = areq->assoclen;
+ 	memcpy(cipher_param->u.cipher_IV_array, areq->iv, AES_BLOCK_SIZE);
+ 	auth_param = (void *)((uint8_t *)cipher_param + sizeof(*cipher_param));
+@@ -916,6 +921,9 @@ static int qat_alg_aead_enc(struct aead_
+ 	uint8_t *iv = areq->iv;
+ 	int ret, ctr = 0;
+ 
++	if (areq->cryptlen % AES_BLOCK_SIZE != 0)
 +		return -EINVAL;
 +
- 	ctx->salt_len = GCM_ESP_SALT_SIZE;
- 	ctx->salt_offset = GCM_ESP_SALT_OFFSET;
- 	memcpy(ctx->salt, key + keylen - GCM_ESP_SALT_SIZE, GCM_ESP_SALT_SIZE);
-@@ -3041,6 +3046,10 @@ static int rfc4543_gcm_esp_setkey(struct
- 	struct iproc_ctx_s *ctx = crypto_aead_ctx(cipher);
- 
- 	flow_log("%s\n", __func__);
-+
-+	if (keylen < GCM_ESP_SALT_SIZE)
-+		return -EINVAL;
-+
- 	ctx->salt_len = GCM_ESP_SALT_SIZE;
- 	ctx->salt_offset = GCM_ESP_SALT_OFFSET;
- 	memcpy(ctx->salt, key + keylen - GCM_ESP_SALT_SIZE, GCM_ESP_SALT_SIZE);
-@@ -3070,6 +3079,10 @@ static int aead_ccm_esp_setkey(struct cr
- 	struct iproc_ctx_s *ctx = crypto_aead_ctx(cipher);
- 
- 	flow_log("%s\n", __func__);
-+
-+	if (keylen < CCM_ESP_SALT_SIZE)
-+		return -EINVAL;
-+
- 	ctx->salt_len = CCM_ESP_SALT_SIZE;
- 	ctx->salt_offset = CCM_ESP_SALT_OFFSET;
- 	memcpy(ctx->salt, key + keylen - CCM_ESP_SALT_SIZE, CCM_ESP_SALT_SIZE);
+ 	ret = qat_alg_sgl_to_bufl(ctx->inst, areq->src, areq->dst, qat_req);
+ 	if (unlikely(ret))
+ 		return ret;
 
 
