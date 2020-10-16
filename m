@@ -2,284 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD67290051
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31AA290055
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394745AbgJPI74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:59:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49096 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390404AbgJPI74 (ORCPT
+        id S2394786AbgJPI76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:59:58 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:41488 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394642AbgJPI75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:59:56 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09G8Y0GR187560;
-        Fri, 16 Oct 2020 04:59:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=aALYR+KLGLyFqDjlUTb6VFMnGfzSKI3yLC1Ow2yGdeY=;
- b=dNDQQIfHSAd7XPhKLxxUNCmtNzAEpnMwPsBzIvDSagAB2LrfDyQ6S6vbBS2+Ch5t6NX6
- QTS9Ie9ZwM9BdgRzuaYVRjjv8staR23qTlfEPYXqMshhCOFYjFp1WS3YAX+9Eq3RdyLi
- MM75k5iFAnXnBZjMzQtODxGAq6mEQsx4osTcL5YVB31vqQD7wp0AuoPVj/3nsVE6m3d9
- qS0U7MID+oLjbYTr8uLDPHZ+kpuohIFJvoXBPr0sFng1eLQrDuQNderPEinJPpCnntZd
- cNo5m9cccOlS4Ad9UvJcfT2dsZl0n66zUgObz8PIMuyhbKetSdIgSY3FxFsmjfUdQWrs /w== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34781ggv6a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Oct 2020 04:59:45 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09G8sl0T013242;
-        Fri, 16 Oct 2020 08:59:43 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 3434k83626-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Oct 2020 08:59:43 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09G8xfWJ33817006
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Oct 2020 08:59:41 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 31EAC42042;
-        Fri, 16 Oct 2020 08:59:41 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DAB2C42041;
-        Fri, 16 Oct 2020 08:59:39 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.79.233.59])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Oct 2020 08:59:39 +0000 (GMT)
-From:   Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
-To:     shuah@kernel.org, trenn@suse.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        latha@linux.vnet.ibm.com,
-        "Pavithra R . Prakash" <pavrampu@in.ibm.com>
-Subject: [PATCH v3] cpupower: Provide online and offline CPU information
-Date:   Fri, 16 Oct 2020 14:29:29 +0530
-Message-Id: <20201016085929.86252-1-latha@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Fri, 16 Oct 2020 04:59:57 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UCBNCzY_1602838793;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCBNCzY_1602838793)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 16 Oct 2020 16:59:54 +0800
+Date:   Fri, 16 Oct 2020 16:59:53 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: Re: [PATCH v1 23/29] virtio-mem: factor out adding/removing memory
+ from Linux
+Message-ID: <20201016085953.GF44269@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-24-david@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-16_05:2020-10-16,2020-10-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- mlxscore=0 malwarescore=0 impostorscore=0 phishscore=0 priorityscore=1501
- mlxlogscore=999 suspectscore=2 spamscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010160062
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012125323.17509-24-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a user tries to modify cpuidle or cpufreq properties on offline
-CPUs, the tool returns success (exit status 0) but also does not provide
-any warning message regarding offline cpus that may have been specified
-but left unchanged. In case of all or a few CPUs being offline, it can be
-difficult to keep track of which CPUs didn't get the new frequency or idle
-state set. Silent failures are difficult to keep track of when there are a
-huge number of CPUs on which the action is performed.
+On Mon, Oct 12, 2020 at 02:53:17PM +0200, David Hildenbrand wrote:
+>Let's use wrappers for the low-level functions that dev_dbg/dev_warn
+>and work on addr + size, such that we can reuse them for adding/removing
+>in other granularity.
+>
+>We only warn when adding memory failed, because that's something to pay
+>attention to. We won't warn when removing failed, we'll reuse that in
+>racy context soon (and we do have proper BUG_ON() statements in the
+>current cases where it must never happen).
+>
+>Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>Cc: Jason Wang <jasowang@redhat.com>
+>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
 
-In v1 of this patch, I had sent tried to address this with repetitive code
-in both cpufreq-set and cpuidle-set. V2 incorporated the review comments
-and added helper functions to find both online and offline CPUs and print
-them out accordingly. Correcting compile issues in v3.
+Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 
-We use these helper functions in cpuidle-set and cpufreq-set to print an
-additional message if the user attempts to modify offline cpus.
+>---
+> drivers/virtio/virtio_mem.c | 107 ++++++++++++++++++++++++------------
+> 1 file changed, 73 insertions(+), 34 deletions(-)
+>
+>diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>index d3ab04f655ee..eb2ad31a8d8a 100644
+>--- a/drivers/virtio/virtio_mem.c
+>+++ b/drivers/virtio/virtio_mem.c
+>@@ -453,18 +453,16 @@ static bool virtio_mem_could_add_memory(struct virtio_mem *vm, uint64_t size)
+> }
+> 
+> /*
+>- * Try to add a memory block to Linux. This will usually only fail
+>- * if out of memory.
+>+ * Try adding memory to Linux. Will usually only fail if out of memory.
+>  *
+>  * Must not be called with the vm->hotplug_mutex held (possible deadlock with
+>  * onlining code).
+>  *
+>- * Will not modify the state of the memory block.
+>+ * Will not modify the state of memory blocks in virtio-mem.
+>  */
+>-static int virtio_mem_mb_add(struct virtio_mem *vm, unsigned long mb_id)
+>+static int virtio_mem_add_memory(struct virtio_mem *vm, uint64_t addr,
+>+				 uint64_t size)
+> {
+>-	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
+>-	const uint64_t size = memory_block_size_bytes();
+> 	int rc;
+> 
+> 	/*
+>@@ -478,32 +476,50 @@ static int virtio_mem_mb_add(struct virtio_mem *vm, unsigned long mb_id)
+> 			return -ENOMEM;
+> 	}
+> 
+>-	dev_dbg(&vm->vdev->dev, "adding memory block: %lu\n", mb_id);
+>+	dev_dbg(&vm->vdev->dev, "adding memory: 0x%llx - 0x%llx\n", addr,
+>+		addr + size - 1);
+> 	/* Memory might get onlined immediately. */
+> 	atomic64_add(size, &vm->offline_size);
+> 	rc = add_memory_driver_managed(vm->nid, addr, size, vm->resource_name,
+> 				       MEMHP_MERGE_RESOURCE);
+>-	if (rc)
+>+	if (rc) {
+> 		atomic64_sub(size, &vm->offline_size);
+>+		dev_warn(&vm->vdev->dev, "adding memory failed: %d\n", rc);
+>+		/*
+>+		 * TODO: Linux MM does not properly clean up yet in all cases
+>+		 * where adding of memory failed - especially on -ENOMEM.
+>+		 */
+>+	}
+> 	return rc;
+> }
+> 
+> /*
+>- * Try to remove a memory block from Linux. Will only fail if the memory block
+>- * is not offline.
+>+ * See virtio_mem_add_memory(): Try adding a single Linux memory block.
+>+ */
+>+static int virtio_mem_sbm_add_mb(struct virtio_mem *vm, unsigned long mb_id)
+>+{
+>+	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
+>+	const uint64_t size = memory_block_size_bytes();
+>+
+>+	return virtio_mem_add_memory(vm, addr, size);
+>+}
+>+
+>+/*
+>+ * Try removing memory from Linux. Will only fail if memory blocks aren't
+>+ * offline.
+>  *
+>  * Must not be called with the vm->hotplug_mutex held (possible deadlock with
+>  * onlining code).
+>  *
+>- * Will not modify the state of the memory block.
+>+ * Will not modify the state of memory blocks in virtio-mem.
+>  */
+>-static int virtio_mem_mb_remove(struct virtio_mem *vm, unsigned long mb_id)
+>+static int virtio_mem_remove_memory(struct virtio_mem *vm, uint64_t addr,
+>+				    uint64_t size)
+> {
+>-	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
+>-	const uint64_t size = memory_block_size_bytes();
+> 	int rc;
+> 
+>-	dev_dbg(&vm->vdev->dev, "removing memory block: %lu\n", mb_id);
+>+	dev_dbg(&vm->vdev->dev, "removing memory: 0x%llx - 0x%llx\n", addr,
+>+		addr + size - 1);
+> 	rc = remove_memory(vm->nid, addr, size);
+> 	if (!rc) {
+> 		atomic64_sub(size, &vm->offline_size);
+>@@ -512,27 +528,41 @@ static int virtio_mem_mb_remove(struct virtio_mem *vm, unsigned long mb_id)
+> 		 * immediately instead of waiting.
+> 		 */
+> 		virtio_mem_retry(vm);
+>+	} else {
+>+		dev_dbg(&vm->vdev->dev, "removing memory failed: %d\n", rc);
+> 	}
+> 	return rc;
+> }
+> 
+> /*
+>- * Try to offline and remove a memory block from Linux.
+>+ * See virtio_mem_remove_memory(): Try removing a single Linux memory block.
+>+ */
+>+static int virtio_mem_sbm_remove_mb(struct virtio_mem *vm, unsigned long mb_id)
+>+{
+>+	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
+>+	const uint64_t size = memory_block_size_bytes();
+>+
+>+	return virtio_mem_remove_memory(vm, addr, size);
+>+}
+>+
+>+/*
+>+ * Try offlining and removing memory from Linux.
+>  *
+>  * Must not be called with the vm->hotplug_mutex held (possible deadlock with
+>  * onlining code).
+>  *
+>- * Will not modify the state of the memory block.
+>+ * Will not modify the state of memory blocks in virtio-mem.
+>  */
+>-static int virtio_mem_mb_offline_and_remove(struct virtio_mem *vm,
+>-					    unsigned long mb_id)
+>+static int virtio_mem_offline_and_remove_memory(struct virtio_mem *vm,
+>+						uint64_t addr,
+>+						uint64_t size)
+> {
+>-	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
+>-	const uint64_t size = memory_block_size_bytes();
+> 	int rc;
+> 
+>-	dev_dbg(&vm->vdev->dev, "offlining and removing memory block: %lu\n",
+>-		mb_id);
+>+	dev_dbg(&vm->vdev->dev,
+>+		"offlining and removing memory: 0x%llx - 0x%llx\n", addr,
+>+		addr + size - 1);
+>+
+> 	rc = offline_and_remove_memory(vm->nid, addr, size);
+> 	if (!rc) {
+> 		atomic64_sub(size, &vm->offline_size);
+>@@ -541,10 +571,26 @@ static int virtio_mem_mb_offline_and_remove(struct virtio_mem *vm,
+> 		 * immediately instead of waiting.
+> 		 */
+> 		virtio_mem_retry(vm);
+>+	} else {
+>+		dev_dbg(&vm->vdev->dev,
+>+			"offlining and removing memory failed: %d\n", rc);
+> 	}
+> 	return rc;
+> }
+> 
+>+/*
+>+ * See virtio_mem_offline_and_remove_memory(): Try offlining and removing
+>+ * a single Linux memory block.
+>+ */
+>+static int virtio_mem_sbm_offline_and_remove_mb(struct virtio_mem *vm,
+>+						unsigned long mb_id)
+>+{
+>+	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
+>+	const uint64_t size = memory_block_size_bytes();
+>+
+>+	return virtio_mem_offline_and_remove_memory(vm, addr, size);
+>+}
+>+
+> /*
+>  * Trigger the workqueue so the device can perform its magic.
+>  */
+>@@ -1230,17 +1276,10 @@ static int virtio_mem_sbm_plug_and_add_mb(struct virtio_mem *vm,
+> 					    VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL);
+> 
+> 	/* Add the memory block to linux - if that fails, try to unplug. */
+>-	rc = virtio_mem_mb_add(vm, mb_id);
+>+	rc = virtio_mem_sbm_add_mb(vm, mb_id);
+> 	if (rc) {
+> 		int new_state = VIRTIO_MEM_SBM_MB_UNUSED;
+> 
+>-		dev_err(&vm->vdev->dev,
+>-			"adding memory block %lu failed with %d\n", mb_id, rc);
+>-
+>-		/*
+>-		 * TODO: Linux MM does not properly clean up yet in all cases
+>-		 * where adding of memory failed - especially on -ENOMEM.
+>-		 */
+> 		if (virtio_mem_sbm_unplug_sb(vm, mb_id, 0, count))
+> 			new_state = VIRTIO_MEM_SBM_MB_PLUGGED;
+> 		virtio_mem_sbm_set_mb_state(vm, mb_id, new_state);
+>@@ -1411,7 +1450,7 @@ static int virtio_mem_sbm_unplug_any_sb_offline(struct virtio_mem *vm,
+> 					    VIRTIO_MEM_SBM_MB_UNUSED);
+> 
+> 		mutex_unlock(&vm->hotplug_mutex);
+>-		rc = virtio_mem_mb_remove(vm, mb_id);
+>+		rc = virtio_mem_sbm_remove_mb(vm, mb_id);
+> 		BUG_ON(rc);
+> 		mutex_lock(&vm->hotplug_mutex);
+> 	}
+>@@ -1504,7 +1543,7 @@ static int virtio_mem_sbm_unplug_any_sb_online(struct virtio_mem *vm,
+> 	 */
+> 	if (virtio_mem_sbm_test_sb_unplugged(vm, mb_id, 0, vm->sbm.sbs_per_mb)) {
+> 		mutex_unlock(&vm->hotplug_mutex);
+>-		rc = virtio_mem_mb_offline_and_remove(vm, mb_id);
+>+		rc = virtio_mem_sbm_offline_and_remove_mb(vm, mb_id);
+> 		mutex_lock(&vm->hotplug_mutex);
+> 		if (!rc)
+> 			virtio_mem_sbm_set_mb_state(vm, mb_id,
+>@@ -1991,7 +2030,7 @@ static void virtio_mem_remove(struct virtio_device *vdev)
+> 	 */
+> 	virtio_mem_sbm_for_each_mb(vm, mb_id,
+> 				   VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
+>-		rc = virtio_mem_mb_remove(vm, mb_id);
+>+		rc = virtio_mem_sbm_remove_mb(vm, mb_id);
+> 		BUG_ON(rc);
+> 		virtio_mem_sbm_set_mb_state(vm, mb_id,
+> 					    VIRTIO_MEM_SBM_MB_UNUSED);
+>-- 
+>2.26.2
 
-Reported-by: Pavithra R. Prakash <pavrampu@in.ibm.com>
-Signed-off-by: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
----
- tools/power/cpupower/utils/cpufreq-set.c     |  3 +
- tools/power/cpupower/utils/cpuidle-set.c     |  4 ++
- tools/power/cpupower/utils/cpupower.c        |  8 +++
- tools/power/cpupower/utils/helpers/helpers.h | 12 ++++
- tools/power/cpupower/utils/helpers/misc.c    | 66 +++++++++++++++++++-
- 5 files changed, 92 insertions(+), 1 deletion(-)
-
-diff --git a/tools/power/cpupower/utils/cpufreq-set.c b/tools/power/cpupower/utils/cpufreq-set.c
-index 6ed82fba5aaa..f25cdfa05c5f 100644
---- a/tools/power/cpupower/utils/cpufreq-set.c
-+++ b/tools/power/cpupower/utils/cpufreq-set.c
-@@ -311,6 +311,7 @@ int cmd_freq_set(int argc, char **argv)
- 		}
- 	}
- 
-+	get_cpustate();
- 
- 	/* loop over CPUs */
- 	for (cpu = bitmask_first(cpus_chosen);
-@@ -328,5 +329,7 @@ int cmd_freq_set(int argc, char **argv)
- 		}
- 	}
- 
-+	print_offline_cpus();
-+
- 	return 0;
- }
-diff --git a/tools/power/cpupower/utils/cpuidle-set.c b/tools/power/cpupower/utils/cpuidle-set.c
-index 569f268f4c7f..46158928f9ad 100644
---- a/tools/power/cpupower/utils/cpuidle-set.c
-+++ b/tools/power/cpupower/utils/cpuidle-set.c
-@@ -95,6 +95,8 @@ int cmd_idle_set(int argc, char **argv)
- 		exit(EXIT_FAILURE);
- 	}
- 
-+	get_cpustate();
-+
- 	/* Default is: set all CPUs */
- 	if (bitmask_isallclear(cpus_chosen))
- 		bitmask_setall(cpus_chosen);
-@@ -181,5 +183,7 @@ int cmd_idle_set(int argc, char **argv)
- 			break;
- 		}
- 	}
-+
-+	print_offline_cpus();
- 	return EXIT_SUCCESS;
- }
-diff --git a/tools/power/cpupower/utils/cpupower.c b/tools/power/cpupower/utils/cpupower.c
-index 8e3d08042825..8ac3304a9957 100644
---- a/tools/power/cpupower/utils/cpupower.c
-+++ b/tools/power/cpupower/utils/cpupower.c
-@@ -34,6 +34,8 @@ int run_as_root;
- int base_cpu;
- /* Affected cpus chosen by -c/--cpu param */
- struct bitmask *cpus_chosen;
-+struct bitmask *online_cpus;
-+struct bitmask *offline_cpus;
- 
- #ifdef DEBUG
- int be_verbose;
-@@ -178,6 +180,8 @@ int main(int argc, const char *argv[])
- 	char pathname[32];
- 
- 	cpus_chosen = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
-+	online_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
-+	offline_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
- 
- 	argc--;
- 	argv += 1;
-@@ -230,6 +234,10 @@ int main(int argc, const char *argv[])
- 		ret = p->main(argc, argv);
- 		if (cpus_chosen)
- 			bitmask_free(cpus_chosen);
-+		if (online_cpus)
-+			bitmask_free(online_cpus);
-+		if (offline_cpus)
-+			bitmask_free(offline_cpus);
- 		return ret;
- 	}
- 	print_help();
-diff --git a/tools/power/cpupower/utils/helpers/helpers.h b/tools/power/cpupower/utils/helpers/helpers.h
-index c258eeccd05f..d5799aa71e1f 100644
---- a/tools/power/cpupower/utils/helpers/helpers.h
-+++ b/tools/power/cpupower/utils/helpers/helpers.h
-@@ -94,6 +94,8 @@ struct cpupower_cpu_info {
-  */
- extern int get_cpu_info(struct cpupower_cpu_info *cpu_info);
- extern struct cpupower_cpu_info cpupower_cpu_info;
-+
-+
- /* cpuid and cpuinfo helpers  **************************/
- 
- /* X86 ONLY ****************************************/
-@@ -171,4 +173,14 @@ static inline unsigned int cpuid_ecx(unsigned int op) { return 0; };
- static inline unsigned int cpuid_edx(unsigned int op) { return 0; };
- #endif /* defined(__i386__) || defined(__x86_64__) */
- 
-+/*
-+ * CPU State related functions
-+ */
-+extern struct bitmask *online_cpus;
-+extern struct bitmask *offline_cpus;
-+
-+void get_cpustate(void);
-+void print_online_cpus(void);
-+void print_offline_cpus(void);
-+
- #endif /* __CPUPOWERUTILS_HELPERS__ */
-diff --git a/tools/power/cpupower/utils/helpers/misc.c b/tools/power/cpupower/utils/helpers/misc.c
-index f406adc40bad..2ead98169cf5 100644
---- a/tools/power/cpupower/utils/helpers/misc.c
-+++ b/tools/power/cpupower/utils/helpers/misc.c
-@@ -1,8 +1,12 @@
- // SPDX-License-Identifier: GPL-2.0
--#if defined(__i386__) || defined(__x86_64__)
-+
-+#include <stdio.h>
-+#include <stdlib.h>
- 
- #include "helpers/helpers.h"
- 
-+#if defined(__i386__) || defined(__x86_64__)
-+
- #define MSR_AMD_HWCR	0xc0010015
- 
- int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
-@@ -41,3 +45,63 @@ int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
- 	return 0;
- }
- #endif /* #if defined(__i386__) || defined(__x86_64__) */
-+
-+/* get_cpustate
-+ *
-+ * Gather the information of all online CPUs into bitmask struct
-+ */
-+void get_cpustate(void)
-+{
-+	unsigned int cpu = 0;
-+
-+	bitmask_clearall(online_cpus);
-+	bitmask_clearall(offline_cpus);
-+
-+	for (cpu = bitmask_first(cpus_chosen);
-+		cpu <= bitmask_last(cpus_chosen); cpu++) {
-+
-+		if (cpupower_is_cpu_online(cpu) == 1)
-+			bitmask_setbit(online_cpus, cpu);
-+		else
-+			bitmask_setbit(offline_cpus, cpu);
-+
-+		continue;
-+	}
-+}
-+
-+/* print_online_cpus
-+ *
-+ * Print the CPU numbers of all CPUs that are online currently
-+ */
-+void print_online_cpus(void)
-+{
-+	int str_len = 0;
-+	char *online_cpus_str = NULL;
-+
-+	str_len = online_cpus->size * 5;
-+	online_cpus_str = (void *)malloc(sizeof(char) * str_len);
-+
-+	if (!bitmask_isallclear(online_cpus)) {
-+		bitmask_displaylist(online_cpus_str, str_len, online_cpus);
-+		printf(_("Following CPUs are online:\n%s\n"), online_cpus_str);
-+	}
-+}
-+
-+/* print_offline_cpus
-+ *
-+ * Print the CPU numbers of all CPUs that are offline currently
-+ */
-+void print_offline_cpus(void)
-+{
-+	int str_len = 0;
-+	char *offline_cpus_str = NULL;
-+
-+	str_len = offline_cpus->size * 5;
-+	offline_cpus_str = (void *)malloc(sizeof(char) * str_len);
-+
-+	if (!bitmask_isallclear(offline_cpus)) {
-+		bitmask_displaylist(offline_cpus_str, str_len, offline_cpus);
-+		printf(_("Following CPUs are offline:\n%s\n"), offline_cpus_str);
-+		printf(_("cpupower set operation was not performed on them\n"));
-+	}
-+}
 -- 
-2.27.0
-
+Wei Yang
+Help you, Help me
