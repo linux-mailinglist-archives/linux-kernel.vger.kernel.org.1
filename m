@@ -2,118 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0497628FC7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 04:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FA528FC80
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 04:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404371AbgJPCsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 22:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404364AbgJPCsY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 22:48:24 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99998C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 19:48:24 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id a4so671254ybq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 19:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2I1rfmkFMOP1oBiXv7DCTbKbbDoMlArYYZ/2NaslRA0=;
-        b=qZBPG1HLxcsJ/PFafPOFhCBa2DqmT/V960xlfvw5MB0aM7SeKfSD7+TS+9Z4Mz8ezj
-         vJkz/SzSSRLo3pfNfY6nEeWA5irkDL42x+3mYCsejfG6Pbwdr4zacjvgeM4X+VEc2KC6
-         eLZfjK3zSSQlNw96J37iQIsTqlNjgnwNTERIMrsvYxV+ABc3N1u0UUN2audTAqSVCDms
-         Ia8bUYLM6NU5UduF7VgzjZgwn0uOqRCN2aqg2LQgYIEUUg397DJjSt3SCSu4++UgdcUB
-         Jk+K4cZ20QwGHcozmkcNi/Gk2CEUFkYpC/mLnMlImz1iIe3Jl4w0iL1RffPu2m0n+uPw
-         9+6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2I1rfmkFMOP1oBiXv7DCTbKbbDoMlArYYZ/2NaslRA0=;
-        b=ppi+BQ9f85xD1iQKW6jahitOZIPdIG7g5bN53fJJSEl8Dg/oW5ujbBAAQ2XqT09wch
-         g2mAvAQayqLDlYwtuyQi3yjkBL7yTV3a8UpPrm+4QwGIDb3YXwO1AiNxuFALLF3tVYGC
-         O9TU6sOxjUU9Qit+Kmz959A6dpt7u7P6w6ahELqxyFg3gNLEs7yNaRylyeFBA9OO3erA
-         CeisHcCFH3/yh+7U0VarNWIxgnnOVNvWh8qLR1LBmzIxMzKuMqMRz9dSfNjPN6yTqUHv
-         UyViI/JZHoOzPwcnNJmXL5gUWFCv27EQQI4SXYOVoqLidhAgJ/TFLg90wpUEyYfaX1Gk
-         RfkQ==
-X-Gm-Message-State: AOAM531duB3W2SUtevo4P/9vDLLnG87rk8MkFCD+eeKX5kYrQzdqEtJh
-        e1XMFboX2oy7qC1YIjNBdVr5hwPhI+MN5T55ZHg=
-X-Google-Smtp-Source: ABdhPJxyMYPvorSexxCUDHNnM++SseBEWYMluhTdbueT2uTAr0e95+Zvci5uulYhm4j4ozRV9s7qoUnWO+YqRqw+GdE=
-X-Received: by 2002:a25:d441:: with SMTP id m62mr2024568ybf.422.1602816503934;
- Thu, 15 Oct 2020 19:48:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201005122732.3429347-1-poeschel@lemonage.de> <20201005122732.3429347-3-poeschel@lemonage.de>
-In-Reply-To: <20201005122732.3429347-3-poeschel@lemonage.de>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 16 Oct 2020 04:48:13 +0200
-Message-ID: <CANiq72mgR5vXE1hFepN-vTQ0m1b9Zay2A29S6-si+3St4bj_fQ@mail.gmail.com>
-Subject: Re: [PATCH v4 02/32] auxdisplay: Introduce hd44780_common.[ch]
-To:     Lars Poeschel <poeschel@lemonage.de>
-Cc:     Willy Tarreau <willy@haproxy.com>,
-        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+        id S2393927AbgJPCxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 22:53:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393703AbgJPCx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 22:53:29 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEA5820878;
+        Fri, 16 Oct 2020 02:53:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602816808;
+        bh=IhSQx53hkVBmzkENXzPWlb+dAsaKLcdkiKSiRey596Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=1LG+EHVjsqLKxDYcoFXj5wJB/Pr9XQTRfBaZN8Dy3bdAFxOJwJn0mxNMPUv2ZQfM+
+         u6T7ZL9WbZGkm+VUPqzHgElWvuuDtaWACL2TwI9X9P/rcMcZWNMVz4DrbmmCWlvV2t
+         6KEevFmkZNK1as8mBtpg/9y+K2vveYG0ZKDLtePw=
+Date:   Fri, 16 Oct 2020 11:53:23 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>
+Subject: Re: [GIT PULL] tracing: Updates for 5.10
+Message-Id: <20201016115323.13a75e51d5dc18573de4d33a@kernel.org>
+In-Reply-To: <20201015222139.1b92a3be@gandalf.local.home>
+References: <20201015135345.6b29e8c0@gandalf.local.home>
+        <CAHk-=wjU86UhovK4XuwvCqTOfc+nvtpAuaN2PJBz15z=w=u0Xg@mail.gmail.com>
+        <20201015222139.1b92a3be@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 2:27 PM <poeschel@lemonage.de> wrote:
->
-> diff --git a/drivers/auxdisplay/hd44780_common.c b/drivers/auxdisplay/hd44780_common.c
-> new file mode 100644
-> index 000000000000..073f47397f7d
-> --- /dev/null
-> +++ b/drivers/auxdisplay/hd44780_common.c
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +
-> +#include "hd44780_common.h"
-> +
-> +struct hd44780_common *hd44780_common_alloc(void)
-> +{
-> +       struct hd44780_common *hd;
-> +
-> +       hd = kzalloc(sizeof(*hd), GFP_KERNEL);
-> +       if (!hd)
-> +               return NULL;
-> +
-> +       return hd;
-> +
+On Thu, 15 Oct 2020 22:21:39 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Typo: spurious newline.
+> On Thu, 15 Oct 2020 18:54:34 -0700
+> Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> 
+> > On Thu, Oct 15, 2020 at 10:53 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > >
+> > > Updates for tracing and bootconfig:  
+> > 
+> > Hmm. I haven't verified that this came from you, but it seems likely..
+> > Once again my clang build shows something that I don't see in my
+> > allmodconfig gcc build:
+> > 
+> >    WARNING: modpost: vmlinux.o(.text+0x1e5b06): Section mismatch in
+> > reference from the function __trace_early_add_events() to the function
+> > .init.text:__trace_early_add_new_event()
+> >    The function __trace_early_add_events() references
+> >    the function __init __trace_early_add_new_event().
+> >    This is often because __trace_early_add_events lacks a __init
+> >    annotation or the annotation of __trace_early_add_new_event is wrong.
+> > 
+> > Hmm?
+> > 
+> >                Linus
+> 
+> I see the issue, and I wonder if it has to do with optimization, for gcc
+> not to warn.
 
-> +}
-> +EXPORT_SYMBOL_GPL(hd44780_common_alloc);
-> +
-> +MODULE_LICENSE("GPL");
-> +
+I also couldn't reproduce it even with CONFIG_DEBUG_SECTION_MISMATCH=y.
+It seems that the __trace_early_add_new_event() is inlined in 
+__trace_early_add_events(). 
 
-Spurious EOF newline.
+$ eu-readelf -w kernel/trace/trace_events.o
+...
+ [ 1af20]    subprogram           abbrev: 53
+             name                 (strp) "__trace_early_add_new_event"
+             decl_file            (data1) trace_events.c (1)
+             decl_line            (data2) 2502
+             decl_column          (data1) 1
+             prototyped           (flag_present) yes
+             type                 (ref4) [    cc]
+             inline               (data1) inlined (1)
+$ gcc -v
+...
+gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04) 
 
-> diff --git a/drivers/auxdisplay/hd44780_common.h b/drivers/auxdisplay/hd44780_common.h
-> new file mode 100644
-> index 000000000000..767bbda91744
-> --- /dev/null
-> +++ b/drivers/auxdisplay/hd44780_common.h
-> @@ -0,0 +1,8 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +
-> +struct hd44780_common {
-> +       void *hd44780;
-> +};
-> +
-> +struct hd44780_common *hd44780_common_alloc(void);
-> +
+> 
+> The issue is that we have:
+> 
+> trace_array_create() that can be called at any time. And it has:
+> 
+> 	if (trace_instance_dir) {
+> 		ret = trace_array_create_dir(tr);
+> 		if (ret)
+> 			goto out_free_tr;
+> 	} else
+> 		__trace_early_add_events(tr);
+> 
+> 
+> Where trace_instance_dir gets set at boot up, and thus the else statement
+> will never get called after that.
+> 
+> The __trace_early_add_events() then calls __trace_early_add_new_events()
+> which is __init.
+> 
+> I don't know how gcc didn't trigger this and clang does.
 
-Spurious EOF newline.
+> 
+> I'll have to think about how to untangle this. Is there some kind of
+> annotation that makes it show that a path can only be called at boot up and
+> not later?
 
-(All already corrected in my queue).
+What happen if we use Peter's static_call() and update it after boot up? 
+Or, we might need to break apart the trace_array_create() and restruct
+it as __init trace_array_early_create() and trace_array_create().
 
-Cheers,
-Miguel
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
