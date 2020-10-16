@@ -2,86 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F1E2909F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878B02909FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410869AbgJPQsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409939AbgJPQsa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:48:30 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A338FC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 09:48:31 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id v12so1570509ply.12
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 09:48:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=kFfjf4cqxqS2UxHCWrfEtDypv5r7sdx7W2lPUX9+ZIs=;
-        b=UNUmY1Npk2hhqg9NYakLEd+p5UXBucqKbfVoGajax7q2M4ma70/lZ/4iBqZkvmItE4
-         NtkWXwua//Ho9cHuxyjs7qfeNTLAGB2JDZyieFnkd7038NJHm0cCWEsg5TQOSp1NGTj+
-         rIww9xyctZAdTQzooWfVE7mpk+TbrfD1cpoKc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=kFfjf4cqxqS2UxHCWrfEtDypv5r7sdx7W2lPUX9+ZIs=;
-        b=PTbJz9l/MLi/y1Whdqodj26etVdLZ+FZvWVXzJEloGblg+4avUtj3szQ0g4SuTsjNm
-         MjCqgPq9TtFKxCbAf8WcPDb52s0/GqJm4G/xb1VvDGkRzY4Qwzm93vuBfMuXBN3mC/6q
-         np7U2WlgKUa8DNKP7KIRWKo+VaaFfQABoq15kTeM8tzjFDv5ewuh07IlzZTQfp3dUuLn
-         z0rtXkdOY9ilq+owLnmGn50uCnAtvVlbwD66BEYYJxDdnAnY8ZVKxzrH8KdBVojv9Q+q
-         fJYzVr9hOh8pU1ONqkHCYHa5OHrERBDq1IWFH/7jU4VE9yzJgvCmJWb+OtkoACxHq+ai
-         K4vg==
-X-Gm-Message-State: AOAM5330eNPUj0GtX3fLTWY9dqthz05P4ZA6eeheaF/swvBXhfzU8gWD
-        kUNMz9MavKw2a5ADTPYvAF09uw==
-X-Google-Smtp-Source: ABdhPJztiqahfwi3NF64kDXzs85qi0GlRHBPiQOLs4nQt5T7N5GDK9hWDgbrzSIV7fxCITICBVioyA==
-X-Received: by 2002:a17:902:8e8b:b029:d2:4276:1df0 with SMTP id bg11-20020a1709028e8bb02900d242761df0mr4751874plb.62.1602866911093;
-        Fri, 16 Oct 2020 09:48:31 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id y4sm3349381pgl.67.2020.10.16.09.48.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 09:48:30 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
+        id S2410872AbgJPQu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:50:26 -0400
+Received: from mail-am6eur05on2072.outbound.protection.outlook.com ([40.107.22.72]:61792
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2409837AbgJPQu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 12:50:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V+bE0eSWejoLPebC8bJLUrs3bMd8JaTdHyXBg4rLaRRnFDQCwiJI+m/f7N+KAp9QIeZgh2MO369nri0AAG0I7sFRdTw1pcgxyL5Xu1Pqrn01SMWUVLWW6ezAW2MpZp/gpMxErB1TB3zuuoh82FA0sFtNE3DV6fyZisJ2gFjvEKD/i4wgfEHU6Twd4Fm7Hsd4d1Si5lQ+MNtBvncwUgR8tgUi+KscBs7PoPDMJbilqMY8TIrlzknMu7tzs6hOI45Hkg80cCtc0ttIKpP/WtZeEnGqM+wWp/L7l9aU1gNPamP2Z7zz6PHZXfo562vTsOOPZLghjprNT1mcjS2fCxESlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jiFr4UXVWRFb/6C8p7jnlDkwt3rG7oVdtJXfRKbpS0M=;
+ b=ZD4lzl8v4ylIsqy9uIIbHxDbFrAN614ttLu/nIctcpnAdxKVJFlpCGNhBn1DKGZXMEJHdMJlbahkSIldcMAfTNPjDl8vRqf5nj7pXlqFMVzQOHh6xS9WqEM+dwqZNVON/8SS8UnKs4kFwALjpZJRpfaE/0iuLNAmTXGja0GmQR4vV+/yD5FRVUILhkZTpTT2u1opWvaRvjEprXHld7wKRiqAc0RiCOCXzkmq8/F42vnbLGLJS7qXb5G4cP1+9rNsUfs1JHGEBAETlsrRW7PQuY/SBMQwUjt5+R+0G9vgnt7OZ/ZchgqFfK6Wzt0P9zPLJCLGwg6+R37Aw+839je3Xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jiFr4UXVWRFb/6C8p7jnlDkwt3rG7oVdtJXfRKbpS0M=;
+ b=p0tvaTV/X0+RNgHLJ9m/n9RT+blHeMGQ+HP0Zoqro62XuDIEja/9hJ5bZQyj+6CuxtM+bqOPAJ8x+KqnxUhAGZdtJCGTaJce/SzpKYSKC4YiA2Bz+hMLwdHG9JHQbGz7c7Pd0bRBLCSnGsxjsEkbQ67OhssT8Z2Nh6k4BG3r6kw=
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VE1PR04MB7343.eurprd04.prod.outlook.com (2603:10a6:800:1a2::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.24; Fri, 16 Oct
+ 2020 16:50:23 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3477.020; Fri, 16 Oct 2020
+ 16:50:23 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+Subject: Re: [RFC PATCH] net: bridge: call br_multicast_del_port before the
+ port leaves
+Thread-Topic: [RFC PATCH] net: bridge: call br_multicast_del_port before the
+ port leaves
+Thread-Index: AQHWoxlk3CgJjcYqVUG5/aECg5LB0qmaPloAgAA0UYA=
+Date:   Fri, 16 Oct 2020 16:50:22 +0000
+Message-ID: <20201016165021.fjrxiwofwfqespei@skbuf>
+References: <20201015173355.564934-1-vladimir.oltean@nxp.com>
+ <ed19387091755aee165c074983776f37f2b87892.camel@nvidia.com>
+In-Reply-To: <ed19387091755aee165c074983776f37f2b87892.camel@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.26.174.215]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6b901356-18ec-4e6d-4aec-08d871f39315
+x-ms-traffictypediagnostic: VE1PR04MB7343:
+x-microsoft-antispam-prvs: <VE1PR04MB73434973C7C2689C7A193882E0030@VE1PR04MB7343.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NKBX/mKebfYKEvIA3G7l0Y9pOY1OE2IfrbbDuyu2JsanVu6ikrp7/ENaIjaV92N/i5fFpWnuOkByt7IgcCsJHWt4D1Q8tcmLoFKn8cSAWHSYB8PtzQZyFoBDlfYGI807oPbV7Rg4NP+vhD5pgiPYSsB8yIEYjDcwK+VX11sId+Ti50ZrBoUbMbFeqe80t9UwB8rnOCXfJyPBEbW4VzI7JxmGgIEgZW2u0DXulWukTWl0ZK/EyCXkQMLZrb+YbcH9yaCMXFtEiY7eLqAFcVF6sTyUQ4PYnuDHAXtppyUQjLpspeM3IsFdfmKSDOuw3Xk2m1T+yPStN9kp7UyDX3ga3g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(366004)(39860400002)(396003)(376002)(346002)(186003)(6486002)(1076003)(4326008)(8676002)(8936002)(6506007)(2906002)(26005)(86362001)(71200400001)(6916009)(5660300002)(66556008)(316002)(33716001)(91956017)(478600001)(66476007)(6512007)(76116006)(66946007)(66446008)(44832011)(54906003)(3716004)(83380400001)(64756008)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: PuJ5Opea8tMIbWtYePpf06urNL2iJ4x4MfRAAga3RG7PGm8a/yV+R9M6JxtTiZFFgpKMc2/1LYXY6UmlzW1Qng4loaMCUPcxNMXrBopmAFljiqNxY4ZJd7xISpT3H/4CyTeYOo/4PMX4A20XZGmZiKahWF33J4eg7XGZkzQc47uEQXcUonIqb6sgJzXuGTV6yVNJCQoHVjDy6OLPepRHsRP/3QtRArWIOqOOpaJ+AE6CMQ0ZHyp1gHiK9DOK/1hT/wEv+Fhujj9ftmNgN+HYtApsKruplJ2IKGiOl7ft75mpTMMnQ/iLTR/mm0Mh2KLB7cb4jGDtfUCFad4wz5FxMdOreAG4bGjWw/fcqIi7a5A+MUIVBL+9YJMuXFjaiaYWta9uG+gn4qXAxlhQu4KoKEpHaAxncdc0vg/wCTMxCeXCJ9MJRHBEJuzAAG3bP/aghkYtmyFLMagMVzFVSsIQV8kAQpnbF0ux7hhUXxP2jv6R83LVnDO/kmPG8AOBVf9+NVsrJ5l0wRtXYGaaijx81Q7sJGiuGmz4mRGVukYKTd5TrFMg+RFApW8sg9NNDjxaf08mFMziIfSsZYMWfix3IIP1whHdjLRV+4R7Hyh62dTxLltw+giP7U2g2WIZZeb1pE6qE0eFZzU2zvapWLgtag==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <01BB5C912E1F944C867A03D3C92DBCC5@eurprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200929133040.RESEND.1.Ideabf6dcdfc577cf39ce3d95b0e4aa1ac8b38f0c@changeid>
-References: <20200929133040.RESEND.1.Ideabf6dcdfc577cf39ce3d95b0e4aa1ac8b38f0c@changeid>
-Subject: Re: [RESEND PATCH] soc: qcom: smp2p: Safely acquire spinlock without IRQs
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Markus Elfring <elfring@users.sourceforge.net>,
-        Evan Green <evgreen@chromium.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Evan Green <evgreen@chromium.org>
-Date:   Fri, 16 Oct 2020 09:48:29 -0700
-Message-ID: <160286690900.884498.13659438662199129460@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b901356-18ec-4e6d-4aec-08d871f39315
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2020 16:50:23.0573
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iz9ByR2avXDSVJUV+fGRB/q/i9BH0Xfpic8Fb1dSYkFlS5+ZAq2QFoBWy+narTM/3jddh7riHbb1IHfHp46Gzg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7343
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Evan Green (2020-09-29 13:30:57)
-> smp2p_update_bits() should disable interrupts when it acquires its
-> spinlock. This is important because without the _irqsave, a priority
-> inversion can occur.
->=20
-> This function is called both with interrupts enabled in
-> qcom_q6v5_request_stop(), and with interrupts disabled in
-> ipa_smp2p_panic_notifier(). IRQ handling of spinlocks should be
-> consistent to avoid the panic notifier deadlocking because it's
-> sitting on the thread that's already got the lock via _request_stop().
->=20
-> Found via lockdep.
->=20
-> Fixes: 50e99641413e7 ("soc: qcom: smp2p: Qualcomm Shared Memory Point to =
-Point")
-> Signed-off-by: Evan Green <evgreen@chromium.org>
-> ---
+On Fri, Oct 16, 2020 at 01:43:06PM +0000, Nikolay Aleksandrov wrote:
+> It can potentially use after free, multicast resources (per-cpu stats) ar=
+e freed
+> in br_multicast_del_port() and can be used due to a race with port state
+> sync on other CPUs since the handler can still process packets. That has =
+a
+> chance of happening if vlans are not used.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Interesting, thanks for pointing this out, I haven't observed
+use-after-free in my limited testing of this patch.
+
+> Interesting that br_stp_disable_port() calls br_multicast_disable_port() =
+which
+> flushes all non-permanent mdb entries, so I'm guessing you have problem o=
+nly
+> with permanent ones?
+
+Indeed, I'm testing out your L2 multicast patch.
+
+> Perhaps we can flush them all before. Either by passing an argument to
+> br_stp_disable_port() that we're deleting the port which will be
+> passed down to br_multicast_disable_port() or by calling an additional
+> helper to flush all which can be re-used by both disable_port() and
+> stop_multicast() calls. Adding an argument to br_stp_disable_port() to
+> be passed down sounds cleaner to me. What do you think?
+
+That sounds a bit complicated, to be honest.
+In fact, the reason why I submitted this as RFC only is because it isn't
+solving all my problems. You know that saying "- it hurts when I do that
+- then don't do that"? I think I can just change the ocelot driver to
+stop remapping the untagged MDB entries to its pvid, and then I can drop
+all my charges to the bridge driver.=
