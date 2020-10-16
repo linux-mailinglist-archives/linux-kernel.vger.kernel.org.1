@@ -2,87 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A9D290031
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DE6290034
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405205AbgJPIwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:52:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:59538 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404836AbgJPIwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:52:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E59ED30E;
-        Fri, 16 Oct 2020 01:52:18 -0700 (PDT)
-Received: from localhost (unknown [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 866173F719;
-        Fri, 16 Oct 2020 01:52:18 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 09:52:17 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Jassi Brar <jassisinghbrar@gmail.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        id S2405217AbgJPIwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:52:50 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:59940 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404319AbgJPIwu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 04:52:50 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 8039D8030808;
+        Fri, 16 Oct 2020 08:52:41 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id PNU5UTBKGSXE; Fri, 16 Oct 2020 11:52:40 +0300 (MSK)
+Date:   Fri, 16 Oct 2020 11:52:35 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Alexandre Torgue <alexandre.torgue@st.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
         Kevin Hilman <khilman@baylibre.com>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        Da Xue <da@libre.computer>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mailbox: cancel timer before starting it
-Message-ID: <20201016085217.GA12323@arm.com>
-References: <20200923123916.1115962-1-jbrunet@baylibre.com>
- <20201015134628.GA11989@arm.com>
- <1jlfg7k2ux.fsf@starbuckisacylon.baylibre.com>
- <CABb+yY1-MBac0e6xQwWkHRo3bqJNMWb4xQzdaGdrYT=n5zRvtw@mail.gmail.com>
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
+Message-ID: <20201016085235.znzzbqxac4yvh3cz@mobilestation>
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
+ <20201014101402.18271-19-Sergey.Semin@baikalelectronics.ru>
+ <8a7af322-227b-9923-8fb6-f284af582b40@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CABb+yY1-MBac0e6xQwWkHRo3bqJNMWb4xQzdaGdrYT=n5zRvtw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <8a7af322-227b-9923-8fb6-f284af582b40@st.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 15 Oct 2020 at 13:45:54 (-0500), Jassi Brar wrote:
-[..]
-> > >> --- a/drivers/mailbox/mailbox.c
-> > >> +++ b/drivers/mailbox/mailbox.c
-> > >> @@ -82,9 +82,13 @@ static void msg_submit(struct mbox_chan *chan)
-> > >>  exit:
-> > >>      spin_unlock_irqrestore(&chan->lock, flags);
-> > >>
-> > >> -    if (!err && (chan->txdone_method & TXDONE_BY_POLL))
-> > >> -            /* kick start the timer immediately to avoid delays */
-> > >> +    if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
-> > >> +            /* Disable the timer if already active ... */
-> > >> +            hrtimer_cancel(&chan->mbox->poll_hrt);
-> > >> +
-> > >> +            /* ... and kick start it immediately to avoid delays */
-> > >>              hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
-> > >> +    }
-> > >>  }
-> > >>
-> > >>  static void tx_tick(struct mbox_chan *chan, int r)
-> > >
-> > > I've tracked a regression back to this commit. Details to reproduce:
-> >
-> > Hi Ionela,
-> >
-> > I don't have access to your platform and I don't get what is going on
-> > from the log below.
-> >
-> > Could you please give us a bit more details about what is going on ?
-> >
-> > All this patch does is add hrtimer_cancel().
-> > * It is needed if the timer had already been started, which is
-> >   appropriate AFAIU
-> > * It is a NO-OP is the timer is not active.
-> >
-> Can you please try using hrtimer_try_to_cancel() instead ?
+Hello Alexandre,
+
+On Fri, Oct 16, 2020 at 09:08:23AM +0200, Alexandre Torgue wrote:
+> Hi Serge,
+> 
+> On 10/14/20 12:14 PM, Serge Semin wrote:
+> > In accordance with the Generic EHCI/OHCI bindings the corresponding node
+> > name is suppose to comply with the Generic USB HCD DT schema, which
+> > requires the USB nodes to have the name acceptable by the regexp:
+> > "^usb(@.*)?" . Let's fix the DTS files, which have the nodes defined with
+> > incompatible names.
+> > 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > 
+> > ---
+> > 
+> > Please, test the patch out to make sure it doesn't brake the dependent DTS
+> > files. I did only a manual grepping of the possible nodes dependencies.
+> > ---
+> >   arch/arc/boot/dts/axs10x_mb.dtsi               | 4 ++--
+> >   arch/arc/boot/dts/hsdk.dts                     | 4 ++--
+> >   arch/arc/boot/dts/vdk_axs10x_mb.dtsi           | 2 +-
+> >   arch/arm/boot/dts/bcm5301x.dtsi                | 4 ++--
+> >   arch/arm/boot/dts/bcm53573.dtsi                | 4 ++--
+> >   arch/arm/boot/dts/hisi-x5hd2.dtsi              | 4 ++--
+> >   arch/arm/boot/dts/lpc18xx.dtsi                 | 4 ++--
+> >   arch/arm/boot/dts/stm32mp151.dtsi              | 4 ++--
+> >   arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi | 4 ++--
+> >   arch/arm64/boot/dts/hisilicon/hip06.dtsi       | 4 ++--
+> >   arch/arm64/boot/dts/hisilicon/hip07.dtsi       | 4 ++--
+> >   arch/mips/boot/dts/ingenic/jz4740.dtsi         | 2 +-
+> >   arch/mips/boot/dts/ingenic/jz4770.dtsi         | 2 +-
+> >   arch/mips/boot/dts/mti/sead3.dts               | 2 +-
+> >   arch/mips/boot/dts/ralink/mt7628a.dtsi         | 2 +-
+> >   arch/powerpc/boot/dts/akebono.dts              | 6 +++---
+> >   16 files changed, 28 insertions(+), 28 deletions(-)
+> > 
 > 
 
-Yes, using hrtimer_try_to_cancel() instead works for me. But doesn't
-this limit how effective this change is? AFAIU, this will possibly only
-reduce the chances for the race condition, but not solve it.
+> I surely missed something, but we have here in the same patch modifications
+> for different architectures and different vendors.
+> 
+> Do you plan to split this patch after getting some Acked-by / Tested-by ?
 
-Thanks,
-Ionela.
+Yeah, I'll split this patch and two next ones up in v3.
 
-> thanks
+-Sergey
+
+> 
+> regards
+> Alex
+> 
+> 
