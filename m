@@ -2,115 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E608429061C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91195290619
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407220AbgJPNQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407176AbgJPNQA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:16:00 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90033C061755;
-        Fri, 16 Oct 2020 06:16:00 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id h2so1252036pll.11;
-        Fri, 16 Oct 2020 06:16:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ywZMHMoa9Z2/Mz63aoLeLWbP5S3RUkcpUs/A8T6Yyeg=;
-        b=D5961oYoWjrbxsHHTMOeZKBQ/TRF4he+KTOpPZPu0q9sMdCFZxI2NJkuWh8DjpTdbK
-         Nb5w+7ClTeSeXk/73DZv3Ng3yS/dPJntdavYpMrP62XQwzAJ/WvlX3XPyEh4iQC9M4am
-         HQYBvBfJdwdGYHfnKJC+NGj3FTpdC+uZeSFePGF/Wl6IWdZEJb96qzzH1Qtwg+DHQJvF
-         TwjoIySOE2x9Oz2SP9vf2lY8iBBGmGzkfyv+wQoKccbgN43y38sFaZc57A7hWtvqoe3D
-         Lfjjml5Pr8c3prYFdzy8gGZAxg1b5pQI1P1L3eCV+MGlQQ5YvmRlY1bGRrGAqgwcQFoc
-         B7cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ywZMHMoa9Z2/Mz63aoLeLWbP5S3RUkcpUs/A8T6Yyeg=;
-        b=G0+GT8vS2Z7ZWmrIsk1ZbKckM9DkKQ5d9BQ3voQ9grNYa+Vz4BHIVuwrMAQ79MIaRv
-         2TiONfu9AC/qHkyDE8AQwWFcqhCwyvASGW7mI4lH20/BSJ2V1jitirHHW2iHtVQ2JfRA
-         h422goSMp3xva2B3HDB4KC1Rr5ubk04oa8HlRGmgVXf1HVnh/WzMY909Usbv7DsaxIul
-         nM6x1Rartg3kMCGvh7Co7iVhNvKDIrA+L5dVnETfjl76Q+AyVagfNEVKztMKY6YCqAFX
-         u2Xuqy2EFD77boUKoA4M0R3v2W3hwnngLoyuS2IOJHCYusft7+6qyuerMgPlL9Rl/FX/
-         0F9g==
-X-Gm-Message-State: AOAM533hkplphf1BqfBBbpYfjFGVRYmpBgnChzPlTqrQrjSQqGEV1hV9
-        o7l8pDtZFM/pfC22Brs3W7E=
-X-Google-Smtp-Source: ABdhPJzZiFySSHjmf9JkgTm5CVtdFe+1MqqCGZN0AwBdYN0l1fJfu9gdvZmcESsUknwi1zG7/fqlYA==
-X-Received: by 2002:a17:902:c254:b029:d4:c2d4:15f with SMTP id 20-20020a170902c254b02900d4c2d4015fmr4055633plg.18.1602854159966;
-        Fri, 16 Oct 2020 06:15:59 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.207.75])
-        by smtp.gmail.com with ESMTPSA id q8sm2988144pfl.100.2020.10.16.06.15.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 06:15:59 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Subject: [PATCH v5] bluetooth: hci_h5: fix memory leak in h5_close
-Date:   Fri, 16 Oct 2020 18:44:47 +0530
-Message-Id: <20201016131447.32107-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S2407062AbgJPNPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:15:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44826 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404838AbgJPNPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 09:15:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602854132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bvAhj5rd9TdNJeHXm3trKOnA1tBOciYDggMWpj0b74s=;
+        b=GnUJU6yoCfhaA7heEo3YN761vM6a4v/S6AoyAIUE1JTIq02xvo/izHii3S2UTgT0IyAGSj
+        j2DdI+fdP0DEYOd7uNGqxuGV6FGDok/QyT2llMJ0mGTHRAoNJwi7Zw03VsE8o0WsrjGiRy
+        1Uarp2X6M62vtyAO7wXG7DdBrs4uU4Q=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6FE7CAB0E;
+        Fri, 16 Oct 2020 13:15:32 +0000 (UTC)
+Date:   Fri, 16 Oct 2020 15:15:31 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     osalvador@suse.de
+Cc:     Shijie Luo <luoshijie1@huawei.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linmiaohe@huawei.com, linfeilong@huawei.com
+Subject: Re: [PATCH] mm: fix potential pte_unmap_unlock pte error
+Message-ID: <20201016131531.GK22589@dhcp22.suse.cz>
+References: <20201015121534.50910-1-luoshijie1@huawei.com>
+ <20201016123137.GH22589@dhcp22.suse.cz>
+ <f99d9457ae88f3692e57cce86d0e22e8@suse.de>
+ <20201016131112.GJ22589@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016131112.GJ22589@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When h5_close() is called, h5 is directly freed when !hu->serdev.
-However, h5->rx_skb is not freed, which causes a memory leak.
+On Fri 16-10-20 15:11:17, Michal Hocko wrote:
+> On Fri 16-10-20 14:37:08, osalvador@suse.de wrote:
+> > On 2020-10-16 14:31, Michal Hocko wrote:
+> > > I do not like the fix though. The code is really confusing. Why should
+> > > we check for flags in each iteration of the loop when it cannot change?
+> > > Also why should we take the ptl lock in the first place when the look is
+> > > broken out immediately?
+> > 
+> > About checking the flags:
+> > 
+> > https://lore.kernel.org/linux-mm/20190320081643.3c4m5tec5vx653sn@d104.suse.de/#t
+> 
+> This didn't really help. Maybe the code was different back then but
+> right now the code doesn't make much sense TBH. The only reason to check
+> inside the loop would be to have a completely unpopulated address range.
+> Note about MPOL_MF_STRICT is not checked explicitly and I do not see how
+> it makes any difference.
 
-Freeing h5->rx_skb and setting it to NULL, fixes this memory leak.
+Ohh, I have missed queue_pages_required. Let me think some more.
 
-Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
-Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
-Changes in v5:
-	* Set h5->rx_skb = NULL unconditionally - to improve code
-	  readability
-	* Update commit message accordingly
-
-Changes in v4:
-	* Free h5->rx_skb even when hu->serdev
-	(Suggested by Hans de Goede <hdegoede@redhat.com>)
-	* If hu->serdev, then assign h5->rx_skb = NULL
-
-Changes in v3:
-	* Free h5->rx_skb when !hu->serdev, and fix the memory leak
-	* Do not incorrectly and unnecessarily call serdev_device_close()
-
-Changes in v2:
-	* Fixed the Fixes tag
-
-
- drivers/bluetooth/hci_h5.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-index e41854e0d79a..0ef253136b06 100644
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -245,6 +245,9 @@ static int h5_close(struct hci_uart *hu)
- 	skb_queue_purge(&h5->rel);
- 	skb_queue_purge(&h5->unrel);
- 
-+	kfree_skb(h5->rx_skb);
-+	h5->rx_skb = NULL;
-+
- 	if (h5->vnd && h5->vnd->close)
- 		h5->vnd->close(h5);
- 
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
