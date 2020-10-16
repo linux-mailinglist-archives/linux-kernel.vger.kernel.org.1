@@ -2,123 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCBA290018
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FAC29001A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394753AbgJPIoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:44:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:59382 "EHLO foss.arm.com"
+        id S2394766AbgJPIqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:46:13 -0400
+Received: from mga11.intel.com ([192.55.52.93]:43025 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394727AbgJPIoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:44:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3982330E;
-        Fri, 16 Oct 2020 01:44:36 -0700 (PDT)
-Received: from bogus (unknown [10.57.17.164])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0FA0F3F66B;
-        Fri, 16 Oct 2020 01:44:34 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 09:44:28 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-amlogic@lists.infradead.org, Da Xue <da@libre.computer>,
+        id S2394758AbgJPIqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 04:46:12 -0400
+IronPort-SDR: chggaPFl9FfnfbBU1ivL8D0DyIMdwRHMfi9AJPLUR+fJWPVmPGyfWHMf+a/T8/JYTgbywZOweY
+ yXdRSdXsbfeg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="163090125"
+X-IronPort-AV: E=Sophos;i="5.77,382,1596524400"; 
+   d="scan'208";a="163090125"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 01:46:12 -0700
+IronPort-SDR: 8LLpAYwz9KCocTN2dUijC/LibC0f7DgLVp2iZzFYUccnI54ez/AHz3q+79kD8Z79B0bnAma9YA
+ Dn74ihBSFEaw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,382,1596524400"; 
+   d="scan'208";a="522165891"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Oct 2020 01:46:10 -0700
+Subject: Re: [PATCH] mmc: sdhci-of-esdhc: set timeout to max before tuning
+To:     Michael Walle <michael@walle.cc>, linux-mmc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mailbox: cancel timer before starting it
-Message-ID: <20201016084428.gthqj25wrvnqjsvz@bogus>
-References: <20200923123916.1115962-1-jbrunet@baylibre.com>
- <20201015134628.GA11989@arm.com>
- <1jlfg7k2ux.fsf@starbuckisacylon.baylibre.com>
- <20201015142935.GA12516@arm.com>
+Cc:     Yangbo Lu <yangbo.lu@nxp.com>, Ulf Hansson <ulf.hansson@linaro.org>
+References: <20201015231149.9333-1-michael@walle.cc>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <d3546633-18d6-9ebf-0581-a3bf043178c3@intel.com>
+Date:   Fri, 16 Oct 2020 11:45:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015142935.GA12516@arm.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20201015231149.9333-1-michael@walle.cc>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 03:29:35PM +0100, Ionela Voinescu wrote:
-> Hi Jerome,
+On 16/10/20 2:11 am, Michael Walle wrote:
+> On rare occations there is the following error:
 > 
-> On Thursday 15 Oct 2020 at 15:58:30 (+0200), Jerome Brunet wrote:
-> > 
-> > On Thu 15 Oct 2020 at 15:46, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
-> > 
-> > > Hi guys,
-> > >
-> > > On Wednesday 23 Sep 2020 at 14:39:16 (+0200), Jerome Brunet wrote:
-> > >> If the txdone is done by polling, it is possible for msg_submit() to start
-> > >> the timer while txdone_hrtimer() callback is running. If the timer needs
-> > >> recheduling, it could already be enqueued by the time hrtimer_forward_now()
-> > >> is called, leading hrtimer to loudly complain.
-> > >> 
-> > >> WARNING: CPU: 3 PID: 74 at kernel/time/hrtimer.c:932 hrtimer_forward+0xc4/0x110
-> > >> CPU: 3 PID: 74 Comm: kworker/u8:1 Not tainted 5.9.0-rc2-00236-gd3520067d01c-dirty #5
-> > >> Hardware name: Libre Computer AML-S805X-AC (DT)
-> > >> Workqueue: events_freezable_power_ thermal_zone_device_check
-> > >> pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
-> > >> pc : hrtimer_forward+0xc4/0x110
-> > >> lr : txdone_hrtimer+0xf8/0x118
-> > >> [...]
-> > >> 
-> > >> Canceling the timer before starting it ensure that the timer callback is
-> > >> not running when the timer is started, solving this race condition.
-> > >> 
-> > >> Fixes: 0cc67945ea59 ("mailbox: switch to hrtimer for tx_complete polling")
-> > >> Reported-by: Da Xue <da@libre.computer>
-> > >> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> > >> ---
-> > >>  drivers/mailbox/mailbox.c | 8 ++++++--
-> > >>  1 file changed, 6 insertions(+), 2 deletions(-)
-> > >> 
-> > >> diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
-> > >> index 0b821a5b2db8..34f9ab01caef 100644
-> > >> --- a/drivers/mailbox/mailbox.c
-> > >> +++ b/drivers/mailbox/mailbox.c
-> > >> @@ -82,9 +82,13 @@ static void msg_submit(struct mbox_chan *chan)
-> > >>  exit:
-> > >>  	spin_unlock_irqrestore(&chan->lock, flags);
-> > >>  
-> > >> -	if (!err && (chan->txdone_method & TXDONE_BY_POLL))
-> > >> -		/* kick start the timer immediately to avoid delays */
-> > >> +	if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
-> > >> +		/* Disable the timer if already active ... */
-> > >> +		hrtimer_cancel(&chan->mbox->poll_hrt);
-> > >> +
-> > >> +		/* ... and kick start it immediately to avoid delays */
-> > >>  		hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
-> > >> +	}
-> > >>  }
-> > >>  
-> > >>  static void tx_tick(struct mbox_chan *chan, int r)
-> > >
-> > > I've tracked a regression back to this commit. Details to reproduce:
-> > 
-> > Hi Ionela,
-> > 
-> > I don't have access to your platform and I don't get what is going on
-> > from the log below.
-> > 
-> > Could you please give us a bit more details about what is going on ?
-> > 
+>   mmc0: Tuning timeout, falling back to fixed sampling clock
 > 
-> I'm not familiar with the mailbox subsystem, so the best I can do right
-> now is to add Sudeep to Cc, in case this conflicts in some way with the
-> ARM MHU patches [1].
->
+> There are SD cards which takes a significant longer time to reply to the
+> first CMD19 command. The eSDHC takes the data timeout value into account
+> during the tuning period. The SDHCI core doesn't explicitly set this
+> timeout for the tuning procedure. Thus on the slow cards, there might be
+> a spurious "Buffer Read Ready" interrupt, which in turn triggers a wrong
+> sequence of events. In the end this will lead to an unsuccessful tuning
+> procedure and to the above error.
+> 
+> To workaround this, set the timeout to the maximum value (which is the
+> best we can do) and the SDHCI core will take care of the proper timeout
+> handling.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-Not it can't be doorbell driver as we use SCPI(old firmware) with upstream
-MHU driver as is limiting the number of channels to be used.
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-> In the meantime I'll get some traces and get more familiar with the
-> code.
->
+> ---
+>  drivers/mmc/host/sdhci-of-esdhc.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-of-esdhc.c b/drivers/mmc/host/sdhci-of-esdhc.c
+> index 0b45eff6fed4..baf7801a1804 100644
+> --- a/drivers/mmc/host/sdhci-of-esdhc.c
+> +++ b/drivers/mmc/host/sdhci-of-esdhc.c
+> @@ -1052,6 +1052,17 @@ static int esdhc_execute_tuning(struct mmc_host *mmc, u32 opcode)
+>  
+>  	esdhc_tuning_block_enable(host, true);
+>  
+> +	/*
+> +	 * The eSDHC controller takes the data timeout value into account
+> +	 * during tuning. If the SD card is too slow sending the response, the
+> +	 * timer will expire and a "Buffer Read Ready" interrupt without data
+> +	 * is triggered. This leads to tuning errors.
+> +	 *
+> +	 * Just set the timeout to the maximum value because the core will
+> +	 * already take care of it in sdhci_send_tuning().
+> +	 */
+> +	sdhci_writeb(host, 0xe, SDHCI_TIMEOUT_CONTROL);
+> +
+>  	hs400_tuning = host->flags & SDHCI_HS400_TUNING;
+>  
+>  	do {
+> 
 
-I will try that too.
-
--- 
-Regards,
-Sudeep
