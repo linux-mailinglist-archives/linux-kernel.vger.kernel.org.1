@@ -2,334 +2,497 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4FF290C96
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28B2290C99
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393402AbgJPUFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 16:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392848AbgJPUFc (ORCPT
+        id S2393433AbgJPUHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 16:07:42 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:54084 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393212AbgJPUHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 16:05:32 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5991BC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:05:32 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id a200so2097337pfa.10
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:05:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JlmEeUtoxILUOsMKYCpMQdn4yPK9pTLKCLX4Si8MjAU=;
-        b=t1Dv5NTlDwXbYXAQYRzsrIDZdbB/MF9AsR8YdHhz/45R310IsVYdrtBLl8T8cwKYBj
-         3xpXcEeHrSZGYKKYwpFec9j+2FWElN2nVfN3PDcOU2eXRYkgb8pWaAT/OoS/PIrmBz4h
-         H1A8YLAK2rrOBydgtSbad0UHF3FNaPaKP9/oopZxRU8nr1FBEcPLUDANhbjKU5JBpRo6
-         WtP7MI73Je4UubwwpBP4i2yC1/Q0qaU9MW60IL+1SAHhXqnE3yDAvmJaAIz4fk7UmglV
-         Qety6GIbPtUqu0oBJKYfRkw7XGUbILbAAoLFF3t5Ha2mj2lIa6mpBRsb2ihzULbWsfuf
-         3UMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JlmEeUtoxILUOsMKYCpMQdn4yPK9pTLKCLX4Si8MjAU=;
-        b=lu+zfx0z7xd5z2/sPK3SLFjhJWvcWDgTkvlcEVEeJ2qkx8gPRbOohNM6Toi6u1Csvn
-         /We65xMoIanq0JpmKDLXuSuKQOM9UqVaXb2F3IYvWEu/1GN2xa6zXaj/8nbiiJa2YtUC
-         sjobu/VGoTwKHg5ndjEzx4/RTmXEEMC4KhBe1AlVfNtAR2JNicTzW8rc4qnwLaSrbr97
-         KnW8mPVzpbxRLF4MtHyjxgMD3WB30zCyGj3aodbO3VWAU8pR+r28iM+ifLwrpIiOiuq8
-         VTmPJ5r8JvZjreN+9GFku0d+cCnT58nmkKLtoEoSGrVoKoUD+mfPhGG61KgLfCKHdbH+
-         Ow9A==
-X-Gm-Message-State: AOAM533rzDfud0uuw5lFgGc0ynRQdUpGEx9cNssULCmlq7WtD2r4ZoHe
-        Rt7OLqPGPDRtEsYb13XQmeVr5oFCXE6q++SavwZCpw==
-X-Google-Smtp-Source: ABdhPJyY0iL3mCeN7sysfzxRlTqNR6HarRP8wyQNgU5xI+aCw8nzRm4aJgTclvHo+lg1XAtCCJJ/3+T3KQbJJNKH+sw=
-X-Received: by 2002:a63:8c42:: with SMTP id q2mr4523721pgn.130.1602878731581;
- Fri, 16 Oct 2020 13:05:31 -0700 (PDT)
+        Fri, 16 Oct 2020 16:07:41 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 1549D20030;
+        Fri, 16 Oct 2020 22:07:35 +0200 (CEST)
+Date:   Fri, 16 Oct 2020 22:07:34 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>, devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Subject: Re: [RESEND PATCH v5 2/2] drm/bridge: hx8837: add a Himax HX8837
+ display controller driver
+Message-ID: <20201016200734.GD1345100@ravnborg.org>
+References: <20200926000719.229204-1-lkundrak@v3.sk>
+ <20200926000719.229204-3-lkundrak@v3.sk>
 MIME-Version: 1.0
-References: <44861eaca17ffbb51726473bc8e86ad9e130c67e.1602876780.git.andreyknvl@google.com>
-In-Reply-To: <44861eaca17ffbb51726473bc8e86ad9e130c67e.1602876780.git.andreyknvl@google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 16 Oct 2020 22:05:20 +0200
-Message-ID: <CAAeHK+y=6cGn9OUd7wgB_RZyBDkZSpSBvyf8_c+V_ESz=hA7qw@mail.gmail.com>
-Subject: Re: [PATCH] kasan: adopt KUNIT tests to SW_TAGS mode
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        David Gow <davidgow@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926000719.229204-3-lkundrak@v3.sk>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=Op-mwl0xAAAA:8 a=e5mUnYsNAAAA:8
+        a=YTiKu0AdvXNqoZNr570A:9 a=CjuIK1q_8ugA:10 a=_kNtSFdpYmJUICABlfa3:22
+        a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 9:33 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> Now that we have KASAN-KUNIT tests integration, it's easy to see that
-> some KASAN tests are not adopted to the SW_TAGS mode and are failing.
->
-> Adjust the allocation size for kasan_memchr() and kasan_memcmp() by
-> roung it up to OOB_TAG_OFF so the bad access ends up in a separate
-> memory granule.
->
-> Add new kmalloc_uaf_16() and kasan_bitops_uaf() tests that rely on UAFs,
-> as it's hard to adopt the existing kmalloc_oob_16() and kasan_bitops_oob()
-> (rename from kasan_bitops()) without losing the precision.
->
-> Disable kasan_global_oob() and kasan_alloca_oob_left/right() as SW_TAGS
-> mode doesn't instrument globals nor dynamic allocas.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Hi Lubomir.
+
+On Sat, Sep 26, 2020 at 02:07:19AM +0200, Lubomir Rintel wrote:
+> Himax HX8837 is used to drive the LCD panel on OLPC platforms.
+> 
+> It controls the panel backlight and is able to refresh it when the LCD
+> controller (and the rest of the plaform) is powered off.
+> 
+> It also converts regular RGB color data from the LCDC so that it looks
+> reasonable on the OLPC LCD panel with a monochromatic layer on top of a
+> layer that can either reflect light (b/w sunlight readable mode) or light
+> pattern of red, green and blue pixels.
+> 
+> At this point, the driver is rather basic. The self-refresh mode is not
+> supported. There's no way of independently controlling the color swizzling,
+> antialiasing or b/w conversion, but it probably isn't too useful either.
+> 
+> There's another driver for the same hardware on OLPC XO-1.5 and XO-1.75
+> in drivers/staging/olpc_dcon. The display on that hardware doesn't utilize
+> DRM, so this driver doesn't replace the other one yet.
+> 
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+
+A little feedback follows.
+
+	Sam
+
+> 
 > ---
->  lib/test_kasan.c | 144 ++++++++++++++++++++++++++++++++---------------
->  1 file changed, 99 insertions(+), 45 deletions(-)
->
-> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index 63c26171a791..3bff25a7fdcc 100644
-> --- a/lib/test_kasan.c
-> +++ b/lib/test_kasan.c
-> @@ -216,6 +216,12 @@ static void kmalloc_oob_16(struct kunit *test)
->                 u64 words[2];
->         } *ptr1, *ptr2;
->
-> +       /* This test is specifically crafted for the generic mode. */
-> +       if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-> +               kunit_info(test, "CONFIG_KASAN_GENERIC required\n");
-> +               return;
-> +       }
+> Changes since v3:
+> - Added this patch, in place of a driver derived from
+>   drivers/staging/olpc_dcon. Compared to the previous one this
+>   implements the bare minimum, without the fancy stuff such as
+>   self-refresh that need more work/thinking.
+> 
+>  drivers/gpu/drm/bridge/Kconfig        |  13 ++
+>  drivers/gpu/drm/bridge/Makefile       |   1 +
+>  drivers/gpu/drm/bridge/himax-hx8837.c | 325 ++++++++++++++++++++++++++
+>  3 files changed, 339 insertions(+)
+>  create mode 100644 drivers/gpu/drm/bridge/himax-hx8837.c
+> 
+> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> index ef91646441b16..6a923dd56c1d5 100644
+> --- a/drivers/gpu/drm/bridge/Kconfig
+> +++ b/drivers/gpu/drm/bridge/Kconfig
+> @@ -48,6 +48,19 @@ config DRM_DISPLAY_CONNECTOR
+>  	  on ARM-based platforms. Saying Y here when this driver is not needed
+>  	  will not cause any issue.
+>  
+> +config DRM_HIMAX_HX8837
+> +        tristate "HiMax HX8837 OLPC Display Controller"
+> +	depends on OF
+> +	depends on OLPC || ARCH_MMP || COMPILE_TEST
+> +	select DRM_KMS_HELPER
+> +        select BACKLIGHT_LCD_SUPPORT
+> +        select BACKLIGHT_CLASS_DEVICE
+> +        help
+> +          Enable support for HiMax HX8837 Display Controller as found in the
+> +          OLPC XO laptops.
 > +
->         ptr1 = kmalloc(sizeof(*ptr1) - 3, GFP_KERNEL);
->         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
->
-> @@ -227,6 +233,23 @@ static void kmalloc_oob_16(struct kunit *test)
->         kfree(ptr2);
->  }
->
-> +static void kmalloc_uaf_16(struct kunit *test)
-> +{
-> +       struct {
-> +               u64 words[2];
-> +       } *ptr1, *ptr2;
-> +
-> +       ptr1 = kmalloc(sizeof(*ptr1), GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
-> +
-> +       ptr2 = kmalloc(sizeof(*ptr2), GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr2);
-> +       kfree(ptr2);
-> +
-> +       KUNIT_EXPECT_KASAN_FAIL(test, *ptr1 = *ptr2);
-> +       kfree(ptr1);
-> +}
-> +
->  static void kmalloc_oob_memset_2(struct kunit *test)
->  {
->         char *ptr;
-> @@ -429,6 +452,12 @@ static void kasan_global_oob(struct kunit *test)
->         volatile int i = 3;
->         char *p = &global_array[ARRAY_SIZE(global_array) + i];
->
-> +       /* Only generic mode instruments globals. */
-> +       if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-> +               kunit_info(test, "CONFIG_KASAN_GENERIC required");
-> +               return;
-> +       }
-> +
->         KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
->  }
->
-> @@ -467,6 +496,12 @@ static void kasan_alloca_oob_left(struct kunit *test)
->         char alloca_array[i];
->         char *p = alloca_array - 1;
->
-> +       /* Only generic mode instruments dynamic allocas. */
-> +       if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-> +               kunit_info(test, "CONFIG_KASAN_GENERIC required");
-> +               return;
-> +       }
-> +
->         if (!IS_ENABLED(CONFIG_KASAN_STACK)) {
->                 kunit_info(test, "CONFIG_KASAN_STACK is not enabled");
->                 return;
-> @@ -481,6 +516,12 @@ static void kasan_alloca_oob_right(struct kunit *test)
->         char alloca_array[i];
->         char *p = alloca_array + i;
->
-> +       /* Only generic mode instruments dynamic allocas. */
-> +       if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-> +               kunit_info(test, "CONFIG_KASAN_GENERIC required");
-> +               return;
-> +       }
-> +
->         if (!IS_ENABLED(CONFIG_KASAN_STACK)) {
->                 kunit_info(test, "CONFIG_KASAN_STACK is not enabled");
->                 return;
-> @@ -551,6 +592,9 @@ static void kasan_memchr(struct kunit *test)
->                 return;
->         }
->
-> +       if (OOB_TAG_OFF)
-> +               size = round_up(size, OOB_TAG_OFF);
-> +
->         ptr = kmalloc(size, GFP_KERNEL | __GFP_ZERO);
->         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
->
-> @@ -573,6 +617,9 @@ static void kasan_memcmp(struct kunit *test)
->                 return;
->         }
->
-> +       if (OOB_TAG_OFF)
-> +               size = round_up(size, OOB_TAG_OFF);
-> +
->         ptr = kmalloc(size, GFP_KERNEL | __GFP_ZERO);
->         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
->         memset(arr, 0, sizeof(arr));
-> @@ -619,13 +666,50 @@ static void kasan_strings(struct kunit *test)
->         KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = strnlen(ptr, 1));
->  }
->
-> -static void kasan_bitops(struct kunit *test)
-> +static void kasan_bitops_modify(struct kunit *test, int nr, void *addr)
-> +{
-> +       KUNIT_EXPECT_KASAN_FAIL(test, set_bit(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, __set_bit(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, clear_bit(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, __clear_bit(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, clear_bit_unlock(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, __clear_bit_unlock(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, change_bit(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, __change_bit(nr, addr));
-> +}
-> +
-> +static void kasan_bitops_test_and_modify(struct kunit *test, int nr, void *addr)
->  {
-> +       KUNIT_EXPECT_KASAN_FAIL(test, test_and_set_bit(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, __test_and_set_bit(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, test_and_set_bit_lock(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, test_and_clear_bit(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, __test_and_clear_bit(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, test_and_change_bit(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, __test_and_change_bit(nr, addr));
-> +       KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = test_bit(nr, addr));
-> +
-> +#if defined(clear_bit_unlock_is_negative_byte)
-> +       KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result =
-> +                               clear_bit_unlock_is_negative_byte(nr, addr));
-> +#endif
-> +}
-> +
-> +static void kasan_bitops_oob(struct kunit *test)
-> +{
-> +       long *bits;
-> +
-> +       /* This test is specifically crafted for the generic mode. */
-> +       if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-> +               kunit_info(test, "CONFIG_KASAN_GENERIC required\n");
-> +               return;
-> +       }
-> +
->         /*
->          * Allocate 1 more byte, which causes kzalloc to round up to 16-bytes;
->          * this way we do not actually corrupt other memory.
->          */
-> -       long *bits = kzalloc(sizeof(*bits) + 1, GFP_KERNEL);
-> +       bits = kzalloc(sizeof(*bits) + 1, GFP_KERNEL);
->         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, bits);
->
->         /*
-> @@ -633,56 +717,24 @@ static void kasan_bitops(struct kunit *test)
->          * below accesses are still out-of-bounds, since bitops are defined to
->          * operate on the whole long the bit is in.
->          */
-> -       KUNIT_EXPECT_KASAN_FAIL(test, set_bit(BITS_PER_LONG, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test, __set_bit(BITS_PER_LONG, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test, clear_bit(BITS_PER_LONG, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test, __clear_bit(BITS_PER_LONG, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test, clear_bit_unlock(BITS_PER_LONG, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test, __clear_bit_unlock(BITS_PER_LONG, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test, change_bit(BITS_PER_LONG, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test, __change_bit(BITS_PER_LONG, bits));
-> +       kasan_bitops_modify(test, BITS_PER_LONG, bits);
->
->         /*
->          * Below calls try to access bit beyond allocated memory.
->          */
-> -       KUNIT_EXPECT_KASAN_FAIL(test,
-> -               test_and_set_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test,
-> -               __test_and_set_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
-> +       kasan_bitops_test_and_modify(test, BITS_PER_LONG + BITS_PER_BYTE, bits);
->
-> -       KUNIT_EXPECT_KASAN_FAIL(test,
-> -               test_and_set_bit_lock(BITS_PER_LONG + BITS_PER_BYTE, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test,
-> -               test_and_clear_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test,
-> -               __test_and_clear_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test,
-> -               test_and_change_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
-> -
-> -       KUNIT_EXPECT_KASAN_FAIL(test,
-> -               __test_and_change_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
-> +       kfree(bits);
-> +}
->
-> -       KUNIT_EXPECT_KASAN_FAIL(test,
-> -               kasan_int_result =
-> -                       test_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
-> +static void kasan_bitops_uaf(struct kunit *test)
-> +{
-> +       long *bits = kzalloc(sizeof(*bits), GFP_KERNEL);
->
-> -#if defined(clear_bit_unlock_is_negative_byte)
-> -       KUNIT_EXPECT_KASAN_FAIL(test,
-> -               kasan_int_result = clear_bit_unlock_is_negative_byte(
-> -                       BITS_PER_LONG + BITS_PER_BYTE, bits));
-> -#endif
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, bits);
->         kfree(bits);
-> +       kasan_bitops_modify(test, BITS_PER_LONG, bits);
-> +       kasan_bitops_test_and_modify(test, BITS_PER_LONG + BITS_PER_BYTE, bits);
->  }
+> +          If your laptop doesn't have green ears, say "N"
 
-This actually ends up modifying the data in a freed object, which
-isn't a good idea. I'll change this to do an OOB too, but for the
-tag-based mode.
+There is a mixture of tabs and spaces for indent - use tabs only (and
+tabs + 2 spaces for the help text).
 
->
->  static void kmalloc_double_kzfree(struct kunit *test)
-> @@ -728,6 +780,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
->         KUNIT_CASE(kmalloc_oob_krealloc_more),
->         KUNIT_CASE(kmalloc_oob_krealloc_less),
->         KUNIT_CASE(kmalloc_oob_16),
-> +       KUNIT_CASE(kmalloc_uaf_16),
->         KUNIT_CASE(kmalloc_oob_in_memset),
->         KUNIT_CASE(kmalloc_oob_memset_2),
->         KUNIT_CASE(kmalloc_oob_memset_4),
-> @@ -751,7 +804,8 @@ static struct kunit_case kasan_kunit_test_cases[] = {
->         KUNIT_CASE(kasan_memchr),
->         KUNIT_CASE(kasan_memcmp),
->         KUNIT_CASE(kasan_strings),
-> -       KUNIT_CASE(kasan_bitops),
-> +       KUNIT_CASE(kasan_bitops_oob),
-> +       KUNIT_CASE(kasan_bitops_uaf),
->         KUNIT_CASE(kmalloc_double_kzfree),
->         KUNIT_CASE(vmalloc_oob),
->         {}
-> --
-> 2.29.0.rc1.297.gfa9743e501-goog
->
+
+> +
+>  config DRM_LONTIUM_LT9611
+>  	tristate "Lontium LT9611 DSI/HDMI bridge"
+>  	select SND_SOC_HDMI_CODEC if SND_SOC
+> diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
+> index 2b3aff104e466..21f72df3260db 100644
+> --- a/drivers/gpu/drm/bridge/Makefile
+> +++ b/drivers/gpu/drm/bridge/Makefile
+> @@ -2,6 +2,7 @@
+>  obj-$(CONFIG_DRM_CDNS_DSI) += cdns-dsi.o
+>  obj-$(CONFIG_DRM_CHRONTEL_CH7033) += chrontel-ch7033.o
+>  obj-$(CONFIG_DRM_DISPLAY_CONNECTOR) += display-connector.o
+> +obj-$(CONFIG_DRM_HIMAX_HX8837) += himax-hx8837.o
+Please add in alphabetical order.
+
+>  obj-$(CONFIG_DRM_LONTIUM_LT9611) += lontium-lt9611.o
+>  obj-$(CONFIG_DRM_LVDS_CODEC) += lvds-codec.o
+>  obj-$(CONFIG_DRM_MEGACHIPS_STDPXXXX_GE_B850V3_FW) += megachips-stdpxxxx-ge-b850v3-fw.o
+> diff --git a/drivers/gpu/drm/bridge/himax-hx8837.c b/drivers/gpu/drm/bridge/himax-hx8837.c
+> new file mode 100644
+> index 0000000000000..1e97fcb8ce505
+> --- /dev/null
+> +++ b/drivers/gpu/drm/bridge/himax-hx8837.c
+> @@ -0,0 +1,325 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * HiMax HX8837 Display Controller Driver
+> + *
+> + * Datasheet: http://wiki.laptop.org/images/0/09/DCON_datasheet_HX8837-A.pdf
+> + *
+> + * Copyright (C) 2020 Lubomir Rintel
+> + */
+> +
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/regmap.h>
+> +
+> +#include <drm/drm_atomic_helper.h>
+> +#include <drm/drm_panel.h>
+> +#include <drm/drm_bridge.h>
+> +#include <drm/drm_of.h>
+> +#include <drm/drm_print.h>
+> +#include <drm/drm_probe_helper.h>
+In blocks are good but please add them in alphabetical order.
+
+> +
+> +#define bridge_to_hx8837_priv(x) \
+> +	container_of(x, struct hx8837_priv, bridge)
+> +
+> +/* DCON registers */
+> +enum {
+> +	DCON_REG_ID		= 0x00,
+> +	DCON_REG_MODE		= 0x01,
+> +	DCON_REG_HRES		= 0x02,
+> +	DCON_REG_HTOTAL		= 0x03,
+> +	DCON_REG_HSYNC_WIDTH	= 0x04,
+> +	DCON_REG_VRES		= 0x05,
+> +	DCON_REG_VTOTAL		= 0x06,
+> +	DCON_REG_VSYNC_WIDTH	= 0x07,
+> +	DCON_REG_TIMEOUT	= 0x08,
+> +	DCON_REG_SCAN_INT	= 0x09,
+> +	DCON_REG_BRIGHT		= 0x0a,
+> +	DCON_REG_MEM_OPT_A	= 0x41,
+> +	DCON_REG_MEM_OPT_B	= 0x42,
+> +};
+> +
+> +/* DCON_REG_MODE */
+> +enum {
+> +	MODE_PASSTHRU		= BIT(0),
+> +	MODE_SLEEP		= BIT(1),
+> +	MODE_SLEEP_AUTO		= BIT(2),
+> +	MODE_BL_ENABLE		= BIT(3),
+> +	MODE_BLANK		= BIT(4),
+> +	MODE_CSWIZZLE		= BIT(5),
+> +	MODE_COL_AA		= BIT(6),
+> +	MODE_MONO_LUMA		= BIT(7),
+> +	MODE_SCAN_INT		= BIT(8),
+> +	MODE_CLOCKDIV		= BIT(9),
+> +	MODE_DEBUG		= BIT(14),
+> +	MODE_SELFTEST		= BIT(15),
+> +};
+> +
+> +struct hx8837_priv {
+> +	struct regmap *regmap;
+> +	struct gpio_desc *load_gpio;
+> +
+> +	struct drm_bridge *panel_bridge;
+> +	struct drm_panel *panel;
+No need for the panel pointer - use a local variable in the probe
+function 
+
+> +	struct drm_bridge bridge;
+> +};
+> +
+> +static int hx8837_bridge_attach(struct drm_bridge *bridge,
+> +				enum drm_bridge_attach_flags flags)
+> +{
+> +	struct hx8837_priv *priv = bridge_to_hx8837_priv(bridge);
+> +
+> +	return drm_bridge_attach(bridge->encoder, priv->panel_bridge,
+> +				 bridge, flags);
+> +}
+> +
+> +static enum drm_mode_status hx8837_bridge_mode_valid(
+> +				struct drm_bridge *bridge,
+> +				const struct drm_display_info *info,
+> +				const struct drm_display_mode *mode)
+> +{
+> +	if (mode->hdisplay > 0xffff)
+> +		return MODE_BAD_HVALUE;
+> +	if (mode->htotal > 0xffff)
+> +		return MODE_BAD_HVALUE;
+> +	if (mode->hsync_start - mode->hdisplay > 0xff)
+> +		return MODE_HBLANK_WIDE;
+> +	if (mode->hsync_end - mode->hsync_start > 0xff)
+> +		return MODE_HSYNC_WIDE;
+> +	if (mode->vdisplay > 0xffff)
+> +		return MODE_BAD_VVALUE;
+> +	if (mode->vtotal > 0xffff)
+> +		return MODE_BAD_VVALUE;
+> +	if (mode->vsync_start - mode->vdisplay > 0xff)
+> +		return MODE_VBLANK_WIDE;
+> +	if (mode->vsync_end - mode->vsync_start > 0xff)
+> +		return MODE_VSYNC_WIDE;
+> +
+> +	return MODE_OK;
+> +}
+> +
+> +static void hx8837_bridge_disable(struct drm_bridge *bridge)
+> +{
+> +	struct hx8837_priv *priv = bridge_to_hx8837_priv(bridge);
+> +	int ret;
+> +
+> +	ret = gpiod_direction_output(priv->load_gpio, 0);
+> +	if (ret)
+> +		DRM_ERROR("error enabling the dcon load: %d\n", ret);
+The driver uses both dev_xxx() and DRM_XXX for logging.
+Please stick to one way to do logging - I prefer for bridge drivers
+the dev_* variants.
+
+> +
+> +	ret = regmap_update_bits(priv->regmap, DCON_REG_MODE,
+> +					       MODE_PASSTHRU |
+> +					       MODE_SLEEP,
+> +					       MODE_PASSTHRU |
+> +					       MODE_SLEEP);
+> +	if (ret)
+> +		DRM_ERROR("error disabling the dcon: %d\n", ret);
+> +}
+> +
+> +static void hx8837_bridge_enable(struct drm_bridge *bridge)
+> +{
+> +	struct hx8837_priv *priv = bridge_to_hx8837_priv(bridge);
+> +	int ret;
+> +
+> +	ret = regmap_update_bits(priv->regmap, DCON_REG_MODE,
+> +					       MODE_PASSTHRU |
+> +					       MODE_SLEEP |
+> +					       MODE_SLEEP_AUTO |
+> +					       MODE_BLANK |
+> +					       MODE_SCAN_INT |
+> +					       MODE_CLOCKDIV |
+> +					       MODE_DEBUG |
+> +					       MODE_SELFTEST,
+> +					       MODE_PASSTHRU);
+> +	if (ret)
+> +		DRM_ERROR("error enabling the dcon: %d\n", ret);
+> +
+> +	ret = gpiod_direction_output(priv->load_gpio, 1);
+> +	if (ret)
+> +		DRM_ERROR("error enabling the dcon load: %d\n", ret);
+> +}
+> +
+> +static void hx8837_bridge_mode_set(struct drm_bridge *bridge,
+> +			   const struct drm_display_mode *mode,
+> +			   const struct drm_display_mode *adjusted_mode)
+> +{
+> +	struct hx8837_priv *priv = bridge_to_hx8837_priv(bridge);
+> +
+> +	regmap_write(priv->regmap, DCON_REG_HRES, mode->hdisplay);
+> +	regmap_write(priv->regmap, DCON_REG_HTOTAL, mode->htotal);
+> +	regmap_write(priv->regmap, DCON_REG_HSYNC_WIDTH,
+> +			(mode->hsync_start - mode->hdisplay) << 8 |
+> +			(mode->hsync_end - mode->hsync_start));
+> +	regmap_write(priv->regmap, DCON_REG_VRES, mode->vdisplay);
+> +	regmap_write(priv->regmap, DCON_REG_VTOTAL, mode->vtotal);
+> +	regmap_write(priv->regmap, DCON_REG_VSYNC_WIDTH,
+> +			(mode->vsync_start - mode->vdisplay) << 8 |
+> +			(mode->vsync_end - mode->vsync_start));
+> +}
+> +
+> +static const struct drm_bridge_funcs hx8837_bridge_funcs = {
+> +	.attach = hx8837_bridge_attach,
+> +	.mode_valid = hx8837_bridge_mode_valid,
+> +	.disable = hx8837_bridge_disable,
+> +	.enable = hx8837_bridge_enable,
+> +	.mode_set = hx8837_bridge_mode_set,
+> +};
+> +
+> +static int hx8837_bl_update_status(struct backlight_device *bl)
+> +{
+> +	struct hx8837_priv *priv = bl_get_data(bl);
+> +	unsigned int val;
+> +	int ret;
+> +
+> +	ret = regmap_update_bits(priv->regmap, DCON_REG_BRIGHT,
+> +					       0x000f,
+> +					       bl->props.brightness);
+
+Use backlight_get_brightness() to get the brightness.
+This will also make sure 0 is returned when backlight is off so the
+logic a few lines down is correct.
+
+> +	if (ret) {
+> +		dev_err(&bl->dev, "error setting the backlight: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	if (bl->props.brightness)
+> +		val = MODE_CSWIZZLE | MODE_COL_AA;
+> +	else
+> +		val = MODE_MONO_LUMA;
+> +
+> +	ret = regmap_update_bits(priv->regmap, DCON_REG_MODE,
+> +					       MODE_CSWIZZLE |
+> +					       MODE_COL_AA |
+> +					       MODE_MONO_LUMA,
+> +					       val);
+> +	if (ret) {
+> +		dev_err(&bl->dev, "error setting color mode: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct backlight_ops hx8837_bl_ops = {
+> +	.update_status = hx8837_bl_update_status,
+> +};
+> +
+> +static const struct regmap_config hx8837_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 16,
+> +	.max_register = 0x4c,
+> +	.val_format_endian = REGMAP_ENDIAN_LITTLE,
+> +};
+> +
+> +static int hx8837_probe(struct i2c_client *client,
+> +			const struct i2c_device_id *id)
+> +{
+> +	struct backlight_properties bl_props = {
+> +		.type = BACKLIGHT_RAW,
+> +		.max_brightness = 0xf,
+> +	};
+Make it const
+Maybe use a constant for the max value as it is also used as a mask
+later.
+
+> +	struct device *dev = &client->dev;
+> +	struct backlight_device *bl;
+> +	struct hx8837_priv *priv;
+> +	unsigned int val;
+> +	int ret;
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	dev_set_drvdata(dev, priv);
+> +
+> +	priv->load_gpio = devm_gpiod_get(dev, "load", GPIOD_ASIS);
+> +	if (IS_ERR(priv->load_gpio))
+> +		return PTR_ERR(priv->load_gpio);
+> +
+> +	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, -1,
+> +					  &priv->panel, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (priv->panel->backlight) {
+> +		dev_err(dev, "the panel already has a backlight controller\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	priv->panel_bridge = devm_drm_panel_bridge_add(dev, priv->panel);
+> +	if (IS_ERR(priv->panel_bridge))
+> +		return PTR_ERR(priv->panel_bridge);
+> +
+> +	priv->regmap = devm_regmap_init_i2c(client, &hx8837_regmap_config);
+> +	if (IS_ERR(priv->regmap)) {
+> +		dev_err(dev, "regmap init failed\n");
+> +		return PTR_ERR(priv->regmap);
+> +	}
+> +
+> +	ret = regmap_read(priv->regmap, DCON_REG_ID, &val);
+> +	if (ret < 0) {
+> +		dev_err(dev, "error reading the model id: %d\n", ret);
+> +		return ret;
+> +	}
+> +	if ((val & 0xff00) != 0xdc00) {
+> +		dev_err(dev, "the device is not a hx8837\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = regmap_read(priv->regmap, DCON_REG_BRIGHT, &val);
+> +	if (ret < 0) {
+> +		dev_err(&bl->dev, "error getting the backlight: %d\n", ret);
+> +		return ret;
+> +	}
+> +	bl_props.brightness = val & 0xf;
+> +
+> +	bl = devm_backlight_device_register(dev, dev_name(dev), dev, priv,
+> +					    &hx8837_bl_ops, &bl_props);
+> +	if (IS_ERR(bl)) {
+> +		dev_err(dev, "failed to register backlight\n");
+> +		return PTR_ERR(bl);
+> +	}
+> +
+> +	priv->panel->backlight = bl;
+> +
+> +	INIT_LIST_HEAD(&priv->bridge.list);
+> +	priv->bridge.funcs = &hx8837_bridge_funcs;
+> +	priv->bridge.of_node = dev->of_node;
+> +	drm_bridge_add(&priv->bridge);
+> +
+> +	dev_info(dev, "HiMax HX8837 Display Controller Driver\n");
+> +	return 0;
+> +}
+> +
+> +static int hx8837_remove(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	struct hx8837_priv *priv = dev_get_drvdata(dev);
+> +
+> +	drm_bridge_remove(&priv->bridge);
+
+> +	priv->panel->backlight = NULL;
+I cannot see why this is needed.
+IF this is needed we have a bug in the core stuff we need to fix.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id hx8837_dt_ids[] = {
+> +	{ .compatible = "himax,hx8837", },
+> +	{ }
+We often see { /* sentinel */ },
+in these cases.
+
+> +};
+> +MODULE_DEVICE_TABLE(of, hx8837_dt_ids);
+> +
+> +static const struct i2c_device_id hx8837_ids[] = {
+> +	{ "hx8837", 0 },
+> +	{ }
+Likewise
+
+> +};
+> +MODULE_DEVICE_TABLE(i2c, hx8837_ids);
+> +
+> +static struct i2c_driver hx8837_driver = {
+> +	.probe = hx8837_probe,
+> +	.remove = hx8837_remove,
+> +	.driver = {
+> +		.name = "hx8837",
+> +		.of_match_table = of_match_ptr(hx8837_dt_ids),
+> +	},
+> +	.id_table = hx8837_ids,
+> +};
+> +
+> +module_i2c_driver(hx8837_driver);
+> +
+> +MODULE_AUTHOR("Lubomir Rintel <lkundrak@v3.sk>");
+> +MODULE_DESCRIPTION("HiMax HX8837 Display Controller Driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.26.2
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
