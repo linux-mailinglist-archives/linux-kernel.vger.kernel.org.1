@@ -2,189 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C1728FEFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A1728FF01
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404513AbgJPHPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:15:06 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:37721 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404342AbgJPHPG (ORCPT
+        id S2404523AbgJPHTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404399AbgJPHTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:15:06 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UCAePNM_1602832502;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCAePNM_1602832502)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 16 Oct 2020 15:15:03 +0800
-Date:   Fri, 16 Oct 2020 15:15:02 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Subject: Re: [PATCH v1 13/29] virtio-mem: factor out handling of fake-offline
- pages in memory notifier
-Message-ID: <20201016071502.GM86495@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20201012125323.17509-1-david@redhat.com>
- <20201012125323.17509-14-david@redhat.com>
+        Fri, 16 Oct 2020 03:19:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AC2C061755;
+        Fri, 16 Oct 2020 00:19:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1P9w9u3qcroAFsEKoQTf2CUIsIxd2xOaHJsIpH8VZXg=; b=n+IoMjgMxCixm8P514TfCKSvC8
+        nY5+bNKvVQDdUID4OdW6wq2PbKzFEdIBuWFvhw6O9MutWf9LjHY7ogGBluYejt9RtPfjJiqY+PIrt
+        KNYzAzZWX8PLxxy0xJMEzaw+6vd7UQrXGuOcW8+JK/UQC374x/XbSJ5PugaElRWAZI2IUEB/ly87+
+        34TZICEmIxAF3lmAA+zCj7LrsoaoKpkkd2pYd47tHmGtpI8X3+4ogVhBPStgi0wTxxNzvNE9bjvyd
+        cmW0QHYExnsp18c0q5aEiqJxXMUYqo9mCIADvPSywAD0dbiOsiJYPEuEurXVur4QgEfvlCkKaeoH5
+        CaeXaqHw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kTK1d-00049y-2X; Fri, 16 Oct 2020 07:19:41 +0000
+Date:   Fri, 16 Oct 2020 08:19:41 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v2 2/4] block: add private field to struct keyslot_manager
+Message-ID: <20201016071941.GA14885@infradead.org>
+References: <20201015214632.41951-1-satyat@google.com>
+ <20201015214632.41951-3-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201012125323.17509-14-david@redhat.com>
+In-Reply-To: <20201015214632.41951-3-satyat@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 02:53:07PM +0200, David Hildenbrand wrote:
->Let's factor out the core pieces and place the implementation next to
->virtio_mem_fake_offline(). We'll reuse this functionality soon.
->
->Cc: "Michael S. Tsirkin" <mst@redhat.com>
->Cc: Jason Wang <jasowang@redhat.com>
->Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->Signed-off-by: David Hildenbrand <david@redhat.com>
->---
-> drivers/virtio/virtio_mem.c | 73 +++++++++++++++++++++++++------------
-> 1 file changed, 50 insertions(+), 23 deletions(-)
->
->diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
->index d132bc54ef57..a2124892e510 100644
->--- a/drivers/virtio/virtio_mem.c
->+++ b/drivers/virtio/virtio_mem.c
->@@ -168,6 +168,10 @@ static LIST_HEAD(virtio_mem_devices);
+On Thu, Oct 15, 2020 at 09:46:30PM +0000, Satya Tangirala wrote:
+> Add a (void *) pointer to struct keyslot_manager that the owner of the
+> struct can use for any purpose it wants.
 > 
-> static void virtio_mem_online_page_cb(struct page *page, unsigned int order);
-> static void virtio_mem_retry(struct virtio_mem *vm);
->+static void virtio_mem_fake_offline_going_offline(unsigned long pfn,
->+						  unsigned long nr_pages);
->+static void virtio_mem_fake_offline_cancel_offline(unsigned long pfn,
->+						   unsigned long nr_pages);
-> 
-> /*
->  * Register a virtio-mem device so it will be considered for the online_page
->@@ -604,27 +608,15 @@ static void virtio_mem_notify_going_offline(struct virtio_mem *vm,
-> 					    unsigned long mb_id)
-> {
-> 	const unsigned long nr_pages = PFN_DOWN(vm->subblock_size);
->-	struct page *page;
-> 	unsigned long pfn;
->-	int sb_id, i;
->+	int sb_id;
-> 
-> 	for (sb_id = 0; sb_id < vm->nb_sb_per_mb; sb_id++) {
-> 		if (virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id, 1))
-> 			continue;
->-		/*
->-		 * Drop our reference to the pages so the memory can get
->-		 * offlined and add the unplugged pages to the managed
->-		 * page counters (so offlining code can correctly subtract
->-		 * them again).
->-		 */
-> 		pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
-> 			       sb_id * vm->subblock_size);
->-		adjust_managed_page_count(pfn_to_page(pfn), nr_pages);
+> Right now, the struct keyslot_manager is expected to be embedded directly
+> into other structs (and the owner of the keyslot_manager would use
+> container_of() to access any other data the owner needs). However, this
+> might take up more space than is acceptable, and it would be better to be
+> able to add only a pointer to a struct keyslot_manager into other structs
+> rather than embed the entire struct directly. But container_of() can't be
+> used when only the pointer to the keyslot_manager is embded. The primary
+> motivation of this patch is to get around that issue.
 
-One question about the original code, why we want to adjust count here?
-
-The code flow is
-
-    __offline_pages()
-        memory_notify(MEM_GOING_OFFLINE, &arg)
-	    virtio_mem_notify_going_offline(vm, mb_id)
-	        adjust_managed_page_count(pfn_to_page(pfn), nr_pages)
-	adjust_managed_page_count(pfn_to_page(start_pfn), -offlined_pages)
-
-Do we adjust the count twice?
-
->-		for (i = 0; i < nr_pages; i++) {
->-			page = pfn_to_page(pfn + i);
->-			if (WARN_ON(!page_ref_dec_and_test(page)))
->-				dump_page(page, "unplugged page referenced");
->-		}
->+		virtio_mem_fake_offline_going_offline(pfn, nr_pages);
-> 	}
-> }
-> 
->@@ -633,21 +625,14 @@ static void virtio_mem_notify_cancel_offline(struct virtio_mem *vm,
-> {
-> 	const unsigned long nr_pages = PFN_DOWN(vm->subblock_size);
-> 	unsigned long pfn;
->-	int sb_id, i;
->+	int sb_id;
-> 
-> 	for (sb_id = 0; sb_id < vm->nb_sb_per_mb; sb_id++) {
-> 		if (virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id, 1))
-> 			continue;
->-		/*
->-		 * Get the reference we dropped when going offline and
->-		 * subtract the unplugged pages from the managed page
->-		 * counters.
->-		 */
-> 		pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
-> 			       sb_id * vm->subblock_size);
->-		adjust_managed_page_count(pfn_to_page(pfn), -nr_pages);
->-		for (i = 0; i < nr_pages; i++)
->-			page_ref_inc(pfn_to_page(pfn + i));
->+		virtio_mem_fake_offline_cancel_offline(pfn, nr_pages);
-> 	}
-> }
-> 
->@@ -853,6 +838,48 @@ static int virtio_mem_fake_offline(unsigned long pfn, unsigned long nr_pages)
-> 	return 0;
-> }
-> 
->+/*
->+ * Handle fake-offline pages when memory is going offline - such that the
->+ * pages can be skipped by mm-core when offlining.
->+ */
->+static void virtio_mem_fake_offline_going_offline(unsigned long pfn,
->+						  unsigned long nr_pages)
->+{
->+	struct page *page;
->+	unsigned long i;
->+
->+	/*
->+	 * Drop our reference to the pages so the memory can get offlined
->+	 * and add the unplugged pages to the managed page counters (so
->+	 * offlining code can correctly subtract them again).
->+	 */
->+	adjust_managed_page_count(pfn_to_page(pfn), nr_pages);
->+	/* Drop our reference to the pages so the memory can get offlined. */
->+	for (i = 0; i < nr_pages; i++) {
->+		page = pfn_to_page(pfn + i);
->+		if (WARN_ON(!page_ref_dec_and_test(page)))
->+			dump_page(page, "fake-offline page referenced");
->+	}
->+}
->+
->+/*
->+ * Handle fake-offline pages when memory offlining is canceled - to undo
->+ * what we did in virtio_mem_fake_offline_going_offline().
->+ */
->+static void virtio_mem_fake_offline_cancel_offline(unsigned long pfn,
->+						   unsigned long nr_pages)
->+{
->+	unsigned long i;
->+
->+	/*
->+	 * Get the reference we dropped when going offline and subtract the
->+	 * unplugged pages from the managed page counters.
->+	 */
->+	adjust_managed_page_count(pfn_to_page(pfn), -nr_pages);
->+	for (i = 0; i < nr_pages; i++)
->+		page_ref_inc(pfn_to_page(pfn + i));
->+}
->+
-> static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
-> {
-> 	const unsigned long addr = page_to_phys(page);
->-- 
->2.26.2
-
--- 
-Wei Yang
-Help you, Help me
+No, please don't bloat the structure.  If some weird caller doesn't
+like the embedding it can create a container structure with the
+blk_keyslot_manager structure and a backpointer.
