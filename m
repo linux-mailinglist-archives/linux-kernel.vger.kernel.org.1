@@ -2,195 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A123290A60
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AE3290A6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732641AbgJPRPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:15:24 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:56414 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732605AbgJPRPY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:15:24 -0400
-Received: from 89-64-86-149.dynamic.chello.pl (89.64.86.149) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.491)
- id 922e8bd7e753c80b; Fri, 16 Oct 2020 19:15:21 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Bob Moore <robert.moore@intel.com>
-Subject: Re: [PATCH 4/6] ACPICA: Add support for using logical addresses of GPE blocks
-Date:   Fri, 16 Oct 2020 19:15:20 +0200
-Message-ID: <1735226.fPvPZg4QOa@kreacher>
-In-Reply-To: <3b69e0d0-fb8a-92b4-42fd-f2a8fcdd642b@tessares.net>
-References: <1748021.N9i9sLPJ40@kreacher> <9373262.piL2bvXoCD@kreacher> <3b69e0d0-fb8a-92b4-42fd-f2a8fcdd642b@tessares.net>
+        id S2390164AbgJPRQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:16:57 -0400
+Received: from mailout08.rmx.de ([94.199.90.85]:48128 "EHLO mailout08.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730958AbgJPRQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 13:16:57 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout08.rmx.de (Postfix) with ESMTPS id 4CCXrN5QytzN1M8;
+        Fri, 16 Oct 2020 19:16:52 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4CCXqc07dDz2TTMX;
+        Fri, 16 Oct 2020 19:16:12 +0200 (CEST)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.12) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Fri, 16 Oct
+ 2020 19:16:11 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+CC:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>
+Subject: [PATCH net] net: dsa: tag_ksz: KSZ8795 and KSZ9477 also use tail tags
+Date:   Fri, 16 Oct 2020 19:16:03 +0200
+Message-ID: <20201016171603.10587-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.12]
+X-RMX-ID: 20201016-191612-4CCXqc07dDz2TTMX-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, October 16, 2020 4:30:55 PM CEST Matthieu Baerts wrote:
-> Hi Rafael,
+The Marvell 88E6060 uses tag_trailer.c and the KSZ8795, KSZ9477 and
+KSZ9893 switches also use tail tags.
 
-Hi,
-
-> On 04/09/2020 19:24, Rafael J. Wysocki wrote:
-> > From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-> > 
-> > The logical address of every GPE block in system memory must be
-> > known before passing it to acpi_ev_initialize_gpe_block(), because
-> > memory cannot be mapped on the fly from an interrupt handler.
-> > Accordingly, the host OS must map every GPE block in system
-> > memory upfront and it can store the logical addresses of GPE
-> > blocks for future use.
-> 
-> (...)
-> 
-> > diff --git a/drivers/acpi/acpica/hwgpe.c b/drivers/acpi/acpica/hwgpe.c
-> > index a0e71f34c77a..37bb67ef3232 100644
-> > --- a/drivers/acpi/acpica/hwgpe.c
-> > +++ b/drivers/acpi/acpica/hwgpe.c
-> > @@ -46,8 +46,13 @@ acpi_status acpi_hw_gpe_read(u64 *value, struct acpi_gpe_address *reg)
-> >   	u32 value32;
-> >   
-> >   	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
-> > +#ifdef ACPI_GPE_USE_LOGICAL_ADDRESSES
-> > +		*value = (u64)ACPI_GET8(reg->address);
-> 
-> Thank you for the patch!
-> 
-> When compiling net-next repo, recently sync with Linus repo, I got an 
-> error when using i386 arch because of this line above.
-> 
-> Here are the commands I used:
-> 
-> 
-> ================================================
-> $ make defconfig KBUILD_DEFCONFIG=i386_defconfig
-> *** Default configuration is based on 'i386_defconfig'
-> #
-> # configuration written to .config
-> #
-> $ scripts/config --disable DRM --disable PCCARD --disable ATA --disable 
-> MD --disable PPS --disable SOUND --disable USB --disable IOMMU_SUPPORT 
-> --disable INPUT_LEDS --disable AGP --disable VGA_ARB --disable EFI 
-> --disable WLAN --disable WIRELESS --disable LOGO --disable NFS_FS 
-> --disable XFRM_USER --disable INET6_AH --disable INET6_ESP --disable 
-> NETDEVICES -e KUNIT -d KUNIT_DEBUGFS -d KUNIT_TEST -d KUNIT_EXAMPLE_TEST 
-> -d EXT4_KUNIT_TESTS -d SYSCTL_KUNIT_TEST -d LIST_KUNIT_TEST -d 
-> LINEAR_RANGES_TEST -d BITS_TEST -d KUNIT_ALL_TESTS -e INET_DIAG -d 
-> INET_UDP_DIAG -d INET_RAW_DIAG -d INET_DIAG_DESTROY -e MPTCP -e 
-> MPTCP_IPV6 -e MPTCP_KUNIT_TESTS
-> $ KCFLAGS=-Werror make -j8 -l8
-> scripts/kconfig/conf  --syncconfig Kconfig
-> (...)
->    CC      drivers/acpi/acpica/hwgpe.o
-> In file included from ./include/acpi/acpi.h:24,
->                   from drivers/acpi/acpica/hwgpe.c:10:
-> drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_read':
-> ./include/acpi/actypes.h:501:48: error: cast to pointer from integer of 
-> different size [-Werror=int-to-pointer-cast]
->    501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) 
-> (p))
->        |                                                ^
-> drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 
-> 'ACPI_CAST_PTR'
->     18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (ptr))
->        |                                         ^~~~~~~~~~~~~
-> drivers/acpi/acpica/acmacros.h:22:43: note: in expansion of macro 
-> 'ACPI_CAST8'
->     22 | #define ACPI_GET8(ptr)                  (*ACPI_CAST8 (ptr))
->        |                                           ^~~~~~~~~~
-> drivers/acpi/acpica/hwgpe.c:50:17: note: in expansion of macro 'ACPI_GET8'
->     50 |   *value = (u64)ACPI_GET8(reg->address);
->        |                 ^~~~~~~~~
-> drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_write':
-> ./include/acpi/actypes.h:501:48: error: cast to pointer from integer of 
-> different size [-Werror=int-to-pointer-cast]
->    501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) 
-> (p))
->        |                                                ^
-> drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 
-> 'ACPI_CAST_PTR'
->     18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (ptr))
->        |                                         ^~~~~~~~~~~~~
-> drivers/acpi/acpica/acmacros.h:26:43: note: in expansion of macro 
-> 'ACPI_CAST8'
->     26 | #define ACPI_SET8(ptr, val)             (*ACPI_CAST8 (ptr) = 
-> (u8) (val))
->        |                                           ^~~~~~~~~~
-> drivers/acpi/acpica/hwgpe.c:85:3: note: in expansion of macro 'ACPI_SET8'
->     85 |   ACPI_SET8(reg->address, value);
->        |   ^~~~~~~~~
-> cc1: all warnings being treated as errors
-
-This is what causes the build to terminate.
-
-> make[3]: *** [scripts/Makefile.build:283: drivers/acpi/acpica/hwgpe.o] 
-> Error 1
-> make[2]: *** [scripts/Makefile.build:500: drivers/acpi/acpica] Error 2
-> make[1]: *** [scripts/Makefile.build:500: drivers/acpi] Error 2
-> make: *** [Makefile:1777: drivers] Error 2
-> ================================================
-> 
-> 
-> > +		return_ACPI_STATUS(AE_OK);
-> > +#else
-> >   		return acpi_os_read_memory((acpi_physical_address)reg->address,
-> >   					    value, ACPI_GPE_REGISTER_WIDTH);
-> > +#endif
-> >   	}
-> >   
-> >   	status = acpi_os_read_port((acpi_io_address)reg->address,
-> > @@ -76,8 +81,13 @@ acpi_status acpi_hw_gpe_read(u64 *value, struct acpi_gpe_address *reg)
-> >   acpi_status acpi_hw_gpe_write(u64 value, struct acpi_gpe_address *reg)
-> >   {
-> >   	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
-> > +#ifdef ACPI_GPE_USE_LOGICAL_ADDRESSES
-> > +		ACPI_SET8(reg->address, value);
-> 
-> (and also because of this line)
-> 
-> By chance, do you already have a fix for that?
-
-Can you please try the appended patch?
-
-> I didn't see any other 
-> email related to this issue, I am surprised no bot already reported the 
-> problem but maybe I didn't look everywhere :)
-
-No, they didn't AFAICS.
-
+Fixes: 7a6ffe764be3 ("net: dsa: point out the tail taggers")
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/acpi/acpica/hwgpe.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Friday, 16 October 2020, 18:56:51 CEST, Vladimir Oltean wrote:
+> Hi Christian,
+> 
+> The idea is perfect but the commit isn't.
+>  ...
+> Now if you run
+> "git show 7a6ffe764be35af0527d8cfd047945e8f8797ddf --pretty=fixes",
+> you'll see:
+> 
+> Fixes: 7a6ffe764be3 ("net: dsa: point out the tail taggers")
+thanks for pointing out how to use this feature. I did this manually up to now.
 
-Index: linux-pm/drivers/acpi/acpica/hwgpe.c
-===================================================================
---- linux-pm.orig/drivers/acpi/acpica/hwgpe.c
-+++ linux-pm/drivers/acpi/acpica/hwgpe.c
-@@ -47,7 +47,7 @@ acpi_status acpi_hw_gpe_read(u64 *value,
+> Notice how there's no [net] tag?
+> People complain when the format of the Fixes: tag is not standardized.
+I added it manually because the commit ID is not from Linus' tree. Is there any
+value using Fixes tags with id's from other trees?
+
+regards
+Christian
+
+ net/dsa/tag_ksz.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/dsa/tag_ksz.c b/net/dsa/tag_ksz.c
+index 945a9bd5ba35..0a5aa982c60d 100644
+--- a/net/dsa/tag_ksz.c
++++ b/net/dsa/tag_ksz.c
+@@ -123,6 +123,7 @@ static const struct dsa_device_ops ksz8795_netdev_ops = {
+ 	.xmit	= ksz8795_xmit,
+ 	.rcv	= ksz8795_rcv,
+ 	.overhead = KSZ_INGRESS_TAG_LEN,
++	.tail_tag = true,
+ };
  
- 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
- #ifdef ACPI_GPE_USE_LOGICAL_ADDRESSES
--		*value = (u64)ACPI_GET8(reg->address);
-+		*value = (u64)ACPI_GET8((unsigned long)reg->address);
- 		return_ACPI_STATUS(AE_OK);
- #else
- 		return acpi_os_read_memory((acpi_physical_address)reg->address,
-@@ -82,7 +82,7 @@ acpi_status acpi_hw_gpe_write(u64 value,
- {
- 	if (reg->space_id == ACPI_ADR_SPACE_SYSTEM_MEMORY) {
- #ifdef ACPI_GPE_USE_LOGICAL_ADDRESSES
--		ACPI_SET8(reg->address, value);
-+		ACPI_SET8((unsigned long)reg->address, value);
- 		return_ACPI_STATUS(AE_OK);
- #else
- 		return acpi_os_write_memory((acpi_physical_address)reg->address,
+ DSA_TAG_DRIVER(ksz8795_netdev_ops);
+@@ -199,6 +200,7 @@ static const struct dsa_device_ops ksz9477_netdev_ops = {
+ 	.xmit	= ksz9477_xmit,
+ 	.rcv	= ksz9477_rcv,
+ 	.overhead = KSZ9477_INGRESS_TAG_LEN,
++	.tail_tag = true,
+ };
+ 
+ DSA_TAG_DRIVER(ksz9477_netdev_ops);
+-- 
+Christian Eggers
+Embedded software developer
 
-
+Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
 
