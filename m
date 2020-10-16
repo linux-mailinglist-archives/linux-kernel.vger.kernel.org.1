@@ -2,64 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87797290676
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819ED290674
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408341AbgJPNmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:42:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40107 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406784AbgJPNmX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:42:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602855741;
+        id S2408326AbgJPNmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:42:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34632 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408186AbgJPNmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 09:42:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602855736;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cbJxc+II0u6UP+GUu2KXn2UU9q29Ru3OPZf8OkjfGbk=;
-        b=XATsLnYsRhgavAXrFea7gmV9xjxfLuTTFveaKsW9fHwZktSy5yHlWzTIjsHG3c+6W6knuW
-        WWVOrxlnlD0eLT+wU+7BLxZlT22s8jrEk7i/JToEHnUk7lAR83tgNe8fkEeo6pMS0iQveZ
-        GvlDIYrBHWthdU++LmOLaPntbeYQJtY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-411-QGqHxhTANqSNKjJtY0fl-A-1; Fri, 16 Oct 2020 09:42:18 -0400
-X-MC-Unique: QGqHxhTANqSNKjJtY0fl-A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5172B18A0737;
+        bh=vLWRvYYXUO47dYQW4nDaQupe4h8/87CElGZFuPU0ZGg=;
+        b=e+kzxg5P2cYcA3iqY8DQAbdAkvIKuc4qr+PABYuLWc2x5OgCUgpQ4TOj9e0Wb4MqTl0Ycb
+        Ynt1KKkEhAXJBTd3NanyST++1EQlZC2faj3tNXhABXKTGsWq8/whsUz6P0VxEVF7z4xa05
+        TFg3b4RH52o/fYVXpjSlu+zs1+nKqv0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B6323B2D8;
         Fri, 16 Oct 2020 13:42:16 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B75C16EF58;
-        Fri, 16 Oct 2020 13:42:08 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <000000000000b9f2ac05b05ae349@google.com>
-References: <000000000000b9f2ac05b05ae349@google.com>
-To:     syzbot <syzbot+b994ecf2b023f14832c1@syzkaller.appspotmail.com>
-Cc:     dhowells@redhat.com, davem@davemloft.net,
-        hchunhui@mail.ustc.edu.cn, ja@ssi.bg, jmorris@namei.org,
-        kaber@trash.net, kuznet@ms2.inr.ac.ru,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
-Subject: Re: WARNING: proc registration bug in afs_manage_cell
+Date:   Fri, 16 Oct 2020 15:42:15 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     osalvador@suse.de
+Cc:     Shijie Luo <luoshijie1@huawei.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linmiaohe@huawei.com, linfeilong@huawei.com
+Subject: Re: [PATCH] mm: fix potential pte_unmap_unlock pte error
+Message-ID: <20201016134215.GL22589@dhcp22.suse.cz>
+References: <20201015121534.50910-1-luoshijie1@huawei.com>
+ <20201016123137.GH22589@dhcp22.suse.cz>
+ <f99d9457ae88f3692e57cce86d0e22e8@suse.de>
+ <20201016131112.GJ22589@dhcp22.suse.cz>
+ <20201016131531.GK22589@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1423870.1602855728.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 16 Oct 2020 14:42:08 +0100
-Message-ID: <1423871.1602855728@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016131531.GK22589@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs=
-.git 7530d3eb3dcf1a30750e8e7f1f88b782b96b72b8
+On Fri 16-10-20 15:15:32, Michal Hocko wrote:
+> On Fri 16-10-20 15:11:17, Michal Hocko wrote:
+> > On Fri 16-10-20 14:37:08, osalvador@suse.de wrote:
+> > > On 2020-10-16 14:31, Michal Hocko wrote:
+> > > > I do not like the fix though. The code is really confusing. Why should
+> > > > we check for flags in each iteration of the loop when it cannot change?
+> > > > Also why should we take the ptl lock in the first place when the look is
+> > > > broken out immediately?
+> > > 
+> > > About checking the flags:
+> > > 
+> > > https://lore.kernel.org/linux-mm/20190320081643.3c4m5tec5vx653sn@d104.suse.de/#t
+> > 
+> > This didn't really help. Maybe the code was different back then but
+> > right now the code doesn't make much sense TBH. The only reason to check
+> > inside the loop would be to have a completely unpopulated address range.
+> > Note about MPOL_MF_STRICT is not checked explicitly and I do not see how
+> > it makes any difference.
+> 
+> Ohh, I have missed queue_pages_required. Let me think some more.
 
+OK, I finally managed to convince my friday brain to think and grasped
+what the code is intended to do. The loop is hairy and we want to
+prevent from spurious EIO when all the pages are on a proper node. So
+the check has to be done inside the loop. Anyway I would find the
+following fix less error prone and easier to follow
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index eddbe4e56c73..8cc1fc9c4d13 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -525,7 +525,7 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
+ 	unsigned long flags = qp->flags;
+ 	int ret;
+ 	bool has_unmovable = false;
+-	pte_t *pte;
++	pte_t *pte, *mapped_pte;
+ 	spinlock_t *ptl;
+ 
+ 	ptl = pmd_trans_huge_lock(pmd, vma);
+@@ -539,7 +539,7 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
+ 	if (pmd_trans_unstable(pmd))
+ 		return 0;
+ 
+-	pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
++	mapped_pte = pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
+ 	for (; addr != end; pte++, addr += PAGE_SIZE) {
+ 		if (!pte_present(*pte))
+ 			continue;
+@@ -571,7 +571,7 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
+ 		} else
+ 			break;
+ 	}
+-	pte_unmap_unlock(pte - 1, ptl);
++	pte_unmap_unlock(mapped_pte, ptl);
+ 	cond_resched();
+ 
+ 	if (has_unmovable)
+-- 
+Michal Hocko
+SUSE Labs
