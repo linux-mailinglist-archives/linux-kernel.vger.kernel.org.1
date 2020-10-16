@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7397F28FFD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED15128FFDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404996AbgJPINu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:13:50 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:41618 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404939AbgJPINt (ORCPT
+        id S2405070AbgJPISn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:18:43 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:3747 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404992AbgJPISm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:13:49 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-25-NRrZ346XOLelYSsRdn014w-1; Fri, 16 Oct 2020 09:13:45 +0100
-X-MC-Unique: NRrZ346XOLelYSsRdn014w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 16 Oct 2020 09:13:44 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 16 Oct 2020 09:13:44 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arvind Sankar' <nivedita@alum.mit.edu>
-CC:     Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Nathan Chancellor" <natechancellor@gmail.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] compiler.h: Clarify comment about the need for
- barrier_data()
-Thread-Topic: [PATCH] compiler.h: Clarify comment about the need for
- barrier_data()
-Thread-Index: AQHWox7rJ5hC7vlNqk+GpAb0LFktmKmZJEvQgAACJICAALXFQA==
-Date:   Fri, 16 Oct 2020 08:13:44 +0000
-Message-ID: <407e91d1d36d48faa8bbdfe4f51033ad@AcuMS.aculab.com>
-References: <CAKwvOdkLvxeYeBh7Kx0gw7JPktPH8A4DomJTidUqA0jRQTR0FA@mail.gmail.com>
- <20201015181340.653004-1-nivedita@alum.mit.edu>
- <72958fd25e33490181b0df9413ec08b4@AcuMS.aculab.com>
- <20201015220123.GA919128@rani.riverdale.lan>
-In-Reply-To: <20201015220123.GA919128@rani.riverdale.lan>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 16 Oct 2020 04:18:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1602836322; x=1634372322;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FQiY+u3yLkMuP0Qqk5TM9IZJRRRUTajSE4D/OI6vgoo=;
+  b=Wn3n3rPcSPA885W9E6YkJnvoMgfa6MCUg+x4aPXx1kkC6GphwQ5Ul3WU
+   2jDgIND+AZwwvJoGf/wUyCozA9xbt7ImNFmIhY3yvb8wCMjBalVCNH2FJ
+   IZICStdHgt5yzeJY+yVPpQymVnsH+DOiHKyTynLsTZ8Iy8GDWZvhUclUl
+   pwF3vel2OIxQuMweJF96lR4MmVCQ3MJ3ESQVNC3Xyz0srAx6a7hZ8aOI7
+   lRBbYCJ9X+64xOmyelSM/jCguVoPWhACQ9UoxM1bn2aAkvtnsHEVfKuS2
+   pKm9qGNOLpnJfvRSYGrzv9i5ClHzfdqUiNkqhFFVJogQ+DJYZu0lP3Asr
+   g==;
+IronPort-SDR: 7HZ2svuXbSoAwo/wpFlTmOG65l0Et/yLOjVa5vcLruopKr0NGAC7LZ6mQ4XsqPx/6BCA8DipVr
+ SY1jz5OtsUFrgWU8vRfkV4mQXnAp3CT/6I9Q0Qe4S/tEwNZcOfUW0nOoRgMUSRig37bv2EIjGd
+ khDvx7t3YSwi8OZEb6c0fZ+Q4JT5hRqtvlLRxKZRYnifPlZpX/BvmQrREyIxLr6zTz0/loM6T7
+ K1EPqOfPShFsnvfh6v6lOJuv1pT5TXp6Nhn44zDVhG7riZUaRSZ8grVUkdPNMz2Uuze+n9qddK
+ 3Fw=
+X-IronPort-AV: E=Sophos;i="5.77,382,1596524400"; 
+   d="scan'208";a="99779782"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Oct 2020 01:18:41 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 16 Oct 2020 01:18:01 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Fri, 16 Oct 2020 01:17:57 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <vkoul@kernel.org>, <robh+dt@kernel.org>
+CC:     <nicolas.ferre@microchip.com>, <tudor.ambarus@microchip.com>,
+        <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Eugen Hristev" <eugen.hristev@microchip.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v2 1/4] dt-bindings: dmaengine: at_xdmac: add compatible with microchip,sama7g5
+Date:   Fri, 16 Oct 2020 11:17:51 +0300
+Message-ID: <20201016081754.288488-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJ2aW5kIFNhbmthcg0KPiBTZW50OiAxNSBPY3RvYmVyIDIwMjAgMjM6MDENCiwsLA0K
-PiBJIHRoaW5rIGl0J3MgaGVscGZ1bCB0byBoYXZlIHRoZSBtb3JlIGRldGFpbGVkIGV4cGxhbmF0
-aW9uIGFib3V0DQo+IHJlZ2lzdGVyIHZhcmlhYmxlcyAtLSBhdCBmaXJzdCBnbGFuY2UsIGl0J3Mg
-YSBiaXQgbXlzdGlmeWluZyBhcyB0byB3aHkNCj4gdGhlIGNvbXBpbGVyIHdvdWxkIHRoaW5rIHRo
-YXQgdGhlIGFzbSBjYW4ndCBhY2Nlc3MgdGhlIHN0YWNrLiBTcGlsbGluZw0KPiByZWdpc3RlcnMg
-dG8gdGhlIHN0YWNrIGlzIGFjdHVhbGx5IGFuIHVuZGVzaXJhYmxlIHNpZGUtZWZmZWN0IG9mIHRo
-ZQ0KPiB3b3JrYXJvdW5kLg0KDQpUaGF0IGlzIHRoZSB2ZXJ5IGJpdCB0aGF0IGp1c3QgY29uZnVz
-ZXMgdGhpbmdzLg0KVGhlIGRhdGEgdGhlIG1lbXplcm9fZXhwbGljdGl0KCkgaXMgdHJ5aW5nIHRv
-IGNsZWFyIGlzIChwcm9iYWJseSkNCm9uLXN0YWNrIGFscmVhZHkgLSBpdCB3b24ndCBiZSBpbiBy
-ZWdpc3RlcnMuDQoNCklmIGl0IHdlcmUgaW4gcmVnaXN0ZXJzIHlvdSB3b3VsZG4ndCBuZWVkIHRo
-ZSBtZW1zZXQoKS4NCg0KQWN0dWFsbHkgSSBzdXNwZWN0IHRoYXQgdGhlIG1lbXNldCgpIGlzIGlu
-bGluZWQgc28gdGhhdCBpcw0KanVzdCBhc3NpZ25zIHplcm9zIHRvIGFsbCB0aGUgdmFyaWFibGVz
-Lg0KVGhpcyB3aWxsIGJlIGRvbmUgdXNpbmcgJ3ZpcnR1YWwgcmVnaXN0ZXJzJyB0aGF0IGNhY2hl
-IHRoZQ0Kb24tc3RhY2sgdmFsdWUuDQpZb3UgdGhlbiBuZWVkIHRvIGRvIHNvbWV0aGluZyB0byBm
-b3JjZSB0aGUgaW5zdHJ1Y3Rpb25zIHRvIGZsdXNoDQp0aGUgJ3ZpcnR1YWwgcmVnaXN0ZXJzJyBi
-YWNrIHRvIHN0YWNrIHRvIGJlIGdlbmVyYXRlZC4NCg0KVGhlIGZ1bmRhbWVudGFsIHRoaW5nIGlz
-IHRoYXQgdGhlIGFkZHJlc3Mgb2YgYSBsb2NhbCAoYXV0byEpDQp2YXJpYWJsZSBtdXN0IGJlIHZp
-c2libGUgdG8gdGhlIGFzbSBzdGF0ZW1lbnQgZm9yIHRoZSBjb21waWxlcg0KdG8gbWFrZSB0aGUg
-Y29udGVudHMgb2YgdGhvc2UgdmFyaWFibGVzIHZpc2libGUuDQoNCkkgZXZlbiBzdXNwZWN0IHlv
-dSBtYXkgbmVlZCB0byBwYXNzIHRoZSBhZGRyZXNzIG9mIHRoZSBzdHJ1Y3R1cmUNCih0byBiZSB6
-ZXJvZWQpIHRvIGFuIGFzbSBibG9jayBhdCB0aGUgdG9wIG9mIHRoZSBmdW5jdGlvbiBhcyB3ZWxs
-Lg0KT3RoZXJ3aXNlIHRoZSBjb21waWxlciBjb3VsZCBjaGFuZ2UgdGhlIHN0YWNrIG9mZnNldHMg
-d2hlcmUgdGhlDQpzdHJ1Y3R1cmUgaXMgc3RvcmVkLg0KQnV0IEkgZG9uJ3QgdGhpbmsgY29tcGls
-ZXJzIGRvIHRoYXQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUs
-IEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJl
-Z2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+Add compatible to sama7g5 SoC.
+
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+Changes in v2:
+- no changes
+
+ Documentation/devicetree/bindings/dma/atmel-xdma.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/dma/atmel-xdma.txt b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
+index 4dc398e1a371..510b7f25ba24 100644
+--- a/Documentation/devicetree/bindings/dma/atmel-xdma.txt
++++ b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
+@@ -2,7 +2,8 @@
+ 
+ * XDMA Controller
+ Required properties:
+-- compatible: Should be "atmel,sama5d4-dma" or "microchip,sam9x60-dma".
++- compatible: Should be "atmel,sama5d4-dma", "microchip,sam9x60-dma" or
++  "microchip,sama7g5-dma".
+ - reg: Should contain DMA registers location and length.
+ - interrupts: Should contain DMA interrupt.
+ - #dma-cells: Must be <1>, used to represent the number of integer cells in
+-- 
+2.25.1
 
