@@ -2,72 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646392903E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2B72903E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394897AbgJPLOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:14:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:34764 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394676AbgJPLOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:14:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68658D6E;
-        Fri, 16 Oct 2020 04:14:36 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.53.7])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 784FC3F719;
-        Fri, 16 Oct 2020 04:14:34 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 12:14:31 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Mark Brown <broonie@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] arm64: Implement reliable stack trace
-Message-ID: <20201016111431.GB84361@C02TD0UTHF1T.local>
-References: <20201012172605.10715-1-broonie@kernel.org>
- <alpine.LSU.2.21.2010151533490.14094@pobox.suse.cz>
- <20201015141612.GC50416@C02TD0UTHF1T.local>
- <20201015154951.GD4390@sirena.org.uk>
- <20201015212931.mh4a5jt7pxqlzxsg@treble>
+        id S2405417AbgJPLQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:16:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57509 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405354AbgJPLQY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 07:16:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602846982;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x10tOVtolquaTARTsDJ6mze3Z1Z5YmBSGNWKhKgumKQ=;
+        b=RYzzM0ro6syeg+C5MFbuNvfppoMcsnjKgbDgmuGfKCihSUc/0vBCh5iYRFIq79EmeZy4CE
+        cO47yxvfp4+fThFO4nxOeqkPUyBd9aZQAdfNfQOFo8r+ps0r+HY0wE+FWUbyLUXzYhTH9G
+        XqbR4ogibT9auLmDG9BAWFYQcLLucvc=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-Svc81JtPOhm-aTbzeEzOvA-1; Fri, 16 Oct 2020 07:16:21 -0400
+X-MC-Unique: Svc81JtPOhm-aTbzeEzOvA-1
+Received: by mail-ed1-f69.google.com with SMTP id p7so852873edi.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:16:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x10tOVtolquaTARTsDJ6mze3Z1Z5YmBSGNWKhKgumKQ=;
+        b=SvMEE9P5w5/A8xkcj4EuBO+aPI5PVP6overR90FCXCqi+itc8KQx6QssGXpC8oqZGG
+         ANsK+dIHebfvq1KjOSg7YijqBhH1C5TH8UVhVchfO+uBmNEnNMGGJWTcuxIv8XSJ4t0h
+         mpu5OuiN1tj2xCRjFW2e05o63UlREGlYLGRz9Xer39xv/h4xoKasgrSsC9M+uoGNQubc
+         xyaioi1dDPZDOTG33nVZY1bdHvRolzuSAIwKCi4Ymdlf0jsfp3ewaENEOzlMQYqx9QfU
+         LIDLx2XSs/0IqPmggabUkB3yUDec0zXkVSjjot6iDckH0IwlKOrQsCN68Z8jPf8k0NdG
+         goKQ==
+X-Gm-Message-State: AOAM531DiVeDcRiqoIda4ezlfUQPz5kC8ppL9H2mp8v0dS4mkNZ6njOz
+        YEhj2TlsxyMV3ddf/q8ixLGhIVGaMRzjAIVvtEYG8iaevkHjA2iAXquY5p9Pf4T805fy7AYfcB+
+        d7LGTIb7xg8LX4Iu+HOKiG7qd
+X-Received: by 2002:aa7:dd11:: with SMTP id i17mr3223336edv.188.1602846979885;
+        Fri, 16 Oct 2020 04:16:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwuvprMrV+hqnX1T0y5+3fN1JRilnar9FML+MPU44c3eibJhR0OodM6ROgP40nhJisPLOe+tg==
+X-Received: by 2002:aa7:dd11:: with SMTP id i17mr3223308edv.188.1602846979647;
+        Fri, 16 Oct 2020 04:16:19 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id a31sm1169521ede.32.2020.10.16.04.16.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 04:16:18 -0700 (PDT)
+Subject: Re: [PATCH v2 0/4] i2c-hid: Save power by reducing i2c xfers with
+ block reads
+To:     Jiri Kosina <jikos@kernel.org>,
+        Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     linux-i2c@vger.kernel.org, aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hn.chen@weidahitech.com, jarkko.nikula@linux.intel.com,
+        kai.heng.feng@canonical.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mika.westerberg@linux.intel.com,
+        vicamo.yang@canonical.com, wsa@kernel.org
+References: <20200917052256.5770-1-sultan@kerneltoast.com>
+ <nycvar.YFH.7.76.2009221118150.3336@cbobk.fhfr.pm>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <b29e577e-7c10-1e28-ef01-22b00a9734e5@redhat.com>
+Date:   Fri, 16 Oct 2020 13:16:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015212931.mh4a5jt7pxqlzxsg@treble>
+In-Reply-To: <nycvar.YFH.7.76.2009221118150.3336@cbobk.fhfr.pm>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Josh,
+Hi,
 
-On Thu, Oct 15, 2020 at 04:29:31PM -0500, Josh Poimboeuf wrote:
-> > > AFAICT, existing architectures don't always handle all of the above in
-> > > arch_stack_walk_reliable(). For example, it looks like x86 assumes
-> > > unwiding through exceptions is reliable for !CONFIG_FRAME_POINTER, but I
-> > > think this might not always be true.
+On 9/22/20 11:19 AM, Jiri Kosina wrote:
+> On Wed, 16 Sep 2020, Sultan Alsawaf wrote:
 > 
-> Why not?
+>> From: Sultan Alsawaf <sultan@kerneltoast.com>
+>>
+>> This is a fixed resubmission of "[PATCH 0/2] i2c-hid: Save power by reducing i2c
+>> xfers with block reads". That original patchset did not have enough fixes for
+>> the designware i2c adapter's I2C_M_RECV_LEN feature, which is documented
+>> extensively in the original email thread.
+>>
+>> Here is the original cover letter, which still applies:
+>> "I noticed on my Dell Precision 15 5540 with an i9-9880H that simply putting my
+>> finger on the touchpad would increase my system's power consumption by 4W, which
+>> is quite considerable. Resting my finger on the touchpad would generate roughly
+>> 4000 i2c irqs per second, or roughly 20 i2c irqs per touchpad irq.
+>>
+>> Upon closer inspection, I noticed that the i2c-hid driver would always transfer
+>> the maximum report size over i2c (which is 60 bytes for my touchpad), but all of
+>> my touchpad's normal touch events are only 32 bytes long according to the length
+>> byte contained in the buffer sequence.
+>>
+>> Therefore, I was able to save about 2W of power by passing the I2C_M_RECV_LEN
+>> flag in i2c-hid, which says to look for the payload length in the first byte of
+>> the transfer buffer and adjust the i2c transaction accordingly. The only problem
+>> though is that my i2c controller's driver allows bytes other than the first one
+>> to be used to retrieve the payload length, which is incorrect according to the
+>> SMBus spec, and would break my i2c-hid change since not *all* of the reports
+>> from my touchpad are conforming SMBus block reads.
+>>
+>> This patchset fixes the I2C_M_RECV_LEN behavior in the designware i2c driver and
+>> modifies i2c-hid to use I2C_M_RECV_LEN to save quite a bit of power. Even if the
+>> peripheral controlled by i2c-hid doesn't support block reads, the i2c controller
+>> drivers should cope with this and proceed with the i2c transfer using the
+>> original requested length."
+>>
+>> Sultan
+>>
+>> Sultan Alsawaf (4):
+>>   i2c: designware: Fix transfer failures for invalid SMBus block reads
+>>   i2c: designware: Ensure tx_buf_len is nonzero for SMBus block reads
+>>   i2c: designware: Allow SMBus block reads up to 255 bytes in length
+>>   HID: i2c-hid: Use block reads when possible to save power
+>>
+>>  drivers/hid/i2c-hid/i2c-hid-core.c         |  5 ++++-
+>>  drivers/i2c/busses/i2c-designware-master.c | 15 +++++++++------
+>>  2 files changed, 13 insertions(+), 7 deletions(-)
+> 
+> Hans, Benjamin, could you please give this patchset some smoke-testing? It 
+> looks good to me, but I'd like it to get some testing from your testing 
+> machinery before merging.
 
-Mark B's reply dropped this, but the next paragraph covered that:
+Sorry for being slow to respond to this. I have not gotten around to testing
+this, but I saw another email that this breaks things on at least AMD
+platforms, so I guess that this is on hold for now ?
 
-| I was planning to send a mail once I've finished writing a test, but
-| IIUC there are some windows where ftrace/kretprobes
-| detection/repainting may not work, e.g. if preempted after
-| ftrace_return_to_handler() decrements curr_ret_stack, but before the
-| arch trampoline asm restores the original return addr. So we might
-| need something like an in_return_trampoline() to detect and report
-| that reliably.
+Regards,
 
-... so e.g. for a callchain A->B->C, where C is instrumented there are
-windows where B might be missing from the trace, but the trace is
-reported as reliable.
+Hans
 
-I'll start a new thread on this (with a more fleshed-out example), with
-the full set of livepatch folk, lkml, etc. I just want to write a test
-case first, since it's entirely possible something I've missed is
-catching this already.
-
-Thanks,
-Mark.
