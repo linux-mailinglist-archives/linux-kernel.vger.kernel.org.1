@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E298D290BC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB1E290BCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404019AbgJPSwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 14:52:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403993AbgJPSwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 14:52:24 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48FE42065C;
-        Fri, 16 Oct 2020 18:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602874342;
-        bh=A7zZGWRfTPgHv2W/P7bhldL+fcnGv2TC7ECKIEEdj/A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LpD5TMU1EAv09SqpvGHXT4gQ1YaI+jT2qxNutul3CbPeWLD2p+uC03AqOgjB6Bjds
-         MSLjcQeA8Wl+D0DCEPxgkR7F9T+2/XNrg5CG8B1+iHfJPQ4yjopdt0/M9WO4nm5yIn
-         Z+IWdjeeIuiNwYYuTHRTdOYyElGuKrVnMBX4Vqg4=
-Date:   Fri, 16 Oct 2020 11:52:20 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Christian Eggers <ceggers@arri.de>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: ksz: fix padding size of skb
-Message-ID: <20201016115220.771c7169@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201016181319.2jrbdp5h7avzjczj@skbuf>
-References: <20201014161719.30289-1-ceggers@arri.de>
-        <4467366.g9nP7YU7d8@n95hx1g2>
-        <20201016090527.tbzmjkraok5k7pwb@skbuf>
-        <1655621.YBUmbkoM4d@n95hx1g2>
-        <20201016155645.kmlehweenqdue6q2@skbuf>
-        <20201016110311.6a43e10d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201016181319.2jrbdp5h7avzjczj@skbuf>
+        id S2404062AbgJPSxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 14:53:43 -0400
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:35047 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404031AbgJPSxn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 14:53:43 -0400
+Received: by mail-oo1-f65.google.com with SMTP id f2so865089ooj.2;
+        Fri, 16 Oct 2020 11:53:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/BLMOeuNPLg/1+rmux5PnQpwOXbVITQef6gQqf/xRV4=;
+        b=r0iPlj+VgkWzyANF8V4WjDIIEQ9E/r2wKjGV5W69sZZpVfVI9GagmexvAPte4nD9W6
+         bCe4KBKcEaupY21yuGFfgZPmsRReQKHVlRxG/ytUDG0o+LoWfMG+O/1S+bNi7fNWrhBb
+         YOa+rJEY2dzvHh1EQSEI5PrQmyS6fVNfVzYPP50ju8h6T9Jx5R5KJ/IguZKEJoGe3Pdy
+         RRm0sZtS9+KnrnrR6kscEPvOPlKgKPXySMw5PiLLxj7bkXPGz03jX9mcmx5IlsCQVB6R
+         XliQA8xoLIZPpvuMGvPBmROGKNG9u7FhfyzOtZZURcmI4eKOotTBBmIvkHL8R5lqSmWL
+         Lh+w==
+X-Gm-Message-State: AOAM5302JH6V2kihjQbTOiCQrEqUGTGWlQSRQezK6FuZHpeD0RambkC7
+        fF8dAuaPc1n1HT7bukTHug==
+X-Google-Smtp-Source: ABdhPJxtoraofuhC22sxyo8Q42rEuTESh7JvVkC+ACDOtuWNWIg2F8VJBGdmwUM7JkujSl0LOdhDaw==
+X-Received: by 2002:a4a:e93a:: with SMTP id a26mr3885560ooe.58.1602874422546;
+        Fri, 16 Oct 2020 11:53:42 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 33sm1194275otr.25.2020.10.16.11.53.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 11:53:41 -0700 (PDT)
+Received: (nullmailer pid 1738434 invoked by uid 1000);
+        Fri, 16 Oct 2020 18:53:40 -0000
+Date:   Fri, 16 Oct 2020 13:53:40 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/20] dt-bindings: usb: dwc3: Add synopsys,dwc3
+ compatible string
+Message-ID: <20201016185340.GA1734346@bogus>
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
+ <20201014101402.18271-12-Sergey.Semin@baikalelectronics.ru>
+ <20201014201818.GA6926@kozik-lap>
+ <20201014213554.turskjyuntk35syj@mobilestation>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014213554.turskjyuntk35syj@mobilestation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 21:13:19 +0300 Vladimir Oltean wrote:
-> On Fri, Oct 16, 2020 at 11:03:11AM -0700, Jakub Kicinski wrote:
-> > On Fri, 16 Oct 2020 18:56:45 +0300 Vladimir Oltean wrote:  
-> > > > 3. "Manually" unsharing in dsa_slave_xmit(), reserving enough tailroom
-> > > > for the tail tag (and ETH_ZLEN?). Would moving the "else" clause from
-> > > > ksz_common_xmit()  to dsa_slave_xmit() do the job correctly?    
-> > > 
-> > > I was thinking about something like that, indeed. DSA knows everything
-> > > about the tagger: its overhead, whether it's a tail tag or not. The xmit
-> > > callback of the tagger should only be there to populate the tag where it
-> > > needs to be. But reallocation, padding, etc etc, should all be dealt
-> > > with by the common DSA xmit procedure. We want the taggers to be simple
-> > > and reuse as much logic as possible, not to be bloated.  
+On Thu, Oct 15, 2020 at 12:35:54AM +0300, Serge Semin wrote:
+> On Wed, Oct 14, 2020 at 10:18:18PM +0200, Krzysztof Kozlowski wrote:
+> > On Wed, Oct 14, 2020 at 01:13:53PM +0300, Serge Semin wrote:
+> > > The DWC USB3 driver and some DTS files like Exynos 5250, Keystone k2e, etc
+> > > expects the DWC USB3 DT node to have the compatible string with the
+> > > "synopsys" vendor prefix. Let's add the corresponding compatible string to
+> > > the controller DT schema, but mark it as deprecated seeing the Synopsys,
+> > > Inc. is presented with just "snps" vendor prefix.
 > > 
-> > FWIW if you want to avoid the reallocs you may want to set
-> > needed_tailroom on the netdev.  
 > 
-> Tell me more about that, I've been meaning since forever to try it out.
-> I read about needed_headroom and needed_tailroom, and it's one of the
-> reasons why I added the .tail_tag option in the DSA tagger (to
-> distinguish whether a switch needs headroom or tailroom), but I can't
-> figure out, just from static analysis of the code, where exactly is the
-> needed tailroom being accounted for. 
+> > Instead of adding deprecated schema just correct the DTSes to use snps.
+> > The "synopsys" is not even in vendor prefixes.
+> 
+> Yeah, it's not, but the driver and some dts'es use it this way. I am not sure
+> that the solution suggested by you is much better than mine. So let's hear the
+> Rob'es opinion out in this matter. @Rob, what do you think?
 
-My understanding that the tail tag use case matches pretty well,
-needed_tailroom is supposed to be a hit to the higher layers of 
-the stack to leave some extra space at the end.
+I think we should fix the dts files given there's only 5.
 
-Now, it's probably of limited use in practice since I'd imagine 
-most data comes in fragments. 
-
-> For example, if I'm in Christian's
-> situation, e.g. I have a packet smaller than ETH_ZLEN, would the
-> tailroom be enough to hold just the dev->needed_tailroom, or would there
-> be enough space in the skb for the entire ETH_ZLEN + dev->needed_tailroom?
-
-I don't think we account for padding in general. Also looking at
-__pskb_pull_tail() we're already seem to be provisioning some extra 
-128B. So I guess it won't matter and the DSA tags are too small to
-need the head/tailroom hints anyway..
+Rob
