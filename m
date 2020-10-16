@@ -2,160 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA3A290812
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 023E0290815
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409854AbgJPPPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:15:01 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:48676 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407202AbgJPPPB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:15:01 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09GFAilX018346;
-        Fri, 16 Oct 2020 10:14:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=xqJa7ke2bej+Y2/yTZCs2JgbiMjO2DRRIlRYVcz8XVI=;
- b=lmVCs/iv5yXyzLP36G1sZy/Gmdxojo/mafF7AdQAH6vCS2wF8tUbMEhyiJuUS8grLEN2
- DHZrIY5kwqkVYp01pPgpiq32BIsMwK/PVVfC3uUIfW52MjYKgQebYEr134yHOtt+TVGU
- VHntl0Zu7aBONdahAsWTWT7BUr0zI8e6TjtpdZ0lFu4JjiirsAol58ysuqF4DLW5oJtE
- G9ZXqxsNJagA6vek7sMd1znVWR3Si19q8P9DpTxASchg6UJISQBZMAbW2Ur74uTL9rmY
- 7e4vUt3oOMWpRW2IKnuX0vVU+/T5OfHw8s7dJ8A6dcOAoRQM88KR+3/3QjTz+lGQvdml uw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3439cngaya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 16 Oct 2020 10:14:46 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 16 Oct
- 2020 16:14:45 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 16 Oct 2020 16:14:45 +0100
-Received: from [10.0.2.15] (ausnpc0lsnw1.ad.cirrus.com [198.61.64.143])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A8A4345;
-        Fri, 16 Oct 2020 15:14:44 +0000 (UTC)
-Subject: Re: [PATCH 1/7] of: base: Add of_count_phandle_with_fixed_args()
-To:     Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-CC:     <devicetree@vger.kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        - <patches@opensource.cirrus.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        id S2409907AbgJPPPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:15:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409856AbgJPPPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 11:15:52 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7D3820897;
+        Fri, 16 Oct 2020 15:15:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602861351;
+        bh=4OJOxhlwL10+hIzc3OR9WXy5yLt7RM+8bC7enpcS2dg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SWX5cJfU8mdmrvgiur8vBB1juDQuMAN326gUaFyUMgbDet9z1wUCApkZyS8gzFQ49
+         D88379d/cjY2Tv7JOem0ufX+1krTMYPPkulPd18C/O2TNgcO1pubsDdNg93YPT5Xyg
+         HgOR+gJjib+xTQb5Ij7Z+mRnwICq5KRoGN9iGQ1c=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>
-References: <20201014145418.31838-1-rf@opensource.cirrus.com>
- <20201014145418.31838-2-rf@opensource.cirrus.com>
- <CAL_Jsq+qdcHc9H7qUVwLieHrLM8E20HZXa8DkarMiuXfCh8WOQ@mail.gmail.com>
- <90600a67-25e4-7933-35c3-f515deaee94f@arm.com>
- <CAL_JsqKAvJ9fv9pm82iv5YjWVCJu1fmP-t+Fyc95pzUaCEL3XQ@mail.gmail.com>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <474edf9d-e15a-cc20-1b56-2fe1d7fccf55@opensource.cirrus.com>
-Date:   Fri, 16 Oct 2020 16:14:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org
+Cc:     Kamil Debski <kamil@wypas.org>
+Subject: [PATCH 1/4] MAINTAINERS: move Kamil Debski to credits
+Date:   Fri, 16 Oct 2020 17:15:25 +0200
+Message-Id: <20201016151528.7553-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKAvJ9fv9pm82iv5YjWVCJu1fmP-t+Fyc95pzUaCEL3XQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0
- priorityscore=1501 malwarescore=0 adultscore=0 spamscore=0 impostorscore=0
- mlxlogscore=999 lowpriorityscore=0 phishscore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010160116
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/10/2020 14:31, Rob Herring wrote:
-> On Thu, Oct 15, 2020 at 11:52 AM Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2020-10-14 19:39, Rob Herring wrote:
->>> On Wed, Oct 14, 2020 at 9:54 AM Richard Fitzgerald
->>> <rf@opensource.cirrus.com> wrote:
->>>>
->>>> Add an equivalent of of_count_phandle_with_args() for fixed argument
->>>> sets, to pair with of_parse_phandle_with_fixed_args().
->>>>
->>>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->>>> ---
->>>>    drivers/of/base.c  | 42 ++++++++++++++++++++++++++++++++++++++++++
->>>>    include/linux/of.h |  9 +++++++++
->>>>    2 files changed, 51 insertions(+)
->>>>
->>>> diff --git a/drivers/of/base.c b/drivers/of/base.c
->>>> index ea44fea99813..45d8b0e65345 100644
->>>> --- a/drivers/of/base.c
->>>> +++ b/drivers/of/base.c
->>>> @@ -1772,6 +1772,48 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
->>>>    }
->>>>    EXPORT_SYMBOL(of_count_phandle_with_args);
->>>>
->>>> +/**
->>>> + * of_count_phandle_with_fixed_args() - Find the number of phandles references in a property
->>>> + * @np:                pointer to a device tree node containing a list
->>>> + * @list_name: property name that contains a list
->>>> + * @cell_count: number of argument cells following the phandle
->>>> + *
->>>> + * Returns the number of phandle + argument tuples within a property. It
->>>> + * is a typical pattern to encode a list of phandle and variable
->>>> + * arguments into a single property.
->>>> + */
->>>> +int of_count_phandle_with_fixed_args(const struct device_node *np,
->>>> +                                    const char *list_name,
->>>> +                                    int cells_count)
->>>> +{
->>>
->>> Looks to me like you can refactor of_count_phandle_with_args to handle
->>> both case and then make this and of_count_phandle_with_args simple
->>> wrapper functions.
->>
->> Although for just counting the number of phandles each with n arguments
->> that a property contains, isn't that simply a case of dividing the
->> property length by n + 1? The phandles themselves will be validated by
->> any subsequent of_parse_phandle*() call anyway, so there doesn't seem
->> much point in doing more work then necessary here.
->>
->>>> +       struct of_phandle_iterator it;
->>>> +       int rc, cur_index = 0;
->>>> +
->>>> +       if (!cells_count) {
->>>> +               const __be32 *list;
->>>> +               int size;
->>>> +
->>>> +               list = of_get_property(np, list_name, &size);
->>>> +               if (!list)
->>>> +                       return -ENOENT;
->>>> +
->>>> +               return size / sizeof(*list);
->>
->> Case in point - if it's OK to do exactly that for n == 0, then clearly
->> we're *aren't* fussed about validating anything, so the n > 0 code below
->> is nothing more than a massively expensive way to check for a nonzero
->> remainder :/
-> 
-> Indeed. We should just generalize this. It can still be refactored to
-> shared code.
-> 
-> It's probably worthwhile to check for a remainder here IMO.
->
+Kamil Debski has not been active on LKML since 2017:
+https://lore.kernel.org/lkml/?q=f%3A%22Kamil+Debski%22
 
-Ok, I looked at the implementation of of_phandle_iterator_next() and
-it is in fact simply incrementing by 'count' 32-bit words. So as Robin
-said the count_phandle_with_x_args()functions could simply divide the
-length by count+1.
+Move Kamil Debski to the CREDITS file.  Thank you for the effort you put
+in to the upstream Linux kernel work.
 
-However, may I suggest that should be done in a separate patch after my
-patch to add count_phandle_with_fixed_args()? That way, if replacing the
-iteration with the simple length divide causes any unforeseen problems
-the patch can just be reverted.
+Cc: Kamil Debski <kamil@wypas.org>
+Cc: Andrzej Hajda <a.hajda@samsung.com>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ CREDITS     | 6 ++++++
+ MAINTAINERS | 4 ----
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-> Rob
-> 
+diff --git a/CREDITS b/CREDITS
+index 8592e45e3932..8dfd6a2fb3e8 100644
+--- a/CREDITS
++++ b/CREDITS
+@@ -849,6 +849,12 @@ D: trivial hack to add variable address length routing to Rose.
+ D: AX25-HOWTO, HAM-HOWTO, IPX-HOWTO, NET-2-HOWTO
+ D: ax25-utils maintainer.
+ 
++N: Kamil Debski
++E: kamil@wypas.org
++D: Samsung S5P 2D graphics acceleration and Multi Format Codec drivers
++D: Samsung USB2 phy drivers
++D: PWM fan driver
++
+ N: Helge Deller
+ E: deller@gmx.de
+ W: http://www.parisc-linux.org/
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aa46cb3ce6e6..bb40bac8cf27 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2411,7 +2411,6 @@ F:	arch/arm/mach-s5pv210/
+ 
+ ARM/SAMSUNG S5P SERIES 2D GRAPHICS ACCELERATION (G2D) SUPPORT
+ M:	Kyungmin Park <kyungmin.park@samsung.com>
+-M:	Kamil Debski <kamil@wypas.org>
+ M:	Andrzej Hajda <a.hajda@samsung.com>
+ L:	linux-arm-kernel@lists.infradead.org
+ L:	linux-media@vger.kernel.org
+@@ -2437,7 +2436,6 @@ F:	drivers/media/platform/s5p-jpeg/
+ 
+ ARM/SAMSUNG S5P SERIES Multi Format Codec (MFC) SUPPORT
+ M:	Kyungmin Park <kyungmin.park@samsung.com>
+-M:	Kamil Debski <kamil@wypas.org>
+ M:	Jeongtae Park <jtp.park@samsung.com>
+ M:	Andrzej Hajda <a.hajda@samsung.com>
+ L:	linux-arm-kernel@lists.infradead.org
+@@ -14237,7 +14235,6 @@ F:	drivers/media/usb/pwc/*
+ F:	include/trace/events/pwc.h
+ 
+ PWM FAN DRIVER
+-M:	Kamil Debski <kamil@wypas.org>
+ M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+ L:	linux-hwmon@vger.kernel.org
+ S:	Supported
+@@ -15519,7 +15516,6 @@ T:	git https://github.com/lmajewski/linux-samsung-thermal.git
+ F:	drivers/thermal/samsung/
+ 
+ SAMSUNG USB2 PHY DRIVER
+-M:	Kamil Debski <kamil@wypas.org>
+ M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+ L:	linux-kernel@vger.kernel.org
+ S:	Supported
+-- 
+2.25.1
+
