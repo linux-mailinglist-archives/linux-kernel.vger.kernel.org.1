@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6CB28FCAB
+	by mail.lfdr.de (Postfix) with ESMTP id 777F028FCAA
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 05:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394031AbgJPDTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 23:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394025AbgJPDTj (ORCPT
+        id S2394022AbgJPDTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 23:19:35 -0400
+Received: from smtprelay0082.hostedemail.com ([216.40.44.82]:55036 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2394007AbgJPDTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 23:19:39 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE381C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 20:19:37 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id s89so720510ybi.12
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 20:19:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BJYKBcCXZlv8WXk+yX5Jl9oyPoOWc+Ilne0ptBVvlTk=;
-        b=Kgvx5l+7Pe0j85iMO4evONuKffb750hhQ9Lekmpfb9mM34eEAitpqg2ddMrqwIzh8x
-         yhjDI2Vi/bMrkOR/itUYHyNf9n2XBExV2ENlwEkv/OYf21Qm1oqymaroXGC7VLNv16aQ
-         skv9gIBbP3smr3JcXOrLN8sfCHE9IgaFbVFeWzfo5vx6Ttmi7RUStpctLgPKFqCXrGb5
-         dP3FXxGMSPVr4Rmrj8NXqksTY4vG78CzOXTJL1gStdRHjzLqA6yRIHpOBfwSHMSjGOk+
-         wpuocEC8srF80lHJFxOONDmtgWnr9oF7NN7tnaZB9bzw/VVkeeF8ePbVqhVihrvwHpM5
-         75Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BJYKBcCXZlv8WXk+yX5Jl9oyPoOWc+Ilne0ptBVvlTk=;
-        b=dNWG+j5wAd457vzkLd9LPAi555HAD22NebKxU6YZ58y37peF3SiL4kA/RKarf6lhU0
-         3lQcej21ntl12sCKWgLLefrM41hJcQU/FaDw0gMSH8MaQkGbdc9anKZOc9lUavlwA61D
-         CGgxKomOu+ZVXBRsaPsgUw/uwdDg4CfUeSfmE2guND6u1hT3gl8p40jgJiBRqHCUkQLX
-         Kw9DaNa9DAtNJvoTweWlgIccHH+BUvehRePYv4gYedNoXOVfPxyURVf5G4+5yhkELPuJ
-         5Sr2a06ISnGzX0sVOt96pASKiUajYnspjZGNzieLRRDT8u4bxNk69LTiSHPLwQmz7FRo
-         1bAA==
-X-Gm-Message-State: AOAM532bulsAVKMFQC401GyRu2VFIvZtKm96vazBWiENpehtBkQxNHbc
-        isBZ37pD/eg+pbQDK0itQwgU92JZz+Z36e/5uC2/oVQCEjM=
-X-Google-Smtp-Source: ABdhPJyrLUuMSNlUnkUce4Qu91rC5QD8Zu24wFmsU3aF+Dszr9HLvtOWF8qYutuPWcnoVM5MkmIz0GP9eP3igQJSr9g=
-X-Received: by 2002:a25:c786:: with SMTP id w128mr2035771ybe.135.1602818377248;
- Thu, 15 Oct 2020 20:19:37 -0700 (PDT)
+        Thu, 15 Oct 2020 23:19:35 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 68AD3182251CC;
+        Fri, 16 Oct 2020 03:19:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2692:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3873:3874:4321:5007:6119:7903:10004:10400:10848:11232:11658:11914:12297:12663:12740:12760:12895:13069:13163:13229:13311:13357:13439:14096:14097:14659:14721:21080:21092:21433:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: hope98_3710e2727219
+X-Filterd-Recvd-Size: 2125
+Received: from XPS-9350 (unknown [172.58.27.109])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 16 Oct 2020 03:19:31 +0000 (UTC)
+Message-ID: <943aabb5a27dc58321cb4a8e53e7b2c12cd791dc.camel@perches.com>
+Subject: Re: [PATCH V2] scripts: spelling:  Remove space in the entry memry
+ to memory
+From:   Joe Perches <joe@perches.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     akpm@linux-foundation.org, colin.king@canonical.com,
+        sfr@canb.auug.org.au, wangqing@vivo.com, david@redhat.com,
+        xndchn@gmail.com, luca@lucaceresoli.net, ebiggers@google.com,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 15 Oct 2020 20:19:28 -0700
+In-Reply-To: <20201015230842.GC1129531@ArchLinux>
+References: <20201015132336.1770828-1-unixbhaskar@gmail.com>
+         <796974d4de89d1e8483d16f4f1f3d6324b49bf86.camel@perches.com>
+         <20201015135407.GB1899805@ArchLinux>
+         <f479c3b907279ba79391ae1d4ec27773a79ffd15.camel@perches.com>
+         <20201015224919.GA1129531@ArchLinux>
+         <d8237d5151e108f969628302c22e27dda3860bdd.camel@perches.com>
+         <20201015225558.GB1129531@ArchLinux>
+         <a03bbb48d2e8b27a2469e91500b264019bbfc33b.camel@perches.com>
+         <20201015230842.GC1129531@ArchLinux>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20201005130128.3430804-1-poeschel@lemonage.de> <20201005130128.3430804-12-poeschel@lemonage.de>
-In-Reply-To: <20201005130128.3430804-12-poeschel@lemonage.de>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 16 Oct 2020 05:19:26 +0200
-Message-ID: <CANiq72n0QNusCdW5VZM99Jb9dw3zFLXFzEAGoBW7VQQikUmCQA@mail.gmail.com>
-Subject: Re: [PATCH v4 24/32] auxdisplay: Move char redefine code to hd44780_common
-To:     Lars Poeschel <poeschel@lemonage.de>
-Cc:     Willy Tarreau <willy@haproxy.com>,
-        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 3:01 PM <poeschel@lemonage.de> wrote:
->
-> +       while (*esc && cgoffset < 8) {
-> +               shift ^= 4;
-> +               if (*esc >= '0' && *esc <= '9') {
-> +                       value |= (*esc - '0') << shift;
-> +               } else if (*esc >= 'A' && *esc <= 'F') {
-> +                       value |= (*esc - 'A' + 10) << shift;
-> +               } else if (*esc >= 'a' && *esc <= 'f') {
-> +                       value |= (*esc - 'a' + 10) << shift;
+On Fri, 2020-10-16 at 04:38 +0530, Bhaskar Chowdhury wrote:
+> On 16:06 Thu 15 Oct 2020, Joe Perches wrote:
+> > On Fri, 2020-10-16 at 04:25 +0530, Bhaskar Chowdhury wrote:
+> > > You have all flawed understanding...please stay away ..
+> > > if you don't understand something...
+> > 
+> > <chuckle>  You're funny.
+> > 
+> > You're wrong, but you're still funny.
+> > 
+> > 
+> ROFL ..you too...what a waste of time ...shame that I am engage this kind of
+> conversation ...heck
 
-I just noticed this is undoing commit 3f03b6498 ("auxdisplay: charlcd:
-Reuse hex_to_bin() instead of custom code"). Lars?
+Your tone doesn't become you.
+Please try to be polite next time.
+I'm rather familiar with the appropriate process.
 
-Cheers,
-Miguel
+$ git shortlog -n -s --author="Joe Perches" --author="Bhaskar Chowdhury"
+  3227  Joe Perches
+     8  Bhaskar Chowdhury
+     1  Joe Perches via samba-technical
+
