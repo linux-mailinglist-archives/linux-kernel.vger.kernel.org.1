@@ -2,95 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9927028FED7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04D428FEDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394483AbgJPHGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:06:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394374AbgJPHGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:06:24 -0400
-Received: from localhost (unknown [122.182.237.175])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59CC320720;
-        Fri, 16 Oct 2020 07:06:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602831983;
-        bh=bg+YekF+PjfIIMGx3SUCBgRM+vVNcEeNxcknchyB36I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=waMS4eMW7q+rFjqGaN2EZQEXLMHgOLzBfrw7R6RdwAlfEB9/n6PIpsBs6jZaf5kzm
-         2Nij6X6vzV1QsD0xXWb0KQY8b/r7YvHbR4q1jZiaay/qJJAL94oXDVdZ1eMKIaUhp1
-         pAYHtsjCh5KuL4SWxHy9T6cy9pClC/O1CtIKggNM=
-Date:   Fri, 16 Oct 2020 12:36:18 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Eugen.Hristev@microchip.com
-Cc:     robh@kernel.org, Tudor.Ambarus@microchip.com,
-        Ludovic.Desroches@microchip.com, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Nicolas.Ferre@microchip.com
-Subject: Re: [PATCH 6/7] dt-bindings: dmaengine: at_xdmac: add optional
- microchip,m2m property
-Message-ID: <20201016070618.GW2968@vkoul-mobl>
-References: <20200914140956.221432-1-eugen.hristev@microchip.com>
- <20200914140956.221432-7-eugen.hristev@microchip.com>
- <20200922233327.GA3474555@bogus>
- <6f305564-e91c-794b-0025-de805f1d1a58@microchip.com>
+        id S2394523AbgJPHHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:07:07 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15227 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2394401AbgJPHHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 03:07:07 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 588DA7865FCC9F27216E;
+        Fri, 16 Oct 2020 15:07:04 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.134) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Fri, 16 Oct 2020
+ 15:06:59 +0800
+Subject: Re: [PATCH 1/2] arm64: dts: broadcom: remove an unused property
+ dma-ranges
+To:     Arnd Bergmann <arnd@arndb.de>
+CC:     devicetree <devicetree@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Andy Gross" <agross@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20201013060623.1711-1-thunder.leizhen@huawei.com>
+ <20201013060623.1711-2-thunder.leizhen@huawei.com>
+ <fa40441b-6ae1-6018-3da6-424d0252c1ba@gmail.com>
+ <CAK8P3a3MtCDpbCgNEnLf1QcE+1O0oGZtob2KY7G-77oA95bLJQ@mail.gmail.com>
+ <b25dd804-c691-b987-9f6a-de043aa45755@huawei.com>
+ <CAK8P3a24XPt55MuCnRPkH0QRVgmAbttghDnLkd5TQ-s6fi=GHg@mail.gmail.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <989f3efa-4fd0-8061-266c-56de03ce9029@huawei.com>
+Date:   Fri, 16 Oct 2020 15:06:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f305564-e91c-794b-0025-de805f1d1a58@microchip.com>
+In-Reply-To: <CAK8P3a24XPt55MuCnRPkH0QRVgmAbttghDnLkd5TQ-s6fi=GHg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eugen,
 
-On 16-10-20, 06:45, Eugen.Hristev@microchip.com wrote:
-> On 23.09.2020 02:33, Rob Herring wrote:
-> 
-> > On Mon, Sep 14, 2020 at 05:09:55PM +0300, Eugen Hristev wrote:
-> >> Add optional microchip,m2m property that specifies if a controller is
-> >> dedicated to memory to memory operations only.
-> >>
-> >> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> >> ---
-> >>   Documentation/devicetree/bindings/dma/atmel-xdma.txt | 6 ++++++
-> >>   1 file changed, 6 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/dma/atmel-xdma.txt b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-> >> index 510b7f25ba24..642da6b95a29 100644
-> >> --- a/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-> >> +++ b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-> >> @@ -15,6 +15,12 @@ the dmas property of client devices.
-> >>       interface identifier,
-> >>       - bit 30-24: PERID, peripheral identifier.
-> >>
-> >> +Optional properties:
-> >> +- microchip,m2m: this controller is connected on AXI only to memory and it's
-> >> +     dedicated to memory to memory DMA operations. If this option is
-> >> +     missing, it's assumed that the DMA controller is connected to
-> >> +     peripherals, thus it's a per2mem and mem2per.
-> > 
-> > Wouldn't 'dma-requests = <0>' cover this case?
-> > 
-> > Rob
-> > 
-> 
-> Hi Rob,
-> 
-> I do not think so. With requests = 0, it means that actually the DMA 
-> controller is unusable ?
-> Since you suggest requests = 0, it means that it cannot take requests at 
-> all ?
-> I do not find another example in current DT with this property set to zero.
 
-Not really, dma-requests implies "request signals supported" which are
-used for peripheral cases. m2m does not need request signals, so it is
-very reasonable to conclude that dma-requests = <0> would imply no
-peripheral support and only m2m support.
+On 2020/10/14 22:02, Arnd Bergmann wrote:
+> On Wed, Oct 14, 2020 at 3:36 PM Leizhen (ThunderTown)
+> <thunder.leizhen@huawei.com> wrote:
+>> On 2020/10/14 15:38, Arnd Bergmann wrote:
+>>> On Wed, Oct 14, 2020 at 5:15 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>>> On 10/12/2020 11:06 PM, Zhen Lei wrote:
+>>>>> stingray-usb.dtsi is finally included by three dts files:
+>>>>> bcm958802a802x.dts, bcm958742k.dts and bcm958742t.dts. I searched all
+>>>>> these three entire expanded dts files, and each of them contains only one
+>>>>> dma-ranges. No conversion range is specified, so it cannot work properly.
+>>>>> I think this property "dma-ranges" is added by mistake, just remove it.
+>>>>> Otherwise, the following error will be reported when any YAML detection
+>>>>> is performed on arm64.
+>>>>>
+>>>>> arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+>>>>> (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+>>>>> its #address-cells (1) differs from / (2)
+>>>>> arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+>>>>> (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+>>>>> its #size-cells (1) differs from / (2)
+>>>>>
+>>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>>
+>>>> This looks fine to me, Scott, Ray do you want to Ack this patch before I
+>>>> take it?
+>>>
+>>> Does it mean that there are no devices on this bus that can do DMA?
+>>>
+>>> Usually there should be a dma-ranges property to identify that DMA
+>>> is possible and what the limits are, though we have failed to enforce
+>>> that.
+>>
+>> Documentation/devicetree/bindings/iommu/iommu.txt +79
+>> When an "iommus" property is specified in a device tree node, the IOMMU will
+>> be used for address translation. If a "dma-ranges" property exists in the
+>> device's parent node it will be ignored. An exception to this rule is if the
+>> referenced IOMMU is disabled, in which case the "dma-ranges" property of the
+>> parent shall take effect.
+>>
+>> The dma-ranges is only required by IOMMU disabled case. And should exist in
+>> the parent node of IOMMU device. But this deleted dma-ranges is under the usb
+>> bus node.
+> 
+> The USB hosts here don't use an IOMMU though, right?
 
-Thanks
--- 
-~Vinod
+Generally, USB devices are accessed through the IOMMU. However, even in this
+case, dma-ranges is not necessarily required. There are many examples of this
+in arch/arm64/boot/dts/. For example: arch/arm64/boot/dts/arm/juno.dt.yaml.
+
+Not sure, but maybe I found the answer.
+
+vi drivers/of/address.c +457
+457                                               Thus we treat the absence of
+458          * "ranges" as equivalent to an empty "ranges" property which means
+459          * a 1:1 translation at that level.
+
+466          * This quirk also applies for 'dma-ranges' which frequently exist in
+467          * child nodes without 'dma-ranges' in the parent nodes. --RobH
+
+475         if (ranges == NULL || rlen == 0) {
+476                 offset = of_read_number(addr, na);
+477                 memset(addr, 0, pna * 4);
+478                 pr_debug("empty ranges; 1:1 translation\n");
+479                 goto finish;
+480         }
+
+By the way: At first, I thought that these errors was detected by YAML. Now,
+I found that it was generated by "make dtbs". That's why it was reported by
+any YAML. Thus, the need to fix these errors is even more urgent.
+
+
+> 
+>>> Also note that the #address-cells=<1> means that any device under
+>>> this bus is assumed to only support 32-bit addressing, and DMA will
+>>> have to go through a slow swiotlb in the absence of an IOMMU.
+>>
+>> The dma_alloc_coherent() will allocate memory with GFP_DMA32 flag and
+>> try the 0-4G first. The reserved swiotlb buffer memory is used only
+>> when the allocation failed.
+> 
+> The swiotlb is primarily about the streaming mappings with dma_map_*(),
+> which has to copy all data sent to the device. dma_alloc_coherent()
+> is a rare operation and less impacted by DMA limitations.
+
+OK, I got it.
+
+> 
+>       Arnd
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+> .
+> 
+
