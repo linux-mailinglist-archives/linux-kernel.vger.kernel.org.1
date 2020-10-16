@@ -2,172 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC369290860
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C1B290875
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410127AbgJPP3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:29:47 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:35409 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407477AbgJPP3r (ORCPT
+        id S2436469AbgJPPcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:32:03 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:45083 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2410182AbgJPPbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:29:47 -0400
-Received: by mail-oi1-f193.google.com with SMTP id w141so2868383oia.2;
-        Fri, 16 Oct 2020 08:29:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tXhI22XAr9QzRuwe87asqlMQMLxwTwVNTWciuAMb+bw=;
-        b=GQtkcjkEmuX6yXVbf5YWfQqpHkLHlJyht7e/mlUU9QjVRTERgDkNFqbKtXZMeWkYfd
-         10JsGLOxNpbObp0wyaQjyc5cp/JYhTG1W5H/MAVWmADg3c+FYRtSgBa+yZuLlir3R/dg
-         KTi+MGepu0XH4A6bJM7/xR4mnifbRQ2zlOqwqyYV/BWJikdKTWaHRj7H5bCLfPBUKv5W
-         vZ1+TXwaDBFy7mHRwR9E8CCM81ZlGH2RSBDr+djSIAvu89p6D21JNurSXRGJQnxUmmH3
-         L42Lh9HnVG2QFmrSpO9EtMlIPltkXT/zTe5Nf/zHfC3Jy2McPvZOujKbjxYkkw6tqlhl
-         dLxA==
-X-Gm-Message-State: AOAM531Rg0KQZAfuCtzMy3rIEkK7q9rvtDo2u4qg4S1gLGvQxofKWRBY
-        Wlg5UodCQRkjjhGI6A19DlEFb/xoDj/XzGibgT0=
-X-Google-Smtp-Source: ABdhPJy4hrU2lU+3QjTmaeU44NjAxcXQ5fVUg4lrlZfb/u1ptd6lnum/YIQ1b5IpjyYol7BUsq4F50F50fb7nq5Gn8o=
-X-Received: by 2002:aca:fd52:: with SMTP id b79mr2863592oii.69.1602862186025;
- Fri, 16 Oct 2020 08:29:46 -0700 (PDT)
+        Fri, 16 Oct 2020 11:31:50 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id DCC9C822DA;
+        Fri, 16 Oct 2020 18:31:45 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1602862305;
+        bh=hUyZWVbgxKlcw/mUi/FvnWB+WyvlIGoSQAgeC+DQMrg=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=kvLxoJULMr3MAihtLja6rhwUt7/pwzL+32N7Gd9lJ8bFyBzwQblbV1ts8mVVH1yRy
+         07HoGMJW4DnerCO06qIQu4N1Clb2ZxSCgZcszNRGNGx9q64/L2dbqPsvAbOA2cW1I4
+         mwN6YV3ZY/jxLLZ0febPXDcvCzAOhvn4+r+K19/E=
+Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 16 Oct 2020 18:31:45 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <linux-fsdevel@vger.kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
+        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
+        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
+        <mark@harmstone.com>, <nborisov@suse.com>,
+        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v9 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
+Date:   Fri, 16 Oct 2020 18:29:35 +0300
+Message-ID: <20201016152937.4030001-9-almaz.alexandrovich@paragon-software.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20201016152937.4030001-1-almaz.alexandrovich@paragon-software.com>
+References: <20201016152937.4030001-1-almaz.alexandrovich@paragon-software.com>
 MIME-Version: 1.0
-References: <25f31d3e-7a67-935f-93ba-32216a5084e2@intel.com>
- <20201006211820.GN3227@techsingularity.net> <2382d796-7c2f-665e-9169-5cdc437bf34c@intel.com>
- <20201008090909.GP3227@techsingularity.net> <dcf4266a-5769-8a6b-d8e1-e77553126861@intel.com>
- <20201008173436.GQ3227@techsingularity.net> <f6b04376-4214-ff5d-1069-890449a923e2@intel.com>
- <20201014223703.GT3227@techsingularity.net> <20201015183410.GU3227@techsingularity.net>
- <CAJZ5v0jzZ6iQGYNnkgi-pPmdbq3aH+RoH+tBbEoBxFfmt_0MDg@mail.gmail.com> <20201016140909.GV3227@techsingularity.net>
-In-Reply-To: <20201016140909.GV3227@techsingularity.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 16 Oct 2020 17:29:34 +0200
-Message-ID: <CAJZ5v0gYddcnpWEB+rSxXdr3vkgTkO6MJGH8qR0v_d9qfFWTRw@mail.gmail.com>
-Subject: Re: ACPI _CST introduced performance regresions on Haswll
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.30.114.105]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 4:09 PM Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> On Fri, Oct 16, 2020 at 03:41:12PM +0200, Rafael J. Wysocki wrote:
-> > > Turns out I didn't even have that. On another machine (same model,
-> > > same cpu, different BIOS that cannot be updated), enabling the C6 state
-> > > still did not enable it on boot and dmesg complained about CST not being
-> > > usable. This is weird because one would expect that if CST was unusable
-> > > that it would be the same as use_acpi == false.
-> > >
-> > > This could potentially be if the ACPI tables are unsuitable due to bad
-> > > bad FFH information for a lower c-state. If _CST is not found or usable,
-> > > should acpi_state_table.count be reset to go back to the old behaviour?
-> >
-> > Yes, it should, although I would reset it in intel_idle_cst_usable()
-> > right away before returning 'false'.
-> >
->
-> Good stuff.
->
-> > I can send a patch to do the above or please submit the one below as
-> > it works too.
-> >
->
-> I'm happy to go with your alternative if you prefer. For a finish,
-> I decided it was worth reporting if the _CST was ignored regardless of
-> the reason. It performs roughly the same as setting use_acpi = false on
-> the affected machines.
->
-> ---8<---
-> intel_idle: Ignore _CST if control cannot be taken from the platform
->
-> e6d4f08a6776 ("intel_idle: Use ACPI _CST on server systems") avoids
-> enabling c-states that have been disabled by the platform with the
-> exception of C1E.
->
-> Unfortunately, BIOS implementations are not always consistent in terms
-> of how capabilities are advertised and control cannot always be handed
-> over. If control cannot be handed over then intel_idle reports that "ACPI
-> _CST not found or not usable" but does not clear acpi_state_table.count
-> meaning the information is still partially used.
->
-> This patch ignores ACPI information if CST control cannot be requested from
-> the platform. This was only observed on a number of Haswell platforms that
-> had identical CPUs but not identical BIOS versions.  While this problem
-> may be rare overall, 24 separate test cases bisected to this specific
-> commit across 4 separate test machines and is worth addressing. If the
-> situation occurs, the kernel behaves as it did before commit e6d4f08a6776
-> and uses any c-states that are discovered.
->
-> The affected test cases were all ones that involved a small number of
-> processes -- exec microbenchmark, pipe microbenchmark, git test suite,
-> netperf, tbench with one client and system call microbenchmark. Each
-> case benefits from being able to use turboboost which is prevented if the
-> lower c-states are unavailable. This may mask real regressions specific
-> to older hardware so it is worth addressing.
->
-> C-state status before and after the patch
->
-> 5.9.0-vanilla            POLL     latency:0      disabled:0 default:enabled
-> 5.9.0-vanilla            C1       latency:2      disabled:0 default:enabled
-> 5.9.0-vanilla            C1E      latency:10     disabled:0 default:enabled
-> 5.9.0-vanilla            C3       latency:33     disabled:1 default:disabled
-> 5.9.0-vanilla            C6       latency:133    disabled:1 default:disabled
-> 5.9.0-ignore-cst-v1r1    POLL     latency:0      disabled:0 default:enabled
-> 5.9.0-ignore-cst-v1r1    C1       latency:2      disabled:0 default:enabled
-> 5.9.0-ignore-cst-v1r1    C1E      latency:10     disabled:0 default:enabled
-> 5.9.0-ignore-cst-v1r1    C3       latency:33     disabled:0 default:enabled
-> 5.9.0-ignore-cst-v1r1    C6       latency:133    disabled:0 default:enabled
->
-> Patch enables C3/C6.
->
-> Netperf UDP_STREAM
->
-> netperf-udp
->                                       5.5.0                  5.9.0
->                                     vanilla        ignore-cst-v1r1
-> Hmean     send-64         193.41 (   0.00%)      226.54 *  17.13%*
-> Hmean     send-128        392.16 (   0.00%)      450.54 *  14.89%*
-> Hmean     send-256        769.94 (   0.00%)      881.85 *  14.53%*
-> Hmean     send-1024      2994.21 (   0.00%)     3468.95 *  15.85%*
-> Hmean     send-2048      5725.60 (   0.00%)     6628.99 *  15.78%*
-> Hmean     send-3312      8468.36 (   0.00%)    10288.02 *  21.49%*
-> Hmean     send-4096     10135.46 (   0.00%)    12387.57 *  22.22%*
-> Hmean     send-8192     17142.07 (   0.00%)    19748.11 *  15.20%*
-> Hmean     send-16384    28539.71 (   0.00%)    30084.45 *   5.41%*
->
-> Fixes: e6d4f08a6776 ("intel_idle: Use ACPI _CST on server systems")
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> ---
->  drivers/idle/intel_idle.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-> index 9a810e4a7946..4af2d3f2c8aa 100644
-> --- a/drivers/idle/intel_idle.c
-> +++ b/drivers/idle/intel_idle.c
-> @@ -1212,14 +1212,13 @@ static bool __init intel_idle_acpi_cst_extract(void)
->                 if (!intel_idle_cst_usable())
->                         continue;
->
-> -               if (!acpi_processor_claim_cst_control()) {
-> -                       acpi_state_table.count = 0;
-> -                       return false;
-> -               }
-> +               if (!acpi_processor_claim_cst_control())
-> +                       break;
->
->                 return true;
->         }
->
-> +       acpi_state_table.count = 0;
->         pr_debug("ACPI _CST not found or not usable\n");
->         return false;
->  }
+This adds Kconfig, Makefile and doc
 
-Applied as a fix for 5.10-rc1, thanks!
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+---
+ Documentation/filesystems/ntfs3.rst | 107 ++++++++++++++++++++++++++++
+ fs/ntfs3/Kconfig                    |  23 ++++++
+ fs/ntfs3/Makefile                   |  11 +++
+ 3 files changed, 141 insertions(+)
+ create mode 100644 Documentation/filesystems/ntfs3.rst
+ create mode 100644 fs/ntfs3/Kconfig
+ create mode 100644 fs/ntfs3/Makefile
+
+diff --git a/Documentation/filesystems/ntfs3.rst b/Documentation/filesystems/ntfs3.rst
+new file mode 100644
+index 000000000000..7b7d71b26c95
+--- /dev/null
++++ b/Documentation/filesystems/ntfs3.rst
+@@ -0,0 +1,107 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=====
++NTFS3
++=====
++
++
++Summary and Features
++====================
++
++NTFS3 is fully functional NTFS Read-Write driver. The driver works with
++NTFS versions up to 3.1, normal/compressed/sparse files
++and journal replaying. File system type to use on mount is 'ntfs3'.
++
++- This driver implements NTFS read/write support for normal, sparse and
++  compressed files.
++  NOTE: Operations with compressed files require increased memory consumption;
++- Supports native journal replaying;
++- Supports extended attributes;
++- Supports NFS export of mounted NTFS volumes.
++
++Mount Options
++=============
++
++The list below describes mount options supported by NTFS3 driver in addition to
++generic ones.
++
++===============================================================================
++
++nls=name		This option informs the driver how to interpret path
++			strings and translate them to Unicode and back. If
++			this option is not set, the default codepage will be
++			used (CONFIG_NLS_DEFAULT).
++			Examples:
++				'nls=utf8'
++
++nls_alt=name		This option extends "nls". It will be used to translate
++			path string to Unicode if primary nls failed.
++			Examples:
++				'nls_alt=cp1251'
++
++uid=
++gid=
++umask=			Controls the default permissions for files/directories created
++			after the NTFS volume is mounted.
++
++fmask=
++dmask=			Instead of specifying umask which applies both to
++			files and directories, fmask applies only to files and
++			dmask only to directories.
++
++nohidden		Files with the Windows-specific HIDDEN (FILE_ATTRIBUTE_HIDDEN)
++			attribute will not be shown under Linux.
++
++sys_immutable		Files with the Windows-specific SYSTEM
++			(FILE_ATTRIBUTE_SYSTEM) attribute will be marked as system
++			immutable files.
++
++discard			Enable support of the TRIM command for improved performance
++			on delete operations, which is recommended for use with the
++			solid-state drives (SSD).
++
++force			Forces the driver to mount partitions even if 'dirty' flag
++			(volume dirty) is set. Not recommended for use.
++
++sparse			Create new files as "sparse".
++
++showmeta		Use this parameter to show all meta-files (System Files) on
++			a mounted NTFS partition.
++			By default, all meta-files are hidden.
++
++prealloc		Preallocate space for files excessively when file size is
++			increasing on writes. Decreases fragmentation in case of
++			parallel write operations to different files.
++
++no_acs_rules		"No access rules" mount option sets access rights for
++			files/folders to 777 and owner/group to root. This mount
++			option absorbs all other permissions:
++			- permissions change for files/folders will be reported
++				as successful, but they will remain 777;
++			- owner/group change will be reported as successful, but
++				they will stay as root
++
++acl			Support POSIX ACLs (Access Control Lists). Effective if
++			supported by Kernel. Not to be confused with NTFS ACLs.
++			The option specified as acl enables support for POSIX ACLs.
++
++noatime			All files and directories will not update their last access
++			time attribute if a partition is mounted with this parameter.
++			This option can speed up file system operation.
++
++===============================================================================
++
++ToDo list
++=========
++
++- Full journaling support (currently journal replaying is supported) over JBD.
++
++
++References
++==========
++https://www.paragon-software.com/home/ntfs-linux-professional/
++	- Commercial version of the NTFS driver for Linux.
++
++almaz.alexandrovich@paragon-software.com
++	- Direct e-mail address for feedback and requests on the NTFS3 implementation.
++
+diff --git a/fs/ntfs3/Kconfig b/fs/ntfs3/Kconfig
+new file mode 100644
+index 000000000000..92a9c68008c8
+--- /dev/null
++++ b/fs/ntfs3/Kconfig
+@@ -0,0 +1,23 @@
++# SPDX-License-Identifier: GPL-2.0-only
++config NTFS3_FS
++	tristate "NTFS Read-Write file system support"
++	select NLS
++	help
++	  Windows OS native file system (NTFS) support up to NTFS version 3.1.
++
++	  Y or M enables the NTFS3 driver with full features enabled (read,
++	  write, journal replaying, sparse/compressed files support).
++	  File system type to use on mount is "ntfs3". Module name (M option)
++	  is also "ntfs3".
++
++	  Documentation: <file:Documentation/filesystems/ntfs3.rst>
++
++config NTFS3_64BIT_CLUSTER
++	bool "64 bits per NTFS clusters"
++	depends on NTFS3_FS && 64BIT
++	help
++	  Windows implementation of ntfs.sys uses 32 bits per clusters.
++	  If activated 64 bits per clusters you will be able to use 4k cluster
++	  for 16T+ volumes. Windows will not be able to mount such volumes.
++
++	  It is recommended to say N here.
+diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
+new file mode 100644
+index 000000000000..d99dd1af43aa
+--- /dev/null
++++ b/fs/ntfs3/Makefile
+@@ -0,0 +1,11 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Makefile for the ntfs3 filesystem support.
++#
++
++obj-$(CONFIG_NTFS3_FS) += ntfs3.o
++
++ntfs3-y := bitfunc.o bitmap.o inode.o fsntfs.o frecord.o \
++	    index.o attrlist.o record.o attrib.o run.o xattr.o\
++	    upcase.o super.o file.o dir.o namei.o lznt.o\
++	    fslog.o
+-- 
+2.25.4
+
