@@ -2,236 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECF728FF6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D04C28FF73
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404834AbgJPHr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404735AbgJPHr3 (ORCPT
+        id S2404797AbgJPHsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:48:24 -0400
+Received: from alln-iport-1.cisco.com ([173.37.142.88]:53858 "EHLO
+        alln-iport-1.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404717AbgJPHsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:47:29 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21BA8C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 00:47:29 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kTKSO-0007y9-Qh; Fri, 16 Oct 2020 09:47:20 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:c4e8:c8ff:a41:29c1] (unknown [IPv6:2a03:f580:87bc:d400:c4e8:c8ff:a41:29c1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id DCAD257A739;
-        Fri, 16 Oct 2020 07:47:18 +0000 (UTC)
-Subject: Re: [PATCH 3/6] dt-bindings: can: flexcan: add fsl, can-index
- property to indicate a resource
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>, Ying Liu <victor.liu@nxp.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>
-References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
- <20201016134320.20321-4-qiangqing.zhang@nxp.com>
- <604a66f6-83ea-630e-f479-fe62189de42a@pengutronix.de>
- <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <715a951f-5ed7-d5ee-f64e-f228cf6b9f87@pengutronix.de>
-Date:   Fri, 16 Oct 2020 09:47:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 16 Oct 2020 03:48:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=6210; q=dns/txt; s=iport;
+  t=1602834502; x=1604044102;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:mime-version;
+  bh=G+8sVqnMv/pLJI+viaNOv8cVsIOrsDn4gfG05Iy9MOw=;
+  b=QkuOFKUJuJIb9wEJwprNyWyLDRFMAe5pBNvanXXg/cvBP7YHV9EK3wLk
+   RoyckImqe8ql06Kb3wevg8lsRzXmKgfLKMPSX4WKphcacCeXOs3Q/CE3u
+   YZl/p47CvppqGmexjyOlBeNKCW8dXgfIrtgIxbjO9hjc8MDiujKRnva6j
+   8=;
+X-Files: pEpkey.asc : 1813
+IronPort-PHdr: =?us-ascii?q?9a23=3AKUMNYBGOTZiGjFOtSqSHIJ1GYnJ96bzpIg4Y7I?=
+ =?us-ascii?q?YmgLtSc6Oluo7vJ1Hb+e401wGbWYTd9uJKjPfQv6n8WGsGp5GbvyNKfJ9NUk?=
+ =?us-ascii?q?oDjsMb10wlDdWeAEL2ZPjtc2QhHctEWVMkmhPzMUVcFMvkIVGHpHq04G0WGx?=
+ =?us-ascii?q?PiJQRyO+L5E5LTiMLx0Pq9qNXfZgxSj2+7ZrV/ZBy9sQTWsJwQho1vT8R5yh?=
+ =?us-ascii?q?bArnZSPepMwmY9LlOIlBG67cC1r5M=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BVBwAuT4lf/5xdJa1gHAEBAQEBAQc?=
+ =?us-ascii?q?BARIBAQQEAQGCD4FSKSgHgUkvLAqEM4NGA40jLph7glMDVQQHAQEBCgMBAS0?=
+ =?us-ascii?q?CBAEBhEoCF4FxAiU4EwIDAQELAQEFAQEBAgEGBG2FXAyFcgEBAQEDEhEdAQE?=
+ =?us-ascii?q?3AQ8CAQgVAyoCAgIwJQIEDQEFAgEBChSCOUsBgksDLgEDoiECgTmIYXaBMoM?=
+ =?us-ascii?q?BAQEFhSUYggkHCYE4gVOBH4NuhlYbgUE/gREngjsuPoRUgwCCYJApgyeHD4F?=
+ =?us-ascii?q?Mm1EKgmqETYJfkzYFBwMfgxaPTo5mjkmlEAIEAgQFAg4BAQWBayOBV3AVgyR?=
+ =?us-ascii?q?QFwINjh+DcYpWdAI2AgYKAQEDCXyMOwGBEAEB?=
+X-IronPort-AV: E=Sophos;i="5.77,382,1596499200"; 
+   d="asc'?scan'208";a="563969916"
+Received: from rcdn-core-5.cisco.com ([173.37.93.156])
+  by alln-iport-1.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 16 Oct 2020 07:48:22 +0000
+Received: from XCH-ALN-004.cisco.com (xch-aln-004.cisco.com [173.36.7.14])
+        by rcdn-core-5.cisco.com (8.15.2/8.15.2) with ESMTPS id 09G7mMsN020500
+        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
+        Fri, 16 Oct 2020 07:48:22 GMT
+Received: from xhs-rtp-001.cisco.com (64.101.210.228) by XCH-ALN-004.cisco.com
+ (173.36.7.14) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Oct
+ 2020 02:48:21 -0500
+Received: from xhs-aln-002.cisco.com (173.37.135.119) by xhs-rtp-001.cisco.com
+ (64.101.210.228) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Oct
+ 2020 03:48:20 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (173.37.151.57)
+ by xhs-aln-002.cisco.com (173.37.135.119) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 16 Oct 2020 02:48:20 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ED1/0YgWyXsvGJ/oMqKEugo4Y8YJ78f4SG9Tj0u3lMRn6a5HfPfp2/h3Rm6zynpI/TDcSpYUw158J5mRzQmuART1aH6r3CdormusoWqcgSRRohZt1A5Feh0950MmbaZd+YAByrbLX+OnihAbUkhr51z7lDCfoBvS1pclZ9JIOlKnrqeLHK+REj8QkCi4U8SX+4GRJEfWNnMvckJl27lGKyEC51LaNaMcq3V+hSIq3S2Uc58bLUXtLF5vZkIxuWD3N/jTj/tYhjLZhI/YHVF8r8qRfx2Q1iRn1pj5h2OXvdVLsjE/3gCKE/G+IxKad7saK1jlNCBtZatFhlHfzSSRsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5yOeKuJ093LrV1CkdGWLZtu5RUsY3/uqnizxE7ot2D8=;
+ b=JaovmsmlNaI+ZBP8+XA3K3t8VB5ZwsljFt7rAcB4DDqUdI3j4UpOhkq4zUvggwzlCrIXqakb3e4ugKUToMUJ2lqB77emPaQt82cGotXgSfBbCpm0xqVymKCjf7avhECtAZ6KTdN55klwOYXlCo3NJm453bu3jzyMMHwW4RyBnJA9L1ai5fXRHIhQ6iUFjS6/xhPtf43mvhn9tRrt4e2CxOcR0i9oo0hT67+EukBgvw6hDxUlyrefnDYdMmeVdkexLQBJHBC8/tCBAgZbgeF/f37nghE4wHXdHSVM/47kIGERSAYQj/2fpDgd9ZmHpWN6WJeMsH+/53VVr5sE7tNguQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
+ dkim=pass header.d=cisco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com;
+ s=selector2-cisco-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5yOeKuJ093LrV1CkdGWLZtu5RUsY3/uqnizxE7ot2D8=;
+ b=YpYewHhhc5LvGeG/Brb07fYqpeuwyCfd0zgS+uRnPo0AJVbN++ItCYyTDktgtJBum/WNw/BnJLaxJ9YAeOcE0tqicTs1e1WFMRn2RJDKmM1ux8/NXbJNlNtBe2+eXMhUHuusx4x7g0wYKqNE90k4lW2qPQRqoHEfJAs366RMDPI=
+Received: from DM6PR11MB3866.namprd11.prod.outlook.com (2603:10b6:5:199::33)
+ by DM6PR11MB2540.namprd11.prod.outlook.com (2603:10b6:5:c5::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Fri, 16 Oct
+ 2020 07:48:19 +0000
+Received: from DM6PR11MB3866.namprd11.prod.outlook.com
+ ([fe80::c943:b491:e40e:4f02]) by DM6PR11MB3866.namprd11.prod.outlook.com
+ ([fe80::c943:b491:e40e:4f02%7]) with mapi id 15.20.3477.025; Fri, 16 Oct 2020
+ 07:48:19 +0000
+From:   "Hans-Christian Egtvedt (hegtvedt)" <hegtvedt@cisco.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Luiz Augusto von Dentz" <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [v5.8/bluetooth PATCH] Bluetooth: Disconnect if E0 is used for
+ Level 4
+Thread-Topic: [v5.8/bluetooth PATCH] Bluetooth: Disconnect if E0 is used for
+ Level 4
+Thread-Index: AQHWo42PA8eSz5GJ+UWkEBYQcxu8TamZ2lEA
+Date:   Fri, 16 Oct 2020 07:48:19 +0000
+Message-ID: <b65dadad-ff95-671e-f330-7179b5752d75@cisco.com>
+References: <20201015211124.1187822-1-hegtvedt@cisco.com>
+ <20201016072553.GA578349@kroah.com>
+In-Reply-To: <20201016072553.GA578349@kroah.com>
+Accept-Language: en-DK, en-US
+Content-Language: aa
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=cisco.com;
+x-originating-ip: [31.45.31.45]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a8b19ad2-2c8b-4f76-8244-08d871a7d98f
+x-ms-traffictypediagnostic: DM6PR11MB2540:
+x-microsoft-antispam-prvs: <DM6PR11MB2540F750F32545FA1B58064DDD030@DM6PR11MB2540.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:663;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /rP4dwzOIx83L0/7HHIesk1yg7pYaHkERGm8jZGLBWQvFfNN044HPzdYZUDxP/rl7ZvkrkXbQ3o+xfuBT/MOlyMW2O4RrEwRPPDlv1CD7uhb30Bf86ukBi9ZayR3J2Ke8+Ku6QEnUUSg1uZxF6wVt8wddlZjj8brvZSGofDHuDywGUp8mRAWT0PWih4p8cl/asuL02TaiwRs07fl7MSr66ELeirbzojZveCN67ag+DQOv0eLEYEBCwyihVo0oO3XpxpcF5OsrDoo7KlQU51YPT66L8EeLTS6p8scpHPf29SR1oxfEoqWIfbjGcWqywgdODWY5rVso0xi/CDhiKjptDO96FtuYUFGVO6Q++NE79Rxgap3rlUAsn2dx0OBn2Vu
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3866.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(396003)(136003)(346002)(376002)(66946007)(99936003)(8676002)(66616009)(66476007)(91956017)(66446008)(66556008)(76116006)(26005)(478600001)(64756008)(31686004)(6512007)(53546011)(6506007)(4326008)(6486002)(5660300002)(2906002)(86362001)(6916009)(83380400001)(8936002)(2616005)(71200400001)(54906003)(316002)(36756003)(186003)(31696002)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: iBoTFO/vRCCn4QcYts86AV2U0eE1UWeivRX5VFkhYxFrBQJV42pDhB84Wafr4KgdSs9g7r/4W9EW/mpAmRrm/ulnHkh3PqPoTsFuE0ulc4q9Tee9e/gwD5fWa8/g4n2Wo7YITyF4H8KsnYDoF85hrwsINs1j6gYEsu5KEGtBV9I/f0qGI1X+qDnnExFopdfGBlLBnNkl2erGd8yn5yavHSgkJjzyyI3XfkwWLL1QAbTAkUiwidF9STtcgq1C4omcJOT1111pbN9c/FDjl9SzwT7fiahmQX0WXhknVrpMCOA19GJmyAuyyOl4xaJy5Z2edHP3rx5NpAA3nU9SQ4H3m+p+RtgxGqGeCxRyIQI8vS5zMQDhNFijWU8c2c8M5MW9cOJ146SdDUMevXAkXJWQPHS9g1q0uZPH84IOHDnrJhwJMZKjfMgZFQ2cMvsrpxBTr4pg76LaZ9gUZyW88YHl4IjArBXqWq3HvZyPrXT6pW2jboR5/O7wUVdbkOHU8Ke/otrc/vHtVDS3m3r4DzMjLIziIEgAa4+cTwvCw6lDFwaW5lGx/+6gdUmcdZMGj9E50dWzLq2MXqS8vHrMgm6JgoMVxut0Qy+AOBa7vAoZwvAjs4gHev4kO4bbqFdfBuNNMz4DF0yvlzj/5wm5fZL3bw==
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/mixed;
+        boundary="_002_b65dadadff95671ef3307179b5752d75ciscocom_"
 MIME-Version: 1.0
-In-Reply-To: <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="84xmicyfAILlR4Bs14e1ExCBWjUXoSs64"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3866.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8b19ad2-2c8b-4f76-8244-08d871a7d98f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2020 07:48:19.4744
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: b0Ay98LM6TU1dl5nxtaXXLfDJ8oA3xiJN+A5Ugl0+CtO1hwfiFGI9j4ccgDMuwh9khRete8T67P36Na5iclrag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2540
+X-OriginatorOrg: cisco.com
+X-Outbound-SMTP-Client: 173.36.7.14, xch-aln-004.cisco.com
+X-Outbound-Node: rcdn-core-5.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---84xmicyfAILlR4Bs14e1ExCBWjUXoSs64
-Content-Type: multipart/mixed; boundary="GG5iOWp7CBqqr0CCKLzfjW0KgNqLUKaES";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Peng Fan <peng.fan@nxp.com>, Ying Liu <victor.liu@nxp.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- Pankaj Bansal <pankaj.bansal@nxp.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- dl-linux-imx <linux-imx@nxp.com>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>
-Message-ID: <715a951f-5ed7-d5ee-f64e-f228cf6b9f87@pengutronix.de>
-Subject: Re: [PATCH 3/6] dt-bindings: can: flexcan: add fsl, can-index
- property to indicate a resource
-References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
- <20201016134320.20321-4-qiangqing.zhang@nxp.com>
- <604a66f6-83ea-630e-f479-fe62189de42a@pengutronix.de>
- <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
-In-Reply-To: <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
+--_002_b65dadadff95671ef3307179b5752d75ciscocom_
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2B989E30DA1860419DBA361D778A5D37@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 
---GG5iOWp7CBqqr0CCKLzfjW0KgNqLUKaES
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+T24gMTYvMTAvMjAyMCAwOToyNSwgR3JlZyBLSCB3cm90ZToNCj4gT24gVGh1LCBPY3QgMTUsIDIw
+MjAgYXQgMTE6MTE6MjRQTSArMDIwMCwgSGFucy1DaHJpc3RpYW4gTm9yZW4gRWd0dmVkdCB3cm90
+ZToNCj4+IEZyb206IEx1aXogQXVndXN0byB2b24gRGVudHogPGx1aXoudm9uLmRlbnR6QGludGVs
+LmNvbT4NCj4+DQo+PiBFMCBpcyBub3QgYWxsb3dlZCB3aXRoIExldmVsIDQ6DQo+Pg0KPj4gQkxV
+RVRPT1RIIENPUkUgU1BFQ0lGSUNBVElPTiBWZXJzaW9uIDUuMiB8IFZvbCAzLCBQYXJ0IEMgcGFn
+ZSAxMzE5Og0KPj4NCj4+ICAgJzEyOC1iaXQgZXF1aXZhbGVudCBzdHJlbmd0aCBmb3IgbGluayBh
+bmQgZW5jcnlwdGlvbiBrZXlzDQo+PiAgICByZXF1aXJlZCB1c2luZyBGSVBTIGFwcHJvdmVkIGFs
+Z29yaXRobXMgKEUwIG5vdCBhbGxvd2VkLA0KPj4gICAgU0FGRVIrIG5vdCBhbGxvd2VkLCBhbmQg
+UC0xOTIgbm90IGFsbG93ZWQ7IGVuY3J5cHRpb24ga2V5DQo+PiAgICBub3Qgc2hvcnRlbmVkJw0K
+Pj4NCj4+IFNDIGVuYWJsZWQ6DQo+Pg0KPj4+IEhDSSBFdmVudDogUmVhZCBSZW1vdGUgRXh0ZW5k
+ZWQgRmVhdHVyZXMgKDB4MjMpIHBsZW4gMTMNCj4+ICAgICAgICAgU3RhdHVzOiBTdWNjZXNzICgw
+eDAwKQ0KPj4gICAgICAgICBIYW5kbGU6IDI1Ng0KPj4gICAgICAgICBQYWdlOiAxLzINCj4+ICAg
+ICAgICAgRmVhdHVyZXM6IDB4MGIgMHgwMCAweDAwIDB4MDAgMHgwMCAweDAwIDB4MDAgMHgwMA0K
+Pj4gICAgICAgICAgIFNlY3VyZSBTaW1wbGUgUGFpcmluZyAoSG9zdCBTdXBwb3J0KQ0KPj4gICAg
+ICAgICAgIExFIFN1cHBvcnRlZCAoSG9zdCkNCj4+ICAgICAgICAgICBTZWN1cmUgQ29ubmVjdGlv
+bnMgKEhvc3QgU3VwcG9ydCkNCj4+PiBIQ0kgRXZlbnQ6IEVuY3J5cHRpb24gQ2hhbmdlICgweDA4
+KSBwbGVuIDQNCj4+ICAgICAgICAgU3RhdHVzOiBTdWNjZXNzICgweDAwKQ0KPj4gICAgICAgICBI
+YW5kbGU6IDI1Ng0KPj4gICAgICAgICBFbmNyeXB0aW9uOiBFbmFibGVkIHdpdGggQUVTLUNDTSAo
+MHgwMikNCj4+DQo+PiBTQyBkaXNhYmxlZDoNCj4+DQo+Pj4gSENJIEV2ZW50OiBSZWFkIFJlbW90
+ZSBFeHRlbmRlZCBGZWF0dXJlcyAoMHgyMykgcGxlbiAxMw0KPj4gICAgICAgICBTdGF0dXM6IFN1
+Y2Nlc3MgKDB4MDApDQo+PiAgICAgICAgIEhhbmRsZTogMjU2DQo+PiAgICAgICAgIFBhZ2U6IDEv
+Mg0KPj4gICAgICAgICBGZWF0dXJlczogMHgwMyAweDAwIDB4MDAgMHgwMCAweDAwIDB4MDAgMHgw
+MCAweDAwDQo+PiAgICAgICAgICAgU2VjdXJlIFNpbXBsZSBQYWlyaW5nIChIb3N0IFN1cHBvcnQp
+DQo+PiAgICAgICAgICAgTEUgU3VwcG9ydGVkIChIb3N0KQ0KPj4+IEhDSSBFdmVudDogRW5jcnlw
+dGlvbiBDaGFuZ2UgKDB4MDgpIHBsZW4gNA0KPj4gICAgICAgICBTdGF0dXM6IFN1Y2Nlc3MgKDB4
+MDApDQo+PiAgICAgICAgIEhhbmRsZTogMjU2DQo+PiAgICAgICAgIEVuY3J5cHRpb246IEVuYWJs
+ZWQgd2l0aCBFMCAoMHgwMSkNCj4+IFtNYXkgOCAyMDoyM10gQmx1ZXRvb3RoOiBoY2kwOiBJbnZh
+bGlkIHNlY3VyaXR5OiBleHBlY3QgQUVTIGJ1dCBFMCB3YXMgdXNlZA0KPj4gPCBIQ0kgQ29tbWFu
+ZDogRGlzY29ubmVjdCAoMHgwMXwweDAwMDYpIHBsZW4gMw0KPj4gICAgICAgICBIYW5kbGU6IDI1
+Ng0KPj4gICAgICAgICBSZWFzb246IEF1dGhlbnRpY2F0aW9uIEZhaWx1cmUgKDB4MDUpDQo+Pg0K
+Pj4gU2lnbmVkLW9mZi1ieTogTHVpeiBBdWd1c3RvIHZvbiBEZW50eiA8bHVpei52b24uZGVudHpA
+aW50ZWwuY29tPg0KPj4gU2lnbmVkLW9mZi1ieTogTWFyY2VsIEhvbHRtYW5uIDxtYXJjZWxAaG9s
+dG1hbm4ub3JnPg0KPj4gKGNoZXJyeSBwaWNrZWQgZnJvbSBjb21taXQgODc0NmYxMzViYjAxODcy
+ZmY0MTJkNDA4ZWExYWE5ZWJkMzI4YzFmNSkNCj4+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3Jn
+ICMgNS44DQo+IA0KPiBBbnkgcmVhc29uIHlvdSBkaWRuJ3Qgc2lnbiBvZmYgb24gdGhlc2UgYmFj
+a3BvcnRzPyAgWW91IHNob3VsZCB0YWtlIHRoZQ0KPiBjcmVkaXQgZm9yIHRoZW0gOikNCg0KSSBq
+dXN0IGNoZXJyeS1waWNrICgtOiBJIGhhdmUgYWx3YXlzIHJlc2VydmVkIHRoZSBzaWduIG9mZiBw
+YXJ0IGZvciBjb2RlDQpjaGFuZ2UuIFdpbGwgbWFrZSBhIG5vdGUgb2YgdGhhdCBmb3IgdGhlIGZ1
+dHVyZS4NCg0KLS0gDQpCZXN0IHJlZ2FyZHMsIEhhbnMtQ2hyaXN0aWFuIE5vcmVuIEVndHZlZHQN
+Cg==
 
-On 10/16/20 8:52 AM, Joakim Zhang wrote:
->=20
-> Hi Marc,
->=20
->> -----Original Message-----
->> From: Marc Kleine-Budde <mkl@pengutronix.de>
->> Sent: 2020=E5=B9=B410=E6=9C=8816=E6=97=A5 14:20
->> To: Joakim Zhang <qiangqing.zhang@nxp.com>; robh+dt@kernel.org;
->> shawnguo@kernel.org; s.hauer@pengutronix.de
->> Cc: devicetree@vger.kernel.org; Peng Fan <peng.fan@nxp.com>; Ying Liu
->> <victor.liu@nxp.com>; netdev@vger.kernel.org; Pankaj Bansal
->> <pankaj.bansal@nxp.com>; linux-kernel@vger.kernel.org;
->> linux-can@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
->> kernel@pengutronix.de
->> Subject: Re: [PATCH 3/6] dt-bindings: can: flexcan: add fsl, can-index=
- property
->> to indicate a resource
->>
->> On 10/16/20 3:43 PM, Joakim Zhang wrote:
->>> For SoCs with SCU support, need setup stop mode via SCU firmware, so
->>> this property can help indicate a resource.
->>>
->>> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
->>> ---
->>>  Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 5 +++++
->>>  1 file changed, 5 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.tx=
-t
->>> b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
->>> index 6af67f5e581c..839c0c0064a2 100644
->>> --- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
->>> +++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
->>> @@ -43,6 +43,10 @@ Optional properties:
->>>  		  0: clock source 0 (oscillator clock)
->>>  		  1: clock source 1 (peripheral clock)
->>>
->>> +- fsl,can-index: The index of CAN instance.
->>> +                 For SoCs with SCU support, need setup stop mode via=
+--_002_b65dadadff95671ef3307179b5752d75ciscocom_
+Content-Type: application/pgp-keys; name="pEpkey.asc"
+Content-Description: pEpkey.asc
+Content-Disposition: attachment; filename="pEpkey.asc"; size=1813;
+	creation-date="Fri, 16 Oct 2020 07:48:19 GMT";
+	modification-date="Fri, 16 Oct 2020 07:48:19 GMT"
+Content-ID: <4FEAFD38A1702E4C9CDA440531F96ABA@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 
->> SCU firmware,
->>> +                 so this property can help indicate a resource.
->>
->> This property is not CAN specific. So the name could be more general.
->=20
-> How about "fsl,index"?
+LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tDQoNCm1RRU5CRjkyUTYwQkNBRERq
+dUxjNDlMSEQ2WmVsNW5xekxnclVWczRiSE94M3hlTkxRSVpGNXBIemxXa2VqMzYNCmtyRjltcFN1
+TGdUamtsd2dkN2ZzNE44NHlEVllZbXZIR0l0NVpzZVRqTW53aFVodUNNY2FHNERVUEFsMk9CNHkN
+CkxIUUFVY0QxdktKU2pEM21GWDYzR1hzajJTSzluTWthYmxCVDcxVXBCcUdSVVVyY2c3OVRreGg5
+b3VjblU3UnQNCnUzWTZzTWhDancvU1gwWmVJb2VxU1NaZWlDS3l4OXlSZ3JiNkJGSXFWMm16QUZB
+YWcyK1BZYVQ5dWs1NWlnUzgNCklhM2M0aVVxbllHeWNnQ2hYZ1NuVk91eGJwWC9LeEVsM3pmVTA3
+RzZVSTRMejcwR3lDOXRKMU1kUE1tWnhwTUMNCldZYWMwQSt5SEcrTGIrQ1lNVDBvQS9yK3dZZXgz
+RXBBODI1YkFCRUJBQUcwTVVoaGJuTXRRMmh5YVhOMGFXRnUNCklFNXZjbVZ1SUVWbmRIWmxaSFFn
+UEdobFozUjJaV1IwUUdOcGMyTnZMbU52YlQ2SkFWUUVFd0VJQUQ0V0lRUTgNClJJdmZkUXpWN3FB
+dmRvY3BqV0VUWUhyRE9RVUNYM1pEcmdJYkF3VUpBZUV6Z0FVTENRZ0hBZ1lWQ2drSUN3SUUNCkZn
+SURBUUllQVFJWGdBQUtDUkFwaldFVFlIckRPWklIQ0FDQjdncXMvSVdwTkU2TlNsS2l1eSs3SkR1
+ZEJaRkENCklMMVJFUlBsSU9uWkRTQm5TMkcyakkvQ25IL0NWYlAyaVdHSy9WdUx6ZUdVM2QrNy9R
+VkN4U2xXd0NHUmw5SnENCnYyaXFlemxpeHNrUVJRSVdGL2t2MWxKNVJXUzRFMzRLVUxiak44WTF2
+WGhwOExjRnA2WGtmMDEzSWZodHJRZlENCllLaW1zWjlvNzd6VDZJVHhiOTZsK0xabVZlWTdrNGd3
+MExQbEdFZkh1N25hNFNWS05xSTd3cHMzWEZhWGVJN00NCnp6MVlvZ2oxL0l2d1ZpczM2dmtickNV
+b2lVeWprSC9zRVhVdUI1amNXeXFaOGpYY2daZUN1dHlEQVNRVFJHSFgNClFPdkRoV3JFbUlZTzNl
+OE9hYjg3R1ZmVXNwd1pRWnY0STdCQnVCbkZySFFFL2RTcHFzOWtFdXhxdVFFTkJGOTINClE2NEJD
+QUMrd1JZZ1IxcEtuZDZWWGhRdWg1b3hqbXlLTkQ4Uy91SE9SOVVXeUZnUnBpSzhlWmFUMUdOc2ow
+c1UNCnZ1ZytZcVZMekZHWG04djg4STBWVEgydU1USmw5VHUzeEo0THhuYjJsdnFiaE1wQ2UzOG1O
+em1UOFh3cXJ4WjkNCms3cmx0a24vWjVBV1JoRHVoZFJORHVHWENmL0Zua1FFczIyVmpxN0JQTkZn
+Z0RCakliU3VGOVRWbnMvL0FVSkUNCk9GOE1uWFhuSWdEK3dKc25maDcwcTVRbFFjRURzMkhCMEFD
+R0g4NHovc3lWeGdpRGFlYklELy9SMXVzNDJyWEENCktETHZQZ2tmRDdRbUNlQ1JrRUt1SmorQWRM
+U3ZFRE5jUXhZSE13eTRBTC9qd0hNM0RwYjI5WFFRdnVMcm5RckwNClpGQzE5WXVpSTFMY2RkWUFi
+STM3UFV0cnhvZ0xBQkVCQUFHSkFUd0VHQUVJQUNZV0lRUThSSXZmZFF6VjdxQXYNCmRvY3BqV0VU
+WUhyRE9RVUNYM1pEcmdJYkRBVUpBZUV6Z0FBS0NSQXBqV0VUWUhyRE9TbzBCLzl3RDVTYVYxQWIN
+CnAvNVVuMHJvYy9nRGhteGsrT3dDcWpPKytMaEZNOVovK2grVVZYeEw1Y25MTE05NUZuQ0RWSngr
+dTIyQ1dkTnQNCnNlVDFWejVHLzVlaXZ6SXA2cSt5a3pOUFpPVUxaRVNoSmpQYnRDa1FyRDFIY3NO
+MTJNNXdKcm1TVFlOTXN1MC8NCkI4dDBxaVJ4WFpybi9uRlVaTXVsL2FLTmI4d0dDcVpUbWFEL1hQ
+b3Z5d2c0QW5DcDRRR2JFQlJFTjJMcis3NWwNClJmSlJSMkU2MENHaUpxdEZOUjZwUG5GSmg4ajR2
+dUVZS0MvY3QvRmxpRk1lTVVQWEl4YnYrUTdVUnI1all5SHUNCjVwVldrVWRvSU9ZcVc4THVsL2dZ
+RUY0MTgrdGJ1Qk13TG5maDhraFBGVGhmYjlUditGY0llZmR6Uk9KTzJOTncNClJuUFNJTzBYWkll
+Sw0KPU8vR1UNCi0tLS0tRU5EIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS0NCg==
 
-Maybe something with "scu", as it's specific to the SCU firmware.
-
-I think it's up to Rob's and the DT people.
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---GG5iOWp7CBqqr0CCKLzfjW0KgNqLUKaES--
-
---84xmicyfAILlR4Bs14e1ExCBWjUXoSs64
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+JUAIACgkQqclaivrt
-76k39Af9GKMdUJduwNkE51ACE92N+qC/32WuSsSxd0N4AK2eEJZUS2qFrQSQmJ3R
-C8hVVevohxoIDW+F8YdFurdh9WGNzQIRFbUfk/m9BGotoODWYcCqUDkRG/Q3XNj+
-REhiMFZdi+VWyKaZ8aoWvXFZMw4Bff3mF7Mdghuv7nLA5fy9LxF4h4tr1YO8Y3zz
-KkbIDaia86EV3lhLfoTaNGFZpCresnfwBTz2HEZya3zBRI+l006v0uT+cQEr7gd4
-FrzJNioQR5HRHJdZzzIU0asu7EoymR3ZD5oILNg5VfBveFjnNaMCv4ywNBeZoKvn
-bIZ6EPrePS19x5nxdYvMj5qg8OQmVA==
-=1p8i
------END PGP SIGNATURE-----
-
---84xmicyfAILlR4Bs14e1ExCBWjUXoSs64--
+--_002_b65dadadff95671ef3307179b5752d75ciscocom_--
