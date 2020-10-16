@@ -2,92 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83660290651
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA05290656
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408026AbgJPNaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:30:23 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:37922 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407834AbgJPNaX (ORCPT
+        id S2408052AbgJPNbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407350AbgJPNbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:30:23 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09GDKuI8031555;
-        Fri, 16 Oct 2020 08:30:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=EIFdycrd2ap6D7qPrimuZQwoebezAFOPU6dKTD7N7RY=;
- b=jLPerM7HmVGBq0QyY8rZARuxbCIh18RcB6tih9Ep0hzLcDCOyiZzOUW6Er3dmUVw9eNT
- owe5oejeZrBeHmgXhaTocEsaQDdeYSChGFDkAGWuF8MtlNA7GafLeV62kGi+eLmeUYr8
- rAKS7h6wws6PnJw6vJS3PDxkZxrivhA+r6/gz3hPy6qbh/ME4O3EfPaSrk36b4H0UWy2
- vIvs9luwrnSpeOkNbHbGSclu4ykAlTVCmMhEZhCcZRuh+vOEjItmY+7HTyhqn9T81bQY
- CINAZRPc9DqnuYst8YMFoQJB9xl2+8vTLYc1NDFFkZ6UbuuMm9BTKfth0BxwT8QGtH/K EQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3439cng6gb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 16 Oct 2020 08:30:11 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 16 Oct
- 2020 14:30:09 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 16 Oct 2020 14:30:09 +0100
-Received: from [10.0.2.15] (ausnpc0lsnw1.ad.cirrus.com [198.61.64.143])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0C87345;
-        Fri, 16 Oct 2020 13:30:09 +0000 (UTC)
-Subject: Re: [PATCH 0/7] Add dts for Rpi4 + Cirrus Lochnagar and codecs
-To:     Mark Brown <broonie@kernel.org>
-CC:     <robh+dt@kernel.org>, <nsaenzjulienne@suse.de>,
-        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-rpi-kernel@lists.infradead.org>
-References: <20201014145418.31838-1-rf@opensource.cirrus.com>
- <20201014185632.GD4580@sirena.org.uk>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <b3376cd4-010f-cf72-8c81-1f5d22cb6454@opensource.cirrus.com>
-Date:   Fri, 16 Oct 2020 14:30:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Fri, 16 Oct 2020 09:31:40 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBFEC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:31:40 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id l4so2385711ota.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5QuvgoP2s4jo0WikDSiJUcCamsSLK3zQlawt0pcsDSM=;
+        b=oiLCg7IWLPKTDjRDQoDjtRyiP6dOyUfMf63gYkJBbrZYeOmGztsMYRK89juEA0LAQf
+         wn6xsgrto6sU+S2CcFYyC2aq3GQUdN3zQKP/mg5v9aLxwRhzLbjWi3s420RCzNavwwt6
+         p/8ubQBKte/eIekbVGy5/Zh4DLCLbZWc5xZ4b60dQfJOISBP0kYDnfgZW6+JHkupO5Bz
+         2j7SBywfGprciwEW0ObxUYXi9TAj4RTYFaNwDDt2Ys48IeAxwvAGNHFBKFIIX2++dny0
+         eu7jNE4Q18C+/J25RC8YNhNhB9NiB8EUrw8GS/KrmGJuRCPr9vNvtFxTe+s1xRQQ1y+5
+         /SmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5QuvgoP2s4jo0WikDSiJUcCamsSLK3zQlawt0pcsDSM=;
+        b=nHjP6ncMxmyR2mkzFZB2R9E2VE9q93ZWqZhUMKyKx5dHaWGYfr3Cffm/KaxAgP9o1c
+         DLbg9WNly+rKpUhTIaSpR5yfQJh0Hy6X4cPCNt9QL/8Y6XRmhkw7OYjx1wAQNIZgc6aR
+         ijM9at2W0jkxz/yorPSOaGV4SibteqeOEjyi9bbRTkl9bh2TMlwHnTsEL7Jcve9uZwJ9
+         LdX5WmbM86g38p2hHl5H7QZO5O2ftlNYgHfcoFp20iFp7E1Rmo8gX5EhFcECVfQDYlbS
+         6L1oXa5lsd14VYuN1hlCRMGFTfIM3Eg3cuhTbXwe/PXi2hBNzJ73nqc4XUaaXUuRKCKH
+         OudQ==
+X-Gm-Message-State: AOAM533bIPuiVnMaV7gkhIIox8EWU1ALgQLcHtL21q84EIyLMJyJrrT5
+        rZYKq8uMfX2cF6lAEqSC5uht5JdRDTd+5wvwUAhsbw==
+X-Google-Smtp-Source: ABdhPJxVF9gMy0Xl/FnPakpeZeakUVi8Ul5mNfn/2LDnWzqC4QF+xITkFCJdipqJKA+DJQvisoUsngHcHbdjk+nodc4=
+X-Received: by 2002:a9d:34d:: with SMTP id 71mr2403102otv.251.1602855099909;
+ Fri, 16 Oct 2020 06:31:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201014185632.GD4580@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0
- priorityscore=1501 malwarescore=0 adultscore=0 spamscore=0 impostorscore=0
- mlxlogscore=809 lowpriorityscore=0 phishscore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010160100
+References: <cover.1602708025.git.andreyknvl@google.com> <CANpmjNOV90-eZyX9wjsahBkzCFMtm=Y0KtLn_VLDXVO_ehsR1g@mail.gmail.com>
+ <CAAeHK+zOaGJbG0HbVRHrYv8yNmPV0Anf5hvDGcHoZVZ2bF+LBg@mail.gmail.com>
+In-Reply-To: <CAAeHK+zOaGJbG0HbVRHrYv8yNmPV0Anf5hvDGcHoZVZ2bF+LBg@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 16 Oct 2020 15:31:28 +0200
+Message-ID: <CANpmjNPvx4oozqSf9ZXN8FhZia03Y0Ar0twrogkfoxTekHx39A@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/8] kasan: hardware tag-based mode for production use
+ on arm64
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2020 19:56, Mark Brown wrote:
-> On Wed, Oct 14, 2020 at 03:54:11PM +0100, Richard Fitzgerald wrote:
->> This set of patches provides support for using the Cirrus Logic
->> Lochnagar audio development platform plus Cirrus Logic Madera/Arizona
->> codecs with the simple-card machine driver and a Raspberry Pi4. The
->> ultimate aim is to provide the dts file but some updates are needed to
->> the simple-card machine driver.
-> 
-> Why extend simple-card and not the more modern and flexible
-> audio-graph-card?
-> 
+On Fri, 16 Oct 2020 at 15:17, 'Andrey Konovalov' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+[...]
+> > > The intention with this kind of a high level switch is to hide the
+> > > implementation details. Arguably, we could add multiple switches that allow
+> > > to separately control each KASAN or MTE feature, but I'm not sure there's
+> > > much value in that.
+> > >
+> > > Does this make sense? Any preference regarding the name of the parameter
+> > > and its values?
+> >
+> > KASAN itself used to be a debugging tool only. So introducing an "on"
+> > mode which no longer follows this convention may be confusing.
+>
+> Yeah, perhaps "on" is not the best name here.
+>
+> > Instead, maybe the following might be less confusing:
+> >
+> > "full" - current "debug", normal KASAN, all debugging help available.
+> > "opt" - current "on", optimized mode for production.
+>
+> How about "prod" here?
 
-I'm struggling to understand how to use audio-graph-card where there are
-multiple alternative codecs. The host I2S endpoint has to point back to
-the codec endpoint, like this:
+SGTM.
 
-	cpu_i2s_ep_cs47l15: endpoint {
-		remote-endpoint = <&cs47l15_aif1>;
-	};
+[...]
+>
+> > > Should we somehow control whether to panic the kernel on a tag fault?
+> > > Another boot time parameter perhaps?
+> >
+> > It already respects panic_on_warn, correct?
+>
+> Yes, but Android is unlikely to enable panic_on_warn as they have
+> warnings happening all over. AFAIR Pixel 3/4 kernels actually have a
+> custom patch that enables kernel panic for KASAN crashes specifically
+> (even though they don't obviously use KASAN in production), and I
+> think it's better to provide a similar facility upstream. Maybe call
+> it panic_on_kasan or something?
 
-But obviously that depends on which codec node was enabled. Listing
-multiple endpoints makes the whole port node disabled if any remote
-endpoint is in a disabled node. I've tried adding status="disabled"
-to endpoints or multiple port definitions with status="disabled" but
-I haven't figured out a solution.
+Best would be if kasan= can take another option, e.g.
+"kasan=prod,panic". I think you can change the strcmp() to a
+str_has_prefix() for the checks for full/prod/on/off, and then check
+if what comes after it is ",panic".
+
+Thanks,
+-- Marco
