@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E5E290830
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DE4290833
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409978AbgJPPQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409970AbgJPPQ5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:16:57 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB42C061755;
-        Fri, 16 Oct 2020 08:16:56 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id 32so2741895otm.3;
-        Fri, 16 Oct 2020 08:16:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=V/AXa/HkeuoOZLJYgxHQzzJo9a+rbKkCGiALxR72sxM=;
-        b=uoP9uySt6+4/2UaMMCLFtlRbau8WVR61oWRx+OX2FSLMGqXI/6T5jOi+Pi7KpN4vrv
-         hlLKvRPoyMYG1X07gVgqcAKwAnt9kexp9ZBCkJ/RzZ3WjBX9n0DIoL+YstcZLHU2D+YR
-         d9VHyP7dl6mqQ2ieZMXOkP88KSeEGLEcenfi+8TRNIVNfGSPemLBxE2+8crXiZf9ZW6X
-         dxN/R4wHbqjIOJ6yFIy/hMfkoZ0MPNXZ83CSR+nyAYvOcRw0F9eKYwbNMBQz9bLcZQzl
-         LyeIkfNb5yaNnqbW6s7HjS5POjOCJrm1FNUcU58+3X0kJGHO2nibb9LjHd6x/Wtndx+g
-         +Ojw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=V/AXa/HkeuoOZLJYgxHQzzJo9a+rbKkCGiALxR72sxM=;
-        b=uPY7ZzlCjaY/6xCHTcxc6CafW2+NqT1mOmC3gPcgMWI4ksbWtqWPIB/5fAvCFnKhMC
-         oDlEXhVNHK4O5cKxjx6pVOxODc+vNA/4td9+Rk8zkc9O/uhwDE4zBkGX6rqpkGxLiiIj
-         hYxzpr6PXpPhGh0YJTmm3mg52fRr5MFrq4PYT5lrDtAZGDXZptnHWds2NhnyjTQMvTyy
-         CvanjnwodRb1iClwq1cmTwQhG6be+jBYlaqYkHhUpi+abd+1pTqgt4NTSI/+YU6nlpLN
-         QSxjlZM4T4VCMm/Z7vMKsfB0puJ4kViezVjw53v50quJMB/b4PYrHPfmpw+gIezyqzKh
-         EUGQ==
-X-Gm-Message-State: AOAM531FGhDq9zgMkMxlhdhZgXdcW3Z+wBZGTUP0YWdFVtnKGCLJOeyc
-        qfti1NV0/PkHiPCDvl+2S2o=
-X-Google-Smtp-Source: ABdhPJzNElD1N5isgUGsNsJkZ6kpJrZmv82enZOn5BVJKtV/6tU/yOGRkk5wYreKIQXfx1VYiJ8w9w==
-X-Received: by 2002:a05:6830:138f:: with SMTP id d15mr2787535otq.367.1602861414702;
-        Fri, 16 Oct 2020 08:16:54 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u125sm1147503oif.21.2020.10.16.08.16.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 16 Oct 2020 08:16:54 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 16 Oct 2020 08:16:53 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 00/14] 5.8.16-rc1 review
-Message-ID: <20201016151653.GB230162@roeck-us.net>
-References: <20201016090437.153175229@linuxfoundation.org>
- <7138d7bce8f8da009119f0107eeb7c85f67057b9.camel@rajagiritech.edu.in>
- <20201016150021.GA1807231@kroah.com>
+        id S2409854AbgJPPSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:18:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395343AbgJPPSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 11:18:40 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E891C20897;
+        Fri, 16 Oct 2020 15:18:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602861520;
+        bh=rgeQjAZ0kzxnk8SwXsOvCKN7o5QSYlfcQcgpKjlVIBE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xOFC0xX1gIoo4Cbk07OV9cXGBwYcCa9MigKKW1zmacVlTi811BbqPB4d805bK3D7z
+         wEt5uMbXHm4huhSU6vgLL+2AtqkdgW1XoSV0iBeKGnzZ2ewKvOTR3rmYOHNW3rV/uQ
+         Kg90usJVdKnr6IvoZcAkhmQNdFzSxraX4Q7b587A=
+Date:   Fri, 16 Oct 2020 16:18:31 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     robh+dt@kernel.org, nsaenzjulienne@suse.de,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/7] Add dts for Rpi4 + Cirrus Lochnagar and codecs
+Message-ID: <20201016151831.GE5274@sirena.org.uk>
+References: <20201014145418.31838-1-rf@opensource.cirrus.com>
+ <20201014185632.GD4580@sirena.org.uk>
+ <b3376cd4-010f-cf72-8c81-1f5d22cb6454@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="10jrOL3x2xqLmOsH"
 Content-Disposition: inline
-In-Reply-To: <20201016150021.GA1807231@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b3376cd4-010f-cf72-8c81-1f5d22cb6454@opensource.cirrus.com>
+X-Cookie: Pournelle must die!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 05:00:21PM +0200, Greg Kroah-Hartman wrote:
-> 
-> > [   37.208082] uvcvideo 1-6:1.0: Entity type for entity Extension 4 was
-> > not initialized!
-> > [   37.208092] uvcvideo 1-6:1.0: Entity type for entity Processing 2
-> > was not initialized!
-> > [   37.208098] uvcvideo 1-6:1.0: Entity type for entity Camera 1 was
-> > not initialized!
-> 
-> Crummy device :(
-> 
-I still have to encounter a usb video camera where I don't get at least
-one of those messages. As in:
 
-uvcvideo: Found UVC 1.00 device Logitech Webcam C925e (046d:085b)
-uvcvideo 1-2.3:1.0: Entity type for entity Processing 3 was not initialized!
-uvcvideo 1-2.3:1.0: Entity type for entity Extension 6 was not initialized!
-uvcvideo 1-2.3:1.0: Entity type for entity Extension 12 was not initialized!
-uvcvideo 1-2.3:1.0: Entity type for entity Camera 1 was not initialized!
-uvcvideo 1-2.3:1.0: Entity type for entity Extension 8 was not initialized!
-uvcvideo 1-2.3:1.0: Entity type for entity Extension 9 was not initialized!
-uvcvideo 1-2.3:1.0: Entity type for entity Extension 10 was not initialized!
-uvcvideo 1-2.3:1.0: Entity type for entity Extension 11 was not initialized!
+--10jrOL3x2xqLmOsH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I suspect they are all "crummy".
+On Fri, Oct 16, 2020 at 02:30:08PM +0100, Richard Fitzgerald wrote:
+> On 14/10/2020 19:56, Mark Brown wrote:
 
-Guenter
+> > Why extend simple-card and not the more modern and flexible
+> > audio-graph-card?
+
+> I'm struggling to understand how to use audio-graph-card where there are
+> multiple alternative codecs. The host I2S endpoint has to point back to
+> the codec endpoint, like this:
+
+OK, this seems like a more urgent problem to address given that the
+graph card is supposed to be able to support things like TDM.
+However...
+
+> 	cpu_i2s_ep_cs47l15: endpoint {
+> 		remote-endpoint = <&cs47l15_aif1>;
+> 	};
+
+> But obviously that depends on which codec node was enabled. Listing
+> multiple endpoints makes the whole port node disabled if any remote
+> endpoint is in a disabled node. I've tried adding status="disabled"
+> to endpoints or multiple port definitions with status="disabled" but
+> I haven't figured out a solution.
+
+...it seems like the issue here is that you're essentially trying to
+define multiple cards at once in the same overlay.  TBH this feels like
+you want two nested levels of overlay, with the extra layer patching the
+CODEC compatible.  Or if this is mainly as an example for people you
+could just pick one and use that?
+
+--10jrOL3x2xqLmOsH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+JuccACgkQJNaLcl1U
+h9AnaQf+LQ6dXnZyQXkJi780zdCEyQ12TcEOc3Mb5/WE51kiHuRDa4Luy5Xk97Gt
+XI6V2WO9lJyYVgZt5BgLjAJJohah5WBPo+ShXgwgZI1bo4Y6N+6jctbqC6/DPtHe
+yIKyeZMlemrwsqbuRJI937EZMfGRhdF5ba8JymF6N7K8xjjZyls0g/VE8KqOZjFr
+7MUpgcSaWVeazF8LLRcQkhA8f4YT0mnMuFtvy07u4plMMyxRTtNdF2szMHNY9rTu
+Lnhd8/OE6tNFNnoEeAzrREHbeuqtQ4NCSiTl3vEfO4yMR/cby7caXXdSqODGYhC9
+gPAU+bIAOvQQV6vzj+AX9zbuVE/C2w==
+=H9bK
+-----END PGP SIGNATURE-----
+
+--10jrOL3x2xqLmOsH--
