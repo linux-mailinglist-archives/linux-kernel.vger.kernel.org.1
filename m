@@ -2,95 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97A7290802
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111A9290806
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409819AbgJPPNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:13:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42311 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2409810AbgJPPNF (ORCPT
+        id S2409831AbgJPPNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409810AbgJPPNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:13:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602861184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XXuQ2J5tyK0euDvqdN4vvQ3etzq51rcwkx2yRUeKdfE=;
-        b=Yw/Dk1wl8tqb38UmdzADbELqP78xNqsuZD189hGLumBq1w5sTWFDy0EqtanTF7I2unLjsy
-        AArm+zTKSd+t1lfBO0v2IhZ7O67t5/03NA0PIv7cOo2CgQyYEzTAZu7RmG1CCi0ObhC3id
-        ogrRjSD0K3Hvuo6BYwLWtdzTYV8ltp0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-151-HIlKdawJO7iCNG9ewcABMQ-1; Fri, 16 Oct 2020 11:13:02 -0400
-X-MC-Unique: HIlKdawJO7iCNG9ewcABMQ-1
-Received: by mail-wr1-f72.google.com with SMTP id n14so1629468wrp.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:13:02 -0700 (PDT)
+        Fri, 16 Oct 2020 11:13:36 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5401AC061755;
+        Fri, 16 Oct 2020 08:13:36 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id e2so3355324wme.1;
+        Fri, 16 Oct 2020 08:13:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4caXpkclqb0kte1ui2rZGOT3gO9tw5QkWF6WaM5340U=;
+        b=bw0C7RL0+fhKMO0EAe8XGEcHwb8wyybaCpfl8P7sGnfdkZI9j4tysI6uZ0YoR29/ha
+         YOX4aILlakJ066q+xevlet5l+Z+N9q/nV7+KQ/NKKo3PoqCwvkqKc4MR4ryRAmfVyqTJ
+         uz9QwYlBWj2ZUFkyZ/iB50AZoKJOmHEFk3aQyW2Q+ljkXeftI1rA7efNHa+FZThIiT4K
+         wnmZSuOqxrB01w27tBcLSH/JQmZ6evhSO/vqsZliSKtLWCHF4Bm+V6PvS55UoVIl4rIy
+         DKgs589sQo9GoZg5GOugVRSrxKtqGwZuZqZxIpdhnOn/1/ZjONqYyoPkPZqi0JtPd9tA
+         H/bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XXuQ2J5tyK0euDvqdN4vvQ3etzq51rcwkx2yRUeKdfE=;
-        b=ZZvj1+O9iPR0TwhYqUWdXztHi65bpptOzK6C+6ismRRopJAEhNFTS6RJ92c5zRbb5P
-         IDG/34TvXyfxpDgDOsn63IRNMo5TRVEQOd7Ri2MVSMjYDvdqCmfS3NFGXzjFzGUjAJCo
-         bS2cxa3FuC30QTclSMGo2Wq/fS7K9dgAHfIjQm/eGh/EO5/2pVSCQFSuhTugSVAQovbC
-         efMmA7TtieOPrBAnMvCM2WmfGtRUt6ix+o08Io9Cxqs0cAL8p5Q4tr+4UwWxG/6jgR+m
-         lE/nQDwYHcm9S+8khr6qcg/CXcbY6F3Hl5xsb05nmShV0I/UbEehjfitg1duX/VtWUwC
-         6ZWg==
-X-Gm-Message-State: AOAM532yW+1jm9NFe/4m5UN7RE261bxJyl5oVs1TTEVGZJBfxOlBnlH3
-        wjNuGJgyniOtxtFQwOvhG7wLG072WCaOy0LPBlShe17DfIlbyKpMxPRkJ6tl61doFGHGegiGjgp
-        0xzaG/bb9By94ll/SDrcNESMT
-X-Received: by 2002:adf:ed49:: with SMTP id u9mr4323868wro.88.1602861181081;
-        Fri, 16 Oct 2020 08:13:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJySiuEdF8Qgm9VbY+OyiIzzdTIfV0LWVLIJOarxUrK2xeA3m2l9uScuqOFd58pz1L8EVtBfpA==
-X-Received: by 2002:adf:ed49:: with SMTP id u9mr4323838wro.88.1602861180879;
-        Fri, 16 Oct 2020 08:13:00 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:4e8a:ee8e:6ed5:4bc3? ([2001:b07:6468:f312:4e8a:ee8e:6ed5:4bc3])
-        by smtp.gmail.com with ESMTPSA id t12sm3971534wrm.25.2020.10.16.08.12.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 08:12:59 -0700 (PDT)
-Subject: Re: [PATCH v2 10/20] kvm: x86/mmu: Add TDP MMU PF handler
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20201014182700.2888246-1-bgardon@google.com>
- <20201014182700.2888246-11-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d74ab511-586b-4704-dbb1-811343a05092@redhat.com>
-Date:   Fri, 16 Oct 2020 17:12:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4caXpkclqb0kte1ui2rZGOT3gO9tw5QkWF6WaM5340U=;
+        b=URbglXgCr8xtVv0EEkKQ0fcCFjJHrE24DHS/T3tmMgzSK6jhpfEH1K4+KvUlmynPC6
+         WlV7eG3ZxdDaiA0+Ail4WK41i2OliIHKpd5P1zpNZQh01pbgnZCX7g+U/78QBhHWZaHV
+         PW3exzLKDJgcGxdOuw7NojZyyMDGBECKAbfYGtEm29Ki5lWu1Y7n+Ss42TQ6MTY2p11G
+         Wibe0Xf1+aR555EIfMQNrNt0QbAu8gUgCbPuOUg49+/sJEHOrbrrcuV1n2IOInt592r4
+         uD8CRJu9RJU3WfMEFG5iyhlFYMe2FtzdZ7Xorv3jLwIQwvxYeXnofJ7kgRF/6frt/lR8
+         tF3w==
+X-Gm-Message-State: AOAM5315qmZa+Nx4ZGrLD0ZPM38bRZBjAat2Qh2diZJ9f46x5OpOjXiV
+        FHZNwVwhHI83Vz0+8dZsBRrP39eptYnsKe6MzYDIQPxKUWs=
+X-Google-Smtp-Source: ABdhPJzr3VYyUdzLIDtBlIsdA+pEKl3QsosK5nMd+7onCOzT6+6p6L4hMZjIv11pJzsNcjZWS7NXyiKQkqyJvnToGuo=
+X-Received: by 2002:a05:600c:2241:: with SMTP id a1mr4437272wmm.49.1602861212981;
+ Fri, 16 Oct 2020 08:13:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201014182700.2888246-11-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1602857443-27317-1-git-send-email-mkrishn@codeaurora.org>
+In-Reply-To: <1602857443-27317-1-git-send-email-mkrishn@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 16 Oct 2020 08:13:18 -0700
+Message-ID: <CAF6AEGuc967Ooq+YJSej5nmyD9pqAYkN83odieOJ=4fRsdwdeA@mail.gmail.com>
+Subject: Re: [v3] drm/msm: Fix race condition in msm driver with async layer updates
+To:     Krishna Manikandan <mkrishn@codeaurora.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/20 20:26, Ben Gardon wrote:
-> +	if (is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
-> +		r = kvm_tdp_mmu_map(vcpu, gpa, error_code, map_writable,
-> +				    max_level, pfn, prefault, is_tdp);
-> +	else
-> +		r = __direct_map(vcpu, gpa, error_code, map_writable, max_level,
-> +				 pfn, prefault, is_tdp);
+On Fri, Oct 16, 2020 at 7:11 AM Krishna Manikandan
+<mkrishn@codeaurora.org> wrote:
+>
+> When there are back to back commits with async cursor update,
+> there is a case where second commit can program the DPU hw
+> blocks while first didn't complete flushing config to HW.
+>
+> Synchronize the compositions such that second commit waits
+> until first commit flushes the composition.
+>
+> This change also introduces per crtc commit lock, such that
+> commits on different crtcs are not blocked by each other.
+>
+> Changes in v2:
+>         - Use an array of mutexes in kms to handle commit
+>           lock per crtc. (Rob Clark)
+>
+> Changes in v3:
+>         - Add wrapper functions to handle lock and unlock of
+>           commit_lock for each crtc. (Rob Clark)
+>
+> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
 
-I like the rename, but I guess is_tdp is clearly enough superfluous.
+Reviewed-by: Rob Clark <robdclark@gmail.com>
 
-Paolo
-
+> ---
+>  drivers/gpu/drm/msm/msm_atomic.c | 37 ++++++++++++++++++++++++-------------
+>  drivers/gpu/drm/msm/msm_kms.h    |  6 ++++--
+>  2 files changed, 28 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/msm_atomic.c b/drivers/gpu/drm/msm/msm_atomic.c
+> index 561bfa4..575e9af 100644
+> --- a/drivers/gpu/drm/msm/msm_atomic.c
+> +++ b/drivers/gpu/drm/msm/msm_atomic.c
+> @@ -55,16 +55,32 @@ static void vblank_put(struct msm_kms *kms, unsigned crtc_mask)
+>         }
+>  }
+>
+> +static void lock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
+> +{
+> +       struct drm_crtc *crtc;
+> +
+> +       for_each_crtc_mask(kms->dev, crtc, crtc_mask)
+> +               mutex_lock(&kms->commit_lock[drm_crtc_index(crtc)]);
+> +}
+> +
+> +static void unlock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
+> +{
+> +       struct drm_crtc *crtc;
+> +
+> +       for_each_crtc_mask(kms->dev, crtc, crtc_mask)
+> +               mutex_unlock(&kms->commit_lock[drm_crtc_index(crtc)]);
+> +}
+> +
+>  static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+>  {
+>         unsigned crtc_mask = BIT(crtc_idx);
+>
+>         trace_msm_atomic_async_commit_start(crtc_mask);
+>
+> -       mutex_lock(&kms->commit_lock);
+> +       lock_crtcs(kms, crtc_mask);
+>
+>         if (!(kms->pending_crtc_mask & crtc_mask)) {
+> -               mutex_unlock(&kms->commit_lock);
+> +               unlock_crtcs(kms, crtc_mask);
+>                 goto out;
+>         }
+>
+> @@ -79,7 +95,6 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+>          */
+>         trace_msm_atomic_flush_commit(crtc_mask);
+>         kms->funcs->flush_commit(kms, crtc_mask);
+> -       mutex_unlock(&kms->commit_lock);
+>
+>         /*
+>          * Wait for flush to complete:
+> @@ -90,9 +105,8 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+>
+>         vblank_put(kms, crtc_mask);
+>
+> -       mutex_lock(&kms->commit_lock);
+>         kms->funcs->complete_commit(kms, crtc_mask);
+> -       mutex_unlock(&kms->commit_lock);
+> +       unlock_crtcs(kms, crtc_mask);
+>         kms->funcs->disable_commit(kms);
+>
+>  out:
+> @@ -189,12 +203,11 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+>          * Ensure any previous (potentially async) commit has
+>          * completed:
+>          */
+> +       lock_crtcs(kms, crtc_mask);
+>         trace_msm_atomic_wait_flush_start(crtc_mask);
+>         kms->funcs->wait_flush(kms, crtc_mask);
+>         trace_msm_atomic_wait_flush_finish(crtc_mask);
+>
+> -       mutex_lock(&kms->commit_lock);
+> -
+>         /*
+>          * Now that there is no in-progress flush, prepare the
+>          * current update:
+> @@ -232,8 +245,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+>                 }
+>
+>                 kms->funcs->disable_commit(kms);
+> -               mutex_unlock(&kms->commit_lock);
+> -
+> +               unlock_crtcs(kms, crtc_mask);
+>                 /*
+>                  * At this point, from drm core's perspective, we
+>                  * are done with the atomic update, so we can just
+> @@ -260,8 +272,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+>          */
+>         trace_msm_atomic_flush_commit(crtc_mask);
+>         kms->funcs->flush_commit(kms, crtc_mask);
+> -       mutex_unlock(&kms->commit_lock);
+> -
+> +       unlock_crtcs(kms, crtc_mask);
+>         /*
+>          * Wait for flush to complete:
+>          */
+> @@ -271,9 +282,9 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+>
+>         vblank_put(kms, crtc_mask);
+>
+> -       mutex_lock(&kms->commit_lock);
+> +       lock_crtcs(kms, crtc_mask);
+>         kms->funcs->complete_commit(kms, crtc_mask);
+> -       mutex_unlock(&kms->commit_lock);
+> +       unlock_crtcs(kms, crtc_mask);
+>         kms->funcs->disable_commit(kms);
+>
+>         drm_atomic_helper_commit_hw_done(state);
+> diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
+> index 1cbef6b..2049847 100644
+> --- a/drivers/gpu/drm/msm/msm_kms.h
+> +++ b/drivers/gpu/drm/msm/msm_kms.h
+> @@ -155,7 +155,7 @@ struct msm_kms {
+>          * For async commit, where ->flush_commit() and later happens
+>          * from the crtc's pending_timer close to end of the frame:
+>          */
+> -       struct mutex commit_lock;
+> +       struct mutex commit_lock[MAX_CRTCS];
+>         unsigned pending_crtc_mask;
+>         struct msm_pending_timer pending_timers[MAX_CRTCS];
+>  };
+> @@ -165,7 +165,9 @@ static inline void msm_kms_init(struct msm_kms *kms,
+>  {
+>         unsigned i;
+>
+> -       mutex_init(&kms->commit_lock);
+> +       for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
+> +               mutex_init(&kms->commit_lock[i]);
+> +
+>         kms->funcs = funcs;
+>
+>         for (i = 0; i < ARRAY_SIZE(kms->pending_timers); i++)
+> --
+> 2.7.4
+>
