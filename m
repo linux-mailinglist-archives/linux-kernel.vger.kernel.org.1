@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02D3290DFA
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CFD7290DFB
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408018AbgJPXJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 19:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
+        id S2408113AbgJPXJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 19:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407010AbgJPXJj (ORCPT
+        with ESMTP id S2407671AbgJPXJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 19:09:39 -0400
+        Fri, 16 Oct 2020 19:09:40 -0400
 Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564B0C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:38 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e17so4831174wru.12
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3055C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:39 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id n15so4901300wrq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YKfumXOLgixAy84wx3Nv6Fkz9iX4qYebEti8jMCXhGY=;
-        b=GTdBD4iCkIejmT0ii834rbvngwiM3DhYbyE0f6KICAmNujfqnubYf4FptFnJ7Ysp0D
-         0AbzjfrI4HXAM3FXcrrS7+gPcEpe3IBbotJjQILnBOSYFyRI7DnM/agiJPj9Sw+eK7PY
-         q6wRtLdbq3KMM7iQzfrPslOjTuZ1JmpQ5JjGB/mU22P75fBHPmN7P+j+Lm4X1ybiyaIo
-         iS3LK1vFKhl8x3xlYmY//o8eP72UCJ+bxVhgDZBWxb0Hq+qnU0OCajLdC4S5qV/8uPPD
-         /vSGXzm3SdhEKPUQDvMeKGQ0DSf3xMwxv/7lMh522scj3xOCYR3IoxJ+sHeMtrj078aP
-         IPrg==
+        bh=4LL5NRC0cRVJNqBZIY3Vnesfk3vz5g8to7dyxws6//g=;
+        b=eL+60koMwsyvcjNqBBva4am3HrD7R0Mk/MAMKX69iwE+8LKoVLd4bFn6bE0eHTD1a8
+         pybTDkHu2I9373x1/HctrF7ICCgGyBGldp0utHtZt+nXoOsQEo0B7ZloQyzhDGnUi4QI
+         ESstpz23vYvfc2rFDn4MEgP6Hs/2gW6xF5W2MdSUjV6bCcE4jebP7DXYCIF3J8wXtaKC
+         vXtM1KDeouCuOfGrPBB6gFrI8L2gf5FYi+HFxNI4B8rJfX+rewKEHzdqvozoItNZgA1O
+         RtR4xP9dXBCq1SDJmnNNeZblxAotKmTItqDdHcoBnlkFHGGlbmlydFNtu3UYZ8gyHQJa
+         IJHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YKfumXOLgixAy84wx3Nv6Fkz9iX4qYebEti8jMCXhGY=;
-        b=Swjc2KwwOHPQMqppxw/SSK3hfF3spq7kTqRr9tHPPXA8UEKnIei5MEn2PpyjtnlJEw
-         MLSqhgv/nm0eKWjszlGvCITW14OTkK4kqufgulzsKymPd35YyAZCLRQUDhOwyoZIDwX+
-         4lKmWa/tMx8da3iCBlNLa7xEx1DDj96mRQZoiLgQnGy1ijiWsSGm7UEsROu+ifHZ2VWs
-         xcyDSEZZLHJRERzLZ1wtvVifoUcK0PPL20T+nnkDUuAZEMRRa3VxM+lscBxySTZONjQr
-         fhLZc0KtBsdUTKJWjv021/+aeVbxNg3yoRE5W80rMAa3GadV6Yjk/hOphX9oXFsz7iWS
-         XgJA==
-X-Gm-Message-State: AOAM531Zypna0tjZPaghHCWwuMxjFjh3lFk9/wVk4mACW9enWkNyhq0h
-        gHQ+tCfGqcR2nOXrJsrvN+EkNz1ZvNKgPw==
-X-Google-Smtp-Source: ABdhPJzPIxZWpPKHv3yxMqwsMLhL6oUdBGXHlkzC5ZPb9QzCCBu761qmb+/Ol2XykISQILgn3L+6XQ==
-X-Received: by 2002:a5d:4b49:: with SMTP id w9mr7014571wrs.41.1602889776793;
-        Fri, 16 Oct 2020 16:09:36 -0700 (PDT)
+        bh=4LL5NRC0cRVJNqBZIY3Vnesfk3vz5g8to7dyxws6//g=;
+        b=njDZQse8/9iC1RVSQkolTiOQAbw3CcH2VsDXhe6n5K1KF5Ufw10p+MKfyZWpOhALz7
+         OoeoUeW9xYBRvour3+K2WwMHN9ahr4GFQajXvTwU6PG7jmZiFZwLNAawJIk1KiF7vmfY
+         H5w5PLiLTLlRSQrirtIzvFUFqima1MXcm9BKsfZ+8ibENVuYG41jolXmQ22c+nO48OdO
+         PP1eYCTQk01ed0XWPdE97447UvUMZNWRrJloHPBAXjpM6CWlbEQwqQM36MUXxiohUptB
+         h5sCcY1I0xUerEt7AytCjhXsWLB7KTHMjsTLQowO+oIB/5F038JwUAmlNvZq7u0O4AqL
+         vNDg==
+X-Gm-Message-State: AOAM5319n598DykvjtnwM0JqnGCpLpDojywgzvFQvmbLYe9Y3lxxqljM
+        Z4SvR/8bx0S7qJoqAbYvZRxRGpJ3dKnFQg==
+X-Google-Smtp-Source: ABdhPJwutZJE8aiWvcNxtLTRLki2GRNZHZiM+YTPOkZuGIVpCqNB5rDOXOX33qg++t0t+HfIIggPyQ==
+X-Received: by 2002:adf:f88a:: with SMTP id u10mr6663411wrp.1.1602889778384;
+        Fri, 16 Oct 2020 16:09:38 -0700 (PDT)
 Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
-        by smtp.gmail.com with ESMTPSA id s11sm5476456wrm.56.2020.10.16.16.09.35
+        by smtp.gmail.com with ESMTPSA id n9sm5754512wrq.72.2020.10.16.16.09.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 16:09:36 -0700 (PDT)
+        Fri, 16 Oct 2020 16:09:37 -0700 (PDT)
 From:   Jann Horn <jannh@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Eric Biederman <ebiederm@xmission.com>,
@@ -55,9 +55,9 @@ To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
 Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
         Kees Cook <keescook@chromium.org>,
         Ingo Molnar <mingo@kernel.org>
-Subject: [RFC PATCH resend 1/6] ptrace: Keep mm around after exit_mm() for __ptrace_may_access()
-Date:   Sat, 17 Oct 2020 01:09:10 +0200
-Message-Id: <20201016230915.1972840-2-jannh@google.com>
+Subject: [RFC PATCH resend 2/6] refcount: Move refcount_t definition into linux/types.h
+Date:   Sat, 17 Oct 2020 01:09:11 +0200
+Message-Id: <20201016230915.1972840-3-jannh@google.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 In-Reply-To: <20201016230915.1972840-1-jannh@google.com>
 References: <20201016230915.1972840-1-jannh@google.com>
@@ -67,176 +67,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__ptrace_may_access() checks can happen on target tasks that are in the
-middle of do_exit(), past exit_mm(). At that point, the ->mm pointer has
-been NULLed out, and the mm_struct has been mmput().
+I want to use refcount_t in mm_struct, but if refcount_t is defined in
+linux/refcount.h, that header would have to be included in
+linux/mm_types.h; that would be wasteful.
 
-Unfortunately, the mm_struct contains the dumpability and the user_ns in
-which the task last went through execve(), and we need those for
-__ptrace_may_access(). Currently, that problem is handled by failing open:
-If the ->mm is gone, we assume that the task was dumpable. In some edge
-cases, this could potentially expose access to things like
-/proc/$pid/fd/$fd of originally non-dumpable processes.
-(exit_files() comes after exit_mm(), so the file descriptor table is still
-there when we've gone through exit_mm().)
+Let's move refcount_t over into linux/types.h so that includes can be
+written less wastefully.
 
-One way to fix this would be to move mm->user_ns and the dumpability state
-over into the task_struct. However, that gets quite ugly if we want to
-preserve existing semantics because e.g. PR_SET_DUMPABLE and commit_creds()
-would then have to scan through all tasks sharing the mm_struct and keep
-them in sync manually - that'd be a bit error-prone and overcomplicated.
-
-(Moving these things into the signal_struct is not an option because that
-is kept across executions, and pre-execve co-threads will share the
-signal_struct that is also used by the task that has gone through
-execve().)
-
-I believe that this patch may be the least bad option to fix this - keep
-the mm_struct (but not process memory) around with an mmgrab() reference
-from exit_mm() until the task goes away completely.
-
-Note that this moves free_task() down in order to make mmdrop_async()
-available without a forward declaration.
-
-Cc: stable@vger.kernel.org
-Fixes: bfedb589252c ("mm: Add a user_ns owner to mm_struct and fix ptrace p=
-ermission checks")
 Signed-off-by: Jann Horn <jannh@google.com>
 ---
- include/linux/sched.h |  8 +++++++
- kernel/exit.c         |  2 ++
- kernel/fork.c         | 54 ++++++++++++++++++++++---------------------
- kernel/ptrace.c       | 10 ++++++++
- 4 files changed, 48 insertions(+), 26 deletions(-)
+ include/linux/refcount.h | 13 +------------
+ include/linux/types.h    | 12 ++++++++++++
+ 2 files changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index afe01e232935..55bec6ff5626 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -747,6 +747,14 @@ struct task_struct {
+diff --git a/include/linux/refcount.h b/include/linux/refcount.h
+index 0e3ee25eb156..fd8cf65e4e2f 100644
+--- a/include/linux/refcount.h
++++ b/include/linux/refcount.h
+@@ -96,22 +96,11 @@
+ #include <linux/bug.h>
+ #include <linux/compiler.h>
+ #include <linux/limits.h>
++#include <linux/types.h> /* refcount_t is defined here */
+ #include <linux/spinlock_types.h>
 =20
- 	struct mm_struct		*mm;
- 	struct mm_struct		*active_mm;
-+	/*
-+	 * When we exit and ->mm (the reference pinning ->mm's address space)
-+	 * goes away, we stash a reference to the mm_struct itself (counted via
-+	 * exit_mm->mm_count) in this member.
-+	 * This allows us to continue using the mm_struct for security checks
-+	 * and such even after the task has started exiting.
-+	 */
-+	struct mm_struct		*exit_mm;
+ struct mutex;
 =20
- 	/* Per-thread vma caching: */
- 	struct vmacache			vmacache;
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 733e80f334e7..97253ef33486 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -476,6 +476,8 @@ static void exit_mm(void)
- 	/* more a memory barrier than a real lock */
- 	task_lock(current);
- 	current->mm =3D NULL;
-+	mmgrab(mm); /* for current->exit_mm */
-+	current->exit_mm =3D mm;
- 	mmap_read_unlock(mm);
- 	enter_lazy_tlb(mm, current);
- 	task_unlock(current);
-diff --git a/kernel/fork.c b/kernel/fork.c
-index da8d360fb032..4942428a217c 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -438,32 +438,6 @@ void put_task_stack(struct task_struct *tsk)
- }
+-/**
+- * struct refcount_t - variant of atomic_t specialized for reference counts
+- * @refs: atomic_t counter field
+- *
+- * The counter saturates at REFCOUNT_SATURATED and will not move once
+- * there. This avoids wrapping the counter and causing 'spurious'
+- * use-after-free bugs.
+- */
+-typedef struct refcount_struct {
+-	atomic_t refs;
+-} refcount_t;
+-
+ #define REFCOUNT_INIT(n)	{ .refs =3D ATOMIC_INIT(n), }
+ #define REFCOUNT_MAX		INT_MAX
+ #define REFCOUNT_SATURATED	(INT_MIN / 2)
+diff --git a/include/linux/types.h b/include/linux/types.h
+index a147977602b5..34e4e779e767 100644
+--- a/include/linux/types.h
++++ b/include/linux/types.h
+@@ -175,6 +175,18 @@ typedef struct {
+ } atomic64_t;
  #endif
 =20
--void free_task(struct task_struct *tsk)
--{
--	scs_release(tsk);
--
--#ifndef CONFIG_THREAD_INFO_IN_TASK
--	/*
--	 * The task is finally done with both the stack and thread_info,
--	 * so free both.
--	 */
--	release_task_stack(tsk);
--#else
--	/*
--	 * If the task had a separate stack allocation, it should be gone
--	 * by now.
--	 */
--	WARN_ON_ONCE(refcount_read(&tsk->stack_refcount) !=3D 0);
--#endif
--	rt_mutex_debug_task_free(tsk);
--	ftrace_graph_exit_task(tsk);
--	arch_release_task_struct(tsk);
--	if (tsk->flags & PF_KTHREAD)
--		free_kthread_struct(tsk);
--	free_task_struct(tsk);
--}
--EXPORT_SYMBOL(free_task);
--
- #ifdef CONFIG_MMU
- static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 					struct mm_struct *oldmm)
-@@ -722,6 +696,34 @@ static inline void put_signal_struct(struct signal_str=
-uct *sig)
- 		free_signal_struct(sig);
- }
-=20
-+void free_task(struct task_struct *tsk)
-+{
-+	scs_release(tsk);
++/**
++ * struct refcount_t - variant of atomic_t specialized for reference counts
++ * @refs: atomic_t counter field
++ *
++ * The counter saturates at REFCOUNT_SATURATED and will not move once
++ * there. This avoids wrapping the counter and causing 'spurious'
++ * use-after-free bugs.
++ */
++typedef struct refcount_struct {
++	atomic_t refs;
++} refcount_t;
 +
-+#ifndef CONFIG_THREAD_INFO_IN_TASK
-+	/*
-+	 * The task is finally done with both the stack and thread_info,
-+	 * so free both.
-+	 */
-+	release_task_stack(tsk);
-+#else
-+	/*
-+	 * If the task had a separate stack allocation, it should be gone
-+	 * by now.
-+	 */
-+	WARN_ON_ONCE(refcount_read(&tsk->stack_refcount) !=3D 0);
-+#endif
-+	rt_mutex_debug_task_free(tsk);
-+	ftrace_graph_exit_task(tsk);
-+	arch_release_task_struct(tsk);
-+	if (tsk->flags & PF_KTHREAD)
-+		free_kthread_struct(tsk);
-+	if (tsk->exit_mm)
-+		mmdrop_async(tsk->exit_mm);
-+	free_task_struct(tsk);
-+}
-+EXPORT_SYMBOL(free_task);
-+
- void __put_task_struct(struct task_struct *tsk)
- {
- 	WARN_ON(!tsk->exit_state);
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 43d6179508d6..0aedc6cf5bdc 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -342,7 +342,17 @@ static int __ptrace_may_access(struct task_struct *tas=
-k, unsigned int mode)
- 	 * Pairs with a write barrier in commit_creds().
- 	 */
- 	smp_rmb();
-+	/*
-+	 * Look up the target task's mm_struct. If it fails because the task is
-+	 * exiting and has gone through exit_mm(), we can instead use ->exit_mm
-+	 * as long as we only use members that are preserved by an mmgrab()
-+	 * reference.
-+	 * The only case in which both ->mm and ->exit_mm can be NULL should be
-+	 * kernel threads.
-+	 */
- 	mm =3D task->mm;
-+	if (!mm)
-+		mm =3D task->exit_mm;
- 	if (mm &&
- 	    ((get_dumpable(mm) !=3D SUID_DUMP_USER) &&
- 	     !ptrace_has_cap(cred, mm->user_ns, mode)))
+ struct list_head {
+ 	struct list_head *next, *prev;
+ };
 --=20
 2.29.0.rc1.297.gfa9743e501-goog
 
