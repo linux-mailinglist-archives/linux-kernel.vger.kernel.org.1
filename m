@@ -2,183 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AB6290615
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E43290612
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406906AbgJPNNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:13:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49969 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405456AbgJPNNs (ORCPT
+        id S2406928AbgJPNNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406679AbgJPNNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Oct 2020 09:13:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602854026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/GCi79zDDWJnh1oE+IGSqyeTEpkoS02M8NJnTnJPBQA=;
-        b=geY0X6mruhE5+3ps4JmedbcSTfrjixu0AIe6gWcRD8NSzEFGBaFfDb2QtTe7V5WKCp9Qjq
-        XET6pX3r69DYWr9N4B0q0GGACmoBEtxb8ZToE/ePpiocZPTpAApTHmQ5Ntdfr4uR+05GXx
-        49H5AESGc/8b35nGS1v3cEC+r1k5vV0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419--GoBk286PPSx0wVv5pyA3A-1; Fri, 16 Oct 2020 09:13:41 -0400
-X-MC-Unique: -GoBk286PPSx0wVv5pyA3A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 740DE8030BE;
-        Fri, 16 Oct 2020 13:13:39 +0000 (UTC)
-Received: from [10.36.113.23] (ovpn-113-23.ams2.redhat.com [10.36.113.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 797975D9D5;
-        Fri, 16 Oct 2020 13:13:33 +0000 (UTC)
-Subject: Re: [PATCH v1 25/29] virtio-mem: Big Block Mode (BBM) memory hotplug
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-References: <20201012125323.17509-1-david@redhat.com>
- <20201012125323.17509-26-david@redhat.com>
- <20201016093835.GH44269@L-31X9LVDL-1304.local>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <7abe3109-741c-b7ed-8d83-fc7c42c7f843@redhat.com>
-Date:   Fri, 16 Oct 2020 15:13:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD2EC061755;
+        Fri, 16 Oct 2020 06:13:48 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id a1so1498481pjd.1;
+        Fri, 16 Oct 2020 06:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r5Hg3Dk+SylQ4f7Edvw0KnX3T45iNPufDTirpc/94f4=;
+        b=P8XLPB+1rw5hOmfd0EX46Wwjt9+Yi/55Xa1ESJR2IRDVgtIIdIduxJ4dk8KwXO2PK/
+         JWFHbJoYYRFv9qAxgV5mVi9zev8EAN8BP4rMCC1GxemLojHwTKTcsvXpUTgK7CAjss1k
+         BkjOo5eAo0SDCuv2pBc53lecf18q1lVUw/gK7jBxASET7xPXin73br5J46O0Zi+YDx+6
+         UvY8CCcsa/tn6NG7MiQPjAV0iKbTjHqsi3NRhhGrubPWgPBIEgA9S7MGw512SQRMZo2h
+         6srtgbEzbuVSyjR+8k2EgIK8wIoulMJaOPEjl2DWkAOvez8i+4q8SQMJfHvsFoeF0o2b
+         m8bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r5Hg3Dk+SylQ4f7Edvw0KnX3T45iNPufDTirpc/94f4=;
+        b=EF5/oG+y6nqEWOSOVvw8NHOZzuGW2cGWompqJk424nlqLlzTtsAlZko9LHhEMVKf5Y
+         8mpnIOMNAmHDGsNyINyCr5cDmX+eV2gn1cj3G0SKJFn8enddbePu8D8J5yfteVTogG1e
+         gWeTHNd9iT9yuY4b3A1tnxWx+80k0x3uagRy1tbdhYMlFEMeOnYdghPP3ww7dTYxsDIK
+         ismHNcfaJx93EgqACWmiE51aDA7JsSkvG2sTBIjojY74oIJxJ9YUSwy8nY0V7QcQtoGH
+         KIRRFmiliDlbng0j335RyB9pg286nSbdSLCdHrYS401MBws3glblYRxg6A6G9L0LKsXv
+         QvqQ==
+X-Gm-Message-State: AOAM530lp/r6lhm11B3nlUM87UFDHRHlmc+ayJLFv9Q30fPlKDL/KyZb
+        77ntYz17IcH+1mUgiwqQgWIEFs9BOABE8n0v
+X-Google-Smtp-Source: ABdhPJxBXCYVxJCr/2KNV6N/iuWIi8hwoi9+qi4LXIlO+IYIEeAL9uhPanxPUH3rzVzJEbUO8rp8IA==
+X-Received: by 2002:a17:902:848b:b029:d4:e5b2:fb9b with SMTP id c11-20020a170902848bb02900d4e5b2fb9bmr3824765plo.34.1602854027523;
+        Fri, 16 Oct 2020 06:13:47 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id t10sm3208237pjr.37.2020.10.16.06.13.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 06:13:47 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+To:     linux-input@vger.kernel.org
+Cc:     Helmut Stult <helmut.stult@schinfo.de>,
+        =?UTF-8?q?Barnab=C3=A1s=20P=C5=91cze?= <pobrn@protonmail.com>,
+        stable@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] HID: i2c-hid: add polling mode based on connected GPIO chip's pin status
+Date:   Fri, 16 Oct 2020 21:13:35 +0800
+Message-Id: <20201016131335.8121-1-coiby.xu@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201016093835.GH44269@L-31X9LVDL-1304.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.10.20 11:38, Wei Yang wrote:
-> On Mon, Oct 12, 2020 at 02:53:19PM +0200, David Hildenbrand wrote:
->> Currently, we do not support device block sizes that exceed the Linux
->> memory block size. For example, having a device block size of 1 GiB (e.g.,
->> gigantic pages in the hypervisor) won't work with 128 MiB Linux memory
->> blocks.
->>
->> Let's implement Big Block Mode (BBM), whereby we add/remove at least
->> one Linux memory block at a time. With a 1 GiB device block size, a Big
->> Block (BB) will cover 8 Linux memory blocks.
->>
->> We'll keep registering the online_page_callback machinery, it will be used
->> for safe memory hotunplug in BBM next.
->>
->> Note: BBM is properly prepared for variable-sized Linux memory
->> blocks that we might see in the future. So we won't care how many Linux
->> memory blocks a big block actually spans, and how the memory notifier is
->> called.
->>
->> Cc: "Michael S. Tsirkin" <mst@redhat.com>
->> Cc: Jason Wang <jasowang@redhat.com>
->> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->> Cc: Michal Hocko <mhocko@kernel.org>
->> Cc: Oscar Salvador <osalvador@suse.de>
->> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
->> ---
->> drivers/virtio/virtio_mem.c | 484 ++++++++++++++++++++++++++++++------
->> 1 file changed, 402 insertions(+), 82 deletions(-)
->>
->> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
->> index e68d0d99590c..4d396ef98a92 100644
->> --- a/drivers/virtio/virtio_mem.c
->> +++ b/drivers/virtio/virtio_mem.c
->> @@ -30,12 +30,18 @@ MODULE_PARM_DESC(unplug_online, "Try to unplug online memory");
->> /*
->>  * virtio-mem currently supports the following modes of operation:
->>  *
->> - * * Sub Block Mode (SBM): A Linux memory block spans 1..X subblocks (SB). The
->> + * * Sub Block Mode (SBM): A Linux memory block spans 2..X subblocks (SB). The
->>  *   size of a Sub Block (SB) is determined based on the device block size, the
->>  *   pageblock size, and the maximum allocation granularity of the buddy.
->>  *   Subblocks within a Linux memory block might either be plugged or unplugged.
->>  *   Memory is added/removed to Linux MM in Linux memory block granularity.
->>  *
->> + * * Big Block Mode (BBM): A Big Block (BB) spans 1..X Linux memory blocks.
->> + *   Memory is added/removed to Linux MM in Big Block granularity.
->> + *
->> + * The mode is determined automatically based on the Linux memory block size
->> + * and the device block size.
->> + *
->>  * User space / core MM (auto onlining) is responsible for onlining added
->>  * Linux memory blocks - and for selecting a zone. Linux Memory Blocks are
->>  * always onlined separately, and all memory within a Linux memory block is
->> @@ -61,6 +67,19 @@ enum virtio_mem_sbm_mb_state {
->> 	VIRTIO_MEM_SBM_MB_COUNT
->> };
->>
->> +/*
->> + * State of a Big Block (BB) in BBM, covering 1..X Linux memory blocks.
->> + */
->> +enum virtio_mem_bbm_bb_state {
->> +	/* Unplugged, not added to Linux. Can be reused later. */
->> +	VIRTIO_MEM_BBM_BB_UNUSED = 0,
->> +	/* Plugged, not added to Linux. Error on add_memory(). */
->> +	VIRTIO_MEM_BBM_BB_PLUGGED,
->> +	/* Plugged and added to Linux. */
->> +	VIRTIO_MEM_BBM_BB_ADDED,
->> +	VIRTIO_MEM_BBM_BB_COUNT
->> +};
->> +
->> struct virtio_mem {
->> 	struct virtio_device *vdev;
->>
->> @@ -113,6 +132,9 @@ struct virtio_mem {
->> 	atomic64_t offline_size;
->> 	uint64_t offline_threshold;
->>
->> +	/* If set, the driver is in SBM, otherwise in BBM. */
->> +	bool in_sbm;
->> +
->> 	struct {
->> 		/* Id of the first memory block of this device. */
->> 		unsigned long first_mb_id;
->> @@ -151,9 +173,27 @@ struct virtio_mem {
->> 		unsigned long *sb_states;
->> 	} sbm;
->>
->> +	struct {
->> +		/* Id of the first big block of this device. */
->> +		unsigned long first_bb_id;
->> +		/* Id of the last usable big block of this device. */
->> +		unsigned long last_usable_bb_id;
->> +		/* Id of the next device bock to prepare when needed. */
->> +		unsigned long next_bb_id;
->> +
->> +		/* Summary of all big block states. */
->> +		unsigned long bb_count[VIRTIO_MEM_BBM_BB_COUNT];
->> +
->> +		/* One byte state per big block. See sbm.mb_states. */
->> +		uint8_t *bb_states;
->> +
->> +		/* The block size used for (un)plugged, adding/removing. */
->> +		uint64_t bb_size;
->> +	} bbm;
-> 
-> Can we use a union here?
+For a broken touchpad, it may take several months or longer to be fixed.
+Polling mode could be a fallback solution for enthusiastic Linux users
+when they have a new laptop. It also acts like a debugging feature. If
+polling mode works for a broken touchpad, we can almost be certain
+the root cause is related to the interrupt or power setting.
 
-As I had the same thought initially, it most probably makes sense :)
+When polling mode is enabled, an I2C device can't wake up the suspended
+system since enable/disable_irq_wake is invalid for polling mode.
 
-Thanks!
+Three module parameters are added to i2c-hid,
+    - polling_mode: by default set to 0, i.e., polling is disabled
+    - polling_interval_idle_ms: the polling internal when the touchpad
+      is idle, default to 10ms
+    - polling_interval_active_us: the polling internal when the touchpad
+      is active, default to 4000us
 
+User can change the last two runtime polling parameter by writing to
+/sys/module/i2c_hid/parameters/polling_interval_{idle_ms,active_us}.
 
--- 
-Thanks,
+Cc: <stable@vger.kernel.org>
+Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
+Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+---
+ drivers/hid/i2c-hid/i2c-hid-core.c | 151 ++++++++++++++++++++++++++---
+ 1 file changed, 135 insertions(+), 16 deletions(-)
 
-David / dhildenb
+diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+index dbd04492825d..0bb8075424b6 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -36,6 +36,8 @@
+ #include <linux/hid.h>
+ #include <linux/mutex.h>
+ #include <linux/acpi.h>
++#include <linux/kthread.h>
++#include <linux/gpio/driver.h>
+ #include <linux/of.h>
+ #include <linux/regulator/consumer.h>
+
+@@ -60,6 +62,24 @@
+ #define I2C_HID_PWR_ON		0x00
+ #define I2C_HID_PWR_SLEEP	0x01
+
++/* polling mode */
++#define I2C_POLLING_DISABLED 0
++#define I2C_POLLING_GPIO_PIN 1
++#define POLLING_INTERVAL 10
++
++static u8 polling_mode;
++module_param(polling_mode, byte, 0444);
++MODULE_PARM_DESC(polling_mode, "How to poll - 0 disabled; 1 based on GPIO pin's status");
++
++static unsigned int polling_interval_active_us = 4000;
++module_param(polling_interval_active_us, uint, 0644);
++MODULE_PARM_DESC(polling_interval_active_us,
++		 "Poll every {polling_interval_active_us} us when the touchpad is active. Default to 4000 us");
++
++static unsigned int polling_interval_idle_ms = 10;
++module_param(polling_interval_idle_ms, uint, 0644);
++MODULE_PARM_DESC(polling_interval_ms,
++		 "Poll every {polling_interval_idle_ms} ms when the touchpad is idle. Default to 10 ms");
+ /* debug option */
+ static bool debug;
+ module_param(debug, bool, 0444);
+@@ -158,6 +178,8 @@ struct i2c_hid {
+
+ 	struct i2c_hid_platform_data pdata;
+
++	struct task_struct *polling_thread;
++
+ 	bool			irq_wake_enabled;
+ 	struct mutex		reset_lock;
+ };
+@@ -772,7 +794,9 @@ static int i2c_hid_start(struct hid_device *hid)
+ 		i2c_hid_free_buffers(ihid);
+
+ 		ret = i2c_hid_alloc_buffers(ihid, bufsize);
+-		enable_irq(client->irq);
++
++		if (polling_mode == I2C_POLLING_DISABLED)
++			enable_irq(client->irq);
+
+ 		if (ret)
+ 			return ret;
+@@ -814,6 +838,86 @@ struct hid_ll_driver i2c_hid_ll_driver = {
+ };
+ EXPORT_SYMBOL_GPL(i2c_hid_ll_driver);
+
++static int get_gpio_pin_state(struct irq_desc *irq_desc)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(&irq_desc->irq_data);
++
++	return gc->get(gc, irq_desc->irq_data.hwirq);
++}
++
++static bool interrupt_line_active(struct i2c_client *client)
++{
++	unsigned long trigger_type = irq_get_trigger_type(client->irq);
++	struct irq_desc *irq_desc = irq_to_desc(client->irq);
++
++	/*
++	 * According to Windows Precsiontion Touchpad's specs
++	 * https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/windows-precision-touchpad-device-bus-connectivity,
++	 * GPIO Interrupt Assertion Leve could be either ActiveLow or
++	 * ActiveHigh.
++	 */
++	if (trigger_type & IRQF_TRIGGER_LOW)
++		return !get_gpio_pin_state(irq_desc);
++
++	return get_gpio_pin_state(irq_desc);
++}
++
++static int i2c_hid_polling_thread(void *i2c_hid)
++{
++	struct i2c_hid *ihid = i2c_hid;
++	struct i2c_client *client = ihid->client;
++	unsigned int polling_interval_idle;
++
++	while (1) {
++		/*
++		 * re-calculate polling_interval_idle
++		 * so the module parameters polling_interval_idle_ms can be
++		 * changed dynamically through sysfs as polling_interval_active_us
++		 */
++		polling_interval_idle = polling_interval_idle_ms * 1000;
++		if (test_bit(I2C_HID_READ_PENDING, &ihid->flags))
++			usleep_range(50000, 100000);
++
++		if (kthread_should_stop())
++			break;
++
++		while (interrupt_line_active(client)) {
++			i2c_hid_get_input(ihid);
++			usleep_range(polling_interval_active_us,
++				     polling_interval_active_us + 100);
++		}
++
++		usleep_range(polling_interval_idle,
++			     polling_interval_idle + 1000);
++	}
++
++	do_exit(0);
++	return 0;
++}
++
++static int i2c_hid_init_polling(struct i2c_hid *ihid)
++{
++	struct i2c_client *client = ihid->client;
++
++	if (!irq_get_trigger_type(client->irq)) {
++		dev_warn(&client->dev,
++			 "Failed to get GPIO Interrupt Assertion Level, could not enable polling mode for %s",
++			 client->name);
++		return -1;
++	}
++
++	ihid->polling_thread = kthread_create(i2c_hid_polling_thread, ihid,
++					      "I2C HID polling thread");
++
++	if (ihid->polling_thread) {
++		pr_info("I2C HID polling thread");
++		wake_up_process(ihid->polling_thread);
++		return 0;
++	}
++
++	return -1;
++}
++
+ static int i2c_hid_init_irq(struct i2c_client *client)
+ {
+ 	struct i2c_hid *ihid = i2c_get_clientdata(client);
+@@ -997,6 +1101,15 @@ static void i2c_hid_fwnode_probe(struct i2c_client *client,
+ 		pdata->post_power_delay_ms = val;
+ }
+
++static void free_irq_or_stop_polling(struct i2c_client *client,
++				     struct i2c_hid *ihid)
++{
++	if (polling_mode != I2C_POLLING_DISABLED)
++		kthread_stop(ihid->polling_thread);
++	else
++		free_irq(client->irq, ihid);
++}
++
+ static int i2c_hid_probe(struct i2c_client *client,
+ 			 const struct i2c_device_id *dev_id)
+ {
+@@ -1090,7 +1203,11 @@ static int i2c_hid_probe(struct i2c_client *client,
+ 	if (ret < 0)
+ 		goto err_regulator;
+
+-	ret = i2c_hid_init_irq(client);
++	if (polling_mode != I2C_POLLING_DISABLED)
++		ret = i2c_hid_init_polling(ihid);
++	else
++		ret = i2c_hid_init_irq(client);
++
+ 	if (ret < 0)
+ 		goto err_regulator;
+
+@@ -1129,7 +1246,7 @@ static int i2c_hid_probe(struct i2c_client *client,
+ 	hid_destroy_device(hid);
+
+ err_irq:
+-	free_irq(client->irq, ihid);
++	free_irq_or_stop_polling(client, ihid);
+
+ err_regulator:
+ 	regulator_bulk_disable(ARRAY_SIZE(ihid->pdata.supplies),
+@@ -1146,7 +1263,7 @@ static int i2c_hid_remove(struct i2c_client *client)
+ 	hid = ihid->hid;
+ 	hid_destroy_device(hid);
+
+-	free_irq(client->irq, ihid);
++	free_irq_or_stop_polling(client, ihid);
+
+ 	if (ihid->bufsize)
+ 		i2c_hid_free_buffers(ihid);
+@@ -1162,7 +1279,7 @@ static void i2c_hid_shutdown(struct i2c_client *client)
+ 	struct i2c_hid *ihid = i2c_get_clientdata(client);
+
+ 	i2c_hid_set_power(client, I2C_HID_PWR_SLEEP);
+-	free_irq(client->irq, ihid);
++	free_irq_or_stop_polling(client, ihid);
+ }
+
+ #ifdef CONFIG_PM_SLEEP
+@@ -1183,15 +1300,16 @@ static int i2c_hid_suspend(struct device *dev)
+ 	/* Save some power */
+ 	i2c_hid_set_power(client, I2C_HID_PWR_SLEEP);
+
+-	disable_irq(client->irq);
+-
+-	if (device_may_wakeup(&client->dev)) {
+-		wake_status = enable_irq_wake(client->irq);
+-		if (!wake_status)
+-			ihid->irq_wake_enabled = true;
+-		else
+-			hid_warn(hid, "Failed to enable irq wake: %d\n",
+-				wake_status);
++	if (polling_mode == I2C_POLLING_DISABLED) {
++		disable_irq(client->irq);
++		if (device_may_wakeup(&client->dev)) {
++			wake_status = enable_irq_wake(client->irq);
++			if (!wake_status)
++				ihid->irq_wake_enabled = true;
++			else
++				hid_warn(hid, "Failed to enable irq wake: %d\n",
++					 wake_status);
++		}
+ 	} else {
+ 		regulator_bulk_disable(ARRAY_SIZE(ihid->pdata.supplies),
+ 				       ihid->pdata.supplies);
+@@ -1208,7 +1326,7 @@ static int i2c_hid_resume(struct device *dev)
+ 	struct hid_device *hid = ihid->hid;
+ 	int wake_status;
+
+-	if (!device_may_wakeup(&client->dev)) {
++	if (!device_may_wakeup(&client->dev) || polling_mode != I2C_POLLING_DISABLED) {
+ 		ret = regulator_bulk_enable(ARRAY_SIZE(ihid->pdata.supplies),
+ 					    ihid->pdata.supplies);
+ 		if (ret)
+@@ -1225,7 +1343,8 @@ static int i2c_hid_resume(struct device *dev)
+ 				wake_status);
+ 	}
+
+-	enable_irq(client->irq);
++	if (polling_mode == I2C_POLLING_DISABLED)
++		enable_irq(client->irq);
+
+ 	/* Instead of resetting device, simply powers the device on. This
+ 	 * solves "incomplete reports" on Raydium devices 2386:3118 and
+--
+2.28.0
 
