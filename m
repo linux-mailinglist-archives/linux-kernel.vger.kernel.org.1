@@ -2,125 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1139F2906D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0720F2906D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408590AbgJPOKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:10:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:37960 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408582AbgJPOKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:10:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E61D930E;
-        Fri, 16 Oct 2020 07:10:29 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D89C13F71F;
-        Fri, 16 Oct 2020 07:10:27 -0700 (PDT)
-Subject: Re: [PATCH v7 3/3] iommu/tegra-smmu: Add PCI support
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, jonathanh@nvidia.com
-References: <20201009161936.23122-1-nicoleotsuka@gmail.com>
- <20201009161936.23122-4-nicoleotsuka@gmail.com>
- <cbc6e3bf-eedc-195c-c4d6-52d3cd24c257@arm.com>
- <20201015041346.GA13936@Asurada-Nvidia>
- <340afbc0-5513-0742-d2d2-1ab908248af3@arm.com>
- <20201016035347.GA28140@Asurada-Nvidia>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <1431eba3-d0b3-8460-2c12-573dc148e0df@arm.com>
-Date:   Fri, 16 Oct 2020 15:10:26 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-MIME-Version: 1.0
-In-Reply-To: <20201016035347.GA28140@Asurada-Nvidia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S2408602AbgJPOLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:11:13 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:56738 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408593AbgJPOLL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 10:11:11 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 16 Oct 2020 07:11:09 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Oct 2020 07:11:07 -0700
+X-QCInternal: smtphost
+Received: from mkrishn-linux.qualcomm.com ([10.204.66.35])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 16 Oct 2020 19:40:47 +0530
+Received: by mkrishn-linux.qualcomm.com (Postfix, from userid 438394)
+        id F2461213ED; Fri, 16 Oct 2020 19:40:45 +0530 (IST)
+From:   Krishna Manikandan <mkrishn@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        kalyan_t@codeaurora.org, dianders@chromium.org
+Subject: [v3] drm/msm: Fix race condition in msm driver with async layer updates
+Date:   Fri, 16 Oct 2020 19:40:43 +0530
+Message-Id: <1602857443-27317-1-git-send-email-mkrishn@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-16 04:53, Nicolin Chen wrote:
-> On Thu, Oct 15, 2020 at 10:55:52AM +0100, Robin Murphy wrote:
->> On 2020-10-15 05:13, Nicolin Chen wrote:
->>> On Wed, Oct 14, 2020 at 06:42:36PM +0100, Robin Murphy wrote:
->>>> On 2020-10-09 17:19, Nicolin Chen wrote:
->>>>> This patch simply adds support for PCI devices.
->>>>>
->>>>> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
->>>>> Tested-by: Dmitry Osipenko <digetx@gmail.com>
->>>>> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
->>>>> ---
->>>>>
->>>>> Changelog
->>>>> v6->v7
->>>>>     * Renamed goto labels, suggested by Thierry.
->>>>> v5->v6
->>>>>     * Added Dmitry's Reviewed-by and Tested-by.
->>>>> v4->v5
->>>>>     * Added Dmitry's Reviewed-by
->>>>> v3->v4
->>>>>     * Dropped !iommu_present() check
->>>>>     * Added CONFIG_PCI check in the exit path
->>>>> v2->v3
->>>>>     * Replaced ternary conditional operator with if-else in .device_group()
->>>>>     * Dropped change in tegra_smmu_remove()
->>>>> v1->v2
->>>>>     * Added error-out labels in tegra_smmu_probe()
->>>>>     * Dropped pci_request_acs() since IOMMU core would call it.
->>>>>
->>>>>     drivers/iommu/tegra-smmu.c | 35 +++++++++++++++++++++++++----------
->>>>>     1 file changed, 25 insertions(+), 10 deletions(-)
->>>>>
->>>>> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
->>>>> index be29f5977145..2941d6459076 100644
->>>>> --- a/drivers/iommu/tegra-smmu.c
->>>>> +++ b/drivers/iommu/tegra-smmu.c
->>>>> @@ -10,6 +10,7 @@
->>>>>     #include <linux/kernel.h>
->>>>>     #include <linux/of.h>
->>>>>     #include <linux/of_device.h>
->>>>> +#include <linux/pci.h>
->>>>>     #include <linux/platform_device.h>
->>>>>     #include <linux/slab.h>
->>>>>     #include <linux/spinlock.h>
->>>>> @@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
->>>>>     	group->smmu = smmu;
->>>>>     	group->soc = soc;
->>>>> -	group->group = iommu_group_alloc();
->>>>> +	if (dev_is_pci(dev))
->>>>> +		group->group = pci_device_group(dev);
->>>>
->>>> Just to check, is it OK to have two or more swgroups "owning" the same
->>>> iommu_group if an existing one gets returned here? It looks like that might
->>>> not play nice with the use of iommu_group_set_iommudata().
->>>
->>> Do you mean by "gets returned here" the "IS_ERR" check below?
->>
->> I mean that unlike iommu_group_alloc()/generic_device_group(),
->> pci_device_group() may give you back a group that already contains another
->> device and has already been set up from that device's perspective. This can
->> happen for topological reasons like requester ID aliasing through a PCI-PCIe
->> bridge or lack of isolation between functions.
-> 
-> Okay..but we don't really have two swgroups owning the same groups
-> in case of PCI devices. For Tegra210, all PCI devices inherit the
-> same swgroup from the PCI controller. And I'd think previous chips
-> do the same. The only use case currently of 2+ swgroups owning the
-> same iommu_group is for display controller.
-> 
-> Or do you suggest we need an additional check for pci_device_group?
+When there are back to back commits with async cursor update,
+there is a case where second commit can program the DPU hw
+blocks while first didn't complete flushing config to HW.
 
-Ah, OK - I still don't have the best comprehension of what exactly 
-swgroups are, and the path through .of_xlate looked like you might be 
-using the PCI requester ID as the swgroup identifier, but I guess that 
-ultimately depends on what your "iommu-map" is supposed to look like. If 
-pci_device_group() will effectively only ever get called once regardless 
-of how many endpoints exist, then indeed this won't be a concern 
-(although if that's *guaranteed* to be the case then you may as well 
-just stick with calling iommu_group_alloc() directly). Thanks for 
-clarifying.
+Synchronize the compositions such that second commit waits
+until first commit flushes the composition.
 
-Robin.
+This change also introduces per crtc commit lock, such that
+commits on different crtcs are not blocked by each other.
+
+Changes in v2:
+	- Use an array of mutexes in kms to handle commit
+	  lock per crtc. (Rob Clark)
+
+Changes in v3:
+	- Add wrapper functions to handle lock and unlock of
+	  commit_lock for each crtc. (Rob Clark)
+
+Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+---
+ drivers/gpu/drm/msm/msm_atomic.c | 37 ++++++++++++++++++++++++-------------
+ drivers/gpu/drm/msm/msm_kms.h    |  6 ++++--
+ 2 files changed, 28 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/msm_atomic.c b/drivers/gpu/drm/msm/msm_atomic.c
+index 561bfa4..575e9af 100644
+--- a/drivers/gpu/drm/msm/msm_atomic.c
++++ b/drivers/gpu/drm/msm/msm_atomic.c
+@@ -55,16 +55,32 @@ static void vblank_put(struct msm_kms *kms, unsigned crtc_mask)
+ 	}
+ }
+ 
++static void lock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
++{
++	struct drm_crtc *crtc;
++
++	for_each_crtc_mask(kms->dev, crtc, crtc_mask)
++		mutex_lock(&kms->commit_lock[drm_crtc_index(crtc)]);
++}
++
++static void unlock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
++{
++	struct drm_crtc *crtc;
++
++	for_each_crtc_mask(kms->dev, crtc, crtc_mask)
++		mutex_unlock(&kms->commit_lock[drm_crtc_index(crtc)]);
++}
++
+ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+ {
+ 	unsigned crtc_mask = BIT(crtc_idx);
+ 
+ 	trace_msm_atomic_async_commit_start(crtc_mask);
+ 
+-	mutex_lock(&kms->commit_lock);
++	lock_crtcs(kms, crtc_mask);
+ 
+ 	if (!(kms->pending_crtc_mask & crtc_mask)) {
+-		mutex_unlock(&kms->commit_lock);
++		unlock_crtcs(kms, crtc_mask);
+ 		goto out;
+ 	}
+ 
+@@ -79,7 +95,6 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+ 	 */
+ 	trace_msm_atomic_flush_commit(crtc_mask);
+ 	kms->funcs->flush_commit(kms, crtc_mask);
+-	mutex_unlock(&kms->commit_lock);
+ 
+ 	/*
+ 	 * Wait for flush to complete:
+@@ -90,9 +105,8 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+ 
+ 	vblank_put(kms, crtc_mask);
+ 
+-	mutex_lock(&kms->commit_lock);
+ 	kms->funcs->complete_commit(kms, crtc_mask);
+-	mutex_unlock(&kms->commit_lock);
++	unlock_crtcs(kms, crtc_mask);
+ 	kms->funcs->disable_commit(kms);
+ 
+ out:
+@@ -189,12 +203,11 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+ 	 * Ensure any previous (potentially async) commit has
+ 	 * completed:
+ 	 */
++	lock_crtcs(kms, crtc_mask);
+ 	trace_msm_atomic_wait_flush_start(crtc_mask);
+ 	kms->funcs->wait_flush(kms, crtc_mask);
+ 	trace_msm_atomic_wait_flush_finish(crtc_mask);
+ 
+-	mutex_lock(&kms->commit_lock);
+-
+ 	/*
+ 	 * Now that there is no in-progress flush, prepare the
+ 	 * current update:
+@@ -232,8 +245,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+ 		}
+ 
+ 		kms->funcs->disable_commit(kms);
+-		mutex_unlock(&kms->commit_lock);
+-
++		unlock_crtcs(kms, crtc_mask);
+ 		/*
+ 		 * At this point, from drm core's perspective, we
+ 		 * are done with the atomic update, so we can just
+@@ -260,8 +272,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+ 	 */
+ 	trace_msm_atomic_flush_commit(crtc_mask);
+ 	kms->funcs->flush_commit(kms, crtc_mask);
+-	mutex_unlock(&kms->commit_lock);
+-
++	unlock_crtcs(kms, crtc_mask);
+ 	/*
+ 	 * Wait for flush to complete:
+ 	 */
+@@ -271,9 +282,9 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+ 
+ 	vblank_put(kms, crtc_mask);
+ 
+-	mutex_lock(&kms->commit_lock);
++	lock_crtcs(kms, crtc_mask);
+ 	kms->funcs->complete_commit(kms, crtc_mask);
+-	mutex_unlock(&kms->commit_lock);
++	unlock_crtcs(kms, crtc_mask);
+ 	kms->funcs->disable_commit(kms);
+ 
+ 	drm_atomic_helper_commit_hw_done(state);
+diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
+index 1cbef6b..2049847 100644
+--- a/drivers/gpu/drm/msm/msm_kms.h
++++ b/drivers/gpu/drm/msm/msm_kms.h
+@@ -155,7 +155,7 @@ struct msm_kms {
+ 	 * For async commit, where ->flush_commit() and later happens
+ 	 * from the crtc's pending_timer close to end of the frame:
+ 	 */
+-	struct mutex commit_lock;
++	struct mutex commit_lock[MAX_CRTCS];
+ 	unsigned pending_crtc_mask;
+ 	struct msm_pending_timer pending_timers[MAX_CRTCS];
+ };
+@@ -165,7 +165,9 @@ static inline void msm_kms_init(struct msm_kms *kms,
+ {
+ 	unsigned i;
+ 
+-	mutex_init(&kms->commit_lock);
++	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
++		mutex_init(&kms->commit_lock[i]);
++
+ 	kms->funcs = funcs;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(kms->pending_timers); i++)
+-- 
+2.7.4
+
