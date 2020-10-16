@@ -2,117 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6EBA290744
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39A129073E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408927AbgJPOex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:34:53 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:47896 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406402AbgJPOex (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:34:53 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09GEYeZp102455;
-        Fri, 16 Oct 2020 14:34:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=/n57+e1VdtbtTbhnDHEyTLAdam04u1YUaGW6EAKirgg=;
- b=MNmd+VfCvB0YyAnbVAqA18LOfnk81ygM3f/HIyyqaQ6/lVRYiB4bxHnqPe3BC/oMbEMO
- zyiUnvMtLGS79TnOy0SW2VDd7hhvDbmuirxsK+SOhqWeEBMTrlEUD2FSGCibub2y5jfl
- E5mEAlQF2lMTU98z7oUueTW8cmUros8iI568H80AI3F8LINTrq97vfRk+88H1+/htpnb
- Qd9ED0978wv3QG/n2nW286xoTft2D9FzxXoBlTEM1kekw+OV9Njk1rZzNC/a+o0xTPkT
- Cw1Q+10dDvUZDw1+y0JOk0J/kEmRsNmD0Ql9Nn4YIe77U69M4RHugceRGFk4R6kbiO3b 1g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 346g8gq8ap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 16 Oct 2020 14:34:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09GEUh2I191755;
-        Fri, 16 Oct 2020 14:32:47 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 343pw1ws6f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Oct 2020 14:32:47 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09GEWkgN031574;
-        Fri, 16 Oct 2020 14:32:46 GMT
-Received: from disaster-area.hh.sledj.net (/81.187.26.238)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 16 Oct 2020 07:32:46 -0700
-Received: from localhost (disaster-area.hh.sledj.net [local])
-        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id dc10a74e;
-        Fri, 16 Oct 2020 14:32:44 +0000 (UTC)
-From:   David Edmondson <david.edmondson@oracle.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-input@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        David Edmondson <david.edmondson@oracle.com>
-Subject: [PATCH] HID: multitouch: Re-enable trackpoint and buttons on Lenovo X1 Tab gen2
-Date:   Fri, 16 Oct 2020 15:32:44 +0100
-Message-Id: <20201016143244.1303262-1-david.edmondson@oracle.com>
-X-Mailer: git-send-email 2.28.0
+        id S2408904AbgJPOdw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 16 Oct 2020 10:33:52 -0400
+Received: from smtp.h3c.com ([60.191.123.50]:14970 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405999AbgJPOdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 10:33:52 -0400
+Received: from DAG2EX10-IDC.srv.huawei-3com.com ([10.8.0.73])
+        by h3cspam02-ex.h3c.com with ESMTPS id 09GEX97X045540
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 16 Oct 2020 22:33:09 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX10-IDC.srv.huawei-3com.com (10.8.0.73) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 16 Oct 2020 22:33:13 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.1713.004; Fri, 16 Oct 2020 22:33:13 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Michal Hocko <mhocko@suse.com>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mm: vmscan: avoid a unnecessary reschedule in
+ shrink_slab()
+Thread-Topic: [PATCH] mm: vmscan: avoid a unnecessary reschedule in
+ shrink_slab()
+Thread-Index: AQHWo29cMaRbAMdQE0ycFn5GylDeeqmZnPOAgACJFdD//4YYAIAAiVZw//+CoICAAJNtUA==
+Date:   Fri, 16 Oct 2020 14:33:13 +0000
+Message-ID: <ca5e3e13f00348898bb9205a7eeb4c85@h3c.com>
+References: <20201016033952.1924-1-tian.xianting@h3c.com>
+ <20201016120749.GG22589@dhcp22.suse.cz>
+ <9a2b772b13f84bdd9517b17d8d72aa89@h3c.com>
+ <20201016130208.GI22589@dhcp22.suse.cz>
+ <8a25eacf4b37460897911ade338754d3@h3c.com>
+ <20201016134457.GM22589@dhcp22.suse.cz>
+In-Reply-To: <20201016134457.GM22589@dhcp22.suse.cz>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9775 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 suspectscore=1 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010160110
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9775 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 suspectscore=1
- priorityscore=1501 phishscore=0 clxscore=1011 spamscore=0 adultscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010160111
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 09GEX97X045540
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the FORCE_MULTI_INPUT class and quirk added in
-commit 40d5bb87377a ("HID: multitouch: enable multi-input as a quirk
-for some devices")
-to enable event reporting from both the trackpad and the
-trackpoint/buttons in the Lenovo X1 Tab gen2.
+Thanks for the explain.
+I got it.
 
-Signed-off-by: David Edmondson <david.edmondson@oracle.com>
----
-It seems likely that some other devices should be treated similarly
-(X1 Tab gen3, for example), but I don't have them available to test.
+-----Original Message-----
+From: Michal Hocko [mailto:mhocko@suse.com] 
+Sent: Friday, October 16, 2020 9:45 PM
+To: tianxianting (RD) <tian.xianting@h3c.com>
+Cc: akpm@linux-foundation.org; linux-mm@kvack.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: vmscan: avoid a unnecessary reschedule in shrink_slab()
 
- drivers/hid/hid-ids.h        | 1 +
- drivers/hid/hid-multitouch.c | 6 ++++++
- 2 files changed, 7 insertions(+)
+On Fri 16-10-20 13:20:41, Tianxianting wrote:
+> Thanks
+> I understood what you said :)
+> But whether it is proper to check reschedule in every loop when lock is taken? 
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 74fc1df6e3c2..450ffb760aca 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -727,6 +727,7 @@
- #define USB_DEVICE_ID_LENOVO_TP10UBKBD	0x6062
- #define USB_DEVICE_ID_LENOVO_TPPRODOCK	0x6067
- #define USB_DEVICE_ID_LENOVO_X1_COVER	0x6085
-+#define USB_DEVICE_ID_LENOVO_X1_TAB	0x60a3
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_608D	0x608d
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_6019	0x6019
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_602E	0x602e
-diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-index e3152155c4b8..9e8251fc62b8 100644
---- a/drivers/hid/hid-multitouch.c
-+++ b/drivers/hid/hid-multitouch.c
-@@ -1965,6 +1965,12 @@ static const struct hid_device_id mt_devices[] = {
- 		MT_USB_DEVICE(USB_VENDOR_ID_ILITEK,
- 			USB_DEVICE_ID_ILITEK_MULTITOUCH) },
- 
-+	/* Lenovo X1 TAB Gen 2 */
-+	{ .driver_data = MT_CLS_WIN_8_FORCE_MULTI_INPUT,
-+		HID_DEVICE(BUS_USB, HID_GROUP_MULTITOUCH_WIN_8,
-+			USB_VENDOR_ID_LENOVO,
-+			USB_DEVICE_ID_LENOVO_X1_TAB) },
-+
- 	/* LG Melfas panel */
- 	{ .driver_data = MT_CLS_LG,
- 		HID_USB_DEVICE(USB_VENDOR_ID_LG,
--- 
-2.28.0
+I do not see any actual problem TBH. cond_resched is mostly to increase interactivity for non preemptible kernel. It can reduce throughput but this is a memory reclaim path and I do not expect this to contribute to any moderate hot paths. Direct reclaim doesn't really count as a hot path.
 
+--
+Michal Hocko
+SUSE Labs
