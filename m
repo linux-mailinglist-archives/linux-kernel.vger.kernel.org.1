@@ -2,177 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AD12903D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5E32903D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406705AbgJPLLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:11:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24124 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406689AbgJPLLB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:11:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602846659;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kOERbbEx7nVCNHLlMb3rSnmIO9vt1UAO946lTC4L+xc=;
-        b=BgyFuUhGCHc+CNlaVEuKhwjT5d+oq5e8MTD/j4q+KNLi+COldA4ou1ihtHMRfISDioVEFZ
-        ozf+8GaCS2DUDa7rFRyl90hzpPSvzdlg96QTJfMplNCUC0jXZEj3eUBmDlPNWjMmw5W3V3
-        xzBZXaRIttxh6m4X1U9D8oL0WWeyI7w=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-177-_IpVryykORaH6Pybq2FA2Q-1; Fri, 16 Oct 2020 07:10:57 -0400
-X-MC-Unique: _IpVryykORaH6Pybq2FA2Q-1
-Received: by mail-ej1-f70.google.com with SMTP id z25so797222ejd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:10:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kOERbbEx7nVCNHLlMb3rSnmIO9vt1UAO946lTC4L+xc=;
-        b=uEbf8xUE2FY4xJ3JwTD08eh5AhfSquP+B+/14CW+IwRBZng1toFTbv37OTie0c6PKf
-         JQTrgw/1Y0UHjEQ+iKMGxBSmxlNIV/iI5g2sENYFKZk+lJUTIBbos9wE8lLlBAQ4VKZE
-         XRQ7oT0BZQzsjicmd5kjks8xzOl4H53VLwj43SX/8gIXwoEpk0IA+ithN2GjFp3SuCIP
-         oxKQqv+quhquF6sRlDwsLzfzp7oi1igp34X6USILPiwIfA583ptq5qNy9YTDTScNcLkd
-         /EqIXwc3SZ/ejTbSCEIWpOzKRUGUgDYjpETzhdqThAqN+w0U8vORIfihYVXedTE92vgZ
-         OSwA==
-X-Gm-Message-State: AOAM531/Dqp4HijWVXo9/YXpxWSmCn3DyEkNu0vBlGh7/XLvKvvSI7Kw
-        ITawpu1++4SvcGjwWPkj/TVICwwjxoAODwOslv0WiJ4IpC3E9S89dtCUxnZAMqrP0AZ3dMdvBRX
-        QIxKOPq6lIYHZ4XQneWfIDAPW
-X-Received: by 2002:a50:c309:: with SMTP id a9mr3223884edb.199.1602846656312;
-        Fri, 16 Oct 2020 04:10:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx+iD0vQ3CWmW+0Tj/Lolks366zfvPUxo3S7eFXQ4IACS8Nha9I/OIrD7KLkJUTlI56BBzdlw==
-X-Received: by 2002:a50:c309:: with SMTP id a9mr3223845edb.199.1602846655995;
-        Fri, 16 Oct 2020 04:10:55 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id 11sm1321247ejy.19.2020.10.16.04.10.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 04:10:55 -0700 (PDT)
-Subject: Re: [RFC] Documentation: Add documentation for new
- performance_profile sysfs class (Also Re: [PATCH 0/4] powercap/dtpm: Add the
- DTPM framework)
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Mark Pearson <mpearson@lenovo.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Elia Devito <eliadevito@gmail.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com>
- <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
- <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com>
- <CAJZ5v0gwc_d1vnwDVWXY+i4f0T2r0tAz8xuWV7oS_afsy7OocQ@mail.gmail.com>
- <63dfa6a1-0424-7985-7803-756c0c5cc4a5@redhat.com>
- <CAJZ5v0jpYpu3Tk7qq_MCVs0wUr-Dw0rY5EZELrVbQta0NZaoVA@mail.gmail.com>
- <87d9a808-39d6-4949-c4f9-6a80d14a3768@redhat.com>
- <CAJZ5v0iWmmu5WV7cX7uNb61NMYQ7s0dnhg1K+T0x90b3sBfU9w@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <943531a7-74d6-7c7f-67bc-2645b3ba7b8a@redhat.com>
-Date:   Fri, 16 Oct 2020 13:10:54 +0200
+        id S2406788AbgJPLLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:11:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:34678 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391033AbgJPLLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 07:11:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12107D6E;
+        Fri, 16 Oct 2020 04:11:53 -0700 (PDT)
+Received: from [10.57.50.28] (unknown [10.57.50.28])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E7A43F719;
+        Fri, 16 Oct 2020 04:11:50 -0700 (PDT)
+Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
+ tracing
+To:     Denis Nikitin <denik@chromium.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
+ <20201015160257.GA1450102@xps15>
+ <CADDJ8CXS8gGuXL45vR6xiHwJhZNcUJPvHMVYSGR6LDETRPJFiQ@mail.gmail.com>
+From:   Suzuki Poulose <suzuki.poulose@arm.com>
+Message-ID: <fcfd6a92-de94-e318-5715-23b97fb9724e@arm.com>
+Date:   Fri, 16 Oct 2020 12:11:40 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0iWmmu5WV7cX7uNb61NMYQ7s0dnhg1K+T0x90b3sBfU9w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CADDJ8CXS8gGuXL45vR6xiHwJhZNcUJPvHMVYSGR6LDETRPJFiQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<note folding the 2 threads we are having on this into one, adding every one from both threads to the Cc>
-
-Hi,
-
-On 10/14/20 5:42 PM, Rafael J. Wysocki wrote:
-> On Wed, Oct 14, 2020 at 4:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
->> On 10/14/20 3:33 PM, Rafael J. Wysocki wrote:
-
-<snip>
-
->>> First, a common place to register a DPTF system profile seems to be
->>> needed and, as I said above, I wouldn't expect more than one such
->>> thing to be present in the system at any given time, so it may be
->>> registered along with the list of supported profiles and user space
->>> will have to understand what they mean.
->>
->> Mostly Ack, I would still like to have an enum for DPTF system
->> profiles in the kernel and have a single piece of code map that
->> enum to profile names. This enum can then be extended as
->> necessary, but I want to avoid having one driver use
->> "Performance" and the other "performance" or one using
->> "performance-balanced" and the other "balanced-performance", etc.
->>
->> With the goal being that new drivers use existing values from
->> the enum as much as possible, but we extend it where necessary.
+On 10/16/20 7:40 AM, Denis Nikitin wrote:
+> Hi Mathieu,
 > 
-> IOW, just a table of known profile names with specific indices assigned to them.
+> I think one of the use cases could be VMs.
+> Is there isolation between EL1 guest kernels which we can control from 
+> perf in a system wide mode?
 
-Yes.
+The proposed solution doesn't solve this for VMs anyway. It only
+excludes EL1 *OR* EL2, depending on the host kernel's running  EL.
+We cannot support Virtual ETM access for VMs with memory mapped
+accesses.
 
-> This sounds reasonable.
+Unforutnately, trace filtering is the solution for preventing tracing
+for EL1 guest/kernel (available from v8.4 Self Hosted extensions). Other
+option is to add support for "exclude_guest" support for CoreSight for perf.
+But again this can't be controlled by sysfs. And it can't be enforced 
+for perf, if not specified. Again it all goes back to the root
+permission hammer lock which Mathieu pointed out.
+
+
+With the v8.4 Self hosted trace extensions, Guest and Host both could
+control individually if they can be traced (both EL0 and EL1/2).
+
+Suzuki
+
 > 
->>> Second, irrespective of the above, it may be useful to have a
->>> consistent way to pass performance-vs-power preference information
->>> from user space to different parts of the kernel so as to allow them
->>> to adjust their operation and this could be done with a system-wide
->>> power profile attribute IMO.
->>
->> I agree, which is why I tried to tackle both things in one go,
->> but as you said doing both in 1 API is probably not the best idea.
->> So I believe we should park this second issue for now and revisit it
->> when we find a need for it.
+> Thanks,
+> Denis
 > 
-> Agreed.
+> On Thu, Oct 15, 2020 at 9:03 AM Mathieu Poirier 
+> <mathieu.poirier@linaro.org <mailto:mathieu.poirier@linaro.org>> wrote:
 > 
->> Do you have any specific userspace API in mind for the
->> DPTF system profile selection?
+>     On Thu, Oct 15, 2020 at 06:15:22PM +0530, Sai Prakash Ranjan wrote:
+>      > On production systems with ETMs enabled, it is preferred to
+>      > exclude kernel mode(NS EL1) tracing for security concerns and
+>      > support only userspace(NS EL0) tracing. So provide an option
+>      > via kconfig to exclude kernel mode tracing if it is required.
+>      > This config is disabled by default and would not affect the
+>      > current configuration which has both kernel and userspace
+>      > tracing enabled by default.
+>      >
 > 
-> Not really.
-
-So before /sys/power/profile was mentioned, but that seems more like
-a thing which should have a set of fixed possible values, iow that is
-out of scope for this discussion.
-
-Since we all seem to agree that this is something which we need
-specifically for DPTF profiles maybe just add:
-
-/sys/power/dptf_current_profile    (rw)
-/sys/power/dptf_available_profiles (ro)
-
-(which will only be visible if a dptf-profile handler
- has been registered) ?
-
-Or more generic and thus better (in case other platforms
-later need something similar) I think, mirror the:
-
-/sys/bus/cpu/devices/cpu#/cpufreq/energy_performance_* bits
-for a system-wide energy-performance setting, so we get:
-
-/sys/power/energy_performance_preference
-/sys/power/energy_performance_available_preferences
-
-(again only visible when applicable) ?
-
-I personally like the second option best.
-
-Regards,
-
-Hans
+>     One requires root access (or be part of a special trace group) to be
+>     able to use
+>     the cs_etm PMU.  With this kind of elevated access restricting
+>     tracing at EL1
+>     provides little in terms of security.
+> 
+>     Thanks,
+>     Mathieu
+> 
+>      > Signed-off-by: Sai Prakash Ranjan
+>     <saiprakash.ranjan@codeaurora.org
+>     <mailto:saiprakash.ranjan@codeaurora.org>>
+>      > ---
+>      >  drivers/hwtracing/coresight/Kconfig                | 9 +++++++++
+>      >  drivers/hwtracing/coresight/coresight-etm4x-core.c | 6 +++++-
+>      >  2 files changed, 14 insertions(+), 1 deletion(-)
+>      >
+>      > diff --git a/drivers/hwtracing/coresight/Kconfig
+>     b/drivers/hwtracing/coresight/Kconfig
+>      > index c1198245461d..52435de8824c 100644
+>      > --- a/drivers/hwtracing/coresight/Kconfig
+>      > +++ b/drivers/hwtracing/coresight/Kconfig
+>      > @@ -110,6 +110,15 @@ config CORESIGHT_SOURCE_ETM4X
+>      >         To compile this driver as a module, choose M here: the
+>      >         module will be called coresight-etm4x.
+>      >
+>      > +config CORESIGHT_ETM4X_EXCL_KERN
+>      > +     bool "Coresight ETM 4.x exclude kernel mode tracing"
+>      > +     depends on CORESIGHT_SOURCE_ETM4X
+>      > +     help
+>      > +       This will exclude kernel mode(NS EL1) tracing if enabled.
+>     This option
+>      > +       will be useful to provide more flexible options on
+>     production systems
+>      > +       where only userspace(NS EL0) tracing might be preferred
+>     for security
+>      > +       reasons.
+>      > +
+>      >  config CORESIGHT_STM
+>      >       tristate "CoreSight System Trace Macrocell driver"
+>      >       depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) ||
+>     ARM64
+>      > diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>     b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>      > index abd706b216ac..7e5669e5cd1f 100644
+>      > --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>      > +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>      > @@ -832,6 +832,9 @@ static u64 etm4_get_ns_access_type(struct
+>     etmv4_config *config)
+>      >  {
+>      >       u64 access_type = 0;
+>      >
+>      > +     if (IS_ENABLED(CONFIG_CORESIGHT_ETM4X_EXCL_KERN))
+>      > +             config->mode |= ETM_MODE_EXCL_KERN;
+>      > +
+>      >       /*
+>      >        * EXLEVEL_NS, bits[15:12]
+>      >        * The Exception levels are:
+>      > @@ -849,7 +852,8 @@ static u64 etm4_get_ns_access_type(struct
+>     etmv4_config *config)
+>      >               access_type = ETM_EXLEVEL_NS_HYP;
+>      >       }
+>      >
+>      > -     if (config->mode & ETM_MODE_EXCL_USER)
+>      > +     if (config->mode & ETM_MODE_EXCL_USER &&
+>      > +         !IS_ENABLED(CONFIG_CORESIGHT_ETM4X_EXCL_KERN))
+>      >               access_type |= ETM_EXLEVEL_NS_APP;
+>      >
+>      >       return access_type;
+>      >
+>      > base-commit: 3477326277451000bc667dfcc4fd0774c039184c
+>      > --
+>      > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is
+>     a member
+>      > of Code Aurora Forum, hosted by The Linux Foundation
+>      >
+> 
 
