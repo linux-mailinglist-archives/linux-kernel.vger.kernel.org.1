@@ -2,222 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6F42908EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884C5290B0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410470AbgJPPy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:54:28 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:42499 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408822AbgJPPy1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:54:27 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 620264000A;
-        Fri, 16 Oct 2020 15:54:20 +0000 (UTC)
-Date:   Fri, 16 Oct 2020 19:54:06 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Eugen.Hristev@microchip.com
-Cc:     laurent.pinchart@ideasonboard.com, robh+dt@kernel.org,
-        sakari.ailus@iki.fi, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/3] dt-bindings: media: atmel: csi2dc: add bindings
- for microchip csi2dc
-Message-ID: <20201016175406.meg2wbsjmhj4xf7z@uno.localdomain>
-References: <20200826065142.205000-1-eugen.hristev@microchip.com>
- <20201010211743.GB3939@pendragon.ideasonboard.com>
- <c5d27d11-891b-afd8-0be1-02bf5eb8bef9@microchip.com>
- <20201012130425.2rszhgd7eh7nffrv@uno.localdomain>
- <c473748a-18f9-082a-9121-9c04c663e434@microchip.com>
+        id S2390770AbgJPSBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 14:01:13 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:60142 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390128AbgJPSBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 14:01:13 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kTU2G-0021tA-Kf; Fri, 16 Oct 2020 20:01:00 +0200
+Date:   Fri, 16 Oct 2020 20:01:00 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, jim.cromie@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v2 2/4] net: ax88796c: ASIX AX88796C SPI Ethernet Adapter
+ Driver
+Message-ID: <20201016180100.GF139700@lunn.ch>
+References: <20201002203641.GI3996795@lunn.ch>
+ <CGME20201013200453eucas1p1b77c93275b518422429ff1481f88a4be@eucas1p1.samsung.com>
+ <dleftjd01l99jv.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <c473748a-18f9-082a-9121-9c04c663e434@microchip.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dleftjd01l99jv.fsf%l.stelmach@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Eugen,
-
-On Fri, Oct 16, 2020 at 12:30:59PM +0000, Eugen.Hristev@microchip.com wrote:
-> On 12.10.2020 16:04, Jacopo Mondi wrote:
-> > Hello,
-> >     just my 2 cents, as I've noticed this patch skimming through the
-> >     list
+> >> +static void
+> >> +ax88796c_get_regs(struct net_device *ndev, struct ethtool_regs *regs, void *_p)
+> >> +{
+> >> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
+> >> +	u16 *p = _p;
+> >> +	int offset, i;
+> >> +
+> >> +	memset(p, 0, AX88796C_REGDUMP_LEN);
+> >> +
+> >> +	for (offset = 0; offset < AX88796C_REGDUMP_LEN; offset += 2) {
+> >> +		if (!test_bit(offset / 2, ax88796c_no_regs_mask))
+> >> +			*p = AX_READ(&ax_local->ax_spi, offset);
+> >> +		p++;
+> >> +	}
+> >> +
+> >> +	for (i = 0; i < AX88796C_PHY_REGDUMP_LEN / 2; i++) {
+> >> +		*p = phy_read(ax_local->phydev, i);
+> >> +		p++;
 > >
-> > On Mon, Oct 12, 2020 at 07:19:43AM +0000, Eugen.Hristev@microchip.com wrote:
+> > Depending on the PHY, that can be dangerous.
+> 
+> This is a built-in generic PHY. The chip has no lines to attach any
+> other external one.
+> 
+> > phylib could be busy doing things with the PHY. It could be looking at
+> 
+> How does phylib prevent concurrent access to a PHY? 
 
-[snip]
+phydev->lock. All access to the PHY should go through the phylib,
+which will take the lock before calling into the driver.
 
->
-> Hi,
->
-> Thanks for helping,
-> >
-> > Is this property describing the CSI-2 clock continuous, non-continuous
-> > mode configuration, or did I mis-interpreted it ?
->
-> I think so. This is a setting inside the csi2dc regarding clock. If we
-> can obtain it from pads operations, then it's good, but the question is,
-> if the devices can provide this or not ?
+> > a different page for example.
+> 
+> Different page? 
 
-The transmitter can provide this information, as it knows which clock
-mode it is going to use (it's not clear from the CSI-2 spec which side
-is in charge of the selection, but it seems natural to me that it's up
-to the transmitter side). Whether they implement the right operation
-to do so, well... see below
+I was talking about the general case. A number of PHYs have more than
+32 registers. So they implement pages to give access to more
+registers. For that to work, you need to ensure you don't have
+concurrent access.
 
-> >
-> > We added support for retrieving run-time configuration of the media
-> > bus with the get_mbus_config pad operations recently. Among the
-> > configuration flags for MBUS_CSI2_DPHY there are inded CONTINUOUS and
-> > NON_CONTINUOUS clock flags.
-> >
-> >>>
-> >>>> +
-> >>>> +  microchip,inter-line-delay:
-> >>>> +    allOf:
-> >>>> +    - $ref: /schemas/types.yaml#/definitions/uint32
-> >>>> +    - minimum: 1
-> >>>> +    - maximum: 16
-> >>>> +    default: 16
-> >>>> +    description:
-> >>>> +      Indicates how many clock cycles should be introduced between each line.
-> >>>
-> >>> This also sounds like a configuration parameter. How does one compute
-> >>> the right value for this ?
+> > miitool(1) can give you the same functionally without the MAC driver
+> > doing anything, other than forwarding the IOCTL call on.
+> 
+> No, I am afraid mii-tool is not able to dump registers.
+
+It should be able to.
+
+sudo mii-tool -vv eth0
+Using SIOCGMIIPHY=0x8947
+eth0: negotiated 1000baseT-FD flow-control, link ok
+  registers for MII PHY 0: 
+    1040 79ed 001c c800 0de1 c5e1 006d 0000
+    0000 0200 0800 0000 0000 0000 0000 2000
+    0000 0000 ffff 0000 0000 0400 0f00 0f00
+    318b 0053 31ec 8012 bf1f 0000 0000 0000
+  product info: vendor 00:07:32, model 0 rev 0
+  basic mode:   autonegotiation enabled
+  basic status: autonegotiation complete, link ok
+  capabilities: 1000baseT-FD 100baseTx-FD 100baseTx-HD 10baseT-FD 10baseT-HD
+  advertising:  1000baseT-FD 100baseTx-FD 100baseTx-HD 10baseT-FD 10baseT-HD flow-control
+  link partner: 1000baseT-FD 100baseTx-FD 100baseTx-HD 10baseT-FD 10baseT-HD flow-control
+
+> >> +ax88796c_mdio_write(struct mii_bus *mdiobus, int phy_id, int loc, u16 val)
+> >> +{
+> >> +	struct ax88796c_device *ax_local = mdiobus->priv;
+> >> +	int ret;
+> >> +
+> >> +	AX_WRITE(&ax_local->ax_spi, val, P2_MDIODR);
+> >> +
+> >> +	AX_WRITE(&ax_local->ax_spi,
+> >> +		 MDIOCR_RADDR(loc) | MDIOCR_FADDR(phy_id)
+> >> +		 | MDIOCR_WRITE, P2_MDIOCR);
+> >> +
+> >> +	ret = read_poll_timeout(AX_READ, ret,
+> >> +				((ret & MDIOCR_VALID) != 0), 0,
+> >> +				jiffies_to_usecs(HZ / 100), false,
+> >> +				&ax_local->ax_spi, P2_MDIOCR);
+> >> +	if (ret)
+> >> +		return -EIO;
+> >> +
+> >> +	if (loc == MII_ADVERTISE) {
+> >> +		AX_WRITE(&ax_local->ax_spi, (BMCR_FULLDPLX | BMCR_ANRESTART |
+> >> +			  BMCR_ANENABLE | BMCR_SPEED100), P2_MDIODR);
+> >> +		AX_WRITE(&ax_local->ax_spi, (MDIOCR_RADDR(MII_BMCR) |
+> >> +			  MDIOCR_FADDR(phy_id) | MDIOCR_WRITE),
+> >> +			  P2_MDIOCR);
 > >>
-> >> I think this is a delay that can be added inside the hardware block,
-> >> depending on the interface speed and bandwidth. I will try to understand
-> >> more details from the hardware design and come back with a more detailed
-> >> answer.
-> >>
->
-> Regarding this, I will remove it. Our design team advised to have a
-> hardcoded value for this product.
->
-> >>>
-> >>>> +
-> >>>> +
-> >>>> +        properties:
-> >>>> +          reg:
-> >>>> +            enum: [0, 1, 2, 3]
-> >>>> +            description: virtual channel for the endpoint
-> >>>
-> >>> The virtual channel used by the source is also something that needs to
-> >>> be queried from the source at runtime, it doesn't belong to this
-> >>> binding.
-> >>
-> >> The same question as for the gated clock configuration. How can we use
-> >> v4l2 subdevice API to obtain such information from the subdevice? And if
-> >> the subdevice does not offer such information ?
 > >
-> > I think the subdev driver should be instrumented to report it instead of
-> > hard-coding the information in DT which should be otherwise updated
-> > depending on which sensor is connected to the board. Does it make
-> > sense to you ?
->
-> It does, but then, it won't work unless connected to instrumented
-> subdevices. Which is not really something I would do, since it would
-> completely limit the usability.
-> Do you have any example on how to get the virtual id from the subdev ?
-
-As examples of CSI-2 transmitters implementing get_mbus_config() we
-have tc358743 and adv748x reporting the number of active data lanes.
-
-Reporting the virtual channel in use is a matter of using one of the
-following flags:
-
-/* CSI-2 Virtual Channel identifiers. */
-#define V4L2_MBUS_CSI2_CHANNEL_0		BIT(4)
-#define V4L2_MBUS_CSI2_CHANNEL_1		BIT(5)
-#define V4L2_MBUS_CSI2_CHANNEL_2		BIT(6)
-#define V4L2_MBUS_CSI2_CHANNEL_3		BIT(7)
-
-As an example of a receiver driver rcar-csi2 uses the operation to
-dynamically negotiate the number of data lanes. To handle virtual
-channel you would need to inspect which of the above flags have been
-set by the subdevice.
-
-On deciding if this better handled by using a subdev operation or a DT
-property, I understand the subdev driver needs to implement
-get_mbus_config, but hardcoding it in DT I fear is a no-go for
-mainline and honestly it doesn't sound much more advantageous, as it
-needs to be adapted according to the connected sensor anyway, doesn't
-it ? But I'm happy to defer this call to the maintainers, I hope I
-just have provided some useful references.
-
-Cheers
-   j
-
->
-> Thanks again,
->
-> Eugen
+> > What is this doing?
 > >
-> > Cheers
-> >     j
+> 
+> Well… it turns autonegotiation when changing advertised link modes. But
+> this is obvious. As to why this code is here, I will honestly say — I am
+> not sure (Reminder: this is a vendor driver I am porting, I am more than
+> happy to receive any comments, thank you). Apparently it is not required
+> and I am willing to remove it.
+
+Please do remove it.
+
+> >> +
+> >> +	ret = devm_register_netdev(&spi->dev, ndev);
+> >> +	if (ret) {
+> >> +		dev_err(&spi->dev, "failed to register a network device\n");
+> >> +		destroy_workqueue(ax_local->ax_work_queue);
+> >> +		goto err;
+> >> +	}
 > >
-> >>
-> >> Thanks again,
-> >>
-> >> Eugen
-> >>>
-> >>>> +
-> >>>> +          remote-endpoint: true
-> >>>> +
-> >>>> +        required:
-> >>>> +          - remote-endpoint
-> >>>> +          - reg
-> >>>> +
-> >>>> +        additionalProperties: false
-> >>>> +
-> >>>> +    additionalProperties: false
-> >>>> +
-> >>>> +required:
-> >>>> +  - compatible
-> >>>> +  - reg
-> >>>> +  - clocks
-> >>>> +  - clock-names
-> >>>> +  - port@0
-> >>>> +
-> >>>> +examples:
-> >>>> +  - |
-> >>>> +    csi2dc@e1404000 {
-> >>>> +        compatible = "microchip,sama7g5-csi2dc";
-> >>>> +        #address-cells = <1>;
-> >>>> +        #size-cells = <0>;
-> >>>> +        reg = <0xe1404000 0x500>;
-> >>>> +        clocks = <&pclk>, <&scck>;
-> >>>> +        clock-names = "pclk", "scck";
-> >>>> +
-> >>>> +        port@0 {
-> >>>> +               reg = <0>; /* must be 0, first child port */
-> >>>> +               csi2dc_in: endpoint { /* input from IDI interface */
-> >>>> +                     remote-endpoint = <&csi2host_out>;
-> >>>> +               };
-> >>>> +        };
-> >>>> +
-> >>>> +        port@1 {
-> >>>> +                #address-cells = <1>;
-> >>>> +                #size-cells = <0>;
-> >>>> +                reg = <1>; /* must be 1, second child port */
-> >>>> +                csi2dc_out: endpoint@2 {
-> >>>> +                        reg = <2>;  /* virtual channel identifier */
-> >>>> +                        remote-endpoint = <&xisc_in>; /* output to sensor controller */
-> >>>> +                };
-> >>>> +        };
-> >>>> +    };
-> >>>> +
-> >>>> +...
-> >>>
-> >>> --
-> >>> Regards,
-> >>>
-> >>> Laurent Pinchart
-> >>>
-> >>
->
+> > The device is not live. If this is being used for NFS root, the kernel
+> > will start using it. So what sort of mess will it get into, if there
+> > is no PHY yet? Nothing important should happen after register_netdev().
+> >
+> 
+> But, with an unregistered network device ndev_owner in
+> phy_attach_direct() is NULL. Thus, phy_connect_direct() below fails.
+> 
+> --8<---------------cut here---------------start------------->8---
+>    1332         if (dev)
+>    1333                 ndev_owner = dev->dev.parent->driver->owner;
+>    1334         if (ndev_owner != bus->owner &&  !try_module_get(bus->owner)) {
+>    1335                 phydev_err(phydev, "failed to get the bus  module\n");
+>    1336                 return -EIO;
+>    1337         }
+> --8<---------------cut here---------------end--------------->8---
+
+Which is probably why most drivers actually attach the PHY in open()
+and detach it in close().
+
+It can be done in probe, just look around for a driver which does and
+copy it.
+
+> No problem. Do you have any recommendation how to express this
+> 
+>  #define PSR_RESET  (0 << 15)
+
+> I know it equals 0, but shows explicitly the bit number.
+
+Yes, that is useful for documentation. How about:
+
+#define PSR_NOT_RESET BIT(15)
+
+And then turn the logic around.
+
+    Andrew
