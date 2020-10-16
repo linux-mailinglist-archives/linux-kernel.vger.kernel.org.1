@@ -2,120 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24DA290C97
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC74290C8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393098AbgJPUGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 16:06:05 -0400
-Received: from mailout02.rmx.de ([62.245.148.41]:59245 "EHLO mailout02.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393046AbgJPUGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 16:06:05 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout02.rmx.de (Postfix) with ESMTPS id 4CCcbX32BVzNlxv;
-        Fri, 16 Oct 2020 22:06:00 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4CCcZY4RpQz2xPF;
-        Fri, 16 Oct 2020 22:05:09 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.12) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Fri, 16 Oct
- 2020 22:04:30 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Christian Eggers <ceggers@arri.de>
-Subject: [PATCH net-next 3/3] net: dsa: trailer: don't allocate additional memory for padding/tagging
-Date:   Fri, 16 Oct 2020 22:02:26 +0200
-Message-ID: <20201016200226.23994-4-ceggers@arri.de>
+        id S2393316AbgJPUEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 16:04:07 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:35268 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393309AbgJPUEH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 16:04:07 -0400
+Received: by mail-il1-f195.google.com with SMTP id j17so4056482ilr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:04:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pSe2oE2EcJMZ2q2g9lbAlfmtda5uIsfsRQrbLON3NK0=;
+        b=nWo/URvtIZ9PCVQsvG1jErss9SHN02J9FZrJUFL5Y2eIlakPjhf2ipH+DfUavEFz8w
+         DyRl1vY/iFjIpR/Kr0IDweUWFHFRDapNGD1XiYaXeNIYsueHRKoUnxNwg1PjtQPhuFbp
+         l2umbbAE8I1459F9QCTnNbtdT05FepiPA2bqmqG/YZIOULdbbo4oNARnLUQN6h4TLxUa
+         75RyjEVubi67lLL6jRNpqVWFqit9oab51c7Uon9K02K2tWSa1zkwtZKG1wpe6V3uPOFc
+         1Q/heDzqPlXDKCsZmhjcLYN7tfrkEamVLwdsveFzvjlKUqtAiQ/WgoGZNSl9JK1pIQaQ
+         8hjA==
+X-Gm-Message-State: AOAM530/JbJ4R06+YdueJlD3IcUuua/XdAO4MRIvT9D5JisIL6B+k4Sa
+        /uDyeoVaQYvjvHDokREZl+w=
+X-Google-Smtp-Source: ABdhPJyYuEDlKlwULdZLtNgyacYksMaozKWslcIGpyg15pLqfjsokHihj9uo3Yk+v9vQWwLV112Czw==
+X-Received: by 2002:a92:98c5:: with SMTP id a66mr4197296ill.50.1602878646265;
+        Fri, 16 Oct 2020 13:04:06 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id r2sm2886961ile.1.2020.10.16.13.04.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 13:04:05 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/4] x86/boot/64: Explicitly map boot_params and command line
+Date:   Fri, 16 Oct 2020 16:04:01 -0400
+Message-Id: <20201016200404.1615994-1-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201016200226.23994-1-ceggers@arri.de>
-References: <20201016200226.23994-1-ceggers@arri.de>
+In-Reply-To: <20201016173232.GI8483@zn.tnic>
+References: <20201016173232.GI8483@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.12]
-X-RMX-ID: 20201016-220513-4CCcZY4RpQz2xPF-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The caller (dsa_slave_xmit) guarantees that the frame length is at least
-ETH_ZLEN and that enough memory for tail tagging is available.
+Commits
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
+  ca0e22d4f011 ("x86/boot/compressed/64: Always switch to own page table")
+  8570978ea030 ("x86/boot/compressed/64: Don't pre-map memory in KASLR code")
+
+set up a new page table in the decompressor stub, but without explicit
+mappings for boot_params and the kernel command line, relying on the #PF
+handler instead.
+
+This is fragile, as boot_params and the command line mappings are
+required for the main kernel. If EARLY_PRINTK and RANDOMIZE_BASE are
+disabled, a QEMU/OVMF boot never accesses the command line in the
+decompressor stub, and so it never gets mapped. The main kernel accesses
+it from the identity mapping if AMD_MEM_ENCRYPT is enabled, and will
+crash.
+
+Fix this by adding back the explicit mapping of boot_params and the
+command line.
+
+Note: the changes also removed the explicit mapping of the main kernel,
+with the result that .bss and .brk may not be in the identity mapping,
+but those don't get accessed by the main kernel before it switches to
+its own page tables.
+
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
 ---
- net/dsa/tag_trailer.c | 31 ++-----------------------------
- 1 file changed, 2 insertions(+), 29 deletions(-)
+ arch/x86/boot/compressed/head_64.S      |  3 +++
+ arch/x86/boot/compressed/ident_map_64.c | 24 +++++++++++++++++++++---
+ 2 files changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/net/dsa/tag_trailer.c b/net/dsa/tag_trailer.c
-index 3a1cc24a4f0a..5b97ede56a0f 100644
---- a/net/dsa/tag_trailer.c
-+++ b/net/dsa/tag_trailer.c
-@@ -13,42 +13,15 @@
- static struct sk_buff *trailer_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct dsa_port *dp = dsa_slave_to_port(dev);
--	struct sk_buff *nskb;
--	int padlen;
- 	u8 *trailer;
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index 1c80f1738fd9..3976b4e92e1b 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -544,6 +544,9 @@ SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
+ 	pushq	%rsi
+ 	call	set_sev_encryption_mask
+ 	call	load_stage2_idt
++	/* Pass boot_params to initialize_identity_maps */
++	popq	%rdi
++	pushq	%rdi
+ 	call	initialize_identity_maps
+ 	popq	%rsi
  
--	/*
--	 * We have to make sure that the trailer ends up as the very
--	 * last 4 bytes of the packet.  This means that we have to pad
--	 * the packet to the minimum ethernet frame size, if necessary,
--	 * before adding the trailer.
--	 */
--	padlen = 0;
--	if (skb->len < 60)
--		padlen = 60 - skb->len;
--
--	nskb = alloc_skb(NET_IP_ALIGN + skb->len + padlen + 4, GFP_ATOMIC);
--	if (!nskb)
--		return NULL;
--	skb_reserve(nskb, NET_IP_ALIGN);
--
--	skb_reset_mac_header(nskb);
--	skb_set_network_header(nskb, skb_network_header(skb) - skb->head);
--	skb_set_transport_header(nskb, skb_transport_header(skb) - skb->head);
--	skb_copy_and_csum_dev(skb, skb_put(nskb, skb->len));
--	consume_skb(skb);
--
--	if (padlen) {
--		skb_put_zero(nskb, padlen);
--	}
--
--	trailer = skb_put(nskb, 4);
-+	trailer = skb_put(skb, 4);
- 	trailer[0] = 0x80;
- 	trailer[1] = 1 << dp->index;
- 	trailer[2] = 0x10;
- 	trailer[3] = 0x00;
+diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
+index c6f7aef7e85a..bf61581277c2 100644
+--- a/arch/x86/boot/compressed/ident_map_64.c
++++ b/arch/x86/boot/compressed/ident_map_64.c
+@@ -33,6 +33,12 @@
+ #define __PAGE_OFFSET __PAGE_OFFSET_BASE
+ #include "../../mm/ident_map.c"
  
--	return nskb;
-+	return skb;
++#define _SETUP
++#include <asm/setup.h>	/* For COMMAND_LINE_SIZE */
++#undef _SETUP
++
++extern unsigned long get_cmd_line_ptr(void);
++
+ /* Used by PAGE_KERN* macros: */
+ pteval_t __default_kernel_pte_mask __read_mostly = ~0;
+ 
+@@ -101,8 +107,10 @@ static void add_identity_map(unsigned long start, unsigned long end)
  }
  
- static struct sk_buff *trailer_rcv(struct sk_buff *skb, struct net_device *dev,
+ /* Locates and clears a region for a new top level page table. */
+-void initialize_identity_maps(void)
++void initialize_identity_maps(void *rmode)
+ {
++	unsigned long cmdline;
++
+ 	/* Exclude the encryption mask from __PHYSICAL_MASK */
+ 	physical_mask &= ~sme_me_mask;
+ 
+@@ -143,10 +151,20 @@ void initialize_identity_maps(void)
+ 	}
+ 
+ 	/*
+-	 * New page-table is set up - map the kernel image and load it
+-	 * into cr3.
++	 * New page-table is set up - map the kernel image, boot_params and the
++	 * command line.
++	 * The uncompressed kernel requires boot_params and the command line to
++	 * be mapped in the identity mapping.
++	 * Map them explicitly here in case the compressed kernel does not
++	 * touch them, or does not touch all the pages covering them.
+ 	 */
+ 	add_identity_map((unsigned long)_head, (unsigned long)_end);
++	boot_params = rmode;
++	add_identity_map((unsigned long)boot_params, (unsigned long)(boot_params + 1));
++	cmdline = get_cmd_line_ptr();
++	add_identity_map(cmdline, cmdline + COMMAND_LINE_SIZE);
++
++	/* Load the new page-table. */
+ 	write_cr3(top_level_pgt);
+ }
+ 
 -- 
-Christian Eggers
-Embedded software developer
-
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+2.26.2
 
