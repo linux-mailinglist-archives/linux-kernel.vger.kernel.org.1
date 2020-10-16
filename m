@@ -2,125 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A929290ACB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7847290AD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391441AbgJPReI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390235AbgJPReI (ORCPT
+        id S2391536AbgJPRgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:36:12 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:60992 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2391668AbgJPRgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:34:08 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCBDC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:34:08 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id p16so3546548ilq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:34:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QQNx5lbWWREoG92H9GWCHwFrOsjOJReO5JJROvxhPeA=;
-        b=MyFCI1d57eYhGAHzNbPzG0+gwYQAPxbalJwgjSW3Xqd7s2+P4uhkgk30gxqP/ihsvQ
-         KF7AvZIciGhSezS3QwLEja/cPTQDqJafJnNdZxZlCIf0vTsPdXD9Q9cshuO9TkutzWfQ
-         ZAoP/KiSOVuFakNyI8LvzZLyuakFqxRi4ZzsqUJu7Pe8KdVeoKHeIyH+k4OWEFxozyCa
-         5+TFuqYQOhZzIHK05h9JUTmtHxl9ACg1oGGohQgBDKcXuqyQD19KN3haqgRW3myQ+ppE
-         ofO4JeH99ih+xoeSNvSPp//8olyMBOwbZlIdCeKkgxReTNifQzN5QHAqumDS43rAchzN
-         zmGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QQNx5lbWWREoG92H9GWCHwFrOsjOJReO5JJROvxhPeA=;
-        b=jAW7TPxHZvU41xJvTVmmxYSIHkAsQOHzh0GqwwYjnZ6CMPEmeujQr3MI4iGoHZLdEo
-         vpfVTMsiT2y+l7H/tzEbGamuI955tebqSktfEDnXO9vgFZ/J9+3CO3Xn+6/2S0HDZoWK
-         f+YVCJywbG6F0JDoi+Qk4yvIgZkH9i5ptkx1z7a3FfODdBgDOe369KABTylc2s3QO5D9
-         B3cUc30xmNjagJnMK61qwGX2D2uajOzKSPNo6OotJbMWqkXt1QrYtcZze85znR/t4VDD
-         oEOZPWjR3x30ZkbVKtzWOTLYAI1WLofgO72zc+zj1puxwUfyXVySycPCxMeuq/bTGBGn
-         o6gg==
-X-Gm-Message-State: AOAM5317KSwcBbAtCFoSwic75WN5aBDTSzBoSuH5mjACXyP0QitApUXB
-        k43q8qJHr0rWywzQi5b7hyNAjbbErTlbo2l7kjo=
-X-Google-Smtp-Source: ABdhPJzqEi6vOzU0lH2knDMwvo/xl3sQVDyGD5lN09LWg2IW8Wn0f7e5enis3EJ0LeWdcqTHvb9n++TPoRvcM1csb1A=
-X-Received: by 2002:a92:600e:: with SMTP id u14mr3557017ilb.303.1602869647783;
- Fri, 16 Oct 2020 10:34:07 -0700 (PDT)
+        Fri, 16 Oct 2020 13:36:03 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09GHQLpa024369;
+        Fri, 16 Oct 2020 12:35:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=5ARtZ8iuUZWTt92xPnGmGgGIFglUvN30JaId3ybKh1U=;
+ b=GqfLhYq5fVpf+NH05aA5aX6efreXaoZKcOKIXf8AFjnDuhgwGvpB1ZBdaBjpsln/gC4h
+ JajQmv+HrdtfuzSRUt6s0d56rZpsJrlr5b2w9tBdrsFyeTfMVxdg/hKEVTChxPzitGdu
+ eDOZxAHo//3K9LsLrF990RCy/EtNOI8CnUgEec0At13WXlzHXkec6cDmo8VpzgKUoFhc
+ gSsRcekD0ACXP5JEKop4s3VrbLNltWrWYda8QbtJSdkloLcHmkGdKSTurH9qYQrOPHvs
+ dEp6D9CwM1cUKzqgcnPc8lQRXiQ2R2WmzjRP4t5AwdmnIoceJFvYUlpeatKfe51Lz7JB dg== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 343ac20jk8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 16 Oct 2020 12:35:46 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 16 Oct
+ 2020 18:35:44 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 16 Oct 2020 18:35:44 +0100
+Received: from AUSNPC0LSNW1-debian.ad.cirrus.com (ausnpc0lsnw1.ad.cirrus.com [198.61.64.143])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1542545;
+        Fri, 16 Oct 2020 17:35:44 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>, <robh+dt@kernel.org>,
+        <nsaenzjulienne@suse.de>
+CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v2 0/7] Add support for Rpi4b + Cirrus Lochnagar2 and CS47L15
+Date:   Fri, 16 Oct 2020 18:35:34 +0100
+Message-ID: <20201016173541.21180-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200923123916.1115962-1-jbrunet@baylibre.com>
- <20201015134628.GA11989@arm.com> <1jlfg7k2ux.fsf@starbuckisacylon.baylibre.com>
- <CABb+yY1-MBac0e6xQwWkHRo3bqJNMWb4xQzdaGdrYT=n5zRvtw@mail.gmail.com>
- <20201016085217.GA12323@arm.com> <1jk0vqk0ju.fsf@starbuckisacylon.baylibre.com>
-In-Reply-To: <1jk0vqk0ju.fsf@starbuckisacylon.baylibre.com>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Fri, 16 Oct 2020 12:33:57 -0500
-Message-ID: <CABb+yY0pDxQ7B+NPsEz325-_X2nSJngnfER7uOLVyoBLoH37cA@mail.gmail.com>
-Subject: Re: [PATCH] mailbox: cancel timer before starting it
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        Da Xue <da@libre.computer>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 suspectscore=0 impostorscore=0
+ mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=871 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010160130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 4:00 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
->
->
-> On Fri 16 Oct 2020 at 10:52, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
->
-> > On Thursday 15 Oct 2020 at 13:45:54 (-0500), Jassi Brar wrote:
-> > [..]
-> >> > >> --- a/drivers/mailbox/mailbox.c
-> >> > >> +++ b/drivers/mailbox/mailbox.c
-> >> > >> @@ -82,9 +82,13 @@ static void msg_submit(struct mbox_chan *chan)
-> >> > >>  exit:
-> >> > >>      spin_unlock_irqrestore(&chan->lock, flags);
-> >> > >>
-> >> > >> -    if (!err && (chan->txdone_method & TXDONE_BY_POLL))
-> >> > >> -            /* kick start the timer immediately to avoid delays */
-> >> > >> +    if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
-> >> > >> +            /* Disable the timer if already active ... */
-> >> > >> +            hrtimer_cancel(&chan->mbox->poll_hrt);
-> >> > >> +
-> >> > >> +            /* ... and kick start it immediately to avoid delays */
-> >> > >>              hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
-> >> > >> +    }
-> >> > >>  }
-> >> > >>
-> >> > >>  static void tx_tick(struct mbox_chan *chan, int r)
-> >> > >
-> >> > > I've tracked a regression back to this commit. Details to reproduce:
-> >> >
-> >> > Hi Ionela,
-> >> >
-> >> > I don't have access to your platform and I don't get what is going on
-> >> > from the log below.
-> >> >
-> >> > Could you please give us a bit more details about what is going on ?
-> >> >
-> >> > All this patch does is add hrtimer_cancel().
-> >> > * It is needed if the timer had already been started, which is
-> >> >   appropriate AFAIU
-> >> > * It is a NO-OP is the timer is not active.
-> >> >
-> >> Can you please try using hrtimer_try_to_cancel() instead ?
-> >>
-> >
-> > Yes, using hrtimer_try_to_cancel() instead works for me. But doesn't
-> > this limit how effective this change is? AFAIU, this will possibly only
-> > reduce the chances for the race condition, but not solve it.
-> >
->
-> It is also my understanding, hrtimer_try_to_cancel() would remove a
-> timer which as not already started but would return withtout doing
-> anything if the callback is already running ... which is the original
-> problem
->
-If we are running in the callback path, hrtimer_try_to_cancel will
-return -1, in which case we could skip hrtimer_start.
-Anyways, I think simply checking for hrtimer_active should effect the same.
-I have submitted a patch, of course not tested.
+This set of patches provides support for using the Raspberry Pi 4b with
+a Cirrus Logic Lochnagar 2 audio development platform plus Cirrus Logic
+CS47L15 codec.
 
-Thanks
+Patches are needed to audio-graph-card to enable support for setting the
+component sysclks and plls. The codec sysclks and plls cannot be placed
+under the clock framwork because they are I2C/SPI-connected peripherals
+and access to the registers would cause a nested get of the I2C/SPI bus
+clock. The clock framework does not support this and it would result in
+a deadlock.
+
+Richard Fitzgerald (7):
+  of: base: Add of_count_phandle_with_fixed_args()
+  ASoC: audio-graph-card: Add plls and sysclks DT bindings
+  ASoC: audio-graph-card: Support setting component plls and sysclks
+  ASoC: arizona: Allow codecs to be selected from kernel config
+  ASoC: madera: Allow codecs to be selected from kernel config
+  ARM: dts: Add dts for RPi4b + Cirrus Logic Lochnagar2 + CS47L15
+  MAINTAINERS: Add dts for Cirrus Logic Lochnagar on RPi4
+
+ .../bindings/sound/audio-graph-card.txt       |  44 ++++
+ MAINTAINERS                                   |   1 +
+ arch/arm/boot/dts/Makefile                    |   1 +
+ ...bcm2711-rpi4b-cirrus-lochnagar-cs47l15.dts | 166 +++++++++++++++
+ .../dts/bcm2711-rpi4b-cirrus-lochnagar.dtsi   | 201 ++++++++++++++++++
+ drivers/of/base.c                             |  73 +++++--
+ include/linux/of.h                            |   9 +
+ include/sound/simple_card_utils.h             |  24 +++
+ sound/soc/codecs/Kconfig                      |  18 +-
+ sound/soc/generic/audio-graph-card.c          |  16 +-
+ sound/soc/generic/simple-card-utils.c         | 184 ++++++++++++++++
+ 11 files changed, 703 insertions(+), 34 deletions(-)
+ create mode 100644 arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar-cs47l15.dts
+ create mode 100644 arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar.dtsi
+
+-- 
+2.20.1
+
