@@ -2,142 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777B9290A31
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC51290A35
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410993AbgJPREC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409259AbgJPREB (ORCPT
+        id S2436502AbgJPRE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:04:28 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:19058 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410555AbgJPRE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:04:01 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46F7C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:04:01 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id t18so3392053ilo.12
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nrXZT1NSneKmXGXvDV7/6n23kcrvfeFmh1gJOAKmVU4=;
-        b=MvkqmVew7lrU/VxTo0f57KdRMcxJLRETE2OsPfuvXJ6w2GVXQvEPvbXdx0lrTbufde
-         nCKNLz5Ur2ar8ErXe9lg7UuJTXFuOx4jCN92rlduTz/5I+UpX68CXOsQC5WscAIr/GRE
-         ekAnhX8Wlf535PPmfS1HzlGajNWQOTl988S7U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nrXZT1NSneKmXGXvDV7/6n23kcrvfeFmh1gJOAKmVU4=;
-        b=mfuqpw3eYkYznT2g9KGlB9ekS8tAmlzLDG1hcUg0Qq4U+9bvWp3W1/WrROy1xgD9j4
-         6qH1RhZ8A+VKM7wSX2agEY0Mx66/XIQ3Vn+LSYQoxXPN+k0A+f4cM3LDaemRXABXAlyy
-         PbHJGpH7SGiijPG+gxXj5/HjpQLqbcmNdW23i7Q80pScVbT57MvraY6sUtBDsqCmTZM5
-         UtwSiboqShK9U/nU+KgkNSThN7DHOUH5PfJWqky6zlcVksz0K2/SN8PyqZVj/MFF5kKy
-         K+1RVfJfaGWil+vRDwCBSCKt7gh6zstvAx4Vd4FBacOWXTDAnZrCT596zIORhoy+edYt
-         68og==
-X-Gm-Message-State: AOAM530cz5bYPykbdJ0nwPhxBgOoV2GNzH9XuwIjB60M1cn5aC04xLB3
-        3p6BwnFaSIZMtyEVbG9Fni6Hog==
-X-Google-Smtp-Source: ABdhPJwvSYsL4onTjRI8p1kVAz8AVrFmM4IfxZzeotZQNiynr6bqTtSKNN8s5yTLv5OD5L7hrXX/WQ==
-X-Received: by 2002:a05:6e02:e46:: with SMTP id l6mr3496414ilk.8.1602867841067;
-        Fri, 16 Oct 2020 10:04:01 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c1sm2744116ile.0.2020.10.16.10.03.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 10:04:00 -0700 (PDT)
-Subject: Re: [PATCH v2] kcov, usbip: collect coverage from vhci_rx_loop
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Nazime Hande Harputluoglu <handeharput@gmail.com>,
-        Nazime Hande Harputluoglu <handeharputlu@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <c07a2deae7a75e394de272c1a33cfcc1f667af92.1602522185.git.andreyknvl@google.com>
- <dddca63c-088c-d87c-370f-e8f02d1b0d04@linuxfoundation.org>
- <CAAeHK+zdH0WqihL-394p88VM8tkMztdagR=_KuOSwteEdLsFgg@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <eaa06c4f-5947-c24e-1415-71c625b1c84c@linuxfoundation.org>
-Date:   Fri, 16 Oct 2020 11:03:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 16 Oct 2020 13:04:28 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f89d28f0000>; Fri, 16 Oct 2020 10:04:15 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
+ 2020 17:04:27 +0000
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.176)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 16 Oct 2020 17:04:27 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dqNmQM2nmYJsHouOdIQIwAiCUKQrPleUFcx9iGwzZTDUJu66g/TEU78ASCiGzgp2Pp18W9ftxpYurpkAlARv4Yb595fBdDCdMYJrkF9+ToVBgrJcloaOFwXlSysj0L6jKAReEuy8+p0cmsUFg4nOF5HmNzpizd/shP0/+62klEMYWkfQlbZAOyyc4Cengsvjt6LTLVVWoormFAYGDwo5NJwxQg0SYJYvWuw8FiNtgUQDotuwpaiN55p/vprnHjRpX4pXq35BA5tvLR+XxJIb3ouyb7NCROPbhTBR/E/0JnVELAWeVAPv8qZNpEhBBIum8Zsa1q+KgN6CyeTRkZtLKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ex1IfC+H+LMj/vvs4T5XJXWgHVGCXfN2KDwvirgIBHs=;
+ b=Jp6MYHCNYnUrBIllq6t13DPBDv8i4eMZoOYNOyehpA39syK7iJSEzwPWHcj4lcjg9XKnGDCNtJGLq7TKXiG6PXPKGH0tCEZtQDin0um/ppquW8ILBidE9PWpwHnKyd3hoA9AQ2Z9Q3N5CTt37nWp0y+xZZE+Na3/NAxZawdryP5SOexe30T54XAoTu8LI/n4d81CfaIyFe9uJu87hARU+DEO/pmJdlBAvRXR2U9xBTibpuG99N7fV0gaZQmFqnUHbuXocrAlNv6AfOcKkj3cChfY6kPAOmwi1A/FQ6aZX9vyvXsctkhrG1MMY6vMrfKgfwMp+KowLzHTaSClcbodCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4500.namprd12.prod.outlook.com (2603:10b6:5:28f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Fri, 16 Oct
+ 2020 17:04:26 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.020; Fri, 16 Oct 2020
+ 17:04:26 +0000
+Date:   Fri, 16 Oct 2020 14:04:24 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Dewar <alex.dewar90@gmail.com>
+CC:     Zhu Yanjun <yanjunz@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/rxe: Fix possible NULL pointer dereference
+Message-ID: <20201016170424.GA161687@nvidia.com>
+References: <20201012165229.59257-1-alex.dewar90@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201012165229.59257-1-alex.dewar90@gmail.com>
+X-ClientProxiedBy: BL0PR1501CA0035.namprd15.prod.outlook.com
+ (2603:10b6:207:17::48) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <CAAeHK+zdH0WqihL-394p88VM8tkMztdagR=_KuOSwteEdLsFgg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR1501CA0035.namprd15.prod.outlook.com (2603:10b6:207:17::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Fri, 16 Oct 2020 17:04:25 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kTT9U-000g4d-CS; Fri, 16 Oct 2020 14:04:24 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602867855; bh=Ex1IfC+H+LMj/vvs4T5XJXWgHVGCXfN2KDwvirgIBHs=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=SLkXa8MukMOX3QkVos0sCopy2nWXDr7l00Y+iGaUmI4Q+Pf7StZYYWl7MVK1Dko0I
+         ZaAHgqNVwIwnkbsP5p9dL/lo6ExwtWnse4GbaI9eHEP5POqHHSto/h8izeIFtXqPtJ
+         Cq/vsAa5gB+ZjipEzgkIqrao95wA7adaCN7Dmyk0oLWoE0d9UEkcmN83RtK6x8hMm/
+         833KdDJRZW9Au8xmbG8KKB5CnYvzeEo0ci9PLFfV5YnlGpV2gT/OAigoOZuVcO57uF
+         mFzcgeIQ2O3kuEcv9Y1/2lhIUPzvXdI/9argv8E97Oqe9hIVOMhcBkzSze1fAbLDWT
+         8+GWaBy71SxNA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/20 8:18 AM, Andrey Konovalov wrote:
-> On Tue, Oct 13, 2020 at 7:28 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->>
->> On 10/12/20 11:10 AM, Andrey Konovalov wrote:
->>> From: Nazime Hande Harputluoglu <handeharputlu@google.com>
->>>
->>> Add kcov_remote_start()/kcov_remote_stop() annotations to the
->>> vhci_rx_loop() function, which is responsible for parsing USB/IP packets
->>> coming into USB/IP client.
->>>
->>> Since vhci_rx_loop() threads are spawned per vhci_hcd device instance, the
->>> common kcov handle is used for kcov_remote_start()/stop() annotations
->>> (see Documentation/dev-tools/kcov.rst for details). As the result kcov
->>> can now be used to collect coverage from vhci_rx_loop() threads.
->>>
->>> Signed-off-by: Nazime Hande Harputluoglu <handeharputlu@google.com>
->>> ---
->>>
->>> Changes v1->v2:
->>> - Fix spacing issues.
->>> - Add ifdef CONFIG_KCOV around kcov_handle in usbip_device struct.
->>>
->>
->> Does this compile without CONFIG_KCOV?
->>
->>> ---
->>>    drivers/usb/usbip/usbip_common.h |  4 ++++
->>>    drivers/usb/usbip/vhci_rx.c      |  3 +++
->>>    drivers/usb/usbip/vhci_sysfs.c   | 12 +++++++-----
->>>    3 files changed, 14 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
->>> index 8be857a4fa13..0906182011d6 100644
->>> --- a/drivers/usb/usbip/usbip_common.h
->>> +++ b/drivers/usb/usbip/usbip_common.h
->>> @@ -277,6 +277,10 @@ struct usbip_device {
->>>                void (*reset)(struct usbip_device *);
->>>                void (*unusable)(struct usbip_device *);
->>>        } eh_ops;
->>> +
->>> +#ifdef CONFIG_KCOV
->>> +     u64 kcov_handle;
->>> +#endif
+On Mon, Oct 12, 2020 at 05:52:30PM +0100, Alex Dewar wrote:
+> skb_clone() is called without checking if the returned pointer is NULL
+> before it is dereferenced. Fix by adding an additional error check.
 > 
-> Hi Shuah,
-> 
-> We could have this field always defined, which allows us to not check
-> CONFIG_KCOV in the places where it's used (this is what we do for
-> vhost; the kcov functions will be optimized away). Or we could keep
-> the ifdef CONFIG_KCOV check here, and then add the same checks to
-> other places.
-> 
-> What would be your preference here?
+> Fixes: e7ec96fc7932 ("RDMA/rxe: Fix skb lifetime in rxe_rcv_mcast_pkt()")
+> Addresses-Coverity-ID: 1497804: Null pointer dereferences (NULL_RETURNS)
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_recv.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
 
-Let's keep it in ifdef CONFIG_KCOV and add checks to keep this
-limited to just the kcov case.
+I took Bob's version of this since it is a little bit simpler
 
-thanks,
--- Shuah
-
-
-
-
+Thanks,
+Jason
