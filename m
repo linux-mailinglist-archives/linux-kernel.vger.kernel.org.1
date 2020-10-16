@@ -2,121 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3966128FC41
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 03:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4109E28FC44
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 03:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389037AbgJPBdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 21:33:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388978AbgJPBdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 21:33:36 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2389786AbgJPBst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 21:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389331AbgJPBst (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 21:48:49 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7FEC061755;
+        Thu, 15 Oct 2020 18:48:44 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC97120760;
-        Fri, 16 Oct 2020 01:33:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602812015;
-        bh=Gyq0Uk2XEfl9xmWYnLkSM9zvUTO4aNfnfhPhd5Y8Dyw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=1Mlbr9r5bcAnUqGUfWwMD8DGKhMJgxyOMR+rHZeKITFbo1+QN6xLqfguFM4Au1Ffa
-         x7WVxZVJFg2GS/N1H9LufkM09Jo4ykEZBVbBg4Lu61FnoV6qMy8jBXwQgKLEmzoMEY
-         oiJdHOWokM8FXajrQsmzrA/Zp+s3sZuqD2NbOnGI=
-Date:   Fri, 16 Oct 2020 10:33:30 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Numfor Mbiziwo-Tiapo <nums@google.com>
-Subject: Re: [PATCH v2] x86/insn, tools/x86: Fix some potential undefined
- behavior.
-Message-Id: <20201016103330.668783f6d4e19ec2ac2ca1f8@kernel.org>
-In-Reply-To: <20201015161216.1563600-1-irogers@google.com>
-References: <20201015161216.1563600-1-irogers@google.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CC8FP0zkjz9sTK;
+        Fri, 16 Oct 2020 12:48:41 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602812921;
+        bh=Bv8mW/Z5DDg0FU5ThZnGc9FK3ffvxVVTHJa3v2eHyYA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=nlXlQP4bEQIFVveP2R4zhVUl+XH/Bh+QLW3vFMUNd7uOycEVyJBijG8UABRpEmfgt
+         DbWbqlcLPSuYWylsOTi3yfWWj5J0zVEvdclLDEGBea0PbZTD2lyPp0B2mszjNARFRf
+         S2e8lfxCSUmW9ccE+q4pR6Z5sFfDX4g9QBhOuD+oAKPloKHKlLUm7GJjSPn6pnWpPa
+         xysmhIqRk/owH96XvUlL9ASzRFSNjLhbb9LNijScZ8Oa7ZBMhuEPDpRzngwCYqdCBN
+         yYsJ4CWqqDtD/5harpPH3hcVWPP3d/7eZSgE/kpm8WfZVwLdLe60aUj+DYRnR8aDE0
+         OdjXmAAaj2Lsg==
+Date:   Fri, 16 Oct 2020 12:48:38 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the amdgpu tree with Linus' tree
+Message-ID: <20201016124838.4ff60cc0@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/LPfLcBmW6cQ0Etf_uyl.eNi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020 09:12:16 -0700
-Ian Rogers <irogers@google.com> wrote:
+--Sig_/LPfLcBmW6cQ0Etf_uyl.eNi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> From: Numfor Mbiziwo-Tiapo <nums@google.com>
-> 
-> Don't perform unaligned loads in __get_next and __peek_nbyte_next as
-> these are forms of undefined behavior.
-> 
-> These problems were identified using the undefined behavior sanitizer
-> (ubsan) with the tools version of the code and perf test. Part of this
-> patch was previously posted here:
-> https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
-> 
-> v2. removes the validate_next check and merges the 2 changes into one as
-> requested by Masami Hiramatsu <mhiramat@kernel.org>
+Hi all,
 
-Looks good to me. This may be OK on x86, but now this code will be run
-on other arches for cross compilation.
+Today's linux-next merge of the amdgpu tree got a conflict in:
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+  drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
 
-Thank you,
+between commit:
 
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
-> ---
->  arch/x86/lib/insn.c       | 4 ++--
->  tools/arch/x86/lib/insn.c | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-> index 404279563891..be88ab250146 100644
-> --- a/arch/x86/lib/insn.c
-> +++ b/arch/x86/lib/insn.c
-> @@ -20,10 +20,10 @@
->  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
->  
->  #define __get_next(t, insn)	\
-> -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
-> +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); r; })
->  
->  #define __peek_nbyte_next(t, insn, n)	\
-> -	({ t r = *(t*)((insn)->next_byte + n); r; })
-> +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
->  
->  #define get_next(t, insn)	\
->  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-> diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-> index 0151dfc6da61..92358c71a59e 100644
-> --- a/tools/arch/x86/lib/insn.c
-> +++ b/tools/arch/x86/lib/insn.c
-> @@ -20,10 +20,10 @@
->  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
->  
->  #define __get_next(t, insn)	\
-> -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
-> +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); r; })
->  
->  #define __peek_nbyte_next(t, insn, n)	\
-> -	({ t r = *(t*)((insn)->next_byte + n); r; })
-> +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
->  
->  #define get_next(t, insn)	\
->  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-> -- 
-> 2.28.0.1011.ga647a8990f-goog
-> 
+  3cb9d2416ccd ("drm/amd/pm: setup APU dpm clock table in SMU HW initializa=
+tion")
 
+from Linus' tree and commit:
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+  44d6e160f60a ("drm/amd/pm: setup APU dpm clock table in SMU HW initializa=
+tion")
+
+from the amdgpu tree.
+
+So this is one of the things that can go wrong when you have the same
+patch obn both sides of a merge ... due to the context not verying
+very much, the chunk of code that is moved into smu_smc_hw_setup()
+by these identical patches was inserted twice by the automatic git
+mrege resolution.
+
+I fixed it up (I removed the second copy of the code) and can carry the
+fix as necessary. This is now fixed as far as linux-next is concerned,
+but any non trivial conflicts should be mentioned to your upstream
+maintainer when your tree is submitted for merging.  You may also want
+to consider cooperating with the maintainer of the conflicting tree to
+minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/LPfLcBmW6cQ0Etf_uyl.eNi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+I+/YACgkQAVBC80lX
+0GwRxAf/b6gRvc7Fn6uxOaNiccloYNgx8JoYEp67S+87fjYdaf8LeR6anQ4slBHY
+sTNInM8ipazcVx+w6RheGCwpq1fx8atGiHVxQ0vGiIaK+4i9YdUUamKwUinAz31B
+ngh7Expln5/KAPhNOqdimp10hqeHxzTL26NuqmGx1338jrwfaveKbB3tpqaNcl/U
+jZATCNIJbPGf6cHmDI+3Rk3JKZBtH/Dg1uvtQadFnp8/BNHupNlo+ye+WC1/FjJ4
+Bks0qTFj6hKDj5Wxx4JQSk0njkKILhVH0yeWOV04uK+/jldupiCNo75L9RPf6BH1
+sQ+dbSA+AYKapoCiWFN3ZeVaGgi4KQ==
+=T7Z1
+-----END PGP SIGNATURE-----
+
+--Sig_/LPfLcBmW6cQ0Etf_uyl.eNi--
