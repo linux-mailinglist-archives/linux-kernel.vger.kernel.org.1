@@ -2,160 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C7E290406
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8EC4290426
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406544AbgJPLbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
+        id S2406361AbgJPLfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406366AbgJPLbJ (ORCPT
+        with ESMTP id S2405097AbgJPLfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:31:09 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F18CC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:31:09 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id t67so538393vkb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:31:09 -0700 (PDT)
+        Fri, 16 Oct 2020 07:35:15 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B62C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:35:14 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id l23so2135904ybl.23
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:35:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VfR2k3sQxdqJVPvkLHgRVDpnfd48L/sAbfIZJJQVUGU=;
-        b=U3arh0PpNKrL1ViPiMAT0p2E0sl1OdJBhyvUHT4isXu6+XcRLSALuWaqK3qkJaGkEy
-         t8bLEKQge3lIp5OeEMAmTMP3eHUZOfzzoYTvA+hKG5gzjJ6jBJwXNnuAODzY7/gqLhDg
-         pprH6HvpZvmUmEi3fYOlqSuW8lbgPlNp2+o8TswEl5CIop61UyNKvxY/My5zTTEmkTL7
-         wn7UUyyNWiq7oamyFJrfUF8XrsQme69ZI9KAaHUTjCnMWs6AcYLhu3MzDdEDy0r1G8ki
-         SwesbK5trA8dGyyUxob6ItDYO0XA4TU9d9EUSvSHSmSxKVk3Jb3n/Z9s606yVsheLKJl
-         +YBg==
+        d=google.com; s=20161025;
+        h=sender:mime-version:message-id:date:subject:from:to:cc;
+        bh=mLnefFqm4XNTGAZuh8SK08mNoT3kzEMqh/Bo6hfoNX8=;
+        b=FUY+fl9sehf8Cts35O5qD6B4/4VRsmeL9zQ+BgZ/ixGdFkYD+3II74+OjF+ARL05IA
+         2q89lac5cmJGJYbia8xPn48g/GGXeqmZ1i0EJwvTeEMJD1KAg0tgV5Vj88jDYIX5l0TE
+         N5L+yFJCUju4Hwf3/QMg+DE6iRsXvP6DExET4ZhjCX0uSkRXIJA3ecjm/LJriM5VMHXt
+         qtB5WgJ6m/kty/2uI5cuiRrZ0VBbCDftnJu25JY09jzbTis7Rr/FtZOpRfZOnDLWi/wl
+         3PmY/MgG8Arhs6ltbQupvgaFArQYbjCePWU/776NWpnZdkZxsg/14WAEHjywnuqoTGD2
+         vP/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VfR2k3sQxdqJVPvkLHgRVDpnfd48L/sAbfIZJJQVUGU=;
-        b=GStL5l8z/+oA+RQtX18XC5NzG/oisDaC8c7yasL9rpvMkHwzLgIE87KFmCHk9J9Z11
-         QzorLvNIsJO4T6Fx4F/OBflw+yFI5/QCM0kb0QMsVQXbohz9c0RTrHc2Su8PpBcZzGkf
-         TuUEbGaYQ9SbIoXt2BGB4iV0XxfZYjTje5Ywy1O3EYP239GUWCwzGcpy35QT/OQwOqd5
-         LFSmiXt9uppy5wEY2+Ne6pbmgMhS8A881X1nlx1Q68W3kP6GbBl/IxhZ3QX5LY/ccyQu
-         GqvZK0E1QM+IVvPnxwh97Zov3FYbBc5BQxGHwS5izU0teKJN3eISmViqE11qzwaNaNjf
-         GUIA==
-X-Gm-Message-State: AOAM531sAKzT1jtJxNtMlCnYLiNC5uhqHUL7VDQBBS5vYDJyzZCZFgZY
-        U3g145dLhjOnQeGesYg3CtPEqGPBSIu/KflrW9DnNw==
-X-Google-Smtp-Source: ABdhPJxYAVqNSgwSx1Eoge43VUADHeCK6li9b/4u8o1NT7/3wN77SDJYFQCZnpPpHiOo14iB/Ng7q8JPB3TjsN9qSbg=
-X-Received: by 2002:a1f:ae85:: with SMTP id x127mr1798903vke.8.1602847868573;
- Fri, 16 Oct 2020 04:31:08 -0700 (PDT)
+        h=x-gm-message-state:sender:mime-version:message-id:date:subject:from
+         :to:cc;
+        bh=mLnefFqm4XNTGAZuh8SK08mNoT3kzEMqh/Bo6hfoNX8=;
+        b=soYWMGuXzrCJL1MDt+FFrrqGJ2aJDWnYcba3/zOquUy+1jiQl+3H+Nihs4s6hYcM/A
+         6+RP46nDCBSoN8OLUE3XD0aeWOFOk7NgeWWuMYyiurDQqXaoyQvZIEw4Ivo3F/3U1+V4
+         z2P5pRgv2ThE1+uENW32jMUXjltCSaNeA+G13c56WxjILhLoZQwp+rl45DMJVOwj7yNN
+         Z+EKZXisN+KN96T169vb9ZYSN+h2PLNn6Kp5VkAGY/zmDQjgfOIAdSa4v21y5xnO+eza
+         Noyabc+CadvVtAGAj1xLdd4dfmQNc93uHAk+kxQZUlM2zIAlacYQbdk9VQaO+fXLxSJk
+         4vdA==
+X-Gm-Message-State: AOAM532BilXzVrwMjo2ce+LFzIXOYBvnUDZMNq08afYkqLKgKbf9e1qJ
+        KxVLHNx0TOQF39y+F09eZDQ+Zwj5iYn+IiNH
+X-Google-Smtp-Source: ABdhPJyh/bL4xzjWOOTBFsC9+iPVPMAs1+Flf9gozKyEepyJ1BJnn73FjaUzDXXUJ+x5NKJVnbnHNw90CpDhvmKS
+Sender: "josephjang via sendgmr" 
+        <josephjang@josephjang-p920.ntc.corp.google.com>
 MIME-Version: 1.0
-References: <20201012104648.985256-1-Jerome.Pouiller@silabs.com> <20201012104648.985256-8-Jerome.Pouiller@silabs.com>
-In-Reply-To: <20201012104648.985256-8-Jerome.Pouiller@silabs.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 16 Oct 2020 13:30:30 +0200
-Message-ID: <CAPDyKFpP6xBru79Xh2oe=J8HWO3uk1VpcMzEiG6X7WX-AOvgkA@mail.gmail.com>
-Subject: Re: [PATCH 07/23] wfx: add bus_sdio.c
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:7220:84ff:fe09:41e0])
+ (user=josephjang job=sendgmr) by 2002:a25:b709:: with SMTP id
+ t9mr4054316ybj.182.1602848113293; Fri, 16 Oct 2020 04:35:13 -0700 (PDT)
+Message-ID: <0000000000006c8bd705b1c82896@google.com>
+Date:   Fri, 16 Oct 2020 11:35:13 +0000
+Subject: [PATCH] power: suspend: Add suspend timeout handler
+From:   <josephjang@google.com>
+To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net, pavel@ucw.cz,
+        len.brown@intel.com, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        jonglin@google.com, woodylin@google.com, markcheng@google.com,
+        josephjang@google.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 at 12:47, Jerome Pouiller
-<Jerome.Pouiller@silabs.com> wrote:
->
-> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+Thank you Greg's promptly reply.
 
-Please fill out this commit message to explain a bit more about the
-patch and the HW it enables support for.
+let me try to explain detail in following.
 
->
-> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+On Fri, Oct 16, 2020 at 11:51:09AM +0800, Joseph Jang wrote:
+> From: josephjang <josephjang@google.com>
+
+Please use your name as spelled out like you did above in the email
+header.
+
+Sure, I will update the patch again like following.
+ From b3afca8f3ee1d587c188b830d94c683fe66cbfb3 Mon Sep 17 00:00:00 2001
+From: Joseph Jang <josephjang@google.com>
+Date: Fri, 16 Oct 2020 16:31:38 +0800
+Subject: [PATCH] power: suspend: Add suspend timeout handler
+
+Add suspend timeout handler to prevent device stuck during suspend/
+resume process. Suspend timeout handler will dump disk sleep task
+at first round timeout and trigger kernel panic at second round timeout.
+The default timer for each round is 30 seconds.
+
+
+> Add suspend timeout handler to prevent device stuck during suspend/
+> resume process. Suspend timeout handler will dump disk sleep task
+> at first round timeout and trigger kernel panic at second round timeout.
+> The default timer for each round is 30 seconds.
+
+> Note: Can use following command to simulate suspend hang for testing.
+>      adb shell echo 1 > /sys/power/pm_hang
+>      adb shell echo mem > /sys/power/state
+> Signed-off-by: josephjang <josephjang@google.com>
+
+Need a blank line before the signed-off-by: and again, spell your name
+the same way.
+
+Sure, I will update the patch again like following.
+
+Note: Can use following command to simulate suspend hang for testing.
+     adb shell echo 1 > /sys/power/pm_hang
+     adb shell echo mem > /sys/power/state
+
+Signed-off-by: Joseph Jang <josephjang@google.com>
+---
+
 > ---
->  drivers/net/wireless/silabs/wfx/bus_sdio.c | 269 +++++++++++++++++++++
->  1 file changed, 269 insertions(+)
->  create mode 100644 drivers/net/wireless/silabs/wfx/bus_sdio.c
->
-> diff --git a/drivers/net/wireless/silabs/wfx/bus_sdio.c b/drivers/net/wir=
-eless/silabs/wfx/bus_sdio.c
-> new file mode 100644
-> index 000000000000..e06d7e1ebe9c
+>   include/linux/console.h |   1 +
+>   kernel/power/Kconfig    |   9 +++
+>   kernel/power/main.c     |  66 ++++++++++++++++
+>   kernel/power/suspend.c  | 162 ++++++++++++++++++++++++++++++++++++++++
+>   kernel/printk/printk.c  |   5 ++
+>   5 files changed, 243 insertions(+)
 
-[...]
+> diff --git a/include/linux/console.h b/include/linux/console.h
+> index 0670d3491e0e..ac468c602c0b 100644
+> --- a/include/linux/console.h
+> +++ b/include/linux/console.h
+> @@ -192,6 +192,7 @@ static inline void console_sysfs_notify(void)
+>   { }
+>   #endif
+>   extern bool console_suspend_enabled;
+> +extern int is_console_suspended(void);
+
+For global functions, how about:
+         bool console_is_suspended(void);
+?
+
+Agree, I will update like following.
+  extern bool console_suspend_enabled;
++extern int console_is_suspended(void);
+
+
+
+>   /* Suspend and resume console messages over PM events */
+>   extern void suspend_console(void);
+> diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
+> index a7320f07689d..52b7a181b6d8 100644
+> --- a/kernel/power/Kconfig
+> +++ b/kernel/power/Kconfig
+> @@ -207,6 +207,15 @@ config PM_SLEEP_DEBUG
+>        def_bool y
+>        depends on PM_DEBUG && PM_SLEEP
+
+> +config PM_SLEEP_MONITOR
+> +     bool "Linux kernel suspend/resume process monitor"
+> +     depends on PM_SLEEP
+> +     help
+> +     This option will enable suspend/resume monitor to prevent device
+> +     stuck during suspend/resume process. Suspend timeout handler will
+> +     dump disk sleep task at first round timeout and trigger kernel panic
+> +     at second round timeout. The default timer for each round is 30  
+> seconds.
+
+Ouch, are you sure you want to panic?
+Yes, we would like to trigger kernel panic to reboot system and prevent  
+system hang there.
 
 > +
-> +static int wfx_sdio_irq_subscribe(void *priv)
+>   config DPM_WATCHDOG
+>        bool "Device suspend/resume watchdog"
+>        depends on PM_DEBUG && PSTORE && EXPERT
+> diff --git a/kernel/power/main.c b/kernel/power/main.c
+> index 40f86ec4ab30..f25b8a47583e 100644
+> --- a/kernel/power/main.c
+> +++ b/kernel/power/main.c
+> @@ -575,6 +575,69 @@ void __pm_pr_dbg(bool defer, const char *fmt, ...)
+>   static inline void pm_print_times_init(void) {}
+>   #endif /* CONFIG_PM_SLEEP_DEBUG */
+
+> +#ifdef CONFIG_PM_SLEEP_MONITOR
+> +/* If set, devices will stuck at suspend for verification */
+> +static bool pm_hang_enabled;
+> +
+> +static int pm_notify_test(struct notifier_block *nb,
+> +                          unsigned long mode, void *_unused)
 > +{
-> +       struct wfx_sdio_priv *bus =3D priv;
-> +       u32 flags;
-> +       int ret;
-> +       u8 cccr;
+> +     pr_info("Jump into infinite loop now\n");
+
+Why do you have debugging code still enabled?
+Because we want to make sure system hang was cause by our test code here.
+
+> +
+> +     /* Suspend thread stuck at a loop forever */
+> +     for (;;)
+> +             ;
 > +
 
-I would appreciate a comment about an out-of-band IRQ line. If it's
-supported, that is the preferred option to use, else the SDIO IRQs.
+Don't busy spin, that will burn power.
+Okay, I will add msleep() to prevent system burn power during testing.
++static int pm_notify_test(struct notifier_block *nb,
++     unsigned long mode, void *_unused)
++{
++ pr_info("Jump into infinite loop now\n");
++
++ /* Suspend thread stuck at a loop forever */
++ for (;;)
++ msleep(100);
++
++ pr_info("Fail to stuck at loop\n");
++
++ return 0;
++}
 
-> +       if (!bus->of_irq) {
-> +               sdio_claim_host(bus->func);
-> +               ret =3D sdio_claim_irq(bus->func, wfx_sdio_irq_handler);
-> +               sdio_release_host(bus->func);
-> +               return ret;
-> +       }
+> +     pr_info("Fail to stuck at loop\n");
+
+And how can this happen?
+I think we should not see this log unless the for loop has problem.
+
+Sure, I add some description in the document like following.
+--- a/Documentation/ABI/testing/sysfs-power
++++ b/Documentation/ABI/testing/sysfs-power
+@@ -420,3 +420,18 @@ Description:
+   disables it.  Reads from the file return the current value.
+   The default is "1" if the build-time "SUSPEND_SKIP_SYNC" config
+   flag is unset, or "0" otherwise.
++
++What: /sys/power/pm_hang
++Date: Oct 2020
++Contact: Joseph Jang <josephjang@google.com>
++Description:
++ The /sys/power/pm_hang file controls the variable pm_hang_enabled
++ which controls whether you need to simulate system hang during
++ suspend.
++
++ Writing a "1" to this file will set the pm_hang_enabled to "1" and
++ register a pm_notify function pm_notify_test() to simulate system
++ hang during suspend.
++ Writing a "0" to this file will set the pm_hang_enabled to "0" and
++ unregister a pm_notify function pm_notify_test().
++ Reads from this file return the current value of pm_hang_enabled.
+> +#endif
+>   #endif
+>   #ifdef CONFIG_FREEZER
+>        &pm_freeze_timeout_attr.attr,
+> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> index 8b1bb5ee7e5d..6f2679cfd9d1 100644
+> --- a/kernel/power/suspend.c
+> +++ b/kernel/power/suspend.c
+> @@ -30,6 +30,12 @@
+>   #include <trace/events/power.h>
+>   #include <linux/compiler.h>
+>   #include <linux/moduleparam.h>
+> +#ifdef CONFIG_PM_SLEEP_MONITOR
+> +#include <linux/sched/debug.h>
+> +#include <linux/kthread.h>
+> +#include <linux/sched.h>
+> +#include <uapi/linux/sched/types.h>
+> +#endif
+
+Don't #ifdef include files.
+
+And why the uapi file?
+
+I refer to linux-stable/kernel/rcu/tree.c source code.
+In order to prevent build error for MAX_RT_PRIO, I need to include this  
+header file
+<uapi/linux/sched/types.h>.
+
+>   #include "power.h"
+
+> @@ -61,6 +67,133 @@ static DECLARE_SWAIT_QUEUE_HEAD(s2idle_wait_head);
+>   enum s2idle_states __read_mostly s2idle_state;
+>   static DEFINE_RAW_SPINLOCK(s2idle_lock);
+
+> +#ifdef CONFIG_PM_SLEEP_MONITOR
+> +/* Suspend monitor thread toggle reason */
+> +enum toggle_reason {
+> +     TOGGLE_NONE,
+> +     TOGGLE_START,
+> +     TOGGLE_STOP,
+> +};
 > +
-> +       sdio_claim_host(bus->func);
-> +       cccr =3D sdio_f0_readb(bus->func, SDIO_CCCR_IENx, NULL);
-> +       cccr |=3D BIT(0);
-> +       cccr |=3D BIT(bus->func->num);
-> +       sdio_f0_writeb(bus->func, cccr, SDIO_CCCR_IENx, NULL);
-> +       sdio_release_host(bus->func);
-> +       flags =3D irq_get_trigger_type(bus->of_irq);
-> +       if (!flags)
-> +               flags =3D IRQF_TRIGGER_HIGH;
-> +       flags |=3D IRQF_ONESHOT;
-> +       return devm_request_threaded_irq(&bus->func->dev, bus->of_irq, NU=
-LL,
-> +                                        wfx_sdio_irq_handler_ext, flags,
-> +                                        "wfx", bus);
+> +#define SUSPEND_TIMER_TIMEOUT_MS 30000
+> +static struct task_struct *ksuspend_mon_tsk;
+> +static DECLARE_WAIT_QUEUE_HEAD(power_suspend_waitqueue);
+> +static enum toggle_reason suspend_mon_toggle;
+> +static DEFINE_MUTEX(suspend_mon_lock);
+> +
+> +static void start_suspend_mon(void)
+> +{
+> +     mutex_lock(&suspend_mon_lock);
+> +     suspend_mon_toggle = TOGGLE_START;
+> +     mutex_unlock(&suspend_mon_lock);
+
+Why do you need a lock for a single integer?
+Since we have two kernel thread may reference variable "suspend_mon_toggle",
+one is suspend thread, another is suspend_monitor_kthread. We use it to  
+start/stop
+suspend monitor.
+Yes, in order to notify user this kernel panic was triggered by
+suspend_timeout(), I add debug code to prevent confused.
+
+> +
+> +     /* Trigger a NULL pointer dereference */
+> +     *null_pointer = 'a';
+
+Are you sure this will work on all platforms?  We do have a panic
+function if you really want to do that.
+I agree to change to use panic() like following.
++static void suspend_timeout(int timeout_count)
++{
++ pr_info("Suspend monitor timeout (timer is %d seconds)\n",
++ (SUSPEND_TIMER_TIMEOUT_MS/1000));
++
++ show_state_filter(TASK_UNINTERRUPTIBLE);
++
++ if (timeout_count < 2)
++ return;
++
++ if (console_is_suspended())
++ resume_console();
++
++ /* Trigger a NULL pointer dereference */
++ panic("suspend timeout and panic");
++}
+> +
+> +     /* Should not reach here */
+> +     pr_err("Trigger panic failed!\n");
 > +}
 > +
+> +static int suspend_monitor_kthread(void *arg)
+> +{
+> +     long err;
+> +     struct sched_param param = {.sched_priority
+> +             = MAX_RT_PRIO-1};
 
-[...]
+Ick, no, call the scheduler functions properly, don't do this "by hand"
+ever.
+I refer to kernel/sched/core.c and they use MAX_RT_PRIO as thread priority  
+directly.
+If you have other suggestion, I am willing to try.
 
+> +     static int timeout_count;
+> +     static long timeout;
 > +
-> +#define SDIO_VENDOR_ID_SILABS        0x0000
-> +#define SDIO_DEVICE_ID_SILABS_WF200  0x1000
-> +static const struct sdio_device_id wfx_sdio_ids[] =3D {
-> +       { SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILABS_WF200)=
- },
-> +       // FIXME: ignore VID/PID and only rely on device tree
-> +       // { SDIO_DEVICE(SDIO_ANY_ID, SDIO_ANY_ID) },
-> +       { },
-> +};
-> +MODULE_DEVICE_TABLE(sdio, wfx_sdio_ids);
+> +     pr_info("Init ksuspend_mon thread\n");
 
-I will comment about the sdio IDs separately, replying to the other
-thread between you and Pali.
+Again, debugging code :(
+In order to make sure ksuspend_mon thread has been initialize, I add log  
+here.
+If you think that is not necessary, I can remove it.
+Sure, I got it, could you help to review if we can use IS_ENABLED() like  
+following?
++ if (IS_ENABLED(CONFIG_PM_SLEEP_MONITOR))
++ stop_suspend_mon();
++
 
-> +
-> +struct sdio_driver wfx_sdio_driver =3D {
-> +       .name =3D "wfx-sdio",
-> +       .id_table =3D wfx_sdio_ids,
-> +       .probe =3D wfx_sdio_probe,
-> +       .remove =3D wfx_sdio_remove,
-> +       .drv =3D {
-> +               .owner =3D THIS_MODULE,
-> +               .of_match_table =3D wfx_sdio_of_match,
-> +       }
-> +};
-
-I couldn't find where you call sdio_register|unregister_driver(), but
-maybe that's done from another patch in series?
-
-Kind regards
-Uffe
+Thank you,
+Joseph.
