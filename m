@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDF8290A83
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC694290A82
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390770AbgJPRV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:21:29 -0400
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:47170 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390433AbgJPRV3 (ORCPT
+        id S2390349AbgJPRVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733160AbgJPRVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:21:29 -0400
-Received: from tomoyo.flets-east.jp ([153.230.197.127])
-        by mwinf5d44 with ME
-        id ghMB2300J2lQRaH03hML2a; Fri, 16 Oct 2020 19:21:26 +0200
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 16 Oct 2020 19:21:26 +0200
-X-ME-IP: 153.230.197.127
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>
-Cc:     Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v4 2/4] can: dev: add a helper function to get the correct length of Classical frames
-Date:   Sat, 17 Oct 2020 02:20:23 +0900
-Message-Id: <20201016172053.229281-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
-References: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
+        Fri, 16 Oct 2020 13:21:02 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58257C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:21:01 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id p16so3504175ilq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:21:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rgrwJpY6ESad1/QTTAmokj2VzhBLPWhnxJ7XmieuY+o=;
+        b=hIZgfs6QCDvAVRYXFo+62WbiYxs0TfapOlUBEcOcFpktZGdQeRtJhuaxQW2fN/Uh/w
+         nt/MqVidofka7fhVh24i3S61MKcjcIE3BL9XqNOCtwNO01QyxJ+0iq+Klsl6yjesidT6
+         +8fgkT2G7MB8QE6DXDXMQBCwdEXrZ8yq3Z3VGzzecE2GWOsCq9pAVzDgFz1DQStjpkD6
+         QOOjsh3HJQ3u7p7H5hicYys7rV+Wyiz1voVrSQaxqtkD2ryTZ2F+Xi0zi0I4zkb4vB9i
+         iD8i71MGsWXv4CyQidYF1zy/ELl1rGTDC6t5WFlCN2te7iMhqDPcnS/uGofDWP/IYouZ
+         TxnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=rgrwJpY6ESad1/QTTAmokj2VzhBLPWhnxJ7XmieuY+o=;
+        b=hdjupNdvP5+Dj5oiMMWFi57+blNX3F9mR04BptJ7yrtTjE/c3O9RA3l9EZeQdF3NLR
+         osXukl1dQGGSdgVPe0CGYsNqyr0BgSt+Bo2zjFxlOJoFZ423t8ak95QptEBzdzrScDH1
+         H5mI28r8jnP6Q+AOpX4KRwaLH+CjD7XRu5fO8BCoLIJpw4JKEZ+1f+635XPro0CC0F6C
+         CWWhikyXgtJDWvrFe1TBBYOf5fev8tMViRjrKkfREyDmmieDEeDNK0F7VrtUPZH9/caw
+         WsAdHYq2wbJUC56hsu1JTZw8onyspemrsW8VAd6zk/vO7+P6z9qXpXubzb4tHFDMpP69
+         8SBw==
+X-Gm-Message-State: AOAM533IhhvYRjX1ldunDdmf20NSfvSy5bPwF/Ln6sFAjyHo1nQy3sGW
+        20uW4vXRZkqmHOQKIwX1mtA=
+X-Google-Smtp-Source: ABdhPJxMoAnxSBQtrGdR5wUXdWTjKN/aoIkcpxKoESTpfB2iwnEfKNj88JnyJC+79Bu5z4+aTDWzgg==
+X-Received: by 2002:a05:6e02:f85:: with SMTP id v5mr3640870ilo.47.1602868860500;
+        Fri, 16 Oct 2020 10:21:00 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id e17sm2526319ile.60.2020.10.16.10.20.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 10:21:00 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 16 Oct 2020 13:20:58 -0400
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] x86/boot/64: Explicitly map boot_params and
+ command line
+Message-ID: <20201016172058.GA1246432@rani.riverdale.lan>
+References: <20201008191623.2881677-1-nivedita@alum.mit.edu>
+ <20201008191623.2881677-5-nivedita@alum.mit.edu>
+ <20201016162759.GG8483@zn.tnic>
+ <20201016164755.GA1185111@rani.riverdale.lan>
+ <20201016170726.GH8483@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201016170726.GH8483@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In classical CAN, the length of the data (i.e. CAN payload) is not
-always equal to the DLC! If the frame is a Remote Transmission Request
-(RTR), data length is always zero regardless of DLC value and else, if
-the DLC is greater than 8, the length is 8. Contrary to common belief,
-ISO 11898-1 Chapter 8.4.2.3 (DLC field) do allow DLCs greater than 8
-for Classical Frames and specifies that those DLCs shall indicate that
-the data field is 8 bytes long.
+On Fri, Oct 16, 2020 at 07:07:42PM +0200, Borislav Petkov wrote:
+> On Fri, Oct 16, 2020 at 12:47:55PM -0400, Arvind Sankar wrote:
+> > Just for clarity, by cleanups you mean patches 2 and 3? i.e. you want to
+> > see 1, 4, 2, 3?
+> 
+> It is important for:
+> 
+> [PATCH v2 4/5] x86/boot/64: Explicitly map boot_params and command line
+> 
+> to come first so that it goes in now.
 
-Above facts are widely unknown and so many developpers uses the "len"
-field of "struct canfd_frame" to get the length of classical CAN
-frames: this is incorrect!
+This patch depends on 1 to initialize boot_params before
+initialize_identity_maps() is called. You want me to rework it to avoid
+that?
 
-This patch introduces function get_can_len() which can be used in
-remediation. The function takes the SKB as an input in order to be
-able to determine if the frame is classical or FD.
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
-
-Changes in v4: None
-
-Changes in v3:
-  - Make get_can_len() return u8.
-  - Make the skb const.
-Reference: https://lkml.org/lkml/2020/9/30/883
-
-Changes in v2: None
----
- include/linux/can/dev.h | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 41ff31795320..d90890172d2a 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -192,6 +192,29 @@ u8 can_dlc2len(u8 can_dlc);
- /* map the sanitized data length to an appropriate data length code */
- u8 can_len2dlc(u8 len);
- 
-+/*
-+ * get_can_len(skb) - get the length of the CAN payload.
-+ *
-+ * In classical CAN, the length of the data (i.e. CAN payload) is not
-+ * always equal to the DLC! If the frame is a Remote Transmission
-+ * Request (RTR), data length is always zero regardless of DLC value
-+ * and else, if the DLC is greater than 8, the length is 8. Contrary
-+ * to common belief, ISO 11898-1 Chapter 8.4.2.3 (DLC field) do allow
-+ * DLCs greater than 8 for Classical Frames and specifies that those
-+ * DLCs shall indicate that the data field is 8 bytes long.
-+ */
-+static inline u8 get_can_len(const struct sk_buff *skb)
-+{
-+	const struct canfd_frame *cf = (const struct canfd_frame *)skb->data;
-+
-+	if (can_is_canfd_skb(skb))
-+		return min_t(u8, cf->len, CANFD_MAX_DLEN);
-+	else if (cf->can_id & CAN_RTR_FLAG)
-+		return 0;
-+	else
-+		return min_t(u8, cf->len, CAN_MAX_DLEN);
-+}
-+
- struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
- 				    unsigned int txqs, unsigned int rxqs);
- #define alloc_candev(sizeof_priv, echo_skb_max) \
--- 
-2.26.2
-
+> 
+> The rest:
+> 
+> [PATCH v2 1/5] x86/boot: Initialize boot_params in startup code
+> [PATCH v2 2/5] x86/boot: Split out command-line related declarations
+> [PATCH v2 3/5] x86/boot/64: Show original faulting address in case of error
+> 
+> can come in any order and when ready.
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
