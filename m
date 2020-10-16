@@ -2,69 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69DB290CC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4A6290CC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395433AbgJPUdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 16:33:11 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:56667 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393392AbgJPUdH (ORCPT
+        id S2403843AbgJPUfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 16:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403788AbgJPUfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 16:33:07 -0400
-Received: by mail-il1-f197.google.com with SMTP id 6so2429537ill.23
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:33:05 -0700 (PDT)
+        Fri, 16 Oct 2020 16:35:00 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82303C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:35:00 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id qp15so5058040ejb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=DrXe8nq7zyAh3znAJW55dJ/CbHSN9L+XiHjQd4hlZAM=;
+        b=D+XL7zi/imriCBN1SpjcLu/xKgegulfNfgFK+KfZ5wbr0Chb8jkEZ7O0vduKjKEUQG
+         LV7Udv+2XbaRqdDwnhwNUWEXI534TV2/wM4c451yn/cZRX3IBaSXSj/UJFZnS2mib0z+
+         lXAoCVR34oXDcPQTJq5RfTKar5uGuAbvU14hQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=ROzsNmPEboimXBnltYvp0yZ0R4DqKoIDM5mz8ldG/wE=;
-        b=NoTwpeuKlH7ZmjFoTWd9+3bhgPgv1Uo0T2E5xwpRbOC+/QxsAl+pzqaE7oK3ADnU/o
-         chlQNled/eZQZj3c3Ux5F8pQd3tnsEMl9k277mPXmtpF6oMmaqSgSvuwCej3X3+fPI7d
-         yyR4tstEAk5jNG/ZvZ71DO2hxC1NsSlAAhzcftUVfgz0YCGSk6cVuLr9FEbA2m0QnI2b
-         oFeGQmOOnRA88Ka0OEcqJDuEWhMFZPJ41LZ0gN/wlXPLHeGUnyqzFuPQXKS/6tvP1IGM
-         mmQOL2TSyfNQzY6wY9Z9O2D2fdGK+zaU4xY/51qiecso4IU9zbZ5WfaOaW/9fsUcnq5u
-         60cA==
-X-Gm-Message-State: AOAM532lwZhEYunBN7j4TMNMO/AJmYrJhmvk91PDoQOuG9Iy8y6hbywi
-        1Y98Gnf6+I6m//7gCQs+qbAZ35ObC0247ZbZgkTd9Mtc1x4D
-X-Google-Smtp-Source: ABdhPJydD4gCS1GOdiO5MwakOGqV4ls4j0FZtILxVgGqBP7Uc/39/66TxdoYwmTOVK/z73ttFcN08POCtPfnQNumYnXoocxDU7jN
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=DrXe8nq7zyAh3znAJW55dJ/CbHSN9L+XiHjQd4hlZAM=;
+        b=ah2K5ZWhrWduViNgozgjDemZPm8UycFPrE5vgmevDAnPBZsrrdEONgV60oXuoOIJ2w
+         hwjdT8GZbjzvJfURAIn1iR0u4wfmlhGhPmJFDp15nw6W9eGpSOzR0f5nM0B2bl7YsZrz
+         0zjvJiMFucVUk4zumL3Xu5/pd4LKn6Y7WEpwd6PvKfaBZ5etqLuym9CVvaor6pTrc7L+
+         wuVspEjnCgvHcM5+8HqXX65zlFllUqIJSg+vey2/RiQremhO2tzCKKq/jaEQjVQ2kq/+
+         JRZ2gAx6/MzfpeiJpGYB4mpOgmGPXDD5OuWr+/F0oHbl6EL6Mds4oU1sRUJSXg4VaXkz
+         M45A==
+X-Gm-Message-State: AOAM533etWH5N7Kt72SxRV+QWyNXSVTFeYy9r1WyFBfIz+szudM2n3ER
+        M2+EcUahV7Fp10tvKZQXsCEAgQ==
+X-Google-Smtp-Source: ABdhPJyXuyCrMa43ja+v85kezMDo1vHd8ckKW5wKN2039mqfQMTw6UnE3QxXZ080eLM5I4/uOsCYRA==
+X-Received: by 2002:a17:906:6dc6:: with SMTP id j6mr5917255ejt.354.1602880499257;
+        Fri, 16 Oct 2020 13:34:59 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
+        by smtp.gmail.com with ESMTPSA id j5sm2741679ejt.52.2020.10.16.13.34.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 13:34:58 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 22:34:53 +0200
+From:   Miklos Szeredi <miklos@szeredi.hu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Subject: [GIT PULL] overlayfs update for 5.10
+Message-ID: <20201016203453.GA327006@miu.piliscsaba.redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:930d:: with SMTP id k13mr2094900iom.33.1602880385159;
- Fri, 16 Oct 2020 13:33:05 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 13:33:05 -0700
-In-Reply-To: <000000000000e921b305b18ba0a7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f9990805b1cfab64@google.com>
-Subject: Re: BUG: using __this_cpu_read() in preemptible code in trace_hardirqs_on
-From:   syzbot <syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Hi Linus,
 
-commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Fri Oct 2 09:04:21 2020 +0000
+Please pull from:
 
-    lockdep: Fix lockdep recursion
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.10
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=174a766f900000
-start commit:   9ff9b0d3 Merge tag 'net-next-5.10' of git://git.kernel.org..
-git tree:       net-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=14ca766f900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10ca766f900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d13c3fa80bc4bcc1
-dashboard link: https://syzkaller.appspot.com/bug?extid=53f8ce8bbc07924b6417
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b63310500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1565657f900000
+- Improve performance for certain container setups by introducing a "volatile"
+  mode.
 
-Reported-by: syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com
-Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
+- Ioctl improvements.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+- Continue preparation for unprivileged overlay mounts.
+
+Thanks,
+Miklos
+
+---
+Amir Goldstein (3):
+      ovl: check for incompatible features in work dir
+      ovl: support [S|G]ETFLAGS and FS[S|G]ETXATTR ioctls for directories
+      ovl: use generic vfs_ioc_setflags_prepare() helper
+
+Miklos Szeredi (9):
+      duplicate ovl_getxattr()
+      ovl: clean up ovl_getxattr() in copy_up.c
+      ovl: fold ovl_getxattr() into ovl_get_redirect_xattr()
+      ovl: use ovl_do_getxattr() for private xattr
+      ovl: adhere to the vfs_ vs. ovl_do_ conventions for xattrs
+      ovl: drop flags argument from ovl_do_setxattr()
+      ovl: pass ovl_fs down to functions accessing private xattrs
+      ovl: enumerate private xattrs
+      ovl: rearrange ovl_can_list()
+
+Vivek Goyal (1):
+      ovl: provide a mount option "volatile"
+
+---
+ Documentation/filesystems/overlayfs.rst |  19 ++++++
+ fs/overlayfs/copy_up.c                  |  59 ++++++++++++----
+ fs/overlayfs/dir.c                      |   2 +-
+ fs/overlayfs/export.c                   |   2 +-
+ fs/overlayfs/file.c                     |  88 ++++++++++++++----------
+ fs/overlayfs/inode.c                    |  32 +++++----
+ fs/overlayfs/namei.c                    |  57 ++++++++--------
+ fs/overlayfs/overlayfs.h                |  92 ++++++++++++++++---------
+ fs/overlayfs/ovl_entry.h                |   6 ++
+ fs/overlayfs/readdir.c                  |  76 ++++++++++++++++++---
+ fs/overlayfs/super.c                    | 117 +++++++++++++++++++++++++++-----
+ fs/overlayfs/util.c                     |  96 +++++++++++++-------------
+ 12 files changed, 446 insertions(+), 200 deletions(-)
