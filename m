@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEC029014C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7E629017C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405332AbgJPJM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:12:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39902 "EHLO mail.kernel.org"
+        id S2406126AbgJPJPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:15:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405286AbgJPJKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:10:38 -0400
+        id S2405211AbgJPJJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:09:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C488020848;
-        Fri, 16 Oct 2020 09:10:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E43120878;
+        Fri, 16 Oct 2020 09:09:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602839437;
-        bh=3YinR5z+Sbg7wxo+bifXxdhFG//sN09p2yYY0SF4g2w=;
+        s=default; t=1602839373;
+        bh=4PMp+jC2Cua2QgUNI4boZbV9Y0Y/jP3yD0u9iJv70Zo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iqNn9MdBEET+RzGNWwb5LytXs1ssfOhrjMeeNSDduORcTRtXsWWDv4P5JPU6VLXtT
-         VH/vQ2h0tikh8+LZ7j4WJ2EOjkuhEETOniBDE6Jk2bUHXrdl66yGi+acm1gKme80ps
-         Olagmwe/RB80ioVGwKLauZjGwh3/ctl/KLGiGWqs=
+        b=D54KlsDuZoHQ6YjZwd7qBFtPjFR69h8YXgBjkKjUcnlcePOpG47kX3GuA56anxp10
+         xRRSMYGsxqP1uLICJWEQJKddzzoZL+t8LDBT1goKB27kItq+3HLWXZ39VQmqMPqQTR
+         TWlYckkR8nPSPV59HkjHfyNA/Uo4a08HRYjylAwg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Golovin <dima@golovin.in>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Matthias Maennich <maennich@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 04/22] ARM: 8939/1: kbuild: use correct nm executable
-Date:   Fri, 16 Oct 2020 11:07:32 +0200
-Message-Id: <20201016090437.530919822@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Subject: [PATCH 4.19 14/21] staging: comedi: check validity of wMaxPacketSize of usb endpoints found
+Date:   Fri, 16 Oct 2020 11:07:33 +0200
+Message-Id: <20201016090437.987989197@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201016090437.308349327@linuxfoundation.org>
-References: <20201016090437.308349327@linuxfoundation.org>
+In-Reply-To: <20201016090437.301376476@linuxfoundation.org>
+References: <20201016090437.301376476@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,54 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Golovin <dima@golovin.in>
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-[ Upstream commit 29c623d64f0dcd6aa10e0eabd16233e77114090b ]
+commit e1f13c879a7c21bd207dc6242455e8e3a1e88b40 upstream.
 
-Since $(NM) variable can be easily overridden for the whole build, it's
-better to use it instead of $(CROSS_COMPILE)nm. The use of $(CROSS_COMPILE)
-prefixed variables where their calculated equivalents can be used is
-incorrect. This fixes issues with builds where $(NM) is set to llvm-nm.
+While finding usb endpoints in vmk80xx_find_usb_endpoints(), check if
+wMaxPacketSize = 0 for the endpoints found.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/766
+Some devices have isochronous endpoints that have wMaxPacketSize = 0
+(as required by the USB-2 spec).
+However, since this doesn't apply here, wMaxPacketSize = 0 can be
+considered to be invalid.
 
-Signed-off-by: Dmitry Golovin <dima@golovin.in>
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Matthias Maennich <maennich@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
+Tested-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201010082933.5417-1-anant.thazhemadam@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm/boot/compressed/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/comedi/drivers/vmk80xx.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-index 1483966dcf23b..6da67789ac221 100644
---- a/arch/arm/boot/compressed/Makefile
-+++ b/arch/arm/boot/compressed/Makefile
-@@ -121,7 +121,7 @@ ccflags-y := -fpic $(call cc-option,-mno-single-pic-base,) -fno-builtin \
- asflags-y := -DZIMAGE
+--- a/drivers/staging/comedi/drivers/vmk80xx.c
++++ b/drivers/staging/comedi/drivers/vmk80xx.c
+@@ -667,6 +667,9 @@ static int vmk80xx_find_usb_endpoints(st
+ 	if (!devpriv->ep_rx || !devpriv->ep_tx)
+ 		return -ENODEV;
  
- # Supply kernel BSS size to the decompressor via a linker symbol.
--KBSS_SZ = $(shell echo $$(($$($(CROSS_COMPILE)nm $(obj)/../../../../vmlinux | \
-+KBSS_SZ = $(shell echo $$(($$($(NM) $(obj)/../../../../vmlinux | \
- 		sed -n -e 's/^\([^ ]*\) [AB] __bss_start$$/-0x\1/p' \
- 		       -e 's/^\([^ ]*\) [AB] __bss_stop$$/+0x\1/p') )) )
- LDFLAGS_vmlinux = --defsym _kernel_bss_size=$(KBSS_SZ)
-@@ -165,7 +165,7 @@ $(obj)/bswapsdi2.S: $(srctree)/arch/$(SRCARCH)/lib/bswapsdi2.S
- # The .data section is already discarded by the linker script so no need
- # to bother about it here.
- check_for_bad_syms = \
--bad_syms=$$($(CROSS_COMPILE)nm $@ | sed -n 's/^.\{8\} [bc] \(.*\)/\1/p') && \
-+bad_syms=$$($(NM) $@ | sed -n 's/^.\{8\} [bc] \(.*\)/\1/p') && \
- [ -z "$$bad_syms" ] || \
-   ( echo "following symbols must have non local/private scope:" >&2; \
-     echo "$$bad_syms" >&2; false )
--- 
-2.25.1
-
++	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
++		return -EINVAL;
++
+ 	return 0;
+ }
+ 
 
 
