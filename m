@@ -2,155 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44950290B6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8376B290B71
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392300AbgJPSgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 14:36:13 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:39520 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391870AbgJPSgN (ORCPT
+        id S2392382AbgJPSit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 14:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391980AbgJPSit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 14:36:13 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 0615820030;
-        Fri, 16 Oct 2020 20:36:08 +0200 (CEST)
-Date:   Fri, 16 Oct 2020 20:36:07 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Add retries for link training
-Message-ID: <20201016183607.GA1345100@ravnborg.org>
-References: <20201002135920.1.I2adbc90b2db127763e2444bd5a4e5bf30e1db8e5@changeid>
+        Fri, 16 Oct 2020 14:38:49 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD3DC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:38:48 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id p15so4573142ejm.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=2zZ9Bi5ipiBfOedVgWs+s17XKliwMJJo2kx5NuQsO90=;
+        b=NkgS21FMAKTdY8KfT1dAj5/BSF3aJXAiiidrcKTHLpR+HeCQgP1u8BC6v1a7WCRcDq
+         l9xumpHbA3K1/ubMrowrA2PHr8aCyOQhwbhLDO8WcR1U5td02UK2KWdjaldMkfFwq4on
+         2T8LxW2E+LgAqt+l2+dIfTZDQcvMFhFjYUZR/AQjAEFjQxoDkgIBcOclq6WINpwDlrc4
+         otw8k5BzWxOi7Z4wQmcehzqik+2bpzbLkxVKqnDSZX3T0ezM6Oq+xTuoYVSaOsCcj6EC
+         yUU8fl2fYqJzS5Q2QT6JevqBRXef1CXibpcwiAwQnB6o7CvP3qlGxjifIhFFzoPT5PTu
+         FtlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=2zZ9Bi5ipiBfOedVgWs+s17XKliwMJJo2kx5NuQsO90=;
+        b=QruZnbne3olJjlqG0KqU9D5rSbCO+j6WspS2Z5hhzBDqkZqEyTDX90pyHvYoD5DXSo
+         8oEUaIU0W/C6G59LXfgOa1jwMwUUWKOzXzZYUKiX0382eY2DUpyqO2IvwUtHuHNaC1FK
+         00nM0ipYqHqF3Ar4iVJb408sPhl5NztjOcPnjfxT2SCvAc6bSbt/+D1/LOCg6/ojy1ZI
+         wWyeRKF46NAaBL1jbBTs7U2aAm88LyZg1VB3gwhcX3yKwfU8lBEvpP6vCuy5vNfUGOcY
+         vdmggMDsEApft4Ak96elKO1ZKu2aruv8VDw62ViF4bi0LmvExSzDBzon5BSAxtpvn9NF
+         AL0g==
+X-Gm-Message-State: AOAM533MclCAbLVE6SyKG89xGARSSgudWWdl8hfThviuWs57Ll+fB2gA
+        RrcQP4T2bjz7+i5IJ4l0hIaYIQ==
+X-Google-Smtp-Source: ABdhPJwvdBTERxVJGMwUofl3mCYol43bxTqtNRVxrOu8OGKxuymL0NyNUXYNtTPyp+cmdarLmQUpzQ==
+X-Received: by 2002:a17:906:72cb:: with SMTP id m11mr4941541ejl.348.1602873527174;
+        Fri, 16 Oct 2020 11:38:47 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id o13sm2397555ejr.120.2020.10.16.11.38.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 11:38:46 -0700 (PDT)
+References: <20201016173020.12686-1-jassisinghbrar@gmail.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     jassisinghbrar@gmail.com, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+Cc:     ionela.voinescu@arm.com, khilman@baylibre.com, da@libre.computer,
+        sudeep.holla@arm.com, Jassi Brar <jaswinder.singh@linaro.org>
+Subject: Re: [PATCH] mailbox: avoid timer start from callback
+In-reply-to: <20201016173020.12686-1-jassisinghbrar@gmail.com>
+Date:   Fri, 16 Oct 2020 20:38:45 +0200
+Message-ID: <1jh7quj9sa.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002135920.1.I2adbc90b2db127763e2444bd5a4e5bf30e1db8e5@changeid>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=cm27Pg_UAAAA:8 a=e5mUnYsNAAAA:8
-        a=TbjnnDg1GpMu5epwdsMA:9 a=g2MK2S0s9NEDQWlg:21 a=iS_yR1XhKHkLfVqC:21
-        a=CjuIK1q_8ugA:10 a=xmb-EsYY8bH0VWELuYED:22 a=Vxmtnl_E_bksehYqCbjh:22
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Douglas.
 
-On Fri, Oct 02, 2020 at 02:03:51PM -0700, Douglas Anderson wrote:
-> On some panels hooked up to the ti-sn65dsi86 bridge chip we found that
-> link training was failing.  Specifically, we'd see:
-> 
->   ti_sn65dsi86 2-002d: [drm:ti_sn_bridge_enable] *ERROR* Link training failed, link is off (-5)
-> 
-> The panel was hooked up to a logic analyzer and it was found that, as
-> part of link training, the bridge chip was writing a 0x1 to DPCD
-> address 00600h and the panel responded NACK.  As can be seen in header
-> files, the write of 0x1 to DPCD address 0x600h means we were trying to
-> write the value DP_SET_POWER_D0 to the register DP_SET_POWER.  The
-> panel vendor says that a NACK in this case is not unexpected and means
-> "not ready, try again".
-> 
-> In testing, we found that this panel would respond with a NACK in
-> about 1/25 times.  Adding the retry logic worked fine and the most
-> number of tries needed was 3.  Just to be safe, we'll add 10 tries
-> here and we'll add a little blurb to the logs if we ever need more
-> than 5.
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+On Fri 16 Oct 2020 at 19:30, jassisinghbrar@gmail.com wrote:
 
-I have picked this patch up and applied to drm-misc-next now.
-
-	Sam
-
+> From: Jassi Brar <jaswinder.singh@linaro.org>
+>
+> If the txdone is done by polling, it is possible for msg_submit() to start
+> the timer while txdone_hrtimer() callback is running. If the timer needs
+> recheduling, it could already be enqueued by the time hrtimer_forward_now()
+> is called, leading hrtimer to loudly complain.
+>
+> WARNING: CPU: 3 PID: 74 at kernel/time/hrtimer.c:932 hrtimer_forward+0xc4/0x110
+> CPU: 3 PID: 74 Comm: kworker/u8:1 Not tainted 5.9.0-rc2-00236-gd3520067d01c-dirty #5
+> Hardware name: Libre Computer AML-S805X-AC (DT)
+> Workqueue: events_freezable_power_ thermal_zone_device_check
+> pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
+> pc : hrtimer_forward+0xc4/0x110
+> lr : txdone_hrtimer+0xf8/0x118
+> [...]
+>
+> This can be fixed by not starting the timer from the callback path. Which
+> requires the timer reloading as long as any message is queued on the
+> channel, and not just when current tx is not done yet.
+>
+> Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
 > ---
-> 
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 40 +++++++++++++++++++--------
->  1 file changed, 29 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index ecdf9b01340f..6e12cda69b54 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -106,6 +106,8 @@
->  #define SN_NUM_GPIOS			4
->  #define SN_GPIO_PHYSICAL_OFFSET		1
->  
-> +#define SN_LINK_TRAINING_TRIES		10
-> +
->  /**
->   * struct ti_sn_bridge - Platform data for ti-sn65dsi86 driver.
->   * @dev:          Pointer to our device.
-> @@ -673,6 +675,7 @@ static int ti_sn_link_training(struct ti_sn_bridge *pdata, int dp_rate_idx,
->  {
->  	unsigned int val;
->  	int ret;
-> +	int i;
->  
->  	/* set dp clk frequency value */
->  	regmap_update_bits(pdata->regmap, SN_DATARATE_CONFIG_REG,
-> @@ -689,19 +692,34 @@ static int ti_sn_link_training(struct ti_sn_bridge *pdata, int dp_rate_idx,
->  		goto exit;
->  	}
->  
-> -	/* Semi auto link training mode */
-> -	regmap_write(pdata->regmap, SN_ML_TX_MODE_REG, 0x0A);
-> -	ret = regmap_read_poll_timeout(pdata->regmap, SN_ML_TX_MODE_REG, val,
-> -				       val == ML_TX_MAIN_LINK_OFF ||
-> -				       val == ML_TX_NORMAL_MODE, 1000,
-> -				       500 * 1000);
-> -	if (ret) {
-> -		*last_err_str = "Training complete polling failed";
-> -	} else if (val == ML_TX_MAIN_LINK_OFF) {
-> -		*last_err_str = "Link training failed, link is off";
-> -		ret = -EIO;
-> +	/*
-> +	 * We'll try to link train several times.  As part of link training
-> +	 * the bridge chip will write DP_SET_POWER_D0 to DP_SET_POWER.  If
-> +	 * the panel isn't ready quite it might respond NAK here which means
-> +	 * we need to try again.
-> +	 */
-> +	for (i = 0; i < SN_LINK_TRAINING_TRIES; i++) {
-> +		/* Semi auto link training mode */
-> +		regmap_write(pdata->regmap, SN_ML_TX_MODE_REG, 0x0A);
-> +		ret = regmap_read_poll_timeout(pdata->regmap, SN_ML_TX_MODE_REG, val,
-> +					val == ML_TX_MAIN_LINK_OFF ||
-> +					val == ML_TX_NORMAL_MODE, 1000,
-> +					500 * 1000);
-> +		if (ret) {
-> +			*last_err_str = "Training complete polling failed";
-> +		} else if (val == ML_TX_MAIN_LINK_OFF) {
-> +			*last_err_str = "Link training failed, link is off";
-> +			ret = -EIO;
-> +			continue;
-> +		}
-> +
-> +		break;
->  	}
->  
-> +	/* If we saw quite a few retries, add a note about it */
-> +	if (!ret && i > SN_LINK_TRAINING_TRIES / 2)
-> +		DRM_DEV_INFO(pdata->dev, "Link training needed %d retries\n", i);
-> +
+>  drivers/mailbox/mailbox.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
+> index 0b821a5b2db8..a093a6ecaa66 100644
+> --- a/drivers/mailbox/mailbox.c
+> +++ b/drivers/mailbox/mailbox.c
+> @@ -82,9 +82,12 @@ static void msg_submit(struct mbox_chan *chan)
 >  exit:
->  	/* Disable the PLL if we failed */
->  	if (ret)
-> -- 
-> 2.28.0.806.g8561365e88-goog
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>  	spin_unlock_irqrestore(&chan->lock, flags);
+>  
+> -	if (!err && (chan->txdone_method & TXDONE_BY_POLL))
+> -		/* kick start the timer immediately to avoid delays */
+> -		hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
+> +	/* kick start the timer immediately to avoid delays */
+> +	if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
+> +		/* but only if not already active */
+
+It would solve the problem I reported as well but instead of running the
+check immediately (timer with value 0), we will have to wait for the
+next of the timer, it is already started. IOW, there might be a delay
+now. I don't know if this important for the mailbox - the existing
+comments in the code suggested it was.
+
+> +		if (!hrtimer_active(&chan->mbox->poll_hrt))
+> +			hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
+> +	}
+>  }
+>  
+>  static void tx_tick(struct mbox_chan *chan, int r)
+> @@ -122,11 +125,10 @@ static enum hrtimer_restart txdone_hrtimer(struct hrtimer *hrtimer)
+>  		struct mbox_chan *chan = &mbox->chans[i];
+>  
+>  		if (chan->active_req && chan->cl) {
+> +			resched = true;
+>  			txdone = chan->mbox->ops->last_tx_done(chan);
+>  			if (txdone)
+>  				tx_tick(chan, 0);
+> -			else
+> -				resched = true;
+>  		}
+>  	}
+
