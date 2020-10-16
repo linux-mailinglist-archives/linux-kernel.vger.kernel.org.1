@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A926290DE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 00:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AE3290DE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 00:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392798AbgJPWxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 18:53:15 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39940 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392705AbgJPWxH (ORCPT
+        id S2393101AbgJPWy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 18:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391461AbgJPWy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 18:53:07 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09GMr0kx002406
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 15:53:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=facebook;
- bh=9Hm3Dn6iH9NJK0lCAO7l0OFnlRvp1sLOoEnjFN8y4JA=;
- b=IPD/dr+lyA43l+uzbdoxuubFH0+wkfxHbfGIpicglJbcBDKX0ylsSwZR8x6UgnNXYKrG
- RVsVm2C287pyNs7krM/u2woJfqjBVXqbfhcySHplUvOqrsZT8GRh0cAnAa4whYy0vJcC
- +0xrQBJfJ2eaKzns+AaUHZ9w9XTlpW7rAk8= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 347gmw18c9-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 15:53:06 -0700
-Received: from intmgw001.06.prn3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 16 Oct 2020 15:53:00 -0700
-Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
-        id 9C48816EFB7A; Fri, 16 Oct 2020 15:52:56 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Zi Yan <ziy@nvidia.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>, Roman Gushchin <guro@fb.com>
-Subject: [PATCH rfc 2/2] mm: hugetlb: don't drop hugetlb_lock around cma_release() call
-Date:   Fri, 16 Oct 2020 15:52:54 -0700
-Message-ID: <20201016225254.3853109-3-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201016225254.3853109-1-guro@fb.com>
-References: <20201016225254.3853109-1-guro@fb.com>
+        Fri, 16 Oct 2020 18:54:28 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BB1C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 15:54:28 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id b19so2048388pld.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 15:54:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ICYd57CoaTy1qGFozzh5HtqQudKTXEKY66Y/KKwo8Lk=;
+        b=VqlJmJeJpWv0jfshqm7uw5p/d/Crrw98Z+oE10biAfMK6x+/MB1Ue4y9OrUuMb1S19
+         NVBf0YH72PGjn6trqTsPBQU4VAblvBvPpx/VlhpjqfSCx9LzyiIz4rmKGiHcPvEhRPf3
+         aAvMrYjW2k0Ii1ot6r1dmHtwQoFpgg+DRFVY4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ICYd57CoaTy1qGFozzh5HtqQudKTXEKY66Y/KKwo8Lk=;
+        b=MXKvXhX4JNQiMpI/WHVv12lYEIBOo488HZkWnlFSbUiUTJPIVvmZBSjoYFqlAj+49G
+         kYPthugZCr5rhed9DCB76YCUPoLlu4clBswSOKQG+a/3ptFmWdrxrOa2RiyRCB4XEK7D
+         qUP0W5XVjCfuCf7KTKs+8jFReZxJfZkl9Rl1FwJ+Wnq93GNuR/U8HGBqYa1iFgKTkyx+
+         KA9AvGyeunD45t8aJwswKagJrQrvgKk0qIrtw1V8OHNtNe1ahOCb3laJ/kh4LUtSc01Z
+         z0K4rioRHHj87C/s9hh8G0pCj3HVMpakOaDZGUHs7AYxmTOlVj+PvimzKWFHME1LIKHt
+         WGAA==
+X-Gm-Message-State: AOAM532p08iLLN4zzF+XYe74yxJES8XYQ5xvu4eqr81EXWSLeY7xJkWt
+        5ls7dH6fJa8jaTlYuLa0yky6xQ==
+X-Google-Smtp-Source: ABdhPJztu1BrcI2AvRp/VvjJLHuh4P7B1CW+afiAMTqbl51L8NnUyyWVOosqEGO8gUPez74J93eSuw==
+X-Received: by 2002:a17:90b:4a10:: with SMTP id kk16mr6428298pjb.77.1602888867778;
+        Fri, 16 Oct 2020 15:54:27 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x18sm3788262pga.49.2020.10.16.15.54.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 15:54:26 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 15:54:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        WeiXiong Liao <liaoweixiong@allwinnertech.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: simplify pstore-blk
+Message-ID: <202010161553.F2BA6CF@keescook>
+References: <20201016132047.3068029-1-hch@lst.de>
 MIME-Version: 1.0
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-16_12:2020-10-16,2020-10-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- adultscore=0 suspectscore=2 mlxlogscore=413 phishscore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010160162
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016132047.3068029-1-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cma_release() now is a non-blocking function, so there is no more need
-to drop hugetlb_lock to call it.
+On Fri, Oct 16, 2020 at 03:20:38PM +0200, Christoph Hellwig wrote:
+> this series cleans up and massively simplifies the pstore-blk code,
+> please take a look.
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- mm/hugetlb.c | 6 ------
- 1 file changed, 6 deletions(-)
+Cool! Thanks for doing this work. I have a few things I'd like to see
+done differently, and while I'm not a huge fan of the general reduction
+in utility, I can live with it as long as it doesn't make other things
+worse. :) I'll get this reviewed with specific feedback soon, but I'm
+about to be EOW. ;)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index fe76f8fd5a73..c8c892b1cabc 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1312,14 +1312,8 @@ static void update_and_free_page(struct hstate *h,=
- struct page *page)
- 	set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
- 	set_page_refcounted(page);
- 	if (hstate_is_gigantic(h)) {
--		/*
--		 * Temporarily drop the hugetlb_lock, because
--		 * we might block in free_gigantic_page().
--		 */
--		spin_unlock(&hugetlb_lock);
- 		destroy_compound_gigantic_page(page, huge_page_order(h));
- 		free_gigantic_page(page, huge_page_order(h));
--		spin_lock(&hugetlb_lock);
- 	} else {
- 		__free_pages(page, huge_page_order(h));
- 	}
---=20
-2.26.2
-
+-- 
+Kees Cook
