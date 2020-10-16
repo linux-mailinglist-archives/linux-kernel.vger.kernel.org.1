@@ -2,52 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D51290DC3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 00:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697F229186C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 18:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406515AbgJPWbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 18:31:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406125AbgJPWbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 18:31:53 -0400
-Subject: Re: [GIT PULL] overlayfs update for 5.10
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602887512;
-        bh=NG/GWsisAfNbHXAGwOQgk1ozWocu1lvF7zSRynTEYdM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=oXpEfvLs72lBqTgyMcc5XA19Rwgg3vPKZMNM0Q0rWfGB5D+AFrsaFop6ySg3N4e0w
-         68qXcybjuFX77jJV2GIjGTAwPktcwfzKlwh9bAsNh2aatu2Ys4dOgnxom8BOaaeoSu
-         F8kfEai6eXMwe0Nb2gCFsTQEp6ptCgkrD0JQ0W+c=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201016203453.GA327006@miu.piliscsaba.redhat.com>
-References: <20201016203453.GA327006@miu.piliscsaba.redhat.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201016203453.GA327006@miu.piliscsaba.redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.10
-X-PR-Tracked-Commit-Id: be4df0cea08a8b59eb38d73de988b7ba8022df41
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 071a0578b0ce0b0e543d1e38ee6926b9cc21c198
-Message-Id: <160288751244.30401.9448530647466023663.pr-tracker-bot@kernel.org>
-Date:   Fri, 16 Oct 2020 22:31:52 +0000
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
+        id S1727208AbgJRQ5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 12:57:18 -0400
+Received: from mail.grupocomunica.com ([109.107.126.6]:51667 "EHLO
+        mail.grupocomunica.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726613AbgJRQ5S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 12:57:18 -0400
+X-Greylist: delayed 83103 seconds by postgrey-1.27 at vger.kernel.org; Sun, 18 Oct 2020 12:57:17 EDT
+Received: (qmail 15114 invoked by uid 89); 16 Oct 2020 22:32:38 -0000
+Received: by simscan 1.4.0 ppid: 14698, pid: 15095, t: 0.8696s
+         scanners: attach: 1.4.0 clamav: 0.95.3/m:55/d:18358
+Received: from unknown (HELO pequebebe.es) (manuel@pequebebe.es@171.35.163.246)
+  by mail.grupocomunica.info with ESMTPA; 16 Oct 2020 22:32:38 -0000
+To:     "eda" <eda@reroberto.it>, "gianni1963" <gianni1963@tin.it>,
+        "Vincenzo Carbone" <vincenzo@cipcarbone.it>,
+        "Ivan Zanoni" <ivan.zanoni@verona.pozzoni.it>,
+        "alessandro cimino" <alessandro.cimino@ampsrl.net>,
+        "Alboresi Luigi Utit" <alboresi.l@utit.it>,
+        "Richeldi Claudio" <cricheldi@utit.it>,
+        "Ian Barrodale" <ian@barrodale.com>,
+        "Mike Dunham Wilkie" <mike@barrodale.com>,
+        "cristina sagresti" <cristina.sagresti@infomediaweb.it>,
+        "John Harris" <john.harris@vt.edu>,
+        "Tony Hall" <Tony.Hall@progress.com>,
+        "l treviso" <l.treviso@virgilio.it>,
+        "Mark Stodola" <stodola@pelletron.com>,
+        "Rachid Ayad" <ayad@slac.stanford.edu>,
+        "linux kernel" <linux-kernel@vger.kernel.org>,
+        "majordomo" <majordomo@vger.kernel.org>,
+        "informix list" <informix-list@iiug.org>,
+        "Yorick" <yhardy@uj.ac.za>,
+        "dott casellasalvatore" <dott.casellasalvatore@virgilio.it>
+From:   Francesco Alfano <manuel@pequebebe.es>
+Subject: =?UTF-8?Q?=5BAttenzione!=5D_Con_che_velocit=C3=A0_?= =?UTF-8?Q?vola_il_tempo._Tutto_bene=3F?=
+Message-ID: <8d9680d2-f479-44ff-b18d-bb945af3cfe1@pequebebe.es>
+Date:   Fri, 16 Oct 2020 13:32:27 -0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 16 Oct 2020 22:34:53 +0200:
+https://bit.ly/33KlF6q
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.10
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/071a0578b0ce0b0e543d1e38ee6926b9cc21c198
 
-Thank you!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
+Con i migliori auguri,Francesco Alfano
