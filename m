@@ -2,148 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6950C2903FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C7E290406
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406312AbgJPL2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:28:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25245 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406067AbgJPL23 (ORCPT
+        id S2406544AbgJPLbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:31:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406366AbgJPLbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:28:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602847707;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uncw1p8wEaEZ4da7CrqyMdu3Pcg9RwYIjaA2lxjM3PI=;
-        b=SDLmcbYpoLpj9rL2a/v2ATeG/yrbjsYpg8waXYjNLbUuQ6PxRAysm3GBGJnl/jsF7CYJoE
-        Po2dkmi47upUtvnXcVsLuM1GDdWeTZsDwJYV7o5mkM+SlwwXq1OQf+AYVAW0uYAFg8I6Jr
-        Ak6b2AQbfMnPXAUxAcKT+EcfsH2pXXE=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-369-A38a2nL_OHu2H5XTluhsCA-1; Fri, 16 Oct 2020 07:28:25 -0400
-X-MC-Unique: A38a2nL_OHu2H5XTluhsCA-1
-Received: by mail-ej1-f72.google.com with SMTP id d13so813941ejz.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:28:25 -0700 (PDT)
+        Fri, 16 Oct 2020 07:31:09 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F18CC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:31:09 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id t67so538393vkb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VfR2k3sQxdqJVPvkLHgRVDpnfd48L/sAbfIZJJQVUGU=;
+        b=U3arh0PpNKrL1ViPiMAT0p2E0sl1OdJBhyvUHT4isXu6+XcRLSALuWaqK3qkJaGkEy
+         t8bLEKQge3lIp5OeEMAmTMP3eHUZOfzzoYTvA+hKG5gzjJ6jBJwXNnuAODzY7/gqLhDg
+         pprH6HvpZvmUmEi3fYOlqSuW8lbgPlNp2+o8TswEl5CIop61UyNKvxY/My5zTTEmkTL7
+         wn7UUyyNWiq7oamyFJrfUF8XrsQme69ZI9KAaHUTjCnMWs6AcYLhu3MzDdEDy0r1G8ki
+         SwesbK5trA8dGyyUxob6ItDYO0XA4TU9d9EUSvSHSmSxKVk3Jb3n/Z9s606yVsheLKJl
+         +YBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Uncw1p8wEaEZ4da7CrqyMdu3Pcg9RwYIjaA2lxjM3PI=;
-        b=kkPg8YE4gerklQAik5dqQhxfmOQzRWLj5r6yEuUEVBPWxDk/NkNio4rTKunx+1yUoy
-         MolrQtdFyCIhVHOq7ClFBCFWVWMVUuga/2no9xR88sao2pKL26mDxkGumBaUrCGr8Ipi
-         COFppAm+x6vK/zbFPOEZdaszwZdTKv4Parsb3f5EJ05UVn4jALrXABHDMEIfQnSGyqzz
-         sdYSMpBixdlqm6f+1aBUZwpjvE1T5FlCnkJ0fukQUJigPZyRfkT8W71ElTl2uo2yKs6z
-         BUtUk6ij4CK0nGiQB0nnsaO8PrXf5Y44sUbo7HSR3ZdbOm5pFEZRt9P9VxFlCxbNkIvt
-         IwAA==
-X-Gm-Message-State: AOAM532SzdBT7FLEAZiT9phTNDmeSYh3RU3wU/HeRjEPdEKTbGj9nHYG
-        aypzMSQnxxm53CVlZ9Bm5AcetUtpClD0cLG0hmXdkKlQAVkgGd/2a+Q2kF9xSG/dPNBUtllRvZs
-        PeDPh8pVZuN2PrMkOBhcz5aKM
-X-Received: by 2002:a17:907:43c6:: with SMTP id i6mr3108673ejs.207.1602847704562;
-        Fri, 16 Oct 2020 04:28:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxafcuee0i5hxOgusCBNcMWWy78Vr/YlDZ8KxL6yLiWe2S8E6BQLTMsRHYg7w1v3h++iMg/pQ==
-X-Received: by 2002:a17:907:43c6:: with SMTP id i6mr3108655ejs.207.1602847704363;
-        Fri, 16 Oct 2020 04:28:24 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id i5sm1335818ejs.121.2020.10.16.04.28.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 04:28:23 -0700 (PDT)
-Subject: Re: [PATCH v4] bluetooth: hci_h5: fix memory leak in h5_close
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201007034803.7554-1-anant.thazhemadam@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <2a79ece2-c63b-a881-bc19-65b59952344f@redhat.com>
-Date:   Fri, 16 Oct 2020 13:28:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VfR2k3sQxdqJVPvkLHgRVDpnfd48L/sAbfIZJJQVUGU=;
+        b=GStL5l8z/+oA+RQtX18XC5NzG/oisDaC8c7yasL9rpvMkHwzLgIE87KFmCHk9J9Z11
+         QzorLvNIsJO4T6Fx4F/OBflw+yFI5/QCM0kb0QMsVQXbohz9c0RTrHc2Su8PpBcZzGkf
+         TuUEbGaYQ9SbIoXt2BGB4iV0XxfZYjTje5Ywy1O3EYP239GUWCwzGcpy35QT/OQwOqd5
+         LFSmiXt9uppy5wEY2+Ne6pbmgMhS8A881X1nlx1Q68W3kP6GbBl/IxhZ3QX5LY/ccyQu
+         GqvZK0E1QM+IVvPnxwh97Zov3FYbBc5BQxGHwS5izU0teKJN3eISmViqE11qzwaNaNjf
+         GUIA==
+X-Gm-Message-State: AOAM531sAKzT1jtJxNtMlCnYLiNC5uhqHUL7VDQBBS5vYDJyzZCZFgZY
+        U3g145dLhjOnQeGesYg3CtPEqGPBSIu/KflrW9DnNw==
+X-Google-Smtp-Source: ABdhPJxYAVqNSgwSx1Eoge43VUADHeCK6li9b/4u8o1NT7/3wN77SDJYFQCZnpPpHiOo14iB/Ng7q8JPB3TjsN9qSbg=
+X-Received: by 2002:a1f:ae85:: with SMTP id x127mr1798903vke.8.1602847868573;
+ Fri, 16 Oct 2020 04:31:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201007034803.7554-1-anant.thazhemadam@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201012104648.985256-1-Jerome.Pouiller@silabs.com> <20201012104648.985256-8-Jerome.Pouiller@silabs.com>
+In-Reply-To: <20201012104648.985256-8-Jerome.Pouiller@silabs.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 16 Oct 2020 13:30:30 +0200
+Message-ID: <CAPDyKFpP6xBru79Xh2oe=J8HWO3uk1VpcMzEiG6X7WX-AOvgkA@mail.gmail.com>
+Subject: Re: [PATCH 07/23] wfx: add bus_sdio.c
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        DTML <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 12 Oct 2020 at 12:47, Jerome Pouiller
+<Jerome.Pouiller@silabs.com> wrote:
+>
+> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
 
-On 10/7/20 5:48 AM, Anant Thazhemadam wrote:
-> If h5_close is called when !hu->serdev, h5 is directly freed.
-> However, h5->rx_skb is not freed, which causes a memory leak.
-> 
-> Freeing h5->rx_skb fixes this memory leak.
-> 
-> In case hu->serdev exists, h5->rx_skb is then set to NULL,
-> since we do not want to risk a potential NULL pointer 
-> dereference.
-> 
-> Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
-> Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-> Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>h5_close v4
+Please fill out this commit message to explain a bit more about the
+patch and the HW it enables support for.
+
+>
+> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
 > ---
-> Changes in v4:
-> 	* Free h5->rx_skb even when hu->serdev
-> 	(Suggested by Hans de Goede <hdegoede@redhat.com>)
-> 	* If hu->serdev, then assign h5->rx_skb = NULL
-> 
-> Changes in v3:
-> 	* Free h5->rx_skb when !hu->serdev, and fix the memory leak
-> 	* Do not incorrectly and unnecessarily call serdev_device_close()
-> 
-> Changes in v2:
-> 	* Fixed the Fixes tag
-> 
->  drivers/bluetooth/hci_h5.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-> index e41854e0d79a..39f9553caa5c 100644
-> --- a/drivers/bluetooth/hci_h5.c
-> +++ b/drivers/bluetooth/hci_h5.c
-> @@ -245,11 +245,15 @@ static int h5_close(struct hci_uart *hu)
->  	skb_queue_purge(&h5->rel);
->  	skb_queue_purge(&h5->unrel);
->  
-> +	kfree_skb(h5->rx_skb);
+>  drivers/net/wireless/silabs/wfx/bus_sdio.c | 269 +++++++++++++++++++++
+>  1 file changed, 269 insertions(+)
+>  create mode 100644 drivers/net/wireless/silabs/wfx/bus_sdio.c
+>
+> diff --git a/drivers/net/wireless/silabs/wfx/bus_sdio.c b/drivers/net/wir=
+eless/silabs/wfx/bus_sdio.c
+> new file mode 100644
+> index 000000000000..e06d7e1ebe9c
+
+[...]
+
 > +
->  	if (h5->vnd && h5->vnd->close)
->  		h5->vnd->close(h5);
->  
->  	if (!hu->serdev)
->  		kfree(h5);
-> +	else
-> +		h5->rx_skb = NULL;
+> +static int wfx_sdio_irq_subscribe(void *priv)
+> +{
+> +       struct wfx_sdio_priv *bus =3D priv;
+> +       u32 flags;
+> +       int ret;
+> +       u8 cccr;
+> +
 
-Please just do this unconditionally directly after
-the kfree_skb()
+I would appreciate a comment about an out-of-band IRQ line. If it's
+supported, that is the preferred option to use, else the SDIO IRQs.
 
-So after this comment has been addressed the end result should
-look like this:
+> +       if (!bus->of_irq) {
+> +               sdio_claim_host(bus->func);
+> +               ret =3D sdio_claim_irq(bus->func, wfx_sdio_irq_handler);
+> +               sdio_release_host(bus->func);
+> +               return ret;
+> +       }
+> +
+> +       sdio_claim_host(bus->func);
+> +       cccr =3D sdio_f0_readb(bus->func, SDIO_CCCR_IENx, NULL);
+> +       cccr |=3D BIT(0);
+> +       cccr |=3D BIT(bus->func->num);
+> +       sdio_f0_writeb(bus->func, cccr, SDIO_CCCR_IENx, NULL);
+> +       sdio_release_host(bus->func);
+> +       flags =3D irq_get_trigger_type(bus->of_irq);
+> +       if (!flags)
+> +               flags =3D IRQF_TRIGGER_HIGH;
+> +       flags |=3D IRQF_ONESHOT;
+> +       return devm_request_threaded_irq(&bus->func->dev, bus->of_irq, NU=
+LL,
+> +                                        wfx_sdio_irq_handler_ext, flags,
+> +                                        "wfx", bus);
+> +}
+> +
 
-	skb_queue_purge(&h5->rel);
-	skb_queue_purge(&h5->unrel);
-	kfree_skb(h5->rx_skb);
-	h5->rx_skb = NULL;
+[...]
 
-	if (h5->vnd && h5->vnd->close)
-		h5->vnd->close(h5);
+> +
+> +#define SDIO_VENDOR_ID_SILABS        0x0000
+> +#define SDIO_DEVICE_ID_SILABS_WF200  0x1000
+> +static const struct sdio_device_id wfx_sdio_ids[] =3D {
+> +       { SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILABS_WF200)=
+ },
+> +       // FIXME: ignore VID/PID and only rely on device tree
+> +       // { SDIO_DEVICE(SDIO_ANY_ID, SDIO_ANY_ID) },
+> +       { },
+> +};
+> +MODULE_DEVICE_TABLE(sdio, wfx_sdio_ids);
 
-	if (!hu->serdev)
-		kfree(h5);
- 
- 	return 0;
+I will comment about the sdio IDs separately, replying to the other
+thread between you and Pali.
 
-Regards,
+> +
+> +struct sdio_driver wfx_sdio_driver =3D {
+> +       .name =3D "wfx-sdio",
+> +       .id_table =3D wfx_sdio_ids,
+> +       .probe =3D wfx_sdio_probe,
+> +       .remove =3D wfx_sdio_remove,
+> +       .drv =3D {
+> +               .owner =3D THIS_MODULE,
+> +               .of_match_table =3D wfx_sdio_of_match,
+> +       }
+> +};
 
-Hans
+I couldn't find where you call sdio_register|unregister_driver(), but
+maybe that's done from another patch in series?
 
+Kind regards
+Uffe
