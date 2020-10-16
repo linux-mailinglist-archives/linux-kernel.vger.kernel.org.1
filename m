@@ -2,148 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465CD290CE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1332A290CEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408102AbgJPUv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 16:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
+        id S2409093AbgJPUw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 16:52:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732579AbgJPUv4 (ORCPT
+        with ESMTP id S2393599AbgJPUw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 16:51:56 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C09C061755;
-        Fri, 16 Oct 2020 13:51:55 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id r4so5639621ioh.0;
-        Fri, 16 Oct 2020 13:51:55 -0700 (PDT)
+        Fri, 16 Oct 2020 16:52:57 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1461EC061755;
+        Fri, 16 Oct 2020 13:52:57 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id p13so3859078edi.7;
+        Fri, 16 Oct 2020 13:52:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3iRQz1Y4EjtL/zm7xtJOoKw/y4Z4fC/UfX5G2HjfOfA=;
-        b=DTKxfLT9qPTRmpVDMyjjStu8lMoH5InFR7MMemOpvmXyhEszgMkAhgTAPhVHrIHNqV
-         2zb7xJg7Jq9RpxkgmbE/E4NYuZ9atcNIc/rhJuXl/KS7jEI1wO5t70USNS/Pgr6PsyME
-         /PAWKsmW+27lOTpLSpH0wFqeDm4dZ8vaune/XiCk6DBUZwKen1Mns5qd4W+YWeikcVx/
-         UfPh8h5ZHdKVFMg39pSE+YS6LfofroyEZbF9NE9TwPacH4qwsi8kq1esfkSwitNyGa/F
-         AbDeUgzROTPQQ0155OVmO4E7UNj4M/6cH8Wl2sIyIAulO0FOuL5LnMXqYNq50pEs7tn8
-         0atA==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LugPJbth2L+5NzHqEmJU9Ma7NXcScsFxdJ4jE8WC+U4=;
+        b=Tu7vXfika4qfrXsXOIcn75dbSNc5REGqutvQkX6182ssmjsn2jxIUZ+kP8c4FqidD1
+         iMzZVkOEOhMbhuvETrQ/wljPan2CMq5kBxv+mBrz11X8ejGecJ8bWRBk8n5i1el2g865
+         DcJ19IfZWCT5lfDCWFPx7PDVa7mCH/RVW3L8uosA+GHrAE6AlJIKvI9YTPbecLzi8Zl4
+         jzEq+1N1XhG3Y53aL+JM7tkGhzIN5n4Di8Q1Ya0zBcGQFV/82K9vHhZHztRJVXCX8jxA
+         1TLFIqkAgvFYCRXj7lryJz8v9DXrS+Q/x9nl9BFk4o7ukXPoUCi3AXy1fiWoVQkhtyRR
+         Lo8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=3iRQz1Y4EjtL/zm7xtJOoKw/y4Z4fC/UfX5G2HjfOfA=;
-        b=lsJ2hUv4w1vJoglWYlHV8xutlGGSnmzMyC7fX3+RGWTTVlkVY4fC3925ZMexum3qig
-         plI+Q9OiOPU/VWUDGELjh7BZwb6t/6T7eydIXPeHn+sNlx7GKF2gCBJIe6DXZgI+OqfJ
-         Xw1WJPmkdx7t3A49/F1JVqLn+LgAGgiEul6eyxU2lhVdV5+LofXM2DkptG6AZIakx+Iu
-         QnD8Zmq3yPh7bWzNjvvFTosdeJOGcanJa9xYYOngqcB2mG/3T8Sk1wusZs688uii6+gj
-         oxJ6rNHVgGajQcMUMuJtPJDZfZ8d4nUbH+l4sE4iVlFx6PpUOq5CrLIw6Kox1UwCtp4Y
-         EzCg==
-X-Gm-Message-State: AOAM532otci3Lqg801IOra1c2+chvs47YAhpdVRYLJSQMLPVRrT3Smij
-        LAugGMgm6Bs1Xrp6xYbK1tY=
-X-Google-Smtp-Source: ABdhPJzztWiZTCGYMZtjZZ8pBvCLaA7A2d0XRv+qhOiv2muZA//Rjui/vVkVwPn3uUY6NW2zcQc4sg==
-X-Received: by 2002:a02:1cc1:: with SMTP id c184mr4196277jac.29.1602881514264;
-        Fri, 16 Oct 2020 13:51:54 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id p12sm3929524ili.14.2020.10.16.13.51.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 13:51:53 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Fri, 16 Oct 2020 16:51:51 -0400
-To:     Daniel Kiper <daniel.kiper@oracle.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Ross Philipson <ross.philipson@oracle.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
-        linux-doc@vger.kernel.org, dpsmith@apertussolutions.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        luto@amacapital.net, trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH 07/13] x86: Secure Launch kernel early boot stub
-Message-ID: <20201016205151.GA1618249@rani.riverdale.lan>
-References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
- <1600959521-24158-8-git-send-email-ross.philipson@oracle.com>
- <20200924173801.GA103726@rani.riverdale.lan>
- <c9ab2edf-1aaf-a1c9-92d5-2d37382a3163@oracle.com>
- <20200925191842.GA643740@rani.riverdale.lan>
- <d34c189c-4528-0458-0b84-cfd36dc068b3@oracle.com>
- <20201015182654.lgtht5fd2aaunczu@tomti.i.net-space.pl>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LugPJbth2L+5NzHqEmJU9Ma7NXcScsFxdJ4jE8WC+U4=;
+        b=M1sS6jgMdJVphvKsg93hRVoBd3QUrMRpMpEj6lliVh6CddE5rvlcaYFkiBYlnrxmsn
+         kkzXq5jOLTqjjHd9ZqE5cvU0c4Jt3DoSjbbtzlq7G7LVY+s+YTDWMjl5y/tQHIk1zJ56
+         mvptrkOWytmUqAWhQbbJNuIvMUl5CJ6gqDrmJG82aFkJNbYsBWbBXeC6pkdcrADzRvNr
+         dryKiUPK89bnY+8GA/XxD0tT2HrF+UhWQGLWVkCGByfHnKt9WN5KnHcN1PmSMYe2tuRl
+         /IVTJwI9jnpAyvfGmIHr+haex5Vcoxf2NvQLkO8himq1nIYjtiRxVKsQgYUBhBaOkvlA
+         fFow==
+X-Gm-Message-State: AOAM5336d8FlJU4OA5cnSyeXtFyPU5bLG+Qu7kk2T3vbxaxqUjUNVuBh
+        Ez8klFJtDCQ3T8Fv+u4bto18rLIvnmzx26MKMLI=
+X-Google-Smtp-Source: ABdhPJxZ42lByUDO+OTDvcJk4T2dgzm029Jq7A4vWTsHVjzFmUepjiwamlx320/sHJIq5iNEVzj9fJQxeoJTImluMKI=
+X-Received: by 2002:a50:d517:: with SMTP id u23mr6148394edi.338.1602881575797;
+ Fri, 16 Oct 2020 13:52:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201015182654.lgtht5fd2aaunczu@tomti.i.net-space.pl>
+References: <20201004162908.3216898-1-martin.blumenstingl@googlemail.com>
+ <20201004162908.3216898-3-martin.blumenstingl@googlemail.com>
+ <CACRpkdbTw4UBw02RXX2prju45AsDZqPchhz=gdzsuT-QjhYHVw@mail.gmail.com>
+ <CAFBinCAFDhWp6mgUqyOjdMVBR5oZQVpmVPjhnZs1Xg16tFa0PQ@mail.gmail.com>
+ <CACRpkdZdwoQCxxqosn2jQPMXLDnTEjuxSWOxG-L1YGE33wbFrg@mail.gmail.com> <CAL_JsqLF8KHG6qZUJzdMyN5cX-ZvPDbuGSGZLOw=CkY90SUGLw@mail.gmail.com>
+In-Reply-To: <CAL_JsqLF8KHG6qZUJzdMyN5cX-ZvPDbuGSGZLOw=CkY90SUGLw@mail.gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 16 Oct 2020 22:52:44 +0200
+Message-ID: <CAFBinCBpDn1Vx1ZQdk-Gf-muuAyxjXb+zCkvW6jsH8jP6mDuTw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] dt-bindings: gpio: Add binding documentation for
+ Etron EJ168/EJ188/EJ198
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 08:26:54PM +0200, Daniel Kiper wrote:
-> 
-> I am discussing with Ross the other option. We can create
-> .rodata.mle_header section and put it at fixed offset as
-> kernel_info is. So, we would have, e.g.:
-> 
-> arch/x86/boot/compressed/vmlinux.lds.S:
->         .rodata.kernel_info KERNEL_INFO_OFFSET : {
->                 *(.rodata.kernel_info)
->         }
->         ASSERT(ABSOLUTE(kernel_info) == KERNEL_INFO_OFFSET, "kernel_info at bad address!")
-> 
->         .rodata.mle_header MLE_HEADER_OFFSET : {
->                 *(.rodata.mle_header)
->         }
->         ASSERT(ABSOLUTE(mle_header) == MLE_HEADER_OFFSET, "mle_header at bad address!")
-> 
-> arch/x86/boot/compressed/sl_stub.S:
-> #define mleh_rva(X) (((X) - mle_header) + MLE_HEADER_OFFSET)
-> 
->         .section ".rodata.mle_header", "a"
-> 
-> SYM_DATA_START(mle_header)
->         .long   0x9082ac5a    /* UUID0 */
->         .long   0x74a7476f    /* UUID1 */
->         .long   0xa2555c0f    /* UUID2 */
->         .long   0x42b651cb    /* UUID3 */
->         .long   0x00000034    /* MLE header size */
->         .long   0x00020002    /* MLE version 2.2 */
->         .long   mleh_rva(sl_stub_entry)    /* Linear entry point of MLE (virt. address) */
->         .long   0x00000000    /* First valid page of MLE */
->         .long   0x00000000    /* Offset within binary of first byte of MLE */
->         .long   0x00000000    /* Offset within binary of last byte + 1 of MLE */
->         .long   0x00000223    /* Bit vector of MLE-supported capabilities */
->         .long   0x00000000    /* Starting linear address of command line (unused) */
->         .long   0x00000000    /* Ending linear address of command line (unused) */
-> SYM_DATA_END(mle_header)
-> 
-> Of course MLE_HEADER_OFFSET has to be defined as a constant somewhere.
-> Anyway, is it acceptable?
-> 
-> There is also another problem. We have to put into mle_header size of
-> the Linux kernel image. Currently it is done by the bootloader but
-> I think it is not a role of the bootloader. The kernel image should
-> provide all data describing its properties and do not rely on the
-> bootloader to do that. Ross and I investigated various options but we
-> did not find a good/simple way to do that. Could you suggest how we
-> should do that or at least where we should take a look to get some
-> ideas?
-> 
-> Daniel
+Hi Linus,
 
-What exactly is the size you need here? Is it just the size of the
-protected mode image, that's startup_32 to _edata. Or is it the size of
-the whole bzImage file, or something else? I guess the same question
-applies to "first valid page of MLE" and "first byte of MLE", and the
-linear entry point -- are those all relative to startup_32 or do they
-need to be relative to the start of the bzImage, i.e. you have to add
-the size of the real-mode boot stub?
+On Wed, Oct 14, 2020 at 2:43 PM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Tue, Oct 13, 2020 at 8:27 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> >
+> > On Wed, Oct 7, 2020 at 9:58 PM Martin Blumenstingl
+> > <martin.blumenstingl@googlemail.com> wrote:
+> > > On Wed, Oct 7, 2020 at 11:19 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > > > On Sun, Oct 4, 2020 at 8:00 PM Martin Blumenstingl
+> > > > <martin.blumenstingl@googlemail.com> wrote:
+> > > >
+> > > > > +properties:
+> > > > > +  compatible:
+> > > > > +    enum:
+> > > > > +      - pci1b6f,7023
+> > > > > +      - pci1b6f,7052
+> > > >
+> > > > I think it is better to let the PCI driver for the whole hardware in
+> > > > drivers/usb/host/xhci-pci.c probe from the PCI configuration space
+> > > > numbers, and then add a gpio_chip to xhci-pci.c.
+> > >
+> > > to have everything consistent I will move the binding to
+> > > Documentation/devicetree/bindings/usb
+> >
+> > I do not understand why a PCI device would need a DT binding
+> > at all. They just probe from the magic number in the PCI
+> > config space, they spawn struct pci_dev PCI devices, not the
+> > type of platform devices coming out of the DT parser code.
+> > No DT compatible needed.
+>
+> Same reason for all the discoverable buses need bindings. There can be
+> parts that are not discoverable or connections with non-discoverable
+> nodes. There's also cases where the discoverable device has to be
+> powered, reset deasserted, clocks enabled, etc. first to be
+> discovered.
+>
+> If the GPIOs here had connections elsewhere in the DT, then we have to
+> describe the provider in DT.
+this is exactly what I need it for: that platform has hand-written
+.dts files and I need to wire up a GPIO LED
 
-If you need to include the size of the bzImage file, that's not known
-when the files in boot/compressed are built. It's only known after the
-real-mode stub is linked. arch/x86/boot/tools/build.c fills in various
-details in the setup header and creates the bzImage file, but it does
-not currently modify anything in the protected-mode portion of the
-compressed kernel (i.e. arch/x86/boot/compressed/vmlinux, which then
-gets converted to binary format as arch/x86/boot/vmlinux.bin), so it
-would need to be extended if you need to modify the MLE header to
-include the bzImage size or anything depending on the size of the
-real-mode stub.
+
+Best regards,
+Martin
