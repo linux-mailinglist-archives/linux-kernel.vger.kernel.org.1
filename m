@@ -2,276 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E31C290824
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F8C290828
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409947AbgJPPQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:16:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409936AbgJPPQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:16:13 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C31FD20897;
-        Fri, 16 Oct 2020 15:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602861371;
-        bh=c+YsK2J8DdpiJEfsMYPt+lGBjI0F4b9EJK07DSg8ZNE=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=2QLAX0eSdbAfraisiiiArZqpQyYJJwKwXBW/cPW7iWXcbTkOF9OVxKG7uEGOJYHL9
-         /hMy9HCcQwFLkrXrlRMFAqv2RVs1r1aB7fMMbu/kvN5cv0L9RK5diDP4Km4Lk/7Knp
-         cfxONxw92DbR/6CfwvXpdkkio2HZOVPtrzJcqeaU=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: [PATCH 4/4] CREDITS: remove trailing white spaces
-Date:   Fri, 16 Oct 2020 17:15:28 +0200
-Message-Id: <20201016151528.7553-4-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201016151528.7553-1-krzk@kernel.org>
-References: <20201016151528.7553-1-krzk@kernel.org>
+        id S2409956AbgJPPQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409901AbgJPPQZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 11:16:25 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F24C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:16:25 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b6so1236113pju.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:16:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=+gBbJKM527S8wrEw363kKHypxaaVMWtdRemMBbx8kok=;
+        b=lICo4UBHGmwCB8HeHziISCpIAjsyMrUp3h20nEHfTwKV+byfAJWh7IqAEjbngYJWqc
+         xlqZqgdWw3aGYaFdqqvt44GJNkgA2t8ZH/jb1OzqM3d0cY0tMD9H9RWcmB+tHLv4WkAm
+         5bCNBNLOUH5T8niOCYba55RCCZafCaOgttMJ6JeZGTMA9voZi7TITwzbWTVQD/hDqf2y
+         M7LPGpcd/MPTangKf6FXDMpQIWxkBLSZSEKE2afImMkK04xwkO+2OEegoL1irwKU9PIM
+         uXfr9n/E5bTgaOmt+OBleMj8Ydq/64RH/SsDZdlLPzt9LXxxZmmWzkuvNKtfJiney9/V
+         mspQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=+gBbJKM527S8wrEw363kKHypxaaVMWtdRemMBbx8kok=;
+        b=CFVyfpPhJ+k3+yCe9grleIR/0YzRgh60rGvDcxqbxUSuqxrdGANxWTT4YrybfuNhr8
+         k3VmTHre5zXWQJXHQluijaUxwwsL9e5c5yubGaYlFSTfsnkH0gBPeJkjsnVm7fpJBt09
+         B+8ZCPygYJREb/1SnWk2ibq89ISCxZ8OBFcJFrygRnh3vWyrtVD8KTiMneiaXql5RlO4
+         yJqIJFnr/C+d8Cnh1VO8spUSEiWebeSGGVvxXDKXUv3WbdOpWttoJKT9jvGr16EkpLkc
+         klBoTvC1x4SEF9ZSqQazHDthAX9cO4nhdpuAl1qHbjTsczp8iTlXIJUr4ywwn3lO+fzf
+         wu0g==
+X-Gm-Message-State: AOAM5308qLCmtmvku2wdZAcuu92hvUjOHEpJl7KDgd9N/u1H4+oxbFaA
+        dH137Krn/2yxvAAoYqPU9K4eaBu8SZKLisJL
+X-Google-Smtp-Source: ABdhPJy6chhmLFUq0EQasOHn3OGK8Bm7qii7qIrMkfILamn5LQ3v2fX14resYtZF+l8FFdneY24V0g==
+X-Received: by 2002:a17:902:860b:b029:d3:c430:7eb9 with SMTP id f11-20020a170902860bb02900d3c4307eb9mr4452275plo.9.1602861383984;
+        Fri, 16 Oct 2020 08:16:23 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id i30sm3349154pgb.81.2020.10.16.08.16.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 08:16:22 -0700 (PDT)
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH] task_work: cleanup notification modes
+Message-ID: <93292d5b-9124-d252-c81f-1f2cfbd60e7b@kernel.dk>
+Date:   Fri, 16 Oct 2020 09:16:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove trailing white spaces.  No functional/substantive change.
+A previous commit changed the notification mode from 0/1 to allowing
+0/1/TWA_SIGNAL. Clean this up properly, and define a proper enum for
+the notification mode. Now we have:
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+- TWA_NONE. This is 0, same as before the original change, meaning no
+  notification requested.
+- TWA_RESUME. This is 1, same as before the original change, meaning
+  that we use TIF_NOTIFY_RESUME.
+- TWA_SIGNAL. This uses TIF_SIGPENDING/JOBCTL_TASK_WORK for the
+  notification.
+
+Clean up all the callers, switching their 0/1/false/true to using the
+appropriate TWA_* mode for notifications.
+
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+
 ---
- CREDITS | 52 ++++++++++++++++++++++++++--------------------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
 
-diff --git a/CREDITS b/CREDITS
-index f5c924a09b74..748301954ab7 100644
---- a/CREDITS
-+++ b/CREDITS
-@@ -98,7 +98,7 @@ N: Erik Andersen
- E: andersen@codepoet.org
- W: https://www.codepoet.org/
- P: 1024D/30D39057 1BC4 2742 E885 E4DE 9301  0C82 5F9B 643E 30D3 9057
--D: Maintainer of ide-cd and Uniform CD-ROM driver, 
-+D: Maintainer of ide-cd and Uniform CD-ROM driver,
- D: ATAPI CD-Changer support, Major 2.1.x CD-ROM update.
- S: 352 North 525 East
- S: Springville, Utah 84663
-@@ -263,7 +263,7 @@ N: Paul Barton-Davis
- E: pbd@op.net
- D: Driver for WaveFront soundcards (Turtle Beach Maui, Tropez, Tropez+)
- D: Various bugfixes and changes to sound drivers
--S: USA 
-+S: USA
+As promised, here's the task_work notification cleanup patch.
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 1c08cb9eb9f6..4102b866e7c0 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1277,7 +1277,7 @@ static void queue_task_work(struct mce *m, int kill_it)
+ 	else
+ 		current->mce_kill_me.func = kill_me_maybe;
  
- N: Carlos Henrique Bauer
- E: chbauer@acm.org
-@@ -1205,7 +1205,7 @@ N: Daniel J. Frasnelli
- E: dfrasnel@alphalinux.org
- W: http://www.alphalinux.org/
- P: 1024/3EF87611 B9 F1 44 50 D3 E8 C2 80  DA E5 55 AA 56 7C 42 DA
--D: DEC Alpha hacker 
-+D: DEC Alpha hacker
- D: Miscellaneous bug squisher
+-	task_work_add(current, &current->mce_kill_me, true);
++	task_work_add(current, &current->mce_kill_me, TWA_RESUME);
+ }
  
- N: Jim Freeman
-@@ -1305,7 +1305,7 @@ S: P.O. Box 76, Epping
- S: New South Wales, 2121
- S: Australia
+ /*
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index b494187632b2..af323e2e3100 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -561,7 +561,7 @@ static int __rdtgroup_move_task(struct task_struct *tsk,
+ 	 * callback has been invoked.
+ 	 */
+ 	atomic_inc(&rdtgrp->waitcount);
+-	ret = task_work_add(tsk, &callback->work, true);
++	ret = task_work_add(tsk, &callback->work, TWA_RESUME);
+ 	if (ret) {
+ 		/*
+ 		 * Task is exiting. Drop the refcount and free the callback.
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index 81bf71b10d44..8360f8d6be65 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -879,7 +879,7 @@ static void ghes_proc_in_irq(struct irq_work *irq_work)
+ 			estatus_node->task_work.func = ghes_kick_task_work;
+ 			estatus_node->task_work_cpu = smp_processor_id();
+ 			ret = task_work_add(current, &estatus_node->task_work,
+-					    true);
++					    TWA_RESUME);
+ 			if (ret)
+ 				estatus_node->task_work.func = NULL;
+ 		}
+diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+index 4b9476521da6..b5117576792b 100644
+--- a/drivers/android/binder.c
++++ b/drivers/android/binder.c
+@@ -2229,7 +2229,7 @@ static void binder_deferred_fd_close(int fd)
+ 	__close_fd_get_file(fd, &twcb->file);
+ 	if (twcb->file) {
+ 		filp_close(twcb->file, current->files);
+-		task_work_add(current, &twcb->twork, true);
++		task_work_add(current, &twcb->twork, TWA_RESUME);
+ 	} else {
+ 		kfree(twcb);
+ 	}
+diff --git a/fs/file_table.c b/fs/file_table.c
+index 656647f9575a..709ada3151da 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -339,7 +339,7 @@ void fput_many(struct file *file, unsigned int refs)
  
--N: Carlos E. Gorges 
-+N: Carlos E. Gorges
- E: carlos@techlinux.com.br
- D: fix smp support on cmpci driver
- P: 2048G/EA3C4B19 FF31 33A6 0362 4915 B7EB  E541 17D0 0379 EA3C 4B19
-@@ -1346,7 +1346,7 @@ E: wgreathouse@smva.com
- E: wgreathouse@myfavoritei.com
- D: Current Belkin USB Serial Adapter F5U103 hacker
- D: Kernel hacker, embedded systems
--S: 7802 Fitzwater Road   
-+S: 7802 Fitzwater Road
- S: Brecksville, OH  44141-1334
- S: USA
+ 		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
+ 			init_task_work(&file->f_u.fu_rcuhead, ____fput);
+-			if (!task_work_add(task, &file->f_u.fu_rcuhead, true))
++			if (!task_work_add(task, &file->f_u.fu_rcuhead, TWA_RESUME))
+ 				return;
+ 			/*
+ 			 * After this task has run exit_task_work(),
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 2e1dc354cd08..16e1d0e0d9b9 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1756,7 +1756,7 @@ static void __io_free_req(struct io_kiocb *req)
+ 			struct task_struct *tsk;
  
-@@ -1387,7 +1387,7 @@ N: Grant Guenther
- E: grant@torque.net
- W: http://www.torque.net/linux-pp.html
- D: original author of ppa driver for parallel port ZIP drive
--D: original architect of the parallel-port sharing scheme 
-+D: original architect of the parallel-port sharing scheme
- D: PARIDE subsystem: drivers for parallel port IDE & ATAPI devices
- S: 44 St. Joseph Street, Suite 506
- S: Toronto, Ontario, M4Y 2W4
-@@ -1529,7 +1529,7 @@ N: Benjamin Herrenschmidt
- E: benh@kernel.crashing.org
- D: Various parts of PPC/PPC64 & PowerMac
- S: 312/107 Canberra Avenue
--S: Griffith, ACT 2603 
-+S: Griffith, ACT 2603
- S: Australia
+ 			tsk = io_wq_get_task(req->ctx->io_wq);
+-			task_work_add(tsk, &req->task_work, 0);
++			task_work_add(tsk, &req->task_work, TWA_NONE);
+ 		}
+ 	}
+ }
+@@ -1905,7 +1905,8 @@ static int io_req_task_work_add(struct io_kiocb *req, bool twa_signal_ok)
+ {
+ 	struct task_struct *tsk = req->task;
+ 	struct io_ring_ctx *ctx = req->ctx;
+-	int ret, notify;
++	enum task_work_notify_mode notify;
++	int ret;
  
- N: Andreas Herrmann
-@@ -1831,7 +1831,7 @@ S: Hungary
- N: Bernhard Kaindl
- E: bkaindl@netway.at
- E: edv@bartelt.via.at
--D: Author of a menu based configuration tool, kmenu, which 
-+D: Author of a menu based configuration tool, kmenu, which
- D: is the predecessor of 'make menuconfig' and 'make xconfig'.
- D: digiboard driver update(modularisation work and 2.1.x upd)
- S: Tallak 95
-@@ -2022,7 +2022,7 @@ W: http://www.xos.nl/
- D: IP transparent proxy support
- S: X/OS Experts in Open Systems BV
- S: Kruislaan 419
--S: 1098 VA Amsterdam 
-+S: 1098 VA Amsterdam
- S: The Netherlands
+ 	if (tsk->flags & PF_EXITING)
+ 		return -ESRCH;
+@@ -1916,7 +1917,7 @@ static int io_req_task_work_add(struct io_kiocb *req, bool twa_signal_ok)
+ 	 * processing task_work. There's no reliable way to tell if TWA_RESUME
+ 	 * will do the job.
+ 	 */
+-	notify = 0;
++	notify = TWA_NONE;
+ 	if (!(ctx->flags & IORING_SETUP_SQPOLL) && twa_signal_ok)
+ 		notify = TWA_SIGNAL;
  
- N: Goran Koruga
-@@ -2094,7 +2094,7 @@ S: Germany
+@@ -1985,7 +1986,7 @@ static void io_req_task_queue(struct io_kiocb *req)
  
- N: Andrzej M. Krzysztofowicz
- E: ankry@mif.pg.gda.pl
--D: Some 8-bit XT disk driver and devfs hacking 
-+D: Some 8-bit XT disk driver and devfs hacking
- D: Aladdin 1533/1543(C) chipset IDE
- D: PIIX chipset IDE
- S: ul. Matemblewska 1B/10
-@@ -2469,7 +2469,7 @@ E: mge@EZ-Darmstadt.Telekom.de
- D: Logical Volume Manager
- S: Bartningstr. 12
- S: 64289 Darmstadt
--S: Germany 
-+S: Germany
+ 		init_task_work(&req->task_work, io_req_task_cancel);
+ 		tsk = io_wq_get_task(req->ctx->io_wq);
+-		task_work_add(tsk, &req->task_work, 0);
++		task_work_add(tsk, &req->task_work, TWA_NONE);
+ 		wake_up_process(tsk);
+ 	}
+ }
+@@ -3199,7 +3200,7 @@ static int io_async_buf_func(struct wait_queue_entry *wait, unsigned mode,
+ 		/* queue just for cancelation */
+ 		init_task_work(&req->task_work, io_req_task_cancel);
+ 		tsk = io_wq_get_task(req->ctx->io_wq);
+-		task_work_add(tsk, &req->task_work, 0);
++		task_work_add(tsk, &req->task_work, TWA_NONE);
+ 		wake_up_process(tsk);
+ 	}
+ 	return 1;
+@@ -4765,7 +4766,7 @@ static int __io_async_wake(struct io_kiocb *req, struct io_poll_iocb *poll,
  
- N: Mark W. McClelland
- E: mmcclell@bigfoot.com
-@@ -2553,7 +2553,7 @@ E: meskes@debian.org
- P: 1024/04B6E8F5 6C 77 33 CA CC D6 22 03  AB AB 15 A3 AE AD 39 7D
- D: Kernel hacker. PostgreSQL hacker. Software watchdog daemon.
- D: Maintainer of several Debian packages
--S: Th.-Heuss-Str. 61 
-+S: Th.-Heuss-Str. 61
- S: D-41812 Erkelenz
- S: Germany
+ 		WRITE_ONCE(poll->canceled, true);
+ 		tsk = io_wq_get_task(req->ctx->io_wq);
+-		task_work_add(tsk, &req->task_work, 0);
++		task_work_add(tsk, &req->task_work, TWA_NONE);
+ 		wake_up_process(tsk);
+ 	}
+ 	return 1;
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 294e05a13d17..1a75336668a3 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -1191,7 +1191,7 @@ static void mntput_no_expire(struct mount *mnt)
+ 		struct task_struct *task = current;
+ 		if (likely(!(task->flags & PF_KTHREAD))) {
+ 			init_task_work(&mnt->mnt_rcu, __cleanup_mnt);
+-			if (!task_work_add(task, &mnt->mnt_rcu, true))
++			if (!task_work_add(task, &mnt->mnt_rcu, TWA_RESUME))
+ 				return;
+ 		}
+ 		if (llist_add(&mnt->mnt_llist, &delayed_mntput_list))
+diff --git a/include/linux/task_work.h b/include/linux/task_work.h
+index 0fb93aafa478..0d848a1e9e62 100644
+--- a/include/linux/task_work.h
++++ b/include/linux/task_work.h
+@@ -13,9 +13,14 @@ init_task_work(struct callback_head *twork, task_work_func_t func)
+ 	twork->func = func;
+ }
  
-@@ -2791,7 +2791,7 @@ E: neuffer@goofy.zdv.uni-mainz.de
- W: http://www.i-Connect.Net/~mike/
- D: Developer and maintainer of the EATA-DMA SCSI driver
- D: Co-developer EATA-PIO SCSI driver
--D: /proc/scsi and assorted other snippets 
-+D: /proc/scsi and assorted other snippets
- S: Zum Schiersteiner Grund 2
- S: 55127 Mainz
- S: Germany
-@@ -3029,7 +3029,7 @@ D: Embedded PowerPC 4xx/6xx/7xx/74xx support
- S: Chandler, Arizona 85249
- S: USA
+-#define TWA_RESUME	1
+-#define TWA_SIGNAL	2
+-int task_work_add(struct task_struct *task, struct callback_head *twork, int);
++enum task_work_notify_mode {
++	TWA_NONE,
++	TWA_RESUME,
++	TWA_SIGNAL,
++};
++
++int task_work_add(struct task_struct *task, struct callback_head *twork,
++			enum task_work_notify_mode mode);
  
--N: Frederic Potter 
-+N: Frederic Potter
- E: fpotter@cirpack.com
- D: Some PCI kernel support
+ struct callback_head *task_work_cancel(struct task_struct *, task_work_func_t);
+ void task_work_run(void);
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 0e18aaf23a7b..00b0358739ab 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -1823,7 +1823,7 @@ void uprobe_copy_process(struct task_struct *t, unsigned long flags)
  
-@@ -3462,21 +3462,21 @@ S: Klosterweg 28 / i309
- S: 76131 Karlsruhe
- S: Germany
+ 	t->utask->dup_xol_addr = area->vaddr;
+ 	init_task_work(&t->utask->dup_xol_work, dup_xol_work);
+-	task_work_add(t, &t->utask->dup_xol_work, true);
++	task_work_add(t, &t->utask->dup_xol_work, TWA_RESUME);
+ }
  
--N: James Simmons 
-+N: James Simmons
- E: jsimmons@infradead.org
--E: jsimmons@users.sf.net 
-+E: jsimmons@users.sf.net
- D: Frame buffer device maintainer
- D: input layer development
- D: tty/console layer
--D: various mipsel devices 
--S: 115 Carmel Avenue 
-+D: various mipsel devices
-+S: 115 Carmel Avenue
- S: El Cerrito CA 94530
--S: USA 
-+S: USA
+ /*
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index 5df903fccb60..c460e0496006 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -1162,7 +1162,7 @@ static int irq_thread(void *data)
+ 		handler_fn = irq_thread_fn;
  
- N: Jaspreet Singh
- E: jaspreet@sangoma.com
- W: www.sangoma.com
--D: WANPIPE drivers & API Support for Sangoma S508/FT1 cards 
-+D: WANPIPE drivers & API Support for Sangoma S508/FT1 cards
- S: Sangoma Technologies Inc.,
- S: 1001 Denison Street
- S: Suite 101
-@@ -3500,7 +3500,7 @@ N: Craig Small
- E: csmall@triode.apana.org.au
- E: vk2xlz@gonzo.vk2xlz.ampr.org (packet radio)
- D: Gracilis PackeTwin device driver
--D: RSPF daemon 
-+D: RSPF daemon
- S: 10 Stockalls Place
- S: Minto, NSW, 2566
- S: Australia
-@@ -3710,7 +3710,7 @@ N: Tsu-Sheng Tsao
- E: tsusheng@scf.usc.edu
- D: IGMP(Internet Group Management Protocol) version 2
- S: 2F 14 ALY 31 LN 166 SEC 1 SHIH-PEI RD
--S: Taipei 
-+S: Taipei
- S: Taiwan 112
- S: Republic of China
- S: 24335 Delta Drive
-@@ -3871,7 +3871,7 @@ D: Produced the Slackware distribution, updated the SVGAlib
- D: patches for ghostscript, worked on color 'ls', etc.
- S: 301 15th Street S.
- S: Moorhead, Minnesota 56560
--S: USA 
-+S: USA
+ 	init_task_work(&on_exit_work, irq_thread_dtor);
+-	task_work_add(current, &on_exit_work, false);
++	task_work_add(current, &on_exit_work, TWA_NONE);
  
- N: Jos Vos
- E: jos@xos.nl
-@@ -3879,7 +3879,7 @@ W: http://www.xos.nl/
- D: Various IP firewall updates, ipfwadm
- S: X/OS Experts in Open Systems BV
- S: Kruislaan 419
--S: 1098 VA Amsterdam 
-+S: 1098 VA Amsterdam
- S: The Netherlands
+ 	irq_thread_check_affinity(desc, action);
  
- N: Jeroen Vreeken
-@@ -4117,7 +4117,7 @@ S: People's Repulic of China
- N: Victor Yodaiken
- E: yodaiken@fsmlabs.com
- D: RTLinux (RealTime Linux)
--S: POB 1822 
-+S: POB 1822
- S: Socorro NM, 87801
- S: USA
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index aa4c6227cd6d..e17012be4d14 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -2928,7 +2928,7 @@ static void task_tick_numa(struct rq *rq, struct task_struct *curr)
+ 		curr->node_stamp += period;
  
-@@ -4215,7 +4215,7 @@ D: EISA/sysfs subsystem
- S: France
+ 		if (!time_before(jiffies, curr->mm->numa_next_scan))
+-			task_work_add(curr, work, true);
++			task_work_add(curr, work, TWA_RESUME);
+ 	}
+ }
  
- # Don't add your name here, unless you really _are_ after Marc
--# alphabetically. Leonard used to be very proud of being the 
-+# alphabetically. Leonard used to be very proud of being the
- # last entry, and he'll get positively pissed if he can't even
- # be second-to-last.  (and this file really _is_ supposed to be
- # in alphabetic order)
+diff --git a/kernel/task_work.c b/kernel/task_work.c
+index 613b2d634af8..6aad749485de 100644
+--- a/kernel/task_work.c
++++ b/kernel/task_work.c
+@@ -9,7 +9,7 @@ static struct callback_head work_exited; /* all we need is ->next == NULL */
+  * task_work_add - ask the @task to execute @work->func()
+  * @task: the task which should run the callback
+  * @work: the callback to run
+- * @notify: send the notification if true
++ * @notify: send chosen notification, if any
+  *
+  * Queue @work for task_work_run() below and notify the @task if @notify.
+  * Fails if the @task is exiting/exited and thus it can't process this @work.
+@@ -24,8 +24,8 @@ static struct callback_head work_exited; /* all we need is ->next == NULL */
+  * RETURNS:
+  * 0 if succeeds or -ESRCH.
+  */
+-int
+-task_work_add(struct task_struct *task, struct callback_head *work, int notify)
++int task_work_add(struct task_struct *task, struct callback_head *work,
++		  enum task_work_notify_mode notify)
+ {
+ 	struct callback_head *head;
+ 	unsigned long flags;
+@@ -38,6 +38,8 @@ task_work_add(struct task_struct *task, struct callback_head *work, int notify)
+ 	} while (cmpxchg(&task->task_works, head, work) != head);
+ 
+ 	switch (notify) {
++	case TWA_NONE:
++		break;
+ 	case TWA_RESUME:
+ 		set_notify_resume(task);
+ 		break;
+diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
+index e26bbccda7cc..61a614c21b9b 100644
+--- a/security/keys/keyctl.c
++++ b/security/keys/keyctl.c
+@@ -1693,7 +1693,7 @@ long keyctl_session_to_parent(void)
+ 
+ 	/* the replacement session keyring is applied just prior to userspace
+ 	 * restarting */
+-	ret = task_work_add(parent, newwork, true);
++	ret = task_work_add(parent, newwork, TWA_RESUME);
+ 	if (!ret)
+ 		newwork = NULL;
+ unlock:
+diff --git a/security/yama/yama_lsm.c b/security/yama/yama_lsm.c
+index 536c99646f6a..06e226166aab 100644
+--- a/security/yama/yama_lsm.c
++++ b/security/yama/yama_lsm.c
+@@ -99,7 +99,7 @@ static void report_access(const char *access, struct task_struct *target,
+ 	info->access = access;
+ 	info->target = target;
+ 	info->agent = agent;
+-	if (task_work_add(current, &info->work, true) == 0)
++	if (task_work_add(current, &info->work, TWA_RESUME) == 0)
+ 		return; /* success */
+ 
+ 	WARN(1, "report_access called from exiting task");
+
 -- 
-2.25.1
+Jens Axboe
 
