@@ -2,124 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212ED290C48
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 21:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B129E290C35
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 21:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411017AbgJPT2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 15:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
+        id S2410825AbgJPTZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 15:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406432AbgJPT2W (ORCPT
+        with ESMTP id S2393104AbgJPTZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 15:28:22 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E792C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:28:22 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id f21so3699259ljh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:28:22 -0700 (PDT)
+        Fri, 16 Oct 2020 15:25:57 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9524C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:25:57 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id u3so2045538pjr.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:25:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MRVo2b4ecg4fSLmj2WDTdho466tlop5d3GW1xgN23Yc=;
-        b=LtWF4l2zb33bsp8mIFoo0zYwm+TW2Ly3PPuLPnO3A6OUPkIxlrpqhj+yE02ERp9D8e
-         0A0I6jUZa/WGIdYT0aSYrO4r6yS7SV3b+44IbPu6gddOdh4PBi/bfl/WzLB9bNZRZpZK
-         br4Z/e7aE9SCW3jSJY/PBQYNJS9XMkpaijjNA=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OXk1jfBaMHbzQu0BqQr7WofN8pSj9l5vUka1ouSx6Wc=;
+        b=GgLiO+wxevsX71YQYXp7fxr+ivsispxIh7DFqcdnGRxSfJDAPCPhNUhIDg/vyuD0bo
+         VYNmS8+YRoxz5z0zU2lC8HKdQhqJ3Jw/bW21rEQoWJc1/gmhKHkDJ87TQZrnE8X7C2CB
+         IyvCl7dqXHv4kDczugYjPhlUVbui404ozz0io=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MRVo2b4ecg4fSLmj2WDTdho466tlop5d3GW1xgN23Yc=;
-        b=FzpfjWxQ0EajZEPfXQYBg8KRrPd9ruOnod2Syz/T8RSRv8iJGF3jf1V/R+hSQ8Gq7b
-         hhKJcxrhv96qxHACLgiHnS2OBemmHMeQfkI/82lyNF7Qcb563e/mQzAfd+xgu48CJ+rB
-         nO489Sc+cIch03qKAtHiSsAEBywQiavfaV+XwvGjK58CkjkMCXEVBXrIyqulBu7ggCO8
-         fXvQBf9Ef/Qxp0EF05DKatU5wLAlx6+Ydk70DoeHhjdKsdjiD+KOhynp9sZB3v/kA7/J
-         2PIa7DuKVxJ4SL/IrNZqXOBZ9pOHIVpY5y00u4aFNPAz4i1j4RsLiGuhSW1fhd619gmI
-         FboA==
-X-Gm-Message-State: AOAM530dJbZruENAcjFKFbxHBa9oeTT47rLbj846bkZgKM98zUiaSHlj
-        5F9TnnVO2wHD/m80bV9E4OezM81h1zPjlw==
-X-Google-Smtp-Source: ABdhPJxiUAd/cQryWpU95BxttnpDrqurWaPkg17KIXESxEg82ZwciktU9O6J7B8DS2dqUaBrA13pEQ==
-X-Received: by 2002:a2e:1614:: with SMTP id w20mr2346851ljd.103.1602876500313;
-        Fri, 16 Oct 2020 12:28:20 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id t17sm1093002lff.147.2020.10.16.12.28.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 12:28:20 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id c141so4383156lfg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:28:19 -0700 (PDT)
-X-Received: by 2002:ac2:5f48:: with SMTP id 8mr2066193lfz.344.1602876159691;
- Fri, 16 Oct 2020 12:22:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OXk1jfBaMHbzQu0BqQr7WofN8pSj9l5vUka1ouSx6Wc=;
+        b=YTWOknqwclFqAE7LeKqLBDX4GZDUaFdGqnTeetzfCRaU0nKP9HfMUng2K3hKwm+1z8
+         /F1Ced4QZGr8we+kRy9wAOS8VZlWNPg6M/c0ezWCJ7VNudTPhB12crqQvaOPTC94nVbs
+         I6LNwwh9YWoYMbEu8ZtMtrSnXh1BnWBX3ZGj+WfsgCY+WWvpEaUzlTrPY4KLc6T4GaI+
+         K8Pzxc8hW3R/z6ERK7vB5v8iyO8VKhgLjp8AkYiT9qefHpD6zlZms6i9LDjmUg7JZ8qQ
+         QRSk5y8kiXuo0uYEgcKcWo3tvWm0D/ZUWlfM2Ln4C+cjGj4yjJkg4sBpaOXUJiTiyTRi
+         UC/g==
+X-Gm-Message-State: AOAM531wKyRkErXkVUj4yVcrxctW9K+iZdWisuCuwtZtDViAv0BaZFUg
+        veC+ZTGYgzjFa8r0mmjo0kCRzuBgaPMlfg==
+X-Google-Smtp-Source: ABdhPJx94/o/V5/ZWeAagrf96SWc3/wMDS0CxIjbADfA4+9mpVLezx3y3aVEvNSFSsQoBhbJaeZDHg==
+X-Received: by 2002:a17:902:be0c:b029:d2:8ceb:f39c with SMTP id r12-20020a170902be0cb02900d28cebf39cmr5538086pls.71.1602876357089;
+        Fri, 16 Oct 2020 12:25:57 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 78sm3661187pfz.211.2020.10.16.12.25.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 12:25:56 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 12:25:55 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Petr Mladek <pmladek@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Fabian Frederick <fabf@skynet.be>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] reboot: fix overflow parsing reboot cpu number
+Message-ID: <202010161225.393710E4@keescook>
+References: <20201016180907.171957-1-mcroce@linux.microsoft.com>
+ <20201016180907.171957-2-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
-References: <87a6wmzwco.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87a6wmzwco.fsf@mpe.ellerman.id.au>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 16 Oct 2020 12:22:23 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjTwLKR1YhVHv5UzvCag5jxBeKVxLLxN9-CoxQYhi_=Kw@mail.gmail.com>
-Message-ID: <CAHk-=wjTwLKR1YhVHv5UzvCag5jxBeKVxLLxN9-CoxQYhi_=Kw@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.10-1 tag
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     ajd@linux.ibm.com, "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        atrajeev@linux.vnet.ibm.com, bauerman@linux.ibm.com,
-        biwen.li@nxp.com, Qian Cai <cai@lca.pw>, cheloha@linux.ibm.com,
-        Christophe Leroy <christophe.leroy@csgroup.eu>, clg@kaod.org,
-        Colin King <colin.king@canonical.com>,
-        David Miller <davem@davemloft.net>,
-        Daniel Axtens <dja@axtens.net>, ego@linux.vnet.ibm.com,
-        fbarrat@linux.ibm.com, fthain@telegraphics.com.au,
-        gromero@linux.ibm.com, Christoph Hellwig <hch@lst.de>,
-        hofrat@osadl.org, jniethe5@gmail.com,
-        Joel Stanley <joel@jms.id.au>, kjain@linux.ibm.com,
-        leobras.c@gmail.com, Li Yang <leoyang.li@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        liushixin2@huawei.com, mahesh@linux.ibm.com,
-        miaoqinglang@huawei.com, mrochs@linux.ibm.com,
-        nathanl@linux.ibm.com,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Russell Currey <ruscur@russell.cc>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Stephen Kitt <steve@sk2.org>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>, wangwensheng4@huawei.com,
-        Wolfram Sang <wsa@kernel.org>, yanaijie@huawei.com,
-        yangyingliang@huawei.com, zhengbin <zhengbin13@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016180907.171957-2-mcroce@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 8:24 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
->
-> Just two minor conflicts I'm aware of. The only slight subtlety is the conflict
-> in kasan_init() where "int ret" needs to move out of the for_each_mem_range()
-> and up to the function scope.
+On Fri, Oct 16, 2020 at 08:09:06PM +0200, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
+> 
+> Limit the CPU number to num_possible_cpus(), because setting it
+> to a value lower than INT_MAX but higher than NR_CPUS produces the
+> following error on reboot and shutdown:
+> 
+>     BUG: unable to handle page fault for address: ffffffff90ab1bb0
+>     #PF: supervisor read access in kernel mode
+>     #PF: error_code(0x0000) - not-present page
+>     PGD 1c09067 P4D 1c09067 PUD 1c0a063 PMD 0
+>     Oops: 0000 [#1] SMP
+>     CPU: 1 PID: 1 Comm: systemd-shutdow Not tainted 5.9.0-rc8-kvm #110
+>     Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+>     RIP: 0010:migrate_to_reboot_cpu+0xe/0x60
+>     Code: ea ea 00 48 89 fa 48 c7 c7 30 57 f1 81 e9 fa ef ff ff 66 2e 0f 1f 84 00 00 00 00 00 53 8b 1d d5 ea ea 00 e8 14 33 fe ff 89 da <48> 0f a3 15 ea fc bd 00 48 89 d0 73 29 89 c2 c1 e8 06 65 48 8b 3c
+>     RSP: 0018:ffffc90000013e08 EFLAGS: 00010246
+>     RAX: ffff88801f0a0000 RBX: 0000000077359400 RCX: 0000000000000000
+>     RDX: 0000000077359400 RSI: 0000000000000002 RDI: ffffffff81c199e0
+>     RBP: ffffffff81c1e3c0 R08: ffff88801f41f000 R09: ffffffff81c1e348
+>     R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+>     R13: 00007f32bedf8830 R14: 00000000fee1dead R15: 0000000000000000
+>     FS:  00007f32bedf8980(0000) GS:ffff88801f480000(0000) knlGS:0000000000000000
+>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: ffffffff90ab1bb0 CR3: 000000001d057000 CR4: 00000000000006a0
+>     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>     Call Trace:
+>     __do_sys_reboot.cold+0x34/0x5b
+>     ? vfs_writev+0x92/0xc0
+>     ? do_writev+0x52/0xd0
+>     do_syscall_64+0x2d/0x40
+>     entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>     RIP: 0033:0x7f32bfaaecd3
+>     Code: 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 89 fa be 69 19 12 28 bf ad de e1 fe b8 a9 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 05 c3 0f 1f 40 00 48 8b 15 89 81 0c 00 f7 d8
+>     RSP: 002b:00007fff6265fb58 EFLAGS: 00000202 ORIG_RAX: 00000000000000a9
+>     RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f32bfaaecd3
+>     RDX: 0000000001234567 RSI: 0000000028121969 RDI: 00000000fee1dead
+>     RBP: 0000000000000000 R08: 0000000000008020 R09: 00007fff6265ef60
+>     R10: 00007f32bedf8830 R11: 0000000000000202 R12: 0000000000000000
+>     R13: 0000557bba2c51c0 R14: 0000000000000000 R15: 00007fff6265fbc8
+>     CR2: ffffffff90ab1bb0
+>     ---[ end trace b813e80157136563 ]---
+>     RIP: 0010:migrate_to_reboot_cpu+0xe/0x60
+>     Code: ea ea 00 48 89 fa 48 c7 c7 30 57 f1 81 e9 fa ef ff ff 66 2e 0f 1f 84 00 00 00 00 00 53 8b 1d d5 ea ea 00 e8 14 33 fe ff 89 da <48> 0f a3 15 ea fc bd 00 48 89 d0 73 29 89 c2 c1 e8 06 65 48 8b 3c
+>     RSP: 0018:ffffc90000013e08 EFLAGS: 00010246
+>     RAX: ffff88801f0a0000 RBX: 0000000077359400 RCX: 0000000000000000
+>     RDX: 0000000077359400 RSI: 0000000000000002 RDI: ffffffff81c199e0
+>     RBP: ffffffff81c1e3c0 R08: ffff88801f41f000 R09: ffffffff81c1e348
+>     R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+>     R13: 00007f32bedf8830 R14: 00000000fee1dead R15: 0000000000000000
+>     FS:  00007f32bedf8980(0000) GS:ffff88801f480000(0000) knlGS:0000000000000000
+>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: ffffffff90ab1bb0 CR3: 000000001d057000 CR4: 00000000000006a0
+>     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>     Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
+>     Kernel Offset: disabled
+>     ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009 ]---
+> 
+> Fixes: 1b3a5d02ee07 ("reboot: move arch/x86 reboot= handling to generic kernel")
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 
-Well, there was also a conflict for the dependencies of OCXL.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-I resolved that by ruthlessly simplifying the dependency:
-
--       depends on PPC_POWERNV && PCI && EEH && HOTPLUG_PCI_POWERNV
- -      depends on PPC_POWERNV && PCI && EEH && PPC_XIVE_NATIVE
-++      depends on HOTPLUG_PCI_POWERNV
-
-because all the other dependencies seem to be pointless.
-
-HOTPLUG_PCI_POWERNV already has a
-
-        depends on PPC_POWERNV && EEH
-
-so there's no point in repeating those.
-
-And PPC_XIVE_NATIVE is selected by PPC_POWERNV, so if PPC_POWERNV, we
-know PPC_XIVE_NATIVE is set.
-
-Maybe I missed something strange, so I'm just letting you know so you
-can blame me if I broke something.
-
-              Linus
+-- 
+Kees Cook
