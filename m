@@ -2,163 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7577129065E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A16029065F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408115AbgJPNdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45622 "EHLO
+        id S2408134AbgJPNdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407424AbgJPNdU (ORCPT
+        with ESMTP id S2408036AbgJPNdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:33:20 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529C6C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:33:19 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id j18so1534440pfa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:33:19 -0700 (PDT)
+        Fri, 16 Oct 2020 09:33:37 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A56BC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:33:37 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id v8so1360175plz.14
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:33:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XId5jF20WoJucd7UO/O4pOGAuuKjSwAQsDiyHWbeAK0=;
-        b=0bNM9NwPbtFkSdLDBoUo/aM0G5yRT9dB58kuUATJYEA+QUGkwEChc5rGMnj64wNBfN
-         e6ZW+CZTl+f4EA4jFl46ZxGdOQaROglNJPCMalxHq/XvwbbsniMMPPk2CcjnHRKOBbF+
-         T95R6sXAf+6TchEmAak4fWzVqSVxJYCNeBocnyg25iU+Xs9hG5tTcE5Fhuxk3yTo9ISH
-         Oy88F3tdBPv9XbUX9xyWTIDl/8RYO+DbXeetRLvmveStTW/E7E5a6vAnsXPZPmxaydb3
-         TluEKL8e+zjdrtKGRH+X2Zt2Nfp8Aub80XUqOr4HZqQcC7r7InD6Gz8oRYsevTkzBLy8
-         f1xg==
+        d=google.com; s=20161025;
+        h=sender:mime-version:message-id:date:subject:from:to:cc;
+        bh=KcIutrRAI690Kuxs6Ggg953kyLX5Sg3gj/e4pIHhVgA=;
+        b=Me+/3P5ngmHekvdLvG/5LNWF9JOFgy0gp1tj8Qzwpw/LCk9rEUIDm6FeFA/KulV1uK
+         hehBlKdcquNszWV2o1IvuuzYXjoCGuyPH2S9omIAaImZeFCtufZg4u7bWVamKHnTnLgO
+         T7CIpFgFIBhnyR1XPQ5jJBxz2GnBcWKr6ygAlemMfednCbBzwBhpDQInJyZsANzS7GEg
+         s0l3obUarohtvhThj7wOmTc8nk6gpKnQ8MfIlMOa8P8ni8Yk81QHtYmSZQfhkZyYu3LO
+         p9eaqzb6GSYlT4C0q5LyHZ2iXuTUM8s6zAOwVeSawIZdmThX9wrhpds7UlBvXb4Efe9Q
+         6sKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XId5jF20WoJucd7UO/O4pOGAuuKjSwAQsDiyHWbeAK0=;
-        b=XWfCTD3XA+kB7slET8IHIcq//46JgFOWh6tkB93QnhTdi6H3BlZYbRvkjlpXF3Njjv
-         sC4g8utLG2nwg9/0wdVpuA6rC8Xlin7UQL8ChXCpUQ0/c5XzKgJnz6LO+J0f5sUNMTGz
-         L6N0/OT+VD/IEI8T/wWYJvbnElJgAeof548YLZIH6a0qtzGiqVf5E5BOnPnD92U5YCD4
-         gfRp+Kclf4k0YO0063Ui9i00O5UX6LgCe8CHQBbqDYll6RsPq7NvF2AkK3roxl6e9GhB
-         uA6j/0+WOavLRxaAfa+fOgYarb3jzhOlp17YW2DiO879gLkcS8Dq+vihC/W3owN8CSFi
-         9ZTQ==
-X-Gm-Message-State: AOAM531mOgzmoqrQYjaYzVIW4/vRTv/UAWNyS3XXubpESeAwELXXnbP4
-        Wi3pT9vYrMUOal32wgd0T6CHqA==
-X-Google-Smtp-Source: ABdhPJyKqfI5qKnih+7nbP6TbkIQesNEOH+MdKaLZsEubZNXQk/tyXddMMNizkeyBJ6DPe9ocgaoEQ==
-X-Received: by 2002:a05:6a00:16d1:b029:157:7d81:432d with SMTP id l17-20020a056a0016d1b02901577d81432dmr3759531pfc.38.1602855198763;
-        Fri, 16 Oct 2020 06:33:18 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id k9sm2978122pfi.188.2020.10.16.06.33.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 06:33:18 -0700 (PDT)
-Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org, Roman Gershman <romger@amazon.com>
-References: <20201015131701.511523-1-axboe@kernel.dk>
- <20201015131701.511523-6-axboe@kernel.dk> <20201015154953.GM24156@redhat.com>
- <e17cd91e-97b2-1eae-964b-fc90f8f9ef31@kernel.dk>
- <87a6wmv93v.fsf@nanos.tec.linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <c7da5280-f283-2c89-f6f2-be7d84c3675a@kernel.dk>
-Date:   Fri, 16 Oct 2020 07:33:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:mime-version:message-id:date:subject:from
+         :to:cc;
+        bh=KcIutrRAI690Kuxs6Ggg953kyLX5Sg3gj/e4pIHhVgA=;
+        b=HXTI5Mx/pstfAUcOGtGqhLneweOD6Mhud+fH1M+w8mwZGfvl+28oE+0Mdi0jY5tdd4
+         86zkPWBARxW8+YZANEGfv1E75kHp4hBIaDjMcB4BwweScyvxB0jK2+6TsyT1WQ8+4Ly0
+         WGzq7OgfPCFW2X++ICue2YKUciMO7WiYYHsoOQoH1CqGkSzMgeF30iwWN9e6UBwgbOcy
+         pIn4qUKvRkxJXyNmqsrTIymK4H+N0qpY/w35pjS2zxJYfWC+i19L6eaZSX7ePLr2l3KA
+         RR3DSkmHRyNyFkWpawFO+w+xwewVWBNa+01q18EneqH/F2sahA/8+RZcP15MXxyzIKGj
+         JfZA==
+X-Gm-Message-State: AOAM531ZiN6762k6U5w76JmTF0y42W7wlDo6qqFwSj9IZ1fN5vKm9ChY
+        M366MezAPR1RImj2b65AN/mKWQ6FXqMe5t/l
+X-Google-Smtp-Source: ABdhPJyDqt0Arf5tyMl1YZBfCGnMk0e7itWn7hCVqqkMfa88u0f/qFiKDj57Rz8Lbh9cZSoo+BJ2RJ8y1JC1eMj8
+Sender: "josephjang via sendgmr" 
+        <josephjang@josephjang-p920.ntc.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <87a6wmv93v.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:7220:84ff:fe09:41e0])
+ (user=josephjang job=sendgmr) by 2002:a17:902:aa8b:b029:d3:b362:7936 with
+ SMTP id d11-20020a170902aa8bb02900d3b3627936mr3905140plr.11.1602855216579;
+ Fri, 16 Oct 2020 06:33:36 -0700 (PDT)
+Message-ID: <000000000000cfe69e05b1c9cf0e@google.com>
+Date:   Fri, 16 Oct 2020 13:33:36 +0000
+Subject: [PATCH] power: suspend: Add suspend timeout handler
+From:   <josephjang@google.com>
+To:     rafael@kernel.org, gregkh@linuxfoundation.org, rjw@rjwysocki.net,
+        pavel@ucw.cz, len.brown@intel.com, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        jonglin@google.com, woodylin@google.com, markcheng@google.com,
+        josephjang@google.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/20 3:00 AM, Thomas Gleixner wrote:
-> On Thu, Oct 15 2020 at 12:39, Jens Axboe wrote:
->> On 10/15/20 9:49 AM, Oleg Nesterov wrote:
->>> You can simply nack the patch which adds TIF_NOTIFY_SIGNAL to
->>> arch/xxx/include/asm/thread_info.h.
-> 
-> As if that is going to change anything...
-> 
->> This seems to be the biggest area of contention right now. Just to
->> summarize, we have two options:
->>
->> 1) We leave the CONFIG_GENERIC_ENTRY requirement, which means that the
->>    rest of the cleanups otherwise enabled by this series will not be
->>    able to move forward until the very last arch is converted to the
->>    generic entry code.
->>
->> 2) We go back to NOT having the CONFIG_GENERIC_ENTRY requirement, and
->>    archs can easily opt-in to TIF_NOTIFY_SIGNAL independently of
->>    switching to the generic entry code.
->>
->> I understand Thomas's reasoning in wanting to push archs towards the
->> generic entry code, and I fully support that. However, it does seem like
->> the road paved by #1 is long and potentially neverending, which would
->> leave us with never being able to kill the various bits of code that we
->> otherwise would be able to.
->>
->> Thomas, I do agree with Oleg on this one, I think we can make quicker
->> progress on cleanups with option #2. This isn't really going to hinder
->> any arch conversion to the generic entry code, as arch patches would be
->> funeled through the arch trees anyway.
-> 
-> I completely understand the desire to remove the jobctl mess and it
-> looks like a valuable cleanup on it's own.
-> 
-> But I fundamentaly disagree with the wording of #2:
-> 
->     'and archs can easily opt-in ....'
-> 
-> Just doing it on an opt-in base is not any different from making it
-> dependent on CONFIG_GENERIC_ENTRY. It's just painted differently and
-> makes it easy for you to bring the performance improvement to the less
-> than a handful architectures which actually care about io_uring.
+> >
+> > On Fri, Oct 16, 2020 at 3:22 PM <josephjang@google.com> wrote:
+> > >
+> > > Thank you Rafael's promptly response.
+> > >
+> > > > On Fri, Oct 16, 2020 at 5:51 AM Joseph Jang <josephjang@google.com>  
+> wrote:
+> > > > >
+> > > > > From: josephjang <josephjang@google.com>
+> > > > >
+> > > > > Add suspend timeout handler to prevent device stuck during  
+> suspend/
+> > > > > resume process. Suspend timeout handler will dump disk sleep task
+> > > > > at first round timeout and trigger kernel panic at second round  
+> timeout.
+> > > > > The default timer for each round is 30 seconds.
+> > > > >
+> > > > > Note: Can use following command to simulate suspend hang for  
+> testing.
+> > > > >     adb shell echo 1 > /sys/power/pm_hang
+> > > > >     adb shell echo mem > /sys/power/state
+> > > > > Signed-off-by: josephjang <josephjang@google.com>
+> > > > > ---
+> > > > >  include/linux/console.h |   1 +
+> > > > >  kernel/power/Kconfig    |   9 +++
+> > > > >  kernel/power/main.c     |  66 ++++++++++++++++
+> > > > >  kernel/power/suspend.c  | 162  
+> ++++++++++++++++++++++++++++++++++++++++
+> > > > >  kernel/printk/printk.c  |   5 ++
+> > > > >  5 files changed, 243 insertions(+)
+> > > > >
+> > > > > diff --git a/include/linux/console.h b/include/linux/console.h
+> > > > > index 0670d3491e0e..ac468c602c0b 100644
+> > > > > --- a/include/linux/console.h
+> > > > > +++ b/include/linux/console.h
+> > > > > @@ -192,6 +192,7 @@ static inline void console_sysfs_notify(void)
+> > > > >  { }
+> > > > >  #endif
+> > > > >  extern bool console_suspend_enabled;
+> > > > > +extern int is_console_suspended(void);
+> > > > >
+> > > > >  /* Suspend and resume console messages over PM events */
+> > > > >  extern void suspend_console(void);
+> > > > > diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
+> > > > > index a7320f07689d..52b7a181b6d8 100644
+> > > > > --- a/kernel/power/Kconfig
+> > > > > +++ b/kernel/power/Kconfig
+> > > > > @@ -207,6 +207,15 @@ config PM_SLEEP_DEBUG
+> > > > >         def_bool y
+> > > > >         depends on PM_DEBUG && PM_SLEEP
+> > > > >
+> > > > > +config PM_SLEEP_MONITOR
+> > > > > +       bool "Linux kernel suspend/resume process monitor"
+> > > > > +       depends on PM_SLEEP
+> > > > > +       help
+> > > > > +       This option will enable suspend/resume monitor to prevent  
+> device
+> > > > > +       stuck during suspend/resume process. Suspend timeout  
+> handler
+> > > > will
+> > > > > +       dump disk sleep task at first round timeout and trigger  
+> kernel
+> > > > panic
+> > > > > +       at second round timeout. The default timer for each round  
+> is 30
+> > > > seconds.
+> > > > > +
+> > >
+> > > > The facility associated with the Kconfig entry right below is  
+> supposed
+> > > > to do exactly the same thing.
+> > >
+> > > > What's the reason to add another one?  What is missing?
+> > >
+> > >
+> > >
+> > > > >  config DPM_WATCHDOG
+> > > > >         bool "Device suspend/resume watchdog"
+> > > > >         depends on PM_DEBUG && PSTORE && EXPERT
+> > >
+> > > Because we found some suspend hand issue that cannot be detected by
+> > > "CONFIG_DPM_WATCHDOG" (which is focus on device PM).
+> >
+> > What's that issue?
+> >
+> > > Our suspend timeout monitor can cover PM core and Device PM hang  
+> issues.
+> >
+> > Then I'd suggest to extend the existing watchdog instead of adding a
+> > whole new implementation.
 
-It's a lot easier for me to add support for archs for TIF_NOTIFY_SIGNAL,
-than it is to convert them to CONFIG_GENERIC ENTRY. And in fact I
-already _did_ convert all archs, in a separate series. Is it perfect
-yet? No. arm needs a bit of love, powerpc should be cleaned up once the
-5.10 merge happens for that arch (dropping a bit), and s390 I need
-someone to verify. But apart from that, it is already done.
 
-> So if you change #2 to:
-> 
->    Drop the CONFIG_GENERIC_ENTRY dependency, make _all_ architectures
->    use TIF_NOTIFY_SIGNAL and clean up the jobctl and whatever related
->    mess.
-> 
-> and actually act apon it, then I'm fine with that approach.
+Since kernel/power/suspend.c doesn't need "struct device *dev" like  
+following.
+Can we create a new suspend_timer to cover PM core and Device PM hang  
+issues?
 
-Already did that too!
+/**
+  * dpm_watchdog_set - Enable pm watchdog for given device.
+  * @wd: Watchdog. Must be allocated on the stack.
+  * @dev: Device to handle.
+  */
+static void dpm_watchdog_set(struct dpm_watchdog *wd, struct device *dev)
+{
+	struct timer_list *timer = &wd->timer;
 
-https://git.kernel.dk/cgit/linux-block/log/?h=tif-task_work.arch
+	wd->dev = dev;
+	wd->tsk = current;
+...
 
-It's sitting on top of this series. So the work is already done.
 
-> Anything else is just proliferating the existing mess and yet another
-> promise of great improvements which never materialize.
-> 
-> Just to prove my point:
-> 
-> e91b48162332 ("task_work: teach task_work_add() to do signal_wake_up()")
-> 
-> added TWA_SIGNAL in June with the following in the changelog:
-> 
->     TODO: once this patch is merged we need to change all current users
->     of task_work_add(notify = true) to use TWA_RESUME.
 
-Totally agree the ball was dropped on this one. I did actually write a
-patch, just never had time to get it out.
- 
-> This features first and let others deal with the mess we create mindset
-> has to stop. I'm dead tired of it.
-
-I totally agree, and we're on the same page. I think you'll find that in
-the past I always carry through, the task_work notification was somewhat
-of a rush due to a hang related to it. For this particular case, the
-cleanups and arch additions are pretty much ready to go.
-
--- 
-Jens Axboe
-
+Thank you,
+Joseph.
