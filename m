@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB6D290CB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8CF290CB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393610AbgJPUWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 16:22:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393586AbgJPUWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 16:22:46 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5271720878;
-        Fri, 16 Oct 2020 20:22:44 +0000 (UTC)
-Date:   Fri, 16 Oct 2020 16:22:42 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [GIT PULL] tracing: Fix of mismatch section
-Message-ID: <20201016162242.16434e2b@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2393617AbgJPU3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 16:29:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390751AbgJPU3a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 16:29:30 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB58C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:29:30 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id o9so1872672plx.10
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:29:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H7i+8CG0VezDxncLDsSfvwAV5Z67ulpr447ijtY2QB0=;
+        b=fQzmAQbQ2NZGk+Uzvb2BlGacXVYAzvn9WHtQkDiyThI7jHzE1dQH3neGn9q6jy0i+E
+         pMyomEgKN8Xf4qzO2TI5rScNx7iDW//zJjVRGQvgBkwVlBb8c1RjO1O+R2iYAqKPkVDR
+         WSLIbWHTjUFd1u5ZycvGqQYWNCy/9qgXQ11jucRiuO+E/0XnfxDZUtCfZ20HHX5YiCX/
+         bg2YuFrwjWZw9XMt+JMvUKUp3eRslIbVKHOM16ScMo9PNcd8L0ItmrxOLh0xPuXcR2G1
+         FAcy1KDrTpmiIO1OE1UY5lXWQFqrP5LyD0MFVQT55HgHcLhU/eKHLlINaz7OppOuYY3Z
+         2Siw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=H7i+8CG0VezDxncLDsSfvwAV5Z67ulpr447ijtY2QB0=;
+        b=T52t/Gh9dYzyf0mYg1o5bCCjxLSPc465154QZ1f59dPJemeG4IvUcLsRvXwj56IDfF
+         U8b9hIMYv+zaXzrPt4/Q/6TcjPmEk0NIB5b5gm7s6I0twTNuLdYUqDmTE751MH2Buz09
+         Te+lM26Dp5LbSwOKbkRq1EsXl+eqKho/ZQhT54M+El2YjnyvgIyztDaGpG73a+pV3a8f
+         lyxYYxLrXGa8wCACA7lo8xwxNOdfhl8Jzou8uLZiSVR4rg9UYe+aWVbfELO8S5+ufA8w
+         rW4Xy0NomIAairSDgdL5tVLZvAU2CjjdaE/+ddPsCcfVaLU4Avh3VY4yT37sHNoaBxcW
+         jRPw==
+X-Gm-Message-State: AOAM533ZjAa9DfkpFG94+lIUXXMutwHKCvnScNP+gDDf/Ct9NuPIFwir
+        qzyjXqBiBDAutJQNEKrrqQ0=
+X-Google-Smtp-Source: ABdhPJwu3BwQqhHl7G7SuuhIVedhg4GEtNmK3nsmk7gaYG3uLezYG+f3s/seQmHSbscErI0cRPekWw==
+X-Received: by 2002:a17:902:d34a:b029:d3:dcb5:a84c with SMTP id l10-20020a170902d34ab02900d3dcb5a84cmr5722171plk.81.1602880169945;
+        Fri, 16 Oct 2020 13:29:29 -0700 (PDT)
+Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id c12sm3841110pgi.14.2020.10.16.13.29.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 13:29:28 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 16 Oct 2020 13:29:26 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, rajekumar@google.com,
+        amosbianchi@google.com, joaodias@google.com
+Subject: Re: [PATCH] zram: support a page writeback
+Message-ID: <20201016202926.GB1976566@google.com>
+References: <20201012071452.1613131-1-minchan@kernel.org>
+ <20201016002547.GA2412725@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016002547.GA2412725@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sergey,
 
-Linus,
+On Fri, Oct 16, 2020 at 09:25:47AM +0900, Sergey Senozhatsky wrote:
+> On (20/10/12 00:14), Minchan Kim wrote:
+> >  
+> >  With the command, zram writeback idle pages from memory to the storage.
+> >  
+> > +If admin want to write a specific page in zram device to backing device,
+> > +they could write the page index into the interface.
+> > +
+> > +	echo 1251 > /sys/block/zramX/writeback
+> > +
+> 
+> May be we can make it more explicit?
+> 
+> 	echo "page_index=123" > /sys/block/zramX/writeback
+> 
+> Just in case of future extensions. E.g. someone might want to
+> have something like
+> 
+> 	echo "idle_nr=123" > /sys/block/zramX/writeback
+> 
+> which would write_back 123 idle pages max.
+> 
+> 	-ss
 
-Tracing: Fix mismatch section of adding early trace events
+Make sense. I will use echo "block_index" since page size could be
+changed later(e.g., some pages are 4K, some are THP).
+I will revise it at next spin.
 
-- Fixes the issue of a mismatch section that was missed due to gcc
-  inlining the offending function, while clang did not (and reported
-  the issue).
-
-
-Please pull the latest trace-v5.10-2 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.10-2
-
-Tag SHA1: 39abab2b445c7e77fa0932a45e150c90ede54bd8
-Head SHA1: ce66f6136460a51acfc32de4481fe8fd69dfd50b
-
-
-Masami Hiramatsu (1):
-      tracing: Remove __init from __trace_early_add_new_event()
-
-----
- kernel/trace/trace_events.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
----------------------------
-commit ce66f6136460a51acfc32de4481fe8fd69dfd50b
-Author: Masami Hiramatsu <mhiramat@kernel.org>
-Date:   Fri Oct 16 13:20:02 2020 +0900
-
-    tracing: Remove __init from __trace_early_add_new_event()
-    
-    The commit 720dee53ad8d ("tracing/boot: Initialize per-instance event
-    list in early boot") removes __init from __trace_early_add_events()
-    but __trace_early_add_new_event() still has __init and will cause a
-    section mismatch.
-    
-    Remove __init from __trace_early_add_new_event() as same as
-    __trace_early_add_events().
-    
-    Link: https://lore.kernel.org/lkml/CAHk-=wjU86UhovK4XuwvCqTOfc+nvtpAuaN2PJBz15z=w=u0Xg@mail.gmail.com/
-    
-    Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-    Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 851ab37058dd..e705f06c68c6 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -2498,7 +2498,7 @@ __trace_add_new_event(struct trace_event_call *call, struct trace_array *tr)
-  * for enabling events at boot. We want to enable events before
-  * the filesystem is initialized.
-  */
--static __init int
-+static int
- __trace_early_add_new_event(struct trace_event_call *call,
- 			    struct trace_array *tr)
- {
+Thanks, Sergey!
