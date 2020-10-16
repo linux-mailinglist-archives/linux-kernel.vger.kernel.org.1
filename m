@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C9928FC6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 04:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B913028FC70
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 04:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404187AbgJPCev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 22:34:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404178AbgJPCeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 22:34:50 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 300C720878;
-        Fri, 16 Oct 2020 02:34:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602815690;
-        bh=wgurwTerQ1P/meEIJ41flc1QgAVRe5/Dfi5vOxe09rc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nkfJ6Q/Q3tcGvmzBTyfkTAEYV1zGi8EnSX6c1jl4ED6X9l/jjs9hOqp7LPZpgMkj+
-         5I/IWmUkV24magig5hppYc+Tk/Dcc5dFJMi3SRROAoo3v79a7yLdHRU9OdfVN51+SP
-         EE1TNfrt8zDEBestllDF3ocWXnbqwxRFh+HzIn2Q=
-Date:   Fri, 16 Oct 2020 11:34:45 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [GIT PULL] tracing: Updates for 5.10
-Message-Id: <20201016113445.4bd2a37c9b5e7f3a065b6f52@kernel.org>
-In-Reply-To: <CAHk-=wjU86UhovK4XuwvCqTOfc+nvtpAuaN2PJBz15z=w=u0Xg@mail.gmail.com>
-References: <20201015135345.6b29e8c0@gandalf.local.home>
-        <CAHk-=wjU86UhovK4XuwvCqTOfc+nvtpAuaN2PJBz15z=w=u0Xg@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S2393792AbgJPCiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 22:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393780AbgJPCiC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 22:38:02 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD18C061755;
+        Thu, 15 Oct 2020 19:38:02 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 144so606968pfb.4;
+        Thu, 15 Oct 2020 19:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:references:from:subject:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=0TuHxCA8pR0v59g98Y4cASFZIZDcQpxe39FAPO1UrgI=;
+        b=L0lVs86czcYYmUK91+ua/qhUFF4egDyhi09/9lg9+Hq/SbxUqweuQbDA7lw+4jEef0
+         KpvZYxh+fiCXwjf9X/Uz/aSl8n+ntbfsWZ7i3prjuI8LSUH0oPTvZVZH9UD/R6OKr+Ql
+         C0sfpl5PMFxSB7/hqIx3T+ABh0dUyBe6SUmJKqsz9e/XJuXA4u1tvQTLx7AWqncWoTrQ
+         LcG41e+Kqxd2jPZU3EC/RmtrKhNj/os3wfONiS9D0pAMzKh+TUmmL/oE1tEXiQDKFyyn
+         8EJ+vxNJ9+kG5bxZi80CNuUjyswzJkTSFt0jNKTqsMNbzzIb8SCrfnDYveyd4LVo9nHG
+         zcow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0TuHxCA8pR0v59g98Y4cASFZIZDcQpxe39FAPO1UrgI=;
+        b=FbabARTs55dDc5LDJGOEMQwNK2iMB+JYh8vClL2Idwhr++zWdZq78wfvjQsLb9Ym7x
+         g6br65AKNLFJUiQsq+iqTtQuS0SoPgecYmGeRc0FT59clQlFtyry97F1QabS0HLe+NVO
+         O4bJj+J16zhVee+jGZhmAzH346RS7z/K6nkDkW7c0wJLrWSyb6H8yNOKOgp4oeLxyuOM
+         kzJTlYvVYEO1cqzjL+zCyEy30hbCN2RRTpTkHhHA424j5y/R2jadr5yJmKfKXYtSojNx
+         kT4epmOgKQcub8uYd5N3XyQoeIBsUJb+tXitfvcs7alnNQ8CTQZq+BjBnJ/KxDLQLL1s
+         xvTA==
+X-Gm-Message-State: AOAM5322QZmjVOfoUT5mpmFlf3e4dGKv4+2Sr28CJRBV/Gx73UgoXZvf
+        +Vl/gQnOgdbDSMKygnrD/LY=
+X-Google-Smtp-Source: ABdhPJx8EIEf4Ouf843MeXYP3lM6J5uJSAxpBrbnYXa6dDpmYEsFGXVMBXZ8Q8/RxoMz7nTkzdiWrQ==
+X-Received: by 2002:a63:c053:: with SMTP id z19mr1256223pgi.418.1602815881307;
+        Thu, 15 Oct 2020 19:38:01 -0700 (PDT)
+Received: from [10.230.29.112] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id i2sm765006pjk.12.2020.10.15.19.37.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Oct 2020 19:38:00 -0700 (PDT)
+To:     Pavana Sharma <pavana.sharma@digi.com>, andrew@lunn.ch,
+        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Vladimir Oltean <olteanv@gmail.com>
+References: <djc@djc.id.au; danc86@gmail.com[PATCH v2] Add support for
+ mv88e6393x family of Marvell.>
+ <20201016020902.28237-1-pavana.sharma@digi.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH v3] Add support for mv88e6393x family of Marvell.
+Message-ID: <e7658756-ac90-b4c8-40d8-b948024da55e@gmail.com>
+Date:   Thu, 15 Oct 2020 19:37:59 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.3.2
+MIME-Version: 1.0
+In-Reply-To: <20201016020902.28237-1-pavana.sharma@digi.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020 18:54:34 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> On Thu, Oct 15, 2020 at 10:53 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > Updates for tracing and bootconfig:
+
+On 10/15/2020 7:09 PM, Pavana Sharma wrote:
+> The Marvell 88E6393X device is a single-chip integration of a 11-port
+> Ethernet switch with eight integrated Gigabit Ethernet (GbE) transceivers
+> and three 10-Gigabit interfaces.
 > 
-> Hmm. I haven't verified that this came from you, but it seems likely..
-> Once again my clang build shows something that I don't see in my
-> allmodconfig gcc build:
+> This patch adds functionalities specific to mv88e6393x family (88E6393X,
+> 88E6193X and 88E6191X)
 > 
->    WARNING: modpost: vmlinux.o(.text+0x1e5b06): Section mismatch in
-> reference from the function __trace_early_add_events() to the function
-> .init.text:__trace_early_add_new_event()
->    The function __trace_early_add_events() references
->    the function __init __trace_early_add_new_event().
->    This is often because __trace_early_add_events lacks a __init
->    annotation or the annotation of __trace_early_add_new_event is wrong.
-> 
-> Hmm?
+> Signed-off-by: Pavana Sharma <pavana.sharma@digi.com>
 
-Oops, that's my fault.
-The commit 720dee53ad8d ("tracing/boot: Initialize per-instance event list
- in early boot") removes __init from __trace_early_add_events() but I
-forgot to do same on __trace_early_add_new_event().
-Would this work?
+The subject of your patch should be:
 
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 851ab37058dd..e705f06c68c6 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -2498,7 +2498,7 @@ __trace_add_new_event(struct trace_event_call *call, struct trace_array *tr)
-  * for enabling events at boot. We want to enable events before
-  * the filesystem is initialized.
-  */
--static __init int
-+static int
- __trace_early_add_new_event(struct trace_event_call *call,
-                            struct trace_array *tr)
- {
+net: dsa: mv88e6xxx: Add support for mv88e6393x family
 
-
+to be consistent with the previous changes done to these files. I don't 
+have the datasheet for that switch so cannot confirm if the changes 
+appear to be correct or not, Vivien and Andrew might though.
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Florian
