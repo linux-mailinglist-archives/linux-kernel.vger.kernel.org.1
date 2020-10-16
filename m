@@ -2,232 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CC52902F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 12:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 534472902F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 12:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395425AbgJPKkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 06:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394467AbgJPKkX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 06:40:23 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D42AC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 03:40:23 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kTN9d-0002oD-Id; Fri, 16 Oct 2020 12:40:09 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:c4e8:c8ff:a41:29c1] (unknown [IPv6:2a03:f580:87bc:d400:c4e8:c8ff:a41:29c1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 8492157A8B7;
-        Fri, 16 Oct 2020 10:40:07 +0000 (UTC)
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, Ying Liu <victor.liu@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
- <20201016134320.20321-6-qiangqing.zhang@nxp.com>
- <0e3f5abc-6baf-53e2-959b-793dfd41c17b@pengutronix.de>
- <DB8PR04MB6795DEDFA271889A162539EFE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <DB8PR04MB67952A058934D5013946EE97E6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Subject: Re: [PATCH 5/6] can: flexcan: add CAN wakeup function for i.MX8QM
-Message-ID: <44f939d8-81a5-bd8d-d6a9-3ca990abeb55@pengutronix.de>
-Date:   Fri, 16 Oct 2020 12:40:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2395452AbgJPKlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 06:41:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50508 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395431AbgJPKlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 06:41:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B892DAB5C;
+        Fri, 16 Oct 2020 10:41:04 +0000 (UTC)
+To:     Zhenhua Huang <zhenhuah@codeaurora.org>, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <1602839640-13125-1-git-send-email-zhenhuah@codeaurora.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm: fix page_owner initializing issue for arm32
+Message-ID: <1a1a80b8-2ce4-9346-f333-68f3bb8b25c0@suse.cz>
+Date:   Fri, 16 Oct 2020 12:41:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <DB8PR04MB67952A058934D5013946EE97E6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="2CWW9XC2IDkE5qwqWw0Aa8qJve4FfyyVV"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <1602839640-13125-1-git-send-email-zhenhuah@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2CWW9XC2IDkE5qwqWw0Aa8qJve4FfyyVV
-Content-Type: multipart/mixed; boundary="RnuItdngXCd1cZcC5pblzA5S6GNTTaXUf";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc: "kernel@pengutronix.de" <kernel@pengutronix.de>,
- dl-linux-imx <linux-imx@nxp.com>, Ying Liu <victor.liu@nxp.com>,
- Peng Fan <peng.fan@nxp.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- Pankaj Bansal <pankaj.bansal@nxp.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <44f939d8-81a5-bd8d-d6a9-3ca990abeb55@pengutronix.de>
-Subject: Re: [PATCH 5/6] can: flexcan: add CAN wakeup function for i.MX8QM
-References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
- <20201016134320.20321-6-qiangqing.zhang@nxp.com>
- <0e3f5abc-6baf-53e2-959b-793dfd41c17b@pengutronix.de>
- <DB8PR04MB6795DEDFA271889A162539EFE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <DB8PR04MB67952A058934D5013946EE97E6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
-In-Reply-To: <DB8PR04MB67952A058934D5013946EE97E6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
+On 10/16/20 11:14 AM, Zhenhua Huang wrote:
+> Page owner of pages used by page owner itself used is missing on arm32 targets.
+> The reason is dummy_handle and failure_handle is not initialized correctly.
+> Buddy allocator is used to initialize these two handles. However, buddy
+> allocator is not ready when page owner calls it. This change fixed that by
+> initializing page owner after buddy initialization.
+> 
+> The working flow before and after this change are:
+> original logic:
+> 1. allocated memory for page_ext(using memblock).
+> 2. invoke the init callback of page_ext_ops like
+> page_owner(using buddy allocator).
+> 3. initialize buddy.
+> 
+> after this change:
+> 1. allocated memory for page_ext(using memblock).
+> 2. initialize buddy.
+> 3. invoke the init callback of page_ext_ops like
+> page_owner(using buddy allocator).
+> 
+> with the change, failure/dummy_handle can get its correct value and
+> page owner output for example has the one for page owner itself:
+> Page allocated via order 2, mask 0x6202c0(GFP_USER|__GFP_NOWARN), pid 1006, ts
+> 67278156558 ns
+> PFN 543776 type Unmovable Block 531 type Unmovable Flags 0x0()
+>   init_page_owner+0x28/0x2f8
+>   invoke_init_callbacks_flatmem+0x24/0x34
+>   start_kernel+0x33c/0x5d8
+>     (null)
 
---RnuItdngXCd1cZcC5pblzA5S6GNTTaXUf
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+register_dummy_stack should also appear in the above. Either one too many is 
+skipped in arm32 stack saving, or the noinline is not honoured. Could be 
+investigated separately.
 
-On 10/16/20 12:00 PM, Joakim Zhang wrote:
->>>> +static int flexcan_stop_mode_enable_scfw(struct flexcan_priv *priv,=
+> 
+> Signed-off-by: Zhenhua Huang <zhenhuah@codeaurora.org>
 
->>>> +bool enabled) {
->>>> +	u8 idx =3D priv->can_idx;
->>>> +	u32 rsrc_id, val;
->>>> +
->>>> +	if (idx =3D=3D 0)
->>>> +		rsrc_id =3D IMX_SC_R_CAN_0;
->>>> +	else if (idx =3D=3D 1)
->>>> +		rsrc_id =3D IMX_SC_R_CAN_1;
->>>> +	else
->>>> +		rsrc_id =3D IMX_SC_R_CAN_2;
->>>
->>> Can you introduce something like and make use of it:
->>>
->>> #define IMX_SC_R_CAN(x)			(105 + (x))
->> OK.
->=20
-> I thought it over again, from my point of view, use macro here directly=
- could
-> be more intuitive, and can achieve a direct jump.
-> If change to above wrapper, on the contrary make confusion, and generat=
-e the
-> magic number 105. =E2=98=B9
+This should be safe, as the sparse variant page_ext_init() runs even later, so:
 
-The define should go into the rsrc.h, and probably be:
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-#define IMX_SC_R_CAN(x)		(IMX_SC_R_CAN_0 + (x))=09
+Nit below:
 
-and if you change the firmware interface, you probably have more problems=
- :)
+> ---
+>   include/linux/page_ext.h | 8 ++++++++
+>   init/main.c              | 2 ++
+>   mm/page_ext.c            | 8 +++++++-
+>   3 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
+> index cfce186..aff81ba 100644
+> --- a/include/linux/page_ext.h
+> +++ b/include/linux/page_ext.h
+> @@ -44,8 +44,12 @@ static inline void page_ext_init_flatmem(void)
+>   {
+>   }
+>   extern void page_ext_init(void);
+> +static inline void page_ext_init_flatmem_late(void)
+> +{
+> +}
+>   #else
+>   extern void page_ext_init_flatmem(void);
+> +extern void page_ext_init_flatmem_late(void);
+>   static inline void page_ext_init(void)
+>   {
+>   }
+> @@ -76,6 +80,10 @@ static inline void page_ext_init(void)
+>   {
+>   }
+>   
+> +static inline void page_ext_init_flatmem_late(void)
+> +{
+> +}
+> +
+>   static inline void page_ext_init_flatmem(void)
+>   {
+>   }
+> diff --git a/init/main.c b/init/main.c
+> index 130376e..b34c475 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -818,6 +818,8 @@ static void __init mm_init(void)
+>   	init_debug_pagealloc();
+>   	report_meminit();
+>   	mem_init();
+> +	/* page_owner must be initialized after buddy is ready */
+> +	page_ext_init_flatmem_late();
+>   	kmem_cache_init();
+>   	kmemleak_init();
+>   	pgtable_init();
+> diff --git a/mm/page_ext.c b/mm/page_ext.c
+> index a3616f7..373f7a1 100644
+> --- a/mm/page_ext.c
+> +++ b/mm/page_ext.c
+> @@ -99,6 +99,13 @@ static void __init invoke_init_callbacks(void)
+>   	}
+>   }
+>   
+> +#if !defined(CONFIG_SPARSEMEM)
 
->>>> +
->>>> +	if (enabled)
->>>> +		val =3D 1;
->>>> +	else
->>>> +		val =3D 0;
->>>> +
->>>> +	/* stop mode request via scu firmware */
->>>> +	return imx_sc_misc_set_control(priv->sc_ipc_handle, rsrc_id,
->>>> +IMX_SC_C_IPG_STOP, val); }
->=20
-> We still need use IMX_SC_C_IPG_STOP, why not be consistent?
+#ifndef is more common if you don't need boolean ops on multiple configs
 
-Sorry I don't get what you want to tell me here.
+> +void __init page_ext_init_flatmem_late(void)
+> +{
+> +	invoke_init_callbacks();
+> +}
+> +#endif
+> +
+>   static inline struct page_ext *get_entry(void *base, unsigned long index)
+>   {
+>   	return base + page_ext_size * index;
+> @@ -177,7 +184,6 @@ void __init page_ext_init_flatmem(void)
+>   			goto fail;
+>   	}
+>   	pr_info("allocated %ld bytes of page_ext\n", total_usage);
+> -	invoke_init_callbacks();
+>   	return;
+>   
+>   fail:
+> 
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---RnuItdngXCd1cZcC5pblzA5S6GNTTaXUf--
-
---2CWW9XC2IDkE5qwqWw0Aa8qJve4FfyyVV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+JeIIACgkQqclaivrt
-76lgUQgAhflan3MrsC2XcHgt8ziLn6BTryf8LgsuV6W6qIsf2p4NNNLMULAniH15
-rJPNzeTBPZ4BWkPyB6PUczlQgPw1/CEKA08AwkoO2K96YzZHAkbnPibkzEOwAnj9
-8MISPrjZSIKGJiec4RkjABR7p9vv04JzTsJIJOths579uj/O/EPrrgmb7WmBTtJT
-881tA/mU1O71bQzIPbUgvYn1LJIGSX2hW9+RstX3lvsATZb8yEQ5pPRKF8PmV1Tp
-uosSMIns65LrafXi8yeX8pbe4+bs+DJO/7WkTNvE/3dM0rndb2FDs8+G0/Ffux2+
-4dqf8ovPQ16E/hjN32FceYz8DX7BxA==
-=gnuC
------END PGP SIGNATURE-----
-
---2CWW9XC2IDkE5qwqWw0Aa8qJve4FfyyVV--
