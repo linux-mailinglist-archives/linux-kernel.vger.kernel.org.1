@@ -2,161 +2,611 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8182906CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422DF2906CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408570AbgJPOJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:09:14 -0400
-Received: from outbound-smtp13.blacknight.com ([46.22.139.230]:46797 "EHLO
-        outbound-smtp13.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405627AbgJPOJN (ORCPT
+        id S2408580AbgJPOJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408451AbgJPOJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:09:13 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp13.blacknight.com (Postfix) with ESMTPS id 5492B1C4CCF
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 15:09:11 +0100 (IST)
-Received: (qmail 5453 invoked from network); 16 Oct 2020 14:09:11 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 16 Oct 2020 14:09:11 -0000
-Date:   Fri, 16 Oct 2020 15:09:09 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: ACPI _CST introduced performance regresions on Haswll
-Message-ID: <20201016140909.GV3227@techsingularity.net>
-References: <25f31d3e-7a67-935f-93ba-32216a5084e2@intel.com>
- <20201006211820.GN3227@techsingularity.net>
- <2382d796-7c2f-665e-9169-5cdc437bf34c@intel.com>
- <20201008090909.GP3227@techsingularity.net>
- <dcf4266a-5769-8a6b-d8e1-e77553126861@intel.com>
- <20201008173436.GQ3227@techsingularity.net>
- <f6b04376-4214-ff5d-1069-890449a923e2@intel.com>
- <20201014223703.GT3227@techsingularity.net>
- <20201015183410.GU3227@techsingularity.net>
- <CAJZ5v0jzZ6iQGYNnkgi-pPmdbq3aH+RoH+tBbEoBxFfmt_0MDg@mail.gmail.com>
+        Fri, 16 Oct 2020 10:09:55 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261F3C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:09:55 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id v19so2526150edx.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:09:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hLPKmGYxUZ647/SB/tOrxBeCuYUUZYkKkddudRu/PV4=;
+        b=YNXL3ybaN+Thpgbev9S21XwNyD5FrtFDnYXSQNHgQ+fbdItBUrWUGVAB5FyUgN13y0
+         VUgadUqYofsKNLR7keYRODowaQSuAzi1FAr4n7hSrjy3kp8dqgwVu6LGl/+aL6Zto+//
+         4LXVqzCecwMIcbNIscMqp80XyOBbLZN2D+iAsTInCLZZpDWQPy6AoId+vPBGfqSuZ/4j
+         Pg1iJuQ2QfteWNqWcwIAt46GbHYBOcoR1hc73lXBqpMAXi0Js1qEg5FX51c/JnaT4gk9
+         gOB/RufXAe64C5uqf4VdQk9cqc69UmBQBl/KERDzbz+Y6r5m4nBWAbgev7a/HuPGBA8f
+         Mwtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hLPKmGYxUZ647/SB/tOrxBeCuYUUZYkKkddudRu/PV4=;
+        b=ZYeT8AO14niOAyNcdqEqbe7UPRuhwzYYu0QdxbzMRm5bUXRSTbPIoA6rS70a89SUUN
+         cYux3I1IIAQyf4Y8uofRMyx+vpOZTImY6fyvxwSQZNNU5cTWS9QY1fgZfWUj1DzY/S79
+         iUmLDT8vF14gsaYFUEadUNBfFBK6/0aNQShNsDYrS2+7PPKszA9/19uv9aeyTAkLGRuf
+         Oo0+4QtzdblofTJnFcKGGsvQeioOm/G4EKha/up3h7gqnRlmOJVW6rDfO/MP+0S77YLB
+         x568/rMd3BmdTDzq5UZfPLOdrxdPUJvm9UpTMr81no3Z8mjesh/JAF0++5Hu3Gp23I5R
+         LVaw==
+X-Gm-Message-State: AOAM532QGULADNgqhDnpknNwMqRzkCWdZ56BgMLbTJ3t+1JW9XrBfjnT
+        sEUI7ZhlzGPHeKc+7rzvZMQSNLKjs7bGzc7xTrgCkA==
+X-Google-Smtp-Source: ABdhPJw3fq63uZjeu65gGZR1FxiUACko4T8ZxSscsfdmKa6zUVgntGcQ9Oorh1UFiWdll2M21+HV4O+EdtW6GrEC/d0=
+X-Received: by 2002:a50:8b62:: with SMTP id l89mr4263623edl.132.1602857393644;
+ Fri, 16 Oct 2020 07:09:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jzZ6iQGYNnkgi-pPmdbq3aH+RoH+tBbEoBxFfmt_0MDg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201015154001.8931-1-cristian.marussi@arm.com> <20201015154001.8931-4-cristian.marussi@arm.com>
+In-Reply-To: <20201015154001.8931-4-cristian.marussi@arm.com>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Fri, 16 Oct 2020 16:09:42 +0200
+Message-ID: <CAN5uoS-4MVnwsHDqhx0vpDi6wij62V4TODY0-ZP2-Ann3H-FnQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] regulator: add SCMI driver
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, lukasz.luba@arm.com,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan.Cameron@huawei.com, broonie@kernel.org,
+        Rob Herring <robh@kernel.org>, satyakim@qti.qualcomm.com,
+        f.fainelli@gmail.com, Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 03:41:12PM +0200, Rafael J. Wysocki wrote:
-> > Turns out I didn't even have that. On another machine (same model,
-> > same cpu, different BIOS that cannot be updated), enabling the C6 state
-> > still did not enable it on boot and dmesg complained about CST not being
-> > usable. This is weird because one would expect that if CST was unusable
-> > that it would be the same as use_acpi == false.
-> >
-> > This could potentially be if the ACPI tables are unsuitable due to bad
-> > bad FFH information for a lower c-state. If _CST is not found or usable,
-> > should acpi_state_table.count be reset to go back to the old behaviour?
-> 
-> Yes, it should, although I would reset it in intel_idle_cst_usable()
-> right away before returning 'false'.
-> 
+Hi Cristian,
 
-Good stuff.
+Some minor comments...
 
-> I can send a patch to do the above or please submit the one below as
-> it works too.
-> 
+Etienne
 
-I'm happy to go with your alternative if you prefer. For a finish,
-I decided it was worth reporting if the _CST was ignored regardless of
-the reason. It performs roughly the same as setting use_acpi = false on
-the affected machines.
 
----8<---
-intel_idle: Ignore _CST if control cannot be taken from the platform
+On Thu, 15 Oct 2020 at 17:40, Cristian Marussi <cristian.marussi@arm.com> wrote:
+>
+> Add a simple regulator based on SCMI Voltage Domain Protocol.
+>
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> ----
+> v1 --> v2
+> - removed duplicate regulator naming
+> - removed redundant .get/set_voltage ops: only _sel variants implemented
+> - removed condexpr on fail path to increase readability
+>
+> v0 --> v1
+> - fixed init_data constraint parsing
+> - fixes for v5.8 (linear_range.h)
+> - fixed commit message content and subject line format
+> - factored out SCMI core specific changes to distinct patch
+> - reworked Kconfig and Makefile to keep proper alphabetic order
+> - fixed SPDX comment style
+> - removed unneeded inline functions
+> - reworked conditionals for legibility
+> - fixed some return paths to properly report SCMI original errors codes
+> - added some more descriptive error messages when fw returns invalid ranges
+> - removed unneeded explicit devm_regulator_unregister from .remove()
+> ---
+>  drivers/regulator/Kconfig          |   9 +
+>  drivers/regulator/Makefile         |   1 +
+>  drivers/regulator/scmi-regulator.c | 453 +++++++++++++++++++++++++++++
+>  3 files changed, 463 insertions(+)
+>  create mode 100644 drivers/regulator/scmi-regulator.c
+>
+> diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+> index de17ef7e18f0..6d3a10cb9833 100644
+> --- a/drivers/regulator/Kconfig
+> +++ b/drivers/regulator/Kconfig
+> @@ -155,6 +155,15 @@ config REGULATOR_ARIZONA_MICSUPP
+>           and Wolfson Microelectronic Arizona codecs
+>           devices.
+>
+> +config REGULATOR_ARM_SCMI
+> +       tristate "SCMI based regulator driver"
+> +       depends on ARM_SCMI_PROTOCOL && OF
+> +       help
+> +         This adds the regulator driver support for ARM platforms using SCMI
+> +         protocol for device voltage management.
+> +         This driver uses SCMI Message Protocol driver to interact with the
+> +         firmware providing the device Voltage functionality.
+> +
+>  config REGULATOR_AS3711
+>         tristate "AS3711 PMIC"
+>         depends on MFD_AS3711
+> diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+> index d8d3ecf526a8..0532a7393d5d 100644
+> --- a/drivers/regulator/Makefile
+> +++ b/drivers/regulator/Makefile
+> @@ -24,6 +24,7 @@ obj-$(CONFIG_REGULATOR_AD5398) += ad5398.o
+>  obj-$(CONFIG_REGULATOR_ANATOP) += anatop-regulator.o
+>  obj-$(CONFIG_REGULATOR_ARIZONA_LDO1) += arizona-ldo1.o
+>  obj-$(CONFIG_REGULATOR_ARIZONA_MICSUPP) += arizona-micsupp.o
+> +obj-$(CONFIG_REGULATOR_ARM_SCMI) += scmi-regulator.o
+>  obj-$(CONFIG_REGULATOR_AS3711) += as3711-regulator.o
+>  obj-$(CONFIG_REGULATOR_AS3722) += as3722-regulator.o
+>  obj-$(CONFIG_REGULATOR_AXP20X) += axp20x-regulator.o
+> diff --git a/drivers/regulator/scmi-regulator.c b/drivers/regulator/scmi-regulator.c
+> new file mode 100644
+> index 000000000000..e4e7d0345723
+> --- /dev/null
+> +++ b/drivers/regulator/scmi-regulator.c
+> @@ -0,0 +1,453 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +//
+> +// System Control and Management Interface (SCMI) based regulator driver
+> +//
+> +// Copyright (C) 2020 ARM Ltd.
+> +//
+> +// Implements a regulator driver on top of the SCMI Voltage Protocol.
+> +//
+> +// The ARM SCMI Protocol aims in general to hide as much as possible all the
+> +// underlying operational details while providing an abstracted interface for
+> +// its users to operate upon: as a consequence the resulting operational
+> +// capabilities and configurability of this regulator device are much more
+> +// limited than the ones usually available on a standard physical regulator.
+> +//
+> +// The supported SCMI regulator ops are restricted to the bare minimum:
+> +//
+> +//  - 'status_ops': enable/disable/is_enabled
+> +//  - 'voltage_ops': get_voltage_sel/set_voltage_sel
+> +//                  list_voltage/map_voltage
+> +//
+> +// Each SCMI regulator instance is associated, through the means of a proper DT
+> +// entry description, to a specific SCMI Voltage Domain.
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+> +#include <linux/linear_range.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/regulator/driver.h>
+> +#include <linux/regulator/machine.h>
+> +#include <linux/regulator/of_regulator.h>
+> +#include <linux/scmi_protocol.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +
+> +struct scmi_regulator {
+> +       u32 id;
+> +       struct scmi_device *sdev;
+> +       struct regulator_dev *rdev;
+> +       struct device_node *of_node;
+> +       struct regulator_desc desc;
+> +       struct regulator_config conf;
+> +};
+> +
+> +struct scmi_regulator_info {
+> +       int num_doms;
+> +       struct scmi_regulator **sregv;
+> +};
+> +
+> +static int scmi_reg_enable(struct regulator_dev *rdev)
+> +{
+> +       struct scmi_regulator *sreg = rdev_get_drvdata(rdev);
+> +       const struct scmi_handle *handle = sreg->sdev->handle;
+> +
+> +       return handle->voltage_ops->config_set(handle, sreg->id,
+> +                                              SCMI_VOLTAGE_ARCH_STATE_ON);
+> +}
+> +
+> +static int scmi_reg_disable(struct regulator_dev *rdev)
+> +{
+> +       struct scmi_regulator *sreg = rdev_get_drvdata(rdev);
+> +       const struct scmi_handle *handle = sreg->sdev->handle;
+> +
+> +       return handle->voltage_ops->config_set(handle, sreg->id,
+> +                                              SCMI_VOLTAGE_ARCH_STATE_OFF);
+> +}
+> +
+> +static int scmi_reg_is_enabled(struct regulator_dev *rdev)
+> +{
+> +       int ret;
+> +       u32 config;
+> +       struct scmi_regulator *sreg = rdev_get_drvdata(rdev);
+> +       const struct scmi_handle *handle = sreg->sdev->handle;
+> +
+> +       ret = handle->voltage_ops->config_get(handle, sreg->id,
+> +                                             &config);
+> +       if (ret) {
+> +               dev_err(&sreg->sdev->dev,
+> +                       "Error %d reading regulator %s status.\n",
+> +                       ret, sreg->desc.name);
+> +               return 0;
+> +       }
+> +
+> +       return config & SCMI_VOLTAGE_ARCH_STATE_ON;
+> +}
+> +
+> +static int scmi_reg_get_voltage_sel(struct regulator_dev *rdev)
+> +{
+> +       int ret;
+> +       s32 volt_uV;
+> +       struct scmi_regulator *sreg = rdev_get_drvdata(rdev);
+> +       const struct scmi_handle *handle = sreg->sdev->handle;
+> +
+> +       ret = handle->voltage_ops->level_get(handle, sreg->id, &volt_uV);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return sreg->desc.ops->map_voltage(rdev, volt_uV, volt_uV);
+> +}
+> +
+> +static int scmi_reg_set_voltage_sel(struct regulator_dev *rdev,
+> +                                   unsigned int selector)
+> +{
+> +       int ret;
+> +       s32 volt_uV;
+> +       struct scmi_regulator *sreg = rdev_get_drvdata(rdev);
+> +       const struct scmi_handle *handle = sreg->sdev->handle;
+> +
+> +       volt_uV = sreg->desc.ops->list_voltage(rdev, selector);
+> +       if (volt_uV <= 0)
+> +               return -EINVAL;
+> +
+> +       ret = handle->voltage_ops->level_set(handle, sreg->id, 0x0, volt_uV);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return ret;
 
-e6d4f08a6776 ("intel_idle: Use ACPI _CST on server systems") avoids
-enabling c-states that have been disabled by the platform with the
-exception of C1E.
+    return handle->voltage_ops->level_set(handle, sreg->id, 0x0, volt_uV);
 
-Unfortunately, BIOS implementations are not always consistent in terms
-of how capabilities are advertised and control cannot always be handed
-over. If control cannot be handed over then intel_idle reports that "ACPI
-_CST not found or not usable" but does not clear acpi_state_table.count
-meaning the information is still partially used.
+> +}
+> +
+> +static const struct regulator_ops scmi_reg_fixed_ops = {
+> +       .enable = scmi_reg_enable,
+> +       .disable = scmi_reg_disable,
+> +       .is_enabled = scmi_reg_is_enabled,
+> +};
+> +
+> +static const struct regulator_ops scmi_reg_linear_ops = {
+> +       .enable = scmi_reg_enable,
+> +       .disable = scmi_reg_disable,
+> +       .is_enabled = scmi_reg_is_enabled,
+> +       .get_voltage_sel = scmi_reg_get_voltage_sel,
+> +       .set_voltage_sel = scmi_reg_set_voltage_sel,
+> +       .list_voltage = regulator_list_voltage_linear,
+> +       .map_voltage = regulator_map_voltage_linear,
+> +};
+> +
+> +static const struct regulator_ops scmi_reg_range_ops = {
+> +       .enable = scmi_reg_enable,
+> +       .disable = scmi_reg_disable,
+> +       .is_enabled = scmi_reg_is_enabled,
+> +       .get_voltage_sel = scmi_reg_get_voltage_sel,
+> +       .set_voltage_sel = scmi_reg_set_voltage_sel,
+> +       .list_voltage = regulator_list_voltage_linear_range,
+> +       .map_voltage = regulator_map_voltage_linear_range,
+> +};
+> +
+> +static const struct regulator_ops scmi_reg_discrete_ops = {
+> +       .enable = scmi_reg_enable,
+> +       .disable = scmi_reg_disable,
+> +       .is_enabled = scmi_reg_is_enabled,
+> +       .get_voltage_sel = scmi_reg_get_voltage_sel,
+> +       .set_voltage_sel = scmi_reg_set_voltage_sel,
+> +       .list_voltage = regulator_list_voltage_table,
+> +       .map_voltage = regulator_map_voltage_iterate,
+> +};
+> +
+> +static int
+> +scmi_config_linear_regulator_mappings(struct scmi_regulator *sreg,
+> +                                     const struct scmi_voltage_info *vinfo)
+> +{
+> +       /*
+> +        * Note that SCMI voltage domains describable by linear ranges
+> +        * (segments) {low, high, step} are guaranteed to come in triplets by
+> +        * the SCMI Voltage Domain protocol support itself.
+> +        */
+> +       if (vinfo->num_levels == 3) {
+> +               s32 delta_uV;
+> +
+> +               delta_uV = (vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_HIGH] -
+> +                               vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_LOW]);
+> +               /* Rule out buggy negative-intervals answers from fw */
+> +               if (delta_uV < 0) {
+> +                       dev_err(&sreg->sdev->dev,
+> +                               "Invalid volt-range %d-%duV for domain %d\n",
+> +                               vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_LOW],
+> +                               vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_HIGH],
+> +                               sreg->id);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               if (!delta_uV) {
+> +                       /* Just one fixed voltage exposed by SCMI */
+> +                       sreg->desc.fixed_uV =
+> +                               vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_LOW];
+> +                       sreg->desc.n_voltages = 1;
+> +                       sreg->desc.ops = &scmi_reg_fixed_ops;
+> +               } else {
+> +                       /* One simple linear mapping. */
+> +                       sreg->desc.min_uV =
+> +                               vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_LOW];
+> +                       sreg->desc.uV_step =
+> +                               vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_STEP];
+> +                       sreg->desc.linear_min_sel = 0;
+> +                       sreg->desc.n_voltages = delta_uV / sreg->desc.uV_step;
+> +                       sreg->desc.ops = &scmi_reg_linear_ops;
+> +               }
+> +       } else {
+> +               /* Multiple linear mappings. */
 
-This patch ignores ACPI information if CST control cannot be requested from
-the platform. This was only observed on a number of Haswell platforms that
-had identical CPUs but not identical BIOS versions.  While this problem
-may be rare overall, 24 separate test cases bisected to this specific
-commit across 4 separate test machines and is worth addressing. If the
-situation occurs, the kernel behaves as it did before commit e6d4f08a6776
-and uses any c-states that are discovered.
+I don't see this multi-linear mapping in the v3.0 beta of the spec.
+Is it something planned?
 
-The affected test cases were all ones that involved a small number of
-processes -- exec microbenchmark, pipe microbenchmark, git test suite,
-netperf, tbench with one client and system call microbenchmark. Each
-case benefits from being able to use turboboost which is prevented if the
-lower c-states are unavailable. This may mask real regressions specific
-to older hardware so it is worth addressing.
+> +               int i, num_ranges, last_max = -1;
+> +               struct linear_range *lr;
+> +
+> +               num_ranges = vinfo->num_levels / 3;
+> +               lr = devm_kcalloc(&sreg->sdev->dev, num_ranges,
+> +                                 sizeof(*lr), GFP_KERNEL);
+> +               if (!lr)
+> +                       return -ENOMEM;
+> +
+> +               sreg->desc.n_linear_ranges = num_ranges;
+> +               sreg->desc.linear_ranges = lr;
+> +               for (i = 0; num_ranges; num_ranges--, i += 3, lr++) {
+> +                       s32 delta_uV;
+> +
+> +                       lr->min =
+> +                               vinfo->levels_uv[i + SCMI_VOLTAGE_SEGMENT_LOW];
+> +                       lr->step =
+> +                               vinfo->levels_uv[i + SCMI_VOLTAGE_SEGMENT_STEP];
+> +                       delta_uV =
+> +                           vinfo->levels_uv[i + SCMI_VOLTAGE_SEGMENT_HIGH] -
+> +                           lr->min;
+> +                       if (delta_uV <= 0 || !(delta_uV / lr->step)) {
+> +                               dev_err(&sreg->sdev->dev,
+> +                                       "Invalid volt-range %d-%duV for domain %d\n",
+> +                                    vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_LOW],
+> +                                   vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_HIGH],
+> +                                                                     sreg->id);
+> +                               return -EINVAL;
+> +                       }
+> +                       lr->max_sel = delta_uV / lr->step - 1;
+> +                       lr->min_sel = last_max + 1;
+> +                       last_max = lr->max_sel;
+> +               }
+> +               sreg->desc.n_voltages = last_max + 1;
+> +               sreg->desc.ops = &scmi_reg_range_ops;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int
+> +scmi_config_discrete_regulator_mappings(struct scmi_regulator *sreg,
+> +                                       const struct scmi_voltage_info *vinfo)
+> +{
+> +       /* Discrete non linear levels are mapped to volt_table */
+> +       sreg->desc.n_voltages = vinfo->num_levels;
+> +       if (sreg->desc.n_voltages > 1) {
+> +               sreg->desc.volt_table = (const unsigned int *)vinfo->levels_uv;
+> +               sreg->desc.ops = &scmi_reg_discrete_ops;
+> +       } else {
+> +               sreg->desc.fixed_uV = vinfo->levels_uv[0];
+> +               sreg->desc.ops = &scmi_reg_fixed_ops;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int scmi_regulator_common_init(struct scmi_regulator *sreg)
+> +{
+> +       int ret;
+> +       const struct scmi_handle *handle = sreg->sdev->handle;
+> +       struct device *dev = &sreg->sdev->dev;
+> +       const struct scmi_voltage_info *vinfo;
+> +
+> +       vinfo = handle->voltage_ops->info_get(handle, sreg->id);
+> +       if (!vinfo)
+> +               return -ENODEV;
+> +
+> +       if (!vinfo->num_levels)
+> +               return -EINVAL;
+> +
+> +       /*
+> +        * Regulator framework does not fully support negative voltages
+> +        * so we discard any voltage domain reported as supporting negative
+> +        * voltages: as a consequence each levels_uv entry is guaranteed to
+> +        * be non-negative from here on.
+> +        */
+> +       if (vinfo->negative_volts_allowed) {
+> +               dev_warn(dev, "Negative voltages NOT supported...skip %s\n",
+> +                        sreg->of_node->full_name);
+> +               return -EOPNOTSUPP;
+> +       }
+> +
+> +       sreg->desc.name = devm_kasprintf(dev, GFP_KERNEL, "%s", vinfo->name);
+> +       if (!sreg->desc.name)
+> +               return -ENOMEM;
+> +
+> +       sreg->desc.id = sreg->id;
+> +       sreg->desc.type = REGULATOR_VOLTAGE;
+> +       sreg->desc.owner = THIS_MODULE;
+> +       sreg->desc.of_match = sreg->of_node->name;
+> +       sreg->desc.regulators_node = "regulators";
+> +       if (vinfo->segmented)
+> +               ret = scmi_config_linear_regulator_mappings(sreg, vinfo);
+> +       else
+> +               ret = scmi_config_discrete_regulator_mappings(sreg, vinfo);
+> +       if (ret)
+> +               return ret;
+> +
+> +       sreg->conf.dev = dev;
+> +       sreg->conf.driver_data = sreg;
+> +
+> +       return 0;
+> +}
+> +
+> +static int process_scmi_regulator_of_node(struct scmi_device *sdev,
+> +                                         struct device_node *np,
+> +                                         struct scmi_regulator_info *rinfo)
+> +{
+> +       u32 dom, ret;
+> +
+> +       ret = of_property_read_u32(np, "reg", &dom);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (dom >= rinfo->num_doms)
+> +               return -ENODEV;
+> +
+> +       if (rinfo->sregv[dom]) {
+> +               dev_err(&sdev->dev,
+> +                       "SCMI Voltage Domain %d already in use. Skipping: %s\n",
+> +                       dom, np->full_name);
+> +               return -EINVAL;
+> +       }
+> +
+> +       rinfo->sregv[dom] = devm_kzalloc(&sdev->dev,
+> +                                        sizeof(struct scmi_regulator),
+> +                                        GFP_KERNEL);
+> +       if (!rinfo->sregv[dom])
+> +               return -ENOMEM;
+> +
+> +       rinfo->sregv[dom]->id = dom;
+> +       rinfo->sregv[dom]->sdev = sdev;
+> +       /* get hold of good nodes */
+> +       of_node_get(np);
+> +       rinfo->sregv[dom]->of_node = np;
+> +       dev_info(&sdev->dev,
+> +                "Found valid SCMI Regulator -- OF node [%d] -> %s\n",
+> +                dom, np->full_name);
+> +
+> +       return ret;
 
-C-state status before and after the patch
+suggest return 0; here.
 
-5.9.0-vanilla            POLL     latency:0      disabled:0 default:enabled
-5.9.0-vanilla            C1       latency:2      disabled:0 default:enabled
-5.9.0-vanilla            C1E      latency:10     disabled:0 default:enabled
-5.9.0-vanilla            C3       latency:33     disabled:1 default:disabled
-5.9.0-vanilla            C6       latency:133    disabled:1 default:disabled
-5.9.0-ignore-cst-v1r1    POLL     latency:0      disabled:0 default:enabled
-5.9.0-ignore-cst-v1r1    C1       latency:2      disabled:0 default:enabled
-5.9.0-ignore-cst-v1r1    C1E      latency:10     disabled:0 default:enabled
-5.9.0-ignore-cst-v1r1    C3       latency:33     disabled:0 default:enabled
-5.9.0-ignore-cst-v1r1    C6       latency:133    disabled:0 default:enabled
+> +}
+> +
+> +static int scmi_regulator_probe(struct scmi_device *sdev)
+> +{
+> +       int d, ret, num_doms;
+> +       struct device_node *np, *child;
+> +       const struct scmi_handle *handle = sdev->handle;
+> +       struct scmi_regulator_info *rinfo;
+> +
+> +       if (!handle || !handle->voltage_ops)
+> +               return -ENODEV;
+> +
+> +       num_doms = handle->voltage_ops->num_domains_get(handle);
+> +       if (num_doms <= 0) {
+> +               if (!num_doms) {
+> +                       dev_err(&sdev->dev,
+> +                               "number of voltage domains invalid\n");
+> +                       num_doms = -EINVAL;
+> +               } else {
+> +                       dev_err(&sdev->dev,
+> +                               "failed to get voltage domains - err:%d\n",
+> +                               num_doms);
+> +               }
+> +
+> +               return num_doms;
+> +       }
+> +
+> +       rinfo = devm_kzalloc(&sdev->dev, sizeof(*rinfo), GFP_KERNEL);
+> +       if (!rinfo)
+> +               return -ENOMEM;
+> +
+> +       /* Allocate pointers' array for all possible domains */
+> +       rinfo->sregv = devm_kcalloc(&sdev->dev, num_doms,
+> +                                   sizeof(rinfo->sregv), GFP_KERNEL);
+> +       if (!rinfo->sregv)
+> +               return -ENOMEM;
+> +
+> +       rinfo->num_doms = num_doms;
+> +       /*
+> +        * Start collecting into rinfo->sregv possibly good SCMI Regulators as
+> +        * described by a well-formed DT entry and associated with an existing
+> +        * plausible SCMI Voltage Domain number, all belonging to this SCMI
+> +        * platform instance node (handle->dev->of_node).
+> +        */
+> +       np = of_find_node_by_name(handle->dev->of_node, "regulators");
+> +       for_each_child_of_node(np, child) {
+> +               ret = process_scmi_regulator_of_node(sdev, child, rinfo);
+> +               /* abort on any mem issue */
+> +               if (ret == -ENOMEM)
+> +                       return ret;
+> +       }
+> +
+> +       /*
+> +        * Register a regulator for each valid regulator-DT-entry that we
+> +        * can successfully reach via SCMI
+> +        */
+> +       for (d = 0; d < num_doms; d++) {
+> +               struct scmi_regulator *sreg = rinfo->sregv[d];
+> +
+> +               if (!sreg)
+> +                       continue;
+> +               ret = scmi_regulator_common_init(sreg);
+> +               if (ret)
+> +                       continue;
+> +               sreg->rdev = devm_regulator_register(&sdev->dev, &sreg->desc,
+> +                                                    &sreg->conf);
+> +               if (IS_ERR(sreg->rdev)) {
+> +                       sreg->rdev = NULL;
+> +                       continue;
+> +               }
+> +
+> +               dev_info(&sdev->dev,
+> +                        "Regulator %s registered for domain [%d](%s)\n",
+> +                        sreg->desc.name, sreg->id, sreg->desc.name);
 
-Patch enables C3/C6.
+Maybe not display sreg->desc.name twice.
 
-Netperf UDP_STREAM
-
-netperf-udp
-                                      5.5.0                  5.9.0
-                                    vanilla        ignore-cst-v1r1
-Hmean     send-64         193.41 (   0.00%)      226.54 *  17.13%*
-Hmean     send-128        392.16 (   0.00%)      450.54 *  14.89%*
-Hmean     send-256        769.94 (   0.00%)      881.85 *  14.53%*
-Hmean     send-1024      2994.21 (   0.00%)     3468.95 *  15.85%*
-Hmean     send-2048      5725.60 (   0.00%)     6628.99 *  15.78%*
-Hmean     send-3312      8468.36 (   0.00%)    10288.02 *  21.49%*
-Hmean     send-4096     10135.46 (   0.00%)    12387.57 *  22.22%*
-Hmean     send-8192     17142.07 (   0.00%)    19748.11 *  15.20%*
-Hmean     send-16384    28539.71 (   0.00%)    30084.45 *   5.41%*
-
-Fixes: e6d4f08a6776 ("intel_idle: Use ACPI _CST on server systems")
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- drivers/idle/intel_idle.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-index 9a810e4a7946..4af2d3f2c8aa 100644
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -1212,14 +1212,13 @@ static bool __init intel_idle_acpi_cst_extract(void)
- 		if (!intel_idle_cst_usable())
- 			continue;
- 
--		if (!acpi_processor_claim_cst_control()) {
--			acpi_state_table.count = 0;
--			return false;
--		}
-+		if (!acpi_processor_claim_cst_control())
-+			break;
- 
- 		return true;
- 	}
- 
-+	acpi_state_table.count = 0;
- 	pr_debug("ACPI _CST not found or not usable\n");
- 	return false;
- }
+> +       }
+> +
+> +       dev_set_drvdata(&sdev->dev, rinfo);
+> +
+> +       return 0;
+> +}
+> +
+> +static void scmi_regulator_remove(struct scmi_device *sdev)
+> +{
+> +       int d;
+> +       struct scmi_regulator_info *rinfo;
+> +
+> +       rinfo = dev_get_drvdata(&sdev->dev);
+> +       if (!rinfo)
+> +               return;
+> +
+> +       for (d = 0; d < rinfo->num_doms; d++) {
+> +               if (!rinfo->sregv[d])
+> +                       continue;
+> +               of_node_put(rinfo->sregv[d]->of_node);
+> +       }
+> +}
+> +
+> +static const struct scmi_device_id scmi_regulator_id_table[] = {
+> +       { SCMI_PROTOCOL_VOLTAGE,  "regulator" },
+> +       { },
+> +};
+> +MODULE_DEVICE_TABLE(scmi, scmi_regulator_id_table);
+> +
+> +static struct scmi_driver scmi_drv = {
+> +       .name           = "scmi-regulator",
+> +       .probe          = scmi_regulator_probe,
+> +       .remove         = scmi_regulator_remove,
+> +       .id_table       = scmi_regulator_id_table,
+> +};
+> +
+> +module_scmi_driver(scmi_drv);
+> +
+> +MODULE_AUTHOR("Cristian Marussi <cristian.marussi@arm.com>");
+> +MODULE_DESCRIPTION("ARM SCMI regulator driver");
+> +MODULE_LICENSE("GPL v2");
+> --
+> 2.17.1
+>
