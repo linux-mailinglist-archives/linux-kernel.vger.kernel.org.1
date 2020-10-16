@@ -2,105 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF77290CC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69DB290CC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395342AbgJPUbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 16:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391218AbgJPUbd (ORCPT
+        id S2395433AbgJPUdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 16:33:11 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:56667 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393392AbgJPUdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 16:31:33 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C91DC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:31:33 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j7so343531wrt.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:31:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1/2DVyuLmVjG5utJc1170VeVzEsF5Yt1L3A443X8J0g=;
-        b=o8KIgZCXKOMGGQSD+fc3xEyhQf7IZTFsaBqFfb6Qf8N+Z3Wkyiw5Dbgu4mGTDuNQjt
-         DRSnghWylfoP0I5ZClwQnXgqFNKogK2mFZuByr/M5CbkXuGvNe7GgAcxfROoGto21IDF
-         ialnFWgiAA/PIbegfiFqwsTa+w2ij6rgRZmJ1XWTf12Mnc2sbIbbTqh7gotBhLnhoD+2
-         VPMoDaXYtr9QUmiPZs/EzzuRz0+onW5Ga5kzizeDAHd00EH0UswQMZBApoDnM9x/5bTU
-         UupR+0ZFYE6CfCAGL5YBghdjfXk01LCiFrNBnvht6dOSJB+zuc7nfJbcMNexVklqZD7g
-         +JMg==
+        Fri, 16 Oct 2020 16:33:07 -0400
+Received: by mail-il1-f197.google.com with SMTP id 6so2429537ill.23
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:33:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1/2DVyuLmVjG5utJc1170VeVzEsF5Yt1L3A443X8J0g=;
-        b=G6zkVU+Wq1W5Y9+2WSq5T+oo6qOeTlY5QBVn2EMa2BjE4uF8TK3l9rLj4ch6rSVY6d
-         WnqRFpEJYaNQGNngs9PakpWCtZfcay1W/476zWT+VV92fpYTa5EC4Suebfi7jImDlDb/
-         ULxYsRua/MzO+J3uylRYC0WRpKF0y+/0LbCaPfXrT7fWNiaI/XKwHyHuzmKO1DOHqpdt
-         TUS7TWzI6MX8N7qrxml7Qngp9GeGA2usfPZZmn133XFGdai7tnII0VTPX0OSp3w8F4t4
-         sPG+cW8mAzJcqVbXYl2T/7HMrowxtwRlWCjOaUvsr9DO3Xwfbn0bWixE2MVYpQ9GZoQn
-         qTSA==
-X-Gm-Message-State: AOAM531HO7JXFPlsiGGELU71yIiJU87fOBA9NR+/RjSx61Lp/Z/8K8O7
-        oSWkP38FBL6/jz2ejxPGC1fazA==
-X-Google-Smtp-Source: ABdhPJxZPXqkkGeQ3NnluGfMQsIwuWy2LtxIZzKdhUjHxBSP7b25GGXi3Tq9B6UxaQC4PdvhgersJA==
-X-Received: by 2002:adf:cd82:: with SMTP id q2mr6351812wrj.118.1602880289463;
-        Fri, 16 Oct 2020 13:31:29 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c9d8:1700:5168:39b? ([2a01:e34:ed2f:f020:c9d8:1700:5168:39b])
-        by smtp.googlemail.com with ESMTPSA id f14sm5064340wrt.53.2020.10.16.13.31.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 13:31:28 -0700 (PDT)
-Subject: Re: [PATCH 1/5] cpuidle: Remove pointless stub
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>
-References: <20201015144431.9979-1-daniel.lezcano@linaro.org>
- <CAJZ5v0gPYXhqP4CF+ep3tE7ov5zza0FW9_9cuDsiqznUX8CTCQ@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <8fef63ad-a081-e543-0c18-3797f3aaf1be@linaro.org>
-Date:   Fri, 16 Oct 2020 22:31:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ROzsNmPEboimXBnltYvp0yZ0R4DqKoIDM5mz8ldG/wE=;
+        b=NoTwpeuKlH7ZmjFoTWd9+3bhgPgv1Uo0T2E5xwpRbOC+/QxsAl+pzqaE7oK3ADnU/o
+         chlQNled/eZQZj3c3Ux5F8pQd3tnsEMl9k277mPXmtpF6oMmaqSgSvuwCej3X3+fPI7d
+         yyR4tstEAk5jNG/ZvZ71DO2hxC1NsSlAAhzcftUVfgz0YCGSk6cVuLr9FEbA2m0QnI2b
+         oFeGQmOOnRA88Ka0OEcqJDuEWhMFZPJ41LZ0gN/wlXPLHeGUnyqzFuPQXKS/6tvP1IGM
+         mmQOL2TSyfNQzY6wY9Z9O2D2fdGK+zaU4xY/51qiecso4IU9zbZ5WfaOaW/9fsUcnq5u
+         60cA==
+X-Gm-Message-State: AOAM532lwZhEYunBN7j4TMNMO/AJmYrJhmvk91PDoQOuG9Iy8y6hbywi
+        1Y98Gnf6+I6m//7gCQs+qbAZ35ObC0247ZbZgkTd9Mtc1x4D
+X-Google-Smtp-Source: ABdhPJydD4gCS1GOdiO5MwakOGqV4ls4j0FZtILxVgGqBP7Uc/39/66TxdoYwmTOVK/z73ttFcN08POCtPfnQNumYnXoocxDU7jN
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0gPYXhqP4CF+ep3tE7ov5zza0FW9_9cuDsiqznUX8CTCQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5e:930d:: with SMTP id k13mr2094900iom.33.1602880385159;
+ Fri, 16 Oct 2020 13:33:05 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 13:33:05 -0700
+In-Reply-To: <000000000000e921b305b18ba0a7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f9990805b1cfab64@google.com>
+Subject: Re: BUG: using __this_cpu_read() in preemptible code in trace_hardirqs_on
+From:   syzbot <syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        syzkaller-bugs@googlegroups.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has bisected this issue to:
 
-Hi Rafael,
+commit 4d004099a668c41522242aa146a38cc4eb59cb1e
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Fri Oct 2 09:04:21 2020 +0000
 
-On 16/10/2020 17:24, Rafael J. Wysocki wrote:
-> On Thu, Oct 15, 2020 at 4:44 PM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
->>
->> The cpuidle.h header is declaring functions with an empty stub when
->> cpuidle is not enabled. However these functions are only called from
->> the governors which depends on cpuidle. In other words, when the
->> function is called it is when cpuidle is enabled, there is no
->> situation when it is called with cpuidle disabled.
->>
->> Remove the pointless stub.
->>
->> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> ---
+    lockdep: Fix lockdep recursion
 
-[ ... ]
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=174a766f900000
+start commit:   9ff9b0d3 Merge tag 'net-next-5.10' of git://git.kernel.org..
+git tree:       net-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14ca766f900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10ca766f900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d13c3fa80bc4bcc1
+dashboard link: https://syzkaller.appspot.com/bug?extid=53f8ce8bbc07924b6417
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b63310500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1565657f900000
 
-> Applied (this patch alone) as 5.10-rc material with some minor edits
-> in the changelog, thanks!
+Reported-by: syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com
+Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
 
-Does it mean you disagree the other patches? Or are you waiting for more
-comments?
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
