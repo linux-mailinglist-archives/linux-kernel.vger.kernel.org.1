@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CAF2907CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AC42907CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409442AbgJPOyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58272 "EHLO
+        id S2409435AbgJPOx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407149AbgJPOyp (ORCPT
+        with ESMTP id S2394947AbgJPOx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:54:45 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55CAAC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:54:45 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id b8so4094687ioh.11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:54:45 -0700 (PDT)
+        Fri, 16 Oct 2020 10:53:57 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D964BC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:53:55 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id q21so1579562pgi.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:53:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=P+wWygljj49b/Jwoyua6AHD+Ku/LFmb5gdhqTAfvLEg=;
-        b=LfWcB5jJyrh0MulkzzuGDm88OUPUpKQE8o53FteBypfuv4DTJIqcilO5fbMfXFgYXI
-         lNzpYppun7sYKDcWP9drg2dRRpqy3ivRLLdyLTh5O5yrcim1D+Rl1p43Fc8Ww1Dlnq75
-         UduIWxVs7cKdmtuQ99t4hyO12AovSFAZgo1uUGJ5obm0Il7FaQHkzj9QMdXK9zopXcSF
-         PLwlynbaqdXAtnJzQ89MJ+Lzr1Vb/40fbGXEsslJk7dWbQwUd777LR4USiIBmWG9Zm6f
-         7A4U32UBKsGWK71FaDROAEtzkzsNLPZWM6FOj2Bt9j8CrzMDRFddJUzI7S5C99xjuZd5
-         KqJA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7wrAFrQUbhjohmG+yzeVkhlwYfh81dSt3oQQlEyyNKQ=;
+        b=rvUHYiv61e9UOpqMZ+1aLFH3V8k1Sy2d+UAevkQKgGSi8I5uAdCcSSkknLrG3NchXK
+         7jeWq31V/oLD1kCucsslIcUcfTG/EvAfn2qCF4pZ8eXeUrlOsf9mcSf++TVN1SJvyEbS
+         kaJWz/WkpsWZEl7yd3MOXklPQQFwoWMSP6KgVq7is1KZAzW4hs8H/5fuG0yApyLnJs06
+         893TadG7sR7BazPsL2Q7qNQlYQz5F6Ov03xqJ7ZiGESruEvc95o7UEic9rtDlM4O27+t
+         tqDLlqM8BKLDVzX0gOy6RPCp9a7Q9cLjFdLsyxJ9wyQgnJJKnI0Co9zbTp15Msi+eghq
+         Rdmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=P+wWygljj49b/Jwoyua6AHD+Ku/LFmb5gdhqTAfvLEg=;
-        b=ltD+Ud4lBx96atxO13ucRWLU90tsOxCFzTpms3oPAenNb8AJXidq9dU6Sm40sjDDh0
-         bsxBg+aFdexsDOP4iFzkrs6m3pgMEbAD1er2N6M52d5jcBMobL2KwUJKVxCIFBbGormz
-         NvBTua2SF5vRw9rzyXwklIcJiLfYSCppcCnrowphOkA3WNksofhbDyoGAckWpFsKO15R
-         vgUWW1EyjZyieTmOS6z7jctl1RqGCiAVZB1+U138I2r19RvGATC8wANZ6TWO5G4Oz3K7
-         iWoZgl/BmmYp6L0qANG1UOGZAbZAeEijCSIGqRVozGCIu80IXppXZ2G13biZt5YhEofQ
-         vThw==
-X-Gm-Message-State: AOAM530j0HeyBuPY/a68Ej1cozauOMdoTE5Z9TsfzkkKtZbj61qwx76m
-        S3a5Z35Zijd1Pc7wHwIgEZ5/Uw==
-X-Google-Smtp-Source: ABdhPJzFogEG6IQkoTlKAgWk1KT+gJK3ZP6L/JPWVdkauPYFnSZXzWhrRw9D+btj4vw97vn8oJI+tQ==
-X-Received: by 2002:a02:9441:: with SMTP id a59mr2934832jai.122.1602860084430;
-        Fri, 16 Oct 2020 07:54:44 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:b51d])
-        by smtp.gmail.com with ESMTPSA id b14sm2815853ilg.63.2020.10.16.07.54.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 07:54:43 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 10:53:08 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Richard Palethorpe <rpalethorpe@suse.com>,
-        Roman Gushchin <guro@fb.com>, ltp@lists.linux.it,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from
- charging root
-Message-ID: <20201016145308.GA312010@cmpxchg.org>
-References: <20201014190749.24607-1-rpalethorpe@suse.com>
- <20201016094702.GA95052@blackbook>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7wrAFrQUbhjohmG+yzeVkhlwYfh81dSt3oQQlEyyNKQ=;
+        b=lyNy5Aixr+fX18JlQTYXwRDQLuxDpzlL9Y6cD0KCCvrlAOe8GHx/JvhSraGgNQNw1b
+         TxS+XyYhqBmZNV9KazWb9V7Onwbupd4fUmaWnMuOmQRm2K3bQd9FGaWFH1sjdGWkZzwD
+         Iz1lm7cBRsYspTnsCszKzJr2c5JujQrCcCptIeFSc+SIP9CLD+9JAVCJf2eI9gtXchv/
+         NgU1XX9rasPv27EzrHk5APwHvoerjbEH0yB/sJg5A6bfkiNJVMzuIEU2k4qIMElRPo0E
+         3hHP8UeDfjFBKbZDQ0J75uGqpZ+mx30L+m/iN1594LcPxuQ2HVwmJS+fFtBDu/XyIV1h
+         YpCA==
+X-Gm-Message-State: AOAM532a5mlZ8KMjI8wyFfqSkH1aRFOi83dOgPYJBFvRUZijuFI4peyc
+        YKQ0kS6wcMGzF/ggt61e3C4ttQ==
+X-Google-Smtp-Source: ABdhPJwQZhhvkLFb1LbTZK7fHEb1X6uNP4Dy3qqVx1CPMR97ZjGa84MNNPd0X/7+SLmhIO9usrv4cw==
+X-Received: by 2002:a63:e705:: with SMTP id b5mr3374044pgi.230.1602860035351;
+        Fri, 16 Oct 2020 07:53:55 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id 132sm3094943pfu.52.2020.10.16.07.53.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 07:53:54 -0700 (PDT)
+Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
+To:     Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, Roman Gershman <romger@amazon.com>
+References: <20201015131701.511523-1-axboe@kernel.dk>
+ <20201015131701.511523-6-axboe@kernel.dk> <20201015154953.GM24156@redhat.com>
+ <e17cd91e-97b2-1eae-964b-fc90f8f9ef31@kernel.dk>
+ <87a6wmv93v.fsf@nanos.tec.linutronix.de>
+ <871rhyv7a8.fsf@nanos.tec.linutronix.de>
+ <fbaab94b-dd85-9756-7a99-06bf684b80a4@kernel.dk>
+ <87a6wmtfvb.fsf@nanos.tec.linutronix.de> <20201016145138.GB21989@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <1a89eacd-830e-7310-0e56-9b4b389cdc5d@kernel.dk>
+Date:   Fri, 16 Oct 2020 08:53:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201016094702.GA95052@blackbook>
+In-Reply-To: <20201016145138.GB21989@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 11:47:02AM +0200, Michal Koutný wrote:
-> Hello.
+On 10/16/20 8:51 AM, Oleg Nesterov wrote:
+> On 10/16, Thomas Gleixner wrote:
+>>
+>> With moving the handling into get_signal() you don't need more changes
+>> to arch/* than adding the TIF bit, right?
 > 
-> On Wed, Oct 14, 2020 at 08:07:49PM +0100, Richard Palethorpe <rpalethorpe@suse.com> wrote:
-> > SLAB objects which outlive their memcg are moved to their parent
-> > memcg where they may be uncharged. However if they are moved to the
-> > root memcg, uncharging will result in negative page counter values as
-> > root has no page counters.
-> Why do you think those are reparented objects? If those are originally
-> charged in a non-root cgroup, then the charge value should be propagated up the
-> hierarchy, including root memcg, so if they're later uncharged in root
-> after reparenting, it should still break even. (Or did I miss some stock
-> imbalance?)
+> we still need to do something like
+> 
+> 	-	if (thread_flags & _TIF_SIGPENDING)
+> 	+	if (thread_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+> 			do_signal(...);
+> 
+> and add _TIF_NOTIFY_SIGNAL to the WORK-PENDING mask in arch/* code.
 
-Looking a bit closer at this code, it's kind of a mess right now.
+Yes, but it becomes really minimal at that point, and just that. There's
+no touching any of the arch do_signal() code.
 
-The central try_charge() function charges recursively all the way up
-to and including the root. But not if it's called directly on the
-root, in which case it bails and does nothing.
+Just finished the update of the branch to this model, and it does simplify
+things quite a bit! Most arch patches are now exactly just what you write
+above, no more.
 
-kmem and objcg use try_charge(), so they have the same
-behavior. get_obj_cgroup_from_current() does it's own redundant
-filtering for root_mem_cgroup, whereas get_mem_cgroup_from_current()
-does not, but its callsite __memcg_kmem_charge_page() does.
+-- 
+Jens Axboe
 
-We should clean this up one way or another: either charge the root or
-don't, but do it consistently.
-
-Since we export memory.stat at the root now, we should probably just
-always charge the root instead of special-casing it all over the place
-and risking bugs.
-
-Indeed, it looks like there is at least one bug where the root-level
-memory.stat shows non-root slab objects, but not root ones, whereas it
-shows all anon and cache pages, root or no root.
