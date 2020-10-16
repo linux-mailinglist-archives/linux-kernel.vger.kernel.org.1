@@ -2,85 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0640290AE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99298290ADE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392377AbgJPRgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:36:33 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:32929 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733088AbgJPRg3 (ORCPT
+        id S2391990AbgJPRga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732266AbgJPRgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:36:29 -0400
-Received: by mail-oi1-f195.google.com with SMTP id s21so3312723oij.0;
-        Fri, 16 Oct 2020 10:36:29 -0700 (PDT)
+        Fri, 16 Oct 2020 13:36:24 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1386C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:36:23 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id g16so1755042pjv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:36:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=b0NxEiR9ivavFc0Jqy/jtl7ltzxrQHnl1HNNW0pqUTw=;
+        b=hS7kj0TplfyP1Xsxf+GvR6o8Q1+dUSCCUeVywv4xj3dNlGqTMlArTmTdQ2fchuFikv
+         zB0/H3LOTPHBdC2uXkIZvvE4OwGsKBOVF0GlUqG8/lLVdaUd/5EVl5HuVFF4qDCB+CEb
+         3hsxOPX1Tpka3rRW3QVWiSA2PR5YqFpkc9ofeoirgrHTnl23RxUWFQw+GHwDc7q1JCT6
+         sVqzkC3D6Da9Ye3DgTwvqtqeWP5mCnZgxEbfgRtu8+oJWLGnTekBOQqMShl1d84ia8vG
+         4o2BA99yCY7vr3f+0Flpln7E0cdJByTx5IU2WUe9hlZxOX6uyyH/aks5qmEdHPn4kUJP
+         7NIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uNjJL9XRXf6UiVLAufuLhgqCl6U0FzLOoCk4A9Q+UKg=;
-        b=jCWdp34+7nVQbbNjoQaqxefXZl833KpTUtBo8w92GApZKxICvHKur1kE3JjEAv/aCb
-         PNnZLsMz4fRtKCZi5BLmM/MFHWaMt4H7m2EbIfOEBsvpWST8u1o8wi84g2uEWm8P9tfo
-         B3MpDFTe61LOmloK1R/zJVd19s/Kmmh+q7YAueuAtS13iGuchWiXKYPZkc4uIPysKH5W
-         1jwbtdnQRUMUvEiSQFlSRFkTCRpeeC4fGGWsrMdnh1UK1SQOkuUn/7z78PQeHjC0cyC6
-         lztl/85/rn44eZ4IyJkR0v8jiWPmR8zhxZMoyFaOgxkuajpy4qf7gt4M3jUK/3btQIKS
-         0IOA==
-X-Gm-Message-State: AOAM530nF4cc3i0SxfxW+PEocdmj87xkrqGi8s/KAFFuhT/xev3ade3h
-        T8sk3Mb46PAypw12lYJolXFaflLZ2fHHrr54TI66He0o
-X-Google-Smtp-Source: ABdhPJwc6hEIByVrIX+yaimgNWYjOejjd72/SieX3kq7/0xwhSeZeMPey6u21dcQkanDvtB29ybz9vLA0LqG/XWoa2M=
-X-Received: by 2002:aca:724a:: with SMTP id p71mr3250305oic.157.1602869788870;
- Fri, 16 Oct 2020 10:36:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=b0NxEiR9ivavFc0Jqy/jtl7ltzxrQHnl1HNNW0pqUTw=;
+        b=RgqjhYQqSgXW4bZ1cveNK8hMHN4fWw8lUxQmT09FRcNiCDtWJSZ3k9nmjFYlHkgF4k
+         fpEcTcB+EpUZjwMOHSNoN7Sktju7LxT/vJkbYkD9hEm0aegQ3doLj1zUY4QGvQOosSLc
+         c1bl5T95ZgF0yIKV3uBQiS1C7T7yhA7QtRb8oZQkihsUy42crHmUJm4nID3q516CRTp8
+         +L8hsUMaIXWTonRnPvMoB18MqK73JbcBdk8NJCZc+fQJ/e+9foHEPVHekmYyWWI/vQh5
+         Wb0bAYFrCX48k4YYoKkdoIqknAH0+n0jCWx7SFosgYZEpEvUEVrZ8Z5ZBR+Fux9I7VXm
+         v7Ag==
+X-Gm-Message-State: AOAM533xIHWF8494tJ2MGBAJzYK4xS9IaW2vj1+1y6aoxswW54mL4Ipd
+        F+25mtIaEhrAQjA0UpjlVHJHzw==
+X-Google-Smtp-Source: ABdhPJwfPtalLr/bCxHuL1IwRgnEbvznCze5AWo10rbFuYNnABsfCtIq1/D1HANP9gHXMRYGugZvZg==
+X-Received: by 2002:a17:90b:3010:: with SMTP id hg16mr4856194pjb.21.1602869783273;
+        Fri, 16 Oct 2020 10:36:23 -0700 (PDT)
+Received: from [10.213.166.74] ([192.55.54.40])
+        by smtp.gmail.com with ESMTPSA id 8sm3554202pfj.44.2020.10.16.10.36.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 16 Oct 2020 10:36:22 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
+        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 10/15] PCI/ERR: Limit AER resets in pcie_do_recovery()
+Date:   Fri, 16 Oct 2020 10:36:19 -0700
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <7E259265-CE19-450D-A902-6C531690939D@intel.com>
+In-Reply-To: <20201016172210.GA86168@bjorn-Precision-5520>
+References: <20201016172210.GA86168@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20201016163634.857573-1-wvw@google.com> <CAJZ5v0in0N6USFqvuLcccpirahj=oOki67+Lq9_5i_q7Ep7T6g@mail.gmail.com>
- <CAGXk5yq_xcHYizG_z+FV14ieWya-4qeyVFz1gQZ9_gbJxUcQqg@mail.gmail.com>
-In-Reply-To: <CAGXk5yq_xcHYizG_z+FV14ieWya-4qeyVFz1gQZ9_gbJxUcQqg@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 16 Oct 2020 19:36:17 +0200
-Message-ID: <CAJZ5v0jSC3oD+SFEzhyk=PqhSZoz9yt7jojXj3T5BXhjJ-CaFw@mail.gmail.com>
-Subject: Re: [PATCH] sched: cpufreq_schedutil: maintain raw cache when next_f
- is not changed
-To:     Wei Wang <wvw@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Wei Wang <wei.vince.wang@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Quentin Perret <qperret@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 7:18 PM Wei Wang <wvw@google.com> wrote:
->
-> On Fri, Oct 16, 2020 at 10:01 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Fri, Oct 16, 2020 at 6:36 PM Wei Wang <wvw@google.com> wrote:
-> > >
-> > > Currently, raw cache will be reset when next_f is changed after
-> > > get_next_freq for correctness. However, it may introduce more
-> > > cycles. This patch changes it to maintain the cached value instead of
-> > > dropping it.
-> >
-> > IMV you need to be more specific about why this helps.
-> >
->
-> I think the idea of cached_raw_freq is to reduce the chance of calling
-> cpufreq drivers (in some arch those may be costly) but sometimes the
-> cache will be wiped for correctness. The purpose of this patch is to
-> still keep the cached value instead of wiping them.
+On 16 Oct 2020, at 10:22, Bjorn Helgaas wrote:
 
-Well, I see what the problem is and how the patch is attempting to
-address it (which is not the best way to do that because of the extra
-struct member that doesn't need to be added if I'm not mistaken), but
-IMO the changelog is way too vague from the problem statement
-perspective.
+> On Thu, Oct 15, 2020 at 05:11:08PM -0700, Sean V Kelley wrote:
+>> From: Sean V Kelley <sean.v.kelley@intel.com>
+>>
+>> In some cases a bridge may not exist as the hardware controlling may =
+
+>> be
+>> handled only by firmware and so is not visible to the OS. This =
+
+>> scenario is
+>> also possible in future use cases involving non-native use of RCECs =
+
+>> by
+>> firmware.
+>>
+>> Explicitly apply conditional logic around these resets by limiting =
+
+>> them to
+>> Root Ports and Downstream Ports.
+>>
+>> Link: =
+
+>> https://lore.kernel.org/r/20201002184735.1229220-8-seanvk.dev@oregontr=
+acks.org
+>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+>> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+>> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>> ---
+>>  drivers/pci/pcie/err.c | 31 +++++++++++++++++++++++++------
+>>  1 file changed, 25 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>> index 8b53aecdb43d..7883c9791562 100644
+>> --- a/drivers/pci/pcie/err.c
+>> +++ b/drivers/pci/pcie/err.c
+>> @@ -148,13 +148,17 @@ static int report_resume(struct pci_dev *dev, =
+
+>> void *data)
+>>
+>>  /**
+>>   * pci_walk_bridge - walk bridges potentially AER affected
+>> - * @bridge:	bridge which may be a Port
+>> + * @bridge:	bridge which may be a Port, an RCEC with associated =
+
+>> RCiEPs,
+>> + *		or an RCiEP associated with an RCEC
+>>   * @cb:		callback to be called for each device found
+>>   * @userdata:	arbitrary pointer to be passed to callback
+>>   *
+>>   * If the device provided is a bridge, walk the subordinate bus, =
+
+>> including
+>>   * any bridged devices on buses under this bus.  Call the provided =
+
+>> callback
+>>   * on each device found.
+>> + *
+>> + * If the device provided has no subordinate bus, call the callback =
+
+>> on the
+>> + * device itself.
+>>   */
+>>  static void pci_walk_bridge(struct pci_dev *bridge,
+>>  			    int (*cb)(struct pci_dev *, void *),
+>> @@ -162,6 +166,8 @@ static void pci_walk_bridge(struct pci_dev =
+
+>> *bridge,
+>>  {
+>>  	if (bridge->subordinate)
+>>  		pci_walk_bus(bridge->subordinate, cb, userdata);
+>> +	else
+>> +		cb(bridge, userdata);
+>
+> Looks like *this* is the patch where the "no subordinate bus" case
+> becomes possible?  If you agree, I can just move the test here, no
+> need to repost.
+
+Agree, this is the patch that the check is needed as we are opening =
+
+things up for walking RC_ECs and RC_ENDs as below.
+
+Sean
+
+
+>
+>>  }
+>>
+>>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>> @@ -174,10 +180,13 @@ pci_ers_result_t pcie_do_recovery(struct =
+
+>> pci_dev *dev,
+>>
+>>  	/*
+>>  	 * Error recovery runs on all subordinates of the bridge.  If the
+>> -	 * bridge detected the error, it is cleared at the end.
+>> +	 * bridge detected the error, it is cleared at the end.  For RCiEPs
+>> +	 * we should reset just the RCiEP itself.
+>>  	 */
+>>  	if (type =3D=3D PCI_EXP_TYPE_ROOT_PORT ||
+>> -	    type =3D=3D PCI_EXP_TYPE_DOWNSTREAM)
+>> +	    type =3D=3D PCI_EXP_TYPE_DOWNSTREAM ||
+>> +	    type =3D=3D PCI_EXP_TYPE_RC_EC ||
+>> +	    type =3D=3D PCI_EXP_TYPE_RC_END)
+>>  		bridge =3D dev;
+>>  	else
+>>  		bridge =3D pci_upstream_bridge(dev);
+>> @@ -185,6 +194,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev =
+
+>> *dev,
+>>  	pci_dbg(bridge, "broadcast error_detected message\n");
+>>  	if (state =3D=3D pci_channel_io_frozen) {
+>>  		pci_walk_bridge(bridge, report_frozen_detected, &status);
+>> +		if (type =3D=3D PCI_EXP_TYPE_RC_END) {
+>> +			pci_warn(dev, "subordinate device reset not possible for =
+
+>> RCiEP\n");
+>> +			status =3D PCI_ERS_RESULT_NONE;
+>> +			goto failed;
+>> +		}
+>> +
+>>  		status =3D reset_subordinates(bridge);
+>>  		if (status !=3D PCI_ERS_RESULT_RECOVERED) {
+>>  			pci_warn(bridge, "subordinate device reset failed\n");
+>> @@ -217,9 +232,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev =
+
+>> *dev,
+>>  	pci_dbg(bridge, "broadcast resume message\n");
+>>  	pci_walk_bridge(bridge, report_resume, &status);
+>>
+>> -	if (pcie_aer_is_native(bridge))
+>> -		pcie_clear_device_status(bridge);
+>> -	pci_aer_clear_nonfatal_status(bridge);
+>> +	if (type =3D=3D PCI_EXP_TYPE_ROOT_PORT ||
+>> +	    type =3D=3D PCI_EXP_TYPE_DOWNSTREAM ||
+>> +	    type =3D=3D PCI_EXP_TYPE_RC_EC) {
+>> +		if (pcie_aer_is_native(bridge))
+>> +			pcie_clear_device_status(bridge);
+>> +		pci_aer_clear_nonfatal_status(bridge);
+>> +	}
+>>  	pci_info(bridge, "device recovery successful\n");
+>>  	return status;
+>>
+>> -- =
+
+>> 2.28.0
+>>
