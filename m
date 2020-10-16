@@ -2,127 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F162906B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FF82906B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408349AbgJPN56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
+        id S2408414AbgJPN6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395556AbgJPN54 (ORCPT
+        with ESMTP id S2408348AbgJPN56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:57:56 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354EFC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:57:56 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id 13so829891wmf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:57:56 -0700 (PDT)
+        Fri, 16 Oct 2020 09:57:58 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB55C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:57:57 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id n15so3074664wrq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:57:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=7zDNhPy5uc8ogz43uAAVw05Oz1rJmR7+6LDT853a82A=;
-        b=Y4XB+ZRhrCz7A+n9G/WnCF8CEAVpPH07zo9bQCsffKeXsRpHkh4nYvpGW9+UdVYH9I
-         5ewSDjdF+a6y0YJNM7iMm9F/TQT9oox5ruhHmKebT//cZXOkVCuABfGe7UUFhYERSAPj
-         hTfj5tqZ6X0TF9X/3PAcmBdgpOrga4CXpcq8tQybjN18LXGarSEWMwket6K8LvfkzhYf
-         AceeBY45BtBzhysrUEXMvx7iHFIVsN1nmY8Lgv5lA/qBUXLiPvV0Nxe3Dk4yDBe1kZVQ
-         BrUBWSyIHFKryNJhGizpiQn18nzMEVvoKxNPfYK6kGPqmNzlMLwGtVEw2FciLOe6+spk
-         G1BA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=D+Oj1pj0xy3pRTG2tbwccw/BvWEVT+/elwc8Xpf2+ms=;
+        b=DDXq+5dREgrKBdNS5zYxq9+ypSTjRgAp/ciRqn8b3/yWoQO2NQcZ3qiGzZihicFwzh
+         OSKVorGcQ+Nw+fctsSOaK5KbLncywVTX6ZuiK7mYSElwllKamCMVemviNWnqq1mbVdtB
+         zerN5dGDQTbe+ce2xHxE+2CB/JjMsaM/DyltB/GU9ugfzCxsKo75b1wnRifLtiv4w11p
+         eAw2D0DRUadQ5veCRDIBh+upOxC6bBZG+rOz9YQOl6LAbreGYEdBfQm34Pe68SJzxNxv
+         uoDOxmBUXzdEq3n9iM5hslW6fmLNP2BhjDJ3CjLd/ZbibEyBz/Nz/KVVV+rEm13xevMp
+         6q+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=7zDNhPy5uc8ogz43uAAVw05Oz1rJmR7+6LDT853a82A=;
-        b=SV2eJLDNQaIBdaF0gH1GfisSr1bxNx3x6pI5EDTVcch0L4FGbY1o4UFCTRdXxwB1qO
-         8J3mNQd3mO55WE9oKpFvU5kWBLerxwXMv++Nmx3vodHRVDjg2C+DxxEiSiycKp06SIJG
-         1irIkzkz2rqmr/B+DZchanQiFSRSJZIOI+dzF6obQygGuMa9Vwocmq0YgmXUj8xrQyQ9
-         kJuZ9ZqYTN5vUw4YAYssJNC+XaAgGLuNb1R39iL6GE9b03+MB8PbfMmSPZOYG84/ohRo
-         VqS595LR8DkIf7gj8mvI9bpRzt7aMAz7xwpSfuAL4B2L7zHhg01aDvah2q1NUBBdFuhm
-         S1QQ==
-X-Gm-Message-State: AOAM531SERFwHVN5joYqUYxogG6lMc9096tKjS5Y2kJ6gzLH4Ai+TJB3
-        Nrb3BUmICf6sg7E87CueLNXtI0SjXicna3CW
-X-Google-Smtp-Source: ABdhPJyjpxbLtjDZsCgYCWCSKPekYZtidvLDRCAX+mRjETMl7mHYP/SGTA6yKCFT9+QDQLxxgZfWL5c6GwsXIZUW
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a1c:c28a:: with SMTP id
- s132mr3899832wmf.67.1602856673396; Fri, 16 Oct 2020 06:57:53 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 15:57:45 +0200
-Message-Id: <f3a7a153f0719cb53ec385b16e912798bd3e4cf9.1602856358.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH v4] kcov, usb: only collect coverage from __usb_hcd_giveback_urb
- in softirq
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Nazime Hande Harputluoglu <handeharput@gmail.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=D+Oj1pj0xy3pRTG2tbwccw/BvWEVT+/elwc8Xpf2+ms=;
+        b=et0K5fV7RLJ6DN1AGGLOG9M4AeOgB1ZMJrdUwe0bVIGjYD8LVAuZaNYGLoh5y7l2xC
+         UKMWFyd32RvY0Aq08zJHzBVSHrsf+ALllkxcQ8/Bntk17HwUB5VABHDur4c300bQoCwv
+         UZmpZ5t8k2eEx3cHK7v+4eMrBW/DoGvWI5WqakKHrL+yPvGOoTH0dPiOnLCGHvQqH5sl
+         G02gGn5qdojTtQpdoivwpZOke3ceKZPse+m8T6H3lh4IJzNvpS59peVGHt+ikBhIBqmw
+         B8NguRA19w/QkXvYosAPuS6nORfvOxC72LORPhSyFLDU5WzK4YNUhdbfpmY1s0lQOu7d
+         jKlA==
+X-Gm-Message-State: AOAM532I3gdmkGZdGX1jPjE08DEtpMpb//y4tk3nL7jPu9UcYNEnT1sA
+        S8APSqFlveFZGIiRwtPwwUxJGgVox1LEiw==
+X-Google-Smtp-Source: ABdhPJzQWk0tbOyCNjqeSDXRj8WMg9EHO3/jd1ZjGhTEY6ctOFAVVz4uMWlvIssusgBkeMNP4rmQsw==
+X-Received: by 2002:a5d:498a:: with SMTP id r10mr4220816wrq.106.1602856675984;
+        Fri, 16 Oct 2020 06:57:55 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id u15sm2791368wml.21.2020.10.16.06.57.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 16 Oct 2020 06:57:55 -0700 (PDT)
+Subject: Re: [PATCH v2 0/4] clk: qcom : add sm8250 LPASS GFM drivers
+To:     Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200925103115.15191-1-srinivas.kandagatla@linaro.org>
+ <160263991247.310579.116180302037536226@swboyd.mtv.corp.google.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <19d0f252-924c-eece-0788-a24d9c7b9645@linaro.org>
+Date:   Fri, 16 Oct 2020 14:57:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <160263991247.310579.116180302037536226@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently there's a KCOV remote coverage collection section in
-__usb_hcd_giveback_urb(). Initially that section was added based on the
-assumption that usb_hcd_giveback_urb() can only be called in interrupt
-context as indicated by a comment before it. This is what happens when
-syzkaller is fuzzing the USB stack via the dummy_hcd driver.
+thanks Stephen,
 
-As it turns out, it's actually valid to call usb_hcd_giveback_urb() in task
-context, provided that the caller turned off the interrupts; USB/IP does
-exactly that. This can lead to a nested KCOV remote coverage collection
-sections both trying to collect coverage in task context. This isn't
-supported by KCOV, and leads to a WARNING.
+On 14/10/2020 02:45, Stephen Boyd wrote:
+>> Changes since v1:
+>>   -removed unnecessary Kconfig dependencies
+>>   - cleaned up header includes.
+>>   - moved to using pm_clk
+>>   - Moved to right place in Makefile
+>>   - moved to use module_platform_driver instead of builtin_platform_driver
+>>   - add null check for of_device_get_match_data
+>>
+>> verified dt_binding_check to pass on linux nexthttps://paste.ubuntu.com/p/6nVzjRwvsW/
+> Rob's bot complained again. Can you run with
 
-Change __usb_hcd_giveback_urb() to only call kcov_remote_*() callbacks
-when it's being executed in a softirq. As the result, the coverage from
-USB/IP related usb_hcd_giveback_urb() calls won't be collected, but the
-WARNING is fixed.
+Yes, I think the bot is probably checking against linus master branch.
+Now the dependent patches are merged in master.
+dt_binding_check passes, I will send v3 with the suggested changes!
 
-A potential future improvement would be to support nested remote coverage
-collection sections, but this patch doesn't address that.
 
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Acked-by: Marco Elver <elver@google.com>
----
+--srini
 
-Changes v3->v4:
-- Don't make any kcov changes, do a softirq context check in usb code
-  instead.
-
----
- drivers/usb/core/hcd.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-index a33b849e8beb..2f6a39e09dc6 100644
---- a/drivers/usb/core/hcd.c
-+++ b/drivers/usb/core/hcd.c
-@@ -1646,9 +1646,16 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
- 
- 	/* pass ownership to the completion handler */
- 	urb->status = status;
--	kcov_remote_start_usb((u64)urb->dev->bus->busnum);
-+	/*
-+	 * This function can be called in task context inside another remote
-+	 * coverage collection section, but KCOV doesn't support that kind of
-+	 * recursion yet. Only collect coverage in softirq context for now.
-+	 */
-+	if (in_serving_softirq())
-+		kcov_remote_start_usb((u64)urb->dev->bus->busnum);
- 	urb->complete(urb);
--	kcov_remote_stop();
-+	if (in_serving_softirq())
-+		kcov_remote_stop();
- 
- 	usb_anchor_resume_wakeups(anchor);
- 	atomic_dec(&urb->use_count);
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+> 
+>    make DT_SCHEMA_FILES=<path to schema file.yaml> dt_binding_check
+> 
+> and make sure the schema is up to date?
