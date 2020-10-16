@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173E9290CD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C61290CD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408070AbgJPUqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 16:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
+        id S2408670AbgJPUqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 16:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407904AbgJPUqS (ORCPT
+        with ESMTP id S2408077AbgJPUqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 16:46:18 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BB6C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:46:18 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id y12so4484174wrp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:46:18 -0700 (PDT)
+        Fri, 16 Oct 2020 16:46:37 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEB3C061755;
+        Fri, 16 Oct 2020 13:46:36 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id md26so5048299ejb.10;
+        Fri, 16 Oct 2020 13:46:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z34pjZEl/yAj35BmeMPeQ2AuzmLDkr4JaiqOt/ocOb0=;
-        b=umGeLcj4PeucC6Uf/5Tp5/oxosbRT2cAL8LwYyMK7PC10/QkTWvNiOcD9zxdFYXYjF
-         lMZc31X6dH9HqmOiO7Yqx0H7Iu2F32wfIRiRQNEGhfDhJTgoEPbeYwaS0go5VQWFuTQa
-         fHHCUJkJ4Xj2x4Iwag48IxwTxiPPe4G5xT5QUy9KNfb3acQsEaZ3KDss+IwTacYSFc+C
-         RKXH9M6tAChIWYXw4VJ7WOB08uXWOjd7fbgoSypAdoKzYUDx59f7uXtTbgam+kvN38R7
-         KoV9gnJpp2nELz3qwI1rXL4lJPAQIOD62dpkDVibocadOgc5FQtM2wHPJ/15Xpc+nIG7
-         1p4Q==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mAY0QDFqvIDjx5HUOQ+MdvNYA3kylWMqxJWjR23AFzk=;
+        b=Pge7XeimtOGQPWwobIeFhAVFY6hovQZpX0ZLcKzZ8AVgQQQ672h2NV6G4tVk7cpmI+
+         1+gpE/GaiJ6rOXia2sUQl2tkgPYRwpujI/1jI9yUuZbMHNhhdIPSSFFZisDCvdGyMNCm
+         Bv7XKMjurquBEjLiG0g7MIjYLAxlPxapoizFVEWiVkAHI83UW9jV/Zr0Oj+Y0jv0AGkL
+         cttkNhvMmB1Ql9iOu8/GJqu+JOcP+inoZKVjC8g7gRUssTThoHFHguWhzOQMKNXZP0Bi
+         /t44sdZ14d2mGGgRgIH93pq2zHZDD0h2Gi9RGZg69aSc7fX52eFBBVlYAcrwgabfDNox
+         6p+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z34pjZEl/yAj35BmeMPeQ2AuzmLDkr4JaiqOt/ocOb0=;
-        b=l3YmCGE6Gk9XaCvq42BXDALLqvw4pIVBh1IJ3RmCJLYHiGP8XHEFLUqNFIV9VwZ1NV
-         rMQeUINw0aCZ4Ogvj3dWoHRViJKzK6ZSDaCx1KZU3WnumdGMxMDlPuV1bV8JibJA5Ud0
-         vb5HijEMSm6FlZRzExsQI2jR93s11urqOdn421kcVnoHQrFWaIPCX6FQkP9rqbWBggn+
-         YsmegO4EUHHaoWJXlZc9RbR9gfDMuqfzjm4yi79WYwOQbqdfsNIq+ptmA6lfRMQo8Nz4
-         c9PxwPddCmqp/y5J+dxPNQYF+T6lf56iWXx7yqWjNxWkRgDOpiEe+QKKWUQvPRJdYDI2
-         Tzqg==
-X-Gm-Message-State: AOAM533ICunek2O/svCLXo9uTtjjw/ioupZ3r5b0Oz8GnkI1Htr9ClMU
-        Z0hyaETJNz4nmydw4MKo5gH04//1gMhi1g==
-X-Google-Smtp-Source: ABdhPJz36RkEVJGo8Lo+uuUMuw1zpTfpRfIeXeo6wreRRLSULo2sCHXOz8UUwuJxT9Iqbo+vH5Cj+w==
-X-Received: by 2002:adf:fe48:: with SMTP id m8mr5978231wrs.127.1602881176869;
-        Fri, 16 Oct 2020 13:46:16 -0700 (PDT)
-Received: from localhost.localdomain (dh207-98-181.xnet.hr. [88.207.98.181])
-        by smtp.googlemail.com with ESMTPSA id z5sm5143609wrw.37.2020.10.16.13.46.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 13:46:16 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        robh+dt@kernel.org, mark.rutland@arm.com, vkoul@kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: [PATCH] MAINTAINERS: Add entry for Qualcomm IPQ4019 USB PHY
-Date:   Fri, 16 Oct 2020 22:46:10 +0200
-Message-Id: <20201016204610.2406075-1-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mAY0QDFqvIDjx5HUOQ+MdvNYA3kylWMqxJWjR23AFzk=;
+        b=po1m8uwegap4OUymmHUBI9SwKOHwckXU2OC+oiIfQhE+ThvXWPpo5k4oN7rLNr72Zt
+         d99Bn9ezles6r2hqXk5bc610CUl5TA7TVO5Pz9NGo3Pg8wu51mlZTbsj4WD8St9qR6Be
+         h3U1sav7E7VSqxNAn+NE0nU98gO3SKATKmFFzbZuVxy+ZiiDSK6DnrWggX1G5keX2Oay
+         zdU5Sj2rYvz2F+hca8SvlOAcOVf5TU7zygVi7aSnWMBTXqHXCNKiXV/30AbaN+OLcTpT
+         /YQJX6LcgiRhDzhgfoaBcKcV/04RKBRkKgtLlz/+QTDHuwgEvJ0wp/h7jqUOHZ9uhbW4
+         YHSA==
+X-Gm-Message-State: AOAM530Tt76x/TK4Bs8Ke5DCe6WyeIN8qMozxEQmk0rN5vpF6whMs7Fx
+        FNCrF2FBXh+k3n2UCGvBvjuh361MEtqB/VT9zsYy7DZgW9c=
+X-Google-Smtp-Source: ABdhPJzZH9WV53owno/ZkjiRehR4EVV/83Ve6RR9ZDeTZs5Z1Fi5I5Jf9JSdZ0IMRjggvROTLl8Mkpi59PwKfkncEXs=
+X-Received: by 2002:a17:906:cc0d:: with SMTP id ml13mr5630435ejb.2.1602881195652;
+ Fri, 16 Oct 2020 13:46:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru> <20201014101402.18271-15-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201014101402.18271-15-Sergey.Semin@baikalelectronics.ru>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 16 Oct 2020 22:46:24 +0200
+Message-ID: <CAFBinCDYu+C62P37QjY75xG8iXa+MwZEL-agNhoOsaXQ0OQpgQ@mail.gmail.com>
+Subject: Re: [PATCH 14/20] dt-bindings: usb: meson-g12a-usb: Fix FL-adj
+ property value
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainers entry for the Qualcomm IPQ4019 USB PHY driver.
-
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 867157311dc8..bc05bea8dda0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14411,6 +14411,14 @@ F:	Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
- F:	drivers/mailbox/qcom-ipcc.c
- F:	include/dt-bindings/mailbox/qcom-ipcc.h
- 
-+QUALCOMM IPQ4019 USB PHY DRIVER
-+M:	Robert Marko <robert.marko@sartura.hr>
-+M:	Luka Perkov <luka.perkov@sartura.hr>
-+L:	linux-arm-msm@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
-+F:	drivers/phy/qualcomm/phy-qcom-ipq4019-usb.c
-+
- QUALCOMM RMNET DRIVER
- M:	Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
- M:	Sean Tranchetti <stranche@codeaurora.org>
--- 
-2.28.0
-
+On Wed, Oct 14, 2020 at 12:14 PM Serge Semin
+<Sergey.Semin@baikalelectronics.ru> wrote:
+>
+> An empty snps,quirk-frame-length-adjustment won't cause any change
+> performed by the driver. Moreover the DT schema validation will fail,
+> since it expects the property being assigned with some value. So set
+> fix the example by setting a valid FL-adj value in accordance with
+> Neil Armstrong comment.
+>
+> Link: https://lore.kernel.org/linux-usb/20201010224121.12672-16-Sergey.Semin@baikalelectronics.ru/
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
