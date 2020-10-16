@@ -2,125 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CAA290C17
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 21:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6426290C1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 21:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410448AbgJPTI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 15:08:26 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:42884 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732607AbgJPTI0 (ORCPT
+        id S2410460AbgJPTIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 15:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390579AbgJPTIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 15:08:26 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 5C98180623;
-        Fri, 16 Oct 2020 21:08:22 +0200 (CEST)
-Date:   Fri, 16 Oct 2020 21:08:21 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Kevin Tang <kevin3.tang@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, mark.rutland@arm.com, orsonzhai@gmail.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        zhang.lyra@gmail.com
-Subject: Re: [PATCH RFC v7 0/6] Add Unisoc's drm kms module
-Message-ID: <20201016190821.GC1345100@ravnborg.org>
-References: <1601274460-7866-1-git-send-email-kevin3.tang@gmail.com>
+        Fri, 16 Oct 2020 15:08:53 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D585C061755;
+        Fri, 16 Oct 2020 12:08:52 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id q136so3599101oic.8;
+        Fri, 16 Oct 2020 12:08:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MuaE4hO6bq+ijROR/m0uZ0eh0bV7cOVlRbgqwVBWT9g=;
+        b=Cpam5yILFhb3Ogg5JoLdakhMvY5ExGYs5JMAkvIPt+XXS+euPwRuTu3X3X41zFkUCq
+         /zPFoc2kZQN69FeQLlIs5sYSmhTfktOK4yfAW5cvyj5ECQRpqTtfxe1nFjmuDojjtOSY
+         lWIeL0fcyZ6ZO87YMBg655pUzQDzN/D8aQs78gPR1CVSE7/6X2HpatpQhhifGwXosgbf
+         5AsXRPNpwkikoV5f2/4FoS4KHEEyaarwPiQez1G2MFH1eEHf3DnB+Pn16ggofJcsuSKV
+         OxTYOXyUNwLMu3PcqT9IIvoFLnfArbVxBYX2flZYCpu6QRSCwajb/vMHZ1bCtFLa853Q
+         Ihnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MuaE4hO6bq+ijROR/m0uZ0eh0bV7cOVlRbgqwVBWT9g=;
+        b=gQWm4UOBQg4RruIq+VxLuyrTayop4Ya4NImHGGep6U2/zZnsFS60oEvkPRQIz2QOJe
+         zsB9kcf1qGd5K9y2j1AzSPt0dr750sE30Mwnk3cgwZ1TdjFZdramyIhOqJueeIcdbNEa
+         BjGFFWoztaKf3tM+jio7ChVvGZ9+Dg28jyY1aIBfyLxsytkVCFoZlZy/UVmGw2/Rxi58
+         bkG8xmbqOrPpu5/fQQI/CYMXujZ/CRYyiQ4iDOl7HX0/4LFTK/h/Zd/3SOHBmg9KHgRM
+         AgRmlw8BXpW3ietgEHvWRmP98tiT4BGCMRPPdd0PEHdKU2YNkP76yvhCgr3vUShqq1cQ
+         67GQ==
+X-Gm-Message-State: AOAM533pSwzHCo8Er80VrHESxhwyv8PprlGsXYwwRSkkUTA17mqa2h64
+        QY0Z860Pfw1QBBnh+62D8qQ=
+X-Google-Smtp-Source: ABdhPJxvpBus0eQ7jL5ZttCjWEXpEDBOeayj5h2rY6AshqQq6lQ2S+xqWN88ZHDQCqXcz5xuSwMJPg==
+X-Received: by 2002:aca:d804:: with SMTP id p4mr3359087oig.24.1602875331734;
+        Fri, 16 Oct 2020 12:08:51 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f9sm1383489ooq.9.2020.10.16.12.08.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 16 Oct 2020 12:08:51 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 16 Oct 2020 12:08:50 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.8 00/14] 5.8.16-rc1 review
+Message-ID: <20201016190850.GF32893@roeck-us.net>
+References: <20201016090437.153175229@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1601274460-7866-1-git-send-email-kevin3.tang@gmail.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=e5mUnYsNAAAA:8 a=Bk4yDtxpmw7rSWEHNH8A:9
-        a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
+In-Reply-To: <20201016090437.153175229@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
-
-> v7:
-> 1. Fix DTC unit name warnings
-> 2. Fix the problem of maintainers
-> 3. Call drmm_mode_config_init to mode config init
-> 4. Embed drm_device in sprd_drm and use devm_drm_dev_alloc
-> 5. Replace DRM_XXX with drm_xxx on KMS module, but not suitable for other subsystems
-> 6. Remove plane_update stuff, dpu handles all the HW update in crtc->atomic_flush
-> 7. Dsi&Dphy Code structure adjustment, all move to "sprd/"
-
-I can see some of my feedback from last round of review is not
-addressed. There were makefile fixes and then I asked for a high-level
-intro.
-
-Can you please revisit last round of review feedback to check what was
-missed.
-
-	Sam
-
-
+On Fri, Oct 16, 2020 at 11:07:45AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.8.16 release.
+> There are 14 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Kevin Tang (6):
->   dt-bindings: display: add Unisoc's drm master bindings
->   drm/sprd: add Unisoc's drm kms master
->   dt-bindings: display: add Unisoc's dpu bindings
->   drm/sprd: add Unisoc's drm display controller driver
->   dt-bindings: display: add Unisoc's mipi dsi&dphy bindings
->   drm/sprd: add Unisoc's drm mipi dsi&dphy driver
+> Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
+> Anything received after that time might be too late.
 > 
->  .../display/sprd/sprd,display-subsystem.yaml       |   39 +
->  .../bindings/display/sprd/sprd,sharkl3-dpu.yaml    |   83 ++
->  .../display/sprd/sprd,sharkl3-dsi-host.yaml        |   98 ++
->  .../display/sprd/sprd,sharkl3-dsi-phy.yaml         |   75 +
->  drivers/gpu/drm/Kconfig                            |    2 +
->  drivers/gpu/drm/Makefile                           |    1 +
->  drivers/gpu/drm/sprd/Kconfig                       |   13 +
->  drivers/gpu/drm/sprd/Makefile                      |   12 +
->  drivers/gpu/drm/sprd/dpu_r2p0.c                    |  636 +++++++++
->  drivers/gpu/drm/sprd/dw_dsi_ctrl.c                 |  792 +++++++++++
->  drivers/gpu/drm/sprd/dw_dsi_ctrl.h                 | 1475 ++++++++++++++++++++
->  drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c             |  276 ++++
->  drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h             |   34 +
->  drivers/gpu/drm/sprd/megacores_pll.c               |  315 +++++
->  drivers/gpu/drm/sprd/megacores_pll.h               |  146 ++
->  drivers/gpu/drm/sprd/sprd_dphy.c                   |  335 +++++
->  drivers/gpu/drm/sprd/sprd_dphy.h                   |   39 +
->  drivers/gpu/drm/sprd/sprd_dpu.c                    |  501 +++++++
->  drivers/gpu/drm/sprd/sprd_dpu.h                    |  217 +++
->  drivers/gpu/drm/sprd/sprd_drm.c                    |  263 ++++
->  drivers/gpu/drm/sprd/sprd_drm.h                    |   20 +
->  drivers/gpu/drm/sprd/sprd_dsi.c                    | 1102 +++++++++++++++
->  drivers/gpu/drm/sprd/sprd_dsi.h                    |  105 ++
->  23 files changed, 6579 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dpu.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-host.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-phy.yaml
->  create mode 100644 drivers/gpu/drm/sprd/Kconfig
->  create mode 100644 drivers/gpu/drm/sprd/Makefile
->  create mode 100644 drivers/gpu/drm/sprd/dpu_r2p0.c
->  create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.c
->  create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl.h
->  create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.c
->  create mode 100644 drivers/gpu/drm/sprd/dw_dsi_ctrl_ppi.h
->  create mode 100644 drivers/gpu/drm/sprd/megacores_pll.c
->  create mode 100644 drivers/gpu/drm/sprd/megacores_pll.h
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dphy.c
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dphy.h
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.c
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.h
->  create mode 100644 drivers/gpu/drm/sprd/sprd_drm.c
->  create mode 100644 drivers/gpu/drm/sprd/sprd_drm.h
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.c
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.h
-> 
-> -- 
-> 2.7.4
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+Build results:
+	total: 154 pass: 154 fail: 0
+Qemu test results:
+	total: 430 pass: 430 fail: 0
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
