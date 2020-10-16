@@ -2,174 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B65290239
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6226229020F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406401AbgJPJuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:50:14 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:51750 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389928AbgJPJuO (ORCPT
+        id S2406183AbgJPJjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:39:45 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43452 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405486AbgJPJjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:50:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602841813; x=1634377813;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=cwuFRVPEgnDmB/74qh87kydQpX0yxhSulI7Bq85/FhI=;
-  b=RGWaMi1NIM+2NcKrGTCoy+9mnPdGYrOxrZAMeo2A1VrQd64PSlnN6emL
-   PVlyT9BLL/XmIoQyIoD0kj/LY6/XULdqy9aeu777773Zx7d5zpsFPZbmP
-   Qg5maB1OX+Ur01QDWpKn61tqQtpl4WKff0tMbsbI1GguScjf2LYvYe04v
-   kac3F+lmbgrG3xjOgIwUfbvAEmCU/RUmFTGdqVjTnodgt+DLpJYL0vLW8
-   DvdLTMZ1ijm0QM5Mcn1Fyg9nE5R0xMLkCjAe5U4KZ5nrfQvjTLj/lNyK5
-   BUuY2m8mS35pbzv5CF9BaFZaZa9eg4npO8anyqlkwyfLcXfqRBzDUbgMO
-   w==;
-IronPort-SDR: LcxvTX4osntWQZD9fR+pvVnHwjbZzuuYv5udmw/9J9BfEZNCIXFdUotag2uLIjcF9Np+EsiwR1
- dzy6vGzwRA/f40iKGiKmvxxYTmzHf2GK/OXJ41KEDwTpzdyCC6Gnwvvi/+0sWKa10HAM+GPcNU
- moURTzvUWSL8fVSitY/5JRUn91xYrXYzaiGygWI5FaOu84qohJKHX5P3YmGgOzhyynhGZ39AA+
- WG5ui5z+WAF1xDWGO5OtPxcyyx28u6d6W7vJvoFyl1InktQsVJn4UVmk6eyKNvXGqolZN8vosb
- jbA=
-X-IronPort-AV: E=Sophos;i="5.77,382,1596524400"; 
-   d="scan'208";a="94860492"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Oct 2020 02:50:13 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 16 Oct 2020 02:39:24 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 16 Oct 2020 02:39:20 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <vkoul@kernel.org>, <robh+dt@kernel.org>
-CC:     <nicolas.ferre@microchip.com>, <tudor.ambarus@microchip.com>,
-        <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Eugen Hristev" <eugen.hristev@microchip.com>
-Subject: [PATCH v2 4/4] dmaengine: at_xdmac: add AXI priority support and recommended settings
-Date:   Fri, 16 Oct 2020 12:39:18 +0300
-Message-ID: <20201016093918.290137-1-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 16 Oct 2020 05:39:45 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602841183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IQSAq0DmcMCp8Il1c6ZBuGTyHZ8gpfRWlnpFLmWcST8=;
+        b=axWfea24jcPVqd7XdMsnD60n55IHtNcbIBDwPGWKdVDMyPtkNbS9+pSReoCZVQXdIIE1KW
+        W9seUIsKWQNaG5mp78Fi3tJfXHC3ZsCEOYOs7mHUiE9P2xw92kIl5E0s/3P1j3/hG2iO0r
+        mDb87G+alYm2ooFjXtFUEGzmV1mqKnpxtf+pZGDWq9YpEYxHAV7mBmSUjgJe4z8d5dgEWb
+        cRI8aJjCFp5TYud7cRlDcHCCN8WgHJtAy5S1bC6Jzcr5ml7ofgObhAhImvixXzDV9RSNKK
+        DkgL1WYQzrolmNs+7TmOnx9vwGpC3F4iAlvfnlN7RfbJ7lJ+AYhYZiUtcttBIw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602841183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IQSAq0DmcMCp8Il1c6ZBuGTyHZ8gpfRWlnpFLmWcST8=;
+        b=c3yXCUWPSkn+oH+vHxi4tK25AE8sUcYOc5AMFY4+3uAfbvQAZMObx/dg3TWPw5rXZZhQNQ
+        5FKr74oQ0fuKSmCg==
+To:     Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, Roman Gershman <romger@amazon.com>
+Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
+In-Reply-To: <87a6wmv93v.fsf@nanos.tec.linutronix.de>
+References: <20201015131701.511523-1-axboe@kernel.dk> <20201015131701.511523-6-axboe@kernel.dk> <20201015154953.GM24156@redhat.com> <e17cd91e-97b2-1eae-964b-fc90f8f9ef31@kernel.dk> <87a6wmv93v.fsf@nanos.tec.linutronix.de>
+Date:   Fri, 16 Oct 2020 11:39:43 +0200
+Message-ID: <871rhyv7a8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sama7g5 version of the XDMAC supports priority configuration and
-outstanding capabilities.
-Add defines for the specific registers for this configuration, together
-with recommended settings.
-However the settings are very different if the XDMAC is a mem2mem or a
-per2mem controller.
-Thus, we need to differentiate according to device tree property.
+On Fri, Oct 16 2020 at 11:00, Thomas Gleixner wrote:
+> On Thu, Oct 15 2020 at 12:39, Jens Axboe wrote:
+>> On 10/15/20 9:49 AM, Oleg Nesterov wrote:
+> So if you change #2 to:
+>
+>    Drop the CONFIG_GENERIC_ENTRY dependency, make _all_ architectures
+>    use TIF_NOTIFY_SIGNAL and clean up the jobctl and whatever related
+>    mess.
+>
+> and actually act apon it, then I'm fine with that approach.
 
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
----
-Changes in v2:
-- changed from specific binding to use of dma-request binding as suggested
+Which makes me rethink my view on Olegs suggestion:
 
+>>> You can simply nack the patch which adds TIF_NOTIFY_SIGNAL to
+>>> arch/xxx/include/asm/thread_info.h.
 
- drivers/dma/at_xdmac.c | 47 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+That's a truly great suggestion:
 
-diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
-index bfbf6375c293..cdc795a9c576 100644
---- a/drivers/dma/at_xdmac.c
-+++ b/drivers/dma/at_xdmac.c
-@@ -30,7 +30,24 @@
- #define		AT_XDMAC_FIFO_SZ(i)	(((i) >> 5) & 0x7FF)		/* Number of Bytes */
- #define		AT_XDMAC_NB_REQ(i)	((((i) >> 16) & 0x3F) + 1)	/* Number of Peripheral Requests Minus One */
- #define AT_XDMAC_GCFG		0x04	/* Global Configuration Register */
-+#define		AT_XDMAC_WRHP(i)		(((i) & 0xF) << 4)
-+#define		AT_XDMAC_WRMP(i)		(((i) & 0xF) << 8)
-+#define		AT_XDMAC_WRLP(i)		(((i) & 0xF) << 12)
-+#define		AT_XDMAC_RDHP(i)		(((i) & 0xF) << 16)
-+#define		AT_XDMAC_RDMP(i)		(((i) & 0xF) << 20)
-+#define		AT_XDMAC_RDLP(i)		(((i) & 0xF) << 24)
-+#define		AT_XDMAC_RDSG(i)		(((i) & 0xF) << 28)
-+#define AT_XDMAC_GCFG_M2M	(AT_XDMAC_RDLP(0xF) | AT_XDMAC_WRLP(0xF))
-+#define AT_XDMAC_GCFG_P2M	(AT_XDMAC_RDSG(0x1) | AT_XDMAC_RDHP(0x3) | \
-+				AT_XDMAC_WRHP(0x5))
- #define AT_XDMAC_GWAC		0x08	/* Global Weighted Arbiter Configuration Register */
-+#define		AT_XDMAC_PW0(i)		(((i) & 0xF) << 0)
-+#define		AT_XDMAC_PW1(i)		(((i) & 0xF) << 4)
-+#define		AT_XDMAC_PW2(i)		(((i) & 0xF) << 8)
-+#define		AT_XDMAC_PW3(i)		(((i) & 0xF) << 12)
-+#define AT_XDMAC_GWAC_M2M	0
-+#define AT_XDMAC_GWAC_P2M	(AT_XDMAC_PW0(0xF) | AT_XDMAC_PW2(0xF))
-+
- #define AT_XDMAC_GIE		0x0C	/* Global Interrupt Enable Register */
- #define AT_XDMAC_GID		0x10	/* Global Interrupt Disable Register */
- #define AT_XDMAC_GIM		0x14	/* Global Interrupt Mask Register */
-@@ -189,6 +206,8 @@ struct at_xdmac_layout {
- 	u8				chan_cc_reg_base;
- 	/* Source/Destination Interface must be specified or not */
- 	bool				sdif;
-+	/* AXI queue priority configuration supported */
-+	bool				axi_config;
- };
- 
- /* ----- Channels ----- */
-@@ -267,6 +286,7 @@ static const struct at_xdmac_layout at_xdmac_sama5d4_layout = {
- 	.gswf = 0x40,
- 	.chan_cc_reg_base = 0x50,
- 	.sdif = true,
-+	.axi_config = false,
- };
- 
- static const struct at_xdmac_layout at_xdmac_sama7g5_layout = {
-@@ -279,6 +299,7 @@ static const struct at_xdmac_layout at_xdmac_sama7g5_layout = {
- 	.gswf = 0x50,
- 	.chan_cc_reg_base = 0x60,
- 	.sdif = false,
-+	.axi_config = true,
- };
- 
- static inline void __iomem *at_xdmac_chan_reg_base(struct at_xdmac *atxdmac, unsigned int chan_nb)
-@@ -1997,6 +2018,30 @@ static int atmel_xdmac_resume(struct device *dev)
- }
- #endif /* CONFIG_PM_SLEEP */
- 
-+static void at_xdmac_axi_config(struct platform_device *pdev)
-+{
-+	struct at_xdmac	*atxdmac = (struct at_xdmac *)platform_get_drvdata(pdev);
-+	bool dev_m2m = false;
-+	u32 dma_requests;
-+
-+	if (!atxdmac->layout->axi_config)
-+		return; /* Not supported */
-+
-+	if (!of_property_read_u32(pdev->dev.of_node, "dma-requests",
-+				  &dma_requests)) {
-+		dev_info(&pdev->dev, "controller in mem2mem mode.\n");
-+		dev_m2m = true;
-+	}
-+
-+	if (dev_m2m) {
-+		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_M2M);
-+		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_M2M);
-+	} else {
-+		at_xdmac_write(atxdmac, AT_XDMAC_GCFG, AT_XDMAC_GCFG_P2M);
-+		at_xdmac_write(atxdmac, AT_XDMAC_GWAC, AT_XDMAC_GWAC_P2M);
-+	}
-+}
-+
- static int at_xdmac_probe(struct platform_device *pdev)
- {
- 	struct at_xdmac	*atxdmac;
-@@ -2142,6 +2187,8 @@ static int at_xdmac_probe(struct platform_device *pdev)
- 	dev_info(&pdev->dev, "%d channels, mapped at 0x%p\n",
- 		 nr_channels, atxdmac->regs);
- 
-+	at_xdmac_axi_config(pdev);
-+
- 	return 0;
- 
- err_dma_unregister:
--- 
-2.25.1
+   X86 is going to have that TIF bit once the above is available.
+
+I'm happy to help with the merge logistics of this.
+
+Thanks,
+
+        tglx
 
