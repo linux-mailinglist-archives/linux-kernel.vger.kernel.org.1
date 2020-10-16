@@ -2,130 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986F329058A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC7729058F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407875AbgJPMue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 08:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
+        id S2407883AbgJPMu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 08:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405632AbgJPMud (ORCPT
+        with ESMTP id S2406502AbgJPMu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 08:50:33 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80384C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:50:33 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id q5so2857271wmq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:50:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CrMlB8wZnz1QSRMDLaaqihjuRkl23NGRAQ7yTr/KKgU=;
-        b=Clni0cNlsKDQqQNx9Z1oea1qbI5trbL18Iwm/RppeJEeDU5onspHP+KN+DucCmqcpr
-         83zcVFENnk98nG7FAfwFElxxybgV2pzT2pSgM81VeOQzDSMxo3KvK/oBUr6gZENqPREC
-         Qkfm1jEKyT9XhdjMCrNsYLL4T+qZTbXTOOm+PYNIyqgd9H+V5BiMUcGSlQBkNyj9kBHS
-         HJu9xFj7y65JJdwxs8rQkmrNYeKw8u6w4LcCr+IKygGQmg6FCDKpfEsjYX58XNWbY+MS
-         fznHd8MrGWW6vLo0g1BieoHkqw4Rk9MDTCiFEdSwEsYwURoaoU9zpKfa4hxH3a57OMDJ
-         9kBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CrMlB8wZnz1QSRMDLaaqihjuRkl23NGRAQ7yTr/KKgU=;
-        b=ds+WjQXgLsj1G8COmuXvJBv5Vi87aUz5g9stcopi4SmkuW/aFeUPpx1byOfIzwQYYo
-         a+oacrWK8mpxLYjnYOXKe6SZrYsgqt3erIJ9i24AOzDdRHKNoN2hUiA1LzGrliUJjQ7R
-         MoImUnMOPTDUmX1/Ud4Hs0nBfUUaDS3jU587sIYfk9GYS9EMHyawkxYdieViszdPmUpm
-         FZzFUlZWB9K0qHwCUkGgxvgWWPv7/RmUeAPo0SfsY5HMZ0ePI+5U12jsefUehoYgTWjJ
-         pIQF+XIUXlyiIu1PFcFgj9/6jfcjGzjYGReP2sRgNcmNQbvlypNC0j9x4zTV9ut4JtnK
-         jQqw==
-X-Gm-Message-State: AOAM532zIQiWNo3iG7dx1ahKwvggGrzB1chFt+ZqNbB9KWL3ADiryXRd
-        kUt1KEl/+jrfzB4HwNn7FGij3g==
-X-Google-Smtp-Source: ABdhPJwc6OQCnkD3OpBg2RnakL6syJWoFj3OemWf0bJrqBo0e6K5q4D9gFKaC16wyZgW5X4c9QHMMw==
-X-Received: by 2002:a1c:495:: with SMTP id 143mr3543475wme.63.1602852631989;
-        Fri, 16 Oct 2020 05:50:31 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c9d8:1700:5168:39b? ([2a01:e34:ed2f:f020:c9d8:1700:5168:39b])
-        by smtp.googlemail.com with ESMTPSA id 14sm2610405wmf.27.2020.10.16.05.50.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 05:50:31 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-To:     Quentin Perret <qperret@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "Nayak, Rajendra" <rnayak@codeaurora.org>
-References: <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
- <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
- <b19c1f12-b7cf-fcae-4ebb-617019effe2e@arm.com>
- <55d3fb0f-f7d8-63c5-2bdb-53eaa62380e0@linaro.org>
- <f660731e-132b-2514-f526-d7123ed3522c@arm.com>
- <d04019bd-9e85-5f3e-2a1b-66780b8df3dc@linaro.org>
- <3e3dd42c-48ac-7267-45c5-ca88205611bd@arm.com>
- <00ceec64-3273-bb4a-6f38-22de8d877ab5@linaro.org>
- <CAJZ5v0hV8fwRnADdjiiF=zapO3AE6=_W_PeOQ_WhUirCcFkgdA@mail.gmail.com>
- <e321191c-61d2-a15d-47c2-653b277984ca@linaro.org>
- <20201016121844.GA2420691@google.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <b3c6d7a5-0564-6e84-77ff-9afe10d7ee27@linaro.org>
-Date:   Fri, 16 Oct 2020 14:50:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 16 Oct 2020 08:50:57 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24B4C061755;
+        Fri, 16 Oct 2020 05:50:57 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 7C228226F6;
+        Fri, 16 Oct 2020 14:50:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1602852654;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jP4HQaKiGyn+S5AxLUagFAJkiHjjyugeL1er/xlRrfc=;
+        b=v/OPpudmOdfdIc29yGVyRTAd55VBkX0Xq8D4S8O6CEz5calCWHK18jpYNJuuHAtUmtia7i
+        VlPc0zK1812U0l6hfw1qkC9dUgiO6StIfzrWJ4hkQ3V8erw28RqUmJ61qWKxN+bEvLiym3
+        nm+EK8SpggZZKVPW4qcdNEbA3hLWiSg=
 MIME-Version: 1.0
-In-Reply-To: <20201016121844.GA2420691@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 16 Oct 2020 14:50:54 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH] mmc: sdhci-of-esdhc: set timeout to max before tuning
+In-Reply-To: <CAPDyKFoMmsYhwvNDdprtWiY+EMjXQx5uFvn4+fHmCG8zj6aryQ@mail.gmail.com>
+References: <20201015231149.9333-1-michael@walle.cc>
+ <CAPDyKFoMmsYhwvNDdprtWiY+EMjXQx5uFvn4+fHmCG8zj6aryQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <7051c929a585bf7b1f62561f0ea91193@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/10/2020 14:18, Quentin Perret wrote:
-> On Friday 16 Oct 2020 at 13:48:33 (+0200), Daniel Lezcano wrote:
->> If the SCMI is returning abstract numbers, the thermal IPA governor will
->> use these numbers as a reference to mitigate the temperature at the
->> specified sustainable power which is expressed in mW in the DT. So it
->> does not work and we can not detect such conflict.
->>
->> That is why I'm advocating to keep mW for the energy model and make the
->> SCMI and DT power numbers incompatible.
+Am 2020-10-16 12:53, schrieb Ulf Hansson:
+> On Fri, 16 Oct 2020 at 01:12, Michael Walle <michael@walle.cc> wrote:
+>> 
+>> On rare occations there is the following error:
+>> 
+>>   mmc0: Tuning timeout, falling back to fixed sampling clock
+>> 
+>> There are SD cards which takes a significant longer time to reply to 
+>> the
+>> first CMD19 command. The eSDHC takes the data timeout value into 
+>> account
+>> during the tuning period. The SDHCI core doesn't explicitly set this
+>> timeout for the tuning procedure. Thus on the slow cards, there might 
+>> be
+>> a spurious "Buffer Read Ready" interrupt, which in turn triggers a 
+>> wrong
+>> sequence of events. In the end this will lead to an unsuccessful 
+>> tuning
+>> procedure and to the above error.
+>> 
+>> To workaround this, set the timeout to the maximum value (which is the
+>> best we can do) and the SDHCI core will take care of the proper 
+>> timeout
+>> handling.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
 > 
-> I think it's fair to say SCMI-provided number should only be compared to
-> other SCMI-provided numbers, so +1 on that. But what I don't understand
-> is why specifying the EM in mW helps with that?
+> Sound like this should be tagged for stable, right?
 
-It is already specified in mW. I'm just saying to not add the
-'scale'/'abstract'/'bogoWatt' in the documentation.
+Yes, but I was unsure about that. I didn't find a lot of Fixes: tags in 
+the history of this driver (eg. for errata etc.)
 
-> Can we not let the providers specify the unit? 
+I could repost a v2 with a fixes tag if you like.
 
-Yes, it is possible but the provider must give the 'unit' and the energy
-model must store this information along with the "power" numbers, so we
-can compare apple with apple.
-
-Today, the energy model is using the mW unit only and the providers are
-not telling the 'unit', so both are missing.
-
-Because both are missing, it does not make sense to talk about
-'abstract' values in the energy model documentation until the above is
-fixed.
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+-michael
