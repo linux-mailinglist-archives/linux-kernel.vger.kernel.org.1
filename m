@@ -2,170 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F2929017D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830D9290199
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394897AbgJPJPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:15:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38280 "EHLO mail.kernel.org"
+        id S2406312AbgJPJQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:16:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404497AbgJPJJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:09:32 -0400
+        id S2394634AbgJPJIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:08:51 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A853520872;
-        Fri, 16 Oct 2020 09:09:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E99721527;
+        Fri, 16 Oct 2020 09:08:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602839371;
-        bh=Ufj4byAwzHISa5yDmrjT0bZGdQpWvUbd0rnFT5cr2MI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ppLWAP/mLEKMV4ugNTapIkIm7yfa02GAZ3kf8E6ATFthCGdUY0Y4vzrS4rtwyZm/V
-         Xdph3mh4Pp7iZNDLPibzcSR40grQNVg2AN06S739o7Lhxi3EG/H2Q1bbDasJsG08lP
-         b3whACMh+GXU/bGrBKtx2as60f/ULq28oPUhS7r4=
+        s=default; t=1602839321;
+        bh=+S/omUG/l6n5LQVQ1qJsfEyHgDv/IEI4OcZAq9W/AUA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=f4afD0i6Sb8VRaF/G6S0ZECRIVOz7f/gztjEl0AGMyCzoXwn8mknZ9PUqxLqvjaYW
+         Z6Z2E1KeuSwhsypNfz0EgJSzW9qDxbk5m3oF9YhVh5BWF81AntvuBdvtaQgdfDrd9+
+         UI9Oz592UVfbQgc4IyoIb54CNZO3yYybc2mmFHuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: [PATCH 4.19 00/21] 4.19.152-rc1 review
+        stable@vger.kernel.org,
+        Wilken Gottwalt <wilken.gottwalt@mailbox.org>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 09/18] USB: serial: option: add Cellient MPL200 card
 Date:   Fri, 16 Oct 2020 11:07:19 +0200
-Message-Id: <20201016090437.301376476@linuxfoundation.org>
+Message-Id: <20201016090437.745267092@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
+In-Reply-To: <20201016090437.265805669@linuxfoundation.org>
+References: <20201016090437.265805669@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.152-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.19.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.19.152-rc1
-X-KernelTest-Deadline: 2020-10-18T09:04+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.19.152 release.
-There are 21 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
 
-Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
-Anything received after that time might be too late.
+commit 3e765cab8abe7f84cb80d4a7a973fc97d5742647 upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.152-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-and the diffstat can be found below.
+Add usb ids of the Cellient MPL200 card.
 
-thanks,
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/3db5418fe9e516f4b290736c5a199c9796025e3c.1601715478.git.wilken.gottwalt@mailbox.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-greg k-h
+---
+ drivers/usb/serial/option.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.19.152-rc1
-
-Dominik Przychodni <dominik.przychodni@intel.com>
-    crypto: qat - check cipher length for aead AES-CBC-HMAC-SHA
-
-Herbert Xu <herbert@gondor.apana.org.au>
-    crypto: bcm - Verify GCM/CCM key length in setkey
-
-Arnaud Patard <arnaud.patard@rtp-net.org>
-    drivers/net/ethernet/marvell/mvmdio.c: Fix non OF case
-
-Jan Kara <jack@suse.cz>
-    reiserfs: Fix oops during mount
-
-Jan Kara <jack@suse.cz>
-    reiserfs: Initialize inode keys properly
-
-Mychaela N. Falconia <falcon@freecalypso.org>
-    USB: serial: ftdi_sio: add support for FreeCalypso JTAG+UART adapters
-
-Scott Chen <scott@labau.com.tw>
-    USB: serial: pl2303: add device-id for HP GC device
-
-Anant Thazhemadam <anant.thazhemadam@gmail.com>
-    staging: comedi: check validity of wMaxPacketSize of usb endpoints found
-
-Leonid Bloch <lb.workbox@gmail.com>
-    USB: serial: option: Add Telit FT980-KS composition
-
-Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-    USB: serial: option: add Cellient MPL200 card
-
-Oliver Neukum <oneukum@suse.com>
-    media: usbtv: Fix refcounting mixup
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: Disconnect if E0 is used for Level 4
-
-Patrick Steinhardt <ps@pks.im>
-    Bluetooth: Fix update of connection state in `hci_encrypt_cfm`
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: Consolidate encryption handling in hci_encrypt_cfm
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: MGMT: Fix not checking if BT_HS is enabled
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: L2CAP: Fix calling sk_filter on non-socket based channel
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: A2MP: Fix not initializing all members
-
-Jason A. Donenfeld <Jason@zx2c4.com>
-    ARM: 8867/1: vdso: pass --be8 to linker if necessary
-
-Dmitry Golovin <dima@golovin.in>
-    ARM: 8939/1: kbuild: use correct nm executable
-
-Masahiro Yamada <yamada.masahiro@socionext.com>
-    ARM: 8858/1: vdso: use $(LD) instead of $(CC) to link VDSO
-
-Leo Yan <leo.yan@linaro.org>
-    perf cs-etm: Move definition of 'traceid_list' global variable from header file
-
-
--------------
-
-Diffstat:
-
- Makefile                                 |  4 +--
- arch/arm/boot/compressed/Makefile        |  4 +--
- arch/arm/vdso/Makefile                   | 22 ++++++---------
- drivers/crypto/bcm/cipher.c              | 15 +++++++++-
- drivers/crypto/qat/qat_common/qat_algs.c | 10 ++++++-
- drivers/media/usb/usbtv/usbtv-core.c     |  3 +-
- drivers/net/ethernet/marvell/mvmdio.c    | 22 +++++++++++----
- drivers/staging/comedi/drivers/vmk80xx.c |  3 ++
- drivers/usb/serial/ftdi_sio.c            |  5 ++++
- drivers/usb/serial/ftdi_sio_ids.h        |  7 +++++
- drivers/usb/serial/option.c              |  5 ++++
- drivers/usb/serial/pl2303.c              |  1 +
- drivers/usb/serial/pl2303.h              |  1 +
- fs/reiserfs/inode.c                      |  6 +---
- fs/reiserfs/xattr.c                      |  7 +++++
- include/net/bluetooth/hci_core.h         | 30 ++++++++++++++++----
- include/net/bluetooth/l2cap.h            |  2 ++
- net/bluetooth/a2mp.c                     | 22 ++++++++++++++-
- net/bluetooth/hci_conn.c                 | 17 +++++++++++
- net/bluetooth/hci_event.c                | 48 ++++++++------------------------
- net/bluetooth/l2cap_core.c               |  7 +++--
- net/bluetooth/l2cap_sock.c               | 14 ++++++++++
- net/bluetooth/mgmt.c                     |  7 ++++-
- tools/perf/util/cs-etm.c                 |  3 ++
- tools/perf/util/cs-etm.h                 |  3 --
- 25 files changed, 186 insertions(+), 82 deletions(-)
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -531,6 +531,7 @@ static void option_instat_callback(struc
+ /* Cellient products */
+ #define CELLIENT_VENDOR_ID			0x2692
+ #define CELLIENT_PRODUCT_MEN200			0x9005
++#define CELLIENT_PRODUCT_MPL200			0x9025
+ 
+ /* Hyundai Petatel Inc. products */
+ #define PETATEL_VENDOR_ID			0x1ff4
+@@ -1985,6 +1986,8 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2, 0xff, 0x02, 0x01) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2, 0xff, 0x00, 0x00) },
+ 	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MEN200) },
++	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MPL200),
++	  .driver_info = RSVD(1) | RSVD(4) },
+ 	{ USB_DEVICE(PETATEL_VENDOR_ID, PETATEL_PRODUCT_NP10T_600A) },
+ 	{ USB_DEVICE(PETATEL_VENDOR_ID, PETATEL_PRODUCT_NP10T_600E) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(TPLINK_VENDOR_ID, TPLINK_PRODUCT_LTE, 0xff, 0x00, 0x00) },	/* TP-Link LTE Module */
 
 
