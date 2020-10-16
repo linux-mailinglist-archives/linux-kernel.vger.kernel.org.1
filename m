@@ -2,220 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A75928FD8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 07:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E9F28FD91
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 07:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730321AbgJPFDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 01:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728261AbgJPFDv (ORCPT
+        id S1732271AbgJPFOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 01:14:32 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10312 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbgJPFOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 01:03:51 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605EEC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 22:03:51 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id p21so716522pju.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 22:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qtvV026HLCzz5NoDCyozzqnf4hHRYfc35Oyit81StQ4=;
-        b=Ite6O0sCdHz/TgSDObsypuRJ50z5WPXZKhRbHh9UISq6lAfUuYiP2/fxTwDz6y5Ybl
-         FzmVDWhO8+7+s2AonNYSGfsZpkyHMN+ZMH1DpakymkuZQ40z2PCL6ii3HREtm5QOkOe7
-         wUX1yTeE1uQKl9WSquqWA6niHRpgmmDLMngi0LALRWW/dMqvWdDcOEY7GgsyCy3Ck5S0
-         Xdas5bG2RjXOEXQh60p7Jn+86jyRQ6rkeNwGudEH1KCJew9Qu9t4snMdGkBrFXPgINeF
-         OAcPYABU9h8FTwtiUSsGsr7wIeaUyVzD7ppPGgkOUBACYyJyZk6vuk3380wzeTwDLdMX
-         RP2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qtvV026HLCzz5NoDCyozzqnf4hHRYfc35Oyit81StQ4=;
-        b=HZv0nIYprwxkNbgaB8GgDLoihAgyYheGPTkUYqg/oU6XClrPWfQ2/5J7jL6wn/VXpi
-         MGRdf3tRrHpoOUN+E+7pv2puIqTYqZEf6jLqI7v/KKaYdBEET2oOG0JEn8eAylmJhqKr
-         rtDfGcJjV070WOlSUUbLO5uPG26GkDskPji4JHsQQS0SNh6fxCsm7T76nltyVMbOW697
-         VY8a8NMoe5VX6lC6GcaQwkD3QkSO3RWjK2kaZkOQN7y1tIHFIYksJaQmnpapMQAEubo+
-         PpMHoaPSkDa/XJzPst+0Ar8uxHPOyPb0zRRsct7eD8m/RoWDyDH77KoWRTm8jP6JMptG
-         E+ZA==
-X-Gm-Message-State: AOAM533OBmWOD6E7/UdH/FQ+XWb2zjeHnDEoq5yuV2fjtsaEMadL5Gdu
-        uIntFxtEqLpHuMZYfkBqQ4aurQ==
-X-Google-Smtp-Source: ABdhPJwS+WvqHaiufqyl/oZWHRdnnVMhUffeS+VlYpnK2fAPQP12O+6RzLoANUPd82bd045uDJtZDA==
-X-Received: by 2002:a17:902:930c:b029:d3:b362:7939 with SMTP id bc12-20020a170902930cb02900d3b3627939mr2277168plb.54.1602824630725;
-        Thu, 15 Oct 2020 22:03:50 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id e4sm1097611pgg.37.2020.10.15.22.03.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Oct 2020 22:03:49 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 10:33:47 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        nks@flawful.org, Georgi Djakov <georgi.djakov@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH V2 2/2] cpufreq: dt: Refactor initialization to handle
- probe deferral properly
-Message-ID: <20201016050347.ers54itzmxgijzsy@vireshk-i7>
-References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
- <f75c61f193f396608d592ae2a9938264d582c038.1598260050.git.viresh.kumar@linaro.org>
- <CAMuHMdXLQKN5n58NvOp43vhc3ryLXWurBSsmcW9Q=oW502PYOQ@mail.gmail.com>
- <20201013095613.mbgmjwzojg5wxmau@vireshk-i7>
- <CAMuHMdVAJdHVMtK3Sc4sJiJGAwz1J4dKODBFcNzgstaktyKkOw@mail.gmail.com>
+        Fri, 16 Oct 2020 01:14:32 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f892c2b0000>; Thu, 15 Oct 2020 22:14:19 -0700
+Received: from [10.25.98.225] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
+ 2020 05:14:19 +0000
+Subject: Re: [PATCH v3 09/13] ASoC: dt-bindings: tegra: Add schema for audio
+ graph card
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <broonie@kernel.org>, <lgirdwood@gmail.com>,
+        <kuninori.morimoto.gx@renesas.com>,
+        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
+        <tiwai@suse.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
+        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
+        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
+        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
+        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
+References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
+ <1601573587-15288-10-git-send-email-spujar@nvidia.com>
+ <20201006203433.GA2786434@bogus>
+ <a5bc07d8-fb2e-e86e-f0d3-be19166ad7bb@nvidia.com>
+Message-ID: <acbcd136-a933-e5e0-863b-f435dafe1697@nvidia.com>
+Date:   Fri, 16 Oct 2020 10:44:15 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVAJdHVMtK3Sc4sJiJGAwz1J4dKODBFcNzgstaktyKkOw@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <a5bc07d8-fb2e-e86e-f0d3-be19166ad7bb@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-GB
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602825259; bh=58G5hh5VTCRWNjS2NbwxGT+Sa6kUqX0udY4utQfHKx4=;
+        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=rkMkit/dwJWZjwBML9DdGRm+RNMv9B5Kz7OUNznxWxt1JLSqpH5lHP4OWCQNRdJf5
+         AvU6R5Buf8OP2UclEUIXoAAcYfYNqtLZCpZxiqF4Vr/t5ZyBOAvFO259diZQnwxnJ5
+         PJmLj17dQgUYtijjaRy7Do2j9Vh9oOKDAwkbsfnwQXY5XW5giTTuJZEAV4eRyc43/w
+         0jw6nBHxUXE6faiST7IY30d425/tOOWm01PXWSimZhXK8ylwk0U93tJCaanvdekoBw
+         EpmB7r5c/s+z2Wtg7z5FB+uZ+rhTx9Y7nKpHbzotX2CXRHWigkuDKq9OxDo6w9Dp0e
+         lqPyJ9p8O8KmQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-10-20, 18:40, Geert Uytterhoeven wrote:
-> On this platform (r8a7791-koelsch.dts), there is no opp table in DT.
-> 
->   Before:
 
-I assume this means before this patchset came in..
+>>> Add YAML schema for Tegra audio graph sound card DT bindings. It=20
+>>> uses the
+>>> same DT bindings provided by generic audio graph driver. Along with=20
+>>> this
+>>> few standard clock DT bindings are added which are specifically=20
+>>> required
+>>> for Tegra audio.
+>>>
+>>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+>>> ---
+>>> =C2=A0 .../sound/nvidia,tegra-audio-graph-card.yaml | 70=20
+>>> ++++++++++++++++++++++
+>>> =C2=A0 1 file changed, 70 insertions(+)
+>>> =C2=A0 create mode 100644=20
+>>> Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.y=
+aml
+>>>
+>>> diff --git=20
+>>> a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card=
+.yaml=20
+>>> b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card=
+.yaml=20
+>>>
+>>> new file mode 100644
+>>> index 0000000..b73fbe5
+>>> --- /dev/null
+>>> +++=20
+>>> b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card=
+.yaml
+>>> @@ -0,0 +1,70 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id:=20
+>>> http://devicetree.org/schemas/sound/nvidia,tegra-audio-graph-card.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Audio Graph based Tegra sound card driver
+>>> +
+>>> +description: |
+>>> +=C2=A0 This is based on generic audio graph card driver along with=20
+>>> additional
+>>> +=C2=A0 customizations for Tegra platforms. It uses the same bindings w=
+ith
+>>> +=C2=A0 additional standard clock DT bindings required for Tegra.
+>>> +
+>>> +=20
+>>> See{LINUX}/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+>>> +
+>>> +maintainers:
+>>> +=C2=A0 - Jon Hunter <jonathanh@nvidia.com>
+>>> +=C2=A0 - Sameer Pujar <spujar@nvidia.com>
+>>> +
+>>> +properties:
+>>> +=C2=A0 compatible:
+>>> +=C2=A0=C2=A0=C2=A0 oneOf:
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - const: nvidia,tegra210-audio-graph-ca=
+rd
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - const: nvidia,tegra186-audio-graph-ca=
+rd
+>>> +
+>>> +=C2=A0 clocks:
+>>> +=C2=A0=C2=A0 minItems: 2
+>>> +
+>>> +=C2=A0 clock-names:
+>>> +=C2=A0=C2=A0 minItems: 2
+>>> +=C2=A0=C2=A0 items:
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 - const: pll_a
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 - const: plla_out0
+>>> +
+>>> +=C2=A0 assigned-clocks:
+>>> +=C2=A0=C2=A0=C2=A0 minItems: 1
+>>> +=C2=A0=C2=A0=C2=A0 maxItems: 3
+>>> +
+>>> +=C2=A0 assigned-clock-parents:
+>>> +=C2=A0=C2=A0=C2=A0 minItems: 1
+>>> +=C2=A0=C2=A0=C2=A0 maxItems: 3
+>>> +
+>>> +=C2=A0 assigned-clock-rates:
+>>> +=C2=A0=C2=A0=C2=A0 minItems: 1
+>>> +=C2=A0=C2=A0=C2=A0 maxItems: 3
+>>> +
+>>> +required:
+>>> +=C2=A0 - compatible
+>>> +=C2=A0 - clocks
+>>> +=C2=A0 - clock-names
+>>> +=C2=A0 - assigned-clocks
+>>> +=C2=A0 - assigned-clock-parents
+>> Where's the graph? You need to define the ports and reference the common
+>> schema.
+>
+> I am looking to reference the bindings used in below doc which is not=20
+> yet in YAML format. Only additional properties I listed here.
+> {LINUX}/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+>
+> Should I keep this doc to *.txt format as well and later move to YAML=20
+> or is there a way to reference *.txt doc here?
 
->     boot:
->       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:362
->       cpu cpu0: resources_available:95
->       cpu cpu0: resources_available:102: clk_get() returned z
->       cpu cpu0: resources_available:120:
-> dev_pm_opp_of_find_icc_paths() returned 0
->       cpu cpu0: resources_available:125: find_supply_name() returned cpu0
->       cpu cpu0: resources_available:132: regulator_get_optional()
-> returned -EPROBE_DEFER
->       cpu cpu0: cpu0 regulator not ready, retry
->       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:371:
-> resources_available() returned -517
+The dependency here is like below,
+Tegra audio graph card -> generic audio graph card=20
+(audio-graph-card.txt) -> graph (graph.txt)
 
-we deferred probe once.
+I plan to convert dependencies to json-schema in next revision and then=20
+refer these for Tegra audio graph card.
 
->       ...
->       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:362
->       cpu cpu0: resources_available:95
->       cpu cpu0: resources_available:102: clk_get() returned z
->       cpu cpu0: resources_available:120:
-> dev_pm_opp_of_find_icc_paths() returned 0
->       cpu cpu0: resources_available:125: find_supply_name() returned cpu0
->       cpu cpu0: resources_available:132: regulator_get_optional()
-> returned (ptrval)
-
-found regulator next time.
-
->       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:371:
-> resources_available() returned 0
->       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:375
->       cpufreq_dt: cpufreq_init:162
->       cpu cpu0: cpufreq_init:170: clk_get() returned z
->       cpu cpu0: cpufreq_init:179: dev_pm_opp_of_get_sharing_cpus() returned -2
->       cpu cpu0: cpufreq_init:198: find_supply_name() returned cpu0
->       <i2c comm>
->       cpu cpu0: cpufreq_init:201: dev_pm_opp_set_regulators() returned (ptrval)
->       <i2c comm>
->       cpu cpu0: cpufreq_init:230: dev_pm_opp_of_cpumask_add_table() returned 0
->       cpu cpu0: cpufreq_init:239: dev_pm_opp_get_opp_count() returned 0
->       cpu cpu0: OPP table is not ready, deferring probe
-
-This failed, as we couldn't have deferred probe from cpufreq_init.
-Which means that cpufreq didn't work here.
-
->       cpufreq_dt: cpufreq_init:162
->       cpu cpu1: cpufreq_init:170: clk_get() returned z
->       cpu cpu1: cpufreq_init:179: dev_pm_opp_of_get_sharing_cpus() returned -2
->       cpu cpu1: no regulator for cpu1
->       cpu cpu1: cpufreq_init:198: find_supply_name() returned (null)
->       cpu cpu1: cpufreq_init:230: dev_pm_opp_of_cpumask_add_table() returned 0
->       cpu cpu1: cpufreq_init:239: dev_pm_opp_get_opp_count() returned 0
->       cpu cpu1: OPP table is not ready, deferring probe
-
-Same for CPU1.
-
-> 
->     s2ram:
->       cpufreq_dt: cpufreq_init:162
->       cpu cpu1: cpufreq_init:170: clk_get() returned z
->       cpu cpu1: cpufreq_init:179: dev_pm_opp_of_get_sharing_cpus() returned -2
->       cpu cpu1: no regulator for cpu1
->       cpu cpu1: cpufreq_init:198: find_supply_name() returned (null)
->       cpu cpu1: cpufreq_init:230: dev_pm_opp_of_cpumask_add_table() returned 0
->       cpu cpu1: cpufreq_init:239: dev_pm_opp_get_opp_count() returned 0
->       cpu cpu1: OPP table is not ready, deferring probe
-
-And same here.
-
->       CPU1 is up
-> 
->   After:
->     boot:
->       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:356
->       cpufreq_dt: dt_cpufreq_early_init:251
->       cpu cpu0: dt_cpufreq_early_init:256
->       cpu cpu0: dt_cpufreq_early_init:271: dev_pm_opp_get_opp_table()
-> returned (ptrval)
->       cpu cpu0: dt_cpufreq_early_init:284: find_supply_name() returned cpu0
->       cpu cpu0: dt_cpufreq_early_init:288: dev_pm_opp_set_regulators()
-> returned -EPROBE_DEFER
->       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:360:
-> dt_cpufreq_early_init() returned -517
->       ...
->       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:356
->       cpufreq_dt: dt_cpufreq_early_init:251
->       cpu cpu0: dt_cpufreq_early_init:256
->       cpu cpu0: dt_cpufreq_early_init:271: dev_pm_opp_get_opp_table()
-> returned (ptrval)
->       cpu cpu0: dt_cpufreq_early_init:284: find_supply_name() returned cpu0
->       cpu cpu0: dt_cpufreq_early_init:288: dev_pm_opp_set_regulators()
-> returned (ptrval)
->       cpu cpu0: dt_cpufreq_early_init:301:
-> dev_pm_opp_of_get_sharing_cpus() returned -2
->       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:360:
-> dt_cpufreq_early_init() returned 0
->       cpufreq_dt: dt_cpufreq_early_init:251
->       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:360:
-> dt_cpufreq_early_init() returned 0
->       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:365
->       cpufreq_dt: cpufreq_init:114
->       cpu cpu0: cpufreq_init:124: clk_get() returned z
->       cpu cpu0: cpufreq_init:142: dev_pm_opp_of_cpumask_add_table() returned 0
->       cpu cpu0: cpufreq_init:151: dev_pm_opp_get_opp_count() returned 0
->       cpu cpu0: OPP table can't be empty
-
-Same issue here.
-
->       cpufreq_dt: cpufreq_init:114
->       cpu cpu0: cpufreq_init:124: clk_get() returned z
->       <i2c comm>
->       cpu cpu0: cpufreq_init:142: dev_pm_opp_of_cpumask_add_table() returned 0
->       cpu cpu0: cpufreq_init:151: dev_pm_opp_get_opp_count() returned 0
-> 
->     s2ram:
-> 
->       cpufreq_dt: cpufreq_init:114
->       cpu cpu0: cpufreq_init:124: clk_get() returned z
->       WARNING: CPU: 1 PID: 14 at drivers/i2c/i2c-core.h:54
-> __i2c_transfer+0x2d8/0x310
->       i2c i2c-6: Transfer while suspended
->       cpu cpu0: cpufreq_init:142: dev_pm_opp_of_cpumask_add_table() returned 0
->       cpu cpu0: cpufreq_init:151: dev_pm_opp_get_opp_count() returned 0
->       cpu cpu0: OPP table can't be empty
->       CPU1 is up
-> 
-> I hope this helps.
-
-Unfortunately it raised more questions than what it answered :(
-
--- 
-viresh
