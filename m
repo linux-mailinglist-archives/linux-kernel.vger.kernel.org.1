@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE0428FD5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 06:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946DD28FD5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 06:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732223AbgJPEgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1732254AbgJPEgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 16 Oct 2020 00:36:17 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:60931 "EHLO
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:50519 "EHLO
         wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731890AbgJPEgQ (ORCPT
+        by vger.kernel.org with ESMTP id S1731897AbgJPEgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Oct 2020 00:36:16 -0400
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 5A965F84;
-        Fri, 16 Oct 2020 00:36:13 -0400 (EDT)
+        by mailout.west.internal (Postfix) with ESMTP id 2F111F7C;
+        Fri, 16 Oct 2020 00:36:15 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 16 Oct 2020 00:36:13 -0400
+  by compute3.internal (MEProxy); Fri, 16 Oct 2020 00:36:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
-        :to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=tFx9y1gOlAAhTEgT/PH0isSwFS
-        +k2LV4WaIJDM4cFVQ=; b=qBJyevLiNRwhAo/COPdxdQwigdwLM9BDJS0Sm6HKWk
-        lNTt+5NNPiWfAprigBF7N7mXmkbjFHIUPVbEYqR10XOctsppSA4eeYZmhSq1VCcW
-        Yq/J0U9Yx9dyhg/LXL/ktOgs0IlPSRDJU6FTdDyDpBB/PXuJSI4CKrYku6Ge+oT2
-        8ACkJfMANUN+mfqDA+C0NUbM7krcU+myOn1LJe/opu61bLIdSpZcte2dJ0zOE1CZ
-        tlHqJYudkAE+5xwquFoupagHtMZ1SbUsjDPpZFSLpaZSc3MglD0ugFkSgkTsGxnH
-        PQHr302ZMgq6CeQVUZIaXazLAWhKRcqNAi9F3rVENHmQ==
+        :to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=q5CcFs0/EeK4z
+        qujRNpYgO1/SVfarI39TTpxy4dUVj4=; b=GeNCDmRcFtRvHTY65800D84wSQ/tN
+        C2K9tBarEU20jxdNxGU1YT0yfiboFqUc27KYfP8A/pI1oYHaumahz13cE6YYHVDt
+        ud8CRg2KXLUVj1jvTJ2pWP4JHT5YSQQdVvskgsrqhTVqfo/rSfrv3y3bY/4QnN+c
+        I6Vlq2ow4RDKhwJgClhb6/uUiaqEb/27DYLEYnfzHHsnnvYLYHmylWqug8L6CdpG
+        wHW/XxCGXeFbOF9zJEtMAgMCt54519hAl2EO5VNnbIgsnXulzkw5FH4f/hUrHDhK
+        5gKDsJXt7KXy7nmfh5xvxKPWoed3ar9zOiAPVHptq630IouwyoQ19FOGw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=tFx9y1gOlAAhTEgT/
-        PH0isSwFS+k2LV4WaIJDM4cFVQ=; b=cCAgUUAQoAqnYRfF6dq3ZcLdwxo0BS10w
-        vZ5qoKQTsYWJYeiEOjCNmR2BCnURYw+bFe5Dwixw/eZjW3vpQGPMqh7T3rOKvPf6
-        HnelX6TDYELG6Pfs7qE5Je21fstTN7iqfoTAo4wiby6j+7+VbjT3eiH2Qphz6T8D
-        aNdPnZ9cMbd0BNIhKwu6w+on/1Cs5de7pCJ+4fLnb7CWQLRnAk/6Nnjtri8sCyhb
-        wwAIonBfSq8RqvmKrNNEIhqsgXid1WsZ+zrsZ4xQ2pUfQmYGwcCktfz05gyAyr3v
-        yuAyCiGaEtUPlOXigd5rqopxbb7pUSPp4v4OMhVlR3maiUEG7zLBQ==
-X-ME-Sender: <xms:OyOJXwpmMsNXlED5iDcMNWDpX6i32I1OewH4Aax7A1h1WPF7yGCIAw>
-    <xme:OyOJX2qKUGkhmZJ4LiCBOslucfSjQOkvBSmSPK2Sybzq7tWlWbo5Meq53b9-c21Qo
-    HzAyxZTtTdT1Aus3g>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=q5CcFs0/EeK4zqujRNpYgO1/SVfarI39TTpxy4dUVj4=; b=RkGOo10a
+        prlpQDsEtITzU28aulICJabebvl+tRkD++XKcU33Y4tYPldLrRXAWHV0aB5i1HL4
+        Bx3E3qMIpNBc44eGvWZWGFubprdNJ+63ip22ZD47io9TR3PFSFbll0Nr4oycDJUH
+        D7zYoXqocv8cvWfOg5kMpWHiivhrQaTwaodT4C+QR3RIxoUHGdJlOO8D1t8FXOjM
+        IUiVVMqRz/HyxdCzDgXSoY/OQ4McPCYb2uZp1penNwA0aI/yynhi1GG90yPHuJWk
+        hmDuJdQ+41cbuWF+dvkx+hdENXXfQe51FfU1GIEq6Ey100tzJKfWfYkiSCa8SnUV
+        Ehn0jV9XF9zAlQ==
+X-ME-Sender: <xms:PiOJX_HyUCi6MLicTk9QEVT3tiBXL2p3aqOVV0CfTzORJ6FX2Kpb9A>
+    <xme:PiOJX8US3iCTa3vCDb7VjLExJarRw-Yc9fktvygRhi7HhmkLgw4HrApJnq5q2vTZl
+    NoOX-PmEeGJtRTXhg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrieeggdekiecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeetnhgurhgvficulfgvfhhfvghrhicuoegrnhgurhgvfiesrghjrdhi
-    ugdrrghuqeenucggtffrrghtthgvrhhnpeekhfeiffejveefveehtdeiiefhfedvjeelvd
-    dvtdehffetudejtefhueeuleeftdenucfkphepuddukedrvddutddrjedrudektdenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfi
-    esrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:OyOJX1ODvrA-3lrx2i6JZOAEl7kbC_2qK5FwtLcgZmG6asxH9M6ydw>
-    <xmx:OyOJX37ogbq8sOSxGyNeiftS70jZaNr6h9mgo1MfaSXfF2eEHOYveg>
-    <xmx:OyOJX_71nPRFkOYhzto3gZdv9ZX_F2yBK2OYu9ci1WaPw8ln8UmAeg>
-    <xmx:PCOJXxkqdQaw4134yjzKB61Pnb8ICZR0WLot1pLsQyubEZXjdDPisg>
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
+    ertddtnecuhfhrohhmpeetnhgurhgvficulfgvfhhfvghrhicuoegrnhgurhgvfiesrghj
+    rdhiugdrrghuqeenucggtffrrghtthgvrhhnpeejgfdvveehteekveeggeellefgleette
+    ejffelffdvudduveeiffegteelvefhteenucfkphepuddukedrvddutddrjedrudektden
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurh
+    gvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:PiOJXxJUZ546BfkYTk274Wwf3Wy35e8HcncIxmE8mUTmaKGKJbiUyQ>
+    <xmx:PiOJX9FjAqlJoGOPUuxeP6sgJrVxKaqs1turw1VhAFxGVqCYrm9WQQ>
+    <xmx:PiOJX1UKoprl1Swr46gU6cZgTlsFQumDFJuOGRUzrdVnwZJTgHF-bw>
+    <xmx:PiOJX4QzPuPsCa5fITZUUDi4wRrDwhtNzhD9jDP8GAPf7gPsBpZHkA>
 Received: from localhost.localdomain (ppp118-210-7-180.adl-adc-lon-bras31.tpg.internode.on.net [118.210.7.180])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4E764328005E;
-        Fri, 16 Oct 2020 00:36:09 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 46D0B328005D;
+        Fri, 16 Oct 2020 00:36:11 -0400 (EDT)
 From:   Andrew Jeffery <andrew@aj.id.au>
 To:     joel@jms.id.au
 Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] ARM: dts: Enable ramoops for Rainier and Tacoma
-Date:   Fri, 16 Oct 2020 15:05:11 +1030
-Message-Id: <20201016043513.119841-1-andrew@aj.id.au>
+Subject: [PATCH 1/2] ARM: dts: rainier: Add reserved memory for ramoops
+Date:   Fri, 16 Oct 2020 15:05:12 +1030
+Message-Id: <20201016043513.119841-2-andrew@aj.id.au>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201016043513.119841-1-andrew@aj.id.au>
+References: <20201016043513.119841-1-andrew@aj.id.au>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Reserve a 1.5MiB region of memory to record kmsg dumps, console and
+userspace message state into 16kiB ring-buffer slots. The sizing allows
+for up to 32 dumps to be captured and read out.
 
-We're looking to improve our crash data capture for the BMC on some IBM
-platforms. This small series enables ramoops for Rainier and Tacoma.
+Set max-reason to KMSG_DUMP_EMERG to capture bad-path reboots.
 
-Please review.
-
-Andrew
-
-Andrew Jeffery (2):
-  ARM: dts: rainier: Add reserved memory for ramoops
-  ARM: dts: tacoma: Add reserved memory for ramoops
-
+Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+---
  arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 9 +++++++++
- arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts  | 9 +++++++++
- 2 files changed, 18 insertions(+)
+ 1 file changed, 9 insertions(+)
 
+diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+index 183e1a4dcc65..89729ee698c5 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+@@ -47,6 +47,15 @@ reserved-memory {
+ 		#size-cells = <1>;
+ 		ranges;
+ 
++		ramoops@b7e80000 {
++			compatible = "ramoops";
++			reg = <0xb7e80000 0x180000>;
++			record-size = <0x4000>;
++			console-size = <0x4000>;
++			pmsg-size = <0x4000>;
++			max-reason = <3>; /* KMSG_DUMP_EMERG */
++		};
++
+ 		flash_memory: region@b8000000 {
+ 			no-map;
+ 			reg = <0xb8000000 0x04000000>; /* 64M */
 -- 
 2.25.1
 
