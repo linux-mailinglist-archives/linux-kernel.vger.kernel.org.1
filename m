@@ -2,205 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0D8290624
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA49F290623
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407335AbgJPNRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:17:34 -0400
-Received: from mail-am6eur05on2095.outbound.protection.outlook.com ([40.107.22.95]:40976
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405262AbgJPNRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:17:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ECg6oQusulF5tv4Jr89PVMAqXBth32w/HegKERzLmtDm8ElgEEgwYerBazkHGcqBP3XUr9qPn/kw6jsoaF4/4IniKsS7j/vDmWQ6Vj/SK4NprV9edJCaYKqlTOflUmG+ibQSAsAiKqcESX0oRn1lauXr0Ckdc/lt8fQliZbmoZ/6ubspMHJFruEpCtNG3qd1VlP72gfe1uP5CczOJwUE2jfSseFSFxNU+5Qc7hz5DJvMzd4Nmtkzr09b2FfoJHttFSLWFx9mxNZXlPtKIcyaONsgQSaFh9v1nNfiCj7TCocCn6sSkP+3gOg9BLOoTFCrhGmpUsWd/2Vo/73JhgZFCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yDrWW+Ykc2Q4lk+vKTeEB6/MO4mOYBhch7ipnF33eNQ=;
- b=EMYK7qlIIzX/JQPDog3lnRlbziDMS2Jmp8q2NEkbwZEyNtMw+TMsuWoJc2SqPz0Hz2o8NV9bE5Ck1tKcSOOUNWhst/A5G3K+mEfmMDFLcj7z4pehmPLCjqLtY+h0FQ4Xym20hqRJoPlfB2xOTnKN8ghC6aOXu2XR+3zSWgMdfWIHPyXNErQd0zP6BhOQPB0s3nVhN1eagbFNXetch5xNeGUxOHSaCdJ7hU+JuHVOiwNJudlZK+LqpTnJHzWzLQ1JQWQrmkKPCj8HDyLps7caGWGDZfzCtK7kznZfFJARfrBGReg4DzDuKcbLYrm4leADx8Tb5yeyCkOpXeEadtENXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yDrWW+Ykc2Q4lk+vKTeEB6/MO4mOYBhch7ipnF33eNQ=;
- b=H/q8tQPy6MV8GXcT6RyKl+Sf8eMwX3yW3bSEU4vhbRgMK5MLqR0dOD8vPijCOwX6LUscW4/wzr03NjwC8Y+xrIwl4AGwJ0D+xzAzQxmtnwecuJ/cC0Etam8pI06spIuPMLJBfSbAjTTa9aGh88SYoY6Tw1QrDm1tXxOGLXgwbHk=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
-Received: from HE1PR07MB3450.eurprd07.prod.outlook.com (2603:10a6:7:2c::17) by
- HE1PR0702MB3706.eurprd07.prod.outlook.com (2603:10a6:7:8d::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3477.11; Fri, 16 Oct 2020 13:17:29 +0000
-Received: from HE1PR07MB3450.eurprd07.prod.outlook.com
- ([fe80::eca3:4085:434:e74]) by HE1PR07MB3450.eurprd07.prod.outlook.com
- ([fe80::eca3:4085:434:e74%6]) with mapi id 15.20.3477.019; Fri, 16 Oct 2020
- 13:17:29 +0000
-From:   Tommi Rantala <tommi.t.rantala@nokia.com>
-To:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     Tommi Rantala <tommi.t.rantala@nokia.com>
-Subject: [PATCH] perf test: Implement skip_reason callback for watchpoint tests
-Date:   Fri, 16 Oct 2020 16:16:50 +0300
-Message-Id: <20201016131650.72476-1-tommi.t.rantala@nokia.com>
-X-Mailer: git-send-email 2.26.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [131.228.2.26]
-X-ClientProxiedBy: HE1PR0901CA0045.eurprd09.prod.outlook.com
- (2603:10a6:3:45::13) To HE1PR07MB3450.eurprd07.prod.outlook.com
- (2603:10a6:7:2c::17)
+        id S2407308AbgJPNRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:17:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39971 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394872AbgJPNRS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 09:17:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602854236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ppwECXXF9N8LusanMZ3Ph7brQG4uWGwjqD3v/E6A81c=;
+        b=NSyBBHRBuPQt+ohyxJGepyaBFWRIMcyMXRCQ6+HaR2Q4ShJ09mWrZNotu3nihxpVDOclpf
+        w7lnX6oJRu/DJHcXn2AsL9Tu8VGiohtoQ4lGS3UHHZIKlHS63PzU3F016+pE5cwbRteouw
+        9Xel0rXMVXh2+jGg4S9CmJdQ+5YPy3U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-vJtuXK49Osm8WkYjnAPuUw-1; Fri, 16 Oct 2020 09:17:13 -0400
+X-MC-Unique: vJtuXK49Osm8WkYjnAPuUw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0F008014D8;
+        Fri, 16 Oct 2020 13:17:11 +0000 (UTC)
+Received: from [10.36.113.23] (ovpn-113-23.ams2.redhat.com [10.36.113.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 480E95D9D5;
+        Fri, 16 Oct 2020 13:17:07 +0000 (UTC)
+Subject: Re: [PATCH v1 20/29] virtio-mem: nb_sb_per_mb and subblock_size are
+ specific to Sub Block Mode (SBM)
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-21-david@redhat.com>
+ <20201016085319.GD44269@L-31X9LVDL-1304.local>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <7b55ffe1-95fc-1e71-ea6b-82bd0a98a6b4@redhat.com>
+Date:   Fri, 16 Oct 2020 15:17:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from trfedora.emea.nsn-net.net (131.228.2.26) by HE1PR0901CA0045.eurprd09.prod.outlook.com (2603:10a6:3:45::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20 via Frontend Transport; Fri, 16 Oct 2020 13:17:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b456e3a2-9027-41a3-b55c-08d871d5d562
-X-MS-TrafficTypeDiagnostic: HE1PR0702MB3706:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1PR0702MB3706A7312AE998A5AA0F92DEB4030@HE1PR0702MB3706.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1332;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +ZkEoaY3xnl/PaZX2IFgWmR9JDvfArApCRS0jzS/3/Smp4RLNU8pW4UGploaJciTUNDT0zBfcjUUvnXLUNkXAlgIqTKOZ96M+/4bWmuW+GY1FFTQ+bruW92ftPjjvzozzcmS3rvS4i9vPN8r31k7WoifbFri4QImYtN2Yh+dtMSMhE2mUEMbeRa3SEZiY4FMAUA9yoOk0Z+AC2xZNmJNltlK7cFjvKqxoxEQsuOPdApdjXnwRp6khmK8NWcgkMh2mQJIj5+mztuOt37laUifLzXCmN0XilPRlnuYtMrTai4V9Rv/kRGdd9vmrzAMIJiowlA5wEBnFBzPNSlDFSnJtLw1qVjIAnl+0maCJGkoObj0dyEFYaXHKppkSnpr/bO+jsYz3iSp79fyx3apxgzdhe/85XNIP+3JXrTnvBn8AA8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR07MB3450.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(366004)(376002)(39860400002)(8936002)(2616005)(956004)(1076003)(6512007)(16526019)(36756003)(34490700002)(186003)(103116003)(6506007)(478600001)(6666004)(86362001)(52116002)(2906002)(107886003)(6486002)(5660300002)(66476007)(8676002)(66556008)(66946007)(26005)(83380400001)(110136005)(316002)(4326008)(171213001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: cKax6MiGr7aWMBHXvlavCbMqNGfoGSUslBROPqZ9MoXabSCegIeH1rm2vUXdQ2WMyFOdP5AV3fQBkH8rznp/+9YNSJe5ryhVRMXdRX0gYZ8U1k8X0gDQTbF5DuPXhRTUDdNfjTSbNeizZaZEn/ZSUQ8wKVV8DtLff4fOQok0j7tDzqTfJKwrCuvO0y6GdHInhMnBgZFmiNRFkg2gj4TEMnOmurN9WB+pptByNyTwlZEaE70WHnZbKcuEKnxk4axy0xZAvZ4TMxkJiZ+LQ4is14HAmtBgjQBsctOl1rA8WXdkkMMfh3iWcKWT09f8XDvcryvj2fZFOX5mfhCR/g/cA/DR8Fbsk7NNQOs2oIPghuyHpOAlA3GsDRQzZhT2J06WXkLvF9bAKMVt/GQg5lVdahAf/qlEjijpYAl6BBtAEVieN1G6+UwqPqAxH6PeBa8GqEpf5WxKFLRqqJtyWXV4i2Xrie+FVguaMf9WuT3b4QNTCOwfcPD2c0AK2QRP6uMNU/crRbn3DBCIARnF6v5rtrnoXONOVV0eyO2hv1MUMngKn9arOQ07pi+YHiI5YiO3/HiuiKXmWzvpMUEeU9GlKX8TpZohje3r9y014KuGi/ueBXeZkZ7yiW9FX6Do/RrRekT1kOARBGKOO6pGwBd+ow==
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b456e3a2-9027-41a3-b55c-08d871d5d562
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR07MB3450.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2020 13:17:29.6932
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Azrf//EoOFlYRuEwJksNpWClaPSpcDnb6cTM/RK3JpsynZ/dGEgwQNPmTIqTB7ZnUUCcf4sg2LXUreQb+Uf4y123XycJz98XokMgc1lVkAQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0702MB3706
+In-Reply-To: <20201016085319.GD44269@L-31X9LVDL-1304.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently reason for skipping the read only watchpoint test is only seen
-when running in verbose mode:
+On 16.10.20 10:53, Wei Yang wrote:
+> On Mon, Oct 12, 2020 at 02:53:14PM +0200, David Hildenbrand wrote:
+>> Let's rename to "sbs_per_mb" and "sb_size" and move accordingly.
+>>
+>> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>> Cc: Jason Wang <jasowang@redhat.com>
+>> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+> 
+> One trivial suggestion, could we move this patch close the data structure
+> movement patch?
+> 
+> I know this would be some work, since you have changed some of the code logic.
+> This would take you some time to rebase.
 
-  $ perf test watchpoint
-  23: Watchpoint                                            :
-  23.1: Read Only Watchpoint                                : Skip
-  23.2: Write Only Watchpoint                               : Ok
-  23.3: Read / Write Watchpoint                             : Ok
-  23.4: Modify Watchpoint                                   : Ok
+You mean after patch #17 ?
 
-  $ perf test -v watchpoint
-  23: Watchpoint                                            :
-  23.1: Read Only Watchpoint                                :
-  --- start ---
-  test child forked, pid 60204
-  Hardware does not support read only watchpoints.
-  test child finished with -2
+I guess I can move patch #18 (prereq) a little further up (e.g., after
+patch #15). Guess moving it in front of #19 shouldn't be too hard.
 
-Implement skip_reason callback for the watchpoint tests, so that it's
-easy to see reason why the test is skipped:
+Will give it a try - if it takes too much effort, I'll leave it like this.
 
-  $ perf test watchpoint
-  23: Watchpoint                                            :
-  23.1: Read Only Watchpoint                                : Skip (missing hardware support)
-  23.2: Write Only Watchpoint                               : Ok
-  23.3: Read / Write Watchpoint                             : Ok
-  23.4: Modify Watchpoint                                   : Ok
+Thanks!
 
-Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
----
- tools/perf/tests/builtin-test.c |  1 +
- tools/perf/tests/tests.h        |  1 +
- tools/perf/tests/wp.c           | 21 +++++++++++++++------
- 3 files changed, 17 insertions(+), 6 deletions(-)
-
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index d328caaba45d..3bfad4ee31ae 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -142,6 +142,7 @@ static struct test generic_tests[] = {
- 			.skip_if_fail	= false,
- 			.get_nr		= test__wp_subtest_get_nr,
- 			.get_desc	= test__wp_subtest_get_desc,
-+			.skip_reason    = test__wp_subtest_skip_reason,
- 		},
- 	},
- 	{
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index 4447a516c689..0630301087a6 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -66,6 +66,7 @@ int test__bp_signal_overflow(struct test *test, int subtest);
- int test__bp_accounting(struct test *test, int subtest);
- int test__wp(struct test *test, int subtest);
- const char *test__wp_subtest_get_desc(int subtest);
-+const char *test__wp_subtest_skip_reason(int subtest);
- int test__wp_subtest_get_nr(void);
- int test__task_exit(struct test *test, int subtest);
- int test__mem(struct test *test, int subtest);
-diff --git a/tools/perf/tests/wp.c b/tools/perf/tests/wp.c
-index d262d6639829..9387fa76faa5 100644
---- a/tools/perf/tests/wp.c
-+++ b/tools/perf/tests/wp.c
-@@ -174,10 +174,12 @@ static bool wp_ro_supported(void)
- #endif
- }
- 
--static void wp_ro_skip_msg(void)
-+static const char *wp_ro_skip_msg(void)
- {
- #if defined (__x86_64__) || defined (__i386__)
--	pr_debug("Hardware does not support read only watchpoints.\n");
-+	return "missing hardware support";
-+#else
-+	return NULL;
- #endif
- }
- 
-@@ -185,7 +187,7 @@ static struct {
- 	const char *desc;
- 	int (*target_func)(void);
- 	bool (*is_supported)(void);
--	void (*skip_msg)(void);
-+	const char *(*skip_msg)(void);
- } wp_testcase_table[] = {
- 	{
- 		.desc = "Read Only Watchpoint",
-@@ -219,16 +221,23 @@ const char *test__wp_subtest_get_desc(int i)
- 	return wp_testcase_table[i].desc;
- }
- 
-+const char *test__wp_subtest_skip_reason(int i)
-+{
-+	if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
-+		return NULL;
-+	if (!wp_testcase_table[i].skip_msg)
-+		return NULL;
-+	return wp_testcase_table[i].skip_msg();
-+}
-+
- int test__wp(struct test *test __maybe_unused, int i)
- {
- 	if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
- 		return TEST_FAIL;
- 
- 	if (wp_testcase_table[i].is_supported &&
--	    !wp_testcase_table[i].is_supported()) {
--		wp_testcase_table[i].skip_msg();
-+	    !wp_testcase_table[i].is_supported())
- 		return TEST_SKIP;
--	}
- 
- 	return !wp_testcase_table[i].target_func() ? TEST_OK : TEST_FAIL;
- }
 -- 
-2.26.2
+Thanks,
+
+David / dhildenb
 
