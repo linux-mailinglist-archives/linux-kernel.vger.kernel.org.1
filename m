@@ -2,70 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5CC29061A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45C529061E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407207AbgJPNP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407176AbgJPNP5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:15:57 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F406C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:15:57 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d0d005de09972a775d667.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d00:5de0:9972:a775:d667])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AEAED1EC04D1;
-        Fri, 16 Oct 2020 15:15:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602854155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5TYPdxVlFdRW3EyXHSC36z3MQByrqASt7K9C7kSa2ZE=;
-        b=QbRjdw0+/0pCwE/8MvwjOA1whLiIydNlckD/Ki/827WHX69Xfl/vhe37SEYDPCjYUsnPw8
-        6N8eqiix2pnY5UBDCYCOrXeY2eKW1wg7ouhxXtOn93BkC0pEoBYXDUUFZ/FAU3p6cpRbFX
-        dUQGE3lfSqZmCILT4xWscTdwzIeHCl0=
-Date:   Fri, 16 Oct 2020 15:15:45 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] x86/head/64: Disable stack protection for
- head$(BITS).o
-Message-ID: <20201016131545.GE8483@zn.tnic>
-References: <20201008191623.2881677-1-nivedita@alum.mit.edu>
- <20201008191623.2881677-6-nivedita@alum.mit.edu>
- <20201016111703.GD8483@zn.tnic>
- <20201016124301.GA1040839@rani.riverdale.lan>
+        id S2407245AbgJPNQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:16:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:37176 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407228AbgJPNQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 09:16:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5260C1FB;
+        Fri, 16 Oct 2020 06:16:02 -0700 (PDT)
+Received: from [10.57.50.28] (unknown [10.57.50.28])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C61E3F71F;
+        Fri, 16 Oct 2020 06:16:00 -0700 (PDT)
+Subject: Re: [PATCH] coresight: etm4x: Skip setting LPOVERRIDE bit for
+ qcom,skip-power-up
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>, denik@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20201016101025.26505-1-saiprakash.ranjan@codeaurora.org>
+ <5c4f6f5d-b07d-0816-331f-7c7463fa99b3@arm.com>
+ <41bbcd43c2b016b6d785c3750622e9fe@codeaurora.org>
+From:   Suzuki Poulose <suzuki.poulose@arm.com>
+Message-ID: <9e19d312-9de4-2ed8-75ca-c774b93bfe11@arm.com>
+Date:   Fri, 16 Oct 2020 14:15:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201016124301.GA1040839@rani.riverdale.lan>
+In-Reply-To: <41bbcd43c2b016b6d785c3750622e9fe@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 08:43:01AM -0400, Arvind Sankar wrote:
-> You need STACKPROTECTOR_STRONG -- I was testing with defconfig and the
-> option is enabled by default.
+On 10/16/20 12:47 PM, Sai Prakash Ranjan wrote:
+> Hi Suzuki,
+> 
+> On 2020-10-16 16:51, Suzuki Poulose wrote:
+>> Hi Sai,
+>>
+>> On 10/16/20 11:10 AM, Sai Prakash Ranjan wrote:
+>>> There is a bug on the systems supporting to skip power up
+>>> (qcom,skip-power-up) where setting LPOVERRIDE bit(low-power
+>>> state override behaviour) will result in CPU hangs/lockups
+>>> even on the implementations which supports it. So skip
+>>> setting the LPOVERRIDE bit for such platforms.
+>>>
+>>> Fixes: 02510a5aa78d ("coresight: etm4x: Add support to skip trace 
+>>> unit power up")
+>>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>>
+>> The fix is fine by me. Btw, is there a hardware Erratum assigned for
+>> this ? It would be good to have the Erratum documented somewhere,
+>> preferrably ( Documentation/arm64/silicon-errata.rst )
+>>
+> 
+> No, afaik we don't have any erratum assigned to this bug.
 
-And you need to write those things in the commit messages.
+Ok. Please double check, if there are any.
 
-Please, for the future, always make sure that all required ingredients
-for triggering a bug are documented in the commit message, before
-sending a fix. Jörg and I were both scratching heads on how you're
-reproducing this.
+> It was already present in downstream kernel and since we
+> support these targets with the previous HW bug
+> (qcom,skip-power-up) now in upstream, we would need this
+> fix in upstream kernel as well.
 
-Thx.
+I understand the need for the fix and we must fix it. I was
+looking to document this in the central place for errata's
+handled in the kernel. And I missed asking this question
+when the original patch was posted. So, thought of asking
+the question now anyways. Better late than never ;-)
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
