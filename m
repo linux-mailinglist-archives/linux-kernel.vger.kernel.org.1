@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A1828FE11
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 08:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D74E228FE14
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 08:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393964AbgJPGMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 02:12:01 -0400
-Received: from mail-eopbgr10073.outbound.protection.outlook.com ([40.107.1.73]:25070
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390173AbgJPGMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 02:12:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ab8W+IcvgjrQUPM05mRcyr69hddD9xPzt/lns03YD1/BZa2RNk5Y6qbCTJjKUmF8odbsow1fqmzU8QOFY5aueyK00urcEzog3+tGaF4QnS5nR+6J7yx6YrA7bC5uWQITFJb45FugoMA6euxIeBR7SDb/p+4VRogkc+x9UetfJjr/u5JdKzUAY2hu5I2Mw5u5AZfU5kK5hIdRoyKQtj2wZpjkQq7Y7iciv3ozmgp5MXNKC1z/kpMGJ5XSDiK2es+rcuDO0o2kO7nd8qRHkx/+NumhwkKcaD2ylEx888+tpIjdWlgtWQ98Eqcbrl/xNHQd/uWCGCbdpzmwF8xj48gxag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W7NOpveRuKRSRfs5OCYAyn17b2OtFs6LCg3nCm0im5w=;
- b=DoyXC+sbZDdDmD/9flldGYpmGtf7nMop5z5i7hJntU4G/6EthiecSC9kopsXqts1yPn1GIOYn0VFX8qvmDMvjYy+1oxpbCbKBIthDtJQw9yy0Xhhs/22J1YrPS1+q540AMaa4Vxzsvt6/msgs8kNqVGqDtJ+56Dq6YyrkaulYeGME0aEvNarL8p1Rgyx+xN5t3UAjASaQ7bOB50TGmK6NoJwjQVjKx5P8HdMnD4H6Q76GA/IEqkiy0LbDTOmxKWz8duBdqlgfqYSU6gxXXs2I8xb9P11c4JuUnBPd3bjVZ+UYiskKiEX/u6rvdsr+REkUvYgwt4YGUGp8jawtvJqdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W7NOpveRuKRSRfs5OCYAyn17b2OtFs6LCg3nCm0im5w=;
- b=NR4MJYrhPRLx4+tCfOii+XbWbNWM52C96Crx286NbxAry4MPHSGw1ZyiZUy2MNIg8SVTzlp5cFlcfFfRd0CpabSO+RkaJmxohMEr2XdLJoK04WEukjXy64JaS9uBfLAPzF4XYn9e2tW3KHjXu1QZErx/+fvXmsQgZWAMYBT5XcE=
-Received: from AM8PR04MB7300.eurprd04.prod.outlook.com (2603:10a6:20b:1c7::12)
- by AM0PR04MB4353.eurprd04.prod.outlook.com (2603:10a6:208:65::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Fri, 16 Oct
- 2020 06:11:57 +0000
-Received: from AM8PR04MB7300.eurprd04.prod.outlook.com
- ([fe80::ad01:9b1c:3b4b:3a77]) by AM8PR04MB7300.eurprd04.prod.outlook.com
- ([fe80::ad01:9b1c:3b4b:3a77%7]) with mapi id 15.20.3455.032; Fri, 16 Oct 2020
- 06:11:57 +0000
-From:   Peter Chen <peter.chen@nxp.com>
-To:     Ran Wang <ran.wang_1@nxp.com>, Leo Li <leoyang.li@nxp.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ran Wang <ran.wang_1@nxp.com>
-Subject: RE: [PATCH] usb: gadget: fsl: fix null pointer checking
-Thread-Topic: [PATCH] usb: gadget: fsl: fix null pointer checking
-Thread-Index: AQHWo3bEGfqv25FPWEu4/P4q8F/mcamZv3Ow
-Date:   Fri, 16 Oct 2020 06:11:57 +0000
-Message-ID: <AM8PR04MB7300DB9144EA4655B4CD43388B030@AM8PR04MB7300.eurprd04.prod.outlook.com>
-References: <20201016043326.40442-1-ran.wang_1@nxp.com>
-In-Reply-To: <20201016043326.40442-1-ran.wang_1@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [92.121.68.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8148b00c-12df-4849-b732-08d8719a62f5
-x-ms-traffictypediagnostic: AM0PR04MB4353:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM0PR04MB435331422E7A27E769D8A5F98B030@AM0PR04MB4353.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:510;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wlduozm8vxv7RFBBBwdqJ/zyq35tKlnwCf29k3rcyE9gDhJr7Xy5yfYBUUvbVEzqUIBt7bhpM8V8t2itg471+muvoUpt+PIkuBFs8x33AA6+btGNyeV1Krd5Qk2Ot7VGmkJHmwbiJvk8omoLfMZC6ahExPxJNEPe4LNvNQhOfj8Zx839NDq8woFf/nmBBMsD35gOviZ+ZvaHk8N+VYIVt6nheHTSwlhnVYWSA9gQO3ujgCA757BZ3S4Cn1kf3sCrIfDdTA8ntrT1RGQq4HME2OdqMagOAC+NFtis/Xx239t8xlCMa4d39Xaub1JE/5NYWg6Zi/U4w50sBxpX4tfQRw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7300.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(376002)(39860400002)(136003)(66476007)(33656002)(186003)(110136005)(76116006)(66556008)(66946007)(64756008)(52536014)(8936002)(478600001)(54906003)(26005)(83380400001)(2906002)(44832011)(5660300002)(71200400001)(7696005)(55016002)(316002)(86362001)(4326008)(4744005)(66446008)(9686003)(8676002)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Eben17kDHlMMO7XnSI8oVpL2Q/btif2+uJ/fBRulains4VmJbzXIar18uUs0vv3mWXzITiLKI6FvYI6pM72aVL4D8Nju2rEmSod+OX75BMzHl7a+OOOztP6KgbQ1l8Vv+lO+Ka9Q+qJz63A3XcasjKfxPJcmbEJguF4zKIB8btdvVnNzUFGahrfprj87UL0OWAeLUd1rRGQk8dkL+t0IWFlIQANXcUxiWkwIKz3fBYKwuAOphpA4kVbvMkCJ+/zrGvHxeTJCzLaQYs9+QpslQml7Mg0aYXL/Vp7spta8En96shak8PlTJLyCfI6nhafaApVIV8dWf6EgTTJ8lagGqmZoszqfW09q1DN8TVtxXgItK81qIPsLJmLJdCMuS+Vo8qFu+pCyqstOUMcJija1vJTPhCb81JYSLbUpJ7DGNRPJ9FUiwLY1B3mrCLmLRIc0tn3h6LKNVHByajMjIbHyUFk8IVsL9vTaMo1pQoqBS76l0M0Hfq0ZWm8nsRYsc5R96XvfLTDsuOnjGpvJtwM1m+/3wLZpykbKB/CdVa3YOPdTGZUAza40vsmP1uTCYd3Uv5uSQMQlWhgvsy9BmuHgpLKtsPhkM0f4etMtCByFRBv9DkSPV3BHMe4Q7EL/Hfpt1lxlzkLXwRqkQklT6kyfHA==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S2404104AbgJPGMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 02:12:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50329 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2393968AbgJPGM3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 02:12:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602828748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lhTK8mlZxJsJRt3mlsGbPE50FFeq5Q196dDwcFogQmo=;
+        b=hJfsxaY/3vRvC1Wxg2gQ/wcsb5ORnX8UCcjrvTpqHphl3C3hB/N/JY5AGR2VMZGNaEROYH
+        Pl6dZPA/6j0ZJJkIsxfYr2+PUuuygDhL+EG9gMqhfoizdGzg1fjmZb+95uElAH4ulOnNye
+        Re9VnkZFkVgIgX4KxElhM0PAey58cxc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-XebdCiUhN1ybm8dBxLj-bQ-1; Fri, 16 Oct 2020 02:12:26 -0400
+X-MC-Unique: XebdCiUhN1ybm8dBxLj-bQ-1
+Received: by mail-ej1-f72.google.com with SMTP id i21so530131ejb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 23:12:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lhTK8mlZxJsJRt3mlsGbPE50FFeq5Q196dDwcFogQmo=;
+        b=cqEmNQlhB640kc0VNikPuGA+IgBlLXRNsFN7fPNUF2fQwmHxWdGV3y2JpqQq4NvWM5
+         y5+ZTeFk1Qgp2b9NT+fOjhbze3i/Gq/PYRByLLIWLA8LZEQCU3PIdGaECbji1W0qXO8b
+         lwes3bImzYXY5nKoauLvB2g6ojHUKasLHwNBNJPCH2jUFu3Qycs7g/68DH60qewIi4T6
+         E5MRPZ3HpxLZhGfmlCm6IqQG80FxGZMl8zIj5Mh+aDOgdmKhwC9M7/ayPN2CtuNnYMcT
+         OkvxrqzArsisEujEFbemLqJkAwaJ3T618UmuajzEhaXAEE0wKAitekmL3FVN7DXzKsEo
+         PnHQ==
+X-Gm-Message-State: AOAM532jDHc02uh4L9qJXHHbpPpaG1WHJ+x/NsPXog8ZimVIT95Mu9XB
+        xBGKpEUP8TuVT4MwkkYNibaHTzmY3viJ1EESr5KOWXriMN0bS6SyKl42K6vUUAD7ozOQdHnzLHI
+        YD1GLpbt+6cecmz3QBsX/CW/t
+X-Received: by 2002:a17:906:24cd:: with SMTP id f13mr2017855ejb.329.1602828745170;
+        Thu, 15 Oct 2020 23:12:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx/K8DEVgXJsmt9WpWdtv4pG66MeCo3OswfXyYcHMAjSnoFnImSjx9DipncVCYra8h270BN/w==
+X-Received: by 2002:a17:906:24cd:: with SMTP id f13mr2017835ejb.329.1602828744997;
+        Thu, 15 Oct 2020 23:12:24 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id u26sm625366edt.39.2020.10.15.23.12.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Oct 2020 23:12:24 -0700 (PDT)
+Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
+To:     Matthew Garrett <mjg59@google.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        jarkko@kernel.org, Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+References: <20201015214430.17937-1-jsnitsel@redhat.com>
+ <CACdnJuuAyBYacCiOOZ8-L-0Xnfa3+pCVY_oejOJ8RPzuG2QgrQ@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <78839bb8-dd17-0e55-3d22-be476b71ece5@redhat.com>
+Date:   Fri, 16 Oct 2020 08:12:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7300.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8148b00c-12df-4849-b732-08d8719a62f5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2020 06:11:57.1600
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WkxU0mzZLOcRH7gc3HpPCEqu9hiANzn6dYoQjz8BiAPx0M13145A52I+Xk7YlxwmdYCEVqAUdOcoOguEqEiXEg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4353
+In-Reply-To: <CACdnJuuAyBYacCiOOZ8-L-0Xnfa3+pCVY_oejOJ8RPzuG2QgrQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IA0KPiANCj4gRml4ZXM6IDc1ZWFhNDk4Yzk5ZSAo4oCcdXNiOiBnYWRnZXQ6IENvcnJlY3QgTlVM
-TCBwb2ludGVyIGNoZWNraW5nIGluIGZzbA0KPiBnYWRnZXTigJ0pDQo+IFNpZ25lZC1vZmYtYnk6
-IFJhbiBXYW5nIDxyYW4ud2FuZ18xQG54cC5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy91c2IvZ2Fk
-Z2V0L3VkYy9mc2xfdWRjX2NvcmUuYyB8IDIgKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
-dGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2dh
-ZGdldC91ZGMvZnNsX3VkY19jb3JlLmMNCj4gYi9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2ZzbF91
-ZGNfY29yZS5jDQo+IGluZGV4IGRlNTI4ZTMuLmFkNmZmOWMgMTAwNjQ0DQo+IC0tLSBhL2RyaXZl
-cnMvdXNiL2dhZGdldC91ZGMvZnNsX3VkY19jb3JlLmMNCj4gKysrIGIvZHJpdmVycy91c2IvZ2Fk
-Z2V0L3VkYy9mc2xfdWRjX2NvcmUuYw0KPiBAQCAtMTA1MSw3ICsxMDUxLDcgQEAgc3RhdGljIGlu
-dCBmc2xfZXBfZmlmb19zdGF0dXMoc3RydWN0IHVzYl9lcCAqX2VwKQ0KPiAgCXUzMiBiaXRtYXNr
-Ow0KPiAgCXN0cnVjdCBlcF9xdWV1ZV9oZWFkICpxaDsNCj4gDQo+IC0JaWYgKCFfZXAgfHwgX2Vw
-LT5kZXNjIHx8ICEoX2VwLT5kZXNjLT5iRW5kcG9pbnRBZGRyZXNzJjB4RikpDQo+ICsJaWYgKCFf
-ZXAgfHwgIV9lcC0+ZGVzYyB8fCAhKF9lcC0+ZGVzYy0+YkVuZHBvaW50QWRkcmVzcyYweEYpKQ0K
-PiAgCQlyZXR1cm4gLUVOT0RFVjsNCj4gDQoNClJldmlld2VkLWJ5OiBQZXRlciBDaGVuIDxwZXRl
-ci5jaGVuQG54cC5jb20+DQoNClBldGVyDQoNCg==
+Hi,
+
+On 10/16/20 12:39 AM, Matthew Garrett wrote:
+> On Thu, Oct 15, 2020 at 2:44 PM Jerry Snitselaar <jsnitsel@redhat.com> wrote:
+>>
+>> There is a misconfiguration in the bios of the gpio pin used for the
+>> interrupt in the T490s. When interrupts are enabled in the tpm_tis
+>> driver code this results in an interrupt storm. This was initially
+>> reported when we attempted to enable the interrupt code in the tpm_tis
+>> driver, which previously wasn't setting a flag to enable it. Due to
+>> the reports of the interrupt storm that code was reverted and we went back
+>> to polling instead of using interrupts. Now that we know the T490s problem
+>> is a firmware issue, add code to check if the system is a T490s and
+>> disable interrupts if that is the case. This will allow us to enable
+>> interrupts for everyone else. If the user has a fixed bios they can
+>> force the enabling of interrupts with tpm_tis.interrupts=1 on the
+>> kernel command line.
+> 
+> I think an implication of this is that systems haven't been
+> well-tested with interrupts enabled. In general when we've found a
+> firmware issue in one place it ends up happening elsewhere as well, so
+> it wouldn't surprise me if there are other machines that will also be
+> unhappy with interrupts enabled. Would it be possible to automatically
+> detect this case (eg, if we get more than a certain number of
+> interrupts in a certain timeframe immediately after enabling the
+> interrupt) and automatically fall back to polling in that case? It
+> would also mean that users with fixed firmware wouldn't need to pass a
+> parameter.
+
+IIRC then at least on the T490 the irq storm caused systems to not boot
+in some cases. I guess if we detect the storm and disable the irq we might
+fix that... OTOH this problem seems to only hit a certain generation of
+Thinkpads so with some luck the denylist should not be too big and the denylist
+approach should work.
+
+Regards,
+
+Hans
+
