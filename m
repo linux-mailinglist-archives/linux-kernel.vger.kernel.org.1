@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F056290E05
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E90290E0D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409056AbgJPXNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 19:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50818 "EHLO
+        id S2410893AbgJPXPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 19:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393608AbgJPXNX (ORCPT
+        with ESMTP id S2393118AbgJPXPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 19:13:23 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B629DC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:13:21 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id b23so2302964pgb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:13:21 -0700 (PDT)
+        Fri, 16 Oct 2020 19:15:46 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4517C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:15:46 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id h62so266911oth.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:15:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QvsRxAR3QLRh7ySxFHudvfnvGYyrt1u/17WyPPBYrPM=;
-        b=TQJGlod6lc/tFgFLsxCnR2bpXzvV0h5L5be1xy4ghjuJsPKqwuHdPqIRsXC3kEPUNo
-         wJvTiK9GsZEYxy2hAG7KO+bXt/rc42Nypg3yko5VmC5eH4Ke2FACtg04Q9eCatPl4TG4
-         kvPNRwlvPn94jRgvvEjWGoTCSKnWX6src1xlBMuIZFuhYLJML+L4SauIM2fSN3y0cVCE
-         RlRLwhIbOjS04lHWiXSl5CvC0K0+TtPPT8CmozBMRmGU0tANtExiqNO1+8eK5E/E8g0J
-         gN5VBzZUPKp+HTBmjvoxV0wFWSev/f9jU3iHDdSjRsp4Qw6hy2SVF/WUETwM3AVNqG87
-         Txkg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z/utRDTKVHmHoEv/2/0Wo96JPENEebgv5nLtf2BjNsM=;
+        b=Oi+V1WJt62DGA+OLvUtpmMrFw9shQt3hUS/kNEujvoDH0S+ng6vAYPzCIgge+f3w9u
+         TKWiYzRhkNSA9GoKq34ilGiHvwx6EY6aftODB89USCCvqSBrOF9Ahb1YH6AVXBZCgQig
+         4DlUkffsXOsF1pIm13wAFD7dnXVaJqoYN2sqj94xan8ytJ2xtxnef5agl5SMLLqg4NgB
+         QpAQQPmcmS3RUog/rS5HW2x/+33CWgbJZeTEULDKM2cMYyziRnQ50KtbeBtD/GX0MMx9
+         fEvYXSp+sAAsczFNL8AvoNylNDa3YEDww1jbOh3ovT1X6SZKJrjCeHi3LzO3cklJhFnp
+         KO+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QvsRxAR3QLRh7ySxFHudvfnvGYyrt1u/17WyPPBYrPM=;
-        b=EA4qQKORQ7WG6ipbJ/+0RS9EQIjdQTFNild5m2GTem44jFEwCiR86KfZZLYgGCuFWv
-         LJKveXkABYfxm9Jgds7kaf7N/tRt8XVqi6mO9/55WE4aOalXWPXaObMMXbbaBHRZ6/8e
-         aDmfM6e9BRjnbVZ/mTIAJXxX8E/WRFqr6U/HuOulMpCctvrw7/ucV1RCzZvYhDsTFOFM
-         aUFbAuRF8J0jn3TzU8ANOGe87rj5r2vLMvEfddBgJ69qriN2WfEjUZJyjAWCPRChbTku
-         pgKwpaV3eG+3d+t+Pye+zBf1ceZNKsFVAh9NT9JwjUaN0YtMptMR7tu/A/kvNOmZb45b
-         zvAg==
-X-Gm-Message-State: AOAM533cpYAUySctJj5T9YC5xyNoUIHoFZpn40FL4neqfERQVx1zPFka
-        1Z0Fh83ujXbluPb7bD1L7gyHhCnmhR3uQn2O
-X-Google-Smtp-Source: ABdhPJwZYONFGdcr9EkLM+w/FT+9Qof47mD0qUPPtBwyINvQ13IEofgmvXl3VyZJw0FxrysGaviRSA==
-X-Received: by 2002:a62:30c2:0:b029:15c:77c7:4687 with SMTP id w185-20020a6230c20000b029015c77c74687mr1371660pfw.19.1602890000552;
-        Fri, 16 Oct 2020 16:13:20 -0700 (PDT)
-Received: from ?IPv6:2600:380:4910:fe35:1659:7eea:2a98:b14b? ([2600:380:4910:fe35:1659:7eea:2a98:b14b])
-        by smtp.gmail.com with ESMTPSA id q23sm4197429pfl.162.2020.10.16.16.13.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 16:13:19 -0700 (PDT)
-Subject: Re: [PATCH] task_work: cleanup notification modes
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <93292d5b-9124-d252-c81f-1f2cfbd60e7b@kernel.dk>
- <87tuutalre.fsf@nanos.tec.linutronix.de>
- <aaed79d1-972f-e4bd-f3ac-d589cd729163@kernel.dk>
- <87zh4lix8l.fsf@nanos.tec.linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2ebe7e45-b4e5-1a6b-d3ee-4a790817a119@kernel.dk>
-Date:   Fri, 16 Oct 2020 17:13:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z/utRDTKVHmHoEv/2/0Wo96JPENEebgv5nLtf2BjNsM=;
+        b=TKXyCk6VPmkFEGmZeRpf3+26Jm37pZr5TWyWwH3SsV6jje90IXXFd51k1GF8a1dF4y
+         b86KhIweeha9YolsrIexfYg5osW15PdNq9tyjqvUZVM2Ul8PjWIlCk6xmRnepfOfhgrY
+         q0QbeJJI60PFOj3q2dhcsj5TnZepGi4UFKKRPPyb76FeNphSW5HMFSTnAUS/BK1Ki9iA
+         7GpyNLwMG18FH+lFjV57qHEHUOVAe//QSE9urBvOJP1onUku5l3bnnCuhvf2QYT0hqdc
+         aE94K2vyQaOVKBe6KJd06Z2kZ6/qNy4fJE1gLNVskPHQCCf12bqTOap8KZk4shlkFNKy
+         ok4Q==
+X-Gm-Message-State: AOAM530A7PU+sc9Qg9toZA2DeSavCPynsUFtY8/QDyDNxEYgqO+c/czw
+        fr7WssWyMUT4sNBqUKtvkMjqEN/pESxYvORs5euZ0A==
+X-Google-Smtp-Source: ABdhPJx+Js3ydQFBUP7ACgCzkoV+mCC9MxMLL2meKWUMIA/Fue2cHeE5SzEFTuMIFXv2hDabWqdWiVicuLD7Dfqz5J4=
+X-Received: by 2002:a05:6830:1082:: with SMTP id y2mr4127841oto.221.1602890146021;
+ Fri, 16 Oct 2020 16:15:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87zh4lix8l.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201003040257.62768-1-john.stultz@linaro.org>
+ <20201003040257.62768-8-john.stultz@linaro.org> <20201008115101.4qi6wh3hhkb6krg5@DESKTOP-E1NTVVP.localdomain>
+ <CALAqxLWrbgHoh=BCnuB4US77AOPMYmgGrE85WT6DYnEV-bad-A@mail.gmail.com>
+In-Reply-To: <CALAqxLWrbgHoh=BCnuB4US77AOPMYmgGrE85WT6DYnEV-bad-A@mail.gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 16 Oct 2020 16:15:32 -0700
+Message-ID: <CALAqxLUQkg1uDdLXoP4W7McxQUwFgsncnMxJSOE_VZ4dRRpzFg@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] dma-buf: system_heap: Add a system-uncached heap
+ re-using the system heap
+To:     Brian Starkey <brian.starkey@arm.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>, nd <nd@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/20 5:09 PM, Thomas Gleixner wrote:
-> On Fri, Oct 16 2020 at 16:39, Jens Axboe wrote:
->> On 10/16/20 3:44 PM, Thomas Gleixner wrote:
->>>> - * @notify: send the notification if true
->>>> + * @notify: send chosen notification, if any
->>>
->>> Is that really all you found to be wrong in that comment?
->>
->> There really is nothing wrong, but it's not very descriptive (wasn't
->> before either).
-> 
->  * This is like the signal handler which runs in kernel mode, but it doesn't                                                                                                                                                                                                   
->  * try to wake up the @task.   
-> 
-> If find a lot of wrongs in that sentence in context of TWA_SIGNAL.
-> 
-> Agreed, it was hard to understand before that, but with TWA_SIGNAL it
-> does not make sense at all.
+On Fri, Oct 16, 2020 at 12:03 PM John Stultz <john.stultz@linaro.org> wrote:
+> On Thu, Oct 8, 2020 at 4:51 AM Brian Starkey <brian.starkey@arm.com> wrote:
+> > On Sat, Oct 03, 2020 at 04:02:57AM +0000, John Stultz wrote:
+> > > @@ -426,6 +487,16 @@ static int system_heap_create(void)
+> > >       if (IS_ERR(sys_heap))
+> > >               return PTR_ERR(sys_heap);
+> > >
+> > > +     exp_info.name = "system-uncached";
+> > > +     exp_info.ops = &system_uncached_heap_ops;
+> > > +     exp_info.priv = NULL;
+> > > +
+> > > +     sys_uncached_heap = dma_heap_add(&exp_info);
+> > > +     if (IS_ERR(sys_uncached_heap))
+> > > +             return PTR_ERR(sys_heap);
+> > > +
+> >
+> > In principle, there's a race here between the heap getting registered
+> > to sysfs and the dma_mask getting updated.
+> >
+> > I don't think it would cause a problem in practice, but with the API
+> > as it is, there's no way to avoid it - so I wonder if the
+> > dma_heap_get_dev() accessor isn't the right API design.
+>
+> Hrm.  I guess to address your concern we would need split
+> dma_heap_add() into something like:
+>   dma_heap_create()
+>   dma_heap_add()
+>
+> Which breaks the creation of the heap with the registering it to the
+> subsystem, so some attributes can be tweaked inbetween?
 
-This is what I currently have:
+Looking at this some more, this approach isn't going to work. We
+create the device and then we call dma_coerce_mask_and_coherent() on
+it, but as soon as the device is created it seems possible for
+userland to directly access it. Again, though, as you mentioned this
+isn't terribly likely in practice.
 
-/**
- * task_work_add - ask the @task to execute @work->func()
- * @task: the task which should run the callback
- * @work: the callback to run
- * @notify: how to notify the targeted task
- *
- * Queue @work for task_work_run() below and notify the @task if @notify
- * is @TWA_RESUME or @TWA_SIGNAL. @TWA_SIGNAL work like signals, in that the
- * it will interrupt the targeted task and run the task_work. @TWA_RESUME
- * work is run only when the task exits the kernel and returns to user mode.
- * Fails if the @task is exiting/exited and thus it can't process this @work.
- * Otherwise @work->func() will be called when the @task returns from kernel
- * mode or exits.
- *
- * Note: there is no ordering guarantee on works queued here.
- *
- * RETURNS:
- * 0 if succeeds or -ESRCH.
- */
+The best thing I can think of for now is to have the uncached heap's
+allocate pointer initially point to a dummy function that returns
+EBUSY and then after we update the dma mask then we can set it to the
+real alloc.  I'll go with that for now, but let me know if you have
+other suggestions.
 
--- 
-Jens Axboe
-
+thanks
+-john
