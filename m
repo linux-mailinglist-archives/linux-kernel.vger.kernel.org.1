@@ -2,109 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E011B2904E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2282904EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407415AbgJPMSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 08:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33972 "EHLO
+        id S2405824AbgJPMTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 08:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407254AbgJPMSu (ORCPT
+        with ESMTP id S2407405AbgJPMTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 08:18:50 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A0FC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:18:49 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id n15so2659323wrq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:18:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0pdmY6ok4ux/pRIx0LbllshB3HAtBqzH8ww+t6IFCvg=;
-        b=BRCGCazZgsunLR6jJ78OyJPB+VKA4STGJjhLL24E+nm0fiJ6C/tvZ3LCjySWqlTlCt
-         FUHsNt9eHJHmF2gky45/dqPZGAujEldnyGBehFiP6wzx+HHPBnNvmkGo0Nva+JZ1lx+N
-         jKwgEwvqg+M8unp+nDGAVNz0NGNRvAt7yQp9qnjJYEKOUfZ5L1WWgjTSZ4yL7ywY181w
-         vxN+H2/4XXo5DbRolcOHaJPsqOB+4SYlIYSBhLHzpcwBI8tSBD8oK2sP9s7bovofZHsa
-         voBX29Z23s32AgJqa77Y/uIl/lVcwzwdXFH0p+lqZvROc5zvEH40JJj5saTH1GSrfsCm
-         NkVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0pdmY6ok4ux/pRIx0LbllshB3HAtBqzH8ww+t6IFCvg=;
-        b=Ya7mSLw/7/YxkKxFvigEe+wUqfi+ueySB/zEuOE0wBosXpb/4WBzkU4Jl8+/atnava
-         Cnm2D7d3+BozX5iD01nnnam8CPU76M+V651Gj2dKGk83y1Y/1eb2eScXegUprtvslu+d
-         xpKi6TP3N7gflUDjGYBQ0cvAxcmycT1AMOr+rDFY1ckOlr++s16yd12zqvebXkAw1fka
-         ppw4QDRWu4cKLFibTZDO9bvM2Ji5lyjVdjBwlU7v3Sr9dWeitssm4XbzjFzTD4FQUAFG
-         +LAzdSAbSN4UiSvVGQaFCl3rxPVJPsfjSRc9q/fHeNg7GluiaX5om+Yjo+D2KgGD7wH5
-         PWcg==
-X-Gm-Message-State: AOAM530tKtIcxYOveUEP7vpBiZJ7mCN0yIHA4qSzzCx/oo4Xf83D8AMD
-        bAQ5RykIQa7PpuLME9H4Qd9ATPDl9bizNg==
-X-Google-Smtp-Source: ABdhPJynsLog2SBXEjNnrjD188QPZKXARHTTCwJpoH5mJt1b6bt+GnFTOCBbSDzlQUbUzWRgybvrog==
-X-Received: by 2002:a5d:4144:: with SMTP id c4mr3565269wrq.311.1602850728236;
-        Fri, 16 Oct 2020 05:18:48 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id c68sm2636719wmd.34.2020.10.16.05.18.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 05:18:47 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 13:18:44 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "Nayak, Rajendra" <rnayak@codeaurora.org>
-Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-Message-ID: <20201016121844.GA2420691@google.com>
-References: <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
- <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
- <b19c1f12-b7cf-fcae-4ebb-617019effe2e@arm.com>
- <55d3fb0f-f7d8-63c5-2bdb-53eaa62380e0@linaro.org>
- <f660731e-132b-2514-f526-d7123ed3522c@arm.com>
- <d04019bd-9e85-5f3e-2a1b-66780b8df3dc@linaro.org>
- <3e3dd42c-48ac-7267-45c5-ca88205611bd@arm.com>
- <00ceec64-3273-bb4a-6f38-22de8d877ab5@linaro.org>
- <CAJZ5v0hV8fwRnADdjiiF=zapO3AE6=_W_PeOQ_WhUirCcFkgdA@mail.gmail.com>
- <e321191c-61d2-a15d-47c2-653b277984ca@linaro.org>
+        Fri, 16 Oct 2020 08:19:17 -0400
+Received: from smtp-8fa9.mail.infomaniak.ch (smtp-8fa9.mail.infomaniak.ch [IPv6:2001:1600:3:17::8fa9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE49C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:19:17 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CCQDy0WxlzlhX9r;
+        Fri, 16 Oct 2020 14:19:14 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CCQDx0z2wzlh8TJ;
+        Fri, 16 Oct 2020 14:19:13 +0200 (CEST)
+Subject: Re: [PATCH v2] dm verity: Add support for signature verification with
+ 2nd keyring
+To:     Milan Broz <gmazyland@gmail.com>, Mike Snitzer <snitzer@redhat.com>
+Cc:     Alasdair Kergon <agk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>,
+        dm-devel@redhat.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20201015150504.1319098-1-mic@digikod.net>
+ <20201015165229.GA5513@redhat.com>
+ <022e949e-00c4-d98a-b536-1c5f9e05c09c@digikod.net>
+ <b7ba2ff9-5f5f-8c1e-dfaa-33da56d3d8de@digikod.net>
+ <b7ccaa01-0398-f108-a70d-c67753d9fa6d@gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <55389f91-60a5-05db-b3e1-8f24aa356893@digikod.net>
+Date:   Fri, 16 Oct 2020 14:19:12 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e321191c-61d2-a15d-47c2-653b277984ca@linaro.org>
+In-Reply-To: <b7ccaa01-0398-f108-a70d-c67753d9fa6d@gmail.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 16 Oct 2020 at 13:48:33 (+0200), Daniel Lezcano wrote:
-> If the SCMI is returning abstract numbers, the thermal IPA governor will
-> use these numbers as a reference to mitigate the temperature at the
-> specified sustainable power which is expressed in mW in the DT. So it
-> does not work and we can not detect such conflict.
+
+On 16/10/2020 13:08, Milan Broz wrote:
+> On 16/10/2020 10:49, Mickaël Salaün wrote:
+>> On 16/10/2020 10:29, Mickaël Salaün wrote:
+>>>
+>>> On 15/10/2020 18:52, Mike Snitzer wrote:
+>>>> Can you please explain why you've decided to make this a Kconfig CONFIG
+>>>> knob?  Why not either add: a dm-verity table argument? A dm-verity
+>>>> kernel module parameter? or both (to allow a particular default but
+>>>> then
+>>>> per-device override)?
+>>>
+>>> The purpose of signed dm-verity images is to authenticate files, or said
+>>> in another way, to enable the kernel to trust disk images in a flexible
+>>> way (i.e. thanks to certificate's chain of trust). Being able to update
+>>> such chain at run time requires to use the second trusted keyring. This
+>>> keyring automatically includes the certificate authorities from the
+>>> builtin trusted keyring, which are required to dynamically populate the
+>>> secondary trusted keyring with certificates signed by an already trusted
+>>> authority. The roots of trust must then be included at build time in the
+>>> builtin trusted keyring.
+>>>
+>>> To be meaningful, using dm-verity signatures implies to have a
+>>> restricted user space, i.e. even the root user has limited power over
+>>> the kernel and the rest of the system. Blindly trusting data provided by
+>>> user space (e.g. dm-verity table argument, kernel module parameter)
+>>> defeat the purpose of (mandatory) authenticated images.
+>>>
+>>>>
+>>>> Otherwise, _all_ DM verity devices will be configured to use secondary
+>>>> keyring fallback.  Is that really desirable?
+>>>
+>>> That is already the current state (on purpose).
+>>
+>> I meant that when DM_VERITY_VERIFY_ROOTHASH_SIG is set, dm-verity
+>> signature becomes mandatory. This new configuration
+>> DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING extend this trust to the
+>> secondary trusted keyring, which contains certificates signed (directly
+>> or indirectly) by CA from the builtin trusted keyring.
+>>
+>> So yes, this new (optional) configuration *extends* the source of trust
+>> for all dm-verity devices, and yes, it is desirable. I think it should
+>> have been this way from the beginning (as for other authentication
+>> mechanisms) but it wasn't necessary at that time.
 > 
-> That is why I'm advocating to keep mW for the energy model and make the
-> SCMI and DT power numbers incompatible.
+> Well, I understand why you need a config option here.
+> And using the secondary keyring actually makes much more sense to me than
+> the original approach.
+> 
+> But please do not forget that dm-verity is sometimes used in different
+> contexts where such strict in-kernel certificate trust is unnecessary.
+> With your configure options set, you deliberately remove the possibility
+> to configure such devices.
+It doesn't make sense to set DM_VERITY_VERIFY_ROOTHASH_SIG in generic
+distro because such policy is configured at build time in the kernel
+with hardcoded CAs. If the new option is not set then nothing change. I
+don't see why it could be an issue for use cases we previously defined
+(with DM_VERITY_VERIFY_ROOTHASH_SIG).
 
-I think it's fair to say SCMI-provided number should only be compared to
-other SCMI-provided numbers, so +1 on that. But what I don't understand
-is why specifying the EM in mW helps with that? Can we not let the
-providers specify the unit? And then it's up to the clients to decide
-what they want to do. The scheduler wouldn't care, and IPA would have to
-check things are comparable, but all in all that should work out fine
-without a strong requirement on the actual unit.
+> I understand that it is needed for "trusted" systems, but we should be
+> clear
+> in the documentation.
+> Maybe also add note to
+> /Documentation/admin-guide/device-mapper/verity.rst ?
+> We already mention DM_VERITY_VERIFY_ROOTHASH_SIG there.
 
-Also, I thought SCMI had a notion of sustained performance too, why
-can't we use that for IPA? Lukasz?
+The current documentation remains true.
+DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING depends on
+DM_VERITY_VERIFY_ROOTHASH_SIG.
 
-Thanks.
-Quentin
+> 
+> The current userspace configuration through veritysetup does not need
+> any patches for your patch, correct?
+
+Right, it's only different from the kernel point of view.
+
+> 
+> Thanks,
+> Milan
+> 
