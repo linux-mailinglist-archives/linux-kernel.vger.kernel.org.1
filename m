@@ -2,104 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB13290587
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986F329058A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406442AbgJPMtM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 16 Oct 2020 08:49:12 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:14142 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394663AbgJPMtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 08:49:12 -0400
-Received: from DAG2EX02-BASE.srv.huawei-3com.com ([10.8.0.65])
-        by h3cspam02-ex.h3c.com with ESMTPS id 09GCmK77095507
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 16 Oct 2020 20:48:20 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX02-BASE.srv.huawei-3com.com (10.8.0.65) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 16 Oct 2020 20:48:23 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.1713.004; Fri, 16 Oct 2020 20:48:23 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] mm: vmscan: avoid a unnecessary reschedule in
- shrink_slab()
-Thread-Topic: [PATCH] mm: vmscan: avoid a unnecessary reschedule in
- shrink_slab()
-Thread-Index: AQHWo29cMaRbAMdQE0ycFn5GylDeeqmZnPOAgACJFdA=
-Date:   Fri, 16 Oct 2020 12:48:23 +0000
-Message-ID: <9a2b772b13f84bdd9517b17d8d72aa89@h3c.com>
-References: <20201016033952.1924-1-tian.xianting@h3c.com>
- <20201016120749.GG22589@dhcp22.suse.cz>
-In-Reply-To: <20201016120749.GG22589@dhcp22.suse.cz>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S2407875AbgJPMue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 08:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405632AbgJPMud (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 08:50:33 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80384C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:50:33 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id q5so2857271wmq.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CrMlB8wZnz1QSRMDLaaqihjuRkl23NGRAQ7yTr/KKgU=;
+        b=Clni0cNlsKDQqQNx9Z1oea1qbI5trbL18Iwm/RppeJEeDU5onspHP+KN+DucCmqcpr
+         83zcVFENnk98nG7FAfwFElxxybgV2pzT2pSgM81VeOQzDSMxo3KvK/oBUr6gZENqPREC
+         Qkfm1jEKyT9XhdjMCrNsYLL4T+qZTbXTOOm+PYNIyqgd9H+V5BiMUcGSlQBkNyj9kBHS
+         HJu9xFj7y65JJdwxs8rQkmrNYeKw8u6w4LcCr+IKygGQmg6FCDKpfEsjYX58XNWbY+MS
+         fznHd8MrGWW6vLo0g1BieoHkqw4Rk9MDTCiFEdSwEsYwURoaoU9zpKfa4hxH3a57OMDJ
+         9kBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CrMlB8wZnz1QSRMDLaaqihjuRkl23NGRAQ7yTr/KKgU=;
+        b=ds+WjQXgLsj1G8COmuXvJBv5Vi87aUz5g9stcopi4SmkuW/aFeUPpx1byOfIzwQYYo
+         a+oacrWK8mpxLYjnYOXKe6SZrYsgqt3erIJ9i24AOzDdRHKNoN2hUiA1LzGrliUJjQ7R
+         MoImUnMOPTDUmX1/Ud4Hs0nBfUUaDS3jU587sIYfk9GYS9EMHyawkxYdieViszdPmUpm
+         FZzFUlZWB9K0qHwCUkGgxvgWWPv7/RmUeAPo0SfsY5HMZ0ePI+5U12jsefUehoYgTWjJ
+         pIQF+XIUXlyiIu1PFcFgj9/6jfcjGzjYGReP2sRgNcmNQbvlypNC0j9x4zTV9ut4JtnK
+         jQqw==
+X-Gm-Message-State: AOAM532zIQiWNo3iG7dx1ahKwvggGrzB1chFt+ZqNbB9KWL3ADiryXRd
+        kUt1KEl/+jrfzB4HwNn7FGij3g==
+X-Google-Smtp-Source: ABdhPJwc6OQCnkD3OpBg2RnakL6syJWoFj3OemWf0bJrqBo0e6K5q4D9gFKaC16wyZgW5X4c9QHMMw==
+X-Received: by 2002:a1c:495:: with SMTP id 143mr3543475wme.63.1602852631989;
+        Fri, 16 Oct 2020 05:50:31 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:c9d8:1700:5168:39b? ([2a01:e34:ed2f:f020:c9d8:1700:5168:39b])
+        by smtp.googlemail.com with ESMTPSA id 14sm2610405wmf.27.2020.10.16.05.50.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 05:50:31 -0700 (PDT)
+Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
+ Energy Model, EAS and IPA
+To:     Quentin Perret <qperret@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        "Nayak, Rajendra" <rnayak@codeaurora.org>
+References: <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
+ <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
+ <b19c1f12-b7cf-fcae-4ebb-617019effe2e@arm.com>
+ <55d3fb0f-f7d8-63c5-2bdb-53eaa62380e0@linaro.org>
+ <f660731e-132b-2514-f526-d7123ed3522c@arm.com>
+ <d04019bd-9e85-5f3e-2a1b-66780b8df3dc@linaro.org>
+ <3e3dd42c-48ac-7267-45c5-ca88205611bd@arm.com>
+ <00ceec64-3273-bb4a-6f38-22de8d877ab5@linaro.org>
+ <CAJZ5v0hV8fwRnADdjiiF=zapO3AE6=_W_PeOQ_WhUirCcFkgdA@mail.gmail.com>
+ <e321191c-61d2-a15d-47c2-653b277984ca@linaro.org>
+ <20201016121844.GA2420691@google.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <b3c6d7a5-0564-6e84-77ff-9afe10d7ee27@linaro.org>
+Date:   Fri, 16 Oct 2020 14:50:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 09GCmK77095507
+In-Reply-To: <20201016121844.GA2420691@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks, my understanding is,
-In shrink_slab(), do_shrink_slab() will do the real reclaim work, which will occupy current cpu and consume more cpu time, so we need to trigger a reschedule after reclaim.
-But if it jumps to 'out' label, that means we don't do the reclaim work at this time, it won't cause other thread getting starvation, so we don't need to call cond_resched() in this case.
-Is it right?
-
------Original Message-----
-From: Michal Hocko [mailto:mhocko@suse.com] 
-Sent: Friday, October 16, 2020 8:08 PM
-To: tianxianting (RD) <tian.xianting@h3c.com>
-Cc: akpm@linux-foundation.org; linux-mm@kvack.org; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: vmscan: avoid a unnecessary reschedule in shrink_slab()
-
-On Fri 16-10-20 11:39:52, Xianting Tian wrote:
-> In shrink_slab(), it directly goes to 'out' label only when it can't 
-> get the lock of shrinker_rwsew. In this case, it doesn't do the real 
-> work of shrinking slab, so we don't need trigger a reschedule by 
-> cond_resched().
-
-Your changelog doesn't explain why this is not needed or undesirable. Do you see any actual problem?
-
-The point of this code is to provide a deterministic scheduling point regardless of the shrinker_rwsew.
-
+On 16/10/2020 14:18, Quentin Perret wrote:
+> On Friday 16 Oct 2020 at 13:48:33 (+0200), Daniel Lezcano wrote:
+>> If the SCMI is returning abstract numbers, the thermal IPA governor will
+>> use these numbers as a reference to mitigate the temperature at the
+>> specified sustainable power which is expressed in mW in the DT. So it
+>> does not work and we can not detect such conflict.
+>>
+>> That is why I'm advocating to keep mW for the energy model and make the
+>> SCMI and DT power numbers incompatible.
 > 
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> ---
->  mm/vmscan.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c index 466fc3144..676e97b28 
-> 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -687,8 +687,9 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
->  	}
->  
->  	up_read(&shrinker_rwsem);
-> -out:
-> +
->  	cond_resched();
-> +out:
->  	return freed;
->  }
->  
-> --
-> 2.17.1
-> 
+> I think it's fair to say SCMI-provided number should only be compared to
+> other SCMI-provided numbers, so +1 on that. But what I don't understand
+> is why specifying the EM in mW helps with that?
+
+It is already specified in mW. I'm just saying to not add the
+'scale'/'abstract'/'bogoWatt' in the documentation.
+
+> Can we not let the providers specify the unit? 
+
+Yes, it is possible but the provider must give the 'unit' and the energy
+model must store this information along with the "power" numbers, so we
+can compare apple with apple.
+
+Today, the energy model is using the mW unit only and the providers are
+not telling the 'unit', so both are missing.
+
+Because both are missing, it does not make sense to talk about
+'abstract' values in the energy model documentation until the above is
+fixed.
+
+
 
 -- 
-Michal Hocko
-SUSE Labs
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
