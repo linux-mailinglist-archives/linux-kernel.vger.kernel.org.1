@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003BF290501
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85187290503
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407471AbgJPMYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 08:24:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40124 "EHLO mx2.suse.de"
+        id S2407479AbgJPMYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 08:24:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40140 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407462AbgJPMYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2407463AbgJPMYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Oct 2020 08:24:14 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D0D4BAD20;
-        Fri, 16 Oct 2020 12:24:12 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 15102AD76;
+        Fri, 16 Oct 2020 12:24:13 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Minh Yuan <yuanmingbuaa@gmail.com>, Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 2/3] vt: keyboard, simplify vt_kdgkbsent
-Date:   Fri, 16 Oct 2020 14:24:11 +0200
-Message-Id: <20201016122412.31767-2-jslaby@suse.cz>
+Subject: [PATCH 3/3] vt: keyboard, extend func_buf_lock to readers
+Date:   Fri, 16 Oct 2020 14:24:12 +0200
+Message-Id: <20201016122412.31767-3-jslaby@suse.cz>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201016122412.31767-1-jslaby@suse.cz>
 References: <20201016122412.31767-1-jslaby@suse.cz>
@@ -31,63 +31,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'strlen' of the string, add one for NUL and simply do 'copy_to_user'
-instead of the explicit 'for' loop. This makes the KDGKBSENT case more
-compact.
+Both read-side users of func_table/func_buf need locking. Without that,
+one can easily confuse the code by repeatedly setting altering strings
+like:
+while (1)
+	for (a = 0; a < 2; a++) {
+		struct kbsentry kbs = {};
+		strcpy((char *)kbs.kb_string, a ? ".\n" : "88888\n");
+		ioctl(fd, KDSKBSENT, &kbs);
+	}
 
-The only thing we need to take care about is NULL 'from'.
+When that program runs, one can get unexpected output by holding F1
+(note the unxpected period on the last line):
+.
+88888
+.8888
 
-The original check for overflow could never trigger as the func_buf
-(called 'from' here) strings are always shorter or equal to struct
-kbsentry's.
+So protect all accesses to 'func_table' (and func_buf) by preexisting
+'func_buf_lock'.
+
+It is easy in 'k_fn' handler as 'puts_queue' is expected not to sleep.
+On the other hand, KDGKBSENT needs a local (atomic) copy of the string
+because copy_to_user can sleep.
+
+Likely fixes CVE-2020-25656.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Reported-by: Minh Yuan <yuanmingbuaa@gmail.com>
 ---
- drivers/tty/vt/keyboard.c | 21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+ drivers/tty/vt/keyboard.c | 26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-index d8e2452da1bd..68f9f6a62d02 100644
+index 68f9f6a62d02..68b1acc0074c 100644
 --- a/drivers/tty/vt/keyboard.c
 +++ b/drivers/tty/vt/keyboard.c
-@@ -1995,9 +1995,7 @@ int vt_do_kdsk_ioctl(int cmd, struct kbentry __user *user_kbe, int perm,
+@@ -743,8 +743,13 @@ static void k_fn(struct vc_data *vc, unsigned char value, char up_flag)
+ 		return;
+ 
+ 	if ((unsigned)value < ARRAY_SIZE(func_table)) {
++		unsigned long flags;
++
++		spin_lock_irqsave(&func_buf_lock, flags);
+ 		if (func_table[value])
+ 			puts_queue(vc, func_table[value]);
++		spin_unlock_irqrestore(&func_buf_lock, flags);
++
+ 	} else
+ 		pr_err("k_fn called with value=%d\n", value);
+ }
+@@ -1991,7 +1996,7 @@ int vt_do_kdsk_ioctl(int cmd, struct kbentry __user *user_kbe, int perm,
+ #undef s
+ #undef v
+ 
+-/* FIXME: This one needs untangling and locking */
++/* FIXME: This one needs untangling */
  int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
  {
  	char *kbs;
--	char *p;
- 	u_char *q;
--	u_char __user *up;
- 	int sz, fnw_sz;
- 	int delta;
- 	char *first_free, *fj, *fnw;
-@@ -2014,20 +2012,15 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
- 	i = array_index_nospec(i, MAX_NR_FUNC);
- 
+@@ -2014,12 +2019,23 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
  	switch (cmd) {
--	case KDGKBSENT:
--		/* sz should have been a struct member */
--		sz = sizeof_field(struct kbsentry, kb_string) - 1;
--		up = user_kdgkb->kb_string;
--		p = func_table[i];
--		if(p)
--			for ( ; *p && sz; p++, sz--)
--				if (put_user(*p, up++))
--					return -EFAULT;
--
--		if (put_user('\0', up))
-+	case KDGKBSENT: {
-+		/* size should have been a struct member */
-+		unsigned char *from = func_table[i] ? : "";
-+
-+		if (copy_to_user(user_kdgkb->kb_string, from, strlen(from) + 1))
- 			return -EFAULT;
+ 	case KDGKBSENT: {
+ 		/* size should have been a struct member */
+-		unsigned char *from = func_table[i] ? : "";
++		char *func_copy;
++		ssize_t len = sizeof(user_kdgkb->kb_string);
  
--		return ((p && *p) ? -EOVERFLOW : 0);
-+		return 0;
-+	}
+-		if (copy_to_user(user_kdgkb->kb_string, from, strlen(from) + 1))
+-			return -EFAULT;
++		func_copy = kmalloc(len, GFP_KERNEL);
++		if (!func_copy)
++			return -ENOMEM;
+ 
+-		return 0;
++		spin_lock_irqsave(&func_buf_lock, flags);
++		len = strlcpy(func_copy, func_table[i] ? : "", len);
++		spin_unlock_irqrestore(&func_buf_lock, flags);
++
++		ret = copy_to_user(user_kdgkb->kb_string, func_copy, len + 1) ?
++			-EFAULT : 0;
++
++		kfree(func_copy);
++
++		return ret;
+ 	}
  	case KDSKBSENT:
  		if (!perm)
- 			return -EPERM;
 -- 
 2.28.0
 
