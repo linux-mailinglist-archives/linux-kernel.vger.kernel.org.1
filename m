@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F21290628
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A515F290629
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407390AbgJPNR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:17:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:37216 "EHLO foss.arm.com"
+        id S2407408AbgJPNSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:18:20 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:22976 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407363AbgJPNR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:17:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79AEC1FB;
-        Fri, 16 Oct 2020 06:17:56 -0700 (PDT)
-Received: from [10.57.50.28] (unknown [10.57.50.28])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 87CB73F71F;
-        Fri, 16 Oct 2020 06:17:53 -0700 (PDT)
-Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
- tracing
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Denis Nikitin <denik@chromium.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Mike Leach <mike.leach@linaro.org>
-References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
- <20201015160257.GA1450102@xps15>
- <CADDJ8CXS8gGuXL45vR6xiHwJhZNcUJPvHMVYSGR6LDETRPJFiQ@mail.gmail.com>
- <20201016072401.GC4646@leoy-ThinkPad-X240s>
- <f73ba98c345161f1835458182e6a0002@codeaurora.org>
- <20201016092450.GG4646@leoy-ThinkPad-X240s>
- <f6ee4156-664c-7bff-8e35-5cd1acdbaa84@arm.com>
- <20201016131407.GA31839@leoy-ThinkPad-X240s>
-From:   Suzuki Poulose <suzuki.poulose@arm.com>
-Message-ID: <16b3be3a-0d2d-0d0f-24a5-020480ed980c@arm.com>
-Date:   Fri, 16 Oct 2020 14:17:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S2405204AbgJPNST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 09:18:19 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CCRY41Zymz9vBmK;
+        Fri, 16 Oct 2020 15:18:16 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id WcPndnQa-D6T; Fri, 16 Oct 2020 15:18:16 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CCRY40LN6z9vBmJ;
+        Fri, 16 Oct 2020 15:18:16 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8FD298B849;
+        Fri, 16 Oct 2020 15:18:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id LwNT5LCO5_Ue; Fri, 16 Oct 2020 15:18:17 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 39B498B83E;
+        Fri, 16 Oct 2020 15:18:17 +0200 (CEST)
+Subject: Re: [PATCH 1/8] powerpc/uaccess: Add unsafe_copy_from_user
+To:     Christoph Hellwig <hch@infradead.org>,
+        "Christopher M. Riedl" <cmr@codefail.de>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk
+References: <20201015150159.28933-1-cmr@codefail.de>
+ <20201015150159.28933-2-cmr@codefail.de>
+ <20201016065403.GA9343@infradead.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <479b67b8-0caf-ebcb-433d-5739d71bdadf@csgroup.eu>
+Date:   Fri, 16 Oct 2020 15:18:08 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20201016131407.GA31839@leoy-ThinkPad-X240s>
+In-Reply-To: <20201016065403.GA9343@infradead.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/20 2:14 PM, Leo Yan wrote:
-> On Fri, Oct 16, 2020 at 12:38:47PM +0100, Suzuki Kuruppassery Poulose wrote:
-> 
-> [...]
-> 
->>>> What happens to the sysfs mode of tracing? For that we would still
->>>> need a config right to exclude kernel mode tracing completely.
->>>
->>> IIUC, sysfs mode and perf mode both can apply the same approach, the
->>> guest OS runs a thread context for the host, so when a guest OS is
->>> switched in or out, the hypervisor can save/restore the context for
->>> the guest OS; thus every guest OS will have its dedicated context and
->>> trace data ideally.
->>
->> I don't think Guest Context is something we can support as mentioned
->> above, at least for systems without sysreg access for ETMs (and virtualizing
->> ETRs is a different story !)
-> 
-> Thanks for sharing thoughts, Suzuki.
-> 
-> I missed the device virtulisation.  Here should virtualize all devices
-> (includes CoreSight ETM/funnel/ETR/ETF)?  Or only need to virtualize
-> ETRs?
 
-I wouldn't even think of virtualizing the components without sysreg
-access. So let us not worry about it :-)
 
-Cheers
-Suzuki
+Le 16/10/2020 à 08:54, Christoph Hellwig a écrit :
+> On Thu, Oct 15, 2020 at 10:01:52AM -0500, Christopher M. Riedl wrote:
+>> Implement raw_copy_from_user_allowed() which assumes that userspace read
+>> access is open. Use this new function to implement raw_copy_from_user().
+>> Finally, wrap the new function to follow the usual "unsafe_" convention
+>> of taking a label argument. The new raw_copy_from_user_allowed() calls
+>> __copy_tofrom_user() internally, but this is still safe to call in user
+>> access blocks formed with user_*_access_begin()/user_*_access_end()
+>> since asm functions are not instrumented for tracing.
+> 
+> Please also add a fallback unsafe_copy_from_user to linux/uaccess.h
+> so this can be used as a generic API.
+> 
+
+I guess this can be done in a separate patch independant of that series ?
+
+Christophe
