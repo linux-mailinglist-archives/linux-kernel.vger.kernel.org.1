@@ -2,138 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64495290AC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A929290ACB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391229AbgJPRdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54700 "EHLO
+        id S2391441AbgJPReI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731789AbgJPRdV (ORCPT
+        with ESMTP id S2390235AbgJPReI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:33:21 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0F0C061755;
-        Fri, 16 Oct 2020 10:33:20 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id t20so3251557edr.11;
-        Fri, 16 Oct 2020 10:33:20 -0700 (PDT)
+        Fri, 16 Oct 2020 13:34:08 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCBDC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:34:08 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id p16so3546548ilq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:34:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kso/t/FQGplwmPwYWFbbSAuJZcROUihXnMeufE07GRk=;
-        b=BLwLFhhpdgTVNdpmuEOeE5mzRROgd19f+HRIwQhPzzm/+1ZG9e3fmVdGONVNcVlGUH
-         /WzNKO1ZE2xCrs36UvzAPFcOAOuYJzrxhNFy7KkkDH7ARWZWbNTtK9g1WewKBqMX4yAx
-         AxdJxqEGoll3yqMUXDFPeHp/czQgtU9BFoI7yIdLw47oZyHO2N+u8cnNrzl5O+rIHaWq
-         8yBRrEGCFV1F9yVJJfbBmL9Q+G/CByIbxFqsSRieLytyYrbF1dUpOVUtefa3wmvz93Dw
-         CT66tQJMf5usq/mcU61DK/zCFCQ6KrenEgZezhyn0DKR1y1yU4xJL+928QZVyNEHKLK0
-         XlxA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QQNx5lbWWREoG92H9GWCHwFrOsjOJReO5JJROvxhPeA=;
+        b=MyFCI1d57eYhGAHzNbPzG0+gwYQAPxbalJwgjSW3Xqd7s2+P4uhkgk30gxqP/ihsvQ
+         KF7AvZIciGhSezS3QwLEja/cPTQDqJafJnNdZxZlCIf0vTsPdXD9Q9cshuO9TkutzWfQ
+         ZAoP/KiSOVuFakNyI8LvzZLyuakFqxRi4ZzsqUJu7Pe8KdVeoKHeIyH+k4OWEFxozyCa
+         5+TFuqYQOhZzIHK05h9JUTmtHxl9ACg1oGGohQgBDKcXuqyQD19KN3haqgRW3myQ+ppE
+         ofO4JeH99ih+xoeSNvSPp//8olyMBOwbZlIdCeKkgxReTNifQzN5QHAqumDS43rAchzN
+         zmGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kso/t/FQGplwmPwYWFbbSAuJZcROUihXnMeufE07GRk=;
-        b=uJfelFAjz4s3d3LHYmpBMrnx5K0M4MYfSzYIAMWzqCn3R2Q3lby83ncuEfCNMgshag
-         LGSPt1LQEZI3wSIjl9WbACxDXBAtATis1KKBthSzbGqeJpLloxBu7Sm4jiOy+WFPhCQv
-         iXZ+dv0fr4bmdecQu8sYDyQzjX7VyzSXkXTypwkChIW8p8fMeNn0X33mgsmlLK2EYffP
-         FKfPMnzIrDx+UvnvFH3qVIZxaRB7dR/XfMZqSOnDp/e0br9JfASMGSJXTkJEA+9BhDmo
-         TWK2dC+dOq/VIxjvsubNzIgROsFRD4W6UzfUXfqBLiia45dMyWBgbRQlYo4D7SB4wFmu
-         H10Q==
-X-Gm-Message-State: AOAM531IJBb+WIVKixSN1+w9a+wyOVc3Dfr/2U5khoFV7XT/kpF5BSrs
-        1gU/GPXXhoCfpQuD2Z3RIjg=
-X-Google-Smtp-Source: ABdhPJzt6UvcFHwXt4Lc7paQqFGd0R2+4HVuCNqj2Ha1vecWaPyzXlLAEZJOyoKKpcRkYW3ZqTmgqA==
-X-Received: by 2002:a05:6402:1684:: with SMTP id a4mr5134938edv.79.1602869599455;
-        Fri, 16 Oct 2020 10:33:19 -0700 (PDT)
-Received: from skbuf ([188.26.174.215])
-        by smtp.gmail.com with ESMTPSA id y25sm2220134edr.7.2020.10.16.10.33.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 10:33:19 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 20:33:17 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Christian Eggers <ceggers@arri.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        kbuild-all@lists.01.org,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: point out the tail taggers
-Message-ID: <20201016173317.4ihhiamrv5w5am6y@skbuf>
-References: <20201016162800.7696-1-ceggers@arri.de>
- <202010170153.fwOuks52-lkp@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QQNx5lbWWREoG92H9GWCHwFrOsjOJReO5JJROvxhPeA=;
+        b=jAW7TPxHZvU41xJvTVmmxYSIHkAsQOHzh0GqwwYjnZ6CMPEmeujQr3MI4iGoHZLdEo
+         vpfVTMsiT2y+l7H/tzEbGamuI955tebqSktfEDnXO9vgFZ/J9+3CO3Xn+6/2S0HDZoWK
+         f+YVCJywbG6F0JDoi+Qk4yvIgZkH9i5ptkx1z7a3FfODdBgDOe369KABTylc2s3QO5D9
+         B3cUc30xmNjagJnMK61qwGX2D2uajOzKSPNo6OotJbMWqkXt1QrYtcZze85znR/t4VDD
+         oEOZPWjR3x30ZkbVKtzWOTLYAI1WLofgO72zc+zj1puxwUfyXVySycPCxMeuq/bTGBGn
+         o6gg==
+X-Gm-Message-State: AOAM5317KSwcBbAtCFoSwic75WN5aBDTSzBoSuH5mjACXyP0QitApUXB
+        k43q8qJHr0rWywzQi5b7hyNAjbbErTlbo2l7kjo=
+X-Google-Smtp-Source: ABdhPJzqEi6vOzU0lH2knDMwvo/xl3sQVDyGD5lN09LWg2IW8Wn0f7e5enis3EJ0LeWdcqTHvb9n++TPoRvcM1csb1A=
+X-Received: by 2002:a92:600e:: with SMTP id u14mr3557017ilb.303.1602869647783;
+ Fri, 16 Oct 2020 10:34:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202010170153.fwOuks52-lkp@intel.com>
+References: <20200923123916.1115962-1-jbrunet@baylibre.com>
+ <20201015134628.GA11989@arm.com> <1jlfg7k2ux.fsf@starbuckisacylon.baylibre.com>
+ <CABb+yY1-MBac0e6xQwWkHRo3bqJNMWb4xQzdaGdrYT=n5zRvtw@mail.gmail.com>
+ <20201016085217.GA12323@arm.com> <1jk0vqk0ju.fsf@starbuckisacylon.baylibre.com>
+In-Reply-To: <1jk0vqk0ju.fsf@starbuckisacylon.baylibre.com>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Fri, 16 Oct 2020 12:33:57 -0500
+Message-ID: <CABb+yY0pDxQ7B+NPsEz325-_X2nSJngnfER7uOLVyoBLoH37cA@mail.gmail.com>
+Subject: Re: [PATCH] mailbox: cancel timer before starting it
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        Da Xue <da@libre.computer>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 01:25:08AM +0800, kernel test robot wrote:
-> Hi Christian,
+On Fri, Oct 16, 2020 at 4:00 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
 >
-> Thank you for the patch! Yet something to improve:
 >
-> [auto build test ERROR on net/master]
+> On Fri 16 Oct 2020 at 10:52, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
 >
-> url:    https://github.com/0day-ci/linux/commits/Christian-Eggers/net-dsa-point-out-the-tail-taggers/20201017-003007
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git 2ecbc1f684482b4ed52447a39903bd9b0f222898
-> config: xtensa-allyesconfig (attached as .config)
-> compiler: xtensa-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/aaa07cad29bf365264beb2c2e2668db83ca31923
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Christian-Eggers/net-dsa-point-out-the-tail-taggers/20201017-003007
->         git checkout aaa07cad29bf365264beb2c2e2668db83ca31923
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=xtensa
+> > On Thursday 15 Oct 2020 at 13:45:54 (-0500), Jassi Brar wrote:
+> > [..]
+> >> > >> --- a/drivers/mailbox/mailbox.c
+> >> > >> +++ b/drivers/mailbox/mailbox.c
+> >> > >> @@ -82,9 +82,13 @@ static void msg_submit(struct mbox_chan *chan)
+> >> > >>  exit:
+> >> > >>      spin_unlock_irqrestore(&chan->lock, flags);
+> >> > >>
+> >> > >> -    if (!err && (chan->txdone_method & TXDONE_BY_POLL))
+> >> > >> -            /* kick start the timer immediately to avoid delays */
+> >> > >> +    if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
+> >> > >> +            /* Disable the timer if already active ... */
+> >> > >> +            hrtimer_cancel(&chan->mbox->poll_hrt);
+> >> > >> +
+> >> > >> +            /* ... and kick start it immediately to avoid delays */
+> >> > >>              hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
+> >> > >> +    }
+> >> > >>  }
+> >> > >>
+> >> > >>  static void tx_tick(struct mbox_chan *chan, int r)
+> >> > >
+> >> > > I've tracked a regression back to this commit. Details to reproduce:
+> >> >
+> >> > Hi Ionela,
+> >> >
+> >> > I don't have access to your platform and I don't get what is going on
+> >> > from the log below.
+> >> >
+> >> > Could you please give us a bit more details about what is going on ?
+> >> >
+> >> > All this patch does is add hrtimer_cancel().
+> >> > * It is needed if the timer had already been started, which is
+> >> >   appropriate AFAIU
+> >> > * It is a NO-OP is the timer is not active.
+> >> >
+> >> Can you please try using hrtimer_try_to_cancel() instead ?
+> >>
+> >
+> > Yes, using hrtimer_try_to_cancel() instead works for me. But doesn't
+> > this limit how effective this change is? AFAIU, this will possibly only
+> > reduce the chances for the race condition, but not solve it.
+> >
 >
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> It is also my understanding, hrtimer_try_to_cancel() would remove a
+> timer which as not already started but would return withtout doing
+> anything if the callback is already running ... which is the original
+> problem
 >
-> All error/warnings (new ones prefixed by >>):
->
-> >> net/dsa/tag_ksz.c:126:3: error: 'const struct dsa_device_ops' has no member named 'tail_tag'
->      126 |  .tail_tag = true,
->          |   ^~~~~~~~
-> >> net/dsa/tag_ksz.c:126:14: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
->      126 |  .tail_tag = true,
->          |              ^~~~
->    net/dsa/tag_ksz.c:126:14: note: (near initialization for 'ksz8795_netdev_ops.name')
-> >> net/dsa/tag_ksz.c:126:14: warning: initialized field overwritten [-Woverride-init]
->    net/dsa/tag_ksz.c:126:14: note: (near initialization for 'ksz8795_netdev_ops.name')
->    net/dsa/tag_ksz.c:203:3: error: 'const struct dsa_device_ops' has no member named 'tail_tag'
->      203 |  .tail_tag = true,
->          |   ^~~~~~~~
->    net/dsa/tag_ksz.c:203:14: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
->      203 |  .tail_tag = true,
->          |              ^~~~
->    net/dsa/tag_ksz.c:203:14: note: (near initialization for 'ksz9477_netdev_ops.name')
->    net/dsa/tag_ksz.c:203:14: warning: initialized field overwritten [-Woverride-init]
->    net/dsa/tag_ksz.c:203:14: note: (near initialization for 'ksz9477_netdev_ops.name')
->
-> vim +126 net/dsa/tag_ksz.c
->
->    119
->    120	static const struct dsa_device_ops ksz8795_netdev_ops = {
->    121		.name	= "ksz8795",
->    122		.proto	= DSA_TAG_PROTO_KSZ8795,
->    123		.xmit	= ksz8795_xmit,
->    124		.rcv	= ksz8795_rcv,
->    125		.overhead = KSZ_INGRESS_TAG_LEN,
->  > 126		.tail_tag = true,
->    127	};
->    128
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+If we are running in the callback path, hrtimer_try_to_cancel will
+return -1, in which case we could skip hrtimer_start.
+Anyways, I think simply checking for hrtimer_active should effect the same.
+I have submitted a patch, of course not tested.
 
-Is the test bot being a bit "slow" today?
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/tree/include/net/dsa.h#n93?id=2ecbc1f684482b4ed52447a39903bd9b0f222898
+Thanks
