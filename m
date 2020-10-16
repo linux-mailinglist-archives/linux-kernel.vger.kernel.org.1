@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DBC290201
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985E1290203
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405915AbgJPJf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405602AbgJPJfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:35:24 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49DA7C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 02:35:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yb8gL7vEzjslH+fMZzPSTu+Wz6mcGTp1t7dxaMIvEbE=; b=ltm0e3rvGKODAYrhAaSNItnfV1
-        lobnqnzR8Fxmc3lbCXiQtfNEvG7DIMbq7ELDrhDFNUkCZ4KHPTJKAihUXNHIp04762tWOha3F35PS
-        BF1BagMv/GEdhsSFJ8SzTbc6nz4caBvf4H0BpKgx2SB/99wEXwBrqwkIq+0p8v1bZEd6p4UVYtRjr
-        ITuw0hGv9b7TvqL6Gp6k7KDa7eKjvj67YDEmsFQvTkKYVEuWWr41h8w0yacwfPfigLBndIY837OxX
-        wyXFayUaZK1xGT/8TqebnO57nT/PZgt8RHu4Ocmlac54fZiivJwLBK8Dm3z9DNOJgNYILdHGt1z7/
-        1h3MKHmA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kTM8g-0002hx-JN; Fri, 16 Oct 2020 09:35:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3E42C300DAE;
-        Fri, 16 Oct 2020 11:35:03 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2B7A6203C7039; Fri, 16 Oct 2020 11:35:03 +0200 (CEST)
-Date:   Fri, 16 Oct 2020 11:35:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     zhout <ouwen210@hotmail.com>, g@hirez.programming.kicks-ass.net
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        valentin.schneider@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org
-Subject: Re: [PATCH v3 11/19] sched/core: Make migrate disable and CPU
- hotplug cooperative
-Message-ID: <20201016093503.GG2611@hirez.programming.kicks-ass.net>
-References: <20201015110532.738127234@infradead.org>
- <20201015110923.971283427@infradead.org>
- <BN8PR12MB2978A3BB8062DF4CEEB184109A030@BN8PR12MB2978.namprd12.prod.outlook.com>
+        id S2406091AbgJPJgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:36:01 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3984 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2406063AbgJPJgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:36:01 -0400
+Received: from dggeme753-chm.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 746B09A038579EA4BC6A;
+        Fri, 16 Oct 2020 17:35:59 +0800 (CST)
+Received: from [10.174.184.120] (10.174.184.120) by
+ dggeme753-chm.china.huawei.com (10.3.19.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 16 Oct 2020 17:35:58 +0800
+To:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <alex.williamson@redhat.com>
+CC:     <kwankhede@nvidia.com>, <xieyingtai@huawei.com>,
+        <lizhengui@huawei.com>, <xuxiaoyang2@huawei.com>
+From:   "xuxiaoyang (C)" <xuxiaoyang2@huawei.com>
+Subject: [PATCH] vfio iommu type1: Fix memory leak in
+ vfio_iommu_type1_pin_pages
+Message-ID: <f65f1c3c-c1bc-a44a-15ea-4cb6e43c8b4b@huawei.com>
+Date:   Fri, 16 Oct 2020 17:35:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN8PR12MB2978A3BB8062DF4CEEB184109A030@BN8PR12MB2978.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.120]
+X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
+ dggeme753-chm.china.huawei.com (10.3.19.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 11:43:17AM +0800, zhout wrote:
-> On Thu, Oct 15, 2020 at 01:05:43PM +0200, Peter Zijlstra wrote:
-> > From: Thomas Gleixner <tglx@linutronix.de>
-> > 
-> 
-> [ ... ]  
-> 
-> > +static inline bool rq_has_pinned_tasks(struct rq *rq)
-> > +{
-> > +	return rq->nr_pinned;
-> > +}
-> > +
-> 
-> Even I do not understand well enough, the return type of the
-> above function is bool and rq->nr_pinned is unsigned int.
-> Write this way:
-> 
-> static inline bool rq_has_pinned_tasks(struct rq *rq)
-> {
-> 	return !!rq->nr_pinned;
-> }
+From 099744c26513e386e707faecb3f17726e236d9bc Mon Sep 17 00:00:00 2001
+From: Xiaoyang Xu <xuxiaoyang2@huawei.com>
+Date: Fri, 16 Oct 2020 15:32:02 +0800
+Subject: [PATCH] vfio iommu type1: Fix memory leak in
+ vfio_iommu_type1_pin_pages
 
-The C compiler does this for us. C has a lot of implicit type
-conversions.
+pfn is not added to pfn_list when vfio_add_to_pfn_list fails.
+vfio_unpin_page_external will exit directly without calling
+vfio_iova_put_vfio_pfn.This will lead to a memory leak.
 
-It is the same mechanism at work when we write:
+Signed-off-by: Xiaoyang Xu <xuxiaoyang2@huawei.com>
+---
+ drivers/vfio/vfio_iommu_type1.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-	if (rq->nr_pinned)
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index c255a6683f31..26f518b02c81 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -640,6 +640,7 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
+ 	unsigned long remote_vaddr;
+ 	struct vfio_dma *dma;
+ 	bool do_accounting;
++	int unlocked;
 
-We know that works and we don't have to write:
+ 	if (!iommu || !user_pfn || !phys_pfn)
+ 		return -EINVAL;
+@@ -693,7 +694,9 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
 
-	if (!!rq->nr_pinned)
+ 		ret = vfio_add_to_pfn_list(dma, iova, phys_pfn[i]);
+ 		if (ret) {
+-			vfio_unpin_page_external(dma, iova, do_accounting);
++			unlocked = put_pfn(phys_pfn[i], dma->prot);
++			if (do_accounting)
++				vfio_lock_acct(dma, -unlocked, true);
+ 			goto pin_unwind;
+ 		}
 
-(although we may, but it is pointless).
+--
+2.19.1
 
