@@ -2,173 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C987828FF7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9155228FF80
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404852AbgJPHwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404800AbgJPHwN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:52:13 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71E4C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 00:52:12 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kTKWw-0008UC-IA; Fri, 16 Oct 2020 09:52:02 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kTKWv-0008E6-Om; Fri, 16 Oct 2020 09:52:01 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     mkl@pengutronix.de, Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S2404876AbgJPHxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:53:23 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15228 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2404867AbgJPHxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 03:53:23 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id F2A0DE3BEB72781C2BA9;
+        Fri, 16 Oct 2020 15:53:20 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.134) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Fri, 16 Oct 2020
+ 15:53:17 +0800
+Subject: Re: [PATCH 1/2] arm64: dts: broadcom: remove an unused property
+ dma-ranges
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+CC:     devicetree <devicetree@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH v1] ARM: dts: imx6/7: sync fsl,stop-mode with current flexcan driver
-Date:   Fri, 16 Oct 2020 09:51:58 +0200
-Message-Id: <20201016075158.31574-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Andy Gross <agross@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20201013060623.1711-1-thunder.leizhen@huawei.com>
+ <20201013060623.1711-2-thunder.leizhen@huawei.com>
+ <fa40441b-6ae1-6018-3da6-424d0252c1ba@gmail.com>
+ <CAK8P3a3MtCDpbCgNEnLf1QcE+1O0oGZtob2KY7G-77oA95bLJQ@mail.gmail.com>
+ <b25dd804-c691-b987-9f6a-de043aa45755@huawei.com>
+ <CAK8P3a24XPt55MuCnRPkH0QRVgmAbttghDnLkd5TQ-s6fi=GHg@mail.gmail.com>
+ <989f3efa-4fd0-8061-266c-56de03ce9029@huawei.com>
+Message-ID: <1b50ccfd-e402-d81a-31d8-56aab86dfc03@huawei.com>
+Date:   Fri, 16 Oct 2020 15:53:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <989f3efa-4fd0-8061-266c-56de03ce9029@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After this patch we need 2 arguments less for the fsl,stop-mode
-property:
 
-| commit d9b081e3fc4bdc33e672dcb7bb256394909432fc
-| Author: Marc Kleine-Budde <mkl@pengutronix.de>
-| Date:   Sun Jun 14 21:09:20 2020 +0200
-|
-| can: flexcan: remove ack_grp and ack_bit handling from driver
-|
-| Since commit:
-|
-|  048e3a34a2e7 can: flexcan: poll MCR_LPM_ACK instead of GPR ACK for stop mode acknowledgment
-|
-| the driver polls the IP core's internal bit MCR[LPM_ACK] as stop mode
-| acknowledge and not the acknowledgment on chip level.
-|
-| This means the 4th and 5th value of the property "fsl,stop-mode" isn't used
-| anymore. This patch removes the used "ack_gpr" and "ack_bit" from the driver.
 
-This patch removes the two last arguments, as they are not needed
-anymore.
+On 2020/10/16 15:06, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2020/10/14 22:02, Arnd Bergmann wrote:
+>> On Wed, Oct 14, 2020 at 3:36 PM Leizhen (ThunderTown)
+>> <thunder.leizhen@huawei.com> wrote:
+>>> On 2020/10/14 15:38, Arnd Bergmann wrote:
+>>>> On Wed, Oct 14, 2020 at 5:15 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>>>> On 10/12/2020 11:06 PM, Zhen Lei wrote:
+>>>>>> stingray-usb.dtsi is finally included by three dts files:
+>>>>>> bcm958802a802x.dts, bcm958742k.dts and bcm958742t.dts. I searched all
+>>>>>> these three entire expanded dts files, and each of them contains only one
+>>>>>> dma-ranges. No conversion range is specified, so it cannot work properly.
+>>>>>> I think this property "dma-ranges" is added by mistake, just remove it.
+>>>>>> Otherwise, the following error will be reported when any YAML detection
+>>>>>> is performed on arm64.
+>>>>>>
+>>>>>> arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+>>>>>> (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+>>>>>> its #address-cells (1) differs from / (2)
+>>>>>> arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+>>>>>> (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+>>>>>> its #size-cells (1) differs from / (2)
+>>>>>>
+>>>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>>>
+>>>>> This looks fine to me, Scott, Ray do you want to Ack this patch before I
+>>>>> take it?
+>>>>
+>>>> Does it mean that there are no devices on this bus that can do DMA?
+>>>>
+>>>> Usually there should be a dma-ranges property to identify that DMA
+>>>> is possible and what the limits are, though we have failed to enforce
+>>>> that.
+>>>
+>>> Documentation/devicetree/bindings/iommu/iommu.txt +79
+>>> When an "iommus" property is specified in a device tree node, the IOMMU will
+>>> be used for address translation. If a "dma-ranges" property exists in the
+>>> device's parent node it will be ignored. An exception to this rule is if the
+>>> referenced IOMMU is disabled, in which case the "dma-ranges" property of the
+>>> parent shall take effect.
+>>>
+>>> The dma-ranges is only required by IOMMU disabled case. And should exist in
+>>> the parent node of IOMMU device. But this deleted dma-ranges is under the usb
+>>> bus node.
+>>
+>> The USB hosts here don't use an IOMMU though, right?
+> 
+> Generally, USB devices are accessed through the IOMMU. However, even in this
+> case, dma-ranges is not necessarily required. There are many examples of this
+> in arch/arm64/boot/dts/. For example: arch/arm64/boot/dts/arm/juno.dt.yaml.
+> 
+> Not sure, but maybe I found the answer.
+> 
+> vi drivers/of/address.c +457
+> 457                                               Thus we treat the absence of
+> 458          * "ranges" as equivalent to an empty "ranges" property which means
+> 459          * a 1:1 translation at that level.
+> 
+> 466          * This quirk also applies for 'dma-ranges' which frequently exist in
+> 467          * child nodes without 'dma-ranges' in the parent nodes. --RobH
+> 
+> 475         if (ranges == NULL || rlen == 0) {
+> 476                 offset = of_read_number(addr, na);
+> 477                 memset(addr, 0, pna * 4);
+> 478                 pr_debug("empty ranges; 1:1 translation\n");
+> 479                 goto finish;
+> 480         }
+> 
+> By the way: At first, I thought that these errors was detected by YAML. Now,
+> I found that it was generated by "make dtbs". That's why it was reported by
+> any YAML. Thus, the need to fix these errors is even more urgent.
+> 
+> 
+>>
+>>>> Also note that the #address-cells=<1> means that any device under
+>>>> this bus is assumed to only support 32-bit addressing, and DMA will
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Hi, Arnd:
+  I known what you mean now. I will rewrite the patch. Thanks.
 
- # Please enter the commit message for your changes. Lines starting
----
- arch/arm/boot/dts/imx6qdl.dtsi | 4 ++--
- arch/arm/boot/dts/imx6sx.dtsi  | 4 ++--
- arch/arm/boot/dts/imx6ul.dtsi  | 4 ++--
- arch/arm/boot/dts/imx7s.dtsi   | 4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm/boot/dts/imx6qdl.dtsi b/arch/arm/boot/dts/imx6qdl.dtsi
-index 43edbf1156c7..5efb9b923bf9 100644
---- a/arch/arm/boot/dts/imx6qdl.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl.dtsi
-@@ -549,7 +549,7 @@ can1: flexcan@2090000 {
- 				clocks = <&clks IMX6QDL_CLK_CAN1_IPG>,
- 					 <&clks IMX6QDL_CLK_CAN1_SERIAL>;
- 				clock-names = "ipg", "per";
--				fsl,stop-mode = <&gpr 0x34 28 0x10 17>;
-+				fsl,stop-mode = <&gpr 0x34 28>;
- 				status = "disabled";
- 			};
- 
-@@ -560,7 +560,7 @@ can2: flexcan@2094000 {
- 				clocks = <&clks IMX6QDL_CLK_CAN2_IPG>,
- 					 <&clks IMX6QDL_CLK_CAN2_SERIAL>;
- 				clock-names = "ipg", "per";
--				fsl,stop-mode = <&gpr 0x34 29 0x10 18>;
-+				fsl,stop-mode = <&gpr 0x34 29>;
- 				status = "disabled";
- 			};
- 
-diff --git a/arch/arm/boot/dts/imx6sx.dtsi b/arch/arm/boot/dts/imx6sx.dtsi
-index b480dfa9e251..8770e522d21c 100644
---- a/arch/arm/boot/dts/imx6sx.dtsi
-+++ b/arch/arm/boot/dts/imx6sx.dtsi
-@@ -463,7 +463,7 @@ flexcan1: can@2090000 {
- 				clocks = <&clks IMX6SX_CLK_CAN1_IPG>,
- 					 <&clks IMX6SX_CLK_CAN1_SERIAL>;
- 				clock-names = "ipg", "per";
--				fsl,stop-mode = <&gpr 0x10 1 0x10 17>;
-+				fsl,stop-mode = <&gpr 0x10 1>;
- 				status = "disabled";
- 			};
- 
-@@ -474,7 +474,7 @@ flexcan2: can@2094000 {
- 				clocks = <&clks IMX6SX_CLK_CAN2_IPG>,
- 					 <&clks IMX6SX_CLK_CAN2_SERIAL>;
- 				clock-names = "ipg", "per";
--				fsl,stop-mode = <&gpr 0x10 2 0x10 18>;
-+				fsl,stop-mode = <&gpr 0x10 2>;
- 				status = "disabled";
- 			};
- 
-diff --git a/arch/arm/boot/dts/imx6ul.dtsi b/arch/arm/boot/dts/imx6ul.dtsi
-index 2b088f210331..4a059708ff20 100644
---- a/arch/arm/boot/dts/imx6ul.dtsi
-+++ b/arch/arm/boot/dts/imx6ul.dtsi
-@@ -430,7 +430,7 @@ can1: flexcan@2090000 {
- 				clocks = <&clks IMX6UL_CLK_CAN1_IPG>,
- 					 <&clks IMX6UL_CLK_CAN1_SERIAL>;
- 				clock-names = "ipg", "per";
--				fsl,stop-mode = <&gpr 0x10 1 0x10 17>;
-+				fsl,stop-mode = <&gpr 0x10 1>;
- 				status = "disabled";
- 			};
- 
-@@ -441,7 +441,7 @@ can2: flexcan@2094000 {
- 				clocks = <&clks IMX6UL_CLK_CAN2_IPG>,
- 					 <&clks IMX6UL_CLK_CAN2_SERIAL>;
- 				clock-names = "ipg", "per";
--				fsl,stop-mode = <&gpr 0x10 2 0x10 18>;
-+				fsl,stop-mode = <&gpr 0x10 2>;
- 				status = "disabled";
- 			};
- 
-diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
-index 1cfaf410aa43..837f0da08686 100644
---- a/arch/arm/boot/dts/imx7s.dtsi
-+++ b/arch/arm/boot/dts/imx7s.dtsi
-@@ -971,7 +971,7 @@ flexcan1: can@30a00000 {
- 				clocks = <&clks IMX7D_CLK_DUMMY>,
- 					<&clks IMX7D_CAN1_ROOT_CLK>;
- 				clock-names = "ipg", "per";
--				fsl,stop-mode = <&gpr 0x10 1 0x10 17>;
-+				fsl,stop-mode = <&gpr 0x10 1>;
- 				status = "disabled";
- 			};
- 
-@@ -982,7 +982,7 @@ flexcan2: can@30a10000 {
- 				clocks = <&clks IMX7D_CLK_DUMMY>,
- 					<&clks IMX7D_CAN2_ROOT_CLK>;
- 				clock-names = "ipg", "per";
--				fsl,stop-mode = <&gpr 0x10 2 0x10 18>;
-+				fsl,stop-mode = <&gpr 0x10 2>;
- 				status = "disabled";
- 			};
- 
--- 
-2.28.0
+>>>> have to go through a slow swiotlb in the absence of an IOMMU.
+>>>
+>>> The dma_alloc_coherent() will allocate memory with GFP_DMA32 flag and
+>>> try the 0-4G first. The reserved swiotlb buffer memory is used only
+>>> when the allocation failed.
+>>
+>> The swiotlb is primarily about the streaming mappings with dma_map_*(),
+>> which has to copy all data sent to the device. dma_alloc_coherent()
+>> is a rare operation and less impacted by DMA limitations.
+> 
+> OK, I got it.
+> 
+>>
+>>       Arnd
+>>
+>> _______________________________________________
+>> linux-arm-kernel mailing list
+>> linux-arm-kernel@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>>
+>> .
+>>
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+> .
+> 
 
