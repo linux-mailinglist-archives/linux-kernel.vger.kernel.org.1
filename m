@@ -2,172 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CE42903B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AE42903BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406734AbgJPLBP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 16 Oct 2020 07:01:15 -0400
-Received: from mga11.intel.com ([192.55.52.93]:53219 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404564AbgJPLBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:01:14 -0400
-IronPort-SDR: EHKVTUe2Lvwjyb2azGc6nSvTGpCOrTf98VeW8EmVglPwUugssOjiQN0J/EjltaSvjVi1PbUtwq
- SlXSRwyQDrLQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="163110826"
-X-IronPort-AV: E=Sophos;i="5.77,382,1596524400"; 
-   d="scan'208";a="163110826"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 04:01:13 -0700
-IronPort-SDR: /Q+mvagjsZ8zx4IQMSorTjsfTJ3IvnFocgJAJnyNwJv7u4EZKztOx7qp0pVPiB+Wb1RdEo59rB
- sBzGbcU8OUag==
-X-IronPort-AV: E=Sophos;i="5.77,382,1596524400"; 
-   d="scan'208";a="522195618"
-Received: from ssherida-mobl.ger.corp.intel.com (HELO localhost) ([10.251.83.218])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 04:01:09 -0700
-Content-Type: text/plain; charset="utf-8"
+        id S2406744AbgJPLEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406670AbgJPLEf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 07:04:35 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F59C061755;
+        Fri, 16 Oct 2020 04:04:35 -0700 (PDT)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3FC11528;
+        Fri, 16 Oct 2020 13:04:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1602846272;
+        bh=KpwAjDEbv0VgYYcCcN3JOEIMqRVebV5AYoRSvMrsZq4=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=rVWhYl4bdvV0xA131ANG2T70nFbP0/YAeGXHBpXfzuF7xehT+3JHOHRxSCyiHCxDZ
+         mlH0r2uQODH7sMLc2zc6TGDxJZdiEm7OlgJXWH4bqNHZZb6+W+ezcvltMZWQ8q6G57
+         Ozrp7jsiRaHQP+6QpO3o9ewQ4wVTc0bYC3hgTD3c=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH v3 5/7] media: i2c: max9286: Configure reverse channel
+ amplitude
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se
+Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+References: <20201016120625.64337-1-jacopo+renesas@jmondi.org>
+ <20201016120625.64337-6-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <b27d0984-a1c5-d8a5-6e5a-1fefc3b87fd5@ideasonboard.com>
+Date:   Fri, 16 Oct 2020 12:04:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <52a0dd42d3730d35b3ecd00d20a0601793e443e6.1602589096.git.mchehab+huawei@kernel.org>
-References: <cover.1602589096.git.mchehab+huawei@kernel.org> <52a0dd42d3730d35b3ecd00d20a0601793e443e6.1602589096.git.mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Lionel Landwerlin <lionel.g.landwerlin@intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 44/80] docs: gpu: i915.rst: Fix several C duplication warnings
-From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID: <160284606673.11659.11178759979047002902@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: alot/0.8.1
-Date:   Fri, 16 Oct 2020 14:01:07 +0300
+In-Reply-To: <20201016120625.64337-6-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Lionel
+Hi Jacopo,
 
-Can you please take a look at best resolving the below problem.
-
-Maybe we should eliminate the duplicate declarations? Updating such
-a list manually seems error prone to me.
-
-Regards, Joonas
-
-Quoting Mauro Carvalho Chehab (2020-10-13 14:53:59)
-> As reported by Sphinx:
+On 16/10/2020 13:06, Jacopo Mondi wrote:
+> Adjust reverse channel amplitude according to the presence of
+> the 'high-threshold" DTS property.
 > 
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1147: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_oa_wait_unlocked'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1169: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_oa_poll_wait'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1189: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_oa_read'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2669: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_oa_stream_enable'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2734: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_oa_stream_disable'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2820: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_oa_stream_init'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3010: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_read'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3098: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_poll_locked'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3129: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_poll'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3152: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_enable_locked'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3181: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_disable_locked'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3273: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_ioctl'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3296: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_destroy_locked'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3321: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_release'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3379: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_open_ioctl_locked'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3534: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'read_properties_unlocked'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3717: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_open_ioctl'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3760: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_register'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3789: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_unregister'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4009: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_add_config_ioctl'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4162: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_remove_config_ioctl'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4260: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_init'.
->         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4423: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
->         Declaration is 'i915_perf_fini'.
+> If no high threshold compensation is required, start with a low
+> amplitude (100mV) and increase it after the remote serializers
+> have probed and have enabled noise immunity on their reverse
+> channels.
 > 
-> With Sphinx 3, C declarations can't be duplicated anymore,
-> so let's exclude those from the other internals found on
-> i915_perf.c file.
+> If high threshold compensation is required, configure the reverse
+> channel with a 170mV amplitude before the remote serializers have
+> probed.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> This change is required for both rdacm20 and rdacm21 camera modules
+> to be correctly probed when used in combination with the max9286
+> deserializer.
+
+My only fear here would be that perhaps on other cameras we need a more
+fine-grained control of the amplitudes?
+
+But I'll leave that discussion to the binding itself,
+
+For this patch ...
+
+Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+
+
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 > ---
->  Documentation/gpu/i915.rst | 29 +++++++++++++++++++++++++----
->  1 file changed, 25 insertions(+), 4 deletions(-)
+>  drivers/media/i2c/max9286.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/gpu/i915.rst b/Documentation/gpu/i915.rst
-> index 33cc6ddf8f64..cff1f154b473 100644
-> --- a/Documentation/gpu/i915.rst
-> +++ b/Documentation/gpu/i915.rst
-> @@ -636,15 +636,36 @@ i915 Perf Observation Architecture Stream
->  .. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
->     :functions: i915_oa_poll_wait
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index 31e27d0f34f1..4c72e1e6b27b 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -163,6 +163,8 @@ struct max9286_priv {
+>  	unsigned int mux_channel;
+>  	bool mux_open;
 >  
-> -All i915 Perf Internals
-> ------------------------
-> +Other i915 Perf Internals
-> +-------------------------
+> +	bool high_threshold;
+> +
+>  	struct v4l2_ctrl_handler ctrls;
+>  	struct v4l2_ctrl *pixelrate;
 >  
-> -This section simply includes all currently documented i915 perf internals, in
-> -no particular order, but may include some more minor utilities or platform
-> +This section simply includes all other currently documented i915 perf internals,
-> +in no particular order, but may include some more minor utilities or platform
->  specific details than found in the more high-level sections.
+> @@ -557,10 +559,14 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
+>  	 * All enabled sources have probed and enabled their reverse control
+>  	 * channels:
+>  	 *
+> +	 * - Increase the reverse channel amplitude to compensate for the
+> +	 *   remote ends high threshold, if not done already
+>  	 * - Verify all configuration links are properly detected
+>  	 * - Disable auto-ack as communication on the control channel are now
+>  	 *   stable.
+>  	 */
+> +	if (!priv->high_threshold)
+> +		max9286_reverse_channel_setup(priv, 170);
+>  	max9286_check_config_link(priv, priv->source_mask);
 >  
->  .. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
->     :internal:
-> +   :no-identifiers:
-> +       i915_perf_init
-> +       i915_perf_fini
-> +       i915_perf_register
-> +       i915_perf_unregister
-> +       i915_perf_open_ioctl
-> +       i915_perf_release
-> +       i915_perf_add_config_ioctl
-> +       i915_perf_remove_config_ioctl
-> +       read_properties_unlocked
-> +       i915_perf_open_ioctl_locked
-> +       i915_perf_destroy_locked
-> +       i915_perf_read i915_perf_ioctl
-> +       i915_perf_enable_locked
-> +       i915_perf_disable_locked
-> +       i915_perf_poll i915_perf_poll_locked
-> +       i915_oa_stream_init i915_oa_read
-> +       i915_oa_stream_enable
-> +       i915_oa_stream_disable
-> +       i915_oa_wait_unlocked
-> +       i915_oa_poll_wait
+>  	/*
+> @@ -967,7 +973,12 @@ static int max9286_setup(struct max9286_priv *priv)
+>  	 * only. This should be disabled after the mux is initialised.
+>  	 */
+>  	max9286_configure_i2c(priv, true);
+> -	max9286_reverse_channel_setup(priv, 170);
+> +
+> +	/*
+> +	 * Compensate the remote end high threshold with a larger channel
+> +	 * amplitude if necessary.
+> +	 */
+> +	max9286_reverse_channel_setup(priv, priv->high_threshold ? 170 : 100);
 >  
->  Style
->  =====
-> -- 
-> 2.26.2
+>  	/*
+>  	 * Enable GMSL links, mask unused ones and autodetect link
+> @@ -1235,6 +1246,12 @@ static int max9286_parse_dt(struct max9286_priv *priv)
+>  	}
+>  	of_node_put(node);
+>  
+> +	/*
+> +	 * Parse 'high_threshold' property to configure the reverse channel
+> +	 * amplitude.
+> +	 */
+> +	priv->high_threshold = device_property_present(dev, "high_threshold");
+> +
+>  	priv->route_mask = priv->source_mask;
+>  
+>  	return 0;
 > 
+
