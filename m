@@ -2,66 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48040290896
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D80A29089E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410318AbgJPPg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:36:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:39846 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408384AbgJPPg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:36:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F05C13D5;
-        Fri, 16 Oct 2020 08:36:55 -0700 (PDT)
-Received: from entos-thunderx2-02.shanghai.arm.com (entos-thunderx2-02.shanghai.arm.com [10.169.212.213])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B8D373F719;
-        Fri, 16 Oct 2020 08:36:52 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia He <justin.he@arm.com>
-Subject: [PATCH] gpio: dwapb: Fix missing conversion to GPIO-lib-based IRQ-chip
-Date:   Fri, 16 Oct 2020 23:35:44 +0800
-Message-Id: <20201016153544.162611-1-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S2410323AbgJPPi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:38:29 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:38197 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408427AbgJPPi3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 11:38:29 -0400
+Received: by mail-ed1-f67.google.com with SMTP id i5so2900389edr.5;
+        Fri, 16 Oct 2020 08:38:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l7ooLLyjU79cfl+bt7sttr4E3DYykAdem+WSTdZT84Q=;
+        b=cPO2H6lrMx3ANOh7oH82eqjP9PYFhHHZMmUEWrKH049ckoc5ZP4FKGExZsh/2X1aJw
+         iiAbCQ/7w461JvNwBanHcQ/fSMifHUc/LUQWaWXlY0Ytqr7GxHPe/elWQPar7GWJjmHk
+         uXAXsNi8J9/mBxpX3MRfWEXNizlLI9LDQOdsISS9utip8I1ELnuJDs0fdlcaVwibXLJZ
+         gzPLqjGYVCcFFRWLPF2q8GQ5iJ6tbZv6is9a3s+fwJ9NN6B8ZW017kDz8J994X17QSVI
+         TFYGKK58I30hydV9PSM6/s2vYmH5VcSBzbbsWhuDGFH5zxm//MKotb14ljUqQGbwhyxU
+         MuGg==
+X-Gm-Message-State: AOAM5304I3iufa+nwgC7/Ekf2zZhF/gewBORfp7FqthqI0ut2JV3vG2g
+        zHWG3hgc55J78jzUqgPgOcE=
+X-Google-Smtp-Source: ABdhPJx2vXirUY8EO6Lr8GnfzXGhnxo0d9l8dBuveqgE4nywFvaNT1O0eVe8BcAWvhYByAs4SHpmPw==
+X-Received: by 2002:aa7:d7c1:: with SMTP id e1mr4740554eds.4.1602862706986;
+        Fri, 16 Oct 2020 08:38:26 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id s25sm1894221ejc.29.2020.10.16.08.38.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 08:38:25 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 17:38:23 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     sre@kernel.org, matthias.bgg@gmail.com, robh+dt@kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gene Chen <gene_chen@richtek.com>
+Subject: Re: [PATCH 1/2] dt-bindings: power: Add bindings document for
+ Charger support on MT6360 PMIC
+Message-ID: <20201016153823.GA9890@kozik-lap>
+References: <1600859910-15855-1-git-send-email-gene.chen.richtek@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1600859910-15855-1-git-send-email-gene.chen.richtek@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0ea683931adb ("gpio: dwapb: Convert driver to using the
-GPIO-lib-based IRQ-chip") missed the case in dwapb_irq_set_wake().
+On Wed, Sep 23, 2020 at 07:18:29PM +0800, Gene Chen wrote:
+> From: Gene Chen <gene_chen@richtek.com>
+> 
+> Add bindings document for Charger support on MT6360 PMIC
+> 
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> ---
+>  .../bindings/power/supply/mt6360_charger.yaml      | 44 ++++++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml b/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
+> new file mode 100644
+> index 0000000..711fc19
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
+> @@ -0,0 +1,44 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/power/supply/mt6360_charger.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Battery charger driver for MT6360 PMIC from MediaTek Integrated.
+> +
+> +maintainers:
+> +  - Gene Chen <gene_chen@richtek.com>
+> +
+> +description: |
+> +  This module is part of the MT6360 MFD device.
+> +  Provides Battery Charger, Boost for OTG devices and BC1.2 detection.
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt6360-chg
+> +
+> +  vinovp:
+> +    description:
+> +      Maximum CHGIN regulation voltage.
 
-Without this fix, probing the dwapb gpio driver will hit a error:
-"address between user and kernel address ranges" on a Ampere armv8a
-server and cause a panic.
+1. You need to describe the type.
+2. Use proper unit suffix (see property-units.txt).
+3. Is this a custom property? If yes, it misses vendor prefix. If not,
+   most likely there is already such property. Reuse.
 
-Fixes: 0ea683931adb ("gpio: dwapb: Convert driver to using the
-GPIO-lib-based IRQ-chip")
-Signed-off-by: Jia He <justin.he@arm.com>
----
- drivers/gpio/gpio-dwapb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> +
+> +  usb-otg-vbus:
+> +      $ref: /schemas/regulator/regulator.yaml#
 
-diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-index a5b326754124..2a9046c0fb16 100644
---- a/drivers/gpio/gpio-dwapb.c
-+++ b/drivers/gpio/gpio-dwapb.c
-@@ -343,8 +343,8 @@ static int dwapb_irq_set_type(struct irq_data *d, u32 type)
- #ifdef CONFIG_PM_SLEEP
- static int dwapb_irq_set_wake(struct irq_data *d, unsigned int enable)
- {
--	struct irq_chip_generic *igc = irq_data_get_irq_chip_data(d);
--	struct dwapb_gpio *gpio = igc->private;
-+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-+	struct dwapb_gpio *gpio = to_dwapb_gpio(gc);
- 	struct dwapb_context *ctx = gpio->ports[0].ctx;
- 	irq_hw_number_t bit = irqd_to_hwirq(d);
- 
--- 
-2.17.1
+1. Wrong indentation.
+2. Name should be more or less generic, so maybe
+   "usb-otg-vbus-regulator".
 
+> +
+> +required:
+> +  - compatible
+
+No address/reg? How does it bind?
+
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    mt6360_chg: chg {
+
+s/chg/charger/
+
+> +      compatible = "mediatek,mt6360-chg";
+> +      vinovp = <14500000>;
+
+Empty line break
+
+Best regards,
+Krzysztof
