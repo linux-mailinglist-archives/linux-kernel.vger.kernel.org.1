@@ -2,87 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83002907CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE556290620
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409444AbgJPOzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:55:05 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:58468 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394635AbgJPOzF (ORCPT
+        id S2406887AbgJPNQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:16:52 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:36876 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405352AbgJPNQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:55:05 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 1161B80752;
-        Fri, 16 Oct 2020 16:55:01 +0200 (CEST)
-Date:   Fri, 16 Oct 2020 16:55:00 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Bogdan Togorean <bogdan.togorean@analog.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: Re: [PATCH 1/2] drm/adi: axi-hdmi-tx: Add support for AXI HDMI TX IP
- core
-Message-ID: <20201016145500.GA1325536@ravnborg.org>
-References: <20201005141226.180655-1-bogdan.togorean@analog.com>
+        Fri, 16 Oct 2020 09:16:52 -0400
+Received: from relay11.mail.gandi.net (unknown [217.70.178.231])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id ACBB63B4205;
+        Fri, 16 Oct 2020 12:56:44 +0000 (UTC)
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 397C5100008;
+        Fri, 16 Oct 2020 12:56:17 +0000 (UTC)
+Date:   Fri, 16 Oct 2020 16:56:03 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH v3 2/7] dt-bindings: media: max9286: Document
+ 'maxim,high-threshold'
+Message-ID: <20201016145603.bapqjxsvezn6flyv@uno.localdomain>
+References: <20201016120625.64337-1-jacopo+renesas@jmondi.org>
+ <20201016120625.64337-3-jacopo+renesas@jmondi.org>
+ <CAMuHMdUof5Yb=5notGDYycJtZyLzGp2RPjJ=m6GVodBRDxw9ow@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201005141226.180655-1-bogdan.togorean@analog.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=gAnH3GRIAAAA:8 a=6SQYn8MF9XToLfwsykcA:9
-        a=CjuIK1q_8ugA:10 a=oVHKYsEdi7-vN-J5QA_j:22
+In-Reply-To: <CAMuHMdUof5Yb=5notGDYycJtZyLzGp2RPjJ=m6GVodBRDxw9ow@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bogdan
+Hi Geert
+   (and Kieran, as his question on the other patch is actually on
+   the same point)
 
-On Mon, Oct 05, 2020 at 05:12:08PM +0300, Bogdan Togorean wrote:
-> From: Lars-Peter Clausen <lars@metafoo.de>
-> 
-> The AXI HDMI HDL driver is the driver for the HDL graphics core which is
-> used on various FPGA designs. It's mostly used to interface with the
-> ADV7511 driver on some Zynq boards (e.g. ZC702 & ZedBoard).
-> 
-> Link: https://wiki.analog.com/resources/tools-software/linux-drivers/drm/hdl-axi-hdmi
-> Link: https://wiki.analog.com/resources/fpga/docs/axi_hdmi_tx
+On Fri, Oct 16, 2020 at 01:50:34PM +0200, Geert Uytterhoeven wrote:
+> Hi Jacopo,
+>
+> On Fri, Oct 16, 2020 at 12:09 PM Jacopo Mondi <jacopo+renesas@jmondi.org> wrote:
+> > Document the 'maxim,high-threshold' vendor property in the bindings
+> > document of the max9286 driver.
+> >
+> > The newly introduced boolean property allows controlling the initial
+> > configuration of the GMSL reverse control channel to accommodate
+> > remote serializers pre-programmed with the high threshold power
+> > supply noise immunity enabled.
+> >
+> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+>
+> Thanks for your patch!
+>
+> > --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> > +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> > @@ -51,6 +51,19 @@ properties:
+> >    '#gpio-cells':
+> >      const: 2
+> >
+> > +  maxim,high-threshold:
+> > +    description: |
+> > +      A boolean property to increase the initial amplitude of the reverse
+> > +      control channel to compensate for remote serializers pre-programmed with
+> > +      high threshold noise-immunity.
+> > +
+> > +      Some camera modules (in example the RDACM20 one) include an on-board MCU
+> > +      that pre-programs the embedded serializer with reverse channel power
+> > +      supply noise immunity enabled. The deserializer shall increase its
+> > +      reverse channel amplitude to compensate that and be able to communicate
+> > +      with the remote end.
+> > +    type: boolean
+>
+> Does this "high" threshold correspond to some numerical value?
+> I.e. could we run into a future need to support more values than just
+> true/false?
+> If yes, we may want to use a numerical value from the start.
 
-Thanks for submitting the driver - a few high level comments after
-browsing the driver:
+So, this boolean property controls the initial setting of the reverse
+channel amplitude, which has to be opportunely adjusted to be able to
+probe the remote devices as i2c messages are bridged on the reverse
+channel from the deserializer to the remote serializers.
 
-- Use drmm_mode_config_init() to utilize new cleanup
-- Look at other uses of drm_driver - there is macros that makes this
-  much simpler / smaller
-- Use devm_drm_dev_alloc() to allocate axi_hdmi_tx_private
-  To do so embed drm_device in axi_hdmi_tx_private - which is the way to
-  do it today
-- Do not use ddev->dev_private, it is deprecated
-- Use dev_err_probe() when you risk to see a PROBE_DEFER
-- In all include blocks sort the include alphabetically
-- Use the new interface to drm_bridge_attach() - where display driver
-  creates the connector
-- See if the Kconfig selects can be trimmed - the framebuffer releated
-  selects looks wrong (others get it wrong too)
-- Check if you can use the simple encoder - see
-  drm_simple_encoder_init()
+It also implies that if the initial setting is not "high" it has to be
+increased after the remotes have probed, as it is assumed at the end
+the remotes' probe() routine they have enabled their high threshold
+noise immunity feature.
 
-If this is a simple one plane, one crtc display driver then it should
-use the drm_simple_* support. Or the changelog should explain why not.
+The register that controls the de-serializer reverse channel amplitude
+is not fully documented in the chip manual version I have, but the
+application developer guide shows that it can range from 30mV to
+200mV. The same developer guide shows 100mV and 170mV as "initial" and
+"high threshold" values to be used.
 
-We want the drivers as simple as we can - and they shall use as much of
-the helper infrastructure as they can.
+On the serializer's side (MAX9271 at least) high threshold is a
+boolean control, it is either enabled or disabled.
 
-We continue to develop the helper infrastructure so it is expected that
-there is some lacking behind as is the case here.
+Hence I suspect that for the max9286-max9271 combo, using fixed 100mV
+and 170mV values is enough. Other serializers might allow a more fine
+grained control of the noise cancelling threshold, and might require a
+more precise adjustment of the deserializer side. I'm honestly not
+sure at this point not having seen any other one.
 
-        Sam
+So yes, this is a deserializer setting that depends on the serializer
+in use, and I'm not 100% comfortable expressing it as a deserializer
+property. That said, having an initial numerical value might serve the
+same purpose allowing more flexibility, if other serializers require a
+more precise control of the initial amplitude.
 
+After the remotes have probed, we could also re-explore the
+possibility of getting the bus configuration using get_mbus_config, as
+detailed in the v1 cover letter [1] as at that time their sub-devices
+have been registered and we can call operations on them. But again,
+this might be not required at all.
 
+Thanks
+   j
+
+[1] https://www.spinics.net/lists/linux-renesas-soc/msg52886.html
+
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
