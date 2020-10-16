@@ -2,132 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4DB2906D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795712906DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408613AbgJPOLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51508 "EHLO
+        id S2408624AbgJPOLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408606AbgJPOLS (ORCPT
+        with ESMTP id S2408615AbgJPOL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:11:18 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE59C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:11:17 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x13so1565589pfa.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:11:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=sMQ2dMIgMKaSx58zvkJZR+Zaau89AWNULRIULAFQhWQ=;
-        b=BVs5BLt8c8o0TolmoLyLq5zl+Oh2F4C9/7OQX3Lmga+kuiMARfVa07ypjnDY8gPgqe
-         hYxLKcntwP/OuVYCkJth6rQWsP8K+2Wjqs3eikhad4j2J3R9GqrGTyPxc5l0o6C0BpuQ
-         d2Chf6HhGavHXOpZ5aAtjvrsDkmRa44OQG8xxwYeFbtuxK2dlUp45a8e/52h9isGkWYC
-         SnDx0MmV8brtesj//Rl583OqO+l3oX9z/eXc5EMfetwnwC/8C1ESIctWJFJofAFyBknF
-         ssZ0um/HfEoZuebvTu3uc1NLsBaIdcdw3SY4swj4xr5uXssYQV9FK1JZm9HmWCj555zV
-         xoTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=sMQ2dMIgMKaSx58zvkJZR+Zaau89AWNULRIULAFQhWQ=;
-        b=j1rs0ZWnuyaGXokUZo+SJXtSS9rBlJ1n4+exPvoNNKu3scStQGjec3etfLiqfYM8R2
-         iCNQnsre6hssIvmC96iGPuLqndqGhFNQIiY8/iRyVaS7W1Gkk+veaUR6Lv+VoQ4oI+ap
-         +DI3/4oyVQNFSbwzDJhmBpl6XHZv/v7lxINWmsa/k64zz49xEEnd+B4YhgeN5VBJqFkW
-         Dnbev5Tkd2gf2vEbB8JB8lAtqG+IKrWWXxOEb9wjEtSZk7cx8tq7LvhPxxE2T9Casaum
-         VfT0CEZ21M5G/CYcvW0zPDvn72CYfaGawBtT9xlRNL5mGWbkPNKyyiyFgYu/vHcj9sm9
-         JI8w==
-X-Gm-Message-State: AOAM531CObCxp/vBKtzWX8RS5tP9B8ZsoGRbDtqWll73v08ozy5QHSLt
-        9chpSOBKQTZMUQ6DOt9VymbrVg==
-X-Google-Smtp-Source: ABdhPJx29URNxem/t+30RTckmeM/Ez+G8pGRwfIwLRIMeQ7mkCeZXBhW0fQG0J8lzwEVBMYXApcCKg==
-X-Received: by 2002:aa7:9afc:0:b029:152:9d45:6723 with SMTP id y28-20020aa79afc0000b02901529d456723mr3770149pfp.35.1602857476462;
-        Fri, 16 Oct 2020 07:11:16 -0700 (PDT)
-Received: from debian ([122.164.16.34])
-        by smtp.gmail.com with ESMTPSA id 16sm3334138pjl.27.2020.10.16.07.11.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 07:11:15 -0700 (PDT)
-Message-ID: <7138d7bce8f8da009119f0107eeb7c85f67057b9.camel@rajagiritech.edu.in>
-Subject: Re: [PATCH 5.8 00/14] 5.8.16-rc1 review
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Date:   Fri, 16 Oct 2020 19:41:05 +0530
-In-Reply-To: <20201016090437.153175229@linuxfoundation.org>
-References: <20201016090437.153175229@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        Fri, 16 Oct 2020 10:11:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB88C061755;
+        Fri, 16 Oct 2020 07:11:26 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602857484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CxpfhP4r+cT8NbbcIvpC4YffgKWMaBNfTxc0DHUwwGc=;
+        b=eK9gJiFjXBg+fMXP9Y7aTpgCZUbZfPcb/xaC21Rps0Xho4oZ/FC2+ycLes1xlXrsR/Mjaq
+        QdsLaDKiMnRUyK4CiR3Sr9ZSaatQ7Buwj+5tsUNjmOIQaWJ6slW3NANkz5KE+aR7aKq4JP
+        JYYOP4beyqDKyqOnXzMvBF45A7HzQdIiU0ROKTgHlSXY5o9D7O62t5xJQtmQEYo2a7S5EU
+        4EZ1D8WRM3OOu/qpDBupEM8YzNi3G7WbkUd7ONCO3O31sYK0m9RQAmcZSmJR2S5bxktFYa
+        r3d+M/HEcSldz8CwHZIS1Knw6qM66UnHw6P8ZuOpNILUf/165wOSajIsp0jJAQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602857484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CxpfhP4r+cT8NbbcIvpC4YffgKWMaBNfTxc0DHUwwGc=;
+        b=ki5PSY69rO5yxxsHT4i5xRJKsjbdxshMIh8c8fUbCOG1vmWZIaRYlOz0xSVPS7vnCjl+3S
+        RCI2tUC5ODQOumAg==
+To:     Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, Roman Gershman <romger@amazon.com>
+Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
+In-Reply-To: <c7da5280-f283-2c89-f6f2-be7d84c3675a@kernel.dk>
+References: <20201015131701.511523-1-axboe@kernel.dk> <20201015131701.511523-6-axboe@kernel.dk> <20201015154953.GM24156@redhat.com> <e17cd91e-97b2-1eae-964b-fc90f8f9ef31@kernel.dk> <87a6wmv93v.fsf@nanos.tec.linutronix.de> <c7da5280-f283-2c89-f6f2-be7d84c3675a@kernel.dk>
+Date:   Fri, 16 Oct 2020 16:11:24 +0200
+Message-ID: <87d01itg4z.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-16 at 11:07 +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.8.16 release.
-> There are 14 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied,
-> please
-> let me know.
-> 
-> Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	
-> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.16-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
-> stable-rc.git linux-5.8.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Jens,
 
-hello,
+On Fri, Oct 16 2020 at 07:33, Jens Axboe wrote:
+> On 10/16/20 3:00 AM, Thomas Gleixner wrote:
+> I totally agree, and we're on the same page. I think you'll find that in
+> the past I always carry through, the task_work notification was somewhat
+> of a rush due to a hang related to it. For this particular case, the
+> cleanups and arch additions are pretty much ready to go.
 
-Compiled and booted  5.8.16-rc1+ .Every thing looks clean except "dmesg
--l warn"
+As we seem to be on the same page with this, let me suggest how this
+should go:
 
-------x--------------x-----------------------------x-----------
+1) A cleanup for the task_work_add() mess. This is trivial enough and
+   should go in before rc1.
 
-$dmesg -l warn
-[    0.601699] MDS CPU bug present and SMT on, data leak possible. See 
-https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/mds.html for
-more details.
-[    0.603104]  #3
-[    0.749457] ENERGY_PERF_BIAS: Set to 'normal', was 'performance'
-[   10.718252] i8042: PNP: PS/2 appears to have AUX port disabled, if
-this is incorrect please boot with i8042.nopnp
-[   12.651483] sdhci-pci 0000:00:1e.6: failed to setup card detect gpio
-[   14.398378] i2c_hid i2c-ELAN1300:00: supply vdd not found, using
-dummy regulator
-[   14.399033] i2c_hid i2c-ELAN1300:00: supply vddl not found, using
-dummy regulator
-[   23.866580] systemd[1]: /lib/systemd/system/plymouth-
-start.service:16: Unit configured to use KillMode=none. This is unsafe,
-as it disables systemd's process lifecycle management for the service.
-Please update your service to use a safer KillMode=, such as 'mixed' or
-'control-group'. Support for KillMode=none is deprecated and will
-eventually be removed.
-[   37.208082] uvcvideo 1-6:1.0: Entity type for entity Extension 4 was
-not initialized!
-[   37.208092] uvcvideo 1-6:1.0: Entity type for entity Processing 2
-was not initialized!
-[   37.208098] uvcvideo 1-6:1.0: Entity type for entity Camera 1 was
-not initialized!
-[   40.088516] FAT-fs (sda1): Volume was not properly unmounted. Some
-data may be corrupt. Please run fsck.
----------------x-------x-----------------x-------------------------
+2) The TIF_NOTIFY_RESUME change is a nice cleanup on it's own and can go
+   before rc1 as well.
 
-Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
--- 
-software engineer
-rajagiri school of engineering and technology
+This gets stuff out of the way and reduces conflict surface.
 
+3) Core infrastructure (patch 2 + 3 + 5) of this series
+
+   Please make the changes I asked for in the generic entry code and
+   moving the handling into get_signal() for everybody else.
+
+   So get_signal() gains:
+
+     if (!IS_ENABLED(CONFIG_GENERIC_ENTRY) {
+	 (test_thread_flag(TIF_NOTIFY_SIGNAL))
+		tracehook_notify_signal();
+
+         if (!task_sigpending(current))
+ 		return 0;
+     }
+
+   And with that you don't have to touch do_signal() in any architecture
+   except x86 which becomes:
+
+   arch_do_signal_or_restart(bool sigpending)
+
+4) Conversion of all architectures which means adding the TIF bit.
+
+   If the architecture folks are happy, then this can be collected in
+   tip, which would be preferred because then 
+
+5) Cleanups
+
+   can just go on top.
+
+Hmm?
+
+Thanks,
+
+        tglx
