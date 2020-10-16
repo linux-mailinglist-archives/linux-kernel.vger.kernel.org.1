@@ -2,111 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186CB290987
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89EEC290984
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410004AbgJPQSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:18:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47182 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2409855AbgJPQSe (ORCPT
+        id S2409973AbgJPQSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:18:31 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:36158 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409855AbgJPQSa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:18:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602865112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=y+hjVI66PfcmwJlWfVwVOTQ6i8qhG0kIQEYwSMKlTRs=;
-        b=RUybtcalXrFLkWeOefy5DSLyiNHq1BHsVjrO0yS5ApXru0ad+NAOd5m0P/fyoc4S+2bTSI
-        ebe0K64cJYo4iKUjXz3bxQamD+BdgZ+Df86MotfPf1lJolYjsmMdTtKr6Dp/ZwrT8nY4dz
-        tpJBc5dHSeYoPGhccXwnfnwAp5UgQWM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-hJhe2FRRP26PUE3ZREH50Q-1; Fri, 16 Oct 2020 12:18:31 -0400
-X-MC-Unique: hJhe2FRRP26PUE3ZREH50Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7400A80365F;
-        Fri, 16 Oct 2020 16:18:29 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A5CB60C04;
-        Fri, 16 Oct 2020 16:18:26 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        trond.myklebust@hammerspace.com
-cc:     dhowells@redhat.com, linux-crypto@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-afs@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: gssapi, crypto and afs/rxrpc
+        Fri, 16 Oct 2020 12:18:30 -0400
+Received: by mail-oi1-f195.google.com with SMTP id u17so3037400oie.3;
+        Fri, 16 Oct 2020 09:18:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uISo57yfUZpTzroMJhAVgeLo1/yelMiKsufW7Z+pWqo=;
+        b=m/FHxZAjzDw6+iURm5HXzRFnzv/1zD5JWvP2f4eMso4nTlQ4MTQKWoKUCdQnwaC5Bp
+         kdn4Q215XDh2i4xVHqfNXVvYX3ydimglgp9yUpPBAJ0wnr9bH05fftUrdLQ3toyJ0cnp
+         mleZ0bejFAOo0B/xSoTP47Kz60gOAjtzZEDsbnPBOp+Jh/W98/LvSlDBT7bSYZIOeR70
+         i0FneXckXDOR3H8BJDp4F9t4RZc1ntPMvSOtnF904dQNcuOTiaWCnV05bzHzYTXogUuS
+         fK4aflHqG2sGP0ExNU/rPI+A2n8YuhDZD8LQVIDbpNoqlr+qCWMDsjkTb0Bh1mGdDqoK
+         ZObw==
+X-Gm-Message-State: AOAM5314dMmyG5lv4Lnj+YgMVaB3cRqpU5GaUHwD5c8KuYXtMzlioHyp
+        DOe4/Lx1oGbYrkbrYmVcsg==
+X-Google-Smtp-Source: ABdhPJxXWV44wqWW/P4G+jW/m/jxEn6yv6aGQSaC4SmYzaJjQxINSxxLka7EviDs9inU1aAGasqeyA==
+X-Received: by 2002:aca:aa08:: with SMTP id t8mr3126702oie.129.1602865110271;
+        Fri, 16 Oct 2020 09:18:30 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u22sm1266354oor.13.2020.10.16.09.18.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 09:18:29 -0700 (PDT)
+Received: (nullmailer pid 1517766 invoked by uid 1000);
+        Fri, 16 Oct 2020 16:18:28 -0000
+Date:   Fri, 16 Oct 2020 11:18:28 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mediatek@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        srv_heupstream@mediatek.com, devicetree@vger.kernel.org,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v7 2/4] mmc: dt-bindings: add support for MT8192 SoC
+Message-ID: <20201016161828.GA1517686@bogus>
+References: <20201014030846.12428-1-wenbin.mei@mediatek.com>
+ <20201014030846.12428-3-wenbin.mei@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1444463.1602865106.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 16 Oct 2020 17:18:26 +0100
-Message-ID: <1444464.1602865106@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014030846.12428-3-wenbin.mei@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herbert, Dave, Trond,
+On Wed, 14 Oct 2020 11:08:44 +0800, Wenbin Mei wrote:
+> MT8192 mmc host ip is compatible with MT8183.
+> Add support for this.
+> 
+> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
 
-I've written basic gssapi-derived security support for AF_RXRPC:
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
-/?h=3Drxrpc-rxgk
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
 
-I've borrowed some bits from net/sunrpc/auth_gss/ but there's a lot in the=
-re
-that is quite specific to the sunrpc module that makes it hard to use for
-rxrpc (dprintk, struct xdr_buf).
-
-Further, I've implemented some more enctypes that aren't supported yet by
-gssapi (AES with sha256/sha384 and Camellia), and that requires some chang=
-es
-to the handling as AES with sha384 has a 24-byte checksum size and a 24-by=
-te
-calculated key size for Kc and Ki but a 32-byte Ke.
-
-Should I pull the core out and try to make it common?  If so, should I mov=
-e it
-to crypto/ or lib/, or perhaps put it in net/gssapi/?
-
-There are two components to it:
-
- (1) Key derivation steps.
-
-     My thought is to use xdr_netobj or something similar for to communica=
-te
-     between the steps (though I'd prefer to change .data to be a void* ra=
-ther
-     than u8*).
-
- (2) Encryption/checksumming.
-
-     My thought is to make this interface use scattergather lists[*] since
-     that's what the crypto encryption API requires (though not the hash A=
-PI).
-
-If I do this, should I create a "kerberos" crypto API for the data wrappin=
-g
-functions?  I'm not sure that it quite matches the existing APIs because t=
-he
-size of the input data will likely not match the size of the output data a=
-nd
-it's "one shot" as it needs to deal with a checksum.
-
-Or I can just keep my implementation separate inside net/rxrpc/.
-
-David
-
-[*] That said, I'm not exactly sure how the sunrpc stuff works, so this mi=
-ght
-not work for that.
+If a tag was not added on purpose, please state why and what changed.
 
