@@ -2,152 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AFF290011
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A087290015
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394727AbgJPIlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394718AbgJPIl3 (ORCPT
+        id S2394736AbgJPInQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:43:16 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:50187 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394391AbgJPInP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:41:29 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926EEC0613D5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 01:41:29 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x7so1800002wrl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 01:41:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:autocrypt:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uQtk+JkWwMEwATgr+OhTpaNDc3LvbNZB+56/tR3CRGc=;
-        b=g6aDk1qZRqu1sSIfLksRLGEGveUEmd6U/VdaytxMoY0CorU/S7i/BkT8/apGW/zW1N
-         lgcFmP1nvE9rPx++8e7QLcq5x527D2uDlPLHc1wsExoqv5wNOW1luL0pNdjw+RzMzzQd
-         M/1xkXnkJNZfYRq9tvIRKJkdg0JWL/MY3NOCO6ssEC4V8aThV6KznIHCGQLDpm4UqX7u
-         x6C9swI0ag55gIGoOkSmN9haSiyPkeZgPMjJqhHSYZrRnKv5k0J6WcLcH+wdQBdZoEeu
-         z6ywXa+E0CwLcugppe7h6mG4iLaIQ5Ry05Jb1O9RpHN75B+p5Ej2a9v0P++Nwrf+13lY
-         znRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uQtk+JkWwMEwATgr+OhTpaNDc3LvbNZB+56/tR3CRGc=;
-        b=PbKxUZYYK5fHOM45l942/Ocwifr9rGgvUYiLeZ+nn3GtBLBr7mQU4zyu7nDuz2Z9Uf
-         RyfZmLGBDlNg6HnT0F2NpzFd/YbT5ryQAT3Y54x2NzUdlo6dJ4n8vOdUmha3GwSv0eR3
-         ceSWbLB6ADaJtN0oSBA1//Sm2EEtP1ZwQC9HUggGr4B4ooz1Ld3RpA9mwrt0I63bPveJ
-         qgjdLAFowuP7Gro5uV04Qi2FKIstaFRolF8A85ThBJA/fPDVqsVQCkDrS+qDWMAEmokF
-         sVUXPdBc7Drynxf6XWxA2zKYncxMCdaMmuNnVgwnZZf3wxOJ+JSaHRs6h6mhJ60/E0Up
-         mmjg==
-X-Gm-Message-State: AOAM533Y+7kRiSP3TRqI/6CUnAywS9JXRsd22aSs9o+Yg/PXxYojGU4j
-        S4waR40A7zGxQl93i0blyB3tQmbHZSPXFA==
-X-Google-Smtp-Source: ABdhPJz9m3JGp984AVtKeGBkdjCiktIcI1tKy4izElWyZLcVxTVch5Uw/IS4XIpF8j0oVFqEOw92Mg==
-X-Received: by 2002:adf:dd46:: with SMTP id u6mr2609097wrm.295.1602837688010;
-        Fri, 16 Oct 2020 01:41:28 -0700 (PDT)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id j7sm2577408wrn.81.2020.10.16.01.41.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 01:41:27 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] dt-bindings: interconnect: Add bindings for
- Qualcomm SDM660 NoC
-To:     kholk11@gmail.com, bjorn.andersson@linaro.org
-Cc:     robh+dt@kernel.org, agross@kernel.org, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201008204515.695210-1-kholk11@gmail.com>
- <20201008204515.695210-2-kholk11@gmail.com>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Autocrypt: addr=georgi.djakov@linaro.org; prefer-encrypt=mutual; keydata=
- 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
- KEmKjLDvB0pePJkdTw==
-Message-ID: <51622859-3c60-9547-7253-8df5cf5ccd0d@linaro.org>
-Date:   Fri, 16 Oct 2020 11:41:24 +0300
+        Fri, 16 Oct 2020 04:43:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UCBNA5._1602837790;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCBNA5._1602837790)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 16 Oct 2020 16:43:11 +0800
+Date:   Fri, 16 Oct 2020 16:43:10 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: Re: [PATCH v1 17/29] virito-mem: subblock states are specific to Sub
+ Block Mode (SBM)
+Message-ID: <20201016084310.GP86495@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-18-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201008204515.695210-2-kholk11@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012125323.17509-18-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Oct 12, 2020 at 02:53:11PM +0200, David Hildenbrand wrote:
+>Let's rename and move accordingly. While at it, rename sb_bitmap to
+>"sb_states".
+>
+>Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>Cc: Jason Wang <jasowang@redhat.com>
+>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
 
-On 10/8/20 23:45, kholk11@gmail.com wrote:
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> 
-> Add the bindings for the Qualcomm SDM660-class NoC, valid for
-> SDM630, SDM636, SDM660 and SDA variants.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  .../bindings/interconnect/qcom,sdm660.yaml    | 147 ++++++++++++++++++
->  .../dt-bindings/interconnect/qcom,sdm660.h    | 116 ++++++++++++++
->  2 files changed, 263 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
->  create mode 100644 include/dt-bindings/interconnect/qcom,sdm660.h
-> 
-> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml b/Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
-> new file mode 100644
-> index 000000000000..440e9bc1382a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
-> @@ -0,0 +1,147 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/interconnect/qcom,sdm660.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm SDM660 Network-On-Chip interconnect
-> +
-> +maintainers:
-> +  - Georgi Djakov <georgi.djakov@linaro.org>
+Ok, you separate the change into two parts.
 
-Why me? This should be you.
+Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 
-Thanks,
-Georgi
+>---
+> drivers/virtio/virtio_mem.c | 118 +++++++++++++++++++-----------------
+> 1 file changed, 62 insertions(+), 56 deletions(-)
+>
+>diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>index e76d6f769aa5..2cc497ad8298 100644
+>--- a/drivers/virtio/virtio_mem.c
+>+++ b/drivers/virtio/virtio_mem.c
+>@@ -137,17 +137,23 @@ struct virtio_mem {
+> 		 * memory in one 4 KiB page.
+> 		 */
+> 		uint8_t *mb_states;
+>-	} sbm;
+> 
+>-	/*
+>-	 * $nb_sb_per_mb bit per memory block. Handled similar to sbm.mb_states.
+>-	 *
+>-	 * With 4MB subblocks, we manage 128GB of memory in one page.
+>-	 */
+>-	unsigned long *sb_bitmap;
+>+		/*
+>+		 * Bitmap: one bit per subblock. Allocated similar to
+>+		 * sbm.mb_states.
+>+		 *
+>+		 * A set bit means the corresponding subblock is plugged,
+>+		 * otherwise it's unblocked.
+>+		 *
+>+		 * With 4 MiB subblocks, we manage 128 GiB of memory in one
+>+		 * 4 KiB page.
+>+		 */
+>+		unsigned long *sb_states;
+>+	} sbm;
+> 
+> 	/*
+>-	 * Mutex that protects the sbm.mb_count, sbm.mb_states, and sb_bitmap.
+>+	 * Mutex that protects the sbm.mb_count, sbm.mb_states, and
+>+	 * sbm.sb_states.
+> 	 *
+> 	 * When this lock is held the pointers can't change, ONLINE and
+> 	 * OFFLINE blocks can't change the state and no subblocks will get
+>@@ -326,13 +332,13 @@ static int virtio_mem_sbm_mb_states_prepare_next_mb(struct virtio_mem *vm)
+>  *
+>  * Will not modify the state of the memory block.
+>  */
+>-static void virtio_mem_mb_set_sb_plugged(struct virtio_mem *vm,
+>-					 unsigned long mb_id, int sb_id,
+>-					 int count)
+>+static void virtio_mem_sbm_set_sb_plugged(struct virtio_mem *vm,
+>+					  unsigned long mb_id, int sb_id,
+>+					  int count)
+> {
+> 	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
+> 
+>-	__bitmap_set(vm->sb_bitmap, bit, count);
+>+	__bitmap_set(vm->sbm.sb_states, bit, count);
+> }
+> 
+> /*
+>@@ -340,86 +346,87 @@ static void virtio_mem_mb_set_sb_plugged(struct virtio_mem *vm,
+>  *
+>  * Will not modify the state of the memory block.
+>  */
+>-static void virtio_mem_mb_set_sb_unplugged(struct virtio_mem *vm,
+>-					   unsigned long mb_id, int sb_id,
+>-					   int count)
+>+static void virtio_mem_sbm_set_sb_unplugged(struct virtio_mem *vm,
+>+					    unsigned long mb_id, int sb_id,
+>+					    int count)
+> {
+> 	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
+> 
+>-	__bitmap_clear(vm->sb_bitmap, bit, count);
+>+	__bitmap_clear(vm->sbm.sb_states, bit, count);
+> }
+> 
+> /*
+>  * Test if all selected subblocks are plugged.
+>  */
+>-static bool virtio_mem_mb_test_sb_plugged(struct virtio_mem *vm,
+>-					  unsigned long mb_id, int sb_id,
+>-					  int count)
+>+static bool virtio_mem_sbm_test_sb_plugged(struct virtio_mem *vm,
+>+					   unsigned long mb_id, int sb_id,
+>+					   int count)
+> {
+> 	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
+> 
+> 	if (count == 1)
+>-		return test_bit(bit, vm->sb_bitmap);
+>+		return test_bit(bit, vm->sbm.sb_states);
+> 
+> 	/* TODO: Helper similar to bitmap_set() */
+>-	return find_next_zero_bit(vm->sb_bitmap, bit + count, bit) >=
+>+	return find_next_zero_bit(vm->sbm.sb_states, bit + count, bit) >=
+> 	       bit + count;
+> }
+> 
+> /*
+>  * Test if all selected subblocks are unplugged.
+>  */
+>-static bool virtio_mem_mb_test_sb_unplugged(struct virtio_mem *vm,
+>-					    unsigned long mb_id, int sb_id,
+>-					    int count)
+>+static bool virtio_mem_sbm_test_sb_unplugged(struct virtio_mem *vm,
+>+					     unsigned long mb_id, int sb_id,
+>+					     int count)
+> {
+> 	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
+> 
+> 	/* TODO: Helper similar to bitmap_set() */
+>-	return find_next_bit(vm->sb_bitmap, bit + count, bit) >= bit + count;
+>+	return find_next_bit(vm->sbm.sb_states, bit + count, bit) >=
+>+	       bit + count;
+> }
+> 
+> /*
+>  * Find the first unplugged subblock. Returns vm->nb_sb_per_mb in case there is
+>  * none.
+>  */
+>-static int virtio_mem_mb_first_unplugged_sb(struct virtio_mem *vm,
+>+static int virtio_mem_sbm_first_unplugged_sb(struct virtio_mem *vm,
+> 					    unsigned long mb_id)
+> {
+> 	const int bit = (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb;
+> 
+>-	return find_next_zero_bit(vm->sb_bitmap, bit + vm->nb_sb_per_mb, bit) -
+>-	       bit;
+>+	return find_next_zero_bit(vm->sbm.sb_states,
+>+				  bit + vm->nb_sb_per_mb, bit) - bit;
+> }
+> 
+> /*
+>  * Prepare the subblock bitmap for the next memory block.
+>  */
+>-static int virtio_mem_sb_bitmap_prepare_next_mb(struct virtio_mem *vm)
+>+static int virtio_mem_sbm_sb_states_prepare_next_mb(struct virtio_mem *vm)
+> {
+> 	const unsigned long old_nb_mb = vm->next_mb_id - vm->first_mb_id;
+> 	const unsigned long old_nb_bits = old_nb_mb * vm->nb_sb_per_mb;
+> 	const unsigned long new_nb_bits = (old_nb_mb + 1) * vm->nb_sb_per_mb;
+> 	int old_pages = PFN_UP(BITS_TO_LONGS(old_nb_bits) * sizeof(long));
+> 	int new_pages = PFN_UP(BITS_TO_LONGS(new_nb_bits) * sizeof(long));
+>-	unsigned long *new_sb_bitmap, *old_sb_bitmap;
+>+	unsigned long *new_bitmap, *old_bitmap;
+> 
+>-	if (vm->sb_bitmap && old_pages == new_pages)
+>+	if (vm->sbm.sb_states && old_pages == new_pages)
+> 		return 0;
+> 
+>-	new_sb_bitmap = vzalloc(new_pages * PAGE_SIZE);
+>-	if (!new_sb_bitmap)
+>+	new_bitmap = vzalloc(new_pages * PAGE_SIZE);
+>+	if (!new_bitmap)
+> 		return -ENOMEM;
+> 
+> 	mutex_lock(&vm->hotplug_mutex);
+>-	if (new_sb_bitmap)
+>-		memcpy(new_sb_bitmap, vm->sb_bitmap, old_pages * PAGE_SIZE);
+>+	if (new_bitmap)
+>+		memcpy(new_bitmap, vm->sbm.sb_states, old_pages * PAGE_SIZE);
+> 
+>-	old_sb_bitmap = vm->sb_bitmap;
+>-	vm->sb_bitmap = new_sb_bitmap;
+>+	old_bitmap = vm->sbm.sb_states;
+>+	vm->sbm.sb_states = new_bitmap;
+> 	mutex_unlock(&vm->hotplug_mutex);
+> 
+>-	vfree(old_sb_bitmap);
+>+	vfree(old_bitmap);
+> 	return 0;
+> }
+> 
+>@@ -630,7 +637,7 @@ static void virtio_mem_notify_going_offline(struct virtio_mem *vm,
+> 	int sb_id;
+> 
+> 	for (sb_id = 0; sb_id < vm->nb_sb_per_mb; sb_id++) {
+>-		if (virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id, 1))
+>+		if (virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id, 1))
+> 			continue;
+> 		pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
+> 			       sb_id * vm->subblock_size);
+>@@ -646,7 +653,7 @@ static void virtio_mem_notify_cancel_offline(struct virtio_mem *vm,
+> 	int sb_id;
+> 
+> 	for (sb_id = 0; sb_id < vm->nb_sb_per_mb; sb_id++) {
+>-		if (virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id, 1))
+>+		if (virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id, 1))
+> 			continue;
+> 		pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
+> 			       sb_id * vm->subblock_size);
+>@@ -936,7 +943,7 @@ static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
+> 		 * If plugged, online the pages, otherwise, set them fake
+> 		 * offline (PageOffline).
+> 		 */
+>-		if (virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id, 1))
+>+		if (virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id, 1))
+> 			generic_online_page(page, order);
+> 		else
+> 			virtio_mem_set_fake_offline(PFN_DOWN(addr), 1 << order,
+>@@ -1071,7 +1078,7 @@ static int virtio_mem_mb_plug_sb(struct virtio_mem *vm, unsigned long mb_id,
+> 
+> 	rc = virtio_mem_send_plug_request(vm, addr, size);
+> 	if (!rc)
+>-		virtio_mem_mb_set_sb_plugged(vm, mb_id, sb_id, count);
+>+		virtio_mem_sbm_set_sb_plugged(vm, mb_id, sb_id, count);
+> 	return rc;
+> }
+> 
+>@@ -1092,7 +1099,7 @@ static int virtio_mem_mb_unplug_sb(struct virtio_mem *vm, unsigned long mb_id,
+> 
+> 	rc = virtio_mem_send_unplug_request(vm, addr, size);
+> 	if (!rc)
+>-		virtio_mem_mb_set_sb_unplugged(vm, mb_id, sb_id, count);
+>+		virtio_mem_sbm_set_sb_unplugged(vm, mb_id, sb_id, count);
+> 	return rc;
+> }
+> 
+>@@ -1115,14 +1122,14 @@ static int virtio_mem_mb_unplug_any_sb(struct virtio_mem *vm,
+> 	while (*nb_sb) {
+> 		/* Find the next candidate subblock */
+> 		while (sb_id >= 0 &&
+>-		       virtio_mem_mb_test_sb_unplugged(vm, mb_id, sb_id, 1))
+>+		       virtio_mem_sbm_test_sb_unplugged(vm, mb_id, sb_id, 1))
+> 			sb_id--;
+> 		if (sb_id < 0)
+> 			break;
+> 		/* Try to unplug multiple subblocks at a time */
+> 		count = 1;
+> 		while (count < *nb_sb && sb_id > 0 &&
+>-		       virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id - 1, 1)) {
+>+		       virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id - 1, 1)) {
+> 			count++;
+> 			sb_id--;
+> 		}
+>@@ -1168,7 +1175,7 @@ static int virtio_mem_prepare_next_mb(struct virtio_mem *vm,
+> 		return rc;
+> 
+> 	/* Resize the subblock bitmap if required. */
+>-	rc = virtio_mem_sb_bitmap_prepare_next_mb(vm);
+>+	rc = virtio_mem_sbm_sb_states_prepare_next_mb(vm);
+> 	if (rc)
+> 		return rc;
+> 
+>@@ -1253,14 +1260,13 @@ static int virtio_mem_mb_plug_any_sb(struct virtio_mem *vm, unsigned long mb_id,
+> 		return -EINVAL;
+> 
+> 	while (*nb_sb) {
+>-		sb_id = virtio_mem_mb_first_unplugged_sb(vm, mb_id);
+>+		sb_id = virtio_mem_sbm_first_unplugged_sb(vm, mb_id);
+> 		if (sb_id >= vm->nb_sb_per_mb)
+> 			break;
+> 		count = 1;
+> 		while (count < *nb_sb &&
+> 		       sb_id + count < vm->nb_sb_per_mb &&
+>-		       !virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id + count,
+>-						      1))
+>+		       !virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id + count, 1))
+> 			count++;
+> 
+> 		rc = virtio_mem_mb_plug_sb(vm, mb_id, sb_id, count);
+>@@ -1277,7 +1283,7 @@ static int virtio_mem_mb_plug_any_sb(struct virtio_mem *vm, unsigned long mb_id,
+> 		virtio_mem_fake_online(pfn, nr_pages);
+> 	}
+> 
+>-	if (virtio_mem_mb_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+>+	if (virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+> 		if (online)
+> 			virtio_mem_sbm_set_mb_state(vm, mb_id,
+> 						    VIRTIO_MEM_SBM_MB_ONLINE);
+>@@ -1377,13 +1383,13 @@ static int virtio_mem_mb_unplug_any_sb_offline(struct virtio_mem *vm,
+> 	rc = virtio_mem_mb_unplug_any_sb(vm, mb_id, nb_sb);
+> 
+> 	/* some subblocks might have been unplugged even on failure */
+>-	if (!virtio_mem_mb_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb))
+>+	if (!virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb))
+> 		virtio_mem_sbm_set_mb_state(vm, mb_id,
+> 					    VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL);
+> 	if (rc)
+> 		return rc;
+> 
+>-	if (virtio_mem_mb_test_sb_unplugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+>+	if (virtio_mem_sbm_test_sb_unplugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+> 		/*
+> 		 * Remove the block from Linux - this should never fail.
+> 		 * Hinder the block from getting onlined by marking it
+>@@ -1452,7 +1458,7 @@ static int virtio_mem_mb_unplug_any_sb_online(struct virtio_mem *vm,
+> 
+> 	/* If possible, try to unplug the complete block in one shot. */
+> 	if (*nb_sb >= vm->nb_sb_per_mb &&
+>-	    virtio_mem_mb_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+>+	    virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+> 		rc = virtio_mem_mb_unplug_sb_online(vm, mb_id, 0,
+> 						    vm->nb_sb_per_mb);
+> 		if (!rc) {
+>@@ -1466,7 +1472,7 @@ static int virtio_mem_mb_unplug_any_sb_online(struct virtio_mem *vm,
+> 	for (sb_id = vm->nb_sb_per_mb - 1; sb_id >= 0 && *nb_sb; sb_id--) {
+> 		/* Find the next candidate subblock */
+> 		while (sb_id >= 0 &&
+>-		       !virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id, 1))
+>+		       !virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id, 1))
+> 			sb_id--;
+> 		if (sb_id < 0)
+> 			break;
+>@@ -1485,7 +1491,7 @@ static int virtio_mem_mb_unplug_any_sb_online(struct virtio_mem *vm,
+> 	 * remove it. This will usually not fail, as no memory is in use
+> 	 * anymore - however some other notifiers might NACK the request.
+> 	 */
+>-	if (virtio_mem_mb_test_sb_unplugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+>+	if (virtio_mem_sbm_test_sb_unplugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+> 		mutex_unlock(&vm->hotplug_mutex);
+> 		rc = virtio_mem_mb_offline_and_remove(vm, mb_id);
+> 		mutex_lock(&vm->hotplug_mutex);
+>@@ -2007,7 +2013,7 @@ static void virtio_mem_remove(struct virtio_device *vdev)
+> 
+> 	/* remove all tracking data - no locking needed */
+> 	vfree(vm->sbm.mb_states);
+>-	vfree(vm->sb_bitmap);
+>+	vfree(vm->sbm.sb_states);
+> 
+> 	/* reset the device and cleanup the queues */
+> 	vdev->config->reset(vdev);
+>-- 
+>2.26.2
+
+-- 
+Wei Yang
+Help you, Help me
