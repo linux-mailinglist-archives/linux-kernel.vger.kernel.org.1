@@ -2,135 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6C928FCDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 05:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC55928FCEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 05:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394148AbgJPD2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 23:28:34 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20500 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2394121AbgJPD2d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 23:28:33 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09G32Xr7104134;
-        Thu, 15 Oct 2020 23:27:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Pfl4Q8UgfBozQRqpOnL7CLwyZw3jIbQSuH7T25QWPHE=;
- b=Ow45Rwpj9GbCKLc5v3eokJLP5KU4vJbOfORR1Y8avNUXrJouU2KZrAIuJP2wSIxuMM5A
- um2iRjckka7v6Co3PMCcydvhDKAme7//6VcJjAyTlldbNPaomUocRw1WJTnv9XYOzdPF
- xTshy7ZsABDs1B9BG/JJa0EtIFBPyK0aIUJEq0qgclphxGBSZYnz//xUOq2zEfH5CW9R
- dVgmwy/ag8jufdWhR490ftZpMWRs6z32ajNzBPSX8QCOcQotnOe1LvATh0T4GOTAv1UW
- jYe7S2X6WBpvK0khAv8uZddfwENelSFDcMNV52vYE3Lfcp8XlQ5mhdPisD0eMvMf0AiD 9A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 347386rh02-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Oct 2020 23:27:43 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09G3RgmK157704;
-        Thu, 15 Oct 2020 23:27:42 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 347386rgyg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Oct 2020 23:27:42 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09G3CufA009117;
-        Fri, 16 Oct 2020 03:27:40 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 3434k7u1cx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Oct 2020 03:27:40 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09G3RbZ526542500
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Oct 2020 03:27:37 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73405AE053;
-        Fri, 16 Oct 2020 03:27:37 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE056AE045;
-        Fri, 16 Oct 2020 03:27:31 +0000 (GMT)
-Received: from [9.85.72.211] (unknown [9.85.72.211])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Oct 2020 03:27:31 +0000 (GMT)
-Subject: Re: [PATCH v6 02/11] mm/gup: Use functions to track lockless pgtbl
- walks on gup_pgd_range
-To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
-        Leonardo Bras <leonardo@linux.ibm.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Steven Price <steven.price@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mahesh Salgaonkar <mahesh@linux.vnet.ibm.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Reza Arbab <arbab@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org
-References: <20200206030900.147032-1-leonardo@linux.ibm.com>
- <20200206030900.147032-3-leonardo@linux.ibm.com>
- <760c238043196e0628c8c0eff48a8e938ef539ba.camel@linux.ibm.com>
- <20201015144641.GE29778@kitsune.suse.cz>
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Message-ID: <3709d0f5-0f92-b003-1d6b-24a61ca2cf1c@linux.ibm.com>
-Date:   Fri, 16 Oct 2020 08:57:30 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S2394177AbgJPDbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 23:31:46 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:59254 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394159AbgJPDbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 23:31:44 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kTGT0-001v2C-6N; Fri, 16 Oct 2020 05:31:42 +0200
+Date:   Fri, 16 Oct 2020 05:31:42 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     michael alayev <mic.al.linux@gmail.com>
+Cc:     vivien.didelot@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Dts for eth network based on marvell's mv88e6390x crashes
+ Xilinx's linux-kernel v5.4
+Message-ID: <20201016033142.GB456889@lunn.ch>
+References: <CANBsoPmgct2UTq=Cuf1rXJRitiF1mWhWwdtH2=73yyZiJbT0rg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201015144641.GE29778@kitsune.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-16_01:2020-10-16,2020-10-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- mlxscore=0 adultscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
- priorityscore=1501 mlxlogscore=876 phishscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010160017
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANBsoPmgct2UTq=Cuf1rXJRitiF1mWhWwdtH2=73yyZiJbT0rg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
-
-On 10/15/20 8:16 PM, Michal Suchánek wrote:
+On Sun, Oct 11, 2020 at 03:31:52PM +0300, michael alayev wrote:
 > Hello,
 > 
-> On Thu, Feb 06, 2020 at 12:25:18AM -0300, Leonardo Bras wrote:
->> On Thu, 2020-02-06 at 00:08 -0300, Leonardo Bras wrote:
->>>                  gup_pgd_range(addr, end, gup_flags, pages, &nr);
->>> -               local_irq_enable();
->>> +               end_lockless_pgtbl_walk(IRQS_ENABLED);
->>>                  ret = nr;
->>>          }
->>>   
->>
->> Just noticed IRQS_ENABLED is not available on other archs than ppc64.
->> I will fix this for v7.
+> This is my system's network topology. It relies on Xilinx's Zynq-7000 soc.
 > 
-> Has threre been v7?
+> zynq-7000      switch1       switch2
+>  (cpu)       mv88e6390x    mv88e6390x
+> -------      ---------     ---------
+> |     |      |       |     |       |
+> | gem0|------|p0  p10|-----|p10    |
+> |     |      |       |     |       |
+> |     |      ---------     ---------
+> |     |         |mdio_addr=2   | mdio_addr=3
+> |     |         |              |
+> |     |-------------------------
+> |     |    |
+> |     |    |              mv88e1510(phy)
+> |     |    |  mdio_addr=1 --------
+> |     |    ---------------|      |
+> |     |                   |      |
+> | gem1|-------------------|      |
+> |     |                   |      |
+> |     |                   --------
+> -------
 > 
-> I cannot find it.
+> I have built a v5.4 linux kernel for it and its ethernet network defined in the device-tree as follows
 > 
-> Thanks
+> (arch/arm/boot/dts/zynq-zed.dts gem0 and gem1)   :
 > 
-> Michal
+> &gem0 {
+> status = "okay";
+> phy-mode = "rgmii-id";
+> phy-handle = <&phy0>;
 > 
+> 
+> mdio {
+> #address-cells = <1>;
+> #size-cells = <0>;
+> 
+> phy0: ethernet-phy@0 {
+> compatible = "marvell";
+> reg = <0>;
+> device_type = "ethernet-phy";
+> fixed-link {
+> speed = <1000>;
+> full-duplex;
+> };
+> };
+> 
+> debug_phy: ethernet-phy@1 {
+> compatible = "marvell";
+> reg = <1>;
+> device_type = "ethernet-phy";
+> label = "debug-phy";
+> };
 
-https://lore.kernel.org/linuxppc-dev/20200505071729.54912-1-aneesh.kumar@linux.ibm.com
+Hi Michael
 
-This series should help here.
+This is pretty unreadable with all the white space removed. Please
+could you post again with the white space.
 
--aneesh
+> 
+> Starting kernel ...
+> ...
+> [   40.953876] [<c05ab9cc>] (dsa_unregister_switch) from [<c042c980>] (mv88e6xxx_remove+0x1c/0x6c)
+> [   40.962602] [<c042c980>] (mv88e6xxx_remove) from [<c042572c>] (mdio_remove+0x1c/0x38)
+> [   40.970457] [<c042572c>] (mdio_remove) from [<c03cb4a4>] (device_release_driver_internal+0xf0/0x194)
+> [   40.979612] [<c03cb4a4>] (device_release_driver_internal) from [<c03ca1e8>] (bus_remove_device+0xcc/0xdc)
+> [   40.989201] [<c03ca1e8>] (bus_remove_device) from [<c03c7108>] (device_del+0x170/0x288)
+> [   40.997227] [<c03c7108>] (device_del) from [<c0425674>] (mdio_device_remove+0xc/0x18)
+> [   41.005073] [<c0425674>] (mdio_device_remove) from [<c0425024>] (mdiobus_unregister+0x50/0x84)
+> [   41.013714] [<c0425024>] (mdiobus_unregister) from [<c043ac2c>] (macb_probe+0x88c/0xa68)
+> [   41.021834] [<c043ac2c>] (macb_probe) from [<c03cc6d0>] (platform_drv_probe+0x48/0x98)
+> [   41.029771] [<c03cc6d0>] (platform_drv_probe) from [<c03cad04>] (really_probe+0x140/0x2f8)
+> [   41.038060] [<c03cad04>] (really_probe) from [<c03cb110>] (driver_probe_device+0x10c/0x154)
+> [   41.046427] [<c03cb110>] (driver_probe_device) from [<c03cb2e4>] (device_driver_attach+0x44/0x5c)
+> [   41.055316] [<c03cb2e4>] (device_driver_attach) from [<c03cb3a8>] (__driver_attach+0xac/0xb8)
+> [   41.063856] [<c03cb3a8>] (__driver_attach) from [<c03c93b8>] (bus_for_each_dev+0x64/0xa0)
+> [   41.072049] [<c03c93b8>] (bus_for_each_dev) from [<c03ca2d4>] (bus_add_driver+0xdc/0x1bc)
+> [   41.080244] [<c03ca2d4>] (bus_add_driver) from [<c03cba60>] (driver_register+0xb0/0xf8)
+> [   41.088266] [<c03cba60>] (driver_register) from [<c01026e0>] (do_one_initcall+0x74/0x164)
+> [   41.096469] [<c01026e0>] (do_one_initcall) from [<c0800e38>] (kernel_init_freeable+0x108/0x1d8)
+> [   41.105192] [<c0800e38>] (kernel_init_freeable) from [<c05e829c>] (kernel_init+0x8/0x110)
+> [   41.113391] [<c05e829c>] (kernel_init) from [<c01010e8>] (ret_from_fork+0x14/0x2c)
+
+This looks like the classic first time probe -EPROBE_DEFER. You expect
+this path to happen, but not the invalid access. macb_probe will
+register the mdio bus which causes the switches to probe. But because
+macb_probe has not got so far as to call register_netdev, the gem
+interface is not available, so DSA ends up returning
+EPROBE_DEFER. What normally happens is that macb_probe continues, and
+registers the network interface. The switches get probed again later
+and it all works.
+
+The real question is, why does the unroll go wrong when -EPROBE_DEFER
+is returned?
+
+   Andrew
