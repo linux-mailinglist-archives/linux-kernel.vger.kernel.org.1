@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A1E290200
+	by mail.lfdr.de (Postfix) with ESMTP id A5DBC290201
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405856AbgJPJeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:34:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:60794 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404835AbgJPJeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:34:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8869A30E;
-        Fri, 16 Oct 2020 02:34:24 -0700 (PDT)
-Received: from bogus (unknown [10.57.17.164])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 43AB33F719;
-        Fri, 16 Oct 2020 02:34:23 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 10:34:21 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-amlogic@lists.infradead.org, Da Xue <da@libre.computer>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mailbox: cancel timer before starting it
-Message-ID: <20201016093421.7hyiqrekiy6mtyso@bogus>
-References: <20200923123916.1115962-1-jbrunet@baylibre.com>
- <20201015134628.GA11989@arm.com>
- <1jlfg7k2ux.fsf@starbuckisacylon.baylibre.com>
- <20201015142935.GA12516@arm.com>
- <20201016084428.gthqj25wrvnqjsvz@bogus>
- <1jimbak0hh.fsf@starbuckisacylon.baylibre.com>
+        id S2405915AbgJPJf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405602AbgJPJfY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:35:24 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49DA7C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 02:35:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yb8gL7vEzjslH+fMZzPSTu+Wz6mcGTp1t7dxaMIvEbE=; b=ltm0e3rvGKODAYrhAaSNItnfV1
+        lobnqnzR8Fxmc3lbCXiQtfNEvG7DIMbq7ELDrhDFNUkCZ4KHPTJKAihUXNHIp04762tWOha3F35PS
+        BF1BagMv/GEdhsSFJ8SzTbc6nz4caBvf4H0BpKgx2SB/99wEXwBrqwkIq+0p8v1bZEd6p4UVYtRjr
+        ITuw0hGv9b7TvqL6Gp6k7KDa7eKjvj67YDEmsFQvTkKYVEuWWr41h8w0yacwfPfigLBndIY837OxX
+        wyXFayUaZK1xGT/8TqebnO57nT/PZgt8RHu4Ocmlac54fZiivJwLBK8Dm3z9DNOJgNYILdHGt1z7/
+        1h3MKHmA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kTM8g-0002hx-JN; Fri, 16 Oct 2020 09:35:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3E42C300DAE;
+        Fri, 16 Oct 2020 11:35:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2B7A6203C7039; Fri, 16 Oct 2020 11:35:03 +0200 (CEST)
+Date:   Fri, 16 Oct 2020 11:35:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     zhout <ouwen210@hotmail.com>, g@hirez.programming.kicks-ass.net
+Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        valentin.schneider@arm.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org
+Subject: Re: [PATCH v3 11/19] sched/core: Make migrate disable and CPU
+ hotplug cooperative
+Message-ID: <20201016093503.GG2611@hirez.programming.kicks-ass.net>
+References: <20201015110532.738127234@infradead.org>
+ <20201015110923.971283427@infradead.org>
+ <BN8PR12MB2978A3BB8062DF4CEEB184109A030@BN8PR12MB2978.namprd12.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1jimbak0hh.fsf@starbuckisacylon.baylibre.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <BN8PR12MB2978A3BB8062DF4CEEB184109A030@BN8PR12MB2978.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 11:02:02AM +0200, Jerome Brunet wrote:
+On Fri, Oct 16, 2020 at 11:43:17AM +0800, zhout wrote:
+> On Thu, Oct 15, 2020 at 01:05:43PM +0200, Peter Zijlstra wrote:
+> > From: Thomas Gleixner <tglx@linutronix.de>
+> > 
 > 
-> On Fri 16 Oct 2020 at 10:44, Sudeep Holla <sudeep.holla@arm.com> wrote:
+> [ ... ]  
 > 
-> > On Thu, Oct 15, 2020 at 03:29:35PM +0100, Ionela Voinescu wrote:
-> >> Hi Jerome,
-> >> 
-> >> On Thursday 15 Oct 2020 at 15:58:30 (+0200), Jerome Brunet wrote:
-> >> > 
-> >> > On Thu 15 Oct 2020 at 15:46, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
-> >> > 
-> >> > > Hi guys,
-> >> > >
-> >> > > On Wednesday 23 Sep 2020 at 14:39:16 (+0200), Jerome Brunet wrote:
-> >> > >> If the txdone is done by polling, it is possible for msg_submit() to start
-> >> > >> the timer while txdone_hrtimer() callback is running. If the timer needs
-> >> > >> recheduling, it could already be enqueued by the time hrtimer_forward_now()
-> >> > >> is called, leading hrtimer to loudly complain.
-> >> > >> 
-> >> > >> WARNING: CPU: 3 PID: 74 at kernel/time/hrtimer.c:932 hrtimer_forward+0xc4/0x110
-> >> > >> CPU: 3 PID: 74 Comm: kworker/u8:1 Not tainted 5.9.0-rc2-00236-gd3520067d01c-dirty #5
-> >> > >> Hardware name: Libre Computer AML-S805X-AC (DT)
-> >> > >> Workqueue: events_freezable_power_ thermal_zone_device_check
-> >> > >> pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
-> >> > >> pc : hrtimer_forward+0xc4/0x110
-> >> > >> lr : txdone_hrtimer+0xf8/0x118
-> >> > >> [...]
-> >> > >> 
-> >> > >> Canceling the timer before starting it ensure that the timer callback is
-> >> > >> not running when the timer is started, solving this race condition.
-> >> > >> 
-> >> > >> Fixes: 0cc67945ea59 ("mailbox: switch to hrtimer for tx_complete polling")
-> >> > >> Reported-by: Da Xue <da@libre.computer>
-> >> > >> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> >> > >> ---
-> >> > >>  drivers/mailbox/mailbox.c | 8 ++++++--
-> >> > >>  1 file changed, 6 insertions(+), 2 deletions(-)
-> >> > >> 
-> >> > >> diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
-> >> > >> index 0b821a5b2db8..34f9ab01caef 100644
-> >> > >> --- a/drivers/mailbox/mailbox.c
-> >> > >> +++ b/drivers/mailbox/mailbox.c
-> >> > >> @@ -82,9 +82,13 @@ static void msg_submit(struct mbox_chan *chan)
-> >> > >>  exit:
-> >> > >>  	spin_unlock_irqrestore(&chan->lock, flags);
-> >> > >>  
-> >> > >> -	if (!err && (chan->txdone_method & TXDONE_BY_POLL))
-> >> > >> -		/* kick start the timer immediately to avoid delays */
-> >> > >> +	if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
-> >> > >> +		/* Disable the timer if already active ... */
-> >> > >> +		hrtimer_cancel(&chan->mbox->poll_hrt);
-> >> > >> +
-> >> > >> +		/* ... and kick start it immediately to avoid delays */
-> >> > >>  		hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
-> >> > >> +	}
-> >> > >>  }
-> >> > >>  
-> >> > >>  static void tx_tick(struct mbox_chan *chan, int r)
-> >> > >
-> >> > > I've tracked a regression back to this commit. Details to reproduce:
-> >> > 
-> >> > Hi Ionela,
-> >> > 
-> >> > I don't have access to your platform and I don't get what is going on
-> >> > from the log below.
-> >> > 
-> >> > Could you please give us a bit more details about what is going on ?
-> >> > 
-> >> 
-> >> I'm not familiar with the mailbox subsystem, so the best I can do right
-> >> now is to add Sudeep to Cc, in case this conflicts in some way with the
-> >> ARM MHU patches [1].
-> >>
-> >
-> > Not it can't be doorbell driver as we use SCPI(old firmware) with upstream
-> > MHU driver as is limiting the number of channels to be used.
-> >
-> >> In the meantime I'll get some traces and get more familiar with the
-> >> code.
-> >>
-> >
-> > I will try that too.
+> > +static inline bool rq_has_pinned_tasks(struct rq *rq)
+> > +{
+> > +	return rq->nr_pinned;
+> > +}
+> > +
 > 
-> BTW, this issue was originally reported on amlogic platforms which also
-> use arm,mhu mailbox driver.
+> Even I do not understand well enough, the return type of the
+> above function is bool and rq->nr_pinned is unsigned int.
+> Write this way:
 > 
+> static inline bool rq_has_pinned_tasks(struct rq *rq)
+> {
+> 	return !!rq->nr_pinned;
+> }
 
-OK. Anyway just noticed that hrtimer_cancel uses  hrtimer_try_to_cancel
-and hrtimer_cancel_wait_running. The latter is just cpu_relax() if
-PREEMPT_RT=n, so you may still have issue if the hrtimer is still active
-or restarts in the meantime.
+The C compiler does this for us. C has a lot of implicit type
+conversions.
 
--- 
-Regards,
-Sudeep
+It is the same mechanism at work when we write:
+
+	if (rq->nr_pinned)
+
+We know that works and we don't have to write:
+
+	if (!!rq->nr_pinned)
+
+(although we may, but it is pointless).
+
