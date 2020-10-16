@@ -2,202 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC2328FFA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15EE28FFAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404954AbgJPIAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:00:53 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:49850 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404915AbgJPIAv (ORCPT
+        id S2405010AbgJPIDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404995AbgJPIDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:00:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UCAvZF5_1602835246;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCAvZF5_1602835246)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 16 Oct 2020 16:00:46 +0800
-Date:   Fri, 16 Oct 2020 16:00:46 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Subject: Re: [PATCH v1 13/29] virtio-mem: factor out handling of fake-offline
- pages in memory notifier
-Message-ID: <20201016080046.GA43862@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20201012125323.17509-1-david@redhat.com>
- <20201012125323.17509-14-david@redhat.com>
- <20201016071502.GM86495@L-31X9LVDL-1304.local>
+        Fri, 16 Oct 2020 04:03:53 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FAC0C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 01:03:52 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id 16so1467417oix.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 01:03:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=INEWr2CP3X204G2+3BdRku1fQyrBAx5gcE6UKT3OyOY=;
+        b=PYscHGENn896fSGfivBibPnplvLtnL/b2OJMTMD4dpMHQHxNw+64iWRis9sD2nvJ3L
+         GOV/hMMVbuuc/Dh9AKUrk63GN8LOY99ye984UM1brrmBjSpje4c9K1cdtapwwULr3uYK
+         5a7sZUI60W2i8WwwI8UzzVDb5t1NNMYrEKGHc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=INEWr2CP3X204G2+3BdRku1fQyrBAx5gcE6UKT3OyOY=;
+        b=YqSyliNCjGK0KInccfRUT14aZEpXBkTHoDn6JxI3FjT7sABQaoZ/Pd+nfMra0gpkeW
+         gw/EZuuzKGJPtv/ZQpteG56vE9+l6YFhx0VJD8sgQOyC3LTrrS05WX8l0lXhbTWGGzoT
+         BXOvUOyXzStrSrPM7y+4kxojOxtTbeJy0XLy5duIjMBLrBLcyDjBRa715iRDlKXCCapp
+         Vu7yqjuvGlMNDA7stfB/ZCfmigZyhijVbQWZnuAuLMtOzTBSk+2PYedW+eWAvENtdOgf
+         Hp9IGVSxS7I7HaIHs8b98df1Sz2/faKmxbgKY9AshyPKNG+DoZtIaAcZVwVLuSYuuply
+         4t8g==
+X-Gm-Message-State: AOAM530zzYgmcgMvcDVTHgM/G5FkEnHmzH4hOa8g8n6Jxs9jOwULpPHz
+        MWgS7R/4fRsRiBuLk0/j3jTFOyNwkx4c1bAQ7ddJvQ==
+X-Google-Smtp-Source: ABdhPJyggtVpJqRzRZN6iIJJ0+C7Hddh3AOv25V3h7tJwuwrOe4WsT5egHelZJkzdhhjjawKTJeCGzwdsP8tFNIJ4dY=
+X-Received: by 2002:aca:cc01:: with SMTP id c1mr1679690oig.128.1602835431410;
+ Fri, 16 Oct 2020 01:03:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016071502.GM86495@L-31X9LVDL-1304.local>
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-6-daniel.vetter@ffwll.ch> <4685181e-8306-0d96-8be6-592b3c563cbf@nvidia.com>
+In-Reply-To: <4685181e-8306-0d96-8be6-592b3c563cbf@nvidia.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri, 16 Oct 2020 10:03:40 +0200
+Message-ID: <CAKMK7uEoM3vM9X-R6dAHPAqdKryMtj2BOoBbJwJR9mCwNSpQ1g@mail.gmail.com>
+Subject: Re: [PATCH v2 05/17] mm/frame-vector: Use FOLL_LONGTERM
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 03:15:03PM +0800, Wei Yang wrote:
->On Mon, Oct 12, 2020 at 02:53:07PM +0200, David Hildenbrand wrote:
->>Let's factor out the core pieces and place the implementation next to
->>virtio_mem_fake_offline(). We'll reuse this functionality soon.
->>
->>Cc: "Michael S. Tsirkin" <mst@redhat.com>
->>Cc: Jason Wang <jasowang@redhat.com>
->>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->>Signed-off-by: David Hildenbrand <david@redhat.com>
->>---
->> drivers/virtio/virtio_mem.c | 73 +++++++++++++++++++++++++------------
->> 1 file changed, 50 insertions(+), 23 deletions(-)
->>
->>diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
->>index d132bc54ef57..a2124892e510 100644
->>--- a/drivers/virtio/virtio_mem.c
->>+++ b/drivers/virtio/virtio_mem.c
->>@@ -168,6 +168,10 @@ static LIST_HEAD(virtio_mem_devices);
->> 
->> static void virtio_mem_online_page_cb(struct page *page, unsigned int order);
->> static void virtio_mem_retry(struct virtio_mem *vm);
->>+static void virtio_mem_fake_offline_going_offline(unsigned long pfn,
->>+						  unsigned long nr_pages);
->>+static void virtio_mem_fake_offline_cancel_offline(unsigned long pfn,
->>+						   unsigned long nr_pages);
->> 
->> /*
->>  * Register a virtio-mem device so it will be considered for the online_page
->>@@ -604,27 +608,15 @@ static void virtio_mem_notify_going_offline(struct virtio_mem *vm,
->> 					    unsigned long mb_id)
->> {
->> 	const unsigned long nr_pages = PFN_DOWN(vm->subblock_size);
->>-	struct page *page;
->> 	unsigned long pfn;
->>-	int sb_id, i;
->>+	int sb_id;
->> 
->> 	for (sb_id = 0; sb_id < vm->nb_sb_per_mb; sb_id++) {
->> 		if (virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id, 1))
->> 			continue;
->>-		/*
->>-		 * Drop our reference to the pages so the memory can get
->>-		 * offlined and add the unplugged pages to the managed
->>-		 * page counters (so offlining code can correctly subtract
->>-		 * them again).
->>-		 */
->> 		pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
->> 			       sb_id * vm->subblock_size);
->>-		adjust_managed_page_count(pfn_to_page(pfn), nr_pages);
+On Fri, Oct 16, 2020 at 9:54 AM John Hubbard <jhubbard@nvidia.com> wrote:
 >
->One question about the original code, why we want to adjust count here?
+> On 10/9/20 12:59 AM, Daniel Vetter wrote:
+> ...
+> > @@ -48,40 +47,25 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+> >
+> >       start = untagged_addr(start);
+> >
+> > -     mmap_read_lock(mm);
+> > -     locked = 1;
+> > -     vma = find_vma_intersection(mm, start, start + 1);
+> > -     if (!vma) {
+> > -             ret = -EFAULT;
+> > -             goto out;
+> > -     }
+> > -
+> > -     /*
+> > -      * While get_vaddr_frames() could be used for transient (kernel
+> > -      * controlled lifetime) pinning of memory pages all current
+> > -      * users establish long term (userspace controlled lifetime)
+> > -      * page pinning. Treat get_vaddr_frames() like
+> > -      * get_user_pages_longterm() and disallow it for filesystem-dax
+> > -      * mappings.
+> > -      */
+> > -     if (vma_is_fsdax(vma)) {
+> > -             ret = -EOPNOTSUPP;
+> > -             goto out;
+> > -     }
+> > -
+> > -     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP))) {
+> > +     ret = pin_user_pages_fast(start, nr_frames,
+> > +                               FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
+> > +                               (struct page **)(vec->ptrs));
+> > +     if (ret > 0) {
 >
->The code flow is
->
->    __offline_pages()
->        memory_notify(MEM_GOING_OFFLINE, &arg)
->	    virtio_mem_notify_going_offline(vm, mb_id)
->	        adjust_managed_page_count(pfn_to_page(pfn), nr_pages)
->	adjust_managed_page_count(pfn_to_page(start_pfn), -offlined_pages)
->
->Do we adjust the count twice?
->
+> None of the callers that we have today will accept anything less than
+> ret == nr_frames. And the whole partially pinned region idea turns out
+> to be just not useful for almost everyone, from what I recall of the gup/pup
+> call sites. So I wonder if we should just have get_vaddr_frames do the
+> cleanup here and return -EFAULT, if ret != nr_frames ?
 
-Ah, I got the reason why we need to adjust count for *unplugged* sub-blocks.
+Yeah I noticed that the calling convention here is a bit funny. But I
+with these frame-vector helpers now being part of drivers/media it's
+up to media folks if they want to clean that up, or leave it as is.
 
->>-		for (i = 0; i < nr_pages; i++) {
->>-			page = pfn_to_page(pfn + i);
->>-			if (WARN_ON(!page_ref_dec_and_test(page)))
+If this would be in drm I'd say we'll have the loud warning and
+tainting due to CONFIG_STRICT_FOLLOW_PFN=n for 2-3 years. Then
+assuming no big complaints showed up, rip it all out and just directly
+call pup in each place that wants it (like I've done for habanalabs
+and exynos).
+-Daniel
 
-Another question is when we grab a refcount for the unpluged pages? The one
-you mentioned in virtio_mem_set_fake_offline().
 
->>-				dump_page(page, "unplugged page referenced");
->>-		}
->>+		virtio_mem_fake_offline_going_offline(pfn, nr_pages);
->> 	}
->> }
->> 
->>@@ -633,21 +625,14 @@ static void virtio_mem_notify_cancel_offline(struct virtio_mem *vm,
->> {
->> 	const unsigned long nr_pages = PFN_DOWN(vm->subblock_size);
->> 	unsigned long pfn;
->>-	int sb_id, i;
->>+	int sb_id;
->> 
->> 	for (sb_id = 0; sb_id < vm->nb_sb_per_mb; sb_id++) {
->> 		if (virtio_mem_mb_test_sb_plugged(vm, mb_id, sb_id, 1))
->> 			continue;
->>-		/*
->>-		 * Get the reference we dropped when going offline and
->>-		 * subtract the unplugged pages from the managed page
->>-		 * counters.
->>-		 */
->> 		pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
->> 			       sb_id * vm->subblock_size);
->>-		adjust_managed_page_count(pfn_to_page(pfn), -nr_pages);
->>-		for (i = 0; i < nr_pages; i++)
->>-			page_ref_inc(pfn_to_page(pfn + i));
->>+		virtio_mem_fake_offline_cancel_offline(pfn, nr_pages);
->> 	}
->> }
->> 
->>@@ -853,6 +838,48 @@ static int virtio_mem_fake_offline(unsigned long pfn, unsigned long nr_pages)
->> 	return 0;
->> }
->> 
->>+/*
->>+ * Handle fake-offline pages when memory is going offline - such that the
->>+ * pages can be skipped by mm-core when offlining.
->>+ */
->>+static void virtio_mem_fake_offline_going_offline(unsigned long pfn,
->>+						  unsigned long nr_pages)
->>+{
->>+	struct page *page;
->>+	unsigned long i;
->>+
->>+	/*
->>+	 * Drop our reference to the pages so the memory can get offlined
->>+	 * and add the unplugged pages to the managed page counters (so
->>+	 * offlining code can correctly subtract them again).
->>+	 */
->>+	adjust_managed_page_count(pfn_to_page(pfn), nr_pages);
->>+	/* Drop our reference to the pages so the memory can get offlined. */
->>+	for (i = 0; i < nr_pages; i++) {
->>+		page = pfn_to_page(pfn + i);
->>+		if (WARN_ON(!page_ref_dec_and_test(page)))
->>+			dump_page(page, "fake-offline page referenced");
->>+	}
->>+}
->>+
->>+/*
->>+ * Handle fake-offline pages when memory offlining is canceled - to undo
->>+ * what we did in virtio_mem_fake_offline_going_offline().
->>+ */
->>+static void virtio_mem_fake_offline_cancel_offline(unsigned long pfn,
->>+						   unsigned long nr_pages)
->>+{
->>+	unsigned long i;
->>+
->>+	/*
->>+	 * Get the reference we dropped when going offline and subtract the
->>+	 * unplugged pages from the managed page counters.
->>+	 */
->>+	adjust_managed_page_count(pfn_to_page(pfn), -nr_pages);
->>+	for (i = 0; i < nr_pages; i++)
->>+		page_ref_inc(pfn_to_page(pfn + i));
->>+}
->>+
->> static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
->> {
->> 	const unsigned long addr = page_to_phys(page);
->>-- 
->>2.26.2
->
->-- 
->Wei Yang
->Help you, Help me
-
--- 
-Wei Yang
-Help you, Help me
+--
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
