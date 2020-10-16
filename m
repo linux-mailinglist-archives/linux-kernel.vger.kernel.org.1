@@ -2,148 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFC7290A8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4758290A94
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391019AbgJPRWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:22:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390217AbgJPRWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:22:13 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B984820704;
-        Fri, 16 Oct 2020 17:22:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602868932;
-        bh=B2nFS5GlTtH8/HnTMPOmwLUFB4yuB1O45kTS6SX8Q3Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Qb+10I1vdbsqZe8uwvcmY+mTQ0NpQAMw0MzlnGKjWYnlEn5SkGg72ip0PwkdPzfcN
-         AVcwlXHLl7TmEGu7K7JCG9SXC2zwcX7V1I4bgh/YPtAnzxkCyTDitJagVj3U+L7Pyb
-         D51KbvpCCsIxdY841pA0h2hBZT9ahxbQqQqZCz9A=
-Date:   Fri, 16 Oct 2020 12:22:10 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sean V Kelley <seanvk.dev@oregontracks.org>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v9 10/15] PCI/ERR: Limit AER resets in pcie_do_recovery()
-Message-ID: <20201016172210.GA86168@bjorn-Precision-5520>
+        id S2391301AbgJPRXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:23:11 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:28907 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390479AbgJPRXL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 13:23:11 -0400
+Received: from tomoyo.flets-east.jp ([153.230.197.127])
+        by mwinf5d44 with ME
+        id ghNj2300m2lQRaH03hP5Kz; Fri, 16 Oct 2020 19:23:09 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 16 Oct 2020 19:23:09 +0200
+X-ME-IP: 153.230.197.127
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v4 3/4] can: dev: __can_get_echo_skb(): fix the return length
+Date:   Sat, 17 Oct 2020 02:22:11 +0900
+Message-Id: <20201016172240.229359-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
+References: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016001113.2301761-11-seanvk.dev@oregontracks.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 05:11:08PM -0700, Sean V Kelley wrote:
-> From: Sean V Kelley <sean.v.kelley@intel.com>
-> 
-> In some cases a bridge may not exist as the hardware controlling may be
-> handled only by firmware and so is not visible to the OS. This scenario is
-> also possible in future use cases involving non-native use of RCECs by
-> firmware.
-> 
-> Explicitly apply conditional logic around these resets by limiting them to
-> Root Ports and Downstream Ports.
-> 
-> Link: https://lore.kernel.org/r/20201002184735.1229220-8-seanvk.dev@oregontracks.org
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> ---
->  drivers/pci/pcie/err.c | 31 +++++++++++++++++++++++++------
->  1 file changed, 25 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 8b53aecdb43d..7883c9791562 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -148,13 +148,17 @@ static int report_resume(struct pci_dev *dev, void *data)
->  
->  /**
->   * pci_walk_bridge - walk bridges potentially AER affected
-> - * @bridge:	bridge which may be a Port
-> + * @bridge:	bridge which may be a Port, an RCEC with associated RCiEPs,
-> + *		or an RCiEP associated with an RCEC
->   * @cb:		callback to be called for each device found
->   * @userdata:	arbitrary pointer to be passed to callback
->   *
->   * If the device provided is a bridge, walk the subordinate bus, including
->   * any bridged devices on buses under this bus.  Call the provided callback
->   * on each device found.
-> + *
-> + * If the device provided has no subordinate bus, call the callback on the
-> + * device itself.
->   */
->  static void pci_walk_bridge(struct pci_dev *bridge,
->  			    int (*cb)(struct pci_dev *, void *),
-> @@ -162,6 +166,8 @@ static void pci_walk_bridge(struct pci_dev *bridge,
->  {
->  	if (bridge->subordinate)
->  		pci_walk_bus(bridge->subordinate, cb, userdata);
-> +	else
-> +		cb(bridge, userdata);
+The length of Remote Transmission Request (RTR) frames is always 0
+bytes. The DLC represents the requested length, not the actual length
+of the RTR. But __can_get_echo_skb() returns the DLC value regardless.
 
-Looks like *this* is the patch where the "no subordinate bus" case
-becomes possible?  If you agree, I can just move the test here, no
-need to repost.
+Apply get_can_len() function to retrieve the correct length.
 
->  }
->  
->  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-> @@ -174,10 +180,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  
->  	/*
->  	 * Error recovery runs on all subordinates of the bridge.  If the
-> -	 * bridge detected the error, it is cleared at the end.
-> +	 * bridge detected the error, it is cleared at the end.  For RCiEPs
-> +	 * we should reset just the RCiEP itself.
->  	 */
->  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
-> -	    type == PCI_EXP_TYPE_DOWNSTREAM)
-> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
-> +	    type == PCI_EXP_TYPE_RC_EC ||
-> +	    type == PCI_EXP_TYPE_RC_END)
->  		bridge = dev;
->  	else
->  		bridge = pci_upstream_bridge(dev);
-> @@ -185,6 +194,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	pci_dbg(bridge, "broadcast error_detected message\n");
->  	if (state == pci_channel_io_frozen) {
->  		pci_walk_bridge(bridge, report_frozen_detected, &status);
-> +		if (type == PCI_EXP_TYPE_RC_END) {
-> +			pci_warn(dev, "subordinate device reset not possible for RCiEP\n");
-> +			status = PCI_ERS_RESULT_NONE;
-> +			goto failed;
-> +		}
-> +
->  		status = reset_subordinates(bridge);
->  		if (status != PCI_ERS_RESULT_RECOVERED) {
->  			pci_warn(bridge, "subordinate device reset failed\n");
-> @@ -217,9 +232,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	pci_dbg(bridge, "broadcast resume message\n");
->  	pci_walk_bridge(bridge, report_resume, &status);
->  
-> -	if (pcie_aer_is_native(bridge))
-> -		pcie_clear_device_status(bridge);
-> -	pci_aer_clear_nonfatal_status(bridge);
-> +	if (type == PCI_EXP_TYPE_ROOT_PORT ||
-> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
-> +	    type == PCI_EXP_TYPE_RC_EC) {
-> +		if (pcie_aer_is_native(bridge))
-> +			pcie_clear_device_status(bridge);
-> +		pci_aer_clear_nonfatal_status(bridge);
-> +	}
->  	pci_info(bridge, "device recovery successful\n");
->  	return status;
->  
-> -- 
-> 2.28.0
-> 
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+
+Changes in v2 to v4: None
+---
+ drivers/net/can/dev.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 73cfcd7e9517..8f91d23c1ca7 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -507,14 +507,9 @@ __can_get_echo_skb(struct net_device *dev, unsigned int idx, u8 *len_ptr)
+ 	}
+ 
+ 	if (priv->echo_skb[idx]) {
+-		/* Using "struct canfd_frame::len" for the frame
+-		 * length is supported on both CAN and CANFD frames.
+-		 */
+ 		struct sk_buff *skb = priv->echo_skb[idx];
+-		struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+-		u8 len = cf->len;
+ 
+-		*len_ptr = len;
++		*len_ptr = get_can_len(skb);
+ 		priv->echo_skb[idx] = NULL;
+ 
+ 		return skb;
+-- 
+2.26.2
+
