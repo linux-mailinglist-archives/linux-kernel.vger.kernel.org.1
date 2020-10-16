@@ -2,120 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4C628FBCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8162B28FBD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 02:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733011AbgJOX7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 19:59:17 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:51538 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732997AbgJOX7R (ORCPT
+        id S2389655AbgJPABo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 20:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733025AbgJPABn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 19:59:17 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09FNxC9e092032;
-        Thu, 15 Oct 2020 18:59:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1602806352;
-        bh=Id8Jrt/UkZ0O6zrv4E9lbv+cNcpUGnm5eWOCH5ZsdDo=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=eqlEuNQhZ3UE3SiYMXEV9oo1AcVmH75XhM9Sts/ahmCOn864KGvWier4DO6O/n2oR
-         CQmXZTAHrwt2OfR1kIpkpXq5c1C7lQV3K+w8mkRIgX91CEx7DaegqsYnhgPi8EIGox
-         L17Dgw1J3xySBn+dRjA/aqzq1Z2pUnFiqCjDn0Ns=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09FNxCV4039214
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Oct 2020 18:59:12 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 15
- Oct 2020 18:59:12 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 15 Oct 2020 18:59:12 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09FNx9cT028389;
-        Thu, 15 Oct 2020 18:59:09 -0500
-Subject: Re: [PATCH net-next v2 0/9] net: ethernet: ti: am65-cpsw: add multi
- port support in mac-only mode
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        Murali Karicheri <m-karicheri2@ti.com>
-References: <20201015231913.30280-1-grygorii.strashko@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <eeb0db9f-9599-1619-cd7c-910e2f095e2a@ti.com>
-Date:   Fri, 16 Oct 2020 02:59:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 15 Oct 2020 20:01:43 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219B9C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 17:01:43 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id dg9so458680edb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 17:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a/1IntEkdWKImHNOT+qrBdO4BgCV+2jRbRdBJi8ptLs=;
+        b=egXQczmuoyRvh6M/he1kd7PQ4dgg2oOgmQXK19ba+2lhe626jeXg8WMf0DaPeWUlVC
+         bUhHRXqbb1VNrT4Xb2gNjmbxJBPbt43FrX+vt8ZKUWg3wiBoChwuc1jzxh4bevC9sR/8
+         Re5O8J7oGzKbfCI5ZLYWjILsESNlNbH27JNVc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a/1IntEkdWKImHNOT+qrBdO4BgCV+2jRbRdBJi8ptLs=;
+        b=iWv+JXbtFWaVJoA1oByWxKKg2/3w78wUK48hX0tc/AIN+/JGvxoTUvOo/Y7J38IqvZ
+         nsq4r5PtAGRGFzJ2r4OlQ8el6dV1XdYskdJiSrHwRyuChyeYtmqqJAP4AQYxnCQPTtfR
+         qGtXGyONYkhTEcdSO2QrNfTNKux6Ov9zrKV4Qd4B6WKqvIt6dlFsibTkDTm/w30NIa0M
+         ZExLUpj9ucntZPULNUFsjT6Fi8yIAJGXSn0bUD+mChLhN/b5mfc4UDChMN3vScilqRjn
+         b2ZjIMtAJB5wrQcR7VHUetiuWjMQLXyZW43E/hk5xHXbI4pAhrhGeRWK7Nc44DFoAJ+/
+         FE0g==
+X-Gm-Message-State: AOAM5317QmggUUluAhhl6CFobaKo6aiW8NmGGK2ADnCl20W0xObIf5OW
+        ctNj0efnr6ZndsBa/407Doc5USafAjzKR27gdb/Ejg==
+X-Google-Smtp-Source: ABdhPJwfQrrcT6QUMBHBgIm/m4g7SUq0+p4qrE08K2xMTDwSO9lwXA2IPSiEEa8yuchfyZh3lCSWC1CNlrA5c14ypsc=
+X-Received: by 2002:a05:6402:602:: with SMTP id n2mr969028edv.327.1602806499816;
+ Thu, 15 Oct 2020 17:01:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201015231913.30280-1-grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CAJ-EccOQxDjSgUL0AsCywoKDbOUNWDyxCKHQc+s6+ZemUh9Uzw@mail.gmail.com>
+ <CAHk-=wg3kHxMP67XmQyCg7J+KfFgAsQqj1goUa3dKR-A812ZbA@mail.gmail.com>
+In-Reply-To: <CAHk-=wg3kHxMP67XmQyCg7J+KfFgAsQqj1goUa3dKR-A812ZbA@mail.gmail.com>
+From:   Micah Morton <mortonm@chromium.org>
+Date:   Thu, 15 Oct 2020 17:01:29 -0700
+Message-ID: <CAJ-EccPLAD5TGg=KQ-m54ymrVdd++Dg7A_UR+v535iOVRsDe4w@mail.gmail.com>
+Subject: Re: [GIT PULL] SafeSetID changes for v5.10
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 15, 2020 at 4:06 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> These were rebased since the merge window started, for no apparent reason.
+>
+> Were they in linux-next?
 
+Yeah, they are changes that were originally targeting the v5.9 merge
+window (and thus were in -next during July/August) but I didn't get
+the chance to send a pull request for them. Since I didn't touch my
+-next branch since then they are also in 'next-20201013' and
+'next-20201015'.
 
-On 16/10/2020 02:19, Grygorii Strashko wrote:
-> Hi
-> 
-> This series adds multi-port support in mac-only mode (multi MAC mode) to TI
-> AM65x CPSW driver in preparation for enabling support for multi-port devices,
-> like Main CPSW0 on K3 J721E SoC or future CPSW3g on K3 AM64x SoC.
-> 
-> The multi MAC mode is implemented by configuring every enabled port in "mac-only"
-> mode (all ingress packets are sent only to the Host port and egress packets
-> directed to target Ext. Port) and creating separate net_device for
-> every enabled Ext. port.
-> 
-> This series does not affect on existing CPSW2g one Ext. Port devices and xmit
-> path changes are done only for multi-port devices by splitting xmit path for
-> one-port and multi-port devices.
-> 
-> Patches 1-3: Preparation patches to improve K3 CPSW configuration depending on DT
-> Patches 4-5: Fix VLAN offload for multi MAC mode
-> Patch 6: Fixes CPTS context lose issue during PM runtime transition
-> Patch 7: Fixes TX csum offload for multi MAC mode
-> Patches 8-9: add multi-port support to TI AM65x CPSW
-> 
-> changes in v2:
-> - patch 8: xmit path split for one-port and multi-port devices to avoid
->    performance losses
-> - patch 9: fixed the case when Port 1 is disabled
-> - Patch 7: added fix for TX csum offload
-> 
-> v1: https://lore.kernel.org/patchwork/cover/1315766/
-> 
-> Grygorii Strashko (9):
->    net: ethernet: ti: am65-cpsw: move ale selection in pdata
->    net: ethernet: ti: am65-cpsw: move free desc queue mode selection in
->      pdata
->    net: ethernet: ti: am65-cpsw: use cppi5_desc_is_tdcm()
->    net: ethernet: ti: cpsw_ale: add cpsw_ale_vlan_del_modify()
->    net: ethernet: ti: am65-cpsw: fix vlan offload for multi mac mode
->    net: ethernet: ti: am65-cpsw: keep active if cpts enabled
->    net: ethernet: ti: am65-cpsw: fix tx csum offload for multi mac mode
->    net: ethernet: ti: am65-cpsw: prepare xmit/rx path for multi-port
->      devices in mac-only mode
->    net: ethernet: ti: am65-cpsw: add multi port support in mac-only mode
-> 
->   drivers/net/ethernet/ti/am65-cpsw-nuss.c | 327 +++++++++++++++--------
->   drivers/net/ethernet/ti/am65-cpsw-nuss.h |   5 +
->   drivers/net/ethernet/ti/cpsw_ale.c       |  41 ++-
->   drivers/net/ethernet/ti/cpsw_ale.h       |   1 +
->   drivers/net/ethernet/ti/cpsw_switchdev.c |   2 +-
->   5 files changed, 251 insertions(+), 125 deletions(-)
-> 
+I just rebased to v5.9 to make sure the 1-line changes that touch
+kernel/capability.c, kernel/groups.c and kernel/sys.c still applied
+cleanly without conflicts. Should I have rebased onto one of the -rc's
+for v5.9 instead?
 
-Sorry, missed "net-next is CLOSED" announcement
-
--- 
-Best regards,
-grygorii
+>
+> And if so, why was I sent some different version?
+>
+>              Linus
