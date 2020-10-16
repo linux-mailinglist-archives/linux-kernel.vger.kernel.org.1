@@ -2,224 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF39228FF60
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F3428FF64
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404770AbgJPHo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404735AbgJPHo6 (ORCPT
+        id S2404802AbgJPHpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:45:17 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2836 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404682AbgJPHpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:44:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B03CC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 00:44:58 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kTKPy-0007Th-Rv; Fri, 16 Oct 2020 09:44:50 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:c4e8:c8ff:a41:29c1] (unknown [IPv6:2a03:f580:87bc:d400:c4e8:c8ff:a41:29c1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 2AE7D57A72B;
-        Fri, 16 Oct 2020 07:44:49 +0000 (UTC)
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, Ying Liu <victor.liu@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
- <20201016134320.20321-6-qiangqing.zhang@nxp.com>
- <f201e24c-18b9-513a-c4be-6bc4057f4530@pengutronix.de>
- <DB8PR04MB67958AD696264DE16F0936DBE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Subject: Re: [PATCH 5/6] can: flexcan: add CAN wakeup function for i.MX8QM
-Message-ID: <da613453-7038-bcec-cdd5-7a8566a254b5@pengutronix.de>
-Date:   Fri, 16 Oct 2020 09:44:44 +0200
+        Fri, 16 Oct 2020 03:45:17 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f894f800000>; Fri, 16 Oct 2020 00:45:04 -0700
+Received: from [10.2.49.77] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
+ 2020 07:45:15 +0000
+Subject: Re: [PATCH v2 03/17] misc/habana: Stop using frame_vector helpers
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     <kvm@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        "Omer Shpigelman" <oshpigelman@habana.ai>,
+        Ofir Bitton <obitton@habana.ai>,
+        "Tomer Tayar" <ttayar@habana.ai>,
+        Moti Haimovski <mhaimovski@habana.ai>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Pawel Piskorski <ppiskorski@habana.ai>
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-4-daniel.vetter@ffwll.ch>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <13282062-f8d7-62e4-1ee8-9462ac056ed5@nvidia.com>
+Date:   Fri, 16 Oct 2020 00:45:15 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <DB8PR04MB67958AD696264DE16F0936DBE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="CC3P733UC0dbH8BLHjAHCg9NnWvq9T3ki"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201009075934.3509076-4-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602834304; bh=+de1QPOaNy8jFnyKeo9MlrCg/nb0t2idpW6X5tFAQ+Y=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=hPr5KUlpKzHzeUeo+1cBDTnY/Ka58tYJNr3ovgy7bWfefkHkq7edqGODAtXHB9NXU
+         4eLWx971P+gG9rg5Nuz85Cm8mbANwflo6wjTU+SNxaYC9J8kWuosn6U9MXQUAZ6n61
+         X7zRsPlza1ruG0CRd/8gi1EodPGKnoEJ3a3YQf8v/y+uc46+FIoVTzAzUyUPwJCKdp
+         wtr/JtXxwsmmSQw/rfKdilMyzIQAVENqsvG6H36223FxJxbZNk9V7IlXO8foEtpwK1
+         GQWGeEozLDBHIjItrcJnA7sx+/Vax2oTG44rw9AWI3AT/PAs+2MONfvCB7ffYQyPqM
+         DZsd9595OihIg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---CC3P733UC0dbH8BLHjAHCg9NnWvq9T3ki
-Content-Type: multipart/mixed; boundary="6DjUUFuSTFd5eQIv3cZQP9FOz607Sx1SF";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc: "kernel@pengutronix.de" <kernel@pengutronix.de>,
- dl-linux-imx <linux-imx@nxp.com>, Ying Liu <victor.liu@nxp.com>,
- Peng Fan <peng.fan@nxp.com>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- Pankaj Bansal <pankaj.bansal@nxp.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <da613453-7038-bcec-cdd5-7a8566a254b5@pengutronix.de>
-Subject: Re: [PATCH 5/6] can: flexcan: add CAN wakeup function for i.MX8QM
-References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
- <20201016134320.20321-6-qiangqing.zhang@nxp.com>
- <f201e24c-18b9-513a-c4be-6bc4057f4530@pengutronix.de>
- <DB8PR04MB67958AD696264DE16F0936DBE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
-In-Reply-To: <DB8PR04MB67958AD696264DE16F0936DBE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
+On 10/9/20 12:59 AM, Daniel Vetter wrote:
+> All we need are a pages array, pin_user_pages_fast can give us that
+> directly. Plus this avoids the entire raw pfn side of get_vaddr_frames.
+>=20
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: Oded Gabbay <oded.gabbay@gmail.com>
+> Cc: Omer Shpigelman <oshpigelman@habana.ai>
+> Cc: Ofir Bitton <obitton@habana.ai>
+> Cc: Tomer Tayar <ttayar@habana.ai>
+> Cc: Moti Haimovski <mhaimovski@habana.ai>
+> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Pawel Piskorski <ppiskorski@habana.ai>
+> --
+> v2: Use unpin_user_pages_dirty_lock (John)
+> ---
+>   drivers/misc/habanalabs/Kconfig             |  1 -
+>   drivers/misc/habanalabs/common/habanalabs.h |  3 +-
+>   drivers/misc/habanalabs/common/memory.c     | 49 ++++++++-------------
+>   3 files changed, 20 insertions(+), 33 deletions(-)
 
---6DjUUFuSTFd5eQIv3cZQP9FOz607Sx1SF
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
-On 10/16/20 8:46 AM, Joakim Zhang wrote:
->>> @@ -2019,6 +2109,7 @@ static int flexcan_probe(struct platform_device=
-
->> *pdev)
->>>  	priv->clk_src =3D clk_src;
->>>  	priv->devtype_data =3D devtype_data;
->>>  	priv->reg_xceiver =3D reg_xceiver;
->>> +	priv->can_idx =3D can_idx;
->>>
->>>  	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) {
->>>  		priv->can.ctrlmode_supported |=3D CAN_CTRLMODE_FD | @@
->> -2030,6
->>> +2121,10 @@ static int flexcan_probe(struct platform_device *pdev)
->>>  		priv->can.bittiming_const =3D &flexcan_bittiming_const;
->>>  	}
->>>
->>> +	err =3D flexcan_setup_stop_mode(pdev);
->>> +	if (err =3D=3D -EPROBE_DEFER)
->>> +		return -EPROBE_DEFER;
->>
->> You need to free "dev". What about moving this directly before allocat=
-ing dev.
->
-> Yes, need free "dev" here if defer probe. Flexcan_priv has not allocate=
-d
-> before allocating dev, but we need initialize and check it when setup s=
-top
-> mode.
-
-Right, please take care of freeing all ressouces in case of defered probe=
-=2E
-
->> Do you have to undo device_set_wakeup_capable() and
->> device_set_wakeup_enable() in case of a failure and/or on flexcan_remo=
-ve()?
->
-> Yes, should invoke device_wakeup_disable() in flexcan_remove.
-
-Make it so.
-
-regards,
-Marc
-
+thanks,
 --=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+John Hubbard
+NVIDIA
 
+>=20
+> diff --git a/drivers/misc/habanalabs/Kconfig b/drivers/misc/habanalabs/Kc=
+onfig
+> index 8eb5d38c618e..2f04187f7167 100644
+> --- a/drivers/misc/habanalabs/Kconfig
+> +++ b/drivers/misc/habanalabs/Kconfig
+> @@ -6,7 +6,6 @@
+>   config HABANA_AI
+>   	tristate "HabanaAI accelerators (habanalabs)"
+>   	depends on PCI && HAS_IOMEM
+> -	select FRAME_VECTOR
+>   	select DMA_SHARED_BUFFER
+>   	select GENERIC_ALLOCATOR
+>   	select HWMON
+> diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/h=
+abanalabs/common/habanalabs.h
+> index edbd627b29d2..c1b3ad613b15 100644
+> --- a/drivers/misc/habanalabs/common/habanalabs.h
+> +++ b/drivers/misc/habanalabs/common/habanalabs.h
+> @@ -881,7 +881,8 @@ struct hl_ctx_mgr {
+>   struct hl_userptr {
+>   	enum vm_type_t		vm_type; /* must be first */
+>   	struct list_head	job_node;
+> -	struct frame_vector	*vec;
+> +	struct page		**pages;
+> +	unsigned int		npages;
+>   	struct sg_table		*sgt;
+>   	enum dma_data_direction dir;
+>   	struct list_head	debugfs_list;
+> diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/haban=
+alabs/common/memory.c
+> index 5ff4688683fd..327b64479f97 100644
+> --- a/drivers/misc/habanalabs/common/memory.c
+> +++ b/drivers/misc/habanalabs/common/memory.c
+> @@ -1281,45 +1281,41 @@ static int get_user_memory(struct hl_device *hdev=
+, u64 addr, u64 size,
+>   		return -EFAULT;
+>   	}
+>  =20
+> -	userptr->vec =3D frame_vector_create(npages);
+> -	if (!userptr->vec) {
+> +	userptr->pages =3D kvmalloc_array(npages, sizeof(*userptr->pages),
+> +					GFP_KERNEL);
+> +	if (!userptr->pages) {
+>   		dev_err(hdev->dev, "Failed to create frame vector\n");
+>   		return -ENOMEM;
+>   	}
+>  =20
+> -	rc =3D get_vaddr_frames(start, npages, FOLL_FORCE | FOLL_WRITE,
+> -				userptr->vec);
+> +	rc =3D pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_WRITE,
+> +				 userptr->pages);
+>  =20
+>   	if (rc !=3D npages) {
+>   		dev_err(hdev->dev,
+>   			"Failed to map host memory, user ptr probably wrong\n");
+>   		if (rc < 0)
+> -			goto destroy_framevec;
+> +			goto destroy_pages;
+> +		npages =3D rc;
+>   		rc =3D -EFAULT;
+> -		goto put_framevec;
+> -	}
+> -
+> -	if (frame_vector_to_pages(userptr->vec) < 0) {
+> -		dev_err(hdev->dev,
+> -			"Failed to translate frame vector to pages\n");
+> -		rc =3D -EFAULT;
+> -		goto put_framevec;
+> +		goto put_pages;
+>   	}
+> +	userptr->npages =3D npages;
+>  =20
+>   	rc =3D sg_alloc_table_from_pages(userptr->sgt,
+> -					frame_vector_pages(userptr->vec),
+> -					npages, offset, size, GFP_ATOMIC);
+> +				       userptr->pages,
+> +				       npages, offset, size, GFP_ATOMIC);
+>   	if (rc < 0) {
+>   		dev_err(hdev->dev, "failed to create SG table from pages\n");
+> -		goto put_framevec;
+> +		goto put_pages;
+>   	}
+>  =20
+>   	return 0;
+>  =20
+> -put_framevec:
+> -	put_vaddr_frames(userptr->vec);
+> -destroy_framevec:
+> -	frame_vector_destroy(userptr->vec);
+> +put_pages:
+> +	unpin_user_pages(userptr->pages, npages);
+> +destroy_pages:
+> +	kvfree(userptr->pages);
+>   	return rc;
+>   }
+>  =20
+> @@ -1405,8 +1401,6 @@ int hl_pin_host_memory(struct hl_device *hdev, u64 =
+addr, u64 size,
+>    */
+>   void hl_unpin_host_memory(struct hl_device *hdev, struct hl_userptr *us=
+erptr)
+>   {
+> -	struct page **pages;
+> -
+>   	hl_debugfs_remove_userptr(hdev, userptr);
+>  =20
+>   	if (userptr->dma_mapped)
+> @@ -1414,15 +1408,8 @@ void hl_unpin_host_memory(struct hl_device *hdev, =
+struct hl_userptr *userptr)
+>   							userptr->sgt->nents,
+>   							userptr->dir);
+>  =20
+> -	pages =3D frame_vector_pages(userptr->vec);
+> -	if (!IS_ERR(pages)) {
+> -		int i;
+> -
+> -		for (i =3D 0; i < frame_vector_count(userptr->vec); i++)
+> -			set_page_dirty_lock(pages[i]);
+> -	}
+> -	put_vaddr_frames(userptr->vec);
+> -	frame_vector_destroy(userptr->vec);
+> +	unpin_user_pages_dirty_lock(userptr->pages, userptr->npages, true);
+> +	kvfree(userptr->pages);
+>  =20
+>   	list_del(&userptr->job_node);
+>  =20
+>=20
 
---6DjUUFuSTFd5eQIv3cZQP9FOz607Sx1SF--
-
---CC3P733UC0dbH8BLHjAHCg9NnWvq9T3ki
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+JT2wACgkQqclaivrt
-76k/Xgf+NR8VQLXF63WndzKZiYOLyNsP4R7X/DD0qBESzR6jQJOuNF3H7XDJ+iAM
-QcjeCT7zlM/tN8P5QOeiHhGisEBVM5YECCfUbSX88Js2riGC2rI9YP0d+gwsmSIZ
-Qe6gd4dTuoPhrgtYQ37MaaOqB7gffbDGqOnDp78LVUZEbsUlWuPwxeRVW19HCJgz
-unbeH651x+agD38WJYg47Sgltm7RLRu1Sx9OnmbCNho8cJ2TCKmRY8Eyzl9AbP9K
-0FNZOGmynOVkVwdTjs0HsqniDuq1fPexfkXwxGs3cUiJOQ+Y/PwW52LJqWQv+sk/
-LhmDr85Lerlw7S7ItEkO1y4kohmOHw==
-=6jp0
------END PGP SIGNATURE-----
-
---CC3P733UC0dbH8BLHjAHCg9NnWvq9T3ki--
