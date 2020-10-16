@@ -2,71 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D832909AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3EE2909AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410267AbgJPQ2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:28:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410246AbgJPQ2X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:28:23 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1E1C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 09:28:11 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d0d000a68ceadd6ffefc0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d00:a68:cead:d6ff:efc0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2410745AbgJPQ2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:28:53 -0400
+Received: from mailout07.rmx.de ([94.199.90.95]:50606 "EHLO mailout07.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408316AbgJPQ2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 12:28:53 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 07B011EC0505;
+        by mailout07.rmx.de (Postfix) with ESMTPS id 4CCWmy28JVzBv88;
+        Fri, 16 Oct 2020 18:28:50 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4CCWm93ZM9z2TTLW;
         Fri, 16 Oct 2020 18:28:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602865689;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=hjWqlQ0EK6JQ2uFLQlqVAqPQkPmHrCRi+HGz7xb2tlc=;
-        b=YBVNIm82ajhQirCJEJsTTNuL670VaY/ZjDwijWJKhl9gXSi45OFk1Ayq83uMGYfd+og3Iy
-        RqvjlT8dWIeBc7wQnz9VCjO8mMSd1ISOooFED+KwP4xeV+uGCz+zxzYRHmG2eo1Ujt9ZsY
-        w5aTUteLn0hJbw3P+mqj6aWi0tJOcBo=
-Date:   Fri, 16 Oct 2020 18:27:59 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] x86/boot/64: Explicitly map boot_params and
- command line
-Message-ID: <20201016162759.GG8483@zn.tnic>
-References: <20201008191623.2881677-1-nivedita@alum.mit.edu>
- <20201008191623.2881677-5-nivedita@alum.mit.edu>
+Received: from N95HX1G2.wgnetz.xx (192.168.54.12) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Fri, 16 Oct
+ 2020 18:28:09 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+CC:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>
+Subject: [PATCH net] net: dsa: point out the tail taggers
+Date:   Fri, 16 Oct 2020 18:28:00 +0200
+Message-ID: <20201016162800.7696-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201008191623.2881677-5-nivedita@alum.mit.edu>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.12]
+X-RMX-ID: 20201016-182809-4CCWm93ZM9z2TTLW-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 03:16:22PM -0400, Arvind Sankar wrote:
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> ---
->  arch/x86/boot/compressed/ident_map_64.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
+From a  recent commit with the same summary:
 
-Ok, just pushed your two fixes here:
+"The Marvell 88E6060 uses tag_trailer.c and the KSZ8795, KSZ9477 and
+KSZ9893 switches also use tail tags."
 
-https://git.kernel.org/pub/scm/linux/kernel/git/bp/bp.git/log/?h=rc0%2b1-seves
+Set "tail_tag" to true for KSZ8795 and KSZ9477 which were missing in the
+original commit.
 
-Please rebase this one ontop and put the two cleanups last so that the
-fixes can go into urgent while the two cleanups can follow later through
-normal tip flow. And yes, pls do this in the future too: fixes should
-be minimal so that they can be expedited first and normal cleanups and
-features can be done later.
+Fixes: 7a6ffe764be3 [net] ("net: dsa: point out the tail taggers")
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+---
+ net/dsa/tag_ksz.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thx.
-
+diff --git a/net/dsa/tag_ksz.c b/net/dsa/tag_ksz.c
+index 945a9bd5ba35..0a5aa982c60d 100644
+--- a/net/dsa/tag_ksz.c
++++ b/net/dsa/tag_ksz.c
+@@ -123,6 +123,7 @@ static const struct dsa_device_ops ksz8795_netdev_ops = {
+ 	.xmit	= ksz8795_xmit,
+ 	.rcv	= ksz8795_rcv,
+ 	.overhead = KSZ_INGRESS_TAG_LEN,
++	.tail_tag = true,
+ };
+ 
+ DSA_TAG_DRIVER(ksz8795_netdev_ops);
+@@ -199,6 +200,7 @@ static const struct dsa_device_ops ksz9477_netdev_ops = {
+ 	.xmit	= ksz9477_xmit,
+ 	.rcv	= ksz9477_rcv,
+ 	.overhead = KSZ9477_INGRESS_TAG_LEN,
++	.tail_tag = true,
+ };
+ 
+ DSA_TAG_DRIVER(ksz9477_netdev_ops);
 -- 
-Regards/Gruss,
-    Boris.
+Christian Eggers
+Embedded software developer
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+
