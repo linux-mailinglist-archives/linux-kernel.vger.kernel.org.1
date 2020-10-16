@@ -2,111 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A72290D0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F29290D13
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410572AbgJPVBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 17:01:21 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:34142 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410553AbgJPVBV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 17:01:21 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 10B9C20030;
-        Fri, 16 Oct 2020 23:01:17 +0200 (CEST)
-Date:   Fri, 16 Oct 2020 23:01:16 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Bernie Thompson <bernie@plugable.com>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        id S2410587AbgJPVDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 17:03:35 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:60368 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392011AbgJPVDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 17:03:35 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kTWsg-0023ZU-0v; Fri, 16 Oct 2020 23:03:18 +0200
+Date:   Fri, 16 Oct 2020 23:03:18 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Christian Eggers <ceggers@arri.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        kbuild-all@lists.01.org,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] video: use kobj_to_dev()
-Message-ID: <20201016210116.GC1496366@ravnborg.org>
-References: <1600776867-24226-1-git-send-email-wangqing@vivo.com>
+Subject: Re: [PATCH net] net: dsa: point out the tail taggers
+Message-ID: <20201016210318.GL139700@lunn.ch>
+References: <20201016162800.7696-1-ceggers@arri.de>
+ <202010170153.fwOuks52-lkp@intel.com>
+ <20201016173317.4ihhiamrv5w5am6y@skbuf>
+ <20201016201428.GI139700@lunn.ch>
+ <20201016201930.2i2lw4aixklyg6j7@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1600776867-24226-1-git-send-email-wangqing@vivo.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=1WtWmnkvAAAA:8 a=e5mUnYsNAAAA:8
-        a=S625N62x_EdrrIXL-UUA:9 a=4VdfB5lweFc2GgQk:21 a=SvyDWAbSgJdgMsRO:21
-        a=CjuIK1q_8ugA:10 a=-_UHfarfsM-RsASml2Jt:22 a=Vxmtnl_E_bksehYqCbjh:22
+In-Reply-To: <20201016201930.2i2lw4aixklyg6j7@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wang Qing
-
-On Tue, Sep 22, 2020 at 08:14:24PM +0800, Wang Qing wrote:
-> Use kobj_to_dev() instead of container_of()
+On Fri, Oct 16, 2020 at 11:19:30PM +0300, Vladimir Oltean wrote:
+> On Fri, Oct 16, 2020 at 10:14:28PM +0200, Andrew Lunn wrote:
+> > On Fri, Oct 16, 2020 at 08:33:17PM +0300, Vladimir Oltean wrote:
+> > > On Sat, Oct 17, 2020 at 01:25:08AM +0800, kernel test robot wrote:
+> > > > Hi Christian,
+> > > >
+> > > > Thank you for the patch! Yet something to improve:
+> > > >
+> > > > [auto build test ERROR on net/master]
+> > > >
+> > > > url:    https://github.com/0day-ci/linux/commits/Christian-Eggers/net-dsa-point-out-the-tail-taggers/20201017-003007
+> > > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git 2ecbc1f684482b4ed52447a39903bd9b0f222898
+> > 
+> > > Is the test bot being a bit "slow" today?
+> > 
+> > It is using the net.git commit from yesterday afternoon. net-next got
+> > merged into net yesterday evening, so it is a bit behind, but not too
+> > far behind.
 > 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> Exactly. The sha1sum it uses _does_ contain the tail_tag member inside
+> struct dsa_device_ops. What's it complaining about?
 
-Thanks, applied to drm-misc-next. Patch will appear in -next in a few
-weeks.
+2ecbc1f684482b4ed52447a39903bd9b0f222898 does not have net-next, as
+far as i see, and tail_tag only hit net when net-next was merged into
+net.
 
-	Sam
+Or i'm reading the git history wrong.
 
-> ---
->  drivers/video/fbdev/aty/radeon_base.c | 4 ++--
->  drivers/video/fbdev/udlfb.c           | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/aty/radeon_base.c b/drivers/video/fbdev/aty/radeon_base.c
-> index 3fe509c..878c39a
-> --- a/drivers/video/fbdev/aty/radeon_base.c
-> +++ b/drivers/video/fbdev/aty/radeon_base.c
-> @@ -2200,7 +2200,7 @@ static ssize_t radeon_show_edid1(struct file *filp, struct kobject *kobj,
->  				 struct bin_attribute *bin_attr,
->  				 char *buf, loff_t off, size_t count)
->  {
-> -	struct device *dev = container_of(kobj, struct device, kobj);
-> +	struct device *dev = kobj_to_dev(kobj);
->  	struct fb_info *info = dev_get_drvdata(dev);
->          struct radeonfb_info *rinfo = info->par;
->  
-> @@ -2212,7 +2212,7 @@ static ssize_t radeon_show_edid2(struct file *filp, struct kobject *kobj,
->  				 struct bin_attribute *bin_attr,
->  				 char *buf, loff_t off, size_t count)
->  {
-> -	struct device *dev = container_of(kobj, struct device, kobj);
-> +	struct device *dev = kobj_to_dev(kobj);
->  	struct fb_info *info = dev_get_drvdata(dev);
->          struct radeonfb_info *rinfo = info->par;
->  
-> diff --git a/drivers/video/fbdev/udlfb.c b/drivers/video/fbdev/udlfb.c
-> index 5b014b4..f9b3c1c
-> --- a/drivers/video/fbdev/udlfb.c
-> +++ b/drivers/video/fbdev/udlfb.c
-> @@ -1457,7 +1457,7 @@ static ssize_t edid_show(
->  			struct file *filp,
->  			struct kobject *kobj, struct bin_attribute *a,
->  			 char *buf, loff_t off, size_t count) {
-> -	struct device *fbdev = container_of(kobj, struct device, kobj);
-> +	struct device *fbdev = kobj_to_dev(kobj);
->  	struct fb_info *fb_info = dev_get_drvdata(fbdev);
->  	struct dlfb_data *dlfb = fb_info->par;
->  
-> @@ -1479,7 +1479,7 @@ static ssize_t edid_store(
->  			struct file *filp,
->  			struct kobject *kobj, struct bin_attribute *a,
->  			char *src, loff_t src_off, size_t src_size) {
-> -	struct device *fbdev = container_of(kobj, struct device, kobj);
-> +	struct device *fbdev = kobj_to_dev(kobj);
->  	struct fb_info *fb_info = dev_get_drvdata(fbdev);
->  	struct dlfb_data *dlfb = fb_info->par;
->  	int ret;
-> -- 
-> 2.7.4
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+	Andrew
