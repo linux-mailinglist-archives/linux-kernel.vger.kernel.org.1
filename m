@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A60290BA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF59B290BA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403807AbgJPSrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 14:47:46 -0400
-Received: from mail-oo1-f68.google.com ([209.85.161.68]:34886 "EHLO
-        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393016AbgJPSrq (ORCPT
+        id S2403820AbgJPSr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 14:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393020AbgJPSr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 14:47:46 -0400
-Received: by mail-oo1-f68.google.com with SMTP id f2so860497ooj.2;
-        Fri, 16 Oct 2020 11:47:45 -0700 (PDT)
+        Fri, 16 Oct 2020 14:47:58 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A924C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:47:58 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 32so3380237otm.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:47:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/6ZPAavAgIBaIj1gBG4jv7Gu9L4sN03UOtnPoYPnkGM=;
+        b=lP4NOv51TEXmx39salQG6uTSU8gkLmkF8p4KPDm1dBqsQhZGdByHYty0AxeWaPaWU8
+         IMBNfFJZEqSvFcX/JetY+udEH2E82sSSdgfZuuppOCDvedBZJjGbifYxGHw+S7eNMkl7
+         Q4yPOvK7BXm8r1/s/BzGQMn0sLvwN7kWFqYfrHSd+w3n665ToypEQlxLHvd/d1PUW4vB
+         lOcigsbdkdaso/ojnZ9YEwwCJDkWy14nmMFgohf3GDceQCc+WNSA+0TELgk0n2HJ8reg
+         s0X2GbNw/6VhfYupl1ci+c1/LDuzgv37IEaqsXpF4sHnYq/fMeKyFnBOZQamOHM/6axz
+         243Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ah4l6QAR2mQ0/oHGxUZvIiL/bIHnlL8stCXNgxk0zPU=;
-        b=G+jNTM163zK9UZ0z77v5dXhWdQfUBO62QnF/xsDc1P0DI2so4pRpIbH791JC7O2qPQ
-         WG/7Y65s6S7jjCvFgchWEozdDbbLwBwJNtffAnqKUvtXB/Jelthq0Y5VmM45Et70mGdo
-         pX0vfZ91F2jo465Z/uR6Y3mfGz11o0npT8Gew95wJcy0Ukytf5JMhRSXFF4IgrCcMVGh
-         luojozI1vHM2AT09uj4B/OUVMr6sFcNI11yuE7DKy7GR4iMtGzBCOzfjgPoFKEw1199I
-         is/CxQZVuMxwPLYr5Q9GLQ+6v38BhyL5YO3xgidyJkORMdyJJrFnNKrVjcv+9Ez+Xfc1
-         WP7Q==
-X-Gm-Message-State: AOAM532Orx7OM6nyDIHWJfLhrcQO2ph/qovA3LkeAx0cvsUdkMxmz6B7
-        WxxAGF89WL627i2jWXm4f4QUFpRm9A==
-X-Google-Smtp-Source: ABdhPJwi2sSg9TbyxlBb9FKSGQY3aAdhbGYA8TNts9SijJNIvpVCDN/KL4oZNOHs+2wFaZc9X3ZX/w==
-X-Received: by 2002:a4a:e592:: with SMTP id o18mr3759398oov.28.1602874065319;
-        Fri, 16 Oct 2020 11:47:45 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 189sm1239683oid.40.2020.10.16.11.47.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 11:47:44 -0700 (PDT)
-Received: (nullmailer pid 1729968 invoked by uid 1000);
-        Fri, 16 Oct 2020 18:47:43 -0000
-Date:   Fri, 16 Oct 2020 13:47:43 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     devicetree@vger.kernel.org,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Roger Quadros <rogerq@ti.com>, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linuxppc-dev@lists.ozlabs.org, Felipe Balbi <balbi@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Subject: Re: [PATCH 05/20] dt-bindings: usb: usb-hcd: Add generic "usb-phy"
- property
-Message-ID: <20201016184743.GA1729897@bogus>
-References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
- <20201014101402.18271-6-Sergey.Semin@baikalelectronics.ru>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/6ZPAavAgIBaIj1gBG4jv7Gu9L4sN03UOtnPoYPnkGM=;
+        b=qYFb/YVNaAoqphhTYZvI45MjZV4CkksDyAxOTZ+eNCeqnviUNemIGtGrqPYem058G+
+         aKdGQ8Lf0rP2R/k7Pj5yymAlF4dzfPuIj51Q2odEGBGSMXaTf6D9KZtciC3n24Pv/zxV
+         oaYx30y6BhLnJuc+umP6D+vq46C5iTWkvzX0MLBWPo0o4CeRMv5v/ekyvXn6WhMbk2XB
+         J729jpkexUIeMOrSuDfTv3DVaRXeOzy5UdFwMdilVgfnUgNjW3/ez4g9g/02+jVvJcJw
+         ELqbCDm0+AlxX1KjsfftwJ9y+RlRw1UCTqNqq/ATl1NFT9z9m4Qqaf3fizUfI/22j1KG
+         T0WQ==
+X-Gm-Message-State: AOAM531k6Ji9jbmiN5K4b4JOF3VrsQfWY/cfecUZ5BHtksEZRLKwP07J
+        jPBO03zxyDfuI3OpBzgOun5l/Y/9q9QRdDAi0ysbMA==
+X-Google-Smtp-Source: ABdhPJwH6XcBKPJDC1Mm7DKnG5P/EL1ztBMF0+cVOUi9cs5EKrO3sGguh+sEF+ZQIE3ke+UzdUEAW/qfG0BqWAz8nWs=
+X-Received: by 2002:a9d:2d81:: with SMTP id g1mr3546671otb.352.1602874077645;
+ Fri, 16 Oct 2020 11:47:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014101402.18271-6-Sergey.Semin@baikalelectronics.ru>
+References: <20201003040257.62768-1-john.stultz@linaro.org> <20201008113602.n7ju2hu3j6qsaxve@DESKTOP-E1NTVVP.localdomain>
+In-Reply-To: <20201008113602.n7ju2hu3j6qsaxve@DESKTOP-E1NTVVP.localdomain>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 16 Oct 2020 11:47:44 -0700
+Message-ID: <CALAqxLUbL4ci4Vnwe6UM1OEFfLyirsQOr57nmx5NSe8Bb_yAwg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] dma-buf: Performance improvements for system heap
+ & a system-uncached implementation
+To:     Brian Starkey <brian.starkey@arm.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>, nd <nd@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 13:13:47 +0300, Serge Semin wrote:
-> Even though the Generic PHY framework is the more preferable way of
-> setting the USB PHY up, there are still many dts-files and DT bindings
-> which rely on having the legacy "usb-phy" specified to attach particular
-> USB PHYs to USB cores. Let's have the "usb-phy" property described in
-> the generic USB HCD binding file so it would be validated against the
-> nodes in which it's specified. Mark the property as deprecated to
-> discourage the developers from using it.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> 
-> ---
-> 
-> Changelog v2:
-> - Discard '|' from the property description, since we don't need to preserve
->   the text formatting.
-> ---
->  Documentation/devicetree/bindings/usb/usb-hcd.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
+On Thu, Oct 8, 2020 at 4:36 AM Brian Starkey <brian.starkey@arm.com> wrote:
+>
+> Hi John,
+>
+> On Sat, Oct 03, 2020 at 04:02:50AM +0000, John Stultz wrote:
+> > Hey All,
+>
+> ...
+>
+> >
+> > I did add to this series a reworked version of my uncached
+> > system heap implementation I was submitting a few weeks back.
+> > Since it duplicated a lot of the now reworked system heap code,
+> > I realized it would be much simpler to add the functionality to
+> > the system_heap implementaiton itself.
+>
+> That looks like a neat approach to me. Referencing your previous
+> thread, I like the separate heap (as you have done), rather than a
+> generic "cached"/"noncached" flag on all heaps.
+>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Sounds good! I really appreciate the feedback on this.
+
+> > While not improving the core allocation performance, the
+> > uncached heap allocations do result in *much* improved
+> > performance on HiKey960 as it avoids a lot of flushing and
+> > invalidating buffers that the cpu doesn't touch often.
+> >
+> > Feedback on these would be great!
+>
+> Minor nit: s/detatch/detach/ on both heaps, but other than that
+> you can add my r-b to patches 1-5.
+
+Doh! Thanks for the spelling catch! Thanks again!
+
+> As you've said, it does feel like there's some room for
+> de-duplication, but that will be easier to work out once the
+> implementations settle.
+>
+> I've a couple of comments for the uncached heap, but I'm not confident
+> I understand the implications of having the non-cached alias enough to
+> say if it looks OK or not.
+
+Thanks so much!
+-john
