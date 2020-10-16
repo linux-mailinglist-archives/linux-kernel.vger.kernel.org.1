@@ -2,201 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2689290B35
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BDD290B2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391503AbgJPSQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 14:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33156 "EHLO
+        id S2391408AbgJPSMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 14:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391493AbgJPSQr (ORCPT
+        with ESMTP id S2391007AbgJPSMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 14:16:47 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45900C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:16:47 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id m22so3264079ots.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:16:47 -0700 (PDT)
+        Fri, 16 Oct 2020 14:12:14 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037B9C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:12:12 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id t25so4422526ejd.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:12:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lXUFwXy4CvWitPRBtcqz4P6w54dAmXcel3/G3PMWxJk=;
-        b=W5g+DZ0Y+oLih8JHD8yavPz/uC0IhD0zJoUh59V8GVOd6SaaZhHBMLTt5ePflQ91pd
-         /1kUpypg2gwGTndoH0SOMQ4qGBOfD1mSG1DMPuGMWpbezFoZsdHnDTHT/Upbey6/L7Kz
-         3GbgLp8aWQrW9HWuXCtjyFqQLxE89a5b7wnqwGUQYZLS+4Jh5eLuKFL8LKEBgTyCo33S
-         U3YHhKl8uN7kEOqUvYujVmRpHlbqNeh6F5yC2ElknhcZQYLtsmAaIwLgKodysE0Y41X3
-         0qolVLm8P4JKYAIGBsu92Ii6hNPuaG9/tQM1oo7Wn8aGOXh9DQEX2sR00NElZLhkt2Nv
-         BY7w==
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KL1IjUStMhQCFtfovQWJh8Jb/Mss3XgTN9JXM1OzgKQ=;
+        b=nCmzpADjn6lWmk/cJIZL/0H+TtyQVQoy2Rje4CDydYYZD/fMBMK4+mRCe/cUkiHVZD
+         YM9hpV93oj3Y7JZMS8m2idkj+ObHWcGN4TsuTPhm4D/gIUTi0v2/tidwquT62K46s507
+         RoEDb/vwJGc43Xm2ztoi1zZhan6FE03ILTxxpz0c7lOMh6owcPbC7SqZB9NnHSi1Kjv9
+         SR+V4vhLULsxAD6kQNbaViaFyGwM32oRHzWT9xZwJ/S+XI71obJ5bHfns2VtVY09qVl2
+         /TcpRHBfXeTNDcEZQ6eB+BL344Cxo6PPJgPlDwA4cT1vumn2ityKGEZSJ8xC6ELeTxwV
+         n2kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lXUFwXy4CvWitPRBtcqz4P6w54dAmXcel3/G3PMWxJk=;
-        b=s1BavhvjVK8ALm6ESoG0epepLJRlANFIV9ShtoK/pM3pdXt2wIKatxvl7MpNzbdOFs
-         8MO+rM9H/6V4ezV/b319/7T83dpk20yT0GLyZl/WD8R6ndf8Kt5G9uf0YFIowoP7I1+i
-         9zL3Trg+Gh+gl4Yxu27aM7GV+zsCTxTpQ9iz5Vzrnl6oTy1wb8pDHpDNnFXBC8J+ZKJF
-         V2paTFe6KRkB0jH+TQZApGphpyvpWagQAufsa2J1ZySrQcVX7Hk2OSJdjHK3kQB5Ikug
-         Tu/gBqME0YU9h98GgS1P2Eqo4cziWM54MoSMr99OvQ6UdEv08KyW3NouwJEWrlngICY0
-         04hg==
-X-Gm-Message-State: AOAM531bMB9expeVc2DJLjWYpe3F+yVHXsqO0laJ8i/Pc+XoVM4Z9lB3
-        +uGXLOYss9/l33y2FaLdqw6mGA==
-X-Google-Smtp-Source: ABdhPJxMlYFEmvPd/oJ+AQMXJK2Q7X41clGIcOfyf7fGkqn3XjCTTzI8bIyIQwbfPa70i7PTr009ZA==
-X-Received: by 2002:a9d:7315:: with SMTP id e21mr3387087otk.372.1602872206412;
-        Fri, 16 Oct 2020 11:16:46 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id e30sm1173034otf.49.2020.10.16.11.16.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 11:16:45 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 13:11:35 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Nishanth Menon <nm@ti.com>, linux-pm@vger.kernel.org,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Gross <agross@kernel.org>,
-        Niklas Cassel <nks@flawful.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Kevin Hilman <khilman@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 1/4] power: avs: qcom-cpr: Move the driver to the qcom
- specific drivers
-Message-ID: <20201016181135.GB6705@builder.lan>
-References: <20201006160516.319830-1-ulf.hansson@linaro.org>
- <20201006160516.319830-2-ulf.hansson@linaro.org>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KL1IjUStMhQCFtfovQWJh8Jb/Mss3XgTN9JXM1OzgKQ=;
+        b=X21yEs7Qy/lrp/8dAcOswxNXocGRQnX21ttGzwGixEXDnABmIaW0VG5YbPMA8rvqic
+         E+yGnZV8ReVSzmTy4Qs8RHXtCBsu/Gs6LcQyrMOPLCpebStVK30AKwMTneLf1F4IPb+o
+         V2LE/c7Ej5NXMHfaNa7uMWjMxnA0mIrkJrO0tRfXcVwHgwyfh8jLQ4h+haQUyDYTrheq
+         y1DOa2B+YM7LbXtvhmT/UKyjCyvp81L2tizvFMbKxZ3viagPjgh7oo80DUKv03rwENzf
+         U2UfnrGZts9RtsZ5L5yYqF4c4Y0ImKmmZ57achLhlwuj4xd67j0Ro1a7EU7l8BXmSrC+
+         cPzw==
+X-Gm-Message-State: AOAM5329qmHdR9BiU6rq00K40wqG3VIQf6PR0swrvXoZ2ZTr9iSk4ICI
+        MCBaf6NDX2D/G/6FvWUpgOf5mXZ3GOooAhJx
+X-Google-Smtp-Source: ABdhPJwoa2VxwM0Q1aACfU+VpUsaIM6Lo7z3y2iVhbiqD0vx5pcczCOIa9y/bQ5zT313ldX6mxDI+A==
+X-Received: by 2002:a17:906:f118:: with SMTP id gv24mr5076405ejb.174.1602871931411;
+        Fri, 16 Oct 2020 11:12:11 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:6f98:5069:d66d:d5c0])
+        by smtp.gmail.com with ESMTPSA id q19sm2266942edc.14.2020.10.16.11.12.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 11:12:10 -0700 (PDT)
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Bob Moore <robert.moore@intel.com>
+References: <1748021.N9i9sLPJ40@kreacher> <9373262.piL2bvXoCD@kreacher>
+ <3b69e0d0-fb8a-92b4-42fd-f2a8fcdd642b@tessares.net>
+ <1735226.fPvPZg4QOa@kreacher>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: Re: [PATCH 4/6] ACPICA: Add support for using logical addresses of
+ GPE blocks
+Message-ID: <fe077e28-2421-6d48-d55a-882b802e47c1@tessares.net>
+Date:   Fri, 16 Oct 2020 20:12:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006160516.319830-2-ulf.hansson@linaro.org>
+In-Reply-To: <1735226.fPvPZg4QOa@kreacher>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 06 Oct 11:05 CDT 2020, Ulf Hansson wrote:
+Hi Rafael,
 
-> The avs drivers are all SoC specific drivers that doesn't share any code.
-> Instead they are located in a directory, mostly to keep similar
-> functionality together. From a maintenance point of view, it makes better
-> sense to collect SoC specific drivers like these, into the SoC specific
-> directories.
+On 16/10/2020 19:15, Rafael J. Wysocki wrote:
+> On Friday, October 16, 2020 4:30:55 PM CEST Matthieu Baerts wrote:
+>>
+>> By chance, do you already have a fix for that?
 > 
-> Therefore, let's move the qcom-cpr driver to the qcom directory.
-> 
-> Cc: Niklas Cassel <nks@flawful.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Can you please try the appended patch?
 
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Thank you for the patch, this fixes the compilation warning I got.
 
-Regards,
-Bjorn
+Reported-and-tested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 
-> ---
->  MAINTAINERS                                      |  2 +-
->  drivers/power/avs/Kconfig                        | 16 ----------------
->  drivers/power/avs/Makefile                       |  1 -
->  drivers/soc/qcom/Kconfig                         | 16 ++++++++++++++++
->  drivers/soc/qcom/Makefile                        |  1 +
->  drivers/{power/avs/qcom-cpr.c => soc/qcom/cpr.c} |  0
->  6 files changed, 18 insertions(+), 18 deletions(-)
->  rename drivers/{power/avs/qcom-cpr.c => soc/qcom/cpr.c} (100%)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4f1a56f6efaa..f51dd1944fe6 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14337,7 +14337,7 @@ L:	linux-pm@vger.kernel.org
->  L:	linux-arm-msm@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/power/avs/qcom,cpr.txt
-> -F:	drivers/power/avs/qcom-cpr.c
-> +F:	drivers/soc/qcom/cpr.c
->  
->  QUALCOMM CPUFREQ DRIVER MSM8996/APQ8096
->  M:	Ilia Lin <ilia.lin@kernel.org>
-> diff --git a/drivers/power/avs/Kconfig b/drivers/power/avs/Kconfig
-> index cdb4237bfd02..089b6244b716 100644
-> --- a/drivers/power/avs/Kconfig
-> +++ b/drivers/power/avs/Kconfig
-> @@ -12,22 +12,6 @@ menuconfig POWER_AVS
->  
->  	  Say Y here to enable Adaptive Voltage Scaling class support.
->  
-> -config QCOM_CPR
-> -	tristate "QCOM Core Power Reduction (CPR) support"
-> -	depends on POWER_AVS && HAS_IOMEM
-> -	select PM_OPP
-> -	select REGMAP
-> -	help
-> -	  Say Y here to enable support for the CPR hardware found on Qualcomm
-> -	  SoCs like QCS404.
-> -
-> -	  This driver populates CPU OPPs tables and makes adjustments to the
-> -	  tables based on feedback from the CPR hardware. If you want to do
-> -	  CPUfrequency scaling say Y here.
-> -
-> -	  To compile this driver as a module, choose M here: the module will
-> -	  be called qcom-cpr
-> -
->  config ROCKCHIP_IODOMAIN
->  	tristate "Rockchip IO domain support"
->  	depends on POWER_AVS && ARCH_ROCKCHIP && OF
-> diff --git a/drivers/power/avs/Makefile b/drivers/power/avs/Makefile
-> index 9007d05853e2..a1b8cd453f19 100644
-> --- a/drivers/power/avs/Makefile
-> +++ b/drivers/power/avs/Makefile
-> @@ -1,4 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  obj-$(CONFIG_POWER_AVS_OMAP)		+= smartreflex.o
-> -obj-$(CONFIG_QCOM_CPR)			+= qcom-cpr.o
->  obj-$(CONFIG_ROCKCHIP_IODOMAIN)		+= rockchip-io-domain.o
-> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-> index 3dc3e3d61ea3..6a3b69b43ad5 100644
-> --- a/drivers/soc/qcom/Kconfig
-> +++ b/drivers/soc/qcom/Kconfig
-> @@ -26,6 +26,22 @@ config QCOM_COMMAND_DB
->  	  resource on a RPM-hardened platform must use this database to get
->  	  SoC specific identifier and information for the shared resources.
->  
-> +config QCOM_CPR
-> +	tristate "QCOM Core Power Reduction (CPR) support"
-> +	depends on ARCH_QCOM && HAS_IOMEM
-> +	select PM_OPP
-> +	select REGMAP
-> +	help
-> +	  Say Y here to enable support for the CPR hardware found on Qualcomm
-> +	  SoCs like QCS404.
-> +
-> +	  This driver populates CPU OPPs tables and makes adjustments to the
-> +	  tables based on feedback from the CPR hardware. If you want to do
-> +	  CPUfrequency scaling say Y here.
-> +
-> +	  To compile this driver as a module, choose M here: the module will
-> +	  be called qcom-cpr
-> +
->  config QCOM_GENI_SE
->  	tristate "QCOM GENI Serial Engine Driver"
->  	depends on ARCH_QCOM || COMPILE_TEST
-> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-> index 93392d9dc7f7..ad675a6593d0 100644
-> --- a/drivers/soc/qcom/Makefile
-> +++ b/drivers/soc/qcom/Makefile
-> @@ -3,6 +3,7 @@ CFLAGS_rpmh-rsc.o := -I$(src)
->  obj-$(CONFIG_QCOM_AOSS_QMP) +=	qcom_aoss.o
->  obj-$(CONFIG_QCOM_GENI_SE) +=	qcom-geni-se.o
->  obj-$(CONFIG_QCOM_COMMAND_DB) += cmd-db.o
-> +obj-$(CONFIG_QCOM_CPR)		+= cpr.o
->  obj-$(CONFIG_QCOM_GSBI)	+=	qcom_gsbi.o
->  obj-$(CONFIG_QCOM_MDT_LOADER)	+= mdt_loader.o
->  obj-$(CONFIG_QCOM_OCMEM)	+= ocmem.o
-> diff --git a/drivers/power/avs/qcom-cpr.c b/drivers/soc/qcom/cpr.c
-> similarity index 100%
-> rename from drivers/power/avs/qcom-cpr.c
-> rename to drivers/soc/qcom/cpr.c
-> -- 
-> 2.25.1
-> 
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
