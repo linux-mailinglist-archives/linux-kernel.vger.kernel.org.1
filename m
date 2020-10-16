@@ -2,102 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CE229045D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7848029045F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406935AbgJPLut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:50:49 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:43437 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406895AbgJPLus (ORCPT
+        id S2406989AbgJPLu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406983AbgJPLu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:50:48 -0400
-Received: by mail-ot1-f68.google.com with SMTP id n61so2097208ota.10;
-        Fri, 16 Oct 2020 04:50:46 -0700 (PDT)
+        Fri, 16 Oct 2020 07:50:58 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5792C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:50:57 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id n142so1678721ybf.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=jEnRa2ThjvFLKpqb2iLCaVEJUkVLQ7tc8W9hs1rWHU0=;
+        b=mZlZ4zQso1lCc0Hx9VxGlkV25nWxEVBOTo6CZUyFfnHwcmsI0Zfe6kVSQNltbXR/L9
+         esqhDsyKSE/ABh3A3JypBDQJcOkpowdt3bUhfd2duPd/DF6uwF9chk1ndOLcqrqguH53
+         Tvr8ltxsQYUiGKOutKnKHiMhzloeWhVYj9wmTdkABbGBeUwPFALRAR3w8XzqYHCR9PZC
+         Nn99cvAUmYGxF/IDxg3H9xLqATm8Hq8QgaJ91+m+ZVU+Y+vLY122w8jyimNCBA8PalN5
+         WWMBksQKe0MSpqOoYWrRPc7ugOCyVV/ihCujY982Sqw3eqQuKo+uy37FlyRVccLAPQyu
+         qPuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r/6QPBpExSoKarbZok55Q3okDwia1sPzi7Df1m2mfVg=;
-        b=qLToeB5QN1lU57o82TzXNCNnk7969ntfaxFxVwFV3jA3LMKKDaYD5hMx9O1n8jqMQy
-         gcFgKrGkH586eh4+kGgUIO0P9F03Ni51NSLhPBQKU0XZDjQp3udoVkLjtgK5TnJgHcUw
-         7O8Fav044cbmPkiSW4zOVoUsUtSkrDgbulY39X2S3GgwKnRKQobxcqz4+Q570wB5jfY1
-         ZTCvlx/N8sQluHklITV83SolbK9YEFSXset9LbWG6+OzMcNDo6NE7uwYOX60Ed6z4KD6
-         6G4ohuGZp8PsFO/YlfM5hACtveQTeCNN0InGeqovuY1zVB5Uks0VGbBgp80nKWDX6zc+
-         nJTw==
-X-Gm-Message-State: AOAM533SzFuIscj/9eSs+FR/MGtuV/dozYLBDOkUT2lujQlREu3/NK2I
-        ApT6XyHsQBLQ/8ZsSjgmwRl5VIyyL8QbNux3A0zrOLrU
-X-Google-Smtp-Source: ABdhPJwigMKNyVfvIGoimEjWHJyvFWyITKnqMAGiCmKOG0IomEp8v2CuuetHlv8E32U+FTI2pVl7xHVgLom/iXuQAgs=
-X-Received: by 2002:a9d:5e14:: with SMTP id d20mr2082934oti.107.1602849045708;
- Fri, 16 Oct 2020 04:50:45 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=jEnRa2ThjvFLKpqb2iLCaVEJUkVLQ7tc8W9hs1rWHU0=;
+        b=lKdpVyFXqiWSu1dJWd4NXt7a41sarEO+JN1zB89+jnP9j97N9nsTEtRz8PDhx5cXnE
+         +0Am1ypT+DkG7QCsWRiTNlAp3WbhLUvz0ueUSQD6eOq5efb2ZkcWU4P0F5AYr+HvNF39
+         IU6KPOHztY6MIGIW7LcuRHNaFqnnENjLrblWMGpwj3oBtNM47yeQSYfhjI6t+O8mwDeY
+         FhU6T+NxkqS9bfFkQiZiKMhksaVoIaFlzJOwooaLKebC1q048ks94H5uDmL0B+OEdxPE
+         nGyU+KHh6rcUa9CUHCx8rPV0OJUPL/eRsxTQLd1xZTiMvePHPw89vnPItxYDupIkYjh4
+         epVQ==
+X-Gm-Message-State: AOAM532ZM0k95sP+uSMsw3yE41ErXGx7mqz7wgQriC1LDxszSU0PfK5L
+        N5436VYbbzxHUA6GSiUViCrzbJwjttpcf9gyafU=
+X-Google-Smtp-Source: ABdhPJwj0PCr8oEJ1eggVyIAxXyHdaAY6Qzu27U5XlMO2nc7m3atiPkRdtgS5ohaKxc9ebwJiOVwbi9o0EhyB4TUdkU=
+X-Received: by 2002:a25:1503:: with SMTP id 3mr4247258ybv.241.1602849057278;
+ Fri, 16 Oct 2020 04:50:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201016120625.64337-1-jacopo+renesas@jmondi.org> <20201016120625.64337-3-jacopo+renesas@jmondi.org>
-In-Reply-To: <20201016120625.64337-3-jacopo+renesas@jmondi.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 16 Oct 2020 13:50:34 +0200
-Message-ID: <CAMuHMdUof5Yb=5notGDYycJtZyLzGp2RPjJ=m6GVodBRDxw9ow@mail.gmail.com>
-Subject: Re: [PATCH v3 2/7] dt-bindings: media: max9286: Document 'maxim,high-threshold'
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Received: by 2002:a05:7000:3c47:0:0:0:0 with HTTP; Fri, 16 Oct 2020 04:50:56
+ -0700 (PDT)
+Reply-To: sgtkaylam28@gmail.com
+From:   SgtKayla Manthey <sidoineakouma@gmail.com>
+Date:   Fri, 16 Oct 2020 04:50:56 -0700
+Message-ID: <CAG8ZY6TXfEtkNxUP===8Cx+JeKKXgEY8NxoY-19ZXtbrYsfr1A@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
-
-On Fri, Oct 16, 2020 at 12:09 PM Jacopo Mondi <jacopo+renesas@jmondi.org> wrote:
-> Document the 'maxim,high-threshold' vendor property in the bindings
-> document of the max9286 driver.
->
-> The newly introduced boolean property allows controlling the initial
-> configuration of the GMSL reverse control channel to accommodate
-> remote serializers pre-programmed with the high threshold power
-> supply noise immunity enabled.
->
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-
-Thanks for your patch!
-
-> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> @@ -51,6 +51,19 @@ properties:
->    '#gpio-cells':
->      const: 2
->
-> +  maxim,high-threshold:
-> +    description: |
-> +      A boolean property to increase the initial amplitude of the reverse
-> +      control channel to compensate for remote serializers pre-programmed with
-> +      high threshold noise-immunity.
-> +
-> +      Some camera modules (in example the RDACM20 one) include an on-board MCU
-> +      that pre-programs the embedded serializer with reverse channel power
-> +      supply noise immunity enabled. The deserializer shall increase its
-> +      reverse channel amplitude to compensate that and be able to communicate
-> +      with the remote end.
-> +    type: boolean
-
-Does this "high" threshold correspond to some numerical value?
-I.e. could we run into a future need to support more values than just
-true/false?
-If yes, we may want to use a numerical value from the start.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Greetings,
+My name is Kayla please did you receive my previous message? Write me back.
