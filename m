@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DAF2907F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961402907FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409797AbgJPPJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407453AbgJPPI7 (ORCPT
+        id S2409246AbgJPPLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:11:39 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:45509 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406926AbgJPPLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:08:59 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C67C061755;
-        Fri, 16 Oct 2020 08:08:59 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id h6so1629083pgk.4;
-        Fri, 16 Oct 2020 08:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a+hPhVaR5GY+I1MleoS6eNBmSlE2W0O1gZm+rdUy6VU=;
-        b=c+4sNBaGoiaDiRNFEdp0bwVWGYXXUMH965l+YcIpbMy8wy+slJJuqh516o/Uvq/vpS
-         zTxHVTvOpefYrwUk2jR1ObuypvVckXAM/zAJA3SmDBFWFBd8Wp7xOMvTRcglC4tPGSEm
-         ZYI2ZRKHcE4l17rSmwzZSxx9Ops4tqJB/Z+62R1BnslNTuCkoQyG2GumWstmFnJgY1/w
-         SQkYI76RiMmm0rCq//R8nerKrurXDTfke4SobxpzJ8kdm4UhSUKpwo6ghkU3+bWMnxYh
-         i/RGhDwRbbOL8YyjUZDEvLKZJtkjg1TBZGjRSJjMXrjGrL0FZBJ48DeHKtdxDGTI4vTT
-         uYXw==
+        Fri, 16 Oct 2020 11:11:38 -0400
+Received: by mail-oi1-f193.google.com with SMTP id j7so2750686oie.12;
+        Fri, 16 Oct 2020 08:11:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=a+hPhVaR5GY+I1MleoS6eNBmSlE2W0O1gZm+rdUy6VU=;
-        b=AqoJ8pVNhBJrkWmhSpAKj8EXoMq9IyEVErQ4HnE6/yzcHdPrEC+HelsnQZVw20bwdT
-         2tx/pgpFfmIdWEwK+PNbhX15rY65DOrx1MBa8n9fJ04Ag718HQ65WJgZWVtkQiDGhBKb
-         Xbe0tmBmo+JE+tjMp39O3uQ4zwDVjmwjjizhuqNc9vaRVk8w84kt3KK80+7LhPw78Jkf
-         2ZKue4qRMqHYIXwH9dVHxzYGFlxKctmTE/w2+OUaV2nAwiXqYEXGnxZ2d8p7yZvx+Ib7
-         +dc71JVk5+pI4tw+8ChSm1Z+eBZygmrVfkAUsOwKmr9JJdaUn+kwWniOHEe3xHvKC1l/
-         5kMQ==
-X-Gm-Message-State: AOAM531sgPNklNIZnX7YX7FFxJyHYM9Q/zSnXwJrmsn31uGJPyywtDe8
-        sYPkRLs99Bc31GJMotDv0Lj4XRaAU0oyNWQ81Q4=
-X-Google-Smtp-Source: ABdhPJxH69gtM7S4sKUktYCoPE8j5Os4acTrvawLtfWPvOYEo0j/tKYuikKH0LqtRFJP/tnn1Jn7/hC17nXTyFrjiW8=
-X-Received: by 2002:a05:6a00:22c2:b029:156:543:7c1d with SMTP id
- f2-20020a056a0022c2b029015605437c1dmr4012698pfj.40.1602860939282; Fri, 16 Oct
- 2020 08:08:59 -0700 (PDT)
+        bh=d1cWWdYktv9KzOmDwgjjOczko8U/7YWosUu3S0VLH7A=;
+        b=dF8bUXGCAnZgBFj4ABCpa5eHLuoVdUhP4OJspb+JDvYNVKgCIFQQPme/UVJroPS2Gl
+         zehFvIfxmn8u0pQwD4juBtnIzs5S/YPfZxSN3fcP/HZroJUKRELtdpsdAeMIUQG9FG7c
+         mtuqf4qPBxYOXeurHwmKK4EAmDjnSOaHIk9EMV134/vFSR23s8I1JqqEA8R8UQwKLaqr
+         Gy/b6lhFQQrlPathVUA0NpEl1nKnho7qpzOSgvhIsATP3wVl0J1n0uHG9eDZC5B+tkbt
+         LCtGkmGX8zFgO3WVGx0oVkrZ1BDREJhR4iDNlWakULhchq4K2/3d2jWYTF6q0woPytg7
+         a+eQ==
+X-Gm-Message-State: AOAM530vUdRN4BUqYLBbOFsVIEQXMCsCcbc7S3ToTuWHkt8pvifpj2eX
+        Z1fYJI8ylHnCZvZc+Cis+GyuxvmNMP3kFLf26xs=
+X-Google-Smtp-Source: ABdhPJzt1e/31LrtSJL1Z+WRHh7ll27TcGg5kT7kfGc85/OMNjQlPkJNhXDpjSLUM6NqK7gUjZO/eVNnJVUFf9kXV5M=
+X-Received: by 2002:aca:fd52:: with SMTP id b79mr2806924oii.69.1602861097688;
+ Fri, 16 Oct 2020 08:11:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201011160748.4a47b889@archlinux> <1602440546-2376-1-git-send-email-LinoSanfilippo@gmx.de>
-In-Reply-To: <1602440546-2376-1-git-send-email-LinoSanfilippo@gmx.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 16 Oct 2020 18:09:48 +0300
-Message-ID: <CAHp75VfQ=fFn_r43VPV0uPCkozS2K=VQsuSEyj0mF+7QVsFQuA@mail.gmail.com>
-Subject: Re: [PATCH v2] iio:core: In map_array_register() cleanup in case of error
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201012125033.2809-1-amonakov@ispras.ru>
+In-Reply-To: <20201012125033.2809-1-amonakov@ispras.ru>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 16 Oct 2020 17:11:26 +0200
+Message-ID: <CAJZ5v0ggvwHhkZHNf2V+fk=vxQjVN_twL8TD7BFhz6jzjnR5vw@mail.gmail.com>
+Subject: Re: [PATCH v2] intel_idle: mention assumption that wbinvd is not needed
+To:     Alexander Monakov <amonakov@ispras.ru>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 9:24 PM Lino Sanfilippo <LinoSanfilippo@gmx.de> wrote:
+On Mon, Oct 12, 2020 at 2:51 PM Alexander Monakov <amonakov@ispras.ru> wrote:
 >
-> In function map_array_register() properly rewind in case of error.
-> Furthermore remove the now superfluous initialization of "ret" with 0.
-
->  int iio_map_array_register(struct iio_dev *indio_dev, struct iio_map *maps)
->  {
-> -       int i = 0, ret = 0;
-> +       int i = 0, ret;
->         struct iio_map_internal *mapi;
+> Intel SDM does not explicitly say that entering a C-state via MWAIT will
+> implicitly flush CPU caches as appropriate for that C-state. However,
+> documentation for individual Intel CPU generations does mention this
+> behavior.
 >
->         if (maps == NULL)
-> @@ -44,7 +44,18 @@ int iio_map_array_register(struct iio_dev *indio_dev, struct iio_map *maps)
->                 list_add_tail(&mapi->l, &iio_map_list);
->                 i++;
->         }
-> +       mutex_unlock(&iio_map_list_lock);
-> +
-> +       return 0;
-> +
->  error_ret:
+> Since intel_idle binds to any Intel CPU with MWAIT, list this assumption
+> of MWAIT behavior. In passing, reword opening comment to make it clear
+> that the driver can load on any old and future Intel CPU with MWAIT.
+>
+> Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
+> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>
+> v2: reword remark about WBINVD (Rafael)
+>
+>  drivers/idle/intel_idle.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index f4495841bf68..6d87f2129119 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -8,7 +8,7 @@
+>   */
+>
+>  /*
+> - * intel_idle is a cpuidle driver that loads on specific Intel processors
+> + * intel_idle is a cpuidle driver that loads on all Intel CPUs with MWAIT
+>   * in lieu of the legacy ACPI processor_idle driver.  The intent is to
+>   * make Linux more efficient on these processors, as intel_idle knows
+>   * more than ACPI, as well as make Linux more immune to ACPI BIOS bugs.
+> @@ -20,7 +20,11 @@
+>   * All CPUs have same idle states as boot CPU
+>   *
+>   * Chipset BM_STS (bus master status) bit is a NOP
+> - *     for preventing entry into deep C-stats
+> + *     for preventing entry into deep C-states
+> + *
+> + * CPU will flush caches as needed when entering a C-state via MWAIT
+> + *     (in contrast to entering ACPI C3, in which case the WBINVD
+> + *     instruction needs to be executed to flush the caches)
+>   */
+>
+>  /*
+> --
 
-Wait a bit.
-First of all we linked all successfully added items to the list.
-From this we have two ways to go:
- - leave with as many maps as we registered
- - clean up and bail out
-
-I dunno which one would play better in IIO, but you seem to go with
-the latter one.
-
-> +       /* undo */
-> +       while (i--) {
-> +               mapi = list_last_entry(&iio_map_list, struct iio_map_internal,
-> +                                      l);
-> +               list_del(&mapi->l);
-> +               kfree(mapi);
-> +       }
-
-We have iio_map_array_unregister(). Why not use it?
-
->         mutex_unlock(&iio_map_list_lock);
-
-I would rather drop a label with replacement goto -> break inside the
-loop and call the following
-
-
-        mutex_unlock(&iio_map_list_lock);
-if (ret)
-  iio_map_array_unregister();
-return ret;
-
-Sounds like only a few LOCs are needed.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Applied as 5.10-rc material, thanks!
