@@ -2,76 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C18A28FEC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0198628FECE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404342AbgJPHAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41044 "EHLO
+        id S2394476AbgJPHDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404330AbgJPHAg (ORCPT
+        with ESMTP id S2391475AbgJPHDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:00:36 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330B1C061755;
-        Fri, 16 Oct 2020 00:00:36 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id u19so2557997ion.3;
-        Fri, 16 Oct 2020 00:00:36 -0700 (PDT)
+        Fri, 16 Oct 2020 03:03:32 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8035DC061755;
+        Fri, 16 Oct 2020 00:03:32 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x13so926975pfa.9;
+        Fri, 16 Oct 2020 00:03:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jLX4tjetRKA0PHysqPRRicfLzPtIoW91Ix3UaAsDkAQ=;
-        b=lM2A1SkJeHKn/589JN7Rcy6DLmtQ22uuUWp7ZKgzrST+0Ay3G5BLs68yMx8YTLxVdD
-         ksoUhGKLlbAdV370+mkh2N4C42rWKHKH57UOgXNyiqCOLbX4B7vKQCLKBXJCqaj2Pd/+
-         LIkp+D0Ly+DDN0UN/qg4HRlFX/A9ukomIqWLvkilCLg6jtJJOe4xbtEjPZJ3ckcu43uG
-         vd+W2+2+H30W3qAZ5xFVPbFd713k1DprkJZ0dvuDKwvyMK8v9Tx9cOMUWjax6VkuDpM1
-         S3oLs0l8+TEeKPbn6RroedX9CTS5yzqjMXU4hNLRQSD+uDdZMzuxS97REkO/cF3DNzvT
-         4jVQ==
+        h=content-transfer-encoding:mime-version:subject:from:in-reply-to
+         :date:cc:message-id:references:to;
+        bh=gZuqvmeZLiB4EetTt35Ahi6N1kjCZ4lqMWrOBCtfCBw=;
+        b=up3tNrQxBaE40+eqR/OR+ddHRuuz+YYuC7b7qxK7/TYAk0j4PiBoieKghL3hkrDtWo
+         HZpISr7SwtAJdn2lW/aVRBfH5NbGcYRr3tR4nbmP0AzxSKUi8PmQiHfwL4IKYaJ99tUM
+         k/wtnSc+InTj1VNBadeTBccPRWVCRVigfHt16YUUJpIoV4TjwKEveGtErheofOVbqn/h
+         oDo+Kj7rEWBXgWez2pwrQWfM19cUD71Wkzg2t7xCY1/SMWbktE402LXStCxtsvJhqVlh
+         r/BBJITIrmYBy+1pdxnBqr64PHRrA8Aqzfjo1aUMFYSXW05phnVIySlBxEFatUqJP70e
+         1zgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jLX4tjetRKA0PHysqPRRicfLzPtIoW91Ix3UaAsDkAQ=;
-        b=ndc1zJdX3PGo4fIhzw32tTbsC3crYmBbKM9oNdJPXVlDHY49bsVm6HrDg9D/+BZokS
-         GbYHTrsW6OKEDD0UkR22SPjNjcGLrLwEnzmNR2lRxE2NgRWZuWxclNiVsmLNZAAthSJ6
-         j+ce8J2F3zi0LRbaTJuKE0sv8LNFRmLrMQn4VSxNX04svtCIMp6++CaDCA8SNpNUGVnm
-         Kdp+DNAYUbvRYuVBie0yBtKRtjyNUXea6ki5va2IfKf5XxEUoDgf6+PoK+R+JF0lpYhG
-         PuUDSdImH/XKu260n1RAWnyBHgL7QYU/hFi+Q1BvCf/jmUY1V+Ywc7mVYG/VY17+TVGS
-         EKig==
-X-Gm-Message-State: AOAM533P2cPkDz8rP/EC78II9Po7nuMSUv4nkwi9UaK0jgWaSVCLuQS8
-        Em6V13dEjHv9upASAuIpU8z2yGTSS+9VBjPOPKg=
-X-Google-Smtp-Source: ABdhPJyC+ZT0LhfpxJkVNKRfWURve8qq2+TPFnG/9acZvbeoYoUUWhR0dm1V+hqHw6E97nrueuLJ/rWyk1/AOl2WuBc=
-X-Received: by 2002:a5d:8487:: with SMTP id t7mr1402987iom.35.1602831635544;
- Fri, 16 Oct 2020 00:00:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201015104649.2104432-1-a.nogikh@gmail.com> <20201015104649.2104432-2-a.nogikh@gmail.com>
- <20201015153009.GA26517@mail.hallyn.com>
-In-Reply-To: <20201015153009.GA26517@mail.hallyn.com>
-From:   Aleksandr Nogikh <a.nogikh@gmail.com>
-Date:   Fri, 16 Oct 2020 10:00:25 +0300
-Message-ID: <CADpXja-oWx7K4Zcsv57boUhg08-JhxzSYiVpWSNh9DfpxKTXjA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] security: add fault injection capability
-To:     "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     jmorris@namei.org, akinobu.mita@gmail.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org,
-        Aleksandr Nogikh <nogikh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:content-transfer-encoding:mime-version:subject
+         :from:in-reply-to:date:cc:message-id:references:to;
+        bh=gZuqvmeZLiB4EetTt35Ahi6N1kjCZ4lqMWrOBCtfCBw=;
+        b=VwDbg4i2A7KI+W6LdqSC8ZZtn6SRM0MgZzI7cGUs06rnThn0Y7305tJ55zACaxdP+l
+         Z+yudciXhBYy32TtuRvnMZhEuYIIb6JzU1/5amvx1g9eQ8PsXS5r0J+eZh+119TVzJjv
+         steEBTHFWXuQo/1dNy/e88Dw5WDjhcOUfiYBfkCUsttexq/SU3MrDHX5gx1huF4Skd2F
+         NYwlxFTb1w/TIt3Vp/GajmA9sVCewuyzWGQ8h9LxO83LqV1dRP8/w9gJE41O1PnRhQQJ
+         2V/Ls9LGkcL3XRt8HdkZkh17fEGP5Sos2jor5Mh5ISofFagWWq4Ssb8a9ouYr2/pZu7J
+         2hdA==
+X-Gm-Message-State: AOAM531D9511dqQGYOLHyM/EvXInHi4aUv+BAoi9Goxi6FIRvLIVLo96
+        xlCxYTxGJMD2IOaUCfrSHcc=
+X-Google-Smtp-Source: ABdhPJz1CwgI2WS9NnLr3NQL/Qbp2ctqKJ8+y1sUimSFcDxbM+JFzvLgL2DBxP3iRIm7LnD/0ctNTw==
+X-Received: by 2002:a65:64cc:: with SMTP id t12mr2057175pgv.106.1602831811915;
+        Fri, 16 Oct 2020 00:03:31 -0700 (PDT)
+Received: from [102.164.189.252] ([175.223.34.209])
+        by smtp.gmail.com with ESMTPSA id g1sm1555127pfm.124.2020.10.16.00.03.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 00:03:30 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 1/2] MAINTAINERS: Move Kukjin Kim to credits
+From:   Kukjin Kim <kgene.kim@gmail.com>
+In-Reply-To: <20201016061848.6258-1-krzk@kernel.org>
+Date:   Fri, 16 Oct 2020 16:03:28 +0900
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, arm@kernel.org, soc@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Kukjin Kim <kgene@kernel.org>
+Message-Id: <4A6641A3-2D1A-47AE-8330-8E3F269145CB@gmail.com>
+References: <20201016061848.6258-1-krzk@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+X-Mailer: iPhone Mail (18A393)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020 at 18:30, Serge E. Hallyn <serge@hallyn.com> wrote:
-[...]
-> seeing 'should_fail' here, kind of out of context, would be confusing to
-> thousands of ppl reading the code and wondering why it should fail.  maybe
-> "inject_fail_lsm_hook()" ?
 
-Sounds reasonable, thank you for the suggestion. I'll rename this
-function in v2.
+> 10/16/20 PM 3:19, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+
+Hi Krzysztof,
+
+Thanks for your maintaining :)
+I=E2=80=99m fine on this change.
+
+> =EF=BB=BFKukjin Kim has been maintaining the Samsung ARM architectures sin=
+ce 2010
+> up to 2016.  He contributed many patches for the S3C, S5P and Exynos
+> support.  However since 2016 there is little activity from him on the
+> LKML [1] so move his name to the CREDITS.
+>=20
+> Dear Kukjin, thank you for all the effort you put in to the upstream
+> Samsung support.
+>=20
+> [1] https://lore.kernel.org/lkml/?q=3Df%3A%22Kukjin+Kim%22
+>=20
+> Cc: Kukjin Kim <kgene@kernel.org>
+Acked-by: Kukjin Kim <kgene@kernel.org>
+
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Olof Johansson <olof@lixom.net>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+> CREDITS     | 4 ++++
+> MAINTAINERS | 2 --
+> 2 files changed, 4 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/CREDITS b/CREDITS
+> index cb02b9923a52..5df027e12ff7 100644
+> --- a/CREDITS
+> +++ b/CREDITS
+> @@ -1910,6 +1910,10 @@ S: 660 Harvard Ave. #7
+> S: Santa Clara, CA 95051
+> S: USA
+>=20
+> +N: Kukjin Kim
+> +E: kgene@kernel.org
+> +D: Samsung S3C, S5P and Exynos ARM architectures
+> +
+> N: Russell King
+> E: rmk@arm.linux.org.uk
+> D: Linux/arm integrator, maintainer & hacker
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 4538378de6f5..c3976803057c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2375,7 +2375,6 @@ F:    sound/soc/rockchip/
+> N:    rockchip
+>=20
+> ARM/SAMSUNG EXYNOS ARM ARCHITECTURES
+> -M:    Kukjin Kim <kgene@kernel.org>
+> M:    Krzysztof Kozlowski <krzk@kernel.org>
+> L:    linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)=
+
+> L:    linux-samsung-soc@vger.kernel.org
+> @@ -15497,7 +15496,6 @@ F:    include/linux/clk/samsung.h
+> F:    include/linux/platform_data/clk-s3c2410.h
+>=20
+> SAMSUNG SPI DRIVERS
+> -M:    Kukjin Kim <kgene@kernel.org>
+> M:    Krzysztof Kozlowski <krzk@kernel.org>
+> M:    Andi Shyti <andi@etezian.org>
+> L:    linux-spi@vger.kernel.org
+> --=20
+> 2.25.1
+>=20
