@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C0329022F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C0C290230
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406382AbgJPJrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:47:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38192 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406221AbgJPJrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:47:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602841627;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BDB5UEUrkBNCh2xtKefDnttBa3itZcKarLkBKMAP85c=;
-        b=GHhY115QpXOP/li/piMyOcErB3jxQAbmT6uDTeto7iEt7jEEWDFm46UWJgxB4J70q7CxEx
-        Y9R+JypcumFRJAyZvNv3+bF70X6pTJk+b/87IhZz5Oire3KSpPPdvRmWezqnb2y3L7LfJs
-        Mr50b0oRnRY9v94DQAmV5cY48PP8mRg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ACAD6ACF1;
-        Fri, 16 Oct 2020 09:47:07 +0000 (UTC)
-Date:   Fri, 16 Oct 2020 11:47:02 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Richard Palethorpe <rpalethorpe@suse.com>
-Cc:     Roman Gushchin <guro@fb.com>, ltp@lists.linux.it,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from
- charging root
-Message-ID: <20201016094702.GA95052@blackbook>
-References: <20201014190749.24607-1-rpalethorpe@suse.com>
+        id S2406392AbgJPJtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:49:06 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39779 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405433AbgJPJtG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:49:06 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kTMMB-00054p-U9; Fri, 16 Oct 2020 09:49:03 +0000
+Subject: Re: [PATCH] vfio/fsl-mc: fix the return of the uninitialized variable
+ ret
+To:     Diana Craciun OSS <diana.craciun@oss.nxp.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201015122226.485911-1-colin.king@canonical.com>
+ <20201015125211.3ff46dc1@w520.home>
+ <65c7ffdb-fa92-102d-d7d1-29bb7d39fcb7@oss.nxp.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <556df27a-d4aa-ccbf-7559-52b7c0e05c0f@canonical.com>
+Date:   Fri, 16 Oct 2020 10:49:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jI8keyz6grp/JLjh"
-Content-Disposition: inline
-In-Reply-To: <20201014190749.24607-1-rpalethorpe@suse.com>
+In-Reply-To: <65c7ffdb-fa92-102d-d7d1-29bb7d39fcb7@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16/10/2020 10:26, Diana Craciun OSS wrote:
+> On 10/15/2020 9:52 PM, Alex Williamson wrote:
+>> On Thu, 15 Oct 2020 13:22:26 +0100
+>> Colin King <colin.king@canonical.com> wrote:
+>>
+>>> From: Colin Ian King <colin.king@canonical.com>
+>>>
+>>> Currently the success path in function vfio_fsl_mc_reflck_attach is
+>>> returning an uninitialized value in variable ret. Fix this by setting
+>>> this to zero to indicate success.
+>>>
+>>> Addresses-Coverity: ("Uninitialized scalar variable")
+>>> Fixes: f2ba7e8c947b ("vfio/fsl-mc: Added lock support in preparation
+>>> for interrupt handling")
+>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>> ---
+>>>   drivers/vfio/fsl-mc/vfio_fsl_mc.c | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>>> b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>>> index 80fc7f4ed343..42a5decb78d1 100644
+>>> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>>> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>>> @@ -84,6 +84,7 @@ static int vfio_fsl_mc_reflck_attach(struct
+>>> vfio_fsl_mc_device *vdev)
+>>>           vfio_fsl_mc_reflck_get(cont_vdev->reflck);
+>>>           vdev->reflck = cont_vdev->reflck;
+>>>           vfio_device_put(device);
+>>> +        ret = 0;
+>>>       }
+>>>     unlock:
+>>
+>> Looks correct to me, unless Diana would rather set the initial value to
+>> zero instead.  Thanks,
+>>
+>> Alex
+>>
+> 
+> 
+> I prefer to initialize the variable to 0 when it's defined. I'll send a
+> patch for it.
 
---jI8keyz6grp/JLjh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yep, works for me.
 
-Hello.
+> 
+> Thanks,
+> Diana
 
-On Wed, Oct 14, 2020 at 08:07:49PM +0100, Richard Palethorpe <rpalethorpe@suse.com> wrote:
-> SLAB objects which outlive their memcg are moved to their parent
-> memcg where they may be uncharged. However if they are moved to the
-> root memcg, uncharging will result in negative page counter values as
-> root has no page counters.
-Why do you think those are reparented objects? If those are originally
-charged in a non-root cgroup, then the charge value should be propagated up the
-hierarchy, including root memcg, so if they're later uncharged in root
-after reparenting, it should still break even. (Or did I miss some stock
-imbalance?)
-
-(But the patch seems justifiable to me as objects (not)charged directly to
-root memcg may be incorrectly uncharged.)
-
-Thanks,
-Michal
-
---jI8keyz6grp/JLjh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl+JbBAACgkQia1+riC5
-qSjC0w//aMd+WraEXQVcGywU5HBwq4ZhMLA8dUsyH97TuiT8gtiKLwMm/uwbS7HC
-D7h+DRxt7TdyUrTAqmmQpqbfDL1hBRUXvBHpy8SxLYqulPYmSpt2WIKNP7ph3e6J
-A4RGJqUxI5p0tepxMYD9ixRNaGH8mR7koXgGsxBsFTgXOnQiwwDbJuXoVcf4zpAR
-Niel4m7H4BHrzqeas8NQMN6oe+cLyMVz3M3pH/GCNwDRztVFSe+23ygJYxZ3R+3M
-Kd7FGn/Ny8izuDDEL786DojBi+uar+FlXMKPvhk6WJqGKsmMs63vxpClKnHECJ0d
-V/7ZQlqQeFkjyp1No+JnGOQbHUlgX4J9LQwF1mI9PpOP6u1enzk2briQ7GA1+kEd
-bMC8oyFdALFTUFqZNaNOKdrFLp2cTJLzxmy7FxGEfBtVkey/FGSFLFwPhi7EGKnQ
-fyIsIlZJnPE0LqNkj3WUJquGpA6YJLlJHsXAn79UI2qZaHLBH0IiebP8fUmkAwwX
-rg9v6BuK1/jOEJK79L6dTPrkbnuhyCpM79ww3opWdg67VOLdaPvvD14VL7ovPClE
-QO2p4PRN8soZo+bjSP0wx8N1FDKMsn0DN8GWdblqKxlS3rPltNcIjx7HZs1Nf8ef
-uMFg1Tf61euYE/nJxP7sxBMW+I+O6OtGo8Z15FqmjhO4K6UJv3c=
-=pMdi
------END PGP SIGNATURE-----
-
---jI8keyz6grp/JLjh--
