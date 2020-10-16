@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4A6290CC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8445290D07
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403843AbgJPUfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 16:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403788AbgJPUfA (ORCPT
+        id S2409915AbgJPVAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 17:00:34 -0400
+Received: from mxwww.masterlogin.de ([95.129.51.170]:58658 "EHLO
+        mxwww.masterlogin.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390931AbgJPVAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 16:35:00 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82303C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:35:00 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id qp15so5058040ejb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:35:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=DrXe8nq7zyAh3znAJW55dJ/CbHSN9L+XiHjQd4hlZAM=;
-        b=D+XL7zi/imriCBN1SpjcLu/xKgegulfNfgFK+KfZ5wbr0Chb8jkEZ7O0vduKjKEUQG
-         LV7Udv+2XbaRqdDwnhwNUWEXI534TV2/wM4c451yn/cZRX3IBaSXSj/UJFZnS2mib0z+
-         lXAoCVR34oXDcPQTJq5RfTKar5uGuAbvU14hQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=DrXe8nq7zyAh3znAJW55dJ/CbHSN9L+XiHjQd4hlZAM=;
-        b=ah2K5ZWhrWduViNgozgjDemZPm8UycFPrE5vgmevDAnPBZsrrdEONgV60oXuoOIJ2w
-         hwjdT8GZbjzvJfURAIn1iR0u4wfmlhGhPmJFDp15nw6W9eGpSOzR0f5nM0B2bl7YsZrz
-         0zjvJiMFucVUk4zumL3Xu5/pd4LKn6Y7WEpwd6PvKfaBZ5etqLuym9CVvaor6pTrc7L+
-         wuVspEjnCgvHcM5+8HqXX65zlFllUqIJSg+vey2/RiQremhO2tzCKKq/jaEQjVQ2kq/+
-         JRZ2gAx6/MzfpeiJpGYB4mpOgmGPXDD5OuWr+/F0oHbl6EL6Mds4oU1sRUJSXg4VaXkz
-         M45A==
-X-Gm-Message-State: AOAM533etWH5N7Kt72SxRV+QWyNXSVTFeYy9r1WyFBfIz+szudM2n3ER
-        M2+EcUahV7Fp10tvKZQXsCEAgQ==
-X-Google-Smtp-Source: ABdhPJyXuyCrMa43ja+v85kezMDo1vHd8ckKW5wKN2039mqfQMTw6UnE3QxXZ080eLM5I4/uOsCYRA==
-X-Received: by 2002:a17:906:6dc6:: with SMTP id j6mr5917255ejt.354.1602880499257;
-        Fri, 16 Oct 2020 13:34:59 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id j5sm2741679ejt.52.2020.10.16.13.34.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 13:34:58 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 22:34:53 +0200
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: [GIT PULL] overlayfs update for 5.10
-Message-ID: <20201016203453.GA327006@miu.piliscsaba.redhat.com>
+        Fri, 16 Oct 2020 17:00:34 -0400
+Received: from mxout1.routing.net (unknown [192.168.10.81])
+        by backup.mxwww.masterlogin.de (Postfix) with ESMTPS id 2D6BE2C45C;
+        Fri, 16 Oct 2020 20:40:47 +0000 (UTC)
+Received: from mxbox3.masterlogin.de (unknown [192.168.10.78])
+        by mxout1.routing.net (Postfix) with ESMTP id AE2E040200;
+        Fri, 16 Oct 2020 20:40:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1602880841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=eByxQJ3Uw+4BTez5687bqBmBgV7qeZW+tNKXlbDd5mo=;
+        b=CSs+7sEcIpTLCTKNIQgOYRsKkoXl/FP5ViCDZoRe3iZcWE7urOw/lVdgdiyKD9Ktu7JUr9
+        OGoHPObVhvnWBHgp7V/bpeTpB9q1eMRDtanFQQnjQwTPKdBa+Y1N+sro90ZPj/W6a5XqcO
+        O1dZYu/hbueXe8xYEi2mZ2+CozqTwXs=
+Received: from localhost.localdomain (fttx-pool-80.208.213.194.bambit.de [80.208.213.194])
+        by mxbox3.masterlogin.de (Postfix) with ESMTPSA id EA325360549;
+        Fri, 16 Oct 2020 20:40:40 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org
+Subject: [RFC 0/3] add available pwm for bananapi-r64
+Date:   Fri, 16 Oct 2020 22:40:16 +0200
+Message-Id: <20201016204019.2606-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Frank Wunderlich <frank-w@public-files.de>
 
-Please pull from:
+- mt7622 provides 6 pwm channels and only one is configured in dts
+- pinctl-driver contains 7 pwm-channels where one is currently used.
+- Mediatek confirmed that pwm7 does not exist and so dts is wrong
+  and also the pinctrl definitions.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.10
+Frank Wunderlich (3):
+  dts64: mt7622: enable all pwm for bananapi r64
+  dts64: mt7622: disable spi1 and uart2 because pins are used by pwm
+  pinctl: mt7622: drop pwm ch7 as mt7622 only has 6 channels
 
-- Improve performance for certain container setups by introducing a "volatile"
-  mode.
+ .../boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts   | 13 ++++++++-----
+ drivers/pinctrl/mediatek/pinctrl-mt7622.c           | 13 +------------
+ 2 files changed, 9 insertions(+), 17 deletions(-)
 
-- Ioctl improvements.
+-- 
+2.25.1
 
-- Continue preparation for unprivileged overlay mounts.
-
-Thanks,
-Miklos
-
----
-Amir Goldstein (3):
-      ovl: check for incompatible features in work dir
-      ovl: support [S|G]ETFLAGS and FS[S|G]ETXATTR ioctls for directories
-      ovl: use generic vfs_ioc_setflags_prepare() helper
-
-Miklos Szeredi (9):
-      duplicate ovl_getxattr()
-      ovl: clean up ovl_getxattr() in copy_up.c
-      ovl: fold ovl_getxattr() into ovl_get_redirect_xattr()
-      ovl: use ovl_do_getxattr() for private xattr
-      ovl: adhere to the vfs_ vs. ovl_do_ conventions for xattrs
-      ovl: drop flags argument from ovl_do_setxattr()
-      ovl: pass ovl_fs down to functions accessing private xattrs
-      ovl: enumerate private xattrs
-      ovl: rearrange ovl_can_list()
-
-Vivek Goyal (1):
-      ovl: provide a mount option "volatile"
-
----
- Documentation/filesystems/overlayfs.rst |  19 ++++++
- fs/overlayfs/copy_up.c                  |  59 ++++++++++++----
- fs/overlayfs/dir.c                      |   2 +-
- fs/overlayfs/export.c                   |   2 +-
- fs/overlayfs/file.c                     |  88 ++++++++++++++----------
- fs/overlayfs/inode.c                    |  32 +++++----
- fs/overlayfs/namei.c                    |  57 ++++++++--------
- fs/overlayfs/overlayfs.h                |  92 ++++++++++++++++---------
- fs/overlayfs/ovl_entry.h                |   6 ++
- fs/overlayfs/readdir.c                  |  76 ++++++++++++++++++---
- fs/overlayfs/super.c                    | 117 +++++++++++++++++++++++++++-----
- fs/overlayfs/util.c                     |  96 +++++++++++++-------------
- 12 files changed, 446 insertions(+), 200 deletions(-)
