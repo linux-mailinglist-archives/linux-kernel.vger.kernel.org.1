@@ -2,81 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11F2290A48
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC18290A4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436538AbgJPRHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:07:36 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:37279 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410150AbgJPRHf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:07:35 -0400
-Received: by mail-ot1-f66.google.com with SMTP id m22so3049993ots.4;
-        Fri, 16 Oct 2020 10:07:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VOnUBlYCol3UnYmGYrGOQTrAlxbpurYNGe8gXF8RHnk=;
-        b=uUyXuMcq1lppSmj9ZlVrx/bzSsiBVEAfaVn5dGvz1wwA49L7qY4khgccy9NLN+oVM3
-         TwVowGsm+MY9y7grdGrXpqUQFnzgnZgJvpqcXIgehMfXOUSE6j2CM9EFIXr/wvhxVVve
-         xesj2Evep/k4hYON7pyb5h9jGwySJIssaBYFJbz+ULDw28pfgcwzJIARRKTa9P5uXv4s
-         +Pf51iy8RoDFm721LONS/1K68FUf7PZpqRBUhiz8OmXcV8UsO1jzVfEjRrwTpnx0ZYZE
-         UmFNlyLOu8rStWRDJPjDgYDSCOmSOs1WddPHiiQkYLN9j3c2LLL0NGTDyNhmoJISByVW
-         aHjw==
-X-Gm-Message-State: AOAM530NNCC/BVanJpauZ/wQ6CGbxGOmhCOdnWtzqIFRSqNJqinh6kdH
-        pFRGlCg0UtXqHal98ijnag==
-X-Google-Smtp-Source: ABdhPJwg/aSdvLT6liD1DFywqtQD2ulJ09DrXmWwEbznkeBnRsDigukv0B1qfRnTkjDHe2MLKQ2teA==
-X-Received: by 2002:a9d:bee:: with SMTP id 101mr3169477oth.257.1602868052731;
-        Fri, 16 Oct 2020 10:07:32 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o14sm1149734ota.63.2020.10.16.10.07.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 10:07:32 -0700 (PDT)
-Received: (nullmailer pid 1583848 invoked by uid 1000);
-        Fri, 16 Oct 2020 17:07:30 -0000
-Date:   Fri, 16 Oct 2020 12:07:30 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Vinod Koul <vkoul@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Min Guo <min.guo@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: Re: [PATCH v2 4/8] dt-bindings: phy: convert HDMI PHY binding to
- YAML schema
-Message-ID: <20201016170730.GA1583813@bogus>
-References: <20201013085207.17749-1-chunfeng.yun@mediatek.com>
- <20201013085207.17749-4-chunfeng.yun@mediatek.com>
+        id S2436559AbgJPRHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:07:55 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:50396 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436535AbgJPRHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 13:07:52 -0400
+Received: from zn.tnic (p200300ec2f0d0d000a68ceadd6ffefc0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d00:a68:cead:d6ff:efc0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 224231EC050F;
+        Fri, 16 Oct 2020 19:07:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1602868071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=zfCrcyFm0qEpEYxy7QuMjtjaeZWx1kOCQyF1pdXhVCY=;
+        b=FiFC1V8lcCmd5jI89Esdiwa0VU+vFDmz4jC7dJU1WdOBs7n8dIVghDajZOzoDNUuQ6THBh
+        jpVmFAFHihaiGWf3hnoPiVeMSCv7vPhPu/JhdKJdqFwN+/l3SoQF7jUcKlTPk4Mp4ayEtO
+        M9NXKIwKiKE9k4o2kQva+uocjjT6wOU=
+Date:   Fri, 16 Oct 2020 19:07:42 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] x86/boot/64: Explicitly map boot_params and
+ command line
+Message-ID: <20201016170726.GH8483@zn.tnic>
+References: <20201008191623.2881677-1-nivedita@alum.mit.edu>
+ <20201008191623.2881677-5-nivedita@alum.mit.edu>
+ <20201016162759.GG8483@zn.tnic>
+ <20201016164755.GA1185111@rani.riverdale.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201013085207.17749-4-chunfeng.yun@mediatek.com>
+In-Reply-To: <20201016164755.GA1185111@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Oct 2020 16:52:03 +0800, Chunfeng Yun wrote:
-> Convert HDMI PHY binding to YAML schema mediatek,ufs-phy.yaml
-> 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
-> v2: fix binding check warning of reg in example
-> ---
->  .../display/mediatek/mediatek,hdmi.txt        | 17 +---
->  .../bindings/phy/mediatek,hdmi-phy.yaml       | 90 +++++++++++++++++++
->  2 files changed, 91 insertions(+), 16 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml
-> 
+On Fri, Oct 16, 2020 at 12:47:55PM -0400, Arvind Sankar wrote:
+> Just for clarity, by cleanups you mean patches 2 and 3? i.e. you want to
+> see 1, 4, 2, 3?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+It is important for:
+
+[PATCH v2 4/5] x86/boot/64: Explicitly map boot_params and command line
+
+to come first so that it goes in now.
+
+The rest:
+
+[PATCH v2 1/5] x86/boot: Initialize boot_params in startup code
+[PATCH v2 2/5] x86/boot: Split out command-line related declarations
+[PATCH v2 3/5] x86/boot/64: Show original faulting address in case of error
+
+can come in any order and when ready.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
