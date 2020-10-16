@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FBF2908AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DE92908B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410356AbgJPPlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:41:46 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:38966 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408610AbgJPPlp (ORCPT
+        id S2410361AbgJPPmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408608AbgJPPmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:41:45 -0400
-Received: by mail-oi1-f196.google.com with SMTP id c13so2890334oiy.6;
-        Fri, 16 Oct 2020 08:41:45 -0700 (PDT)
+        Fri, 16 Oct 2020 11:42:35 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD2BC061755;
+        Fri, 16 Oct 2020 08:42:35 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id p11so1488249pld.5;
+        Fri, 16 Oct 2020 08:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AAbghpaYZHbkqxI5bowqjpAtc3NHNID3auCHmv5xSqY=;
+        b=YBw/HrTYRU7xNRlN50SRo3xTSr6CvOaTWR11dIoj758OomuykXmZQrt4O2via32RfP
+         kBgXsXcB2oy0bA8vsJ1U5rSchWi+zYSGO8p9Nl7yBgrrs9FWs5fulA4oLkTu5TUh1rnD
+         N8fsS7ByF1Fecx4UBgfCyVrswLTa5crXvo/Tz/SsTtaTmCoNLAE09U8XLYh+7f5x7xaW
+         1pBiAECVkIRNjlYyYGHUqvt1XlyZVJPmk4PRPt89I6Y0H6pzsC0xtiXUl6LdaDy3+16M
+         XTNwLBfNuup8F6JmsgZ9z9eXpRGyqaHkZEaf6J5HggwhYzevRtQiUT8nAopsQK5pZ44j
+         /qzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wLNdAZob0B/HfCZfs4SRDuNnBT+b5bjOmS6VwnBTk1c=;
-        b=gZuxKBhr+2gI5vd8J1O6KXoEA3SA9DknL8NhW/oteOljvvJSQW7RlnYRKMKo22Z2Ce
-         dKSkvzLOUK0TYrrnppYl2DIakKMHOzCKcB1hGPpQX1vgp7HrujRPILK4OFjLHRd7jhcE
-         rOd7v97r3isHCO9EUqy9vUTX916PtPS/oSnAcN0RS68NYw/7G9YS17rcwvuyP3D7tPqW
-         fWrij8xUj4sWX4DcECkbVqCTg7v9HENOAYYK7olyVng3NdhcDzoGlB/XlxtcwfGvPmbk
-         LgJAQBkfpOO2EatDoOMXdC7sVP2WoJCkpk+stFc2X57ylUc72mmYB8hlveSs6JZMQmV0
-         m1mw==
-X-Gm-Message-State: AOAM533hw92m4nvZzDX2NVwjtqPZmi21zQAKm3m2lR3oMtD5w45nhWh/
-        4Y3uJr8lfpWfw25A5y8T9ypsZLopDVN49EvzXWU=
-X-Google-Smtp-Source: ABdhPJxNIl2elS5L/rj8wJdj9B92T+Gl6g2IY9jJsgPxco/8aXyzrkAkbfQGBxSIsFSjtao5ufV2VdflVfFtIsMrxCE=
-X-Received: by 2002:aca:724a:: with SMTP id p71mr2891999oic.157.1602862904691;
- Fri, 16 Oct 2020 08:41:44 -0700 (PDT)
+        bh=AAbghpaYZHbkqxI5bowqjpAtc3NHNID3auCHmv5xSqY=;
+        b=i0bmYJ3VqZG9h4k4G96YXQVv645gnK/GIDb/w7goyKSqjkRvO+WWq3yTsrmA6qk93c
+         zbM/2O4bygpoYcuRp6zIL0rxR+0OmMxqf64OEovFFKqSODB/HqQ8D5XlMde2l1dQ99fz
+         bhJGQ0DeR2pDel9zneykEs66Qw8gjAoOOjcj0bgfHYsDY4iKyGK1H2BV30LHVZFZqarF
+         z8GowV0qqexwZMY3WQwWojJXnbAPx+//rVZwFidA2I7QqCxLbfB1dA9Gjvk0MKxJWzbD
+         JMnjoqWSZgX+BEKYVpJS11ZjTxo3WLXiNtKxK5wBmcVVn48PSV4YFBuKjupod43/h78s
+         xkRg==
+X-Gm-Message-State: AOAM530iRoh/xNnrkJT0BKF0MrLYe27CFvEWzSSWmcA37RBgk06G7QLT
+        yyUUU5yw5FdiCci4tEe9bBKVq+MuTXxLcBigUtU=
+X-Google-Smtp-Source: ABdhPJxAX6hiE7Ts8mpORicINnf0zOKVYKb8a3OLR81zMNfEeORtZGXKk2cYZpL4TX4PT7tdEMseGRQIX5sXuDY/OI4=
+X-Received: by 2002:a17:902:ea8c:b029:d2:8abd:c8de with SMTP id
+ x12-20020a170902ea8cb02900d28abdc8demr4620759plb.21.1602862954641; Fri, 16
+ Oct 2020 08:42:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201013122339.450955-1-ulf.hansson@linaro.org>
-In-Reply-To: <20201013122339.450955-1-ulf.hansson@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 16 Oct 2020 17:41:33 +0200
-Message-ID: <CAJZ5v0iTn34nE6u2SK2Niz_NmQi8O7QUjPAkCZY2Mo42WzDAiw@mail.gmail.com>
-Subject: Re: [PATCH v3] PM: domains: Add support for PM domain on/off
- notifiers for genpd
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+References: <20201016153544.162611-1-justin.he@arm.com>
+In-Reply-To: <20201016153544.162611-1-justin.he@arm.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 16 Oct 2020 18:43:23 +0300
+Message-ID: <CAHp75Vexk_He78uHN-o4Cev4aUYM_doK6g-bvwfqgKwHm3mTvA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: dwapb: Fix missing conversion to GPIO-lib-based IRQ-chip
+To:     Jia He <justin.he@arm.com>
+Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 2:23 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+On Fri, Oct 16, 2020 at 6:36 PM Jia He <justin.he@arm.com> wrote:
 >
-> A device may have specific HW constraints that must be obeyed to, before
-> its corresponding PM domain (genpd) can be powered off - and vice verse at
-> power on. These constraints can't be managed through the regular runtime PM
-> based deployment for a device, because the access pattern for it, isn't
-> always request based. In other words, using the runtime PM callbacks to
-> deal with the constraints doesn't work for these cases.
+> Commit 0ea683931adb ("gpio: dwapb: Convert driver to using the
+> GPIO-lib-based IRQ-chip") missed the case in dwapb_irq_set_wake().
 >
-> For these reasons, let's instead add a PM domain power on/off notification
-> mechanism to genpd. To add/remove a notifier for a device, the device must
-> already have been attached to the genpd, which also means that it needs to
-> be a part of the PM domain topology.
->
-> To add/remove a notifier, let's introduce two genpd specific functions:
->  - dev_pm_genpd_add|remove_notifier()
->
-> Note that, to further clarify when genpd power on/off notifiers may be
-> used, one can compare with the existing CPU_CLUSTER_PM_ENTER|EXIT
-> notifiers. In the long run, the genpd power on/off notifiers should be able
-> to replace them, but that requires additional genpd based platform support
-> for the current users.
->
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Without this fix, probing the dwapb gpio driver will hit a error:
+> "address between user and kernel address ranges" on a Ampere armv8a
+> server and cause a panic.
+
+Thank you for a fix!
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+
+> Fixes: 0ea683931adb ("gpio: dwapb: Convert driver to using the
+> GPIO-lib-based IRQ-chip")
+
+Should be one line. But I think Bart or Linus may fix this problem if
+Serge is okay with a change in general.
+
+> Signed-off-by: Jia He <justin.he@arm.com>
 > ---
+>  drivers/gpio/gpio-dwapb.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> Changes in v3:
->         - Adopted suggestions from Peng Fan to allow more fine grained levels of
->         notifications, which is needed on some NXP platforms.
->         - Move the code that fires the notifications into _genpd_power_on|off(),
->         as it simply fits better in there.
+> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+> index a5b326754124..2a9046c0fb16 100644
+> --- a/drivers/gpio/gpio-dwapb.c
+> +++ b/drivers/gpio/gpio-dwapb.c
+> @@ -343,8 +343,8 @@ static int dwapb_irq_set_type(struct irq_data *d, u32 type)
+>  #ifdef CONFIG_PM_SLEEP
+>  static int dwapb_irq_set_wake(struct irq_data *d, unsigned int enable)
+>  {
+> -       struct irq_chip_generic *igc = irq_data_get_irq_chip_data(d);
+> -       struct dwapb_gpio *gpio = igc->private;
+> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+> +       struct dwapb_gpio *gpio = to_dwapb_gpio(gc);
+>         struct dwapb_context *ctx = gpio->ports[0].ctx;
+>         irq_hw_number_t bit = irqd_to_hwirq(d);
 >
-> Note that, I understand that some of us may be occupied with dealing with the
-> merge window, but I still wanted to get this submitted to allow those that have
-> some time to review and test.
+> --
+> 2.17.1
+>
 
-Appreciated. :-)
 
-Anyway, applied as 5.10-rc material, thanks!
+-- 
+With Best Regards,
+Andy Shevchenko
