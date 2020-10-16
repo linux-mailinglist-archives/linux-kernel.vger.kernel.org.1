@@ -2,105 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74150290616
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E608429061C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407025AbgJPNOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
+        id S2407220AbgJPNQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395334AbgJPNON (ORCPT
+        with ESMTP id S2407176AbgJPNQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:14:13 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3F3C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:14:13 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id y14so1465896pfp.13
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:14:13 -0700 (PDT)
+        Fri, 16 Oct 2020 09:16:00 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90033C061755;
+        Fri, 16 Oct 2020 06:16:00 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id h2so1252036pll.11;
+        Fri, 16 Oct 2020 06:16:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2v//XZb9addO+YnQGTuZ1rtYAQE5PbqfnjEF9yMyDoc=;
-        b=CpB0A1qLkDsgmfvKFlr7UWapLdP1M00owIA2ts+xR/6P+6yK9aTnPfr/6RsH0lcJ+l
-         rX5wPDmXPApN0QW7GUw/tRwsktOJgkS2wcU59h0u8CN8GJnM/Jtowgu1lUiN63H8RIKc
-         wx3+f+RTXRcFKXiqmhSmnjdxEoPbQN1uj5++a3/5ThnGYl42h1HmtPI3AcKCgMbUrAjb
-         vIIfwN2kfj2evVmwQ/OaNQDq4nl+TmJaTRNxpwtggZR8txOeD9QdwZhx2n1ZlKVL4k2R
-         Gx3S4zpiFqE7TM9VVfbXNrvpt3gpBIWZeiJmmYFzZstDxfviyixPE2I7Gn+DXEbmaFli
-         3tcg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ywZMHMoa9Z2/Mz63aoLeLWbP5S3RUkcpUs/A8T6Yyeg=;
+        b=D5961oYoWjrbxsHHTMOeZKBQ/TRF4he+KTOpPZPu0q9sMdCFZxI2NJkuWh8DjpTdbK
+         Nb5w+7ClTeSeXk/73DZv3Ng3yS/dPJntdavYpMrP62XQwzAJ/WvlX3XPyEh4iQC9M4am
+         HQYBvBfJdwdGYHfnKJC+NGj3FTpdC+uZeSFePGF/Wl6IWdZEJb96qzzH1Qtwg+DHQJvF
+         TwjoIySOE2x9Oz2SP9vf2lY8iBBGmGzkfyv+wQoKccbgN43y38sFaZc57A7hWtvqoe3D
+         Lfjjml5Pr8c3prYFdzy8gGZAxg1b5pQI1P1L3eCV+MGlQQ5YvmRlY1bGRrGAqgwcQFoc
+         B7cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2v//XZb9addO+YnQGTuZ1rtYAQE5PbqfnjEF9yMyDoc=;
-        b=K/BWq56so8ct9CuP0ci0XA9srpSLZ8ZG7WwmtQ80e/MVoLJSvlV5+rlwyLsVuql65P
-         zhjRHzrbeLk8Pjf8QBx/m/magKzYJdl0b4UzH0yvpTpsLvGNsX/Y6qrnqzULurQK6Vq5
-         NnCmlf62Fm24yMI7tvMQHWyA2GhWIg8c+JqsOyVDI2uKfSfqpDXrmetjY7RrCX2SrcT8
-         Yenq77l0ueVts6DhbnYC+a4gVGFvl6+bjFE/ed1sy1X/njIoQ+mDYSH52BmcjIrC9AM3
-         FxnLG/iZ0k7p3xmmIzGZS0fo1RSClA0Nc/uqyLLGBY4GktWCut9Ak62yMDAflg4jv3f9
-         0ieg==
-X-Gm-Message-State: AOAM533VEQ3/hyHXE+nD9033/PbC7krrRraTKeSxuGsNLG8T+50LAdTX
-        7XiiRlABSzdwraeMLIH17bjLUQ==
-X-Google-Smtp-Source: ABdhPJwpBt1lWaerL/zTVz8TqRFSN2H2X1ZaeEtayOXScEJOTVGGH1v+RUnnCnoUuu2gcA9u1B5ljg==
-X-Received: by 2002:a63:1865:: with SMTP id 37mr3186358pgy.322.1602854052978;
-        Fri, 16 Oct 2020 06:14:12 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([64.120.119.108])
-        by smtp.gmail.com with ESMTPSA id e5sm3587979pjd.0.2020.10.16.06.14.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 16 Oct 2020 06:14:12 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 21:14:07 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Suzuki Poulose <suzuki.poulose@arm.com>
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Denis Nikitin <denik@chromium.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Mike Leach <mike.leach@linaro.org>
-Subject: Re: [PATCH] coresight: etm4x: Add config to exclude kernel mode
- tracing
-Message-ID: <20201016131407.GA31839@leoy-ThinkPad-X240s>
-References: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
- <20201015160257.GA1450102@xps15>
- <CADDJ8CXS8gGuXL45vR6xiHwJhZNcUJPvHMVYSGR6LDETRPJFiQ@mail.gmail.com>
- <20201016072401.GC4646@leoy-ThinkPad-X240s>
- <f73ba98c345161f1835458182e6a0002@codeaurora.org>
- <20201016092450.GG4646@leoy-ThinkPad-X240s>
- <f6ee4156-664c-7bff-8e35-5cd1acdbaa84@arm.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ywZMHMoa9Z2/Mz63aoLeLWbP5S3RUkcpUs/A8T6Yyeg=;
+        b=G0+GT8vS2Z7ZWmrIsk1ZbKckM9DkKQ5d9BQ3voQ9grNYa+Vz4BHIVuwrMAQ79MIaRv
+         2TiONfu9AC/qHkyDE8AQwWFcqhCwyvASGW7mI4lH20/BSJ2V1jitirHHW2iHtVQ2JfRA
+         h422goSMp3xva2B3HDB4KC1Rr5ubk04oa8HlRGmgVXf1HVnh/WzMY909Usbv7DsaxIul
+         nM6x1Rartg3kMCGvh7Co7iVhNvKDIrA+L5dVnETfjl76Q+AyVagfNEVKztMKY6YCqAFX
+         u2Xuqy2EFD77boUKoA4M0R3v2W3hwnngLoyuS2IOJHCYusft7+6qyuerMgPlL9Rl/FX/
+         0F9g==
+X-Gm-Message-State: AOAM533hkplphf1BqfBBbpYfjFGVRYmpBgnChzPlTqrQrjSQqGEV1hV9
+        o7l8pDtZFM/pfC22Brs3W7E=
+X-Google-Smtp-Source: ABdhPJzZiFySSHjmf9JkgTm5CVtdFe+1MqqCGZN0AwBdYN0l1fJfu9gdvZmcESsUknwi1zG7/fqlYA==
+X-Received: by 2002:a17:902:c254:b029:d4:c2d4:15f with SMTP id 20-20020a170902c254b02900d4c2d4015fmr4055633plg.18.1602854159966;
+        Fri, 16 Oct 2020 06:15:59 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.207.75])
+        by smtp.gmail.com with ESMTPSA id q8sm2988144pfl.100.2020.10.16.06.15.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 06:15:59 -0700 (PDT)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Subject: [PATCH v5] bluetooth: hci_h5: fix memory leak in h5_close
+Date:   Fri, 16 Oct 2020 18:44:47 +0530
+Message-Id: <20201016131447.32107-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6ee4156-664c-7bff-8e35-5cd1acdbaa84@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 12:38:47PM +0100, Suzuki Kuruppassery Poulose wrote:
+When h5_close() is called, h5 is directly freed when !hu->serdev.
+However, h5->rx_skb is not freed, which causes a memory leak.
 
-[...]
+Freeing h5->rx_skb and setting it to NULL, fixes this memory leak.
 
-> > > What happens to the sysfs mode of tracing? For that we would still
-> > > need a config right to exclude kernel mode tracing completely.
-> > 
-> > IIUC, sysfs mode and perf mode both can apply the same approach, the
-> > guest OS runs a thread context for the host, so when a guest OS is
-> > switched in or out, the hypervisor can save/restore the context for
-> > the guest OS; thus every guest OS will have its dedicated context and
-> > trace data ideally.
-> 
-> I don't think Guest Context is something we can support as mentioned
-> above, at least for systems without sysreg access for ETMs (and virtualizing
-> ETRs is a different story !)
+Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
+Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+---
+Changes in v5:
+	* Set h5->rx_skb = NULL unconditionally - to improve code
+	  readability
+	* Update commit message accordingly
 
-Thanks for sharing thoughts, Suzuki.
+Changes in v4:
+	* Free h5->rx_skb even when hu->serdev
+	(Suggested by Hans de Goede <hdegoede@redhat.com>)
+	* If hu->serdev, then assign h5->rx_skb = NULL
 
-I missed the device virtulisation.  Here should virtualize all devices
-(includes CoreSight ETM/funnel/ETR/ETF)?  Or only need to virtualize
-ETRs?
+Changes in v3:
+	* Free h5->rx_skb when !hu->serdev, and fix the memory leak
+	* Do not incorrectly and unnecessarily call serdev_device_close()
 
-Obviously, this is a difficult task :)
+Changes in v2:
+	* Fixed the Fixes tag
 
-Thanks,
-Leo
+
+ drivers/bluetooth/hci_h5.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index e41854e0d79a..0ef253136b06 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -245,6 +245,9 @@ static int h5_close(struct hci_uart *hu)
+ 	skb_queue_purge(&h5->rel);
+ 	skb_queue_purge(&h5->unrel);
+ 
++	kfree_skb(h5->rx_skb);
++	h5->rx_skb = NULL;
++
+ 	if (h5->vnd && h5->vnd->close)
+ 		h5->vnd->close(h5);
+ 
+-- 
+2.25.1
+
