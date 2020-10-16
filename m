@@ -2,57 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847C728FE9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 08:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4EC28FEA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 08:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394499AbgJPGyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 02:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394162AbgJPGyV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 02:54:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D0DC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 23:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6qmV6T/fkjw04YEk4tETd5MpPwH/0OOPAH2ymP/DpVc=; b=ndM3N2H9UJgv0dwSmm6hAx628h
-        Hf6/x7fwbqfjb71sajdhWuHIdexSlUT6qZmoBnrUPftILWZJrSxKRkHQOKRFr/SL0J5xsFisirEHu
-        XXl3i4wFRhBxPGO8cF0ilc88GjbGphNnwUCVQ723Pr1nYon64Qxx3WfPINc+aGQKDubqhm75AWa19
-        0AMOAp/6O2St/+im05QN0aok38sjTB9vYYjApnZRfJy7GIfEuVUuI/yz6h/Unz6l53LdkYP0o4Bx4
-        lx6sbKjnUDN1wnpe1yHIIDarGrOUyQ/PoTWRdETrUjQfdl4bNsG85Xiucbhc6bpQMBcyKwaZToyWz
-        WqxkeE+w==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kTJcp-0002W2-I9; Fri, 16 Oct 2020 06:54:03 +0000
-Date:   Fri, 16 Oct 2020 07:54:03 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Christopher M. Riedl" <cmr@codefail.de>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 1/8] powerpc/uaccess: Add unsafe_copy_from_user
-Message-ID: <20201016065403.GA9343@infradead.org>
-References: <20201015150159.28933-1-cmr@codefail.de>
- <20201015150159.28933-2-cmr@codefail.de>
+        id S2404209AbgJPGzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 02:55:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394276AbgJPGzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 02:55:10 -0400
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C43220FC3;
+        Fri, 16 Oct 2020 06:55:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602831309;
+        bh=b3qDwjjAp5PHcyt8IPdk4OZdAwmA08qCD89V2qvJHaU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OnEMUDtfzK0gADScZPt2n5h2HkDxjKlzfLcIFiT2z0pNHcWCzFlaM+Gg9CdaS49Cm
+         GGa4rRxzT6s4z6RPwHyrwBHNffZ87P0maEvRUvVl6a9/aOKYXpqaTL3rvmlz1Kr4M4
+         OpYcEVUMGGBhILJAXeRULNbnv58Scz98UscOGpEM=
+Received: by mail-ot1-f51.google.com with SMTP id n15so1509338otl.8;
+        Thu, 15 Oct 2020 23:55:09 -0700 (PDT)
+X-Gm-Message-State: AOAM533klGXnv499aBIa7+HubRWuxuq2ixXUQZLD6yihODFiPlcLRent
+        tDXLy0hVinXRfsRItDIJKG/vno+oASIY0f+RxPg=
+X-Google-Smtp-Source: ABdhPJzFVaXBGl8dFNX52YrC8SMcHfjR/tZskK4YIqFusTZj+VMKn9rDGBEcRadGWaZ6KZRA07DaMJyrRkA2/apa6EA=
+X-Received: by 2002:a9d:6a85:: with SMTP id l5mr1646843otq.77.1602831308155;
+ Thu, 15 Oct 2020 23:55:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015150159.28933-2-cmr@codefail.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20201014191211.27029-1-nsaenzjulienne@suse.de>
+ <20201014191211.27029-8-nsaenzjulienne@suse.de> <1a3df60a-4568-cb72-db62-36127d0ffb7e@huawei.com>
+ <20201015180340.GB2624@gaia> <35faab1c-5c32-6cd3-0a14-77057dd223f5@huawei.com>
+In-Reply-To: <35faab1c-5c32-6cd3-0a14-77057dd223f5@huawei.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 16 Oct 2020 08:54:56 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFzYbr_mYm-zhsio2XV+KGgDBjtgy_NWNYnanyfU-U-Nw@mail.gmail.com>
+Message-ID: <CAMj1kXFzYbr_mYm-zhsio2XV+KGgDBjtgy_NWNYnanyfU-U-Nw@mail.gmail.com>
+Subject: Re: [PATCH v3 7/8] arm64: mm: Set ZONE_DMA size based on early IORT scan
+To:     Hanjun Guo <guohanjun@huawei.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 10:01:52AM -0500, Christopher M. Riedl wrote:
-> Implement raw_copy_from_user_allowed() which assumes that userspace read
-> access is open. Use this new function to implement raw_copy_from_user().
-> Finally, wrap the new function to follow the usual "unsafe_" convention
-> of taking a label argument. The new raw_copy_from_user_allowed() calls
-> __copy_tofrom_user() internally, but this is still safe to call in user
-> access blocks formed with user_*_access_begin()/user_*_access_end()
-> since asm functions are not instrumented for tracing.
+On Fri, 16 Oct 2020 at 08:51, Hanjun Guo <guohanjun@huawei.com> wrote:
+>
+> On 2020/10/16 2:03, Catalin Marinas wrote:
+> > On Thu, Oct 15, 2020 at 10:26:18PM +0800, Hanjun Guo wrote:
+> >> On 2020/10/15 3:12, Nicolas Saenz Julienne wrote:
+> >>> From: Ard Biesheuvel <ardb@kernel.org>
+> >>>
+> >>> We recently introduced a 1 GB sized ZONE_DMA to cater for platforms
+> >>> incorporating masters that can address less than 32 bits of DMA, in
+> >>> particular the Raspberry Pi 4, which has 4 or 8 GB of DRAM, but has
+> >>> peripherals that can only address up to 1 GB (and its PCIe host
+> >>> bridge can only access the bottom 3 GB)
+> >>>
+> >>> Instructing the DMA layer about these limitations is straight-forward,
+> >>> even though we had to fix some issues regarding memory limits set in
+> >>> the IORT for named components, and regarding the handling of ACPI _DMA
+> >>> methods. However, the DMA layer also needs to be able to allocate
+> >>> memory that is guaranteed to meet those DMA constraints, for bounce
+> >>> buffering as well as allocating the backing for consistent mappings.
+> >>>
+> >>> This is why the 1 GB ZONE_DMA was introduced recently. Unfortunately,
+> >>> it turns out the having a 1 GB ZONE_DMA as well as a ZONE_DMA32 causes
+> >>> problems with kdump, and potentially in other places where allocations
+> >>> cannot cross zone boundaries. Therefore, we should avoid having two
+> >>> separate DMA zones when possible.
+> >>>
+> >>> So let's do an early scan of the IORT, and only create the ZONE_DMA
+> >>> if we encounter any devices that need it. This puts the burden on
+> >>> the firmware to describe such limitations in the IORT, which may be
+> >>> redundant (and less precise) if _DMA methods are also being provided.
+> >>> However, it should be noted that this situation is highly unusual for
+> >>> arm64 ACPI machines. Also, the DMA subsystem still gives precedence to
+> >>> the _DMA method if implemented, and so we will not lose the ability to
+> >>> perform streaming DMA outside the ZONE_DMA if the _DMA method permits
+> >>> it.
+> >>
+> >> Sorry, I'm still a little bit confused. With this patch, if we have
+> >> a device which set the right _DMA method (DMA size >= 32), but with the
+> >> wrong DMA size in IORT, we still have the ZONE_DMA created which
+> >> is actually not needed?
+> >
+> > With the current kernel, we get a ZONE_DMA already with an arbitrary
+> > size of 1GB that matches what RPi4 needs. We are trying to eliminate
+> > such unnecessary ZONE_DMA based on some heuristics (well, something that
+> > looks "better" than a OEM ID based quirk). Now, if we learn that IORT
+> > for platforms in the field is that broken as to describe few bits-wide
+> > DMA masks, we may have to go back to the OEM ID quirk.
+>
+> Some platforms using 0 as the memory size limit, for example D05 [0] and
+> D06 [1], I think we need to go back to the OEM ID quirk.
+>
+> For D05/D06, there are multi interrupt controllers named as mbigen,
+> mbigen is using the named component to describe the mappings with
+> the ITS controller, and mbigen is using 0 as the memory size limit.
+>
+> Also since the memory size limit for PCI RC was introduced by later
+> IORT revision, so firmware people may think it's fine to set that
+> as 0 because the system works without it.
+>
 
-Please also add a fallback unsafe_copy_from_user to linux/uaccess.h
-so this can be used as a generic API.
+Hello Hanjun,
+
+The patch only takes the address limit field into account if its value > 0.
+
+Also, before commit 7fb89e1d44cb6aec ("ACPI/IORT: take _DMA methods
+into account for named components"), the _DMA method was not taken
+into account for named components at all, and only the IORT limit was
+used, so I do not anticipate any problems with that.
