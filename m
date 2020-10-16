@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7F529019D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904222900A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406324AbgJPJQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:16:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37424 "EHLO mail.kernel.org"
+        id S2394927AbgJPJHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:07:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394602AbgJPJIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:08:50 -0400
+        id S2394914AbgJPJHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:07:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FC1321582;
-        Fri, 16 Oct 2020 09:08:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D7B220848;
+        Fri, 16 Oct 2020 09:07:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602839318;
-        bh=rCuKaO0ItDgcez7vR2S0pKoYWlZRDIP/DdBssTSD7QY=;
+        s=default; t=1602839266;
+        bh=gtid9xbAtZXSLeYhxWdTEi4nnDY2sSpXJmi71eOpprw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zsvaPTdNWgz9WTRFmwDPUN/sdgOp/MJ89WyJ6e4H9m3QJM/yMp0Gc6vs32o+dKwvi
-         Oe/s7JA30jqDVz6jOjOT1n8q4MnkANN377Csi9AeDJUIN4wXO5jP85OBXUNPMTQ3Gh
-         WIkgdfhicD+m+JmtOPWz23HcCD+rqAHAAoWVJMjA=
+        b=xhkECl+mmOnCltQdBmpR8ZH5GTK/RCLAPcWOddkRpZ2pFztDXZ6C5T8kixxU+GL1L
+         T5B4eF86296tjbuhevs+gGkBSowP4Jjl1G5L67w5XECHWDT1lerIcjuTOEuCi6uYM2
+         fxoybRDa3Rvqzu+anscaevPa0fJ+mvIdQ3BKes9I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.14 08/18] media: usbtv: Fix refcounting mixup
-Date:   Fri, 16 Oct 2020 11:07:18 +0200
-Message-Id: <20201016090437.694246818@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+9b33c9b118d77ff59b6f@syzkaller.appspotmail.com,
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH 4.9 15/16] reiserfs: Fix oops during mount
+Date:   Fri, 16 Oct 2020 11:07:19 +0200
+Message-Id: <20201016090437.966431498@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201016090437.265805669@linuxfoundation.org>
-References: <20201016090437.265805669@linuxfoundation.org>
+In-Reply-To: <20201016090437.205626543@linuxfoundation.org>
+References: <20201016090437.205626543@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Jan Kara <jack@suse.cz>
 
-commit bf65f8aabdb37bc1a785884374e919477fe13e10 upstream.
+commit c2bb80b8bdd04dfe32364b78b61b6a47f717af52 upstream.
 
-The premature free in the error path is blocked by V4L
-refcounting, not USB refcounting. Thanks to
-Ben Hutchings for review.
+With suitably crafted reiserfs image and mount command reiserfs will
+crash when trying to verify that XATTR_ROOT directory can be looked up
+in / as that recurses back to xattr code like:
 
-[v2] corrected attributions
+ xattr_lookup+0x24/0x280 fs/reiserfs/xattr.c:395
+ reiserfs_xattr_get+0x89/0x540 fs/reiserfs/xattr.c:677
+ reiserfs_get_acl+0x63/0x690 fs/reiserfs/xattr_acl.c:209
+ get_acl+0x152/0x2e0 fs/posix_acl.c:141
+ check_acl fs/namei.c:277 [inline]
+ acl_permission_check fs/namei.c:309 [inline]
+ generic_permission+0x2ba/0x550 fs/namei.c:353
+ do_inode_permission fs/namei.c:398 [inline]
+ inode_permission+0x234/0x4a0 fs/namei.c:463
+ lookup_one_len+0xa6/0x200 fs/namei.c:2557
+ reiserfs_lookup_privroot+0x85/0x1e0 fs/reiserfs/xattr.c:972
+ reiserfs_fill_super+0x2b51/0x3240 fs/reiserfs/super.c:2176
+ mount_bdev+0x24f/0x360 fs/super.c:1417
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Fixes: 50e704453553 ("media: usbtv: prevent double free in error case")
+Fix the problem by bailing from reiserfs_xattr_get() when xattrs are not
+yet initialized.
+
 CC: stable@vger.kernel.org
-Reported-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reported-by: syzbot+9b33c9b118d77ff59b6f@syzkaller.appspotmail.com
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/media/usb/usbtv/usbtv-core.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/reiserfs/xattr.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/media/usb/usbtv/usbtv-core.c
-+++ b/drivers/media/usb/usbtv/usbtv-core.c
-@@ -113,7 +113,8 @@ static int usbtv_probe(struct usb_interf
+--- a/fs/reiserfs/xattr.c
++++ b/fs/reiserfs/xattr.c
+@@ -664,6 +664,13 @@ reiserfs_xattr_get(struct inode *inode,
+ 	if (get_inode_sd_version(inode) == STAT_DATA_V1)
+ 		return -EOPNOTSUPP;
  
- usbtv_audio_fail:
- 	/* we must not free at this point */
--	usb_get_dev(usbtv->udev);
-+	v4l2_device_get(&usbtv->v4l2_dev);
-+	/* this will undo the v4l2_device_get() */
- 	usbtv_video_free(usbtv);
- 
- usbtv_video_fail:
++	/*
++	 * priv_root needn't be initialized during mount so allow initial
++	 * lookups to succeed.
++	 */
++	if (!REISERFS_SB(inode->i_sb)->priv_root)
++		return 0;
++
+ 	dentry = xattr_lookup(inode, name, XATTR_REPLACE);
+ 	if (IS_ERR(dentry)) {
+ 		err = PTR_ERR(dentry);
 
 
