@@ -2,153 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602AA290A7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDF8290A83
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390632AbgJPRTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:19:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390321AbgJPRTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:19:34 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D71520704;
-        Fri, 16 Oct 2020 17:19:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602868773;
-        bh=9kLpyiAYynL4fs7VkW+MjrLNVjELYDZXp4v/TfTQB2g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=GymZvpishaFRuNxpLri5eyNg1vnMIzZZtcMQGadqRjYDKQs+DBJ1aLYaseEKL1gQO
-         hNqmhOskfTjxrfMXWgm33lr9Wd7HotwEJp7g/xSjHEo0FGlxB9IshW0iVLHwophT1o
-         38xb4xJ++9sNO0L7GtvbDFXyimmnRV6TxCV8Auw8=
-Date:   Fri, 16 Oct 2020 12:19:31 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sean V Kelley <seanvk.dev@oregontracks.org>
-Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v9 09/15] PCI/ERR: Add pci_walk_bridge() to
- pcie_do_recovery()
-Message-ID: <20201016171931.GA85196@bjorn-Precision-5520>
+        id S2390770AbgJPRV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:21:29 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:47170 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390433AbgJPRV3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 13:21:29 -0400
+Received: from tomoyo.flets-east.jp ([153.230.197.127])
+        by mwinf5d44 with ME
+        id ghMB2300J2lQRaH03hML2a; Fri, 16 Oct 2020 19:21:26 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 16 Oct 2020 19:21:26 +0200
+X-ME-IP: 153.230.197.127
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>
+Cc:     Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v4 2/4] can: dev: add a helper function to get the correct length of Classical frames
+Date:   Sat, 17 Oct 2020 02:20:23 +0900
+Message-Id: <20201016172053.229281-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
+References: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016001113.2301761-10-seanvk.dev@oregontracks.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 05:11:07PM -0700, Sean V Kelley wrote:
-> From: Sean V Kelley <sean.v.kelley@intel.com>
-> 
-> Consolidate subordinate bus checks with pci_walk_bus() into
-> pci_walk_bridge() for walking below potentially AER affected bridges.
-> 
-> [bhelgaas: fix kerneldoc]
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Link: https://lore.kernel.org/r/20201002184735.1229220-7-seanvk.dev@oregontracks.org
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/pci/pcie/err.c | 30 +++++++++++++++++++++++-------
->  1 file changed, 23 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 931e75f2549d..8b53aecdb43d 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -146,13 +146,30 @@ static int report_resume(struct pci_dev *dev, void *data)
->  	return 0;
->  }
->  
-> +/**
-> + * pci_walk_bridge - walk bridges potentially AER affected
-> + * @bridge:	bridge which may be a Port
-> + * @cb:		callback to be called for each device found
-> + * @userdata:	arbitrary pointer to be passed to callback
-> + *
-> + * If the device provided is a bridge, walk the subordinate bus, including
-> + * any bridged devices on buses under this bus.  Call the provided callback
-> + * on each device found.
-> + */
-> +static void pci_walk_bridge(struct pci_dev *bridge,
-> +			    int (*cb)(struct pci_dev *, void *),
-> +			    void *userdata)
-> +{
-> +	if (bridge->subordinate)
+In classical CAN, the length of the data (i.e. CAN payload) is not
+always equal to the DLC! If the frame is a Remote Transmission Request
+(RTR), data length is always zero regardless of DLC value and else, if
+the DLC is greater than 8, the length is 8. Contrary to common belief,
+ISO 11898-1 Chapter 8.4.2.3 (DLC field) do allow DLCs greater than 8
+for Classical Frames and specifies that those DLCs shall indicate that
+the data field is 8 bytes long.
 
-Remind me why we add this bridge->subordinate test?  I see that we're
-going to need it later, but I think we should add the test in the same
-patch that adds the case where "bridge->subordinate == NULL" becomes
-possible.
+Above facts are widely unknown and so many developpers uses the "len"
+field of "struct canfd_frame" to get the length of classical CAN
+frames: this is incorrect!
 
-Or else a note in this commit log about what's happening.
+This patch introduces function get_can_len() which can be used in
+remediation. The function takes the SKB as an input in order to be
+able to determine if the frame is classical or FD.
 
-AFAICT, this test is literally the only possible functional change in
-this patch, so the commit log should mention it.
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
 
-> +		pci_walk_bus(bridge->subordinate, cb, userdata);
-> +}
-> +
->  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  		pci_channel_state_t state,
->  		pci_ers_result_t (*reset_subordinates)(struct pci_dev *pdev))
->  {
->  	int type = pci_pcie_type(dev);
->  	struct pci_dev *bridge;
-> -	struct pci_bus *bus;
->  	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
->  
->  	/*
-> @@ -165,23 +182,22 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	else
->  		bridge = pci_upstream_bridge(dev);
->  
-> -	bus = bridge->subordinate;
->  	pci_dbg(bridge, "broadcast error_detected message\n");
->  	if (state == pci_channel_io_frozen) {
-> -		pci_walk_bus(bus, report_frozen_detected, &status);
-> +		pci_walk_bridge(bridge, report_frozen_detected, &status);
->  		status = reset_subordinates(bridge);
->  		if (status != PCI_ERS_RESULT_RECOVERED) {
->  			pci_warn(bridge, "subordinate device reset failed\n");
->  			goto failed;
->  		}
->  	} else {
-> -		pci_walk_bus(bus, report_normal_detected, &status);
-> +		pci_walk_bridge(bridge, report_normal_detected, &status);
->  	}
->  
->  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
->  		status = PCI_ERS_RESULT_RECOVERED;
->  		pci_dbg(bridge, "broadcast mmio_enabled message\n");
-> -		pci_walk_bus(bus, report_mmio_enabled, &status);
-> +		pci_walk_bridge(bridge, report_mmio_enabled, &status);
->  	}
->  
->  	if (status == PCI_ERS_RESULT_NEED_RESET) {
-> @@ -192,14 +208,14 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  		 */
->  		status = PCI_ERS_RESULT_RECOVERED;
->  		pci_dbg(bridge, "broadcast slot_reset message\n");
-> -		pci_walk_bus(bus, report_slot_reset, &status);
-> +		pci_walk_bridge(bridge, report_slot_reset, &status);
->  	}
->  
->  	if (status != PCI_ERS_RESULT_RECOVERED)
->  		goto failed;
->  
->  	pci_dbg(bridge, "broadcast resume message\n");
-> -	pci_walk_bus(bus, report_resume, &status);
-> +	pci_walk_bridge(bridge, report_resume, &status);
->  
->  	if (pcie_aer_is_native(bridge))
->  		pcie_clear_device_status(bridge);
-> -- 
-> 2.28.0
-> 
+Changes in v4: None
+
+Changes in v3:
+  - Make get_can_len() return u8.
+  - Make the skb const.
+Reference: https://lkml.org/lkml/2020/9/30/883
+
+Changes in v2: None
+---
+ include/linux/can/dev.h | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 41ff31795320..d90890172d2a 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -192,6 +192,29 @@ u8 can_dlc2len(u8 can_dlc);
+ /* map the sanitized data length to an appropriate data length code */
+ u8 can_len2dlc(u8 len);
+ 
++/*
++ * get_can_len(skb) - get the length of the CAN payload.
++ *
++ * In classical CAN, the length of the data (i.e. CAN payload) is not
++ * always equal to the DLC! If the frame is a Remote Transmission
++ * Request (RTR), data length is always zero regardless of DLC value
++ * and else, if the DLC is greater than 8, the length is 8. Contrary
++ * to common belief, ISO 11898-1 Chapter 8.4.2.3 (DLC field) do allow
++ * DLCs greater than 8 for Classical Frames and specifies that those
++ * DLCs shall indicate that the data field is 8 bytes long.
++ */
++static inline u8 get_can_len(const struct sk_buff *skb)
++{
++	const struct canfd_frame *cf = (const struct canfd_frame *)skb->data;
++
++	if (can_is_canfd_skb(skb))
++		return min_t(u8, cf->len, CANFD_MAX_DLEN);
++	else if (cf->can_id & CAN_RTR_FLAG)
++		return 0;
++	else
++		return min_t(u8, cf->len, CAN_MAX_DLEN);
++}
++
+ struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
+ 				    unsigned int txqs, unsigned int rxqs);
+ #define alloc_candev(sizeof_priv, echo_skb_max) \
+-- 
+2.26.2
+
