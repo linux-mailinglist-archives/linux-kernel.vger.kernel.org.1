@@ -2,178 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8381F29037F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 12:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67DC29038D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 12:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395503AbgJPKvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 06:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48638 "EHLO
+        id S2395532AbgJPKyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 06:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395496AbgJPKvM (ORCPT
+        with ESMTP id S2394459AbgJPKyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 06:51:12 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA8DC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 03:51:12 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id r1so1151241vsi.12
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 03:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xbxr9IqhfBSHOTINIDRRrGXVvLUBIFjfiaN+PDTjgRQ=;
-        b=h1/x/JENjlGBAxLp90NlmELvg20nyWnLhe2fPvUUCrFFVnqXuUlUOdB1tYjeFXV1OL
-         shCcv+r8YSU5nl0KeCt5njRSbPdhMTTKptboeoNGClrKyPbkeHleS/BcWp0PqH+vHvFV
-         O8XdDZF1hPr7i+XLHFrvchx2HkX9wcqYCJhM2T21/JxBmDEj/zBEKC5wgiytnrywvT1a
-         xQLa4WlrL5Q1fznU2MFAXKDIBpbyW900vANTpc8eZ/S+f1MpmR+jgCPQUon0b7WVqAQb
-         fK3Z9ItWOzBAm/gLaVsRynTakRWof4rgR9dRWV+7mxFY9gHLmRQIgJr4j4oWhCk0QOJ0
-         2lyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xbxr9IqhfBSHOTINIDRRrGXVvLUBIFjfiaN+PDTjgRQ=;
-        b=Utv3+tLVzC+3udY7DFfH+hO70oazcUbfR2sJZzzX2fnMHBwY9QMkI/i6ACt8IekG6T
-         Yo/qo03VCpK13U3kYBMpcnsOkPpyK4QI+G1RouGA8Xv2KRN1AOYGCwcoDtbJnIX1KysI
-         9J9cIfLhagRkf6Mu1q8RH1ClUL9eQtR8uFi2utn9gIWApDzuow1Cfm/2URzc0J9EBR7g
-         ZX4emYtDZRkrQ/xBfO9ZLfQldRdkm7+fGkbQfjMEYUTkly4CImqstKhuZS3agR1Tmcdc
-         eFI72hw+lbTIbu3GYrkhLyr1oIAB8Prioo79b92wb20Pg1vL5pkq43GIVf9gIJcmpPpd
-         M9RA==
-X-Gm-Message-State: AOAM530Px2RRds71x0Ie9PndA7GqFjsOkXDZY4pv4qa2L2uQFRB9I8K3
-        58MSd3eIyLQgwnRTGt1vJVy9rxwE/e4nVZ+ssKLgNg==
-X-Google-Smtp-Source: ABdhPJxaHgzUhpedWRcsJOLXZxBTwLRwdu9IeczL62z9Gp1yOoyKgss0MK1ty0S0xi2z3ujakcbAn7IalKgFlkEbFuY=
-X-Received: by 2002:a67:6c86:: with SMTP id h128mr1407272vsc.42.1602845470789;
- Fri, 16 Oct 2020 03:51:10 -0700 (PDT)
+        Fri, 16 Oct 2020 06:54:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32676C0613D4;
+        Fri, 16 Oct 2020 03:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+RZTLQaq+qRJR9rQRj8dPc5jefZyAh1kHGftAj9LgAo=; b=FBzTRCct2xrc5zVUeKT7is1xSu
+        MGbl4pv9vThbIjrp7wOg/ARUySZd2N65zj7HJnWgkEwqogKZo3kyRyNZCXlCF00S4NUl1ETHDkdkJ
+        z9KhuQEYiVomLErq7jlIKdrzprV7ezYNIiMNt0LE+xYFR16YOvdR6+Xjk5t4zG2+GOL1gki5IFG3a
+        UOZNELwkfPjO+FEtZmB58smOwGFR4/3dZuQ2ZslNhpTAcKbnwzuXRJlY0IVYwZwRZ3Wf2BFbUdX9R
+        bPzY8lx3e875T1rDs1Y0LwvQCNuqCnuYUzWXxXfoDqY2wBzk+y6lFHQAQRqQJpGaCvGZDqRzfYuKz
+        0HeUGVwA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kTNMM-0001mw-Nq; Fri, 16 Oct 2020 10:53:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4B3A63011E6;
+        Fri, 16 Oct 2020 12:53:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2C299203EB17E; Fri, 16 Oct 2020 12:53:13 +0200 (CEST)
+Date:   Fri, 16 Oct 2020 12:53:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, shuah@kernel.org, rafael@kernel.org,
+        johannes@sipsolutions.net, lenb@kernel.org, james.morse@arm.com,
+        tony.luck@intel.com, bp@alien8.de, arve@android.com,
+        tkjos@android.com, maco@android.com, joel@joelfernandes.org,
+        christian@brauner.io, hridya@google.com, surenb@google.com,
+        minyard@acm.org, arnd@arndb.de, mchehab@kernel.org,
+        rric@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devel@driverdev.osuosl.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-edac@vger.kernel.org, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v3 00/11] Introduce Simple atomic counters
+Message-ID: <20201016105313.GJ2611@hirez.programming.kicks-ass.net>
+References: <cover.1602209970.git.skhan@linuxfoundation.org>
+ <20201009193746.GA1073957@hirez.programming.kicks-ass.net>
+ <202010091255.246395A6@keescook>
+ <20201010110920.GQ2628@hirez.programming.kicks-ass.net>
+ <6e1dd408-653e-817e-b659-23649259a929@linuxfoundation.org>
+ <20201014091720.GC2628@hirez.programming.kicks-ass.net>
+ <202010141611.70B7A38@keescook>
 MIME-Version: 1.0
-References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
- <20201008020936.19894-5-muhammad.husaini.zulkifli@intel.com>
- <CAPDyKFpUv8yeVrWVLRKvz4eKsSDdk0y4dKY2mYs07zpA2UqNdw@mail.gmail.com>
- <DM6PR11MB28764EC5E1F89D417D700F29B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
- <CAPDyKFptgKG8uvKUkN56sooFL4xqaBcNdbpo645xRQqPOH4BkQ@mail.gmail.com>
- <DM6PR11MB28761F10936FF0D2695FAF19B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
- <CAPDyKFoRHsOiz9BFJ5jWyKqvdmNW9eeEmCGKYn0Q1jUzNwJZNg@mail.gmail.com>
- <DM6PR11MB2876DF701740F70FFD2B2D17B8080@DM6PR11MB2876.namprd11.prod.outlook.com>
- <CAPDyKFqB5SCfNWumhDjvH+mQxMi6bYcHSg-vBV+gWEgDee0m1Q@mail.gmail.com> <DM6PR11MB2876F5F9A801E449B266011CB8030@DM6PR11MB2876.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB2876F5F9A801E449B266011CB8030@DM6PR11MB2876.namprd11.prod.outlook.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 16 Oct 2020 12:50:34 +0200
-Message-ID: <CAPDyKFq52myX+i=uRg4-mEyRYo=Pn2YkWUk94AbnzgG3-CTS7Q@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
- Keem Bay SOC
-To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-Cc:     "Hunter, Adrian" <adrian.hunter@intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202010141611.70B7A38@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+On Wed, Oct 14, 2020 at 04:31:42PM -0700, Kees Cook wrote:
+> On Wed, Oct 14, 2020 at 11:17:20AM +0200, Peter Zijlstra wrote:
+> > On Tue, Oct 13, 2020 at 08:12:20PM -0600, Shuah Khan wrote:
+> > 
+> > > They don't add any new behavior, As Kees mentioned they do give us a
+> > > way to clearly differentiate atomic usages that can wrap.
+> > 
+> > No it doesn't! atomic_t can wrap, this thing can wrap, no distinction.
+> > 
+> > All it does is fragment the API and sow confusion. FOR NO BENEFIT.
+> 
+> I really don't see it this way. It's a distinct subset of the atomic_t
+> API. The trouble that has existed here has been with an atomic_t being
+> originally used NOT for lifetime management, that mutates into something
+> like that because of the available API, but doing so without realizing
+> it. atomic_t gets used for all kinds of algorithms, and the "counter"
+> type is way too easily accidentally transformed into a "lifetime
+> tracker" and we get bugs.
+> 
+> If we have a distinct type for wrapping-counters that limits the API,
+> then it is much harder for folks to shoot themselves in the foot. I don't
+> see why this is so bad: we end up with safer usage, more easily auditable
+> code behavior ("how was this atomic_t instance _intended_ to be used?"),
+> and no change in binary size.
 
-> >> >> >> The SDcard for Keem Bay SOC does not have its own voltage regulator.
-> >> >> >> There are 2 places to control the voltage.
-> >> >> >> 1) By setting the AON register calling system-level platform
-> >> >> >> management
-> >> >> >layer (SMC)
-> >> >> >>    to set the I/O pads voltage for particular GPIOs line for clk,data and
-> >cmd.
-> >> >> >>    The reason why I use this keembay_sd_voltage_selection() via
-> >> >> >> smccc
-> >> >> >interface it because during voltage switching
-> >> >> >>    I need to access to AON register. On a secure system, we
-> >> >> >> could not
-> >> >> >directly access to AON register due to some security concern from
-> >> >> >driver side, thus
-> >> >> >>    cannot exposed any register or address.
-> >> >> >> 2) By controlling the GPIO expander value to drive either 1.8V
-> >> >> >> or 3.3V for
-> >> >> >power mux input.
-> >> >> >
-> >> >> >I see, thanks for clarifying.
-> >> >> >
-> >> >> >To me, it sounds like the best fit is to implement a pinctrl (to
-> >> >> >manage the I/O
-> >> >> >pads) and a GPIO regulator.
-> >> >> >
-> >> >> Even with pinctrl, i still need to use the
-> >> >> keembay_sd_voltage_selection()
-> >> >thingy for AON register.
-> >> >
-> >> >Yes, I am fine by that.
-> >> >
-> >> >Although, as it's really a pinctrl, it deserves to be modelled like
-> >> >that. Not as a soc specific hack in a mmc host driver.
-> >> >
-> >> >> Plus, the GPIO pin that control the sd-voltage is in GPIO Expander
-> >> >> not using
-> >> >Keembay SOC GPIO Pin.
-> >> >> The best option is using the gpio consumer function to toggle the pin.
-> >> >
-> >> >As I said, please no.
-> >> >
-> >> >The common way to model this is as a GPIO regulator. In this way, you
-> >> >can even rely on existing mmc DT bindings. All you have to do is to
-> >> >hook up a vqmmc supply to the mmc node.
-> >> >
-> >> >To be clear, as long as there are no arguments for why a pinctrl and
-> >> >GPIO regulator can't be used - I am not going to pick up the patches.
-> >> As I mentioned The SDcard does not have its own voltage regulator.
-> >> It only uses the voltage rails on the mux input.
-> >>
-> >> There are 2 things need to be configured before getting the output voltage:
-> >>
-> >> 1) V_VDDIO_B :
-> >> Supplied voltage applied to I/O Rail which is controlled from the Always on
-> >domain using specific bits in AON_CFG1 register.
-> >> This is where we set for V_VDDIO_B using the
-> >keembay_sd_voltage_selection() to set either 1.8v or 3.3v depending on the bit
-> >value.
-> >> IMHO, we do not pinctrl to do this.
-> >>
-> >> 2) V_VDDIO_B_MAIN:
-> >> The output V_VDDIO_B_MAIN (OUT1) will be either V_3P3_MAIN (IN1) or
-> >> V_1P8_MAIN (IN2), depending on the state of GPIO expander Pin value. There
-> >is a POWER MUX involving here.
-> >> IMHO, we do not need any gpio regulator/regulator api hook up for this.
-> >> Most important thing, there is no regulator ic at all.
-> >> We still need to manually control and toggle the pin value.
-> >>
-> >> The final IO voltage is set by V_VDDIO_B (= V_VDDIO_B_MAIN after passing
-> >through voltage sense resistor).
-> >>
-> >> Hope this will clarify.
-> >
-> >I think I get it, thanks.
-> >
-> >Again, I haven't seen any reasons for why this can't be modelled as a pinctrl and
-> >a gpio-regulator. So, please convert it to that.
-> For gpio-regulator, I believe I could not use the current gpio-regulator.c framework as there is no consumer API for me to change the state of gpio pin during voltage switching.
+I simply do not believe in that. Maybe I've seen too much code like:
 
-The consumer API you want to use, is the regulator consumer API,
-regulator_enable|disable(), for example.
+  atomic_dec_and_test(&counter->cnt);
 
-Although, as I stated earlier, the mmc core already provides helper
-functions for this. I suggest you have a look at
-mmc_regulator_set_vqmmc() and how it's used by other mmc host drivers.
+or god forbid (thanks Will):
 
-> Do I need to create a specific gpio-regulator driver under drivers/regulator for keem bay?
-> >
+  typedef union { refcount_t ref; counter_atomic_t cnt; atomic_t atm; } my_awesome_type_t;
 
-I don't think so. Please have a look at
-Documentation/devicetree/bindings/regulator/gpio-regulator.yaml. This
-allows you to specify your GPIO regulator in DT.
+People simply aren't too fussed. They'll do whatever it takes (to get
+the job done with minimal effort).
 
-Then from the mmc node you add a "vqmmc-supply" specifier with the
-phandle to the regulator - that should be it.
+You think you've cleaned things up, but the moment you turn your back,
+it'll decend into madness at break-neck speed. This is part economics
+and part the fact that C is crap (see the above two examples).
 
-Kind regards
-Uffe
+Can't we use static-analysis/robots for this? The constant feedback from
+those is the only thing that helps stem the tide of crap.
+
+Create a variable attribute __wrap, and have the robot complain when
+atomic_*_and_test() are used on a variable declared with __wrap. Or
+better yet, when a __wrap heads a condition that leads to call_rcu() /
+*free*().
+
+> > > There is no need to keep inc_return in this API as such. I included it
+> > > so it can be used for above cases 1 and 2, so the users don't have to
+> > > call inc() followed by read(). It can be left out of the API.
+> 
+> I go back and forth on this, but after looking at these instances,
+> it makes sense to have inc_return(), for where counters are actually
+> "serial numbers". An argument could be made[1], however, that such uses
+> should not end up in the position of _reusing_ earlier identifiers, which
+> means it's actually can't wrap. (And some cases just need u64 to make this
+> happen[2] -- and in that specific case, don't even need to be atomic_t).
+> 
+> [1] https://lore.kernel.org/lkml/202010071334.8298F3FA7@keescook/
+> [2] https://git.kernel.org/linus/d1e7fd6462ca9fc76650fbe6ca800e35b24267da
+
+Sure, there's valid cases where wrapping is ok, but it's a distinct
+use-case and really shouldn't be mixed up in the statistics one --
+they're distinct.
+
+The fact that patch #4 appears to get this wrong seems like a fairly big
+clue.
+
+> > Wrong! The atomic usage in mutex doesn't fall in any of those
+> > categories.
+> 
+> But the atomic usage in mutex is *IN* mutex -- it's a separate data
+> type, etc. We don't build mutexes manually, so why build counters
+> manually?
+
+The claim was: atomic usage in the kernel falls in these 3 categories.
+
+ - mutex uses atomic (atomic_long_t);
+ - mutex is in the kernel;
+ - mutex's use of atomic does not fit the listed categories.
+
+Therefore, the claim is false. In fact most of the locking primitives
+use atomic one way or another. And yes, some people do build their own.
+
+> > The only thing you're all saying that makes sense is that unintentional
+> > wrapping can have bad consequences, the rest is pure confusion.
+> > 
+> > Focus on the non-wrapping cases, _everything_ else is not going
+> > anywhere.
+> 
+> I view this as a way to do so: this subset of wrapping cases is being
+> identified and removed from the pool of all the atomic_t cases so that
+> they will have been classified, and we can continue to narrow down all
+> the atomic_t uses to find any potentially mis-used non-wrapping cases.
+> 
+> The other option is adding some kind of attribute to the declarations
+> (which gets us the annotation) but doesn't provide a limit to the API.
+> (e.g. no counter should ever call dec_return).
+
+See above; robots can do exactly that.
+
+> > So audit the kernel, find the cases that should not wrap, categorize and
+> > create APIs for them that trap the wrapping. But don't go around
+> > confusing things that don't need confusion.
+> 
+> That's what's happening here. But as it turns out, it's easier to do
+> this by employing both the process of elimination (mark the counters)
+> and direct identification (mark the refcount_t). Then the pool of
+> "unannotated" atomic_t instances continues to shrink.
+
+That's like saying: "I'm too lazy to track what I've looked at already".
+You're basically proposing to graffiti "Kees was here -- 16/10/2020" all
+over the kernel. Just so you can see where you still need to go.
+
+It says the code was (assuming your audit was correct) good at that
+date, but has no guarantees for any moment after that.
+
