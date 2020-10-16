@@ -2,92 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997AB290AB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7460290AC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391984AbgJPR0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:26:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33292 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391855AbgJPR0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:26:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602869197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S7adOyJQobTs7oFN7R41/ee6ZODNptFcC0aLMfk4q+Q=;
-        b=cvs1EqQJad6ys0IgBRtNq+qkk7IAGgPYw8pc+utGMKssl6HaCS8gQoJoBHSjjuuEmU1ksy
-        Ds1TvB9F1dI6TZbBH9+Ek+woExdQtDWvp9GT5QRl0QoCdLF2WHvKMhuVxJucc50i5/U3+M
-        k/KNwdhcwmKXqSKlzi+r3bAGjhwnk5k=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 29212AC19;
-        Fri, 16 Oct 2020 17:26:37 +0000 (UTC)
-Date:   Fri, 16 Oct 2020 19:26:35 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Richard Palethorpe <rpalethorpe@suse.de>
-Cc:     Roman Gushchin <guro@fb.com>, ltp@lists.linux.it,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from
- charging root
-Message-ID: <20201016172635.GB102311@blackbook>
-References: <20201014190749.24607-1-rpalethorpe@suse.com>
- <20201016094702.GA95052@blackbook>
- <87sgaesba0.fsf@suse.de>
- <87pn5irz2m.fsf@suse.de>
+        id S2390564AbgJPRa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731737AbgJPRaZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 13:30:25 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA73C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:30:25 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id j8so1888319pjy.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:30:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LkpxYpHOUh6wWOIUN82AjP6Fw85m2v3htFNaqQxO/5A=;
+        b=lroJG7Sa2/n+Pm3E/imxwkcvy1qhI24bxdO7S3msAaNvwtM7v7F1m6eZvIiuLQMyOG
+         CJbnu11Yt9R/hTlpc0HNsmBFgYCQYYiEDbKglUhRQtBoZuN6YKwdv91XZ0gDvxAgzEsc
+         qLxfLbsyFPMoOKFw2i0kQ7G2FLR3f2cI0LlYtfDg5rsX1nCV2e8Oj1jpa8N0X4N/+bpL
+         e1QEG24lkO1XtKO9AqRqSCms7cTOLaRsaGkzUscSYf7iVos24lBmy6UJXo3FFjIWbzb+
+         8TfsZX3jv3F2lszHO1HMWsphZq906YxkPoGulGWPxDCPVFDz3q4YYYd6HG2WeXEYvVXz
+         EqtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LkpxYpHOUh6wWOIUN82AjP6Fw85m2v3htFNaqQxO/5A=;
+        b=Pm4jRJ4syDpiu5eCDethxeL0xf2V7PXTbdWVI66c13QomDeqvMUuQR6jVjC52iq0CR
+         G8pXLpEeCjlx0zZbT2YnvnjXmF87j5YACWytXjjD7AoSf7wVtTAH7oE2sreHPHuF09uJ
+         I3xRdbZz0RDLzSx1olpBe9LHeUr0rUqm9LPaA8tiOhVO5ZY1WVm7NFnmJbZII4vhN34e
+         KBEjTyaP0jY6NKrsfUbtV1ShwPCg1843rXjFUY4f6blolCFQpX9uNb3JN9kKaO5E0iA3
+         v6ZcPTEqXSRJ47Tw+d3/iAGUVlpcH1ltT+VhGp//TQ3DoEoFJ/nQhZapkQt19dnoXVhR
+         Q2Xw==
+X-Gm-Message-State: AOAM530HlLA7NXE2tqahRQNBgjctkUkkuYIK7l5tE1p9U1UDVR9lz7Ur
+        g2benESC+U99qYqWVSccNBXSn3z7U2g=
+X-Google-Smtp-Source: ABdhPJwclqbg+gtWSGEcRJ5TA2g06LpmhR3sr00rrCicZcy6R7gm/FKrjktQ24YJCgeBfuHf8an+Ug==
+X-Received: by 2002:a17:90a:dc0c:: with SMTP id i12mr5346362pjv.191.1602869425011;
+        Fri, 16 Oct 2020 10:30:25 -0700 (PDT)
+Received: from localhost.localdomain (S0106d80d17472dbd.wp.shawcable.net. [24.79.253.190])
+        by smtp.gmail.com with ESMTPSA id nh4sm3668126pjb.1.2020.10.16.10.30.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 10:30:24 -0700 (PDT)
+From:   jassisinghbrar@gmail.com
+To:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+Cc:     jbrunet@baylibre.com, ionela.voinescu@arm.com,
+        khilman@baylibre.com, da@libre.computer, sudeep.holla@arm.com,
+        Jassi Brar <jaswinder.singh@linaro.org>
+Subject: [PATCH] mailbox: avoid timer start from callback
+Date:   Fri, 16 Oct 2020 12:30:20 -0500
+Message-Id: <20201016173020.12686-1-jassisinghbrar@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xgyAXRrhYN0wYx8y"
-Content-Disposition: inline
-In-Reply-To: <87pn5irz2m.fsf@suse.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jassi Brar <jaswinder.singh@linaro.org>
 
---xgyAXRrhYN0wYx8y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If the txdone is done by polling, it is possible for msg_submit() to start
+the timer while txdone_hrtimer() callback is running. If the timer needs
+recheduling, it could already be enqueued by the time hrtimer_forward_now()
+is called, leading hrtimer to loudly complain.
 
-On Fri, Oct 16, 2020 at 04:05:21PM +0100, Richard Palethorpe <rpalethorpe@suse.de> wrote:
-> I'm don't know if that could happen without reparenting. I suppose if
-> use_hierarchy=1 then actually this patch will result in root being
-> overcharged, so perhaps it should also check for use_hierarchy?
-Right, you'd need to distinguish whether the uncharged objcg was
-originally (not)charged in the root memcg or it was only reparented to
-it. (I originally considered only the genuine root objcgs.)
+WARNING: CPU: 3 PID: 74 at kernel/time/hrtimer.c:932 hrtimer_forward+0xc4/0x110
+CPU: 3 PID: 74 Comm: kworker/u8:1 Not tainted 5.9.0-rc2-00236-gd3520067d01c-dirty #5
+Hardware name: Libre Computer AML-S805X-AC (DT)
+Workqueue: events_freezable_power_ thermal_zone_device_check
+pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
+pc : hrtimer_forward+0xc4/0x110
+lr : txdone_hrtimer+0xf8/0x118
+[...]
 
-In this light, homogenous charing to root memcg looks really simpler but
-I wonder what other surprises it brings about.
+This can be fixed by not starting the timer from the callback path. Which
+requires the timer reloading as long as any message is queued on the
+channel, and not just when current tx is not done yet.
 
-Michal
+Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
+---
+ drivers/mailbox/mailbox.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
---xgyAXRrhYN0wYx8y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
+index 0b821a5b2db8..a093a6ecaa66 100644
+--- a/drivers/mailbox/mailbox.c
++++ b/drivers/mailbox/mailbox.c
+@@ -82,9 +82,12 @@ static void msg_submit(struct mbox_chan *chan)
+ exit:
+ 	spin_unlock_irqrestore(&chan->lock, flags);
+ 
+-	if (!err && (chan->txdone_method & TXDONE_BY_POLL))
+-		/* kick start the timer immediately to avoid delays */
+-		hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
++	/* kick start the timer immediately to avoid delays */
++	if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
++		/* but only if not already active */
++		if (!hrtimer_active(&chan->mbox->poll_hrt))
++			hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
++	}
+ }
+ 
+ static void tx_tick(struct mbox_chan *chan, int r)
+@@ -122,11 +125,10 @@ static enum hrtimer_restart txdone_hrtimer(struct hrtimer *hrtimer)
+ 		struct mbox_chan *chan = &mbox->chans[i];
+ 
+ 		if (chan->active_req && chan->cl) {
++			resched = true;
+ 			txdone = chan->mbox->ops->last_tx_done(chan);
+ 			if (txdone)
+ 				tx_tick(chan, 0);
+-			else
+-				resched = true;
+ 		}
+ 	}
+ 
+-- 
+2.25.1
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl+J18cACgkQia1+riC5
-qSgBlA/9E7AebKZQjQP9HUGpWS+49sRCns58CiQJhFugbkHlJl5PsgvI9rQs9j6k
-AhG6e0WZlMb35II+naqx3kNnAYoRiw8xWcuAH+lvWFXKI1saYN4UOjKNzigojTw0
-x3fi9bRJveQtpwPY6IwXbiOJkYZnEplEskwiqbY0kCFZMhQlvnBfJIAzegEa5Jty
-ZCcqYPMxcfczsm3+vtrcHDWBXzujoxp9QPyyNWmRAkIjgTebO3ZmGRieCVmuPTm7
-PY1nCA/65amYSsxBPvo+L7U5a4jKOV04pSLg0PeBByJbiy3TEoLi0938arMVg7P5
-MT2PdqfzJ5W1T+7zh1SsRWV2/7b05JLVHnLPTL3SlvNIn2GIouSWSnAbdiZvqenB
-XFafC+4PbL0xTdo5Lrp3pqTgw8kwScNUz/5FnRAdNw7eET2bGRQ46ah3EBQsoqNw
-kOv07/gipMp3BBNJy6JHV+hSwK8CfOvy45FuyIJ6TAzYKZdOaBVWv4kt2eesHj+I
-qzGRmmhS1rPcSzMtZU2rBIXcWfy7tgUsPdyEOgx+0VE10O0Vn0qFEWcupTSLYykv
-8C301Q+aMnXbFcytJ5dSixD3oxzI5OP3x8VIkyuuoFe9MsRJZuBwBAYS6Vl+Wwd4
-fmJBhroGerid+YzHDvvB0zeNr+j4IBjztGGJznC0/Mgm/Bf3rn8=
-=j9PI
------END PGP SIGNATURE-----
-
---xgyAXRrhYN0wYx8y--
