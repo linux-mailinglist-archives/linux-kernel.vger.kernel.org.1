@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0142900E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6090229014B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395032AbgJPJKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:10:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38840 "EHLO mail.kernel.org"
+        id S2394875AbgJPJMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:12:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395029AbgJPJJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:09:53 -0400
+        id S2395068AbgJPJKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:10:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B97D20EDD;
-        Fri, 16 Oct 2020 09:09:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D51F20872;
+        Fri, 16 Oct 2020 09:10:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602839378;
-        bh=qbJbByzF9Z+5Vt5LcSu6FyXTvg/ukDSvDqTNAro7xOg=;
+        s=default; t=1602839447;
+        bh=jsqWrNlb0BmE21Lo+GWPmU8KblvtiTeaAckTD9qI36c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oCVTSVkh7TlwF2N5zkjtcb2hMVRPPM7Y+3Ht0L+eiDr6Tjtfygb+lrVZHkT3Stg6y
-         ITKvPH5xbAUp1ZQEUD2OlC9Y29r7UMSArnfnYOeMUXJ04mHwqjqxLUKQnMaCvlUlrj
-         +Yk2CUeKPaJjBIWAkDId4xB3lZVM1g1SqrZ/vfTE=
+        b=vTLmwl5KQo+7IgFRUxSwk8hyDvdEuSUyRz2hQJI4kk4vW91FikSZL8gpvrCym6Jeu
+         Z2Jgha8A6tf2IuBf8U7hEC6GDB9o2eEZjC2r1E1UWkWILH6ik/BTZVJ3M2sM/qs96a
+         +cq1prEN/qPLWnCghgwcwEbAOSYOiFsAoknvIJmA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Mychaela N. Falconia" <falcon@freecalypso.org>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 16/21] USB: serial: ftdi_sio: add support for FreeCalypso JTAG+UART adapters
-Date:   Fri, 16 Oct 2020 11:07:35 +0200
-Message-Id: <20201016090438.089333741@linuxfoundation.org>
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 5.4 08/22] Bluetooth: MGMT: Fix not checking if BT_HS is enabled
+Date:   Fri, 16 Oct 2020 11:07:36 +0200
+Message-Id: <20201016090437.724516955@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201016090437.301376476@linuxfoundation.org>
-References: <20201016090437.301376476@linuxfoundation.org>
+In-Reply-To: <20201016090437.308349327@linuxfoundation.org>
+References: <20201016090437.308349327@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,73 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mychaela N. Falconia <falcon@freecalypso.org>
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-commit 6cf87e5edd9944e1d3b6efd966ea401effc304ee upstream.
+commit b560a208cda0297fef6ff85bbfd58a8f0a52a543 upstream.
 
-There exist many FT2232-based JTAG+UART adapter designs in which
-FT2232 Channel A is used for JTAG and Channel B is used for UART.
-The best way to handle them in Linux is to have the ftdi_sio driver
-create a ttyUSB device only for Channel B and not for Channel A:
-a ttyUSB device for Channel A would be bogus and will disappear as
-soon as the user runs OpenOCD or other applications that access
-Channel A for JTAG from userspace, causing undesirable noise for
-users.  The ftdi_sio driver already has a dedicated quirk for such
-JTAG+UART FT2232 adapters, and it requires assigning custom USB IDs
-to such adapters and adding these IDs to the driver with the
-ftdi_jtag_quirk applied.
+This checks if BT_HS is enabled relecting it on MGMT_SETTING_HS instead
+of always reporting it as supported.
 
-Boutique hardware manufacturer Falconia Partners LLC has created a
-couple of JTAG+UART adapter designs (one buffered, one unbuffered)
-as part of FreeCalypso project, and this hardware is specifically made
-to be used with Linux hosts, with the intent that Channel A will be
-accessed only from userspace via appropriate applications, and that
-Channel B will be supported by the ftdi_sio kernel driver, presenting
-a standard ttyUSB device to userspace.  Toward this end the hardware
-manufacturer will be programming FT2232 EEPROMs with custom USB IDs,
-specifically with the intent that these IDs will be recognized by
-the ftdi_sio driver with the ftdi_jtag_quirk applied.
-
-Signed-off-by: Mychaela N. Falconia <falcon@freecalypso.org>
-[johan: insert in PID order and drop unused define]
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/ftdi_sio.c     |    5 +++++
- drivers/usb/serial/ftdi_sio_ids.h |    7 +++++++
- 2 files changed, 12 insertions(+)
+ net/bluetooth/mgmt.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/ftdi_sio.c
-+++ b/drivers/usb/serial/ftdi_sio.c
-@@ -1027,6 +1027,11 @@ static const struct usb_device_id id_tab
- 	/* U-Blox devices */
- 	{ USB_DEVICE(UBLOX_VID, UBLOX_C099F9P_ZED_PID) },
- 	{ USB_DEVICE(UBLOX_VID, UBLOX_C099F9P_ODIN_PID) },
-+	/* FreeCalypso USB adapters */
-+	{ USB_DEVICE(FTDI_VID, FTDI_FALCONIA_JTAG_BUF_PID),
-+		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
-+	{ USB_DEVICE(FTDI_VID, FTDI_FALCONIA_JTAG_UNBUF_PID),
-+		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
- 	{ }					/* Terminating entry */
- };
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -756,7 +756,8 @@ static u32 get_supported_settings(struct
  
---- a/drivers/usb/serial/ftdi_sio_ids.h
-+++ b/drivers/usb/serial/ftdi_sio_ids.h
-@@ -39,6 +39,13 @@
+ 		if (lmp_ssp_capable(hdev)) {
+ 			settings |= MGMT_SETTING_SSP;
+-			settings |= MGMT_SETTING_HS;
++			if (IS_ENABLED(CONFIG_BT_HS))
++				settings |= MGMT_SETTING_HS;
+ 		}
  
- #define FTDI_LUMEL_PD12_PID	0x6002
+ 		if (lmp_sc_capable(hdev))
+@@ -1771,6 +1772,10 @@ static int set_hs(struct sock *sk, struc
  
-+/*
-+ * Custom USB adapters made by Falconia Partners LLC
-+ * for FreeCalypso project, ID codes allocated to Falconia by FTDI.
-+ */
-+#define FTDI_FALCONIA_JTAG_BUF_PID	0x7150
-+#define FTDI_FALCONIA_JTAG_UNBUF_PID	0x7151
+ 	BT_DBG("request for %s", hdev->name);
+ 
++	if (!IS_ENABLED(CONFIG_BT_HS))
++		return mgmt_cmd_status(sk, hdev->id, MGMT_OP_SET_HS,
++				       MGMT_STATUS_NOT_SUPPORTED);
 +
- /* Sienna Serial Interface by Secyourit GmbH */
- #define FTDI_SIENNA_PID		0x8348
- 
+ 	status = mgmt_bredr_support(hdev);
+ 	if (status)
+ 		return mgmt_cmd_status(sk, hdev->id, MGMT_OP_SET_HS, status);
 
 
