@@ -2,66 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06A228FCFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 05:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369CC28FD00
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 05:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394301AbgJPDyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 23:54:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393647AbgJPDyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 23:54:47 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6325F2074F;
-        Fri, 16 Oct 2020 03:54:46 +0000 (UTC)
-Date:   Thu, 15 Oct 2020 23:54:44 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [GIT PULL] tracing: Updates for 5.10
-Message-ID: <20201015235444.6f222746@gandalf.local.home>
-In-Reply-To: <20201016115323.13a75e51d5dc18573de4d33a@kernel.org>
-References: <20201015135345.6b29e8c0@gandalf.local.home>
-        <CAHk-=wjU86UhovK4XuwvCqTOfc+nvtpAuaN2PJBz15z=w=u0Xg@mail.gmail.com>
-        <20201015222139.1b92a3be@gandalf.local.home>
-        <20201016115323.13a75e51d5dc18573de4d33a@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2394311AbgJPDzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 23:55:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394304AbgJPDzB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 23:55:01 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6EFFC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 20:55:01 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id f140so809141ybg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 20:55:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ot9Zov/qEKxuoRmgcLQBBrNfhdxpMJD/QLZntt713ng=;
+        b=uhPd9yZn3+rZNSdCV2aeR/Vr8d27UrrOV3KjvykP/RqxuCqhbYT5MshXbKCn5q62mS
+         u3gFJph/6LwXgnCq8jiju+l+Bua6+6vQ7jwSzD29qsuWk589RSupqu/lBtshlZ8dpi2J
+         1CmN9KVEHn/bqbUowVt9TDa7wb7Ai6/KJX9ce8nwQRouMMdd0GMgs21aIN6QZQGVw+wb
+         Y+679YVN/C3OC+sjVyNkFBJPoQZzwBjzoDm5WgzCQISbOvNE483LQJZZZx8qjAHU76ud
+         nQrDdtqOCjQDu87gOQDw2+FdvBExmzUNLXdycAAOj3DINzyyIFNyT3Ic+eHMZJpjapUQ
+         S3+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ot9Zov/qEKxuoRmgcLQBBrNfhdxpMJD/QLZntt713ng=;
+        b=ZN426GtJKAXuIfR+kUzpySJNmGzlIqDO4Bmp3O/s27puQLlLg1n+VCYt3sRwTBxL7S
+         gBxV8+c4wQfl2N1BCXa1cWsDpbXs4Z7VEkwfGP67xpMyLZO1GsapxBKHP2LixGktIorY
+         BrR/tglKUmzVTSH9xmg/eFNkKsy9EmibfWzrkAZOPohNg7WMpnzQM40pOKtWbAwr21bq
+         /a8ObUrRC4IlWXfg5ieC9XraEgBBBl0YAYZ1pgd9RN5I0Bw4rvmK8SnFyfBsEvrcAGNy
+         TuREZ4W5Qyqo69R7+3ZtsrdBsfNMkDWtT1BWoa5L0QXmJn7sVvK7tgHlwxxaf0XWF9ug
+         QfbQ==
+X-Gm-Message-State: AOAM531UviA+SMgfUNUUTKCyjHXJNvPvZP/14/VSItMc2GVWwRl4wz7M
+        19Hp6bximbQNgCNwCdJACtwuOOG9DSVn6P4TSXc=
+X-Google-Smtp-Source: ABdhPJzBJUy+ssOpQulsLC0AKfwHAysHffyZwaAo+TZyEVQyrQD/MpwGHvZz8CEI4JZybhc/xovcRG7NLT1Ss3ztxyo=
+X-Received: by 2002:a25:3b4b:: with SMTP id i72mr2433881yba.22.1602820501017;
+ Thu, 15 Oct 2020 20:55:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201005122732.3429347-1-poeschel@lemonage.de> <20201005122732.3429347-9-poeschel@lemonage.de>
+In-Reply-To: <20201005122732.3429347-9-poeschel@lemonage.de>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 16 Oct 2020 05:54:50 +0200
+Message-ID: <CANiq72mfmArumdLBqk-td1HAjxVsfu51zdn=uR=7etq98kYF=A@mail.gmail.com>
+Subject: Re: [PATCH v4 08/32] auxdisplay: hd44780_common_print
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>, Willy Tarreau <w@1wt.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 11:53:23 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Mon, Oct 5, 2020 at 2:27 PM <poeschel@lemonage.de> wrote:
+>
+> We create a hd44780_common_print function. It is derived from the
+> original charlcd_print. charlcd_print becomes a device independent print
+> function, that then only calles via it's ops function pointers, into the
 
-> > 
-> > I'll have to think about how to untangle this. Is there some kind of
-> > annotation that makes it show that a path can only be called at boot up and
-> > not later?  
-> 
-> What happen if we use Peter's static_call() and update it after boot up? 
+Typos: calles -> calls, it's -> its
 
-I think that's a bit over engineering ;-)
+> + * @clear_fast: Clear the whole display and set cursor to position 0, 0.
 
-> Or, we might need to break apart the trace_array_create() and restruct
-> it as __init trace_array_early_create() and trace_array_create().
+This one is optional, but the comment seems to say it isn't (it is
+later removed, so in the end it doesn't matter, but probably we should
+write "Optional." here too).
 
-That will likely make the code a bit more complex and possibly add as much
-code as we save from the __init sections.
+> + * @backlight: Turn backlight on or off. Optional.
+> + * @print: just Print one character to the display at current cursor position.
 
-I think the best solution is what you proposed, and removing the __init,
-and possibly making that function inline as well.
+Typo: remove "just"
 
-Care to send an official patch?
-
-Thanks!
-
--- Steve
+Cheers,
+Miguel
