@@ -2,137 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A35828FFC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A548E28FFC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405059AbgJPIIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404988AbgJPIIy (ORCPT
+        id S2405042AbgJPIKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:10:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52817 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405000AbgJPIKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:08:54 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8CAC061755;
-        Fri, 16 Oct 2020 01:08:53 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id a7so1769385lfk.9;
-        Fri, 16 Oct 2020 01:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qZe2CLjNbYrE8jVJW7Bxg0tsRI3b/ccVNXtLY33BYJg=;
-        b=d3vu7Heq2NfOyc1FsZpYFtDai+Xs3zayyghnh4V8U8y6gj0m7ixSpc1ovm/93Q0qEZ
-         usutg6ivd4Lv3Ev8zPh/gZmnO64gYCZeooTZIZTyjTc/NX8F7OLpENlg1c2diLxQO/EF
-         bmlvmjnxtbovvP/Ip1CG1IojFb2y6x+X/Rh3zrN2xTUYpLpLo9dE4HMf8X9h6vIJ0/eM
-         DfFr2ppHR9B3DFjF0EbKlDGgSMhFiR6yfWbAwZi6szH2jFcwQUV2g9QH2/YilJw6dnLb
-         clfia3XgxLHpj3CXd5cDrHETOM5kPL1ba4hx0AXuoaXIfEcSEJ94DBjsjcCPRv0xj6ak
-         SKfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=qZe2CLjNbYrE8jVJW7Bxg0tsRI3b/ccVNXtLY33BYJg=;
-        b=Q2R3Ra2B8CdFT9cR+tGCVEo+MOUSgP323AaGfr2Zm+Kd5OZtCpgV43moU8FR1JpZaz
-         mZDrqjyYkbshC4XesbzWezykFgl6GU246v8+nl3/9rMCSAjwTkVd0G3PLj9Nj2mtbjbR
-         QagCO8U3W7Jefx5R90xJNKl8prIg462EwfSSgueZmOQYDio3CR1VMFxlMEsBOo9DAoMm
-         9EuKs1J/CcVIZLh+joczjjkyFAOyoOFIRbWcP43V+PxiHYWHG5iKct/yBmHbaa67eF0w
-         fH8CzU1xxqmQpp6qgGVkA8gxgmQknB89bh1zhcWh8aihQySLyqoyQeT/b/HwUl/QMhCp
-         YtIQ==
-X-Gm-Message-State: AOAM5301/YjQI3lVLgntfuqwbxTMFiOWIIrS/Eb0xLL/wJQcRC3/VqHk
-        Q+G9F4ygTEpA0BG4CsV+9N0=
-X-Google-Smtp-Source: ABdhPJyj4PJbafl41hzy4tbyoGjRVJdCzt1YMxHhDWj9o44Bmfvdyu6Orr9SSPXyhKO+BEuMt14cmw==
-X-Received: by 2002:a19:7509:: with SMTP id y9mr809233lfe.306.1602835732292;
-        Fri, 16 Oct 2020 01:08:52 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:42b1:307f:5872:636a:7546:106a? ([2a00:1fa0:42b1:307f:5872:636a:7546:106a])
-        by smtp.gmail.com with ESMTPSA id q2sm579439lfe.50.2020.10.16.01.08.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 01:08:51 -0700 (PDT)
-Subject: Re: [PATCH v2 4/7] media: i2c: max9286: Make channel amplitude
- programmable
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se
-Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-References: <20201015182710.54795-1-jacopo+renesas@jmondi.org>
- <20201015182710.54795-5-jacopo+renesas@jmondi.org>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <09c29e37-6adb-f5e4-fe57-46babaa6dae4@gmail.com>
-Date:   Fri, 16 Oct 2020 11:08:37 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Fri, 16 Oct 2020 04:10:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602835830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=raiMjzXfAaqrrxS6tLwOK468SKq4ScIhA6jKxC9X91w=;
+        b=UaRhF1nFSYXZkNN580tLJi3UoAZ7jZcaP+vDtoQ2+2FSKD/LQKLyrRVDpyJnYDOXw1W4D6
+        F4RmX2zt77tZcpZWE9Q4sTZvXMyuApEtBIaCzmv0ZlpN6bpJ9LqtEscspwemP5lATNT2QE
+        g3bBACQ1CQ+EfbFzbgg0Q17UgFwav3U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-Y8HgBloHN42pBKad04K4Xw-1; Fri, 16 Oct 2020 04:10:26 -0400
+X-MC-Unique: Y8HgBloHN42pBKad04K4Xw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E78D31015ECD;
+        Fri, 16 Oct 2020 08:10:23 +0000 (UTC)
+Received: from [10.36.113.23] (ovpn-113-23.ams2.redhat.com [10.36.113.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 42B4E5C1BD;
+        Fri, 16 Oct 2020 08:10:21 +0000 (UTC)
+Subject: Re: [PATCH V2] scripts: spelling: Remove space in the entry memry to
+ memory
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Joe Perches <joe@perches.com>, akpm@linux-foundation.org,
+        colin.king@canonical.com, sfr@canb.auug.org.au, wangqing@vivo.com,
+        xndchn@gmail.com, luca@lucaceresoli.net, ebiggers@google.com,
+        linux-kernel@vger.kernel.org
+References: <20201015132336.1770828-1-unixbhaskar@gmail.com>
+ <796974d4de89d1e8483d16f4f1f3d6324b49bf86.camel@perches.com>
+ <20201015135407.GB1899805@ArchLinux>
+ <f479c3b907279ba79391ae1d4ec27773a79ffd15.camel@perches.com>
+ <20201015224919.GA1129531@ArchLinux>
+ <d8237d5151e108f969628302c22e27dda3860bdd.camel@perches.com>
+ <20201015225558.GB1129531@ArchLinux>
+ <a03bbb48d2e8b27a2469e91500b264019bbfc33b.camel@perches.com>
+ <20201015230842.GC1129531@ArchLinux>
+ <943aabb5a27dc58321cb4a8e53e7b2c12cd791dc.camel@perches.com>
+ <20201016034936.GA1142048@ArchLinux>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <eb71aa65-20c1-44e9-4104-582be44c4f7a@redhat.com>
+Date:   Fri, 16 Oct 2020 10:10:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201015182710.54795-5-jacopo+renesas@jmondi.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201016034936.GA1142048@ArchLinux>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 15.10.2020 21:27, Jacopo Mondi wrote:
-
-> Instrument the function that configures the reverse channel with a
-> programmable amplitude value.
+On 16.10.20 05:49, Bhaskar Chowdhury wrote:
+> On 20:19 Thu 15 Oct 2020, Joe Perches wrote:
+>> On Fri, 2020-10-16 at 04:38 +0530, Bhaskar Chowdhury wrote:
+>>> On 16:06 Thu 15 Oct 2020, Joe Perches wrote:
+>>>> On Fri, 2020-10-16 at 04:25 +0530, Bhaskar Chowdhury wrote:
+>>>>> You have all flawed understanding...please stay away ..
+>>>>> if you don't understand something...
+>>>>
+>>>> <chuckle>  You're funny.
+>>>>
+>>>> You're wrong, but you're still funny.
+>>>>
+>>>>
+>>> ROFL ..you too...what a waste of time ...shame that I am engage this kind of
+>>> conversation ...heck
+>>
+>> Your tone doesn't become you.
+> Same  goes you too...
 > 
-> This change serves to prepare to adjust the reverse channel amplitude
-> depending on the remote end high-threshold configuration.
+>> Please try to be polite next time.
 > 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->   drivers/media/i2c/max9286.c | 22 ++++++++++++++++------
->   1 file changed, 16 insertions(+), 6 deletions(-)
+> Please stop sending unnecessary "reviews" too. Thanks. If I need ,I will ask.
 > 
-> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> index 89a7248f5c25..163e102199e3 100644
-> --- a/drivers/media/i2c/max9286.c
-> +++ b/drivers/media/i2c/max9286.c
-> @@ -906,19 +906,29 @@ static void max9286_v4l2_unregister(struct max9286_priv *priv)
->    * Probe/Remove
->    */
->   
-> -static void max9286_reverse_channel_setup(struct max9286_priv *priv)
-> +static void max9286_reverse_channel_setup(struct max9286_priv *priv,
-> +					  unsigned int chan_amplitude)
->   {
-> +	/* Reverse channel transmission time: default to 1. */
-> +	u8 chan_config = MAX9286_REV_TRF(1);
-> +
->   	/*
->   	 * Reverse channel setup.
->   	 *
->   	 * - Enable custom reverse channel configuration (through register 0x3f)
->   	 *   and set the first pulse length to 35 clock cycles.
-> -	 * - Increase the reverse channel amplitude to 170mV to accommodate the
-> -	 *   high threshold enabled by the serializer driver.
-> +	 * - Adjust reverse channel amplitude: values > 130 are programmed
-> +	 *   using the additional +100mV REV_AMP_X boost flag
->   	 */
->   	max9286_write(priv, 0x3f, MAX9286_EN_REV_CFG | MAX9286_REV_FLEN(35));
-> -	max9286_write(priv, 0x3b, MAX9286_REV_TRF(1) | MAX9286_REV_AMP(70) |
-> -		      MAX9286_REV_AMP_X);
-> +
-> +	if (chan_amplitude > 100) {
-> +		/* It is not possible express values (100 < x < 130) */
+> Well, didn't I appreciate your feedback first time?? It the following that
+> stupid and garbage .
+> 
+>> I'm rather familiar with the appropriate process.
+>>
+>> $ git shortlog -n -s --author="Joe Perches" --author="Bhaskar Chowdhury"
+>>   3227  Joe Perches
+>>      8  Bhaskar Chowdhury
+>>      1  Joe Perches via samba-technical
+> 
+> Never doubt that ..but you clinging on something not true is surprise me...I
+> believe you do better next time.
+> 
+> This is the most "useless" thread I have ever been...
+> 
+> Stop propagating it ...>
+> 
 
-    "To express", perhaps?
+Honestly, I really don't want to wake up, check my mails, and read such 
+toxic crap. Stop it, this is not how we communicate on these lists. Period.
 
-> +		chan_amplitude = chan_amplitude < 130
-> +			       ? 30 : chan_amplitude - 100;
-> +		chan_config |= MAX9286_REV_AMP_X;
-> +	}
-> +	max9286_write(priv, 0x3b, chan_config | MAX9286_REV_AMP(chan_amplitude));
->   	usleep_range(2000, 2500);
->   }
->   
-[...]
+If you have the urge to scream at each other (or make fun of each 
+other), do that off-list (or even better: don't!).
 
-MBR, Sergei
+
+I haven't read the whole discussion, here is my understanding:
+
+
+A new patch series version supersedes older ones, meaning it should be 
+completely self-contained. Just as if you're buying a new version of a 
+car, they won't be sending parts to replace.
+
+Imagine you're at V37, no reviewer will go through v1..V37 and apply 
+delta updates. When a reviewer sees a new version, the old ones are 
+discarded.
+
+Now, when it comes to *simple fixups* like here, the process depends a 
+little bit on the subsystem + maintainer, and it's best to ask how to 
+proceed.
+
+Option 1: Send a new version that's completely self-contained.
+
+Option 2: Ask the maintainer to fixup while applying/before sending 
+upstream.
+
+Option 3: Send an *unversioned* fixup patch as reply to the problematic 
+patch and ask to squash that into the original patch.
+
+
+Of course, it's different when the patch is already upstream. Then, a 
+fix/cleanup should mention the original, problematic commit.
+
+-- 
+Thanks,
+
+David / dhildenb
+
