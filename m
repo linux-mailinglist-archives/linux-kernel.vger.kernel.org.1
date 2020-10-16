@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9897B2901A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00702901AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406348AbgJPJQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:16:20 -0400
-Received: from mga09.intel.com ([134.134.136.24]:26032 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406310AbgJPJQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:16:04 -0400
-IronPort-SDR: 2l3JvqUg3YV+8YGv4Y6fu3V1t2GDynOX+ox9igzUoHsmrV11/6S8NccfY9mtF4iYWwdpGQJcmE
- SGipWgtQ/WyQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="166670662"
-X-IronPort-AV: E=Sophos;i="5.77,382,1596524400"; 
-   d="scan'208";a="166670662"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 02:16:03 -0700
-IronPort-SDR: cn9yV8a6EkpvDnhuC5Eu3JzAbrOrgpflkTrPT36A3TNxwptXSo7u0wMtWhHCu3/ZLrcp+bKO1C
- 4OGZxaKo2QxQ==
-X-IronPort-AV: E=Sophos;i="5.77,382,1596524400"; 
-   d="scan'208";a="522172401"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 02:16:01 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kTLrE-0087v0-OX; Fri, 16 Oct 2020 12:17:04 +0300
-Date:   Fri, 16 Oct 2020 12:17:04 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Syed Nayyar Waris <syednwaris@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v11 1/4] bitops: Introduce the for_each_set_clump macro
-Message-ID: <20201016091704.GE4077@smile.fi.intel.com>
-References: <cover.1601974764.git.syednwaris@gmail.com>
- <33de236870f7d3cf56a55d747e4574cdd2b9686a.1601974764.git.syednwaris@gmail.com>
- <20201006112745.GG4077@smile.fi.intel.com>
- <CACG_h5pYL+HbJpPcCTp=dR8rDbm07RsRDaX8Uc0HYc2LG--w_Q@mail.gmail.com>
+        id S2406044AbgJPJSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405515AbgJPJSb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:18:31 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F420C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 02:18:32 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id n9so1062501pgf.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 02:18:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5VJmUi2hckCsijxBcYyhh03sDZwAMNbDuXEf/NPFrU4=;
+        b=b8sPn/iNZ1hbUzVpPTulPn8fj7ufJEu2637RgBM8VxE9XMymWItCB/8oAIZlAU6V3/
+         ulvQ0s3Md9tj7JuyvdmisQNwH1gF3Ai6rSu+/T85Tp0TE6mWavWcwznhxS+gOz/Nu6GA
+         HbN28t9OrYj6QNZCpoOOzUPhs7YxQoXaG6WBxjMdcRHQYlvPof0W93p5qV8iFhlbSnlv
+         4+Ggxl1o0nHi0nLrWdK6gSMnRvMkLEzHnkLJ/Vec/eL1MpzR5R6B8Rm2iadxTedPXf4W
+         lvmgM5Mpe4S8y+at1XI++plh5fAmrOPNeDMCtEbjN3lOlGshcG7/gBv6jxKdXLE8OvFB
+         MGLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5VJmUi2hckCsijxBcYyhh03sDZwAMNbDuXEf/NPFrU4=;
+        b=XEAtLQjInP0tqevD8S9T5KwM+P/Nn4LkJFQw0qsIQwoE95d24XTtEu+tI5s86CUWdY
+         hh/br5XX0Lp/b3DZSqT7fO5PuivfPOKNOCwUrT479eeiBV1CLhhQCAx/kPxE3ehKXVvF
+         flV9oQGjrmybY5nI/PTt9LmgIkVefKdbzlyMZJDEP4EtjRSZr5IwpsmdhT+4amOxb8x4
+         iDyIKvvFxojZ3iJGencmMDJ77CjGc8wxJv+px4OFio902YmgugJ0MDl1KOluQ8Vqcjv5
+         sSV2/DB5ZSj0QlTCViPQq94fGFs5Uoxc9d4obXJdy2k0epwqsfDWSuy8QDrWy0fIEtdv
+         JEpg==
+X-Gm-Message-State: AOAM533A3qZZp8tFID2DSvKOAHkpt2CW29nhJrBFH5O66Xd852sC2s6N
+        TJ5JbckIcOIWUeeAyi8h3SA0tA==
+X-Google-Smtp-Source: ABdhPJxZY7syDdW76ZozIFq6p/RBmSoveEp5Ylw9O1uyIBddkks60ZtOQigzuvNjRHEcvFRBPIL0pw==
+X-Received: by 2002:a63:6f46:: with SMTP id k67mr2230777pgc.296.1602839911585;
+        Fri, 16 Oct 2020 02:18:31 -0700 (PDT)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id h5sm2093263pfh.9.2020.10.16.02.18.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 02:18:31 -0700 (PDT)
+From:   Zong Li <zong.li@sifive.com>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, mturquette@baylibre.com, sboyd@kernel.org,
+        yash.shah@sifive.com, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     Zong Li <zong.li@sifive.com>
+Subject: [PATCH 0/4] clk: add driver for the SiFive FU740
+Date:   Fri, 16 Oct 2020 17:18:22 +0800
+Message-Id: <cover.1602838910.git.zong.li@sifive.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACG_h5pYL+HbJpPcCTp=dR8rDbm07RsRDaX8Uc0HYc2LG--w_Q@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 04:23:05AM +0530, Syed Nayyar Waris wrote:
-> On Tue, Oct 6, 2020 at 4:56 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Tue, Oct 06, 2020 at 02:52:16PM +0530, Syed Nayyar Waris wrote:
+Add a driver for the SiFive FU740 PRCI IP block, which handles more
+clocks than FU540. These patches also refactor the original
+implementation by spliting the dependent-code of fu540 and fu740
+respectively.
 
-...
+Zong Li (4):
+  clk: sifive: Extract prci core to common base
+  clk: sifive: Use common name for prci configuration
+  clk: sifive: Add a driver for the SiFive FU740 PRCI IP block
+  clk: sifive: Refactor __prci_clock array by using macro
 
-> > > +             return (map[index] >> offset) & GENMASK(nbits - 1, 0);
-> >
-> > Have you considered to use rather BIT{_ULL}(nbits) - 1?
-> > It maybe better for code generation.
-> 
-> Yes I have considered using BIT{_ULL} in earlier versions of patchset.
-> It has a problem:
-> 
-> This macro when used in both bitmap_get_value and
-> bitmap_set_value functions, it will give unexpected results when nbits or clump
-> size is BITS_PER_LONG (32 or 64 depending on arch).
-> 
-> Actually when nbits (clump size) is 64 (BITS_PER_LONG is 64, for example),
-> (BIT(nbits) - 1)
-> gives a value of zero and when this zero is ANDed with any value, it
-> makes it full zero. This is unexpected, and incorrect calculation occurs.
-> 
-> What actually happens is in the macro expansion of BIT(64), that is 1
-> << 64, the '1' overflows from leftmost bit position (most significant
-> bit) and re-enters at the rightmost bit position (least significant
-> bit), therefore 1 << 64 becomes '0x1', and when another '1' is
-> subtracted from this, the final result becomes 0.
-> 
-> This is undefined behavior in the C standard (section 6.5.7 in the N1124)
-
-I see, indeed, for 64/32 it is like this.
-
-...
-
-> Yes I have incorporated your suggestion to use the '<<' operator. Thank You.
-
-One side note, consider the use round_up() vs. roundup(). I don't remember
-which one is optimized to divisor being power of 2.
+ arch/riscv/Kconfig.socs                       |   2 +-
+ drivers/clk/sifive/Kconfig                    |   8 +-
+ drivers/clk/sifive/Makefile                   |   5 +-
+ drivers/clk/sifive/fu540-prci.c               | 618 +-----------------
+ drivers/clk/sifive/fu540-prci.h               |  21 +
+ drivers/clk/sifive/fu740-prci.c               | 102 +++
+ drivers/clk/sifive/fu740-prci.h               |  21 +
+ drivers/clk/sifive/sifive-prci.c              | 529 +++++++++++++++
+ drivers/clk/sifive/sifive-prci.h              | 297 +++++++++
+ include/dt-bindings/clock/sifive-fu740-prci.h |  23 +
+ 10 files changed, 1032 insertions(+), 594 deletions(-)
+ create mode 100644 drivers/clk/sifive/fu540-prci.h
+ create mode 100644 drivers/clk/sifive/fu740-prci.c
+ create mode 100644 drivers/clk/sifive/fu740-prci.h
+ create mode 100644 drivers/clk/sifive/sifive-prci.c
+ create mode 100644 drivers/clk/sifive/sifive-prci.h
+ create mode 100644 include/dt-bindings/clock/sifive-fu740-prci.h
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.28.0
 
