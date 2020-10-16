@@ -2,173 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADB3290C0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 21:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8A9290C0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 21:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409789AbgJPTDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 15:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
+        id S2409813AbgJPTEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 15:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409694AbgJPTDU (ORCPT
+        with ESMTP id S2407907AbgJPTEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 15:03:20 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D3EC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:03:19 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id j17so3870747ilr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:03:19 -0700 (PDT)
+        Fri, 16 Oct 2020 15:04:06 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D61C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:04:05 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id m128so3583413oig.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:04:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rhXvB127CgmNZaT5aVO87+trEM6r5CPZEs1DuC4WiLQ=;
-        b=Uu4aUsm9QyKvHqSOUIqW/AewHn/qqFd9S5qRzL2wZcitgnf/fJA8pH8lWFT2d+uZZc
-         YBPvCDiF9HopzvIeEgn0Xrj3gAzT3qkmFDo99NHXJzTlCj7pQFE8yT+aD5ExBeGgKcsq
-         bTlwG7fH401mq4atSbyQDJeo54Nf2ScpEbM8C1Rfd0qEuXVydl8/PtfwTofj5LXg5oYo
-         5tmmObR6eXCzd7Ql+9nwJ/ee5VxlMyumDgkK+7nvxDlFXY+mgBW/jVKaK4MMsIXP5C0e
-         Do5A3h1heKjCv92HV/+erKnEQTYmGuA2q9n3YkclyPvkjb9eNdrz6rf3hAC/HJBFWA6W
-         iWzQ==
+         :cc;
+        bh=IDGiTqL122cqbXZ5gmkVRBP3kDwxXwWxYEu+99pwLt8=;
+        b=Vu3mPMHF4DBQL4kRlIWhIl9ji8RQex+xp7zFTvbtx9Zh3wWBCGFoYeL/7r0Hwx7EEm
+         ek/hS1ud5mnmbehUUkObdzbIdX1ck0whwPXMxyA+pc4U2Po7VQFjq76x7YeoaqZ4xAFJ
+         mwF4zceOwX+zbQMCOYexMBUOltu9uBPnMBcKiz318natkpmKGrWTqxNZ5Kkiu5RJurMu
+         G/iH5A/kDsU0spCOTx5TFbopILA7+8QBYCiLHYfxxrGaW08UxWy4D6M49AWqht3kleGc
+         lWN6yRRg3N3kw1bDIyIRC8GWZYDYuXhfaMzjmSt5arM4Ogx55jg+MJ5wQfQvit3Fy1Q6
+         4vbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rhXvB127CgmNZaT5aVO87+trEM6r5CPZEs1DuC4WiLQ=;
-        b=XGTvw1yZa+DQ5ZiwCFXYKl9VJJ3n2iYQ7c8Te5FFSd4Zqgm6L28Vnyxh+WON8yY6Eo
-         agqIZRfZo/r+Sweo/qirZDTMDphcoOV6OAcFLN7W8phO2U/A0hTG9oRfz+ZyHC3scY8B
-         Q4ToGUG8KoePbV0n9khrndNmYA+S72kgDnP/d9aqiqyoOg4ufGkaAR0xomPTsU0svcGd
-         iA+fZZORItqLE8zkVEmB2/0v0Z/TkNuR+QhTCeUAdb58cbhKi8WdjBqPM3iMXQzv0J+T
-         jdk2XFXtAN8tF8MsqQLCcTamVuojVqXVEepQFM3A6HsD15AQF2705uHhdZ40AWzXJFYv
-         j9lQ==
-X-Gm-Message-State: AOAM531gZgpxkH35PtJUToXksFwBHr1lbk3LO89rradSZj0PvkLYwHVg
-        Dix+9xRcjmADsG/IZ81OIazH00EtzHgbg/r0VRwBLg==
-X-Google-Smtp-Source: ABdhPJzCP2po4gVQwsjHb0Omj/pFsKqZ21h7VtQabMhzBzubeZXFRar6oYxlyUQ2DNNZwCLIu8NTGeM1rJU+kvwzezA=
-X-Received: by 2002:a05:6e02:664:: with SMTP id l4mr4043591ilt.81.1602874998234;
- Fri, 16 Oct 2020 12:03:18 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=IDGiTqL122cqbXZ5gmkVRBP3kDwxXwWxYEu+99pwLt8=;
+        b=muPaRCx/63www7WlH0dmAwMAfJGVQvQZQOcEKLC7ZtOv95ebASXos2WtszVSfpOVXa
+         VwCSxZNjZFRBXrj36mZvjDSU22sxZszEAwh5EdL3GvQjjB/wioM9R6PKegm1OnchGhfo
+         7CLPIHc+soN8MoBdGiLhGFFb+TYSiBunH8SwM+HcML2g5GYt0vCCfARJFfh4IYxrCgXA
+         ie95vfO7cvOM2pRyHJwqJg+NaYwV9bRWFenEwhJGvAjfC87O2EbxV9vABJEehTgTNFiq
+         GnoLOZTKARc2e7BCFfW/oOO5RiGnOus+1mKJz1MnSeJV+XtigfuCk8uUZN2rXV2MPF2S
+         HoVg==
+X-Gm-Message-State: AOAM5333kBGJT7/bSIubu09e/SX32HLi4VVkDtpFxkjQNpp6wnibms3r
+        a/eV0lT/dbADC4OGjI8TQZoFrbR+Wf8bU2QN+XbnGw==
+X-Google-Smtp-Source: ABdhPJyCT4CFxxioZ0RKc9SGkaYU2J4oKTJezbHz1a5Jln7LGJyPN5dehP917sAYUY6hvIpgxqdn6fwmIVzzFsccKtw=
+X-Received: by 2002:aca:3341:: with SMTP id z62mr3245667oiz.169.1602875044682;
+ Fri, 16 Oct 2020 12:04:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201016090437.170032996@linuxfoundation.org>
-In-Reply-To: <20201016090437.170032996@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 17 Oct 2020 00:33:06 +0530
-Message-ID: <CA+G9fYuEpbTX3_hjeGhfue49a051i3iuzdKfFQ3YGpy86vCZnQ@mail.gmail.com>
-Subject: Re: [PATCH 5.9 00/15] 5.9.1-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <20201003040257.62768-1-john.stultz@linaro.org>
+ <20201003040257.62768-8-john.stultz@linaro.org> <20201008115101.4qi6wh3hhkb6krg5@DESKTOP-E1NTVVP.localdomain>
+In-Reply-To: <20201008115101.4qi6wh3hhkb6krg5@DESKTOP-E1NTVVP.localdomain>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 16 Oct 2020 12:03:52 -0700
+Message-ID: <CALAqxLWrbgHoh=BCnuB4US77AOPMYmgGrE85WT6DYnEV-bad-A@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] dma-buf: system_heap: Add a system-uncached heap
+ re-using the system heap
+To:     Brian Starkey <brian.starkey@arm.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>, nd <nd@arm.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 at 14:42, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Thu, Oct 8, 2020 at 4:51 AM Brian Starkey <brian.starkey@arm.com> wrote:
+> On Sat, Oct 03, 2020 at 04:02:57AM +0000, John Stultz wrote:
+> > @@ -215,8 +236,12 @@ static void *system_heap_do_vmap(struct system_heap_buffer *buffer)
+> >       struct page **pages = vmalloc(sizeof(struct page *) * npages);
+> >       struct page **tmp = pages;
+> >       struct sg_page_iter piter;
+> > +     pgprot_t pgprot = PAGE_KERNEL;
+> >       void *vaddr;
+> >
+> > +     if (buffer->uncached)
+> > +             pgprot = pgprot_writecombine(PAGE_KERNEL);
 >
-> This is the start of the stable review cycle for the 5.9.1 release.
-> There are 15 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> I think this should go after the 'if (!pages)' check. Best to get the
+> allocation failure check as close to the allocation as possible IMO.
+
+Sounds good. Changed in my tree.
+
+> > @@ -393,6 +424,16 @@ static int system_heap_allocate(struct dma_heap *heap,
+> >               /* just return, as put will call release and that will free */
+> >               return ret;
+> >       }
+> > +
+> > +     /*
+> > +      * For uncached buffers, we need to initially flush cpu cache, since
+> > +      * the __GFP_ZERO on the allocation means the zeroing was done by the
+> > +      * cpu and thus it is likely cached. Map (and implicitly flush) it out
+> > +      * now so we don't get corruption later on.
+> > +      */
+> > +     if (buffer->uncached)
+> > +             dma_map_sgtable(dma_heap_get_dev(heap), table, DMA_BIDIRECTIONAL, 0);
 >
-> Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
-> Anything received after that time might be too late.
+> Do we have to keep this mapping around for the entire lifetime of the
+> buffer?
+
+Yea, I guess we can just map and unmap it right there.  It will look a
+little absurd, but that sort of aligns with your next point.
+
+> Also, this problem (and solution) keeps lingering around. It really
+> feels like there should be a better way to solve "clean the linear
+> mapping all the way to DRAM", but I don't know what that should be.
+
+Yea, something better here would be nice...
+
+
+> > @@ -426,6 +487,16 @@ static int system_heap_create(void)
+> >       if (IS_ERR(sys_heap))
+> >               return PTR_ERR(sys_heap);
+> >
+> > +     exp_info.name = "system-uncached";
+> > +     exp_info.ops = &system_uncached_heap_ops;
+> > +     exp_info.priv = NULL;
+> > +
+> > +     sys_uncached_heap = dma_heap_add(&exp_info);
+> > +     if (IS_ERR(sys_uncached_heap))
+> > +             return PTR_ERR(sys_heap);
+> > +
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.9.1-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.9.y
-> and the diffstat can be found below.
+> In principle, there's a race here between the heap getting registered
+> to sysfs and the dma_mask getting updated.
 >
-> thanks,
->
-> greg k-h
->
+> I don't think it would cause a problem in practice, but with the API
+> as it is, there's no way to avoid it - so I wonder if the
+> dma_heap_get_dev() accessor isn't the right API design.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Hrm.  I guess to address your concern we would need split
+dma_heap_add() into something like:
+  dma_heap_create()
+  dma_heap_add()
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Which breaks the creation of the heap with the registering it to the
+subsystem, so some attributes can be tweaked inbetween?
 
-Summary
-------------------------------------------------------------------------
+I'll see about taking a stab at this, but I'll probably submit my
+updated series sooner with this un-addressed so I can get some further
+review.
 
-kernel: 5.9.1-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.9.y
-git commit: 1cbc5f2d0eace639921f0e26fd6817e346961d5d
-git describe: v5.9-16-g1cbc5f2d0eac
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.=
-y/build/v5.9-16-g1cbc5f2d0eac
-
-No regressions (compared to build v5.9)
-
-No fixes (compared to build v5.9)
-
-Ran 29051 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* v4l2-compliance
-* install-android-platform-tools-r2600
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-math-tests
-* network-basic-tests
-* perf
-* ltp-sched-tests
-* ltp-quickhit-tests
-* kselftest
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+thanks
+-john
