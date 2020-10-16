@@ -2,88 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1396290ADA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0640290AE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390697AbgJPRgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:36:25 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:44466 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391676AbgJPRgF (ORCPT
+        id S2392377AbgJPRgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:36:33 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:32929 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733088AbgJPRg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:36:05 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09GHQLpg024369;
-        Fri, 16 Oct 2020 12:35:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=277Z0PefD7/3bHCFPZvHO3OjpBunOgY+as+ShFpcA00=;
- b=k3FPVmQtepxCKMeD69J8smRcmnQILFOGua0wtRXOO9SBOMtfiAlHyBd7oO3fp15o2xNl
- QYS9GeWp/dBxOWyLUgv35PQ7k5tPB8ygdi7zNPDYBypp/uvy+FEqO2CuxvejUouON2UM
- vEE24elPMfe4LZvzSYQdOTonPvqcFfg2O79obvzCpd81FFHGallnoLPkMc06fthMqyp+
- KUwORcL84kWSzOi0c2ZMYFBqlnQrCNu/B8hp6h5wk1OeAJ2ghlJntfQO8zX2yR8KjOt+
- 6GKO0gBHVKcXck6oco7N3/GIS9skHsUrOsPczYz9bByoaFl2Xn8eLwjisjrizRSQR1OA hQ== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 343ac20jk8-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 16 Oct 2020 12:35:51 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 16 Oct
- 2020 18:35:47 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 16 Oct 2020 18:35:47 +0100
-Received: from AUSNPC0LSNW1-debian.ad.cirrus.com (ausnpc0lsnw1.ad.cirrus.com [198.61.64.143])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 616D045;
-        Fri, 16 Oct 2020 17:35:47 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <nsaenzjulienne@suse.de>
-CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-rpi-kernel@lists.infradead.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH v2 7/7] MAINTAINERS: Add dts for Cirrus Logic Lochnagar on RPi4
-Date:   Fri, 16 Oct 2020 18:35:41 +0100
-Message-ID: <20201016173541.21180-8-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201016173541.21180-1-rf@opensource.cirrus.com>
-References: <20201016173541.21180-1-rf@opensource.cirrus.com>
+        Fri, 16 Oct 2020 13:36:29 -0400
+Received: by mail-oi1-f195.google.com with SMTP id s21so3312723oij.0;
+        Fri, 16 Oct 2020 10:36:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uNjJL9XRXf6UiVLAufuLhgqCl6U0FzLOoCk4A9Q+UKg=;
+        b=jCWdp34+7nVQbbNjoQaqxefXZl833KpTUtBo8w92GApZKxICvHKur1kE3JjEAv/aCb
+         PNnZLsMz4fRtKCZi5BLmM/MFHWaMt4H7m2EbIfOEBsvpWST8u1o8wi84g2uEWm8P9tfo
+         B3MpDFTe61LOmloK1R/zJVd19s/Kmmh+q7YAueuAtS13iGuchWiXKYPZkc4uIPysKH5W
+         1jwbtdnQRUMUvEiSQFlSRFkTCRpeeC4fGGWsrMdnh1UK1SQOkuUn/7z78PQeHjC0cyC6
+         lztl/85/rn44eZ4IyJkR0v8jiWPmR8zhxZMoyFaOgxkuajpy4qf7gt4M3jUK/3btQIKS
+         0IOA==
+X-Gm-Message-State: AOAM530nF4cc3i0SxfxW+PEocdmj87xkrqGi8s/KAFFuhT/xev3ade3h
+        T8sk3Mb46PAypw12lYJolXFaflLZ2fHHrr54TI66He0o
+X-Google-Smtp-Source: ABdhPJwc6hEIByVrIX+yaimgNWYjOejjd72/SieX3kq7/0xwhSeZeMPey6u21dcQkanDvtB29ybz9vLA0LqG/XWoa2M=
+X-Received: by 2002:aca:724a:: with SMTP id p71mr3250305oic.157.1602869788870;
+ Fri, 16 Oct 2020 10:36:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 priorityscore=1501 suspectscore=0 impostorscore=0
- mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010160130
+References: <20201016163634.857573-1-wvw@google.com> <CAJZ5v0in0N6USFqvuLcccpirahj=oOki67+Lq9_5i_q7Ep7T6g@mail.gmail.com>
+ <CAGXk5yq_xcHYizG_z+FV14ieWya-4qeyVFz1gQZ9_gbJxUcQqg@mail.gmail.com>
+In-Reply-To: <CAGXk5yq_xcHYizG_z+FV14ieWya-4qeyVFz1gQZ9_gbJxUcQqg@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 16 Oct 2020 19:36:17 +0200
+Message-ID: <CAJZ5v0jSC3oD+SFEzhyk=PqhSZoz9yt7jojXj3T5BXhjJ-CaFw@mail.gmail.com>
+Subject: Re: [PATCH] sched: cpufreq_schedutil: maintain raw cache when next_f
+ is not changed
+To:     Wei Wang <wvw@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Wei Wang <wei.vince.wang@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Quentin Perret <qperret@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the Cirrus Logic driver maintainers to include the device
-tree files for using the Lochnagar with a Raspberry Pi 4.
+On Fri, Oct 16, 2020 at 7:18 PM Wei Wang <wvw@google.com> wrote:
+>
+> On Fri, Oct 16, 2020 at 10:01 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Fri, Oct 16, 2020 at 6:36 PM Wei Wang <wvw@google.com> wrote:
+> > >
+> > > Currently, raw cache will be reset when next_f is changed after
+> > > get_next_freq for correctness. However, it may introduce more
+> > > cycles. This patch changes it to maintain the cached value instead of
+> > > dropping it.
+> >
+> > IMV you need to be more specific about why this helps.
+> >
+>
+> I think the idea of cached_raw_freq is to reduce the chance of calling
+> cpufreq drivers (in some arch those may be costly) but sometimes the
+> cache will be wiped for correctness. The purpose of this patch is to
+> still keep the cached value instead of wiping them.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0f59b0412953..d0065cba9535 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4193,6 +4193,7 @@ M:	Charles Keepax <ckeepax@opensource.cirrus.com>
- M:	Richard Fitzgerald <rf@opensource.cirrus.com>
- L:	patches@opensource.cirrus.com
- S:	Supported
-+F:	arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar*
- F:	Documentation/devicetree/bindings/clock/cirrus,lochnagar.yaml
- F:	Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.yaml
- F:	Documentation/devicetree/bindings/mfd/cirrus,lochnagar.yaml
--- 
-2.20.1
-
+Well, I see what the problem is and how the patch is attempting to
+address it (which is not the best way to do that because of the extra
+struct member that doesn't need to be added if I'm not mistaken), but
+IMO the changelog is way too vague from the problem statement
+perspective.
