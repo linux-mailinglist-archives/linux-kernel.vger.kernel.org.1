@@ -2,114 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00F728FFEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7038D290002
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394581AbgJPIXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:23:55 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:22369 "EHLO m42-4.mailgun.net"
+        id S2394641AbgJPIfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:35:08 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:33664 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391299AbgJPIXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:23:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602836632; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=ogih4ttt21IhnMbpr4r7Ie0P2Iu9q+S+qfDsHdjfTpI=; b=l2axuc3EWuQCRrTaYTMXp7eub3uvYXxlwkprV9eoviND2uQUJbVk4R7lt/QcnVrAnyGruYbW
- 9KFgUW/9YcxVivj03A52Yf73qPwKfclgHLxhCorIntrSJmruo1HMyKLxmx0uIgNB+/qR3Eoj
- sDhOuPJ33KA2w9qMyvOAPZhEHK8=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f895898588858a304539122 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Oct 2020 08:23:52
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 30CC4C43385; Fri, 16 Oct 2020 08:23:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F48DC433CB;
-        Fri, 16 Oct 2020 08:23:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0F48DC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Srinivasan Raju <srini.raju@purelifi.com>,
-        mostafa.afgani@purelifi.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] [v2] wireless: Initial driver submission for pureLiFi devices
-References: <20200924151910.21693-1-srini.raju@purelifi.com>
-        <20200928102008.32568-1-srini.raju@purelifi.com>
-        <20200930051602.GJ3094@unreal> <87d023elrc.fsf@codeaurora.org>
-        <20200930095526.GM3094@unreal>
-        <1449cdbe49b428b7d16a199ebc4c9aef73d6564c.camel@sipsolutions.net>
-        <20200930104459.GO3094@unreal>
-Date:   Fri, 16 Oct 2020 11:23:45 +0300
-In-Reply-To: <20200930104459.GO3094@unreal> (Leon Romanovsky's message of
-        "Wed, 30 Sep 2020 13:44:59 +0300")
-Message-ID: <87blh2y3xq.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S2394633AbgJPIfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 04:35:08 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id ABB8720181D;
+        Fri, 16 Oct 2020 10:35:04 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 66BAE2000FB;
+        Fri, 16 Oct 2020 10:34:58 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 71014402A7;
+        Fri, 16 Oct 2020 10:34:50 +0200 (CEST)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     leoyang.li@nxp.com, linux@rempel-privat.de, kernel@pengutronix.de,
+        wsa@the-dreams.de, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, aisheng.dong@nxp.com, xiaoning.wang@nxp.com,
+        o.rempel@pengutronix.de
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
+        linux-arm-kernel@lists.infradead.org, Biwen Li <biwen.li@nxp.com>
+Subject: [v7] i2c: imx: support slave mode for imx I2C driver
+Date:   Fri, 16 Oct 2020 16:24:35 +0800
+Message-Id: <20201016082435.11593-1-biwen.li@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Leon Romanovsky <leon@kernel.org> writes:
+From: Biwen Li <biwen.li@nxp.com>
 
-> On Wed, Sep 30, 2020 at 12:11:24PM +0200, Johannes Berg wrote:
->> On Wed, 2020-09-30 at 12:55 +0300, Leon Romanovsky wrote:
->> > On Wed, Sep 30, 2020 at 11:01:27AM +0300, Kalle Valo wrote:
->> > > Leon Romanovsky <leon@kernel.org> writes:
->> > >
->> > > > > diff --git a/drivers/net/wireless/purelifi/Kconfig
->> > > > b/drivers/net/wireless/purelifi/Kconfig
->> > > > > new file mode 100644
->> > > > > index 000000000000..ff05eaf0a8d4
->> > > > > --- /dev/null
->> > > > > +++ b/drivers/net/wireless/purelifi/Kconfig
->> > > > > @@ -0,0 +1,38 @@
->> > > > > +# SPDX-License-Identifier: GPL-2.0
->> > > > > +config WLAN_VENDOR_PURELIFI
->> > > > > +	bool "pureLiFi devices"
->> > > > > +	default y
->> > > >
->> > > > "N" is preferred default.
->> > >
->> > > In most cases that's true, but for WLAN_VENDOR_ configs 'default y'
->> > > should be used. It's the same as with NET_VENDOR_.
->> >
->> > I would like to challenge it, why is that?
->> > Why do I need to set "N", every time new vendor upstreams its code?
->>
->> You don't. The WLAN_VENDOR_* settings are not supposed to affect the
->> build, just the Kconfig visibility.
->
-> Which is important to me, I'm keeping .config as minimal as possible
-> to simplify comparison between various builds.
+The patch supports slave mode for imx I2C driver
 
-IIRC the 'default y' is to avoid breaking when updating from an old,
-pre-vendor, kernel config (for example with 'make oldconfig'), otherwise
-all wireless drivers would have been disabled without a warning. But as
-wireless vendors were introduced back in 2015 in v4.5-rc1 I don't think
-we need to worry about that anymore. But I would like to keep this
-behaviour consistent across all vendors, so they all should be changed
-at the same time in one patch.
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+---
+Change in v7:
+	- support auto switch mode between master and slave
+	- enable interrupt when idle in slave mode
+	- remove #ifdef
 
+Change in v6:
+	- delete robust logs and comments
+	- not read status register again in master isr.
+
+Change in v5:
+	- fix a bug that cannot determine in what mode(master mode or
+	  slave mode)
+
+Change in v4:
+	- add MACRO CONFIG_I2C_SLAVE to fix compilation issue
+
+Change in v3:
+	- support layerscape and i.mx platform
+
+Change in v2:
+	- remove MACRO CONFIG_I2C_SLAVE
+
+ drivers/i2c/busses/i2c-imx.c | 213 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 199 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+index 0ab5381aa012..0d62b09ee967 100644
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -17,6 +17,7 @@
+  *	Copyright (C) 2008 Darius Augulis <darius.augulis at teltonika.lt>
+  *
+  *	Copyright 2013 Freescale Semiconductor, Inc.
++ *	Copyright 2020 NXP
+  *
+  */
+ 
+@@ -72,6 +73,7 @@
+ #define IMX_I2C_I2CR	0x02	/* i2c control */
+ #define IMX_I2C_I2SR	0x03	/* i2c status */
+ #define IMX_I2C_I2DR	0x04	/* i2c transfer data */
++#define IMX_I2C_IBIC	0x05    /* i2c transfer data */
+ 
+ #define IMX_I2C_REGSHIFT	2
+ #define VF610_I2C_REGSHIFT	0
+@@ -91,6 +93,7 @@
+ #define I2CR_MSTA	0x20
+ #define I2CR_IIEN	0x40
+ #define I2CR_IEN	0x80
++#define IBIC_BIIE	0x80 // Bus idle interrupt enable
+ 
+ /* register bits different operating codes definition:
+  * 1) I2SR: Interrupt flags clear operation differ between SoCs:
+@@ -201,6 +204,7 @@ struct imx_i2c_struct {
+ 	struct pinctrl_state *pinctrl_pins_gpio;
+ 
+ 	struct imx_i2c_dma	*dma;
++	struct i2c_client	*slave;
+ };
+ 
+ static const struct imx_i2c_hwdata imx1_i2c_hwdata = {
+@@ -277,6 +281,14 @@ static inline unsigned char imx_i2c_read_reg(struct imx_i2c_struct *i2c_imx,
+ 	return readb(i2c_imx->base + (reg << i2c_imx->hwdata->regshift));
+ }
+ 
++/* Set up i2c controller register and i2c status register to default value. */
++static void i2c_imx_reset_regs(struct imx_i2c_struct *i2c_imx)
++{
++	imx_i2c_write_reg(i2c_imx->hwdata->i2cr_ien_opcode ^ I2CR_IEN,
++			i2c_imx, IMX_I2C_I2CR);
++	imx_i2c_write_reg(i2c_imx->hwdata->i2sr_clr_opcode, i2c_imx, IMX_I2C_I2SR);
++}
++
+ /* Functions for DMA support */
+ static void i2c_imx_dma_request(struct imx_i2c_struct *i2c_imx,
+ 						dma_addr_t phy_addr)
+@@ -614,20 +626,110 @@ static void i2c_imx_stop(struct imx_i2c_struct *i2c_imx, bool atomic)
+ 	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
+ }
+ 
++/*
++ * Enable bus idle interrupts
++ * Note: IBIC register will be cleared after disabled i2c module.
++ */
++static void i2c_imx_enable_bus_idle(struct imx_i2c_struct *i2c_imx)
++{
++	unsigned int temp;
++
++	temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_IBIC);
++	temp |= IBIC_BIIE;
++	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_IBIC);
++}
++
++static void i2c_imx_clr_if_bit(unsigned int status, struct imx_i2c_struct *i2c_imx)
++{
++	status &= ~I2SR_IIF;
++	status |= (i2c_imx->hwdata->i2sr_clr_opcode & I2SR_IIF);
++	imx_i2c_write_reg(status, i2c_imx, IMX_I2C_I2SR);
++}
++
++/* Clear arbitration lost bit */
++static void i2c_imx_clr_al_bit(unsigned int status, struct imx_i2c_struct *i2c_imx)
++{
++	status &= ~I2SR_IAL;
++	status |= (i2c_imx->hwdata->i2sr_clr_opcode & I2SR_IAL);
++	imx_i2c_write_reg(status, i2c_imx, IMX_I2C_I2SR);
++}
++
++static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
++				     unsigned int status, unsigned int ctl)
++{
++	u8 value;
++
++	if (status & I2SR_IAL) { /* Arbitration lost */
++		i2c_imx_clr_al_bit(status | I2SR_IIF, i2c_imx);
++	} else if (status & I2SR_IAAS) { /* Addressed as a slave */
++		if (status & I2SR_SRW) { /* Master wants to read from us*/
++			dev_dbg(&i2c_imx->adapter.dev, "read requested");
++			i2c_slave_event(i2c_imx->slave, I2C_SLAVE_READ_REQUESTED, &value);
++
++			/* Slave transmit */
++			ctl |= I2CR_MTX;
++			imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
++
++			/* Send data */
++			imx_i2c_write_reg(value, i2c_imx, IMX_I2C_I2DR);
++		} else { /* Master wants to write to us */
++			dev_dbg(&i2c_imx->adapter.dev, "write requested");
++			i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_WRITE_REQUESTED, &value);
++
++			/* Slave receive */
++			ctl &= ~I2CR_MTX;
++			imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
++			/* Dummy read */
++			imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
++		}
++	} else if (!(ctl & I2CR_MTX)) { /* Receive mode */
++		if (status & I2SR_IBB) { /* No STOP signal detected */
++			value = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
++			i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_WRITE_RECEIVED, &value);
++		} else { /* STOP signal is detected */
++			dev_dbg(&i2c_imx->adapter.dev,
++				"STOP signal detected");
++			i2c_slave_event(i2c_imx->slave, I2C_SLAVE_STOP, &value);
++		}
++	} else if (!(status & I2SR_RXAK)) { /* Transmit mode received ACK */
++		ctl |= I2CR_MTX;
++		imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
++
++		i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_READ_PROCESSED, &value);
++
++		imx_i2c_write_reg(value, i2c_imx, IMX_I2C_I2DR);
++	} else { /* Transmit mode received NAK */
++		ctl &= ~I2CR_MTX;
++		imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
++		imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
++	}
++
++	return IRQ_HANDLED;
++}
++
++static irqreturn_t i2c_imx_master_isr(struct imx_i2c_struct *i2c_imx, unsigned int status)
++{
++	/* Save status register */
++	i2c_imx->i2csr = status | I2SR_IIF;
++	wake_up(&i2c_imx->queue);
++
++	return IRQ_HANDLED;
++}
++
+ static irqreturn_t i2c_imx_isr(int irq, void *dev_id)
+ {
+ 	struct imx_i2c_struct *i2c_imx = dev_id;
+-	unsigned int temp;
++	unsigned int ctl, status;
++
++	status = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2SR);
++	ctl = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
++
++	if (status & I2SR_IIF) {
++		i2c_imx_clr_if_bit(status, i2c_imx);
++		if (IS_ENABLED(CONFIG_I2C_SLAVE) && i2c_imx->slave && !(ctl & I2CR_MSTA))
++			return i2c_imx_slave_isr(i2c_imx, status, ctl);
+ 
+-	temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2SR);
+-	if (temp & I2SR_IIF) {
+-		/* save status register */
+-		i2c_imx->i2csr = temp;
+-		temp &= ~I2SR_IIF;
+-		temp |= (i2c_imx->hwdata->i2sr_clr_opcode & I2SR_IIF);
+-		imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
+-		wake_up(&i2c_imx->queue);
+-		return IRQ_HANDLED;
++		return i2c_imx_master_isr(i2c_imx, status);
+ 	}
+ 
+ 	return IRQ_NONE;
+@@ -918,6 +1020,38 @@ static int i2c_imx_read(struct imx_i2c_struct *i2c_imx, struct i2c_msg *msgs,
+ 	return 0;
+ }
+ 
++static int i2c_imx_slave_init(struct imx_i2c_struct *i2c_imx)
++{
++	int temp;
++
++	/* Resume */
++	temp = pm_runtime_get_sync(i2c_imx->adapter.dev.parent);
++	if (temp < 0) {
++		dev_err(&i2c_imx->adapter.dev, "failed to resume i2c controller");
++		return temp;
++	}
++
++	/* Set slave addr. */
++	imx_i2c_write_reg((i2c_imx->slave->addr << 1), i2c_imx, IMX_I2C_IADR);
++
++	i2c_imx_reset_regs(i2c_imx);
++
++	/* Enable module */
++	temp = i2c_imx->hwdata->i2cr_ien_opcode;
++	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
++
++	/* Enable interrupt from i2c module */
++	temp |= I2CR_IIEN;
++	imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
++
++	i2c_imx_enable_bus_idle(i2c_imx);
++
++	/* Wait controller to be stable */
++	usleep_range(50, 150);
++
++	return 0;
++}
++
+ static int i2c_imx_xfer_common(struct i2c_adapter *adapter,
+ 			       struct i2c_msg *msgs, int num, bool atomic)
+ {
+@@ -999,6 +1133,12 @@ static int i2c_imx_xfer_common(struct i2c_adapter *adapter,
+ 	dev_dbg(&i2c_imx->adapter.dev, "<%s> exit with: %s: %d\n", __func__,
+ 		(result < 0) ? "error" : "success msg",
+ 			(result < 0) ? result : num);
++	/* After data is transferred, switch to slave mode(as a receiver) */
++	if (IS_ENABLED(CONFIG_I2C_SLAVE) && i2c_imx->slave) {
++		if (i2c_imx_slave_init(i2c_imx) < 0)
++			dev_err(&i2c_imx->adapter.dev, "failed to switch to slave mode");
++	}
++
+ 	return (result < 0) ? result : num;
+ }
+ 
+@@ -1108,10 +1248,58 @@ static u32 i2c_imx_func(struct i2c_adapter *adapter)
+ 		| I2C_FUNC_SMBUS_READ_BLOCK_DATA;
+ }
+ 
++static int i2c_imx_reg_slave(struct i2c_client *client)
++{
++	struct imx_i2c_struct *i2c_imx = i2c_get_adapdata(client->adapter);
++	int ret;
++
++	if (!IS_ENABLED(CONFIG_I2C_SLAVE))
++		return -EINVAL;
++
++	if (i2c_imx->slave)
++		return -EBUSY;
++
++	i2c_imx->slave = client;
++
++	ret = i2c_imx_slave_init(i2c_imx);
++	if (ret < 0)
++		dev_err(&i2c_imx->adapter.dev, "failed to switch to slave mode");
++
++	return ret;
++}
++
++static int i2c_imx_unreg_slave(struct i2c_client *client)
++{
++	struct imx_i2c_struct *i2c_imx = i2c_get_adapdata(client->adapter);
++	int ret;
++
++	if (!IS_ENABLED(CONFIG_I2C_SLAVE))
++		return -EINVAL;
++
++	if (!i2c_imx->slave)
++		return -EINVAL;
++
++	/* Reset slave address. */
++	imx_i2c_write_reg(0, i2c_imx, IMX_I2C_IADR);
++
++	i2c_imx_reset_regs(i2c_imx);
++
++	i2c_imx->slave = NULL;
++
++	/* Suspend */
++	ret = pm_runtime_put_sync(i2c_imx->adapter.dev.parent);
++	if (ret < 0)
++		dev_err(&i2c_imx->adapter.dev, "failed to suspend i2c controller");
++
++	return ret;
++}
++
+ static const struct i2c_algorithm i2c_imx_algo = {
+ 	.master_xfer = i2c_imx_xfer,
+ 	.master_xfer_atomic = i2c_imx_xfer_atomic,
+ 	.functionality = i2c_imx_func,
++	.reg_slave	= i2c_imx_reg_slave,
++	.unreg_slave	= i2c_imx_unreg_slave,
+ };
+ 
+ static int i2c_imx_probe(struct platform_device *pdev)
+@@ -1207,10 +1395,7 @@ static int i2c_imx_probe(struct platform_device *pdev)
+ 	clk_notifier_register(i2c_imx->clk, &i2c_imx->clk_change_nb);
+ 	i2c_imx_set_clk(i2c_imx, clk_get_rate(i2c_imx->clk));
+ 
+-	/* Set up chip registers to defaults */
+-	imx_i2c_write_reg(i2c_imx->hwdata->i2cr_ien_opcode ^ I2CR_IEN,
+-			i2c_imx, IMX_I2C_I2CR);
+-	imx_i2c_write_reg(i2c_imx->hwdata->i2sr_clr_opcode, i2c_imx, IMX_I2C_I2SR);
++	i2c_imx_reset_regs(i2c_imx);
+ 
+ 	/* Init optional bus recovery function */
+ 	ret = i2c_imx_init_recovery_info(i2c_imx, pdev);
 -- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.17.1
+
