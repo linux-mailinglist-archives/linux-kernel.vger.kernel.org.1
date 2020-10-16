@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566252906DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513182906E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408637AbgJPOL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51612 "EHLO
+        id S2408668AbgJPONA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408629AbgJPOLz (ORCPT
+        with ESMTP id S2404154AbgJPOM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:11:55 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A20C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:11:55 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id t12so2813242ilh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:11:55 -0700 (PDT)
+        Fri, 16 Oct 2020 10:12:57 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EAAC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:12:55 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id t9so3071917wrq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:12:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HPXoxu79axlTDJVQIxIG8QUlu16nOKhGS3CzRhj1ZMc=;
-        b=KFS9cTK79o4EoRuF9ed5XQZZmdxqn9ICALvcpd94PNb3kt7mzqAXfVUE5u7MddmR+K
-         79K5QzhEqNUQprrChH3nLn/VCcN9uibrtaEoo6QjitkI6FDZIsqi9Mxc4PBp+OX3U2M6
-         25UhwAzyGUD+Pu1+jgM6CueaJjIyv8efWpooKqc6N5Uiq2aDwT8AyX+KrLGFH6Eji1lw
-         bHboEbG6CdHvMrdXA8g5KEr+5MiRiE8N3ngrrj16sBkLZgjC/wt2SWVOId1NKuPI/xpu
-         WB558S6pNvBpdWJnKbrlpkwNYTOCyKsuovYq+PT98cfiN3KCBvmutNhwv77NewC8Hhv9
-         0CPA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/5OWg3ftk4N++cGTvtidW1nQcYwkBYUJIWAKoaAJoUU=;
+        b=JB0ZR3FoUlW/JFBSJAimzbR9cTGbrAYD/+9uf2EoIqoJ/hRqQ1n3E8EfhHxfs8m3WL
+         ycOGcMyutOnOYV8TG+udGFQep5jMCWMcsrw1tEeWiQX7ztGyvW/Fab3ECYyjEFerBa0O
+         LP3CA5ItQsVYelucyJ7V4BneROyrhjIp2J6HokXuPtEw815t2I9TRxQZF6wkPzEfea87
+         l6oNJGfs5EIRZBnDXu5Eim/z8rtxCP0SeQy4nU0qNPEZpDbTWlX1b6CTlDUDyttdjff/
+         lkAl84CxVKuYFid5XUFVuVw8v0S8w1/yZjPvdcgEonFYC4K6nstJPdMfwkC1kJVm61+Q
+         GmxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HPXoxu79axlTDJVQIxIG8QUlu16nOKhGS3CzRhj1ZMc=;
-        b=WY+kTEYt+p0Epp3qnuppWiuwTZzr2FZZGOlseii46wHs1gw3eigZgzpxON8NTzd8d3
-         BSf1uapCm4uoBo/bTJtoYV5Ge6noq2iuDP1AThmHDTyGDrzFdcOrUU7ItRvLsH5idvZH
-         ex6bzwz0lg4WKuGo4AqAdhj1dqB0f+OuF/YU04RasitvJwtIRXj49cNx7PT2JKnv6jd1
-         ewl4n4+M0NEZxK+6mTSn0MUePNIuD8Hu03RBJDk9BJ6wZkN9s8p0OolSkyXKeaFDpJ3S
-         H9g5Vuapn6tLq8bjvb6N6aaxdIEVUbgJGNysMZ/quhqktJHe+zQj3bGvhUFf9YtWKziJ
-         F8gw==
-X-Gm-Message-State: AOAM531gMJ/kmMpjRZ5r0zVveopy+ptI+ZRrAl2SRGHNeLD0KIqyMt6J
-        XGV+3DbH7afYKLtFlmGkSYk9WQ==
-X-Google-Smtp-Source: ABdhPJz4tvYKJglbN1lonM9e4+1p0JSAq7kEAPmdSjLyzk2pt8NgXt3J56wCLkoUEt8wp4TerOcgQA==
-X-Received: by 2002:a05:6e02:13e8:: with SMTP id w8mr2969156ilj.139.1602857514321;
-        Fri, 16 Oct 2020 07:11:54 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id 69sm2350676iou.42.2020.10.16.07.11.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/5OWg3ftk4N++cGTvtidW1nQcYwkBYUJIWAKoaAJoUU=;
+        b=PoCXdjfSaWz+vqVpcm7PrVLhrIBM7kcuCaJr/3k5GcmN0eKt8R64gZuK7Yd5kK/l6D
+         ywcar1Ex33aB9bXsWhZZkY7sNN6z2r8h2IMBJFOyX+5e+9KlDqwkYCBPmWZQacNgFCYI
+         8rkXRHoWC/j7zj7MZUjFLDbBpbPb/TI7a+ytLdsZsoovm8SzMXw9mpj3o+AmNmuabdLN
+         4tkv+90HvYaGDYy+5F+EewMFCpQVozw5GxUOpjcZXQwlfWpe/bMtloCDOu1IKBDHyPQU
+         JsDPHYEVnIXkFsoHybIEpxFwvp31Pp7WavYqSQEi0ACSWobozqtcjf1/SftFOdEI3vsv
+         DLMw==
+X-Gm-Message-State: AOAM532GvoRM8zbzGjiQhGhj4lHgVPvXQJ9IaZbE6RUJxGOH/nsAObOT
+        Au8rcKoTCGaSfyJJDY7t5FDcVQ==
+X-Google-Smtp-Source: ABdhPJw+syrWSIvIbwdzERHBMz7PuK0C0aRY/cQbmq/KeUEvG0vIAO0FlZzAWNzvuHTOUVhIHXJFEQ==
+X-Received: by 2002:a5d:5090:: with SMTP id a16mr4005862wrt.281.1602857574137;
+        Fri, 16 Oct 2020 07:12:54 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id p9sm2982284wma.12.2020.10.16.07.12.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 07:11:53 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kTQSW-000VCO-IF; Fri, 16 Oct 2020 11:11:52 -0300
-Date:   Fri, 16 Oct 2020 11:11:52 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     Xianting Tian <tian.xianting@h3c.com>, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] IB/hfi1: Avoid allocing memory on memoryless numa node
-Message-ID: <20201016141152.GC36674@ziepe.ca>
-References: <20201010085732.20708-1-tian.xianting@h3c.com>
- <9ba33073-044c-9da6-a90d-4626e6441793@cornelisnetworks.com>
+        Fri, 16 Oct 2020 07:12:53 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     sboyd@kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 0/4] clk: qcom : add sm8250 LPASS GFM drivers
+Date:   Fri, 16 Oct 2020 15:12:37 +0100
+Message-Id: <20201016141241.5839-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ba33073-044c-9da6-a90d-4626e6441793@cornelisnetworks.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 08:36:57AM -0400, Dennis Dalessandro wrote:
-> On 10/10/2020 4:57 AM, Xianting Tian wrote:
-> > In architecture like powerpc, we can have cpus without any local memory
-> > attached to it. In such cases the node does not have real memory.
-> > 
-> > Use local_memory_node(), which is guaranteed to have memory.
-> > local_memory_node is a noop in other architectures that does not support
-> > memoryless nodes.
-> > 
-> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> >   drivers/infiniband/hw/hfi1/file_ops.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
-> > index 8ca51e43c..79fa22cc7 100644
-> > +++ b/drivers/infiniband/hw/hfi1/file_ops.c
-> > @@ -965,7 +965,7 @@ static int allocate_ctxt(struct hfi1_filedata *fd, struct hfi1_devdata *dd,
-> >   	 */
-> >   	fd->rec_cpu_num = hfi1_get_proc_affinity(dd->node);
-> >   	if (fd->rec_cpu_num != -1)
-> > -		numa = cpu_to_node(fd->rec_cpu_num);
-> > +		numa = local_memory_node(cpu_to_node(fd->rec_cpu_num));
-> >   	else
-> >   		numa = numa_node_id();
-> >   	ret = hfi1_create_ctxtdata(dd->pport, numa, &uctxt);
-> > 
-> 
-> The hfi1 driver depends on X86_64. I'm not sure what this patch buys, can
-> you expand a bit?
+This patchset adds support for GFM Muxes found in LPASS
+(Low Power Audio SubSystem) IP in Audio Clock Controller
+and Always ON clock controller.
 
-Yikes, that is strongly discouraged.
+Clocks derived from these muxes are consumed by LPASS Digital Codec.
+Currently the driver for Audio and Always ON clock controller only
+supports GFM Muxes, however it should be easy to add more clock
+support when required
 
-Jason
+Changes since v2:
+- updated Kconfig text and help as suggested by Stephen
+- removed unnecessary header file include
+- use fw_name instead of name for parents
+- use devm_platform_ioremap_resource
+
+verified dt_binding_check to pass on linux master,
+
+Srinivas Kandagatla (4):
+  dt-bindings: clock: Add support for LPASS Audio Clock Controller
+  dt-bindings: clock: Add support for LPASS Always ON Controller
+  clk: qcom: Add support to LPASS AUDIO_CC Glitch Free Mux clocks
+  clk: qcom: Add support to LPASS AON_CC Glitch Free Mux clocks
+
+ .../bindings/clock/qcom,aoncc-sm8250.yaml     |  58 ++++
+ .../bindings/clock/qcom,audiocc-sm8250.yaml   |  58 ++++
+ drivers/clk/qcom/Kconfig                      |   6 +
+ drivers/clk/qcom/Makefile                     |   1 +
+ drivers/clk/qcom/lpass-gfm-sm8250.c           | 320 ++++++++++++++++++
+ .../clock/qcom,sm8250-lpass-aoncc.h           |  11 +
+ .../clock/qcom,sm8250-lpass-audiocc.h         |  13 +
+ 7 files changed, 467 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,aoncc-sm8250.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,audiocc-sm8250.yaml
+ create mode 100644 drivers/clk/qcom/lpass-gfm-sm8250.c
+ create mode 100644 include/dt-bindings/clock/qcom,sm8250-lpass-aoncc.h
+ create mode 100644 include/dt-bindings/clock/qcom,sm8250-lpass-audiocc.h
+
+-- 
+2.21.0
+
