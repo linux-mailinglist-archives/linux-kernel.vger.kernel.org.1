@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412B228FFCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7397F28FFD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405100AbgJPIMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:12:47 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:41036 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405073AbgJPIM0 (ORCPT
+        id S2404996AbgJPINu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:13:50 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:41618 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404939AbgJPINt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:12:26 -0400
-Received: by mail-io1-f70.google.com with SMTP id j21so1018565iog.8
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 01:12:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=xcWA32PLfjx6w6sKv3bsQQXLERevMZycCbs2tAWwNCw=;
-        b=KdZ0m1N7LMm4c36fIzifFdLFVrwi4RjY6JItDkPbRgGYbtUF0NjzAZdb3BfCL3tEE/
-         JJTZiBPNd/y6bgaPIqGy57xmiWp62eCMI1/Yoygy3O+0NhxxwMxcn9mbA6daE7rRj+gB
-         sDNG79PfCFNttgTdTZSHK6u5UWGdaZF/T4unHoz/EQmUH7V9L8g8pUTTLbGyN16ZRZuE
-         kabnrjxhGhfwx8ITkIiUn9I/9qLyC3wmtONmywRmJ12azwyiIpDQ99/F2Q1sm1i3HWHa
-         UACoWfrrERSjQsBN+qe3fVaDGXMLTtSDmjSpFp2mvg6oXths/JUAekpQi27gOi3GSHXn
-         9XDA==
-X-Gm-Message-State: AOAM531DYPFxeTRYcQkKh4G8jy9LMXjGe4e9CewnocKStDag7CiUpeII
-        Vmwz4+kEgC7fXyjt/5WGGScaxAXSqta2aUlC6258TELA+rmF
-X-Google-Smtp-Source: ABdhPJzwvMF9v0pcHs6e2Uz/eGY/vdXVtzVUVGAUB+hmv0oGAXPqUsfIMO7RIxIVpqDYMb8sANNZ3w+yOogd+Wy10rAdqzMY3OO6
+        Fri, 16 Oct 2020 04:13:49 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-25-NRrZ346XOLelYSsRdn014w-1; Fri, 16 Oct 2020 09:13:45 +0100
+X-MC-Unique: NRrZ346XOLelYSsRdn014w-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 16 Oct 2020 09:13:44 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 16 Oct 2020 09:13:44 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arvind Sankar' <nivedita@alum.mit.edu>
+CC:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Nathan Chancellor" <natechancellor@gmail.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] compiler.h: Clarify comment about the need for
+ barrier_data()
+Thread-Topic: [PATCH] compiler.h: Clarify comment about the need for
+ barrier_data()
+Thread-Index: AQHWox7rJ5hC7vlNqk+GpAb0LFktmKmZJEvQgAACJICAALXFQA==
+Date:   Fri, 16 Oct 2020 08:13:44 +0000
+Message-ID: <407e91d1d36d48faa8bbdfe4f51033ad@AcuMS.aculab.com>
+References: <CAKwvOdkLvxeYeBh7Kx0gw7JPktPH8A4DomJTidUqA0jRQTR0FA@mail.gmail.com>
+ <20201015181340.653004-1-nivedita@alum.mit.edu>
+ <72958fd25e33490181b0df9413ec08b4@AcuMS.aculab.com>
+ <20201015220123.GA919128@rani.riverdale.lan>
+In-Reply-To: <20201015220123.GA919128@rani.riverdale.lan>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-Received: by 2002:a6b:fa07:: with SMTP id p7mr1543319ioh.124.1602835944057;
- Fri, 16 Oct 2020 01:12:24 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 01:12:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000014370305b1c55370@google.com>
-Subject: UBSAN: array-index-out-of-bounds in alg_bind
-From:   syzbot <syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+RnJvbTogQXJ2aW5kIFNhbmthcg0KPiBTZW50OiAxNSBPY3RvYmVyIDIwMjAgMjM6MDENCiwsLA0K
+PiBJIHRoaW5rIGl0J3MgaGVscGZ1bCB0byBoYXZlIHRoZSBtb3JlIGRldGFpbGVkIGV4cGxhbmF0
+aW9uIGFib3V0DQo+IHJlZ2lzdGVyIHZhcmlhYmxlcyAtLSBhdCBmaXJzdCBnbGFuY2UsIGl0J3Mg
+YSBiaXQgbXlzdGlmeWluZyBhcyB0byB3aHkNCj4gdGhlIGNvbXBpbGVyIHdvdWxkIHRoaW5rIHRo
+YXQgdGhlIGFzbSBjYW4ndCBhY2Nlc3MgdGhlIHN0YWNrLiBTcGlsbGluZw0KPiByZWdpc3RlcnMg
+dG8gdGhlIHN0YWNrIGlzIGFjdHVhbGx5IGFuIHVuZGVzaXJhYmxlIHNpZGUtZWZmZWN0IG9mIHRo
+ZQ0KPiB3b3JrYXJvdW5kLg0KDQpUaGF0IGlzIHRoZSB2ZXJ5IGJpdCB0aGF0IGp1c3QgY29uZnVz
+ZXMgdGhpbmdzLg0KVGhlIGRhdGEgdGhlIG1lbXplcm9fZXhwbGljdGl0KCkgaXMgdHJ5aW5nIHRv
+IGNsZWFyIGlzIChwcm9iYWJseSkNCm9uLXN0YWNrIGFscmVhZHkgLSBpdCB3b24ndCBiZSBpbiBy
+ZWdpc3RlcnMuDQoNCklmIGl0IHdlcmUgaW4gcmVnaXN0ZXJzIHlvdSB3b3VsZG4ndCBuZWVkIHRo
+ZSBtZW1zZXQoKS4NCg0KQWN0dWFsbHkgSSBzdXNwZWN0IHRoYXQgdGhlIG1lbXNldCgpIGlzIGlu
+bGluZWQgc28gdGhhdCBpcw0KanVzdCBhc3NpZ25zIHplcm9zIHRvIGFsbCB0aGUgdmFyaWFibGVz
+Lg0KVGhpcyB3aWxsIGJlIGRvbmUgdXNpbmcgJ3ZpcnR1YWwgcmVnaXN0ZXJzJyB0aGF0IGNhY2hl
+IHRoZQ0Kb24tc3RhY2sgdmFsdWUuDQpZb3UgdGhlbiBuZWVkIHRvIGRvIHNvbWV0aGluZyB0byBm
+b3JjZSB0aGUgaW5zdHJ1Y3Rpb25zIHRvIGZsdXNoDQp0aGUgJ3ZpcnR1YWwgcmVnaXN0ZXJzJyBi
+YWNrIHRvIHN0YWNrIHRvIGJlIGdlbmVyYXRlZC4NCg0KVGhlIGZ1bmRhbWVudGFsIHRoaW5nIGlz
+IHRoYXQgdGhlIGFkZHJlc3Mgb2YgYSBsb2NhbCAoYXV0byEpDQp2YXJpYWJsZSBtdXN0IGJlIHZp
+c2libGUgdG8gdGhlIGFzbSBzdGF0ZW1lbnQgZm9yIHRoZSBjb21waWxlcg0KdG8gbWFrZSB0aGUg
+Y29udGVudHMgb2YgdGhvc2UgdmFyaWFibGVzIHZpc2libGUuDQoNCkkgZXZlbiBzdXNwZWN0IHlv
+dSBtYXkgbmVlZCB0byBwYXNzIHRoZSBhZGRyZXNzIG9mIHRoZSBzdHJ1Y3R1cmUNCih0byBiZSB6
+ZXJvZWQpIHRvIGFuIGFzbSBibG9jayBhdCB0aGUgdG9wIG9mIHRoZSBmdW5jdGlvbiBhcyB3ZWxs
+Lg0KT3RoZXJ3aXNlIHRoZSBjb21waWxlciBjb3VsZCBjaGFuZ2UgdGhlIHN0YWNrIG9mZnNldHMg
+d2hlcmUgdGhlDQpzdHJ1Y3R1cmUgaXMgc3RvcmVkLg0KQnV0IEkgZG9uJ3QgdGhpbmsgY29tcGls
+ZXJzIGRvIHRoYXQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUs
+IEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJl
+Z2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-syzbot found the following issue on:
-
-HEAD commit:    726eb70e Merge tag 'char-misc-5.10-rc1' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1011b678500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89a0a83d1be17a89
-dashboard link: https://syzkaller.appspot.com/bug?extid=92ead4eb8e26a26d465e
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com
-
-================================================================================
-UBSAN: array-index-out-of-bounds in crypto/af_alg.c:166:2
-index 91 is out of range for type '__u8 [64]'
-CPU: 1 PID: 8236 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- ubsan_epilogue lib/ubsan.c:148 [inline]
- __ubsan_handle_out_of_bounds+0xdb/0x130 lib/ubsan.c:356
- alg_bind+0x738/0x740 crypto/af_alg.c:166
- __sys_bind+0x283/0x360 net/socket.c:1656
- __do_sys_bind net/socket.c:1667 [inline]
- __se_sys_bind net/socket.c:1665 [inline]
- __x64_sys_bind+0x76/0x80 net/socket.c:1665
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45de59
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f547948ec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
-RAX: ffffffffffffffda RBX: 0000000000000ac0 RCX: 000000000045de59
-RDX: 0000000000000074 RSI: 0000000020000940 RDI: 0000000000000003
-RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007ffd6121d5bf R14: 00007f547948f9c0 R15: 000000000118bf2c
-================================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 8236 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- panic+0x316/0x910 kernel/panic.c:231
- ubsan_epilogue lib/ubsan.c:162 [inline]
- __ubsan_handle_out_of_bounds+0x12b/0x130 lib/ubsan.c:356
- alg_bind+0x738/0x740 crypto/af_alg.c:166
- __sys_bind+0x283/0x360 net/socket.c:1656
- __do_sys_bind net/socket.c:1667 [inline]
- __se_sys_bind net/socket.c:1665 [inline]
- __x64_sys_bind+0x76/0x80 net/socket.c:1665
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45de59
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f547948ec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
-RAX: ffffffffffffffda RBX: 0000000000000ac0 RCX: 000000000045de59
-RDX: 0000000000000074 RSI: 0000000020000940 RDI: 0000000000000003
-RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007ffd6121d5bf R14: 00007f547948f9c0 R15: 000000000118bf2c
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
