@@ -2,467 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1148729080C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA3A290812
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409842AbgJPPOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:14:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409834AbgJPPOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:14:00 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9300E206A1;
-        Fri, 16 Oct 2020 15:13:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602861239;
-        bh=SU2uvwZI0LUxCNBQQdmpoJqsnGrJCAao6J5ggGoHKGM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D8PZ2aOehRX66/L20VGYutaDVmvjtf1wcPtaFf+aXdEWrAMBOsY9TLf8VeOgqTCIy
-         OQ4bPsD+XbEZfa0QfZE2/1vkjf+yqfzwKbX/wrUEYdAFwde7j+lotBv37E80hgtrLP
-         QuZAwwxOdNK0SrrfGsqs1ImPevCBnL0uJ1fGRsEg=
-Date:   Fri, 16 Oct 2020 17:14:29 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     "Catangiu, Adrian Costin" <acatan@amazon.com>
-Cc:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        id S2409854AbgJPPPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:15:01 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:48676 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407202AbgJPPPB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 11:15:01 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09GFAilX018346;
+        Fri, 16 Oct 2020 10:14:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=xqJa7ke2bej+Y2/yTZCs2JgbiMjO2DRRIlRYVcz8XVI=;
+ b=lmVCs/iv5yXyzLP36G1sZy/Gmdxojo/mafF7AdQAH6vCS2wF8tUbMEhyiJuUS8grLEN2
+ DHZrIY5kwqkVYp01pPgpiq32BIsMwK/PVVfC3uUIfW52MjYKgQebYEr134yHOtt+TVGU
+ VHntl0Zu7aBONdahAsWTWT7BUr0zI8e6TjtpdZ0lFu4JjiirsAol58ysuqF4DLW5oJtE
+ G9ZXqxsNJagA6vek7sMd1znVWR3Si19q8P9DpTxASchg6UJISQBZMAbW2Ur74uTL9rmY
+ 7e4vUt3oOMWpRW2IKnuX0vVU+/T5OfHw8s7dJ8A6dcOAoRQM88KR+3/3QjTz+lGQvdml uw== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3439cngaya-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 16 Oct 2020 10:14:46 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 16 Oct
+ 2020 16:14:45 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 16 Oct 2020 16:14:45 +0100
+Received: from [10.0.2.15] (ausnpc0lsnw1.ad.cirrus.com [198.61.64.143])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A8A4345;
+        Fri, 16 Oct 2020 15:14:44 +0000 (UTC)
+Subject: Re: [PATCH 1/7] of: base: Add of_count_phandle_with_fixed_args()
+To:     Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+CC:     <devicetree@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        - <patches@opensource.cirrus.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "Graf (AWS), Alexander" <graf@amazon.de>,
-        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "bonzini@gnu.org" <bonzini@gnu.org>,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>,
-        "oridgar@gmail.com" <oridgar@gmail.com>,
-        "ghammer@redhat.com" <ghammer@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>
-Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
-Message-ID: <20201016151429.GD1807983@kroah.com>
-References: <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
+        Mark Brown <broonie@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>
+References: <20201014145418.31838-1-rf@opensource.cirrus.com>
+ <20201014145418.31838-2-rf@opensource.cirrus.com>
+ <CAL_Jsq+qdcHc9H7qUVwLieHrLM8E20HZXa8DkarMiuXfCh8WOQ@mail.gmail.com>
+ <90600a67-25e4-7933-35c3-f515deaee94f@arm.com>
+ <CAL_JsqKAvJ9fv9pm82iv5YjWVCJu1fmP-t+Fyc95pzUaCEL3XQ@mail.gmail.com>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <474edf9d-e15a-cc20-1b56-2fe1d7fccf55@opensource.cirrus.com>
+Date:   Fri, 16 Oct 2020 16:14:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
+In-Reply-To: <CAL_JsqKAvJ9fv9pm82iv5YjWVCJu1fmP-t+Fyc95pzUaCEL3XQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 adultscore=0 spamscore=0 impostorscore=0
+ mlxlogscore=999 lowpriorityscore=0 phishscore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010160116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 02:33:15PM +0000, Catangiu, Adrian Costin wrote:
-> +config VMGENID
-> +	tristate "Virtual Machine Generation ID driver"
-> +	depends on ACPI
-> +	default M
+On 16/10/2020 14:31, Rob Herring wrote:
+> On Thu, Oct 15, 2020 at 11:52 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>>
+>> On 2020-10-14 19:39, Rob Herring wrote:
+>>> On Wed, Oct 14, 2020 at 9:54 AM Richard Fitzgerald
+>>> <rf@opensource.cirrus.com> wrote:
+>>>>
+>>>> Add an equivalent of of_count_phandle_with_args() for fixed argument
+>>>> sets, to pair with of_parse_phandle_with_fixed_args().
+>>>>
+>>>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>>>> ---
+>>>>    drivers/of/base.c  | 42 ++++++++++++++++++++++++++++++++++++++++++
+>>>>    include/linux/of.h |  9 +++++++++
+>>>>    2 files changed, 51 insertions(+)
+>>>>
+>>>> diff --git a/drivers/of/base.c b/drivers/of/base.c
+>>>> index ea44fea99813..45d8b0e65345 100644
+>>>> --- a/drivers/of/base.c
+>>>> +++ b/drivers/of/base.c
+>>>> @@ -1772,6 +1772,48 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
+>>>>    }
+>>>>    EXPORT_SYMBOL(of_count_phandle_with_args);
+>>>>
+>>>> +/**
+>>>> + * of_count_phandle_with_fixed_args() - Find the number of phandles references in a property
+>>>> + * @np:                pointer to a device tree node containing a list
+>>>> + * @list_name: property name that contains a list
+>>>> + * @cell_count: number of argument cells following the phandle
+>>>> + *
+>>>> + * Returns the number of phandle + argument tuples within a property. It
+>>>> + * is a typical pattern to encode a list of phandle and variable
+>>>> + * arguments into a single property.
+>>>> + */
+>>>> +int of_count_phandle_with_fixed_args(const struct device_node *np,
+>>>> +                                    const char *list_name,
+>>>> +                                    int cells_count)
+>>>> +{
+>>>
+>>> Looks to me like you can refactor of_count_phandle_with_args to handle
+>>> both case and then make this and of_count_phandle_with_args simple
+>>> wrapper functions.
+>>
+>> Although for just counting the number of phandles each with n arguments
+>> that a property contains, isn't that simply a case of dividing the
+>> property length by n + 1? The phandles themselves will be validated by
+>> any subsequent of_parse_phandle*() call anyway, so there doesn't seem
+>> much point in doing more work then necessary here.
+>>
+>>>> +       struct of_phandle_iterator it;
+>>>> +       int rc, cur_index = 0;
+>>>> +
+>>>> +       if (!cells_count) {
+>>>> +               const __be32 *list;
+>>>> +               int size;
+>>>> +
+>>>> +               list = of_get_property(np, list_name, &size);
+>>>> +               if (!list)
+>>>> +                       return -ENOENT;
+>>>> +
+>>>> +               return size / sizeof(*list);
+>>
+>> Case in point - if it's OK to do exactly that for n == 0, then clearly
+>> we're *aren't* fussed about validating anything, so the n > 0 code below
+>> is nothing more than a massively expensive way to check for a nonzero
+>> remainder :/
+> 
+> Indeed. We should just generalize this. It can still be refactored to
+> shared code.
+> 
+> It's probably worthwhile to check for a remainder here IMO.
+>
 
-Unless this is required to boot a machine, this should be removed.
+Ok, I looked at the implementation of of_phandle_iterator_next() and
+it is in fact simply incrementing by 'count' 32-bit words. So as Robin
+said the count_phandle_with_x_args()functions could simply divide the
+length by count+1.
 
-> +	help
-> +	  This is a Virtual Machine Generation ID driver which provides
-> +	  a virtual machine unique identifier. The provided UUID can be
-> +	  watched through the FS interface exposed by this driver, and
-> +	  thus can provide notifications for VM snapshot or cloning events.
+However, may I suggest that should be done in a separate patch after my
+patch to add count_phandle_with_fixed_args()? That way, if replacing the
+iteration with the simple length divide causes any unforeseen problems
+the patch can just be reverted.
 
-Where is the uuid exposed in the filesystem?
-
-> +	  This enables applications and libraries that store or cache
-> +	  sensitive information, to know that they need to regenerate it
-> +	  after process memory has been exposed to potential copying.
-
-Module name?
-
-> +
->  config FSL_HV_MANAGER
->  	tristate "Freescale hypervisor management driver"
->  	depends on FSL_SOC
-> diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
-> index fd33124..a1f8dcc 100644
-> --- a/drivers/virt/Makefile
-> +++ b/drivers/virt/Makefile
-> @@ -4,4 +4,5 @@
->  #
->  
->  obj-$(CONFIG_FSL_HV_MANAGER)	+= fsl_hypervisor.o
-> +obj-$(CONFIG_VMGENID)		+= vmgenid.o
->  obj-y				+= vboxguest/
-> diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
-> new file mode 100644
-> index 0000000..d314c72
-> --- /dev/null
-> +++ b/drivers/virt/vmgenid.c
-> @@ -0,0 +1,419 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Virtual Machine Generation ID driver
-> + *
-> + * Copyright (C) 2018 Red Hat Inc, Copyright (C) 2020 Amazon.com Inc
-
-That's not how you write copyright lines, please fix up.
-
-> + * All rights reserved.
-> + *	Authors:
-> + *	  Adrian Catangiu <acatan@amazon.com>
-> + *	  Or Idgar <oridgar@gmail.com>
-> + *	  Gal Hammer <ghammer@redhat.com>
-> + *
-> + */
-> +#include <linux/acpi.h>
-> +#include <linux/cdev.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mm.h>
-> +#include <linux/module.h>
-> +#include <linux/poll.h>
-> +#include <linux/uuid.h>
-> +#include <linux/vmgenid.h>
-> +
-> +#define DEV_NAME "vmgenid"
-> +ACPI_MODULE_NAME(DEV_NAME);
-> +
-> +struct dev_data {
-> +	struct cdev       cdev;
-> +	dev_t             dev_id;
-> +	unsigned long     map_buf;
-> +
-> +	void              *uuid_iomap;
-> +	uuid_t            uuid;
-> +	wait_queue_head_t read_wait;
-> +
-> +	atomic_t          watchers;
-> +	atomic_t          outdated_watchers;
-> +	wait_queue_head_t outdated_wait;
-> +};
-> +
-> +struct file_data {
-> +	struct dev_data  *dev_data;
-> +	uuid_t           acked_uuid;
-> +};
-> +
-> +static bool vmgenid_uuid_matches(struct dev_data *priv, uuid_t *uuid)
-> +{
-> +	return !memcmp(uuid, &priv->uuid, sizeof(uuid_t));
-> +}
-> +
-> +static void vmgenid_put_outdated_watchers(struct dev_data *priv)
-> +{
-> +	if (atomic_dec_and_test(&priv->outdated_watchers))
-> +		wake_up_interruptible(&priv->outdated_wait);
-> +}
-> +
-> +static int vmgenid_open(struct inode *inode, struct file *file)
-> +{
-> +	struct dev_data *priv =
-> +		container_of(inode->i_cdev, struct dev_data, cdev);
-> +	struct file_data *file_data =
-> +		kzalloc(sizeof(struct file_data), GFP_KERNEL);
-> +
-> +	if (!file_data)
-> +		return -ENOMEM;
-> +
-> +	file_data->acked_uuid = priv->uuid;
-> +	file_data->dev_data = priv;
-> +
-> +	file->private_data = file_data;
-> +	atomic_inc(&priv->watchers);
-> +
-> +	return 0;
-> +}
-> +
-> +static int vmgenid_close(struct inode *inode, struct file *file)
-> +{
-> +	struct file_data *file_data = (struct file_data *) file->private_data;
-> +	struct dev_data *priv = file_data->dev_data;
-> +
-> +	if (!vmgenid_uuid_matches(priv, &file_data->acked_uuid))
-> +		vmgenid_put_outdated_watchers(priv);
-> +	atomic_dec(&priv->watchers);
-> +	kfree(file->private_data);
-> +
-> +	return 0;
-> +}
-> +
-> +static ssize_t
-> +vmgenid_read(struct file *file, char __user *ubuf, size_t nbytes, loff_t *ppos)
-> +{
-> +	struct file_data *file_data =
-> +		(struct file_data *) file->private_data;
-> +	struct dev_data *priv = file_data->dev_data;
-> +	ssize_t ret;
-> +
-> +	if (nbytes == 0)
-> +		return 0;
-> +	/* disallow partial UUID reads */
-> +	if (nbytes < sizeof(uuid_t))
-> +		return -EINVAL;
-> +	nbytes = sizeof(uuid_t);
-> +
-> +	if (vmgenid_uuid_matches(priv, &file_data->acked_uuid)) {
-> +		if (file->f_flags & O_NONBLOCK)
-> +			return -EAGAIN;
-> +		ret = wait_event_interruptible(
-> +			priv->read_wait,
-> +			!vmgenid_uuid_matches(priv, &file_data->acked_uuid)
-> +		);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	ret = copy_to_user(ubuf, &priv->uuid, nbytes);
-> +	if (ret)
-> +		return -EFAULT;
-> +
-> +	return nbytes;
-> +}
-> +
-> +static ssize_t vmgenid_write(struct file *file, const char __user *ubuf,
-> +				size_t count, loff_t *ppos)
-> +{
-> +	struct file_data *file_data = (struct file_data *) file->private_data;
-> +	struct dev_data *priv = file_data->dev_data;
-> +	uuid_t ack_uuid;
-> +
-> +	/* disallow partial UUID writes */
-> +	if (count != sizeof(uuid_t))
-> +		return -EINVAL;
-> +	if (copy_from_user(&ack_uuid, ubuf, count))
-> +		return -EFAULT;
-> +	/* wrong UUID acknowledged */
-> +	if (!vmgenid_uuid_matches(priv, &ack_uuid))
-> +		return -EINVAL;
-> +
-> +	if (!vmgenid_uuid_matches(priv, &file_data->acked_uuid)) {
-> +		/* update local view of UUID */
-> +		file_data->acked_uuid = ack_uuid;
-> +		vmgenid_put_outdated_watchers(priv);
-> +	}
-> +
-> +	return (ssize_t)count;
-> +}
-> +
-> +static __poll_t
-> +vmgenid_poll(struct file *file, poll_table *wait)
-> +{
-> +	__poll_t mask = 0;
-> +	struct file_data *file_data =
-> +		(struct file_data *) file->private_data;
-> +	struct dev_data *priv = file_data->dev_data;
-> +
-> +	if (!vmgenid_uuid_matches(priv, &file_data->acked_uuid))
-> +		return EPOLLIN | EPOLLRDNORM;
-> +
-> +	poll_wait(file, &priv->read_wait, wait);
-> +
-> +	if (!vmgenid_uuid_matches(priv, &file_data->acked_uuid))
-> +		mask = EPOLLIN | EPOLLRDNORM;
-> +
-> +	return mask;
-> +}
-> +
-> +static long vmgenid_ioctl(struct file *file,
-> +		unsigned int cmd, unsigned long arg)
-> +{
-> +	struct file_data *file_data =
-> +		(struct file_data *) file->private_data;
-> +	struct dev_data *priv = file_data->dev_data;
-> +	struct timespec __user *timeout = (void *) arg;
-> +	struct timespec kts;
-> +	ktime_t until;
-> +	int ret;
-> +
-> +	switch (cmd) {
-> +	case VMGENID_GET_OUTDATED_WATCHERS:
-> +		ret = atomic_read(&priv->outdated_watchers);
-> +		break;
-> +	case VMGENID_WAIT_WATCHERS:
-> +		if (timeout) {
-> +			ret = copy_from_user(&kts, timeout, sizeof(kts));
-> +			if (ret)
-> +				return -EFAULT;
-> +			until = timespec_to_ktime(kts);
-
-No validation of structure fields?
-
-And you are exposing a kernel structure to userspace?
-
-I don't see this function in Linus's tree right now, are you sure this
-builds?
-
-
-> +		} else {
-> +			until = KTIME_MAX;
-> +		}
-> +
-> +		ret = wait_event_interruptible_hrtimeout(
-> +			priv->outdated_wait,
-> +			!atomic_read(&priv->outdated_watchers),
-> +			until
-> +		);
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +		break;
-> +	}
-> +	return ret;
-> +}
-> +
-> +static vm_fault_t vmgenid_vm_fault(struct vm_fault *vmf)
-> +{
-> +	struct page *page;
-> +	struct file_data *file_data =
-> +			(struct file_data *) vmf->vma->vm_private_data;
-
-You do know you don't need to cast stuff like this, right?
-
-Also run checkpatch.pl so maintainers are not grumpy and tell you to run
-checkpatch.pl.
-
-> +	struct dev_data *priv = file_data->dev_data;
-> +
-> +	if (priv->map_buf) {
-> +		page = virt_to_page(priv->map_buf);
-> +		get_page(page);
-> +		vmf->page = page;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct vm_operations_struct vmgenid_vm_ops = {
-> +	.fault = vmgenid_vm_fault,
-> +};
-> +
-> +static int vmgenid_mmap(struct file *file, struct vm_area_struct *vma)
-> +{
-> +	if (vma->vm_pgoff != 0 || vma_pages(vma) > 1)
-> +		return -EINVAL;
-> +
-> +	if ((vma->vm_flags & VM_WRITE) != 0)
-> +		return -EPERM;
-> +
-> +	vma->vm_ops = &vmgenid_vm_ops;
-> +	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
-> +	vma->vm_private_data = file->private_data;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct file_operations fops = {
-> +	.owner          = THIS_MODULE,
-> +	.mmap           = vmgenid_mmap,
-> +	.open           = vmgenid_open,
-> +	.release        = vmgenid_close,
-> +	.read           = vmgenid_read,
-> +	.write          = vmgenid_write,
-> +	.poll           = vmgenid_poll,
-> +	.compat_ioctl   = vmgenid_ioctl,
-> +	.unlocked_ioctl = vmgenid_ioctl,
-> +};
-> +
-> +static int vmgenid_acpi_map(struct dev_data *priv, acpi_handle handle)
-> +{
-> +	int i;
-> +	phys_addr_t phys_addr;
-> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> +	acpi_status status;
-> +	union acpi_object *pss;
-> +	union acpi_object *element;
-> +
-> +	status = acpi_evaluate_object(handle, "ADDR", NULL, &buffer);
-> +	if (ACPI_FAILURE(status)) {
-> +		ACPI_EXCEPTION((AE_INFO, status, "Evaluating ADDR"));
-> +		return -ENODEV;
-> +	}
-> +	pss = buffer.pointer;
-> +	if (!pss || pss->type != ACPI_TYPE_PACKAGE || pss->package.count != 2)
-> +		return -EINVAL;
-> +
-> +	phys_addr = 0;
-> +	for (i = 0; i < pss->package.count; i++) {
-> +		element = &(pss->package.elements[i]);
-> +		if (element->type != ACPI_TYPE_INTEGER)
-> +			return -EINVAL;
-> +		phys_addr |= element->integer.value << i * 32;
-> +	}
-> +
-> +	priv->uuid_iomap = acpi_os_map_memory(phys_addr, sizeof(uuid_t));
-> +	if (!priv->uuid_iomap) {
-> +		pr_err("Could not map memory at 0x%llx, size %u",
-> +			   phys_addr,
-> +			   (u32)sizeof(uuid_t));
-> +		return -ENOMEM;
-> +	}
-> +
-> +	memcpy_fromio(&priv->uuid, priv->uuid_iomap, sizeof(uuid_t));
-> +	memcpy((void *) priv->map_buf, &priv->uuid, sizeof(uuid_t));
-> +
-> +	return 0;
-> +}
-> +
-> +static int vmgenid_acpi_add(struct acpi_device *device)
-> +{
-> +	int ret;
-> +	struct dev_data *priv;
-> +
-> +	if (!device)
-> +		return -EINVAL;
-> +
-> +	priv = kzalloc(sizeof(struct dev_data), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->map_buf = get_zeroed_page(GFP_KERNEL);
-> +	if (!priv->map_buf) {
-> +		ret = -ENOMEM;
-> +		goto free;
-> +	}
-> +
-> +	device->driver_data = priv;
-> +
-> +	init_waitqueue_head(&priv->read_wait);
-> +	atomic_set(&priv->watchers, 0);
-> +	atomic_set(&priv->outdated_watchers, 0);
-> +	init_waitqueue_head(&priv->outdated_wait);
-> +
-> +	ret = vmgenid_acpi_map(priv, device->handle);
-> +	if (ret < 0)
-> +		goto err;
-> +
-> +	ret = alloc_chrdev_region(&priv->dev_id, 0, 1, DEV_NAME);
-
-Why is this not a misc device driver instead of messing around with all
-of this "by hand"?
-
-By doing things this way, you are not creating a device node in /dev/
-automatically, right?  How did you test this?
-
-> @@ -0,0 +1,22 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
-> +/*
-> + * Copyright (c) 2020, Amazon.com Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * as published by the Free Software Foundation; either version
-> + * 2 of the License, or (at your option) any later version.
-
-License boilerplate is not needed.
-
-> + */
-> +
-> +#ifndef _UAPI_LINUX_VMGENID_H
-> +#define _UAPI_LINUX_VMGENID_H
-> +
-> +#include <linux/ioctl.h>
-> +#include <linux/time.h>
-> +
-> +#define VMGENID_IOCTL 0x2d
-> +#define VMGENID_GET_OUTDATED_WATCHERS _IO(VMGENID_IOCTL, 1)
-> +#define VMGENID_WAIT_WATCHERS         _IOW(VMGENID_IOCTL, 2, struct timespec)
-
-Why do you need ioctls for this?  Why not just use read/write?
-
-thanks,
-
-greg k-h
+> Rob
+> 
