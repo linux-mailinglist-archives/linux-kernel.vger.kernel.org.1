@@ -2,147 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7892903F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6950C2903FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406103AbgJPL0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406030AbgJPL0L (ORCPT
+        id S2406312AbgJPL2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:28:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25245 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406067AbgJPL23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:26:11 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709F2C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:26:11 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id m62so2153048ybb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:26:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:mime-version:message-id:date:subject:from:to:cc;
-        bh=3ebDBpjfYB18MuoFXn3zyWkL13VkNV9A5TzUsx3Jwns=;
-        b=TyCPqnNlQ2tcgOI9HZRRvbcDUw1pNMZrSfzIxK5M9PKlD78GCSdhSu6X9TCI/RpJsj
-         oOAK5YQ6mcJmeEcljL/CtUx0PNhbdF+Z2OEwZU9X7sO3dPo7LgOJklrtAU9Mjrz3DxKS
-         MLvYrkb88kID2iKty7cfxG9LCi4ARCPAE8/JiftnwlqR2ggPM4O1LZCstgKHs0T3GIfC
-         WqGwo5rDpFDzg+z3Eg8jr7tS7xe8gs0NWZXbLwXIFXE2YnUpQEgABEHV8f0OFXxMJRaD
-         Gmlg2NiRSEktPhMo0Xc7okfc544MdNyS5nFEILM+MzygLv+dKUhfcPF/2EF8+v3l2/XY
-         47tw==
+        Fri, 16 Oct 2020 07:28:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602847707;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Uncw1p8wEaEZ4da7CrqyMdu3Pcg9RwYIjaA2lxjM3PI=;
+        b=SDLmcbYpoLpj9rL2a/v2ATeG/yrbjsYpg8waXYjNLbUuQ6PxRAysm3GBGJnl/jsF7CYJoE
+        Po2dkmi47upUtvnXcVsLuM1GDdWeTZsDwJYV7o5mkM+SlwwXq1OQf+AYVAW0uYAFg8I6Jr
+        Ak6b2AQbfMnPXAUxAcKT+EcfsH2pXXE=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-369-A38a2nL_OHu2H5XTluhsCA-1; Fri, 16 Oct 2020 07:28:25 -0400
+X-MC-Unique: A38a2nL_OHu2H5XTluhsCA-1
+Received: by mail-ej1-f72.google.com with SMTP id d13so813941ejz.6
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:28:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:mime-version:message-id:date:subject:from
-         :to:cc;
-        bh=3ebDBpjfYB18MuoFXn3zyWkL13VkNV9A5TzUsx3Jwns=;
-        b=c7O/p3LS3oCqRHfqfxW8tdhgf8xC/IFLd5K88PGG2ktwpPlUNr8YySI5z4Dlmzb3AJ
-         n0TbYlLZcObz1MzCRUKc/SzdWhlMnA4QJWgLEb5X1yrzuibvcVNBSPJWjkohq1IzdASB
-         yPP9/v26Z0b0Wp12+kqdT0WJ8bxPePicy0F/WLY6ieBSTfvrNV8s0TnPIt2u12FMgIdp
-         6pb/7ZlAbZgrqMCXAoqKNVUXQct3LaAwX0jD+q3ROz5RtfhqQrt4vVVt+MyH1HHd75aB
-         L1XLtMoCbZ8UVO+GxtiqwOzwALDwHPNNkjW+BquWDusv3E+uLEE+BPJh/TzM0m5MUCdu
-         Sq+g==
-X-Gm-Message-State: AOAM530P1WUeXFb9f9HindqNUcG+U0RfjdnDlPSRzx77LN3OxNed/sKP
-        nh3EYYEpri/O0mUQMXs/dBsR/pKRNdr2nKO/
-X-Google-Smtp-Source: ABdhPJybTUwPfKQYF1YsUkaWjuIOOnZy4F3lP/IWLqxa37JyufLE2W+lbH1WIDnfweIefkboX933fGFaCJAzEwl3
-Sender: "josephjang via sendgmr" 
-        <josephjang@josephjang-p920.ntc.corp.google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Uncw1p8wEaEZ4da7CrqyMdu3Pcg9RwYIjaA2lxjM3PI=;
+        b=kkPg8YE4gerklQAik5dqQhxfmOQzRWLj5r6yEuUEVBPWxDk/NkNio4rTKunx+1yUoy
+         MolrQtdFyCIhVHOq7ClFBCFWVWMVUuga/2no9xR88sao2pKL26mDxkGumBaUrCGr8Ipi
+         COFppAm+x6vK/zbFPOEZdaszwZdTKv4Parsb3f5EJ05UVn4jALrXABHDMEIfQnSGyqzz
+         sdYSMpBixdlqm6f+1aBUZwpjvE1T5FlCnkJ0fukQUJigPZyRfkT8W71ElTl2uo2yKs6z
+         BUtUk6ij4CK0nGiQB0nnsaO8PrXf5Y44sUbo7HSR3ZdbOm5pFEZRt9P9VxFlCxbNkIvt
+         IwAA==
+X-Gm-Message-State: AOAM532SzdBT7FLEAZiT9phTNDmeSYh3RU3wU/HeRjEPdEKTbGj9nHYG
+        aypzMSQnxxm53CVlZ9Bm5AcetUtpClD0cLG0hmXdkKlQAVkgGd/2a+Q2kF9xSG/dPNBUtllRvZs
+        PeDPh8pVZuN2PrMkOBhcz5aKM
+X-Received: by 2002:a17:907:43c6:: with SMTP id i6mr3108673ejs.207.1602847704562;
+        Fri, 16 Oct 2020 04:28:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxafcuee0i5hxOgusCBNcMWWy78Vr/YlDZ8KxL6yLiWe2S8E6BQLTMsRHYg7w1v3h++iMg/pQ==
+X-Received: by 2002:a17:907:43c6:: with SMTP id i6mr3108655ejs.207.1602847704363;
+        Fri, 16 Oct 2020 04:28:24 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id i5sm1335818ejs.121.2020.10.16.04.28.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 04:28:23 -0700 (PDT)
+Subject: Re: [PATCH v4] bluetooth: hci_h5: fix memory leak in h5_close
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201007034803.7554-1-anant.thazhemadam@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <2a79ece2-c63b-a881-bc19-65b59952344f@redhat.com>
+Date:   Fri, 16 Oct 2020 13:28:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:7220:84ff:fe09:41e0])
- (user=josephjang job=sendgmr) by 2002:a25:ea02:: with SMTP id
- p2mr4338796ybd.95.1602847570438; Fri, 16 Oct 2020 04:26:10 -0700 (PDT)
-Message-ID: <00000000000011154c05b1c8083a@google.com>
-Date:   Fri, 16 Oct 2020 11:26:10 +0000
-Subject: [PATCH] power: suspend: Add suspend timeout handler
-From:   <josephjang@google.com>
-To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net, pavel@ucw.cz,
-        len.brown@intel.com, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        jonglin@google.com, woodylin@google.com, markcheng@google.com,
-        josephjang@google.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+In-Reply-To: <20201007034803.7554-1-anant.thazhemadam@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you Petr for promptly reply.
+Hi,
 
-> On Fri 2020-10-16 11:51:09, Joseph Jang wrote:
-> > From: josephjang <josephjang@google.com>
-> >
-> > Add suspend timeout handler to prevent device stuck during suspend/
-> > resume process. Suspend timeout handler will dump disk sleep task
-> > at first round timeout and trigger kernel panic at second round timeout.
-> > The default timer for each round is 30 seconds.
+On 10/7/20 5:48 AM, Anant Thazhemadam wrote:
+> If h5_close is called when !hu->serdev, h5 is directly freed.
+> However, h5->rx_skb is not freed, which causes a memory leak.
+> 
+> Freeing h5->rx_skb fixes this memory leak.
+> 
+> In case hu->serdev exists, h5->rx_skb is then set to NULL,
+> since we do not want to risk a potential NULL pointer 
+> dereference.
+> 
+> Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
+> Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+> Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>h5_close v4
+> ---
+> Changes in v4:
+> 	* Free h5->rx_skb even when hu->serdev
+> 	(Suggested by Hans de Goede <hdegoede@redhat.com>)
+> 	* If hu->serdev, then assign h5->rx_skb = NULL
+> 
+> Changes in v3:
+> 	* Free h5->rx_skb when !hu->serdev, and fix the memory leak
+> 	* Do not incorrectly and unnecessarily call serdev_device_close()
+> 
+> Changes in v2:
+> 	* Fixed the Fixes tag
+> 
+>  drivers/bluetooth/hci_h5.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+> index e41854e0d79a..39f9553caa5c 100644
+> --- a/drivers/bluetooth/hci_h5.c
+> +++ b/drivers/bluetooth/hci_h5.c
+> @@ -245,11 +245,15 @@ static int h5_close(struct hci_uart *hu)
+>  	skb_queue_purge(&h5->rel);
+>  	skb_queue_purge(&h5->unrel);
+>  
+> +	kfree_skb(h5->rx_skb);
+> +
+>  	if (h5->vnd && h5->vnd->close)
+>  		h5->vnd->close(h5);
+>  
+>  	if (!hu->serdev)
+>  		kfree(h5);
+> +	else
+> +		h5->rx_skb = NULL;
 
-> A better solution would be to resume instead of panic().
+Please just do this unconditionally directly after
+the kfree_skb()
 
+So after this comment has been addressed the end result should
+look like this:
 
-[Joseph] suspend_timeout() will trigger kernel panic() only when
-suspend thread stuck (deadlock/hang) for 2*30 seconds.
-At that moment, I don't know how to resume the suspend thread. So I
-just could trigger panic to reboot system.
-If you have better suggestions, I am willing to study it.
+	skb_queue_purge(&h5->rel);
+	skb_queue_purge(&h5->unrel);
+	kfree_skb(h5->rx_skb);
+	h5->rx_skb = NULL;
 
-> > Note: Can use following command to simulate suspend hang for testing.
-> >     adb shell echo 1 > /sys/power/pm_hang
+	if (h5->vnd && h5->vnd->close)
+		h5->vnd->close(h5);
 
-> This looks dangerous. It adds a simple way to panic() the system.
+	if (!hu->serdev)
+		kfree(h5);
+ 
+ 	return 0;
 
-> First, it should get enabled separately. e.g.
-> CONFIG_TEST_PM_SLEEP_MONITOR.
+Regards,
 
-> Second, I would add it as a module that might get loaded
-> and unloaded.
-
-
-[Joseph] Agree to enable new compile flag for test module.
-I think it is better to create separate patch for the new test module right?
-
-> > diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-> > index 8b1bb5ee7e5d..6f2679cfd9d1 100644
-> > --- a/kernel/power/suspend.c
-> > +++ b/kernel/power/suspend.c
-> Using kthread looks like an overkill to me. I wonder how this actually
-> works when the kthreads get freezed. It might be enough to implement
-> just a timer callback. Start the timer in start_suspend_mon() and
-> delete it in stop_suspend_mon(). Or do I miss anything?
-
-> Anyway, the kthread implementation looks a but hairy. If you really
-> need to use kthread, I suggest to use kthread_worker API. You would
-> need to run an init work to setup the RT scheduling. Then you
-> could just call kthread_queue_delayed_work(()
-> and kthread_cancel_delayed_work_sync() to start and stop
-> the monitor.
-
-
-
-[Joseph]
-Actually, I had ever think we just need to use
-add_timer()/del_timer_sync() for start_suspend_mon()/stop_suspend_mon()  
-before.
-
-But I am not sure if add_timer() may cause any performance impact in
-suspend thread or not.
-So I try to create a suspend monitor kthread and just flip the flag in
-suspend thread.
-
-
-> > @@ -114,6 +251,10 @@ static void s2idle_enter(void)
-> >       s2idle_state = S2IDLE_STATE_NONE;
-> >       raw_spin_unlock_irq(&s2idle_lock);
-> >
-> > +#ifdef CONFIG_PM_SLEEP_MONITOR
-> > +     start_suspend_mon();
-> > +#endif
-
-> It is better to solve this by defining start_suspend_mon() as empty
-> function when the config option is disabled. For example, see
-> how  vgacon_text_force() is defined in console.h.
-
-
-[Joseph] Thank you for good suggestions.
-May I know if I could use IS_ENABLED() ?
-if (IS_ENABLED(CONFIG_PM_SLEEP_MONITOR))
-     start_suspend_mon();
-
-> Best Regards,
-> Petr
+Hans
 
