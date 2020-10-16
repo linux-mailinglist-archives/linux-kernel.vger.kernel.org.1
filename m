@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62AF28FED2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9927028FED7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404343AbgJPHFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:05:13 -0400
-Received: from mailout08.rmx.de ([94.199.90.85]:43405 "EHLO mailout08.rmx.de"
+        id S2394483AbgJPHGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:06:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404197AbgJPHFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:05:12 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2394374AbgJPHGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 03:06:24 -0400
+Received: from localhost (unknown [122.182.237.175])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailout08.rmx.de (Postfix) with ESMTPS id 4CCHGV5KJGzN0hg;
-        Fri, 16 Oct 2020 09:05:06 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4CCHGN0Vmkz2TTNh;
-        Fri, 16 Oct 2020 09:05:00 +0200 (CEST)
-Received: from n95hx1g2.localnet (192.168.54.49) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Fri, 16 Oct
- 2020 09:04:38 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-CC:     Richard Cochran <richardcochran@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Vishal Kulkarni <vishal@chelsio.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: ptp: get rid of IPV4_HLEN() and OFF_IHL macros
-Date:   Fri, 16 Oct 2020 09:04:38 +0200
-Message-ID: <2135183.8zsl8bQRyA@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <939828b0-846c-9e10-df31-afcb77b1150a@gmail.com>
-References: <20201014115805.23905-1-ceggers@arri.de> <20201015033648.GA24901@hoboy> <939828b0-846c-9e10-df31-afcb77b1150a@gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 59CC320720;
+        Fri, 16 Oct 2020 07:06:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602831983;
+        bh=bg+YekF+PjfIIMGx3SUCBgRM+vVNcEeNxcknchyB36I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=waMS4eMW7q+rFjqGaN2EZQEXLMHgOLzBfrw7R6RdwAlfEB9/n6PIpsBs6jZaf5kzm
+         2Nij6X6vzV1QsD0xXWb0KQY8b/r7YvHbR4q1jZiaay/qJJAL94oXDVdZ1eMKIaUhp1
+         pAYHtsjCh5KuL4SWxHy9T6cy9pClC/O1CtIKggNM=
+Date:   Fri, 16 Oct 2020 12:36:18 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Eugen.Hristev@microchip.com
+Cc:     robh@kernel.org, Tudor.Ambarus@microchip.com,
+        Ludovic.Desroches@microchip.com, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Nicolas.Ferre@microchip.com
+Subject: Re: [PATCH 6/7] dt-bindings: dmaengine: at_xdmac: add optional
+ microchip,m2m property
+Message-ID: <20201016070618.GW2968@vkoul-mobl>
+References: <20200914140956.221432-1-eugen.hristev@microchip.com>
+ <20200914140956.221432-7-eugen.hristev@microchip.com>
+ <20200922233327.GA3474555@bogus>
+ <6f305564-e91c-794b-0025-de805f1d1a58@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.49]
-X-RMX-ID: 20201016-090500-4CCHGN0Vmkz2TTNh-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6f305564-e91c-794b-0025-de805f1d1a58@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 15 October 2020, 18:56:41 CEST, Florian Fainelli wrote:
-> Having recently helped someone with a bug that involved using
-> IPV4_HLEN() instead of ip_hdr() in a driver's transmit path (so with the
-> transport header correctly set), it would probably help if we could make
-> IPV4_HLEN()'s semantics clearer with converting it to a static inline
-> function and put asserts in there about what the transport and MAC
-> header positions should be.
-IPV4_HLEN() is only used for PTP. Is there any way to use "normal" 
-infrastructure as in the rest of the network stack? It looks like PTP code 
-typically has to look into multiple network layers (mac, network, transport) 
-at places these layers may not be processed yet (at least in RX direction).
+Hi Eugen,
 
-> At the very least, creating a new function, like this maybe in
-> include/linux/ip.h might help:
+On 16-10-20, 06:45, Eugen.Hristev@microchip.com wrote:
+> On 23.09.2020 02:33, Rob Herring wrote:
 > 
-> static inline u8 __ip_hdr_len(const struct sk_buff *skb)
-> {
-> 	const struct iphdr *ip_hdr = (const struct iphdr *)(skb->data);
+> > On Mon, Sep 14, 2020 at 05:09:55PM +0300, Eugen Hristev wrote:
+> >> Add optional microchip,m2m property that specifies if a controller is
+> >> dedicated to memory to memory operations only.
+> >>
+> >> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> >> ---
+> >>   Documentation/devicetree/bindings/dma/atmel-xdma.txt | 6 ++++++
+> >>   1 file changed, 6 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/dma/atmel-xdma.txt b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
+> >> index 510b7f25ba24..642da6b95a29 100644
+> >> --- a/Documentation/devicetree/bindings/dma/atmel-xdma.txt
+> >> +++ b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
+> >> @@ -15,6 +15,12 @@ the dmas property of client devices.
+> >>       interface identifier,
+> >>       - bit 30-24: PERID, peripheral identifier.
+> >>
+> >> +Optional properties:
+> >> +- microchip,m2m: this controller is connected on AXI only to memory and it's
+> >> +     dedicated to memory to memory DMA operations. If this option is
+> >> +     missing, it's assumed that the DMA controller is connected to
+> >> +     peripherals, thus it's a per2mem and mem2per.
+> > 
+> > Wouldn't 'dma-requests = <0>' cover this case?
+> > 
+> > Rob
+> > 
 > 
-> 	return ip_hdr->ihl << 2;
-> }
-Is there any reason using skb->data instead of skb_network_header()? Debugging 
-through my DSA driver showed that ...
+> Hi Rob,
+> 
+> I do not think so. With requests = 0, it means that actually the DMA 
+> controller is unusable ?
+> Since you suggest requests = 0, it means that it cannot take requests at 
+> all ?
+> I do not find another example in current DT with this property set to zero.
 
-- for TX (called by dsa_slave_xmit), skb->data is set to the MAC header
-(skb->head+0x02), whilst skb->network_header is correctly set to 0x10 
-(skb->mac_header+14).
-- for TX, skb->transport_header is 0xffff, so udp_hdr() cannot be used
+Not really, dma-requests implies "request signals supported" which are
+used for peripheral cases. m2m does not need request signals, so it is
+very reasonable to conclude that dma-requests = <0> would imply no
+peripheral support and only m2m support.
 
-- for RX (called by dsa_switch_rcv), skb->data is set to skb->head+0x50, which 
-is identical to skb->network_header
-- for RX, skb->transport_header ist set equal to skb->network_header, so 
-udp_hdr() can also not be used.
-
-Best regards
-Christian
-
-
-
+Thanks
+-- 
+~Vinod
