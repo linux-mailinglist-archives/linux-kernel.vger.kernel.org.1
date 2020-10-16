@@ -2,78 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEDE2903F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7892903F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406030AbgJPLVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:21:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:34886 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394660AbgJPLVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:21:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B38ED6E;
-        Fri, 16 Oct 2020 04:21:19 -0700 (PDT)
-Received: from [10.57.50.28] (unknown [10.57.50.28])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EFC43F719;
-        Fri, 16 Oct 2020 04:21:16 -0700 (PDT)
-Subject: Re: [PATCH] coresight: etm4x: Skip setting LPOVERRIDE bit for
- qcom,skip-power-up
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>
-Cc:     coresight@lists.linaro.org, Stephen Boyd <swboyd@chromium.org>,
-        denik@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20201016101025.26505-1-saiprakash.ranjan@codeaurora.org>
-From:   Suzuki Poulose <suzuki.poulose@arm.com>
-Message-ID: <5c4f6f5d-b07d-0816-331f-7c7463fa99b3@arm.com>
-Date:   Fri, 16 Oct 2020 12:21:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S2406103AbgJPL0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406030AbgJPL0L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 07:26:11 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709F2C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:26:11 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id m62so2153048ybb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:26:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:mime-version:message-id:date:subject:from:to:cc;
+        bh=3ebDBpjfYB18MuoFXn3zyWkL13VkNV9A5TzUsx3Jwns=;
+        b=TyCPqnNlQ2tcgOI9HZRRvbcDUw1pNMZrSfzIxK5M9PKlD78GCSdhSu6X9TCI/RpJsj
+         oOAK5YQ6mcJmeEcljL/CtUx0PNhbdF+Z2OEwZU9X7sO3dPo7LgOJklrtAU9Mjrz3DxKS
+         MLvYrkb88kID2iKty7cfxG9LCi4ARCPAE8/JiftnwlqR2ggPM4O1LZCstgKHs0T3GIfC
+         WqGwo5rDpFDzg+z3Eg8jr7tS7xe8gs0NWZXbLwXIFXE2YnUpQEgABEHV8f0OFXxMJRaD
+         Gmlg2NiRSEktPhMo0Xc7okfc544MdNyS5nFEILM+MzygLv+dKUhfcPF/2EF8+v3l2/XY
+         47tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:mime-version:message-id:date:subject:from
+         :to:cc;
+        bh=3ebDBpjfYB18MuoFXn3zyWkL13VkNV9A5TzUsx3Jwns=;
+        b=c7O/p3LS3oCqRHfqfxW8tdhgf8xC/IFLd5K88PGG2ktwpPlUNr8YySI5z4Dlmzb3AJ
+         n0TbYlLZcObz1MzCRUKc/SzdWhlMnA4QJWgLEb5X1yrzuibvcVNBSPJWjkohq1IzdASB
+         yPP9/v26Z0b0Wp12+kqdT0WJ8bxPePicy0F/WLY6ieBSTfvrNV8s0TnPIt2u12FMgIdp
+         6pb/7ZlAbZgrqMCXAoqKNVUXQct3LaAwX0jD+q3ROz5RtfhqQrt4vVVt+MyH1HHd75aB
+         L1XLtMoCbZ8UVO+GxtiqwOzwALDwHPNNkjW+BquWDusv3E+uLEE+BPJh/TzM0m5MUCdu
+         Sq+g==
+X-Gm-Message-State: AOAM530P1WUeXFb9f9HindqNUcG+U0RfjdnDlPSRzx77LN3OxNed/sKP
+        nh3EYYEpri/O0mUQMXs/dBsR/pKRNdr2nKO/
+X-Google-Smtp-Source: ABdhPJybTUwPfKQYF1YsUkaWjuIOOnZy4F3lP/IWLqxa37JyufLE2W+lbH1WIDnfweIefkboX933fGFaCJAzEwl3
+Sender: "josephjang via sendgmr" 
+        <josephjang@josephjang-p920.ntc.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201016101025.26505-1-saiprakash.ranjan@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:7220:84ff:fe09:41e0])
+ (user=josephjang job=sendgmr) by 2002:a25:ea02:: with SMTP id
+ p2mr4338796ybd.95.1602847570438; Fri, 16 Oct 2020 04:26:10 -0700 (PDT)
+Message-ID: <00000000000011154c05b1c8083a@google.com>
+Date:   Fri, 16 Oct 2020 11:26:10 +0000
+Subject: [PATCH] power: suspend: Add suspend timeout handler
+From:   <josephjang@google.com>
+To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net, pavel@ucw.cz,
+        len.brown@intel.com, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        jonglin@google.com, woodylin@google.com, markcheng@google.com,
+        josephjang@google.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sai,
+Thank you Petr for promptly reply.
 
-On 10/16/20 11:10 AM, Sai Prakash Ranjan wrote:
-> There is a bug on the systems supporting to skip power up
-> (qcom,skip-power-up) where setting LPOVERRIDE bit(low-power
-> state override behaviour) will result in CPU hangs/lockups
-> even on the implementations which supports it. So skip
-> setting the LPOVERRIDE bit for such platforms.
-> 
-> Fixes: 02510a5aa78d ("coresight: etm4x: Add support to skip trace unit power up")
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> On Fri 2020-10-16 11:51:09, Joseph Jang wrote:
+> > From: josephjang <josephjang@google.com>
+> >
+> > Add suspend timeout handler to prevent device stuck during suspend/
+> > resume process. Suspend timeout handler will dump disk sleep task
+> > at first round timeout and trigger kernel panic at second round timeout.
+> > The default timer for each round is 30 seconds.
 
-The fix is fine by me. Btw, is there a hardware Erratum assigned for
-this ? It would be good to have the Erratum documented somewhere,
-preferrably ( Documentation/arm64/silicon-errata.rst )
+> A better solution would be to resume instead of panic().
 
-> ---
->   drivers/hwtracing/coresight/coresight-etm4x-core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index abd706b216ac..6096d7abf80d 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -779,7 +779,7 @@ static void etm4_init_arch_data(void *info)
->   	 * LPOVERRIDE, bit[23] implementation supports
->   	 * low-power state override
->   	 */
-> -	if (BMVAL(etmidr5, 23, 23))
-> +	if (BMVAL(etmidr5, 23, 23) && (!drvdata->skip_power_up))
->   		drvdata->lpoverride = true;
->   	else
->   		drvdata->lpoverride = false;
-> 
-> base-commit: 3477326277451000bc667dfcc4fd0774c039184c
-> 
+
+[Joseph] suspend_timeout() will trigger kernel panic() only when
+suspend thread stuck (deadlock/hang) for 2*30 seconds.
+At that moment, I don't know how to resume the suspend thread. So I
+just could trigger panic to reboot system.
+If you have better suggestions, I am willing to study it.
+
+> > Note: Can use following command to simulate suspend hang for testing.
+> >     adb shell echo 1 > /sys/power/pm_hang
+
+> This looks dangerous. It adds a simple way to panic() the system.
+
+> First, it should get enabled separately. e.g.
+> CONFIG_TEST_PM_SLEEP_MONITOR.
+
+> Second, I would add it as a module that might get loaded
+> and unloaded.
+
+
+[Joseph] Agree to enable new compile flag for test module.
+I think it is better to create separate patch for the new test module right?
+
+> > diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> > index 8b1bb5ee7e5d..6f2679cfd9d1 100644
+> > --- a/kernel/power/suspend.c
+> > +++ b/kernel/power/suspend.c
+> Using kthread looks like an overkill to me. I wonder how this actually
+> works when the kthreads get freezed. It might be enough to implement
+> just a timer callback. Start the timer in start_suspend_mon() and
+> delete it in stop_suspend_mon(). Or do I miss anything?
+
+> Anyway, the kthread implementation looks a but hairy. If you really
+> need to use kthread, I suggest to use kthread_worker API. You would
+> need to run an init work to setup the RT scheduling. Then you
+> could just call kthread_queue_delayed_work(()
+> and kthread_cancel_delayed_work_sync() to start and stop
+> the monitor.
+
+
+
+[Joseph]
+Actually, I had ever think we just need to use
+add_timer()/del_timer_sync() for start_suspend_mon()/stop_suspend_mon()  
+before.
+
+But I am not sure if add_timer() may cause any performance impact in
+suspend thread or not.
+So I try to create a suspend monitor kthread and just flip the flag in
+suspend thread.
+
+
+> > @@ -114,6 +251,10 @@ static void s2idle_enter(void)
+> >       s2idle_state = S2IDLE_STATE_NONE;
+> >       raw_spin_unlock_irq(&s2idle_lock);
+> >
+> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+> > +     start_suspend_mon();
+> > +#endif
+
+> It is better to solve this by defining start_suspend_mon() as empty
+> function when the config option is disabled. For example, see
+> how  vgacon_text_force() is defined in console.h.
+
+
+[Joseph] Thank you for good suggestions.
+May I know if I could use IS_ENABLED() ?
+if (IS_ENABLED(CONFIG_PM_SLEEP_MONITOR))
+     start_suspend_mon();
+
+> Best Regards,
+> Petr
 
