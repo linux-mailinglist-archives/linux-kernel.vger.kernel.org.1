@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551422900F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6A2290107
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404654AbgJPJKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:10:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39388 "EHLO mail.kernel.org"
+        id S2405809AbgJPJLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:11:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405654AbgJPJKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:10:18 -0400
+        id S2405251AbgJPJKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:10:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C013B20872;
-        Fri, 16 Oct 2020 09:10:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0105320872;
+        Fri, 16 Oct 2020 09:10:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602839417;
-        bh=yKckwfUmmqhsdO2j2KA/qh1gXICTdLHLltRHDtBq+Ys=;
+        s=default; t=1602839454;
+        bh=20S+Ry+wwnSQSVzsqIq4suWan8f7Ps0V3Jj1KHwM0XM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vS0cevNQocfSK0wqSpTMq6NxOS29ugfw9+1HrbCY8Um5DHv/qvcLcG2ciluf9ZjFB
-         5wdZIEQg5yYl/EBOi+il5qZnX584GEvtPPgtyzthZFEmwKJwVmnAoif3V/6j3U9FKb
-         4As5vUVoQbb2t/oiz606T/BBGi3x7xoq6OhUoEeI=
+        b=wgySe4mq2Q/JHYMNTRgMYvtVQEqTcgCLp4Jx1dUF52e6CwxiAZhgs42MHzWE73xfg
+         t6pvTrz9K9BSMqHiKKJS1AjZiaswaf6w5Ncoq/2WA2b6RmkZ1HopNTqgaMGuKxMfig
+         9ADQyegZwnzsnrsu1nCusQBKTx/Kr62/ZXpUJwgI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Mychaela N. Falconia" <falcon@freecalypso.org>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 17/22] USB: serial: ftdi_sio: add support for FreeCalypso JTAG+UART adapters
-Date:   Fri, 16 Oct 2020 11:07:45 +0200
-Message-Id: <20201016090438.160483405@linuxfoundation.org>
+        stable@vger.kernel.org, =?UTF-8?q?kiyin ?= <kiyin@tencent.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.8 01/14] crypto: bcm - Verify GCM/CCM key length in setkey
+Date:   Fri, 16 Oct 2020 11:07:46 +0200
+Message-Id: <20201016090437.230112516@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201016090437.308349327@linuxfoundation.org>
-References: <20201016090437.308349327@linuxfoundation.org>
+In-Reply-To: <20201016090437.153175229@linuxfoundation.org>
+References: <20201016090437.153175229@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,73 +44,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mychaela N. Falconia <falcon@freecalypso.org>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-commit 6cf87e5edd9944e1d3b6efd966ea401effc304ee upstream.
+commit 10a2f0b311094ffd45463a529a410a51ca025f27 upstream.
 
-There exist many FT2232-based JTAG+UART adapter designs in which
-FT2232 Channel A is used for JTAG and Channel B is used for UART.
-The best way to handle them in Linux is to have the ftdi_sio driver
-create a ttyUSB device only for Channel B and not for Channel A:
-a ttyUSB device for Channel A would be bogus and will disappear as
-soon as the user runs OpenOCD or other applications that access
-Channel A for JTAG from userspace, causing undesirable noise for
-users.  The ftdi_sio driver already has a dedicated quirk for such
-JTAG+UART FT2232 adapters, and it requires assigning custom USB IDs
-to such adapters and adding these IDs to the driver with the
-ftdi_jtag_quirk applied.
+The setkey function for GCM/CCM algorithms didn't verify the key
+length before copying the key and subtracting the salt length.
 
-Boutique hardware manufacturer Falconia Partners LLC has created a
-couple of JTAG+UART adapter designs (one buffered, one unbuffered)
-as part of FreeCalypso project, and this hardware is specifically made
-to be used with Linux hosts, with the intent that Channel A will be
-accessed only from userspace via appropriate applications, and that
-Channel B will be supported by the ftdi_sio kernel driver, presenting
-a standard ttyUSB device to userspace.  Toward this end the hardware
-manufacturer will be programming FT2232 EEPROMs with custom USB IDs,
-specifically with the intent that these IDs will be recognized by
-the ftdi_sio driver with the ftdi_jtag_quirk applied.
+This patch delays the copying of the key til after the verification
+has been done.  It also adds checks on the key length to ensure
+that it's at least as long as the salt.
 
-Signed-off-by: Mychaela N. Falconia <falcon@freecalypso.org>
-[johan: insert in PID order and drop unused define]
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: 9d12ba86f818 ("crypto: brcm - Add Broadcom SPU driver")
+Cc: <stable@vger.kernel.org>
+Reported-by: kiyin(尹亮) <kiyin@tencent.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/ftdi_sio.c     |    5 +++++
- drivers/usb/serial/ftdi_sio_ids.h |    7 +++++++
- 2 files changed, 12 insertions(+)
+ drivers/crypto/bcm/cipher.c |   15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/ftdi_sio.c
-+++ b/drivers/usb/serial/ftdi_sio.c
-@@ -1037,6 +1037,11 @@ static const struct usb_device_id id_tab
- 	/* U-Blox devices */
- 	{ USB_DEVICE(UBLOX_VID, UBLOX_C099F9P_ZED_PID) },
- 	{ USB_DEVICE(UBLOX_VID, UBLOX_C099F9P_ODIN_PID) },
-+	/* FreeCalypso USB adapters */
-+	{ USB_DEVICE(FTDI_VID, FTDI_FALCONIA_JTAG_BUF_PID),
-+		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
-+	{ USB_DEVICE(FTDI_VID, FTDI_FALCONIA_JTAG_UNBUF_PID),
-+		.driver_info = (kernel_ulong_t)&ftdi_jtag_quirk },
- 	{ }					/* Terminating entry */
- };
+--- a/drivers/crypto/bcm/cipher.c
++++ b/drivers/crypto/bcm/cipher.c
+@@ -2930,7 +2930,6 @@ static int aead_gcm_ccm_setkey(struct cr
  
---- a/drivers/usb/serial/ftdi_sio_ids.h
-+++ b/drivers/usb/serial/ftdi_sio_ids.h
-@@ -39,6 +39,13 @@
+ 	ctx->enckeylen = keylen;
+ 	ctx->authkeylen = 0;
+-	memcpy(ctx->enckey, key, ctx->enckeylen);
  
- #define FTDI_LUMEL_PD12_PID	0x6002
+ 	switch (ctx->enckeylen) {
+ 	case AES_KEYSIZE_128:
+@@ -2946,6 +2945,8 @@ static int aead_gcm_ccm_setkey(struct cr
+ 		goto badkey;
+ 	}
  
-+/*
-+ * Custom USB adapters made by Falconia Partners LLC
-+ * for FreeCalypso project, ID codes allocated to Falconia by FTDI.
-+ */
-+#define FTDI_FALCONIA_JTAG_BUF_PID	0x7150
-+#define FTDI_FALCONIA_JTAG_UNBUF_PID	0x7151
++	memcpy(ctx->enckey, key, ctx->enckeylen);
 +
- /* Sienna Serial Interface by Secyourit GmbH */
- #define FTDI_SIENNA_PID		0x8348
+ 	flow_log("  enckeylen:%u authkeylen:%u\n", ctx->enckeylen,
+ 		 ctx->authkeylen);
+ 	flow_dump("  enc: ", ctx->enckey, ctx->enckeylen);
+@@ -3000,6 +3001,10 @@ static int aead_gcm_esp_setkey(struct cr
+ 	struct iproc_ctx_s *ctx = crypto_aead_ctx(cipher);
  
+ 	flow_log("%s\n", __func__);
++
++	if (keylen < GCM_ESP_SALT_SIZE)
++		return -EINVAL;
++
+ 	ctx->salt_len = GCM_ESP_SALT_SIZE;
+ 	ctx->salt_offset = GCM_ESP_SALT_OFFSET;
+ 	memcpy(ctx->salt, key + keylen - GCM_ESP_SALT_SIZE, GCM_ESP_SALT_SIZE);
+@@ -3028,6 +3033,10 @@ static int rfc4543_gcm_esp_setkey(struct
+ 	struct iproc_ctx_s *ctx = crypto_aead_ctx(cipher);
+ 
+ 	flow_log("%s\n", __func__);
++
++	if (keylen < GCM_ESP_SALT_SIZE)
++		return -EINVAL;
++
+ 	ctx->salt_len = GCM_ESP_SALT_SIZE;
+ 	ctx->salt_offset = GCM_ESP_SALT_OFFSET;
+ 	memcpy(ctx->salt, key + keylen - GCM_ESP_SALT_SIZE, GCM_ESP_SALT_SIZE);
+@@ -3057,6 +3066,10 @@ static int aead_ccm_esp_setkey(struct cr
+ 	struct iproc_ctx_s *ctx = crypto_aead_ctx(cipher);
+ 
+ 	flow_log("%s\n", __func__);
++
++	if (keylen < CCM_ESP_SALT_SIZE)
++		return -EINVAL;
++
+ 	ctx->salt_len = CCM_ESP_SALT_SIZE;
+ 	ctx->salt_offset = CCM_ESP_SALT_OFFSET;
+ 	memcpy(ctx->salt, key + keylen - CCM_ESP_SALT_SIZE, CCM_ESP_SALT_SIZE);
 
 
