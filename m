@@ -2,204 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768F128FD0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 05:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585B328FD12
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 06:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394346AbgJPD7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 23:59:32 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:54710 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394339AbgJPD7b (ORCPT
+        id S1726424AbgJPEDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 00:03:06 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:44199 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726379AbgJPEDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 23:59:31 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09G3xGCv159118;
-        Fri, 16 Oct 2020 03:59:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=HU4F9wuG1k3SPCqoyCP3TB8GXZKlahUWq31j/Ddhho0=;
- b=VZhh5HKybVleyvd/JnS8W3gCE8LdrNB5ahnAjuLrt4JGVdoI8XGL7I3Rrzx/nqoCid95
- yVPW+dkLRV26/s6+OZ1FuTcBJFqpG6KxOSZW69Hnn0Acy7qD8hV8B9S5sSruT6BXbk9g
- P5UI3QcwwCnsaJKiRjzi8KCQzwLCq6+gM0Jeuij/Sje5XHLOBvtK5KGgsgr8Y1LEZIwy
- OF5wMMFEEEbN7FdIiTeHSIQxWzUmDXgirqHrKhuPGhZbP/77MCvHzn2WBU5GO6IxpHBT
- /KF68n3fpe6OepcIHRRs0GgII044MnIpEm8Cq9JmrassVsP6XvQBP1/u6QFsOW1/adVL PA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 346g8gn0m0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 16 Oct 2020 03:59:16 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09G3tmSd032246;
-        Fri, 16 Oct 2020 03:59:16 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 343phrxj1q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Oct 2020 03:59:15 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09G3xCT1010493;
-        Fri, 16 Oct 2020 03:59:12 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 15 Oct 2020 20:59:12 -0700
-Subject: Re: [RFC PATCH 2/3] hugetlbfs: introduce hinode_rwsem for pmd sharing
- synchronization
-To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBICjloIDlj6Mg55u05LmfKQ==?= 
-        <naoya.horiguchi@nec.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Kirill A.Shutemov" <kirill.shutemov@linux.intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Prakash Sangappa <prakash.sangappa@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20201013231100.71013-1-mike.kravetz@oracle.com>
- <20201013231100.71013-3-mike.kravetz@oracle.com>
- <20201015230511.GA4325@hori.linux.bs1.fc.nec.co.jp>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <6bcf16c6-0881-e5ae-b2c8-3f63a033b250@oracle.com>
-Date:   Thu, 15 Oct 2020 20:59:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Fri, 16 Oct 2020 00:03:06 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UC9wxDT_1602820981;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UC9wxDT_1602820981)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 16 Oct 2020 12:03:02 +0800
+Date:   Fri, 16 Oct 2020 12:03:01 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: Re: [PATCH v1 09/29] virtio-mem: don't always trigger the workqueue
+ when offlining memory
+Message-ID: <20201016040301.GJ86495@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-10-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201015230511.GA4325@hori.linux.bs1.fc.nec.co.jp>
-Content-Type: text/plain; charset=iso-2022-jp
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9775 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010160024
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9775 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 suspectscore=0
- priorityscore=1501 phishscore=0 clxscore=1011 spamscore=0 adultscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010160024
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012125323.17509-10-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/20 4:05 PM, HORIGUCHI NAOYA(堀口 直也) wrote:
-> On Tue, Oct 13, 2020 at 04:10:59PM -0700, Mike Kravetz wrote:
->> Due to pmd sharing, the huge PTE pointer returned by huge_pte_alloc
->> may not be valid.  This can happen if a call to huge_pmd_unshare for
->> the same pmd is made in another thread.
->>
->> To address this issue, add a rw_semaphore (hinode_rwsem) to the hugetlbfs
->> inode.
->> - hinode_rwsem is taken in read mode before calling huge_pte_alloc, and
->>   held until finished with the returned pte pointer.
->> - hinode_rwsem is held in write mode whenever huge_pmd_unshare is called.
->>
->> In the locking hierarchy, hinode_rwsem must be taken before a page lock.
->>
->> In an effort to minimize performance impacts, hinode_rwsem is not taken
->> if the caller knows the target can not possibly be part of a shared pmd.
->> lockdep_assert calls are added to huge_pmd_share and huge_pmd_unshare to
->> help catch callers not using the proper locking.
->>
->> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+On Mon, Oct 12, 2020 at 02:53:03PM +0200, David Hildenbrand wrote:
+>Let's trigger from offlining code when we're not allowed to touch online
+>memory.
+
+This describes the change in virtio_mem_memory_notifier_cb()?
+
+>
+>Handle the other case (memmap possibly freeing up another memory block)
+>when actually removing memory. When removing via virtio_mem_remove(),
+>virtio_mem_retry() is a NOP and safe to use.
+>
+>While at it, move retry handling when offlining out of
+>virtio_mem_notify_offline(), to share it with Device Block Mode (DBM)
+>soon.
+
+I may not understand the logic fully. Here is my understanding of current
+logic:
+
+
+  virtio_mem_run_wq()
+      virtio_mem_unplug_request()
+          virtio_mem_mb_unplug_any_sb_offline()
+	      virtio_mem_mb_remove()             --- 1
+	  virtio_mem_mb_unplug_any_sb_online()
+	      virtio_mem_mb_offline_and_remove() --- 2
+
+This patch tries to trigger the wq at 1 and 2. And these two functions are
+only valid during this code flow.
+
+These two functions actually remove some memory from the system. So I am not
+sure where extra unplug-able memory comes from. I guess those memory is from
+memory block device and mem_sectioin, memmap? While those memory is still
+marked as online, right?
+
+In case we can gather extra memory at 1 and form a whole memory block. So that
+we can unplug an online memory block (by moving data to a new place), this
+just affect the process at 2. This means there is no need to trigger the wq at
+1, and we can leave it at 2.
+
+>
+>Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>Cc: Jason Wang <jasowang@redhat.com>
+>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
+>---
+> drivers/virtio/virtio_mem.c | 40 ++++++++++++++++++++++++++-----------
+> 1 file changed, 28 insertions(+), 12 deletions(-)
+>
+>diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>index 5c93f8a65eba..8ea00f0b2ecd 100644
+>--- a/drivers/virtio/virtio_mem.c
+>+++ b/drivers/virtio/virtio_mem.c
+>@@ -158,6 +158,7 @@ static DEFINE_MUTEX(virtio_mem_mutex);
+> static LIST_HEAD(virtio_mem_devices);
 > 
-> Hi Mike,
+> static void virtio_mem_online_page_cb(struct page *page, unsigned int order);
+>+static void virtio_mem_retry(struct virtio_mem *vm);
 > 
-> I didn't find a problem on main idea of introducing hinode_rwsem, so
-> I'm fine if the known problems are fixed.
-
-Thank you for taking a look Naoya!
-
-I have been trying to address these race issues for some time.  The issues
-have been there since the pmd sharing code was introduced.  Fortunately,
-it is not easy to hit the issue.  However, targeted test programs can cause
-BUGs.
-
-> I have one question. This patch seems to make sure that huge_pmd_unshare()
-> are called under holding hinode_rwsem in write mode for some case. Some
-> callers of try_to_unmap() seem not to hold it like shrink_page_list(),
-> unmap_page(), which is OK because they never call try_to_unmap() for hugetlb
-> pages.  And unmap_ref_private() doesn't takes hinode_rwsem either, and
-> that's also OK because this function never handles pmd sharing case.  So
-> what about unmap_single_vma()?  It seems that this generic function could
-> reach huge_pmd_unshare() without hinode_rwsem, so what prevents the race here?
-> (Maybe I might miss some assumption or condition over this race...)
-
-You are not missing anything.  I mistakingly left out the locking code in
-of unmap_single_vma().  If I would have run some tests with lockdep enabled,
-the new lock checking code would have noticed.
-
+> /*
+>  * Register a virtio-mem device so it will be considered for the online_page
+>@@ -435,9 +436,17 @@ static int virtio_mem_mb_add(struct virtio_mem *vm, unsigned long mb_id)
+> static int virtio_mem_mb_remove(struct virtio_mem *vm, unsigned long mb_id)
+> {
+> 	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
+>+	int rc;
 > 
-> I left a few other minor comments below ...
+> 	dev_dbg(&vm->vdev->dev, "removing memory block: %lu\n", mb_id);
+>-	return remove_memory(vm->nid, addr, memory_block_size_bytes());
+>+	rc = remove_memory(vm->nid, addr, memory_block_size_bytes());
+>+	if (!rc)
+>+		/*
+>+		 * We might have freed up memory we can now unplug, retry
+>+		 * immediately instead of waiting.
+>+		 */
+>+		virtio_mem_retry(vm);
+>+	return rc;
+> }
+> 
+> /*
+>@@ -452,11 +461,19 @@ static int virtio_mem_mb_offline_and_remove(struct virtio_mem *vm,
+> 					    unsigned long mb_id)
+> {
+> 	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id);
+>+	int rc;
+> 
+> 	dev_dbg(&vm->vdev->dev, "offlining and removing memory block: %lu\n",
+> 		mb_id);
+>-	return offline_and_remove_memory(vm->nid, addr,
+>-					 memory_block_size_bytes());
+>+	rc = offline_and_remove_memory(vm->nid, addr,
+>+				       memory_block_size_bytes());
+>+	if (!rc)
+>+		/*
+>+		 * We might have freed up memory we can now unplug, retry
+>+		 * immediately instead of waiting.
+>+		 */
+>+		virtio_mem_retry(vm);
+>+	return rc;
+> }
+> 
+> /*
+>@@ -534,15 +551,6 @@ static void virtio_mem_notify_offline(struct virtio_mem *vm,
+> 		BUG();
+> 		break;
+> 	}
+>-
+>-	/*
+>-	 * Trigger the workqueue, maybe we can now unplug memory. Also,
+>-	 * when we offline and remove a memory block, this will re-trigger
+>-	 * us immediately - which is often nice because the removal of
+>-	 * the memory block (e.g., memmap) might have freed up memory
+>-	 * on other memory blocks we manage.
+>-	 */
+>-	virtio_mem_retry(vm);
+> }
+> 
+> static void virtio_mem_notify_online(struct virtio_mem *vm, unsigned long mb_id)
+>@@ -679,6 +687,14 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+> 		break;
+> 	case MEM_OFFLINE:
+> 		virtio_mem_notify_offline(vm, mb_id);
+>+
+>+		/*
+>+		 * Trigger the workqueue. Now that we have some offline memory,
+>+		 * maybe we can handle pending unplug requests.
+>+		 */
+>+		if (!unplug_online)
+>+			virtio_mem_retry(vm);
+>+
+> 		vm->hotplug_active = false;
+> 		mutex_unlock(&vm->hotplug_mutex);
+> 		break;
+>-- 
+>2.26.2
 
-I will address the below issues in the next revision.
-
-Thanks again for taking a look.
 -- 
-Mike Kravetz
-
-> 
->> @@ -4424,6 +4442,11 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
->>  
->>  	ptep = huge_pte_offset(mm, haddr, huge_page_size(h));
->>  	if (ptep) {
->> +		/*
->> +		 * Since we hold no locks, ptep could be stale.  That is
->> +		 * OK as we are only making decisions based on content and
->> +		 * not actually modifying content here.
->> +		 */
-> 
-> nice comment, thank you.
-> 
->>  		entry = huge_ptep_get(ptep);
->>  		if (unlikely(is_hugetlb_entry_migration(entry))) {
->>  			migration_entry_wait_huge(vma, mm, ptep);
->> @@ -4431,20 +4454,32 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
->>  		} else if (unlikely(is_hugetlb_entry_hwpoisoned(entry)))
->>  			return VM_FAULT_HWPOISON_LARGE |
->>  				VM_FAULT_SET_HINDEX(hstate_index(h));
->> -	} else {
->> -		ptep = huge_pte_alloc(mm, haddr, huge_page_size(h));
->> -		if (!ptep)
->> -			return VM_FAULT_OOM;
->>  	}
->>  
->> +	/*
->> +	 * Acquire hinode_sem before calling huge_pte_alloc and hold
-> 
->                    hinode_rwsem?
-> 
->> +	 * until finished with ptep.  This prevents huge_pmd_unshare from
->> +	 * being called elsewhere and making the ptep no longer valid.
->> +	 *
->> +	 * ptep could have already be assigned via huge_pte_offset.  That
->> +	 * is OK, as huge_pte_alloc will return the same value unless
->> +	 * something has changed.
->> +	 */
-> 
-> ... 
-> 
->> @@ -278,10 +278,14 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
->>  		BUG_ON(dst_addr >= dst_start + len);
->>  
->>  		/*
->> -		 * Serialize via hugetlb_fault_mutex
->> +		 * Serialize via hinode_rwsem hugetlb_fault_mutex.
->                                              ^ "and" here?
-> 
->> +		 * hinode_rwsem ensures the dst_pte remains valid even
->> +		 * in the case of shared pmds.  fault mutex prevents
->> +		 * races with other faulting threads.
->>  		 */
->>  		idx = linear_page_index(dst_vma, dst_addr);
->>  		mapping = dst_vma->vm_file->f_mapping;
->> +		hinode_lock_read(mapping, dst_vma, dst_addr);
->>  		hash = hugetlb_fault_mutex_hash(mapping, idx);
->>  		mutex_lock(&hugetlb_fault_mutex_table[hash]);
-> 
-> 
-> Thanks,
-> Naoya Horiguchi
-> 
+Wei Yang
+Help you, Help me
