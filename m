@@ -2,130 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D80A29089E
+	by mail.lfdr.de (Postfix) with ESMTP id BB77929089F
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410323AbgJPPi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:38:29 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:38197 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408427AbgJPPi3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:38:29 -0400
-Received: by mail-ed1-f67.google.com with SMTP id i5so2900389edr.5;
-        Fri, 16 Oct 2020 08:38:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l7ooLLyjU79cfl+bt7sttr4E3DYykAdem+WSTdZT84Q=;
-        b=cPO2H6lrMx3ANOh7oH82eqjP9PYFhHHZMmUEWrKH049ckoc5ZP4FKGExZsh/2X1aJw
-         iiAbCQ/7w461JvNwBanHcQ/fSMifHUc/LUQWaWXlY0Ytqr7GxHPe/elWQPar7GWJjmHk
-         uXAXsNi8J9/mBxpX3MRfWEXNizlLI9LDQOdsISS9utip8I1ELnuJDs0fdlcaVwibXLJZ
-         gzPLqjGYVCcFFRWLPF2q8GQ5iJ6tbZv6is9a3s+fwJ9NN6B8ZW017kDz8J994X17QSVI
-         TFYGKK58I30hydV9PSM6/s2vYmH5VcSBzbbsWhuDGFH5zxm//MKotb14ljUqQGbwhyxU
-         MuGg==
-X-Gm-Message-State: AOAM5304I3iufa+nwgC7/Ekf2zZhF/gewBORfp7FqthqI0ut2JV3vG2g
-        zHWG3hgc55J78jzUqgPgOcE=
-X-Google-Smtp-Source: ABdhPJx2vXirUY8EO6Lr8GnfzXGhnxo0d9l8dBuveqgE4nywFvaNT1O0eVe8BcAWvhYByAs4SHpmPw==
-X-Received: by 2002:aa7:d7c1:: with SMTP id e1mr4740554eds.4.1602862706986;
-        Fri, 16 Oct 2020 08:38:26 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id s25sm1894221ejc.29.2020.10.16.08.38.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 08:38:25 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 17:38:23 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     sre@kernel.org, matthias.bgg@gmail.com, robh+dt@kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gene Chen <gene_chen@richtek.com>
-Subject: Re: [PATCH 1/2] dt-bindings: power: Add bindings document for
- Charger support on MT6360 PMIC
-Message-ID: <20201016153823.GA9890@kozik-lap>
-References: <1600859910-15855-1-git-send-email-gene.chen.richtek@gmail.com>
+        id S2410335AbgJPPib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:38:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34684 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408462AbgJPPia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 11:38:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 71872ABE3;
+        Fri, 16 Oct 2020 15:38:28 +0000 (UTC)
+To:     Mike Rapoport <rppt@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Shakeel Butt <shakeelb@google.com>,
+        Will Deacon <will@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Neil Brown <neilb@suse.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Florian Westphal <fw@strlen.de>, gustavoars@kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>, dave@stgolabs.net,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>, chenqiwu@xiaomi.com,
+        christophe.leroy@c-s.fr, Minchan Kim <minchan@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+References: <20201010103854.66746-1-songmuchun@bytedance.com>
+ <CAM_iQpUQXctR8UBNRP6td9dWTA705tP5fWKj4yZe9gOPTn_8oQ@mail.gmail.com>
+ <CAMZfGtUhVx_iYY3bJZRY5s1PG0N1mCsYGS9Oku8cTqPiMDze-g@mail.gmail.com>
+ <CANn89iKprp7WYeZy4RRO5jHykprnSCcVBc7Tk14Ui_MA9OK7Fg@mail.gmail.com>
+ <CAMZfGtXVKER_GM-wwqxrUshDzcEg9FkS3x_BaMTVyeqdYPGSkw@mail.gmail.com>
+ <9262ea44-fc3a-0b30-54dd-526e16df85d1@gmail.com>
+ <CAMZfGtVF6OjNuJFUExRMY1k-EaDS744=nKy6_a2cYdrJRncTgQ@mail.gmail.com>
+ <20201013080906.GD4251@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [External] Re: [PATCH] mm: proc: add Sock to /proc/meminfo
+Message-ID: <8d1558e7-cd09-1f9e-edab-5f22c5bfc342@suse.cz>
+Date:   Fri, 16 Oct 2020 17:38:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1600859910-15855-1-git-send-email-gene.chen.richtek@gmail.com>
+In-Reply-To: <20201013080906.GD4251@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 07:18:29PM +0800, Gene Chen wrote:
-> From: Gene Chen <gene_chen@richtek.com>
+On 10/13/20 10:09 AM, Mike Rapoport wrote:
+>> We are not complaining about TCP using too much memory, but how do
+>> we know that TCP uses a lot of memory. When I firstly face this problem,
+>> I do not know who uses the 25GB memory and it is not shown in the /proc/meminfo.
+>> If we can know the amount memory of the socket buffer via /proc/meminfo, we
+>> may not need to spend a lot of time troubleshooting this problem. Not everyone
+>> knows that a lot of memory may be used here. But I believe many people
+>> should know /proc/meminfo to confirm memory users.
+> If I undestand correctly, the problem you are trying to solve is to
+> simplify troubleshooting of memory usage for people who may not be aware
+> that networking stack can be a large memory consumer.
 > 
-> Add bindings document for Charger support on MT6360 PMIC
+> For that a paragraph in 'man 5 proc' maybe a good start:
+
+Yeah. Another major consumer that I've seen at some point was xfs buffers. And 
+there might be others, and adding everything to /proc/meminfo is not feasible. I 
+have once proposed adding a counter called "Unaccounted:" which would at least 
+tell the user easily if a significant portion is occupied by memory not 
+explained by the other meminfo counters, and look for trends (increase = 
+potential memory leak?). For specific prominent consumers not covered by meminfo 
+but that have some kind of internal counters, we could document where to look, 
+such as /proc/net/sockstat or maybe create some /proc/ or /sys directory with 
+file per consumer so that it's still easy to check, but without the overhead of 
+global counters and bloated /proc/meminfo?
+
+>  From ddbcf38576d1a2b0e36fe25a27350d566759b664 Mon Sep 17 00:00:00 2001
+> From: Mike Rapoport<rppt@linux.ibm.com>
+> Date: Tue, 13 Oct 2020 11:07:35 +0300
+> Subject: [PATCH] proc.5: meminfo: add not anout network stack memory
+>   consumption
 > 
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> Signed-off-by: Mike Rapoport<rppt@linux.ibm.com>
 > ---
->  .../bindings/power/supply/mt6360_charger.yaml      | 44 ++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
+>   man5/proc.5 | 8 ++++++++
+>   1 file changed, 8 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml b/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
-> new file mode 100644
-> index 0000000..711fc19
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
-> @@ -0,0 +1,44 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/supply/mt6360_charger.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Battery charger driver for MT6360 PMIC from MediaTek Integrated.
-> +
-> +maintainers:
-> +  - Gene Chen <gene_chen@richtek.com>
-> +
-> +description: |
-> +  This module is part of the MT6360 MFD device.
-> +  Provides Battery Charger, Boost for OTG devices and BC1.2 detection.
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt6360-chg
-> +
-> +  vinovp:
-> +    description:
-> +      Maximum CHGIN regulation voltage.
+> diff --git a/man5/proc.5 b/man5/proc.5
+> index ed309380b..8414676f1 100644
+> --- a/man5/proc.5
+> +++ b/man5/proc.5
+> @@ -3478,6 +3478,14 @@ Except as noted below,
+>   all of the fields have been present since at least Linux 2.6.0.
+>   Some fields are displayed only if the kernel was configured
+>   with various options; those dependencies are noted in the list.
+> +.IP
+> +Note that significant part of memory allocated by the network stack
+> +is not accounted in the file.
+> +The memory consumption of the network stack can be queried
+> +using
+> +.IR /proc/net/sockstat
+> +or
+> +.BR ss (8)
+>   .RS
+>   .TP
+>   .IR MemTotal " %lu"
+> -- 2.25.4
 
-1. You need to describe the type.
-2. Use proper unit suffix (see property-units.txt).
-3. Is this a custom property? If yes, it misses vendor prefix. If not,
-   most likely there is already such property. Reuse.
-
-> +
-> +  usb-otg-vbus:
-> +      $ref: /schemas/regulator/regulator.yaml#
-
-1. Wrong indentation.
-2. Name should be more or less generic, so maybe
-   "usb-otg-vbus-regulator".
-
-> +
-> +required:
-> +  - compatible
-
-No address/reg? How does it bind?
-
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    mt6360_chg: chg {
-
-s/chg/charger/
-
-> +      compatible = "mediatek,mt6360-chg";
-> +      vinovp = <14500000>;
-
-Empty line break
-
-Best regards,
-Krzysztof
