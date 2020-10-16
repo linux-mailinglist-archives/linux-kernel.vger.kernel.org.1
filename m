@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3EE2909AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8532909B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410745AbgJPQ2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:28:53 -0400
-Received: from mailout07.rmx.de ([94.199.90.95]:50606 "EHLO mailout07.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408316AbgJPQ2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:28:53 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout07.rmx.de (Postfix) with ESMTPS id 4CCWmy28JVzBv88;
-        Fri, 16 Oct 2020 18:28:50 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4CCWm93ZM9z2TTLW;
-        Fri, 16 Oct 2020 18:28:09 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.12) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Fri, 16 Oct
- 2020 18:28:09 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Woojung Huh <woojung.huh@microchip.com>,
-        Vladimir Oltean <olteanv@gmail.com>
-CC:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>
-Subject: [PATCH net] net: dsa: point out the tail taggers
-Date:   Fri, 16 Oct 2020 18:28:00 +0200
-Message-ID: <20201016162800.7696-1-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
+        id S2410799AbgJPQaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:30:39 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:44702 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408429AbgJPQaj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 12:30:39 -0400
+Received: by mail-oi1-f196.google.com with SMTP id x62so3030231oix.11;
+        Fri, 16 Oct 2020 09:30:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tMQhVtgWTLUrHnXhHeGDTXy+R8Q9Ulj7YjmL8avZ4i0=;
+        b=DE3jpborKFPNieaEhZtYIXksMh5JzhzmsSjufIfwEsu6Tn4UBecGVS8Gb8R//Yzism
+         GQckDH8ZOiBQtFy0XZbxZJBcUbrkA3oiyY62jX1MfEdHdNLd8auzrMKMOsuif/EZf+u+
+         f1iDjKzKg18nKe4cEXUaOwsYa5PeXs8msukOzdigPhS6UcjK0sghh8d0/2eL6NtvwmQC
+         BOVSjJNLOqim2JoBVxIzrS9flq4piRb20J726HG+A/NyhQBlBOwuvjtYGnxEbGfsTr9Y
+         oHeEt5cTg8qVC/D9splOJfaf7PsU0Cq6dwMVP2At7W5PWqM1iBVotYJv4rAMs/8+/ihT
+         r1HA==
+X-Gm-Message-State: AOAM530IsYnKzK/OYdllv8bulHzODFurCEGK/j9JkN4wgBFTeo1JWODI
+        A9NKwbY0IpwEbfQGhFfXYRKAq8+Lb9MRZcB7Qmg=
+X-Google-Smtp-Source: ABdhPJzQyn0JbPc7rGxUTeQ87yBu9s0xoUvfAxPzQH1y7cn5aiMsjxR8zZkxZV3SmT3VwlwdAELK2xZWa48odZL1CHA=
+X-Received: by 2002:aca:724a:: with SMTP id p71mr3049209oic.157.1602865839368;
+ Fri, 16 Oct 2020 09:30:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.12]
-X-RMX-ID: 20201016-182809-4CCWm93ZM9z2TTLW-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+References: <20201006160516.319830-1-ulf.hansson@linaro.org>
+ <CAJZ5v0iNQ51C5WYUy-ZhzpFGMLxSAVV8=xxYBfMX9ia6FOpg1Q@mail.gmail.com> <CAPDyKFrLTsYWVhR03hQgRJGGEkmTk5etGR5RcKgMW+Nj60+vhQ@mail.gmail.com>
+In-Reply-To: <CAPDyKFrLTsYWVhR03hQgRJGGEkmTk5etGR5RcKgMW+Nj60+vhQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 16 Oct 2020 18:30:28 +0200
+Message-ID: <CAJZ5v0i6CeUy4aQnyMmNyAHfdunWbbB2TsQwtX4QwNwYk+71jg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] power: avs: Move drivers to the soc directories and
+ drop avs
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Nishanth Menon <nm@ti.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Niklas Cassel <nks@flawful.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Kevin Hilman <khilman@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From a  recent commit with the same summary:
+On Wed, Oct 7, 2020 at 5:23 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> + Arnd
+>
+> On Wed, 7 Oct 2020 at 17:09, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Tue, Oct 6, 2020 at 6:05 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > The avs drivers in drivers/power/avs/* are all SoC specific drivers that
+> > > doesn't share any code. Instead they are located in a directory, mostly to keep
+> > > similar functionality together. From a maintenance point of view, it makes
+> > > better sense to collect SoC specific drivers like these, into the SoC specific
+> > > directories.
+> > >
+> > > Therefore, this series moves the drivers, one by one - and in the end, it
+> > > deletes the empty avs directory.
+> > >
+> > > It seems best to me, if this can be funneled via Rafael's linux-pm tree. Then
+> > > when going forward, each driver should be managed through the SoC maintainer's
+> > > trees.
+> >
+> > That's fine by me.
+> >
+> > I'd like to get an ACK from the arm-soc side on this, though.
+>
+> I have looped in Arnd, to get his opinion on this.
+>
+> Although, I think the people on cc already send pull requests to the
+> arm-soc maintainers (or perhaps it was these people you were referring
+> to), so just awaiting their acks should be fine, I guess.
 
-"The Marvell 88E6060 uses tag_trailer.c and the KSZ8795, KSZ9477 and
-KSZ9893 switches also use tail tags."
+OK
 
-Set "tail_tag" to true for KSZ8795 and KSZ9477 which were missing in the
-original commit.
+For now, I've taken patches [2-3/4] that have been ACKed.
 
-Fixes: 7a6ffe764be3 [net] ("net: dsa: point out the tail taggers")
-Signed-off-by: Christian Eggers <ceggers@arri.de>
----
- net/dsa/tag_ksz.c | 2 ++
- 1 file changed, 2 insertions(+)
+When the [1/4] is ACKed, I'll take it too and apply the last one.
 
-diff --git a/net/dsa/tag_ksz.c b/net/dsa/tag_ksz.c
-index 945a9bd5ba35..0a5aa982c60d 100644
---- a/net/dsa/tag_ksz.c
-+++ b/net/dsa/tag_ksz.c
-@@ -123,6 +123,7 @@ static const struct dsa_device_ops ksz8795_netdev_ops = {
- 	.xmit	= ksz8795_xmit,
- 	.rcv	= ksz8795_rcv,
- 	.overhead = KSZ_INGRESS_TAG_LEN,
-+	.tail_tag = true,
- };
- 
- DSA_TAG_DRIVER(ksz8795_netdev_ops);
-@@ -199,6 +200,7 @@ static const struct dsa_device_ops ksz9477_netdev_ops = {
- 	.xmit	= ksz9477_xmit,
- 	.rcv	= ksz9477_rcv,
- 	.overhead = KSZ9477_INGRESS_TAG_LEN,
-+	.tail_tag = true,
- };
- 
- DSA_TAG_DRIVER(ksz9477_netdev_ops);
--- 
-Christian Eggers
-Embedded software developer
-
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
-
+Thanks!
