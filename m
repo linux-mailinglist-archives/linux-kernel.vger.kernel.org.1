@@ -2,75 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9E628FC6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 04:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C9928FC6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 04:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404199AbgJPCe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 22:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404192AbgJPCez (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 22:34:55 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D23BC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 19:34:55 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id a12so668013ybg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 19:34:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tRFu4XyLJUaboKK9qG9+2IQ4xH96xQePNVeGubVhXBg=;
-        b=FMO/F5M08gafWlZ0+ywzEwlzw1E3a/0ASULyHUbRxN63QYe0rOK4Tb+DOj/jkZ6YFU
-         Hb0mjmP8tCe6oxknwN3muaP7zwzLUFMUalAce5R0KAEo8Wm/R9hawRL6duOMP0Ygkbbf
-         k1rzwN2NBfAx26EsWHcL8m/W0jKW8tJzos0SHOKu4CM13NRnPK1r3JgU9F9Umg7BDvPl
-         gEGkKcoU8BkPOd1Nw9S3mhHfQGGbG+lrSBDD/2xCvReV9BW5Wz3rkgUcfLO7EzLo9z/N
-         LibcHy+eFoi5ut33rb1uQcLn8siG7Q7njS+HqlQ6LsH9Eb/H3RaqrLqEYsifm3b3BkBr
-         ycyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tRFu4XyLJUaboKK9qG9+2IQ4xH96xQePNVeGubVhXBg=;
-        b=EM5mEgKSkP9SjyHgSzk4C1R5lWbdS24xX0Ra36pGm9eE3eDP+KyLJ+p75X9dIqq7nO
-         DpCjWr/IOtaQZON8GTvWxvAHDRN+5wsyg3Bu7p9IHr9gcjt5x6EP/w2FHfpzg9mlU3oW
-         cm7qNQovzDVhAx4yDh04WT7xhlFJsl1gVR0oWDHyYUPfzJMF8BWjV3Kk6rBPWMERmQoJ
-         EoDG637jniOKyA3KnYW8oukX8WOiJOPZemJmmxFqKoJj8TSDKrJr5AHqbt5AAWXJiStK
-         6UudIBemA4aBLvL5EqXz+0strVPkkBVL2T6rLIvupxb1HvHWpjPGKq5PzRM4ppmt1h5j
-         TFCQ==
-X-Gm-Message-State: AOAM5339+pLLfmlFYSwYTpxAZ12mKNUEok+bqHtrwKcoEtfLxsoYErYI
-        ES52NblSS3EOJN2Jsx0Zf/MDLoCr03xoiuhRqhA=
-X-Google-Smtp-Source: ABdhPJyL8ASo7baN7S0qMZDCztIU3HT/YOgyEtGIn1W2930NStB1xsCE8Hubd+NCXD1/4PEAL/DDaJ2PSf9z5NRNa1E=
-X-Received: by 2002:a25:b792:: with SMTP id n18mr2143221ybh.93.1602815694777;
- Thu, 15 Oct 2020 19:34:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201005122732.3429347-1-poeschel@lemonage.de> <20201005122732.3429347-2-poeschel@lemonage.de>
-In-Reply-To: <20201005122732.3429347-2-poeschel@lemonage.de>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 16 Oct 2020 04:34:44 +0200
-Message-ID: <CANiq72nGzHqY3t_DvPknnpDK3MOwWt45ZW2iLs4FRbvvGxw0mA@mail.gmail.com>
-Subject: Re: [PATCH v4 01/32] auxdisplay: Use an enum for charlcd backlight
- on/off ops
-To:     Lars Poeschel <poeschel@lemonage.de>
-Cc:     Willy Tarreau <willy@haproxy.com>,
-        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+        id S2404187AbgJPCev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 22:34:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404178AbgJPCeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 22:34:50 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 300C720878;
+        Fri, 16 Oct 2020 02:34:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602815690;
+        bh=wgurwTerQ1P/meEIJ41flc1QgAVRe5/Dfi5vOxe09rc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nkfJ6Q/Q3tcGvmzBTyfkTAEYV1zGi8EnSX6c1jl4ED6X9l/jjs9hOqp7LPZpgMkj+
+         5I/IWmUkV24magig5hppYc+Tk/Dcc5dFJMi3SRROAoo3v79a7yLdHRU9OdfVN51+SP
+         EE1TNfrt8zDEBestllDF3ocWXnbqwxRFh+HzIn2Q=
+Date:   Fri, 16 Oct 2020 11:34:45 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>
+Subject: Re: [GIT PULL] tracing: Updates for 5.10
+Message-Id: <20201016113445.4bd2a37c9b5e7f3a065b6f52@kernel.org>
+In-Reply-To: <CAHk-=wjU86UhovK4XuwvCqTOfc+nvtpAuaN2PJBz15z=w=u0Xg@mail.gmail.com>
+References: <20201015135345.6b29e8c0@gandalf.local.home>
+        <CAHk-=wjU86UhovK4XuwvCqTOfc+nvtpAuaN2PJBz15z=w=u0Xg@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 2:27 PM <poeschel@lemonage.de> wrote:
->
-> We use an enum for calling the functions in charlcd, that turn the
-> backlight on or off. This enum is generic and can be used for other
-> charlcd turn of / turn off operations as well.
+On Thu, 15 Oct 2020 18:54:34 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Typo: of -> on
+> On Thu, Oct 15, 2020 at 10:53 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > Updates for tracing and bootconfig:
+> 
+> Hmm. I haven't verified that this came from you, but it seems likely..
+> Once again my clang build shows something that I don't see in my
+> allmodconfig gcc build:
+> 
+>    WARNING: modpost: vmlinux.o(.text+0x1e5b06): Section mismatch in
+> reference from the function __trace_early_add_events() to the function
+> .init.text:__trace_early_add_new_event()
+>    The function __trace_early_add_events() references
+>    the function __init __trace_early_add_new_event().
+>    This is often because __trace_early_add_events lacks a __init
+>    annotation or the annotation of __trace_early_add_new_event is wrong.
+> 
+> Hmm?
 
-(Already corrected in my queue)
+Oops, that's my fault.
+The commit 720dee53ad8d ("tracing/boot: Initialize per-instance event list
+ in early boot") removes __init from __trace_early_add_events() but I
+forgot to do same on __trace_early_add_new_event().
+Would this work?
 
-Cheers,
-Miguel
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 851ab37058dd..e705f06c68c6 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -2498,7 +2498,7 @@ __trace_add_new_event(struct trace_event_call *call, struct trace_array *tr)
+  * for enabling events at boot. We want to enable events before
+  * the filesystem is initialized.
+  */
+-static __init int
++static int
+ __trace_early_add_new_event(struct trace_event_call *call,
+                            struct trace_array *tr)
+ {
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
