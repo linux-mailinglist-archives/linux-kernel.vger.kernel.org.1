@@ -2,61 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB122913A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 20:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEB42913A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 20:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438866AbgJQSWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 14:22:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51160 "EHLO mail.kernel.org"
+        id S2438897AbgJQSWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 14:22:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438829AbgJQSWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 14:22:42 -0400
-Subject: Re: [GIT PULL] thermal for v5.10-rc1
+        id S2438857AbgJQSWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 14:22:43 -0400
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602958962;
-        bh=eXo88rAbTjvaW4172sjXLBLN6eD4E7Ih2esVj6xi8/8=;
+        bh=ZJhBWWopLQvF2UxXLEbKDxRKqrX4d5+Foi7eRPFsfuI=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=tqgjmq2EqP8dw68xDBYzTmnOncu3zmt3Iy3ka7QYfM+rmZ8jkQl1rX6jKnJZC4pCN
-         uDiIskYpykurwjlw5NpgufBozFZbxhPz76y7J5yDqQFarqsDbLl8SIM/akuOsBsGdk
-         d/NwPI7JCePfloFwAOd8sN41kBoFPrd7q0vy2hc8=
+        b=bXOBrEs1hjCZSpAChX7j2OvdOVXQm4DcRdF8PwCQ2TONqRBcsuoXu7Pa/tgWMVLMg
+         6+55VU33cWnxZwueiE6ZOyEtqvB6KNkYMU44F7phste1Jwo/uPtTfApLwJzsm5FdpR
+         zQcGCOiwHnxTXYStHApf6Iq3+aduZpIM8TisnE7M=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ff1ca9b4-51fa-209a-b047-17dcc2e74720@linaro.org>
-References: <ff1ca9b4-51fa-209a-b047-17dcc2e74720@linaro.org>
+In-Reply-To: <20201016185155.GA233060@nvidia.com>
+References: <20201016185155.GA233060@nvidia.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ff1ca9b4-51fa-209a-b047-17dcc2e74720@linaro.org>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git tags/thermal-v5.10-rc1
-X-PR-Tracked-Commit-Id: 48b458591749d35c927351b4960b49e35af30fe6
+X-PR-Tracked-Message-Id: <20201016185155.GA233060@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: c7a198c700763ac89abbb166378f546aeb9afb33
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5a77b6a0131f7197e1a037f65fc7cbabcb4fe680
-Message-Id: <160295896227.15185.3432103274876109620.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: a1e16bc7d5f7ca3599d8a7f061841c93a563665e
+Message-Id: <160295896282.15185.17250016359986869696.pr-tracker-bot@kernel.org>
 Date:   Sat, 17 Oct 2020 18:22:42 +0000
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Colin King <colin.king@canonical.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        zhuguangqing@xiaomi.com,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Adam Ford <aford173@gmail.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 16 Oct 2020 10:47:01 +0200:
+The pull request you sent on Fri, 16 Oct 2020 15:51:55 -0300:
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git tags/thermal-v5.10-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5a77b6a0131f7197e1a037f65fc7cbabcb4fe680
+https://git.kernel.org/torvalds/c/a1e16bc7d5f7ca3599d8a7f061841c93a563665e
 
 Thank you!
 
