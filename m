@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A9E29121C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 15:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816DF29121D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 15:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438207AbgJQNvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 09:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44364 "EHLO
+        id S2437537AbgJQN5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 09:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438199AbgJQNvD (ORCPT
+        with ESMTP id S2436959AbgJQN5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 09:51:03 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2ACC0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 06:51:02 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id x20so4260523qkn.1
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 06:51:02 -0700 (PDT)
+        Sat, 17 Oct 2020 09:57:20 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A4CC0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 06:57:19 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w21so3182604pfc.7
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 06:57:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4MgdNESWv5eDl+CUOXr6F2inTCBbN7co4Pv3gwx16Wc=;
-        b=EiXO03NhEk2wbgmN0avyaTVn215mJlgFIRwAZkNm4U8ohgwsX9ZY+vAuSi4wAEkgDf
-         Sw9MTqnCownGn9LsP+J8b5Xx5BFRtMXmNvFxexLlVfmNZedq4QF9KyojkQmFxJucDlZz
-         MXxaua1SrN6eBr+RouqCqyTySXgVnZ3uaDe9w=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=7co/6vS67fyodZT7r+a17TECavfbdRgr+rD1dFZXz9k=;
+        b=RBksC0qHpz1xZkXwpWrxObHN4olJYMH5C4xMYfNrH9R5LY9VMGYwPX34eU7JGY/OS5
+         SyUPWo4LGFINc8hB8+/xD4xhrpUbSPr8MZ5tbksQbA9+KZzMrpMKGeeIIODc5iM8fulU
+         WX6VcNpfvF7xXcpSnAC1QaV1LzSKtHJPjlOU4HK17ZhgEEcmnWqtM0hIGaCDJO4P5i44
+         FWC9NndUPDJyjWwH31LBKEll2Yu/+okGbrUzaZ2X3r00g34i8CjyqTQXxXLW76IqogP/
+         j8SEtomNLafgfGz0pJCm2DOfriY7Rtoo9qYLjRULRgWL4Pa/e3+sbqCBmfudczwT1yOD
+         B8DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=4MgdNESWv5eDl+CUOXr6F2inTCBbN7co4Pv3gwx16Wc=;
-        b=PuGuWW/i3XcvEzZ6aqOjlbn47UiPHs6ovr+VEiTlMoRRd9ybzW3VQSsjLQm16YfC2q
-         xWIPEby5zamx3Ku2pRUzvXF3Q36I6xMdwOQmwfdOm1CyiK0eQynfhRDkYL47RTfiEQiU
-         /pICqdWSBU8GmMNcyQtjOhZeXdkHbw9wLdOXstH2uTeyIFWMaqBq4xKEPT/pBu4PpisG
-         KlvlhMOe2EYvM8ES938GrcUWtghLvIf+lBk33EwfS8HtRdiv7DXEiaOwQkeWogY7EetV
-         uUZ4hTEJKYc4xOW+IlajgoJ9eHnedVUyWJCUnnnt1Nyvq1hMrVl3y5i4D4pxPUOiYMoU
-         DqOw==
-X-Gm-Message-State: AOAM533bI+onF0LmXtFWke/NvLBbzvY01N+rpw9iv9nNaXjAPVcN4p4/
-        fepHf9pSaqlqAOSMqC6H6yJlEOqD8FkJdgEX
-X-Google-Smtp-Source: ABdhPJwPgt9GwEUG+ybkb4xxn9y8igRaI2t/gURb9hFpkSJ8NgJbpMtJD+JGsolQE0HM633TfuLc3g==
-X-Received: by 2002:a37:9b42:: with SMTP id d63mr8411455qke.49.1602942661073;
-        Sat, 17 Oct 2020 06:51:01 -0700 (PDT)
-Received: from chatter.i7.local ([89.36.78.230])
-        by smtp.gmail.com with ESMTPSA id w6sm2115321qkb.6.2020.10.17.06.50.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Oct 2020 06:51:00 -0700 (PDT)
-Date:   Sat, 17 Oct 2020 09:50:58 -0400
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Backing up the PGP master key
-Message-ID: <20201017135058.mxlbuxqekpvy3hqx@chatter.i7.local>
-Mail-Followup-To: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201014213406.GA7622@linux.intel.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=7co/6vS67fyodZT7r+a17TECavfbdRgr+rD1dFZXz9k=;
+        b=D1+yNY8fdmPvGPHbW0L6F8ruYBYjeU6alUKRdqZ0WSsjTDhAzMIcRUsJNJ2xRwCAiE
+         rvBWMg8ZMNYO/P2Mu/OGTS2rfUJbbt2duuPoqlDUhlosQzL1rtL+g7B3JK0am57wSkNu
+         lrfoZbec8JcP2Uc+4+qB81zKW1XgFBL86kgS/bibdMHyKeEsnhMkNmU9xv4v2kyWbv2m
+         +0PvwU8MgjMAEMJNc0mBgHVQy5rUw9hukuP+YwBqRRBt+zY+cBJ/COQagJuCRLKs+zY7
+         x1yR+8T+w1BEE6+2jZs3avxciB+TRBWYXeMmXCtwHe90pygRFds0yRI6TvK8ZlC0BXRk
+         yUBw==
+X-Gm-Message-State: AOAM532MXJgjiT/MwAvUzIh2KWb/bc2CEViBlyTJiEA6xZwDOeaXm3t3
+        uODQcbjMO4byNIV/WHn5GfBtOHoqHVgkf3dV2c4=
+X-Google-Smtp-Source: ABdhPJwR624TRXk0LPe4WIOlPIwZm4TVXnhg25FpGN4hifAnSt6SLdRwGCTRfrRFN9ksOICwgr5fwZ4J1KTiQ/v2vCQ=
+X-Received: by 2002:a62:3857:0:b029:155:37a5:295 with SMTP id
+ f84-20020a6238570000b029015537a50295mr8629155pfa.23.1602943039141; Sat, 17
+ Oct 2020 06:57:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201014213406.GA7622@linux.intel.com>
+Received: by 2002:a05:6a10:654a:0:0:0:0 with HTTP; Sat, 17 Oct 2020 06:57:18
+ -0700 (PDT)
+Reply-To: aadilalabo593@gmail.com
+From:   Aadila Laboso <adsanga77@gmail.com>
+Date:   Sat, 17 Oct 2020 06:57:18 -0700
+Message-ID: <CAC+r+ijQzW2moSZaJBsOvAcQhQ7Ovixh-dxd0UGvS5tEKqTvNw@mail.gmail.com>
+Subject: My beloved
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 12:34:06AM +0300, Jarkko Sakkinen wrote:
-> Konstantin, writing to you based on 'git blame' :-)
-> 
-> The maintainer guide recommends using paperkey for the PGP master key,
-> which is a prefectly sane method.
-> 
-> I was just wondering that isn't a backup to a USB stick a reasonable
-> option? E.g. get a few USB sticks (new, unweared), store your master key
-> to each of them and put to safe.
+--=20
+Good day and God bless you as you read this massage, I am Aadila
+Laboso a 27 years old girl from Kenya, my mother was Late Mrs. Lorna
+Laboso the former Kenyan Assistant Minister of Home and affairs who
+was among plan that crash board in the remote area of Kalong=E2=80=99s west=
+ern
+Kenya Read more about the crash with the below web
 
-Sure, it's an option as well. I believe the guide recommends three 
-different backups:
+site.http://edition.cnn.com/2008/WORLD/africa/06/10/kenya.crash/index.html
+I am constrained to contact you because of the maltreatment I am
+receiving from my step mother. She planned to take away all my late
+mothers treasury and properties from me since the unexpected death of
+my beloved mother.
 
-1. thumb drive within reach for regular access
-2. another drive in case the first one goes bad
-3. paperkey backup in the vault
 
-There's no reason why #2 above can't go into the vault as well, if 
-you're inclined. I wouldn't skip paperkey, since I'm generally wary of 
-putting anything long-term onto electronic media due to things like 
-charge decay, cosmic rays, or other weird phenomena resulting in flipped 
-bits.
+One day I opened my mother brave case and secretly found out that my
+mother deposited the sum of  27.5 million Euros in BMCE bank of
+Burkina Faso with my name as the next of kin, then I visited Burkina
+Faso to withdraw the money and take care of myself and start a new
+life, on my arrival the Bank Director whom I meet in person told me
+that my mother left an instruction to the bank, that the money should
+be release to me only when I am an adult to present a trustee who will
+help me and invest the money overseas.
 
--K
+
+That is the reason why I am in search of a honest and reliable person
+who will help me and stand as my trustee for the Bank to transfer the
+fund to your account for me to come over and join you.It will be my
+great pleasure to compensate you with 30% of the money for your help
+and the balance shall be my capital with your kind idea for me to
+invest under your  control over there in your country.As soon as I
+receive your positive response showing your interest I will send you
+my picture's in my next mail and how you will have the money in your
+account.
+(aadilalabo593@gmail.com)
+
+Thanks and waiting
+Yours Sincerely
+Queen Aadila Laboso
