@@ -2,175 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4EBF290F56
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D682290F67
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411794AbgJQFfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 01:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411755AbgJQFen (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 01:34:43 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8166FC0610E0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 18:57:47 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id z22so2528863wmi.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 18:57:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nuh/bmn3RkFq4gADcA0ZAUJL6az2qyr09AghLknddnE=;
-        b=Hc8aQmwnLL+wERyyQ7CpO51Fsn3derfmkT8umMZkwXPkhXFcXuK1+srj5bzWdyGS8X
-         w44FRI2rzKxxk+WBy/GE7xvWOVWLkwNIvcfxSm9c9uuhAX+67wPWEgXL3kgROKrUsuvf
-         zsmczeVNeaUiEkBC4f+DsFxJ2lpdyqlb7kjm8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nuh/bmn3RkFq4gADcA0ZAUJL6az2qyr09AghLknddnE=;
-        b=eCWRsgWwZ+D8nE3mpiD0AETAgmF+3uBSzAFIJnqRt+mMgRFJTX18g+N5FKW3MCWNCM
-         xrs+BUf1MXUv5uZ375Iij7KI/BX1pTsp9lRONmPBcTR5+N9SO5H1wbtTRJywWv6h83xj
-         Fl6q31DLudqhmq7kQ+0vJTKEG1EXp5AMO6oBLqe0GF1WRBapjpawAGBUaK73mxeIyXP6
-         7t0kETym/vdHsu2eT04aSZ7wUmsAolqPotITGqHLr3mc956eqabf3jpJxcHkeLrHX4pM
-         dxasFb98GlLzJbBwHXBlbBxWr8jKxSvbUkHsUwTUkR3Nzt/LKD17WGsyJCb4c/ulBOKB
-         JOpQ==
-X-Gm-Message-State: AOAM531sKnimtkmjmSOKSeAvh+Cpjve+xIErJ2YPODCakyUmvAaa6gq0
-        IhuPpslyHyLq++zDatviHRD/krTarpsbKTIQdhNASw==
-X-Google-Smtp-Source: ABdhPJz2dwlicRXSki8sbde0WGJf342Dhw9U8otxbpBoITFVZF9Vdk/vRb8AtHXnj/BTbponqM3On9YyYJ9zovqDyQ0=
-X-Received: by 2002:a7b:c935:: with SMTP id h21mr6120268wml.99.1602899865888;
- Fri, 16 Oct 2020 18:57:45 -0700 (PDT)
+        id S2411834AbgJQFhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:37:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2411478AbgJQFhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 01:37:22 -0400
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 732CF20714;
+        Sat, 17 Oct 2020 02:01:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602900096;
+        bh=d7EFEjjiKLB+QQW+J2bNQ9y7o//QoL+XQws3HgblEQU=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=z+ZU3SrDwOJOC+B6oe70jp+xIdSPfci7uQdmzP3dbYiRqI3a5dLVnxM3v/1Jv+/GX
+         EIJLDbJYA7XSXgK9s5vkRSV9YHiAQcqRNs9p6q84pdttZy3zABC0RoOLH2cW4nscke
+         mdqmKqL0mXd2VrUJO45hVj/SPodHAAhfXiAyvius=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20201011024831.3868571-1-daniel@0x0f.com> <20201011024831.3868571-4-daniel@0x0f.com>
- <CACRpkdYmdZ81q_tsXRQ56aFjGsvV3AwJ8_hiu31mD14DGiK84A@mail.gmail.com>
-In-Reply-To: <CACRpkdYmdZ81q_tsXRQ56aFjGsvV3AwJ8_hiu31mD14DGiK84A@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Sat, 17 Oct 2020 10:57:35 +0900
-Message-ID: <CAFr9PX==5iqX6UfE7KOagkuYviUhM2cSuyHYNquhxcxJU5hFMA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] gpio: msc313: MStar MSC313 GPIO driver
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <160281818774.884498.11509417433655580732@swboyd.mtv.corp.google.com>
+References: <20201014171259.v4.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid> <20201014171259.v4.3.Id0cc5d859e2422082a29a7909658932c857f5a81@changeid> <160281818774.884498.11509417433655580732@swboyd.mtv.corp.google.com>
+Subject: Re: [PATCH v4 3/3] clk: qcom: lpasscc-sc7180: Re-configure the PLL in case lost
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     David Brown <david.brown@linaro.org>, linux-soc@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To:     Douglas Anderson <dianders@chromium.org>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Fri, 16 Oct 2020 19:01:35 -0700
+Message-ID: <160290009516.884498.11234055455838582432@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus
+Quoting Stephen Boyd (2020-10-15 20:16:27)
+> Quoting Douglas Anderson (2020-10-14 17:13:29)
+> > From: Taniya Das <tdas@codeaurora.org>
+> >=20
+> > In the case where the PLL configuration is lost, then the pm runtime
+> > resume will reconfigure before usage.
+>=20
+> Taniya, this commit needs a lot more describing than one sentence. I see
+> that the PLL's L value is reset at boot, but only once. That seems to be
+> because the bootloader I have doesn't set bit 11 for the RETAIN_FF bit
+> on the lpass_core_hm_gdsc. Once the gdsc is turned off the first time,
+> the PLL settings are lost and the L val is reset to 0. That makes sense
+> because RETAIN_FF isn't set. This also means the other register writes
+> during probe are lost during the first suspend of the lpass core clk
+> controller. Then when the GDSC is turned on the next time for this clk
+> controller  being runtime resumed we will set the retain bit and then
+> configure the PLL again. BTW, I see that runtime PM is called for this
+> clk controller for all the clk operations. Maybe there should be some
+> auto suspend timeout so that we're not toggling the gdsc constantly?
+>=20
+> I hacked up the GDSC code to set the bit at gdsc registration time and
+> it seems to fix the problem I'm seeing (i.e. that the PLL is stuck,
+> which should also be in the commit text here). When I try to set the bit
+> in the bootloader though my kernel won't boot. I guess something is
+> hanging the system if I enable the retain bit in the GDSC?
+>=20
 
-On Sat, 17 Oct 2020 at 01:56, Linus Walleij <linus.walleij@linaro.org> wrote:
-> (...)
->
-> > +config GPIO_MSC313
-> > +       bool "MStar MSC313 GPIO support"
-> > +       default y if ARCH_MSTARV7
-> > +       depends on ARCH_MSTARV7
-> > +       select GPIO_GENERIC
->
-> Selecting GPIO_GENERIC, that is good.
-> But you're not using it, because you can't.
-> This chip does not have the bits lined up nicely
-> in one register, instead there seems to be something
-> like one register per line, right?
-> So skip GPIO_GENERIC.
+After hacking on this for some time it looks like we can apply this
+patch instead and things are good. The first two patches in this series
+look mostly good to me minus some nitpicks so please resend.
 
-Well spotted. Copy/paste fail on my side :).
-
-> > +#define MSC313_GPIO_IN  BIT(0)
-> > +#define MSC313_GPIO_OUT BIT(4)
-> > +#define MSC313_GPIO_OEN BIT(5)
-> > +
-> > +#define MSC313_GPIO_BITSTOSAVE (MSC313_GPIO_OUT | MSC313_GPIO_OEN)
->
-> Some comment here telling us why these need saving and
-> not others.
-
-There is a comment near to the save function that explains it I think.
-When the hardware goes into low power mode with the CPU turned off
-the register contents are lost and those two bits are the only ones that are
-writable from what I can tell. I'll add an extra comment above that line.
-
-> > +#define FUART_NAMES                    \
-> > +       MSC313_PINNAME_FUART_RX,        \
-> > +       MSC313_PINNAME_FUART_TX,        \
-> > +       MSC313_PINNAME_FUART_CTS,       \
-> > +       MSC313_PINNAME_FUART_RTS
-> > +
-> > +#define OFF_FUART_RX   0x50
-> > +#define OFF_FUART_TX   0x54
-> > +#define OFF_FUART_CTS  0x58
-> > +#define OFF_FUART_RTS  0x5c
-> > +
-> > +#define FUART_OFFSETS  \
-> > +       OFF_FUART_RX,   \
-> > +       OFF_FUART_TX,   \
-> > +       OFF_FUART_CTS,  \
-> > +       OFF_FUART_RTS
->
-> This looks a bit strange. The GPIO driver should not really
-> have to know about any other use cases for pins than
-> GPIO. But I guess it is intuitive for the driver.
->
-<snip>
->
-> Same with all these. I suppose it is the offsets of stuff
-> that would be there unless we were using it for GPIO.
-
-The pad FUART_RX can't move but the function FUART_RX can.
-If the function FUART_RX (or another function) isn't on the pad/pin
-FUART_RX it's connected to the GPIO block.
-Even more confusingly some of the other chips (SSD201/SSD202)
-have pads called GPIO1, GPIO2 etc that only have GPIO functionality
-but the offsets of the registers to control the GPIO on those pads might
-not have a relation to the name.
-GPIO1 isn't gpio_base + (1 * 4) and instead some random address.
-
-Basically using the pad name as the name of the GPIO made sense
-because it's fixed and the pad name and offset are the same with all
-of the chips I've seen so far.
-
-> > +static int msc313_gpio_to_irq(struct gpio_chip *chip, unsigned int offset)
-> > +{
-> > +       struct msc313_gpio *gpio = gpiochip_get_data(chip);
-> > +> +
->
-> > +       return gpio->irqs[offset];
-> > +}
->
-> Please do not use custom IRQ handling like this.
-> As there seems to be one IRQ per line, look into using
->
->         select GPIOLIB_IRQCHIP
->         select IRQ_DOMAIN_HIERARCHY
->
-> See for example in gpio-ixp4xx.c how we deal with
-> hiearchical GPIO IRQs.
-
-<snip>
-
-> Use hierarchical generic GPIO IRQs for these.
->
-> Assign ->fwnode, ->parent_domain, ->child_to_parent_hwirq,
-> and probably also ->handler on the struct gpio_irq_chip *.
->
-> Skip assigning gpiochip->to_irq, the generic code will
-> handle that.
->
-> Again see gpio-ixp4xx.c for an example.
-
-I'll look into this.
-I don't have datasheets so I'm working from some crusty header
-files from the vendor kernel but there isn't one irq per line from
-what I can tell.
-There seems to have been 4 spare lines on an interrupt controller
-so they wired GPIOs to them.
-
-Thank you for the comments. I'll send a v2 in a few days.
-
-Thanks,
-
-Daniel
+---8<---
+diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
+index 99834564bcc2..508c2901abfa 100644
+--- a/drivers/clk/qcom/gdsc.c
++++ b/drivers/clk/qcom/gdsc.c
+@@ -343,6 +343,14 @@ static int gdsc_init(struct gdsc *sc)
+ 	if ((sc->flags & VOTABLE) && on)
+ 		gdsc_enable(&sc->pd);
+=20
++	/*
++	 * Make sure the retain bit is set if the GDSC is already on, otherwise
++	 * we end up turning off the GDSC and destroying all the register
++	 * contents that we thought we were saving.
++	 */
++	if ((sc->flags & RETAIN_FF_ENABLE) && on)
++		gdsc_retain_ff_on(sc);
++
+ 	/* If ALWAYS_ON GDSCs are not ON, turn them ON */
+ 	if (sc->flags & ALWAYS_ON) {
+ 		if (!on)
