@@ -2,90 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA66290F81
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DCA290F7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436591AbgJQFlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 01:41:46 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15233 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2411653AbgJQFlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 01:41:46 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6F35DD5519210D144968;
-        Sat, 17 Oct 2020 09:55:49 +0800 (CST)
-Received: from [10.174.177.6] (10.174.177.6) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Sat, 17 Oct 2020
- 09:55:42 +0800
-Subject: Re: [PATCH] mm: fix potential pte_unmap_unlock pte error
-To:     <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>
-CC:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>,
-        <linfeilong@huawei.com>
-References: <20201015121534.50910-1-luoshijie1@huawei.com>
- <20201016123137.GH22589@dhcp22.suse.cz>
- <f99d9457ae88f3692e57cce86d0e22e8@suse.de>
- <20201016131112.GJ22589@dhcp22.suse.cz>
- <20201016131531.GK22589@dhcp22.suse.cz>
- <20201016134215.GL22589@dhcp22.suse.cz>
- <8b1e52b7a07b9ff1be9badb73209abda@suse.de>
-From:   Shijie Luo <luoshijie1@huawei.com>
-Message-ID: <bc1ea882-9434-0009-0dc1-849954f80a3a@huawei.com>
-Date:   Sat, 17 Oct 2020 09:55:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S2436569AbgJQFjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411652AbgJQFjm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 01:39:42 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2C4C0610E1;
+        Fri, 16 Oct 2020 19:04:38 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id hk7so2474243pjb.2;
+        Fri, 16 Oct 2020 19:04:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=swJTOo0+OeDIPNlZmpUNpCccwzVAN8JMX1PnG4lkV8M=;
+        b=JF3BQ+8ZwhdmCyhHsc4k56aEf2TRI4JW3HNtDvCsDa3bvLNAFOMP/UrvvlhqEMIHpI
+         Z6Yr+OeHrXAvlRZzgke5PASmG4xm0uPRrdasNvWaVRmJWe/7IhoRvToWL9yO9H+muIvY
+         nVLTKNMWL/GBSv9IDq1uEcZ7GAolCNiUX+v7lML4Emr7EXDncHSwBu0FOdkkZRbgZiSs
+         CJCfVNOeDWn0trXRMmQPmJXPVh2nXITBr60MB+wX1K6y4zaW8abBuM/9iNVY0V+DD2Ba
+         ygCRHZKgRrH6B2uT17MnJvCFSgAD52yHR7ZxGRpgVhLXPlhwvosMWsSZf+vXp86lpsEP
+         bypg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=swJTOo0+OeDIPNlZmpUNpCccwzVAN8JMX1PnG4lkV8M=;
+        b=ID8xS4adj1xzu665+wl1iEKamvxuV/CHkfEMuJA6fy/KXoVmJAS3pMMDvZ6MYMvR35
+         Xn/1ZErZ3zNUErIr/xouLt0wRbMuWUaH/aajEaZbYgcbTxgTfGOUqhO6/Fgq9lo1MxLn
+         iCWPC2idf/nfzMEYwy+Ydv0bNwmJjSxur9UULQHNJ0TqQB9kCVhgfPKtMcMN8kMguVH/
+         Pl0S8ZLYRcH6KWPujD1zg7SnOfuHVBZUuvp8ahyxltPHHq6/DT5tCTGHGt7QtJ62dxWV
+         fnKp9RnajJiGK7hQJM17p//3hxOYuJ6LcQpDmOKm1HSWbJQoHciF4kREvwyKqq77LgoC
+         LZLg==
+X-Gm-Message-State: AOAM531RjqOFOYC92wgcBSPpPjLQdi5mW0fxczqtS1Q3m/fco6mFv8DU
+        NpZ2YF92DINcVCxZEkd/f90=
+X-Google-Smtp-Source: ABdhPJwEY0kB/NGLxD9ci0NbxaFi/YJtDjtuugODqnZm3qeuLt8C1eqt/2mdtsrRfEyU68ls+csv8Q==
+X-Received: by 2002:a17:90b:d91:: with SMTP id bg17mr7030547pjb.66.1602900277826;
+        Fri, 16 Oct 2020 19:04:37 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id bj17sm4168738pjb.15.2020.10.16.19.04.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 16 Oct 2020 19:04:37 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 18:56:08 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, jonathanh@nvidia.com
+Subject: Re: [PATCH v7 3/3] iommu/tegra-smmu: Add PCI support
+Message-ID: <20201017015607.GC7203@Asurada-Nvidia>
+References: <20201009161936.23122-1-nicoleotsuka@gmail.com>
+ <20201009161936.23122-4-nicoleotsuka@gmail.com>
+ <cbc6e3bf-eedc-195c-c4d6-52d3cd24c257@arm.com>
+ <20201015041346.GA13936@Asurada-Nvidia>
+ <340afbc0-5513-0742-d2d2-1ab908248af3@arm.com>
+ <20201016035347.GA28140@Asurada-Nvidia>
+ <1431eba3-d0b3-8460-2c12-573dc148e0df@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <8b1e52b7a07b9ff1be9badb73209abda@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.6]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1431eba3-d0b3-8460-2c12-573dc148e0df@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/16 22:05, osalvador@suse.de wrote:
-> On 2020-10-16 15:42, Michal Hocko wrote:
->> OK, I finally managed to convince my friday brain to think and grasped
->> what the code is intended to do. The loop is hairy and we want to
->> prevent from spurious EIO when all the pages are on a proper node. So
->> the check has to be done inside the loop. Anyway I would find the
->> following fix less error prone and easier to follow
->> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
->> index eddbe4e56c73..8cc1fc9c4d13 100644
->> --- a/mm/mempolicy.c
->> +++ b/mm/mempolicy.c
->> @@ -525,7 +525,7 @@ static int queue_pages_pte_range(pmd_t *pmd,
->> unsigned long addr,
->>      unsigned long flags = qp->flags;
->>      int ret;
->>      bool has_unmovable = false;
->> -    pte_t *pte;
->> +    pte_t *pte, *mapped_pte;
->>      spinlock_t *ptl;
->>
->>      ptl = pmd_trans_huge_lock(pmd, vma);
->> @@ -539,7 +539,7 @@ static int queue_pages_pte_range(pmd_t *pmd,
->> unsigned long addr,
->>      if (pmd_trans_unstable(pmd))
->>          return 0;
->>
->> -    pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
->> +    mapped_pte = pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
->>      for (; addr != end; pte++, addr += PAGE_SIZE) {
->>          if (!pte_present(*pte))
->>              continue;
->> @@ -571,7 +571,7 @@ static int queue_pages_pte_range(pmd_t *pmd,
->> unsigned long addr,
->>          } else
->>              break;
->>      }
->> -    pte_unmap_unlock(pte - 1, ptl);
->> +    pte_unmap_unlock(mapped_pte, ptl);
->>      cond_resched();
->>
->>      if (has_unmovable)
->
-> It is more clear to grasp, definitely.
-Yeah, this one is more comprehensible, I 'll send a v2 patch, thank you.
+On Fri, Oct 16, 2020 at 03:10:26PM +0100, Robin Murphy wrote:
+> On 2020-10-16 04:53, Nicolin Chen wrote:
+> > On Thu, Oct 15, 2020 at 10:55:52AM +0100, Robin Murphy wrote:
+> > > On 2020-10-15 05:13, Nicolin Chen wrote:
+> > > > On Wed, Oct 14, 2020 at 06:42:36PM +0100, Robin Murphy wrote:
+> > > > > On 2020-10-09 17:19, Nicolin Chen wrote:
+> > > > > > This patch simply adds support for PCI devices.
+> > > > > > 
+> > > > > > Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+> > > > > > Tested-by: Dmitry Osipenko <digetx@gmail.com>
+> > > > > > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> > > > > > ---
+> > > > > > 
+> > > > > > Changelog
+> > > > > > v6->v7
+> > > > > >     * Renamed goto labels, suggested by Thierry.
+> > > > > > v5->v6
+> > > > > >     * Added Dmitry's Reviewed-by and Tested-by.
+> > > > > > v4->v5
+> > > > > >     * Added Dmitry's Reviewed-by
+> > > > > > v3->v4
+> > > > > >     * Dropped !iommu_present() check
+> > > > > >     * Added CONFIG_PCI check in the exit path
+> > > > > > v2->v3
+> > > > > >     * Replaced ternary conditional operator with if-else in .device_group()
+> > > > > >     * Dropped change in tegra_smmu_remove()
+> > > > > > v1->v2
+> > > > > >     * Added error-out labels in tegra_smmu_probe()
+> > > > > >     * Dropped pci_request_acs() since IOMMU core would call it.
+> > > > > > 
+> > > > > >     drivers/iommu/tegra-smmu.c | 35 +++++++++++++++++++++++++----------
+> > > > > >     1 file changed, 25 insertions(+), 10 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> > > > > > index be29f5977145..2941d6459076 100644
+> > > > > > --- a/drivers/iommu/tegra-smmu.c
+> > > > > > +++ b/drivers/iommu/tegra-smmu.c
+> > > > > > @@ -10,6 +10,7 @@
+> > > > > >     #include <linux/kernel.h>
+> > > > > >     #include <linux/of.h>
+> > > > > >     #include <linux/of_device.h>
+> > > > > > +#include <linux/pci.h>
+> > > > > >     #include <linux/platform_device.h>
+> > > > > >     #include <linux/slab.h>
+> > > > > >     #include <linux/spinlock.h>
+> > > > > > @@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
+> > > > > >     	group->smmu = smmu;
+> > > > > >     	group->soc = soc;
+> > > > > > -	group->group = iommu_group_alloc();
+> > > > > > +	if (dev_is_pci(dev))
+> > > > > > +		group->group = pci_device_group(dev);
+> > > > > 
+> > > > > Just to check, is it OK to have two or more swgroups "owning" the same
+> > > > > iommu_group if an existing one gets returned here? It looks like that might
+> > > > > not play nice with the use of iommu_group_set_iommudata().
+> > > > 
+> > > > Do you mean by "gets returned here" the "IS_ERR" check below?
+> > > 
+> > > I mean that unlike iommu_group_alloc()/generic_device_group(),
+> > > pci_device_group() may give you back a group that already contains another
+> > > device and has already been set up from that device's perspective. This can
+> > > happen for topological reasons like requester ID aliasing through a PCI-PCIe
+> > > bridge or lack of isolation between functions.
+> > 
+> > Okay..but we don't really have two swgroups owning the same groups
+> > in case of PCI devices. For Tegra210, all PCI devices inherit the
+> > same swgroup from the PCI controller. And I'd think previous chips
+> > do the same. The only use case currently of 2+ swgroups owning the
+> > same iommu_group is for display controller.
+> > 
+> > Or do you suggest we need an additional check for pci_device_group?
+> 
+> Ah, OK - I still don't have the best comprehension of what exactly swgroups
+
+The "swgroup" stands for "software group", which associates with
+an ASID (Address Space Identifier) for SMMU to determine whether
+this client is going through SMMU translation or not.
+
+> are, and the path through .of_xlate looked like you might be using the PCI
+> requester ID as the swgroup identifier, but I guess that ultimately depends
+> on what your "iommu-map" is supposed to look like. If pci_device_group()
+
+This is copied from pcie node in our downstream dtsi file:
+
+		iommus = <&mc TEGRA_SWGROUP_AFI>;
+		iommu-map = <0x0 &mc TEGRA_SWGROUP_AFI 0x1000>;
+		iommu-map-mask = <0x0>;
+
+> will effectively only ever get called once regardless of how many endpoints
+> exist, then indeed this won't be a concern (although if that's *guaranteed*
+> to be the case then you may as well just stick with calling
+> iommu_group_alloc() directly). Thanks for clarifying.
+
+All PCI devices are supposed to get this swgroup of the pcie node
+above. So the function will return the existing group of the pcie
+controller, before giving a chance to call iommu_group_alloc().
+
+Thanks for the review and input.
