@@ -2,163 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC193290FDB
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A51290FC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436911AbgJQGB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 02:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436912AbgJQGBl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 02:01:41 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C868C05BD1D
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 21:03:05 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id y16so4940172ljk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 21:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uR2yRSoFIyQFa85ZmyTeQWbKesy0kogveF0JOmK3HCU=;
-        b=G0aFMwnXL3XlqQtltqTo0eoChMRvdBPFzMoicowzO+xAY5WA7wnecLBujcLmZah0k/
-         e5mpG2PgiCXI5UV6aPxyJHgp+ak3mHqsIwGNyATLAY9IpyytJ/yv/eUNLEx8n5Z8IWxM
-         5Ev81C4+GL/IiR5iIz/ra80OcP7ctuQ69Pj2L7/QrHYXrCEAAle4I31KIYWKOWdz7wXn
-         M3HFOt505tL/bufF7RKhxyavqsmuktaYt6aLjMXM2bezAY35bwnHVGu6RsGL9aReXefA
-         CUnwlpUOUePqMTfmrge6m16eiA1+eUvlxTaBEHUJphVGNMuBAicVc8kqC269vRlgE0G9
-         pD+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uR2yRSoFIyQFa85ZmyTeQWbKesy0kogveF0JOmK3HCU=;
-        b=Udg7Z9qni81hsjSkTDhVQGpCP/9688Al40A9jdQVVWQ04IVETQDEUULGDJnMFguFM7
-         cIzIu35G98iDwBaA0V/wod7hJM61VyHIyK5TEXN58+siyMbYYHRmaBxiwiNxXVKcUlbX
-         NbjJ3+d3aG0noggz6Pzds3KwpYkFdfpnflPJkeXp4BdBiX8FwbrS860Hqr2Aoq9jwwEP
-         VK7fkHtA5RT64Z/qFDst0bEx52qajVvG0LNk4bf4ua6jPYvZI4Zn4gLR7c1wE13qyQYX
-         aYx6kOqRpASlKXnt9ToxZWZyu9UWahQFpHYnegEMRPKx+Pp+IXEgc7Ho1YM+fIJ2fEbZ
-         mOWA==
-X-Gm-Message-State: AOAM532zdbS8CHLza5tTRPEBwOFRYhmqCO9MYdTBIKtXKMYeOkCEH9fG
-        t0DC608qIRgfnlpSU7cY0E8Ydzs9TVTy5ZdDXI0hAA==
-X-Google-Smtp-Source: ABdhPJyWM+KuxWSKm+WZakQM1coYpvqzhvFBssVoo8yKJsSvLXOonodEkq1Mrj4Ytt2McNT6VBun6xj6Gc9/hPkEfDk=
-X-Received: by 2002:a2e:8816:: with SMTP id x22mr2543467ljh.377.1602907383409;
- Fri, 16 Oct 2020 21:03:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
- <CAG48ez0EanBvDyfthe+hAP0OC8iGLNSq2e5wJVz-=ENNGF97_w@mail.gmail.com> <20201017033606.GA14014@1wt.eu>
-In-Reply-To: <20201017033606.GA14014@1wt.eu>
-From:   Jann Horn <jannh@google.com>
-Date:   Sat, 17 Oct 2020 06:02:36 +0200
-Message-ID: <CAG48ez0x2S9XuCrANAQbXNi8Jjwm822-fnQSmr-Zr07JgrEs1g@mail.gmail.com>
-Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     "Catangiu, Adrian Costin" <acatan@amazon.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jason Donenfeld <Jason@zx2c4.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "Graf (AWS), Alexander" <graf@amazon.de>,
-        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>,
-        "bonzini@gnu.org" <bonzini@gnu.org>,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>,
-        "oridgar@gmail.com" <oridgar@gmail.com>,
-        "ghammer@redhat.com" <ghammer@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S2436872AbgJQGAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 02:00:39 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:63724 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436664AbgJQGAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 02:00:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602914437; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=HT/R9yUZLHwn3pMf/0k5BOEAUmeENiqSjIZIsp0nOeY=; b=GMnsOa3JwYcLSIxDCBFHBaHGTLsoHKSDzMAviZI5TbJdkdWuWi5b9j4RBx5rFSWZUqkE40oF
+ zWe9yifKWyNWv9SKoPZ4MBp+HH/tRlX+irv9pb/xW9H/JqtztNNA/WNXPIPdUTyjPcLw3eJU
+ +Em/pe7cMl/HWjwhTUHyoi5vSUk=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f8a6d4b42f9861fb11c9d8e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 17 Oct 2020 04:04:27
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 07F76C433CB; Sat, 17 Oct 2020 04:04:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F0B50C433C9;
+        Sat, 17 Oct 2020 04:04:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F0B50C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, Hemant Kumar <hemantk@codeaurora.org>
+Subject: [PATCH v7 0/4] userspace MHI client interface driver
+Date:   Fri, 16 Oct 2020 21:04:13 -0700
+Message-Id: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 5:36 AM Willy Tarreau <w@1wt.eu> wrote:
-> On Sat, Oct 17, 2020 at 03:40:08AM +0200, Jann Horn wrote:
-> > [adding some more people who are interested in RNG stuff: Andy, Jason,
-> > Theodore, Willy Tarreau, Eric Biggers. also linux-api@, because this
-> > concerns some pretty fundamental API stuff related to RNG usage]
-> >
-> > On Fri, Oct 16, 2020 at 4:33 PM Catangiu, Adrian Costin
-> > <acatan@amazon.com> wrote:
-> > > This patch is a driver which exposes the Virtual Machine Generation ID
-> > > via a char-dev FS interface that provides ID update sync and async
-> > > notification, retrieval and confirmation mechanisms:
-> > >
-> > > When the device is 'open()'ed a copy of the current vm UUID is
-> > > associated with the file handle. 'read()' operations block until the
-> > > associated UUID is no longer up to date - until HW vm gen id changes -
-> > > at which point the new UUID is provided/returned. Nonblocking 'read()'
-> > > uses EWOULDBLOCK to signal that there is no _new_ UUID available.
-> > >
-> > > 'poll()' is implemented to allow polling for UUID updates. Such
-> > > updates result in 'EPOLLIN' events.
-> > >
-> > > Subsequent read()s following a UUID update no longer block, but return
-> > > the updated UUID. The application needs to acknowledge the UUID update
-> > > by confirming it through a 'write()'.
-> > > Only on writing back to the driver the right/latest UUID, will the
-> > > driver mark this "watcher" as up to date and remove EPOLLIN status.
-> > >
-> > > 'mmap()' support allows mapping a single read-only shared page which
-> > > will always contain the latest UUID value at offset 0.
-> >
-> > It would be nicer if that page just contained an incrementing counter,
-> > instead of a UUID. It's not like the application cares *what* the UUID
-> > changed to, just that it *did* change and all RNGs state now needs to
-> > be reseeded from the kernel, right? And an application can't reliably
-> > read the entire UUID from the memory mapping anyway, because the VM
-> > might be forked in the middle.
-> >
-> > So I think your kernel driver should detect UUID changes and then turn
-> > those into a monotonically incrementing counter. (Probably 64 bits
-> > wide?) (That's probably also a little bit faster than comparing an
-> > entire UUID.)
->
-> I agree with this. Further, I'm observing there is a very common
-> confusion between "universally unique" and "random". Randoms are
-> needed when seeking unpredictability. A random number generator
-> *must* be able to return the same value multiple times in a row
-> (though this is rare), otherwise it's not random.
-[...]
-> If the UUIDs used there are real UUIDs, it could be as simple as
-> updating them according to their format, i.e. updating the timestamp,
-> and if the timestamp is already the same, just increase the seq counter.
-> Doing this doesn't require entropy, doesn't need to block and doesn't
-> needlessly leak randoms that sometimes make people feel nervous.
+This patch series adds support for UCI driver. UCI driver enables userspace
+clients to communicate to external MHI devices like modem and WLAN. UCI driver
+probe creates standard character device file nodes for userspace clients to
+perform open, read, write, poll and release file operations. These file
+operations call MHI core layer APIs to perform data transfer using MHI bus
+to communicate with MHI device. Patch is tested using arm64 based platform.
 
-Those UUIDs are supplied by existing hypervisor code; in that regard,
-this is almost like a driver for a hardware device. It is written
-against a fixed API provided by the underlying machine. Making sure
-that the sequence of UUIDs, as seen from inside the machine, never
-changes back to a previous one is the responsibility of the hypervisor
-and out of scope for this driver.
+V7:
+- Decoupled uci device and uci channel objects. uci device is
+  associated with device file node. uci channel is associated
+  with MHI channels. uci device refers to uci channel to perform
+  MHI channel operations for device file operations like read()
+  and write(). uci device increments its reference count for
+  every open(). uci device calls mhi_uci_dev_start_chan() to start
+  the MHI channel. uci channel object is tracking number of times
+  MHI channel is referred. This allows to keep the MHI channel in
+  start state until last release() is called. After that uci channel
+  reference count goes to 0 and uci channel clean up is performed
+  which stops the MHI channel. After the last call to release() if
+  driver is removed uci reference count becomes 0 and uci object is
+  cleaned up.
+- Use separate uci channel read and write lock to fine grain locking
+  between reader and writer.
+- Use uci device lock to synchronize open, release and driver remove.
+- Optimize for downlink only or uplink only UCI device.
 
-Microsoft's spec document (which is a .docx file for reasons I don't
-understand) actually promises us that it is a cryptographically random
-128-bit integer value, which means that if you fork a VM 2^64 times,
-the probability that any two of those VMs have the same counter is
-2^-64. That should be good enough.
+V6:
+- Moved uci.c to mhi directory.
+- Updated Kconfig to add module information.
+- Updated Makefile to rename uci object file name as mhi_uci
+- Removed kref for open count
 
-But in userspace, we just need a simple counter. There's no need for
-us to worry about anything else, like timestamps or whatever. If we
-repeatedly fork a paused VM, the forked VMs will see the same counter
-value, but that's totally fine, because the only thing that matters to
-userspace is that the counter changes when the VM is forked.
+V5:
+- Removed mhi_uci_drv structure.
+- Used idr instead of creating global list of uci devices.
+- Used kref instead of local ref counting for uci device and
+  open count.
+- Removed unlikely macro.
 
-And actually, since the value is a cryptographically random 128-bit
-value, I think that we should definitely use it to help reseed the
-kernel's RNG, and keep it secret from userspace. That way, even if the
-VM image is public, we can ensure that going forward, the kernel RNG
-will return securely random data.
+V4:
+- Fix locking to protect proper struct members.
+- Updated documentation describing uci client driver use cases.
+- Fixed uci ref counting in mhi_uci_open for error case.
+- Addressed style related review comments.
+
+V3: Added documentation for MHI UCI driver.
+
+V2: Added mutex lock to prevent multiple readers to access same
+mhi buffer which can result into use after free.
+
+Hemant Kumar (4):
+  bus: mhi: core: Add helper API to return number of free TREs
+  bus: mhi: core: Move MHI_MAX_MTU to external header file
+  docs: Add documentation for userspace client interface
+  bus: mhi: Add userspace client interface driver
+
+ Documentation/mhi/index.rst     |   1 +
+ Documentation/mhi/uci.rst       |  39 +++
+ drivers/bus/mhi/Kconfig         |  13 +
+ drivers/bus/mhi/Makefile        |   4 +
+ drivers/bus/mhi/core/internal.h |   1 -
+ drivers/bus/mhi/core/main.c     |  12 +
+ drivers/bus/mhi/uci.c           | 661 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mhi.h             |  12 +
+ 8 files changed, 742 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/mhi/uci.rst
+ create mode 100644 drivers/bus/mhi/uci.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
