@@ -2,54 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA4729109D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 09:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D092910A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 10:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437560AbgJQH7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 03:59:34 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:46892 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437553AbgJQH7e (ORCPT
+        id S2406626AbgJQICx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 04:02:53 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33292 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388136AbgJQICv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 03:59:34 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
+        Sat, 17 Oct 2020 04:02:51 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 35A6580608;
-        Sat, 17 Oct 2020 09:59:31 +0200 (CEST)
-Date:   Sat, 17 Oct 2020 09:59:29 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Eric Anholt <eric@anholt.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] drm/mcde: Fix handling of platform_get_irq() error
-Message-ID: <20201017075929.GA2568873@ravnborg.org>
-References: <20200827071107.27429-1-krzk@kernel.org>
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 861FA1F45E3C;
+        Sat, 17 Oct 2020 09:02:50 +0100 (BST)
+Date:   Sat, 17 Oct 2020 10:02:47 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i3c <linux-i3c@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] i3c: Changes for 5.10
+Message-ID: <20201017100247.475552a8@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827071107.27429-1-krzk@kernel.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=VwQbUJbxAAAA:8 a=OmeMd-_iD0Inhxqqi-8A:9
-        a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof
+Hello Linus,
 
-On Thu, Aug 27, 2020 at 09:11:06AM +0200, Krzysztof Kozlowski wrote:
-> platform_get_irq() returns -ERRNO on error.  In such case comparison
-> to 0 would pass the check.
-> 
-> Fixes: 5fc537bfd000 ("drm/mcde: Add new driver for ST-Ericsson MCDE")
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+I'm a bit late, but here is the I3C PR for 5.10.
 
-Thanks, applied this and the tve200 patch to drm-misc-next.
-They will appear in -next in a few weeks time.
+Regards,
 
-	Sam
+Boris
+
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-5.10
+
+for you to fetch changes up to abea14bfdebbe9bd02f2ad24a1f3a878ed21c8f0:
+
+  i3c: master: Fix error return in cdns_i3c_master_probe() (2020-10-07 15:14:07 +0200)
+
+----------------------------------------------------------------
+* Fix DAA for the pre-reserved address case
+* Fix an error path in the cadence driver
+
+----------------------------------------------------------------
+Jing Xiangfeng (1):
+      i3c: master: Fix error return in cdns_i3c_master_probe()
+
+Parshuram Thombare (2):
+      i3c: master add i3c_master_attach_boardinfo to preserve boardinfo
+      i3c: master: fix for SETDASA and DAA process
+
+ drivers/i3c/master.c                 | 144 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------
+ drivers/i3c/master/i3c-master-cdns.c |   4 +++-
+ 2 files changed, 94 insertions(+), 54 deletions(-)
