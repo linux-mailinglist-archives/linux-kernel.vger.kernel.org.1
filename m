@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0F52911BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 14:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD032911C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 14:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437811AbgJQMCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 08:02:10 -0400
-Received: from wildebeest.demon.nl ([212.238.236.112]:35340 "EHLO
-        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388231AbgJQMCH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 08:02:07 -0400
-Received: from tarox.wildebeest.org (tarox.wildebeest.org [172.31.17.39])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by gnu.wildebeest.org (Postfix) with ESMTPSA id 873AA30291AC;
-        Sat, 17 Oct 2020 14:02:03 +0200 (CEST)
-Received: by tarox.wildebeest.org (Postfix, from userid 1000)
-        id E2344401658F; Sat, 17 Oct 2020 14:02:02 +0200 (CEST)
-From:   Mark Wielaard <mark@klomp.org>
-To:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>, Andi Kleen <andi@firstfloor.org>,
-        Mark Wielaard <mark@klomp.org>,
-        linux-toolchains@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [PATCH V2] Only add -fno-var-tracking-assignments workaround for old GCC versions.
-Date:   Sat, 17 Oct 2020 14:01:35 +0200
-Message-Id: <20201017120135.4004-1-mark@klomp.org>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20201014110132.2680-1-mark@klomp.org>
-References: <20201014110132.2680-1-mark@klomp.org>
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
+        id S2437852AbgJQMIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 08:08:20 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:58538 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437821AbgJQMIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 08:08:18 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kTl0H-0008Qe-Kg; Sat, 17 Oct 2020 14:08:05 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Rob Herring <robh+dt@kernel.org>, Johan Jonker <jbx6244@gmail.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Vivek Unune <npcomplete13@gmail.com>,
+        Alexis Ballier <aballier@gentoo.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Anand Moon <linux.amoon@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        jagan@amarulasolutions.com
+Subject: Re: [PATCH v2 1/2] ARM: dts: rk3188: correct interrupt flags
+Date:   Sat, 17 Oct 2020 14:08:04 +0200
+Message-ID: <2926877.yplJhP9KA3@diego>
+In-Reply-To: <20201002161128.GB4542@kozik-lap>
+References: <20200917185211.5483-1-krzk@kernel.org> <20201002161128.GB4542@kozik-lap>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some old GCC versions between 4.5.0 and 4.9.1 might miscompile code
-with -fvar-tracking-assingments (which is enabled by default with -g -O2).
-commit 2062afb4f added -fno-var-tracking-assignments unconditionally to
-work around this. But newer versions of GCC no longer have this bug, so
-only add it for versions of GCC before 5.0. This allows various tools
-such as a perf probe or gdb debuggers or systemtap to resolve variable
-locations using dwarf locations in more code.
+Hi,
 
-Changes in V2:
-- Update commit message explaining purpose.
-- Explicitly mention GCC version in comment.
-- Wrap workaround in ifdef CONFIG_CC_IS_GCC
+Am Freitag, 2. Oktober 2020, 18:11:28 CEST schrieb Krzysztof Kozlowski:
+> On Thu, Sep 17, 2020 at 08:52:10PM +0200, Krzysztof Kozlowski wrote:
+> > GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
+> > These are simple defines so they could be used in DTS but they will not
+> > have the same meaning:
+> > 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
+> > 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
+> > 
+> > Correct the interrupt flags without affecting the code:
+> >   ACTIVE_HIGH => IRQ_TYPE_NONE
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > 
+> > ---
+> > 
+> > Not tested on HW.
+> > 
+> > Changes since v1:
+> > 1. Correct title
+> > ---
+> >  arch/arm/boot/dts/rk3188-bqedison2qc.dts | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> Hi,
+> 
+> Any comments/review/testing from Heiko or other Rockchip folks? Shall I
+> cc here someone?
 
-Signed-off-by: Mark Wielaard <mark@klomp.org>
-Acked-by: Ian Rogers <irogers@google.com>
-Reviewed-by: Andi Kleen <andi@firstfloor.org>
-Cc: linux-toolchains@vger.kernel.org
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Segher Boessenkool <segher@kernel.crashing.org>
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Cc: Sedat Dilek <sedat.dilek@gmail.com>
----
- Makefile | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+I'm actually wondering about this ... I somehow remember writing a response,
+but don't see it in my history - so it might have gotten lost before I
+actually sent it.
 
-diff --git a/Makefile b/Makefile
-index 51540b291738..964754b4cedf 100644
---- a/Makefile
-+++ b/Makefile
-@@ -813,7 +813,11 @@ KBUILD_CFLAGS	+= -ftrivial-auto-var-init=zero
- KBUILD_CFLAGS	+= -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
- endif
- 
--DEBUG_CFLAGS	:= $(call cc-option, -fno-var-tracking-assignments)
-+# Workaround for GCC versions < 5.0
-+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
-+ifdef CONFIG_CC_IS_GCC
-+DEBUG_CFLAGS	:= $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
-+endif
- 
- ifdef CONFIG_DEBUG_INFO
- ifdef CONFIG_DEBUG_INFO_SPLIT
--- 
-2.18.4
+I think the biggest issue I have is that none of that is tested on any
+hardware and looking at other brcm wifi drivers in the kernel, the
+interrupt polarity seems to be all over the place, some set it high,
+some low and I even have seen edge triggers.
+
+As all changes are in regard to (copied) brcm wifi node, it would be
+really interesting to actually know what trigger is the right one.
+
+I've Cc'ed Jagan who I think has worked on an affected board,
+maybe he can check which trigger is correct.
+
+
+Heiko
+
+
 
