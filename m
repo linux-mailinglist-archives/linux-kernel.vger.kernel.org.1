@@ -2,110 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FAB291410
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 21:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF41B291417
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 21:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439386AbgJQTMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 15:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37222 "EHLO
+        id S2439411AbgJQTPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 15:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437998AbgJQTMz (ORCPT
+        with ESMTP id S2439275AbgJQTPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 15:12:55 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F98C061755;
-        Sat, 17 Oct 2020 12:12:53 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id t21so6111973eds.6;
-        Sat, 17 Oct 2020 12:12:53 -0700 (PDT)
+        Sat, 17 Oct 2020 15:15:52 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB44AC061755;
+        Sat, 17 Oct 2020 12:15:50 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id m20so6421003ljj.5;
+        Sat, 17 Oct 2020 12:15:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JIfVjsDKn4SaATVNn//P1puG7p7aBs4tQ9Vt/McDwTQ=;
-        b=MeHJDRcXkRRYn2oKVNujZ0bE3bLyfkPd0lbdYLiaIGSj0jDnKdizyZyU+O6GVAi5O/
-         kL7qC/xR1RFSdYdDkHFjTXm5B5z7jRUhcF5UPEBMwvCJUOCzzvT0qPx9iEGJGJa3w/KO
-         3/Q7nMJn6csxzcKPuYCEjAHBpXjed59cMU5N23ITLOjL6aOOMPZ0GBQJcL4qBUbg+0Lg
-         ZjcHKfdfI/6MLPUhye/HX59xvas1hVClyIRHsQSjnmDS0pMmgCPZQ7+rJfGBatkGjwUK
-         RDWBCk3fXOOu9Rs/+fIoWRiUnKIw2BxR8PbTPvSfFHMpqmfrJxeC4w8ZCQMVXedtjLAa
-         CTQA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1pDfRvE5t/wD9O6TX1BzomcWhFOCiJ7ybHvakZc7Cs8=;
+        b=RWEJe4O6Gptbz6cUhZ1+gwg8FetxX0elzhmYmdIwQmNcrUMjIIfvj5vNtRbZsE30FA
+         19BNxGCDCbMFnFl/OC9CMslTK3c01ODhU0AEw5VrDspDdsWy3otGoV5c7OnR9mn6OD0W
+         LkiusyQPRnw2uTCjM5befx3UoNE7XLyiAgsc5eESzacWP+DmXs5mD4mpXIGIL0lLLd1u
+         D0pwv7pL8jw80N4ISNcAL/zmPxI7MaV2WdlrJ1Gk5ss98d4eauI3vnyzumuuuQqYWtx1
+         CZ3RaQShS9iLanLaM2f5exUxAIPvXLHg2l2niA55Q3M9V6wGR1eR73Lp4pc+3VKq2ogb
+         jMpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JIfVjsDKn4SaATVNn//P1puG7p7aBs4tQ9Vt/McDwTQ=;
-        b=CARZ41B78JkpczARuSGaZ4qwXILMfeib0cxTczq7e16vQ/1mF6j+HfU0IlKvG0NNtM
-         41CCY44a0AdTBQHcw6+B6sNcjcILnPt9v9L0x612ZT+1kALayvvGFEQNmdwDrddekGVK
-         b2U9HPbQs+CCv3FLjs9iq9XO4GDApaDgec4NoifEfUFZlUekVhS3US1MU+GaLWgL6/XY
-         p8IVC4+iakEl6aoufZBcNLdSQYwfQbZJObVHlvaWPWi03VYQeToi1yhy+VcuQW6iJ9g/
-         RAQTu74cdoc3JrTmupMQZLhqlWFrXfK1Ki6pycjJ/Oztg1mrgDlnUAYe0mR7NmpbLD5n
-         8fvw==
-X-Gm-Message-State: AOAM532jJkLsjGMF/eGzjB30k2HWuOAKKvEnEPtNlJgYcsd48F4UP3cj
-        s9u5WuF8IzcvYPW3lRfW8W0=
-X-Google-Smtp-Source: ABdhPJyqjdZATDf+JPQ2D8XUseLmg53+oz1AtIR+gC56PALUZRxC8lo9ad01A3eMsQ8q+Wxn1xvrsQ==
-X-Received: by 2002:aa7:d394:: with SMTP id x20mr10500532edq.14.1602961969464;
-        Sat, 17 Oct 2020 12:12:49 -0700 (PDT)
-Received: from skbuf ([188.26.174.215])
-        by smtp.gmail.com with ESMTPSA id v21sm5704579edt.80.2020.10.17.12.12.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Oct 2020 12:12:48 -0700 (PDT)
-Date:   Sat, 17 Oct 2020 22:12:47 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/3] net: dsa: don't pass cloned skb's to
- drivers xmit function
-Message-ID: <20201017191247.ohslc77wkhbhffym@skbuf>
-References: <20201016200226.23994-1-ceggers@arri.de>
- <20201016200226.23994-2-ceggers@arri.de>
- <20201017004816.q4l6cypw4fd4vu5f@skbuf>
- <2130539.dlFve3NVyK@n95hx1g2>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1pDfRvE5t/wD9O6TX1BzomcWhFOCiJ7ybHvakZc7Cs8=;
+        b=Rz/BIiF3mVVN/1bBTc4GOEubGjLeAagmapLPAo5PwKxfP72XXQPrXn3xwSNuftCOpl
+         aKcP57SxO1JYmF6TGpWH2YV5z+NVgOb56tKLPDyf2b0gOgMIl8LxAeGsCszU/OkvgAB0
+         eggP7Y+BeV/LLdLRFNbEcwPv3xah0eNlbI8ynfiR3n9tOXnQN4K0FhL9loIbS21M9M0z
+         1gUkODXDiWmJjfCf+sq+9qVO73tsHLtYlbFCf5mg8T7TqMff/jKvxxSaTX+M+4wmVN+S
+         hDbgI+W85r6w+IMuZLyWCjshpwZbvZiEZvoxEoQlv7l2/GohoSStH3vOQG6UrFH1taSx
+         3IlQ==
+X-Gm-Message-State: AOAM53346+3H2PTHBChMpzvM3l4kQF07NiaIu8uVjen5hRbOO+3wYnib
+        1TE4lJW2NEmDHCJDbGlQ91BKfk4ttwuBhw==
+X-Google-Smtp-Source: ABdhPJwZPRkgmtwcjRHQfWqrJTh8ctpurvMHZB8H6WxkSyS6oplxryBX2xh3DPLl81qVNZRG8lVErA==
+X-Received: by 2002:a2e:989a:: with SMTP id b26mr3378280ljj.276.1602962147703;
+        Sat, 17 Oct 2020 12:15:47 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:44ab:aa29:cc3a:7ce3:762e:af0? ([2a00:1fa0:44ab:aa29:cc3a:7ce3:762e:af0])
+        by smtp.gmail.com with ESMTPSA id r19sm750940ljn.73.2020.10.17.12.15.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Oct 2020 12:15:47 -0700 (PDT)
+Subject: Re: [PATCH v3] ata: sata_rcar: Fix DMA boundary mask
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-ide@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+References: <20200917130920.6689-1-geert+renesas@glider.be>
+ <CAHp75Vd3s1N_f9oM=MiMv6ZhtrOzYMKAQz+CURVkxG4JgGVw+Q@mail.gmail.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <b9b74843-70ea-f53c-53cf-e929d0542d2c@gmail.com>
+Date:   Sat, 17 Oct 2020 22:15:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2130539.dlFve3NVyK@n95hx1g2>
+In-Reply-To: <CAHp75Vd3s1N_f9oM=MiMv6ZhtrOzYMKAQz+CURVkxG4JgGVw+Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 08:53:19PM +0200, Christian Eggers wrote:
-> > Does 1588 work for you using this change, or you haven't finished
-> > implementing it yet? If you haven't, I would suggest finishing that
-> > part first.
-> Yes it does. Just after finishing this topic, I would to sent the patches for
-> PTP. Maybe I'll do it in parallel, anything but the combination of L2/E2E/SLOB
-> seems to work.
+On 10/16/20 7:40 PM, Andy Shevchenko wrote:
 
-2 aspects:
-- net-next is closed for this week and the next one, due to the merge
-  window. You'll have to wait until it reopens.
-- Actually I was asking you this because sja1105 PTP no longer works
-  after this change, due to the change of txflags.
+>> Before commit 9495b7e92f716ab2 ("driver core: platform: Initialize
+>> dma_parms for platform devices"), the R-Car SATA device didn't have DMA
+>> parameters.  Hence the DMA boundary mask supplied by its driver was
+>> silently ignored, as __scsi_init_queue() doesn't check the return value
+>> of dma_set_seg_boundary(), and the default value of 0xffffffff was used.
+>>
+>> Now the device has gained DMA parameters, the driver-supplied value is
+>> used, and the following warning is printed on Salvator-XS:
+>>
+>>     DMA-API: sata_rcar ee300000.sata: mapping sg segment across boundary [start=0x00000000ffffe000] [end=0x00000000ffffefff] [boundary=0x000000001ffffffe]
+>>     WARNING: CPU: 5 PID: 38 at kernel/dma/debug.c:1233 debug_dma_map_sg+0x298/0x300
+>>
+>> (the range of start/end values depend on whether IOMMU support is
+>>  enabled or not)
+>>
+>> The issue here is that SATA_RCAR_DMA_BOUNDARY doesn't have bit 0 set, so
+>> any typical end value, which is odd, will trigger the check.
+>>
+>> Fix this by increasing the DMA boundary value by 1.
+>>
+>> This also fixes the following WRITE DMA EXT timeout issue:
+>>
+>>     # dd if=/dev/urandom of=/mnt/de1/file1-1024M bs=1M count=1024
+>>     ata1.00: exception Emask 0x0 SAct 0x0 SErr 0x0 action 0x6 frozen
+>>     ata1.00: failed command: WRITE DMA EXT
+>>     ata1.00: cmd 35/00:00:00:e6:0c/00:0a:00:00:00/e0 tag 0 dma 1310720 out
+>>     res 40/00:01:00:00:00/00:00:00:00:00/00 Emask 0x4 (timeout)
+>>     ata1.00: status: { DRDY }
+>>
+>> as seen by Shimoda-san since commit 429120f3df2dba2b ("block: fix
+>> splitting segments on boundary masks").
+>>
+>> Fixes: 8bfbeed58665dbbf ("sata_rcar: correct 'sata_rcar_sht'")
+>> Fixes: 9495b7e92f716ab2 ("driver core: platform: Initialize dma_parms for platform devices")
+>> Fixes: 429120f3df2dba2b ("block: fix splitting segments on boundary masks")
+>> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+>> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+>> Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>> Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>> Cc: stable <stable@vger.kernel.org>
+>> ---
+>> v3:
+>>   - Add Reviewed-by, Tested-by,
+>>   - Augment description and Fixes: with Shimoda-san's problem report
+>>     https://lore.kernel.org/r/1600255098-21411-1-git-send-email-yoshihiro.shimoda.uh@renesas.com,
+>>
+>> v2:
+>>   - Add Reviewed-by, Tested-by, Cc.
+>> ---
+>>  drivers/ata/sata_rcar.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/ata/sata_rcar.c b/drivers/ata/sata_rcar.c
+>> index 141ac600b64c87ef..44b0ed8f6bb8a120 100644
+>> --- a/drivers/ata/sata_rcar.c
+>> +++ b/drivers/ata/sata_rcar.c
+>> @@ -120,7 +120,7 @@
+>>  /* Descriptor table word 0 bit (when DTA32M = 1) */
+>>  #define SATA_RCAR_DTEND                        BIT(0)
+>>
+>> -#define SATA_RCAR_DMA_BOUNDARY         0x1FFFFFFEUL
+>> +#define SATA_RCAR_DMA_BOUNDARY         0x1FFFFFFFUL
+> 
+> Wondering if GENMASK() here will be better to avoid such mistakes.
 
-> I don't like to touch the non-tail taggers, this is too much out of the scope
-> of my current work.
+   How? The bit 0 is reserved, so only even byte counts are possiblе...
 
-Do you want me to try and send a version using pskb_expand_head and you
-can test if it works for your tail-tagging switch?
+[...]
 
-> > Also, if the result is going to be longer than ~20 lines of code, I
-> > strongly suggest moving the reallocation to a separate function so you
-> > don't clutter dsa_slave_xmit.
-> As Florian requested I'll likely put the code into a separate function in
-> slave.c and call it from the individual tail-taggers in order not to put
-> extra conditionals in dsa_slave_xmit.
-
-I think it would be best to use the unlikely(tail_tag) approach though.
-The reallocation function should still be in the common code path. Even
-for a non-1588 switch, there are other code paths that clone packets on
-TX. For example, the bridge does that, when flooding packets. Currently,
-DSA ensures that the header area is writable by calling skb_cow_head, as
-far as I can see. But the point is, maybe we can do TX reallocation
-centrally.
+MBR, Sergei
