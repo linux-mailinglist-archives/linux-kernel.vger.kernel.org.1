@@ -2,222 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1723B291513
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 01:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D167291516
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 01:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439920AbgJQXjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 19:39:19 -0400
-Received: from lithium.sammserver.com ([168.119.122.30]:33556 "EHLO
-        lithium.sammserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439872AbgJQXjS (ORCPT
+        id S2439940AbgJQX7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 19:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439932AbgJQX7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 19:39:18 -0400
-X-Greylist: delayed 349 seconds by postgrey-1.27 at vger.kernel.org; Sat, 17 Oct 2020 19:39:17 EDT
-Received: from mail.sammserver.com (sammserver.wg [10.32.40.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by lithium.sammserver.com (Postfix) with ESMTPS id 85F9A312B5AC;
-        Sun, 18 Oct 2020 01:33:40 +0200 (CEST)
-Received: by mail.sammserver.com (Postfix, from userid 5011)
-        id 3BB061120B24; Sun, 18 Oct 2020 01:33:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
-        t=1602977620; bh=hSLyJwAfXMOvw2hrxJI7fB18l0bxx3UdgjaZb3hqi+0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WEiLcCX1JzZJxz1o6di1ivvMGIC/j60ZXyr2gWN4SkO9hjkUA6JKfmeld6AFTHGRo
-         yxeCNJBL884RwTw42BeNuM+ZR1eTFfwMbUhUmqSEZFw7h7gwwDyMvdQKUbokpK3o36
-         vtM2I4YtYWrEO+DexKUI0FpYgFuWiot8a913Wmcs=
-Received: from fastboi.localdomain (fastboi.wg [10.32.40.5])
-        by mail.sammserver.com (Postfix) with ESMTP id E4CF61120B21;
-        Sun, 18 Oct 2020 01:33:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
-        t=1602977620; bh=hSLyJwAfXMOvw2hrxJI7fB18l0bxx3UdgjaZb3hqi+0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WEiLcCX1JzZJxz1o6di1ivvMGIC/j60ZXyr2gWN4SkO9hjkUA6JKfmeld6AFTHGRo
-         yxeCNJBL884RwTw42BeNuM+ZR1eTFfwMbUhUmqSEZFw7h7gwwDyMvdQKUbokpK3o36
-         vtM2I4YtYWrEO+DexKUI0FpYgFuWiot8a913Wmcs=
-Received: by fastboi.localdomain (Postfix, from userid 1000)
-        id CD1091420A90; Sun, 18 Oct 2020 01:33:39 +0200 (CEST)
-Date:   Sun, 18 Oct 2020 01:33:39 +0200
-From:   Samuel =?utf-8?B?xIxhdm9q?= <samuel@cavoj.net>
-To:     Andy Shevchenko <andy@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Corentin Chary <corentin.chary@gmail.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v2] platform/x86: asus-wmi: Add support for
- SW_TABLET_MODE on UX360
-Message-ID: <20201017233339.v4th6wyej3a25ved@fastboi.localdomain>
-References: <20200917133425.168310-1-samuel@cavoj.net>
+        Sat, 17 Oct 2020 19:59:38 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF917C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 16:59:37 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id r4so8756670ioh.0
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 16:59:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=h2GtTlshfWWUrnm7ALXf8OWo2w1JGw4rOyTg09mkVyQ=;
+        b=ApP7c5sXrBNPlNOq+WcG1+06dnSbHDjMN70f3T4VJGPh1N27Qb/LtYEGbhNfSHBb7B
+         nLR4DA01wYpPOnLgEiNsu6tBSIpmzoNeGFiWGS8Dx8OVcLpr+QWfzIThlZrTChAH7e/z
+         6RT+zavq8V9k4N627FbdpMzyYwlBswSG7Prds=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=h2GtTlshfWWUrnm7ALXf8OWo2w1JGw4rOyTg09mkVyQ=;
+        b=hqZquKBxMdRT8v5pWF/1H9n+jsA0kD5f/179KBjaz+9rStsuC3k0ZCGVRl0gIrffWz
+         jZtAwg4xlvKyZKQKVU7X0Q5Lh5abh8IARhIVqAbg/IaCs5AM2cJaZpZeYbrpuStrB85V
+         oiUgwp+sxvU2AQYwJkSdhSjSeJOT1PLiBI1BEgBfk35LlCIlm9SU9LZ0ppqZ2b9Bfq/W
+         xi3YVZJFK7AGGsijU6bs+qdGvJTiuhNarJVD5286w3pzzs9jRhszto0snpk612WuqZj0
+         Orz5Ut/vQajl8ZJiM/TrS7xJStzGp9vJiXjoNzQ4kNUE/0sxzm2NaF3L91hsV4wyH+2Z
+         sDow==
+X-Gm-Message-State: AOAM533YlU34chvGzta4YbJZitVw3hTfyvXVyyR5qDiA/shx/lL9L9S7
+        bR9h9kpz55/f1XTuv7uXjppeAg==
+X-Google-Smtp-Source: ABdhPJxOO/JhWm5ou5JikonWGPY7wHpCNLut3YTQOFiVBKXQY0qVFd6+y5r7mn+ejRfpXC6oQGaPdw==
+X-Received: by 2002:a02:6d4b:: with SMTP id e11mr6791283jaf.41.1602979176779;
+        Sat, 17 Oct 2020 16:59:36 -0700 (PDT)
+Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
+        by smtp.gmail.com with ESMTPSA id e11sm6726478ioq.48.2020.10.17.16.59.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 17 Oct 2020 16:59:36 -0700 (PDT)
+Date:   Sat, 17 Oct 2020 23:59:34 +0000
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     "J . Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH v2 0/3] NFS User Namespaces with new mount API
+Message-ID: <20201017235933.GA1516@ircssh-2.c.rugged-nimbus-611.internal>
+References: <20201016124550.10739-1-sargun@sargun.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200917133425.168310-1-samuel@cavoj.net>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS autolearn=no autolearn_force=no
-        version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on sammserver.tu
+In-Reply-To: <20201016124550.10739-1-sargun@sargun.me>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello everyone.
-
-On 17.09.2020 15:34, Samuel Čavoj wrote:
-> The UX360CA has a WMI device id 0x00060062, which reports whether the
-> lid is flipped in tablet mode (1) or in normal laptop mode (0).
+On Fri, Oct 16, 2020 at 05:45:47AM -0700, Sargun Dhillon wrote:
+> This patchset adds some functionality to allow NFS to be used from
+> NFS namespaces (containers).
 > 
-> This commit adds a quirk (quirk_asus_use_lid_flip_devid) for devices on
-> which this WMI device should be used to figure out the SW_TABLET_MODE
-> state, as opposed to the quirk_asus_use_kbd_dock_devid.
+> Changes since v1:
+>   * Added samples
 > 
-> It is assumed other UX360* models have the same WMI device. As such, the
-> quirk is applied to devices with DMI_MATCH(DMI_PRODUCT_NAME, "UX360").
-> More devices with this feature need to be tested and added accordingly.
+> Sargun Dhillon (3):
+>   NFS: Use cred from fscontext during fsmount
+>   samples/vfs: Split out common code for new syscall APIs
+>   samples/vfs: Add example leveraging NFS with new APIs and user
+>     namespaces
 > 
-> The reason for using a whitelist via the quirk mechanism is that the new
-> WMI device (0x00060062) is also present on some models which do not have
-> a 360 degree hinge (at least FX503VD and GL503VD from Hans' DSTS
-> collection) and therefore its presence cannot be relied on.
+>  fs/nfs/client.c                        |   2 +-
+>  fs/nfs/flexfilelayout/flexfilelayout.c |   1 +
+>  fs/nfs/nfs4client.c                    |   2 +-
+>  samples/vfs/.gitignore                 |   2 +
+>  samples/vfs/Makefile                   |   5 +-
+>  samples/vfs/test-fsmount.c             |  86 +-----------
+>  samples/vfs/test-nfs-userns.c          | 181 +++++++++++++++++++++++++
+>  samples/vfs/vfs-helper.c               |  43 ++++++
+>  samples/vfs/vfs-helper.h               |  55 ++++++++
+>  9 files changed, 289 insertions(+), 88 deletions(-)
+>  create mode 100644 samples/vfs/test-nfs-userns.c
+>  create mode 100644 samples/vfs/vfs-helper.c
+>  create mode 100644 samples/vfs/vfs-helper.h
 > 
-> This patch is a followup to "platform/x86: asus-wmi: Fix SW_TABLET_MODE
-> always reporting 1 on many different models" by Hans de Goede.
-> 
-> Signed-off-by: Samuel Čavoj <samuel@cavoj.net>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> ---
-> 
-> v1 -> v2:
->   - inherit wmi_backlight_set_devstate from default quirk
-
-I have realised that one shortcoming still remains: If the laptop is
-suspended while in tablet mode, flipped to normal mode during sleep and
-then awoken, no event is generated by the firmware. The SW_TABLET_MODE
-switch then stays enabled, with inputs not working until the user tries
-flipping it once again.
-
-I suppose a simple check on resume would suffice. However, I am not sure
-if this is worth implementing as an update to this patch (i would like
-it to make the 5.10 merge window after all) or as a separate patch, if
-at all.
-
-Opinions?
-
-Thanks,
-Sam
-> 
-> ---
->  drivers/platform/x86/asus-nb-wmi.c         | 15 +++++++++++++++
->  drivers/platform/x86/asus-wmi.c            | 22 ++++++++++++++++++++++
->  drivers/platform/x86/asus-wmi.h            |  1 +
->  include/linux/platform_data/x86/asus-wmi.h |  1 +
->  4 files changed, 39 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
-> index 345bd224494b..5019b03b2c95 100644
-> --- a/drivers/platform/x86/asus-nb-wmi.c
-> +++ b/drivers/platform/x86/asus-nb-wmi.c
-> @@ -119,6 +119,11 @@ static struct quirk_entry quirk_asus_use_kbd_dock_devid = {
->  	.use_kbd_dock_devid = true,
->  };
->  
-> +static struct quirk_entry quirk_asus_use_lid_flip_devid = {
-> +	.wmi_backlight_set_devstate = true,
-> +	.use_lid_flip_devid = true,
-> +};
-> +
->  static int dmi_matched(const struct dmi_system_id *dmi)
->  {
->  	pr_info("Identified laptop model '%s'\n", dmi->ident);
-> @@ -520,6 +525,16 @@ static const struct dmi_system_id asus_quirks[] = {
->  		},
->  		.driver_data = &quirk_asus_use_kbd_dock_devid,
->  	},
-> +	{
-> +		.callback = dmi_matched,
-> +		.ident = "ASUS ZenBook Flip UX360",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +			/* Match UX360* */
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "UX360"),
-> +		},
-> +		.driver_data = &quirk_asus_use_lid_flip_devid,
-> +	},
->  	{},
->  };
->  
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> index ae6289d37faf..e5066248e83a 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -63,6 +63,7 @@ MODULE_LICENSE("GPL");
->  #define NOTIFY_KBD_BRTTOGGLE		0xc7
->  #define NOTIFY_KBD_FBM			0x99
->  #define NOTIFY_KBD_TTP			0xae
-> +#define NOTIFY_LID_FLIP			0xfa
->  
->  #define ASUS_WMI_FNLOCK_BIOS_DISABLED	BIT(0)
->  
-> @@ -375,6 +376,18 @@ static int asus_wmi_input_init(struct asus_wmi *asus)
->  		}
->  	}
->  
-> +	if (asus->driver->quirks->use_lid_flip_devid) {
-> +		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
-> +		if (result >= 0) {
-> +			input_set_capability(asus->inputdev, EV_SW, SW_TABLET_MODE);
-> +			input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
-> +		} else if (result == -ENODEV) {
-> +			pr_err("This device has lid_flip quirk but got ENODEV checking it. This is a bug.");
-> +		} else {
-> +			pr_err("Error checking for lid-flip: %d\n", result);
-> +		}
-> +	}
-> +
->  	err = input_register_device(asus->inputdev);
->  	if (err)
->  		goto err_free_dev;
-> @@ -2127,6 +2140,15 @@ static void asus_wmi_handle_event_code(int code, struct asus_wmi *asus)
->  		return;
->  	}
->  
-> +	if (asus->driver->quirks->use_lid_flip_devid && code == NOTIFY_LID_FLIP) {
-> +		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
-> +		if (result >= 0) {
-> +			input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
-> +			input_sync(asus->inputdev);
-> +		}
-> +		return;
-> +	}
-> +
->  	if (asus->fan_boost_mode_available && code == NOTIFY_KBD_FBM) {
->  		fan_boost_mode_switch_next(asus);
->  		return;
-> diff --git a/drivers/platform/x86/asus-wmi.h b/drivers/platform/x86/asus-wmi.h
-> index 1a95c172f94b..b302415bf1d9 100644
-> --- a/drivers/platform/x86/asus-wmi.h
-> +++ b/drivers/platform/x86/asus-wmi.h
-> @@ -34,6 +34,7 @@ struct quirk_entry {
->  	bool wmi_backlight_set_devstate;
->  	bool wmi_force_als_set;
->  	bool use_kbd_dock_devid;
-> +	bool use_lid_flip_devid;
->  	int wapf;
->  	/*
->  	 * For machines with AMD graphic chips, it will send out WMI event
-> diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
-> index 897b8332a39f..2f274cf52805 100644
-> --- a/include/linux/platform_data/x86/asus-wmi.h
-> +++ b/include/linux/platform_data/x86/asus-wmi.h
-> @@ -62,6 +62,7 @@
->  
->  /* Misc */
->  #define ASUS_WMI_DEVID_CAMERA		0x00060013
-> +#define ASUS_WMI_DEVID_LID_FLIP		0x00060062
->  
->  /* Storage */
->  #define ASUS_WMI_DEVID_CARDREADER	0x00080013
 > -- 
-> 2.28.0
+> 2.25.1
 > 
+
+Digging deeper into this a little bit, I actually found that there is some 
+problematic aspects of the current behaviour. Because nfs_get_tree_common calls 
+sget_fc, and sget_fc sets the super block's s_user_ns (via alloc_super) to the 
+fs_context's user namespace unless the global flag is set (which NFS does not 
+set), there are a bunch of permissions checks that are done against the super 
+block's user_ns.
+
+It looks like this was introduced in:
+f2aedb713c28: NFS: Add fs_context support[1]
+
+It turns out that unmapped users in the "parent" user namespace just get an 
+EOVERFLOW error when trying to perform a read, even if the UID sent to the NFS 
+server to read a file is a valid uid (the uid in the init user ns), and 
+inode_permission checks permissions against the mapped UID in the namespace, 
+while the authentication credentials (UIDs, GIDs) sent to the server are
+those from the init user ns.
+
+[This is all under the assumption there's not upcalls doing ID mapping]
+
+Although, I do not think this presents any security risk (because you have to 
+have CAP_SYS_ADMIN in the init user ns to get this far), it definitely seems
+like "incorrect" behaviour.
+
+[1]: https://lore.kernel.org/linux-nfs/20191120152750.6880-26-smayhew@redhat.com/
