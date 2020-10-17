@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04954290FE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B54291015
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436981AbgJQGCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 02:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436899AbgJQGBk (ORCPT
+        id S2437065AbgJQGVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 02:21:01 -0400
+Received: from mail-m17613.qiye.163.com ([59.111.176.13]:59921 "EHLO
+        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437051AbgJQGVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 02:01:40 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACEBC0604DE;
-        Fri, 16 Oct 2020 19:44:40 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id h4so2511678pjk.0;
-        Fri, 16 Oct 2020 19:44:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=L8ggdEfY4bl2Bnt1VidQjf6CT+zfsSuUzYgjI1vnszg=;
-        b=hszp57NUtZAPIvQiya97eWTv/TsnZKHenBOhSnRffAc2zv58vy4VYnbstsyXnWFsjE
-         YyKXlii5FoUTJYyukJ8TEqzsNKjJucX5UAH/XDHA0JYesnJlEP4zoo2pNX2mU5QDNgIX
-         3zba7STQ6kbrbXLN+oDYY+CP27cccr6Bgqoogld7DjvCjVUXWSUe62+czRtJ2w6cpZtx
-         oGRi4bbg3W4W4/8Zicy2KR0PDoT5j6APds+KWSGqQNFh/00hpBU3QFHsYFDqjQpspEmD
-         BP+uNWPkU8fzhkEk2he8Ee+j3Z9mhCvkMcDlgyqh6IkUhwiRtnO91jpqR4Rot5N19hHD
-         Iq3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L8ggdEfY4bl2Bnt1VidQjf6CT+zfsSuUzYgjI1vnszg=;
-        b=jHE+Y73/0xgIwm3r5x2cLQn/88UPcELV8S16ADdU/zhaAHGZO81Ts8QawzsUwIOfUP
-         Pgj6o8Xk1wjCDu98XlCs5pmBXe7w1JuLhX7csXuu7dsUTL7pgm+uooULwd/LGh4xrh9Z
-         RJu9xslZ+YLHGanXHflV39ItIJTTa4ROVFsgAiS6/MwPqyy7nnT3m/SDDc0TqYhL/GgK
-         RqPL9sjXxNfDMg0gKqTr4wDr3ScsCVGcRUKXNg7MqkBUk3scUz7aWOtcwpg2LjE5c+0r
-         +xKt1sMEPrqX2M/tTxv911Lth04SlvrXfHI2fEOLTH4ukGNj7L75JRha+bEtQTRhu1/s
-         Owxw==
-X-Gm-Message-State: AOAM530FBpjzra1KdQciObssZPd/23bm9vZMMj8ZciWnKSOEPdvfNNoI
-        +Sxz9qaHOncUHObrYx/ShfykRRgSDF8=
-X-Google-Smtp-Source: ABdhPJxZ7yEW1/6l9gektHcw+CNMQfsWlliI1+TAmr029TvLC1B7MIVE4VoCcNqX8jl3TuPB2d66sA==
-X-Received: by 2002:a17:90a:6541:: with SMTP id f1mr7111762pjs.46.1602902679784;
-        Fri, 16 Oct 2020 19:44:39 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id e11sm4138039pfm.160.2020.10.16.19.44.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 19:44:39 -0700 (PDT)
-To:     Christian Eggers <ceggers@arri.de>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201016200226.23994-1-ceggers@arri.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 0/3] net: dsa: move skb reallocation to dsa_slave_xmit
-Message-ID: <9795d523-c296-cc18-4188-9214fb9cc25d@gmail.com>
-Date:   Fri, 16 Oct 2020 19:44:37 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.3.2
+        Sat, 17 Oct 2020 02:21:00 -0400
+Received: from ubuntu.localdomain (unknown [157.0.31.125])
+        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id 2702C48275B;
+        Sat, 17 Oct 2020 10:44:57 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] drivers/thermal: remove unnecessary structure members allocated_tzp
+Date:   Fri, 16 Oct 2020 19:44:49 -0700
+Message-Id: <20201017024449.37377-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201016200226.23994-1-ceggers@arri.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHUoeSkkaSE1OQx5MVkpNS0lCS0lNQkxIT0pVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OQw6Iio*AT8ZGTMiFjI8Dhg9
+        FwpPFElVSlVKTUtJQktJTUJMTExPVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSU5ZV1kIAVlBSUJCSzcG
+X-HM-Tid: 0a753472254793bakuws2702c48275b
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Struct power_allocator_params element allocated_tzp is only used
+in unbind to kfree the kzalloc space.
+Maybe we don’t have to need this member to mark, also, kfree will
+handle NULL point, there is no risk.
+This change is to make the code run a bit fast.
 
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+---
+ drivers/thermal/gov_power_allocator.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-On 10/16/2020 1:02 PM, Christian Eggers wrote:
-
-[snip]
-
-> On Friday, 16 October 2020, 20:03:11 CEST, Jakub Kicinski wrote:
->> FWIW if you want to avoid the reallocs you may want to set
->> needed_tailroom on the netdev.
-> I haven't looked for this yet. If this can really solve the tagging AND
-> padding problem, I would like to do this in a follow up patch.
-
-The comment in netdevice.h says:
-
-    *      @needed_headroom: Extra headroom the hardware may need, but 
-not in all
-    *                        cases can this be guaranteed
-    *      @needed_tailroom: Extra tailroom the hardware may need, but 
-not in all
-    *                        cases can this be guaranteed. Some cases 
-also use
-    *                        LL_MAX_HEADER instead to allocate the skb
-
-and while I have never seen a reallocation occur while pushing a 
-descriptor status block in front of a frame on transmit after setting 
-the correct needed_headroom, it was not exercised in a very complicated 
-way either, just TCP or UDP over IPv4 or IPv6. This makes me think that 
-the comment is cautionary about more complicated transmit scenarios with 
-stacked devices, tunneling etc.
-
-> 
-> Wishing a nice weekend for netdev.
-
-Likewise!
+diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
+index 5cb518d8f156..e4672a94e6b1 100644
+--- a/drivers/thermal/gov_power_allocator.c
++++ b/drivers/thermal/gov_power_allocator.c
+@@ -51,8 +51,6 @@ static inline s64 div_frac(s64 x, s64 y)
+ 
+ /**
+  * struct power_allocator_params - parameters for the power allocator governor
+- * @allocated_tzp:	whether we have allocated tzp for this thermal zone and
+- *			it needs to be freed on unbind
+  * @err_integral:	accumulated error in the PID controller.
+  * @prev_err:	error in the previous iteration of the PID controller.
+  *		Used to calculate the derivative term.
+@@ -65,7 +63,6 @@ static inline s64 div_frac(s64 x, s64 y)
+  *					controlling for.
+  */
+ struct power_allocator_params {
+-	bool allocated_tzp;
+ 	s64 err_integral;
+ 	s32 prev_err;
+ 	int trip_switch_on;
+@@ -556,8 +553,6 @@ static int power_allocator_bind(struct thermal_zone_device *tz)
+ 			ret = -ENOMEM;
+ 			goto free_params;
+ 		}
+-
+-		params->allocated_tzp = true;
+ 	}
+ 
+ 	if (!tz->tzp->sustainable_power)
+@@ -593,10 +588,8 @@ static void power_allocator_unbind(struct thermal_zone_device *tz)
+ 
+ 	dev_dbg(&tz->device, "Unbinding from thermal zone %d\n", tz->id);
+ 
+-	if (params->allocated_tzp) {
+-		kfree(tz->tzp);
+-		tz->tzp = NULL;
+-	}
++	kfree(tz->tzp);
++	tz->tzp = NULL;
+ 
+ 	kfree(tz->governor_data);
+ 	tz->governor_data = NULL;
 -- 
-Florian
+2.28.0
+
