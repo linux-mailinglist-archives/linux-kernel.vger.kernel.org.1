@@ -2,170 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A180E291482
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 23:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15EB29148D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 23:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439280AbgJQVBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 17:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439261AbgJQVBi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 17:01:38 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDEAC0613D4
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 14:01:37 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id h24so8465026ejg.9
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 14:01:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QU5tUnKrk3cCgEOM6DUuSpHohPcIoidzngrqxPrVqlg=;
-        b=ntIAxdfj5B3UZZJPAO3W3zqpuYJdxZe6wmMN+Cg5+tfh5QjsxLbXR5o2amfdJQ2J48
-         +r9G2vZiMs4S/e6t6kNU+/1RisTXP2Yspklt8lksB4PhSQjsUISEYusYJeN2p0XCHoqr
-         5tX/QI+fZe3GQZJaviemAIYQlGxoIFC7s6aX8R5MJQLi2SOYJ/keQbrc62HNUeJ8pCOI
-         7WYztP0OE4axPIRoGDfVK4aq4k9dPY6fZ69Y4fL3/a70qb0GrKtNhloBSbp9yIhwtpgg
-         UECkhdkcAFyI2jUc3qFZfU7NKoc+E1dZJHZxhONiRQFFV//aVnbaYjp+hfJUaNjfh3TU
-         ik3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QU5tUnKrk3cCgEOM6DUuSpHohPcIoidzngrqxPrVqlg=;
-        b=tkV0i8mAoDZ41C9Jz0spQuFt/shtrZsHrjFGARmgFOPX67a/uurAFe8WrHFHcjItzi
-         9/0PDMh8leUK4uKoXVf4UTqC49otIfQ1qQdiMGdsy34IywzbEgWfn93m1YXXQRfjxgv6
-         qZ6u1cicz4/qy67IgUjtkUI0eKFO3HADxoUOGKfmpVq7f1aR9txlloQ1dndlQqD468bC
-         rBoboO5Npmgib8ULGtpKsXXTpLelJQM02xE5obRHiDwVGJZuJhFjLk85S8bcqATbnL+k
-         IvsgqOWM485qOF3Qve5zACu6SyNaHgJsCt3eHMgWRhmUKiDOrCKGt2cF69kUXJIHf9+g
-         tnVA==
-X-Gm-Message-State: AOAM531iInXoHPJ6885ZTIR5KDVUnROx3b7OqBFh43MBrdoCxYebjXNI
-        +N85ud5UcUVfqt9pEvkrVgoEtMG8lHlI4e13T/uCoQ==
-X-Google-Smtp-Source: ABdhPJzde2s6j/g/ekBLPPrgSH2EJqfd3KSDRuhe3Mnzr9w98lVRa6HniOngGCyhNuV4q/eDk1HFvyy/v8IqyEanGTA=
-X-Received: by 2002:a17:906:1a19:: with SMTP id i25mr9957370ejf.323.1602968492144;
- Sat, 17 Oct 2020 14:01:32 -0700 (PDT)
+        id S2439403AbgJQVCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 17:02:22 -0400
+Received: from mga18.intel.com ([134.134.136.126]:28858 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439312AbgJQVCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 17:02:22 -0400
+IronPort-SDR: EQkXEoMyOFC9cnEueiGKaanYR/Ejbed3um19OxNCeMxjIXNBXz6L2lhNI7gFZFZdL8VFGopyg/
+ sEzFFVyNqnwA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9777"; a="154623379"
+X-IronPort-AV: E=Sophos;i="5.77,388,1596524400"; 
+   d="scan'208";a="154623379"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2020 14:02:21 -0700
+IronPort-SDR: f5eYN8cnDLfQvNcDja6UpjSpxreobQybxFbC3vpwgGjFvIgKp32cp2oJxTZXTiGpSc9Mw3GDjz
+ ADzJEUrzYhRg==
+X-IronPort-AV: E=Sophos;i="5.77,388,1596524400"; 
+   d="scan'208";a="465074195"
+Received: from hebenstp-mobl3.ger.corp.intel.com (HELO localhost) ([10.252.54.12])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2020 14:02:09 -0700
+Date:   Sun, 18 Oct 2020 00:02:04 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        chenalexchen@google.com, Conrad Parker <conradparker@google.com>,
+        cyhanish@google.com, Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Andrew Lutomirski <luto@kernel.org>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20201017210204.GA64894@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-22-jarkko.sakkinen@linux.intel.com>
+ <CALCETrUJG4LLk4SkBdufUYAx=ec=NyY2wv=Js=72=am6nFQfiw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201017160928.12698-1-trix@redhat.com>
-In-Reply-To: <20201017160928.12698-1-trix@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sat, 17 Oct 2020 14:01:22 -0700
-Message-ID: <CAPcyv4jkSFxMXgMABX7sDbwmq8zJO=rLX2ww3Y9Tc0VAANY8xQ@mail.gmail.com>
-Subject: Re: [RFC] treewide: cleanup unreachable breaks
-To:     trix@redhat.com
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-edac@vger.kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux-pm mailing list <linux-pm@vger.kernel.org>,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        linux-block@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, nouveau@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        industrypack-devel@lists.sourceforge.net,
-        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        MPT-FusionLinux.pdl@broadcom.com,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-mtd@lists.infradead.org, linux-can@vger.kernel.org,
-        Netdev <netdev@vger.kernel.org>,
-        intel-wired-lan@lists.osuosl.org, ath10k@lists.infradead.org,
-        Linux Wireless List <linux-wireless@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com, linux-nfc@lists.01.org,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, patches@opensource.cirrus.com,
-        storagedev@microchip.com, devel@driverdev.osuosl.org,
-        linux-serial@vger.kernel.org, USB list <linux-usb@vger.kernel.org>,
-        usb-storage@lists.one-eyed-alien.net,
-        linux-watchdog@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        bpf@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        "open list:KEYS-TRUSTED" <keyrings@vger.kernel.org>,
-        alsa-devel@alsa-project.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrUJG4LLk4SkBdufUYAx=ec=NyY2wv=Js=72=am6nFQfiw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 9:10 AM <trix@redhat.com> wrote:
->
-> From: Tom Rix <trix@redhat.com>
->
-> This is a upcoming change to clean up a new warning treewide.
-> I am wondering if the change could be one mega patch (see below) or
-> normal patch per file about 100 patches or somewhere half way by collecting
-> early acks.
->
-> clang has a number of useful, new warnings see
-> https://clang.llvm.org/docs/DiagnosticsReference.html
->
-> This change cleans up -Wunreachable-code-break
-> https://clang.llvm.org/docs/DiagnosticsReference.html#wunreachable-code-break
-> for 266 of 485 warnings in this week's linux-next, allyesconfig on x86_64.
->
-> The method of fixing was to look for warnings where the preceding statement
-> was a simple statement and by inspection made the subsequent break unneeded.
-> In order of frequency these look like
->
-> return and break
->
->         switch (c->x86_vendor) {
->         case X86_VENDOR_INTEL:
->                 intel_p5_mcheck_init(c);
->                 return 1;
-> -               break;
->
-> goto and break
->
->         default:
->                 operation = 0; /* make gcc happy */
->                 goto fail_response;
-> -               break;
->
-> break and break
->                 case COLOR_SPACE_SRGB:
->                         /* by pass */
->                         REG_SET(OUTPUT_CSC_CONTROL, 0,
->                                 OUTPUT_CSC_GRPH_MODE, 0);
->                         break;
-> -                       break;
->
-> The exception to the simple statement, is a switch case with a block
-> and the end of block is a return
->
->                         struct obj_buffer *buff = r->ptr;
->                         return scnprintf(str, PRIV_STR_SIZE,
->                                         "size=%u\naddr=0x%X\n", buff->size,
->                                         buff->addr);
->                 }
-> -               break;
->
-> Not considered obvious and excluded, breaks after
-> multi level switches
-> complicated if-else if-else blocks
-> panic() or similar calls
->
-> And there is an odd addition of a 'fallthrough' in drivers/tty/nozomi.c
-[..]
-> diff --git a/drivers/nvdimm/claim.c b/drivers/nvdimm/claim.c
-> index 5a7c80053c62..2f250874b1a4 100644
-> --- a/drivers/nvdimm/claim.c
-> +++ b/drivers/nvdimm/claim.c
-> @@ -200,11 +200,10 @@ ssize_t nd_namespace_store(struct device *dev,
->                 }
->                 break;
->         default:
->                 len = -EBUSY;
->                 goto out_attach;
-> -               break;
->         }
+On Fri, Oct 16, 2020 at 06:48:53PM -0700, Andy Lutomirski wrote:
+> On Fri, Oct 2, 2020 at 9:51 PM Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> >
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
+> >
+> > An SGX runtime must be aware of the exceptions, which happen inside an
+> > enclave. Introduce a vDSO call that wraps EENTER/ERESUME cycle and returns
+> > the CPU exception back to the caller exactly when it happens.
+> >
+> > Kernel fixups the exception information to RDI, RSI and RDX. The SGX call
+> > vDSO handler fills this information to the user provided buffer or
+> > alternatively trigger user provided callback at the time of the exception.
+> >
+> > The calling convention supports providing the parameters in standard RDI
+> > RSI, RDX, RCX, R8 and R9 registers, i.e. it is possible to declare the vDSO
+> > as a C prototype, but other than that there is no specific support for
+> > SystemV ABI. Storing XSAVE etc. is all responsibility of the enclave and
+> > the associated run-time.
+> >
+> > Suggested-by: Andy Lutomirski <luto@amacapital.net>
+> > Acked-by: Jethro Beekman <jethro@fortanix.com>
+> > Tested-by: Jethro Beekman <jethro@fortanix.com>
+> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > Co-developed-by: Cedric Xing <cedric.xing@intel.com>
+> > Signed-off-by: Cedric Xing <cedric.xing@intel.com>
+> > Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> 
+> > +SYM_FUNC_START(__vdso_sgx_enter_enclave)
+> > +       /* Prolog */
+> > +       .cfi_startproc
+> > +       push    %rbp
+> > +       .cfi_adjust_cfa_offset  8
+> > +       .cfi_rel_offset         %rbp, 0
+> > +       mov     %rsp, %rbp
+> > +       .cfi_def_cfa_register   %rbp
+> > +       push    %rbx
+> > +       .cfi_rel_offset         %rbx, -8
+> 
+> This *looks* right, but I'm not really an expert.
 
-Acked-by: Dan Williams <dan.j.williams@intel.com>
+I did not change this from earlier versions.
+
+> > +
+> > +       mov     %ecx, %eax
+> > +.Lenter_enclave:
+> > +       /* EENTER <= leaf <= ERESUME */
+> > +       cmp     $EENTER, %eax
+> > +       jb      .Linvalid_input
+> > +       cmp     $ERESUME, %eax
+> > +       ja      .Linvalid_input
+> > +
+> > +       mov     SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rcx
+> > +
+> > +       /* Validate that the reserved area contains only zeros. */
+> > +       push    %rax
+> > +       push    %rbx
+> 
+> This could use a .cfi_register_something_or_other for rbx
+
+Sean pointed out that saving %rbx is not necessary here:
+
+https://lore.kernel.org/linux-sgx/20201006025703.GG15803@linux.intel.com/
+
+> > +       mov     $SGX_ENCLAVE_RUN_RESERVED_START, %rbx
+> > +1:
+> > +       mov     (%rcx, %rbx), %rax
+> > +       cmpq    $0, %rax
+> > +       jne     .Linvalid_input
+> > +
+> > +       add     $8, %rbx
+> > +       cmpq    $SGX_ENCLAVE_RUN_RESERVED_END, %rbx
+> > +       jne     1b
+> > +       pop     %rbx
+> 
+> This should undo it.
+
+Given private feedback from Sean, I'm replacing this with:
+
+        mov     $SGX_ENCLAVE_RUN_RESERVED_START, %rbx
+ 1:
+        cmpq    $0, (%rcx, %rbx)
+        jne     .Linvalid_input
+
+        add     $8, %rbx
+        cmpq    $SGX_ENCLAVE_RUN_RESERVED_END, %rbx
+        jne     1b
+
+There was bug in the error path, %rax was not popped. I did negative
+testing (testing both branches) for this but it went clean.
+
+I guess if I fix this, that will deal with all of your comments?
+
+> > +       pop     %rax
+> > +
+> > +       /* Load TCS and AEP */
+> > +       mov     SGX_ENCLAVE_RUN_TCS(%rcx), %rbx
+> > +       lea     .Lasync_exit_pointer(%rip), %rcx
+> > +
+> > +       /* Single ENCLU serving as both EENTER and AEP (ERESUME) */
+> > +.Lasync_exit_pointer:
+> > +.Lenclu_eenter_eresume:
+> > +       enclu
+> > +
+> > +       /* EEXIT jumps here unless the enclave is doing something fancy. */
+> > +       mov     SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
+> > +
+> > +       /* Set exit_reason. */
+> > +       movl    $EEXIT, SGX_ENCLAVE_RUN_LEAF(%rbx)
+> > +
+> > +       /* Invoke userspace's exit handler if one was provided. */
+> > +.Lhandle_exit:
+> > +       cmpq    $0, SGX_ENCLAVE_RUN_USER_HANDLER(%rbx)
+> > +       jne     .Linvoke_userspace_handler
+> > +
+> > +       /* Success, in the sense that ENCLU was attempted. */
+> > +       xor     %eax, %eax
+> > +
+> > +.Lout:
+> > +       pop     %rbx
+> 
+> and this should undo the .cfi_register.
+> 
+> > +       leave
+> > +       .cfi_def_cfa            %rsp, 8
+> > +       ret
+> > +
+> > +       /* The out-of-line code runs with the pre-leave stack frame. */
+> > +       .cfi_def_cfa            %rbp, 16
+> > +
+> > +.Linvalid_input:
+> 
+> Here rbx and rax are pushed, and I guess pop rbx and leave fixes that
+> up, so okay.
+> 
+> > +       mov     $(-EINVAL), %eax
+> > +       jmp     .Lout
+> > +
+> > +.Lhandle_exception:
+> > +       mov     SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
+> > +
+> > +       /* Set the exception info. */
+> > +       mov     %eax, (SGX_ENCLAVE_RUN_LEAF)(%rbx)
+> > +       mov     %di,  (SGX_ENCLAVE_RUN_EXCEPTION_VECTOR)(%rbx)
+> > +       mov     %si,  (SGX_ENCLAVE_RUN_EXCEPTION_ERROR_CODE)(%rbx)
+> > +       mov     %rdx, (SGX_ENCLAVE_RUN_EXCEPTION_ADDR)(%rbx)
+> > +       jmp     .Lhandle_exit
+> > +
+> > +.Linvoke_userspace_handler:
+> > +       /* Pass the untrusted RSP (at exit) to the callback via %rcx. */
+> > +       mov     %rsp, %rcx
+> > +
+> > +       /* Save struct sgx_enclave_exception %rbx is about to be clobbered. */
+> > +       mov     %rbx, %rax
+> > +
+> > +       /* Save the untrusted RSP offset in %rbx (non-volatile register). */
+> > +       mov     %rsp, %rbx
+> > +       and     $0xf, %rbx
+> > +
+> > +       /*
+> > +        * Align stack per x86_64 ABI. Note, %rsp needs to be 16-byte aligned
+> > +        * _after_ pushing the parameters on the stack, hence the bonus push.
+> > +        */
+> > +       and     $-0x10, %rsp
+> > +       push    %rax
+> > +
+> > +       /* Push struct sgx_enclave_exception as a param to the callback. */
+> > +       push    %rax
+> > +
+> > +       /* Clear RFLAGS.DF per x86_64 ABI */
+> > +       cld
+> > +
+> > +       /*
+> > +        * Load the callback pointer to %rax and lfence for LVI (load value
+> > +        * injection) protection before making the call.
+> > +        */
+> > +       mov     SGX_ENCLAVE_RUN_USER_HANDLER(%rax), %rax
+> > +       lfence
+> > +       call    *%rax
+> > +
+> > +       /* Undo the post-exit %rsp adjustment. */
+> > +       lea     0x10(%rsp, %rbx), %rsp
+> > +
+> > +       /*
+> > +        * If the return from callback is zero or negative, return immediately,
+> > +        * else re-execute ENCLU with the postive return value interpreted as
+> > +        * the requested ENCLU leaf.
+> > +        */
+> > +       cmp     $0, %eax
+> > +       jle     .Lout
+> > +       jmp     .Lenter_enclave
+> > +
+> > +       .cfi_endproc
+> > +
+> > +_ASM_VDSO_EXTABLE_HANDLE(.Lenclu_eenter_eresume, .Lhandle_exception)
+
+/Jarkko
