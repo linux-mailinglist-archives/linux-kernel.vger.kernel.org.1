@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F6D2911B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 13:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0F52911BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 14:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437757AbgJQLeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 07:34:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55462 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436472AbgJQLeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 07:34:09 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2437811AbgJQMCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 08:02:10 -0400
+Received: from wildebeest.demon.nl ([212.238.236.112]:35340 "EHLO
+        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388231AbgJQMCH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 08:02:07 -0400
+Received: from tarox.wildebeest.org (tarox.wildebeest.org [172.31.17.39])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1888B206E5;
-        Sat, 17 Oct 2020 11:34:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602934449;
-        bh=mIFW/MioU6azdyQ/VEY1vjQP36uq847Elii5AnxN+iU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K8x1BCPBmWXxdZKUDUwfvzhaa4CBSmXSXI/61UYqFB1AE169BDHEQ4a8DRbTNzfIC
-         v6HXz59QBpAkb00dyv77NTI1h+bGugyVrVIvHI+hX1CAskF93RJ83nb5fP6aPM+2xO
-         xhQ/O8LMBOyPFCHcrhrBw+WOYH/zfqnD98FvBPCQ=
-Date:   Sat, 17 Oct 2020 13:34:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.9 00/15] 5.9.1-rc1 review
-Message-ID: <20201017113459.GE2978968@kroah.com>
-References: <20201016090437.170032996@linuxfoundation.org>
- <20201016210942.GA108535@roeck-us.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016210942.GA108535@roeck-us.net>
+        by gnu.wildebeest.org (Postfix) with ESMTPSA id 873AA30291AC;
+        Sat, 17 Oct 2020 14:02:03 +0200 (CEST)
+Received: by tarox.wildebeest.org (Postfix, from userid 1000)
+        id E2344401658F; Sat, 17 Oct 2020 14:02:02 +0200 (CEST)
+From:   Mark Wielaard <mark@klomp.org>
+To:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org
+Cc:     Ian Rogers <irogers@google.com>, Andi Kleen <andi@firstfloor.org>,
+        Mark Wielaard <mark@klomp.org>,
+        linux-toolchains@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH V2] Only add -fno-var-tracking-assignments workaround for old GCC versions.
+Date:   Sat, 17 Oct 2020 14:01:35 +0200
+Message-Id: <20201017120135.4004-1-mark@klomp.org>
+X-Mailer: git-send-email 2.18.4
+In-Reply-To: <20201014110132.2680-1-mark@klomp.org>
+References: <20201014110132.2680-1-mark@klomp.org>
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 02:09:42PM -0700, Guenter Roeck wrote:
-> On Fri, Oct 16, 2020 at 11:08:02AM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.9.1 release.
-> > There are 15 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> Build results:
-> 	total: 154 pass: 153 fail: 1
-> Failed builds:
-> 	mips:allmodconfig
-> Qemu test results:
-> 	total: 430 pass: 430 fail: 0
-> 
-> The mips build problem is inherited from mainline and still seen there.
-> 
-> ERROR: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko] undefined!
-> 
-> A fix is (finally) queued in -next.
+Some old GCC versions between 4.5.0 and 4.9.1 might miscompile code
+with -fvar-tracking-assingments (which is enabled by default with -g -O2).
+commit 2062afb4f added -fno-var-tracking-assignments unconditionally to
+work around this. But newer versions of GCC no longer have this bug, so
+only add it for versions of GCC before 5.0. This allows various tools
+such as a perf probe or gdb debuggers or systemtap to resolve variable
+locations using dwarf locations in more code.
 
-Good!
+Changes in V2:
+- Update commit message explaining purpose.
+- Explicitly mention GCC version in comment.
+- Wrap workaround in ifdef CONFIG_CC_IS_GCC
 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Mark Wielaard <mark@klomp.org>
+Acked-by: Ian Rogers <irogers@google.com>
+Reviewed-by: Andi Kleen <andi@firstfloor.org>
+Cc: linux-toolchains@vger.kernel.org
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Segher Boessenkool <segher@kernel.crashing.org>
+Cc: Florian Weimer <fw@deneb.enyo.de>
+Cc: Sedat Dilek <sedat.dilek@gmail.com>
+---
+ Makefile | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Great, thanks for testing them all and letting me know.
+diff --git a/Makefile b/Makefile
+index 51540b291738..964754b4cedf 100644
+--- a/Makefile
++++ b/Makefile
+@@ -813,7 +813,11 @@ KBUILD_CFLAGS	+= -ftrivial-auto-var-init=zero
+ KBUILD_CFLAGS	+= -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
+ endif
+ 
+-DEBUG_CFLAGS	:= $(call cc-option, -fno-var-tracking-assignments)
++# Workaround for GCC versions < 5.0
++# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
++ifdef CONFIG_CC_IS_GCC
++DEBUG_CFLAGS	:= $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
++endif
+ 
+ ifdef CONFIG_DEBUG_INFO
+ ifdef CONFIG_DEBUG_INFO_SPLIT
+-- 
+2.18.4
 
-greg k-h
