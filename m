@@ -2,183 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E410829135C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 19:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C998F291365
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 20:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438723AbgJQRyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 13:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
+        id S2438748AbgJQSFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 14:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438689AbgJQRyo (ORCPT
+        with ESMTP id S2438736AbgJQSFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 13:54:44 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2906EC061755;
-        Sat, 17 Oct 2020 10:54:44 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id hk7so3243215pjb.2;
-        Sat, 17 Oct 2020 10:54:44 -0700 (PDT)
+        Sat, 17 Oct 2020 14:05:30 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961BEC061755
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 11:05:29 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id h6so7510843lfj.3
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 11:05:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ywf91qFk4g7sz+DlmxxY8d4Lv3wU4S3rRm5J3fQEk4I=;
-        b=UZMxJgpw2+g0COQ0LZ330jX8puaeXgFg86Yfbu4RbU2DBTTg61lxtelBciP6dNan4K
-         UmV5FoIhzK7ibnO9G4ii5EDKh+HWCsi/8+eVxGxEXcfOlfsoPHFlQtT0k2AV3QOLVu+1
-         hny/0fnCMOeS8dsZYnwWypgG56VNHBgALMCJz2mazB5ia2xo8EfX4q3QaNqv23qcxw/f
-         Ou7X+Aab1THgbP9vdSrkyxJv2Cuo/5gwXIanzJ/UrkrxvJxX3Edc8yXReN3FI98DLDNb
-         sPfjeqEgDsNMzEu+28ZHFJRJ/4yim5X2H/xv/0RPHSAu5p/SFtwvcblfr28DbnKO+/sh
-         h+IA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YzzkfpJGlrB+NzoqhMm5+0wWAh7Rs2lQArX41HEAZCI=;
+        b=TKzbCbUH7/c9ZSIadXiw2jBTw8FZOtumacQ3aVsQPG3EMi3ovIrNr1LT83lI/QH6RX
+         6SYmz6HeVIjzp5Sr0WpMUwSO9mzQG42mg+5ygnrIHPoOo7L2Cw7XHagFYbBRDwk3tqba
+         +KviVi+0xg52SClQeey5o0rS6yC1vNh69NVxo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ywf91qFk4g7sz+DlmxxY8d4Lv3wU4S3rRm5J3fQEk4I=;
-        b=WWDJ0cgOKzT7gsW6KUgK7dhrOfmTvQLEW+sCFBPYCEioNs3Tmdy/pP3kP/HWbZV7v6
-         1W0C4VnuL1bR2GRKMSfYslISTDJbuvxTXefn6aZs+XeK1w7nk+7sBkCwgSyH9yn4QR6j
-         l3jP8117sZCqgm4ok7j/vjnG8Zkmhlx2B34tzhjres/GFAzZ/axdIVG+8baw6IQ4jykC
-         q2vSuphUlkZeWKXHyjzUOiiFreSQQGtFFDiYoqPr5UplTR4lNG7PGzJLGIHrb2cnRoRH
-         lnAkCE+QVYB/zAuOlXBqUxTDPNlm1RX2Unflt6zoCC9KkLjn2aNWZMz0/HEvbeEMPWJx
-         +PPw==
-X-Gm-Message-State: AOAM531HQWwsMGmTxDpv5PVINzamsiEGm4ijpTgRDoFV1+x3Lr3GXAtr
-        pw0wFq78311oRb00E/T6E2inYzP2Tdmp
-X-Google-Smtp-Source: ABdhPJzWAzu9OVUFxwRwXzu0nwufS/0UacK/dYlj/pcYUHlETMRaHkFvdxPLGJ4p+Q9uF4gGoYpj2A==
-X-Received: by 2002:a17:902:8508:b029:d5:af79:8b40 with SMTP id bj8-20020a1709028508b02900d5af798b40mr9886951plb.28.1602957283250;
-        Sat, 17 Oct 2020 10:54:43 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id b3sm6309041pfd.66.2020.10.17.10.54.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 17 Oct 2020 10:54:42 -0700 (PDT)
-From:   lihaiwei.kernel@gmail.com
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, Haiwei Li <lihaiwei@tencent.com>
-Subject: [PATCH v4] KVM: Check the allocation of pv cpu mask
-Date:   Sun, 18 Oct 2020 01:54:36 +0800
-Message-Id: <20201017175436.17116-1-lihaiwei.kernel@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YzzkfpJGlrB+NzoqhMm5+0wWAh7Rs2lQArX41HEAZCI=;
+        b=dhC5U2YpTXhaUtv0E9RQJjzYjBn/20IH4faJIRZYRVmxiScV9V/mSWDtgd6NlPzpzL
+         w41Hk4lqhAp3L/clWDKUwgyVk+/NaZa/SENiACL52TwvXuJFZQf5tLj9+dSohjVSAxB2
+         yWw0qAxbixKk+BWHM8trp4Z8M9JMuO23tdqN53J4MRzDH6NsY7jo7hRUAp9uK94ZYxjn
+         wjsXR3t08Rh2OlNxUixiOkiU+9rQcezk2BEznsS4kls+UK2qV5sZO4xFhgHl2IMatbgL
+         Syc9YU+rBfU1qQkXkHYRQxWaREa+703n+YP5fhbo4Vp6sOfrnxpfugY3jbjbbzNMHeYw
+         odtg==
+X-Gm-Message-State: AOAM531IzjErEgxfmvcktADiRBL2gxLRH53P38x8cnPe7g8f1kcUtdJC
+        jjm/KFbUYpzpJdJvi1mqLUAeu/+94gksQA==
+X-Google-Smtp-Source: ABdhPJyaXWG496YUcO3yCcb5ycxmU/JYK7up78e0tKSnC1oL3nypSKYozibdTOPlPKPG3HW2JwXB3g==
+X-Received: by 2002:ac2:5101:: with SMTP id q1mr3116291lfb.560.1602957925649;
+        Sat, 17 Oct 2020 11:05:25 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id d21sm2107102lfl.62.2020.10.17.11.05.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Oct 2020 11:05:23 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id h6so7510659lfj.3
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 11:05:22 -0700 (PDT)
+X-Received: by 2002:a19:4815:: with SMTP id v21mr3692028lfa.603.1602957921972;
+ Sat, 17 Oct 2020 11:05:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201016123530.GA30444@duo.ucw.cz> <bfac7ed28d79b8696cb8576790b27027a78cd3b7.camel@themaw.net>
+ <20201017100234.GA3797@amd>
+In-Reply-To: <20201017100234.GA3797@amd>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 17 Oct 2020 11:05:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whFVYJabpFsSRL-t7PjDfisvNU=kUMPQUh=SDtLtT587w@mail.gmail.com>
+Message-ID: <CAHk-=whFVYJabpFsSRL-t7PjDfisvNU=kUMPQUh=SDtLtT587w@mail.gmail.com>
+Subject: Re: autofs: use __kernel_write() for the autofs pipe writing causes
+ regression in -next was Re: 5.9.0-next-20201015: autofs oops in update-binfmts
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Ian Kent <raven@themaw.net>, Ondrej Mosnacek <omosnace@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        autofs@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Peter Anvin <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiwei Li <lihaiwei@tencent.com>
+On Sat, Oct 17, 2020 at 3:02 AM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Bad Linus!
 
-check the allocation of per-cpu __pv_cpu_mask. Init
-'send_IPI_mask_allbutself' only when successful and check the allocation
-of __pv_cpu_mask in 'kvm_flush_tlb_others'.
+Christ people.
 
-Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
----
-v1 -> v2:
- * add CONFIG_SMP for kvm_send_ipi_mask_allbutself to prevent build error
-v2 -> v3:
- * always check the allocation of __pv_cpu_mask in kvm_flush_tlb_others
-v3 -> v4:
- * mov kvm_setup_pv_ipi to kvm_alloc_cpumask and get rid of kvm_apic_init
+The bug is in linux-next, not in mainline.  I've told the people
+involved already over a week ago.
 
- arch/x86/kernel/kvm.c | 53 +++++++++++++++++++++++++++++--------------
- 1 file changed, 36 insertions(+), 17 deletions(-)
+I can't do anything about linux-next being broken and people not fixing it.
 
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index 42c6e0deff9e..be28203cc098 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -547,16 +547,6 @@ static void kvm_send_ipi_mask_allbutself(const struct cpumask *mask, int vector)
- 	__send_ipi_mask(local_mask, vector);
- }
- 
--/*
-- * Set the IPI entry points
-- */
--static void kvm_setup_pv_ipi(void)
--{
--	apic->send_IPI_mask = kvm_send_ipi_mask;
--	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
--	pr_info("setup PV IPIs\n");
--}
--
- static void kvm_smp_send_call_func_ipi(const struct cpumask *mask)
- {
- 	int cpu;
-@@ -619,6 +609,11 @@ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
- 	struct kvm_steal_time *src;
- 	struct cpumask *flushmask = this_cpu_cpumask_var_ptr(__pv_cpu_mask);
- 
-+	if (unlikely(!flushmask)) {
-+		native_flush_tlb_others(cpumask, info);
-+		return;
-+	}
-+
- 	cpumask_copy(flushmask, cpumask);
- 	/*
- 	 * We have to call flush only on online vCPUs. And
-@@ -732,10 +727,6 @@ static uint32_t __init kvm_detect(void)
- 
- static void __init kvm_apic_init(void)
- {
--#if defined(CONFIG_SMP)
--	if (pv_ipi_supported())
--		kvm_setup_pv_ipi();
--#endif
- }
- 
- static void __init kvm_init_platform(void)
-@@ -765,10 +756,18 @@ static __init int activate_jump_labels(void)
- }
- arch_initcall(activate_jump_labels);
- 
-+static void kvm_free_cpumask(void)
-+{
-+	unsigned int cpu;
-+
-+	for_each_possible_cpu(cpu)
-+		free_cpumask_var(per_cpu(__pv_cpu_mask, cpu));
-+}
-+
- static __init int kvm_alloc_cpumask(void)
- {
- 	int cpu;
--	bool alloc = false;
-+	bool alloc = false, alloced = true;
- 
- 	if (!kvm_para_available() || nopv)
- 		return 0;
-@@ -783,10 +782,30 @@ static __init int kvm_alloc_cpumask(void)
- 
- 	if (alloc)
- 		for_each_possible_cpu(cpu) {
--			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
--				GFP_KERNEL, cpu_to_node(cpu));
-+			if (!zalloc_cpumask_var_node(
-+				per_cpu_ptr(&__pv_cpu_mask, cpu),
-+				GFP_KERNEL, cpu_to_node(cpu))) {
-+				alloced = false;
-+				break;
-+			}
- 		}
- 
-+#if defined(CONFIG_SMP)
-+	/* Set the IPI entry points */
-+	if (pv_ipi_supported()) {
-+		apic->send_IPI_mask = kvm_send_ipi_mask;
-+		if (alloced)
-+			apic->send_IPI_mask_allbutself =
-+				kvm_send_ipi_mask_allbutself;
-+		pr_info("setup PV IPIs\n");
-+	}
-+#endif
-+
-+	if (!alloced) {
-+		kvm_free_cpumask();
-+		return -ENOMEM;
-+	}
-+
- 	return 0;
- }
- arch_initcall(kvm_alloc_cpumask);
--- 
-2.18.4
-
+              Linus
