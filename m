@@ -2,336 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7D329142C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 21:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB91229142F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 21:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439603AbgJQTsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 15:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42710 "EHLO
+        id S2439626AbgJQTtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 15:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439594AbgJQTsm (ORCPT
+        with ESMTP id S2439613AbgJQTto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 15:48:42 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DCCC061755;
-        Sat, 17 Oct 2020 12:48:21 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a4so6468150lji.12;
-        Sat, 17 Oct 2020 12:48:21 -0700 (PDT)
+        Sat, 17 Oct 2020 15:49:44 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35FADC061755;
+        Sat, 17 Oct 2020 12:49:28 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a28so1682153ljn.3;
+        Sat, 17 Oct 2020 12:49:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cegU7lWKKHjc/OI81eLoaa0b8R0vGwDdxHJB+PphqZ0=;
-        b=rw/pi6RL9GmKAq6Lc7J/Nc8rDzvRABVIcecByO+zNfikHH0pG19RrOFjjX5QlgB1cs
-         BGPFn86p7iR/sAOx2wpiUlgCW3UpMd3hrTobbpOdNCjkp3rnIqz/K2pTUOSHkpK8nHwZ
-         CU3S/jy3eDMHOg94YTaGVEY/klA587446ndEtXwcT2R+MUVzPSSb8PAllUVjJlTWlyYl
-         CXl2PPWge83ozCDfVeKktnQFx4BA/RxRoBCQCJNGA7Z81OKAGAkM6NzVILPY7PtcSmLF
-         4AWss/krx4OPs39uZKitgYK9JYQlyfL0I9cUcY4m0q4IY3CisYFkDSx6m2zRiS6QnT7Y
-         E4Kw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BAlmrGVj9wF13S7ppPspWcU+ZJ0NozHnpDbdtnO2YJA=;
+        b=Zcrld+DrlwySaOYgwlurVdgb1dEdVXr/mE+EHK/Ld8E06lVYeEtOMO0k+QarLcGI99
+         aqj6egQ/Xjg29QUh1a0X92CXNBRo5PrHPm+ywXHEDJLUQDTh4vxYpU8UeHeNKAzm25ZU
+         VWVbBaRV/6YT2JDQm4AYPynYuEhs9xDqa5nPurTCyN+pLKB7+ZV+M/4p9atF2v9eDhku
+         NO4zaEqX7MoQ5A0Gwa3i8wQltKa5t8IUMa8ueKehL9psKasgpm8nQ4vLPG0oZoI06FZg
+         v1fYsoRtJA/NSA54i8Ei1oiayzsPK6Yvw70/X/0c32GXgR+dIfeNYt8saz0jb8GxN9Z0
+         0XYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=cegU7lWKKHjc/OI81eLoaa0b8R0vGwDdxHJB+PphqZ0=;
-        b=UuKWpwM00w+DBaGUYGsQxLZ8pEdEfWv+SH4pUTaU5AbgT/oQVveqgcK8ADKbIuF70h
-         Ia4mwSvDkjEX9MgoyO542tTxS6TQWa9vYpmzIdRBRgNwVcV+MzLXg7alRCOUaDeMWDzR
-         20PHn6bQC1cK85O1l0+echrdeJ408Ce57z414A3FDgdreAr0Cx76nV3HJBE92v1Je69p
-         amnquPCJWr3HIUavk/fZ2vFdhoPXc/0v8y4nyMTH9bI3nH/8IqQYnHoYmV7BTS/E/XBx
-         3pqplYPcwle3OcHlXf6mTsXZ6Q8k6dKd88+L+aM2KqDFiyqsaKTl3Xh3Jj4h4qpyoqly
-         Dkhg==
-X-Gm-Message-State: AOAM5327jYwX2yM1BE3ROtGHN22kDYu7saIN7l6Hcr6NATj83ugr4W2o
-        tCDwQ60p9lwe2Sm/PHwtske2RptJkkM=
-X-Google-Smtp-Source: ABdhPJyer14sZVv5JTcqzQnp6grw8SEoLVn6y/eVW9iPZXNs8hfeutHoqWtToJBN0T6W7kG3bRxPTw==
-X-Received: by 2002:a2e:9652:: with SMTP id z18mr3705582ljh.410.1602964097509;
-        Sat, 17 Oct 2020 12:48:17 -0700 (PDT)
-Received: from localhost.localdomain (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id f25sm2351009ljk.57.2020.10.17.12.48.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Oct 2020 12:48:16 -0700 (PDT)
-From:   Topi Miettinen <toiwoton@gmail.com>
-To:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Topi Miettinen <toiwoton@gmail.com>
-Subject: [PATCH v3] mm: Optional full ASLR for mmap() and mremap()
-Date:   Sat, 17 Oct 2020 22:47:59 +0300
-Message-Id: <20201017194759.59449-1-toiwoton@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        bh=BAlmrGVj9wF13S7ppPspWcU+ZJ0NozHnpDbdtnO2YJA=;
+        b=qzuPanAMZ9Rg5gXevnCBY0RUannqmOkQVaRgjf86BFKM/oUlAfNzDmEVwfP9zdXitx
+         gUjAwa/mJgALuJbxidr/dHh46B2KXOblvsGdFSgXOpuuHpBz7wsp/ra5xG51ZEJEsyPt
+         Et/dEAS14wxXCp+RllW3kWRYICVevTvI4jj1Wvy1P5rJbiDWZxtUmGa5jVLEHv7nUeEk
+         A6OCN3i75uh29zFYx12SrrWaqT2QWsLh3CNoskxQlYRp1Gw4xkYlU6nyM/W3EHt8oGI3
+         xPyLJwgbfOZnEOXXfP+iccugCeAONsOMwrzD8OLY6em/SHzUU4rub3EpC89tJNAuSLlx
+         sHFA==
+X-Gm-Message-State: AOAM533pKQFmQej8QRnTIAmnuzHzlEeq6ItvKcG+rPL5l5QfJWRLpVWt
+        O7rLuhF1I4f+uYRHZHYZesY=
+X-Google-Smtp-Source: ABdhPJwY+HhJaGGSWQaVZwh6RK+t9vQHZe+ZaI9x04lBF828T1ZaCFDvHuUWw7hd/VPfHHZVJp2FBw==
+X-Received: by 2002:a2e:9782:: with SMTP id y2mr4021100lji.110.1602964165239;
+        Sat, 17 Oct 2020 12:49:25 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:44ab:aa29:cc3a:7ce3:762e:af0? ([2a00:1fa0:44ab:aa29:cc3a:7ce3:762e:af0])
+        by smtp.gmail.com with ESMTPSA id u24sm2229286lfg.21.2020.10.17.12.49.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Oct 2020 12:49:24 -0700 (PDT)
+Subject: Re: [PATCH net] ravb: Fix bit fields checking in ravb_hwtstamp_get()
+To:     Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Cc:     linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, geert+renesas@glider.be,
+        Julia Lawall <julia.lawall@inria.fr>,
+        "Behme, Dirk - Bosch" <dirk.behme@de.bosch.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>
+References: <20200930192124.25060-1-andrew_gabbasov@mentor.com>
+ <000001d697c2$71651d70$542f5850$@mentor.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <2819a14d-500c-561b-337e-417201eb040f@gmail.com>
+Date:   Sat, 17 Oct 2020 22:49:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <000001d697c2$71651d70$542f5850$@mentor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
-enables full randomization of memory mappings created with mmap(NULL,
-...). With 2, the base of the VMA used for such mappings is random,
-but the mappings are created in predictable places within the VMA and
-in sequential order. With 3, new VMAs are created to fully randomize
-the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
-even if not necessary.
+Hello!
 
-The method is to randomize the new address without considering
-VMAs. If the address fails checks because of overlap with the stack
-area (or in case of mremap(), overlap with the old mapping), the
-operation is retried a few times before falling back to old method.
+On 10/1/20 10:13 AM, Andrew Gabbasov wrote:
 
-On 32 bit systems this may cause problems due to increased VM
-fragmentation if the address space gets crowded.
+   The patch was set to the "Changes Requested" state -- most probably because of this
+mail. Though unintentionally, it served to throttle actions on this patch. I did only
+remember about this patch yesterday... :-)
 
-On all systems, it will reduce performance and increase memory
-usage due to less efficient use of page tables and inability to
-merge adjacent VMAs with compatible attributes.
+[...]
+>> In the function ravb_hwtstamp_get() in ravb_main.c with the existing
+> values
+>> for RAVB_RXTSTAMP_TYPE_V2_L2_EVENT (0x2) and RAVB_RXTSTAMP_TYPE_ALL
+>> (0x6)
+>>
+>> if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
+>> 	config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+>> else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
+>> 	config.rx_filter = HWTSTAMP_FILTER_ALL;
+>>
+>> if the test on RAVB_RXTSTAMP_TYPE_ALL should be true, it will never be
+>> reached.
+>>
+>> This issue can be verified with 'hwtstamp_config' testing program
+>> (tools/testing/selftests/net/hwtstamp_config.c). Setting filter type to
+> ALL
+>> and subsequent retrieving it gives incorrect value:
+>>
+>> $ hwtstamp_config eth0 OFF ALL
+>> flags = 0
+>> tx_type = OFF
+>> rx_filter = ALL
+>> $ hwtstamp_config eth0
+>> flags = 0
+>> tx_type = OFF
+>> rx_filter = PTP_V2_L2_EVENT
+>>
+>> Correct this by converting if-else's to switch.
+> 
+> Earlier you proposed to fix this issue by changing the value
+> of RAVB_RXTSTAMP_TYPE_ALL constant to 0x4.
+> Unfortunately, simple changing of the constant value will not
+> be enough, since the code in ravb_rx() (actually determining
+> if timestamp is needed)
+> 
+> u32 get_ts = priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE;
+> [...]
+> get_ts &= (q == RAVB_NC) ?
+>                 RAVB_RXTSTAMP_TYPE_V2_L2_EVENT :
+>                 ~RAVB_RXTSTAMP_TYPE_V2_L2_EVENT;
+> 
+> will work incorrectly and will need to be fixed too, making this
+> piece of code more complicated.
+> 
+> So, it's probably easier and safer to keep the constant value and
+> the code in ravb_rx() intact, and just fix the get ioctl code,
+> where the issue is actually located.
 
-In this example, with value of 2, ld.so.cache, libc, an anonymous mmap
-and locale-archive are located close to each other:
-$ strace /bin/sync
-...
-openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
-fstat(3, {st_mode=S_IFREG|0644, st_size=189096, ...}) = 0
-mmap(NULL, 189096, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7d9c1e7f2000
-...
-openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
-read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0n\2\0\0\0\0\0"..., 832) = 832
-fstat(3, {st_mode=S_IFREG|0755, st_size=1839792, ...}) = 0
-mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7d9c1e7f0000
-mmap(NULL, 1852680, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7d9c1e62b000
-...
-openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
-fstat(3, {st_mode=S_IFREG|0644, st_size=5642592, ...}) = 0
-mmap(NULL, 5642592, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7d9c1e0c9000
+   We have one more issue with the current driver: bit 2 of priv->tstamp_rx_ctrl
+can only be set as a part of the ALL mask, not individually. I'm now thinking we
+should set RAVB_RXTSTAMP_TYPE[_ALL] to 2 (and probably just drop the ALL mask)...
 
-With 3, they are located in unrelated addresses:
-$ echo 3 > /proc/sys/kernel/randomize_va_space
-$ strace /bin/sync
-...
-openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
-fstat(3, {st_mode=S_IFREG|0644, st_size=189096, ...}) = 0
-mmap(NULL, 189096, PROT_READ, MAP_PRIVATE, 3, 0) = 0xeda4fbea000
-...
-openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
-read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0n\2\0\0\0\0\0"..., 832) = 832
-fstat(3, {st_mode=S_IFREG|0755, st_size=1839792, ...}) = 0
-mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb8fb9c1d000
-mmap(NULL, 1852680, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xaabd8598000
-...
-openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
-fstat(3, {st_mode=S_IFREG|0644, st_size=5642592, ...}) = 0
-mmap(NULL, 5642592, PROT_READ, MAP_PRIVATE, 3, 0) = 0xbe351ab8000
+[...]
 
-Signed-off-by: Topi Miettinen <toiwoton@gmail.com>
----
-v2: also randomize mremap(..., MREMAP_MAYMOVE)
-v3: avoid stack area and retry in case of bad random address
----
- Documentation/admin-guide/hw-vuln/spectre.rst |  6 ++--
- Documentation/admin-guide/sysctl/kernel.rst   | 15 +++++++++
- init/Kconfig                                  |  2 +-
- mm/internal.h                                 |  8 +++++
- mm/mmap.c                                     | 32 +++++++++++++------
- mm/mremap.c                                   | 26 +++++++++++++++
- 6 files changed, 76 insertions(+), 13 deletions(-)
+>> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+>> Reported-by: Julia Lawall <julia.lawall@inria.fr>
+>> Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+>> ---
+>>  drivers/net/ethernet/renesas/ravb_main.c | 10 +++++++---
+>>  1 file changed, 7 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c
+>> b/drivers/net/ethernet/renesas/ravb_main.c
+>> index df89d09b253e..c0610b2d3b14 100644
+>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>> @@ -1802,12 +1802,16 @@ static int ravb_hwtstamp_get(struct net_device
+>> *ndev, struct ifreq *req)
+>>  	config.flags = 0;
+>>  	config.tx_type = priv->tstamp_tx_ctrl ? HWTSTAMP_TX_ON :
+>>  						HWTSTAMP_TX_OFF;
+>> -	if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
+>> +	switch (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE) {
+>> +	case RAVB_RXTSTAMP_TYPE_V2_L2_EVENT:
+>>  		config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+>> -	else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
+>> +		break;
+>> +	case RAVB_RXTSTAMP_TYPE_ALL:
+>>  		config.rx_filter = HWTSTAMP_FILTER_ALL;
+>> -	else
+>> +		break;
+>> +	default:
+>>  		config.rx_filter = HWTSTAMP_FILTER_NONE;
 
-diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
-index e05e581af5cf..9ea250522077 100644
---- a/Documentation/admin-guide/hw-vuln/spectre.rst
-+++ b/Documentation/admin-guide/hw-vuln/spectre.rst
-@@ -254,7 +254,7 @@ Spectre variant 2
-    left by the previous process will also be cleared.
- 
-    User programs should use address space randomization to make attacks
--   more difficult (Set /proc/sys/kernel/randomize_va_space = 1 or 2).
-+   more difficult (Set /proc/sys/kernel/randomize_va_space = 1, 2 or 3).
- 
- 3. A virtualized guest attacking the host
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-@@ -499,8 +499,8 @@ Spectre variant 2
-    more overhead and run slower.
- 
-    User programs should use address space randomization
--   (/proc/sys/kernel/randomize_va_space = 1 or 2) to make attacks more
--   difficult.
-+   (/proc/sys/kernel/randomize_va_space = 1, 2 or 3) to make attacks
-+   more difficult.
- 
- 3. VM mitigation
- ^^^^^^^^^^^^^^^^
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index d4b32cc32bb7..bc3bb74d544d 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -1060,6 +1060,21 @@ that support this feature.
-     Systems with ancient and/or broken binaries should be configured
-     with ``CONFIG_COMPAT_BRK`` enabled, which excludes the heap from process
-     address space randomization.
-+
-+3   Additionally enable full randomization of memory mappings created
-+    with mmap(NULL, ...). With 2, the base of the VMA used for such
-+    mappings is random, but the mappings are created in predictable
-+    places within the VMA and in sequential order. With 3, new VMAs
-+    are created to fully randomize the mappings. Also mremap(...,
-+    MREMAP_MAYMOVE) will move the mappings even if not necessary.
-+
-+    On 32 bit systems this may cause problems due to increased VM
-+    fragmentation if the address space gets crowded.
-+
-+    On all systems, it will reduce performance and increase memory
-+    usage due to less efficient use of page tables and inability to
-+    merge adjacent VMAs with compatible attributes.
-+
- ==  ===========================================================================
- 
- 
-diff --git a/init/Kconfig b/init/Kconfig
-index d6a0b31b13dc..c5ea2e694f6a 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1859,7 +1859,7 @@ config COMPAT_BRK
- 	  also breaks ancient binaries (including anything libc5 based).
- 	  This option changes the bootup default to heap randomization
- 	  disabled, and can be overridden at runtime by setting
--	  /proc/sys/kernel/randomize_va_space to 2.
-+	  /proc/sys/kernel/randomize_va_space to 2 or 3.
- 
- 	  On non-ancient distros (post-2000 ones) N is usually a safe choice.
- 
-diff --git a/mm/internal.h b/mm/internal.h
-index 10c677655912..382abfcc9ea3 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -620,4 +620,12 @@ struct migration_target_control {
- 	gfp_t gfp_mask;
- };
- 
-+#ifndef arch_get_mmap_end
-+#define arch_get_mmap_end(addr)	(TASK_SIZE)
-+#endif
-+
-+#ifndef arch_get_mmap_base
-+#define arch_get_mmap_base(addr, base) (base)
-+#endif
-+
- #endif	/* __MM_INTERNAL_H */
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 40248d84ad5f..2340f8a0978c 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -47,6 +47,7 @@
- #include <linux/pkeys.h>
- #include <linux/oom.h>
- #include <linux/sched/mm.h>
-+#include <linux/elf-randomize.h>
- 
- #include <linux/uaccess.h>
- #include <asm/cacheflush.h>
-@@ -73,6 +74,8 @@ const int mmap_rnd_compat_bits_max = CONFIG_ARCH_MMAP_RND_COMPAT_BITS_MAX;
- int mmap_rnd_compat_bits __read_mostly = CONFIG_ARCH_MMAP_RND_COMPAT_BITS;
- #endif
- 
-+#define MAX_RANDOM_MMAP_RETRIES			5
-+
- static bool ignore_rlimit_data;
- core_param(ignore_rlimit_data, ignore_rlimit_data, bool, 0644);
- 
-@@ -206,7 +209,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
- #ifdef CONFIG_COMPAT_BRK
- 	/*
- 	 * CONFIG_COMPAT_BRK can still be overridden by setting
--	 * randomize_va_space to 2, which will still cause mm->start_brk
-+	 * randomize_va_space to >= 2, which will still cause mm->start_brk
- 	 * to be arbitrarily shifted
- 	 */
- 	if (current->brk_randomized)
-@@ -1407,6 +1410,25 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
- 	if (mm->map_count > sysctl_max_map_count)
- 		return -ENOMEM;
- 
-+	/* Pick a random address even outside current VMAs? */
-+	if (!addr && randomize_va_space >= 3) {
-+		int i = MAX_RANDOM_MMAP_RETRIES;
-+		unsigned long max_addr = arch_get_mmap_base(addr, mm->mmap_base);
-+
-+		do {
-+			/* Try a few times to find a free area */
-+			addr = arch_mmap_rnd();
-+			if (addr >= max_addr)
-+				continue;
-+			addr = get_unmapped_area(file, addr, len, pgoff, flags);
-+			if (!IS_ERR_VALUE(addr))
-+				break;
-+		} while (--i >= 0);
-+
-+		if (IS_ERR_VALUE(addr))
-+			addr = 0;
-+	}
-+
- 	/* Obtain the address to map to. we verify (or select) it and ensure
- 	 * that it represents a valid section of the address space.
- 	 */
-@@ -2095,14 +2117,6 @@ unsigned long vm_unmapped_area(struct vm_unmapped_area_info *info)
- 	return addr;
- }
- 
--#ifndef arch_get_mmap_end
--#define arch_get_mmap_end(addr)	(TASK_SIZE)
--#endif
--
--#ifndef arch_get_mmap_base
--#define arch_get_mmap_base(addr, base) (base)
--#endif
--
- /* Get an address range which is currently unmapped.
-  * For shmat() with addr=0.
-  *
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 138abbae4f75..12f61c4b9d3a 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -24,12 +24,15 @@
- #include <linux/uaccess.h>
- #include <linux/mm-arch-hooks.h>
- #include <linux/userfaultfd_k.h>
-+#include <linux/elf-randomize.h>
- 
- #include <asm/cacheflush.h>
- #include <asm/tlbflush.h>
- 
- #include "internal.h"
- 
-+#define MAX_RANDOM_MREMAP_RETRIES		5
-+
- static pmd_t *get_old_pmd(struct mm_struct *mm, unsigned long addr)
- {
- 	pgd_t *pgd;
-@@ -720,6 +723,29 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
- 		goto out;
- 	}
- 
-+	if ((flags & MREMAP_MAYMOVE) && randomize_va_space >= 3) {
-+		/*
-+		 * Caller is happy with a different address, so let's
-+		 * move even if not necessary!
-+		 */
-+		int i = MAX_RANDOM_MREMAP_RETRIES;
-+		unsigned long max_addr = arch_get_mmap_base(addr, mm->mmap_base);
-+
-+		do {
-+			/* Try a few times to find a free area */
-+			new_addr = arch_mmap_rnd();
-+			if (new_addr >= max_addr)
-+				continue;
-+			ret = mremap_to(addr, old_len, new_addr, new_len,
-+					&locked, flags, &uf, &uf_unmap_early,
-+					&uf_unmap);
-+			if (!IS_ERR_VALUE(ret))
-+				goto out;
-+		} while (--i >= 0);
-+
-+		new_addr = addr;
-+	}
-+
- 	/*
- 	 * Always allow a shrinking remap: that just unmaps
- 	 * the unnecessary pages..
--- 
-2.28.0
+   Yeah, that's better. But do we really need am anonymous bit 2 that can't be
+toggled other than via passing the ALL mask?
 
+[...]
+
+MBR, Sergei
