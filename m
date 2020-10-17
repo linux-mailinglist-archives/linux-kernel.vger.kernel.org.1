@@ -2,131 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB2E2911D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 14:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C80D2911F0
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 15:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437935AbgJQMZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 08:25:12 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:50578 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437813AbgJQMZL (ORCPT
+        id S2437998AbgJQNG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 09:06:27 -0400
+Received: from mail-03.mail-europe.com ([91.134.188.129]:42726 "EHLO
+        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437990AbgJQNG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 08:25:11 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id DEA978055B;
-        Sat, 17 Oct 2020 14:25:07 +0200 (CEST)
-Date:   Sat, 17 Oct 2020 14:25:06 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] vgacon: fix a UAF in do_update_region()
-Message-ID: <20201017122506.GA2838103@ravnborg.org>
-References: <20200713110445.553974-1-yangyingliang@huawei.com>
+        Sat, 17 Oct 2020 09:06:26 -0400
+Date:   Sat, 17 Oct 2020 13:06:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1602939981;
+        bh=de22LrvYVNO+7IibwrPlriMTI7Y3usocqLQKuqCcfKU=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=BXMCP97EQIGafljtiwnUqS1RlDD41cD76BVudAxjiFnmiKy6Em6mYmY5XDkNSprcg
+         dWoCj8aP12iYNz9BTvA4SYjwOE+NmdCGNQyaTssKoQvMjb2wdOclGejJsp0PQ/tQ3J
+         xrdq8mYpKVtmVj0BhNxQwTSPVSbxYLb+IOR1Qh5M=
+To:     Coiby Xu <coiby.xu@gmail.com>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Helmut Stult <helmut.stult@schinfo.de>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v2] HID: i2c-hid: add polling mode based on connected GPIO chip's pin status
+Message-ID: <FWsXxqGztJgszUpmNtKli8eOyeKP-lxFeTsjs2nQAxgYZBkT3JNTU3VdHF4GbQVS_PvKiqbfrZXI7vaUHA_lXTxjPX-WjkNEOdiMUetO8IQ=@protonmail.com>
+In-Reply-To: <20201017004556.kuoxzmbvef4yr3kg@Rk>
+References: <20201016131335.8121-1-coiby.xu@gmail.com> <T2SIcFVxZ81NUwKLDbSESA7Wpm7DYowEiii8ZaxTPtrdXZZeHLq5iZPkN5BLlp-9C6PLwUZOVwNpMdEdPSRZcAG4MmDt-tfyKZoQYJ0KHOA=@protonmail.com> <20201017004556.kuoxzmbvef4yr3kg@Rk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713110445.553974-1-yangyingliang@huawei.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=ID6ng7r3AAAA:8 a=i0EeH86SAAAA:8 a=e5mUnYsNAAAA:8
-        a=PHTwHYtFXg1mRD0ZxZcA:9 a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
-        a=AkheI1RvQwOzcTXhi5f4:22 a=Vxmtnl_E_bksehYqCbjh:22
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang.
+Hi
 
-Can you please resend and include Greg in the recipient list.
-Greg is maintainer of the console subsystem these days.
+> [...]
+> >> +static int get_gpio_pin_state(struct irq_desc *irq_desc)
+> >> +{
+> >> +=09struct gpio_chip *gc =3D irq_data_get_irq_chip_data(&irq_desc->irq=
+_data);
+> >> +
+> >> +=09return gc->get(gc, irq_desc->irq_data.hwirq);
+> >> +}
+> >> +
+> >> +static bool interrupt_line_active(struct i2c_client *client)
+> >> +{
+> >> +=09unsigned long trigger_type =3D irq_get_trigger_type(client->irq);
+> >> +=09struct irq_desc *irq_desc =3D irq_to_desc(client->irq);
+> >> +
+> >> +=09/*
+> >> +=09 * According to Windows Precsiontion Touchpad's specs
+> >> +=09 * https://docs.microsoft.com/en-us/windows-hardware/design/compon=
+ent-guidelines/windows-precision-touchpad-device-bus-connectivity,
+> >> +=09 * GPIO Interrupt Assertion Leve could be either ActiveLow or
+> >> +=09 * ActiveHigh.
+> >> +=09 */
+> >> +=09if (trigger_type & IRQF_TRIGGER_LOW)
+> >> +=09=09return !get_gpio_pin_state(irq_desc);
+> >> +
+> >> +=09return get_gpio_pin_state(irq_desc);
+> >> +}
+> >
+> >Excuse my ignorance, but I think some kind of error handling regarding t=
+he return
+> >value of `get_gpio_pin_state()` should be present here.
+> >
+> What kind of errors would you expect? It seems (struct gpio_chip *)->get
+> only return 0 or 1.
+> >
 
-	Sam
+I read the code of a couple gpio chips and - I may be wrong, but - it seems=
+ they
+can return an arbitrary errno.
 
-On Mon, Jul 13, 2020 at 11:04:45AM +0000, Yang Yingliang wrote:
-> I got a UAF report in do_update_region() when I doing fuzz test.
-> 
-> [   51.161905] BUG: KASAN: use-after-free in do_update_region+0x579/0x600
-> [   51.161918] Read of size 2 at addr ffff888000100000 by task test/295
-> 
-> [   51.161957] CPU: 2 PID: 295 Comm: test Not tainted 5.7.0+ #975
-> [   51.161969] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-> [   51.161976] Call Trace:
-> [   51.162001]  dump_stack+0xc6/0x11e
-> [   51.162019]  ? do_update_region+0x579/0x600
-> [   51.162047]  print_address_description.constprop.6+0x1a/0x220
-> [   51.162083]  ? vprintk_func+0x66/0xed
-> [   51.162100]  ? do_update_region+0x579/0x600
-> [   51.162112]  ? do_update_region+0x579/0x600
-> [   51.162128]  kasan_report.cold.9+0x37/0x7c
-> [   51.162151]  ? do_update_region+0x579/0x600
-> [   51.162173]  do_update_region+0x579/0x600
-> [   51.162207]  ? con_get_trans_old+0x230/0x230
-> [   51.162229]  ? retint_kernel+0x10/0x10
-> [   51.162278]  csi_J+0x557/0xa00
-> [   51.162307]  do_con_trol+0x49af/0x5cc0
-> [   51.162330]  ? lock_downgrade+0x720/0x720
-> [   51.162347]  ? reset_palette+0x1b0/0x1b0
-> [   51.162369]  ? lockdep_hardirqs_on_prepare+0x379/0x540
-> [   51.162393]  ? notifier_call_chain+0x11b/0x160
-> [   51.162438]  do_con_write.part.24+0xb0a/0x1a30
-> [   51.162501]  ? do_con_trol+0x5cc0/0x5cc0
-> [   51.162522]  ? console_unlock+0x7b8/0xb00
-> [   51.162555]  ? __mutex_unlock_slowpath+0xd4/0x670
-> [   51.162574]  ? this_tty+0xe0/0xe0
-> [   51.162589]  ? console_unlock+0x559/0xb00
-> [   51.162605]  ? wait_for_completion+0x260/0x260
-> [   51.162638]  con_write+0x31/0xb0
-> [   51.162658]  n_tty_write+0x4fa/0xd40
-> [   51.162710]  ? n_tty_read+0x1800/0x1800
-> [   51.162730]  ? prepare_to_wait_exclusive+0x270/0x270
-> [   51.162754]  ? __might_fault+0x175/0x1b0
-> [   51.162783]  tty_write+0x42b/0x8d0
-> [   51.162795]  ? n_tty_read+0x1800/0x1800
-> [   51.162825]  ? tty_lookup_driver+0x450/0x450
-> [   51.162848]  __vfs_write+0x7c/0x100
-> [   51.162875]  vfs_write+0x1c9/0x510
-> [   51.162901]  ksys_write+0xff/0x200
-> [   51.162918]  ? __ia32_sys_read+0xb0/0xb0
-> [   51.162940]  ? do_syscall_64+0x1a/0x520
-> [   51.162957]  ? lockdep_hardirqs_on_prepare+0x379/0x540
-> [   51.162984]  do_syscall_64+0xa1/0x520
-> [   51.163008]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
-> 
-> After vgacon_set_origin() is called in set_origin(), the vc_origin is
-> set to vga_vram_base, the vc_pos should between vga_vram_base and
-> vga_vram_end. But we still use vc_screenbuf_size, if the vga_vram_size
-> is smaller than vc_screenbuf_size, vc_pos may be out of bound, using it
-> will cause a use-after-free(or out-of-bounds). Fix this by calling
-> vc_resize() if vga_vram_size is smaller than vc_screenbuf_size.
-> 
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/video/console/vgacon.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
-> index b51ffb9a208d..2eabb86bb0dd 100644
-> --- a/drivers/video/console/vgacon.c
-> +++ b/drivers/video/console/vgacon.c
-> @@ -1341,6 +1341,9 @@ static int vgacon_set_origin(struct vc_data *c)
->  	if (vga_is_gfx ||	/* We don't play origin tricks in graphic modes */
->  	    (console_blanked && !vga_palette_blanked))	/* Nor we write to blanked screens */
->  		return 0;
-> +
-> +	if (c->vc_screenbuf_size > vga_vram_size)
-> +		vc_resize(c, screen_info.orig_video_cols, screen_info.orig_video_lines);
->  	c->vc_origin = c->vc_visible_origin = vga_vram_base;
->  	vga_set_mem_top(c);
->  	vga_rolled_over = 0;
-> -- 
-> 2.25.1
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+> >> +
+> >> +static int i2c_hid_polling_thread(void *i2c_hid)
+> >> +{
+> >> +=09struct i2c_hid *ihid =3D i2c_hid;
+> >> +=09struct i2c_client *client =3D ihid->client;
+> >> +=09unsigned int polling_interval_idle;
+> >> +
+> >> +=09while (1) {
+> >> +=09=09/*
+> >> +=09=09 * re-calculate polling_interval_idle
+> >> +=09=09 * so the module parameters polling_interval_idle_ms can be
+> >> +=09=09 * changed dynamically through sysfs as polling_interval_active=
+_us
+> >> +=09=09 */
+> >> +=09=09polling_interval_idle =3D polling_interval_idle_ms * 1000;
+> >> +=09=09if (test_bit(I2C_HID_READ_PENDING, &ihid->flags))
+> >> +=09=09=09usleep_range(50000, 100000);
+> >> +
+> >> +=09=09if (kthread_should_stop())
+> >> +=09=09=09break;
+> >> +
+> >> +=09=09while (interrupt_line_active(client)) {
+> >
+> >I realize it's quite unlikely, but can't this be a endless loop if data =
+is coming
+> >in at a high enough rate? Maybe the maximum number of iterations could b=
+e limited here?
+> >
+> If we find HID reports are constantly read and send to front-end
+> application like libinput, won't it help expose the problem of the I2C
+> HiD device?
+> >
+
+I'm not sure I completely understand your point. The reason why I wrote wha=
+t I wrote
+is that this kthread could potentially could go on forever (since `kthread_=
+should_stop()`
+is not checked in the inner while loop) if the data is supplied at a high e=
+nough rate.
+That's why I said, to avoid this problem, only allow a certain number of it=
+erations
+for the inner loop, to guarantee that the kthread can stop in any case.
+
+
+> >> +=09=09=09i2c_hid_get_input(ihid);
+> >> +=09=09=09usleep_range(polling_interval_active_us,
+> >> +=09=09=09=09     polling_interval_active_us + 100);
+> >> +=09=09}
+> >> +
+> >> +=09=09usleep_range(polling_interval_idle,
+> >> +=09=09=09     polling_interval_idle + 1000);
+> >> +=09}
+> >> +
+> >> +=09do_exit(0);
+> >> +=09return 0;
+> >> +}
+> [...]
+> >Excuse my ignorance, but I do not understand why the following two chang=
+es are not enough:
+> >
+> >in `i2c_hid_suspend()`:
+> > if (polling_mode =3D=3D I2C_POLLING_DISABLED)
+> >   disable_irq(client->irq);
+> >
+> >in `i2c_hid_resume()`:
+> > if (polling_mode =3D=3D I2C_POLLING_DISABLED)
+> >   enable_irq(client->irq);
+> >
+> I think we shouldn't call enable/disable_irq_wake in polling mode
+> where we don't set up irq.
+
+I think I now understand what you mean. I'm not sure, but it seems logical =
+to me
+that you can enable/disable irq wake regardless whether any irq handlers ar=
+e
+registered or not. Therefore, I figure it makes sense to take the safe path=
+,
+and don't touch irq wake when polling, just as you did.
+
+
+> [...]
+
+
+Regards,
+Barnab=C3=A1s P=C5=91cze
