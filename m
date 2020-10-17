@@ -2,104 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A848A2912C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 17:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241BD2912D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 18:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437716AbgJQPz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 11:55:27 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:53101 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436599AbgJQPz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 11:55:27 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CD6zs339Vz9v4h3;
-        Sat, 17 Oct 2020 17:55:21 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id MhA9Gwx4xqNd; Sat, 17 Oct 2020 17:55:21 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CD6zs1qBZz9v4h1;
-        Sat, 17 Oct 2020 17:55:21 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F21C48B778;
-        Sat, 17 Oct 2020 17:55:21 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id wtrs88iciF0T; Sat, 17 Oct 2020 17:55:21 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BD8BD8B75E;
-        Sat, 17 Oct 2020 17:55:21 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 77B5866461; Sat, 17 Oct 2020 15:55:21 +0000 (UTC)
-Message-Id: <96c6172d619c51acc5c1c4884b80785c59af4102.1602949927.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] asm-generic: Force inlining of get_order() to work around
- gcc10 poor decision
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arch@vger.kernel.org
-Date:   Sat, 17 Oct 2020 15:55:21 +0000 (UTC)
+        id S2437869AbgJQQBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 12:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437772AbgJQQBr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 12:01:47 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1D3C061755
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 09:01:47 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id u17so6532204oie.3
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 09:01:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R8NJjCBei+UeB+MzclJEuZNeo91P2U/6rtV8C+ufyxg=;
+        b=NVi5G2gKtCf6TCnZ/ONOCXsNWjiFdBP0ydbzYseoJ3VLIQH13OBdVGeWKcFFsWWtld
+         w525JKCWohJY7QI6fuRIOWWCPrGXQFXoUGx7AkvQvBY3czBqXZKj8ThL8UdWUHGys7iq
+         leQWHq1y1ZrcQMFkYH8r7LauNMDE7lqvjALSYf0PTqoXYDMAjSTyXD3JIbbmNx/FM0mp
+         GbmxrjUq7W9Y2K4ENpaqGdHBEKT0bKx09lCg6vu4cK15X2iz8qXIFNQy9MOH0jwMVmTY
+         /jbUSa5nSg7nSSk+JDzjozosufT0KtlGDBCl6nXuwUVQIUY1zFygAFWtWNwIUjxEj04l
+         sTBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R8NJjCBei+UeB+MzclJEuZNeo91P2U/6rtV8C+ufyxg=;
+        b=jXcvOWsyh1yfHHl/PK8Vhzf/G4xkV+wlQ2ddOVWzf0eJ3JUqn9tpVLLNWBYuNVJ5Bg
+         K9ZcaVmdrPyLgJSu7cI0a6cuDtmJym3TQZFEwB4Nsq2hWL0FIHckF01/gxVXF2Dtwafe
+         YE8QwbzxIdrej3WCk5zmvoNATOl922qdN0c7aJRjXnXtOjvSHzaCocUll2hhAjkBI7Pc
+         jdHsg83HXOe2nxUY4vfCoqAUU5UyOM9V0F+sApvEdW0rhpaJ/xKN/GM4cGdpYOUUFnxl
+         fZkyrPT8u9UQPlEGrKjlBOieCGvWoOoKYGC+g8xxOtlEYY8ikyj6sQDM7XrwvJAwOHKv
+         YJag==
+X-Gm-Message-State: AOAM530NYs0aKv7gE6ldnBAHKna06brV1kWdEOE80z3rVMK1FZH7g1lp
+        U6JeWtgVMTLFxX8qOqCF46Tm3AWKe5pHnjGsE31OTat41geWFw==
+X-Google-Smtp-Source: ABdhPJzTQqZq9xS5kTWm5FNhbsDhaK+z8sbQx7cgtbVS/GqXobJFxXC0QmXtkopAadkJ5xtfbWehRsZeyCX4e7l2tbY=
+X-Received: by 2002:aca:420a:: with SMTP id p10mr5785693oia.117.1602950506500;
+ Sat, 17 Oct 2020 09:01:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201017075131.47566-1-dwaipayanray1@gmail.com> <d2254db39f798b408bdd16237c86dea1617bcfac.camel@perches.com>
+In-Reply-To: <d2254db39f798b408bdd16237c86dea1617bcfac.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Sat, 17 Oct 2020 21:31:20 +0530
+Message-ID: <CABJPP5DkJbPZCkXdOewFjvZhS5gYmEfjSK8m3ZpZsR7sAvQ+8A@mail.gmail.com>
+Subject: Re: [PATCH v4] checkpatch: add new exception to repeated word check
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building mpc885_ads_defconfig with gcc 10.1,
-the function get_order() appears 50 times in vmlinux:
+On Sat, Oct 17, 2020 at 9:24 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Sat, 2020-10-17 at 13:21 +0530, Dwaipayan Ray wrote:
+> > Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
+> > moved the repeated word test to check for more file types. But after
+> > this, if checkpatch.pl is run on MAINTAINERS, it generates several
+> > new warnings of the type:
+> >
+> > WARNING: Possible repeated word: 'git'
+> >
+> > For example:
+> > WARNING: Possible repeated word: 'git'
+> > +T:   git git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git
+> >
+> > So, the pattern "git git://..." is a false positive in this case.
+> >
+> > There are several other combinations which may produce a wrong
+> > warning message, such as "@size size", ":Begin begin", etc.
+> >
+> > Extend repeated word check to compare the characters before and
+> > after the word matches. If the preceding or succeeding character
+> > belongs to the exception list, the warning is avoided.
+>
+> Not true.
+>
+> This excludes any non-space character before the first word
+> and excludes space or punctuation after the second word.
+>
+> This also adds case insensitive word matching.
+>
 
-[linux]# ppc-linux-objdump -x vmlinux | grep get_order | wc -l
-50
+Right, I didn't change the commit message. I will update it
+properly.
 
-[linux]# size vmlinux
-   text	   data	    bss	    dec	    hex	filename
-3842620	 675624	 135160	4653404	 47015c	vmlinux
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -3052,19 +3052,30 @@ sub process {
+> >
+> >  # check for repeated words separated by a single space
+> >               if ($rawline =~ /^\+/ || $in_commit_log) {
+> > +                     pos($rawline) = 1 if (!$in_commit_log);
+> >                       while ($rawline =~ /\b($word_pattern) (?=($word_pattern))/g) {
+> >
+> >                               my $first = $1;
+> >                               my $second = $2;
+> > -
+> > +                             my $start_pos = $-[1];
+> > +                             my $end_pos = $+[2];
+> >                               if ($first =~ /(?:struct|union|enum)/) {
+> >                                       pos($rawline) += length($first) + length($second) + 1;
+> >                                       next;
+> >                               }
+> >
+> > -                             next if ($first ne $second);
+> > +                             next if (lc($first) ne lc($second));
+>
+> case-insensitive matching
+>
+> >                               next if ($first eq 'long');
+> >
+> > +                             # check for character before and after the word matches
+> > +                             my $start_char = '';
+> > +                             my $end_char = '';
+> > +                             $start_char = substr($rawline, $start_pos - 1, 1) if ($start_pos > ($in_commit_log? 0 : 1));
+> > +                             $end_char = substr($rawline, $end_pos, 1) if ($end_pos < length($rawline));
+> > +
+> > +                             next if ($start_char =~ /^\S$/);
+>
+> non-space
+>
+> > +                             next if ($end_char !~ /^[\.\,\;\?\!\s]?$/);
+>
+> space or punctuation.
+>
+> trivia:
+>
+> I believe using index would be ~50% faster than !~ here
+> Perhaps more readable too.
+>
+>                                 next if (index(" \t.,;?!", $end_char) >= 0);
+>
+Yes, it looks better. Thanks for the suggestion.
 
-In the old days, marking a function 'static inline' was forcing
-GCC to inline, but since commit ac7c3e4ff401 ("compiler: enable
-CONFIG_OPTIMIZE_INLINING forcibly") GCC may decide to not inline
-a function.
+I will send in a new iteration after all of this is incorporated.
 
-It looks like GCC 10 is taking poor decisions on this.
-
-get_order() compiles into the following tiny function,
-occupying 20 bytes of text.
-
-0000007c <get_order>:
-  7c:   38 63 ff ff     addi    r3,r3,-1
-  80:   54 63 a3 3e     rlwinm  r3,r3,20,12,31
-  84:   7c 63 00 34     cntlzw  r3,r3
-  88:   20 63 00 20     subfic  r3,r3,32
-  8c:   4e 80 00 20     blr
-
-By forcing get_order() to be __always_inline, the size of text is
-reduced by 1940 bytes, that is almost twice the space occupied by
-50 times get_order()
-
-[linux-powerpc]# size vmlinux
-   text	   data	    bss	    dec	    hex	filename
-3840680	 675588	 135176	4651444	 46f9b4	vmlinux
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- include/asm-generic/getorder.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/asm-generic/getorder.h b/include/asm-generic/getorder.h
-index e9f20b813a69..f2979e3a96b6 100644
---- a/include/asm-generic/getorder.h
-+++ b/include/asm-generic/getorder.h
-@@ -26,7 +26,7 @@
-  *
-  * The result is undefined if the size is 0.
-  */
--static inline __attribute_const__ int get_order(unsigned long size)
-+static __always_inline __attribute_const__ int get_order(unsigned long size)
- {
- 	if (__builtin_constant_p(size)) {
- 		if (!size)
--- 
-2.25.0
-
+Thank you,
+Dwaipayan.
