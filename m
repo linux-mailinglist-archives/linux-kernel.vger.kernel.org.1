@@ -2,139 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FD5290F1F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8703D290F45
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411579AbgJQF3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 01:29:24 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:12821 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391975AbgJQF3Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 01:29:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1602912563; x=1634448563;
-  h=from:to:cc:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding:subject;
-  bh=4D+RWh/5beB78lRbdCD/b83sagLyNZAat88yYlEo6kY=;
-  b=Jf9H2Zd2Supmg22O3tLEBtoMqtAm0m/UzVnOGJeKZ3S674jKZRcmOVDs
-   +NyN8sJ69rNWfWC9bjdQn1J7oX7k8vzT0gXS/ArXKyEkP8k1P1OeIQDaz
-   Q3VSNC7k12vs5eh6f5Joq0HltI5+zKsG5Jlw7RXSpu5yTReEBKip3Ext3
-   s=;
-X-IronPort-AV: E=Sophos;i="5.77,385,1596499200"; 
-   d="scan'208";a="77295793"
-Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 17 Oct 2020 05:29:17 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2b-4ff6265a.us-west-2.amazon.com (Postfix) with ESMTPS id 5414EA26D1;
-        Sat, 17 Oct 2020 05:29:16 +0000 (UTC)
-Received: from EX13D01UWA003.ant.amazon.com (10.43.160.107) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sat, 17 Oct 2020 05:29:15 +0000
-Received: from [10.50.40.37] (10.43.161.237) by EX13d01UWA003.ant.amazon.com
- (10.43.160.107) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 17 Oct
- 2020 05:29:14 +0000
-From:   Colm MacCarthaigh <colmmacc@amazon.com>
-To:     Jann Horn <jannh@google.com>
-CC:     Willy Tarreau <w@1wt.eu>,
-        "Catangiu, Adrian Costin" <acatan@amazon.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jason Donenfeld <Jason@zx2c4.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:VIRTIO GPU DRIVER" 
-        <virtualization@lists.linux-foundation.org>,
-        "Graf (AWS), Alexander" <graf@amazon.de>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>, <bonzini@gnu.org>,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>, <oridgar@gmail.com>,
-        <ghammer@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Qemu Developers <qemu-devel@nongnu.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linux API <linux-api@vger.kernel.org>
-Date:   Fri, 16 Oct 2020 22:29:14 -0700
-X-Mailer: MailMate Trial (1.13.2r5673)
-Message-ID: <FF2CCC35-87DD-4311-A3CF-4943B29DBEE3@amazon.com>
-In-Reply-To: <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
-References: <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
- <CAG48ez0EanBvDyfthe+hAP0OC8iGLNSq2e5wJVz-=ENNGF97_w@mail.gmail.com>
- <20201017033606.GA14014@1wt.eu>
- <CAG48ez0x2S9XuCrANAQbXNi8Jjwm822-fnQSmr-Zr07JgrEs1g@mail.gmail.com>
- <6CC3DB03-27BA-4F5E-8ADA-BE605D83A85C@amazon.com>
- <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
+        id S2407396AbgJQFdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:33:00 -0400
+Received: from mga11.intel.com ([192.55.52.93]:22077 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404845AbgJQFc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 01:32:59 -0400
+IronPort-SDR: zrbc8xyhv37IIBow7N+yrIb20TvHa0FFQGpRs+Wv/HcgTFLzZnecrsdcUsDGicEADzq9arACKU
+ HRbVR7nUsm4Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9776"; a="163281924"
+X-IronPort-AV: E=Sophos;i="5.77,385,1596524400"; 
+   d="scan'208";a="163281924"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 22:32:58 -0700
+IronPort-SDR: paIA1B5Muq6jz0pWQV5nOuZMSGcyVqIHXGcfCRUzmIzkieHD8QuXOc9iZVo0bbsXLBLkIIbNTe
+ KX5J4AtVFkmA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,385,1596524400"; 
+   d="scan'208";a="346800153"
+Received: from lkp-server02.sh.intel.com (HELO 262a2cdd3070) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 16 Oct 2020 22:32:57 -0700
+Received: from kbuild by 262a2cdd3070 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kTeps-0000GQ-UJ; Sat, 17 Oct 2020 05:32:56 +0000
+Date:   Sat, 17 Oct 2020 13:32:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:master] BUILD SUCCESS
+ 78b9b11ec17709681e5fc7b50287354f9b0f7728
+Message-ID: <5f8a81d8.hiTvQr/pTsIZKsSA%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.161.237]
-X-ClientProxiedBy: EX13d09UWC002.ant.amazon.com (10.43.162.102) To
- EX13d01UWA003.ant.amazon.com (10.43.160.107)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  master
+branch HEAD: 78b9b11ec17709681e5fc7b50287354f9b0f7728  Merge branch 'urezki-pcount.2020.10.01a' into HEAD
 
+elapsed time: 720m
 
-On 16 Oct 2020, at 22:01, Jann Horn wrote:
->
-> On Sat, Oct 17, 2020 at 6:34 AM Colm MacCarthaigh 
-> <colmmacc@amazon.com> wrote:
->> For user-space, even a single bit would do. We added 
->> MADVISE_WIPEONFORK
->> so that userspace libraries can detect fork()/clone() robustly, for 
->> the
->> same reasons. It just wipes a page as the indicator, which is
->> effectively a single-bit signal, and it works well. On the user-space
->> side of this, I’m keen to find a solution like that that we can use
->> fairly easily inside of portable libraries and applications. The 
->> “have
->> I forked” checks do end up in hot paths, so it’s nice if they can 
->> be
->> CPU cache friendly. Comparing a whole 128-bit value wouldn’t be my
->> favorite.
->
-> I'm pretty sure a single bit is not enough if you want to have a
-> single page, shared across the entire system, that stores the VM
-> forking state; you need a counter for that.
+configs tested: 150
+configs skipped: 4
 
-You’re right. WIPEONFORK is more like a single-bit per use. If it’s 
-something system wide then a counter is better.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> So the RNG state after mixing in the new VM Generation ID would
-> contain 128 bits of secret entropy not known to anyone else, including
-> people with access to the VM image.
->
-> Now, 128 bits of cryptographically random data aren't _optimal_; I
-> think something on the order of 256 bits would be nicer from a
-> theoretical standpoint. But in practice I think we'll be good with the
-> 128 bits we're getting (since the number of users who fork a VM image
-> is probably not going to be so large that worst-case collision
-> probabilities matter).
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                        workpad_defconfig
+powerpc                     redwood_defconfig
+sh                           se7751_defconfig
+arm                           omap1_defconfig
+h8300                               defconfig
+mips                      fuloong2e_defconfig
+parisc                              defconfig
+mips                     loongson1b_defconfig
+powerpc                     taishan_defconfig
+powerpc                     ksi8560_defconfig
+arm                      jornada720_defconfig
+mips                  cavium_octeon_defconfig
+arm                          moxart_defconfig
+alpha                            alldefconfig
+powerpc                    adder875_defconfig
+mips                 pnx8335_stb225_defconfig
+riscv                    nommu_virt_defconfig
+mips                           ip28_defconfig
+powerpc                       ebony_defconfig
+sh                          r7785rp_defconfig
+arm                          pcm027_defconfig
+xtensa                          iss_defconfig
+arm                              alldefconfig
+arm                         ebsa110_defconfig
+mips                       rbtx49xx_defconfig
+arm                           viper_defconfig
+arm                         axm55xx_defconfig
+arm                        cerfcube_defconfig
+mips                         tb0226_defconfig
+arm                            u300_defconfig
+ia64                          tiger_defconfig
+powerpc                     pseries_defconfig
+xtensa                       common_defconfig
+um                            kunit_defconfig
+sh                        sh7757lcr_defconfig
+arm                             mxs_defconfig
+mips                        qi_lb60_defconfig
+powerpc                      acadia_defconfig
+arc                        nsimosci_defconfig
+mips                         db1xxx_defconfig
+powerpc                   lite5200b_defconfig
+m68k                         amcore_defconfig
+arc                              alldefconfig
+h8300                    h8300h-sim_defconfig
+arm                         at91_dt_defconfig
+openrisc                            defconfig
+arm                        magician_defconfig
+arm                  colibri_pxa270_defconfig
+arc                          axs103_defconfig
+arm                       imx_v4_v5_defconfig
+sh                 kfr2r09-romimage_defconfig
+parisc                           alldefconfig
+mips                      malta_kvm_defconfig
+powerpc                   currituck_defconfig
+arm                            lart_defconfig
+mips                        omega2p_defconfig
+arm                         vf610m4_defconfig
+sh                             shx3_defconfig
+powerpc                 mpc834x_itx_defconfig
+arm                         s3c6400_defconfig
+powerpc                     sbc8548_defconfig
+m68k                        m5272c3_defconfig
+i386                             alldefconfig
+arm                          gemini_defconfig
+um                           x86_64_defconfig
+powerpc                     asp8347_defconfig
+arm                           spitz_defconfig
+arm                         cm_x300_defconfig
+sh                      rts7751r2d1_defconfig
+m68k                             alldefconfig
+powerpc                     tqm8548_defconfig
+powerpc                 mpc834x_mds_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20201016
+i386                 randconfig-a006-20201016
+i386                 randconfig-a001-20201016
+i386                 randconfig-a003-20201016
+i386                 randconfig-a004-20201016
+i386                 randconfig-a002-20201016
+x86_64               randconfig-a016-20201016
+x86_64               randconfig-a012-20201016
+x86_64               randconfig-a015-20201016
+x86_64               randconfig-a013-20201016
+x86_64               randconfig-a014-20201016
+x86_64               randconfig-a011-20201016
+i386                 randconfig-a016-20201016
+i386                 randconfig-a013-20201016
+i386                 randconfig-a015-20201016
+i386                 randconfig-a011-20201016
+i386                 randconfig-a012-20201016
+i386                 randconfig-a014-20201016
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-This reminds me on key/IV usage limits for AES encryption, where the 
-same birthday bounds apply, and even though 256-bits would be better, we 
-routinely make 128-bit birthday bounds work for massively scalable 
-systems.
+clang tested configs:
+x86_64               randconfig-a004-20201016
+x86_64               randconfig-a002-20201016
+x86_64               randconfig-a006-20201016
+x86_64               randconfig-a001-20201016
+x86_64               randconfig-a005-20201016
+x86_64               randconfig-a003-20201016
+x86_64               randconfig-a016-20201017
+x86_64               randconfig-a012-20201017
+x86_64               randconfig-a015-20201017
+x86_64               randconfig-a013-20201017
+x86_64               randconfig-a014-20201017
+x86_64               randconfig-a011-20201017
 
->> The kernel would need to use the change as a trigger to
->> measure some entropy (e.g. interrupts and RDRAND, or whatever). Our 
->> just
->> define the machine contract as “this has to be unique random data 
->> and
->> if it’s not unique, or if it’s pubic, you’re toast”.
->
-> As far as I can tell from Microsoft's spec, that is a guarantee we're
-> already getting.
-
-Neat.
-
--
-Colm
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
