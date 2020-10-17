@@ -2,167 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F3F29101D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C83029102E
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436746AbgJQG1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 02:27:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728189AbgJQG1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 02:27:21 -0400
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C086E2076D
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 02:51:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602903071;
-        bh=Gr3nGfsG3c90q2Jwo99IVkvbuKxMDLVUT2x1M7u1RTI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=T534dyX6m9WKLTAbNTVOnQhq0+weumEhQjaOBlZkhrWmittJHHYXDdn8hyUQ04ziZ
-         BGt460aru1rdqAmm46s6j5tkWcQaN5bg1ihZIklRR2nxxLB6SbrKxf1j6TU58n4hUK
-         ilYxSyUdtGH4UTzFMV0+wkQzOazSvEScg0vs0SGM=
-Received: by mail-ed1-f49.google.com with SMTP id t21so4648797eds.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 19:51:10 -0700 (PDT)
-X-Gm-Message-State: AOAM532d3pnT9429dM+YKG1sEHp7mx90NokssHmAxdfEPQBs73SnrDvg
-        2ArwFt3OMwQI9fNFB+1Btes+cVGz5BP4GQMrEg==
-X-Google-Smtp-Source: ABdhPJzeeOBiHIseq3aPT99tDKtn0oB87/Hc2OKRlRnxhLG7z3kaKy7+YvcHp12bFQwqGIaU7F6JOvPhv/BF8Tg2oPo=
-X-Received: by 2002:a05:6402:c12:: with SMTP id co18mr7225456edb.162.1602903069286;
- Fri, 16 Oct 2020 19:51:09 -0700 (PDT)
+        id S2437119AbgJQGdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 02:33:22 -0400
+Received: from smtprelay0250.hostedemail.com ([216.40.44.250]:46166 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2436965AbgJQGdW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 02:33:22 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave03.hostedemail.com (Postfix) with ESMTP id 1E7D0181CA0B2
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 02:56:03 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 51092100E7B44;
+        Sat, 17 Oct 2020 02:56:02 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3355:3622:3653:3865:3866:3867:3868:3871:3872:3873:3874:4184:4321:4605:5007:7903:8603:10004:10400:10848:11232:11658:11914:12296:12297:12555:12663:12740:12760:12895:12986:13439:14093:14097:14180:14181:14659:14721:21060:21080:21221:21451:21627:21740:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: song39_35185ef27222
+X-Filterd-Recvd-Size: 3592
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 17 Oct 2020 02:56:01 +0000 (UTC)
+Message-ID: <81b6a0bb2c7b9256361573f7a13201ebcd4876f1.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: add new exception to repeated word check
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Fri, 16 Oct 2020 19:56:00 -0700
+In-Reply-To: <7d8c7d80aa7b0524cca49a6dfe24e878bea6ab12.camel@perches.com>
+References: <20201014163738.117332-1-dwaipayanray1@gmail.com>
+         <ea011df1e30ce445d51e128287e2c6c38de20949.camel@perches.com>
+         <CABJPP5DrSL7GoZUWc7P02CfLHfTBmfpLxrVOVQ08KH3pPontoA@mail.gmail.com>
+         <7d8c7d80aa7b0524cca49a6dfe24e878bea6ab12.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20201013085512.12857-1-bernard@vivo.com>
-In-Reply-To: <20201013085512.12857-1-bernard@vivo.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sat, 17 Oct 2020 10:50:58 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__r-2aQLK+oy6uRFnu3xExngBYrSAQ7jCfhWx+Ti0UgFw@mail.gmail.com>
-Message-ID: <CAAOTY__r-2aQLK+oy6uRFnu3xExngBYrSAQ7jCfhWx+Ti0UgFw@mail.gmail.com>
-Subject: Re: [PATCH] drm/mediatek: Optimize functions which do not need to return
-To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bernard Zhao <bernard@vivo.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8813=E6=97=
-=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:55=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Function mtk_hdmi_aud_set_input always return 0, no need to
-> keep the return value. Functions mtk_hdmi_aud_enable_packet &
-> mtk_hdmi_aud_on_off_hw_ncts are the same, these two functions
-> just call next functions. Maybe it`s a bit better to just call
-> the inner function.
+On Wed, 2020-10-14 at 11:35 -0700, Joe Perches wrote:
+> On Wed, 2020-10-14 at 23:42 +0530, Dwaipayan Ray wrote:
+> > On Wed, Oct 14, 2020 at 11:33 PM Joe Perches <joe@perches.com> wrote:
+> > > On Wed, 2020-10-14 at 22:07 +0530, Dwaipayan Ray wrote:
+> > > > Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
+> > > > moved the repeated word test to check for more file types. But after
+> > > > this, if checkpatch.pl is run on MAINTAINERS, it generates several
+> > > > new warnings of the type:
+> > > 
+> > > Perhaps instead of adding more content checks so that
+> > > word boundaries are not something like \S but also
+> > > not punctuation so that content like
+> > > 
+> > >         git git://
+> > >         @size size
+> > > 
+> > > does not match?
+> > > 
+> > > 
+> > Hi,
+> > So currently the words are trimmed of non alphabets before the check:
+> > 
+> > while ($rawline =~ /\b($word_pattern) (?=($word_pattern))/g) {
+> > my $first = $1;
+> > my $second = $2;
+> > 
+> > where, the word_pattern is:
+> > my $word_pattern = '\b[A-Z]?[a-z]{2,}\b';
+> 
+> I'm familiar.
+> 
+> > So do you perhaps recommend modifying this word pattern to
+> > include the punctuation as well rather than trimming them off?
+> 
+> Not really, perhaps use the capture group position
+> markers @- @+ or $-[1] $+[1] and $-[2] $+[2] with the
+> substr could be used to see what characters are
+> before and after the word matches.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Perhaps something like:
+---
+ scripts/checkpatch.pl | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
->
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_hdmi.c | 27 +++++++--------------------
->  1 file changed, 7 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediat=
-ek/mtk_hdmi.c
-> index a97725680d4e..f1d987df0550 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> @@ -870,19 +870,8 @@ static void mtk_hdmi_video_set_display_mode(struct m=
-tk_hdmi *hdmi,
->         mtk_hdmi_hw_msic_setting(hdmi, mode);
->  }
->
-> -static int mtk_hdmi_aud_enable_packet(struct mtk_hdmi *hdmi, bool enable=
-)
-> -{
-> -       mtk_hdmi_hw_send_aud_packet(hdmi, enable);
-> -       return 0;
-> -}
->
-> -static int mtk_hdmi_aud_on_off_hw_ncts(struct mtk_hdmi *hdmi, bool on)
-> -{
-> -       mtk_hdmi_hw_ncts_enable(hdmi, on);
-> -       return 0;
-> -}
-> -
-> -static int mtk_hdmi_aud_set_input(struct mtk_hdmi *hdmi)
-> +static void mtk_hdmi_aud_set_input(struct mtk_hdmi *hdmi)
->  {
->         enum hdmi_aud_channel_type chan_type;
->         u8 chan_count;
-> @@ -912,8 +901,6 @@ static int mtk_hdmi_aud_set_input(struct mtk_hdmi *hd=
-mi)
->         chan_count =3D mtk_hdmi_aud_get_chnl_count(chan_type);
->         mtk_hdmi_hw_aud_set_i2s_chan_num(hdmi, chan_type, chan_count);
->         mtk_hdmi_hw_aud_set_input_type(hdmi, hdmi->aud_param.aud_input_ty=
-pe);
-> -
-> -       return 0;
->  }
->
->  static int mtk_hdmi_aud_set_src(struct mtk_hdmi *hdmi,
-> @@ -921,7 +908,7 @@ static int mtk_hdmi_aud_set_src(struct mtk_hdmi *hdmi=
-,
->  {
->         unsigned int sample_rate =3D hdmi->aud_param.codec_params.sample_=
-rate;
->
-> -       mtk_hdmi_aud_on_off_hw_ncts(hdmi, false);
-> +       mtk_hdmi_hw_ncts_enable(hdmi, false);
->         mtk_hdmi_hw_aud_src_disable(hdmi);
->         mtk_hdmi_clear_bits(hdmi, GRL_CFG2, CFG2_ACLK_INV);
->
-> @@ -959,7 +946,7 @@ static int mtk_hdmi_aud_output_config(struct mtk_hdmi=
- *hdmi,
->                                       struct drm_display_mode *display_mo=
-de)
->  {
->         mtk_hdmi_hw_aud_mute(hdmi);
-> -       mtk_hdmi_aud_enable_packet(hdmi, false);
-> +       mtk_hdmi_hw_send_aud_packet(hdmi, false);
->
->         mtk_hdmi_aud_set_input(hdmi);
->         mtk_hdmi_aud_set_src(hdmi, display_mode);
-> @@ -968,8 +955,8 @@ static int mtk_hdmi_aud_output_config(struct mtk_hdmi=
- *hdmi,
->
->         usleep_range(50, 100);
->
-> -       mtk_hdmi_aud_on_off_hw_ncts(hdmi, true);
-> -       mtk_hdmi_aud_enable_packet(hdmi, true);
-> +       mtk_hdmi_hw_ncts_enable(hdmi, true);
-> +       mtk_hdmi_hw_send_aud_packet(hdmi, true);
->         mtk_hdmi_hw_aud_unmute(hdmi);
->         return 0;
->  }
-> @@ -1097,13 +1084,13 @@ static int mtk_hdmi_output_init(struct mtk_hdmi *=
-hdmi)
->
->  static void mtk_hdmi_audio_enable(struct mtk_hdmi *hdmi)
->  {
-> -       mtk_hdmi_aud_enable_packet(hdmi, true);
-> +       mtk_hdmi_hw_send_aud_packet(hdmi, true);
->         hdmi->audio_enable =3D true;
->  }
->
->  static void mtk_hdmi_audio_disable(struct mtk_hdmi *hdmi)
->  {
-> -       mtk_hdmi_aud_enable_packet(hdmi, false);
-> +       mtk_hdmi_hw_send_aud_packet(hdmi, false);
->         hdmi->audio_enable =3D false;
->  }
->
-> --
-> 2.28.0
->
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index fab38b493cef..a65eb40a5539 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3054,15 +3054,25 @@ sub process {
+ 
+ 				my $first = $1;
+ 				my $second = $2;
++				my $start_pos = $-[1];
++				my $end_pos = $+[2];
+ 
+ 				if ($first =~ /(?:struct|union|enum)/) {
+ 					pos($rawline) += length($first) + length($second) + 1;
+ 					next;
+ 				}
+ 
+-				next if ($first ne $second);
++				next if (lc($first) ne lc($second));
+ 				next if ($first eq 'long');
+ 
++				my $start_char = "";
++				my $end_char = "";
++				$start_char = substr($rawline, $start_pos - 1, 1) if ($start_pos > 0);
++				$end_char = substr($rawline, $end_pos, 1) if (length($rawline) > $end_pos);
++
++				next if ($start_char =~ /^\S$/);
++				next if ($end_char !~ /^[\.\,\s]?$/);
++
+ 				if (WARN("REPEATED_WORD",
+ 					 "Possible repeated word: '$first'\n" . $herecurr) &&
+ 				    $fix) {
+
+
