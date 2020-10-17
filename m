@@ -2,116 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935AF291448
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 22:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D7429144F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 22:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439792AbgJQUYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 16:24:12 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:33105 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S2439785AbgJQUYM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 16:24:12 -0400
-Received: (qmail 843765 invoked by uid 1000); 17 Oct 2020 16:24:11 -0400
-Date:   Sat, 17 Oct 2020 16:24:11 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     joel@joelfernandes.org
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki \(Sony\)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v7 6/6] rcu/segcblist: Add additional comments to explain
- smp_mb()
-Message-ID: <20201017202411.GC842001@rowland.harvard.edu>
-References: <20201015002301.101830-1-joel@joelfernandes.org>
- <20201015002301.101830-7-joel@joelfernandes.org>
- <20201015133511.GB127222@lothringen>
- <20201017012753.GB4015033@google.com>
- <20201017031941.GD4015033@google.com>
+        id S2438813AbgJQUck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 16:32:40 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:32814 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438258AbgJQUck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 16:32:40 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kTssM-002BpP-Cq; Sat, 17 Oct 2020 22:32:26 +0200
+Date:   Sat, 17 Oct 2020 22:32:26 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        Joel Stanley <joel@jms.id.au>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Subject: Re: [PATCH v1 1/2] net: ftgmac100: move phy connect out from
+ ftgmac100_setup_mdio
+Message-ID: <20201017203226.GQ456889@lunn.ch>
+References: <20201015124917.8168-1-i.mikhaylov@yadro.com>
+ <20201015124917.8168-2-i.mikhaylov@yadro.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201017031941.GD4015033@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201015124917.8168-2-i.mikhaylov@yadro.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[I sent this reply earlier, but since it hasn't shown up in the mailing 
-list archives, I may have forgotten to include the proper CC's.  At the 
-risk of repeating myself, here it is again.]
+On Thu, Oct 15, 2020 at 03:49:16PM +0300, Ivan Mikhaylov wrote:
+> Split MDIO registration and PHY connect into ftgmac100_setup_mdio and
+> ftgmac100_mii_probe.
+> 
+> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
+> ---
+>  drivers/net/ethernet/faraday/ftgmac100.c | 92 ++++++++++++------------
+>  1 file changed, 47 insertions(+), 45 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
+> index 87236206366f..6997e121824b 100644
+> --- a/drivers/net/ethernet/faraday/ftgmac100.c
+> +++ b/drivers/net/ethernet/faraday/ftgmac100.c
+> @@ -1044,11 +1044,47 @@ static void ftgmac100_adjust_link(struct net_device *netdev)
+>  	schedule_work(&priv->reset_task);
+>  }
+>  
+> -static int ftgmac100_mii_probe(struct ftgmac100 *priv, phy_interface_t intf)
+> +static int ftgmac100_mii_probe(struct net_device *netdev)
+>  {
+> -	struct net_device *netdev = priv->netdev;
+> +	struct ftgmac100 *priv = netdev_priv(netdev);
+> +	struct platform_device *pdev = to_platform_device(priv->dev);
+> +	struct device_node *np = pdev->dev.of_node;
+> +	phy_interface_t phy_intf = PHY_INTERFACE_MODE_RGMII;
+>  	struct phy_device *phydev;
 
-On Fri, Oct 16, 2020 at 11:19:41PM -0400, joel@joelfernandes.org wrote:
-> So I made a litmus test to show that smp_mb() is needed also after the update
-> to length. Basically, otherwise it is possible the callback will see garbage
-> that the module cleanup/unload did.
-> 
-> C rcubarrier+ctrldep
-> 
-> (*
->  * Result: Never
->  *
->  * This litmus test shows that rcu_barrier (P1) prematurely
->  * returning by reading len 0 can cause issues if P0 does
->  * NOT have a smb_mb() after WRITE_ONCE(len, 1).
->  * mod_data == 2 means module was unloaded (so data is garbage).
->  *)
-> 
-> { int len = 0; int enq = 0; }
-> 
-> P0(int *len, int *mod_data, int *enq)
-> {
-> 	int r0;
-> 
-> 	WRITE_ONCE(*len, 1);
-> 	smp_mb();		/* Needed! */
-> 	WRITE_ONCE(*enq, 1);
-> 
-> 	r0 = READ_ONCE(*mod_data);
-> }
-> 
-> P1(int *len, int *mod_data, int *enq)
-> {
-> 	int r0;
-> 	int r1;
-> 
-> 	r1 = READ_ONCE(*enq);
-> 
-> 	// barrier Just for test purpose ("exists" clause) to force the..
-> 	// ..rcu_barrier() to see enq before len
-> 	smp_mb();		
-> 	r0 = READ_ONCE(*len);
-> 
-> 	// implicit memory barrier due to conditional */
-> 	if (r0 == 0)
-> 		WRITE_ONCE(*mod_data, 2);
-> }
-> 
-> // Did P0 read garbage?
-> exists (0:r0=2 /\ 1:r0=0 /\ 1:r1=1)
+Reverse Christmas tree.
 
-Is this exists clause really what you meant?  Not only can it not be 
-satisfied, it couldn't even be satisfied if you left out the 0:r0=2 
-part.  And smp_mb() is stronger than neessary to enforce this.
+>  
+> +	/* Get PHY mode from device-tree */
+> +	if (np) {
+> +		/* Default to RGMII. It's a gigabit part after all */
+> +		phy_intf = of_get_phy_mode(np, &phy_intf);
+> +		if (phy_intf < 0)
+> +			phy_intf = PHY_INTERFACE_MODE_RGMII;
 
-However, some memory barrier is needed.  If the smp_mb() in P1 were 
-omitted then P1 would be free to reorder its reads, and the exists 
-clause could be satisfied as follows:
+I know you are just moving code around, but it is better to do:
 
-	P0			P1
-	------------------------------------------
-				Read len = 0
-	Write len = 1
-	smp_mb();
-	Write enq = 1
-				Read enq = 1
-				Write mod_data = 2
-	Read mod_data = 2
+> +		err = of_get_phy_mode(np, &phy_intf);
+> +		if (err)
+> +			phy_intf = PHY_INTERFACE_MODE_RGMII;
 
-Alan
+With the code you have, you are probably going to get an email about
+assigning an int to an unsigned int type from Colin..
+
+> @@ -1860,6 +1854,14 @@ static int ftgmac100_probe(struct platform_device *pdev)
+>  		err = ftgmac100_setup_mdio(netdev);
+>  		if (err)
+>  			goto err_setup_mdio;
+> +
+> +		err = ftgmac100_mii_probe(netdev);
+> +		if (err) {
+> +			dev_err(priv->dev, "MII probe failed!\n");
+> +			mdiobus_unregister(priv->mii_bus);
+> +			goto err_setup_mdio;
+> +		}
+
+It is more uniform to add a new label and add the
+mdiobus_unregister(priv->mii_bus) there. All the other error handling
+works like that.
+
+      Andrew
