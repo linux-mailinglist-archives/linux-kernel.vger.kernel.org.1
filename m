@@ -2,90 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183C1290F5A
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25366290F44
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408935AbgJQFfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 01:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411743AbgJQFem (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 01:34:42 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D81C061787
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 17:44:57 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 10so2432141pfp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 17:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=t9yJLINbzwE8Nu7tDTVwWsu7fLlkt2OC2B8ewL9ichE=;
-        b=TC2v/G/X38bPexyIKhyZyIKtPATsnd3MqzNOg8FDA3mUa7Ha5Pf3ZFsjDeLRG9buSF
-         Sf9OFpukyi5u2SfavoWjW35cqM6Ue8M/PEOFQ9wi2Ev60rKbUpv8lkOaOjshFqAEitqA
-         2VNwzzD5J9u6Rd7RYCYKJrkKU7MPNR17TwA/JD941iXo3Qii5kAtDKR5G/2j/x+CUWYl
-         0WT/IL1PD2zj0oKucETXNEkFsovslftYjgeIVB3aD5SxdfauYlPN3qsSc8fAl8J/qZMi
-         RXQV5CsGmwW7VZP0j/f7le4EC3tJ7P4yXwnlwSXhGYNkiQpFxcsXXS+2BkIQoAYKs8mj
-         kssA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=t9yJLINbzwE8Nu7tDTVwWsu7fLlkt2OC2B8ewL9ichE=;
-        b=WyjWfGSEQl99e7hXBxEh5c+n5IOT5pFmJOJGmX91eEMy+3loXmkdgY/KG55UlF8nUC
-         fxv7pzI61dK6yGPvnBXdp+XrM+Euhm7YjHDJkPWMy3JEfZUhwHib1At55Frl80CUsbGZ
-         cLjdQVDov1jvByqHbk1kqb1SDsnMDd/bKpPxB8xL6X2aJ7krvcKDwvyDFVgEtTV9QkGd
-         wMWvo6RnXi44fKA+g81OAGoa7ht2iVbImW1T6uBfr/6edC3qJuJpydfYdK9xiv0AMkxi
-         WrlW5kwsQyBmddvFt6WLiedEQ26o0wDCSgVMGVrjgRT2T2hBzPSQ8iCnscYeFhPTb+Cu
-         9gLg==
-X-Gm-Message-State: AOAM530ghq4S0hkIBipaQxbKO4FbNisw1tNcf/ERIrnqW+sdAoNg68vp
-        bCo5EJJ7y4jsJ3fw4P+4xf+XvQ==
-X-Google-Smtp-Source: ABdhPJxUn+qEjZ3XHAPjLRio5lkyQ0Be3yCgN7hUPgUTuiEtXeaz8Nef0nXDheY0EKD+2ipzx7Smeg==
-X-Received: by 2002:a63:4854:: with SMTP id x20mr5534018pgk.220.1602895496832;
-        Fri, 16 Oct 2020 17:44:56 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id g15sm3851217pgi.89.2020.10.16.17.44.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 17:44:56 -0700 (PDT)
-Subject: [PATCH] nds32: Fix a broken copyright header in gen_vdso_offsets.sh
-Date:   Fri, 16 Oct 2020 17:27:54 -0700
-Message-Id: <20201017002754.504049-1-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+        id S2406696AbgJQFb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:31:58 -0400
+Received: from mga14.intel.com ([192.55.52.115]:46277 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392668AbgJQFb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 01:31:58 -0400
+IronPort-SDR: dyqzDkd7E0cnLbx2xFEJS67u+Eq9kahluiYU8NL8LNCgqeQXM4LTav+GdZLGKFhsi8qLuH68UU
+ rODbFe3ciMtA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9776"; a="165948492"
+X-IronPort-AV: E=Sophos;i="5.77,384,1596524400"; 
+   d="scan'208";a="165948492"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 17:28:36 -0700
+IronPort-SDR: Z3/1OQLLK+Hj28b868G8zmgY/tUtxixXfmj7tgI9CJ7Jl5RVra1sv+1an/xWJS59IetIM1Aw6+
+ VqaI5IVV9XFw==
+X-IronPort-AV: E=Sophos;i="5.77,384,1596524400"; 
+   d="scan'208";a="522477806"
+Received: from ukapaley-mobl.amr.corp.intel.com (HELO [10.254.66.36]) ([10.254.66.36])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 17:28:34 -0700
+Subject: Re: [PATCH v9 12/15] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Sean V Kelley <seanvk.dev@oregontracks.org>,
+        Jonathan.Cameron@huawei.com
+Cc:     bhelgaas@google.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Ethan Zhao <xerces.zhao@gmail.com>,
+        Sinan Kaya <okaya@kernel.org>, Keith Busch <kbusch@kernel.org>
+References: <20201016222902.GA112659@bjorn-Precision-5520>
+From:   "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>
+Message-ID: <e5a004dd-f7bc-4445-be6e-55004ae97b8c@intel.com>
+Date:   Fri, 16 Oct 2020 17:28:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     nickhu@andestech.com, deanbo422@gmail.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     green.hu@gmail.com
+In-Reply-To: <20201016222902.GA112659@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-I was going to copy this but I didn't want to chase around the build
-system stuff so I did it a different way.
+On 10/16/20 3:29 PM, Bjorn Helgaas wrote:
+> [+cc Christoph, Ethan, Sinan, Keith; sorry should have cc'd you to
+> begin with since you're looking at this code too.  Particularly
+> interested in your thoughts about whether we should be touching
+> PCI_ERR_ROOT_COMMAND and PCI_ERR_ROOT_STATUS when we don't own AER.]
+This part is not very clear in ACPI spec or PCI firmware spec.
 
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
- arch/nds32/kernel/vdso/gen_vdso_offsets.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+IMO, since AEPI notifies the OS about the error, then I guess
+we are allowed to clear the PCI_ERR_ROOT_STATUS register
+after handling the error.
 
-diff --git a/arch/nds32/kernel/vdso/gen_vdso_offsets.sh b/arch/nds32/kernel/vdso/gen_vdso_offsets.sh
-index 01924ff071ad..5b329aed3501 100755
---- a/arch/nds32/kernel/vdso/gen_vdso_offsets.sh
-+++ b/arch/nds32/kernel/vdso/gen_vdso_offsets.sh
-@@ -7,7 +7,7 @@
- # Doing this inside the Makefile will break the $(filter-out) function,
- # causing Kbuild to rebuild the vdso-offsets header file every time.
- #
--# Author: Will Deacon <will.deacon@arm.com
-+# Author: Will Deacon <will.deacon@arm.com>
- #
- 
- LC_ALL=C
+>
+> On Fri, Oct 16, 2020 at 03:30:37PM -0500, Bjorn Helgaas wrote:
+>> [+to Jonathan]
+>>
+>> On Thu, Oct 15, 2020 at 05:11:10PM -0700, Sean V Kelley wrote:
+>>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>>>
+>>> When attempting error recovery for an RCiEP associated with an RCEC device,
+>>> there needs to be a way to update the Root Error Status, the Uncorrectable
+>>> Error Status and the Uncorrectable Error Severity of the parent RCEC.  In
+>>> some non-native cases in which there is no OS-visible device associated
+>>> with the RCiEP, there is nothing to act upon as the firmware is acting
+>>> before the OS.
+>>>
+>>> Add handling for the linked RCEC in AER/ERR while taking into account
+>>> non-native cases.
+>>>
+>>> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
+>>> Link: https://lore.kernel.org/r/20201002184735.1229220-12-seanvk.dev@oregontracks.org
+>>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+>>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>>> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+>>> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>>> ---
+>>>   drivers/pci/pcie/aer.c | 53 ++++++++++++++++++++++++++++++------------
+>>>   drivers/pci/pcie/err.c | 20 ++++++++--------
+>>>   2 files changed, 48 insertions(+), 25 deletions(-)
+>>>
+>>> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+>>> index 65dff5f3457a..083f69b67bfd 100644
+>>> --- a/drivers/pci/pcie/aer.c
+>>> +++ b/drivers/pci/pcie/aer.c
+>>> @@ -1357,27 +1357,50 @@ static int aer_probe(struct pcie_device *dev)
+>>>    */
+>>>   static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+>>>   {
+>>> -	int aer = dev->aer_cap;
+>>> +	int type = pci_pcie_type(dev);
+>>> +	struct pci_dev *root;
+>>> +	int aer = 0;
+>>> +	int rc = 0;
+>>>   	u32 reg32;
+>>> -	int rc;
+>>>   
+>>> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END)
+>> "type == PCI_EXP_TYPE_RC_END"
+>>
+>>> +		/*
+>>> +		 * The reset should only clear the Root Error Status
+>>> +		 * of the RCEC. Only perform this for the
+>>> +		 * native case, i.e., an RCEC is present.
+>>> +		 */
+>>> +		root = dev->rcec;
+>>> +	else
+>>> +		root = dev;
+>>>   
+>>> -	/* Disable Root's interrupt in response to error messages */
+>>> -	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+>>> -	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+>>> -	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
+>>> +	if (root)
+>>> +		aer = dev->aer_cap;
+>>>   
+>>> -	rc = pci_bus_error_reset(dev);
+>>> -	pci_info(dev, "Root Port link has been reset\n");
+>>> +	if (aer) {
+>>> +		/* Disable Root's interrupt in response to error messages */
+>>> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+>>> +		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+>>> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
+>> Not directly related to *this* patch, but my assumption was that in
+>> the APEI case, the firmware should retain ownership of the AER
+>> Capability, so the OS should not touch PCI_ERR_ROOT_COMMAND and
+>> PCI_ERR_ROOT_STATUS.
+>>
+>> But this code appears to ignore that ownership.  Jonathan, you must
+>> have looked at this recently for 068c29a248b6 ("PCI/ERR: Clear PCIe
+>> Device Status errors only if OS owns AER").  Do you have any insight
+>> about this?
+>>
+>>> -	/* Clear Root Error Status */
+>>> -	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
+>>> -	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
+>>> +		/* Clear Root Error Status */
+>>> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
+>>> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
+>>>   
+>>> -	/* Enable Root Port's interrupt in response to error messages */
+>>> -	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+>>> -	reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
+>>> -	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
+>>> +		/* Enable Root Port's interrupt in response to error messages */
+>>> +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+>>> +		reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
+>>> +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
+>>> +	}
+>>> +
+>>> +	if ((type == PCI_EXP_TYPE_RC_EC) || (type == PCI_EXP_TYPE_RC_END)) {
+>>> +		if (pcie_has_flr(root)) {
+>>> +			rc = pcie_flr(root);
+>>> +			pci_info(dev, "has been reset (%d)\n", rc);
+>>> +		}
+>>> +	} else {
+>>> +		rc = pci_bus_error_reset(root);
+>> Don't we want "dev" for both the FLR and pci_bus_error_reset()?  I
+>> think "root == dev" except when dev is an RCiEP.  When dev is an
+>> RCiEP, "root" is the RCEC (if present), and we want to reset the
+>> RCiEP, not the RCEC.
+>>
+>>> +		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
+>>> +	}
+>> There are a couple changes here that I think should be split out.
+>>
+>> Based on my theory that when firmware retains control of AER, the OS
+>> should not touch PCI_ERR_ROOT_COMMAND and PCI_ERR_ROOT_STATUS, and any
+>> updates to them would have to be done by firmware before we get here,
+>> I suggested reordering this:
+>>
+>>    - clear PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
+>>    - do reset
+>>    - clear PCI_ERR_ROOT_STATUS (for APEI, presumably done by firmware?)
+>>    - enable PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
+>>
+>> to this:
+>>
+>>    - clear PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
+>>    - clear PCI_ERR_ROOT_STATUS
+>>    - enable PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
+>>    - do reset
+>>
+>> If my theory is correct, I think we should still reorder this, but:
+>>
+>>    - It's a significant behavior change that deserves its own patch so
+>>      we can document/bisect/revert.
+>>
+>>    - I'm not sure why we clear the PCI_ERR_ROOT_COMMAND error reporting
+>>      bits.  In the new "clear COMMAND, clear STATUS, enable COMMAND"
+>>      order, it looks superfluous.  There's no reason to disable error
+>>      reporting while clearing the status bits.
+>>
+>>      The current "clear, reset, enable" order suggests that the reset
+>>      might cause errors that we should ignore.  I don't know whether
+>>      that's the case or not.  It dates from 6c2b374d7485 ("PCI-Express
+>>      AER implemetation: AER core and aerdriver"), which doesn't
+>>      elaborate.
+>>
+>>    - Should we also test for OS ownership of AER before touching
+>>      PCI_ERR_ROOT_STATUS?
+>>
+>>    - If we remove the PCI_ERR_ROOT_COMMAND fiddling (and I tentatively
+>>      think we *should* unless we can justify it), that would also
+>>      deserve its own patch.  Possibly (1) remove PCI_ERR_ROOT_COMMAND
+>>      fiddling, (2) reorder PCI_ERR_ROOT_STATUS clearing and reset, (3)
+>>      test for OS ownership of AER (?), (4) the rest of this patch.
+>>
+>>>   	return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
+>>>   }
+>>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>>> index 7883c9791562..cbc5abfe767b 100644
+>>> --- a/drivers/pci/pcie/err.c
+>>> +++ b/drivers/pci/pcie/err.c
+>>> @@ -148,10 +148,10 @@ static int report_resume(struct pci_dev *dev, void *data)
+>>>   
+>>>   /**
+>>>    * pci_walk_bridge - walk bridges potentially AER affected
+>>> - * @bridge:	bridge which may be a Port, an RCEC with associated RCiEPs,
+>>> - *		or an RCiEP associated with an RCEC
+>>> - * @cb:		callback to be called for each device found
+>>> - * @userdata:	arbitrary pointer to be passed to callback
+>>> + * @bridge   bridge which may be an RCEC with associated RCiEPs,
+>>> + *           or a Port.
+>>> + * @cb       callback to be called for each device found
+>>> + * @userdata arbitrary pointer to be passed to callback.
+>>>    *
+>>>    * If the device provided is a bridge, walk the subordinate bus, including
+>>>    * any bridged devices on buses under this bus.  Call the provided callback
+>>> @@ -164,8 +164,14 @@ static void pci_walk_bridge(struct pci_dev *bridge,
+>>>   			    int (*cb)(struct pci_dev *, void *),
+>>>   			    void *userdata)
+>>>   {
+>>> +	/*
+>>> +	 * In a non-native case where there is no OS-visible reporting
+>>> +	 * device the bridge will be NULL, i.e., no RCEC, no Downstream Port.
+>>> +	 */
+>>>   	if (bridge->subordinate)
+>>>   		pci_walk_bus(bridge->subordinate, cb, userdata);
+>>> +	else if (bridge->rcec)
+>>> +		cb(bridge->rcec, userdata);
+>>>   	else
+>>>   		cb(bridge, userdata);
+>>>   }
+>>> @@ -194,12 +200,6 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>>   	pci_dbg(bridge, "broadcast error_detected message\n");
+>>>   	if (state == pci_channel_io_frozen) {
+>>>   		pci_walk_bridge(bridge, report_frozen_detected, &status);
+>>> -		if (type == PCI_EXP_TYPE_RC_END) {
+>>> -			pci_warn(dev, "subordinate device reset not possible for RCiEP\n");
+>>> -			status = PCI_ERS_RESULT_NONE;
+>>> -			goto failed;
+>>> -		}
+>>> -
+>>>   		status = reset_subordinates(bridge);
+>>>   		if (status != PCI_ERS_RESULT_RECOVERED) {
+>>>   			pci_warn(bridge, "subordinate device reset failed\n");
+>>> -- 
+>>> 2.28.0
+>>>
 -- 
-2.29.0.rc1.297.gfa9743e501-goog
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
