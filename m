@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93A52910A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 10:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11CA2910A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 10:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437594AbgJQIFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 04:05:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36454 "EHLO mx2.suse.de"
+        id S2437606AbgJQIFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 04:05:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36540 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437587AbgJQIFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 04:05:23 -0400
+        id S2437597AbgJQIFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 04:05:36 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 45E49ACAE;
-        Sat, 17 Oct 2020 08:05:22 +0000 (UTC)
-Date:   Sat, 17 Oct 2020 10:05:22 +0200
-Message-ID: <s5h1rhxmg59.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 3739AACDB;
+        Sat, 17 Oct 2020 08:05:34 +0000 (UTC)
+Date:   Sat, 17 Oct 2020 10:05:34 +0200
+Message-ID: <s5hzh4ll1kh.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2] sound: sparc: dbri: fix repeated word 'the'
-In-Reply-To: <20201016174405.17745-1-rdunlap@infradead.org>
-References: <20201016174405.17745-1-rdunlap@infradead.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Connor McAdams <conmanx360@gmail.com>,
+        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/ca0132: make some const arrays static, makes object smaller
+In-Reply-To: <20201016224913.687724-1-colin.king@canonical.com>
+References: <20201016224913.687724-1-colin.king@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -34,20 +35,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 19:44:05 +0200,
-Randy Dunlap wrote:
+On Sat, 17 Oct 2020 00:49:13 +0200,
+Colin King wrote:
 > 
-> Change the duplicated word "the" to "Then the".
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: Joe Perches <joe@perches.com>
-> ---
-> v2: use "Then the" instead of just "The". (Joe Perches)
+> Don't populate const arrays on the stack but instead make them
+> static. Makes the object code smaller by 57 bytes.
+> 
+> Before:
+>    text	   data	    bss	    dec	    hex	filename
+>  173256	  38016	    192	 211464	  33a08	sound/pci/hda/patch_ca0132.o
+> 
+> After:
+>    text	   data	    bss	    dec	    hex	filename
+>  172879	  38336	    192	 211407	  339cf	sound/pci/hda/patch_ca0132.o
+> 
+> (gcc version 10.2.0)
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Thanks, applied now.
+Thanks, applied.
 
 
 Takashi
