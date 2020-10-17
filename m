@@ -2,172 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD182291191
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 13:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09C32911A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 13:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437557AbgJQLLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 07:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411788AbgJQLLQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 07:11:16 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565E0C061755;
-        Sat, 17 Oct 2020 04:11:16 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id j136so8098840wmj.2;
-        Sat, 17 Oct 2020 04:11:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Pm5lcM7xCMgydOKeCL0HJ7IwwbAf9QYQ2Zi7aqPQeB4=;
-        b=EgZGKwhiwTox00z4tbgYo/hOr6ERqvzrhWbqjlRPNJtbL/mFJpcty5lW1e4Fe4hv9G
-         jk/UHASmPO07WOKrMnHK5iXN4TL853vqSYwaLGUcxwmjVFOa2l2HBF4UwIr9JU847wP4
-         QWRE2u5NBlV2KMFQKBeUWclaDXBck+/eeZISR6RdWSpFAR2g+LUvRpI5jbH40cGwysBc
-         z/RrQ6oEU7bSC/gIatfmxmVlORyevmIT5SvfRHEFWh+AB5V7IOiWOWPQpI2kUnhG68JI
-         o2yo9qQzDHLKdzP+8zRMfl+WFxA349DF29lYzge5HjSLxCizVU1Cpqu7etl+uBedrmib
-         jW8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=Pm5lcM7xCMgydOKeCL0HJ7IwwbAf9QYQ2Zi7aqPQeB4=;
-        b=r4CeSUtoR0yYbULO7l2/4K27sWPGsgmSCx6oPCXQIXnJCrbpM804m/tOJ9yEcCsnJD
-         648i8j/gfseaKZO1V9vopYzUkp8KkI2S86C6itY67SHR0/ZYDx4A05MVr2YdL7gbA62f
-         oHXR6fJCDbEw/4NgW12nxJUvbVBtPCc89buekYydqQqKFDL+vbr/vsIXIJuRvDm9Ap1Y
-         mfVg/CTcifer9cSP04Ticq8k/B/ftQr/tGYLsYnWMwU+sOOo/M0Fh35FKb7ZuOuKT6ym
-         Ak8K+a20d/PuLKnuSihHKQLoN00BV5Oa6PjDPAvf4Q92ijv1RO6azQNQWYhi8J4DDKBV
-         g98Q==
-X-Gm-Message-State: AOAM532KuflUtbSqdfrIQqzoYinbgsHwXCPcicmpUZ7RvOHi/1DZhkEm
-        V5VHzmRiUIJ+jPqTI16STjjavZ/KVE3JuQ==
-X-Google-Smtp-Source: ABdhPJwVlGhBzuaAf9bfzkWPNzbnroeZoEo1Iie93AWfzV2m0i/NKOx4M5ZX5OImN9ZHtiK1uvxxPw==
-X-Received: by 2002:a1c:e919:: with SMTP id q25mr7994790wmc.142.1602933074755;
-        Sat, 17 Oct 2020 04:11:14 -0700 (PDT)
-Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id b63sm7356305wme.9.2020.10.17.04.11.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Oct 2020 04:11:12 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Sat, 17 Oct 2020 13:11:11 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/21] 4.19.152-rc1 review
-Message-ID: <20201017111111.GA206185@eldamar.lan>
-References: <20201016090437.301376476@linuxfoundation.org>
- <20201016190151.GD32893@roeck-us.net>
- <20201017094153.GA190870@eldamar.lan>
- <20201017094943.GA1356372@kroah.com>
+        id S2437472AbgJQLZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 07:25:35 -0400
+Received: from mga03.intel.com ([134.134.136.65]:56571 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726543AbgJQLZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 07:25:29 -0400
+IronPort-SDR: /MNjUu7z8YiuzsXFgFHDUrv3PCZoE43UzLQ4PIFlbGuX0LJ9NbCpwLgMOvKL5PEjoX4C8f0t6f
+ d7O+gcr8lNZQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9776"; a="166864037"
+X-IronPort-AV: E=Sophos;i="5.77,386,1596524400"; 
+   d="scan'208";a="166864037"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2020 04:25:27 -0700
+IronPort-SDR: fJYorjHmM8rSDgf+AxOo8DQPaNgLXY2tWkNpbZAoBerP99MSi411fEqxxCXwYO+Iv27hZtjlge
+ nyFknD9/+HXQ==
+X-IronPort-AV: E=Sophos;i="5.77,386,1596524400"; 
+   d="scan'208";a="532052790"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2020 04:25:26 -0700
+Date:   Sat, 17 Oct 2020 04:25:25 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
+        zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-accelerators@lists.ozlabs.org,
+        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        linux-pci@vger.kernel.org, "Lu, Baolu" <baolu.lu@intel.com>,
+        Jacon Jun Pan <jacob.jun.pan@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [RFC PATCH 0/2] iommu: Avoid unnecessary PRI queue flushes
+Message-ID: <20201017112525.GA47206@otc-nc-03>
+References: <20201015090028.1278108-1-jean-philippe@linaro.org>
+ <20201015182211.GA54780@otc-nc-03>
+ <20201016075923.GB1309464@myrica>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201017094943.GA1356372@kroah.com>
+In-Reply-To: <20201016075923.GB1309464@myrica>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Jean
 
-On Sat, Oct 17, 2020 at 11:49:43AM +0200, Greg Kroah-Hartman wrote:
-> On Sat, Oct 17, 2020 at 11:41:53AM +0200, Salvatore Bonaccorso wrote:
-> > hi,
-> >=20
-> > On Fri, Oct 16, 2020 at 12:01:51PM -0700, Guenter Roeck wrote:
-> > > On Fri, Oct 16, 2020 at 11:07:19AM +0200, Greg Kroah-Hartman wrote:
-> > > > This is the start of the stable review cycle for the 4.19.152 relea=
-se.
-> > > > There are 21 patches in this series, all will be posted as a respon=
-se
-> > > > to this one.  If anyone has any issues with these being applied, pl=
-ease
-> > > > let me know.
-> > > >=20
-> > > > Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
-> > > > Anything received after that time might be too late.
-> > > >=20
-> > >=20
-> > > Build results:
-> > > 	total: 155 pass: 153 fail: 2
-> > > Failed builds:
-> > > 	i386:tools/perf
-> > > 	x86_64:tools/perf
-> >=20
-> > I'm seeing the tools/perf failure as well:
-> >=20
-> >   gcc -Wp,-MD,/home/build/linux-4.19.152/debian/build/build-tools/tools=
-/perf/util/intel-pt-decoder/.intel-pt-insn-decoder.o.d -Wp,-MT,/home/build/=
-linux-4.19.152/debian/build/build-tools/tools/perf/util/intel-pt-decoder/in=
-tel-pt-insn-decoder.o -g -O2 -fstack-protector-strong -Wformat -Werror=3Dfo=
-rmat-security -Wall -Wdate-time -D_FORTIFY_SOURCE=3D2 -I/home/build/linux-4=
-=2E19.152/tools/perf -I/home/build/linux-4.19.152/debian/build/build-tools/=
-tools/perf -isystem /home/build/linux-4.19.152/debian/build/build-tools/inc=
-lude -Wbad-function-cast -Wdeclaration-after-statement -Wformat-security -W=
-format-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wnested=
--externs -Wno-system-headers -Wold-style-definition -Wpacked -Wredundant-de=
-cls -Wshadow -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wundef -Ww=
-rite-strings -Wformat -Wstrict-aliasing=3D3 -DHAVE_ARCH_X86_64_SUPPORT -I/h=
-ome/build/linux-4.19.152/debian/build/build-tools/tools/perf/arch/x86/inclu=
-de/generated -DHAVE_SYSCALL_TABLE_SUPPORT -DHAVE_PERF_REGS_SUPPORT -DHAVE_A=
-RCH_REGS_QUERY_REGISTER_OFFSET -O6 -fno-omit-frame-pointer -ggdb3 -funwind-=
-tables -Wall -Wextra -std=3Dgnu99 -fstack-protector-all -D_FORTIFY_SOURCE=
-=3D2 -I/home/build/linux-4.19.152/tools/perf/util/include -I/home/build/lin=
-ux-4.19.152/tools/perf/arch/x86/include -I/home/build/linux-4.19.152/tools/=
-include/uapi -I/home/build/linux-4.19.152/tools/include/ -I/home/build/linu=
-x-4.19.152/tools/arch/x86/include/uapi -I/home/build/linux-4.19.152/tools/a=
-rch/x86/include/ -I/home/build/linux-4.19.152/tools/arch/x86/ -I/home/build=
-/linux-4.19.152/debian/build/build-tools/tools/perf//util -I/home/build/lin=
-ux-4.19.152/debian/build/build-tools/tools/perf/ -I/home/build/linux-4.19.1=
-52/tools/perf/util -I/home/build/linux-4.19.152/tools/perf -I/home/build/li=
-nux-4.19.152/tools/lib/ -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=3D64 -D_G=
-NU_SOURCE -DHAVE_SYNC_COMPARE_AND_SWAP_SUPPORT -DHAVE_PTHREAD_ATTR_SETAFFIN=
-ITY_NP -DHAVE_PTHREAD_BARRIER -DHAVE_DWARF_GETLOCATIONS_SUPPORT -DHAVE_GLIB=
-C_SUPPORT -DHAVE_SCHED_GETCPU_SUPPORT -DHAVE_SETNS_SUPPORT -DHAVE_CSTRACE_S=
-UPPORT -DHAVE_LIBELF_SUPPORT -DHAVE_LIBELF_MMAP_SUPPORT -DHAVE_ELF_GETPHDRN=
-UM_SUPPORT -DHAVE_GELF_GETNOTE_SUPPORT -DHAVE_ELF_GETSHDRSTRNDX_SUPPORT -DH=
-AVE_DWARF_SUPPORT -DHAVE_LIBBPF_SUPPORT -DHAVE_BPF_PROLOGUE -DHAVE_JITDUMP =
--DHAVE_DWARF_UNWIND_SUPPORT -DNO_LIBUNWIND_DEBUG_FRAME -DHAVE_LIBUNWIND_SUP=
-PORT -I/usr/include/slang -DHAVE_SLANG_SUPPORT -DHAVE_LIBPERL_SUPPORT -DHAV=
-E_TIMERFD_SUPPORT -DHAVE_LIBPYTHON_SUPPORT -DHAVE_CPLUS_DEMANGLE_SUPPORT -D=
-HAVE_ZLIB_SUPPORT -DHAVE_LZMA_SUPPORT -DHAVE_BACKTRACE_SUPPORT -DHAVE_LIBNU=
-MA_SUPPORT -DHAVE_KVM_STAT_SUPPORT -DHAVE_PERF_READ_VDSO32 -DHAVE_PERF_READ=
-_VDSOX32 -DHAVE_LIBBABELTRACE_SUPPORT -DHAVE_AUXTRACE_SUPPORT -I/home/build=
-/linux-4.19.152/debian/build/build-tools/tools/perf/ -D"BUILD_STR(s)=3D#s" =
--I/home/build/linux-4.19.152/debian/build/build-tools/tools/perf/util/intel=
--pt-decoder -c -o /home/build/linux-4.19.152/debian/build/build-tools/tools=
-/perf/util/intel-pt-decoder/intel-pt-insn-decoder.o util/intel-pt-decoder/i=
-ntel-pt-insn-decoder.c
-> > util/cs-etm-decoder/cs-etm-decoder.c: In function 'cs_etm_decoder__buff=
-er_packet':
-> > util/cs-etm-decoder/cs-etm-decoder.c:287:24: error: 'traceid_list' unde=
-clared (first use in this function); did you mean 'trace_event'?
-> >   inode =3D intlist__find(traceid_list, trace_chan_id);
-> >                         ^~~~~~~~~~~~
-> >                         trace_event
-> > util/cs-etm-decoder/cs-etm-decoder.c:287:24: note: each undeclared iden=
-tifier is reported only once for each function it appears in
-> > make[8]: *** [/home/build/linux-4.19.152/tools/build/Makefile.build:97:=
- /home/build/linux-4.19.152/debian/build/build-tools/tools/perf/util/cs-etm=
--decoder/cs-etm-decoder.o] Error 1
-> > make[8]: Leaving directory '/home/build/linux-4.19.152/tools/perf'
-> > make[7]: *** [/home/build/linux-4.19.152/tools/build/Makefile.build:139=
-: cs-etm-decoder] Error 2
->=20
-> Yeah, it's a mess, and I tried to unwind it, but it was not a simple
-> fix.
->=20
-> If people still care about building perf on 4.19 with newer gcc
-> releases, I'll gladly take backports of the needed patches for this.
+On Fri, Oct 16, 2020 at 09:59:23AM +0200, Jean-Philippe Brucker wrote:
+> On Thu, Oct 15, 2020 at 11:22:11AM -0700, Raj, Ashok wrote:
+> > Hi Jean
+> > 
+> > + Baolu who is looking into this.
+> > 
+> > 
+> > On Thu, Oct 15, 2020 at 11:00:27AM +0200, Jean-Philippe Brucker wrote:
+> > > Add a parameter to iommu_sva_unbind_device() that tells the IOMMU driver
+> > > whether the PRI queue needs flushing. When looking at the PCIe spec
+> > > again I noticed that most of the time the SMMUv3 driver doesn't actually
+> > > need to flush the PRI queue. Does this make sense for Intel VT-d as well
+> > > or did I overlook something?
+> > > 
+> > > Before calling iommu_sva_unbind_device(), device drivers must stop the
+> > > device from using the PASID. For PCIe devices, that consists of
+> > > completing any pending DMA, and completing any pending page request
+> > > unless the device uses Stop Markers. So unless the device uses Stop
+> > > Markers, we don't need to flush the PRI queue. For SMMUv3, stopping DMA
+> > > means completing all stall events, so we never need to flush the event
+> > > queue.
+> > 
+> > I don't think this is true. Baolu is working on an enhancement to this,
+> > I'll quickly summarize this below:
+> > 
+> > Stop markers are weird, I'm not certain there is any device today that
+> > sends STOP markers. Even if they did, markers don't have a required
+> > response, they are fire and forget from the device pov.
+> 
+> Definitely agree with this, and I hope none will implement stop marker.
+> For devices that *don't* use a stop marker, the PCIe spec says (10.4.1.2):
+> 
+>   To stop [using a PASID] without using a Stop Marker Message, the
+>   function shall:
+>   1. Stop queueing new Page Request Messages for this PASID.
 
-Ack! For the build of 4.19.152 in Debian we will for now just revert
-"perf cs-etm: Move definition of 'traceid_list' global variable from
-header file" again.
+The device driver would need to tell stop sending any new PR's.
 
-Regards,
-Salvatore
+>   2. Finish transmitting any multi-page Page Request Messages for this
+>      PASID (i.e. send the Page Request Message with the L bit Set).
+>   3. Wait for PRG Response Messages associated any outstanding Page
+>      Request Messages for the PASID.
+> 
+> So they have to flush their PR themselves. And since the device driver
+> completes this sequence before calling unbind(), then there shouldn't be
+> any oustanding PR for the PASID, and unbind() doesn't need to flush,
+> right?
+
+I can see how the device can complete #2,3 above. But the device driver
+isn't the one managing page-responses right. So in order for the device to
+know the above sequence is complete, it would need to get some assist from
+IOMMU driver?
+
+How does the driver know that everything host received has been responded
+back to device?
+
+> 
+> > I'm not sure about other IOMMU's how they behave, When there is no space in
+> > the PRQ, IOMMU auto-responds to the device. This puts the device in a
+> > while (1) loop. The fake successful response will let the device do a ATS
+> > lookup, and that would fail forcing the device to do another PRQ.
+> 
+> But in the sequence above, step 1 should ensure that the device will not
+> send another PR for any successful response coming back at step 3.
+
+True, but there could be some page-request in flight on its way to the
+IOMMU. By draining and getting that round trip back to IOMMU we gaurantee
+things in flight are flushed to PRQ after that Drain completes.
+> 
+> So I agree with the below if we suspect there could be pending PR, but
+> given that pending PR are a stop marker thing and we don't know any device
+> using stop markers, I wondered why I bothered implementing PRIq flush at
+> all for SMMUv3, hence this RFC.
+> 
+
+Cheers,
+Ashok
