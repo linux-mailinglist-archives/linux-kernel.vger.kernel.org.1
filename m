@@ -2,101 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A249A290FDD
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC193290FDB
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436955AbgJQGCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 02:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
+        id S2436911AbgJQGB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 02:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436907AbgJQGBl (ORCPT
+        with ESMTP id S2436912AbgJQGBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 17 Oct 2020 02:01:41 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1BAC05BD18
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 20:49:41 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id az3so2389815pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 20:49:41 -0700 (PDT)
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C868C05BD1D
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 21:03:05 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id y16so4940172ljk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 21:03:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jax4atoPJwkdfJLEu7w0obe+ESpSyuWLwfdsf3Y/MXI=;
-        b=EyNFtokkMOa7ze2Kbr5RF4vu56zkybgxN1S+XqwEuGm/93rAdYcsk5GVZrOQwne0Gu
-         uamOGa2VlAv5ps8EotoVIXq0pWWgr9NqBa597VliymjdSANE2AB0vq82ErtnsEBKOe7S
-         7ZLvcEmQu9YYEu2QMarKqvs6phZOpdh7IIN1U=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uR2yRSoFIyQFa85ZmyTeQWbKesy0kogveF0JOmK3HCU=;
+        b=G0aFMwnXL3XlqQtltqTo0eoChMRvdBPFzMoicowzO+xAY5WA7wnecLBujcLmZah0k/
+         e5mpG2PgiCXI5UV6aPxyJHgp+ak3mHqsIwGNyATLAY9IpyytJ/yv/eUNLEx8n5Z8IWxM
+         5Ev81C4+GL/IiR5iIz/ra80OcP7ctuQ69Pj2L7/QrHYXrCEAAle4I31KIYWKOWdz7wXn
+         M3HFOt505tL/bufF7RKhxyavqsmuktaYt6aLjMXM2bezAY35bwnHVGu6RsGL9aReXefA
+         CUnwlpUOUePqMTfmrge6m16eiA1+eUvlxTaBEHUJphVGNMuBAicVc8kqC269vRlgE0G9
+         pD+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jax4atoPJwkdfJLEu7w0obe+ESpSyuWLwfdsf3Y/MXI=;
-        b=nNT4F1J97dAoIBQlpGQdRkvLaJUITCL7wH86alTa8LAd176xWzu+bo4QX0bSCsyR4y
-         2icGq6kmGO3b455y0Pv9F8DVGf4JXx+qpjWMt+omtFwcEzCDuYJny1BkIkMVxe4Y4X7u
-         MbDtdMV2DAQAWPzvQ3oMWhc/mS3T6sE+SrLJYHuzkqLAvYE2lHcssprPVlhVGJXpigjj
-         61dJjBh2D1meUKoE9KWWhMWw7RQpDNTjJmoePc6X3LH0WvVvxi+e4Lhp2XvihT7ikpsB
-         GnOfg8Ngth9WHgdVkbX0HT/jQaSnSi4rRyPgSfD8wPZRHjT587worZSwcOY+8OHxnAqJ
-         3CdA==
-X-Gm-Message-State: AOAM532196C4knLWlpAc8J8X7zNu/6XQcqbNx2UUHIF3TwPzvC31m4kQ
-        myt1iu4NuRtaiUlDzJ+8do545g==
-X-Google-Smtp-Source: ABdhPJy3c4n93YNge6bCvLa5SNe3k/VWD6dF7uIpzuTvy8Uq0axiuYe+VCgXWMxO8UG8MTQ3YwVQsw==
-X-Received: by 2002:a17:902:bcc6:b029:d4:db82:4439 with SMTP id o6-20020a170902bcc6b02900d4db824439mr7210581pls.63.1602906581160;
-        Fri, 16 Oct 2020 20:49:41 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w74sm4510226pff.200.2020.10.16.20.49.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 20:49:39 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 20:49:38 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     herbert@gondor.apana.org.au
-Cc:     syzbot <syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, linux-hardening@vger.kernel.org,
-        Elena Petrova <lenaptr@google.com>
-Subject: Re: UBSAN: array-index-out-of-bounds in alg_bind
-Message-ID: <202010162042.7C51549A16@keescook>
-References: <00000000000014370305b1c55370@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uR2yRSoFIyQFa85ZmyTeQWbKesy0kogveF0JOmK3HCU=;
+        b=Udg7Z9qni81hsjSkTDhVQGpCP/9688Al40A9jdQVVWQ04IVETQDEUULGDJnMFguFM7
+         cIzIu35G98iDwBaA0V/wod7hJM61VyHIyK5TEXN58+siyMbYYHRmaBxiwiNxXVKcUlbX
+         NbjJ3+d3aG0noggz6Pzds3KwpYkFdfpnflPJkeXp4BdBiX8FwbrS860Hqr2Aoq9jwwEP
+         VK7fkHtA5RT64Z/qFDst0bEx52qajVvG0LNk4bf4ua6jPYvZI4Zn4gLR7c1wE13qyQYX
+         aYx6kOqRpASlKXnt9ToxZWZyu9UWahQFpHYnegEMRPKx+Pp+IXEgc7Ho1YM+fIJ2fEbZ
+         mOWA==
+X-Gm-Message-State: AOAM532zdbS8CHLza5tTRPEBwOFRYhmqCO9MYdTBIKtXKMYeOkCEH9fG
+        t0DC608qIRgfnlpSU7cY0E8Ydzs9TVTy5ZdDXI0hAA==
+X-Google-Smtp-Source: ABdhPJyWM+KuxWSKm+WZakQM1coYpvqzhvFBssVoo8yKJsSvLXOonodEkq1Mrj4Ytt2McNT6VBun6xj6Gc9/hPkEfDk=
+X-Received: by 2002:a2e:8816:: with SMTP id x22mr2543467ljh.377.1602907383409;
+ Fri, 16 Oct 2020 21:03:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000014370305b1c55370@google.com>
+References: <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
+ <CAG48ez0EanBvDyfthe+hAP0OC8iGLNSq2e5wJVz-=ENNGF97_w@mail.gmail.com> <20201017033606.GA14014@1wt.eu>
+In-Reply-To: <20201017033606.GA14014@1wt.eu>
+From:   Jann Horn <jannh@google.com>
+Date:   Sat, 17 Oct 2020 06:02:36 +0200
+Message-ID: <CAG48ez0x2S9XuCrANAQbXNi8Jjwm822-fnQSmr-Zr07JgrEs1g@mail.gmail.com>
+Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     "Catangiu, Adrian Costin" <acatan@amazon.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jason Donenfeld <Jason@zx2c4.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "Graf (AWS), Alexander" <graf@amazon.de>,
+        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "bonzini@gnu.org" <bonzini@gnu.org>,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>,
+        "oridgar@gmail.com" <oridgar@gmail.com>,
+        "ghammer@redhat.com" <ghammer@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 01:12:24AM -0700, syzbot wrote:
-> dashboard link: https://syzkaller.appspot.com/bug?extid=92ead4eb8e26a26d465e
-> [...]
-> Reported-by: syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com
-> [...]
-> UBSAN: array-index-out-of-bounds in crypto/af_alg.c:166:2
-> index 91 is out of range for type '__u8 [64]'
+On Sat, Oct 17, 2020 at 5:36 AM Willy Tarreau <w@1wt.eu> wrote:
+> On Sat, Oct 17, 2020 at 03:40:08AM +0200, Jann Horn wrote:
+> > [adding some more people who are interested in RNG stuff: Andy, Jason,
+> > Theodore, Willy Tarreau, Eric Biggers. also linux-api@, because this
+> > concerns some pretty fundamental API stuff related to RNG usage]
+> >
+> > On Fri, Oct 16, 2020 at 4:33 PM Catangiu, Adrian Costin
+> > <acatan@amazon.com> wrote:
+> > > This patch is a driver which exposes the Virtual Machine Generation ID
+> > > via a char-dev FS interface that provides ID update sync and async
+> > > notification, retrieval and confirmation mechanisms:
+> > >
+> > > When the device is 'open()'ed a copy of the current vm UUID is
+> > > associated with the file handle. 'read()' operations block until the
+> > > associated UUID is no longer up to date - until HW vm gen id changes -
+> > > at which point the new UUID is provided/returned. Nonblocking 'read()'
+> > > uses EWOULDBLOCK to signal that there is no _new_ UUID available.
+> > >
+> > > 'poll()' is implemented to allow polling for UUID updates. Such
+> > > updates result in 'EPOLLIN' events.
+> > >
+> > > Subsequent read()s following a UUID update no longer block, but return
+> > > the updated UUID. The application needs to acknowledge the UUID update
+> > > by confirming it through a 'write()'.
+> > > Only on writing back to the driver the right/latest UUID, will the
+> > > driver mark this "watcher" as up to date and remove EPOLLIN status.
+> > >
+> > > 'mmap()' support allows mapping a single read-only shared page which
+> > > will always contain the latest UUID value at offset 0.
+> >
+> > It would be nicer if that page just contained an incrementing counter,
+> > instead of a UUID. It's not like the application cares *what* the UUID
+> > changed to, just that it *did* change and all RNGs state now needs to
+> > be reseeded from the kernel, right? And an application can't reliably
+> > read the entire UUID from the memory mapping anyway, because the VM
+> > might be forked in the middle.
+> >
+> > So I think your kernel driver should detect UUID changes and then turn
+> > those into a monotonically incrementing counter. (Probably 64 bits
+> > wide?) (That's probably also a little bit faster than comparing an
+> > entire UUID.)
+>
+> I agree with this. Further, I'm observing there is a very common
+> confusion between "universally unique" and "random". Randoms are
+> needed when seeking unpredictability. A random number generator
+> *must* be able to return the same value multiple times in a row
+> (though this is rare), otherwise it's not random.
+[...]
+> If the UUIDs used there are real UUIDs, it could be as simple as
+> updating them according to their format, i.e. updating the timestamp,
+> and if the timestamp is already the same, just increase the seq counter.
+> Doing this doesn't require entropy, doesn't need to block and doesn't
+> needlessly leak randoms that sometimes make people feel nervous.
 
-This seems to be an "as intended", if very odd. false positive (the actual
-memory area is backed by the on-stack _K_SS_MAXSIZE-sized sockaddr_storage
-"address" variable in __sys_bind. But yes, af_alg's salg_name member
-size here doesn't make sense. The origin appears to be that 3f69cc60768b
-("crypto: af_alg - Allow arbitrarily long algorithm names") intentionally
-didn't extend the kernel structure (which is actually just using the UAPI
-structure). I don't see a reason the UAPI couldn't have been extended:
-it's a sockaddr implementation, so the size is always passed in as part
-of the existing API.
+Those UUIDs are supplied by existing hypervisor code; in that regard,
+this is almost like a driver for a hardware device. It is written
+against a fixed API provided by the underlying machine. Making sure
+that the sequence of UUIDs, as seen from inside the machine, never
+changes back to a previous one is the responsibility of the hypervisor
+and out of scope for this driver.
 
-At the very least the kernel needs to switch to using a correctly-sized
-structure: I expected UBSAN_BOUNDS to be enabled globally by default at
-some point in the future (with the minimal runtime -- the
-instrumentation is tiny and catches real issues).
+Microsoft's spec document (which is a .docx file for reasons I don't
+understand) actually promises us that it is a cryptographically random
+128-bit integer value, which means that if you fork a VM 2^64 times,
+the probability that any two of those VMs have the same counter is
+2^-64. That should be good enough.
 
-Reproduction:
+But in userspace, we just need a simple counter. There's no need for
+us to worry about anything else, like timestamps or whatever. If we
+repeatedly fork a paused VM, the forked VMs will see the same counter
+value, but that's totally fine, because the only thing that matters to
+userspace is that the counter changes when the VM is forked.
 
-struct sockaddr_alg sa = {
-    .salg_family = AF_ALG,
-    .salg_type = "skcipher",
-    .salg_name = "cbc(aes)"
-};
-fd = socket(AF_ALG, SOCK_SEQPACKET, 0);
-bind(fd, (void *)&sa, sizeof(sa));
-
-Replace "sizeof(sa)" with x where 64<x<=128.
-
--- 
-Kees Cook
+And actually, since the value is a cryptographically random 128-bit
+value, I think that we should definitely use it to help reseed the
+kernel's RNG, and keep it secret from userspace. That way, even if the
+VM image is public, we can ensure that going forward, the kernel RNG
+will return securely random data.
