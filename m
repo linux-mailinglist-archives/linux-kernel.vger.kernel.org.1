@@ -2,78 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F3F291260
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 16:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC6B291264
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 16:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438343AbgJQO1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 10:27:30 -0400
-Received: from smtprelay0224.hostedemail.com ([216.40.44.224]:34802 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2437013AbgJQO13 (ORCPT
+        id S2438355AbgJQO3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 10:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438346AbgJQO3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 10:27:29 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave05.hostedemail.com (Postfix) with ESMTP id BCFE5182895B9
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 14:27:28 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id E81DA837F24A;
-        Sat, 17 Oct 2020 14:27:27 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3870:3873:4321:4362:4605:5007:7576:7904:7974:10004:10400:10848:11026:11232:11473:11658:11914:12297:12555:12740:12760:12895:13069:13095:13311:13357:13439:14181:14659:14721:21080:21325:21433:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: test28_1d11acb27226
-X-Filterd-Recvd-Size: 1964
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf01.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 17 Oct 2020 14:27:27 +0000 (UTC)
-Message-ID: <25b86b7d30a3a94faf4e7279bcc34af1c522303f.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: add a fixer for missing newline at eof
-From:   Joe Perches <joe@perches.com>
-To:     trix@redhat.com, apw@canonical.com,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Sat, 17 Oct 2020 07:27:25 -0700
-In-Reply-To: <20201017142546.28988-1-trix@redhat.com>
-References: <20201017142546.28988-1-trix@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sat, 17 Oct 2020 10:29:15 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F120BC061755;
+        Sat, 17 Oct 2020 07:29:14 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id a72so6164531wme.5;
+        Sat, 17 Oct 2020 07:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YVQnjhnO3hPEHey+2a/NsTVt2kt0i3WZ2OmRQGb+eEU=;
+        b=lPz4OrDNKkJKRGbxIKA86ZwUlRZGmluEv4tikHtZVh0Z/EQdien5qZyTMYb/73ZwEM
+         la/V7M84Xe9V7Kc90euTFPV1Fs6TrEjr0y3OVmO60jU3/1yj57osqvVeIKP3UKZQTegn
+         RtEMvOnw0UmHuH54peCQZymCg3LQXIIgLMbUAY0FjZ9g/Sg+BMAsOBatBmBpCFDZQp/z
+         NAlSAe/mmm5ZXNoMxTRtcWU11TTt6VW0KyT5eooRv6PSKJ/0GsaUpLv9AN7v29Auhrd8
+         BERIfdAzMKLweDxv4rEunjcledmnXGeC4bPAzGPNW/1P5yK0MB1nsP33iANR7j7fahzn
+         VBow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YVQnjhnO3hPEHey+2a/NsTVt2kt0i3WZ2OmRQGb+eEU=;
+        b=eb3QmLyiz7IBk/wOC9yUwEFP7DYcEfNdGyDQFwG9wrAlNX36BBdBuG3zUfqTnuI3rV
+         +4VaT8TNjsGXwa1cxXmj4Qo15HXduLOFHEPU0jzee5tTw/A+LayIPBKt0YLx0Le+rFVQ
+         V4yDFJbDET+GvCP1aPTclfW2plAoK0K90EL1MSAS7TqLtlycTloZuYcUrN7NVxI/sVfC
+         +QteJJNyj21ZMLnmqxYFxon6ycyXXjnMgge0D2SKT2p4Q31Jjf7DS7s8I5FZhUcwwJQI
+         sgxQWpjUW46UCawgEHHe2eM8ihM8NKi4MboCCW/n+sLu5uYFO4lgOI7sjv3I/k4mTMAr
+         DbPw==
+X-Gm-Message-State: AOAM5313I28hg3sBekd96u9S+MYURWsAElDqljt7bMZht83h7ARJTm7d
+        R51kmMlR/EuDSS2lRddyDYOMdos3wACmDQ==
+X-Google-Smtp-Source: ABdhPJyecMC7VKYn9/3RgFi8oaYY+8gX1km0A2OJxjhdLdLiHBiocHr5Hr6rQWe0HVVYhH2XtNtVnA==
+X-Received: by 2002:a1c:4b0f:: with SMTP id y15mr9123399wma.165.1602944953679;
+        Sat, 17 Oct 2020 07:29:13 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id n5sm9020860wrm.2.2020.10.17.07.29.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Oct 2020 07:29:13 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] staging: media: atomisp: Remove unused function
+Date:   Sat, 17 Oct 2020 15:28:00 +0100
+Message-Id: <20201017142810.26967-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-10-17 at 07:25 -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Remove the trailing error message from the fixed lines
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
-> v2: fix whitespace
+The function ia_css_mipi_frame_specify() is not called from anywhere and
+the comment above its declaration states that it should be removed when
+there are no more users. So remove it.
 
-Thanks Tom.  Andrew can you pick this up please?
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ drivers/staging/media/atomisp/pci/ia_css_mipi.h | 17 -----------------
+ drivers/staging/media/atomisp/pci/sh_css_mipi.c | 11 -----------
+ 2 files changed, 28 deletions(-)
 
-> ---
->  scripts/checkpatch.pl | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index fab38b493cef..f9e78a5385ad 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3393,8 +3393,11 @@ sub process {
->  
->  # check for adding lines without a newline.
->  		if ($line =~ /^\+/ && defined $lines[$linenr] && $lines[$linenr] =~ /^\\ No newline at end of file/) {
-> -			WARN("MISSING_EOF_NEWLINE",
-> -			     "adding a line without newline at end of file\n" . $herecurr);
-> +			if (WARN("MISSING_EOF_NEWLINE",
-> +			         "adding a line without newline at end of file\n" . $herecurr) &&
-> +			    $fix) {
-> +				fix_delete_line($fixlinenr+1, "No newline at end of file");
-> +			}
->  		}
->  
->  # check we are in a valid source file C or perl if not then ignore this hunk
+diff --git a/drivers/staging/media/atomisp/pci/ia_css_mipi.h b/drivers/staging/media/atomisp/pci/ia_css_mipi.h
+index 7b6d796d6ee0..9e50e1c619be 100644
+--- a/drivers/staging/media/atomisp/pci/ia_css_mipi.h
++++ b/drivers/staging/media/atomisp/pci/ia_css_mipi.h
+@@ -25,23 +25,6 @@
+ #include "ia_css_stream_format.h"
+ #include "ia_css_input_port.h"
+ 
+-/* Backward compatible for CSS API 2.0 only
+- * TO BE REMOVED when all drivers move to CSS API 2.1.
+- */
+-/* @brief Specify a CSS MIPI frame buffer.
+- *
+- * @param[in]	size_mem_words	The frame size in memory words (32B).
+- * @param[in]	contiguous	Allocate memory physically contiguously or not.
+- * @return		The error code.
+- *
+- * \deprecated{Use ia_css_mipi_buffer_config instead.}
+- *
+- * Specifies a CSS MIPI frame buffer: size in memory words (32B).
+- */
+-int
+-ia_css_mipi_frame_specify(const unsigned int	size_mem_words,
+-			  const bool contiguous);
+-
+ /* @brief Register size of a CSS MIPI frame for check during capturing.
+  *
+  * @param[in]	port	CSI-2 port this check is registered.
+diff --git a/drivers/staging/media/atomisp/pci/sh_css_mipi.c b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
+index d5ae7f0b5864..3f34cc81be87 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css_mipi.c
++++ b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
+@@ -33,17 +33,6 @@
+ static u32
+ ref_count_mipi_allocation[N_CSI_PORTS]; /* Initialized in mipi_init */
+ 
+-int
+-ia_css_mipi_frame_specify(const unsigned int size_mem_words,
+-			  const bool contiguous) {
+-	int err = 0;
+-
+-	my_css.size_mem_words = size_mem_words;
+-	(void)contiguous;
+-
+-	return err;
+-}
+-
+ /*
+  * Check if a source port or TPG/PRBS ID is valid
+  */
+-- 
+2.28.0
 
