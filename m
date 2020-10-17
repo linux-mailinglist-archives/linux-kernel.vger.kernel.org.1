@@ -2,135 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804E529108D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 09:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A26291093
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 09:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437496AbgJQHeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 03:34:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56373 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2437489AbgJQHeJ (ORCPT
+        id S2406218AbgJQHhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 03:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390880AbgJQHhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 03:34:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602920047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P3KAINg8BNoCuG8bCQJ62lnGK5HBs8vSXpaMWaoVlLo=;
-        b=gm6LP6Md7nCAa2r5KDgxn07PlkEyfcrqJ4dQSEO16iW2PeFps4sjT7K7R0NCZimj17oZrD
-        m2IvwLMheNIcgCaj4/bL6NXapPIwiugITM0uVAGL82V8248AoTOLCp4iyoi3ydZlSJuUuq
-        XAPK7a8/Q8GDK+YQVP6Z+1k0Naaf5/g=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-145-lYtzM88zOkiLBqBGXQLZRw-1; Sat, 17 Oct 2020 03:34:05 -0400
-X-MC-Unique: lYtzM88zOkiLBqBGXQLZRw-1
-Received: by mail-ed1-f70.google.com with SMTP id i22so2952419edu.1
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:34:05 -0700 (PDT)
+        Sat, 17 Oct 2020 03:37:50 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FADC061755;
+        Sat, 17 Oct 2020 00:37:50 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id a17so2577048pju.1;
+        Sat, 17 Oct 2020 00:37:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=V7WTw4kQ5sRpBkhDX+SWEg0pWl+mUzy6Zy/Hpg45vAU=;
+        b=BRyAxexzDzzzMw90bVD+Z+pge6fXwE2rberWdEfLDpgLwS1B/X2D0J/LESkoyZXDR+
+         YEX+R5tyYbmirDWhIR41z3HsZUzfP/bybG0s9aekel9iUkNgWKyLge0RszpfVhOpRNxD
+         CLBew4qcavwez8YtqabBR14x7FNxlSo9CjhYB/vxOJzPYy5DnNCKuDoxh4Jl5DH7Luyp
+         Fyf+zzjNWIRgTDKZccMpqQsw/9jszwYUwkOmfzILb8A+cGJKTdImNphyKeJxo7UFCivW
+         L3bTVo4+kCVPa2Y/5uJcbqv+T0+p+tLzatD1faaSESKxd6PyGv8so38qPaJK5r1PnlUb
+         Vq2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=P3KAINg8BNoCuG8bCQJ62lnGK5HBs8vSXpaMWaoVlLo=;
-        b=pxUequZVZW6QGr0vMvC9KuKpDYCIASAHZJG4jDYslGqOO9dbGPBJqlOQ5uMQkQ75is
-         ytlhhlK6ne6j9aB+T9rbSnIpyaayT6VvwYmB0JzVK9KMTLD1UQQyJRXFYWNnHcogrq1j
-         jSo1xPu42SzlYt91elCf5TdVlf2hbN26bEV6lB88+04ZFPpoTgAUE/I+qnEZqMe6LlBE
-         HuqHe0jp0fMiG+aau9EPKag7WW8YTBICI4qJE8tsOwOipiyKsrUQkCEn7879uyMUblnX
-         TpZrHIZpmib8Pw27xgwIMcXMEt8WJ/tNjMshp9x8jEIm+HgBWoHLPUWbNfi50ePVK/5F
-         kmTg==
-X-Gm-Message-State: AOAM532tu1KU3IhScdlGZvaCbgmwwfJtQ/ZYNPqIHY3xknIywQpnGsYs
-        CWCUXT9RPr+amx9ku0L2AZhlGfqNMyXLVGFDNtxE5DQx1GmKHWwAFNqgK4JeURjJDM8/kTZT6Wk
-        wDXVa4PCiwKKDQYelcL95uwdD
-X-Received: by 2002:a17:906:b0d7:: with SMTP id bk23mr7898175ejb.103.1602920044176;
-        Sat, 17 Oct 2020 00:34:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw342FUQjFUP7HhPAUabllimsjaLbjdlXWUcUskiQHFdl6RF7ue37YFNOK9g8Wbuv2tXjxx7g==
-X-Received: by 2002:a17:906:b0d7:: with SMTP id bk23mr7898150ejb.103.1602920044004;
-        Sat, 17 Oct 2020 00:34:04 -0700 (PDT)
-Received: from [192.168.3.114] (p4ff239ab.dip0.t-ipconnect.de. [79.242.57.171])
-        by smtp.gmail.com with ESMTPSA id si13sm4354754ejb.49.2020.10.17.00.34.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Oct 2020 00:34:03 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 2/2] arm64: allow hotpluggable sections to be offlined
-Date:   Sat, 17 Oct 2020 09:34:02 +0200
-Message-Id: <04C5B822-70DF-47CF-9F76-2A31843B01E8@redhat.com>
-References: <c5f96b483158871ff65377884955fb0106e43951.1602899443.git.sudaraja@codeaurora.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>
-In-Reply-To: <c5f96b483158871ff65377884955fb0106e43951.1602899443.git.sudaraja@codeaurora.org>
-To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-X-Mailer: iPhone Mail (18A393)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=V7WTw4kQ5sRpBkhDX+SWEg0pWl+mUzy6Zy/Hpg45vAU=;
+        b=dOm7hKfR/+uqoXtNqB7q4YBBlNFgkMR4ydWq71HASO7RIfk6p+gpJfkFxgDK3geiQM
+         f8FNrZ1E+Ip6cxvq71l1tmNz30A2w+X2Lnug/QM3xrDvaWw3F6Z5aZa7r6gRrwooMzuT
+         YDUqeHBOCFw/CpKqpffntVjtDeDc7wn1fx45gNxUGSvR8t+4M7BIkTSVSBFifn32yBEO
+         u0zwCk0XdiHR/N4a5VqWF/0qs55g42KMb6hYVleGkGjrv0N3eYsnusNkWMkd+4spZMkr
+         5geqbLwNcMZbtlY9r6HEgTV5J0c5eoCG6KmOnyTGmhpHuWsTB33xx1VXljCn/4yoMigE
+         G1pg==
+X-Gm-Message-State: AOAM533F928F7RR6iXUfwe6A8VW221Xabq/wbcTwIt5DEda4FwDCQPMx
+        lcFaN3rvjJmu1dD+zk6rOnY=
+X-Google-Smtp-Source: ABdhPJz1yDCnaAkjxMzBSI/408KpVtWPUAHlzCEZvFya28EWo8I7aw/XRgxmRLP75R6W60S0O75D6A==
+X-Received: by 2002:a17:90a:6282:: with SMTP id d2mr8099887pjj.86.1602920269684;
+        Sat, 17 Oct 2020 00:37:49 -0700 (PDT)
+Received: from localhost.localdomain.localdomain (li885-200.members.linode.com. [45.56.83.200])
+        by smtp.gmail.com with ESMTPSA id z185sm4815539pfz.32.2020.10.17.00.37.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 17 Oct 2020 00:37:49 -0700 (PDT)
+From:   Jeff Xie <chongguiguzi@gmail.com>
+X-Google-Original-From: Jeff Xie <huan.xie@suse.com>
+To:     axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chongguiguzi@gmail.com, huan.xie@suse.com
+Subject: [PATCH] block: use helper function bio_copy_dev to __bio_clone_fast
+Date:   Sat, 17 Oct 2020 15:37:26 +0800
+Message-Id: <1602920246-25131-1-git-send-email-huan.xie@suse.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We have introduced helper function bio_copy_dev. Just use it.
 
-> Am 17.10.2020 um 04:03 schrieb Sudarshan Rajagopalan <sudaraja@codeaurora.=
-org>:
->=20
-> =EF=BB=BFOn receiving the MEM_GOING_OFFLINE notification, we disallow offl=
-ining of
-> any boot memory by checking if section_early or not. With the introduction=
+Signed-off-by: Jeff Xie <huan.xie@suse.com>
+---
+ block/bio.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> of SECTION_MARK_HOTPLUGGABLE, allow boot mem sections that are marked as
-> hotpluggable with this bit set to be offlined and removed. This now allows=
-
-> certain boot mem sections to be offlined.
->=20
-
-The check (notifier) is in arm64 code. I don=E2=80=98t see why you cannot ma=
-ke such decisions completely in arm64 code? Why would you have to mark secti=
-ons?
-
-Also, I think I am missing from *where* the code that marks sections removab=
-le is even called? Who makes such decisions?
-
-This feels wrong.=20
-
-> Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Gavin Shan <gshan@redhat.com>
-> Cc: Logan Gunthorpe <logang@deltatee.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Steven Price <steven.price@arm.com>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> ---
-> arch/arm64/mm/mmu.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index 75df62fea1b6..fb8878698672 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -1487,7 +1487,7 @@ static int prevent_bootmem_remove_notifier(struct no=
-tifier_block *nb,
->=20
->    for (; pfn < end_pfn; pfn +=3D PAGES_PER_SECTION) {
->        ms =3D __pfn_to_section(pfn);
-> -        if (early_section(ms))
-> +        if (early_section(ms) && !removable_section(ms))
->            return NOTIFY_BAD;
->    }
->    return NOTIFY_OK;
-> --=20
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->=20
+diff --git a/block/bio.c b/block/bio.c
+index 640d0fb..9fce7df 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -679,8 +679,6 @@ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
+ 	 * most users will be overriding ->bi_disk with a new target,
+ 	 * so we don't set nor calculate new physical/hw segment counts here
+ 	 */
+-	bio->bi_disk = bio_src->bi_disk;
+-	bio->bi_partno = bio_src->bi_partno;
+ 	bio_set_flag(bio, BIO_CLONED);
+ 	if (bio_flagged(bio_src, BIO_THROTTLED))
+ 		bio_set_flag(bio, BIO_THROTTLED);
+@@ -690,7 +688,7 @@ void __bio_clone_fast(struct bio *bio, struct bio *bio_src)
+ 	bio->bi_iter = bio_src->bi_iter;
+ 	bio->bi_io_vec = bio_src->bi_io_vec;
+ 
+-	bio_clone_blkg_association(bio, bio_src);
++	bio_copy_dev(bio, bio_src);
+ 	blkcg_bio_issue_init(bio);
+ }
+ EXPORT_SYMBOL(__bio_clone_fast);
+-- 
+1.8.3.1
 
