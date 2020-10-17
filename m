@@ -2,380 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFB0290F4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A60E290F57
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411777AbgJQFeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 01:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
+        id S2436473AbgJQFfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411742AbgJQFem (ORCPT
+        with ESMTP id S2411748AbgJQFen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 01:34:42 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E73C0613A6;
-        Fri, 16 Oct 2020 17:46:31 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id t18so2145437plo.1;
-        Fri, 16 Oct 2020 17:46:31 -0700 (PDT)
+        Sat, 17 Oct 2020 01:34:43 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBDDC0613A7;
+        Fri, 16 Oct 2020 17:48:20 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id x7so5847846eje.8;
+        Fri, 16 Oct 2020 17:48:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=dn9cdPHWGuAfcbl3He2BFEACXq6BvONvKiWXbCjohRk=;
-        b=CIIZEr6gQxn5JEsE0dyJ3QU4JgFlq8/H1DJ32sNozMPqljGJtBUjIYdLDQJFd8B5h6
-         kHYftEVJgRQGebLEwwDWBiLaF9mIgLuy2OILeubg2YgandHJx079+cw4w9m9b2DEKNIx
-         Wuc2KSZlMOzFH6N6sFIkt0inqK6TRYgbiqAzx62isyUbwUeoB4M7SXQOEHVhqfwfZkM6
-         PHfdNGyLpwy8LzUkk30q9mGtx9FpzOH9ZXcja47jOhuxTRzUmApTGVEstqL67O4aKLU4
-         8dqe8StmOzOgeeolwuBkpPSzMwnVqmgDBWgXfo4RuO8x5BRAovIyPaxRJsLMwzi8E1AE
-         OB1g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ua2AZ2Oeg9ewqA0Si3AkIz4WRNl/Q2mfMB0KJrjvhWY=;
+        b=uUqHvywJ4GS5x9oDzvgNuIg90FGhdNqaQgCMHgxjpw45tpi34MNDwt4s22Pxeay58Y
+         ujr4iqHG6RbIXO+2EZqSWTzH3aEpz0Mgj4cnakrg0lFeDXs+Xu5Zt05zoJdANtopnbxF
+         tCBBVD3+0CLMQMTsYUMegL844PryMkQ1229MKI+1MMq4vg39zbGA1Nv9jkr2l74gfWMz
+         VMLpnROG2RhB4Ql8m/yZ9BW+I8oDO5v7leu7r5x/1y0Iq53NEyHwgaEhK/5IyZB6Ch8b
+         GhiQ33U3GMiqBMdiQCnen1aPahXyFCv6zyJoc7OjbcsXlQcPiE0q3Jy0vgQj7I34eYFs
+         5bSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dn9cdPHWGuAfcbl3He2BFEACXq6BvONvKiWXbCjohRk=;
-        b=gZAUwndG4iz5N5cJCr7KTjw8R95sLaJSG3pEMosso0/Y4XAow9Zr+mqm6f3MimKB4Q
-         h1yCFWVdiVNeE5bp1QrZQS8K5W0LhG52LeQhoN1vBYy36a18UlhjM23aA9fWgG7ZkwLj
-         cLFjqqoLuC9XMIUxDS4/3rCh2TB/Si7//yH/QvulfiVyDzzf+QSg2TCPqHgWwpVzi1sg
-         NYwRKQSwDy2jx3+VY6kOHOItcwMQtiRtn5WhSMXLRHgxjv7UETrrNdU6IYxr0/K6toCf
-         mAQp/iwahDj5H81AmbecLaWuAsQz2oZZzpzvq9VAGu7UkBsZHLc555lzAACBZxC53ZDq
-         fvhA==
-X-Gm-Message-State: AOAM5326x3M0LUEDPot6zZ66E+0+9LH/ReQvMCPJHIdcI7pTYZHuKMDM
-        THLu8/yh0mt5oYRhEmkjke4=
-X-Google-Smtp-Source: ABdhPJx0+GPjjDU4pEHz/lc2slf4aU35ky3MUeRVFEHRJPWqG4/iwOFHikynZEJaQx32WxMH/Jh6iw==
-X-Received: by 2002:a17:902:7c93:b029:d4:e1c3:bde0 with SMTP id y19-20020a1709027c93b02900d4e1c3bde0mr6425873pll.85.1602895590795;
-        Fri, 16 Oct 2020 17:46:30 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id b142sm3892091pfb.186.2020.10.16.17.46.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ua2AZ2Oeg9ewqA0Si3AkIz4WRNl/Q2mfMB0KJrjvhWY=;
+        b=uAlV+uik/qawGdNa/4aQn+Gx4Io9fdtlXUZcUKB6TAh3mFjKHhiSNZfcbBU1HZPNfy
+         +MRSNmJaSpqPF8X9Lgyx+2UzESY0atNvuEf+UdiVz0UdpFEf544g2FrqYT3itOEhFPcQ
+         H0VYRgmhMQt7tnHXTHCijJA6e95tYfkkY7aNVqlkYpI7lEp+86sRLU+rg8l5E7VU5Opb
+         blTfNc1jkXutFTft8z+XvSkMqetSje4lcSiqrzwmVBDgfotnZgUGU6N0IonVtEGvRkrz
+         Ajv+flI04b9426ztcVsl/Ntt8XoeSf2a3Y6ngDh1cx5bKNXysWNukSTYeH/v088gadLp
+         VgnA==
+X-Gm-Message-State: AOAM530jJN+H1FzUzpNtTrJS+aEFkLNE1LN4UnP98BJv9rA8xbwEdKiv
+        EOThw3XChWgFlvkAiLOlH3I=
+X-Google-Smtp-Source: ABdhPJzn4nNS0j7LhCADf/vRymr8pWItLqMkNIvB2wdUC712nx3iIG29qbmvY0bg9osr7Jp5j/DpQg==
+X-Received: by 2002:a17:906:1a11:: with SMTP id i17mr6338496ejf.381.1602895698730;
+        Fri, 16 Oct 2020 17:48:18 -0700 (PDT)
+Received: from skbuf ([188.26.174.215])
+        by smtp.gmail.com with ESMTPSA id si13sm3326957ejb.49.2020.10.16.17.48.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 17:46:30 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Sat, 17 Oct 2020 08:45:56 +0800
-To:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Helmut Stult <helmut.stult@schinfo.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] HID: i2c-hid: add polling mode based on connected
- GPIO chip's pin status
-Message-ID: <20201017004556.kuoxzmbvef4yr3kg@Rk>
-References: <20201016131335.8121-1-coiby.xu@gmail.com>
- <T2SIcFVxZ81NUwKLDbSESA7Wpm7DYowEiii8ZaxTPtrdXZZeHLq5iZPkN5BLlp-9C6PLwUZOVwNpMdEdPSRZcAG4MmDt-tfyKZoQYJ0KHOA=@protonmail.com>
+        Fri, 16 Oct 2020 17:48:18 -0700 (PDT)
+Date:   Sat, 17 Oct 2020 03:48:16 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/3] net: dsa: don't pass cloned skb's to
+ drivers xmit function
+Message-ID: <20201017004816.q4l6cypw4fd4vu5f@skbuf>
+References: <20201016200226.23994-1-ceggers@arri.de>
+ <20201016200226.23994-2-ceggers@arri.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <T2SIcFVxZ81NUwKLDbSESA7Wpm7DYowEiii8ZaxTPtrdXZZeHLq5iZPkN5BLlp-9C6PLwUZOVwNpMdEdPSRZcAG4MmDt-tfyKZoQYJ0KHOA=@protonmail.com>
+In-Reply-To: <20201016200226.23994-2-ceggers@arri.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Oct 16, 2020 at 10:02:24PM +0200, Christian Eggers wrote:
+> Ensure that the skb is not cloned and has enough tail room for the tail
+> tag. This code will be removed from the drivers in the next commits.
+> 
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
+> ---
 
-Thank you for examine this patch in such a careful way!
+Does 1588 work for you using this change, or you haven't finished
+implementing it yet? If you haven't, I would suggest finishing that
+part first.
 
-On Fri, Oct 16, 2020 at 03:00:49PM +0000, Barnabás Pőcze wrote:
->Hi,
->
->I still think that `i2c_hid_resume()` and `i2c_hid_suspend()` are asymmetric and
->that might lead to issues.
->
+The post-reallocation skb looks nothing like the one before.
 
-Do you think this commit message is relevant to your concern?
+Before:
+skb len=68 headroom=2 headlen=68 tailroom=186
+mac=(2,14) net=(16,-1) trans=-1
+shinfo(txflags=1 nr_frags=0 gso(size=0 type=0 segs=0))
+csum(0x0 ip_summed=0 complete_sw=0 valid=0 level=0)
+hash(0x9d6927ec sw=1 l4=0) proto=0x88f7 pkttype=0 iif=0
+dev name=swp2 feat=0x0x0002000000005020
+sk family=17 type=3 proto=0
 
-$ git show d1c48038b849e9df0475621a52193a62424a4e87
-commit d1c48038b849e9df0475621a52193a62424a4e87
-     HID: i2c-hid: Only disable irq wake if it was successfully enabled during suspend
+After:
+skb len=68 headroom=2 headlen=68 tailroom=186
+mac=(2,16) net=(18,-17) trans=1
+shinfo(txflags=0 nr_frags=0 gso(size=0 type=0 segs=0))
+csum(0x0 ip_summed=0 complete_sw=0 valid=0 level=0)
+hash(0x0 sw=0 l4=0) proto=0x0000 pkttype=0 iif=0
 
-     Enabling irq wake could potentially fail and calling disable_irq_wake
-     after a failed call to enable_irq_wake could result in an unbalanced irq
-     warning. This patch warns if enable_irq_wake fails and avoids other
-     potential issues caused by calling disable_irq_wake on resume after
-     enable_irq_wake failed during suspend.
+Notice how you've changed shinfo(txflags), among other things.
 
-So I think all cases about irq have been handled. But for the regulator
-part, you are right. I made a mistake.
->
->> [...]
->> When polling mode is enabled, an I2C device can't wake up the suspended
->> system since enable/disable_irq_wake is invalid for polling mode.
->>
->
->Excuse my ignorance, but could you elaborate this because I am not sure I understand.
->Aren't the two things orthogonal (polling and waking up the system)?
->
-Waking up the system depends on irq. Since we use polling, we don't set
-up irq.
->
->> [...]
->>  #define I2C_HID_PWR_ON		0x00
->>  #define I2C_HID_PWR_SLEEP	0x01
->>
->> +/* polling mode */
->> +#define I2C_POLLING_DISABLED 0
->> +#define I2C_POLLING_GPIO_PIN 1
->
->This is a very small detail, but I personally think that these defines should be
->called I2C_HID_.... since they are only used here.
->
-Thank you! This is absolutely a good suggestion.
->
->> +#define POLLING_INTERVAL 10
->> +
->> +static u8 polling_mode;
->> +module_param(polling_mode, byte, 0444);
->> +MODULE_PARM_DESC(polling_mode, "How to poll - 0 disabled; 1 based on GPIO pin's status");
->> +
->> +static unsigned int polling_interval_active_us = 4000;
->> +module_param(polling_interval_active_us, uint, 0644);
->> +MODULE_PARM_DESC(polling_interval_active_us,
->> +		 "Poll every {polling_interval_active_us} us when the touchpad is active. Default to 4000 us");
->> +
->> +static unsigned int polling_interval_idle_ms = 10;
->
->There is a define for this value, I don't really see why you don't use it here.
->And if there is a define for one value, I don't really see why there isn't one
->for the other. (As far as I see `POLLING_INTERVAL` is not even used anywhere.)
->
-Thank you for spotting this leftover issue after introducing two
-parameters to control the polling interval.
+Which proves that you can't just copy&paste whatever you found in
+tag_trailer.c.
 
-Another issue is "MODULE_PARM_DESC(polling_interval_ms" should be
-"MODULE_PARM_DESC(polling_interval_idle_ms" although this won't cause
-real problem.
->
->> +module_param(polling_interval_idle_ms, uint, 0644);
->> +MODULE_PARM_DESC(polling_interval_ms,
->> +		 "Poll every {polling_interval_idle_ms} ms when the touchpad is idle. Default to 10 ms");
->>  /* debug option */
->>  static bool debug;
->>  module_param(debug, bool, 0444);
->> @@ -158,6 +178,8 @@ struct i2c_hid {
->>
->>  	struct i2c_hid_platform_data pdata;
->>
->> +	struct task_struct *polling_thread;
->> +
->>  	bool			irq_wake_enabled;
->>  	struct mutex		reset_lock;
->>  };
->> @@ -772,7 +794,9 @@ static int i2c_hid_start(struct hid_device *hid)
->>  		i2c_hid_free_buffers(ihid);
->>
->>  		ret = i2c_hid_alloc_buffers(ihid, bufsize);
->> -		enable_irq(client->irq);
->> +
->> +		if (polling_mode == I2C_POLLING_DISABLED)
->> +			enable_irq(client->irq);
->>
->>  		if (ret)
->>  			return ret;
->> @@ -814,6 +838,86 @@ struct hid_ll_driver i2c_hid_ll_driver = {
->>  };
->>  EXPORT_SYMBOL_GPL(i2c_hid_ll_driver);
->>
->> +static int get_gpio_pin_state(struct irq_desc *irq_desc)
->> +{
->> +	struct gpio_chip *gc = irq_data_get_irq_chip_data(&irq_desc->irq_data);
->> +
->> +	return gc->get(gc, irq_desc->irq_data.hwirq);
->> +}
->> +
->> +static bool interrupt_line_active(struct i2c_client *client)
->> +{
->> +	unsigned long trigger_type = irq_get_trigger_type(client->irq);
->> +	struct irq_desc *irq_desc = irq_to_desc(client->irq);
->> +
->> +	/*
->> +	 * According to Windows Precsiontion Touchpad's specs
->> +	 * https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/windows-precision-touchpad-device-bus-connectivity,
->> +	 * GPIO Interrupt Assertion Leve could be either ActiveLow or
->> +	 * ActiveHigh.
->> +	 */
->> +	if (trigger_type & IRQF_TRIGGER_LOW)
->> +		return !get_gpio_pin_state(irq_desc);
->> +
->> +	return get_gpio_pin_state(irq_desc);
->> +}
->
->Excuse my ignorance, but I think some kind of error handling regarding the return
->value of `get_gpio_pin_state()` should be present here.
->
-What kind of errors would you expect? It seems (struct gpio_chip *)->get
-only return 0 or 1.
->
->> +
->> +static int i2c_hid_polling_thread(void *i2c_hid)
->> +{
->> +	struct i2c_hid *ihid = i2c_hid;
->> +	struct i2c_client *client = ihid->client;
->> +	unsigned int polling_interval_idle;
->> +
->> +	while (1) {
->> +		/*
->> +		 * re-calculate polling_interval_idle
->> +		 * so the module parameters polling_interval_idle_ms can be
->> +		 * changed dynamically through sysfs as polling_interval_active_us
->> +		 */
->> +		polling_interval_idle = polling_interval_idle_ms * 1000;
->> +		if (test_bit(I2C_HID_READ_PENDING, &ihid->flags))
->> +			usleep_range(50000, 100000);
->> +
->> +		if (kthread_should_stop())
->> +			break;
->> +
->> +		while (interrupt_line_active(client)) {
->
->I realize it's quite unlikely, but can't this be a endless loop if data is coming
->in at a high enough rate? Maybe the maximum number of iterations could be limited here?
->
-If we find HID reports are constantly read and send to front-end
-application like libinput, won't it help expose the problem of the I2C
-HiD device?
->
->> +			i2c_hid_get_input(ihid);
->> +			usleep_range(polling_interval_active_us,
->> +				     polling_interval_active_us + 100);
->> +		}
->> +
->> +		usleep_range(polling_interval_idle,
->> +			     polling_interval_idle + 1000);
->> +	}
->> +
->> +	do_exit(0);
->> +	return 0;
->> +}
->> +
->> +static int i2c_hid_init_polling(struct i2c_hid *ihid)
->> +{
->> +	struct i2c_client *client = ihid->client;
->> +
->> +	if (!irq_get_trigger_type(client->irq)) {
->> +		dev_warn(&client->dev,
->> +			 "Failed to get GPIO Interrupt Assertion Level, could not enable polling mode for %s",
->> +			 client->name);
->> +		return -1;
->> +	}
->> +
->> +	ihid->polling_thread = kthread_create(i2c_hid_polling_thread, ihid,
->> +					      "I2C HID polling thread");
->> +
->> +	if (ihid->polling_thread) {
->
->`kthread_create()` returns an errno in a pointer, so this check is incorrect. It should be
->
-> if (!IS_ERR(ihid->polling_thread))
->
-Thank you for correcting my mistake!
+I am not yet sure whether there is any helper that can be used instead
+of this crazy open-coding. Right now, not having tested anything yet, my
+candidates of choice would be pskb_expand_head or __pskb_pull_tail. You
+should probably also try to cater here for the potential reallocation
+done in the skb_cow_head() of non-tail taggers. Which would lean the
+balance towards pskb_expand_head(), I believe.
 
->I think it's a bit inconsistent that in this function you do:
->
-> if (err)
->   bail
->
-> if (!err)
->   return ok
->
-> return err
->
-I'm not sure if I get you, but current pattern is
+Also, if the result is going to be longer than ~20 lines of code, I
+strongly suggest moving the reallocation to a separate function so you
+don't clutter dsa_slave_xmit.
 
-if (err)
-   return err;
-
-if (!err)
-   return ok
-
-return err
-
->moreover, I think the errno should be propagated, so use
->
-> return PTR_ERR(ihid->polling_thread);
->
->for example, when bailing out.
->
-
-This a good advice! Thank you
->
->> +		pr_info("I2C HID polling thread");
->> +		wake_up_process(ihid->polling_thread);
->> +		return 0;
->> +	}
->> +
->> +	return -1;
->> +}
->> +
->> [...]
->>  #ifdef CONFIG_PM_SLEEP
->> @@ -1183,15 +1300,16 @@ static int i2c_hid_suspend(struct device *dev)
->>  	/* Save some power */
->>  	i2c_hid_set_power(client, I2C_HID_PWR_SLEEP);
->>
->> -	disable_irq(client->irq);
->> -
->> -	if (device_may_wakeup(&client->dev)) {
->> -		wake_status = enable_irq_wake(client->irq);
->> -		if (!wake_status)
->> -			ihid->irq_wake_enabled = true;
->> -		else
->> -			hid_warn(hid, "Failed to enable irq wake: %d\n",
->> -				wake_status);
->> +	if (polling_mode == I2C_POLLING_DISABLED) {
->> +		disable_irq(client->irq);
->> +		if (device_may_wakeup(&client->dev)) {
->> +			wake_status = enable_irq_wake(client->irq);
->> +			if (!wake_status)
->> +				ihid->irq_wake_enabled = true;
->> +			else
->> +				hid_warn(hid, "Failed to enable irq wake: %d\n",
->> +					 wake_status);
->> +		}
->>  	} else {
->>  		regulator_bulk_disable(ARRAY_SIZE(ihid->pdata.supplies),
->>  				       ihid->pdata.supplies);
->> @@ -1208,7 +1326,7 @@ static int i2c_hid_resume(struct device *dev)
->>  	struct hid_device *hid = ihid->hid;
->>  	int wake_status;
->>
->> -	if (!device_may_wakeup(&client->dev)) {
->> +	if (!device_may_wakeup(&client->dev) || polling_mode != I2C_POLLING_DISABLED) {
->>  		ret = regulator_bulk_enable(ARRAY_SIZE(ihid->pdata.supplies),
->>  					    ihid->pdata.supplies);
->>  		if (ret)
->> @@ -1225,7 +1343,8 @@ static int i2c_hid_resume(struct device *dev)
->>  				wake_status);
->>  	}
->>
->> -	enable_irq(client->irq);
->> +	if (polling_mode == I2C_POLLING_DISABLED)
->> +		enable_irq(client->irq);
->> [...]
->
->Before this patch, if a device cannot wake up, then the regulators are disabled
->when suspending, after this patch, regulators are only disabled if polling is
->used. But they are enabled if the device cannot wake up *or* polling is used.
->
-Thank for analyzing what's wrong for me!
-
->Excuse my ignorance, but I do not understand why the following two changes are not enough:
->
->in `i2c_hid_suspend()`:
-> if (polling_mode == I2C_POLLING_DISABLED)
->   disable_irq(client->irq);
->
->in `i2c_hid_resume()`:
-> if (polling_mode == I2C_POLLING_DISABLED)
->   enable_irq(client->irq);
->
-I think we shouldn't call enable/disable_irq_wake in polling mode
-where we don't set up irq.
->
->Regards,
->Barnabás Pőcze
-
---
-Best regards,
-Coiby
+Also, please don't redeclare struct sk_buff *nskb, you don't need to.
