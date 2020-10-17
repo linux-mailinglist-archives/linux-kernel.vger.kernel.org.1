@@ -2,157 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C9B290F79
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C4A290F60
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436538AbgJQFjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 01:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436533AbgJQFjm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 01:39:42 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9173FC05BD2D
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 22:01:59 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id m16so4983656ljo.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 22:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Hx7Q/ww8SNQlC+Vff55Qg1KHQPfa6zByV8YGUpfQHNk=;
-        b=Mj4ipAZT8hm2EFBVYWNa/tPYN08h/c6I9aqqDDNKd/U1Gx8lY/fq6SCOLleNehgJrg
-         16iTyZDjW3bOYh1hhqWtA77oKiTI+TPM4N1Keo/JnJzSrlqFLzW7RPlCSwXodHNBHioe
-         60sjtbu/3EHa3YEwd0uy5df4RemUuD5LYm5H+8Y1Jz0qZOf6lUVUq/8KwhvUZ8M3r7Gw
-         bWF2ycp8+cBNuu5EidPWzLVcRpMEVOSaAgokNP1gQ/Vcr6lzp6alR3rT1I0+BfHSKna1
-         MUB9pFRtzc7GBqzTpgUnKrsGKvi+izpGnZj97WNgEpuknnloyOVePKBpgA5B1rIzMjOM
-         A/bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Hx7Q/ww8SNQlC+Vff55Qg1KHQPfa6zByV8YGUpfQHNk=;
-        b=Hcu8gAjV7WJnLpRNOxVPCsHaZNO8l4C9622k5ZAyOmRMTOirngUVAzN5LvFZJ1pbq6
-         pNhdCEDsBM3z2XS05Jec+oW63ndn/9nkJscNXksHTmhR/ba3zOovNBoflI+gfvZVgx8g
-         +ZgdKDQnZswzyOUrlwOLld6ieegqV1XVSbIRNtxlfPCaUcwoc9FLJ6ZT4Ml5y3vH6ShW
-         Ln9Rp29oks8X5IXuTVXPgK5c7LT/9312KmRl6n/FBMcSYOw/Jl4WUYYoBra3LVAVrAg5
-         RAbvMSm9tpHe4bSS0EUHc3JRcIcLjZeHaqvCJjaLyBj03XXPu8WxUGB0U/pFOPFRblwA
-         KTEw==
-X-Gm-Message-State: AOAM531L+v5l2AKdJjT1pIbZWQdimRSKvApS3FHIdSHFCftm68gwCZ5z
-        OsJcOQhxQqC+ZEKi+PIF5aG45jQpjiBsOqr0VH6eOg==
-X-Google-Smtp-Source: ABdhPJxCQSIczBapjLlcHFxQX22QzzHRPdqAFoK5FO3ftEN502eaH7vfcq23H3Fg7kt7YZD0VFtLi0VxAAPhKjminMo=
-X-Received: by 2002:a2e:b6cf:: with SMTP id m15mr2566942ljo.74.1602910917566;
- Fri, 16 Oct 2020 22:01:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
- <CAG48ez0EanBvDyfthe+hAP0OC8iGLNSq2e5wJVz-=ENNGF97_w@mail.gmail.com>
- <20201017033606.GA14014@1wt.eu> <CAG48ez0x2S9XuCrANAQbXNi8Jjwm822-fnQSmr-Zr07JgrEs1g@mail.gmail.com>
- <6CC3DB03-27BA-4F5E-8ADA-BE605D83A85C@amazon.com>
-In-Reply-To: <6CC3DB03-27BA-4F5E-8ADA-BE605D83A85C@amazon.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Sat, 17 Oct 2020 07:01:31 +0200
-Message-ID: <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
-Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
-To:     Colm MacCarthaigh <colmmacc@amazon.com>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        "Catangiu, Adrian Costin" <acatan@amazon.com>,
+        id S2411824AbgJQFgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:36:21 -0400
+Received: from mga07.intel.com ([134.134.136.100]:18143 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407407AbgJQFgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 01:36:20 -0400
+IronPort-SDR: z1ObCSkUQYoqiGlpwNCq8A/MaXnj1FTiuLFrq1/JDZcxGV6EnNmzfF4SJGXF6hAbTVQogtmXAD
+ WpWT+dBKkNRg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9776"; a="230939350"
+X-IronPort-AV: E=Sophos;i="5.77,385,1596524400"; 
+   d="scan'208";a="230939350"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 22:14:11 -0700
+IronPort-SDR: 3XRfBEMKtTlYf8Z8qW4rktOEmrz3tfwYHJY64FpmSJj9Yo7F5sdqW0j6CxcMd1S6SrD+tuozbQ
+ 2OvTFTNMfadw==
+X-IronPort-AV: E=Sophos;i="5.77,385,1596524400"; 
+   d="scan'208";a="522523589"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 22:14:11 -0700
+Date:   Fri, 16 Oct 2020 22:14:10 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Andy Lutomirski <luto@kernel.org>,
-        Jason Donenfeld <Jason@zx2c4.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:VIRTIO GPU DRIVER" 
-        <virtualization@lists.linux-foundation.org>,
-        "Graf (AWS), Alexander" <graf@amazon.de>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>, bonzini@gnu.org,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>, oridgar@gmail.com,
-        ghammer@redhat.com, Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Qemu Developers <qemu-devel@nongnu.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V3 4/9] x86/pks: Preserve the PKRS MSR on context
+ switch
+Message-ID: <20201017051410.GW2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-5-ira.weiny@intel.com>
+ <429789d3-ab5b-49c3-65c3-f0fc30a12516@intel.com>
+ <20201016111226.GN2611@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016111226.GN2611@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 6:34 AM Colm MacCarthaigh <colmmacc@amazon.com> wro=
-te:
-> On 16 Oct 2020, at 21:02, Jann Horn wrote:
-> > On Sat, Oct 17, 2020 at 5:36 AM Willy Tarreau <w@1wt.eu> wrote:
-> > But in userspace, we just need a simple counter. There's no need for
-> > us to worry about anything else, like timestamps or whatever. If we
-> > repeatedly fork a paused VM, the forked VMs will see the same counter
-> > value, but that's totally fine, because the only thing that matters to
-> > userspace is that the counter changes when the VM is forked.
->
-> For user-space, even a single bit would do. We added MADVISE_WIPEONFORK
-> so that userspace libraries can detect fork()/clone() robustly, for the
-> same reasons. It just wipes a page as the indicator, which is
-> effectively a single-bit signal, and it works well. On the user-space
-> side of this, I=E2=80=99m keen to find a solution like that that we can u=
-se
-> fairly easily inside of portable libraries and applications. The =E2=80=
-=9Chave
-> I forked=E2=80=9D checks do end up in hot paths, so it=E2=80=99s nice if =
-they can be
-> CPU cache friendly. Comparing a whole 128-bit value wouldn=E2=80=99t be m=
-y
-> favorite.
+On Fri, Oct 16, 2020 at 01:12:26PM +0200, Peter Zijlstra wrote:
+> On Tue, Oct 13, 2020 at 11:31:45AM -0700, Dave Hansen wrote:
+> > > +/**
+> > > + * It should also be noted that the underlying WRMSR(MSR_IA32_PKRS) is not
+> > > + * serializing but still maintains ordering properties similar to WRPKRU.
+> > > + * The current SDM section on PKRS needs updating but should be the same as
+> > > + * that of WRPKRU.  So to quote from the WRPKRU text:
+> > > + *
+> > > + * 	WRPKRU will never execute transiently. Memory accesses
+> > > + * 	affected by PKRU register will not execute (even transiently)
+> > > + * 	until all prior executions of WRPKRU have completed execution
+> > > + * 	and updated the PKRU register.
+> > > + */
+> > > +void write_pkrs(u32 new_pkrs)
+> > > +{
+> > > +	u32 *pkrs;
+> > > +
+> > > +	if (!static_cpu_has(X86_FEATURE_PKS))
+> > > +		return;
+> > > +
+> > > +	pkrs = get_cpu_ptr(&pkrs_cache);
+> > > +	if (*pkrs != new_pkrs) {
+> > > +		*pkrs = new_pkrs;
+> > > +		wrmsrl(MSR_IA32_PKRS, new_pkrs);
+> > > +	}
+> > > +	put_cpu_ptr(pkrs);
+> > > +}
+> > > 
+> > 
+> > It bugs me a *bit* that this is being called in a preempt-disabled
+> > region, but we still bother with the get/put_cpu jazz.  Are there other
+> > future call-sites for this that aren't in preempt-disabled regions?
+> 
+> So the previous version had a useful comment that got lost.
 
-I'm pretty sure a single bit is not enough if you want to have a
-single page, shared across the entire system, that stores the VM
-forking state; you need a counter for that.
+Ok Looking back I see what happened...  This comment...
 
-> > And actually, since the value is a cryptographically random 128-bit
-> > value, I think that we should definitely use it to help reseed the
-> > kernel's RNG, and keep it secret from userspace. That way, even if the
-> > VM image is public, we can ensure that going forward, the kernel RNG
-> > will return securely random data.
->
-> If the image is public, you need some extra new raw entropy from
-> somewhere. The gen-id could be mixed in, that can=E2=80=99t do any harm a=
-s
-> long as rigorous cryptographic mixing with the prior state is used, but
-> if that=E2=80=99s all you do then the final state is still deterministic =
-and
-> non-secret.
+ /*
+  * PKRS is only temporarily changed during specific code paths.
+  * Only a preemption during these windows away from the default
+  * value would require updating the MSR.
+  */
 
-Microsoft's documentation
-(http://go.microsoft.com/fwlink/?LinkId=3D260709) says that the VM
-Generation ID that we get after a fork "is a 128-bit,
-cryptographically random integer value". If multiple people use the
-same image, it guarantees that each use of the image gets its own,
-fresh ID: The table in section "How to implement virtual machine
-generation ID support in a virtualization platform" says that (among
-other things) "Virtual machine is imported, copied, or cloned"
-generates a new generation ID.
+... was added to pks_sched_in() but that got simplified down because cleaning
+up write_pkrs() made the code there obsolete.
 
-So the RNG state after mixing in the new VM Generation ID would
-contain 128 bits of secret entropy not known to anyone else, including
-people with access to the VM image.
+> This stuff
+> needs to fundamentally be preempt disabled,
 
-Now, 128 bits of cryptographically random data aren't _optimal_; I
-think something on the order of 256 bits would be nicer from a
-theoretical standpoint. But in practice I think we'll be good with the
-128 bits we're getting (since the number of users who fork a VM image
-is probably not going to be so large that worst-case collision
-probabilities matter).
+I agree, the update to the percpu cache value and MSR can not be torn.
 
-> The kernel would need to use the change as a trigger to
-> measure some entropy (e.g. interrupts and RDRAND, or whatever). Our just
-> define the machine contract as =E2=80=9Cthis has to be unique random data=
- and
-> if it=E2=80=99s not unique, or if it=E2=80=99s pubic, you=E2=80=99re toas=
-t=E2=80=9D.
+> so it either needs to
+> explicitly do so, or have an assertion that preemption is indeed
+> disabled.
 
-As far as I can tell from Microsoft's spec, that is a guarantee we're
-already getting.
+However, I don't think I understand clearly.  Doesn't [get|put]_cpu_ptr()
+handle the preempt_disable() for us?  Is it not sufficient to rely on that?
+
+Dave's comment seems to be the opposite where we need to eliminate preempt
+disable before calling write_pkrs().
+
+FWIW I think I'm mistaken in my response to Dave regarding the
+preempt_disable() in pks_update_protection().
+
+Ira
