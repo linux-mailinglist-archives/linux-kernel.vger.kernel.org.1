@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD032911C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 14:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19BD2911CA
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 14:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437852AbgJQMIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 08:08:20 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:58538 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437821AbgJQMIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 08:08:18 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kTl0H-0008Qe-Kg; Sat, 17 Oct 2020 14:08:05 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Rob Herring <robh+dt@kernel.org>, Johan Jonker <jbx6244@gmail.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        Alexis Ballier <aballier@gentoo.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Anand Moon <linux.amoon@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        jagan@amarulasolutions.com
-Subject: Re: [PATCH v2 1/2] ARM: dts: rk3188: correct interrupt flags
-Date:   Sat, 17 Oct 2020 14:08:04 +0200
-Message-ID: <2926877.yplJhP9KA3@diego>
-In-Reply-To: <20201002161128.GB4542@kozik-lap>
-References: <20200917185211.5483-1-krzk@kernel.org> <20201002161128.GB4542@kozik-lap>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S2437877AbgJQMNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 08:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437852AbgJQMNF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 08:13:05 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC938C061755;
+        Sat, 17 Oct 2020 05:13:05 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id g29so3072119pgl.2;
+        Sat, 17 Oct 2020 05:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ruSfbwiFHP3Eq9VOsgPCaQqVVjbaLLVtHNrQXQOVVtE=;
+        b=YllacpTSo2ofPyvyocDL10TuVJUzZJSXMjGFMCWkknsF8hqstKdJl0oDWPxZph/Znu
+         5i1/JaN5gr3Y42NdPtBkImtQZJ8dgcyRTM00fjnM3DwAcVviy0lKg34MMhVumBgGTwcu
+         X2CeoNhI1qUD9N6eNp+S/zDvMOxpfDH0slFzXt/1R5fBUWSJDdL83erEBaTOfN9m76f9
+         JwLw9QmwUvuxYkDU0cQJIERi7D1iU/EsNz7N3EqRiN0/N6D41xhDJgnETwYfsV1Ffl65
+         6/PYSPOv/H1dvOa+Q5JxLj83V+FLPpY9RO8BHZFgMQvGwPqmXMo8gBoJmH+uzpQ8PbPt
+         yk3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ruSfbwiFHP3Eq9VOsgPCaQqVVjbaLLVtHNrQXQOVVtE=;
+        b=S2mM3gVyPTadUhXk8WzrEAZ+ym8Omh4LiThJHSr9Pk5or+zkjUoHBDxWqUz28U1lPc
+         sTEekUkcvb1gmGaaxyLiHGkSJiq0kspCro7/RSapaeyCuOPjEvvh/Md/K8pLqsrT1LXQ
+         CqFoszV4aKGPuejdP0hpxkXxz+avBffQjWi5wST4Bapdv9uKqnaSAFPoDBdhb27oi25z
+         y+SDK/zGbbDjdY+JD9Os+2vuhBrHkmQaYMn72iozddws7eUSGZ4+P1VyoArGc7RZdI7H
+         jK0xKHl31f+8tRTHUK6cV1TWt14Du/3WdxUQK34ZrGflZdZSvdMkOIxRTtTGvZUCPmsM
+         mYKQ==
+X-Gm-Message-State: AOAM5338AfvFx1qJMN60hOdfcghIffDMraI3vG5dldGlvcLYQK3Q1TjR
+        W0pbA8H1fReWCaHRRcNGtA==
+X-Google-Smtp-Source: ABdhPJyfu4pwqoI6JEuDgCy+ZFO6mndmcTGPYkSfDydQyidrJRJQnprqKOwJwabNhsWolU0nAi1xxA==
+X-Received: by 2002:a63:5c5f:: with SMTP id n31mr6456292pgm.397.1602936785356;
+        Sat, 17 Oct 2020 05:13:05 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.169.164])
+        by smtp.gmail.com with ESMTPSA id e1sm5812701pfd.198.2020.10.17.05.13.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Oct 2020 05:13:04 -0700 (PDT)
+From:   Pujin Shi <shipujin.t@gmail.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Filipe Manana <fdmanana@suse.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pujin Shi <shipujin.t@gmail.com>
+Subject: [PATCH v2] fs: btrfs: Fix incorrect printf qualifier
+Date:   Sat, 17 Oct 2020 20:12:49 +0800
+Message-Id: <20201017121249.1261-1-shipujin.t@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patch addresses a compile warning:
+fs/btrfs/extent-tree.c: In function '__btrfs_free_extent':
+fs/btrfs/extent-tree.c:3187:4: warning: format '%lu' expects argument of type 'long unsigned int', but argument 8 has type 'unsigned int' [-Wformat=]
 
-Am Freitag, 2. Oktober 2020, 18:11:28 CEST schrieb Krzysztof Kozlowski:
-> On Thu, Sep 17, 2020 at 08:52:10PM +0200, Krzysztof Kozlowski wrote:
-> > GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
-> > These are simple defines so they could be used in DTS but they will not
-> > have the same meaning:
-> > 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
-> > 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
-> > 
-> > Correct the interrupt flags without affecting the code:
-> >   ACTIVE_HIGH => IRQ_TYPE_NONE
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > 
-> > ---
-> > 
-> > Not tested on HW.
-> > 
-> > Changes since v1:
-> > 1. Correct title
-> > ---
-> >  arch/arm/boot/dts/rk3188-bqedison2qc.dts | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> Hi,
-> 
-> Any comments/review/testing from Heiko or other Rockchip folks? Shall I
-> cc here someone?
+Fixes: 1c2a07f598d5 ("btrfs: extent-tree: kill BUG_ON() in __btrfs_free_extent()")
+Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
+---
+ fs/btrfs/extent-tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'm actually wondering about this ... I somehow remember writing a response,
-but don't see it in my history - so it might have gotten lost before I
-actually sent it.
-
-I think the biggest issue I have is that none of that is tested on any
-hardware and looking at other brcm wifi drivers in the kernel, the
-interrupt polarity seems to be all over the place, some set it high,
-some low and I even have seen edge triggers.
-
-As all changes are in regard to (copied) brcm wifi node, it would be
-really interesting to actually know what trigger is the right one.
-
-I've Cc'ed Jagan who I think has worked on an affected board,
-maybe he can check which trigger is correct.
-
-
-Heiko
-
-
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 3b21fee13e77..5fd60b13f4f8 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -3185,7 +3185,7 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 		struct btrfs_tree_block_info *bi;
+ 		if (item_size < sizeof(*ei) + sizeof(*bi)) {
+ 			btrfs_crit(info,
+-"invalid extent item size for key (%llu, %u, %llu) owner %llu, has %u expect >= %lu",
++"invalid extent item size for key (%llu, %u, %llu) owner %llu, has %u expect >= %zu",
+ 				   key.objectid, key.type, key.offset,
+ 				   owner_objectid, item_size,
+ 				   sizeof(*ei) + sizeof(*bi));
+-- 
+2.18.1
 
