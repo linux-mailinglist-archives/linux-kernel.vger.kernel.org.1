@@ -2,87 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32474291026
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D8D291031
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437018AbgJQG3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 02:29:36 -0400
-Received: from sonic301-20.consmr.mail.ir2.yahoo.com ([77.238.176.97]:45727
-        "EHLO sonic301-20.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2436934AbgJQG3g (ORCPT
+        id S2437162AbgJQGlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 02:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437155AbgJQGlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 02:29:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1602916173; bh=815eJ56VHnklTDk+DCOG4XAfdC9czamW+ZJP9hVvUQw=; h=Date:From:Reply-To:Subject:References:From:Subject; b=XOxGgUQGfj2XdVwCLN5nugU08oZunnhLgHdc0jf2EzqSuu3KSaRWKWOcmiHOyFWs1gzRBvkDJlAKekvCJHC1wmJ/x/h/V3CSJ8e53pCvQROfJdWMFghNZj865akb9mb4DW1TEvzidFDZexhOfZLU5lU7BbA37zGpvls/dUKkAJCEsIhHmy/RMIaq2PwEX47Zd/UJZ3fkPfUAhAN2GjkATC/NyIbfWQSdKaUOantfKXDqxPcbuHfPl5oDXYIviLzRCM2Ux+fSAf1HNe1Pj2vPkvIc/Z6msICetLe62moUDNDl++GrE+9aP7R5guLwo1vubP7HKeLqy62jCFkl1RHHLw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1602916173; bh=rXIfuoqmzca0eMbNYity36C0RVhAg70w5i2D9cdPJh9=; h=Date:From:Subject; b=gG6RpCRU+q0QR5KFWAdWoiOsxZ3w6TWl+3jumio/EdLnTmJ2a1QlMduzl0CEnlHrkNL6pHrqY4fW7vevnQVVJsW0GENLJZHfpglhXjORTBnoFxhq+Wat7If39JJhJOn2Ng5jhCyPzwmHLPMC3MdUiU4Js3rlltvXU/I/yq5S8Nv0jvWxmMwVEHr5lKMAVpWlJYEpKkiLIWcuJ9s4uUAYmflitBSYfQxYf9GGWM57ddWWF/HgdmbDxBRSyC0/nnLHT/rjOGWZrgIr4EOBTb+/CkESL/i/aM8NCgpQH8jeURagack/WLB5EbYn36jU5vUycqFKQP1Xqgo/ESB9MloN2A==
-X-YMail-OSG: 5iAH3fAVM1ntzZsZ0ZXT9dAEWQeOOFwNZw8v7GAVvtrqxkL7TWBUBhDngGqpWYN
- yXrWFPsdrRjSzPsCNQtSpizfRzHvZBv2LGxZ7glEXvlu.HHgUMR6PH0xITZcC7TE_8bopMs0tD8Y
- TvsLLB6CKdw3Wjbbk6E52cZ9rF9mehvlVtGNw412oEqyA_YgRpw8r1WO1ZgzGdOWk8.Nq16hwf5P
- iqZ.depmqn7HRPc7C9SrVkR52LjcpCkPvD5.ddINJ364Sk.ay.qTEdo9YLLAQtGEqdKHds2RuS8A
- imuu_bwB0iVMHHaharOgtA_AKEeiACNOx69r9TMWmyBnhcOIWqYOzoe0XO024JZ65WPmTAIBjKIh
- VH_Pm6u55P_3WgfgaJHo6UTqE5MfKZAQk_qCP9UhYaWTFd4r7w11cRTm7_yHoRr1lSD8bjJ5SDCt
- hAMk4YtSqJmNR5jupmKHCHR9CJZkmy48r0AyB6TPcsZT9.mMvibTGQheMe9dwArJbruGrBBaIxJq
- XDfrmHSrSusndFapxog35QeQNR7w8zNhls3Jt4nXpBHpc.BlfQRWx2WIDUUJPGI9Fn3e777xr6pi
- zt61J0aFMImMH_X4ZonrUO8p79aiE6exrvPgyl35yB2ov2u4DUqwBbe3JU4HzQ9RyP08_vD5yUvV
- AhoXPR5HM1JH0j3FOC9bHUqfd6xodpzsSztNxvu7QcB63DSogg7YoGiOdiOJhWFzC8x4nmcZOr2l
- 4Hui3MLHc1hZYyo0ZpAFlZusSgrs05CAHCPjkrkMJ_xTDGAFycjDGNQjrZ22qLero027YSj4K10i
- nJSYoAoiiFND4pgri4XF95LIhsaFhTDAB3UZR9O7S5cRIpaDZmWC302Wk2H9ZM9DM9sw13g9l1tF
- 5FXgW97ei3WdR9QcN8m_51HVF10N9HVvURSIXywPmf_H1aSyfnreuGKLNj4vfzHr.EvN41psWa3t
- zDomAqvJK.JlNT2eiVYrKQC5NfJgVTWUnPt8jP66UBHQvrd8jZjWdYbBOEPsJlki4tEk2UOgR2zc
- 4mDuso00pNy5RpX8fnvhQH5vyz4eFhFf9P6fLz_2Vy1iC5vQPK8fablHnCQkju0LDYsCzHPbyJqG
- go7gt6k7MDJdoigegd2hLqMgPPu_OkmScV7Hr.lda5iJyzfDym6UXCQ1wGSF47PLBw7XlB7PJcCe
- skhMUCfII6qmY34rkUT_8CYWf5fE1WUEfbD2scetyKi9xjnkUrE3LLmrCUlvEAM.JSYSzUsLcVpd
- YVVpegkVVW0ODlXPKNVwHktLin7uylDu.qmzvc2l.sis5sOOcqQf8QFgDM33YN2zgmB.WKnvWm6n
- 15LCYahvaFM3fEchjbVCsbQe.JKl_wd67K2Wmh0yvKJ5iS1wUjrPuJ_2.eTx1DcKyL84PqoxHKKZ
- 2odVNjWGdgcRS0cIMiW90D8yIr3HdzTnx4lr6vMz_
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.ir2.yahoo.com with HTTP; Sat, 17 Oct 2020 06:29:33 +0000
-Date:   Sat, 17 Oct 2020 06:29:32 +0000 (UTC)
-From:   "Mrs. Barbara Roth." <mrsemailcontact1@aol.com>
-Reply-To: mrsemailcontact1@aol.com
-Message-ID: <857866243.602427.1602916172816@mail.yahoo.com>
-Subject: Dearest beloved in the Lord,
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <857866243.602427.1602916172816.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16868 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+        Sat, 17 Oct 2020 02:41:31 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78910C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 23:41:31 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id f2so2472774pgf.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 23:41:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=gYXoTy8UdH0s1OT5tLFrTZAYUQ4IBX8u576c7QZTu7o=;
+        b=rrrjzDx+j+nCaUrOb0wLsA6On/IqHbnnbFwI85l1uJ0rGXZSw+zOGrbvtS5PnXlmmm
+         c9/rvAEbDfSZGfcLvsXzwgVDOoVO4FU/n9ZaUAq4dE3dGC7h1gCnFKxKds3BfLVSrWCL
+         h49JLEmiUzcdMiw64wUAMYay+3n5bRIrlY+oidihC0KjrPZI8q05GNI2XJP1OmqFFIpg
+         bgkHahykVJvBAs1Kt6Ht2BWg4YnzAC2JF96es+fOLEkd+7+t+Mvh+MnCiqGfMh6b+IPS
+         1daAB6zNcUj/uMcsTRUK6QcqWKrtrcXKHsfDkf+1Oy7ZA66JHtYY2rX0bSaFh1VLtGq0
+         3osA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=gYXoTy8UdH0s1OT5tLFrTZAYUQ4IBX8u576c7QZTu7o=;
+        b=t9LRIqxvI9sd7YW5o4as/YZDrEBHlQLYZ+kZ+Ei1iehrG14uC+ldsr0RRzmCckKkt6
+         NdkhxT4/KhyPN6l5nTOBjtb6uxG0ZC+18Xcf2FjSwyPdnunsoh1eZyl8NgiNABbJRtA2
+         BjTuqWF8vjVvv0JXcP35ALiZcgaBAdNLi+GWpBQ+BnGOGg9Ma49k6fWQz0C/Cq7reDac
+         1uRDRXcR/fzdd6pXXkkRbICFEFv4RTZ6oU2hrp7Rkd6w4sBvTnpSAKIv5JA8GDkXuNv9
+         vceWLgg94iQHokMSRwVmlLrBBurtiDFosONlRSIZNPrkjB0rW9OxG9swHyDLF923PIot
+         LvOw==
+X-Gm-Message-State: AOAM530gbOMSKGpUntuwJmx54FV66roBUIWr8N88H4f4NjYiG8wk+TV9
+        OKBqRD17+qzAvl6/zCR4l81qbvDJOWvV4g==
+X-Google-Smtp-Source: ABdhPJyqbmiYrm/jFelH5D9cTBq7Nd+XKSQK/7tstwRSXLXRiufktQbZYRDxUUmmjlxMekGIQz7Hx2FQ/DQ2zg==
+Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
+ (user=davidgow job=sendgmr) by 2002:a63:c44c:: with SMTP id
+ m12mr5945328pgg.92.1602916890770; Fri, 16 Oct 2020 23:41:30 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 23:41:07 -0700
+Message-Id: <20201017064107.375174-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+Subject: [PATCH] fat: Add KUnit tests for checksums and timestamps
+From:   David Gow <davidgow@google.com>
+To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Brendan Higgins <brendanhiggins@google.com>, shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add some basic sanity-check tests for the fat_checksum() function and
+the fat_time_unix2fat() and fat_time_fat2unix() functions. These unit
+tests verify these functions return correct output for a number of test
+inputs.
 
+These tests were inspored by -- and serve a similar purpose to -- the
+timestamp parsing KUnit tests in ext4[1].
 
+[1]:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/inode-test.c
 
+Signed-off-by: David Gow <davidgow@google.com>
+---
+ fs/fat/Kconfig    |  13 +++
+ fs/fat/Makefile   |   2 +
+ fs/fat/fat_test.c | 197 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 212 insertions(+)
+ create mode 100644 fs/fat/fat_test.c
 
-Dearest beloved in the Lord,
+diff --git a/fs/fat/Kconfig b/fs/fat/Kconfig
+index 66532a71e8fd..fdef03b79c69 100644
+--- a/fs/fat/Kconfig
++++ b/fs/fat/Kconfig
+@@ -115,3 +115,16 @@ config FAT_DEFAULT_UTF8
+ 	  Say Y if you use UTF-8 encoding for file names, N otherwise.
+ 
+ 	  See <file:Documentation/filesystems/vfat.rst> for more information.
++
++config FAT_KUNIT_TEST
++	tristate "Unit Tests for FAT filesystems" if !KUNIT_ALL_TESTS
++	select FAT_FS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
++	help
++	  This builds the FAT KUnit tests
++
++	  For more information on KUnit and unit tests in general, please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit
++
++	  If unsure, say N
+diff --git a/fs/fat/Makefile b/fs/fat/Makefile
+index 70645ce2f7fc..2b034112690d 100644
+--- a/fs/fat/Makefile
++++ b/fs/fat/Makefile
+@@ -10,3 +10,5 @@ obj-$(CONFIG_MSDOS_FS) += msdos.o
+ fat-y := cache.o dir.o fatent.o file.o inode.o misc.o nfs.o
+ vfat-y := namei_vfat.o
+ msdos-y := namei_msdos.o
++
++obj-$(CONFIG_FAT_KUNIT_TEST) += fat_test.o
+diff --git a/fs/fat/fat_test.c b/fs/fat/fat_test.c
+new file mode 100644
+index 000000000000..c1b4348b9b3b
+--- /dev/null
++++ b/fs/fat/fat_test.c
+@@ -0,0 +1,197 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit tests for FAT filesystems.
++ *
++ * Copyright (C) 2020 Google LLC.
++ * Author: David Gow <davidgow@google.com>
++ */
++
++#include <kunit/test.h>
++
++#include "fat.h"
++
++static void fat_checksum_test(struct kunit *test)
++{
++	/* With no extension. */
++	KUNIT_EXPECT_EQ(test, fat_checksum("VMLINUX    "), 44);
++	/* With 3-letter extension. */
++	KUNIT_EXPECT_EQ(test, fat_checksum("README  TXT"), 115);
++	/* With short (1-letter) extension. */
++	KUNIT_EXPECT_EQ(test, fat_checksum("ABCDEFGHA  "), 98);
++}
++
++
++struct fat_timestamp_testcase {
++	const char *name;
++	struct timespec64 ts;
++	__le16 time;
++	__le16 date;
++	u8 cs;
++	int time_offset;
++};
++
++const static struct fat_timestamp_testcase time_test_cases[] = {
++	{
++		.name = "Earliest possible UTC (1980-01-01 00:00:00)",
++		.ts = {.tv_sec = 315532800LL, .tv_nsec = 0L},
++		.time = 0,
++		.date = 33,
++		.cs = 0,
++		.time_offset = 0,
++	},
++	{
++		.name = "Latest possible UTC (2107-12-31 23:59:58)",
++		.ts = {.tv_sec = 4354819198LL, .tv_nsec = 0L},
++		.time = 49021,
++		.date = 65439,
++		.cs = 0,
++		.time_offset = 0,
++	},
++	{
++		.name = "Earliest possible (UTC-11) (== 1979-12-31 13:00:00 UTC)",
++		.ts = {.tv_sec = 315493200LL, .tv_nsec = 0L},
++		.time = 0,
++		.date = 33,
++		.cs = 0,
++		.time_offset = 11 * 60,
++	},
++	{
++		.name = "Latest possible (UTC+11) (== 2108-01-01 10:59:58 UTC)",
++		.ts = {.tv_sec = 4354858798LL, .tv_nsec = 0L},
++		.time = 49021,
++		.date = 65439,
++		.cs = 0,
++		.time_offset = -11 * 60,
++	},
++	{
++		.name = "Leap Day / Year (1996-02-29 00:00:00)",
++		.ts = {.tv_sec = 825552000LL, .tv_nsec = 0L},
++		.time = 0,
++		.date = 8285,
++		.cs = 0,
++		.time_offset = 0,
++	},
++	{
++		.name = "Year 2000 is leap year (2000-02-29 00:00:00)",
++		.ts = {.tv_sec = 951782400LL, .tv_nsec = 0L},
++		.time = 0,
++		.date = 10333,
++		.cs = 0,
++		.time_offset = 0,
++	},
++	{
++		.name = "Year 2100 not leap year (2100-03-01 00:00:00)",
++		.ts = {.tv_sec = 4107542400LL, .tv_nsec = 0L},
++		.time = 0,
++		.date = 61537,
++		.cs = 0,
++		.time_offset = 0,
++	},
++	{
++		.name = "Leap year + timezone UTC+1 (== 2004-02-29 00:30:00 UTC)",
++		.ts = {.tv_sec = 1078014600LL, .tv_nsec = 0L},
++		.time = 48064,
++		.date = 12380,
++		.cs = 0,
++		.time_offset = -60,
++	},
++	{
++		.name = "Leap year + timezone UTC-1 (== 2004-02-29 23:30:00 UTC)",
++		.ts = {.tv_sec = 1078097400LL, .tv_nsec = 0L},
++		.time = 960,
++		.date = 12385,
++		.cs = 0,
++		.time_offset = 60,
++	},
++	{
++		.name = "VFAT odd-second resolution (1999-12-31 23:59:59)",
++		.ts = {.tv_sec = 946684799LL, .tv_nsec = 0L},
++		.time = 49021,
++		.date = 10143,
++		.cs = 100,
++		.time_offset = 0,
++	},
++	{
++		.name = "VFAT 10ms resolution (1980-01-01 00:00:00:0010)",
++		.ts = {.tv_sec = 315532800LL, .tv_nsec = 10000000L},
++		.time = 0,
++		.date = 33,
++		.cs = 1,
++		.time_offset = 0,
++	},
++};
++
++static void fat_time_fat2unix_test(struct kunit *test)
++{
++	struct msdos_sb_info fake_sb;
++	int i;
++	struct timespec64 ts;
++
++	for (i = 0; i < ARRAY_SIZE(time_test_cases); ++i) {
++		fake_sb.options.tz_set = 1;
++		fake_sb.options.time_offset = time_test_cases[i].time_offset;
++
++		fat_time_fat2unix(&fake_sb, &ts,
++				  time_test_cases[i].time,
++				  time_test_cases[i].date,
++				  time_test_cases[i].cs);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    time_test_cases[i].ts.tv_sec,
++				    ts.tv_sec,
++				    "Timestamp mismatch (seconds) in case \"%s\"\n",
++				    time_test_cases[i].name);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    time_test_cases[i].ts.tv_nsec,
++				    ts.tv_nsec,
++				    "Timestamp mismatch (nanoseconds) in case \"%s\"\n",
++				    time_test_cases[i].name);
++	}
++}
++
++static void fat_time_unix2fat_test(struct kunit *test)
++{
++	struct msdos_sb_info fake_sb;
++	int i;
++	__le16 date, time;
++	u8 cs;
++
++	for (i = 0; i < ARRAY_SIZE(time_test_cases); ++i) {
++		fake_sb.options.tz_set = 1;
++		fake_sb.options.time_offset = time_test_cases[i].time_offset;
++
++		fat_time_unix2fat(&fake_sb, &time_test_cases[i].ts,
++				  &time, &date, &cs);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    time_test_cases[i].time,
++				    time,
++				    "Time mismatch in case \"%s\"\n",
++				    time_test_cases[i].name);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    time_test_cases[i].date,
++				    date,
++				    "Date mismatch in case \"%s\"\n",
++				    time_test_cases[i].name);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    time_test_cases[i].cs,
++				    cs,
++				    "Centisecond mismatch in case \"%s\"\n",
++				    time_test_cases[i].name);
++	}
++}
++
++static struct kunit_case fat_test_cases[] = {
++	KUNIT_CASE(fat_checksum_test),
++	KUNIT_CASE(fat_time_fat2unix_test),
++	KUNIT_CASE(fat_time_unix2fat_test),
++	{},
++};
++
++static struct kunit_suite fat_test_suite = {
++	.name = "fat_test",
++	.test_cases = fat_test_cases,
++};
++
++kunit_test_suites(&fat_test_suite);
++
++MODULE_LICENSE("GPL v2");
++
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
 
-Mine names are Mrs. Barbara Roth, I am a 66 years old woman. My beloved lat=
-e husband is from United Kingdom England, while I am of a Dutch nationality=
- by birth .I was born an orphan and GOD blessed me and mine late beloved hu=
-sband with abundantly with riches but no children. I am not a happy woman b=
-ecause i have no husband or children, my husband died 21 years ago. Right n=
-ow I am affected with cancer of the lung and breast i also have partial str=
-oke which has affected my speeches. I can no longer talk well and half of m=
-y body is paralyzed, i send this email to you with the help of my private f=
-emale nurse who is typing my request at China cancer research facility.
-
-My condition is really deteriorating and is quite obvious that i may not li=
-ve more than 3 weeks, because the cancer stage has gotten to its 3rd stage.=
- After my Doctor Notice, i have decided to divide part of my fortune by con=
-tributing to the Charities & Motherless. I don't know you but i am contacti=
-ng you with the hope that, you will be able to carry out my wish for the sa=
-ke of humanity.
-
-I am willing to donate the sum of =EF=BF=A110,500,000.00, Ten Million Five =
-Hundred Thousand, Great Britain Pound to the poor through you. I have also =
-made some cash donations to orphanage children in Somalia, Syria, Ethiopian=
-, Cambodia, Philippines, South Sudan and some in South Africa and Europe.
-
-If you are willing and able to do this task for the sake of humanity then s=
-end me below information for more details to receive the funds.
-1. Name...................................................
-2. Phone number...............................
-3. Address.............................................
-May GOD guide you.
-
-Mrs. Barbara Roth.
