@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C75291343
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 18:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB2B291345
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 18:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438521AbgJQQuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 12:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
+        id S2438569AbgJQQu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 12:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438056AbgJQQuY (ORCPT
+        with ESMTP id S2438056AbgJQQuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 12:50:24 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2063AC061755
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 09:50:24 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id m11so5807529otk.13
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 09:50:24 -0700 (PDT)
+        Sat, 17 Oct 2020 12:50:25 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C1AC061755;
+        Sat, 17 Oct 2020 09:50:24 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id qp15so7930298ejb.3;
+        Sat, 17 Oct 2020 09:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ypO4D+lCWHgDUozLpM6wT/YiqQy0Ek26O6Lt6jvs4bM=;
-        b=Wy2kowaOKHqRe1fM39TY92/SC/bIqm6XUoAijQ4N4HpxQop/hwXkeXftYa85hYOs06
-         bjHUC52DEjroU/sRiCnO5IfmKS73WCWommHfiX2lZAOTpWqn63najeVp/9EHjdvPhLTU
-         tt0TP4USQi0j6zU+jFf/RKC6Anr7qRynHAPYZJzz72o5B4TiLKQkkxAh2EEXdjNxUmG6
-         gUepFqpUjOENGHsr2tMnqCexPPBHKEy3MmakeYXn7dipzt99u3uJdhYhgj51ip6fenBz
-         HI4dxN5GIt7GmKUP2is8imiQTsXI48W6gS58WFHr6EddcXeGp3HvC2SUcMm9l0m6qsUy
-         5YtA==
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1iTzuemyXkpM0NB6MrjzDP3iYy24eeV3XKFWaqiWlow=;
+        b=QE5LRD33T+2CIsxl9EkU3t1lujWDwZZv7osP9Gdqh1NX8CXp9EUAduBeMAmVmVLdr3
+         nd8WAGZ2Vpk8sZl6vg6Y/+rhnSF847IHQXKnhheaYBxLNZzPCNNS5rgMYvLq5548Io0p
+         a1zHQXC31xHKUYsxqwDSbnCNwNUB4TEAxl1SWsQ0N4bdyoOUYf47tenvgvBVL6MtEOku
+         4ovfZFUEnXNpPO6HtZQWipgr4bpRY2lhW0MEPQRm6HRkdp8jmlE2HyOyrLhwd+XXONQO
+         /8FBgx3W67phcYgiBYX5JuXXzGN5xLQRmgyBKFdMseZZR7vcdY6yUElBcI370pQ1ltwr
+         43UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ypO4D+lCWHgDUozLpM6wT/YiqQy0Ek26O6Lt6jvs4bM=;
-        b=ClRvU/1nvMq9fKMICLl6UpEmdK8hGsSXxxd4fY/rd7mHD4qwhA3IE/k23pEi+bQvEV
-         +qcvUEcgZiMzrsp+liiKVa1LOJkvNMrwWoJ18VDl2gWHO6i/LlVvLph9LmoLLKA29yOC
-         BzQN1h9BA5+5lpOjLcIFfrTgPkyGvls+nSfmoAXaAD+OBKoaPUBbT2FBR1OZRGyM4Zd2
-         +RvNwfMp5rxPt7boiy2U9xJN3VuteteexnR7/gM+0ef/jh/kikyIyNi5EZ2l2+ezO7+r
-         0e3o3mpcCUh35OEDAqZzipCn/AYC2U1OwdUNPkw0c0LQxuINXPovz4OoH1kuRVhKXMI7
-         VxpQ==
-X-Gm-Message-State: AOAM533rnb/5SkunnNvRzNOgRkoH8hY3Wgum55GBpKMpjngF5mKAoDJ4
-        ewf+cV6MLMFx8ammdsDALQyFCUHgEFoErCP8UwU=
-X-Google-Smtp-Source: ABdhPJxao0Izqts8K9liVx7YNWZE7FEAhAAztRVYAiPrMuLoATgBQQ3jYYgI5CP/k7vwrb4/7yLHqU0/HJtVDAB3uik=
-X-Received: by 2002:a9d:53cc:: with SMTP id i12mr6385715oth.215.1602953423381;
- Sat, 17 Oct 2020 09:50:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1iTzuemyXkpM0NB6MrjzDP3iYy24eeV3XKFWaqiWlow=;
+        b=ZVNUswnOdOh6IADwq23rZ0y7OT9hbof2ZADMgOSNNZ2m4ybqMKd0XDCCge0yReD3wW
+         iftOJ0Y7iXpOYLrzdLijSRg3wd0pchQSURO8qZLR0um4uNXBh8RyxTH6fd5QCfXRLoby
+         lZRGm1zY/I6Nwfo5JMC0tdXBLEu3rR6zdFdCNIk1G1KLyC1PNv8Re6I4yKd9vI9fcVD6
+         yg2ikqlTZDRhZSaX7qNYALgOB3flbsKWpkeWTkndzqAP5ZumPC/WxX8QZKfXusiSq2Tk
+         vT94X5n3UbmDpASf7BwTl8a7mCb6yIEr3Nu5oLDk3jhZSHk5Gvj2bN/kOHrjDlJaWvnl
+         NdSw==
+X-Gm-Message-State: AOAM5336I2TJ+7aQ5SmsYG1ejwWJmS1q14h4C2Jt1oU9peUjqqd/hV8B
+        4kbzIJJgocleqsKJHVQSE/wHib8wI98=
+X-Google-Smtp-Source: ABdhPJzRN7jCxQ1xZCtG4Yni0wG9n8K3flau2+JNrDleOFDJoV0BfSh1iwwxRuOjUNQ3DRPkWHIbog==
+X-Received: by 2002:a17:906:d978:: with SMTP id rp24mr9868225ejb.0.1602953421751;
+        Sat, 17 Oct 2020 09:50:21 -0700 (PDT)
+Received: from localhost.localdomain (p4fd5d4ba.dip0.t-ipconnect.de. [79.213.212.186])
+        by smtp.googlemail.com with ESMTPSA id v14sm5533074ejh.6.2020.10.17.09.50.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Oct 2020 09:50:21 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-usb@vger.kernel.org, balbi@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, hminas@synopsys.com, axboe@kernel.dk,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] usb: dwc2: Avoid leaving the error_debugfs label unused
+Date:   Sat, 17 Oct 2020 18:50:12 +0200
+Message-Id: <20201017165012.546729-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201017162732.152351-1-dwaipayanray1@gmail.com> <1ad9c5f49e10a192f0c6efb1116f3f0d31adce74.camel@perches.com>
-In-Reply-To: <1ad9c5f49e10a192f0c6efb1116f3f0d31adce74.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Sat, 17 Oct 2020 22:19:56 +0530
-Message-ID: <CABJPP5DuQ_Y0LLS5BzNXUWyxjzp9ts5kgEH-3+7Pn7PPjq0Ljg@mail.gmail.com>
-Subject: Re: [PATCH v5] checkpatch: add new exception to repeated word check
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 10:03 PM Joe Perches <joe@perches.com> wrote:
->
-> On Sat, 2020-10-17 at 21:57 +0530, Dwaipayan Ray wrote:
-> > Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
-> > moved the repeated word test to check for more file types. But after
-> > this, if checkpatch.pl is run on MAINTAINERS, it generates several
-> > new warnings of the type:
->
-> NAK.
->
-> Slow down and test before you send more patch versions.
->
-> > +                             next if (index(" \t.,;?!", $end_char) == -1);
->
-> what does this do?
+The error_debugfs label is only used when either
+CONFIG_USB_DWC2_PERIPHERAL or CONFIG_USB_DWC2_DUAL_ROLE is enabled. Add
+the same #if to the error_debugfs label itself as the code which uses
+this label already has.
 
-Um, it checks if end_char is not present in " \t.,;?!".
-If end_char doesn't belong to this list, then the check shall
-skip. That is the test will skip for "word word:", but will produce
-a warning for "word word." or "word word?", etc.
+This avoids the following compiler warning:
+  warning: label ‘error_debugfs’ defined but not used [-Wunused-label]
 
-Shouldn't this itself be the case or am I perhaps going wrong
-somewhere?
+Fixes: e1c08cf23172ed ("usb: dwc2: Add missing cleanups when usb_add_gadget_udc() fails")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ drivers/usb/dwc2/platform.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thanks,
-Dwaipayan.
+diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
+index e2820676beb1..5f18acac7406 100644
+--- a/drivers/usb/dwc2/platform.c
++++ b/drivers/usb/dwc2/platform.c
+@@ -608,10 +608,13 @@ static int dwc2_driver_probe(struct platform_device *dev)
+ #endif /* CONFIG_USB_DWC2_PERIPHERAL || CONFIG_USB_DWC2_DUAL_ROLE */
+ 	return 0;
+ 
++#if IS_ENABLED(CONFIG_USB_DWC2_PERIPHERAL) || \
++	IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
+ error_debugfs:
+ 	dwc2_debugfs_exit(hsotg);
+ 	if (hsotg->hcd_enabled)
+ 		dwc2_hcd_remove(hsotg);
++#endif
+ error_drd:
+ 	dwc2_drd_exit(hsotg);
+ 
+-- 
+2.28.0
+
