@@ -2,114 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A77129146A
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 22:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7858D29146E
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 23:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439145AbgJQU7u convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 17 Oct 2020 16:59:50 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:39450 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439135AbgJQU7u (ORCPT
+        id S2439159AbgJQVBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 17:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439116AbgJQVBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 16:59:50 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id E91406231F3E;
-        Sat, 17 Oct 2020 22:59:47 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id DhYFasblXd3D; Sat, 17 Oct 2020 22:59:47 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 75B3760CEF32;
-        Sat, 17 Oct 2020 22:59:47 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id yciNccjmzGxw; Sat, 17 Oct 2020 22:59:47 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 524416231F3E;
-        Sat, 17 Oct 2020 22:59:47 +0200 (CEST)
-Date:   Sat, 17 Oct 2020 22:59:47 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>
-Message-ID: <1807778111.204345.1602968387192.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] uml updates for 5.10
+        Sat, 17 Oct 2020 17:01:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82FCC061755
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 14:01:17 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602968476;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ai1Uzc13uhocuU3eLVJfTQZIISzuUjnF1sAm2+jwNbs=;
+        b=1n4kBKvDyAkXzhlgdivrmeADkSrpO2/j8er5fQsRX84ORcCx5+54kB0K+GAWajrNk0d3JX
+        GjJ1HBdipBoZNcXsyN3nC7263D07fYHpK7E2gwVk/3rvKoCDcWINHZWC0Of3cy62e3vRP/
+        S6Xm0vRQHOnamZoa7Ea4FjAAXQIZ4bTe+ID894w2bfvPJblG71HucLNVUf4NHYUemO3cIZ
+        yhCFlDzBs1YblnYqDNPW0F8Lx/lwb4PmvkMCwFdL+nFWQoIURjy0kR2EmLJSesk38MZRVs
+        Ipx/+JK0GkKG+QX8fQsnlBjRhW82p2VWpXXaaiPgb1DCau7rbefHoMpnYg20kQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602968476;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ai1Uzc13uhocuU3eLVJfTQZIISzuUjnF1sAm2+jwNbs=;
+        b=d7DX20a/4JI52lYrBx4NJtyepJd0IJkj9hXJw4oCb+oy6UcE6w3CMvb9dia+C8hOe+L55e
+        Q4rompygR21RfECg==
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] task_work: cleanup notification modes
+In-Reply-To: <ffd90972-d664-b024-f537-8d02f91d12d7@kernel.dk>
+References: <93292d5b-9124-d252-c81f-1f2cfbd60e7b@kernel.dk> <87tuutalre.fsf@nanos.tec.linutronix.de> <aaed79d1-972f-e4bd-f3ac-d589cd729163@kernel.dk> <87zh4lix8l.fsf@nanos.tec.linutronix.de> <2ebe7e45-b4e5-1a6b-d3ee-4a790817a119@kernel.dk> <87wnzpivvx.fsf@nanos.tec.linutronix.de> <7e32aa44-35ff-3a48-87d0-8e7df586db1d@kernel.dk> <87tuusj2ch.fsf@nanos.tec.linutronix.de> <4a2f1a71-3548-1f13-23a4-2f7e73408cf3@kernel.dk> <87k0voip1w.fsf@nanos.tec.linutronix.de> <ffd90972-d664-b024-f537-8d02f91d12d7@kernel.dk>
+Date:   Sat, 17 Oct 2020 23:01:15 +0200
+Message-ID: <87h7qsin38.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Index: SNAiCOtYJidXA91rESSXr7ieCXwdSQ==
-Thread-Topic: uml updates for 5.10
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[re-sending, this time with Linus in the recipient list...]
+Jens,
 
-Linus,
+On Sat, Oct 17 2020 at 14:32, Jens Axboe wrote:
+> On 10/17/20 2:18 PM, Thomas Gleixner wrote:
+>
+> Thanks! Fixed the two typos, and also included the guest mode. If you're fine
+> with it now, would be great to have your reviewed-by or similar.
 
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
+Sure. I assume you ship it to Linus, otherwise let me know and I'll pick
+it up.
 
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.10-rc1
-
-for you to fetch changes up to f06885b3f3e3884f98351d7b72a4fc8400911cde:
-
-  um: vector: Add dynamic tap interfaces and scripting (2020-10-11 23:26:37 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- Improve support for non-glibc systems
-- Vector: Add support for scripting and dynamic tap devices
-- Various fixes for the vector networking driver
-- Various fixes for time travel mode
-
-----------------------------------------------------------------
-Anton Ivanov (1):
-      um: vector: Add dynamic tap interfaces and scripting
-
-Gabriel Krisman Bertazi (1):
-      um: Remove dead usage of TIF_IA32
-
-Gaurav Singh (1):
-      um: Fix null pointer dereference in vector_user_bpf
-
-Ignat Korchagin (2):
-      um: Some fixes to build UML with musl
-      um: Allow static linking for non-glibc implementations
-
-Johannes Berg (4):
-      um: time-travel: Fix IRQ handling in time_travel_handle_message()
-      um: time-travel: Return the sequence number in ACK messages
-      um: change sigio_spinlock to a mutex
-      um: Clean up stacktrace dump
-
-Li Heng (1):
-      um: Remove redundant NULL check
-
-Maciej Żenczykowski (1):
-      um: Fix incorrect assumptions about max pid length
-
-Tiezhu Yang (1):
-      um: vector: Use GFP_ATOMIC under spin lock
-
- arch/um/Kconfig               |  6 ++--
- arch/um/drivers/Kconfig       |  6 ++--
- arch/um/drivers/daemon_user.c |  1 +
- arch/um/drivers/pcap_user.c   | 12 ++++----
- arch/um/drivers/slip_user.c   |  2 +-
- arch/um/drivers/vector_kern.c |  4 +--
- arch/um/drivers/vector_user.c | 71 ++++++++++++++++++++++++++++++++-----------
- arch/um/kernel/sigio.c        |  6 ++--
- arch/um/kernel/sysrq.c        |  4 +--
- arch/um/kernel/time.c         | 15 ++++++---
- arch/um/os-Linux/umid.c       |  8 ++---
- arch/um/os-Linux/util.c       |  2 +-
- arch/x86/um/ptrace_64.c       | 13 +-------
- arch/x86/um/user-offsets.c    |  2 +-
- 14 files changed, 91 insertions(+), 61 deletions(-)
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
