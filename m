@@ -2,87 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E46291014
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386BF291018
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437043AbgJQGUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 02:20:50 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:59430 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436912AbgJQGUt (ORCPT
+        id S2437090AbgJQGV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 02:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437080AbgJQGV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 02:20:49 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id DD78680573;
-        Sat, 17 Oct 2020 08:20:46 +0200 (CEST)
-Date:   Sat, 17 Oct 2020 08:20:45 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH -next] omapfb: connector-dvi: simplify the return
- expression of dvic_connect()
-Message-ID: <20201017062045.GF2242298@ravnborg.org>
-References: <20200915032627.1772517-1-liushixin2@huawei.com>
+        Sat, 17 Oct 2020 02:21:28 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB07CC0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 23:21:26 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id i2so5092395ljg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 23:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K5fP2IedoKQlRQouSCWpsDIMKmWivfsQ9eQLA1F2LGk=;
+        b=LMmylegyEXB4ETZFcAg0jZ3ywuK/RWOoyd8IF2q7wbf0FlBPa1CmGDbEXkW+jghAbm
+         L/ZDBTeW0W+eYkvJeGow+VVh0xMTCd2CjHybf0Yd0FJf6PC7WL4xF2qG5wrVBC42yxgQ
+         8zg/2jexyYshW1yQH1s+pVSH0LX9mH5ZboR6fOLWNE1KqDRC8jjvr83OZzi4/ipuIs9Q
+         dFrUSBctQ7q6gHPyfMClsBZMkU9oNgNQp7tdM4fX4J+lCCSGXw7In/UD6xkyOWe4J850
+         JMe5a+2COrcu8wW2/OjDhZZYR++6Jrvj9sBrMWL/JEJjmvrImBEV8RyU9R0lJv9ID5mO
+         57jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K5fP2IedoKQlRQouSCWpsDIMKmWivfsQ9eQLA1F2LGk=;
+        b=ZXvrXoNEIuhJc/iRr1qSnIzlEka1TCXmHSKIuo5wyCl3/FqPISIhvSc10wU12DEqY+
+         IbE3CGeJh1zUZmmzsNkr1qIDSU7i9fMG3yPm3HkeP8flkGlHW9rk3+WiaAvQ7e89wKwW
+         bZb8r6pCCZOik3KRA0PZP785AIQArHGraJPVlAIRYMf/jcAt0I59b3UpSPyIDerbbent
+         0BL6DKaMp3tseVXE00SCrRWplG2tc6ttLXPyy9KPw9xe0dvR7+50WphKnwueu84i0gsZ
+         vkbTJm7c53aE/DgCtsq+7kundgewQMXCBk6AjbcHEirxUOxdKNwAv7RUugTEmhd95Qes
+         A0gQ==
+X-Gm-Message-State: AOAM530+GN2d7l1rm3su7i6wO5vEdIulvNumuTW0NYJJ90CCcb807uHA
+        f5jfv2iDxqvQhTdjwrJyvOvLzdTDhKl/Fw1LKodHeQ==
+X-Google-Smtp-Source: ABdhPJxODCfO9ZVU11lc/q6G6VCj8F3pnGVHFozeCzeN2p8bjSk3h58nmS2HKf7Nkir5cfAE2D9bdypZ/Mc+oRT6tqk=
+X-Received: by 2002:a05:651c:1205:: with SMTP id i5mr2905687lja.47.1602915685058;
+ Fri, 16 Oct 2020 23:21:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915032627.1772517-1-liushixin2@huawei.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=i0EeH86SAAAA:8 a=e5mUnYsNAAAA:8
-        a=qyqJRru8iCNiQjncfiQA:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
+References: <00000000000014370305b1c55370@google.com> <202010162042.7C51549A16@keescook>
+In-Reply-To: <202010162042.7C51549A16@keescook>
+From:   Jann Horn <jannh@google.com>
+Date:   Sat, 17 Oct 2020 08:20:58 +0200
+Message-ID: <CAG48ez1KEOHL5VCNtrsRTHa6Wj9xUY+daReb4V08O8dFzarkjw@mail.gmail.com>
+Subject: Re: UBSAN: array-index-out-of-bounds in alg_bind
+To:     Kees Cook <keescook@chromium.org>
+Cc:     herbert@gondor.apana.org.au,
+        syzbot <syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com>,
+        linux-crypto@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        linux-hardening@vger.kernel.org,
+        Elena Petrova <lenaptr@google.com>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liu.
++linux-api because this is about fixing UAPI without breaking userspace
 
-On Tue, Sep 15, 2020 at 11:26:27AM +0800, Liu Shixin wrote:
-> Simplify the return expression.
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+On Sat, Oct 17, 2020 at 8:02 AM Kees Cook <keescook@chromium.org> wrote:
+> On Fri, Oct 16, 2020 at 01:12:24AM -0700, syzbot wrote:
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=92ead4eb8e26a26d465e
+> > [...]
+> > Reported-by: syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com
+> > [...]
+> > UBSAN: array-index-out-of-bounds in crypto/af_alg.c:166:2
+> > index 91 is out of range for type '__u8 [64]'
+>
+> This seems to be an "as intended", if very odd. false positive (the actual
+> memory area is backed by the on-stack _K_SS_MAXSIZE-sized sockaddr_storage
+> "address" variable in __sys_bind. But yes, af_alg's salg_name member
+> size here doesn't make sense. The origin appears to be that 3f69cc60768b
+> ("crypto: af_alg - Allow arbitrarily long algorithm names") intentionally
+> didn't extend the kernel structure (which is actually just using the UAPI
+> structure). I don't see a reason the UAPI couldn't have been extended:
+> it's a sockaddr implementation, so the size is always passed in as part
+> of the existing API.
 
-Thanks, also applied.
-If you have other drm/fbdev patches pending then I have missed them.
-So please resend if this is the case.
+If you e.g. recompiled the wrong parts of the "btcheck" project with
+such changed UAPI headers, I think you'd get OOB writes, because they
+have this in a header
+(https://sources.debian.org/src/btcheck/2.1-4/src/kernelcryptoapi.h/?hl=29#L29):
 
-	Sam
+typedef struct {
+  struct sockaddr_alg sa;
+  int safd;
+  int fd;
+} lkca_hash_ctx;
 
-> ---
->  drivers/video/fbdev/omap2/omapfb/displays/connector-dvi.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/omap2/omapfb/displays/connector-dvi.c b/drivers/video/fbdev/omap2/omapfb/displays/connector-dvi.c
-> index b4a1aefff766..2fa436475b40 100644
-> --- a/drivers/video/fbdev/omap2/omapfb/displays/connector-dvi.c
-> +++ b/drivers/video/fbdev/omap2/omapfb/displays/connector-dvi.c
-> @@ -51,16 +51,11 @@ static int dvic_connect(struct omap_dss_device *dssdev)
->  {
->  	struct panel_drv_data *ddata = to_panel_data(dssdev);
->  	struct omap_dss_device *in = ddata->in;
-> -	int r;
->  
->  	if (omapdss_device_is_connected(dssdev))
->  		return 0;
->  
-> -	r = in->ops.dvi->connect(in, dssdev);
-> -	if (r)
-> -		return r;
-> -
-> -	return 0;
-> +	return in->ops.dvi->connect(in, dssdev);
->  }
->  
->  static void dvic_disconnect(struct omap_dss_device *dssdev)
-> -- 
-> 2.25.1
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+so if you rebuilt e.g. kernelcryptoapi.o (which uses the struct)
+without also rebuilding hash.o (which allocates the struct), code in
+kernelcryptoapi.o would write beyond the end of lkca_hash_ctx, I
+think.
+
+Sure, there aren't many places that do this kind of thing for this
+struct. But at least in theory, you can't change the size of UAPI
+structs because someone might be passing instances of that struct
+around between object files.
+
+> At the very least the kernel needs to switch to using a correctly-sized
+> structure: I expected UBSAN_BOUNDS to be enabled globally by default at
+> some point in the future (with the minimal runtime -- the
+> instrumentation is tiny and catches real issues).
+
+Yeah, the kernel should probably use a struct that looks different
+from the userspace one. :/ I guess we'll probably end up with some
+ugly hack with "#ifdef __KERNEL__", where the same struct has
+different sizes between kernel and userspace? Or am I being too
+puritan about UAPI consistency?
+
+> Reproduction:
+>
+> struct sockaddr_alg sa = {
+>     .salg_family = AF_ALG,
+>     .salg_type = "skcipher",
+>     .salg_name = "cbc(aes)"
+> };
+> fd = socket(AF_ALG, SOCK_SEQPACKET, 0);
+> bind(fd, (void *)&sa, sizeof(sa));
+>
+> Replace "sizeof(sa)" with x where 64<x<=128.
+
+I think you mean 88<x<=128 ?
