@@ -2,146 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499C42913E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 21:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1B029140E
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 21:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439312AbgJQTCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 15:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
+        id S2438647AbgJQTIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 15:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439290AbgJQTCB (ORCPT
+        with ESMTP id S2437462AbgJQTIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 15:02:01 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF18C0613CE;
-        Sat, 17 Oct 2020 12:02:00 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x7so7092329wrl.3;
-        Sat, 17 Oct 2020 12:02:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Sq/g3QntWZKliuSV9V54j9Wg1RchEoNv9jy29pYMN/E=;
-        b=A3ZOgROJWtqTXK50vo9ZZn/RsXM/wU51rqWIavc2hfVj/FvwMctZTiAxPsMJhhX0xK
-         VjrsZPG3aVpJ486cVkEvPHqqC/23Z9O1arYB6aE2lAVIM+Qa7jtsJz/VyPaRbb6viubw
-         nS3kBcgUDIfUHbHu93yutvh2gmMb0NH7pwt3XkJLWyg2+rUHPM6+s2C15543KjyMlWEP
-         1WxdLJ+SPKQKpA4/7Vr5JtLYvrjZcGjAuIG20jHoFL0onUJlVkL4tUrPCFJq0eU8pvtW
-         Cfhb6i6mIusw+SaKqR3KRxJlXII68XB1uX4/DOUiuRsImTMHNeTgjeibH/oee86zWLGg
-         I54Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Sq/g3QntWZKliuSV9V54j9Wg1RchEoNv9jy29pYMN/E=;
-        b=XQ2XWy2A5la97Jym2xvHZlA+Wzpjga+M11kW41PJseUASEd+EM5vLdswcnOMyetyBZ
-         F8+MqR73sffpM8oZeDW8GuumjLBLTcDgghxXvx7d5sNX0our38fs6IH23fiY+slxhUIv
-         2YscvPuNeAn+tPXdKGJRIVK1vxoWOINIhixMlhST4JDFA58d+NCr9YLRBqVDR9C5B+vo
-         n79JKWWZrrAFNN+ByR1oRwhPIsePYm6PZxTJml1rk1Pu7kMMd7zUAKwts2oos9hm01UG
-         QUaq3+OH3TT+YaKO3dD5jd3f+ot+IXjGpzxUNrOrmArF7luYFTD/e2T/YYkUZS2Oc1Tk
-         IeXw==
-X-Gm-Message-State: AOAM530p0SB9qhX0weFs7nsGCHI2IW4iDjB1iOwdL150AxXUlNd9kmB6
-        ZH8m5oxLwiCd6S9PaPadvJk=
-X-Google-Smtp-Source: ABdhPJxYWmgr18jm3rtS63dhc4+1O0nXFwkHGQOklEDTmEVN4Xp7FsV6YbS5BgLa7+mUX802LuFeNw==
-X-Received: by 2002:adf:cd87:: with SMTP id q7mr11112682wrj.169.1602961319598;
-        Sat, 17 Oct 2020 12:01:59 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
-        by smtp.gmail.com with ESMTPSA id a5sm9583793wrt.80.2020.10.17.12.01.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Oct 2020 12:01:59 -0700 (PDT)
-From:   kholk11@gmail.com
-To:     dmitry.torokhov@gmail.com
-Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, krzk@kernel.org
-Subject: [PATCH v5 3/3] dt-bindings: touchscreen: Add binding for Novatek NT36xxx series driver
-Date:   Sat, 17 Oct 2020 21:01:52 +0200
-Message-Id: <20201017190152.12780-4-kholk11@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201017190152.12780-1-kholk11@gmail.com>
-References: <20201017190152.12780-1-kholk11@gmail.com>
+        Sat, 17 Oct 2020 15:08:31 -0400
+Received: from rhcavuit02.kulnet.kuleuven.be (rhcavuit02.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CA1C061755
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 12:08:31 -0700 (PDT)
+X-KULeuven-Envelope-From: mathy.vanhoef@kuleuven.be
+X-Spam-Status: not spam, SpamAssassin (not cached, score=-51, required 5,
+        autolearn=disabled, ALL_TRUSTED -1.00, LOCAL_SMTPS -50.00)
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 2AFE912033A.AF5BA
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-smtps-1.cc.kuleuven.be (icts-p-smtps-1e.kulnet.kuleuven.be [134.58.240.33])
+        by rhcavuit02.kulnet.kuleuven.be (Postfix) with ESMTP id 2AFE912033A
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 21:08:23 +0200 (CEST)
+Received: from mathy-work.localhost (unknown [31.215.199.82])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by icts-p-smtps-1.cc.kuleuven.be (Postfix) with ESMTPSA id 6924140B2;
+        Sat, 17 Oct 2020 21:08:21 +0200 (CEST)
+Date:   Sat, 17 Oct 2020 23:08:18 +0400
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+To:     Thomas Deutschmann <whissi@gentoo.org>
+Cc:     <johannes@sipsolutions.net>,
+        "davem@davemloft.net" <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-wireless@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        <denkenz@gmail.com>
+Subject: Re: [Regression 5.9][Bisected 1df2bdba528b] Wifi GTK rekeying
+ fails: Sending of EAPol packages broken
+Message-ID: <20201017230818.04896494@mathy-work.localhost>
+In-Reply-To: <4a7f92dc-13bb-697f-1730-ac288e74b730@gentoo.org>
+References: <4a7f92dc-13bb-697f-1730-ac288e74b730@gentoo.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+I've managed to reproduce the issue, or at least a related issue. Can
+you try the draft patch below and see if that fixes it?
 
-Add binding for the Novatek NT36xxx series touchscreen driver.
+[PATCH] mac80211: fix regression where EAPOL frames were sent in plaintext
 
-Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+When sending EAPOL frames via NL80211 they are treated as injected
+frames in mac80211. Due to commit 1df2bdba528b ("mac80211: never drop
+injected frames even if normally not allowed") these injected frames
+were not assigned a sta context in the function ieee80211_tx_dequeue,
+causing certain wireless network cards to always send EAPOL frames in
+plaintext. This may cause compatibility issues with some clients or
+APs, which for instance can cause the group key handshake to fail and
+in turn would cause the station to get disconnected.
+
+This commit fixes this regression by assigning a sta context in
+ieee80211_tx_dequeue to injected frames as well.
+
+Note that sending EAPOL frames in plaintext is not a security issue
+since they contain their own encryption and authentication protection.
+
+Fixes: 1df2bdba528b ("mac80211: never drop injected frames even if normally not allowed")
 ---
- .../bindings/input/touchscreen/nt36xxx.yaml   | 59 +++++++++++++++++++
- 1 file changed, 59 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+ net/mac80211/tx.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-new file mode 100644
-index 000000000000..1486b20d6c49
---- /dev/null
-+++ b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/input/touchscreen/nt36xxx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Novatek NT36xxx series touchscreen controller Bindings
-+
-+maintainers:
-+  - AngeloGioacchino Del Regno <kholk11@gmail.com>
-+
-+allOf:
-+  - $ref: touchscreen.yaml#
-+
-+properties:
-+  compatible:
-+    const: novatek,nt36525
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+  vdd-supply:
-+    description: Power supply regulator for VDD pin
-+
-+  vio-supply:
-+    description: Power supply regulator on VDD-IO pin
-+
-+unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      touchscreen@62 {
-+        compatible = "novatek,nt36525";
-+        reg = <0x62>;
-+        interrupt-parent = <&tlmm>;
-+        interrupts = <45 IRQ_TYPE_EDGE_RISING>;
-+        reset-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
-+      };
-+    };
-+
-+...
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 8ba10a48d..55b41167a 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -3619,13 +3619,14 @@ struct sk_buff *ieee80211_tx_dequeue(struct ieee80211_hw *hw,
+ 	tx.skb = skb;
+ 	tx.sdata = vif_to_sdata(info->control.vif);
+ 
+-	if (txq->sta && !(info->flags & IEEE80211_TX_CTL_INJECTED)) {
++	if (txq->sta) {
+ 		tx.sta = container_of(txq->sta, struct sta_info, sta);
+ 		/*
+ 		 * Drop unicast frames to unauthorised stations unless they are
+-		 * EAPOL frames from the local station.
++		 * injected frames or EAPOL frames from the local station.
+ 		 */
+-		if (unlikely(ieee80211_is_data(hdr->frame_control) &&
++		if (unlikely(!(info->flags & IEEE80211_TX_CTL_INJECTED) &&
++			     ieee80211_is_data(hdr->frame_control) &&
+ 			     !ieee80211_vif_is_mesh(&tx.sdata->vif) &&
+ 			     tx.sdata->vif.type != NL80211_IFTYPE_OCB &&
+ 			     !is_multicast_ether_addr(hdr->addr1) &&
 -- 
 2.28.0
-
