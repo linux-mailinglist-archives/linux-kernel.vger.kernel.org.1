@@ -2,158 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67245290FF8
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA70290FD6
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437059AbgJQGDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 02:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57318 "EHLO
+        id S2436941AbgJQGBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 02:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411771AbgJQGBh (ORCPT
+        with ESMTP id S2436892AbgJQGBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 02:01:37 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D903C0613AD
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 18:31:25 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id b8so6137976ioh.11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 18:31:25 -0700 (PDT)
+        Sat, 17 Oct 2020 02:01:39 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD43C0613B0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 18:33:03 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id w11so2166815pll.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 18:33:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SLzJSGMR4mbYOI89e+4XPuKYVMYsrE6xEQzvzv1FK40=;
-        b=ZkATWNHfDMwAnZYAEPtQdFpGvzmblB9A8Jo2ek8XDBkVys0P/vtgeQwi0sPRlpsbz8
-         R72eT+JFhPIo+VnDxQPGZ0AaoTwoADs40Bp58zZch1bbsUSYCwPw+DbslwfE1grZC0R5
-         VnxoWRYC57Swywhlsw5vS8f//o2+slDnYTze4=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C5OysJtvM42BExDrSWPepk1+ntovtD7pOwO/xcdChaw=;
+        b=BGY23IMQRW0yl9F0jX0ao1lYRZTCAEgSrhcam5pGSwwBp0okWk+jVwa9eE2JYEObKD
+         TsKP5vCtq0XeXWIsl8EF7en+vJ96qBGaRGyGS/sBNu7Cn3G0qLnJhsIIfJ0hODOD+x1G
+         IWh+t//F12zX9gFDr9pJaxHGXIvAECOcSuKr1aVEhzQ7o3JU7JTi4cNqnAwUDV7CEcM0
+         MBD3RflPojsg3nphAfPmG1ex0B8G5rezL4jWclRFgINVtkc1yZfGerA/eBJWgwj/fXwc
+         gWBK7YerfQ0X/3X6o/xS+8FfUTNj/jeBheSJYLo3UZXYq6YQwTx3GX6EDpXobV03Kt+H
+         vj2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SLzJSGMR4mbYOI89e+4XPuKYVMYsrE6xEQzvzv1FK40=;
-        b=sCpZ1cyrdeXIF25RJwUqEFtVVZZkOj3gh0QcASevghP1j0MULep1zFjxe8Y0JFiTJQ
-         gq1NBNZMSOdoDzK08LMCZV8aNIZcxXHHCFBHnYDy0FW0ecQhYTUE4mHGGwlTfR7njWf1
-         M2Bao74UouO7t3QqFUiuh68BnG5+9/oK/HEqi0tSdyOWvcKNZF3OysGsgU9GUi/4F1z9
-         sda8qLB646bsBc/onQrxuwA0c5mlVPVvvwjRHiGSkv9mf/W1+A/s2qyZmB6GLT9UzMLp
-         Sj/WRl5Yf9LIG1F7lsrEH1Rr6X0+zn2zZ4cS41AOss3Uxvkxk2D8FE/ZSr0UCDoOFFvi
-         M/OQ==
-X-Gm-Message-State: AOAM5327LlcxtM46X1MHvclrCO7VuxU2pX9eeOQ/46tg0UykZQeqIedI
-        9H/qFZmJ77C7haHVyK+1jmjzzA==
-X-Google-Smtp-Source: ABdhPJy3A9mxbUrKl5CR5I3MLz47bWf1N/lJ3npLhzSycul4E/UhT67t1SqNiyxnFxyASxGUoohSZg==
-X-Received: by 2002:a02:b80f:: with SMTP id o15mr4617962jam.103.1602898284676;
-        Fri, 16 Oct 2020 18:31:24 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id z18sm3704281ioi.30.2020.10.16.18.31.23
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C5OysJtvM42BExDrSWPepk1+ntovtD7pOwO/xcdChaw=;
+        b=pzhwTwx4le1josWA7gn+lAzvjKvbV5C3IdZSVN+sIGEiF30ydUI6Yjx4Dfjg1Tp4lD
+         E+Y2t/UUwDokrtjFO3RVUvsTPiXtZzj+Z74dVe4lJ4AEFQWpOX8leT1ML2H04fmx6TIJ
+         QnwVqOE2eE2VbKckddCuMr4tmydFs89nb/7JBQH40ydHcOBJAn75QOlP4Q/T6K+a6Qzd
+         Lv7gzgPSgHnwCDs2UfylPDH4v0PLOKDgviM85b8dtBvMga/6AJS5Q572iksLN3Q1kdgr
+         JenlFZEeCzxBTN2EHBE44dSpKvb0/OOm8nbIXOlvW3PQxwpVIgaeAGEmNG7T+o8ysoSr
+         CbxA==
+X-Gm-Message-State: AOAM530nIRC0RznCnWf5uv1K0HLZssyVw5dDLU8CRY2issmC6YP96rYC
+        ked12wO4ynXuMqs9KPblBaMsr3gzp7W5Wg==
+X-Google-Smtp-Source: ABdhPJwHJlZeqN6N0aXNECfz8P9EDG08ntt+PJs7x5uLqu0m/hGKeYlTAa5AxHxGx7pS07nW5P3kOw==
+X-Received: by 2002:a17:902:7c14:b029:d4:d894:7eed with SMTP id x20-20020a1709027c14b02900d4d8947eedmr6994979pll.81.1602898382292;
+        Fri, 16 Oct 2020 18:33:02 -0700 (PDT)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id e186sm4222122pfh.60.2020.10.16.18.32.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 18:31:23 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 21:31:23 -0400
-From:   joel@joelfernandes.org
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v7 2/6] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20201017013123.GC4015033@google.com>
-References: <20201015002301.101830-1-joel@joelfernandes.org>
- <20201015002301.101830-3-joel@joelfernandes.org>
- <20201015122158.GA127222@lothringen>
+        Fri, 16 Oct 2020 18:33:01 -0700 (PDT)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v4 0/7] dma-buf: Performance improvements for system heap & a system-uncached implementation
+Date:   Sat, 17 Oct 2020 01:32:48 +0000
+Message-Id: <20201017013255.43568-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015122158.GA127222@lothringen>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 02:21:58PM +0200, Frederic Weisbecker wrote:
-> On Wed, Oct 14, 2020 at 08:22:57PM -0400, Joel Fernandes (Google) wrote:
-> > Add counting of segment lengths of segmented callback list.
-> > 
-> > This will be useful for a number of things such as knowing how big the
-> > ready-to-execute segment have gotten. The immediate benefit is ability
-> > to trace how the callbacks in the segmented callback list change.
-> > 
-> > Also this patch remove hacks related to using donecbs's ->len field as a
-> > temporary variable to save the segmented callback list's length. This cannot be
-> > done anymore and is not needed.
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  include/linux/rcu_segcblist.h |   2 +
-> >  kernel/rcu/rcu_segcblist.c    | 133 +++++++++++++++++++++++-----------
-> >  kernel/rcu/rcu_segcblist.h    |   2 -
-> >  3 files changed, 92 insertions(+), 45 deletions(-)
-> > 
-> > diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
-> > index b36afe7b22c9..d462ae5e340a 100644
-> > --- a/include/linux/rcu_segcblist.h
-> > +++ b/include/linux/rcu_segcblist.h
-> > @@ -69,8 +69,10 @@ struct rcu_segcblist {
-> >  	unsigned long gp_seq[RCU_CBLIST_NSEGS];
-> >  #ifdef CONFIG_RCU_NOCB_CPU
-> >  	atomic_long_t len;
-> > +	atomic_long_t seglen[RCU_CBLIST_NSEGS];
-> 
-> Also does it really need to be atomic?
+Hey All,
+  So this is another revision of my patch series to performance
+optimizations to the dma-buf system heap.
 
-Yeah I think not. In fact, I am not even sure if ->len in the existing code
-needs to be atomic. I am considering vetting all code paths. Paul told me it
-used to be the case that ->len could be lockless written (possibly without
-IRQs disabled) I think but that maybe nowadays it is not the case. Let us
-double check to be sure.
+This series reworks the system heap to use sgtables, and then
+consolidates the pagelist method from the heap-helpers into the
+CMA heap. After which the heap-helpers logic is removed (as it
+is unused). I'd still like to find a better way to avoid some of
+the logic duplication in implementing the entire dma_buf_ops
+handlers per heap. But unfortunately that code is tied somewhat
+to how the buffer's memory is tracked.
 
-> > @@ -245,7 +280,7 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
-> >  			   struct rcu_head *rhp)
-> >  {
-> >  	rcu_segcblist_inc_len(rsclp);
-> > -	smp_mb(); /* Ensure counts are updated before callback is enqueued. */
-> 
-> That's a significant change that shouldn't be hidden and unexplained in an unrelated
-> patch or it may be easily missed. I'd suggest to move this line together in
-> "rcu/tree: Remove redundant smp_mb() in rcu_do_batch" (with the title updated perhaps)
-> and maybe put it in the beginning of the series?
+After this, the series introduces an optimization that
+Ørjan Eide implemented for ION that avoids calling sync on
+attachments that don't have a mapping.
 
-Ok I can do that.
+Next, an optimization to use larger order pages for the system
+heap. This change brings us closer to the current performance
+of the ION allocation code (though there still is a gap due
+to ION using a mix of deferred-freeing and page pools, I'll be
+looking at integrating those eventually).
 
-> > +	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
-> >  	rhp->next = NULL;
-> >  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
-> >  	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], &rhp->next);
-> [...]
-> > @@ -330,11 +353,16 @@ void rcu_segcblist_extract_pend_cbs(struct rcu_segcblist *rsclp,
-> >  
-> >  	if (!rcu_segcblist_pend_cbs(rsclp))
-> >  		return; /* Nothing to do. */
-> > +	rclp->len = rcu_segcblist_get_seglen(rsclp, RCU_WAIT_TAIL) +
-> > +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_READY_TAIL) +
-> > +		    rcu_segcblist_get_seglen(rsclp, RCU_NEXT_TAIL);
-> >  	*rclp->tail = *rsclp->tails[RCU_DONE_TAIL];
-> >  	rclp->tail = rsclp->tails[RCU_NEXT_TAIL];
-> >  	WRITE_ONCE(*rsclp->tails[RCU_DONE_TAIL], NULL);
-> > -	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++)
-> > +	for (i = RCU_DONE_TAIL + 1; i < RCU_CBLIST_NSEGS; i++) {
-> >  		WRITE_ONCE(rsclp->tails[i], rsclp->tails[RCU_DONE_TAIL]);
-> > +		rcu_segcblist_set_seglen(rsclp, i, 0);
-> > +	}
-> 
-> So, that's probably just a matter of personal preference, so feel free to
-> ignore but I'd rather do:
-> 
->     rclp->len += rcu_segcblist_get_seglen(rsclp, i);
->     rcu_segcblist_set_seglen(rsclp, i, 0);
-> 
-> instead of the big addition above. That way, if a new index ever gets added/renamed
-> to the segcblist, we'll take it into account. Also that spares a few lines.
+Finally, a reworked version of my uncached system heap
+implementation I was submitting a few weeks back. Since it
+duplicated a lot of the now reworked system heap code, I
+realized it would be much simpler to add the functionality to
+the system_heap implementaiton itself.
 
-Yeah your way is better, I will do it this way.
+While not improving the core allocation performance, the
+uncached heap allocations do result in *much* improved
+performance on HiKey960 as it avoids a lot of flushing and
+invalidating buffers that the cpu doesn't touch often.
 
-thanks,
+Feedback on these would be great!
 
- - Joel
+thanks
+-john
+
+New in v4:
+* Make sys_heap static (indirectly) Reported-by:
+     kernel test robot <lkp@intel.com>
+* Spelling fixes suggested by BrianS
+* Make sys_uncached_heap static, as
+    Reported-by: kernel test robot <lkp@intel.com>
+* Fix wrong return value, caught by smatch
+    Reported-by: kernel test robot <lkp@intel.com>
+    Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+* Ensure we call flush/invalidate_kernel_vmap_range() in the
+  uncached cases to try to address feedback about VIVT caches
+  from Christoph
+* Reorder a few lines as suggested by BrianS
+* Avoid holding the initial mapping for the lifetime of the buffer
+  as suggested by BrianS
+* Fix a unlikely race between allocate and updating the dma_mask
+  that BrianS noticed.
+
+
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+
+John Stultz (7):
+  dma-buf: system_heap: Rework system heap to use sgtables instead of
+    pagelists
+  dma-buf: heaps: Move heap-helper logic into the cma_heap
+    implementation
+  dma-buf: heaps: Remove heap-helpers code
+  dma-buf: heaps: Skip sync if not mapped
+  dma-buf: system_heap: Allocate higher order pages if available
+  dma-buf: dma-heap: Keep track of the heap device struct
+  dma-buf: system_heap: Add a system-uncached heap re-using the system
+    heap
+
+ drivers/dma-buf/dma-heap.c           |  33 +-
+ drivers/dma-buf/heaps/Makefile       |   1 -
+ drivers/dma-buf/heaps/cma_heap.c     | 327 +++++++++++++++---
+ drivers/dma-buf/heaps/heap-helpers.c | 270 ---------------
+ drivers/dma-buf/heaps/heap-helpers.h |  53 ---
+ drivers/dma-buf/heaps/system_heap.c  | 488 ++++++++++++++++++++++++---
+ include/linux/dma-heap.h             |   9 +
+ 7 files changed, 749 insertions(+), 432 deletions(-)
+ delete mode 100644 drivers/dma-buf/heaps/heap-helpers.c
+ delete mode 100644 drivers/dma-buf/heaps/heap-helpers.h
+
+-- 
+2.17.1
 
