@@ -2,100 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816DF29121D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 15:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B493E29122B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 16:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437537AbgJQN5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 09:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
+        id S2438236AbgJQOGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 10:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436959AbgJQN5U (ORCPT
+        with ESMTP id S2438227AbgJQOGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 09:57:20 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A4CC0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 06:57:19 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w21so3182604pfc.7
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 06:57:19 -0700 (PDT)
+        Sat, 17 Oct 2020 10:06:36 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C753AC061755;
+        Sat, 17 Oct 2020 07:06:35 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id o9so2714176plx.10;
+        Sat, 17 Oct 2020 07:06:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=7co/6vS67fyodZT7r+a17TECavfbdRgr+rD1dFZXz9k=;
-        b=RBksC0qHpz1xZkXwpWrxObHN4olJYMH5C4xMYfNrH9R5LY9VMGYwPX34eU7JGY/OS5
-         SyUPWo4LGFINc8hB8+/xD4xhrpUbSPr8MZ5tbksQbA9+KZzMrpMKGeeIIODc5iM8fulU
-         WX6VcNpfvF7xXcpSnAC1QaV1LzSKtHJPjlOU4HK17ZhgEEcmnWqtM0hIGaCDJO4P5i44
-         FWC9NndUPDJyjWwH31LBKEll2Yu/+okGbrUzaZ2X3r00g34i8CjyqTQXxXLW76IqogP/
-         j8SEtomNLafgfGz0pJCm2DOfriY7Rtoo9qYLjRULRgWL4Pa/e3+sbqCBmfudczwT1yOD
-         B8DQ==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=QxCFWYbj1NhZqQc4h9ExLWXO4yGB5U4hjLtwgymRmUk=;
+        b=ZjmHvDgt6FmTreyueP61zYXWSlppEX8mGLtUrcGhB8hYErnE37dvXNHjuj+/hJYnYk
+         aFbdOW+t0TFGPHgJq9qKmK9inVUErE7QwQIt5d3KJsEl7OVh0evanexc05b1uQba80lq
+         wF40c3Ta1GinQ6zW+PznOW1bdRxjZEfEO+bM9zDvmUH9+DAEWji2YN2suIq661XD60AZ
+         frkIyhsYD2c+jKKAAQriwZFefnpnFutSDMShmuOzKSRERPhTZ6ZzmhBfw1Nyt/dH+5Je
+         6AsGAv0R3LiiVkAh/5RDAQ/QwX92plxJ1ePCILbsInrzw6z74p/J2pNXeLxJ/NOdeCuF
+         I8FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=7co/6vS67fyodZT7r+a17TECavfbdRgr+rD1dFZXz9k=;
-        b=D1+yNY8fdmPvGPHbW0L6F8ruYBYjeU6alUKRdqZ0WSsjTDhAzMIcRUsJNJ2xRwCAiE
-         rvBWMg8ZMNYO/P2Mu/OGTS2rfUJbbt2duuPoqlDUhlosQzL1rtL+g7B3JK0am57wSkNu
-         lrfoZbec8JcP2Uc+4+qB81zKW1XgFBL86kgS/bibdMHyKeEsnhMkNmU9xv4v2kyWbv2m
-         +0PvwU8MgjMAEMJNc0mBgHVQy5rUw9hukuP+YwBqRRBt+zY+cBJ/COQagJuCRLKs+zY7
-         x1yR+8T+w1BEE6+2jZs3avxciB+TRBWYXeMmXCtwHe90pygRFds0yRI6TvK8ZlC0BXRk
-         yUBw==
-X-Gm-Message-State: AOAM532MXJgjiT/MwAvUzIh2KWb/bc2CEViBlyTJiEA6xZwDOeaXm3t3
-        uODQcbjMO4byNIV/WHn5GfBtOHoqHVgkf3dV2c4=
-X-Google-Smtp-Source: ABdhPJwR624TRXk0LPe4WIOlPIwZm4TVXnhg25FpGN4hifAnSt6SLdRwGCTRfrRFN9ksOICwgr5fwZ4J1KTiQ/v2vCQ=
-X-Received: by 2002:a62:3857:0:b029:155:37a5:295 with SMTP id
- f84-20020a6238570000b029015537a50295mr8629155pfa.23.1602943039141; Sat, 17
- Oct 2020 06:57:19 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=QxCFWYbj1NhZqQc4h9ExLWXO4yGB5U4hjLtwgymRmUk=;
+        b=IJd2kh7zElZTm3xK7/ONskgUTD5TqjofZ9i/mwY00x0I+k13YKvB6e0bjp9Pvzxkbi
+         fKeyaGEZuVHJj9vASf/xfWMFsGQCQAm+WsrxYLSZtMgioQMAjyRFeqKowxmjHpoT76xj
+         kQiN+zo9kc7Yn4PcRIsLbiIFmPG1YYdjtTRICp3D+KLlWjWWegFsPd/7mQOwc2G1uFvh
+         DKuGagzfBVXZghpj6tp+/hVpxs2lX2dzdl/eWjos5eKdLZVLd0S7tDP/8jmjGGNe0ABV
+         Td17BaVBaFM9CPjWV5yxRVlYSPvkIRoKGkbLrTeW4cxWAgVbtMycuoukOCtn0G+f3RxO
+         pL/w==
+X-Gm-Message-State: AOAM532UTAlWwMefU2iKvCbXqq3fdk2xSKF2CR8HCxNHVVSdwBskHio7
+        0nBCefd1n/UHg9iVNUVBr3c=
+X-Google-Smtp-Source: ABdhPJxPXaybuirVsPTkEF81+YdnQS6anDik0rIbF9ZCC89dj3lF7Gq6Wulr8SzLVWksWq9BGB9z0A==
+X-Received: by 2002:a17:90a:6288:: with SMTP id d8mr9577924pjj.210.1602943595246;
+        Sat, 17 Oct 2020 07:06:35 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id e16sm6452669pfh.45.2020.10.17.07.06.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Oct 2020 07:06:34 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Sat, 17 Oct 2020 22:05:41 +0800
+To:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Helmut Stult <helmut.stult@schinfo.de>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] HID: i2c-hid: add polling mode based on connected
+ GPIO chip's pin status
+Message-ID: <20201017140541.fggujaz2klpv3cd5@Rk>
+References: <20201016131335.8121-1-coiby.xu@gmail.com>
+ <T2SIcFVxZ81NUwKLDbSESA7Wpm7DYowEiii8ZaxTPtrdXZZeHLq5iZPkN5BLlp-9C6PLwUZOVwNpMdEdPSRZcAG4MmDt-tfyKZoQYJ0KHOA=@protonmail.com>
+ <20201017004556.kuoxzmbvef4yr3kg@Rk>
+ <FWsXxqGztJgszUpmNtKli8eOyeKP-lxFeTsjs2nQAxgYZBkT3JNTU3VdHF4GbQVS_PvKiqbfrZXI7vaUHA_lXTxjPX-WjkNEOdiMUetO8IQ=@protonmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:654a:0:0:0:0 with HTTP; Sat, 17 Oct 2020 06:57:18
- -0700 (PDT)
-Reply-To: aadilalabo593@gmail.com
-From:   Aadila Laboso <adsanga77@gmail.com>
-Date:   Sat, 17 Oct 2020 06:57:18 -0700
-Message-ID: <CAC+r+ijQzW2moSZaJBsOvAcQhQ7Ovixh-dxd0UGvS5tEKqTvNw@mail.gmail.com>
-Subject: My beloved
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <FWsXxqGztJgszUpmNtKli8eOyeKP-lxFeTsjs2nQAxgYZBkT3JNTU3VdHF4GbQVS_PvKiqbfrZXI7vaUHA_lXTxjPX-WjkNEOdiMUetO8IQ=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Good day and God bless you as you read this massage, I am Aadila
-Laboso a 27 years old girl from Kenya, my mother was Late Mrs. Lorna
-Laboso the former Kenyan Assistant Minister of Home and affairs who
-was among plan that crash board in the remote area of Kalong=E2=80=99s west=
-ern
-Kenya Read more about the crash with the below web
+Hi,
 
-site.http://edition.cnn.com/2008/WORLD/africa/06/10/kenya.crash/index.html
-I am constrained to contact you because of the maltreatment I am
-receiving from my step mother. She planned to take away all my late
-mothers treasury and properties from me since the unexpected death of
-my beloved mother.
+On Sat, Oct 17, 2020 at 01:06:14PM +0000, Barnabás Pőcze wrote:
+>Hi
+>
+>> [...]
+>> >> +static int get_gpio_pin_state(struct irq_desc *irq_desc)
+>> >> +{
+>> >> +	struct gpio_chip *gc = irq_data_get_irq_chip_data(&irq_desc->irq_data);
+>> >> +
+>> >> +	return gc->get(gc, irq_desc->irq_data.hwirq);
+>> >> +}
+>> >> +
+>> >> +static bool interrupt_line_active(struct i2c_client *client)
+>> >> +{
+>> >> +	unsigned long trigger_type = irq_get_trigger_type(client->irq);
+>> >> +	struct irq_desc *irq_desc = irq_to_desc(client->irq);
+>> >> +
+>> >> +	/*
+>> >> +	 * According to Windows Precsiontion Touchpad's specs
+>> >> +	 * https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/windows-precision-touchpad-device-bus-connectivity,
+>> >> +	 * GPIO Interrupt Assertion Leve could be either ActiveLow or
+>> >> +	 * ActiveHigh.
+>> >> +	 */
+>> >> +	if (trigger_type & IRQF_TRIGGER_LOW)
+>> >> +		return !get_gpio_pin_state(irq_desc);
+>> >> +
+>> >> +	return get_gpio_pin_state(irq_desc);
+>> >> +}
+>> >
+>> >Excuse my ignorance, but I think some kind of error handling regarding the return
+>> >value of `get_gpio_pin_state()` should be present here.
+>> >
+>> What kind of errors would you expect? It seems (struct gpio_chip *)->get
+>> only return 0 or 1.
+>> >
+>
+>I read the code of a couple gpio chips and - I may be wrong, but - it seems they
+>can return an arbitrary errno.
+>
+I thought all GPIO chip return 0 or 1 since !!val is returned. I find
+an example which could return negative value,
 
+// drivers/gpio/gpio-wm8994.c
+static int wm8994_gpio_get(struct gpio_chip *chip, unsigned offset)
+{
+	struct wm8994_gpio *wm8994_gpio = gpiochip_get_data(chip);
+	struct wm8994 *wm8994 = wm8994_gpio->wm8994;
+	int ret;
 
-One day I opened my mother brave case and secretly found out that my
-mother deposited the sum of  27.5 million Euros in BMCE bank of
-Burkina Faso with my name as the next of kin, then I visited Burkina
-Faso to withdraw the money and take care of myself and start a new
-life, on my arrival the Bank Director whom I meet in person told me
-that my mother left an instruction to the bank, that the money should
-be release to me only when I am an adult to present a trustee who will
-help me and invest the money overseas.
+	ret = wm8994_reg_read(wm8994, WM8994_GPIO_1 + offset);
+	if (ret < 0)
+		return ret;
 
+	if (ret & WM8994_GPN_LVL)
+		return 1;
+	else
+		return 0;
+}
+>
+>> >> +
+>> >> +static int i2c_hid_polling_thread(void *i2c_hid)
+>> >> +{
+>> >> +	struct i2c_hid *ihid = i2c_hid;
+>> >> +	struct i2c_client *client = ihid->client;
+>> >> +	unsigned int polling_interval_idle;
+>> >> +
+>> >> +	while (1) {
+>> >> +		/*
+>> >> +		 * re-calculate polling_interval_idle
+>> >> +		 * so the module parameters polling_interval_idle_ms can be
+>> >> +		 * changed dynamically through sysfs as polling_interval_active_us
+>> >> +		 */
+>> >> +		polling_interval_idle = polling_interval_idle_ms * 1000;
+>> >> +		if (test_bit(I2C_HID_READ_PENDING, &ihid->flags))
+>> >> +			usleep_range(50000, 100000);
+>> >> +
+>> >> +		if (kthread_should_stop())
+>> >> +			break;
+>> >> +
+>> >> +		while (interrupt_line_active(client)) {
+>> >
+>> >I realize it's quite unlikely, but can't this be a endless loop if data is coming
+>> >in at a high enough rate? Maybe the maximum number of iterations could be limited here?
+>> >
+>> If we find HID reports are constantly read and send to front-end
+>> application like libinput, won't it help expose the problem of the I2C
+>> HiD device?
+>> >
+>
+>I'm not sure I completely understand your point. The reason why I wrote what I wrote
+>is that this kthread could potentially could go on forever (since `kthread_should_stop()`
+>is not checked in the inner while loop) if the data is supplied at a high enough rate.
+>That's why I said, to avoid this problem, only allow a certain number of iterations
+>for the inner loop, to guarantee that the kthread can stop in any case.
+>
+I mean if "data is supplied at a high enough rate" does happen, this is
+an abnormal case and indicates a bug. So we shouldn't cover it up. We
+expect the user to report it to us.
+>
+>> >> +			i2c_hid_get_input(ihid);
+>> >> +			usleep_range(polling_interval_active_us,
+>> >> +				     polling_interval_active_us + 100);
+>> >> +		}
+>> >> +
+>> >> +		usleep_range(polling_interval_idle,
+>> >> +			     polling_interval_idle + 1000);
+>> >> +	}
+>> >> +
+>> >> +	do_exit(0);
+>> >> +	return 0;
+>> >> +}
+>> [...]
+>> >Excuse my ignorance, but I do not understand why the following two changes are not enough:
+>> >
+>> >in `i2c_hid_suspend()`:
+>> > if (polling_mode == I2C_POLLING_DISABLED)
+>> >   disable_irq(client->irq);
+>> >
+>> >in `i2c_hid_resume()`:
+>> > if (polling_mode == I2C_POLLING_DISABLED)
+>> >   enable_irq(client->irq);
+>> >
+>> I think we shouldn't call enable/disable_irq_wake in polling mode
+>> where we don't set up irq.
+>
+>I think I now understand what you mean. I'm not sure, but it seems logical to me
+>that you can enable/disable irq wake regardless whether any irq handlers are
+>registered or not. Therefore, I figure it makes sense to take the safe path,
+>and don't touch irq wake when polling, just as you did.
+>
 
-That is the reason why I am in search of a honest and reliable person
-who will help me and stand as my trustee for the Bank to transfer the
-fund to your account for me to come over and join you.It will be my
-great pleasure to compensate you with 30% of the money for your help
-and the balance shall be my capital with your kind idea for me to
-invest under your  control over there in your country.As soon as I
-receive your positive response showing your interest I will send you
-my picture's in my next mail and how you will have the money in your
-account.
-(aadilalabo593@gmail.com)
+Thank you for offering your understandings on this patch. When I'm going
+to submit next version, I will add a "Signed-off-by" tag with your name
+and email, does it look good to you?
+>
+>> [...]
+>
+>
+>Regards,
+>Barnabás Pőcze
 
-Thanks and waiting
-Yours Sincerely
-Queen Aadila Laboso
+--
+Best regards,
+Coiby
