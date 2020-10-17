@@ -2,104 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089F92914AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 23:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DCC2914B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 23:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439304AbgJQVQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 17:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56234 "EHLO
+        id S2439451AbgJQVRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 17:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439244AbgJQVQz (ORCPT
+        with ESMTP id S2439427AbgJQVRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 17:16:55 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5043C061755
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 14:16:54 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kTtZ5-0006Fj-TO; Sat, 17 Oct 2020 23:16:35 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kTtZ4-0004pP-RR; Sat, 17 Oct 2020 23:16:34 +0200
-Date:   Sat, 17 Oct 2020 23:16:32 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-pwm@vger.kernel.org, matthias.bgg@gmail.com,
-        robh+dt@kernel.org, lee.jones@linaro.org, thierry.reding@gmail.com
-Subject: Re: [PATCH] dt-bindings: pwm: mtk-disp: add MT8167 SoC binding
-Message-ID: <20201017211632.ufgcsmjhbdmcj7hr@pengutronix.de>
-References: <20201016185015.3371433-1-fparent@baylibre.com>
+        Sat, 17 Oct 2020 17:17:05 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043BDC061755
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 14:17:05 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602969423;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JZSaf6mICsG61g+Ahs/kdu56X2nbEqMkG66Lbe+nYek=;
+        b=ndxeosOQZadtBcUt+JNj+2y2nVugdPwgHSPz0Q3C8rTAhaHlaoQa3JD2Fl3rhLS7dMVwR9
+        6B93B+kbDSR6NWrtM4smffy9V7NqZMPJQgxVr4Xea7pNwtAI8/a5wHNO6otTdSRrnKO8wG
+        j29OgwoMyQEgVnKQUMluftM0rEQMs6usYsoWQEPr4tdLMUwG/J/YyMPdM9FQxJJ6rGxU+V
+        hWoXhV7sP4AFLo5rMdfnYPf2U3pLE1ZgAUC6+PQnVeYilIT1fUQL8+sZUAk9Bz09SJ9AFE
+        t38/H0IyuSimeUUbMIja0hV374P35n+Ky3goLvtr2DYw2cg+iXvcRQm66geDQw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602969423;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JZSaf6mICsG61g+Ahs/kdu56X2nbEqMkG66Lbe+nYek=;
+        b=j4eNE9FnBaEwypZPrH5Qxv6YxiHJ34OlUwjMffbRaIpxdjJNb2adwMD0widNPArjtKDxY2
+        4LLAIfxa8HbuAyBw==
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] task_work: cleanup notification modes
+In-Reply-To: <99a29dd4-b968-c4fb-5071-2fd9b14e020e@kernel.dk>
+References: <93292d5b-9124-d252-c81f-1f2cfbd60e7b@kernel.dk> <87tuutalre.fsf@nanos.tec.linutronix.de> <aaed79d1-972f-e4bd-f3ac-d589cd729163@kernel.dk> <87zh4lix8l.fsf@nanos.tec.linutronix.de> <2ebe7e45-b4e5-1a6b-d3ee-4a790817a119@kernel.dk> <87wnzpivvx.fsf@nanos.tec.linutronix.de> <7e32aa44-35ff-3a48-87d0-8e7df586db1d@kernel.dk> <87tuusj2ch.fsf@nanos.tec.linutronix.de> <4a2f1a71-3548-1f13-23a4-2f7e73408cf3@kernel.dk> <87k0voip1w.fsf@nanos.tec.linutronix.de> <ffd90972-d664-b024-f537-8d02f91d12d7@kernel.dk> <87h7qsin38.fsf@nanos.tec.linutronix.de> <99a29dd4-b968-c4fb-5071-2fd9b14e020e@kernel.dk>
+Date:   Sat, 17 Oct 2020 23:17:03 +0200
+Message-ID: <87eelwimcw.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dkesq5stxul6y32h"
-Content-Disposition: inline
-In-Reply-To: <20201016185015.3371433-1-fparent@baylibre.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 17 2020 at 15:03, Jens Axboe wrote:
+> On 10/17/20 3:01 PM, Thomas Gleixner wrote:
+>> Sure. I assume you ship it to Linus, otherwise let me know and I'll pick
+>> it up.
+>
+> I can, I have it bundled up with the TIF_NOTIFY_RESUME cleanup. Either
+> way is fine with me, so if you're good with it, I'll ship it before -rc1.
 
---dkesq5stxul6y32h
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Oct 16, 2020 at 08:50:15PM +0200, Fabien Parent wrote:
-> Add binding for MT8167 SoC. The IP is compatible with MT8173.
->=20
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
->  Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt b/Doc=
-umentation/devicetree/bindings/pwm/pwm-mtk-disp.txt
-> index 0521957c253f..902b271891ae 100644
-> --- a/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt
-> +++ b/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt
-> @@ -4,6 +4,7 @@ Required properties:
->   - compatible: should be "mediatek,<name>-disp-pwm":
->     - "mediatek,mt2701-disp-pwm": found on mt2701 SoC.
->     - "mediatek,mt6595-disp-pwm": found on mt6595 SoC.
-> +   - "mediatek,mt8167-disp-pwm", "mediatek,mt8173-disp-pwm": found on mt=
-8167 SoC.
->     - "mediatek,mt8173-disp-pwm": found on mt8173 SoC.
->   - reg: physical base address and length of the controller's registers.
->   - #pwm-cells: must be 2. See pwm.yaml in this directory for a descripti=
-on of
-
-LGTM:
-
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---dkesq5stxul6y32h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+LXy0ACgkQwfwUeK3K
-7AkGVQf/W23j54YXyBoJHOo0UT7KjtVUZs7RlAf41JjeatSLPQ2AFfeInknaMEkX
-rGoUteV8Dj36mb5SWUJhGN4tmBUGX7e5u/XRhkHRjuJeA41MThhw16ubjIPBxXks
-GiB0mtz69sFQp5T9w7Nyz4iI6qCEvP2GOuNisELgRJXAECob6gX33RYFhvJZK1Gg
-v/hR0xjoblqnJ15jKKoUiuw75Qbtj7Bj9ei+6ypNRTu/zYRSSUsrXaYX6gcYr0Ar
-ZAPLhiaOKv9utkDGnrvcV97qHRQxkoSBOLljtx3EikgkRkIC4uoT3T7oQuaV9fvG
-kE00SKEPLcxAeOj8mGGn6mSkloQxGQ==
-=DF3E
------END PGP SIGNATURE-----
-
---dkesq5stxul6y32h--
+Works for me.
