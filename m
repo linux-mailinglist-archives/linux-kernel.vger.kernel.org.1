@@ -2,122 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EBE29141C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 21:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FF2291421
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 21:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439419AbgJQTVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 15:21:33 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:50143 "EHLO z5.mailgun.us"
+        id S2439427AbgJQTaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 15:30:55 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:60998 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439292AbgJQTVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 15:21:32 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602962492; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=w3XBZtDYMSOGf1b1iEGY4J4TyZg0rOzlWwKlB0140jE=; b=GII0HA0eAdzl54l5N/BHGIs1DaBlDzzyycooJ0BCTbhP3zdPZWSKa5YMuuA/JBPivsuRKILB
- Rfok/z0Pjb4B+lt85bdvjfFWkEiy5wezaO5yLIYUnUNd98cYZUKiIgS5YJcqYbc7xH+/+FWy
- iDRCWgKEK23Fh1UfKeGDJOmrzww=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f8b4438aad2c3cd1ce88115 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 17 Oct 2020 19:21:28
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3A398C43382; Sat, 17 Oct 2020 19:21:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.106] (unknown [49.204.182.124])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AE5C7C433CB;
-        Sat, 17 Oct 2020 19:21:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AE5C7C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-Subject: Re: [PATCH] clk: qcom: gdsc: Keep RETAIN_FF bit set if gdsc is
- already on
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-References: <20201017020137.1251319-1-sboyd@kernel.org>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <1d87c476-cd40-2954-bdfc-bd13dd911c07@codeaurora.org>
-Date:   Sun, 18 Oct 2020 00:51:23 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S2437545AbgJQTaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 15:30:55 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kTrue-002BUa-QN; Sat, 17 Oct 2020 21:30:44 +0200
+Date:   Sat, 17 Oct 2020 21:30:44 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pavana Sharma <pavana.sharma@digi.com>
+Cc:     vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Subject: Re: [PATCH v3] Add support for mv88e6393x family of Marvell.
+Message-ID: <20201017193044.GO456889@lunn.ch>
+References: <20201016020902.28237-1-pavana.sharma@digi.com>
 MIME-Version: 1.0
-In-Reply-To: <20201017020137.1251319-1-sboyd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016020902.28237-1-pavana.sharma@digi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Taniya Das <tdas@codeaurora.org>
-
-On 10/17/2020 7:31 AM, Stephen Boyd wrote:
-> If the GDSC is enabled out of boot but doesn't have the retain ff bit
-> set we will get confusing results where the registers that are powered
-> by the GDSC lose their contents on the first power off of the GDSC but
-> thereafter they retain their contents. This is because gdsc_init() fails
-> to make sure the RETAIN_FF bit is set when it probes the GDSC the first
-> time and thus powering off the GDSC causes the register contents to be
-> reset. We do set the RETAIN_FF bit the next time we power on the GDSC,
-> see gdsc_enable(), so that subsequent GDSC power off's don't lose
-> register contents state.
-> 
-> Forcibly set the bit at device probe time so that the kernel's assumed
-> view of the GDSC is consistent with the state of the hardware. This
-> fixes a problem where the audio PLL doesn't work on sc7180 when the
-> bootloader leaves the lpass_core_hm GDSC enabled at boot (e.g. to make a
-> noise) but critically doesn't set the RETAIN_FF bit.
-> 
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Taniya Das <tdas@codeaurora.org>
-> Cc: Rajendra Nayak <rnayak@codeaurora.org>
-> Fixes: 173722995cdb ("clk: qcom: gdsc: Add support to enable retention of GSDCR")
-> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-> ---
->   drivers/clk/qcom/gdsc.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> index bfc4ac02f9ea..af26e0695b86 100644
-> --- a/drivers/clk/qcom/gdsc.c
-> +++ b/drivers/clk/qcom/gdsc.c
-> @@ -358,6 +358,14 @@ static int gdsc_init(struct gdsc *sc)
->   	if ((sc->flags & VOTABLE) && on)
->   		gdsc_enable(&sc->pd);
->   
-> +	/*
-> +	 * Make sure the retain bit is set if the GDSC is already on, otherwise
-> +	 * we end up turning off the GDSC and destroying all the register
-> +	 * contents that we thought we were saving.
-> +	 */
-> +	if ((sc->flags & RETAIN_FF_ENABLE) && on)
-> +		gdsc_retain_ff_on(sc);
+> +static void mv88e6393x_phylink_validate(struct mv88e6xxx_chip *chip, int port,
+> +					unsigned long *mask,
+> +					struct phylink_link_state *state)
+> +{
+> +	if (port == 0 || port >= 9) {
+> +		phylink_set(mask, 10000baseT_Full);
+> +		phylink_set(mask, 10000baseKR_Full);
+> +		phylink_set(mask, 2500baseX_Full);
+> +		phylink_set(mask, 2500baseT_Full);
+> +	}
 > +
->   	/* If ALWAYS_ON GDSCs are not ON, turn them ON */
->   	if (sc->flags & ALWAYS_ON) {
->   		if (!on)
-> 
-> base-commit: 9ff9b0d392ea08090cd1780fb196f36dbb586529
-> 
+> +	phylink_set(mask, 1000baseT_Full);
+> +	phylink_set(mask, 1000baseX_Full);
+> +
+> +	mv88e6065_phylink_validate(chip, port, mask, state);
+> +}
+> +
+>  static void mv88e6xxx_validate(struct dsa_switch *ds, int port,
+>  			       unsigned long *supported,
+>  			       struct phylink_link_state *state)
+> @@ -4141,6 +4158,56 @@ static const struct mv88e6xxx_ops mv88e6191_ops = {
+>  	.phylink_validate = mv88e6390_phylink_validate,
+>  };
+>  
+> +static const struct mv88e6xxx_ops mv88e6193x_ops = {
+> +	/* MV88E6XXX_FAMILY_6393X */
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
+Please add support for the 6393X and the 6391X. Most of the
+differences are in mv88e6X93x_phylink_validate() functions, given the
+different number of multiG ports. Just a best effort, since i guess
+you do not have the hardware to test on.
 
---
+> diff --git a/drivers/net/dsa/mv88e6xxx/chip.h b/drivers/net/dsa/mv88e6xxx/chip.h
+> index 823ae89e5fca..407d683c0fcf 100644
+> --- a/drivers/net/dsa/mv88e6xxx/chip.h
+> +++ b/drivers/net/dsa/mv88e6xxx/chip.h
+> @@ -63,6 +63,7 @@ enum mv88e6xxx_model {
+>  	MV88E6190,
+>  	MV88E6190X,
+>  	MV88E6191,
+> +	MV88E6193X,
+>  	MV88E6220,
+>  	MV88E6240,
+>  	MV88E6250,
+> @@ -90,6 +91,7 @@ enum mv88e6xxx_family {
+>  	MV88E6XXX_FAMILY_6351,	/* 6171 6175 6350 6351 */
+>  	MV88E6XXX_FAMILY_6352,	/* 6172 6176 6240 6352 */
+>  	MV88E6XXX_FAMILY_6390,  /* 6190 6190X 6191 6290 6390 6390X */
+> +	MV88E6XXX_FAMILY_6393X, /* 6191X 6193X 6393X */
+>  };
+
+Are there any 6393 devices, i.e. not X? I just wondering if we want to
+call the family plain 6393? In general, it would be nicer to use the
+name 6393, not 6393X.
+
+> +int mv88e6393x_port_set_cmode(struct mv88e6xxx_chip *chip, int port,
+> +			      phy_interface_t mode)
+> +{
+> +	if (lane >= 0) {
+> +		if (chip->ports[port].serdes_irq) {
+> +			err = mv88e6393x_serdes_irq_enable(chip, port, lane, false);
+> +			if (err)
+> +				return err;
+> +	}
+> +
+> +		err = mv88e6393x_serdes_power(chip, port, lane, false);
+> +		if (err)
+> +			return err;
+> +	}
+
+Something wrong with the indentation here.
+
+Please can you also look at trying to refactor
+mv88e6xxx_port_set_cmode() so you don't have to duplicate so much.
+
+> +/* Offset 0x0E: Policy & MGMT Control Register for FAMILY 6191X 6193X 6393X*/
+> +
+> +static int mv88e6393x_port_policy_write(struct mv88e6xxx_chip *chip, u16 pointer,
+> +				u8 data)
+> +{
+> +	u16 reg;
+> +	int port;
+> +	int err = 0;
+
+Reverse Christmas tree please, here and everywhere.
+
+> +static int mv88e6393x_epc_wait_ready(struct mv88e6xxx_chip *chip, int port)
+> +{
+> +	const unsigned long timeout = jiffies + 1 * HZ;
+> +	u16 val;
+> +	int err;
+> +
+> +	while (time_before(jiffies, timeout)) {
+> +		err = mv88e6xxx_port_read(chip, port, MV88E6393X_PORT_EPC_CMD, &val);
+> +		if (err)
+> +			return err;
+> +		if (!(val & MV88E6393X_PORT_EPC_CMD_BUSY))
+> +			break;
+> +		usleep_range(1000, 2000);
+> +	}
+> +
+> +	if (time_after(jiffies, timeout))
+> +		return -ETIMEDOUT;
+> +
+> +	return 0;
+> +}
+
+Please build something on top of mv88e6xxx_wait_bit(). Look at
+global1.c as an example for its _wait_ functions.
+
+> +/* Return the SERDES lane address a port is using. Only Ports 0, 9 and 10
+> + * have SERDES lanes. Returns -ENODEV if a port does not have a lane.
+> + */
+> +u8 mv88e6393x_serdes_get_lane(struct mv88e6xxx_chip *chip, int port)
+> +{
+> +	u8 cmode = chip->ports[port].cmode;
+> +
+> +	switch (port) {
+> +	case 0:
+> +		if (cmode == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+> +		    cmode == MV88E6XXX_PORT_STS_CMODE_2500BASEX ||
+> +		    cmode == MV88E6XXX_PORT_STS_CMODE_10GBASER)
+> +			return MV88E6393X_PORT0_LANE;
+> +		return ENODEV;
+
+Missing the - in -ENODEV.
+
+> +	case 9:
+> +		if (cmode == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+> +		    cmode == MV88E6XXX_PORT_STS_CMODE_2500BASEX ||
+> +		    cmode == MV88E6XXX_PORT_STS_CMODE_10GBASER)
+> +			return MV88E6393X_PORT9_LANE;
+> +		return ENODEV;
+> +	case 10:
+> +		if (cmode == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+> +		    cmode == MV88E6XXX_PORT_STS_CMODE_2500BASEX ||
+> +		    cmode == MV88E6XXX_PORT_STS_CMODE_10GBASER)
+> +			return MV88E6393X_PORT10_LANE;
+> +		return ENODEV;
+> +	default:
+> +		return ENODEV;
+> +	}
+> +}
+> +
+
+  Andrew
