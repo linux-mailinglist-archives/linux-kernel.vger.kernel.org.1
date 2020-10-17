@@ -2,778 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88885290FC4
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D714290F9C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436883AbgJQGAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 02:00:50 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:63724 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436791AbgJQGAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 02:00:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602914448; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=ZLdAFvMazk4rLaHkAjG8MrWM7Ij4t6xLhSAQFBZiUGY=; b=aCkRckjUA4QH1DAFJ/cdWVO9yu9N8CTiREUoy0Lwn/dHWAAW1WTG2SzUS0I05jyYnTePzOyr
- cy2lUTaZgcBxFSXOVsTp8FLFbtHJ5KgKWeNVjDITdcaHxXAu1knSDXBwKRdHwXMG43dx5TnS
- 993tJHReKSVwTsfLRh5tYTXAIeQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f8a6d4dd6d00c7a9e00b308 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 17 Oct 2020 04:04:29
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DB679C433C9; Sat, 17 Oct 2020 04:04:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 587E2C433FF;
-        Sat, 17 Oct 2020 04:04:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 587E2C433FF
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-From:   Hemant Kumar <hemantk@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, Hemant Kumar <hemantk@codeaurora.org>
-Subject: [PATCH v7 4/4] bus: mhi: Add userspace client interface driver
-Date:   Fri, 16 Oct 2020 21:04:17 -0700
-Message-Id: <1602907457-13680-5-git-send-email-hemantk@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
-References: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
+        id S2436741AbgJQFtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436732AbgJQFtm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 01:49:42 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9640EC05BD20
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 21:33:18 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id f22so1923198ots.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 21:33:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uyIT3KDc657FTDBbPllL5gNl/9qPglQwQSgiFUmTmhQ=;
+        b=n2KJOrItLONyucDgNwFYobyDFs+b1ckgNXl7VW6UicOXTWsHj4WlMojIBI8GjDuXUd
+         dWaRkMXZ+crAOGyvKniSSTRXa4B/fR6HDfFjXaBr64MtGomUiqZycIaGThuD/OH9/KfC
+         aCD90YLR1yYkXLpLtA2IQenlyiJSoggpORClX35oxO6TufDvF1ivvltx3E4CormVde3G
+         QK91RM94BoA4sjbPldMNGdVGjWdYHkszL4ufG7KZysaQbRO8y9A8jTLt9ZVSF3r0dkfF
+         kudkS3O1kSBOpwkaQv3ClJjJYTJLEkdfYLoM2IBFJ9Gzn74zA7c96k5mxF7Vos8bcFdr
+         IrUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uyIT3KDc657FTDBbPllL5gNl/9qPglQwQSgiFUmTmhQ=;
+        b=Fp6WdWB3+Lnfjl/3rM/RKWiMtHbDUPCTHGQVWhEzUMg1CJcdPSbVDIpzRMk8ElELkI
+         nv/iMl6XtzoZhlEsnUYWx0Y5Zyjhne8+bf2xvVgzyLgX63OMiOCYoncAAl8AcEHFizu3
+         xKKUnwMC4Oxvsl6m02b3HdJRJ5jOUkCGeQr1Kig30Y0ENrqoRrFt8cuu/degjquFkdq0
+         jCrcMpTQnr+4Xm0goivRxXszgJbZNesClBIqLUaVJnv+UCn5W0sARWTy9t8pVckNBT5W
+         WBXzT7lwzOo45m9Lfqpo8jXEqNLMqHX8oAVd76L69UDwS80WDhgjFBDUPUqHkbG3f9xK
+         UuEA==
+X-Gm-Message-State: AOAM532/JU4eC7A9XZa+1Z+TY8Ld6jWQnSbZuBRZj5Eglj/X6e0hgeAe
+        9MHZvp7cqSIn2CBiteQmu4iZg1dfJyqPgt9y0Wg=
+X-Google-Smtp-Source: ABdhPJx8xcFVIZjN/KaRIv7WT3MHFAHET8yuV8lcDte3eCZ+pmCVMZSbMAQsl1HKfTHIveyLvYG46KW2kxUqO61TOlQ=
+X-Received: by 2002:a9d:53cc:: with SMTP id i12mr4772542oth.215.1602909197796;
+ Fri, 16 Oct 2020 21:33:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201014163738.117332-1-dwaipayanray1@gmail.com>
+ <ea011df1e30ce445d51e128287e2c6c38de20949.camel@perches.com>
+ <CABJPP5DrSL7GoZUWc7P02CfLHfTBmfpLxrVOVQ08KH3pPontoA@mail.gmail.com>
+ <7d8c7d80aa7b0524cca49a6dfe24e878bea6ab12.camel@perches.com> <81b6a0bb2c7b9256361573f7a13201ebcd4876f1.camel@perches.com>
+In-Reply-To: <81b6a0bb2c7b9256361573f7a13201ebcd4876f1.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Sat, 17 Oct 2020 10:02:51 +0530
+Message-ID: <CABJPP5DjmY8N18XOhikHymiwkF9h213Rwi-ffQiBvKSrw2WqyA@mail.gmail.com>
+Subject: Re: [PATCH v2] checkpatch: add new exception to repeated word check
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This MHI client driver allows userspace clients to transfer
-raw data between MHI device and host using standard file operations.
-Driver instantiates uci device object which is associated to device
-file node. uci device object instantiates uci channel object when device
-file node is opened. uci channel object is used to manage MHI channels
-by calling MHI core APIs for read and write operations. MHI channels
-are started as part of device open(). MHI channels remain in start
-state until last release() is called on uci device file node. Device
-file node is created with format
+On Sat, Oct 17, 2020 at 8:26 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Wed, 2020-10-14 at 11:35 -0700, Joe Perches wrote:
+> > On Wed, 2020-10-14 at 23:42 +0530, Dwaipayan Ray wrote:
+> > > On Wed, Oct 14, 2020 at 11:33 PM Joe Perches <joe@perches.com> wrote:
+> > > > On Wed, 2020-10-14 at 22:07 +0530, Dwaipayan Ray wrote:
+> > > > > Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
+> > > > > moved the repeated word test to check for more file types. But after
+> > > > > this, if checkpatch.pl is run on MAINTAINERS, it generates several
+> > > > > new warnings of the type:
+> > > >
+> > > > Perhaps instead of adding more content checks so that
+> > > > word boundaries are not something like \S but also
+> > > > not punctuation so that content like
+> > > >
+> > > >         git git://
+> > > >         @size size
+> > > >
+> > > > does not match?
+> > > >
+> > > >
+> > > Hi,
+> > > So currently the words are trimmed of non alphabets before the check:
+> > >
+> > > while ($rawline =~ /\b($word_pattern) (?=($word_pattern))/g) {
+> > > my $first = $1;
+> > > my $second = $2;
+> > >
+> > > where, the word_pattern is:
+> > > my $word_pattern = '\b[A-Z]?[a-z]{2,}\b';
+> >
+> > I'm familiar.
+> >
+> > > So do you perhaps recommend modifying this word pattern to
+> > > include the punctuation as well rather than trimming them off?
+> >
+> > Not really, perhaps use the capture group position
+> > markers @- @+ or $-[1] $+[1] and $-[2] $+[2] with the
+> > substr could be used to see what characters are
+> > before and after the word matches.
+>
+> Perhaps something like:
+> ---
+>  scripts/checkpatch.pl | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index fab38b493cef..a65eb40a5539 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3054,15 +3054,25 @@ sub process {
+>
+>                                 my $first = $1;
+>                                 my $second = $2;
+> +                               my $start_pos = $-[1];
+> +                               my $end_pos = $+[2];
+>
+>                                 if ($first =~ /(?:struct|union|enum)/) {
+>                                         pos($rawline) += length($first) + length($second) + 1;
+>                                         next;
+>                                 }
+>
+> -                               next if ($first ne $second);
+> +                               next if (lc($first) ne lc($second));
+>                                 next if ($first eq 'long');
+>
+> +                               my $start_char = "";
+> +                               my $end_char = "";
+> +                               $start_char = substr($rawline, $start_pos - 1, 1) if ($start_pos > 0);
+> +                               $end_char = substr($rawline, $end_pos, 1) if (length($rawline) > $end_pos);
+> +
+> +                               next if ($start_char =~ /^\S$/);
+> +                               next if ($end_char !~ /^[\.\,\s]?$/);
+> +
+>                                 if (WARN("REPEATED_WORD",
+>                                          "Possible repeated word: '$first'\n" . $herecurr) &&
+>                                     $fix) {
+>
+>
 
-/dev/mhi_<controller_name>_<mhi_device_name>
+Hi Joe,
+Thank you for the insight. I was also doing something similar:
 
-Currently it supports LOOPBACK channel.
-
-Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
 ---
- drivers/bus/mhi/Kconfig  |  13 +
- drivers/bus/mhi/Makefile |   4 +
- drivers/bus/mhi/uci.c    | 656 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 673 insertions(+)
- create mode 100644 drivers/bus/mhi/uci.c
+ scripts/checkpatch.pl | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/bus/mhi/Kconfig b/drivers/bus/mhi/Kconfig
-index e841c10..3891b31 100644
---- a/drivers/bus/mhi/Kconfig
-+++ b/drivers/bus/mhi/Kconfig
-@@ -20,3 +20,16 @@ config MHI_BUS_DEBUG
- 	  Enable debugfs support for use with the MHI transport. Allows
- 	  reading and/or modifying some values within the MHI controller
- 	  for debug and test purposes.
-+
-+config MHI_UCI
-+	tristate "MHI UCI"
-+	depends on MHI_BUS
-+	help
-+	  MHI based userspace client interface driver is used for transferring
-+	  raw data between host and device using standard file operations from
-+	  userspace. Open, read, write, and close operations are supported
-+	  by this driver. Please check mhi_uci_match_table for all supported
-+	  channels that are exposed to userspace.
-+
-+	  To compile this driver as a module, choose M here: the module will be
-+	  called mhi_uci.
-diff --git a/drivers/bus/mhi/Makefile b/drivers/bus/mhi/Makefile
-index 19e6443..80feefb 100644
---- a/drivers/bus/mhi/Makefile
-+++ b/drivers/bus/mhi/Makefile
-@@ -1,2 +1,6 @@
- # core layer
- obj-y += core/
-+
-+# MHI client
-+mhi_uci-y := uci.o
-+obj-$(CONFIG_MHI_UCI) += mhi_uci.o
-diff --git a/drivers/bus/mhi/uci.c b/drivers/bus/mhi/uci.c
-new file mode 100644
-index 0000000..8334836
---- /dev/null
-+++ b/drivers/bus/mhi/uci.c
-@@ -0,0 +1,656 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.*/
-+
-+#include <linux/kernel.h>
-+#include <linux/mhi.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/poll.h>
-+
-+#define DEVICE_NAME "mhi"
-+#define MHI_UCI_DRIVER_NAME "mhi_uci"
-+#define MAX_UCI_MINORS (128)
-+
-+static DEFINE_IDR(uci_idr);
-+static DEFINE_MUTEX(uci_drv_mutex);
-+static struct class *uci_dev_class;
-+static int uci_dev_major;
-+
-+/**
-+ * struct uci_chan - MHI channel for a uci device
-+ * @udev: associated uci device object
-+ * @ul_wq: wait queue for writer
-+ * @write_lock: mutex write lock for ul channel
-+ * @dl_wq: wait queue for reader
-+ * @read_lock: mutex read lock for dl channel
-+ * @dl_lock: spin lock
-+ * @pending: list of dl buffers userspace is waiting to read
-+ * @cur_buf: current buffer userspace is reading
-+ * @dl_size: size of the current dl buffer userspace is reading
-+ * @ref_count: uci_chan reference count
-+ */
-+struct uci_chan {
-+	struct uci_dev *udev;
-+	wait_queue_head_t ul_wq;
-+
-+	/* ul channel lock to synchronize multiple writes */
-+	struct mutex write_lock;
-+
-+	wait_queue_head_t dl_wq;
-+
-+	/* dl channel lock to synchronize multiple reads */
-+	struct mutex read_lock;
-+
-+	/*
-+	 * protects pending and cur_buf members in bh context, channel release,
-+	 * read and poll
-+	 */
-+	spinlock_t dl_lock;
-+
-+	struct list_head pending;
-+	struct uci_buf *cur_buf;
-+	size_t dl_size;
-+	struct kref ref_count;
-+};
-+
-+/**
-+ * struct uci_buf - uci buffer
-+ * @data: data buffer
-+ * @len: length of data buffer
-+ * @node: list node of the uci buffer
-+ */
-+struct uci_buf {
-+	void *data;
-+	size_t len;
-+	struct list_head node;
-+};
-+
-+/**
-+ * struct uci_dev - MHI uci device
-+ * @minor: uci device node minor number
-+ * @mhi_dev: associated mhi device object
-+ * @uchan: uci uplink and downlink channel object
-+ * @mtu: max TRE buffer length
-+ * @enabled: uci device probed
-+ * @lock: mutex lock to manage uchan object
-+ * @ref_count: uci_dev reference count
-+ */
-+struct uci_dev {
-+	unsigned int minor;
-+	struct mhi_device *mhi_dev;
-+	struct uci_chan *uchan;
-+	size_t mtu;
-+	bool enabled;
-+
-+	/* synchronize open, release and driver remove */
-+	struct mutex lock;
-+	struct kref ref_count;
-+};
-+
-+static void mhi_uci_dev_chan_release(struct kref *ref)
-+{
-+	struct uci_buf *buf_itr, *tmp;
-+	struct uci_chan *uchan =
-+		container_of(ref, struct uci_chan, ref_count);
-+
-+	if (uchan->udev->enabled)
-+		mhi_unprepare_from_transfer(uchan->udev->mhi_dev);
-+
-+	spin_lock_bh(&uchan->dl_lock);
-+	list_for_each_entry_safe(buf_itr, tmp, &uchan->pending, node) {
-+		list_del(&buf_itr->node);
-+		kfree(buf_itr->data);
-+	}
-+
-+	if (uchan->cur_buf)
-+		kfree(uchan->cur_buf->data);
-+	spin_unlock_bh(&uchan->dl_lock);
-+
-+	uchan->cur_buf = NULL;
-+
-+	wake_up(&uchan->ul_wq);
-+	wake_up(&uchan->dl_wq);
-+
-+	mutex_destroy(&uchan->write_lock);
-+	mutex_destroy(&uchan->read_lock);
-+
-+	uchan->udev->uchan = NULL;
-+	kfree(uchan);
-+}
-+
-+static int mhi_queue_inbound(struct uci_dev *udev)
-+{
-+	struct mhi_device *mhi_dev = udev->mhi_dev;
-+	struct device *dev = &mhi_dev->dev;
-+	int nr_trbs, i, ret = -EIO;
-+	size_t dl_buf_size;
-+	void *buf;
-+	struct uci_buf *ubuf;
-+
-+	/* dont queue if dl channel is not supported */
-+	if (!udev->mhi_dev->dl_chan)
-+		return 0;
-+
-+	nr_trbs = mhi_get_free_desc_count(mhi_dev, DMA_FROM_DEVICE);
-+
-+	for (i = 0; i < nr_trbs; i++) {
-+		buf = kmalloc(udev->mtu, GFP_KERNEL);
-+		if (!buf)
-+			return -ENOMEM;
-+
-+		dl_buf_size = udev->mtu - sizeof(*ubuf);
-+
-+		/* save uci_buf info at the end of buf */
-+		ubuf = buf + dl_buf_size;
-+		ubuf->data = buf;
-+
-+		dev_dbg(dev, "Allocated buf %d of %d size %ld\n", i, nr_trbs,
-+			dl_buf_size);
-+
-+		ret = mhi_queue_buf(mhi_dev, DMA_FROM_DEVICE, buf, dl_buf_size,
-+				    MHI_EOT);
-+		if (ret) {
-+			kfree(buf);
-+			dev_err(dev, "Failed to queue buffer %d\n", i);
-+			return ret;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static int mhi_uci_dev_start_chan(struct uci_dev *udev)
-+{
-+	int ret = 0;
-+	struct uci_chan *uchan;
-+
-+	mutex_lock(&udev->lock);
-+	if (!udev->uchan || !kref_get_unless_zero(&udev->uchan->ref_count)) {
-+		uchan = kzalloc(sizeof(*uchan), GFP_KERNEL);
-+		if (!uchan) {
-+			ret = -ENOMEM;
-+			goto error_chan_start;
-+		}
-+
-+		udev->uchan = uchan;
-+		uchan->udev = udev;
-+		init_waitqueue_head(&uchan->ul_wq);
-+		init_waitqueue_head(&uchan->dl_wq);
-+		mutex_init(&uchan->write_lock);
-+		mutex_init(&uchan->read_lock);
-+		spin_lock_init(&uchan->dl_lock);
-+		INIT_LIST_HEAD(&uchan->pending);
-+
-+		ret = mhi_prepare_for_transfer(udev->mhi_dev);
-+		if (ret) {
-+			dev_err(&udev->mhi_dev->dev, "Error starting transfer channels\n");
-+			goto error_chan_cleanup;
-+		}
-+
-+		ret = mhi_queue_inbound(udev);
-+		if (ret)
-+			goto error_chan_cleanup;
-+
-+		kref_init(&uchan->ref_count);
-+	}
-+
-+	mutex_unlock(&udev->lock);
-+	return 0;
-+
-+error_chan_cleanup:
-+	mhi_uci_dev_chan_release(&uchan->ref_count);
-+error_chan_start:
-+	mutex_unlock(&udev->lock);
-+	return ret;
-+}
-+
-+static void mhi_uci_dev_release(struct kref *ref)
-+{
-+	struct uci_dev *udev =
-+		container_of(ref, struct uci_dev, ref_count);
-+
-+	mutex_destroy(&udev->lock);
-+
-+	kfree(udev);
-+}
-+
-+static int mhi_uci_open(struct inode *inode, struct file *filp)
-+{
-+	unsigned int minor = iminor(inode);
-+	struct uci_dev *udev = NULL;
-+	int ret;
-+
-+	mutex_lock(&uci_drv_mutex);
-+	udev = idr_find(&uci_idr, minor);
-+	if (!udev) {
-+		pr_debug("uci dev: minor %d not found\n", minor);
-+		mutex_unlock(&uci_drv_mutex);
-+		return -ENODEV;
-+	}
-+
-+	kref_get(&udev->ref_count);
-+	mutex_unlock(&uci_drv_mutex);
-+
-+	ret = mhi_uci_dev_start_chan(udev);
-+	if (ret) {
-+		kref_put(&udev->ref_count, mhi_uci_dev_release);
-+		return ret;
-+	}
-+
-+	filp->private_data = udev;
-+
-+	return 0;
-+}
-+
-+static int mhi_uci_release(struct inode *inode, struct file *file)
-+{
-+	struct uci_dev *udev = file->private_data;
-+
-+	mutex_lock(&udev->lock);
-+	kref_put(&udev->uchan->ref_count, mhi_uci_dev_chan_release);
-+	mutex_unlock(&udev->lock);
-+
-+	kref_put(&udev->ref_count, mhi_uci_dev_release);
-+
-+	return 0;
-+}
-+
-+static __poll_t mhi_uci_poll(struct file *file, poll_table *wait)
-+{
-+	struct uci_dev *udev = file->private_data;
-+	struct mhi_device *mhi_dev = udev->mhi_dev;
-+	struct device *dev = &mhi_dev->dev;
-+	struct uci_chan *uchan = udev->uchan;
-+	__poll_t mask = 0;
-+
-+	poll_wait(file, &udev->uchan->ul_wq, wait);
-+	poll_wait(file, &udev->uchan->dl_wq, wait);
-+
-+	if (!udev->enabled) {
-+		mask = EPOLLERR;
-+		goto done;
-+	}
-+
-+	spin_lock_bh(&uchan->dl_lock);
-+	if (!list_empty(&uchan->pending) || uchan->cur_buf) {
-+		dev_dbg(dev, "Client can read from node\n");
-+		mask |= EPOLLIN | EPOLLRDNORM;
-+	}
-+	spin_unlock_bh(&uchan->dl_lock);
-+
-+	if (mhi_get_free_desc_count(mhi_dev, DMA_TO_DEVICE) > 0) {
-+		dev_dbg(dev, "Client can write to node\n");
-+		mask |= EPOLLOUT | EPOLLWRNORM;
-+	}
-+
-+	dev_dbg(dev, "Client attempted to poll, returning mask 0x%x\n", mask);
-+
-+done:
-+	return mask;
-+}
-+
-+static ssize_t mhi_uci_write(struct file *file,
-+			     const char __user *buf,
-+			     size_t count,
-+			     loff_t *offp)
-+{
-+	struct uci_dev *udev = file->private_data;
-+	struct mhi_device *mhi_dev = udev->mhi_dev;
-+	struct device *dev = &mhi_dev->dev;
-+	struct uci_chan *uchan = udev->uchan;
-+	size_t bytes_xfered = 0;
-+	int ret, nr_avail = 0;
-+
-+	/* if ul channel is not supported return error */
-+	if (!buf || !count || !mhi_dev->ul_chan)
-+		return -EINVAL;
-+
-+	dev_dbg(dev, "%s: to xfer: %lu bytes\n", __func__, count);
-+
-+	mutex_lock(&uchan->write_lock);
-+	while (count) {
-+		size_t xfer_size;
-+		void *kbuf;
-+		enum mhi_flags flags;
-+
-+		/* wait for free descriptors */
-+		ret = wait_event_interruptible(uchan->ul_wq,
-+					       (!udev->enabled) ||
-+				(nr_avail = mhi_get_free_desc_count(mhi_dev,
-+					       DMA_TO_DEVICE)) > 0);
-+
-+		if (ret == -ERESTARTSYS) {
-+			dev_dbg(dev, "Interrupted by a signal in %s, exiting\n",
-+				__func__);
-+			goto err_mtx_unlock;
-+		}
-+
-+		if (!udev->enabled) {
-+			ret = -ENODEV;
-+			goto err_mtx_unlock;
-+		}
-+
-+		xfer_size = min_t(size_t, count, udev->mtu);
-+		kbuf = kmalloc(xfer_size, GFP_KERNEL);
-+		if (!kbuf) {
-+			ret = -ENOMEM;
-+			goto err_mtx_unlock;
-+		}
-+
-+		ret = copy_from_user(kbuf, buf, xfer_size);
-+		if (ret) {
-+			kfree(kbuf);
-+			ret = -EFAULT;
-+			goto err_mtx_unlock;
-+		}
-+
-+		/* if ring is full after this force EOT */
-+		if (nr_avail > 1 && (count - xfer_size))
-+			flags = MHI_CHAIN;
-+		else
-+			flags = MHI_EOT;
-+
-+		ret = mhi_queue_buf(mhi_dev, DMA_TO_DEVICE, kbuf, xfer_size,
-+				    flags);
-+		if (ret) {
-+			kfree(kbuf);
-+			goto err_mtx_unlock;
-+		}
-+
-+		bytes_xfered += xfer_size;
-+		count -= xfer_size;
-+		buf += xfer_size;
-+	}
-+
-+	mutex_unlock(&uchan->write_lock);
-+	dev_dbg(dev, "%s: bytes xferred: %lu\n", __func__, bytes_xfered);
-+
-+	return bytes_xfered;
-+
-+err_mtx_unlock:
-+	mutex_unlock(&uchan->write_lock);
-+
-+	return ret;
-+}
-+
-+static ssize_t mhi_uci_read(struct file *file,
-+			    char __user *buf,
-+			    size_t count,
-+			    loff_t *ppos)
-+{
-+	struct uci_dev *udev = file->private_data;
-+	struct mhi_device *mhi_dev = udev->mhi_dev;
-+	struct uci_chan *uchan = udev->uchan;
-+	struct device *dev = &mhi_dev->dev;
-+	struct uci_buf *ubuf;
-+	size_t rx_buf_size;
-+	char *ptr;
-+	size_t to_copy;
-+	int ret = 0;
-+
-+	/* if dl channel is not supported return error */
-+	if (!buf || !mhi_dev->dl_chan)
-+		return -EINVAL;
-+
-+	mutex_lock(&uchan->read_lock);
-+	spin_lock_bh(&uchan->dl_lock);
-+	/* No data available to read, wait */
-+	if (!uchan->cur_buf && list_empty(&uchan->pending)) {
-+		dev_dbg(dev, "No data available to read, waiting\n");
-+
-+		spin_unlock_bh(&uchan->dl_lock);
-+		ret = wait_event_interruptible(uchan->dl_wq,
-+					       (!udev->enabled ||
-+					      !list_empty(&uchan->pending)));
-+
-+		if (ret == -ERESTARTSYS) {
-+			dev_dbg(dev, "Interrupted by a signal in %s, exiting\n",
-+				__func__);
-+			goto err_mtx_unlock;
-+		}
-+
-+		if (!udev->enabled) {
-+			ret = -ENODEV;
-+			goto err_mtx_unlock;
-+		}
-+		spin_lock_bh(&uchan->dl_lock);
-+	}
-+
-+	/* new read, get the next descriptor from the list */
-+	if (!uchan->cur_buf) {
-+		ubuf = list_first_entry_or_null(&uchan->pending,
-+						struct uci_buf, node);
-+		if (!ubuf) {
-+			ret = -EIO;
-+			goto err_spin_unlock;
-+		}
-+
-+		list_del(&ubuf->node);
-+		uchan->cur_buf = ubuf;
-+		uchan->dl_size = ubuf->len;
-+		dev_dbg(dev, "Got pkt of size: %zu\n", uchan->dl_size);
-+	}
-+
-+	ubuf = uchan->cur_buf;
-+	spin_unlock_bh(&uchan->dl_lock);
-+
-+	/* Copy the buffer to user space */
-+	to_copy = min_t(size_t, count, uchan->dl_size);
-+	ptr = ubuf->data + (ubuf->len - uchan->dl_size);
-+
-+	ret = copy_to_user(buf, ptr, to_copy);
-+	if (ret) {
-+		ret = -EFAULT;
-+		goto err_mtx_unlock;
-+	}
-+
-+	dev_dbg(dev, "Copied %lu of %lu bytes\n", to_copy, uchan->dl_size);
-+	uchan->dl_size -= to_copy;
-+
-+	/* we finished with this buffer, queue it back to hardware */
-+	if (!uchan->dl_size) {
-+		spin_lock_bh(&uchan->dl_lock);
-+		uchan->cur_buf = NULL;
-+		spin_unlock_bh(&uchan->dl_lock);
-+
-+		rx_buf_size = udev->mtu - sizeof(*ubuf);
-+		ret = mhi_queue_buf(mhi_dev, DMA_FROM_DEVICE, ubuf->data,
-+				    rx_buf_size, MHI_EOT);
-+		if (ret) {
-+			dev_err(dev, "Failed to recycle element: %d\n", ret);
-+			kfree(ubuf->data);
-+			goto err_mtx_unlock;
-+		}
-+	}
-+	mutex_unlock(&uchan->read_lock);
-+
-+	dev_dbg(dev, "%s: Returning %lu bytes\n", __func__, to_copy);
-+
-+	return to_copy;
-+
-+err_spin_unlock:
-+	spin_unlock_bh(&uchan->dl_lock);
-+err_mtx_unlock:
-+	mutex_unlock(&uchan->read_lock);
-+	return ret;
-+}
-+
-+static const struct file_operations mhidev_fops = {
-+	.owner = THIS_MODULE,
-+	.open = mhi_uci_open,
-+	.release = mhi_uci_release,
-+	.read = mhi_uci_read,
-+	.write = mhi_uci_write,
-+	.poll = mhi_uci_poll,
-+};
-+
-+static void mhi_ul_xfer_cb(struct mhi_device *mhi_dev,
-+			   struct mhi_result *mhi_result)
-+{
-+	struct uci_dev *udev = dev_get_drvdata(&mhi_dev->dev);
-+	struct uci_chan *uchan = udev->uchan;
-+	struct device *dev = &mhi_dev->dev;
-+
-+	dev_dbg(dev, "status: %d xfer_len: %zu\n",
-+		mhi_result->transaction_status, mhi_result->bytes_xferd);
-+
-+	kfree(mhi_result->buf_addr);
-+
-+	if (!mhi_result->transaction_status)
-+		wake_up(&uchan->ul_wq);
-+}
-+
-+static void mhi_dl_xfer_cb(struct mhi_device *mhi_dev,
-+			   struct mhi_result *mhi_result)
-+{
-+	struct uci_dev *udev = dev_get_drvdata(&mhi_dev->dev);
-+	struct uci_chan *uchan = udev->uchan;
-+	struct device *dev = &mhi_dev->dev;
-+	struct uci_buf *ubuf;
-+	size_t dl_buf_size = udev->mtu - sizeof(*ubuf);
-+
-+	dev_dbg(dev, "status: %d receive_len: %zu\n",
-+		mhi_result->transaction_status, mhi_result->bytes_xferd);
-+
-+	if (mhi_result->transaction_status == -ENOTCONN) {
-+		kfree(mhi_result->buf_addr);
-+		return;
-+	}
-+
-+	ubuf = mhi_result->buf_addr + dl_buf_size;
-+	ubuf->data = mhi_result->buf_addr;
-+	ubuf->len = mhi_result->bytes_xferd;
-+	spin_lock_bh(&uchan->dl_lock);
-+	list_add_tail(&ubuf->node, &uchan->pending);
-+	spin_unlock_bh(&uchan->dl_lock);
-+
-+	wake_up(&uchan->dl_wq);
-+}
-+
-+static int mhi_uci_probe(struct mhi_device *mhi_dev,
-+			 const struct mhi_device_id *id)
-+{
-+	struct uci_dev *udev;
-+	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-+	struct device *dev;
-+	int index;
-+
-+	udev = kzalloc(sizeof(*udev), GFP_KERNEL);
-+	if (!udev)
-+		return -ENOMEM;
-+
-+	kref_init(&udev->ref_count);
-+	mutex_init(&udev->lock);
-+	udev->mhi_dev = mhi_dev;
-+
-+	mutex_lock(&uci_drv_mutex);
-+	index = idr_alloc(&uci_idr, udev, 0, MAX_UCI_MINORS, GFP_KERNEL);
-+	mutex_unlock(&uci_drv_mutex);
-+	if (index < 0) {
-+		kfree(udev);
-+		return index;
-+	}
-+
-+	udev->minor = index;
-+
-+	udev->mtu = min_t(size_t, id->driver_data, MHI_MAX_MTU);
-+	dev_set_drvdata(&mhi_dev->dev, udev);
-+	udev->enabled = true;
-+
-+	/* create device file node /dev/mhi_<cntrl_dev_name>_<mhi_dev_name> */
-+	dev = device_create(uci_dev_class, &mhi_dev->dev,
-+			    MKDEV(uci_dev_major, index), udev,
-+			    DEVICE_NAME "_%s_%s",
-+			    dev_name(mhi_cntrl->cntrl_dev), mhi_dev->name);
-+	if (IS_ERR(dev)) {
-+		mutex_lock(&uci_drv_mutex);
-+		idr_remove(&uci_idr, udev->minor);
-+		mutex_unlock(&uci_drv_mutex);
-+		dev_set_drvdata(&mhi_dev->dev, NULL);
-+		kfree(udev);
-+		return PTR_ERR(dev);
-+	}
-+
-+	dev_dbg(&mhi_dev->dev, "probed uci dev: minor %d\n", index);
-+
-+	return 0;
-+};
-+
-+static void mhi_uci_remove(struct mhi_device *mhi_dev)
-+{
-+	struct uci_dev *udev = dev_get_drvdata(&mhi_dev->dev);
-+
-+	/* disable the node */
-+	mutex_lock(&udev->lock);
-+	udev->enabled = false;
-+
-+	/* delete the node to prevent new opens */
-+	device_destroy(uci_dev_class, MKDEV(uci_dev_major, udev->minor));
-+
-+	/* return error for any blocked read or write */
-+	if (udev->uchan) {
-+		wake_up(&udev->uchan->ul_wq);
-+		wake_up(&udev->uchan->dl_wq);
-+	}
-+	mutex_unlock(&udev->lock);
-+
-+	mutex_lock(&uci_drv_mutex);
-+	idr_remove(&uci_idr, udev->minor);
-+	kref_put(&udev->ref_count, mhi_uci_dev_release);
-+	mutex_unlock(&uci_drv_mutex);
-+}
-+
-+/* .driver_data stores max mtu */
-+static const struct mhi_device_id mhi_uci_match_table[] = {
-+	{ .chan = "LOOPBACK", .driver_data = 0x1000},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(mhi, mhi_uci_match_table);
-+
-+static struct mhi_driver mhi_uci_driver = {
-+	.id_table = mhi_uci_match_table,
-+	.remove = mhi_uci_remove,
-+	.probe = mhi_uci_probe,
-+	.ul_xfer_cb = mhi_ul_xfer_cb,
-+	.dl_xfer_cb = mhi_dl_xfer_cb,
-+	.driver = {
-+		.name = MHI_UCI_DRIVER_NAME,
-+	},
-+};
-+
-+static int mhi_uci_init(void)
-+{
-+	int ret;
-+
-+	ret = register_chrdev(0, MHI_UCI_DRIVER_NAME, &mhidev_fops);
-+	if (ret < 0)
-+		return ret;
-+
-+	uci_dev_major = ret;
-+	uci_dev_class = class_create(THIS_MODULE, MHI_UCI_DRIVER_NAME);
-+	if (IS_ERR(uci_dev_class)) {
-+		unregister_chrdev(uci_dev_major, MHI_UCI_DRIVER_NAME);
-+		return PTR_ERR(uci_dev_class);
-+	}
-+
-+	ret = mhi_driver_register(&mhi_uci_driver);
-+	if (ret) {
-+		class_destroy(uci_dev_class);
-+		unregister_chrdev(uci_dev_major, MHI_UCI_DRIVER_NAME);
-+	}
-+
-+	return ret;
-+}
-+
-+static void __exit mhi_uci_exit(void)
-+{
-+	mhi_driver_unregister(&mhi_uci_driver);
-+	class_destroy(uci_dev_class);
-+	unregister_chrdev(uci_dev_major, MHI_UCI_DRIVER_NAME);
-+	idr_destroy(&uci_idr);
-+}
-+
-+module_init(mhi_uci_init);
-+module_exit(mhi_uci_exit);
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("MHI UCI Driver");
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index f1a4e61917eb..82497a71ac96 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -595,6 +595,7 @@ our @mode_permission_funcs = (
+ );
 
+ my $word_pattern = '\b[A-Z]?[a-z]{2,}\b';
++my $punctuation_chars = '[,:;@\.\-]';
+
+ #Create a search pattern for all these functions to speed up a loop below
+ our $mode_perms_search = "";
+@@ -3065,6 +3066,21 @@ sub process {
+  next if ($first ne $second);
+  next if ($first eq 'long');
+
++ # check for character before and after the word matches
++ my $ca_first = substr($rawline, $-[1]-1, 1);
++ my $cb_first = substr($rawline, $+[1], 1);
++ my $ca_second = substr($rawline, $-[2]-1, 1);
++ my $cb_second = substr($rawline, $+[2], 1);
++
++ if ($ca_first ne $ca_second || $cb_first ne $cb_second) {
++ if ($ca_first =~ /$punctuation_chars/ ||
++     $ca_second =~ /$punctuation_chars/ ||
++     $cb_first =~ /$punctuation_chars/ ||
++     $cb_second =~ /$punctuation_chars/) {
++ next;
++ }
++ }
++
+  if (WARN("REPEATED_WORD",
+  "Possible repeated word: '$first'\n" . $herecurr) &&
+      $fix) {
+
+Does it look okay to you??
+
+Thanks,
+Dwaipayan.
