@@ -2,146 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D872913BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 20:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82FA2913D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 21:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439106AbgJQSyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 14:54:13 -0400
-Received: from mailout08.rmx.de ([94.199.90.85]:58689 "EHLO mailout08.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439068AbgJQSyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 14:54:12 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout08.rmx.de (Postfix) with ESMTPS id 4CDBy83CvqzMstg;
-        Sat, 17 Oct 2020 20:54:08 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4CDBxs3nTgz2xDh;
-        Sat, 17 Oct 2020 20:53:53 +0200 (CEST)
-Received: from n95hx1g2.localnet (192.168.54.12) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Sat, 17 Oct
- 2020 20:53:20 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-CC:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 1/3] net: dsa: don't pass cloned skb's to drivers xmit function
-Date:   Sat, 17 Oct 2020 20:53:19 +0200
-Message-ID: <2130539.dlFve3NVyK@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <20201017004816.q4l6cypw4fd4vu5f@skbuf>
-References: <20201016200226.23994-1-ceggers@arri.de> <20201016200226.23994-2-ceggers@arri.de> <20201017004816.q4l6cypw4fd4vu5f@skbuf>
+        id S2439266AbgJQTAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 15:00:15 -0400
+Received: from smtprelay0208.hostedemail.com ([216.40.44.208]:36586 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2439239AbgJQTAN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 15:00:13 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 15895182CED2A;
+        Sat, 17 Oct 2020 19:00:10 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1535:1542:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2525:2553:2561:2564:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4470:4823:5007:6117:6742:6743:7576:7903:8660:8792:8957:9010:9025:9108:10004:10400:10450:10455:11232:11658:11914:12043:12050:12295:12296:12297:12438:12555:12663:12740:12760:12895:12986:13138:13148:13230:13231:13439:14096:14097:14181:14659:14721:19904:19999:21080:21324:21451:21627:21939:21990:30029:30034:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: jewel08_4005cbe27228
+X-Filterd-Recvd-Size: 5179
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 17 Oct 2020 19:00:02 +0000 (UTC)
+Message-ID: <503af4a57ca6daeb3e42a9be136dcd21e6d6e23d.camel@perches.com>
+Subject: Re: [Cocci] [RFC] treewide: cleanup unreachable breaks
+From:   Joe Perches <joe@perches.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     trix@redhat.com, linux-kernel@vger.kernel.org,
+        cocci <cocci@systeme.lip6.fr>, alsa-devel@alsa-project.org,
+        clang-built-linux@googlegroups.com, linux-iio@vger.kernel.org,
+        nouveau@lists.freedesktop.org, storagedev@microchip.com,
+        dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
+        ath10k@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        usb-storage@lists.one-eyed-alien.net,
+        linux-watchdog@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvdimm@lists.01.org, amd-gfx@lists.freedesktop.org,
+        linux-acpi@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        industrypack-devel@lists.sourceforge.net,
+        linux-pci@vger.kernel.org, spice-devel@lists.freedesktop.org,
+        MPT-FusionLinux.pdl@broadcom.com, linux-media@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-nfc@lists.01.org,
+        linux-pm@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-gpio@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-amlogic@lists.infradead.org,
+        openipmi-developer@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-crypto@vger.kernel.org, patches@opensource.cirrus.com,
+        bpf@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-power@fi.rohmeurope.com
+Date:   Sat, 17 Oct 2020 12:00:01 -0700
+In-Reply-To: <alpine.DEB.2.22.394.2010172016370.9440@hadrien>
+References: <20201017160928.12698-1-trix@redhat.com>
+         <f530b7aeecbbf9654b4540cfa20023a4c2a11889.camel@perches.com>
+         <alpine.DEB.2.22.394.2010172016370.9440@hadrien>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.12]
-X-RMX-ID: 20201017-205359-4CDBxs3nTgz2xDh-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
-
-On Saturday, 17 October 2020, 02:48:16 CEST, Vladimir Oltean wrote:
-> On Fri, Oct 16, 2020 at 10:02:24PM +0200, Christian Eggers wrote:
-> > Ensure that the skb is not cloned and has enough tail room for the tail
-> > tag. This code will be removed from the drivers in the next commits.
+On Sat, 2020-10-17 at 20:21 +0200, Julia Lawall wrote:
+> On Sat, 17 Oct 2020, Joe Perches wrote:
+> > On Sat, 2020-10-17 at 09:09 -0700, trix@redhat.com wrote:
+> > > From: Tom Rix <trix@redhat.com>
+> > > 
+> > > This is a upcoming change to clean up a new warning treewide.
+> > > I am wondering if the change could be one mega patch (see below) or
+> > > normal patch per file about 100 patches or somewhere half way by collecting
+> > > early acks.
+> > > 
+> > > clang has a number of useful, new warnings see
+> > > https://clang.llvm.org/docs/DiagnosticsReference.html
+> > > 
+> > > This change cleans up -Wunreachable-code-break
+> > > https://clang.llvm.org/docs/DiagnosticsReference.html#wunreachable-code-break
+> > > for 266 of 485 warnings in this week's linux-next, allyesconfig on x86_64.
 > > 
-> > Signed-off-by: Christian Eggers <ceggers@arri.de>
-> > ---
+> > Early acks/individual patches by subsystem would be good.
+> > Better still would be an automated cocci script.
 > 
-> Does 1588 work for you using this change, or you haven't finished
-> implementing it yet? If you haven't, I would suggest finishing that
-> part first.
-Yes it does. Just after finishing this topic, I would to sent the patches for
-PTP. Maybe I'll do it in parallel, anything but the combination of L2/E2E/SLOB
-seems to work.
-
-> The post-reallocation skb looks nothing like the one before.
+> Coccinelle is not especially good at this, because it is based on control
+> flow, and a return or goto diverts the control flow away from the break.
+> A hack to solve the problem is to put an if around the return or goto, but
+> that gives the break a meaningless file name and line number.  I collected
+> the following list, but it only has 439 results, so fewer than clang.  But
+> maybe there are some files that are not considered by clang in the x86
+> allyesconfig configuration.
 > 
-> Before:
-> skb len=68 headroom=2 headlen=68 tailroom=186
-> mac=(2,14) net=(16,-1) trans=-1
-> shinfo(txflags=1 nr_frags=0 gso(size=0 type=0 segs=0))
-> csum(0x0 ip_summed=0 complete_sw=0 valid=0 level=0)
-> hash(0x9d6927ec sw=1 l4=0) proto=0x88f7 pkttype=0 iif=0
-> dev name=swp2 feat=0x0x0002000000005020
-> sk family=17 type=3 proto=0
-> 
-> After:
-> skb len=68 headroom=2 headlen=68 tailroom=186
-> mac=(2,16) net=(18,-17) trans=1
-> shinfo(txflags=0 nr_frags=0 gso(size=0 type=0 segs=0))
-> csum(0x0 ip_summed=0 complete_sw=0 valid=0 level=0)
-> hash(0x0 sw=0 l4=0) proto=0x0000 pkttype=0 iif=0
-> 
-> Notice how you've changed shinfo(txflags), among other things.
+> Probably checkpatch is the best solution here, since it is not
+> configuration sensitive and doesn't care about control flow.
 
-I get a similar output when placing the two skb_dump() calls in the current
-ksz_common_xmit() code:
+Likely the clang compiler is the best option here.
 
-[ 5052.662168] old:skb len=58 headroom=2 headlen=58 tailroom=68
-[ 5052.662168] mac=(2,14) net=(16,-1) trans=-1
-[ 5052.662168] shinfo(txflags=1 nr_frags=0 gso(size=0 type=0 segs=0))
-[ 5052.662168] csum(0x0 ip_summed=0 complete_sw=0 valid=0 level=0)
-[ 5052.662168] hash(0x0 sw=0 l4=0) proto=0x88f7 pkttype=0 iif=0
-[ 5052.676360] old:dev name=lan0 feat=0x0x0002000000005220
-[ 5052.679001] old:sk family=17 type=3 proto=0
-[ 5052.681140] old:skb linear:   00000000: 01 1b 19 00 00 00 52 d9 a9 5d a1 40 88 f7 01 02
-[ 5052.685236] old:skb linear:   00000010: 00 2c 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[ 5052.689342] old:skb linear:   00000020: 00 00 52 d9 a9 ff fe 5d a1 40 00 01 00 00 01 7f
-[ 5052.693418] old:skb linear:   00000030: 00 00 00 00 00 00 00 00 00 00
-[ 5052.696843] new:skb len=65 headroom=2 headlen=65 tailroom=61
-[ 5052.696843] mac=(2,16) net=(18,-17) trans=1
-[ 5052.696843] shinfo(txflags=0 nr_frags=0 gso(size=0 type=0 segs=0))
-[ 5052.696843] csum(0x0 ip_summed=0 complete_sw=0 valid=0 level=0)
-[ 5052.696843] hash(0x0 sw=0 l4=0) proto=0x0000 pkttype=0 iif=0
-[ 5052.711215] new:skb linear:   00000000: 01 1b 19 00 00 00 52 d9 a9 5d a1 40 88 f7 01 02
-[ 5052.715305] new:skb linear:   00000010: 00 2c 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[ 5052.719407] new:skb linear:   00000020: 00 00 52 d9 a9 ff fe 5d a1 40 00 01 00 00 01 7f
-[ 5052.723484] new:skb linear:   00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[ 5052.727587] new:skb linear:   00000040: 00
+It might be useful to add -Wunreachable-code-break to W=1
+or just always enable it if it isn't already enabled.
 
+diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+index 95e4cdb94fe9..3819787579d5 100644
+--- a/scripts/Makefile.extrawarn
++++ b/scripts/Makefile.extrawarn
+@@ -32,6 +32,7 @@ KBUILD_CFLAGS += $(call cc-option, -Wunused-but-set-variable)
+ KBUILD_CFLAGS += $(call cc-option, -Wunused-const-variable)
+ KBUILD_CFLAGS += $(call cc-option, -Wpacked-not-aligned)
+ KBUILD_CFLAGS += $(call cc-option, -Wstringop-truncation)
++KBUILD_CFLAGS += $(call cc-option, -Wunreachable-code-break)
+ # The following turn off the warnings enabled by -Wextra
+ KBUILD_CFLAGS += -Wno-missing-field-initializers
+ KBUILD_CFLAGS += -Wno-sign-compare
 
-Note that whilst some skb members differ, the two hexdumps look correct.
+(and thank you Tom for pushing this forward)
 
-> Which proves that you can't just copy&paste whatever you found in
-> tag_trailer.c.
-I did. tag_trailer and tag_ksz are quite similar here, so I took a combination of them.
+checkpatch can't find instances like:
 
-> I am not yet sure whether there is any helper that can be used instead
-> of this crazy open-coding. Right now, not having tested anything yet, my
-> candidates of choice would be pskb_expand_head or __pskb_pull_tail. You
-> should probably also try to cater here for the potential reallocation
-> done in the skb_cow_head() of non-tail taggers. Which would lean the
-> balance towards pskb_expand_head(), I believe.
-The "open coding" is from the existing code (which doesn't say that it is
-correct). I will investigate why the copied skb is different and whether 
-psk_expand_head can do better.
+	case FOO:
+		if (foo)
+			return 1;
+		else
+			return 2;
+		break;
 
-I don't like to touch the non-tail taggers, this is too much out of the scope
-of my current work.
+As it doesn't track flow and relies on the number
+of tabs to be the same for any goto/return and break;
 
-> Also, if the result is going to be longer than ~20 lines of code, I
-> strongly suggest moving the reallocation to a separate function so you
-> don't clutter dsa_slave_xmit.
-As Florian requested I'll likely put the code into a separate function in
-slave.c and call it from the individual tail-taggers in order not to put 
-extra conditionals in dsa_slave_xmit.
+checkpatch will warn on:
 
-regards
-Christian
-
+	case FOO:
+		...
+		goto bar;
+		break;
 
 
