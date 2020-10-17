@@ -2,87 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8050C29143B
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 22:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4298429143D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 22:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439681AbgJQUDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 16:03:55 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51326 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439665AbgJQUDz (ORCPT
+        id S2439697AbgJQULE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 16:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439688AbgJQULE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 16:03:55 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602965033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fD8To0G31Wnjv4CSMouQW042TTW/VTVEOWWDfMh5qQE=;
-        b=MMY/7PwSl8pTU+QjRZoRdBJnqBHwz3WNOQs0ZqfB9wtPAyxcZphka1I8Ox3P5w0HQEfHwc
-        SB1bT3KSbn97AzStxmqRWvD7Jd1jINNp6UzvOCJeJVGYRRL3eexJl/Vemp+B9FDCZ0+3Fq
-        ss12hKC4M9SCODCom0ozeSDBsVLSh1PAsl1aXNQdx7EndPJwIV1/mfzl+oW7mFRzHpBKYf
-        ZzNn7oai9typ1Hao6RIxtPLiPSbCytsNDkTgasYyf+PB/qvtmFUugyLPS669321TQUPE/x
-        jnKNK2t5jeFrlr50fDhlJipvwCarc80vKcxm/4D6B5Vi8z6egogWTImuKBe0yg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602965033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fD8To0G31Wnjv4CSMouQW042TTW/VTVEOWWDfMh5qQE=;
-        b=PSyszyaXkHnx+TsPjL80dPcUU/8lGfYRE5vJu8CKE5x06QLwbhdfM79YhpSyaQN11p4USa
-        FOppEQaJ2xqSucCA==
-To:     Alex Belits <abelits@marvell.com>,
-        "nitesh\@redhat.com" <nitesh@redhat.com>,
-        "frederic\@kernel.org" <frederic@kernel.org>
-Cc:     "mingo\@kernel.org" <mingo@kernel.org>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "linux-arch\@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "catalin.marinas\@arm.com" <catalin.marinas@arm.com>,
-        "will\@kernel.org" <will@kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Prasun Kapoor <pkapoor@marvell.com>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [EXT] Re: [PATCH v4 03/13] task_isolation: userspace hard isolation from kernel
-In-Reply-To: <e9c5513d0d8dcd8b2db07a932e9f45640be6b0ea.camel@marvell.com>
-References: <04be044c1bcd76b7438b7563edc35383417f12c8.camel@marvell.com> <b18546567a2ed61073ae86f2d9945257ab285dfa.camel@marvell.com> <20201001135640.GA1748@lothringen> <7e54b3c5e0d4c91eb64f2dd1583dd687bc34757e.camel@marvell.com> <20201004231404.GA66364@lothringen> <d0289bb9-cc10-9e64-f8ac-b4d252b424b8@redhat.com> <91b8301b0888bf9e5ff7711c3b49d21beddf569a.camel@marvell.com> <87r1pwj0nh.fsf@nanos.tec.linutronix.de> <e9c5513d0d8dcd8b2db07a932e9f45640be6b0ea.camel@marvell.com>
-Date:   Sat, 17 Oct 2020 22:03:52 +0200
-Message-ID: <87mu0kipqv.fsf@nanos.tec.linutronix.de>
+        Sat, 17 Oct 2020 16:11:04 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4E6C061755;
+        Sat, 17 Oct 2020 13:11:04 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id q9so8250878iow.6;
+        Sat, 17 Oct 2020 13:11:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PD5epUb/EZWtl+iEKstEUTgpv3g/Q5MUxAonVyQITN4=;
+        b=TBHfeIb/+RA8PlzGusuS5N+TtLo1A6If92F/tA6aQmMFf5BskXxxNqV5Ju0xRPRR6w
+         qoThI8TbAToZgUA33wOTRyVKoGdzLrsribkySiPBZUA6DsHGULjxlRNqK1mTq+lFAFQz
+         /fu4DHa6EEyZoltGqbyFicMeHe9lPjr7FvL4mbEM9uDZurByZBDhQ2EnMiag7KmPRWD4
+         QdPOsZmJKFgCJtq8DYEHhBd/tOVHVFKnyVb/5Q6ix3watIUYb7lKhMmNCe+ofLcTYbeu
+         OBcAi4beIvGLqV6ruWFfRmY7N3DI0j7Nn8uf/eFVk5JKqQ6Me0Gn4HL6ohNH/Xdp1cgF
+         vWlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PD5epUb/EZWtl+iEKstEUTgpv3g/Q5MUxAonVyQITN4=;
+        b=gvJkmCPRZXwO4TcabztHDFM9QOiG07ptVuSYAuBmQUxATfwIoKqwSUqib19S4g9Oxk
+         WOJe8CfapDl1HlkYhvC98/I0dWwfkpNzT69QBGCPHKvsZ7VIwLH5jhBBm4qaWlY3m3N9
+         681bhyQqQkOf5vG7Pet7h4JTgDU28/0JDmfg93UZEUOBIa0MMk+Ho1ogiZcUbItwsavx
+         wvUSigx955xkZoxOJ1NS/INxsdYpMj26J10jrQv+Lh6bukaEEZ+woM5SUGeRM8TTZtnM
+         DfVIt4RDGWcUXsMdMC+qoEcJ4PF1CgpHClUFPYZNHLMdjj92jeJKETfAuUWYDsDvqJjh
+         disQ==
+X-Gm-Message-State: AOAM533q/Whpo3Y9nCPwCww5P+BZje9snhRfp67s4vjVCS8r5eILLTx/
+        E3qZ3X6HFa4+THVKRY5oynBorIwnFA==
+X-Google-Smtp-Source: ABdhPJyBa1CV3I9/TT+8bGPPR13VvvQT+GbeALryn9+U5nIPgMHNz+Uo/1QuA13o3ySkvSShvaydGQ==
+X-Received: by 2002:a6b:4e0b:: with SMTP id c11mr6345201iob.68.1602965463098;
+        Sat, 17 Oct 2020 13:11:03 -0700 (PDT)
+Received: from zaphod.evilpiepirate.org ([2601:19b:c500:a1:d1eb:cfce:9b0b:f9e0])
+        by smtp.gmail.com with ESMTPSA id e204sm5583483iof.16.2020.10.17.13.11.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Oct 2020 13:11:02 -0700 (PDT)
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        akpm@linux-foundation.org
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>, willy@infradead.org
+Subject: [PATCH 0/2] generic_file_buffered_read() refactoring, perf improvements
+Date:   Sat, 17 Oct 2020 16:10:53 -0400
+Message-Id: <20201017201055.2216969-1-kent.overstreet@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17 2020 at 16:15, Alex Belits wrote:
-> On Sat, 2020-10-17 at 18:08 +0200, Thomas Gleixner wrote:
->> On Sat, Oct 17 2020 at 01:08, Alex Belits wrote:
->> > I think that the goal of "finding source of disturbance" interface
->> > is
->> > different from what can be accomplished by tracing in two ways:
->> > 
->> > 1. "Source of disturbance" should provide some useful information
->> > about
->> > category of event and it cause as opposed to determining all
->> > precise
->> > details about things being called that resulted or could result in
->> > disturbance. It should not depend on the user's knowledge about
->> > details
->> 
->> Tracepoints already give you selectively useful information.
->
-> Carefully placed tracepoints also can give the user information about
-> failures of open(), write(), execve() or mmap(). However syscalls still
-> provide an error code instead of returning generic failure and letting
-> user debug the cause.
+Rebased this patchset onto 5.9, I'd like to finally get this because
+generic_file_buffered_read() has turned into a real monstrosity to work with.
+And it's a major performance improvement, for both small random and large
+sequential reads. On my test box, 4k buffered random reads go from ~150k to
+~250k iops, and the improvements to big sequential reads are even bigger.
 
-I have absolutely no idea what you are trying to tell me.
+This incorporates the fix for IOCB_WAITQ handling that Jens just posted as well,
+also factors out lock_page_for_iocb() to improve handling of the various iocb
+flags.
 
-Thanks,
+Kent Overstreet (2):
+  fs: Break generic_file_buffered_read up into multiple functions
+  fs: generic_file_buffered_read() now uses find_get_pages_contig
 
-        tglx
+ mm/filemap.c | 563 ++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 328 insertions(+), 235 deletions(-)
+
+-- 
+2.28.0
+
