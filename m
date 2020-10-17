@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF5D2912C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 17:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03172912C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 17:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437535AbgJQPxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 11:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411860AbgJQPxJ (ORCPT
+        id S2437591AbgJQPyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 11:54:38 -0400
+Received: from smtprelay0198.hostedemail.com ([216.40.44.198]:33272 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2436623AbgJQPyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 11:53:09 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA7AC061755;
-        Sat, 17 Oct 2020 08:53:08 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id dn5so5789595edb.10;
-        Sat, 17 Oct 2020 08:53:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=amQ8vE2LZX99CSwDilFQzQGa2tS1RKAkSyt0DblJjS0=;
-        b=nFh7YdVPyOxKq3XLhVvFb1RnshslJoRjTDc88GUgak545GOgEoF0VcY/BDU8i3nJWw
-         djnT2wjUheeZ1dJgrX2eNGrVuYtpJmKJ0zx4aZVnCCAwKkZhCjyhi+Jw57u+NmLOFFiz
-         v/v+dztf5LAakbuBn7Pt+gkhgDxiTDW5GcFKNqOVmG/8IwDaUi19g59yzEmNm4PrP6NH
-         AVHg0RjdGPuPyda5pDEAYX+948wj0Vs1dbHGQDS7d/wLsAmd5kB2z+bVjTg9MijhdcZl
-         rT5c9p5uaxHiwgsRIhqjKUbPpnMfFxFT0h58MHxx7merc2esz2JeZ7n++P0Ws5dDtab2
-         D0qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=amQ8vE2LZX99CSwDilFQzQGa2tS1RKAkSyt0DblJjS0=;
-        b=IOQNNURklu7gpbHmcI1SqOJtNRs7+k2NrqM69OqDsLXRRCd7v7xbMk9C/URHOt7usn
-         1UtDopoJW7bwtZMxQSoCMDCe8drucpCCduVtFvEqT+SjKvNXLBZDYXjudMzZK3F956lT
-         tjNN8T5kB0lTDi3k9s0oR1Pq7SnIrG1TG1oVebVbRWIK2OJmrvxDq5ShhxyA+/+yeuOR
-         VzVCP0uHtndcgwtvdoc44mVD37NzMox6AlPE0CmTnano5WpNISta/qAdITayY/WcJNqS
-         3aUpmMsDgtWN301W9B3SfHQ8CkJ+LZo62RJV86051CaeTWVKvz1yrtqOFbFoUTZ7n3KF
-         iB7g==
-X-Gm-Message-State: AOAM532GsJSwniO+HjoZ4RCtZKV/K8Jej9YajjY2fEjhEh4k0eJ793Mp
-        3sLW3KyJm0EjWy2KKUVTzxQRemyxE9E=
-X-Google-Smtp-Source: ABdhPJyvS+u5v2bU9b+uQiiefByN2yRUZNSMb2/zWLBf8SkbS1CBwSv6tegLjUcgCBtYonEAwQxa7Q==
-X-Received: by 2002:aa7:dc50:: with SMTP id g16mr9674813edu.95.1602949987054;
-        Sat, 17 Oct 2020 08:53:07 -0700 (PDT)
-Received: from [192.168.0.48] (HSI-KBW-046-005-005-004.hsi8.kabel-badenwuerttemberg.de. [46.5.5.4])
-        by smtp.gmail.com with ESMTPSA id x2sm5434615edr.65.2020.10.17.08.53.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 17 Oct 2020 08:53:06 -0700 (PDT)
-Subject: Re: [ANNOUNCE] Reiser5: Selective File Migration - User Interface
-To:     Pavel Machek <pavel@ucw.cz>,
-        Metztli Information Technology <jose.r.r@metztli.com>
-Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200826205216.07BC868EF679@huitzilopochtli.metztli-it.com>
- <20201004095922.GC1104@bug>
-From:   Edward Shishkin <edward.shishkin@gmail.com>
-Message-ID: <fe9dafa8-0fef-7046-fea7-f2344adc2ee1@gmail.com>
-Date:   Sat, 17 Oct 2020 17:53:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+        Sat, 17 Oct 2020 11:54:37 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 47FCB18224504;
+        Sat, 17 Oct 2020 15:54:36 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2553:2559:2562:2691:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:4321:5007:7903:8603:9010:10004:10400:10848:11026:11232:11658:11914:12043:12297:12679:12740:12760:12895:13095:13439:14093:14097:14181:14659:14721:21080:21221:21433:21451:21627:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: nest32_481265327227
+X-Filterd-Recvd-Size: 3377
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 17 Oct 2020 15:54:35 +0000 (UTC)
+Message-ID: <d2254db39f798b408bdd16237c86dea1617bcfac.camel@perches.com>
+Subject: Re: [PATCH v4] checkpatch: add new exception to repeated word check
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Sat, 17 Oct 2020 08:54:34 -0700
+In-Reply-To: <20201017075131.47566-1-dwaipayanray1@gmail.com>
+References: <20201017075131.47566-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20201004095922.GC1104@bug>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 2020-10-17 at 13:21 +0530, Dwaipayan Ray wrote:
+> Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
+> moved the repeated word test to check for more file types. But after
+> this, if checkpatch.pl is run on MAINTAINERS, it generates several
+> new warnings of the type:
+> 
+> WARNING: Possible repeated word: 'git'
+> 
+> For example:
+> WARNING: Possible repeated word: 'git'
+> +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git
+> 
+> So, the pattern "git git://..." is a false positive in this case.
+> 
+> There are several other combinations which may produce a wrong
+> warning message, such as "@size size", ":Begin begin", etc.
+> 
+> Extend repeated word check to compare the characters before and
+> after the word matches. If the preceding or succeeding character
+> belongs to the exception list, the warning is avoided.
 
-On 10/04/2020 11:59 AM, Pavel Machek wrote:
-> Hi!
-> 
->>> In particular, using this functionality, user is able to push out
->>> "hot" files on any high-performance device (e.g. proxy device) and pin
->>> them there.
-> 
-> What permissions are normally required for file migration?
+Not true.
 
-Hi Pavel,
-I guess, admin ones.
-With such operation it is possible to organize an attack on a
-collectively shared volume by clogging some its brick. So that other
-users, who rely on regular distribution (provided by per-volume
-distribution table) will get "no space left on device", while other
-bricks contain a lot of free space..
+This excludes any non-space character before the first word
+and excludes space or punctuation after the second word.
 
-> 
->>> COMMENT. After ioctl successful completion the file is not necessarily
->>> written to the target device! To make sure of it, call fsync(2) after
->>> successful ioctl completion, or open the file with O_SYNC flag before
->>> migration.
-> 
-> Ok.
-> 
->>> COMMENT. File migration is a volume operation (like adding, removing a device to/from
->>> a logical volumes), and all volume operations are serialized. So, any attempt to
->>> migrate a file, while performing other operation on that volume will fail. If some
->>> file migration procedure fails (with EBUSY, or other errors), or was interrupted by
->>> user, then it should be repeated in the current mount session. File migration
->>> procedures interrupted by system crash, hared reset, etc) should be repeated in the
->>> next mount sessions.
-> 
-> Dunno. Returning -EBUSY is kind of "interesting" there. I'd expect kernel to queue
-> the callers, because userland can't really do that easily.
-> 
+This also adds case insensitive word matching.
 
-You are right. The current solution is temporary. Actually, we don't
-need to lock the whole volume in order to migrate a file (anyway, the
-file migration procedure takes an exclusive access to the file).
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -3052,19 +3052,30 @@ sub process {
+>  
+>  # check for repeated words separated by a single space
+>  		if ($rawline =~ /^\+/ || $in_commit_log) {
+> +			pos($rawline) = 1 if (!$in_commit_log);
+>  			while ($rawline =~ /\b($word_pattern) (?=($word_pattern))/g) {
+>  
+>  				my $first = $1;
+>  				my $second = $2;
+> -
+> +				my $start_pos = $-[1];
+> +				my $end_pos = $+[2];
+>  				if ($first =~ /(?:struct|union|enum)/) {
+>  					pos($rawline) += length($first) + length($second) + 1;
+>  					next;
+>  				}
+>  
+> -				next if ($first ne $second);
+> +				next if (lc($first) ne lc($second));
 
-User-defined migration of individual files should be serialized with
-brick removal. So it will be even per-brick lock rather than per-volume
-lock.. I think, that it should be a rw-semaphore. Brick removal
-procedure will take a write lock (with possible waiting) and
-user-defined migration will try to take a read lock. If busy, then
-return error (brick is under removal == doesn't exist for user).
+case-insensitive matching
 
-Thanks,
-Edward.
+>  				next if ($first eq 'long');
+>  
+> +				# check for character before and after the word matches
+> +				my $start_char = '';
+> +				my $end_char = '';
+> +				$start_char = substr($rawline, $start_pos - 1, 1) if ($start_pos > ($in_commit_log? 0 : 1));
+> +				$end_char = substr($rawline, $end_pos, 1) if ($end_pos < length($rawline));
+> +
+> +				next if ($start_char =~ /^\S$/);
+
+non-space
+
+> +				next if ($end_char !~ /^[\.\,\;\?\!\s]?$/);
+
+space or punctuation.
+
+trivia:
+
+I believe using index would be ~50% faster than !~ here
+Perhaps more readable too.
+
+				next if (index(" \t.,;?!", $end_char) >= 0);
+
+> +
+>  				if (WARN("REPEATED_WORD",
+>  					 "Possible repeated word: '$first'\n" . $herecurr) &&
+>  				    $fix) {
+
