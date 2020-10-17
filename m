@@ -2,80 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFDB290F6D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FCA290F69
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411851AbgJQFhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 01:37:45 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:43838 "EHLO 1wt.eu"
+        id S2436490AbgJQFhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:37:35 -0400
+Received: from mga03.intel.com ([134.134.136.65]:54619 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410829AbgJQFho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 01:37:44 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 09H5bCCa014109;
-        Sat, 17 Oct 2020 07:37:12 +0200
-Date:   Sat, 17 Oct 2020 07:37:12 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Jann Horn <jannh@google.com>
-Cc:     Colm MacCarthaigh <colmmacc@amazon.com>,
-        "Catangiu, Adrian Costin" <acatan@amazon.com>,
+        id S2411565AbgJQFhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 01:37:35 -0400
+IronPort-SDR: d+auaUoau+kMHS4utnqPjz5oDbG6bGQh5OZbCpOsUol+jk14KPSllLMAZPuJUuChmYgqzV7stV
+ EPPeHvKaAGog==
+X-IronPort-AV: E=McAfee;i="6000,8403,9776"; a="166820635"
+X-IronPort-AV: E=Sophos;i="5.77,385,1596524400"; 
+   d="scan'208";a="166820635"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 22:37:34 -0700
+IronPort-SDR: Ty1fM6Vbx2+YqgAFSfiZo7vOUTz9OdV+8hAXKYG3AIQEYKvwVWfnceXqF2oJSEM79KD2hC0opy
+ pucoh92Qu6uQ==
+X-IronPort-AV: E=Sophos;i="5.77,385,1596524400"; 
+   d="scan'208";a="531984870"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 22:37:33 -0700
+Date:   Fri, 16 Oct 2020 22:37:33 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Andy Lutomirski <luto@kernel.org>,
-        Jason Donenfeld <Jason@zx2c4.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:VIRTIO GPU DRIVER" 
-        <virtualization@lists.linux-foundation.org>,
-        "Graf (AWS), Alexander" <graf@amazon.de>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>, bonzini@gnu.org,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>, oridgar@gmail.com,
-        ghammer@redhat.com, Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Qemu Developers <qemu-devel@nongnu.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
-Message-ID: <20201017053712.GA14105@1wt.eu>
-References: <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
- <CAG48ez0EanBvDyfthe+hAP0OC8iGLNSq2e5wJVz-=ENNGF97_w@mail.gmail.com>
- <20201017033606.GA14014@1wt.eu>
- <CAG48ez0x2S9XuCrANAQbXNi8Jjwm822-fnQSmr-Zr07JgrEs1g@mail.gmail.com>
- <6CC3DB03-27BA-4F5E-8ADA-BE605D83A85C@amazon.com>
- <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V3 4/9] x86/pks: Preserve the PKRS MSR on context
+ switch
+Message-ID: <20201017053733.GA3702775@iweiny-DESK2.sc.intel.com>
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-5-ira.weiny@intel.com>
+ <20201016110636.GL2611@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+In-Reply-To: <20201016110636.GL2611@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 07:01:31AM +0200, Jann Horn wrote:
-> Microsoft's documentation
-> (http://go.microsoft.com/fwlink/?LinkId=260709) says that the VM
-> Generation ID that we get after a fork "is a 128-bit,
-> cryptographically random integer value". If multiple people use the
-> same image, it guarantees that each use of the image gets its own,
-> fresh ID:
+On Fri, Oct 16, 2020 at 01:06:36PM +0200, Peter Zijlstra wrote:
+> On Fri, Oct 09, 2020 at 12:42:53PM -0700, ira.weiny@intel.com wrote:
+> 
+> > @@ -644,6 +663,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
+> >  
+> >  	if ((tifp ^ tifn) & _TIF_SLD)
+> >  		switch_to_sld(tifn);
+> > +
+> > +	pks_sched_in();
+> >  }
+> >  
+> 
+> You seem to have lost the comment proposed here:
+> 
+>   https://lkml.kernel.org/r/20200717083140.GW10769@hirez.programming.kicks-ass.net
+> 
+> It is useful and important information that the wrmsr normally doesn't
+> happen.
 
-No. It cannot be more unique than the source that feeds that cryptographic
-transformation. All it guarantees is that the entropy source is protected
-from being guessed based on the output. Applying cryptography on a simple
-counter provides apparently random numbers that will be unique for a long
-period for the same source, but as soon as you duplicate that code between
-users and they start from the same counter they'll get the same IDs.
+Added back in here.
 
-This is why I think that using a counter is better if you really need something
-unique. Randoms only reduce predictability which helps avoiding collisions.
-And I'm saying this as someone who had on his external gateway the same SSH
-host key as 89 other hosts on the net, each of them using randoms to provide
-a universally unique one...
+> 
+> > diff --git a/arch/x86/mm/pkeys.c b/arch/x86/mm/pkeys.c
+> > index 3cf8f775f36d..30f65dd3d0c5 100644
+> > --- a/arch/x86/mm/pkeys.c
+> > +++ b/arch/x86/mm/pkeys.c
+> > @@ -229,3 +229,31 @@ u32 update_pkey_val(u32 pk_reg, int pkey, unsigned int flags)
+> >  
+> >  	return pk_reg;
+> >  }
+> > +
+> > +DEFINE_PER_CPU(u32, pkrs_cache);
+> > +
+> > +/**
+> > + * It should also be noted that the underlying WRMSR(MSR_IA32_PKRS) is not
+> > + * serializing but still maintains ordering properties similar to WRPKRU.
+> > + * The current SDM section on PKRS needs updating but should be the same as
+> > + * that of WRPKRU.  So to quote from the WRPKRU text:
+> > + *
+> > + * 	WRPKRU will never execute transiently. Memory accesses
+> > + * 	affected by PKRU register will not execute (even transiently)
+> > + * 	until all prior executions of WRPKRU have completed execution
+> > + * 	and updated the PKRU register.
+> 
+> (whitespace damage; space followed by tabstop)
 
-Willy
+Fixed thanks.
+
+> 
+> > + */
+> > +void write_pkrs(u32 new_pkrs)
+> > +{
+> > +	u32 *pkrs;
+> > +
+> > +	if (!static_cpu_has(X86_FEATURE_PKS))
+> > +		return;
+> > +
+> > +	pkrs = get_cpu_ptr(&pkrs_cache);
+> > +	if (*pkrs != new_pkrs) {
+> > +		*pkrs = new_pkrs;
+> > +		wrmsrl(MSR_IA32_PKRS, new_pkrs);
+> > +	}
+> > +	put_cpu_ptr(pkrs);
+> > +}
+> 
+> looks familiar that... :-)
+
+Added you as a co-developer if that is ok?
+
+Ira
