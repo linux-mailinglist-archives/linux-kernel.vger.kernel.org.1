@@ -2,159 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D3F290F28
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C29A290F37
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411670AbgJQF3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 01:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52242 "EHLO
+        id S2411695AbgJQFaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411629AbgJQF3n (ORCPT
+        with ESMTP id S2411648AbgJQF3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 01:29:43 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DD9C05110C
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 22:20:22 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id f26so1149580oou.11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 22:20:22 -0700 (PDT)
+        Sat, 17 Oct 2020 01:29:45 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCF0C05110E
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 22:23:11 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r10so2663219pgb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 22:23:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Am11ttHsA0DQGqbaWBINshvKBjWKydVsOnpvVxHgLqA=;
-        b=GgJ0F82RgLNPenXfBHY3Yuam0WuUgNNRsHU3kZ9RxCI0cztz44uqB65UALb8JACGqO
-         b/kwohjUGJMdgoy5SuW5bvE3iO3PptyjJLvsTe0m4S2/wg3CdZPL6SbhmcafhKaf9uHq
-         BHr4kioSB89b1RaD2OIGaDnzaPowIRJ5nc+RtPJ7lJ37mAWueTfNfTzS+NSgN4cRGswd
-         y0xWxaTrNWDxU6W1vfI0PAezq1EFPRXarkP8uhYGcXGnoyH9/DQDyhB+qTzrODTZOJLG
-         QwWgQLdrOfUqNxzBvB+yWAxfD9Fn3bkPRvczHRfr5Y8vZMsMunwbr76YVbSuvUUbPUoZ
-         j1aQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=46Kt70r/bDYHJDe+zcQ3TtYjzSLIU+e5WRMsBr0lX/E=;
+        b=n5WACNV9WxTHG+MStnGGcYxyNlN1WbK8pALro7h7tZmxIsAtwbbh71K5u3nVAZtiTT
+         a/06ueRYTcsoUp2f4kqoLnnUeJOvLVVORtbikIfRNERyDkjeOceu6D7wV9M0LQ/aPLur
+         cPyQSdy/NRYDkim2xQhpVKKwzmDX7C9rwKotJSlCFd1F8CyY5JL+bSyiNHNhIWqyJvPe
+         oSKRQiw4gsS0zoVCesJnEXuldCcJMPpW533h/tirkqakcxBm0O6OfqZaYo1qZN8IcQQu
+         LNA4H2L17xct1c7s9q2KWR4itTcPThn4TtztPNPxVZiMNzTsznxPrVjDrXPFCW80wAlR
+         bxkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Am11ttHsA0DQGqbaWBINshvKBjWKydVsOnpvVxHgLqA=;
-        b=DJiL4o0x6quJUPcKxY2NQXIWWZ4G5zSFoCnp80z7EwgF7PFHQt15dNJTYLmYktHoFk
-         SJrINZ5jqLJDyQybLK5P9aSAnGutOW5TetahMy/8ExXYna6sdeBwfliqcv7dHLwwDi/A
-         DHULMxGz1fDlhgtPZ+nU1cL8O/7WmdoiKyRzCtwgcFmJAyJJdKMOHkhYVxYr9lo4a64+
-         CdJRdv2V23UieZpgYER2IP2MNgHKOXh2Ud1FPa/aTZbdqOZCmQ4/wIyIjKPxN9vjpxLj
-         GSBABMslzUgj3zRfjQglRaeBWxf/MwglTm4OwG6+9jrUaL80rBvNZ4Si3SheCOinvQKd
-         dNfA==
-X-Gm-Message-State: AOAM533W+xEu3/nv86uckM6bkiSP9fn3D1hTjLSgajiKcuC5/qzVIlOb
-        OHowQLT3K635JnmRnM1xe8kd8Q==
-X-Google-Smtp-Source: ABdhPJylLggLu5AkxzhvDUwAo5oPqq2BFPVnonhOahpzng8sR+Z2KckCismnGoNPMyY4/Y0/5QJA6Q==
-X-Received: by 2002:a4a:b78f:: with SMTP id a15mr5211950oop.33.1602912021584;
-        Fri, 16 Oct 2020 22:20:21 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f2sm1572769ots.64.2020.10.16.22.20.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=46Kt70r/bDYHJDe+zcQ3TtYjzSLIU+e5WRMsBr0lX/E=;
+        b=VN2uoJka9SnxSe0d+nNOedj+T6l6is7eSUZVvOsXEN01K53B8YC24lXcAUDIf9XnNG
+         kuORnUX13NLoT8+SjXStfrPqhTjpLS4s7I6i2066NluMP3xxUYMV1ax9w6aoHi50qip4
+         je3yOpA1S0Z4wBN9eGC6YU51paoMNAittkNpTHu9jcjKT4pnras/H+RcKsLMAQ6iVnJo
+         e/3J85PQCtQ4t1nAErybVxIdMO9Jrz2MUQmh6GK/lX8fsH90GYkQrdtBKIcbRSdN69ul
+         WepEtYyffoCfXou+iT8Kkj9megrxbry3o7+6wC/5uGKlTfYCdR9F+wrLC8i7kIaGG06U
+         rYzw==
+X-Gm-Message-State: AOAM531IYNGPJUJuqpd2rBtiREA0RDI+t7PI+Yx0ATcaK5XG578Wm3Zq
+        uBylIp4qJTbAbcOKWZlmvdQ=
+X-Google-Smtp-Source: ABdhPJxieGBqB4KXv5IPVX+eo5Ha7V47PYjzIhvlIsMgdTyoBAe6wepK+bNX6niGtsHq0u07KzglJQ==
+X-Received: by 2002:a63:f14:: with SMTP id e20mr6207523pgl.52.1602912191025;
+        Fri, 16 Oct 2020 22:23:11 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:9004:68e2:46b7:2869:5094:8e3e])
+        by smtp.gmail.com with ESMTPSA id q2sm4172191pfu.193.2020.10.16.22.23.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 22:20:20 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Martin Botka <martin.botka1@gmail.com>
-Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: [PATCH v5 4/4] arm64: dts: qcom: Add user LEDs on db820c
-Date:   Fri, 16 Oct 2020 22:20:57 -0700
-Message-Id: <20201017052057.2698588-5-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201017052057.2698588-1-bjorn.andersson@linaro.org>
-References: <20201017052057.2698588-1-bjorn.andersson@linaro.org>
+        Fri, 16 Oct 2020 22:23:10 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com
+Subject: [PATCH v3] checkpatch: add new exception to repeated word check
+Date:   Sat, 17 Oct 2020 10:52:43 +0530
+Message-Id: <20201017052243.17095-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The db820c has 4 "user LEDs", all connected to the PMI8994. The first
-three are connected to the three current sinks provided by the TRILED
-and the fourth is connected to MPP2.
+Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
+moved the repeated word test to check for more file types. But after
+this, if checkpatch.pl is run on MAINTAINERS, it generates several
+new warnings of the type:
 
-By utilizing the DTEST bus the MPP is fed the control signal from the
-fourth LPG block, providing a consistent interface to the user.
+WARNING: Possible repeated word: 'git'
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+For example:
+WARNING: Possible repeated word: 'git'
++T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git
+
+So, the pattern "git git://..." is a false positive in this case.
+
+There are several other combinations which may produce a wrong
+warning message, such as "@size size", ":Begin begin", etc.
+
+Extend repeated word check to compare the characters before and
+after the word matches. If the preceding or succeeding character
+belongs to the exception list, the warning is avoided.
+
+Link: https://lore.kernel.org/linux-kernel-mentees/81b6a0bb2c7b9256361573f7a13201ebcd4876f1.camel@perches.com/
+Suggested-by: Joe Perches <joe@perches.com>
+Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 ---
+ scripts/checkpatch.pl | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-Changes since v4:
-- None
-
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 49 ++++++++++++++++++++
- 1 file changed, 49 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-index defcbd15edf9..7e51677d256e 100644
---- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-+++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-@@ -8,6 +8,7 @@
- #include "pmi8994.dtsi"
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
- #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
- #include <dt-bindings/sound/qcom,q6afe.h>
- #include <dt-bindings/sound/qcom,q6asm.h>
-@@ -682,6 +683,54 @@ pinconf {
- 	};
- };
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index f1a4e61917eb..89430dfd6652 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -595,6 +595,7 @@ our @mode_permission_funcs = (
+ );
  
-+&pmi8994_mpps {
-+	pmi8994_mpp2_userled4: mpp2-userled4 {
-+		pins = "mpp2";
-+		function = "sink";
+ my $word_pattern = '\b[A-Z]?[a-z]{2,}\b';
++my $exclude_chars = '[^\.\,\+\s]';
+ 
+ #Create a search pattern for all these functions to speed up a loop below
+ our $mode_perms_search = "";
+@@ -3056,15 +3057,27 @@ sub process {
+ 
+ 				my $first = $1;
+ 				my $second = $2;
+-
++				my $start_pos = $-[1];
++				my $end_pos = $+[2];
+ 				if ($first =~ /(?:struct|union|enum)/) {
+ 					pos($rawline) += length($first) + length($second) + 1;
+ 					next;
+ 				}
+ 
+-				next if ($first ne $second);
++				next if (lc($first) ne lc($second));
+ 				next if ($first eq 'long');
+ 
++				# check for character before and after the word matches
++				my $start_char = '';
++				my $end_char = '';
++				$start_char = substr($rawline, $start_pos - 1, 1) if ($start_pos > 0);
++				$end_char = substr($rawline, $end_pos, 1) if ($end_pos <= length($rawline));
 +
-+		output-low;
-+		qcom,dtest = <4>;
-+	};
-+};
++				if ($start_char =~ /^$exclude_chars$/ ||
++				    $end_char =~ /^$exclude_chars$/) {
++					next;
++				}
 +
-+&pmi8994_lpg {
-+	qcom,power-source = <1>;
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pmi8994_mpp2_userled4>;
-+
-+	status = "okay";
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	led@1 {
-+		reg = <1>;
-+		label = "green:user1";
-+
-+		linux,default-trigger = "heartbeat";
-+		default-state = "on";
-+	};
-+
-+	led@2 {
-+		reg = <2>;
-+		label = "green:user0";
-+		default-state = "on";
-+	};
-+
-+	led@3 {
-+		reg = <3>;
-+		label = "green:user2";
-+	};
-+
-+	led@4 {
-+		reg = <4>;
-+		label = "green:user3";
-+
-+		qcom,dtest = <4 1>;
-+	};
-+};
-+
- &pmi8994_spmi_regulators {
- 	vdd_gfx: s2@1700 {
- 		reg = <0x1700 0x100>;
+ 				if (WARN("REPEATED_WORD",
+ 					 "Possible repeated word: '$first'\n" . $herecurr) &&
+ 				    $fix) {
 -- 
-2.28.0
+2.27.0
 
