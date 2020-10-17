@@ -2,105 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8EA290FDE
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC5C290F12
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436965AbgJQGCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 02:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436904AbgJQGBk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 02:01:40 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995F0C05BD12
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 20:35:45 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id b23so2572916pgb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 20:35:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=QCDwsfNkvqPQpIDU4u2sxBUV+wI2fvaYjsjuhY5RuJc=;
-        b=GMxYGdsmmYiibZtixe+aGFA6jkG/y38/+DJoIyZpEciLgohQn6z5cAlabOqCDhfzKk
-         K0sMKIGOFuTvUCFfmYmWUGSt4mCeOtrXQ9tEof9Y+9eaSC5R44kJqxD6NS2oJqsLleSs
-         vQ2ZhVzXOQuX9u74j3yzoh8Uoa9xg/EX6d5SKtb+LBjA6h2p15B88dEzhWtJFrLkcaZr
-         p1kwOyFIRR0EsZKfmvINTOwiK3boq/TVplc/qCuLsoz9z3CvAs83K3Q7LI7CKEL8D1O3
-         aYA/ja/Zej1HuL9vWHZNtFE5vdp2XaCCg6/UEifspLDsI7Ic17l1gXAa41WnfFh9DHnY
-         f37w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=QCDwsfNkvqPQpIDU4u2sxBUV+wI2fvaYjsjuhY5RuJc=;
-        b=Fq8751Gq8K9B+l6NgOGf0i4/BMlDvke8gKFIiOVIKFAYItgX/0aC6RjhpTQgmF3Cu3
-         uM/c1szwrXn4NXRBO6rwxOrxFj1whPs75t2F5xegpqFLO1zp6U5XZKGmNAuRRgMZQ+xx
-         r0R3mjglrX277Vt6DrML2B5dWkJl2Yh0zDj6ahkSFC8MqxFe8nMqZkYm+kD6/rZ0ubaT
-         jJV2OSr6mzNcWtb/qdwm9EcuVaXX+XJsWHuwlgVFHoWvqFXVJ6Larn8f8bgH4ePLG8Ug
-         +tOyrnMiXVu6CNMuRS1UzGVtrxWkIhC+yEt/vo8ykakuSpZHNcVldzZIn5ZFQJKrQHrG
-         z1SQ==
-X-Gm-Message-State: AOAM530S0dwQ6y0acrZd3HG++8ryA3Z75ZECUrk5NQTnX1fPbqiFfMVb
-        S5zthJnPw6GVD+OHWex6Vowz3A==
-X-Google-Smtp-Source: ABdhPJzhg8j37lQ1anTwUnr51Yoc7Hw5kVKAHEnp+m0vWm6Q+L5sYL8LC6bIVz4ArNu9hUosH9T/Xg==
-X-Received: by 2002:a63:7841:: with SMTP id t62mr5605629pgc.183.1602905744957;
-        Fri, 16 Oct 2020 20:35:44 -0700 (PDT)
-Received: from debian ([122.164.16.34])
-        by smtp.gmail.com with ESMTPSA id q7sm3958172pfj.38.2020.10.16.20.35.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 20:35:44 -0700 (PDT)
-Message-ID: <4fb15a8ea92e6adcb68445ec065a910d09100ed3.camel@rajagiritech.edu.in>
-Subject: Re: [PATCH 5.8 00/14] 5.8.16-rc1 review
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Date:   Sat, 17 Oct 2020 09:05:35 +0530
-In-Reply-To: <20201016150021.GA1807231@kroah.com>
-References: <20201016090437.153175229@linuxfoundation.org>
-         <7138d7bce8f8da009119f0107eeb7c85f67057b9.camel@rajagiritech.edu.in>
-         <20201016150021.GA1807231@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
+        id S2411566AbgJQFZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:25:54 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:43826 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2411543AbgJQFZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 01:25:51 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 09H3a6p1014024;
+        Sat, 17 Oct 2020 05:36:06 +0200
+Date:   Sat, 17 Oct 2020 05:36:06 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Jann Horn <jannh@google.com>
+Cc:     "Catangiu, Adrian Costin" <acatan@amazon.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jason Donenfeld <Jason@zx2c4.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "Graf (AWS), Alexander" <graf@amazon.de>,
+        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "bonzini@gnu.org" <bonzini@gnu.org>,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>,
+        "oridgar@gmail.com" <oridgar@gmail.com>,
+        "ghammer@redhat.com" <ghammer@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
+Message-ID: <20201017033606.GA14014@1wt.eu>
+References: <AQHWo8lIfZnFKGe8nkGmhTCXwq5R3w==>
+ <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
+ <CAG48ez0EanBvDyfthe+hAP0OC8iGLNSq2e5wJVz-=ENNGF97_w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez0EanBvDyfthe+hAP0OC8iGLNSq2e5wJVz-=ENNGF97_w@mail.gmail.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-16 at 17:00 +0200, Greg Kroah-Hartman wrote:
-> On Fri, Oct 16, 2020 at 07:41:05PM +0530, Jeffrin Jose T wrote:
-> > On Fri, 2020-10-16 at 11:07 +0200, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 5.8.16
-> > > release.
-> > > There are 14 patches in this series, all will be posted as a
-> > > response
-> > > to this one.  If anyone has any issues with these being applied,
-> > > please
-> > > let me know.
-> > > 
-> > > Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
-> > > Anything received after that time might be too late.
-> > > 
-> > > The whole patch series can be found in one patch at:
-> > > 	
-> > > https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.16-rc1.gz
-> > > or in the git tree and branch at:
-> > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
-> > > stable-rc.git linux-5.8.y
-> > > and the diffstat can be found below.
-> > > 
-> > > thanks,
+On Sat, Oct 17, 2020 at 03:40:08AM +0200, Jann Horn wrote:
+> [adding some more people who are interested in RNG stuff: Andy, Jason,
+> Theodore, Willy Tarreau, Eric Biggers. also linux-api@, because this
+> concerns some pretty fundamental API stuff related to RNG usage]
 > 
-> > [   10.718252] i8042: PNP: PS/2 appears to have AUX port disabled,
-> > if
-> > this is incorrect please boot with i8042.nopnp
+> On Fri, Oct 16, 2020 at 4:33 PM Catangiu, Adrian Costin
+> <acatan@amazon.com> wrote:
+> > This patch is a driver which exposes the Virtual Machine Generation ID
+> > via a char-dev FS interface that provides ID update sync and async
+> > notification, retrieval and confirmation mechanisms:
+> >
+> > When the device is 'open()'ed a copy of the current vm UUID is
+> > associated with the file handle. 'read()' operations block until the
+> > associated UUID is no longer up to date - until HW vm gen id changes -
+> > at which point the new UUID is provided/returned. Nonblocking 'read()'
+> > uses EWOULDBLOCK to signal that there is no _new_ UUID available.
+> >
+> > 'poll()' is implemented to allow polling for UUID updates. Such
+> > updates result in 'EPOLLIN' events.
+> >
+> > Subsequent read()s following a UUID update no longer block, but return
+> > the updated UUID. The application needs to acknowledge the UUID update
+> > by confirming it through a 'write()'.
+> > Only on writing back to the driver the right/latest UUID, will the
+> > driver mark this "watcher" as up to date and remove EPOLLIN status.
+> >
+> > 'mmap()' support allows mapping a single read-only shared page which
+> > will always contain the latest UUID value at offset 0.
 > 
-> Is this incorrect?
-it seems to be incorrect for me, because the warning
-disappeared when i passed i8042.nopnp to kernel.
--- 
-software engineer
-rajagiri school of engineering and technology
+> It would be nicer if that page just contained an incrementing counter,
+> instead of a UUID. It's not like the application cares *what* the UUID
+> changed to, just that it *did* change and all RNGs state now needs to
+> be reseeded from the kernel, right? And an application can't reliably
+> read the entire UUID from the memory mapping anyway, because the VM
+> might be forked in the middle.
+> 
+> So I think your kernel driver should detect UUID changes and then turn
+> those into a monotonically incrementing counter. (Probably 64 bits
+> wide?) (That's probably also a little bit faster than comparing an
+> entire UUID.)
 
+I agree with this. Further, I'm observing there is a very common
+confusion between "universally unique" and "random". Randoms are
+needed when seeking unpredictability. A random number generator
+*must* be able to return the same value multiple times in a row
+(though this is rare), otherwise it's not random.
+
+To illustrate this, a die has less than 3 bits of randomness and
+is sufficient to play games with friends where a counter would allow
+everyone to cheat. Conversely if you want to assign IDs to members
+of your family you'd rather use a counter than a die for this or
+you risk collisions and/or long series of retries to pick unique
+IDs.
+
+RFC4122 explains in great length how to produce guaranteed unique
+IDs, and this only involves space, time and counters. There's
+indeed a lazy variant that probably everyone uses nowadays,
+consisting in picking random numbers, but this is not guaranteed
+unique anymore.
+
+If the UUIDs used there are real UUIDs, it could be as simple as
+updating them according to their format, i.e. updating the timestamp,
+and if the timestamp is already the same, just increase the seq counter.
+Doing this doesn't require entropy, doesn't need to block and doesn't
+needlessly leak randoms that sometimes make people feel nervous.
+
+Just my two cents,
+Willy
