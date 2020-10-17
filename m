@@ -2,109 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E738F291084
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 09:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A9429108A
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 09:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437464AbgJQH23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 03:28:29 -0400
-Received: from smtprelay0090.hostedemail.com ([216.40.44.90]:57434 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2436550AbgJQH23 (ORCPT
+        id S2437478AbgJQHcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 03:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411853AbgJQHcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 03:28:29 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 55DD5100E7B40;
-        Sat, 17 Oct 2020 07:28:28 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 93,11,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:305:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:3872:3874:4184:4321:5007:6119:7903:9592:10010:10400:11026:11232:11658:11914:12297:12555:12679:12740:12760:12895:13069:13095:13161:13229:13311:13357:13439:13972:14093:14097:14180:14181:14659:14721:21060:21080:21221:21433:21451:21627:21740:21741:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: dress26_2a0c37727223
-X-Filterd-Recvd-Size: 2977
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 17 Oct 2020 07:28:27 +0000 (UTC)
-Message-ID: <c2f40543564323a5dc3b632df8f1770d61b86633.camel@perches.com>
-Subject: Re: [PATCH v3] checkpatch: add new exception to repeated word check
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Sat, 17 Oct 2020 00:28:25 -0700
-In-Reply-To: <CABJPP5CBh2TDwo9Z1hoaLPjk=d00N0r4VkLVdwAuMbWPyNbDYA@mail.gmail.com>
-References: <20201017052243.17095-1-dwaipayanray1@gmail.com>
-         <fc47f1e6babab1044c9dece4b30200e239438931.camel@perches.com>
-         <CABJPP5CBh2TDwo9Z1hoaLPjk=d00N0r4VkLVdwAuMbWPyNbDYA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sat, 17 Oct 2020 03:32:07 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94705C061755
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:32:05 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id p16so5225761ilq.5
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:32:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4Fk3OnLiw5ztAx8v/gYaz77wwN28d2Wfn4uwAsNjxKQ=;
+        b=jT8WMOW1ve3dXCzPD6Nuv+tCvINtSg6Gqi8Lbj4uSbalDeBSFbN41DAgVY2knhkxlq
+         56eLHMQ3YnAEuya6Hg5OTCeFgZeTcES0Ym7LPDUxLBrBLtA0DYWeW0s7wdiew0+8MMp7
+         kycTrbJsXfLBXaYbsbDol3DFW0SZzAjp/QscSEP0V4y1GFOr+6pC8gCUeNkcC5zjK9kk
+         NaiLnh3pc66cWKQL8lan3+Q0q10iKJdNI1QoMP2UXacYmL1wa1qWUxT5IHKWGyDZtL3o
+         E7QUqXzi0tfIAaeDtNnCEKtoMheFqM3fl5EbgCY7fbjYCC/EjqGl1EQpO18JJemPU9Yr
+         BHOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4Fk3OnLiw5ztAx8v/gYaz77wwN28d2Wfn4uwAsNjxKQ=;
+        b=ZIXfOqniKcFMZc/SvexL4GpXuXgNUHbyVDhIdD2bj+PDhjgn7OT8ZxSCA+ZZ6+RvRR
+         s3GByMlPlAETo+qoluKGYNdvqwRpBem4iNilWESw/cRTFsT1JUFG6b9o3zaPZ5G57Xfa
+         q2/Fkd/yacyaMpHF5L6Me6BksGhH2cmmsssEPH5OYIUZJAYItSqGEYGlfdgku+aBK34Y
+         CGdDGmcWG6ZGYXvIPnAEYVDkCnx4bjJElseJvVZXzgyyX5jkqWYTg265fRNSqZ+2WRTE
+         76qPJ13axD+s5aghVs1EPr5CiWEmXgUCXGM8zPJtCnV3jRtLe7A3MkAGZcTl9z4NEJFd
+         Va8A==
+X-Gm-Message-State: AOAM533t+rzoi4stIgXRNF4tFOX2PRpYOcrswGa4hTFQeePbJ+ksfhT6
+        pQ86iyUvUuCjo+5G4FQ4J7cOOYwCAc4cijknzzc1bvGHwoab+G1U
+X-Google-Smtp-Source: ABdhPJxRXPXtmsdw8rYPXpvYboUdzlQ8bJV3kOcd4PAhMuDZclH19mi1sUHxf6/scOAqGe6EqSG+qHrjPehozgwYZXo=
+X-Received: by 2002:a05:6e02:bf4:: with SMTP id d20mr5204235ilu.252.1602919924794;
+ Sat, 17 Oct 2020 00:32:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201016090437.301376476@linuxfoundation.org>
+In-Reply-To: <20201016090437.301376476@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 17 Oct 2020 13:01:53 +0530
+Message-ID: <CA+G9fYsZh9L_1RsH+LipyzOzEYFunSU=b_bZeuzMi6-SQxRMKw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/21] 4.19.152-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-10-17 at 11:32 +0530, Dwaipayan Ray wrote:
-> > Why include a + character here?
-> > 
-> Hi,
-> I tried it without + first, but then lines like
-> "The the repeated word."
-> didn't register a warning.
-> 
-> I think checkpatch adds a + to the line when used on
-> files. Am not sure but my $rawline was:
-> +The the repeated word.
+On Fri, 16 Oct 2020 at 14:40, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.152 release.
+> There are 21 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.152-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-The + is the first character of an added line in a
-patch.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-That's different from lines in a commit message so
-there needs to be an additional mechanism to strip
-the leading + when not !$in_commit_log.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Add:
-	pos($rawline) = 1 if (!$in_commit_log);
+Summary
+------------------------------------------------------------------------
 
-and test the start position too
+kernel: 4.19.152-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 5f066e3d5e44986dffd040360637a0dee8c66ccb
+git describe: v4.19.151-22-g5f066e3d5e44
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.151-22-g5f066e3d5e44
 
----
- scripts/checkpatch.pl | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+No regressions (compared to build v4.19.151)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index fab38b493cef..99563b3d5a3e 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3050,19 +3050,28 @@ sub process {
- 
- # check for repeated words separated by a single space
- 		if ($rawline =~ /^\+/ || $in_commit_log) {
-+			pos($rawline) = 1 if (!$in_commit_log);
- 			while ($rawline =~ /\b($word_pattern) (?=($word_pattern))/g) {
--
- 				my $first = $1;
- 				my $second = $2;
-+				my $start_pos = $-[1];
-+				my $end_pos = $+[2];
- 
- 				if ($first =~ /(?:struct|union|enum)/) {
- 					pos($rawline) += length($first) + length($second) + 1;
- 					next;
- 				}
- 
--				next if ($first ne $second);
-+				next if (lc($first) ne lc($second));
- 				next if ($first eq 'long');
- 
-+				my $start_char = "";
-+				my $end_char = "";
-+				$start_char = substr($rawline, $start_pos - 1, 1) if ($start_pos > ($in_commit_log ? 0 : 1));
-+				$end_char = substr($rawline, $end_pos, 1) if (length($rawline) > $end_pos);
-+				next if ($start_char =~ /^\S$/);
-+				next if ($end_char !~ /^[\.\,\s]?$/);
-+
- 				if (WARN("REPEATED_WORD",
- 					 "Possible repeated word: '$first'\n" . $herecurr) &&
- 				    $fix) {
+No fixes (compared to build v4.19.151)
 
+Ran 27932 total tests in the following environments and test suites.
 
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* linux-log-parser
+* ltp-cve-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-sched-tests
+* network-basic-tests
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-fs-tests
+* ssuite
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
