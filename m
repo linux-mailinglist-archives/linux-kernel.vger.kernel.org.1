@@ -2,157 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB52291094
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 09:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C5E291097
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 09:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437511AbgJQHjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 03:39:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43757 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2437504AbgJQHjp (ORCPT
+        id S2410922AbgJQHm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 03:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406218AbgJQHm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 03:39:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602920385;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nlE7mWs+OHbEhLBW5Ti9CXDUCrj0uRPZ3Ruggfy/J74=;
-        b=DiJv4nfH+zahr5JMOPatKC8w8Gz1t9Jh/MejtMqkBPy516PvXbwXJ50uVORnDcpN/X2SVH
-        lXwYqdmZTAlcuRg2+iKu5oU+G2gGID8ttNrQP9HCgFR3fPA88UuhV7ZN/wuvkFiYI5CFi3
-        bwrKfb+qIzE0H7XYYO55r3fnZEpCbdA=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-nPDBdNqlPMCD5V0IH_25zg-1; Sat, 17 Oct 2020 03:39:41 -0400
-X-MC-Unique: nPDBdNqlPMCD5V0IH_25zg-1
-Received: by mail-ej1-f72.google.com with SMTP id x22so2748407ejs.17
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:39:41 -0700 (PDT)
+        Sat, 17 Oct 2020 03:42:58 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8F7C061755
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:42:57 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x7so5947611wrl.3
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8nuuz9yi8Y031tKgDWok/ahu1bW/JJ2vJv28TM2RgTI=;
+        b=S8DTt5VgS5NmR9ckDdJlmI2YSnCm5/+Kf/Qsnm+fzcI2WeLBMhr8ZdDOzTMH21TKof
+         mjAFbWH2oGUYeNQjEuw6jbvnD4afwgeUk7YL0VOrSAdV6h5nEU7KhYjUlt+ctOBvux9Y
+         nwMa036rpr+SgzuU5mouaZows2ZQ3RzC6txnlZwlCW93tzv/fw/OFv8TJ8tdxOAUayrM
+         VpnMA9fE0olI8hz7aoFlRrpkVdTutZ2dP1eijwFz5naBlzSFbfHsGq2YiyXhh5hMo2Ih
+         YTpdmoZ/yNkZDqeoAjuCqDoiQEPKXplSRD5Df7eGCOc8PpLEdL6XRKZcU8Fx8hyx+JyN
+         +4PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=nlE7mWs+OHbEhLBW5Ti9CXDUCrj0uRPZ3Ruggfy/J74=;
-        b=tma9uPjutdw7JcKKlOuqv+XX7e+2IFaDQMzQDeV44dhfWTX70DZISfCVkA+K30wEA2
-         BoCBJIrMxSqiSz8+9fsa+yG0AsddG4PwWoeQuO9IJc100qu2xoJIgfzozzUPs5HHWNbP
-         6lIInLkdLeGxuqzf39Myk0/HXjaw1pHtFDw3/53bdDlLi6nQa6qh5VSBzKwJb085jpoL
-         A/VzTrq6adtrq9o4mk2B44pFpeIUOF+T0MtbUxTVKKZTnIaaR2uleiD43GWsFy+8MBHI
-         Og+5LbARCK+dpqxICGCbcdVAV2bjZpo3eQi4ycvNhTfcy8nOtmSKHly9eaLhQ4pETdYc
-         z41g==
-X-Gm-Message-State: AOAM530D0kKIdnvi11y7/xJK53d/LvB5BF+qQ7EIXzNI7s32971Caeah
-        6P6Ibhu2ajEdmf60isXEUHYB+D0CpsjrJKRAF7Gi0K2ir/YCu/EvDsDJeTXNfa3Pd+YAoYdZXxS
-        h2BVE6LCfAy+OerTVweFdn6wJ
-X-Received: by 2002:aa7:dc16:: with SMTP id b22mr8068523edu.252.1602920379910;
-        Sat, 17 Oct 2020 00:39:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzuZ1/FCI19jeTpRP2oGQpZx/HslqeOvnC2jgnpgIVRX1a6ZmQPIKyyDNb7ut4Lh1R/3tQAQA==
-X-Received: by 2002:aa7:dc16:: with SMTP id b22mr8068509edu.252.1602920379651;
-        Sat, 17 Oct 2020 00:39:39 -0700 (PDT)
-Received: from [192.168.3.114] (p4ff239ab.dip0.t-ipconnect.de. [79.242.57.171])
-        by smtp.gmail.com with ESMTPSA id vr3sm4406332ejb.124.2020.10.17.00.39.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Oct 2020 00:39:39 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v1 05/29] virtio-mem: generalize check for added memory
-Date:   Sat, 17 Oct 2020 09:39:38 +0200
-Message-Id: <2E12AC3C-872A-4B30-8FD7-12420FA1D14E@redhat.com>
-References: <20201016223811.GJ44269@L-31X9LVDL-1304.local>
-Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-In-Reply-To: <20201016223811.GJ44269@L-31X9LVDL-1304.local>
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>
-X-Mailer: iPhone Mail (18A393)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8nuuz9yi8Y031tKgDWok/ahu1bW/JJ2vJv28TM2RgTI=;
+        b=Kyqc1C8JrlS/FFXcaQ9bfTxg9g6Z+ktbQU9kiTe/gkRkfNv5MfWzx7npLvxwJ64xB7
+         pf5UDWJ1bauDDdRZ1mMRlarq7hZFVkuCxOOVgvGSA8SDe99/xSHwj9GwlPMrrMFkZDLe
+         rn7CY37+O7IGBs/NVvdylr5dAPKSxaHjgwSmAzSevvRUpLAUlO1DGVNbZEFbBo5vFNzh
+         yAOoOdoVTUsRQyOhJdrFDExegOIL0iyh2+xgE37w7RZmf5XYGrwi+iQuDFj9l7abLvXQ
+         Qu+b+jdUwd/sN8CHAUsKgU3fjupmn+tPzBSy2UBrgmHJ6Sz7eYM2wdWHlqkZfVa23Ywo
+         Mz5A==
+X-Gm-Message-State: AOAM533MCtQWG8hjetPqFqo2rfr51ZAGkg3YUS5J8N2t3/O1v3SoDpNQ
+        UF5rM1sBaiP+qngdnSw7VBKlNM+F/40Y05AQBLrpgA==
+X-Google-Smtp-Source: ABdhPJy9A/6uEDOmpUZ9DKM+fvbvAWksxv9VVCkLa8R4yNFNugKzpc8LHRGHDXZQA4LSXICJ4BplKBwvQHYoqFvltu0=
+X-Received: by 2002:a5d:488e:: with SMTP id g14mr8889936wrq.203.1602920576419;
+ Sat, 17 Oct 2020 00:42:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <44861eaca17ffbb51726473bc8e86ad9e130c67e.1602876780.git.andreyknvl@google.com>
+In-Reply-To: <44861eaca17ffbb51726473bc8e86ad9e130c67e.1602876780.git.andreyknvl@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 17 Oct 2020 15:42:44 +0800
+Message-ID: <CABVgOSnMiNHZoj36NfHTuQ3xLOu-W7FqMnE93cgJv465Kv1QUQ@mail.gmail.com>
+Subject: Re: [PATCH] kasan: adopt KUNIT tests to SW_TAGS mode
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 17, 2020 at 3:33 AM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> Now that we have KASAN-KUNIT tests integration, it's easy to see that
+> some KASAN tests are not adopted to the SW_TAGS mode and are failing.
+>
+> Adjust the allocation size for kasan_memchr() and kasan_memcmp() by
+> roung it up to OOB_TAG_OFF so the bad access ends up in a separate
+> memory granule.
+>
+> Add new kmalloc_uaf_16() and kasan_bitops_uaf() tests that rely on UAFs,
+> as it's hard to adopt the existing kmalloc_oob_16() and kasan_bitops_oob()
+> (rename from kasan_bitops()) without losing the precision.
+>
+> Disable kasan_global_oob() and kasan_alloca_oob_left/right() as SW_TAGS
+> mode doesn't instrument globals nor dynamic allocas.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-> Am 17.10.2020 um 00:38 schrieb Wei Yang <richard.weiyang@linux.alibaba.com=
->:
->=20
-> =EF=BB=BFOn Fri, Oct 16, 2020 at 12:32:50PM +0200, David Hildenbrand wrote=
-:
->>>>> Ok, I seems to understand the logic now.
->>>>>=20
->>>>> But how we prevent ONLINE_PARTIAL memory block get offlined? There are=
- three
->>>>> calls in virtio_mem_set_fake_offline(), while all of them adjust page'=
-s flag.
->>>>> How they hold reference to struct page?
->>>>=20
->>>> Sorry, I should have given you the right pointer. (similar to my other
->>>> reply)
->>>>=20
->>>> We hold a reference either via
->>>>=20
->>>> 1. alloc_contig_range()
->>>=20
->>> I am not familiar with this one, need to spend some time to look into.
->>=20
->> Each individual page will have a pagecount of 1.
->>=20
->>>=20
->>>> 2. memmap init code, when not calling generic_online_page().
->>>=20
->>> I may miss some code here. Before online pages, memmaps are allocated in=
+This looks good to me. Though, as you mention, writing to freed memory
+might not bode well for system stability after the test runs. I don't
+think that needs to be a goal for these tests, though.
 
->>> section_activate(). They are supposed to be zero-ed. (I don't get the ex=
-act
->>> code line.) I am not sure when we grab a refcount here.
->>=20
->> Best to refer to __init_single_page() -> init_page_count().
->>=20
->> Each page that wasn't onlined via generic_online_page() has a refcount
->> of 1 and looks like allocated.
->>=20
->=20
-> Thanks, I see the logic.
->=20
->    online_pages()
->        move_pfn_range_to_zone()  --- 1)
->    online_pages_range()      --- 2)
->=20
-> At 1), __init_single_page() would set page count to 1. At 2),
-> generic_online_page() would clear page count, while the call back would no=
-t.
->=20
-> Then I am trying to search the place where un-zero page count prevent offl=
-ine.
-> scan_movable_pages() would fail, since this is a PageOffline() and has 1 p=
-age
-> count.
->=20
-> So the GUARD we prevent offline partial-onlined pages is
->=20
->    (PageOffline && page_count)
->=20
-> And your commit aa218795cb5fd583c94f
->=20
-> mm: Allow to offline unmovable PageOffline() pages via MEM_GOING_OFFLINE
->=20
-> is introduced to handle this case.
->=20
-> That's pretty clear now.
->=20
+One thing which we're hoping to add to KUnit soon is support for
+skipping tests: once that's in place, we can use it to mark tests as
+explicitly skipped if they rely on the GENERIC mode. That'll take a
+little while to get upstream though, so I wouldn't want to hold this
+up for it.
 
-I=E2=80=98m happy to see that I am no longer the only person that understand=
-s all this magic :)
+Otherwise, from the KUnit side, this looks great.
 
-Thanks for having a look / reviewing!
+I also tested it against the GENERIC mode on x86_64 (which is all I
+have set up here at the moment), and nothing obviously had broken.
+So:
+Tested-by: David Gow <davidgow@google.com>
 
->> --=20
->> Thanks,
->>=20
->> David / dhildenb
->=20
-> --=20
-> Wei Yang
-> Help you, Help me
->=20
-
+Cheers,
+-- David
