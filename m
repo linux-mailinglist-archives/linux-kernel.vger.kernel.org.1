@@ -2,80 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEAC7291078
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 09:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805A429107F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 09:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411772AbgJQHRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 03:17:45 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:39972 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411713AbgJQHRp (ORCPT
+        id S2437445AbgJQHSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 03:18:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411763AbgJQHSx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 03:17:45 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 812DD8055B;
-        Sat, 17 Oct 2020 09:17:42 +0200 (CEST)
-Date:   Sat, 17 Oct 2020 09:17:40 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-amarula@amarulasolutions.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 1/3] dt-bindings: vendor-prefixes: Add Yes Optoelectronics
-Message-ID: <20201017071740.GJ2242298@ravnborg.org>
-References: <20200904180821.302194-1-jagan@amarulasolutions.com>
+        Sat, 17 Oct 2020 03:18:53 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62349C061755
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:18:53 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id p16so5207593ilq.5
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:18:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mOXF3ZRhcAdJq9d5jsCmLnGzHw/gmfcOBR2I4XS02as=;
+        b=hSqM+IHlQ5xex2nF1vosEmMq1O/yiqmTJhDgYgiYYE48S5QEbnzjlJk7f0YV9oYY9m
+         1tZAux8Sm3s4kKTA18VKFj7d2n1vgmhgBnRfbnZk2w2dyEPjUIHY8fBxdeHPHSfrUCub
+         tOPd0hc7SJcaVuj7e27GPj5cHWymidM5/lV5QD87Je+8u2o11oJiEto503Dd/MOFqFJR
+         9D+FO9Mcwu2wyaXZDZjY3vUYwGVsWKyfCXu7edIyCSRH3uVDKZBbwOXiJewdxEF7pDkB
+         fg/dZ2iNlpAAtARfwLNgow1+RSFSUvt1mpItUi0m+4Ls00QNAhJe/IT3tuNufzAsNp45
+         46KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mOXF3ZRhcAdJq9d5jsCmLnGzHw/gmfcOBR2I4XS02as=;
+        b=BP/5JMEdMPExUV0sX8/NocsIH7XxZ3rsC1wkRWnQrrKX7KVQaTCvpIfTAK1uu9zqoC
+         Pz+FgCHW5Gnlv21OEq3AnFmmQo8endZVKr94dlO0B1D2R+RxBIwi6kNRx+I83nnbLN4E
+         /YkdGHnB/3AH8m/c7dR0yduzxouMhSiVcQUBwxDGn7pt5attb5ZvzHv4+V7ZyZajwK8i
+         Rim+oCNR/kltnNPLSwpVDd+AHOdL2Oha5OVQMM/G4MY8tENDXBrjAwZl1625naJwaWq7
+         lI3qTiiZlcJAXhPqy/JoUgdfWVCnJn+4HaRLvvKY994/oVGe7vI6PnXE3wHjjEKfFusf
+         h0lA==
+X-Gm-Message-State: AOAM530ZpgK8Eo+16rFtGUSRRIyOl5VgkR2yr8uiyP4cL56GWPAgGZYo
+        hJmf2SJJqipf2akPmEVBnMWrq8GDjr3O26E0Jf0DKw==
+X-Google-Smtp-Source: ABdhPJzQbCaw6s+WBgBlVJ+xIoF01DpOKN7p9HexQLMg2LiCkzKhJ6GLpYQkMuDWVVey9j6yBtAtFJJWyFFPm0BC/xQ=
+X-Received: by 2002:a05:6e02:664:: with SMTP id l4mr5545220ilt.81.1602919132515;
+ Sat, 17 Oct 2020 00:18:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904180821.302194-1-jagan@amarulasolutions.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=iP-xVBlJAAAA:8 a=e5mUnYsNAAAA:8
-        a=9mebZdXVrDbmM0H2kEcA:9 a=CjuIK1q_8ugA:10 a=lHLH-nfn2y1bM_0xSXwp:22
-        a=Vxmtnl_E_bksehYqCbjh:22
+References: <20201016090437.308349327@linuxfoundation.org>
+In-Reply-To: <20201016090437.308349327@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 17 Oct 2020 12:48:41 +0530
+Message-ID: <CA+G9fYtcgyPUJQ9aZa=1GQJv_r5LiPkSHA8jT64pMd0M3K-wrw@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/22] 5.4.72-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagan.
+On Fri, 16 Oct 2020 at 14:41, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.72 release.
+> There are 22 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.72-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-On Fri, Sep 04, 2020 at 11:38:19PM +0530, Jagan Teki wrote:
-> Add vendor dt-bindings for Yes Optoelectronics Co.,Ltd.
-> 
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-I have applied the full series to drm-misc-next.
-Sorry for the delay.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-	Sam
+Summary
+------------------------------------------------------------------------
 
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> index 9aeab66be85f..15a6a8e7260d 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -1167,6 +1167,8 @@ patternProperties:
->      description: Shenzhen Xunlong Software CO.,Limited
->    "^xylon,.*":
->      description: Xylon
-> +  "^yes-optoelectronics,.*":
-> +    description: Yes Optoelectronics Co.,Ltd.
->    "^yna,.*":
->      description: YSH & ATIL
->    "^yones-toptech,.*":
-> -- 
-> 2.25.1
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+kernel: 5.4.72-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: a3f8c7f24ee00462a09758774aee840317650b51
+git describe: v5.4.71-23-ga3f8c7f24ee0
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.71-23-ga3f8c7f24ee0
+
+No regressions (compared to build v5.4.71)
+
+No fixes (compared to build v5.4.71)
+
+
+Ran 24730 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-fs-tests
+* ltp-ipc-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-mm-tests
+* network-basic-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
