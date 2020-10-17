@@ -2,90 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F440290F64
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BD9290FB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411793AbgJQFhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 01:37:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43042 "EHLO mail.kernel.org"
+        id S2436800AbgJQF6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:58:14 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:19564 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411472AbgJQFhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 01:37:21 -0400
-Received: from mail.kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2436763AbgJQF6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 01:58:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602914294; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=O39GHa5Zc7YYi6xk0MgUGMyJ7D1ZYO+P8ngBtf0mzWU=; b=LPaxnwnW+8p7cau0WW5/01YfetRb5f2berm9wtC5Ip73KmJJ4fuDh7fOj7yyigInGvui6Sad
+ 4KeVeOvEtYyRAYqp6nvU0JBlXc24LpcaRdVl9sPl9tDiLTWNJJKQBgxUzfmVkSilC9y4tHaR
+ YIwGNql69VWeTuql6qi5662PEiY=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f8a50c44f8cc67c31616dbc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 17 Oct 2020 02:02:44
+ GMT
+Sender: sudaraja=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6ADEEC433CB; Sat, 17 Oct 2020 02:02:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-014.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D205207BC;
-        Sat, 17 Oct 2020 02:01:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602900098;
-        bh=wpHHkpSSM4GJrfAVokKmd5/Sksc+zajepbEU8E6FKKw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RRxUJMkGM/FWKah4086J64u71LxphKynJzZrkX/5UlfClBO1pt0VPETpfzmV/iWCX
-         MM7f54KEepOPQuvVxbwGRbqEY5mrNs5CPdISa5GM1jn4Pyjmk1GNsd3ym9Li0DqY+j
-         KlVYSJ6DMQHhg14/0nRg/f1DfbvksiUTUte9Pgbk=
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH] clk: qcom: gdsc: Keep RETAIN_FF bit set if gdsc is already on
-Date:   Fri, 16 Oct 2020 19:01:37 -0700
-Message-Id: <20201017020137.1251319-1-sboyd@kernel.org>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+        (Authenticated sender: sudaraja)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6313C433C9;
+        Sat, 17 Oct 2020 02:02:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A6313C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sudaraja@codeaurora.org
+From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Subject: [PATCH 0/2] mm/memory_hotplug, arm64: allow certain bootmem sections to be offlinable
+Date:   Fri, 16 Oct 2020 19:02:22 -0700
+Message-Id: <cover.1602899443.git.sudaraja@codeaurora.org>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the GDSC is enabled out of boot but doesn't have the retain ff bit
-set we will get confusing results where the registers that are powered
-by the GDSC lose their contents on the first power off of the GDSC but
-thereafter they retain their contents. This is because gdsc_init() fails
-to make sure the RETAIN_FF bit is set when it probes the GDSC the first
-time and thus powering off the GDSC causes the register contents to be
-reset. We do set the RETAIN_FF bit the next time we power on the GDSC,
-see gdsc_enable(), so that subsequent GDSC power off's don't lose
-register contents state.
+In the patch that enables memory hot-remove (commit bbd6ec605c0f ("arm64/mm: Enable memory hot remove")) for arm64, there’s a notifier put in place that prevents boot memory from being offlined and removed. The commit text mentions that boot memory on arm64 cannot be removed. But x86 and other archs doesn’t seem to do this prevention.
 
-Forcibly set the bit at device probe time so that the kernel's assumed
-view of the GDSC is consistent with the state of the hardware. This
-fixes a problem where the audio PLL doesn't work on sc7180 when the
-bootloader leaves the lpass_core_hm GDSC enabled at boot (e.g. to make a
-noise) but critically doesn't set the RETAIN_FF bit.
+The current logic is that only “new” memory blocks which are hot-added can later be offlined and removed. The memory that system booted up with cannot be offlined and removed. But there could be many usercases such as inter-VM memory sharing where a primary VM could offline and hot-remove a block/section of memory and lend it to secondary VM where it could hot-add it. And after usecase is done, the reverse happens where secondary VM hot-removes and gives it back to primary which can hot-add it back. In such cases, the present logic for arm64 doesn’t allow this hot-remove in primary to happen.
 
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Taniya Das <tdas@codeaurora.org>
-Cc: Rajendra Nayak <rnayak@codeaurora.org>
-Fixes: 173722995cdb ("clk: qcom: gdsc: Add support to enable retention of GSDCR")
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/clk/qcom/gdsc.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Also, on systems with movable zone that sort of guarantees pages to be migrated and isolated so that blocks can be offlined, this logic also defeats the purpose of having a movable zone which system can rely on memory hot-plugging, which say virt-io mem also relies on for fully plugged memory blocks.
 
-diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-index bfc4ac02f9ea..af26e0695b86 100644
---- a/drivers/clk/qcom/gdsc.c
-+++ b/drivers/clk/qcom/gdsc.c
-@@ -358,6 +358,14 @@ static int gdsc_init(struct gdsc *sc)
- 	if ((sc->flags & VOTABLE) && on)
- 		gdsc_enable(&sc->pd);
- 
-+	/*
-+	 * Make sure the retain bit is set if the GDSC is already on, otherwise
-+	 * we end up turning off the GDSC and destroying all the register
-+	 * contents that we thought we were saving.
-+	 */
-+	if ((sc->flags & RETAIN_FF_ENABLE) && on)
-+		gdsc_retain_ff_on(sc);
-+
- 	/* If ALWAYS_ON GDSCs are not ON, turn them ON */
- 	if (sc->flags & ALWAYS_ON) {
- 		if (!on)
+This patch tries to solve by introducing a new section mem map sit 'SECTION_MARK_HOTPLUGGABLE' which allows the concerned module drivers be able
+to mark requried sections as "hotpluggable" by setting this bit. Also this marking is only allowed for sections which are in movable zone and have unmovable pages. The arm64 mmu code on receiving the MEM_GOING_OFFLINE notification, we disallow offlining of any boot memory by checking if section_early or not. With the introduction of SECTION_MARK_HOTPLUGGABLE, we allow boot mem sections that are marked as hotpluggable with this bit set to be offlined and removed. Thereby allowing required bootmem sections to be offlinable.
 
-base-commit: 9ff9b0d392ea08090cd1780fb196f36dbb586529
+Sudarshan Rajagopalan (2):
+  mm/memory_hotplug: allow marking of memory sections as hotpluggable
+  arm64: allow hotpluggable sections to be offlined
+
+ arch/arm64/mm/mmu.c            |  2 +-
+ include/linux/memory_hotplug.h |  1 +
+ include/linux/mmzone.h         |  9 ++++++++-
+ mm/memory_hotplug.c            | 20 ++++++++++++++++++++
+ mm/sparse.c                    | 31 +++++++++++++++++++++++++++++++
+ 5 files changed, 61 insertions(+), 2 deletions(-)
+
 -- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
