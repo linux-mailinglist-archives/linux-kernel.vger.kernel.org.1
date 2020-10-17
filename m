@@ -2,154 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0037E291465
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 22:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE06291467
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 22:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439080AbgJQUyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 16:54:05 -0400
-Received: from mga03.intel.com ([134.134.136.65]:60391 "EHLO mga03.intel.com"
+        id S2439116AbgJQU5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 16:57:18 -0400
+Received: from mailout06.rmx.de ([94.199.90.92]:43707 "EHLO mailout06.rmx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439049AbgJQUyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 16:54:05 -0400
-IronPort-SDR: /1412WXuS/2+GySH3pr2WE0KItmsVIhYV5Pjbdz1fiekS9tWurox0zQAlsyqa+HqGdGteWy4A1
- 4b6VqJ856xPg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9777"; a="166912209"
-X-IronPort-AV: E=Sophos;i="5.77,388,1596524400"; 
-   d="scan'208";a="166912209"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2020 13:54:04 -0700
-IronPort-SDR: Ia5mvpe+nhIuvxWU7pSeJNOIb5VmJpsE0ag7EYB33kt8+PpouOovarV/3mlX87Ib1KlEm2ILXY
- YfsZBQ6fPgyw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,388,1596524400"; 
-   d="scan'208";a="521564549"
-Received: from lkp-server02.sh.intel.com (HELO c383df7b95ee) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Oct 2020 13:54:03 -0700
-Received: from kbuild by c383df7b95ee with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kTtDG-00006D-Jp; Sat, 17 Oct 2020 20:54:02 +0000
-Date:   Sun, 18 Oct 2020 04:53:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- c8cd075be67b25278b7a2eb47b21002228a11b9c
-Message-ID: <5f8b59c8.Ol1L5nfkdsvkJN3K%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2439080AbgJQU5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 16:57:17 -0400
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout06.rmx.de (Postfix) with ESMTPS id 4CDFh92mp3z9tD4;
+        Sat, 17 Oct 2020 22:57:13 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4CDFgt3PVjz2xGF;
+        Sat, 17 Oct 2020 22:56:58 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.12) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Sat, 17 Oct
+ 2020 22:56:25 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 1/3] net: dsa: don't pass cloned skb's to drivers xmit function
+Date:   Sat, 17 Oct 2020 22:56:24 +0200
+Message-ID: <1735006.IpzxAEH60n@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20201017191247.ohslc77wkhbhffym@skbuf>
+References: <20201016200226.23994-1-ceggers@arri.de> <2130539.dlFve3NVyK@n95hx1g2> <20201017191247.ohslc77wkhbhffym@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.12]
+X-RMX-ID: 20201017-225704-4CDFgt3PVjz2xGF-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: c8cd075be67b25278b7a2eb47b21002228a11b9c  Merge branch 'core/rcu'
+On Saturday, 17 October 2020, 21:12:47 CEST, Vladimir Oltean wrote:
+> On Sat, Oct 17, 2020 at 08:53:19PM +0200, Christian Eggers wrote:
+> > > Does 1588 work for you using this change, or you haven't finished
+> > > implementing it yet? If you haven't, I would suggest finishing that
+> > > part first.
+> > 
+> > Yes it does. Just after finishing this topic, I would to sent the patches
+> > for PTP. Maybe I'll do it in parallel, anything but the combination of
+> > L2/E2E/SLOB seems to work.
+> 
+> 2 aspects:
+> - net-next is closed for this week and the next one, due to the merge
+>   window. You'll have to wait until it reopens.
+The status page seems to be out of date:
+http://vger.kernel.org/~davem/net-next.html
 
-elapsed time: 722m
+The FAQ says: "Do not send new net-next content to netdev...". So there is no
+possibility for code review, is it?
 
-configs tested: 90
-configs skipped: 3
+> - Actually I was asking you this because sja1105 PTP no longer works
+>   after this change, due to the change of txflags.
+The tail taggers seem to be immune against this change.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> > I don't like to touch the non-tail taggers, this is too much out of the
+> > scope of my current work.
+> 
+> Do you want me to try and send a version using pskb_expand_head and you
+> can test if it works for your tail-tagging switch?
+I already wanted to ask... My 2nd try (checking for !skb_cloned()) was already
+sufficient (for me). Hacking linux-net is very interesting, but I have many 
+other items open... Testing would be no problem.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                   motionpro_defconfig
-m68k                        m5407c3_defconfig
-mips                         mpc30x_defconfig
-arm                  colibri_pxa270_defconfig
-mips                   sb1250_swarm_defconfig
-arc                        vdk_hs38_defconfig
-arm                      tct_hammer_defconfig
-arc                        nsim_700_defconfig
-arm                        cerfcube_defconfig
-arm                         socfpga_defconfig
-mips                          ath25_defconfig
-i386                             alldefconfig
-arm                          gemini_defconfig
-um                           x86_64_defconfig
-powerpc                     asp8347_defconfig
-arm                           spitz_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20201017
-i386                 randconfig-a006-20201017
-i386                 randconfig-a001-20201017
-i386                 randconfig-a003-20201017
-i386                 randconfig-a004-20201017
-i386                 randconfig-a002-20201017
-i386                 randconfig-a016-20201017
-i386                 randconfig-a013-20201017
-i386                 randconfig-a015-20201017
-i386                 randconfig-a011-20201017
-i386                 randconfig-a012-20201017
-i386                 randconfig-a014-20201017
-x86_64               randconfig-a004-20201017
-x86_64               randconfig-a002-20201017
-x86_64               randconfig-a006-20201017
-x86_64               randconfig-a001-20201017
-x86_64               randconfig-a005-20201017
-x86_64               randconfig-a003-20201017
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+> > > Also, if the result is going to be longer than ~20 lines of code, I
+> > > strongly suggest moving the reallocation to a separate function so you
+> > > don't clutter dsa_slave_xmit.
+> > 
+> > As Florian requested I'll likely put the code into a separate function in
+> > slave.c and call it from the individual tail-taggers in order not to put
+> > extra conditionals in dsa_slave_xmit.
+> 
+> I think it would be best to use the unlikely(tail_tag) approach though.
+> The reallocation function should still be in the common code path. Even
+> for a non-1588 switch, there are other code paths that clone packets on
+> TX. For example, the bridge does that, when flooding packets. 
+You already mentioned that you don't want to pass cloned packets to the tag 
+drivers xmit() functions. I've no experience with the problems caused by 
+cloned packets, but would cloned packets work anyway? Or must cloned packets 
+not be changed (e.g. by tail-tagging)? Is there any value in first cloning in 
+dsa_skb_tx_timestamp() and then unsharing in dsa_slave_xmit a few lines later? 
+The issue I currently have only affects a very minor number of packets (cloned 
+AND < ETH_ZLEN AND CONFIG_SLOB), so only these packets would need a copying.
 
-clang tested configs:
-x86_64               randconfig-a016-20201017
-x86_64               randconfig-a012-20201017
-x86_64               randconfig-a015-20201017
-x86_64               randconfig-a013-20201017
-x86_64               randconfig-a014-20201017
-x86_64               randconfig-a011-20201017
+> Currently, DSA ensures that the header area is writable by calling 
+> skb_cow_head, as far as I can see. But the point is, maybe we can do TX 
+> reallocation centrally.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+regards
+Christian
+
+
+
