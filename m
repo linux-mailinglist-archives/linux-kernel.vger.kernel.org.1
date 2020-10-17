@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FD02912BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 17:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5750E2912BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 17:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438576AbgJQPi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 11:38:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411790AbgJQPi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 11:38:27 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3ACB22074A;
-        Sat, 17 Oct 2020 15:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602949107;
-        bh=Ul+2WFNOLHdtkthH8bHfAg3CW6qX6LsLPlT9WQ+AMWw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HTaAOAHYcuYPqR2uYqLDNzQxN06tv21hyNwxlMrtYe5nU6lIzbIr6qT+IHM52BHV5
-         MUtI9n2DYyzQHx6feo7ZowZrjjfGDUwzQa9c2L4z9qjy+GtTuHSbCL8GPhXnvDE8VN
-         D31Kq5WGcCY+pf7nzrTd4qaQJoscFcbWR5lgEkSE=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id F104135225E7; Sat, 17 Oct 2020 08:38:26 -0700 (PDT)
-Date:   Sat, 17 Oct 2020 08:38:26 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, rcu@vger.kernel.org,
+        id S2438586AbgJQPjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 11:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437689AbgJQPjE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 11:39:04 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD01CC0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 08:39:02 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id i1so6768299wro.1
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 08:39:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S57koDeKUk9PDAYgtgQlZSy1LTrQ6sM1ZV8HODyjnuA=;
+        b=V+07PWg7E3zcry2NI5Zrheb2Mam1kkLOYXJjko6l7ewkCpiSMFtjAMYK4i05qeUe+C
+         n6Qi4SZ15TwwJHmm+V+QBYzoJb2cyQV3v3Q6Po4sW8dz3vLmfzros9JiQlFmIqCYYSyp
+         hO69nJ+8GSt5elCZZMtUH1gqK9/lv0wGWQGDYuVygdPNABZEJQleNy0vpA9F3Jwc0/mS
+         DBqo8fJ2QBn4uU/MqBHjrY36GuA5WJsXaaJC45RgfIdN1Liik3bI0goeN9Zv0PDSoPp8
+         /PG9Vdyu6GV8OoBJyPtjFIeddef3oQbAYZqzgh89zXuikTma0a7CTiwawBsLPTTOFpjx
+         39xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S57koDeKUk9PDAYgtgQlZSy1LTrQ6sM1ZV8HODyjnuA=;
+        b=GxeRWoLDlJZcisOpXNrBTm4LKCTJBOBI+pIANpwHqzJ6CpdZGjknnhPdtL8jcuhDcs
+         h+jUP72402xAcFE/w08rbROmbZWJt6EQfMa5k4CXpU0grVeFrFDqWvmiTE/VyAYZzOcR
+         qkmvmZVaIUN7sbaCAvG2vSAX4/tN8I6RaiGa3hUKNHRcLCuHygPETWU8sFpyew2Lmjhv
+         YxZel9MUiKySiva/FvStTkuMYd7d1Rm/qt8T2CWRchXGT3fmCyKfiUQCUEYjKNAMkk8D
+         chdJFzR2TndTEDyhpMp0p199pT//nAEgnL3sO0HjYJ8YbX20QVXQUBUo9M6cXYA9vcrU
+         3QZw==
+X-Gm-Message-State: AOAM5318La3LGn0Qp0tKXDDWSMU2T9uVZlVLmgRbrMfRIwH+jfPmCF9f
+        o+Atw5VlDnw9Qq1lFxYbQRoXKw==
+X-Google-Smtp-Source: ABdhPJxaLOFBPxlbBFHRog+7C5BOZDHcTEDwnCef2nkMVMHZV6tTMIEHAy9lHwGxGrVbgIdZBSUfjA==
+X-Received: by 2002:adf:bbca:: with SMTP id z10mr11255586wrg.403.1602949141476;
+        Sat, 17 Oct 2020 08:39:01 -0700 (PDT)
+Received: from localhost.localdomain (159.171.185.81.rev.sfr.net. [81.185.171.159])
+        by smtp.gmail.com with ESMTPSA id n66sm7654953wmb.35.2020.10.17.08.38.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Oct 2020 08:39:00 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Add missing inline to
- show_rcu_tasks_rude_gp_kthread() dummy
-Message-ID: <20201017153826.GA3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201016103144.23491-1-geert@linux-m68k.org>
+Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org, tglx@linutronix.de,
+        daniel.lezcano@linaro.org, Fabien Parent <fparent@baylibre.com>
+Subject: [PATCH 1/2] dt-bindings: timer: mtk-timer: add optional 13m and bus clock
+Date:   Sat, 17 Oct 2020 17:38:56 +0200
+Message-Id: <20201017153857.2494845-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201016103144.23491-1-geert@linux-m68k.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 12:31:44PM +0200, Geert Uytterhoeven wrote:
-> If CONFIG_TINY_RCU=y:
-> 
->     In file included from kernel/rcu/update.c:591:
->     kernel/rcu/tasks.h:710:13: warning: ‘show_rcu_tasks_rude_gp_kthread’ defined but not used [-Wunused-function]
->      static void show_rcu_tasks_rude_gp_kthread(void) {}
-> 		 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Fix this by marking show_rcu_tasks_rude_gp_kthread() inline.
-> 
-> Fixes: e21408ceec2de5be ("rcu-tasks: Add RCU tasks to rcutorture writer stall output")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+The timer IP on MT8516 requires two clocks to be enabled. Add both
+clocks.
 
-Good catch, but commit 2cf0c4b5 ("rcutorture: Make grace-period kthread
-report match RCU flavor being tested") beat you to it, though apparently
-by accident.
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+---
+ .../devicetree/bindings/timer/mediatek,mtk-timer.txt         | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Either way, thank you for your time and attention!
+diff --git a/Documentation/devicetree/bindings/timer/mediatek,mtk-timer.txt b/Documentation/devicetree/bindings/timer/mediatek,mtk-timer.txt
+index 690a9c0966ac..3f9bfd246f19 100644
+--- a/Documentation/devicetree/bindings/timer/mediatek,mtk-timer.txt
++++ b/Documentation/devicetree/bindings/timer/mediatek,mtk-timer.txt
+@@ -29,6 +29,11 @@ Required properties:
+ - reg: Should contain location and length for timer register.
+ - clocks: Should contain system clock.
+ 
++Optional properties:
++- clock-names: May contain:
++	* "clk13m": 13MHz clock system clock
++	* "bus": Bus clock
++
+ Examples:
+ 
+ 	timer@10008000 {
+-- 
+2.28.0
 
-							Thanx, Paul
-
-> ---
-> Exposed by commit 1e6c62a882155772 ("bpf: Introduce sleepable BPF
-> programs"), which selects TASKS_TRACE_RCU.
-> ---
->  kernel/rcu/tasks.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index d5d9f2d03e8a0ac9..8c290cc45e6fc63a 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -707,7 +707,7 @@ static void show_rcu_tasks_rude_gp_kthread(void)
->  #endif /* #ifndef CONFIG_TINY_RCU */
->  
->  #else /* #ifdef CONFIG_TASKS_RUDE_RCU */
-> -static void show_rcu_tasks_rude_gp_kthread(void) {}
-> +static inline void show_rcu_tasks_rude_gp_kthread(void) {}
->  #endif /* #else #ifdef CONFIG_TASKS_RUDE_RCU */
->  
->  ////////////////////////////////////////////////////////////////////////
-> -- 
-> 2.17.1
-> 
