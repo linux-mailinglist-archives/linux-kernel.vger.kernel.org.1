@@ -2,154 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B915290F9D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8545D290F5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 07:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436749AbgJQFtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 01:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436732AbgJQFtm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 01:49:42 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAC2C05BD11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 20:19:44 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id j17so4902579ilr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 20:19:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bJgUMZO3YTSbeM5AMCQb0/+aRiqChbCB39IRnkW7Nro=;
-        b=j1Ea2sdeMEYWzpsqOCaXEkzCUYagNXrAn/nD1xOgdnU3Nk8EaZs6HLhgKerJQCTgaH
-         uMuHf9RuOIta5gWWmc87pmEC1gYS/wbOPBwY3j6WTWAT03ylXTXpi2tXGH8I5no6HmS0
-         xgZ0CpL/V2W7W/R829tYaS/blSkj2QiHcywnM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bJgUMZO3YTSbeM5AMCQb0/+aRiqChbCB39IRnkW7Nro=;
-        b=nQ9zPN18YNXb8eM0/0KjckumW8w2c/XBH5En4NQquIzQdJZ9NJCEJr/Ft6NoelWu1r
-         xVi9Dcn4Ko+PooU7JBqHOIrxiWRr5LvVcLBXj4jvLzI1ulDN8dzg12fH4J3pvCu/oRzC
-         pqM1WOk7RNbGB1j4LO705YR/tCiCehaOrc1Yw3aQhDR38fkbt05K+V77eqdW3s5cbtfh
-         XWSlUP84pxtiSaI4CeO43RdyAL5eYvYqqBd5KjeTMvnynxpOLHJ4YGX2nYqpvziRRyKf
-         Bn3/1OI61YH03LON+0yUeOzEcEvbcJS6p0pMk5SulHOF5v85Fr7UYm28u8cvUxtJ6R3B
-         aCXw==
-X-Gm-Message-State: AOAM533xXyrcLgWZZUHtyDbsEC7wGJALEh+TEXuq2Noe8EbTASDMtq2V
-        csWQBaKAeflRVTAFxWMl7kWYhg==
-X-Google-Smtp-Source: ABdhPJwqqZuBXrStzbcWS274m3dqBdhvLdxCjevJYH0MQwp99RRhJ/egixNKM9ynkCNsjRgxu606+A==
-X-Received: by 2002:a92:85d5:: with SMTP id f204mr5216560ilh.108.1602904783370;
-        Fri, 16 Oct 2020 20:19:43 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id y75sm4132922iof.36.2020.10.16.20.19.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 20:19:42 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 23:19:41 -0400
-From:   joel@joelfernandes.org
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com, stern@rowland.harvard.edu
-Subject: Re: [PATCH v7 6/6] rcu/segcblist: Add additional comments to explain
- smp_mb()
-Message-ID: <20201017031941.GD4015033@google.com>
-References: <20201015002301.101830-1-joel@joelfernandes.org>
- <20201015002301.101830-7-joel@joelfernandes.org>
- <20201015133511.GB127222@lothringen>
- <20201017012753.GB4015033@google.com>
+        id S2411816AbgJQFfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 01:35:18 -0400
+Received: from mga05.intel.com ([192.55.52.43]:43562 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409430AbgJQFfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 01:35:18 -0400
+IronPort-SDR: RXH8Q+dOWLdkHKyiD1mnGpbys3Efva8uFXdh1cQEs5Gn+pMZMMsNDAQBRD4RcawbjgLSC08fi2
+ jj3u1XCjZPiw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9776"; a="251422269"
+X-IronPort-AV: E=Sophos;i="5.77,385,1596524400"; 
+   d="scan'208";a="251422269"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 20:32:03 -0700
+IronPort-SDR: kvyfzP2MmHEewAuij6J97fqoPkF27+6ntcl4pUo67Y0ey7WhiD8GVW1pnB6mjR8DSQp0w+kBVn
+ R3ZScB5JlEAA==
+X-IronPort-AV: E=Sophos;i="5.77,385,1596524400"; 
+   d="scan'208";a="521393708"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 20:32:03 -0700
+Date:   Fri, 16 Oct 2020 20:32:03 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V3 2/9] x86/fpu: Refactor arch_set_user_pkey_access()
+ for PKS support
+Message-ID: <20201017033202.GV2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-3-ira.weiny@intel.com>
+ <20201016105743.GK2611@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201017012753.GB4015033@google.com>
+In-Reply-To: <20201016105743.GK2611@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 09:27:53PM -0400, joel@joelfernandes.org wrote:
-[..]
-> > > + *
-> > > + * Memory barrier is needed after adding to length for the case
-> > > + * where length transitions from 0 -> 1. This is because rcu_barrier()
-> > > + * should never miss an update to the length. So the update to length
-> > > + * has to be seen *before* any modifications to the segmented list. Otherwise a
-> > > + * race can happen.
-> > > + * P0 (what P1 sees)	P1
-> > > + * queue to list
-> > > + *                      rcu_barrier sees len as 0
-> > > + * set len = 1.
-> > > + *                      rcu_barrier does nothing.
+On Fri, Oct 16, 2020 at 12:57:43PM +0200, Peter Zijlstra wrote:
+> On Fri, Oct 09, 2020 at 12:42:51PM -0700, ira.weiny@intel.com wrote:
+> > From: Fenghua Yu <fenghua.yu@intel.com>
 > > 
-> > So that would be:
+> > Define a helper, update_pkey_val(), which will be used to support both
+> > Protection Key User (PKU) and the new Protection Key for Supervisor
+> > (PKS) in subsequent patches.
 > > 
-> >       call_rcu()                    rcu_barrier()
-> >       --                            --
-> >       WRITE(len, len + 1)           l = READ(len)
-> >       smp_mb()                      if (!l)
-> >       queue                            check next CPU...
-> > 
-> > 
-> > But I still don't see against what it pairs in rcu_barrier.
+> > Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> > ---
+> >  arch/x86/include/asm/pkeys.h |  2 ++
+> >  arch/x86/kernel/fpu/xstate.c | 22 ++++------------------
+> >  arch/x86/mm/pkeys.c          | 21 +++++++++++++++++++++
+> >  3 files changed, 27 insertions(+), 18 deletions(-)
 > 
-> Actually, for the second case maybe a similar reasoning can be applied
-> (control dependency) but I'm unable to come up with a litmus test.
-> In fact, now I'm wondering how is it possible that call_rcu() races with
-> rcu_barrier(). The module should ensure that no more call_rcu() should happen
-> before rcu_barrier() is called.
+> This is not from Fenghua.
 > 
-> confused
+>   https://lkml.kernel.org/r/20200717085442.GX10769@hirez.programming.kicks-ass.net
+> 
+> This is your patch based on the code I wrote.
 
-So I made a litmus test to show that smp_mb() is needed also after the update
-to length. Basically, otherwise it is possible the callback will see garbage
-that the module cleanup/unload did.
+Ok, I apologize.  Yes the code below was all yours.
 
-C rcubarrier+ctrldep
+Is it ok to add?
 
-(*
- * Result: Never
- *
- * This litmus test shows that rcu_barrier (P1) prematurely
- * returning by reading len 0 can cause issues if P0 does
- * NOT have a smb_mb() after WRITE_ONCE(len, 1).
- * mod_data == 2 means module was unloaded (so data is garbage).
- *)
+Co-developed-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
 
-{ int len = 0; int enq = 0; }
+?
 
-P0(int *len, int *mod_data, int *enq)
-{
-	int r0;
+Thanks,
+Ira
 
-	WRITE_ONCE(*len, 1);
-	smp_mb();		/* Needed! */
-	WRITE_ONCE(*enq, 1);
-
-	r0 = READ_ONCE(*mod_data);
-}
-
-P1(int *len, int *mod_data, int *enq)
-{
-	int r0;
-	int r1;
-
-	r1 = READ_ONCE(*enq);
-
-	// barrier Just for test purpose ("exists" clause) to force the..
-	// ..rcu_barrier() to see enq before len
-	smp_mb();		
-	r0 = READ_ONCE(*len);
-
-	// implicit memory barrier due to conditional */
-	if (r0 == 0)
-		WRITE_ONCE(*mod_data, 2);
-}
-
-// Did P0 read garbage?
-exists (0:r0=2 /\ 1:r0=0 /\ 1:r1=1)
-
+> 
+> > diff --git a/arch/x86/mm/pkeys.c b/arch/x86/mm/pkeys.c
+> > index f5efb4007e74..3cf8f775f36d 100644
+> > --- a/arch/x86/mm/pkeys.c
+> > +++ b/arch/x86/mm/pkeys.c
+> > @@ -208,3 +208,24 @@ static __init int setup_init_pkru(char *opt)
+> >  	return 1;
+> >  }
+> >  __setup("init_pkru=", setup_init_pkru);
+> > +
+> > +/*
+> > + * Update the pk_reg value and return it.
+> > + *
+> > + * Kernel users use the same flags as user space:
+> > + *     PKEY_DISABLE_ACCESS
+> > + *     PKEY_DISABLE_WRITE
+> > + */
+> > +u32 update_pkey_val(u32 pk_reg, int pkey, unsigned int flags)
+> > +{
+> > +	int pkey_shift = pkey * PKR_BITS_PER_PKEY;
+> > +
+> > +	pk_reg &= ~(((1 << PKR_BITS_PER_PKEY) - 1) << pkey_shift);
+> > +
+> > +	if (flags & PKEY_DISABLE_ACCESS)
+> > +		pk_reg |= PKR_AD_BIT << pkey_shift;
+> > +	if (flags & PKEY_DISABLE_WRITE)
+> > +		pk_reg |= PKR_WD_BIT << pkey_shift;
+> > +
+> > +	return pk_reg;
+> > +}
+> > -- 
+> > 2.28.0.rc0.12.gb6a658bd00c9
+> > 
