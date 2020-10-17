@@ -2,317 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D8D291031
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86E8291036
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 08:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437162AbgJQGlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 02:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437155AbgJQGlb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 02:41:31 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78910C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 23:41:31 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id f2so2472774pgf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 23:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=gYXoTy8UdH0s1OT5tLFrTZAYUQ4IBX8u576c7QZTu7o=;
-        b=rrrjzDx+j+nCaUrOb0wLsA6On/IqHbnnbFwI85l1uJ0rGXZSw+zOGrbvtS5PnXlmmm
-         c9/rvAEbDfSZGfcLvsXzwgVDOoVO4FU/n9ZaUAq4dE3dGC7h1gCnFKxKds3BfLVSrWCL
-         h49JLEmiUzcdMiw64wUAMYay+3n5bRIrlY+oidihC0KjrPZI8q05GNI2XJP1OmqFFIpg
-         bgkHahykVJvBAs1Kt6Ht2BWg4YnzAC2JF96es+fOLEkd+7+t+Mvh+MnCiqGfMh6b+IPS
-         1daAB6zNcUj/uMcsTRUK6QcqWKrtrcXKHsfDkf+1Oy7ZA66JHtYY2rX0bSaFh1VLtGq0
-         3osA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=gYXoTy8UdH0s1OT5tLFrTZAYUQ4IBX8u576c7QZTu7o=;
-        b=t9LRIqxvI9sd7YW5o4as/YZDrEBHlQLYZ+kZ+Ei1iehrG14uC+ldsr0RRzmCckKkt6
-         NdkhxT4/KhyPN6l5nTOBjtb6uxG0ZC+18Xcf2FjSwyPdnunsoh1eZyl8NgiNABbJRtA2
-         BjTuqWF8vjVvv0JXcP35ALiZcgaBAdNLi+GWpBQ+BnGOGg9Ma49k6fWQz0C/Cq7reDac
-         1uRDRXcR/fzdd6pXXkkRbICFEFv4RTZ6oU2hrp7Rkd6w4sBvTnpSAKIv5JA8GDkXuNv9
-         vceWLgg94iQHokMSRwVmlLrBBurtiDFosONlRSIZNPrkjB0rW9OxG9swHyDLF923PIot
-         LvOw==
-X-Gm-Message-State: AOAM530gbOMSKGpUntuwJmx54FV66roBUIWr8N88H4f4NjYiG8wk+TV9
-        OKBqRD17+qzAvl6/zCR4l81qbvDJOWvV4g==
-X-Google-Smtp-Source: ABdhPJyqbmiYrm/jFelH5D9cTBq7Nd+XKSQK/7tstwRSXLXRiufktQbZYRDxUUmmjlxMekGIQz7Hx2FQ/DQ2zg==
-Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
- (user=davidgow job=sendgmr) by 2002:a63:c44c:: with SMTP id
- m12mr5945328pgg.92.1602916890770; Fri, 16 Oct 2020 23:41:30 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 23:41:07 -0700
-Message-Id: <20201017064107.375174-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH] fat: Add KUnit tests for checksums and timestamps
-From:   David Gow <davidgow@google.com>
-To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Brendan Higgins <brendanhiggins@google.com>, shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2437175AbgJQGn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 02:43:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437167AbgJQGn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 02:43:57 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 594302074A;
+        Sat, 17 Oct 2020 06:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602917036;
+        bh=a6zcUKlSgSys512jNLN6WswG7+wX08wIvpptFrELGwc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=URdAqCglk8hMKDvBnAqd72tRBYV5G+VJ++lmRLx1WQjkFLIdXI6Yo/3kpuZqpR92w
+         4hOaFHhAjy7ygCldVjCv8LQ4ikTjN0lPhXi23x9a8CjahLJgyuAvaHQyWBdlSJZ+Xr
+         rRZuRSL6WxH7tuIhgihS7Y/kNz5O4KF++SGSK6cw=
+Date:   Sat, 17 Oct 2020 08:44:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Len Brown <len.brown@intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>, guohanjun@huawei.com,
+        Will Deacon <will@kernel.org>, linuxarm@huawei.com,
+        Brice Goglin <Brice.Goglin@inria.fr>
+Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
+Message-ID: <20201017064425.GB1883987@kroah.com>
+References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some basic sanity-check tests for the fat_checksum() function and
-the fat_time_unix2fat() and fat_time_fat2unix() functions. These unit
-tests verify these functions return correct output for a number of test
-inputs.
+On Fri, Oct 16, 2020 at 11:27:02PM +0800, Jonathan Cameron wrote:
+> Both ACPI and DT provide the ability to describe additional layers of
+> topology between that of individual cores and higher level constructs
+> such as the level at which the last level cache is shared.
+> In ACPI this can be represented in PPTT as a Processor Hierarchy
+> Node Structure [1] that is the parent of the CPU cores and in turn
+> has a parent Processor Hierarchy Nodes Structure representing
+> a higher level of topology.
+> 
+> For example Kunpeng 920 has clusters of 4 CPUs.  These do not share
+> any cache resources, but the interconnect topology is such that
+> the cost to transfer ownership of a cacheline between CPUs within
+> a cluster is lower than between CPUs in different clusters on the same
+> die.   Hence, it can make sense to deliberately schedule threads
+> sharing data to a single cluster.
+> 
+> This patch simply exposes this information to userspace libraries
+> like hwloc by providing cluster_cpus and related sysfs attributes.
+> PoC of HWLOC support at [2].
+> 
+> Note this patch only handle the ACPI case.
+> 
+> Special consideration is needed for SMT processors, where it is
+> necessary to move 2 levels up the hierarchy from the leaf nodes
+> (thus skipping the processor core level).
+> 
+> Currently the ID provided is the offset of the Processor
+> Hierarchy Nodes Structure within PPTT.  Whilst this is unique
+> it is not terribly elegant so alternative suggestions welcome.
+> 
+> Note that arm64 / ACPI does not provide any means of identifying
+> a die level in the topology but that may be unrelate to the cluster
+> level.
+> 
+> RFC questions:
+> 1) Naming
+> 2) Related to naming, do we want to represent all potential levels,
+>    or this enough?  On Kunpeng920, the next level up from cluster happens
+>    to be covered by llc cache sharing, but in theory more than one
+>    level of cluster description might be needed by some future system.
+> 3) Do we need DT code in place? I'm not sure any DT based ARM64
+>    systems would have enough complexity for this to be useful.
+> 4) Other architectures?  Is this useful on x86 for example?
+> 
+> [1] ACPI Specification 6.3 - section 5.2.29.1 processor hierarchy node
+>     structure (Type 0)
+> [2] https://github.com/hisilicon/hwloc/tree/linux-cluster
+> 
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> ---
+> 
+>  Documentation/admin-guide/cputopology.rst | 26 ++++++++--
 
-These tests were inspored by -- and serve a similar purpose to -- the
-timestamp parsing KUnit tests in ext4[1].
+You are adding new sysfs files here, but not adding Documentation/ABI/
+entries as well?  This cputopology document is nice, but no one knows to
+look there for sysfs stuff :)
 
-[1]:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/inode-test.c
+thanks,
 
-Signed-off-by: David Gow <davidgow@google.com>
----
- fs/fat/Kconfig    |  13 +++
- fs/fat/Makefile   |   2 +
- fs/fat/fat_test.c | 197 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 212 insertions(+)
- create mode 100644 fs/fat/fat_test.c
-
-diff --git a/fs/fat/Kconfig b/fs/fat/Kconfig
-index 66532a71e8fd..fdef03b79c69 100644
---- a/fs/fat/Kconfig
-+++ b/fs/fat/Kconfig
-@@ -115,3 +115,16 @@ config FAT_DEFAULT_UTF8
- 	  Say Y if you use UTF-8 encoding for file names, N otherwise.
- 
- 	  See <file:Documentation/filesystems/vfat.rst> for more information.
-+
-+config FAT_KUNIT_TEST
-+	tristate "Unit Tests for FAT filesystems" if !KUNIT_ALL_TESTS
-+	select FAT_FS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  This builds the FAT KUnit tests
-+
-+	  For more information on KUnit and unit tests in general, please refer
-+	  to the KUnit documentation in Documentation/dev-tools/kunit
-+
-+	  If unsure, say N
-diff --git a/fs/fat/Makefile b/fs/fat/Makefile
-index 70645ce2f7fc..2b034112690d 100644
---- a/fs/fat/Makefile
-+++ b/fs/fat/Makefile
-@@ -10,3 +10,5 @@ obj-$(CONFIG_MSDOS_FS) += msdos.o
- fat-y := cache.o dir.o fatent.o file.o inode.o misc.o nfs.o
- vfat-y := namei_vfat.o
- msdos-y := namei_msdos.o
-+
-+obj-$(CONFIG_FAT_KUNIT_TEST) += fat_test.o
-diff --git a/fs/fat/fat_test.c b/fs/fat/fat_test.c
-new file mode 100644
-index 000000000000..c1b4348b9b3b
---- /dev/null
-+++ b/fs/fat/fat_test.c
-@@ -0,0 +1,197 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit tests for FAT filesystems.
-+ *
-+ * Copyright (C) 2020 Google LLC.
-+ * Author: David Gow <davidgow@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+
-+#include "fat.h"
-+
-+static void fat_checksum_test(struct kunit *test)
-+{
-+	/* With no extension. */
-+	KUNIT_EXPECT_EQ(test, fat_checksum("VMLINUX    "), 44);
-+	/* With 3-letter extension. */
-+	KUNIT_EXPECT_EQ(test, fat_checksum("README  TXT"), 115);
-+	/* With short (1-letter) extension. */
-+	KUNIT_EXPECT_EQ(test, fat_checksum("ABCDEFGHA  "), 98);
-+}
-+
-+
-+struct fat_timestamp_testcase {
-+	const char *name;
-+	struct timespec64 ts;
-+	__le16 time;
-+	__le16 date;
-+	u8 cs;
-+	int time_offset;
-+};
-+
-+const static struct fat_timestamp_testcase time_test_cases[] = {
-+	{
-+		.name = "Earliest possible UTC (1980-01-01 00:00:00)",
-+		.ts = {.tv_sec = 315532800LL, .tv_nsec = 0L},
-+		.time = 0,
-+		.date = 33,
-+		.cs = 0,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "Latest possible UTC (2107-12-31 23:59:58)",
-+		.ts = {.tv_sec = 4354819198LL, .tv_nsec = 0L},
-+		.time = 49021,
-+		.date = 65439,
-+		.cs = 0,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "Earliest possible (UTC-11) (== 1979-12-31 13:00:00 UTC)",
-+		.ts = {.tv_sec = 315493200LL, .tv_nsec = 0L},
-+		.time = 0,
-+		.date = 33,
-+		.cs = 0,
-+		.time_offset = 11 * 60,
-+	},
-+	{
-+		.name = "Latest possible (UTC+11) (== 2108-01-01 10:59:58 UTC)",
-+		.ts = {.tv_sec = 4354858798LL, .tv_nsec = 0L},
-+		.time = 49021,
-+		.date = 65439,
-+		.cs = 0,
-+		.time_offset = -11 * 60,
-+	},
-+	{
-+		.name = "Leap Day / Year (1996-02-29 00:00:00)",
-+		.ts = {.tv_sec = 825552000LL, .tv_nsec = 0L},
-+		.time = 0,
-+		.date = 8285,
-+		.cs = 0,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "Year 2000 is leap year (2000-02-29 00:00:00)",
-+		.ts = {.tv_sec = 951782400LL, .tv_nsec = 0L},
-+		.time = 0,
-+		.date = 10333,
-+		.cs = 0,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "Year 2100 not leap year (2100-03-01 00:00:00)",
-+		.ts = {.tv_sec = 4107542400LL, .tv_nsec = 0L},
-+		.time = 0,
-+		.date = 61537,
-+		.cs = 0,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "Leap year + timezone UTC+1 (== 2004-02-29 00:30:00 UTC)",
-+		.ts = {.tv_sec = 1078014600LL, .tv_nsec = 0L},
-+		.time = 48064,
-+		.date = 12380,
-+		.cs = 0,
-+		.time_offset = -60,
-+	},
-+	{
-+		.name = "Leap year + timezone UTC-1 (== 2004-02-29 23:30:00 UTC)",
-+		.ts = {.tv_sec = 1078097400LL, .tv_nsec = 0L},
-+		.time = 960,
-+		.date = 12385,
-+		.cs = 0,
-+		.time_offset = 60,
-+	},
-+	{
-+		.name = "VFAT odd-second resolution (1999-12-31 23:59:59)",
-+		.ts = {.tv_sec = 946684799LL, .tv_nsec = 0L},
-+		.time = 49021,
-+		.date = 10143,
-+		.cs = 100,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "VFAT 10ms resolution (1980-01-01 00:00:00:0010)",
-+		.ts = {.tv_sec = 315532800LL, .tv_nsec = 10000000L},
-+		.time = 0,
-+		.date = 33,
-+		.cs = 1,
-+		.time_offset = 0,
-+	},
-+};
-+
-+static void fat_time_fat2unix_test(struct kunit *test)
-+{
-+	struct msdos_sb_info fake_sb;
-+	int i;
-+	struct timespec64 ts;
-+
-+	for (i = 0; i < ARRAY_SIZE(time_test_cases); ++i) {
-+		fake_sb.options.tz_set = 1;
-+		fake_sb.options.time_offset = time_test_cases[i].time_offset;
-+
-+		fat_time_fat2unix(&fake_sb, &ts,
-+				  time_test_cases[i].time,
-+				  time_test_cases[i].date,
-+				  time_test_cases[i].cs);
-+		KUNIT_EXPECT_EQ_MSG(test,
-+				    time_test_cases[i].ts.tv_sec,
-+				    ts.tv_sec,
-+				    "Timestamp mismatch (seconds) in case \"%s\"\n",
-+				    time_test_cases[i].name);
-+		KUNIT_EXPECT_EQ_MSG(test,
-+				    time_test_cases[i].ts.tv_nsec,
-+				    ts.tv_nsec,
-+				    "Timestamp mismatch (nanoseconds) in case \"%s\"\n",
-+				    time_test_cases[i].name);
-+	}
-+}
-+
-+static void fat_time_unix2fat_test(struct kunit *test)
-+{
-+	struct msdos_sb_info fake_sb;
-+	int i;
-+	__le16 date, time;
-+	u8 cs;
-+
-+	for (i = 0; i < ARRAY_SIZE(time_test_cases); ++i) {
-+		fake_sb.options.tz_set = 1;
-+		fake_sb.options.time_offset = time_test_cases[i].time_offset;
-+
-+		fat_time_unix2fat(&fake_sb, &time_test_cases[i].ts,
-+				  &time, &date, &cs);
-+		KUNIT_EXPECT_EQ_MSG(test,
-+				    time_test_cases[i].time,
-+				    time,
-+				    "Time mismatch in case \"%s\"\n",
-+				    time_test_cases[i].name);
-+		KUNIT_EXPECT_EQ_MSG(test,
-+				    time_test_cases[i].date,
-+				    date,
-+				    "Date mismatch in case \"%s\"\n",
-+				    time_test_cases[i].name);
-+		KUNIT_EXPECT_EQ_MSG(test,
-+				    time_test_cases[i].cs,
-+				    cs,
-+				    "Centisecond mismatch in case \"%s\"\n",
-+				    time_test_cases[i].name);
-+	}
-+}
-+
-+static struct kunit_case fat_test_cases[] = {
-+	KUNIT_CASE(fat_checksum_test),
-+	KUNIT_CASE(fat_time_fat2unix_test),
-+	KUNIT_CASE(fat_time_unix2fat_test),
-+	{},
-+};
-+
-+static struct kunit_suite fat_test_suite = {
-+	.name = "fat_test",
-+	.test_cases = fat_test_cases,
-+};
-+
-+kunit_test_suites(&fat_test_suite);
-+
-+MODULE_LICENSE("GPL v2");
-+
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+greg k-h
