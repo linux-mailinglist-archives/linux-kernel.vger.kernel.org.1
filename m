@@ -2,82 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A815291135
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 11:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E65291143
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 12:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436622AbgJQJwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 05:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411859AbgJQJwy (ORCPT
+        id S2406181AbgJQKCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 06:02:39 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53898 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391990AbgJQKCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 05:52:54 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F525C061755
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 02:52:54 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id gm14so2682267pjb.2
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 02:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=T8WCR0uqO7FdRKPquY75xpPQ5KYI1PWYHzaEu+F4REg=;
-        b=EDAOR9TOW4rzbEdkYiwre3sa1QYU+Kz2sn3CXj9SgAE+r9pM3wcIo+w3FFZdd6vR4g
-         LFtHdvoev254jrxMHfM4CNotKss6u3aiUHUxZfomyLRaUT/4vgLMUb4Xfe0Sxpfj4Dsd
-         WV1UnpnjY5335JjFtYGa4nVrHxYiiaAfFOFBOYTGEUlhZ3XQ3gZWALH/qRrtJgBLDb+t
-         eF+YVEo2yC8H+VlX6rgNxV8+iJx+ZPfPuYUzdZErnFGhFFSyh560Hhe31rVIXW5wp7Pw
-         2HA93JGb6qhEIW0RfRd7RiNaHnWwDjgBzLmkm0lQ4imemiVLii1fbhEHInNNEjNpPg5/
-         WetQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=T8WCR0uqO7FdRKPquY75xpPQ5KYI1PWYHzaEu+F4REg=;
-        b=PpqeQJnq3o2uBfexJryVEE/pTvONw9A5of+zm5d5a18EEqkacE7kSn24vwcr2YgbwU
-         FtVHU6nE0Yit/mW6irZaPcjspOTZhT+sE9FKSMB6aLreZPbHSp8WETzKXWO8Cp01KqCC
-         +taT4wOf/sixg4MJbWilR2shApegj9k5Gmtgbodvz7O47/BmHpRjHG3R7r/kj1c/an2K
-         tQ51Ra2+cc2qh2i7bmjriGhXyaOpmUhF04cCTBmbt0PF0JPCPhRe7ee23UHCdC1pHpgI
-         lcar2hDubr0RJ8xgl9Ndkm+mTXuXACzAhSXc2Pq2+vcpWrhGQLb5J/3NEzfovyiOPFh4
-         Oorg==
-X-Gm-Message-State: AOAM533AZUgrXCLa/c7lJfp5iL5/dMBcL9XS7M02U0ky2AHboDntgxpk
-        5K0wp8JyPQ0ZItS/2BpcMK0=
-X-Google-Smtp-Source: ABdhPJyNvTapF4i7x+sOCVb/Ff08khLMiaMxKldKRA5q9LHSpcFQAstKttdzdSW9je8SGeoUltzY/Q==
-X-Received: by 2002:a17:902:bcc1:b029:d3:9bdf:32e3 with SMTP id o1-20020a170902bcc1b02900d39bdf32e3mr8155869pls.1.1602928373668;
-        Sat, 17 Oct 2020 02:52:53 -0700 (PDT)
-Received: from localhost ([13.94.42.177])
-        by smtp.gmail.com with ESMTPSA id v129sm5209214pfc.76.2020.10.17.02.52.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 17 Oct 2020 02:52:53 -0700 (PDT)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Cc:     Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH] ring-buffer: Update the description for ring_buffer_wait
-Date:   Sat, 17 Oct 2020 17:52:46 +0800
-Message-Id: <20201017095246.5170-1-hqjagain@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 17 Oct 2020 06:02:38 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 6CAC31C0B76; Sat, 17 Oct 2020 12:02:35 +0200 (CEST)
+Date:   Sat, 17 Oct 2020 12:02:34 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Ian Kent <raven@themaw.net>, torvalds@linux-foundation.org,
+        omosnace@redhat.com, hch@lst.de
+Cc:     kernel list <linux-kernel@vger.kernel.org>, autofs@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com
+Subject: autofs: use __kernel_write() for the autofs pipe writing causes
+ regression in -next was Re: 5.9.0-next-20201015: autofs oops in
+ update-binfmts
+Message-ID: <20201017100234.GA3797@amd>
+References: <20201016123530.GA30444@duo.ucw.cz>
+ <bfac7ed28d79b8696cb8576790b27027a78cd3b7.camel@themaw.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="3MwIy2ne0vdjdPXF"
+Content-Disposition: inline
+In-Reply-To: <bfac7ed28d79b8696cb8576790b27027a78cd3b7.camel@themaw.net>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function changed at some point, but the description was not
-updated.
 
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
----
- kernel/trace/ring_buffer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--3MwIy2ne0vdjdPXF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index b2c6f2546d69..598c388d6436 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -793,7 +793,7 @@ static void rb_wake_up_waiters(struct irq_work *work)
-  * ring_buffer_wait - wait for input to the ring buffer
-  * @buffer: buffer to wait on
-  * @cpu: the cpu buffer to wait on
-- * @full: wait until a full page is available, if @cpu != RING_BUFFER_ALL_CPUS
-+ * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
-  *
-  * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
-  * as data is added to any of the @buffer's cpu buffers. Otherwise
--- 
-2.17.1
+Hi!
 
+> > I'm getting this during boot: 32-bit thinkpad x60.
+>=20
+> This is very odd.
+>=20
+> The change in next is essentially a revert of a change, maybe I'm
+> missing something and the revert isn't quite a revert. Although
+> there was one difference.
+>=20
+> I'll check for other revert differences too.
+>=20
+> Are you in a position to check a kernel without the 5.9 change
+> if I send you a patch?
+
+I think I can revert changes myself.
+
+pavel@amd:/data/l/linux-next-32$ git show
+90fb702791bf99b959006972e8ee7bb4609f441b | git apply -R
+pavel@amd:/data/l/linux-next-32$
+pavel@amd:/data/l/linux-next-32$ git show
+d7a8c5c78d37500346c25cc8887ed2c3fda8ed4d | git apply -R
+
+=2E..and it boots up without a warning. Let me re-apply Linus' patch:
+
+pavel@amd:/data/l/linux-next-32$ git show
+90fb702791bf99b959006972e8ee7bb4609f441b | git apply
+pavel@amd:/data/l/linux-next-32$
+
+=2E..and the oops is back:
+
+Bad Linus!
+
+[    9.889419] EXT4-fs (sda2): mounted filesystem with ordered data
+mode. Opts: errors=3Dremount-ro
+[   10.042221] BUG: kernel NULL pointer dereference, address: 00000000
+[   10.045702] #PF: supervisor read access in kernel mode
+[   10.048142] #PF: error_code(0x0000) - not-present page
+[   10.052172] *pdpt =3D 00000000031ea001 *pde =3D 0000000000000000
+[   10.052172] Oops: 0000 [#1] PREEMPT SMP PTI
+[   10.052172] CPU: 1 PID: 2764 Comm: update-binfmts Not tainted
+5.9.0-next-20201015+ #154
+[   10.065205] Hardware name: LENOVO 17097HU/17097HU, BIOS 7BETD8WW
+(2.19 ) 03/31/2011
+[   10.065205] EIP: __kernel_write+0xd4/0x230
+[   10.065205] Code: 89 d6 64 8b 15 b4 77 4c c5 8b 8a 38 0b 00 00 31
+d2 85 c9 74 04 0f b7 51 30 66 89 75 e8 8b 75 ac 8d 4d b0 89 45 e4 66
+89 55 ea <8b> 06 8b 56 04 57 6a 01 89 45 d4 8d 45 b8 89 55 d8 ba 01 00
+00 00
+[   10.065205] EAX: 00020000 EBX: c192d640 ECX: c2b89ad0 EDX: 00000000
+[   10.065205] ESI: 00000000 EDI: 0000012c EBP: c2b89b20 ESP: c2b89acc
+[   10.065205] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS:
+00010282
+[   10.065205] CR0: 80050033 CR2: 00000000 CR3: 03414000 CR4: 000006b0
+[   10.065205] Call Trace:
+[   10.065205]  ? __mutex_unlock_slowpath+0x2b/0x2c0
+[   10.065205]  ? dma_direct_map_sg+0x13a/0x320
+[   10.065205]  autofs_notify_daemon+0x14d/0x2b0
+[   10.065205]  autofs_wait+0x4cd/0x770
+[   10.065205]  ? autofs_d_automount+0xd6/0x1e0
+[   10.065205]  autofs_mount_wait+0x43/0xe0
+[   10.065205]  autofs_d_automount+0xdf/0x1e0
+[   10.065205]  __traverse_mounts+0x85/0x200
+[   10.065205]  step_into+0x368/0x620
+[   10.065205]  ? proc_setup_thread_self+0x110/0x110
+[   10.065205]  walk_component+0x58/0x190
+[   10.065205]  link_path_walk.part.0+0x245/0x360
+[   10.065205]  path_lookupat.isra.0+0x31/0x130
+[   10.065205]  filename_lookup+0x8d/0x130
+[   10.065205]  ? cache_alloc_debugcheck_after+0x151/0x180
+[   10.065205]  ? getname_flags+0x1f/0x160
+[   10.065205]  ? kmem_cache_alloc+0x75/0x100
+[   10.065205]  user_path_at_empty+0x25/0x30
+[   10.065205]  vfs_statx+0x63/0x100
+[   10.065205]  ? _raw_spin_unlock+0x18/0x30
+[   10.065205]  ? replace_page_cache_page+0x160/0x160
+[   10.065205]  __do_sys_stat64+0x36/0x60
+[   10.065205]  ? exit_to_user_mode_prepare+0x35/0xe0
+[   10.065205]  ? irqentry_exit_to_user_mode+0x8/0x20
+[   10.065205]  ? irqentry_exit+0x55/0x70
+[   10.065205]  ? exc_page_fault+0x228/0x3c0
+[   10.065205]  __ia32_sys_stat64+0xd/0x10
+[   10.065205]  do_int80_syscall_32+0x2c/0x40
+[   10.065205]  entry_INT80_32+0x111/0x111
+[   10.065205] EIP: 0xb7f03092
+[   10.065205] Code: 00 00 00 e9 90 ff ff ff ff a3 24 00 00 00 68 30
+00 00 00 e9 80 ff ff ff ff a3 e8 ff ff ff 66 90 00 00 00 00 00 00 00
+00 cd 80 <c3> 8d b4 26 00 00 00 00 8d b6 00 00 00 00 8b 1c 24 c3 8d b4
+26 00
+[   10.065205] EAX: ffffffda EBX: 004fa490 ECX: bfaf7e6c EDX: 004f9348
+[   10.065205] ESI: 00000000 EDI: 004fa490 EBP: bfaf7e6c ESP: bfaf7e44
+[   10.065205] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS:
+00000296
+[   10.065205] Modules linked in:
+[   10.065205] CR2: 0000000000000000
+[   10.073216] ---[ end trace 13a709ba02b08366 ]---
+[   10.073221] EIP: __kernel_write+0xd4/0x230
+[   10.073224] Code: 89 d6 64 8b 15 b4 77 4c c5 8b 8a 38 0b 00 00 31
+d2 85 c9 74 04 0f b7 51 30 66 89 75 e8 8b 75 ac 8d 4d b0 89 45 e4 66
+89 55 ea <8b> 06 8b 56 04 57 6a 01 89 45 d4 8d 45 b8 89 55 d8 ba 01 00
+00 00
+[   10.073226] EAX: 00020000 EBX: c192d640 ECX: c2b89ad0 EDX: 00000000
+[   10.073228] ESI: 00000000 EDI: 0000012c EBP: c2b89b20 ESP: c2b89acc
+[   10.073230] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS:
+00010282
+[   10.073232] CR0: 80050033 CR2: b7e10020 CR3: 03414000 CR4: 000006b0
+[   10.453818] systemd-journald[2512]: Received request to flush
+runtime journal from PID 1
+[   24.752167] iwl3945 0000:03:00.0: loaded firmware version 15.32.2.9
+
+> And we should check if that difference to what was originally
+> there is the source of the problem, so probably two things to
+> follow up on, reverting that small difference first would be
+> the way to go.
+>=20
+> Are you able to reliably reproduce it?
+
+Looks so, yes.
+
+Best regards,
+								Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--3MwIy2ne0vdjdPXF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+KwToACgkQMOfwapXb+vIIvgCfdMHvaaR45ZlAc3B4KuEcsU2l
+ih4Anjqtvg4aK6pE84L1NWwoLKcLj4U5
+=rzWF
+-----END PGP SIGNATURE-----
+
+--3MwIy2ne0vdjdPXF--
