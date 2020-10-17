@@ -2,132 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B5D29109A
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 09:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32C029109B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 09:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437518AbgJQHv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 03:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46038 "EHLO
+        id S2437548AbgJQH4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 03:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408914AbgJQHv5 (ORCPT
+        with ESMTP id S2437539AbgJQH4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 03:51:57 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1CAC061755
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:51:57 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id o3so2795549pgr.11
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:51:57 -0700 (PDT)
+        Sat, 17 Oct 2020 03:56:15 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646D4C0613D3
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:56:15 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id b15so2968680iod.13
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 00:56:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ieRlNgPHBAGbi6ikKKJ3AXzMP9jjGJKj6Jv32R1alc0=;
-        b=OXsrb1bmQxi4DbWtQdmiqD7RPR5zIb6GBKE765xITMw3lNXoCDAZC/4YyXtI2Pz121
-         hDvE87Yiyv5xwFsDmfl1iPnu5yo8PaiwnPG6e9+x+z6OfrRziL/UWEj707U3sEtrlA+F
-         YcooKsaQ1qKJejPnSa2HkmDYeZizrQNxRSbQargzJxwS0PVIpadlVsi35PJ2xhPPr3HX
-         3kBssc7Bdk4hG8kSYdLx6/ON/cpgE/5pS3m0/266rH1XpF63KLLswqsL5lbysIlBOKLZ
-         l5FXGIqmbQmdGt9qRhwLwvuAuifC8yXYFoKi/YmKMGKwA+KUYccHqvDQ/K64YytEy4oQ
-         UEgg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eeJRitbwnPEjMGDAswjdWZJQPMXqea0MWxUvLCrKIe8=;
+        b=fQTsui2nq+dEQbjtVAi+6auWqLFzWYsJGNhS+sSBVVe9TDbCyasl31EytKoeEMB/TV
+         bsTKuyMwufHkTge/xOII5YnG/q+HNLmhLMBCQZzW3COgMsKSLkKBvZfVMod+5LfpDY8I
+         2OkvKDnZShKflX/rXSOL69NbsdmLJ9m7a4dvqO37ZqO6XbvNz5yWJ7L3e2ljmag0VAwh
+         9uOks2CoWsuT3PnGdFXpSoD1MGSIEtsNuQ0XOlMyATM1Ky/k7QmF1OiwaAEK75UIiQIZ
+         Oh0A3vnnNo4NAU+ei7wga7i6o0hhi8pQfBPXsvJS3MT3Jr7M5BeJcifkQO50ku0koWme
+         g9gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ieRlNgPHBAGbi6ikKKJ3AXzMP9jjGJKj6Jv32R1alc0=;
-        b=txcyP2XUiHyqQygCrHi5U7VsZQcD6XGP9QeSSDyCTGeUBw3gJ8ZwFa2sz5Y38RZO+X
-         v+HBddR4bHJEvPe3RXcGItrmTO17dCKK9RgkwKb32Zb7yT0u017mYLIEcQssCc2TU2cl
-         350+/Lz8O9t/DANktJoqdhx9qPSdCUfc9J5ZWywlFK12GB8rra46NSZcU1SNa0rCNBtC
-         /PIHIEPpiqI9gPozL+oqR1DEuEbbulocu8imzOB8S3QBhhiVN9l3V7okNvs4DwBXBykS
-         DolQ5Y7YX0YqNm8SHOzItn+N7e/wVDJdBGc88cf54fjPEpVHC6mfn8NK6vnmUN3O1uQB
-         XYRQ==
-X-Gm-Message-State: AOAM530aFESfxDWh+zuRN+w/ZogXp6pbDzYrOX0slgP/W97tVUzYGRRr
-        qeHPyWg+hoxfAftqjaWAbzlR5lj03RIY0XYR
-X-Google-Smtp-Source: ABdhPJzofSdFAL+b24AjD7ILZ385ACUFzCnYfzbnhkskuCrjG81yb+qPa0HDOo2DX1Wvfo3UuoM2Cg==
-X-Received: by 2002:a63:b348:: with SMTP id x8mr6531478pgt.207.1602921116555;
-        Sat, 17 Oct 2020 00:51:56 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:9004:68e2:46b7:2869:5094:8e3e])
-        by smtp.gmail.com with ESMTPSA id s186sm5131335pfs.51.2020.10.17.00.51.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Oct 2020 00:51:55 -0700 (PDT)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com
-Subject: [PATCH v4] checkpatch: add new exception to repeated word check
-Date:   Sat, 17 Oct 2020 13:21:31 +0530
-Message-Id: <20201017075131.47566-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eeJRitbwnPEjMGDAswjdWZJQPMXqea0MWxUvLCrKIe8=;
+        b=KlTRkHGwKZ1q4hZR6C53Rq0r6CuNFpcir8+BeljiXeeiSc5Mh4CdVxkSQaYUhIJf6G
+         6TLO4KL7/jZnioLP+JsHL0IBizLcE1rp5St6Ta3Y/0TNI71xalGTM2BDAVIyTnB8YkK1
+         EWCmZRMfy6IFFIALg49ew3MuJ/iCCl03iEbz5HnJnyziIUISbxGAtb59YADko8+Yitwc
+         yUY6t8FtMNC8uMBFtQHQaZtKQkJkQYCAKbkQ60Qe5ScRg58u/W7uCsfO9vnzKKBMMQvl
+         clHNfE300GEhj+OlJ3A78jhFBovyxmMlMlke8nfd65CYOc91CjmqtoRbBpTr9kGsXfkg
+         izCw==
+X-Gm-Message-State: AOAM533aBVk/mOMwKSDxHEwJR8MyQ8nHVu35f3cyZS4OIPch6ih0zPrJ
+        kf9y/4PhJ4yztCkdXGKiKr0W4MqsAhBByMhoiZgvbw==
+X-Google-Smtp-Source: ABdhPJzL3bAQA0diWHzlJsviIewq/7uIeD6vEKRBQLicAE6d9cDxd8xKWzSzERbY3iPVM86yC4BirP9GkI85BkQLisY=
+X-Received: by 2002:a5e:9307:: with SMTP id k7mr5212937iom.129.1602921374727;
+ Sat, 17 Oct 2020 00:56:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201016090437.205626543@linuxfoundation.org>
+In-Reply-To: <20201016090437.205626543@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 17 Oct 2020 13:26:02 +0530
+Message-ID: <CA+G9fYsWa2=LcL2xsS-kTVgdi9-c=X3V13dzbMvpuXurbjWL7w@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/16] 4.9.240-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
-moved the repeated word test to check for more file types. But after
-this, if checkpatch.pl is run on MAINTAINERS, it generates several
-new warnings of the type:
+On Fri, 16 Oct 2020 at 14:38, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.240 release.
+> There are 16 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.240-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-WARNING: Possible repeated word: 'git'
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-For example:
-WARNING: Possible repeated word: 'git'
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-So, the pattern "git git://..." is a false positive in this case.
+Summary
+------------------------------------------------------------------------
 
-There are several other combinations which may produce a wrong
-warning message, such as "@size size", ":Begin begin", etc.
+kernel: 4.9.240-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: eb0fbe0c6b1c2863b26464de441a406275c47b6d
+git describe: v4.9.239-17-geb0fbe0c6b1c
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
+y/build/v4.9.239-17-geb0fbe0c6b1c
 
-Extend repeated word check to compare the characters before and
-after the word matches. If the preceding or succeeding character
-belongs to the exception list, the warning is avoided.
+No regressions (compared to build v4.9.239)
 
-Link: https://lore.kernel.org/linux-kernel-mentees/81b6a0bb2c7b9256361573f7a13201ebcd4876f1.camel@perches.com/
-Suggested-by: Joe Perches <joe@perches.com>
-Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
- scripts/checkpatch.pl | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+No fixes (compared to build v4.9.239)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index f1a4e61917eb..5dc5bf75c6e7 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3052,19 +3052,30 @@ sub process {
- 
- # check for repeated words separated by a single space
- 		if ($rawline =~ /^\+/ || $in_commit_log) {
-+			pos($rawline) = 1 if (!$in_commit_log);
- 			while ($rawline =~ /\b($word_pattern) (?=($word_pattern))/g) {
- 
- 				my $first = $1;
- 				my $second = $2;
--
-+				my $start_pos = $-[1];
-+				my $end_pos = $+[2];
- 				if ($first =~ /(?:struct|union|enum)/) {
- 					pos($rawline) += length($first) + length($second) + 1;
- 					next;
- 				}
- 
--				next if ($first ne $second);
-+				next if (lc($first) ne lc($second));
- 				next if ($first eq 'long');
- 
-+				# check for character before and after the word matches
-+				my $start_char = '';
-+				my $end_char = '';
-+				$start_char = substr($rawline, $start_pos - 1, 1) if ($start_pos > ($in_commit_log? 0 : 1));
-+				$end_char = substr($rawline, $end_pos, 1) if ($end_pos < length($rawline));
-+
-+				next if ($start_char =~ /^\S$/);
-+				next if ($end_char !~ /^[\.\,\;\?\!\s]?$/);
-+
- 				if (WARN("REPEATED_WORD",
- 					 "Possible repeated word: '$first'\n" . $herecurr) &&
- 				    $fix) {
--- 
-2.27.0
+Ran 17816 total tests in the following environments and test suites.
 
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* network-basic-tests
+* ltp-syscalls-tests
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
