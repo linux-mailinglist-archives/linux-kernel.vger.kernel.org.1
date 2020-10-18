@@ -2,127 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187602918EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 20:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6F92918EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 20:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727466AbgJRSpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 14:45:47 -0400
-Received: from smtprelay0149.hostedemail.com ([216.40.44.149]:41168 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726075AbgJRSpq (ORCPT
+        id S1727482AbgJRSuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 14:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726075AbgJRSut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 14:45:46 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 4F7A3182CED28;
-        Sun, 18 Oct 2020 18:45:45 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6299:7875:7903:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12438:12555:12760:13141:13230:13255:13439:14093:14097:14181:14394:14659:14721:21080:21433:21627:21819:21990:30003:30022:30025:30029:30046:30054:30070:30080:30089,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: trees27_0205dac27230
-X-Filterd-Recvd-Size: 3770
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 18 Oct 2020 18:45:44 +0000 (UTC)
-Message-ID: <c5e23b45562373d632fccb8bc04e563abba4dd1d.camel@perches.com>
-Subject: [PATCH V2] checkpatch: Enable GIT_DIR environment use to set git
- repository location
-From:   Joe Perches <joe@perches.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andy Whitcroft <apw@shadowen.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Sun, 18 Oct 2020 11:45:43 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sun, 18 Oct 2020 14:50:49 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50F7C061755;
+        Sun, 18 Oct 2020 11:50:49 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id a1so4332722pjd.1;
+        Sun, 18 Oct 2020 11:50:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p3YiCTiAFbX/Gmg1awU3t3P6S3a7w4v1beKYXNj4/dQ=;
+        b=dx/uHL8qWS0dPYXJuEsdGYld4HjBmg+zX+pY4wuXDMEl+Anl+J5SNH2CD8LM1DuiM5
+         R6Gu2o4EMoL/60NcgZz8CRgG1Fiig6T+CZKuHWzwz/8R2vn5bahLKz/MZ7sPKAv4APUK
+         IJzsOI3cpJpSa0ob8qgb3t8RXzy/WFYdf5vbH4J4IvFk8I40uRW7yjUS5unGGhfBg7Ih
+         JdThp74pR463jt7An/sGTzBPQ54Bxc6EvgivcIDcFLxXgpuGYRm6O4guWGx+GLj28iTx
+         fzK78LU13eP6SWa30blxU+GRMOYqZuMi7BAE+8ScCNJ1VeeBH0/td9sT4dV2xUIdJoer
+         fRmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p3YiCTiAFbX/Gmg1awU3t3P6S3a7w4v1beKYXNj4/dQ=;
+        b=AD/IHRSNcsLMu4thr8dG+lF7lVMO0HshO0G0nDRQXg0At683oyxcjj9s89Yfib/KPr
+         33Y2QdfHE1AgVJiKo9QCorIJZ2A2aEPyZyWritIBS43IlEaZxRqimszvH8TesmzVPPsm
+         uIhGPY6PMarFJdPt//F/gEO9bfDuVBc8sBpqa9zBHnbK4pPAc0ZJRgsTHJWy/L7ulPqY
+         4VY7ISDKJqcy8MGEnRzgv7kl843X1RQ73kT673kHyLNSu6hqWEb5qBIjDkKnb5zxkrSX
+         yTZM9XtOPVssJ/ng49JOLi3gWwsKku++HULSatECMLrRxoxKrjTxNWMiWlPXm7FNbpGF
+         nc1A==
+X-Gm-Message-State: AOAM531K63IE2V7bA6sGUnHEbFAtHmTDdGG62zkNJE1anndLvcVTpQQX
+        8gVRsukNQORFWu+mNcbohrkytOitVTe+60syhVI=
+X-Google-Smtp-Source: ABdhPJx7KOXioaWsrCOKqX/TfV9NiRJ7ADS9suogUzjnMYiwt3jpQTA2AJIMtPIxVj94oN68ppD7hwpmjJf+gxwYllA=
+X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr14588785pjb.228.1603047049318;
+ Sun, 18 Oct 2020 11:50:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201017211035.257110-1-luka.kovacic@sartura.hr> <20201017211035.257110-5-luka.kovacic@sartura.hr>
+In-Reply-To: <20201017211035.257110-5-luka.kovacic@sartura.hr>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 18 Oct 2020 21:50:33 +0300
+Message-ID: <CAHp75VdQnNXdhs52+WFt4bQKwZ3u5euFd3d65XU+-sMSFjt8jA@mail.gmail.com>
+Subject: Re: [PATCH v5 4/6] drivers: leds: Add the iEi WT61P803 PUZZLE LED driver
+To:     Luka Kovacic <luka.kovacic@sartura.hr>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        luka.perkov@sartura.hr, robert.marko@sartura.hr
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If set, use the environment variable GIT_DIR to change the
-default .git location of the kernel git tree.
+On Sun, Oct 18, 2020 at 12:18 AM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
+>
+> Add support for the iEi WT61P803 PUZZLE LED driver.
+> Currently only the front panel power LED is supported.
+>
+> This driver depends on the iEi WT61P803 PUZZLE MFD driver.
 
-If GIT_DIR is unset, keep using the current ".git" default.
+...
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
+> +/**
+> + * struct iei_wt61p803_puzzle_led - MCU LED Driver
+> + *
+> + * @mcu:               MCU struct pointer
+> + * @response_buffer    Global MCU response buffer allocation
+> + * @lock:              General mutex lock to protect simultaneous R/W access to led_power_state
+> + * @led_power_state:   State of the front panel power LED
+> + * @cdev:              LED classdev
+> + */
+> +struct iei_wt61p803_puzzle_led {
+> +       struct iei_wt61p803_puzzle *mcu;
+> +       unsigned char *response_buffer;
+> +       struct mutex lock;
+> +       int led_power_state;
 
-V2: learn to type my own email address...
+> +       struct led_classdev cdev;
 
-commit f5f613259f3f ("checkpatch: allow not using -f with files that are in git")
-breaks the use of checkpatch with:
+If you are using container_of() and move this member to be first, you
+will effectively make the container_of() a no-op.
 
-   Global symbol "$gitroot" requires explicit package name (did you forget to declare "my $gitroot"?) at ./scripts/checkpatch.pl line 980.
-   Execution of ./scripts/checkpatch.pl aborted due to compilation errors.
+> +};
+> +
+> +static inline struct iei_wt61p803_puzzle_led *cdev_to_iei_wt61p803_puzzle_led
+> +       (struct led_classdev *led_cdev)
+> +{
+> +       return dev_get_drvdata(led_cdev->dev->parent);
 
-An unsigned test patch exists in -next that is required for
-that new commit.
+Why not simply call container_of()
 
-So, provide a better commit description for that test patch
-and sign it too...
+> +}
 
-scripts/checkpatch.pl | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+...
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index f40a81f24d43..a213cdb82ab0 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -43,6 +43,8 @@ my $list_types = 0;
- my $fix = 0;
- my $fix_inplace = 0;
- my $root;
-+my $gitroot = $ENV{'GIT_DIR'};
-+$gitroot = ".git" if !defined($gitroot);
- my %debug;
- my %camelcase = ();
- my %use_type = ();
-@@ -908,7 +910,7 @@ sub is_maintained_obsolete {
- sub is_SPDX_License_valid {
- 	my ($license) = @_;
- 
--	return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$root/.git"));
-+	return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
- 
- 	my $root_path = abs_path($root);
- 	my $status = `cd "$root_path"; echo "$license" | python scripts/spdxcheck.py -`;
-@@ -926,7 +928,7 @@ sub seed_camelcase_includes {
- 
- 	$camelcase_seeded = 1;
- 
--	if (-e ".git") {
-+	if (-e "$gitroot") {
- 		my $git_last_include_commit = `${git_command} log --no-merges --pretty=format:"%h%n" -1 -- include`;
- 		chomp $git_last_include_commit;
- 		$camelcase_cache = ".checkpatch-camelcase.git.$git_last_include_commit";
-@@ -954,7 +956,7 @@ sub seed_camelcase_includes {
- 		return;
- 	}
- 
--	if (-e ".git") {
-+	if (-e "$gitroot") {
- 		$files = `${git_command} ls-files "include/*.h"`;
- 		@include_files = split('\n', $files);
- 	}
-@@ -987,7 +989,7 @@ sub git_is_single_file {
- sub git_commit_info {
- 	my ($commit, $id, $desc) = @_;
- 
--	return ($id, $desc) if ((which("git") eq "") || !(-e ".git"));
-+	return ($id, $desc) if ((which("git") eq "") || !(-e "$gitroot"));
- 
- 	my $output = `${git_command} log --no-color --format='%H %s' -1 $commit 2>&1`;
- 	$output =~ s/^\s*//gm;
-@@ -1026,7 +1028,7 @@ my $fixlinenr = -1;
- 
- # If input is git commits, extract all commits from the commit expressions.
- # For example, HEAD-3 means we need check 'HEAD, HEAD~1, HEAD~2'.
--die "$P: No git repository found\n" if ($git && !-e ".git");
-+die "$P: No git repository found\n" if ($git && !-e "$gitroot");
- 
- if ($git) {
- 	my @commits = ();
+> +       ret = fwnode_property_read_u32(child, "reg", &reg);
+> +       if (ret || reg > 1) {
+> +               dev_err(dev, "Could not register 'reg' (%lu)\n", (unsigned long)reg);
 
+When you cast explicitly during printf() you are doing something wrong
+in 99.9% cases.
+What's wrong with %u in this case?
 
+> +               ret = -EINVAL;
+> +               goto err_child_node;
+> +       }
+
+-- 
+With Best Regards,
+Andy Shevchenko
