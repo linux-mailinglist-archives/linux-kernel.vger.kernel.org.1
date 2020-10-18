@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6858E29208C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 01:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40AA4292093
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 01:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729544AbgJRXBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 19:01:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726681AbgJRXBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 19:01:50 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57A7C20720;
-        Sun, 18 Oct 2020 23:01:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603062109;
-        bh=0XHHPvp67qZax3bsXz6sZZHJ1GOQKrKzO098AVjNzC0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CQD1J6Oyoz2Ic+GKffGgx7WUw6Sai0ZJJYI70GOmcxRz3QPKrrTPIheKUxF7O8jQ4
-         VQI8t6wUrCTob9JmSw50Ys4sD8GOOzbCw6lS0cJSe9jWrtKNpQAFG20WygT1hHcpe4
-         YJe9TkLCQWDVF5304HgAGKLE7zCqQA3wAR5cw7lg=
-Date:   Sun, 18 Oct 2020 16:01:47 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Reji Thomas <rejithomas@juniper.net>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rejithomas.d@gmail.com,
-        kernel test robot <lkp@intel.com>,
-        Mathieu Xhonneux <m.xhonneux@gmail.com>,
-        David Lebrun <david.lebrun@uclouvain.be>
-Subject: Re: [PATCH v2] IPv6: sr: Fix End.X nexthop to use oif.
-Message-ID: <20201018160147.6b3c940a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201015082119.68287-1-rejithomas@juniper.net>
-References: <20201015082119.68287-1-rejithomas@juniper.net>
+        id S1729635AbgJRXSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 19:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726681AbgJRXSq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 19:18:46 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13237C061755;
+        Sun, 18 Oct 2020 16:18:45 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id h2so4043198pll.11;
+        Sun, 18 Oct 2020 16:18:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=FO4mDbBP+BBfJY9p5OcubUJVlHsGofkZoBj46ylAG8g=;
+        b=uLuIuh69ehJGgDQl/M0MaznpaQmYZK8Lie2BYp9rFv0Vpo3F2voQ7mey6a+FGx0cIM
+         slu+VPuGgQKCWqrUM9LgEUefsoIAp36fCObpOmzYRkKnhxof/hTD0fe9rplfs5UCbaX8
+         vzAEqBaABboOkHi4e2I/8nItVwHcd0Ki8XnyL2QhT9K8xnnArNgHKGSitYQ9w7x6P8Vs
+         cdH84ik55/Wc/ARFzD75RquR6MctBxTTPkEK/7h6JWkwyFECm591eyKL2kLpWHSHAri0
+         4OuG1MC0XA0yiqnsWKlO7+HRdTMPxskLMrADd81xeuOC8eYtnHTXjk954r45EI90LiSU
+         APxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=FO4mDbBP+BBfJY9p5OcubUJVlHsGofkZoBj46ylAG8g=;
+        b=WpAtRVS7aS5NgRdJKJuEPs+0s0CcO0xnw3MryBThypqDxySaT/g0ncsYNvaXB6qNGt
+         c7GRFoxcjmPrPDWJ7kKh5tDQbyTrwuk9Hjxm+EtMSC9+ExlYtea/AljTpFK0PB4Npcxo
+         avxpRsgpBVC9nWrN88tr4BosO1NJSsC9rB7VJRcgSexj8qutYoMpboO8ThYmjtJlBP2e
+         xMLDwxAcWa/M+VnQOdiHqhpX/XD3sD1AeGCUfObiRxNpdH0zNwCIdMEsmYT00UnBglAn
+         5Z/EFd6S5XlXg45ei6BymDYgruFUH55FVxLyOBcHDUXsxPQUcV3Zj2ie3RMSjGorzVt/
+         efOg==
+X-Gm-Message-State: AOAM531n6MUqNNI3rEmPfUQCT6YoFJz8KBLT+rWhirHRpYNiSZcRFz4d
+        cZa/E3nHBUWNIkH8BrqB8bUaSqVrch/HJLkH+kRZ38j2urbX6Q==
+X-Google-Smtp-Source: ABdhPJwB5VaEhdoWIuYtVmphOtsWH2XZq6Q1sXDpZ7iCjElLYhrwLRWhpgaY0xXrb369NRSXdRPEmmGaeMK6Y+j1obk=
+X-Received: by 2002:a17:90a:8684:: with SMTP id p4mr14503486pjn.232.1603063124327;
+ Sun, 18 Oct 2020 16:18:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   =?UTF-8?B?w4lyaWNvIFJvbGlt?= <erico.erc@gmail.com>
+Date:   Sun, 18 Oct 2020 20:18:33 -0300
+Message-ID: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
+Subject: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
+To:     dwarves@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020 13:51:19 +0530 Reji Thomas wrote:
-> Currently End.X action doesn't consider the outgoing interface
-> while looking up the nexthop.This breaks packet path functionality
-> specifically while using link local address as the End.X nexthop.
-> The patch fixes this by enforcing End.X action to have both nh6 and
-> oif and using oif in lookup.It seems this is a day one issue.
-> 
-> Fixes: 140f04c33bbc ("ipv6: sr: implement several seg6local actions")
-> Signed-off-by: Reji Thomas <rejithomas@juniper.net>
+Hi!
 
-David, Mathiey - any comments?
+I'm trying to build kernel 5.9.1 for arm64, and my dotconfig has
+`CONFIG_DEBUG_INFO_BTF=3Dy`, which requires pahole for building. However, p=
+ahole
+version 1.18 segfaults during the build, as can be seen below:
 
-> @@ -239,6 +250,8 @@ static int input_action_end(struct sk_buff *skb, struct seg6_local_lwt *slwt)
->  static int input_action_end_x(struct sk_buff *skb, struct seg6_local_lwt *slwt)
->  {
->  	struct ipv6_sr_hdr *srh;
-> +	struct net_device *odev;
-> +	struct net *net = dev_net(skb->dev);
+PAHOLE: Error: Found symbol of zero size when encoding btf (sym:
+'__kvm_nvhe_arm64_ssbd_callback_required', cu:
+'arch/arm64/kernel/cpu_errata.c').
+PAHOLE: Error: Use '-j' or '--force' to ignore such symbols and force
+emit the btf.
+scripts/link-vmlinux.sh: line 141: 43837 Segmentation fault
+LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
+  LD      .tmp_vmlinux.kallsyms1
+  KSYM    .tmp_vmlinux.kallsyms1.o
+  LD      .tmp_vmlinux.kallsyms2
+  KSYM    .tmp_vmlinux.kallsyms2.o
+  LD      vmlinux
+  BTFIDS  vmlinux
+FAILED: load BTF from vmlinux: Unknown error -2make: ***
+[Makefile:1162: vmlinux] Error 255
 
-Order longest to shortest.
+It is possible to force the build to continue if
 
->  
->  	srh = get_and_validate_srh(skb);
->  	if (!srh)
-> @@ -246,7 +259,11 @@ static int input_action_end_x(struct sk_buff *skb, struct seg6_local_lwt *slwt)
->  
->  	advance_nextseg(srh, &ipv6_hdr(skb)->daddr);
->  
-> -	seg6_lookup_nexthop(skb, &slwt->nh6, 0);
-> +	odev = dev_get_by_index_rcu(net, slwt->oif);
-> +	if (!odev)
-> +		goto drop;
+  LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
 
-Are you doing this lookup just to make sure that oif exists?
-Looks a little wasteful for fast path, but more importantly 
-it won't be backward compatible, right? See below..
+in scripts/link-vmlinux.sh is changed to
 
-> +
-> +	seg6_strict_lookup_nexthop(skb, &slwt->nh6, odev->ifindex, 0);
->  
->  	return dst_input(skb);
->  
+  LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J --btf_encode_force ${1}
 
-> @@ -566,7 +583,8 @@ static struct seg6_action_desc seg6_action_table[] = {
->  	},
->  	{
->  		.action		= SEG6_LOCAL_ACTION_END_X,
-> -		.attrs		= (1 << SEG6_LOCAL_NH6),
-> +		.attrs		= ((1 << SEG6_LOCAL_NH6) |
-> +				   (1 << SEG6_LOCAL_OIF)),
->  		.input		= input_action_end_x,
->  	},
->  	{
+The suggested `-j` or `--force` flags don't exist, since they were removed =
+in
+[1]. I believe `--btf_encode_force` should be suggested instead.
 
-If you set this parse_nla_action() will reject all
-SEG6_LOCAL_ACTION_END_X without OIF.
+It should be noted that the same build, but with pahole version 1.17, works
+without issue, so I think this is either a regression in pahole or the scri=
+pt
+will need to be changed for newer versions of pahole.
 
-As you say the OIF is only required for using link local addresses,
-so this change breaks perfectly legitimate configurations.
+- [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/pahole.=
+c?h=3Dv1.18&id=3D1abc001417b579b86a9b27ff88c9095d8f498a46
 
-Can we instead only warn about the missing OIF, and only do that when
-nh is link local?
-
-Also doesn't SEG6_LOCAL_ACTION_END_DX6 need a similar treatment?
+Thanks,
+=C3=89rico
