@@ -2,140 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206D7291813
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8678B291815
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727138AbgJRPgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 11:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgJRPgC (ORCPT
+        id S1726891AbgJRPng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 11:43:36 -0400
+Received: from sonic316-20.consmr.mail.ne1.yahoo.com ([66.163.187.146]:39477
+        "EHLO sonic316-20.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726364AbgJRPnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 11:36:02 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59E2C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 08:36:00 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id 67so10019597iob.8
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 08:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g0nW91KAKtHqqih47wMzMhuIwlI+DPugrQO5DPU/EGE=;
-        b=I+1HrpYqiUXYxR5WJIusD1mNhg/B2ZFyy48DPEO4imoGXFsFGBIUQHogwH+gUkHzNN
-         a9wDlzOrJ6cympE25UEdCve+0FG6cpshm6+oxvhdWvF1dBRh0eKjDbEta8UKb3Q2rs1Y
-         EaYzHVFFH6u5tJJVHaFsWhccSvxItBn9j90xedecoEBLecUyav/NilhUaOvf3E8wEQdj
-         3TkaQtyFa8XEY3SnP2X3lDrPVxCyn1Yqu3tK2oRq3BvZBy9kmvXmWqFUVIxFwzzGIOCm
-         8ZPS8hZl2kYwAvC9f/yhZgo9fL/RNrV46dSZKgrKvR0GDKSZD3wdhep/ClN5MEXchUuI
-         Z0OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g0nW91KAKtHqqih47wMzMhuIwlI+DPugrQO5DPU/EGE=;
-        b=ZxnbGfOhLOJNnDIT6JkGYJ7ZQJ556U/VA/f6BvRYDYVG44ixiwRWIuAi0x7H7jrhHu
-         TmUU1dOrDWqqWT/jLrYniXLrxq9uBK5RXxN+7FipHuoYYeVHHGFOKeFRrPfTRKpTWNG6
-         Gbbul5S73I8uQ44HXALmH7qmJIwzvhRTXWl764NM7JUZi9tSebcdxArDCQABrSzacYCv
-         BwToA9eROtaNNTJfhN1RVMc9aSRPd5pGT+/EH0I43xcN1unYK8ps3/uBTGrHH32y36y9
-         24brJ39Vn2EpPPo8jueUSDmZJtQ9Cm4mCz+w2yNrCgx3GmPgDgfQ+h8V0Nj1dWf4O+y/
-         oniQ==
-X-Gm-Message-State: AOAM531Ulov3KhQmhdZ2yTs9bKwOzvTMjAC1ndWfBsiaRIUrsTGjAXyI
-        Qwp+jYjvIBnEiOZDQDrl/32isbida3tMRAqVvRbg
-X-Google-Smtp-Source: ABdhPJyjJAqraG8PMHzOE7BQ8rKSJvFKw0VuEtg5QIB3vpi6Onl98uCxAQC2fjGRx6haTSmaBs5jocGjcB/+BIWZIic=
-X-Received: by 2002:a02:6cd0:: with SMTP id w199mr8617688jab.121.1603035360160;
- Sun, 18 Oct 2020 08:36:00 -0700 (PDT)
+        Sun, 18 Oct 2020 11:43:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603035815; bh=ShrdGJTCUVMCJqYIFt8iS0epc16DuED8/NfeEkfRx3o=; h=Date:From:Reply-To:Subject:References:From:Subject; b=tFEGz+RkfL+PZIrtgJeWde7ftz64atm0XTvj6QTPfR3MYcWxvfD49HEds5xi5XsyAczL2DCnu7TiY6D742Ukg9Am7jRc1ttyv3LXeGDViANaimebQF8cJpL4tq4vK3dNaMLeAJAaAmJoV4ZU7huxlDB635faKMXfLdRxu6hMRJaD1HWm2V1Rs7wyz83qzYYO7xTBEdw6olZJQxbRyJJ3v5VVrk3bX7rSS2zoYsGc5vJJ50aaIGfUKn0RSLSEbsP6HetD5k0izVstNLhLR5MQb9Xec0uEkgRTRt041/nUjK14UrmoTU8tzyZ+oRkESNOqMXumpvnechcMQTVaf3yOcA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603035815; bh=zax5VsgMmnG3QUGZiQlv1/V0hJC1R/q3NQ9EDdFcNJK=; h=Date:From:Subject; b=fzTn1HhEqlMstZLA/oGCcEYZ620KcGXlWEpWLGnincUksBfAK7fwkZLKhzQZoNbNCGgPytEPxjZUj1UsuboIL5cvA3Hlr36a3MdkfkVyglFyX7IyJvZncEJTpl0s4MUfjusCMUgM+NLPlsku16QFlAGq+xWQA/bQxonOUqVnyLUY52fIBCEjntefjeQsye83Y3q1E9qxE2Xs1xwyj3RvcRNnJf4flZxFAuhmm0uu9qM677fLGaNjCK2ou/8mao5SMhyGfi1bHAG1ZXBoOnTO0Y9ANGzeJ3zGeTBZ6aKi6w+g4y/NbvRLuhUAsAravC8BQcSubs7n4T40Gspkh+9EDQ==
+X-YMail-OSG: _t_XlyEVM1llOrb_IeNAJ7zkxRkBVMx5dDhXxzp5VA5VO7lQyz8sj_ue2qDitz3
+ Dj__2j03nw8.KLM5gHKjWL7DYShGLQIrV3TKbF.C3ZExRR57c3.pDEf8IE6uNxnu2TNNJRuqDreY
+ nKhBaY.A1O0oTr7He_wv6QuXOWvpnh0pDoAmHd3SytBQvVM.WtWKZ6DhV.AntwksDWGpFgG0Z1a2
+ e3y.p_x4rc.zReXeFJJKQXwbDbE0zb3WEqiRhewYNQ95pxlPstT8qEu9BZXcfw0r0evAqswBegf_
+ C0gDAyrCnmbKUQBC07TwWXaBkDCu_32pzFHJM1cigD3fOsBbpaR9oqkyoFYOdjwCzfUJ3Pj3eS_i
+ mocnVhRPOZeoQlXfzFDUlPLp4YhutymN5_eX0bS.pKWg8FnUtI5T_lhwtqgTDxMm8VU3O2qcMuoS
+ xZcKAecx5G_1.l3CgiomaAUhm2MdrnG8weI1Fc9HYQZgPUt7RjN14bjm4H16abqA4ekdlbfTrtLD
+ t57rFskDGGbWyOlmKasB16CsAnbj4nB4Svc75wHG05DVN4IXqH8hOXnl2DCRmWDrhcAGu0NDOHL6
+ l_7BfaPOAamPgnYG2YMGwgm8n5577BnRcLk3A6QKPyJgpxCMqQpkeIihF38vcRzlNJmzOHqsdW_K
+ ACKb8MA3JC169INhj1zRl6iVL50x059Kr82PSUTK60640FxodaVmP146FR99j6TbJZ71g25imY0O
+ irWRCHPkREI6.ZaBiFy1Cxlb0hg0HXpMo.KjTLVcnl8qJXr8uh.JiUoENur0WaChFTp9_gMICrbE
+ fK08m1rxlCJ1YYLFgNa3xxV878sF6WAO9nFMdB4rpd7qXuq9XDfOxgdYLHvPpGxYtMX.ERAa5SZG
+ k2Ncjtgvts8V9ODZSsL1l80j19p4.gxHNku3.2vl8Q_HexSPliwyIzmfb4NQYUmOOysZZjZscl4e
+ l4b6AyEezC2wkJATBuPMbpEuAY_UbRZ1WXILxR06DpMRjfh0KyXp3GQsYD2BqRM2l1r0pEyVUtxK
+ f3yX93bfPeVmnMW9Ji_gjhozgz28yzObHv38rV9oqjVVnc2GBvklV5jbnUc_EeDNXz8KyTzqnlNA
+ bghIQ8YM9iwGmnO38s.q.gocNR.RBYH8ZBRIYYPa_UX4JXphfcdtNjik4LmzBy1FzG6zPd52.O.a
+ _ynPL.cIK_Hn32TE57N1GUwfadVREiD4sNp1_4NWVHAT_Im9uXd8VRVGLSodMZ513byhjgFHy0cg
+ 6xLn5ZHDaP9lTdGZEXoJxzG4gNH0A2zm537UJuSrI2gfo4mKW0kb9zbpDkUsqIljlcq.UJSFXR.K
+ H2hNGy_EeSwsSz3NTfkgExWhLw7nmQB7QQhDtQh0A.1mE3hrbzvHOHIiJz_zO4OV45vLPQBnChMC
+ s4zlsR_XhgGLw1LekYCjjhfs.Yoc0hc7Luzyl9Es6oygsPQA-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Sun, 18 Oct 2020 15:43:35 +0000
+Date:   Sun, 18 Oct 2020 15:43:34 +0000 (UTC)
+From:   Ali Shareef Al-Emadi <alishareefalemadi465@gmail.com>
+Reply-To: alishareefalemadi465@gmail.com
+Message-ID: <401880578.747846.1603035814237@mail.yahoo.com>
+Subject: QATAR PETROLEUM INVESTMENT....
 MIME-Version: 1.0
-References: <20201018031732.GA27204@ubuntu> <20201018121712.0393cab9@archlinux>
-In-Reply-To: <20201018121712.0393cab9@archlinux>
-From:   Vaishnav M A <vaishnav@beagleboard.org>
-Date:   Sun, 18 Oct 2020 21:05:49 +0530
-Message-ID: <CALudOK7dPNsGJXaCjFQ=gujs8Mt+sN9ZXUQ=9BF80K8cw4E_SA@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: proximity: as3935 change of_property_read to device_property_read
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Drew Fustini <drew@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        =?UTF-8?Q?Ivan_Rajkovi=C4=87?= <rajkovic@mikroe.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <401880578.747846.1603035814237.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16868 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:81.0) Gecko/20100101 Firefox/81.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 4:47 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Sun, 18 Oct 2020 08:47:32 +0530
-> Vaishnav M A <vaishnav@beagleboard.org> wrote:
->
-> A very similar change was made recently in
-> 00fa493b9989 ("iio:proximity:as3935: Drop of_match_ptr and use generic fw accessors")
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=00fa493b99894b930e431c05a9dba294c5189120
->
-Sorry for missing that, happy to see this change.
 
-Thanks,
-Vaishnav M A
-> Review follows for reference as I wrote it before remembering the above!
->
-> > replace the of_property_read_u32 for reading
-> > the ams,tuning-capacitor-pf, ams,nflwdth properties with
-> > device_property_read_u32, allows the driver to get the properties
-> > information using the more generic device_property_* helpers and opens
-> > the possibility of passing the properties during platform instantiation
-> > of the device by a suitably populated struct property_entry
->
-> Please format this to aid readability.
->
-> Replace of_property_read_u32() with device_property_read_u32,
-> when reading the ams,tuning-capacitor-pf and ams,nflwdth properties.
-> This opens up the possibility of passing the properties during platform
-> instantiation of the device by a suitable populated struct property_entry.
->
->
-> As in your other patch, please add the header property.h.
->
-> >
-> > Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
-> > ---
-> >  v2:
-> >       - fix commit message
-> >  drivers/iio/proximity/as3935.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/iio/proximity/as3935.c b/drivers/iio/proximity/as3935.c
-> > index c339e7339ec8..7e47ddf89a56 100644
-> > --- a/drivers/iio/proximity/as3935.c
-> > +++ b/drivers/iio/proximity/as3935.c
-> > @@ -355,7 +355,6 @@ static int as3935_probe(struct spi_device *spi)
-> >       struct iio_dev *indio_dev;
-> >       struct iio_trigger *trig;
-> >       struct as3935_state *st;
-> > -     struct device_node *np = spi->dev.of_node;
-> >       int ret;
-> >
-> >       /* Be sure lightning event interrupt is specified */
-> > @@ -374,7 +373,7 @@ static int as3935_probe(struct spi_device *spi)
-> >       spi_set_drvdata(spi, indio_dev);
-> >       mutex_init(&st->lock);
-> >
-> > -     ret = of_property_read_u32(np,
-> > +     ret = device_property_read_u32(&spi->dev,
-> >                       "ams,tuning-capacitor-pf", &st->tune_cap);
-> >       if (ret) {
-> >               st->tune_cap = 0;
-> > @@ -390,7 +389,7 @@ static int as3935_probe(struct spi_device *spi)
-> >               return -EINVAL;
-> >       }
-> >
-> > -     ret = of_property_read_u32(np,
-> > +     ret = device_property_read_u32(&spi->dev,
-> >                       "ams,nflwdth", &st->nflwdth_reg);
-> >       if (!ret && st->nflwdth_reg > AS3935_NFLWDTH_MASK) {
-> >               dev_err(&spi->dev,
->
+
+Greetings.
+
+I am Mr. H.E. Ali Shareef Al-Emadi, Finance and Account, Qatar Petroleum. I have $30m for Investment. Contact me if you are interested; I have all it will take to move the fund to any of your account designate as a Contract Fund to avoid every query by the authority in your Country.
+
+I sent this message from my private Email; I will give you more details through my official
+Email upon the receipt of your response to prove myself and office to
+you.
+
+Email Address: alishareefalemadi465@gmail.com
+
+Regards.
+
+Mr. H.E. Ali Shareef Al-Emadi,
+Minister Of Finance.
+Qatar Petroleum
