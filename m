@@ -2,154 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF94D29180B
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206D7291813
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbgJRP3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 11:29:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41541 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726635AbgJRP3Z (ORCPT
+        id S1727138AbgJRPgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 11:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726364AbgJRPgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 11:29:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603034963;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1CTKIbN/xVjEnO6qY3wyEbNeQNs54uP2PLOt/PBfoP4=;
-        b=VsxKuqkfCZ683JEjKtfFtGsCSIozdhjKvvo1UQKPTYwZIcJ/tGuGJyokd7GPeHV1mej9Op
-        MySwiGMMN+KDNrI2RfnRM90RatTvPcy9mHy1fPr8GJkbU4hx/DSr1FzSPB1FVoDOUnGHDj
-        OYZzAM1gpLBpGWJHfq//XGq+mhMef0o=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462-dhxiXeFDOJ6--dxFRbNgCA-1; Sun, 18 Oct 2020 11:29:21 -0400
-X-MC-Unique: dhxiXeFDOJ6--dxFRbNgCA-1
-Received: by mail-wr1-f69.google.com with SMTP id h8so4349972wrt.9
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 08:29:21 -0700 (PDT)
+        Sun, 18 Oct 2020 11:36:02 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59E2C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 08:36:00 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id 67so10019597iob.8
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 08:36:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g0nW91KAKtHqqih47wMzMhuIwlI+DPugrQO5DPU/EGE=;
+        b=I+1HrpYqiUXYxR5WJIusD1mNhg/B2ZFyy48DPEO4imoGXFsFGBIUQHogwH+gUkHzNN
+         a9wDlzOrJ6cympE25UEdCve+0FG6cpshm6+oxvhdWvF1dBRh0eKjDbEta8UKb3Q2rs1Y
+         EaYzHVFFH6u5tJJVHaFsWhccSvxItBn9j90xedecoEBLecUyav/NilhUaOvf3E8wEQdj
+         3TkaQtyFa8XEY3SnP2X3lDrPVxCyn1Yqu3tK2oRq3BvZBy9kmvXmWqFUVIxFwzzGIOCm
+         8ZPS8hZl2kYwAvC9f/yhZgo9fL/RNrV46dSZKgrKvR0GDKSZD3wdhep/ClN5MEXchUuI
+         Z0OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1CTKIbN/xVjEnO6qY3wyEbNeQNs54uP2PLOt/PBfoP4=;
-        b=Bi1gOYz3ellgcUi5QqRfiITUbgJP+rhEU3BoitmAesAwL1QU4AO+c6G8KzfXae8/ki
-         NklWbtRrMRblGBVvKO3HzSEhq7A6suYAL0KjmtF8XXxgwfR9Ve4tO5R5Q4aZKmK7gGJL
-         dcWM5OcJe0RvFdm6ny669le7JhlxkUhg/HItipYZRXjlPgLpN+Ra5nu29pyDYHNv+OoB
-         9iaNM3kQS89bnfbKlN9No3SUXvfbVXyorhB6nPoqg10iUb1Zq80h5YOrD+HgXC+T7Z2Y
-         8HJqpl83+3MdHawcH1CENVFQz2zwC6ffe2U7ml/QQuJW+sCMv2qE7iPqzHQwsoDH3eev
-         eYlw==
-X-Gm-Message-State: AOAM5302ghvKbjRHzhlGS5QtjoNx7WYCk83ZWVWP5yREqIjFwZChpkst
-        U1h/qL9zt/dj7w6DXBc2h9nerIq9Zq1Y7TaqAxpSZWtrJgRqAExrEbGaz6d/k+YjiQXu9q1h/mX
-        SxWplfL2bdXrZxSjIxEhoVTLF
-X-Received: by 2002:a7b:c7c3:: with SMTP id z3mr13134894wmk.43.1603034960405;
-        Sun, 18 Oct 2020 08:29:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwdSke2D/bQ/4Rv046vND4iUOBVEXFQoAjUmmIvF3U1fKjAq8Hc0bRgog5vC4nNUSJIsqNYWw==
-X-Received: by 2002:a7b:c7c3:: with SMTP id z3mr13134876wmk.43.1603034960186;
-        Sun, 18 Oct 2020 08:29:20 -0700 (PDT)
-Received: from redhat.com (bzq-79-176-118-93.red.bezeqint.net. [79.176.118.93])
-        by smtp.gmail.com with ESMTPSA id u81sm12089933wmg.43.2020.10.18.08.29.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Oct 2020 08:29:19 -0700 (PDT)
-Date:   Sun, 18 Oct 2020 11:29:15 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: Re: [PATCH v1 00/29] virtio-mem: Big Block Mode (BBM)
-Message-ID: <20201018112849-mutt-send-email-mst@kernel.org>
-References: <20201012125323.17509-1-david@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g0nW91KAKtHqqih47wMzMhuIwlI+DPugrQO5DPU/EGE=;
+        b=ZxnbGfOhLOJNnDIT6JkGYJ7ZQJ556U/VA/f6BvRYDYVG44ixiwRWIuAi0x7H7jrhHu
+         TmUU1dOrDWqqWT/jLrYniXLrxq9uBK5RXxN+7FipHuoYYeVHHGFOKeFRrPfTRKpTWNG6
+         Gbbul5S73I8uQ44HXALmH7qmJIwzvhRTXWl764NM7JUZi9tSebcdxArDCQABrSzacYCv
+         BwToA9eROtaNNTJfhN1RVMc9aSRPd5pGT+/EH0I43xcN1unYK8ps3/uBTGrHH32y36y9
+         24brJ39Vn2EpPPo8jueUSDmZJtQ9Cm4mCz+w2yNrCgx3GmPgDgfQ+h8V0Nj1dWf4O+y/
+         oniQ==
+X-Gm-Message-State: AOAM531Ulov3KhQmhdZ2yTs9bKwOzvTMjAC1ndWfBsiaRIUrsTGjAXyI
+        Qwp+jYjvIBnEiOZDQDrl/32isbida3tMRAqVvRbg
+X-Google-Smtp-Source: ABdhPJyjJAqraG8PMHzOE7BQ8rKSJvFKw0VuEtg5QIB3vpi6Onl98uCxAQC2fjGRx6haTSmaBs5jocGjcB/+BIWZIic=
+X-Received: by 2002:a02:6cd0:: with SMTP id w199mr8617688jab.121.1603035360160;
+ Sun, 18 Oct 2020 08:36:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012125323.17509-1-david@redhat.com>
+References: <20201018031732.GA27204@ubuntu> <20201018121712.0393cab9@archlinux>
+In-Reply-To: <20201018121712.0393cab9@archlinux>
+From:   Vaishnav M A <vaishnav@beagleboard.org>
+Date:   Sun, 18 Oct 2020 21:05:49 +0530
+Message-ID: <CALudOK7dPNsGJXaCjFQ=gujs8Mt+sN9ZXUQ=9BF80K8cw4E_SA@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: proximity: as3935 change of_property_read to device_property_read
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Drew Fustini <drew@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        =?UTF-8?Q?Ivan_Rajkovi=C4=87?= <rajkovic@mikroe.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 02:52:54PM +0200, David Hildenbrand wrote:
-> virtio-mem currently only supports device block sizes that span at most
-> a single Linux memory block. For example, gigantic pages in the hypervisor
-> result on x86-64 in a device block size of 1 GiB - when the Linux memory
-> block size is 128 MiB, we cannot support such devices (we fail loading the
-> driver). Of course, we want to support any device block size in any Linux
-> VM.
-> 
-> Bigger device block sizes will become especially important once supporting
-> VFIO in QEMU - each device block has to be mapped separately, and the
-> maximum number of mappings for VFIO is 64k. So we usually want blocks in
-> the gigabyte range when wanting to grow the VM big.
+On Sun, Oct 18, 2020 at 4:47 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sun, 18 Oct 2020 08:47:32 +0530
+> Vaishnav M A <vaishnav@beagleboard.org> wrote:
+>
+> A very similar change was made recently in
+> 00fa493b9989 ("iio:proximity:as3935: Drop of_match_ptr and use generic fw accessors")
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=00fa493b99894b930e431c05a9dba294c5189120
+>
+Sorry for missing that, happy to see this change.
 
-I guess it missed this Linux right? There's an mm change which did not
-get an ack from mm mainatiners, so I can't merge it ...
-
-> This series:
-> - Performs some cleanups
-> - Factors out existing Sub Block Mode (SBM)
-> - Implements memory hot(un)plug in Big Block Mode (BBM)
-> 
-> I need one core-mm change, to make offline_and_remove_memory() eat bigger
-> chunks.
-> 
-> This series is based on "next-20201009" and can be found at:
-> 	git@gitlab.com:virtio-mem/linux.git virtio-mem-dbm-v1
-> 
-> Once some virtio-mem patches that are pending in the -mm tree are upstream
-> (I guess they'll go in in 5.10), I'll resend based on Linus' tree.
-> I suggest to take this (including the MM patch, acks/review please) via the
-> vhost tree once time has come. In the meantime, I'll do more testing.
-> 
-> David Hildenbrand (29):
->   virtio-mem: determine nid only once using memory_add_physaddr_to_nid()
->   virtio-mem: simplify calculation in
->     virtio_mem_mb_state_prepare_next_mb()
->   virtio-mem: simplify MAX_ORDER - 1 / pageblock_order handling
->   virtio-mem: drop rc2 in virtio_mem_mb_plug_and_add()
->   virtio-mem: generalize check for added memory
->   virtio-mem: generalize virtio_mem_owned_mb()
->   virtio-mem: generalize virtio_mem_overlaps_range()
->   virtio-mem: drop last_mb_id
->   virtio-mem: don't always trigger the workqueue when offlining memory
->   virtio-mem: generalize handling when memory is getting onlined
->     deferred
->   virtio-mem: use "unsigned long" for nr_pages when fake
->     onlining/offlining
->   virtio-mem: factor out fake-offlining into virtio_mem_fake_offline()
->   virtio-mem: factor out handling of fake-offline pages in memory
->     notifier
->   virtio-mem: retry fake-offlining via alloc_contig_range() on
->     ZONE_MOVABLE
->   virito-mem: document Sub Block Mode (SBM)
->   virtio-mem: memory block states are specific to Sub Block Mode (SBM)
->   virito-mem: subblock states are specific to Sub Block Mode (SBM)
->   virtio-mem: factor out calculation of the bit number within the
->     sb_states bitmap
->   virito-mem: existing (un)plug functions are specific to Sub Block Mode
->     (SBM)
->   virtio-mem: nb_sb_per_mb and subblock_size are specific to Sub Block
->     Mode (SBM)
->   virtio-mem: memory notifier callbacks are specific to Sub Block Mode
->     (SBM)
->   virtio-mem: memory block ids are specific to Sub Block Mode (SBM)
->   virtio-mem: factor out adding/removing memory from Linux
->   virtio-mem: print debug messages from virtio_mem_send_*_request()
->   virtio-mem: Big Block Mode (BBM) memory hotplug
->   virtio-mem: allow to force Big Block Mode (BBM) and set the big block
->     size
->   mm/memory_hotplug: extend offline_and_remove_memory() to handle more
->     than one memory block
->   virtio-mem: Big Block Mode (BBM) - basic memory hotunplug
->   virtio-mem: Big Block Mode (BBM) - safe memory hotunplug
-> 
->  drivers/virtio/virtio_mem.c | 1783 +++++++++++++++++++++++++----------
->  mm/memory_hotplug.c         |  105 ++-
->  2 files changed, 1373 insertions(+), 515 deletions(-)
-> 
-> -- 
-> 2.26.2
-
+Thanks,
+Vaishnav M A
+> Review follows for reference as I wrote it before remembering the above!
+>
+> > replace the of_property_read_u32 for reading
+> > the ams,tuning-capacitor-pf, ams,nflwdth properties with
+> > device_property_read_u32, allows the driver to get the properties
+> > information using the more generic device_property_* helpers and opens
+> > the possibility of passing the properties during platform instantiation
+> > of the device by a suitably populated struct property_entry
+>
+> Please format this to aid readability.
+>
+> Replace of_property_read_u32() with device_property_read_u32,
+> when reading the ams,tuning-capacitor-pf and ams,nflwdth properties.
+> This opens up the possibility of passing the properties during platform
+> instantiation of the device by a suitable populated struct property_entry.
+>
+>
+> As in your other patch, please add the header property.h.
+>
+> >
+> > Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
+> > ---
+> >  v2:
+> >       - fix commit message
+> >  drivers/iio/proximity/as3935.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/iio/proximity/as3935.c b/drivers/iio/proximity/as3935.c
+> > index c339e7339ec8..7e47ddf89a56 100644
+> > --- a/drivers/iio/proximity/as3935.c
+> > +++ b/drivers/iio/proximity/as3935.c
+> > @@ -355,7 +355,6 @@ static int as3935_probe(struct spi_device *spi)
+> >       struct iio_dev *indio_dev;
+> >       struct iio_trigger *trig;
+> >       struct as3935_state *st;
+> > -     struct device_node *np = spi->dev.of_node;
+> >       int ret;
+> >
+> >       /* Be sure lightning event interrupt is specified */
+> > @@ -374,7 +373,7 @@ static int as3935_probe(struct spi_device *spi)
+> >       spi_set_drvdata(spi, indio_dev);
+> >       mutex_init(&st->lock);
+> >
+> > -     ret = of_property_read_u32(np,
+> > +     ret = device_property_read_u32(&spi->dev,
+> >                       "ams,tuning-capacitor-pf", &st->tune_cap);
+> >       if (ret) {
+> >               st->tune_cap = 0;
+> > @@ -390,7 +389,7 @@ static int as3935_probe(struct spi_device *spi)
+> >               return -EINVAL;
+> >       }
+> >
+> > -     ret = of_property_read_u32(np,
+> > +     ret = device_property_read_u32(&spi->dev,
+> >                       "ams,nflwdth", &st->nflwdth_reg);
+> >       if (!ret && st->nflwdth_reg > AS3935_NFLWDTH_MASK) {
+> >               dev_err(&spi->dev,
+>
