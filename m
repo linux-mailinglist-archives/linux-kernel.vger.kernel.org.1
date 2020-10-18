@@ -2,85 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC0E291536
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 03:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA03D291544
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 04:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440100AbgJRBOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 21:14:34 -0400
-Received: from mout.gmx.net ([212.227.15.18]:46069 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440084AbgJRBOe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 21:14:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1602983624;
-        bh=LJP+KriKdGjpMcY1CtvW6omWMCmOlJNTjPQaEG7uDPE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=YSkGdx+ie1qdxT/9uFS7Srwj+B0qXhAsV1tftl1kJfYMsAnKV5X6T6GbSQzDMDB0O
-         2iU++AOA/ALKT451hJo3vESTni6nxkN4NcaFsr7ubrQDMRVvN6CzVCj3tzAcpM1h8q
-         A6as1ZY+mJghHY4z5PaV0y5gq18x8ER5YtEKBotw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mz9Un-1kFqKh1c5D-00wDl2; Sun, 18
- Oct 2020 03:13:44 +0200
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     andy.shevchenko@gmail.com
-Cc:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
-        pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Subject: [PATCH 2/2] iio:core: In iio_map_array_register() cleanup in case of error.
-Date:   Sun, 18 Oct 2020 03:11:56 +0200
-Message-Id: <1602983516-22913-3-git-send-email-LinoSanfilippo@gmx.de>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602983516-22913-1-git-send-email-LinoSanfilippo@gmx.de>
-References: <CAHp75VfQ=fFn_r43VPV0uPCkozS2K=VQsuSEyj0mF+7QVsFQuA@mail.gmail.com>
- <1602983516-22913-1-git-send-email-LinoSanfilippo@gmx.de>
+        id S2439936AbgJRCId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 22:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439906AbgJRCId (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 22:08:33 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18199C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 19:08:33 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a4so7213574lji.12
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 19:08:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EoL7d0lHzdswPEFGsAEJJdNfE07sA8igVy5PEUcTbDQ=;
+        b=JYBvkmsN9RysEeFQRgQMS2IGgQheKP8WCpVEITeoShBcDrScb2YzXJWCS9fBQBrxMO
+         n86hAFDTEQHXskSLJ578m/TKYBOiwMg0z/aLu4hSKM9fzy3Bml2AtFnKiNFHXmC81ou5
+         oLgoTyjjd7m8dU7zn1iDkaLBmUIFwukS3W1degboeUcB5xxmHAwJ7X7ZJjY5qLq4Uevz
+         9565oX51vhmKmr/jiZRuPNAZjyZvYkS6kUYo9TyvCsqYY8xkBsy/gcixSZeElDfa4GKl
+         lQjC5lLseYNii8XoYpb7znRj1djIzK3pwUzl9c71Hf2cfPLya0ovLXiar856omGyFgtc
+         cBdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EoL7d0lHzdswPEFGsAEJJdNfE07sA8igVy5PEUcTbDQ=;
+        b=pgpyUatk6FkLf4vRT3725rRerkzzcSIZMldqz0rx+8GcED8lwKf4goSQ3hGQol6amd
+         6o8pTG+SZoW2eq3Y4iFQwPnP+YKFrJn5LzNJ1CZbSzoGLBLQQdqHfht466+Gr2VsA0Le
+         izq/N0pgyjJzqzrpcTkJvTmduTiEQA8FuLsBEb7AEQa/72z1rn7zmO7opalJowf1LXR7
+         R9LQGixRkmh8A+nVqB2ASe/glRdyq2/h3I4KDpIQr7B5FloGelgeCrByhppEnmMoyGk8
+         8h1NtFo4XWzxb0EDJQZd5Oefk7cymUmrY83wCmHZIu/XHVPsFAPjDdjSXjA+zIXZ7qzY
+         ZlFA==
+X-Gm-Message-State: AOAM533n/9NkOIcRzVzySNWAK7dlQPV6zhJ6sGL+MdcicDJb86XKzpus
+        Sf3X7kxKW4LpAf/yGBIye/kRdhYrwZXwX37XPYc+HA==
+X-Google-Smtp-Source: ABdhPJxVC4A8hz5Ph8xI5Lcuiwu6i49AGWglYFrVbrHYISFimwHqgN7R9bAY4u2r3Hi8cj+JpNCqLDs0HlkcXSFAtqI=
+X-Received: by 2002:a05:651c:1313:: with SMTP id u19mr1073920lja.47.1602986911177;
+ Sat, 17 Oct 2020 19:08:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/G0i5tr9fAo76BkwxEOgAf5BtvgmaSTud7gTCL5d5JZvpeNnkQj
- 5fYQS7JXj4Inygb2B60ThlJq4ER43D3Ky9bfkPQNu54S0H5EsnLgoekzdwtfVl/9XfJvf4B
- W2f0sRKsj1TSSbN28MHoKIv8jJ8ncL+xUbSbS41sErvj2PXIBAXzV5KMaCm13tju25/hfxc
- bm4TQ6lzYZ1Z8GC2aW97w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DboLyUSQS+Q=:LnWLtiC+oQ5Nwl0WPbpwqU
- WNLy1ztDvFoTdpXl+PPBvzx+B8OsFN4odB1aXf9h38XSI+ddsnAiw2TVnfN/Ft1NriskZ3gNm
- zRpLrm4ds9uSCrgeN0PihpXZ2TR3bd+vXIHhU86wJ5m19sFZHVK+deOO6NG/eVQfiqnW8EeHZ
- F4nTtsBwE+gPfUbHIOtJ0eDIACUYo6gH6MK5bYw4rDYu63EvhkwhYHtg62iY9kEZIr0TkZkXD
- UVU6zuuiyoLFtV57xUKnlkbv4JniALpZDomXD4DqkF+mR1uovTB0dOfqM3H7/HPM35DWIMRpv
- I7lpm3rC5jTh5A+lph/1Q7+uVH9FOPjZPLdsno6Z1kd8kKJcFmGSEvZgh9CnLzQRMwHWOmApo
- Klmuzpq5dUfH9IjnuZ05UOwWh2O/7kB/mNMKviivhkBrEC0GU3BXcozPIwGJ5x/CYzPOT9AYQ
- DI91ei30k8y87CTMcleWnYivtn+kl1karu6GSsZvFXnyyXUEQ1v1c0d2ivMpmMosQO0/EYgWM
- NRdazR9ygCTFsRc6MgVl4GyfclY76BmcSXhdheidepN5oWf/pfeSE8X2vgrPfywZVC6T7SCQr
- fYzd9VViSIjwPIrHNlQ/3TjfBfR4MJFhQmPTCeTe443e4/9KLILFh0uCKdjdLAyJHXulZ8KfV
- QYg9jwfuTgkwu1Ws8lhDo/Zy26q14HcJTUlj1VmDfc/O0N20wULYwJgifoFR/kVcqHDZsCJli
- JVVWut2/DxtbnlyE0EhRQiDdl1vZyhduCXNJEXi7Zb+RRdIS3HVtqpd0Ko+U2EPvj+X1OF198
- /2+Um96FTLdBPy7kyx3EbzjVJ5z67tz3haGMAGOddTokVkMMac6X3lmndNdb9sObm+CPHVnoB
- ee0LZVA8ooB4/IlY0MuQ==
+References: <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
+ <CAG48ez0EanBvDyfthe+hAP0OC8iGLNSq2e5wJVz-=ENNGF97_w@mail.gmail.com>
+ <20201017033606.GA14014@1wt.eu> <CAG48ez0x2S9XuCrANAQbXNi8Jjwm822-fnQSmr-Zr07JgrEs1g@mail.gmail.com>
+ <6CC3DB03-27BA-4F5E-8ADA-BE605D83A85C@amazon.com> <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
+ <20201017053712.GA14105@1wt.eu> <CAG48ez1h0ynXfGap_KiHiPVTfcB8NBQJ-2dnj08ZNfuhrW0jWA@mail.gmail.com>
+ <20201017064442.GA14117@1wt.eu> <CAG48ez3pXLC+eqAXDCniM0a+5yP2XJODDkZqiUTZUOttCE_LbA@mail.gmail.com>
+ <CAHmME9qHGSF8w3DoyCP+ud_N0MAJ5_8zsUWx=rxQB1mFnGcu9w@mail.gmail.com> <aacdff7a-2af1-4f46-6ab2-2a9d5b865d35@amazon.de>
+In-Reply-To: <aacdff7a-2af1-4f46-6ab2-2a9d5b865d35@amazon.de>
+From:   Jann Horn <jannh@google.com>
+Date:   Sun, 18 Oct 2020 04:08:04 +0200
+Message-ID: <CAG48ez0JYK2_tk0DuEgKY2y0d38N+O5HJrH2je7RRk6o7XBixA@mail.gmail.com>
+Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
+To:     Alexander Graf <graf@amazon.de>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>, Willy Tarreau <w@1wt.eu>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        "Catangiu, Adrian Costin" <acatan@amazon.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:VIRTIO GPU DRIVER" 
+        <virtualization@lists.linux-foundation.org>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>, bonzini@gnu.org,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>, oridgar@gmail.com,
+        ghammer@redhat.com, Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Qemu Developers <qemu-devel@nongnu.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux API <linux-api@vger.kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function iio_map_array_register() properly rewind in case of error.
+On Sat, Oct 17, 2020 at 8:09 PM Alexander Graf <graf@amazon.de> wrote:
+> There are applications way beyond that though. What do you do with
+> applications that already consumed randomness? For example a cached pool
+> of SSL keys. Or a higher level language primitive that consumes
+> randomness and caches its seed somewhere in an internal data structure.
 
-Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
----
- drivers/iio/inkern.c | 2 ++
- 1 file changed, 2 insertions(+)
+For deterministic protection, those would also have to poll some
+memory location that tells them whether the VmGenID changed:
 
-diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
-index 39c1d63..fe30bcb 100644
---- a/drivers/iio/inkern.c
-+++ b/drivers/iio/inkern.c
-@@ -60,6 +60,8 @@ int iio_map_array_register(struct iio_dev *indio_dev, str=
-uct iio_map *maps)
- 		i++;
- 	}
- error_ret:
-+	if (ret)
-+		iio_map_array_unregister_locked(indio_dev);
- 	mutex_unlock(&iio_map_list_lock);
-=20
- 	return ret;
---=20
-2.7.4
+1. between reading entropy from their RNG pool and using it
+2. between collecting data from external sources (user input, clock,
+...) and encrypting it
 
+and synchronously shoot down the connection if a change happened. If
+e.g. an application inside the VM has an AES-GCM-encrypted TLS
+connection and, directly after the VM is restored, triggers an
+application-level timeout that sends some fixed message across the
+connection, then the TLS library must guarantee that either the VM was
+already committed to sending exactly that message before the VM was
+forked or the message will be blocked. If we don't do that, an
+attacker who captures both a single packet from the forked VM and
+traffic from the old VM can decrypt the next message from the old VM
+after the fork (because AES-GCM is like AES-CTR plus an authenticator,
+and CTR means that when keystream reuse occurs and one of the
+plaintexts is known, the attacker can simply recover the other
+plaintext using XOR).
+
+(Or maybe, in disaster failover environments, TLS 1.3 servers could
+get away with rekeying the connection instead of shooting it down? Ask
+your resident friendly cryptographer whether that would be secure, I
+am not one.)
+
+I don't think a mechanism based around asynchronously telling the
+application and waiting for it to confirm the rotation at a later
+point is going to cut it; we should have some hard semantics on when
+an application needs to poll this value.
+
+> Or even worse: your system's host ssh key.
+
+Mmmh... I think I normally would not want a VM to reset its host ssh
+key after merely restoring a snapshot though? And more importantly,
+Microsoft's docs say that they also change the VmGenID on disaster
+failover. I think you very much wouldn't want your server to lose its
+host key every time disaster failover happens. On the other hand,
+after importing a public VM image, it might be a good idea.
+
+I guess you could push that responsibility on the user, by adding an
+option to the sshd_config that tells OpenSSH whether the host key
+should be rotated on an ID change or not... but that still would not
+be particularly pretty.
+
+Ideally we would have the host tell us what type of events happened to
+the VM, or something like that... or maybe even get the host VM
+management software to ask the user whether they're importing a public
+image... I really feel like with Microsoft's current protocol, we
+don't get enough information to figure out what we should do about
+private long-term authentication keys.
