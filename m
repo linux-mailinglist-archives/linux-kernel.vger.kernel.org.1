@@ -2,104 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3332629183A
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 18:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9B6291847
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 18:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgJRQHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 12:07:37 -0400
-Received: from smtprelay0187.hostedemail.com ([216.40.44.187]:44952 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725776AbgJRQHg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 12:07:36 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 8F1BF18224956;
-        Sun, 18 Oct 2020 16:07:35 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2691:2693:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4605:5007:6119:7903:9040:10004:10400:10848:11026:11232:11658:11914:12043:12262:12297:12438:12555:12660:12679:12740:12760:12895:13069:13311:13357:13439:14096:14097:14180:14181:14659:14721:21060:21063:21080:21365:21627:21990:30029:30054:30070:30080:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: corn47_3708b142722f
-X-Filterd-Recvd-Size: 2939
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf03.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 18 Oct 2020 16:07:34 +0000 (UTC)
-Message-ID: <fce55e74e4331c6e19c4030a4e02fb35ca5ee4f7.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Allow not using -f with files that are in
- git
-From:   Joe Perches <joe@perches.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@shadowen.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Sun, 18 Oct 2020 09:07:33 -0700
-In-Reply-To: <CAMuHMdV8FEPhTp653RN00LK4UcQZHkuLByJzqiM85r2qoqhDvQ@mail.gmail.com>
-References: <45b81a48e1568bd0126a96f5046eb7aaae9b83c9.camel@perches.com>
-         <CAMuHMdV8FEPhTp653RN00LK4UcQZHkuLByJzqiM85r2qoqhDvQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1726877AbgJRQOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 12:14:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgJRQOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 12:14:15 -0400
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC5C822255
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 16:14:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603037654;
+        bh=QkAuJOFzVf0Wwxo6H++VdX8xdeoi48QFNUPVWESxEeY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=REQ21UN9Va/Tchhw0Iufx5i7bXZEJ9oRfutu3gwrdtekpNdyOP9oS2QBdbHuW8dkc
+         RTeKkF2w8JxMtCocwlSDcoWntutriBaaDLoscjSsibsvmsABsaj4WSuB5g4UAvbHCa
+         sbahCb0xKb0j3iMhYCaCKqibUKXv3mZ2Htcf9Y/k=
+Received: by mail-wm1-f50.google.com with SMTP id b127so10300075wmb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 09:14:13 -0700 (PDT)
+X-Gm-Message-State: AOAM533VHEYHIwNJVYLynGO6JTUWksF9f2GQTEO4PxghWIBxQ91K1Ksl
+        pcg9sbHbX4MrandKfOykDjnDlDM08pCZ3TSYJpKS1g==
+X-Google-Smtp-Source: ABdhPJzAXECqLOcgtU/8DSPTTXSAjc3cG+qUKXcQQZ/UMNZ2TU+94ycOvtKGPaT5rUWM66K+feNpmT6EZJqfh4RkIck=
+X-Received: by 2002:a05:600c:2256:: with SMTP id a22mr13760040wmm.138.1603037652395;
+ Sun, 18 Oct 2020 09:14:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <CAG48ez0x2S9XuCrANAQbXNi8Jjwm822-fnQSmr-Zr07JgrEs1g@mail.gmail.com>
+ <6CC3DB03-27BA-4F5E-8ADA-BE605D83A85C@amazon.com> <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
+ <20201017053712.GA14105@1wt.eu> <CAG48ez1h0ynXfGap_KiHiPVTfcB8NBQJ-2dnj08ZNfuhrW0jWA@mail.gmail.com>
+ <20201017064442.GA14117@1wt.eu> <CAG48ez3pXLC+eqAXDCniM0a+5yP2XJODDkZqiUTZUOttCE_LbA@mail.gmail.com>
+ <CAHmME9qHGSF8w3DoyCP+ud_N0MAJ5_8zsUWx=rxQB1mFnGcu9w@mail.gmail.com>
+ <20201018114625-mutt-send-email-mst@kernel.org> <CALCETrXBJZnKXo2QLKVWSgAhSMdwEVHeut6pRw4P92CR_5A-fQ@mail.gmail.com>
+ <20201018115524-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20201018115524-mutt-send-email-mst@kernel.org>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sun, 18 Oct 2020 09:14:00 -0700
+X-Gmail-Original-Message-ID: <CALCETrUeRAhmEFR6EFXz8HzDYd2doZ2TMyZmu1pU_-yAPA6KDw@mail.gmail.com>
+Message-ID: <CALCETrUeRAhmEFR6EFXz8HzDYd2doZ2TMyZmu1pU_-yAPA6KDw@mail.gmail.com>
+Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Jann Horn <jannh@google.com>, Willy Tarreau <w@1wt.eu>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        "Catangiu, Adrian Costin" <acatan@amazon.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:VIRTIO GPU DRIVER" 
+        <virtualization@lists.linux-foundation.org>,
+        "Graf (AWS), Alexander" <graf@amazon.de>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>, bonzini@gnu.org,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>, oridgar@gmail.com,
+        ghammer@redhat.com, Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Qemu Developers <qemu-devel@nongnu.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-10-18 at 16:03 +0200, Geert Uytterhoeven wrote:
-> Hi Joe,
-> 
-> On Tue, Aug 25, 2020 at 2:12 AM Joe Perches <joe@perches.com> wrote:
-> > If a file exists in git and checkpatch is used without the -f
-> > flag for scanning a file, then checkpatch will scan the file
-> > assuming it's a patch and emit:
-> > 
-> > ERROR: Does not appear to be a unified-diff format patch
-> > 
-> > Change the behavior to assume the -f flag if the file exists
-> > in git.
-> > 
-> > Signed-off-by: Joe Perches <joe@perches.com>
-> 
-> Thanks for your patch!
-> 
-> > --- a/scripts/checkpatch.pl
-> > +++ b/scripts/checkpatch.pl
-> > @@ -976,6 +976,16 @@ sub seed_camelcase_includes {
-> >         }
-> >  }
-> > 
-> > +sub git_is_single_file {
-> > +       my ($filename) = @_;
-> > +
-> > +       return 0 if ((which("git") eq "") || !(-e "$gitroot"));
-> > +
-> > +       my $output = `${git_command} ls-files -- $filename`;
-> > +       my $count = $output =~ tr/\n//;
-> > +       return $count eq 1 && $output =~ m{^${filename}$};
-> > +}
-> > +
-> >  sub git_commit_info {
-> >         my ($commit, $id, $desc) = @_;
-> > 
-> 
-> This is now commit f5f613259f3fea81 ("checkpatch: allow not using -f
-> with files that are in git"), causing:
-> 
->     Global symbol "$gitroot" requires explicit package name (did you
-> forget to declare "my $gitroot"?) at scripts/checkpatch.pl line 980.
->     Execution of scripts/checkpatch.pl aborted due to compilation errors.
-> 
-> FWIW, host system is running Ubuntu 18.04.5 LTS (upgrade to 20.04 LTS
-> planned soon ;-).
+On Sun, Oct 18, 2020 at 8:59 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Sun, Oct 18, 2020 at 08:54:36AM -0700, Andy Lutomirski wrote:
+> > On Sun, Oct 18, 2020 at 8:52 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Sat, Oct 17, 2020 at 03:24:08PM +0200, Jason A. Donenfeld wrote:
+> > > > 4c. The guest kernel maintains an array of physical addresses that are
+> > > > MADV_WIPEONFORK. The hypervisor knows about this array and its
+> > > > location through whatever protocol, and before resuming a
+> > > > moved/snapshotted/duplicated VM, it takes the responsibility for
+> > > > memzeroing this memory. The huge pro here would be that this
+> > > > eliminates all races, and reduces complexity quite a bit, because the
+> > > > hypervisor can perfectly synchronize its bringup (and SMP bringup)
+> > > > with this, and it can even optimize things like on-disk memory
+> > > > snapshots to simply not write out those pages to disk.
+> > > >
+> > > > A 4c-like approach seems like it'd be a lot of bang for the buck -- we
+> > > > reuse the existing mechanism (MADV_WIPEONFORK), so there's no new
+> > > > userspace API to deal with, and it'd be race free, and eliminate a lot
+> > > > of kernel complexity.
+> > >
+> > > Clearly this has a chance to break applications, right?
+> > > If there's an app that uses this as a non-system-calls way
+> > > to find out whether there was a fork, it will break
+> > > when wipe triggers without a fork ...
+> > > For example, imagine:
+> > >
+> > > MADV_WIPEONFORK
+> > > copy secret data to MADV_DONTFORK
+> > > fork
+> > >
+> > >
+> > > used to work, with this change it gets 0s instead of the secret data.
+> > >
+> > >
+> > > I am also not sure it's wise to expose each guest process
+> > > to the hypervisor like this. E.g. each process needs a
+> > > guest physical address of its own then. This is a finite resource.
+> > >
+> > >
+> > > The mmap interface proposed here is somewhat baroque, but it is
+> > > certainly simple to implement ...
+> >
+> > Wipe of fork/vmgenid/whatever could end up being much more problematic
+> > than it naively appears -- it could be wiped in the middle of a read.
+> > Either the API needs to handle this cleanly, or we need something more
+> > aggressive like signal-on-fork.
+> >
+> > --Andy
+>
+>
+> Right, it's not on fork, it's actually when process is snapshotted.
+>
+> If we assume it's CRIU we care about, then I
+> wonder what's wrong with something like
+> MADV_CHANGEONPTRACE_SEIZE
+> and basically say it's X bytes which change the value...
 
-I believe there is a dependency on another patch
-in -next that wasn't pushed to Linus' tree.
+I feel like we may be approaching this from the wrong end.  Rather
+than saying "what data structure can the kernel expose that might
+plausibly be useful", how about we try identifying some specific
+userspace needs and see what a good solution could look like.  I can
+identify two major cryptographic use cases:
 
-commit 5ec1f7de97b26a3fa364bbb31fdd2e42c8e6fa22
-Author: Joe Perches <joe@perches.com>
-Date:   Thu Oct 8 11:53:44 2020 +1100
+1. A userspace RNG.  The API exposed by the userspace end is a
+function that generates random numbers.  The userspace code in turn
+wants to know some things from the kernel: it wants some
+best-quality-available random seed data from the kernel (and possibly
+an indication of how good it is) as well as an indication of whether
+the userspace memory may have been cloned or rolled back, or, failing
+that, an indication of whether a reseed is needed.  Userspace could
+implement a wide variety of algorithms on top depending on its goals
+and compliance requirements, but the end goal is for the userspace
+part to be very, very fast.
 
-    checkpatch: test $GIT_DIR changes
+2. A userspace crypto stack that wants to avoid shooting itself in the
+foot due to inadvertently doing the same thing twice.  For example, an
+AES-GCM stack does not want to reuse an IV, *expecially* if there is
+even the slightest chance that it might reuse the IV for different
+data.  This use case doesn't necessarily involve random numbers, but,
+if anything, it needs to be even faster than #1.
 
-So it'd be better to revert right now until
-this other patch is accepted or pushed.
+The threats here are not really the same.  For #1, a userspace RNG
+should be able to recover from a scenario in which an adversary clones
+the entire process *and gets to own the clone*.  For example, in
+Android, an adversary can often gain complete control of a fork of the
+zygote -- this shouldn't adversely affect the security properties of
+other forks.  Similarly, a server farm could operate by having one
+booted server that is cloned to create more workers.  Those clones
+could be provisioned with secrets and permissions post-clone, and at
+attacker gaining control of a fresh clone could be considered
+acceptable.  For #2, in contrast, if an adversary gains control of a
+clone of an AES-GCM session, they learn the key outright -- the
+relevant attack scenario is that the adversary gets to interact with
+two clones without compromising either clone per se.
 
+It's worth noting that, in both cases, there could possibly be more
+than one instance of an RNG or an AES-GCM session in the same process.
+This means that using signals is awkward but not necessarily
+impossibly.  (This is an area in which Linux, and POSIX in general, is
+much weaker than Windows.)
