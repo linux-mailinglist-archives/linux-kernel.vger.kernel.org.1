@@ -2,117 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253BA291FD7
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 22:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7804291FDA
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 22:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728279AbgJRUdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 16:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
+        id S1727269AbgJRUgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 16:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgJRUdY (ORCPT
+        with ESMTP id S1725776AbgJRUgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 16:33:24 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A67C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:33:23 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id 16so10115204oix.9
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:33:23 -0700 (PDT)
+        Sun, 18 Oct 2020 16:36:01 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F24C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:35:59 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id e15so1544873pfh.6
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:35:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2tjt8ngbdIU3h9PETCczfJ9vnTQ40FaapLpDo2xIhaE=;
-        b=Sp9iIrfZIvjznRS75UO82B6KhHY8UwiZ3t5UFaGmGqwmbjlttQPIxbes+8+VYGfeUc
-         vBjeQ28RaYl66uxePh4ZL0rA8ul4c6tJl5y34Ezn0mtkJ7fpCfvAm+1vc/JkXxoDiX+m
-         XWZgtLUI+RJeQdB9hmX2gJ2FWQlkhnbRrBU7Y=
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=rqhubITZucLjIPmaYRNb6YYx2VTwfGAAxlULYuBZwr4=;
+        b=QfdY8x17n/94SlduisjHjd5UHou8ch9k1JiCT9D/RwXyXGAyy2sWeGDF5sN+yfNeNH
+         89vw/c33WQOiqqbMas45A609nadok8b8IuIFYCKYRTl3ueXllzEt/S5vyYlrcSHlWi2z
+         +KMTYh1t81VFDLh9OsPW7VkoP4sD1cb+p+FubTq76KT3CqVuvEQkOlOepvgLDEU7wX2H
+         d8+4B8MzyfFIcseWeJ33wW0R43PdoFV8s/RXGC65SiKWdwMXTqzzccneLkKqIsFnyhgH
+         77MkKbl3deSl2pdnFCWYtU6ancCUk76E/j4EGjoPaq/jvZ/bbMyzoyihZM4DB3z5q1iU
+         xjYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2tjt8ngbdIU3h9PETCczfJ9vnTQ40FaapLpDo2xIhaE=;
-        b=LDTSirAgrm0e8Iurn7BL9z8iLl1bbGQqBj1FNtqFX/ehJ44uY0onMYOp0/Ix1xsDfI
-         qciPW3kCYd7QwQKiVzjoZNuHtu69Nds02NuMGDssNYyr9njQ46VwgTq/PkcVLrx21Dft
-         o9gS/D+Y5FDahx3Hx6HH4gXqxRUkjYP7IocHffXPkHzuX5FRRAAFLq0/PhDaWUCshmCQ
-         7/DaSYDIK1Y7KOsuXfEgnuKvo2wibZVyU/PbKXD9nvNRj7wwKXjKEn4J/EAjMHPr7ALx
-         AksKLA2oy3yYzcy94QxgAxJDwDbTmFcsPXY6iW6No5eLZq0KhGEYQLNPG1Yr898vya1x
-         pOSg==
-X-Gm-Message-State: AOAM531mVwPqphLFfJc0XvT5uWuh18jvvsQbxUyStwl580d8Envof6cF
-        utpjYgBb9D0UK57stijoZlVyz/deVpz1L/RAqMhpVA==
-X-Google-Smtp-Source: ABdhPJxGp/avmYnxlHs5bpREP0kcu2f1x3Av0xEFWBggKhyJihr+jjRB7wtkrc3DNtVCdX/JVjLJsFJDIiHvWMvOt4s=
-X-Received: by 2002:aca:6083:: with SMTP id u125mr9349336oib.14.1603053202045;
- Sun, 18 Oct 2020 13:33:22 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=rqhubITZucLjIPmaYRNb6YYx2VTwfGAAxlULYuBZwr4=;
+        b=n+F4Y1fmYvZLLbNKU5otOKW4pEUwhtaeP0c/PwfFx2iGnJfNzFvWeLAxVnys8LO2wL
+         97+vq8idajoGdCvCKeQ6Sp/sJ7hUir/Yfi1PmlNKvxgvemCsbKCk6w6PZR1+lFghej8j
+         qF0PleUAkCoqU7K9WEZKeoYSw142TDGpVOVdCdOaifX+c6/qSJ1XGRy3eYLdT4iJc8Dw
+         v3M3zxs5Ea0492kLGpl9ZxJKsuTePQfCMyOGFSClCJTdHXnaCom6akp7beKKJpmqtdWw
+         SlamR5xjiqwzBSZX984uIwh2v4Whz4JV661AslWcQK3VEDs2GCZvprTtqL21c+8EhbPk
+         qJTQ==
+X-Gm-Message-State: AOAM53332lgJ8m/8D6xi9KQmQOnaWV3hQhBNJ6mMAymSPSmvPByL6JMF
+        dPg0TGdaGWhAyHy/ix888UJa
+X-Google-Smtp-Source: ABdhPJzNCQrhHHahLFjNTXfy3QIMvULkSoY+gQdYzYFLr/RkPnnzftp97vs9Kz8+vTuSq6a2diY81A==
+X-Received: by 2002:a63:715:: with SMTP id 21mr11488068pgh.13.1603053359289;
+        Sun, 18 Oct 2020 13:35:59 -0700 (PDT)
+Received: from ubuntu ([116.68.78.80])
+        by smtp.gmail.com with ESMTPSA id l13sm2292891pgp.25.2020.10.18.13.35.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Oct 2020 13:35:58 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 02:05:52 +0530
+From:   Vaishnav M A <vaishnav@beagleboard.org>
+To:     jic23@kernel.org, andy.shevchenko@gmail.com, wsa@kernel.org,
+        knaack.h@gmx.de, lars@metafoo.de, alexandru.ardelean@analog.com,
+        matt.ranostay@konsulko.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     jkridner@beagleboard.org, drew@beagleboard.org,
+        robertcnelson@beagleboard.org, rajkovic@mikroe.com,
+        vaishnav@beagleboard.org
+Subject: [PATCH v4] iio:light:tsl2563 use generic fw accessors
+Message-ID: <20201018203552.GA816421@ubuntu>
 MIME-Version: 1.0
-References: <20200820082137.5907-1-s.hauer@pengutronix.de> <926453876c92caac34cba8545716a491754d04d5.1603037079.git.yepeilin.cs@gmail.com>
- <CAKMK7uF9E24P=vzKt28=1_iaFTYD7obHs+tEPwwZPNMhh7DBrg@mail.gmail.com> <20201018201811.GA697615@PWN>
-In-Reply-To: <20201018201811.GA697615@PWN>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Sun, 18 Oct 2020 22:33:11 +0200
-Message-ID: <CAKMK7uFEmNnBdpoHYqvCUYS=nxh99gKs6P1-1pgp-ouvTSioGw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] Fonts: Support FONT_EXTRA_WORDS macros for font_6x8
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sven Schneider <s.schneider@arkona-technologies.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 10:18 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
->
-> On Sun, Oct 18, 2020 at 10:09:06PM +0200, Daniel Vetter wrote:
-> > Adding dri-devel too, not sure anyone is still listening on linux-fbdev.
->
-> I see, thanks!
->
-> > On Sun, Oct 18, 2020 at 8:13 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> > >
-> > > Recently, in commit 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros
-> > > for built-in fonts"), we wrapped each of our built-in data buffers in a
-> > > `font_data` structure, in order to use the following macros on them, see
-> > > include/linux/font.h:
-> > >
-> > >         #define REFCOUNT(fd)    (((int *)(fd))[-1])
-> > >         #define FNTSIZE(fd)     (((int *)(fd))[-2])
-> > >         #define FNTCHARCNT(fd)  (((int *)(fd))[-3])
-> > >         #define FNTSUM(fd)      (((int *)(fd))[-4])
-> > >
-> > >         #define FONT_EXTRA_WORDS 4
-> > >
-> > > Do the same thing to our new 6x8 font. For built-in fonts, currently we
-> > > only use FNTSIZE(). Since this is only a temporary solution for an
-> > > out-of-bounds issue in the framebuffer layer (see commit 5af08640795b
-> > > ("fbcon: Fix global-out-of-bounds read in fbcon_get_font()")), all the
-> > > three other fields are intentionally set to zero in order to discourage
-> > > using these negative-indexing macros.
-> > >
-> > > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> >
-> > Patch looks good to me, but it says 1/2 and I can't find 2/2 anywhere,
-> > not even on lore. Did that get lost?
->
-> 2/2 is just updating the fb documentation:
->
-> [PATCH 2/2] docs: fb: Add font_6x8 to available built-in fonts
-> https://lore.kernel.org/lkml/717bb41dda8e2ed615f3faadfbc3e215de726d38.1603037079.git.yepeilin.cs@gmail.com/
->
-> I did `git format-patch -2 --thread=deep`, did I do something wrong when
-> sending it?
+Replace of_property_read_u32() with device_property_read_u32(),
+when reading the amstaos,cover-comp-gain.This opens up the
+possibility of passing the properties during platform instantiation
+of the device by a suitable populated struct property_entry.
+Additionally, a minor change in logic is added to remove the
+of_node present check.
 
-No idea, it just didn't arrive anywhere I could find. And I did get
-your previous patch series. Maybe just try again with dri-devel
-included and hope it works then?
--Daniel
+Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
+---
+ v4:
+	-update commit message, fix punctuation.
+	-update to a shorter commit title, used for similar changes
+	 within the subsystem, like in 00fa493b9989
+	 ("iio:proximity:as3935: Drop of_match_ptr and use generic fw accessors")
+ v3:
+        -modify commit message for readability, mention minor logic change
+        -include  mod_devicetable.h and property.h headers
+ v2:
+        -fix commit message
+ drivers/iio/light/tsl2563.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
->
+diff --git a/drivers/iio/light/tsl2563.c b/drivers/iio/light/tsl2563.c
+index abc8d7db8dc1..5bf2bfbc5379 100644
+--- a/drivers/iio/light/tsl2563.c
++++ b/drivers/iio/light/tsl2563.c
+@@ -12,6 +12,8 @@
+  */
+ 
+ #include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/property.h>
+ #include <linux/i2c.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+@@ -703,7 +705,6 @@ static int tsl2563_probe(struct i2c_client *client,
+ 	struct iio_dev *indio_dev;
+ 	struct tsl2563_chip *chip;
+ 	struct tsl2563_platform_data *pdata = client->dev.platform_data;
+-	struct device_node *np = client->dev.of_node;
+ 	int err = 0;
+ 	u8 id = 0;
+ 
+@@ -738,13 +739,14 @@ static int tsl2563_probe(struct i2c_client *client,
+ 	chip->calib0 = tsl2563_calib_from_sysfs(CALIB_BASE_SYSFS);
+ 	chip->calib1 = tsl2563_calib_from_sysfs(CALIB_BASE_SYSFS);
+ 
+-	if (pdata)
++	if (pdata) {
+ 		chip->cover_comp_gain = pdata->cover_comp_gain;
+-	else if (np)
+-		of_property_read_u32(np, "amstaos,cover-comp-gain",
+-				     &chip->cover_comp_gain);
+-	else
+-		chip->cover_comp_gain = 1;
++	} else {
++		err = device_property_read_u32(&client->dev, "amstaos,cover-comp-gain",
++					       &chip->cover_comp_gain);
++		if (err)
++			chip->cover_comp_gain = 1;
++	}
+ 
+ 	dev_info(&client->dev, "model %d, rev. %d\n", id >> 4, id & 0x0f);
+ 	indio_dev->name = client->name;
+-- 
+2.25.1
 
-
---
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
