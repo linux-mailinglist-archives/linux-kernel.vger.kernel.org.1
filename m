@@ -2,102 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45F129189D
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 19:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F372918A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 19:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbgJRRYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 13:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43130 "EHLO
+        id S1727157AbgJRRZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 13:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgJRRYR (ORCPT
+        with ESMTP id S1727064AbgJRRZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 13:24:17 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E515C061755;
-        Sun, 18 Oct 2020 10:24:16 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id n15so8834942wrq.2;
-        Sun, 18 Oct 2020 10:24:16 -0700 (PDT)
+        Sun, 18 Oct 2020 13:25:24 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D87FC061755;
+        Sun, 18 Oct 2020 10:25:23 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id b15so6417151iod.13;
+        Sun, 18 Oct 2020 10:25:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mLdfSAR0LwOOtqwUC8udPXOOYAtdKU3B5mmLxtalmVY=;
-        b=jTzRpx++WPceEK9RoYdLVnjHAf4Oy/71STRL4VcaJ7/IHjbAURWV3bnpeoIex3mwYu
-         ho8AV7D6wJ8GYaiN2dzi8PHwkk8voiaoUjdGMJYlxBo+mW5y1DKbHOrC51LR5WyhSlON
-         S4LAndxXEQvWVr3PaYSt3suUrmrIsgU2mVF15hPp9OixdPjM9TbL4iKru0ovwV92ZJ6w
-         QrdlPFCI0U8r9Rke5iubYvcRHO8wEAs2zc6cYZjrMTYHsXUKA++I3CANF+P7VlgtgUg1
-         2uHCq3BbtnBPMS9mu7G1ZSpcTcXFRP2nwyRWLvbqwpjgl7xhgHZ0qhAQC8DHnfBjL5h/
-         ID7w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EF0d0rPxPBP+eQ08m8KipVtvfWo4S1ML+teg9iAvEgM=;
+        b=KxNJ94VbFWhQMgJG9lsw14cyd2TbyC3LMiUEL6t5S2ulBXZX1Y0zrZQNi0D8+GzxpU
+         GAIXJLQAEHstwd1UXgnK74GEx75Z1kCr0rsVssy8CDouOXLG1sRnG/MFY3jyi+utmUlj
+         9nKjzsEW1PB6Y9pkaFXZn6lR+ysPt1cn0PFowfpAZKWaJyGRmmzJuX67qm9iI6VO5QkA
+         Br14LBIyj9Zmka7/3GFoWmGLtLyfGlQ7aHRy3Jlc7bRB5WKPoWnSW4egzcQm/ec/UGwe
+         P095iapWehaQOF7exvA/ueAf2pcgU9L1TeSMfQPnsOPxcde4pOxcY2aqt24gqGIemMXv
+         zjZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mLdfSAR0LwOOtqwUC8udPXOOYAtdKU3B5mmLxtalmVY=;
-        b=GABDbMr+UF/ElLmNmh9c6o4glEuUDCboppt3di+t70ZJEDAA6OoAC7pQU9WUJbsvbg
-         p+1nX5L66K7TvJPLtkOwqnLk6BJJK4j/uKYku83Sz7tXm4UtlBhMm6zQVOWaBnwKC8MU
-         v6Ic14bAuCcaDl3mzfhvMTwIq9mo3jENG+RsT6yTyixh/xO7gdKs7JHQZH/hzU5RQNpn
-         SMJdJBban9ZFy/jNLnaZ/q1TaELFLILLeCpP0fYBRWLIzdbMfWJr6Zlo5YHPCPdtc3iY
-         YsYfoM3fGrddW+l2PlFodsQjfK6Utj/mCPuuM5B0hUZSsLJzNuWlsPuJSl7HadwUja9w
-         vALA==
-X-Gm-Message-State: AOAM530y6G8Ed8iqhD0+/c21I3+/ivh5F3lVfv+eDP08jJnygix7dajL
-        cJ31OM744GH84tUwAFeUr5U=
-X-Google-Smtp-Source: ABdhPJzqeAG7+AstLsB9Ivo+7f37ckUYlHOxLO7uMV0wguDsRO7FcNYu7MRIF0rSl2Ot7PEoUNV8MQ==
-X-Received: by 2002:adf:f1cd:: with SMTP id z13mr15757991wro.197.1603041855000;
-        Sun, 18 Oct 2020 10:24:15 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id q7sm9697505wrr.39.2020.10.18.10.24.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Oct 2020 10:24:14 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: allwinner: beelink-gs1: Enable both RGMII RX/TX delay
-Date:   Sun, 18 Oct 2020 19:24:09 +0200
-Message-Id: <20201018172409.1754775-1-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EF0d0rPxPBP+eQ08m8KipVtvfWo4S1ML+teg9iAvEgM=;
+        b=Llum++LmLezI9KGHj9NFsTy47OaFKoVASH5O1D7fNkMxDfbNMhsWLsRtA0FdkkzEHP
+         VaTkAE37fJzXD/Hk7kf7avSLfXT2ElS4HqHlxP6z9cgDc2d+OxXDXy1BJ9uBZYTAXB1T
+         KhbND4R0kYASFc9rkWLx7FfskNnEL+Z9pIcWlBvleeLtLZUFG3sB1Isxj2Cv2qsRqi9R
+         kFWrlfq6ADSWhimkOI3Dv7tC6h61vxQwFv8xO13YUVc+y6ZbvHbl+RPT+p2ZS+uzxTfb
+         amnP/ajq3nl7RmS/c3IQlLzUJa3h3NnERgz5Q4vBGxWtsEnv7AxxI/lvRzjEhvPay12r
+         buCA==
+X-Gm-Message-State: AOAM530TDFtAH0pHGu7nPpRbhLIQWAD9NYkHYqH+LkAu6AkXAw8gHl8K
+        DsKkrqz0CoeR/n0oE5FUubQox2EI9XWCjYpNrJo=
+X-Google-Smtp-Source: ABdhPJyTT8m3C4AeKq24obqVZhbsLHjyeL/1sJFdbSFOu5S2S1/2OY9bDRPr9FVGZLj6lYSyArc2jnZFmgBKWRAecYk=
+X-Received: by 2002:a6b:b208:: with SMTP id b8mr8348127iof.36.1603041922246;
+ Sun, 18 Oct 2020 10:25:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201011212238.174792-1-peron.clem@gmail.com> <20201012112218.juke4ll4dnwrmwzw@gilmour.lan>
+In-Reply-To: <20201012112218.juke4ll4dnwrmwzw@gilmour.lan>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Sun, 18 Oct 2020 19:25:10 +0200
+Message-ID: <CAJiuCceNOgZVNquFx7Fytxi-e0hvA_==V2Oudq+fYWSRKWD5sA@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: allwinner: beelink-gs1: Update LED power node
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before the commit:
-net: phy: realtek: fix rtl8211e rx/tx delay config
+HI Maxime,
 
-The software overwrite for RX/TX delays of the RTL8211e were not
-working properly and the Beelink GS1 had both RX/TX delay of RGMII
-interface set using pull-up on the TXDLY and RXDLY pins.
+On Mon, 12 Oct 2020 at 13:22, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Hi!
+>
+> On Sun, Oct 11, 2020 at 11:22:37PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
+> > Beelink GS1 LED trigger a warning when running dtbs_check.
+> >
+> > Update the node with a valid pattern property.
+> >
+> > Also add the function and the color of the LED and drop the
+> > label which is deprecated.
+> >
+> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> > ---
+> >  arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/=
+arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > index 3f7ceeb1a767..a364cb4e5b3f 100644
+> > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > @@ -7,6 +7,7 @@
+> >  #include "sun50i-h6-cpu-opp.dtsi"
+> >
+> >  #include <dt-bindings/gpio/gpio.h>
+> > +#include <dt-bindings/leds/common.h>
+> >
+> >  / {
+> >       model =3D "Beelink GS1";
+> > @@ -43,8 +44,9 @@ ext_osc32k: ext_osc32k_clk {
+> >       leds {
+> >               compatible =3D "gpio-leds";
+> >
+> > -             power {
+> > -                     label =3D "beelink:white:power";
+> > +             led-0 {
+> > +                     function =3D LED_FUNCTION_POWER;
+> > +                     color =3D <LED_COLOR_ID_WHITE>;
+> >                       gpios =3D <&r_pio 0 4 GPIO_ACTIVE_HIGH>; /* PL4 *=
+/
+> >                       default-state =3D "on";
+> >               };
+>
+> Doesn't that also change the sysfs file that LED is exposed to the usersp=
+ace with?
 
-Now that these delays are working properly they overwrite the HW
-config and set this to 'rgmii' meaning no delay on both RX/TX.
-This makes the ethernet of this board not working anymore.
+Indeed the previous led sysfs:
+/sys/class/leds/beelink:white:power/
+is now
+/sys/class/leds/white:power/
 
-Set the phy-mode to 'rgmii-id' meaning RGMII with RX/TX delays
-in the device-tree to keep the correct configuration.
+Do you want me to keep the label property to avoid this sysfs change ?
 
-Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Beelink GS1 board")
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regards,
+Clement
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index a364cb4e5b3f..6ab53860e447 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -99,7 +99,7 @@ &ehci0 {
- &emac {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&ext_rgmii_pins>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	phy-handle = <&ext_rgmii_phy>;
- 	phy-supply = <&reg_aldo2>;
- 	status = "okay";
--- 
-2.25.1
-
+>
+> Maxime
