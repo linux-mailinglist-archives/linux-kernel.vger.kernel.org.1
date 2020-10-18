@@ -2,99 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 961EE292010
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 23:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5091292014
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 23:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727706AbgJRVDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 17:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48626 "EHLO
+        id S1727759AbgJRVLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 17:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726977AbgJRVDg (ORCPT
+        with ESMTP id S1726656AbgJRVLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 17:03:36 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE36C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 14:03:35 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f250700329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f25:700:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 269F41EC0258;
-        Sun, 18 Oct 2020 23:03:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1603055014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=HwAu3GUBF7amG1UMj2+U4ITJHLPamNq91Zbg5d12q50=;
-        b=W1T5dsQh1V77IZFrSeKk23XP7oI8NFw253hJsq67QD/mIEIbBDqZpE5oQ7UyObzeomoeW3
-        TAbAW0dm/D8+W6d5KUr714fq1SzFjP1CDE6ZR7/xajmqP8cDHQyFnkLyx1v8wGfxXVrNWF
-        BKDmVf894BUlyxELsWqw4jxiBsOxL8s=
-Date:   Sun, 18 Oct 2020 23:03:23 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        jpoimboe@redhat.com, mbenes@suse.cz,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        shile.zhang@linux.alibaba.com, lkml <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: Fwd: [WARNING AND ERROR]  may be  system slow and  audio and
- video breaking
-Message-ID: <20201018210323.GD8364@zn.tnic>
-References: <959da1eee73f58a824fe4913b5cacda6de0f392e.camel@rajagiritech.edu.in>
- <b4533bcbb095cf11f01d0adfd50912c52242eb02.camel@rajagiritech.edu.in>
- <20201018174948.GC8364@zn.tnic>
- <328218dc46c4f883dad44d6fb53746c5f35f055d.camel@rajagiritech.edu.in>
+        Sun, 18 Oct 2020 17:11:46 -0400
+X-Greylist: delayed 125 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 18 Oct 2020 14:11:45 PDT
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A45C061755;
+        Sun, 18 Oct 2020 14:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=rwlD0i+Gji/DQfCWgJihttK1p3QsdOsw/Q0vx5uztvU=; b=Lb3hFbiK2JW6hqjPMwPt7dpAFo
+        X99d5Yc0bNqX+pmMiQAQz3Sqpr0n8dPLtP/shdnBS/X3BfFEW1jwSYu8yqcFsPJJbnwDkgNYrgC5h
+        IUswxA+x9UPo0sqVlosKX3ggVmUjdTDmH9XXzXHXS+nlKe078OIn82LL/JPV7Uy+vlx7C+WbLNk34
+        Z2/ONHI199dCH9S8o84OWEA0vGv+xZOBR587K4RawVJ0FTvnFGDOzrLiv2jvd9XskG2H2AK2tROIm
+        PGRnCtQ3VN9Ik2Hc7JnpuBkQyCcjkzUqoWSZ8zTNlVgWG0oQ4zPpWiYpy4SpYP3EtZsw2F6kDw0PR
+        3fdW8Dbg==;
+Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=localhost)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <jarkko.sakkinen@iki.fi>)
+        id 1kUFxw-0002fn-5e; Mon, 19 Oct 2020 00:11:44 +0300
+Date:   Mon, 19 Oct 2020 00:11:43 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
+To:     Jerry Snitselaar <jsnitsel@redhat.com>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jarkko@kernel.org, Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
+Message-ID: <20201018211143.GC575510@kapsi.fi>
+References: <20201015214430.17937-1-jsnitsel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <328218dc46c4f883dad44d6fb53746c5f35f055d.camel@rajagiritech.edu.in>
+In-Reply-To: <20201015214430.17937-1-jsnitsel@redhat.com>
+X-SA-Exim-Connect-IP: 83.245.197.237
+X-SA-Exim-Mail-From: jarkko.sakkinen@iki.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 01:51:34AM +0530, Jeffrin Jose T wrote:
-> On Sun, 2020-10-18 at 19:49 +0200, Borislav Petkov wrote:
-> > On Sun, Oct 18, 2020 at 10:42:39PM +0530, Jeffrin Jose T wrote:
-> > > smpboot: Scheduler frequency invariance went wobbly, disabling!
-> > > [ 1112.592866] unchecked MSR access error: RDMSR from 0x123 at rIP:
-> > > 0xffffffffb5c9a184 (native_read_msr+0x4/0x30)
+On Thu, Oct 15, 2020 at 02:44:30PM -0700, Jerry Snitselaar wrote:
+> There is a misconfiguration in the bios of the gpio pin used for the
+> interrupt in the T490s. When interrupts are enabled in the tpm_tis
+> driver code this results in an interrupt storm. This was initially
+> reported when we attempted to enable the interrupt code in the tpm_tis
+> driver, which previously wasn't setting a flag to enable it. Due to
+> the reports of the interrupt storm that code was reverted and we went back
+> to polling instead of using interrupts. Now that we know the T490s problem
+> is a firmware issue, add code to check if the system is a T490s and
+> disable interrupts if that is the case. This will allow us to enable
+> interrupts for everyone else. If the user has a fixed bios they can
+> force the enabling of interrupts with tpm_tis.interrupts=1 on the
+> kernel command line.
+> 
+> Cc: jarkko@kernel.org
+> Cc: Peter Huewe <peterhuewe@gmx.de>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Reviewed-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+> Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
 
-Ok, you forgot to say in your initial mail that this happens when you
-suspend your laptop.
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Now, this unchecked MSR error thing happens only once because that early
-during resume the microcode on CPU1 is not updated yet - and that needs
-to be debugged separately and I'll try to reproduce that on my machine -
-so the microcode is not updated yet and therefore the 0x123 MSR is not
-"emulated" by the microcode, so to speak, thus the warning.
+I'll apply this and make it available in linux-next.
 
-That warning doesn't happen anymore, though, once the microcode is
-updated.
+/Jarkko
 
-But what happens after that is you get a flood of correctable PCIe
-errors about a transaction to a device timeoutting:
-
-pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
-pcieport 0000:00:1c.5: PCIe Bus Error: severity=Corrected, type=Data Link Layer, (Transmitter ID)
-pcieport 0000:00:1c.5:   device [8086:9d15] error status/mask=00001000/00002000
-pcieport 0000:00:1c.5:    [12] Timeout 
-
-and it looks like that flood is slowing down the machine because it is
-busy logging them.
-
-Do
-
-# lspci -nn -xxx
-
-as root. It'll show us which device that 8086:9d15 is.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> ---
+>  drivers/char/tpm/tpm_tis.c | 29 +++++++++++++++++++++++++++--
+>  1 file changed, 27 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
+> index 0b214963539d..4ed6e660273a 100644
+> --- a/drivers/char/tpm/tpm_tis.c
+> +++ b/drivers/char/tpm/tpm_tis.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+>  #include <linux/kernel.h>
+> +#include <linux/dmi.h>
+>  #include "tpm.h"
+>  #include "tpm_tis_core.h"
+>  
+> @@ -49,8 +50,8 @@ static inline struct tpm_tis_tcg_phy *to_tpm_tis_tcg_phy(struct tpm_tis_data *da
+>  	return container_of(data, struct tpm_tis_tcg_phy, priv);
+>  }
+>  
+> -static bool interrupts = true;
+> -module_param(interrupts, bool, 0444);
+> +static int interrupts = -1;
+> +module_param(interrupts, int, 0444);
+>  MODULE_PARM_DESC(interrupts, "Enable interrupts");
+>  
+>  static bool itpm;
+> @@ -63,6 +64,28 @@ module_param(force, bool, 0444);
+>  MODULE_PARM_DESC(force, "Force device probe rather than using ACPI entry");
+>  #endif
+>  
+> +static int tpm_tis_disable_irq(const struct dmi_system_id *d)
+> +{
+> +	if (interrupts == -1) {
+> +		pr_notice("tpm_tis: %s detected: disabling interrupts.\n", d->ident);
+> +		interrupts = 0;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dmi_system_id tpm_tis_dmi_table[] = {
+> +	{
+> +		.callback = tpm_tis_disable_irq,
+> +		.ident = "ThinkPad T490s",
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> +			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad T490s"),
+> +		},
+> +	},
+> +	{}
+> +};
+> +
+>  #if defined(CONFIG_PNP) && defined(CONFIG_ACPI)
+>  static int has_hid(struct acpi_device *dev, const char *hid)
+>  {
+> @@ -192,6 +215,8 @@ static int tpm_tis_init(struct device *dev, struct tpm_info *tpm_info)
+>  	int irq = -1;
+>  	int rc;
+>  
+> +	dmi_check_system(tpm_tis_dmi_table);
+> +
+>  	rc = check_acpi_tpm2(dev);
+>  	if (rc)
+>  		return rc;
+> -- 
+> 2.28.0
+> 
+> 
