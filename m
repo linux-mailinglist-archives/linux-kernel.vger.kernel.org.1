@@ -2,330 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0732917D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 16:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52402917DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 16:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgJROUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 10:20:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgJROUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 10:20:17 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D8A021655;
-        Sun, 18 Oct 2020 14:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603030815;
-        bh=3AB8hYHe4JuaaeMkHvGBGXqZRLeCJdn5mw9iKzXnsW8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iJjOAF284twGC8z4Fzc04iNNvC1jkvccbIWVu/yDvdlk9hgolXT30rQlvuI5ETsFB
-         TIEd8LOg42F0JlWXWwCQ9rLy03LTxjrj3mkqNq3scNUe4uPVw4xcD0WUNvczBrR6OD
-         X6+Z8F1FbOP8hW5eigVoGZWN8/L9vlDrqjzr1BSk=
-Date:   Sun, 18 Oct 2020 23:20:11 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] tracing: Make trace_*_run_command() more flexible
-Message-Id: <20201018232011.38e5da51f5cd8e73e6f529ee@kernel.org>
-In-Reply-To: <e29c3ae1fc46892ec792d6f6f910f75d0e12584c.1602883818.git.zanussi@kernel.org>
-References: <cover.1602883818.git.zanussi@kernel.org>
-        <e29c3ae1fc46892ec792d6f6f910f75d0e12584c.1602883818.git.zanussi@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726699AbgJROZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 10:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgJROZM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 10:25:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DCFC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 07:25:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iyUXgLDRMr3vwQo92a8pwTwL+g8y/sgJT1e4TYXDgiU=; b=cwKCt4fLPMzqz3ptSnye/nAMPq
+        d/lDE7hvPO8lXT1ZeoI85Bm02XYaST6Plsh6sTBdL4geu+7ytQGJvO99RmXEKIxkyQ0+dL3WQbak0
+        Ax6ppsjAu+mg25Bye5KMgpKrjJ3DaZ9mvBHCdYxDC4vrt8KesW9ZJ9pjWdclAtm+y9LpjK1jwwdtr
+        SPgIa73LStoYF9xW3T9Do7qGIqyUm5s53aRTjRWWBBpyPRDQCZtGq0qWSaa1xtJhrAOlLFmV4mWzp
+        gRqkTWSqv1fLLnVWcV1Kv2ND4e9JPAtLQSz9/0KSf866C9zGZX68BQhIiVenAuiMpSi4HsO25FSEx
+        x2rq9cQA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kU9cS-00044P-5I; Sun, 18 Oct 2020 14:25:08 +0000
+Date:   Sun, 18 Oct 2020 15:25:08 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib/test_free_pages: Add basic progress indicators
+Message-ID: <20201018142508.GJ20115@casper.infradead.org>
+References: <20201018140445.20972-1-geert@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201018140445.20972-1-geert@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+On Sun, Oct 18, 2020 at 04:04:45PM +0200, Geert Uytterhoeven wrote:
+> The test module to check that free_pages() does not leak memory does not
+> provide any feedback whatsoever its state or progress, but may take some
+> time on slow machines.  Add the printing of messages upon starting each
+> phase of the test, and upon completion.
 
-On Fri, 16 Oct 2020 16:48:22 -0500
-Tom Zanussi <zanussi@kernel.org> wrote:
+It's not supposed to take a long time.  Can you crank down that 1000 *
+1000 to something more appropriate?
 
-> trace_run_command() and therefore functions that use it, such as
-> trace_parse_run_command(), uses argv_split() to split the command into
-> an array of args then passed to the callback to handle.
-> 
-> This works fine for most commands but some commands would like to
-> allow the user to use and additional separator to visually group items
-> in the command.  One example would be synthetic event commands, which
-> use semicolons to group fields:
-> 
->   echo 'event_name int a; char b[]; u64 lat' >> synthetic_events
-> 
-> What gets passed as an args array to the command for a command like
-> this include tokens that have semicolons included with the token,
-> which the callback then needs to strip out, since argv_split() only
-> looks at whitespace as a separator.
-> 
-> It would be nicer to just have trace_run_command() strip out the
-> semicolons at its level rather than passing that task onto the
-> callback. To accomplish that, this change adds an 'additional_sep'
-> arg to a new __trace_run_command() function that allows a caller to
-> pass an additional separator char that if non-zero simply replaces
-> that character with whitespace before splitting the command into args.
-> The original trace_run_command() remains as-is in this regard, simply
-> calling __trace_run_command() with 0 for the separator, while making a
-> new trace_run_command_add_sep() version that can be used to pass in a
-> separator.
-
-No, I don't like to tweak trace_run_command() that way, I'm OK to
-delegate the argv_split() totally to the callback function (pass
-the raw command string to the callback), OR __create_synth_event()
-concatinate the fields argv and parse it by itself (I think the
-latter is better and simpler).
-
-The ";" separator is not an additinal separator but that is higher
-level separator for synthetic event. Suppose that you get the
-following input;
- "myevent int c ; char b"
- "myevent int;c;char;b;"
-These should not be same for the synthetic events. The fields must be
-splitted by ';' at first, and then each field should be parsed.
-
-So, I recommend you not to pass the additional separator to the
-generic function, but (since it is only for synthetic event) to
-reconstruct the raw command from argv, and parse it again with
-";" inside synthetic event parser. Then each fields parser can
-check that is a wrong input or not.
-
-It will be something like
-
-__create_synth_event(argc, argv)
-{
-	<event-name parsing>
-	argc--; argv++;
-
-	raw_fields = concat_argv(argc, argv);// you can assume argv is generated by argv_split().
-	vfields = split_fields(raw_fields, &nfields);// similar to argv_split()
-	for (i = 0; i < nfields; i++)
-		parse_synth_field(vfields[i]);
-}
-
-Then, you don't need to change the generic functions, and also
-you will get the correct parser routines.
-
-Thank you,
-
-> 
-> The other change here simply has __trace_run_command() make a copy of
-> the original command to work on, while leaving the original command
-> string untouched.  This untouched string is now passed into the
-> callback as well - this allows the callback to use the original string
-> for error processing and caret placement rather than forcing the
-> callback to recreate the original string from the args, which isn't
-> always possible.
-> 
-> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-> ---
->  kernel/trace/trace.c              | 41 +++++++++++++++++++++++++------
->  kernel/trace/trace.h              | 12 ++++++---
->  kernel/trace/trace_dynevent.c     |  4 +--
->  kernel/trace/trace_events_synth.c |  5 ++--
->  kernel/trace/trace_kprobe.c       |  5 ++--
->  kernel/trace/trace_uprobe.c       |  5 ++--
->  6 files changed, 54 insertions(+), 18 deletions(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 63c97012ed39..afa526414b25 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -9367,30 +9367,56 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
->  }
->  EXPORT_SYMBOL_GPL(ftrace_dump);
->  
-> -int trace_run_command(const char *buf, int (*createfn)(int, char **))
-> +static int __trace_run_command(const char *buf,
-> +			       int (*createfn)(int, char **, const char *),
-> +			       char additional_sep)
->  {
-> -	char **argv;
->  	int argc, ret;
-> +	char **argv, *cmd;
-> +
-> +	cmd = kstrdup(buf, GFP_KERNEL);
-> +	if (!cmd)
-> +		return -ENOMEM;
-> +
-> +	if (additional_sep)
-> +		strreplace(cmd, additional_sep, ' ');
->  
->  	argc = 0;
->  	ret = 0;
-> -	argv = argv_split(GFP_KERNEL, buf, &argc);
-> -	if (!argv)
-> +	argv = argv_split(GFP_KERNEL, cmd, &argc);
-> +	if (!argv) {
-> +		kfree(cmd);
->  		return -ENOMEM;
-> +	}
->  
->  	if (argc)
-> -		ret = createfn(argc, argv);
-> +		ret = createfn(argc, argv, buf);
->  
->  	argv_free(argv);
-> +	kfree(cmd);
->  
->  	return ret;
->  }
->  
-> +int trace_run_command(const char *buf, int (*createfn)(int, char **,
-> +						       const char *))
-> +{
-> +	return __trace_run_command(buf, createfn, 0);
-> +}
-> +
-> +int trace_run_command_add_sep(const char *buf,
-> +			      int (*createfn)(int, char **, const char *),
-> +			      char additional_sep)
-> +{
-> +	return __trace_run_command(buf, createfn, additional_sep);
-> +}
-> +
->  #define WRITE_BUFSIZE  4096
->  
->  ssize_t trace_parse_run_command(struct file *file, const char __user *buffer,
->  				size_t count, loff_t *ppos,
-> -				int (*createfn)(int, char **))
-> +				int (*createfn)(int, char **, const char *),
-> +				char additional_sep)
->  {
->  	char *kbuf, *buf, *tmp;
->  	int ret = 0;
-> @@ -9438,7 +9464,8 @@ ssize_t trace_parse_run_command(struct file *file, const char __user *buffer,
->  			if (tmp)
->  				*tmp = '\0';
->  
-> -			ret = trace_run_command(buf, createfn);
-> +			ret = trace_run_command_add_sep(buf, createfn,
-> +							additional_sep);
->  			if (ret)
->  				goto out;
->  			buf += size;
-> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> index 34e0c4d5a6e7..ae6e0c2ec028 100644
-> --- a/kernel/trace/trace.h
-> +++ b/kernel/trace/trace.h
-> @@ -1982,10 +1982,16 @@ extern int tracing_set_cpumask(struct trace_array *tr,
->  
->  #define MAX_EVENT_NAME_LEN	64
->  
-> -extern int trace_run_command(const char *buf, int (*createfn)(int, char**));
-> +extern int trace_run_command(const char *buf,
-> +			     int (*createfn)(int, char **, const char *));
-> +extern int trace_run_command_add_sep(const char *buf,
-> +				     int (*createfn)(int, char **, const char *),
-> +				     char additional_sep);
->  extern ssize_t trace_parse_run_command(struct file *file,
-> -		const char __user *buffer, size_t count, loff_t *ppos,
-> -		int (*createfn)(int, char**));
-> +				       const char __user *buffer,
-> +				       size_t count, loff_t *ppos,
-> +				       int (*createfn)(int, char **, const char *),
-> +				       char additional_sep);
->  
->  extern unsigned int err_pos(char *cmd, const char *str);
->  extern void tracing_log_err(struct trace_array *tr,
-> diff --git a/kernel/trace/trace_dynevent.c b/kernel/trace/trace_dynevent.c
-> index 5fa49cfd2bb6..4dc21c1879ae 100644
-> --- a/kernel/trace/trace_dynevent.c
-> +++ b/kernel/trace/trace_dynevent.c
-> @@ -75,7 +75,7 @@ int dyn_event_release(int argc, char **argv, struct dyn_event_operations *type)
->  	return ret;
->  }
->  
-> -static int create_dyn_event(int argc, char **argv)
-> +static int create_dyn_event(int argc, char **argv, const char *raw_cmd)
->  {
->  	struct dyn_event_operations *ops;
->  	int ret = -ENODEV;
-> @@ -191,7 +191,7 @@ static ssize_t dyn_event_write(struct file *file, const char __user *buffer,
->  				size_t count, loff_t *ppos)
->  {
->  	return trace_parse_run_command(file, buffer, count, ppos,
-> -				       create_dyn_event);
-> +				       create_dyn_event, ';');
->  }
->  
->  static const struct file_operations dynamic_events_ops = {
-> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-> index 3212e2c653b3..e6659bb9a500 100644
-> --- a/kernel/trace/trace_events_synth.c
-> +++ b/kernel/trace/trace_events_synth.c
-> @@ -1378,7 +1378,8 @@ int synth_event_delete(const char *event_name)
->  }
->  EXPORT_SYMBOL_GPL(synth_event_delete);
->  
-> -static int create_or_delete_synth_event(int argc, char **argv)
-> +static int create_or_delete_synth_event(int argc, char **argv,
-> +					const char *raw_cmd)
->  {
->  	const char *name = argv[0];
->  	int ret;
-> @@ -2046,7 +2047,7 @@ static ssize_t synth_events_write(struct file *file,
->  				  size_t count, loff_t *ppos)
->  {
->  	return trace_parse_run_command(file, buffer, count, ppos,
-> -				       create_or_delete_synth_event);
-> +				       create_or_delete_synth_event, ';');
->  }
->  
->  static const struct file_operations synth_events_fops = {
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index b911e9f6d9f5..54af5ff58923 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -907,7 +907,8 @@ static int trace_kprobe_create(int argc, const char *argv[])
->  	goto out;
->  }
->  
-> -static int create_or_delete_trace_kprobe(int argc, char **argv)
-> +static int create_or_delete_trace_kprobe(int argc, char **argv,
-> +					 const char *raw_cmd)
->  {
->  	int ret;
->  
-> @@ -1159,7 +1160,7 @@ static ssize_t probes_write(struct file *file, const char __user *buffer,
->  			    size_t count, loff_t *ppos)
->  {
->  	return trace_parse_run_command(file, buffer, count, ppos,
-> -				       create_or_delete_trace_kprobe);
-> +				       create_or_delete_trace_kprobe, 0);
->  }
->  
->  static const struct file_operations kprobe_events_ops = {
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index 3cf7128e1ad3..b2840003b851 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -716,7 +716,8 @@ static int trace_uprobe_create(int argc, const char **argv)
->  	return ret;
->  }
->  
-> -static int create_or_delete_trace_uprobe(int argc, char **argv)
-> +static int create_or_delete_trace_uprobe(int argc, char **argv,
-> +					 const char *raw_cmd)
->  {
->  	int ret;
->  
-> @@ -793,7 +794,7 @@ static ssize_t probes_write(struct file *file, const char __user *buffer,
->  			    size_t count, loff_t *ppos)
->  {
->  	return trace_parse_run_command(file, buffer, count, ppos,
-> -					create_or_delete_trace_uprobe);
-> +				       create_or_delete_trace_uprobe, 0);
->  }
->  
->  static const struct file_operations uprobe_events_ops = {
-> -- 
-> 2.17.1
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
