@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513C02918E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 20:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D4A2918E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 20:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727432AbgJRSnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 14:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgJRSnO (ORCPT
+        id S1727448AbgJRSor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 14:44:47 -0400
+Received: from smtprelay0074.hostedemail.com ([216.40.44.74]:47372 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726075AbgJRSor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 14:43:14 -0400
-Received: from valentin-vidic.from.hr (valentin-vidic.from.hr [IPv6:2001:470:1f0b:3b7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577E6C061755;
-        Sun, 18 Oct 2020 11:43:13 -0700 (PDT)
-X-Virus-Scanned: Debian amavisd-new at valentin-vidic.from.hr
-Received: by valentin-vidic.from.hr (Postfix, from userid 1000)
-        id 03CD7408F; Sun, 18 Oct 2020 20:43:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=valentin-vidic.from.hr; s=2020; t=1603046582;
-        bh=gRzHD+oSUHpkztyZmdldRMqm3tZdYir04yyrrfQNfX8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=viPMi1YdG9dmmH2ANBu+MCdM/WReOw/DHXlYYl7jwTaqMTKp6A9qe9qY255w04JqK
-         SCZxiOIEoqroiaVjqZFaqQ8kOgt6FdmQ2GXwJCmGSXbAtC5Oiv9bjcFsXmxVECsfrx
-         dEHm2z4zO2oSnCijXWTLMu5a7YSfdYwQ0jQH+85732i3Td7L2F6vwzBFd63HWaOwEL
-         5Z0B4A5b0jJFjP6SXGes6MwPLJzGrL6Hq3m/u1VH5HD56lk5k8R8+Z9BnSpYqD3eaG
-         fpzM12BQFa6SmGgWLCkQUy7nJrkVGTWc5sw7/hviCBoDg4iS3jBeWAKyX+ZWlmGUg+
-         JjZd+SjyLEZ87bQ7fVh0R6Z7xqIDVGNIDfBbSGhBZy20OfFbeb+zLRqVy9k7mEnSrd
-         ladi2caC4nVERtJxq2rdN88YRwNeNFJ9OkYKaaNKTWdYc98cE5lGKVpNgNWUg7wc/r
-         Q/NQkyHSyy5yJbqk333SYL5y9V/tpdJt6D22HlGrgkZVYVWY0bebDLdzdCUoMGQDCp
-         FDApFpJHvpCaH0YUIGJzv60/FX+9URXomv2s468uJrVr3pOvuIiz6mlW5vdFYDN/h2
-         ir5Wt1fFamYTa8l5+lvvLGvTkIbSFLKzBMJXqVv8SIGWMZJw4KyilmjrqHtCPJy4gn
-         K2EL8vbdfkTruZCRbinG55YU=
-From:   Valentin Vidic <vvidic@valentin-vidic.from.hr>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Philip Rischel <rischelp@idt.com>,
-        Florian Fainelli <florian@openwrt.org>,
-        Roman Yeryomin <roman@advem.lv>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Valentin Vidic <vvidic@valentin-vidic.from.hr>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] net: korina: cast KSEG0 address to pointer in kfree
-Date:   Sun, 18 Oct 2020 20:42:55 +0200
-Message-Id: <20201018184255.28989-1-vvidic@valentin-vidic.from.hr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201016194611.GK8773@valentin-vidic.from.hr>
-References: <20201016194611.GK8773@valentin-vidic.from.hr>
+        Sun, 18 Oct 2020 14:44:47 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 967A718029120;
+        Sun, 18 Oct 2020 18:44:45 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6299:7875:7903:10004:10400:10848:11026:11658:11914:12043:12296:12297:12438:12555:12760:13141:13230:13255:13439:14093:14097:14181:14394:14659:14721:21080:21627:21990:30025:30029:30046:30054:30070:30080:30089,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: straw50_341118a27230
+X-Filterd-Recvd-Size: 3721
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 18 Oct 2020 18:44:44 +0000 (UTC)
+Message-ID: <95f9ca20c9c7efe5d40d38e2dd60487e66df43f2.camel@perches.com>
+Subject: [PATCH] checkpatch: Enable GIT_DIR environment use to set git
+ repository location
+From:   Joe Perches <joe@perches.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andy Whitcroft <apw@shadowen.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Sun, 18 Oct 2020 11:44:43 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc warning:
+If set, use the environment variable GIT_DIR to change the
+default .git location of the kernel git tree.
 
-passing argument 1 of 'kfree' makes pointer from integer without a cast
+If GIT_DIR is unset, keep using the current ".git" default.
 
-Fixes: 3af5f0f5c74e ("net: korina: fix kfree of rx/tx descriptor array")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Signed-off-by: Joe Perches <joe@perches.co>
 ---
- drivers/net/ethernet/korina.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index af441d699a57..bf48f0ded9c7 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -1113,7 +1113,7 @@ static int korina_probe(struct platform_device *pdev)
- 	return rc;
+commit f5f613259f3f ("checkpatch: allow not using -f with files that are in git")
+breaks the use of checkpatch with:
+
+   Global symbol "$gitroot" requires explicit package name (did you forget to declare "my $gitroot"?) at ./scripts/checkpatch.pl line 980.
+   Execution of ./scripts/checkpatch.pl aborted due to compilation errors.
+
+An unsigned test patch exists in -next that is required for
+that new commit.
+
+So, provide a better commit description for that test patch
+and sign it too...
+
+scripts/checkpatch.pl | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index f40a81f24d43..a213cdb82ab0 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -43,6 +43,8 @@ my $list_types = 0;
+ my $fix = 0;
+ my $fix_inplace = 0;
+ my $root;
++my $gitroot = $ENV{'GIT_DIR'};
++$gitroot = ".git" if !defined($gitroot);
+ my %debug;
+ my %camelcase = ();
+ my %use_type = ();
+@@ -908,7 +910,7 @@ sub is_maintained_obsolete {
+ sub is_SPDX_License_valid {
+ 	my ($license) = @_;
  
- probe_err_register:
--	kfree(KSEG0ADDR(lp->td_ring));
-+	kfree((struct dma_desc *)KSEG0ADDR(lp->td_ring));
- probe_err_td_ring:
- 	iounmap(lp->tx_dma_regs);
- probe_err_dma_tx:
-@@ -1133,7 +1133,7 @@ static int korina_remove(struct platform_device *pdev)
- 	iounmap(lp->eth_regs);
- 	iounmap(lp->rx_dma_regs);
- 	iounmap(lp->tx_dma_regs);
--	kfree(KSEG0ADDR(lp->td_ring));
-+	kfree((struct dma_desc *)KSEG0ADDR(lp->td_ring));
+-	return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$root/.git"));
++	return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
  
- 	unregister_netdev(bif->dev);
- 	free_netdev(bif->dev);
--- 
-2.20.1
+ 	my $root_path = abs_path($root);
+ 	my $status = `cd "$root_path"; echo "$license" | python scripts/spdxcheck.py -`;
+@@ -926,7 +928,7 @@ sub seed_camelcase_includes {
+ 
+ 	$camelcase_seeded = 1;
+ 
+-	if (-e ".git") {
++	if (-e "$gitroot") {
+ 		my $git_last_include_commit = `${git_command} log --no-merges --pretty=format:"%h%n" -1 -- include`;
+ 		chomp $git_last_include_commit;
+ 		$camelcase_cache = ".checkpatch-camelcase.git.$git_last_include_commit";
+@@ -954,7 +956,7 @@ sub seed_camelcase_includes {
+ 		return;
+ 	}
+ 
+-	if (-e ".git") {
++	if (-e "$gitroot") {
+ 		$files = `${git_command} ls-files "include/*.h"`;
+ 		@include_files = split('\n', $files);
+ 	}
+@@ -987,7 +989,7 @@ sub git_is_single_file {
+ sub git_commit_info {
+ 	my ($commit, $id, $desc) = @_;
+ 
+-	return ($id, $desc) if ((which("git") eq "") || !(-e ".git"));
++	return ($id, $desc) if ((which("git") eq "") || !(-e "$gitroot"));
+ 
+ 	my $output = `${git_command} log --no-color --format='%H %s' -1 $commit 2>&1`;
+ 	$output =~ s/^\s*//gm;
+@@ -1026,7 +1028,7 @@ my $fixlinenr = -1;
+ 
+ # If input is git commits, extract all commits from the commit expressions.
+ # For example, HEAD-3 means we need check 'HEAD, HEAD~1, HEAD~2'.
+-die "$P: No git repository found\n" if ($git && !-e ".git");
++die "$P: No git repository found\n" if ($git && !-e "$gitroot");
+ 
+ if ($git) {
+ 	my @commits = ();
+
 
