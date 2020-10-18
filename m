@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288C92916E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 12:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F141E2916E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 12:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgJRKMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 06:12:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgJRKMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 06:12:03 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 728CA21655;
-        Sun, 18 Oct 2020 10:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603015922;
-        bh=gLbxEEWfSmwUSe05MiWq3mo7ZfbPoHNGLJwjOIXi0Ns=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mVb/p5PqtX1Ur4SDhPiSyPIfiP5qm7JC7p8dBJXufoqiLtKpDI6F5vvvuHUtpUIOb
-         PjlBq1bmDfmhOzM6t5Pqmh91ljdhQOrO0y555RN2Ssv4QrvgkY/vqDKiIc1E78cZV4
-         BoAzIafQAYoZn2EfHXVZMsya+e5wZoJL7pGXp+zk=
-Date:   Sun, 18 Oct 2020 11:11:57 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Fabien Parent <fparent@baylibre.com>, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org, robh+dt@kernel.org, pmeerw@pmeerw.net,
-        lars@metafoo.de, knaack.h@gmx.de
-Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: auxadc: add doc for MT8516
- SoC
-Message-ID: <20201018111157.490962a9@archlinux>
-In-Reply-To: <5ac4afb0-3950-3b11-1f5c-01bbf74e64a4@gmail.com>
-References: <20201012205218.3010868-1-fparent@baylibre.com>
-        <5ac4afb0-3950-3b11-1f5c-01bbf74e64a4@gmail.com>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726478AbgJRKQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 06:16:32 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18555 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgJRKQc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 06:16:32 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8c15a30000>; Sun, 18 Oct 2020 03:15:00 -0700
+Received: from [172.27.1.130] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 18 Oct
+ 2020 10:16:13 +0000
+Subject: Re: [PATCH] RDMA/core: Fix error return in _ib_modify_qp()
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, <dledford@redhat.com>,
+        <jgg@ziepe.ca>, <leon@kernel.org>, <maorg@mellanox.com>,
+        <parav@mellanox.com>, <galpress@amazon.com>, <monis@mellanox.com>,
+        <chuck.lever@oracle.com>, <maxg@mellanox.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20201016075845.129562-1-jingxiangfeng@huawei.com>
+From:   Maor Gottlieb <maorg@nvidia.com>
+Message-ID: <fbca7f4d-aad5-8b0b-89fc-f87caf873828@nvidia.com>
+Date:   Sun, 18 Oct 2020 13:16:09 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201016075845.129562-1-jingxiangfeng@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603016100; bh=xu20L7kd47iKzkXqoWHQBgj12XJ/iPczDhZM1gwB/aA=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=dn1NfZXiLUInfRQl6NLYPUld3LzjhhDwHWZXxP6iiXjjtE8h9Lc0NWqW0C0DJmQMO
+         FB/q91afg4sMCUtknyc3rA1jhv/pnv4bI3wJOAYAa1WnG5Va2JwLb95x8m/ykypgce
+         T1mY1a5n0PPTaYDW6k7YJylqeYeh8dQ37DJFnlj/Mpcs01MxOdN/RLPfgMHeApZfKf
+         Je9Kh7hL+3OsvgQYJles4ZX1ESql12ZMHYNJ3AolyXPYt+unINcXwPO1AeM3xgxEf5
+         sPssKpPC7bqeelfVyKyjDOMSloIZrq8vcEENbqWz7/vKiIVFlgpel5jfkDGZXrzD6X
+         En5DSo47bvhTg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Oct 2020 08:00:25 +0200
-Matthias Brugger <matthias.bgg@gmail.com> wrote:
 
-> On 12/10/2020 22:52, Fabien Parent wrote:
-> > Add documentation for the auxadc binding for MT8516 SoC.
-> > 
-> > Signed-off-by: Fabien Parent <fparent@baylibre.com>  
-> 
-> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+On 10/16/2020 10:58 AM, Jing Xiangfeng wrote:
+> Fix to return error code PTR_ERR() from the error handling case instead of
+> 0.
+>
+> Fixes: 51aab12631dd ("RDMA/core: Get xmit slave for LAG")
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> ---
+>   drivers/infiniband/core/verbs.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+> index 307886737646..bf63c7561e8c 100644
+> --- a/drivers/infiniband/core/verbs.c
+> +++ b/drivers/infiniband/core/verbs.c
+> @@ -1685,8 +1685,10 @@ static int _ib_modify_qp(struct ib_qp *qp, struct ib_qp_attr *attr,
+>   			slave = rdma_lag_get_ah_roce_slave(qp->device,
+>   							   &attr->ah_attr,
+>   							   GFP_KERNEL);
+> -			if (IS_ERR(slave))
+> +			if (IS_ERR(slave)) {
+> +				ret = PTR_ERR(slave);
+>   				goto out_av;
+> +			}
+>   			attr->xmit_slave = slave;
+>   		}
+>   	}
 
-Applied to the togreg branch of iio.git and pushed out as testing
-for the autobuilders to poke at it (or do nothing given it's
-a txt file ;)
-
-Jonathan
-
-> 
-> > ---
-> >   Documentation/devicetree/bindings/iio/adc/mt6577_auxadc.txt | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/adc/mt6577_auxadc.txt b/Documentation/devicetree/bindings/iio/adc/mt6577_auxadc.txt
-> > index 78c06e05c8e5..1b7ff9e5615a 100644
-> > --- a/Documentation/devicetree/bindings/iio/adc/mt6577_auxadc.txt
-> > +++ b/Documentation/devicetree/bindings/iio/adc/mt6577_auxadc.txt
-> > @@ -17,6 +17,7 @@ Required properties:
-> >       - "mediatek,mt7622-auxadc": For MT7622 family of SoCs
-> >       - "mediatek,mt8173-auxadc": For MT8173 family of SoCs
-> >       - "mediatek,mt8183-auxadc", "mediatek,mt8173-auxadc": For MT8183 family of SoCs
-> > +    - "mediatek,mt8516-auxadc", "mediatek,mt8173-auxadc": For MT8516 family of SoCs
-> >     - reg: Address range of the AUXADC unit.
-> >     - clocks: Should contain a clock specifier for each entry in clock-names
-> >     - clock-names: Should contain "main".
-> >   
+Looks good,
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
 
