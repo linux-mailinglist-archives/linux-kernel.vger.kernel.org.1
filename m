@@ -2,465 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5E329205D
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 23:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DAD292065
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 00:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728310AbgJRV55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 17:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
+        id S1728980AbgJRWAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 18:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727329AbgJRV54 (ORCPT
+        with ESMTP id S1727329AbgJRWAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 17:57:56 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F54C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 14:57:56 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id d23so3996503pll.7
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 14:57:56 -0700 (PDT)
+        Sun, 18 Oct 2020 18:00:17 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DA3C061755;
+        Sun, 18 Oct 2020 15:00:16 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b6so2495057pju.1;
+        Sun, 18 Oct 2020 15:00:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version;
-        bh=V6ILMUdL0atq479dT7lQmUYpWd+pUJStbEMCkWevr7g=;
-        b=02qppN+ZZ5XGtmomc5OzLS4+K1i455QdifNP5uzg6I9D8omflqfF3VvG6rJUlk697a
-         62lsTdogVguG7+unKbWb2UwQl0q8ZrEe+Mwow92J4OB/o8mVk5iW/Hh639NSSobmx+/I
-         qrQTijDY4H9N5IPKyEpc1VdztfGfdpFeIR6UTmsrYdmddOkclEGHZVEaP+W5ejJef6YT
-         SuM+ve/U0bh4H0jlejpMO5RmmkOy1tFgTjKzpB/WJPg/bAQpGjqNGKAM0sjkXlO9Zl3S
-         lje077A7eFs9GI/8BlqfUfNu8i7SW2DfFGuf0IHUjPrlTkZ4gy2U/lbktWzqqThJ6pLt
-         o5jQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=udUzFpXMQfO7iiReA0yJz9dVJWzLPia8TCqMdPi5DbI=;
+        b=uFz0r7yGCvFVOvm0DzxzGP7Bhrh6JAf8LXzi036DO2KzBW2jRFKwTZQ6JMFSyX3ZLy
+         V1TKretTH3MeuV9RgixjMReWe/0fNupxjAlfxMk3Iz9TruB8Js8bdogUW7aYj5f+L8NV
+         ++XXOIsyhiFNFE4Ee4IHOmV09c1oq0Gh25MuI9B2yCa4+hqLr5cz9+eTNT6dfW2ePH6U
+         xiblJg661Zn69N83bVqweABHONRLVCyAZ9Gb2I64CxY1Gcc1czadSCUeYMC6OhziYK5+
+         R8CmQq++c+MJUaxLtpRto62fSdb5oJ1V69kb46fdaHxDESuf526FZZ+qrg2FOx3ySEYC
+         uMwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version;
-        bh=V6ILMUdL0atq479dT7lQmUYpWd+pUJStbEMCkWevr7g=;
-        b=eUDNDUL0SntvND8b7N2soL3FvQaPw5SOvtWZlijENs+br9greN5whYBpW/7ycNfEbM
-         7qffjbbQR0f7iqsdpmQY69w6SugFg2MbF9z+YuxtiAPZgDKQIvQ4si3wULWYzBeQ1jva
-         lWDdeV9bSBk6p8BlubxAMC3+ymi/mLkEEbNYuvXblfhIjR8B44cWT+Urxbd8RZgFpszR
-         N1I3jEZP+sLq7u5IWapJs7M5Vo1qgvurBPkzsPiEL/DTVbOCeWAYpaCPt8EOMx607TjH
-         X5mvOAtBVhv691A1XoqSzc7yAKP53HEiQuKZTWE49oRGqim4PnEKBvyveyHFKnJVUtEq
-         pgGg==
-X-Gm-Message-State: AOAM5300MfXSehch6UfrWpKBYAqsYt4NkObMcOWPUMELGApZq6uamjRu
-        zvsFBv62r/NX+9VrNFQ51LeStw==
-X-Google-Smtp-Source: ABdhPJzKHn2tml1WniC17hE6tzIj3tJb52feJYpr0/UbDoT/xDWGbu2LVW3qHfqYVWnGDoYe0ILjOw==
-X-Received: by 2002:a17:90b:3d5:: with SMTP id go21mr14932922pjb.149.1603058275707;
-        Sun, 18 Oct 2020 14:57:55 -0700 (PDT)
-Received: from debian ([122.183.152.57])
-        by smtp.gmail.com with ESMTPSA id c7sm9727831pfj.84.2020.10.18.14.57.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=udUzFpXMQfO7iiReA0yJz9dVJWzLPia8TCqMdPi5DbI=;
+        b=H/mDw+EInpdxZaCk3JBTJCBHApFNaLDT35fQZsHPJ7gAz41WkCr0EAA+MoWgLltAIe
+         DBgWjxgpEz2QaGy7pG65OBfXnsqSK8/gWr6+rh6zMyBwiRqxkhzNQtkSyUZxhOb4I03v
+         kVyH1XWv12TuvQtLOYfaiRQ6CJ5PG7lUGALFHUJ3k9U1anrY02KvaCmsDG811GodQGJB
+         nEE3jxVY7mth1Q9dVvX1dXIpPKGH9nhXSQABvs69uN6OKjIuTe/MSAK4iKifYivv3/kg
+         dxS2MWSE5JcwpP0vRfWMA0taq35zc7A/PAxHh+DZ/APqdZ0jTKQvvs/dWY9fOcsRuNBG
+         cmkA==
+X-Gm-Message-State: AOAM5314Yt8TaSLRWqsZO+PmMynnC5q0+85Ko6YRHf6f3njdcfaaaLxL
+        sFMKJjX/hIhjIA5hQzMNai9te+xbRIjgCaFIPjs=
+X-Google-Smtp-Source: ABdhPJzaNuuGQi9kCgR1WMGMKX9LCBlJoNXpgRoTm+v1j9pAmjJM/IZlB9XUsODVWDoTOhrcSefTsg==
+X-Received: by 2002:a17:90b:1053:: with SMTP id gq19mr14697777pjb.194.1603058416161;
+        Sun, 18 Oct 2020 15:00:16 -0700 (PDT)
+Received: from thinkpad (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id e23sm9601143pfi.191.2020.10.18.15.00.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Oct 2020 14:57:55 -0700 (PDT)
-Message-ID: <a5f540f4685291d766a61ca583c1b774e2ea584f.camel@rajagiritech.edu.in>
-Subject: Re: Fwd: [WARNING AND ERROR]  may be  system slow and  audio and
- video breaking
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        jpoimboe@redhat.com, mbenes@suse.cz,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        shile.zhang@linux.alibaba.com, lkml <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Date:   Mon, 19 Oct 2020 03:27:48 +0530
-In-Reply-To: <20201018210323.GD8364@zn.tnic>
-References: <959da1eee73f58a824fe4913b5cacda6de0f392e.camel@rajagiritech.edu.in>
-         <b4533bcbb095cf11f01d0adfd50912c52242eb02.camel@rajagiritech.edu.in>
-         <20201018174948.GC8364@zn.tnic>
-         <328218dc46c4f883dad44d6fb53746c5f35f055d.camel@rajagiritech.edu.in>
-         <20201018210323.GD8364@zn.tnic>
-Content-Type: multipart/mixed; boundary="=-GVReltKK7MlbJ0mY/0KY"
-User-Agent: Evolution 3.36.4-2 
+        Sun, 18 Oct 2020 15:00:15 -0700 (PDT)
+Date:   Sun, 18 Oct 2020 15:01:17 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     mchehab@kernel.org, linux-media@vger.kernel.org
+Cc:     andreyknvl@google.com, hans.verkuil@cisco.com,
+        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, sakari.ailus@linux.intel.com,
+        syzkaller-bugs@googlegroups.com, gregkh@linuxfoundation.org
+Subject: Re: KASAN: use-after-free Read in v4l2_fh_init
+Message-ID: <20201018220117.GA3246571@thinkpad>
+References: <000000000000ec53de0586e309fc@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000ec53de0586e309fc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 19, 2019 at 07:36:05AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
+> 
+> HEAD commit:    d34f9519 usb-fuzzer: main usb gadget fuzzer driver
+> git tree:       https://github.com/google/kasan/tree/usb-fuzzer
+> console output: https://syzkaller.appspot.com/x/log.txt?x=125bbb5b200000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c73d1bb5aeaeae20
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c025d34b8eaa54c571b8
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1513ac1d200000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13555c1d200000
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+c025d34b8eaa54c571b8@syzkaller.appspotmail.com
+> 
+> em28xx 1-1:5.176: failed to create media graph
+> em28xx 1-1:5.176: V4L2 device video32 deregistered
+> em28xx 1-1:5.176: Binding DVB extension
+> ==================================================================
+> em28xx 1-1:5.176: no endpoint for DVB mode and transfer type 0
+> BUG: KASAN: use-after-free in v4l2_fh_init+0x24c/0x290
+> drivers/media/v4l2-core/v4l2-fh.c:33
+> Read of size 8 at addr ffff8880a4f149d0 by task v4l_id/5313
+> 
+> CPU: 1 PID: 5313 Comm: v4l_id Not tainted 5.1.0-rc5-319617-gd34f951 #4
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> Google 01/01/2011
+> em28xx 1-1:5.176: failed to pre-allocate USB transfer buffers for DVB.
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0xe8/0x16e lib/dump_stack.c:113
+>  print_address_description+0x6c/0x236 mm/kasan/report.c:187
+> em28xx 1-1:5.176: Registering input extension
+>  kasan_report.cold+0x1a/0x3c mm/kasan/report.c:317
+>  v4l2_fh_init+0x24c/0x290 drivers/media/v4l2-core/v4l2-fh.c:33
+>  v4l2_fh_open+0x8d/0xd0 drivers/media/v4l2-core/v4l2-fh.c:71
+>  em28xx_v4l2_open+0x11f/0x470 drivers/media/usb/em28xx/em28xx-video.c:2184
+>  v4l2_open+0x1b6/0x360 drivers/media/v4l2-core/v4l2-dev.c:427
+>  chrdev_open+0x220/0x5d0 fs/char_dev.c:417
+>  do_dentry_open+0x49c/0x1130 fs/open.c:777
+>  do_last fs/namei.c:3416 [inline]
+>  path_openat+0x147d/0x40b0 fs/namei.c:3533
+>  do_filp_open+0x1a6/0x280 fs/namei.c:3563
+>  do_sys_open+0x3c5/0x590 fs/open.c:1069
+>  do_syscall_64+0xcf/0x4f0 arch/x86/entry/common.c:290
+>  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> RIP: 0033:0x7fdb23b8d120
+> Code: 48 8b 15 1b 4d 2b 00 f7 d8 64 89 02 83 c8 ff c3 90 90 90 90 90 90 90
+> 90 90 90 83 3d d5 a4 2b 00 00 75 10 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff ff
+> 73 31 c3 48 83 ec 08 e8 5e 8c 01 00 48 89 04 24
+> RSP: 002b:00007ffc1aebde18 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+> RAX: ffffffffffffffda RBX: 00007ffc1aebdf78 RCX: 00007fdb23b8d120
+> RDX: 00007fdb23e42138 RSI: 0000000000000000 RDI: 00007ffc1aebef17
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000400884
+> R13: 00007ffc1aebdf70 R14: 0000000000000000 R15: 0000000000000000
+> 
+> Allocated by task 12:
+>  set_track mm/kasan/common.c:87 [inline]
+>  __kasan_kmalloc mm/kasan/common.c:497 [inline]
+>  __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:470
+>  kmalloc include/linux/slab.h:547 [inline]
+>  kzalloc include/linux/slab.h:742 [inline]
+>  em28xx_v4l2_init drivers/media/usb/em28xx/em28xx-video.c:2563 [inline]
+>  em28xx_v4l2_init.cold+0x93/0x3112
+> drivers/media/usb/em28xx/em28xx-video.c:2541
+>  em28xx_init_extension+0x13a/0x200
+> drivers/media/usb/em28xx/em28xx-core.c:1128
+>  request_module_async+0x62/0x70 drivers/media/usb/em28xx/em28xx-cards.c:3300
+>  process_one_work+0x90f/0x1580 kernel/workqueue.c:2269
+>  worker_thread+0x9b/0xe20 kernel/workqueue.c:2415
+>  kthread+0x313/0x420 kernel/kthread.c:253
+>  ret_from_fork+0x3a/0x50 arch/x86/entry/entry_64.S:352
+> 
+> Freed by task 12:
+>  set_track mm/kasan/common.c:87 [inline]
+>  __kasan_slab_free+0x130/0x180 mm/kasan/common.c:459
+>  slab_free_hook mm/slub.c:1429 [inline]
+>  slab_free_freelist_hook+0x5e/0x140 mm/slub.c:1456
+>  slab_free mm/slub.c:3003 [inline]
+>  kfree+0xce/0x280 mm/slub.c:3958
+>  em28xx_free_v4l2 drivers/media/usb/em28xx/em28xx-video.c:2149 [inline]
+>  kref_put include/linux/kref.h:67 [inline]
+>  em28xx_v4l2_init drivers/media/usb/em28xx/em28xx-video.c:2920 [inline]
+>  em28xx_v4l2_init.cold+0x2cf/0x3112
+> drivers/media/usb/em28xx/em28xx-video.c:2541
+>  em28xx_init_extension+0x13a/0x200
+> drivers/media/usb/em28xx/em28xx-core.c:1128
+>  request_module_async+0x62/0x70 drivers/media/usb/em28xx/em28xx-cards.c:3300
+>  process_one_work+0x90f/0x1580 kernel/workqueue.c:2269
+>  worker_thread+0x9b/0xe20 kernel/workqueue.c:2415
+>  kthread+0x313/0x420 kernel/kthread.c:253
+>  ret_from_fork+0x3a/0x50 arch/x86/entry/entry_64.S:352
+> 
+> The buggy address belongs to the object at ffff8880a4f14200
+>  which belongs to the cache kmalloc-8k of size 8192
+> The buggy address is located 2000 bytes inside of
+>  8192-byte region [ffff8880a4f14200, ffff8880a4f16200)
+> The buggy address belongs to the page:
+> page:ffffea000293c400 count:1 mapcount:0 mapping:ffff88812c3f4400 index:0x0
+> compound_mapcount: 0
+> flags: 0xfff00000010200(slab|head)
+> raw: 00fff00000010200 dead000000000100 dead000000000200 ffff88812c3f4400
+> raw: 0000000000000000 0000000080030003 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> 
+> Memory state around the buggy address:
+>  ffff8880a4f14880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff8880a4f14900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > ffff8880a4f14980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                                                  ^
+>  ffff8880a4f14a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff8880a4f14a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> ==================================================================
+> 
+> 
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> syzbot can test patches for this bug, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
 
---=-GVReltKK7MlbJ0mY/0KY
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+in v4l2_open() calling video_get() has no effect when vdev is a nested
+struct inside some driver's struct (em28xx_v4l2 in this case), and referencing
+vdev again, after a call to vdev->fops->open(), might cause UAF if
+the driver's struct has already been freed
 
-On Sun, 2020-10-18 at 23:03 +0200, Borislav Petkov wrote:
-> On Mon, Oct 19, 2020 at 01:51:34AM +0530, Jeffrin Jose T wrote:
-> > On Sun, 2020-10-18 at 19:49 +0200, Borislav Petkov wrote:
-> > > On Sun, Oct 18, 2020 at 10:42:39PM +0530, Jeffrin Jose T wrote:
-> > > > smpboot: Scheduler frequency invariance went wobbly, disabling!
-> > > > [ 1112.592866] unchecked MSR access error: RDMSR from 0x123 at
-> > > > rIP:
-> > > > 0xffffffffb5c9a184 (native_read_msr+0x4/0x30)
-> 
-> Ok, you forgot to say in your initial mail that this happens when you
-> suspend your laptop.
-> 
-> Now, this unchecked MSR error thing happens only once because that
-> early
-> during resume the microcode on CPU1 is not updated yet - and that
-> needs
-> to be debugged separately and I'll try to reproduce that on my
-> machine -
-> so the microcode is not updated yet and therefore the 0x123 MSR is
-> not
-> "emulated" by the microcode, so to speak, thus the warning.
-> 
-> That warning doesn't happen anymore, though, once the microcode is
-> updated.
-> 
-> But what happens after that is you get a flood of correctable PCIe
-> errors about a transaction to a device timeoutting:
-> 
-> pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
-> pcieport 0000:00:1c.5: PCIe Bus Error: severity=Corrected, type=Data
-> Link Layer, (Transmitter ID)
-> pcieport 0000:00:1c.5:   device [8086:9d15] error
-> status/mask=00001000/00002000
-> pcieport 0000:00:1c.5:    [12] Timeout 
-> 
-> and it looks like that flood is slowing down the machine because it
-> is
-> busy logging them.
-> 
-> Do
-> 
-> # lspci -nn -xxx
-> 
-> as root. It'll show us which device that 8086:9d15 is.
-> 
-> Thx.
-> 
+the following patch fixes both syzbot issue with v4l2_fh_init() and side
+issue with v4l2_open() described above:
+https://syzkaller.appspot.com/text?tag=Patch&x=15fbba30500000
+1. it adds check for already freed struct in em28xx_v4l2_open(), it fixes
+this syzbot UAF report about v4l2_fh_init(), but it moves UAF up to v4l2_open()
+2. it delays freeing of em28xx_v4l2, hence allows v4l2_open() to
+safely reference vdev and exit without UAF
 
-$sudo lspci -nn -xxx | grep 9d15
-00:1c.5 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI
-Express Root Port #6 [8086:9d15] (rev f1)
-$
+fix for #2 does not look great, and it seems that proper fix would
+be changing em28xx driver and having vdev allocated separateley and not
+nested in struct em28xx_v4l2:
+	struct video_device *vdev 
+instead of:
+	struct video_device vdev
+and having em28xx utilize video_device_release() instead of
+video_device_release_empty()
 
-
-file lspci.txt is attached
--- 
-software engineer
-rajagiri school of engineering and technology
-
---=-GVReltKK7MlbJ0mY/0KY
-Content-Disposition: attachment; filename="lspci.txt"
-Content-Type: text/plain; name="lspci.txt"; charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-MDA6MDAuMCBIb3N0IGJyaWRnZSBbMDYwMF06IEludGVsIENvcnBvcmF0aW9uIFhlb24gRTMtMTIw
-MCB2Ni83dGggR2VuIENvcmUgUHJvY2Vzc29yIEhvc3QgQnJpZGdlL0RSQU0gUmVnaXN0ZXJzIFs4
-MDg2OjU5MDRdIChyZXYgMDMpCjAwOiA4NiA4MCAwNCA1OSAwNiAwMCA5MCAyMCAwMyAwMCAwMCAw
-NiAwMCAwMCAwMCAwMAoxMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAKMjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDQzIDEwIDEx
-IDEzCjMwOiAwMCAwMCAwMCAwMCBlMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo0
-MDogMDEgOTAgZDEgZmUgMDAgMDAgMDAgMDAgMDEgMDAgZDEgZmUgMDAgMDAgMDAgMDAKNTA6IGMx
-IDAyIDAwIDAwIGIxIDAwIDAwIDAwIDQ3IDAwIGYwIDlmIDAxIDAwIDAwIDliCjYwOiAwMyAwMCAw
-MCBmMCAwMCAwMCAwMCAwMCAwMSA4MCBkMSBmZSAwMCAwMCAwMCAwMAo3MDogMDAgMDAgMDAgZmYg
-MDEgMDAgMDAgMDAgMDAgMGMgMDAgZmYgN2YgMDAgMDAgMDAKODA6IDAxIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDFhIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjkwOiAwMSAwMCAwMCBmZiAwMSAwMCAwMCAw
-MCAwMSAwMCBmMCA1ZSAwMiAwMCAwMCAwMAphMDogMDEgMDAgMDAgMDAgMDIgMDAgMDAgMDAgMDEg
-MDAgMDAgNWYgMDIgMDAgMDAgMDAKYjA6IDAxIDAwIDAwIDljIDAxIDAwIDgwIDliIDAxIDAwIDAw
-IDliIDAxIDAwIDAwIGEwCmMwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMApkMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAKZTA6IDA5IDAwIDEwIDAxIDMxIDYwIDYxIDdhIGRjIDgwIDE1IDk0IDAwIGMwIDA2IDAw
-CmYwOiAwMCAwMCAwMCAwMCBjOCAwZiAwOSAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAoKMDA6
-MDIuMCBWR0EgY29tcGF0aWJsZSBjb250cm9sbGVyIFswMzAwXTogSW50ZWwgQ29ycG9yYXRpb24g
-RGV2aWNlIFs4MDg2OjU5MjFdIChyZXYgMDYpCjAwOiA4NiA4MCAyMSA1OSAwNyAwNCAxMCAwMCAw
-NiAwMCAwMCAwMyAxMCAwMCAwMCAwMAoxMDogMDQgMDAgMDAgZWUgMDAgMDAgMDAgMDAgMGMgMDAg
-MDAgZDAgMDAgMDAgMDAgMDAKMjA6IDAxIGYwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDQzIDEwIDExIDEzCjMwOiAwMCAwMCAwMCAwMCA0MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBmZiAw
-MSAwMCAwMAo0MDogMDkgNzAgMGMgMDEgMzEgNjAgNjEgN2EgZGMgODAgMTUgOTQgMDAgMDAgMDAg
-MDAKNTA6IGMxIDAyIDAwIDAwIGIxIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAxIDAwIDAwIDljCjYw
-OiAwMCAwMCAwMSAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo3MDogMTAg
-YWMgOTIgMDAgMDAgODAgMDAgMTAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKODA6IDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjkwOiAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAphMDogMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDUgZDAgMDEgMDAKYjA6IDE4IDAwIGUwIGZlIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmMwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMApkMDogMDEgMDAgMjIgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAKZTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDgwIDAwIDAwIDAw
-IDAwIDAwIDAwCmYwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAxOCA1MCA5
-MCA5YQoKMDA6MDQuMCBTaWduYWwgcHJvY2Vzc2luZyBjb250cm9sbGVyIFsxMTgwXTogSW50ZWwg
-Q29ycG9yYXRpb24gWGVvbiBFMy0xMjAwIHY1L0UzLTE1MDAgdjUvNnRoIEdlbiBDb3JlIFByb2Nl
-c3NvciBUaGVybWFsIFN1YnN5c3RlbSBbODA4NjoxOTAzXSAocmV2IDAzKQowMDogODYgODAgMDMg
-MTkgMDIgMDAgOTAgMDAgMDMgMDAgODAgMTEgMDAgMDAgMDAgMDAKMTA6IDA0IDgwIDFhIGVmIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjIwOiAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCA0MyAxMCAxMSAxMwozMDogMDAgMDAgMDAgMDAgOTAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgZmYgMDEgMDAgMDAKNDA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwCjUwOiAwMCAwMCAwMCAwMCBiMSAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMAo2MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAKNzA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwCjgwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo5
-MDogMDUgZDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKYTA6IDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmIwOiAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApjMDogMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKZDA6IDAxIGUwIDAzIDAwIDA4IDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmUwOiAwOSAwMCAwYyAwMSAzMSA2MCA2MSA3
-YSBkYyA4MCAxNSA5NCAwMCAwMCAwMCAwMApmMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAKCjAwOjE0LjAgVVNCIGNvbnRyb2xsZXIgWzBjMDNdOiBJbnRl
-bCBDb3Jwb3JhdGlvbiBTdW5yaXNlIFBvaW50LUxQIFVTQiAzLjAgeEhDSSBDb250cm9sbGVyIFs4
-MDg2OjlkMmZdIChyZXYgMjEpCjAwOiA4NiA4MCAyZiA5ZCAwMiAwNCA5MCAwMiAyMSAzMCAwMyAw
-YyAwMCAwMCA4MCAwMAoxMDogMDQgMDAgMTkgZWYgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAKMjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDQzIDEwIDFm
-IDIwCjMwOiAwMCAwMCAwMCAwMCA3MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBmZiAwMSAwMCAwMAo0
-MDogZmQgMDEgMDAgMDAgMDAgYzAgMDMgODAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKNTA6IDVm
-IDZlIGNlIDBmIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjYwOiAzMCA2MCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo3MDogMDEgODAgYzIgYzEg
-MGIgMDEgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKODA6IDA1IDAwIDg3IDAwIDk4IDAy
-IGUwIGZlIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjkwOiAwOSAwMCAxNCBmMCAxMCAwMCA0MCAw
-MSAwMCAwMCAwMCAwMCBjMSAwYSAwOCAwMAphMDogMDAgMDggMDQgMDAgMDAgMjAgMDAgMDAgOGYg
-MDAgMDIgMDAgMDAgMDEgMDAgMDAKYjA6IDAzIDAwIDAwIDAwIDBjIDAwIDAwIDAwIDMwIDAwIDAw
-IDAwIGMwIDAwIDAwIDAwCmMwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMApkMDogMDMgMDAgMDAgMDAgMGMgMDAgMDAgMDAgMzAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAKZTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-CmYwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBiMyAwZiA0MSAwOCAwMCAwMCAwMCAwMAoKMDA6
-MTQuMiBTaWduYWwgcHJvY2Vzc2luZyBjb250cm9sbGVyIFsxMTgwXTogSW50ZWwgQ29ycG9yYXRp
-b24gU3VucmlzZSBQb2ludC1MUCBUaGVybWFsIHN1YnN5c3RlbSBbODA4Njo5ZDMxXSAocmV2IDIx
-KQowMDogODYgODAgMzEgOWQgMDIgMDAgMTAgMDAgMjEgMDAgODAgMTEgMDAgMDAgMDAgMDAKMTA6
-IDA0IDAwIDFjIGVmIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjIwOiAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCA0MyAxMCAxMSAxMwozMDogMDAgMDAgMDAg
-MDAgNTAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgZmYgMDMgMDAgMDAKNDA6IDA0IDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjUwOiAwMSA4MCAyMyAwMCAwOCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo2MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKNzA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwCjgwOiAwNSAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMAo5MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAKYTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwCmIwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApj
-MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKZDA6IDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmUwOiAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApmMDogMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgYjMgMGYgNDEgMDggMDAgMDAgMDAgMDAKCjAwOjE1LjAgU2lnbmFsIHByb2Nl
-c3NpbmcgY29udHJvbGxlciBbMTE4MF06IEludGVsIENvcnBvcmF0aW9uIFN1bnJpc2UgUG9pbnQt
-TFAgU2VyaWFsIElPIEkyQyBDb250cm9sbGVyICMwIFs4MDg2OjlkNjBdIChyZXYgMjEpCjAwOiA4
-NiA4MCA2MCA5ZCAwNiAwMCAxMCAwMCAyMSAwMCA4MCAxMSAxMCAwMCA4MCAwMAoxMDogMDQgZjAg
-MWIgZWYgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKMjA6IDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDQzIDEwIDExIDEzCjMwOiAwMCAwMCAwMCAwMCA4MCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCBmZiAwMSAwMCAwMAo0MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKNTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwCjYwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMAo3MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAKODA6IDAxIDkwIDAzIDAwIDBiIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwCjkwOiAwOSAwMCAxNCBmMCAxMCAwMCA0MCAwMSAwMSAyMSAwMCAwMCBjMSAyNCAwMCAw
-MAphMDogMDAgMDggMGYgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKYjA6
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmMwOiAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApkMDogMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKZTA6IDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmYwOiAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCBiMyAwZiA0MSAwOCAwMCAwMCAwMCAwMAoKMDA6MTUuMSBTaWduYWwgcHJvY2Vzc2luZyBj
-b250cm9sbGVyIFsxMTgwXTogSW50ZWwgQ29ycG9yYXRpb24gU3VucmlzZSBQb2ludC1MUCBTZXJp
-YWwgSU8gSTJDIENvbnRyb2xsZXIgIzEgWzgwODY6OWQ2MV0gKHJldiAyMSkKMDA6IDg2IDgwIDYx
-IDlkIDA2IDAwIDEwIDAwIDIxIDAwIDgwIDExIDEwIDAwIDgwIDAwCjEwOiAwNCBlMCAxYiBlZiAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAoyMDogMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgNDMgMTAgMTEgMTMKMzA6IDAwIDAwIDAwIDAwIDgwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIGZmIDAyIDAwIDAwCjQwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMAo1MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAKNjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwCjcwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMAo4MDogMDEgOTAgMDMgMDAgMGIgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAK
-OTA6IDA5IDAwIDE0IGYwIDEwIDAwIDQwIDAxIDAxIDIxIDAwIDAwIGMxIDI0IDAwIDAwCmEwOiAw
-MCAwOCAwZiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApiMDogMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKYzA6IDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmQwOiAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAplMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKZjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIGIz
-IDBmIDQxIDA4IDAwIDAwIDAwIDAwCgowMDoxNi4wIENvbW11bmljYXRpb24gY29udHJvbGxlciBb
-MDc4MF06IEludGVsIENvcnBvcmF0aW9uIFN1bnJpc2UgUG9pbnQtTFAgQ1NNRSBIRUNJICMxIFs4
-MDg2OjlkM2FdIChyZXYgMjEpCjAwOiA4NiA4MCAzYSA5ZCAwNiAwNCAxMCAwMCAyMSAwMCA4MCAw
-NyAwMCAwMCA4MCAwMAoxMDogMDQgZDAgMWIgZWYgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAKMjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDQzIDEwIDEx
-IDEzCjMwOiAwMCAwMCAwMCAwMCA1MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBmZiAwMSAwMCAwMAo0
-MDogNDUgMDIgMDAgOTAgMTAgMDAgMDEgODAgMDYgMDEgMTAgODAgMDAgMDAgMDAgMDAKNTA6IDAx
-IDhjIDAzIDQwIDA4IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjYwOiAyMCAwMCAw
-MCAwMCAwNCA0NCAwOCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCA0MAo3MDogMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKODA6IDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDA1IDAwIDgxIDAwCjkwOiA1OCAwMyBlMCBmZSAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAphMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAKYjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDQwCmMwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMApkMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAKZTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-CmYwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBiMyAwZiA0MSAwOCAwMCAwMCAwMCAwMAoKMDA6
-MTcuMCBSQUlEIGJ1cyBjb250cm9sbGVyIFswMTA0XTogSW50ZWwgQ29ycG9yYXRpb24gODI4MDEg
-TW9iaWxlIFNBVEEgQ29udHJvbGxlciBbUkFJRCBtb2RlXSBbODA4NjoyODJhXSAocmV2IDIxKQow
-MDogODYgODAgMmEgMjggMDcgMDQgYjAgMDIgMjEgMDAgMDQgMDEgMDAgMDAgMDAgMDAKMTA6IDAw
-IDAwIDFhIGVmIDAwIGMwIDFiIGVmIDkxIGYwIDAwIDAwIDgxIGYwIDAwIDAwCjIwOiA2MSBmMCAw
-MCAwMCAwMCAwMCAxMCBlZiAwMCAwMCAwMCAwMCA0MyAxMCAxMSAxMwozMDogMDAgMDAgMDAgMDAg
-ODAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgZmYgMDEgMDAgMDAKNDA6IDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjUwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo2MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAKNzA6IDAxIGE4IDAzIDQwIDA4IDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwCjgwOiAwNSA3MCAwMSAwMCBiOCAwMiBlMCBmZSAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMAo5MDogNDAgMDYgMDEgODEgODMgMDEgMDAgMDAgMjQgMDIgZGMgMjAgMjYgMDAg
-MDAgODAKYTA6IGE0IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDEyIDAwIDEwIDAwIDQ4IDAwIDAwIDAw
-CmIwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApjMDog
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKZDA6IDExIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAxIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmUwOiAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApmMDogMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgYjMgMGYgNDEgMDggMDAgMDAgMDAgMDAKCjAwOjFjLjAgUENJIGJyaWRnZSBbMDYw
-NF06IEludGVsIENvcnBvcmF0aW9uIFN1bnJpc2UgUG9pbnQtTFAgUENJIEV4cHJlc3MgUm9vdCBQ
-b3J0ICMxIFs4MDg2OjlkMTBdIChyZXYgZjEpCjAwOiA4NiA4MCAxMCA5ZCAwNyAwNCAxMCAwMCBm
-MSAwMCAwNCAwNiAxMCAwMCA4MSAwMAoxMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDEg
-MDEgMDAgMjAgMjAgMDAgMjAKMjA6IDAwIGEwIDEwIGEwIDIxIGEwIDMxIGEwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwCjMwOiAwMCAwMCAwMCAwMCA0MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBmZiAw
-MSAxMiAwMAo0MDogMTAgODAgNDIgMDEgMDEgODAgMDAgMDAgMDAgMDAgMTAgMDAgNDMgN2MgNzEg
-MDEKNTA6IDAzIDAwIDAxIDEwIDYwIDAwIDA0IDAwIDI4IDEwIDAwIDAwIDA4IDAwIDAwIDAwCjYw
-OiAwMCAwMCAwMCAwMCAzNyAwOCAwOCAwMCAwMCAwMCAwMCAwMCAwZSAwMCAwMCAwMAo3MDogMDMg
-MDAgMDEgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKODA6IDA1IDkwIDAx
-IDAwIDE4IDAyIGUwIGZlIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjkwOiAwZCBhMCAwMCAwMCA0
-MyAxMCAxMSAxMyAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAphMDogMDEgMDAgMDMgYzggMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKYjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmMwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMApkMDogMTEgMDAgMDAgMDcgMDAgMDggMDAgMDAgMDIgMDAgOWUg
-MDkgMDAgMDAgMDAgMDAKZTA6IDAwIGY3IDMzIDAwIDAwIDAwIDAwIDAwIDA0IDgwIDAyIDAwIDAw
-IDAwIDAwIDAwCmYwOiA1MCAwMSAwMCAwMCAwMCBmMyAwMCA0MCBiMyAwZiA0MSAwOCAwNCBjMCAw
-MCAwMQoKMDA6MWMuNSBQQ0kgYnJpZGdlIFswNjA0XTogSW50ZWwgQ29ycG9yYXRpb24gU3Vucmlz
-ZSBQb2ludC1MUCBQQ0kgRXhwcmVzcyBSb290IFBvcnQgIzYgWzgwODY6OWQxNV0gKHJldiBmMSkK
-MDA6IDg2IDgwIDE1IDlkIDA3IDA0IDEwIDAwIGYxIDAwIDA0IDA2IDEwIDAwIDgxIDAwCjEwOiAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMiAwMiAwMCBmMCAwMCAwMCAwMAoyMDogMDAgZWYg
-MDAgZWYgZjEgZmYgMDEgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKMzA6IDAwIDAwIDAwIDAw
-IDQwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIGZmIDAyIDEyIDAwCjQwOiAxMCA4MCA0MiAwMSAwMSA4
-MCAwMCAwMCAwZiAwMCAxMCAwMCAxMyA0YyA3MiAwNgo1MDogNDMgMDAgMTEgNzAgMDAgYjIgNGMg
-MDAgMDAgMDAgNDAgMDEgMDggMDAgMDAgMDAKNjA6IDAwIDAwIDAwIDAwIDM3IDA4IDAwIDAwIDAw
-IDA0IDAwIDAwIDBlIDAwIDAwIDAwCjcwOiAwMyAwMCAwMSAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMAo4MDogMDUgOTAgMDEgMDAgNTggMDIgZTAgZmUgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAKOTA6IDBkIGEwIDAwIDAwIDQzIDEwIDExIDEzIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwCmEwOiAwMSAwMCAwMyBjOCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MApiMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKYzA6
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmQwOiAwMSAx
-MCAwMCAwNyA0MiAxOCAwMCAwMCAwOCAwMCA5ZSAwOSAwMCAwMCAwMCAwMAplMDogMDAgMDMgZTMg
-MDAgMDAgMDAgMDAgMDAgMDYgMDAgMTAgMDAgMDAgMDAgMDAgMDAKZjA6IDUwIDAxIDAwIDAwIDAw
-IDAwIDAwIDRjIGIzIDBmIDQxIDA4IDA0IDAwIDAwIDAyCgowMDoxZS4wIFNpZ25hbCBwcm9jZXNz
-aW5nIGNvbnRyb2xsZXIgWzExODBdOiBJbnRlbCBDb3Jwb3JhdGlvbiBTdW5yaXNlIFBvaW50LUxQ
-IFNlcmlhbCBJTyBVQVJUIENvbnRyb2xsZXIgIzAgWzgwODY6OWQyN10gKHJldiAyMSkKMDA6IDg2
-IDgwIDI3IDlkIDA2IDAwIDEwIDAwIDIxIDAwIDgwIDExIDEwIDAwIDgwIDAwCjEwOiAwNCBiMCAx
-YiBlZiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAoyMDogMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgNDMgMTAgMmQgMWQKMzA6IDAwIDAwIDAwIDAwIDgwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIGZmIDAxIDAwIDAwCjQwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo1MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAKNjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwCjcwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMAo4MDogMDEgOTAgMDMgMDAgMGIgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAKOTA6IDA5IDAwIDE0IGYwIDEwIDAwIDQwIDAxIDAxIDIxIDAwIDAwIGMxIDI0IDAwIDAw
-CmEwOiAwMCAwOCAwZiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApiMDog
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKYzA6IDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmQwOiAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAplMDogMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKZjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIGIzIDBmIDQxIDA4IDAwIDAwIDAwIDAwCgowMDoxZS4yIFNpZ25hbCBwcm9jZXNzaW5nIGNv
-bnRyb2xsZXIgWzExODBdOiBJbnRlbCBDb3Jwb3JhdGlvbiBTdW5yaXNlIFBvaW50LUxQIFNlcmlh
-bCBJTyBTUEkgQ29udHJvbGxlciAjMCBbODA4Njo5ZDI5XSAocmV2IDIxKQowMDogODYgODAgMjkg
-OWQgMDYgMDAgMTAgMDAgMjEgMDAgODAgMTEgMTAgMDAgODAgMDAKMTA6IDA0IGEwIDFiIGVmIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjIwOiAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCA0MyAxMCAyZCAxZAozMDogMDAgMDAgMDAgMDAgODAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgZmYgMDMgMDAgMDAKNDA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwCjUwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMAo2MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAKNzA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwCjgwOiAwMSA5MCAwMyAwMCAwYiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo5
-MDogMDkgMDAgMTQgZjAgMTAgMDAgNDAgMDEgMDEgMjEgMDAgMDAgYzEgMjQgMDAgMDAKYTA6IDAw
-IDA4IDBmIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmIwOiAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApjMDogMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKZDA6IDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmUwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApmMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgYjMg
-MGYgNDEgMDggMDAgMDAgMDAgMDAKCjAwOjFlLjYgU0QgSG9zdCBjb250cm9sbGVyIFswODA1XTog
-SW50ZWwgQ29ycG9yYXRpb24gU3VucmlzZSBQb2ludC1MUCBTZWN1cmUgRGlnaXRhbCBJTyBDb250
-cm9sbGVyIFs4MDg2OjlkMmRdIChyZXYgMjEpCjAwOiA4NiA4MCAyZCA5ZCAwNiAwMCAxMCAwMCAy
-MSAwMSAwNSAwOCAxMCAwMCA4MCAwMAoxMDogMDQgOTAgMWIgZWYgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAKMjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDg2IDgwIDJkIDlkCjMwOiAwMCAwMCAwMCAwMCA4MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBmZiAw
-NCAwMCAwMAo0MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAKNTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjYw
-OiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo3MDogMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKODA6IDAxIDkwIDAz
-IDAwIDA4IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjkwOiAwOSAwMCAxNCBmMCAx
-MCAwMCA0MCAwMSA0MSA4MCAwMCAwMCBjMSA4MSAwMCAwMAphMDogMDAgMDggMDkgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKYjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmMwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMApkMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAKZTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwCmYwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBiMyAwZiA0MSAwOCAwMCAwMCAw
-MCAwMAoKMDA6MWYuMCBJU0EgYnJpZGdlIFswNjAxXTogSW50ZWwgQ29ycG9yYXRpb24gU3Vucmlz
-ZSBQb2ludCBMUEMgQ29udHJvbGxlci9lU1BJIENvbnRyb2xsZXIgWzgwODY6OWQ0ZV0gKHJldiAy
-MSkKMDA6IDg2IDgwIDRlIDlkIDA3IDAwIDAwIDAyIDIxIDAwIDAxIDA2IDAwIDAwIDgwIDAwCjEw
-OiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAoyMDogMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgNDMgMTAgMTEgMTMKMzA6IDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjQwOiAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo1MDogMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKNjA6IDAwIDAwIDAwIDAwIDkwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjcwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMAo4MDogMDAgMDAgMDAgMmMgNDEgMDIgMDQgMDAgNTEgMDIgMGMg
-MDAgODEgMDMgMGMgMDAKOTA6IDgxIDAwIDBjIDAwIDAwIDBmIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwCmEwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMApiMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAK
-YzA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmQwOiAz
-MyAyMiAxMSAwMCA2NyA0NSAwMCAwMCBjZiBmZiAwMCAwMCBhMiAwMCAwMCAwMAplMDogYzEgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKZjA6IDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIGIzIDBmIDQxIDA4IDAwIDAwIDAwIDAwCgowMDoxZi4yIE1lbW9yeSBjb250
-cm9sbGVyIFswNTgwXTogSW50ZWwgQ29ycG9yYXRpb24gU3VucmlzZSBQb2ludC1MUCBQTUMgWzgw
-ODY6OWQyMV0gKHJldiAyMSkKMDA6IDg2IDgwIDIxIDlkIDAwIDAwIDAwIDAwIDIxIDAwIDgwIDA1
-IDAwIDAwIDgwIDAwCjEwOiAwMCA0MCAxYiBlZiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMAoyMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgNDMgMTAgMTEg
-MTMKMzA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjQw
-OiAwMSAxOCAwMCAwMCA4MCAwMSAwMCAwMCAwMCAwMCAwMCBmZSAwMCAwMCAwMCAwMAo1MDogMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKNjA6IDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjcwOiAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo4MDogMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKOTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmEwOiBmMCAzNiBhMCBkOCAwOSAzYSAwNyAwMCAwMCA0
-NiAwMCAwMCAwMCAwMCAwMCA4MQpiMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAKYzA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwCmQwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMAplMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAK
-ZjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIGIzIDBmIDQxIDA4IDAwIDAwIDAwIDAwCgowMDox
-Zi4zIEF1ZGlvIGRldmljZSBbMDQwM106IEludGVsIENvcnBvcmF0aW9uIFN1bnJpc2UgUG9pbnQt
-TFAgSEQgQXVkaW8gWzgwODY6OWQ3MV0gKHJldiAyMSkKMDA6IDg2IDgwIDcxIDlkIDA2IDA0IDEw
-IDAwIDIxIDAwIDAzIDA0IDEwIDIwIDAwIDAwCjEwOiAwNCAwMCAxYiBlZiAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMAoyMDogMDQgMDAgMTggZWYgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgNDMgMTAgMTAgMWUKMzA6IDAwIDAwIDAwIDAwIDUwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IGZmIDAxIDAwIDAwCjQwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBmZiAwZCAzYiA4MCAwMCAw
-MCAwMCAwMAo1MDogMDEgNjAgNDMgYzAgMDggMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAKNjA6IDA1IDAwIDgxIDAwIDc4IDAzIGUwIGZlIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjcw
-OiAxMCAwMCA5MSAwMCAwMCAwMCAwMCAxMCAwMCAyMCAxMCAwMCAwMCAwMCAwMCAwMAo4MDogMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKOTA6IDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmEwOiAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApiMDogMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKYzA6IDA4IDA2IDAyIDAwIDAwIDcwIDgwIDA0
-IDAwIDBjIGE1IDgyIDEwIDAwIDAzIDAwCmQwOiAwMCAwYyBiNSAwMiAxMCAwMCAwMyAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMAplMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAKZjA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIGIzIDBmIDQxIDA4IDAw
-IDAwIDAwIDAwCgowMDoxZi40IFNNQnVzIFswYzA1XTogSW50ZWwgQ29ycG9yYXRpb24gU3Vucmlz
-ZSBQb2ludC1MUCBTTUJ1cyBbODA4Njo5ZDIzXSAocmV2IDIxKQowMDogODYgODAgMjMgOWQgMDMg
-MDAgODAgMDIgMjEgMDAgMDUgMGMgMDAgMDAgMDAgMDAKMTA6IDA0IDgwIDFiIGVmIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjIwOiA0MSBmMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCA0MyAxMCAxMSAxMwozMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgZmYgMDEgMDAgMDAKNDA6IDExIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwCjUwOiAwMSAwNCAwMCAwMCAwMCAwMSAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMAo2MDogMDQgMDUgMDUgMDAgMDAgMDAgMGEgMGEgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAKNzA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjgw
-OiAyNCAwMCAwNCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo5MDogMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKYTA6IDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmIwOiAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApjMDogMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKZDA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCmUwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMApmMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgYjMgMGYgNDEg
-MDggMDAgMDAgMDAgMDAKCjAyOjAwLjAgTmV0d29yayBjb250cm9sbGVyIFswMjgwXTogUXVhbGNv
-bW0gQXRoZXJvcyBRQ0E5NTY1IC8gQVI5NTY1IFdpcmVsZXNzIE5ldHdvcmsgQWRhcHRlciBbMTY4
-YzowMDM2XSAocmV2IDAxKQowMDogOGMgMTYgMzYgMDAgMDYgMDAgMTAgMDAgMDEgMDAgODAgMDIg
-MTAgMDAgMDAgMDAKMTA6IDA0IDAwIDAwIGVmIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwCjIwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBhZCAxMSAyMyAx
-OAozMDogMDAgMDAgMDggZWYgNDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgZmYgMDEgMDAgMDAKNDA6
-IDAxIDUwIGMyIGZmIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwCjUwOiAwNSA3
-MCA4NCAwMSAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo2MDogMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKNzA6IDEwIDAwIDAyIDAwIGMw
-IDhkIDkwIDA1IDEwIDIwIDExIDAwIDExIDZjIDAzIDAwCjgwOiA0MyAwMCAxMSAxMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMAo5MDogMDAgMDAgMDAgMDAgMTAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDIgMDAgMDAgMDAKYTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwCmIwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMApjMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAKZDA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwCmUwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMApm
-MDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAKCg==
-
-
---=-GVReltKK7MlbJ0mY/0KY--
+any advice or hints in fixing this would be highly appreciated, tyvm!
 
