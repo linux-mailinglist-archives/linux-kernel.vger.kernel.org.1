@@ -2,167 +2,471 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66CF292073
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 00:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8150029207B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 00:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729410AbgJRWTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 18:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
+        id S1729379AbgJRWb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 18:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729389AbgJRWTp (ORCPT
+        with ESMTP id S1726681AbgJRWb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 18:19:45 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBFBC061755
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 15:19:44 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id 33so8253940edq.13
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 15:19:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HNlNSWtGKHz22BkJOTQfDL7XA8BtaJWUZUUPXDCETnw=;
-        b=JRtiX+f5Af6nqke8AiQdsPQwxw9FOoxZSc4NgHM9vLVt9hKkwbuYGxBK7A9LxcZIEh
-         UX6CcbLvYNAwOAbLAIAmux7gbPYhh7FCRu+dTUUMGQurunzaNov2S0aAe3Kct8j44cIw
-         8SOYbD/bx6iPRs+nQ2DhktxKWx2AUe5OaBLhw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HNlNSWtGKHz22BkJOTQfDL7XA8BtaJWUZUUPXDCETnw=;
-        b=R+aVLhRcNA+RHX4UgrOxhTOhGZKHoFaik3Bwh77hVhpCtvwK3BqM1yJKGHaya6ANjg
-         nfIioj5ijVvMH3uWQh7VHX6vJECCYviOZdxIxWEgvpIX1juZVROqa30f3EVkoi5SED5y
-         /0wJogNRtlFSSsg5aWbPkwpjXnCrD9oRvFv7pIHYB7veEJPpjm3xJEvNwv0QZaOF6BhN
-         kyUWjFC4rp8vUKNIt+r310lqbcnQ1sZhchRTGkNuhfnKcazNjfkQsdgapvwxJE4bP87A
-         /d6/LjHJJ81INZJ5r2CZiD/zCR9oEvPxxoZIgeoMGqI3o/2QN2om3NOqetVsoDIaFmzN
-         x2tQ==
-X-Gm-Message-State: AOAM532Uo/d9h5U7Ejf1LwrYQ+KN4EmzsqZ7VE/6qr5rr/oXabXeT8We
-        zIyAG5vSbFJyEC+cG2L22iV7ka6BJw11ig==
-X-Google-Smtp-Source: ABdhPJwr57aQld8NbQ6fwjPIrCLPz+opOWXmdjYTxDREH4d7Cv67LWGjSS7LqoC5sxru1RNXk8UIjw==
-X-Received: by 2002:aa7:cad6:: with SMTP id l22mr15231133edt.229.1603059582047;
-        Sun, 18 Oct 2020 15:19:42 -0700 (PDT)
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
-        by smtp.gmail.com with ESMTPSA id j26sm5663232ejk.93.2020.10.18.15.19.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Oct 2020 15:19:41 -0700 (PDT)
-Received: by mail-wm1-f45.google.com with SMTP id b127so10841439wmb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 15:19:41 -0700 (PDT)
-X-Received: by 2002:a1c:2586:: with SMTP id l128mr4802138wml.49.1603059580798;
- Sun, 18 Oct 2020 15:19:40 -0700 (PDT)
+        Sun, 18 Oct 2020 18:31:27 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4A0C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 15:31:27 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f250700329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f25:700:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BE62E1EC03D5;
+        Mon, 19 Oct 2020 00:31:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603060286;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=y7R8qKpfMG0hDlQpS8g9LaHS19RHzKgCILLRpAIgHiw=;
+        b=fRz6YmOnDo+fYmota81z7KliNXQkuSzm2/Yfw9SMgSHB/2x4Dk1V0FfMnOGUYhBZ2VzkTj
+        +bLQYSo1GfRxS+H3znB53td+1HYN+4TpaE2kT69N3rJfXBtsk0VKyp7ZVh7aHddOK5VTvo
+        wbl12RGSwwZRQECHMzjDXqkutypGtCU=
+Date:   Mon, 19 Oct 2020 00:31:07 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        jpoimboe@redhat.com, mbenes@suse.cz,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        shile.zhang@linux.alibaba.com, lkml <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: Fwd: [WARNING AND ERROR]  may be  system slow and  audio and
+ video breaking
+Message-ID: <20201018223107.GE8364@zn.tnic>
+References: <959da1eee73f58a824fe4913b5cacda6de0f392e.camel@rajagiritech.edu.in>
+ <b4533bcbb095cf11f01d0adfd50912c52242eb02.camel@rajagiritech.edu.in>
+ <20201018174948.GC8364@zn.tnic>
+ <328218dc46c4f883dad44d6fb53746c5f35f055d.camel@rajagiritech.edu.in>
+ <20201018210323.GD8364@zn.tnic>
+ <a5f540f4685291d766a61ca583c1b774e2ea584f.camel@rajagiritech.edu.in>
 MIME-Version: 1.0
-References: <20201009084533.2405320-1-acourbot@chromium.org>
-In-Reply-To: <20201009084533.2405320-1-acourbot@chromium.org>
-From:   Fritz Koenig <frkoenig@chromium.org>
-Date:   Sun, 18 Oct 2020 15:19:28 -0700
-X-Gmail-Original-Message-ID: <CAMfZQbw4wFzcocXXGavYdt+o8ydUoW4rSw4QnnrbZgwWUnp7Nw@mail.gmail.com>
-Message-ID: <CAMfZQbw4wFzcocXXGavYdt+o8ydUoW4rSw4QnnrbZgwWUnp7Nw@mail.gmail.com>
-Subject: Re: [PATCH] venus: vdec: return parsed crop information from stream
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a5f540f4685291d766a61ca583c1b774e2ea584f.camel@rajagiritech.edu.in>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It looks like only h.264 streams are populating the event.input_crop
-struct when receiving the HFI_INDEX_EXTRADATA_INPUT_CROP message in
-event_seq_changed().  vp8/vp9 streams end up with the struct filled
-with 0.
+On Mon, Oct 19, 2020 at 03:27:48AM +0530, Jeffrin Jose T wrote:
+> On Sun, 2020-10-18 at 23:03 +0200, Borislav Petkov wrote:
+> > On Mon, Oct 19, 2020 at 01:51:34AM +0530, Jeffrin Jose T wrote:
+> > > On Sun, 2020-10-18 at 19:49 +0200, Borislav Petkov wrote:
+> > > > On Sun, Oct 18, 2020 at 10:42:39PM +0530, Jeffrin Jose T wrote:
+> > > > > smpboot: Scheduler frequency invariance went wobbly, disabling!
+> > > > > [ 1112.592866] unchecked MSR access error: RDMSR from 0x123 at
+> > > > > rIP:
+> > > > > 0xffffffffb5c9a184 (native_read_msr+0x4/0x30)
+> > 
+> > Ok, you forgot to say in your initial mail that this happens when you
+> > suspend your laptop.
+> > 
+> > Now, this unchecked MSR error thing happens only once because that
+> > early
+> > during resume the microcode on CPU1 is not updated yet - and that
+> > needs
+> > to be debugged separately and I'll try to reproduce that on my
+> > machine -
+> > so the microcode is not updated yet and therefore the 0x123 MSR is
+> > not
+> > "emulated" by the microcode, so to speak, thus the warning.
+> > 
+> > That warning doesn't happen anymore, though, once the microcode is
+> > updated.
+> > 
+> > But what happens after that is you get a flood of correctable PCIe
+> > errors about a transaction to a device timeoutting:
+> > 
+> > pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
+> > pcieport 0000:00:1c.5: PCIe Bus Error: severity=Corrected, type=Data
+> > Link Layer, (Transmitter ID)
+> > pcieport 0000:00:1c.5:   device [8086:9d15] error
+> > status/mask=00001000/00002000
+> > pcieport 0000:00:1c.5:    [12] Timeout 
+> > 
+> > and it looks like that flood is slowing down the machine because it
+> > is
+> > busy logging them.
+> > 
+> > Do
+> > 
+> > # lspci -nn -xxx
+> > 
+> > as root. It'll show us which device that 8086:9d15 is.
+> > 
+> > Thx.
+> > 
+> 
+> $sudo lspci -nn -xxx | grep 9d15
+> 00:1c.5 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI
+> Express Root Port #6 [8086:9d15] (rev f1)
 
-On Fri, Oct 9, 2020 at 1:45 AM Alexandre Courbot <acourbot@chromium.org> wrote:
->
-> Per the stateful codec specification, VIDIOC_G_SELECTION with a target
-> of V4L2_SEL_TGT_COMPOSE is supposed to return the crop area of capture
-> buffers containing the decoded frame. Until now the driver did not get
-> that information from the firmware and just returned the dimensions of
-> CAPTURE buffers.
->
-> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> ---
->  drivers/media/platform/qcom/venus/core.h |  1 +
->  drivers/media/platform/qcom/venus/vdec.c | 21 ++++++++++++++++-----
->  2 files changed, 17 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-> index 7b79a33dc9d6..3bc129a4f817 100644
-> --- a/drivers/media/platform/qcom/venus/core.h
-> +++ b/drivers/media/platform/qcom/venus/core.h
-> @@ -361,6 +361,7 @@ struct venus_inst {
->         unsigned int streamon_cap, streamon_out;
->         u32 width;
->         u32 height;
-> +       struct v4l2_rect crop;
->         u32 out_width;
->         u32 out_height;
->         u32 colorspace;
-> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-> index ea13170a6a2c..ee74346f0cae 100644
-> --- a/drivers/media/platform/qcom/venus/vdec.c
-> +++ b/drivers/media/platform/qcom/venus/vdec.c
-> @@ -325,6 +325,10 @@ static int vdec_s_fmt(struct file *file, void *fh, struct v4l2_format *f)
->
->         inst->width = format.fmt.pix_mp.width;
->         inst->height = format.fmt.pix_mp.height;
-> +       inst->crop.top = 0;
-> +       inst->crop.left = 0;
-> +       inst->crop.width = inst->width;
-> +       inst->crop.height = inst->height;
->
->         if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
->                 inst->fmt_out = fmt;
-> @@ -343,6 +347,9 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
->             s->type != V4L2_BUF_TYPE_VIDEO_OUTPUT)
->                 return -EINVAL;
->
-> +       s->r.top = 0;
-> +       s->r.left = 0;
-> +
->         switch (s->target) {
->         case V4L2_SEL_TGT_CROP_BOUNDS:
->         case V4L2_SEL_TGT_CROP_DEFAULT:
-> @@ -363,16 +370,12 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
->         case V4L2_SEL_TGT_COMPOSE:
->                 if (s->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
->                         return -EINVAL;
-> -               s->r.width = inst->out_width;
-> -               s->r.height = inst->out_height;
-> +               s->r = inst->crop;
->                 break;
->         default:
->                 return -EINVAL;
->         }
->
-> -       s->r.top = 0;
-> -       s->r.left = 0;
-> -
->         return 0;
->  }
->
-> @@ -1309,6 +1312,10 @@ static void vdec_event_change(struct venus_inst *inst,
->
->         inst->width = format.fmt.pix_mp.width;
->         inst->height = format.fmt.pix_mp.height;
-> +       inst->crop.left = ev_data->input_crop.left;
-> +       inst->crop.top = ev_data->input_crop.top;
-> +       inst->crop.width = ev_data->input_crop.width;
-> +       inst->crop.height = ev_data->input_crop.height;
->
->         inst->out_width = ev_data->width;
->         inst->out_height = ev_data->height;
-> @@ -1412,6 +1419,10 @@ static void vdec_inst_init(struct venus_inst *inst)
->         inst->fmt_cap = &vdec_formats[0];
->         inst->width = frame_width_min(inst);
->         inst->height = ALIGN(frame_height_min(inst), 32);
-> +       inst->crop.left = 0;
-> +       inst->crop.top = 0;
-> +       inst->crop.width = inst->width;
-> +       inst->crop.height = inst->height;
->         inst->out_width = frame_width_min(inst);
->         inst->out_height = frame_height_min(inst);
->         inst->fps = 30;
-> --
-> 2.28.0.1011.ga647a8990f-goog
->
+Hm, looks like a builtin pci express port can't stomach suspend/resume
+and starts throwing AER errors.
+
+Adding Bjorn for a comment and leaving in the rest for reference.
+
+> file lspci.txt is attached
+> -- 
+> software engineer
+> rajagiri school of engineering and technology
+
+> 00:00.0 Host bridge [0600]: Intel Corporation Xeon E3-1200 v6/7th Gen Core Processor Host Bridge/DRAM Registers [8086:5904] (rev 03)
+> 00: 86 80 04 59 06 00 90 20 03 00 00 06 00 00 00 00
+> 10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 11 13
+> 30: 00 00 00 00 e0 00 00 00 00 00 00 00 00 00 00 00
+> 40: 01 90 d1 fe 00 00 00 00 01 00 d1 fe 00 00 00 00
+> 50: c1 02 00 00 b1 00 00 00 47 00 f0 9f 01 00 00 9b
+> 60: 03 00 00 f0 00 00 00 00 01 80 d1 fe 00 00 00 00
+> 70: 00 00 00 ff 01 00 00 00 00 0c 00 ff 7f 00 00 00
+> 80: 01 00 00 00 00 00 00 00 1a 00 00 00 00 00 00 00
+> 90: 01 00 00 ff 01 00 00 00 01 00 f0 5e 02 00 00 00
+> a0: 01 00 00 00 02 00 00 00 01 00 00 5f 02 00 00 00
+> b0: 01 00 00 9c 01 00 80 9b 01 00 00 9b 01 00 00 a0
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 09 00 10 01 31 60 61 7a dc 80 15 94 00 c0 06 00
+> f0: 00 00 00 00 c8 0f 09 00 00 00 00 00 00 00 00 00
+> 
+> 00:02.0 VGA compatible controller [0300]: Intel Corporation Device [8086:5921] (rev 06)
+> 00: 86 80 21 59 07 04 10 00 06 00 00 03 10 00 00 00
+> 10: 04 00 00 ee 00 00 00 00 0c 00 00 d0 00 00 00 00
+> 20: 01 f0 00 00 00 00 00 00 00 00 00 00 43 10 11 13
+> 30: 00 00 00 00 40 00 00 00 00 00 00 00 ff 01 00 00
+> 40: 09 70 0c 01 31 60 61 7a dc 80 15 94 00 00 00 00
+> 50: c1 02 00 00 b1 00 00 00 00 00 00 00 01 00 00 9c
+> 60: 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 10 ac 92 00 00 80 00 10 00 00 00 00 00 00 00 00
+> 80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> a0: 00 00 00 00 00 00 00 00 00 00 00 00 05 d0 01 00
+> b0: 18 00 e0 fe 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 01 00 22 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 80 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 00 00 00 00 18 50 90 9a
+> 
+> 00:04.0 Signal processing controller [1180]: Intel Corporation Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Thermal Subsystem [8086:1903] (rev 03)
+> 00: 86 80 03 19 02 00 90 00 03 00 80 11 00 00 00 00
+> 10: 04 80 1a ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 11 13
+> 30: 00 00 00 00 90 00 00 00 00 00 00 00 ff 01 00 00
+> 40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 00 00 00 00 b1 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 90: 05 d0 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 01 e0 03 00 08 00 00 00 00 00 00 00 00 00 00 00
+> e0: 09 00 0c 01 31 60 61 7a dc 80 15 94 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 
+> 00:14.0 USB controller [0c03]: Intel Corporation Sunrise Point-LP USB 3.0 xHCI Controller [8086:9d2f] (rev 21)
+> 00: 86 80 2f 9d 02 04 90 02 21 30 03 0c 00 00 80 00
+> 10: 04 00 19 ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 1f 20
+> 30: 00 00 00 00 70 00 00 00 00 00 00 00 ff 01 00 00
+> 40: fd 01 00 00 00 c0 03 80 00 00 00 00 00 00 00 00
+> 50: 5f 6e ce 0f 00 00 00 00 00 00 00 00 00 00 00 00
+> 60: 30 60 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 01 80 c2 c1 0b 01 00 00 00 00 00 00 00 00 00 00
+> 80: 05 00 87 00 98 02 e0 fe 00 00 00 00 00 00 00 00
+> 90: 09 00 14 f0 10 00 40 01 00 00 00 00 c1 0a 08 00
+> a0: 00 08 04 00 00 20 00 00 8f 00 02 00 00 01 00 00
+> b0: 03 00 00 00 0c 00 00 00 30 00 00 00 c0 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 03 00 00 00 0c 00 00 00 30 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:14.2 Signal processing controller [1180]: Intel Corporation Sunrise Point-LP Thermal subsystem [8086:9d31] (rev 21)
+> 00: 86 80 31 9d 02 00 10 00 21 00 80 11 00 00 00 00
+> 10: 04 00 1c ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 11 13
+> 30: 00 00 00 00 50 00 00 00 00 00 00 00 ff 03 00 00
+> 40: 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 01 80 23 00 08 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 05 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:15.0 Signal processing controller [1180]: Intel Corporation Sunrise Point-LP Serial IO I2C Controller #0 [8086:9d60] (rev 21)
+> 00: 86 80 60 9d 06 00 10 00 21 00 80 11 10 00 80 00
+> 10: 04 f0 1b ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 11 13
+> 30: 00 00 00 00 80 00 00 00 00 00 00 00 ff 01 00 00
+> 40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 01 90 03 00 0b 00 00 00 00 00 00 00 00 00 00 00
+> 90: 09 00 14 f0 10 00 40 01 01 21 00 00 c1 24 00 00
+> a0: 00 08 0f 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:15.1 Signal processing controller [1180]: Intel Corporation Sunrise Point-LP Serial IO I2C Controller #1 [8086:9d61] (rev 21)
+> 00: 86 80 61 9d 06 00 10 00 21 00 80 11 10 00 80 00
+> 10: 04 e0 1b ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 11 13
+> 30: 00 00 00 00 80 00 00 00 00 00 00 00 ff 02 00 00
+> 40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 01 90 03 00 0b 00 00 00 00 00 00 00 00 00 00 00
+> 90: 09 00 14 f0 10 00 40 01 01 21 00 00 c1 24 00 00
+> a0: 00 08 0f 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:16.0 Communication controller [0780]: Intel Corporation Sunrise Point-LP CSME HECI #1 [8086:9d3a] (rev 21)
+> 00: 86 80 3a 9d 06 04 10 00 21 00 80 07 00 00 80 00
+> 10: 04 d0 1b ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 11 13
+> 30: 00 00 00 00 50 00 00 00 00 00 00 00 ff 01 00 00
+> 40: 45 02 00 90 10 00 01 80 06 01 10 80 00 00 00 00
+> 50: 01 8c 03 40 08 00 00 00 00 00 00 00 00 00 00 00
+> 60: 20 00 00 00 04 44 08 00 00 00 00 00 00 00 00 40
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 00 00 00 00 00 00 00 00 00 00 00 00 05 00 81 00
+> 90: 58 03 e0 fe 00 00 00 00 00 00 00 00 00 00 00 00
+> a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 40
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:17.0 RAID bus controller [0104]: Intel Corporation 82801 Mobile SATA Controller [RAID mode] [8086:282a] (rev 21)
+> 00: 86 80 2a 28 07 04 b0 02 21 00 04 01 00 00 00 00
+> 10: 00 00 1a ef 00 c0 1b ef 91 f0 00 00 81 f0 00 00
+> 20: 61 f0 00 00 00 00 10 ef 00 00 00 00 43 10 11 13
+> 30: 00 00 00 00 80 00 00 00 00 00 00 00 ff 01 00 00
+> 40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 01 a8 03 40 08 00 00 00 00 00 00 00 00 00 00 00
+> 80: 05 70 01 00 b8 02 e0 fe 00 00 00 00 00 00 00 00
+> 90: 40 06 01 81 83 01 00 00 24 02 dc 20 26 00 00 80
+> a0: a4 00 00 00 00 00 00 00 12 00 10 00 48 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 11 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:1c.0 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI Express Root Port #1 [8086:9d10] (rev f1)
+> 00: 86 80 10 9d 07 04 10 00 f1 00 04 06 10 00 81 00
+> 10: 00 00 00 00 00 00 00 00 00 01 01 00 20 20 00 20
+> 20: 00 a0 10 a0 21 a0 31 a0 00 00 00 00 00 00 00 00
+> 30: 00 00 00 00 40 00 00 00 00 00 00 00 ff 01 12 00
+> 40: 10 80 42 01 01 80 00 00 00 00 10 00 43 7c 71 01
+> 50: 03 00 01 10 60 00 04 00 28 10 00 00 08 00 00 00
+> 60: 00 00 00 00 37 08 08 00 00 00 00 00 0e 00 00 00
+> 70: 03 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 05 90 01 00 18 02 e0 fe 00 00 00 00 00 00 00 00
+> 90: 0d a0 00 00 43 10 11 13 00 00 00 00 00 00 00 00
+> a0: 01 00 03 c8 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 11 00 00 07 00 08 00 00 02 00 9e 09 00 00 00 00
+> e0: 00 f7 33 00 00 00 00 00 04 80 02 00 00 00 00 00
+> f0: 50 01 00 00 00 f3 00 40 b3 0f 41 08 04 c0 00 01
+> 
+> 00:1c.5 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI Express Root Port #6 [8086:9d15] (rev f1)
+> 00: 86 80 15 9d 07 04 10 00 f1 00 04 06 10 00 81 00
+> 10: 00 00 00 00 00 00 00 00 00 02 02 00 f0 00 00 00
+> 20: 00 ef 00 ef f1 ff 01 00 00 00 00 00 00 00 00 00
+> 30: 00 00 00 00 40 00 00 00 00 00 00 00 ff 02 12 00
+> 40: 10 80 42 01 01 80 00 00 0f 00 10 00 13 4c 72 06
+> 50: 43 00 11 70 00 b2 4c 00 00 00 40 01 08 00 00 00
+> 60: 00 00 00 00 37 08 00 00 00 04 00 00 0e 00 00 00
+> 70: 03 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 05 90 01 00 58 02 e0 fe 00 00 00 00 00 00 00 00
+> 90: 0d a0 00 00 43 10 11 13 00 00 00 00 00 00 00 00
+> a0: 01 00 03 c8 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 01 10 00 07 42 18 00 00 08 00 9e 09 00 00 00 00
+> e0: 00 03 e3 00 00 00 00 00 06 00 10 00 00 00 00 00
+> f0: 50 01 00 00 00 00 00 4c b3 0f 41 08 04 00 00 02
+> 
+> 00:1e.0 Signal processing controller [1180]: Intel Corporation Sunrise Point-LP Serial IO UART Controller #0 [8086:9d27] (rev 21)
+> 00: 86 80 27 9d 06 00 10 00 21 00 80 11 10 00 80 00
+> 10: 04 b0 1b ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 2d 1d
+> 30: 00 00 00 00 80 00 00 00 00 00 00 00 ff 01 00 00
+> 40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 01 90 03 00 0b 00 00 00 00 00 00 00 00 00 00 00
+> 90: 09 00 14 f0 10 00 40 01 01 21 00 00 c1 24 00 00
+> a0: 00 08 0f 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:1e.2 Signal processing controller [1180]: Intel Corporation Sunrise Point-LP Serial IO SPI Controller #0 [8086:9d29] (rev 21)
+> 00: 86 80 29 9d 06 00 10 00 21 00 80 11 10 00 80 00
+> 10: 04 a0 1b ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 2d 1d
+> 30: 00 00 00 00 80 00 00 00 00 00 00 00 ff 03 00 00
+> 40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 01 90 03 00 0b 00 00 00 00 00 00 00 00 00 00 00
+> 90: 09 00 14 f0 10 00 40 01 01 21 00 00 c1 24 00 00
+> a0: 00 08 0f 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:1e.6 SD Host controller [0805]: Intel Corporation Sunrise Point-LP Secure Digital IO Controller [8086:9d2d] (rev 21)
+> 00: 86 80 2d 9d 06 00 10 00 21 01 05 08 10 00 80 00
+> 10: 04 90 1b ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 86 80 2d 9d
+> 30: 00 00 00 00 80 00 00 00 00 00 00 00 ff 04 00 00
+> 40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 01 90 03 00 08 00 00 00 00 00 00 00 00 00 00 00
+> 90: 09 00 14 f0 10 00 40 01 41 80 00 00 c1 81 00 00
+> a0: 00 08 09 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:1f.0 ISA bridge [0601]: Intel Corporation Sunrise Point LPC Controller/eSPI Controller [8086:9d4e] (rev 21)
+> 00: 86 80 4e 9d 07 00 00 02 21 00 01 06 00 00 80 00
+> 10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 11 13
+> 30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 90 00 00 00 00 00 00 00 00 00 00 00
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 00 00 00 2c 41 02 04 00 51 02 0c 00 81 03 0c 00
+> 90: 81 00 0c 00 00 0f 00 00 00 00 00 00 00 00 00 00
+> a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 33 22 11 00 67 45 00 00 cf ff 00 00 a2 00 00 00
+> e0: c1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:1f.2 Memory controller [0580]: Intel Corporation Sunrise Point-LP PMC [8086:9d21] (rev 21)
+> 00: 86 80 21 9d 00 00 00 00 21 00 80 05 00 00 80 00
+> 10: 00 40 1b ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 43 10 11 13
+> 30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 40: 01 18 00 00 80 01 00 00 00 00 00 fe 00 00 00 00
+> 50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> a0: f0 36 a0 d8 09 3a 07 00 00 46 00 00 00 00 00 81
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:1f.3 Audio device [0403]: Intel Corporation Sunrise Point-LP HD Audio [8086:9d71] (rev 21)
+> 00: 86 80 71 9d 06 04 10 00 21 00 03 04 10 20 00 00
+> 10: 04 00 1b ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 04 00 18 ef 00 00 00 00 00 00 00 00 43 10 10 1e
+> 30: 00 00 00 00 50 00 00 00 00 00 00 00 ff 01 00 00
+> 40: 00 00 00 00 00 00 00 00 ff 0d 3b 80 00 00 00 00
+> 50: 01 60 43 c0 08 00 00 00 00 00 00 00 00 00 00 00
+> 60: 05 00 81 00 78 03 e0 fe 00 00 00 00 00 00 00 00
+> 70: 10 00 91 00 00 00 00 10 00 20 10 00 00 00 00 00
+> 80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 08 06 02 00 00 70 80 04 00 0c a5 82 10 00 03 00
+> d0: 00 0c b5 02 10 00 03 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 00:1f.4 SMBus [0c05]: Intel Corporation Sunrise Point-LP SMBus [8086:9d23] (rev 21)
+> 00: 86 80 23 9d 03 00 80 02 21 00 05 0c 00 00 00 00
+> 10: 04 80 1b ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 41 f0 00 00 00 00 00 00 00 00 00 00 43 10 11 13
+> 30: 00 00 00 00 00 00 00 00 00 00 00 00 ff 01 00 00
+> 40: 11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 01 04 00 00 00 01 00 00 00 00 00 00 00 00 00 00
+> 60: 04 05 05 00 00 00 0a 0a 00 00 00 00 00 00 00 00
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 24 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
+> 
+> 02:00.0 Network controller [0280]: Qualcomm Atheros QCA9565 / AR9565 Wireless Network Adapter [168c:0036] (rev 01)
+> 00: 8c 16 36 00 06 00 10 00 01 00 80 02 10 00 00 00
+> 10: 04 00 00 ef 00 00 00 00 00 00 00 00 00 00 00 00
+> 20: 00 00 00 00 00 00 00 00 00 00 00 00 ad 11 23 18
+> 30: 00 00 08 ef 40 00 00 00 00 00 00 00 ff 01 00 00
+> 40: 01 50 c2 ff 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 05 70 84 01 00 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 10 00 02 00 c0 8d 90 05 10 20 11 00 11 6c 03 00
+> 80: 43 00 11 10 00 00 00 00 00 00 00 00 00 00 00 00
+> 90: 00 00 00 00 10 00 00 00 00 00 00 00 02 00 00 00
+> a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 
+
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
