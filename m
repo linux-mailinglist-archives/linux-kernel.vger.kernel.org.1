@@ -2,406 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2C7291FB8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 22:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE98291FC2
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 22:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgJRUNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 16:13:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
+        id S1727013AbgJRURK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 16:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbgJRUNS (ORCPT
+        with ESMTP id S1726422AbgJRURJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 16:13:18 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92EBC061755;
-        Sun, 18 Oct 2020 13:13:16 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id h2so3909711pll.11;
-        Sun, 18 Oct 2020 13:13:16 -0700 (PDT)
+        Sun, 18 Oct 2020 16:17:09 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA3FC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:17:09 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id b15so6746916iod.13
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:17:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=joelfernandes.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qiLTIFWZBdLPHI9PhMrRJ9NkcaJO2rf64KID/1y8Jq4=;
-        b=fde92EDIsObRIuQ6dMVuPsAZJAM8IHZVlbubAro6fK9RG4G+9d5M3RzVjj1jXeLWnT
-         01gNv3LUSZb+FEYm/4ge9xx+1Y1BM6Ec8n4fA0LjKyJ6t2s1PCaKV014NJJtmphIZ9zF
-         XltJSB07ZBVu4yXg1oDDtWrccpoCeN70oUFfheQ/THSNeuYyohx9odsevJClK9PcUfT9
-         IcGBzD0ntALg4ByThdeOv932AoOu1nVRMc81OVNlKz3FfQQR0MhEttGlu1eOvpfKMbUB
-         I0q2mKNuAJMQo2u/w5bAN8h474Kih6uIJJtJJLfERAJfL7h2z0aG/iEhHaTKVWTymU0v
-         RFUg==
+        bh=hgDhaY7fqK+FMnZC3CevUCCUqcuSuLmtjwQEAUjRcIk=;
+        b=JkkpEPD2sKts0GtmZClZI9gb1Rw0shyqd/ZXgWY4aWRGtI5oc4wR/i9RXn+hZOxUwB
+         C69dDdh7Z7ObwjuWCebEHpbMBQHXQKdNgtoaY8IaIyTtZSiH7wHtxt6W4dtWt/X/iC35
+         06wkrMz8wgTTPzFXrxnEWXvZMEJchYr6RTa+w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qiLTIFWZBdLPHI9PhMrRJ9NkcaJO2rf64KID/1y8Jq4=;
-        b=EMDcaRuFFeuW2iRhCamZVEnq5pxathPrYYhO1jBYYRoqDBCWbvVdSgiZuggkcpSY4k
-         U5EEr8zZChPw6KYDCaeGZ3xwX7dTCrDkLTufRRZ9oy3Bouf2hTnSMOfjE6tlC/FcevGs
-         NZV12LU/RvOmUt+P3P60hCskmEmUU3mxQ4k8WScWcJDwR99ptVNerwofe6GQpG4w+lIm
-         o0KHbJ2EUe6wOgD+GUMgjusq7hCnqmhY1gmz+SxxnzOCrCP3AGE7WRFHQQWL+UqVeUjP
-         Ut2yu9a9/g4341zfQX2rST/XZnAnuG7AdGdjsNqrLye5IJf7DXLBnYwBLfSTfnTLhm8W
-         ulGw==
-X-Gm-Message-State: AOAM53151UdsgYUXGzdCjq2DglY8Vl8GJ+ipdF2oS4WaNVO/LjlemtT+
-        DsxAo8I64uQLYr5SnxliZNy4xWKw2VYjf5nY98k=
-X-Google-Smtp-Source: ABdhPJx8fnfhCA+ESUnvRVW3CWZOAZBToPARtzSmbAQdW2rO8EA5SXLVMYJ777ifIGNSH0uGOEhsxV3OYTFKtjZDHhA=
-X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr13763307pjs.181.1603051996194;
- Sun, 18 Oct 2020 13:13:16 -0700 (PDT)
+        bh=hgDhaY7fqK+FMnZC3CevUCCUqcuSuLmtjwQEAUjRcIk=;
+        b=WKRTW46fbEmqWD4cOBhVBQbraEp5qPjeFwZ9dOIvBJ03JK4eoMK4cRmrANYUsDCynp
+         jJy0DqSwQNcTbYZCr+rtcWJYPl5xVKVweMB6UwsEv7Gvnt3FRWb07vi6IvISVEMcMxhA
+         7M2C8b2B0QNMZm8KH826ndQLgTnpqQNhf31ugzEEiuiYaZxO+eGIXrPKAJ3ftRFDGWVR
+         ifC740Y41L1MOr0d3H0LsJqjm2UluCgavV90F4ZJW+H8OkFIpIsNRrhc3uZag61OCsiX
+         v5axpzY8+m2UjG72AtrQgtm4nRYkD5k97VGOS0polsYYfpdlQRB0sr57s+QueEzlRCO9
+         VHMA==
+X-Gm-Message-State: AOAM533wxiFKqX6XrH/wmYeAS7K0HWv0rCunjVYwHOrNjaQt/LnzqCeE
+        yzUKkejOoKD6CYaQ2p/fkXNrSweb7bGDVxCPbCZ+lQ==
+X-Google-Smtp-Source: ABdhPJyIZ5xkld7dr1PxipmOsqVLdHv+ZRVpWzxlQ3NugJHHX+BXmIBfnPdshpg3MTxNJXhXT/vkIPGFv5aowNskOuM=
+X-Received: by 2002:a02:ec3:: with SMTP id 186mr1543187jae.92.1603052228687;
+ Sun, 18 Oct 2020 13:17:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201017052057.2698588-1-bjorn.andersson@linaro.org> <20201017052057.2698588-3-bjorn.andersson@linaro.org>
-In-Reply-To: <20201017052057.2698588-3-bjorn.andersson@linaro.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 18 Oct 2020 23:12:59 +0300
-Message-ID: <CAHp75VeVbK1Wx2BEPghtEbEghqDAF2jFFN9=ARLEw-rvTUZ3yw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/4] leds: Add driver for Qualcomm LPG
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Martin Botka <martin.botka1@gmail.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org
+References: <20201015002301.101830-1-joel@joelfernandes.org>
+ <20201015002301.101830-7-joel@joelfernandes.org> <20201015133511.GB127222@lothringen>
+ <20201017012753.GB4015033@google.com> <20201017143144.GA835860@rowland.harvard.edu>
+In-Reply-To: <20201017143144.GA835860@rowland.harvard.edu>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sun, 18 Oct 2020 13:16:57 -0700
+Message-ID: <CAEXW_YSyshFLYMNia+TGfO11Pi_iojzke1+0SG7anGt2GNUXWg@mail.gmail.com>
+Subject: Re: [PATCH v7 6/6] rcu/segcblist: Add additional comments to explain smp_mb()
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 8:41 AM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
+On Sat, Oct 17, 2020 at 7:31 AM Alan Stern <stern@rowland.harvard.edu> wrote:
 >
-> The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
-> PMICs from Qualcomm. It can operate on fixed parameters or based on a
-> lookup-table, altering the duty cycle over time - which provides the
-> means for e.g. hardware assisted transitions of LED brightness.
-
-> +config LEDS_QCOM_LPG
-> +       tristate "LED support for Qualcomm LPG"
-> +       depends on LEDS_CLASS_MULTICOLOR
-> +       depends on OF
-> +       depends on SPMI
-
-
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-
-...
-
-> +struct lpg {
-> +       struct device *dev;
-> +       struct regmap *map;
-
-Can't you derive the former from the latter?
-
-> +
-> +       struct pwm_chip pwm;
-> +
-> +       const struct lpg_data *data;
-> +
-> +       u32 lut_base;
-> +       u32 lut_size;
-> +       unsigned long *lut_bitmap;
-> +
-> +       u32 triled_base;
-> +       u32 triled_src;
-> +
-> +       struct lpg_channel *channels;
-> +       unsigned int num_channels;
-> +};
-
-...
-
-> +static int lpg_lut_store(struct lpg *lpg, struct led_pattern *pattern,
-> +                        size_t len, unsigned int *lo_idx, unsigned int *hi_idx)
-> +{
-> +       unsigned int idx;
-> +       u8 val[2];
-
-__be16 val;
-
-> +       int i;
-> +
-> +       /* Hardware does not behave when LO_IDX == HI_IDX */
-> +       if (len == 1)
-> +               return -EINVAL;
-> +
-> +       idx = bitmap_find_next_zero_area(lpg->lut_bitmap, lpg->lut_size,
-> +                                        0, len, 0);
-> +       if (idx >= lpg->lut_size)
-> +               return -ENOMEM;
-> +
-> +       for (i = 0; i < len; i++) {
-> +               val[0] = pattern[i].brightness & 0xff;
-> +               val[1] = pattern[i].brightness >> 8;
-
-cpu_to_be16();
-
-> +
-> +               regmap_bulk_write(lpg->map,
-> +                                 lpg->lut_base + LPG_LUT_REG(idx + i), val, 2);
-> +       }
-> +
-> +       bitmap_set(lpg->lut_bitmap, idx, len);
-> +
-> +       *lo_idx = idx;
-> +       *hi_idx = idx + len - 1;
-> +
-> +       return 0;
-> +}
-
-...
-
-> +static void lpg_calc_freq(struct lpg_channel *chan, unsigned int period_us)
-> +{
-> +       int             n, m, clk, div;
-> +       int             best_m, best_div, best_clk;
-> +       unsigned int    last_err, cur_err, min_err;
-> +       unsigned int    tmp_p, period_n;
-> +
-> +       if (period_us == chan->period_us)
-> +               return;
-> +
-> +       /* PWM Period / N */
-> +       if (period_us < ((unsigned int)(-1) / NSEC_PER_USEC)) {
-
-Please, replace all these -1 with castings to unsigned types with
-corresponding limits, like
-UINT_MAX here.
-
-> +               period_n = (period_us * NSEC_PER_USEC) >> 6;
-> +               n = 6;
-> +       } else {
-> +               period_n = (period_us >> 9) * NSEC_PER_USEC;
-> +               n = 9;
-> +       }
-
-Why inconsistency in branches? Can you rather derive n and calculate
-only once like
-
-           period_n = (period_us >> n) * NSEC_PER_USEC;
-
-?
-
-> +       min_err = (unsigned int)(-1);
-> +       last_err = (unsigned int)(-1);
-> +       best_m = 0;
-> +       best_clk = 0;
-> +       best_div = 0;
-> +       for (clk = 0; clk < NUM_PWM_CLK; clk++) {
-> +               for (div = 0; div < NUM_PWM_PREDIV; div++) {
-> +                       /* period_n = (PWM Period / N) */
-> +                       /* tmp_p = (Pre-divide * Clock Period) * 2^m */
-> +                       tmp_p = lpg_clk_table[div][clk];
-> +                       for (m = 0; m <= NUM_EXP; m++) {
-> +                               if (period_n > tmp_p)
-> +                                       cur_err = period_n - tmp_p;
-> +                               else
-> +                                       cur_err = tmp_p - period_n;
-> +
-> +                               if (cur_err < min_err) {
-> +                                       min_err = cur_err;
-> +                                       best_m = m;
-> +                                       best_clk = clk;
-> +                                       best_div = div;
-> +                               }
-> +
-> +                               if (m && cur_err > last_err)
-> +                                       /* Break for bigger cur_err */
-> +                                       break;
-> +
-> +                               last_err = cur_err;
-> +                               tmp_p <<= 1;
-> +                       }
-> +               }
-> +       }
-> +
-> +       /* Use higher resolution */
-> +       if (best_m >= 3 && n == 6) {
-> +               n += 3;
-> +               best_m -= 3;
-> +       }
-> +
-> +       chan->clk = best_clk;
-> +       chan->pre_div = best_div;
-> +       chan->pre_div_exp = best_m;
-> +       chan->pwm_size = n;
-> +
-> +       chan->period_us = period_us;
-> +}
-> +
-> +static void lpg_calc_duty(struct lpg_channel *chan, unsigned int duty_us)
-> +{
-> +       unsigned long max = (1 << chan->pwm_size) - 1;
-
-BIT() ?
-
-> +       unsigned long val;
-> +
-> +       /* Figure out pwm_value with overflow handling */
-
-> +       if (duty_us < 1 << (sizeof(val) * 8 - chan->pwm_size))
-
-BITS_PER_TYPE, but actually BITS_PER_LONG here.
-
-BIT(BITS_PER_LONG - ...)
-
-> +               val = (duty_us << chan->pwm_size) / chan->period_us;
-> +       else
-> +               val = duty_us / (chan->period_us >> chan->pwm_size);
-> +
-> +       if (val > max)
-> +               val = max;
-> +
-> +       chan->pwm_value = val;
-> +}
-
-...
-
-> +static void lpg_enable_glitch(struct lpg_channel *chan)
-> +{
-> +       struct lpg *lpg = chan->lpg;
-> +
-> +       regmap_update_bits(lpg->map, chan->base + PWM_TYPE_CONFIG_REG,
-> +                          LPG_ENABLE_GLITCH_REMOVAL, 0);
-> +}
-
-Here and everywhere else when function declared as void there is no
-possibility to know if we do something useful or already screwed up
-the things.
-
-> +static void lpg_apply_pwm_value(struct lpg_channel *chan)
-> +{
-> +       u8 val[] = { chan->pwm_value & 0xff, chan->pwm_value >> 8 };
-
-
-__le16 and cpu_to_le16()
-
-> +       struct lpg *lpg = chan->lpg;
-> +
-> +       if (!chan->enabled)
-> +               return;
-> +
-> +       regmap_bulk_write(lpg->map, chan->base + PWM_VALUE_REG, val, 2);
-> +}
-
-> +#define LPG_PATTERN_CONFIG_LO_TO_HI    BIT(4)
-> +#define LPG_PATTERN_CONFIG_REPEAT      BIT(3)
-> +#define LPG_PATTERN_CONFIG_TOGGLE      BIT(2)
-> +#define LPG_PATTERN_CONFIG_PAUSE_HI    BIT(1)
-> +#define LPG_PATTERN_CONFIG_PAUSE_LO    BIT(0)
-
-Did I miss bits.h inclusion at the beginning of the file?
-
-...
-
-> +static int lpg_blink_set(struct lpg_led *led,
-> +                        unsigned long delay_on, unsigned long delay_off)
-> +{
-> +       struct lpg_channel *chan;
-> +       unsigned int period_us;
-> +       unsigned int duty_us;
-> +       int i;
-> +
-> +       if (!delay_on && !delay_off) {
-> +               delay_on = 500;
-> +               delay_off = 500;
-> +       }
-
-Homegrown duty cycle?
-I mean, why simply not to pass the duty cycle in percentage in the first place?
-
-> +       duty_us = delay_on * USEC_PER_MSEC;
-> +       period_us = (delay_on + delay_off) * USEC_PER_MSEC;
-> +
-> +       for (i = 0; i < led->num_channels; i++) {
-> +               chan = led->channels[i];
-> +
-> +               lpg_calc_freq(chan, period_us);
-> +               lpg_calc_duty(chan, duty_us);
-> +
-> +               chan->enabled = true;
-> +               chan->ramp_enabled = false;
-> +
-> +               lpg_apply(chan);
-> +       }
-> +
-> +       return 0;
-> +}
-
-> +#define interpolate(x1, y1, x2, y2, x) \
-> +       ((y1) + ((y2) - (y1)) * ((x) - (x1)) / ((x2) - (x1)))
-
-Can you rather create a generic one under lib/ or start include/linux/math.h ?
-
-https://elixir.bootlin.com/linux/latest/A/ident/interpolate
-
-...
-
-> +out:
-
-Useless label.
-
-> +       return ret;
-
-...
-
-> +       ret = of_property_read_u32(np, "color", &color);
-> +       if (ret < 0 && ret != -EINVAL)
-
-This check is fishy. Either you have optional property or not, in the
-latter case return any error code.
-
-> +               return ret;
-> +
-> +       chan->color = color;
-
-So, it may be -EINVAL?!
-
-> +       ret = of_property_read_u32_array(np, "qcom,dtest", dtest, 2);
-> +       if (ret < 0 && ret != -EINVAL) {
-> +               dev_err(lpg->dev, "malformed qcom,dtest of %pOFn\n", np);
-> +               return ret;
-> +       } else if (!ret) {
-> +               chan->dtest_line = dtest[0];
-> +               chan->dtest_value = dtest[1];
-> +       }
-
-Ditto.
-
-...
-
-> +       ret = of_property_read_u32(np, "color", &color);
-> +       if (ret < 0 && ret != -EINVAL)
-> +               return ret;
-
-Ditto.
-
-...
-
-> +       size = sizeof(*led) + num_channels * sizeof(struct lpg_channel *);
-
-Use respective helpers from overflow.h.
-
-> +       led = devm_kzalloc(lpg->dev, size, GFP_KERNEL);
-> +       if (!led)
-> +               return -ENOMEM;
-
-...
-
-> +static const struct of_device_id lpg_of_table[] = {
-> +       { .compatible = "qcom,pm8916-pwm", .data = &pm8916_pwm_data },
-> +       { .compatible = "qcom,pm8941-lpg", .data = &pm8941_lpg_data },
-> +       { .compatible = "qcom,pm8994-lpg", .data = &pm8994_lpg_data },
-> +       { .compatible = "qcom,pmi8994-lpg", .data = &pmi8994_lpg_data },
-> +       { .compatible = "qcom,pmi8998-lpg", .data = &pmi8998_lpg_data },
-
-> +       {},
-
-No comma needed for terminator lines.
-
-> +};
-
--- 
-With Best Regards,
-Andy Shevchenko
+> On Fri, Oct 16, 2020 at 09:27:53PM -0400, joel@joelfernandes.org wrote:
+> > Adding Alan as well as its memory barrier discussion ;-)
+>
+> I don't know the internals of how RCU works, so I'll just speak to the
+> litmus test itself, ignoring issues of whether the litmus test is
+> appropriate or expresses what you really want.
+>
+> > The following litmus test would confirm it:
+> >
+> > C rcubarrier+ctrldep
+> >
+> > (*
+> >  * Result: Never
+> >  *
+> >  * This litmus test shows that rcu_barrier (P1) prematurely
+> >  * returning by reading len 0 can cause issues if P0 does
+> >  * NOT have a smb_mb() before WRITE_ONCE().
+> >  *
+> >  * mod_data == 2 means garbage which the callback should never see.
+> >  *)
+> >
+> > { int len = 1; }
+> >
+> > P0(int *len, int *mod_data)
+> > {
+> >         int r0;
+> >
+> >         // accessed by say RCU callback in rcu_do_batch();
+> >         r0 = READ_ONCE(*mod_data);
+> >         smp_mb(); // Remove this and the "exists" will become true.
+> >         WRITE_ONCE(*len, 0);
+> > }
+> >
+> > P1(int *len, int *mod_data)
+> > {
+> >         int r0;
+> >
+> >         r0 = READ_ONCE(*len);
+> >
+> >         // rcu_barrier will return early if len is 0
+> >         if (r0 == 0)
+> >                 WRITE_ONCE(*mod_data, 2);
+> > }
+> >
+> > // Is it possible?
+> > exists (0:r0=2 /\ 1:r0=0)
+>
+> This result is indeed not possible.  And yes, some sort of memory
+> barrier is needed in P0.  But it doesn't have to be smp_mb(); you could
+> use a weaker barrier instead.  For example, you could replace the
+> READ_ONCE in P0 with smp_load_acquire(), or you could replace the
+> WRITE_ONCE with smp_store_release().  Either of those changes would
+> suffice to prevent this outcome.
+
+Right, that works as well. The main point I was trying to hit was the
+control-dependency hardware ordering in P1 (due to rcu_barrier()
+checking for a condition before doing whatever is after the
+rcu_barrier()).
+
+thanks,
+
+ - Joel
