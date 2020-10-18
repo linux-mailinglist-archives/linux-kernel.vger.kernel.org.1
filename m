@@ -2,304 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AC2291FEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 22:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C330E291FF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 22:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgJRUkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 16:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45094 "EHLO
+        id S1729480AbgJRUmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 16:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727304AbgJRUkl (ORCPT
+        with ESMTP id S1729138AbgJRUmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 16:40:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9E8C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:40:41 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kUFTl-0002ZB-RC; Sun, 18 Oct 2020 22:40:33 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kUFTk-0007In-KA; Sun, 18 Oct 2020 22:40:32 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>
-Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, linux-leds@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: [PATCH v9 3/3] leds: trigger: implement a tty trigger
-Date:   Sun, 18 Oct 2020 22:40:22 +0200
-Message-Id: <20201018204022.910815-4-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201018204022.910815-1-u.kleine-koenig@pengutronix.de>
-References: <20201018204022.910815-1-u.kleine-koenig@pengutronix.de>
+        Sun, 18 Oct 2020 16:42:15 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93226C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:42:14 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id b8so10585908ioh.11
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:42:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/+KpZMs+OqXMYvOBeyOsZl9b7vVG7Kgiax4wh9UFch4=;
+        b=JAbHfe/fxHnGEpThMPsb62zas4/7ZLvMIerwwWbMXk28kOB1mNpQGnv+kYXJwegmOd
+         hBVmk5kOnY1jrSLHt9kLrMSoR3KsmYrOzV0ddGYgLtX2pmq96NfXmFdgLTSSnEN5E9aG
+         MfvXVBeNWtlSruLPLS4Dc4S14v2eyUdkOxYXoaydR+hQgeTrHNXDByNx9vpxPlxsbbHf
+         KTVGLE/M/14NWszTVX7Jzt4TD7jPA7NOh/tEfqKO72OUM6EQ5eVBVP6OtdmxQlCMhrbF
+         v6/03DXZCMoWM6eeFibIHpqAdJlmaJi9x20w5KnellvXPdrtt1maIifCWy5zPMhW3/62
+         E7rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/+KpZMs+OqXMYvOBeyOsZl9b7vVG7Kgiax4wh9UFch4=;
+        b=roCAj+bxraoMSARoxJyj/HtUtfOb0jKLiaV+yBHK3TIZV5/nuIvQRTUnPkvcpWwqfh
+         i3D9evCMNJj2Ezn+IMoSFpD6TFGEHE0BRywNeVEBCsiFWZuLj835PNmdHw2xx9R7NLoo
+         PGziLVj4jV7fDY/i7Or5nw20HDMvfGGChFbG/Cpm/NzofnFHxmiMNoysDcamSedMxdn5
+         Rw9eyV9Mq0iMLu4aYD3JFnkxXrSCWFEvrGpTgh5HSI2SHywDytF8IYB5QZi0mi+3Pi1w
+         T6LQZCs1ES29kiZBkhiz5G48+gre+IIjcgM3IZTNFa6ktTM9KgoWn9q+kgLAFMxHOYPN
+         e5Ew==
+X-Gm-Message-State: AOAM533MlXVtyqTLIHkqvIvl15KQ0eksHZGbQrK8YK5aFWqNhw18+Zs2
+        PbFuaM1J1Mn7plZrYfaWtCBTRdLv+USsLFDquxpa
+X-Google-Smtp-Source: ABdhPJyJZJyx/SI9vkySU5+35w3C+Wuh8+wAXLzABnWOkqurEubVhGNWTEs+YjoyNZSFNECArwuS7uhzk9VQmdiUeJg=
+X-Received: by 2002:a6b:9108:: with SMTP id t8mr1323876iod.206.1603053733983;
+ Sun, 18 Oct 2020 13:42:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201018032543.GA27580@ubuntu> <20201018123535.7fdd3ee5@archlinux>
+ <CALudOK6z6W4najGF-rZo1TgdXEhx5menqLP+Y__H6B1+jMxBLw@mail.gmail.com>
+In-Reply-To: <CALudOK6z6W4najGF-rZo1TgdXEhx5menqLP+Y__H6B1+jMxBLw@mail.gmail.com>
+From:   Vaishnav M A <vaishnav@beagleboard.org>
+Date:   Mon, 19 Oct 2020 02:12:02 +0530
+Message-ID: <CALudOK64hPQjYH--_us5qaguhEDMewWU8n1jABQkFf8YUDQ7GA@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: light: tsl2563 change of_property_read to device_property_read
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        nish.malpani25@gmail.com,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Drew Fustini <drew@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        =?UTF-8?Q?Ivan_Rajkovi=C4=87?= <rajkovic@mikroe.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Usage is as follows:
-
-	myled=ledname
-	tty=ttyS0
-
-	echo tty > /sys/class/leds/$myled/trigger
-	echo $tty > /sys/class/leds/$myled/ttyname
-
-. When this new trigger is active it periodically checks the tty's
-statistics and when it changed since the last check the led is flashed
-once.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- .../ABI/testing/sysfs-class-led-trigger-tty   |   6 +
- drivers/leds/trigger/Kconfig                  |   9 +
- drivers/leds/trigger/Makefile                 |   1 +
- drivers/leds/trigger/ledtrig-tty.c            | 184 ++++++++++++++++++
- 4 files changed, 200 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-led-trigger-tty
- create mode 100644 drivers/leds/trigger/ledtrig-tty.c
-
-diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-tty b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-new file mode 100644
-index 000000000000..5c53ce3ede36
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-@@ -0,0 +1,6 @@
-+What:		/sys/class/leds/<led>/ttyname
-+Date:		Jul 2020
-+KernelVersion:	5.8
-+Contact:	linux-leds@vger.kernel.org
-+Description:
-+		Specifies the tty device name of the triggering tty
-diff --git a/drivers/leds/trigger/Kconfig b/drivers/leds/trigger/Kconfig
-index ce9429ca6dde..b77a01bd27f4 100644
---- a/drivers/leds/trigger/Kconfig
-+++ b/drivers/leds/trigger/Kconfig
-@@ -144,4 +144,13 @@ config LEDS_TRIGGER_AUDIO
- 	  the audio mute and mic-mute changes.
- 	  If unsure, say N
- 
-+config LEDS_TRIGGER_TTY
-+	tristate "LED Trigger for TTY devices"
-+	depends on TTY
-+	help
-+	  This allows LEDs to be controlled by activity on ttys which includes
-+	  serial devices like /dev/ttyS0.
-+
-+	  When build as a module this driver will be called ledtrig-tty.
-+
- endif # LEDS_TRIGGERS
-diff --git a/drivers/leds/trigger/Makefile b/drivers/leds/trigger/Makefile
-index 733a83e2a718..25c4db97cdd4 100644
---- a/drivers/leds/trigger/Makefile
-+++ b/drivers/leds/trigger/Makefile
-@@ -15,3 +15,4 @@ obj-$(CONFIG_LEDS_TRIGGER_PANIC)	+= ledtrig-panic.o
- obj-$(CONFIG_LEDS_TRIGGER_NETDEV)	+= ledtrig-netdev.o
- obj-$(CONFIG_LEDS_TRIGGER_PATTERN)	+= ledtrig-pattern.o
- obj-$(CONFIG_LEDS_TRIGGER_AUDIO)	+= ledtrig-audio.o
-+obj-$(CONFIG_LEDS_TRIGGER_TTY)		+= ledtrig-tty.o
-diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/ledtrig-tty.c
-new file mode 100644
-index 000000000000..e249ac24fe78
---- /dev/null
-+++ b/drivers/leds/trigger/ledtrig-tty.c
-@@ -0,0 +1,184 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/delay.h>
-+#include <linux/leds.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/tty.h>
-+#include <uapi/linux/serial.h>
-+
-+struct ledtrig_tty_data {
-+	struct led_classdev *led_cdev;
-+	struct delayed_work dwork;
-+	struct mutex mutex;
-+	const char *ttyname;
-+	struct tty_struct *tty;
-+	int rx, tx;
-+};
-+
-+static void ledtrig_tty_halt(struct ledtrig_tty_data *trigger_data)
-+{
-+	cancel_delayed_work_sync(&trigger_data->dwork);
-+}
-+
-+static void ledtrig_tty_restart(struct ledtrig_tty_data *trigger_data)
-+{
-+	schedule_delayed_work(&trigger_data->dwork, 0);
-+}
-+
-+static ssize_t ttyname_show(struct device *dev,
-+			    struct device_attribute *attr, char *buf)
-+{
-+	struct ledtrig_tty_data *trigger_data = led_trigger_get_drvdata(dev);
-+	ssize_t len = 0;
-+
-+	mutex_lock(&trigger_data->mutex);
-+
-+	if (trigger_data->ttyname)
-+		len = sprintf(buf, "%s\n", trigger_data->ttyname);
-+
-+	mutex_unlock(&trigger_data->mutex);
-+
-+	return len;
-+}
-+
-+static ssize_t ttyname_store(struct device *dev,
-+			     struct device_attribute *attr, const char *buf,
-+			     size_t size)
-+{
-+	struct ledtrig_tty_data *trigger_data = led_trigger_get_drvdata(dev);
-+	char *ttyname;
-+	ssize_t ret = size;
-+
-+	ledtrig_tty_halt(trigger_data);
-+
-+	mutex_lock(&trigger_data->mutex);
-+
-+	if (size > 0 && buf[size - 1] == '\n')
-+		size -= 1;
-+
-+	if (size) {
-+		ttyname = kmemdup_nul(buf, size, GFP_KERNEL);
-+		if (!ttyname) {
-+			ret = -ENOMEM;
-+			goto out_unlock;
-+		}
-+	} else {
-+		ttyname = NULL;
-+	}
-+
-+	kfree(trigger_data->ttyname);
-+	tty_kref_put(trigger_data->tty);
-+	trigger_data->tty = NULL;
-+
-+	trigger_data->ttyname = ttyname;
-+
-+out_unlock:
-+	mutex_unlock(&trigger_data->mutex);
-+
-+	if (ttyname)
-+		ledtrig_tty_restart(trigger_data);
-+
-+	return ret;
-+}
-+static DEVICE_ATTR_RW(ttyname);
-+
-+static void ledtrig_tty_work(struct work_struct *work)
-+{
-+	struct ledtrig_tty_data *trigger_data =
-+		container_of(work, struct ledtrig_tty_data, dwork.work);
-+	struct serial_icounter_struct icount;
-+	int ret;
-+
-+	mutex_lock(&trigger_data->mutex);
-+
-+	BUG_ON(!trigger_data->ttyname);
-+
-+	/* try to get the tty corresponding to $ttyname */
-+	if (!trigger_data->tty) {
-+		dev_t devno;
-+		struct tty_struct *tty;
-+		int ret;
-+
-+		ret = tty_dev_name_to_number(trigger_data->ttyname, &devno);
-+		if (ret < 0)
-+			/*
-+			 * A device with this name might appear later, so keep
-+			 * retrying.
-+			 */
-+			goto out;
-+
-+		tty = tty_kopen_shared(devno);
-+		if (IS_ERR(tty) || !tty)
-+			/* What to do? retry or abort */
-+			goto out;
-+
-+		trigger_data->tty = tty;
-+	}
-+
-+	ret = tty_get_icount(trigger_data->tty, &icount);
-+	if (ret) {
-+		mutex_unlock(&trigger_data->mutex);
-+		dev_info(trigger_data->tty->dev, "Failed to get icount, stopped polling\n");
-+		mutex_unlock(&trigger_data->mutex);
-+		return;
-+	}
-+
-+	if (icount.rx != trigger_data->rx ||
-+	    icount.tx != trigger_data->tx) {
-+		led_set_brightness(trigger_data->led_cdev, LED_ON);
-+
-+		trigger_data->rx = icount.rx;
-+		trigger_data->tx = icount.tx;
-+	} else {
-+		led_set_brightness(trigger_data->led_cdev, LED_OFF);
-+	}
-+
-+out:
-+	mutex_unlock(&trigger_data->mutex);
-+	schedule_delayed_work(&trigger_data->dwork, msecs_to_jiffies(100));
-+}
-+
-+static struct attribute *ledtrig_tty_attrs[] = {
-+	&dev_attr_ttyname.attr,
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(ledtrig_tty);
-+
-+static int ledtrig_tty_activate(struct led_classdev *led_cdev)
-+{
-+	struct ledtrig_tty_data *trigger_data;
-+
-+	trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
-+	if (!trigger_data)
-+		return -ENOMEM;
-+
-+	led_set_trigger_data(led_cdev, trigger_data);
-+
-+	INIT_DELAYED_WORK(&trigger_data->dwork, ledtrig_tty_work);
-+	trigger_data->led_cdev = led_cdev;
-+	mutex_init(&trigger_data->mutex);
-+
-+	return 0;
-+}
-+
-+static void ledtrig_tty_deactivate(struct led_classdev *led_cdev)
-+{
-+	struct ledtrig_tty_data *trigger_data = led_get_trigger_data(led_cdev);
-+
-+	cancel_delayed_work_sync(&trigger_data->dwork);
-+
-+	kfree(trigger_data);
-+}
-+
-+static struct led_trigger ledtrig_tty = {
-+	.name = "tty",
-+	.activate = ledtrig_tty_activate,
-+	.deactivate = ledtrig_tty_deactivate,
-+	.groups = ledtrig_tty_groups,
-+};
-+module_led_trigger(ledtrig_tty);
-+
-+MODULE_AUTHOR("Uwe Kleine-König <u.kleine-koenig@pengutronix.de>");
-+MODULE_DESCRIPTION("UART LED trigger");
-+MODULE_LICENSE("GPL v2");
--- 
-2.28.0
-
+On Sun, Oct 18, 2020 at 8:14 PM Vaishnav M A <vaishnav@beagleboard.org> wrote:
+>
+> On Sun, Oct 18, 2020 at 5:05 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> >
+> > On Sun, 18 Oct 2020 08:55:43 +0530
+> > Vaishnav M A <vaishnav@beagleboard.org> wrote:
+> >
+> > > replace the of_property_read_u32 for reading the amstaos,cover-comp-gain
+> > > property with device_property_read_u32,allows the driver to
+> > > get the properties information using the more generic device_property_*
+> > > helpers and opens the possibility of passing the properties during
+> > > platform instantiation of the device by a suitably populated
+> > > struct property_entry.
+> > >
+> > > Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
+> > Please tidy up that description in a similar fashion to I've suggested in
+> > other reviews.  Code looks fine.
+> >
+> > On another day I might have just fixed that description whilst applying but
+> > we have lots of time at this point in the cycle, hence I'm bouncing
+> > them back to you ;)
+> >
+> > Thanks,
+> >
+> > Jonathan
+> >
+> Thank you Jonathan for the review, sorry about missing to notify after
+> sending the v2 patch(and repeating the same mistake a few times), will
+> make sure that it won't happen again. I have sent a v3 patch updated with
+> all the suggested changes : https://lore.kernel.org/patchwork/patch/1322194/
+>
+> Thanks and Regards,
+> Vaishnav
+Updated v4 patch submitted considering comments from Andy Shevchenko
+on a different patch to refer to the functions like function() and updated the
+commit title to a shorter one, similar to one used for similar changes
+within the subsystem, like in 00fa493b9989
+("iio:proximity:as3935: Drop of_match_ptr and use generic fw accessors")
+https://lore.kernel.org/patchwork/patch/1322221/
+> > > ---
+> > >  v2:
+> > >       - fix commit message
+> > >  drivers/iio/light/tsl2563.c | 14 +++++++-------
+> > >  1 file changed, 7 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/drivers/iio/light/tsl2563.c b/drivers/iio/light/tsl2563.c
+> > > index abc8d7db8dc1..1f1b8b7cefa4 100644
+> > > --- a/drivers/iio/light/tsl2563.c
+> > > +++ b/drivers/iio/light/tsl2563.c
+> > > @@ -703,7 +703,6 @@ static int tsl2563_probe(struct i2c_client *client,
+> > >       struct iio_dev *indio_dev;
+> > >       struct tsl2563_chip *chip;
+> > >       struct tsl2563_platform_data *pdata = client->dev.platform_data;
+> > > -     struct device_node *np = client->dev.of_node;
+> > >       int err = 0;
+> > >       u8 id = 0;
+> > >
+> > > @@ -738,13 +737,14 @@ static int tsl2563_probe(struct i2c_client *client,
+> > >       chip->calib0 = tsl2563_calib_from_sysfs(CALIB_BASE_SYSFS);
+> > >       chip->calib1 = tsl2563_calib_from_sysfs(CALIB_BASE_SYSFS);
+> > >
+> > > -     if (pdata)
+> > > +     if (pdata) {
+> > >               chip->cover_comp_gain = pdata->cover_comp_gain;
+> > > -     else if (np)
+> > > -             of_property_read_u32(np, "amstaos,cover-comp-gain",
+> > > -                                  &chip->cover_comp_gain);
+> > > -     else
+> > > -             chip->cover_comp_gain = 1;
+> > > +     } else {
+> > > +             err = device_property_read_u32(&client->dev, "amstaos,cover-comp-gain",
+> > > +                                            &chip->cover_comp_gain);
+> > > +             if (err)
+> > > +                     chip->cover_comp_gain = 1;
+> > > +     }
+> > >
+> > >       dev_info(&client->dev, "model %d, rev. %d\n", id >> 4, id & 0x0f);
+> > >       indio_dev->name = client->name;
+> >
