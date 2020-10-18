@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F22291899
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 19:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45F129189D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 19:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgJRRTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 13:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725904AbgJRRTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 13:19:50 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DF1A2223F;
-        Sun, 18 Oct 2020 17:19:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603041589;
-        bh=3Q5FHZplMB5Vfvn4zxpHhyQoeHMO5TrTcAto1Ahhweo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0PFgeBKpDbmQRxHwLbzW4/LDVC8WzgEIT+QXQIiLbN+g0Nm0puFPIB0gxxjIpxT9l
-         61EkJ03t09AmdhR0wZzA064BbYcIXV+U4dppmgC9VVTy/AUCdxJd5qTKm2J6knD9Ev
-         SvGDPzX4DY0yVvOc2BUoNl21/k/Rqp06PF5JZtDA=
-Date:   Sun, 18 Oct 2020 10:19:47 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Remove __napi_schedule_irqoff?
-Message-ID: <20201018101947.419802df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <668a1291-e7f0-ef71-c921-e173d4767a14@gmail.com>
-References: <01af7f4f-bd05-b93e-57ad-c2e9b8726e90@gmail.com>
-        <20201017162949.0a6dd37a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CANn89i+q=q_LNDzE23y74Codh5EY0HHi_tROsEL2yJAdRjh-vQ@mail.gmail.com>
-        <668a1291-e7f0-ef71-c921-e173d4767a14@gmail.com>
+        id S1726808AbgJRRYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 13:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgJRRYR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 13:24:17 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E515C061755;
+        Sun, 18 Oct 2020 10:24:16 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id n15so8834942wrq.2;
+        Sun, 18 Oct 2020 10:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mLdfSAR0LwOOtqwUC8udPXOOYAtdKU3B5mmLxtalmVY=;
+        b=jTzRpx++WPceEK9RoYdLVnjHAf4Oy/71STRL4VcaJ7/IHjbAURWV3bnpeoIex3mwYu
+         ho8AV7D6wJ8GYaiN2dzi8PHwkk8voiaoUjdGMJYlxBo+mW5y1DKbHOrC51LR5WyhSlON
+         S4LAndxXEQvWVr3PaYSt3suUrmrIsgU2mVF15hPp9OixdPjM9TbL4iKru0ovwV92ZJ6w
+         QrdlPFCI0U8r9Rke5iubYvcRHO8wEAs2zc6cYZjrMTYHsXUKA++I3CANF+P7VlgtgUg1
+         2uHCq3BbtnBPMS9mu7G1ZSpcTcXFRP2nwyRWLvbqwpjgl7xhgHZ0qhAQC8DHnfBjL5h/
+         ID7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mLdfSAR0LwOOtqwUC8udPXOOYAtdKU3B5mmLxtalmVY=;
+        b=GABDbMr+UF/ElLmNmh9c6o4glEuUDCboppt3di+t70ZJEDAA6OoAC7pQU9WUJbsvbg
+         p+1nX5L66K7TvJPLtkOwqnLk6BJJK4j/uKYku83Sz7tXm4UtlBhMm6zQVOWaBnwKC8MU
+         v6Ic14bAuCcaDl3mzfhvMTwIq9mo3jENG+RsT6yTyixh/xO7gdKs7JHQZH/hzU5RQNpn
+         SMJdJBban9ZFy/jNLnaZ/q1TaELFLILLeCpP0fYBRWLIzdbMfWJr6Zlo5YHPCPdtc3iY
+         YsYfoM3fGrddW+l2PlFodsQjfK6Utj/mCPuuM5B0hUZSsLJzNuWlsPuJSl7HadwUja9w
+         vALA==
+X-Gm-Message-State: AOAM530y6G8Ed8iqhD0+/c21I3+/ivh5F3lVfv+eDP08jJnygix7dajL
+        cJ31OM744GH84tUwAFeUr5U=
+X-Google-Smtp-Source: ABdhPJzqeAG7+AstLsB9Ivo+7f37ckUYlHOxLO7uMV0wguDsRO7FcNYu7MRIF0rSl2Ot7PEoUNV8MQ==
+X-Received: by 2002:adf:f1cd:: with SMTP id z13mr15757991wro.197.1603041855000;
+        Sun, 18 Oct 2020 10:24:15 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+        by smtp.gmail.com with ESMTPSA id q7sm9697505wrr.39.2020.10.18.10.24.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Oct 2020 10:24:14 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: allwinner: beelink-gs1: Enable both RGMII RX/TX delay
+Date:   Sun, 18 Oct 2020 19:24:09 +0200
+Message-Id: <20201018172409.1754775-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 18 Oct 2020 10:20:41 +0200 Heiner Kallweit wrote:
-> >> Otherwise a non-solution could be to make IRQ_FORCED_THREADING
-> >> configurable.  
-> > 
-> > I have to say I do not understand why we want to defer to a thread the
-> > hard IRQ that we use in NAPI model.
-> >   
-> Seems like the current forced threading comes with the big hammer and
-> thread-ifies all hard irq's. To avoid this all NAPI network drivers
-> would have to request the interrupt with IRQF_NO_THREAD.
+Before the commit:
+net: phy: realtek: fix rtl8211e rx/tx delay config
 
-Right, it'd work for some drivers. Other drivers try to take spin locks
-in their IRQ handlers.
+The software overwrite for RX/TX delays of the RTL8211e were not
+working properly and the Beelink GS1 had both RX/TX delay of RGMII
+interface set using pull-up on the TXDLY and RXDLY pins.
 
-What gave me a pause was that we have a busy loop in napi_schedule_prep:
+Now that these delays are working properly they overwrite the HW
+config and set this to 'rgmii' meaning no delay on both RX/TX.
+This makes the ethernet of this board not working anymore.
 
-bool napi_schedule_prep(struct napi_struct *n)
-{
-	unsigned long val, new;
+Set the phy-mode to 'rgmii-id' meaning RGMII with RX/TX delays
+in the device-tree to keep the correct configuration.
 
-	do {
-		val = READ_ONCE(n->state);
-		if (unlikely(val & NAPIF_STATE_DISABLE))
-			return false;
-		new = val | NAPIF_STATE_SCHED;
+Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Beelink GS1 board")
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-		/* Sets STATE_MISSED bit if STATE_SCHED was already set
-		 * This was suggested by Alexander Duyck, as compiler
-		 * emits better code than :
-		 * if (val & NAPIF_STATE_SCHED)
-		 *     new |= NAPIF_STATE_MISSED;
-		 */
-		new |= (val & NAPIF_STATE_SCHED) / NAPIF_STATE_SCHED *
-						   NAPIF_STATE_MISSED;
-	} while (cmpxchg(&n->state, val, new) != val);
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+index a364cb4e5b3f..6ab53860e447 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+@@ -99,7 +99,7 @@ &ehci0 {
+ &emac {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&ext_rgmii_pins>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 	phy-handle = <&ext_rgmii_phy>;
+ 	phy-supply = <&reg_aldo2>;
+ 	status = "okay";
+-- 
+2.25.1
 
-	return !(val & NAPIF_STATE_SCHED);
-}
-
-
-Dunno how acceptable this is to run in an IRQ handler on RT..
