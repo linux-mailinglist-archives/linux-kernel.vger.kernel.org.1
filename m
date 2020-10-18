@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29DF2918D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 20:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D18B2918D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 20:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727322AbgJRS1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 14:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727094AbgJRS1E (ORCPT
+        id S1727297AbgJRS1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 14:27:02 -0400
+Received: from smtprelay0035.hostedemail.com ([216.40.44.35]:40318 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727094AbgJRS1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 14:27:04 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9C3C061755;
-        Sun, 18 Oct 2020 11:27:02 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id b23so4652842pgb.3;
-        Sun, 18 Oct 2020 11:27:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5m1S5sZujQt2BwrJwE08lEoVDm6unn9shH52UvLq8Pg=;
-        b=eCP39ru/wgTWoNuwiKr05wbnzi+MNNugEbNjFFhzbv9bIlF4z0H41WAb7F4QFdrzUs
-         3wApOFJXpSx7+78Xj1hxnR2j5WckIejtQxGjFSu6/frC7Px0NHZdr7s+cR+aVnqBAMZy
-         L0pru/h6bvGuBNskG6WWNXhhERcHqmM0Ya6D7tREXWbwpbb8ked7joDGAyt2LB/uNhkv
-         igmMotPA4vei9LB5S8fw9yuBKvoMeL1jnh7i4hoj4IlvXjn0CuTJS4dI4RAfo2vWHCyl
-         luAzC2CT5EzaYE5fTWW6bfM6kXw4OtDs4OvbUeOXBWMgILs0ZaFG4zihUOnNsvQvL3Cr
-         GAPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5m1S5sZujQt2BwrJwE08lEoVDm6unn9shH52UvLq8Pg=;
-        b=ESOOf98xbVzQgPAEXSKtuzpNsrZ0B6YO8YjBvuRaBPu+Gy6GzWJwlgxkITUKlEm5RQ
-         puZ2OWZw4RI9lcXXrfJ0xy9/sGiV7Mh0Y5YGBhETzb/VAjko1WZSZX5x3ebsLejspe+v
-         blUGrR/Sz+PAyB2IUzHPFxXeJH7AcMGhP0q0hqKNIWbXlAri9sQ0GQe0oq1KTo4AZGMM
-         5iS3wxEGYdsLDUqD5xbFhOL/8Pr7hdaJqnPmLtm1oQmW2h8/WQr5qWpwwcSgR0rzMQHZ
-         gyzhORkgPYvAawa4V3U+peYS1i7c5AeqezY5tEQzbtalUXh+jdy03eKR+/lOi65wGjKX
-         q1EQ==
-X-Gm-Message-State: AOAM533TMxbLngHFFHMWXPpqSFL1eWYi8bdXVp/sF9P1Gj3EpgMMmNws
-        ItLH9e4KfoBWJ7g0iDfLSR8dghdNSKeZAfMjSa8=
-X-Google-Smtp-Source: ABdhPJwGULC56yMeMCTuCfZOR7vq/3gi+527g6HGEFWCQUoYxjC3jZWMZspFWo8az4pMvmRQfXU/2rwfArpqJE7bIq4=
-X-Received: by 2002:a65:47c2:: with SMTP id f2mr11362279pgs.4.1603045621632;
- Sun, 18 Oct 2020 11:27:01 -0700 (PDT)
+        Sun, 18 Oct 2020 14:27:02 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 6B0E9837F24A;
+        Sun, 18 Oct 2020 18:27:01 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2691:2828:2902:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6248:7903:7974:10004:10400:10848:11232:11289:11658:11914:12043:12297:12438:12555:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14180:14181:14659:14721:14777:21060:21080:21325:21365:21433:21451:21627:21740:21741:21819:21939:30022:30029:30054:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: dad38_590e2f027230
+X-Filterd-Recvd-Size: 2921
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 18 Oct 2020 18:27:00 +0000 (UTC)
+Message-ID: <3d9ef962b7007308a538e42375adf09d058ee8ab.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: Allow not using -f with files that are in
+ git
+From:   Joe Perches <joe@perches.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@shadowen.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Sun, 18 Oct 2020 11:26:59 -0700
+In-Reply-To: <CAMuHMdUp5U0nnp9LfWgY0VnkRppMVXZU9NSpWqcMKYM_zRXRuA@mail.gmail.com>
+References: <45b81a48e1568bd0126a96f5046eb7aaae9b83c9.camel@perches.com>
+         <CAMuHMdV8FEPhTp653RN00LK4UcQZHkuLByJzqiM85r2qoqhDvQ@mail.gmail.com>
+         <fce55e74e4331c6e19c4030a4e02fb35ca5ee4f7.camel@perches.com>
+         <CAMuHMdUp5U0nnp9LfWgY0VnkRppMVXZU9NSpWqcMKYM_zRXRuA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20201013103245.16723-1-billy_tsai@aspeedtech.com>
- <20201013103245.16723-2-billy_tsai@aspeedtech.com> <20201018112249.44dd3bde@archlinux>
-In-Reply-To: <20201018112249.44dd3bde@archlinux>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 18 Oct 2020 21:26:45 +0300
-Message-ID: <CAHp75Vd4Sequmg_qLbtkk2JktM95bk+xg65P0gJNzPO3OQ7Vkg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] iio: adc: aspeed: Orgnaize and add the define of adc
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Billy Tsai <billy_tsai@aspeedtech.com>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed@lists.ozlabs.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BMC-SW@aspeedtech.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 1:32 PM Jonathan Cameron <jic23@kernel.org> wrote:
-> On Tue, 13 Oct 2020 18:32:43 +0800
-> Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+On Sun, 2020-10-18 at 20:15 +0200, Geert Uytterhoeven wrote:
+> Hi Joe,
 
-...
+rehi Geert
 
-> > +/* [31:16] */
+> On Sun, Oct 18, 2020 at 6:07 PM Joe Perches <joe@perches.com> wrote:
+> > On Sun, 2020-10-18 at 16:03 +0200, Geert Uytterhoeven wrote:
+[]
+> > > This is now commit f5f613259f3fea81 ("checkpatch: allow not using -f
+> > > with files that are in git"), causing:
+> > > 
+> > >     Global symbol "$gitroot" requires explicit package name (did you
+> > > forget to declare "my $gitroot"?) at scripts/checkpatch.pl line 980.
+> > >     Execution of scripts/checkpatch.pl aborted due to compilation errors.
+[]
+> > I believe there is a dependency on another patch
+> > in -next that wasn't pushed to Linus' tree.
+> > 
+> > commit 5ec1f7de97b26a3fa364bbb31fdd2e42c8e6fa22
+> > Author: Joe Perches <joe@perches.com>
+> > Date:   Thu Oct 8 11:53:44 2020 +1100
+> > 
+> >     checkpatch: test $GIT_DIR changes
+> > 
+> > So it'd be better to revert right now until
+> > this other patch is accepted or pushed.
+> 
+> Thanks, after cherry-picking that one from next, checkpatch works again.
+> However, there are some issues with that commit:
+>   1. ERROR: Missing Signed-off-by: line by nominal patch author 'Joe
+> Perches <joe@perches.com>',
+>   2. The Link: is bogus, and gives 404.
 
-Useless comment.
+I generally create patches against -next.
 
-> > +#define ASPEED_ADC_CTRL_CH_EN(n)     (1 << (16 + n))
-> > +#define ASPEED_ADC_CTRL_CH_EN_ALL    GENMASK(31, 16)
+The above commit was a test patch for Andrew who
+had some inconvenience because he doesn't generally
+use git or has a git repo in some non-standard path.
 
-But the main point is here.
-First of all you may use BIT() in above.
-Second, it's a good practice to put variables in the additional
-parentheses in macros in case you are doing some operations with.
+I believe it works well enough to be OK, but I
+didn't test it and don't have the same setup.
 
-So, something like BIT(16 + (n)) would be nice to have at the end.
+I'll post it again as a reply to this email with a
+with a sign-off and a better commit description and
+Linus/Andrew can decide if it's better to revert
+f5f613259f3f or apply it separately.
 
--- 
-With Best Regards,
-Andy Shevchenko
+
