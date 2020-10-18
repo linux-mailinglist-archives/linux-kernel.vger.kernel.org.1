@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D18B2918D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 20:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A27F2918D9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 20:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727297AbgJRS1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 14:27:02 -0400
-Received: from smtprelay0035.hostedemail.com ([216.40.44.35]:40318 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727094AbgJRS1C (ORCPT
+        id S1727335AbgJRS3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 14:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727094AbgJRS3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 14:27:02 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 6B0E9837F24A;
-        Sun, 18 Oct 2020 18:27:01 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2691:2828:2902:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6248:7903:7974:10004:10400:10848:11232:11289:11658:11914:12043:12297:12438:12555:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14180:14181:14659:14721:14777:21060:21080:21325:21365:21433:21451:21627:21740:21741:21819:21939:30022:30029:30054:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: dad38_590e2f027230
-X-Filterd-Recvd-Size: 2921
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 18 Oct 2020 18:27:00 +0000 (UTC)
-Message-ID: <3d9ef962b7007308a538e42375adf09d058ee8ab.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Allow not using -f with files that are in
- git
-From:   Joe Perches <joe@perches.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@shadowen.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Sun, 18 Oct 2020 11:26:59 -0700
-In-Reply-To: <CAMuHMdUp5U0nnp9LfWgY0VnkRppMVXZU9NSpWqcMKYM_zRXRuA@mail.gmail.com>
-References: <45b81a48e1568bd0126a96f5046eb7aaae9b83c9.camel@perches.com>
-         <CAMuHMdV8FEPhTp653RN00LK4UcQZHkuLByJzqiM85r2qoqhDvQ@mail.gmail.com>
-         <fce55e74e4331c6e19c4030a4e02fb35ca5ee4f7.camel@perches.com>
-         <CAMuHMdUp5U0nnp9LfWgY0VnkRppMVXZU9NSpWqcMKYM_zRXRuA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sun, 18 Oct 2020 14:29:09 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A5CC061755;
+        Sun, 18 Oct 2020 11:29:08 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 10so4647065pfp.5;
+        Sun, 18 Oct 2020 11:29:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YhKxtKap6Pg66R8IThOkPzKVVHg3CECR5dk8D1mogFs=;
+        b=FeI37/MF0a3MLwqdZ7Mc43KQxBaI7EI1wQbV46C0xHiNDFH3p9oNSHpNP74JJry2MU
+         gDhZaBkkhn9KCdly8lYF+Dlj3OWSQ5KLfSP9HvyrxAUPMXiVDV88NSu7C5jGqtjAC18t
+         hqc+gb19BOzDGgsmGqIcSXt17hxCK4aeEWQ9Yd1cgfEf1OciznSAOGm1ngPYQ1xaIU3/
+         7WbVBjXY+eJor+OXxOuQfE+/1COzW46E0rTJ0GA8idAIc7y1SFWas723xdMj2VH3M9Ug
+         hkhaYHmuwv34d2BYLY2fSRWBH3ZDH/CTt25iy4k431TWst7W0Vn9fnIlX9QsvtRBVJVk
+         TQrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YhKxtKap6Pg66R8IThOkPzKVVHg3CECR5dk8D1mogFs=;
+        b=DwnWVcezKPnjpCnUM+TpIglk5zKY5YwVstsgoLlquEDHIE8D5AeUxxDy0O2I9n1XwS
+         le7S/hKn+W6/Mhm+s6Inmr/MHTiqLicixuTJyHc5mOki/B2tvxTQOMyfJy+A/OY8ZGVS
+         v1gNtu40Kge8FOE5YlaPjEp6cYuPqA5/06dAEd0ZE2Yqujn20o0NST1+vN7w+jFv+eEw
+         pcIBw81EHu5/apMFyTiFQS5DnfFjEx/phw60oJ9wlByU9OMXFf51Av2nJqzkLVq+GUid
+         4XyPOrFpGxTeh2HTehmvRZZ9rRiCYmDcHK1VK95wGWNQwfun2lGqPdf6HnTqxbxz328o
+         8pjQ==
+X-Gm-Message-State: AOAM532pHgwTeMOYfhMqquaRmKRt5knXsCooG3+ZqilXTmZ8Fj1J/fIO
+        CySO6Ay+qOzaxc2vCSM5ZT/UTjOWVYGpYyjwBps=
+X-Google-Smtp-Source: ABdhPJxiDq/CZEnC5cQO5RjAJLmdc4WB5HNZG0ZIBdrwlccwkWDshdG87/gwAQWggC8a0WQS8cz7WM5ZsZkG0tIg/JQ=
+X-Received: by 2002:a63:1e02:: with SMTP id e2mr1480626pge.74.1603045748399;
+ Sun, 18 Oct 2020 11:29:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201018150442.GA219064@ubuntu>
+In-Reply-To: <20201018150442.GA219064@ubuntu>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 18 Oct 2020 21:28:52 +0300
+Message-ID: <CAHp75Vch2jPwZm8gVC6zRs6k=BR23Mb15Q4R4VbpMZ5FwshNLQ@mail.gmail.com>
+Subject: Re: [PATCH v3] iio: light: vcnl4035 add i2c_device_id
+To:     Vaishnav M A <vaishnav@beagleboard.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Drew Fustini <drew@beagleboard.org>,
+        robertcnelson@beagleboard.org, rajkovic@mikroe.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-10-18 at 20:15 +0200, Geert Uytterhoeven wrote:
-> Hi Joe,
+On Sun, Oct 18, 2020 at 6:47 PM Vaishnav M A <vaishnav@beagleboard.org> wrote:
+>
+> Add i2c_device_id table for the vl53l0x-i2c driver,
+> helps in device instantiation using i2c_new_client_device
 
-rehi Geert
+In all your patches please refer to the functions like function().
+For example, here is i2c_new_client_device().
 
-> On Sun, Oct 18, 2020 at 6:07 PM Joe Perches <joe@perches.com> wrote:
-> > On Sun, 2020-10-18 at 16:03 +0200, Geert Uytterhoeven wrote:
-[]
-> > > This is now commit f5f613259f3fea81 ("checkpatch: allow not using -f
-> > > with files that are in git"), causing:
-> > > 
-> > >     Global symbol "$gitroot" requires explicit package name (did you
-> > > forget to declare "my $gitroot"?) at scripts/checkpatch.pl line 980.
-> > >     Execution of scripts/checkpatch.pl aborted due to compilation errors.
-[]
-> > I believe there is a dependency on another patch
-> > in -next that wasn't pushed to Linus' tree.
-> > 
-> > commit 5ec1f7de97b26a3fa364bbb31fdd2e42c8e6fa22
-> > Author: Joe Perches <joe@perches.com>
-> > Date:   Thu Oct 8 11:53:44 2020 +1100
-> > 
-> >     checkpatch: test $GIT_DIR changes
-> > 
-> > So it'd be better to revert right now until
-> > this other patch is accepted or pushed.
-> 
-> Thanks, after cherry-picking that one from next, checkpatch works again.
-> However, there are some issues with that commit:
->   1. ERROR: Missing Signed-off-by: line by nominal patch author 'Joe
-> Perches <joe@perches.com>',
->   2. The Link: is bogus, and gives 404.
+> or from userspace in cases where device-tree based description
+> is not possible now (Example: device on a gbphy i2c adapter
+> created by greybus)
 
-I generally create patches against -next.
+Don't forget proper English punctuation, like periods at the end of sentences.
 
-The above commit was a test patch for Andrew who
-had some inconvenience because he doesn't generally
-use git or has a git repo in some non-standard path.
-
-I believe it works well enough to be OK, but I
-didn't test it and don't have the same setup.
-
-I'll post it again as a reply to this email with a
-with a sign-off and a better commit description and
-Linus/Andrew can decide if it's better to revert
-f5f613259f3f or apply it separately.
-
-
+-- 
+With Best Regards,
+Andy Shevchenko
