@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6E52920A2
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3462920A3
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 01:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729743AbgJRXpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 19:45:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726371AbgJRXpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 19:45:00 -0400
-Received: from [10.44.0.192] (unknown [103.48.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31E6422266;
-        Sun, 18 Oct 2020 23:44:57 +0000 (UTC)
-Subject: Re: [PATCH 2/2] m68k: m68328: remove duplicate code
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <20201015123258.2644027-1-arnd@arndb.de>
- <20201015123258.2644027-2-arnd@arndb.de>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <ab3a33d0-7a3a-f12b-244d-24195c06f3fc@linux-m68k.org>
-Date:   Mon, 19 Oct 2020 09:44:53 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729798AbgJRXvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 19:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728212AbgJRXvG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 19:51:06 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6BAC061755;
+        Sun, 18 Oct 2020 16:51:06 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w21so4927975pfc.7;
+        Sun, 18 Oct 2020 16:51:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uw+aYLYiJGyrDrMZb/nx2w+eKuS/axoOgFXJxufPotQ=;
+        b=vUIQrBGf0OmZIeb04zw12omzwGDUBfS7uF/AZi/t/KjJz8Ox3iJWsTpNcC1WH4nGLD
+         AyVc7/3zihN9mdYP2Xeck8zhncSVdCYnD1f9muK+u9WqdnhlNSHy/sMits6o0tqLuyIy
+         BABDgRe0qXn8xa+fzmzrmIZ45Z7g0aa4+hRKJUNj18ayg0j1ZQ5efnU/Mp8VVZFWBBIn
+         an6zDaSKetwX/yHwOlfCc+QNk/ZQrIQVWbolaKmj3FZ0EDYpbiqXodqhRM8alaBeJIcx
+         TN9HSazC3VHwV5z3laibqpCStSNS+4ECuXQgOJd/cSTpF/zie8YYFGqOiqaUbod4QE8R
+         AjSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uw+aYLYiJGyrDrMZb/nx2w+eKuS/axoOgFXJxufPotQ=;
+        b=PEjM9xYku1c+xoCuNWZ5u9PZ1atRepe4U0MpGtduNYg0hO/k1Xe78gDjRHfy3v7Mn3
+         bxD12hJKVzVEGfDTpKwJCIBDTQm4RkLZgMnppJzVeAWKN4qRKit5mchv6riyheafEcTo
+         QPtzV/6WixqUB8117pXsKFUwa8w4SDfC66GYNR5S9q4heqy1lu78XGRzsYMSCIMiDF4i
+         sFapbdSNEe7eur1PbIuVhtb91RxIJ9b3P1jxQwoSRXttqcgfGUzEz7VGdtkaAHYDyYUR
+         kv6nK5xn6eTEzY8hnJZuXrlxoV4upQOyuh3+hwNAp4Wp+8wkR0Pt2qsILL3kE0xmO0UE
+         s87g==
+X-Gm-Message-State: AOAM5323rHij9p2pCKiEL69OObD1WowaU2XHSw6yrO9OIiojxTdz9C0b
+        PrczPZk78Rvnrg3DbCtMEVft4Qt5C4UTLtmkrg8=
+X-Google-Smtp-Source: ABdhPJwUOQqQgvxG038okq/jB4hBcc/S0RxWmJZHbd3TReKoKTW7d0XMQZZHi0SxjOjHsmFp4wUNXueWUfUg25+Qxpo=
+X-Received: by 2002:aa7:96f8:0:b029:152:94c0:7e5 with SMTP id
+ i24-20020aa796f80000b029015294c007e5mr14208283pfq.76.1603065065977; Sun, 18
+ Oct 2020 16:51:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201015123258.2644027-2-arnd@arndb.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201017051951.363514-1-xie.he.0141@gmail.com> <20201018150517.2f3dfb5c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201018150517.2f3dfb5c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Sun, 18 Oct 2020 16:50:55 -0700
+Message-ID: <CAJht_EPnidrjS0Am+Vwp9W0dXP+6VJsmuHzy0eL9c7h5vpWwPA@mail.gmail.com>
+Subject: Re: [PATCH net-next] drivers/net/wan/hdlc_fr: Improve fr_rx and add
+ support for any Ethertype
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Sun, Oct 18, 2020 at 3:05 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> Whenever you make a list like that it's a strong indication that
+> each of these should be a separate commit. That makes things easier
+> to review.
+>
+>
+> We have already sent a pull request for 5.10 and therefore net-next
+> is closed for new drivers, features, and code refactoring.
+>
+> Please repost when net-next reopens after 5.10-rc1 is cut.
+>
+> (http://vger.kernel.org/~davem/net-next.html will not be up to date
+>  this time around, sorry about that).
+>
+> RFC patches sent for review only are obviously welcome at any time.
 
-Overall looks good.
+OK. Thanks!
 
-
-On 15/10/20 10:32 pm, Arnd Bergmann wrote:
-[snip]
-> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-> index 694c4fca9f5d..a65ce7618232 100644
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -35,7 +35,7 @@ endchoice
->   if M68KCLASSIC
->   
->   config M68000
-> -	bool "MC68000"
-> +	bool
->   	depends on !MMU
->   	select CPU_HAS_NO_BITFIELDS
->   	select CPU_HAS_NO_MULDIV64
-> @@ -102,21 +102,21 @@ config M68060
->   	  processor, say Y. Otherwise, say N.
->   
->   config M68328
-> -	bool "MC68328"
-> +	bool
->   	depends on !MMU
->   	select M68000
->   	help
->   	  Motorola 68328 processor support.
->   
->   config M68EZ328
-> -	bool "MC68EZ328"
-> +	bool
->   	depends on !MMU
->   	select M68000
->   	help
->   	  Motorola 68EX328 processor support.
->   
->   config M68VZ328
-> -	bool "MC68VZ328"
-> +	bool
->   	depends on !MMU
->   	select M68000
->   	help
-> diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-> index 17e8c3a292d7..1851c66e8667 100644
-> --- a/arch/m68k/Kconfig.machine
-> +++ b/arch/m68k/Kconfig.machine
-> @@ -136,14 +136,13 @@ config SUN3
->   
->   	  If you don't want to compile a kernel exclusively for a Sun 3, say N.
->   
-> -endif # M68KCLASSIC
-> -
->   config PILOT
->   	bool
->   
->   config PILOT3
->   	bool "Pilot 1000/5000, PalmPilot Personal/Pro, or PalmIII support"
-> -	depends on M68328
-> +	depends on !MMU
-> +	select M68328
-
-Given that M68328 depends on !MMU do you also need or want that here?
-
-Regards
-Greg
-
-
-
+I'll divide this into smaller commits and repost after rc1.
