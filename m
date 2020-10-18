@@ -2,170 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9515E29152D
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 02:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DA2291535
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 03:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440059AbgJRAzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 20:55:14 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:39744 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440050AbgJRAzN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 20:55:13 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id C51E82A7EE;
-        Sat, 17 Oct 2020 20:55:06 -0400 (EDT)
-Date:   Sun, 18 Oct 2020 11:54:54 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Arnd Bergmann <arnd@arndb.de>
-cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
-In-Reply-To: <CAK8P3a2ymv79j1edtJ983-VgjtxvT_6co7V0VRnHzcneW+0ZtA@mail.gmail.com>
-Message-ID: <alpine.LNX.2.23.453.2010180810010.6@nippy.intranet>
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de> <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com> <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet>
- <CAK8P3a2ymv79j1edtJ983-VgjtxvT_6co7V0VRnHzcneW+0ZtA@mail.gmail.com>
+        id S2440082AbgJRBOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 21:14:32 -0400
+Received: from mout.gmx.net ([212.227.15.15]:46929 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440072AbgJRBOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 21:14:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1602983623;
+        bh=1OPnAzyG0UP63YieKjebVmqLGBRWiUnIlrUbQC4b4Xg=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=A/bUyM/LQa6AqyW4GxjLeyB4LirSd5cIw6RZLhNlaDTULPu/mt7IrGxq7bbPsDilD
+         QwdZ3GPn7P0ymQ041i5mC9Z+3nYD7KAVPd2qGrXEP8oTKBz8Ve53Kizhd+ImU+KOAB
+         fXvH2MtYW/PFs63JHFsdN0Zh4Gyn265AEK7drsHE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MFKGZ-1kehqw2w1Z-00Fl7i; Sun, 18
+ Oct 2020 03:13:43 +0200
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     andy.shevchenko@gmail.com
+Cc:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
+        pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio:core: In map_array_register() cleanup in case of error 
+Date:   Sun, 18 Oct 2020 03:11:54 +0200
+Message-Id: <1602983516-22913-1-git-send-email-LinoSanfilippo@gmx.de>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <CAHp75VfQ=fFn_r43VPV0uPCkozS2K=VQsuSEyj0mF+7QVsFQuA@mail.gmail.com>
+References: <CAHp75VfQ=fFn_r43VPV0uPCkozS2K=VQsuSEyj0mF+7QVsFQuA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UT979+DTW55HwB8+y4JN2u4i/kCPkrgJHnUCbza1Hg0hcGzVGYK
+ BA0kVXAmkPpaUnpjeA7YdcspdCNDHn44cvi0siuRedFAIr/bvAIBYbuscsmKkEo5KsSxtj2
+ lOXbU1MKlpWJ2kAl8tdJ99CPn7tv9nz4c84UMSGRS5XTeyEpe4LPD5SkrlcN2iHeKm6yulQ
+ /AhbnFHgoMYinBLqpSa7w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RQp0Y63Rfgs=:+gOJBqOilWlqdqFI4z+fa+
+ 4KMF4F4wkdJTHrLdnWPTQQv9e1WL0gNmAIqEJi4XRgHxIlf9mmXjw4FDnj00jpSGa29ZwYenE
+ hCJuoiXJcNXbh65EIQO361a5Pw0TyJp+kmGNtUZeGXVYIADIaPQPBiGHYcO5Ev65ZxJeqpfaf
+ iW0y4r7OqmL52KBzBaiVh+Kh7BM6nL5Cjaa7xmwzAAUnUiy12uYaasbvJTuCArx2sdyuGAt90
+ GfJyUwrfXaP/e/DAyqXArw0U39x9LB7K929m/xrjn7cvVoWXVVo5oN038IFpWjP+LlQE6wnvL
+ oIKNuLHMzY9agVltAeWr+9a6I85A+VCuq98fPS+mX28J9hifXYFN3CewDmvDo22+rP1SZo4Be
+ GJn0tZ7v8LDJRXYPmy77WQr9kbz5nfJaDnEnxNyIFQRqgreBRV9XuvQ/Xh48Zv/sBdQ+2oPom
+ yxtmvCU64GebokgJcCZVcIwg/hXYOnDpP5AlmdRaSAwp0aZ7NFxjkG3IaR7gm7B7ShMI+NVxr
+ Fyo1zLiqIFN2Jh5XWWF1CvxouAcNkKA9+/FdRNgdzk2HRelHt8JzqzTA46UJiCT4BebCwc6DZ
+ cSj5xFslws4wfC+UDQswGgUb/gmI8Yo77njzvVtPAPALShjmhHr6vRaWYXLIzJjQbT1Y7hq5e
+ oGVnXkP1w/WBzs+XZi6TDuWUpS6UigsMEEFxTzUbSxFj84S6DdEyFpqS40f9jFRSkmBR/swiF
+ n5vl3TqxaaGSbZhPEWgXYVkMXLgumN2dd8o/3ywu+nvEvoeDs7BKXazwG2nU1yQGO/4QXPIlr
+ +/8F9ezO6ya1N+KcUl7WJoqupja2B2aI3PLBIqRLkY3FT511M5iujUdDiNn0o+o4NYyd1g49/
+ dwxoWZJs+z4cspk2qnSA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020, Arnd Bergmann wrote:
+Hi Andy,
 
-> On Thu, Oct 15, 2020 at 3:19 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> >
-> > On Sat, 10 Oct 2020, Arnd Bergmann wrote:
-> >
-> > > > Perhaps patch 13 does not belong in this series (?).
-> > > >
-> > > > All m68k platforms will need conversion before the TODO can be removed
-> > > > from Documentation/features/time/clockevents/arch-support.txt.
-> > >
-> > > Yes, correct. I marked this patch as RFC instead of PATCH, as I'm just
-> > > trying to find out where it should be headed. I would hope the other
-> > > patches can just get merged.
-> > >
-> >
-> > I wonder whether we can improve support for your proposed configuration
-> > i.e. a system with no oneshot clockevent device.
-> >
-> > The 16 platforms you identified are not all in that category but I suspect
-> > that there are others which are (though they don't appear in this series
-> > because they already use GENERIC_CLOCKEVENTS).
-> >
-> > One useful optimization would be some way to elide oneshot clockevent
-> > support (perhaps with the help of Link Time Optimization).
-> 
-> I think this already happens if one picks CONFIG_HZ_PERIODIC while
-> disabling HIGH_RES_TIMERS. In that case, CONFIG_TICK_ONESHOT
-> remains disabled.
-> 
+Thanks for you suggestion. I agree that it is nicer to reuse the cleanup in
+iio_map_array_unregister() than to reimplement it. However I would like to
+avoid dropping and regaining the mutex in case of error.
+What about the attached approach:
 
-That configuration still produces the same 5 KiB of bloat. I see that 
-kernel/time/Kconfig has this --
+Introduce an unlocked version of iio_map_array_unregister() and then use
+this one to unwind in error case. Thus we only need to add two lines of
+code, so that Jonathan may be ok with adding it to the main code flow...
 
-# Core internal switch. Selected by NO_HZ_COMMON / HIGH_RES_TIMERS. This is
-# only related to the tick functionality. Oneshot clockevent devices
-# are supported independent of this.
-config TICK_ONESHOT
-        bool
+Regards,
+Lino
 
-But my question was really about both kinds of dead code (oneshot device 
-support and oneshot tick support). Anyway, after playing with the code for 
-a bit I don't see any easy way to reduce the growth in text size.
-
-> ...
-> > After looking at the chip documentation I don't think it's viable to 
-> > use the hardware timers in the way I proposed. A VIA register access 
-> > requires at least one full VIA clock cycle (about 1.3 us) which means 
-> > register accesses themselves cause timing delays. They also make 
-> > clocksource reads expensive.
-> >
-> > I think this rules out oneshot clockevent devices because if the 
-> > system offered such a device it would preferentially get used as a 
-> > tick device.
-> >
-> > So I think your approach (periodic clockevent device driven by the 
-> > existing periodic tick interrupt) is best for this platform due to 
-> > simplicity (not much code) and performance (good accuracy, no 
-> > additional overhead).
-> 
-> Yes, makes sense. I think the one remaining problem with the periodic 
-> mode in this driver is that it can drop timer ticks when interrupts are 
-> disabled for too long, while in oneshot mode there may be a way to know 
-> how much time has passed since the last tick as long as the counter does 
-> not overflow.
-
-Is there any benefit from adopting a oneshot tick (rather than periodic) 
-if no clocksource is consulted when calculating the next interval? (I'm 
-assuming NO_HZ is not in use, for reasons discussed below.)
-
-> I would agree that despite this oneshot mode is probably worse overall 
-> for timekeeping if the register accesses introduce systematic errors.
-> 
-
-It probably has to be tried. But consulting a VIA clocksource on every 
-tick would be expensive on this platform, so if that was the only way to 
-avoid cumulative errors, I'd probably just stick with the periodic tick.
-
-> ...
-> The arm/rpc timer seems to be roughly in the same category as most of 
-> the m68k ones or the i8253 counter on a PC. It's possible that some of 
-> them could use the same logic as drivers/clocksource/i8253.o as long as 
-> there is any hardware oneshot mode.
-> 
-
-There appear to be 15 platforms in that category. 4 have no clocksource 
-besides the jiffies clocksource, meaning there's no practical alternative 
-to using a periodic tick, like you did in your RFC patch:
-
-arch/m68k/apollo/config.c
-arch/m68k/q40/q40ints.c
-arch/m68k/sun3/sun3ints.c
-arch/m68k/sun3x/time.c
-
-The other 11 platforms in that category also have 'synthetic' clocksources 
-derived from a timer reload interrupt. In 3 cases, the clocksource read 
-method does not (or can not) check for a pending counter reload interrupt. 
-For these also, I see no practical alternative to the approach you've 
-taken in your RFC patch:
-
-arch/m68k/68000/timers.c
-arch/m68k/atari/time.c
-arch/m68k/coldfire/timers.c
-
-That leaves 8 platforms that have reliable clocksource devices which 
-should be able to provide an accurate reading even in the presence of a 
-dropped tick (due to drivers disabling interrupts for too long):
-
-arch/arm/mach-rpc/time.c
-arch/m68k/amiga/config.c
-arch/m68k/bvme6000/config.c
-arch/m68k/coldfire/sltimers.c
-arch/m68k/hp300/time.c
-arch/m68k/mac/via.c
-arch/m68k/mvme147/config.c
-arch/m68k/mvme16x/config.c
-
-But is there any reason to adopt a oneshot tick on any of these platforms, 
-if NO_HZ won't eliminate the timer interrupt that's needed to run a 
-'synthetic' clocksource?
