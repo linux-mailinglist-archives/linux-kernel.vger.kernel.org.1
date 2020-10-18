@@ -2,123 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20CB2917FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F2D291800
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727039AbgJRPGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 11:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgJRPGn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 11:06:43 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB528C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 08:06:41 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id q9so9997818iow.6
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 08:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=czqkN2JOMIdx3mElJVahK+RV1sW2EcADLO8fEOnd2gY=;
-        b=mOxpLHHYKQ/9MAts3WpueP7YGC5Tun1HFH3VKXZgKDwJK1H36gxsO4ubHorxcqk1oc
-         pbE0aAnvFYngbcN/jByjxx71P5QnOjcvW22dCVU6o6w29DPkIDCqXu9LnrnfVI0CfHzo
-         ThxPLd4aZ1zjFG/yqPXPDnWfAaG/Ulrt1Gy6syHznLnTjHI/13M+JDsaKOvSD8bg5qXL
-         /OhfNQjW1bDxLB5n4MS74dYPqSeKtcRTqoMi2WF2wTTv63C2mMk4OwZP9h1G96rfxq77
-         lxQCWZLyPrUzkz11xv1d5gQNJTW/CFhZr8IDTxmVyC15fdjWpAx2qHmouOgHLoyDY18L
-         Qm7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=czqkN2JOMIdx3mElJVahK+RV1sW2EcADLO8fEOnd2gY=;
-        b=gjjsS4WI7sfrVeANVS+hVv+TmtoxFY9VaK3inyoe9Nij2gULcJF4Dhx7+tf43/7KKq
-         SHXXIW8YuK9oimlkbjA5NxAAN0oo769cXIQHzofLNPTzvshRmUYzxGaPFtdHzOU2TIwQ
-         TW+P2zwfPsNqLTvCvCDvx1D2ncWXOFPWE5jG++vsIMQ9DYTq6BPPMa8EWDpNd84fMUg9
-         yVKJ2yF6L7638Im5e+Ciu82+bpES52qSsvDYWoxRA6mZgcbeW43iJCGv4wwrfRslKA4r
-         MXVAmm7Zj8n5vmQEgvR/lYdjTIwHrUAhvD9ip1zqiaNagQV2c26WwyeTXMkNPvnjQw/A
-         w3/g==
-X-Gm-Message-State: AOAM532YoDkr2DZPCgWBkdI+KV9EycdTdkXIAIINhlVTGNa5LnMXpRms
-        z1yOIs6JfGUqNuz0PUgW7YpD5u3GWjXXRtXJ0Cz+6rDNwhs9qDc=
-X-Google-Smtp-Source: ABdhPJxTmtCnVTbI2p+LMLIuIbMjWoDpTYT8mP5zpcvmq/R2e4Cp3/i29Cz0eVW2BcFfRfCP2mOKgFfx3h9Yw2dcZO4=
-X-Received: by 2002:a6b:b208:: with SMTP id b8mr8121415iof.36.1603033601269;
- Sun, 18 Oct 2020 08:06:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201018033602.GA27912@ubuntu> <20201018123651.635e2ec3@archlinux>
-In-Reply-To: <20201018123651.635e2ec3@archlinux>
-From:   Vaishnav M A <vaishnav@beagleboard.org>
-Date:   Sun, 18 Oct 2020 20:36:30 +0530
-Message-ID: <CALudOK425LJXphTA1RH7A45=5=m5S-7r-5xpeanjpwzFBUMXTg@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: light: vcnl4035 add i2c_device_id
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Drew Fustini <drew@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        =?UTF-8?Q?Ivan_Rajkovi=C4=87?= <rajkovic@mikroe.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727061AbgJRPNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 11:13:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgJRPNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 11:13:50 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B2D4208B8;
+        Sun, 18 Oct 2020 15:13:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603034029;
+        bh=BSFYCgPQ9AmjyxF/qscSU+n8q8yrhsEMJAA+56Cy0W0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WQVcdcTXqKe7Fh3JK07XbEit3mXLIV3DTIcL3XGLUG+8BBgIOO2p2sL4skALYvFAW
+         wh/7d6VvgAInnXt+fyK/sQcczV/r1Stq7PVQ3ACxj6pBbmy5v/4MujJfo6Zyd65m5+
+         Xp+5K/83sL88RGtQlXsf5qbQo6lkZv08NJJI7ngo=
+Date:   Mon, 19 Oct 2020 00:13:46 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] tracing: More synthetic event error fixes
+Message-Id: <20201019001346.9d53c0c942e368ab01f667bb@kernel.org>
+In-Reply-To: <cover.1602883818.git.zanussi@kernel.org>
+References: <cover.1602883818.git.zanussi@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 5:06 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Sun, 18 Oct 2020 09:06:02 +0530
-> Vaishnav M A <vaishnav@beagleboard.org> wrote:
->
-> > add i2c_device_id for the vcnl4035 driver so that
-> > the device can be instantiated using i2c_new_client_device
-> > or from userspace, useful in cases where device tree based
-> > description is not possible now(Eg. a device on a gbphy i2c
-> > adapter created by greybus)
-> >
-> > Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
-> Rewrite the description and this should be fine.
->
-> Thanks,
->
-> Jonathan
->
-Thank you Jonathan for the Review, I have submitted v3 patch
-with the modified description: https://lore.kernel.org/patchwork/patch/1322195/
+Hi Tom,
+
+On Fri, 16 Oct 2020 16:48:21 -0500
+Tom Zanussi <zanussi@kernel.org> wrote:
+
+> Hi,
+> 
+> This patchset addresses the synthetic event error anomalies reported
+> by Masami in the last patchset [1].
+> 
+> It turns out that most of the problems boil down to clunky separator
+> parsing; adding a couple new abilities to trace_run_command() and then
+> adapting the existing users seemed to me the best way to fix these
+> things, and also gets rid of some code.
+
+Thanks for your work! But I think the interface design is a bit add-hoc.
+I sent a comment mail on [1/4]. Let's discuss on the thread.
+
+> Also, to make things easier for error display, I changed these to
+> preserve the original command string and pass it through the callback
+> instead of rebuilding it for error display.
+
+trace_*probe reconstruct the input from argv, are there any reason
+synthetic event can not do the same thing?
+(this means the command on error message can be a bit different,
+ see __trace_probe_log_err() in kernel/trace/trace_probe.c)
+
+> 
+> I added some new error strings and removed unused ones as well, and
+> added a bunch of new test cases to the synthetic parser error test
+> case.
+
+Good.
+
+> 
+> I didn't see any problems running the entire ftrace testsuite or the
+> test modules that also use the things that were touched here.
 
 Thanks,
-Vaishnav
-> > ---
-> >  v2:
-> >       - fix commit message
-> >  drivers/iio/light/vcnl4035.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/drivers/iio/light/vcnl4035.c b/drivers/iio/light/vcnl4035.c
-> > index 765c44adac57..73a28e30dddc 100644
-> > --- a/drivers/iio/light/vcnl4035.c
-> > +++ b/drivers/iio/light/vcnl4035.c
-> > @@ -652,6 +652,12 @@ static const struct dev_pm_ops vcnl4035_pm_ops = {
-> >                          vcnl4035_runtime_resume, NULL)
-> >  };
-> >
-> > +static const struct i2c_device_id vcnl4035_id[] = {
-> > +     { "vcnl4035", 0},
-> > +     { }
-> > +};
-> > +MODULE_DEVICE_TABLE(i2c, vcnl4035_id);
-> > +
-> >  static const struct of_device_id vcnl4035_of_match[] = {
-> >       { .compatible = "vishay,vcnl4035", },
-> >       { }
-> > @@ -666,6 +672,7 @@ static struct i2c_driver vcnl4035_driver = {
-> >       },
-> >       .probe  = vcnl4035_probe,
-> >       .remove = vcnl4035_remove,
-> > +     .id_table = vcnl4035_id,
-> >  };
-> >
-> >  module_i2c_driver(vcnl4035_driver);
->
+
+> 
+> Thanks,
+> 
+> Tom
+> 
+> [1] https://lore.kernel.org/lkml/20201014110636.139df7be275d40a23b523b84@kernel.org/
+> 
+> The following changes since commit 6107742d15832011cd0396d821f3225b52551f1f:
+> 
+>   tracing: support "bool" type in synthetic trace events (2020-10-15 12:01:14 -0400)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/zanussi/linux-trace.git ftrace/synth-fixes-v1
+> 
+> Tom Zanussi (4):
+>   tracing: Make trace_*_run_command() more flexible
+>   tracing: Use new trace_run_command() options
+>   tracing: Update synth command errors
+>   selftests/ftrace: Update synthetic event syntax errors
+> 
+>  kernel/trace/trace.c                          | 41 ++++++++--
+>  kernel/trace/trace.h                          | 12 ++-
+>  kernel/trace/trace_dynevent.c                 |  4 +-
+>  kernel/trace/trace_events_synth.c             | 79 ++++---------------
+>  kernel/trace/trace_kprobe.c                   |  5 +-
+>  kernel/trace/trace_uprobe.c                   |  5 +-
+>  .../trigger-synthetic_event_syntax_errors.tc  | 17 ++--
+>  7 files changed, 78 insertions(+), 85 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
