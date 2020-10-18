@@ -2,99 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13EF291711
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 13:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104AA291708
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 12:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgJRLA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 07:00:56 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:60291 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726486AbgJRLAz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 07:00:55 -0400
-X-Greylist: delayed 559 seconds by postgrey-1.27 at vger.kernel.org; Sun, 18 Oct 2020 07:00:54 EDT
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id A47285C00AD;
-        Sun, 18 Oct 2020 06:51:34 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sun, 18 Oct 2020 06:51:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=septs.email; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=VUJ7KcqLyyVQT8Y4XLEKdxU4S+
-        5e7Lh6H2pYNF9gymU=; b=CcnyMy3QtPEQSDbgYc3zUBHGCaBKMq6p7ZBcjjGNk0
-        aQV7niZfnEGXQN/NYGZkAlSD3tEXqfEvxO6SA1MAWbg1rapN58ZtLLKQJN4Zjgy+
-        ewrpkgg6XRHjyPaEGwkZYJMxjkOlV9ik7QCkSDSN0f5IeHSwOI3SoAuPq/UEzixg
-        SPmTfVsHl5+3GgKXJNonjjox++68g3DRaLcgjcd+Hl6xBR3NWnx5k48fnU5G96g4
-        Hk/FuElH3g2B9Z4eZLOzvQYnzqS8iujgMhKAhuVeuDdtlu2CtA83z6cP6dEwhyfx
-        UY8x0FQKS35/iVLWsF7vIY8uQMPNkmbPnlm4Zx7yOMPA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=VUJ7KcqLyyVQT8Y4X
-        LEKdxU4S+5e7Lh6H2pYNF9gymU=; b=Ucx9Uxw3r1uJ29JzT2L3r7FkzENqSC0Gm
-        4Auz1eD9IEK24SoplbBRrCZKdRUs2PWcUdMtq7YlsCVby/aHpgW/JKevD3gwJAi7
-        ORTyrHJhIWYhs3j8UgF/zf4bT42KvL9i8LIvZ+PT0XtcrI2RuiMMErsBbUqmmiI+
-        N7EWo0yo9Mbvk+Ul4mhJODjj2Is8wLu4htpG6ezJgzkeGKPzd1+fY9uchLbVKSkA
-        tOBmhla2cb/Dp1ZuytVAyvXluykdpYeZZuLzFxQ8BampiEura7mEeOKxyajompgP
-        NysTGN2+rzCePgABotbj1GWcpC8xJSJShL6BsEbwdU48pLCoUuFYQ==
-X-ME-Sender: <xms:Nh6MX1WmMt2Owu8bz69rlnGmfUovg2RjwOvn-fft2Dylyu0tKU30PQ>
-    <xme:Nh6MX1lMUwSlsxIVIIffJeyACZVWW24Wcr1aUbcD9YANXVdpMhbmqI7yF6pPzKPFu
-    uPnrIRDQvTKBVhPYA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrieelgdeffecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdduhedmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecu
-    hfhrohhmpehsvghpthhsuceojhhosgesshgvphhtshdrvghmrghilheqnecuggftrfgrth
-    htvghrnhepjeetkeevkeffjefhtdegvdelieeifeetveegtdeggffgueeivdegveffueev
-    vedunecukfhppeeiuddrudejfedrkedrudekudenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehjohgssehsvghpthhsrdgvmhgrihhl
-X-ME-Proxy: <xmx:Nh6MXxbQezXrTh32ZNlmyG0whQxQ6QJMZklPyr9wpl3d9Iu64HMMCw>
-    <xmx:Nh6MX4XJ1i-wZb3sUtmrQFeFdzZvCmQAexh632TKvwIpensbKkGzTA>
-    <xmx:Nh6MX_kPYbDMByUmO7ksj6g9EBPSzzV243FAirN2l8CyDRgpKoAxrA>
-    <xmx:Nh6MX0zDNrgjhUUj7y0wkdfrPTNl7GrN6OLPuWKRp3R0ewJ8hMd1Sg>
-Received: from localhost.localdomain (unknown [61.173.8.181])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B349A306467D;
-        Sun, 18 Oct 2020 06:51:24 -0400 (EDT)
-From:   septs <job@septs.email>
-To:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     septs <kernel@septs.pw>
-Subject: [PATCH 1/1] usb: serial: option: add Quectel EC200T module support
-Date:   Sun, 18 Oct 2020 18:51:11 +0800
-Message-Id: <20201018105111.8727-1-kernel@septs.pw>
-X-Mailer: git-send-email 2.25.1
+        id S1726532AbgJRKz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 06:55:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725287AbgJRKz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 06:55:56 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D26520897;
+        Sun, 18 Oct 2020 10:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603018555;
+        bh=L+dg32jrevsTb3fSsRs6/iEC7MJ0sIPnxbRA5OGaXE0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TjMO+PplxQuZkosT10rnNMmsEujF4/Sb2QRh09G28MZC3H1ZZog7xP2V/vzwZsTqj
+         2Z24FPUsnXEMYhMtWh8gZphJCwP0xRvDxURlLRgCHEIN1DyLSlhE9Y7kB5g/MfJIxO
+         /KdvwO9qugnmJjmStreXqgbKOcCy9uhRfz2iUWFE=
+Date:   Sun, 18 Oct 2020 11:55:49 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     <knaack.h@gmx.de>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <p.zabel@pengutronix.de>, <alexandru.ardelean@analog.com>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <BMC-SW@aspeedtech.com>
+Subject: Re: [PATCH 3/3] iio: adc: aspeed: Setting ref_voltage in probe
+Message-ID: <20201018115549.6b1f871a@archlinux>
+In-Reply-To: <20201013103245.16723-4-billy_tsai@aspeedtech.com>
+References: <20201013103245.16723-1-billy_tsai@aspeedtech.com>
+        <20201013103245.16723-4-billy_tsai@aspeedtech.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add usb product id of the Quectel EC200T module.
----
- drivers/usb/serial/option.c | 2 ++
- 1 file changed, 2 insertions(+)
+On Tue, 13 Oct 2020 18:32:45 +0800
+Billy Tsai <billy_tsai@aspeedtech.com> wrote:
 
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 2a3bfd6f8..7e879233b 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -250,6 +250,7 @@ static void option_instat_callback(struct urb *urb);
- #define QUECTEL_PRODUCT_EP06			0x0306
- #define QUECTEL_PRODUCT_EM12			0x0512
- #define QUECTEL_PRODUCT_RM500Q			0x0800
-+#define QUECTEL_PRODUCT_EC200T			0x6026
- 
- #define CMOTECH_VENDOR_ID			0x16d8
- #define CMOTECH_PRODUCT_6001			0x6001
-@@ -1117,6 +1118,7 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
- 	  .driver_info = ZLP },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
- 
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_CMU_300) },
--- 
-2.25.1
+> At ast2600 ref_voltage becomes configurable and this property is board
+> dependency.
+> 
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+
+dt-bindings: etc for the patch title.  Look at naming of similar patches
+for a reference.
+
+
+> ---
+>  .../devicetree/bindings/iio/adc/aspeed_adc.txt   | 16 +++++++++++++++-
+
+This has been converted to yaml. 
+It is now in Linus' tree (though only very recently!)
+
+You will need to add the relevant logic to make the yaml binding express that this
+only exists and is required for ast600
+
+The binding is making me wonder a bit on what this voltage actually is...
+
+I 'think' we have a setup where the reference voltage is either picked
+from 2 available internal references or uses an external regulator (presumably
+provided to a pin on the chip?)
+
+As such, the binding should be an optional regulator.  If the regulator is present
+we use that, even if it matches the internal regulator votlage.  Someone put it
+down on the board, so presumably  they want to use it.
+
+If it's not present, then have to provide either of the two internal regulator
+voltages via a devicetree binding such as you have here.
+
+
+
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt b/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt
+> index 034fc2ba100e..0ba1980c4e06 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt
+> +++ b/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt
+> @@ -3,8 +3,11 @@ Aspeed ADC
+>  This device is a 10-bit converter for 16 voltage channels.  All inputs are
+>  single ended.
+>  
+> +At ast2600, this device split into two individual IPs and each contains 8 voltage channels.
+> +
+> +Chip level dtsi:
+>  Required properties:
+> -- compatible: Should be "aspeed,ast2400-adc" or "aspeed,ast2500-adc"
+> +- compatible: Should be "aspeed,ast2400-adc" or "aspeed,ast2500-adc" or "aspeed,ast2600-adc"
+>  - reg: memory window mapping address and length
+>  - clocks: Input clock used to derive the sample clock. Expected to be the
+>            SoC's APB clock.
+> @@ -20,3 +23,14 @@ Example:
+>  		resets = <&syscon ASPEED_RESET_ADC>;
+>  		#io-channel-cells = <1>;
+>  	};
+> +
+> +Board level dts:
+> +Required properties:
+> +- ref_voltage: (ast2600 only)
+> +	- Reference voltage in millivolts for the conversions.
+> +	- The range of value is 900 to 2700 mv.
+
+See above for suggestion on on this. For the internal case, will need
+a name that expresses both what it is and what the units are.
+
+int_ref_voltage_mv perhaps?
+
+Yaml binding should check that either we have a regulator, or
+we have this element.  That way we'll ensure we don't have any confusion
+over which one to use.
+
+Thanks,
+
+Jonathan
+
+> +
+> +Example:
+> +&adc0 {
+> +	ref_voltage = <2500>;
+> +};
+> \ No newline at end of file
 
