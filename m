@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F22A291EB5
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 21:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C25291FA8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 22:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388250AbgJRTyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 15:54:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388229AbgJRTy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 15:54:27 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2DFB22263;
-        Sun, 18 Oct 2020 19:54:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603050867;
-        bh=lYYbu+LHVs/lI42o9GlVg5xf4fVuj6IuC281Ogm3UKg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eH87+V9t24jrCyts1XE4BPOlv/zkzt1xVw5KzK9qWvsLfSDe9MQuPqGunvGiubzgP
-         dwOBj7YgdFy7GWJ6uAk/TBKbT4RxRfbIux+UZ7Xy1A3SIPCx5NQValsuU0XRPmOBqK
-         Ngku01mhuYSPoejY2vD0Wc17FLgZ5JWoL6MgAXnM=
-Date:   Sun, 18 Oct 2020 12:54:25 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Greg KH <greg@kroah.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        petkan@nucleusys.com, davem@davemloft.net,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-next@vger.kernel.org
-Subject: Re: [PATCH v2] net: usb: rtl8150: don't incorrectly assign random
- MAC addresses
-Message-ID: <20201018125425.05ef059d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201015153700.1e97b354@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201010064459.6563-1-anant.thazhemadam@gmail.com>
-        <20201011173030.141582-1-anant.thazhemadam@gmail.com>
-        <20201012091428.103fc2be@canb.auug.org.au>
-        <20201016085922.4a2b90d1@canb.auug.org.au>
-        <20201015152451.125895b1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201015153700.1e97b354@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1727612AbgJRUBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 16:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727313AbgJRUBw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 16:01:52 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBABBC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:01:51 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id k25so10564623ioh.7
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:01:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nRw0/o5oGZTZDjjB3gqNIBPtxjJHtDVQ+1IUMXih6zw=;
+        b=gvDwqRVNDojHEaRSR9D1CBu8YuHYcAxmjdzaT9DBoFJeXkdNv/dKZqnBe8DOjNgnlL
+         nr/JbAzCYLqeXD3NgU3Ranu+PyyI0jhgr1L1b1NoVja30nViV7obzDbT5Ob7+F15u0gt
+         h00ddz2XJMsMueX17SmCXYR1PvIkF9U6edigDrX0fdupBWOjIUZLVN8+vvrmvuKkOJ6e
+         FUywBdobrBeEXdUlVfVn/PPuwW0wIYir7mEfCTwlxn5/83kQDg39PJWUVgRuTTmnwBeF
+         tdqsfGjU6xR4svByJOpkuWvG1QKrqtlP4M6Jmsjpi8StAPhwYNjDfyAOnUZC8Le+Gw2Y
+         JLcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nRw0/o5oGZTZDjjB3gqNIBPtxjJHtDVQ+1IUMXih6zw=;
+        b=YUrQHbiYUiyFHjU09+XXIIWY0WKn8+nPuJ5+h3jzqSlLJ/ei3PviV6GRLQjx3xEFey
+         4ofYwNFOS5PyCwSjd1WxDMHgQNni2FYYRrIwuvpIhCyZxCU7+yDrlr10xOFXGDc1bbpC
+         mh7x46LOfyxdJyFcK2TJW8/tUaEBCZlH0amn8axWFB5Xo6DmBV7YE40NC4kmDU/u9mIX
+         Bf8/EZJVGr27wltNrcyWulQIL+2vqNRt42XWJFYxWbhryse2ys6wN7uvS6u76HL0uNbi
+         BBpnkzvk8v1V03v+not9g+BMuOZJcg89Janj3CZQgPcRSvhnUMh2Wklab2f5RlJFoKSV
+         Ip4A==
+X-Gm-Message-State: AOAM531M62HELZRBkN1Hl2931YLoHVrKVEzRTTTvV5xhtiJrznO4taOR
+        wPePRYhgCtT/QSyZPaEwQa4hf6Wnpocp4p0Vselw
+X-Google-Smtp-Source: ABdhPJwSkNVofX2Rs4udoFZfsL1pIQx70wVs4ruhTz3vz35pvUxHZs8N+2Bm/9qad7XzQYL36FuETG0/KDTY+IzxMKU=
+X-Received: by 2002:a02:6cd0:: with SMTP id w199mr9067803jab.121.1603051310571;
+ Sun, 18 Oct 2020 13:01:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201018150442.GA219064@ubuntu> <CAHp75Vch2jPwZm8gVC6zRs6k=BR23Mb15Q4R4VbpMZ5FwshNLQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vch2jPwZm8gVC6zRs6k=BR23Mb15Q4R4VbpMZ5FwshNLQ@mail.gmail.com>
+From:   Vaishnav M A <vaishnav@beagleboard.org>
+Date:   Mon, 19 Oct 2020 01:31:39 +0530
+Message-ID: <CALudOK5Hy3cU6W+yWAgpqxP-27K2MXiwSwR1x3z=mJjq3y3K8w@mail.gmail.com>
+Subject: Re: [PATCH v3] iio: light: vcnl4035 add i2c_device_id
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Drew Fustini <drew@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        =?UTF-8?Q?Ivan_Rajkovi=C4=87?= <rajkovic@mikroe.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020 15:37:00 -0700 Jakub Kicinski wrote:
-> On Thu, 15 Oct 2020 15:24:51 -0700 Jakub Kicinski wrote:
-> > On Fri, 16 Oct 2020 08:59:22 +1100 Stephen Rothwell wrote:  
-> > > > I will apply the above patch to the merge of the usb tree today to fix
-> > > > up a semantic conflict between the usb tree and Linus' tree.      
-> > > 
-> > > It looks like you forgot to mention this one to Linus :-(
-> > > 
-> > > It should probably say:
-> > > 
-> > > Fixes: b2a0f274e3f7 ("net: rtl8150: Use the new usb control message API.")    
-> > 
-> > Umpf. I think Greg sent his changes first, so this is on me.
-> > 
-> > The networking PR is still outstanding, can we reply to the PR with
-> > the merge guidance. Or is it too late?  
-> 
-> I take that back, this came through net, not net-next so our current
-> PR is irrelevant :)
+On Sun, Oct 18, 2020 at 11:59 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Sun, Oct 18, 2020 at 6:47 PM Vaishnav M A <vaishnav@beagleboard.org> wrote:
+> >
+> > Add i2c_device_id table for the vl53l0x-i2c driver,
+> > helps in device instantiation using i2c_new_client_device
+>
+> In all your patches please refer to the functions like function().
+> For example, here is i2c_new_client_device().
+>
+> > or from userspace in cases where device-tree based description
+> > is not possible now (Example: device on a gbphy i2c adapter
+> > created by greybus)
+>
+> Don't forget proper English punctuation, like periods at the end of sentences.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
-Looks like the best thing to do right now is to put this fix in net,
-so let me do just that (with the Fixes tag from Stephen).
+Thank you Andy for your review, I have updated v4 patch with your suggestions,
+https://lore.kernel.org/patchwork/patch/1322219/ (sorry about the
+incorrect driver
+name in the first-line of the commit message in the v3 version). This is
+also fixed in the v4 submission.
 
-Thanks Anant!
+Thanks,
+Vaishnav
