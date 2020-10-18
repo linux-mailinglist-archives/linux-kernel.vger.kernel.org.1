@@ -2,89 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2829B29206B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 00:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC31292070
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 00:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgJRWIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 18:08:32 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:33872 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727329AbgJRWIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 18:08:32 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kUGqd-002NwM-Id; Mon, 19 Oct 2020 00:08:15 +0200
-Date:   Mon, 19 Oct 2020 00:08:15 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "olteanv@gmail.com" <olteanv@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] net: dsa: mv88e6xxx: Support serdes ports on
- MV88E6097
-Message-ID: <20201018220815.GK456889@lunn.ch>
-References: <20201013021858.20530-1-chris.packham@alliedtelesis.co.nz>
- <20201013021858.20530-3-chris.packham@alliedtelesis.co.nz>
- <20201018161624.GD456889@lunn.ch>
- <b3d1d071-3bce-84f4-e9d5-f32a41c432bd@alliedtelesis.co.nz>
- <20201018202539.GJ456889@lunn.ch>
- <2e1f1ca4-b5d5-ebc8-99bf-9ad74f461d26@alliedtelesis.co.nz>
+        id S1729359AbgJRWTi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 18 Oct 2020 18:19:38 -0400
+Received: from hosting.bgkniga.bg ([212.91.170.195]:60712 "EHLO
+        hosting.bgkniga.bg" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727329AbgJRWTi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 18:19:38 -0400
+X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Sun, 18 Oct 2020 18:19:38 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by hosting.bgkniga.bg (Postfix) with ESMTP id A5B94283294;
+        Mon, 19 Oct 2020 01:12:55 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at hosting.bgkniga.bg
+Received: from hosting.bgkniga.bg ([127.0.0.1])
+        by localhost (hosting.bgkniga.bg [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id R86XP_ykQg4c; Mon, 19 Oct 2020 01:12:55 +0300 (EEST)
+Received: from WIN-093COB1UF4M.ap-south-1.compute.internal (ec2-13-235-0-48.ap-south-1.compute.amazonaws.com [13.235.0.48])
+        (Authenticated sender: noreply@bgkniga.bg)
+        by hosting.bgkniga.bg (Postfix) with ESMTPSA id 210C928329B;
+        Mon, 19 Oct 2020 01:12:51 +0300 (EEST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2e1f1ca4-b5d5-ebc8-99bf-9ad74f461d26@alliedtelesis.co.nz>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Hello
+To:     Recipients <noreply@bgkniga.bg>
+From:   "Mrs. Julianna Stefan" <noreply@bgkniga.bg>
+Date:   Sun, 18 Oct 2020 22:12:47 +0000
+Reply-To: maryp1799_8335@yahoo.co.jp
+Message-Id: <20201018221255.A5B94283294@hosting.bgkniga.bg>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 09:15:52PM +0000, Chris Packham wrote:
-> 
-> On 19/10/20 9:25 am, Andrew Lunn wrote:
-> >> I assume you're talking about the PHY Control Register 0 bit 11. If so
-> >> that's for the internal PHYs on ports 0-7. Ports 8, 9 and 10 don't have
-> >> PHYs.
-> > Hi Chris
-> >
-> > I have a datasheet for the 6122/6121, from some corner of the web,
-> > Part 3 of 3, Gigabit PHYs and SERDES.
-> >
-> > http://www.image.micros.com.pl/_dane_techniczne_auto/ui88e6122b2lkj1i0.pdf
-> >
-> > Section 5 of this document talks
-> > about the SERDES registers. Register 0 is Control, register 1 is
-> > Status - Fiber, register 2 and 3 are the usual ID, 4 is auto-net
-> > advertisement etc.
-> >
-> > Where these registers appear in the address space is not clear from
-> > this document. It is normally in document part 2 of 3, which my
-> > searching of the web did not find.
-> >
-> > 	  Andrew
-> 
-> I have got the 88E6122 datasheet(s) and can see the SERDES registers 
-> you're talking about (I think they're in the same register space as the 
-> built-in PHYs). It looks like the 88E6097 is different in that there are 
-> no SERDES registers exposed (at least not in a documented way). Looking 
-> at the 88E6185 it's the same as the 88E6097.
+Greetings my beloved,
+My name is Mrs.Julianna Stefan Ndoi,I am a deaf woman and also a cancer
+patient who had decided to donate what I have to you for God's works. I
+want to donate $8.5 million to you so that you will use part of the this
+fund to help the poor ones,while you use the rest for your family.If you
+are interested,Respond now for more details on how to receive this fund.
 
-Hi Chris
+Regards,
+Mrs.Julianna,greeting from the sick bed
+**************************************
+Saludos mi amado,
+Mi nombre es Sra. Julianna Stefan Ndoi, soy una hermana sorda ... Soy
+una paciente de c?ncer que ten?a
+Decid? donarles lo que tengo para las obras de Dios. Quiero donar
+$ 8.5 millones para usted para que use parte de este fondo para ayudar
+los pobres, mientras que el resto lo usas para tu familia.
+interesado, responda ahora para obtener m?s detalles sobre c?mo recibir
+este fondo.
 
-I find it odd there are no SERDES registers.  Can you poke around the
-register space and look for ID registers? See if there are any with
-Marvells OUI, but different to the chip ID found in the port
-registers?
-
-> So how do you want to move this series forward? I can test it on the 
-> 88E6097 (and have restricted it to just that chip for now), I'm pretty 
-> sure it'll work on the 88E6185. I doubt it'll work on the 88E6122 but 
-> maybe it would with a different serdes_power function (or even the 
-> mv88e6352_serdes_power() as you suggested).
-
-Make your best guess for what you cannot test.
-
-     Andrew
+Saludos,
+Se?ora Julianna, saludando desde la cama de enferma
