@@ -2,144 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C11929166F
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 10:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E231B291671
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 10:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726325AbgJRI10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 04:27:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21760 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725468AbgJRI1Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 04:27:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603009643;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/lBT3OTVFipCR4zZkozYGoBkHRhMOkVqglG62jYQatI=;
-        b=M/AVa9X82wGv/azCMR4i4Z9lYRu2IPNUWDk69eQ41cN++uXodHxa8NImvOvzdc8K8rqZ7c
-        /kkrCct7dRRjfrImyw7HbOMZL2gBksFXISsyVPRgFguQ+dPoobp4XVjER7H2cVl3arfU44
-        R+zi395bYCD/vMKjbltI2feMK2tXh2E=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-532-lIRewBZLOUi2dwr3LdQXrA-1; Sun, 18 Oct 2020 04:27:21 -0400
-X-MC-Unique: lIRewBZLOUi2dwr3LdQXrA-1
-Received: by mail-wr1-f70.google.com with SMTP id f11so5887081wro.15
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 01:27:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/lBT3OTVFipCR4zZkozYGoBkHRhMOkVqglG62jYQatI=;
-        b=F1PNaJxleM1EmLTZRA870VTsjCousjeEpgplQoky/ru0rnlIJ0ddxbm1Hp8DTZeVLT
-         EjrePvi57TyVmlz0HkSO1t43Ykasxzbz+eSvaJZaATBQoKf3+r/C9Z8q89ZWr9rMyJAs
-         yWgXBKIh1hmFY2j8CVKTI9lCXEZ6t31L/wkq+XZ19jSxOGHYm/vCl6eUsr2c1LA3FPWD
-         NjEmFgnvTP7z0vZpjvYVmwGkb5TH1sXMab6nxl41RvUFF+Z3DTCnOJVKYQevsZKWO8sb
-         qTx2ZZ5X3E/69aifN/ITHnrf/AxaFd/ZiEV+dF54+RjWqVLs+M4BoujGLXO/ciPA4XAd
-         jLYA==
-X-Gm-Message-State: AOAM533zzY2oerOL1us3nQbG9jUEyy6AYOkxuSg6x9Cey5kXkyh0aQp4
-        /JXGSQO3BPEI11QtarpH9aA7xONXnsUbWeZlXPmDe4JjUQli6MP/7SQTj6ky6KryHDdE0YPCIop
-        O+/W0kDNwvyYhivjMlvYloIhs
-X-Received: by 2002:adf:e9c6:: with SMTP id l6mr13779086wrn.257.1603009640141;
-        Sun, 18 Oct 2020 01:27:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxAgCPSumCgfVdKfGznnm7YeSUUw2RZd8R4TsnET+Z4/8ID3k5gFkvBsav4aIlMXzHcTGpBzw==
-X-Received: by 2002:adf:e9c6:: with SMTP id l6mr13779058wrn.257.1603009639883;
-        Sun, 18 Oct 2020 01:27:19 -0700 (PDT)
-Received: from x1.bristot.me (host-79-33-206-95.retail.telecomitalia.it. [79.33.206.95])
-        by smtp.gmail.com with ESMTPSA id u202sm11287729wmu.23.2020.10.18.01.27.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Oct 2020 01:27:19 -0700 (PDT)
-Subject: Re: [PATCH v6 0/2] sched/deadline: Fix and optimize
- sched_dl_global_validate()
-To:     Juri Lelli <juri.lelli@redhat.com>, Peng Liu <iwtbavbm@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, valentin.schneider@arm.com, raistlin@linux.it
-References: <cover.1602171061.git.iwtbavbm@gmail.com>
- <20201014133247.GC219214@localhost.localdomain>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <5ce38799-f7cd-6dcb-3e10-5e4767510094@redhat.com>
-Date:   Sun, 18 Oct 2020 10:27:18 +0200
+        id S1726341AbgJRI2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 04:28:11 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:42227 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725468AbgJRI2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 04:28:10 -0400
+Received: from [192.168.0.2] (ip5f5af1e8.dynamic.kabel-deutschland.de [95.90.241.232])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 80E152000C13E;
+        Sun, 18 Oct 2020 10:28:07 +0200 (CEST)
+To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>
+Cc:     platform-driver-x86@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: Intel PMC driver on Broadwell system to gather C-State statistics
+Message-ID: <c0b7a8c4-6791-a5aa-b51e-61956a0928c1@molgen.mpg.de>
+Date:   Sun, 18 Oct 2020 10:28:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201014133247.GC219214@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/14/20 3:32 PM, Juri Lelli wrote:
-> Hi,
-> 
-> On 08/10/20 23:47, Peng Liu wrote:
->> When change global rt bandwidth, we check to make sure that new
->> settings could accommodate the allocated dl bandwidth.
->>
->> Under SMP, the dl_bw is on a per root domain basis, currently we check
->> and update the new settings one cpu by one cpu, but not in the unit of
->> root domain, which is either overdoing or error.
->>
->> patch 1 removed the superfluous checking and updating
->> patch 2 fixed the error validation
->>
->> For details, please see the corresponding patch.
->>
->> ----------------
->> v6 <-- v5:
->>  - no functional changes, just revert visit_gen back to u64;
->>
->> v5 <-- v4:
->>  - no functional changes, just split the v4 single patch to two to
->>    obey the "one patch do only one thing" rule;
->>  - turn root_domain::visit_gen from u64 to u32;
->>    both suggested by Juri.
->>  - refine changelog;
->>
->> v4 <-- v3:
->>  - refine changelog;
->>  - eliminate the ugly #ifdef guys with Peter's method;
->>
->> v3 <-- v2:
->>  - fix build error for !CONFIG_SMP, reported by kernel test robot;
->>
->> v2 <-- v1:
->>  - replace cpumask_weight(cpu_rq(cpu)->rd->span) with dl_bw_cpus(cpu),
->>    suggested by Juri;
->>
->> Peng Liu (2):
->>   sched/deadline: Optimize sched_dl_global_validate()
->>   sched/deadline: Fix sched_dl_global_validate()
->>
->>  kernel/sched/deadline.c | 44 +++++++++++++++++++++++++++--------
->>  kernel/sched/sched.h    | 51 ++++++++++++++++++++++-------------------
->>  kernel/sched/topology.c |  1 +
->>  3 files changed, 63 insertions(+), 33 deletions(-)
-> 
-> These look now good to me. Thanks a lot!
-> 
-> Acked-by: Juri Lelli <juri.lelli@redhat.com>
+Dear Linux folks,
 
 
-I just found a minor thing in a comment:
+The Intel Broadwell-U laptop Dell Latitude E7250 (BIOS A19 01/23/2018), 
+according to PowerTOP, only reaches package C-State C7 and not C8, C9, 
+C10, while the four CPUs itself do reach C-State C10 and CE.
 
-"It's *monotonously* increasing."
+I was asked to look at:
 
-I tried to find the usage of "monotonously increasing" for monotonic functions,
-and I did not find it. The (as least most used) term is "monotonically," so the
-sentence would be like "It is a monotonically increasing value." But it is just
-a minor thing. Anyways:
+1.  `/sys/kernel/debug/pmc_core/package_cstate_show`
+2.  `/sys/kernel/debug/pmc_core/ltr`
 
-Reviewed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+Trying to gather statistics, after the Debian Linux kernel 5.9.1 is now 
+built with `INTEL_PMC_CORE=y`, `/sys/kernel/debug/pmc_core/` is still 
+not created despite `sudo modprobe intel_pmc_core` being successful. 
+(It’s not loaded automatically.)
 
-Thanks!
--- Daniel
+     [ 1063.644680] calling  pmc_core_driver_init+0x0/0x1000 
+[intel_pmc_core] @ 4252
+     [ 1063.644721] initcall pmc_core_driver_init+0x0/0x1000 
+[intel_pmc_core] returned 0 after 36 usecs
 
+The ACPI device `INT33A1` is there.
+
+>     Scope (_SB)
+>     {
+>         Device (PEPD)         
+>         {
+>             Name (_HID, "INT33A1" /* Intel Power Engine */)  // _HID: Hardware ID
+>             Name (_CID, EisaId ("PNP0D80") /* Windows-compatible System Power Management Controller */)  // _CID: Compatible ID
+>             Name (_UID, One)  // _UID: Unique ID
+>             Name (PEPP, Zero)
+>             Name (DEVS, Package (0x03)
+>             {        
+>                 0x02, 
+>                 Package (0x01)
+>                 {
+>                     "\\_SB.PCI0.GFX0"
+>                 },    
+>             
+>                 Package (0x01)        
+>                 {                           
+>                     "\\_SB.PCI0.SAT0.PRT1"
+>                 }
+>             })
+>             Name (DEVX, Package (0x08)
+
+The table `intel_pmc_core_ids` does not contain the Broadwell-U ID 
+though, so I guess it’s not supported.
+
+> $ lspci -nn
+> 00:00.0 Host bridge [0600]: Intel Corporation Broadwell-U Host Bridge -OPI [8086:1604] (rev 09)
+> 00:02.0 VGA compatible controller [0300]: Intel Corporation HD Graphics 5500 [8086:1616] (rev 09)
+> 00:03.0 Audio device [0403]: Intel Corporation Broadwell-U Audio Controller [8086:160c] (rev 09)
+> 00:04.0 Signal processing controller [1180]: Intel Corporation Broadwell-U Processor Thermal Subsystem [8086:1603] (rev 09)
+> 00:14.0 USB controller [0c03]: Intel Corporation Wildcat Point-LP USB xHCI Controller [8086:9cb1] (rev 03)
+> 00:16.0 Communication controller [0780]: Intel Corporation Wildcat Point-LP MEI Controller #1 [8086:9cba] (rev 03)
+> 00:19.0 Ethernet controller [0200]: Intel Corporation Ethernet Connection (3) I218-LM [8086:15a2] (rev 03)
+> 00:1b.0 Audio device [0403]: Intel Corporation Wildcat Point-LP High Definition Audio Controller [8086:9ca0] (rev 03)
+> 00:1c.0 PCI bridge [0604]: Intel Corporation Wildcat Point-LP PCI Express Root Port #1 [8086:9c90] (rev e3)
+> 00:1c.3 PCI bridge [0604]: Intel Corporation Wildcat Point-LP PCI Express Root Port #4 [8086:9c96] (rev e3)
+> 00:1d.0 USB controller [0c03]: Intel Corporation Wildcat Point-LP USB EHCI Controller [8086:9ca6] (rev 03)
+> 00:1f.0 ISA bridge [0601]: Intel Corporation Wildcat Point-LP LPC Controller [8086:9cc3] (rev 03)
+> 00:1f.2 SATA controller [0106]: Intel Corporation Wildcat Point-LP SATA Controller [AHCI Mode] [8086:9c83] (rev 03)
+> 00:1f.3 SMBus [0c05]: Intel Corporation Wildcat Point-LP SMBus Controller [8086:9ca2] (rev 03)
+> 01:00.0 SD Host controller [0805]: O2 Micro, Inc. SD/MMC Card Reader Controller [1217:8520] (rev 01)
+> 02:00.0 Network controller [0280]: Intel Corporation Wireless 7265 [8086:095a] (rev 59)
+
+Any idea, why the probe function `pmc_core_probe()` succeeds, despite 
+the code below?
+
+         cpu_id = x86_match_cpu(intel_pmc_core_ids);
+         if (!cpu_id)
+                 return -ENODEV;
+
+The watchdog driver iTCO_wdt seems to load the module `pmc_core_bxt` 
+despite I am unable to find the ACPI device `INT34D2` in the dissembled 
+AML/ASL files.
+
+
+Kind regards,
+
+Paul
