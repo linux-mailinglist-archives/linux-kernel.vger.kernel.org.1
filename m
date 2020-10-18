@@ -2,125 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AD72918CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 20:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D676E2918CF
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 20:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727256AbgJRSQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 14:16:03 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:43805 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727112AbgJRSQC (ORCPT
+        id S1727227AbgJRSWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 14:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727094AbgJRSWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 14:16:02 -0400
-Received: by mail-ot1-f67.google.com with SMTP id k68so3886696otk.10
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 11:16:01 -0700 (PDT)
+        Sun, 18 Oct 2020 14:22:12 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B223CC061755;
+        Sun, 18 Oct 2020 11:22:12 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id u3so4303283pjr.3;
+        Sun, 18 Oct 2020 11:22:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UY5ozoK35dRnsBBWPfOvH0U314VRK+4OEsZHw3VNig4=;
+        b=cQr9ttHhvapYCUz+VPP9SA8DkrjAg3KcoyOdt8AGWI2S5vlVuZqUHYvA4y1s8TFd1n
+         kKXJ3Uz8d6h0HR2EbS78JBu2J89I7WgyTYq1jp9jSWmw9JXr8zxjPBW8nEVz6UP+r5Ox
+         fIWE69FB1PnOCqKGZXMNb2DF5j1T0kKrVAnrKWK/GVDwfuyA6yAKwD/kdGD6vxItqBnk
+         9yuXTsvBA5AONiYOZMnRAHxO5riIG5WRu3aaZ1recO2ky98psDl2zKg5iAJttoUXqzPY
+         kFROsIKia9Ao6yQP+AEz/67MkZn7KCtXiFUXcbYtpXHgCtwPCFEguv/HUn6FDnas1qsg
+         9o4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ehs9Mj6iRxjpqWN9PdX7MR174XtTZXauay85kgjUgF8=;
-        b=VE1NtLHamK8kX3v/uNAfO+4xlnlrUjSPaXcOSEHCGOFKSuM+yrEQT/z+Xz/aoXsv77
-         G0a2W34NWupJobjCU0sflnPwUliNmoAE5avt5RO7tExz6z49EOBvRJq7ufky9gxS0EZ6
-         IWiyhazaMG9BypinpAWPgc5qqP+iFqNj6zXiMItj7wc646qux+yqoP/C5ihxh2m6JTf6
-         ruoLh8yBGf+G49c6broSsAQID2x6nd6pA/1hwP8ku039Qva2bRpb/1fjudNHzbXYAbnK
-         dyKW2e5WBRVYzNMnb/eG30dgthKL8Ukh5r1U7Re07jhxcMbla6KnXfp9+PskEe4+0YSw
-         +cfQ==
-X-Gm-Message-State: AOAM530sr40q9aGsDME7q8kSS/WhyGtJvDIwGJ9KbY+5g+afP8g7oeQV
-        GMUmvxL3+xPtG1cr7u/jACNPz3fYmLpsS6Ha8xnJzlJituc=
-X-Google-Smtp-Source: ABdhPJw0ZKL7lHK6jB1BD34cUyU5V+aaHMsnA1n1VSgnNWSBoZ82/kfrhiFSu7juJTFg07Y9I8PWmrhL33Q7qIxyfJA=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr9495437otc.145.1603044961332;
- Sun, 18 Oct 2020 11:16:01 -0700 (PDT)
+        bh=UY5ozoK35dRnsBBWPfOvH0U314VRK+4OEsZHw3VNig4=;
+        b=Ioo9dQ+ohnavZEYSSvWCCaO1XHnsn56OET0R38dKwKbinAM/VixyVJNk3gR8RBPZe2
+         99BAn6vKrE+kvBZEOeUst1/fwjX/AmhnaXbihzeQJFHcgS9UF98EO05na6e5Ki+B0GNk
+         lVcemVkwla15ZGTQHhpZHDx8zP3AtS+dB/hca+9mK00wzblyCPN0+hv2BI5wa+oYwgrQ
+         VBr7F53hRqOmB+7r+UONudEJk5A2zAYiABzv0t3w1P0MNt1MtB9EJ4pxg4boSQFeNHAJ
+         LyOt0XF7u3r8pSrnMAd4p8XgxGwham1YQltixDYSjdDaJWghHRfy3D7yM8RI2MkHbQnG
+         5xwQ==
+X-Gm-Message-State: AOAM532y28JsFbc5MdV0wcXWPomOMBYMAAvD1rSMrEFztI7xaxPHXTif
+        QjLsy8jMVbQZ+IA5OaeM6dsbLq9MNfBn+qDp5/U=
+X-Google-Smtp-Source: ABdhPJzziWgcBdW4Gqfv/w3u1LFvfuJxbfkeyl1rvFENQL/8QBWnJtxQH+3Rih3k2WOZNL+/XdNjn/hPOaD6F+GiVf0=
+X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr13468957pjs.181.1603045332185;
+ Sun, 18 Oct 2020 11:22:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <45b81a48e1568bd0126a96f5046eb7aaae9b83c9.camel@perches.com>
- <CAMuHMdV8FEPhTp653RN00LK4UcQZHkuLByJzqiM85r2qoqhDvQ@mail.gmail.com> <fce55e74e4331c6e19c4030a4e02fb35ca5ee4f7.camel@perches.com>
-In-Reply-To: <fce55e74e4331c6e19c4030a4e02fb35ca5ee4f7.camel@perches.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 18 Oct 2020 20:15:49 +0200
-Message-ID: <CAMuHMdUp5U0nnp9LfWgY0VnkRppMVXZU9NSpWqcMKYM_zRXRuA@mail.gmail.com>
-Subject: Re: [PATCH] checkpatch: Allow not using -f with files that are in git
-To:     Joe Perches <joe@perches.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@shadowen.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <CAHp75VfQ=fFn_r43VPV0uPCkozS2K=VQsuSEyj0mF+7QVsFQuA@mail.gmail.com>
+ <1602983516-22913-1-git-send-email-LinoSanfilippo@gmx.de> <1602983516-22913-2-git-send-email-LinoSanfilippo@gmx.de>
+In-Reply-To: <1602983516-22913-2-git-send-email-LinoSanfilippo@gmx.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 18 Oct 2020 21:21:56 +0300
+Message-ID: <CAHp75VcJGMNnU4j8S=J5wk1yTMgDLJcg-SD9Nh415L_TJju9zA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] iio:core: Introduce unlocked version of iio_map_array_unregister()
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
-
-On Sun, Oct 18, 2020 at 6:07 PM Joe Perches <joe@perches.com> wrote:
-> On Sun, 2020-10-18 at 16:03 +0200, Geert Uytterhoeven wrote:
-> > On Tue, Aug 25, 2020 at 2:12 AM Joe Perches <joe@perches.com> wrote:
-> > > If a file exists in git and checkpatch is used without the -f
-> > > flag for scanning a file, then checkpatch will scan the file
-> > > assuming it's a patch and emit:
-> > >
-> > > ERROR: Does not appear to be a unified-diff format patch
-> > >
-> > > Change the behavior to assume the -f flag if the file exists
-> > > in git.
-> > >
-> > > Signed-off-by: Joe Perches <joe@perches.com>
-> >
-> > Thanks for your patch!
-> >
-> > > --- a/scripts/checkpatch.pl
-> > > +++ b/scripts/checkpatch.pl
-> > > @@ -976,6 +976,16 @@ sub seed_camelcase_includes {
-> > >         }
-> > >  }
-> > >
-> > > +sub git_is_single_file {
-> > > +       my ($filename) = @_;
-> > > +
-> > > +       return 0 if ((which("git") eq "") || !(-e "$gitroot"));
-> > > +
-> > > +       my $output = `${git_command} ls-files -- $filename`;
-> > > +       my $count = $output =~ tr/\n//;
-> > > +       return $count eq 1 && $output =~ m{^${filename}$};
-> > > +}
-> > > +
-> > >  sub git_commit_info {
-> > >         my ($commit, $id, $desc) = @_;
-> > >
-> >
-> > This is now commit f5f613259f3fea81 ("checkpatch: allow not using -f
-> > with files that are in git"), causing:
-> >
-> >     Global symbol "$gitroot" requires explicit package name (did you
-> > forget to declare "my $gitroot"?) at scripts/checkpatch.pl line 980.
-> >     Execution of scripts/checkpatch.pl aborted due to compilation errors.
-> >
-> > FWIW, host system is running Ubuntu 18.04.5 LTS (upgrade to 20.04 LTS
-> > planned soon ;-).
+On Sun, Oct 18, 2020 at 4:13 AM Lino Sanfilippo <LinoSanfilippo@gmx.de> wrote:
 >
-> I believe there is a dependency on another patch
-> in -next that wasn't pushed to Linus' tree.
->
-> commit 5ec1f7de97b26a3fa364bbb31fdd2e42c8e6fa22
-> Author: Joe Perches <joe@perches.com>
-> Date:   Thu Oct 8 11:53:44 2020 +1100
->
->     checkpatch: test $GIT_DIR changes
->
-> So it'd be better to revert right now until
-> this other patch is accepted or pushed.
+> Introduce an unlocked version of iio_map_array_unregister(). This function
+> can help to unwind in case of error while the iio_map_list_lock mutex is
+> held.
 
-Thanks, after cherry-picking that one from next, checkpatch works again.
-However, there are some issues with that commit:
-  1. ERROR: Missing Signed-off-by: line by nominal patch author 'Joe
-Perches <joe@perches.com>',
-  2. The Link: is bogus, and gives 404.
+Both looks good to me, FWIW,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Gr{oetje,eeting}s,
+if Jonathan is okay with them.
 
-                        Geert
+> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+> ---
+>  drivers/iio/inkern.c | 27 ++++++++++++++++++---------
+>  1 file changed, 18 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
+> index ede99e0..39c1d63 100644
+> --- a/drivers/iio/inkern.c
+> +++ b/drivers/iio/inkern.c
+> @@ -24,6 +24,21 @@ struct iio_map_internal {
+>  static LIST_HEAD(iio_map_list);
+>  static DEFINE_MUTEX(iio_map_list_lock);
+>
+> +static int iio_map_array_unregister_locked(struct iio_dev *indio_dev)
+> +{
+> +       int ret = -ENODEV;
+> +       struct iio_map_internal *mapi, *next;
+> +
+> +       list_for_each_entry_safe(mapi, next, &iio_map_list, l) {
+> +               if (indio_dev == mapi->indio_dev) {
+> +                       list_del(&mapi->l);
+> +                       kfree(mapi);
+> +                       ret = 0;
+> +               }
+> +       }
+> +       return ret;
+> +}
+> +
+>  int iio_map_array_register(struct iio_dev *indio_dev, struct iio_map *maps)
+>  {
+>         int i = 0, ret = 0;
+> @@ -57,18 +72,12 @@ EXPORT_SYMBOL_GPL(iio_map_array_register);
+>   */
+>  int iio_map_array_unregister(struct iio_dev *indio_dev)
+>  {
+> -       int ret = -ENODEV;
+> -       struct iio_map_internal *mapi, *next;
+> +       int ret;
+>
+>         mutex_lock(&iio_map_list_lock);
+> -       list_for_each_entry_safe(mapi, next, &iio_map_list, l) {
+> -               if (indio_dev == mapi->indio_dev) {
+> -                       list_del(&mapi->l);
+> -                       kfree(mapi);
+> -                       ret = 0;
+> -               }
+> -       }
+> +       ret = iio_map_array_unregister_locked(indio_dev);
+>         mutex_unlock(&iio_map_list_lock);
+> +
+>         return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(iio_map_array_unregister);
+> --
+> 2.7.4
+>
+
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+With Best Regards,
+Andy Shevchenko
