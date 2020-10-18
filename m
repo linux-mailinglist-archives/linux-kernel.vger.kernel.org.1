@@ -2,68 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8678B291815
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3601291818
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgJRPng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 11:43:36 -0400
-Received: from sonic316-20.consmr.mail.ne1.yahoo.com ([66.163.187.146]:39477
-        "EHLO sonic316-20.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726364AbgJRPnf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 11:43:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603035815; bh=ShrdGJTCUVMCJqYIFt8iS0epc16DuED8/NfeEkfRx3o=; h=Date:From:Reply-To:Subject:References:From:Subject; b=tFEGz+RkfL+PZIrtgJeWde7ftz64atm0XTvj6QTPfR3MYcWxvfD49HEds5xi5XsyAczL2DCnu7TiY6D742Ukg9Am7jRc1ttyv3LXeGDViANaimebQF8cJpL4tq4vK3dNaMLeAJAaAmJoV4ZU7huxlDB635faKMXfLdRxu6hMRJaD1HWm2V1Rs7wyz83qzYYO7xTBEdw6olZJQxbRyJJ3v5VVrk3bX7rSS2zoYsGc5vJJ50aaIGfUKn0RSLSEbsP6HetD5k0izVstNLhLR5MQb9Xec0uEkgRTRt041/nUjK14UrmoTU8tzyZ+oRkESNOqMXumpvnechcMQTVaf3yOcA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603035815; bh=zax5VsgMmnG3QUGZiQlv1/V0hJC1R/q3NQ9EDdFcNJK=; h=Date:From:Subject; b=fzTn1HhEqlMstZLA/oGCcEYZ620KcGXlWEpWLGnincUksBfAK7fwkZLKhzQZoNbNCGgPytEPxjZUj1UsuboIL5cvA3Hlr36a3MdkfkVyglFyX7IyJvZncEJTpl0s4MUfjusCMUgM+NLPlsku16QFlAGq+xWQA/bQxonOUqVnyLUY52fIBCEjntefjeQsye83Y3q1E9qxE2Xs1xwyj3RvcRNnJf4flZxFAuhmm0uu9qM677fLGaNjCK2ou/8mao5SMhyGfi1bHAG1ZXBoOnTO0Y9ANGzeJ3zGeTBZ6aKi6w+g4y/NbvRLuhUAsAravC8BQcSubs7n4T40Gspkh+9EDQ==
-X-YMail-OSG: _t_XlyEVM1llOrb_IeNAJ7zkxRkBVMx5dDhXxzp5VA5VO7lQyz8sj_ue2qDitz3
- Dj__2j03nw8.KLM5gHKjWL7DYShGLQIrV3TKbF.C3ZExRR57c3.pDEf8IE6uNxnu2TNNJRuqDreY
- nKhBaY.A1O0oTr7He_wv6QuXOWvpnh0pDoAmHd3SytBQvVM.WtWKZ6DhV.AntwksDWGpFgG0Z1a2
- e3y.p_x4rc.zReXeFJJKQXwbDbE0zb3WEqiRhewYNQ95pxlPstT8qEu9BZXcfw0r0evAqswBegf_
- C0gDAyrCnmbKUQBC07TwWXaBkDCu_32pzFHJM1cigD3fOsBbpaR9oqkyoFYOdjwCzfUJ3Pj3eS_i
- mocnVhRPOZeoQlXfzFDUlPLp4YhutymN5_eX0bS.pKWg8FnUtI5T_lhwtqgTDxMm8VU3O2qcMuoS
- xZcKAecx5G_1.l3CgiomaAUhm2MdrnG8weI1Fc9HYQZgPUt7RjN14bjm4H16abqA4ekdlbfTrtLD
- t57rFskDGGbWyOlmKasB16CsAnbj4nB4Svc75wHG05DVN4IXqH8hOXnl2DCRmWDrhcAGu0NDOHL6
- l_7BfaPOAamPgnYG2YMGwgm8n5577BnRcLk3A6QKPyJgpxCMqQpkeIihF38vcRzlNJmzOHqsdW_K
- ACKb8MA3JC169INhj1zRl6iVL50x059Kr82PSUTK60640FxodaVmP146FR99j6TbJZ71g25imY0O
- irWRCHPkREI6.ZaBiFy1Cxlb0hg0HXpMo.KjTLVcnl8qJXr8uh.JiUoENur0WaChFTp9_gMICrbE
- fK08m1rxlCJ1YYLFgNa3xxV878sF6WAO9nFMdB4rpd7qXuq9XDfOxgdYLHvPpGxYtMX.ERAa5SZG
- k2Ncjtgvts8V9ODZSsL1l80j19p4.gxHNku3.2vl8Q_HexSPliwyIzmfb4NQYUmOOysZZjZscl4e
- l4b6AyEezC2wkJATBuPMbpEuAY_UbRZ1WXILxR06DpMRjfh0KyXp3GQsYD2BqRM2l1r0pEyVUtxK
- f3yX93bfPeVmnMW9Ji_gjhozgz28yzObHv38rV9oqjVVnc2GBvklV5jbnUc_EeDNXz8KyTzqnlNA
- bghIQ8YM9iwGmnO38s.q.gocNR.RBYH8ZBRIYYPa_UX4JXphfcdtNjik4LmzBy1FzG6zPd52.O.a
- _ynPL.cIK_Hn32TE57N1GUwfadVREiD4sNp1_4NWVHAT_Im9uXd8VRVGLSodMZ513byhjgFHy0cg
- 6xLn5ZHDaP9lTdGZEXoJxzG4gNH0A2zm537UJuSrI2gfo4mKW0kb9zbpDkUsqIljlcq.UJSFXR.K
- H2hNGy_EeSwsSz3NTfkgExWhLw7nmQB7QQhDtQh0A.1mE3hrbzvHOHIiJz_zO4OV45vLPQBnChMC
- s4zlsR_XhgGLw1LekYCjjhfs.Yoc0hc7Luzyl9Es6oygsPQA-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Sun, 18 Oct 2020 15:43:35 +0000
-Date:   Sun, 18 Oct 2020 15:43:34 +0000 (UTC)
-From:   Ali Shareef Al-Emadi <alishareefalemadi465@gmail.com>
-Reply-To: alishareefalemadi465@gmail.com
-Message-ID: <401880578.747846.1603035814237@mail.yahoo.com>
-Subject: QATAR PETROLEUM INVESTMENT....
+        id S1726943AbgJRPvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 11:51:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:37842 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726364AbgJRPvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 11:51:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DB7A30E;
+        Sun, 18 Oct 2020 08:51:17 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 416B93F66B;
+        Sun, 18 Oct 2020 08:51:15 -0700 (PDT)
+References: <20201015110532.738127234@infradead.org> <20201015110923.910090294@infradead.org> <jhjlfg6qqum.mognet@arm.com> <BN8PR12MB29784D239007D0D6CA3F4F2A9A010@BN8PR12MB2978.namprd12.prod.outlook.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     ouwen210@hotmail.com
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org
+Subject: Re: [PATCH v3 10/19] sched: Fix migrate_disable() vs set_cpus_allowed_ptr()
+In-reply-to: <BN8PR12MB29784D239007D0D6CA3F4F2A9A010@BN8PR12MB2978.namprd12.prod.outlook.com>
+Date:   Sun, 18 Oct 2020 16:51:10 +0100
+Message-ID: <jhjimb7r0r5.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <401880578.747846.1603035814237.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16868 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:81.0) Gecko/20100101 Firefox/81.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hi,
 
-Greetings.
+On 18/10/20 10:46, ouwen wrote:
+> On Fri, Oct 16, 2020 at 01:48:17PM +0100, Valentin Schneider wrote:
+>> ---
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index a5b6eac07adb..1ebf653c2c2f 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -1859,6 +1859,13 @@ static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
+>>  	return rq;
+>>  }
+>>  
+>> +struct set_affinity_pending {
+>> +	refcount_t		refs;
+>> +	struct completion	done;
+>> +	struct cpu_stop_work	stop_work;
+>> +	struct migration_arg	arg;
+>> +};
+>> +
+>>  /*
+>>   * migration_cpu_stop - this will be executed by a highprio stopper thread
+>>   * and performs thread migration by bumping thread off CPU then
+>> @@ -1866,6 +1873,7 @@ static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
+>>   */
+>>  static int migration_cpu_stop(void *data)
+>>  {
+>> +	struct set_affinity_pending *pending;
+>>  	struct migration_arg *arg = data;
+>>  	struct task_struct *p = arg->task;
+>>  	struct rq *rq = this_rq();
+>> @@ -1886,13 +1894,22 @@ static int migration_cpu_stop(void *data)
+>>  
+>>  	raw_spin_lock(&p->pi_lock);
+>>  	rq_lock(rq, &rf);
+>> +
+>> +	if (arg->done)
+>
+> If I'm not wrong(always likely), arg->done is point to the installed
+> pending's done of the first task that calling sca. It should not be
+> NULL because it is a pointer to the stack address not related to the
+> content in the stack.
+>
 
-I am Mr. H.E. Ali Shareef Al-Emadi, Finance and Account, Qatar Petroleum. I have $30m for Investment. Contact me if you are interested; I have all it will take to move the fund to any of your account designate as a Contract Fund to avoid every query by the authority in your Country.
+Correct; here I'm using it as an indicator of whether migration_cpu_stop()
+was invoked by SCA with a pending affinity request. I'll admit it's icky,
+I'd prefer having an explicit flag to check against.
 
-I sent this message from my private Email; I will give you more details through my official
-Email upon the receipt of your response to prove myself and office to
-you.
+>> +		pending = container_of(arg->done, struct set_affinity_pending, done);
+>>  	/*
+>>  	 * If task_rq(p) != rq, it cannot be migrated here, because we're
+>>  	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
+>>  	 * we're holding p->pi_lock.
+>>  	 */
+>>  	if (task_rq(p) == rq) {
+>> -		if (is_migration_disabled(p))
+>> +		/*
+>> +		 * An affinity update may have raced with us.
+>> +		 * p->migration_pending could now be NULL, or could be pointing
+>> +		 * elsewhere entirely.
+>> +		 */
+>> +		if (is_migration_disabled(p) ||
+>> +		    (arg->done && p->migration_pending != pending))
+>                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> p->migration_pending can be set on the random task's stack but the
+> address is possible to be the same with the previous pending. It's
+> very very unlikely. But I'm also totally failed.
+>
 
-Email Address: alishareefalemadi465@gmail.com
+Do you mean if we encounter the above race, but on top of that a new
+pending gets installed that has the *same* address as the previous one?
 
-Regards.
+That would mean that the task which installed that first pending got out of
+affine_move_task() and *back into it*, with the same stack depth, before the
+stopper got to run & grab the task_rq_lock. I also thought about this, but
+am unsure how far to push the paranoia.
 
-Mr. H.E. Ali Shareef Al-Emadi,
-Minister Of Finance.
-Qatar Petroleum
+
+Side thought: don't we need to NULL p->migration_pending in __sched_fork()?
+
+> I can't realize anything that time, but now I just give this noise.
+> Use refcount_add/dec on MIGRATE_ENABLE path to prevent that not sure
+> yet.
+>
+
+One annoying thing is that in that path we can't wait on the refcount
+reaching 0, since migrate_{disable, enable}() disable preemption.
+(the stopper is only schedule()'d upon reenabling preemption in
+migrate_enable()).
+
+Including the stopper callback in the refcount chain would probably reduce
+future headaches, but it's not as straightforward.
+
+
+>>  			goto out;
+>>  
+>>  		if (task_on_rq_queued(p))
+>> @@ -2024,13 +2041,6 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
+>>  	__do_set_cpus_allowed(p, new_mask, 0);
+>>  }
+>>  
+>> -struct set_affinity_pending {
+>> -	refcount_t		refs;
+>> -	struct completion	done;
+>> -	struct cpu_stop_work	stop_work;
+>> -	struct migration_arg	arg;
+>> -};
+>> -
+>>  /*
+>>   * This function is wildly self concurrent; here be dragons.
+>>   *
+
