@@ -2,146 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208C3292017
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 23:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00FE29201D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 23:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgJRVPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 17:15:55 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:49633 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1727841AbgJRVPy (ORCPT
+        id S1728008AbgJRVVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 17:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726458AbgJRVVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 17:15:54 -0400
-Received: (qmail 873255 invoked by uid 1000); 18 Oct 2020 17:15:53 -0400
-Date:   Sun, 18 Oct 2020 17:15:53 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki \(Sony\)" <urezki@gmail.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>
-Subject: Re: [PATCH v7 6/6] rcu/segcblist: Add additional comments to explain
- smp_mb()
-Message-ID: <20201018211553.GA872947@rowland.harvard.edu>
-References: <20201015002301.101830-1-joel@joelfernandes.org>
- <20201015002301.101830-7-joel@joelfernandes.org>
- <20201015133511.GB127222@lothringen>
- <20201017012753.GB4015033@google.com>
- <20201017031941.GD4015033@google.com>
- <20201017202411.GC842001@rowland.harvard.edu>
- <CAEXW_YQ--s-0aYGFtO46ptf9y9LjoRhXvv3Ksk-QTYpLQYGaJg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YQ--s-0aYGFtO46ptf9y9LjoRhXvv3Ksk-QTYpLQYGaJg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Sun, 18 Oct 2020 17:21:20 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727C8C061755;
+        Sun, 18 Oct 2020 14:21:20 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id b8so9254114wrn.0;
+        Sun, 18 Oct 2020 14:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=pcBDk3xTi1JpIx/rgIRMpOmHCerqPvdUMi9HOx3oj3w=;
+        b=mePniag4SSMtgAZxS5stq3QdzAbv0c5IBDOSONkEib/DMXJPx9qBbw2c4iB1RTWkzR
+         JKPoa8YDmPieZtnVB6inE1J4Zf7BM7zD9EQOuTqmTV/Oju/GQMh2/1tcQBt98TaM46Xq
+         3QoY0nLca67hr+/SDR69NPKu+XUAxH5nbSmGOZBh1m3iWDfap5ewAJ6JL000o/OpQ6Rx
+         IUZDgVXVr7qyM26qbSe3pbFlGWZuuWZMc+SMeyqNMsj4vJW03JOCMGRSoEzVE95SQ2zf
+         dDakLrYg34P3XLFMiAtQmuMaqImmjXSvxXmM8tNFzHu8x1KhSx1WrwEEQUBR6hwAjH/u
+         VfkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=pcBDk3xTi1JpIx/rgIRMpOmHCerqPvdUMi9HOx3oj3w=;
+        b=PEL8pRBuHubpv3Xat0yNyVSeTvHdNW4aQ+Dwh5Sipwc93Pn3Xl86c0fh3sJiVxEhX2
+         dQzv4egnBVLMrcRhoeVDY5c+lM5TWyKNoAxZIhiung3m87aMGDCYEkGwPgqi1uPll0Vh
+         yh4S331rl9FqWae98pQC+WVtCRo0CGCDU7qKrbF/99pu+bYdxvhd8XltmKrsWbQm+z2D
+         mbZS3iBw9AHE682iot2feyIp/2IHoX1sH9Ssg8lrdQjJvBZ/l2/B9Wvzv8phtbDA/Lds
+         OB4afOtAe4Aa4iLrGmc0c0VwVn5KYPCgTp8ZmuxfhIVAN9crMSliE4aNw4yrF5Ugoz3e
+         2cUQ==
+X-Gm-Message-State: AOAM531QiQb9VjrZeo24GaJz87Uc0bQToDYaCXncr6RJm24rgWUaDbOj
+        B1+Dlj5NlxVp5ulKoI7bwm4=
+X-Google-Smtp-Source: ABdhPJxiX2HOwBjI9jdgFUDWLYUHd/xUuLEf/MELhyxbRZ1i8WKf40v2OCt+8Bz6Q/pfrl1R/CM5cw==
+X-Received: by 2002:adf:9069:: with SMTP id h96mr17229331wrh.358.1603056078979;
+        Sun, 18 Oct 2020 14:21:18 -0700 (PDT)
+Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
+        by smtp.gmail.com with ESMTPSA id r1sm15642149wro.18.2020.10.18.14.21.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 18 Oct 2020 14:21:18 -0700 (PDT)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>, acme@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] libtraceevent: install html files
+Date:   Sun, 18 Oct 2020 22:19:12 +0100
+Message-Id: <20201018211912.17541-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 01:45:31PM -0700, Joel Fernandes wrote:
-> Hi,
-> Thanks Alan for your replies.
+Only the man pages were installed using "make install". Add rules to
+install html files also.
 
-You're welcome.
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
+ tools/lib/traceevent/Documentation/Makefile | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-> > > C rcubarrier+ctrldep
-> > >
-> > > (*
-> > >  * Result: Never
-> > >  *
-> > >  * This litmus test shows that rcu_barrier (P1) prematurely
-> > >  * returning by reading len 0 can cause issues if P0 does
-> > >  * NOT have a smb_mb() after WRITE_ONCE(len, 1).
-> > >  * mod_data == 2 means module was unloaded (so data is garbage).
-> > >  *)
-> > >
-> > > { int len = 0; int enq = 0; }
-> > >
-> > > P0(int *len, int *mod_data, int *enq)
-> > > {
-> > >       int r0;
-> > >
-> > >       WRITE_ONCE(*len, 1);
-> > >       smp_mb();               /* Needed! */
-> > >       WRITE_ONCE(*enq, 1);
-> > >
-> > >       r0 = READ_ONCE(*mod_data);
-> > > }
-> > >
-> > > P1(int *len, int *mod_data, int *enq)
-> > > {
-> > >       int r0;
-> > >       int r1;
-> > >
-> > >       r1 = READ_ONCE(*enq);
-> > >
-> > >       // barrier Just for test purpose ("exists" clause) to force the..
-> > >       // ..rcu_barrier() to see enq before len
-> > >       smp_mb();
-> > >       r0 = READ_ONCE(*len);
-> > >
-> > >       // implicit memory barrier due to conditional */
-> > >       if (r0 == 0)
-> > >               WRITE_ONCE(*mod_data, 2);
-> > > }
-> > >
-> > > // Did P0 read garbage?
-> > > exists (0:r0=2 /\ 1:r0=0 /\ 1:r1=1)
-> >
-> > Is this exists clause really what you meant?  Not only can it not be
-> > satisfied, it couldn't even be satisfied if you left out the 0:r0=2
-> > part.  And smp_mb() is stronger than neessary to enforce this.
-> 
-> This is indeed what I meant.
-> 
-> Maybe the exists clause can be simplified, but I just wanted to
-> enforce that P1 saw P0's write to enq before seeing anything else.
-> 
-> Per my test, if you remove the smp_mb() in P0, the test will fail.
-> 
-> What I wanted to show was P0() seeing mod_data == 2 is bad and should
-> never happen (as that implies rcu_barrier() saw len == 0 when it
-> should not have). Maybe you can point out what is my test missing?
+diff --git a/tools/lib/traceevent/Documentation/Makefile b/tools/lib/traceevent/Documentation/Makefile
+index aa72ab96c3c1..dd3d62b17140 100644
+--- a/tools/lib/traceevent/Documentation/Makefile
++++ b/tools/lib/traceevent/Documentation/Makefile
+@@ -147,7 +147,7 @@ html: $(MAN_HTML)
+ 
+ $(MAN_HTML) $(DOC_MAN3): asciidoc.conf
+ 
+-install: install-man
++install: install-man install-html
+ 
+ check-man-tools:
+ ifdef missing_tools
+@@ -161,12 +161,22 @@ do-install-man: man
+ 
+ install-man: check-man-tools man do-install-man
+ 
+-uninstall: uninstall-man
++do-install-html: html
++	$(call QUIET_INSTALL, Documentation-html) \
++		$(INSTALL) -d -m 755 $(DESTDIR)$(htmldir); \
++		$(INSTALL) -m 644 $(OUTPUT)*.html $(DESTDIR)$(htmldir);
++
++install-html: check-man-tools html do-install-html
++
++uninstall: uninstall-man uninstall-html
+ 
+ uninstall-man:
+ 	$(call QUIET_UNINST, Documentation-man) \
+ 		$(Q)$(RM) $(addprefix $(DESTDIR)$(man3dir)/,$(DOC_MAN3))
+ 
++uninstall-html:
++	$(call QUIET_UNINST, Documentation-html) \
++		$(Q)$(RM) $(addprefix $(DESTDIR)$(htmldir)/,$(MAN_HTML))
+ 
+ ifdef missing_tools
+   DO_INSTALL_MAN = $(warning Please install $(missing_tools) to have the man pages installed)
+-- 
+2.11.0
 
-That's a little tricky, since I don't understand what the test is trying 
-to say.
-
-For example, you could change the exists clause to omit "/\ 1:r1=1".  
-Maybe that's not a meaningful thing to do... but then it could be 
-satisfied simply by having P1 run to completion before P0 starts.
-
-Or you could leave the exists clause as it is and remove the smp_mb() 
-from P0.  As you said, that version of the test would also fail since P0 
-could then reorder its two writes.
-
-> > However, some memory barrier is needed.  If the smp_mb() in P1 were
-> > omitted then P1 would be free to reorder its reads, and the exists
-> > clause could be satisfied as follows:
-> >
-> >         P0                      P1
-> >         ------------------------------------------
-> >                                 Read len = 0
-> >         Write len = 1
-> >         smp_mb();
-> >         Write enq = 1
-> >                                 Read enq = 1
-> >                                 Write mod_data = 2
-> >         Read mod_data = 2
-> 
-> Right, so I think I got it right then. I want to show that the control
-> dependency in P1 provides the needed ordering. The extra smp_mb() I
-> added was just so that I could force P1 to see P0's enqueue.
-
-Yes, it's quite correct that because of the control dependency, P1 
-cannot write mod_data before it reads the value of len.
-
-Alan Stern
