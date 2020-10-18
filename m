@@ -2,122 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E231B291671
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 10:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8459291690
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 11:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgJRI2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 04:28:11 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:42227 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725468AbgJRI2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 04:28:10 -0400
-Received: from [192.168.0.2] (ip5f5af1e8.dynamic.kabel-deutschland.de [95.90.241.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 80E152000C13E;
-        Sun, 18 Oct 2020 10:28:07 +0200 (CEST)
-To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@intel.com>
-Cc:     platform-driver-x86@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Zha Qipeng <qipeng.zha@intel.com>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: Intel PMC driver on Broadwell system to gather C-State statistics
-Message-ID: <c0b7a8c4-6791-a5aa-b51e-61956a0928c1@molgen.mpg.de>
-Date:   Sun, 18 Oct 2020 10:28:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726199AbgJRJEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 05:04:50 -0400
+Received: from wind.enjellic.com ([76.10.64.91]:57294 "EHLO wind.enjellic.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725298AbgJRJEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 05:04:49 -0400
+X-Greylist: delayed 865 seconds by postgrey-1.27 at vger.kernel.org; Sun, 18 Oct 2020 05:04:49 EDT
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 09I8nM6G019472;
+        Sun, 18 Oct 2020 03:49:22 -0500
+Received: (from greg@localhost)
+        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 09I8nK1x019471;
+        Sun, 18 Oct 2020 03:49:20 -0500
+Date:   Sun, 18 Oct 2020 03:49:20 -0500
+From:   "Dr. Greg" <greg@enjellic.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20201018084920.GA19255@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20200924202549.GB19127@linux.intel.com> <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com> <20200924230501.GA20095@linux.intel.com> <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com> <20200925000052.GA20333@linux.intel.com> <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com> <20200925194304.GE31528@linux.intel.com> <230ce6da-7820-976f-f036-a261841d626f@intel.com> <20200928005347.GB6704@linux.intel.com> <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Sun, 18 Oct 2020 03:49:22 -0500 (CDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Linux folks,
+On Mon, Sep 28, 2020 at 07:04:38AM -0700, Dave Hansen wrote:
 
+Good morning, I hope the weekend is going well for everyone.
 
-The Intel Broadwell-U laptop Dell Latitude E7250 (BIOS A19 01/23/2018), 
-according to PowerTOP, only reaches package C-State C7 and not C8, C9, 
-C10, while the four CPUs itself do reach C-State C10 and CE.
+> On 9/27/20 5:53 PM, Jarkko Sakkinen wrote:
+> > On Fri, Sep 25, 2020 at 12:53:35PM -0700, Dave Hansen wrote:
+> >> On 9/25/20 12:43 PM, Sean Christopherson wrote:
+> >>>> That means that the intent argument (SGX_PROT_*) is currently unused.
+> >>> No, the intent argument is used (eventually) by SGX's ->mprotect()
+> >>> implementation, i.e. sgx_mprotect() enforces that the actual protections are a
+> >>> subset of the declared/intended protections.
+> >>>
+> >>> If ->mprotect() is not merged, then it yes, it will be unused.
+> >>
+> >> OK, I think I've got it.
+> >>
+> >> I think I'm OK with adding ->mprotect().  As long as folks buy into the
+> >> argument that intent needs to be checked at mmap() time, they obviously
+> >> need to be checked at mprotect() too.
+> >>
+> >> Jarkko, if you want to try and rewrite the changelog, capturing the
+> >> discussion here and reply, I think I can ack the resulting patch.  I
+> >> don't know if that will satisfy the request from Boris from an ack from
+> >> a "mm person", but we can at least start there. :)
+> > 
+> > I think what it needs, based on what I've read, is the step by step
+> > description of the EMODPE scenarion without this callback and with it.
+> 
+> EMODPE is virtually irrelevant for this whole thing.  The x86 PTE
+> permissions still specify the most restrictive permissions, which is
+> what matters the most.
+> 
+> We care about the _worst_ the enclave can do, not what it imposes on
+> itself on top of that.
+> 
+> > I think other important thing to underline is that an LSM or any other
+> > security measure can only do a sane decision when the enclave is loaded.
+> > At that point we know the source (vm_file).
+> 
+> Right, you know the source, but it can be anonymous or a file.
 
-I was asked to look at:
+Or it could be loaded over the network in encrypted form by the
+enclave itself.
 
-1.  `/sys/kernel/debug/pmc_core/package_cstate_show`
-2.  `/sys/kernel/debug/pmc_core/ltr`
+Sean, admirably, wants to peer into the future and set the driver up
+from an architectural perspective, to future proof it for the
+imposition of security controls.  So it would seem helpful to peer a
+bit.
 
-Trying to gather statistics, after the Debian Linux kernel 5.9.1 is now 
-built with `INTEL_PMC_CORE=y`, `/sys/kernel/debug/pmc_core/` is still 
-not created despite `sudo modprobe intel_pmc_core` being successful. 
-(It’s not loaded automatically.)
+If I can paraphrase/simplify the discussion to date; the best the
+kernel can do with respect to SGX is to impose controls, via mprotect,
+that limit the maximum permissions of an enclave page to whatever was
+specified when the enclave was loaded/initialized.
 
-     [ 1063.644680] calling  pmc_core_driver_init+0x0/0x1000 
-[intel_pmc_core] @ 4252
-     [ 1063.644721] initcall pmc_core_driver_init+0x0/0x1000 
-[intel_pmc_core] returned 0 after 36 usecs
+So here is the question that would seem to need answering:
 
-The ACPI device `INT33A1` is there.
+Is this even a relevant control if we cede the notion of dynamically
+loadable enclave code, which is the objective of SGX2 hardware, which
+will in all likelihood be the only relevant hardware implementation in
+the future?
 
->     Scope (_SB)
->     {
->         Device (PEPD)         
->         {
->             Name (_HID, "INT33A1" /* Intel Power Engine */)  // _HID: Hardware ID
->             Name (_CID, EisaId ("PNP0D80") /* Windows-compatible System Power Management Controller */)  // _CID: Compatible ID
->             Name (_UID, One)  // _UID: Unique ID
->             Name (PEPP, Zero)
->             Name (DEVS, Package (0x03)
->             {        
->                 0x02, 
->                 Package (0x01)
->                 {
->                     "\\_SB.PCI0.GFX0"
->                 },    
->             
->                 Package (0x01)        
->                 {                           
->                     "\\_SB.PCI0.SAT0.PRT1"
->                 }
->             })
->             Name (DEVX, Package (0x08)
+The answer to this could very well be yes if the objective is to
+provide a method for a platform owner to explicitly block dynamically
+loadable enclave code.  Since there seems to be a desire for immense
+clarity in the changelogs surrounding all of this, framing the
+discussion in something practical like this may be of assistance.
 
-The table `intel_pmc_core_ids` does not contain the Broadwell-U ID 
-though, so I guess it’s not supported.
+One of the desires of the SGX user community is to not allow
+visibility into enclave code, this is one of the notions/objectives of
+confidential computing.  The Protected Code Loader that was added by
+Intel to their PSW is an acknowledgement of this fact.  EDMM and
+dynamically loadable code makes doing this much more efficient so that
+would seem to be the face of the future.
 
-> $ lspci -nn
-> 00:00.0 Host bridge [0600]: Intel Corporation Broadwell-U Host Bridge -OPI [8086:1604] (rev 09)
-> 00:02.0 VGA compatible controller [0300]: Intel Corporation HD Graphics 5500 [8086:1616] (rev 09)
-> 00:03.0 Audio device [0403]: Intel Corporation Broadwell-U Audio Controller [8086:160c] (rev 09)
-> 00:04.0 Signal processing controller [1180]: Intel Corporation Broadwell-U Processor Thermal Subsystem [8086:1603] (rev 09)
-> 00:14.0 USB controller [0c03]: Intel Corporation Wildcat Point-LP USB xHCI Controller [8086:9cb1] (rev 03)
-> 00:16.0 Communication controller [0780]: Intel Corporation Wildcat Point-LP MEI Controller #1 [8086:9cba] (rev 03)
-> 00:19.0 Ethernet controller [0200]: Intel Corporation Ethernet Connection (3) I218-LM [8086:15a2] (rev 03)
-> 00:1b.0 Audio device [0403]: Intel Corporation Wildcat Point-LP High Definition Audio Controller [8086:9ca0] (rev 03)
-> 00:1c.0 PCI bridge [0604]: Intel Corporation Wildcat Point-LP PCI Express Root Port #1 [8086:9c90] (rev e3)
-> 00:1c.3 PCI bridge [0604]: Intel Corporation Wildcat Point-LP PCI Express Root Port #4 [8086:9c96] (rev e3)
-> 00:1d.0 USB controller [0c03]: Intel Corporation Wildcat Point-LP USB EHCI Controller [8086:9ca6] (rev 03)
-> 00:1f.0 ISA bridge [0601]: Intel Corporation Wildcat Point-LP LPC Controller [8086:9cc3] (rev 03)
-> 00:1f.2 SATA controller [0106]: Intel Corporation Wildcat Point-LP SATA Controller [AHCI Mode] [8086:9c83] (rev 03)
-> 00:1f.3 SMBus [0c05]: Intel Corporation Wildcat Point-LP SMBus Controller [8086:9ca2] (rev 03)
-> 01:00.0 SD Host controller [0805]: O2 Micro, Inc. SD/MMC Card Reader Controller [1217:8520] (rev 01)
-> 02:00.0 Network controller [0280]: Intel Corporation Wireless 7265 [8086:095a] (rev 59)
+My apologies for 'delaying' the driver even more.  I was accused of
+that about a year ago but it appears I didn't do too much
+damage... :-)
 
-Any idea, why the probe function `pmc_core_probe()` succeeds, despite 
-the code below?
+Best wishes for a productive week.
 
-         cpu_id = x86_match_cpu(intel_pmc_core_ids);
-         if (!cpu_id)
-                 return -ENODEV;
+Dr. Greg
 
-The watchdog driver iTCO_wdt seems to load the module `pmc_core_bxt` 
-despite I am unable to find the ACPI device `INT34D2` in the dissembled 
-AML/ASL files.
-
-
-Kind regards,
-
-Paul
+As always,
+Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
+Enjellic Systems Development, LLC     IOT platforms and edge devices.
+4206 N. 19th Ave.
+Fargo, ND  58102
+PH: 701-281-1686                      EMAIL: greg@enjellic.com
+------------------------------------------------------------------------------
+"If you get to thinkin' you're a person of some influence, try
+ orderin' somebody else's dog around."
+                                -- Cowboy Wisdom
