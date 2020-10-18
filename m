@@ -2,133 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7804291FDA
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 22:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04387291FE9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 22:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727269AbgJRUgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 16:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        id S1729277AbgJRUkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 16:40:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgJRUgB (ORCPT
+        with ESMTP id S1725776AbgJRUkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 16:36:01 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F24C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:35:59 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id e15so1544873pfh.6
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:35:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=rqhubITZucLjIPmaYRNb6YYx2VTwfGAAxlULYuBZwr4=;
-        b=QfdY8x17n/94SlduisjHjd5UHou8ch9k1JiCT9D/RwXyXGAyy2sWeGDF5sN+yfNeNH
-         89vw/c33WQOiqqbMas45A609nadok8b8IuIFYCKYRTl3ueXllzEt/S5vyYlrcSHlWi2z
-         +KMTYh1t81VFDLh9OsPW7VkoP4sD1cb+p+FubTq76KT3CqVuvEQkOlOepvgLDEU7wX2H
-         d8+4B8MzyfFIcseWeJ33wW0R43PdoFV8s/RXGC65SiKWdwMXTqzzccneLkKqIsFnyhgH
-         77MkKbl3deSl2pdnFCWYtU6ancCUk76E/j4EGjoPaq/jvZ/bbMyzoyihZM4DB3z5q1iU
-         xjYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=rqhubITZucLjIPmaYRNb6YYx2VTwfGAAxlULYuBZwr4=;
-        b=n+F4Y1fmYvZLLbNKU5otOKW4pEUwhtaeP0c/PwfFx2iGnJfNzFvWeLAxVnys8LO2wL
-         97+vq8idajoGdCvCKeQ6Sp/sJ7hUir/Yfi1PmlNKvxgvemCsbKCk6w6PZR1+lFghej8j
-         qF0PleUAkCoqU7K9WEZKeoYSw142TDGpVOVdCdOaifX+c6/qSJ1XGRy3eYLdT4iJc8Dw
-         v3M3zxs5Ea0492kLGpl9ZxJKsuTePQfCMyOGFSClCJTdHXnaCom6akp7beKKJpmqtdWw
-         SlamR5xjiqwzBSZX984uIwh2v4Whz4JV661AslWcQK3VEDs2GCZvprTtqL21c+8EhbPk
-         qJTQ==
-X-Gm-Message-State: AOAM53332lgJ8m/8D6xi9KQmQOnaWV3hQhBNJ6mMAymSPSmvPByL6JMF
-        dPg0TGdaGWhAyHy/ix888UJa
-X-Google-Smtp-Source: ABdhPJzNCQrhHHahLFjNTXfy3QIMvULkSoY+gQdYzYFLr/RkPnnzftp97vs9Kz8+vTuSq6a2diY81A==
-X-Received: by 2002:a63:715:: with SMTP id 21mr11488068pgh.13.1603053359289;
-        Sun, 18 Oct 2020 13:35:59 -0700 (PDT)
-Received: from ubuntu ([116.68.78.80])
-        by smtp.gmail.com with ESMTPSA id l13sm2292891pgp.25.2020.10.18.13.35.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Oct 2020 13:35:58 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 02:05:52 +0530
-From:   Vaishnav M A <vaishnav@beagleboard.org>
-To:     jic23@kernel.org, andy.shevchenko@gmail.com, wsa@kernel.org,
-        knaack.h@gmx.de, lars@metafoo.de, alexandru.ardelean@analog.com,
-        matt.ranostay@konsulko.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     jkridner@beagleboard.org, drew@beagleboard.org,
-        robertcnelson@beagleboard.org, rajkovic@mikroe.com,
-        vaishnav@beagleboard.org
-Subject: [PATCH v4] iio:light:tsl2563 use generic fw accessors
-Message-ID: <20201018203552.GA816421@ubuntu>
+        Sun, 18 Oct 2020 16:40:43 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95ACDC0613D1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:40:42 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kUFTl-0002Z4-RC; Sun, 18 Oct 2020 22:40:33 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kUFTk-0007Ie-08; Sun, 18 Oct 2020 22:40:32 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>, linux-leds@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: [PATCH v9 0/3] leds: trigger: implement a tty trigger
+Date:   Sun, 18 Oct 2020 22:40:19 +0200
+Message-Id: <20201018204022.910815-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace of_property_read_u32() with device_property_read_u32(),
-when reading the amstaos,cover-comp-gain.This opens up the
-possibility of passing the properties during platform instantiation
-of the device by a suitable populated struct property_entry.
-Additionally, a minor change in logic is added to remove the
-of_node present check.
+Hello,
 
-Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
----
- v4:
-	-update commit message, fix punctuation.
-	-update to a shorter commit title, used for similar changes
-	 within the subsystem, like in 00fa493b9989
-	 ("iio:proximity:as3935: Drop of_match_ptr and use generic fw accessors")
- v3:
-        -modify commit message for readability, mention minor logic change
-        -include  mod_devicetable.h and property.h headers
- v2:
-        -fix commit message
- drivers/iio/light/tsl2563.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+this is v9 of this series. Changes compared to v8 sent with Message-Id
+20201012123358.1475928-1-u.kleine-koenig@pengutronix.de on Oct 12:
 
-diff --git a/drivers/iio/light/tsl2563.c b/drivers/iio/light/tsl2563.c
-index abc8d7db8dc1..5bf2bfbc5379 100644
---- a/drivers/iio/light/tsl2563.c
-+++ b/drivers/iio/light/tsl2563.c
-@@ -12,6 +12,8 @@
-  */
- 
- #include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/property.h>
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-@@ -703,7 +705,6 @@ static int tsl2563_probe(struct i2c_client *client,
- 	struct iio_dev *indio_dev;
- 	struct tsl2563_chip *chip;
- 	struct tsl2563_platform_data *pdata = client->dev.platform_data;
--	struct device_node *np = client->dev.of_node;
- 	int err = 0;
- 	u8 id = 0;
- 
-@@ -738,13 +739,14 @@ static int tsl2563_probe(struct i2c_client *client,
- 	chip->calib0 = tsl2563_calib_from_sysfs(CALIB_BASE_SYSFS);
- 	chip->calib1 = tsl2563_calib_from_sysfs(CALIB_BASE_SYSFS);
- 
--	if (pdata)
-+	if (pdata) {
- 		chip->cover_comp_gain = pdata->cover_comp_gain;
--	else if (np)
--		of_property_read_u32(np, "amstaos,cover-comp-gain",
--				     &chip->cover_comp_gain);
--	else
--		chip->cover_comp_gain = 1;
-+	} else {
-+		err = device_property_read_u32(&client->dev, "amstaos,cover-comp-gain",
-+					       &chip->cover_comp_gain);
-+		if (err)
-+			chip->cover_comp_gain = 1;
-+	}
- 
- 	dev_info(&client->dev, "model %d, rev. %d\n", id >> 4, id & 0x0f);
- 	indio_dev->name = client->name;
+ - make struct led_trigger ledtrig_tty static
+ - drop write-only variable firstrun (which is a remains of the changes
+   done in v8)
+
+Both issues were found by the kernel test robot <lkp@intel.com>.
+
+Best regards
+Uwe
+
+Uwe Kleine-König (3):
+  tty: rename tty_kopen() and add new function tty_kopen_shared()
+  tty: new helper function tty_get_icount()
+  leds: trigger: implement a tty trigger
+
+ .../ABI/testing/sysfs-class-led-trigger-tty   |   6 +
+ drivers/accessibility/speakup/spk_ttyio.c     |   2 +-
+ drivers/leds/trigger/Kconfig                  |   9 +
+ drivers/leds/trigger/Makefile                 |   1 +
+ drivers/leds/trigger/ledtrig-tty.c            | 184 ++++++++++++++++++
+ drivers/tty/tty_io.c                          |  85 +++++---
+ include/linux/tty.h                           |   7 +-
+ 7 files changed, 269 insertions(+), 25 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-led-trigger-tty
+ create mode 100644 drivers/leds/trigger/ledtrig-tty.c
+
+
+base-commit: bbf5c979011a099af5dc76498918ed7df445635b
 -- 
-2.25.1
+2.28.0
 
