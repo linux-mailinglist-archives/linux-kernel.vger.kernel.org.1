@@ -2,150 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC3729177C
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 14:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEC429178F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 15:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgJRMxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 08:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbgJRMws (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 08:52:48 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66821C0613D3;
-        Sun, 18 Oct 2020 05:52:48 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id d81so7706713wmc.1;
-        Sun, 18 Oct 2020 05:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=N7xv68tWBewz/GeA48bq8PQRHwqrfz4hriEOmLuQ28Y=;
-        b=mugo8nze+fjR6Wx/dWsPwWxXnGP/l5l1LWq31lWFHS2kLRgbe+nT5/lhIJAeI2dikl
-         1KOtLx8BnSZN6txnQ/eTmDOAhlRmsdCfj7XyS4DYyZRSZDdQF5wcrs8yY4WJJa+YfwRA
-         X018hpLcQWqeP1x0n/l+ew2+YWYrHw+w6sfVY7PMBeFbKN9f3QKl2AJAF/HYS/OylqNk
-         xVIRmWmuN4AIjMjP72Rfw7+v3SQroch5tF2JwHGM8toeA0tNSjiglNPE4nk0GaHQb1w7
-         Av62wN8XNwr6HnRrk5Rb0eSsfAwfshI28z67IYBwpkMVQpSNc7aBGjiG2fltZMiF93Xi
-         QxuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=N7xv68tWBewz/GeA48bq8PQRHwqrfz4hriEOmLuQ28Y=;
-        b=rgLYXXnQP21NK3YpxrP+pKdrhewoFnkIs266ZplGv5mt3GoO+bqSd9DIHcKCHLdWiv
-         8h2V5iCiTG2pl5NY4+5oDzoiZd3GqBqOaQxTxLIl3sV4aFlCPrdOWd3LT0Rh5wL5FdxY
-         /H6jNyjkGIJHfzITXvelPTXbIFcIJU2+RLrioOFxiSg3XEw+I1cYg6+legt6B/MMcBp9
-         HNvLl9VPUmMIq5JhYsgpxtQF9pb0k4fUzVvArZbeISsb3pyrhX4TemS4DEdOyARw0+sY
-         yyxW4yeDYOhNDA6eTviD2ILijW2VoyW9zBlBCZS5UQ1Az5nfMX3XHqJb2oE1YNrmPFWt
-         CVoA==
-X-Gm-Message-State: AOAM530zg5OQhJQKYVSa3aMt9KCahdUlQxliDifHneODXmD4+9hwSYyI
-        a3ZItYxlJpznGn7CEmrkFgrX31MjwIw8lZee
-X-Google-Smtp-Source: ABdhPJxpHbBhE0qZR2xNZ1nASrvUppNtEOwODRkka8Om+C9N9qGVwHlQeKGjsYaIKq2FhYoZdOvQmg==
-X-Received: by 2002:a7b:cc89:: with SMTP id p9mr13452008wma.4.1603025567080;
-        Sun, 18 Oct 2020 05:52:47 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
-        by smtp.gmail.com with ESMTPSA id u2sm11940158wme.1.2020.10.18.05.52.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Oct 2020 05:52:46 -0700 (PDT)
-From:   kholk11@gmail.com
-To:     todor.too@gmail.com
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
-        robh+dt@kernel.org, marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>
-Subject: [PATCH 6/6] media: camss: csiphy: Set rate on csiX_phy clock on SDM630/660
-Date:   Sun, 18 Oct 2020 14:52:37 +0200
-Message-Id: <20201018125237.16717-7-kholk11@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201018125237.16717-1-kholk11@gmail.com>
-References: <20201018125237.16717-1-kholk11@gmail.com>
+        id S1726473AbgJRNB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 09:01:26 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:48222 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725837AbgJRNB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 09:01:26 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id F17FDFB03;
+        Sun, 18 Oct 2020 15:01:23 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vS3LHYXK4BBc; Sun, 18 Oct 2020 15:01:22 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 983B2420E6; Sun, 18 Oct 2020 15:01:22 +0200 (CEST)
+Date:   Sun, 18 Oct 2020 15:01:22 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] drm/panel: mantix panel reset fixes
+Message-ID: <20201018130122.GA3705@bogon.m.sigxcpu.org>
+References: <cover.1602584953.git.agx@sigxcpu.org>
+ <20201016142916.GA1184974@ravnborg.org>
+ <20201017091307.GA2885@bogon.m.sigxcpu.org>
+ <20201017104736.GA2822081@ravnborg.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201017104736.GA2822081@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+Hi Sam,
+On Sat, Oct 17, 2020 at 12:47:36PM +0200, Sam Ravnborg wrote:
+> Hi Guido.
+> 
+> On Sat, Oct 17, 2020 at 11:13:07AM +0200, Guido Günther wrote:
+> > Hi Sam,
+> > On Fri, Oct 16, 2020 at 04:29:16PM +0200, Sam Ravnborg wrote:
+> > > Hi Guido.
+> > > On Tue, Oct 13, 2020 at 12:32:45PM +0200, Guido Günther wrote:
+> > [..snip..]
+> > > > 
+> > > > Changes from v1:
+> > > >  - As per review comments by Fabio Estevam
+> > > >    https://lore.kernel.org/dri-devel/CAOMZO5B5ECcConvKej=RcaF8wvOxgq7nUzKJ-ad0aSAOzUqtbQ@mail.gmail.com/
+> > > >    - Fix typo in commit messages
+> > > >  - As per review comments by Rob Herring
+> > > >    https://lore.kernel.org/dri-devel/20200929174624.GA832332@bogus/
+> > > >    - Don't use an array of reset lines
+> > > > 
+> > > > Guido Günther (3):
+> > > >   drm/panel: mantix: Don't dereference NULL mode
+> > > >   drm/panel: mantix: Fix panel reset
+> > > >   dt-binding: display: Require two resets on mantix panel
+> > > 
+> > > All applied to drm-misc-next and pushed out.
+> > > And then I remembered you had commit right - sigh.
+> > 
+> > Thanks! Is there any special care needed to get that into 5.10? The
+> > driver landed there in 72967d5616d3f0c714f8eb6c4e258179a9031c45.
+> 
+> As the patches was applied to drm-misc-next the easiet path would
+> be to cherry-pick them and apply to drm-misc-fixes.
+> dim has cherry-pick support - try to use it rahter than doing it by
+> hand.
 
-The SDM630/660 SoCs (and variants) have another clock source
-for the PHY, which must be set to a rate that's equal or
-greater than the CSI PHY timer clock: failing to do this
-will produce PHY overflows when trying to get a stream from
-a very high bandwidth camera sensor and outputting no frame
-or a partial one.
+Does that require any further ACKs or just cherry-pick and push out?
 
-Since I haven't found any usecase in which the csiX_phy
-clock needs to be higher than the csiXphy_timer, let's just
-set the same rate on both, which seems to work just perfect.
+> When you apply to drm-misc-fixes include a Fixes: tag so the tooling
+> will pick the patches automagically.
 
-Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
----
- .../media/platform/qcom/camss/camss-csiphy.c  | 22 ++++++++++++++++---
- .../media/platform/qcom/camss/camss-csiphy.h  |  1 +
- 2 files changed, 20 insertions(+), 3 deletions(-)
+Will do. It was unfortunate that the initial ones didn't get them but
+i think the drm merge happened while v2 was out on the list. I'll try
+add that relevant information to the cover letter in the future.
 
-diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
-index c00f25aac21b..a5d717d022a5 100644
---- a/drivers/media/platform/qcom/camss/camss-csiphy.c
-+++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
-@@ -113,9 +113,7 @@ static int csiphy_set_clock_rates(struct csiphy_device *csiphy)
- 	for (i = 0; i < csiphy->nclocks; i++) {
- 		struct camss_clock *clock = &csiphy->clock[i];
- 
--		if (!strcmp(clock->name, "csiphy0_timer") ||
--		    !strcmp(clock->name, "csiphy1_timer") ||
--		    !strcmp(clock->name, "csiphy2_timer")) {
-+		if (csiphy->rate_set[i]) {
- 			u8 bpp = csiphy_get_bpp(csiphy->formats,
- 					csiphy->nformats,
- 					csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
-@@ -611,6 +609,13 @@ int msm_csiphy_subdev_init(struct camss *camss,
- 	if (!csiphy->clock)
- 		return -ENOMEM;
- 
-+	csiphy->rate_set = devm_kcalloc(dev,
-+					csiphy->nclocks,
-+					sizeof(*csiphy->rate_set),
-+					GFP_KERNEL);
-+	if (!csiphy->rate_set)
-+		return -ENOMEM;
-+
- 	for (i = 0; i < csiphy->nclocks; i++) {
- 		struct camss_clock *clock = &csiphy->clock[i];
- 
-@@ -638,6 +643,17 @@ int msm_csiphy_subdev_init(struct camss *camss,
- 
- 		for (j = 0; j < clock->nfreqs; j++)
- 			clock->freq[j] = res->clock_rate[i][j];
-+
-+		if (!strcmp(clock->name, "csiphy0_timer") ||
-+		    !strcmp(clock->name, "csiphy1_timer") ||
-+		    !strcmp(clock->name, "csiphy2_timer"))
-+			csiphy->rate_set[i] = true;
-+
-+		if (camss->version == CAMSS_660 &&
-+		    (!strcmp(clock->name, "csi0_phy") ||
-+		     !strcmp(clock->name, "csi1_phy") ||
-+		     !strcmp(clock->name, "csi2_phy")))
-+			csiphy->rate_set[i] = true;
- 	}
- 
- 	return 0;
-diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.h b/drivers/media/platform/qcom/camss/camss-csiphy.h
-index 376f865ad383..f7967ef836dc 100644
---- a/drivers/media/platform/qcom/camss/camss-csiphy.h
-+++ b/drivers/media/platform/qcom/camss/camss-csiphy.h
-@@ -66,6 +66,7 @@ struct csiphy_device {
- 	u32 irq;
- 	char irq_name[30];
- 	struct camss_clock *clock;
-+	bool *rate_set;
- 	int nclocks;
- 	u32 timer_clk_rate;
- 	struct csiphy_config cfg;
--- 
-2.28.0
+Cheers,
+ -- Guido
 
+> 
+> In hindsight the patches should have carried a Fixes: tag from a start
+> and should have been applied to drm-misc-fixes from a start too.
+> 
+> I have done something like above once or twice but anyway reach out if
+> you have questions. Or ask at #dri-devel.
+> 
+> 	Sam
+> 
