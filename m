@@ -2,241 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B012916C6
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 11:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA722916CD
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 11:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgJRJlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 05:41:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25624 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725320AbgJRJlw (ORCPT
+        id S1726359AbgJRJvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 05:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgJRJvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 05:41:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603014110;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TudAeQsUJ5pd5Y9j32+DABfeXi6VPO6ucETRD2xY/80=;
-        b=SgwDQIIu0A04Xnf99o+R1ehtC2qY8Jx449HjFD8ccCmoVaCOFpifg4D21gZt9gvOSIhcu2
-        sVs44E7mP8Cvt8IcdrE8dOovPmJmuDCCT+Zx90X8r1EoUwHqQoodx8WcjZd8ua/8fhnG0v
-        zFZKZWDLroYgEcnv7v2BK8TbXl7UBTA=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462-frHi3uxJPhm0NouIukaJng-1; Sun, 18 Oct 2020 05:41:48 -0400
-X-MC-Unique: frHi3uxJPhm0NouIukaJng-1
-Received: by mail-ed1-f69.google.com with SMTP id h6so3506696edt.12
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 02:41:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TudAeQsUJ5pd5Y9j32+DABfeXi6VPO6ucETRD2xY/80=;
-        b=c0JfmSQPeGhqhXBitkRN7ZIiHrs+9RtuOGF7UYQ+ki31BQo1LXuLXQWfed1p3Yu1gF
-         uZz1WrXpXzKXcAwbfwbxvZGdF+/tSAToNnGytBgdN5LAfX7PoP1vPrTkqO8IdBZVwMOD
-         AxqBHAx0oKBE4KDX3pB1YbsbzlTxHhAb1CD8PelWEMTi1wFRUYd9ac9vsVzkDeZNq9dk
-         HfiZ83eb6knZDCpqoeJ5gCtscrCsKGD8ZOrMRwycYIbamRwajR0HBstmJVOacm3QACJF
-         FfJKN6gsArAGNvWQUpElBGDxnWNM2fxhOPlTLS4GPx6a/7IdLLK7tHXyYh1fihU/HIHH
-         N5gw==
-X-Gm-Message-State: AOAM533oPG/vUANemq+BF0htnnakQZ4Dy4aVkN3PX8WcNGOHCcojCPU6
-        1T+W5TMPCRBzBbCy3Tvskurz3okgkCmjKdeR2AGMUgSQq9+40vsD5U+vyTRURe8IjxZxkqsGIoq
-        bdj5fycHQnOQluSu9U0gljQF3
-X-Received: by 2002:a17:906:4b10:: with SMTP id y16mr12440824eju.395.1603014106693;
-        Sun, 18 Oct 2020 02:41:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcnIf9lwkS7uf9YuTtQEMADmv9iWsC1b8Wz5e5LENkpMb7HO4p498S/QnYsgaX90GOyZUqoA==
-X-Received: by 2002:a17:906:4b10:: with SMTP id y16mr12440808eju.395.1603014106415;
-        Sun, 18 Oct 2020 02:41:46 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id os11sm7040204ejb.104.2020.10.18.02.41.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Oct 2020 02:41:45 -0700 (PDT)
-Subject: Re: [RFC] Documentation: Add documentation for new
- performance_profile sysfs class (Also Re: [PATCH 0/4] powercap/dtpm: Add the
- DTPM framework)
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Mark Pearson <mpearson@lenovo.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Elia Devito <eliadevito@gmail.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com>
- <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
- <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com>
- <CAJZ5v0gwc_d1vnwDVWXY+i4f0T2r0tAz8xuWV7oS_afsy7OocQ@mail.gmail.com>
- <63dfa6a1-0424-7985-7803-756c0c5cc4a5@redhat.com>
- <CAJZ5v0jpYpu3Tk7qq_MCVs0wUr-Dw0rY5EZELrVbQta0NZaoVA@mail.gmail.com>
- <87d9a808-39d6-4949-c4f9-6a80d14a3768@redhat.com>
- <CAJZ5v0iWmmu5WV7cX7uNb61NMYQ7s0dnhg1K+T0x90b3sBfU9w@mail.gmail.com>
- <943531a7-74d6-7c7f-67bc-2645b3ba7b8a@redhat.com>
- <CAJZ5v0j8o5Ot-4U0HmUtckUUBSNqC+TRB6CCRzqdjeE0p_XfvA@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <25d000cc-0c00-3b17-50f7-ca8de8b7a65b@redhat.com>
-Date:   Sun, 18 Oct 2020 11:41:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Sun, 18 Oct 2020 05:51:53 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3363DC061755;
+        Sun, 18 Oct 2020 02:51:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=qEMPtsMLmphrg8Ai/5Jx8LIQzpGt/vPBENY1d0RHC0E=; b=Lcf4K01IIvsr9y0KWAyBU51kL
+        tBL6KBpVPqVkHgTKZ8NomGJTe0GNS4C7pFwC22oHL20kyd6gBm2HOhmjqwLjR1cEbFQf+7z6ngNT/
+        yWNSWU3RKHlTp60XJzKTHAFdkMEw3CNV0oAD1Ij+wRmggkUZpZ9I5NXABiCqfoKe2SYalm2m1gfMv
+        lMqRrXmJ/Yepa8+lc+QPNQmmsPQ3L4FlNdKxjrGwqPqeagjoYs1u3hMW1Fl0Nq2A+gHW+aJIOWHl5
+        GP44LwSAJ3TOpXTgLfqAJC6MsPO8dh3wlkt+tCOQkq9/WlMBajs7v0eYzw4fTWRz9k/7DT/epZdA9
+        nOo7Ap+lA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47782)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kU5Lq-0004Al-VS; Sun, 18 Oct 2020 10:51:43 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kU5Lm-00039F-1K; Sun, 18 Oct 2020 10:51:38 +0100
+Date:   Sun, 18 Oct 2020 10:51:38 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 3/3] timekeeping: remove arch_gettimeoffset
+Message-ID: <20201018095137.GV1551@shell.armlinux.org.uk>
+References: <20201008154601.1901004-1-arnd@arndb.de>
+ <20201008154601.1901004-4-arnd@arndb.de>
+ <CACRpkdbc-Y6M+q8f7VEiee41ChUtP_5ygy_YN-wi873a+bN3yQ@mail.gmail.com>
+ <20201015095307.GS1551@shell.armlinux.org.uk>
+ <CACRpkdaOuMHfqrToVPRVW1zEYDY6H-gPm1QkR2CydtbLj-7csw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0j8o5Ot-4U0HmUtckUUBSNqC+TRB6CCRzqdjeE0p_XfvA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdaOuMHfqrToVPRVW1zEYDY6H-gPm1QkR2CydtbLj-7csw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/16/20 4:51 PM, Rafael J. Wysocki wrote:
-> On Fri, Oct 16, 2020 at 1:11 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> <note folding the 2 threads we are having on this into one, adding every one from both threads to the Cc>
->>
->> Hi,
->>
->> On 10/14/20 5:42 PM, Rafael J. Wysocki wrote:
->>> On Wed, Oct 14, 2020 at 4:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>>> On 10/14/20 3:33 PM, Rafael J. Wysocki wrote:
->>
->> <snip>
->>
->>>>> First, a common place to register a DPTF system profile seems to be
->>>>> needed and, as I said above, I wouldn't expect more than one such
->>>>> thing to be present in the system at any given time, so it may be
->>>>> registered along with the list of supported profiles and user space
->>>>> will have to understand what they mean.
->>>>
->>>> Mostly Ack, I would still like to have an enum for DPTF system
->>>> profiles in the kernel and have a single piece of code map that
->>>> enum to profile names. This enum can then be extended as
->>>> necessary, but I want to avoid having one driver use
->>>> "Performance" and the other "performance" or one using
->>>> "performance-balanced" and the other "balanced-performance", etc.
->>>>
->>>> With the goal being that new drivers use existing values from
->>>> the enum as much as possible, but we extend it where necessary.
->>>
->>> IOW, just a table of known profile names with specific indices assigned to them.
->>
->> Yes.
->>
->>> This sounds reasonable.
->>>
->>>>> Second, irrespective of the above, it may be useful to have a
->>>>> consistent way to pass performance-vs-power preference information
->>>>> from user space to different parts of the kernel so as to allow them
->>>>> to adjust their operation and this could be done with a system-wide
->>>>> power profile attribute IMO.
->>>>
->>>> I agree, which is why I tried to tackle both things in one go,
->>>> but as you said doing both in 1 API is probably not the best idea.
->>>> So I believe we should park this second issue for now and revisit it
->>>> when we find a need for it.
->>>
->>> Agreed.
->>>
->>>> Do you have any specific userspace API in mind for the
->>>> DPTF system profile selection?
->>>
->>> Not really.
->>
->> So before /sys/power/profile was mentioned, but that seems more like
->> a thing which should have a set of fixed possible values, iow that is
->> out of scope for this discussion.
+On Thu, Oct 15, 2020 at 02:38:07PM +0200, Linus Walleij wrote:
+> On Thu, Oct 15, 2020 at 11:53 AM Russell King - ARM Linux admin
+> <linux@armlinux.org.uk> wrote:
 > 
-> Yes.
+> > Don't be misled. It was not a matter of "enough gritty people", it
+> > was a matter that EBSA110 was blocking it.
 > 
->> Since we all seem to agree that this is something which we need
->> specifically for DPTF profiles maybe just add:
->>
->> /sys/power/dptf_current_profile    (rw)
->> /sys/power/dptf_available_profiles (ro)
->>
->> (which will only be visible if a dptf-profile handler
->>  has been registered) ?
->>
->> Or more generic and thus better (in case other platforms
->> later need something similar) I think, mirror the:
->>
->> /sys/bus/cpu/devices/cpu#/cpufreq/energy_performance_* bits
->> for a system-wide energy-performance setting, so we get:
->>
->> /sys/power/energy_performance_preference
->> /sys/power/energy_performance_available_preferences
-> 
-> But this is not about energy vs performance only in general, is it?
-> 
->> (again only visible when applicable) ?
->>
->> I personally like the second option best.
-> 
-> But I would put it under /sys/firmware/ instead of /sys/power/ and I
-> would call it something like platform_profile (and
-> platform_profile_choices or similar).
+> I remember that EBSA110 was quite different in that it had this
+> especially limited PIT timer, true that. At one point I even read
+> up on the details of it and then forgot them :/
 
-Currently we only have dirs under /sys/firmware:
+Yes, it was so basic that it required software to reprogram it on every
+interrupt - it had no sensible periodic mode. The side effect of which
+was that unless done carefully, your timekeeping varied all over the
+place (so much that ntpd was not happy.) The final implementation made
+ntpd really quite happy on the machine despite the timer's weirdness,
+up until Linux stopped allowing interrupts to be nested. At that point,
+it was back to utterly crap timekeeping.
 
-[hans@x1 ~]$ ls /sys/firmware
-acpi  dmi  efi  memmap
-
-But we do have /sys/firmware/apci/pm_profile:
-
-Documentation/ABI/stable/sysfs-acpi-pmprofile
-
-What:           /sys/firmware/acpi/pm_profile
-Date:           03-Nov-2011
-KernelVersion:  v3.2
-Contact:        linux-acpi@vger.kernel.org
-Description:    The ACPI pm_profile sysfs interface exports the platform
-                power management (and performance) requirement expectations
-                as provided by BIOS. The integer value is directly passed as
-                retrieved from the FADT ACPI table.
-Values:         For possible values see ACPI specification:
-                5.2.9 Fixed ACPI Description Table (FADT)
-                Field: Preferred_PM_Profile
-
-                Currently these values are defined by spec:
-                0 Unspecified
-                1 Desktop
-                2 Mobile
-                3 Workstation
-                4 Enterprise Server
-		...
-
-Since all platforms which we need this for are ACPI based
-(and the involved interfaces are also all ACPI interfaces)
-how about:
-
-/sys/firmware/acpi/platform_profile
-/sys/firmware/acpi/platform_profile_choices
-
-?
-
-I think this goes nice together with /sys/firmware/acpi/pm_profile
-although that is read-only and this is a read/write setting.
-
-Rafel, would:
-
-/sys/firmware/acpi/platform_profile
-/sys/firmware/acpi/platform_profile_choices
-
-work for you ?
-
-Regards,
-
-Hans
-
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
