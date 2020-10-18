@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D6F2918A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 19:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 987112918B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 19:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbgJRRkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 13:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgJRRkF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 13:40:05 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2B5C061755;
-        Sun, 18 Oct 2020 10:40:04 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id d24so8690807ljg.10;
-        Sun, 18 Oct 2020 10:40:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CZ5/1YNy2bWo7Jp+UxAXqknDLVCcYm3vq3FYtrYD/QY=;
-        b=l6u3B8phZSYgy1V4b9FLJO+NLWfYJD3epja1Etg9m4quhshmTJ8GtBeaFevy9ziDsI
-         hre+pYMJZAMuQJGksbOlWryhYW6ift3IyFD+jr62MCy7jZcBlYLRpP9qXsnZyriPdZgk
-         UeaKIB8G1IblZxUp5pLoK9koCuDwC76n70rnFkbXKFMt7NKSdCIbS6OQROuESLAppTj6
-         hae4vXEZZce1WieTsDf2Jm64ea7vP28tcSslN4YevjMJj0gbI2zsPuKOMTrIRO5WsT/V
-         rhgsrcAcvpyPLpjioSCsAn8OVFOyn2VA2Fs+szWw/u5O+fxe45XK2XayWb0Rq2U+MGg/
-         bspA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CZ5/1YNy2bWo7Jp+UxAXqknDLVCcYm3vq3FYtrYD/QY=;
-        b=PSoPfbwi7H2YpBBHUnwkms+88JKHwYZJjBYeBbKb65hPav/Dw36YuaVTPQDsLHNnbL
-         0IwX5tTxf3/o5l1cx34N3i6fePfCtXngLXnuav3yUoA0nXlEKKm+/oK7hTVLoi8c8PLI
-         vHN3/kJj0CDRW6W1XVd6aCYpOQ9sJj1HIizAL+10a4dp+fTOrZ2uHWTu74s6ZxlJ1WoY
-         tTvyoBFl2kxrWbR3Ca+ouItzhZ8W+nDjFlj6b7HbQNGKnUPo2RnnVkGkEqBbjI/pIYdC
-         RL2ogmF5+PLvEvBpRMDVdjEppZc2LqVLmwPBPMGPNc/ZK35Mbw8JHwX3YaSKQ6XngikR
-         uQ+A==
-X-Gm-Message-State: AOAM530aJ1yXm+9ChYbi0hn4ODHJ6YtJ8SzUKv5CvzwtpYWUXLdsnmKD
-        GY7lD7ueRRSzaj++f9zqlHqPUhO0vrpcOg==
-X-Google-Smtp-Source: ABdhPJxMUy/3JQXqufHrNfxcxp+8pLkSS1BbN7I5aOJx8L6RKPOrWgvCnIRR/6i3SGAyiXcKPsSTiQ==
-X-Received: by 2002:a2e:9c52:: with SMTP id t18mr4941259ljj.65.1603042803010;
-        Sun, 18 Oct 2020 10:40:03 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:42a2:d0b3:f3e9:8103:3101:8ef6? ([2a00:1fa0:42a2:d0b3:f3e9:8103:3101:8ef6])
-        by smtp.gmail.com with ESMTPSA id p26sm2900343lfd.262.2020.10.18.10.40.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Oct 2020 10:40:02 -0700 (PDT)
-Subject: Re: [PATCH v1] usb: dwc3: core: fix a issue about clear connect state
-To:     Dejin Zheng <zhengdejin5@gmail.com>, balbi@kernel.org,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20201018134734.10406-1-zhengdejin5@gmail.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <4dcdcdcf-2878-f6b1-e85a-6cb2a478ed1a@gmail.com>
-Date:   Sun, 18 Oct 2020 20:40:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1727261AbgJRRuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 13:50:00 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:37584 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgJRRuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 13:50:00 -0400
+Received: from zn.tnic (p200300ec2f250700329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f25:700:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1F9ED1EC0249;
+        Sun, 18 Oct 2020 19:49:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603043399;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=SbE868tEU7gQHKQ0mIlsGDQikJ8XI0dl4ksEKyh2LKI=;
+        b=baWm0yBXxtPAEzeNqadcs7KN+z+Lwlfu3TUg9gfHRBjo8OveGmKVQ12yOX66Fmzp+YzSOG
+        8SKHGnW42L2K4LKsk3SrMd4gbI4s2PqkZT+odci2/mRTI86thTHRUWDrQTownkh9XBI+9g
+        5DRD/xm2Rbrt2X07TywIKZ0/xyF6OgQ=
+Date:   Sun, 18 Oct 2020 19:49:48 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        jpoimboe@redhat.com, mbenes@suse.cz,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        shile.zhang@linux.alibaba.com, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Fwd: [WARNING AND ERROR]  may be  system slow and  audio and
+ video breaking
+Message-ID: <20201018174948.GC8364@zn.tnic>
+References: <959da1eee73f58a824fe4913b5cacda6de0f392e.camel@rajagiritech.edu.in>
+ <b4533bcbb095cf11f01d0adfd50912c52242eb02.camel@rajagiritech.edu.in>
 MIME-Version: 1.0
-In-Reply-To: <20201018134734.10406-1-zhengdejin5@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <b4533bcbb095cf11f01d0adfd50912c52242eb02.camel@rajagiritech.edu.in>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Sun, Oct 18, 2020 at 10:42:39PM +0530, Jeffrin Jose T wrote:
+> smpboot: Scheduler frequency invariance went wobbly, disabling!
+> [ 1112.592866] unchecked MSR access error: RDMSR from 0x123 at rIP:
+> 0xffffffffb5c9a184 (native_read_msr+0x4/0x30)
+> [ 1112.592869] Call Trace:
+> [ 1112.592876]  update_srbds_msr+0x6f/0xb0
+> [ 1112.592880]  smp_store_cpu_info+0x8e/0xb0
+> [ 1112.592883]  start_secondary+0x93/0x200
+> [ 1112.592887]  ? set_cpu_sibling_map+0xcb0/0xcb0
+> [ 1112.592891]  secondary_startup_64+0xa4/0xb0
+> [ 1112.592898] unchecked MSR access error: WRMSR to 0x123 (tried to
+> write 0x0000000000000000) at rIP: 0xffffffffb5c9a264
+> (native_write_msr+0x4/0x20)
+> [ 1112.592899] Call Trace:
+> [ 1112.592902]  update_srbds_msr+0x98/0xb0
+> [ 1112.592904]  smp_store_cpu_info+0x8e/0xb0
+> [ 1112.592907]  start_secondary+0x93/0x200
+> [ 1112.592911]  ? set_cpu_sibling_map+0xcb0/0xcb0
+> [ 1112.592914]  secondary_startup_64+0xa4/0xb0
+> [ 2915.106879] show_signal: 6 callbacks suppressed
+> [ 6089.209343] WARNING: stack going in the wrong direction? at
+> i915_gem_close_object+0x2fb/0x560 [i915]
 
-On 10/18/20 4:47 PM, Dejin Zheng wrote:
+This looks strange.
 
-> According to Synopsys Programming Guide chapter 2.2 Register Resets,
-> it cannot reset the DCTL register by set DCTL.CSFTRST for Core Soft Reset,
+Please send
 
-   s/set/setting/.
+- full dmesg
+- output from the "grep -r . /sys/devices/system/cpu/vulnerabilities/" command
+- /proc/cpuinfo
+- .config
 
-> if DWC3 controller as a slave device and stay connected with a usb host,
-> then, reboot linux, it will fail to reinitialize dwc3 as a slave device
+Privately is fine too.
 
-   s/reboot/while rebooting/.
+> -----------------x---------------x----------------x------------
+> Linux debian 5.9.1-rc1+ #4 SMP Fri Oct 16 16:48:04 IST 2020 x86_64
 
-> when the DWC3 controller did not power off. because the connection status
-> is incorrect, so we also need clear DCTL.RUN_STOP bit for disable connect
-                               ^ to                               ^ ing
+What kernel is that exactly?
 
-> when do core soft reset.
-         ^ ing
+Can you reproduce with plain v5.9 too?
 
-> Fixes: f59dcab176293b6 ("usb: dwc3: core: improve reset sequence")
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-[...]
+Thx.
 
-MBR, Sergei
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
