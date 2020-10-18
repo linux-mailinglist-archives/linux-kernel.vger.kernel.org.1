@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF989291B03
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 21:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A8F291B3D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 21:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732333AbgJRT2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 15:28:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732248AbgJRT2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 15:28:09 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD2C02226B;
-        Sun, 18 Oct 2020 19:28:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603049288;
-        bh=jIAekVB3MQm0oOvM6jDIOM8yBr6iMSKLVdA9Kkfu914=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OYHcZtgLGtDPZFThdeBKtt6x/3P59QCihMWbHxT9OlSrYkb2slcG18nTw+X2n9/xz
-         5hoUfAIAqILjoepmangx21fkpNZcMIRLPZ6xeTHAdHRKYeftqABgE7BLw8Ar6fB2LP
-         9D0yOOQPAiBegSPj98RInr2w581PSqb3JOtH2AMg=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zekun Shen <bruceshenzk@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 33/33] ath10k: check idx validity in __ath10k_htt_rx_ring_fill_n()
-Date:   Sun, 18 Oct 2020 15:27:28 -0400
-Message-Id: <20201018192728.4056577-33-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201018192728.4056577-1-sashal@kernel.org>
-References: <20201018192728.4056577-1-sashal@kernel.org>
+        id S1732528AbgJRTaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 15:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732154AbgJRTaW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 15:30:22 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B87BC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 12:30:21 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id n15so9057379wrq.2
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 12:30:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OiO/CbYiErh+VMCoZF8e42eNV4rVIWemGcIMMY1+JXo=;
+        b=NO4BBseFZMaLr8Ping9guGMNWZ1CDpYUAPxPRADAuwkhBTiCKXXny83bHqMUO4pWHp
+         Cb7yex3BZ8LvGX/cOXX101giFa0IVT/1ZaVCjJelWjS/u1jDcxX96OZwmUfGTuj4feQ+
+         eIRwxPqkGXyVHPScYlmqJYOGX8lkUD9NKIqKqnykzjy7guTsquwJgQqOE5GLVAXwjhnd
+         aJazSik69uPmb5OZk2jvnmiJTVCB7PYCvUsUeXtaRSuG+H0ZHW7pEZKnKkLvIu4/fiWr
+         QZc18ABP001JKDv1CDH5APJsH4sCP2NIkr38QBNYXXwQRpRgzocDlC3nwAgTliYvDrjy
+         911A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OiO/CbYiErh+VMCoZF8e42eNV4rVIWemGcIMMY1+JXo=;
+        b=B0C2k7r8Ybf9hupmN/mMx1FYyMSN/qTpriujjHJRgf9m37W5g4vjM4PEVw3i2bYr1a
+         lQ/7AX2ALWCR2LasfFTQ8lKUc2bvs6mPGxhfpjSOXqJhdlputT5z2GTN6cj10WmWD+0S
+         dFO62vdhXJQsNuEVNuUvil2bzWQ2uHyW1Ja9jVJYeoyYUCHXXww8tU7yZmCRk7Hvj2Ks
+         Y3b1qDedj0FuY3b0gkN1/zjlk1tNWhvPULG/ZFIQ1y5Ipja7Kff5kLMOKnE1Jxziwy07
+         lx3UC7u7KT5MO/0s7Qz79pJRpwswHvq1KyAT2da0C2D6KBUn7sNR/U1hR00XpGKXMEjQ
+         dO5A==
+X-Gm-Message-State: AOAM531XTmJcPVh+IfpE2yp3h6rDCffXhNmaYOwV5jXFU9W+W1od/o70
+        rzY8SM+SlxN+N6exNmHeHD4LEpXuvKS1fw==
+X-Google-Smtp-Source: ABdhPJxjk2lJO5ut9RfrL95tkil3NUyCvwqdq6rPg6tJq6126c2Etcp0yxa8XlIz5XjHq8J8lTbXqQ==
+X-Received: by 2002:adf:e589:: with SMTP id l9mr15846465wrm.110.1603049419718;
+        Sun, 18 Oct 2020 12:30:19 -0700 (PDT)
+Received: from localhost.localdomain (124.171.185.81.rev.sfr.net. [81.185.171.124])
+        by smtp.gmail.com with ESMTPSA id v8sm13571628wmb.20.2020.10.18.12.30.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Oct 2020 12:30:19 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Cc:     dennis-yc.hsieh@mediatek.com, ck.hu@mediatek.com,
+        bibby.hsieh@mediatek.com, jaswinder.singh@linaro.org,
+        matthias.bgg@gmail.com, Fabien Parent <fparent@baylibre.com>
+Subject: [PATCH] dt-bindings: mailbox: mtk-gce: fix incorrect mbox-cells value
+Date:   Sun, 18 Oct 2020 21:30:16 +0200
+Message-Id: <20201018193016.3339045-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zekun Shen <bruceshenzk@gmail.com>
+As the binding documentation says, #mbox-cells must have a value of 2,
+but the example use a value 3. The MT8173 device tree correctly use
+mbox-cells = <2>. This commit fixes the example.
 
-[ Upstream commit bad60b8d1a7194df38fd7fe4b22f3f4dcf775099 ]
-
-The idx in __ath10k_htt_rx_ring_fill_n function lives in
-consistent dma region writable by the device. Malfunctional
-or malicious device could manipulate such idx to have a OOB
-write. Either by
-    htt->rx_ring.netbufs_ring[idx] = skb;
-or by
-    ath10k_htt_set_paddrs_ring(htt, paddr, idx);
-
-The idx can also be negative as it's signed, giving a large
-memory space to write to.
-
-It's possibly exploitable by corruptting a legit pointer with
-a skb pointer. And then fill skb with payload as rougue object.
-
-Part of the log here. Sometimes it appears as UAF when writing
-to a freed memory by chance.
-
- [   15.594376] BUG: unable to handle page fault for address: ffff887f5c1804f0
- [   15.595483] #PF: supervisor write access in kernel mode
- [   15.596250] #PF: error_code(0x0002) - not-present page
- [   15.597013] PGD 0 P4D 0
- [   15.597395] Oops: 0002 [#1] SMP KASAN PTI
- [   15.597967] CPU: 0 PID: 82 Comm: kworker/u2:2 Not tainted 5.6.0 #69
- [   15.598843] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
- BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
- [   15.600438] Workqueue: ath10k_wq ath10k_core_register_work [ath10k_core]
- [   15.601389] RIP: 0010:__ath10k_htt_rx_ring_fill_n
- (linux/drivers/net/wireless/ath/ath10k/htt_rx.c:173) ath10k_core
-
-Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200623221105.3486-1-bruceshenzk@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Documentation/devicetree/bindings/mailbox/mtk-gce.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index a65b5d7f59f44..1c6c422dbad64 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -99,6 +99,14 @@ static int __ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
- 	BUILD_BUG_ON(HTT_RX_RING_FILL_LEVEL >= HTT_RX_RING_SIZE / 2);
+diff --git a/Documentation/devicetree/bindings/mailbox/mtk-gce.txt b/Documentation/devicetree/bindings/mailbox/mtk-gce.txt
+index cf48cd806e00..7771ecaac586 100644
+--- a/Documentation/devicetree/bindings/mailbox/mtk-gce.txt
++++ b/Documentation/devicetree/bindings/mailbox/mtk-gce.txt
+@@ -47,7 +47,7 @@ Example:
+ 		interrupts = <GIC_SPI 135 IRQ_TYPE_LEVEL_LOW>;
+ 		clocks = <&infracfg CLK_INFRA_GCE>;
+ 		clock-names = "gce";
+-		#mbox-cells = <3>;
++		#mbox-cells = <2>;
+ 	};
  
- 	idx = __le32_to_cpu(*htt->rx_ring.alloc_idx.vaddr);
-+
-+	if (idx < 0 || idx >= htt->rx_ring.size) {
-+		ath10k_err(htt->ar, "rx ring index is not valid, firmware malfunctioning?\n");
-+		idx &= htt->rx_ring.size_mask;
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
- 	while (num > 0) {
- 		skb = dev_alloc_skb(HTT_RX_BUF_SIZE + HTT_RX_DESC_ALIGN);
- 		if (!skb) {
+ Example for a client device:
 -- 
-2.25.1
+2.28.0
 
