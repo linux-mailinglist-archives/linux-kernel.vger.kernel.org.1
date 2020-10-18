@@ -2,92 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6771291FAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 22:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80714291FB0
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 22:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728978AbgJRUGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 16:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728169AbgJRUGw (ORCPT
+        id S1727787AbgJRUHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 16:07:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21473 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726422AbgJRUHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 16:06:52 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B58C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:06:52 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id j17so8391654ilr.2
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6Q+QZmJpwsedrOmuOwexAkyOHh5e+Tpl5OUShy/OlPs=;
-        b=xySt+MvjPglENyFuBRQOnmr66cLHBJ5yfRSQr6vuGJpUvrkhwagNaKMZSGEaWgpwCR
-         TlIDLVuq4NeZri0lInLdrSe8sUAbMSOwwXMdIUTfmI8INr/IyJxXLNDMgNhw2wo4c0kF
-         YdKhs19l/95pP0J1kzkDdnHdh5aJ5nri8gaxhdIbQ/7xGltX3jK4gbiI9XoE0GPYgLrX
-         65Aji9GQyWyOpJoyVqzRRcJoCgv8ImBdIX1zlZvT8fiQ97XuAzsx9tQEZmqk+/YhCwvL
-         YalbdVBMG/b9oKiyPrzhs2jaQ4D35C1w1VZgOguLoa8vSfoRe/DNJ5/J1gLSeINnAS+f
-         QftQ==
+        Sun, 18 Oct 2020 16:07:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603051673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NTLZYWawMA/L7zMDVfD3OfVMnCwMIaw3VHURN6LV+Y0=;
+        b=KeiQwrW9sPfr+vR6uMFXkyS2kaqOocIRRR+FWQlSwyfTkQXxjiPahAzVW1ddnTIJ+gsEiG
+        7JlOsTK0WYxPs0HsZtFCA4ptTn3Ti7MJM5yMW5puegDD8Nv8p5F43mFpt6c88Q4nYR7dIF
+        uDfZmDlKk4T9UueSRtetz4GmOrcJ1Ww=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-z5BxICbVO-W4QO6264HbYA-1; Sun, 18 Oct 2020 16:07:51 -0400
+X-MC-Unique: z5BxICbVO-W4QO6264HbYA-1
+Received: by mail-qt1-f198.google.com with SMTP id i39so5042666qtb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 13:07:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6Q+QZmJpwsedrOmuOwexAkyOHh5e+Tpl5OUShy/OlPs=;
-        b=hpi5v4toZkMjjnayvV/J0eZ3zD6XhyjgIxMsScP9KbdiltCRzqXibe0j7+Zt6o7rFw
-         iAuXhritF5v16uPB+aEzDuQlcc0R6Zwib2dImQYJwJiTA7BqUXkHknv9chSbZi9WakpX
-         Qb8oFja3KTmIToGzta3jtz0DRsDnKMD6YPs2QlGZVGImX9LpoJD2iR3TWiKAEbvrJvoI
-         1A/tPhcr0QYzgap89uPOkuvJZiJLtigfs2F0SMxc3TC3MT5PX8dasZ26KQxqiyCpH/DX
-         ZR+U7fZTolVntO0Q+dquXS33/UAw4DYPT/p6Trh8pOy25YvTzF5Jm26ypy3915rzs63p
-         NtRA==
-X-Gm-Message-State: AOAM533Ikn510pDVQf/JgI3pMjart5mYwC4ZkPjbWuMFrtk1HaDObEFL
-        hJCSFoJiS77rNWTkQPIag9a7ofpKS7RL2PbQh/YW
-X-Google-Smtp-Source: ABdhPJxCFuvH10WfEmecxe7UGnx4FnMZQgVztmoxowtLqJh6PgpDRXAhi6Pco+Y6CSNr0Ukm72MpdMb5vWfahn2TaX8=
-X-Received: by 2002:a92:9a8c:: with SMTP id c12mr8811075ill.186.1603051611520;
- Sun, 18 Oct 2020 13:06:51 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=NTLZYWawMA/L7zMDVfD3OfVMnCwMIaw3VHURN6LV+Y0=;
+        b=Z0VHZuqLOlnPDAyCBcFlsyocRVz4CPftSHA8XOZGDBXft3rEsQ8cVFwBwb1fWaRN40
+         0NJsN2uQ8NRSNUZDIgpQaIZyNq0/+aKTh++milpG+Mcs0c/qHspJgRbJeHHngxV1rp4I
+         O68BS69xrwJ4mxaBWhQQp7jGob18TyPUHBXwgbIbpq1/noZ6H34fixMHGln+ddQlG0qe
+         982sX0J3CcWjPBAO1MeyGfc9CqQP96sI8Bjta/3N45McpNPKombatXC7FpnCg3bBfRDE
+         Dih5fsDrThIMJi/4t5MnpWTZ9VzQcPBGDwqYqSqFkepV2Cc+bLWIZYSlgvNdR46z49Bo
+         JIzA==
+X-Gm-Message-State: AOAM530J3Dxjs8B31976NpoDPPSAYq5SKgK7AqGPirNo8vS/L5MZy5mw
+        zW+SSJsXqfMRyufj97l3zUwzKJV9ly/hyraMefcRd6U0JOu8gRSmDlqKq/2aeeeIrCDJF8y4YR1
+        S5qBMh6GqFX2tQTJbOqyCDDOi
+X-Received: by 2002:a05:620a:2018:: with SMTP id c24mr13315174qka.154.1603051670700;
+        Sun, 18 Oct 2020 13:07:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyOPFqVFv2ElM0J+6h4M5OMFvrz9WjHO0/gGrsguFVm71lDcwnpUchKmvulX5ZULsK/1q+uCQ==
+X-Received: by 2002:a05:620a:2018:: with SMTP id c24mr13315160qka.154.1603051670423;
+        Sun, 18 Oct 2020 13:07:50 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 29sm3462782qks.28.2020.10.18.13.07.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Oct 2020 13:07:49 -0700 (PDT)
+Subject: Re: [PATCH] checkpatch: Allow --fix removal of unnecessary break
+ statements
+To:     Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Julia Lawall <julia.lawall@inria.fr>, linux-kernel@vger.kernel.org,
+        cocci <cocci@systeme.lip6.fr>
+References: <20201017160928.12698-1-trix@redhat.com>
+ <f530b7aeecbbf9654b4540cfa20023a4c2a11889.camel@perches.com>
+ <alpine.DEB.2.22.394.2010172016370.9440@hadrien>
+ <dfe24da760056e31d90ff639b47c494263b5f4a7.camel@perches.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <a15ada1f-9bad-612e-e841-934bff088f38@redhat.com>
+Date:   Sun, 18 Oct 2020 13:07:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20201018151726.GA219649@ubuntu> <CAHp75Vdk4J5t3A6b+w2-7M1zfeA2wkaf_QH_HYWZ2TY4xaKmrw@mail.gmail.com>
-In-Reply-To: <CAHp75Vdk4J5t3A6b+w2-7M1zfeA2wkaf_QH_HYWZ2TY4xaKmrw@mail.gmail.com>
-From:   Vaishnav M A <vaishnav@beagleboard.org>
-Date:   Mon, 19 Oct 2020 01:36:40 +0530
-Message-ID: <CALudOK7hTQ3BZEm7mXWMrP1N_VHQoJh3+LucHfrNYB-0BGO_Ag@mail.gmail.com>
-Subject: Re: [PATCH v3] iio: proximity: vl53l0x-i2c add i2c_device_id
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-        Song Qiang <songqiang1304521@gmail.com>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Drew Fustini <drew@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        =?UTF-8?Q?Ivan_Rajkovi=C4=87?= <rajkovic@mikroe.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <dfe24da760056e31d90ff639b47c494263b5f4a7.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 12:00 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Sun, Oct 18, 2020 at 6:53 PM Vaishnav M A <vaishnav@beagleboard.org> wrote:
-> >
-> > Add i2c_device_id table for the vl53l0x-i2c driver,
-> > helps in device instantiation using i2c_new_client_device
-> > or from userspace in cases where device-tree based description
-> > is not possible now (Example: device on a gbphy i2c adapter
-> > created by greybus)
->
-> Same comments as per v1.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+I like!
 
-Thank you Andy for your review, I have updated v4 patch with your
-suggestions : https://lore.kernel.org/patchwork/patch/1322218/
+On 10/18/20 12:49 PM, Joe Perches wrote:
+> switch/case use of break after a return or goto is unnecessary.
+>
+> There is an existing warning for these uses, so add a --fix option too.
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+>
+> For today's next, this would remove ~300 instances like:
+>
+> 	case FOO:
+> 		return bar;
+> 		break;
+> or
+> 	case FOO:
+> 		goto bar;
+> 		break;
+>
+>  scripts/checkpatch.pl | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index fab38b493cef..22263b278e87 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3678,8 +3678,11 @@ sub process {
+>  		if ($sline =~ /^\+([\t]+)break\s*;\s*$/) {
+>  			my $tabs = $1;
+>  			if ($prevline =~ /^\+$tabs(?:goto|return)\b/) {
 
-Thanks,
-Vaishnav
+could add a '|break' here to catch the couple
+
+break;
+
+break;
+
+Reviewed-by: Tom Rix <trix@redhat.com>
+
+> -				WARN("UNNECESSARY_BREAK",
+> -				     "break is not useful after a goto or return\n" . $hereprev);
+> +				if (WARN("UNNECESSARY_BREAK",
+> +					 "break is not useful after a goto or return\n" . $hereprev) &&
+> +				    $fix) {
+> +					fix_delete_line($fixlinenr, $rawline);
+> +				}
+>  			}
+>  		}
+>  
+>
+>
+
