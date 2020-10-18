@@ -2,215 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7641A292049
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 23:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625D7292050
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 23:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728559AbgJRVmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 17:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
+        id S1728658AbgJRVuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 17:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726249AbgJRVmN (ORCPT
+        with ESMTP id S1726249AbgJRVuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 17:42:13 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E19C061755;
-        Sun, 18 Oct 2020 14:42:13 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id o9so3974695plx.10;
-        Sun, 18 Oct 2020 14:42:13 -0700 (PDT)
+        Sun, 18 Oct 2020 17:50:14 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797D3C061755;
+        Sun, 18 Oct 2020 14:50:14 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id m65so4983425qte.11;
+        Sun, 18 Oct 2020 14:50:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5GwnKa3t0cilaiZZH34/HtJehNj189L7Ol8ojb+g4Wc=;
-        b=qwEVLjRfhc59TkhtkFMY0M/RR2pAyuxacdmfsfG9U3ZoBbxmAUH++QKOubJhOGE+Vw
-         EDfgOWcvGJGR8qnPF2n3Fz2Cvhiw32gyPu9E3HnzKPClt23cLkrdMSiDVTXx/Cv+vBRf
-         XONZrzNjrHfs+BgUXpthA8T+BEyoupId3hDACQ7y94sGSBvn7Ug+GJM3GHvy78AQj2jO
-         /vlM1xfLJqkMhqjg5FehAR9q2oI71bCYnwn94wyQXLUmP6B28aqJ6u32DEWTX0oSCl1d
-         g4ahlNbKb6DErJtNFu63OlIss/cYOA6W5YU5nmqvZC8pAwRw9MdSNybp9mjLf8qdiOS8
-         0I8w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LW7NtPMGJ2R8VOhKgzw6sjc10vh2YbY8kQEEkfju8fA=;
+        b=BT6sX70H+s8KhgIkqlKxOTyt7nLW9Zkkp/pWMqwoIwpRPwASphI99ISJJY/DrRq4YB
+         tuxxuQta89p2LltScao7kwUamcV10d6qq0/0GsMri9Y5uCbzF0DQIPVBZym6oh2w8IRp
+         jGv4FzahYM8UB3UvXODpIfq1ilK2uqq9Xd/9k1Vp0D25EYeZvsrsLMiSOVKbh0jHo8ly
+         ZwpyiDfjYzQI7omWM6lYTXWC4WxC4zXCwovEKbG2sVh0lXA3kgHlfvQ9kncK/jS7lzXB
+         WtZ4PQbPMGBo2Fvzsm14b4aTThFD0/Vsyl0CynTIq6qQwMl+W5yJA342KaaYBMt5xICG
+         NkkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5GwnKa3t0cilaiZZH34/HtJehNj189L7Ol8ojb+g4Wc=;
-        b=E1GClCwbd2ZmGT93aUMe7aJ1gFWHw2dylTZWqgG7xuqC+qyJgSgnWkBVl4EKCeWTam
-         u1i6UL8SoWR9fQdouO6MRDZ7Hpwnj66ZOECRYoB5oomalCRKgVoFqGv1kYxr+l+KiWK3
-         fiMxm5AU8teRDYwHd8UiTViXrq+UIvGRt3j7KSAyK04cbiANWYI+WZBJdzj6Ob3PXAmG
-         YZXwc4p9xkr06oYQVkgfoOSIaKJYFt+7L3+OnNK8x+8gEXNXo8zLXHFLVgpCYPnPYrRq
-         H2T6fTrwzLruIypwWMyQpWAUPVgV/p1wu+NXW1dpllcQkLIirdQsLr2xdZTZWVPZmOkm
-         qDkg==
-X-Gm-Message-State: AOAM530UDIZVQ/N3j6YNPXtmWcq/ChVp21doRjYQgcXqdRJOVidtDvl1
-        6vWc0IRZq6QThhaQycFvRV0=
-X-Google-Smtp-Source: ABdhPJzdpCqnLzuQ2vSx6TjD2G3wSfK/dvSnie7XjY72PoC4uZOe7h1W1Bo8U6tGdo0DCvvw2Kppsw==
-X-Received: by 2002:a17:902:d706:b029:d5:dde6:f56 with SMTP id w6-20020a170902d706b02900d5dde60f56mr4607249ply.26.1603057332595;
-        Sun, 18 Oct 2020 14:42:12 -0700 (PDT)
-Received: from syed ([2401:4900:47f3:e624:90f9:25c2:806b:19c8])
-        by smtp.gmail.com with ESMTPSA id u7sm9501375pfn.37.2020.10.18.14.42.05
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 18 Oct 2020 14:42:12 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 03:11:52 +0530
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-To:     linus.walleij@linaro.org, akpm@linux-foundation.org
-Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
-        bgolaszewski@baylibre.com, michal.simek@xilinx.com,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value and
- _set_value
-Message-ID: <15a044d3ba23f00c31fd09437bdd3e5924bb91cd.1603055402.git.syednwaris@gmail.com>
-References: <cover.1603055402.git.syednwaris@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LW7NtPMGJ2R8VOhKgzw6sjc10vh2YbY8kQEEkfju8fA=;
+        b=A54fIiuMEzcWU81kWizVMjWexILYSifLNSzkHPsvY2YrLg8OawjexicsjeQJnFnBDX
+         lFgMcBFXA82PdWXGIIPhsA9feRYqx1SsNLbcJ/ziaN4LYnD1cKUMCksOLHy3lFXz5KLL
+         mu9EmHYogFvkDCXUl8CHzXsYLO+k6XJR5vHxIizc57xHGVrJllBoAsjDznA1f3vEv4gq
+         7r/cDjJ56/USRGuhaG/HGaCbsUTFN5E6xSa5feLVxVzOgJvtHqkKZCTYXCcsqR5D9EDP
+         B2OZD0jdfFS8VVd8PckfIcCDEueSt7zf1C/eHHzfQ2kzEXzjmS452U49hb5WZ726v4sf
+         2NGA==
+X-Gm-Message-State: AOAM533U1Tx5J8OhD7nMqzqK4J++qB+CTP2+s6UHp1PSbvAYT+XXA4Gn
+        4VQzZkhSxbqT6YowujhmHWmAgdDYog4L64/VD5A=
+X-Google-Smtp-Source: ABdhPJw59Z9ZSI7YkUnrDX/NzYUwLZIQMERPV41io/elXdvNyA/Ph+eIMdFGNAEYy/TP8jUOuq9oIUb3paHWMlURueE=
+X-Received: by 2002:aed:2983:: with SMTP id o3mr12423656qtd.285.1603057812125;
+ Sun, 18 Oct 2020 14:50:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1603055402.git.syednwaris@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200817091617.28119-1-allen.cryptic@gmail.com>
+In-Reply-To: <20200817091617.28119-1-allen.cryptic@gmail.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Sun, 18 Oct 2020 23:50:00 +0200
+Message-ID: <CAFLxGvxsHD6zvTJSHeo2gaoRQfjUPZ6M=5BirOObHFjGqnzfew@mail.gmail.com>
+Subject: Re: [PATCH] arch: um: convert tasklets to use new tasklet_setup() API
+To:     Allen Pais <allen.cryptic@gmail.com>
+Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        3chas3@gmail.com, Jens Axboe <axboe@kernel.dk>,
+        stefanr@s5r6.in-berlin.de, Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sebastian Reichel <sre@kernel.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Helge Deller <deller@gmx.de>, dmitry.torokhov@gmail.com,
+        jassisinghbrar@gmail.com, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        mporter@kernel.crashing.org, alex.bou9@gmail.com,
+        Mark Brown <broonie@kernel.org>, martyn@welchs.me.uk,
+        manohar.vanga@gmail.com, mitch@sfgoth.com,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux1394-devel@lists.sourceforge.net,
+        intel-gfx@lists.freedesktop.org,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        linux-hyperv@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-ntb@googlegroups.com, linux-s390@vger.kernel.org,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        devel@driverdev.osuosl.org, Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch reimplements the xgpio_set_multiple() function in
-drivers/gpio/gpio-xilinx.c to use the new generic functions:
-bitmap_get_value() and bitmap_set_value(). The code is now simpler
-to read and understand. Moreover, instead of looping for each bit
-in xgpio_set_multiple() function, now we can check each channel at
-a time and save cycles.
+On Mon, Aug 17, 2020 at 11:17 AM Allen Pais <allen.cryptic@gmail.com> wrote:
+>
+> From: Allen Pais <allen.lkml@gmail.com>
+>
+> In preparation for unconditionally passing the
+> struct tasklet_struct pointer to all tasklet
+> callbacks, switch to using the new tasklet_setup()
+> and from_tasklet() to pass the tasklet pointer explicitly.
+>
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+> ---
+>  arch/um/drivers/vector_kern.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
----
-Changes in v12:
- - Remove extra empty newline.
+Anton, can you please review this patch?
 
-Changes in v11:
- - Change variable name 'flag' to 'flags'.
-
-Changes in v10:
- - No change.
-
-Changes in v9:
- - Remove looping of 'for_each_set_clump' and instead process two
-   halves of a 64-bit bitmap separately or individually. Use normal spin_lock 
-   call for second inner lock. And take the spin_lock_init call outside the 'if'
-   condition in the 'probe' function of driver.
-
-Changes in v8:
- - No change.
-
-Changes in v7:
- - No change.
-
-Changes in v6:
- - No change.
-
-Changes in v5:
- - Minor change: Inline values '32' and '64' in code for better
-   code readability.
-
-Changes in v4:
- - Minor change: Inline values '32' and '64' in code for better
-   code readability.
-
-Changes in v3:
- - No change.
-
-Changes in v2:
- - No change
-
- drivers/gpio/gpio-xilinx.c | 65 +++++++++++++++++++-------------------
- 1 file changed, 32 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/gpio/gpio-xilinx.c b/drivers/gpio/gpio-xilinx.c
-index 67f9f82e0db0..3ba1a993c85e 100644
---- a/drivers/gpio/gpio-xilinx.c
-+++ b/drivers/gpio/gpio-xilinx.c
-@@ -138,37 +138,37 @@ static void xgpio_set_multiple(struct gpio_chip *gc, unsigned long *mask,
- {
- 	unsigned long flags;
- 	struct xgpio_instance *chip = gpiochip_get_data(gc);
--	int index = xgpio_index(chip, 0);
--	int offset, i;
--
--	spin_lock_irqsave(&chip->gpio_lock[index], flags);
--
--	/* Write to GPIO signals */
--	for (i = 0; i < gc->ngpio; i++) {
--		if (*mask == 0)
--			break;
--		/* Once finished with an index write it out to the register */
--		if (index !=  xgpio_index(chip, i)) {
--			xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
--				       index * XGPIO_CHANNEL_OFFSET,
--				       chip->gpio_state[index]);
--			spin_unlock_irqrestore(&chip->gpio_lock[index], flags);
--			index =  xgpio_index(chip, i);
--			spin_lock_irqsave(&chip->gpio_lock[index], flags);
--		}
--		if (__test_and_clear_bit(i, mask)) {
--			offset =  xgpio_offset(chip, i);
--			if (test_bit(i, bits))
--				chip->gpio_state[index] |= BIT(offset);
--			else
--				chip->gpio_state[index] &= ~BIT(offset);
--		}
--	}
--
--	xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
--		       index * XGPIO_CHANNEL_OFFSET, chip->gpio_state[index]);
--
--	spin_unlock_irqrestore(&chip->gpio_lock[index], flags);
-+	u32 *const state = chip->gpio_state;
-+	unsigned int *const width = chip->gpio_width;
-+
-+	DECLARE_BITMAP(old, 64);
-+	DECLARE_BITMAP(new, 64);
-+	DECLARE_BITMAP(changed, 64);
-+
-+	spin_lock_irqsave(&chip->gpio_lock[0], flags);
-+	spin_lock(&chip->gpio_lock[1]);
-+
-+	bitmap_set_value(old, state[0], 0, width[0]);
-+	bitmap_set_value(old, state[1], width[0], width[1]);
-+	bitmap_replace(new, old, bits, mask, gc->ngpio);
-+
-+	bitmap_set_value(old, state[0], 0, 32);
-+	bitmap_set_value(old, state[1], 32, 32);
-+	state[0] = bitmap_get_value(new, 0, width[0]);
-+	state[1] = bitmap_get_value(new, width[0], width[1]);
-+	bitmap_set_value(new, state[0], 0, 32);
-+	bitmap_set_value(new, state[1], 32, 32);
-+	bitmap_xor(changed, old, new, 64);
-+
-+	if (((u32 *)changed)[0])
-+		xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET,
-+				state[0]);
-+	if (((u32 *)changed)[1])
-+		xgpio_writereg(chip->regs + XGPIO_DATA_OFFSET +
-+				XGPIO_CHANNEL_OFFSET, state[1]);
-+
-+	spin_unlock(&chip->gpio_lock[1]);
-+	spin_unlock_irqrestore(&chip->gpio_lock[0], flags);
- }
- 
- /**
-@@ -292,6 +292,7 @@ static int xgpio_probe(struct platform_device *pdev)
- 		chip->gpio_width[0] = 32;
- 
- 	spin_lock_init(&chip->gpio_lock[0]);
-+	spin_lock_init(&chip->gpio_lock[1]);
- 
- 	if (of_property_read_u32(np, "xlnx,is-dual", &is_dual))
- 		is_dual = 0;
-@@ -313,8 +314,6 @@ static int xgpio_probe(struct platform_device *pdev)
- 		if (of_property_read_u32(np, "xlnx,gpio2-width",
- 					 &chip->gpio_width[1]))
- 			chip->gpio_width[1] = 32;
--
--		spin_lock_init(&chip->gpio_lock[1]);
- 	}
- 
- 	chip->gc.base = -1;
 -- 
-2.26.2
-
+Thanks,
+//richard
