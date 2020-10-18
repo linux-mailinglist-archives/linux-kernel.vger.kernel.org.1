@@ -2,212 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7DD291760
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 14:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F83B291765
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 14:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgJRMbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 08:31:48 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:45123 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgJRMbr (ORCPT
+        id S1726578AbgJRMdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 08:33:39 -0400
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:12271 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725784AbgJRMdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 08:31:47 -0400
-Received: by mail-ot1-f65.google.com with SMTP id f37so7815068otf.12;
-        Sun, 18 Oct 2020 05:31:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BR4bAT5Vr/PxycFS8TzpSfye3h+0S0snmDQBRj/kypQ=;
-        b=GbXYEiQrEGUzPDXWKoY73aRBVZey6zasOM1YRbP4RKZcRR+/nBibNbloRvBr9IQwx7
-         H+CwwUZ/VJpDeE2i3iUpA/5lVcry506VgzX+19tZSJ+3MlkNVIgfiRONCAiusmI1iy9B
-         noivx+7WAj0436D+r0FySC0bLxxqLPSUiT+LhtSNvsft5aFFY3qGka62l2eo6EcxmLNN
-         ezWz2Cm2KZewvk50DGHxofWl80OusXebXOiUxoZr8qs5qoGtfbgcY5UCIsWY3KVKLArP
-         4XufTe1Tf8h1Qp7HK92DasGBSv8eCFlaf5MonJt8llDRcdbMoR0Uaab1Hh2sYUuB+5nN
-         dUeA==
-X-Gm-Message-State: AOAM532x0edtYClci/xLPYnXc6KJAOChS8r0dRTzlfSLpGyTZVTUmK+4
-        6VlPrqb+oJutendXQ490G609QIE0kFtko20bKa8khsNW
-X-Google-Smtp-Source: ABdhPJydK+ylUpkMXBo0SnSQz0xN3pQu9JLoCvAtgjkW9DHhkIty1cxnjT4bn0aaXMIGFa3h121MVjVaDdd35f1lN70=
-X-Received: by 2002:a05:6830:18cd:: with SMTP id v13mr5082968ote.206.1603024306315;
- Sun, 18 Oct 2020 05:31:46 -0700 (PDT)
+        Sun, 18 Oct 2020 08:33:39 -0400
+Date:   Sun, 18 Oct 2020 12:33:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
+        s=protonmail; t=1603024416;
+        bh=GCCxJzqOnfsVI/hX933byDTiphe1ufjEW2PregmWSLo=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=f+hV804e70VkKoIWRn7lDMgkeqT2qE8ENc6nW6FtprsQ95OUyJzlP0nWidHtODY3t
+         2rzpoWw8FEbph1STSYBYkit71a3mtR/Xze3Z7XyeILvONxAqoJBCNyeUaSfRCUz070
+         KmqilvG2Lhych3aFR83Oq7sZeDM//DxKss96mhgQ=
+To:     Rob Herring <robh@kernel.org>
+From:   Caleb Connolly <caleb@connolly.tech>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Caleb Connolly <caleb@connolly.tech>
+Subject: Re: [PATCH 2/5] dt-bindings: panel: add documentation for oneplus6 panel
+Message-ID: <3b3f9ede-89ef-26c7-3ade-bf498ea483b8@connolly.tech>
+In-Reply-To: <20201009140544.GB4071736@bogus>
+References: <20201007174736.292968-1-caleb@connolly.tech> <20201007174736.292968-3-caleb@connolly.tech> <20201009140544.GB4071736@bogus>
 MIME-Version: 1.0
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com> <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
- <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com> <CAJZ5v0gwc_d1vnwDVWXY+i4f0T2r0tAz8xuWV7oS_afsy7OocQ@mail.gmail.com>
- <63dfa6a1-0424-7985-7803-756c0c5cc4a5@redhat.com> <CAJZ5v0jpYpu3Tk7qq_MCVs0wUr-Dw0rY5EZELrVbQta0NZaoVA@mail.gmail.com>
- <87d9a808-39d6-4949-c4f9-6a80d14a3768@redhat.com> <CAJZ5v0iWmmu5WV7cX7uNb61NMYQ7s0dnhg1K+T0x90b3sBfU9w@mail.gmail.com>
- <943531a7-74d6-7c7f-67bc-2645b3ba7b8a@redhat.com> <CAJZ5v0j8o5Ot-4U0HmUtckUUBSNqC+TRB6CCRzqdjeE0p_XfvA@mail.gmail.com>
- <25d000cc-0c00-3b17-50f7-ca8de8b7a65b@redhat.com>
-In-Reply-To: <25d000cc-0c00-3b17-50f7-ca8de8b7a65b@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Sun, 18 Oct 2020 14:31:36 +0200
-Message-ID: <CAJZ5v0jC=rrTEtqoTvjw5vi=OH7i5OGC-KFuJgjCaXaDsKhUeQ@mail.gmail.com>
-Subject: Re: [RFC] Documentation: Add documentation for new
- performance_profile sysfs class (Also Re: [PATCH 0/4] powercap/dtpm: Add the
- DTPM framework)
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Mark Pearson <mpearson@lenovo.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Elia Devito <eliadevito@gmail.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 11:41 AM Hans de Goede <hdegoede@redhat.com> wrote:
+On 2020-10-09 15:05, Rob Herring wrote:
+> On Wed, Oct 07, 2020 at 05:49:14PM +0000, Caleb Connolly wrote:
+>> Document the OnePlus 6/T common panel driver, example from
+>> arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
+>>
+>> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+>> ---
+>>   .../display/panel/panel-oneplus6.yaml         | 73 +++++++++++++++++++
+>>   1 file changed, 73 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/display/panel/pan=
+el-oneplus6.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/display/panel/panel-onepl=
+us6.yaml b/Documentation/devicetree/bindings/display/panel/panel-oneplus6.y=
+aml
+>> new file mode 100644
+>> index 000000000000..23ba369cc2f5
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/display/panel/panel-oneplus6.yam=
+l
+>> @@ -0,0 +1,73 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/display/panel/panel-oneplus6.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: OnePlus 6/T panel driver
+>> +
+>> +description: |
+>> +  The OnePlus 6 panel driver encompasses the display panels found in th=
+e
+>> +  OnePlus 6 and 6T devices, the panels have almost identical behaviour =
+and
+>> +  are not used by any other devices.
+>> +
+>> +maintainers:
+>> +  - Caleb Connolly <caleb@connolly.tech>
+>> +
+>> +allOf:
+>> +  - $ref: panel-common.yaml#
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - samsung,sofef00
+>> +      - samsung,s6e3fc2x01
+>> +
+>> +  reg: true
+>> +  reset-gpios: true
+>> +  port: true
+>> +
+>> +  vddio-supply:
+>> +    description: VDDIO regulator
+> A panel with a single supply can use panel-simple-dsi.yaml.
 >
-> Hi,
+> 'reset-gpios' was missing, but has been added recently.
 >
-> On 10/16/20 4:51 PM, Rafael J. Wysocki wrote:
-> > On Fri, Oct 16, 2020 at 1:11 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> >>
-> >> <note folding the 2 threads we are having on this into one, adding every one from both threads to the Cc>
-> >>
-> >> Hi,
-> >>
-> >> On 10/14/20 5:42 PM, Rafael J. Wysocki wrote:
-> >>> On Wed, Oct 14, 2020 at 4:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> >>>> On 10/14/20 3:33 PM, Rafael J. Wysocki wrote:
-> >>
-> >> <snip>
-> >>
-> >>>>> First, a common place to register a DPTF system profile seems to be
-> >>>>> needed and, as I said above, I wouldn't expect more than one such
-> >>>>> thing to be present in the system at any given time, so it may be
-> >>>>> registered along with the list of supported profiles and user space
-> >>>>> will have to understand what they mean.
-> >>>>
-> >>>> Mostly Ack, I would still like to have an enum for DPTF system
-> >>>> profiles in the kernel and have a single piece of code map that
-> >>>> enum to profile names. This enum can then be extended as
-> >>>> necessary, but I want to avoid having one driver use
-> >>>> "Performance" and the other "performance" or one using
-> >>>> "performance-balanced" and the other "balanced-performance", etc.
-> >>>>
-> >>>> With the goal being that new drivers use existing values from
-> >>>> the enum as much as possible, but we extend it where necessary.
-> >>>
-> >>> IOW, just a table of known profile names with specific indices assigned to them.
-> >>
-> >> Yes.
-> >>
-> >>> This sounds reasonable.
-> >>>
-> >>>>> Second, irrespective of the above, it may be useful to have a
-> >>>>> consistent way to pass performance-vs-power preference information
-> >>>>> from user space to different parts of the kernel so as to allow them
-> >>>>> to adjust their operation and this could be done with a system-wide
-> >>>>> power profile attribute IMO.
-> >>>>
-> >>>> I agree, which is why I tried to tackle both things in one go,
-> >>>> but as you said doing both in 1 API is probably not the best idea.
-> >>>> So I believe we should park this second issue for now and revisit it
-> >>>> when we find a need for it.
-> >>>
-> >>> Agreed.
-> >>>
-> >>>> Do you have any specific userspace API in mind for the
-> >>>> DPTF system profile selection?
-> >>>
-> >>> Not really.
-> >>
-> >> So before /sys/power/profile was mentioned, but that seems more like
-> >> a thing which should have a set of fixed possible values, iow that is
-> >> out of scope for this discussion.
-> >
-> > Yes.
-> >
-> >> Since we all seem to agree that this is something which we need
-> >> specifically for DPTF profiles maybe just add:
-> >>
-> >> /sys/power/dptf_current_profile    (rw)
-> >> /sys/power/dptf_available_profiles (ro)
-> >>
-> >> (which will only be visible if a dptf-profile handler
-> >>  has been registered) ?
-> >>
-> >> Or more generic and thus better (in case other platforms
-> >> later need something similar) I think, mirror the:
-> >>
-> >> /sys/bus/cpu/devices/cpu#/cpufreq/energy_performance_* bits
-> >> for a system-wide energy-performance setting, so we get:
-> >>
-> >> /sys/power/energy_performance_preference
-> >> /sys/power/energy_performance_available_preferences
-> >
-> > But this is not about energy vs performance only in general, is it?
-> >
-> >> (again only visible when applicable) ?
-> >>
-> >> I personally like the second option best.
-> >
-> > But I would put it under /sys/firmware/ instead of /sys/power/ and I
-> > would call it something like platform_profile (and
-> > platform_profile_choices or similar).
->
-> Currently we only have dirs under /sys/firmware:
->
-> [hans@x1 ~]$ ls /sys/firmware
-> acpi  dmi  efi  memmap
->
-> But we do have /sys/firmware/apci/pm_profile:
->
-> Documentation/ABI/stable/sysfs-acpi-pmprofile
->
-> What:           /sys/firmware/acpi/pm_profile
-> Date:           03-Nov-2011
-> KernelVersion:  v3.2
-> Contact:        linux-acpi@vger.kernel.org
-> Description:    The ACPI pm_profile sysfs interface exports the platform
->                 power management (and performance) requirement expectations
->                 as provided by BIOS. The integer value is directly passed as
->                 retrieved from the FADT ACPI table.
-> Values:         For possible values see ACPI specification:
->                 5.2.9 Fixed ACPI Description Table (FADT)
->                 Field: Preferred_PM_Profile
->
->                 Currently these values are defined by spec:
->                 0 Unspecified
->                 1 Desktop
->                 2 Mobile
->                 3 Workstation
->                 4 Enterprise Server
->                 ...
->
-> Since all platforms which we need this for are ACPI based
-> (and the involved interfaces are also all ACPI interfaces)
-> how about:
->
-> /sys/firmware/acpi/platform_profile
-> /sys/firmware/acpi/platform_profile_choices
->
-> ?
->
-> I think this goes nice together with /sys/firmware/acpi/pm_profile
-> although that is read-only and this is a read/write setting.
->
-> Rafel, would:
->
-> /sys/firmware/acpi/platform_profile
-> /sys/firmware/acpi/platform_profile_choices
->
-> work for you ?
+> Rob
 
-Yes, it would.
+Thanks, I'll move docs into panel-simple-dsi.yaml
 
-Cheers!
+Caleb
+
+
