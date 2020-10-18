@@ -2,113 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C350A2917A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 15:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C312917A6
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 15:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgJRNiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 09:38:50 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:39278 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbgJRNiu (ORCPT
+        id S1726861AbgJRNrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 09:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726474AbgJRNrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 09:38:50 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 388F320020;
-        Sun, 18 Oct 2020 15:38:47 +0200 (CEST)
-Date:   Sun, 18 Oct 2020 15:38:45 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc:     devicetree@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH v2 0/3] drm/panel: mantix panel reset fixes
-Message-ID: <20201018133845.GA361365@ravnborg.org>
-References: <cover.1602584953.git.agx@sigxcpu.org>
- <20201016142916.GA1184974@ravnborg.org>
- <20201017091307.GA2885@bogon.m.sigxcpu.org>
- <20201017104736.GA2822081@ravnborg.org>
- <20201018130122.GA3705@bogon.m.sigxcpu.org>
+        Sun, 18 Oct 2020 09:47:45 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29F7C061755;
+        Sun, 18 Oct 2020 06:47:44 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id h6so4408062pgk.4;
+        Sun, 18 Oct 2020 06:47:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yITj8dBRv3eP6s3AyfeUdrvXg5i+GxFPHwm8RZEHOO4=;
+        b=rM3pr12X746v1vIOK9QDqXttSIZ/dMOc3OTtp+397Zu3cQJG0VQd4BKvi2rDYM94vN
+         SrQvNnlXb0aZUnNox/kB4aCnA+9PwI0aQch683c38FCO46FAk+xWkw7bWp6uGDj7JZ8c
+         8wlCBUzGVOySCVAqGHTW7E6evkbXxDSAeoqxeQxLX+bhORLD019TH1bJhCUyUasAgRqz
+         Q64BiMR3/G1tD8HRxKVK0/NoY5l9HT0irpGxdFsKCPZo0GtG2xPShc2bjWUJlfYqsuoM
+         /+CfwlH8CSO1JPNpOn5H9WHhBrnA9i3ShwgyTxOLzXGWPEuoDVKhmBdh+Lu0BJrdrxV+
+         vvdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yITj8dBRv3eP6s3AyfeUdrvXg5i+GxFPHwm8RZEHOO4=;
+        b=ne15rntq+hANH2pekuEoLGUJKa0oNPv3XPAW7DHu3+2KFDeucBVF71YJNLTZOYT4P1
+         GlRY9LQwIRRwd4Ut2U1F2nfKXPmShdAONBWHgdPfu/a7bSO70Ovv1X5G+C5vCoWd2phz
+         xrJ5GddU/FZrHDTfFDm9/EbGoT7Md0mGAnfkzmZ5DCnV9O9T9i33RPoZi50sNBx01GoS
+         BBwXpT356D5h3xukhnA4l1g8mt3XZAtwkaT9zB1vATCXtyWhOnIlEDJ4hDYYeutrjDIy
+         8kvFzVAe9K/0E51Xahece/k17mXztyBgOZ4wz+PAgKfxd8UIkKR1t9ZVXJXvJjzl6SOW
+         BcOg==
+X-Gm-Message-State: AOAM530H2bRhSHzeyQxbbnBZr0PgPOOYh+cKpAeK9MO3lAIAhoP+CJnk
+        XQz+6jSgLmj7tZDzZJRpsp8=
+X-Google-Smtp-Source: ABdhPJzka8p1UURxATgAVhikDTB9qma4UG+5S5LaXOXMtfgGri2oh+7X/CWHrm3EtEB8URamSAfemA==
+X-Received: by 2002:a63:1849:: with SMTP id 9mr10498295pgy.393.1603028864215;
+        Sun, 18 Oct 2020 06:47:44 -0700 (PDT)
+Received: from localhost ([204.124.180.191])
+        by smtp.gmail.com with ESMTPSA id o2sm8428946pgg.3.2020.10.18.06.47.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 18 Oct 2020 06:47:43 -0700 (PDT)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
+Subject: [PATCH v1] usb: dwc3: core: fix a issue about clear connect state
+Date:   Sun, 18 Oct 2020 21:47:34 +0800
+Message-Id: <20201018134734.10406-1-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201018130122.GA3705@bogon.m.sigxcpu.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=8nJEP1OIZ-IA:10 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=e5mUnYsNAAAA:8
-        a=I_DR3_W_4JJieZY4840A:9 a=wPNLvfGTeEIA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Hi Guido
-> On Sun, Oct 18, 2020 at 03:01:22PM +0200, Guido Günther wrote:
-> Hi Sam,
-> On Sat, Oct 17, 2020 at 12:47:36PM +0200, Sam Ravnborg wrote:
-> > Hi Guido.
-> > 
-> > On Sat, Oct 17, 2020 at 11:13:07AM +0200, Guido Günther wrote:
-> > > Hi Sam,
-> > > On Fri, Oct 16, 2020 at 04:29:16PM +0200, Sam Ravnborg wrote:
-> > > > Hi Guido.
-> > > > On Tue, Oct 13, 2020 at 12:32:45PM +0200, Guido Günther wrote:
-> > > [..snip..]
-> > > > > 
-> > > > > Changes from v1:
-> > > > >  - As per review comments by Fabio Estevam
-> > > > >    https://lore.kernel.org/dri-devel/CAOMZO5B5ECcConvKej=RcaF8wvOxgq7nUzKJ-ad0aSAOzUqtbQ@mail.gmail.com/
-> > > > >    - Fix typo in commit messages
-> > > > >  - As per review comments by Rob Herring
-> > > > >    https://lore.kernel.org/dri-devel/20200929174624.GA832332@bogus/
-> > > > >    - Don't use an array of reset lines
-> > > > > 
-> > > > > Guido Günther (3):
-> > > > >   drm/panel: mantix: Don't dereference NULL mode
-> > > > >   drm/panel: mantix: Fix panel reset
-> > > > >   dt-binding: display: Require two resets on mantix panel
-> > > > 
-> > > > All applied to drm-misc-next and pushed out.
-> > > > And then I remembered you had commit right - sigh.
-> > > 
-> > > Thanks! Is there any special care needed to get that into 5.10? The
-> > > driver landed there in 72967d5616d3f0c714f8eb6c4e258179a9031c45.
-> > 
-> > As the patches was applied to drm-misc-next the easiet path would
-> > be to cherry-pick them and apply to drm-misc-fixes.
-> > dim has cherry-pick support - try to use it rahter than doing it by
-> > hand.
-> 
-> Does that require any further ACKs or just cherry-pick and push out?
-To the best of my knowledge just cherry-pick, test and push out.
+According to Synopsys Programming Guide chapter 2.2 Register Resets,
+it cannot reset the DCTL register by set DCTL.CSFTRST for Core Soft Reset,
+if DWC3 controller as a slave device and stay connected with a usb host,
+then, reboot linux, it will fail to reinitialize dwc3 as a slave device
+when the DWC3 controller did not power off. because the connection status
+is incorrect, so we also need clear DCTL.RUN_STOP bit for disable connect
+when do core soft reset.
 
-	Sam
+Fixes: f59dcab176293b6 ("usb: dwc3: core: improve reset sequence")
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+---
+ drivers/usb/dwc3/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> > When you apply to drm-misc-fixes include a Fixes: tag so the tooling
-> > will pick the patches automagically.
-> 
-> Will do. It was unfortunate that the initial ones didn't get them but
-> i think the drm merge happened while v2 was out on the list. I'll try
-> add that relevant information to the cover letter in the future.
-> 
-> Cheers,
->  -- Guido
-> 
-> > 
-> > In hindsight the patches should have carried a Fixes: tag from a start
-> > and should have been applied to drm-misc-fixes from a start too.
-> > 
-> > I have done something like above once or twice but anyway reach out if
-> > you have questions. Or ask at #dri-devel.
-> > 
-> > 	Sam
-> > 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index 2eb34c8b4065..239636c454c2 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -256,6 +256,7 @@ static int dwc3_core_soft_reset(struct dwc3 *dwc)
+ 
+ 	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
+ 	reg |= DWC3_DCTL_CSFTRST;
++	reg &= ~DWC3_DCTL_RUN_STOP;
+ 	dwc3_writel(dwc->regs, DWC3_DCTL, reg);
+ 
+ 	/*
+-- 
+2.25.0
+
