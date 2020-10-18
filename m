@@ -2,48 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E09291826
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6770F29182D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727164AbgJRP6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 11:58:24 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:33344 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726961AbgJRP6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 11:58:24 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kUB4c-002Jm1-7m; Sun, 18 Oct 2020 17:58:18 +0200
-Date:   Sun, 18 Oct 2020 17:58:18 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     michael alayev <mic.al.linux@gmail.com>
-Cc:     vivien.didelot@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, adror@iai.co.il
-Subject: Re: Dts for eth network based on marvell's mv88e6390x crashes
- Xilinx's linux-kernel v5.4
-Message-ID: <20201018155818.GB456889@lunn.ch>
-References: <CANBsoPmgct2UTq=Cuf1rXJRitiF1mWhWwdtH2=73yyZiJbT0rg@mail.gmail.com>
- <20201016033142.GB456889@lunn.ch>
- <CANBsoPkCEZadmBaeZ=8EAOP6Ctw5deLen7yKQk__1-ZVoJE6yA@mail.gmail.com>
+        id S1727179AbgJRP7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 11:59:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26099 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727120AbgJRP7t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 11:59:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603036787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G1NfFqRvQCLurPJ/4oycBIXRpf/JK9ZrKM1/uUoh0IA=;
+        b=Pyf4yAXzQVn2Aj82XmoXSyLYN97mk9UayHMBtuxkEhO2tsJrAtLI8o/4ftXbS1JseST0dR
+        MUozCkLLJkcBN2mmXQUtGjfeBWpeek3vqoyUp3WZnuUg1d5frZLAVidmNiV+JJKe9Yvu9f
+        dSZolVLhGG7ZO7zxXGEhltq8Rr3yQbw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-142-bBNfxWFrNm6RfPZ0aQydnA-1; Sun, 18 Oct 2020 11:59:45 -0400
+X-MC-Unique: bBNfxWFrNm6RfPZ0aQydnA-1
+Received: by mail-wr1-f72.google.com with SMTP id 91so4235131wrk.20
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 08:59:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G1NfFqRvQCLurPJ/4oycBIXRpf/JK9ZrKM1/uUoh0IA=;
+        b=TWVXMPXXY6c7cOEPnwejz2n536xGvrRn1BxtdmmzT06QBeMdMRMpd2i8bNrrTS2EeY
+         8DRbfjvOSj8xiLRfua2bz++zVgWqg04tHa/6sYscq6/9R8jTCCqtHxT9dJoXVCJMAJwa
+         FgwpBuV5376Q52uhM3sVAV2QHZv1SFpeSMcOlrvlrKEgG38+lot1XWORQ7i+6VXW/fPK
+         7XU921mEYvkfz2qDJXKIo41LAbsf5rlB4ozPR8JwehzCvtTqjWamqSE/+QcVmQQjGXTk
+         acGvssBoHfgb2nIoG3xM0NsYvnB3df4lfD1W2F+1fhAetpoLNheVY/S+wrytU++78iWF
+         ZuLw==
+X-Gm-Message-State: AOAM5316QSuSF4uupTqO0qKmV6KHyvwM85gAHcF9tt3/MHKZdy+pB9Ox
+        7aw2YCbDJTgZ20JSowoQLtxw3ccpc6GiszMPFCrKjHCfQNlSPPQb3UJHwBFBlU1FyY+FF9VNsFW
+        cTAaZReQ3PP9ZXUvqJJRmjXIB
+X-Received: by 2002:a1c:f719:: with SMTP id v25mr13416586wmh.186.1603036784680;
+        Sun, 18 Oct 2020 08:59:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyKG4LDYGrfcTeGKXBvhe3OP7bjzV07mWsDR9CnUloQlRE4wGL7GgoXxjxr0ZXIKJ7mRGf5bw==
+X-Received: by 2002:a1c:f719:: with SMTP id v25mr13416551wmh.186.1603036784415;
+        Sun, 18 Oct 2020 08:59:44 -0700 (PDT)
+Received: from redhat.com (bzq-79-176-118-93.red.bezeqint.net. [79.176.118.93])
+        by smtp.gmail.com with ESMTPSA id a82sm12794262wmc.44.2020.10.18.08.59.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Oct 2020 08:59:43 -0700 (PDT)
+Date:   Sun, 18 Oct 2020 11:59:39 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Jann Horn <jannh@google.com>, Willy Tarreau <w@1wt.eu>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        "Catangiu, Adrian Costin" <acatan@amazon.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:VIRTIO GPU DRIVER" 
+        <virtualization@lists.linux-foundation.org>,
+        "Graf (AWS), Alexander" <graf@amazon.de>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>, bonzini@gnu.org,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>, oridgar@gmail.com,
+        ghammer@redhat.com, Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Qemu Developers <qemu-devel@nongnu.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
+Message-ID: <20201018115524-mutt-send-email-mst@kernel.org>
+References: <CAG48ez0x2S9XuCrANAQbXNi8Jjwm822-fnQSmr-Zr07JgrEs1g@mail.gmail.com>
+ <6CC3DB03-27BA-4F5E-8ADA-BE605D83A85C@amazon.com>
+ <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
+ <20201017053712.GA14105@1wt.eu>
+ <CAG48ez1h0ynXfGap_KiHiPVTfcB8NBQJ-2dnj08ZNfuhrW0jWA@mail.gmail.com>
+ <20201017064442.GA14117@1wt.eu>
+ <CAG48ez3pXLC+eqAXDCniM0a+5yP2XJODDkZqiUTZUOttCE_LbA@mail.gmail.com>
+ <CAHmME9qHGSF8w3DoyCP+ud_N0MAJ5_8zsUWx=rxQB1mFnGcu9w@mail.gmail.com>
+ <20201018114625-mutt-send-email-mst@kernel.org>
+ <CALCETrXBJZnKXo2QLKVWSgAhSMdwEVHeut6pRw4P92CR_5A-fQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANBsoPkCEZadmBaeZ=8EAOP6Ctw5deLen7yKQk__1-ZVoJE6yA@mail.gmail.com>
+In-Reply-To: <CALCETrXBJZnKXo2QLKVWSgAhSMdwEVHeut6pRw4P92CR_5A-fQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 10:18:53AM +0300, michael alayev wrote:
-> Hello andrew,
-> > This is pretty unreadable with all the white space removed.
-> > Please could you post again with the white space.
-> Its formatted better here:
-> https://stackoverflow.com/q/64301750/8926995?sem=2
+On Sun, Oct 18, 2020 at 08:54:36AM -0700, Andy Lutomirski wrote:
+> On Sun, Oct 18, 2020 at 8:52 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Sat, Oct 17, 2020 at 03:24:08PM +0200, Jason A. Donenfeld wrote:
+> > > 4c. The guest kernel maintains an array of physical addresses that are
+> > > MADV_WIPEONFORK. The hypervisor knows about this array and its
+> > > location through whatever protocol, and before resuming a
+> > > moved/snapshotted/duplicated VM, it takes the responsibility for
+> > > memzeroing this memory. The huge pro here would be that this
+> > > eliminates all races, and reduces complexity quite a bit, because the
+> > > hypervisor can perfectly synchronize its bringup (and SMP bringup)
+> > > with this, and it can even optimize things like on-disk memory
+> > > snapshots to simply not write out those pages to disk.
+> > >
+> > > A 4c-like approach seems like it'd be a lot of bang for the buck -- we
+> > > reuse the existing mechanism (MADV_WIPEONFORK), so there's no new
+> > > userspace API to deal with, and it'd be race free, and eliminate a lot
+> > > of kernel complexity.
+> >
+> > Clearly this has a chance to break applications, right?
+> > If there's an app that uses this as a non-system-calls way
+> > to find out whether there was a fork, it will break
+> > when wipe triggers without a fork ...
+> > For example, imagine:
+> >
+> > MADV_WIPEONFORK
+> > copy secret data to MADV_DONTFORK
+> > fork
+> >
+> >
+> > used to work, with this change it gets 0s instead of the secret data.
+> >
+> >
+> > I am also not sure it's wise to expose each guest process
+> > to the hypervisor like this. E.g. each process needs a
+> > guest physical address of its own then. This is a finite resource.
+> >
+> >
+> > The mmap interface proposed here is somewhat baroque, but it is
+> > certainly simple to implement ...
+> 
+> Wipe of fork/vmgenid/whatever could end up being much more problematic
+> than it naively appears -- it could be wiped in the middle of a read.
+> Either the API needs to handle this cleanly, or we need something more
+> aggressive like signal-on-fork.
+> 
+> --Andy
 
-Better, but the indentation is still wrong.
 
-Please fix your email client and post the DT file for review. I will
-then point out some of the errors.
+Right, it's not on fork, it's actually when process is snapshotted.
 
-    Andrew
+If we assume it's CRIU we care about, then I
+wonder what's wrong with something like
+MADV_CHANGEONPTRACE_SEIZE
+and basically say it's X bytes which change the value...
+
+
+-- 
+MST
+
