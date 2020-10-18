@@ -2,145 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA03D291544
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 04:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6785B29154C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 04:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439936AbgJRCId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 22:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439906AbgJRCId (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 22:08:33 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18199C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 19:08:33 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id a4so7213574lji.12
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 19:08:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EoL7d0lHzdswPEFGsAEJJdNfE07sA8igVy5PEUcTbDQ=;
-        b=JYBvkmsN9RysEeFQRgQMS2IGgQheKP8WCpVEITeoShBcDrScb2YzXJWCS9fBQBrxMO
-         n86hAFDTEQHXskSLJ578m/TKYBOiwMg0z/aLu4hSKM9fzy3Bml2AtFnKiNFHXmC81ou5
-         oLgoTyjjd7m8dU7zn1iDkaLBmUIFwukS3W1degboeUcB5xxmHAwJ7X7ZJjY5qLq4Uevz
-         9565oX51vhmKmr/jiZRuPNAZjyZvYkS6kUYo9TyvCsqYY8xkBsy/gcixSZeElDfa4GKl
-         lQjC5lLseYNii8XoYpb7znRj1djIzK3pwUzl9c71Hf2cfPLya0ovLXiar856omGyFgtc
-         cBdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EoL7d0lHzdswPEFGsAEJJdNfE07sA8igVy5PEUcTbDQ=;
-        b=pgpyUatk6FkLf4vRT3725rRerkzzcSIZMldqz0rx+8GcED8lwKf4goSQ3hGQol6amd
-         6o8pTG+SZoW2eq3Y4iFQwPnP+YKFrJn5LzNJ1CZbSzoGLBLQQdqHfht466+Gr2VsA0Le
-         izq/N0pgyjJzqzrpcTkJvTmduTiEQA8FuLsBEb7AEQa/72z1rn7zmO7opalJowf1LXR7
-         R9LQGixRkmh8A+nVqB2ASe/glRdyq2/h3I4KDpIQr7B5FloGelgeCrByhppEnmMoyGk8
-         8h1NtFo4XWzxb0EDJQZd5Oefk7cymUmrY83wCmHZIu/XHVPsFAPjDdjSXjA+zIXZ7qzY
-         ZlFA==
-X-Gm-Message-State: AOAM533n/9NkOIcRzVzySNWAK7dlQPV6zhJ6sGL+MdcicDJb86XKzpus
-        Sf3X7kxKW4LpAf/yGBIye/kRdhYrwZXwX37XPYc+HA==
-X-Google-Smtp-Source: ABdhPJxVC4A8hz5Ph8xI5Lcuiwu6i49AGWglYFrVbrHYISFimwHqgN7R9bAY4u2r3Hi8cj+JpNCqLDs0HlkcXSFAtqI=
-X-Received: by 2002:a05:651c:1313:: with SMTP id u19mr1073920lja.47.1602986911177;
- Sat, 17 Oct 2020 19:08:31 -0700 (PDT)
+        id S2440115AbgJRCKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 22:10:11 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15754 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2440101AbgJRCKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Oct 2020 22:10:11 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 42E6015C4A072DBDADB7;
+        Sun, 18 Oct 2020 10:10:06 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.134) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Sun, 18 Oct 2020
+ 10:10:04 +0800
+Subject: Re: [PATCH v2 1/2] arm64: dts: broadcom: clear the warnings caused by
+ empty dma-ranges
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>
+CC:     Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        "Scott Branden" <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
+ <20201016090833.1892-2-thunder.leizhen@huawei.com>
+ <CAK8P3a2TSmsNSi-XFpT6AQ3jvVxJ1AW7Uf5tAo477wtwXZwUzg@mail.gmail.com>
+ <e27dc152-7aef-10df-f391-bf56e13e23df@gmail.com>
+ <CAK8P3a13ywHh7igdfDSPQz9Bw8YAnKWFLKARkk2NL5u6=6yb=w@mail.gmail.com>
+ <0eee3fd2-7400-7de7-27a7-7fcaa0955854@gmail.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <d42745b7-ef76-e584-0da2-751ac8c1cf3a@huawei.com>
+Date:   Sun, 18 Oct 2020 10:10:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
- <CAG48ez0EanBvDyfthe+hAP0OC8iGLNSq2e5wJVz-=ENNGF97_w@mail.gmail.com>
- <20201017033606.GA14014@1wt.eu> <CAG48ez0x2S9XuCrANAQbXNi8Jjwm822-fnQSmr-Zr07JgrEs1g@mail.gmail.com>
- <6CC3DB03-27BA-4F5E-8ADA-BE605D83A85C@amazon.com> <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
- <20201017053712.GA14105@1wt.eu> <CAG48ez1h0ynXfGap_KiHiPVTfcB8NBQJ-2dnj08ZNfuhrW0jWA@mail.gmail.com>
- <20201017064442.GA14117@1wt.eu> <CAG48ez3pXLC+eqAXDCniM0a+5yP2XJODDkZqiUTZUOttCE_LbA@mail.gmail.com>
- <CAHmME9qHGSF8w3DoyCP+ud_N0MAJ5_8zsUWx=rxQB1mFnGcu9w@mail.gmail.com> <aacdff7a-2af1-4f46-6ab2-2a9d5b865d35@amazon.de>
-In-Reply-To: <aacdff7a-2af1-4f46-6ab2-2a9d5b865d35@amazon.de>
-From:   Jann Horn <jannh@google.com>
-Date:   Sun, 18 Oct 2020 04:08:04 +0200
-Message-ID: <CAG48ez0JYK2_tk0DuEgKY2y0d38N+O5HJrH2je7RRk6o7XBixA@mail.gmail.com>
-Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
-To:     Alexander Graf <graf@amazon.de>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>, Willy Tarreau <w@1wt.eu>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "Catangiu, Adrian Costin" <acatan@amazon.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:VIRTIO GPU DRIVER" 
-        <virtualization@lists.linux-foundation.org>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>, bonzini@gnu.org,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>, oridgar@gmail.com,
-        ghammer@redhat.com, Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Qemu Developers <qemu-devel@nongnu.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linux API <linux-api@vger.kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0eee3fd2-7400-7de7-27a7-7fcaa0955854@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 8:09 PM Alexander Graf <graf@amazon.de> wrote:
-> There are applications way beyond that though. What do you do with
-> applications that already consumed randomness? For example a cached pool
-> of SSL keys. Or a higher level language primitive that consumes
-> randomness and caches its seed somewhere in an internal data structure.
 
-For deterministic protection, those would also have to poll some
-memory location that tells them whether the VmGenID changed:
 
-1. between reading entropy from their RNG pool and using it
-2. between collecting data from external sources (user input, clock,
-...) and encrypting it
+On 2020/10/17 3:27, Florian Fainelli wrote:
+> On 10/16/20 11:23 AM, Arnd Bergmann wrote:
+>> On Fri, Oct 16, 2020 at 6:48 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>> On 10/16/20 4:01 AM, Arnd Bergmann wrote:
+>>>> On Fri, Oct 16, 2020 at 11:09 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>>>>>
+>>>>> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+>>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>>
+>>>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>>>>
+>>>> I see that at least the 'bcd' and 'xhci' devices in fact try to
+>>>> use 64-bit DMA. It would be good to test this on actual
+>>>> hardware to ensure that it works correctly when this is enabled.
+>>>>
+>>>> Ideally avoiding the swiotlb bounce buffering should only
+>>>> make it faster here, but there are many chips on which
+>>>> 64-bit DMA is broken in some form.
+>>>
+>>> Is this change really an improvement though? This 'usb' pseudo bus node
+>>> could just keep being defined with #address-cells = <1> and #size-cells
+>>> = <1> so as to satisfy the 'reg' definition however we could just adjust
+>>> dma-ranges to indicate full 64-bit addressing capability. Would not that
+>>> work?
+>>
+>> When #address-cells is '1', you cannot specify dma-ranges that
+>> go beyond a 32-bit address range.
+> 
+> Would not it be enough to remove the 'dma-ranges' property though? Sorry
+> for being slow here.
 
-and synchronously shoot down the connection if a change happened. If
-e.g. an application inside the VM has an AES-GCM-encrypted TLS
-connection and, directly after the VM is restored, triggers an
-application-level timeout that sends some fixed message across the
-connection, then the TLS library must guarantee that either the VM was
-already committed to sending exactly that message before the VM was
-forked or the message will be blocked. If we don't do that, an
-attacker who captures both a single packet from the forked VM and
-traffic from the old VM can decrypt the next message from the old VM
-after the fork (because AES-GCM is like AES-CTR plus an authenticator,
-and CTR means that when keystream reuse occurs and one of the
-plaintexts is known, the attacker can simply recover the other
-plaintext using XOR).
+Remove the 'dma-ranges' property should also work. After all, it is equivalent
+to the original empty dma-ranges scheme. In addition, since the IOMMU nodes are
+defined, it should be enabled. Therefore, Arnd's concern about the scenario where
+the IOMMU is disabled may not be triggered. All roads lead to Rome. Which solution
+should be chose depends on individual preferences. For me, either solution is fine.
 
-(Or maybe, in disaster failover environments, TLS 1.3 servers could
-get away with rekeying the connection instead of shooting it down? Ask
-your resident friendly cryptographer whether that would be secure, I
-am not one.)
+The third solution is to define a non-empty dma-ranges property. However, because
+stingray-usb.dtsi is included in multiple files, it may not be appropriate.
 
-I don't think a mechanism based around asynchronously telling the
-application and waiting for it to confirm the rotation at a later
-point is going to cut it; we should have some hard semantics on when
-an application needs to poll this value.
 
-> Or even worse: your system's host ssh key.
+> 
 
-Mmmh... I think I normally would not want a VM to reset its host ssh
-key after merely restoring a snapshot though? And more importantly,
-Microsoft's docs say that they also change the VmGenID on disaster
-failover. I think you very much wouldn't want your server to lose its
-host key every time disaster failover happens. On the other hand,
-after importing a public VM image, it might be a good idea.
-
-I guess you could push that responsibility on the user, by adding an
-option to the sshd_config that tells OpenSSH whether the host key
-should be rotated on an ID change or not... but that still would not
-be particularly pretty.
-
-Ideally we would have the host tell us what type of events happened to
-the VM, or something like that... or maybe even get the host VM
-management software to ask the user whether they're importing a public
-image... I really feel like with Microsoft's current protocol, we
-don't get enough information to figure out what we should do about
-private long-term authentication keys.
