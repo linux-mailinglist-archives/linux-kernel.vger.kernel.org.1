@@ -2,258 +2,576 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE546291792
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 15:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559DD2917A0
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 15:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgJRNFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 09:05:02 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:56308 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbgJRNFB (ORCPT
+        id S1726692AbgJRNf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 09:35:56 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:39114 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbgJRNfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 09:05:01 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kU8Mn-002Ipr-Dj; Sun, 18 Oct 2020 07:04:53 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kU8Mm-000424-0s; Sun, 18 Oct 2020 07:04:53 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "Enrico Weigelt\, metux IT consult" <lkml@metux.net>,
-        containers@lists.linux-foundation.org,
-        Alexander Mihalicyn <alexander@mihalicyn.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Joseph Christopher Sible <jcsible@cert.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        Wat Lim <watl@google.com>, Mrunal Patel <mpatel@redhat.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>, <linux-api@vger.kernel.org>
-References: <20200830143959.rhosiunyz5yqbr35@wittgenstein>
-        <cb6c6f1a-89ee-1762-3eec-4f69bd7739b1@metux.net>
-        <874kmsdcdx.fsf@x220.int.ebiederm.org>
-        <20201018102026.34jtxfheygowgejp@wittgenstein>
-Date:   Sun, 18 Oct 2020 08:05:06 -0500
-In-Reply-To: <20201018102026.34jtxfheygowgejp@wittgenstein> (Christian
-        Brauner's message of "Sun, 18 Oct 2020 12:20:26 +0200")
-Message-ID: <87h7qradml.fsf_-_@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Sun, 18 Oct 2020 09:35:55 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 3A47520020;
+        Sun, 18 Oct 2020 15:35:48 +0200 (CEST)
+Date:   Sun, 18 Oct 2020 15:35:46 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 1/5] drm/panel/oneplus6: Add panel-oneplus6
+Message-ID: <20201018133546.GA352707@ravnborg.org>
+References: <20201007174736.292968-1-caleb@connolly.tech>
+ <20201007174736.292968-2-caleb@connolly.tech>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kU8Mm-000424-0s;;;mid=<87h7qradml.fsf_-_@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/pyu37Trds5P/tpj4beDB1eRIcEN/AbrA=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_XMDrugObfuBody_08,XM_B_SpammyWords
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Christian Brauner <christian.brauner@ubuntu.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 994 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 10 (1.0%), b_tie_ro: 9 (0.9%), parse: 1.22 (0.1%),
-         extract_message_metadata: 21 (2.1%), get_uri_detail_list: 4.3 (0.4%),
-        tests_pri_-1000: 8 (0.8%), tests_pri_-950: 1.35 (0.1%),
-        tests_pri_-900: 1.04 (0.1%), tests_pri_-90: 349 (35.1%), check_bayes:
-        332 (33.4%), b_tokenize: 15 (1.5%), b_tok_get_all: 12 (1.3%),
-        b_comp_prob: 4.0 (0.4%), b_tok_touch_all: 296 (29.8%), b_finish: 1.04
-        (0.1%), tests_pri_0: 589 (59.2%), check_dkim_signature: 0.62 (0.1%),
-        check_dkim_adsp: 2.3 (0.2%), poll_dns_idle: 0.70 (0.1%), tests_pri_10:
-        2.2 (0.2%), tests_pri_500: 8 (0.8%), rewrite_mail: 0.00 (0.0%)
-Subject: The problem of setgroups and containers
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007174736.292968-2-caleb@connolly.tech>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=pG8NhYCFD_6Fsa5lt6wA:9 a=CjuIK1q_8ugA:10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Added linux-api because we are talking about a subtle semantic
-  change to the permission checks ]
+Hi Caleb.
 
-Christian Brauner <christian.brauner@ubuntu.com> writes:
+I have missed to provice review feedback so here goes.
+There is some improvements that can be made as the infrastructure has
+evolved since the driver was started.
+But despite the number of comments below it is all trivial and the
+driver looks good in general.
 
-> On Sat, Oct 17, 2020 at 11:51:22AM -0500, Eric W. Biederman wrote:
->> "Enrico Weigelt, metux IT consult" <lkml@metux.net> writes:
->> 
->> > On 30.08.20 16:39, Christian Brauner wrote:
->> >> For mount points
->> >>    that originate from outside the namespace, everything will show as
->> >>    the overflow ids and access would be restricted to the most
->> >>    restricted permission bit for any path that can be accessed.
->> >
->> > So, I can't just take a btrfs snapshot as rootfs anymore ?
->> 
->> Interesting until reading through your commentary I had missed the
->> proposal to effectively effectively change the permissions to:
->> ((mode >> 3) & (mode >> 6) & mode & 7).
->> 
->> The challenge is that in a permission triple it is possible to set
->> lower permissions for the owner of the file, or for a specific group,
->> than for everyone else.
->> 
->> Today we require root permissions to be able to map users and groups in
->> /proc/<pid>/uid_map and /proc/<pid>/gid_map, and we require root
->> permissions to be able to drop groups with setgroups.
->> 
->> Now we are discussiong moving to a world where we can use users and
->> groups that don't map to any other user namespace in uid_map and
->> gid_map.  It should be completely safe to use those users and groups
->> except for negative permissions in filesystems.  So a big question is
->> how do we arrange the system so anyone can use those files without
->> negative permission causing problems.
->> 
->> 
->> I believe it is safe to not limit the owner of a file, as the
->> owner of a file can always chmode the file and remove any restrictions.
->> Which is no worse than calling setuid to a different uid.
->> 
->> Which leaves where we have been dealing with the ability to drop groups
->> with setgroups.
->> 
->> I guess the practical proposal is when the !in_group_p and we are
->> looking at the other permission.  Treat the permissions as:
->> ((mode >> 3) & mode & 7).  Instead of just (mode & 7).
->> 
->> Which for systems who don't use negative group permissions is a no-op.
->> So this should not effect your btrfs snapshots at all (unless you use
->> negative group permissions).
->> 
->> It denies things before we get to an NFS server or other interesting
->> case so it should work for pretty much everything the kernel deals with.
->> 
->> Userspace repeating permission checks could break.  But that is just a
->> problem of inconsistency, and will always be a problem.
->> 
->> We could make it more precise as Serge was suggesting with a set of that
->> were dropped from setgroups, but under the assumption that negative
->> groups are sufficient rare we can avoid that overhead.
->
-> I'm tempted to agree and say that it's safe to assume that they are used
-> very much. Negative acls have been brought up a couple of times in
-> related contexts though. One being a potential bug in newgidmap which we
-> discussed back in
-> https://bugs.launchpad.net/ubuntu/+source/shadow/+bug/1729357
-> But I think if we have this under a sysctl as proposed earlier is good
-> enough.
->
->> 
->>  static int acl_permission_check(struct inode *inode, int mask)
->>  {
->>  	unsigned int mode = inode->i_mode;
->>  
->> - [irrelevant bits of this function]        
->>  
->>  	/* Only RWX matters for group/other mode bits */
->>  	mask &= 7;
->>  
->>  	/*
->>  	 * Are the group permissions different from
->>  	 * the other permissions in the bits we care
->>  	 * about? Need to check group ownership if so.
->>  	 */
->>  	if (mask & (mode ^ (mode >> 3))) {
->>  		if (in_group_p(inode->i_gid))
->>  			mode >>= 3;
->> +		/* Use the most restrictive permissions? */
->> +		else (current->user_ns->flags & USERNS_ALWAYS_DENY_GROUPS)
->> +			mode &= (mode >> 3);
->>  	}
->>  
->>  	/* Bits in 'mode' clear that we require? */
->>  	return (mask & ~mode) ? -EACCES : 0;
->>  }
->> 
->> As I read posix_acl_permission all of the posix acls for groups are
->> positive permissions.  So I think the only other code that would need to
->> be updated would be the filesystems that replace generic_permission with
->> something that doesn't call acl_permission check.
->> 
->> Userspace could then activate this mode with:
->> 	echo "safely_allow" > /proc/<pid>/setgroups
->> 
->> That looks very elegant and simple, and I don't think will cause
->> problems for anyone.  It might even make sense to make that the default
->> mode when creating a new user namespace.
->> 
->> I guess we owe this idea to Josh Triplett and Geoffrey Thomas.
->> 
->> Does anyone see any problems with tweaking the permissions this way so
->> that we can always allow setgroups in a user namespace?
->
-> This looks sane and simple. I would still think that making it opt-in
-> for a few kernel releases might be preferable to just making it the new
-> default. We can then revisit flipping the default. Advanced enough
-> container runtimes will quickly pick up on this and can make it the
-> default for their unprivileged containers if they want to.
+I look forward to see the next revision.
 
-I think we can even do a little bit better than what I proposed above.
-The downside of my code is that negtative acls won't work in containers
-even if they do today.  (Not that I think negative acls are something to
-encourage just that breaking them means we have to deal with the
-question: "Does someone care?").
+	Sam
 
-What we can very safely do is limit negative acls to filesystems that
-are mounted in the same user namespace.  Like the code below.
+On Wed, Oct 07, 2020 at 05:49:08PM +0000, Caleb Connolly wrote:
+> This commit adds support for the display panels used in the OnePlus 6 /
+> T devices.
+> 
+> The OnePlus 6/T devices use different panels however they are
+> functionally identical with much of the commands being shared. The
+> panels don't appear to be used by any other devices some combine them as
+> one driver that is specific to the devices.
+> 
+> The panels are: samsung,sofef00
+> and             samsung,s6e3fc2x01
+> 
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> ---
+>  drivers/gpu/drm/panel/Kconfig          |  12 +
+>  drivers/gpu/drm/panel/Makefile         |   1 +
+>  drivers/gpu/drm/panel/panel-oneplus6.c | 418 +++++++++++++++++++++++++
 
- static int acl_permission_check(struct inode *inode, int mask)
- {
- 	unsigned int mode = inode->i_mode;
- 
-- [irrelevant bits of this function]        
- 
- 	/* Only RWX matters for group/other mode bits */
- 	mask &= 7;
- 
- 	/*
- 	 * Are the group permissions different from
- 	 * the other permissions in the bits we care
- 	 * about? Need to check group ownership if so.
- 	 */
- 	if (mask & (mode ^ (mode >> 3))) {
- 		if (in_group_p(inode->i_gid))
- 			mode >>= 3;
-+		/*
-+		 * In a user namespace groups may have been dropped
-+		 * so use the most restrictive permissions.
-+		 */
-+		else if (current->user_ns != inode->i_sb->user_ns)
-+			mode &= (mode >> 3);
- 	}
- 
- 	/* Bits in 'mode' clear that we require? */
- 	return (mask & ~mode) ? -EACCES : 0;
- }
+It would be better to name the driver after the panels and not their
+user. So something like panel-samsung-sofef00.
+It is OK to name it after one panel and let it support mroe than one
+panel. The Kconfig description could then expain where it is used.
 
-I would make the plan that we apply the fully fleshed out version of the
-above (aka updating the permission methods that don't use
-generic_permission), and then in a following kernel cycle we remove the
-restrictions on setgroups because they are no longer needed.
 
-The only possible user breaking issue I can see if a system with
-negative acls where the containers rely on having access to the other
-permissions for some reason.  If someone finds a system that does this
-change would need to be reverted and another plan would need to be
-found.  Otherwise I think/hope this is a safe semantic change.
+>  3 files changed, 431 insertions(+)
+>  create mode 100644 drivers/gpu/drm/panel/panel-oneplus6.c
+> 
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index de2f2a452be5..d72862265400 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -229,6 +229,18 @@ config DRM_PANEL_OLIMEX_LCD_OLINUXINO
+>  	  Say Y here if you want to enable support for Olimex Ltd.
+>  	  LCD-OLinuXino panel.
+>  
+> +config DRM_PANEL_ONEPLUS6
+> +	tristate "OnePlus 6/6T Samsung AMOLED DSI command mode panels"
+> +	depends on OF
+> +	depends on DRM_MIPI_DSI
+> +	depends on BACKLIGHT_CLASS_DEVICE
+> +	select VIDEOMODE_HELPERS
+> +	help
+> +	  Say Y or M here if you want to enable support for the Samsung AMOLED
+> +	  command mode panels found in the OnePlus 6/6T smartphones.
+> +
+> +	  The panels are 2280x1080@60Hz and 2340x1080@60Hz respectively
+> +
+>  config DRM_PANEL_ORISETECH_OTM8009A
+>  	tristate "Orise Technology otm8009a 480x800 dsi 2dl panel"
+>  	depends on OF
+> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+> index e45ceac6286f..017539056f53 100644
+> --- a/drivers/gpu/drm/panel/Makefile
+> +++ b/drivers/gpu/drm/panel/Makefile
+> @@ -21,6 +21,7 @@ obj-$(CONFIG_DRM_PANEL_NEC_NL8048HL11) += panel-nec-nl8048hl11.o
+>  obj-$(CONFIG_DRM_PANEL_NOVATEK_NT35510) += panel-novatek-nt35510.o
+>  obj-$(CONFIG_DRM_PANEL_NOVATEK_NT39016) += panel-novatek-nt39016.o
+>  obj-$(CONFIG_DRM_PANEL_OLIMEX_LCD_OLINUXINO) += panel-olimex-lcd-olinuxino.o
+> +obj-$(CONFIG_DRM_PANEL_ONEPLUS6) += panel-oneplus6.o
+>  obj-$(CONFIG_DRM_PANEL_ORISETECH_OTM8009A) += panel-orisetech-otm8009a.o
+>  obj-$(CONFIG_DRM_PANEL_OSD_OSD101T2587_53TS) += panel-osd-osd101t2587-53ts.o
+>  obj-$(CONFIG_DRM_PANEL_PANASONIC_VVX10F034N00) += panel-panasonic-vvx10f034n00.o
+> diff --git a/drivers/gpu/drm/panel/panel-oneplus6.c b/drivers/gpu/drm/panel/panel-oneplus6.c
+> new file mode 100644
+> index 000000000000..5e212774b1e0
+> --- /dev/null
+> +++ b/drivers/gpu/drm/panel/panel-oneplus6.c
+> @@ -0,0 +1,418 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2020 Caleb Connolly <caleb@connolly.tech>
+> + * Generated with linux-mdss-dsi-panel-driver-generator from vendor device tree:
+> + *   Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> + *
+> + * Caleb Connolly <caleb@connolly.tech>
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +#include <video/mipi_display.h>
+> +
+> +#include <drm/drm_mipi_dsi.h>
+> +#include <drm/drm_modes.h>
+> +#include <drm/drm_panel.h>
+> +#include <linux/backlight.h>
+Keep all linux include together.
 
-Does anyone see any problems with my further simplification?
+> +
+> +struct oneplus6_panel {
+> +	struct drm_panel panel;
+> +	struct mipi_dsi_device *dsi;
+> +	struct backlight_device *backlight;
+Use drm_panel backlight support - so you can drop this variable and
+simplify some of the code below.
 
-Eric
+> +	struct regulator *supply;
+> +	struct gpio_desc *reset_gpio;
+> +	struct gpio_desc *enable_gpio;
+The enable_gpio is not used.
+
+> +	const struct drm_display_mode *mode;
+> +	bool prepared;
+> +	bool enabled;
+> +};
+> +
+> +static inline
+> +struct oneplus6_panel *to_oneplus6_panel(struct drm_panel *panel)
+> +{
+> +	return container_of(panel, struct oneplus6_panel, panel);
+> +}
+> +
+> +#define dsi_dcs_write_seq(dsi, seq...) do {				\
+> +		static const u8 d[] = { seq };				\
+> +		int ret;						\
+> +		ret = mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));	\
+> +		if (ret < 0)						\
+> +			return ret;					\
+> +	} while (0)
+> +
+> +static void oneplus6_panel_reset(struct oneplus6_panel *ctx)
+> +{
+> +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+> +	usleep_range(5000, 6000);
+> +}
+IT is not obvious if this helper reset the panel or de-assert the reset
+signal. It does not help me that there is only one helper despite both
+operatiosn are needed.
+
+> +
+> +static int oneplus6_panel_on(struct oneplus6_panel *ctx)
+> +{
+> +	struct mipi_dsi_device *dsi = ctx->dsi;
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
+> +
+> +	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to exit sleep mode: %d\n", ret);
+> +		return ret;
+> +	}
+> +	usleep_range(10000, 11000);
+> +
+> +	dsi_dcs_write_seq(dsi, 0xf0, 0x5a, 0x5a);
+> +
+> +	ret = mipi_dsi_dcs_set_tear_on(dsi, MIPI_DSI_DCS_TEAR_MODE_VBLANK);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to set tear on: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	dsi_dcs_write_seq(dsi, 0xf0, 0xa5, 0xa5);
+> +	dsi_dcs_write_seq(dsi, 0xf0, 0x5a, 0x5a);
+> +	dsi_dcs_write_seq(dsi, 0xb0, 0x07);
+> +	dsi_dcs_write_seq(dsi, 0xb6, 0x12);
+> +	dsi_dcs_write_seq(dsi, 0xf0, 0xa5, 0xa5);
+> +	dsi_dcs_write_seq(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY, 0x20);
+> +	dsi_dcs_write_seq(dsi, MIPI_DCS_WRITE_POWER_SAVE, 0x00);
+> +
+> +	ret = mipi_dsi_dcs_set_display_on(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to set display on: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int oneplus6_panel_off(struct oneplus6_panel *ctx)
+> +{
+> +	struct mipi_dsi_device *dsi = ctx->dsi;
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> +
+> +	ret = mipi_dsi_dcs_set_display_off(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to set display off: %d\n", ret);
+> +		return ret;
+> +	}
+> +	msleep(40);
+> +
+> +	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to enter sleep mode: %d\n", ret);
+> +		return ret;
+> +	}
+> +	msleep(160);
+> +
+> +	return 0;
+> +}
+> +
+> +static int oneplus6_panel_prepare(struct drm_panel *panel)
+> +{
+> +	struct oneplus6_panel *ctx = to_oneplus6_panel(panel);
+> +	struct device *dev = &ctx->dsi->dev;
+> +	int ret;
+> +
+> +	if (ctx->prepared)
+> +		return 0;
+> +
+Do you not need to do a regulator_enable() here to get power supply to
+the panel?
+
+> +	oneplus6_panel_reset(ctx);
+> +
+> +	ret = oneplus6_panel_on(ctx);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to initialize panel: %d\n", ret);
+> +		gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+> +		return ret;
+> +	}
+> +
+> +	ctx->prepared = true;
+> +	return 0;
+> +}
+> +
+> +static int oneplus6_panel_unprepare(struct drm_panel *panel)
+> +{
+> +	struct oneplus6_panel *ctx = to_oneplus6_panel(panel);
+> +	struct device *dev = &ctx->dsi->dev;
+> +	int ret;
+> +
+> +	if (!ctx->prepared)
+> +		return 0;
+> +
+> +	ret = regulator_enable(ctx->supply);
+Looks strange that the power supply is enabled here - was it not enabled
+before to use the panel?
+
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to enable regulator: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = oneplus6_panel_off(ctx);
+> +	if (ret < 0)
+> +		dev_err(dev, "Failed to un-initialize panel: %d\n", ret);
+> +
+> +	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+> +	regulator_disable(ctx->supply);
+> +
+> +	ctx->prepared = false;
+> +	return 0;
+> +}
+> +
+> +
+> +static int oneplus6_panel_enable(struct drm_panel *panel)
+> +{
+> +	struct oneplus6_panel *ctx = to_oneplus6_panel(panel);
+> +	int ret;
+> +
+> +	if (ctx->enabled)
+> +		return 0;
+> +
+> +	ret = backlight_enable(ctx->backlight);
+> +	if (ret < 0) {
+> +		dev_err(&ctx->dsi->dev, "Failed to enable backlight: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ctx->enabled = true;
+> +	return 0;
+> +}
+> +
+> +static int oneplus6_panel_disable(struct drm_panel *panel)
+> +{
+> +	struct oneplus6_panel *ctx = to_oneplus6_panel(panel);
+> +	int ret;
+> +
+> +	if (!ctx->enabled)
+> +		return 0;
+> +
+> +	ret = backlight_disable(ctx->backlight);
+> +	if (ret < 0) {
+> +		dev_err(&ctx->dsi->dev, "Failed to disable backlight: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ctx->enabled = false;
+> +	return 0;
+> +}
+When backlight support in drm_panel is used the two enabled/disable
+functions can be dropped and the enabled flag is then no longer sued and
+can be dropped too.
+
+> +
+> +
+> +static const struct drm_display_mode enchilada_panel_mode = {
+> +	.clock = (1080 + 112 + 16 + 36) * (2280 + 36 + 8 + 12) * 60 / 1000,
+> +	.hdisplay = 1080,
+> +	.hsync_start = 1080 + 112,
+> +	.hsync_end = 1080 + 112 + 16,
+> +	.htotal = 1080 + 112 + 16 + 36,
+> +	.vdisplay = 2280,
+> +	.vsync_start = 2280 + 36,
+> +	.vsync_end = 2280 + 36 + 8,
+> +	.vtotal = 2280 + 36 + 8 + 12,
+> +	.width_mm = 68,
+> +	.height_mm = 145,
+> +};
+> +
+> +static const struct drm_display_mode fajita_panel_mode = {
+> +	.clock = (1080 + 72 + 16 + 36) * (2340 + 32 + 4 + 18) * 60 / 1000,
+> +	.hdisplay = 1080,
+> +	.hsync_start = 1080 + 72,
+> +	.hsync_end = 1080 + 72 + 16,
+> +	.htotal = 1080 + 72 + 16 + 36,
+> +	.vdisplay = 2340,
+> +	.vsync_start = 2340 + 32,
+> +	.vsync_end = 2340 + 32 + 4,
+> +	.vtotal = 2340 + 32 + 4 + 18,
+> +	.width_mm = 68,
+> +	.height_mm = 145,
+> +};
+> +
+> +static int oneplus6_panel_get_modes(struct drm_panel *panel,
+> +						struct drm_connector *connector)
+Some indent looks fishy here.
+Try to check the driver using checkpatch --strict - it should be clean.
+> +{
+> +	struct drm_display_mode *mode;
+> +	struct oneplus6_panel *ctx = to_oneplus6_panel(panel);
+> +
+> +	mode = drm_mode_duplicate(connector->dev, ctx->mode);
+> +	if (!mode)
+> +		return -ENOMEM;
+> +
+> +	drm_mode_set_name(mode);
+> +
+> +	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
+> +	connector->display_info.width_mm = mode->width_mm;
+> +	connector->display_info.height_mm = mode->height_mm;
+> +	drm_mode_probed_add(connector, mode);
+> +
+> +	return 1;
+> +}
+> +
+> +static const struct drm_panel_funcs oneplus6_panel_panel_funcs = {
+> +	.disable = oneplus6_panel_disable,
+> +	.enable = oneplus6_panel_enable,
+> +	.prepare = oneplus6_panel_prepare,
+> +	.unprepare = oneplus6_panel_unprepare,
+> +	.get_modes = oneplus6_panel_get_modes,
+> +};
+> +
+> +static int oneplus6_panel_bl_get_brightness(struct backlight_device *bl)
+> +{
+> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
+> +	int err;
+> +	u16 brightness = bl->props.brightness;
+No need to read the brightness here. It will be set if
+mipi_dsi_dcs_get_display_brightness() succeeds.
+> +
+> +	err = mipi_dsi_dcs_get_display_brightness(dsi, &brightness);
+> +	if (err < 0) {
+> +		return err;
+> +	}
+> +
+> +	return brightness & 0xff;
+> +}
+> +
+> +static int oneplus6_panel_bl_update_status(struct backlight_device *bl)
+> +{
+> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
+> +	int err;
+> +	unsigned short brightness;
+> +
+Use backlight_get_brightness() to get the current brightness from the
+backlight device. Do not access the properties direct.
+> +	// This panel needs the high and low bytes swapped for the brightness value
+> +	brightness = ((bl->props.brightness<<8)&0xff00)|((bl->props.brightness>>8)&0x00ff);
+> +
+> +	err = mipi_dsi_dcs_set_display_brightness(dsi, brightness);
+> +	if (err < 0) {
+> +		return err;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct backlight_ops oneplus6_panel_bl_ops = {
+> +	.update_status = oneplus6_panel_bl_update_status,
+> +	.get_brightness = oneplus6_panel_bl_get_brightness,
+> +};
+> +
+> +static struct backlight_device *
+> +oneplus6_panel_create_backlight(struct mipi_dsi_device *dsi)
+> +{
+> +	struct device *dev = &dsi->dev;
+> +	struct backlight_properties props = {
+const
+> +		.type = BACKLIGHT_PLATFORM,
+> +		.scale = BACKLIGHT_SCALE_LINEAR,
+> +		.brightness = 255,
+> +		.max_brightness = 512,
+> +	};
+> +
+> +	return devm_backlight_device_register(dev, dev_name(dev), dev, dsi,
+> +						  &oneplus6_panel_bl_ops, &props);
+> +}
+> +
+> +
+> +static int oneplus6_panel_probe(struct mipi_dsi_device *dsi)
+> +{
+> +	struct device *dev = &dsi->dev;
+> +	struct oneplus6_panel *ctx;
+> +	int ret;
+> +
+> +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		return -ENOMEM;
+> +
+> +	ctx->mode = of_device_get_match_data(dev);
+> +
+> +	if (!ctx->mode) {
+> +		dev_err(dev, "Missing device mode\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	ctx->supply = devm_regulator_get(dev, "vddio");
+> +	if (IS_ERR(ctx->supply)) {
+> +		ret = PTR_ERR(ctx->supply);
+> +		dev_err(dev, "Failed to get vddio regulator: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(ctx->reset_gpio)) {
+> +		ret = PTR_ERR(ctx->reset_gpio);
+> +		dev_warn(dev, "Failed to get reset-gpios: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ctx->backlight = oneplus6_panel_create_backlight(dsi);
+> +	if (IS_ERR(ctx->backlight)) {
+> +		ret = PTR_ERR(ctx->backlight);
+> +		dev_err(dev, "Failed to create backlight: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ctx->dsi = dsi;
+> +	mipi_dsi_set_drvdata(dsi, ctx);
+> +
+> +	dsi->lanes = 4;
+> +	dsi->format = MIPI_DSI_FMT_RGB888;
+> +
+> +	drm_panel_init(&ctx->panel, dev, &oneplus6_panel_panel_funcs,
+> +			   DRM_MODE_CONNECTOR_DSI);
+> +
+When using backlight support from drm_panel remember to assing
+pane-backlight after drm_panel_init()
+
+> +	ret = drm_panel_add(&ctx->panel);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to add panel: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = mipi_dsi_attach(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to attach to DSI host: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	dev_info(dev, "Successfully added oneplus6 panel");
+This is just noide, drop it.
+> +
+> +	return 0;
+> +}
+> +
+> +static int oneplus6_panel_remove(struct mipi_dsi_device *dsi)
+> +{
+> +	struct oneplus6_panel *ctx = mipi_dsi_get_drvdata(dsi);
+> +	int ret;
+> +
+> +	ret = mipi_dsi_detach(dsi);
+> +	if (ret < 0)
+> +		dev_err(&dsi->dev, "Failed to detach from DSI host: %d\n", ret);
+> +
+> +	drm_panel_remove(&ctx->panel);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id oneplus6_panel_of_match[] = {
+> +	{
+> +		.compatible = "samsung,sofef00",
+> +		.data = &enchilada_panel_mode,
+> +	},
+> +	{
+> +		.compatible = "samsung,s6e3fc2x01",
+> +		.data = &fajita_panel_mode,
+> +	},
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, oneplus6_panel_of_match);
+> +
+> +static struct mipi_dsi_driver oneplus6_panel_driver = {
+> +	.probe = oneplus6_panel_probe,
+> +	.remove = oneplus6_panel_remove,
+> +	.driver = {
+> +		.name = "panel-oneplus6",
+> +		.of_match_table = oneplus6_panel_of_match,
+> +	},
+> +};
+> +
+> +module_mipi_dsi_driver(oneplus6_panel_driver);
+> +
+> +MODULE_AUTHOR("Caleb Connolly <caleb@connolly.tech>");
+> +MODULE_DESCRIPTION("DRM driver for Samsung AMOLED DSI panels found in OnePlus 6/6T phones");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.28.0
+> 
