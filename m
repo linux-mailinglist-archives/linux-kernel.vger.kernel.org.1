@@ -2,223 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8491291758
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 14:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7DD291760
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 14:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726790AbgJRMbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 08:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726578AbgJRMbO (ORCPT
+        id S1726799AbgJRMbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 08:31:48 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:45123 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgJRMbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 08:31:14 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE60C0613CE;
-        Sun, 18 Oct 2020 05:31:12 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id j136so10010611wmj.2;
-        Sun, 18 Oct 2020 05:31:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=l5krHm/bo+C26sgi9z1Mg3sNFoVSJVuUbTBE8mDuBFE=;
-        b=cxUuY+q00E3MQiermTeSmkbZPW1mHZ/4dwqStrl7FHanVGucCuYaVglF7bF+F2qpma
-         85ehto2JZXKMFEfuwKyYs45/H0fEZOHSp6cbTeaODm8lxk8VrrFcRDRAdRNk7dYBv3QO
-         TuWhG67KppoBNTyVEd1+UFxaSVMc63TTzVk+Qt6Q++TM7Qkb7wmkT3P8Bq3E/P3X2Yp6
-         njQfae2aDb6ER1WXo63d4gSgN47nV029nu9OWJNLG6VtFPCewrUBfgfi5GDSh3nR9HX9
-         0Dc6K5szdqVbEUfN2iw7qYOxr1ZtDr5xFXjT3fT/rYjng9uUsEGDKpB9HykvpAxmnpJV
-         ewjg==
+        Sun, 18 Oct 2020 08:31:47 -0400
+Received: by mail-ot1-f65.google.com with SMTP id f37so7815068otf.12;
+        Sun, 18 Oct 2020 05:31:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=l5krHm/bo+C26sgi9z1Mg3sNFoVSJVuUbTBE8mDuBFE=;
-        b=I++7w5DQl9XZ0w2Jlr8lcOS0HUttLp847ZDZiFNcE66yAbPRP7L1y+cVf7QWVgQQby
-         zZX+KueU3dc2iUEu7VwmsPbi+0PMgj/LZqrU3Y5Dt7eA5rvzluyeje6x2h8FpMY8uZWC
-         38jWssLEfXXVh7zrE5eqOgH9fJL4oKnfba9JtiEQssCMXzb1FxG6834TGzgv1sxdTRt4
-         oTCMv5rFern3pQhNBc3Ll2GD3/dPwC5vq4VekhgLfYhYdEibdPiGmMdBxq6W4f64LkUh
-         et7hpDSkWr6djQaIfyyM2wJdY3Zov6Pq0lE1AgCYA/BvtEoSd/MxsZgqXXo+w5ij4jWB
-         KWtw==
-X-Gm-Message-State: AOAM530dzZHDdv2MgJf/LMM0usix481Jpv7R7/uIu9KUxTMuYJYUbE3i
-        74LgKtXj0YNTyB11ZfCgKOE=
-X-Google-Smtp-Source: ABdhPJz5DmBiPThiLd9R0+6VBUTm7Qpg2ueKyNO4KvoNAz/9NtlrA3tgoWvoAjSYeYKZi0sk2ksSxA==
-X-Received: by 2002:a1c:7d54:: with SMTP id y81mr12309565wmc.114.1603024270977;
-        Sun, 18 Oct 2020 05:31:10 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
-        by smtp.gmail.com with ESMTPSA id q2sm13308568wrw.40.2020.10.18.05.31.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Oct 2020 05:31:10 -0700 (PDT)
-From:   kholk11@gmail.com
-To:     mchehab@kernel.org
-Cc:     robh+dt@kernel.org, marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, devicetree@vger.kernel.org,
-        linux-media@vger.kernel.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>
-Subject: [PATCH 2/2] media: dt-bindings: media: i2c: Add IMX300 CMOS sensor binding
-Date:   Sun, 18 Oct 2020 14:31:06 +0200
-Message-Id: <20201018123106.14917-3-kholk11@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201018123106.14917-1-kholk11@gmail.com>
-References: <20201018123106.14917-1-kholk11@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BR4bAT5Vr/PxycFS8TzpSfye3h+0S0snmDQBRj/kypQ=;
+        b=GbXYEiQrEGUzPDXWKoY73aRBVZey6zasOM1YRbP4RKZcRR+/nBibNbloRvBr9IQwx7
+         H+CwwUZ/VJpDeE2i3iUpA/5lVcry506VgzX+19tZSJ+3MlkNVIgfiRONCAiusmI1iy9B
+         noivx+7WAj0436D+r0FySC0bLxxqLPSUiT+LhtSNvsft5aFFY3qGka62l2eo6EcxmLNN
+         ezWz2Cm2KZewvk50DGHxofWl80OusXebXOiUxoZr8qs5qoGtfbgcY5UCIsWY3KVKLArP
+         4XufTe1Tf8h1Qp7HK92DasGBSv8eCFlaf5MonJt8llDRcdbMoR0Uaab1Hh2sYUuB+5nN
+         dUeA==
+X-Gm-Message-State: AOAM532x0edtYClci/xLPYnXc6KJAOChS8r0dRTzlfSLpGyTZVTUmK+4
+        6VlPrqb+oJutendXQ490G609QIE0kFtko20bKa8khsNW
+X-Google-Smtp-Source: ABdhPJydK+ylUpkMXBo0SnSQz0xN3pQu9JLoCvAtgjkW9DHhkIty1cxnjT4bn0aaXMIGFa3h121MVjVaDdd35f1lN70=
+X-Received: by 2002:a05:6830:18cd:: with SMTP id v13mr5082968ote.206.1603024306315;
+ Sun, 18 Oct 2020 05:31:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
+ <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com> <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
+ <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com> <CAJZ5v0gwc_d1vnwDVWXY+i4f0T2r0tAz8xuWV7oS_afsy7OocQ@mail.gmail.com>
+ <63dfa6a1-0424-7985-7803-756c0c5cc4a5@redhat.com> <CAJZ5v0jpYpu3Tk7qq_MCVs0wUr-Dw0rY5EZELrVbQta0NZaoVA@mail.gmail.com>
+ <87d9a808-39d6-4949-c4f9-6a80d14a3768@redhat.com> <CAJZ5v0iWmmu5WV7cX7uNb61NMYQ7s0dnhg1K+T0x90b3sBfU9w@mail.gmail.com>
+ <943531a7-74d6-7c7f-67bc-2645b3ba7b8a@redhat.com> <CAJZ5v0j8o5Ot-4U0HmUtckUUBSNqC+TRB6CCRzqdjeE0p_XfvA@mail.gmail.com>
+ <25d000cc-0c00-3b17-50f7-ca8de8b7a65b@redhat.com>
+In-Reply-To: <25d000cc-0c00-3b17-50f7-ca8de8b7a65b@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Sun, 18 Oct 2020 14:31:36 +0200
+Message-ID: <CAJZ5v0jC=rrTEtqoTvjw5vi=OH7i5OGC-KFuJgjCaXaDsKhUeQ@mail.gmail.com>
+Subject: Re: [RFC] Documentation: Add documentation for new
+ performance_profile sysfs class (Also Re: [PATCH 0/4] powercap/dtpm: Add the
+ DTPM framework)
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Mark Pearson <mpearson@lenovo.com>,
+        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Elia Devito <eliadevito@gmail.com>,
+        Benjamin Berg <bberg@redhat.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+On Sun, Oct 18, 2020 at 11:41 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi,
+>
+> On 10/16/20 4:51 PM, Rafael J. Wysocki wrote:
+> > On Fri, Oct 16, 2020 at 1:11 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> >>
+> >> <note folding the 2 threads we are having on this into one, adding every one from both threads to the Cc>
+> >>
+> >> Hi,
+> >>
+> >> On 10/14/20 5:42 PM, Rafael J. Wysocki wrote:
+> >>> On Wed, Oct 14, 2020 at 4:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> >>>> On 10/14/20 3:33 PM, Rafael J. Wysocki wrote:
+> >>
+> >> <snip>
+> >>
+> >>>>> First, a common place to register a DPTF system profile seems to be
+> >>>>> needed and, as I said above, I wouldn't expect more than one such
+> >>>>> thing to be present in the system at any given time, so it may be
+> >>>>> registered along with the list of supported profiles and user space
+> >>>>> will have to understand what they mean.
+> >>>>
+> >>>> Mostly Ack, I would still like to have an enum for DPTF system
+> >>>> profiles in the kernel and have a single piece of code map that
+> >>>> enum to profile names. This enum can then be extended as
+> >>>> necessary, but I want to avoid having one driver use
+> >>>> "Performance" and the other "performance" or one using
+> >>>> "performance-balanced" and the other "balanced-performance", etc.
+> >>>>
+> >>>> With the goal being that new drivers use existing values from
+> >>>> the enum as much as possible, but we extend it where necessary.
+> >>>
+> >>> IOW, just a table of known profile names with specific indices assigned to them.
+> >>
+> >> Yes.
+> >>
+> >>> This sounds reasonable.
+> >>>
+> >>>>> Second, irrespective of the above, it may be useful to have a
+> >>>>> consistent way to pass performance-vs-power preference information
+> >>>>> from user space to different parts of the kernel so as to allow them
+> >>>>> to adjust their operation and this could be done with a system-wide
+> >>>>> power profile attribute IMO.
+> >>>>
+> >>>> I agree, which is why I tried to tackle both things in one go,
+> >>>> but as you said doing both in 1 API is probably not the best idea.
+> >>>> So I believe we should park this second issue for now and revisit it
+> >>>> when we find a need for it.
+> >>>
+> >>> Agreed.
+> >>>
+> >>>> Do you have any specific userspace API in mind for the
+> >>>> DPTF system profile selection?
+> >>>
+> >>> Not really.
+> >>
+> >> So before /sys/power/profile was mentioned, but that seems more like
+> >> a thing which should have a set of fixed possible values, iow that is
+> >> out of scope for this discussion.
+> >
+> > Yes.
+> >
+> >> Since we all seem to agree that this is something which we need
+> >> specifically for DPTF profiles maybe just add:
+> >>
+> >> /sys/power/dptf_current_profile    (rw)
+> >> /sys/power/dptf_available_profiles (ro)
+> >>
+> >> (which will only be visible if a dptf-profile handler
+> >>  has been registered) ?
+> >>
+> >> Or more generic and thus better (in case other platforms
+> >> later need something similar) I think, mirror the:
+> >>
+> >> /sys/bus/cpu/devices/cpu#/cpufreq/energy_performance_* bits
+> >> for a system-wide energy-performance setting, so we get:
+> >>
+> >> /sys/power/energy_performance_preference
+> >> /sys/power/energy_performance_available_preferences
+> >
+> > But this is not about energy vs performance only in general, is it?
+> >
+> >> (again only visible when applicable) ?
+> >>
+> >> I personally like the second option best.
+> >
+> > But I would put it under /sys/firmware/ instead of /sys/power/ and I
+> > would call it something like platform_profile (and
+> > platform_profile_choices or similar).
+>
+> Currently we only have dirs under /sys/firmware:
+>
+> [hans@x1 ~]$ ls /sys/firmware
+> acpi  dmi  efi  memmap
+>
+> But we do have /sys/firmware/apci/pm_profile:
+>
+> Documentation/ABI/stable/sysfs-acpi-pmprofile
+>
+> What:           /sys/firmware/acpi/pm_profile
+> Date:           03-Nov-2011
+> KernelVersion:  v3.2
+> Contact:        linux-acpi@vger.kernel.org
+> Description:    The ACPI pm_profile sysfs interface exports the platform
+>                 power management (and performance) requirement expectations
+>                 as provided by BIOS. The integer value is directly passed as
+>                 retrieved from the FADT ACPI table.
+> Values:         For possible values see ACPI specification:
+>                 5.2.9 Fixed ACPI Description Table (FADT)
+>                 Field: Preferred_PM_Profile
+>
+>                 Currently these values are defined by spec:
+>                 0 Unspecified
+>                 1 Desktop
+>                 2 Mobile
+>                 3 Workstation
+>                 4 Enterprise Server
+>                 ...
+>
+> Since all platforms which we need this for are ACPI based
+> (and the involved interfaces are also all ACPI interfaces)
+> how about:
+>
+> /sys/firmware/acpi/platform_profile
+> /sys/firmware/acpi/platform_profile_choices
+>
+> ?
+>
+> I think this goes nice together with /sys/firmware/acpi/pm_profile
+> although that is read-only and this is a read/write setting.
+>
+> Rafel, would:
+>
+> /sys/firmware/acpi/platform_profile
+> /sys/firmware/acpi/platform_profile_choices
+>
+> work for you ?
 
-Add YAML device tree binding for IMX300 CMOS image sensor, and
-the relevant MAINTAINERS entries.
+Yes, it would.
 
-Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
----
- .../devicetree/bindings/media/i2c/imx300.yaml | 115 ++++++++++++++++++
- MAINTAINERS                                   |   8 ++
- 2 files changed, 123 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/i2c/imx300.yaml
-
-diff --git a/Documentation/devicetree/bindings/media/i2c/imx300.yaml b/Documentation/devicetree/bindings/media/i2c/imx300.yaml
-new file mode 100644
-index 000000000000..82fb19c5018c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/i2c/imx300.yaml
-@@ -0,0 +1,115 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/i2c/imx300.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Sony 1/2.3-Inch 8Mpixel Stacked CMOS Digital Image Sensor
-+
-+maintainers:
-+  - AngeloGioacchino Del Regno <kholk11@gmail.com>
-+
-+description: |-
-+  The Sony IMX300 is a 1/2.3-inch Stacked CMOS (Exmor-RS) digital image
-+  sensor with a pixel size of 1.08um and an active array size of
-+  5948H x 4140V. It is programmable through I2C interface at address 0x10.
-+  Image data is sent through MIPI CSI-2, which is configured as either 2 or
-+  4 data lanes.
-+
-+properties:
-+  compatible:
-+    const: sony,imx300
-+
-+  reg:
-+    description: I2C device address
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  VDIG-supply:
-+    description:
-+      Digital I/O voltage supply, 1.15-1.20 volts
-+
-+  VANA-supply:
-+    description:
-+      Analog voltage supply, 2.2 volts
-+
-+  VDDL-supply:
-+    description:
-+      Digital core voltage supply, 1.8 volts
-+
-+  reset-gpios:
-+    description: |-
-+      Reference to the GPIO connected to the xclr pin, if any.
-+      Must be released (set high) after all supplies are applied.
-+
-+  # See ../video-interfaces.txt for more details
-+  port:
-+    type: object
-+    properties:
-+      endpoint:
-+        type: object
-+        properties:
-+          data-lanes:
-+            description: |-
-+              The sensor supports either two-lane, or four-lane operation.
-+              If this property is omitted four-lane operation is assumed.
-+              For four-lane operation the property must be set to <0 1 2 3>.
-+            items:
-+              - const: 0
-+              - const: 1
-+              - const: 2
-+              - const: 3
-+
-+          clock-noncontinuous:
-+            type: boolean
-+            description: |-
-+              MIPI CSI-2 clock is non-continuous if this property is present,
-+              otherwise it's continuous.
-+
-+          link-frequencies:
-+            $ref: /schemas/types.yaml#/definitions/uint64-array
-+            description:
-+              Allowed data bus frequencies.
-+
-+        required:
-+          - link-frequencies
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - VANA-supply
-+  - VDIG-supply
-+  - VDDL-supply
-+  - port
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        imx300: sensor@10 {
-+            compatible = "sony,imx300";
-+            reg = <0x10>;
-+            clocks = <&imx300_xclk>;
-+            VANA-supply = <&imx300_vana>;   /* 2.2v */
-+            VDIG-supply = <&imx300_vdig>;   /* 1.2v */
-+            VDDL-supply = <&imx300_vddl>;   /* 1.8v */
-+
-+            port {
-+                imx300_0: endpoint {
-+                    remote-endpoint = <&csi1_ep>;
-+                    data-lanes = <0 1 2 3>;
-+                    clock-noncontinuous;
-+                    link-frequencies = /bits/ 64 <780000000 480000000>;
-+                };
-+            };
-+        };
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c66710dd7e0a..231937d9d16a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16279,6 +16279,14 @@ T:	git git://linuxtv.org/media_tree.git
- F:	Documentation/devicetree/bindings/media/i2c/imx290.txt
- F:	drivers/media/i2c/imx290.c
- 
-+SONY IMX300 SENSOR DRIVER
-+M:	AngeloGioacchino Del Regno <kholk11@gmail.com>
-+L:	linux-media@vger.kernel.org
-+S:	Maintained
-+T:	git git://linuxtv.org/media_tree.git
-+F:	Documentation/devicetree/bindings/media/i2c/imx300.yaml
-+F:	drivers/media/i2c/imx300.c
-+
- SONY IMX319 SENSOR DRIVER
- M:	Bingbu Cao <bingbu.cao@intel.com>
- L:	linux-media@vger.kernel.org
--- 
-2.28.0
-
+Cheers!
