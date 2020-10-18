@@ -2,248 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A866291529
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 02:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9515E29152D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 02:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440034AbgJRAf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Oct 2020 20:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440026AbgJRAf6 (ORCPT
+        id S2440059AbgJRAzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Oct 2020 20:55:14 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:39744 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440050AbgJRAzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Oct 2020 20:35:58 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3C7C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 17:35:58 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id j17so6843441ilr.2
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Oct 2020 17:35:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AmhFcnM2ta3F2zfSBB4loyXslkWWIa2GP1KcDkrxLco=;
-        b=MM+a9bqzDnqkQ8EXpB/nPEjTGQiK6hrU5mrbSL484V2YecAqzHRJyjy1Evmmiv0i4u
-         rk1IuhH5FkfIk0e0bdBWxwtTSfH/nJMAI9oMZUO4zz36i445bvNNG9qvJNquTkLyzVBE
-         9XWnAdxVOlYVioJSHYQp/1QJIxRX2f0T9sFb4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AmhFcnM2ta3F2zfSBB4loyXslkWWIa2GP1KcDkrxLco=;
-        b=Bxdz/2M3df0/MOd+y+mOvkeNuouuCkXv56Qd1iTuIqhe8eNkuEnEsGlkas/rCBHzfl
-         ARPP8DoB9d7oDdJltF+XwmsW0x/keQAJU36+lKCazIT2RGuBgOZoIPbR4FuJmwB2dyjE
-         cNspE8w2TdYdntVQsJLpXSg9nYTkVqKngE9w/MwLC5EN38fzNQaJlm9yn7KxDauGfTq+
-         VivObfkkygvREjoqGmVUvP+o7Cx8E97orK2+NdoeIgadMEp2XL64M1UYGaUd02M6Ac1M
-         70mQDns4eCpk60RCWA+bZQxHF8LI9uJJq3syltmwEi7EXYy/jkRdkXonISHO2ju7zZNw
-         gMBA==
-X-Gm-Message-State: AOAM532DzhddyBotkVaL38LWNpk1u4W2yMaJ8xS3YNsHVm/sOdeky5qa
-        r5kGvzQsaWTUz0c+oVVnlFKBCQ==
-X-Google-Smtp-Source: ABdhPJzdRiQ1eG59A6A1kOfP0e+RZq59r0uWrFS40cxw/v3mEezIZH9L8XSuA3Ob5WX5HFYOpagDVw==
-X-Received: by 2002:a92:cbd2:: with SMTP id s18mr6730192ilq.34.1602981357842;
-        Sat, 17 Oct 2020 17:35:57 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id m2sm6036076ion.44.2020.10.17.17.35.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Oct 2020 17:35:57 -0700 (PDT)
-Date:   Sat, 17 Oct 2020 20:35:56 -0400
-From:   joel@joelfernandes.org
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com, stern@rowland.harvard.edu
-Subject: Re: [PATCH v7 6/6] rcu/segcblist: Add additional comments to explain
- smp_mb()
-Message-ID: <20201018003556.GA1034551@google.com>
-References: <20201015002301.101830-1-joel@joelfernandes.org>
- <20201015002301.101830-7-joel@joelfernandes.org>
- <20201015133511.GB127222@lothringen>
- <20201017012753.GB4015033@google.com>
- <20201017031941.GD4015033@google.com>
- <20201017132954.GA15657@lothringen>
+        Sat, 17 Oct 2020 20:55:13 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id C51E82A7EE;
+        Sat, 17 Oct 2020 20:55:06 -0400 (EDT)
+Date:   Sun, 18 Oct 2020 11:54:54 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-ia64@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
+In-Reply-To: <CAK8P3a2ymv79j1edtJ983-VgjtxvT_6co7V0VRnHzcneW+0ZtA@mail.gmail.com>
+Message-ID: <alpine.LNX.2.23.453.2010180810010.6@nippy.intranet>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de> <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com> <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet>
+ <CAK8P3a2ymv79j1edtJ983-VgjtxvT_6co7V0VRnHzcneW+0ZtA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201017132954.GA15657@lothringen>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 03:29:54PM +0200, Frederic Weisbecker wrote:
-> On Fri, Oct 16, 2020 at 11:19:41PM -0400, joel@joelfernandes.org wrote:
-> > On Fri, Oct 16, 2020 at 09:27:53PM -0400, joel@joelfernandes.org wrote:
-> > [..]
-> > > > > + *
-> > > > > + * Memory barrier is needed after adding to length for the case
-> > > > > + * where length transitions from 0 -> 1. This is because rcu_barrier()
-> > > > > + * should never miss an update to the length. So the update to length
-> > > > > + * has to be seen *before* any modifications to the segmented list. Otherwise a
-> > > > > + * race can happen.
-> > > > > + * P0 (what P1 sees)	P1
-> > > > > + * queue to list
-> > > > > + *                      rcu_barrier sees len as 0
-> > > > > + * set len = 1.
-> > > > > + *                      rcu_barrier does nothing.
-> > > > 
-> > > > So that would be:
-> > > > 
-> > > >       call_rcu()                    rcu_barrier()
-> > > >       --                            --
-> > > >       WRITE(len, len + 1)           l = READ(len)
-> > > >       smp_mb()                      if (!l)
-> > > >       queue                            check next CPU...
-> > > > 
-> > > > 
-> > > > But I still don't see against what it pairs in rcu_barrier.
-> > > 
-> > > Actually, for the second case maybe a similar reasoning can be applied
-> > > (control dependency) but I'm unable to come up with a litmus test.
-> > > In fact, now I'm wondering how is it possible that call_rcu() races with
-> > > rcu_barrier(). The module should ensure that no more call_rcu() should happen
-> > > before rcu_barrier() is called.
-> > > 
-> > > confused
-> > 
-> > So I made a litmus test to show that smp_mb() is needed also after the update
-> > to length. Basically, otherwise it is possible the callback will see garbage
-> > that the module cleanup/unload did.
-> > 
-> > C rcubarrier+ctrldep
-> > 
-> > (*
-> >  * Result: Never
-> >  *
-> >  * This litmus test shows that rcu_barrier (P1) prematurely
-> >  * returning by reading len 0 can cause issues if P0 does
-> >  * NOT have a smb_mb() after WRITE_ONCE(len, 1).
-> >  * mod_data == 2 means module was unloaded (so data is garbage).
-> >  *)
-> > 
-> > { int len = 0; int enq = 0; }
-> > 
-> > P0(int *len, int *mod_data, int *enq)
-> > {
-> > 	int r0;
-> > 
-> > 	WRITE_ONCE(*len, 1);
-> > 	smp_mb();		/* Needed! */
-> > 	WRITE_ONCE(*enq, 1);
-> > 
-> > 	r0 = READ_ONCE(*mod_data);
-> > }
-> > 
-> > P1(int *len, int *mod_data, int *enq)
-> > {
-> > 	int r0;
-> > 	int r1;
-> > 
-> > 	r1 = READ_ONCE(*enq);
-> > 
-> > 	// barrier Just for test purpose ("exists" clause) to force the..
-> > 	// ..rcu_barrier() to see enq before len
-> > 	smp_mb();		
-> > 	r0 = READ_ONCE(*len);
-> > 
-> > 	// implicit memory barrier due to conditional */
-> > 	if (r0 == 0)
-> > 		WRITE_ONCE(*mod_data, 2);
-> > }
-> 
-> I'm not sure what scenario P1 refers to in practice, and to what module?
+On Thu, 15 Oct 2020, Arnd Bergmann wrote:
 
-Kernel module usecase for rcu_barrier. See the docs. P1() in the litmus test
-is just a thread of execution which I was using to show the memory accesses
-of rcu_barrier.
+> On Thu, Oct 15, 2020 at 3:19 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> >
+> > On Sat, 10 Oct 2020, Arnd Bergmann wrote:
+> >
+> > > > Perhaps patch 13 does not belong in this series (?).
+> > > >
+> > > > All m68k platforms will need conversion before the TODO can be removed
+> > > > from Documentation/features/time/clockevents/arch-support.txt.
+> > >
+> > > Yes, correct. I marked this patch as RFC instead of PATCH, as I'm just
+> > > trying to find out where it should be headed. I would hope the other
+> > > patches can just get merged.
+> > >
+> >
+> > I wonder whether we can improve support for your proposed configuration
+> > i.e. a system with no oneshot clockevent device.
+> >
+> > The 16 platforms you identified are not all in that category but I suspect
+> > that there are others which are (though they don't appear in this series
+> > because they already use GENERIC_CLOCKEVENTS).
+> >
+> > One useful optimization would be some way to elide oneshot clockevent
+> > support (perhaps with the help of Link Time Optimization).
+> 
+> I think this already happens if one picks CONFIG_HZ_PERIODIC while
+> disabling HIGH_RES_TIMERS. In that case, CONFIG_TICK_ONESHOT
+> remains disabled.
+> 
 
-> > // Did P0 read garbage?
-> > exists (0:r0=2 /\ 1:r0=0 /\ 1:r1=1)
-> > 
-> 
-> 
-> What also scares me is that in rcu_barrier():
-> 
-> 	for_each_possible_cpu(cpu) {
-> 		rdp = per_cpu_ptr(&rcu_data, cpu);
-> 		if (cpu_is_offline(cpu) &&
-> 		    !rcu_segcblist_is_offloaded(&rdp->cblist))
-> 			continue;
-> 		if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
-> 			rcu_barrier_trace(TPS("OnlineQ"), cpu,
-> 					  rcu_state.barrier_sequence);
-> 			smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
-> 		} else if (rcu_segcblist_n_cbs(&rdp->cblist) &&
-> 			   cpu_is_offline(cpu)) {
-> 			rcu_barrier_trace(TPS("OfflineNoCBQ"), cpu,
-> 					  rcu_state.barrier_sequence);
-> 			local_irq_disable();
-> 			rcu_barrier_func((void *)cpu);
-> 			local_irq_enable();
-> 		} else if (cpu_is_offline(cpu)) {
-> 			rcu_barrier_trace(TPS("OfflineNoCBNoQ"), cpu,
-> 					  rcu_state.barrier_sequence);
-> 		} else {
-> 			rcu_barrier_trace(TPS("OnlineNQ"), cpu,
-> 					  rcu_state.barrier_sequence);
-> 		}
-> 	}
-> 
-> I can't find something that makes sure this isn't racy while reading
-> rcu_segcblist_n_cbs(&rdp->cblist).
-> 
-> I mean what I see sums up to this:
-> 
->       CPU 0                                CPU 1
->       rcu_barrier()                        call_rcu()/rcu_segcblist_enqueue()
->       ------------                         --------
-> 
->                                            smp_mb();
->                                            inc_len();
-> 					   smp_mb();
-> 					   queue callback;
->       for_each_possible_cpu(cpu)
->           if (!rcu_segcblist_n_cbs(&rdp->cblist))
-> 	      continue;
-> 
-> It looks possible for rcu_barrier() to believe there is no callback enqueued
-> and see rcu_segcblist_n_cbs(&rdp->cblist) == 0 here.
-> 
-> I'm very likely missing something obvious somewhere.
-> 
->       CPU 0                                CPU 1
->       rcu_barrier()                        call_rcu()/rcu_segcblist_enqueue()
->       ------------                         --------
-> 
->                                            smp_mb();
->                                            inc_len();
-> 					   smp_mb();
-> 					   queue callback;
->       for_each_possible_cpu(cpu)
->           if (!rcu_segcblist_n_cbs(&rdp->cblist))
-> 	      continue;
->
+That configuration still produces the same 5 KiB of bloat. I see that 
+kernel/time/Kconfig has this --
 
->						invoke_callback
+# Core internal switch. Selected by NO_HZ_COMMON / HIGH_RES_TIMERS. This is
+# only related to the tick functionality. Oneshot clockevent devices
+# are supported independent of this.
+config TICK_ONESHOT
+        bool
 
-If CPU 0 saw the enqueue of the callback (that is the CPU 1's writes to the
-segcb_list propagated to CPU 0), then it would have also seen the
-effects of the inc_len. I forced this case in my last litmus test by this
-code in P1():
+But my question was really about both kinds of dead code (oneshot device 
+support and oneshot tick support). Anyway, after playing with the code for 
+a bit I don't see any easy way to reduce the growth in text size.
 
-        r1 = READ_ONCE(*enq);
-        smp_mb();               /* barrier Just for test purpose to show that the.. */
-                                /* ..rcu_barrier() saw list modification */
+> ...
+> > After looking at the chip documentation I don't think it's viable to 
+> > use the hardware timers in the way I proposed. A VIA register access 
+> > requires at least one full VIA clock cycle (about 1.3 us) which means 
+> > register accesses themselves cause timing delays. They also make 
+> > clocksource reads expensive.
+> >
+> > I think this rules out oneshot clockevent devices because if the 
+> > system offered such a device it would preferentially get used as a 
+> > tick device.
+> >
+> > So I think your approach (periodic clockevent device driven by the 
+> > existing periodic tick interrupt) is best for this platform due to 
+> > simplicity (not much code) and performance (good accuracy, no 
+> > additional overhead).
+> 
+> Yes, makes sense. I think the one remaining problem with the periodic 
+> mode in this driver is that it can drop timer ticks when interrupts are 
+> disabled for too long, while in oneshot mode there may be a way to know 
+> how much time has passed since the last tick as long as the counter does 
+> not overflow.
 
-On the other hand, if CPU 0 did not see the enqueue, then there is really no
-issue. Since that is the same case where call_rcu() happened _after_ the
-rcu_barrier() and there's no race. rcu_barrier() does not need to wait if
-there was no callback enqueued.
+Is there any benefit from adopting a oneshot tick (rather than periodic) 
+if no clocksource is consulted when calculating the next interval? (I'm 
+assuming NO_HZ is not in use, for reasons discussed below.)
 
-This is not exactly the easiest thing to explain, hence the litmus.
+> I would agree that despite this oneshot mode is probably worse overall 
+> for timekeeping if the register accesses introduce systematic errors.
+> 
 
- - Joel
+It probably has to be tried. But consulting a VIA clocksource on every 
+tick would be expensive on this platform, so if that was the only way to 
+avoid cumulative errors, I'd probably just stick with the periodic tick.
 
+> ...
+> The arm/rpc timer seems to be roughly in the same category as most of 
+> the m68k ones or the i8253 counter on a PC. It's possible that some of 
+> them could use the same logic as drivers/clocksource/i8253.o as long as 
+> there is any hardware oneshot mode.
+> 
+
+There appear to be 15 platforms in that category. 4 have no clocksource 
+besides the jiffies clocksource, meaning there's no practical alternative 
+to using a periodic tick, like you did in your RFC patch:
+
+arch/m68k/apollo/config.c
+arch/m68k/q40/q40ints.c
+arch/m68k/sun3/sun3ints.c
+arch/m68k/sun3x/time.c
+
+The other 11 platforms in that category also have 'synthetic' clocksources 
+derived from a timer reload interrupt. In 3 cases, the clocksource read 
+method does not (or can not) check for a pending counter reload interrupt. 
+For these also, I see no practical alternative to the approach you've 
+taken in your RFC patch:
+
+arch/m68k/68000/timers.c
+arch/m68k/atari/time.c
+arch/m68k/coldfire/timers.c
+
+That leaves 8 platforms that have reliable clocksource devices which 
+should be able to provide an accurate reading even in the presence of a 
+dropped tick (due to drivers disabling interrupts for too long):
+
+arch/arm/mach-rpc/time.c
+arch/m68k/amiga/config.c
+arch/m68k/bvme6000/config.c
+arch/m68k/coldfire/sltimers.c
+arch/m68k/hp300/time.c
+arch/m68k/mac/via.c
+arch/m68k/mvme147/config.c
+arch/m68k/mvme16x/config.c
+
+But is there any reason to adopt a oneshot tick on any of these platforms, 
+if NO_HZ won't eliminate the timer interrupt that's needed to run a 
+'synthetic' clocksource?
