@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F83B291765
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 14:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE986291767
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 14:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgJRMdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 08:33:39 -0400
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:12271 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725784AbgJRMdj (ORCPT
+        id S1726421AbgJRMhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 08:37:37 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:48886 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725776AbgJRMhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 08:33:39 -0400
-Date:   Sun, 18 Oct 2020 12:33:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1603024416;
-        bh=GCCxJzqOnfsVI/hX933byDTiphe1ufjEW2PregmWSLo=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=f+hV804e70VkKoIWRn7lDMgkeqT2qE8ENc6nW6FtprsQ95OUyJzlP0nWidHtODY3t
-         2rzpoWw8FEbph1STSYBYkit71a3mtR/Xze3Z7XyeILvONxAqoJBCNyeUaSfRCUz070
-         KmqilvG2Lhych3aFR83Oq7sZeDM//DxKss96mhgQ=
-To:     Rob Herring <robh@kernel.org>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: Re: [PATCH 2/5] dt-bindings: panel: add documentation for oneplus6 panel
-Message-ID: <3b3f9ede-89ef-26c7-3ade-bf498ea483b8@connolly.tech>
-In-Reply-To: <20201009140544.GB4071736@bogus>
-References: <20201007174736.292968-1-caleb@connolly.tech> <20201007174736.292968-3-caleb@connolly.tech> <20201009140544.GB4071736@bogus>
+        Sun, 18 Oct 2020 08:37:37 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UCMVb5V_1603024653;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCMVb5V_1603024653)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 18 Oct 2020 20:37:34 +0800
+Date:   Sun, 18 Oct 2020 20:37:33 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: Re: [PATCH v1 13/29] virtio-mem: factor out handling of fake-offline
+ pages in memory notifier
+Message-ID: <20201018123733.GC50506@L-31X9LVDL-1304>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-14-david@redhat.com>
+ <20201016071502.GM86495@L-31X9LVDL-1304.local>
+ <20201016080046.GA43862@L-31X9LVDL-1304.local>
+ <17ca9bd8-bdc6-541c-b8f9-4076cb9a7322@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <17ca9bd8-bdc6-541c-b8f9-4076cb9a7322@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-09 15:05, Rob Herring wrote:
-> On Wed, Oct 07, 2020 at 05:49:14PM +0000, Caleb Connolly wrote:
->> Document the OnePlus 6/T common panel driver, example from
->> arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
->>
->> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
->> ---
->>   .../display/panel/panel-oneplus6.yaml         | 73 +++++++++++++++++++
->>   1 file changed, 73 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/display/panel/pan=
-el-oneplus6.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/display/panel/panel-onepl=
-us6.yaml b/Documentation/devicetree/bindings/display/panel/panel-oneplus6.y=
-aml
->> new file mode 100644
->> index 000000000000..23ba369cc2f5
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/display/panel/panel-oneplus6.yam=
-l
->> @@ -0,0 +1,73 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/display/panel/panel-oneplus6.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: OnePlus 6/T panel driver
->> +
->> +description: |
->> +  The OnePlus 6 panel driver encompasses the display panels found in th=
-e
->> +  OnePlus 6 and 6T devices, the panels have almost identical behaviour =
-and
->> +  are not used by any other devices.
->> +
->> +maintainers:
->> +  - Caleb Connolly <caleb@connolly.tech>
->> +
->> +allOf:
->> +  - $ref: panel-common.yaml#
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - samsung,sofef00
->> +      - samsung,s6e3fc2x01
->> +
->> +  reg: true
->> +  reset-gpios: true
->> +  port: true
->> +
->> +  vddio-supply:
->> +    description: VDDIO regulator
-> A panel with a single supply can use panel-simple-dsi.yaml.
+On Fri, Oct 16, 2020 at 10:57:35AM +0200, David Hildenbrand wrote:
+>>> Do we adjust the count twice?
+>>>
+>> 
+>> Ah, I got the reason why we need to adjust count for *unplugged* sub-blocks.
 >
-> 'reset-gpios' was missing, but has been added recently.
+>Exactly.
 >
-> Rob
+>> 
+>>>> -		for (i = 0; i < nr_pages; i++) {
+>>>> -			page = pfn_to_page(pfn + i);
+>>>> -			if (WARN_ON(!page_ref_dec_and_test(page)))
+>> 
+>> Another question is when we grab a refcount for the unpluged pages? The one
+>> you mentioned in virtio_mem_set_fake_offline().
+>
+>Yeah, that was confusing on my side. I actually meant
+>virtio_mem_fake_offline() - patch #12.
+>
+>We have a reference on unplugged (fake offline) blocks via
+>
+>1. memmap initialization, if never online via generic_online_page()
+>
+>So if we keep pages fake offline when onlining memory, they
+>
+>a) Have a refcount of 1
+>b) Have *not* increased the managed page count
+>
+>2. alloc_contig_range(), if fake offlined. After we fake-offlined pages
+>(e.g., patch #12), such pages
+>
+>a) Have a refcount of 1
+>b) Have *not* increased the managed page count (because we manually
+>decreased it)
+>
 
-Thanks, I'll move docs into panel-simple-dsi.yaml
+Yep, I got the reason now.
 
-Caleb
+>
+>-- 
+>Thanks,
+>
+>David / dhildenb
 
-
+-- 
+Wei Yang
+Help you, Help me
