@@ -2,152 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3601291818
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88EBD29181D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726943AbgJRPvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 11:51:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:37842 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726364AbgJRPvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 11:51:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DB7A30E;
-        Sun, 18 Oct 2020 08:51:17 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 416B93F66B;
-        Sun, 18 Oct 2020 08:51:15 -0700 (PDT)
-References: <20201015110532.738127234@infradead.org> <20201015110923.910090294@infradead.org> <jhjlfg6qqum.mognet@arm.com> <BN8PR12MB29784D239007D0D6CA3F4F2A9A010@BN8PR12MB2978.namprd12.prod.outlook.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     ouwen210@hotmail.com
-Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
-        tj@kernel.org
-Subject: Re: [PATCH v3 10/19] sched: Fix migrate_disable() vs set_cpus_allowed_ptr()
-In-reply-to: <BN8PR12MB29784D239007D0D6CA3F4F2A9A010@BN8PR12MB2978.namprd12.prod.outlook.com>
-Date:   Sun, 18 Oct 2020 16:51:10 +0100
-Message-ID: <jhjimb7r0r5.mognet@arm.com>
+        id S1727038AbgJRPwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 11:52:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31525 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726949AbgJRPwQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 11:52:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603036335;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=98NF5I6kW3PEIcXhLOKqmMDjTo2gmlFaETZTllsyzbc=;
+        b=eXW2s2cwTi3F4VGWSjbxrULm7vx2pqBo7Whj+hIXq++u8mHniFXW5Q1gYjpYGtP3FQMdBS
+        P7X5fIKFbLSTuF3/Um9jfD3L8qBl7W/kAuX7rdPfgcvBIZW6krwibdxjOr/6VqVti4hIw3
+        7/e7ngcdJ1zz64Krp6RkYXZM/Gx+tbo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-cDxzA_1dOAm895riBxTsng-1; Sun, 18 Oct 2020 11:52:13 -0400
+X-MC-Unique: cDxzA_1dOAm895riBxTsng-1
+Received: by mail-wr1-f70.google.com with SMTP id i6so6243063wrx.11
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 08:52:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=98NF5I6kW3PEIcXhLOKqmMDjTo2gmlFaETZTllsyzbc=;
+        b=jZgOj5AG9wux3KJDK96uD3kDzjLtbjGQKsETIyOMwjdJUyosPDkuHZyJbfqBZjhHT5
+         O0oJLLpGigKrASPSQ477lhwe1LRwbYet5f1LTbOZvbKn7nW1B9kObS7stp/W46hoNG4Z
+         21gZymazj8USo93vvy1EIKDfCXBOnM6h0gVEOzDcpADijEV+HSb5kfkz9vfdayHqhO9T
+         cmjltJqNj+w9LxFlIgVgblo/m+xySTb0uXMcClN7UvOjJsn1LPh56TCsEvBp32shVnQp
+         fyMayGBVFXffJY99PmCVYdE4f1JkWBErlm77TQHiGR++31bqzD0h/7xp8dDXVaIrJTmW
+         Cl6Q==
+X-Gm-Message-State: AOAM531qKGOpf1uRppYGWgKN81Fi1/k7MFWocUaW8RLAd7h6DJVM5zOV
+        TounighawV49UnaHIi7YeQdkmzLp2SOI7bdRqfYei9VLQzx50yiazUSXq3GXvpJxOPtifpSV7Em
+        LZDZN+/0EDjTwMJKiOIk/NJp3
+X-Received: by 2002:a05:6000:1084:: with SMTP id y4mr14633136wrw.138.1603036332032;
+        Sun, 18 Oct 2020 08:52:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzDk0m1PaAgQbG5uGn8JDuTOpRDE6IZs81q1mD08uCdggM28IdBmZmD2H7MRJNdhDzXVGo/nQ==
+X-Received: by 2002:a05:6000:1084:: with SMTP id y4mr14633124wrw.138.1603036331866;
+        Sun, 18 Oct 2020 08:52:11 -0700 (PDT)
+Received: from redhat.com (bzq-79-176-118-93.red.bezeqint.net. [79.176.118.93])
+        by smtp.gmail.com with ESMTPSA id i8sm12624962wmd.14.2020.10.18.08.52.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Oct 2020 08:52:11 -0700 (PDT)
+Date:   Sun, 18 Oct 2020 11:52:06 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Jann Horn <jannh@google.com>, Willy Tarreau <w@1wt.eu>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        "Catangiu, Adrian Costin" <acatan@amazon.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:VIRTIO GPU DRIVER" 
+        <virtualization@lists.linux-foundation.org>,
+        "Graf (AWS), Alexander" <graf@amazon.de>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>, bonzini@gnu.org,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>, oridgar@gmail.com,
+        ghammer@redhat.com, Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Qemu Developers <qemu-devel@nongnu.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
+Message-ID: <20201018114625-mutt-send-email-mst@kernel.org>
+References: <CAG48ez0EanBvDyfthe+hAP0OC8iGLNSq2e5wJVz-=ENNGF97_w@mail.gmail.com>
+ <20201017033606.GA14014@1wt.eu>
+ <CAG48ez0x2S9XuCrANAQbXNi8Jjwm822-fnQSmr-Zr07JgrEs1g@mail.gmail.com>
+ <6CC3DB03-27BA-4F5E-8ADA-BE605D83A85C@amazon.com>
+ <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
+ <20201017053712.GA14105@1wt.eu>
+ <CAG48ez1h0ynXfGap_KiHiPVTfcB8NBQJ-2dnj08ZNfuhrW0jWA@mail.gmail.com>
+ <20201017064442.GA14117@1wt.eu>
+ <CAG48ez3pXLC+eqAXDCniM0a+5yP2XJODDkZqiUTZUOttCE_LbA@mail.gmail.com>
+ <CAHmME9qHGSF8w3DoyCP+ud_N0MAJ5_8zsUWx=rxQB1mFnGcu9w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHmME9qHGSF8w3DoyCP+ud_N0MAJ5_8zsUWx=rxQB1mFnGcu9w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 17, 2020 at 03:24:08PM +0200, Jason A. Donenfeld wrote:
+> 4c. The guest kernel maintains an array of physical addresses that are
+> MADV_WIPEONFORK. The hypervisor knows about this array and its
+> location through whatever protocol, and before resuming a
+> moved/snapshotted/duplicated VM, it takes the responsibility for
+> memzeroing this memory. The huge pro here would be that this
+> eliminates all races, and reduces complexity quite a bit, because the
+> hypervisor can perfectly synchronize its bringup (and SMP bringup)
+> with this, and it can even optimize things like on-disk memory
+> snapshots to simply not write out those pages to disk.
+> 
+> A 4c-like approach seems like it'd be a lot of bang for the buck -- we
+> reuse the existing mechanism (MADV_WIPEONFORK), so there's no new
+> userspace API to deal with, and it'd be race free, and eliminate a lot
+> of kernel complexity.
 
-Hi,
+Clearly this has a chance to break applications, right?
+If there's an app that uses this as a non-system-calls way
+to find out whether there was a fork, it will break
+when wipe triggers without a fork ...
+For example, imagine:
 
-On 18/10/20 10:46, ouwen wrote:
-> On Fri, Oct 16, 2020 at 01:48:17PM +0100, Valentin Schneider wrote:
->> ---
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index a5b6eac07adb..1ebf653c2c2f 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -1859,6 +1859,13 @@ static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
->>  	return rq;
->>  }
->>  
->> +struct set_affinity_pending {
->> +	refcount_t		refs;
->> +	struct completion	done;
->> +	struct cpu_stop_work	stop_work;
->> +	struct migration_arg	arg;
->> +};
->> +
->>  /*
->>   * migration_cpu_stop - this will be executed by a highprio stopper thread
->>   * and performs thread migration by bumping thread off CPU then
->> @@ -1866,6 +1873,7 @@ static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
->>   */
->>  static int migration_cpu_stop(void *data)
->>  {
->> +	struct set_affinity_pending *pending;
->>  	struct migration_arg *arg = data;
->>  	struct task_struct *p = arg->task;
->>  	struct rq *rq = this_rq();
->> @@ -1886,13 +1894,22 @@ static int migration_cpu_stop(void *data)
->>  
->>  	raw_spin_lock(&p->pi_lock);
->>  	rq_lock(rq, &rf);
->> +
->> +	if (arg->done)
->
-> If I'm not wrong(always likely), arg->done is point to the installed
-> pending's done of the first task that calling sca. It should not be
-> NULL because it is a pointer to the stack address not related to the
-> content in the stack.
->
-
-Correct; here I'm using it as an indicator of whether migration_cpu_stop()
-was invoked by SCA with a pending affinity request. I'll admit it's icky,
-I'd prefer having an explicit flag to check against.
-
->> +		pending = container_of(arg->done, struct set_affinity_pending, done);
->>  	/*
->>  	 * If task_rq(p) != rq, it cannot be migrated here, because we're
->>  	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
->>  	 * we're holding p->pi_lock.
->>  	 */
->>  	if (task_rq(p) == rq) {
->> -		if (is_migration_disabled(p))
->> +		/*
->> +		 * An affinity update may have raced with us.
->> +		 * p->migration_pending could now be NULL, or could be pointing
->> +		 * elsewhere entirely.
->> +		 */
->> +		if (is_migration_disabled(p) ||
->> +		    (arg->done && p->migration_pending != pending))
->                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> p->migration_pending can be set on the random task's stack but the
-> address is possible to be the same with the previous pending. It's
-> very very unlikely. But I'm also totally failed.
->
-
-Do you mean if we encounter the above race, but on top of that a new
-pending gets installed that has the *same* address as the previous one?
-
-That would mean that the task which installed that first pending got out of
-affine_move_task() and *back into it*, with the same stack depth, before the
-stopper got to run & grab the task_rq_lock. I also thought about this, but
-am unsure how far to push the paranoia.
+MADV_WIPEONFORK
+copy secret data to MADV_DONTFORK
+fork
 
 
-Side thought: don't we need to NULL p->migration_pending in __sched_fork()?
-
-> I can't realize anything that time, but now I just give this noise.
-> Use refcount_add/dec on MIGRATE_ENABLE path to prevent that not sure
-> yet.
->
-
-One annoying thing is that in that path we can't wait on the refcount
-reaching 0, since migrate_{disable, enable}() disable preemption.
-(the stopper is only schedule()'d upon reenabling preemption in
-migrate_enable()).
-
-Including the stopper callback in the refcount chain would probably reduce
-future headaches, but it's not as straightforward.
+used to work, with this change it gets 0s instead of the secret data.
 
 
->>  			goto out;
->>  
->>  		if (task_on_rq_queued(p))
->> @@ -2024,13 +2041,6 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
->>  	__do_set_cpus_allowed(p, new_mask, 0);
->>  }
->>  
->> -struct set_affinity_pending {
->> -	refcount_t		refs;
->> -	struct completion	done;
->> -	struct cpu_stop_work	stop_work;
->> -	struct migration_arg	arg;
->> -};
->> -
->>  /*
->>   * This function is wildly self concurrent; here be dragons.
->>   *
+I am also not sure it's wise to expose each guest process
+to the hypervisor like this. E.g. each process needs a
+guest physical address of its own then. This is a finite resource.
+
+
+The mmap interface proposed here is somewhat baroque, but it is
+certainly simple to implement ...
+
+-- 
+MST
 
