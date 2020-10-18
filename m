@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C312917A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 15:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144B32917B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 16:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgJRNrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 09:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgJRNrp (ORCPT
+        id S1726915AbgJRODa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 10:03:30 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:42451 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbgJROD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 09:47:45 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29F7C061755;
-        Sun, 18 Oct 2020 06:47:44 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id h6so4408062pgk.4;
-        Sun, 18 Oct 2020 06:47:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yITj8dBRv3eP6s3AyfeUdrvXg5i+GxFPHwm8RZEHOO4=;
-        b=rM3pr12X746v1vIOK9QDqXttSIZ/dMOc3OTtp+397Zu3cQJG0VQd4BKvi2rDYM94vN
-         SrQvNnlXb0aZUnNox/kB4aCnA+9PwI0aQch683c38FCO46FAk+xWkw7bWp6uGDj7JZ8c
-         8wlCBUzGVOySCVAqGHTW7E6evkbXxDSAeoqxeQxLX+bhORLD019TH1bJhCUyUasAgRqz
-         Q64BiMR3/G1tD8HRxKVK0/NoY5l9HT0irpGxdFsKCPZo0GtG2xPShc2bjWUJlfYqsuoM
-         /+CfwlH8CSO1JPNpOn5H9WHhBrnA9i3ShwgyTxOLzXGWPEuoDVKhmBdh+Lu0BJrdrxV+
-         vvdg==
+        Sun, 18 Oct 2020 10:03:27 -0400
+Received: by mail-oo1-f66.google.com with SMTP id l18so2169934ooa.9
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 07:03:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yITj8dBRv3eP6s3AyfeUdrvXg5i+GxFPHwm8RZEHOO4=;
-        b=ne15rntq+hANH2pekuEoLGUJKa0oNPv3XPAW7DHu3+2KFDeucBVF71YJNLTZOYT4P1
-         GlRY9LQwIRRwd4Ut2U1F2nfKXPmShdAONBWHgdPfu/a7bSO70Ovv1X5G+C5vCoWd2phz
-         xrJ5GddU/FZrHDTfFDm9/EbGoT7Md0mGAnfkzmZ5DCnV9O9T9i33RPoZi50sNBx01GoS
-         BBwXpT356D5h3xukhnA4l1g8mt3XZAtwkaT9zB1vATCXtyWhOnIlEDJ4hDYYeutrjDIy
-         8kvFzVAe9K/0E51Xahece/k17mXztyBgOZ4wz+PAgKfxd8UIkKR1t9ZVXJXvJjzl6SOW
-         BcOg==
-X-Gm-Message-State: AOAM530H2bRhSHzeyQxbbnBZr0PgPOOYh+cKpAeK9MO3lAIAhoP+CJnk
-        XQz+6jSgLmj7tZDzZJRpsp8=
-X-Google-Smtp-Source: ABdhPJzka8p1UURxATgAVhikDTB9qma4UG+5S5LaXOXMtfgGri2oh+7X/CWHrm3EtEB8URamSAfemA==
-X-Received: by 2002:a63:1849:: with SMTP id 9mr10498295pgy.393.1603028864215;
-        Sun, 18 Oct 2020 06:47:44 -0700 (PDT)
-Received: from localhost ([204.124.180.191])
-        by smtp.gmail.com with ESMTPSA id o2sm8428946pgg.3.2020.10.18.06.47.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 18 Oct 2020 06:47:43 -0700 (PDT)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
-Subject: [PATCH v1] usb: dwc3: core: fix a issue about clear connect state
-Date:   Sun, 18 Oct 2020 21:47:34 +0800
-Message-Id: <20201018134734.10406-1-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.25.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jdYTigja8ZWEG3eKOvDG5jgCOVY9eahGaE3L6tasC3w=;
+        b=tPUhsBCRedsoDEADviAbVDyiU2+CK1V/nYWvxN9c4QJu0/dqmnrxcpgFhvgN1f+9ht
+         tpeW0iw+Apmej2qwHVj636Ylg82P9lukbC3jnUmeFxWuCSo9Ytotq+aX/y3i+s+vW0pm
+         SX04McoPBkbPiHw6aiC7+q6GX/kJxK1Re5IXNCHsnuNuZxK6DZmjX98HPiBFsq5Vk9KW
+         A1LX38DaXwyRgWbzPhttfadZ1s+Aw+XHJlg2eu00prjionVJucO9cNioBZfxWuQyejg4
+         O/+hRBQGWiOfS0QoYhJTDzhkiJbm9VByIhnFXX2lqTulEsp10dM3ZGvLOrFKhdhwIguB
+         3ksg==
+X-Gm-Message-State: AOAM531FdWrzESjkhl+K2/ur66qrB7KsOsjBrpQ0vMG4s1LdhilncchX
+        EVvrMRisnjcdCKcybHYH3EyokPSTJtSj7HJrIqeheDPqJEc=
+X-Google-Smtp-Source: ABdhPJzdaDi1+Q/OVfT5rGZHhOTdQ3r3UQIgRBV1wkt1ZoQNmurLWXzyfEQ0YMj5CkR1Z481aUmxKXZWAJRV2+KD/bs=
+X-Received: by 2002:a4a:dbd3:: with SMTP id t19mr9447968oou.40.1603029806402;
+ Sun, 18 Oct 2020 07:03:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <45b81a48e1568bd0126a96f5046eb7aaae9b83c9.camel@perches.com>
+In-Reply-To: <45b81a48e1568bd0126a96f5046eb7aaae9b83c9.camel@perches.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 18 Oct 2020 16:03:15 +0200
+Message-ID: <CAMuHMdV8FEPhTp653RN00LK4UcQZHkuLByJzqiM85r2qoqhDvQ@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: Allow not using -f with files that are in git
+To:     Joe Perches <joe@perches.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@shadowen.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to Synopsys Programming Guide chapter 2.2 Register Resets,
-it cannot reset the DCTL register by set DCTL.CSFTRST for Core Soft Reset,
-if DWC3 controller as a slave device and stay connected with a usb host,
-then, reboot linux, it will fail to reinitialize dwc3 as a slave device
-when the DWC3 controller did not power off. because the connection status
-is incorrect, so we also need clear DCTL.RUN_STOP bit for disable connect
-when do core soft reset.
+Hi Joe,
 
-Fixes: f59dcab176293b6 ("usb: dwc3: core: improve reset sequence")
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
----
- drivers/usb/dwc3/core.c | 1 +
- 1 file changed, 1 insertion(+)
+On Tue, Aug 25, 2020 at 2:12 AM Joe Perches <joe@perches.com> wrote:
+> If a file exists in git and checkpatch is used without the -f
+> flag for scanning a file, then checkpatch will scan the file
+> assuming it's a patch and emit:
+>
+> ERROR: Does not appear to be a unified-diff format patch
+>
+> Change the behavior to assume the -f flag if the file exists
+> in git.
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 2eb34c8b4065..239636c454c2 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -256,6 +256,7 @@ static int dwc3_core_soft_reset(struct dwc3 *dwc)
- 
- 	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
- 	reg |= DWC3_DCTL_CSFTRST;
-+	reg &= ~DWC3_DCTL_RUN_STOP;
- 	dwc3_writel(dwc->regs, DWC3_DCTL, reg);
- 
- 	/*
+Thanks for your patch!
+
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -976,6 +976,16 @@ sub seed_camelcase_includes {
+>         }
+>  }
+>
+> +sub git_is_single_file {
+> +       my ($filename) = @_;
+> +
+> +       return 0 if ((which("git") eq "") || !(-e "$gitroot"));
+> +
+> +       my $output = `${git_command} ls-files -- $filename`;
+> +       my $count = $output =~ tr/\n//;
+> +       return $count eq 1 && $output =~ m{^${filename}$};
+> +}
+> +
+>  sub git_commit_info {
+>         my ($commit, $id, $desc) = @_;
+>
+
+This is now commit f5f613259f3fea81 ("checkpatch: allow not using -f
+with files that are in git"), causing:
+
+    Global symbol "$gitroot" requires explicit package name (did you
+forget to declare "my $gitroot"?) at scripts/checkpatch.pl line 980.
+    Execution of scripts/checkpatch.pl aborted due to compilation errors.
+
+FWIW, host system is running Ubuntu 18.04.5 LTS (upgrade to 20.04 LTS
+planned soon ;-).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
