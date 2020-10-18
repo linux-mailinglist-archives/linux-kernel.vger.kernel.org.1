@@ -2,168 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A342918A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 19:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D6F2918A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 19:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727201AbgJRRZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 13:25:29 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:36642 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgJRRZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 13:25:25 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CDmxB401vz9vCyc;
-        Sun, 18 Oct 2020 19:25:18 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id GN-qKgBtLpLm; Sun, 18 Oct 2020 19:25:18 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CDmxB36Cvz9ty3L;
-        Sun, 18 Oct 2020 19:25:18 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 494D18B778;
-        Sun, 18 Oct 2020 19:25:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id EpJiRDk3HG-l; Sun, 18 Oct 2020 19:25:22 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 034438B75E;
-        Sun, 18 Oct 2020 19:25:22 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 1A34466488; Sun, 18 Oct 2020 17:25:18 +0000 (UTC)
-Message-Id: <c3e64da3d5d068c69a201e03bbae7da055761e5b.1603041883.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <822833ce3dc10634339818f7d1ab616edf63b0c6.1603041883.git.christophe.leroy@csgroup.eu>
-References: <822833ce3dc10634339818f7d1ab616edf63b0c6.1603041883.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 2/2] powerpc/44x: Don't support 47x code and non 47x code
- at the same time
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Sun, 18 Oct 2020 17:25:18 +0000 (UTC)
+        id S1727149AbgJRRkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 13:40:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgJRRkF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 13:40:05 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2B5C061755;
+        Sun, 18 Oct 2020 10:40:04 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id d24so8690807ljg.10;
+        Sun, 18 Oct 2020 10:40:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CZ5/1YNy2bWo7Jp+UxAXqknDLVCcYm3vq3FYtrYD/QY=;
+        b=l6u3B8phZSYgy1V4b9FLJO+NLWfYJD3epja1Etg9m4quhshmTJ8GtBeaFevy9ziDsI
+         hre+pYMJZAMuQJGksbOlWryhYW6ift3IyFD+jr62MCy7jZcBlYLRpP9qXsnZyriPdZgk
+         UeaKIB8G1IblZxUp5pLoK9koCuDwC76n70rnFkbXKFMt7NKSdCIbS6OQROuESLAppTj6
+         hae4vXEZZce1WieTsDf2Jm64ea7vP28tcSslN4YevjMJj0gbI2zsPuKOMTrIRO5WsT/V
+         rhgsrcAcvpyPLpjioSCsAn8OVFOyn2VA2Fs+szWw/u5O+fxe45XK2XayWb0Rq2U+MGg/
+         bspA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CZ5/1YNy2bWo7Jp+UxAXqknDLVCcYm3vq3FYtrYD/QY=;
+        b=PSoPfbwi7H2YpBBHUnwkms+88JKHwYZJjBYeBbKb65hPav/Dw36YuaVTPQDsLHNnbL
+         0IwX5tTxf3/o5l1cx34N3i6fePfCtXngLXnuav3yUoA0nXlEKKm+/oK7hTVLoi8c8PLI
+         vHN3/kJj0CDRW6W1XVd6aCYpOQ9sJj1HIizAL+10a4dp+fTOrZ2uHWTu74s6ZxlJ1WoY
+         tTvyoBFl2kxrWbR3Ca+ouItzhZ8W+nDjFlj6b7HbQNGKnUPo2RnnVkGkEqBbjI/pIYdC
+         RL2ogmF5+PLvEvBpRMDVdjEppZc2LqVLmwPBPMGPNc/ZK35Mbw8JHwX3YaSKQ6XngikR
+         uQ+A==
+X-Gm-Message-State: AOAM530aJ1yXm+9ChYbi0hn4ODHJ6YtJ8SzUKv5CvzwtpYWUXLdsnmKD
+        GY7lD7ueRRSzaj++f9zqlHqPUhO0vrpcOg==
+X-Google-Smtp-Source: ABdhPJxMUy/3JQXqufHrNfxcxp+8pLkSS1BbN7I5aOJx8L6RKPOrWgvCnIRR/6i3SGAyiXcKPsSTiQ==
+X-Received: by 2002:a2e:9c52:: with SMTP id t18mr4941259ljj.65.1603042803010;
+        Sun, 18 Oct 2020 10:40:03 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:42a2:d0b3:f3e9:8103:3101:8ef6? ([2a00:1fa0:42a2:d0b3:f3e9:8103:3101:8ef6])
+        by smtp.gmail.com with ESMTPSA id p26sm2900343lfd.262.2020.10.18.10.40.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Oct 2020 10:40:02 -0700 (PDT)
+Subject: Re: [PATCH v1] usb: dwc3: core: fix a issue about clear connect state
+To:     Dejin Zheng <zhengdejin5@gmail.com>, balbi@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20201018134734.10406-1-zhengdejin5@gmail.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <4dcdcdcf-2878-f6b1-e85a-6cb2a478ed1a@gmail.com>
+Date:   Sun, 18 Oct 2020 20:40:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <20201018134734.10406-1-zhengdejin5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-440/460 variants and 470 variants are not compatible, no
-need to make code supporting both and using MMU features.
+Hello!
 
-Just use CONFIG_PPC_47x to decide what to build.
+On 10/18/20 4:47 PM, Dejin Zheng wrote:
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Move outside #ifdef CONFIG_PPC_47x a label "1:" used by 44x
----
- arch/powerpc/kernel/entry_32.S   | 11 +++--------
- arch/powerpc/mm/nohash/tlb_low.S | 29 +++++++----------------------
- 2 files changed, 10 insertions(+), 30 deletions(-)
+> According to Synopsys Programming Guide chapter 2.2 Register Resets,
+> it cannot reset the DCTL register by set DCTL.CSFTRST for Core Soft Reset,
 
-diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index 8cdc8bcde703..a425360deabb 100644
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -439,15 +439,13 @@ syscall_exit_cont:
- 	andis.	r10,r0,DBCR0_IDM@h
- 	bnel-	load_dbcr0
- #endif
--#ifdef CONFIG_44x
--BEGIN_MMU_FTR_SECTION
-+#ifdef CONFIG_PPC_47x
- 	lis	r4,icache_44x_need_flush@ha
- 	lwz	r5,icache_44x_need_flush@l(r4)
- 	cmplwi	cr0,r5,0
- 	bne-	2f
-+#endif /* CONFIG_PPC_47x */
- 1:
--END_MMU_FTR_SECTION_IFCLR(MMU_FTR_TYPE_47x)
--#endif /* CONFIG_44x */
- BEGIN_FTR_SECTION
- 	lwarx	r7,0,r1
- END_FTR_SECTION_IFSET(CPU_FTR_NEED_PAIRED_STWCX)
-@@ -948,10 +946,7 @@ restore_kuap:
- 
- 	/* interrupts are hard-disabled at this point */
- restore:
--#ifdef CONFIG_44x
--BEGIN_MMU_FTR_SECTION
--	b	1f
--END_MMU_FTR_SECTION_IFSET(MMU_FTR_TYPE_47x)
-+#if defined(CONFIG_44x) && !defined(CONFIG_PPC_47x)
- 	lis	r4,icache_44x_need_flush@ha
- 	lwz	r5,icache_44x_need_flush@l(r4)
- 	cmplwi	cr0,r5,0
-diff --git a/arch/powerpc/mm/nohash/tlb_low.S b/arch/powerpc/mm/nohash/tlb_low.S
-index eaeee402f96e..68797e072f55 100644
---- a/arch/powerpc/mm/nohash/tlb_low.S
-+++ b/arch/powerpc/mm/nohash/tlb_low.S
-@@ -92,36 +92,25 @@ _GLOBAL(__tlbil_va)
- 	tlbsx.	r6,0,r3
- 	bne	10f
- 	sync
--BEGIN_MMU_FTR_SECTION
--	b	2f
--END_MMU_FTR_SECTION_IFSET(MMU_FTR_TYPE_47x)
-+#ifndef CONFIG_PPC_47x
- 	/* On 440 There are only 64 TLB entries, so r3 < 64, which means bit
- 	 * 22, is clear.  Since 22 is the V bit in the TLB_PAGEID, loading this
- 	 * value will invalidate the TLB entry.
- 	 */
- 	tlbwe	r6,r6,PPC44x_TLB_PAGEID
--	isync
--10:	wrtee	r10
--	blr
--2:
--#ifdef CONFIG_PPC_47x
-+#else
- 	oris	r7,r6,0x8000	/* specify way explicitly */
- 	clrrwi	r4,r3,12	/* get an EPN for the hashing with V = 0 */
- 	ori	r4,r4,PPC47x_TLBE_SIZE
- 	tlbwe   r4,r7,0		/* write it */
-+#endif /* !CONFIG_PPC_47x */
- 	isync
--	wrtee	r10
-+10:	wrtee	r10
- 	blr
--#else /* CONFIG_PPC_47x */
--1:	trap
--	EMIT_BUG_ENTRY 1b,__FILE__,__LINE__,0;
--#endif /* !CONFIG_PPC_47x */
- 
- _GLOBAL(_tlbil_all)
- _GLOBAL(_tlbil_pid)
--BEGIN_MMU_FTR_SECTION
--	b	2f
--END_MMU_FTR_SECTION_IFSET(MMU_FTR_TYPE_47x)
-+#ifndef CONFIG_PPC_47x
- 	li	r3,0
- 	sync
- 
-@@ -136,8 +125,7 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_TYPE_47x)
- 
- 	isync
- 	blr
--2:
--#ifdef CONFIG_PPC_47x
-+#else
- 	/* 476 variant. There's not simple way to do this, hopefully we'll
- 	 * try to limit the amount of such full invalidates
- 	 */
-@@ -179,11 +167,8 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_TYPE_47x)
- 	b	1b		/* Then loop */
- 1:	isync			/* Sync shadows */
- 	wrtee	r11
--#else /* CONFIG_PPC_47x */
--1:	trap
--	EMIT_BUG_ENTRY 1b,__FILE__,__LINE__,0;
--#endif /* !CONFIG_PPC_47x */
- 	blr
-+#endif /* !CONFIG_PPC_47x */
- 
- #ifdef CONFIG_PPC_47x
- 
--- 
-2.25.0
+   s/set/setting/.
 
+> if DWC3 controller as a slave device and stay connected with a usb host,
+> then, reboot linux, it will fail to reinitialize dwc3 as a slave device
+
+   s/reboot/while rebooting/.
+
+> when the DWC3 controller did not power off. because the connection status
+> is incorrect, so we also need clear DCTL.RUN_STOP bit for disable connect
+                               ^ to                               ^ ing
+
+> when do core soft reset.
+         ^ ing
+
+> Fixes: f59dcab176293b6 ("usb: dwc3: core: improve reset sequence")
+> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+[...]
+
+MBR, Sergei
