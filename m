@@ -2,86 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C61E291807
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A106291809
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 17:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgJRPVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 11:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
+        id S1727106AbgJRPXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 11:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726635AbgJRPVf (ORCPT
+        with ESMTP id S1726635AbgJRPXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 11:21:35 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB78C061755;
-        Sun, 18 Oct 2020 08:21:35 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id 23so4025046ljv.7;
-        Sun, 18 Oct 2020 08:21:35 -0700 (PDT)
+        Sun, 18 Oct 2020 11:23:50 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E95AC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 08:23:48 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id b8so9977463ioh.11
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 08:23:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VtpdlBX2SFrPia1lw3w/twJyFVdNiSIe4U4QQ2v4e1c=;
-        b=FQqTEExB4p06tKd9q0RIuPTm064MqB0pFGJ7i8nqIEmtZkt+d2dHMytpo+4+bazN2+
-         yPFn/sT1iS95v56+3FF5Yz5bEMtLeyz4DccMpJxdDEH3wrP7/IfTakmBuss4QvCOa94C
-         o/zCKWd8QOZr1uoLu8jJYodghD9UNueMlDguEWzx5s0zYdfBIyjwZIn9O/8oS/Ju9/Iq
-         cnckAT2pOungAPLwxZnT7+t0QjWQN5dlyDCB8g7kJj4OpU98E3anwie96RARCCH/vamx
-         9JdAGacYAS0QbKqcZ9AyI6ZSc4QGDRDuKNVIp7uERSq/uACRXastuV7d/jtSdR4HTHT+
-         MiLw==
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pq2cCgFfAlIaF+/VLMFX1e8QfeRpmNnZdqE+CnQe2SU=;
+        b=tAvpFy7jIz1zxAY+hqkFJfB9toH6vNuqj5d/iV4hRsqTj/0uFUS2gnCy3kDMjep0ds
+         BTmvjlrELM6fnN+AN8oFVbxrQ1hyyfx80GfW2s4JkPEB+pgufvh08EljOHAzikUaNztR
+         xWvwM/9RBa/tDEbsSk0LXJwlu3nMUXDFV5zz/kk74FRYX9HzVB1abIm/U1PxYmvPZ7sZ
+         RNBvhoIWxSU1Z6i0Qdcu5xqgm70dusZWNq+UhiIlA3aX0t6BO0Xhh+th6za2ClJVJDHa
+         1ljYJl3lO5NbhVlmm5sRkxPX9LAX6wyv8qi0sVFePSccloH63lxy8EOJSFzMOkgIpD9M
+         312w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VtpdlBX2SFrPia1lw3w/twJyFVdNiSIe4U4QQ2v4e1c=;
-        b=NZJxyUPu6Lnc7AyR7GpBcPN/++aO2ePLcT31IzHhvK7oWryS3iLW97SnzD1EG8ZCgi
-         I+Cg0ZqVi5aT3NacdA9LFzUroXfuSIy+opAB/Qts3H2FT7oC0FuvYqKXnM7I9wWqZIML
-         7Km4R+AKVbLTDyp1TaG81RYexa57xA/1J4DaVxXCJFUbGO9zjIZwqfDPusu5bGhPTlFB
-         eZ5iQGiuftlgRHkvuWO/5EXgc1F5hnQ3Kkf66s9+m29MHqDED5AfvsSmBoJZCa5gxhTH
-         XFybqT+LorJF/BDHszTFN+K58qtofSFyg58QfzNXK4toVnCSlpP60vI2gJGj6Y3/NUq4
-         De6Q==
-X-Gm-Message-State: AOAM530MRmon2PxFsd8Z23zOo4RGd0RC8bB+4jPdn5sF8zPkZ7ZTQue1
-        8QOW7cGspkaOhFEEL+6v9m6bL58p9bHPj2mE
-X-Google-Smtp-Source: ABdhPJyTaYX+sDOnTnWEIAc3rQHytBudND0xZSCVfZi5lCJYUuHxF9IClsZFGHYc9lZ/QVvQc0eGzA==
-X-Received: by 2002:a2e:2a86:: with SMTP id q128mr3972086ljq.158.1603034493667;
-        Sun, 18 Oct 2020 08:21:33 -0700 (PDT)
-Received: from localhost ([2a02:a310:53e:fc00:a13a:fe7:fa56:f3f9])
-        by smtp.gmail.com with ESMTPSA id m13sm2787966lfl.269.2020.10.18.08.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Oct 2020 08:21:33 -0700 (PDT)
-From:   Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-pm@vger.kernel.org (open list:POWER MANAGEMENT CORE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] powercap: Fix typo in Kconfig "Plance" -> "Plane"
-Date:   Sun, 18 Oct 2020 17:21:06 +0200
-Message-Id: <adc856179a9496f73be4036d80e6e6fa5c7ee591.1603033133.git.hubert.jasudowicz@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pq2cCgFfAlIaF+/VLMFX1e8QfeRpmNnZdqE+CnQe2SU=;
+        b=Rb8CEgFAwqFMK5jml5HFQtksKbNprApIc1xiQD0WyEMFfMOxnHbzRMg1HvhmyyodWg
+         8mK9uqKpB05NubXJbcQ5YEXekyTKpmMa+G4XM/o5RZKTJnqSNPHmaOkgFWxBMIr31jGd
+         VQM0tH0DWNHamVTdVxmO2qPNlxqrqq7LBmpS4+2AK3R3awZowL7rP/2UCp7H/E7BkyVR
+         Qt8rqaYetIMAiIlJ6nmWteux+7ewcXnnalIsC8b9pvKGn0unnRv/a5OgJ49FKelgFERn
+         sWXnS4a5rV2WHv1V2FER8JToH8g5BP1Kmer/8aR4B48qzK6pK55yN+PfY3zG3p631hfy
+         44EA==
+X-Gm-Message-State: AOAM53104zW+oHNgyOeX+xaJnp0L3Q2SWNX4/3adnGUNCfaXHjA5nJTR
+        HrDJXUNDXvLso0qIfVuxsCnUKYbD5SEr3oPGOnEB
+X-Google-Smtp-Source: ABdhPJzDh2HYF2MkopPq0IP02CbEU1LreS/yV9unO6dAXxEl63mPEr/hOTpksUJUZANJitN9TUp/dh/RfdD4Ppuh2rA=
+X-Received: by 2002:a6b:9108:: with SMTP id t8mr846700iod.206.1603034627798;
+ Sun, 18 Oct 2020 08:23:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201018033142.GA27793@ubuntu> <20201018123334.5a8bb5ac@archlinux>
+In-Reply-To: <20201018123334.5a8bb5ac@archlinux>
+From:   Vaishnav M A <vaishnav@beagleboard.org>
+Date:   Sun, 18 Oct 2020 20:53:36 +0530
+Message-ID: <CALudOK5KOgPy6wfi7nsXSgEtNsjaFy6faf_wqL_2TxJJZKugmw@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: proximity: vl53l0x-i2c add i2c_device_id
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     songqiang1304521@gmail.com, Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Drew Fustini <drew@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        =?UTF-8?Q?Ivan_Rajkovi=C4=87?= <rajkovic@mikroe.com>,
+        Wolfram Sang <wsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
----
- drivers/powercap/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sun, Oct 18, 2020 at 5:03 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sun, 18 Oct 2020 09:01:42 +0530
+> Vaishnav M A <vaishnav@beagleboard.org> wrote:
+>
+> > add i2c_device_id for the vl53l0x-i2c driver so
+> > that the device can be instantiated using i2c_new_client_device
+> > or from userspace, useful in cases where device tree based description
+> > is not possible now(Eg. a device on a gbphy i2c
+> > adapter created by greybus).
+> >
+> > Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
+>
+> Please fix the description as mentioned in other patches.
+>
+Thank you Jonathan for your review, I have sent a v3 patch with fixed
+description : https://lore.kernel.org/patchwork/patch/1322196/
+understand your concern about the redundant device_id(s), it will be nice to see
+of_match_table reused in such cases as you suggested.
 
-diff --git a/drivers/powercap/Kconfig b/drivers/powercap/Kconfig
-index ebc4d4578339..bc228725346b 100644
---- a/drivers/powercap/Kconfig
-+++ b/drivers/powercap/Kconfig
-@@ -30,7 +30,7 @@ config INTEL_RAPL
- 
- 	  In RAPL, the platform level settings are divided into domains for
- 	  fine grained control. These domains include processor package, DRAM
--	  controller, CPU core (Power Plance 0), graphics uncore (Power Plane
-+	  controller, CPU core (Power Plane 0), graphics uncore (Power Plane
- 	  1), etc.
- 
- config IDLE_INJECT
-
-base-commit: 9d9af1007bc08971953ae915d88dc9bb21344b53
--- 
-2.28.0
-
+> The code change is fine, but it does raise the question of whether we want to think
+> about providing a means to register such devices using the of_match_table.
+> It's somewhat irritating to need to provide both (I'd rather not
+> just provide the non-dt version rely on the old hack that drops the
+> vendor ID for matching).
+>
+> +CC Wolfram.
+>
+> > ---
+> >  v2:
+> >       - fix commit message
+> >  drivers/iio/proximity/vl53l0x-i2c.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/drivers/iio/proximity/vl53l0x-i2c.c b/drivers/iio/proximity/vl53l0x-i2c.c
+> > index 5fbda9475ba9..7c29d4cae24a 100644
+> > --- a/drivers/iio/proximity/vl53l0x-i2c.c
+> > +++ b/drivers/iio/proximity/vl53l0x-i2c.c
+> > @@ -143,6 +143,12 @@ static int vl53l0x_probe(struct i2c_client *client)
+> >       return devm_iio_device_register(&client->dev, indio_dev);
+> >  }
+> >
+> > +static const struct i2c_device_id vl53l0x_id[] = {
+> > +     { "vl53l0x", 0},
+> > +     { }
+> > +};
+> > +MODULE_DEVICE_TABLE(i2c, vl53l0x_id);
+> > +
+> >  static const struct of_device_id st_vl53l0x_dt_match[] = {
+> >       { .compatible = "st,vl53l0x", },
+> >       { }
+> > @@ -155,6 +161,7 @@ static struct i2c_driver vl53l0x_driver = {
+> >               .of_match_table = st_vl53l0x_dt_match,
+> >       },
+> >       .probe_new = vl53l0x_probe,
+> > +     .id_table = vl53l0x_id,
+> >  };
+> >  module_i2c_driver(vl53l0x_driver);
+> >
+>
