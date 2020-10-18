@@ -2,80 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEE62917E5
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 16:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9572917E7
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 16:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgJROjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 10:39:40 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:38773 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726519AbgJROjk (ORCPT
+        id S1726883AbgJROnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 10:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726519AbgJROnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 10:39:40 -0400
-Received: by mail-ot1-f65.google.com with SMTP id i12so8011222ota.5
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 07:39:39 -0700 (PDT)
+        Sun, 18 Oct 2020 10:43:45 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CAAC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 07:43:45 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id hk7so4129996pjb.2
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 07:43:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=ioUl3a2YgheFEBSCpVRh2eFlj1emUIf0N1aypWiTiuE=;
+        b=1pvu8Cf19+kAXYtldE/dTmygylRaMkNNM8nwYYEwlimC8KCif2WRiBRlNaFGyTlaEl
+         sVFDna9EN67/aspy2sP+A6GrIpD0U33kwbYpVTmsvK9MJJRjf4Rpz3xbGzhbjHapNPqZ
+         PNw1HoabNIG7L1H/AkhC3xSVwTs+kb5pB1vz07IdbXTL6CPPAMoT5axmtvwzI5Xo8MxK
+         0MIouvMgixoy+29kFYYmf47nqt/tCjDf669FNNfGcX7NBVd8CQeIaipKs8rqOK12f4QR
+         7TlEWLm7EsCx/8JyI1Xbvq1IH/iEIEKZIZopqeoKtbrOnzxoSqnDzXuQkMgzkN3YxG3L
+         sLRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZhoQCn1JiZzZO+O1miFJ27iO/mX2XMIJR/r8umj5hJE=;
-        b=KpLhA87ul/uuReiJ9vGC1u/sjlh3cpQJZR4Au9i2hE2rtDyB3Ycbf/YEIhwim8AmJb
-         Mr4CwgKq6jj5Tc2Ie+TC5fz6pWwrm/cnTRES6ap1ATDjEhQ3/i7e9hWDlI4VFO9JwfXW
-         nh4wyRxgnMljG4VpGmXWfTdUPYM6BG/H9iqJTbnmXaY0RzfgGWV9/7aCK+Zt1Vurf0Zv
-         anTUy87q6FXF8hsJbvQ2tuMh42PFPXHs/jBTKFTL7JT2VO5jTPYzJ/BteTf/gnzGGqes
-         iMPIu1n6yI6eZ3JVE70VabJCe+9eElbgn3z9m+GvazMphQSZfw/cUpjDEIRMs1DiG6oI
-         EVZg==
-X-Gm-Message-State: AOAM531BFl0DuYUcednNIY+3dzgaDrlRS6606cU3WHTxYbw9C5/kR3MW
-        qZ7BxYs7Tkil4dDPpj+C+9yzrJa7vN9uv1aOOG4=
-X-Google-Smtp-Source: ABdhPJyYtSylRs4YpN8Jpnr9M4d0jJYc50QXbtzghaCMbPhoACjsEVrwjsHXEKcKsFZXRWH9MqFQS0EUiUgrYY3/FE4=
-X-Received: by 2002:a9d:5e14:: with SMTP id d20mr8589875oti.107.1603031979558;
- Sun, 18 Oct 2020 07:39:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=ioUl3a2YgheFEBSCpVRh2eFlj1emUIf0N1aypWiTiuE=;
+        b=DGJjk1G8+elsHexJft9m0WmD+hj+/+8Cs1OZOtF46vxsU1L2Pv/ha9PpFiR4rxu0lP
+         DSXYKghXwSvN+Z2b+dyPxGPx9VrjVU5NOvijBeS707/Ck3/AAXIHKMr9g9txWPpS0mWg
+         RpFYKTEzKkVg8ik+RAL9NXIeFjbL3O3QqldOfdO+8jas68GWx6YfhE1lSPVGdvx2uqZR
+         ToZSPyE7350RliMZIpKz9lNKoBJeR2tsZxZva7+VgZjGyfJ2huWmbHmPNJK50HjYaNfW
+         OqX+4ObROllEvXxe1lSav9g7K/OY5GWjADCKLmtDrCSQpv7Ihdi7L5RqkhbRlgjxQ2n7
+         15Rw==
+X-Gm-Message-State: AOAM532aP4XIO3fzPbqz5RhTOxoRX252yhHh4flzSP5HE3aGQl8DKQco
+        /noDX/X69g1QVk+G49TAA3s5
+X-Google-Smtp-Source: ABdhPJwDBZ8z9w+JO0X8KwfUGLubtnNMj3YJONCELYeIaSreLj+jt/9KPtKGB0f7aDikUf15snO2LQ==
+X-Received: by 2002:a17:902:ed54:b029:d3:d0bc:e41d with SMTP id y20-20020a170902ed54b02900d3d0bce41dmr13769272plb.13.1603032225390;
+        Sun, 18 Oct 2020 07:43:45 -0700 (PDT)
+Received: from ubuntu ([116.68.78.80])
+        by smtp.gmail.com with ESMTPSA id f1sm8600675pfe.145.2020.10.18.07.43.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Oct 2020 07:43:44 -0700 (PDT)
+Date:   Sun, 18 Oct 2020 20:13:38 +0530
+From:   Vaishnav M A <vaishnav@beagleboard.org>
+To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
+        nish.malpani25@gmail.com, alexandru.ardelean@analog.com,
+        matt.ranostay@konsulko.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     jkridner@beagleboard.org, drew@beagleboard.org,
+        robertcnelson@beagleboard.org, rajkovic@mikroe.com,
+        vaishnav@beagleboard.org
+Subject: [PATCH v3] iio: light: tsl2563 change of_property_read to
+ device_property_read
+Message-ID: <20201018144338.GA218707@ubuntu>
 MIME-Version: 1.0
-References: <20201018140445.20972-1-geert@linux-m68k.org> <20201018142508.GJ20115@casper.infradead.org>
-In-Reply-To: <20201018142508.GJ20115@casper.infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 18 Oct 2020 16:39:27 +0200
-Message-ID: <CAMuHMdVcTx0wVTSh-YaJxXqCMpCxGRe3QH36O5i+McinfdRwDg@mail.gmail.com>
-Subject: Re: [PATCH] lib/test_free_pages: Add basic progress indicators
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
+Replace of_property_read_u32() with device_property_read_u32,
+when reading the amstaos,cover-comp-gain.This opens up the
+possibility of passing the properties during platform instantiation
+of the device by a suitable populated struct property_entry.
+Additionally a minor change to logic is added to remove the
+of_node present check.
 
-On Sun, Oct 18, 2020 at 4:25 PM Matthew Wilcox <willy@infradead.org> wrote:
-> On Sun, Oct 18, 2020 at 04:04:45PM +0200, Geert Uytterhoeven wrote:
-> > The test module to check that free_pages() does not leak memory does not
-> > provide any feedback whatsoever its state or progress, but may take some
-> > time on slow machines.  Add the printing of messages upon starting each
-> > phase of the test, and upon completion.
->
-> It's not supposed to take a long time.  Can you crank down that 1000 *
+Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
+---
+ v3:
+        -modify commit message for readability, mention minor logic change
+        -include  mod_devicetable.h and property.h headers
+ v2:
+        -fix commit message
+ drivers/iio/light/tsl2563.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-It took 1m11s on ARAnyM, running on an i7-8700K.
-Real hardware may even take longer.
-
-> 1000 to something more appropriate?
-
-What would be a suitable value? You do want to see it "leak gigabytes
-of memory and probably OOM your system" if something's wrong,
-so decreasing the value a lot may not be a good idea?
-
-Regardless, if it OOMs, I think you do want to see this happens
-while running this test.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/iio/light/tsl2563.c b/drivers/iio/light/tsl2563.c
+index abc8d7db8dc1..5bf2bfbc5379 100644
+--- a/drivers/iio/light/tsl2563.c
++++ b/drivers/iio/light/tsl2563.c
+@@ -12,6 +12,8 @@
+  */
+ 
+ #include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/property.h>
+ #include <linux/i2c.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+@@ -703,7 +705,6 @@ static int tsl2563_probe(struct i2c_client *client,
+ 	struct iio_dev *indio_dev;
+ 	struct tsl2563_chip *chip;
+ 	struct tsl2563_platform_data *pdata = client->dev.platform_data;
+-	struct device_node *np = client->dev.of_node;
+ 	int err = 0;
+ 	u8 id = 0;
+ 
+@@ -738,13 +739,14 @@ static int tsl2563_probe(struct i2c_client *client,
+ 	chip->calib0 = tsl2563_calib_from_sysfs(CALIB_BASE_SYSFS);
+ 	chip->calib1 = tsl2563_calib_from_sysfs(CALIB_BASE_SYSFS);
+ 
+-	if (pdata)
++	if (pdata) {
+ 		chip->cover_comp_gain = pdata->cover_comp_gain;
+-	else if (np)
+-		of_property_read_u32(np, "amstaos,cover-comp-gain",
+-				     &chip->cover_comp_gain);
+-	else
+-		chip->cover_comp_gain = 1;
++	} else {
++		err = device_property_read_u32(&client->dev, "amstaos,cover-comp-gain",
++					       &chip->cover_comp_gain);
++		if (err)
++			chip->cover_comp_gain = 1;
++	}
+ 
+ 	dev_info(&client->dev, "model %d, rev. %d\n", id >> 4, id & 0x0f);
+ 	indio_dev->name = client->name;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
