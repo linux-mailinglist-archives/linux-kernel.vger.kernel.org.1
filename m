@@ -2,203 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B392917D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 16:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0732917D8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 16:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgJROSs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 18 Oct 2020 10:18:48 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:32440 "EHLO h3cspam02-ex.h3c.com"
+        id S1726663AbgJROUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 10:20:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgJROSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 10:18:48 -0400
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam02-ex.h3c.com with ESMTPS id 09IEIZDq084122
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 18 Oct 2020 22:18:36 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Sun, 18 Oct 2020 22:18:37 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.2106.002; Sun, 18 Oct 2020 22:18:37 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     "cl@linux.com" <cl@linux.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>
-Subject: RE: [PATCH] mm: Make allocator take care of memoryless numa node
-Thread-Topic: [PATCH] mm: Make allocator take care of memoryless numa node
-Thread-Index: AQHWoHLpCFmBht8fWEyQ1LSKDhVJgamTi1oAgAnlFDA=
-Date:   Sun, 18 Oct 2020 14:18:37 +0000
-Message-ID: <10ae851702e346369db44e1ec9c830fb@h3c.com>
-References: <20201012082739.15661-1-tian.xianting@h3c.com>
- <20201012150554.GE29725@dhcp22.suse.cz>
-In-Reply-To: <20201012150554.GE29725@dhcp22.suse.cz>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 09IEIZDq084122
+        id S1725776AbgJROUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 10:20:17 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D8A021655;
+        Sun, 18 Oct 2020 14:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603030815;
+        bh=3AB8hYHe4JuaaeMkHvGBGXqZRLeCJdn5mw9iKzXnsW8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iJjOAF284twGC8z4Fzc04iNNvC1jkvccbIWVu/yDvdlk9hgolXT30rQlvuI5ETsFB
+         TIEd8LOg42F0JlWXWwCQ9rLy03LTxjrj3mkqNq3scNUe4uPVw4xcD0WUNvczBrR6OD
+         X6+Z8F1FbOP8hW5eigVoGZWN8/L9vlDrqjzr1BSk=
+Date:   Sun, 18 Oct 2020 23:20:11 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] tracing: Make trace_*_run_command() more flexible
+Message-Id: <20201018232011.38e5da51f5cd8e73e6f529ee@kernel.org>
+In-Reply-To: <e29c3ae1fc46892ec792d6f6f910f75d0e12584c.1602883818.git.zanussi@kernel.org>
+References: <cover.1602883818.git.zanussi@kernel.org>
+        <e29c3ae1fc46892ec792d6f6f910f75d0e12584c.1602883818.git.zanussi@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the comments
-I found in current code, there are two places to call local_memory_node(node) before calling kzalloc_node(), I think we can remove them?
+Hi Tom,
 
------Original Message-----
-From: Michal Hocko [mailto:mhocko@suse.com] 
-Sent: Monday, October 12, 2020 11:06 PM
-To: tianxianting (RD) <tian.xianting@h3c.com>
-Cc: cl@linux.com; penberg@kernel.org; rientjes@google.com; iamjoonsoo.kim@lge.com; akpm@linux-foundation.org; linux-mm@kvack.org; linux-kernel@vger.kernel.org; kuba@kernel.org; alexei.starovoitov@gmail.com
-Subject: Re: [PATCH] mm: Make allocator take care of memoryless numa node
+On Fri, 16 Oct 2020 16:48:22 -0500
+Tom Zanussi <zanussi@kernel.org> wrote:
 
-On Mon 12-10-20 16:27:39, Xianting Tian wrote:
-> In architecture like powerpc, we can have cpus without any local 
-> memory attached to it. In such cases the node does not have real memory.
-
-Yes, this is normal (unfortunately).
-
-> In many places of current kernel code, it doesn't judge whether the 
-> node is memoryless numa node before calling allocator interface.
-
-And that is correct. It shouldn't make any assumption on the memory on a given node because that memory might be depleted (similar to no memory) or it can disappear at any moment because of the memory offlining.
-
-> This patch is to use local_memory_node(), which is guaranteed to have 
-> memory, in allocator interface. local_memory_node() is a noop in other 
-> architectures that don't support memoryless nodes.
+> trace_run_command() and therefore functions that use it, such as
+> trace_parse_run_command(), uses argv_split() to split the command into
+> an array of args then passed to the callback to handle.
 > 
-> As the call path:
-> 	alloc_pages_node
-> 	    __alloc_pages_node
-> 	        __alloc_pages_nodemask
-> and __alloc_pages_node,__alloc_pages_nodemask may be called directly, 
-> so only add local_memory_node() in __alloc_pages_nodemask.
+> This works fine for most commands but some commands would like to
+> allow the user to use and additional separator to visually group items
+> in the command.  One example would be synthetic event commands, which
+> use semicolons to group fields:
+> 
+>   echo 'event_name int a; char b[]; u64 lat' >> synthetic_events
+> 
+> What gets passed as an args array to the command for a command like
+> this include tokens that have semicolons included with the token,
+> which the callback then needs to strip out, since argv_split() only
+> looks at whitespace as a separator.
+> 
+> It would be nicer to just have trace_run_command() strip out the
+> semicolons at its level rather than passing that task onto the
+> callback. To accomplish that, this change adds an 'additional_sep'
+> arg to a new __trace_run_command() function that allows a caller to
+> pass an additional separator char that if non-zero simply replaces
+> that character with whitespace before splitting the command into args.
+> The original trace_run_command() remains as-is in this regard, simply
+> calling __trace_run_command() with 0 for the separator, while making a
+> new trace_run_command_add_sep() version that can be used to pass in a
+> separator.
 
-Page allocator should deal with memory less nodes just fine. It has zonelists constructed for each possible nodes. And it will automatically fall back into a node with is closest to the requested node.
-local_memory_node might be incorrect choice from the topology POV.
+No, I don't like to tweak trace_run_command() that way, I'm OK to
+delegate the argv_split() totally to the callback function (pass
+the raw command string to the callback), OR __create_synth_event()
+concatinate the fields argv and parse it by itself (I think the
+latter is better and simpler).
 
-What kind of problem are you trying to fix?
+The ";" separator is not an additinal separator but that is higher
+level separator for synthetic event. Suppose that you get the
+following input;
+ "myevent int c ; char b"
+ "myevent int;c;char;b;"
+These should not be same for the synthetic events. The fields must be
+splitted by ';' at first, and then each field should be parsed.
 
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+So, I recommend you not to pass the additional separator to the
+generic function, but (since it is only for synthetic event) to
+reconstruct the raw command from argv, and parse it again with
+";" inside synthetic event parser. Then each fields parser can
+check that is a wrong input or not.
+
+It will be something like
+
+__create_synth_event(argc, argv)
+{
+	<event-name parsing>
+	argc--; argv++;
+
+	raw_fields = concat_argv(argc, argv);// you can assume argv is generated by argv_split().
+	vfields = split_fields(raw_fields, &nfields);// similar to argv_split()
+	for (i = 0; i < nfields; i++)
+		parse_synth_field(vfields[i]);
+}
+
+Then, you don't need to change the generic functions, and also
+you will get the correct parser routines.
+
+Thank you,
+
+> 
+> The other change here simply has __trace_run_command() make a copy of
+> the original command to work on, while leaving the original command
+> string untouched.  This untouched string is now passed into the
+> callback as well - this allows the callback to use the original string
+> for error processing and caret placement rather than forcing the
+> callback to recreate the original string from the args, which isn't
+> always possible.
+> 
+> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
 > ---
->  include/linux/slab.h |  3 +++
->  mm/page_alloc.c      |  1 +
->  mm/slab.c            |  6 +++++-
->  mm/slob.c            |  1 +
->  mm/slub.c            | 10 ++++++++--
->  5 files changed, 18 insertions(+), 3 deletions(-)
+>  kernel/trace/trace.c              | 41 +++++++++++++++++++++++++------
+>  kernel/trace/trace.h              | 12 ++++++---
+>  kernel/trace/trace_dynevent.c     |  4 +--
+>  kernel/trace/trace_events_synth.c |  5 ++--
+>  kernel/trace/trace_kprobe.c       |  5 ++--
+>  kernel/trace/trace_uprobe.c       |  5 ++--
+>  6 files changed, 54 insertions(+), 18 deletions(-)
 > 
-> diff --git a/include/linux/slab.h b/include/linux/slab.h index 
-> 24df2393e..527e811e0 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -574,6 +574,7 @@ static __always_inline void *kmalloc_node(size_t size, gfp_t flags, int node)
->  						flags, node, size);
->  	}
->  #endif
-> +	node = local_memory_node(node);
->  	return __kmalloc_node(size, flags, node);  }
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 63c97012ed39..afa526414b25 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -9367,30 +9367,56 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
+>  }
+>  EXPORT_SYMBOL_GPL(ftrace_dump);
 >  
-> @@ -626,6 +627,8 @@ static inline void *kmalloc_array_node(size_t n, size_t size, gfp_t flags,
->  		return NULL;
->  	if (__builtin_constant_p(n) && __builtin_constant_p(size))
->  		return kmalloc_node(bytes, flags, node);
-> +
-> +	node = local_memory_node(node);
->  	return __kmalloc_node(bytes, flags, node);  }
->  
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c index 
-> 6866533de..be63c62c2 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4878,6 +4878,7 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order, int preferred_nid,
->  		return NULL;
->  	}
->  
-> +	preferred_nid = local_memory_node(preferred_nid);
->  	gfp_mask &= gfp_allowed_mask;
->  	alloc_mask = gfp_mask;
->  	if (!prepare_alloc_pages(gfp_mask, order, preferred_nid, nodemask, 
-> &ac, &alloc_mask, &alloc_flags)) diff --git a/mm/slab.c b/mm/slab.c 
-> index f658e86ec..263c2f2e1 100644
-> --- a/mm/slab.c
-> +++ b/mm/slab.c
-> @@ -3575,7 +3575,10 @@ EXPORT_SYMBOL(kmem_cache_alloc_trace);
->   */
->  void *kmem_cache_alloc_node(struct kmem_cache *cachep, gfp_t flags, 
-> int nodeid)  {
-> -	void *ret = slab_alloc_node(cachep, flags, nodeid, _RET_IP_);
-> +	void *ret;
-> +
-> +	nodeid = local_memory_node(nodeid);
-> +	ret = slab_alloc_node(cachep, flags, nodeid, _RET_IP_);
->  
->  	trace_kmem_cache_alloc_node(_RET_IP_, ret,
->  				    cachep->object_size, cachep->size, @@ -3593,6 +3596,7 @@ void 
-> *kmem_cache_alloc_node_trace(struct kmem_cache *cachep,  {
->  	void *ret;
->  
-> +	nodeid = local_memory_node(nodeid);
->  	ret = slab_alloc_node(cachep, flags, nodeid, _RET_IP_);
->  
->  	ret = kasan_kmalloc(cachep, ret, size, flags); diff --git 
-> a/mm/slob.c b/mm/slob.c index 7cc9805c8..1f1c25e06 100644
-> --- a/mm/slob.c
-> +++ b/mm/slob.c
-> @@ -636,6 +636,7 @@ EXPORT_SYMBOL(__kmalloc_node);
->  
->  void *kmem_cache_alloc_node(struct kmem_cache *cachep, gfp_t gfp, int 
-> node)  {
-> +	node = local_memory_node(node);
->  	return slob_alloc_node(cachep, gfp, node);  }  
-> EXPORT_SYMBOL(kmem_cache_alloc_node);
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 6d3574013..6e5e12b04 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2921,7 +2921,10 @@ EXPORT_SYMBOL(kmem_cache_alloc_trace);
->  #ifdef CONFIG_NUMA
->  void *kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags, int 
-> node)  {
-> -	void *ret = slab_alloc_node(s, gfpflags, node, _RET_IP_);
-> +	void *ret;
-> +
-> +	node = local_memory_node(node);
-> +	ret = slab_alloc_node(s, gfpflags, node, _RET_IP_);
->  
->  	trace_kmem_cache_alloc_node(_RET_IP_, ret,
->  				    s->object_size, s->size, gfpflags, node); @@ -2935,7 +2938,10 
-> @@ void *kmem_cache_alloc_node_trace(struct kmem_cache *s,
->  				    gfp_t gfpflags,
->  				    int node, size_t size)
+> -int trace_run_command(const char *buf, int (*createfn)(int, char **))
+> +static int __trace_run_command(const char *buf,
+> +			       int (*createfn)(int, char **, const char *),
+> +			       char additional_sep)
 >  {
-> -	void *ret = slab_alloc_node(s, gfpflags, node, _RET_IP_);
-> +	void *ret;
+> -	char **argv;
+>  	int argc, ret;
+> +	char **argv, *cmd;
 > +
-> +	node = local_memory_node(node);
-> +	ret = slab_alloc_node(s, gfpflags, node, _RET_IP_);
+> +	cmd = kstrdup(buf, GFP_KERNEL);
+> +	if (!cmd)
+> +		return -ENOMEM;
+> +
+> +	if (additional_sep)
+> +		strreplace(cmd, additional_sep, ' ');
 >  
->  	trace_kmalloc_node(_RET_IP_, ret,
->  			   size, s->size, gfpflags, node);
-> --
+>  	argc = 0;
+>  	ret = 0;
+> -	argv = argv_split(GFP_KERNEL, buf, &argc);
+> -	if (!argv)
+> +	argv = argv_split(GFP_KERNEL, cmd, &argc);
+> +	if (!argv) {
+> +		kfree(cmd);
+>  		return -ENOMEM;
+> +	}
+>  
+>  	if (argc)
+> -		ret = createfn(argc, argv);
+> +		ret = createfn(argc, argv, buf);
+>  
+>  	argv_free(argv);
+> +	kfree(cmd);
+>  
+>  	return ret;
+>  }
+>  
+> +int trace_run_command(const char *buf, int (*createfn)(int, char **,
+> +						       const char *))
+> +{
+> +	return __trace_run_command(buf, createfn, 0);
+> +}
+> +
+> +int trace_run_command_add_sep(const char *buf,
+> +			      int (*createfn)(int, char **, const char *),
+> +			      char additional_sep)
+> +{
+> +	return __trace_run_command(buf, createfn, additional_sep);
+> +}
+> +
+>  #define WRITE_BUFSIZE  4096
+>  
+>  ssize_t trace_parse_run_command(struct file *file, const char __user *buffer,
+>  				size_t count, loff_t *ppos,
+> -				int (*createfn)(int, char **))
+> +				int (*createfn)(int, char **, const char *),
+> +				char additional_sep)
+>  {
+>  	char *kbuf, *buf, *tmp;
+>  	int ret = 0;
+> @@ -9438,7 +9464,8 @@ ssize_t trace_parse_run_command(struct file *file, const char __user *buffer,
+>  			if (tmp)
+>  				*tmp = '\0';
+>  
+> -			ret = trace_run_command(buf, createfn);
+> +			ret = trace_run_command_add_sep(buf, createfn,
+> +							additional_sep);
+>  			if (ret)
+>  				goto out;
+>  			buf += size;
+> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> index 34e0c4d5a6e7..ae6e0c2ec028 100644
+> --- a/kernel/trace/trace.h
+> +++ b/kernel/trace/trace.h
+> @@ -1982,10 +1982,16 @@ extern int tracing_set_cpumask(struct trace_array *tr,
+>  
+>  #define MAX_EVENT_NAME_LEN	64
+>  
+> -extern int trace_run_command(const char *buf, int (*createfn)(int, char**));
+> +extern int trace_run_command(const char *buf,
+> +			     int (*createfn)(int, char **, const char *));
+> +extern int trace_run_command_add_sep(const char *buf,
+> +				     int (*createfn)(int, char **, const char *),
+> +				     char additional_sep);
+>  extern ssize_t trace_parse_run_command(struct file *file,
+> -		const char __user *buffer, size_t count, loff_t *ppos,
+> -		int (*createfn)(int, char**));
+> +				       const char __user *buffer,
+> +				       size_t count, loff_t *ppos,
+> +				       int (*createfn)(int, char **, const char *),
+> +				       char additional_sep);
+>  
+>  extern unsigned int err_pos(char *cmd, const char *str);
+>  extern void tracing_log_err(struct trace_array *tr,
+> diff --git a/kernel/trace/trace_dynevent.c b/kernel/trace/trace_dynevent.c
+> index 5fa49cfd2bb6..4dc21c1879ae 100644
+> --- a/kernel/trace/trace_dynevent.c
+> +++ b/kernel/trace/trace_dynevent.c
+> @@ -75,7 +75,7 @@ int dyn_event_release(int argc, char **argv, struct dyn_event_operations *type)
+>  	return ret;
+>  }
+>  
+> -static int create_dyn_event(int argc, char **argv)
+> +static int create_dyn_event(int argc, char **argv, const char *raw_cmd)
+>  {
+>  	struct dyn_event_operations *ops;
+>  	int ret = -ENODEV;
+> @@ -191,7 +191,7 @@ static ssize_t dyn_event_write(struct file *file, const char __user *buffer,
+>  				size_t count, loff_t *ppos)
+>  {
+>  	return trace_parse_run_command(file, buffer, count, ppos,
+> -				       create_dyn_event);
+> +				       create_dyn_event, ';');
+>  }
+>  
+>  static const struct file_operations dynamic_events_ops = {
+> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+> index 3212e2c653b3..e6659bb9a500 100644
+> --- a/kernel/trace/trace_events_synth.c
+> +++ b/kernel/trace/trace_events_synth.c
+> @@ -1378,7 +1378,8 @@ int synth_event_delete(const char *event_name)
+>  }
+>  EXPORT_SYMBOL_GPL(synth_event_delete);
+>  
+> -static int create_or_delete_synth_event(int argc, char **argv)
+> +static int create_or_delete_synth_event(int argc, char **argv,
+> +					const char *raw_cmd)
+>  {
+>  	const char *name = argv[0];
+>  	int ret;
+> @@ -2046,7 +2047,7 @@ static ssize_t synth_events_write(struct file *file,
+>  				  size_t count, loff_t *ppos)
+>  {
+>  	return trace_parse_run_command(file, buffer, count, ppos,
+> -				       create_or_delete_synth_event);
+> +				       create_or_delete_synth_event, ';');
+>  }
+>  
+>  static const struct file_operations synth_events_fops = {
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index b911e9f6d9f5..54af5ff58923 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -907,7 +907,8 @@ static int trace_kprobe_create(int argc, const char *argv[])
+>  	goto out;
+>  }
+>  
+> -static int create_or_delete_trace_kprobe(int argc, char **argv)
+> +static int create_or_delete_trace_kprobe(int argc, char **argv,
+> +					 const char *raw_cmd)
+>  {
+>  	int ret;
+>  
+> @@ -1159,7 +1160,7 @@ static ssize_t probes_write(struct file *file, const char __user *buffer,
+>  			    size_t count, loff_t *ppos)
+>  {
+>  	return trace_parse_run_command(file, buffer, count, ppos,
+> -				       create_or_delete_trace_kprobe);
+> +				       create_or_delete_trace_kprobe, 0);
+>  }
+>  
+>  static const struct file_operations kprobe_events_ops = {
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index 3cf7128e1ad3..b2840003b851 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -716,7 +716,8 @@ static int trace_uprobe_create(int argc, const char **argv)
+>  	return ret;
+>  }
+>  
+> -static int create_or_delete_trace_uprobe(int argc, char **argv)
+> +static int create_or_delete_trace_uprobe(int argc, char **argv,
+> +					 const char *raw_cmd)
+>  {
+>  	int ret;
+>  
+> @@ -793,7 +794,7 @@ static ssize_t probes_write(struct file *file, const char __user *buffer,
+>  			    size_t count, loff_t *ppos)
+>  {
+>  	return trace_parse_run_command(file, buffer, count, ppos,
+> -					create_or_delete_trace_uprobe);
+> +				       create_or_delete_trace_uprobe, 0);
+>  }
+>  
+>  static const struct file_operations uprobe_events_ops = {
+> -- 
 > 2.17.1
 > 
 
+
 -- 
-Michal Hocko
-SUSE Labs
+Masami Hiramatsu <mhiramat@kernel.org>
