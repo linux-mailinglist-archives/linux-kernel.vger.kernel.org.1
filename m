@@ -2,87 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8260C291867
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 18:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CE929186F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Oct 2020 18:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727202AbgJRQvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 12:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38094 "EHLO
+        id S1727224AbgJRQ62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 12:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbgJRQvV (ORCPT
+        with ESMTP id S1726613AbgJRQ62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 12:51:21 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA379C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 09:51:21 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id w141so9745583oia.2
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 09:51:21 -0700 (PDT)
+        Sun, 18 Oct 2020 12:58:28 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9805FC061755;
+        Sun, 18 Oct 2020 09:58:26 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id bl9so3335742qvb.10;
+        Sun, 18 Oct 2020 09:58:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/xbr1iyCmVHPM8Z+0u2tLKLLy6qAswXo6NMqrcz7V/s=;
-        b=bVmfFn6awNB2/CzdrTTm8RdDtSDSR1opWIX65757pAPRZOR2YjHuhqFxHX8hb8fIYE
-         8JuBeBOMUPZYPL6S5zDmexyXyLkcGeRph0QvN24V7R2V14hXZNAX1hzdFe4mMtTih9av
-         jYgBE8RkfkUCb7IgAOsT8rrHBLAkbuv32059BgeNWiuJ1odC5+DV2Nxnv6GbNdlR5dlv
-         4evZxNC4MgD6YqEWntQBJ3hqUnAmoxyuf4XmW5sVEJkgG6E8hSuMZYLbGBkObAaeI6Zu
-         pFtbv9vaEzeEulumMjhigOI0KwFaU2ctt4dTg34JvI29Tr8NMEFqOusLbG3xLdAEZeLP
-         z5zA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HJanRkOnYDRWWUUxMT+SX3xeE/WoWNZDclqoOIIZ6ik=;
+        b=fvbVbd6bP0z7Vuuq+jqTEeUxxfKwXFaectxEGgR9FBXrWbQRPTqxDDp12hv7pyjgny
+         pVkvJW2CkducvZ6zcT1Qg0RHQcsGRQ0FhijtX46wCeavXfhFRtyCnOyLjRs5MWQ9WPvQ
+         gg5G9PlVyumf0QRB680kMp51sPQ6IHY4uqL2GYT6DCGRgnVz0RzxExcK+XR6LftDCd0U
+         YJFevQR8R/XSy5mGZ+5t5z5pBJ23cZlNqC/oAw11/HkRs75AFqDH8WxVaKZqsErwqASc
+         TwBvFGoV/fp1AX7pspMG1+psZXZFyGFkHafZmjY71NNHWOOGsyPr7xn5psISVrrjxveJ
+         xJsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/xbr1iyCmVHPM8Z+0u2tLKLLy6qAswXo6NMqrcz7V/s=;
-        b=uAkmivC/q5gXsZFvBNhXWfX65OlaKbpUtVbAYzYyBgKb3e20NitJzFmuA4om8CzaPL
-         cC7DX9J00fUveccPbG4LAdDI5ewBAKY5FL9M1DgY1hrehLT10QLut9+GYtlsXbkpOpqz
-         7aDxj5t6TNxH9zlTfbhvj0RQPQ+zaP8u31Poe2RwxjLvxalf4dYbrVP6ablk4Rf2q14h
-         mRrD2F+HX+nEp+2ieJfYYsSGsDeMfkneTsSG9/MheyKjhFGMeK/aNPjnBJHylAIoYLER
-         VpExCNdHv8vfrCbch/GqsE6hPEC6+qxVOrGnV2S0IzwRDn/wPveZHwh/tc75D2LrNZYv
-         2cHw==
-X-Gm-Message-State: AOAM530LfCkPze5ft6Q5ixE93bin2os2il10nyvH8aY6XmaYO3cM7wkg
-        9cVs3hslM7Rp10EU4IcKGaUhCDUsXHoaVccOOOU=
-X-Google-Smtp-Source: ABdhPJyhWxhBMikpLU46CQ8PBjaY8lh36ICXoqo8ZC1BdgFdxeS4VGUomctZm0OHXL2F63/qOB1raHyV8+QYoHdebzc=
-X-Received: by 2002:aca:d5d2:: with SMTP id m201mr8910518oig.74.1603039880960;
- Sun, 18 Oct 2020 09:51:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HJanRkOnYDRWWUUxMT+SX3xeE/WoWNZDclqoOIIZ6ik=;
+        b=KkeL16JvAWgNQz/O1gSP1XpmVEgy0FFvZnItUKW/deP/cjjcDVnm6F4tV3/hAhLWAA
+         XwF8owc4JVaFCA2gNU4DmoIuL82/DLlbpdpW5Mt0cy/mFBG3gf8jvkEPbvTf3GKoW8fI
+         O9D7ronkDIQLJvBiw+Ih4BNLs3DlR6ryqnCHhDk5rpqJ3Tvj5wGSccSj60Q0GrTiQ0oN
+         iZoZmg7gFJ1w1mCtboZy61xJS5ic48Nld7LtBAjs41kwifb+nxcJmbyM7gRUWYCLyxiM
+         MqyDMxhuvyCmQrQNjro7pHyjDx8CTJKwTWgq7PjWiKtxfIEO+AYpLe5meJdh+aveCJhl
+         aAXA==
+X-Gm-Message-State: AOAM533e00KbM4hct28OjdnNISKAwy3dRqQWYSPFLCtyM+5nX3NfgyC+
+        yeFarqDhCEwAiba5wGHKM/jSolv/pXUoGg==
+X-Google-Smtp-Source: ABdhPJxjcZwbX9ypE+uUB13PJDlMX4ZiI7bkB4E/9sDUMmaq7Hljo6yZcmPmqM5wbZ5FOb82iKUy0w==
+X-Received: by 2002:ad4:43e5:: with SMTP id f5mr13696233qvu.12.1603040305761;
+        Sun, 18 Oct 2020 09:58:25 -0700 (PDT)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id g5sm3325325qto.39.2020.10.18.09.58.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Oct 2020 09:58:24 -0700 (PDT)
+Date:   Sun, 18 Oct 2020 12:58:22 -0400
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+Subject: Re: [PATCH v5 3/5] counter: Add character device interface
+Message-ID: <20201018165822.GE231549@shinobu>
+References: <cover.1601170670.git.vilhelm.gray@gmail.com>
+ <00be1fccc672c5207f3b04fe4cc09c29e22641f4.1601170670.git.vilhelm.gray@gmail.com>
+ <cc1f7e4d-18d1-bc28-8ce3-e3edcd91bcab@lechnology.com>
 MIME-Version: 1.0
-References: <20201017162732.152351-1-dwaipayanray1@gmail.com>
- <1ad9c5f49e10a192f0c6efb1116f3f0d31adce74.camel@perches.com>
- <CABJPP5DuQ_Y0LLS5BzNXUWyxjzp9ts5kgEH-3+7Pn7PPjq0Ljg@mail.gmail.com>
- <eda7a64b4af42ba1fb66a5b3704780cf3f761951.camel@perches.com>
- <CABJPP5Cr3giDJkJvBDd62iwx6y6r1dFhaVXp9jYXS8Y6k9b09A@mail.gmail.com> <e417e506c23ad56b2618204071c86e8a6ec2cb85.camel@perches.com>
-In-Reply-To: <e417e506c23ad56b2618204071c86e8a6ec2cb85.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Sun, 18 Oct 2020 22:20:53 +0530
-Message-ID: <CABJPP5CPgT4VHP9-xiWNVbPDVjDykPsE4kWTFgDmzp553H3o8Q@mail.gmail.com>
-Subject: Re: [PATCH v5] checkpatch: add new exception to repeated word check
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="idY8LE8SD6/8DnRI"
+Content-Disposition: inline
+In-Reply-To: <cc1f7e4d-18d1-bc28-8ce3-e3edcd91bcab@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 12:41 PM Joe Perches <joe@perches.com> wrote:
->
-> On Sun, 2020-10-18 at 12:10 +0530, Dwaipayan Ray wrote:
-> > print index(" \t.,;?!", '');
-> >
-> > It output 0 in my case. So last words on a line seems to work.
-> > I don't know if this changes with the perl version though.
-> >
-> > So given this, will it be necessary to change end_char to ' ' ?
-> > or perhaps change both start_char and end_char to a ' ' to maintain
-> > uniformity?
->
-> It seems it's fine even back to perl 5.6, so it's fine as is.
->
-> cheers, Joe
->
-Okay thanks!
-Please let me know if any other change is needed
-or if it's good to go.
 
-Regards,
-Dwaipayan.
+--idY8LE8SD6/8DnRI
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Oct 14, 2020 at 05:40:44PM -0500, David Lechner wrote:
+> On 9/26/20 9:18 PM, William Breathitt Gray wrote:
+> > +static ssize_t counter_chrdev_read(struct file *filp, char __user *buf,
+> > +				   size_t len, loff_t *f_ps)
+> > +{
+> > +	struct counter_device *const counter =3D filp->private_data;
+> > +	int err;
+> > +	unsigned long flags;
+> > +	unsigned int copied;
+> > +
+> > +	if (len < sizeof(struct counter_event))
+> > +		return -EINVAL;
+> > +
+> > +	do {
+> > +		if (kfifo_is_empty(&counter->events)) {
+> > +			if (filp->f_flags & O_NONBLOCK)
+> > +				return -EAGAIN;
+> > +
+> > +			err =3D wait_event_interruptible(counter->events_wait,
+> > +					!kfifo_is_empty(&counter->events));
+> > +			if (err)
+> > +				return err;
+> > +		}
+> > +
+> > +		raw_spin_lock_irqsave(&counter->events_lock, flags);
+> > +		err =3D kfifo_to_user(&counter->events, buf, len, &copied);
+> > +		raw_spin_unlock_irqrestore(&counter->events_lock, flags);
+> > +		if (err)
+> > +			return err;
+> > +	} while (!copied);
+> > +
+> > +	return copied;
+> > +}
+>=20
+> All other uses of kfifo_to_user() I saw use a mutex instead of spin
+> lock. I don't see a reason for disabling interrupts here.
+
+The Counter character device interface is special in this case because
+counter->events could be accessed from an interrupt context. This is
+possible if counter_push_event() is called for an interrupt (as is the
+case for the 104_quad_8 driver). In this case, we can't use mutex
+because we can't sleep in an interrupt context, so our only option is to
+use spin lock.
+
+William Breathitt Gray
+
+--idY8LE8SD6/8DnRI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl+MdC4ACgkQhvpINdm7
+VJKtZA/+NKz/zDPUYG1k3eRF+qrTFSszN6ZaQVFDVW2dNUUxCvZtcCZ8x2hZx/n9
+1hWhczCgYYpeYM6ahWC+JRwebm1vUqc/U3KbKRXVpJVg4dot5+A9jqiXtevPA99D
+RctZMaJLJ/1UGh2R4Pkiew5YtStfcqMlblDrIBCZiwCEY5mIs+6kR0CgaQUwG/sx
+M777scU4ixIM+o5m6XJoLkgh9Lv89KnESESl/XBBYXfcN7zYBXtEcmf4ixQhuO+Y
+ehpfmgpCcuBhrOVYjqzDN4h+dopSUVpI8QzTTe9Rpu8FgpoONnPm9O5cpD2rFvlL
+AVCEi9U+OCkiWvh5WozChmBVSkvnzRgQe6y2silU47bGfFumj9LSgb/QMLKNCXpz
+VgI4psvFiUPq17+PMXeNUH3+1v5FEaVjOQ1gBgl1Er9KPP2u9ixifrTkkssBzFAI
+luF4Z0nsEkK+ezF5oDT1IlSIZILChd8Lb2IGkXSebNQ/SQ2bAom+QNd8Spo1tIJR
+C2inE32wpPyUniISW+Hl6rxjM/uUKYiUh6WPjYx98u4tCrcHkBtZ5N3Pq59HrS5s
+tD6kyEScmGR+R/x6uvkdkgxSRSScFItkDFI8fo6765W3Fb7GAK9B8Clt//SMxgct
+NJDo7dKl/bsALJyLe2s/bHJNteD0o5S0jlU8fedIrB819/lqF54=
+=oUCr
+-----END PGP SIGNATURE-----
+
+--idY8LE8SD6/8DnRI--
