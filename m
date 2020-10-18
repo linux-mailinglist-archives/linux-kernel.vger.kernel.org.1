@@ -2,84 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3462920A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 01:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A282920A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 01:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729798AbgJRXvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 19:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728212AbgJRXvG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 19:51:06 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6BAC061755;
-        Sun, 18 Oct 2020 16:51:06 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w21so4927975pfc.7;
-        Sun, 18 Oct 2020 16:51:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uw+aYLYiJGyrDrMZb/nx2w+eKuS/axoOgFXJxufPotQ=;
-        b=vUIQrBGf0OmZIeb04zw12omzwGDUBfS7uF/AZi/t/KjJz8Ox3iJWsTpNcC1WH4nGLD
-         AyVc7/3zihN9mdYP2Xeck8zhncSVdCYnD1f9muK+u9WqdnhlNSHy/sMits6o0tqLuyIy
-         BABDgRe0qXn8xa+fzmzrmIZ45Z7g0aa4+hRKJUNj18ayg0j1ZQ5efnU/Mp8VVZFWBBIn
-         an6zDaSKetwX/yHwOlfCc+QNk/ZQrIQVWbolaKmj3FZ0EDYpbiqXodqhRM8alaBeJIcx
-         TN9HSazC3VHwV5z3laibqpCStSNS+4ECuXQgOJd/cSTpF/zie8YYFGqOiqaUbod4QE8R
-         AjSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uw+aYLYiJGyrDrMZb/nx2w+eKuS/axoOgFXJxufPotQ=;
-        b=PEjM9xYku1c+xoCuNWZ5u9PZ1atRepe4U0MpGtduNYg0hO/k1Xe78gDjRHfy3v7Mn3
-         bxD12hJKVzVEGfDTpKwJCIBDTQm4RkLZgMnppJzVeAWKN4qRKit5mchv6riyheafEcTo
-         QPtzV/6WixqUB8117pXsKFUwa8w4SDfC66GYNR5S9q4heqy1lu78XGRzsYMSCIMiDF4i
-         sFapbdSNEe7eur1PbIuVhtb91RxIJ9b3P1jxQwoSRXttqcgfGUzEz7VGdtkaAHYDyYUR
-         kv6nK5xn6eTEzY8hnJZuXrlxoV4upQOyuh3+hwNAp4Wp+8wkR0Pt2qsILL3kE0xmO0UE
-         s87g==
-X-Gm-Message-State: AOAM5323rHij9p2pCKiEL69OObD1WowaU2XHSw6yrO9OIiojxTdz9C0b
-        PrczPZk78Rvnrg3DbCtMEVft4Qt5C4UTLtmkrg8=
-X-Google-Smtp-Source: ABdhPJwUOQqQgvxG038okq/jB4hBcc/S0RxWmJZHbd3TReKoKTW7d0XMQZZHi0SxjOjHsmFp4wUNXueWUfUg25+Qxpo=
-X-Received: by 2002:aa7:96f8:0:b029:152:94c0:7e5 with SMTP id
- i24-20020aa796f80000b029015294c007e5mr14208283pfq.76.1603065065977; Sun, 18
- Oct 2020 16:51:05 -0700 (PDT)
+        id S1729829AbgJRXwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 19:52:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40808 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728212AbgJRXwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 19:52:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+X-Amavis-Alert: BAD HEADER SECTION, Duplicate header field: "Cc"
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4A430B264;
+        Sun, 18 Oct 2020 23:52:18 +0000 (UTC)
+From:   NeilBrown <neilb@suse.de>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Mon, 19 Oct 2020 10:52:09 +1100
+Subject: [PATCH] workqueue: export apply_workqueue_attrs()
+cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+cc:     LKML <linux-kernel@vger.kernel.org>
+Message-ID: <87blgzf5xy.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-References: <20201017051951.363514-1-xie.he.0141@gmail.com> <20201018150517.2f3dfb5c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201018150517.2f3dfb5c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Sun, 18 Oct 2020 16:50:55 -0700
-Message-ID: <CAJht_EPnidrjS0Am+Vwp9W0dXP+6VJsmuHzy0eL9c7h5vpWwPA@mail.gmail.com>
-Subject: Re: [PATCH net-next] drivers/net/wan/hdlc_fr: Improve fr_rx and add
- support for any Ethertype
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 3:05 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Whenever you make a list like that it's a strong indication that
-> each of these should be a separate commit. That makes things easier
-> to review.
->
->
-> We have already sent a pull request for 5.10 and therefore net-next
-> is closed for new drivers, features, and code refactoring.
->
-> Please repost when net-next reopens after 5.10-rc1 is cut.
->
-> (http://vger.kernel.org/~davem/net-next.html will not be up to date
->  this time around, sorry about that).
->
-> RFC patches sent for review only are obviously welcome at any time.
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-OK. Thanks!
 
-I'll divide this into smaller commits and repost after rc1.
+Lustre is a widely used cluster filesystem which is currently
+out-of-tree, but work is underway to make it ready for upstream
+submission.
+
+Lustre needs apply_workqueue_attrs(), and for this reason that function
+was exported in Commit 6106c0f82481 ("staging: lustre: lnet: convert
+selftest to use workqueues").
+
+Unfortuantely it was later (through an excess of caution) unexported by
+Commit 2c9858ecbeb1 ("workqueue: Make alloc/apply/free_workqueue_attrs()
+static"), which also marked the function static.
+
+Subsequently in Commit 513c98d08682 ("workqueue: unconfine
+alloc/apply/free_workqueue_attrs()") the "static" marking was removed
+when it was realized that it is actually useful to some clients of
+"workqueue", but it was not exported at this time.
+
+Lustre has been making do with use of kallsyms_lookup_name() to get
+access to this function when it isn't exported, but that loop-hole has
+now been removed.
+
+So: time to export the function again.
+
+Signed-off-by: NeilBrown <neilb@suse.de>
+=2D--
+ kernel/workqueue.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 437935e7a199..ab593b20fb94 100644
+=2D-- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -4068,6 +4068,7 @@ int apply_workqueue_attrs(struct workqueue_struct *wq,
+=20
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(apply_workqueue_attrs);
+=20
+ /**
+  * wq_update_unbound_numa - update NUMA affinity of a wq for CPU hot[un]pl=
+ug
+=2D-=20
+2.28.0
+
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl+M1SkOHG5laWxiQHN1
+c2UuZGUACgkQOeye3VZigbnQKQ/9HgoIiOI2vo95Er4XPeBn0ngvga0sS1K4Vzht
+it68xtcFV6zJRp1foYDBikc/0NYHNDzGctcbVef4wypRYujI2e70ReARstPB8YVD
+p8d8PCJ5T5ZSJcL0DDSYY15XeFOqgiALgUErPYWmNvanXrQNVpBEAforLyn4hJvf
+lmRpbXTDHWJarKEYY56clsNivzq1NFa4aVUv30yX59vNzJ5qn8oaDiAoAwOlzjqJ
+/Vangn2C0Z2ymaWyLGNkI/v5u6y9nZx2EaNL6wCRJ09PQsfI5RAwSUqZDEmA7MxS
+vB58fLZNJ6o8snOqzt/J9jpRwHu6TfUzcbgPVVwMJOG8qJS88AXJSZWR03BZwEqo
+TN2vryIN/mR0Q3QjlvWE9yFrOZOGCQ3lwUgXhkcTTwwHT6qBmcbw4tTYM1oaZ4o0
+Qd3q/NxLUBHqwyVnsnALZX7daeV499aZF+Agf0iJDCWukmjvHjmeUexxXxcSqoAJ
+y9d6fqkHVMUQxNw8l7rMi07T6hPajJhrCPZTNT9vYqtnNMYqi05/pWORk6VvmCBu
+MqitPAkZAo8HEf5K9QbSvIXw4Ax2V7iiVe8QXHUSwlpnV7G6bcbXFWwX9iAc/4Fd
+G4ndWYayRnlGtUBdQP9jVfMCufmJMv6iX8bRFSKL1URfzvtWhaOSsXcxTFH1CeoA
+R/2MnK4=
+=taI5
+-----END PGP SIGNATURE-----
+--=-=-=--
