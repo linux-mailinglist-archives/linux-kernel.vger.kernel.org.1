@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D163E292BA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DAB292BAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730570AbgJSQkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:40:23 -0400
-Received: from mail-eopbgr110100.outbound.protection.outlook.com ([40.107.11.100]:9687
-        "EHLO GBR01-CWL-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729879AbgJSQkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:40:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hkCzrtby9ZKn/jmFxtoQplCC8Y0yz5aanwTde2bujErWtgESQj79IRg2aI6kRi7L6IgLe+0BiAgMGrXUqHwzEphCQkIqmkjSM1Sy9QOkaXB+Ir0XkZmMlLeCmh2lWVPiLLRPRCR8GpuCNLL/xYn9n8oJg3OonhjsJbDY5j+tqnPO2mgA3t0w0mUYHXzSsyJzEg/j4zP4vLPIF0nn4sZjk+4rRv8ChZcxLv6bB4HdYO0FYz6lFOBCMSJGDNW+dYymek9YuNWy/tdnUEvbepk1apSSVekMIUydcoCyd2GwhsGdzg9efnPdH3r7ABR3bEK7Dcn3c2ET6Oa1cn+2ALxFBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jt7VgHIx8NbG+Ds4qlxxYKfCHWmI55iZZzKpHh0ODJg=;
- b=T0ljcSv71N1Ez11i7legQFzei9dnglEH4MLaSnd+dhd/AqoRJZaswYinzRvbTEpKM9Wa59gM6G4rl07mLhNTT3V3jdot9suvFueACH1LLIOyahze543MEnN/wXARejh/zofJvsDrwkBGUbySRyuB6pS+0MCW6eO3aSIVRAycxtavm1Vb/+dp1sbGjf8AGWjHMet1h8HhGUqkYjprp/WEgZOyX1rxSxPmm8xwOFfVErfC0IGGuWGbNll0ZXQXBeVJgsF7F3MWxrAqFzb32gathwCfQf8tlhQMPKnTuCKZV8953sTr08gxA7mKopCeSTm5d6bDrgoGTNMXuF2mF86PCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=purelifi.com; dmarc=pass action=none header.from=purelifi.com;
- dkim=pass header.d=purelifi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=purevlc.onmicrosoft.com; s=selector2-purevlc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jt7VgHIx8NbG+Ds4qlxxYKfCHWmI55iZZzKpHh0ODJg=;
- b=VRxkYGbbD5S7RfqiqG1s3OBputk3zVW63fwllubvjQszxUMlgwzk2LlS7TJStwEKeLxL01pfqMHO9xffprSc98/rqKesqyHJJdoHi9KkXajOrNzWb7WL94qJAGTeiG3RiOm2DPt+W0Q3u0wGTm8agADgA/xweLTw7oXftGEzu4k=
-Received: from LOYP265MB1918.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:ef::9) by
- LO3P265MB2314.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:107::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3477.21; Mon, 19 Oct 2020 16:40:18 +0000
-Received: from LOYP265MB1918.GBRP265.PROD.OUTLOOK.COM
- ([fe80::b8d7:c2a7:cbbd:6c2b]) by LOYP265MB1918.GBRP265.PROD.OUTLOOK.COM
- ([fe80::b8d7:c2a7:cbbd:6c2b%7]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
- 16:40:18 +0000
-From:   Srinivasan Raju <srini.raju@purelifi.com>
-To:     Krishna Chaitanya <chaitanya.mgit@gmail.com>
-CC:     Mostafa Afgani <mostafa.afgani@purelifi.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS (WIRELESS)" 
-        <linux-wireless@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
-Subject: Re: [PATCH] [v6] wireless: Initial driver submission for pureLiFi STA
- devices
-Thread-Topic: [PATCH] [v6] wireless: Initial driver submission for pureLiFi
- STA devices
-Thread-Index: AQHWpfNnC69OUf5kyEqGJu+7PrU+76mfGBIAgAAIROQ=
-Date:   Mon, 19 Oct 2020 16:40:18 +0000
-Message-ID: <LOYP265MB1918B212C618FF60333BFD85E01E0@LOYP265MB1918.GBRP265.PROD.OUTLOOK.COM>
-References: <20201019031744.17916-1-srini.raju@purelifi.com>
- <20201019083914.10932-1-srini.raju@purelifi.com>,<CABPxzYJaB5_zZshs3JCnPDgUZQZc+XRN+DuE3BjGjJKsiJh0uA@mail.gmail.com>
-In-Reply-To: <CABPxzYJaB5_zZshs3JCnPDgUZQZc+XRN+DuE3BjGjJKsiJh0uA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=purelifi.com;
-x-originating-ip: [103.8.116.159]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d15a6967-27ea-40ee-9674-08d8744daa08
-x-ms-traffictypediagnostic: LO3P265MB2314:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <LO3P265MB2314BDAB5CFD5502838C6AC5E01E0@LO3P265MB2314.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KMg6AFXO29vhVv6O6kaJ7up0Mntw1b7Q5XbD3eVAfiDUELMb2AaK8JCWedDodnBJJk2/bqMnhZmo4z+WFysxk9zd20w74UNmKGA6N4MnfaeN7PZkerqrQZVppkZiRNsKxbi8dqYLriZM2gKgl/ecPPL8cphzOuEWMbDxAAziRr0RncEbgCnX7FivSrecViUlpz4t/RBsjybb0V0+Ay/M+0ValUtoDXLa0OqMCB4/UkfvVBKq8F6TImwVJ+THuM5DB/Id+hzKinm6gZYowVatE9KHl21/hErkPKeDwDfJFOC/xdHUFjJcVFL6NzFT2902
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LOYP265MB1918.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(6029001)(4636009)(366004)(396003)(376002)(346002)(39830400003)(136003)(9686003)(8936002)(52536014)(8676002)(478600001)(186003)(26005)(7696005)(6506007)(4326008)(66556008)(66476007)(76116006)(66946007)(64756008)(91956017)(66446008)(558084003)(33656002)(6916009)(71200400001)(54906003)(55016002)(7416002)(2906002)(86362001)(5660300002)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 9CrjTJCpjzsUEDJgdrO/B2jbb+eD+KjkcWwp2gaBAuLlG84QawhFMtmjga4H42Mk0sEzUkl7etC3KgTh1qgKJlmEni64c+2AsXCLj7pFZnhEZNkjGBz9nCsT4yUZYOqAU5w+ogT16KuhzWaOMQ3KnNp8NbhKO0ERwwqCdebG3YPuOVe+ynI8hYvnPvLumOKOCsESgJDdXofOZRj+d2NFhLkXKkvYQpEa0xNl41rxV97+OmJziPJZT5R7D2AFm2EScwb9UVqQeRz3jql4WuXDglAFoK+rfaTjlf2hD8c0RVB5UrcP0ZvdxTm+TP/M3UwCm1t1yF4LDa6yVTCzmxxiQpW8RUnhI/Rd7Z9K1t4w6w34to65TiNad2/SrO82ly0HQQjQdBWDWYwm22LZXsgYGXTdEiorY3qWm59XQ8IH8Np7AuIH70QMUIxXrEsTMv2pYVugzPMqUG9IPi5ACeLCApzb3Y+PIFPY/Ym9qt8BDG2aXMKL7U7XjkR8S05rt4OQmqEwFqcLYvO26JYkEE1t2kUEUNvZX2iwPcMg8+zAkZWMIfI6h9XmGKTMwehtCO1YO+++XhFQvblJ5udz9eT/uAxkvEq7+qnU7Er9NAnJJHe8p4Gs/So7MAn2L2A0aUS8OtskTMpQ18OkdXvvIy1UDg==
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S1730564AbgJSQnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:43:23 -0400
+Received: from m12-11.163.com ([220.181.12.11]:34633 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729879AbgJSQnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 12:43:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=YC7Ho
+        mMsF1MVd69eG5Tkh0OhJDK52Iatm/gNKnLN6Hw=; b=ZgCHt8Oth4PwwxBrN3a6W
+        93pEO49qRBuDZr5JsEBMJhwcxV86eRPOm7Xsy12j4cD5yPblTAIG4Zr+E3xS7I85
+        e0FgxWw/G5v5K27H/lah7nK0uhGk+JyFe+VqHJmsC2K3uBVQPr74iH7ecXVvSe6F
+        OOSYrzO4ijI4PRpvDHnOzA=
+Received: from localhost (unknown [101.86.214.18])
+        by smtp7 (Coremail) with SMTP id C8CowAAX_dkGwo1fOyrtDw--.24180S2;
+        Tue, 20 Oct 2020 00:42:46 +0800 (CST)
+Date:   Tue, 20 Oct 2020 00:42:46 +0800
+From:   Hui Su <sh_def@163.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] block/elevator: reduce the critical section
+Message-ID: <20201019164246.GA79115@rlk>
 MIME-Version: 1.0
-X-OriginatorOrg: purelifi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LOYP265MB1918.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: d15a6967-27ea-40ee-9674-08d8744daa08
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 16:40:18.5703
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5cf4eba2-7b8f-4236-bed4-a2ac41f1a6dc
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QC3byEguPfVZkJrQ0SlFk1m90RXW8cUUGdCk+fX7b/jb7RuqqLnMuhRYzaVe/szQ8aCUjj6qrkGTTKeaoAU76A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO3P265MB2314
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: C8CowAAX_dkGwo1fOyrtDw--.24180S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tw4rJFWfJrWfWF1xWry3Jwb_yoW8Wr4kpr
+        sIg3sxKr1kXryxZwsrAa429w1Iq34j9r4jqryrCw10kFnrXw43W3W7Ca17XF4YyayxXFs8
+        WF1ktFWDAFWUZr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jYksDUUUUU=
+X-Originating-IP: [101.86.214.18]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiIAbCX10TB0yC3wAAsj
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Overall, there are many magic numbers without comments, this makes it har=
-d to=0A=
-> understand the code. Using defines with proper naming helps and for 802.1=
-1 stuff=0A=
-> can use ieee80211_*/IEEE80211_* should be used.=0A=
-=0A=
-Thanks for your comments Krishna, will work on them.=0A=
-=0A=
-Regards,=0A=
-Srini=
+1.reduce the critical section in elevator_get().
+2.reduce the critical section in elevator_get_by_features().
+3.remove the found variable.
+
+the elv_list_lock is used to protect the elv_list,
+and the operations of elevator_type does not need
+to be protected.
+
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ block/elevator.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/block/elevator.c b/block/elevator.c
+index 293c5c81397a..727902b31954 100644
+--- a/block/elevator.c
++++ b/block/elevator.c
+@@ -151,11 +151,11 @@ static struct elevator_type *elevator_get(struct request_queue *q,
+ 		spin_lock(&elv_list_lock);
+ 		e = elevator_find(name, q->required_elevator_features);
+ 	}
++	spin_unlock(&elv_list_lock);
+ 
+ 	if (e && !try_module_get(e->elevator_owner))
+ 		e = NULL;
+ 
+-	spin_unlock(&elv_list_lock);
+ 	return e;
+ }
+ 
+@@ -633,23 +633,21 @@ static struct elevator_type *elevator_get_default(struct request_queue *q)
+  */
+ static struct elevator_type *elevator_get_by_features(struct request_queue *q)
+ {
+-	struct elevator_type *e, *found = NULL;
++	struct elevator_type *e = NULL;
+ 
+ 	spin_lock(&elv_list_lock);
+-
+ 	list_for_each_entry(e, &elv_list, list) {
+ 		if (elv_support_features(e->elevator_features,
+ 					 q->required_elevator_features)) {
+-			found = e;
+ 			break;
+ 		}
+ 	}
++	spin_unlock(&elv_list_lock);
+ 
+-	if (found && !try_module_get(found->elevator_owner))
+-		found = NULL;
++	if (e && !try_module_get(e->elevator_owner))
++		e = NULL;
+ 
+-	spin_unlock(&elv_list_lock);
+-	return found;
++	return e;
+ }
+ 
+ /*
+-- 
+2.25.1
+
+
