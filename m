@@ -2,203 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71472929E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 690682929E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgJSO7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:59:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45036 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729544AbgJSO7A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:59:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603119539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6S2TV9dAHYTgZdlK1+oGRF6Req84/iEOIZPYDAw9Ys8=;
-        b=KJljXpEs+C3u8IlOOauPVRFh1MXS9JR9HmUjmNGq6fkDz3leq4SVDYhchOcviCDEwI4nMP
-        Sq81eIX/A7sSVqsPL+YVBs4UvKOqRDWmdFhclmbPTkDxYgrnJPrMVAWiuCzXP5TpljLHKk
-        yY9B5/vGx9TToje+0l6Ev9k46IS1BWE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-CTQUwtjQM2OMNQua7o8xKg-1; Mon, 19 Oct 2020 10:58:57 -0400
-X-MC-Unique: CTQUwtjQM2OMNQua7o8xKg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729756AbgJSO73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:59:29 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:31608 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729223AbgJSO72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 10:59:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603119567; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=I/SKOMpzOnnwt8n9VF8We3fcphMOzmAuFiM8CKtC4dU=; b=rBKoOYRAfrn1S2IgeXt3EQ4YJnrxl6GJ6Wo74OxtK/5OWeBrcntqKLIXbGAE49QrV7LTd9wj
+ yUQ+TOx/djSMm9WcWcxDOWemkrpKqGeNWf0T2OayEQljZLATfTfAKeR2mu5udjDtC4T8AVSE
+ 8U5/qHx4NuBhNlxuB08fjsu4920=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f8da9cf856d9308b534b4a1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 14:59:27
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 45A17C43382; Mon, 19 Oct 2020 14:59:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB66687507C;
-        Mon, 19 Oct 2020 14:58:55 +0000 (UTC)
-Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 35BA65B4AD;
-        Mon, 19 Oct 2020 14:58:50 +0000 (UTC)
-Subject: Re: [PATCH] arm64/mm: Validate hotplug range before creating linear
- mapping
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     will@kernel.org, catalin.marinas@arm.com,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>
-References: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
- <7c39c046-b950-ea4c-fa4d-e0a5d6171147@redhat.com>
- <72ea7056-5289-3eb0-eca9-a8444524667e@arm.com>
- <70a76220-9acd-06b6-e074-dc9cbb6668da@redhat.com>
- <40104165-aa6f-201c-4aa2-e3918978dc6e@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <34ab00af-ebdc-6b83-4ff6-1e7bb9f7c3a3@redhat.com>
-Date:   Mon, 19 Oct 2020 16:58:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A67A0C433F1;
+        Mon, 19 Oct 2020 14:59:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A67A0C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 19 Oct 2020 08:59:22 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+Subject: Re: [PATCH 2/2] drm/msm: Fix duplicate gpu node in icc summary
+Message-ID: <20201019145922.GB31882@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+References: <1603113558-23330-1-git-send-email-akhilpo@codeaurora.org>
+ <1603113558-23330-2-git-send-email-akhilpo@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <40104165-aa6f-201c-4aa2-e3918978dc6e@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603113558-23330-2-git-send-email-akhilpo@codeaurora.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>
->> Most probably,
->>
->> struct range memhp_get_addressable_range(bool need_mapping)
->> {
->> 	...
->> }
+On Mon, Oct 19, 2020 at 06:49:18PM +0530, Akhil P Oommen wrote:
+> On targets with a6xx gpu, there is a duplicate gpu icc node listed in
+> the interconnect summary. On these targets, calling
+
+This first sentence is confusing to me. I think the following few sentences do
+a better job of explaining what you are trying to do.
+
+> dev_pm_opp_of_add_table() api initializes the icc nodes for gpu indirectly.
+> So we should avoid using of_icc_get() api in the common probe path. To fix
+> this, we can move of_icc_get() to target specific code where it is
+> required.
+
+> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/adreno/a3xx_gpu.c   | 21 +++++++++++++++++++--
+>  drivers/gpu/drm/msm/adreno/a4xx_gpu.c   | 20 ++++++++++++++++++--
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 29 +----------------------------
+>  3 files changed, 38 insertions(+), 32 deletions(-)
 > 
-> Something like this...
+> diff --git a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
+> index f29c77d..93da668 100644
+> --- a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
+> @@ -519,6 +519,8 @@ struct msm_gpu *a3xx_gpu_init(struct drm_device *dev)
+>  	struct msm_gpu *gpu;
+>  	struct msm_drm_private *priv = dev->dev_private;
+>  	struct platform_device *pdev = priv->gpu_pdev;
+> +	struct icc_path *ocmem_icc_path;
+> +	struct icc_path *icc_path;
+>  	int ret;
+>  
+>  	if (!pdev) {
+> @@ -566,13 +568,28 @@ struct msm_gpu *a3xx_gpu_init(struct drm_device *dev)
+>  		goto fail;
+>  	}
+>  
+> +	icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
+> +	ret = IS_ERR(icc_path);
+> +	if (ret)
+> +		goto fail;
+> +
+> +	ocmem_icc_path = devm_of_icc_get(&pdev->dev, "ocmem");
+> +	ret = IS_ERR(ocmem_icc_path);
+> +	if (ret) {
+> +		/* allow -ENODATA, ocmem icc is optional */
+> +		if (ret != -ENODATA)
+> +			goto fail;
+> +		ocmem_icc_path = NULL;
+> +	}
+> +
+> +
+>  	/*
+>  	 * Set the ICC path to maximum speed for now by multiplying the fastest
+>  	 * frequency by the bus width (8). We'll want to scale this later on to
+>  	 * improve battery life.
+>  	 */
+> -	icc_set_bw(gpu->icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+> -	icc_set_bw(gpu->ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+> +	icc_set_bw(icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+> +	icc_set_bw(ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+
+This seems reasonable but I hope we can get somebody to sign off on a real a3xx
+part.
+
+>  
+>  	return gpu;
+>  
+> diff --git a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
+> index 2b93b33..c0be3a0 100644
+> --- a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
+> @@ -648,6 +648,8 @@ struct msm_gpu *a4xx_gpu_init(struct drm_device *dev)
+>  	struct msm_gpu *gpu;
+>  	struct msm_drm_private *priv = dev->dev_private;
+>  	struct platform_device *pdev = priv->gpu_pdev;
+> +	struct icc_path *ocmem_icc_path;
+> +	struct icc_path *icc_path;
+>  	int ret;
+>  
+>  	if (!pdev) {
+> @@ -694,13 +696,27 @@ struct msm_gpu *a4xx_gpu_init(struct drm_device *dev)
+>  		goto fail;
+>  	}
+>  
+> +	icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
+> +	ret = IS_ERR(icc_path);
+> +	if (ret)
+> +		goto fail;
+> +
+> +	ocmem_icc_path = devm_of_icc_get(&pdev->dev, "ocmem");
+> +	ret = IS_ERR(ocmem_icc_path);
+> +	if (ret) {
+> +		/* allow -ENODATA, ocmem icc is optional */
+> +		if (ret != -ENODATA)
+> +			goto fail;
+> +		ocmem_icc_path = NULL;
+> +	}
+> +
+>  	/*
+>  	 * Set the ICC path to maximum speed for now by multiplying the fastest
+>  	 * frequency by the bus width (8). We'll want to scale this later on to
+>  	 * improve battery life.
+>  	 */
+> -	icc_set_bw(gpu->icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+> -	icc_set_bw(gpu->ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+> +	icc_set_bw(icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+> +	icc_set_bw(ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+
+Less confident we can find any 4xx fans to test this, but if a3xx works then so
+should this (in theory).
+
+>  	return gpu;
+>  
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> index fd8f491..6e3b820 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> @@ -920,35 +920,8 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>  
+>  	ret = msm_gpu_init(drm, pdev, &adreno_gpu->base, &funcs->base,
+>  			adreno_gpu->info->name, &adreno_gpu_config);
+> -	if (ret)
+> -		return ret;
+> -
+> -	/*
+> -	 * The legacy case, before "interconnect-names", only has a
+> -	 * single interconnect path which is equivalent to "gfx-mem"
+> -	 */
+> -	if (!of_find_property(dev->of_node, "interconnect-names", NULL)) {
+> -		gpu->icc_path = of_icc_get(dev, NULL);
+> -	} else {
+> -		gpu->icc_path = of_icc_get(dev, "gfx-mem");
+> -		gpu->ocmem_icc_path = of_icc_get(dev, "ocmem");
+> -	}
+>  
+> -	if (IS_ERR(gpu->icc_path)) {
+> -		ret = PTR_ERR(gpu->icc_path);
+> -		gpu->icc_path = NULL;
+> -		return ret;
+> -	}
+> -
+> -	if (IS_ERR(gpu->ocmem_icc_path)) {
+> -		ret = PTR_ERR(gpu->ocmem_icc_path);
+> -		gpu->ocmem_icc_path = NULL;
+> -		/* allow -ENODATA, ocmem icc is optional */
+> -		if (ret != -ENODATA)
+> -			return ret;
+> -	}
+> -
+> -	return 0;
+> +	return ret;
+
+This could go even further:
+
+return msm_gpu_init(...);
+
+>  }
+>  
+>  void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
+> -- 
+> 2.7.4
 > 
-> +struct memhp_range {
-> +       u64 start;
-> +       u64 end;
-> +};
-
-We do have struct range already in include/linux/range.h
-
-> +
-> +#ifndef arch_get_addressable_range
-> +static inline struct memhp_range arch_get_mappable_range(bool need_mapping)
-> +{
-> +       struct memhp_range range = {
-> +               .start = 0UL,
-> +               .end = (1ull << (MAX_PHYSMEM_BITS + 1)) - 1,
-
-Or just set to -1ULL if it's only used in memhp_get_mappable_range(), to
-keep things simple ().
-
-> +       };
-> +       return range;
-> +}
-> +#endif
-> +
-> +static inline struct memhp_range memhp_get_mappable_range(bool need_mapping)
-
-due to "need_mapping" the function might better be called
-
-memhp_get_pluggable_range()
-
-or similar
-
-> +{
-> +       const u64 max_phys = (1ull << (MAX_PHYSMEM_BITS + 1)) - 1;
-> +       struct memhp_range range = arch_get_mappable_range(need_mapping);
-> +
-> +       if (range.start > max_phys) {
-> +               range.start = 0;
-> +               range.end = 0;
-> +       }
-> +       range.end = min_t(u64, range.end, max_phys);
-> +       return range;
-> +}
-> +
-> +static inline bool memhp_range_allowed(u64 start, u64 end, bool need_mapping)
-> +{
-> +       struct memhp_range range = memhp_get_mappable_range(need_mapping);
-> +
-> +       return (start <= end) && (start >= range.start) && (end <= range.end);
-
-Keep in mind that in memory hotplug code, "end" is usually exclusive,
-and "end" in "struct range" is inclusive (see range_len(), or how you
-calculate max_phys.
-
-So depending on the semantics, you might have to fixup your comparisons.
-
-return start < end && start >= range.start && end <= range.end - 1;
-
-
-[...]
-
->> Right now it's like calling a function with wrong arguments - you just
->> don't have a clue what valid arguments are, because non-obvious errors
->> (besides -ENOMEM, which is a temporary error) pop up deep down the call
->> chain.
->>
->> For example, virito-mem would use it to detect during device
->> initialization the usable device range, and warn the user accordingly.
->> It currently manually checks for MAX_PHYSMEM_BITS, but that's just ugly.
->> Failing at random add_memory() calls (permanently!) is not so nice.
->>
->> In case of DIMMs, we could use it to detect if adding parts of a DIMM
->> won't work (and warn the user early). We could try to add as much as
->> possible.
-> 
-> Agreed.
-> 
-> Planning to add memhp_range_allowed() check in add_memory(), __add_memory(),
-> add_memory_driver_managed() and memremap_pages(). This check might just get
-> called twice depending on the hotplug path. Wondering if this needs to be
-> added any where else ?
-
-So
-
-add_memory() needs to
-- add sections via arch_add_memory()
-- create a mapping via arch_add_memory()->add_pages()
-
-memremap_pages() via arch_add_memory() needs to
-- add sections via arch_add_memory()
-- create a mapping via arch_add_memory()->add_pages()
-
-memremap_pages() via add_pages() needs to
-- add sections
-
-I'll reuse the functions from virtio-mem code once in place (exposing
-memhp_get_pluggable_range()).
-
-
-I do agree that having the callers of arch_add_memory() / add_pages()
-validate stuff isn't completely nice. I already raised that I would much
-rather want to see !arch wrappers for these arch functions that could
-validate stuff. But then we would have to do a bigger cleanup to get
-naming right.
-
-1. Rename functions for handling system ram like
-
-s/add_memory/add_sysram/
-s/remove_memory/remove_sysram/
-...
-
-2. Have a new add_memory() that validates + calls arch_add_memory()
-
-3. s/add_pages/arch_add_pages/
-
-4. Have a new add_pages() that validates + calls arch_add_pages()
-
-...
-
-
-Long story short, handling it in the 2 (!) callers might be easier for now.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
