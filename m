@@ -2,169 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84CA292179
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 05:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC0C292184
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 05:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731562AbgJSDkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 23:40:18 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:58935 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731534AbgJSDkS (ORCPT
+        id S1731713AbgJSDz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 23:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731306AbgJSDz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 23:40:18 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201019034014epoutp023ad855a5153bf02b3f2c0dc1730fed51~-R7AgRN390473404734epoutp028
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 03:40:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201019034014epoutp023ad855a5153bf02b3f2c0dc1730fed51~-R7AgRN390473404734epoutp028
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603078814;
-        bh=Fu9FxWTZj8KK0hKciFpjNBpeDe9Ru6cUtyGHj3g2giU=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=LbAd6nh8ZKSWVqxd6i/kuSVhwNM6rO8OW4ctvJUhhlZC815H5mrj2P5v0NRkCNrwm
-         mOLrsGcSSGTfhm5Xox3AHRu2oeVWl+gottJXGUHVm8F9CJt4YC4U+XFoboGAC8n2uj
-         oJEOMcX3kdOhRPBzCn4ITRhzt0fhVgN7xXwRhKbE=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201019034013epcas1p2f08a08b0958a3c9fc496ee28d3493bd4~-R6-1rdTm2094920949epcas1p2B;
-        Mon, 19 Oct 2020 03:40:13 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.157]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4CF2Zf5vwGzMqYks; Mon, 19 Oct
-        2020 03:40:10 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        09.1C.09577.A9A0D8F5; Mon, 19 Oct 2020 12:40:10 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20201019034009epcas1p442daef3ca119825a1faebc541fc559eb~-R68ixOhA2048620486epcas1p4h;
-        Mon, 19 Oct 2020 03:40:09 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201019034009epsmtrp14a627db8699bd6ce7d6e65103969f4a6~-R68h409M1670516705epsmtrp1S;
-        Mon, 19 Oct 2020 03:40:09 +0000 (GMT)
-X-AuditID: b6c32a39-c13ff70000002569-10-5f8d0a9aff36
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CD.AF.08604.99A0D8F5; Mon, 19 Oct 2020 12:40:09 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201019034009epsmtip1436bd147693d86079a9e245c2afe1972~-R68GwcsU0772407724epsmtip13;
-        Mon, 19 Oct 2020 03:40:09 +0000 (GMT)
-Subject: Re: [PATCH v3 1/2] PM / devfreq: Add governor feature flag
-To:     Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Cc:     leonard.crestez@nxp.com, lukasz.luba@arm.com,
-        enric.balletbo@collabora.com, hl@rock-chips.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, abel.vesa@nxp.com,
-        k.konieczny@samsung.com, b.zolnierkie@samsung.com,
-        chanwoo@kernel.org, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <9267f046-1adc-b43d-51ef-2e0ad41dc322@samsung.com>
-Date:   Mon, 19 Oct 2020 12:53:34 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Sun, 18 Oct 2020 23:55:27 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC75FC061755;
+        Sun, 18 Oct 2020 20:55:26 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id i2so10390615ljg.4;
+        Sun, 18 Oct 2020 20:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JGRhD4PEJkPED9SetcvHdpE4f5nhMr/c5YW65Q6YUlE=;
+        b=bZKO7VCR4I4+1wjrFBmZMGZJByH62WFATFg4GFd9UJ3PoVJc61jcpktT837bgYflPH
+         pPbcHo/EoNXIcaELhtfthGYs14cwBs5X7iWwQqfn4yTz9kT75biUXGTa+V491Jso3uOk
+         AzounLT1cQiKiacmbmCeeQnjWVKEw5uehZnaumjcRWC7wPERdZ5G1RmwBnU4Z1MBBMjR
+         2ZydHN7DYREUresYmd7CFGxSwrVswiBYIo60LsaJqBW6MolZvXx0gEAnISn5ChulmMWD
+         D2HSB6kazz42AFlYeKiy5n9gSFh0JC7jJgRrU+opKX9e/soEbGOQdsGJnpuR0XWbBg8E
+         tTqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JGRhD4PEJkPED9SetcvHdpE4f5nhMr/c5YW65Q6YUlE=;
+        b=o4l25ftcfRf+7Ac4+HOYlxcMTpnXo8zBi7XsK7O+I8JCPs9Ss0B8jKkpSjdYn9Zq7f
+         rWdPFwkg9vCwhN0O1KXgcSbppBjgkLSjl4GgSSkOGwJBFsExbtKjuUhAVxRy8FX0FE1F
+         rKuXNDeDcylGKEmtxHCxBUtz1RFa5Q7AozJpc1nr7lARFtv0gvZdzSlbAPsW1GZIq5Zz
+         OXNMLLF7nJbAn0On9BcV8EqgpXG87Vm8UZYgE7pTs273xe0g0W2R3ShOuU62RX0LpJXE
+         qRlDHsTV78nzg5ECWtlOcWKC8HWp7VQ4ENGXHFW4GMzIKREYYTNHHZmRTA76/DNmj8cH
+         zSYg==
+X-Gm-Message-State: AOAM530xanLmumm7nPiSs1XCmN7GzDN0E1X3ltsLHXIu8QHPjZTKt8y3
+        aSH03Bmsr2cx8bzIxZzAGZG2I2lghn94k9EN20PFJmx/cUo6
+X-Google-Smtp-Source: ABdhPJyHm+0O32JklLtr5FJF0K/1T/HeWFTvyT0kyXME7dMRKYtreYmTbSuK6mwqOj05evXptiwtcym6EZ9dCEU7hsE=
+X-Received: by 2002:a2e:8e72:: with SMTP id t18mr4948814ljk.445.1603079725084;
+ Sun, 18 Oct 2020 20:55:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <83b952ab-a25e-8984-8804-1dd990eec835@gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFJsWRmVeSWpSXmKPExsWy7bCmvu4srt54g8VTdC2WXTrKaLFxxnpW
-        i4k3rrBYrP74mNFize1DjBY/NpxitmiZtYjFYsGnGawWZ5vesFusuPuR1eLyrjlsFp97jzBa
-        dH6ZxWaxsKmF3eJ24wo2i5+75rE4CHismbeG0WPH3SWMHjtn3WX32LSqk82jt/kdm8fGdzuY
-        PP7O2s/i0bdlFaPH501yAZxR2TYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5
-        ibmptkouPgG6bpk5QH8oKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgosC/SKE3OL
-        S/PS9ZLzc60MDQyMTIEKE7Iz9hw8wlawn6+ie/tc9gbGfdxdjJwcEgImEpdu/2LvYuTiEBLY
-        wShxtmkGE0hCSOATo8SdRZIQiW+MEiueXmaG6fi7dx0bRGIvo8TRw0ug2t8zSjRu+ADWLizg
-        LNHTDjKXk0NEoFbiyMUHYB3MAiuYJNasP8sCkmAT0JLY/+IGG4jNL6AocfXHY0YQm1fATqJx
-        222wGhYBVYmXxzeBxUUFwiRObmuBqhGUODnzCVgNp4CtRP/N+WDLmAXEJW49mc8EYctLNG+d
-        zQyyWELgB4fE5SNToX5wkZgxsY8FwhaWeHV8CzuELSXxsr8Nyq6WWHnyCBtEcwejxJb9F1gh
-        EsYS+5dOBtrAAbRBU2L9Ln2IsKLEzt9zGSEW80m8+9rDClIiIcAr0dEmBFGiLHH5wV0mCFtS
-        YnF7J9sERqVZSN6ZheSFWUhemIWwbAEjyypGsdSC4tz01GLDAlPk6N7ECE7kWpY7GKe//aB3
-        iJGJg/EQowQHs5IIb6RgV7wQb0piZVVqUX58UWlOavEhRlNgAE9klhJNzgfmkrySeENTI2Nj
-        YwsTQzNTQ0Mlcd4/2h3xQgLpiSWp2ampBalFMH1MHJxSDUyFZrpqag7ThX7XbTu9Jzwr5fqR
-        9eZd1pMF+ido3J/bvnmVsMZOgfqmE7bCO19uTFNKO7XmlzvXXu398rOF5cR3zX3pFzdnj17J
-        xs8MPjIdWfO+MeyZ+XXTRP9lro+O3p75tcO5QEHPNdT4t+glSbvdO35e3PCkdX9hcXYjh1uZ
-        6LJ9zJ+vcWaalhrfvOPkXeB4ZpKMctT7xDYbA5d6vtNLc2/ccrnuEnZqRmDpZLlVh3ZfXnX5
-        hkZ2LUfbPdmDGZ+6jv7i0jV1jJzpcjlTIGx1t/HHCr4jpXk95h6PLF3O7/Ge/K5ocv3NC+9u
-        pC1OSu4st/hf+LLliFm/nP/EG+bSvkycGQb5Jy4frjs7J1CJpTgj0VCLuag4EQBvAyo3bQQA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCIsWRmVeSWpSXmKPExsWy7bCSnO5Mrt54g0PzdCyWXTrKaLFxxnpW
-        i4k3rrBYrP74mNFize1DjBY/NpxitmiZtYjFYsGnGawWZ5vesFusuPuR1eLyrjlsFp97jzBa
-        dH6ZxWaxsKmF3eJ24wo2i5+75rE4CHismbeG0WPH3SWMHjtn3WX32LSqk82jt/kdm8fGdzuY
-        PP7O2s/i0bdlFaPH501yAZxRXDYpqTmZZalF+nYJXBl7Dh5hK9jPV9G9fS57A+M+7i5GTg4J
-        AROJv3vXsXUxcnEICexmlFh0oJMdIiEpMe3iUeYuRg4gW1ji8OFiiJq3jBIfj+xnAakRFnCW
-        6Gn/BVYvIlAr8Wr1dFYQm1lgBZPEws9CEA2fGCUuN/1kBEmwCWhJ7H9xgw3E5hdQlLj64zFY
-        nFfATqJx222woSwCqhIvj28Ci4sKhEnsXPKYCaJGUOLkzCdgNZwCthL9N+ezQyxTl/gz7xIz
-        hC0ucevJfCYIW16ieets5gmMwrOQtM9C0jILScssJC0LGFlWMUqmFhTnpucWGxYY5qWW6xUn
-        5haX5qXrJefnbmIER7SW5g7G7as+6B1iZOJgPMQowcGsJMIbKdgVL8SbklhZlVqUH19UmpNa
-        fIhRmoNFSZz3RuHCOCGB9MSS1OzU1ILUIpgsEwenVAPT0RmnJBVuLdom0s4hc3v9q85f1rzn
-        TZ5ZOdxc/GNlSMqke0qGCtZ3T1ieu2nXt3qhj2HhuQoxIVb1mb2Gy4VD0+bzSHmvN5mSHBvw
-        8E/STw1/wfUt6lEPtlX8fNTTK/Ryw54lOix9C55wfNi5R89m8Xbjol8ifdy1hZftzYP/x989
-        en1N2AxLh7QrClyveyL/5f3cmnvku+abY+tTk59/0XXPaS2Nq/2z/zLPsV+OXL/7DT59uPKh
-        68SN6z+E4mXyNZO+L9zWt0Vzdo+dboK3wP4jJruFdddk2GxxunL0iKqKfOk1IS6t0l+ZXBe1
-        Kvub1x05/eL+jh0BVeUVWc7hn8Ivipxzt0uP4L2+/1iFEktxRqKhFnNRcSIAob/C7lcDAAA=
-X-CMS-MailID: 20201019034009epcas1p442daef3ca119825a1faebc541fc559eb
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201007045340epcas1p4e63955385b1841f44e7a07e2d5d962c4
-References: <20201007050703.20759-1-cw00.choi@samsung.com>
-        <CGME20201007045340epcas1p4e63955385b1841f44e7a07e2d5d962c4@epcas1p4.samsung.com>
-        <20201007050703.20759-2-cw00.choi@samsung.com>
-        <83b952ab-a25e-8984-8804-1dd990eec835@gmail.com>
+References: <20201015082119.68287-1-rejithomas@juniper.net> <20201018160147.6b3c940a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201018160147.6b3c940a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Reji Thomas <rejithomas.d@gmail.com>
+Date:   Mon, 19 Oct 2020 09:25:12 +0530
+Message-ID: <CAA8Zg7Gcua1=6CgSkJ-z8uKJneDjedB4z6zm2a+DcYt-_YcmSQ@mail.gmail.com>
+Subject: Re: [PATCH v2] IPv6: sr: Fix End.X nexthop to use oif.
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Reji Thomas <rejithomas@juniper.net>, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Mathieu Xhonneux <m.xhonneux@gmail.com>,
+        David Lebrun <david.lebrun@uclouvain.be>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/20 9:57 AM, Dmitry Osipenko wrote:
-> 07.10.2020 08:07, Chanwoo Choi пишет:
->> The devfreq governor is able to have the specific flag as follows
->> in order to implement the specific feature. For example, devfreq allows
->> user to change the governors on runtime via sysfs interface.
->> But, if devfreq device uses 'passive' governor, don't allow user to change
->> the governor. For this case, define the DEVFREQ_GOV_FLAT_IMMUTABLE
-> 
-> s/DEVFREQ_GOV_FLAT/DEVFREQ_GOV_FLAG/
-> 
-> ...
->>  /**
->>   * struct devfreq_governor - Devfreq policy governor
->>   * @node:		list node - contains registered devfreq governors
->>   * @name:		Governor's name
->> - * @immutable:		Immutable flag for governor. If the value is 1,
->> - *			this governor is never changeable to other governor.
->> - * @interrupt_driven:	Devfreq core won't schedule polling work for this
->> - *			governor if value is set to 1.
->> + * @flag:		Governor's feature flag
->>   * @get_target_freq:	Returns desired operating frequency for the device.
->>   *			Basically, get_target_freq will run
->>   *			devfreq_dev_profile.get_dev_status() to get the
->> @@ -50,8 +57,7 @@ struct devfreq_governor {
->>  	struct list_head node;
->>  
->>  	const char name[DEVFREQ_NAME_LEN];
->> -	const unsigned int immutable;
->> -	const unsigned int interrupt_driven;
->> +	const u64 flag;
-> A plural form of flag(s) is more common, IMO.
+Hi,
 
-When need to add more feature flag, I prefer to add
-the definition instead of changing the structure.
-I think it is better.
+Please find my replies inline below.
 
-> 
-> It's also possible to use a single bit:1 for the struct members. Thus,
-> could you please explain what are the benefits of the "flag"?
+Regards
+Reji
 
-I think that anyone might add the some optional
-feature. So, I used 'flag' for the extensibility.
+On Mon, Oct 19, 2020 at 4:31 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Thu, 15 Oct 2020 13:51:19 +0530 Reji Thomas wrote:
+> > Currently End.X action doesn't consider the outgoing interface
+> > while looking up the nexthop.This breaks packet path functionality
+> > specifically while using link local address as the End.X nexthop.
+> > The patch fixes this by enforcing End.X action to have both nh6 and
+> > oif and using oif in lookup.It seems this is a day one issue.
+> >
+> > Fixes: 140f04c33bbc ("ipv6: sr: implement several seg6local actions")
+> > Signed-off-by: Reji Thomas <rejithomas@juniper.net>
+>
+> David, Mathiey - any comments?
+>
+> > @@ -239,6 +250,8 @@ static int input_action_end(struct sk_buff *skb, struct seg6_local_lwt *slwt)
+> >  static int input_action_end_x(struct sk_buff *skb, struct seg6_local_lwt *slwt)
+> >  {
+> >       struct ipv6_sr_hdr *srh;
+> > +     struct net_device *odev;
+> > +     struct net *net = dev_net(skb->dev);
+>
+> Order longest to shortest.
+Sorry. Will fix it.
 
+>
+>
+> >
+> >       srh = get_and_validate_srh(skb);
+> >       if (!srh)
+> > @@ -246,7 +259,11 @@ static int input_action_end_x(struct sk_buff *skb, struct seg6_local_lwt *slwt)
+> >
+> >       advance_nextseg(srh, &ipv6_hdr(skb)->daddr);
+> >
+> > -     seg6_lookup_nexthop(skb, &slwt->nh6, 0);
+> > +     odev = dev_get_by_index_rcu(net, slwt->oif);
+> > +     if (!odev)
+> > +             goto drop;
+>
+> Are you doing this lookup just to make sure that oif exists?
+> Looks a little wasteful for fast path, but more importantly
+> it won't be backward compatible, right? See below..
+>
+Please see reply below.
 
+> > +
+> > +     seg6_strict_lookup_nexthop(skb, &slwt->nh6, odev->ifindex, 0);
+> >
+> >       return dst_input(skb);
+> >
+>
+> > @@ -566,7 +583,8 @@ static struct seg6_action_desc seg6_action_table[] = {
+> >       },
+> >       {
+> >               .action         = SEG6_LOCAL_ACTION_END_X,
+> > -             .attrs          = (1 << SEG6_LOCAL_NH6),
+> > +             .attrs          = ((1 << SEG6_LOCAL_NH6) |
+> > +                                (1 << SEG6_LOCAL_OIF)),
+> >               .input          = input_action_end_x,
+> >       },
+> >       {
+>
+> If you set this parse_nla_action() will reject all
+> SEG6_LOCAL_ACTION_END_X without OIF.
+>
+> As you say the OIF is only required for using link local addresses,
+> so this change breaks perfectly legitimate configurations.
+>
+> Can we instead only warn about the missing OIF, and only do that when
+> nh is link local?
+>
+End.X is defined as an adjacency-sid and is used to select a specific link to a
+neighbor for both global and link-local addresses. The intention was
+to drop the
+packet even for global addresses if the route via the specific
+interface is not found.
+Alternatively(believe semantically correct for End.X definition) I
+could do a neighbor lookup
+for nexthop address over specific interface and send the packet out.
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+> Also doesn't SEG6_LOCAL_ACTION_END_DX6 need a similar treatment?
+
+Yes. I will update the patch for End.DX6 based on the patch finalized for End.X.
