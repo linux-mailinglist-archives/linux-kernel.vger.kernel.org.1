@@ -2,143 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F23292B90
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979E7292B92
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730363AbgJSQdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:33:37 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:45149 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729849AbgJSQdg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:33:36 -0400
-Received: from [192.168.1.155] ([77.2.107.242]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1Mjjzx-1k22eG17yF-00lC5i; Mon, 19 Oct 2020 18:33:23 +0200
-Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
- driver
-To:     Ed W <lists@wildgooses.com>, linux-kernel@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org
-References: <20200921215919.3072-1-lists@wildgooses.com>
- <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
- <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
- <65efe44a-bbef-f982-462a-385fffe493a0@wildgooses.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <2eb878bf-3ec7-362f-73b3-4192dd183390@metux.net>
-Date:   Mon, 19 Oct 2020 18:33:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730504AbgJSQeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:34:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42986 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729879AbgJSQeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 12:34:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 20022ADF5;
+        Mon, 19 Oct 2020 16:34:22 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 5A35D1E1342; Mon, 19 Oct 2020 18:34:20 +0200 (CEST)
+Date:   Mon, 19 Oct 2020 18:34:20 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Xianting Tian <tian.xianting@h3c.com>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext2: Remove unnecessary blank
+Message-ID: <20201019163420.GI30825@quack2.suse.cz>
+References: <20201010094335.39797-1-tian.xianting@h3c.com>
 MIME-Version: 1.0
-In-Reply-To: <65efe44a-bbef-f982-462a-385fffe493a0@wildgooses.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:hfmAgZ+ZCxJe6x/tpIb/S4CcmfiDBwEn76cyitZ1Y7p00Ybhk69
- IY9gsTMvAJOGmn3QFG8e+lZMJBpns761Ug3TF37EeIoS0edqRGETFAUZPOeGqTX4CKgD8mi
- tuTUzwtkw0A3Jyu/3i0PdneFUIhX6OmbDa3NT8XXXo6gWpmLozy7v/3rPSNd7pKKLBVtjob
- 3t2XvTwR8EiSWe9LQi3rA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uBth9DTdfU8=:8vkOnjpFh/iM4t5LCstxNb
- plRiouRN2cf18YumDk0ojcv9+d5UOjyscR6KphVy26uj1sAdR8IgL/V7SxrtIhf977gAB80fc
- 3VkgNbUfeafkFNbORzQ9H4+pfOGsNxO8Nhf49L2BYGXQ2L1FSd13GdgEq+2y7797dfg/mPj+X
- hsN/d6wFcIS9img08F7EI7dECOUkw8AMW+bBks3fmD/2DC0/yMZYJhv8Upvv8Kl7tDBugx2Uu
- lkx9iNYNOnTVU6tH299TK20mh4yXG6XatkMScugNK3pQKKo9p943AV4ScbR5kFPtG7m3g9iBu
- dg0ixyWgDxDaoSSVM7UOedeetgrQVT7l2RGbH7WLqj1DMENuDKn6cnskxgBwrlrfB0t2ppvAH
- b0O0k5RrglifiW81hDbcQbVUXrf3bekMkOjis8kiFMw12B7tyT4vUqeRkGlIG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201010094335.39797-1-tian.xianting@h3c.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.10.20 23:40, Ed W wrote:
+On Sat 10-10-20 17:43:35, Xianting Tian wrote:
+> Remove unnecessary blank when calling kmalloc_array().
+> 
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
 
-> But why are users "in the field" 
+Thanks. I've added the patch to my tree.
 
-"field" here means litterlly field. Far away from any human being.
+								Honza
 
-> updating a kernel willy nilly without also updating the userland
-> software that talks to it? 
-
-Of course, we're always testing. Obviously, in the lab, not in the
-field. And we don't wanna have to adapt existing, well tested, embedded
-applications for dozens of BIOS versions, which might or might not
-have certain functionality (it's not just for LEDs, but all the other
-gpio-attached devices, eg. keys, mpcie reset, simsw, ...), etc.
-
-> Why is the kernel upgrade trivial, but the fw upgrade is not an option?
-
-Because technicians have to fly out to the installations and replace
-the whole board (no, certainly no remote updates of the BIOS). The costs
-per installation are a factor of the board price.
-
-> Why not also update the app or setup a udev rule?
-
-Again, BIOS version specific. And it's a not just a udev rule, it's
-a lot of paper work in the application qualification.
-
-This is an embedded device, not an cheap office pc.
-
-> I would understand if we were talking something fairly major, 
-> but it's the case of matching a
-> filename that YOU changed from an old name to the current name and it's now changing back to the
-> original name?
-
-I did not change anything, I wrote a completely new driver with full
-gpio support and attached devices.
-
-pcengine folks ignored it for a long time, suddenly the started adding
-incompatible stuff to their newer firmware.
-
-> That's extremely disingenuous!!
-
-No, its correct. The apuv1 board (more precisely its SoC) has a
-completely different FCH. The old driver had some rudimentary support
-just for the front leds, which actually worked properly on none of my
-testing boards. I've did several surveys in the apu community -
-everybody was using some userland program doing raw iomem access
-(/dev/mem). Haven't found a single Distro that ever shipped that old
-driver.
-
-> It USED to work for the APU2-4 except that YOU removed support for APU2-4 from that module!!
-
-Yes, I've proposed removing it, because I could not find a single person
-who actually used it on apu2/3/4 boards. This might have to with the
-fact that folks were happy that they now could use other gpio-connected
-devices, too.
-
-And, BTW, it did conflict with the new driver.
-
-Note: the old driver is *only* for LEDs, not gpios as such, nor other
-gpio-attached devices.
-
-<skipping stuff that already had been answered>
-
-> - Your LED based SIM toggle HAS already gone. So you have another example of userspace being broken
-> right there. (Seems that this rule isn't so concrete?). 
-
-Without my knowledge and ackknowledge as the maintainer !
-
-> So you already need to (significantly?)
-> adjust your userspace code - I'm not seeing how/why the LED change is such a blocker?
-
-simsw isn't actively used in the field, the other gpio-consumers (leds,
-keys, reset, ...) are used in the field. litterally field.
-
-simsw was a quick shot on purpose, planned to be replaced by rfkill or
-portmux. Both still experimental and nothing ready for mainline yet.
-
-
---mtx
-
+> ---
+>  fs/ext2/super.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+> index 7fab2b3b5..551e69755 100644
+> --- a/fs/ext2/super.c
+> +++ b/fs/ext2/super.c
+> @@ -1070,7 +1070,7 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+>  					/ EXT2_BLOCKS_PER_GROUP(sb)) + 1;
+>  	db_count = (sbi->s_groups_count + EXT2_DESC_PER_BLOCK(sb) - 1) /
+>  		   EXT2_DESC_PER_BLOCK(sb);
+> -	sbi->s_group_desc = kmalloc_array (db_count,
+> +	sbi->s_group_desc = kmalloc_array(db_count,
+>  					   sizeof(struct buffer_head *),
+>  					   GFP_KERNEL);
+>  	if (sbi->s_group_desc == NULL) {
+> -- 
+> 2.17.1
+> 
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
