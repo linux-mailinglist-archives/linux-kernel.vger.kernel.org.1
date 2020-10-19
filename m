@@ -2,420 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3DB292CF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D3F292CB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgJSRhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:37:52 -0400
-Received: from mailout09.rmx.de ([94.199.88.74]:42930 "EHLO mailout09.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgJSRhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:37:52 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout09.rmx.de (Postfix) with ESMTPS id 4CFP963qnCzbhsG;
-        Mon, 19 Oct 2020 19:37:46 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4CFP7b4W46z2xFT;
-        Mon, 19 Oct 2020 19:36:27 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.91) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Mon, 19 Oct
- 2020 19:29:53 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
-        Christian Eggers <ceggers@arri.de>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH net-next 9/9] net: dsa: microchip: ksz9477: add periodic output support
-Date:   Mon, 19 Oct 2020 19:24:35 +0200
-Message-ID: <20201019172435.4416-10-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201019172435.4416-1-ceggers@arri.de>
-References: <20201019172435.4416-1-ceggers@arri.de>
+        id S1731192AbgJSR0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730946AbgJSRYw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 13:24:52 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A6FC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:24:52 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id b23so358224pgb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DqfFRCqrVOSLRxnsHHHALVeB4MkQYOkvAR6pk7ZJ5hs=;
+        b=iG9L1a5azG8pFVMvirbk0r5UPaFLPHzdlEbiIMlPh5+G+iCGH/YTwYnIscLKYQm1Yj
+         lrhRwsYELQDE3bedtjEJH1wgCrKbAkLPNh02lyGCByQgXHDqqiAJ7Dkq6ZX321dK3lN7
+         yV3oc12puI3Gre/Cd6v7pSUbfqsTrLdVn1AJZpo/pHZG9QQYhEYF/mJMvGtYUXa8UWYk
+         eNfH0GJC6JLBcn/tnATKrBHCVCxRrzNr+mDMsqvq/0FoHgVJIJq/1QBXcaqro0gC41cb
+         1+7ieSOMYJ4IBMlcjl43/YQUuE1o3dyLBv+4jybflDTmaagOksgAZhtN8Yyxoxi20fHZ
+         5yMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DqfFRCqrVOSLRxnsHHHALVeB4MkQYOkvAR6pk7ZJ5hs=;
+        b=Hp5LuFyb0Cm9ZRG+w861mU+A0Bdz7/Fa1MwIpeXEyy0H6deXILnGNQqpSBqsC0Uz04
+         qRUVF3BtnrTM9RLmVJo3zZUEHcfX3xMxkVZsLFBdAmJXhAa5toMhDpS+1PoKm7zAbUUt
+         dBPkDIqdJsHWQVhmewAf3hROeTqwq4k2Qgc3aDrbYujlNcIqahfZW84Mpb0PrxumZLJ8
+         FB74BpcsaMqOmzsv1ZSAJKf1V00Z4l7XyEPd3bCWhnDszoz3zZBh05RvQ3l6WSUnKvjQ
+         WdbqM3VUAkcd/IIdv8uuikz2RIwJGHQzjr1VrI+WU0KiZAR0CaIGcnGhWYMe6zvHVGYP
+         w0mw==
+X-Gm-Message-State: AOAM531fHAdnpuwCCPR2mHvggKWiv73w6FqdtYrnPqeYy2ZbylBwxG7i
+        ULDsRc2Q6PNjN5UWbdD4ABHWoQ==
+X-Google-Smtp-Source: ABdhPJyY6NwR7VwUAPGkF7wuxxipgggd0W8n+MrvpHT5KMPGQyoetZI8lpo1g5JwTmnid6uTpowDLw==
+X-Received: by 2002:aa7:868f:0:b029:155:dcd2:7320 with SMTP id d15-20020aa7868f0000b0290155dcd27320mr1017779pfo.53.1603128291742;
+        Mon, 19 Oct 2020 10:24:51 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id e10sm131655pjp.26.2020.10.19.10.24.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 10:24:51 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 11:24:49 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     bjorn.andersson@linaro.org, o.rempel@pengutronix.de,
+        robh+dt@kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        Richard Zhu <hongxing.zhu@nxp.com>
+Subject: Re: [PATCH V2 4/7] remoteproc: imx_rproc: use devm_ioremap
+Message-ID: <20201019172449.GB496175@xps15>
+References: <20200927064131.24101-1-peng.fan@nxp.com>
+ <20200927064131.24101-5-peng.fan@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.91]
-X-RMX-ID: 20201019-193631-4CFP7b4W46z2xFT-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200927064131.24101-5-peng.fan@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The KSZ9563 has a Trigger Output Unit (TOU) which can be used to
-generate periodic signals.
+On Sun, Sep 27, 2020 at 02:41:28PM +0800, Peng Fan wrote:
+> We might need to map an region multiple times, becaue the region might
+> be shared between remote processors, such i.MX8QM with dual M4 cores.
+> So use devm_ioremap, not devm_ioremap_resource.
+> 
+> Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/imx_rproc.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index aa5fbd0c7768..48ce09e857ee 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -298,9 +298,10 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
+>  		if (b >= IMX7D_RPROC_MEM_MAX)
+>  			break;
+>  
+> -		priv->mem[b].cpu_addr = devm_ioremap_resource(&pdev->dev, &res);
+> +		/* Not use resource version, because we might share region*/
 
-The pulse length can be altered via a device attribute.
+s/"region*"/"region *"
 
-Tested on a Microchip KSZ9563 switch.
-
-Signed-off-by: Christian Eggers <ceggers@arri.de>
----
- drivers/net/dsa/microchip/ksz9477_ptp.c | 244 +++++++++++++++++++++++-
- include/linux/dsa/ksz_common.h          |   6 +
- 2 files changed, 249 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/dsa/microchip/ksz9477_ptp.c b/drivers/net/dsa/microchip/ksz9477_ptp.c
-index 6f7df077bc72..0ba6c3a5aa92 100644
---- a/drivers/net/dsa/microchip/ksz9477_ptp.c
-+++ b/drivers/net/dsa/microchip/ksz9477_ptp.c
-@@ -90,6 +90,20 @@ static int ksz9477_ptp_tou_cycle_count_set(struct ksz_device *dev, u16 count)
- 	return 0;
- }
- 
-+static int ksz9477_ptp_tou_pulse_verify(u64 pulse_ns)
-+{
-+	u32 data;
-+
-+	if (pulse_ns & 0x3)
-+		return -EINVAL;
-+
-+	data = (pulse_ns / 8);
-+	if (data != (data & TRIG_PULSE_WIDTH_M))
-+		return -ERANGE;
-+
-+	return 0;
-+}
-+
- static int ksz9477_ptp_tou_pulse_set(struct ksz_device *dev, u32 pulse_ns)
- {
- 	u32 data;
-@@ -191,6 +205,7 @@ static int ksz9477_ptp_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
- 	return 0;
- }
- 
-+static int ksz9477_ptp_restart_perout(struct ksz_device *dev);
- static int ksz9477_ptp_enable_pps(struct ksz_device *dev, int on);
- 
- static int ksz9477_ptp_adjtime(struct ptp_clock_info *ptp, s64 delta)
-@@ -234,6 +249,15 @@ static int ksz9477_ptp_adjtime(struct ptp_clock_info *ptp, s64 delta)
- 	case KSZ_PTP_TOU_IDLE:
- 		break;
- 
-+	case KSZ_PTP_TOU_PEROUT:
-+		dev_info(dev->dev, "Restarting periodic output signal\n");
-+
-+		ret = ksz9477_ptp_restart_perout(dev);
-+		if (ret)
-+			goto error_return;
-+
-+		break;
-+
- 	case KSZ_PTP_TOU_PPS:
- 		dev_info(dev->dev, "Restarting PPS\n");
- 
-@@ -348,6 +372,15 @@ static int ksz9477_ptp_settime(struct ptp_clock_info *ptp, struct timespec64 con
- 	case KSZ_PTP_TOU_IDLE:
- 		break;
- 
-+	case KSZ_PTP_TOU_PEROUT:
-+		dev_info(dev->dev, "Restarting periodic output signal\n");
-+
-+		ret = ksz9477_ptp_restart_perout(dev);
-+		if (ret)
-+			goto error_return;
-+
-+		break;
-+
- 	case KSZ_PTP_TOU_PPS:
- 		dev_info(dev->dev, "Restarting PPS\n");
- 
-@@ -367,6 +400,159 @@ static int ksz9477_ptp_settime(struct ptp_clock_info *ptp, struct timespec64 con
- 	return ret;
- }
- 
-+static int ksz9477_ptp_configure_perout(struct ksz_device *dev, u32 cycle_width_ns,
-+					u16 cycle_count, u32 pulse_width_ns,
-+					struct timespec64 const *target_time)
-+{
-+	int ret;
-+	u32 trig_ctrl;
-+
-+	/* Enable notify, set rising edge, set periodic pattern */
-+	trig_ctrl = TRIG_NOTIFY | (TRIG_POS_PERIOD << TRIG_PATTERN_S);
-+	ret = ksz_write32(dev, REG_TRIG_CTRL__4, trig_ctrl);
-+	if (ret)
-+		return ret;
-+
-+	ret = ksz9477_ptp_tou_cycle_width_set(dev, cycle_width_ns);
-+	if (ret)
-+		return ret;
-+
-+	ksz9477_ptp_tou_cycle_count_set(dev,  cycle_count);
-+	if (ret)
-+		return ret;
-+
-+	ret = ksz9477_ptp_tou_pulse_set(dev, pulse_width_ns);
-+	if (ret)
-+		return ret;
-+
-+	ret = ksz9477_ptp_tou_target_time_set(dev, target_time);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int ksz9477_ptp_enable_perout(struct ksz_device *dev,
-+				     struct ptp_perout_request const *perout_request, int on)
-+{
-+	u32 gpio_stat0;
-+	u64 cycle_width_ns;
-+	int ret;
-+
-+	if (dev->ptp_tou_mode != KSZ_PTP_TOU_PEROUT && dev->ptp_tou_mode != KSZ_PTP_TOU_IDLE)
-+		return -EBUSY;
-+
-+	ret = ksz9477_ptp_tou_reset(dev, 0);
-+	if (ret)
-+		return ret;
-+
-+	if (!on) {
-+		dev->ptp_tou_mode = KSZ_PTP_TOU_IDLE;
-+		return 0;  /* success */
-+	}
-+
-+	dev->ptp_perout_target_time_first.tv_sec  = perout_request->start.sec;
-+	dev->ptp_perout_target_time_first.tv_nsec = perout_request->start.nsec;
-+
-+	dev->ptp_perout_period.tv_sec = perout_request->period.sec;
-+	dev->ptp_perout_period.tv_nsec = perout_request->period.nsec;
-+
-+	cycle_width_ns = timespec64_to_ns(&dev->ptp_perout_period);
-+	if ((cycle_width_ns & GENMASK(31, 0)) != cycle_width_ns)
-+		return -EINVAL;
-+
-+	if (perout_request->flags & PTP_PEROUT_DUTY_CYCLE) {
-+		u64 value = perout_request->on.sec * NSEC_PER_SEC +
-+			    perout_request->on.nsec;
-+
-+		ret = ksz9477_ptp_tou_pulse_verify(value);
-+		if (ret)
-+			return ret;
-+
-+		dev->ptp_perout_pulse_width_ns = value;
-+	}
-+
-+	ret = ksz9477_ptp_configure_perout(dev, cycle_width_ns,
-+					   dev->ptp_perout_cycle_count,
-+					   dev->ptp_perout_pulse_width_ns,
-+					   &dev->ptp_perout_target_time_first);
-+	if (ret)
-+		return ret;
-+
-+	/* Activate trigger unit */
-+	ret = ksz9477_ptp_tou_start(dev, NULL);
-+	if (ret)
-+		return ret;
-+
-+	/* Check error flag:
-+	 * - the ACTIVE flag is NOT cleared an error!
-+	 */
-+	ret = ksz_read32(dev, REG_PTP_TRIG_STATUS__4, &gpio_stat0);
-+	if (ret)
-+		return ret;
-+
-+	if (gpio_stat0 & (1 << (0 + TRIG_ERROR_S))) {
-+		dev_err(dev->dev, "%s: Trigger unit0 error!\n", __func__);
-+		ret = -EIO;
-+		/* Unit will be reset on next access */
-+		return ret;
-+	}
-+
-+	dev->ptp_tou_mode = KSZ_PTP_TOU_PEROUT;
-+	return 0;
-+}
-+
-+static int ksz9477_ptp_restart_perout(struct ksz_device *dev)
-+{
-+	struct timespec64 now;
-+	s64 now_ns, first_ns, period_ns, next_ns;
-+	unsigned int count;
-+	int ret;
-+
-+	ret = _ksz9477_ptp_gettime(dev, &now);
-+	if (ret)
-+		return ret;
-+
-+	now_ns = timespec64_to_ns(&now);
-+	first_ns = timespec64_to_ns(&dev->ptp_perout_target_time_first);
-+
-+	/* Calculate next perout event based on start time and period */
-+	period_ns = timespec64_to_ns(&dev->ptp_perout_period);
-+
-+	if (first_ns < now_ns) {
-+		count = div_u64(now_ns - first_ns, period_ns);
-+		next_ns = first_ns + count * period_ns;
-+	} else {
-+		next_ns = first_ns;
-+	}
-+
-+	/* Ensure 100 ms guard time prior next event */
-+	while (next_ns < now_ns + 100000000)
-+		next_ns += period_ns;
-+
-+	/* Restart periodic output signal */
-+	{
-+		struct timespec64 next = ns_to_timespec64(next_ns);
-+		struct ptp_perout_request perout_request = {
-+			.start = {
-+				.sec  = next.tv_sec,
-+				.nsec = next.tv_nsec
-+			},
-+			.period = {
-+				.sec  = dev->ptp_perout_period.tv_sec,
-+				.nsec = dev->ptp_perout_period.tv_nsec
-+			},
-+			.index = 0,
-+			.flags = 0,  /* keep current values */
-+		};
-+		ret = ksz9477_ptp_enable_perout(dev, &perout_request, 1);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
- #define KSZ9477_PPS_TOU 0   /* currently fixed to trigger output unit 0 */
- 
- static int ksz9477_ptp_enable_pps(struct ksz_device *dev, int on)
-@@ -457,6 +643,15 @@ static int ksz9477_ptp_enable(struct ptp_clock_info *ptp, struct ptp_clock_reque
- 	int ret;
- 
- 	switch (req->type) {
-+	case PTP_CLK_REQ_PEROUT:
-+	{
-+		struct ptp_perout_request const *perout_request = &req->perout;
-+
-+		mutex_lock(&dev->ptp_mutex);
-+		ret = ksz9477_ptp_enable_perout(dev, perout_request, on);
-+		mutex_unlock(&dev->ptp_mutex);
-+		return ret;
-+	}
- 	case PTP_CLK_REQ_PPS:
- 		mutex_lock(&dev->ptp_mutex);
- 		ret = ksz9477_ptp_enable_pps(dev, on);
-@@ -862,9 +1057,56 @@ static ssize_t ocmode_store(struct device *dev, struct device_attribute *attr __
- 
- static DEVICE_ATTR_RW(ocmode);
- 
-+static ssize_t pulse_show(struct device *dev, struct device_attribute *attr __always_unused,
-+			  char *buf)
-+{
-+	struct ksz_device *ksz = dev_get_drvdata(dev);
-+	int ret;
-+
-+	mutex_lock(&ksz->ptp_mutex);
-+
-+	ret = sprintf(buf, "%u\n", ksz->ptp_perout_pulse_width_ns);
-+
-+	mutex_unlock(&ksz->ptp_mutex);
-+	return ret;
-+}
-+
-+static ssize_t pulse_store(struct device *dev, struct device_attribute *attr __always_unused,
-+			   char const *buf, size_t count)
-+{
-+	struct ksz_device *ksz = dev_get_drvdata(dev);
-+	u32 value;
-+	int ret;
-+
-+	mutex_lock(&ksz->ptp_mutex);
-+
-+	if (ksz->ptp_tou_mode != KSZ_PTP_TOU_IDLE) {
-+		ret = -EBUSY;
-+		goto error_return;
-+	}
-+
-+	ret = kstrtou32(buf, 0, &value);
-+	if (ret)
-+		goto error_return;
-+
-+	ret = ksz9477_ptp_tou_pulse_verify(value);
-+	if (ret)
-+		goto error_return;
-+
-+	ksz->ptp_perout_pulse_width_ns = value;
-+	ret = count;  /* success */
-+
-+error_return:
-+	mutex_unlock(&ksz->ptp_mutex);
-+	return ret;
-+}
-+
-+static DEVICE_ATTR_RW(pulse);
-+
- static struct attribute *ksz9477_ptp_attrs[] = {
- 	&dev_attr_tcmode.attr,
- 	&dev_attr_ocmode.attr,
-+	&dev_attr_pulse.attr,
- 	NULL,
- };
- 
-@@ -890,7 +1132,7 @@ int ksz9477_ptp_init(struct ksz_device *dev)
- 	dev->ptp_caps.max_adj     = 6249999;
- 	dev->ptp_caps.n_alarm     = 0;
- 	dev->ptp_caps.n_ext_ts    = 0;  /* currently not implemented */
--	dev->ptp_caps.n_per_out   = 0;
-+	dev->ptp_caps.n_per_out   = 1;
- 	dev->ptp_caps.pps         = 1;
- 	dev->ptp_caps.adjfine     = ksz9477_ptp_adjfine;
- 	dev->ptp_caps.adjtime     = ksz9477_ptp_adjtime;
-diff --git a/include/linux/dsa/ksz_common.h b/include/linux/dsa/ksz_common.h
-index f1014b40d643..194a0a968889 100644
---- a/include/linux/dsa/ksz_common.h
-+++ b/include/linux/dsa/ksz_common.h
-@@ -13,6 +13,7 @@
- #include <linux/ptp_clock_kernel.h>
- #include <linux/spinlock.h>
- #include <linux/regmap.h>
-+#include <linux/time64.h>
- #include <linux/timer.h>
- #include <linux/workqueue.h>
- #include <net/dsa.h>
-@@ -60,6 +61,7 @@ struct ksz_port {
- 
- enum ksz_ptp_tou_mode {
- 	KSZ_PTP_TOU_IDLE,
-+	KSZ_PTP_TOU_PEROUT,
- 	KSZ_PTP_TOU_PPS,
- };
- 
-@@ -122,6 +124,10 @@ struct ksz_device {
- 	/* approximated current time, read once per second from hardware */
- 	struct timespec64 ptp_clock_time;
- 	enum ksz_ptp_tou_mode ptp_tou_mode;
-+	struct timespec64 ptp_perout_target_time_first;  /* start of first perout pulse */
-+	struct timespec64 ptp_perout_period;
-+	u32 ptp_perout_pulse_width_ns;
-+	u16 ptp_perout_cycle_count;
- #endif
- };
- 
--- 
-Christian Eggers
-Embedded software developer
-
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
-
+> +		priv->mem[b].cpu_addr = devm_ioremap(&pdev->dev, res.start, resource_size(&res));
+>  		if (IS_ERR(priv->mem[b].cpu_addr)) {
+> -			dev_err(dev, "devm_ioremap_resource failed\n");
+> +			dev_err(dev, "devm_ioremap %pR failed\n", &res);
+>  			err = PTR_ERR(priv->mem[b].cpu_addr);
+>  			return err;
+>  		}
+> -- 
+> 2.28.0
+> 
