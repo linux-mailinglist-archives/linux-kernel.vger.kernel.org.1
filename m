@@ -2,120 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D613292215
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 07:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526A1292219
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 07:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgJSFJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 01:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38150 "EHLO
+        id S1726199AbgJSFVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 01:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgJSFJ4 (ORCPT
+        with ESMTP id S1725440AbgJSFVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 01:09:56 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D25C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 22:09:55 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id w11so4377632pll.8
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 22:09:54 -0700 (PDT)
+        Mon, 19 Oct 2020 01:21:53 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED52C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 22:21:53 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id dg9so8835693edb.12
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 22:21:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9UfRTd1e3FTHvGK6RIc32bZdl/AF4IhWl0NemlQOkVs=;
-        b=iD2j0xzI+DjBh4wKF6pdJ3v8Fv9c5HXyG/THIxqoAKSGtvixVhv1F1oDwiZVXLKjZI
-         mjXJ1KHf4FEFgiimlWviht9N/OmZHErMZIwiElk4ccLyweTqG3aC/NSfjX/rU1JArRJz
-         PKa5nrLjZZOdD/aIVDFcFc0qkaXB2Zdf6U3sXB2bO1qEx7D/mqkCUlbTrQaEl1zMMKgw
-         0iqed1PYlhDnImsASgD+0Icr5otPD0QkrFFOvHe7RWE9ImEpBW1/I7/Z57a7vpwjNyF4
-         nxdTkQaFUtY6xRLENu4khaRoknEOIH8y7cXmc0vADorrZwTftVRJH9gOgOdaxllpFjWI
-         fsPg==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=2uPYSGQKvJLYPAzFohIDpVs/fazvOwPDq1JWkZXj1bk=;
+        b=eC2j7KaFXxugAEhTp3VeKbXcZaR8HnY4+KUUJxk2fmHajH3HExtf6nQ1S4Um8+F1rL
+         jiOD8HQYcV3Zisx/xCxlxImKmB7b2G8Blbz9EBaPzxViFEisz7xHK77OVQ5HC71mXrec
+         lt+oB+Apb2+F4N7Urcgg7FIBMswre5b17W3GuH4rXexD+kaAJdk28zLsPk/PZA7AxGHi
+         8KdvF3Wpg8IsTD9bTiV776LdJGYfO0/bIZGOehSm+JPEWg4n9vgezAqrX3u28T3GUVkq
+         SeX8tRTZpZtxBanzBIAlnQXUqs2nrCVe+GtjAk906FpLUShbFZyqBikd0gz6Qs+2V2An
+         yN6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9UfRTd1e3FTHvGK6RIc32bZdl/AF4IhWl0NemlQOkVs=;
-        b=rwWtkz4RLiIEMQUhpUhY+6JERP7lrLa5uB3MYiC+vpQcewWDmGPJ7eC//EsojDziDN
-         1dF6Dp64uhsz/mFhskpJJc4m0Kdt4ZkmewD6HEgqn0PA0V/zwM/jRbBEo7xrdAV+Itmh
-         kzGeQwqCXYKBRuRU7bQmFIRsYZPq7mdeixpBR4QLaoJBDO3z0rMDEcWEG6LSD/n11YWI
-         X+1OEnwtukXZq2xl2sweuKAOeeAfLREyT1/svOvubbAI1tgbKcjMpHlxpFzIcnBcgU7P
-         u9jTwpCT3DRERc3QOPJA0A+cEwxUcTsA8s/w+KRqunBs/BIKsVseWeh6RyIqh0f0sVfD
-         6n9g==
-X-Gm-Message-State: AOAM532LvWQKvNifIAARyEnMuz+8fipk4syQWQPpuMYMBOJ+avaXXoSw
-        oLtJbYNVAlA4Bah3QINTuA4rtQ==
-X-Google-Smtp-Source: ABdhPJxITnmBoXw1RKT37+O/i97Rk8mts5wnMskiu54aEI/6vp2dS/BI94X6UlBtMVPB7/s78m6D4w==
-X-Received: by 2002:a17:902:b696:b029:d2:1ebe:d80c with SMTP id c22-20020a170902b696b02900d21ebed80cmr15507748pls.18.1603084194446;
-        Sun, 18 Oct 2020 22:09:54 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id 204sm10132344pfz.74.2020.10.18.22.09.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 18 Oct 2020 22:09:53 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 10:39:52 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Wei Wang <wvw@google.com>
-Cc:     wei.vince.wang@gmail.com, qperret@google.com, rafael@kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched: cpufreq_schedutil: restore cached freq when
- next_f is not changed
-Message-ID: <20201019050952.cxovrbfffrxrl3uy@vireshk-i7>
-References: <CAGXk5yoNxZBD9gX-8RvtsqAwB4rO=hFQKBewFhOGoMO171aJVA@mail.gmail.com>
- <20201016181722.884812-1-wvw@google.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=2uPYSGQKvJLYPAzFohIDpVs/fazvOwPDq1JWkZXj1bk=;
+        b=aVb6ZJL1XQhfxtDUn2uTIZbmw7guh0wiNhfNCeGx9FD+ErxAnSSujOrRKBeKzRt4T5
+         Jj+OU8y5255BbsDwWxdRBf3PV6XLJHqiSgDDItFjaH3Cc3XRELDK49UJA/T94EOC6hFY
+         wMW5tT64piUsNWJV1eaHWnpR04Qfyrim2yJRykyHco/RCcrJXsqtXV6jcn3vDmOs/5To
+         XeLdWVroMDpYtSfd+mQoKfGXF1EdRBJhVmiMrFiRPcOPndk4eXBi5KMLP71g9eqEZ+sB
+         XxkTKgsPdFNp79H++Hzir1P5s0F7vfvz3sHF2JdRxCYrJqor2Jbxu7tuVOdtB3cDCLls
+         Qh5w==
+X-Gm-Message-State: AOAM531STQiuS7TdCzgmlbIQpjxsYlAZXEf9s/VR1j7CV5M5aM6+O2Jw
+        jx3CbxT9ZXBWGiqnjoxT4N9MU8FOgfGfOFHuJiCIzOa5nsQ=
+X-Google-Smtp-Source: ABdhPJyg+hdeN9q1sKdaPImjCa9sjqJS6kmZU7T+uBcdCa5GPLPTxLGVZG+LGDvU7zbq9SCmhaqQZNIQkpr3eUpFMjI=
+X-Received: by 2002:a50:d987:: with SMTP id w7mr16206740edj.113.1603084911889;
+ Sun, 18 Oct 2020 22:21:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016181722.884812-1-wvw@google.com>
-User-Agent: NeoMutt/20180716-391-311a52
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Mon, 19 Oct 2020 15:21:40 +1000
+Message-ID: <CAPM=9tyGF24NcUraYx7shazjkZ=c2sukykcxZE-u6L-qekCvbw@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.10-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-10-20, 11:17, Wei Wang wrote:
-> We have the raw cached freq to reduce the chance in calling cpufreq
-> driver where it could be costly in some arch/SoC.
-> 
-> Currently, the raw cached freq will be reset when next_f is changed for
-> correctness. This patch changes it to maintain the cached value instead
-> of dropping it to honor the purpose of the cached value.
-> 
-> This is adapted from https://android-review.googlesource.com/1352810/
-> 
-> Signed-off-by: Wei Wang <wvw@google.com>
-> ---
->  kernel/sched/cpufreq_schedutil.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 5ae7b4e6e8d6..e254745a82cb 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -441,6 +441,7 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
->  	unsigned long util, max;
->  	unsigned int next_f;
->  	bool busy;
-> +	unsigned int cached_freq = sg_policy->cached_raw_freq;
->  
->  	sugov_iowait_boost(sg_cpu, time, flags);
->  	sg_cpu->last_update = time;
-> @@ -464,8 +465,8 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
->  	if (busy && next_f < sg_policy->next_freq) {
->  		next_f = sg_policy->next_freq;
->  
-> -		/* Reset cached freq as next_freq has changed */
-> -		sg_policy->cached_raw_freq = 0;
-> +		/* Restore cached freq as next_freq has changed */
-> +		sg_policy->cached_raw_freq = cached_freq;
->  	}
->  
->  	/*
+Hi Linus,
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Some fixes queued up already for i915 and amdgpu, I've also included
+the fix for the clang warning you've seen.
 
--- 
-viresh
+Dave.
+
+drm-next-2020-10-19:
+drm fixes for 5.10-rc1
+
+i915:
+- Set all unused color plane offsets to ~0xfff again (Ville)
+- Fix TGL DKL PHY DP vswing handling (Ville)
+
+amdgpu:
+- DCN clang warning fix
+- eDP fix
+- BACO fix
+- Kernel documentation fixes
+- SMU7 mclk fix
+- VCN1 hw bug workaround
+
+amdkfd:
+- kvfree vs kfree fix
+The following changes since commit 640eee067d9aae0bb98d8706001976ff1affaf00=
+:
+
+  Merge tag 'drm-misc-next-fixes-2020-10-13' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-next (2020-10-14
+07:31:53 +1000)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-next-2020-10-19
+
+for you to fetch changes up to 40b99050455b9a6cb8faf15dcd41888312184720:
+
+  Merge tag 'drm-intel-next-fixes-2020-10-15' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-next (2020-10-19
+09:21:59 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.10-rc1
+
+i915:
+- Set all unused color plane offsets to ~0xfff again (Ville)
+- Fix TGL DKL PHY DP vswing handling (Ville)
+
+amdgpu:
+- DCN clang warning fix
+- eDP fix
+- BACO fix
+- Kernel documentation fixes
+- SMU7 mclk fix
+- VCN1 hw bug workaround
+
+amdkfd:
+- kvfree vs kfree fix
+
+----------------------------------------------------------------
+Alex Deucher (1):
+      drm/amdgpu/swsmu: init the baco mutex in early_init
+
+Dave Airlie (2):
+      Merge tag 'amd-drm-fixes-5.10-2020-10-14' of
+git://people.freedesktop.org/~agd5f/linux into drm-next
+      Merge tag 'drm-intel-next-fixes-2020-10-15' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-next
+
+Eryk Brol (1):
+      drm/amd/display: Fix incorrect dsc force enable logic
+
+Evan Quan (1):
+      drm/amd/pm: increase mclk switch threshold to 200 us
+
+Kent Russell (1):
+      drm/amdkfd: Use kvfree in destroy_crat_image
+
+Mauro Carvalho Chehab (2):
+      drm/amd/display: kernel-doc: document force_timing_sync
+      docs: amdgpu: fix a warning when building the documentation
+
+Rodrigo Siqueira (1):
+      drm/amd/display: Fix module load hangs when connected to an eDP
+
+Veerabadhran G (1):
+      drm/amdgpu: vcn and jpeg ring synchronization
+
+Ville Syrj=C3=A4l=C3=A4 (2):
+      drm/i915: Fix TGL DKL PHY DP vswing handling
+      drm/i915: Set all unused color plane offsets to ~0xfff again
+
+ Documentation/gpu/amdgpu.rst                       |  4 ++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c            |  2 ++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.h            |  1 +
+ drivers/gpu/drm/amd/amdgpu/jpeg_v1_0.c             | 24 +++++++++++++++++-=
+-
+ drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c              | 28 ++++++++++++++++++=
+----
+ drivers/gpu/drm/amd/amdgpu/vcn_v1_0.h              |  3 ++-
+ drivers/gpu/drm/amd/amdkfd/kfd_crat.c              |  2 +-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h  |  2 ++
+ .../amd/display/amdgpu_dm/amdgpu_dm_mst_types.c    |  2 +-
+ drivers/gpu/drm/amd/display/dc/core/dc.c           | 10 ++++----
+ .../gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c    |  2 +-
+ drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c          |  7 +++---
+ drivers/gpu/drm/i915/display/intel_ddi.c           |  2 +-
+ drivers/gpu/drm/i915/display/intel_display.c       | 17 ++++---------
+ 14 files changed, 72 insertions(+), 34 deletions(-)
