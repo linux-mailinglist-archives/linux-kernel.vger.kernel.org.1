@@ -2,158 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD86C2929CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB882929D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729693AbgJSOy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:54:26 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:45780 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729075AbgJSOyZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:54:25 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09JEmvoZ104602;
-        Mon, 19 Oct 2020 14:54:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=TQ0JsZZ4AfiOpUOA+G8dEsL4WPds5Z81PFZwUH3rk/A=;
- b=W1T1+qvqb1pNQhTWMxTWAdv35cythKxpTqlFtvIcJFTehFP+BZKS4wOUK+oTjYS5m00+
- bZVAE7GINidii1X+bjxvMQVlDd32QYrvEU5Eri2zctsssskId3BVYkUsG1RCmb4p6XH0
- l5PU2qGpqFB1iiywqEYLhERb+wkTvnOZ4gcsLXUZzwKHNVFA17m4c1W54nd131FLXves
- RWrs35qYy5d/S60N9aA73hKCRac+LNWE1immIq35hsN0t3RvjY9FubdEQUkTga9cFpxV
- 9VLODF5sIBTDGcFarST22JHD4B0XPnGWgBvTcomHRNjg3HhrzwW2FayHdaicER2b/jYP 1g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 347p4ap4gm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Oct 2020 14:54:01 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09JEipcq092608;
-        Mon, 19 Oct 2020 14:52:00 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 348ahv23ya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Oct 2020 14:52:00 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09JEpw1p025443;
-        Mon, 19 Oct 2020 14:51:58 GMT
-Received: from tomti.i.net-space.pl (/10.175.216.157)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 19 Oct 2020 07:51:58 -0700
-Date:   Mon, 19 Oct 2020 16:51:53 +0200
-From:   Daniel Kiper <daniel.kiper@oracle.com>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Ross Philipson <ross.philipson@oracle.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
-        linux-doc@vger.kernel.org, dpsmith@apertussolutions.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        luto@amacapital.net, trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH 07/13] x86: Secure Launch kernel early boot stub
-Message-ID: <20201019145153.7b6cg3rzj7g4njz6@tomti.i.net-space.pl>
-References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
- <1600959521-24158-8-git-send-email-ross.philipson@oracle.com>
- <20200924173801.GA103726@rani.riverdale.lan>
- <c9ab2edf-1aaf-a1c9-92d5-2d37382a3163@oracle.com>
- <20200925191842.GA643740@rani.riverdale.lan>
- <d34c189c-4528-0458-0b84-cfd36dc068b3@oracle.com>
- <20201015182654.lgtht5fd2aaunczu@tomti.i.net-space.pl>
- <20201016205151.GA1618249@rani.riverdale.lan>
+        id S1729588AbgJSOzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:55:41 -0400
+Received: from mail-co1nam11on2068.outbound.protection.outlook.com ([40.107.220.68]:8929
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728311AbgJSOzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 10:55:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BocdefFILelrOJEXZA6xrkLw7erXrD6Y8a8ihc70dMmfbtykXbT608s2F2E1/1jAbxbA5m3BL81uascRnuT2ez6u0UE1cdxe0J4CSSbhlBsk+15W/KWzHJX5tAzLA4u/5nYIwEiWgskbUZ8ekSI6degTf3l9KZIqOvXo6YtqqnaSbE4+rk4+WP8HiVjOUOz9cAYmL0E5jlPpkO5MuzwjfQma5o38yiNVRT+snh3bI+Z6x36pGXSr5MKMq2XVaAClZ0/AhtRQ/j79XKeFFQ0Q+rAP/E5Usol4rJmen4VGvujRe1Ii75y8MWE6qGILBwo4pGOeL3Ljz7f3JKRfrOVHJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B1UvHtcjl4KX8n4clO6Y54BiVE5YCD5tiIkmdyssp78=;
+ b=Os8cLS4W854JXwINGQrw1DuqzYXXSPIhwml9MmUlLvZNwhpa2fRZvUiQyrWYWHSwliKO/3inKLgllqoOpNOlK7CnvQqcyddHAveiTz2+zc7zUdDEAQqGZdytNm7q2ZT2hPk2N0LRun1GvVv02sIjlK44E/LGI5ObbdSsrlZCdPHdwNYoFgXiSWpOUfwbf6GnkBBMGp3FqKHJAwJFnwEkxFQhfFCE/GBVawHkr2SRJypWrAI7yLpeYKw724F/c3QJdsBAvrYIYszfV0AoyK92jYqQYn5idzx13E2A19YpOVH8HUHoKRJvifPZqUzJtg1Qv0vvTUMzDmAdiKyovl2GqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B1UvHtcjl4KX8n4clO6Y54BiVE5YCD5tiIkmdyssp78=;
+ b=Et+QBnoNJHVR2rbdCY3mbQsB4fGhCNP57fK/qkhiYP6pz64kb8cWAE+yMDsSTNtMXRJlWbtmu9ek+xycs/xF4Yblp2iU5PSugHVbA7gtr5IuNFWDdW6iyF/C1Y0POrT+p6CduuTdoWFugdykt4ZFp5g5P+Fx2W35aicja9dZKRs=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4391.namprd12.prod.outlook.com (2603:10b6:208:269::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Mon, 19 Oct
+ 2020 14:55:37 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 14:55:37 +0000
+Subject: Re: [PATCH] drm/amdgpu: remove unneeded break
+To:     trix@redhat.com, harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        issor.oruam@gmail.com, Anthony.Koo@amd.com,
+        Rodrigo.Siqueira@amd.com, Tony.Cheng@amd.com, Charlene.Liu@amd.com,
+        yogesh.mohanmarimuthu@amd.com, Aric.Cyr@amd.com,
+        Igor.Kravchenko@amd.com, colin.king@canonical.com,
+        tao.zhou1@amd.com, Dennis.Li@amd.com, mario.kleiner.de@gmail.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20201019144311.18260-1-trix@redhat.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <2f951197-b93e-d0c9-153f-2ddd1b195b3f@amd.com>
+Date:   Mon, 19 Oct 2020 16:55:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201019144311.18260-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: AM3PR07CA0113.eurprd07.prod.outlook.com
+ (2603:10a6:207:7::23) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016205151.GA1618249@rani.riverdale.lan>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9778 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
- malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010190103
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9778 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
- clxscore=1015 malwarescore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010190103
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM3PR07CA0113.eurprd07.prod.outlook.com (2603:10a6:207:7::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.11 via Frontend Transport; Mon, 19 Oct 2020 14:55:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 671db46f-a73c-468c-16ba-08d8743f09be
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4391:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4391D66E0D42BE7CC16D83F8831E0@MN2PR12MB4391.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:81;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: F3m8mzF9dwSdMaFP9d9EHL0i5/xXibe57gwEj4buB3EZSuUkbVJdAybcsT0rd55WSUzymIuh1hpWsOkJCvgdZpZRoHVaCNYRO3vt7z9g2LoDvmPF+ghCSqt7LoCrDoN6sMna7NWH28fATSGS87+T5FM4PPXxTyagE4hq/M1gAn35TLL8Cun8L79DPr6a2C4gvABJ/8e1Ni8KDHnYg68q2MIJj0exnb71iEuNtdblkBis2KxKPmfWy+f/GOmVY8DkEHkzESevjrLoahpFcSos4IY9FXOBCcYwq/ljPhjq+Xx23xy7XXq7o96iBNHgCWDx3g/QcQiRyPikI+F793r9W5uIcpw4/K1GZp9AKmGK6WWgi38gHLYLtCi6IqohRMfQcUR1G3vK9n6YgUiceZXd/g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(136003)(396003)(346002)(66556008)(66946007)(66476007)(2906002)(52116002)(316002)(6666004)(31686004)(5660300002)(2616005)(8676002)(8936002)(186003)(16526019)(4326008)(6486002)(478600001)(31696002)(86362001)(83380400001)(36756003)(921003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: exZwpmzld1tCbhfp0SWSixvQvaofid9idOW6jdmOaPMPQzu/jWwd82mBZCojgkjN7ByTB/v1yDcxtlYR+j6xx6QK+vSXzxEHuaiva43Rh8CppTT0OCgJBWfmCHBPd9325Z3rK+wwGwWIilhKDm1D0JaHmMKJfB5mbA7nqwlMgY19Y/cOP/Z6xpXd2INPDALnvz4lmaQdhonRtTMSOrqtN3Gox3JYg6ReEMunMatvC4+CokcVIBBSSIalJXzhWenMjhwJhF1rgwQNKG+mOiCHoBsf0xnWJPf+xdZ9Y22t0tTxoqU8358a6cyQIcf6HnaoABFGU2pnDViUgtubG17di6nAMZRfXnYjL9AhQ8VYbBVaSGl1zhaxQKrfv7z/lKkbHIvNusQR4my2rehA2UtEZOvhqsoj0KgnMltXwD0184hCFD0Q39wnFx/nl60dyaVhSu1RwL4zNQbFCP2YjMOKOUcJ8dkGNAYfZWDoREJc+OpyZVKGOZGCYl9008rn1NK6cl0r4lhAqXX9e6W++6ACHvSevWSgQyUj3/6fAtbLnaoWeoyZf6FzIR1lsgtryWBrIzQzOxDR3w4RbWKQqWpqbhQo++e7YVaAaPbsLgKbag0R29Z1tWPVHOOhlobnROXHHeiOsU9hB2oXofSYKof4XfvgLseCNBS3nxA4g/Q3BO/2hn53zVk+LX8kEF4uThxfSRuiWcOj+aM2LJo9hONWMQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 671db46f-a73c-468c-16ba-08d8743f09be
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2020 14:55:37.2457
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8QQdeJ4ymWS0MZVICcgi0p2EvLpui9xMI+ahwUoaQR3ykpt+vYQbvxdONHGnjV/M
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4391
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 04:51:51PM -0400, Arvind Sankar wrote:
-> On Thu, Oct 15, 2020 at 08:26:54PM +0200, Daniel Kiper wrote:
-> >
-> > I am discussing with Ross the other option. We can create
-> > .rodata.mle_header section and put it at fixed offset as
-> > kernel_info is. So, we would have, e.g.:
-> >
-> > arch/x86/boot/compressed/vmlinux.lds.S:
-> >         .rodata.kernel_info KERNEL_INFO_OFFSET : {
-> >                 *(.rodata.kernel_info)
-> >         }
-> >         ASSERT(ABSOLUTE(kernel_info) == KERNEL_INFO_OFFSET, "kernel_info at bad address!")
-> >
-> >         .rodata.mle_header MLE_HEADER_OFFSET : {
-> >                 *(.rodata.mle_header)
-> >         }
-> >         ASSERT(ABSOLUTE(mle_header) == MLE_HEADER_OFFSET, "mle_header at bad address!")
-> >
-> > arch/x86/boot/compressed/sl_stub.S:
-> > #define mleh_rva(X) (((X) - mle_header) + MLE_HEADER_OFFSET)
-> >
-> >         .section ".rodata.mle_header", "a"
-> >
-> > SYM_DATA_START(mle_header)
-> >         .long   0x9082ac5a    /* UUID0 */
-> >         .long   0x74a7476f    /* UUID1 */
-> >         .long   0xa2555c0f    /* UUID2 */
-> >         .long   0x42b651cb    /* UUID3 */
-> >         .long   0x00000034    /* MLE header size */
-> >         .long   0x00020002    /* MLE version 2.2 */
-> >         .long   mleh_rva(sl_stub_entry)    /* Linear entry point of MLE (virt. address) */
-> >         .long   0x00000000    /* First valid page of MLE */
-> >         .long   0x00000000    /* Offset within binary of first byte of MLE */
-> >         .long   0x00000000    /* Offset within binary of last byte + 1 of MLE */
-> >         .long   0x00000223    /* Bit vector of MLE-supported capabilities */
-> >         .long   0x00000000    /* Starting linear address of command line (unused) */
-> >         .long   0x00000000    /* Ending linear address of command line (unused) */
-> > SYM_DATA_END(mle_header)
-> >
-> > Of course MLE_HEADER_OFFSET has to be defined as a constant somewhere.
-> > Anyway, is it acceptable?
-
-What do you think about my MLE_HEADER_OFFSET and related stuff proposal?
-
-> > There is also another problem. We have to put into mle_header size of
-> > the Linux kernel image. Currently it is done by the bootloader but
-> > I think it is not a role of the bootloader. The kernel image should
-> > provide all data describing its properties and do not rely on the
-> > bootloader to do that. Ross and I investigated various options but we
-> > did not find a good/simple way to do that. Could you suggest how we
-> > should do that or at least where we should take a look to get some
-> > ideas?
-> >
-> > Daniel
+Am 19.10.20 um 16:43 schrieb trix@redhat.com:
+> From: Tom Rix <trix@redhat.com>
 >
-> What exactly is the size you need here? Is it just the size of the
-> protected mode image, that's startup_32 to _edata. Or is it the size of
-> the whole bzImage file, or something else? I guess the same question
-> applies to "first valid page of MLE" and "first byte of MLE", and the
-> linear entry point -- are those all relative to startup_32 or do they
-> need to be relative to the start of the bzImage, i.e. you have to add
-> the size of the real-mode boot stub?
+> A break is not needed if it is preceded by a return or break
 >
-> If you need to include the size of the bzImage file, that's not known
-> when the files in boot/compressed are built. It's only known after the
-> real-mode stub is linked. arch/x86/boot/tools/build.c fills in various
-> details in the setup header and creates the bzImage file, but it does
-> not currently modify anything in the protected-mode portion of the
-> compressed kernel (i.e. arch/x86/boot/compressed/vmlinux, which then
-> gets converted to binary format as arch/x86/boot/vmlinux.bin), so it
-> would need to be extended if you need to modify the MLE header to
-> include the bzImage size or anything depending on the size of the
-> real-mode stub.
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Ross clarified this. So, I not have to add much here.
+Acked-by: Christian König <christian.koenig@amd.com>
 
-Daniel
+> ---
+>   drivers/gpu/drm/amd/display/dc/dce/dce_transform.c      | 1 -
+>   drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c | 7 -------
+>   drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c | 7 -------
+>   drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c | 7 -------
+>   drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c | 7 -------
+>   drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c   | 7 -------
+>   drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c   | 7 -------
+>   7 files changed, 43 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
+> index 2a32b66959ba..130a0a0c8332 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
+> @@ -1330,7 +1330,6 @@ static bool configure_graphics_mode(
+>   			REG_SET(OUTPUT_CSC_CONTROL, 0,
+>   				OUTPUT_CSC_GRPH_MODE, 0);
+>   			break;
+> -			break;
+>   		case COLOR_SPACE_SRGB_LIMITED:
+>   			/* TV RGB */
+>   			REG_SET(OUTPUT_CSC_CONTROL, 0,
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
+> index d741787f75dc..42c7d157da32 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
+> @@ -418,25 +418,18 @@ static int map_transmitter_id_to_phy_instance(
+>   	switch (transmitter) {
+>   	case TRANSMITTER_UNIPHY_A:
+>   		return 0;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_B:
+>   		return 1;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_C:
+>   		return 2;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_D:
+>   		return 3;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_E:
+>   		return 4;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_F:
+>   		return 5;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_G:
+>   		return 6;
+> -	break;
+>   	default:
+>   		ASSERT(0);
+>   		return 0;
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
+> index 2bbfa2e176a9..382581c4a674 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
+> @@ -471,25 +471,18 @@ static int map_transmitter_id_to_phy_instance(
+>   	switch (transmitter) {
+>   	case TRANSMITTER_UNIPHY_A:
+>   		return 0;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_B:
+>   		return 1;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_C:
+>   		return 2;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_D:
+>   		return 3;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_E:
+>   		return 4;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_F:
+>   		return 5;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_G:
+>   		return 6;
+> -	break;
+>   	default:
+>   		ASSERT(0);
+>   		return 0;
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+> index b622b4b1dac3..7b4b2304bbff 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+> @@ -446,25 +446,18 @@ static int map_transmitter_id_to_phy_instance(
+>   	switch (transmitter) {
+>   	case TRANSMITTER_UNIPHY_A:
+>   		return 0;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_B:
+>   		return 1;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_C:
+>   		return 2;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_D:
+>   		return 3;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_E:
+>   		return 4;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_F:
+>   		return 5;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_G:
+>   		return 6;
+> -	break;
+>   	default:
+>   		ASSERT(0);
+>   		return 0;
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c b/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
+> index 16fe7344702f..3d782b7c86cb 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
+> @@ -383,25 +383,18 @@ static int map_transmitter_id_to_phy_instance(
+>   	switch (transmitter) {
+>   	case TRANSMITTER_UNIPHY_A:
+>   		return 0;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_B:
+>   		return 1;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_C:
+>   		return 2;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_D:
+>   		return 3;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_E:
+>   		return 4;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_F:
+>   		return 5;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_G:
+>   		return 6;
+> -	break;
+>   	default:
+>   		ASSERT(0);
+>   		return 0;
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c b/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
+> index 5a5a9cb77acb..e9dd78c484d6 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
+> @@ -453,25 +453,18 @@ static int map_transmitter_id_to_phy_instance(
+>   	switch (transmitter) {
+>   	case TRANSMITTER_UNIPHY_A:
+>   		return 0;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_B:
+>   		return 1;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_C:
+>   		return 2;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_D:
+>   		return 3;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_E:
+>   		return 4;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_F:
+>   		return 5;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_G:
+>   		return 6;
+> -	break;
+>   	default:
+>   		ASSERT(0);
+>   		return 0;
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> index 0eae8cd35f9a..9dbf658162cd 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> @@ -458,25 +458,18 @@ static int map_transmitter_id_to_phy_instance(
+>   	switch (transmitter) {
+>   	case TRANSMITTER_UNIPHY_A:
+>   		return 0;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_B:
+>   		return 1;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_C:
+>   		return 2;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_D:
+>   		return 3;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_E:
+>   		return 4;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_F:
+>   		return 5;
+> -	break;
+>   	case TRANSMITTER_UNIPHY_G:
+>   		return 6;
+> -	break;
+>   	default:
+>   		ASSERT(0);
+>   		return 0;
+
