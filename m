@@ -2,73 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2A12930A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADC32930AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733268AbgJSViG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 17:38:06 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:53025 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733261AbgJSViF (ORCPT
+        id S1733310AbgJSVkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 17:40:49 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:39936 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733236AbgJSVkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 17:38:05 -0400
-Received: by mail-io1-f71.google.com with SMTP id e10so1162874ioq.19
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 14:38:05 -0700 (PDT)
+        Mon, 19 Oct 2020 17:40:49 -0400
+Received: by mail-oi1-f194.google.com with SMTP id m128so1689048oig.7;
+        Mon, 19 Oct 2020 14:40:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=3+pOrgaRKys1ukxYUhRD8eMBk03/5Wr4iYqe05uE/Xs=;
-        b=qk/tNL8vmruSzjHg83d7uehXUR2q5tM/72lk8MW1p9MK6NkGhAQq9Y6O/IsPyKtxiw
-         5wh7izPA3iVTxzs6EgRy4lhum/t3LVVDCSRmR4WwSu9GXBdmVYd9ji6crxY00+BTUGoc
-         Sq0iA72oqkYYF13/JXx7xC8dOVuxTIk2dx7/ejf+8Y6wGai3N5vxE8KhBPK7nOnjxqxF
-         jAcLtdhXsDKEc17ECEaGUI37sbPXTWtMvkywl5u1hiarhzexiDMkNk9qbJKOROtcP+aX
-         Lod3gDl/UNsWUcq+Iv1I+P9GXk0mtcH9qb289z9MM6QttW330aY1IKWvJwqAKkmsAoFW
-         KXXA==
-X-Gm-Message-State: AOAM533+9cu5qXjXnplvXZgeFgfrvmPF2pybx6bcxmnYUyTAaQl+vBU9
-        5V7w/5feUlIUaAWzlWmm9WmRSBTT/MoZDfnL95NsvhanUkcO
-X-Google-Smtp-Source: ABdhPJzkyP3ftUH+EdI/DBK/RuoKcZyjk/u/pLBTvtucJaGpONpWfm+0802shWZpgCUYbK0yjsxi2Bj6hRfFJtqBrifaQfcF+s8V
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KwRHpeQcFYy7uhieySaYWDGx//hq6s67j0uXkg0vZ6A=;
+        b=fNSMDk+0Fz2DCUsgFn0u3dEosPwv4JhR8Hr9pIq+ywY7tOeOYtuDbFuCccZ8J50aMy
+         img2UVo8WKtYDG167ixw64RR8W8abAagqusqB0K/7PjQNYJAEHY1dXVBjScCqPUa6rsy
+         HAEiu9/ytFYkyWSUJkiWw53jwGUZ7H7RoCOgez2Tt9EjbsGAO8GOIP8l03S9FhLxQgtL
+         D0YmuMUJdVMtEr523xfArioIcInLjS9MCHw+LLMP/Ds86rUgeJMlIE97xPn4RXzxH216
+         tYwDubCtPi7xhjPYH1LbFce+wYj6wyAJYuuX0U06Jd+E//LQrFYk7TKnjr6rTmMgfqWR
+         8CVw==
+X-Gm-Message-State: AOAM5338Y0X9pLEktRnLtxEyNbSc0BjxkddDFTAFy2B5bwRc+8v8/18o
+        PaIekgf5GieXz3BN9GTU6A==
+X-Google-Smtp-Source: ABdhPJy/3076rgDefQQMiCO3/USZa+uXB2reqghggQBkaNgWN9sQMyn0Q/I88mLdH9mwc3VyuJZ1uQ==
+X-Received: by 2002:aca:2313:: with SMTP id e19mr1005812oie.14.1603143648260;
+        Mon, 19 Oct 2020 14:40:48 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f70sm246135otf.32.2020.10.19.14.40.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 14:40:47 -0700 (PDT)
+Received: (nullmailer pid 3648883 invoked by uid 1000);
+        Mon, 19 Oct 2020 21:40:46 -0000
+Date:   Mon, 19 Oct 2020 16:40:46 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     JC Kuo <jckuo@nvidia.com>
+Cc:     gregkh@linuxfoundation.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, kishon@ti.com, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, nkristam@nvidia.com
+Subject: Re: [PATCH v4 10/16] dt-bindings: phy: tegra-xusb: Add nvidia,pmc
+ prop
+Message-ID: <20201019214046.GA3645734@bogus>
+References: <20201016130726.1378666-1-jckuo@nvidia.com>
+ <20201016130726.1378666-11-jckuo@nvidia.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:1801:: with SMTP id 1mr1325764ily.219.1603143484870;
- Mon, 19 Oct 2020 14:38:04 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 14:38:04 -0700
-In-Reply-To: <00000000000005f0b605af42ab4e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f098f005b20ced50@google.com>
-Subject: Re: KASAN: unknown-crash Read in do_exit
-From:   syzbot <syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, aryabinin@virtuozzo.com,
-        b.zolnierkie@samsung.com, christian@brauner.io,
-        dan.carpenter@oracle.com, dvyukov@google.com,
-        ebiederm@xmission.com, george.kennedy@oracle.com,
-        glider@google.com, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        peterz@infradead.org, sandeen@sandeen.net,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016130726.1378666-11-jckuo@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Fri, Oct 16, 2020 at 09:07:20PM +0800, JC Kuo wrote:
+> This commit describes the "nvidia,pmc" property for Tegra210 tegra-xusb
+> PHY driver. It is a phandle and specifier referring to the Tegra210
+> pmc@7000e400 node.
+> 
+> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+> ---
+> v4:
+>    new change to document "nvidia,pmc" prop
+> 
+>  .../devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt      | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt b/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt
+> index 38c5fa21f435..ea559baeb546 100644
+> --- a/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt
+> +++ b/Documentation/devicetree/bindings/phy/nvidia,tegra124-xusb-padctl.txt
+> @@ -54,6 +54,7 @@ For Tegra210:
+>  - avdd-pll-uerefe-supply: PLLE reference PLL power supply. Must supply 1.05 V.
+>  - dvdd-pex-pll-supply: PCIe/USB3 PLL power supply. Must supply 1.05 V.
+>  - hvdd-pex-pll-e-supply: High-voltage PLLE power supply. Must supply 1.8 V.
+> +- nvidia,pmc: phandle and specifier referring to the Tegra210 pmc@7000e400 node.
 
-commit a49145acfb975d921464b84fe00279f99827d816
-Author: George Kennedy <george.kennedy@oracle.com>
-Date:   Tue Jul 7 19:26:03 2020 +0000
+'Tegra210 pmc@7000e400' is kind of specific. Going to update this for 
+every address and chip?
 
-    fbmem: add margin check to fb_check_caps()
+If there's only one PMC, you can just find the compatible PMC node. Then 
+you don't need a DT update.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17ce19c8500000
-start commit:   729e3d09 Merge tag 'ceph-for-5.9-rc5' of git://github.com/..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d9ae84069cff753e94bf
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10642545900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=141f2bed900000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fbmem: add margin check to fb_check_caps()
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Rob
