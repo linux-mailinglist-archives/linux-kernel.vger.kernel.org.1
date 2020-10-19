@@ -2,104 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64EC292567
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DF729258B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729647AbgJSKSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729485AbgJSKSj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:18:39 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45BD7C0613CE;
-        Mon, 19 Oct 2020 03:18:38 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 13so9744249wmf.0;
-        Mon, 19 Oct 2020 03:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jyCSS4cTjPFXhl4/RUNaCmks9VNBA8VC25KTtXeVMY0=;
-        b=b6aRVscPivqUvHF5pqyiuMVkb6+/IO/I9zVsN6PZjZkK4RkcDU7aQoAbUfCMO6qYog
-         1pF3mV+Rde3esTbTtWZc+dQ3MAPvES+jW7BAvYOWTXShCiToogyro7bEIH5P2W29c0Qg
-         OFvRDzfKPzmVmUyWdvktMahSoQdfcaOVe34sutg1R5KTKI0hbtB10GXB4iMp0bflchCF
-         SpwueeiUcR62Zl1TYIGdjqw6iJT19e9rDo2L7qKdPx27rDLMYfaYT0TyAE5Djjsp5M41
-         MZNSOD1Qq8rBlmHgLp7HCMM4co6mOC4caTcL8mOI5DFkZrljIOWwJGdrRxcVFSqdxYMy
-         m7iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jyCSS4cTjPFXhl4/RUNaCmks9VNBA8VC25KTtXeVMY0=;
-        b=ClLeJG5ub8k5DFz+vPWZ1F1g2feXKnGTIvvpEP+Arx71XexTNCH9q/mNJE6x7uTVJj
-         tLgDKIJA5jYT/RRlVy2CLJ3TurFLT/BuUlbEjRWF0H03i8TXnhtyzYtivomlBOLd4+E0
-         v4ym4f03m7yzFtrS42zDLXyDH58xk8Gf0FIvEL8X5OXu/jEfUzbtW4fC6XdCw0Nq/RjC
-         IhdaEYe+OrG9tjJRh1YnZ228O2QqZ9Tnn4MlwmdzXza9vAeFxFq03HIyx3/kYaZE08JN
-         KFSal0Fai29+IlmpWNjKYggTRL1ypeuFbzy8PMK42i6ec1lY9A4hiGgItE2+CGS20Zfy
-         bQDQ==
-X-Gm-Message-State: AOAM532S8/cBrkoKubzwkpJBDwC2jBVFXCH+5KCSUQJANk23HpIVw7vk
-        Y1iwfng/UrJOzN60uhlL6wI=
-X-Google-Smtp-Source: ABdhPJxqh0JBjgMiNMQsM5zfGmfBmaq0GMxI6SFeha4IKb3awYX27ltJlsnL97exdlDE3lr78UaG7w==
-X-Received: by 2002:a7b:c935:: with SMTP id h21mr16006756wml.99.1603102717032;
-        Mon, 19 Oct 2020 03:18:37 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id o3sm17317744wru.15.2020.10.19.03.18.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 03:18:36 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: mailbox: mtk-gce: fix incorrect mbox-cells
- value
-To:     Fabien Parent <fparent@baylibre.com>, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Cc:     dennis-yc.hsieh@mediatek.com, ck.hu@mediatek.com,
-        bibby.hsieh@mediatek.com, jaswinder.singh@linaro.org
-References: <20201018193016.3339045-1-fparent@baylibre.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <19590d90-978d-0b03-af79-fd8d7a7f1408@gmail.com>
-Date:   Mon, 19 Oct 2020 12:18:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729844AbgJSKTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:19:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726527AbgJSKTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 06:19:13 -0400
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8023C2225A;
+        Mon, 19 Oct 2020 10:19:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603102751;
+        bh=9ol2BO/fELkAmNUDWpBODVH2SpWv/piQGMjT5MYog5E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o725qncPvt2aQQVrR+pZKJJSPCc5JTp6uGiZm/LhIBFBycVETVEIw1yJ2Ng0K1jgb
+         Zc/a2MBJn9KI5y5OuTzb7CXsJj33DDhJl//dfsRyJZDAZurX93QBBHdIbcfjSlny9D
+         EUCuuuPyyiKzjg/47uNt3/FrnTZQxpRuUS8584SE=
+Received: by mail-ej1-f44.google.com with SMTP id qp15so13122701ejb.3;
+        Mon, 19 Oct 2020 03:19:11 -0700 (PDT)
+X-Gm-Message-State: AOAM533AHy9eKIFSpFLlQaIcPYIqYPFh2X+xkTbfcxGNv/9x1VHhfZlr
+        vFyNRNKQ6V1ZbTTccHSLt7jECkqTHcvQaVu4Fbc=
+X-Google-Smtp-Source: ABdhPJwavZy+EEcdbCdWEY/sitMYjxth1cT0VbGrluAs9SydNvzA5wXj6kcEfurdExdip/Bi9Tdcm1TK35qAcuPN1Qc=
+X-Received: by 2002:a17:906:f151:: with SMTP id gw17mr16187128ejb.119.1603102749944;
+ Mon, 19 Oct 2020 03:19:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201018193016.3339045-1-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201019094715.15343-1-m.szyprowski@samsung.com>
+ <CGME20201019094739eucas1p18cd4c7e5a0197393d2e7c5c6fcc2777d@eucas1p1.samsung.com>
+ <20201019094715.15343-3-m.szyprowski@samsung.com> <20201019101233.GB51073@kozik-lap>
+In-Reply-To: <20201019101233.GB51073@kozik-lap>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Mon, 19 Oct 2020 12:18:58 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPcyruYQxcioPxGE8J8jS0Yey+09HpXxFgQm4f2w98s5cg@mail.gmail.com>
+Message-ID: <CAJKOXPcyruYQxcioPxGE8J8jS0Yey+09HpXxFgQm4f2w98s5cg@mail.gmail.com>
+Subject: Re: [PATCH 2/6] Documetation: dt-bindings: add the
+ samsung,exynos-pcie binding
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 19 Oct 2020 at 12:12, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Mon, Oct 19, 2020 at 11:47:11AM +0200, Marek Szyprowski wrote:
+> > From: Jaehoon Chung <jh80.chung@samsung.com>
+> >
+> > Add dt-bindings for the Samsung Exynos PCIe controller (Exynos5433
+> > variant).
+>
+> The title has typo and actually entire "Doc" should be dropped. Just
+> "dt-bindings: pci:".  This applies to all DT patches.
+>
+> >
+> > Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
+> > [mszyprow: updated the binding to latest driver changes, rewrote it in yaml,
+> >          rewrote commit message]
+>
+> If you wrote them in YAML it should be a new patch of yours. It is the
+> same then as converting TXT to YAML.
+>
+> > Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> > ---
+> >  .../bindings/pci/samsung,exynos-pcie.yaml     | 106 ++++++++++++++++++
+> >  1 file changed, 106 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
+> > new file mode 100644
+> > index 000000000000..48fb569c238c
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
+> > @@ -0,0 +1,104 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/samsung,exynos-pcie.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Samsung SoC series PCIe Host Controller Device Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Jaehoon Chung <jh80.chung@samsung.com>
+> > +
+> > +description: |+
+> > +  Exynos5433 SoC PCIe host controller is based on the Synopsys DesignWare
+> > +  PCIe IP and thus inherits all the common properties defined in
+> > +  designware-pcie.txt.
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - samsung,exynos5433-pcie
+>
+> const, not enum
+>
+> > +
+> > +  reg:
+> > +    items:
+> > +      - description: External Local Bus interface (ELBI) registers.
+> > +      - description: Data Bus Interface (DBI) registers.
+> > +      - description: PCIe configuration space region.
+> > +
+> > +  reg-names:
+> > +    items:
+> > +      - const: elbi
+> > +      - const: bdi
+> > +      - const: config
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: PCIe bridge clock
+> > +      - description: PCIe bus clock
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: pcie
+> > +      - const: pcie_bus
+> > +
+> > +  phys:
+> > +    maxItems: 1
+> > +
+> > +  phy-names:
+> > +    const: pcie-phy
+> > +
+> > +  vdd10-supply:
+> > +    description:
+> > +      Phandle to a regulator that provides 1.0V power to the PCIe block.
+> > +
+> > +  vdd18-supply:
+> > +    description:
+> > +      Phandle to a regulator that provides 1.8V power to the PCIe block.
+> > +
+> > +required:
+> > +  - reg
+> > +  - reg-names
+> > +  - interrupts
+> > +  - interrupt-names
+> > +  - clocks
+> > +  - clock-names
+> > +  - phys
+> > +  - phy-names
+> > +  - vdd10-supply
+>
+> additionalProperties: false
 
+This can be unevaluatedProperties, since you include pci-bus schema.
+However still you should either include designware schema or include
+it's properties here.
 
-On 18/10/2020 21:30, Fabien Parent wrote:
-> As the binding documentation says, #mbox-cells must have a value of 2,
-> but the example use a value 3. The MT8173 device tree correctly use
-> mbox-cells = <2>. This commit fixes the example.
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
-
-Fixes: 19d8e335d58a ("dt-binding: gce: remove atomic_exec in mboxes property")
-
-With that:
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
->   Documentation/devicetree/bindings/mailbox/mtk-gce.txt | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mailbox/mtk-gce.txt b/Documentation/devicetree/bindings/mailbox/mtk-gce.txt
-> index cf48cd806e00..7771ecaac586 100644
-> --- a/Documentation/devicetree/bindings/mailbox/mtk-gce.txt
-> +++ b/Documentation/devicetree/bindings/mailbox/mtk-gce.txt
-> @@ -47,7 +47,7 @@ Example:
->   		interrupts = <GIC_SPI 135 IRQ_TYPE_LEVEL_LOW>;
->   		clocks = <&infracfg CLK_INFRA_GCE>;
->   		clock-names = "gce";
-> -		#mbox-cells = <3>;
-> +		#mbox-cells = <2>;
->   	};
->   
->   Example for a client device:
-> 
+Best regards,
+Krzysztof
