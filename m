@@ -2,133 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AB6292304
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0016F292309
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727709AbgJSHiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 03:38:01 -0400
-Received: from mga12.intel.com ([192.55.52.136]:55741 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727678AbgJSHiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 03:38:01 -0400
-IronPort-SDR: diJQwlBGyldHljXBcaKF1AdlW/CMKPGs6kbZuyTLXHNE/Z/S/WcLa01w83nXFBv6ZJTaJ4M99S
- Jk7cHBYaEQ0Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="146280001"
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="146280001"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 00:37:59 -0700
-IronPort-SDR: v8n1GIO3V1Krbh0UsCrd3j9O/YLzI+PkbPAIwaMn10BgwQfpOzLrEVWroHYqT9DOXKJnq/gbGb
- up0eraJF1i/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="347328811"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.65])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Oct 2020 00:37:55 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <yang.shi@linux.alibaba.com>, <rientjes@google.com>,
-        <dan.j.williams@intel.com>, <david@redhat.com>
-Subject: Re: [RFC][PATCH 6/9] mm/vmscan: add page demotion counter
-References: <20201007161736.ACC6E387@viggo.jf.intel.com>
-        <20201007161747.FE7288F0@viggo.jf.intel.com>
-Date:   Mon, 19 Oct 2020 15:37:55 +0800
-In-Reply-To: <20201007161747.FE7288F0@viggo.jf.intel.com> (Dave Hansen's
-        message of "Wed, 7 Oct 2020 09:17:47 -0700")
-Message-ID: <87v9f6hdik.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1727759AbgJSHjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 03:39:45 -0400
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:44042 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727678AbgJSHjo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 03:39:44 -0400
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1kUPl5-0003bi-LB; Mon, 19 Oct 2020 07:39:07 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1kUPl3-00080t-CR; Mon, 19 Oct 2020 08:39:07 +0100
+Subject: Re: [PATCH] arch: um: convert tasklets to use new tasklet_setup() API
+To:     Allen Pais <allen.cryptic@gmail.com>, jdike@addtoit.com,
+        richard@nod.at, 3chas3@gmail.com, axboe@kernel.dk,
+        stefanr@s5r6.in-berlin.de, airlied@linux.ie, daniel@ffwll.ch,
+        sre@kernel.org, James.Bottomley@HansenPartnership.com,
+        kys@microsoft.com, deller@gmx.de, dmitry.torokhov@gmail.com,
+        jassisinghbrar@gmail.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, maximlevitsky@gmail.com, oakad@yahoo.com,
+        ulf.hansson@linaro.org, mporter@kernel.crashing.org,
+        alex.bou9@gmail.com, broonie@kernel.org, martyn@welchs.me.uk,
+        manohar.vanga@gmail.com, mitch@sfgoth.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Romain Perier <romain.perier@gmail.com>, keescook@chromium.org,
+        linux-parisc@vger.kernel.org, linux-ntb@googlegroups.com,
+        netdev@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-spi@vger.kernel.org,
+        linux-block@vger.kernel.org, Allen Pais <allen.lkml@gmail.com>,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux1394-devel@lists.sourceforge.net,
+        linux-arm-kernel@lists.infradead.org
+References: <20200817091617.28119-1-allen.cryptic@gmail.com>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <3359192b-8f02-feb4-a9a7-a13b5d876998@cambridgegreys.com>
+Date:   Mon, 19 Oct 2020 08:39:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+In-Reply-To: <20200817091617.28119-1-allen.cryptic@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave Hansen <dave.hansen@linux.intel.com> writes:
 
-> From: Yang Shi <yang.shi@linux.alibaba.com>
->
-> Account the number of demoted pages into reclaim_state->nr_demoted.
 
-It appears that you don't add "nr_demoted" into struct reclaim_state.
-
-> Add pgdemote_kswapd and pgdemote_direct VM counters showed in
-> /proc/vmstat.
->
-> [ daveh:
->    - __count_vm_events() a bit, and made them look at the THP
->      size directly rather than getting data from migrate_pages()
-
-It appears that we get the data from migrate_pages() now.
-
-> ]
->
-> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
+On 17/08/2020 10:15, Allen Pais wrote:
+> From: Allen Pais <allen.lkml@gmail.com>
+> 
+> In preparation for unconditionally passing the
+> struct tasklet_struct pointer to all tasklet
+> callbacks, switch to using the new tasklet_setup()
+> and from_tasklet() to pass the tasklet pointer explicitly.
+> 
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 > ---
->
->  b/include/linux/vm_event_item.h |    2 ++
->  b/mm/vmscan.c                   |    6 ++++++
->  b/mm/vmstat.c                   |    2 ++
->  3 files changed, 10 insertions(+)
->
-> diff -puN include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter include/linux/vm_event_item.h
-> --- a/include/linux/vm_event_item.h~mm-vmscan-add-page-demotion-counter	2020-10-07 09:15:32.171642439 -0700
-> +++ b/include/linux/vm_event_item.h	2020-10-07 09:15:32.179642439 -0700
-> @@ -33,6 +33,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PS
->  		PGREUSE,
->  		PGSTEAL_KSWAPD,
->  		PGSTEAL_DIRECT,
-> +		PGDEMOTE_KSWAPD,
-> +		PGDEMOTE_DIRECT,
->  		PGSCAN_KSWAPD,
->  		PGSCAN_DIRECT,
->  		PGSCAN_DIRECT_THROTTLE,
-> diff -puN mm/vmscan.c~mm-vmscan-add-page-demotion-counter mm/vmscan.c
-> --- a/mm/vmscan.c~mm-vmscan-add-page-demotion-counter	2020-10-07 09:15:32.173642439 -0700
-> +++ b/mm/vmscan.c	2020-10-07 09:15:32.180642439 -0700
-> @@ -147,6 +147,7 @@ struct scan_control {
->  		unsigned int immediate;
->  		unsigned int file_taken;
->  		unsigned int taken;
-> +		unsigned int demoted;
+>   arch/um/drivers/vector_kern.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+> index 8735c468230a..06980870ae23 100644
+> --- a/arch/um/drivers/vector_kern.c
+> +++ b/arch/um/drivers/vector_kern.c
+> @@ -1196,9 +1196,9 @@ static int vector_net_close(struct net_device *dev)
+>   
+>   /* TX tasklet */
+>   
+> -static void vector_tx_poll(unsigned long data)
+> +static void vector_tx_poll(struct tasklet_struct *t)
+>   {
+> -	struct vector_private *vp = (struct vector_private *)data;
+> +	struct vector_private *vp = from_tasklet(vp, t, tx_poll);
+>   
+>   	vp->estats.tx_kicks++;
+>   	vector_send(vp->tx_queue);
+> @@ -1629,7 +1629,7 @@ static void vector_eth_configure(
+>   	});
+>   
+>   	dev->features = dev->hw_features = (NETIF_F_SG | NETIF_F_FRAGLIST);
+> -	tasklet_init(&vp->tx_poll, vector_tx_poll, (unsigned long)vp);
+> +	tasklet_setup(&vp->tx_poll, vector_tx_poll);
+>   	INIT_WORK(&vp->reset_tx, vector_reset_tx);
+>   
+>   	timer_setup(&vp->tl, vector_timer_expire, 0);
+> 
 
-It appears that this newly added field isn't used in the patch.
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
->  	} nr;
->  
->  	/* for recording the reclaimed slab by now */
-> @@ -1134,6 +1135,11 @@ static unsigned int demote_page_list(str
->  			    target_nid, MIGRATE_ASYNC, MR_DEMOTION,
->  			    &nr_succeeded);
->  
-> +	if (current_is_kswapd())
-> +		__count_vm_events(PGDEMOTE_KSWAPD, nr_succeeded);
-> +	else
-> +		__count_vm_events(PGDEMOTE_DIRECT, nr_succeeded);
-> +
->  	return nr_succeeded;
->  }
->  
-> diff -puN mm/vmstat.c~mm-vmscan-add-page-demotion-counter mm/vmstat.c
-> --- a/mm/vmstat.c~mm-vmscan-add-page-demotion-counter	2020-10-07 09:15:32.175642439 -0700
-> +++ b/mm/vmstat.c	2020-10-07 09:15:32.181642439 -0700
-> @@ -1244,6 +1244,8 @@ const char * const vmstat_text[] = {
->  	"pgreuse",
->  	"pgsteal_kswapd",
->  	"pgsteal_direct",
-> +	"pgdemote_kswapd",
-> +	"pgdemote_direct",
->  	"pgscan_kswapd",
->  	"pgscan_direct",
->  	"pgscan_direct_throttle",
-> _
-
-Best Regards,
-Huang, Ying
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
