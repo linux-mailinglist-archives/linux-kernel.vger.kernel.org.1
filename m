@@ -2,192 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBB62925FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2932925C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727212AbgJSKlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:41:32 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:14739 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727037AbgJSKlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:41:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603104090; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=Qkqt1NTqT3YyTG096XE22aznURqgKsP5d3KKo8LH41w=; b=LmlWDodZLPQDASw17HNKUhAahFz8giV1zUwVCM+E+E/6C3WMZyJ6NElZw23ibJ5RAOmH5fSB
- I9VD/EJSqRlEbe2lPTiwtHsjRl1vJCULbY1Vqg95MEMaHhg1SFR1VS4gomOY3ebxuw8RW37v
- Xyn1nL+zGiw5zFLB9/SKuAAJnzI=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f8d6d59d63768e57b5ac75d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 10:41:29
- GMT
-Sender: zhenhuah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2C8FDC433F1; Mon, 19 Oct 2020 10:41:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zhenhuah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3FA08C433FF;
-        Mon, 19 Oct 2020 10:41:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3FA08C433FF
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zhenhuah@codeaurora.org
-Date:   Mon, 19 Oct 2020 18:39:19 +0800
-From:   Zhenhua Huang <zhenhuah@codeaurora.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm: fix page_owner initializing issue for arm32
-Message-ID: <20201019103919.GA29278@codeaurora.org>
-References: <1602839640-13125-1-git-send-email-zhenhuah@codeaurora.org>
- <1a1a80b8-2ce4-9346-f333-68f3bb8b25c0@suse.cz>
+        id S1726958AbgJSK1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:27:44 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:62856 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726880AbgJSK1o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 06:27:44 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201019102740epoutp01f49bc822239d319a1f1acd0144e3de7c~-XewDEP4S0239402394epoutp01B
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:27:40 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201019102740epoutp01f49bc822239d319a1f1acd0144e3de7c~-XewDEP4S0239402394epoutp01B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603103260;
+        bh=yDoDNggOg225OrRqSzF1Bazr7Llyp7wh5Skp9ddw+sE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=tqtSjjqN0J/CyHqud8XhIJe2YsS5jLLchn7D+Z/iQbmhafUN9rRsveinPyIho2H8v
+         gibGLwwlcDjawTb9CBJHsBFDH+gHqrLw05R1V7/Cp+gTMGM6P4ymywCyv3xNizYFXz
+         F+plIiExPtscarsXOZA/Y3QjHO6Z/7jPf6gx0T5w=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20201019102739epcas1p42e5bfcd73ff2fa8b98b3cd0e920fd705~-XevXOg6F0830008300epcas1p4u;
+        Mon, 19 Oct 2020 10:27:39 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.152]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4CFCcn42zwzMqYkj; Mon, 19 Oct
+        2020 10:27:37 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0C.1B.10463.91A6D8F5; Mon, 19 Oct 2020 19:27:37 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20201019102736epcas1p32f607ce884d698b00f7f3a4c89f7fbbb~-XesqXydC0660906609epcas1p3T;
+        Mon, 19 Oct 2020 10:27:36 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201019102736epsmtrp21ee944d31054f04479a958947c9f1f89~-XespcpP31185611856epsmtrp2z;
+        Mon, 19 Oct 2020 10:27:36 +0000 (GMT)
+X-AuditID: b6c32a38-efbff700000028df-f5-5f8d6a195582
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FB.EE.08604.81A6D8F5; Mon, 19 Oct 2020 19:27:36 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201019102736epsmtip27f942c8dd0686286e094a9cede41c278~-XesV_66R0681806818epsmtip2S;
+        Mon, 19 Oct 2020 10:27:36 +0000 (GMT)
+Subject: Re: [PATCH v3 2/2] PM / devfreq: Add governor attribute flag for
+ specifc sysfs nodes
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+To:     Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Cc:     leonard.crestez@nxp.com, lukasz.luba@arm.com,
+        enric.balletbo@collabora.com, hl@rock-chips.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, abel.vesa@nxp.com,
+        k.konieczny@samsung.com, b.zolnierkie@samsung.com,
+        chanwoo@kernel.org, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com
+Organization: Samsung Electronics
+Message-ID: <d198e358-f636-2f52-1d73-098f8bebffbf@samsung.com>
+Date:   Mon, 19 Oct 2020 19:41:01 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1a1a80b8-2ce4-9346-f333-68f3bb8b25c0@suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <1db2fb62-0b82-409d-20a7-c2ef376d4580@samsung.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0xTVxzO6eP21q1yrIBHNIjXmE0USimFqwNnpm6Nw8GeCWroOnpDEWib
+        e2ERCRsojIdjwxCSrkFExpBHN0YlUKuE0FUXXkOHCIjdXOgmEShQHKtD4/oy47/vd37fd77z
+        /c45OFs4hYXgGeocilYrsghsHafrp12iiM0nK+VRtrtbyaZfbwCyQ9fOJc9P3OGQbUvTgDRM
+        WQDp+nGATRbrGzhkvVPHJYfPzPHIZtsSlxw112LkcqUVkOWP9Rh56Uwxj5wqasbIJ+Y6zgEo
+        M9QZgMxkawSyq3obT2ZsLcdklWcdmKzDYWLJnul7ObKvOluBbNkYmsw/lhmvohRKig6j1Gka
+        ZYY6PYF4+335Qbk0NkocId5LxhFhakU2lUAcSkyOeDMjy52DCPtUkZXrXkpWMAwh2h9Pa3Jz
+        qDCVhslJICitMku7VxvJKLKZXHV6ZJome584Kipa6iZ+nKnSGbq52mH8VE19Pa8QrGAVgI8j
+        GIMW255xK8A6XAhNAJUUtbB8hROg3zpW2b5iBSDXQAnvhaS0rtTP6gHo+blKv34BoFqX08va
+        COVosn2F7cEYDEe9MxNew0BYgKy3H2AeARs2s5ChfZjjaQTA7WjMNQ08WAD3o/nvrSwP5sCd
+        qG1u1isOgh+h/q5iP2cD6v/G7tXy4euoumvJy2HDTeie/SLLh7eh7vlabwYEXTiaWRhj+TIc
+        Qg5rJfDhjejRz53+bCFo2dHjH00+aum3Yj5xGUCdvbe4voYE9X5X7d4IdzvsQu1mkW95O7q6
+        egH4jNcjx99fcj0UBAWo7Auhj7IDjT6w+Y+wGX1bWo5VAUK/Jo5+TQT9mgj6/83qAacVBFNa
+        JjudYsTamLX3bQTeVx5OmsCF+cVIC2DhwAIQziYCBSkbKuRCgVKRd5qiNXI6N4tiLEDqHvB5
+        dkhQmsb9TdQ5crE0WiKRkDHiWKlYTGwSPN1dJhfCdEUOlUlRWop+oWPh/JBC1jbnQUGE3bw4
+        ePR62dBCtW22aWu8ceeWi+zDiYOi8ap7/+J5Txt1E9c+qzCE8uFNla3kWtKcY8L0y0suZmQo
+        eOCyPdEYfvfI6In7x45nvrMFDil7/onVTexhhJ1Xaq4YdnfM5j0pv9/33uOUT8ZhI736SlHq
+        SSruz2lefkEtVcCLDw/mNtTxxuLevRSSz3t+c+xzOH58h2j6yI23Aj6Q/KGm26IfpmCp0Jha
+        U1Y4bk06ahqx/HW7qeVs3w/OO5fN1wdrTrCSZmbOvdb9sGDf0qS0ubB4j1kVNHLqdO38ra81
+        B5QfVh0OyKPrQtf//nJog2D+VWVFXOBsov2RpS9wfGwy9Q2Cw6gU4nA2zSj+A88TQkxuBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCIsWRmVeSWpSXmKPExsWy7bCSvK5EVm+8wcaHJhbLLh1ltNg4Yz2r
+        xcQbV1gsVn98zGix5vYhRosfG04xW7TMWsRiseDTDFaLs01v2C1W3P3IanF51xw2i8+9Rxgt
+        Or/MYrNY2NTCbnG7cQWbxc9d81gcBDzWzFvD6LHj7hJGj52z7rJ7bFrVyebR2/yOzWPjux1M
+        Hn9n7Wfx6NuyitHj8ya5AM4oLpuU1JzMstQifbsErowZa7azFpzlqJi6YAF7A+M3ti5GTg4J
+        AROJ9nntTF2MXBxCArsZJd6s2coCkZCUmHbxKHMXIweQLSxx+HAxRM1bRon5Z/awg9QIC8RL
+        3Fz/jRnEZhPQktj/4gbYUBGBWolXq6ezgtjMAiuYJBZ+FoJoXs4k8W/vWSaQBL+AosTVH48Z
+        QWxeATuJt2uPgMVZBFQlVr95DTZIVCBMYueSx0wQNYISJ2c+ATuOU8BeYvK2j2wQC9Ql/sy7
+        xAxhi0vcejKfCcKWl9j+dg7zBEbhWUjaZyFpmYWkZRaSlgWMLKsYJVMLinPTc4sNCwzzUsv1
+        ihNzi0vz0vWS83M3MYIjWktzB+P2VR/0DjEycTAeYpTgYFYS4Y0U7IoX4k1JrKxKLcqPLyrN
+        SS0+xCjNwaIkznujcGGckEB6YklqdmpqQWoRTJaJg1Oqgck6KmfKslul4rfydl2IZ22N/rXL
+        0cNCd7v6TjGBXpb/lXcEN9kd3hvuFzPl5crbBXx+u55t792pOjOmydHTR/yW0uHHWyf1HVzv
+        u6bRtaa+UfrEN/tDC5W2Zgpb37R/rHrJ61LFuxXTSz+0LolrldZ1+LXDI3/b0hO7/fTkBF+I
+        NOwIzzzdGVdyTD84tjbtq9XV545/us807mv+6bzkh0+K8RfrhoCt1YufPVyZMffDZS4WK5Us
+        P1/rqi8xTzq2nuz39GX8qbSWb2rk7PvnOmzzyxfG/6h6tr+Nkd+KMbH2WtGsM+HnGyfLrX7H
+        J8Rp3GR/TKvGeE7ZE99vUXJ3MsLFdrcJTsx5dW2eCOvr2UosxRmJhlrMRcWJAELi1pFXAwAA
+X-CMS-MailID: 20201019102736epcas1p32f607ce884d698b00f7f3a4c89f7fbbb
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201007045340epcas1p3b4d0f9187f5330a45d20d9d9b79f1767
+References: <20201007050703.20759-1-cw00.choi@samsung.com>
+        <CGME20201007045340epcas1p3b4d0f9187f5330a45d20d9d9b79f1767@epcas1p3.samsung.com>
+        <20201007050703.20759-3-cw00.choi@samsung.com>
+        <4cb8ece7-9399-9ee0-5f93-6c19630308d6@gmail.com>
+        <1db2fb62-0b82-409d-20a7-c2ef376d4580@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fri, Oct 16, 2020 at 06:41:04PM +0800, Vlastimil Babka wrote:
-> On 10/16/20 11:14 AM, Zhenhua Huang wrote:
-> >Page owner of pages used by page owner itself used is missing on arm32
-> >targets.
-> >The reason is dummy_handle and failure_handle is not initialized
-> >correctly.
-> >Buddy allocator is used to initialize these two handles. However, buddy
-> >allocator is not ready when page owner calls it. This change fixed that by
-> >initializing page owner after buddy initialization.
-> >
-> >The working flow before and after this change are:
-> >original logic:
-> >1. allocated memory for page_ext(using memblock).
-> >2. invoke the init callback of page_ext_ops like
-> >page_owner(using buddy allocator).
-> >3. initialize buddy.
-> >
-> >after this change:
-> >1. allocated memory for page_ext(using memblock).
-> >2. initialize buddy.
-> >3. invoke the init callback of page_ext_ops like
-> >page_owner(using buddy allocator).
-> >
-> >with the change, failure/dummy_handle can get its correct value and
-> >page owner output for example has the one for page owner itself:
-> >Page allocated via order 2, mask 0x6202c0(GFP_USER|__GFP_NOWARN), pid
-> >1006, ts
-> >67278156558 ns
-> >PFN 543776 type Unmovable Block 531 type Unmovable Flags 0x0()
-> >  init_page_owner+0x28/0x2f8
-> >  invoke_init_callbacks_flatmem+0x24/0x34
-> >  start_kernel+0x33c/0x5d8
-> >    (null)
+On 10/19/20 1:11 PM, Chanwoo Choi wrote:
+> On 10/19/20 9:39 AM, Dmitry Osipenko wrote:
+>> ...
+>>> @@ -1361,6 +1373,9 @@ static ssize_t governor_store(struct device *dev, struct device_attribute *attr,
+>>>  		goto out;
+>>>  	}
+>>>  
+>>> +	remove_sysfs_files(df, df->governor);
+>>> +	create_sysfs_files(df, governor);
+>>> +
+>>>  	prev_governor = df->governor;
+>>>  	df->governor = governor;
+>>>  	strncpy(df->governor_name, governor->name, DEVFREQ_NAME_LEN);
+>>> @@ -1460,39 +1475,6 @@ static ssize_t target_freq_show(struct device *dev,
+>>>  }
+>>
+>> The further code may revert df->governor to the prev_governor or set it
 > 
-> register_dummy_stack should also appear in the above. Either one too many is
-> skipped in arm32 stack saving, or the noinline is not honoured. Could be
-> investigated separately.
+> prev_governor is better. I'll change it.
 > 
-yes, it's another issue I need to investigate. Be noted, the printing is from
-4.9 kernel and I will look into separately.
-> >
-> >Signed-off-by: Zhenhua Huang <zhenhuah@codeaurora.org>
+>> to NULL. The create_sysfs_files(df->governor) should be invoked at the
+
+Also, when creating and removing the sysfs files, devfreq instance is needed
+because of df->dev.kobj. So, *_sysfs_files need the two parameters.
+
+>> very end of the governor_store() and only in a case of success.
 > 
-> This should be safe, as the sparse variant page_ext_init() runs even later,
-> so:
-> 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> Nit below:
-> 
-> >---
-> >  include/linux/page_ext.h | 8 ++++++++
-> >  init/main.c              | 2 ++
-> >  mm/page_ext.c            | 8 +++++++-
-> >  3 files changed, 17 insertions(+), 1 deletion(-)
-> >
-> >diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
-> >index cfce186..aff81ba 100644
-> >--- a/include/linux/page_ext.h
-> >+++ b/include/linux/page_ext.h
-> >@@ -44,8 +44,12 @@ static inline void page_ext_init_flatmem(void)
-> >  {
-> >  }
-> >  extern void page_ext_init(void);
-> >+static inline void page_ext_init_flatmem_late(void)
-> >+{
-> >+}
-> >  #else
-> >  extern void page_ext_init_flatmem(void);
-> >+extern void page_ext_init_flatmem_late(void);
-> >  static inline void page_ext_init(void)
-> >  {
-> >  }
-> >@@ -76,6 +80,10 @@ static inline void page_ext_init(void)
-> >  {
-> >  }
-> >
-> >+static inline void page_ext_init_flatmem_late(void)
-> >+{
-> >+}
-> >+
-> >  static inline void page_ext_init_flatmem(void)
-> >  {
-> >  }
-> >diff --git a/init/main.c b/init/main.c
-> >index 130376e..b34c475 100644
-> >--- a/init/main.c
-> >+++ b/init/main.c
-> >@@ -818,6 +818,8 @@ static void __init mm_init(void)
-> >  	init_debug_pagealloc();
-> >  	report_meminit();
-> >  	mem_init();
-> >+	/* page_owner must be initialized after buddy is ready */
-> >+	page_ext_init_flatmem_late();
-> >  	kmem_cache_init();
-> >  	kmemleak_init();
-> >  	pgtable_init();
-> >diff --git a/mm/page_ext.c b/mm/page_ext.c
-> >index a3616f7..373f7a1 100644
-> >--- a/mm/page_ext.c
-> >+++ b/mm/page_ext.c
-> >@@ -99,6 +99,13 @@ static void __init invoke_init_callbacks(void)
-> >  	}
-> >  }
-> >
-> >+#if !defined(CONFIG_SPARSEMEM)
-> 
-> #ifndef is more common if you don't need boolean ops on multiple configs
-> 
-Thanks, I'll do the change in patchset v2
-> >+void __init page_ext_init_flatmem_late(void)
-> >+{
-> >+	invoke_init_callbacks();
-> >+}
-> >+#endif
-> >+
-> >  static inline struct page_ext *get_entry(void *base, unsigned long
-> >index)
-> >  {
-> >  	return base + page_ext_size * index;
-> >@@ -177,7 +184,6 @@ void __init page_ext_init_flatmem(void)
-> >  			goto fail;
-> >  	}
-> >  	pr_info("allocated %ld bytes of page_ext\n", total_usage);
-> >-	invoke_init_callbacks();
-> >  	return;
-> >
-> >  fail:
-> >
+> OK. I'll add more exception handling code.
 > 
 > 
+
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
