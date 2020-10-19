@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD262921AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 06:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7DD2921EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 06:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727340AbgJSETU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 00:19:20 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:54575 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgJSETS (ORCPT
+        id S1727977AbgJSE1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 00:27:49 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13596 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726829AbgJSE1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 00:19:18 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 18 Oct 2020 21:19:18 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 18 Oct 2020 21:19:17 -0700
-X-QCInternal: smtphost
-Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 19 Oct 2020 09:49:08 +0530
-Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
-        id E8FD121E1F; Mon, 19 Oct 2020 09:49:06 +0530 (IST)
-From:   Mansur Alisha Shaik <mansur@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, swboyd@chromium.org,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: [PATCH v4 4/4] venus: put dummy vote on video-mem path after last session release
-Date:   Mon, 19 Oct 2020 09:48:14 +0530
-Message-Id: <1603081094-17223-5-git-send-email-mansur@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603081094-17223-1-git-send-email-mansur@codeaurora.org>
-References: <1603081094-17223-1-git-send-email-mansur@codeaurora.org>
+        Mon, 19 Oct 2020 00:27:49 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09J42con060747;
+        Mon, 19 Oct 2020 00:27:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=tcWDIXacr+AR5okwAEeGfsqusWRz2oIQrT0H2Psi9yk=;
+ b=A4uH/3UC3yN2V9I432ysCixH2S8ff+8iZsZ2RUilkQUTJRiOOr9ffFmahTufy414qHQ6
+ pr5y703IXCyWB7yUR6hS5AhGcwRUOsO3FIvSH+1vVFoD5dJmrt1kIHwt0+phodFZ6HFT
+ l5UF+N2VHKIhEO+e9yRAwAIOGoKbMhBvYoZPhmA/kvlI74TOwwzpTXCU3VRMD9FQcsaZ
+ mdTtbDGTUAY5wBTV+qvPkyWR85ovfPw7JNS9rah+/EoDqF0+dGitPo2I2//VLBzr5Rik
+ vQPbRHDHWLbvrvAbbh/4doVFjLJwLBdRBoOljolKfCzG38H2OMp6/YXVnsv+WtGYBpCf cA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3492puhd2h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Oct 2020 00:27:30 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09J4LPrI105865;
+        Mon, 19 Oct 2020 00:27:29 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3492puhd20-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Oct 2020 00:27:29 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09J4I9Zb019688;
+        Mon, 19 Oct 2020 04:27:27 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma01fra.de.ibm.com with ESMTP id 347r880uvd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Oct 2020 04:27:27 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09J4RPki27328966
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Oct 2020 04:27:25 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0C17FA4057;
+        Mon, 19 Oct 2020 04:27:25 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4DE88A4040;
+        Mon, 19 Oct 2020 04:27:21 +0000 (GMT)
+Received: from srikart450.in.ibm.com (unknown [9.79.221.103])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 19 Oct 2020 04:27:21 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>
+Subject: [PATCH v2 0/2] Fixes for coregroup
+Date:   Mon, 19 Oct 2020 09:57:14 +0530
+Message-Id: <20201019042716.106234-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-18_13:2020-10-16,2020-10-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ suspectscore=0 phishscore=0 malwarescore=0 mlxlogscore=723 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010190032
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per current implementation, video driver is unvoting "videom-mem" path
-for last video session during vdec_session_release().
-While video playback when we try to suspend device, we see video clock
-warnings since votes are already removed during vdec_session_release().
+These patches fixes problems introduced by the coregroup patches.
+The first patch we remove a redundant variable.
+Second patch allows to boot with CONFIG_CPUMASK_OFFSTACK enabled.
 
-corrected this by putting dummy vote on "video-mem" after last video
-session release and unvoting it during suspend.
+Changelog v1->v2:
+https://lore.kernel.org/linuxppc-dev/20201008034240.34059-1-srikar@linux.vnet.ibm.com/t/#u
+1. 1st patch was not part of previous posting.
+2. Updated 2nd patch based on comments from Michael Ellerman
 
-Fixes: 07f8f22a33a9e ("media: venus: core: remove CNOC voting while device
-suspend")
-Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
-Changes in v4:
-- As per Stanimir's comments, corrected fixes tag
+Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nathan Lynch <nathanl@linux.ibm.com>
+Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Qian Cai <cai@redhat.com>
 
- drivers/media/platform/qcom/venus/pm_helpers.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Srikar Dronamraju (2):
+  powerpc/smp: Remove unnecessary variable
+  powerpc/smp: Use GFP_ATOMIC while allocating tmp mask
 
-diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index 57877ea..0ebba8e 100644
---- a/drivers/media/platform/qcom/venus/pm_helpers.c
-+++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -212,6 +212,16 @@ static int load_scale_bw(struct venus_core *core)
- 	}
- 	mutex_unlock(&core->lock);
- 
-+	/*
-+	 * keep minimum bandwidth vote for "video-mem" path,
-+	 * so that clks can be disabled during vdec_session_release().
-+	 * Actual bandwidth drop will be done during device supend
-+	 * so that device can power down without any warnings.
-+	 */
-+
-+	if (!total_avg && !total_peak)
-+		total_avg = kbps_to_icc(1000);
-+
- 	dev_dbg(core->dev, VDBGL "total: avg_bw: %u, peak_bw: %u\n",
- 		total_avg, total_peak);
- 
+ arch/powerpc/kernel/smp.c | 70 +++++++++++++++++++--------------------
+ 1 file changed, 35 insertions(+), 35 deletions(-)
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.18.2
 
