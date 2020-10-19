@@ -2,137 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A981292209
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 06:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BFF29220C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 06:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728581AbgJSE4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 00:56:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
+        id S1728704AbgJSE6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 00:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726829AbgJSE4K (ORCPT
+        with ESMTP id S1728603AbgJSE6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 00:56:10 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19B4C061755;
-        Sun, 18 Oct 2020 21:56:08 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 188so6854908qkk.12;
-        Sun, 18 Oct 2020 21:56:08 -0700 (PDT)
+        Mon, 19 Oct 2020 00:58:32 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E5BC0613D0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 21:58:30 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id e7so5270630pfn.12
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 21:58:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+DdX9ApBECm+ZbNtZ5Vnyo8TdWHP3VGSlELnREVWBNY=;
-        b=XQl3RjUCuFc72C5e68vkhmCKQQgsZkb9Vh0Thw8hzOZzbVkTFD4oW0HJS4kZ6wZnO5
-         h7qwyL+8o43sy9jIkDfnRYdrivkw96E6c/JE7XY/e1BYCz2dIVIdYZHQkRQXmsM5lbNr
-         GUEcOVIgdW6FRDAW2PwuDztW/r9zSpXdfmjCw=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6f/C91tZNh03qAAs3dj6+V8PcNIszWwYD5WiOJW/Er0=;
+        b=hFWsgeKIpyXv63TLxokl4C22aWQfvnpdVKlP9XwktpzygC+EIBOzHOeeG3fVitdSFF
+         LHJ6x/3/MqdVu9V+qpXe67o2VcWMH7XLwOncpvghPljed4FxRiMkLf2scwRSfmxL/rPA
+         3Tc+x2WVE76Y1Pxr0E1uiU5UE2Ou5NzNDWbz1ApMfKbkWXlRcsy4F9HYiJQ8NQXGMHrf
+         54GoMH95H2WrpiIzlI8LcJBzuifFJcXyanGESk5QEfJfybmhpzcK1buKfCjinbdQ0TfD
+         2vQI/gDFjA3SOdMTOKvhM71ScHfVKXEHIU3WNJ4xwtpjBU9A64G1MFJ68rcz9uSJUgpH
+         8S5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+DdX9ApBECm+ZbNtZ5Vnyo8TdWHP3VGSlELnREVWBNY=;
-        b=D3Ssa+CgQ47ocmANvui/80qBzCbLPgDlSwbw1bYwxl+5xG9Q5HcVE1NREf1gbdSBI0
-         lxUkHRmrDL6d98cCObjTtfXy1o4L8GGTaGEeGyzn+ENVxzyA93vwMejCHj9O1aJ94h74
-         7sOMD3BoWa8+hFxlXR0MzO/5KZ9eRklxTZOqLAYhP4cwCTdn9qHdPglNvewZIOMYPi1e
-         akPa94IA3v/uQ/J6y8Fp745ePspTBZuI6lI0zkLxqjS/By+1bGUEMP15KtEOcUKDmPAz
-         u1pmfVJLAhvYlCyr/2nqLBuD54cOHPIGoL8RoqCa8IUq+XXJa8nSBgnLGiLPljJBWiDL
-         0HAg==
-X-Gm-Message-State: AOAM530rwYKlc3dE0L3zbberXNd54qtG6E9x8r6Mrpzyh1RdNpooBPjK
-        EsxfiHVAIPU3sMEeDaUehawswSjfclN/p+K59f4=
-X-Google-Smtp-Source: ABdhPJyar9udlZPgCCqFMvDSZwmLzCPi0LxWbnXc6wqf6/x0UQyWB6Sox4JOJ3/KAzY0OBVi6VParLwqDvMXazd9S60=
-X-Received: by 2002:a37:48cc:: with SMTP id v195mr15006360qka.66.1603083367899;
- Sun, 18 Oct 2020 21:56:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6f/C91tZNh03qAAs3dj6+V8PcNIszWwYD5WiOJW/Er0=;
+        b=P/l9ev/XV8EkAXnInIqMtTKEhj3RtbmNd/D10/hmj19CwzthbkEs5U2tPZJHc9vxpn
+         DEC/SP90S2AqkQckM4VMxBRxVAtm+UhFzJnWIEtEB7rPpb+0CB7SPPjXt6pGICZSQhjH
+         XHGE44+m5CaRHH133zau+R79j6X3N83jzB/n1329QHxPNkPeQpiaLk3pXWcB1jU5HTMS
+         Xo9RrOISBzDrpsMHumJ8wg9zlflvFafhwa4QjElIihmyrutW2pyu6nGoOgp32UtE04O8
+         r2kGsjqmvZjQ0vGqtovbNznjDSoTWpA/e6qgtXAvJy1vOz4Le5WYyaa7PkPzyKSkbBk5
+         JJ5Q==
+X-Gm-Message-State: AOAM530fvbTsD9QGCXg+yAdEjpbkNgkrsQuLXL2cGItT8lAfrvkpwvyB
+        4MAyG3vk9d+weph6CG8icEIaFA==
+X-Google-Smtp-Source: ABdhPJxWF9t4wYpgYzkSlSShupSIZhYevBl94ZD7xoiUcQVL/1GrfPReeWHV9QXxkcnbMeOGAXhmzA==
+X-Received: by 2002:a65:5785:: with SMTP id b5mr12436826pgr.44.1603083510308;
+        Sun, 18 Oct 2020 21:58:30 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id z16sm10342158pfr.116.2020.10.18.21.58.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 18 Oct 2020 21:58:29 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 10:28:27 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
+        georgi.djakov@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
+ -EPROBE_DEFER
+Message-ID: <20201019045827.kl6qnx6gidhzjkrs@vireshk-i7>
+References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
+ <20201015180555.gacdzkofpibkdn2e@bogus>
+ <20201016042434.org6ibdqsqbzcdww@vireshk-i7>
+ <20201016060021.sotk72u4hioctg7o@bogus>
+ <20201016111222.lvakbmjhlrocpogt@bogus>
 MIME-Version: 1.0
-References: <96c6172d619c51acc5c1c4884b80785c59af4102.1602949927.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <96c6172d619c51acc5c1c4884b80785c59af4102.1602949927.git.christophe.leroy@csgroup.eu>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Mon, 19 Oct 2020 04:55:55 +0000
-Message-ID: <CACPK8XfgK0Bj3sLjKCi80jS6vK34FN5BTkU8FvBGcMR=RQn4Xw@mail.gmail.com>
-Subject: Re: [PATCH] asm-generic: Force inlining of get_order() to work around
- gcc10 poor decision
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arch@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016111222.lvakbmjhlrocpogt@bogus>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 17 Oct 2020 at 15:55, Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
-> When building mpc885_ads_defconfig with gcc 10.1,
-> the function get_order() appears 50 times in vmlinux:
->
-> [linux]# ppc-linux-objdump -x vmlinux | grep get_order | wc -l
-> 50
->
-> [linux]# size vmlinux
->    text    data     bss     dec     hex filename
-> 3842620  675624  135160 4653404  47015c vmlinux
->
-> In the old days, marking a function 'static inline' was forcing
-> GCC to inline, but since commit ac7c3e4ff401 ("compiler: enable
-> CONFIG_OPTIMIZE_INLINING forcibly") GCC may decide to not inline
-> a function.
->
-> It looks like GCC 10 is taking poor decisions on this.
->
-> get_order() compiles into the following tiny function,
-> occupying 20 bytes of text.
->
-> 0000007c <get_order>:
->   7c:   38 63 ff ff     addi    r3,r3,-1
->   80:   54 63 a3 3e     rlwinm  r3,r3,20,12,31
->   84:   7c 63 00 34     cntlzw  r3,r3
->   88:   20 63 00 20     subfic  r3,r3,32
->   8c:   4e 80 00 20     blr
->
-> By forcing get_order() to be __always_inline, the size of text is
-> reduced by 1940 bytes, that is almost twice the space occupied by
-> 50 times get_order()
->
-> [linux-powerpc]# size vmlinux
->    text    data     bss     dec     hex filename
-> 3840680  675588  135176 4651444  46f9b4 vmlinux
+On 16-10-20, 12:12, Sudeep Holla wrote:
+> On Fri, Oct 16, 2020 at 07:00:21AM +0100, Sudeep Holla wrote:
+> > On Fri, Oct 16, 2020 at 09:54:34AM +0530, Viresh Kumar wrote:
+> > > On 15-10-20, 19:05, Sudeep Holla wrote:
+> > > > OK, this breaks with SCMI which doesn't provide clocks but manage OPPs
+> > > > directly. Before this change clk_get(dev..) was allowed to fail and
+> > > > --EPROBE_DEFER was not an error.
+> > >
+> > > I think the change in itself is fine. We should be returning from
+> > > there if we get EPROBE_DEFER. The question is rather why are you
+> > > getting EPROBE_DEFER here ?
+> > >
+> >
+> > Ah OK, I didn't spend too much time, saw -EPROBE_DEFER, just reverted
+> > this patch and it worked. I need to check it in detail yet.
+> >
+> 
+> You confused me earlier. As I said there will be no clock provider
+> registered for SCMI CPU/Dev DVFS.
+> 	opp_table->clk = clk_get(dev, NULL);
+> will always return -EPROBE_DEFER as there is no clock provider for dev.
+> But this change now propagates that error to caller of dev_pm_opp_add
+> which means we can't add opp to a device if there are no clock providers.
+> This breaks for DVFS which don't operate separately with clocks and
+> regulators.
 
-I see similar results with GCC 10.2 building for arm32. There are 143
-instances of get_order with aspeed_g5_defconfig.
+The CPUs DT node shouldn't have a clock property in such a case and I
+would expect an error instead of EPROBE_DEFER then. Isn't it ?
 
-Before:
- 9071838 2630138  186468 11888444         b5673c vmlinux
-After:
- 9069886 2630126  186468 11886480         b55f90 vmlinux
-
-1952 bytes smaller with your patch applied. Did you raise this with
-anyone from GCC?
-
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-
-
-
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  include/asm-generic/getorder.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/asm-generic/getorder.h b/include/asm-generic/getorder.h
-> index e9f20b813a69..f2979e3a96b6 100644
-> --- a/include/asm-generic/getorder.h
-> +++ b/include/asm-generic/getorder.h
-> @@ -26,7 +26,7 @@
->   *
->   * The result is undefined if the size is 0.
->   */
-> -static inline __attribute_const__ int get_order(unsigned long size)
-> +static __always_inline __attribute_const__ int get_order(unsigned long size)
->  {
->         if (__builtin_constant_p(size)) {
->                 if (!size)
-> --
-> 2.25.0
->
+-- 
+viresh
