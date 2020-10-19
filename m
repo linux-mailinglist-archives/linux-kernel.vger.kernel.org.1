@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3DF292EC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15A3292EC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731379AbgJSTsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:48:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51308 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728196AbgJSTsP (ORCPT
+        id S1731171AbgJSTsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:48:11 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:60885
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728196AbgJSTsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:48:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603136894;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=bDsOLCPMFbR0cX2CHf90aiCRZhzzCHCD2XRNuPp/+Yk=;
-        b=ardXh3r58iBQt1iqeXxYCkpIIPi5l8E/dvnPKwKlIvyg8yYXOGXmeGW69WFAFTIwZUGZ0i
-        Z+aMcx7J2hrZftIhJb39mcgBDDcv2Fd51xtlE54Lp//8JT3iuQaTT9Y2xAjwSfDsx65V9f
-        10f3Rps9xjRXjFPgxR8p5cWfQoYNLew=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-5-2bDhgV0VMhONK4gNHKcAXQ-1; Mon, 19 Oct 2020 15:48:12 -0400
-X-MC-Unique: 2bDhgV0VMhONK4gNHKcAXQ-1
-Received: by mail-qt1-f198.google.com with SMTP id d6so768306qtp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:48:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=bDsOLCPMFbR0cX2CHf90aiCRZhzzCHCD2XRNuPp/+Yk=;
-        b=co5nwm/JKZZ8XPERCiJ/gQ2uc/2c+51c7DU9b/rP6BjZSzWyZa0evayiTONBymd7ow
-         k10GJUkOyC6GH9mL7Kg4e2PPyAtzH3MycDz3ns5DURzXltQj+rJgjznPMI0etsAFV5o7
-         0dgtoKZzug7goMJUWSNBYzt1HtfKjkqq9V1DVwp7I2fwfplYAANWAMkKj29Kh1NIFuyN
-         eexx/oWFmi+LQMT/qz7qjsm2ZgDyTkY8aAay5qh/YZ0dQG0WcFq7d7P7Ieg/zIj0wsPN
-         brj5Zlzm0Pc4FEnKtZVWAE9TBuBWY7KUWY8N8vIU6xNo1JolRmcCp//hm/FPCQmE4g9F
-         4ubw==
-X-Gm-Message-State: AOAM531Fmz2djVDkboYQ/ZCpeYyXGplKIGnG9mPAdveDuBOdMmaMC7g1
-        f6O2OAOi6OLC5I+r+ijofm956Cy8F4yars8jI8P4FWnrKpbOCXCBtDeJ4c8G0/If/t0E54SODXa
-        H5yZSMoeA0CoF5tSGIZjaDXvO
-X-Received: by 2002:a05:620a:1265:: with SMTP id b5mr1202488qkl.27.1603136891918;
-        Mon, 19 Oct 2020 12:48:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw81CUYvfLxISx3cCT0e2fYZOtr8WmXKqMokhkkzTusHzNRfZPMRYaV2QRXolMgWnlxdu+WoA==
-X-Received: by 2002:a05:620a:1265:: with SMTP id b5mr1202347qkl.27.1603136890093;
-        Mon, 19 Oct 2020 12:48:10 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id a3sm374871qtp.63.2020.10.19.12.48.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 12:48:09 -0700 (PDT)
-From:   trix@redhat.com
-To:     minyard@acm.org
-Cc:     openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] char: ipmi: remove unneeded break
-Date:   Mon, 19 Oct 2020 12:48:05 -0700
-Message-Id: <20201019194805.14996-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Mon, 19 Oct 2020 15:48:11 -0400
+X-IronPort-AV: E=Sophos;i="5.77,395,1596492000"; 
+   d="scan'208";a="362224214"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 21:48:08 +0200
+Date:   Mon, 19 Oct 2020 21:48:07 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Waiman Long <longman@redhat.com>
+cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Gilles Muller <Gilles.Muller@inria.fr>
+Subject: Re: slowdown due to reader-owned rwsem time-based spinning
+In-Reply-To: <ddbf4694-10c2-cd7e-b0ed-3ae54f262bde@redhat.com>
+Message-ID: <alpine.DEB.2.22.394.2010192143290.2781@hadrien>
+References: <alpine.DEB.2.22.394.2010151315190.2869@hadrien> <ddbf4694-10c2-cd7e-b0ed-3ae54f262bde@redhat.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
 
-A break is not needed if it is preceded by a return
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/char/ipmi/ipmi_devintf.c | 1 -
- 1 file changed, 1 deletion(-)
+On Mon, 19 Oct 2020, Waiman Long wrote:
 
-diff --git a/drivers/char/ipmi/ipmi_devintf.c b/drivers/char/ipmi/ipmi_devintf.c
-index f7b1c004a12b..3dd1d5abb298 100644
---- a/drivers/char/ipmi/ipmi_devintf.c
-+++ b/drivers/char/ipmi/ipmi_devintf.c
-@@ -490,7 +490,6 @@ static long ipmi_ioctl(struct file   *file,
- 		}
- 
- 		return ipmi_set_my_address(priv->user, val.channel, val.value);
--		break;
- 	}
- 
- 	case IPMICTL_GET_MY_CHANNEL_ADDRESS_CMD:
--- 
-2.18.1
+> On 10/15/20 7:38 AM, Julia Lawall wrote:
+> > Hello,
+> >
+> > Phoenix is an implementation of map reduce:
+> >
+> > https://github.com/kozyraki/phoenix
+> >
+> > The phoenix-2.0/tests subdirectory contains some benchmarks, including
+> > word_count.
+> >
+> > At the same time, on my server, since v5.8, the kernel has changed from
+> > using the governor intel_pstate by default to using intel_cpufreq.
+> > Intel_cpufreq causes kworkers to run on all cores every 0.004 seconds,
+> > while intel_pstate involves very few such stray processes.
+> >
+> > Suprisingly, all those kworkers cause the word_count benchmark to run 2-3
+> > times faster.  I bisected the problem back to the following commit, whcih
+> > was introduced in v5.3:
+> >
+> > commit 7d43f1ce9dd075d8b2aa3ad1f3970ef386a5c358
+> > Author: Waiman Long <longman@redhat.com>
+> > Date:   Mon May 20 16:59:13 2019 -0400
+> >
+> >      locking/rwsem: Enable time-based spinning on reader-owned rwsem
+> >
+> > Representative traces are attached.  word_count_5.9pwrsvpassive_1.pdf is
+> > the one with the kworkers.
+> >
+> > I don't know the Phoenix code in detail, but the problem seems to be in
+> > the infrastructure not the specific word count aplication, because most of
+> > the benchmarks seem to suffer similarly.  Some of the other benchmarks
+> > seem to take a variable and long amount of time to get started in the
+> > active mode, so perhaps the problem could be in reading the initial
+> > dataset.
+> >
+> > Before I plunge into it, do you have any suggestions as to what could be
+> > the problem?
+>
+> I am a bit confused as to what you are looking for. So you said this patch
+> make the benchmark run 2-3 times faster. Is this a problem? What are you
+> trying to achieve? Is it to make the passive case similar to the active case?
 
+Sorry, it seems that I was not clear.  Prior to the commit above the
+active case had good performance,  The patch caused the active case to
+slow down by 2-3 times.  Adding lots of kworkers that interrupt the
+threads eliminated the slowdown.
+
+>
+> What this patch does is to allow writer waiting for a rwsem to spin for a
+> while hoping the readers will release the lock soon to acquire the lock.
+> Before that, the writer will go to sleep immediately when the rwsem is owned
+> by readers. Probably because of that, the kworkers keep on running for a much
+> longer time as long as there are no other tasks competing for the CPUs.
+
+No, the kworkers don't run for a long time.  My hypothesis is that the
+kworkers interrupt a thread that is spinning waiting for a lock and thus
+allow the thread that is holding the lock to run.
+
+julia
