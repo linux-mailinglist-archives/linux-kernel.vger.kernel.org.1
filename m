@@ -2,110 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61462925A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31FD2925AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgJSKVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgJSKVj (ORCPT
+        id S1726565AbgJSKW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:22:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34765 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726259AbgJSKW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:21:39 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4184C0613CE;
-        Mon, 19 Oct 2020 03:21:38 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id i1so10772854wro.1;
-        Mon, 19 Oct 2020 03:21:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rDam2iBux83WmunYrPy6RIkxNQfpNh4uOchFEhMvXMw=;
-        b=ke1K2cvC3R38syswmV0bDDyDWj6nZESQqkQ323WDJxIoBqa6UgZ9LKqvtaVjj85nWa
-         CXLaF4bGei7QVNBj7RvSXhplu8Kk40RnFDoWo5NIAhZWCb4MOEPxtXvI8UXotFDRSCBo
-         WDih8AYIYqFM1NTDcjdy5+U//3N6Dm+pzWP8C8u4/ENPrx906kzLWt+6EySP1ZbS1/s2
-         GjQ/UIiQcxMCdL9rFUX6u/4R2wbmRQAnaIx15MHG0x1KaP7/SLmaP7Y3ZEGmts3RN+KY
-         50H7HeHAjnRgdyKB/mBXEpN3LRGfw1iCoO1r6Cc2PuibqKalct9NAWGN57R7c8GhtlZp
-         5xjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rDam2iBux83WmunYrPy6RIkxNQfpNh4uOchFEhMvXMw=;
-        b=Usze/4ZcqVxbSbxxiUJ/if+kDIwaRp0ptFeQRrwWKya/hy8OkDZgGaiHTPSo49TSnp
-         DheZjwDdGB3nfLgXoSw/qazlaIDMdB1MJL+LHDdAU5ScDRT3ca4+EltsYg8NVQilvaGG
-         nQ8Uad78kS/yf6sROmE6eNga6yaIx49E9DDlmJPCjK07DEoEjVs2l8DcOtxMp0EfS2Kr
-         iffVW1TC6sPJv702xrCn3PQ9nefqFbr3asUDrjJqOvPs/A2cieEai1dzD5GE5oIVDHpX
-         uuX0DgXOXylf7MoGQ5Oo74qbTE1FroWONxjMpupmfj/L1kGRQ5zYdQjHMCb+Wr3EVe9e
-         Wbhg==
-X-Gm-Message-State: AOAM5335KfNFygAmMaIPUgjSq3OOzYC3h90eUB2tnRUMFtu8ui5DjbNR
-        GDrz3PQgPhQbNTxQ9UeZIzo=
-X-Google-Smtp-Source: ABdhPJymr1886oZmydcTM0lwn9ycX7wbCyMOY00WEhv3e+OOYP91KSDh0/hmDryGvGdfVtslZd4i/Q==
-X-Received: by 2002:a5d:5387:: with SMTP id d7mr18692169wrv.224.1603102897459;
-        Mon, 19 Oct 2020 03:21:37 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id 130sm12047799wmd.18.2020.10.19.03.21.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 03:21:36 -0700 (PDT)
-Subject: Re: [PATCH 2/2] arm64: dts: mediatek: mt8516: add auxadc node
-To:     Fabien Parent <fparent@baylibre.com>, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org
-Cc:     robh+dt@kernel.org, pmeerw@pmeerw.net, lars@metafoo.de,
-        knaack.h@gmx.de, jic23@kernel.org
-References: <20201012205218.3010868-1-fparent@baylibre.com>
- <20201012205218.3010868-2-fparent@baylibre.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <ba99554d-b0e9-58bf-110e-541bd9d0e521@gmail.com>
-Date:   Mon, 19 Oct 2020 12:21:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 19 Oct 2020 06:22:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603102977;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dClCYoDEHGrmREG2sQsLlOLmsyhbsQZOxw+llhuTikA=;
+        b=imB+SIqIHx4E6/BCOR69UjLRnwgwaYHXbvyT6W8gfDGqsRyFR54Hfct310hiDyTfJdYerY
+        NguviApclcCEnj3xYsrUmJ4GsgMv17biYHufj8A0Zl+fJVYwyiGrJJA2Q0CM1ifN1E2oJb
+        XO4jNVzOkqOmG2Eg++1az8hx9gsSyyU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-sPW-dcUcMnKKgPRZkQiKug-1; Mon, 19 Oct 2020 06:22:55 -0400
+X-MC-Unique: sPW-dcUcMnKKgPRZkQiKug-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63CAB10199A8;
+        Mon, 19 Oct 2020 10:22:53 +0000 (UTC)
+Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 336545B4A4;
+        Mon, 19 Oct 2020 10:22:45 +0000 (UTC)
+Subject: Re: [PATCH v1 21/29] virtio-mem: memory notifier callbacks are
+ specific to Sub Block Mode (SBM)
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-22-david@redhat.com>
+ <20201019015724.GA54484@L-31X9LVDL-1304.local>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <794b68b2-a3da-5354-4a3b-62f94224c0a6@redhat.com>
+Date:   Mon, 19 Oct 2020 12:22:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201012205218.3010868-2-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201019015724.GA54484@L-31X9LVDL-1304.local>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/10/2020 22:52, Fabien Parent wrote:
-> Add node for the auxadc IP. The IP is compatible with the one found
-> in MT8173 SoC.
+On 19.10.20 03:57, Wei Yang wrote:
+> On Mon, Oct 12, 2020 at 02:53:15PM +0200, David Hildenbrand wrote:
+>> Let's rename accordingly.
+>>
+>> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>> Cc: Jason Wang <jasowang@redhat.com>
+>> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>> drivers/virtio/virtio_mem.c | 29 +++++++++++++++--------------
+>> 1 file changed, 15 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>> index 3a772714fec9..d06c8760b337 100644
+>> --- a/drivers/virtio/virtio_mem.c
+>> +++ b/drivers/virtio/virtio_mem.c
+>> @@ -589,8 +589,8 @@ static bool virtio_mem_contains_range(struct virtio_mem *vm, uint64_t start,
+>> 	return start >= vm->addr && start + size <= vm->addr + vm->region_size;
+>> }
+>>
+>> -static int virtio_mem_notify_going_online(struct virtio_mem *vm,
+>> -					  unsigned long mb_id)
+>> +static int virtio_mem_sbm_notify_going_online(struct virtio_mem *vm,
+>> +					      unsigned long mb_id)
 > 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-
-Applied to v5.10-tmp/dts64
-
-Thanks!
-
-> ---
->   arch/arm64/boot/dts/mediatek/mt8516.dtsi | 10 ++++++++++
->   1 file changed, 10 insertions(+)
+> Look into this patch with "virtio-mem: Big Block Mode (BBM) memory hotplug"
+> together, I thought the code is a little "complex".
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8516.dtsi b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-> index 89af661e7f63..943c426e9aaf 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8516.dtsi
-> @@ -470,5 +470,15 @@ usb0_port: usb-phy@11110800 {
->   				#phy-cells = <1>;
->   			};
->   		};
-> +
-> +		auxadc: adc@11003000 {
-> +			compatible = "mediatek,mt8516-auxadc",
-> +				     "mediatek,mt8173-auxadc";
-> +			reg = <0 0x11003000 0 0x1000>;
-> +			clocks = <&topckgen CLK_TOP_AUX_ADC>;
-> +			clock-names = "main";
-> +			#io-channel-cells = <1>;
-> +			status = "disabled";
-> +		};
->   	};
->   };
+> The final logic of virtio_mem_memory_notifier_cb() looks like this:
 > 
+>     virtio_mem_memory_notifier_cb()
+>         if (vm->in_sbm)
+> 	    notify_xxx()
+>         if (vm->in_sbm)
+> 	    notify_xxx()
+> 
+> Can we adjust this like
+> 
+>     virtio_mem_memory_notifier_cb()
+> 	notify_xxx()
+>             if (vm->in_sbm)
+>                 return
+> 	notify_xxx()
+>             if (vm->in_sbm)
+>                 return
+> 
+> This style looks a little better to me.
+
+Then we lose all the shared code after any of the mode-specific
+handling? Like we have in MEM_OFFLINE, MEM_ONLINE, MEM_CANCEL_OFFLINE, ...
+
+Don't think this will improve the situation.
+
+-- 
+Thanks,
+
+David / dhildenb
+
