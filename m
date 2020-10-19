@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4659C292BDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29EE292BDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730737AbgJSQug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
+        id S1730742AbgJSQux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730642AbgJSQug (ORCPT
+        with ESMTP id S1730642AbgJSQuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:50:36 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAA4C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:50:35 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id l16so835211ilj.9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:50:35 -0700 (PDT)
+        Mon, 19 Oct 2020 12:50:52 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E72C0613CE;
+        Mon, 19 Oct 2020 09:50:51 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id l16so836230ilj.9;
+        Mon, 19 Oct 2020 09:50:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=CZGaBpF+XG3vwH05pw71qWVZZZgkknNclI0WAqZQgSY=;
-        b=Cj5PKu+w0E1ji2GDGbABo9oM6ap9FJejYSREnFl6+ofXwjpvE9kCJnPziy+E874NK/
-         szGIej57JZ2r/5FjwTBHGITuDJX2stUxMPJU/jNvsGlpnexnBQLkQc/nQYOQnIWgjj8h
-         VjRwo0HQJ6mzT0EG7UEBPWuqJLBltMHx3zpNhUckZMNqejeUYoAkfSgdKDiJWWsEjxvx
-         oUiwGGaJSSw51hLsWIgVFsTOD0k/+bKavrp3vQqq8+nHyQ5GoyBIKdHZ+XyokBWdp9Kx
-         rPhfMb7//pnZHlZAqmnSn8XCJ9fcU5Tvt/TSeXgqZUN9J+DTtx3QdN6OFkr6t+jO5IBu
-         r8OA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qjlK8WvBSntPqVvpNX/SGBi23DkBpqAui+Tqkdmh+KE=;
+        b=Ns+H8U0ntimEqy8YRIa4ZGHqX59Kroq2QIuGPG59W7bacAP+pk9Zi+GyG+OK2fjpg0
+         1gg/MOeO2Uu0hFxzV0vhrdwY5WKpXx62TnW2SqvHFn4wH6+wrEkWAdVGBWikdJT0NAXN
+         JNczgzhQqhES4fN/54IRImztR4aMI7JslVujh7wNKvmyIkMufxIb280jOq5BxxYgS3F6
+         Xa9n7oLTDBny5Xb2m3gKs/ZiHC+YI72HHeYu0MN9Q26zQ0bgX3Te9n+4pBD56NIeeiq2
+         W/EAvZRwzvYM7CYDxR+1haExrLqbRuXnqxMz4ZJdYusI1RR0S7vxvfMxwFWRUHJYvNus
+         tnIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=CZGaBpF+XG3vwH05pw71qWVZZZgkknNclI0WAqZQgSY=;
-        b=aw26ziYmuO9cyIvQCTPqoF1Ec6x3/Ju1mL7bewqp5AeZEWzKTKPu2bMvYUN2OjCZ1y
-         nFN4FTwYfp0GkPjnPiv2yHjT05w5rbHOyGCVRygggwdWDT9F121/O6tgC2mMbjv7LJZy
-         ZcAlxIVtYhCUfteDZhQAsJZNmsPUox9qZXsC9I1Dx4DRXXis/0A5trWloEq3JvR4KxqA
-         ynmINbWfDH/mwn6BIEWf3CtkJ4FAPV/21bmxhl0TvL63cv7Dn3enBJM+9FZSvRTGOfYY
-         tRLZFwNaX5Zoh0ysNItb4qUbUiU7dX1PcxGgRXFzSxxZLLtUr1X0xAJnc8gNYUlnNN9s
-         zGcw==
-X-Gm-Message-State: AOAM533RiFgOomekDX7W7QYjG56iMVysg02GyixY+oE71KeIP4IIiiUl
-        t2jTvVK9fb6byLM7YWOYR7+LJ3OCC2WS6g==
-X-Google-Smtp-Source: ABdhPJyfh3SKt/Cs5dzhr5eRA3fFFyIBq9MlPQ3JP992LoEki9nwODqJhoNorbsGwiT26Ui9pkjp1Q==
-X-Received: by 2002:a92:bb9c:: with SMTP id x28mr766407ilk.77.1603126233747;
-        Mon, 19 Oct 2020 09:50:33 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id c2sm275921iot.52.2020.10.19.09.50.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 09:50:33 -0700 (PDT)
-Subject: Re: [PATCH] block/elevator: reduce the critical section
-To:     Hui Su <sh_def@163.com>, linux-block@vger.kernel.org,
+        bh=qjlK8WvBSntPqVvpNX/SGBi23DkBpqAui+Tqkdmh+KE=;
+        b=lymZKoLAclmbYFBIVa0hK8FIW/JVMa0+LJtcff/NP/+Fx0FfkASKS+wUogOHK1GW4i
+         c6naq67+/0b0oA4/p6dZ+Bo7ViQ6A5bpx6eIL8DTcCIC1BuNX/WxIY2PRYx+pneqq4Vq
+         sX59pTTWgdafWJ3MIo8PHEAEc4vsyC59pIQ2IR11dTbalOIqsdB842xTw9u6clU4oDMB
+         qF0XcqZhGvGuRjvCDAW9F+c8mNEdY8/FS/2Xn9SpeEZjisn74uxwaIGGe6DBx7fxsvjp
+         aJIVRTMvXOBojSLGpUo+XMk4EWQs6mPOv8svUJdx7BxzCHmbBtMYYMOzj5Qht/4FK4oo
+         h04Q==
+X-Gm-Message-State: AOAM531lKS9IQP3hnFOAcfKXXHigHO5z68lzSv5atsBlSjw60JfIsdc9
+        6lrPVaAfDjIgrHLdHtJjHis=
+X-Google-Smtp-Source: ABdhPJwfuN/7qf73JC2uq2A46lJw+/CG65J0opBApeLv1flNYWCfZ0HCkKriNKrIBflQmEfK9v1YKw==
+X-Received: by 2002:a92:c142:: with SMTP id b2mr722379ilh.207.1603126250105;
+        Mon, 19 Oct 2020 09:50:50 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:75c9:416d:1d67:486f])
+        by smtp.gmail.com with ESMTPSA id p17sm212839ilh.34.2020.10.19.09.50.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 09:50:49 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20201019164246.GA79115@rlk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e63eb362-a1fc-f746-b5cb-b58d76fd3d06@kernel.dk>
-Date:   Mon, 19 Oct 2020 10:50:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: [PATCH V2 1/3] arm64: dts: imx8mm: Add support for micfil
+Date:   Mon, 19 Oct 2020 11:50:36 -0500
+Message-Id: <20201019165038.274164-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201019164246.GA79115@rlk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/20 10:42 AM, Hui Su wrote:
-> 1.reduce the critical section in elevator_get().
-> 2.reduce the critical section in elevator_get_by_features().
-> 3.remove the found variable.
-> 
-> the elv_list_lock is used to protect the elv_list,
-> and the operations of elevator_type does not need
-> to be protected.
-> 
-> Signed-off-by: Hui Su <sh_def@163.com>
-> ---
->  block/elevator.c | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/block/elevator.c b/block/elevator.c
-> index 293c5c81397a..727902b31954 100644
-> --- a/block/elevator.c
-> +++ b/block/elevator.c
-> @@ -151,11 +151,11 @@ static struct elevator_type *elevator_get(struct request_queue *q,
->  		spin_lock(&elv_list_lock);
->  		e = elevator_find(name, q->required_elevator_features);
->  	}
-> +	spin_unlock(&elv_list_lock);
->  
->  	if (e && !try_module_get(e->elevator_owner))
->  		e = NULL;
->  
-> -	spin_unlock(&elv_list_lock);
->  	return e;
->  }
+The i.MX8M Mini has supports the MICFIL digital interface.
+It's a 16-bit audio signal from a PDM microphone bitstream.
+The driver is already in the kernel, but the node is missing.
 
-What happens for:
+This patch adds the micfil node.
 
-	A					B
-	spin_unlock(&elv_list_lock);
-						rmmod -> elv_unregister();
-	try_module_get();
+Signed-off-by: Adam Ford <aford173@gmail.com>
+---
+V2:  No change
 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+index b83f400def8b..fad1f9cdb241 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+@@ -339,6 +339,25 @@ sai6: sai@30060000 {
+ 				status = "disabled";
+ 			};
+ 
++			micfil: audio-controller@30080000 {
++				compatible = "fsl,imx8mm-micfil";
++				reg = <0x30080000 0x10000>;
++				interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk IMX8MM_CLK_PDM_IPG>,
++					 <&clk IMX8MM_CLK_PDM_ROOT>,
++					 <&clk IMX8MM_AUDIO_PLL1_OUT>,
++					 <&clk IMX8MM_AUDIO_PLL2_OUT>,
++					 <&clk IMX8MM_CLK_EXT3>;
++				clock-names = "ipg_clk", "ipg_clk_app",
++					      "pll8k", "pll11k", "clkext3";
++				dmas = <&sdma2 24 25 0x80000000>;
++				dma-names = "rx";
++				status = "disabled";
++			};
++
+ 			gpio1: gpio@30200000 {
+ 				compatible = "fsl,imx8mm-gpio", "fsl,imx35-gpio";
+ 				reg = <0x30200000 0x10000>;
 -- 
-Jens Axboe
+2.25.1
 
