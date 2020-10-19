@@ -2,132 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CF72929B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 291BD2929BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729647AbgJSOsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44348 "EHLO
+        id S1729717AbgJSOsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729572AbgJSOsQ (ORCPT
+        with ESMTP id S1729698AbgJSOsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:48:16 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E1FC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:48:15 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j7so7688915wrt.9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:48:15 -0700 (PDT)
+        Mon, 19 Oct 2020 10:48:51 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E529C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:48:51 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id v19so10526518edx.9
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:48:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=szeredi.hu; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
          :content-transfer-encoding;
-        bh=IByM6fAwfV36/UB3A2tjIml0N5VQ5jxPxkeC7coc2Zo=;
-        b=B0exkIpg0jMlPZlUstcDD5IUDvafjKZ0dLq9ENV4r1ik//YotB6f5RDT3Zlsrq3ksL
-         Cy0Ah3L2cdAUA/f7e0k39eR40fAnLIkY6l5PzanT45X0tYhCkVaN1YtmcnsYMP3XAs7c
-         mSxsP7lSE/RsvWRc3LjojkCUZXMUNqvOwLD0YVyG7neHJz1HSKSD9dFdN8xE1k//L63T
-         ckutiqsTzwdREsi+ewYourmbEmfPMLTc2n3lKA+xiTH8Z4fP8V7Z3SovGtrd31G4I1gH
-         K2EiQxzBLgl7qUUWMrq8wN6A5/8nuazOrZ4hkwUPhoNyFrgx/DiMTClXCwTsRK+6NFq5
-         2WzA==
+        bh=nFAqhOeRwk6xsRKTG725iKeHbR5L52DeHV/knpJzMzQ=;
+        b=YSykJST50i2yVfRgYP5pUXb3oIzFiF1PaoS0tXTZk1lZnxv9WYo1Dfxjt9XnsgHSvW
+         5ueVErIWDBe1Sj/kLVOoWqdciXzwJ9yTWlJ4sZTcjiCSLDGuMw7X0up64oAzPX4oieKU
+         utcTG3FwUraSuyrdopaUJsd3KEDY+6VptLQg4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IByM6fAwfV36/UB3A2tjIml0N5VQ5jxPxkeC7coc2Zo=;
-        b=Q1ySn4UNemXVRhibXoZG1rnczroH4tr7W5NALCF3svLkR1c74v/iilJoKaCzkY4VDB
-         smWyf0avco3BWZ92lhu7OEoy/j5TnznWftneYspZHwpD2w/klt285nFC+KwTbAeeAHiF
-         PRfo8oPrjMZOHH7B7Gm38reyz8ED001c5HgT1gVJl0Hvv4LYDr81/RbG5nyhwBXEYyNz
-         y0zCh4x3F0sSe5DRQGFfvN/miaUxEzQD9Z81ALYWlW3pnJTuNsu4Kt6LgI6p7DQ6URKT
-         VpZg/dppKkPeD+Eky++hamFxUs/3mQWHx/NDGrbTa5Krek3cxDvoRDpihfYhh41hASZ7
-         dmEQ==
-X-Gm-Message-State: AOAM533ZwIBGCOOf5hoXJyNm+5I5Fv26hOtbI8wWC7mz/KeE/Imar3zJ
-        lYNBSBhtMbEeYJTT4qTi+7Z95g==
-X-Google-Smtp-Source: ABdhPJyV1Y3VAHw8VVM4EZvMv63AARzDLXjLHn4YWRX67f3y+tTQEujcWlBoxLgd5gIIkgCKnNmQbg==
-X-Received: by 2002:a5d:4c4b:: with SMTP id n11mr19735303wrt.171.1603118894402;
-        Mon, 19 Oct 2020 07:48:14 -0700 (PDT)
-Received: from bojack.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id v6sm334971wmj.6.2020.10.19.07.48.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=nFAqhOeRwk6xsRKTG725iKeHbR5L52DeHV/knpJzMzQ=;
+        b=j3/208h59m+EPV+iJ2u9pUpbhkpIojMTj96fb81UTZUZPLfEBdzawdGy9nXOIHdWbc
+         pDWbvLuSxd4jMULQg7+0kIlEMMnlF1HmsSdpzxLXFyVdcGL855JwWdc4KKReJlUTDaGW
+         6fIDDCmjB7KclvwPnkzKAJDRytJjfsGL+bBDOlUuzFj8bckJxRuTDlZKFTVafJRcyyLe
+         ySvgQqqMf+B5DwMg6QXc2uju8CIxJYHZuQ1jVKQL6eKwi++QACFODOuS2lcVmXUvHRI8
+         Coashe3SIv9PmR0H9xLHIPVUA4NW3PxFzrwoQmza4/XJxiX2lH7Vixij6LPeAXxPuYYu
+         GHig==
+X-Gm-Message-State: AOAM532F0TGwsNYwTYeq8fx8KKBcIcQwMttHBEURhIc6g7/FAlX8GfQf
+        yod+xjUt2g626kb3j5iRZWIaLpIHJLGfSw==
+X-Google-Smtp-Source: ABdhPJwlwwIdQuoiNSTialbjFlLypOcUr0TrK8J+0234ihF0tWvIQzUAsGBJmt9dfOA+OmLrv7B0RQ==
+X-Received: by 2002:a05:6402:195:: with SMTP id r21mr176679edv.164.1603118929655;
+        Mon, 19 Oct 2020 07:48:49 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
+        by smtp.gmail.com with ESMTPSA id c19sm11145847edt.48.2020.10.19.07.48.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 07:48:13 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     p.zabel@pengutronix.de
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Subject: [PATCH v2] reset: meson: make it possible to build as a module
-Date:   Mon, 19 Oct 2020 16:48:09 +0200
-Message-Id: <20201019144809.943608-1-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 19 Oct 2020 07:48:48 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 16:48:46 +0200
+From:   Miklos Szeredi <miklos@szeredi.hu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [GIT PULL] fuse update for 5.10
+Message-ID: <20201019144846.GB327006@miu.piliscsaba.redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to reduce the kernel Image size on multi-platform distributions,
-make it possible to build the reset controller driver as a module.
+Hi Linus,
 
-This partially reverts 8290924e ("reset: meson: make it explicitly non-modular")
+Please pull from:
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-Tested-by: Kevin Hilman <khilman@baylibre.com>
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-update-5.10
+
+- Support directly accessing host page cache from virtiofs.  This can
+  improve I/O performance for various workloads, as well as reducing the
+  memory requirement by eliminating double caching.  Thanks to Vivek Goyal
+  for doing most of the work on this.
+
+- Allow automatic submounting inside virtiofs.  This allows unique st_dev/
+  st_ino values to be assigned inside the guest to files residing on
+  different filesystems on the host.  Thanks to Max Reitz for the patches.
+
+- Fix an old use after free bug found by Pradeep P V K.
+
+*Merge notes*
+
+This tree acquired two merge conflicts against mainline:
+
+ 1) a trivial one in fs/fuse/file.c: keep HEAD and s/ff->fc/ff->fm->fc/
+
+ 2) a semantic conflict in fs/fuse/virtio_fs.c against commit a4574f63edc6
+ ("mm/memremap_pages: convert to 'struct range'") and commit b7b3c01b1915
+ ("mm/memremap_pages: support multiple ranges per invocation"):
+   - s/pgmap->res/pgmap->range/
+   - s/struct resource/struct range/
+   - remove .name assignment
+   - add "pgmap->nr_range = 1"
+
+Appended my resolution at the end of this mail.
+
+Thanks,
+Miklos
+
 ---
-Changes since v1 at [1]:
-- Fix Kconfig depends
-- Add missing MODULE_DEVICE_TABLE
-- Add kevin's review & test tags
+André Almeida (1):
+      fuse: update project homepage
 
-[1] http://lore.kernel.org/r/20201013133943.412119-1-narmstrong@baylibre.com
+Max Reitz (6):
+      fuse: add submount support to <uapi/linux/fuse.h>
+      fuse: store fuse_conn in fuse_req
+      fuse: drop fuse_conn parameter where possible
+      fuse: split fuse_mount off of fuse_conn
+      fuse: Allow fuse_fill_super_common() for submounts
+      fuse: implement crossmounts
 
- drivers/reset/Kconfig       | 3 ++-
- drivers/reset/reset-meson.c | 8 +++++++-
- 2 files changed, 9 insertions(+), 2 deletions(-)
+Miklos Szeredi (2):
+      fuse: fix page dereference after free
+      fuse: connection remove fix
 
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index d9efbfd29646..9a36111cfd2c 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -94,7 +94,8 @@ config RESET_LPC18XX
- 	  This enables the reset controller driver for NXP LPC18xx/43xx SoCs.
- 
- config RESET_MESON
--	bool "Meson Reset Driver" if COMPILE_TEST
-+	tristate "Meson Reset Driver"
-+	depends on ARCH_MESON || COMPILE_TEST
- 	default ARCH_MESON
- 	help
- 	  This enables the reset driver for Amlogic Meson SoCs.
-diff --git a/drivers/reset/reset-meson.c b/drivers/reset/reset-meson.c
-index 94d7ba88d7d2..c9bc325ad65a 100644
---- a/drivers/reset/reset-meson.c
-+++ b/drivers/reset/reset-meson.c
-@@ -9,6 +9,7 @@
- #include <linux/init.h>
- #include <linux/io.h>
- #include <linux/of.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/reset-controller.h>
- #include <linux/slab.h>
-@@ -104,6 +105,7 @@ static const struct of_device_id meson_reset_dt_ids[] = {
- 	 { .compatible = "amlogic,meson-a1-reset",   .data = &meson_a1_param},
- 	 { /* sentinel */ },
- };
-+MODULE_DEVICE_TABLE(of, meson_reset_dt_ids);
- 
- static int meson_reset_probe(struct platform_device *pdev)
- {
-@@ -142,4 +144,8 @@ static struct platform_driver meson_reset_driver = {
- 		.of_match_table	= meson_reset_dt_ids,
- 	},
- };
--builtin_platform_driver(meson_reset_driver);
-+module_platform_driver(meson_reset_driver);
-+
-+MODULE_DESCRIPTION("Amlogic Meson Reset Controller driver");
-+MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
-+MODULE_LICENSE("Dual BSD/GPL");
--- 
-2.25.1
+Sebastien Boeuf (3):
+      virtio: Add get_shm_region method
+      virtio: Implement get_shm_region for PCI transport
+      virtio: Implement get_shm_region for MMIO transport
 
+Stefan Hajnoczi (3):
+      virtiofs: set up virtio_fs dax_device
+      virtiofs: implement FUSE_INIT map_alignment field
+      virtiofs: add DAX mmap support
+
+Vivek Goyal (13):
+      dax: Modify bdev_dax_pgoff() to handle NULL bdev
+      dax: Create a range version of dax_layout_busy_page()
+      virtiofs: provide a helper function for virtqueue initialization
+      virtiofs: get rid of no_mount_options
+      virtiofs: add a mount option to enable dax
+      virtiofs: keep a list of free dax memory ranges
+      virtiofs: introduce setupmapping/removemapping commands
+      virtiofs: implement dax read/write operations
+      virtiofs: define dax address space operations
+      virtiofs: serialize truncate/punch_hole and dax fault path
+      virtiofs: maintain a list of busy elements
+      virtiofs: add logic to free up a memory range
+      virtiofs: calculate number of scatter-gather elements accurately
+
+---
+ Documentation/filesystems/fuse.rst |    2 +-
+ MAINTAINERS                        |    2 +-
+ drivers/dax/super.c                |    3 +-
+ drivers/virtio/virtio_mmio.c       |   31 +
+ drivers/virtio/virtio_pci_modern.c |   95 +++
+ fs/dax.c                           |   29 +-
+ fs/fuse/Kconfig                    |   16 +-
+ fs/fuse/Makefile                   |    6 +-
+ fs/fuse/control.c                  |   20 +-
+ fs/fuse/cuse.c                     |   21 +-
+ fs/fuse/dax.c                      | 1365 ++++++++++++++++++++++++++++++++++++
+ fs/fuse/dev.c                      |  189 ++---
+ fs/fuse/dir.c                      |  220 ++++--
+ fs/fuse/file.c                     |  256 ++++---
+ fs/fuse/fuse_i.h                   |  185 ++++-
+ fs/fuse/inode.c                    |  391 ++++++++---
+ fs/fuse/readdir.c                  |   10 +-
+ fs/fuse/virtio_fs.c                |  378 ++++++++--
+ fs/fuse/xattr.c                    |   34 +-
+ include/linux/dax.h                |    6 +
+ include/linux/virtio_config.h      |   17 +
+ include/uapi/linux/fuse.h          |   50 +-
+ include/uapi/linux/virtio_fs.h     |    3 +
+ include/uapi/linux/virtio_mmio.h   |   11 +
+ include/uapi/linux/virtio_pci.h    |   11 +-
+ 25 files changed, 2854 insertions(+), 497 deletions(-)
+ create mode 100644 fs/fuse/dax.c
+---
+diff --cc fs/fuse/file.c
+index 43c165e796da,53d4dd1ab992..c03034e8c152
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@@ -3120,17 -3156,10 +3146,17 @@@ fuse_direct_IO(struct kiocb *iocb, stru
+  	 * By default, we want to optimize all I/Os with async request
+  	 * submission to the client filesystem if supported.
+  	 */
+- 	io->async = ff->fc->async_dio;
+ -	io->async = async_dio;
+++	io->async = ff->fm->fc->async_dio;
+  	io->iocb = iocb;
+  	io->blocking = is_sync_kiocb(iocb);
+  
+ +	/* optimization for short read */
+ +	if (io->async && !io->write && offset + count > i_size) {
+- 		iov_iter_truncate(iter, fuse_round_up(ff->fc, i_size - offset));
+++		iov_iter_truncate(iter, fuse_round_up(ff->fm->fc, i_size - offset));
+ +		shortened = count - iov_iter_count(iter);
+ +		count -= shortened;
+ +	}
+ +
+  	/*
+  	 * We cannot asynchronously extend the size of a file.
+  	 * In such case the aio will behave exactly like sync io.
+diff --cc fs/fuse/virtio_fs.c
+index 104f35de5270,f9c1aa1d289c..21a9e534417c
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@@ -676,6 -733,130 +733,130 @@@ static void virtio_fs_cleanup_vqs(struc
+  	vdev->config->del_vqs(vdev);
+  }
+  
++ /* Map a window offset to a page frame number.  The window offset will have
++  * been produced by .iomap_begin(), which maps a file offset to a window
++  * offset.
++  */
++ static long virtio_fs_direct_access(struct dax_device *dax_dev, pgoff_t pgoff,
++ 				    long nr_pages, void **kaddr, pfn_t *pfn)
++ {
++ 	struct virtio_fs *fs = dax_get_private(dax_dev);
++ 	phys_addr_t offset = PFN_PHYS(pgoff);
++ 	size_t max_nr_pages = fs->window_len/PAGE_SIZE - pgoff;
++ 
++ 	if (kaddr)
++ 		*kaddr = fs->window_kaddr + offset;
++ 	if (pfn)
++ 		*pfn = phys_to_pfn_t(fs->window_phys_addr + offset,
++ 					PFN_DEV | PFN_MAP);
++ 	return nr_pages > max_nr_pages ? max_nr_pages : nr_pages;
++ }
++ 
++ static size_t virtio_fs_copy_from_iter(struct dax_device *dax_dev,
++ 				       pgoff_t pgoff, void *addr,
++ 				       size_t bytes, struct iov_iter *i)
++ {
++ 	return copy_from_iter(addr, bytes, i);
++ }
++ 
++ static size_t virtio_fs_copy_to_iter(struct dax_device *dax_dev,
++ 				       pgoff_t pgoff, void *addr,
++ 				       size_t bytes, struct iov_iter *i)
++ {
++ 	return copy_to_iter(addr, bytes, i);
++ }
++ 
++ static int virtio_fs_zero_page_range(struct dax_device *dax_dev,
++ 				     pgoff_t pgoff, size_t nr_pages)
++ {
++ 	long rc;
++ 	void *kaddr;
++ 
++ 	rc = dax_direct_access(dax_dev, pgoff, nr_pages, &kaddr, NULL);
++ 	if (rc < 0)
++ 		return rc;
++ 	memset(kaddr, 0, nr_pages << PAGE_SHIFT);
++ 	dax_flush(dax_dev, kaddr, nr_pages << PAGE_SHIFT);
++ 	return 0;
++ }
++ 
++ static const struct dax_operations virtio_fs_dax_ops = {
++ 	.direct_access = virtio_fs_direct_access,
++ 	.copy_from_iter = virtio_fs_copy_from_iter,
++ 	.copy_to_iter = virtio_fs_copy_to_iter,
++ 	.zero_page_range = virtio_fs_zero_page_range,
++ };
++ 
++ static void virtio_fs_cleanup_dax(void *data)
++ {
++ 	struct dax_device *dax_dev = data;
++ 
++ 	kill_dax(dax_dev);
++ 	put_dax(dax_dev);
++ }
++ 
++ static int virtio_fs_setup_dax(struct virtio_device *vdev, struct virtio_fs *fs)
++ {
++ 	struct virtio_shm_region cache_reg;
++ 	struct dev_pagemap *pgmap;
++ 	bool have_cache;
++ 
++ 	if (!IS_ENABLED(CONFIG_FUSE_DAX))
++ 		return 0;
++ 
++ 	/* Get cache region */
++ 	have_cache = virtio_get_shm_region(vdev, &cache_reg,
++ 					   (u8)VIRTIO_FS_SHMCAP_ID_CACHE);
++ 	if (!have_cache) {
++ 		dev_notice(&vdev->dev, "%s: No cache capability\n", __func__);
++ 		return 0;
++ 	}
++ 
++ 	if (!devm_request_mem_region(&vdev->dev, cache_reg.addr, cache_reg.len,
++ 				     dev_name(&vdev->dev))) {
++ 		dev_warn(&vdev->dev, "could not reserve region addr=0x%llx len=0x%llx\n",
++ 			 cache_reg.addr, cache_reg.len);
++ 		return -EBUSY;
++ 	}
++ 
++ 	dev_notice(&vdev->dev, "Cache len: 0x%llx @ 0x%llx\n", cache_reg.len,
++ 		   cache_reg.addr);
++ 
++ 	pgmap = devm_kzalloc(&vdev->dev, sizeof(*pgmap), GFP_KERNEL);
++ 	if (!pgmap)
++ 		return -ENOMEM;
++ 
++ 	pgmap->type = MEMORY_DEVICE_FS_DAX;
++ 
++ 	/* Ideally we would directly use the PCI BAR resource but
++ 	 * devm_memremap_pages() wants its own copy in pgmap.  So
++ 	 * initialize a struct resource from scratch (only the start
++ 	 * and end fields will be used).
++ 	 */
+ -	pgmap->res = (struct resource){
+ -		.name = "virtio-fs dax window",
+++	pgmap->range = (struct range) {
++ 		.start = (phys_addr_t) cache_reg.addr,
++ 		.end = (phys_addr_t) cache_reg.addr + cache_reg.len - 1,
++ 	};
+++	pgmap->nr_range = 1;
++ 
++ 	fs->window_kaddr = devm_memremap_pages(&vdev->dev, pgmap);
++ 	if (IS_ERR(fs->window_kaddr))
++ 		return PTR_ERR(fs->window_kaddr);
++ 
++ 	fs->window_phys_addr = (phys_addr_t) cache_reg.addr;
++ 	fs->window_len = (phys_addr_t) cache_reg.len;
++ 
++ 	dev_dbg(&vdev->dev, "%s: window kaddr 0x%px phys_addr 0x%llx len 0x%llx\n",
++ 		__func__, fs->window_kaddr, cache_reg.addr, cache_reg.len);
++ 
++ 	fs->dax_dev = alloc_dax(fs, NULL, &virtio_fs_dax_ops, 0);
++ 	if (IS_ERR(fs->dax_dev))
++ 		return PTR_ERR(fs->dax_dev);
++ 
++ 	return devm_add_action_or_reset(&vdev->dev, virtio_fs_cleanup_dax,
++ 					fs->dax_dev);
++ }
++ 
+  static int virtio_fs_probe(struct virtio_device *vdev)
+  {
+  	struct virtio_fs *fs;
