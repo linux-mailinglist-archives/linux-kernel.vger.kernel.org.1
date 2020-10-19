@@ -2,115 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 322C12929A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EE02929AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729590AbgJSOm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:42:28 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:37766 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729396AbgJSOm1 (ORCPT
+        id S1729676AbgJSOnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:43:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27765 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728311AbgJSOnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:42:27 -0400
-X-IronPort-AV: E=Sophos;i="5.77,394,1596492000"; 
-   d="scan'208";a="473331876"
-Received: from 91-160-5-165.subs.proxad.net (HELO [192.168.44.21]) ([91.160.5.165])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA; 19 Oct 2020 16:42:25 +0200
-Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
-To:     Morten Rasmussen <morten.rasmussen@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Len Brown <len.brown@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        x86@kernel.org, guohanjun@huawei.com, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, linux-acpi@vger.kernel.org,
-        Jerome Glisse <jglisse@redhat.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Will Deacon <will@kernel.org>, valentin.schneider@arm.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
- <20201019103522.GK2628@hirez.programming.kicks-ass.net>
- <20201019123226.00006705@Huawei.com> <20201019131052.GC8004@e123083-lin>
- <20201019134157.00001c97@Huawei.com> <20201019141653.GE8004@e123083-lin>
-From:   Brice Goglin <Brice.Goglin@inria.fr>
-Autocrypt: addr=Brice.Goglin@inria.fr; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <0190e18f-7a55-e1d6-b966-f7844a251609@inria.fr>
-Date:   Mon, 19 Oct 2020 16:42:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20201019141653.GE8004@e123083-lin>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Mon, 19 Oct 2020 10:43:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603118602;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=HS9j6NFClw0xbf6pUYexyg09LSF+fCEmAaVviysMnkA=;
+        b=TaE6ksg86rpg5iH+qAkOv23k15+o21kd7RNg7np8fdlO4vuuy8AwJD+ZCoVazW1UtVRGRf
+        QVxgddQhiMm8Ra2OVT8rYVRLIha6sMVvCmdYFkAgz/9/oDqAJdyD6L2a3cFgla1M/ja2QT
+        fqWB0/WTlhnNHh1N6wVLCesq908wezY=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-24-zzNzyYeCMQ6kMD_4W0AQmA-1; Mon, 19 Oct 2020 10:43:19 -0400
+X-MC-Unique: zzNzyYeCMQ6kMD_4W0AQmA-1
+Received: by mail-qk1-f200.google.com with SMTP id j185so7361893qkf.7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:43:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HS9j6NFClw0xbf6pUYexyg09LSF+fCEmAaVviysMnkA=;
+        b=J7Fejcu4APVcr1E2FXfprzdVzYhiSfrb15pZSjg268tI3Ua7nJNupZOZrbn2X/PAGc
+         UZK80ad+8s+3xM/pjcxIyIL6+MRitQsKferL3bC2cfvVKI1VmzDg1ibQSAKwaD9wXj6z
+         90PTS5yUAXd0XH1Ovd7ZQwegCaSZavgG912rsyxxidmJzFr7Fm4rl7HHVw4uor1C+cgF
+         HRFpqS9wDCvA1Wj+KAhXpNUe3knioB/A0aRB1OOwayAa9CKZTxf2pdV+JLd9CZsOx4si
+         IcrNioFYdmqilcEOsFQqdiKk5LSUuHZ60A/Hwr8MjjTfR9IIQt0p1342x4sm0lPxrWfM
+         3NQg==
+X-Gm-Message-State: AOAM532hFbq170q9ASBeMpsKDDaPlGQYdQWITaeKEvYpQ/uYwSn5wVNN
+        bwpmmGGsPnDLOmCLSaZzjykSUSZw5qSC8VPVH1XUIws5oRVQ/ZriYJVo6oUOHkfhTPgrT+cHrbp
+        C4CZJMu2jIXHADudroyvg3zx3
+X-Received: by 2002:ac8:937:: with SMTP id t52mr15592697qth.268.1603118598556;
+        Mon, 19 Oct 2020 07:43:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzAjzy0z6rzYX/CmMgw+uXDi5Q1r8M21MiqKjUC0Nu0rYOLfUvcBlanK5Bdn1pFWCESWLn7oQ==
+X-Received: by 2002:ac8:937:: with SMTP id t52mr15592664qth.268.1603118598290;
+        Mon, 19 Oct 2020 07:43:18 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id j8sm107460qke.38.2020.10.19.07.43.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 07:43:17 -0700 (PDT)
+From:   trix@redhat.com
+To:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, issor.oruam@gmail.com,
+        Anthony.Koo@amd.com, Rodrigo.Siqueira@amd.com, Tony.Cheng@amd.com,
+        Charlene.Liu@amd.com, yogesh.mohanmarimuthu@amd.com,
+        Aric.Cyr@amd.com, Igor.Kravchenko@amd.com,
+        colin.king@canonical.com, tao.zhou1@amd.com, Dennis.Li@amd.com,
+        mario.kleiner.de@gmail.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] drm/amdgpu: remove unneeded break
+Date:   Mon, 19 Oct 2020 07:43:11 -0700
+Message-Id: <20201019144311.18260-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
-Le 19/10/2020 à 16:16, Morten Rasmussen a écrit :
->
->>> If there is a provable benefit of having interconnect grouping
->>> information, I think it would be better represented by a distance matrix
->>> like we have for NUMA.
->> There have been some discussions in various forums about how to
->> describe the complexity of interconnects well enough to actually be
->> useful.  Those have mostly floundered on the immense complexity of
->> designing such a description in a fashion any normal software would actually
->> use.  +cc Jerome who raised some of this in the kernel a while back.
-> I agree that representing interconnect details is hard. I had hoped that
-> a distance matrix would be better than nothing and more generic than
-> inserting extra group masks.
->
+A break is not needed if it is preceded by a return or break
 
-The distance matrix is indeed more precise, but would it scale to
-tens/hundreds of core? When ACPI HMAT latency/bandwidth was added, there
-were concerns that exposing the full matrix would be an issue for the
-kernel (that's why only local latency/bandwidth is exposed n sysfs).
-This was only for NUMA nodes/targets/initiators, you would have
-significantly more cores than that.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/gpu/drm/amd/display/dc/dce/dce_transform.c      | 1 -
+ drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c | 7 -------
+ drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c | 7 -------
+ drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c | 7 -------
+ drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c | 7 -------
+ drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c   | 7 -------
+ drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c   | 7 -------
+ 7 files changed, 43 deletions(-)
 
-Brice
-
+diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
+index 2a32b66959ba..130a0a0c8332 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
++++ b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
+@@ -1330,7 +1330,6 @@ static bool configure_graphics_mode(
+ 			REG_SET(OUTPUT_CSC_CONTROL, 0,
+ 				OUTPUT_CSC_GRPH_MODE, 0);
+ 			break;
+-			break;
+ 		case COLOR_SPACE_SRGB_LIMITED:
+ 			/* TV RGB */
+ 			REG_SET(OUTPUT_CSC_CONTROL, 0,
+diff --git a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
+index d741787f75dc..42c7d157da32 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
+@@ -418,25 +418,18 @@ static int map_transmitter_id_to_phy_instance(
+ 	switch (transmitter) {
+ 	case TRANSMITTER_UNIPHY_A:
+ 		return 0;
+-	break;
+ 	case TRANSMITTER_UNIPHY_B:
+ 		return 1;
+-	break;
+ 	case TRANSMITTER_UNIPHY_C:
+ 		return 2;
+-	break;
+ 	case TRANSMITTER_UNIPHY_D:
+ 		return 3;
+-	break;
+ 	case TRANSMITTER_UNIPHY_E:
+ 		return 4;
+-	break;
+ 	case TRANSMITTER_UNIPHY_F:
+ 		return 5;
+-	break;
+ 	case TRANSMITTER_UNIPHY_G:
+ 		return 6;
+-	break;
+ 	default:
+ 		ASSERT(0);
+ 		return 0;
+diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
+index 2bbfa2e176a9..382581c4a674 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
+@@ -471,25 +471,18 @@ static int map_transmitter_id_to_phy_instance(
+ 	switch (transmitter) {
+ 	case TRANSMITTER_UNIPHY_A:
+ 		return 0;
+-	break;
+ 	case TRANSMITTER_UNIPHY_B:
+ 		return 1;
+-	break;
+ 	case TRANSMITTER_UNIPHY_C:
+ 		return 2;
+-	break;
+ 	case TRANSMITTER_UNIPHY_D:
+ 		return 3;
+-	break;
+ 	case TRANSMITTER_UNIPHY_E:
+ 		return 4;
+-	break;
+ 	case TRANSMITTER_UNIPHY_F:
+ 		return 5;
+-	break;
+ 	case TRANSMITTER_UNIPHY_G:
+ 		return 6;
+-	break;
+ 	default:
+ 		ASSERT(0);
+ 		return 0;
+diff --git a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+index b622b4b1dac3..7b4b2304bbff 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+@@ -446,25 +446,18 @@ static int map_transmitter_id_to_phy_instance(
+ 	switch (transmitter) {
+ 	case TRANSMITTER_UNIPHY_A:
+ 		return 0;
+-	break;
+ 	case TRANSMITTER_UNIPHY_B:
+ 		return 1;
+-	break;
+ 	case TRANSMITTER_UNIPHY_C:
+ 		return 2;
+-	break;
+ 	case TRANSMITTER_UNIPHY_D:
+ 		return 3;
+-	break;
+ 	case TRANSMITTER_UNIPHY_E:
+ 		return 4;
+-	break;
+ 	case TRANSMITTER_UNIPHY_F:
+ 		return 5;
+-	break;
+ 	case TRANSMITTER_UNIPHY_G:
+ 		return 6;
+-	break;
+ 	default:
+ 		ASSERT(0);
+ 		return 0;
+diff --git a/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c b/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
+index 16fe7344702f..3d782b7c86cb 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
+@@ -383,25 +383,18 @@ static int map_transmitter_id_to_phy_instance(
+ 	switch (transmitter) {
+ 	case TRANSMITTER_UNIPHY_A:
+ 		return 0;
+-	break;
+ 	case TRANSMITTER_UNIPHY_B:
+ 		return 1;
+-	break;
+ 	case TRANSMITTER_UNIPHY_C:
+ 		return 2;
+-	break;
+ 	case TRANSMITTER_UNIPHY_D:
+ 		return 3;
+-	break;
+ 	case TRANSMITTER_UNIPHY_E:
+ 		return 4;
+-	break;
+ 	case TRANSMITTER_UNIPHY_F:
+ 		return 5;
+-	break;
+ 	case TRANSMITTER_UNIPHY_G:
+ 		return 6;
+-	break;
+ 	default:
+ 		ASSERT(0);
+ 		return 0;
+diff --git a/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c b/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
+index 5a5a9cb77acb..e9dd78c484d6 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
+@@ -453,25 +453,18 @@ static int map_transmitter_id_to_phy_instance(
+ 	switch (transmitter) {
+ 	case TRANSMITTER_UNIPHY_A:
+ 		return 0;
+-	break;
+ 	case TRANSMITTER_UNIPHY_B:
+ 		return 1;
+-	break;
+ 	case TRANSMITTER_UNIPHY_C:
+ 		return 2;
+-	break;
+ 	case TRANSMITTER_UNIPHY_D:
+ 		return 3;
+-	break;
+ 	case TRANSMITTER_UNIPHY_E:
+ 		return 4;
+-	break;
+ 	case TRANSMITTER_UNIPHY_F:
+ 		return 5;
+-	break;
+ 	case TRANSMITTER_UNIPHY_G:
+ 		return 6;
+-	break;
+ 	default:
+ 		ASSERT(0);
+ 		return 0;
+diff --git a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+index 0eae8cd35f9a..9dbf658162cd 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+@@ -458,25 +458,18 @@ static int map_transmitter_id_to_phy_instance(
+ 	switch (transmitter) {
+ 	case TRANSMITTER_UNIPHY_A:
+ 		return 0;
+-	break;
+ 	case TRANSMITTER_UNIPHY_B:
+ 		return 1;
+-	break;
+ 	case TRANSMITTER_UNIPHY_C:
+ 		return 2;
+-	break;
+ 	case TRANSMITTER_UNIPHY_D:
+ 		return 3;
+-	break;
+ 	case TRANSMITTER_UNIPHY_E:
+ 		return 4;
+-	break;
+ 	case TRANSMITTER_UNIPHY_F:
+ 		return 5;
+-	break;
+ 	case TRANSMITTER_UNIPHY_G:
+ 		return 6;
+-	break;
+ 	default:
+ 		ASSERT(0);
+ 		return 0;
+-- 
+2.18.1
 
