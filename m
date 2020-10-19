@@ -2,108 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1F5292400
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F949292402
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729711AbgJSI4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 04:56:52 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:32843 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729415AbgJSI4w (ORCPT
+        id S1729753AbgJSI5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 04:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729415AbgJSI5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 04:56:52 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 3EACB5C00BD;
-        Mon, 19 Oct 2020 04:56:51 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 19 Oct 2020 04:56:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=dbXPhf6D9YBCsQEA1lOPXVP5qhr
-        rI0CBgP3BP9BoDp0=; b=t9CcQOM4ZCqacWFp7SnhhO5eWqcwb0CtXrs8P4SCJEn
-        UxFYqT+7MhQcQIkhUGkI87cEXO8q86H4vQ60Qr8EJWusx9qJGkUaBT1k+Ryhjr//
-        VDsYwGrkoP2EY1eOFvOh2aYSck7YxA/emlvtIUFpLNQ3VxLFWXRXre2hf0w02nzH
-        gSywlR5ZDQFlos+ebfeASzjHE51P87TBoBzVakxjdDv9Ue2oMD8TbKwCWiDWKN4+
-        gbjHFcLiSeaTxkZuKBvvt7G37X17exRR6WgargAjUWg5nz+8/H54huCnlc/DQh7I
-        4ErbHNEW0Bxj94vuQeEJ3xlOrO5cNOTp/lUAmBVhIqg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=dbXPhf
-        6D9YBCsQEA1lOPXVP5qhrrI0CBgP3BP9BoDp0=; b=jCTTN2sBiE8CclsQoBIvSv
-        s433uUth8sHIHG+xpX2Gq+CbA94PQt55SctxTTQ4V/XDlZSac9kcnFftjsonZKsF
-        q/MGKM2gSuKUe32U3ZyGu8tx7GF7+fdCiSQB4qBMvp6Ve2R3Ye5CWeiYZhCi5r66
-        ar/K16Tp46FFgLxRwKmH1UF8qpOd/p03AeUmIJ4loYHougNh7GV7SVQjyc3Fefyo
-        S7+SxxkU1rsddnAvEzO2Lk3donU/mjNhO+RP1eNx8Gsc6JUsMuYORVeVcCcxqbOc
-        vAlT0TFT2i8qpUJVgvn9imum50RnG/3N3JfyitWxSJv/tOlEjn1xa5C+XNtVpwUQ
-        ==
-X-ME-Sender: <xms:0VSNX4CDj09kpCTY2lQhK1ECqeBPxBHR0eFLQXXBMqKhdPMV0pjYrg>
-    <xme:0VSNX6gZNlLgGfmc4Be_JbDJL6XzLUgrmWVAo9UoJUQ5q85ewBveqbI1Muc3JGQtP
-    _XsRlH8mj1oCm8mmyQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjedugdduudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:0VSNX7k0VuqFvtrvDlaTRU_kxQI3KSpfL4V_pehr8WZ52qkExKPEXw>
-    <xmx:0VSNX-wUgoeDhvrr62emgZFEhXE54n4wZ_UWe12jVAydo5u8hxMW7A>
-    <xmx:0VSNX9S0Ar86_TocqgzQl9u8UXiN19BWVudKTpLaGmS_06QI3daepg>
-    <xmx:01SNX-Rded7JWGmOagi_KAkfaypveCFgHoktLq_xbRXJKdJZQsYg9A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 88E613280060;
-        Mon, 19 Oct 2020 04:56:49 -0400 (EDT)
-Date:   Mon, 19 Oct 2020 10:56:48 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 15/17] ASoC: sun8i-codec: Generalize AIF clock control
-Message-ID: <20201019085648.hju7xyqky3vdzqna@gilmour.lan>
-References: <20201014061941.4306-1-samuel@sholland.org>
- <20201014061941.4306-16-samuel@sholland.org>
+        Mon, 19 Oct 2020 04:57:18 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E870C0613D0;
+        Mon, 19 Oct 2020 01:57:16 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id h12so5626729qtu.1;
+        Mon, 19 Oct 2020 01:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4wXjVJ2kLM9uL5zZqS31DB6qTzRp54/Wsz/d0bgYSzU=;
+        b=TDyea6ULvpGU7a0Dhx1tL4D0rwfJbSJTi4VN7qeh/4elwEKNOUpmDVqizB19jpmbi5
+         ik+Tv9QgHViUgEFekp/zfJOGt55BpkejTYlZIzmBM2jWyoDSQXPgmZgYIHY54csWtczN
+         Hf40iCTF2f9opr6ioMeyyzHWYeFWWjCrMULiI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4wXjVJ2kLM9uL5zZqS31DB6qTzRp54/Wsz/d0bgYSzU=;
+        b=AYyKyQux9AS/bR1ljH/CHjCLSGkHSCtTvsRrnSSFYFGbMu4nW7/UwyrnKkmq3q2bSC
+         GcJfYa87qwkjJHBPSBh0LZ6VZEuqWO3RuXzIlmgi4lez3gHTiupl2v/hcdbRStPfGT2F
+         Cg2M4qdzTcmIulsgso/p/wOWTtVGvOAYYa9oo/MbaMTL7CJW02MzC8//Z/P/dFzT3/Bi
+         uL8GgMleMK9bBwsTJ2+h1xwDNPzTsX28UdaS97WSKD0qoXF4mL9OU2brhS+RPTdr0Z41
+         5EDFmrjLRBQGIEleFo829briFLmVro6jPT8OvAyCYkIGmN7E1fIEwzSc/E3leKdlUClg
+         Ay/A==
+X-Gm-Message-State: AOAM531tuz1ddyVF5dmmVfL4VoHd8jKEeIJ4Lis9Y451d0imaKp33Vn7
+        +B8DHpYpFBOC283LJgJ3RfyprgwWZ39kz4ONLK0=
+X-Google-Smtp-Source: ABdhPJziaiqhweWLOlZxU+9528F62BwFkgOqsRM3uuTjs1fr/ZaPnhcOPrPNTkmmTVOf98mby6Bwx3/NXCsuhATsdZI=
+X-Received: by 2002:ac8:5b82:: with SMTP id a2mr14060369qta.176.1603097835819;
+ Mon, 19 Oct 2020 01:57:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="72zig4tnx5pbsnz3"
-Content-Disposition: inline
-In-Reply-To: <20201014061941.4306-16-samuel@sholland.org>
+References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
+In-Reply-To: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Mon, 19 Oct 2020 08:57:03 +0000
+Message-ID: <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
+Subject: Re: [PATCH] net: ftgmac100: Fix missing TX-poll issue
+To:     Dylan Hung <dylan_hung@aspeedtech.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 19 Oct 2020 at 07:39, Dylan Hung <dylan_hung@aspeedtech.com> wrote:
+>
+> The cpu accesses the register and the memory via different bus/path on
+> aspeed soc.  So we can not guarantee that the tx-poll command
 
---72zig4tnx5pbsnz3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just the 2600, or other versions too?
 
-On Wed, Oct 14, 2020 at 01:19:39AM -0500, Samuel Holland wrote:
-> The AIF clock control register has the same layout for all three AIFs.
-> The only difference between them is that AIF3 is missing some fields. We
-> can reuse the same register field definitions for all three registers,
-> and use the DAI ID to select the correct register address.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> (register access) is always behind the tx descriptor (memory).  In other
+> words, the HW may start working even the data is not yet ready.  By
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+even if the
 
-Maxime
+> adding a dummy read after the last data write, we can ensure the data
+> are pushed to the memory, then guarantee the processing sequence
+>
+> Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
+> ---
+>  drivers/net/ethernet/faraday/ftgmac100.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
+> index 00024dd41147..9a99a87f29f3 100644
+> --- a/drivers/net/ethernet/faraday/ftgmac100.c
+> +++ b/drivers/net/ethernet/faraday/ftgmac100.c
+> @@ -804,7 +804,8 @@ static netdev_tx_t ftgmac100_hard_start_xmit(struct sk_buff *skb,
+>          * before setting the OWN bit on the first descriptor.
+>          */
+>         dma_wmb();
+> -       first->txdes0 = cpu_to_le32(f_ctl_stat);
+> +       WRITE_ONCE(first->txdes0, cpu_to_le32(f_ctl_stat));
+> +       READ_ONCE(first->txdes0);
 
---72zig4tnx5pbsnz3
-Content-Type: application/pgp-signature; name="signature.asc"
+I understand what you're trying to do here, but I'm not sure that this
+is the correct way to go about it.
 
------BEGIN PGP SIGNATURE-----
+It does cause the compiler to produce a store and then a load.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX41U0AAKCRDj7w1vZxhR
-xWNpAP9ceuFMkQ+PyI9ZceRsiV206vMG/ImuZF8HRn78z7d5CgD+KE73Xpl87Tgx
-nH8iJnTnRVlcV9EfITGlav5daBtjagk=
-=gjlX
------END PGP SIGNATURE-----
-
---72zig4tnx5pbsnz3--
+>
+>         /* Update next TX pointer */
+>         priv->tx_pointer = pointer;
+> --
+> 2.17.1
+>
