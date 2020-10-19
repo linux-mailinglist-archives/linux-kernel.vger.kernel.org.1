@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758A4292267
+	by mail.lfdr.de (Postfix) with ESMTP id E54C7292268
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgJSGSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 02:18:34 -0400
-Received: from mga01.intel.com ([192.55.52.88]:51937 "EHLO mga01.intel.com"
+        id S1726716AbgJSGSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 02:18:40 -0400
+Received: from mga02.intel.com ([134.134.136.20]:21152 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726670AbgJSGSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 02:18:30 -0400
-IronPort-SDR: eTUE0yDowdEq3v3m3ZKjTmIQXuOCOrTrBkYIADDgtp+WcIjp9gQ+0TNcNRTmD5ys6LhA7eGaoQ
- t0+v/ILkogMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="184582580"
+        id S1726663AbgJSGSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 02:18:39 -0400
+IronPort-SDR: VRSbNviPxMHjcDBB2HiwAli1VoKT2gpLNW0mEw+mXsqd8u7PzX/4UMp02VryUK66CLnUJUbwng
+ TWkvv0jt/O3w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="153912590"
 X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
-   d="scan'208";a="184582580"
+   d="scan'208";a="153912590"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:18:30 -0700
-IronPort-SDR: 4+VNOUtT87JO+3z9q8VJRyDHNSBIL8M7jTu+WbfP/ZcgCJ4ZwIO1+GTwLiHZwE40R7+Av8+EzS
- onPV3IxgjqfA==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:18:37 -0700
+IronPort-SDR: rKeJx9Rc2VNk06k+0YPgBaeNcVgxImdTIQo7XODbg8AAYYWwTBo0JVO7m9gN0Bj/C+6sQtib5O
+ qBR1/rFgU3RA==
 X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
-   d="scan'208";a="522992263"
+   d="scan'208";a="347309932"
 Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:18:26 -0700
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:18:32 -0700
 From:   shuo.a.liu@intel.com
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -35,16 +35,15 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Yu Wang <yu1.wang@intel.com>,
         Reinette Chatre <reinette.chatre@intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
         Shuo Liu <shuo.a.liu@intel.com>,
-        Yakui Zhao <yakui.zhao@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
         Dave Hansen <dave.hansen@intel.com>,
         Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
         Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH v5 02/17] x86/acrn: Introduce acrn_{setup, remove}_intr_handler()
-Date:   Mon, 19 Oct 2020 14:17:48 +0800
-Message-Id: <20201019061803.13298-3-shuo.a.liu@intel.com>
+Subject: [PATCH v5 03/17] x86/acrn: Introduce an API to check if a VM is privileged
+Date:   Mon, 19 Oct 2020 14:17:49 +0800
+Message-Id: <20201019061803.13298-4-shuo.a.liu@intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201019061803.13298-1-shuo.a.liu@intel.com>
 References: <20201019061803.13298-1-shuo.a.liu@intel.com>
@@ -54,21 +53,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuo Liu <shuo.a.liu@intel.com>
+From: Yin Fengwei <fengwei.yin@intel.com>
 
-The ACRN Hypervisor builds an I/O request when a trapped I/O access
-happens in User VM. Then, ACRN Hypervisor issues an upcall by sending
-a notification interrupt to the Service VM. HSM in the Service VM needs
-to hook the notification interrupt to handle I/O requests.
+ACRN Hypervisor reports hypervisor features via CPUID leaf 0x40000001
+which is similar to KVM. A VM can check if it's the privileged VM using
+the feature bits. The Service VM is the only privileged VM by design.
 
-Notification interrupts from ACRN Hypervisor are already supported and
-a, currently uninitialized, callback called.
-
-Export two APIs for HSM to setup/remove its callback.
-
-Originally-by: Yakui Zhao <yakui.zhao@intel.com>
+Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
 Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
 Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 Cc: Dave Hansen <dave.hansen@intel.com>
 Cc: Sean Christopherson <sean.j.christopherson@intel.com>
@@ -80,57 +72,63 @@ Cc: Yu Wang <yu1.wang@intel.com>
 Cc: Reinette Chatre <reinette.chatre@intel.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/acrn.h |  8 ++++++++
- arch/x86/kernel/cpu/acrn.c  | 14 ++++++++++++++
- 2 files changed, 22 insertions(+)
- create mode 100644 arch/x86/include/asm/acrn.h
+ arch/x86/include/asm/acrn.h |  9 +++++++++
+ arch/x86/kernel/cpu/acrn.c  | 19 ++++++++++++++++++-
+ 2 files changed, 27 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/include/asm/acrn.h b/arch/x86/include/asm/acrn.h
-new file mode 100644
-index 000000000000..ff259b69cde7
---- /dev/null
+index ff259b69cde7..a2d4aea3a80d 100644
+--- a/arch/x86/include/asm/acrn.h
 +++ b/arch/x86/include/asm/acrn.h
-@@ -0,0 +1,8 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_X86_ACRN_H
-+#define _ASM_X86_ACRN_H
+@@ -2,7 +2,16 @@
+ #ifndef _ASM_X86_ACRN_H
+ #define _ASM_X86_ACRN_H
+ 
++/*
++ * This CPUID returns feature bitmaps in EAX.
++ * Guest VM uses this to detect the appropriate feature bit.
++ */
++#define	ACRN_CPUID_FEATURES		0x40000001
++/* Bit 0 indicates whether guest VM is privileged */
++#define	ACRN_FEATURE_PRIVILEGED_VM	BIT(0)
 +
-+void acrn_setup_intr_handler(void (*handler)(void));
-+void acrn_remove_intr_handler(void);
-+
-+#endif /* _ASM_X86_ACRN_H */
+ void acrn_setup_intr_handler(void (*handler)(void));
+ void acrn_remove_intr_handler(void);
++bool acrn_is_privileged_vm(void);
+ 
+ #endif /* _ASM_X86_ACRN_H */
 diff --git a/arch/x86/kernel/cpu/acrn.c b/arch/x86/kernel/cpu/acrn.c
-index 0b2c03943ac6..e0c181781905 100644
+index e0c181781905..5528bfc913ea 100644
 --- a/arch/x86/kernel/cpu/acrn.c
 +++ b/arch/x86/kernel/cpu/acrn.c
-@@ -10,6 +10,8 @@
-  */
+@@ -19,9 +19,26 @@
+ #include <asm/idtentry.h>
+ #include <asm/irq_regs.h>
  
- #include <linux/interrupt.h>
++static u32 acrn_cpuid_base(void)
++{
++	static u32 acrn_cpuid_base;
 +
-+#include <asm/acrn.h>
- #include <asm/apic.h>
- #include <asm/cpufeatures.h>
- #include <asm/desc.h>
-@@ -55,6 +57,18 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_acrn_hv_callback)
- 	set_irq_regs(old_regs);
++	if (!acrn_cpuid_base && boot_cpu_has(X86_FEATURE_HYPERVISOR))
++		acrn_cpuid_base = hypervisor_cpuid_base("ACRNACRNACRN", 0);
++
++	return acrn_cpuid_base;
++}
++
++bool acrn_is_privileged_vm(void)
++{
++	return cpuid_eax(acrn_cpuid_base() | ACRN_CPUID_FEATURES) &
++			 ACRN_FEATURE_PRIVILEGED_VM;
++}
++EXPORT_SYMBOL_GPL(acrn_is_privileged_vm);
++
+ static u32 __init acrn_detect(void)
+ {
+-	return hypervisor_cpuid_base("ACRNACRNACRN", 0);
++	return acrn_cpuid_base();
  }
  
-+void acrn_setup_intr_handler(void (*handler)(void))
-+{
-+	acrn_intr_handler = handler;
-+}
-+EXPORT_SYMBOL_GPL(acrn_setup_intr_handler);
-+
-+void acrn_remove_intr_handler(void)
-+{
-+	acrn_intr_handler = NULL;
-+}
-+EXPORT_SYMBOL_GPL(acrn_remove_intr_handler);
-+
- const __initconst struct hypervisor_x86 x86_hyper_acrn = {
- 	.name                   = "ACRN",
- 	.detect                 = acrn_detect,
+ static void __init acrn_init_platform(void)
 -- 
 2.28.0
 
