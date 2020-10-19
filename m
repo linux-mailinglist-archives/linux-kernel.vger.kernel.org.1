@@ -2,98 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504D4292F19
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BE7292F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728646AbgJSUEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726385AbgJSUEc (ORCPT
+        id S1726385AbgJSUFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:05:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24631 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728200AbgJSUFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:04:32 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B68C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:04:30 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id j62so763171qtd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:04:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XSfxmMkZMNrPnoT0gljcl/qWl3/OnZ4ITcfP06i5z3Y=;
-        b=P+7LV9NU/clppD5XH/mUZOvJ5aRFAhm7pkrqfknV2vOTbGUjhVyGjrroLwd8Kq+Edj
-         zzpZd/VtlsnSx8TuuuMg8gGEApuOxh2OOB/ei7qVWZLQuBKYDPocRFM3cRVmnZV/nGLe
-         NkT7zqtFUtf1LfzzaqyulqKFtfJF0UxLKsztpY8wsIAA9H8qIA6oVJbdo9AG71va4Rua
-         SWy06PTCFJjZynPD+hfobhI8Fv+txnnH052cXnwX9LWtn541xEeBa9CfA3icZjqF467z
-         hZTtEGsmcbAdjH6YdvGtoYOFJ83SCU0RYHGB7Tc8UJJzS8qRyZtXIsEaV2rIS145TYpY
-         dZZw==
+        Mon, 19 Oct 2020 16:05:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603137901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=mnoRDcLRpk47e6nhzTgs1K3yhuyBi+7gPd1VRJKtnrw=;
+        b=CGzEAYnPSNTbr521XYiMy3YYeYXbQ/a4Ln9CtyPUPbgxIShj82Xv8LlQeDn9PaSGsIktu2
+        qwNGE96SOLbjJSvw1uRgH4XjBj4oxuMhEMrXNUBspZaZuccp94e1ppSVz6paSKC+Wy56lp
+        lBppqamogTy9v2AXTgYBIgTRGSmLVUo=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-218-vfgUs3WdMJanb3t6sj4E0Q-1; Mon, 19 Oct 2020 16:04:59 -0400
+X-MC-Unique: vfgUs3WdMJanb3t6sj4E0Q-1
+Received: by mail-qk1-f200.google.com with SMTP id g184so583279qke.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:04:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XSfxmMkZMNrPnoT0gljcl/qWl3/OnZ4ITcfP06i5z3Y=;
-        b=UCVHvEI2AKqQlqVt8a1/Cc/cO0niHXLogai98fLjOQGFwy0Olyd3acoQGh1rv7XL9X
-         nKZdari73XK9+7W9JD5xRpoejx3vBMqwMCrvwJep1tewJpdufvCVzla0fieFwSOPuOG8
-         sWSpz+urrP1cN5vFwQpummzolRRVBgk/xWflzduGWq5kRHXptsRU0Wc7ptD+wDKub5g8
-         BTT3rNVQAneVJPlt0q/Ce0Ql5bvmhqxWlkW5SdJDV77hmU/8ydUeBM+MHC3SkXI0KJPg
-         +3TRiFLwaXGvw9njVAHo/FD6wmewTpDGi7f9JN7tNHw+I01xCAoXU5TCWJ/ABdD2VDRC
-         lwdQ==
-X-Gm-Message-State: AOAM53256e8WFmxftDo4P4UsbOMmKcECQqaK5PRdHNT0fZ/zQzIF5SSC
-        lqf4J3lcEkOCnDVmc5/eNUY1C+XflB/BHy+P/GE=
-X-Google-Smtp-Source: ABdhPJyVyAM/3YohTjTeJvg3D9kIQTCnDMQ71J0tMGAA0FIzrEbmesrF4wQ1MmGtT1p1awj2aIzrXY7DWM492WXKeG8=
-X-Received: by 2002:aed:3e78:: with SMTP id m53mr1188470qtf.170.1603137869631;
- Mon, 19 Oct 2020 13:04:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201019191631.9604-1-trix@redhat.com>
-In-Reply-To: <20201019191631.9604-1-trix@redhat.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Mon, 19 Oct 2020 22:04:18 +0200
-Message-ID: <CAFLxGvwAVbpUe221N-qS19aFSaJ4hM=J=veHfi+4wAkNTNGAog@mail.gmail.com>
-Subject: Re: [PATCH] mtd: remove unneeded break
-To:     trix@redhat.com
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mnoRDcLRpk47e6nhzTgs1K3yhuyBi+7gPd1VRJKtnrw=;
+        b=M5/SAOp3/nPPHAFcGUETUgo1OjuA0Wnyi6mMOdTdTowBHfUkyKemgEYZj8xJEq5EtC
+         qPTMAPla8l6H8oxcvGFNkQ2fOxw7FfP7Yb8TzbICZxQMjYCQRSHWcFGJ0rdRW3rETEKa
+         NhnbOoAKRjzop0gXwIOJ6DP9S+hwBVuz3se6RZI1d1W3hOJb1jSwOpHPjGabttg8CzQb
+         Q1EIu1GfjNqdAz4MW4NueQVHz1NbH+ql0vxMkFh72K3mSPKqlLlng8exY0z7zSXvTU+h
+         yLXXmF1NspPfAmxbCymtCSpotqUGQNoV15rRouBe96Sw18/g/WZ03C+mH4fwgMyEIkCY
+         qBsw==
+X-Gm-Message-State: AOAM531IyLDLrHl8EbNOHilteXUr4ndbGuM6uBoDt6vy+GNFfjTKo5k5
+        OWVGGNaJcOP/E9wn4p7V8xCKqonnezUtJsxITFCxMLwJoKOmQRYgmmeWVoO1ozEnAb7MawLkKyw
+        NekHU6PeF3POfFr0dDlXVoATc
+X-Received: by 2002:a0c:a166:: with SMTP id d93mr1542683qva.22.1603137899158;
+        Mon, 19 Oct 2020 13:04:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxsbpFpfbLblIlcs3o3CaAmJ42DgOJ5oXwzID77rU+/hVJK0TWsSYMpdjqWTgD/b7WK/kOHmg==
+X-Received: by 2002:a0c:a166:: with SMTP id d93mr1542670qva.22.1603137898939;
+        Mon, 19 Oct 2020 13:04:58 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 128sm454249qkm.76.2020.10.19.13.04.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 13:04:58 -0700 (PDT)
+From:   trix@redhat.com
+To:     rjw@rjwysocki.net, lenb@kernel.org
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] acpi: utils: remove unneeded break
+Date:   Mon, 19 Oct 2020 13:04:53 -0700
+Message-Id: <20201019200453.16864-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 9:23 PM <trix@redhat.com> wrote:
->
-> From: Tom Rix <trix@redhat.com>
->
-> A break is not needed if it is preceded by a return
->
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/mtd/mtdchar.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-> index b40f46a43fc6..323035d4f2d0 100644
-> --- a/drivers/mtd/mtdchar.c
-> +++ b/drivers/mtd/mtdchar.c
-> @@ -881,7 +881,6 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
->                 if (copy_from_user(&offs, argp, sizeof(loff_t)))
->                         return -EFAULT;
->                 return mtd_block_isbad(mtd, offs);
-> -               break;
->         }
->
->         case MEMSETBADBLOCK:
-> @@ -891,7 +890,6 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
->                 if (copy_from_user(&offs, argp, sizeof(loff_t)))
->                         return -EFAULT;
->                 return mtd_block_markbad(mtd, offs);
-> -               break;
+From: Tom Rix <trix@redhat.com>
 
-Acked-by: Richard Weinberger <richard@nod.at>
+A break is not needed if it is preceded by a return
 
-Do you want to route this patch through mtd or do you carry it?
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/acpi/utils.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
+diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+index 838b719ec7ce..d5411a166685 100644
+--- a/drivers/acpi/utils.c
++++ b/drivers/acpi/utils.c
+@@ -104,7 +104,6 @@ acpi_extract_package(union acpi_object *package,
+ 					      " [%c]\n",
+ 					      i, format_string[i]);
+ 				return AE_BAD_DATA;
+-				break;
+ 			}
+ 			break;
+ 
+@@ -129,7 +128,6 @@ acpi_extract_package(union acpi_object *package,
+ 					      " expecting [%c]\n",
+ 					      i, format_string[i]);
+ 				return AE_BAD_DATA;
+-				break;
+ 			}
+ 			break;
+ 		case ACPI_TYPE_LOCAL_REFERENCE:
+@@ -144,7 +142,6 @@ acpi_extract_package(union acpi_object *package,
+ 					      " expecting [%c]\n",
+ 					      i, format_string[i]);
+ 				return AE_BAD_DATA;
+-				break;
+ 			}
+ 			break;
+ 
+@@ -155,7 +152,6 @@ acpi_extract_package(union acpi_object *package,
+ 					  i));
+ 			/* TBD: handle nested packages... */
+ 			return AE_SUPPORT;
+-			break;
+ 		}
+ 	}
+ 
 -- 
-Thanks,
-//richard
+2.18.1
+
