@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEC52924BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59032924C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727614AbgJSJj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727460AbgJSJj4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:39:56 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58746C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 02:39:56 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id c141so13369117lfg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 02:39:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=Zr6WnALleQdZ1gAu/9D/xHkeePuW/Rb5f5x+BjyZdvg=;
-        b=QIZK1nPiYC8ZcBELzS0IhBjf2JVtl2pfb6qrQ3tvwUDVXBlwVtwylABNDe+B1zla7Y
-         4Vxvnco/Aaz+iSSXy0jvfBZ0MxnRgXNYK4RbjZPlazVd6Nx2hWOz22/L3PbqH+JC9R8d
-         o5aEwj1/9yLPSL5k09s+wGxMoN607qd0Nlk4sQzZxFSQjVvlNZQHfcYY6ekSOlWDvi1p
-         uwRw4dm2E2K6Esaag7J/8HRZ/50pPk6XCfXXHc+w7p0muDgo4S8J1Yos6ZxNvOg3mvBS
-         lQz08nf9yUCvitd+cpH+c3++Kq54QIk1uy3QliAP26mrIuoDP5DADjvT4VNtm2j/o0A4
-         HJDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=Zr6WnALleQdZ1gAu/9D/xHkeePuW/Rb5f5x+BjyZdvg=;
-        b=TWugUfe3j+sr4Fo1aHIOwKwPwsXp3dK07iU0FB0QOiB8wy4CMlTUrtDk2leww6PpK0
-         trlOa0N1rQc9aJcn9cQ4jkXJGqugtYxm/WxNkFQ4YOdlSEKZv8NkCefbdYGZiIiis5YR
-         iKpVSdRzwgwCAGnCG168o/E71T2PinkYnVI+vqq5ie962aGKliXweFvzv8Ujd6cS2yNP
-         q5yLtcjoVHT71Omq9op/lbe9ldRR3rcVSAih9SQpJSZxZMKXb3NlT0hn0tN98PLnpupx
-         9jSvPck6lTbz8qoPJq8ScCPU2NM9BxQJul5TiJx5YjF8XpQQ+GfbrRn+1DvVxUu/6EWI
-         r8kg==
-X-Gm-Message-State: AOAM532Iq4THHJneL+atvnwF+J5i2y1qwzMlWKaXV+n1x6FGXxd5eqlL
-        6wMypO4vtwbG0rIP+yAw5J3f77DmtyxLdC/kpgo=
-X-Google-Smtp-Source: ABdhPJyf2mEr0WsePg7MajeAkiSaCxxrmRRA/9PRDTw1l4Q9jKVVKmcv5SSF/7RxvEsOtgiY9dKUUvP+ZGwxjgzbWd4=
-X-Received: by 2002:ac2:43af:: with SMTP id t15mr5016382lfl.42.1603100394685;
- Mon, 19 Oct 2020 02:39:54 -0700 (PDT)
+        id S1730442AbgJSJkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:40:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33084 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727556AbgJSJkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 05:40:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5452AB1E1;
+        Mon, 19 Oct 2020 09:40:08 +0000 (UTC)
+Subject: Re: [PATCH v2] mm/compaction: Rename 'start_pfn' to
+ 'iteration_start_pfn' in compact_zone()
+To:     yanfei.xu@windriver.com, akpm@linux-foundation.org,
+        david@redhat.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20201019083632.25417-1-yanfei.xu@windriver.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <57730b8a-f5d7-d6c7-3961-3fa95701aba5@suse.cz>
+Date:   Mon, 19 Oct 2020 11:40:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Reply-To: salif.musa211@gmail.com
-Sender: uslif12@gmail.com
-Received: by 2002:a19:88d6:0:0:0:0:0 with HTTP; Mon, 19 Oct 2020 02:39:54
- -0700 (PDT)
-From:   Salif Musa <salif.musa212@gmail.com>
-Date:   Mon, 19 Oct 2020 10:39:54 +0100
-X-Google-Sender-Auth: 0GcHAIJjIbzrP9Qw6dr59MDPLSA
-Message-ID: <CAKVqExfGjP9SgEWgeKVc1wokh9ymZQ6K0=AXAZq6SzHDxVTMoA@mail.gmail.com>
-Subject: TREAT AS URGENT/ REPLY FOR MORE DETAILS
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201019083632.25417-1-yanfei.xu@windriver.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hi friend
+On 10/19/20 10:36 AM, yanfei.xu@windriver.com wrote:
+> From: Yanfei Xu <yanfei.xu@windriver.com>
+> 
+> There are two 'start_pfn' declared in compact_zone() which have
+> different meaning. Rename the second one to 'iteration_start_pfn'
+> to prevent trace_mm_compaction_end() from tracing an undesirable
+> value.
 
+"to prevent confusion.", because trace_mm_compaction_end() has the
+correct value even before the patch - the second start_pfn is out
+of scope at that point.
 
+Thanks
 
-I am a banker in ADB BANK. I want to transfer an abandoned sum of
-USD15.6Million to your Bank account. 40/percent will be your share.
+> BTW, remove an useless semicolon.
+> 
+> Acked-by: David Hildenbrand <david@redhat.com>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> ---
+> v1->v2:
+> Rename 'start_pfn' to 'iteration_start_pfn' and change commit messages.
+> 
+>   mm/compaction.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 176dcded298e..ccd27c739fd6 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -2272,7 +2272,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>   
+>   	while ((ret = compact_finished(cc)) == COMPACT_CONTINUE) {
+>   		int err;
+> -		unsigned long start_pfn = cc->migrate_pfn;
+> +		unsigned long iteration_start_pfn = cc->migrate_pfn;
+>   
+>   		/*
+>   		 * Avoid multiple rescans which can happen if a page cannot be
+> @@ -2284,7 +2284,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>   		 */
+>   		cc->rescan = false;
+>   		if (pageblock_start_pfn(last_migrated_pfn) ==
+> -		    pageblock_start_pfn(start_pfn)) {
+> +		    pageblock_start_pfn(iteration_start_pfn)) {
+>   			cc->rescan = true;
+>   		}
+>   
+> @@ -2308,8 +2308,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>   			goto check_drain;
+>   		case ISOLATE_SUCCESS:
+>   			update_cached = false;
+> -			last_migrated_pfn = start_pfn;
+> -			;
+> +			last_migrated_pfn = iteration_start_pfn;
+>   		}
+>   
+>   		err = migrate_pages(&cc->migratepages, compaction_alloc,
+> 
 
-No risk involved but keeps it as secret. Contact me for more details.
-Please reply me through my alternative email id only (salif.musa211@gmail.com)
-for confidential reasons.
-
-
-Yours
-Dr Salif Musa
