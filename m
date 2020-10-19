@@ -2,132 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F413B29251F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAF9292520
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgJSKBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:01:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:53888 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727192AbgJSKBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:01:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2BCF030E;
-        Mon, 19 Oct 2020 03:01:36 -0700 (PDT)
-Received: from bogus (unknown [10.57.13.246])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 412C33F66E;
-        Mon, 19 Oct 2020 03:01:34 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 11:01:00 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Len Brown <len.brown@intel.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        guohanjun@huawei.com, Will Deacon <will@kernel.org>,
-        linuxarm@huawei.com, Brice Goglin <Brice.Goglin@inria.fr>
-Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
-Message-ID: <20201019100100.GA12908@bogus>
-References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728479AbgJSKC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:02:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728206AbgJSKC4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 06:02:56 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FD8C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 03:02:56 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id e7so5696102pfn.12
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 03:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=8GirbwszR7YZrylfYQ7BLEF5mp8hG8uh7OjZ4+CW064=;
+        b=s+mWp2mKFtUQ7UbBVqis1phmbpKy1z6JJZzCz6SOQh/EOYBbIk0nVk/38do755/JXT
+         SU96Bi7lqNF/rBajnYlc8A5gymgZIg/Wtg/k99O/F86In08eB5KQpBP7Y39aPvyglqmC
+         RuvB2p5cVBI2JimnHXl7r0coRwC3Tq3r9TXg227jyhhvkrj06XP2JwqqRp/EcHyCyFJX
+         f65znWWhoDDHoQBhABvcqijFARzUl1oEAWDkfcdpaWgKIIKwB3v3ESEjim0zHJIU0d+Z
+         urV24gNbaiEamWmpFVGl72W2fThDzOst34ADaj+BZH5tJBBnRDqCjtrRta4V3QbbF3jv
+         Qv5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8GirbwszR7YZrylfYQ7BLEF5mp8hG8uh7OjZ4+CW064=;
+        b=FcVzhJgOZwZZXPZT5e7Wax8Gs8Z9174b564Flha4B1nbxu2y0gm8kiSRqR6hgeOBfW
+         wIg3//tB3KHmqAOlvZnhbeQsAhEnSnGT+eoqllqeYT4vZwmSi3y1mrm9c+YxaHELKqD8
+         P6jGz4ki8dxnp5PBcQfdo0B7xenh8s1cJFpmMtXXXBxTssHJmpzsQa0+Xob8pru0a5+f
+         HU1ZipftEwpnkESzlV5K+55sA7/KD29E+jJuwDezwRyrpFkl/sY16il+2+KdY7i/fL7J
+         5yS/yx7QFf+MFGitDjGo03YAd7sx8+KfbmVy6EU01mRe3olSutBcdODUpBWC9Pkd2CB2
+         Ob7g==
+X-Gm-Message-State: AOAM5321fMbeKd0OUCvgnL6hdodDrZu3NvU8S4z60CHH0D6EN0lxTU1C
+        KoYdJcybBwSR5MBHtUQ975fmSA==
+X-Google-Smtp-Source: ABdhPJzrGkRlr+XF8eYNdnMWCfFNebdBjNb1KKAK6BrEnb/F1xfGmit6+P9v0+lEDhW6GF8uHZ2sbg==
+X-Received: by 2002:a62:ce08:0:b029:156:4427:4b29 with SMTP id y8-20020a62ce080000b029015644274b29mr16212537pfg.70.1603101775730;
+        Mon, 19 Oct 2020 03:02:55 -0700 (PDT)
+Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id h6sm7466070pfk.212.2020.10.19.03.02.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 19 Oct 2020 03:02:55 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        Nick Gasson <nick.gasson@arm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v6 0/2] perf: Make tsc testing as a common testing case
+Date:   Mon, 19 Oct 2020 18:02:34 +0800
+Message-Id: <20201019100236.23675-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Morten
+This patch set is to move tsc testing from x86 specific to common
+testing case.  Since Arnaldo found the building failure for patch set
+v4 [1], the first four patches have been merged but the last two patches
+were left out; this patch set is to resend the last two patches with
+fixed the building failure (by removing the header "arch-tests.h" from the
+testing code).
 
-On Fri, Oct 16, 2020 at 11:27:02PM +0800, Jonathan Cameron wrote:
-> Both ACPI and DT provide the ability to describe additional layers of
-> topology between that of individual cores and higher level constructs
-> such as the level at which the last level cache is shared.
-> In ACPI this can be represented in PPTT as a Processor Hierarchy
-> Node Structure [1] that is the parent of the CPU cores and in turn
-> has a parent Processor Hierarchy Nodes Structure representing
-> a higher level of topology.
->
-> For example Kunpeng 920 has clusters of 4 CPUs.  These do not share
-> any cache resources, but the interconnect topology is such that
-> the cost to transfer ownership of a cacheline between CPUs within
-> a cluster is lower than between CPUs in different clusters on the same
-> die.   Hence, it can make sense to deliberately schedule threads
-> sharing data to a single cluster.
->
+These two patches have been tested on x86_64 and Arm64.  Though I don't
+test them on archs MIPS, PowerPC, etc, I tried to search every header so
+ensure included headers are supported for all archs.
 
-This is very SoC specific and hard to generalise, hence LLC is chosen
-as one of the main factor to decide.
+These two patches have been rebased on the perf/core branch with its
+latest commit 744aec4df2c5 ("perf c2c: Update documentation for metrics
+reorganization").
 
-Are there any scheduler topology related changes to achieve the same ?
-If so, we need their opinion on that.
+Changes from v5:
+* Found the merging confliction on latest perf/core, so rebased it.
 
-> This patch simply exposes this information to userspace libraries
-> like hwloc by providing cluster_cpus and related sysfs attributes.
-> PoC of HWLOC support at [2].
->
+[1] https://lore.kernel.org/patchwork/cover/1305382/#1505752
 
-OK, cluster is too Arm specific with no definition for it whatsoever.
-How do you plan to support clusters of clusters or higher level of
-hierarchy present in PPTT.
 
-> Note this patch only handle the ACPI case.
->
+Leo Yan (2):
+  perf tests tsc: Make tsc testing as a common testing
+  perf tests tsc: Add checking helper is_supported()
 
-If we decide to add this to sysfs, I prefer to keep DT implementation
-also in sync. The bindings are in sync, just matter of implementation.
+ tools/perf/arch/x86/include/arch-tests.h      |  1 -
+ tools/perf/arch/x86/tests/Build               |  1 -
+ tools/perf/arch/x86/tests/arch-tests.c        |  4 ----
+ tools/perf/tests/Build                        |  1 +
+ tools/perf/tests/builtin-test.c               |  5 +++++
+ .../{arch/x86 => }/tests/perf-time-to-tsc.c   | 19 +++++++++++++++----
+ tools/perf/tests/tests.h                      |  2 ++
+ 7 files changed, 23 insertions(+), 10 deletions(-)
+ rename tools/perf/{arch/x86 => }/tests/perf-time-to-tsc.c (92%)
 
-> Special consideration is needed for SMT processors, where it is
-> necessary to move 2 levels up the hierarchy from the leaf nodes
-> (thus skipping the processor core level).
->
-> Currently the ID provided is the offset of the Processor
-> Hierarchy Nodes Structure within PPTT.  Whilst this is unique
-> it is not terribly elegant so alternative suggestions welcome.
->
+-- 
+2.17.1
 
-That is firmware choice. May be your firmware just fills in mandatory
-fields and doesn't care about anything and everything optional. We do
-check for valid UID fields and if that is not set, offset is used as
-unique ID in kernel implementation. So if you enhance the firmware, the
-kernel sysfs will become elegant as you expect 😉 
-
-> Note that arm64 / ACPI does not provide any means of identifying
-> a die level in the topology but that may be unrelate to the cluster
-> level.
->
-
-Indeed. It can be cluster of clusters on some platform. If we need that
-info, we should add it. My assumption was that generally each die forms
-a NUMA node and hence the information is available there. I may be wrong.
-
-> RFC questions:
-> 1) Naming
-> 2) Related to naming, do we want to represent all potential levels,
->    or this enough?  On Kunpeng920, the next level up from cluster happens
->    to be covered by llc cache sharing, but in theory more than one
->    level of cluster description might be needed by some future system.
-
-That is my question above. Can't recall the terminology used in ACPI
-PPTT, but IIRC "cluster" is not used to keep it generic. May be we need
-to do the same here as the term "cluster" is ill-defined on Arm and I
-would avoid using it if possible.
-
-> 3) Do we need DT code in place? I'm not sure any DT based ARM64
->    systems would have enough complexity for this to be useful.
-
-I prefer to keep the implementation in sync
-
-> 4) Other architectures?  Is this useful on x86 for example?
->
-
-AMD had multi-die within socket IIRC. IIUC, cpuid will provide the info
-and nothing more is needed from ACPI ? I may be wrong, just guessing/asking.
-
---
-Regards,
-Sudeep
