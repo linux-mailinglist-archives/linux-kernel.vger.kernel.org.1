@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58D6292CF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B00292CFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728483AbgJSRiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:38:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44926 "EHLO
+        id S1728308AbgJSRmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:42:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50210 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726124AbgJSRiz (ORCPT
+        by vger.kernel.org with ESMTP id S1727689AbgJSRmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:38:55 -0400
+        Mon, 19 Oct 2020 13:42:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603129134;
+        s=mimecast20190719; t=1603129357;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=bCZfT5E3im0lNOm7GQVPs0SnshcVMlnSl2CIjv8kRzg=;
-        b=XuRj984d4Ni4B4gOQIkJ1fjsDSTQTYC2CJgK7nE/Un8TdX0LAjj5t978iVp5KFJ6zH3o5U
-        7eEw6N4LFfH6Wus6D6KcDbvrbYSBBGdKcbWc2WE3y+LCg73w1VkTCow7xDD9gFc3LGfahu
-        YOHit4SMBZWQAug5yd3C2gzk0HwQ/vI=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-SE2nPwyJMoms2J7lCjvbBw-1; Mon, 19 Oct 2020 13:38:52 -0400
-X-MC-Unique: SE2nPwyJMoms2J7lCjvbBw-1
-Received: by mail-qt1-f197.google.com with SMTP id t4so394651qtd.23
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:38:52 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mReA3kFCX+myyiXgiYscelnLZR7Th5JMT/d6TpCbjKM=;
+        b=gSenhv9dTBKbpZpEbzYDgwZR8CYhSbFcc9jm2sR/s4S+ieRDw5UEW1aPirSsUsIGLtZpz1
+        TI+sQt/3PvfE2Oojxq4Ehk7fxO+f0cz65jqqfia+C1tZ+5FDMfbIhUh6xZnmJCcHgj7Ig8
+        MCUmIlrHHmtVGRwPvN4B2IDb8AZeYD0=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-401-pUlWtUP8MpKMxkPVLCgPRg-1; Mon, 19 Oct 2020 13:42:36 -0400
+X-MC-Unique: pUlWtUP8MpKMxkPVLCgPRg-1
+Received: by mail-wr1-f69.google.com with SMTP id p6so143803wrm.23
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:42:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=bCZfT5E3im0lNOm7GQVPs0SnshcVMlnSl2CIjv8kRzg=;
-        b=kEo5PslxYHmhJ4Z/QhUgAP7lbgRR3JOpblX/ze/riySMurkJFncIWJaCWCInXpzLlI
-         vd71dw4aYJ3cpqfNt525KArCaUcEM1wjvxflPZmh8YDueLcm4rVCs9s1dgNrPFZ7+d12
-         NDke6y2ArY7h/gD8zkWSE2qB+6zS4Ajp/D2ZOiXsEzMjKF0WboQD6c6EftHfF0n3n1oc
-         ZVK3Bwml/sCftbtKDCDetPeeoS0wYyzFpL4OP96V4xqZhn8Yq4e1ugz8MDeSHq+laCHB
-         MAJCOVg/C9WoQT8i4VCbGLBwfWC1+r/mcY1rOomOCb7l5Sr//xW2w+WvZV35lMfdamRh
-         4m5w==
-X-Gm-Message-State: AOAM530W4z1mEBuQOTv4OFVQ7Ca3GnjV3yjOFnSaJ7HjzzSJalJKCB23
-        MV52kTUXrTi4EY1PXzRIHp7qKe3mbDZMUwvMuojwtObslaavlq4Ia78qFg2KmB0G5Ym/Z1bXgZJ
-        6sCF3VaIZt3QPFNqkyRwuLfPd
-X-Received: by 2002:ac8:937:: with SMTP id t52mr569991qth.268.1603129132249;
-        Mon, 19 Oct 2020 10:38:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKieAoqgQ8WMfOwsu+ME8feLE9yc+3oESLds+QyAt+bmkqHnhzOFlfz8uddoFFD0ZWch2otg==
-X-Received: by 2002:ac8:937:: with SMTP id t52mr569971qth.268.1603129132059;
-        Mon, 19 Oct 2020 10:38:52 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id a200sm296706qkb.66.2020.10.19.10.38.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 10:38:51 -0700 (PDT)
-From:   trix@redhat.com
-To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
-        john.fastabend@gmail.com, kpsingh@chromium.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] bpf: remove unneeded break
-Date:   Mon, 19 Oct 2020 10:38:46 -0700
-Message-Id: <20201019173846.1021-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mReA3kFCX+myyiXgiYscelnLZR7Th5JMT/d6TpCbjKM=;
+        b=C1sDxPRFYZ8S57zlMAcqj5QCFPq/M3kTgwCd/EHK+jk5PU/WcrZ+zafiE7m3qjfD7/
+         etTIoQZOtDGQVSHSSlBZ3Pr9K9p9ub0TzT+NIXJH/JVdU5bV7y4N3Y4ie73w+xrIH6np
+         KhPuMSDDAAgKlR9rrX2l8VzAo0Hykf1Yt/onNguc8PA1wxb586AxKEGLxWEXSA6aGpna
+         45ahi8r4lPIZo+VyRrYucJNEw6RT6FJfwWWuTgmZqfEXKn2fH4/B+hDGymjE4hPwSeMZ
+         BO7JmHii0BEKSxCy/JUYpbhX5s9CSFSJnd2l2IZLpslNjPxgmOe/lua5huVLN2ddRUvv
+         PFmQ==
+X-Gm-Message-State: AOAM531mDSSoXcKAD1hMRG04sC5fU0qb2QJ1936xVyJzGh7FE4k5WFmA
+        itRvU0ULljF67cNVFBtVfHX39ld7yxSUm8zQvIZobm+3/uTm6Dna/Yzn1WLWNzW+hHoF+DkwtXe
+        P7girMuks8oIs7bwlM1Ytmkcf
+X-Received: by 2002:a1c:dd85:: with SMTP id u127mr359489wmg.33.1603129355126;
+        Mon, 19 Oct 2020 10:42:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxazz8vOXvEcDHpQHW1+LpvFk1J3aJizL23Ex5gCpbmbM8wq6DtaFvuDnkLDGC1NY8eSb4o7A==
+X-Received: by 2002:a1c:dd85:: with SMTP id u127mr359472wmg.33.1603129354885;
+        Mon, 19 Oct 2020 10:42:34 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b25sm333844wmj.21.2020.10.19.10.42.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 10:42:34 -0700 (PDT)
+Subject: Re: [PATCH v2 15/20] kvm: x86/mmu: Support dirty logging for the TDP
+ MMU
+To:     Ben Gardon <bgardon@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20201014182700.2888246-1-bgardon@google.com>
+ <20201014182700.2888246-16-bgardon@google.com>
+ <f5e558b2-dab8-ca9e-6870-0c69d683703a@redhat.com>
+ <CANgfPd9UgKK6tr9ArQsDB9ys4Ne=RVkDccY_Za4r4SSHWV46cQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <099dd316-4409-7430-d543-3a33a0ad2df1@redhat.com>
+Date:   Mon, 19 Oct 2020 19:42:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <CANgfPd9UgKK6tr9ArQsDB9ys4Ne=RVkDccY_Za4r4SSHWV46cQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On 19/10/20 19:07, Ben Gardon wrote:
+> On Fri, Oct 16, 2020 at 9:18 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>> On 14/10/20 20:26, Ben Gardon wrote:
+>>>
+>>> +     if (kvm->arch.tdp_mmu_enabled)
+>>> +             kvm_tdp_mmu_clear_dirty_pt_masked(kvm, slot,
+>>> +                             slot->base_gfn + gfn_offset, mask, true);
+>>
+>> This was "false" in v1, I need --verbose for this change. :)
+> 
+> I don't think this changed from v1. Note that there are two callers in
+> mmu.c - kvm_mmu_write_protect_pt_masked and
+> kvm_mmu_clear_dirty_pt_masked. One calls with wrprot = true and the
+> other with wrprot = false.
 
-A break is not needed if it is preceded by a return
+Ah, I messed up fixing the conflicts.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- kernel/bpf/syscall.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 1110ecd7d1f3..8f50c9c19f1b 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2913,7 +2913,6 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
- 	case BPF_CGROUP_INET_INGRESS:
- 	case BPF_CGROUP_INET_EGRESS:
- 		return BPF_PROG_TYPE_CGROUP_SKB;
--		break;
- 	case BPF_CGROUP_INET_SOCK_CREATE:
- 	case BPF_CGROUP_INET_SOCK_RELEASE:
- 	case BPF_CGROUP_INET4_POST_BIND:
--- 
-2.18.1
+Paolo
 
