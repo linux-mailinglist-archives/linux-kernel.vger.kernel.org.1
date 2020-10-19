@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF77F29252F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FCAA2925F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728971AbgJSKIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:08:51 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:36373 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727192AbgJSKIu (ORCPT
+        id S1726565AbgJSKlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:41:17 -0400
+Received: from m15113.mail.126.com ([220.181.15.113]:42499 "EHLO
+        m15113.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726363AbgJSKlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:08:50 -0400
-Received: by mail-wr1-f66.google.com with SMTP id x7so10735579wrl.3;
-        Mon, 19 Oct 2020 03:08:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9RvapzY61O8tFKHyafywHNCO6K53DiR+u+pHA+ZQ0ig=;
-        b=Bp2SJCXLXYnjObKNlClcIBKtopvkiYGJyZu4vMnTxp1ZwqdHKHUj6bZMplXCRozBMI
-         BlFqXkJoZVR7cds6eQRIgJqtVI7DrULYpYfNQWkXscYvHax75zXO49MeOur7s1coquEk
-         ArdMA/4j3YZNoT29/XoMN07blUMNBtso3yh6sBUC0LVL6GGR7Bcmo2YCQvHKrJAg+S1s
-         gIFQGFaPDt/GQWLdkzwrUUtbkDYRg9sF05+6wKJj0ymRlMO9wNSymWSAJ6GVRSsVBYx5
-         H2adt+POCwJmxVA7jkhiMbnX1kzDZx7We0rP9/kevVciqxcHSffF8PvYvLxzHRixSMlY
-         kClg==
-X-Gm-Message-State: AOAM530EUwjB4lfrb54RTSSIvxlIfJjkRPpN5uWjmb7EvpjLs/umfYGT
-        MMoW2RXuhc8sjS/hnTmAG8Y=
-X-Google-Smtp-Source: ABdhPJzx9xXkc3nm/doybY/I18Oz14gGk9trmLpuPrZrOdITbU1R4V/8GsK/VPH6bTvhVwRmgnsbOQ==
-X-Received: by 2002:a5d:6110:: with SMTP id v16mr20226576wrt.219.1603102128114;
-        Mon, 19 Oct 2020 03:08:48 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id n6sm2550513wrj.60.2020.10.19.03.08.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 03:08:46 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 12:08:45 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/6] Documetation: dt-bindings: drop
- samsung,exynos5440-pcie binding
-Message-ID: <20201019100845.GA51073@kozik-lap>
-References: <20201019094715.15343-1-m.szyprowski@samsung.com>
- <CGME20201019094738eucas1p29b377b561089cfc3eba1755d475125b9@eucas1p2.samsung.com>
- <20201019094715.15343-2-m.szyprowski@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201019094715.15343-2-m.szyprowski@samsung.com>
+        Mon, 19 Oct 2020 06:41:17 -0400
+X-Greylist: delayed 1847 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Oct 2020 06:41:16 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=15RqqklK3B4hcok12J
+        T1InvpSQVPDeTAKiQCf6xSEcg=; b=WOTROSizt2KESc2CSF4onoEOY4EwM9iHSi
+        mEvDftvsHG39dOr2QuEOjVrsRhYJY8UczMltYH8B4DwZFq55VWHys0sf/hW1eV7n
+        wSKqY9EA/Y50BdntCL5S3jX6CuadFvqKGKzyfyF1hcVZmO0BnKx+yJQVPsqxsnIq
+        LmdE8KgAQ=
+Received: from localhost.localdomain (unknown [36.112.86.14])
+        by smtp3 (Coremail) with SMTP id DcmowAB3fgITZo1f909CKw--.16741S2;
+        Mon, 19 Oct 2020 18:10:27 +0800 (CST)
+From:   Defang Bo <bodefang@126.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     estherbdf <603571786@qq.com>
+Subject: [PATCH] drm/amd/display: fix a possible NULL pointer dereference in bios_parser_get_src_obj()
+Date:   Mon, 19 Oct 2020 18:10:13 +0800
+Message-Id: <1603102213-4194-1-git-send-email-bodefang@126.com>
+X-Mailer: git-send-email 1.9.1
+X-CM-TRANSID: DcmowAB3fgITZo1f909CKw--.16741S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7KrWxCw4fAw13trWrArWDurg_yoW8Xr13pw
+        47Gr1vqrZ2y3W8Kr45A3W8uryF93WDJFykKF1Fyw1fArs3AFyDJwn0kry3uFyqyF95CFWa
+        qFZ8Wr4ak3Wqyr7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jKiifUUUUU=
+X-Originating-IP: [36.112.86.14]
+X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbikhPC11pEBkkMZQAAss
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 11:47:10AM +0200, Marek Szyprowski wrote:
-> Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
-> dts: exynos: Remove Exynos5440"). Drop the obsolete bindings for
-> exynos5440-pcie.
-> 
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->  .../bindings/pci/samsung,exynos5440-pcie.txt  | 58 -------------------
->  1 file changed, 58 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pci/samsung,exynos5440-pcie.txt
+From: estherbdf <603571786@qq.com>
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+[Why] the func  bios_parser_get_src_obj () is similar to  bios_parser_get_dst_obj () which is fixed by the commit<a8f976473196>("drm/amd/display: Banch of smatch error and warning fixes in DC").
+the symbol 'id' is uninitialized and it is not checked before dereference it,may lead to null pointer dereference.
+[How] Initialized variable explicitly with NULL and add sanitizer.
 
-Best regards,
-Krzysztof
+Signed-off-by: estherbdf <603571786@qq.com>
+---
+ drivers/gpu/drm/amd/display/dc/bios/bios_parser.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser.c b/drivers/gpu/drm/amd/display/dc/bios/bios_parser.c
+index 008d4d1..94c6cca 100644
+--- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser.c
++++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser.c
+@@ -190,7 +190,7 @@ static enum bp_result bios_parser_get_src_obj(struct dc_bios *dcb,
+ 	struct graphics_object_id *src_object_id)
+ {
+ 	uint32_t number;
+-	uint16_t *id;
++	uint16_t *id = NULL;
+ 	ATOM_OBJECT *object;
+ 	struct bios_parser *bp = BP_FROM_DCB(dcb);
+ 
+@@ -206,7 +206,7 @@ static enum bp_result bios_parser_get_src_obj(struct dc_bios *dcb,
+ 
+ 	number = get_src_obj_list(bp, object, &id);
+ 
+-	if (number <= index)
++	if (number <= index || !id)
+ 		return BP_RESULT_BADINPUT;
+ 
+ 	*src_object_id = object_id_from_bios_object_id(id[index]);
+-- 
+1.9.1
+
