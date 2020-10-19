@@ -2,110 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864EA292460
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABC1292470
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgJSJJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727952AbgJSJJQ (ORCPT
+        id S1730219AbgJSJMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:12:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23294 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727235AbgJSJMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:09:16 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC34C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 02:09:16 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id a17so4986109pju.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 02:09:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=uZj2/UkGwPHGYRDabmeLYz7fWi97ENwgCaw+/fZnSYg=;
-        b=mFffBM5SCEC7HStDzuJnoAlobmVwBD4eyao2JgF0wZnAI/P+Kgnsw4kjjQgpTZQwIs
-         YC3iuAxEFovt/87e4fkAD0q4BSMw84jvJsN1k3NiisvYNARvpkGzpPo1cgHuaDCWTeVC
-         UmhtsSNm+1ns7HKxuCNUiwmZqTGT+na3z/jRstf2vKu70qwUMvL3onrbMFD+/R5mxJEf
-         Xp2eMvNcM0Ze7E5ZT6JOdRJNKhjrtutkH9FWZhddenpL9r35OqVfmceptnGANqCULd5I
-         NARjSr/WzyklS1gmtdIbsYVqw3AqUZvzS/49RbqlGA+TzLfMDgr/94wlYsVRpD1F20Gr
-         5cNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=uZj2/UkGwPHGYRDabmeLYz7fWi97ENwgCaw+/fZnSYg=;
-        b=eBdqlYownAm45TWLaDdvb0pEDIipo5/lfj4JB1Jk2TO3JieHzGGIHkaB6eeeFGAZ5R
-         wP81g5y9aanfUcATOJpF5qsQ0AEyyRtiTbUB1sPZNKzC0sSjVmd2AFkq1d7xMpazLQM9
-         QyZ0EG7kJhqvwPp2N6/rRDwpa66pOqq+aqpcG2fY6uTwx5UjN2CJ82KRJft9tY/Bu0OD
-         1upTSmugPQvtDkpSnMje80sGoYro1uS7DM73FI2T7Wt+E7JnCByweIABn6AmvLFtohYe
-         su0/rMVedBw6RIsL3K0+gUl+U6gPo+kniCGBdJvk+k09qM4R2ddXydrSQgfEfTYhR5cj
-         RyWg==
-X-Gm-Message-State: AOAM531nzLW6aX5bdkw1CUa2IrGcKkSQGAWKjKcnI10PIaURnmC/SDfF
-        8CurC8IsHXz88eLFK9PkdwHl4NQus1s=
-X-Google-Smtp-Source: ABdhPJxI4EO/P6d4Q9eq8l1sQFrZJO4zeg7b5XiYAqk9apQxYq/Tm5davUSsCKXQW0INQyia5aTfrA==
-X-Received: by 2002:a17:90a:fd0f:: with SMTP id cv15mr16124050pjb.161.1603098555712;
-        Mon, 19 Oct 2020 02:09:15 -0700 (PDT)
-Received: from cosmos ([103.113.142.250])
-        by smtp.gmail.com with ESMTPSA id f15sm11300828pfk.21.2020.10.19.02.09.11
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 19 Oct 2020 02:09:14 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 14:39:04 +0530
-From:   Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-To:     bskeggs@redhat.com, airlied@linux.ie, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/nouveau: fix memory leak in iccsense/base.c
-Message-ID: <20201019090854.GA2085@cosmos>
+        Mon, 19 Oct 2020 05:12:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603098766;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e42oimHczO8UN2V6y0CVX1eoq01WDcLuEdKCnGjzh98=;
+        b=Ph00NT/f9jfaUa+nI5x/LdsWUqkLXL5J5BkZB9o01mEcz/nwKhyy13uSOqZYQumas/2+QR
+        kK5SUE0nm5zpFuOBDCxchcb4yB6Wl43XuNvoEtVu99RzzeIRU//mXN0AQr6KYllcGodRTS
+        X2Gft2CZ/Cm+UCJ49EJf/dsNwrDx7G0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-4GhZDgGZNMKLMyd-CMZb-g-1; Mon, 19 Oct 2020 05:12:43 -0400
+X-MC-Unique: 4GhZDgGZNMKLMyd-CMZb-g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 31FB31018724;
+        Mon, 19 Oct 2020 09:12:38 +0000 (UTC)
+Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8AE876EF45;
+        Mon, 19 Oct 2020 09:12:33 +0000 (UTC)
+Subject: Re: [PATCH v1 28/29] virtio-mem: Big Block Mode (BBM) - basic memory
+ hotunplug
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-29-david@redhat.com>
+ <20201019034817.GD54484@L-31X9LVDL-1304.local>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <3e1c209e-e8bf-c547-fa90-6b73786bc915@redhat.com>
+Date:   Mon, 19 Oct 2020 11:12:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201019034817.GD54484@L-31X9LVDL-1304.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemleak report:
-  unreferenced object 0xffff9071c65644e0 (size 96):
-  comm "systemd-udevd", pid 347, jiffies 4294898424 (age 810.828s)
-  hex dump (first 32 bytes):
-    02 01 00 00 00 00 00 00 00 00 10 00 02 04 00 00  ................
-    00 00 00 00 00 00 a0 86 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000007c0d0ac3>] __kmalloc+0x337/0x500
-    [<00000000551bfaeb>] nvbios_iccsense_parse+0xf7/0x280 [nouveau]
-    [<00000000e3e8968b>] nvkm_iccsense_oneinit+0x6c/0x4e0 [nouveau]
-    [<00000000287e7701>] nvkm_subdev_init+0x58/0xd0 [nouveau]
-    [<0000000008e4793e>] nvkm_device_init+0x118/0x1a0 [nouveau]
-    [<000000008cd3afa3>] nvkm_udevice_init+0x48/0x60 [nouveau]
-    [<000000007e047aee>] nvkm_object_init+0x43/0x110 [nouveau]
-    [<000000006c56b3a4>] nvkm_ioctl_new+0x184/0x210 [nouveau]
-    [<0000000080abc890>] nvkm_ioctl+0xf0/0x190 [nouveau]
-    [<00000000f35056a2>] nvkm_client_ioctl+0x12/0x20 [nouveau]
-    [<000000000f001008>] nvif_object_ioctl+0x4f/0x60 [nouveau]
-    [<0000000098d66807>] nvif_object_ctor+0xfb/0x160 [nouveau]
-    [<00000000fe24934a>] nvif_device_ctor+0x24/0x70 [nouveau]
-    [<00000000878b3286>] nouveau_cli_init+0x1a3/0x460 [nouveau]
-    [<00000000a1578335>] nouveau_drm_device_init+0x77/0x740 [nouveau]
-    [<00000000faef6b28>] nouveau_drm_probe+0x132/0x1f0 [nouveau]
+On 19.10.20 05:48, Wei Yang wrote:
+> On Mon, Oct 12, 2020 at 02:53:22PM +0200, David Hildenbrand wrote:
+>> Let's try to unplug completely offline big blocks first. Then, (if
+>> enabled via unplug_offline) try to offline and remove whole big blocks.
+>>
+>> No locking necessary - we can deal with concurrent onlining/offlining
+>> just fine.
+>>
+>> Note1: This is sub-optimal and might be dangerous in some environments: we
+>> could end up in an infinite loop when offlining (e.g., long-term pinnings),
+>> similar as with DIMMs. We'll introduce safe memory hotunplug via
+>> fake-offlining next, and use this basic mode only when explicitly enabled.
+>>
+>> Note2: Without ZONE_MOVABLE, memory unplug will be extremely unreliable
+>> with bigger block sizes.
+>>
+>> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>> Cc: Jason Wang <jasowang@redhat.com>
+>> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>> Cc: Michal Hocko <mhocko@kernel.org>
+>> Cc: Oscar Salvador <osalvador@suse.de>
+>> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>> drivers/virtio/virtio_mem.c | 156 +++++++++++++++++++++++++++++++++++-
+>> 1 file changed, 155 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>> index 94cf44b15cbf..6bcd0acbff32 100644
+>> --- a/drivers/virtio/virtio_mem.c
+>> +++ b/drivers/virtio/virtio_mem.c
+>> @@ -388,6 +388,12 @@ static int virtio_mem_bbm_bb_states_prepare_next_bb(struct virtio_mem *vm)
+>> 	     _bb_id++) \
+>> 		if (virtio_mem_bbm_get_bb_state(_vm, _bb_id) == _state)
+>>
+>> +#define virtio_mem_bbm_for_each_bb_rev(_vm, _bb_id, _state) \
+>> +	for (_bb_id = vm->bbm.next_bb_id - 1; \
+>> +	     _bb_id >= vm->bbm.first_bb_id && _vm->bbm.bb_count[_state]; \
+>> +	     _bb_id--) \
+>> +		if (virtio_mem_bbm_get_bb_state(_vm, _bb_id) == _state)
+>> +
+>> /*
+>>  * Set the state of a memory block, taking care of the state counter.
+>>  */
+>> @@ -685,6 +691,18 @@ static int virtio_mem_sbm_remove_mb(struct virtio_mem *vm, unsigned long mb_id)
+>> 	return virtio_mem_remove_memory(vm, addr, size);
+>> }
+>>
+>> +/*
+>> + * See virtio_mem_remove_memory(): Try to remove all Linux memory blocks covered
+>> + * by the big block.
+>> + */
+>> +static int virtio_mem_bbm_remove_bb(struct virtio_mem *vm, unsigned long bb_id)
+>> +{
+>> +	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
+>> +	const uint64_t size = vm->bbm.bb_size;
+>> +
+>> +	return virtio_mem_remove_memory(vm, addr, size);
+>> +}
+>> +
+>> /*
+>>  * Try offlining and removing memory from Linux.
+>>  *
+>> @@ -731,6 +749,19 @@ static int virtio_mem_sbm_offline_and_remove_mb(struct virtio_mem *vm,
+>> 	return virtio_mem_offline_and_remove_memory(vm, addr, size);
+>> }
+>>
+>> +/*
+>> + * See virtio_mem_offline_and_remove_memory(): Try to offline and remove a
+>> + * all Linux memory blocks covered by the big block.
+>> + */
+>> +static int virtio_mem_bbm_offline_and_remove_bb(struct virtio_mem *vm,
+>> +						unsigned long bb_id)
+>> +{
+>> +	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
+>> +	const uint64_t size = vm->bbm.bb_size;
+>> +
+>> +	return virtio_mem_offline_and_remove_memory(vm, addr, size);
+>> +}
+>> +
+>> /*
+>>  * Trigger the workqueue so the device can perform its magic.
+>>  */
+>> @@ -1928,6 +1959,129 @@ static int virtio_mem_sbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
+>> 	return rc;
+>> }
+>>
+>> +/*
+>> + * Try to offline and remove a big block from Linux and unplug it. Will fail
+>> + * with -EBUSY if some memory is busy and cannot get unplugged.
+>> + *
+>> + * Will modify the state of the memory block. Might temporarily drop the
+>> + * hotplug_mutex.
+>> + */
+>> +static int virtio_mem_bbm_offline_remove_and_unplug_bb(struct virtio_mem *vm,
+>> +						       unsigned long bb_id)
+>> +{
+>> +	int rc;
+>> +
+>> +	if (WARN_ON_ONCE(virtio_mem_bbm_get_bb_state(vm, bb_id) !=
+>> +			 VIRTIO_MEM_BBM_BB_ADDED))
+>> +		return -EINVAL;
+>> +
+>> +	rc = virtio_mem_bbm_offline_and_remove_bb(vm, bb_id);
+>> +	if (rc)
+>> +		return rc;
+>> +
+>> +	rc = virtio_mem_bbm_unplug_bb(vm, bb_id);
+>> +	if (rc)
+>> +		virtio_mem_bbm_set_bb_state(vm, bb_id,
+>> +					    VIRTIO_MEM_BBM_BB_PLUGGED);
+>> +	else
+>> +		virtio_mem_bbm_set_bb_state(vm, bb_id,
+>> +					    VIRTIO_MEM_BBM_BB_UNUSED);
+>> +	return rc;
+>> +}
+>> +
+>> +/*
+>> + * Try to remove a big block from Linux and unplug it. Will fail with
+>> + * -EBUSY if some memory is online.
+>> + *
+>> + * Will modify the state of the memory block.
+>> + */
+>> +static int virtio_mem_bbm_remove_and_unplug_bb(struct virtio_mem *vm,
+>> +					       unsigned long bb_id)
+>> +{
+>> +	int rc;
+>> +
+>> +	if (WARN_ON_ONCE(virtio_mem_bbm_get_bb_state(vm, bb_id) !=
+>> +			 VIRTIO_MEM_BBM_BB_ADDED))
+>> +		return -EINVAL;
+>> +
+>> +	rc = virtio_mem_bbm_remove_bb(vm, bb_id);
+>> +	if (rc)
+>> +		return -EBUSY;
+>> +
+>> +	rc = virtio_mem_bbm_unplug_bb(vm, bb_id);
+>> +	if (rc)
+>> +		virtio_mem_bbm_set_bb_state(vm, bb_id,
+>> +					    VIRTIO_MEM_BBM_BB_PLUGGED);
+>> +	else
+>> +		virtio_mem_bbm_set_bb_state(vm, bb_id,
+>> +					    VIRTIO_MEM_BBM_BB_UNUSED);
+>> +	return rc;
+>> +}
+>> +
+>> +/*
+>> + * Test if a big block is completely offline.
+>> + */
+>> +static bool virtio_mem_bbm_bb_is_offline(struct virtio_mem *vm,
+>> +					 unsigned long bb_id)
+>> +{
+>> +	const unsigned long start_pfn = PFN_DOWN(virtio_mem_bb_id_to_phys(vm, bb_id));
+>> +	const unsigned long nr_pages = PFN_DOWN(vm->bbm.bb_size);
+>> +	unsigned long pfn;
+>> +
+>> +	for (pfn = start_pfn; pfn < start_pfn + nr_pages;
+>> +	     pfn += PAGES_PER_SECTION) {
+> 
+> Can we do the check with memory block granularity?
 
-Fix nvkm_iccsense_oneinit(), to free stbl.rail post iteration.
+I had that initially, but the code turned out nicer this way (e.g.,
+PAGES_PER_SECTION).
 
-Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
----
- drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c b/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c
-index fecfa6a..23d91b6 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c
-@@ -291,6 +291,7 @@ nvkm_iccsense_oneinit(struct nvkm_subdev *subdev)
- 			list_add_tail(&rail->head, &iccsense->rails);
- 		}
- 	}
-+	kfree(stbl.rail);
- 	return 0;
- }
- 
 -- 
-2.7.4
+Thanks,
+
+David / dhildenb
 
