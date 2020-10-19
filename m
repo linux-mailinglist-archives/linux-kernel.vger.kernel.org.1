@@ -2,121 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87276292A47
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD08292A5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730117AbgJSPXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729544AbgJSPXD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:23:03 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22D2C0613CE;
-        Mon, 19 Oct 2020 08:23:02 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id E5ADBAAD; Mon, 19 Oct 2020 11:23:01 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org E5ADBAAD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1603120981;
-        bh=lT5xtlsxdwOYkecuDWJlMrE8tDokDHNn495zYSF9O6g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=joviL40jSOAtezsmhplLPOD506JpAKoE7uAJXqz9d5tKuxsgLjzu7RUEVujcEdkZe
-         hZi5lpwnRHX4cywOrMhkd5Wui10LqL4MCOg9YVE/veJ6ilSTIsnTw8Uq6RZpEBlFdK
-         ObD5ClmzEJkWXd77ArKXZpDkLAjIxqiljgfasrDk=
-Date:   Mon, 19 Oct 2020 11:23:01 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, NeilBrown <neilb@suse.de>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Roberto Bergantinos Corpas <rbergant@redhat.com>,
-        "open list:NFS, SUNRPC, AND LOCKD CLIENTS" 
-        <linux-nfs@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] SUNRPC: fix copying of multiple pages in
- gss_read_proxy_verf()
-Message-ID: <20201019152301.GC32403@fieldses.org>
-References: <20201019114229.52973-1-martijn.de.gouw@prodrive-technologies.com>
+        id S1730097AbgJSP07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:26:59 -0400
+Received: from mga01.intel.com ([192.55.52.88]:38590 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729075AbgJSP06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 11:26:58 -0400
+IronPort-SDR: IQkfUETGL72+XlVqdfgh78+jp+OuNaBO04hpE+rzKHqqnyx8gIZObhHYjDqbqXt05r0JOkQB9m
+ tcVdJ8+hAoFA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="184661539"
+X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
+   d="scan'208";a="184661539"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 08:26:58 -0700
+IronPort-SDR: X/puYn9tz2AVmatKIqgYLOxOfIFTADFCC1BNhCc8B8Xosq7FGkUh6Czzqn3sC71GTPpxnm4shC
+ p0DH/9jkG+yw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
+   d="scan'208";a="347467027"
+Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Oct 2020 08:26:56 -0700
+Date:   Mon, 19 Oct 2020 23:24:11 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Rong Chen <rong.a.chen@intel.com>,
+        Anton Blanchard <anton@au.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        lkp <lkp@lists.01.org>, 0day robot <lkp@intel.com>,
+        Ying Huang <ying.huang@intel.com>,
+        Zhengjun Xing <zhengjun.xing@intel.com>
+Subject: Re: [LKP] Unreliable will-it-scale context_switch1 test on 0day bot
+Message-ID: <20201019152410.GA14293@intel.com>
+References: <104775100.27222.1603114052224.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201019114229.52973-1-martijn.de.gouw@prodrive-technologies.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <104775100.27222.1603114052224.JavaMail.zimbra@efficios.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 01:42:27PM +0200, Martijn de Gouw wrote:
-> When the passed token is longer than 4032 bytes, the remaining part
-> of the token must be copied from the rqstp->rq_arg.pages. But the
-> copy must make sure it happens in a consecutive way.
+On Mon, Oct 19, 2020 at 09:27:32AM -0400, Mathieu Desnoyers wrote:
+> Hi,
+> 
+> I pointed out an issue with the will-it-scale context_switch1 test run by the 0day bot on
+> October 7, 2020, and got no reply.
+Thanks Mathieu for the feedback, we had added it to the TODO list but sorry for
+not reply in time.
 
-Thanks.  Apologies, but I don't immediately see where the copy is
-non-consecutive.  What exactly is the bug in the existing code?
-
---b.
+Zhengjun, can you help follow up this mail thread?
 
 > 
-> Signed-off-by: Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>
-> ---
->  net/sunrpc/auth_gss/svcauth_gss.c | 27 +++++++++++++++++----------
->  1 file changed, 17 insertions(+), 10 deletions(-)
+> Until this issue is solved, the results of those tests are basically pure noise when run on
+> SMT hardware:
 > 
-> diff --git a/net/sunrpc/auth_gss/svcauth_gss.c b/net/sunrpc/auth_gss/svcauth_gss.c
-> index 258b04372f85..bd4678db9d76 100644
-> --- a/net/sunrpc/auth_gss/svcauth_gss.c
-> +++ b/net/sunrpc/auth_gss/svcauth_gss.c
-> @@ -1147,9 +1147,9 @@ static int gss_read_proxy_verf(struct svc_rqst *rqstp,
->  			       struct gssp_in_token *in_token)
->  {
->  	struct kvec *argv = &rqstp->rq_arg.head[0];
-> -	unsigned int page_base, length;
-> -	int pages, i, res;
-> -	size_t inlen;
-> +	unsigned int length, pgto_offs, pgfrom_offs;
-> +	int pages, i, res, pgto, pgfrom;
-> +	size_t inlen, to_offs, from_offs;
->  
->  	res = gss_read_common_verf(gc, argv, authp, in_handle);
->  	if (res)
-> @@ -1177,17 +1177,24 @@ static int gss_read_proxy_verf(struct svc_rqst *rqstp,
->  	memcpy(page_address(in_token->pages[0]), argv->iov_base, length);
->  	inlen -= length;
->  
-> -	i = 1;
-> -	page_base = rqstp->rq_arg.page_base;
-> +	to_offs = length;
-> +	from_offs = rqstp->rq_arg.page_base;
->  	while (inlen) {
-> -		length = min_t(unsigned int, inlen, PAGE_SIZE);
-> -		memcpy(page_address(in_token->pages[i]),
-> -		       page_address(rqstp->rq_arg.pages[i]) + page_base,
-> +		pgto = to_offs >> PAGE_SHIFT;
-> +		pgfrom = from_offs >> PAGE_SHIFT;
-> +		pgto_offs = to_offs & ~PAGE_MASK;
-> +		pgfrom_offs = from_offs & ~PAGE_MASK;
-> +
-> +		length = min_t(unsigned int, inlen,
-> +			 min_t(unsigned int, PAGE_SIZE - pgto_offs,
-> +			       PAGE_SIZE - pgfrom_offs));
-> +		memcpy(page_address(in_token->pages[pgto]) + pgto_offs,
-> +		       page_address(rqstp->rq_arg.pages[pgfrom]) + pgfrom_offs,
->  		       length);
->  
-> +		to_offs += length;
-> +		from_offs += length;
->  		inlen -= length;
-> -		page_base = 0;
-> -		i++;
->  	}
->  	return 0;
->  }
+> https://lore.kernel.org/lkml/1183082664.11002.1602082242482.JavaMail.zimbra@efficios.com/
+> 
+> Who is maintaining those tests and the 0day bot ?
+will-it-scale itself is from community at https://github.com/antonblanchard/will-it-scale
+and we will look for the support if we don't have quick solution. 0day bot basically wraps
+the test and analyze the result to find which commit leads to change.
+
+> 
+> Thanks,
+> 
+> Mathieu
+> 
 > -- 
-> 2.20.1
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
+> _______________________________________________
+> LKP mailing list -- lkp@lists.01.org
+> To unsubscribe send an email to lkp-leave@lists.01.org
