@@ -2,130 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186F3292359
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A2A292370
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728645AbgJSIEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 04:04:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727349AbgJSIEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 04:04:12 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BBF92224D;
-        Mon, 19 Oct 2020 08:04:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603094651;
-        bh=7fgajnOQSM7B/+cKJc84EGHLV3zHY5ZxYix7uHpO6O4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hw/kPg7Xl3a0wPXfyoSA+NkMy8bC8FTxoKFyYm+YUeJJL3Np4/2DDpEE+fl3JjZ/3
-         8x90mpPWvGYPfGV7+UYl5pfqG2TbWaIh3ABZDouKG9K8iE1QxgdVhDWJf58tVjvpUu
-         ts1o6jvLSm6KzgITZCJQeAULiyNu2/Dun5sv53gs=
-Received: by pali.im (Postfix)
-        id 17853B70; Mon, 19 Oct 2020 10:04:09 +0200 (CEST)
-Date:   Mon, 19 Oct 2020 10:04:08 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andre Heider <a.heider@gmail.com>,
-        =?utf-8?Q?G=C3=A9rald?= Kerma <gerald@gk2.net>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add support for LED2
-Message-ID: <20201019080408.iv7vmj63cgt2i6vg@pali>
-References: <20201006124455.16617-1-pali@kernel.org>
+        id S1728778AbgJSIKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 04:10:53 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2984 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728142AbgJSIKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 04:10:52 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id B68E437F098303526F95;
+        Mon, 19 Oct 2020 09:10:50 +0100 (IST)
+Received: from localhost (10.52.126.130) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 19 Oct
+ 2020 09:10:50 +0100
+Date:   Mon, 19 Oct 2020 09:08:54 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>, <guohanjun@huawei.com>,
+        Will Deacon <will@kernel.org>, <linuxarm@huawei.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>
+Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
+Message-ID: <20201019080854.00001a9f@Huawei.com>
+In-Reply-To: <20201017064425.GB1883987@kroah.com>
+References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
+        <20201017064425.GB1883987@kroah.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201006124455.16617-1-pali@kernel.org>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.126.130]
+X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello! Gregory, I would like to remind you following patch.
+On Sat, 17 Oct 2020 08:44:25 +0200
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-Andre, if you have a time, could you test it too?
+> On Fri, Oct 16, 2020 at 11:27:02PM +0800, Jonathan Cameron wrote:
+> > Both ACPI and DT provide the ability to describe additional layers of
+> > topology between that of individual cores and higher level constructs
+> > such as the level at which the last level cache is shared.
+> > In ACPI this can be represented in PPTT as a Processor Hierarchy
+> > Node Structure [1] that is the parent of the CPU cores and in turn
+> > has a parent Processor Hierarchy Nodes Structure representing
+> > a higher level of topology.
+> > 
+> > For example Kunpeng 920 has clusters of 4 CPUs.  These do not share
+> > any cache resources, but the interconnect topology is such that
+> > the cost to transfer ownership of a cacheline between CPUs within
+> > a cluster is lower than between CPUs in different clusters on the same
+> > die.   Hence, it can make sense to deliberately schedule threads
+> > sharing data to a single cluster.
+> > 
+> > This patch simply exposes this information to userspace libraries
+> > like hwloc by providing cluster_cpus and related sysfs attributes.
+> > PoC of HWLOC support at [2].
+> > 
+> > Note this patch only handle the ACPI case.
+> > 
+> > Special consideration is needed for SMT processors, where it is
+> > necessary to move 2 levels up the hierarchy from the leaf nodes
+> > (thus skipping the processor core level).
+> > 
+> > Currently the ID provided is the offset of the Processor
+> > Hierarchy Nodes Structure within PPTT.  Whilst this is unique
+> > it is not terribly elegant so alternative suggestions welcome.
+> > 
+> > Note that arm64 / ACPI does not provide any means of identifying
+> > a die level in the topology but that may be unrelate to the cluster
+> > level.
+> > 
+> > RFC questions:
+> > 1) Naming
+> > 2) Related to naming, do we want to represent all potential levels,
+> >    or this enough?  On Kunpeng920, the next level up from cluster happens
+> >    to be covered by llc cache sharing, but in theory more than one
+> >    level of cluster description might be needed by some future system.
+> > 3) Do we need DT code in place? I'm not sure any DT based ARM64
+> >    systems would have enough complexity for this to be useful.
+> > 4) Other architectures?  Is this useful on x86 for example?
+> > 
+> > [1] ACPI Specification 6.3 - section 5.2.29.1 processor hierarchy node
+> >     structure (Type 0)
+> > [2] https://github.com/hisilicon/hwloc/tree/linux-cluster
+> > 
+> > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > ---
+> > 
+> >  Documentation/admin-guide/cputopology.rst | 26 ++++++++--  
+> 
+> You are adding new sysfs files here, but not adding Documentation/ABI/
+> entries as well?  This cputopology document is nice, but no one knows to
+> look there for sysfs stuff :)
+Hi Greg,
 
-On Tuesday 06 October 2020 14:44:55 Pali Rohár wrote:
-> LED2 is connected to MPP1_2 pin. It is working only on V7 boards.
-> V5 boards have hw bug which cause that LED2 is non-working.
+Ah.  I'd assumed there wasn't a current doc as the patch adding
+die description didn't touch it.   Turns out it was just missing from
+that patch. (Documentation/ABI/testing/sysfs-devices-system-cpu)
+Seems those docs are missing quite a bit of more recent stuff such as
+die and more package related parts.  I'll bring it up to date as a
+precursor to v2 of this series.
+
+Thanks,
+
+Jonathan
+
 > 
-> So enable LED2 only for Espressobin V7 boards.
+> thanks,
 > 
-> Note that LED1 is connected to LED_WLAN# pin on miniPCIe card and LED3 to
-> power supply. Therefore on Espressobin board only LED2 can be controlled
-> directly from the host. LED1 is possible to control via WiFi card inserted
-> in miniPCIe slot if driver for particular card supports it.
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Tested-by: Gérald Kerma <gerald@gk2.net>
-> 
-> ---
-> 
-> Previous version of this patch was sent by Uwe in March 2018, but it did
-> not work on any tested V5 board. Now we know it was due to V5 HW bug.
-> 
-> https://lore.kernel.org/linux-arm-kernel/20180321105005.18426-3-u.kleine-koenig@pengutronix.de/
-> ---
->  .../dts/marvell/armada-3720-espressobin-v7-emmc.dts |  4 ++++
->  .../boot/dts/marvell/armada-3720-espressobin-v7.dts |  4 ++++
->  .../boot/dts/marvell/armada-3720-espressobin.dtsi   | 13 +++++++++++++
->  3 files changed, 21 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> index 4775a7eda481..75401eab4d42 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> @@ -39,3 +39,7 @@
->  &sdhci0 {
->  	status = "okay";
->  };
-> +
-> +&led2 {
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> index c47a93978386..48a7f50fb427 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> @@ -34,3 +34,7 @@
->  &switch0port3 {
->  	label = "wan";
->  };
-> +
-> +&led2 {
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> index 8a1c678bea5f..daffe136c523 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> @@ -41,6 +41,19 @@
->  			  3300000 0x0>;
->  		enable-active-high;
->  	};
-> +
-> +	led2: gpio-led2 {
-> +		/* led2 is working only on v7 board */
-> +		status = "disabled";
-> +
-> +		compatible = "gpio-leds";
-> +
-> +		led2 {
-> +			label = "led2";
-> +			gpios = <&gpionb 2 GPIO_ACTIVE_LOW>;
-> +			default-state = "off";
-> +		};
-> +	};
->  };
->  
->  /* J9 */
-> -- 
-> 2.20.1
-> 
+> greg k-h
+
+
