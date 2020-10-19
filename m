@@ -2,105 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19A2292C98
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680FD292C99
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731006AbgJSRXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730552AbgJSRXv (ORCPT
+        id S1731040AbgJSRYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:24:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31024 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730498AbgJSRYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:23:51 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D790EC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:23:50 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id e10so347673pfj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:23:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=m9yDz6jsfkl8I4WwGG8Nd/lVTcCTRXN3HWZNgzXsp4E=;
-        b=0e95TsUR7v0CLtoa8YRBbvAHeoWB96sc0KKgqqYcvM5oMJTphsnRM52cmcwxle0o4K
-         1nYQFXgQDtZ39b6CdsRZkifsV3LwoxGWc6rTmEP/FDiQpb1wz0gwhVA4VZFsmcPTFfMn
-         vB3AU3nSWJaKiM8naZerYkjG+c/WkSOzA4iMKVNdxgdfcp9XUftvP8da4Js3obXtWGoi
-         CY2mXO6cYc7jQeU39AupOao6iCME+dQyPuDl/7zAV7w7SOX7dAQpYx4onXy4Hqeze1wq
-         px02vvtzy1zBetanFakwNOKrRr93MdwIBO1uaUuJXC0lZi7Ul4IlO2jXxcB9xPHhkh8F
-         ExjQ==
+        Mon, 19 Oct 2020 13:24:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603128261;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=GlNRdQUy+AGKN2OBLvxM70f2rqnujuydEmx9LlvXhbI=;
+        b=PGIT5IWEb8BBQWYvfEAvxxpioKhjAnMpXzvP82MrRX8SWQ4pD48w/WfPeAdbSeJ3NDZc0i
+        0rYebwmlYu2Knvek1zNFhtHOk7CrdPXPn4zrJsWCgFRP/F0DtwYGrxtwaEzTCxNY2UlVEI
+        W0sbwW3+cfucGjij0CsqHhCMVgdk3OQ=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-60-r8CJsx6lMRCR-4hEgeWyNA-1; Mon, 19 Oct 2020 13:24:19 -0400
+X-MC-Unique: r8CJsx6lMRCR-4hEgeWyNA-1
+Received: by mail-qv1-f69.google.com with SMTP id c3so367716qvj.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:24:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m9yDz6jsfkl8I4WwGG8Nd/lVTcCTRXN3HWZNgzXsp4E=;
-        b=VTUFZII4hychzxTDRivZLjRqrXiUZjmGfA7nOLax+tVxDRPXQyTjVhiwQLVKAwB+kS
-         AVA9lHPdLUjXWU+r29/7oj/jJM5a4cWxF53W+aBcH5kGo/DUxguXsnMwZDW+csSbxkIy
-         x/ud9v6FqcYBiE6PuaWxdUYoj5h8sHO7jjNG8SxZBZDmK3QisYpRXupmBfL/MAdnpCy3
-         jl0vYpgydC6tqEjorS9ATXryERa8RfASnEMzhtaDVBIDVaWVowSxiFx+DHo2GwaQAN8F
-         79JerWIw2X9LsLOO1xsZAWcvYSJYNKAEYs5DhXuC2ch3vHWDBnfnQmwqJkVVO/cpHtPe
-         k17A==
-X-Gm-Message-State: AOAM533ryIv/L2pyRcXnaWPTNIAJj63iciKCVOftcN2OjwTf0z1lzsbZ
-        BG97U9piSUPaSux3zlpb9L5oIFboL2GNBg==
-X-Google-Smtp-Source: ABdhPJwsqWVBKojPmoF3yeXCiHiiQLSVFNz5YucRTA0U9YYMJCFfkI1WoiaRIMRiDX/5XYmhDYI//g==
-X-Received: by 2002:a63:1e21:: with SMTP id e33mr631531pge.270.1603128230105;
-        Mon, 19 Oct 2020 10:23:50 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c085:21c8::169d? ([2620:10d:c090:400::5:499c])
-        by smtp.gmail.com with ESMTPSA id b5sm221170pgi.55.2020.10.19.10.23.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 10:23:49 -0700 (PDT)
-Subject: Re: [PATCH] block/elevator: reduce the critical section
-To:     Hui Su <sh_def@163.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201019164246.GA79115@rlk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ea4495c3-0003-786d-82e4-3693f349890a@kernel.dk>
-Date:   Mon, 19 Oct 2020 11:23:48 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201019164246.GA79115@rlk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GlNRdQUy+AGKN2OBLvxM70f2rqnujuydEmx9LlvXhbI=;
+        b=kBhGJUGNNBBUQ/fMPIHnTu16Xurgy0+m4V0Kh913hWu2UQufaxV9meqOZPCRQZv9xd
+         EX87hw11qUbr19544u3ilwZfJEJY8lf3OztnKTlVjqZLKhxec28G6xnU58FlyvHOEA1S
+         +MZL3857+W+XjOA7TGsVVc13ktL8On96qFYSTTEA8lRBPpjCC8jfPCbmIX33iJfP/Xc6
+         +DcD5HE3vmlp/HuthB8yUnUaa+QK0yrqxCLbw5iuxOz2IQ2veDg+wkUnm0BNiTgHpfAW
+         V0zAIE7Y01ZNqlnIytsixrJyndpJidFj8UalWSb1l6/HoMXcc9s7/Iptdceih0PJFchb
+         P5uA==
+X-Gm-Message-State: AOAM530Jw+tzC8ejtOBIGg1yGmkpU+44FV+AQiKkyQxrWvYvM5kceXi4
+        0M2ojqW03pFMbXyo+c23alv7pFgGxaSOsOoaMN1WmD7u/K3qTpxLZwPyJKmJLUXKLYKoJBz5J9c
+        t8eBc0cgw+pQY55QwZRtkaeZ7
+X-Received: by 2002:ad4:456c:: with SMTP id o12mr941392qvu.48.1603128259064;
+        Mon, 19 Oct 2020 10:24:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy1IY0STp8Q6ypEf1lWhvSs2JcyK6xaHXzjj4/dVdBi8JhNegNGdN/AJqDRKfg+58L+7+NNYg==
+X-Received: by 2002:ad4:456c:: with SMTP id o12mr941370qvu.48.1603128258823;
+        Mon, 19 Oct 2020 10:24:18 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id s22sm222627qtc.33.2020.10.19.10.24.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 10:24:18 -0700 (PDT)
+From:   trix@redhat.com
+To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
+        kuba@kernel.org, thomas.kopp@microchip.com,
+        dan.carpenter@oracle.com, dev.kurt@vandijck-laurijssen.be
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] net: can: remove unneeded break
+Date:   Mon, 19 Oct 2020 10:24:12 -0700
+Message-Id: <20201019172412.31143-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/20 10:42 AM, Hui Su wrote:
-> @@ -633,23 +633,21 @@ static struct elevator_type *elevator_get_default(struct request_queue *q)
->   */
->  static struct elevator_type *elevator_get_by_features(struct request_queue *q)
->  {
-> -	struct elevator_type *e, *found = NULL;
-> +	struct elevator_type *e = NULL;
->  
->  	spin_lock(&elv_list_lock);
-> -
->  	list_for_each_entry(e, &elv_list, list) {
->  		if (elv_support_features(e->elevator_features,
->  					 q->required_elevator_features)) {
-> -			found = e;
->  			break;
->  		}
->  	}
-> +	spin_unlock(&elv_list_lock);
->  
-> -	if (found && !try_module_get(found->elevator_owner))
-> -		found = NULL;
-> +	if (e && !try_module_get(e->elevator_owner))
-> +		e = NULL;
->  
-> -	spin_unlock(&elv_list_lock);
-> -	return found;
-> +	return e;
->  }
+From: Tom Rix <trix@redhat.com>
 
-This looks wrong as well. If we don't match the elevator, then we just
-return the last one. Or maybe even a totally invalid entry, depending on
-how the list iteration works.
+A break is not needed if it is preceded by a return
 
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ .../net/can/spi/mcp251xfd/mcp251xfd-core.c    | 22 +++++++++----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index c3f49543ff26..9c215f7c5f81 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -75,11 +75,11 @@ static const char *__mcp251xfd_get_model_str(enum mcp251xfd_model model)
+ {
+ 	switch (model) {
+ 	case MCP251XFD_MODEL_MCP2517FD:
+-		return "MCP2517FD"; break;
++		return "MCP2517FD";
+ 	case MCP251XFD_MODEL_MCP2518FD:
+-		return "MCP2518FD"; break;
++		return "MCP2518FD";
+ 	case MCP251XFD_MODEL_MCP251XFD:
+-		return "MCP251xFD"; break;
++		return "MCP251xFD";
+ 	}
+ 
+ 	return "<unknown>";
+@@ -95,21 +95,21 @@ static const char *mcp251xfd_get_mode_str(const u8 mode)
+ {
+ 	switch (mode) {
+ 	case MCP251XFD_REG_CON_MODE_MIXED:
+-		return "Mixed (CAN FD/CAN 2.0)"; break;
++		return "Mixed (CAN FD/CAN 2.0)";
+ 	case MCP251XFD_REG_CON_MODE_SLEEP:
+-		return "Sleep"; break;
++		return "Sleep";
+ 	case MCP251XFD_REG_CON_MODE_INT_LOOPBACK:
+-		return "Internal Loopback"; break;
++		return "Internal Loopback";
+ 	case MCP251XFD_REG_CON_MODE_LISTENONLY:
+-		return "Listen Only"; break;
++		return "Listen Only";
+ 	case MCP251XFD_REG_CON_MODE_CONFIG:
+-		return "Configuration"; break;
++		return "Configuration";
+ 	case MCP251XFD_REG_CON_MODE_EXT_LOOPBACK:
+-		return "External Loopback"; break;
++		return "External Loopback";
+ 	case MCP251XFD_REG_CON_MODE_CAN2_0:
+-		return "CAN 2.0"; break;
++		return "CAN 2.0";
+ 	case MCP251XFD_REG_CON_MODE_RESTRICTED:
+-		return "Restricted Operation"; break;
++		return "Restricted Operation";
+ 	}
+ 
+ 	return "<unknown>";
 -- 
-Jens Axboe
+2.18.1
 
