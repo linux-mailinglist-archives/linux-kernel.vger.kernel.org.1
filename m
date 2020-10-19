@@ -2,72 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CFA292AD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502BD292ADC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730430AbgJSPua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:50:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59942 "EHLO mail.kernel.org"
+        id S1730431AbgJSPvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:51:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:60680 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730097AbgJSPua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:50:30 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6888722282;
-        Mon, 19 Oct 2020 15:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603122629;
-        bh=olmZlieHxEbqTfHRVsL2oAfy+yaGtPgTvl39J02JTEg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E83vm0gVRi98OaCJ9yUuPMkTjZWdatdXa9DnZN89UkGdCPuqAfCsEpnnmCLpT0HLw
-         9RaKLKoL/lOHI8AUhzwKC92vjtVS6v8wTbcfoBerdhnPQM16gBPHtHMCEh+kFv57KW
-         h1/aInMj2Mxegz3eqfo1a3h5frV1QRfDxbOsZAI8=
-Date:   Mon, 19 Oct 2020 11:50:28 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Ahern <dsahern@gmail.com>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.9 035/111] ipv6/icmp: l3mdev: Perform icmp
- error route lookup on source device routing table (v2)
-Message-ID: <20201019155028.GC4060117@sasha-vm>
-References: <20201018191807.4052726-1-sashal@kernel.org>
- <20201018191807.4052726-35-sashal@kernel.org>
- <20201018124004.5f8c50a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <842ae8c4-44ef-2005-18d5-80e00c140107@gmail.com>
- <20201019115236.GA4060117@sasha-vm>
- <20201019083327.34c2cbc4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1730051AbgJSPvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 11:51:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E275F1FB;
+        Mon, 19 Oct 2020 08:51:12 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E625D3F66B;
+        Mon, 19 Oct 2020 08:51:10 -0700 (PDT)
+References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com> <20201019103522.GK2628@hirez.programming.kicks-ass.net> <20201019123226.00006705@Huawei.com> <20201019131052.GC8004@e123083-lin> <jhjh7qqqqct.mognet@arm.com> <20201019142715.00005fb1@huawei.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Morten Rasmussen <morten.rasmussen@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, guohanjun@huawei.com,
+        Will Deacon <will@kernel.org>, linuxarm@huawei.com,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Jeremy Linton <Jeremy.Linton@arm.com>,
+        Jerome Glisse <jglisse@redhat.com>
+Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
+Message-ID: <jhjft6aqko1.mognet@arm.com>
+In-reply-to: <20201019142715.00005fb1@huawei.com>
+Date:   Mon, 19 Oct 2020 16:51:06 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201019083327.34c2cbc4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 08:33:27AM -0700, Jakub Kicinski wrote:
->On Mon, 19 Oct 2020 07:52:36 -0400 Sasha Levin wrote:
->> On Sun, Oct 18, 2020 at 07:40:12PM -0600, David Ahern wrote:
->> >On 10/18/20 1:40 PM, Jakub Kicinski wrote:
->> >> This one got applied a few days ago, and the urgency is low so it may be
->> >> worth letting it see at least one -rc release ;)
->> >
->> >agreed
+
+On 19/10/20 15:27, Jonathan Cameron wrote:
+> On Mon, 19 Oct 2020 14:48:02 +0100
+> Valentin Schneider <valentin.schneider@arm.com> wrote:
 >>
->> Definitely - AUTOSEL patches get extra soaking time before getting
->> queued up. This is more of a request to make sure it's not doing
->> anything silly.
+>> That's my queue to paste some of that stuff I've been rambling on and off
+>> about!
+>>
+>> With regards to cache / interconnect layout, I do believe that if we
+>> want to support in the scheduler itself then we should leverage some
+>> distance table rather than to create X extra scheduler topology levels.
+>>
+>> I had a chat with Jeremy on the ACPI side of that sometime ago. IIRC given
+>> that SLIT gives us a distance value between any two PXM, we could directly
+>> express core-to-core distance in that table. With that (and if that still
+>> lets us properly discover NUMA node spans), we could let the scheduler
+>> build dynamic NUMA-like topology levels representing the inner quirks of
+>> the cache / interconnect layout.
 >
->Could you put a number on "extra soaking time"?
+> You would rapidly run into the problem SLIT had for numa node description.
+> There is no consistent description of distance and except in the vaguest
+> sense or 'nearer' it wasn't any use for anything.   That is why HMAT
+> came along. It's far from perfect but it is a step up.
 >
->I'm asking mostly out of curiosity :)
 
-The AUTOSEL process adds at least another week into the flow, this means
-that the fastest this patch will go in into a released kernel is about 2
-weeks from now.
+I wasn't aware of HMAT; my feeble ACPI knowledge is limited to SRAT / SLIT
+/ PPTT, so thanks for pointing this out.
 
--- 
-Thanks,
-Sasha
+> I can't see how you'd generalize those particular tables to do anything
+> for intercore comms without breaking their use for NUMA, but something
+> a bit similar might work.
+>
+
+Right, there's the issue of still being able to determine NUMA node
+boundaries.
+
+> A lot of thought has gone in (and meeting time) to try an improve the
+> situation for complex topology around NUMA.  Whilst there are differences
+> in representing the internal interconnects and caches it seems like a somewhat
+> similar problem.  The issue there is it is really really hard to describe
+> this stuff with enough detail to be useful, but simple enough to be usable.
+>
+> https://lore.kernel.org/linux-mm/20181203233509.20671-1-jglisse@redhat.com/
+>
+
+Thanks for the link!
+
+>>
+>> It's mostly pipe dreams for now, but there seems to be more and more
+>> hardware where that would make sense; somewhat recently the PowerPC guys
+>> added something to their arch-specific code in that regards.
+>
+> Pipe dream == something to work on ;)
+>
+> ACPI has a nice code first model of updating the spec now, so we can discuss
+> this one in public, and propose spec changes only once we have an implementation
+> proven.
+>
+
+FWIW I blabbered about a "generalization" of NUMA domains & distances
+within the scheduler at LPC19 (and have been pasting that occasionally,
+apologies for the broken record):
+
+https://linuxplumbersconf.org/event/4/contributions/484/
+
+I've only pondered about the implementation, but if (big if; also I really
+despise advertising "the one solution that will solve all your issues"
+which this is starting to sound like) it would help I could cobble together
+an RFC leveraging a separate distance table.
+
+It doesn't solve the "funneling cache properties into a single number"
+issue, which as you just pointed out in a parallel email is a separate
+discussion altogether.
+
+> Note I'm not proposing we put the cluster stuff in the scheduler, just
+> provide it as a hint to userspace.
+>
+
+The goal being to tweak tasks' affinities, right? Other than CPU pinning
+and rare cases, IMO if the userspace has to mess around with affinities it
+is due to the failings of the underlying scheduler. Restricted CPU
+affinities is also something the load-balancer struggles with; I have and
+have been fighting over such issues where just a single per-CPU kworker
+waking up at the wrong time can mess up load-balance for quite some time. I
+tend to phrase it as: "if you're rude to the scheduler, it can and will
+respond in kind".
+
+Now yes, it's not the same timescale nor amount of work, but this is
+something the scheduler itself should leverage, not userspace.
+
+> Jonathan
