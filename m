@@ -2,145 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFDC2928F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21562928F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729224AbgJSOIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
+        id S1729195AbgJSOIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728810AbgJSOIr (ORCPT
+        with ESMTP id S1728810AbgJSOIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:08:47 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCEA3C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:08:46 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id h24so14101404ejg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:08:46 -0700 (PDT)
+        Mon, 19 Oct 2020 10:08:34 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97774C0613CE;
+        Mon, 19 Oct 2020 07:08:34 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id gv6so5785878pjb.4;
+        Mon, 19 Oct 2020 07:08:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=/KfoISsApaN0NSURJOvvfJb6dwcjjrFUhXMB/UsO5u8=;
-        b=NdZ9UN+yHyzobun2pSlu10EnMwdoI5kP57Dg+V9m5zdFRPjXDmTawgoX/3q3hFLOr7
-         TR5GP/k/Lp6kZRQsnuow8o3X97atocZ1Gg0S7CVRhxF9sCC+PDl3TXsHlCw5ZYr214ny
-         d39+ustjfCO8YQY2hsjzo1g621AuJAVzgi+iHCt05Y95N7+cvHBoiwfmQS5qyExSnd6U
-         VNNSXIdBmX7tr2OAhm0mMmhtrkIqePNqGUavbKyC7caHTGUlbxS42DsK58B8keW2wtLJ
-         66lBN8ZAkgIhKatEKaGFAMpbsGtj/WH3lUykXJ8SFQGCrlYHkigOufghId9ptnzODJmi
-         c9Cg==
+        bh=L/d/GrMtM3G1c7gvNmCkj3g3XnSIby04pR6OkOZiUrg=;
+        b=fTxFHbVbjA29MvwNlN3s+0MwtuIYMz+pD+EqynopaECm3ah0DIt33sJkGzB4BSp4DW
+         L8YgUxOWOuv3dwiNagbVhTH9eopfPQVQHv7EMAocSBB9NN0TAqWsEWKNE5lpUCEdjfO/
+         xoOlJRVTOBg5UqCKEx5Kt0+xbzrmD3VbyPHSQQ7cwYlECaXn6MEjBUrmuCSyCMnuxUve
+         A3b+oVWYGrbhfuGpeTDFOt/Pv1uYAY7qMM0ZkJgpRKgCDm4hxfsjLWLpndJwHawRqiD6
+         Ns3b4wX/M/crm6WxKnmwNA91eOQkTEN7aCY5iGYA/oTuIdXDqCpVZdMLOHAtGnRx7WPy
+         ps6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/KfoISsApaN0NSURJOvvfJb6dwcjjrFUhXMB/UsO5u8=;
-        b=I7oqEwoxROHhxLkRv3gwISGRcEGYXScHZjshpoVYvXpbmS9XfY/uwNUR08UEcztCPz
-         1iSwfv5P9MUzfBKAu64HTdGEh0DIJ4JVM8j6eXX+8Gi/AYRbiMAXPkZGITgB8ySYou0n
-         0fUnzr/BZ/H0SQzXUVWAjHu6Euy3qJsoA/xoSuhdKwbHgfPboZonLauj9YuMU5hf7g/f
-         EsJFQBjFvrm0tHUbBTG2JfiA1NFnef7vnVgaPddGVGuGzwNDXSjinMA8ISUHzPIObmZG
-         /rtiR57UQnCHs5cgOQfn8/swKquf65mtjDNFftzJNegp9b6cqwQzzpPbY2xGWJsqGrWp
-         L3HQ==
-X-Gm-Message-State: AOAM530jO+js8QqjaBtmcl/KkWvHIGGqgT0Kit7UPenFWiKF8AYcK70u
-        KalSAZM34++BPmEy8m5sdUcV0w==
-X-Google-Smtp-Source: ABdhPJwA7uw6+ZE3RVnaAj9H96KR8FzN4UrEVEZS6aUBgtDdquQPDfuzZYCFSozbMOV5OyjLm10zow==
-X-Received: by 2002:a17:906:1150:: with SMTP id i16mr96740eja.82.1603116524907;
-        Mon, 19 Oct 2020 07:08:44 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id f25sm10868868edy.52.2020.10.19.07.08.43
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=L/d/GrMtM3G1c7gvNmCkj3g3XnSIby04pR6OkOZiUrg=;
+        b=ik6G4FXPXhu02H6eZ6rBKsGoIl6dod+4PSalwekic4hyEIdImkhStijHjAzZeYjNy6
+         MNOW9R/nA38ATzAGTU/mSBRyVCrUSxJjj0hUT7Kv5xSY0bMEQeORbx9e8NW3lZYJamf+
+         8JKRNzuVtm1NIs0rtiCJJv4HfO4kox//sycyVFCXzASJa+d928Rm5FVlcw2732LRJnyV
+         4SioUx2NwuoY+Oec8xmOj+wIHBB3zksOkWZhueZNgRd5YXckjj4K16sLHkBf/HW/rOJU
+         sMhPDuGGGpbE9bfBn9fshk4ZDB02EPLlQ1G6lPj3ZgcnLp4mS4lmgMuvJBfL0Ge9obtd
+         IMDg==
+X-Gm-Message-State: AOAM530LNlpmIHeOlKtKK33Jx0QUs/wCyUrbpqCjQus/wU1ylFZClark
+        kZUQJrD7370T0PbBsCF5iGSqqLMbc68=
+X-Google-Smtp-Source: ABdhPJx4RKnl2RSyvoZFLRslOtAzjB/CSFLKr0RY1iFncYxGq72yLZM5acJa93UpH8CpVSP7IxJM2g==
+X-Received: by 2002:a17:902:d689:b029:d5:ced2:7968 with SMTP id v9-20020a170902d689b02900d5ced27968mr13532891ply.2.1603116514046;
+        Mon, 19 Oct 2020 07:08:34 -0700 (PDT)
+Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id z18sm40554pfn.158.2020.10.19.07.08.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 07:08:44 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 16:08:24 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     "Raj, Ashok" <ashok.raj@intel.com>
-Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
-        zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-accelerators@lists.ozlabs.org,
-        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
-        linux-pci@vger.kernel.org, "Lu, Baolu" <baolu.lu@intel.com>,
-        Jacon Jun Pan <jacob.jun.pan@intel.com>
-Subject: Re: [RFC PATCH 0/2] iommu: Avoid unnecessary PRI queue flushes
-Message-ID: <20201019140824.GA1478235@myrica>
-References: <20201015090028.1278108-1-jean-philippe@linaro.org>
- <20201015182211.GA54780@otc-nc-03>
- <20201016075923.GB1309464@myrica>
- <20201017112525.GA47206@otc-nc-03>
+        Mon, 19 Oct 2020 07:08:32 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 19 Oct 2020 07:08:30 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Mike Galbraith <umgwanakikbuti@gmail.com>, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, bigeasy@linutronix.de,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] zram: Fix __zram_bvec_{read,write}() locking order
+Message-ID: <20201019140830.GA3118409@google.com>
+References: <CABXGCsOL0pW0Ghh-w5d12P75ve6FS9Rgmzm6DvsYbJY-jMTCdg@mail.gmail.com>
+ <20201016124009.GQ2611@hirez.programming.kicks-ass.net>
+ <20201016153324.GA1976566@google.com>
+ <20201019101353.GJ2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201017112525.GA47206@otc-nc-03>
+In-Reply-To: <20201019101353.GJ2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 04:25:25AM -0700, Raj, Ashok wrote:
-> > For devices that *don't* use a stop marker, the PCIe spec says (10.4.1.2):
-> > 
-> >   To stop [using a PASID] without using a Stop Marker Message, the
-> >   function shall:
-> >   1. Stop queueing new Page Request Messages for this PASID.
+On Mon, Oct 19, 2020 at 12:13:53PM +0200, Peter Zijlstra wrote:
 > 
-> The device driver would need to tell stop sending any new PR's.
+> Mikhail reported a lockdep spat detailing how __zram_bvec_read() and
+> __zram_bvec_write() use zstrm->lock and zspage->lock in opposite order.
 > 
-> >   2. Finish transmitting any multi-page Page Request Messages for this
-> >      PASID (i.e. send the Page Request Message with the L bit Set).
-> >   3. Wait for PRG Response Messages associated any outstanding Page
-> >      Request Messages for the PASID.
-> > 
-> > So they have to flush their PR themselves. And since the device driver
-> > completes this sequence before calling unbind(), then there shouldn't be
-> > any oustanding PR for the PASID, and unbind() doesn't need to flush,
-> > right?
-> 
-> I can see how the device can complete #2,3 above. But the device driver
-> isn't the one managing page-responses right. So in order for the device to
-> know the above sequence is complete, it would need to get some assist from
-> IOMMU driver?
+> Reported-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Acked-by: Minchan Kim <minchan@kernel.org>
 
-No the device driver just waits for the device to indicate that it has
-completed the sequence. That's what the magic stop-PASID mechanism
-described by PCIe does. In 6.20.1 "Managing PASID TLP Prefix Usage" it
-says:
-
-"A Function must have a mechanism to request that it gracefully stop using
- a specific PASID. This mechanism is device specific but must satisfy the
- following rules:
- [...]
- * When the stop request mechanism indicates completion, the Function has:
-   [...]
-   * Complied with additional rules described in Address Translation
-     Services (Chapter 10 [10.4.1.2 quoted above]) if Address Translations
-     or Page Requests were issued on the behalf of this PASID."
-
-So after the device driver initiates this mechanism in the device, the
-device must be able to indicate completion of the mechanism, which
-includes completing all in-flight Page Requests. At that point the device
-driver can call unbind() knowing there is no pending PR for this PASID.
-
-Thanks,
-Jean
-
-> 
-> How does the driver know that everything host received has been responded
-> back to device?
-> 
-> > 
-> > > I'm not sure about other IOMMU's how they behave, When there is no space in
-> > > the PRQ, IOMMU auto-responds to the device. This puts the device in a
-> > > while (1) loop. The fake successful response will let the device do a ATS
-> > > lookup, and that would fail forcing the device to do another PRQ.
-> > 
-> > But in the sequence above, step 1 should ensure that the device will not
-> > send another PR for any successful response coming back at step 3.
-> 
-> True, but there could be some page-request in flight on its way to the
-> IOMMU. By draining and getting that round trip back to IOMMU we gaurantee
-> things in flight are flushed to PRQ after that Drain completes.
-> > 
-> > So I agree with the below if we suspect there could be pending PR, but
-> > given that pending PR are a stop marker thing and we don't know any device
-> > using stop markers, I wondered why I bothered implementing PRIq flush at
-> > all for SMMUv3, hence this RFC.
-> > 
-> 
-> Cheers,
-> Ashok
+Thanks for the fix.
