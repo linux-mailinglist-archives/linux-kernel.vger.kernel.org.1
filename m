@@ -2,87 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3E6292A7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080E9292A7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730051AbgJSPcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729075AbgJSPcx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:32:53 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4DBC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:32:52 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id l16so516644ilj.9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G6IqZPH/xvsjeV+KO4PrfwtgG9S8DY4P3ygKvGFV+Wk=;
-        b=Y/TH7WtZNNRhTiDN1VAyBBdljrCIJKN6XT05Ag7KnMLwK12/Ung3jtuMQBGYi5vmhL
-         72/8lisWN3QniaCEz9Ib59crBAL4W1ZrUu/PaALYAA96srEE+L40iZ2Fnizhbkk2angL
-         n6p7BdbI7RXC6n4N5OwCcPTdftLKF1OCH+NUNUPpmCAhDrhdkH82Rv1C7nl9I/ojaHcV
-         kmS7yyp69BJmWKnQSo8qs4q3hxKII5v/b9LrtNGumGkzr/60C+mgBR70JPZ1kZ0Da7c/
-         NnasKweHHQHA+GwqdLowZhENOTy302Sg6tYVr8qE71tIiiRNXAfefesK4386lqvMYonD
-         vH1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G6IqZPH/xvsjeV+KO4PrfwtgG9S8DY4P3ygKvGFV+Wk=;
-        b=N/d8D1plAioxttygQcdxrAy1cfYmRf9/Ivr6AqBgrsv18Uvil4mldM5yKL/RHNwjhP
-         A9APYXXnRFAkvhD3Y/25mJzO1LzNPC6DqslKiokle0mZiiPhhbC3hvGRpn0WGiv66NKl
-         e/DCFcptK/kyyeJEzBh3OVAOIo/0hhjIS/gwJP7DvS7SpNeszwo28/enIqaUQx3sFtdM
-         yUHrOVwA9E7aFx2U0mTgRIoKDsAKsuhah3m0w2fnn/gReuL+h11xzF4TSq1lQ9Cvq3P5
-         0E92DN7oZBuURdCFYW+R07q87qT9nwyIz3aoJYQWVnSV7w0R29DDp79E4nYCokrjttmH
-         T9fQ==
-X-Gm-Message-State: AOAM531noPso1Jz6sDoznXH7sXV3j4gsitNUKpzpeYzMpaKm9LV0LQPW
-        B1HIqdOn7fxKw77K7z4utIRgew==
-X-Google-Smtp-Source: ABdhPJybmO34vOS8G/CY+b47HRjCg2ALL11YTrOppEKdrvmkSd2kXA82tTKNLtwzSN0eoE8vTukKMg==
-X-Received: by 2002:a92:dc8f:: with SMTP id c15mr387228iln.293.1603121571501;
-        Mon, 19 Oct 2020 08:32:51 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id z200sm65790iof.47.2020.10.19.08.32.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 08:32:50 -0700 (PDT)
-Subject: Re: [PATCH] zram: Fix __zram_bvec_{read,write}() locking order
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Minchan Kim <minchan@kernel.org>
-Cc:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Mike Galbraith <umgwanakikbuti@gmail.com>, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, bigeasy@linutronix.de,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <CABXGCsOL0pW0Ghh-w5d12P75ve6FS9Rgmzm6DvsYbJY-jMTCdg@mail.gmail.com>
- <20201016124009.GQ2611@hirez.programming.kicks-ass.net>
- <20201016153324.GA1976566@google.com>
- <20201019101353.GJ2628@hirez.programming.kicks-ass.net>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <b50bdd18-941b-cc05-2be3-6288f227be4d@kernel.dk>
-Date:   Mon, 19 Oct 2020 09:32:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730102AbgJSPda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:33:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730015AbgJSPda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 11:33:30 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7205622260;
+        Mon, 19 Oct 2020 15:33:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603121609;
+        bh=yya1o9T7oC4vyJO2cm36z0cnriLTvHBVSH790kbyNYw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=flrDcCno2RMwv3HFAcbG3KdXBl2sY6l0k3xT9KrMH4ZkM4sitHZHQaCJ5HiwcmqWA
+         OWrwBrIXQxuCBlXdyLhTpg6B6Xpcvk0TM7zdeUG7jv2DmAdHShzVQa0jthGt5QgLJg
+         izU0jlzTR/Nsz4Jr2NWVgb30cn7mjx05st3X/X+w=
+Date:   Mon, 19 Oct 2020 08:33:27 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     David Ahern <dsahern@gmail.com>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.9 035/111] ipv6/icmp: l3mdev: Perform icmp
+ error route lookup on source device routing table (v2)
+Message-ID: <20201019083327.34c2cbc4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201019115236.GA4060117@sasha-vm>
+References: <20201018191807.4052726-1-sashal@kernel.org>
+        <20201018191807.4052726-35-sashal@kernel.org>
+        <20201018124004.5f8c50a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <842ae8c4-44ef-2005-18d5-80e00c140107@gmail.com>
+        <20201019115236.GA4060117@sasha-vm>
 MIME-Version: 1.0
-In-Reply-To: <20201019101353.GJ2628@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/20 4:13 AM, Peter Zijlstra wrote:
+On Mon, 19 Oct 2020 07:52:36 -0400 Sasha Levin wrote:
+> On Sun, Oct 18, 2020 at 07:40:12PM -0600, David Ahern wrote:
+> >On 10/18/20 1:40 PM, Jakub Kicinski wrote:  
+> >> This one got applied a few days ago, and the urgency is low so it may be
+> >> worth letting it see at least one -rc release ;)  
+> >
+> >agreed  
 > 
-> Mikhail reported a lockdep spat detailing how __zram_bvec_read() and
-> __zram_bvec_write() use zstrm->lock and zspage->lock in opposite order.
+> Definitely - AUTOSEL patches get extra soaking time before getting
+> queued up. This is more of a request to make sure it's not doing
+> anything silly.
 
-Applied, thanks.
+Could you put a number on "extra soaking time"? 
 
--- 
-Jens Axboe
-
+I'm asking mostly out of curiosity :)
