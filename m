@@ -2,78 +2,967 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671F929213D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F12C292141
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729772AbgJSCuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 22:50:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49317 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727192AbgJSCuk (ORCPT
+        id S1731253AbgJSCus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 22:50:48 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:7249 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731229AbgJSCur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 22:50:40 -0400
-Received: from mail-lj1-f198.google.com ([209.85.208.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1kULFu-0005NR-Az
-        for linux-kernel@vger.kernel.org; Mon, 19 Oct 2020 02:50:38 +0000
-Received: by mail-lj1-f198.google.com with SMTP id r15so4681884ljn.16
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 19:50:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XTrK0pAVZQQtS/tzM7uwTIFZMUuNtDoL2D9yFspbaVY=;
-        b=WQDe/efmUgduOuVma8Y8g0GVrU1Ck1s95jzhQpjQ2LucrQCbAKlEYEQXoz5FvZIxhQ
-         7kcL7El2bbPWeHqTDWljDjp/Pk/U1LbmYaL0NqEbXPYtfdc8ybX3gwuz9MyN5Kg0sQFQ
-         hsC34WDD8xfeg3wo7salbtr1VQoGbChYGjzAumnhmrODz0NhLY3zFq4iL9YIiBZ16RwU
-         leZxqWA5O1yj5TKrFVB1VyJiL6qWY4kXjBbu2OKHpRLsiSgIc4z6BCjuoGF+kUVgXYfC
-         CT72dPNMem8hcNYkwHyh76g+Er/N2gbwRdAvkQ/ukI9WMHEXd8RTETIjdA+7+nBNbQXw
-         hm3A==
-X-Gm-Message-State: AOAM532C8VixXWWLZmFWvuYluuyCBJnCsdgSuXYk2BL0sisWFwyLJuZS
-        zcQDCxsMBl6cH2GCPI9SnHg+2UnEWnbmNQYTVTjzaYV5bqYf2GpvAwN6nAu+piwbxzgg2hcK/fn
-        mR66+6Q1Xd+x36INd9s8rA2Rm0ttW7k0kNvxjF5DlhN70gLxFPGkDuI5M
-X-Received: by 2002:a2e:b610:: with SMTP id r16mr5420422ljn.145.1603075837823;
-        Sun, 18 Oct 2020 19:50:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykKr5i72+Z18iQtWw3/e6ifc5NFHwy1z43A4/0WmlyHcQutDyhot3re5YEu2SGMKKEoY3zxU0o520TJ6gK/gM=
-X-Received: by 2002:a2e:b610:: with SMTP id r16mr5420418ljn.145.1603075837589;
- Sun, 18 Oct 2020 19:50:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201016041211.18827-1-po-hsu.lin@canonical.com> <20201016163248.57af2b95@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201016163248.57af2b95@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date:   Mon, 19 Oct 2020 10:50:26 +0800
-Message-ID: <CAMy_GT_vTmVRi-pjysaw1ccwek0r+w12zZokKDmMsCd+ut5eaQ@mail.gmail.com>
-Subject: Re: [PATCHv4] selftests: rtnetlink: load fou module for
- kci_test_encap_fou() test
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 18 Oct 2020 22:50:47 -0400
+Date:   19 Oct 2020 11:50:45 +0900
+X-IronPort-AV: E=Sophos;i="5.77,393,1596466800"; 
+   d="scan'208";a="60137160"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 19 Oct 2020 11:50:45 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8694D4005E08;
+        Mon, 19 Oct 2020 11:50:45 +0900 (JST)
+Message-ID: <87o8kz9blh.wl-kuninori.morimoto.gx@renesas.com>
+From:   Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
+        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
+        <tiwai@suse.com>, <p.zabel@pengutronix.de>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
+        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
+        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
+        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
+        <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH v4 09/15] ASoC: dt-bindings: audio-graph: Convert bindings to json-schema
+In-Reply-To: <1602859382-19505-10-git-send-email-spujar@nvidia.com>
+References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
+        <1602859382-19505-10-git-send-email-spujar@nvidia.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 7:32 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Fri, 16 Oct 2020 12:12:11 +0800 Po-Hsu Lin wrote:
-> > The kci_test_encap_fou() test from kci_test_encap() in rtnetlink.sh
-> > needs the fou module to work. Otherwise it will fail with:
-> >
-> >   $ ip netns exec "$testns" ip fou add port 7777 ipproto 47
-> >   RTNETLINK answers: No such file or directory
-> >   Error talking to the kernel
-> >
-> > Add the CONFIG_NET_FOU into the config file as well. Which needs at
-> > least to be set as a loadable module.
-> >
-> > Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
->
-> Doesn't apply :( Could you rebase on top of:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/
-Ah OK, I was using the next branch in kselftest, will resend another one.
-Thanks.
+
+Hi Sameer
+
+
+> Convert device tree bindings of audio graph card to YAML format. Also
+> expose some common definitions which can be used by similar graph based
+> audio sound cards.
+> 
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+
+I'm posting this patch to Rob & DT ML.
+Not yet accepted, though..
+
+>  .../devicetree/bindings/sound/audio-graph-card.txt | 337 -------------
+>  .../bindings/sound/audio-graph-card.yaml           | 548 +++++++++++++++++++++
+>  2 files changed, 548 insertions(+), 337 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+> deleted file mode 100644
+> index d5f6919..0000000
+> --- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+> +++ /dev/null
+> @@ -1,337 +0,0 @@
+> -Audio Graph Card:
+> -
+> -Audio Graph Card specifies audio DAI connections of SoC <-> codec.
+> -It is based on common bindings for device graphs.
+> -see ${LINUX}/Documentation/devicetree/bindings/graph.txt
+> -
+> -Basically, Audio Graph Card property is same as Simple Card.
+> -see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.yaml
+> -
+> -Below are same as Simple-Card.
+> -
+> -- label
+> -- widgets
+> -- routing
+> -- dai-format
+> -- frame-master
+> -- bitclock-master
+> -- bitclock-inversion
+> -- frame-inversion
+> -- mclk-fs
+> -- hp-det-gpio
+> -- mic-det-gpio
+> -- dai-tdm-slot-num
+> -- dai-tdm-slot-width
+> -- clocks / system-clock-frequency
+> -
+> -Required properties:
+> -
+> -- compatible				: "audio-graph-card";
+> -- dais					: list of CPU DAI port{s}
+> -
+> -Optional properties:
+> -- pa-gpios: GPIO used to control external amplifier.
+> -
+> ------------------------
+> -Example: Single DAI case
+> ------------------------
+> -
+> -	sound_card {
+> -		compatible = "audio-graph-card";
+> -
+> -		dais = <&cpu_port>;
+> -	};
+> -
+> -	dai-controller {
+> -		...
+> -		cpu_port: port {
+> -			cpu_endpoint: endpoint {
+> -				remote-endpoint = <&codec_endpoint>;
+> -
+> -				dai-format = "left_j";
+> -				...
+> -			};
+> -		};
+> -	};
+> -
+> -	audio-codec {
+> -		...
+> -		port {
+> -			codec_endpoint: endpoint {
+> -				remote-endpoint = <&cpu_endpoint>;
+> -			};
+> -		};
+> -	};
+> -
+> ------------------------
+> -Example: Multi DAI case
+> ------------------------
+> -
+> -	sound-card {
+> -		compatible = "audio-graph-card";
+> -
+> -		label = "sound-card";
+> -
+> -		dais = <&cpu_port0
+> -			&cpu_port1
+> -			&cpu_port2>;
+> -	};
+> -
+> -	audio-codec@0 {
+> -		...
+> -		port {
+> -			codec0_endpoint: endpoint {
+> -				remote-endpoint = <&cpu_endpoint0>;
+> -			};
+> -		};
+> -	};
+> -
+> -	audio-codec@1 {
+> -		...
+> -		port {
+> -			codec1_endpoint: endpoint {
+> -				remote-endpoint = <&cpu_endpoint1>;
+> -			};
+> -		};
+> -	};
+> -
+> -	audio-codec@2 {
+> -		...
+> -		port {
+> -			codec2_endpoint: endpoint {
+> -				remote-endpoint = <&cpu_endpoint2>;
+> -			};
+> -		};
+> -	};
+> -
+> -	dai-controller {
+> -		...
+> -		ports {
+> -			cpu_port0: port@0 {
+> -				cpu_endpoint0: endpoint {
+> -					remote-endpoint = <&codec0_endpoint>;
+> -
+> -					dai-format = "left_j";
+> -					...
+> -				};
+> -			};
+> -			cpu_port1: port@1 {
+> -				cpu_endpoint1: endpoint {
+> -					remote-endpoint = <&codec1_endpoint>;
+> -
+> -					dai-format = "i2s";
+> -					...
+> -				};
+> -			};
+> -			cpu_port2: port@2 {
+> -				cpu_endpoint2: endpoint {
+> -					remote-endpoint = <&codec2_endpoint>;
+> -
+> -					dai-format = "i2s";
+> -					...
+> -				};
+> -			};
+> -		};
+> -	};
+> -
+> -
+> ------------------------
+> -Example: Sampling Rate Conversion
+> ------------------------
+> -
+> -	sound_card {
+> -		compatible = "audio-graph-card";
+> -
+> -		label = "sound-card";
+> -		prefix = "codec";
+> -		routing = "codec Playback", "DAI0 Playback",
+> -			  "DAI0 Capture",   "codec Capture";
+> -		convert-rate = <48000>;
+> -
+> -		dais = <&cpu_port>;
+> -	};
+> -
+> -	audio-codec {
+> -		...
+> -		port {
+> -			codec_endpoint: endpoint {
+> -				remote-endpoint = <&cpu_endpoint>;
+> -			};
+> -		};
+> -	};
+> -
+> -	dai-controller {
+> -		...
+> -		cpu_port: port {
+> -			cpu_endpoint: endpoint {
+> -				remote-endpoint = <&codec_endpoint>;
+> -
+> -				dai-format = "left_j";
+> -				...
+> -			};
+> -		};
+> -	};
+> -
+> ------------------------
+> -Example: 2 CPU 1 Codec (Mixing)
+> ------------------------
+> -
+> -	sound_card {
+> -		compatible = "audio-graph-card";
+> -
+> -		label = "sound-card";
+> -		routing = "codec Playback", "DAI0 Playback",
+> -			  "codec Playback", "DAI1 Playback",
+> -			  "DAI0 Capture",   "codec Capture";
+> -
+> -		dais = <&cpu_port>;
+> -	};
+> -
+> -	audio-codec {
+> -		...
+> -
+> -		audio-graph-card,prefix = "codec";
+> -		audio-graph-card,convert-rate = <48000>;
+> -		port {
+> -			reg = <0>;
+> -			codec_endpoint0: endpoint@0 {
+> -				remote-endpoint = <&cpu_endpoint0>;
+> -			};
+> -			codec_endpoint1: endpoint@1 {
+> -				remote-endpoint = <&cpu_endpoint1>;
+> -			};
+> -		};
+> -	};
+> -
+> -	dai-controller {
+> -		...
+> -		cpu_port: port {
+> -			cpu_endpoint0: endpoint@0 {
+> -				remote-endpoint = <&codec_endpoint0>;
+> -
+> -				dai-format = "left_j";
+> -				...
+> -			};
+> -			cpu_endpoint1: endpoint@1 {
+> -				remote-endpoint = <&codec_endpoint1>;
+> -
+> -				dai-format = "left_j";
+> -				...
+> -			};
+> -		};
+> -	};
+> -
+> ------------------------
+> -Example: Multi DAI with DPCM
+> ------------------------
+> -
+> -	CPU0 ------ ak4613
+> -	CPU1 ------ HDMI
+> -	CPU2 ------ PCM3168A-p	/* DPCM 1ch/2ch */
+> -	CPU3 --/		/* DPCM 3ch/4ch */
+> -	CPU4 --/		/* DPCM 5ch/6ch */
+> -	CPU5 --/		/* DPCM 7ch/8ch */
+> -	CPU6 ------ PCM3168A-c
+> -
+> -	sound_card: sound {
+> -		compatible = "audio-graph-card";
+> -
+> -		label = "sound-card";
+> -
+> -		routing =	"pcm3168a Playback", "DAI2 Playback",
+> -				"pcm3168a Playback", "DAI3 Playback",
+> -				"pcm3168a Playback", "DAI4 Playback",
+> -				"pcm3168a Playback", "DAI5 Playback";
+> -
+> -		dais = <&snd_port0	/* ak4613 */
+> -			&snd_port1	/* HDMI0  */
+> -			&snd_port2	/* pcm3168a playback */
+> -			&snd_port3	/* pcm3168a capture  */
+> -			>;
+> -	};
+> -
+> -	ak4613: codec@10 {
+> -		...
+> -		port {
+> -			ak4613_endpoint: endpoint {
+> -				remote-endpoint = <&rsnd_endpoint0>;
+> -			};
+> -		};
+> -	};
+> -
+> -	pcm3168a: audio-codec@44 {
+> -		...
+> -		audio-graph-card,prefix = "pcm3168a";
+> -		audio-graph-card,convert-channels = <8>; /* TDM Split */
+> -		ports {
+> -			port@0 {
+> -				reg = <0>;
+> -				pcm3168a_endpoint_p1: endpoint@1 {
+> -					remote-endpoint = <&rsnd_endpoint2>;
+> -					...
+> -				};
+> -				pcm3168a_endpoint_p2: endpoint@2 {
+> -					remote-endpoint = <&rsnd_endpoint3>;
+> -					...
+> -				};
+> -				pcm3168a_endpoint_p3: endpoint@3 {
+> -					remote-endpoint = <&rsnd_endpoint4>;
+> -					...
+> -				};
+> -				pcm3168a_endpoint_p4: endpoint@4 {
+> -					remote-endpoint = <&rsnd_endpoint5>;
+> -					...
+> -				};
+> -			};
+> -			port@1 {
+> -				reg = <1>;
+> -				pcm3168a_endpoint_c: endpoint {
+> -					remote-endpoint = <&rsnd_endpoint6>;
+> -					...
+> -				};
+> -			};
+> -		};
+> -	};
+> -
+> -	&sound {
+> -		ports {
+> -			snd_port0: port@0 {
+> -				rsnd_endpoint0: endpoint {
+> -					remote-endpoint = <&ak4613_endpoint>;
+> -					...
+> -				};
+> -			};
+> -			snd_port1: port@1 {
+> -				rsnd_endpoint1: endpoint {
+> -					remote-endpoint = <&dw_hdmi0_snd_in>;
+> -					...
+> -				};
+> -			};
+> -			snd_port2: port@2 {
+> -				#address-cells = <1>;
+> -				#size-cells = <0>;
+> -				rsnd_endpoint2: endpoint@2 {
+> -					remote-endpoint = <&pcm3168a_endpoint_p1>;
+> -					...
+> -				};
+> -				rsnd_endpoint3: endpoint@3 {
+> -					remote-endpoint = <&pcm3168a_endpoint_p2>;
+> -					...
+> -				};
+> -				rsnd_endpoint4: endpoint@4 {
+> -					remote-endpoint = <&pcm3168a_endpoint_p3>;
+> -					...
+> -				};
+> -				rsnd_endpoint5: endpoint@5 {
+> -					remote-endpoint = <&pcm3168a_endpoint_p4>;
+> -					...
+> -				};
+> -			};
+> -			snd_port3: port@6 {
+> -				rsnd_endpoint6: endpoint {
+> -					remote-endpoint = <&pcm3168a_endpoint_c>;
+> -					...
+> -				};
+> -			};
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.yaml b/Documentation/devicetree/bindings/sound/audio-graph-card.yaml
+> new file mode 100644
+> index 0000000..d4b56bd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/audio-graph-card.yaml
+> @@ -0,0 +1,548 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/audio-graph-card.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Generic audio graph card
+> +
+> +description: |
+> +  Audio Graph Card specifies audio DAI connections of SoC <-> codec.
+> +  It is based on common bindings for device graphs.
+> +  see ${LINUX}/Documentation/devicetree/bindings/graph.yaml
+> +
+> +  Basically, Audio Graph Card properties are similar to Simple Card.
+> +  see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.yaml
+> +  Common definitions required here are referenced from above.
+> +
+> +maintainers:
+> +  - Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> +
+> +definitions:
+> +
+> +  end-point:
+> +    type: object
+> +    properties:
+> +      mclk-fs:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/mclk-fs
+> +
+> +      prefix:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/prefix
+> +
+> +      convert-rate:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/convert-rate
+> +
+> +      convert-channels:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/convert-channels
+> +
+> +      frame-inversion:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/frame-inversion
+> +
+> +      bitclock-inversion:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/bitclock-inversion
+> +
+> +      frame-master:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/frame-master
+> +
+> +      bitclock-master:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/bitclock-master
+> +
+> +      dai-tdm-slot-num:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/dai-tdm-slot-num
+> +
+> +      dai-tdm-slot-width:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/dai-tdm-slot-width
+> +
+> +      clocks:
+> +        maxItems: 1
+> +
+> +      system-clock-frequency:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/system-clock-frequency
+> +
+> +      system-clock-direction-out:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/system-clock-direction-out
+> +
+> +      dai-format:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/format
+> +
+> +      remote-endpoint:
+> +        description: phandle to an 'endpoint' subnode of a remote device node.
+> +        $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +  port:
+> +    type: object
+> +    description: |
+> +      If there is more than one 'port' or more than one 'endpoint' node
+> +      or 'reg' property present in the port and/or endpoint nodes then
+> +      '#address-cells' and '#size-cells' properties are required in relevant
+> +      parent node.
+> +    properties:
+> +      convert-rate:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/convert-rate
+> +
+> +      convert-channels:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/convert-channels
+> +
+> +      prefix:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/prefix
+> +
+> +      mclk-fs:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/mclk-fs
+> +
+> +    patternProperties:
+> +      "^endpoint(@[0-9a-f]+)?$":
+> +        type: object
+> +        $ref: "#/definitions/end-point"
+> +
+> +  ports:
+> +    type: object
+> +    properties:
+> +      convert-rate:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/convert-rate
+> +
+> +      convert-channels:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/convert-channels
+> +
+> +      prefix:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/prefix
+> +
+> +      mclk-fs:
+> +        $ref: /schemas/sound/simple-card.yaml#/definitions/mclk-fs
+> +
+> +    patternProperties:
+> +      "^port(@[0-9a-f]+)?$":
+> +        $ref: "#/definitions/port"
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: audio-graph-card
+> +
+> +  dais:
+> +    description: list of CPU DAI port{s}
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +
+> +  label:
+> +    $ref: /schemas/sound/simple-card.yaml#/definitions/label
+> +
+> +  pa-gpios:
+> +    description: GPIO used to control external amplifier.
+> +
+> +  widgets:
+> +    $ref: /schemas/sound/simple-card.yaml#/definitions/widgets
+> +
+> +  routing:
+> +    $ref: /schemas/sound/simple-card.yaml#/definitions/routing
+> +
+> +  convert-rate:
+> +    $ref: /schemas/sound/simple-card.yaml#/definitions/convert-rate
+> +
+> +  convert-channels:
+> +    $ref: /schemas/sound/simple-card.yaml#/definitions/convert-channels
+> +
+> +  mclk-fs:
+> +    $ref: /schemas/sound/simple-card.yaml#/definitions/mclk-fs
+> +
+> +  prefix:
+> +    $ref: /schemas/sound/simple-card.yaml#/definitions/prefix
+> +
+> +  hp-det-gpio:
+> +    maxItems: 1
+> +
+> +  mic-det-gpio:
+> +    maxItems: 1
+> +
+> +  ports:
+> +    $ref: "#/definitions/ports"
+> +
+> +patternProperties:
+> +  "^port(@[0-9a-f]+)?$":
+> +    $ref: "#/definitions/port"
+> +
+> +required:
+> +  - compatible
+> +  - dais
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  # ---------------
+> +  # Single DAI case
+> +  # ---------------
+> +  - |
+> +    sound_card {
+> +        compatible = "audio-graph-card";
+> +
+> +        dais = <&cpu_port>;
+> +    };
+> +
+> +    dai-controller {
+> +        // ...
+> +
+> +        cpu_port: port {
+> +            cpu_endpoint: endpoint {
+> +                remote-endpoint = <&codec_endpoint>;
+> +
+> +                dai-format = "left_j";
+> +
+> +                // ...
+> +            };
+> +        };
+> +    };
+> +
+> +    audio-codec {
+> +        // ...
+> +
+> +        port {
+> +            codec_endpoint: endpoint {
+> +                remote-endpoint = <&cpu_endpoint>;
+> +            };
+> +        };
+> +    };
+> +
+> +  # --------------
+> +  # Multi DAI case
+> +  # --------------
+> +  - |
+> +    sound-card {
+> +        compatible = "audio-graph-card";
+> +
+> +        label = "sound-card";
+> +
+> +        dais = <&cpu_port0
+> +                &cpu_port1
+> +                &cpu_port2>;
+> +    };
+> +
+> +    audio-codec-0 {
+> +        // ...
+> +
+> +        port {
+> +            codec0_endpoint: endpoint {
+> +                remote-endpoint = <&cpu_endpoint0>;
+> +            };
+> +        };
+> +    };
+> +
+> +    audio-codec-1 {
+> +        // ...
+> +
+> +        port {
+> +            codec1_endpoint: endpoint {
+> +                remote-endpoint = <&cpu_endpoint1>;
+> +            };
+> +        };
+> +    };
+> +
+> +    audio-codec-2 {
+> +        // ...
+> +
+> +        port {
+> +            codec2_endpoint: endpoint {
+> +                remote-endpoint = <&cpu_endpoint2>;
+> +            };
+> +        };
+> +    };
+> +
+> +    dai-controller {
+> +        // ...
+> +
+> +        ports {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            cpu_port0: port@0 {
+> +                reg = <0>;
+> +
+> +                cpu_endpoint0: endpoint {
+> +                    remote-endpoint = <&codec0_endpoint>;
+> +
+> +                    dai-format = "left_j";
+> +
+> +                    // ...
+> +                };
+> +            };
+> +            cpu_port1: port@1 {
+> +                reg = <1>;
+> +
+> +                cpu_endpoint1: endpoint {
+> +                    remote-endpoint = <&codec1_endpoint>;
+> +
+> +                    dai-format = "i2s";
+> +
+> +                    // ...
+> +                };
+> +            };
+> +            cpu_port2: port@2 {
+> +                reg = <2>;
+> +
+> +                cpu_endpoint2: endpoint {
+> +                    remote-endpoint = <&codec2_endpoint>;
+> +
+> +                    dai-format = "i2s";
+> +
+> +                    // ...
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +  # ------------------------
+> +  # Sampling Rate Conversion
+> +  # ------------------------
+> +  - |
+> +    sound_card {
+> +        compatible = "audio-graph-card";
+> +
+> +        label = "sound-card";
+> +        prefix = "codec";
+> +        routing = "codec Playback", "DAI0 Playback",
+> +                  "DAI0 Capture",   "codec Capture";
+> +        convert-rate = <48000>;
+> +
+> +        dais = <&cpu_port_src>;
+> +    };
+> +
+> +    audio-codec {
+> +        // ...
+> +
+> +        port {
+> +            codec_endpoint_src: endpoint {
+> +                remote-endpoint = <&cpu_endpoint_src>;
+> +            };
+> +        };
+> +    };
+> +
+> +    dai-controller {
+> +        // ...
+> +
+> +        cpu_port_src: port {
+> +            cpu_endpoint_src: endpoint {
+> +                remote-endpoint = <&codec_endpoint_src>;
+> +
+> +                dai-format = "left_j";
+> +
+> +                // ...
+> +            };
+> +        };
+> +    };
+> +
+> +  # ----------------------
+> +  # 2 CPU 1 Codec (Mixing)
+> +  # ----------------------
+> +  - |
+> +    sound_card {
+> +        compatible = "audio-graph-card";
+> +
+> +        label = "sound-card";
+> +        routing = "codec Playback", "DAI0 Playback",
+> +                  "codec Playback", "DAI1 Playback",
+> +                  "DAI0 Capture",   "codec Capture";
+> +
+> +        dais = <&cpu_port_mix>;
+> +    };
+> +
+> +    audio-codec {
+> +        // ...
+> +
+> +        audio-graph-card,prefix = "codec";
+> +        audio-graph-card,convert-rate = <48000>;
+> +
+> +        port {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            codec_endpoint0_mix: endpoint@0 {
+> +                reg = <0>;
+> +
+> +                remote-endpoint = <&cpu_endpoint0_mix>;
+> +            };
+> +            codec_endpoint1_mix: endpoint@1 {
+> +                reg = <1>;
+> +
+> +                remote-endpoint = <&cpu_endpoint1_mix>;
+> +            };
+> +        };
+> +    };
+> +
+> +    dai-controller {
+> +        // ...
+> +
+> +        cpu_port_mix: port {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            cpu_endpoint0_mix: endpoint@0 {
+> +                reg = <0>;
+> +
+> +                remote-endpoint = <&codec_endpoint0_mix>;
+> +
+> +                dai-format = "left_j";
+> +
+> +                // ...
+> +            };
+> +            cpu_endpoint1_mix: endpoint@1 {
+> +                reg = <1>;
+> +
+> +                remote-endpoint = <&codec_endpoint1_mix>;
+> +
+> +                dai-format = "left_j";
+> +
+> +                // ...
+> +            };
+> +        };
+> +    };
+> +
+> +  # -------------------
+> +  # Multi DAI with DPCM
+> +  #
+> +  #  CPU0 ------ ak4613
+> +  #  CPU1 ------ HDMI
+> +  #  CPU2 ------ PCM3168A-p    /* DPCM 1ch/2ch */
+> +  #  CPU3 --/                  /* DPCM 3ch/4ch */
+> +  #  CPU4 --/                  /* DPCM 5ch/6ch */
+> +  #  CPU5 --/                  /* DPCM 7ch/8ch */
+> +  #  CPU6 ------ PCM3168A-c
+> +  # -------------------
+> +  - |
+> +    sound_card: sound {
+> +        compatible = "audio-graph-card";
+> +
+> +        label = "sound-card";
+> +
+> +        routing = "pcm3168a Playback", "DAI2 Playback",
+> +                  "pcm3168a Playback", "DAI3 Playback",
+> +                  "pcm3168a Playback", "DAI4 Playback",
+> +                  "pcm3168a Playback", "DAI5 Playback";
+> +
+> +        dais = <&snd_port0    /* ak4613 */
+> +                &snd_port1    /* HDMI0  */
+> +                &snd_port2    /* pcm3168a playback */
+> +                &snd_port3    /* pcm3168a capture  */
+> +                >;
+> +    };
+> +
+> +    ak4613: codec-10 {
+> +        // ...
+> +
+> +        port {
+> +            ak4613_endpoint: endpoint {
+> +                remote-endpoint = <&rsnd_endpoint0>;
+> +            };
+> +        };
+> +    };
+> +
+> +    pcm3168a: audio-codec-44 {
+> +        // ...
+> +
+> +        audio-graph-card,prefix = "pcm3168a";
+> +        audio-graph-card,convert-channels = <8>; /* TDM Split */
+> +
+> +        ports {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            port@0 {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +
+> +                reg = <0>;
+> +                pcm3168a_endpoint_p1: endpoint@1 {
+> +                    reg = <1>;
+> +                    remote-endpoint = <&rsnd_endpoint2>;
+> +
+> +                    // ...
+> +                };
+> +                pcm3168a_endpoint_p2: endpoint@2 {
+> +                    reg = <2>;
+> +                    remote-endpoint = <&rsnd_endpoint3>;
+> +
+> +                    // ...
+> +                };
+> +                pcm3168a_endpoint_p3: endpoint@3 {
+> +                    reg = <3>;
+> +                    remote-endpoint = <&rsnd_endpoint4>;
+> +
+> +                    // ...
+> +                };
+> +                pcm3168a_endpoint_p4: endpoint@4 {
+> +                    reg = <4>;
+> +                    remote-endpoint = <&rsnd_endpoint5>;
+> +
+> +                    // ...
+> +                };
+> +            };
+> +            port@1 {
+> +                reg = <1>;
+> +                pcm3168a_endpoint_c: endpoint {
+> +                    remote-endpoint = <&rsnd_endpoint6>;
+> +
+> +                    // ...
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +    dai-controller {
+> +        ports {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            snd_port0: port@0 {
+> +                reg = <0>;
+> +                rsnd_endpoint0: endpoint {
+> +                    remote-endpoint = <&ak4613_endpoint>;
+> +
+> +                    // ...
+> +                };
+> +            };
+> +            snd_port1: port@1 {
+> +                reg = <1>;
+> +                rsnd_endpoint1: endpoint {
+> +                    remote-endpoint = <&dw_hdmi0_snd_in>;
+> +
+> +                    // ...
+> +                };
+> +            };
+> +            snd_port2: port@2 {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +
+> +                reg = <2>;
+> +                rsnd_endpoint2: endpoint@2 {
+> +                    reg = <2>;
+> +                    remote-endpoint = <&pcm3168a_endpoint_p1>;
+> +
+> +                    // ...
+> +                };
+> +                rsnd_endpoint3: endpoint@3 {
+> +                    reg = <3>;
+> +                    remote-endpoint = <&pcm3168a_endpoint_p2>;
+> +
+> +                    // ...
+> +                };
+> +                rsnd_endpoint4: endpoint@4 {
+> +                    reg = <4>;
+> +                    remote-endpoint = <&pcm3168a_endpoint_p3>;
+> +
+> +                    // ...
+> +                };
+> +                rsnd_endpoint5: endpoint@5 {
+> +                    reg = <5>;
+> +                    remote-endpoint = <&pcm3168a_endpoint_p4>;
+> +
+> +                    // ...
+> +                };
+> +            };
+> +            snd_port3: port@6 {
+> +                reg = <6>;
+> +                rsnd_endpoint6: endpoint {
+> +                    remote-endpoint = <&pcm3168a_endpoint_c>;
+> +
+> +                    // ...
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.7.4
+> 
