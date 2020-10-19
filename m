@@ -2,122 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976A72920D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 03:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9582920DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 03:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730331AbgJSBIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 21:08:31 -0400
-Received: from mail-eopbgr10066.outbound.protection.outlook.com ([40.107.1.66]:14246
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728329AbgJSBIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 21:08:30 -0400
+        id S1730354AbgJSBWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 21:22:10 -0400
+Received: from mga12.intel.com ([192.55.52.136]:34863 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728042AbgJSBWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 21:22:10 -0400
+IronPort-SDR: 5TYCE2gRfXfJkDtGrJT0G/CBgQwBqpuDiydBcVl3VJTqQP07Hj3Y9njyC54AQhFMIwdpn4PeL/
+ WMpeBRrmhXcw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="146246680"
+X-IronPort-AV: E=Sophos;i="5.77,392,1596524400"; 
+   d="scan'208";a="146246680"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 18:22:09 -0700
+IronPort-SDR: HN6T/3Q4riA3MvQKcENmKJwBp/Wig4oAe2+MV4tJ4RKpcZWHEB6xQfozASvroL+0SpALhaacOE
+ 4WVFQBkm8yTA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,392,1596524400"; 
+   d="scan'208";a="532442759"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by orsmga005.jf.intel.com with ESMTP; 18 Oct 2020 18:22:08 -0700
+Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 18 Oct 2020 18:22:07 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 18 Oct 2020 18:22:07 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Sun, 18 Oct 2020 18:22:07 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.170)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Sun, 18 Oct 2020 18:22:05 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JWUHcb/rIOdd0r+UZmzoZltE2MpzYu3ksA3C8Qu1UiKokadYwxjPkLjtYiv0GtbgNiwAJtYNPyHscdEziYYnEsQYBfMUM/kCno/RAoC66NT4PkPLcprzSYJupubQ8ioR/vAAtAwFBS4ev7mj0cHGJEbVULP5Jrix79KXFh3G3ojiWSxWqTIq6E3ok/lCRM8rCAcc1GJxoYAWydKFuF/yalI52m7VUUO/S/VlgTmSOZGHDPQVOgo3R8/uMp0nhzpYWQ9wzyuJOatLpVMNoqyaQ3rjXnAVnBW09cMU1sqkaPrFZPbIWCWHgJkzd8yzzZRFol/RSq4r9Qx42mORf0sJ9w==
+ b=kvOfYM9LJFtHD/q49BYo0YkG6FFJTfv8KT0ooEMsVtqyWMF28TX2L3eNC9zxqTRQEoHajFemYCKEeRFqhjWPuskQOTyGO3lif5ZMU+p+m4tQduuIMqClbHYzSAwXS9PUwKgDK0tCgbXaw+MJYwdNfBBRYYCX9huWpJX+AuRrJYuh7hIDaQ6K6jcm9pY0kSpy6zWUfVcCmtmO5zg4sh22zmHz7fsHrhyy4Zr5KhXy0P7pg+dCvyULqytYeGrWRXsxcvNuRZE5Xj9qopyL1HN/74k0Z4m3ElbtFr3IE5Voh3/CdaO4AXAaVMve5XHUl5kMmXguuxi0Vd0MFobIYMJVPQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=shHDoCdd+JNHm2Zhor7znShLcaXttXSn3X24ltUA3Fc=;
- b=Hd6ToGsSiLcySArTgFP+DRNY6vlp4KIXBfdtNwpYXJDack629xyIakrngYS8l5TB0qXAVWHcjkV1YSSZuU0coNztoCOR/22k7/+X4bV6KZcDLEX71WvLEH+rNwJvJLPGISQELl6KiU/8R/oXokAj44gx75EliUhuvvFYrE75SIbLxaMF7p6CppmUaqRXX+o3/mtcc1PbYb0PeyOQQb6r2WnQABVFEI3XXsfFcQNdWNujXKvzyw08N3QWUSd63mRkZP2Ew+frfo0edmwz61t/ANVMeKP1Gz3U7m42XuHxnp2UUjkCyWUYbP6E+T4j5hTIWHjTpiEQyr+hd4WmHkFgug==
+ bh=kWoU+sKGZhkE8Ce+F5lOyyyK3pbCmXTMy/QyBPmq/bg=;
+ b=YgP56nv9ih5yDbiNPmRdx5qQjmqMI4fG0t6uRbQ5q7zBBGjZbi0duXnyvxS6loOre5mwjL9tYhu2Z2+QhEVXYCdhjcuisl3fODLLGlSMuYCrZ62LYdmEpX6XVZcuwZGqHRu/K1a9ODsdfDUsuhhrhFl2mICBY1H3muvkswCRdnINI5xXQQQzlubG7jRnLPqugiaBYWLIFY/WBvnX9UDf4Cjrt2R5EGYyx4YIWZLU25KzdJ36Usfv6R6CK+cq6tfBd19wTZ62pxIjwTJBA7yDDpB6ZJuISBVohpm7S1K+qITQMNaDn8WOre5qs/MWv8aXE2f9SsEkMo5Y8sgX1f+XVw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=shHDoCdd+JNHm2Zhor7znShLcaXttXSn3X24ltUA3Fc=;
- b=bAOYUoS9/F/Jgm7Rs7pgJPzb/rzZo0klyNCqm1xIyo2SdAFnVqOUxLReyEN29Q07GdrNU+4Yqf22Whi0ZJTtOUxIRJYONqIF6/qIvgPelOveiabM+gchXmNSHNaKMDSCKgjOTMVkv3vhqNzeLS60zhJRCi7YBPHRQItEJOyyFZo=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB8PR04MB6716.eurprd04.prod.outlook.com (2603:10a6:10:109::22) with
+ bh=kWoU+sKGZhkE8Ce+F5lOyyyK3pbCmXTMy/QyBPmq/bg=;
+ b=tzu0jX2Op3ZqeMCkkEcLYDYMmLXP+nJlO/i6SWWA84UPeD0DR4JHt1mTr1e6/q+UbEx1qRliL6YSrhJYNlOdh5iT7BTovqHPVN30Zr+Fgz6godZOeB+46OU3G7zcjfHCM7fHmEvZ0BZmtoSCkfAChKTg2O/U9xIZpqk+R4BVH2M=
+Received: from DM5PR1101MB2218.namprd11.prod.outlook.com (2603:10b6:4:4f::12)
+ by DM6PR11MB2587.namprd11.prod.outlook.com (2603:10b6:5:c3::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.28; Mon, 19 Oct
- 2020 01:08:25 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::ec42:b6d0:7666:19ef]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::ec42:b6d0:7666:19ef%8]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
- 01:08:25 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Borislav Petkov <bp@alien8.de>, Aisheng Dong <aisheng.dong@nxp.com>
-CC:     Shawn Guo <shawnguo@kernel.org>,
-        "Franck Lenormand (OSS)" <franck.lenormand@oss.nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Mon, 19 Oct
+ 2020 01:22:04 +0000
+Received: from DM5PR1101MB2218.namprd11.prod.outlook.com
+ ([fe80::49ce:b38c:2ee:128f]) by DM5PR1101MB2218.namprd11.prod.outlook.com
+ ([fe80::49ce:b38c:2ee:128f%10]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 01:22:04 +0000
+From:   "Sia, Jee Heng" <jee.heng.sia@intel.com>
+To:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+CC:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        dl-linux-imx <linux-imx@nxp.com>, Abel Vesa <abel.vesa@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        "linux@rempel-privat.de" <linux@rempel-privat.de>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>
-Subject: RE: [PATCH v2 5/5] soc: imx8: Add the SC SECVIO driver
-Thread-Topic: [PATCH v2 5/5] soc: imx8: Add the SC SECVIO driver
-Thread-Index: AQHWX3KAH044pDDlDUSK2nAKZvz1uak/mzuAgF3C7wCAAEXigIABBXkA
-Date:   Mon, 19 Oct 2020 01:08:25 +0000
-Message-ID: <DB6PR0402MB276045F41304FE3DB53540B6881E0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <1595344835-67746-1-git-send-email-franck.lenormand@oss.nxp.com>
- <1595344835-67746-6-git-send-email-franck.lenormand@oss.nxp.com>
- <20200819133136.GB7114@dragon>
- <AM6PR04MB496668D6EE3D07C78C5FE77E80010@AM6PR04MB4966.eurprd04.prod.outlook.com>
- <20201018093135.GA8364@zn.tnic>
-In-Reply-To: <20201018093135.GA8364@zn.tnic>
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        Alexey Brodkin <Alexey.Brodkin@synopsys.com>
+Subject: RE: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
+ AxiDMA
+Thread-Topic: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
+ AxiDMA
+Thread-Index: AQHWo8vT4R/NJ+ZUxUWa9ym9koIG+6meI5ZQ
+Date:   Mon, 19 Oct 2020 01:22:03 +0000
+Message-ID: <DM5PR1101MB22185FFAE24516B90B13D255DA1E0@DM5PR1101MB2218.namprd11.prod.outlook.com>
+References: <20201012042200.29787-1-jee.heng.sia@intel.com>
+ <MWHPR12MB18065E87CEE3FD28868EBB9BDE030@MWHPR12MB1806.namprd12.prod.outlook.com>
+In-Reply-To: <MWHPR12MB18065E87CEE3FD28868EBB9BDE030@MWHPR12MB1806.namprd12.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: alien8.de; dkim=none (message not signed)
- header.d=none;alien8.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: synopsys.com; dkim=none (message not signed)
+ header.d=none;synopsys.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [210.186.89.31]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 47b3c1e3-7aa7-4753-a03a-08d873cb7b2c
-x-ms-traffictypediagnostic: DB8PR04MB6716:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR04MB671603654672135314E533B1881E0@DB8PR04MB6716.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-office365-filtering-correlation-id: a6532835-3b0d-4b25-2121-08d873cd631d
+x-ms-traffictypediagnostic: DM6PR11MB2587:
+x-microsoft-antispam-prvs: <DM6PR11MB2587CC61E77182AAA38505E8DA1E0@DM6PR11MB2587.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Mkvm3wFi574Mh4bDyixqGZya1Mmi0LoxbCRCQMvkkT0kt1fCm0TSOeMjsWIEqmCjZDdzbMARP8mUH+jjM+S3WYFir3v9i/l41SK9gs2EoWS5hQXvhpBhUace2pouzNNI68EtPGSuq5EA7jqqb9PuDEUiPy+3CqlpTaQugGRlxo/qp5HOkA8voDsiLJdQiejgw1c8oAEh7zWqeZWsbbhNXsuYwwSqweX/dY9SBPq6nWJ4DFk/461PzFS68PLdRAGJQT3+cxW27jeh2cE8OsAshvhlw0Er0aeM9Nk6XpRsvakJlEFWLpeKxjhwqaQs8CnDolBLr4PwMqiIciY7ljDfkJqZwmp6SHSC6QH3s/gZUE4ah+lAh9nwMs1Sk5xcQXAxzuMwYJZYg7Zg4LAL+ObLOg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(366004)(39860400002)(396003)(7696005)(9686003)(55016002)(2906002)(26005)(5660300002)(186003)(44832011)(6506007)(33656002)(4744005)(8676002)(478600001)(66476007)(66556008)(64756008)(66446008)(66946007)(4326008)(76116006)(86362001)(45080400002)(110136005)(54906003)(966005)(8936002)(316002)(71200400001)(6636002)(7416002)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: KK6HpzFVxCu6WaWlHYceRWHI1277MB637W9xu+dpe+d2rhrKzLd1EHcilkjJmi+K7ik/V/+jX1ns/R/u7zBstjzjRbnW+AoZVu3UoqdcZT9t3iWlk49rRmxhLTIg16549KtkThSgtRyOIZ0YGt0ynBwsDWByj207R7L9pScblBQAjfZG6qbIkXWzG+rAZ71Sxh2a+PJ7nTJWgSW5FfmMVvxrmN7TVjd8piGtSkJ/lzCNNdljZjggNudJbY2ITfqwZTdeTYYxKuYrYf/fw4waLC2GgJ/3KmhDJKhsb/OvG8khl+XQiNXjENyC9rSIaKm+cjlgjhkPJdCSxWfXsHj1pOwCbmMkJdGk761QRGhjR9p28b/rNzAnc5OGFteaa3anq00WQq/fHmzyjNxF3Bo6bBip9xBeeinSA60r1yrO9LBw8DAEHE0iD3PvJOSIVpr95Sbax48lnWS44p09xs/OpHngaqdhKIHAdhWjhX1SlZhrZjtbr0P541LEWxaBmtPrcsfXLQ8TwFPgk/zQo5rUi/LVZxlKeLbY22MWUrTCL16emnbCPoYNkYfM50WJPkqAWUFhCsltkLQA0o3AvIWFfsl12j+tX5mlAl9xm9vCALRgYmwxrkTdrQBXHlFx9L/VIIB2K+iqkp5jIZXSsa/P5Q==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+x-microsoft-antispam-message-info: AjPeyxr5qevKw+23Yo8fH19bgQaK/+EEfeSRhxiH+RTtBhIMRHscR6OnAVA9CuU74Lhrsx3vQjh8ANFswBlZfYsowCB2PCItFMBNdjr5I9Fl5Vp6LqmyBJNoEnO7kHDaatIDNAoCtULzwXWUuPf7sFIPs7q8Cy/7GneENr74FOvBaaEI3Md7hIZm+UPlgRG0beS6Eieb603tNkVGdulmazxBssogjQiYBw0P42wqIWTLJwWWloarIJ78tLE6n2M7x8hRussxY0aPt+sWgy1exij5OdPoPNGi2YIOjsYIOQNrNhJ63iu0urSDYh4PpKWyrBDcDqSiY05CqORipotNsmlb0aVdElI8ZIpnydeGE46r11XDZwqt/y7G5d7xOMFfFCsXThsZyjZTE/kFLvRajw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1101MB2218.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(376002)(396003)(346002)(26005)(5660300002)(86362001)(54906003)(186003)(71200400001)(478600001)(33656002)(64756008)(66556008)(66476007)(66946007)(76116006)(66446008)(53546011)(6506007)(52536014)(55016002)(966005)(7696005)(6916009)(4326008)(2906002)(83380400001)(8676002)(8936002)(9686003)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: cpE91d0XdYXWJA40KS4R7Qe2q7lEyRiIsk3LfVGvmX/nct5qgLZ09M0faLPcQZuKY12U1YuRItZAmk54j8Oo6UO4TNM0S5sdGYlC4ZFsMVWpfvn54P4mb5JuGygEO5nh/AlFDKCzNKq+5wQZ240iAzUN+nM4a5+gYaMpKy+TU5PMXxwzatacvNeu68iz4cbw9m/Rvz1CAnjyWcsvJjnB+oY2y9vkfHByCyomsciJRTJZggOMNwasGMS7b0vgkQ7P2ZFQp0oPMF7wsLf7+Li6zmnFnHbdA4ss2SffEbKDFvoGkaGtOKshpyeix5dQti/ZJeu5bDS2QsJow9uIh6yi7ZJUSUO174Qckniq8L3ZF0j+rG1w4gzsu3efmg4h0Er+rjgrPcHVRdNaOI9UTmHN8MQoCf1fBC+jFJmbhVNo0XixScA4GjomJmxpXKPECMKQYBjUhwJuUs9vRl6osfGTCBA5KIs6LwQ7ZZ4YH2rz0GxcTNFitDPdJ+Ia+btx6XredVucc54M7Jogjz+ez9gGezBBDOFDTjVw4vqe0YMMsvDRMcGG6VJXGeBTtaadBHh440yAV6Myp4XxutFTS647ciLOvsC6q9iUHGEq8TYsCKhkwrjmyuABCBDe64ej92lam+FIRuB9tqNanWHnQ+0W+A==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47b3c1e3-7aa7-4753-a03a-08d873cb7b2c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 01:08:25.2533
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1101MB2218.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a6532835-3b0d-4b25-2121-08d873cd631d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 01:22:03.9339
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5injSwP02CpPZlGjnkEvXCsuOYsv2OO0QcSUrCahzkICvE7d6N1lxMYNqU/B+tnKhikDPlPN1VNjtnjoafUUIg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6716
+X-MS-Exchange-CrossTenant-userprincipalname: 7MIb1Yiyt6l7FX071OYL2zwO2fMa0Jrtm9WHFBbji/PcNis3T+AkU2kKXpP2xfYGHcodsABsWn2QGC/JZY+J3g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2587
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTdWJqZWN0OiBSZTogW1BBVENIIHYyIDUvNV0gc29jOiBpbXg4OiBBZGQgdGhlIFNDIFNFQ1ZJ
-TyBkcml2ZXINCj4gDQo+IE9uIFN1biwgT2N0IDE4LCAyMDIwIGF0IDA1OjIxOjI4QU0gKzAwMDAs
-IEFpc2hlbmcgRG9uZyB3cm90ZToNCj4gPiBOb3Qgc3VyZSBpZiBFREFDIGNvdWxkIGJlIGEgYmV0
-dGVyIHBsYWNlLg0KPiA+IGUuZy4NCj4gPiBkcml2ZXJzL2VkYWMvc2lmaXZlX2VkYWMuYw0KPiAN
-Cj4gSSBkb24ndCBzZWUgaG93IHRoaXMgZnVuY3Rpb25hbGl0eSBoYXMgYW55dGhpbmcgdG8gZG8g
-d2l0aCBFREFDLg0KDQpZZXMsIHRoaXMgaGFzIG5vdGhpbmcgcmVsYXRlZCB3aXRoIEVEQUMNCg0K
-PiANCj4gPiBJZiBub3QsIG1heWJlIHdlIGNhbiBwdXQgaW4gJ3NvYycgZmlyc3QuDQo+IA0KPiBP
-ciBkcml2ZXJzL21pc2MvDQoNCkkgdGhpbmsgZHJpdmVycy9zb2MvaW14IHNob3VsZCBiZSBvay4N
-Cg0KUmVnYXJkcywNClBlbmcuDQoNCj4gDQo+IC0tDQo+IFJlZ2FyZHMvR3J1c3MsDQo+ICAgICBC
-b3Jpcy4NCj4gDQo+IGh0dHBzOi8vZXVyMDEuc2FmZWxpbmtzLnByb3RlY3Rpb24ub3V0bG9vay5j
-b20vP3VybD1odHRwcyUzQSUyRiUyRnBlb3BsZQ0KPiAua2VybmVsLm9yZyUyRnRnbHglMkZub3Rl
-cy1hYm91dC1uZXRpcXVldHRlJmFtcDtkYXRhPTA0JTdDMDElN0NwZW5nDQo+IC5mYW4lNDBueHAu
-Y29tJTdDOGQyN2MzMjVjZWI4NDRlZjA5YTYwOGQ4NzM0OGEyZDElN0M2ODZlYTFkM2JjDQo+IDJi
-NGM2ZmE5MmNkOTljNWMzMDE2MzUlN0MwJTdDMCU3QzYzNzM4NjEwMzEwNTYyODE5MyU3Q1Vua25v
-dw0KPiBuJTdDVFdGcGJHWnNiM2Q4ZXlKV0lqb2lNQzR3TGpBd01EQWlMQ0pRSWpvaVYybHVNeklp
-TENKQlRpSTZJazFoYQ0KPiBXd2lMQ0pYVkNJNk1uMCUzRCU3QzEwMDAmYW1wO3NkYXRhPXE0bSUy
-RjY1dHlmSmpmNm5ZcndnQ0thdzVNDQo+IE5HTm4zVyUyQmxZbjNLa2Exd3B5RSUzRCZhbXA7cmVz
-ZXJ2ZWQ9MA0K
+
+
+> -----Original Message-----
+> From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+> Sent: 16 October 2020 10:51 PM
+> To: Sia, Jee Heng <jee.heng.sia@intel.com>
+> Cc: andriy.shevchenko@linux.intel.com; dmaengine@vger.kernel.org; linux-
+> kernel@vger.kernel.org; vkoul@kernel.org; Alexey Brodkin
+> <Alexey.Brodkin@synopsys.com>
+> Subject: Re: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
+> AxiDMA
+>=20
+> Hi Sia,
+>=20
+> Is this patch series available in some public git repo?
+[>>] We do not have public git repo, but the patch series are tested on ker=
+nel v5.9
+> I want to test it on our HW with DW AXI DMAC.
+>=20
+> Thanks.
+> ---
+>  Eugeniy Paltsev
+>=20
+>=20
+> ________________________________________
+> From: Sia Jee Heng <jee.heng.sia@intel.com>
+> Sent: Monday, October 12, 2020 07:21
+> To: vkoul@kernel.org; Eugeniy Paltsev
+> Cc: andriy.shevchenko@linux.intel.com; dmaengine@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Subject: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
+> AxiDMA
+>=20
+> The below patch series are to support AxiDMA running on Intel KeemBay SoC=
+.
+> The base driver is dw-axi-dmac but code refactoring is needed, for exampl=
+e:
+> - Support YAML Schemas DT binding.
+> - Replacing Linked List with virtual descriptor management.
+> - Remove unrelated hw desc stuff from dma memory pool.
+> - Manage dma memory pool alloc/destroy based on channel activity.
+> - Support dmaengine device_sync() callback.
+> - Support dmaengine device_config().
+> - Support dmaegnine device_prep_slave_sg().
+> - Support dmaengine device_prep_dma_cyclic().
+> - Support of_dma_controller_register().
+> - Support burst residue granularity.
+> - Support Intel KeemBay AxiDMA registers.
+> - Support Intel KeemBay AxiDMA device handshake.
+> - Support Intel KeemBay AxiDMA BYTE and HALFWORD device operation.
+> - Add constraint to Max segment size.
+>=20
+> This patch set is to replace the patch series submitted at:
+> https://urldefense.com/v3/__https://lore.kernel.org/dmaengine/1599213094-
+> 30144-1-git-send-email-
+> jee.heng.sia@intel.com/__;!!A4F2R9G_pg!Nemc1rSHID2X4d8pr0LNF0nD9Odrn4
+> 25GRV8MSTPDvPwE6a3iWPeylAJSaxwqXjfPapMO4U$
+>=20
+> This patch series are tested on Intel KeemBay platform.
+>=20
+>=20
+> Sia Jee Heng (15):
+>   dt-bindings: dma: Add YAML schemas for dw-axi-dmac
+>   dmaengine: dw-axi-dmac: simplify descriptor management
+>   dmaengine: dw-axi-dmac: move dma_pool_create() to
+>     alloc_chan_resources()
+>   dmaengine: dw-axi-dmac: Add device_synchronize() callback
+>   dmaengine: dw-axi-dmac: Add device_config operation
+>   dmaengine: dw-axi-dmac: Support device_prep_slave_sg
+>   dmaegine: dw-axi-dmac: Support device_prep_dma_cyclic()
+>   dmaengine: dw-axi-dmac: Support of_dma_controller_register()
+>   dmaengine: dw-axi-dmac: Support burst residue granularity
+>   dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA support
+>   dt-binding: dma: dw-axi-dmac: Add support for Intel KeemBay AxiDMA
+>   dmaengine: dw-axi-dmac: Add Intel KeemBay DMA register fields
+>   dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA handshake
+>   dmaengine: dw-axi-dmac: Add Intel KeemBay AxiDMA BYTE and HALFWORD
+>     registers
+>   dmaengine: dw-axi-dmac: Set constraint to the Max segment size
+>=20
+>  .../bindings/dma/snps,dw-axi-dmac.txt         |  39 -
+>  .../bindings/dma/snps,dw-axi-dmac.yaml        | 149 ++++
+>  .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 696 +++++++++++++++---
+>  drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |  33 +-
+>  4 files changed, 783 insertions(+), 134 deletions(-)  delete mode 100644
+> Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.txt
+>  create mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-
+> dmac.yaml
+>=20
+> --
+> 2.18.0
+
