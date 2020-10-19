@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A93F29286A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8013429286C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgJSNmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:42:13 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:34931 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727297AbgJSNmM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:42:12 -0400
-Received: by mail-wm1-f67.google.com with SMTP id q5so12936128wmq.0;
-        Mon, 19 Oct 2020 06:42:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wSpB2OFgBLfQuSAeovcxEvz3XNecpxTvXJc2PkeLsE4=;
-        b=GpyzoYYtQ52mAoPEgrG0fPsWbNCyRvY7DHPipAQnU721AIA9dHOlE3GArA4eoiZDYE
-         WRdQ5WXNZA4Q6cPp/Di09z9pzbctN53erhBV95p+gesSS2w7KFMrxPtjSZ9kVskDk3AM
-         Ujme+GqdDzo/vSGBFOmTNVYSASYjPH0XsxkBB7w8dIIMZvxEHAFSJmu14aDwHQruMCA0
-         8QjsbeHiPSo94AhkMZRO5G91B3/l2yD/eGl7eZea2XhrV+YCQ6ZTEcsumFM2afpxwlVf
-         WNaKcQqCXi68LpscNrOQhY/2M5lKCzkaYo/ZAFk7lamuMeYaYCLrtOCy0pL1J9iYLfyP
-         NmxQ==
-X-Gm-Message-State: AOAM5338Ev1CMscXok3d8YlwAGCCDm2689IC9zDoxDmYIDBkTkiBCnze
-        k3zwNYtvPxl/1dnYS79yPl02lgVqKwg=
-X-Google-Smtp-Source: ABdhPJyCvWUlYnVSgUusnxlmxtwtPBKYm9FsVfRurKRmwiPCqlhvjRkR3X4+gaFV0+37kiywaHzTtg==
-X-Received: by 2002:a1c:c906:: with SMTP id f6mr18528123wmb.9.1603114931205;
-        Mon, 19 Oct 2020 06:42:11 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id g83sm81381wmf.15.2020.10.19.06.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 06:42:10 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 13:42:09 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Olaf Hering <olaf@aepfle.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH v1] hv_balloon: disable warning when floor reached
-Message-ID: <20201019134209.fgjlip52k5xayr2w@liuwe-devbox-debian-v2>
-References: <20201008071216.16554-1-olaf@aepfle.de>
- <MW2PR2101MB1052BA9AB5DB8C11D7F9CE33D71E0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+        id S1728520AbgJSNmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:42:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727297AbgJSNmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:42:38 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B0302223C;
+        Mon, 19 Oct 2020 13:42:37 +0000 (UTC)
+Date:   Mon, 19 Oct 2020 09:42:34 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     acme@redhat.com, linux-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH] libtraceevent: install html files
+Message-ID: <20201019094234.0b36bb61@gandalf.local.home>
+In-Reply-To: <20201018211912.17541-1-sudipm.mukherjee@gmail.com>
+References: <20201018211912.17541-1-sudipm.mukherjee@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB1052BA9AB5DB8C11D7F9CE33D71E0@MW2PR2101MB1052.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 03:02:22AM +0000, Michael Kelley wrote:
-> From: Olaf Hering <olaf@aepfle.de> Sent: Thursday, October 8, 2020 12:12 AM
-> > 
-> > It is not an error if a the host requests to balloon down, but the VM
-> 
-> Spurious word "a"
-> 
-> > refuses to do so. Without this change a warning is logged in dmesg
-> > every five minutes.
-> > 
-> > Fixes commit b3bb97b8a49f3
-> 
-> This "Fixes" line isn't formatted correctly.  Should be:
-> 
-> Fixes:  b3bb97b8a49f3 ("Drivers: hv: balloon: Add logging for dynamic memory operations")
-> 
-> > 
-> > Signed-off-by: Olaf Hering <olaf@aepfle.de>
-> > ---
-> >  drivers/hv/hv_balloon.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
-> > index 32e3bc0aa665..0f50295d0214 100644
-> > --- a/drivers/hv/hv_balloon.c
-> > +++ b/drivers/hv/hv_balloon.c
-> > @@ -1275,7 +1275,7 @@ static void balloon_up(struct work_struct *dummy)
-> > 
-> >  	/* Refuse to balloon below the floor. */
-> >  	if (avail_pages < num_pages || avail_pages - num_pages < floor) {
-> > -		pr_warn("Balloon request will be partially fulfilled. %s\n",
-> > +		pr_info("Balloon request will be partially fulfilled. %s\n",
-> >  			avail_pages < num_pages ? "Not enough memory." :
-> >  			"Balloon floor reached.");
-> > 
-> 
-> Above nits notwithstanding,
-> 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+On Sun, 18 Oct 2020 22:19:12 +0100
+Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
 
-Thanks. I see one for and no against so far.
+> Only the man pages were installed using "make install". Add rules to
+> install html files also.
+> 
+> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+> ---
+>  tools/lib/traceevent/Documentation/Makefile | 14 ++++++++++++--
 
-I've applied this patch to hyperv-fixes. I also fixed those nits
-while at it.
+Thanks Sudip,
 
-Wei.
+Although, to apply it to the libtraceevent.git repo, I had to strip off the
+"tools/lib/traceevent/" from the file paths.
+
+-- Steve
+
+
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/lib/traceevent/Documentation/Makefile b/tools/lib/traceevent/Documentation/Makefile
+> index aa72ab96c3c1..dd3d62b17140 100644
+> --- a/tools/lib/traceevent/Documentation/Makefile
+> +++ b/tools/lib/traceevent/Documentation/Makefile
+> @@ -147,7 +147,7 @@ html: $(MAN_HTML)
+>  
+>  $(MAN_HTML) $(DOC_MAN3): asciidoc.conf
+>  
+> -install: install-man
+> +install: install-man install-html
+>  
+>  check-man-tools:
+>  ifdef missing_tools
+> @@ -161,12 +161,22 @@ do-install-man: man
+>  
+>  install-man: check-man-tools man do-install-man
+>  
+> -uninstall: uninstall-man
+> +do-install-html: html
+> +	$(call QUIET_INSTALL, Documentation-html) \
+> +		$(INSTALL) -d -m 755 $(DESTDIR)$(htmldir); \
+> +		$(INSTALL) -m 644 $(OUTPUT)*.html $(DESTDIR)$(htmldir);
+> +
+> +install-html: check-man-tools html do-install-html
+> +
+> +uninstall: uninstall-man uninstall-html
+>  
+>  uninstall-man:
+>  	$(call QUIET_UNINST, Documentation-man) \
+>  		$(Q)$(RM) $(addprefix $(DESTDIR)$(man3dir)/,$(DOC_MAN3))
+>  
+> +uninstall-html:
+> +	$(call QUIET_UNINST, Documentation-html) \
+> +		$(Q)$(RM) $(addprefix $(DESTDIR)$(htmldir)/,$(MAN_HTML))
+>  
+>  ifdef missing_tools
+>    DO_INSTALL_MAN = $(warning Please install $(missing_tools) to have the man pages installed)
+
