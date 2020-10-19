@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1CC292AC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C9B292AD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730404AbgJSPrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730051AbgJSPrX (ORCPT
+        id S1730390AbgJSPuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:50:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42703 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730097AbgJSPuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:47:23 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996A5C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:47:23 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id t25so14529823ejd.13
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/7dlTxDiqmcYkSqeqEAM+MSSzQMjAQV5ACnbOJwdXNY=;
-        b=GKPSIti2Z/Los0GUsvzfd9b0pNWNRyk+Tp6tSJGWcodh0ZDS5rAPvU9/PP5UueYRae
-         LTe0tyMpJZyGoqqmLOhvPZy7dgX7XgwaPENmWQhJzDi6QF5n3X0R7Y7EncbENJsahSSY
-         ZFR77cCmsWF4Hc0odVeXoQVhNHFRhLdTFzeO2VpDnVX0zQdA2e6uoOj+nDFJjmMveApN
-         IdVippUwlK0s6VWNuDj31K2HTeVxFujFVrJZh6VXowRdg9iptmvk++8Exj3X9Yj3eH1j
-         qrqELC1FidYtjTsia++6v1J8QNZ0iNkUqdGzrSXlK9xy3Aul39YiNzJa3CtjIjFCv7qw
-         3GSA==
+        Mon, 19 Oct 2020 11:50:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603122608;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ty3fQUKhXBYaOFrkQdMkSNwWJaJQlG2vHLExq4dp6RE=;
+        b=hOx8jdhtJOuOZOEH4IHMedt1ZXwiLS3jjP2zcsys2gt1KNAZAUykXmMY6ySN06Qkhln0Jw
+        STGgQkYN314DVNYRS0pylEI0eJTbuY5tZDz32V5aYSQOK/xbARklyZKWJsaMxLSRXPYtXT
+        iq6ms7+ktDpA5x/gBU2cDn9ExWuvjiA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-S4blPusaOrCkGMAh9XVOpw-1; Mon, 19 Oct 2020 11:50:07 -0400
+X-MC-Unique: S4blPusaOrCkGMAh9XVOpw-1
+Received: by mail-wm1-f72.google.com with SMTP id u207so92062wmu.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:50:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=/7dlTxDiqmcYkSqeqEAM+MSSzQMjAQV5ACnbOJwdXNY=;
-        b=PXTlfEfKxVgy65k4+G5slwCwW+UJd5d5BnIzVLhP3p0u/KUZnGmGr2O+vZUu1zaEIK
-         oCER9dlP4x+zeD5Me334M1QrnorzpZ0mXzNgJySzKk8SUMpUt8dkp6aRysKo82cYXBDl
-         oEHimmCGyS0sYqN2BPdOAAnuu+kHDideE6osCa+9OCYYaIaNvJCSh/T7AfOCCNT8ThrI
-         Ksiu6BM4+Nu2cSRtHj/NHcsuz53TiGrlh26qJsJdx1rtrVvCiSbsWxEnKs1gdtbCletL
-         88g/n5gteLaQTW/tbx6dtQKF2roiE1X4NJvGlFPMW6HB23h1eo6PAyqbovKfwYDr8WuJ
-         a/lQ==
-X-Gm-Message-State: AOAM530sMVH89HIDxv3ksz3pdO5vmQ8jdTlHpDjyo5+arleQrh3j86Kn
-        HJpCaw1tY2QgZ8i+zw71toWaankK+D6/6sAE
-X-Google-Smtp-Source: ABdhPJz5DJFN2XyIY0pHmL87n5yVNzMdfSg5FjUwur2ImOFkINOE9kNC92wznoRr9FRqBrJlnjZFAw==
-X-Received: by 2002:a17:906:453:: with SMTP id e19mr489674eja.391.1603122441874;
-        Mon, 19 Oct 2020 08:47:21 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:b49:2ba2:dca5:18d2])
-        by smtp.gmail.com with ESMTPSA id i23sm499558eja.66.2020.10.19.08.47.20
+        bh=Ty3fQUKhXBYaOFrkQdMkSNwWJaJQlG2vHLExq4dp6RE=;
+        b=l+6KSfX7BzrXYJZ94PySO5bC5kZq3q59TQXQONNl32waSJ9EwJaEsTj+kBLU/RXWJV
+         LFB146gsCSt5ex8eJDWrjZWymOdfJRqdfXIrnLauHgBIQi5mRYZMO2LNuY0sgggmZvP2
+         5ub+CFnL4C/3M5L936qPlmaInJOduZxKSOoxVbCSXLsRYZ3DX/NAjmlbA/KNEE4QTfyu
+         aAMRHQGERXX9RLkBb3u7jsm3dN0NnYM1uR9XVeitFoiC4n0BkTimU19MhuwIphDhPTWB
+         d89DaRgdiUuRrfr7o4qbwsq/H1zGZpG/YdIoftb23KIT1d4S6AxMrW/YhyrZjFSNutif
+         +Nzg==
+X-Gm-Message-State: AOAM531EYhiKwM20UG+FfBZ2MSm3W/9Q0h7oGrnW0TbIKez2sWjfjeVR
+        UDCWcvDn4zSQ8MmPi5xh+LNcEIGiVJ/Ix5qr9jVMfwl2ih+4JXXX2Vu1N2NKdlwAqV1QHUtQGbV
+        7d1ju2LK+3uSuiBe1YM9oXWg5
+X-Received: by 2002:a5d:4ed2:: with SMTP id s18mr231486wrv.36.1603122605689;
+        Mon, 19 Oct 2020 08:50:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxTR9iZFcc8IIQX9dGK47DUaftCuX1iqMBs11sOiu81jGa42Cgb3n3WCC85QiisviGSCa5o2A==
+X-Received: by 2002:a5d:4ed2:: with SMTP id s18mr231457wrv.36.1603122605454;
+        Mon, 19 Oct 2020 08:50:05 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id 4sm170402wrn.48.2020.10.19.08.50.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 08:47:21 -0700 (PDT)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
-        linux-kernel@vger.kernel.org
-References: <20201019113240.11516-1-geert@linux-m68k.org>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: Re: [PATCH] mptcp: MPTCP_KUNIT_TESTS should depend on MPTCP instead
- of selecting it
-Message-ID: <1968b7a6-a553-c882-c386-4b4fde2d7a87@tessares.net>
-Date:   Mon, 19 Oct 2020 17:47:20 +0200
+        Mon, 19 Oct 2020 08:50:04 -0700 (PDT)
+Subject: Re: [PATCH 2/4] kvm x86/mmu: Make struct kernel_param_ops definitions
+ const
+To:     Ben Gardon <bgardon@google.com>, Joe Perches <joe@perches.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1601770305.git.joe@perches.com>
+ <ed95eef4f10fc1317b66936c05bc7dd8f943a6d5.1601770305.git.joe@perches.com>
+ <CANgfPd8_Crt0VO3phV7ec55ghSLiJzmzTypNvnZAYq=uJL8r8Q@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <dc79b272-0d32-a08c-d8ee-3d601bd47d5d@redhat.com>
+Date:   Mon, 19 Oct 2020 17:50:03 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201019113240.11516-1-geert@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANgfPd8_Crt0VO3phV7ec55ghSLiJzmzTypNvnZAYq=uJL8r8Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On 05/10/20 19:14, Ben Gardon wrote:
+> Reviewed-by: Ben Gardon <bgardon@google.com>
 
-Thank you for the patch!
+Queued, thanks.
 
-On 19/10/2020 13:32, Geert Uytterhoeven wrote:
-> MPTCP_KUNIT_TESTS selects MPTCP, thus enabling an optional feature the
-> user may not want to enable.  Fix this by making the test depend on
-> MPTCP instead.
+Paolo
 
-I think the initial intension was to select MPTCP to have an easy way to 
-enable all KUnit tests. We imitated what was and is still done in 
-fs/ext4/Kconfig.
-
-But it probably makes sense to depend on MPTCP instead of selecting it. 
-So that's fine for me. But then please also send a patch to ext4 
-maintainer to do the same there.
-
-Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
