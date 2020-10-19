@@ -2,107 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF0F292C3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D3E292C24
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731143AbgJSRDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:03:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:32886 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730921AbgJSRCr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:02:47 -0400
-Date:   Mon, 19 Oct 2020 17:02:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603126965;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rQPEhAKOQNmR8Qe2Z+vrAsDXOE5DX3hk4zXgPWd2vRU=;
-        b=giRTdDgMw193aqNbCTM45VA3xRTtKnSoHuVF1BTkBx9TS0SX0P3t/4lVzE24/2+y+x2z0+
-        CRSByfGiNK4qb/8uj691ez24UNSRfOuxPtmclTKAPR/0DTo1GhD5j79Er2h6I1fjRFghTZ
-        luaAByx2Sn4T4kB4IvG1uddXCUq77893vOZxzKcss8vnXiPLkHLsY9RJ/K6tfD4GKKmuTi
-        mVMLKowzJ+OhoHKDY8RHKfZvUQdZFP19o5O63EQT2qoOtxLJJPRgM1o+WUsY/Q+BaAplck
-        Ojas2b6k6p38VTd1WnjHFrezcRSmLl1HjIDqa3XquroiS/A+mxRGo2bKx7jinQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603126965;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rQPEhAKOQNmR8Qe2Z+vrAsDXOE5DX3hk4zXgPWd2vRU=;
-        b=kYwB08rHdXbS8raICadUTdoktpPRlcqrvPIpeYh/nL/OiL6LCrLOHt/xNeJ3Yj1nxFLgUe
-        nFy+KibCVYTISkCQ==
-From:   "tip-bot2 for Anant Thazhemadam" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] staging: comedi: check validity of wMaxPacketSize
- of usb endpoints found
-Cc:     syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        stable <stable@vger.kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201010082933.5417-1-anant.thazhemadam@gmail.com>
-References: <20201010082933.5417-1-anant.thazhemadam@gmail.com>
+        id S1731053AbgJSRDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:03:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731033AbgJSRDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 13:03:00 -0400
+Received: from localhost.localdomain (unknown [194.230.155.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C98AC205ED;
+        Mon, 19 Oct 2020 17:02:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603126979;
+        bh=5m3PXqqc5gUg7E17UxkNthGmAsWQFVOiTy+EyGvAX4Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aQaCuB1baKgVuEgGfaK+keOXYRuF+p6Tu69qWkmnh9KfdEYe3Fl9Can/ka6Kh+cBW
+         9Ormi2H9eLAiCk5FEJTn+ym8zGQu+bFxpQD6ijs/mH+dCGDj7GiIPqlxv8PT2odLN4
+         5gTE0TQ/oVDM7CzcA5R9vUJ6aTRac8LbGJOyD44M=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 1/4] dt-bindings: media: imx258: add bindings for IMX258 sensor
+Date:   Mon, 19 Oct 2020 19:02:44 +0200
+Message-Id: <20201019170247.92002-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <160312696435.7002.11176979799560597940.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+Add bindings for the IMX258 camera sensor.  The bindings, just like the
+driver, are quite limited, e.g. do not support regulator supplies.
 
-Commit-ID:     38df15cb4ce149ce3648d2a9ccc0140afa71fc02
-Gitweb:        https://git.kernel.org/tip/38df15cb4ce149ce3648d2a9ccc0140afa71fc02
-Author:        Anant Thazhemadam <anant.thazhemadam@gmail.com>
-AuthorDate:    Sat, 10 Oct 2020 13:59:32 +05:30
-Committer:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CommitterDate: Sat, 17 Oct 2020 08:31:21 +02:00
-
-staging: comedi: check validity of wMaxPacketSize of usb endpoints found
-
-commit e1f13c879a7c21bd207dc6242455e8e3a1e88b40 upstream.
-
-While finding usb endpoints in vmk80xx_find_usb_endpoints(), check if
-wMaxPacketSize = 0 for the endpoints found.
-
-Some devices have isochronous endpoints that have wMaxPacketSize = 0
-(as required by the USB-2 spec).
-However, since this doesn't apply here, wMaxPacketSize = 0 can be
-considered to be invalid.
-
-Reported-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
-Tested-by: syzbot+009f546aa1370056b1c2@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201010082933.5417-1-anant.thazhemadam@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ---
- drivers/staging/comedi/drivers/vmk80xx.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/staging/comedi/drivers/vmk80xx.c b/drivers/staging/comedi/drivers/vmk80xx.c
-index 65dc6c5..7956abc 100644
---- a/drivers/staging/comedi/drivers/vmk80xx.c
-+++ b/drivers/staging/comedi/drivers/vmk80xx.c
-@@ -667,6 +667,9 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
- 	if (!devpriv->ep_rx || !devpriv->ep_tx)
- 		return -ENODEV;
- 
-+	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
-+		return -EINVAL;
+Changes since v4:
+1. Add clock-lanes,
+2. Add Rob's review,
+3. Add one more example and extend existing one,
+4. Add common clock properties (assigned-*).
+
+Changes since v3:
+1. Document also two lane setup.
+
+Changes since v2:
+1. Remove clock-frequency, add reset GPIOs, add supplies.
+2. Use additionalProperties.
+
+Changes since v1:
+1. None
+---
+ .../devicetree/bindings/media/i2c/imx258.yaml | 140 ++++++++++++++++++
+ MAINTAINERS                                   |   1 +
+ 2 files changed, 141 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/imx258.yaml
+
+diff --git a/Documentation/devicetree/bindings/media/i2c/imx258.yaml b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
+new file mode 100644
+index 000000000000..4a3471fb88a1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
+@@ -0,0 +1,140 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/i2c/imx258.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	return 0;
- }
++title: Sony IMX258 13 Mpixel CMOS Digital Image Sensor
++
++maintainers:
++  - Krzysztof Kozlowski <krzk@kernel.org>
++
++description: |-
++  IMX258 is a diagonal 5.867mm (Type 1/3.06) 13 Mega-pixel CMOS active pixel
++  type stacked image sensor with a square pixel array of size 4208 x 3120. It
++  is programmable through I2C interface.  Image data is sent through MIPI
++  CSI-2.
++
++properties:
++  compatible:
++    const: sony,imx258
++
++  assigned-clocks: true
++  assigned-clock-parents: true
++  assigned-clock-rates: true
++
++  clocks:
++    description:
++      Clock frequency from 6 to 27 MHz.
++    maxItems: 1
++
++  reg:
++    maxItems: 1
++
++  reset-gpios:
++    description: |-
++      Reference to the GPIO connected to the XCLR pin, if any.
++
++  vana-supply:
++    description:
++      Analog voltage (VANA) supply, 2.7 V
++
++  vdig-supply:
++    description:
++      Digital I/O voltage (VDIG) supply, 1.2 V
++
++  vif-supply:
++    description:
++      Interface voltage (VIF) supply, 1.8 V
++
++  # See ../video-interfaces.txt for more details
++  port:
++    type: object
++    properties:
++      endpoint:
++        type: object
++        properties:
++          clock-lanes:
++            const: 0
++
++          data-lanes:
++            oneOf:
++              - items:
++                  - const: 1
++                  - const: 2
++                  - const: 3
++                  - const: 4
++              - items:
++                  - const: 1
++                  - const: 2
++
++          link-frequencies:
++            allOf:
++              - $ref: /schemas/types.yaml#/definitions/uint64-array
++            description:
++              Allowed data bus frequencies.
++
++        required:
++          - clock-lanes
++          - data-lanes
++          - link-frequencies
++
++required:
++  - compatible
++  - reg
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c0 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        sensor@6c {
++            compatible = "sony,imx258";
++            reg = <0x6c>;
++            clocks = <&imx258_clk>;
++
++            port {
++                endpoint {
++                    remote-endpoint = <&csi1_ep>;
++                    clock-lanes = <0>;
++                    data-lanes = <1 2 3 4>;
++                    link-frequencies = /bits/ 64 <320000000>;
++                };
++            };
++        };
++    };
++
++    /* Oscillator on the camera board */
++    imx258_clk: clk {
++        compatible = "fixed-clock";
++        #clock-cells = <0>;
++        clock-frequency = <19200000>;
++    };
++
++  - |
++    i2c0 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        sensor@6c {
++            compatible = "sony,imx258";
++            reg = <0x6c>;
++            clocks = <&imx258_clk>;
++
++            assigned-clocks = <&imx258_clk>;
++            assigned-clock-rates = <19200000>;
++
++            port {
++                endpoint {
++                    remote-endpoint = <&csi1_ep>;
++                    clock-lanes = <0>;
++                    data-lanes = <1 2 3 4>;
++                    link-frequencies = /bits/ 64 <633600000>;
++                };
++            };
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5b9621ca2b31..68f30a283a2c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16262,6 +16262,7 @@ M:	Sakari Ailus <sakari.ailus@linux.intel.com>
+ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ T:	git git://linuxtv.org/media_tree.git
++F:	Documentation/devicetree/bindings/media/i2c/imx258.yaml
+ F:	drivers/media/i2c/imx258.c
  
+ SONY IMX274 SENSOR DRIVER
+-- 
+2.25.1
+
