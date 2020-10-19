@@ -2,148 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED95B292A8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7460292A87
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730319AbgJSPgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:36:23 -0400
-Received: from mga18.intel.com ([134.134.136.126]:27597 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730215AbgJSPgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:36:18 -0400
-IronPort-SDR: VrA0WIjrCCVGeMPLyB/LaRuTy8SjFkVZnx9qkB3ZHf4TrceSg0VByNefDUcxhRzEe5WRJNatzn
- Xy0rGZpMQdpA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="154839786"
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="154839786"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 08:36:17 -0700
-IronPort-SDR: 1fwBb7bHp1v4DiNzVw1LFjXNfrQJ713yWSA5xULdA6/zc+0SKFpIkF08GU7giSnDQndLgPaTvY
- qqbSN98WbqCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="465569445"
-Received: from ssp-rkls-cdi470.jf.intel.com ([10.54.55.84])
-  by orsmga004.jf.intel.com with ESMTP; 19 Oct 2020 08:36:18 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 4/4] perf/x86/intel/uncore: Add Rocket Lake support
-Date:   Mon, 19 Oct 2020 08:35:28 -0700
-Message-Id: <20201019153528.13850-4-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201019153528.13850-1-kan.liang@linux.intel.com>
-References: <20201019153528.13850-1-kan.liang@linux.intel.com>
+        id S1730150AbgJSPgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:36:11 -0400
+Received: from smtprelay0073.hostedemail.com ([216.40.44.73]:56422 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730121AbgJSPgL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 11:36:11 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A53371802912E;
+        Mon, 19 Oct 2020 15:36:10 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 64,4,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2332:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3653:3865:3866:3867:3868:3871:4321:4823:5007:10004:10400:10848:11026:11232:11658:11914:12043:12050:12297:12555:12760:13069:13095:13161:13229:13311:13357:13439:14181:14394:14659:14721:21080:21221:21433:21627:21990:30054:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: push29_4a1543e27238
+X-Filterd-Recvd-Size: 2415
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 19 Oct 2020 15:36:09 +0000 (UTC)
+Message-ID: <d9ea654104d55f590fb97d252d64a66b23c1a096.camel@perches.com>
+Subject: [PATCH V2] checkpatch: Allow --fix removal of unnecessary break
+ statements
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Julia Lawall <julia.lawall@inria.fr>, trix@redhat.com,
+        linux-kernel@vger.kernel.org, cocci <cocci@systeme.lip6.fr>
+Date:   Mon, 19 Oct 2020 08:36:08 -0700
+In-Reply-To: <alpine.DEB.2.22.394.2010172016370.9440@hadrien>
+References: <20201017160928.12698-1-trix@redhat.com>
+         <f530b7aeecbbf9654b4540cfa20023a4c2a11889.camel@perches.com>
+         <alpine.DEB.2.22.394.2010172016370.9440@hadrien>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+switch/case use of break after a return, goto or break is unnecessary.
 
-For Rocket Lake, the MSR uncore, e.g., CBOX, ARB and CLOCKBOX, are the
-same as Tiger Lake. Share the perf code with it.
+There is an existing warning for the return and goto uses, so add
+break and a --fix option too.
 
-For Rocket Lake and Tiger Lake, the 8th CBOX is not mapped into a
-different MSR space anymore. Add rkl_uncore_msr_init_box() to replace
-skl_uncore_msr_init_box().
-
-The IMC uncore is the similar to Ice Lake. Add new PCIIDs of IMC for
-Rocket Lake.
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- arch/x86/events/intel/uncore.c     |  6 ++++++
- arch/x86/events/intel/uncore_snb.c | 20 +++++++++++++++++++-
- 2 files changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
-index 86d012b3e0b4..1db6a7113bdb 100644
---- a/arch/x86/events/intel/uncore.c
-+++ b/arch/x86/events/intel/uncore.c
-@@ -1636,6 +1636,11 @@ static const struct intel_uncore_init_fun tgl_l_uncore_init __initconst = {
- 	.mmio_init = tgl_l_uncore_mmio_init,
- };
+v2: Add break to matched keyword
+    and change the message to show the matched keyword
  
-+static const struct intel_uncore_init_fun rkl_uncore_init __initconst = {
-+	.cpu_init = tgl_uncore_cpu_init,
-+	.pci_init = skl_uncore_pci_init,
-+};
-+
- static const struct intel_uncore_init_fun icx_uncore_init __initconst = {
- 	.cpu_init = icx_uncore_cpu_init,
- 	.pci_init = icx_uncore_pci_init,
-@@ -1683,6 +1688,7 @@ static const struct x86_cpu_id intel_uncore_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&icx_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L,		&tgl_l_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		&tgl_uncore_init),
-+	X86_MATCH_INTEL_FAM6_MODEL(ROCKETLAKE,		&rkl_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_D,	&snr_uncore_init),
- 	{},
- };
-diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
-index de3d9621b694..6bbf54bf28b9 100644
---- a/arch/x86/events/intel/uncore_snb.c
-+++ b/arch/x86/events/intel/uncore_snb.c
-@@ -60,7 +60,8 @@
- #define PCI_DEVICE_ID_INTEL_TGL_U3_IMC		0x9a12
- #define PCI_DEVICE_ID_INTEL_TGL_U4_IMC		0x9a14
- #define PCI_DEVICE_ID_INTEL_TGL_H_IMC		0x9a36
--
-+#define PCI_DEVICE_ID_INTEL_RKL_1_IMC		0x4c43
-+#define PCI_DEVICE_ID_INTEL_RKL_2_IMC		0x4c53
+For today's next, this would remove ~300 instances like:
+
+	case FOO:
+		return bar;
+		break;
+or
+	case FOO:
+		goto bar;
+		break;
+
+ scripts/checkpatch.pl | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index fab38b493cef..b0597853c16e 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3674,12 +3674,16 @@ sub process {
+ 		}
  
- /* SNB event control */
- #define SNB_UNC_CTL_EV_SEL_MASK			0x000000ff
-@@ -405,6 +406,12 @@ static struct intel_uncore_type *tgl_msr_uncores[] = {
- 	NULL,
- };
+ # check indentation of a line with a break;
+-# if the previous line is a goto or return and is indented the same # of tabs
++# if the previous line is a goto, return or break
++# and is indented the same # of tabs
+ 		if ($sline =~ /^\+([\t]+)break\s*;\s*$/) {
+ 			my $tabs = $1;
+-			if ($prevline =~ /^\+$tabs(?:goto|return)\b/) {
+-				WARN("UNNECESSARY_BREAK",
+-				     "break is not useful after a goto or return\n" . $hereprev);
++			if ($prevline =~ /^\+$tabs(goto|return|break)\b/) {
++				if (WARN("UNNECESSARY_BREAK",
++					 "break is not useful after a $1\n" . $hereprev) &&
++				    $fix) {
++					fix_delete_line($fixlinenr, $rawline);
++				}
+ 			}
+ 		}
  
-+static void rkl_uncore_msr_init_box(struct intel_uncore_box *box)
-+{
-+	if (box->pmu->pmu_idx == 0)
-+		wrmsrl(SKL_UNC_PERF_GLOBAL_CTL, SNB_UNC_GLOBAL_CTL_EN);
-+}
-+
- void tgl_uncore_cpu_init(void)
- {
- 	uncore_msr_uncores = tgl_msr_uncores;
-@@ -412,6 +419,7 @@ void tgl_uncore_cpu_init(void)
- 	icl_uncore_cbox.ops = &skl_uncore_msr_ops;
- 	icl_uncore_clockbox.ops = &skl_uncore_msr_ops;
- 	snb_uncore_arb.ops = &skl_uncore_msr_ops;
-+	skl_uncore_msr_ops.init_box = rkl_uncore_msr_init_box;
- }
- 
- enum {
-@@ -880,6 +888,14 @@ static const struct pci_device_id icl_uncore_pci_ids[] = {
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_ICL_U2_IMC),
- 		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
- 	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_RKL_1_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_RKL_2_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
- 	{ /* end: all zeroes */ },
- };
- 
-@@ -973,6 +989,8 @@ static const struct imc_uncore_pci_dev desktop_imc_pci_ids[] = {
- 	IMC_DEV(CML_S5_IMC, &skl_uncore_pci_driver),
- 	IMC_DEV(ICL_U_IMC, &icl_uncore_pci_driver),	/* 10th Gen Core Mobile */
- 	IMC_DEV(ICL_U2_IMC, &icl_uncore_pci_driver),	/* 10th Gen Core Mobile */
-+	IMC_DEV(RKL_1_IMC, &icl_uncore_pci_driver),
-+	IMC_DEV(RKL_2_IMC, &icl_uncore_pci_driver),
- 	{  /* end marker */ }
- };
- 
--- 
-2.25.1
+
 
