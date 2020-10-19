@@ -2,188 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1053D292769
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 14:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD5E292784
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 14:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727189AbgJSMhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 08:37:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726561AbgJSMhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 08:37:35 -0400
-Received: from localhost (unknown [176.167.103.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40ED521D81;
-        Mon, 19 Oct 2020 12:37:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603111053;
-        bh=Iiq9JtMOsAzTZh0V4bf3ztUsJiRzQ+KheGJpFKUaSP4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=syCvgVxnNpKL/qRzlhkGd4WZGvKfBQbT7Ye1Ov4mfK1W3lXc+cQw85f/ODtd/11Er
-         QaAciK+luw1A6HbC7Pjl/WJcq8+oDTlB88mfAZpuhAVeypEBTLmPciAFoGOEgRVRWH
-         3HG6WtupXGc6aT1G8cJIoTvG5R94h2M7APBgcN+Y=
-Date:   Mon, 19 Oct 2020 14:37:30 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     joel@joelfernandes.org
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com, stern@rowland.harvard.edu
-Subject: Re: [PATCH v7 6/6] rcu/segcblist: Add additional comments to explain
- smp_mb()
-Message-ID: <20201019123730.GA34192@lothringen>
-References: <20201015002301.101830-1-joel@joelfernandes.org>
- <20201015002301.101830-7-joel@joelfernandes.org>
- <20201015133511.GB127222@lothringen>
- <20201017012753.GB4015033@google.com>
- <20201017031941.GD4015033@google.com>
- <20201017132954.GA15657@lothringen>
- <20201018003556.GA1034551@google.com>
+        id S1727224AbgJSMke convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Oct 2020 08:40:34 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2988 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727126AbgJSMkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 08:40:33 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 43F26A2699A4B1467DC1;
+        Mon, 19 Oct 2020 13:40:32 +0100 (IST)
+Received: from localhost (10.52.126.130) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 19 Oct
+ 2020 13:40:31 +0100
+Date:   Mon, 19 Oct 2020 13:38:36 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Brice Goglin <Brice.Goglin@inria.fr>
+CC:     <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, <guohanjun@huawei.com>,
+        Will Deacon <will@kernel.org>, <linuxarm@huawei.com>
+Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
+Message-ID: <20201019123836.00004877@Huawei.com>
+In-Reply-To: <942b4d68-8d19-66d8-c84b-d17eba837e9a@inria.fr>
+References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
+        <942b4d68-8d19-66d8-c84b-d17eba837e9a@inria.fr>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201018003556.GA1034551@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.52.126.130]
+X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 08:35:56PM -0400, joel@joelfernandes.org wrote:
-> On Sat, Oct 17, 2020 at 03:29:54PM +0200, Frederic Weisbecker wrote:
-> > > C rcubarrier+ctrldep
-> > > 
-> > > (*
-> > >  * Result: Never
-> > >  *
-> > >  * This litmus test shows that rcu_barrier (P1) prematurely
-> > >  * returning by reading len 0 can cause issues if P0 does
-> > >  * NOT have a smb_mb() after WRITE_ONCE(len, 1).
-> > >  * mod_data == 2 means module was unloaded (so data is garbage).
-> > >  *)
-> > > 
-> > > { int len = 0; int enq = 0; }
-> > > 
-> > > P0(int *len, int *mod_data, int *enq)
-> > > {
-> > > 	int r0;
-> > > 
-> > > 	WRITE_ONCE(*len, 1);
-> > > 	smp_mb();		/* Needed! */
-> > > 	WRITE_ONCE(*enq, 1);
-> > > 
-> > > 	r0 = READ_ONCE(*mod_data);
-> > > }
-> > > 
-> > > P1(int *len, int *mod_data, int *enq)
-> > > {
-> > > 	int r0;
-> > > 	int r1;
-> > > 
-> > > 	r1 = READ_ONCE(*enq);
-> > > 
-> > > 	// barrier Just for test purpose ("exists" clause) to force the..
-> > > 	// ..rcu_barrier() to see enq before len
-> > > 	smp_mb();		
-> > > 	r0 = READ_ONCE(*len);
-> > > 
-> > > 	// implicit memory barrier due to conditional */
-> > > 	if (r0 == 0)
-> > > 		WRITE_ONCE(*mod_data, 2);
-> > > }
-> > 
-> > I'm not sure what scenario P1 refers to in practice, and to what module?
-> 
-> Kernel module usecase for rcu_barrier. See the docs.
+On Mon, 19 Oct 2020 12:00:15 +0200
+Brice Goglin <Brice.Goglin@inria.fr> wrote:
 
-My bad, I'm just reading that documentation now :-s
-
-> > 
-> > I'm very likely missing something obvious somewhere.
-> > 
-> >       CPU 0                                CPU 1
-> >       rcu_barrier()                        call_rcu()/rcu_segcblist_enqueue()
-> >       ------------                         --------
-> > 
-> >                                            smp_mb();
-> >                                            inc_len();
-> > 					   smp_mb();
-> > 					   queue callback;
-> >       for_each_possible_cpu(cpu)
-> >           if (!rcu_segcblist_n_cbs(&rdp->cblist))
-> > 	      continue;
+> Le 16/10/2020 à 17:27, Jonathan Cameron a écrit :
+> > Both ACPI and DT provide the ability to describe additional layers of
+> > topology between that of individual cores and higher level constructs
+> > such as the level at which the last level cache is shared.
+> > In ACPI this can be represented in PPTT as a Processor Hierarchy
+> > Node Structure [1] that is the parent of the CPU cores and in turn
+> > has a parent Processor Hierarchy Nodes Structure representing
+> > a higher level of topology.
 > >
+> > For example Kunpeng 920 has clusters of 4 CPUs.  These do not share
+> > any cache resources, but the interconnect topology is such that
+> > the cost to transfer ownership of a cacheline between CPUs within
+> > a cluster is lower than between CPUs in different clusters on the same
+> > die.   Hence, it can make sense to deliberately schedule threads
+> > sharing data to a single cluster.
+> >
+> > This patch simply exposes this information to userspace libraries
+> > like hwloc by providing cluster_cpus and related sysfs attributes.
+> > PoC of HWLOC support at [2].
+> >
+> > Note this patch only handle the ACPI case.
+> >
+> > Special consideration is needed for SMT processors, where it is
+> > necessary to move 2 levels up the hierarchy from the leaf nodes
+> > (thus skipping the processor core level).
+> >
+> > Currently the ID provided is the offset of the Processor
+> > Hierarchy Nodes Structure within PPTT.  Whilst this is unique
+> > it is not terribly elegant so alternative suggestions welcome.
+> >
+> > Note that arm64 / ACPI does not provide any means of identifying
+> > a die level in the topology but that may be unrelate to the cluster
+> > level.
+> >
+> > RFC questions:
+> > 1) Naming
+> > 2) Related to naming, do we want to represent all potential levels,
+> >    or this enough?  On Kunpeng920, the next level up from cluster happens
+> >    to be covered by llc cache sharing, but in theory more than one
+> >    level of cluster description might be needed by some future system.
+> > 3) Do we need DT code in place? I'm not sure any DT based ARM64
+> >    systems would have enough complexity for this to be useful.
+> > 4) Other architectures?  Is this useful on x86 for example?  
 > 
-> >						invoke_callback
 > 
-> If CPU 0 saw the enqueue of the callback (that is the CPU 1's writes to the
-> segcb_list propagated to CPU 0), then it would have also seen the
-> effects of the inc_len. I forced this case in my last litmus test by this
-> code in P1():
+> Hello Jonathan
 
-But then I can't find to which part of rcu_barrier() this refers to.
-I see the len read before anything else.
+Hi Brice,
 
 > 
->         r1 = READ_ONCE(*enq);
->         smp_mb();               /* barrier Just for test purpose to show that the.. */
->                                 /* ..rcu_barrier() saw list modification */
+> Intel has CPUID registers to describe "tiles" and "modules" too (not
+> used yet as far as I know). The list of levels could become quite long
+> if any processor ever exposes those. If having multiple cluster levels
+> is possible, maybe it's time to think about introducing some sort of
+> generic levels:
+
+I've been wondering what tiles and modules are... Looking back and
+naming over time, I'm going to guess tiles are the closest to the
+particular case I was focusing on here.
+
 > 
-> On the other hand, if CPU 0 did not see the enqueue, then there is really no
-> issue. Since that is the same case where call_rcu() happened _after_ the
-> rcu_barrier() and there's no race. rcu_barrier() does not need to wait if
-> there was no callback enqueued.
+> cluster0_id = your cluster_id
+> cluster0_cpus/cpulist = your cluster_cpus/cpulis
+> cluster0_type = would optionally contain hardware-specific info such as
+> "module" or "tile" on x86
+> cluster_levels = 1
+
+I wondered exactly the same question.  At this point, perhaps we just
+statically introduce an 0 index, but with the assumption we would extend
+that as / when necessary in future.
+
 > 
-> This is not exactly the easiest thing to explain, hence the litmus.
+> hwloc already does something like this for some "rare" levels such as
+> s390 book/drawers (by the way, thanks a lot for the hwloc PoC, very good
+> job), we call them "Groups" instead of "cluster" above.
 
-Now, reading the documentation of rcu_barrier() (thanks to you!):
+Given we definitely have a 'naming' issue here, perhaps group0 etc is a good
+generic choice? 
 
-    Pseudo-code using rcu_barrier() is as follows:
+> 
+> However I don't know if the Linux scheduler would like that. Is it
+> better to have 10+ levels with static names, or a dynamic number of levels?
 
-   1. Prevent any new RCU callbacks from being posted.
-   2. Execute rcu_barrier().
-   3. Allow the module to be unloaded.
+So far our 'general' experiments with adding clusters into the kernel
+scheduler have been a typical mixed bunch.  Hence the proposal
+to just expose the structure to userspace where we should at least know
+what the workload is.   Hopefully we'll gain more experience with using
+it and use that to drive possible kernel scheduler changes.
 
+> 
+> Brice
 
-I think with point 1, it is assumed that the caller of rcu_barrier() must have
-not only stopped but also sync'ed with the possible enqueuers. Correct me if I'm wrong
-here. So for example if a kthread used to post the module RCU callbacks, calling kthread_stop()
-does the job as it prevents from further RCU callbacks from being enqueued and it also syncs
-with the kthread thanks to the completion implied by any caller of kthread_stop() which then
-sees what the kthread has read and written, including RCU callbacks enqueued. So if the caller
-of kthread_stop() calls rcu_barrier() right after, rcu_barrier() should see at least the len
-corresponding to the last enqueue.
+Thanks,
 
-cancel_work_sync() also seem to really sync as well. I'm less sure about del_timer_sync().
-
-Say we have:
-
-expire_timers (CPU 0)                               CPU 1
--------------                                       -----------
-detach_timer(timer)
-raw_spin_unlock(&base->lock);
-call_timer_fn(timer, fn, baseclk);
-   -> enqueue callback
-//would need at least smp_wmb() here
-base->running_timer = NULL;
-
-                                                    del_timer_sync() {
-                                                        raw_spin_lock(&base->lock);
-                                                        if (base->running_timer != timer)
-                                                            ret = detach_if_pending(timer, base, true);
-                                                                if (!timer_pending())
-                                                                    return 0;
-                                                        raw_spin_unlock(&base->lock);
-                                                    }
-                                                    //would need at least smp_rmb() here
-						    //although rcu_seq_start() implies a full barrier
-                                                    rcu_barrier() {
-						        // Sees rcu_segcblist_n_cbs(rdp(CPU 0)->cblist) == 0
-                                                        // So ignore it
+Jonathan
 
 
-But I'm sure I'm missing something obvious. That's my specialism.
