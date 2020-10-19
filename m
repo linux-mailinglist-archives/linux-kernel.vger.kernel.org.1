@@ -2,109 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E9829217F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 05:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5805292181
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 05:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731631AbgJSDoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 23:44:10 -0400
-Received: from regular1.263xmail.com ([211.150.70.204]:39572 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731534AbgJSDoK (ORCPT
+        id S1731649AbgJSDsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 23:48:22 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:60221 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731306AbgJSDsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 23:44:10 -0400
-Received: from localhost (unknown [192.168.167.13])
-        by regular1.263xmail.com (Postfix) with ESMTP id E2E2B2BA;
-        Mon, 19 Oct 2020 11:43:56 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.120] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P1665T140084967511808S1603079033410318_;
-        Mon, 19 Oct 2020 11:43:54 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <f99b6cdefa6c3a4763585ece9ed9a3cc>
-X-RL-SENDER: kever.yang@rock-chips.com
-X-SENDER: yk@rock-chips.com
-X-LOGIN-NAME: kever.yang@rock-chips.com
-X-FST-TO: linux-kernel@vger.kernel.org
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-Subject: Re: [PATCH v2] drm/of: Consider the state in which the ep is disabled
-To:     Sandy Huang <hjc@rock-chips.com>, heiko@sntech.de,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, huangtao@rock-chips.com,
-        andy.yan@rock-chips.com, linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20200707112526.18438-1-hjc@rock-chips.com>
- <5c0cdb9d-8e35-fa0c-35b3-adfa7770fb30@rock-chips.com>
- <20201015152301.GE438822@phenom.ffwll.local>
-From:   Kever Yang <kever.yang@rock-chips.com>
-Message-ID: <e016801a-61aa-de6c-cb90-c62e03bdd067@rock-chips.com>
-Date:   Mon, 19 Oct 2020 11:43:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 18 Oct 2020 23:48:22 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UCQALvF_1603079297;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCQALvF_1603079297)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 19 Oct 2020 11:48:18 +0800
+Date:   Mon, 19 Oct 2020 11:48:17 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: Re: [PATCH v1 28/29] virtio-mem: Big Block Mode (BBM) - basic memory
+ hotunplug
+Message-ID: <20201019034817.GD54484@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-29-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201015152301.GE438822@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012125323.17509-29-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Mon, Oct 12, 2020 at 02:53:22PM +0200, David Hildenbrand wrote:
+>Let's try to unplug completely offline big blocks first. Then, (if
+>enabled via unplug_offline) try to offline and remove whole big blocks.
+>
+>No locking necessary - we can deal with concurrent onlining/offlining
+>just fine.
+>
+>Note1: This is sub-optimal and might be dangerous in some environments: we
+>could end up in an infinite loop when offlining (e.g., long-term pinnings),
+>similar as with DIMMs. We'll introduce safe memory hotunplug via
+>fake-offlining next, and use this basic mode only when explicitly enabled.
+>
+>Note2: Without ZONE_MOVABLE, memory unplug will be extremely unreliable
+>with bigger block sizes.
+>
+>Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>Cc: Jason Wang <jasowang@redhat.com>
+>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>Cc: Michal Hocko <mhocko@kernel.org>
+>Cc: Oscar Salvador <osalvador@suse.de>
+>Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+>Cc: Andrew Morton <akpm@linux-foundation.org>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
+>---
+> drivers/virtio/virtio_mem.c | 156 +++++++++++++++++++++++++++++++++++-
+> 1 file changed, 155 insertions(+), 1 deletion(-)
+>
+>diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>index 94cf44b15cbf..6bcd0acbff32 100644
+>--- a/drivers/virtio/virtio_mem.c
+>+++ b/drivers/virtio/virtio_mem.c
+>@@ -388,6 +388,12 @@ static int virtio_mem_bbm_bb_states_prepare_next_bb(struct virtio_mem *vm)
+> 	     _bb_id++) \
+> 		if (virtio_mem_bbm_get_bb_state(_vm, _bb_id) == _state)
+> 
+>+#define virtio_mem_bbm_for_each_bb_rev(_vm, _bb_id, _state) \
+>+	for (_bb_id = vm->bbm.next_bb_id - 1; \
+>+	     _bb_id >= vm->bbm.first_bb_id && _vm->bbm.bb_count[_state]; \
+>+	     _bb_id--) \
+>+		if (virtio_mem_bbm_get_bb_state(_vm, _bb_id) == _state)
+>+
+> /*
+>  * Set the state of a memory block, taking care of the state counter.
+>  */
+>@@ -685,6 +691,18 @@ static int virtio_mem_sbm_remove_mb(struct virtio_mem *vm, unsigned long mb_id)
+> 	return virtio_mem_remove_memory(vm, addr, size);
+> }
+> 
+>+/*
+>+ * See virtio_mem_remove_memory(): Try to remove all Linux memory blocks covered
+>+ * by the big block.
+>+ */
+>+static int virtio_mem_bbm_remove_bb(struct virtio_mem *vm, unsigned long bb_id)
+>+{
+>+	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
+>+	const uint64_t size = vm->bbm.bb_size;
+>+
+>+	return virtio_mem_remove_memory(vm, addr, size);
+>+}
+>+
+> /*
+>  * Try offlining and removing memory from Linux.
+>  *
+>@@ -731,6 +749,19 @@ static int virtio_mem_sbm_offline_and_remove_mb(struct virtio_mem *vm,
+> 	return virtio_mem_offline_and_remove_memory(vm, addr, size);
+> }
+> 
+>+/*
+>+ * See virtio_mem_offline_and_remove_memory(): Try to offline and remove a
+>+ * all Linux memory blocks covered by the big block.
+>+ */
+>+static int virtio_mem_bbm_offline_and_remove_bb(struct virtio_mem *vm,
+>+						unsigned long bb_id)
+>+{
+>+	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
+>+	const uint64_t size = vm->bbm.bb_size;
+>+
+>+	return virtio_mem_offline_and_remove_memory(vm, addr, size);
+>+}
+>+
+> /*
+>  * Trigger the workqueue so the device can perform its magic.
+>  */
+>@@ -1928,6 +1959,129 @@ static int virtio_mem_sbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
+> 	return rc;
+> }
+> 
+>+/*
+>+ * Try to offline and remove a big block from Linux and unplug it. Will fail
+>+ * with -EBUSY if some memory is busy and cannot get unplugged.
+>+ *
+>+ * Will modify the state of the memory block. Might temporarily drop the
+>+ * hotplug_mutex.
+>+ */
+>+static int virtio_mem_bbm_offline_remove_and_unplug_bb(struct virtio_mem *vm,
+>+						       unsigned long bb_id)
+>+{
+>+	int rc;
+>+
+>+	if (WARN_ON_ONCE(virtio_mem_bbm_get_bb_state(vm, bb_id) !=
+>+			 VIRTIO_MEM_BBM_BB_ADDED))
+>+		return -EINVAL;
+>+
+>+	rc = virtio_mem_bbm_offline_and_remove_bb(vm, bb_id);
+>+	if (rc)
+>+		return rc;
+>+
+>+	rc = virtio_mem_bbm_unplug_bb(vm, bb_id);
+>+	if (rc)
+>+		virtio_mem_bbm_set_bb_state(vm, bb_id,
+>+					    VIRTIO_MEM_BBM_BB_PLUGGED);
+>+	else
+>+		virtio_mem_bbm_set_bb_state(vm, bb_id,
+>+					    VIRTIO_MEM_BBM_BB_UNUSED);
+>+	return rc;
+>+}
+>+
+>+/*
+>+ * Try to remove a big block from Linux and unplug it. Will fail with
+>+ * -EBUSY if some memory is online.
+>+ *
+>+ * Will modify the state of the memory block.
+>+ */
+>+static int virtio_mem_bbm_remove_and_unplug_bb(struct virtio_mem *vm,
+>+					       unsigned long bb_id)
+>+{
+>+	int rc;
+>+
+>+	if (WARN_ON_ONCE(virtio_mem_bbm_get_bb_state(vm, bb_id) !=
+>+			 VIRTIO_MEM_BBM_BB_ADDED))
+>+		return -EINVAL;
+>+
+>+	rc = virtio_mem_bbm_remove_bb(vm, bb_id);
+>+	if (rc)
+>+		return -EBUSY;
+>+
+>+	rc = virtio_mem_bbm_unplug_bb(vm, bb_id);
+>+	if (rc)
+>+		virtio_mem_bbm_set_bb_state(vm, bb_id,
+>+					    VIRTIO_MEM_BBM_BB_PLUGGED);
+>+	else
+>+		virtio_mem_bbm_set_bb_state(vm, bb_id,
+>+					    VIRTIO_MEM_BBM_BB_UNUSED);
+>+	return rc;
+>+}
+>+
+>+/*
+>+ * Test if a big block is completely offline.
+>+ */
+>+static bool virtio_mem_bbm_bb_is_offline(struct virtio_mem *vm,
+>+					 unsigned long bb_id)
+>+{
+>+	const unsigned long start_pfn = PFN_DOWN(virtio_mem_bb_id_to_phys(vm, bb_id));
+>+	const unsigned long nr_pages = PFN_DOWN(vm->bbm.bb_size);
+>+	unsigned long pfn;
+>+
+>+	for (pfn = start_pfn; pfn < start_pfn + nr_pages;
+>+	     pfn += PAGES_PER_SECTION) {
 
-On 2020/10/15 下午11:23, Daniel Vetter wrote:
-> On Wed, Oct 14, 2020 at 09:48:43AM +0800, Kever Yang wrote:
->> Hi Maintainers,
->>
->>      Does this patch ready to merge?
-> Would maybe be good to get some acks from other drivers using this, then
-> Sandy can push to drm-misc-next.
+Can we do the check with memory block granularity?
 
-Thanks for your reply, I can understand more 'acks' will be better, but 
-there is no comments object to this patch
+>+		if (pfn_to_online_page(pfn))
+>+			return false;
+>+	}
+>+
+>+	return true;
+>+}
+>+
+>+static int virtio_mem_bbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
+>+{
+>+	uint64_t nb_bb = diff / vm->bbm.bb_size;
+>+	uint64_t bb_id;
+>+	int rc;
+>+
+>+	if (!nb_bb)
+>+		return 0;
+>+
+>+	/* Try to unplug completely offline big blocks first. */
+>+	virtio_mem_bbm_for_each_bb_rev(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED) {
+>+		cond_resched();
+>+		/*
+>+		 * As we're holding no locks, this check is racy as memory
+>+		 * can get onlined in the meantime - but we'll fail gracefully.
+>+		 */
+>+		if (!virtio_mem_bbm_bb_is_offline(vm, bb_id))
+>+			continue;
+>+		rc = virtio_mem_bbm_remove_and_unplug_bb(vm, bb_id);
+>+		if (rc == -EBUSY)
+>+			continue;
+>+		if (!rc)
+>+			nb_bb--;
+>+		if (rc || !nb_bb)
+>+			return rc;
+>+	}
+>+
+>+	if (!unplug_online)
+>+		return 0;
+>+
+>+	/* Try to unplug any big blocks. */
+>+	virtio_mem_bbm_for_each_bb_rev(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED) {
+>+		cond_resched();
+>+		rc = virtio_mem_bbm_offline_remove_and_unplug_bb(vm, bb_id);
+>+		if (rc == -EBUSY)
+>+			continue;
+>+		if (!rc)
+>+			nb_bb--;
+>+		if (rc || !nb_bb)
+>+			return rc;
+>+	}
+>+
+>+	return nb_bb ? -EBUSY : 0;
+>+}
+>+
+> /*
+>  * Try to unplug the requested amount of memory.
+>  */
+>@@ -1935,7 +2089,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+> {
+> 	if (vm->in_sbm)
+> 		return virtio_mem_sbm_unplug_request(vm, diff);
+>-	return -EBUSY;
+>+	return virtio_mem_bbm_unplug_request(vm, diff);
+> }
+> 
+> /*
+>-- 
+>2.26.2
 
-or any 'NAK' common for more then 3 months, maintainers should move to 
-next step.
-
-
-Thanks,
-
-- Kever
-
-> -Daniel
->> On 2020/7/7 下午7:25, Sandy Huang wrote:
->>> don't mask possible_crtcs if remote-point is disabled.
->>>
->>> Signed-off-by: Sandy Huang <hjc@rock-chips.com>
->>> ---
->>>    drivers/gpu/drm/drm_of.c | 3 +++
->>>    1 file changed, 3 insertions(+)
->>>
->>> diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
->>> index fdb05fbf72a0..565f05f5f11b 100644
->>> --- a/drivers/gpu/drm/drm_of.c
->>> +++ b/drivers/gpu/drm/drm_of.c
->>> @@ -66,6 +66,9 @@ uint32_t drm_of_find_possible_crtcs(struct drm_device *dev,
->>>    	uint32_t possible_crtcs = 0;
->>>    	for_each_endpoint_of_node(port, ep) {
->>> +		if (!of_device_is_available(ep))
->>> +			continue;
->>> +
->>>    		remote_port = of_graph_get_remote_port(ep);
->>>    		if (!remote_port) {
->>>    			of_node_put(ep);
->> Looks good to me.
->>
->>
->> Reviewed-by: Kever Yang <kever.yang@rock-chips.com>
-
-
+-- 
+Wei Yang
+Help you, Help me
