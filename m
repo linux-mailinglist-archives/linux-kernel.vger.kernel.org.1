@@ -2,147 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD5E292784
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 14:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3251292781
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 14:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727224AbgJSMke convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Oct 2020 08:40:34 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2988 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727126AbgJSMkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 08:40:33 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 43F26A2699A4B1467DC1;
-        Mon, 19 Oct 2020 13:40:32 +0100 (IST)
-Received: from localhost (10.52.126.130) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 19 Oct
- 2020 13:40:31 +0100
-Date:   Mon, 19 Oct 2020 13:38:36 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Brice Goglin <Brice.Goglin@inria.fr>
-CC:     <linux-acpi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, <guohanjun@huawei.com>,
-        Will Deacon <will@kernel.org>, <linuxarm@huawei.com>
-Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
-Message-ID: <20201019123836.00004877@Huawei.com>
-In-Reply-To: <942b4d68-8d19-66d8-c84b-d17eba837e9a@inria.fr>
-References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
-        <942b4d68-8d19-66d8-c84b-d17eba837e9a@inria.fr>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1727009AbgJSMjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 08:39:47 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:52750 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726336AbgJSMjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 08:39:47 -0400
+Received: from zn.tnic (p200300ec2f07840035f820c6b6854d62.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:8400:35f8:20c6:b685:4d62])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E824B1EC0494;
+        Mon, 19 Oct 2020 14:39:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603111186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Ap1Rc76hWxQheV4kamlLkzjVJEhQ2FA71JYULFMFfck=;
+        b=bOIH3nBNi6Ro34Rwc9tx6498/XMGzfgSK32m1NyK/0BVl4g+lpcTnOThevGvIPbPXcSGMa
+        A+1H3eWRtIaIFpWB/GuobNRnI4Zrr1infNALqazBlvxUTdfvuOO5t0RyiJETcIPnun5j4J
+        S7+wLYx+LcNQVzPMel1y48h5Mabfc/Q=
+Date:   Mon, 19 Oct 2020 14:39:34 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Serge Ayoun <serge.ayoun@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 08/24] x86/sgx: Initialize metadata for Enclave Page
+ Cache (EPC) sections
+Message-ID: <20201019123934.GA24325@zn.tnic>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-9-jarkko.sakkinen@linux.intel.com>
+ <20201019084558.GA1155569@kapsi.fi>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.52.126.130]
-X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201019084558.GA1155569@kapsi.fi>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Oct 2020 12:00:15 +0200
-Brice Goglin <Brice.Goglin@inria.fr> wrote:
-
-> Le 16/10/2020 à 17:27, Jonathan Cameron a écrit :
-> > Both ACPI and DT provide the ability to describe additional layers of
-> > topology between that of individual cores and higher level constructs
-> > such as the level at which the last level cache is shared.
-> > In ACPI this can be represented in PPTT as a Processor Hierarchy
-> > Node Structure [1] that is the parent of the CPU cores and in turn
-> > has a parent Processor Hierarchy Nodes Structure representing
-> > a higher level of topology.
-> >
-> > For example Kunpeng 920 has clusters of 4 CPUs.  These do not share
-> > any cache resources, but the interconnect topology is such that
-> > the cost to transfer ownership of a cacheline between CPUs within
-> > a cluster is lower than between CPUs in different clusters on the same
-> > die.   Hence, it can make sense to deliberately schedule threads
-> > sharing data to a single cluster.
-> >
-> > This patch simply exposes this information to userspace libraries
-> > like hwloc by providing cluster_cpus and related sysfs attributes.
-> > PoC of HWLOC support at [2].
-> >
-> > Note this patch only handle the ACPI case.
-> >
-> > Special consideration is needed for SMT processors, where it is
-> > necessary to move 2 levels up the hierarchy from the leaf nodes
-> > (thus skipping the processor core level).
-> >
-> > Currently the ID provided is the offset of the Processor
-> > Hierarchy Nodes Structure within PPTT.  Whilst this is unique
-> > it is not terribly elegant so alternative suggestions welcome.
-> >
-> > Note that arm64 / ACPI does not provide any means of identifying
-> > a die level in the topology but that may be unrelate to the cluster
-> > level.
-> >
-> > RFC questions:
-> > 1) Naming
-> > 2) Related to naming, do we want to represent all potential levels,
-> >    or this enough?  On Kunpeng920, the next level up from cluster happens
-> >    to be covered by llc cache sharing, but in theory more than one
-> >    level of cluster description might be needed by some future system.
-> > 3) Do we need DT code in place? I'm not sure any DT based ARM64
-> >    systems would have enough complexity for this to be useful.
-> > 4) Other architectures?  Is this useful on x86 for example?  
+On Mon, Oct 19, 2020 at 11:45:58AM +0300, Jarkko Sakkinen wrote:
+> On Sat, Oct 03, 2020 at 07:50:43AM +0300, Jarkko Sakkinen wrote:
+> > +config INTEL_SGX
 > 
-> 
-> Hello Jonathan
+> Since the directory for this was renamed some iterations ago from
+> arch/x86/kernel/cpu/sgx to intel_sgx given the feedback from Boris,
+> I'm wondering should this also be renamed as X86_SGX?
 
-Hi Brice,
+I don't think it matters. I hardly doubt there will be anything else
+"SGX" besides the Intel one...
 
-> 
-> Intel has CPUID registers to describe "tiles" and "modules" too (not
-> used yet as far as I know). The list of levels could become quite long
-> if any processor ever exposes those. If having multiple cluster levels
-> is possible, maybe it's time to think about introducing some sort of
-> generic levels:
+-- 
+Regards/Gruss,
+    Boris.
 
-I've been wondering what tiles and modules are... Looking back and
-naming over time, I'm going to guess tiles are the closest to the
-particular case I was focusing on here.
-
-> 
-> cluster0_id = your cluster_id
-> cluster0_cpus/cpulist = your cluster_cpus/cpulis
-> cluster0_type = would optionally contain hardware-specific info such as
-> "module" or "tile" on x86
-> cluster_levels = 1
-
-I wondered exactly the same question.  At this point, perhaps we just
-statically introduce an 0 index, but with the assumption we would extend
-that as / when necessary in future.
-
-> 
-> hwloc already does something like this for some "rare" levels such as
-> s390 book/drawers (by the way, thanks a lot for the hwloc PoC, very good
-> job), we call them "Groups" instead of "cluster" above.
-
-Given we definitely have a 'naming' issue here, perhaps group0 etc is a good
-generic choice? 
-
-> 
-> However I don't know if the Linux scheduler would like that. Is it
-> better to have 10+ levels with static names, or a dynamic number of levels?
-
-So far our 'general' experiments with adding clusters into the kernel
-scheduler have been a typical mixed bunch.  Hence the proposal
-to just expose the structure to userspace where we should at least know
-what the workload is.   Hopefully we'll gain more experience with using
-it and use that to drive possible kernel scheduler changes.
-
-> 
-> Brice
-
-Thanks,
-
-Jonathan
-
-
+https://people.kernel.org/tglx/notes-about-netiquette
