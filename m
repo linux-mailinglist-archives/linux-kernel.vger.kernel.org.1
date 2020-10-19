@@ -2,88 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17F329234E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186F3292359
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728324AbgJSIDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 04:03:10 -0400
-Received: from mga09.intel.com ([134.134.136.24]:56640 "EHLO mga09.intel.com"
+        id S1728645AbgJSIEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 04:04:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727349AbgJSIDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 04:03:05 -0400
-IronPort-SDR: Dokl+3vdgHVOGyKr1im+nNomy5q86SXKUTaCOCd7QcpL0D6Oyftj6NQ/BV7Z2wbYHAnEC3DSl3
- tAVEBBiZIM5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="167102145"
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="167102145"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 01:03:04 -0700
-IronPort-SDR: Clpl+gDWvlEyR+nyydLcDPkJjkrbCRKWDeutkXG3vo02PCEv86GksX4dUJGawPvQDsLviB+bZl
- O+UKFX81E5Uw==
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="532533598"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.83]) ([10.238.4.83])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 01:02:59 -0700
-Subject: Re: [perf metricgroup] fcc9c5243c:
- perf-sanity-tests.Parse_and_process_metrics.fail
-To:     Andi Kleen <ak@linux.intel.com>, Ian Rogers <irogers@google.com>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linuxarm@huawei.com, LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        zhangshaokun@hisilicon.com, James Clark <james.clark@arm.com>,
-        linux-imx@nxp.com, 0day robot <lkp@intel.com>, lkp@lists.01.org
-References: <1602152121-240367-10-git-send-email-john.garry@huawei.com>
- <20201018085031.GK11647@shao2-debian>
- <CAP-5=fWg4W_fpu-uTZkh-ZoL_7nvqU4F_2LqQgKFvBkfn174HQ@mail.gmail.com>
- <20201019015225.GI466880@tassilo.jf.intel.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <0b84ddc4-ddba-34c2-0996-0d83c7008a6f@linux.intel.com>
-Date:   Mon, 19 Oct 2020 16:02:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1727349AbgJSIEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 04:04:12 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BBF92224D;
+        Mon, 19 Oct 2020 08:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603094651;
+        bh=7fgajnOQSM7B/+cKJc84EGHLV3zHY5ZxYix7uHpO6O4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hw/kPg7Xl3a0wPXfyoSA+NkMy8bC8FTxoKFyYm+YUeJJL3Np4/2DDpEE+fl3JjZ/3
+         8x90mpPWvGYPfGV7+UYl5pfqG2TbWaIh3ABZDouKG9K8iE1QxgdVhDWJf58tVjvpUu
+         ts1o6jvLSm6KzgITZCJQeAULiyNu2/Dun5sv53gs=
+Received: by pali.im (Postfix)
+        id 17853B70; Mon, 19 Oct 2020 10:04:09 +0200 (CEST)
+Date:   Mon, 19 Oct 2020 10:04:08 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andre Heider <a.heider@gmail.com>,
+        =?utf-8?Q?G=C3=A9rald?= Kerma <gerald@gk2.net>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Add support for LED2
+Message-ID: <20201019080408.iv7vmj63cgt2i6vg@pali>
+References: <20201006124455.16617-1-pali@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201019015225.GI466880@tassilo.jf.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201006124455.16617-1-pali@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello! Gregory, I would like to remind you following patch.
 
+Andre, if you have a time, could you test it too?
 
-On 10/19/2020 9:52 AM, Andi Kleen wrote:
->> I believe this is a Skylake and there is a known bug in the Skylake
->> metric DRAM_Parallel_Reads as described here:
->> https://lore.kernel.org/lkml/CAP-5=fXejVaQa9qfW66cY77qB962+jbe8tT5bsLoOOcFmODnWQ@mail.gmail.com/
->> Fixing the bug needs more knowledge than what is available in manuals.
->> Hopefully Intel can take a look.
+On Tuesday 06 October 2020 14:44:55 Pali Rohár wrote:
+> LED2 is connected to MPP1_2 pin. It is working only on V7 boards.
+> V5 boards have hw bug which cause that LED2 is non-working.
 > 
-> Oh I missed the original mail for some reason.  Yes it should be cmask instead of thresh
-> for client.  I think thresh is used on the server uncore only, not on the client.
+> So enable LED2 only for Espressobin V7 boards.
 > 
-> Jin Yao, can you send a patch please?
+> Note that LED1 is connected to LED_WLAN# pin on miniPCIe card and LED3 to
+> power supply. Therefore on Espressobin board only LED2 can be controlled
+> directly from the host. LED1 is possible to control via WiFi card inserted
+> in miniPCIe slot if driver for particular card supports it.
 > 
-> -Andi
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> Tested-by: Gérald Kerma <gerald@gk2.net>
 > 
-
-Yes, the DRAM_Parallel_Reads works on server but it's failed on client.
-
-I will post a patch to fix that.
-
-Thanks
-Jin Yao
-
+> ---
+> 
+> Previous version of this patch was sent by Uwe in March 2018, but it did
+> not work on any tested V5 board. Now we know it was due to V5 HW bug.
+> 
+> https://lore.kernel.org/linux-arm-kernel/20180321105005.18426-3-u.kleine-koenig@pengutronix.de/
+> ---
+>  .../dts/marvell/armada-3720-espressobin-v7-emmc.dts |  4 ++++
+>  .../boot/dts/marvell/armada-3720-espressobin-v7.dts |  4 ++++
+>  .../boot/dts/marvell/armada-3720-espressobin.dtsi   | 13 +++++++++++++
+>  3 files changed, 21 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> index 4775a7eda481..75401eab4d42 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> @@ -39,3 +39,7 @@
+>  &sdhci0 {
+>  	status = "okay";
+>  };
+> +
+> +&led2 {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> index c47a93978386..48a7f50fb427 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> @@ -34,3 +34,7 @@
+>  &switch0port3 {
+>  	label = "wan";
+>  };
+> +
+> +&led2 {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+> index 8a1c678bea5f..daffe136c523 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+> @@ -41,6 +41,19 @@
+>  			  3300000 0x0>;
+>  		enable-active-high;
+>  	};
+> +
+> +	led2: gpio-led2 {
+> +		/* led2 is working only on v7 board */
+> +		status = "disabled";
+> +
+> +		compatible = "gpio-leds";
+> +
+> +		led2 {
+> +			label = "led2";
+> +			gpios = <&gpionb 2 GPIO_ACTIVE_LOW>;
+> +			default-state = "off";
+> +		};
+> +	};
+>  };
+>  
+>  /* J9 */
+> -- 
+> 2.20.1
+> 
