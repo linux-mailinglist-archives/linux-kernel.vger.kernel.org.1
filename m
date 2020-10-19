@@ -2,100 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1595F292962
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B13292964
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729517AbgJSObc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
+        id S1729493AbgJSOcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729493AbgJSObb (ORCPT
+        with ESMTP id S1728877AbgJSOcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:31:31 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D964C0613CE;
-        Mon, 19 Oct 2020 07:31:30 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id u8so14222334ejg.1;
-        Mon, 19 Oct 2020 07:31:29 -0700 (PDT)
+        Mon, 19 Oct 2020 10:32:21 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19B7C0613CE;
+        Mon, 19 Oct 2020 07:32:19 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id w7so2830251oow.7;
+        Mon, 19 Oct 2020 07:32:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MepAw8QikH8iyL9uAquf5YG3tjzob/KKJdUH1sVOBVk=;
-        b=k9oWyitnMt++4zrFpLN8CCED218B+biNowtUEWQ/yHYYk6tbQmhfYUreCjx8Y/BDdg
-         mpadDWoTL5XY0u4obiWSO0GvJVGjC08Dp7QBm0WQGzcsu5r1LENTEt+91Ntw2X+BoCyG
-         8x0jERqmhwrFQatevK1DilPRa2WpDHEtDDMkjzDNMvdCmCtfHB+vLSxssGFFndGQTw/T
-         wIaUaIdl/X6xA9IzBGW7Y7lGOF7TBX/UljA/Ny/xri7uR7+SAuxZKCPApYVDyAtn1Dho
-         zEb7NZtvClyHS8maqi9pI+UAInbnhzzl53XTMN3Vj768HY4NQ//Rgt+/dXk8dO+5PgPA
-         zMyA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zPS3FVsTO33207hcva+hc27ibn1TTf2qpiS8Pe5UWu8=;
+        b=Vho/La487lc2tSDXs9azUXYErbs/jWmRBgfHSfPpodJnmqdhTy8lG4Gn99GIUDijAB
+         nInscWRHrO72LJZJOUfFEggpCJzLOQD5cnLwQyZkK670ykz3+RLp4tlmyKVMBWqGiSA/
+         AuxuOtznvZuJu7t4IvAaBvHgGK6WF7PDs/bt4Wmw29WORJ+7TK8nKXm7Y5M9mk5S+GpU
+         brxh6Iom73s7ZRojGX4TvzAwsM1qQrUvB0Yy4d2ONGnHpIyTJPkAtrA9e7T6S8t5VkN0
+         pyadl7Stg4hqQJz2slAkxRaaKvyym1FsJ3+6on7ioKRxLVke2Hp4tUX8H/X59pxQyNb+
+         AHOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MepAw8QikH8iyL9uAquf5YG3tjzob/KKJdUH1sVOBVk=;
-        b=hTlc92jIj8qGKvHuVLDz32z82Ku9Ug05LzVy4tteFbGBmEsb1zVpmNpi8GzEkTFHP7
-         qsNYiWL6cGHNkACmhGAfhErUskMC1kLCNIAnplr7BrYVS8GC5YVTNa+0StP8oUxcyWbo
-         Ufv6A/xTPe7YgKRjs36Lc7woqrcJ+RC/3zlHI1nMDdmMHwuy4B8vOKqAhj8A5NeGcTCQ
-         6Acr/o8Qxnd7wrywi91ZB3s0UuNSYWdoHESEku96g9i71NxLzjxBN/l1ifbCVue5/OGs
-         rDWYpYDquUpdPBjmLJF8lvtl7OoiYGI3rEcKXuWI4jcxH5G71tWgigPW6eDUbIDEsf8U
-         pbJQ==
-X-Gm-Message-State: AOAM533oJ5T/7/XvyOp++AYnpI4qf4zTo/3U3ae3kjA901SOkXhccd62
-        IEmLcjv0euF0v3bl5BmxIOc=
-X-Google-Smtp-Source: ABdhPJyEYwW4FFKts3BZU6uk4cE13TWT4ciblOSS+iLcXuP/eCaQaDXJIweK/eft7Cpo3P5KX3DWaQ==
-X-Received: by 2002:a17:906:1152:: with SMTP id i18mr159113eja.101.1603117888789;
-        Mon, 19 Oct 2020 07:31:28 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id k11sm234857eji.72.2020.10.19.07.31.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 07:31:28 -0700 (PDT)
-Subject: Re: [PATCH 1/5] dt-bindings: pwm: pwm-mediatek: Add documentation for
- MT8183 SoC
-To:     Fabien Parent <fparent@baylibre.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org
-Cc:     robh+dt@kernel.org, lee.jones@linaro.org,
-        u.kleine-koenig@pengutronix.de, thierry.reding@gmail.com
-References: <20201019140705.1518822-1-fparent@baylibre.com>
- <20201019140705.1518822-2-fparent@baylibre.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <95cbfef2-ef5e-1743-58d4-545ce7d29227@gmail.com>
-Date:   Mon, 19 Oct 2020 16:31:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zPS3FVsTO33207hcva+hc27ibn1TTf2qpiS8Pe5UWu8=;
+        b=DQZfjsUG4w+yqmX60qjIDOdKhpt/q4OH0Q1wXrSK/DklICyj3DL9e1EiqPx2ov9YOJ
+         Oxup5pl077jO5ZS5gfMKnwTYb96G7nsz+HM0u3yi1XiIXYrjsC5rZbJ3uwFOLooHpIVb
+         qtoSAiAvZIEMD0pRtTVEdwpAFg9yAROJdhRUTrdKjH0tMWEKDTDWYtSH5xggGzjx7dZL
+         JuhUh6G2V5+y3izE7AYGuuPEr6xSrs7XnYrd2ijdjO172nXdIhp7KsGftc1N5mX/bsM9
+         5NCTyZVXjkkTUNHnAy3IxWy1G4FcJSUM4meTwn2nQ30TANv2T8wrKRjuAFBdPqbJD52U
+         UpFQ==
+X-Gm-Message-State: AOAM533Jphdhwq11L0xlwoARQlZnZmRts3CgHO547EQhnEEzEVwoMBGb
+        1OG1AbMMEr6O1ycNd+t7JSUARw6dpTKCEcvuK3o=
+X-Google-Smtp-Source: ABdhPJz2DdA22E5xFATZ1Fdf4AXs1zeJnUuilEEczn+rPrHYY5PzZT1rtAVar9pD1rgvgWUs9hQXdMI2oDXBF4iZBPE=
+X-Received: by 2002:a4a:c3ca:: with SMTP id e10mr181026ooq.41.1603117939077;
+ Mon, 19 Oct 2020 07:32:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201019140705.1518822-2-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201016055235.440159-1-allen.lkml@gmail.com> <20201016062027.GB569795@kroah.com>
+ <CAOMdWSJDJ-uXpis1WbG3LnOG7bMiif5Q4Maafv_a=55Y_qypfQ@mail.gmail.com>
+ <20201019131613.GA3254417@kroah.com> <CAOMdWS+F=cCK=Rgy-0xk4_mqUFMn1PQBWR8u3JwqTP2AVifxsA@mail.gmail.com>
+ <20201019134729.GA3259788@kroah.com>
+In-Reply-To: <20201019134729.GA3259788@kroah.com>
+From:   Allen <allen.lkml@gmail.com>
+Date:   Mon, 19 Oct 2020 20:02:07 +0530
+Message-ID: <CAOMdWSLs0mdzcjmyBtbAhTxr3ETOSC_4V7v5XPWGRnb5BJUJ+w@mail.gmail.com>
+Subject: Re: [RFC] PCI: allow sysfs file owner to read the config space with CAP_SYS_RAWIO
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        ast@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Allen Pais <allen.pais@lkml.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> > > > > >  Access to pci config space is explictly checked with CAP_SYS_ADMIN
+> > > > > > in order to read configuration space past the frist 64B.
+> > > > > >
+> > > > > >  Since the path is only for reading, could we use CAP_SYS_RAWIO?
+> > > > >
+> > > > > Why?  What needs this reduced capability?
+> > > >
+> > > > Thanks for the review.
+> > > >
+> > > > We need read access to /sys/bus/pci/devices/,  We need write access to config,
+> > > > remove, rescan & enable files under the device directory for each PCIe
+> > > > functions & the downstream PCIe port.
+> > > >
+> > > > We need r/w access to sysfs to unbind and rebind the root complex.
+> > >
+> > > That didn't answer my question at all.
+> >
+> > Sorry about that, breaking it down:
+> >
+> > When the machine first boots, the VFIO device bindings under /dev/vfio
+> > are not present.
+> >
+> > root@localhost:/tmp# ls -l /dev/vfio/
+> > total 0
+> > crw-rw-rw-. 1 root root 10, 196 Jan  5 01:47 vfio
+> >
+> > We have an agent which needs to run the following commands (We get
+> > access denied here and need permissions to do this).
+> > echo -n xxxx yyyy > /sys/module/vfio_pci/drivers/pci:vfio-pci/new_id
+> > echo -n xxxx yyyy > /sys/module/vfio_pci/drivers/pci:vfio-pci/new_id
+> >
+> > And we want to avoid handing CAP_SYS_ADMIN here. Which is why the
+> > thought about CAP_SYS_RAWIO.
+>
+> But that is not what you were asking this patch to do at all.  So why
+> bring it up?
+>
+> new_id is NOT for "raw io" control, that should be only for admin
+> priviliges.
+
+Okay. Thanks for the explanation.
+>
+> And just because the vfio driver "abuses" this
+> traditionally-debug-functionality doesn't mean you get to abuse the
+> permission levels either.
+
+ This makes sense now. I will drop the patch.
+Thank you very much for the review.
+
+>
+> > > Why can't you have the process that wants to do all of the above, have
+> > > admin rights as well?  Doing all of that is _very_ low-level and can
+> > > cause all sorts of horrible things to happen to your machine, and is not
+> > > really "raw io" in the traditional sense at all, right?
+> >
+> >
+> > If the above approach is going to cause the system to do horrible things,
+> > then I'll drop the idea.
+>
+> Of course it can cause the system to do horrible things, try it yourself
+> and see!
+>
+> greg k-h
 
 
-On 19/10/2020 16:07, Fabien Parent wrote:
-> Add binding documentation for the MT8183 SoC.
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
-> ---
->   Documentation/devicetree/bindings/pwm/pwm-mediatek.txt | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pwm/pwm-mediatek.txt b/Documentation/devicetree/bindings/pwm/pwm-mediatek.txt
-> index 29adff59c479..25ed214473d7 100644
-> --- a/Documentation/devicetree/bindings/pwm/pwm-mediatek.txt
-> +++ b/Documentation/devicetree/bindings/pwm/pwm-mediatek.txt
-> @@ -7,6 +7,7 @@ Required properties:
->      - "mediatek,mt7623-pwm": found on mt7623 SoC.
->      - "mediatek,mt7628-pwm": found on mt7628 SoC.
->      - "mediatek,mt7629-pwm": found on mt7629 SoC.
-> +   - "mediatek,mt8183-pwm": found on mt8183 SoC.
->      - "mediatek,mt8516-pwm": found on mt8516 SoC.
->    - reg: physical base address and length of the controller's registers.
->    - #pwm-cells: must be 2. See pwm.yaml in this directory for a description of
-> 
+-- 
+       - Allen
