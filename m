@@ -2,171 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12C62929EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D11292A03
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729815AbgJSPA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:00:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21330 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729715AbgJSPA4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:00:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603119654;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eeEwkWd2inwelOxnZFWrV6qJ4loEm7oC47tsgU5zrNE=;
-        b=KzK3Y4PrPBqzVLK5EXFDXijQAaMHftHhFoZ7WePp24M9Rxe1w4kRDnyEKxNUegT0Lp7rcq
-        Jp56FcRiRyeTkmLW6zqdLlpwNm0BOi8aG2bPjPHI+87rKedwHw5KgHPjUfiywbG6vAz0v3
-        wajCgFHxNV774WTwCJdJd3FvAfDX/io=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-MPWqHqjbOOW5I_js7_UaFA-1; Mon, 19 Oct 2020 11:00:53 -0400
-X-MC-Unique: MPWqHqjbOOW5I_js7_UaFA-1
-Received: by mail-wm1-f70.google.com with SMTP id z7so37442wme.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:00:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eeEwkWd2inwelOxnZFWrV6qJ4loEm7oC47tsgU5zrNE=;
-        b=uJM07U02OtpBoWYaghPC951G7LQZMsdPi8O7pnjMYJ49PJN8X18LZmZVzv4XrFHZ5j
-         z4GphffadU8zq304SYQUOaMt0BfXkr/FbD3ca85ZTBR8fuqmhU6LWsCtLeTuJxKY/vLY
-         bhuOfF8RUHDWIgFwD6eUOjKKU06lyusPq9MtqSkAb2zTM+qlycBOjpmI6JSag0Ho6Hgl
-         GtHso/fY0xNiI/YylzozLNhjDTirWloXQy1YtjZGQ69sU8+3U29w8DnT9DYNXyxe6nlv
-         qccJt0GikKmR01bjGwxTQ/rdbFW5CfDIGrUB2RnzKoA+o45DSIrM+wH32Yz/PTaaN9Os
-         HQDQ==
-X-Gm-Message-State: AOAM531rAk2rL9rKm1BriA8C8e1MYykDK8uMq9asbVvHmS+R6zsBie6u
-        oe5jRVEHR05Ggl5/O0p3+fYLFjsJB/Rwt8rBM8EDVWNyHqhbZ1wqzfIqIqW4gpQxpGiIiJgiXyy
-        t48ZCGAOlQJWN9c3TGb7LbMoQ
-X-Received: by 2002:a7b:c081:: with SMTP id r1mr17940597wmh.158.1603119650819;
-        Mon, 19 Oct 2020 08:00:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx1K7foO6zAsERSnzDbqpvWg8Yzks+2b30SB3/GCrweUhcJIelqhNOTssKhNwAEMU36/iuvgw==
-X-Received: by 2002:a7b:c081:: with SMTP id r1mr17940572wmh.158.1603119650551;
-        Mon, 19 Oct 2020 08:00:50 -0700 (PDT)
-Received: from redhat.com (bzq-79-176-118-93.red.bezeqint.net. [79.176.118.93])
-        by smtp.gmail.com with ESMTPSA id e15sm8898wro.13.2020.10.19.08.00.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 08:00:49 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 11:00:45 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Jann Horn <jannh@google.com>, Willy Tarreau <w@1wt.eu>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "Catangiu, Adrian Costin" <acatan@amazon.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:VIRTIO GPU DRIVER" 
-        <virtualization@lists.linux-foundation.org>,
-        "Graf (AWS), Alexander" <graf@amazon.de>,
-        "Woodhouse, David" <dwmw@amazon.co.uk>, bonzini@gnu.org,
-        "Singh, Balbir" <sblbir@amazon.com>,
-        "Weiss, Radu" <raduweis@amazon.com>, oridgar@gmail.com,
-        ghammer@redhat.com, Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Qemu Developers <qemu-devel@nongnu.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
-Message-ID: <20201019105118-mutt-send-email-mst@kernel.org>
-References: <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
- <20201017053712.GA14105@1wt.eu>
- <CAG48ez1h0ynXfGap_KiHiPVTfcB8NBQJ-2dnj08ZNfuhrW0jWA@mail.gmail.com>
- <20201017064442.GA14117@1wt.eu>
- <CAG48ez3pXLC+eqAXDCniM0a+5yP2XJODDkZqiUTZUOttCE_LbA@mail.gmail.com>
- <CAHmME9qHGSF8w3DoyCP+ud_N0MAJ5_8zsUWx=rxQB1mFnGcu9w@mail.gmail.com>
- <20201018114625-mutt-send-email-mst@kernel.org>
- <CALCETrXBJZnKXo2QLKVWSgAhSMdwEVHeut6pRw4P92CR_5A-fQ@mail.gmail.com>
- <20201018115524-mutt-send-email-mst@kernel.org>
- <CALCETrUeRAhmEFR6EFXz8HzDYd2doZ2TMyZmu1pU_-yAPA6KDw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrUeRAhmEFR6EFXz8HzDYd2doZ2TMyZmu1pU_-yAPA6KDw@mail.gmail.com>
+        id S1729852AbgJSPGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:06:32 -0400
+Received: from mga06.intel.com ([134.134.136.31]:20958 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729223AbgJSPGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 11:06:31 -0400
+IronPort-SDR: OlI+/wDvaIeQpwE4N+jkxNm+3YEEdO3hTFe7fQ52gQ+j5iiOLHRpSvMLUDXHVZkG6yhxZSU6MM
+ NQtD17zqdOag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="228683634"
+X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
+   d="scan'208";a="228683634"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 08:06:31 -0700
+IronPort-SDR: oMJ87bZUoO7EtLwDd2ybLq4I4U7+E++/GvItZx2NEe+1l45QvK7gWao8FDXDNZb6FnjfpmOBM2
+ /y7fZHRi2U5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
+   d="scan'208";a="465559318"
+Received: from ssp-icl-u-210.jf.intel.com ([10.54.55.52])
+  by orsmga004.jf.intel.com with ESMTP; 19 Oct 2020 08:06:30 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH] perf/x86/intel: Add event constraint for CYCLE_ACTIVITY.STALLS_MEM_ANY
+Date:   Mon, 19 Oct 2020 08:01:58 -0700
+Message-Id: <20201019150158.31635-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 09:14:00AM -0700, Andy Lutomirski wrote:
-> On Sun, Oct 18, 2020 at 8:59 AM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Sun, Oct 18, 2020 at 08:54:36AM -0700, Andy Lutomirski wrote:
-> > > On Sun, Oct 18, 2020 at 8:52 AM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > >
-> > > > On Sat, Oct 17, 2020 at 03:24:08PM +0200, Jason A. Donenfeld wrote:
-> > > > > 4c. The guest kernel maintains an array of physical addresses that are
-> > > > > MADV_WIPEONFORK. The hypervisor knows about this array and its
-> > > > > location through whatever protocol, and before resuming a
-> > > > > moved/snapshotted/duplicated VM, it takes the responsibility for
-> > > > > memzeroing this memory. The huge pro here would be that this
-> > > > > eliminates all races, and reduces complexity quite a bit, because the
-> > > > > hypervisor can perfectly synchronize its bringup (and SMP bringup)
-> > > > > with this, and it can even optimize things like on-disk memory
-> > > > > snapshots to simply not write out those pages to disk.
-> > > > >
-> > > > > A 4c-like approach seems like it'd be a lot of bang for the buck -- we
-> > > > > reuse the existing mechanism (MADV_WIPEONFORK), so there's no new
-> > > > > userspace API to deal with, and it'd be race free, and eliminate a lot
-> > > > > of kernel complexity.
-> > > >
-> > > > Clearly this has a chance to break applications, right?
-> > > > If there's an app that uses this as a non-system-calls way
-> > > > to find out whether there was a fork, it will break
-> > > > when wipe triggers without a fork ...
-> > > > For example, imagine:
-> > > >
-> > > > MADV_WIPEONFORK
-> > > > copy secret data to MADV_DONTFORK
-> > > > fork
-> > > >
-> > > >
-> > > > used to work, with this change it gets 0s instead of the secret data.
-> > > >
-> > > >
-> > > > I am also not sure it's wise to expose each guest process
-> > > > to the hypervisor like this. E.g. each process needs a
-> > > > guest physical address of its own then. This is a finite resource.
-> > > >
-> > > >
-> > > > The mmap interface proposed here is somewhat baroque, but it is
-> > > > certainly simple to implement ...
-> > >
-> > > Wipe of fork/vmgenid/whatever could end up being much more problematic
-> > > than it naively appears -- it could be wiped in the middle of a read.
-> > > Either the API needs to handle this cleanly, or we need something more
-> > > aggressive like signal-on-fork.
-> > >
-> > > --Andy
-> >
-> >
-> > Right, it's not on fork, it's actually when process is snapshotted.
-> >
-> > If we assume it's CRIU we care about, then I
-> > wonder what's wrong with something like
-> > MADV_CHANGEONPTRACE_SEIZE
-> > and basically say it's X bytes which change the value...
-> 
-> I feel like we may be approaching this from the wrong end.  Rather
-> than saying "what data structure can the kernel expose that might
-> plausibly be useful", how about we try identifying some specific
-> userspace needs and see what a good solution could look like.  I can
-> identify two major cryptographic use cases:
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Well, I'm aware of a non-cryptographic use-case:
-https://bugzilla.redhat.com/show_bug.cgi?id=1118834
+The event CYCLE_ACTIVITY.STALLS_MEM_ANY (0x14a3) should be available on
+all 8 GP counters on ICL, but it's only scheduled on the first four
+counters due to the current ICL constraint table.
 
-this seems to just ask for the guest to have a way to detect that
-a VM cloning triggered.
+Add a line for the CYCLE_ACTIVITY.STALLS_MEM_ANY event in the ICL
+constraint table.
+Correct the comments for the CYCLE_ACTIVITY.CYCLES_MEM_ANY event.
 
+Reported-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ arch/x86/events/intel/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index c72e4904e056..b31ebb5f7fc4 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -257,7 +257,8 @@ static struct event_constraint intel_icl_event_constraints[] = {
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0x48, 0x54, 0xf),
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0x60, 0x8b, 0xf),
+ 	INTEL_UEVENT_CONSTRAINT(0x04a3, 0xff),  /* CYCLE_ACTIVITY.STALLS_TOTAL */
+-	INTEL_UEVENT_CONSTRAINT(0x10a3, 0xff),  /* CYCLE_ACTIVITY.STALLS_MEM_ANY */
++	INTEL_UEVENT_CONSTRAINT(0x10a3, 0xff),  /* CYCLE_ACTIVITY.CYCLES_MEM_ANY */
++	INTEL_UEVENT_CONSTRAINT(0x14a3, 0xff),  /* CYCLE_ACTIVITY.STALLS_MEM_ANY */
+ 	INTEL_EVENT_CONSTRAINT(0xa3, 0xf),      /* CYCLE_ACTIVITY.* */
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0xa8, 0xb0, 0xf),
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0xb7, 0xbd, 0xf),
 -- 
-MST
+2.17.1
 
