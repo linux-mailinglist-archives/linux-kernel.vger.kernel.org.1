@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2652925A3
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0472925A2
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgJSKVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:21:38 -0400
-Received: from mailout05.rmx.de ([94.199.90.90]:43232 "EHLO mailout05.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726325AbgJSKVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726419AbgJSKVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 19 Oct 2020 06:21:36 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout05.rmx.de (Postfix) with ESMTPS id 4CFCTm6QzMz9yVq;
-        Mon, 19 Oct 2020 12:21:32 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4CFCTQ21kpz2xqM;
-        Mon, 19 Oct 2020 12:21:14 +0200 (CEST)
-Received: from n95hx1g2.localnet (192.168.54.91) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Mon, 19 Oct
- 2020 12:21:07 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-CC:     Peter Zijlstra <peterz@infradead.org>, <tglx@linutronix.de>,
-        <linux-rt-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: sched: system doesn't boot since  "sched: Add new migrate_disable() implementation"
-Date:   Mon, 19 Oct 2020 12:21:06 +0200
-Message-ID: <1654655.1jrfHnk7pZ@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:36097 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbgJSKVf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 06:21:35 -0400
+Received: by mail-wm1-f67.google.com with SMTP id e2so12229187wme.1;
+        Mon, 19 Oct 2020 03:21:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4Go03qU3Z4n7OqYXcuBkScogMQ8cBWutaeJI9eO7tzI=;
+        b=PXwiZrME3jUKfSxbvMZeK5E5YCTL7XpzkpGbK2MraPfKRLeFy/WatRgGE41wa60c7t
+         3j70nTCiBtSAtXwmtVfGReUTMk/iKm1TlxW8hXeziWe4U0deeJ+AOdDmpxKpsGeLk1Za
+         mnwt2z+iwc6eN9R4CKij6Ev4gTxY8drL1L1a697LuIRkRtkG/tLyXsvsOxMIueQjuXPw
+         82ePqd+gG9THxkEIumW1kRFVcWoIIGYEay+FaWgHA16GAEGHNNCW2NtfxxnK3CYtueaA
+         NvOyvDV0Po3i4gVIfXpJ6QI4YMxAQ25EjCzQLCrByVuYxE4A6ngRrdttIaQ4sdieTe/H
+         QpUw==
+X-Gm-Message-State: AOAM531SNWzplPkSr6yZ+CEefX9IdIt3QWjmoLIZUYm0JQIiJMPjOMn5
+        +eXTemt17JanxiUK7QIJPS8=
+X-Google-Smtp-Source: ABdhPJwEA4cu+ZUIHRN3FLZxaaKnCKY1tJx3Afb7XhAayPJfnYBwmsYRRTiSOs3aVt1G3TGXsPgKGg==
+X-Received: by 2002:a7b:c7c9:: with SMTP id z9mr17572921wmk.91.1603102893247;
+        Mon, 19 Oct 2020 03:21:33 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id u5sm18902794wru.63.2020.10.19.03.21.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 03:21:32 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 12:21:30 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 5/6] pci: dwc: pci-exynos: rework the driver to support
+ Exynos5433 variant
+Message-ID: <20201019102130.GE51073@kozik-lap>
+References: <20201019094715.15343-1-m.szyprowski@samsung.com>
+ <CGME20201019094740eucas1p2cd873b29bc19708f9a712d955cba62fe@eucas1p2.samsung.com>
+ <20201019094715.15343-6-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.91]
-X-RMX-ID: 20201019-122118-4CFCTQ21kpz2xqM-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201019094715.15343-6-m.szyprowski@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have problems with the latest 5.9-rt releases on i.MX6ULL (!CONFIG_SMP):
+On Mon, Oct 19, 2020 at 11:47:14AM +0200, Marek Szyprowski wrote:
+> From: Jaehoon Chung <jh80.chung@samsung.com>
+> 
+> Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
+> dts: exynos: Remove Exynos5440"). Rework this driver to support DWC PCIe
+> variant found in the Exynos5433 SoCs.
+> 
+> The main difference in Exynos5433 variant is lack of the MSI support
+> (the MSI interrupt is not even routed to the CPU).
+> 
+> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
+> [mszyprow: reworked the driver to support only Exynos5433 variant,
+> 	   simplified code, rebased onto current kernel code, added
+> 	   regulator support, converted to the regular platform driver,
+> 	   removed MSI related code, rewrote commit message]
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>  drivers/pci/controller/dwc/Kconfig      |   3 +-
+>  drivers/pci/controller/dwc/pci-exynos.c | 358 ++++++++++--------------
+>  drivers/pci/quirks.c                    |   1 +
+>  3 files changed, 145 insertions(+), 217 deletions(-)
+> 
 
--rc8-rt13 works fine
--rc8-rt14 doesn't compile (due to CONFIG_FRACE, already fixed in -rt16)
--rt15 dito.
--rt16 compiles, but doesn't boot (no console output at all)
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-After reverting (on -rt16)
-
-de1c0755e6f9 ("tracing: fix compile failure on RT with PREEMPT_RT off")
-30763ce6c15d ("sched: Add new migrate_disable() implementation")
-
-the system boots fine again.
-
-Tracking the problem down showed that calls to wait_for_completion_timeout() 
-(e.g. during imx_rngc_probe) will never return. The IRQ routine which should 
-fire the completion is not executed, and the call doesn't return after the 
-timeout. The IRQ flag on the ARM is not set before entering 
-wait_for_completion_timeout(), so CPU interrupts seem to be on.
-
-When building with CONFIG_SMP, the system boots fine.
-
-Any hints?
-
-Best regards
-Christian
-
-
-
+Best regards,
+Krzysztof
