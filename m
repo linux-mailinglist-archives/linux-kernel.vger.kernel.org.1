@@ -2,174 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C372923EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0FA2923EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbgJSIu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 04:50:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45141 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728421AbgJSIu4 (ORCPT
+        id S1729595AbgJSIvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 04:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729578AbgJSIvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 04:50:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603097454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W+GLhGk+DGr7aqMMN9qogQIvYXULDe5V4KCY/zVX1ro=;
-        b=USxGFiro/JXM7mP88twPYYkPWmNHY4Sx/Bi3JP1v5H5dey/eKYccbBg9wmnhGj5qYgfpA9
-        jZBkK37P21phfZOPXYHvwx6bHQ6hsR7BH8atTmGztmvhuYdQM5qMZ2Jgw8sK8r3SXYvfof
-        m3/XeQmt8Spm4LMsMawjqHhrTmsXgRE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-86-zf7Z9wQlPKyxDxftXp6dLA-1; Mon, 19 Oct 2020 04:50:49 -0400
-X-MC-Unique: zf7Z9wQlPKyxDxftXp6dLA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F9F310A0B83;
-        Mon, 19 Oct 2020 08:50:48 +0000 (UTC)
-Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C8A7B50B44;
-        Mon, 19 Oct 2020 08:50:41 +0000 (UTC)
-Subject: Re: [PATCH v1 29/29] virtio-mem: Big Block Mode (BBM) - safe memory
- hotunplug
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-References: <20201012125323.17509-1-david@redhat.com>
- <20201012125323.17509-30-david@redhat.com>
- <20201019075406.GE54484@L-31X9LVDL-1304.local>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <e7f7d154-a1e3-0a89-743e-69f51c0e06fc@redhat.com>
-Date:   Mon, 19 Oct 2020 10:50:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 19 Oct 2020 04:51:05 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B427AC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 01:51:05 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id l16so9574233ilt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 01:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4ZHXXo/zRDSa5W/wDcmU0oac1TbitdWk5wxigpAEozI=;
+        b=rHd0eRUjtIvPakMZjsqHfMqY8hnKX470Uqg8DV6DxPOX7fxcSKyV2cVfJjwlSQfn7w
+         CWw9L2gTmwFUNC81J5lHxlbLifS4ifsUZqvKTObScRmj9YV+v5WNAGaVIUjDQEB8DOGG
+         fGh+76EMLWywluZ0Hxc3gZinaA/o0EGmy/uEZP2JhuH9+Zutr6p097A3KwqgUyjkDDpG
+         WN55t/wxpsJsqjPMi2YP/jop9XB5GmYknPZ7GhdxJWJ4xjAI7ApA8pPiLttuo5YPc0tH
+         PAQwCazSvUFeHQawB/awhMbyvQmtuD7BzqDaPkYNAjbkIGqC+Jq+e7JPOP1mCxoo54lS
+         KEwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4ZHXXo/zRDSa5W/wDcmU0oac1TbitdWk5wxigpAEozI=;
+        b=Uk10fmT4v3vi9CYiP5JXoxpYoE/eh/09ZlNttKvwvwMHz2QFRbEMCGTGbtYp1uIJQn
+         bRKFtz5uUYotHFIcaSKA5gy8hrKaf9kDZTdXyMdBxmdiNFad6rzbNDyo100bo5y4i6IH
+         /mSSvRdI67b0NGHKn50NxOujMjvZ8CTvQkmHFRh8n8E4RaTUx+/3ir5u/u+by7DLQs23
+         kGLKXXXEeAM2hR0jRrcJto+geJp0lhR6NlY7YpmFGKgaUUA3iD0oX5hEesAD8ek6mpPG
+         fd3gT05F5z8ya1rwON6TQ9eQPns7yy7LYOq6imx5Rs+WV1Zsu4OI1qy/4/NVz7tExwK8
+         +iLA==
+X-Gm-Message-State: AOAM531r1vyQ+FmxbGDsBD6/4sy6IJORhLmi0xOeiqgqHzMaT4FrVJ96
+        4HKIpzL/oiFC2m/gUahlK0O9va21YulMrRiEU84=
+X-Google-Smtp-Source: ABdhPJyv93wvD5l9Hv1GjIuxBVEuypdf7WdVOWzxSgV3fwgswcIYfQMH3cq1mjhZxy4O8IOiow3VgjjcZasvGI8ilnA=
+X-Received: by 2002:a92:874a:: with SMTP id d10mr10218202ilm.163.1603097464967;
+ Mon, 19 Oct 2020 01:51:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201019075406.GE54484@L-31X9LVDL-1304.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20201019083632.25417-1-yanfei.xu@windriver.com>
+In-Reply-To: <20201019083632.25417-1-yanfei.xu@windriver.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Mon, 19 Oct 2020 10:50:53 +0200
+Message-ID: <CAM9Jb+iz3r3JeERmgvFeQfZ4vY7=TKtoXNEaDvmRPVAmhcyHnw@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/compaction: Rename 'start_pfn' to
+ 'iteration_start_pfn' in compact_zone()
+To:     yanfei.xu@windriver.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.10.20 09:54, Wei Yang wrote:
-> On Mon, Oct 12, 2020 at 02:53:23PM +0200, David Hildenbrand wrote:
->> Let's add a safe mechanism to unplug memory, avoiding long/endless loops
->> when trying to offline memory - similar to in SBM.
->>
->> Fake-offline all memory (via alloc_contig_range()) before trying to
->> offline+remove it. Use this mode as default, but allow to enable the other
->> mode explicitly (which could give better memory hotunplug guarantees in
-> 
-> I don't get the point how unsafe mode would have a better guarantees?
+> From: Yanfei Xu <yanfei.xu@windriver.com>
+>
+> There are two 'start_pfn' declared in compact_zone() which have
+> different meaning. Rename the second one to 'iteration_start_pfn'
+> to prevent trace_mm_compaction_end() from tracing an undesirable
+> value.
+>
+> BTW, remove an useless semicolon.
+>
+> Acked-by: David Hildenbrand <david@redhat.com>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> ---
+> v1->v2:
+> Rename 'start_pfn' to 'iteration_start_pfn' and change commit messages.
+>
+>  mm/compaction.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 176dcded298e..ccd27c739fd6 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -2272,7 +2272,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>
+>         while ((ret = compact_finished(cc)) == COMPACT_CONTINUE) {
+>                 int err;
+> -               unsigned long start_pfn = cc->migrate_pfn;
+> +               unsigned long iteration_start_pfn = cc->migrate_pfn;
+>
+>                 /*
+>                  * Avoid multiple rescans which can happen if a page cannot be
+> @@ -2284,7 +2284,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>                  */
+>                 cc->rescan = false;
+>                 if (pageblock_start_pfn(last_migrated_pfn) ==
+> -                   pageblock_start_pfn(start_pfn)) {
+> +                   pageblock_start_pfn(iteration_start_pfn)) {
+>                         cc->rescan = true;
+>                 }
+>
+> @@ -2308,8 +2308,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>                         goto check_drain;
+>                 case ISOLATE_SUCCESS:
+>                         update_cached = false;
+> -                       last_migrated_pfn = start_pfn;
+> -                       ;
+> +                       last_migrated_pfn = iteration_start_pfn;
+>                 }
+>
+>                 err = migrate_pages(&cc->migratepages, compaction_alloc,
 
-It's primarily only relevant when there is a lot of concurrent action
-going on while unplugging memory. Using alloc_contig_range() on
-ZONE_MOVABLE can fail more easily than memory offlining.
-
-alloc_contig_range() doesn't try as hard as memory offlining code to
-isolate memory. There are known issues with temporary page pinning
-(e.g., when a process dies) and the PCP. (mostly discovered via CMA
-allocations)
-
-See the TODO I add in patch #14.
-
-[...]
->>
->> +	if (bbm_safe_unplug) {
->> +		/*
->> +		 * Start by fake-offlining all memory. Once we marked the device
->> +		 * block as fake-offline, all newly onlined memory will
->> +		 * automatically be kept fake-offline. Protect from concurrent
->> +		 * onlining/offlining until we have a consistent state.
->> +		 */
->> +		mutex_lock(&vm->hotplug_mutex);
->> +		virtio_mem_bbm_set_bb_state(vm, bb_id,
->> +					    VIRTIO_MEM_BBM_BB_FAKE_OFFLINE);
->> +
-> 
-> State is set here.
-> 
->> +		for (pfn = start_pfn; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
->> +			page = pfn_to_online_page(pfn);
->> +			if (!page)
->> +				continue;
->> +
->> +			rc = virtio_mem_fake_offline(pfn, PAGES_PER_SECTION);
->> +			if (rc) {
->> +				end_pfn = pfn;
->> +				goto rollback_safe_unplug;
->> +			}
->> +		}
->> +		mutex_unlock(&vm->hotplug_mutex);
->> +	}
->> +
->> 	rc = virtio_mem_bbm_offline_and_remove_bb(vm, bb_id);
->> -	if (rc)
->> +	if (rc) {
->> +		if (bbm_safe_unplug) {
->> +			mutex_lock(&vm->hotplug_mutex);
->> +			goto rollback_safe_unplug;
->> +		}
->> 		return rc;
->> +	}
->>
->> 	rc = virtio_mem_bbm_unplug_bb(vm, bb_id);
->> 	if (rc)
-> 
-> And changed to PLUGGED or UNUSED based on rc.
-
-Right, after offlining+remove succeeded. So no longer added to Linux.
-
-The final state depends on the success of the unplug request towards the
-hypervisor.
-
-> 
->> @@ -1987,6 +2069,17 @@ static int virtio_mem_bbm_offline_remove_and_unplug_bb(struct virtio_mem *vm,
->> 		virtio_mem_bbm_set_bb_state(vm, bb_id,
->> 					    VIRTIO_MEM_BBM_BB_UNUSED);
->> 	return rc;
->> +
->> +rollback_safe_unplug:
->> +	for (pfn = start_pfn; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
->> +		page = pfn_to_online_page(pfn);
->> +		if (!page)
->> +			continue;
->> +		virtio_mem_fake_online(pfn, PAGES_PER_SECTION);
->> +	}
->> +	virtio_mem_bbm_set_bb_state(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED);
-> 
-> And changed to ADDED if failed.
-
-Right, back to the initial state when entering this function.
-
-> 
->> +	mutex_unlock(&vm->hotplug_mutex);
->> +	return rc;
->> }
-> 
-> So in which case, the bbm state is FAKE_OFFLINE during
-> virtio_mem_bbm_notify_going_offline() and
-> virtio_mem_bbm_notify_cancel_offline() ?
-
-Exactly, so we can do our magic with fake-offline pages and our
-virtio_mem_bbm_offline_and_remove_bb() can actually succeed.
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+Improves readability.
+Acked-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
