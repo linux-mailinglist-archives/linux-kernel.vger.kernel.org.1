@@ -2,134 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886DC292154
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 05:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46541292155
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 05:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731277AbgJSDC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 23:02:26 -0400
-Received: from mail-dm6nam08on2090.outbound.protection.outlook.com ([40.107.102.90]:55393
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728538AbgJSDC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 23:02:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bMG9DMtht5yitE8ukgbgGopjaTSBKgKfV3lmJfXBjRZh/hr+wl5SpuRL/vv4q4BsaAp7sQaPRdnHP79oMGCWK1WPVh59dLuZdoJGvMCq+jP/hbtb3Y4+LL0a0Wg80r84DpYqEEPHWSekDhgIzE3TZqlYr2Ldxcr38HfHHzEOky61UudgwuspVT30otKUVXSXYs1+nAIkH1PeTBA+wwmxfeQWSNngIiY4xGIHYlSx9GPJERIoZzXA0/ZbQJ48rU3jHXGT3RNhJwnUmzmLkfl/E+iyUkGsFqpX5ae0uhQyXtoTSZkdKDPPEi+vNYDwIOnbFsTyfqSRIAsTkl+qI1fSFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jshx7hZg672o4jcGLVW2lraVOJeUriGmJQ7x03HfBWk=;
- b=mAOEal2MK76K46RaOsqumE5qleLPCvxfYmCT6UtEEQ6a3FtADbh7UiVt4E24ARLGNNeYcKXEOB1I6BCDj6RcGB7/fbOYvT6Wa7FTeMnC/doLDlvsFkRB4gMr4CJ3eOL4Dr9W2G9gPg3iUmnB52NZctCPV7O7Rf70NtuAAGQLCKPssvedPysFK+75yfSCmf9OlXUFB7AjkVbf58IPncx5UwhJb8cQ0IcL39QtfHdPK9dX25IdyrXGsKTFPNqNgsST2bWPfTPnSXymvW26GIraGNg9Kk3W4pR+/2xHwuXpu3jVLvurhu70bs4nEtjdS9RZ6J816ncUzTgxlYN5OM+rmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jshx7hZg672o4jcGLVW2lraVOJeUriGmJQ7x03HfBWk=;
- b=LWXvnBnBi25cT1Mz0BvSVdc1DT93EAnQXN34QQKNNAT/vMHazMO4vyuaHDCg3dVkH9lOTAqFDQv4CSkAhy91j5XaQN+GiEW2M8YqVPb6FZMYQ/cuoCNEPrLUqy6SF78GlvQk0aYWL5kXIt7hBMwEvM9bZdqoBFpRBXbZEaevqro=
-Received: from MW2PR2101MB1052.namprd21.prod.outlook.com (52.132.149.16) by
- MW2PR2101MB0924.namprd21.prod.outlook.com (52.132.152.32) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3499.9; Mon, 19 Oct 2020 03:02:23 +0000
-Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::101a:aefa:25a3:709c]) by MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::101a:aefa:25a3:709c%9]) with mapi id 15.20.3499.015; Mon, 19 Oct 2020
- 03:02:23 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     Olaf Hering <olaf@aepfle.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: RE: [PATCH v1] hv_balloon: disable warning when floor reached
-Thread-Topic: [PATCH v1] hv_balloon: disable warning when floor reached
-Thread-Index: AQHWnUJmr5zYZi33iE6Qbgpur5d1vameTNTA
-Date:   Mon, 19 Oct 2020 03:02:22 +0000
-Message-ID: <MW2PR2101MB1052BA9AB5DB8C11D7F9CE33D71E0@MW2PR2101MB1052.namprd21.prod.outlook.com>
-References: <20201008071216.16554-1-olaf@aepfle.de>
-In-Reply-To: <20201008071216.16554-1-olaf@aepfle.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-10-19T03:02:20Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=e26b96c9-bd5d-4999-88d7-baf04ccac9bc;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: aepfle.de; dkim=none (message not signed)
- header.d=none;aepfle.de; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8085a5f3-cb4e-4bb8-85e7-08d873db66d8
-x-ms-traffictypediagnostic: MW2PR2101MB0924:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW2PR2101MB0924610ED720777AEEF824ECD71E0@MW2PR2101MB0924.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:93;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JbGieQvvXHMhnxudqcX3NQUwqYdsuXRQ7hTab3H2PBx0THLDZhBvQGk0QsOoEcAxnhD62IbCcA8PRyh5H/78OSHCq64WSPb5O1kZc7zPWcN7AlV1/e+Sk3/zcQ+I3h/l4TIvgUcvCuKheKUAVhLCiWGRBhOxYIoPJ9qx8QwNxdwyljP0z5vQh3hjmVN/aFdCV2SXwMKtH2PT5EUdhlNzUS++V6GzaEM4kWUvQ0VoBTD3QOXGr1ogAQ7EiIAyy1VzI83c72NRPU/jHTF5gSbLimtHoPCijYJCbr3e8kCQ3W81S2nx8Ce9ge/F1a/3bNuPGgKtNswLt2rOh8ARxTgS7A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(110136005)(55016002)(66946007)(54906003)(76116006)(316002)(86362001)(5660300002)(66446008)(2906002)(66556008)(64756008)(66476007)(10290500003)(83380400001)(71200400001)(52536014)(8676002)(4326008)(478600001)(186003)(9686003)(7696005)(8990500004)(6506007)(33656002)(8936002)(82950400001)(82960400001)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: injPb59TpgrF2teIsYA6EVsAUGO0QYlDLfcxgIyPK81bR9RtSY78HLzV5HCXMVzQvfSiUBn/5fnCgCMtlRnTLen2QNe6AqdK5C9OWF8NUb9zkM+H1ForPz+mwnZu0y1Lpmj4nINqiEXajUn5jybJ7PIVJ/pzKwvwce+WSQjD2z4nlmduOi8vNIBmekdQlTHScbfO2XVPTlm5SA4GZZGHNmnn0gnGelJXaqqXFL1ar19PcM7+3fFRPkY44Ljsd1hw6q8f/c2zL2MUcsMnjwMZgSAQisxGQUJri3L/V8p2iqAEVoTDRKp2HHacvNWMXOxOcg+bXQYtQKlwy3hY3ECtjMV56Gc/owE7DC7vJYv7gDh0qENEJK5mPOnLtudqYElWttizu6I/sA5d+rLATZ2kZFlgrJCiXKozDR3gUdPhnBYlomM6W6URn5jLqTyUDRHLc6J62VAcTWqC4rQkWq4zOhcLmd2Ut0inUDUQ9gqTO0XSXCVK114XmPmPrywaw1R/40Jxy9GBxAuitUicRYxAbs8sIgE2Ck8H4HoxsvxIDNhznI6NG2j5VisskYKXhqNSUA1wSQINhkyVtWlC92cp/hJ+5gcnsPp+t430R9TKlGjCcgWKw44yiLnv6TjpLCZTZC6gYHKI4Yl8Hl2gpGyH1Q==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1731301AbgJSDCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 23:02:46 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:17173 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728538AbgJSDCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 23:02:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603076564; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=88Ss3P2QgWnP90/eGtlLeQElpBWcpaopaAFpncLldrQ=;
+ b=LSVWnmH4REAfbJG0mUCMNfPnBXQDIyHmGBgoJjaB9pB1h384GIYDZa9OW3MHmjTxJDDVriF1
+ QxX2ncD3k6zqnW1N3FkMjKoMXQ3+NVnMm4lxnEEM9mp27jKX3xKcWe69rlyGabq8PAtBQIXq
+ K/jIwLs3XKAlIXgWpeYl1UyD1B0=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f8d01cc3711fec7b1d83eb6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 03:02:36
+ GMT
+Sender: pintu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 47CB4C433FF; Mon, 19 Oct 2020 03:02:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pintu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47B40C433CB;
+        Mon, 19 Oct 2020 03:02:34 +0000 (UTC)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8085a5f3-cb4e-4bb8-85e7-08d873db66d8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 03:02:23.2044
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2O13PYLCNbMBFFkHVU+T/t+f3PGMxrq5Qt9/FQ8oHJdbZSCMzSJX6Ky1i6eqSCk642SUn669dVR8MhjcRMfd0rZ6AWPnhtcKosPbnXUZwKs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0924
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 19 Oct 2020 08:32:34 +0530
+From:   pintu@codeaurora.org
+To:     Michal Hocko <mhocko@suse.com>, willy@infradead.org
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, pintu.ping@gmail.com
+Subject: Re: [PATCH] mm/util.c: Add error logs for commitment overflow
+In-Reply-To: <20201005072011.GP4555@dhcp22.suse.cz>
+References: <1601639861-32171-1-git-send-email-pintu@codeaurora.org>
+ <20201002121726.GF4555@dhcp22.suse.cz>
+ <adaf346febe6bb6fbdcedb8709e35bcb@codeaurora.org>
+ <20201005072011.GP4555@dhcp22.suse.cz>
+Message-ID: <0e9255fcac61ae6ce90bbdde6421b148@codeaurora.org>
+X-Sender: pintu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olaf Hering <olaf@aepfle.de> Sent: Thursday, October 8, 2020 12:12 AM
->=20
-> It is not an error if a the host requests to balloon down, but the VM
+On 2020-10-05 12:50, Michal Hocko wrote:
+> On Fri 02-10-20 21:53:37, pintu@codeaurora.org wrote:
+>> On 2020-10-02 17:47, Michal Hocko wrote:
+>> 
+>> > > __vm_enough_memory: commitment overflow: ppid:150, pid:164,
+>> > > pages:62451
+>> > > fork failed[count:0]: Cannot allocate memory
+>> >
+>> > While I understand that fork failing due to overrcomit heuristic is non
+>> > intuitive and I have seen people scratching heads due to this in the
+>> > past I am not convinced this is a right approach to tackle the problem.
+>> 
+>> Dear Michal,
+>> First, thank you so much for your review and comments.
+>> I totally agree with you.
+>> 
+>> > First off, referencing pids is not really going to help much if process
+>> > is short lived.
+>> 
+>> Yes, I agree with you.
+>> But I think this is most important mainly for short lived processes 
+>> itself.
+>> Because, when this situation occurs, no one knows who could be the 
+>> culprit.
+> 
+> Pid will not tell you much for those processes, right?
+> 
+>> However, user keeps dumping "ps" or "top" in background to reproduce 
+>> once
+>> again.
+> 
+> I do not think this would be an effective way to catch the problem.
+> Especially with _once reporting. My experience with these reports is
+> that a reporter notices a malfunctioning (usually more complex)
+> workload. In some cases ENOMEM from fork is reported into the log by 
+> the
+> userspace.
+> 
+> For others it is strace -f that tells us that fork is failing and a
+> test with OVERCOMMIT_ALWAYS usually confirms the theory that this is
+> the culprit. But a rule of thumb is that it is almost always overcommit
+> to blame. Why? An undocumented secret is that ENOMEM resulting from an
+> actual memory allocation in the fork/clone path is close to impossible
+> because kernel does all it can to satisfy them (an even invokes OOM
+> killer). There are exceptions (e.g. like high order allocation) but
+> those should be very rare in that path.
+> 
+>> At this time, we can easily match the pid, process-name (at least in 
+>> most
+>> cases).
+> 
+> Maybe our definitions of short lived processes differ but in my book
+> those are pretty hard to catch in flight.
+> 
+>> > Secondly, __vm_enough_memory is about any address space
+>> > allocation. Why would you be interested in parent when doing mmap?
+>> >
+>> 
+>> Yes agree, we can remove ppid from here.
+>> I thought it might be useful at least in case of fork (or short lived
+>> process).
+> 
+> I suspect you have missed my point here. Let me clarify a bit more.
+> __vm_enough_memory is called from much more places than fork.
+> Essentially any mmap, brk etc are going though this. This is where
+> parent pid certainly doesn't make any sense. In fork this is a 
+> different
+> case because your forked process pid on its own doesn't make much sense
+> as it is going to die very quickly anyway. This is when parent is 
+> likely
+> a more important information.
+> 
+> That being said the content really depends on the specific path and 
+> that
+> suggestes that you are trying to log at a wrong layer.
+> 
+> Another question is whether we really need a logging done by the 
+> kernel.
+> Ratelimiting would be tricky to get right and we do not want to allow 
+> an
+> easy way to swamp logs either.
+> As already mentioned ENOMEM usually means overcommit failure. Maybe we
+> want to be more explicit this in the man page?
 
-Spurious word "a"
 
-> refuses to do so. Without this change a warning is logged in dmesg
-> every five minutes.
->=20
-> Fixes commit b3bb97b8a49f3
+Thank you so much for your feedback.
+First of all I am sorry for my delayed response.
 
-This "Fixes" line isn't formatted correctly.  Should be:
+As I understand, the conclusion here is that:
+a) The pr_err_once is not helpful and neither pr_err_ratelimited ?
+Even with this below logs:
++ pr_err_ratelimited("vm memory overflow: pid:%d, name: %s, 
+pages:%ld\n",
++     current->pid, current->comm, pages);
 
-Fixes:  b3bb97b8a49f3 ("Drivers: hv: balloon: Add logging for dynamic memor=
-y operations")
+b) This can be invoked from many places so we are adding the logging at 
+wrong layer?
+If so, any other better places which can be explored?
 
->=20
-> Signed-off-by: Olaf Hering <olaf@aepfle.de>
-> ---
->  drivers/hv/hv_balloon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/hv/hv_balloon.c b/drivers/hv/hv_balloon.c
-> index 32e3bc0aa665..0f50295d0214 100644
-> --- a/drivers/hv/hv_balloon.c
-> +++ b/drivers/hv/hv_balloon.c
-> @@ -1275,7 +1275,7 @@ static void balloon_up(struct work_struct *dummy)
->=20
->  	/* Refuse to balloon below the floor. */
->  	if (avail_pages < num_pages || avail_pages - num_pages < floor) {
-> -		pr_warn("Balloon request will be partially fulfilled. %s\n",
-> +		pr_info("Balloon request will be partially fulfilled. %s\n",
->  			avail_pages < num_pages ? "Not enough memory." :
->  			"Balloon floor reached.");
->=20
+c) Adding logging at kernel layer is not the right approach to tackle 
+this problem ?
 
-Above nits notwithstanding,
+d) Another thing we can do is, update the man page with more detailed 
+information about this commitment overflow ?
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+e) May be returning ENOMEM (Cannot allocate memory) from VM path is 
+slightly misleading for user space folks even though there are enough 
+memory?
+=> Either we can introduce ENOVMEM (Cannot create virtual memory 
+mapping)
+=> Or, update the documentation with approach to further debug this 
+issue?
+
+If there are any more suggestions to easily catch this issue please let 
+us know, we can explore further.
+
+
+Thanks,
+Pintu
