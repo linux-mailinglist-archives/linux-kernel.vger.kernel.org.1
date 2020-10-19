@@ -2,428 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308682929DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71472929E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729752AbgJSO6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729594AbgJSO6k (ORCPT
+        id S1729789AbgJSO7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:59:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45036 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729544AbgJSO7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:58:40 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B9FC0613CE;
-        Mon, 19 Oct 2020 07:58:39 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id h6so14557354lfj.3;
-        Mon, 19 Oct 2020 07:58:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=eby7wYPr2R/JTAH/LY7ihsKtLyNV2HU8gVLuaaxevgw=;
-        b=rp58L3J7NZTYXnSKsty+b8Gjyr/pLUkyXp4j91S0FQgDtaMX/6XplzV3Wr2BxOQCjM
-         OM+4gFF0r1ql8NkB6n4mVNKT6apvqjyJFdZHrWEmqZrBcrsnfAMEfdzKqEs/es6HhbNZ
-         P1VySeyoG6DpZ2RPVUuZHRu1MOZJFB3vDlMnJG54xQWKdBTctCxUnZYCpr4YIU5Xmvd7
-         I1DYNxZBudrJkJkqn/nmCnG9lNDVaT8YflhfJM7umgzuF4Xd27S0tG+LZRAJH35Vf2Mi
-         vutEK385laT6ETy78es+/CSN0ww717xL7FTEgaEWBF62OD483UcVkE3QwGwgZoeuKY+i
-         rmWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=eby7wYPr2R/JTAH/LY7ihsKtLyNV2HU8gVLuaaxevgw=;
-        b=A2Of5b6tpPNBBNSltxtlmAQS9qz3D9PJS8HUN/70LGjgsap0WbFM6i3NhsPClcu02r
-         dC65f+Bk3xee8QRz4l+7bg7TSCytmrfBHIxfNloo/cE6D6NtFZP3fAQgoiCzjQZx3H7N
-         LVDt9QXT39BQWa6m3ykYps0HuULmGY/glJYyhui2rdpsZpzd7mukMQz/AkXmexY5txf2
-         QKXFn0ZGr/42apb/K/au1AclecQ8s4QFRUUjFTiTXyUFcMSUzU0DtHVJBmRvdklsxmlg
-         nly8cVhu6xuYIxg9o+elNXNEJtr7CoN76CsqiV0ga36zqPxlQAgUZu9Q7xjQayLs+/VC
-         HAbA==
-X-Gm-Message-State: AOAM531g9XF0LDb33fJpAd6IynjNrJ9n9hcDNoUTaiI8ZrwaYtmVWXv7
-        keoyw2B42F/YI/ryWnkq+eY=
-X-Google-Smtp-Source: ABdhPJyqakpoDYbcQptXmLpOVJXHkESfZLmGBasAlTPW02FpBwGGxt6C8uelnWeqhOtUIhCahpi/Kg==
-X-Received: by 2002:ac2:5633:: with SMTP id b19mr26965lff.334.1603119518251;
-        Mon, 19 Oct 2020 07:58:38 -0700 (PDT)
-Received: from ubuntu-18.lintech.local ([80.87.144.137])
-        by smtp.gmail.com with ESMTPSA id u3sm11842lfm.57.2020.10.19.07.58.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 07:58:37 -0700 (PDT)
-From:   Alexander Kochetkov <al.kochet@gmail.com>
-X-Google-Original-From: Alexander Kochetkov <akochetkov@lintech.ru>
-To:     Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Alexander Kochetkov <al.kochet@gmail.com>
-Subject: [PATCH v2] spi: spi-sun6i: implement DMA-based transfer mode
-Date:   Mon, 19 Oct 2020 17:58:33 +0300
-Message-Id: <20201019145833.2420-1-akochetkov@lintech.ru>
-X-Mailer: git-send-email 2.17.1
+        Mon, 19 Oct 2020 10:59:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603119539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6S2TV9dAHYTgZdlK1+oGRF6Req84/iEOIZPYDAw9Ys8=;
+        b=KJljXpEs+C3u8IlOOauPVRFh1MXS9JR9HmUjmNGq6fkDz3leq4SVDYhchOcviCDEwI4nMP
+        Sq81eIX/A7sSVqsPL+YVBs4UvKOqRDWmdFhclmbPTkDxYgrnJPrMVAWiuCzXP5TpljLHKk
+        yY9B5/vGx9TToje+0l6Ev9k46IS1BWE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-262-CTQUwtjQM2OMNQua7o8xKg-1; Mon, 19 Oct 2020 10:58:57 -0400
+X-MC-Unique: CTQUwtjQM2OMNQua7o8xKg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB66687507C;
+        Mon, 19 Oct 2020 14:58:55 +0000 (UTC)
+Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 35BA65B4AD;
+        Mon, 19 Oct 2020 14:58:50 +0000 (UTC)
+Subject: Re: [PATCH] arm64/mm: Validate hotplug range before creating linear
+ mapping
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     will@kernel.org, catalin.marinas@arm.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>
+References: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
+ <7c39c046-b950-ea4c-fa4d-e0a5d6171147@redhat.com>
+ <72ea7056-5289-3eb0-eca9-a8444524667e@arm.com>
+ <70a76220-9acd-06b6-e074-dc9cbb6668da@redhat.com>
+ <40104165-aa6f-201c-4aa2-e3918978dc6e@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <34ab00af-ebdc-6b83-4ff6-1e7bb9f7c3a3@redhat.com>
+Date:   Mon, 19 Oct 2020 16:58:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <40104165-aa6f-201c-4aa2-e3918978dc6e@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Kochetkov <al.kochet@gmail.com>
+>>
+>> Most probably,
+>>
+>> struct range memhp_get_addressable_range(bool need_mapping)
+>> {
+>> 	...
+>> }
+> 
+> Something like this...
+> 
+> +struct memhp_range {
+> +       u64 start;
+> +       u64 end;
+> +};
 
-DMA-based transfer will be enabled if data length is larger than FIFO size
-(64 bytes for A64). This greatly reduce number of interrupts for
-transferring data.
+We do have struct range already in include/linux/range.h
 
-For smaller data size PIO mode will be used. In PIO mode whole buffer will
-be loaded into FIFO.
+> +
+> +#ifndef arch_get_addressable_range
+> +static inline struct memhp_range arch_get_mappable_range(bool need_mapping)
+> +{
+> +       struct memhp_range range = {
+> +               .start = 0UL,
+> +               .end = (1ull << (MAX_PHYSMEM_BITS + 1)) - 1,
 
-If driver failed to request DMA channels then it fallback for PIO mode.
+Or just set to -1ULL if it's only used in memhp_get_mappable_range(), to
+keep things simple ().
 
-Tested on SOPINE (https://www.pine64.org/sopine/)
+> +       };
+> +       return range;
+> +}
+> +#endif
+> +
+> +static inline struct memhp_range memhp_get_mappable_range(bool need_mapping)
 
-Signed-off-by: Alexander Kochetkov <al.kochet@gmail.com>
----
+due to "need_mapping" the function might better be called
 
-Changes in v2:
+memhp_get_pluggable_range()
 
-- Fix 'checkpatch.pl --strict' warnings
-- Optimezed DMA transfers. Fix burst size and address width for
-  DMA transfers. The code works for me an I did some tests with different
-  values and conditions. Empirically found that trigger level used for
-  PIO mode also can be used for DMA mode (TRM for A64 lacks that 
-  description)
-- Handling inside sun6i_spi_handler() leaved as is, it explicity states that
-  sun6i_spi_drain_fifo() is not used in DMA mode. Yes, if we call
-  sun6i_spi_drain_fifo() after DMA transfer, it will not drain anything
-  becase DMA already drain FIFO.
-  I can remove condition if it's better without it.
+or similar
+
+> +{
+> +       const u64 max_phys = (1ull << (MAX_PHYSMEM_BITS + 1)) - 1;
+> +       struct memhp_range range = arch_get_mappable_range(need_mapping);
+> +
+> +       if (range.start > max_phys) {
+> +               range.start = 0;
+> +               range.end = 0;
+> +       }
+> +       range.end = min_t(u64, range.end, max_phys);
+> +       return range;
+> +}
+> +
+> +static inline bool memhp_range_allowed(u64 start, u64 end, bool need_mapping)
+> +{
+> +       struct memhp_range range = memhp_get_mappable_range(need_mapping);
+> +
+> +       return (start <= end) && (start >= range.start) && (end <= range.end);
+
+Keep in mind that in memory hotplug code, "end" is usually exclusive,
+and "end" in "struct range" is inclusive (see range_len(), or how you
+calculate max_phys.
+
+So depending on the semantics, you might have to fixup your comparisons.
+
+return start < end && start >= range.start && end <= range.end - 1;
 
 
- drivers/spi/spi-sun6i.c | 198 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 179 insertions(+), 19 deletions(-)
+[...]
 
-diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
-index 19238e1b76b4..29ea1e87ce7e 100644
---- a/drivers/spi/spi-sun6i.c
-+++ b/drivers/spi/spi-sun6i.c
-@@ -18,6 +18,7 @@
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
-+#include <linux/dmaengine.h>
- 
- #include <linux/spi/spi.h>
- 
-@@ -52,10 +53,12 @@
- 
- #define SUN6I_FIFO_CTL_REG		0x18
- #define SUN6I_FIFO_CTL_RF_RDY_TRIG_LEVEL_MASK	0xff
-+#define SUN6I_FIFO_CTL_RF_DRQ_EN		BIT(8)
- #define SUN6I_FIFO_CTL_RF_RDY_TRIG_LEVEL_BITS	0
- #define SUN6I_FIFO_CTL_RF_RST			BIT(15)
- #define SUN6I_FIFO_CTL_TF_ERQ_TRIG_LEVEL_MASK	0xff
- #define SUN6I_FIFO_CTL_TF_ERQ_TRIG_LEVEL_BITS	16
-+#define SUN6I_FIFO_CTL_TF_DRQ_EN		BIT(24)
- #define SUN6I_FIFO_CTL_TF_RST			BIT(31)
- 
- #define SUN6I_FIFO_STA_REG		0x1c
-@@ -83,6 +86,8 @@
- struct sun6i_spi {
- 	struct spi_master	*master;
- 	void __iomem		*base_addr;
-+	dma_addr_t		dma_addr_rx;
-+	dma_addr_t		dma_addr_tx;
- 	struct clk		*hclk;
- 	struct clk		*mclk;
- 	struct reset_control	*rstc;
-@@ -92,6 +97,7 @@ struct sun6i_spi {
- 	const u8		*tx_buf;
- 	u8			*rx_buf;
- 	int			len;
-+	bool			use_dma;
- 	unsigned long		fifo_depth;
- };
- 
-@@ -182,6 +188,68 @@ static size_t sun6i_spi_max_transfer_size(struct spi_device *spi)
- 	return SUN6I_MAX_XFER_SIZE - 1;
- }
- 
-+static int sun6i_spi_prepare_dma(struct sun6i_spi *sspi,
-+				 struct spi_transfer *tfr)
-+{
-+	struct dma_async_tx_descriptor *rxdesc, *txdesc;
-+	struct spi_master *master = sspi->master;
-+
-+	rxdesc = NULL;
-+	if (tfr->rx_buf) {
-+		struct dma_slave_config rxconf = {
-+			.direction = DMA_DEV_TO_MEM,
-+			.src_addr = sspi->dma_addr_rx,
-+			.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES,
-+			.src_maxburst = 8,
-+		};
-+
-+		dmaengine_slave_config(master->dma_rx, &rxconf);
-+
-+		rxdesc = dmaengine_prep_slave_sg(master->dma_rx,
-+						 tfr->rx_sg.sgl,
-+						 tfr->rx_sg.nents,
-+						 DMA_DEV_TO_MEM,
-+						 DMA_PREP_INTERRUPT);
-+		if (!rxdesc)
-+			return -EINVAL;
-+	}
-+
-+	txdesc = NULL;
-+	if (tfr->tx_buf) {
-+		struct dma_slave_config txconf = {
-+			.direction = DMA_MEM_TO_DEV,
-+			.dst_addr = sspi->dma_addr_tx,
-+			.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES,
-+			.dst_maxburst = 8,
-+		};
-+
-+		dmaengine_slave_config(master->dma_tx, &txconf);
-+
-+		txdesc = dmaengine_prep_slave_sg(master->dma_tx,
-+						 tfr->tx_sg.sgl,
-+						 tfr->tx_sg.nents,
-+						 DMA_MEM_TO_DEV,
-+						 DMA_PREP_INTERRUPT);
-+		if (!txdesc) {
-+			if (rxdesc)
-+				dmaengine_terminate_sync(master->dma_rx);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (tfr->rx_buf) {
-+		dmaengine_submit(rxdesc);
-+		dma_async_issue_pending(master->dma_rx);
-+	}
-+
-+	if (tfr->tx_buf) {
-+		dmaengine_submit(txdesc);
-+		dma_async_issue_pending(master->dma_tx);
-+	}
-+
-+	return 0;
-+}
-+
- static int sun6i_spi_transfer_one(struct spi_master *master,
- 				  struct spi_device *spi,
- 				  struct spi_transfer *tfr)
-@@ -201,6 +269,8 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 	sspi->tx_buf = tfr->tx_buf;
- 	sspi->rx_buf = tfr->rx_buf;
- 	sspi->len = tfr->len;
-+	sspi->use_dma = master->can_dma ?
-+			master->can_dma(master, spi, tfr) : false;
- 
- 	/* Clear pending interrupts */
- 	sun6i_spi_write(sspi, SUN6I_INT_STA_REG, ~0);
-@@ -209,16 +279,34 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 	sun6i_spi_write(sspi, SUN6I_FIFO_CTL_REG,
- 			SUN6I_FIFO_CTL_RF_RST | SUN6I_FIFO_CTL_TF_RST);
- 
--	/*
--	 * Setup FIFO interrupt trigger level
--	 * Here we choose 3/4 of the full fifo depth, as it's the hardcoded
--	 * value used in old generation of Allwinner SPI controller.
--	 * (See spi-sun4i.c)
--	 */
--	trig_level = sspi->fifo_depth / 4 * 3;
--	sun6i_spi_write(sspi, SUN6I_FIFO_CTL_REG,
--			(trig_level << SUN6I_FIFO_CTL_RF_RDY_TRIG_LEVEL_BITS) |
--			(trig_level << SUN6I_FIFO_CTL_TF_ERQ_TRIG_LEVEL_BITS));
-+	reg = 0;
-+
-+	if (!sspi->use_dma) {
-+		/*
-+		 * Setup FIFO interrupt trigger level
-+		 * Here we choose 3/4 of the full fifo depth, as it's
-+		 * the hardcoded value used in old generation of Allwinner
-+		 * SPI controller. (See spi-sun4i.c)
-+		 */
-+		trig_level = sspi->fifo_depth / 4 * 3;
-+	} else {
-+		/*
-+		 * Setup FIFO DMA request trigger level
-+		 * We choose 1/2 of the full fifo depth, that value will
-+		 * be used as DMA burst length.
-+		 */
-+		trig_level = sspi->fifo_depth / 2;
-+
-+		if (tfr->tx_buf)
-+			reg |= SUN6I_FIFO_CTL_TF_DRQ_EN;
-+		if (tfr->rx_buf)
-+			reg |= SUN6I_FIFO_CTL_RF_DRQ_EN;
-+	}
-+
-+	reg |= (trig_level << SUN6I_FIFO_CTL_RF_RDY_TRIG_LEVEL_BITS) |
-+	       (trig_level << SUN6I_FIFO_CTL_TF_ERQ_TRIG_LEVEL_BITS);
-+
-+	sun6i_spi_write(sspi, SUN6I_FIFO_CTL_REG, reg);
- 
- 	/*
- 	 * Setup the transfer control register: Chip Select,
-@@ -300,16 +388,28 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 	sun6i_spi_write(sspi, SUN6I_XMIT_CNT_REG, tx_len);
- 	sun6i_spi_write(sspi, SUN6I_BURST_CTL_CNT_REG, tx_len);
- 
--	/* Fill the TX FIFO */
--	sun6i_spi_fill_fifo(sspi);
-+	if (!sspi->use_dma) {
-+		/* Fill the TX FIFO */
-+		sun6i_spi_fill_fifo(sspi);
-+	} else {
-+		ret = sun6i_spi_prepare_dma(sspi, tfr);
-+		if (ret) {
-+			dev_warn(&master->dev,
-+				 "%s: prepare DMA failed, ret=%d",
-+				 dev_name(&spi->dev), ret);
-+			return ret;
-+		}
-+	}
- 
- 	/* Enable the interrupts */
- 	reg = SUN6I_INT_CTL_TC;
- 
--	if (rx_len > sspi->fifo_depth)
--		reg |= SUN6I_INT_CTL_RF_RDY;
--	if (tx_len > sspi->fifo_depth)
--		reg |= SUN6I_INT_CTL_TF_ERQ;
-+	if (!sspi->use_dma) {
-+		if (rx_len > sspi->fifo_depth)
-+			reg |= SUN6I_INT_CTL_RF_RDY;
-+		if (tx_len > sspi->fifo_depth)
-+			reg |= SUN6I_INT_CTL_TF_ERQ;
-+	}
- 
- 	sun6i_spi_write(sspi, SUN6I_INT_CTL_REG, reg);
- 
-@@ -332,6 +432,11 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
- 
- 	sun6i_spi_write(sspi, SUN6I_INT_CTL_REG, 0);
- 
-+	if (ret && sspi->use_dma) {
-+		dmaengine_terminate_sync(master->dma_rx);
-+		dmaengine_terminate_sync(master->dma_tx);
-+	}
-+
- 	return ret;
- }
- 
-@@ -343,7 +448,8 @@ static irqreturn_t sun6i_spi_handler(int irq, void *dev_id)
- 	/* Transfer complete */
- 	if (status & SUN6I_INT_CTL_TC) {
- 		sun6i_spi_write(sspi, SUN6I_INT_STA_REG, SUN6I_INT_CTL_TC);
--		sun6i_spi_drain_fifo(sspi);
-+		if (!sspi->use_dma)
-+			sun6i_spi_drain_fifo(sspi);
- 		complete(&sspi->done);
- 		return IRQ_HANDLED;
- 	}
-@@ -422,10 +528,25 @@ static int sun6i_spi_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
-+static bool sun6i_spi_can_dma(struct spi_master *master,
-+			      struct spi_device *spi,
-+			      struct spi_transfer *xfer)
-+{
-+	struct sun6i_spi *sspi = spi_master_get_devdata(master);
-+
-+	/*
-+	 * If the number of spi words to transfer is less or equal than
-+	 * the fifo length we can just fill the fifo and wait for a single
-+	 * irq, so don't bother setting up dma
-+	 */
-+	return xfer->len > sspi->fifo_depth;
-+}
-+
- static int sun6i_spi_probe(struct platform_device *pdev)
- {
- 	struct spi_master *master;
- 	struct sun6i_spi *sspi;
-+	struct resource *mem;
- 	int ret = 0, irq;
- 
- 	master = spi_alloc_master(&pdev->dev, sizeof(struct sun6i_spi));
-@@ -437,7 +558,7 @@ static int sun6i_spi_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, master);
- 	sspi = spi_master_get_devdata(master);
- 
--	sspi->base_addr = devm_platform_ioremap_resource(pdev, 0);
-+	sspi->base_addr = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
- 	if (IS_ERR(sspi->base_addr)) {
- 		ret = PTR_ERR(sspi->base_addr);
- 		goto err_free_master;
-@@ -494,6 +615,33 @@ static int sun6i_spi_probe(struct platform_device *pdev)
- 		goto err_free_master;
- 	}
- 
-+	master->dma_tx = dma_request_chan(&pdev->dev, "tx");
-+	if (IS_ERR(master->dma_tx)) {
-+		/* Check tx to see if we need defer probing driver */
-+		if (PTR_ERR(master->dma_tx) == -EPROBE_DEFER) {
-+			ret = -EPROBE_DEFER;
-+			goto err_free_master;
-+		}
-+		dev_warn(&pdev->dev, "Failed to request TX DMA channel\n");
-+		master->dma_tx = NULL;
-+	}
-+
-+	master->dma_rx = dma_request_chan(&pdev->dev, "rx");
-+	if (IS_ERR(master->dma_rx)) {
-+		if (PTR_ERR(master->dma_rx) == -EPROBE_DEFER) {
-+			ret = -EPROBE_DEFER;
-+			goto err_free_dma_tx;
-+		}
-+		dev_warn(&pdev->dev, "Failed to request RX DMA channel\n");
-+		master->dma_rx = NULL;
-+	}
-+
-+	if (master->dma_tx && master->dma_rx) {
-+		sspi->dma_addr_tx = mem->start + SUN6I_TXDATA_REG;
-+		sspi->dma_addr_rx = mem->start + SUN6I_RXDATA_REG;
-+		master->can_dma = sun6i_spi_can_dma;
-+	}
-+
- 	/*
- 	 * This wake-up/shutdown pattern is to be able to have the
- 	 * device woken up, even if runtime_pm is disabled
-@@ -501,7 +649,7 @@ static int sun6i_spi_probe(struct platform_device *pdev)
- 	ret = sun6i_spi_runtime_resume(&pdev->dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Couldn't resume the device\n");
--		goto err_free_master;
-+		goto err_free_dma_rx;
- 	}
- 
- 	pm_runtime_set_active(&pdev->dev);
-@@ -519,6 +667,12 @@ static int sun6i_spi_probe(struct platform_device *pdev)
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
- 	sun6i_spi_runtime_suspend(&pdev->dev);
-+err_free_dma_rx:
-+	if (master->dma_rx)
-+		dma_release_channel(master->dma_rx);
-+err_free_dma_tx:
-+	if (master->dma_tx)
-+		dma_release_channel(master->dma_tx);
- err_free_master:
- 	spi_master_put(master);
- 	return ret;
-@@ -526,8 +680,14 @@ static int sun6i_spi_probe(struct platform_device *pdev)
- 
- static int sun6i_spi_remove(struct platform_device *pdev)
- {
-+	struct spi_master *master = platform_get_drvdata(pdev);
-+
- 	pm_runtime_force_suspend(&pdev->dev);
- 
-+	if (master->dma_tx)
-+		dma_release_channel(master->dma_tx);
-+	if (master->dma_rx)
-+		dma_release_channel(master->dma_rx);
- 	return 0;
- }
- 
+>> Right now it's like calling a function with wrong arguments - you just
+>> don't have a clue what valid arguments are, because non-obvious errors
+>> (besides -ENOMEM, which is a temporary error) pop up deep down the call
+>> chain.
+>>
+>> For example, virito-mem would use it to detect during device
+>> initialization the usable device range, and warn the user accordingly.
+>> It currently manually checks for MAX_PHYSMEM_BITS, but that's just ugly.
+>> Failing at random add_memory() calls (permanently!) is not so nice.
+>>
+>> In case of DIMMs, we could use it to detect if adding parts of a DIMM
+>> won't work (and warn the user early). We could try to add as much as
+>> possible.
+> 
+> Agreed.
+> 
+> Planning to add memhp_range_allowed() check in add_memory(), __add_memory(),
+> add_memory_driver_managed() and memremap_pages(). This check might just get
+> called twice depending on the hotplug path. Wondering if this needs to be
+> added any where else ?
+
+So
+
+add_memory() needs to
+- add sections via arch_add_memory()
+- create a mapping via arch_add_memory()->add_pages()
+
+memremap_pages() via arch_add_memory() needs to
+- add sections via arch_add_memory()
+- create a mapping via arch_add_memory()->add_pages()
+
+memremap_pages() via add_pages() needs to
+- add sections
+
+I'll reuse the functions from virtio-mem code once in place (exposing
+memhp_get_pluggable_range()).
+
+
+I do agree that having the callers of arch_add_memory() / add_pages()
+validate stuff isn't completely nice. I already raised that I would much
+rather want to see !arch wrappers for these arch functions that could
+validate stuff. But then we would have to do a bigger cleanup to get
+naming right.
+
+1. Rename functions for handling system ram like
+
+s/add_memory/add_sysram/
+s/remove_memory/remove_sysram/
+...
+
+2. Have a new add_memory() that validates + calls arch_add_memory()
+
+3. s/add_pages/arch_add_pages/
+
+4. Have a new add_pages() that validates + calls arch_add_pages()
+
+...
+
+
+Long story short, handling it in the 2 (!) callers might be easier for now.
+
 -- 
-2.17.1
+Thanks,
+
+David / dhildenb
 
