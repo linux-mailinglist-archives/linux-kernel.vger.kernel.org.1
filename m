@@ -2,258 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57C6293181
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 00:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB091293184
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 00:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388702AbgJSWt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 18:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35418 "EHLO
+        id S1727511AbgJSWva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 18:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388674AbgJSWt4 (ORCPT
+        with ESMTP id S1727333AbgJSWva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 18:49:56 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF933C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 15:49:54 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id e15so862419pfh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 15:49:54 -0700 (PDT)
+        Mon, 19 Oct 2020 18:51:30 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7BCC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 15:51:28 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id u7so858327vsq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 15:51:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JTx26RZgAqCsKfzwkiSZg5rClbsyn6MYzPRoe0bjgYQ=;
-        b=bG1yEuj6ghwmVfgv4MprES7oMN1eTrdoAa6hRRtlZrIKE2b9AAw4dS2w1tCdfSVBMe
-         DH83hZotlFPjhstXf691gZLmx5T8J5CepQnw5UrsAO8dwVJoPOrkEhPgI15Rusfgj/B4
-         BjekasqRLpJw3cw7NjM+LY7RVixma4lBCUGJo=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/5knxhq7CVjdPlgBy3BxP03HOY/V3PzThvC7xXq5gGQ=;
+        b=OC0a2zISWY+9Gjsw14nwxC6O3itMVVWDC6aDVg4v2EmgcL/vXSJjZWkYXdUkTzxe8s
+         cAD755MZ57dpMc2y810w9hN4HKdd1mPIEaK+Rhyf+6Icpc56uNmVjdhMx8V3t0ikNEmQ
+         zD6SoncHRrTsQhuUBeiWz7RbQkYnuCzHoyppqlEH8CyBnjJtw9TvmlzrGNyksOi0PHt1
+         JJOXZ2rwGPjrKcgd6x8agmqX6Ta3X73gLTKwO5nf0H+oyki4Fdli1II52j8lP83hVfh7
+         s7+tdQlgbc3hhuzBHJL3dnlCc5OZ9mCCSUM9mgxhzSSB8r/CC/cb6lkT5AVZ16Fc4mBA
+         Pfgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JTx26RZgAqCsKfzwkiSZg5rClbsyn6MYzPRoe0bjgYQ=;
-        b=hAhm8oA3hoKNUVpsyXp1PNQb4zBOjETputK+lVRkjdZ/LzqQ6MvI8gybkyYr6bH2a0
-         LcUMgIH9+qyVUWrr04qpVNNyZrXChOqca1lrdx6bXYCV0Dm4iyb9OW1fy0dFBvXYsex7
-         nP4elR2kjT6Z5SGnm/RC1d0uPcvC6WXoNJziYrwLPKoCR/ArLD/BkngxF3igx2IOTDQp
-         lhS4vZHXeUbUXC8X8icQrnBYWsWR8fJDzqltn8by7Iv95IBt3YlXiGmX8e805PjRubSS
-         bnRmh27bhdzj8xljCA6Mf9xDMGWswkr9hCxYm02o5XlmnDMfwhS/rP1pO7BEN43NJDNf
-         vwYw==
-X-Gm-Message-State: AOAM533RIDsNrcvgB42LhuyEXMftVO/1pz0ZrXuo2nnUEP85MyMYwUjQ
-        jVdwfuVH64UfLemaNvCWunDlyA==
-X-Google-Smtp-Source: ABdhPJwpVO7kPW23Ns/kgYxg64vbaC4B0ZONbTL6lPXWH3KM7BvUqrwp8hN8gIjiXfBRDuM8wscfRg==
-X-Received: by 2002:a62:6044:0:b029:151:1a04:895 with SMTP id u65-20020a6260440000b02901511a040895mr1873256pfb.34.1603147794230;
-        Mon, 19 Oct 2020 15:49:54 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id in6sm19912pjb.42.2020.10.19.15.49.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 15:49:53 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Taniya Das <tdas@codeaurora.org>,
-        David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-soc@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/2] clk: qcom: lpass-sc7180: Disentangle the two clock devices
-Date:   Mon, 19 Oct 2020 15:49:35 -0700
-Message-Id: <20201019154857.v5.2.I75c409497d4dea9daefa53ec5f93824081c4ecbe@changeid>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-In-Reply-To: <20201019154857.v5.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid>
-References: <20201019154857.v5.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/5knxhq7CVjdPlgBy3BxP03HOY/V3PzThvC7xXq5gGQ=;
+        b=enKjkzsgw4pbZCdWosD8cfNOEL3lGDoJCjcPZlxtZ15XvJjn4V1QCAE3qb9TABeh8V
+         OtmYyb3dzJYq2fQ37g/7KJAWUEiAcQh8KOEHiAf6paZk2oa+fCX1igBtda7rEQb+ayjV
+         zY4NIkCqBc63MsT+YQbkjQeHScYL3ttZbGKxn/RBSmzy2phJ4QtgWQZaoZennSYuv2EE
+         Z8Bi1RqyaqF4gC6z12+OoNyTbWsqQcg2bZXeKcQoAYlTjy7GNbOjL4k4c9zGx71CeGce
+         sJvXIWptNamIZ6IWo86c3VsXwJ47D4lUVW/89Ru9+6Y++BJ2jQRGXdgXAkA34NT8iQAz
+         WWNw==
+X-Gm-Message-State: AOAM532aYOBsDf4n0HCzNiVdvMP5jxlZlR1EpcndMbVuqLoR9BtWec82
+        /Mojr2Nsrr9oMV3dk3uvWoL5fgp9C+tNJhGkxxSAuw==
+X-Google-Smtp-Source: ABdhPJy8KN/9grhnwkimwQACJ6SAuvwZovEjixiYVhsLIag8rk3K/bJAZV1lc/Yt7ptOv+azP1Utu40/QynZ3cYAZgw=
+X-Received: by 2002:a67:ff01:: with SMTP id v1mr26767vsp.10.1603147887388;
+ Mon, 19 Oct 2020 15:51:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1602708025.git.andreyknvl@google.com> <CANpmjNOV90-eZyX9wjsahBkzCFMtm=Y0KtLn_VLDXVO_ehsR1g@mail.gmail.com>
+ <CAAeHK+zOaGJbG0HbVRHrYv8yNmPV0Anf5hvDGcHoZVZ2bF+LBg@mail.gmail.com>
+ <CANpmjNPvx4oozqSf9ZXN8FhZia03Y0Ar0twrogkfoxTekHx39A@mail.gmail.com> <CAAeHK+yuUJFbQBCPyp7S+hVMzBM0m=tgrWLMCskELF6SXHXimw@mail.gmail.com>
+In-Reply-To: <CAAeHK+yuUJFbQBCPyp7S+hVMzBM0m=tgrWLMCskELF6SXHXimw@mail.gmail.com>
+From:   Kostya Serebryany <kcc@google.com>
+Date:   Mon, 19 Oct 2020 15:51:15 -0700
+Message-ID: <CAN=P9pjxptTQyvZQg7Z9XA50kFfRBc=E3iaK-KR14Fqay7Xo-Q@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/8] kasan: hardware tag-based mode for production use
+ on arm64
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Serban Constantinescu <serbanc@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sc7180 lpass clock driver manages two different devices.  These
-two devices were tangled together, using one probe and a lookup to
-figure out the real probe.  I think it's cleaner to really separate
-the probe for these two devices since they're really different things,
-just both managed by the same driver.
+Hi,
+I would like to hear opinions from others in CC on these choices:
+* Production use of In-kernel MTE should be based on stripped-down
+KASAN, or implemented independently?
+* Should we aim at a single boot-time flag (with several values) or
+for several independent flags (OFF/SYNC/ASYNC, Stack traces on/off)
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+Andrey, please give us some idea of the CPU and RAM overheads other
+than those coming from MTE
+* stack trace collection and storage
+* adding redzones to every allocation - not strictly needed for MTE,
+but convenient to store the stack trace IDs.
 
-Note: this is now a 2-patch cleanup series with no actual bugfixes
-since the problem solved by patch #3 was better solved with:
+Andrey: with production MTE we should not be using quarantine, which
+means storing the stack trace IDs
+in the deallocated memory doesn't provide good report quality.
+We may need to consider another approach, e.g. the one used in HWASAN
+(separate ring buffer, per thread or per core)
 
-https://lore.kernel.org/r/20201017020137.1251319-1-sboyd@kernel.org
+--kcc
 
-Changes in v5:
-- Two blank lines inserted before "return" statements.
 
-Changes in v3:
-- ("clk: qcom: lpass-sc7180: Disentangle the two clock devices") new for v3.
-
- drivers/clk/qcom/lpasscorecc-sc7180.c | 103 ++++++++++++++++----------
- 1 file changed, 64 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
-index 2d15e33ec837..1a3925badd7c 100644
---- a/drivers/clk/qcom/lpasscorecc-sc7180.c
-+++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
-@@ -366,12 +366,39 @@ static void lpass_pm_clk_destroy(void *data)
- 	pm_clk_destroy(data);
- }
- 
-+static int lpass_create_pm_clks(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	pm_runtime_enable(&pdev->dev);
-+	ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_runtime_disable, &pdev->dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = pm_clk_create(&pdev->dev);
-+	if (ret)
-+		return ret;
-+	ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_clk_destroy, &pdev->dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = pm_clk_add(&pdev->dev, "iface");
-+	if (ret < 0)
-+		dev_err(&pdev->dev, "failed to acquire iface clock\n");
-+
-+	return ret;
-+}
-+
- static int lpass_core_cc_sc7180_probe(struct platform_device *pdev)
- {
- 	const struct qcom_cc_desc *desc;
- 	struct regmap *regmap;
- 	int ret;
- 
-+	ret = lpass_create_pm_clks(pdev);
-+	if (ret)
-+		return ret;
-+
- 	lpass_core_cc_sc7180_regmap_config.name = "lpass_audio_cc";
- 	desc = &lpass_audio_hm_sc7180_desc;
- 	ret = qcom_cc_probe_by_index(pdev, 1, desc);
-@@ -402,6 +429,11 @@ static int lpass_core_cc_sc7180_probe(struct platform_device *pdev)
- static int lpass_hm_core_probe(struct platform_device *pdev)
- {
- 	const struct qcom_cc_desc *desc;
-+	int ret;
-+
-+	ret = lpass_create_pm_clks(pdev);
-+	if (ret)
-+		return ret;
- 
- 	lpass_core_cc_sc7180_regmap_config.name = "lpass_hm_core";
- 	desc = &lpass_core_hm_sc7180_desc;
-@@ -409,55 +441,28 @@ static int lpass_hm_core_probe(struct platform_device *pdev)
- 	return qcom_cc_probe_by_index(pdev, 0, desc);
- }
- 
--static const struct of_device_id lpass_core_cc_sc7180_match_table[] = {
-+static const struct of_device_id lpass_hm_sc7180_match_table[] = {
- 	{
- 		.compatible = "qcom,sc7180-lpasshm",
--		.data = lpass_hm_core_probe,
- 	},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, lpass_hm_sc7180_match_table);
-+
-+static const struct of_device_id lpass_core_cc_sc7180_match_table[] = {
- 	{
- 		.compatible = "qcom,sc7180-lpasscorecc",
--		.data = lpass_core_cc_sc7180_probe,
- 	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, lpass_core_cc_sc7180_match_table);
- 
--static int lpass_core_sc7180_probe(struct platform_device *pdev)
--{
--	int (*clk_probe)(struct platform_device *p);
--	int ret;
--
--	pm_runtime_enable(&pdev->dev);
--	ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_runtime_disable, &pdev->dev);
--	if (ret)
--		return ret;
--
--	ret = pm_clk_create(&pdev->dev);
--	if (ret)
--		return ret;
--	ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_clk_destroy, &pdev->dev);
--	if (ret)
--		return ret;
--
--	ret = pm_clk_add(&pdev->dev, "iface");
--	if (ret < 0) {
--		dev_err(&pdev->dev, "failed to acquire iface clock\n");
--		return ret;
--	}
--
--	clk_probe = of_device_get_match_data(&pdev->dev);
--	if (!clk_probe)
--		return -EINVAL;
--
--	return clk_probe(pdev);
--}
--
- static const struct dev_pm_ops lpass_core_cc_pm_ops = {
- 	SET_RUNTIME_PM_OPS(pm_clk_suspend, pm_clk_resume, NULL)
- };
- 
- static struct platform_driver lpass_core_cc_sc7180_driver = {
--	.probe = lpass_core_sc7180_probe,
-+	.probe = lpass_core_cc_sc7180_probe,
- 	.driver = {
- 		.name = "lpass_core_cc-sc7180",
- 		.of_match_table = lpass_core_cc_sc7180_match_table,
-@@ -465,17 +470,37 @@ static struct platform_driver lpass_core_cc_sc7180_driver = {
- 	},
- };
- 
--static int __init lpass_core_cc_sc7180_init(void)
-+static const struct dev_pm_ops lpass_hm_pm_ops = {
-+	SET_RUNTIME_PM_OPS(pm_clk_suspend, pm_clk_resume, NULL)
-+};
-+
-+static struct platform_driver lpass_hm_sc7180_driver = {
-+	.probe = lpass_hm_core_probe,
-+	.driver = {
-+		.name = "lpass_hm-sc7180",
-+		.of_match_table = lpass_hm_sc7180_match_table,
-+		.pm = &lpass_hm_pm_ops,
-+	},
-+};
-+
-+static int __init lpass_sc7180_init(void)
- {
--	return platform_driver_register(&lpass_core_cc_sc7180_driver);
-+	int ret;
-+
-+	ret = platform_driver_register(&lpass_core_cc_sc7180_driver);
-+	if (ret)
-+		return ret;
-+
-+	return platform_driver_register(&lpass_hm_sc7180_driver);
- }
--subsys_initcall(lpass_core_cc_sc7180_init);
-+subsys_initcall(lpass_sc7180_init);
- 
--static void __exit lpass_core_cc_sc7180_exit(void)
-+static void __exit lpass_sc7180_exit(void)
- {
-+	platform_driver_unregister(&lpass_hm_sc7180_driver);
- 	platform_driver_unregister(&lpass_core_cc_sc7180_driver);
- }
--module_exit(lpass_core_cc_sc7180_exit);
-+module_exit(lpass_sc7180_exit);
- 
- MODULE_DESCRIPTION("QTI LPASS_CORE_CC SC7180 Driver");
- MODULE_LICENSE("GPL v2");
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+On Fri, Oct 16, 2020 at 8:52 AM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> On Fri, Oct 16, 2020 at 3:31 PM Marco Elver <elver@google.com> wrote:
+> >
+> > On Fri, 16 Oct 2020 at 15:17, 'Andrey Konovalov' via kasan-dev
+> > <kasan-dev@googlegroups.com> wrote:
+> > [...]
+> > > > > The intention with this kind of a high level switch is to hide the
+> > > > > implementation details. Arguably, we could add multiple switches that allow
+> > > > > to separately control each KASAN or MTE feature, but I'm not sure there's
+> > > > > much value in that.
+> > > > >
+> > > > > Does this make sense? Any preference regarding the name of the parameter
+> > > > > and its values?
+> > > >
+> > > > KASAN itself used to be a debugging tool only. So introducing an "on"
+> > > > mode which no longer follows this convention may be confusing.
+> > >
+> > > Yeah, perhaps "on" is not the best name here.
+> > >
+> > > > Instead, maybe the following might be less confusing:
+> > > >
+> > > > "full" - current "debug", normal KASAN, all debugging help available.
+> > > > "opt" - current "on", optimized mode for production.
+> > >
+> > > How about "prod" here?
+> >
+> > SGTM.
+> >
+> > [...]
+> > >
+> > > > > Should we somehow control whether to panic the kernel on a tag fault?
+> > > > > Another boot time parameter perhaps?
+> > > >
+> > > > It already respects panic_on_warn, correct?
+> > >
+> > > Yes, but Android is unlikely to enable panic_on_warn as they have
+> > > warnings happening all over. AFAIR Pixel 3/4 kernels actually have a
+> > > custom patch that enables kernel panic for KASAN crashes specifically
+> > > (even though they don't obviously use KASAN in production), and I
+> > > think it's better to provide a similar facility upstream. Maybe call
+> > > it panic_on_kasan or something?
+> >
+> > Best would be if kasan= can take another option, e.g.
+> > "kasan=prod,panic". I think you can change the strcmp() to a
+> > str_has_prefix() for the checks for full/prod/on/off, and then check
+> > if what comes after it is ",panic".
+> >
+> > Thanks,
+> > -- Marco
+>
+> CC Kostya and Serban.
