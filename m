@@ -2,82 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D7F2926D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D6E2926D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgJSLy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:54:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45166 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726249AbgJSLy4 (ORCPT
+        id S1727424AbgJSLzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:55:13 -0400
+Received: from m15114.mail.126.com ([220.181.15.114]:53156 "EHLO
+        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726249AbgJSLzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:54:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603108495;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=syJyp0LZAACFoq8I2v22ukFUQBSHrf8TktVNFyazXaM=;
-        b=NKc+eQg40hb5VyDZ0jACx6jOtv/LayqfyqvFHXpIGF/9GY0LvjpmcH2r/9Iz+tZ6h1CUb6
-        zl1KuxGWVBgdkw1FS5xoPCOOhYgH2EKBQtaPDDC4/mY6w1sD9n0dWWKR6oUiwmCIZiljfp
-        czWj0mUoT/jy/F0xUNe+jp8lQFcLeWA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-264-PE9Of15rPs6GGKWQecEMog-1; Mon, 19 Oct 2020 07:54:51 -0400
-X-MC-Unique: PE9Of15rPs6GGKWQecEMog-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30F3418A8220;
-        Mon, 19 Oct 2020 11:54:50 +0000 (UTC)
-Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 185AD6EF41;
-        Mon, 19 Oct 2020 11:54:46 +0000 (UTC)
-Subject: Re: [PATCH v3] mm/compaction: Rename 'start_pfn' to
- 'iteration_start_pfn' in compact_zone()
-To:     yanfei.xu@windriver.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        pankaj.gupta.linux@gmail.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20201019115044.1571-1-yanfei.xu@windriver.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <2dfd5820-ca92-8a73-6dcb-00b6ce6c735a@redhat.com>
-Date:   Mon, 19 Oct 2020 13:54:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <20201019115044.1571-1-yanfei.xu@windriver.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Mon, 19 Oct 2020 07:55:13 -0400
+X-Greylist: delayed 1805 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Oct 2020 07:55:12 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=OFtEsqbgr+92eux+bA
+        JK5hFDJIJWbwGaB1Mx7vK03yk=; b=FAJr/J/xpAHxCKI9vpHIdJADJ0SX4E+lkh
+        BmcUldP/Sl5M0Hk1KDB35RXa9QwK2bTvg66P4w0XgU93X8BdNGTBQCpJkq3/W1ZK
+        vp3H6LEAKSvdGNBAf00Is+uFWHcNKBfBOurvZvebXiwwcIARLD/WatFoJDTrEAMa
+        xFiHev8a0=
+Received: from localhost.localdomain (unknown [36.112.86.14])
+        by smtp7 (Coremail) with SMTP id DsmowABHTW2Yfo1fu6MPKQ--.47297S2;
+        Mon, 19 Oct 2020 19:55:05 +0800 (CST)
+From:   Defang Bo <bodefang@126.com>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Defang Bo <bodefang@126.com>
+Subject: [PATCH] media: v4l2-compat-ioctl32: check for max size
+Date:   Mon, 19 Oct 2020 19:54:49 +0800
+Message-Id: <1603108489-4832-1-git-send-email-bodefang@126.com>
+X-Mailer: git-send-email 1.9.1
+X-CM-TRANSID: DsmowABHTW2Yfo1fu6MPKQ--.47297S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKryUWFW7Xw1xKr18GFy3Jwb_yoWfArcEqw
+        nrWFn7WF4DJFn7A34ktay3Z34a9an7uryrGFZrtrWaqr9rA3WqyrWvvr9rGrsrWa1jyFn8
+        ZFs3Wr17CF17GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0J5r7UUUUU==
+X-Originating-IP: [36.112.86.14]
+X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbitBnC11pEBvGt+gAAsG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.10.20 13:50, yanfei.xu@windriver.com wrote:
-> From: Yanfei Xu <yanfei.xu@windriver.com>
-> 
-> There are two 'start_pfn' declared in compact_zone() which have
-> different meaning. Rename the second one to 'iteration_start_pfn'
-> to prevent confusion.
-> 
-> BTW, remove an useless semicolon.
-> 
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> Acked-by: David Hildenbrand <david@redhat.com>
+Similar to commit<ea72fbf588ac>("media: v4l2-compat-ioctl32: prevent go past max size"} ,add max size check for count variable.
 
-^ huh, where does that come from? (you should only add acks in case they
-were explicitly spelled out)
+Signed-off-by: Defang Bo <bodefang@126.com>
+---
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Anyhow, now you can keep it :)
-
-Acked-by: David Hildenbrand <david@redhat.com>
-
-
+diff --git a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+index a99e82e..5041d60 100644
+--- a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
++++ b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+@@ -207,7 +207,7 @@ static int put_v4l2_window32(struct v4l2_window __user *p64,
+ 	    get_user(clipcount, &p64->clipcount) ||
+ 	    put_user(clipcount, &p32->clipcount))
+ 		return -EFAULT;
+-	if (!clipcount)
++	if (!clipcount || count > (U32_MAX/sizeof(*uclips)))
+ 		return 0;
+ 
+ 	if (get_user(kclips, &p64->clips))
 -- 
-Thanks,
-
-David / dhildenb
+1.9.1
 
