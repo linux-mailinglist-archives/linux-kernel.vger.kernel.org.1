@@ -2,782 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2395D292123
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40BF292129
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730850AbgJSC0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 22:26:46 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:38373 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730740AbgJSC0p (ORCPT
+        id S1730830AbgJSCdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 22:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728791AbgJSCdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 22:26:45 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UCPnUdK_1603074391;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCPnUdK_1603074391)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 19 Oct 2020 10:26:31 +0800
-Date:   Mon, 19 Oct 2020 10:26:30 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: Re: [PATCH v1 25/29] virtio-mem: Big Block Mode (BBM) memory hotplug
-Message-ID: <20201019022630.GB54484@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20201012125323.17509-1-david@redhat.com>
- <20201012125323.17509-26-david@redhat.com>
+        Sun, 18 Oct 2020 22:33:45 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5E4C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 19:33:44 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id p15so8785999wmi.4
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 19:33:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VBN/6CP/+ltPqdamjKu98WNiNi7S6ZEKhupkah4Br1c=;
+        b=hV63/hxW3sBUBXLnuV54MuJa2DdDe7YEv/dYeKTGNfQvDOv3Ui+Ggz7T7AAyMX2isX
+         VdYbmBeSqXJqfT32pfF+YbRk4kino2tGi9nWzLmzqAEg7OSzMEFy/W4nqugmkBsU5nqx
+         07yGPNKxCy7WEch9pi0GKaOxelBIwUcW1xElYftBxEPtvfDOO8n36H1Fd980GZacGDEk
+         VvT6+p+eo7oajZPaU5gfmDQ9boYl51YTWsN6CaC/kFLQ6Vkmj4JsnaKv20/xt40GtUlX
+         ljvwOOOvDAzxehh1nSg8I9qavUIRGO8LwACuk3F7nrZCsFFiL6ELNehxggDAOacp4+xS
+         1t6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VBN/6CP/+ltPqdamjKu98WNiNi7S6ZEKhupkah4Br1c=;
+        b=XhitX2i6Bm+x7zWqvsA9YD2Jeufq5oWn9lsZ/8jKOtURFqEWBMAtdZDVaEGxRU0wNx
+         Ds7Q1ex8yxM04gymEDPTsvzqHiUVTseIViw9Mc8Nv+G/BvvZsH+IKNZVwnGIddK9xJwS
+         tldlGKhIvqItEECCtL1pkCrYWsxEjJ9OcqKK5yURtWkUZtHTBN0lOMxgZ4CwWlUYq1K5
+         h4/60hKDvTkljQ5GEbidS3UeTcJ3RBjNiSAaYhQzl7B+lKCg22SbIuMam8KACgrFvCgD
+         kPEfz4jAoI2gU87EchMFCjqBYFt3EbQ0xVU87De13roGqqK5zMvPz9UyK79eflSD7pf0
+         19PQ==
+X-Gm-Message-State: AOAM531xYSVwTYyULEgyQbxIraYr0tuG8Y1mNEBzpWsZS1Bv8ccSbAaf
+        Xj0sqiQRml9QGigM68PfSlVFJrk0cv/S32PFYZCjhkTzHGqRSA==
+X-Google-Smtp-Source: ABdhPJzB5DOvyDDSp7xrHu51FkKWPOlUT1KhYRd62+NKzH8xN0RiVPg6E7qSaODPdlUXlyjb34W2tfyApr6feUN4rkY=
+X-Received: by 2002:a1c:e256:: with SMTP id z83mr14534843wmg.37.1603074822730;
+ Sun, 18 Oct 2020 19:33:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012125323.17509-26-david@redhat.com>
+References: <20200527201119.1692513-1-bigeasy@linutronix.de>
+ <20200527201119.1692513-8-bigeasy@linutronix.de> <20201019015252.GA61728@google.com>
+In-Reply-To: <20201019015252.GA61728@google.com>
+From:   Hugh Dickins <hughd@google.com>
+Date:   Sun, 18 Oct 2020 19:33:15 -0700
+Message-ID: <CANsGZ6Z1pHJ-y+AZBngXbZnZC2yhOFtqT1RpP9FHCVdw3EYtRA@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] zram: Use local lock to protect per-CPU data
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 02:53:19PM +0200, David Hildenbrand wrote:
->Currently, we do not support device block sizes that exceed the Linux
->memory block size. For example, having a device block size of 1 GiB (e.g.,
->gigantic pages in the hypervisor) won't work with 128 MiB Linux memory
->blocks.
+On Sun, Oct 18, 2020 at 6:53 PM Yu Zhao <yuzhao@google.com> wrote:
 >
->Let's implement Big Block Mode (BBM), whereby we add/remove at least
->one Linux memory block at a time. With a 1 GiB device block size, a Big
->Block (BB) will cover 8 Linux memory blocks.
+> On Wed, May 27, 2020 at 10:11:19PM +0200, Sebastian Andrzej Siewior wrote:
+> > From: Mike Galbraith <umgwanakikbuti@gmail.com>
+> >
+> > The zcomp driver uses per-CPU compression. The per-CPU data pointer is
+> > acquired with get_cpu_ptr() which implicitly disables preemption.
+> > It allocates memory inside the preempt disabled region which conflicts
+> > with the PREEMPT_RT semantics.
+> >
+> > Replace the implicit preemption control with an explicit local lock.
+> > This allows RT kernels to substitute it with a real per CPU lock, which
+> > serializes the access but keeps the code section preemptible. On non RT
+> > kernels this maps to preempt_disable() as before, i.e. no functional
+> > change.
 >
->We'll keep registering the online_page_callback machinery, it will be used
->for safe memory hotunplug in BBM next.
+> Hi,
 >
->Note: BBM is properly prepared for variable-sized Linux memory
->blocks that we might see in the future. So we won't care how many Linux
->memory blocks a big block actually spans, and how the memory notifier is
->called.
->
->Cc: "Michael S. Tsirkin" <mst@redhat.com>
->Cc: Jason Wang <jasowang@redhat.com>
->Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->Cc: Michal Hocko <mhocko@kernel.org>
->Cc: Oscar Salvador <osalvador@suse.de>
->Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
->Cc: Andrew Morton <akpm@linux-foundation.org>
->Signed-off-by: David Hildenbrand <david@redhat.com>
->---
-> drivers/virtio/virtio_mem.c | 484 ++++++++++++++++++++++++++++++------
-> 1 file changed, 402 insertions(+), 82 deletions(-)
->
->diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
->index e68d0d99590c..4d396ef98a92 100644
->--- a/drivers/virtio/virtio_mem.c
->+++ b/drivers/virtio/virtio_mem.c
->@@ -30,12 +30,18 @@ MODULE_PARM_DESC(unplug_online, "Try to unplug online memory");
-> /*
->  * virtio-mem currently supports the following modes of operation:
->  *
->- * * Sub Block Mode (SBM): A Linux memory block spans 1..X subblocks (SB). The
->+ * * Sub Block Mode (SBM): A Linux memory block spans 2..X subblocks (SB). The
->  *   size of a Sub Block (SB) is determined based on the device block size, the
->  *   pageblock size, and the maximum allocation granularity of the buddy.
->  *   Subblocks within a Linux memory block might either be plugged or unplugged.
->  *   Memory is added/removed to Linux MM in Linux memory block granularity.
->  *
->+ * * Big Block Mode (BBM): A Big Block (BB) spans 1..X Linux memory blocks.
->+ *   Memory is added/removed to Linux MM in Big Block granularity.
->+ *
->+ * The mode is determined automatically based on the Linux memory block size
->+ * and the device block size.
->+ *
->  * User space / core MM (auto onlining) is responsible for onlining added
->  * Linux memory blocks - and for selecting a zone. Linux Memory Blocks are
->  * always onlined separately, and all memory within a Linux memory block is
->@@ -61,6 +67,19 @@ enum virtio_mem_sbm_mb_state {
-> 	VIRTIO_MEM_SBM_MB_COUNT
-> };
-> 
->+/*
->+ * State of a Big Block (BB) in BBM, covering 1..X Linux memory blocks.
->+ */
->+enum virtio_mem_bbm_bb_state {
->+	/* Unplugged, not added to Linux. Can be reused later. */
->+	VIRTIO_MEM_BBM_BB_UNUSED = 0,
->+	/* Plugged, not added to Linux. Error on add_memory(). */
->+	VIRTIO_MEM_BBM_BB_PLUGGED,
->+	/* Plugged and added to Linux. */
->+	VIRTIO_MEM_BBM_BB_ADDED,
->+	VIRTIO_MEM_BBM_BB_COUNT
->+};
->+
-> struct virtio_mem {
-> 	struct virtio_device *vdev;
-> 
->@@ -113,6 +132,9 @@ struct virtio_mem {
-> 	atomic64_t offline_size;
-> 	uint64_t offline_threshold;
-> 
->+	/* If set, the driver is in SBM, otherwise in BBM. */
->+	bool in_sbm;
->+
-> 	struct {
-> 		/* Id of the first memory block of this device. */
-> 		unsigned long first_mb_id;
->@@ -151,9 +173,27 @@ struct virtio_mem {
-> 		unsigned long *sb_states;
-> 	} sbm;
-> 
->+	struct {
->+		/* Id of the first big block of this device. */
->+		unsigned long first_bb_id;
->+		/* Id of the last usable big block of this device. */
->+		unsigned long last_usable_bb_id;
->+		/* Id of the next device bock to prepare when needed. */
->+		unsigned long next_bb_id;
->+
->+		/* Summary of all big block states. */
->+		unsigned long bb_count[VIRTIO_MEM_BBM_BB_COUNT];
->+
->+		/* One byte state per big block. See sbm.mb_states. */
->+		uint8_t *bb_states;
->+
->+		/* The block size used for (un)plugged, adding/removing. */
->+		uint64_t bb_size;
->+	} bbm;
->+
-> 	/*
->-	 * Mutex that protects the sbm.mb_count, sbm.mb_states, and
->-	 * sbm.sb_states.
->+	 * Mutex that protects the sbm.mb_count, sbm.mb_states,
->+	 * sbm.sb_states, bbm.bb_count, and bbm.bb_states
-> 	 *
-> 	 * When this lock is held the pointers can't change, ONLINE and
-> 	 * OFFLINE blocks can't change the state and no subblocks will get
->@@ -247,6 +287,24 @@ static unsigned long virtio_mem_mb_id_to_phys(unsigned long mb_id)
-> 	return mb_id * memory_block_size_bytes();
-> }
-> 
->+/*
->+ * Calculate the big block id of a given address.
->+ */
->+static unsigned long virtio_mem_phys_to_bb_id(struct virtio_mem *vm,
->+					      uint64_t addr)
->+{
->+	return addr / vm->bbm.bb_size;
->+}
->+
->+/*
->+ * Calculate the physical start address of a given big block id.
->+ */
->+static uint64_t virtio_mem_bb_id_to_phys(struct virtio_mem *vm,
->+					 unsigned long bb_id)
->+{
->+	return bb_id * vm->bbm.bb_size;
->+}
->+
-> /*
->  * Calculate the subblock id of a given address.
->  */
->@@ -259,6 +317,67 @@ static unsigned long virtio_mem_phys_to_sb_id(struct virtio_mem *vm,
-> 	return (addr - mb_addr) / vm->sbm.sb_size;
-> }
-> 
->+/*
->+ * Set the state of a big block, taking care of the state counter.
->+ */
->+static void virtio_mem_bbm_set_bb_state(struct virtio_mem *vm,
->+					unsigned long bb_id,
->+					enum virtio_mem_bbm_bb_state state)
->+{
->+	const unsigned long idx = bb_id - vm->bbm.first_bb_id;
->+	enum virtio_mem_bbm_bb_state old_state;
->+
->+	old_state = vm->bbm.bb_states[idx];
->+	vm->bbm.bb_states[idx] = state;
->+
->+	BUG_ON(vm->bbm.bb_count[old_state] == 0);
->+	vm->bbm.bb_count[old_state]--;
->+	vm->bbm.bb_count[state]++;
->+}
->+
->+/*
->+ * Get the state of a big block.
->+ */
->+static enum virtio_mem_bbm_bb_state virtio_mem_bbm_get_bb_state(struct virtio_mem *vm,
->+								unsigned long bb_id)
->+{
->+	return vm->bbm.bb_states[bb_id - vm->bbm.first_bb_id];
->+}
->+
->+/*
->+ * Prepare the big block state array for the next big block.
->+ */
->+static int virtio_mem_bbm_bb_states_prepare_next_bb(struct virtio_mem *vm)
->+{
->+	unsigned long old_bytes = vm->bbm.next_bb_id - vm->bbm.first_bb_id;
->+	unsigned long new_bytes = old_bytes + 1;
->+	int old_pages = PFN_UP(old_bytes);
->+	int new_pages = PFN_UP(new_bytes);
->+	uint8_t *new_array;
->+
->+	if (vm->bbm.bb_states && old_pages == new_pages)
->+		return 0;
->+
->+	new_array = vzalloc(new_pages * PAGE_SIZE);
->+	if (!new_array)
->+		return -ENOMEM;
->+
->+	mutex_lock(&vm->hotplug_mutex);
->+	if (vm->bbm.bb_states)
->+		memcpy(new_array, vm->bbm.bb_states, old_pages * PAGE_SIZE);
->+	vfree(vm->bbm.bb_states);
->+	vm->bbm.bb_states = new_array;
->+	mutex_unlock(&vm->hotplug_mutex);
->+
->+	return 0;
->+}
->+
->+#define virtio_mem_bbm_for_each_bb(_vm, _bb_id, _state) \
->+	for (_bb_id = vm->bbm.first_bb_id; \
->+	     _bb_id < vm->bbm.next_bb_id && _vm->bbm.bb_count[_state]; \
->+	     _bb_id++) \
->+		if (virtio_mem_bbm_get_bb_state(_vm, _bb_id) == _state)
->+
-> /*
->  * Set the state of a memory block, taking care of the state counter.
->  */
->@@ -504,6 +623,17 @@ static int virtio_mem_sbm_add_mb(struct virtio_mem *vm, unsigned long mb_id)
-> 	return virtio_mem_add_memory(vm, addr, size);
-> }
-> 
->+/*
->+ * See virtio_mem_add_memory(): Try adding a big block.
->+ */
->+static int virtio_mem_bbm_add_bb(struct virtio_mem *vm, unsigned long bb_id)
->+{
->+	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
->+	const uint64_t size = vm->bbm.bb_size;
->+
->+	return virtio_mem_add_memory(vm, addr, size);
->+}
->+
-> /*
->  * Try removing memory from Linux. Will only fail if memory blocks aren't
->  * offline.
->@@ -731,20 +861,33 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
-> 	struct memory_notify *mhp = arg;
-> 	const unsigned long start = PFN_PHYS(mhp->start_pfn);
-> 	const unsigned long size = PFN_PHYS(mhp->nr_pages);
->-	const unsigned long mb_id = virtio_mem_phys_to_mb_id(start);
-> 	int rc = NOTIFY_OK;
->+	unsigned long id;
-> 
-> 	if (!virtio_mem_overlaps_range(vm, start, size))
-> 		return NOTIFY_DONE;
-> 
->-	/*
->-	 * Memory is onlined/offlined in memory block granularity. We cannot
->-	 * cross virtio-mem device boundaries and memory block boundaries. Bail
->-	 * out if this ever changes.
->-	 */
->-	if (WARN_ON_ONCE(size != memory_block_size_bytes() ||
->-			 !IS_ALIGNED(start, memory_block_size_bytes())))
->-		return NOTIFY_BAD;
->+	if (vm->in_sbm) {
->+		id = virtio_mem_phys_to_mb_id(start);
->+		/*
->+		 * In SBM, we add memory in separate memory blocks - we expect
->+		 * it to be onlined/offlined in the same granularity. Bail out
->+		 * if this ever changes.
->+		 */
->+		if (WARN_ON_ONCE(size != memory_block_size_bytes() ||
->+				 !IS_ALIGNED(start, memory_block_size_bytes())))
->+			return NOTIFY_BAD;
->+	} else {
->+		id = virtio_mem_phys_to_bb_id(vm, start);
->+		/*
->+		 * In BBM, we only care about onlining/offlining happening
->+		 * within a single big block, we don't care about the
->+		 * actual granularity as we don't track individual Linux
->+		 * memory blocks.
->+		 */
->+		if (WARN_ON_ONCE(id != virtio_mem_phys_to_bb_id(vm, start + size - 1)))
->+			return NOTIFY_BAD;
->+	}
-> 
-> 	/*
-> 	 * Avoid circular locking lockdep warnings. We lock the mutex
->@@ -763,7 +906,8 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
-> 			break;
-> 		}
-> 		vm->hotplug_active = true;
->-		virtio_mem_sbm_notify_going_offline(vm, mb_id);
->+		if (vm->in_sbm)
->+			virtio_mem_sbm_notify_going_offline(vm, id);
-> 		break;
-> 	case MEM_GOING_ONLINE:
-> 		mutex_lock(&vm->hotplug_mutex);
->@@ -773,10 +917,12 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
-> 			break;
-> 		}
-> 		vm->hotplug_active = true;
->-		rc = virtio_mem_sbm_notify_going_online(vm, mb_id);
->+		if (vm->in_sbm)
->+			rc = virtio_mem_sbm_notify_going_online(vm, id);
-> 		break;
-> 	case MEM_OFFLINE:
->-		virtio_mem_sbm_notify_offline(vm, mb_id);
->+		if (vm->in_sbm)
->+			virtio_mem_sbm_notify_offline(vm, id);
-> 
-> 		atomic64_add(size, &vm->offline_size);
-> 		/*
->@@ -790,7 +936,8 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
-> 		mutex_unlock(&vm->hotplug_mutex);
-> 		break;
-> 	case MEM_ONLINE:
->-		virtio_mem_sbm_notify_online(vm, mb_id);
->+		if (vm->in_sbm)
->+			virtio_mem_sbm_notify_online(vm, id);
-> 
-> 		atomic64_sub(size, &vm->offline_size);
-> 		/*
->@@ -809,7 +956,8 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
-> 	case MEM_CANCEL_OFFLINE:
-> 		if (!vm->hotplug_active)
-> 			break;
->-		virtio_mem_sbm_notify_cancel_offline(vm, mb_id);
->+		if (vm->in_sbm)
->+			virtio_mem_sbm_notify_cancel_offline(vm, id);
-> 		vm->hotplug_active = false;
-> 		mutex_unlock(&vm->hotplug_mutex);
-> 		break;
->@@ -980,27 +1128,29 @@ static void virtio_mem_fake_offline_cancel_offline(unsigned long pfn,
-> static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
-> {
-> 	const unsigned long addr = page_to_phys(page);
->-	const unsigned long mb_id = virtio_mem_phys_to_mb_id(addr);
->+	unsigned long id, sb_id;
-> 	struct virtio_mem *vm;
->-	int sb_id;
->+	bool do_online;
-> 
->-	/*
->-	 * We exploit here that subblocks have at least MAX_ORDER_NR_PAGES.
->-	 * size/alignment and that this callback is is called with such a
->-	 * size/alignment. So we cannot cross subblocks and therefore
->-	 * also not memory blocks.
->-	 */
-> 	rcu_read_lock();
-> 	list_for_each_entry_rcu(vm, &virtio_mem_devices, next) {
-> 		if (!virtio_mem_contains_range(vm, addr, PFN_PHYS(1 << order)))
-> 			continue;
-> 
->-		sb_id = virtio_mem_phys_to_sb_id(vm, addr);
->-		/*
->-		 * If plugged, online the pages, otherwise, set them fake
->-		 * offline (PageOffline).
->-		 */
->-		if (virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id, 1))
->+		if (vm->in_sbm) {
->+			/*
->+			 * We exploit here that subblocks have at least
->+			 * MAX_ORDER_NR_PAGES size/alignment - so we cannot
->+			 * cross subblocks within one call.
->+			 */
->+			id = virtio_mem_phys_to_mb_id(addr);
->+			sb_id = virtio_mem_phys_to_sb_id(vm, addr);
->+			do_online = virtio_mem_sbm_test_sb_plugged(vm, id,
->+								   sb_id, 1);
->+		} else {
->+			do_online = true;
->+		}
->+		if (do_online)
-> 			generic_online_page(page, order);
-> 		else
-> 			virtio_mem_set_fake_offline(PFN_DOWN(addr), 1 << order,
->@@ -1180,6 +1330,32 @@ static int virtio_mem_sbm_unplug_sb(struct virtio_mem *vm, unsigned long mb_id,
-> 	return rc;
-> }
-> 
->+/*
->+ * Request to unplug a big block.
->+ *
->+ * Will not modify the state of the big block.
->+ */
->+static int virtio_mem_bbm_unplug_bb(struct virtio_mem *vm, unsigned long bb_id)
->+{
->+	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
->+	const uint64_t size = vm->bbm.bb_size;
->+
->+	return virtio_mem_send_unplug_request(vm, addr, size);
->+}
->+
->+/*
->+ * Request to plug a big block.
->+ *
->+ * Will not modify the state of the big block.
->+ */
->+static int virtio_mem_bbm_plug_bb(struct virtio_mem *vm, unsigned long bb_id)
->+{
->+	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
->+	const uint64_t size = vm->bbm.bb_size;
->+
->+	return virtio_mem_send_plug_request(vm, addr, size);
->+}
->+
-> /*
->  * Unplug the desired number of plugged subblocks of a offline or not-added
->  * memory block. Will fail if any subblock cannot get unplugged (instead of
->@@ -1365,10 +1541,7 @@ static int virtio_mem_sbm_plug_any_sb(struct virtio_mem *vm,
-> 	return 0;
-> }
-> 
->-/*
->- * Try to plug the requested amount of memory.
->- */
->-static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
->+static int virtio_mem_sbm_plug_request(struct virtio_mem *vm, uint64_t diff)
-> {
-> 	uint64_t nb_sb = diff / vm->sbm.sb_size;
-> 	unsigned long mb_id;
->@@ -1435,6 +1608,112 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
-> 	return rc;
-> }
-> 
->+/*
->+ * Plug a big block and add it to Linux.
->+ *
->+ * Will modify the state of the big block.
->+ */
->+static int virtio_mem_bbm_plug_and_add_bb(struct virtio_mem *vm,
->+					  unsigned long bb_id)
->+{
->+	int rc;
->+
->+	if (WARN_ON_ONCE(virtio_mem_bbm_get_bb_state(vm, bb_id) !=
->+			 VIRTIO_MEM_BBM_BB_UNUSED))
->+		return -EINVAL;
->+
->+	rc = virtio_mem_bbm_plug_bb(vm, bb_id);
->+	if (rc)
->+		return rc;
->+	virtio_mem_bbm_set_bb_state(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED);
->+
->+	rc = virtio_mem_bbm_add_bb(vm, bb_id);
->+	if (rc) {
->+		if (!virtio_mem_bbm_unplug_bb(vm, bb_id))
->+			virtio_mem_bbm_set_bb_state(vm, bb_id,
->+						    VIRTIO_MEM_BBM_BB_UNUSED);
->+		else
->+			/* Retry from the main loop. */
->+			virtio_mem_bbm_set_bb_state(vm, bb_id,
->+						    VIRTIO_MEM_BBM_BB_PLUGGED);
->+		return rc;
->+	}
->+	return 0;
->+}
->+
->+/*
->+ * Prepare tracking data for the next big block.
->+ */
->+static int virtio_mem_bbm_prepare_next_bb(struct virtio_mem *vm,
->+					  unsigned long *bb_id)
->+{
->+	int rc;
->+
->+	if (vm->bbm.next_bb_id > vm->bbm.last_usable_bb_id)
->+		return -ENOSPC;
->+
->+	/* Resize the big block state array if required. */
->+	rc = virtio_mem_bbm_bb_states_prepare_next_bb(vm);
->+	if (rc)
->+		return rc;
->+
->+	vm->bbm.bb_count[VIRTIO_MEM_BBM_BB_UNUSED]++;
->+	*bb_id = vm->bbm.next_bb_id;
->+	vm->bbm.next_bb_id++;
->+	return 0;
->+}
->+
->+static int virtio_mem_bbm_plug_request(struct virtio_mem *vm, uint64_t diff)
->+{
->+	uint64_t nb_bb = diff / vm->bbm.bb_size;
->+	unsigned long bb_id;
->+	int rc;
->+
->+	if (!nb_bb)
->+		return 0;
->+
->+	/* Try to plug and add unused big blocks */
->+	virtio_mem_bbm_for_each_bb(vm, bb_id, VIRTIO_MEM_BBM_BB_UNUSED) {
->+		if (!virtio_mem_could_add_memory(vm, vm->bbm.bb_size))
->+			return -ENOSPC;
->+
->+		rc = virtio_mem_bbm_plug_and_add_bb(vm, bb_id);
->+		if (!rc)
->+			nb_bb--;
->+		if (rc || !nb_bb)
->+			return rc;
->+		cond_resched();
->+	}
->+
->+	/* Try to prepare, plug and add new big blocks */
->+	while (nb_bb) {
->+		if (!virtio_mem_could_add_memory(vm, vm->bbm.bb_size))
->+			return -ENOSPC;
->+
->+		rc = virtio_mem_bbm_prepare_next_bb(vm, &bb_id);
->+		if (rc)
->+			return rc;
->+		rc = virtio_mem_bbm_plug_and_add_bb(vm, bb_id);
->+		if (!rc)
->+			nb_bb--;
->+		if (rc)
->+			return rc;
->+		cond_resched();
->+	}
->+
->+	return 0;
->+}
->+
->+/*
->+ * Try to plug the requested amount of memory.
->+ */
->+static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
->+{
->+	if (vm->in_sbm)
->+		return virtio_mem_sbm_plug_request(vm, diff);
->+	return virtio_mem_bbm_plug_request(vm, diff);
->+}
->+
-> /*
->  * Unplug the desired number of plugged subblocks of an offline memory block.
->  * Will fail if any subblock cannot get unplugged (instead of skipping it).
->@@ -1573,10 +1852,7 @@ static int virtio_mem_sbm_unplug_any_sb_online(struct virtio_mem *vm,
-> 	return 0;
-> }
-> 
->-/*
->- * Try to unplug the requested amount of memory.
->- */
->-static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
->+static int virtio_mem_sbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
-> {
-> 	uint64_t nb_sb = diff / vm->sbm.sb_size;
-> 	unsigned long mb_id;
->@@ -1642,20 +1918,42 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
-> 	return rc;
-> }
-> 
->+/*
->+ * Try to unplug the requested amount of memory.
->+ */
->+static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
->+{
->+	if (vm->in_sbm)
->+		return virtio_mem_sbm_unplug_request(vm, diff);
->+	return -EBUSY;
->+}
->+
-> /*
->  * Try to unplug all blocks that couldn't be unplugged before, for example,
->  * because the hypervisor was busy.
->  */
-> static int virtio_mem_unplug_pending_mb(struct virtio_mem *vm)
-> {
->-	unsigned long mb_id;
->+	unsigned long id;
-> 	int rc;
-> 
->-	virtio_mem_sbm_for_each_mb(vm, mb_id, VIRTIO_MEM_SBM_MB_PLUGGED) {
->-		rc = virtio_mem_sbm_unplug_mb(vm, mb_id);
->+	if (!vm->in_sbm) {
->+		virtio_mem_bbm_for_each_bb(vm, id,
->+					   VIRTIO_MEM_BBM_BB_PLUGGED) {
->+			rc = virtio_mem_bbm_unplug_bb(vm, id);
->+			if (rc)
->+				return rc;
->+			virtio_mem_bbm_set_bb_state(vm, id,
->+						    VIRTIO_MEM_BBM_BB_UNUSED);
->+		}
->+		return 0;
->+	}
->+
->+	virtio_mem_sbm_for_each_mb(vm, id, VIRTIO_MEM_SBM_MB_PLUGGED) {
->+		rc = virtio_mem_sbm_unplug_mb(vm, id);
-> 		if (rc)
-> 			return rc;
->-		virtio_mem_sbm_set_mb_state(vm, mb_id,
->+		virtio_mem_sbm_set_mb_state(vm, id,
-> 					    VIRTIO_MEM_SBM_MB_UNUSED);
-> 	}
-> 
->@@ -1681,7 +1979,13 @@ static void virtio_mem_refresh_config(struct virtio_mem *vm)
-> 			usable_region_size, &usable_region_size);
-> 	end_addr = vm->addr + usable_region_size;
-> 	end_addr = min(end_addr, phys_limit);
->-	vm->sbm.last_usable_mb_id = virtio_mem_phys_to_mb_id(end_addr) - 1;
->+
->+	if (vm->in_sbm)
->+		vm->sbm.last_usable_mb_id =
->+					 virtio_mem_phys_to_mb_id(end_addr) - 1;
->+	else
->+		vm->bbm.last_usable_bb_id =
->+				     virtio_mem_phys_to_bb_id(vm, end_addr) - 1;
-> 
-> 	/* see if there is a request to change the size */
-> 	virtio_cread_le(vm->vdev, struct virtio_mem_config, requested_size,
->@@ -1804,6 +2108,7 @@ static int virtio_mem_init_vq(struct virtio_mem *vm)
-> static int virtio_mem_init(struct virtio_mem *vm)
-> {
-> 	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
->+	uint64_t sb_size, addr;
-> 	uint16_t node_id;
-> 
-> 	if (!vm->vdev->config->get) {
->@@ -1836,16 +2141,6 @@ static int virtio_mem_init(struct virtio_mem *vm)
-> 	if (vm->nid == NUMA_NO_NODE)
-> 		vm->nid = memory_add_physaddr_to_nid(vm->addr);
-> 
->-	/*
->-	 * We always hotplug memory in memory block granularity. This way,
->-	 * we have to wait for exactly one memory block to online.
->-	 */
->-	if (vm->device_block_size > memory_block_size_bytes()) {
->-		dev_err(&vm->vdev->dev,
->-			"The block size is not supported (too big).\n");
->-		return -EINVAL;
->-	}
->-
-> 	/* bad device setup - warn only */
-> 	if (!IS_ALIGNED(vm->addr, memory_block_size_bytes()))
-> 		dev_warn(&vm->vdev->dev,
->@@ -1865,20 +2160,35 @@ static int virtio_mem_init(struct virtio_mem *vm)
-> 	 * - Is required for now for alloc_contig_range() to work reliably -
-> 	 *   it doesn't properly handle smaller granularity on ZONE_NORMAL.
-> 	 */
->-	vm->sbm.sb_size = max_t(uint64_t, MAX_ORDER_NR_PAGES,
->-				pageblock_nr_pages) * PAGE_SIZE;
->-	vm->sbm.sb_size = max_t(uint64_t, vm->device_block_size,
->-				vm->sbm.sb_size);
->-	vm->sbm.sbs_per_mb = memory_block_size_bytes() / vm->sbm.sb_size;
->+	sb_size = max_t(uint64_t, MAX_ORDER_NR_PAGES,
->+			pageblock_nr_pages) * PAGE_SIZE;
->+	sb_size = max_t(uint64_t, vm->device_block_size, sb_size);
->+
->+	if (sb_size < memory_block_size_bytes()) {
->+		/* SBM: At least two subblocks per Linux memory block. */
->+		vm->in_sbm = true;
->+		vm->sbm.sb_size = sb_size;
->+		vm->sbm.sbs_per_mb = memory_block_size_bytes() /
->+				     vm->sbm.sb_size;
->+
->+		/* Round up to the next full memory block */
->+		addr = vm->addr + memory_block_size_bytes() - 1;
->+		vm->sbm.first_mb_id = virtio_mem_phys_to_mb_id(addr);
->+		vm->sbm.next_mb_id = vm->sbm.first_mb_id;
->+	} else {
->+		/* BBM: At least one Linux memory block. */
->+		vm->bbm.bb_size = vm->device_block_size;
-> 
->-	/* Round up to the next full memory block */
->-	vm->sbm.first_mb_id = virtio_mem_phys_to_mb_id(vm->addr - 1 +
->-						       memory_block_size_bytes());
->-	vm->sbm.next_mb_id = vm->sbm.first_mb_id;
->+		vm->bbm.first_bb_id = virtio_mem_phys_to_bb_id(vm, vm->addr);
+> This change seems to have introduced a potential deadlock. Can you
+> please take a look?
 
-Per my understanding, vm->addr is not guaranteed to be bb_size aligned, right?
+Probably needs Peter's fix
+https://lore.kernel.org/lkml/20201016124009.GQ2611@hirez.programming.kicks-ass.net/
 
-Why not round up to next big block?
-
->+		vm->bbm.next_bb_id = vm->bbm.first_bb_id;
->+	}
-> 
-> 	/* Prepare the offline threshold - make sure we can add two blocks. */
-> 	vm->offline_threshold = max_t(uint64_t, 2 * memory_block_size_bytes(),
-> 				      VIRTIO_MEM_DEFAULT_OFFLINE_THRESHOLD);
->+	/* In BBM, we also want at least two big blocks. */
->+	vm->offline_threshold = max_t(uint64_t, 2 * vm->bbm.bb_size,
->+				      vm->offline_threshold);
-> 
-> 	dev_info(&vm->vdev->dev, "start address: 0x%llx", vm->addr);
-> 	dev_info(&vm->vdev->dev, "region size: 0x%llx", vm->region_size);
->@@ -1886,8 +2196,12 @@ static int virtio_mem_init(struct virtio_mem *vm)
-> 		 (unsigned long long)vm->device_block_size);
-> 	dev_info(&vm->vdev->dev, "memory block size: 0x%lx",
-> 		 memory_block_size_bytes());
->-	dev_info(&vm->vdev->dev, "subblock size: 0x%llx",
->-		 (unsigned long long)vm->sbm.sb_size);
->+	if (vm->in_sbm)
->+		dev_info(&vm->vdev->dev, "subblock size: 0x%llx",
->+			 (unsigned long long)vm->sbm.sb_size);
->+	else
->+		dev_info(&vm->vdev->dev, "big block size: 0x%llx",
->+			 (unsigned long long)vm->bbm.bb_size);
-> 	if (vm->nid != NUMA_NO_NODE && IS_ENABLED(CONFIG_NUMA))
-> 		dev_info(&vm->vdev->dev, "nid: %d", vm->nid);
-> 
->@@ -2044,22 +2358,24 @@ static void virtio_mem_remove(struct virtio_device *vdev)
-> 	cancel_work_sync(&vm->wq);
-> 	hrtimer_cancel(&vm->retry_timer);
-> 
->-	/*
->-	 * After we unregistered our callbacks, user space can online partially
->-	 * plugged offline blocks. Make sure to remove them.
->-	 */
->-	virtio_mem_sbm_for_each_mb(vm, mb_id,
->-				   VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
->-		rc = virtio_mem_sbm_remove_mb(vm, mb_id);
->-		BUG_ON(rc);
->-		virtio_mem_sbm_set_mb_state(vm, mb_id,
->-					    VIRTIO_MEM_SBM_MB_UNUSED);
->+	if (vm->in_sbm) {
->+		/*
->+		 * After we unregistered our callbacks, user space can online
->+		 * partially plugged offline blocks. Make sure to remove them.
->+		 */
->+		virtio_mem_sbm_for_each_mb(vm, mb_id,
->+					   VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
->+			rc = virtio_mem_sbm_remove_mb(vm, mb_id);
->+			BUG_ON(rc);
->+			virtio_mem_sbm_set_mb_state(vm, mb_id,
->+						    VIRTIO_MEM_SBM_MB_UNUSED);
->+		}
->+		/*
->+		 * After we unregistered our callbacks, user space can no longer
->+		 * offline partially plugged online memory blocks. No need to
->+		 * worry about them.
->+		 */
-> 	}
->-	/*
->-	 * After we unregistered our callbacks, user space can no longer
->-	 * offline partially plugged online memory blocks. No need to worry
->-	 * about them.
->-	 */
-> 
-> 	/* unregister callbacks */
-> 	unregister_virtio_mem_device(vm);
->@@ -2078,8 +2394,12 @@ static void virtio_mem_remove(struct virtio_device *vdev)
-> 	}
-> 
-> 	/* remove all tracking data - no locking needed */
->-	vfree(vm->sbm.mb_states);
->-	vfree(vm->sbm.sb_states);
->+	if (vm->in_sbm) {
->+		vfree(vm->sbm.mb_states);
->+		vfree(vm->sbm.sb_states);
->+	} else {
->+		vfree(vm->bbm.bb_states);
->+	}
-> 
-> 	/* reset the device and cleanup the queues */
-> 	vdev->config->reset(vdev);
->-- 
->2.26.2
-
--- 
-Wei Yang
-Help you, Help me
+>
+> Thank you.
+>
+> [   40.030778] ======================================================
+> [   40.037706] WARNING: possible circular locking dependency detected
+> [   40.044637] 5.9.0-74216-g5c9472ed6825 #1 Tainted: G        W
+> [   40.051759] ------------------------------------------------------
+> [   40.058685] swapon/586 is trying to acquire lock:
+> [   40.063950] ffffe8ffffc0ee60 (&zstrm->lock){+.+.}-{2:2}, at: local_lock_acquire+0x5/0x70 [zram]
+> [   40.073739]
+> [   40.073739] but task is already holding lock:
+> [   40.080277] ffff888101a1f438 (&zspage->lock){.+.+}-{2:2}, at: zs_map_object+0x73/0x28d
+> [   40.089182]
+> [   40.089182] which lock already depends on the new lock.
+> [   40.089182]
+> [   40.098344]
+> [   40.098344] the existing dependency chain (in reverse order) is:
+> [   40.106715]
+> [   40.106715] -> #1 (&zspage->lock){.+.+}-{2:2}:
+> [   40.113386]        lock_acquire+0x1cd/0x2c3
+> [   40.118083]        _raw_read_lock+0x44/0x78
+> [   40.122781]        zs_map_object+0x73/0x28d
+> [   40.127479]        zram_bvec_rw+0x42e/0x75d [zram]
+> [   40.132855]        zram_submit_bio+0x1fc/0x2d7 [zram]
+> [   40.138526]        submit_bio_noacct+0x11b/0x372
+> [   40.143709]        submit_bio+0xfd/0x1b5
+> [   40.148113]        __block_write_full_page+0x302/0x56f
+> [   40.153877]        __writepage+0x1e/0x74
+> [   40.158281]        write_cache_pages+0x404/0x59a
+> [   40.163461]        generic_writepages+0x53/0x82
+> [   40.168545]        do_writepages+0x33/0x74
+> [   40.173145]        __filemap_fdatawrite_range+0x91/0xac
+> [   40.179005]        file_write_and_wait_range+0x39/0x87
+> [   40.184769]        blkdev_fsync+0x19/0x3e
+> [   40.189272]        do_fsync+0x39/0x5c
+> [   40.193384]        __x64_sys_fsync+0x13/0x17
+> [   40.198178]        do_syscall_64+0x37/0x45
+> [   40.202776]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   40.209022]
+> [   40.209022] -> #0 (&zstrm->lock){+.+.}-{2:2}:
+> [   40.215589]        validate_chain+0x1966/0x21a8
+> [   40.220673]        __lock_acquire+0x941/0xbba
+> [   40.225552]        lock_acquire+0x1cd/0x2c3
+> [   40.230250]        local_lock_acquire+0x21/0x70 [zram]
+> [   40.236015]        zcomp_stream_get+0x33/0x4d [zram]
+> [   40.241585]        zram_bvec_rw+0x476/0x75d [zram]
+> [   40.246963]        zram_rw_page+0xd8/0x17c [zram]
+> [   40.252240]        bdev_read_page+0x7a/0x9d
+> [   40.256933]        do_mpage_readpage+0x6b2/0x860
+> [   40.262101]        mpage_readahead+0x136/0x245
+> [   40.267089]        read_pages+0x60/0x1f9
+> [   40.271492]        page_cache_ra_unbounded+0x211/0x27b
+> [   40.277251]        generic_file_buffered_read+0x188/0xd4d
+> [   40.283296]        new_sync_read+0x10c/0x143
+> [   40.288088]        vfs_read+0xf4/0x1a5
+> [   40.292285]        ksys_read+0x73/0xd3
+> [   40.296483]        do_syscall_64+0x37/0x45
+> [   40.301072]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   40.307319]
+> [   40.307319] other info that might help us debug this:
+> [   40.307319]
+> [   40.316285]  Possible unsafe locking scenario:
+> [   40.316285]
+> [   40.322907]        CPU0                    CPU1
+> [   40.327972]        ----                    ----
+> [   40.333041]   lock(&zspage->lock);
+> [   40.336874]                                lock(&zstrm->lock);
+> [   40.343424]                                lock(&zspage->lock);
+> [   40.350071]   lock(&zstrm->lock);
+> [   40.353803]
+> [   40.353803]  *** DEADLOCK ***
+>
