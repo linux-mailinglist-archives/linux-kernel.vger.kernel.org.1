@@ -2,102 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20866292895
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DA629289B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728853AbgJSNuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:50:17 -0400
-Received: from mga18.intel.com ([134.134.136.126]:16870 "EHLO mga18.intel.com"
+        id S1728785AbgJSNvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:51:05 -0400
+Received: from m12-15.163.com ([220.181.12.15]:45803 "EHLO m12-15.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728277AbgJSNuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:50:16 -0400
-IronPort-SDR: zROtJJ/qlHkLW+zbpT8SPUYgCMBYGM9NUL1MG51/B78xQzHGueQpeItNy9CubQzwpuylyk/ByP
- TZx5TG+06vUw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="154820950"
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="154820950"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 06:50:15 -0700
-IronPort-SDR: +pykw250Fmb+Dshcu2KrEc924MczhvYpVBiKHpy/hpTZKJrn9+57nDSjxRW0A/Hg+iWit9nTr5
- gaWpYacS+kLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="422186200"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 19 Oct 2020 06:50:11 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 19 Oct 2020 16:50:10 +0300
-Date:   Mon, 19 Oct 2020 16:50:10 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, Amelie Delaunay <amelie.delaunay@st.com>
-Subject: Re: [PATCH v10 15/15] usb: typec: tcpci_maxim: Enable auto discharge
- disconnect
-Message-ID: <20201019135010.GI1667571@kuha.fi.intel.com>
-References: <20201008061556.1402293-1-badhri@google.com>
- <20201008061556.1402293-16-badhri@google.com>
+        id S1728277AbgJSNvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:51:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=z5YJ8
+        q3sjAt0NsS310V0zZIOMgHG+DxOWwMJx21y6pc=; b=lBHJJuMqufHWZMODOPJ+6
+        kYijA760F1LmItPuNLOfq++58BA1ihuB4kC/vL4FaQBD7FE8oaVGjPy8gcE5UW5M
+        gSQp1wSbReaKUf0pCO8nVnH6pdVp6Madb12z0kEIKZVvj0GEe8wsiGQoP+4MNGM4
+        mT3Dke/33hYpOz3T7SN64o=
+Received: from localhost (unknown [101.86.214.18])
+        by smtp11 (Coremail) with SMTP id D8CowAAHhcbDmY1fxoDUDg--.9286S2;
+        Mon, 19 Oct 2020 21:50:59 +0800 (CST)
+Date:   Mon, 19 Oct 2020 21:50:59 +0800
+From:   Hui Su <sh_def@163.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sh_def@163.com
+Subject: [PATCH] blk: use REQ_OP_WRITE instead of hard code
+Message-ID: <20201019135059.GA16475@rlk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008061556.1402293-16-badhri@google.com>
+X-CM-TRANSID: D8CowAAHhcbDmY1fxoDUDg--.9286S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUFEfoUUUUU
+X-Originating-IP: [101.86.214.18]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiJgPCX1v2ep-rvwAAsk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 11:15:56PM -0700, Badhri Jagan Sridharan wrote:
-> Enable auto discharge disconnect for Maxim TCPC.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+use REQ_OP_WRITE instead of hard code in
+op_is_write().
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ include/linux/blk_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
-> Changes since v1:
-> - Changing patch version to v6 to fix version number confusion.
-> 
-> Changes since v6:
-> - Rebase on usb-next.
-> 
-> Changes since v7:
-> - Heikki's suggestion:
-> Moved the actual write of TCPC_VBUS_SINK_DISCONNECT_THRES
-> register to tcpci code.
-> 
-> Changes since v8:
-> - Moved the logic to program the default values of
->   TCPC_VBUS_SINK_DISCONNECT_THRESH into the tcpci code.
-> 
-> Changes since v9:
-> - none.
-> ---
->  drivers/usb/typec/tcpm/tcpci_maxim.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> index 43dcad95e897..55dea33387ec 100644
-> --- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-> +++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> @@ -441,6 +441,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
->  	chip->data.TX_BUF_BYTE_x_hidden = true;
->  	chip->data.init = tcpci_init;
->  	chip->data.frs_sourcing_vbus = max_tcpci_frs_sourcing_vbus;
-> +	chip->data.auto_discharge_disconnect = true;
->  
->  	max_tcpci_init_regs(chip);
->  	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
-> -- 
-> 2.28.0.806.g8561365e88-goog
-
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index 7d7c13238fdb..7b9b02378c24 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -440,7 +440,7 @@ static inline void bio_set_op_attrs(struct bio *bio, unsigned op,
+ 
+ static inline bool op_is_write(unsigned int op)
+ {
+-	return (op & 1);
++	return (op & REQ_OP_WRITE);
+ }
+ 
+ /*
 -- 
-heikki
+2.25.1
+
+
