@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29EE292BDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8754A292BE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730742AbgJSQux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
+        id S1730758AbgJSQuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:50:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730642AbgJSQuw (ORCPT
+        with ESMTP id S1730570AbgJSQux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:50:52 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E72C0613CE;
-        Mon, 19 Oct 2020 09:50:51 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id l16so836230ilj.9;
-        Mon, 19 Oct 2020 09:50:50 -0700 (PDT)
+        Mon, 19 Oct 2020 12:50:53 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F868C0613D0;
+        Mon, 19 Oct 2020 09:50:52 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id w17so839684ilg.8;
+        Mon, 19 Oct 2020 09:50:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qjlK8WvBSntPqVvpNX/SGBi23DkBpqAui+Tqkdmh+KE=;
-        b=Ns+H8U0ntimEqy8YRIa4ZGHqX59Kroq2QIuGPG59W7bacAP+pk9Zi+GyG+OK2fjpg0
-         1gg/MOeO2Uu0hFxzV0vhrdwY5WKpXx62TnW2SqvHFn4wH6+wrEkWAdVGBWikdJT0NAXN
-         JNczgzhQqhES4fN/54IRImztR4aMI7JslVujh7wNKvmyIkMufxIb280jOq5BxxYgS3F6
-         Xa9n7oLTDBny5Xb2m3gKs/ZiHC+YI72HHeYu0MN9Q26zQ0bgX3Te9n+4pBD56NIeeiq2
-         W/EAvZRwzvYM7CYDxR+1haExrLqbRuXnqxMz4ZJdYusI1RR0S7vxvfMxwFWRUHJYvNus
-         tnIQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8d32TFjCm8T9gZCPnebFvwGLHjSMEjTUaQmQ3dkvl1Y=;
+        b=Lb2Ub6YokGOdQwTwxjIWS0FtqXMPsJlCI6pP/Hot0TXLYlXOzqJ4sCLUTTtCPU42X3
+         PA1nUFk0zricYze0sOYzDEB+dtGpLFdOs6/LpxFTiQgrw667LqW+ZNBKVnvEhSxBNldH
+         7iwjYUImUP9iaAFu3FKuGikx7lJ1Fa+8+Tf9LHfseecahglA6JNI5+IZ8I/f36TRHLvF
+         Aeq8qBTEAgV3NTzk5pWNiZKnqvy74dTNzMuavWuUs+QHnCYA8++yzujsUGBIVZvtmyQB
+         uJh8mHl0dVIft5Zgufhk54jxTm9K8dIPTgpR6yPc7dyz2UyU1KTs0tRJVsMtaSRF06me
+         C9Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qjlK8WvBSntPqVvpNX/SGBi23DkBpqAui+Tqkdmh+KE=;
-        b=lymZKoLAclmbYFBIVa0hK8FIW/JVMa0+LJtcff/NP/+Fx0FfkASKS+wUogOHK1GW4i
-         c6naq67+/0b0oA4/p6dZ+Bo7ViQ6A5bpx6eIL8DTcCIC1BuNX/WxIY2PRYx+pneqq4Vq
-         sX59pTTWgdafWJ3MIo8PHEAEc4vsyC59pIQ2IR11dTbalOIqsdB842xTw9u6clU4oDMB
-         qF0XcqZhGvGuRjvCDAW9F+c8mNEdY8/FS/2Xn9SpeEZjisn74uxwaIGGe6DBx7fxsvjp
-         aJIVRTMvXOBojSLGpUo+XMk4EWQs6mPOv8svUJdx7BxzCHmbBtMYYMOzj5Qht/4FK4oo
-         h04Q==
-X-Gm-Message-State: AOAM531lKS9IQP3hnFOAcfKXXHigHO5z68lzSv5atsBlSjw60JfIsdc9
-        6lrPVaAfDjIgrHLdHtJjHis=
-X-Google-Smtp-Source: ABdhPJwfuN/7qf73JC2uq2A46lJw+/CG65J0opBApeLv1flNYWCfZ0HCkKriNKrIBflQmEfK9v1YKw==
-X-Received: by 2002:a92:c142:: with SMTP id b2mr722379ilh.207.1603126250105;
-        Mon, 19 Oct 2020 09:50:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8d32TFjCm8T9gZCPnebFvwGLHjSMEjTUaQmQ3dkvl1Y=;
+        b=VqvgcANYJsX+IJBxoytTSnQykLb8XtZnu2AT3+9nTjEjwQVh1rVMv0EA2SwgKUTvhg
+         yKR2MNo6bAMRZdksNSLDVX8GWtzhYh6lB/Y4Tbss4DLImZgDlCiY6gbIUvHany1j38UJ
+         4L13j2hlpVT2j3EaB3lTJG489awTuTQ1TQ2tIV9UMVfRBMGnoNypPGQSs6RkKFLSTDhu
+         VhDGL7fIKPsieihYtPbbwd45jhhZdREsJy4jD3U58PlfUa73MWpVmzyzrC7byjOMpFGh
+         3iAXtd1+T3siayqPgWYFSWjc3a3w7jo0onHmK2REwWOibnT/+tQvsZkeBKh2hZSPub2L
+         RCyA==
+X-Gm-Message-State: AOAM5301f9mdTIVNnD7nxsJJqBp5ObNptgQl++jFI7sl16q6cY0guWm6
+        nuYlj9fSDtUrz6YaihW7aU8=
+X-Google-Smtp-Source: ABdhPJyjrVOdG7BldGVEaSXe66H8kVzZgKsI4WBxPCkKxdb4AqvOVqIv65jfuynX/SDfJ/lolzQCGQ==
+X-Received: by 2002:a05:6e02:931:: with SMTP id o17mr726616ilt.273.1603126251669;
+        Mon, 19 Oct 2020 09:50:51 -0700 (PDT)
 Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:75c9:416d:1d67:486f])
-        by smtp.gmail.com with ESMTPSA id p17sm212839ilh.34.2020.10.19.09.50.48
+        by smtp.gmail.com with ESMTPSA id p17sm212839ilh.34.2020.10.19.09.50.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 09:50:49 -0700 (PDT)
+        Mon, 19 Oct 2020 09:50:51 -0700 (PDT)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
@@ -60,50 +60,54 @@ Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V2 1/3] arm64: dts: imx8mm: Add support for micfil
-Date:   Mon, 19 Oct 2020 11:50:36 -0500
-Message-Id: <20201019165038.274164-1-aford173@gmail.com>
+Subject: [PATCH V2 2/3] arm64: dts: imx8mm: Add node for SPDIF
+Date:   Mon, 19 Oct 2020 11:50:37 -0500
+Message-Id: <20201019165038.274164-2-aford173@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201019165038.274164-1-aford173@gmail.com>
+References: <20201019165038.274164-1-aford173@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX8M Mini has supports the MICFIL digital interface.
-It's a 16-bit audio signal from a PDM microphone bitstream.
-The driver is already in the kernel, but the node is missing.
-
-This patch adds the micfil node.
+The i.MX8M Mini can support SPDIF which is compatible to the
+IP used on the i.MX35.  Add the node.
 
 Signed-off-by: Adam Ford <aford173@gmail.com>
 ---
-V2:  No change
+V2:  Fix some typos
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index b83f400def8b..fad1f9cdb241 100644
+index fad1f9cdb241..7cc2899db12e 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -339,6 +339,25 @@ sai6: sai@30060000 {
+@@ -358,6 +358,30 @@ micfil: audio-controller@30080000 {
  				status = "disabled";
  			};
  
-+			micfil: audio-controller@30080000 {
-+				compatible = "fsl,imx8mm-micfil";
-+				reg = <0x30080000 0x10000>;
-+				interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX8MM_CLK_PDM_IPG>,
-+					 <&clk IMX8MM_CLK_PDM_ROOT>,
-+					 <&clk IMX8MM_AUDIO_PLL1_OUT>,
-+					 <&clk IMX8MM_AUDIO_PLL2_OUT>,
-+					 <&clk IMX8MM_CLK_EXT3>;
-+				clock-names = "ipg_clk", "ipg_clk_app",
-+					      "pll8k", "pll11k", "clkext3";
-+				dmas = <&sdma2 24 25 0x80000000>;
-+				dma-names = "rx";
++			spdif1: spdif@30090000 {
++				compatible = "fsl,imx35-spdif";
++				reg = <0x30090000 0x10000>;
++				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk IMX8MM_CLK_AUDIO_AHB>, /* core */
++					 <&clk IMX8MM_CLK_24M>, /* rxtx0 */
++					 <&clk IMX8MM_CLK_SPDIF1>, /* rxtx1 */
++					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx2 */
++					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx3 */
++					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx4 */
++					 <&clk IMX8MM_CLK_AUDIO_AHB>, /* rxtx5 */
++					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx6 */
++					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx7 */
++					 <&clk IMX8MM_CLK_DUMMY>; /* spba */
++				clock-names = "core", "rxtx0",
++					      "rxtx1", "rxtx2",
++					      "rxtx3", "rxtx4",
++					      "rxtx5", "rxtx6",
++					      "rxtx7", "spba";
++				dmas = <&sdma2 28 18 0>, <&sdma2 29 18 0>;
++				dma-names = "rx", "tx";
 +				status = "disabled";
 +			};
 +
