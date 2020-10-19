@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD440292AC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1CC292AC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730267AbgJSPrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:47:23 -0400
-Received: from smtprelay0114.hostedemail.com ([216.40.44.114]:60726 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730051AbgJSPrX (ORCPT
+        id S1730404AbgJSPrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730051AbgJSPrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Oct 2020 11:47:23 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 37D0518029130;
-        Mon, 19 Oct 2020 15:47:22 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:981:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2565:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4605:5007:7875:7903:8603:9025:9036:10004:10394:10400:10848:10903:11232:11657:11658:11854:11914:12043:12050:12266:12297:12438:12555:12679:12740:12760:12895:12986:13069:13161:13229:13255:13311:13357:13439:14180:14181:14659:14721:21060:21080:21347:21365:21451:21627:21660:21740:21789:30012:30054:30064:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: band69_5601b1127238
-X-Filterd-Recvd-Size: 2581
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 19 Oct 2020 15:47:20 +0000 (UTC)
-Message-ID: <80f9a6c79771167d119b2990910fe273c3901df0.camel@perches.com>
-Subject: Re: lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes
- is larger than 1024 bytes
-From:   Joe Perches <joe@perches.com>
-To:     kernel test robot <lkp@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Date:   Mon, 19 Oct 2020 08:47:16 -0700
-In-Reply-To: <202010190356.fgwA7zzR-lkp@intel.com>
-References: <202010190356.fgwA7zzR-lkp@intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996A5C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:47:23 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id t25so14529823ejd.13
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/7dlTxDiqmcYkSqeqEAM+MSSzQMjAQV5ACnbOJwdXNY=;
+        b=GKPSIti2Z/Los0GUsvzfd9b0pNWNRyk+Tp6tSJGWcodh0ZDS5rAPvU9/PP5UueYRae
+         LTe0tyMpJZyGoqqmLOhvPZy7dgX7XgwaPENmWQhJzDi6QF5n3X0R7Y7EncbENJsahSSY
+         ZFR77cCmsWF4Hc0odVeXoQVhNHFRhLdTFzeO2VpDnVX0zQdA2e6uoOj+nDFJjmMveApN
+         IdVippUwlK0s6VWNuDj31K2HTeVxFujFVrJZh6VXowRdg9iptmvk++8Exj3X9Yj3eH1j
+         qrqELC1FidYtjTsia++6v1J8QNZ0iNkUqdGzrSXlK9xy3Aul39YiNzJa3CtjIjFCv7qw
+         3GSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/7dlTxDiqmcYkSqeqEAM+MSSzQMjAQV5ACnbOJwdXNY=;
+        b=PXTlfEfKxVgy65k4+G5slwCwW+UJd5d5BnIzVLhP3p0u/KUZnGmGr2O+vZUu1zaEIK
+         oCER9dlP4x+zeD5Me334M1QrnorzpZ0mXzNgJySzKk8SUMpUt8dkp6aRysKo82cYXBDl
+         oEHimmCGyS0sYqN2BPdOAAnuu+kHDideE6osCa+9OCYYaIaNvJCSh/T7AfOCCNT8ThrI
+         Ksiu6BM4+Nu2cSRtHj/NHcsuz53TiGrlh26qJsJdx1rtrVvCiSbsWxEnKs1gdtbCletL
+         88g/n5gteLaQTW/tbx6dtQKF2roiE1X4NJvGlFPMW6HB23h1eo6PAyqbovKfwYDr8WuJ
+         a/lQ==
+X-Gm-Message-State: AOAM530sMVH89HIDxv3ksz3pdO5vmQ8jdTlHpDjyo5+arleQrh3j86Kn
+        HJpCaw1tY2QgZ8i+zw71toWaankK+D6/6sAE
+X-Google-Smtp-Source: ABdhPJz5DJFN2XyIY0pHmL87n5yVNzMdfSg5FjUwur2ImOFkINOE9kNC92wznoRr9FRqBrJlnjZFAw==
+X-Received: by 2002:a17:906:453:: with SMTP id e19mr489674eja.391.1603122441874;
+        Mon, 19 Oct 2020 08:47:21 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:b49:2ba2:dca5:18d2])
+        by smtp.gmail.com with ESMTPSA id i23sm499558eja.66.2020.10.19.08.47.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 08:47:21 -0700 (PDT)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
+        linux-kernel@vger.kernel.org
+References: <20201019113240.11516-1-geert@linux-m68k.org>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: Re: [PATCH] mptcp: MPTCP_KUNIT_TESTS should depend on MPTCP instead
+ of selecting it
+Message-ID: <1968b7a6-a553-c882-c386-4b4fde2d7a87@tessares.net>
+Date:   Mon, 19 Oct 2020 17:47:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201019113240.11516-1-geert@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-19 at 03:13 +0800, kernel test robot wrote:
-> Hi Ard,
-> 
-> First bad commit (maybe != root cause):
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   9d9af1007bc08971953ae915d88dc9bb21344b53
-> commit: 5fb8ef25803ef33e2eb60b626435828b937bed75 crypto: chacha - move existing library code into lib/crypto
-> date:   11 months ago
-> config: i386-randconfig-r023-20201019 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5fb8ef25803ef33e2eb60b626435828b937bed75
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 5fb8ef25803ef33e2eb60b626435828b937bed75
->         # save the attached .config to linux build tree
->         make W=1 ARCH=i386 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    lib/crypto/chacha.c: In function 'chacha_permute':
-> > > lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->       65 | }
->          | ^
-> 
-> vim +65 lib/crypto/chacha.c
+Hi Geert,
 
-This seems to come from function tracing overhead.
+Thank you for the patch!
 
-It it really useful to add function tracing to what
-should be a single instruction?
+On 19/10/2020 13:32, Geert Uytterhoeven wrote:
+> MPTCP_KUNIT_TESTS selects MPTCP, thus enabling an optional feature the
+> user may not want to enable.  Fix this by making the test depend on
+> MPTCP instead.
 
-AFAIK:
+I think the initial intension was to select MPTCP to have an easy way to 
+enable all KUnit tests. We imitated what was and is still done in 
+fs/ext4/Kconfig.
 
-There isn't a good way to turn function tracing off
-on a per-function basis.
+But it probably makes sense to depend on MPTCP instead of selecting it. 
+So that's fine for me. But then please also send a patch to ext4 
+maintainer to do the same there.
 
-Adding notrace doesn't work for that.  Should it?
+Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 
-
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
