@@ -2,212 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06C32926AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C622926AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgJSLt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:49:58 -0400
-Received: from mga07.intel.com ([134.134.136.100]:3813 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726890AbgJSLt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:49:58 -0400
-IronPort-SDR: 0ZUCGunYweUsquLRtXQzDN7zoIlXG/V7HG643e7TDpNe7iRexUvY0loaVsmnCqQ6X8Vk26hH63
- 1BuM58awUtfw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="231203201"
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="231203201"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 04:49:57 -0700
-IronPort-SDR: LglYMxrgOJWa/15A7yhxWKYN72X957pGeCidXppxBWukErwIbyTXWRX1e6NUhSHcz1XTRatLeM
- 34WeMilcTBEg==
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="523090044"
-Received: from yzheng5-mobl3.ccr.corp.intel.com (HELO [10.254.210.169]) ([10.254.210.169])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 04:49:51 -0700
-Subject: Re: [perf metricgroup] fcc9c5243c:
- perf-sanity-tests.Parse_and_process_metrics.fail
-To:     John Garry <john.garry@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linuxarm@huawei.com, LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        zhangshaokun@hisilicon.com, James Clark <james.clark@arm.com>,
-        linux-imx@nxp.com, 0day robot <lkp@intel.com>, lkp@lists.01.org
-References: <1602152121-240367-10-git-send-email-john.garry@huawei.com>
- <20201018085031.GK11647@shao2-debian>
- <CAP-5=fWg4W_fpu-uTZkh-ZoL_7nvqU4F_2LqQgKFvBkfn174HQ@mail.gmail.com>
- <602e6bb8-a4ac-fae7-ed61-edf252e08d9a@huawei.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <023f1db8-118f-c9e6-28da-e4e7fb2134ef@linux.intel.com>
-Date:   Mon, 19 Oct 2020 19:49:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1727105AbgJSLvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:51:03 -0400
+Received: from mail-mw2nam12on2046.outbound.protection.outlook.com ([40.107.244.46]:57185
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726631AbgJSLvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 07:51:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b4+LdHkKLTQOHRc+WPwg80aE58HP3xmrfORwU4rS1+ppktbNWxWTF1SMOSb9V7Lfvia5JiEh2mPfP7tZp2z5EPgN9T7IO9eMcnZZtRD6yHMvdYcCnOJ3F6i/R6+3bdQQCRpyL48fkPi51hUQepK6T0Ttut5S0tNDZV/m2D22bDBEdXnRVe4qQ0w/w0gZFLihHtquD+w55whY7ROPFYHn9ENwn+yn8k5z/P2sQPcZ/Sg3zsgsDOYslSQZ4efFIzE7o2FEbA8MOi5qdLcCuiD0/ekZFbiNsOPreCe7qG5JmVk7j5VHbEpYpqZYigzkIQM56iTqSfr5BAX6qWbIEOZtzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pCpJaLr+R9sEAAwoJm+/m1uI/4+Nq1viuVJqSyePLm8=;
+ b=Rdz5fhhjppJDBF9JhV9q8AYFvT4ynkMOWeM0/wmex6aWt8F+yUGz5Fc0hYjqaif5OzoS7NMTUERylV5Z7HYaT3eGx6YDNnPfemtQ8+Y+kx9pcsWBwvlrZtTJgV8XrrCt+/Eu/RfmvZs49GdMJcs3NgmCbmxuhE3TjX8/F5jO4dq8hOrqoNjto+nVq2H4mWQvQyeoMDrlCoRTkyX5+QcKnald72VM09ZjGkKTwqqAnAvxMtpEzCXPxDjXbNfz9tD6ozoiLgZ62lxr4KR0FRFlwf8eykHWwwrzDtf+apr6iAUmHVkLi7vct5IKmZvh4GQ7HyXBTlT5Sgg7bg0rrG4Qxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pCpJaLr+R9sEAAwoJm+/m1uI/4+Nq1viuVJqSyePLm8=;
+ b=G72MRzMnnaeT7+wdqDdWfAqUlBDY0wyM19kBXoEkBE8Tb3cNTKc4ZHqGkKjpklupQRCHeL9dDDeHMTofMylKFr+d96/GVEZ0X9Y6Fw6+4Q4KvLdDrINlZlIso3j8lovwkUJ1GXkMQNLu51oLwtygUJ+Ob1x0TJnRMJze6aucstI=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
+ by BY5PR11MB4370.namprd11.prod.outlook.com (2603:10b6:a03:1c3::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Mon, 19 Oct
+ 2020 11:50:57 +0000
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::adbd:559a:4a78:f09b]) by BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::adbd:559a:4a78:f09b%6]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 11:50:57 +0000
+From:   yanfei.xu@windriver.com
+To:     akpm@linux-foundation.org, david@redhat.com, vbabka@suse.cz,
+        pankaj.gupta.linux@gmail.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] mm/compaction: Rename 'start_pfn' to 'iteration_start_pfn' in compact_zone()
+Date:   Mon, 19 Oct 2020 19:50:44 +0800
+Message-Id: <20201019115044.1571-1-yanfei.xu@windriver.com>
+X-Mailer: git-send-email 2.18.2
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR04CA0089.apcprd04.prod.outlook.com
+ (2603:1096:202:15::33) To BY5PR11MB4241.namprd11.prod.outlook.com
+ (2603:10b6:a03:1ca::13)
 MIME-Version: 1.0
-In-Reply-To: <602e6bb8-a4ac-fae7-ed61-edf252e08d9a@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpggp1.wrs.com (60.247.85.82) by HK2PR04CA0089.apcprd04.prod.outlook.com (2603:1096:202:15::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22 via Frontend Transport; Mon, 19 Oct 2020 11:50:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 56a89ea1-9433-4f91-8175-08d874253d8d
+X-MS-TrafficTypeDiagnostic: BY5PR11MB4370:
+X-Microsoft-Antispam-PRVS: <BY5PR11MB4370A08C80559454129E25DFE41E0@BY5PR11MB4370.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:115;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fvHUDKt9Ljxg1vADE1MfbROL+jRbB/JQjf5Mtj3Va/AK1uxTEkv1WDhkcaM2I/uHBAch4uGrvhtXi2deBHc3Tyqy9+HOhboX7owV1442xuL/1zHvEy7kNANfzl0QA6qA0G1NPFX5eAg/EE+CEmzjgffq+YH1DmMVBYHDUK4uZECQFbNhJ7pKYAofg1O/h3nSEvfgYr0ZeKEyfBpJN4pCPZVPwVteRzNxVR4E88uCaG/AMdycY2GcJ10YNo+v22qVr1NLHSCGYMv+KdhL3ky2sIW/eDfi4wS5QcP+wT3rJ7dHyYl/dimc2V8WQM8LASRi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(136003)(346002)(396003)(366004)(376002)(8936002)(4326008)(86362001)(6512007)(9686003)(36756003)(6666004)(66556008)(66946007)(66476007)(83380400001)(8676002)(26005)(52116002)(2906002)(6486002)(478600001)(1076003)(6506007)(16526019)(186003)(316002)(956004)(2616005)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Yx/93bbY8u5iD3/5w9WcDTb21INvyhxCFrb/D81aYp2EhY78320AvTO/pgnDaqTH4OoxnlQW7P27emH6acJk1PVjCGhNRwMYlfF2HednRANFdl3bDg2xLWd9HOsdHsAD+yJGjWNQpvw051mEgUGCXe/X3VzOn9mj2X5n5QmFbPvNgrH+ESkvHxzKFA8bgaAE3HdSrSikypH41eJ8rjTxmS+mPTTK0vgNUGxQ4xZOvG52iVcEQ/AAfnWSjmkLIWn/HAQYQphtpFALRNiR5Rim158GsOuBaeM68UZP8qII6t+dIXjAAjjN0Ep0FTFFGaz0pc6B5sIzSg0jDNCAv+escZg0ABKXoOuRSkzOSzLtiBzh2CMdVyW6ljplZvNwtP8uwQrIvA6FJbXc63SjQdPoqw8Fh6fjMg0Myb8849k0hn3/QEOcbATnxHvC1mYitnacfsmZUZwKlT/DIsQUpFZA8mIDf8rHHNDFV/12kDKtpqHcPPFyBTqzqj+up1H5Kk9cBL9z53PvtiEFB+yEa3IfcrG6km5cWiXU5yo7ZlIWlEN83A7aDlARgCnzsBrvPdOKcGMUphlVdHkte1VikoXUU3qrhsvy0Ue/MAoVhLDZrK8s9L6i1LwEU0YkD11IsoCDPF51DvdJPxAEoZech3Xx2w==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56a89ea1-9433-4f91-8175-08d874253d8d
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2020 11:50:57.0439
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 61GGK79z9ajHF0TI0dHwOrypCLuePSKITkqCjqrB8r060xGSXafZigOSAVe6wFHUnA7E098PLboBIr+vH3BmkA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4370
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Garry, Hi Ian,
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-On 10/19/2020 5:48 PM, John Garry wrote:
-> On 19/10/2020 00:30, Ian Rogers wrote:
->> On Sun, Oct 18, 2020 at 1:51 AM kernel test robot <rong.a.chen@intel.com> wrote:
->>>
->>> Greeting,
->>>
->>> FYI, we noticed the following commit (built with gcc-9):
->>>
->>> commit: fcc9c5243c478f104014daf4d23db86098d2aef0 ("perf metricgroup: Hack a fix for aliases when 
->>> covering multiple PMUs")
->>> url: 
->>> https://github.com/0day-ci/linux/commits/John-Garry/perf-pmu-events-Support-event-aliasing-for-system-PMUs/20201008-182049 
->>>
->>>
->>>
->>> in testcase: perf-sanity-tests
->>> version: perf-x86_64-c85fb28b6f99-1_20201008
->>> with following parameters:
->>>
->>>          perf_compiler: gcc
->>>          ucode: 0xdc
->>>
->>>
->>>
->>> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
->>>
->>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
->>
->> I believe this is a Skylake and there is a known bug in the Skylake
->> metric DRAM_Parallel_Reads as described here:
->> https://lore.kernel.org/lkml/CAP-5=fXejVaQa9qfW66cY77qB962+jbe8tT5bsLoOOcFmODnWQ@mail.gmail.com/
->> Fixing the bug needs more knowledge than what is available in manuals.
->> Hopefully Intel can take a look.
->>
->> Thanks,
->> Ian
-> 
-> So this named patch ("perf metricgroup: Hack a fix for aliases...") is breaking test #67 on my 
-> machine also, which is a broadwell.
-> 
-> I will have a look, but I was hoping that Ian would have a proper fix for this on top of ("perf 
-> metricgroup: Fix uncore metric expressions"), which now looks to be merged.
-> 
-> Thanks!
-> 
+There are two 'start_pfn' declared in compact_zone() which have
+different meaning. Rename the second one to 'iteration_start_pfn'
+to prevent confusion.
 
-I just think they are different issues.
+BTW, remove an useless semicolon.
 
-On my KBL client, the perf test #67 is passed.
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+Acked-by: David Hildenbrand <david@redhat.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+---
+v1->v2:
+    Rename 'start_pfn' to 'iteration_start_pfn'.
+v2->v3:
+    improves commit messages.
 
-But DRAM_Parallel_Reads does have issue.
+ mm/compaction.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-root@kbl-ppc:~# perf stat -M DRAM_Parallel_Reads -- sleep 1
-event syntax error: '{arb/event=0x80,umask=0x2/,arb/event=0x80,umask=0x2,thresh=1/}:W'
-                      \___ unknown term 'thresh' for pmu 'uncore_arb'
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 6e0ee5641788..ee1f8439369e 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2271,7 +2271,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+ 
+ 	while ((ret = compact_finished(cc)) == COMPACT_CONTINUE) {
+ 		int err;
+-		unsigned long start_pfn = cc->migrate_pfn;
++		unsigned long iteration_start_pfn = cc->migrate_pfn;
+ 
+ 		/*
+ 		 * Avoid multiple rescans which can happen if a page cannot be
+@@ -2283,7 +2283,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+ 		 */
+ 		cc->rescan = false;
+ 		if (pageblock_start_pfn(last_migrated_pfn) ==
+-		    pageblock_start_pfn(start_pfn)) {
++		    pageblock_start_pfn(iteration_start_pfn)) {
+ 			cc->rescan = true;
+ 		}
+ 
+@@ -2307,8 +2307,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+ 			goto check_drain;
+ 		case ISOLATE_SUCCESS:
+ 			update_cached = false;
+-			last_migrated_pfn = start_pfn;
+-			;
++			last_migrated_pfn = iteration_start_pfn;
+ 		}
+ 
+ 		err = migrate_pages(&cc->migratepages, compaction_alloc,
+-- 
+2.18.2
 
-valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,percore
-
-Initial error:
-event syntax error: '..umask=0x2/,arb/event=0x80,umask=0x2,thresh=1/}:W'
-                                   \___ Cannot find PMU `arb'. Missing kernel support?
-
-  Usage: perf stat [<options>] [<command>]
-
-     -M, --metrics <metric/metric group list>
-                           monitor specified metrics or metric groups (separated by ,)
-
-I have a patch to fix DRAM_Parallel_Reads.
-
-After:
-
-root@kbl-ppc:~# perf stat -M MEM_Parallel_Reads -- sleep 1
-
-  Performance counter stats for 'system wide':
-
-          3,043,952      arb/event=0x80,umask=0x2/ #     1.00 MEM_Parallel_Reads
-
-        1.000879932 seconds time elapsed
-
-I will post the patch later.
-
-Thanks
-Jin Yao
-
->>
->>>
->>>
->>> If you fix the issue, kindly add following tag
->>> Reported-by: kernel test robot <rong.a.chen@intel.com>
->>>
->>>
->>> 2020-10-16 19:31:52 sudo 
->>> /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf 
->>> test 67
->>> 67: Parse and process metrics                             : FAILED!
->>> 2020-10-16 19:31:52 sudo 
->>> /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf 
->>> test 68
->>> 68: x86 rdpmc                                             : Ok
->>> 2020-10-16 19:31:52 sudo 
->>> /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf 
->>> test 69
->>> 69: Convert perf time to TSC                              : Ok
->>> 2020-10-16 19:31:52 sudo 
->>> /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf 
->>> test 70
->>> 70: DWARF unwind                                          : Ok
->>> 2020-10-16 19:31:52 sudo 
->>> /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf 
->>> test 71
->>> 71: x86 instruction decoder - new instructions            : Ok
->>> 2020-10-16 19:31:52 sudo 
->>> /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf 
->>> test 72
->>> 72: Intel PT packet decoder                               : Ok
->>> 2020-10-16 19:31:52 sudo 
->>> /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf 
->>> test 73
->>> 73: x86 bp modify                                         : Ok
->>> 2020-10-16 19:31:53 sudo 
->>> /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf 
->>> test 74
->>> 74: probe libc's inet_pton & backtrace it with ping       : Ok
->>> 2020-10-16 19:31:54 sudo 
->>> /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf 
->>> test 75
->>> 75: Zstd perf.data compression/decompression              : Ok
->>>
->>>
->>>
->>> To reproduce:
->>>
->>>          git clone https://github.com/intel/lkp-tests.git
->>>          cd lkp-tests
->>>          bin/lkp install job.yaml  # job file is attached in this email
->>>          bin/lkp run     job.yaml
->>>
->>>
->>>
->>> Thanks,
->>> Rong Chen
->>>
->> .
->>
-> 
