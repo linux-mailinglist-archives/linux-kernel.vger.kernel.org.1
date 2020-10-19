@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A585292AB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD9B292AB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730377AbgJSPo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730025AbgJSPo0 (ORCPT
+        id S1730415AbgJSPok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:44:40 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:45553 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730388AbgJSPok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:44:26 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EB9C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:44:26 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 8F2554C3; Mon, 19 Oct 2020 17:44:24 +0200 (CEST)
-Date:   Mon, 19 Oct 2020 17:44:23 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Subject: [git pull] IOMMU Fixes for Linux since iommu-updates-v5.10
-Message-ID: <20201019154418.GA25261@8bytes.org>
+        Mon, 19 Oct 2020 11:44:40 -0400
+Received: from [192.168.1.155] ([77.2.107.242]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MBE3k-1kaYgU0oYg-00Ckb9; Mon, 19 Oct 2020 17:44:28 +0200
+Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
+ driver
+To:     Hans de Goede <hdegoede@redhat.com>, Ed W <lists@wildgooses.com>,
+        linux-kernel@vger.kernel.org
+Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org
+References: <20200921215919.3072-1-lists@wildgooses.com>
+ <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
+ <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
+ <65efe44a-bbef-f982-462a-385fffe493a0@wildgooses.com>
+ <0de126c4-f2aa-a817-0a38-32bf3ede84d1@redhat.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <e727d039-8dea-1a40-48b9-792b6053807c@metux.net>
+Date:   Mon, 19 Oct 2020 17:44:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0de126c4-f2aa-a817-0a38-32bf3ede84d1@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:dXpUIHRfWT5BcBULeI6C3vO+0OYCk7YAbl0tD+Ga1iGSzCkFhdH
+ bzPyS5WuDKman6O01IM2eCaulW1iS2zj7dpI1OjC6XCnW5vV2tHyAIYojHH0FWVHKUx1Q3E
+ /2oSPKIf3Y+Yw7hs5fJkPyPYueLm41VrKQ4DNAG3zcVwohlqly5TUtA3+O1oU+hrImDQGdG
+ QkoZ4tya3l1VD9/Nezkzw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oi9ueL6afnM=:l/JGmFuLohUNZ5OkGYAQz4
+ kocRukoezDLcXg5WFzU+t+FY5AEsjWdCA980yc6MD/sUuopivybknohnp3jKFnl0jytPk3yQV
+ n7T5kmzCW5PyMcl4fe1NWPIUCT92P1YTMmrrclaAoDmKZnfGRc0uHOZfwbUO4/D36XUe2E/Qk
+ RfojzivK3wYRyqQbKJ6ae8PlIH3UfKehmLWqZvmXuebRaEVyeCabayzPq7ihgqwp4PbHGmOR4
+ sW9cw28I1BoTQ9MlK/TfmWbeiEiBLVlGci9BY3e8aheb+aXGepZpSfjMHYez9k2k8MPc0dJBN
+ ug0NDP4ZSeWMpKIoLQ25inGmCV8CMu5VK/esdYNsub/L6JxDPwTPSnuDOeT/J+WwQPbgfVd+K
+ AJnj8KEvIXIOMGfSqx8KehEsXoceHcd4snG+lYcWFrQMvDGkEcnfpLYxD0C9/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14.10.20 10:41, Hans de Goede wrote:
 
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi,
 
-Hi Linus,
+> Keep the current LED/gpio setup code, but make executing it conditional
+> on the BIOS version and skip the LED/gpio setup when the new BIOS is
+> present to avoid having duplicate LED entries, etc. in that case.
+> 
+> I guess this would still break userspace because if I understand things
+> correctly the new ACPI based setup uses different LED names ? That
+> seems unfortunate, but I guess that from the kernel pov we can just
+> blame the BIOS for this, and since we definitely do not want duplicate
+> LED entries for the same LED, this seems the least bad choice.
 
-The following changes since commit 7e3c3883c381aeda903778d7e99fc4cd523be610:
+Sorry, but not fine. When a newer box is taken from storage into
+production (eg. replacement or new installation), application breaks.
+LED isn't the only problem, also affects buttons.
 
-  Merge branches 'arm/allwinner', 'arm/mediatek', 'arm/renesas', 'arm/tegra', 'arm/qcom', 'arm/smmu', 'ppc/pamu', 'x86/amd', 'x86/vt-d' and 'core' into next (2020-10-07 11:51:59 +0200)
+The whole reaons why I invested all the time for writing general
+purpose drivers (fch-gpio is separate from board driver) and bringing
+it to mainline was having clean and generic support for these boards,
+instead of having to carry around special patch queues forever and
+in near future just using stock distro kernel. I guess that's the
+main reason for very most mainlined drivers. This will be defeated
+as soon as the whole thing becomes board/bios specific again.
 
-are available in the Git repository at:
+I purposely slept ofter the naming several times, to make sure it's
+future proof and tells exactly what these leds are for. Otherwise I
+could just have picked numbers and fruits.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fix-v5.10
+Please don't change the names. Field relies on them.
 
-for you to fetch changes up to 9def3b1a07c41e21c68a0eb353e3e569fdd1d2b1:
+Actually, I've already considered adding another workaround for removing
+the ACPI gpio/leds. Haven't had the time for a close analysis the acpi
+bytecode actually does, and what the kernel actually makes out of it.
+As soon as I encounter an conflict (eg. locks the iomem from gpio-amd
+fch, messes up gpio states, etc), I'll have to go that route. There
+already have been bug reports in that direction (eg. simsw and reset
+issues), which I could not yet reproduce (on the older bios versions).
 
-  iommu/vt-d: Don't dereference iommu_device if IOMMU_API is not built (2020-10-19 14:16:02 +0200)
 
-----------------------------------------------------------------
-IOMMU Fix for Linux v5.10:
 
-	- Fix a build regression with !CONFIG_IOMMU_API
+--mtx
 
-----------------------------------------------------------------
-Bartosz Golaszewski (1):
-      iommu/vt-d: Don't dereference iommu_device if IOMMU_API is not built
-
- drivers/iommu/intel/dmar.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-Please pull.
-
-Thanks,
-
-	Joerg
-
---AhhlLboLdkugWU4S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAl+NtFIACgkQK/BELZcB
-GuN+1g/5AQencd67ugSp9xsZdB7mnHk0zO/8tfyxx0PWsX1/QrWbs8vVs8xzHGhA
-1WbLXLzTJwlbJWy0+np26U3/B6Y3AhP3ugBmdu5UMC87Zeyi3aXNhMCaLoTAkCnu
-KKiTCMQDXY1E7T8ocUExgBtCO8M3NAlWCAgBHDMcI9SAeYbsIpGT/lVyloGPEoMk
-tyGJNKa5msxUhXPiDps3UgPrMgBy0ghDwcr2ErURXOQZdL7wa+fWPPkTaF5KSzS7
-+ASBNwALqOECQe6bmOhQ9OGiVlvgA3RkLl7Ep4DdcaUGc6nAseYsFD4LLDEnWAPe
-Uvhjyrbs9iyhCRxVG77s+fyyPt0ppEis/gIqjD0mbh1NvGRJc//davvB2FtR/fiA
-JcrAb9zj6QjOYcaCtRUQUjALe5hXe0N32vHygNwDapQdg80d4W2nL95vFbDg1s8t
-EGFWVoCfD4oc2hQIG/AOpzlaR/g6Mlg+guaaC7wZtn103yVtJMphTYoiwdcrSJYx
-EtWWSAq02L4+lyHp3h2tUW4MMEeUggtC5B+F7WbkA7M6mh0y1oNCm9DfK5RVbn6i
-aJTaCEwg/wgwnk+AiUttO+DoNXR8EZPPc0isnMdIOj2EYTtOwNi9JkTRFZ+eFvAN
-LlcqpmOkJ3RpvRjFO5K8qrnEfHPjs7xAHSYSUSq8DjNMFX6WfdA=
-=FsUY
------END PGP SIGNATURE-----
-
---AhhlLboLdkugWU4S--
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
