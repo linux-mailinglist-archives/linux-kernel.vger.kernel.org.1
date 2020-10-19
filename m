@@ -2,202 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4A0292D77
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C79292D83
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730805AbgJSSWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 14:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727328AbgJSSWt (ORCPT
+        id S1730710AbgJSS1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 14:27:25 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:50792 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729369AbgJSS1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 14:22:49 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA153C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:22:49 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id m128so948464oig.7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:22:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3LEDkBR8wJEGqVwvG1n0vRZnt/gLCojl7HrdvEA23Ug=;
-        b=YrXdztVk2xUzJpFj9keaplNRccfTfjsSp/1YpeMFBVOGa098MtUAjHt61JjJfsvx/w
-         7EKLabdjT74UjcZyARJs/+dEFCBrXaKQUCXVdXINEZn74DjZFX9xZpHprPKxlyFl4v7q
-         1IXwJueTvIPnVUUy5jqry7hlVBoPJstOWFATwNXXfQfByZWagKZZAej5cizJzQP0llFM
-         cVHzvgqxTsGL3FeHLVjhsIybaxWtM6L8hPG5pnNywmmUeiEieclplkHhmKrxZGxFkFnh
-         obpbsliy1aQ0//16iq5tEFV3B3LLNNHnDcGgNnXATsxulFTVxLPxNIkr7OJSSHCcd6uS
-         UJog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3LEDkBR8wJEGqVwvG1n0vRZnt/gLCojl7HrdvEA23Ug=;
-        b=cVqk2MnNR6/Y/Se/N0MPrATIw4zRDaHMXSp2KQHhVoXvog7WUk1eK4zrfotRD29YcQ
-         3lmJbvqUYpnvJ6lvWxf6lt8b38xynHcCjGygM6H9gpXROq/h9uGdgJl2ruvRJkWwcKZG
-         zxpXqqs7M0IF9GsA+P9JzULdE5bV7EoqClorplDllIikhcj00mpGprwsmMH1f0QS8+Yl
-         qrcTJrx22al7Xh62Z5L4Xk0Y2VqeYSZcYpJFpQJBYnDIZr/CbjkCVkkTZ2LoaeXhCBOr
-         12EJcsT3eeKkBQgsCUEdytr9RvDkeyAj1WxTvUEIyyDSiYYBdmTA0KNFk7ZTTAutdtK8
-         LIcg==
-X-Gm-Message-State: AOAM532rL8GrEVxZkLE7nDj/wanF1l0x/zKefecSqVuDs857wzHUc+Gr
-        oyUcg6C+ek19Yz4Mlms238wupw==
-X-Google-Smtp-Source: ABdhPJz2Xt6yCi4zpBwEAH7Rya8QNBfEhDx9AF+q00be7ONZJMUUj3jtzUAoihEPhpft+Di3dh/oKQ==
-X-Received: by 2002:aca:b5c6:: with SMTP id e189mr495877oif.47.1603131768050;
-        Mon, 19 Oct 2020 11:22:48 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o8sm175296oog.47.2020.10.19.11.22.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 11:22:47 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Rob Clark <robdclark@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH v5 3/3] iommu/arm-smmu-qcom: Implement S2CR quirk
-Date:   Mon, 19 Oct 2020 11:23:23 -0700
-Message-Id: <20201019182323.3162386-4-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201019182323.3162386-1-bjorn.andersson@linaro.org>
-References: <20201019182323.3162386-1-bjorn.andersson@linaro.org>
+        Mon, 19 Oct 2020 14:27:25 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 8ABE11C0B76; Mon, 19 Oct 2020 20:27:22 +0200 (CEST)
+Date:   Mon, 19 Oct 2020 20:27:21 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Joe Perches <joe@perches.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: sysfs filenames with spaces
+Message-ID: <20201019182721.GA14004@duo.ucw.cz>
+References: <9b6f5c32d244131dbd63b55b085b3b4173144b4b.camel@perches.com>
+ <20201013171754.GA29185@duo.ucw.cz>
+ <575e7e2eb77ee5c26c3ac8fb6cb863890e971a16.camel@perches.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="vkogqOf2sHV7VnPd"
+Content-Disposition: inline
+In-Reply-To: <575e7e2eb77ee5c26c3ac8fb6cb863890e971a16.camel@perches.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The firmware found in some Qualcomm platforms intercepts writes to S2CR
-in order to replace bypass type streams with fault; and ignore S2CR
-updates of type fault.
 
-Detect this behavior and implement a custom write_s2cr function in order
-to trick the firmware into supporting bypass streams by the means of
-configuring the stream for translation using a reserved and disabled
-context bank.
+--vkogqOf2sHV7VnPd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also circumvent the problem of configuring faulting streams by
-configuring the stream as bypass.
+On Tue 2020-10-13 12:48:49, Joe Perches wrote:
+> On Tue, 2020-10-13 at 19:17 +0200, Pavel Machek wrote:
+> > On Mon 2020-10-05 19:41:15, Joe Perches wrote:
+> > > This doesn't seem like a great idea to me.
+> > >=20
+> > > For my system I've got:
+> > >=20
+> > > /sys/devices/platform/Fixed MDIO bus.0/
+> > > /sys/bus/platform/drivers/int3401 thermal/
+> > > /sys/bus/platform/drivers/int3403 thermal/
+> > > /sys/bus/platform/drivers/int3400 thermal/
+> > > /sys/bus/mdio_bus/drivers/Generic PHY/
+> > > /sys/bus/mdio_bus/drivers/Generic Clause 45 PHY/
+> > > /sys/bus/pnp/drivers/i8042 aux/
+> > > /sys/bus/pnp/drivers/i8042 kbd/
+> > > /sys/bus/i2c/drivers/CHT Whiskey Cove PMIC/
+> > >=20
+> > > Could these filenames be avoided in the future or
+> > > even renamed today?
+> >=20
+> > Does not look like great idea to me, either. Hmm. Is there filename
+> > with "/" in it? :-)
+> >=20
+> > But I guess you'd need to cc relevant maintainers and that this is
+> > going to be a bit of whack-a-mole.
+>=20
+> An option might be to convert any invalid filename
+> via an alloc and substitution in sysfs_add_file
+> and similar free in sysfs_remove_file.
+>=20
+> Emitting a logging message describing any new name
+> would be useful too.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+I believe that would be dangerous... renaming existing entries and
+risking duplicities.
 
-Changes since v4:
-- Made the bypass_cbndx an integer...
-- Separated out the "quirk enabled or not" into a bool, rather than reusing
-  (the valid) context bank 0 to represent this.
-- Dropped the unused EXIDS handling.
+But ... some kind of warning when such entry is created might be good,
+we'd then fix them manually.
 
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 67 ++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
+Best regards,
+								Pavel
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 48627fcf6bed..66ba4870659f 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -10,8 +10,15 @@
- 
- struct qcom_smmu {
- 	struct arm_smmu_device smmu;
-+	bool bypass_quirk;
-+	u8 bypass_cbndx;
- };
- 
-+static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
-+{
-+	return container_of(smmu, struct qcom_smmu, smmu);
-+}
-+
- static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
- 	{ .compatible = "qcom,adreno" },
- 	{ .compatible = "qcom,mdp4" },
-@@ -25,9 +32,33 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
- 
- static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
- {
-+	unsigned int last_s2cr = ARM_SMMU_GR0_S2CR(smmu->num_mapping_groups - 1);
-+	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
-+	u32 reg;
- 	u32 smr;
- 	int i;
- 
-+	/*
-+	 * With some firmware versions writes to S2CR of type FAULT are
-+	 * ignored, and writing BYPASS will end up written as FAULT in the
-+	 * register. Perform a write to S2CR to detect if this is the case and
-+	 * if so reserve a context bank to emulate bypass streams.
-+	 */
-+	reg = FIELD_PREP(ARM_SMMU_S2CR_TYPE, S2CR_TYPE_BYPASS) |
-+	      FIELD_PREP(ARM_SMMU_S2CR_CBNDX, 0xff) |
-+	      FIELD_PREP(ARM_SMMU_S2CR_PRIVCFG, S2CR_PRIVCFG_DEFAULT);
-+	arm_smmu_gr0_write(smmu, last_s2cr, reg);
-+	reg = arm_smmu_gr0_read(smmu, last_s2cr);
-+	if (FIELD_GET(ARM_SMMU_S2CR_TYPE, reg) != S2CR_TYPE_BYPASS) {
-+		qsmmu->bypass_quirk = true;
-+		qsmmu->bypass_cbndx = smmu->num_context_banks - 1;
-+
-+		set_bit(qsmmu->bypass_cbndx, smmu->context_map);
-+
-+		reg = FIELD_PREP(ARM_SMMU_CBAR_TYPE, CBAR_TYPE_S1_TRANS_S2_BYPASS);
-+		arm_smmu_gr1_write(smmu, ARM_SMMU_GR1_CBAR(qsmmu->bypass_cbndx), reg);
-+	}
-+
- 	for (i = 0; i < smmu->num_mapping_groups; i++) {
- 		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
- 
-@@ -45,6 +76,41 @@ static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
- 	return 0;
- }
- 
-+static void qcom_smmu_write_s2cr(struct arm_smmu_device *smmu, int idx)
-+{
-+	struct arm_smmu_s2cr *s2cr = smmu->s2crs + idx;
-+	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
-+	u32 cbndx = s2cr->cbndx;
-+	u32 type = s2cr->type;
-+	u32 reg;
-+
-+	if (qsmmu->bypass_quirk) {
-+		if (type == S2CR_TYPE_BYPASS) {
-+			/*
-+			 * Firmware with quirky S2CR handling will substitute
-+			 * BYPASS writes with FAULT, so point the stream to the
-+			 * reserved context bank and ask for translation on the
-+			 * stream
-+			 */
-+			type = S2CR_TYPE_TRANS;
-+			cbndx = qsmmu->bypass_cbndx;
-+		} else if (type == S2CR_TYPE_FAULT) {
-+			/*
-+			 * Firmware with quirky S2CR handling will ignore FAULT
-+			 * writes, so trick it to write FAULT by asking for a
-+			 * BYPASS.
-+			 */
-+			type = S2CR_TYPE_BYPASS;
-+			cbndx = 0xff;
-+		}
-+	}
-+
-+	reg = FIELD_PREP(ARM_SMMU_S2CR_TYPE, type) |
-+	      FIELD_PREP(ARM_SMMU_S2CR_CBNDX, cbndx) |
-+	      FIELD_PREP(ARM_SMMU_S2CR_PRIVCFG, s2cr->privcfg);
-+	arm_smmu_gr0_write(smmu, ARM_SMMU_GR0_S2CR(idx), reg);
-+}
-+
- static int qcom_smmu_def_domain_type(struct device *dev)
- {
- 	const struct of_device_id *match =
-@@ -86,6 +152,7 @@ static const struct arm_smmu_impl qcom_smmu_impl = {
- 	.cfg_probe = qcom_smmu_cfg_probe,
- 	.def_domain_type = qcom_smmu_def_domain_type,
- 	.reset = qcom_smmu500_reset,
-+	.write_s2cr = qcom_smmu_write_s2cr,
- };
- 
- struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
--- 
-2.28.0
+--=20
+http://www.livejournal.com/~pavelmachek
 
+--vkogqOf2sHV7VnPd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX43aiQAKCRAw5/Bqldv6
+8uVrAJ9S6jPaYGU2xO1irvScMx5MhPf3DACfZ9m0O55biK5H45pXCfG474toIto=
+=ssDG
+-----END PGP SIGNATURE-----
+
+--vkogqOf2sHV7VnPd--
