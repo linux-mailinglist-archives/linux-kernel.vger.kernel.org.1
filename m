@@ -2,274 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0C0292ED6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF942292E86
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731484AbgJSTwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:52:53 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.177]:27329 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731412AbgJSTwq (ORCPT
+        id S1731131AbgJSTeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:34:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55507 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730956AbgJSTeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:52:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1603137161;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=kHQnkVfStHYeA2IR3/MUj97L+KuhfZfqQXPCk2cj9E0=;
-        b=h1ENWONY0tRAlRj0v6nilHJI7nTr8LKj8zEKY9NjSZw1ZHsFWXDoXBOEzQc5PYVbfI
-        0tJ/eUUwoEKrODFNlCCYFUQJWvG7gmc20KEiy6aW449zACnjX4VOIb317tcuus2ewFdM
-        iNJKHhnSG3sBEUKq34HCq6pG33jSAYCg/pPwsl/+hoHL/UQiTDKz+DKyZ8nr9jfZqJBY
-        v7eC888/b0Y7+E4BAmstGiLj9yIMg1mSUPcwxYw9qB0xmiIlIxI+2nbURJ7SIDTBuHrn
-        z0rzCKIAetnsPVVGkLJ6PjfmxL05Ydbixi2etwkokkvqOL3/wEICNnkGl5kiqKAPUsgc
-        Y2HQ==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJPSb3t0="
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
-        with ESMTPSA id C0b627w9JJpmU6u
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 19 Oct 2020 21:51:48 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Torsten Duwe <duwe@lst.de>
-Cc:     Willy Tarreau <w@1wt.eu>, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        linux-crypto@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>
-Subject: [PATCH v36 05/13] LRNG - add common generic hash support
-Date:   Mon, 19 Oct 2020 21:33:27 +0200
-Message-ID: <8668311.CDJkKcVGEf@positron.chronox.de>
-In-Reply-To: <3073852.aeNJFYEL58@positron.chronox.de>
-References: <20200921075857.4424-1-nstange@suse.de> <20201016172619.GA18410@lst.de> <3073852.aeNJFYEL58@positron.chronox.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        Mon, 19 Oct 2020 15:34:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603136042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=Kq5VxBu2z8uXUidFjxUtgnQ0vBBkojXZgIAYG1rS13k=;
+        b=XwisfWL1yDp8tjCx3C/o+yb35YDUfpHhNmDHKMMQkvlo618NOvPKmtzxfz6QEub/6HtMRK
+        jNmJ8pOvBxib7By4WeSp4UzijpIGxoVMj65CfurmiHc3JF7imWUIcQ36NKXZghuY9IKTkr
+        QuA44Tm7WOqehGyB+ui2W+woWrrqzOc=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-jLt2kfnlOfqs3uMiGpmVog-1; Mon, 19 Oct 2020 15:34:00 -0400
+X-MC-Unique: jLt2kfnlOfqs3uMiGpmVog-1
+Received: by mail-qt1-f199.google.com with SMTP id b41so687653qtk.21
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:34:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Kq5VxBu2z8uXUidFjxUtgnQ0vBBkojXZgIAYG1rS13k=;
+        b=JXpO8X7IQWFGZw0FXSrxbyQD61gZSGmS115ihn7yky19mrNXX1BjJPH9OK9sH/dQlu
+         8FOul+3LKijODiCAWHxi4I+6+bH6lLcLnhHCDtUVoLVZMVo6rusWh7x8ADSJHrQq2Y7U
+         krwkJpWCtlAy6pqG+Sd+dnDcvZJxa0Avv8PzGedTpRoFVIfa47qfylLCm6IanwRV1WHc
+         cfZQ6O8om6suDVkBCJ1tEw4VIGXTHhApGm23QoeioPtjgh+D+ieGCFzvBj2VjnrqRHWb
+         /WtLrTT3Q2t5qLZIOk/wsucXxNJJYZChjraGtlVKI6VJpP76hoKG5hoDKqfqv+vmsHXs
+         eaMA==
+X-Gm-Message-State: AOAM532Aqglh8XvMVLWxOIwDY4fFR8sEmEJHAWzAiMtBPfA4bLxopk2q
+        fyRo0hjb1fqR2tGHAc8yWhoTGfgKphLCfzuK9lHzF/q42v4+SQ9ObWwoDPPaamPxlD8Mn+bgWps
+        lVurWn2ZnjTmeUmMzK4Mt0IOo
+X-Received: by 2002:a05:620a:998:: with SMTP id x24mr1093532qkx.160.1603136040061;
+        Mon, 19 Oct 2020 12:34:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyRBOMiv5G17G7LD/7F/VAfAiG22qRDwWAIDg5xLV1iQptDtvpB+4Rtxa35qcp0KfqWXbJFEQ==
+X-Received: by 2002:a05:620a:998:: with SMTP id x24mr1093513qkx.160.1603136039870;
+        Mon, 19 Oct 2020 12:33:59 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id h8sm358550qto.46.2020.10.19.12.33.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 12:33:59 -0700 (PDT)
+From:   trix@redhat.com
+To:     matti.vaittinen@fi.rohmeurope.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com
+Cc:     linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] gpio: bd70528: remove unneeded break
+Date:   Mon, 19 Oct 2020 12:33:53 -0700
+Message-Id: <20201019193353.13066-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LRNG switchable DRNG support also allows the replacement of the hash
-implementation used as conditioning component. The common generic hash
-support code provides the required callbacks using the synchronous hash
-implementations of the kernel crypto API.
+From: Tom Rix <trix@redhat.com>
 
-All synchronous hash implementations supported by the kernel crypto API
-can be used as part of the LRNG with this generic support.
+A break is not needed if it is preceded by a return
 
-The generic support is intended to be configured by separate switchable
-DRNG backends.
-
-CC: Torsten Duwe <duwe@lst.de>
-CC: "Eric W. Biederman" <ebiederm@xmission.com>
-CC: "Alexander E. Patrakov" <patrakov@gmail.com>
-CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
-CC: "Theodore Y. Ts'o" <tytso@mit.edu>
-CC: Willy Tarreau <w@1wt.eu>
-CC: Matthew Garrett <mjg59@srcf.ucam.org>
-CC: Vito Caputo <vcaputo@pengaru.com>
-CC: Andreas Dilger <adilger.kernel@dilger.ca>
-CC: Jan Kara <jack@suse.cz>
-CC: Ray Strode <rstrode@redhat.com>
-CC: William Jon McCann <mccann@jhu.edu>
-CC: zhangjs <zachary@baishancloud.com>
-CC: Andy Lutomirski <luto@kernel.org>
-CC: Florian Weimer <fweimer@redhat.com>
-CC: Lennart Poettering <mzxreary@0pointer.de>
-CC: Nicolai Stange <nstange@suse.de>
-CC: "Peter, Matthias" <matthias.peter@bsi.bund.de>
-CC: Roman Drahtmueller <draht@schaltsekun.de>
-CC: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-CC: Neil Horman <nhorman@redhat.com>
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/char/lrng/Kconfig           |  7 +++
- drivers/char/lrng/Makefile          |  1 +
- drivers/char/lrng/lrng_kcapi_hash.c | 97 +++++++++++++++++++++++++++++
- drivers/char/lrng/lrng_kcapi_hash.h | 19 ++++++
- 4 files changed, 124 insertions(+)
- create mode 100644 drivers/char/lrng/lrng_kcapi_hash.c
- create mode 100644 drivers/char/lrng/lrng_kcapi_hash.h
+ drivers/gpio/gpio-bd70528.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index e211fcf5aa8b..daa2057248ac 100644
---- a/drivers/char/lrng/Kconfig
-+++ b/drivers/char/lrng/Kconfig
-@@ -76,4 +76,11 @@ menuconfig LRNG_DRNG_SWITCH
- 	  accessible via the external interfaces. With this configuration
- 	  option other DRNGs can be selected and loaded at runtime.
- 
-+if LRNG_DRNG_SWITCH
-+
-+config LRNG_KCAPI_HASH
-+	bool
-+
-+endif # LRNG_DRNG_SWITCH
-+
- endif # LRNG
-diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
-index 0eb4a6849c88..40f8826edeeb 100644
---- a/drivers/char/lrng/Makefile
-+++ b/drivers/char/lrng/Makefile
-@@ -11,3 +11,4 @@ obj-y				+= lrng_pool.o lrng_aux.o \
- obj-$(CONFIG_NUMA)		+= lrng_numa.o
- obj-$(CONFIG_SYSCTL)		+= lrng_proc.o
- obj-$(CONFIG_LRNG_DRNG_SWITCH)	+= lrng_switch.o
-+obj-$(CONFIG_LRNG_KCAPI_HASH)	+= lrng_kcapi_hash.o
-diff --git a/drivers/char/lrng/lrng_kcapi_hash.c b/drivers/char/lrng/lrng_kcapi_hash.c
-new file mode 100644
-index 000000000000..c5ddc71f5f8c
---- /dev/null
-+++ b/drivers/char/lrng/lrng_kcapi_hash.c
-@@ -0,0 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-+/*
-+ * Backend for providing the hash primitive using the kernel crypto API.
-+ *
-+ * Copyright (C) 2020, Stephan Mueller <smueller@chronox.de>
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <crypto/hash.h>
-+
-+#include "lrng_kcapi_hash.h"
-+
-+struct lrng_hash_info {
-+	struct crypto_shash *tfm;
-+};
-+
-+static inline void _lrng_kcapi_hash_free(struct lrng_hash_info *lrng_hash)
-+{
-+	struct crypto_shash *tfm = lrng_hash->tfm;
-+
-+	crypto_free_shash(tfm);
-+	kfree(lrng_hash);
-+}
-+
-+void *lrng_kcapi_hash_alloc(const char *name)
-+{
-+	struct lrng_hash_info *lrng_hash;
-+	struct crypto_shash *tfm;
-+	int ret;
-+
-+	if (!name) {
-+		pr_err("Hash name missing\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	tfm = crypto_alloc_shash(name, 0, 0);
-+	if (IS_ERR(tfm)) {
-+		pr_err("could not allocate hash %s\n", name);
-+		return ERR_CAST(tfm);
-+	}
-+
-+	ret = sizeof(struct lrng_hash_info);
-+	lrng_hash = kmalloc(ret, GFP_KERNEL);
-+	if (!lrng_hash) {
-+		crypto_free_shash(tfm);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	lrng_hash->tfm = tfm;
-+
-+	pr_info("Hash %s allocated\n", name);
-+
-+	return lrng_hash;
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_alloc);
-+
-+u32 lrng_kcapi_hash_digestsize(void *hash)
-+{
-+	struct lrng_hash_info *lrng_hash = (struct lrng_hash_info *)hash;
-+	struct crypto_shash *tfm = lrng_hash->tfm;
-+
-+	return crypto_shash_digestsize(tfm);
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_digestsize);
-+
-+void lrng_kcapi_hash_dealloc(void *hash)
-+{
-+	struct lrng_hash_info *lrng_hash = (struct lrng_hash_info *)hash;
-+
-+	_lrng_kcapi_hash_free(lrng_hash);
-+	pr_info("Hash deallocated\n");
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_dealloc);
-+
-+int lrng_kcapi_hash_init(struct shash_desc *shash, void *hash)
-+{
-+	struct lrng_hash_info *lrng_hash = (struct lrng_hash_info *)hash;
-+	struct crypto_shash *tfm = lrng_hash->tfm;
-+
-+	shash->tfm = tfm;
-+	return crypto_shash_init(shash);
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_init);
-+
-+int lrng_kcapi_hash_update(struct shash_desc *shash, const u8 *inbuf,
-+			   u32 inbuflen)
-+{
-+	return crypto_shash_update(shash, inbuf, inbuflen);
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_update);
-+
-+int lrng_kcapi_hash_final(struct shash_desc *shash, u8 *digest)
-+{
-+	return crypto_shash_final(shash, digest);
-+}
-+EXPORT_SYMBOL(lrng_kcapi_hash_final);
-diff --git a/drivers/char/lrng/lrng_kcapi_hash.h b/drivers/char/lrng/lrng_kcapi_hash.h
-new file mode 100644
-index 000000000000..5bca7aba197f
---- /dev/null
-+++ b/drivers/char/lrng/lrng_kcapi_hash.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
-+/*
-+ * Copyright (C) 2020, Stephan Mueller <smueller@chronox.de>
-+ */
-+
-+#ifndef _LRNG_KCAPI_HASH_H
-+#define _LRNG_KCAPI_HASH_H
-+
-+#include <linux/module.h>
-+
-+void *lrng_kcapi_hash_alloc(const char *name);
-+u32 lrng_kcapi_hash_digestsize(void *hash);
-+void lrng_kcapi_hash_dealloc(void *hash);
-+int lrng_kcapi_hash_init(struct shash_desc *shash, void *hash);
-+int lrng_kcapi_hash_update(struct shash_desc *shash, const u8 *inbuf,
-+			   u32 inbuflen);
-+int lrng_kcapi_hash_final(struct shash_desc *shash, u8 *digest);
-+
-+#endif /* _LRNG_KCAPI_HASH_H */
+diff --git a/drivers/gpio/gpio-bd70528.c b/drivers/gpio/gpio-bd70528.c
+index 45b3da8da336..931e5765fe92 100644
+--- a/drivers/gpio/gpio-bd70528.c
++++ b/drivers/gpio/gpio-bd70528.c
+@@ -71,17 +71,14 @@ static int bd70528_gpio_set_config(struct gpio_chip *chip, unsigned int offset,
+ 					  GPIO_OUT_REG(offset),
+ 					  BD70528_GPIO_DRIVE_MASK,
+ 					  BD70528_GPIO_OPEN_DRAIN);
+-		break;
+ 	case PIN_CONFIG_DRIVE_PUSH_PULL:
+ 		return regmap_update_bits(bdgpio->chip.regmap,
+ 					  GPIO_OUT_REG(offset),
+ 					  BD70528_GPIO_DRIVE_MASK,
+ 					  BD70528_GPIO_PUSH_PULL);
+-		break;
+ 	case PIN_CONFIG_INPUT_DEBOUNCE:
+ 		return bd70528_set_debounce(bdgpio, offset,
+ 					    pinconf_to_config_argument(config));
+-		break;
+ 	default:
+ 		break;
+ 	}
 -- 
-2.26.2
-
-
-
+2.18.1
 
