@@ -2,108 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DA8292645
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1B829264D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727811AbgJSLOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:14:45 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:47948 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726634AbgJSLOl (ORCPT
+        id S1727825AbgJSLSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727496AbgJSLSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:14:41 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09JB0I1C019889;
-        Mon, 19 Oct 2020 07:14:27 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 347tf662u3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Oct 2020 07:14:27 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 09JBEQrn032806
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 19 Oct 2020 07:14:26 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 19 Oct
- 2020 07:14:25 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 19 Oct 2020 07:14:25 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 09JBELeU005943;
-        Mon, 19 Oct 2020 07:14:23 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>, <lars@metafoo.de>,
-        <mdf@kernel.org>, <ardeleanalex@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 2/2] clk: axi-clkgen: move the OF table at the bottom of the file
-Date:   Mon, 19 Oct 2020 14:18:09 +0300
-Message-ID: <20201019111809.56374-2-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201019111809.56374-1-alexandru.ardelean@analog.com>
-References: <20201019111809.56374-1-alexandru.ardelean@analog.com>
+        Mon, 19 Oct 2020 07:18:45 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9C9C0613CE;
+        Mon, 19 Oct 2020 04:18:44 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id t21so9810654eds.6;
+        Mon, 19 Oct 2020 04:18:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=45s2FCkwzyyTYjXpdLwRQnD7aZKp7qq3wruiWtEoA1o=;
+        b=j2o7B/XNkY6QxAUAH9C351tgOWQYsxOBcYAFqEPbz5qI0dLEg5vA0FTiZdfZvZyD4N
+         +Z7wS6AMAbyE+PMsMIOXAc+VCm+0HcwRZXq3GBTdMpTiCJxQhsIGb7f6M1tqs5wQPcYD
+         9mKeSEBGXwJ1y3TA11fdiQ8CICZ/LAZj/3pnThAPTMVjvkll18eU4mkdmIL5WaFaZAKg
+         5dPyAdbvco8Y67FeIK67sMD282GkbIPRS0KZAxvgxtOjn83m+l0IXH/jmr+D3dp/3wxA
+         U3kG39Cgcbq1R2+z2y8zAeXzvWFC2UvaEqcxynYUVJELMvBzbzEqPvGOAaEFw+MCsHlN
+         U/uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=45s2FCkwzyyTYjXpdLwRQnD7aZKp7qq3wruiWtEoA1o=;
+        b=lbhpALajv+gnVUxAlYpkjImX0/88AZ7PjP0QAadBdyafRZbB+HAX4viMI6xitN7bQ6
+         HX7OMmM6dkethJbqiYS0wkWP3Qgvmjc82Pci9DAix69vIz5zZr9sEE+GmCbrX0rHK93M
+         iOW4+G3Hnb/hMbACVjFuoWy99EH8wVJZazmKCd/HZjTR2iOlnEigpsDWIs6b2wIyiKUf
+         oXBi4Xih7domL0pzPDFNVjPnSG2Hu1BwAVOdWfLD+ufLD4zAhB6TJSmLwyBOrq6YDSZr
+         NVw8efu5cV1mGsQ9/pWI0PMTDEFz2HdvKpY9660NHSkCsG2dxqGNcIcxJkxH3jrZE6Xv
+         h3bQ==
+X-Gm-Message-State: AOAM533SWioSpQsOeiL5hUuXyaU/uPf4WderEAtZ05pzBiB5kwjwjfQr
+        6QObiXFci0K1PkLSnZ9a2oN7eEfOGw/r5Q==
+X-Google-Smtp-Source: ABdhPJw2B7R7ZQuAnZZQqQwRpR70rr/Vg1pWrC/W/1VOCzjuKr6oga62jViR/knTDnu+L4fnJQDPjg==
+X-Received: by 2002:aa7:c54f:: with SMTP id s15mr17950954edr.107.1603106322909;
+        Mon, 19 Oct 2020 04:18:42 -0700 (PDT)
+Received: from [192.168.178.40] ([188.192.138.212])
+        by smtp.gmail.com with ESMTPSA id d6sm10259216edr.26.2020.10.19.04.18.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 04:18:42 -0700 (PDT)
+Subject: Re: [PATCH v2 4/4] scatterlist: add sgl_memset()
+To:     Douglas Gilbert <dgilbert@interlog.com>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     martin.petersen@oracle.com, axboe@kernel.dk, bvanassche@acm.org
+References: <20201018171336.63839-1-dgilbert@interlog.com>
+ <20201018171336.63839-5-dgilbert@interlog.com>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <75d9b1cf-e418-cee1-89de-c59c5b2b4304@gmail.com>
+Date:   Mon, 19 Oct 2020 13:18:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-19_02:2020-10-16,2020-10-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 bulkscore=0 phishscore=0 adultscore=0 clxscore=1015
- impostorscore=0 mlxlogscore=968 lowpriorityscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010190082
+In-Reply-To: <20201018171336.63839-5-dgilbert@interlog.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The change is mostly cosmetic. No functional changes.
-Since the driver now uses device_get_match_data() to obtain the driver
-specific info, there is no need to define the OF table before the probe
-function.
+AFAICS, there are 2 unneeded lines in the new implementation
+of sgl_memset. Please see details below.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/clk/clk-axi-clkgen.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
-index 963a62e9c728..ad86e031ba3e 100644
---- a/drivers/clk/clk-axi-clkgen.c
-+++ b/drivers/clk/clk-axi-clkgen.c
-@@ -496,15 +496,6 @@ static const struct clk_ops axi_clkgen_ops = {
- 	.get_parent = axi_clkgen_get_parent,
- };
- 
--static const struct of_device_id axi_clkgen_ids[] = {
--	{
--		.compatible = "adi,axi-clkgen-2.00.a",
--		.data = &axi_clkgen_zynq_default_limits,
--	},
--	{ },
--};
--MODULE_DEVICE_TABLE(of, axi_clkgen_ids);
--
- static int axi_clkgen_probe(struct platform_device *pdev)
- {
- 	const struct axi_clkgen_limits *dflt_limits;
-@@ -568,6 +559,15 @@ static int axi_clkgen_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct of_device_id axi_clkgen_ids[] = {
-+	{
-+		.compatible = "adi,axi-clkgen-2.00.a",
-+		.data = &axi_clkgen_zynq_default_limits,
-+	},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, axi_clkgen_ids);
-+
- static struct platform_driver axi_clkgen_driver = {
- 	.driver = {
- 		.name = "adi-axi-clkgen",
--- 
-2.17.1
+Am 18.10.20 um 19:13 schrieb Douglas Gilbert:
+> The existing sg_zero_buffer() function is a bit restrictive.
+> For example protection information (PI) blocks are usually
+> initialized to 0xff bytes. As its name suggests sgl_memset()
+> is modelled on memset(). One difference is the type of the
+> val argument which is u8 rather than int. Plus it returns
+> the number of bytes (over)written.
+> 
+> Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
+> ---
 
+...
+
+> +
+> +/**
+> + * sgl_memset - set byte 'val' up to n_bytes times on SG list
+> + * @sgl:		 The SG list
+> + * @nents:		 Number of SG entries in sgl
+> + * @skip:		 Number of bytes to skip before starting
+> + * @val:		 byte value to write to sgl
+> + * @n_bytes:		 The (maximum) number of bytes to modify
+> + *
+> + * Returns:
+> + *   The number of bytes written.
+> + *
+> + * Notes:
+> + *   Stops writing if either sgl or n_bytes is exhausted. If n_bytes is
+> + *   set SIZE_MAX then val will be written to each byte until the end
+> + *   of sgl.
+> + *
+> + *   The notes in sgl_copy_sgl() about large sgl_s _applies here as well.
+> + *
+> + **/
+> +size_t sgl_memset(struct scatterlist *sgl, unsigned int nents, off_t skip,
+> +		  u8 val, size_t n_bytes)
+> +{
+> +	size_t offset = 0;
+> +	size_t len;
+> +	struct sg_mapping_iter miter;
+> +
+> +	if (n_bytes == 0)
+> +		return 0;
+> +	sg_miter_start(&miter, sgl, nents, SG_MITER_ATOMIC | SG_MITER_TO_SG);
+> +	if (!sg_miter_skip(&miter, skip))
+> +		goto fini;
+> +
+> +	while ((offset < n_bytes) && sg_miter_next(&miter)) {
+> +		len = min(miter.length, n_bytes - offset);
+> +		memset(miter.addr, val, len);
+> +		offset += len;
+> +		miter.consumed = len;
+
+The above line will not change miter.consumed in all loop cycles but the
+last, since len will be miter.length for all loop cycles but the last
+and sg_miter_next initializes miter.consumed to contain miter.length.
+In the last loop cycle it does not harm if miter.consumed stays bigger
+than len. So this line is not needed and can be removed.
+
+> +		sg_miter_stop(&miter);
+
+Since the code does not use nested sg_miter, the sg_miter_stop() here is
+not needed, you can remove that line.
+
+Either the next call to sg_miter_next will call sg_miter_stop before
+preparing next chunk of mem, or sg_miter_stop is called behind the loop.
+
+> +	}
+> +fini:
+> +	sg_miter_stop(&miter);
+> +	return offset;
+> +}
+> +EXPORT_SYMBOL(sgl_memset);
+> +
+> 
