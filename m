@@ -2,216 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17047292652
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BE9292651
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgJSLYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:24:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:55486 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727843AbgJSLYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:24:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42EE830E;
-        Mon, 19 Oct 2020 04:24:12 -0700 (PDT)
-Received: from [10.163.77.151] (unknown [10.163.77.151])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A7DF3F719;
-        Mon, 19 Oct 2020 04:24:08 -0700 (PDT)
-Subject: Re: [PATCH] arm64/mm: Validate hotplug range before creating linear
- mapping
-To:     David Hildenbrand <david@redhat.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     will@kernel.org, catalin.marinas@arm.com,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>
-References: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
- <7c39c046-b950-ea4c-fa4d-e0a5d6171147@redhat.com>
- <72ea7056-5289-3eb0-eca9-a8444524667e@arm.com>
- <70a76220-9acd-06b6-e074-dc9cbb6668da@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <40104165-aa6f-201c-4aa2-e3918978dc6e@arm.com>
-Date:   Mon, 19 Oct 2020 16:53:40 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1727778AbgJSLYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:24:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43139 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725924AbgJSLYD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 07:24:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603106641;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hq4ZCvsEstWxmDC5Y+AIkMFzc4tSVhHqiOMH2psAJxk=;
+        b=UMOfYq7THqj5byJbqpLfpS1uD8aaTag5OjW9Ouixpk5v4S6h1AoNspIBQXsbtTtGJemgAH
+        x9sd6vd7qJAQzue+kal9knOBRBJSsuzcRjelVNcflF3OtS3QftcvhnhD/amg/Rp1krxwGp
+        0JLfYuxL8gkxAlzoIrDlRdFvusBsTOY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-EInenvtDPS6UyDcz-50opQ-1; Mon, 19 Oct 2020 07:24:00 -0400
+X-MC-Unique: EInenvtDPS6UyDcz-50opQ-1
+Received: by mail-wr1-f72.google.com with SMTP id i6so7255268wrx.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 04:23:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Hq4ZCvsEstWxmDC5Y+AIkMFzc4tSVhHqiOMH2psAJxk=;
+        b=abcpRzq9P18Jp3s0RhznYw0JK2px/M1KROd/GjBltS5hoImvZ3X1IK+JlkNq5RI+YB
+         kGTyXAw3tLusOxax5yD/ouJFEvHG/49t3jqBaenZE2J/0PkQuWjtm6roHIsFMmga1Cfo
+         J495AiBHcD1smMOjl1AaNSwKZy++esvqxP2dmaxZ06/IBv55Yi1Grp68wicd39P1cVfE
+         9RztHtgL3QBwfRSpDVDan76Lql6Hqh39M26HTWylSPAqKiS9OwLBECrES+qdeuT7RL0M
+         KWFyxPuoAzcJjDVFOK2/ikCFNegC6mOz2v5jhMJFacKFhaRwRIxqOBoTNuJPUmN+rxt/
+         /7jQ==
+X-Gm-Message-State: AOAM533FtmaVaivQnmWdpn+x45M6BUhT5cobPnNx1HxHyj1BPzT5HCGY
+        wqUVXOqh9H7CIv79rYn15aoKjxoD6FgqICKM+g5JPP34s6976KI8Pl7T8T3+qxN4t+NjhbzuSFQ
+        EFYtXwdS5f1RHaFziwYc3KSE7
+X-Received: by 2002:a1c:b657:: with SMTP id g84mr17104836wmf.0.1603106638576;
+        Mon, 19 Oct 2020 04:23:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz1i/RV7VUN+OHcqUwFaEWXVn6phACO4s7j6t3VeHL2oTRq+sxihm4TZYtS5jcGTM8frt/Prw==
+X-Received: by 2002:a1c:b657:: with SMTP id g84mr17104811wmf.0.1603106638345;
+        Mon, 19 Oct 2020 04:23:58 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id u202sm16230757wmu.23.2020.10.19.04.23.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 04:23:57 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     lihaiwei.kernel@gmail.com
+Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        Haiwei Li <lihaiwei@tencent.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] KVM: Check the allocation of pv cpu mask
+In-Reply-To: <20201017175436.17116-1-lihaiwei.kernel@gmail.com>
+References: <20201017175436.17116-1-lihaiwei.kernel@gmail.com>
+Date:   Mon, 19 Oct 2020 13:23:56 +0200
+Message-ID: <87r1pu4fxv.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <70a76220-9acd-06b6-e074-dc9cbb6668da@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+lihaiwei.kernel@gmail.com writes:
 
+> From: Haiwei Li <lihaiwei@tencent.com>
+>
+> check the allocation of per-cpu __pv_cpu_mask. Init
+> 'send_IPI_mask_allbutself' only when successful and check the allocation
+> of __pv_cpu_mask in 'kvm_flush_tlb_others'.
+>
+> Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+> ---
+> v1 -> v2:
+>  * add CONFIG_SMP for kvm_send_ipi_mask_allbutself to prevent build error
+> v2 -> v3:
+>  * always check the allocation of __pv_cpu_mask in kvm_flush_tlb_others
+> v3 -> v4:
+>  * mov kvm_setup_pv_ipi to kvm_alloc_cpumask and get rid of kvm_apic_init
+>
+>  arch/x86/kernel/kvm.c | 53 +++++++++++++++++++++++++++++--------------
+>  1 file changed, 36 insertions(+), 17 deletions(-)
+>
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index 42c6e0deff9e..be28203cc098 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -547,16 +547,6 @@ static void kvm_send_ipi_mask_allbutself(const struct cpumask *mask, int vector)
+>  	__send_ipi_mask(local_mask, vector);
+>  }
+>  
+> -/*
+> - * Set the IPI entry points
+> - */
+> -static void kvm_setup_pv_ipi(void)
+> -{
+> -	apic->send_IPI_mask = kvm_send_ipi_mask;
+> -	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
+> -	pr_info("setup PV IPIs\n");
+> -}
+> -
+>  static void kvm_smp_send_call_func_ipi(const struct cpumask *mask)
+>  {
+>  	int cpu;
+> @@ -619,6 +609,11 @@ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
+>  	struct kvm_steal_time *src;
+>  	struct cpumask *flushmask = this_cpu_cpumask_var_ptr(__pv_cpu_mask);
+>  
+> +	if (unlikely(!flushmask)) {
+> +		native_flush_tlb_others(cpumask, info);
+> +		return;
+> +	}
+> +
+>  	cpumask_copy(flushmask, cpumask);
+>  	/*
+>  	 * We have to call flush only on online vCPUs. And
+> @@ -732,10 +727,6 @@ static uint32_t __init kvm_detect(void)
+>  
+>  static void __init kvm_apic_init(void)
+>  {
+> -#if defined(CONFIG_SMP)
+> -	if (pv_ipi_supported())
+> -		kvm_setup_pv_ipi();
+> -#endif
+>  }
 
-On 10/07/2020 02:09 PM, David Hildenbrand wrote:
->>> We do have __add_pages()->check_hotplug_memory_addressable() where we
->>> already check against MAX_PHYSMEM_BITS.
->>
->> Initially, I thought about check_hotplug_memory_addressable() but the
->> existing check that asserts end of hotplug wrt MAX_PHYSMEM_BITS, is
->> generic in nature. AFAIK the linear mapping problem is arm64 specific,
->> hence I was not sure whether to add an arch specific callback which
->> will give platform an opportunity to weigh in for these ranges.
-> 
-> Also on s390x, the range where you can create an identity mapping depends on
-> - early kernel setup
-> - kasan
-> 
-> (I assume it's the same for all archs)
-> 
-> See arch/s390/mm/vmem.c:vmem_add_mapping(), which contains similar
-> checks (VMEM_MAX_PHYS).
+Do we still need the now-empty function?
 
-Once there is a high level function, all these platform specific
-checks should go in their arch_get_mappable_range() instead.
+>  
+>  static void __init kvm_init_platform(void)
+> @@ -765,10 +756,18 @@ static __init int activate_jump_labels(void)
+>  }
+>  arch_initcall(activate_jump_labels);
+>  
+> +static void kvm_free_cpumask(void)
+> +{
+> +	unsigned int cpu;
+> +
+> +	for_each_possible_cpu(cpu)
+> +		free_cpumask_var(per_cpu(__pv_cpu_mask, cpu));
+> +}
+> +
+>  static __init int kvm_alloc_cpumask(void)
+>  {
+>  	int cpu;
+> -	bool alloc = false;
+> +	bool alloc = false, alloced = true;
+>  
+>  	if (!kvm_para_available() || nopv)
+>  		return 0;
+> @@ -783,10 +782,30 @@ static __init int kvm_alloc_cpumask(void)
+>  
+>  	if (alloc)
+>  		for_each_possible_cpu(cpu) {
+> -			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
+> -				GFP_KERNEL, cpu_to_node(cpu));
+> +			if (!zalloc_cpumask_var_node(
+> +				per_cpu_ptr(&__pv_cpu_mask, cpu),
+> +				GFP_KERNEL, cpu_to_node(cpu))) {
+> +				alloced = false;
+> +				break;
+> +			}
+>  		}
+>  
+> +#if defined(CONFIG_SMP)
+> +	/* Set the IPI entry points */
+> +	if (pv_ipi_supported()) {
 
-> 
->>
->> But hold on, check_hotplug_memory_addressable() only gets called from
->> __add_pages() after linear mapping creation in arch_add_memory(). How
->> would it help ? We need some thing for add_memory(), its variants and
->> also possibly for memremap_pages() when it calls arch_add_memory().
->>
-> 
-> Good point. We chose that place for simplicity when adding it (I was
-> favoring calling it at two places back then). Now, we might have good
-> reason to move the checks further up the call chain.
+What if we define pv_ipi_supported() in !CONFIG_SMP case as 'false'?
 
-check_hotplug_memory_addressable() check in add_pages() does not add
-much as linear mapping creation must have been completed by then. I
-guess moving this check inside the single high level function should
-be better.
+The code we have above:
 
-But checking against MAX_PHYSMEM_BITS might no longer be required, as
-the range would have been validated against applicable memhp_range.   
+        if (pv_tlb_flush_supported())
+		alloc = true;
 
-> 
-> Most probably,
-> 
-> struct range memhp_get_addressable_range(bool need_mapping)
-> {
-> 	...
-> }
+#if defined(CONFIG_SMP)
+        if (pv_ipi_supported())
+		alloc = true;
+#endif
 
-Something like this...
+      	if (alloc)
+...
 
-+struct memhp_range {
-+       u64 start;
-+       u64 end;
-+};
-+
-+#ifndef arch_get_addressable_range
-+static inline struct memhp_range arch_get_mappable_range(bool need_mapping)
-+{
-+       struct memhp_range range = {
-+               .start = 0UL,
-+               .end = (1ull << (MAX_PHYSMEM_BITS + 1)) - 1,
-+       };
-+       return range;
-+}
-+#endif
-+
-+static inline struct memhp_range memhp_get_mappable_range(bool need_mapping)
-+{
-+       const u64 max_phys = (1ull << (MAX_PHYSMEM_BITS + 1)) - 1;
-+       struct memhp_range range = arch_get_mappable_range(need_mapping);
-+
-+       if (range.start > max_phys) {
-+               range.start = 0;
-+               range.end = 0;
-+       }
-+       range.end = min_t(u64, range.end, max_phys);
-+       return range;
-+}
-+
-+static inline bool memhp_range_allowed(u64 start, u64 end, bool need_mapping)
-+{
-+       struct memhp_range range = memhp_get_mappable_range(need_mapping);
-+
-+       return (start <= end) && (start >= range.start) && (end <= range.end);
-+}
+will transform into 'if (pv_tlb_flush_supported() ||
+pv_ipi_supported())' and we'll get rid of 'alloc' variable.
 
-> 
-> Would make sense, to deal with memremap_pages() without identity mappings.
-> 
-> We have two options:
-> 
-> 1. Generalize the checks, check early in applicable functions. Have a
-> single way to get applicable ranges, both in callers, and inside the
-> functions.
-Inside the functions, check_hotplug_memory_addressable() in add_pages() ?
-We could just drop that. Single generalized check with an arch callback
-makes more sense IMHO.
+Also, we can probably get rid of this new 'alloced' variable and switch
+to checking if the cpumask for the last CPU in cpu_possible_mask is not
+NULL.
+ 
+> +		apic->send_IPI_mask = kvm_send_ipi_mask;
+> +		if (alloced)
+> +			apic->send_IPI_mask_allbutself =
+> +				kvm_send_ipi_mask_allbutself;
+> +		pr_info("setup PV IPIs\n");
 
-> 
-> 2. Keep the checks where they are. Add memhp_get_addressable_range() so
-> callers can figure limits out. It's less clear what the relation between
-> the different checks is. And it's likely if things change at one place
-> that we miss the other place.
+I'd rather not set 'apic->send_IPI_mask = kvm_send_ipi_mask' in case we
+failed to alloc cpumask too. It is weird that in case of an allocation
+failure *some* IPIs will use the PV path and some won't. It's going to
+be a nightmare to debug.
 
-Right, does not sound like a good idea :)
+> +	}
+> +#endif
+> +
+> +	if (!alloced) {
+> +		kvm_free_cpumask();
+> +		return -ENOMEM;
+> +	}
+> +
+>  	return 0;
+>  }
+>  arch_initcall(kvm_alloc_cpumask);
 
-> 
->>> struct range memhp_get_addressable_range(void)
->>> {
->>> 	const u64 max_phys = (1ull << (MAX_PHYSMEM_BITS + 1)) - 1;
->>> 	struct range range = arch_get_mappable_range();
->>
->> What would you suggest as the default fallback range if a platform
->> does not define this callback.
-> 
-> Just the largest possible range until we implement them. IIRC, an s390x
-> version should be easy to add.
+-- 
+Vitaly
 
-[0UL...(1ull << (MAX_PHYSMEM_BITS + 1)) - 1] is the largest possible
-hotplug range.
-
-> 
->>
->>>
->>> 	if (range.start > max_phys) {
->>> 		range.start = 0;
->>> 		range.end = 0;
->>> 	}
->>> 	range.end = max_t(u64, range.end, max_phys);
->>
->> min_t instead ?
-> 
-> Yeah :)
-> 
->>
->>>
->>> 	return range;
->>> }
->>>
->>>
->>> That, we can use in check_hotplug_memory_addressable(), and also allow
->>> add_memory*() users to make use of it.
->>
->> So this check would happen twice during a hotplug ?
-> 
-> Right now it's like calling a function with wrong arguments - you just
-> don't have a clue what valid arguments are, because non-obvious errors
-> (besides -ENOMEM, which is a temporary error) pop up deep down the call
-> chain.
-> 
-> For example, virito-mem would use it to detect during device
-> initialization the usable device range, and warn the user accordingly.
-> It currently manually checks for MAX_PHYSMEM_BITS, but that's just ugly.
-> Failing at random add_memory() calls (permanently!) is not so nice.
-> 
-> In case of DIMMs, we could use it to detect if adding parts of a DIMM
-> won't work (and warn the user early). We could try to add as much as
-> possible.
-
-Agreed.
-
-Planning to add memhp_range_allowed() check in add_memory(), __add_memory(),
-add_memory_driver_managed() and memremap_pages(). This check might just get
-called twice depending on the hotplug path. Wondering if this needs to be
-added any where else ?
