@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0D1292A15
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE18292A18
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730015AbgJSPMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:12:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20939 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729717AbgJSPMA (ORCPT
+        id S1729988AbgJSPNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729717AbgJSPNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:12:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603120318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aXlleUnBQnXgRgurIE/X/dP18+C+fiLS1/SOsHDJ8GA=;
-        b=H4eC25y9E9I7dFEakKen3kpM6c9iNqV1bvNDoawcUEBOiFHdV4NkgXhanYuWkyrHEJYglX
-        UvWl54JE6SwHMKSMEQBqJy5nDF+EgX6FIVwKpz2EzwCOyWGfh2KPBw4keEecVwPQgoLcu5
-        gFKNw2AJmx+K6uL1RoHMUS2v48KOfsY=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-47-ChDhxqS1O2OSRYGCDbJ0zw-1; Mon, 19 Oct 2020 11:11:56 -0400
-X-MC-Unique: ChDhxqS1O2OSRYGCDbJ0zw-1
-Received: by mail-wr1-f72.google.com with SMTP id 2so7551873wrd.14
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:11:56 -0700 (PDT)
+        Mon, 19 Oct 2020 11:13:02 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6A7C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:13:01 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id a28so454787ljn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zk46YEU8AFrJPMd2DZK0YXhrQs/eaI3r0nLePqJ0ljY=;
+        b=QfCrOWagyVz1D/JQhVoyJQsbYNAjvQ/iL7mZq7ErUA3+oG3FeUeyngHtmr1rE78TW2
+         jEnzyi82NX2BxtlxZFHebEGmu38P5zJj9WCs6+iSqnxIoj5aGi0JeTWr3DPX+dP3+yKX
+         ROusE4YeJT4cVzU+K8MYz96BljmWIdtJ4HuB9/BgDhjxhYPDGT9OUp0VhAxFbSPCyCJz
+         DYeUCyUbDI2Esf8lS0dCx3esOjAXoE4j9oDYLRJMVAOtEtegY53K58fX77sPIETx8NZO
+         JuHNAesgnTu5m+RsUsU2DJ5hVSNRke6vMLvbfwGKTfX1Qwu/jUJ7of6sDfo5LButNPCA
+         FYZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aXlleUnBQnXgRgurIE/X/dP18+C+fiLS1/SOsHDJ8GA=;
-        b=fk8vA5P8Ngnum7d9uquPqKTpxjiporJlbPBLaJL0OGeiWEs2+XL+NGFee25rD8Njvl
-         nlAFs/c3f++eRXpYJlmTNlLid7ecAUrXnlhUT0rfnkrJ/gadthZ/k9aP6wSsVEm+TFkH
-         PIzSDJtX31q8ZykmrPtOt5g0H9EnypE1Yqp4zy71/tl0rRa5xBOWPLV0ZzLTcGMyaWvF
-         sNM9FxkcT1yn+pc3HwzCFlawPEfTrq5FLp+CVwUyIHwF7g7oXW8WsAG/ek2TSbytC6v0
-         gPxnRlsqtSx9w8U2GP4iYHFwn0KCUKMWznMR5yS+CgX8nnJZVf5+jmq9XVrjIBcORbHw
-         kbqA==
-X-Gm-Message-State: AOAM531nfM5BpAIOSy7SExy8mV3en5rfbgyitLWniZs+EQkXWMwnNvsG
-        AK2iiYAiOBQvULWNADe0QaUMRjRW6cZ8P33Yo2fV+jpNCmjhecmJHD6Afe6ILS/zKXR95zOnJWX
-        g1EUhljBcNFs/Y1eLUE0vkjry
-X-Received: by 2002:a5d:4648:: with SMTP id j8mr1356810wrs.131.1603120315531;
-        Mon, 19 Oct 2020 08:11:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzFIREbO6DezALO0JWKlg4qRoGscw71tin3lv0IQ+vqnXpANv4T2rRXqGWJt7uALR0ANL13wg==
-X-Received: by 2002:a5d:4648:: with SMTP id j8mr1356789wrs.131.1603120315320;
-        Mon, 19 Oct 2020 08:11:55 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id g4sm374295wmh.13.2020.10.19.08.11.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 08:11:54 -0700 (PDT)
-Subject: Re: [PATCH] Documentation: kvm: fix a typo
-To:     Li Qiang <liq3ea@163.com>, corbet@lwn.net, lnowakow@eng.ucsd.edu,
-        kvm@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     liq3ea@gmail.com
-References: <20201001095333.7611-1-liq3ea@163.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a4339c95-8190-f477-381d-0617c74f9e9b@redhat.com>
-Date:   Mon, 19 Oct 2020 17:11:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zk46YEU8AFrJPMd2DZK0YXhrQs/eaI3r0nLePqJ0ljY=;
+        b=VX7AGb08uW4nT76HZ89Foyh533wdTHTc5pY5CL469pjjhLFHuKK6y77qBKMMp+v74n
+         MP2BL92lMUn0m4b409rDA3upH7YlFYbYbcVWVYKLq20uexOF3tcrRyODuF9ARUAwwEYs
+         fIri2SNszwAIkGGPLGddd/+PmqSIlr+0juOCXE2KB9BkSXNy4/w9VSW+1O35cDp4E7LL
+         8/65dAO8ExX4lQ1ZXPT1+QJJaqn+xsqfuaNcUIBdz3j7VLIcyWZ/5B3V5S6sCKGg7Fu7
+         qYvtPj2eX3mPZw9OdKfxv7DmKdUN07zNAT/Tx2O7oVSjspUHSrWSDJUIHRBisgOa4Vjv
+         R4Cw==
+X-Gm-Message-State: AOAM532FA1RJgdduZlasvhifdkc/ZriefIBgJ9zLf7dSDCNBUubLRFSw
+        izmQGL3cQTJMM3Skg7CqqysSicLfyBH/e/TshA6/Kw==
+X-Google-Smtp-Source: ABdhPJyy1bxdUdOPXMnQ5eKDGPZT8n6dCCKjJ9rZMIhGQSyK/ZSc4sXbGHMHJl0Se48FIReMKBaaBIn4QgIzJEXOaiw=
+X-Received: by 2002:a2e:b60e:: with SMTP id r14mr223627ljn.77.1603120379795;
+ Mon, 19 Oct 2020 08:12:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201001095333.7611-1-liq3ea@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201013153504.92602-1-songmuchun@bytedance.com>
+In-Reply-To: <20201013153504.92602-1-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 19 Oct 2020 08:12:48 -0700
+Message-ID: <CALvZod49YJkG7z+Bnben2pUbw=TyXrHJE1wWt9HbY_85oNpXNA@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: Remove unused mod_memcg_obj_state()
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Chris Down <chris@chrisdown.name>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/10/20 11:53, Li Qiang wrote:
-> Fixes: e287d6de62f74 ("Documentation: kvm: Convert cpuid.txt to .rst")
-> Signed-off-by: Li Qiang <liq3ea@163.com>
-> ---
->  Documentation/virt/kvm/cpuid.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
-> index a7dff9186bed..ff2b38d3e108 100644
-> --- a/Documentation/virt/kvm/cpuid.rst
-> +++ b/Documentation/virt/kvm/cpuid.rst
-> @@ -62,7 +62,7 @@ KVM_FEATURE_PV_EOI                6           paravirtualized end of interrupt
->                                                handler can be enabled by
->                                                writing to msr 0x4b564d04
->  
-> -KVM_FEATURE_PV_UNHAULT            7           guest checks this feature bit
-> +KVM_FEATURE_PV_UNHALT             7           guest checks this feature bit
->                                                before enabling paravirtualized
->                                                spinlock support
->  
-> 
+On Tue, Oct 13, 2020 at 8:36 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> Since commit:
+>
+>   991e7673859e ("mm: memcontrol: account kernel stack per node")
+>
+> There is no user of the mod_memcg_obj_state(). This patch just remove
+> it. Also rework type of the idx parameter of the mod_objcg_state()
+> from int to enum node_stat_item.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Queued, thanks.
-
-Paolo
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
