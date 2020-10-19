@@ -2,78 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB068292D5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11814292D50
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730588AbgJSSMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 14:12:24 -0400
-Received: from surat-el.surakarta.go.id ([103.115.227.187]:41540 "EHLO
-        surat-el.surakarta.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727328AbgJSSMY (ORCPT
+        id S1730422AbgJSSHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 14:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727293AbgJSSHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 14:12:24 -0400
-X-Greylist: delayed 462 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Oct 2020 14:12:22 EDT
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by surat-el.surakarta.go.id (Postfix) with ESMTP id 8E3438E6F43;
-        Tue, 20 Oct 2020 01:04:37 +0700 (WIB)
-Received: from surat-el.surakarta.go.id ([127.0.0.1])
-        by localhost (surat-el.surakarta.go.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id ratUB2672OLh; Tue, 20 Oct 2020 01:04:34 +0700 (WIB)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by surat-el.surakarta.go.id (Postfix) with ESMTP id 07CF78E6F3D;
-        Tue, 20 Oct 2020 01:04:34 +0700 (WIB)
-DKIM-Filter: OpenDKIM Filter v2.10.3 surat-el.surakarta.go.id 07CF78E6F3D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=surakarta.go.id;
-        s=108D7042-CD8C-11EA-94FB-95DFADA11866; t=1603130674;
-        bh=rr82TVra+sMRQ9UdeBnR0iZD1cjhMdXN6zpXN+MzqmE=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=g6RV2K1KVUAyuUJvzYlONPOAPMIDtt5ZzU7+jv5716r3le+MNSX2F8dTlRjr7xjMT
-         m2SjtWXQxQktBcsYq8vs5pEhWLfkv/6tt0VlhtdDmTinaepmPRrSYfA/l9xBNv3p7H
-         xxATQCMcVnmGUg/PDhIh4Sqt3YJQRzIf1BrcsyVB9bx4cmY3NrlmSlIRfOY3pqKNhI
-         gbfNRo484jAC5uPl0raIDL/XdqhYrk2CE8d5iZT9/pjmlQM4iBWpmaBk7YRcE86Xh6
-         VaXj3nA3pxcFKyU7qMN48OAFhi+tcGydcpS0kCX7pxJeHBvxXiFDWk2RzjxQgtdUXq
-         2Dw2Am5CvDD9w==
-X-Virus-Scanned: amavisd-new at surakarta.go.id
-Received: from surat-el.surakarta.go.id ([127.0.0.1])
-        by localhost (surat-el.surakarta.go.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nck0V6mlexgQ; Tue, 20 Oct 2020 01:04:33 +0700 (WIB)
-Received: from [100.81.197.204] (unknown [106.210.46.170])
-        by surat-el.surakarta.go.id (Postfix) with ESMTPSA id 2A01D8E6F26;
-        Tue, 20 Oct 2020 01:04:08 +0700 (WIB)
-Content-Type: text/plain; charset="iso-8859-1"
+        Mon, 19 Oct 2020 14:07:15 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88715C0613CE;
+        Mon, 19 Oct 2020 11:07:15 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 8F970AAD; Mon, 19 Oct 2020 14:07:14 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 8F970AAD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1603130834;
+        bh=dco/WybpU/EqfvSvsH+XSa82NSYyQWrMNtM8NHtAqo8=;
+        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
+        b=GwREMXbUFIGpSf1Gsl88oP+3JCO5ZoWbw+JFj+3z86HxybGd/ID9RSNytKwfe4S3N
+         F7CHbMAgHPKgbcKjzJ8K1aYF9zD3lRddWW+NDiuuWfS9k8tFHbc2dUMZAii+dIZBSC
+         uDXzZ/mhfEqceOj0kg247FrZYqStB7yW+3H/a68M=
+Date:   Mon, 19 Oct 2020 14:07:14 -0400
+To:     David Howells <dhowells@redhat.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        trond.myklebust@hammerspace.com, linux-crypto@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-afs@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: gssapi, crypto and afs/rxrpc
+Message-ID: <20201019180714.GA6692@fieldses.org>
+References: <1444464.1602865106@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?q?ATENCI=C3=93N___?=
-To:     Recipients <fahruddineka@surakarta.go.id>
-From:   Sistemas administrador <fahruddineka@surakarta.go.id>
-Date:   Mon, 19 Oct 2020 23:33:42 +0530
-Reply-To: mailupgrade@mail2engineer.com
-Message-Id: <20201019180409.2A01D8E6F26@surat-el.surakarta.go.id>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1444464.1602865106@warthog.procyon.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+From:   bfields@fieldses.org (J. Bruce Fields)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ATENCI=D3N;
+On Fri, Oct 16, 2020 at 05:18:26PM +0100, David Howells wrote:
+> Hi Herbert, Dave, Trond,
+> 
+> I've written basic gssapi-derived security support for AF_RXRPC:
+> 
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=rxrpc-rxgk
+> 
+> I've borrowed some bits from net/sunrpc/auth_gss/ but there's a lot in there
+> that is quite specific to the sunrpc module that makes it hard to use for
+> rxrpc (dprintk, struct xdr_buf).
+> 
+> Further, I've implemented some more enctypes that aren't supported yet by
+> gssapi (AES with sha256/sha384 and Camellia), and that requires some changes
+> to the handling as AES with sha384 has a 24-byte checksum size and a 24-byte
+> calculated key size for Kc and Ki but a 32-byte Ke.
+> 
+> Should I pull the core out and try to make it common?  If so, should I move it
+> to crypto/ or lib/, or perhaps put it in net/gssapi/?
+> 
+> There are two components to it:
+> 
+>  (1) Key derivation steps.
+> 
+>      My thought is to use xdr_netobj or something similar for to communicate
+>      between the steps (though I'd prefer to change .data to be a void* rather
+>      than u8*).
+> 
+>  (2) Encryption/checksumming.
+> 
+>      My thought is to make this interface use scattergather lists[*] since
+>      that's what the crypto encryption API requires (though not the hash API).
+> 
+> If I do this, should I create a "kerberos" crypto API for the data wrapping
+> functions?  I'm not sure that it quite matches the existing APIs because the
+> size of the input data will likely not match the size of the output data and
+> it's "one shot" as it needs to deal with a checksum.
+> 
+> Or I can just keep my implementation separate inside net/rxrpc/.
 
-Su buz=F3n ha superado el l=EDmite de almacenamiento, que es de 5 GB defini=
-dos por el administrador, quien actualmente est=E1 ejecutando en 10.9GB, no=
- puede ser capaz de enviar o recibir correo nuevo hasta que vuelva a valida=
-r su buz=F3n de correo electr=F3nico. Para revalidar su buz=F3n de correo, =
-env=EDe la siguiente informaci=F3n a continuaci=F3n:
+I'd love to share whatever we can, though I'm not really sure what's
+involved.  Certainly some careful testing at least.
 
-nombre:
-Nombre de usuario:
-contrase=F1a:
-Confirmar contrase=F1a:
-E-mail:
-tel=E9fono:
+It's been about 15 years since I really worked on that code.  I remember
+struggling with struct xdr_buf.  The client and server support
+zero-copy, so requests and replies are represented by a combination of a
+couple of linear buffers plus an array of pages.  My memory is that the
+(undocumented) meanings of the fields of the xdr_buf were different for
+request and replies and for server and client, and getting them right
+took some trial and error.
 
-Si usted no puede revalidar su buz=F3n, el buz=F3n se deshabilitar=E1!
-
-Disculpa las molestias.
-C=F3digo de verificaci=F3n:666690opp4r56 es: 006524
-Correo Soporte T=E9cnico =A9 2020
-
-=A1gracias
-Sistemas administrador
+--b.
