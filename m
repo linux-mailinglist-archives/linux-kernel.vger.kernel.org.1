@@ -2,246 +2,466 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22740292F4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF28292F53
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731559AbgJSUVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:21:16 -0400
-Received: from mga12.intel.com ([192.55.52.136]:1398 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731208AbgJSUVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:21:15 -0400
-IronPort-SDR: /KTKdCg0fH6SljUlNajwkbOel8aec3njGSVKDMk+CcH/5LhhS/GAnLjYbGIj0SRmWp7pFel7sm
- f5BjNqDKqpJQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="146393725"
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="146393725"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 13:21:11 -0700
-IronPort-SDR: 1EXuQhFjza0k+Lt3XlMfKBwE0vXsm16ZZXv0P9NcdvClM7Vg8K2TXPNzPTnboTDNAle6V8ZGNr
- C2k39n58aBlQ==
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="522118229"
-Received: from haixinlu-mobl1.amr.corp.intel.com (HELO [10.212.84.56]) ([10.212.84.56])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 13:21:10 -0700
-Subject: Re: [PATCH v39 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-13-jarkko.sakkinen@linux.intel.com>
- <5f194bf0-ced1-66e1-b6a2-503741a3e7f1@intel.com>
- <20201018042633.GI68722@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <f6fe37ee-7b5c-15b6-6823-2500582e7921@intel.com>
-Date:   Mon, 19 Oct 2020 13:21:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201018042633.GI68722@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1731581AbgJSUYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgJSUYt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 16:24:49 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF244C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:24:48 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id h1so431077pll.10
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:24:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=o7DrpRWoz2RQerdYhTa7KrqyCDFiXKRis0WKnV8M5h8=;
+        b=JJ1VxKFcqm/HhKEPkq6APDyJcVTp219znzvsOfGhmKU5x4oakvYlujHdN4unH1gsav
+         QWzcZ8EYM2PEuhGEENM2UImZLByQNzIF7Pl+r/DAtmqsozfaRSo7/RGWapaY8z47NbUT
+         Ai/rnUZsYNB9coipRBCKiKBtg41R2K0fvGfs6uYJJiC8CDsIcDRD5BaWuImluoQJr/l9
+         L5ICwmbcVLJetGhVtYdMQFCGB4RTq9aB9bL5mX5B56kD32cnwzCLiE6gflhS3KssBZ9C
+         aRoyYwpxfNAEcV5Zf/G5woqKS5JQylPUaagjfuqylPYXBwJOJTrCq+myfvfIIViEvywZ
+         jCxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=o7DrpRWoz2RQerdYhTa7KrqyCDFiXKRis0WKnV8M5h8=;
+        b=WDJShSbWlWwPRStBajpYJnd99JY5uPjQcQGRr+oCjSRnN+1ox87W/TofEulGy32yIX
+         x/vyFnemavv3DyEvEhn22Ec48iZQya9DWU7GfWI7IfutgYuXyF5Lzpv4vf/Xpv8HTS/d
+         OjItdZfjaJQb6NBcrj+lGTnY9iKF1HYBF8cd1WCSlXgq1Xfx3c5sUReByc0UMlNGYXmM
+         u47PQMypND2/RLASgZg9GVHHMWE8i54H/pkb2/2nZuOr+KKaoGhohBWVNpBNGjzhPMZW
+         PwFb6sWOTn2xgSBST1cVfzj2j+yfOOAYslAKRm/k5LGL4XpCuscM1Uv/2XYW8SKcpyA0
+         81hQ==
+X-Gm-Message-State: AOAM53108gfG/N/SQFap0OA0WTfnDpxpOKferQWGebPvxfpp6H9KceC+
+        ua9bXrhRJUqKxehJvd78fPWT/70clmYfhw==
+X-Google-Smtp-Source: ABdhPJzsx7awNrhKyoxXrikpt8wiXrw0GddE9FcWFUzZMys9ElQqLZqWKQYIfgq7mZKlBJXML00wsDXM8X5G7Q==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
+ (user=dlatypov job=sendgmr) by 2002:a17:902:b78c:b029:d4:da94:8766 with SMTP
+ id e12-20020a170902b78cb02900d4da948766mr1684830pls.31.1603139087479; Mon, 19
+ Oct 2020 13:24:47 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 13:24:31 -0700
+Message-Id: <20201019202431.3472335-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+Subject: [PATCH] wireguard: convert selftest/{counter,ratelimiter}.c to KUnit
+From:   Daniel Latypov <dlatypov@google.com>
+To:     Jason@zx2c4.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Latypov <dlatypov@google.com>,
+        David Miller <davem@davemloft.net>,
+        Brendan Higgins <brendanhiggins@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/17/20 9:26 PM, Jarkko Sakkinen wrote:
-...
->>> +static int sgx_validate_secs(const struct sgx_secs *secs)
->>> +{
->>
->> What's the overall point of this function?  Does it avoid a #GP from an
->> instruction later?
->>
->> Does all of the 'secs' content come from userspace?
-> 
-> Yes it does avoid #GP, and all the data comes from the user space.
+These tests already focus on testing individual functions that can run
+in a more minimal environment like KUnit.
 
-Please comment the function to indicate this.
+The primary motivation for this change it to make it faster and easier
+to run these tests, and thus encourage the addition of more test cases.
 
-But, in general, why do we care to avoid a #GP?  Is it just because we
-don't have infrastructure in-kernel to suppress the resulting panic()?
+E.g.
+Test timing after make mrproper: 47.418s building, 0.000s running
+With an incremental build: 3.891s building, 0.000s running
 
->>> +	u64 max_size = (secs->attributes & SGX_ATTR_MODE64BIT) ?
->>> +		       sgx_encl_size_max_64 : sgx_encl_size_max_32;
->>> +
->>> +	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
->>> +		return -EINVAL;
->>> +
->>> +	if (secs->base & (secs->size - 1))
->>> +		return -EINVAL;
->>> +
->>> +	if (secs->miscselect & sgx_misc_reserved_mask ||
->>> +	    secs->attributes & sgx_attributes_reserved_mask ||
->>> +	    secs->xfrm & sgx_xfrm_reserved_mask)
->>> +		return -EINVAL;
->>> +
->>> +	if (secs->size > max_size)
->>> +		return -EINVAL;
->>> +
->>> +	if (!(secs->xfrm & XFEATURE_MASK_FP) ||
->>> +	    !(secs->xfrm & XFEATURE_MASK_SSE) ||
->>> +	    (((secs->xfrm >> XFEATURE_BNDREGS) & 1) != ((secs->xfrm >> XFEATURE_BNDCSR) & 1)))
->>> +		return -EINVAL;
->>> +
->>> +	if (!secs->ssa_frame_size)
->>> +		return -EINVAL;
->>> +
->>> +	if (sgx_calc_ssa_frame_size(secs->miscselect, secs->xfrm) > secs->ssa_frame_size)
->>> +		return -EINVAL;
->>> +
->>> +	if (memchr_inv(secs->reserved1, 0, sizeof(secs->reserved1)) ||
->>> +	    memchr_inv(secs->reserved2, 0, sizeof(secs->reserved2)) ||
->>> +	    memchr_inv(secs->reserved3, 0, sizeof(secs->reserved3)) ||
->>> +	    memchr_inv(secs->reserved4, 0, sizeof(secs->reserved4)))
->>> +		return -EINVAL;
->>> +
->>> +	return 0;
->>> +}
->>
->> I think it would be nice to at least have one comment per condition to
->> explain what's going on there.
-...
+KUnit also provides a bit more structure, like tracking overall
+pass/fail status and printing failure messages like
+>  # wg_packet_counter_test: EXPECTATION FAILED at drivers/net/wireguard/counter_test.c:32
+>  Expected counter_validate(counter, (COUNTER_WINDOW_SIZE + 1)) == false, but
 
+Note: so we no longer need to track test_num in counter_test.c.
+But deleting the /*1*/ test_num comments means git (with the default
+threshold) no longer recognizes that the file was moved.
 
->>> +static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
->>> +{
->>> +	struct sgx_epc_page *secs_epc;
->>> +	struct sgx_pageinfo pginfo;
->>> +	struct sgx_secinfo secinfo;
->>> +	unsigned long encl_size;
->>> +	struct file *backing;
->>> +	long ret;
->>> +
->>> +	if (sgx_validate_secs(secs)) {
->>> +		pr_debug("invalid SECS\n");
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	/* The extra page goes to SECS. */
->>> +	encl_size = secs->size + PAGE_SIZE;
->>> +
->>> +	backing = shmem_file_setup("SGX backing", encl_size + (encl_size >> 5),
->>> +				   VM_NORESERVE);
->>
->> What's the >>5 adjustment for?
-> 
-> The backing storage stores not only the swapped page but also
-> Paging Crypto MetaData (PCMD) structure. It essentially contains
-> a CPU encrypted MAC for a page.
-> 
-> The MAC is over page version and data. The version is stored in
-> a EPC page called Version Array (VA) page.
-> 
-> Both of these are needed by ENCLS[ELDU].
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Cc: Jason A. Donenfeld <Jason@zx2c4.com>
+Cc: David Miller <davem@davemloft.net>
+Cc: Brendan Higgins <brendanhiggins@google.com>
+---
+ drivers/net/Kconfig                           | 12 ++++
+ .../{selftest/counter.c => counter_test.c}    | 45 ++++++------
+ drivers/net/wireguard/main.c                  |  3 +-
+ drivers/net/wireguard/queueing.h              |  4 --
+ drivers/net/wireguard/ratelimiter.c           |  4 +-
+ .../ratelimiter.c => ratelimiter_test.c}      | 68 +++++++++++--------
+ drivers/net/wireguard/receive.c               |  6 +-
+ 7 files changed, 80 insertions(+), 62 deletions(-)
+ rename drivers/net/wireguard/{selftest/counter.c => counter_test.c} (73%)
+ rename drivers/net/wireguard/{selftest/ratelimiter.c => ratelimiter_test.c} (85%)
 
-	/*
-	 * SGX backing storage needs to contain space for both the
-	 * EPC data and some metadata called the Paging Crypto
-	 * MetaData (PCMD).  The PCMD needs 128b of storage for each
-	 * page.
- 	 */
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index c3dbe64e628e..208ed162bcc0 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -114,6 +114,18 @@ config WIREGUARD_DEBUG
+ 
+ 	  Say N here unless you know what you're doing.
+ 
++config WIREGUARD_KUNIT_TEST
++	tristate "KUnit tests for WireGuard"
++	default KUNIT_ALL_TESTS
++	depends on KUNIT && WIREGUARD
++	help
++	  This enables KUnit tests for Wireguard.
++
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  Say N here unless you know what you're doing.
++
+ config EQUALIZER
+ 	tristate "EQL (serial line load balancing) support"
+ 	help
+diff --git a/drivers/net/wireguard/selftest/counter.c b/drivers/net/wireguard/counter_test.c
+similarity index 73%
+rename from drivers/net/wireguard/selftest/counter.c
+rename to drivers/net/wireguard/counter_test.c
+index ec3c156bf91b..167153fc249f 100644
+--- a/drivers/net/wireguard/selftest/counter.c
++++ b/drivers/net/wireguard/counter_test.c
+@@ -3,32 +3,23 @@
+  * Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+  */
+ 
+-#ifdef DEBUG
+-bool __init wg_packet_counter_selftest(void)
++#include <kunit/test.h>
++
++static void wg_packet_counter_test(struct kunit *test)
+ {
+ 	struct noise_replay_counter *counter;
+-	unsigned int test_num = 0, i;
+-	bool success = true;
++	unsigned int i;
+ 
+-	counter = kmalloc(sizeof(*counter), GFP_KERNEL);
+-	if (unlikely(!counter)) {
+-		pr_err("nonce counter self-test malloc: FAIL\n");
+-		return false;
+-	}
++	counter = kunit_kmalloc(test, sizeof(*counter), GFP_KERNEL);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, counter);
+ 
+ #define T_INIT do {                                    \
+ 		memset(counter, 0, sizeof(*counter));  \
+ 		spin_lock_init(&counter->lock);        \
+ 	} while (0)
+ #define T_LIM (COUNTER_WINDOW_SIZE + 1)
+-#define T(n, v) do {                                                  \
+-		++test_num;                                           \
+-		if (counter_validate(counter, n) != (v)) {            \
+-			pr_err("nonce counter self-test %u: FAIL\n",  \
+-			       test_num);                             \
+-			success = false;                              \
+-		}                                                     \
+-	} while (0)
++#define T(n, v) \
++		KUNIT_EXPECT_EQ(test, counter_validate(counter, n), v)
+ 
+ 	T_INIT;
+ 	/*  1 */ T(0, true);
+@@ -102,10 +93,18 @@ bool __init wg_packet_counter_selftest(void)
+ #undef T
+ #undef T_LIM
+ #undef T_INIT
+-
+-	if (success)
+-		pr_info("nonce counter self-tests: pass\n");
+-	kfree(counter);
+-	return success;
+ }
+-#endif
++
++static struct kunit_case wg_packet_counter_test_cases[] = {
++	KUNIT_CASE(wg_packet_counter_test),
++	{}
++};
++
++static struct kunit_suite wg_packet_counter_test_suite = {
++	.name = "wg_packet_counter",
++	.test_cases = wg_packet_counter_test_cases,
++};
++
++kunit_test_suites(&wg_packet_counter_test_suite);
++
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/net/wireguard/main.c b/drivers/net/wireguard/main.c
+index 7a7d5f1a80fc..bfd3312d5133 100644
+--- a/drivers/net/wireguard/main.c
++++ b/drivers/net/wireguard/main.c
+@@ -22,8 +22,7 @@ static int __init mod_init(void)
+ 	int ret;
+ 
+ #ifdef DEBUG
+-	if (!wg_allowedips_selftest() || !wg_packet_counter_selftest() ||
+-	    !wg_ratelimiter_selftest())
++	if (!wg_allowedips_selftest())
+ 		return -ENOTRECOVERABLE;
+ #endif
+ 	wg_noise_init();
+diff --git a/drivers/net/wireguard/queueing.h b/drivers/net/wireguard/queueing.h
+index dfb674e03076..5d428ddf176f 100644
+--- a/drivers/net/wireguard/queueing.h
++++ b/drivers/net/wireguard/queueing.h
+@@ -186,8 +186,4 @@ static inline void wg_queue_enqueue_per_peer_napi(struct sk_buff *skb,
+ 	wg_peer_put(peer);
+ }
+ 
+-#ifdef DEBUG
+-bool wg_packet_counter_selftest(void);
+-#endif
+-
+ #endif /* _WG_QUEUEING_H */
+diff --git a/drivers/net/wireguard/ratelimiter.c b/drivers/net/wireguard/ratelimiter.c
+index 3fedd1d21f5e..f7a7c48aee40 100644
+--- a/drivers/net/wireguard/ratelimiter.c
++++ b/drivers/net/wireguard/ratelimiter.c
+@@ -220,4 +220,6 @@ void wg_ratelimiter_uninit(void)
+ 	mutex_unlock(&init_lock);
+ }
+ 
+-#include "selftest/ratelimiter.c"
++#if IS_ENABLED(CONFIG_WIREGUARD_KUNIT_TEST)
++#include "ratelimiter_test.c"
++#endif
+diff --git a/drivers/net/wireguard/selftest/ratelimiter.c b/drivers/net/wireguard/ratelimiter_test.c
+similarity index 85%
+rename from drivers/net/wireguard/selftest/ratelimiter.c
+rename to drivers/net/wireguard/ratelimiter_test.c
+index 007cd4457c5f..a49f508cccb2 100644
+--- a/drivers/net/wireguard/selftest/ratelimiter.c
++++ b/drivers/net/wireguard/ratelimiter_test.c
+@@ -3,8 +3,7 @@
+  * Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+  */
+ 
+-#ifdef DEBUG
+-
++#include <kunit/test.h>
+ #include <linux/jiffies.h>
+ 
+ static const struct {
+@@ -32,7 +31,7 @@ static __init unsigned int maximum_jiffies_at_index(int index)
+ 
+ static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
+ 			       struct sk_buff *skb6, struct ipv6hdr *hdr6,
+-			       int *test)
++			       int *test_num)
+ {
+ 	unsigned long loop_start_time;
+ 	int i;
+@@ -51,7 +50,7 @@ static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
+ 		if (wg_ratelimiter_allow(skb4, &init_net) !=
+ 					expected_results[i].result)
+ 			return -EXFULL;
+-		++(*test);
++		++(*test_num);
+ 
+ 		hdr4->saddr = htonl(ntohl(hdr4->saddr) + i + 1);
+ 		if (time_is_before_jiffies(loop_start_time +
+@@ -59,7 +58,7 @@ static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
+ 			return -ETIMEDOUT;
+ 		if (!wg_ratelimiter_allow(skb4, &init_net))
+ 			return -EXFULL;
+-		++(*test);
++		++(*test_num);
+ 
+ 		hdr4->saddr = htonl(ntohl(hdr4->saddr) - i - 1);
+ 
+@@ -72,7 +71,7 @@ static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
+ 		if (wg_ratelimiter_allow(skb6, &init_net) !=
+ 					expected_results[i].result)
+ 			return -EXFULL;
+-		++(*test);
++		++(*test_num);
+ 
+ 		hdr6->saddr.in6_u.u6_addr32[0] =
+ 			htonl(ntohl(hdr6->saddr.in6_u.u6_addr32[0]) + i + 1);
+@@ -81,7 +80,7 @@ static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
+ 			return -ETIMEDOUT;
+ 		if (!wg_ratelimiter_allow(skb6, &init_net))
+ 			return -EXFULL;
+-		++(*test);
++		++(*test_num);
+ 
+ 		hdr6->saddr.in6_u.u6_addr32[0] =
+ 			htonl(ntohl(hdr6->saddr.in6_u.u6_addr32[0]) - i - 1);
+@@ -95,7 +94,7 @@ static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
+ }
+ 
+ static __init int capacity_test(struct sk_buff *skb4, struct iphdr *hdr4,
+-				int *test)
++				int *test_num)
+ {
+ 	int i;
+ 
+@@ -104,45 +103,45 @@ static __init int capacity_test(struct sk_buff *skb4, struct iphdr *hdr4,
+ 
+ 	if (atomic_read(&total_entries))
+ 		return -EXFULL;
+-	++(*test);
++	++(*test_num);
+ 
+ 	for (i = 0; i <= max_entries; ++i) {
+ 		hdr4->saddr = htonl(i);
+ 		if (wg_ratelimiter_allow(skb4, &init_net) != (i != max_entries))
+ 			return -EXFULL;
+-		++(*test);
++		++(*test_num);
+ 	}
+ 	return 0;
+ }
+ 
+-bool __init wg_ratelimiter_selftest(void)
++static void wg_ratelimiter_test(struct kunit *test)
+ {
+ 	enum { TRIALS_BEFORE_GIVING_UP = 5000 };
+ 	bool success = false;
+-	int test = 0, trials;
++	int test_num = 0, trials;
+ 	struct sk_buff *skb4, *skb6 = NULL;
+ 	struct iphdr *hdr4;
+ 	struct ipv6hdr *hdr6 = NULL;
+ 
+ 	if (IS_ENABLED(CONFIG_KASAN) || IS_ENABLED(CONFIG_UBSAN))
+-		return true;
++		return;
+ 
+ 	BUILD_BUG_ON(MSEC_PER_SEC % PACKETS_PER_SECOND != 0);
+ 
+ 	if (wg_ratelimiter_init())
+ 		goto out;
+-	++test;
++	++test_num;
+ 	if (wg_ratelimiter_init()) {
+ 		wg_ratelimiter_uninit();
+ 		goto out;
+ 	}
+-	++test;
++	++test_num;
+ 	if (wg_ratelimiter_init()) {
+ 		wg_ratelimiter_uninit();
+ 		wg_ratelimiter_uninit();
+ 		goto out;
+ 	}
+-	++test;
++	++test_num;
+ 
+ 	skb4 = alloc_skb(sizeof(struct iphdr), GFP_KERNEL);
+ 	if (unlikely(!skb4))
+@@ -151,7 +150,7 @@ bool __init wg_ratelimiter_selftest(void)
+ 	hdr4 = (struct iphdr *)skb_put(skb4, sizeof(*hdr4));
+ 	hdr4->saddr = htonl(8182);
+ 	skb_reset_network_header(skb4);
+-	++test;
++	++test_num;
+ 
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	skb6 = alloc_skb(sizeof(struct ipv6hdr), GFP_KERNEL);
+@@ -164,7 +163,7 @@ bool __init wg_ratelimiter_selftest(void)
+ 	hdr6->saddr.in6_u.u6_addr32[0] = htonl(1212);
+ 	hdr6->saddr.in6_u.u6_addr32[1] = htonl(289188);
+ 	skb_reset_network_header(skb6);
+-	++test;
++	++test_num;
+ #endif
+ 
+ 	for (trials = TRIALS_BEFORE_GIVING_UP;;) {
+@@ -173,16 +172,16 @@ bool __init wg_ratelimiter_selftest(void)
+ 		ret = timings_test(skb4, hdr4, skb6, hdr6, &test_count);
+ 		if (ret == -ETIMEDOUT) {
+ 			if (!trials--) {
+-				test += test_count;
++				test_num += test_count;
+ 				goto err;
+ 			}
+ 			msleep(500);
+ 			continue;
+ 		} else if (ret < 0) {
+-			test += test_count;
++			test_num += test_count;
+ 			goto err;
+ 		} else {
+-			test += test_count;
++			test_num += test_count;
+ 			break;
+ 		}
+ 	}
+@@ -192,13 +191,13 @@ bool __init wg_ratelimiter_selftest(void)
+ 
+ 		if (capacity_test(skb4, hdr4, &test_count) < 0) {
+ 			if (!trials--) {
+-				test += test_count;
++				test_num += test_count;
+ 				goto err;
+ 			}
+ 			msleep(50);
+ 			continue;
+ 		}
+-		test += test_count;
++		test_num += test_count;
+ 		break;
+ 	}
+ 
+@@ -216,11 +215,20 @@ bool __init wg_ratelimiter_selftest(void)
+ 	/* Uninit one extra time to check underflow detection. */
+ 	wg_ratelimiter_uninit();
+ out:
+-	if (success)
+-		pr_info("ratelimiter self-tests: pass\n");
+-	else
+-		pr_err("ratelimiter self-test %d: FAIL\n", test);
+-
+-	return success;
++	if (!success)
++		KUNIT_FAIL(test, "test #%d failed", test_num);
+ }
+-#endif
++
++static struct kunit_case wg_ratelimiter_test_cases[] = {
++	KUNIT_CASE(wg_ratelimiter_test),
++	{}
++};
++
++static struct kunit_suite wg_ratelimiter_test_suite = {
++	.name = "wg_ratelimiter",
++	.test_cases = wg_ratelimiter_test_cases,
++};
++
++kunit_test_suites(&wg_ratelimiter_test_suite);
++
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/net/wireguard/receive.c b/drivers/net/wireguard/receive.c
+index 2c9551ea6dc7..30d3d9685e8d 100644
+--- a/drivers/net/wireguard/receive.c
++++ b/drivers/net/wireguard/receive.c
+@@ -336,8 +336,6 @@ static bool counter_validate(struct noise_replay_counter *counter, u64 their_cou
+ 	return ret;
+ }
+ 
+-#include "selftest/counter.c"
+-
+ static void wg_packet_consume_data_done(struct wg_peer *peer,
+ 					struct sk_buff *skb,
+ 					struct endpoint *endpoint)
+@@ -588,3 +586,7 @@ void wg_packet_receive(struct wg_device *wg, struct sk_buff *skb)
+ err:
+ 	dev_kfree_skb(skb);
+ }
++
++#if IS_ENABLED(CONFIG_WIREGUARD_KUNIT_TEST)
++#include "counter_test.c"
++#endif
 
-Also, the MAC is a fixed size, right?  Let's say that x86 got a larger
-page size in the future.  Would this number be 128b or PAGE_SIZE/32?
+base-commit: 7cf726a59435301046250c42131554d9ccc566b8
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
 
-If it's a fixed size, I'd write:
-
-	size = encl_size;
-	size += (encl_size / PAGE_SIZE) * SGX_PCPD_PER_PAGE;
-
-If it really is 1/32nd, I'd write
-
-	size += encl_size / SGX_PCPD_RATIO;
-
-or something.
-
-Either way, the >>5 is total magic and needs comments and fixing.
-
->>> +long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
->>> +{
->>> +	struct sgx_encl *encl = filep->private_data;
->>> +	int ret, encl_flags;
->>> +
->>> +	encl_flags = atomic_fetch_or(SGX_ENCL_IOCTL, &encl->flags);
->>> +	if (encl_flags & SGX_ENCL_IOCTL)
->>> +		return -EBUSY;
->>
->> Is the SGX_ENCL_IOCTL bit essentially just a lock to single-thread
->> ioctl()s?  Should we name it as such?
-> 
-> Yes. It makes the concurrency overally easier if we can assume that
-> only a single ioctl is in progress. There is no good reason to do
-> them in parallel.
-> 
-> E.g. when you add pages you want to do that serially because the
-> order changes the MRENCLAVE.
-
-There are also hardware concurrency requirements, right?  A bunch of the
-SGX functions seem not not even support being called in parallel.
-
-> So should I rename it as SGX_ENCL_IOCTL_LOCKED?
-
-I'd rather not see hand-rolled locking primitives frankly.
