@@ -2,86 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC70292D23
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1643D292D26
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729511AbgJSRw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:52:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51573 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728712AbgJSRwZ (ORCPT
+        id S1729608AbgJSRxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:53:15 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:35705 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726005AbgJSRxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:52:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603129943;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=1rEftUQf/7Jy+J88LXeoBCQ82ZWczV2fVgKUL/vZ8vg=;
-        b=XDBAbgMHImDwkHD6fmeqCZM4pEHK7cXks8dsWYaFGc9qnzcfP+T8P4mLPa2e36mmB8SinH
-        SNP0J6bv4uB3HeczMz9g7ZYK51cdzciSgnVnEyy5xJuDVtwrzh3xDlf5nLIw+6NVfK1uaW
-        PIeGthLpFsKy3Vh5Ffy2cXTQx3KXTQc=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-31-KAtI_DoLOqOYY-CIXVNcSA-1; Mon, 19 Oct 2020 13:52:22 -0400
-X-MC-Unique: KAtI_DoLOqOYY-CIXVNcSA-1
-Received: by mail-qt1-f199.google.com with SMTP id i39so474982qtb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:52:21 -0700 (PDT)
+        Mon, 19 Oct 2020 13:53:15 -0400
+Received: by mail-wm1-f65.google.com with SMTP id q5so410084wmq.0;
+        Mon, 19 Oct 2020 10:53:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1rEftUQf/7Jy+J88LXeoBCQ82ZWczV2fVgKUL/vZ8vg=;
-        b=Z7VwZseT5j/VGRwDG1FCQWBjitHdhjyJ6IWEewMuJyMeC0Vb8aJKF8DHsa3n+L7Hvu
-         QipRr/QigFdKvBnfGDCgFBgJ2P7+QfwpJhx+8AB7s7trLY5S4zRNG11JQS0MK8/BAEwF
-         xVymBjYMkexOIgGJp/gFA6blw+ahlRiOIjO2gZokC0sAUQGKnmyDsa9sycFIzWJ3Fa3d
-         LdA3cVtK5rKXaKtDs/8pYLKXyeQG13MmcCtow8fl0tFRue4SvA16E65Bi/8r/FdIcJuC
-         NGeMkdxUAK3mvEdmG0D/QfGwIKkZhhZDP9I4JkhdFaIyE3Xv4rmU2LAjEhz0qZ4H+TN4
-         7GUA==
-X-Gm-Message-State: AOAM53399tvX/yN4AxCha7ZJtgqy8MsJq+Oq4xacj5wbh86v/C82j5eS
-        mfamPxvB76Xg6pLABvosjVYFt440YI6u0iEaSKDQl1EpD1rzAApJkbdwjt42bEf7OY6p7efEUXd
-        6KWA4hrrPm8VCr2m0AYsOqirn
-X-Received: by 2002:a37:7185:: with SMTP id m127mr793765qkc.246.1603129941370;
-        Mon, 19 Oct 2020 10:52:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzhsAue4y6qUuYrwWoQG00RGuFBLPHfhcyHNIxwMVlpoPdRfJ2W7ZKYrVEdVKFRc7dB1NLf3Q==
-X-Received: by 2002:a37:7185:: with SMTP id m127mr793741qkc.246.1603129941165;
-        Mon, 19 Oct 2020 10:52:21 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 79sm316123qkl.42.2020.10.19.10.52.19
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kaj2effE0IGn4/LUYvpNhrsjTFxJeUBtfIsQ8uRH5Io=;
+        b=rXGRn2/332d/j8c949gQFAap16/djF0N0rxAPt/cPrjPxZURADs43yRpwN2WNWgeBU
+         ZVWQqb8aQ0ZsA/TH8rxDCTjH8qtJqhYDGgpJLXX1Odob4EpWUMg35nUmVaGcJf2Mbfn6
+         CSshq4RVXZ7KIQxPLStjXcqpwigCXX03Py2to3i99zh2KxSLWbJ+uhELRwZ4sfD6pWyi
+         ZU+ls/cTkqWXIAAIcyxa6AlHqvHDrBc2D18kazHMMWG29zPdzOeuklLeEMX9ljWX4J5O
+         syFm28t76dOGEdlzWrn08ckcSi6H4v4TI/4Eu5VQ96PeJQ9vmAjuB0cQKBEhWg96CLqq
+         OUJg==
+X-Gm-Message-State: AOAM530XqImOPZlOJFZ96PEzZNTnyiMAqYYtsLIW2lPYKU6zgSksMF4d
+        4dU+dm/CXDOQMnUHQuIvkSA=
+X-Google-Smtp-Source: ABdhPJxWjHufMLDPPw4t+4vflwlXZwWA6RX4tW0HbR6pyOp73xqDBZNUgUHRknZfAVThGHrgOWtVQw==
+X-Received: by 2002:a1c:750b:: with SMTP id o11mr459965wmc.32.1603129993216;
+        Mon, 19 Oct 2020 10:53:13 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id a3sm552071wrh.94.2020.10.19.10.53.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 10:52:20 -0700 (PDT)
-From:   trix@redhat.com
-To:     mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        davem@davemloft.net, akpm@linux-foundation.org,
-        willy@infradead.org, alex.shi@linux.alibaba.com
-Cc:     ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] fs: ocfs2 remove unneeded break
-Date:   Mon, 19 Oct 2020 10:52:16 -0700
-Message-Id: <20201019175216.2329-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Mon, 19 Oct 2020 10:53:12 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 19:53:09 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 1/3] arm64: dts: imx8mm: Add support for micfil
+Message-ID: <20201019175309.GC94694@kozik-lap>
+References: <20201019165038.274164-1-aford173@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201019165038.274164-1-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Mon, Oct 19, 2020 at 11:50:36AM -0500, Adam Ford wrote:
+> The i.MX8M Mini has supports the MICFIL digital interface.
+> It's a 16-bit audio signal from a PDM microphone bitstream.
+> The driver is already in the kernel, but the node is missing.
+> 
+> This patch adds the micfil node.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V2:  No change
+> 
 
-A break is not needed if it is preceded by a goto
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- fs/ocfs2/cluster/tcp.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/fs/ocfs2/cluster/tcp.c b/fs/ocfs2/cluster/tcp.c
-index 79a231719460..3bd8119bed5e 100644
---- a/fs/ocfs2/cluster/tcp.c
-+++ b/fs/ocfs2/cluster/tcp.c
-@@ -1198,7 +1198,6 @@ static int o2net_process_message(struct o2net_sock_container *sc,
- 			msglog(hdr, "bad magic\n");
- 			ret = -EINVAL;
- 			goto out;
--			break;
- 	}
- 
- 	/* find a handler for it */
--- 
-2.18.1
-
+Best regards,
+Krzysztof
