@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE255292D31
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A8E292D39
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730266AbgJSRzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:55:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726005AbgJSRzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:55:19 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 923772224D;
-        Mon, 19 Oct 2020 17:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603130119;
-        bh=pjFKVmoCsdQyF1oQTqTfsR2tacGK0Y5hFggPLPzGKNY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=R4oD4ifiGsQyfzdXgXsFWg1fnig9UumT9/vck8VgG59/5PU9Z7Cm3COBGGhmwdAqP
-         EC9kKQDXdvWAqG8yWuMsWXjm8KHcYnmrzA8qr6tW3LGIBPiCwhgtmw9bKgj/VEhRE/
-         3gIuzpcYC45kxJJKS9F/9bzlsK4NAQiLOrJlHqkc=
-Date:   Mon, 19 Oct 2020 10:55:16 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Remove __napi_schedule_irqoff?
-Message-ID: <20201019105516.4fae562c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <87ft6aa4k7.fsf@nanos.tec.linutronix.de>
-References: <01af7f4f-bd05-b93e-57ad-c2e9b8726e90@gmail.com>
-        <20201017162949.0a6dd37a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CANn89i+q=q_LNDzE23y74Codh5EY0HHi_tROsEL2yJAdRjh-vQ@mail.gmail.com>
-        <668a1291-e7f0-ef71-c921-e173d4767a14@gmail.com>
-        <20201018101947.419802df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87ft6aa4k7.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730164AbgJSR5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:57:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32138 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728897AbgJSR5m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 13:57:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603130260;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=xiF6inCaAJw3ARp/gHhvEnKHYLKp9sFsuYCI0KYkIC0=;
+        b=c2PHxeiHiTlkOaJKyDbcVDSiN+bYYg9fUPg9lDBibWp7xgHxUfeudIqE1DKYeZaJpQTPql
+        3qbQ5KQzh2BipnpL6zv0gUXF7P5IxD1uG+QBRTF+j80wAdkDt0zx2wwXwjN7nHTk9/LYEz
+        oaQ5VRWK4sYColI128wAvSNWaaz/jQ4=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-541-YBmzNwSpO3ObwggoWrhefw-1; Mon, 19 Oct 2020 13:57:39 -0400
+X-MC-Unique: YBmzNwSpO3ObwggoWrhefw-1
+Received: by mail-qk1-f198.google.com with SMTP id x85so201767qka.14
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:57:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xiF6inCaAJw3ARp/gHhvEnKHYLKp9sFsuYCI0KYkIC0=;
+        b=h+Sj5FK1z3ayNEJIeE8uXXrTbmBjhw863bAwLUU/zQZDcYCWzLbcljIwhaulBlLvw9
+         6y0VEA2LZgGJrfAbIHJ+Vy+TLpClJ8qhsfGCqPj+7Z6CXR0npasBRGoZzaC2Twt5SU2A
+         PRaYHEKjXCmUP+5GSiMQ2SOvoaTuWyuwwQOoUxJ22+1LJyjVCPHvij8Ui3l2ZqsWfkIk
+         ks/3NQ2LKX4ZNFQ0/L6Y1xxXuu/xo9XPsayJrSBfW+BWc7bbqSVbTKIm9GsCti1x60Ll
+         dzLURNgfn0UUpp0Ypt7P715NxD8AelkD+jzu96sYaCcGplc/c2pRpvSQg8Ns78F5syyh
+         tT5Q==
+X-Gm-Message-State: AOAM533Z6WG8EPDD7snGQ+MM59DvR7rynFm3YYNlZnN+Yj+iBDElBr8T
+        KpiC6iK8hI6H/5g/VdrXinC/5Tl7oLjb42ELrAeiBol/LsNA0vb3UwSmTWqxS+Kcgmo5WIca/4+
+        /2O80oTdNwgKH7AgoJCssdbpl
+X-Received: by 2002:ac8:5bc2:: with SMTP id b2mr636518qtb.284.1603130258453;
+        Mon, 19 Oct 2020 10:57:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxwjiNv1Xl3x/Va1x9EblYHVk7lhZ+z/AYxaoF7BYg3ratsvOYSh19/lszAmlmCc8qgBabCtQ==
+X-Received: by 2002:ac8:5bc2:: with SMTP id b2mr636414qtb.284.1603130257094;
+        Mon, 19 Oct 2020 10:57:37 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id d129sm308466qkg.127.2020.10.19.10.57.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 10:57:36 -0700 (PDT)
+From:   trix@redhat.com
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] tty: nozomi: remove unneeded break
+Date:   Mon, 19 Oct 2020 10:57:32 -0700
+Message-Id: <20201019175732.3289-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Oct 2020 12:33:12 +0200 Thomas Gleixner wrote:
-> On Sun, Oct 18 2020 at 10:19, Jakub Kicinski wrote:
-> > On Sun, 18 Oct 2020 10:20:41 +0200 Heiner Kallweit wrote:  
-> >> >> Otherwise a non-solution could be to make IRQ_FORCED_THREADING
-> >> >> configurable.    
-> >> > 
-> >> > I have to say I do not understand why we want to defer to a thread the
-> >> > hard IRQ that we use in NAPI model.
-> >> >     
-> >> Seems like the current forced threading comes with the big hammer and
-> >> thread-ifies all hard irq's. To avoid this all NAPI network drivers
-> >> would have to request the interrupt with IRQF_NO_THREAD.  
-> 
-> In a !RT kernel, forced threading (via commandline option) is mostly a
-> debug aid. It's pretty useful when something crashes in hard interrupt
-> context which usually takes the whole machine down. It's rather unlikely
-> to be used on production systems, and if so then the admin surely should
-> know what he's doing.
-> 
-> > Right, it'd work for some drivers. Other drivers try to take spin locks
-> > in their IRQ handlers.  
-> 
-> I checked a few which do and some of these spinlocks just protect
-> register access and are not used for more complex serialization. So
-> these could be converted to raw spinlocks because their scope is short
-> and limited. But yes, you are right that this might be an issue in
-> general.
-> 
-> > What gave me a pause was that we have a busy loop in napi_schedule_prep:
-> >
-> > bool napi_schedule_prep(struct napi_struct *n)
-> > {
-> > 	unsigned long val, new;
-> >
-> > 	do {
-> > 		val = READ_ONCE(n->state);
-> > 		if (unlikely(val & NAPIF_STATE_DISABLE))
-> > 			return false;
-> > 		new = val | NAPIF_STATE_SCHED;
-> >
-> > 		/* Sets STATE_MISSED bit if STATE_SCHED was already set
-> > 		 * This was suggested by Alexander Duyck, as compiler
-> > 		 * emits better code than :
-> > 		 * if (val & NAPIF_STATE_SCHED)
-> > 		 *     new |= NAPIF_STATE_MISSED;
-> > 		 */
-> > 		new |= (val & NAPIF_STATE_SCHED) / NAPIF_STATE_SCHED *
-> > 						   NAPIF_STATE_MISSED;
-> > 	} while (cmpxchg(&n->state, val, new) != val);
-> >
-> > 	return !(val & NAPIF_STATE_SCHED);
-> > }
-> >
-> >
-> > Dunno how acceptable this is to run in an IRQ handler on RT..  
-> 
-> In theory it's bad, but I don't think it's a big deal in reality.
+From: Tom Rix <trix@redhat.com>
 
-Awesome, thanks for advice and clearing things up!
-Let me apply Heiner's IRQF_NO_THREAD patch, then.
+A break is not needed if it is preceded by a return
+
+Add explicit fallthrough
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/tty/nozomi.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
+index d42b854cb7df..861e95043191 100644
+--- a/drivers/tty/nozomi.c
++++ b/drivers/tty/nozomi.c
+@@ -414,11 +414,9 @@ static void read_mem32(u32 *buf, const void __iomem *mem_addr_start,
+ 		buf16 = (u16 *) buf;
+ 		*buf16 = __le16_to_cpu(readw(ptr));
+ 		goto out;
+-		break;
+ 	case 4:	/* 4 bytes */
+ 		*(buf) = __le32_to_cpu(readl(ptr));
+ 		goto out;
+-		break;
+ 	}
+ 
+ 	while (i < size_bytes) {
+@@ -460,15 +458,14 @@ static u32 write_mem32(void __iomem *mem_addr_start, const u32 *buf,
+ 		buf16 = (const u16 *)buf;
+ 		writew(__cpu_to_le16(*buf16), ptr);
+ 		return 2;
+-		break;
+ 	case 1: /*
+ 		 * also needs to write 4 bytes in this case
+ 		 * so falling through..
+ 		 */
++		fallthrough;
+ 	case 4: /* 4 bytes */
+ 		writel(__cpu_to_le32(*buf), ptr);
+ 		return 4;
+-		break;
+ 	}
+ 
+ 	while (i < size_bytes) {
+-- 
+2.18.1
+
