@@ -2,105 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A9C292CBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F28F292CA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727293AbgJSR2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:28:13 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:42940 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725952AbgJSR2N (ORCPT
+        id S1730498AbgJSR0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:26:25 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:43074 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730820AbgJSR0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:28:13 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09JHMg8W017795;
-        Mon, 19 Oct 2020 17:27:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=pGnY5GYUyhri6gQa1/cFHNQMG5DjWL8tkM5jJLXjTbk=;
- b=iAi5v4D6o78VpgY8atDp5PnvtydOhQUBP7J/afP/cqsDYGPfSz4/xyNErxj9QBI2zunW
- 0gEPOdcpyo/bKaTYmhVLTgKTpk3bZATwuMJrwfRf77mSy9xvhb6ZhWnVpWIyVhWYvCes
- 677S8Jp9EHwzCHR9xXxluIL1F93t2fC0fHxbkvKEfVOBI38O/5buzdRoJdKJlCk8xTsj
- DSlQ8+7Np6SfR26a8MBmgw/yo49M78YGjRRuKim9qUr6NkZXFDv2FaX2olNIXPuudOnR
- iPnZXd8z0hAAvRBWGsXMfiioS2SY+9DnGCXPfS1x3biCzlMo7YCOcx/SqgEU1dt9JknV +Q== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 347p4apwuw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Oct 2020 17:27:57 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09JHOqF9023649;
-        Mon, 19 Oct 2020 17:25:56 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 348ahv7852-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Oct 2020 17:25:56 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09JHPtxa026342;
-        Mon, 19 Oct 2020 17:25:55 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
-        by userp3030.oracle.com with ESMTP id 348ahv784h-1;
-        Mon, 19 Oct 2020 17:25:55 +0000
-From:   saeed.mirzamohammadi@oracle.com
-To:     linux-kernel@vger.kernel.org
-Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH linux-5.9 1/1] net: netfilter: fix KASAN: slab-out-of-bounds Read in nft_flow_rule_create
-Date:   Mon, 19 Oct 2020 10:25:32 -0700
-Message-Id: <20201019172532.3906-1-saeed.mirzamohammadi@oracle.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9779 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 priorityscore=1501
- clxscore=1011 malwarescore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010190118
+        Mon, 19 Oct 2020 13:26:24 -0400
+Received: from tusharsu-Ubuntu.lan (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 6544920B4905;
+        Mon, 19 Oct 2020 10:26:23 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6544920B4905
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1603128383;
+        bh=QLYSVsWBQqF4v9zjJGLLb6QFJkF/2yIoBobzSOob9bI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=K0gvC0duHMBd+GVGRAUvay8neDuDbA1AjMvqj6XHwwmwjXSBzeZsS/4a7xY3uaCCZ
+         d2wgU7/zWjnwmSgWpvhwKaky1jdLBFm16KdrB8ELl9RDiU7MRhlSMBkwSQM6E2/5zN
+         GGUdPlK6La8svDbySHg0rR1MLkrMWpt9ZrvRBgIo=
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+To:     zohar@linux.ibm.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Subject: [PATCH v4 0/2] dm-devel:dm-crypt: infrastructure for measurement of DM target data using IMA
+Date:   Mon, 19 Oct 2020 10:26:05 -0700
+Message-Id: <20201019172607.16714-1-tusharsu@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+There are several device-mapper targets which contribute to verify
+the integrity of the mapped devices e.g. dm-integrity, dm-verity,
+dm-crypt etc.
 
-This patch fixes the issue due to:
+But they do not use the capabilities provided by kernel integrity
+subsystem (IMA). For instance, the IMA capability that measures several
+in-memory constructs and files to detect if they have been accidentally
+or maliciously altered. IMA also has the capability to include these
+measurements in the IMA measurement list and use them to extend a TPM
+PCR so that they can be quoted. These TPM PCR extend operations ensure
+that the tampering with the order of constructs being measured, and
+tampering with the measured constructs themselves - doesn't go
+undetected. In general, this capability is used for remote attestation
+of in-memory constructs and files of interest. As of today,device-mapper
+targets don't use the benefits of extended TPM PCR quotes and ultimately
+the benefits of remote attestation.
 
-BUG: KASAN: slab-out-of-bounds in nft_flow_rule_create+0x622/0x6a2
-net/netfilter/nf_tables_offload.c:40
-Read of size 8 at addr ffff888103910b58 by task syz-executor227/16244
+This series bridges this gap, so that all device-mapper targets
+could take advantage of IMA's measuring and quoting abilities - thus
+ultimately enabling remote attestation for device-mapper targets.
 
-The error happens when expr->ops is accessed early on before performing the boundary check and after nft_expr_next() moves the expr to go out-of-bounds.
+This series is based on the following repo/branch:
+ repo: https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+ branch: next-integrity
+ commit aa662fc04f5b ("ima: Fix NULL pointer dereference in ima_file_hash")
 
-This patch checks the boundary condition before expr->ops that fixes the slab-out-of-bounds Read issue.
+This series also has a dependency on the following patch series and
+should be applied in the following order:
+ 1. https://patchwork.kernel.org/patch/11795559/
+ 2. https://patchwork.kernel.org/patch/11801525/
 
-Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
----
- net/netfilter/nf_tables_offload.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
-index 9ef37c1b7b3b..1273e3c0d4b8 100644
---- a/net/netfilter/nf_tables_offload.c
-+++ b/net/netfilter/nf_tables_offload.c
-@@ -37,7 +37,7 @@ struct nft_flow_rule *nft_flow_rule_create(struct net *net,
- 	struct nft_expr *expr;
- 
- 	expr = nft_expr_first(rule);
--	while (expr->ops && expr != nft_expr_last(rule)) {
-+	while (expr != nft_expr_last(rule) && expr->ops) {
- 		if (expr->ops->offload_flags & NFT_OFFLOAD_F_ACTION)
- 			num_actions++;
- 
-@@ -61,7 +61,7 @@ struct nft_flow_rule *nft_flow_rule_create(struct net *net,
- 	ctx->net = net;
- 	ctx->dep.type = NFT_OFFLOAD_DEP_UNSPEC;
- 
--	while (expr->ops && expr != nft_expr_last(rule)) {
-+	while (expr != nft_expr_last(rule) && expr->ops) {
- 		if (!expr->ops->offload) {
- 			err = -EOPNOTSUPP;
- 			goto err_out;
+Change Log v4:
+Incorporated feedback from Milan Broz <gmazyland@gmail.com> on v3 series.
+ - Added device name of both base disk and target device for
+   measurement, along with their major:minor.
+ - Introduced a function get_devname_from_maj_min() in dm-ima.c, to
+   get the device name from device major:minor. Currently it is used
+   for dm-crypt measurements, but it would be helpful for measuring 
+   other device-mapper targets as well.
+ - Added dm_target members - len and begin - to measurement list. 
+ - Taken dependency on the updated base series v4 (1. above)
+ - Taken dependency on the updated early boot measurement series v3
+   (2. above).
+
+Change Log v3:
+ - Added dm-crypt as a supported data source to measure in ima.h.
+ - Taken dependency on the updated base series v3 (2. above)
+ - Taken dependency on the updated early boot measurement series v2
+   (3. above).
+
+Change Log v2:
+ - Removed the references to "local" measurement from the description -
+   as this series only support remote attestation, and not local
+   integrity enforcement.
+ - Taken dependency on the updated base series (2. above), which 
+   introduced a boolean parameter measure_buf_hash as per community
+   feedback to support measuring hash of the buffer, instead of the
+   buffer itself.
+ - Taken dependency on the updated early boot measurement series
+   (3. above).
+
+Tushar Sugandhi (2):
+  dm-devel: collect target data and submit to IMA to measure
+  dm-crypt: collect data and submit to DM to measure
+
+ block/genhd.c                           |   2 +
+ drivers/md/Makefile                     |   1 +
+ drivers/md/dm-crypt.c                   | 217 ++++++++++++++
+ drivers/md/dm-ima.c                     | 378 ++++++++++++++++++++++++
+ include/linux/device-mapper.h           |  67 +++++
+ include/linux/genhd.h                   |   1 +
+ security/integrity/ima/ima.h            |   1 +
+ security/integrity/ima/ima_queue_data.c |   3 +-
+ 8 files changed, 669 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/md/dm-ima.c
+
 -- 
-2.27.0
+2.17.1
 
