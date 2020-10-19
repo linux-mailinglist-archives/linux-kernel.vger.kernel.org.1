@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B882926D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E0E2926D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727626AbgJSL42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:56:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbgJSL42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:56:28 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726444AbgJSL5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:57:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56225 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725799AbgJSL5m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 07:57:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603108661;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8SlL4Q5SbHMhStfWfVjsxTibC0dKmqUQeioCU1eaaZw=;
+        b=aM66he/J1IO02gxKdZxxMn2uk0d2fV32xL/qdKtx4h4U1cZc49eBnycU1LhLCZf2d2Z/9C
+        hOCoJEVTQEnTV01b+vyymThJxn+NbsJwuQpgcpSZFHLI5LDMgLpHwisqibXvxnih2vfp+m
+        p+tjZAA57NtsWaawlp+RjZEG2ZQ1wHk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544-6W0ZzrGiPiWqR5E7wegN8w-1; Mon, 19 Oct 2020 07:57:39 -0400
+X-MC-Unique: 6W0ZzrGiPiWqR5E7wegN8w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FD49221FC;
-        Mon, 19 Oct 2020 11:56:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603108587;
-        bh=QuduAn6k0rUFR+XlPjYg/pmTJf/ta7vn5SfuOao/njQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=t3odKDxneKRZ/sEMPTz0TQL5M6chluNLskMhfyBO0ZuIYQ3YaEVqxox/KSXnBDm+e
-         WJk11sjxsyrC2c1tXBgd4cpAtFX7sCdeRQD9nM2pCFNE82rXDqbOp8HBCfG2pbU6pd
-         HS8X22ByDu8S+h4Q/EAEjXcDihwG5oaoUvKfcfyI=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kUTm5-002POa-8O; Mon, 19 Oct 2020 12:56:25 +0100
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C2D257088;
+        Mon, 19 Oct 2020 11:57:37 +0000 (UTC)
+Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 959A56EF44;
+        Mon, 19 Oct 2020 11:57:30 +0000 (UTC)
+Subject: Re: [PATCH v1 20/29] virtio-mem: nb_sb_per_mb and subblock_size are
+ specific to Sub Block Mode (SBM)
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-21-david@redhat.com>
+ <20201016085319.GD44269@L-31X9LVDL-1304.local>
+ <7b55ffe1-95fc-1e71-ea6b-82bd0a98a6b4@redhat.com>
+ <20201018124104.GD50506@L-31X9LVDL-1304>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <c5a22f50-210d-a4ab-90b0-ba3d454c1882@redhat.com>
+Date:   Mon, 19 Oct 2020 13:57:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201018124104.GD50506@L-31X9LVDL-1304>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 19 Oct 2020 12:56:25 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
-        jason@lakedaemon.net, mark.rutland@arm.com,
-        julien.thierry.kdev@gmail.com, dianders@chromium.org,
-        daniel.thompson@linaro.org, jason.wessel@windriver.com,
-        msys.mizuma@gmail.com, ito-yuichi@fujitsu.com,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] arm64: Add framework to turn IPI as NMI
-In-Reply-To: <1602673931-28782-2-git-send-email-sumit.garg@linaro.org>
-References: <1602673931-28782-1-git-send-email-sumit.garg@linaro.org>
- <1602673931-28782-2-git-send-email-sumit.garg@linaro.org>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <b366c68fe0b365892aa4324be90235d6@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: sumit.garg@linaro.org, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, jason@lakedaemon.net, mark.rutland@arm.com, julien.thierry.kdev@gmail.com, dianders@chromium.org, daniel.thompson@linaro.org, jason.wessel@windriver.com, msys.mizuma@gmail.com, ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-14 12:12, Sumit Garg wrote:
-> Introduce framework to turn an IPI as NMI using pseudo NMIs. In case a
-> particular platform doesn't support pseudo NMIs, then request IPI as a
-> regular IRQ.
+On 18.10.20 14:41, Wei Yang wrote:
+> On Fri, Oct 16, 2020 at 03:17:06PM +0200, David Hildenbrand wrote:
+>> On 16.10.20 10:53, Wei Yang wrote:
+>>> On Mon, Oct 12, 2020 at 02:53:14PM +0200, David Hildenbrand wrote:
+>>>> Let's rename to "sbs_per_mb" and "sb_size" and move accordingly.
+>>>>
+>>>> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>>>> Cc: Jason Wang <jasowang@redhat.com>
+>>>> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>>
+>>> One trivial suggestion, could we move this patch close the data structure
+>>> movement patch?
+>>>
+>>> I know this would be some work, since you have changed some of the code logic.
+>>> This would take you some time to rebase.
+>>
+>> You mean after patch #17 ?
 > 
-> The main motivation for this feature is to have an IPI that can be
-> leveraged to invoke NMI functions on other CPUs. And current 
-> prospective
-> users are NMI backtrace and KGDB CPUs round-up whose support is added
-> via future patches.
+> Yes
 > 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->  arch/arm64/include/asm/nmi.h | 16 +++++++++
->  arch/arm64/kernel/Makefile   |  2 +-
->  arch/arm64/kernel/ipi_nmi.c  | 77 
-> ++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 94 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/include/asm/nmi.h
->  create mode 100644 arch/arm64/kernel/ipi_nmi.c
+>>
+>> I guess I can move patch #18 (prereq) a little further up (e.g., after
+>> patch #15). Guess moving it in front of #19 shouldn't be too hard.
+>>
+>> Will give it a try - if it takes too much effort, I'll leave it like this.
+>>
+> 
+> Not a big deal, while it will make the change more intact to me.
+> 
+> This is a big patch set to me. In case it could be split into two parts, like
+> bug fix/logic improvement and BBM implementation, that would be more friendly
+> to review.
 
-[...]
+I'll most probably keep it as a single series, but reshuffle the patches
+into
 
-> +	irq_set_status_flags(ipi, IRQ_HIDDEN);
+1. cleanups
+2. preparations
+3. BBM
 
-Another thing is this. Why are you hiding this from /proc/interrupts?
-The only reason the other IPIs are hidden is that displaying them as
-"normal" interrupts would be a change in userspace ABI.
+That should make things easier to digest. Thanks!
 
-In your case, this is something new that can perfectly appear as
-a standard interrupt (and I don't see how you'd display the
-statistics otherwise).
-
-         M.
 -- 
-Jazz is not dead. It just smells funny...
+Thanks,
+
+David / dhildenb
+
