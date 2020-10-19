@@ -2,106 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42A229304B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DC1293050
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732647AbgJSVMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 17:12:47 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34190 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732523AbgJSVMr (ORCPT
+        id S1732654AbgJSVOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 17:14:15 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:34197 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726696AbgJSVOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 17:12:47 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603141964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xDvrn3khPRCsQ3kInC9PrrCmCeDblVbtH3pwV9O3vYI=;
-        b=n9YVFtdwNtjSN+/ua96l0MsskldSlV9SMYPXxeyfZVkSroaPpJvfdUVPxpnadtpw8deZUb
-        1WHNTN+KDfNjTi5UZ+5JOsQnj3hKLVpZBmM3AvPzZbyN5ABYaSPpbmydgqCm1PW2xBsZgF
-        Q+nm3lSRfwtU5hQYk2LEyrERhPTG5W7qQM+OHhPMeEsTb8WmZ33Sr7pfpqqDyEnw+2bwPZ
-        mhZeW6+h9IbsAcKPvE8+85NjwtEUamW1g9p+fRj5XzKvrT8+oyOpngKl2sl4fiIQ1cKXKF
-        HyeHOPQrhTNVU1BJ7gA8h0b9FzwHiJulPZYt8a+b4KPuO/6HVkXyaHmcT6NS/w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603141964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xDvrn3khPRCsQ3kInC9PrrCmCeDblVbtH3pwV9O3vYI=;
-        b=9pvYjSU9yrEDoXWUmWAb3RLmG8qQCf74kogPetVI1dOtIQWI6qjPgTtxmM6U2rfV5AqgLV
-        KTo8wQwFYiESmpBw==
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V3 6/9] x86/entry: Pass irqentry_state_t by reference
-In-Reply-To: <20201019202647.GD3713473@iweiny-DESK2.sc.intel.com>
-References: <20201009194258.3207172-1-ira.weiny@intel.com> <20201009194258.3207172-7-ira.weiny@intel.com> <20201016114510.GO2611@hirez.programming.kicks-ass.net> <87lfg6tjnq.fsf@nanos.tec.linutronix.de> <20201019053639.GA3713473@iweiny-DESK2.sc.intel.com> <87k0vma7ct.fsf@nanos.tec.linutronix.de> <20201019202647.GD3713473@iweiny-DESK2.sc.intel.com>
-Date:   Mon, 19 Oct 2020 23:12:44 +0200
-Message-ID: <871rhtapir.fsf@nanos.tec.linutronix.de>
+        Mon, 19 Oct 2020 17:14:15 -0400
+Received: by mail-ot1-f67.google.com with SMTP id d28so1195199ote.1;
+        Mon, 19 Oct 2020 14:14:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AkXg9ywvkN5UzvdgIWgHzBaGiXjXW0zCY62KlslqE20=;
+        b=Uzm4CaN1e9sv9PPDK1ieKVcMxWzJKnv6o7ubGulYx9v1NZt9FLqiEtSCKNDgIWOLpK
+         xgxnlu+RBKd+r76t+u0c8Gr977ELYiX5y0CG0lAgmPEWO+KMs/zq5Jg16BuT0f88voE5
+         SGwyQDOUkGQdIm41UC6Zrtobo/70AAFFqfQn0rktCiXuCrGt6qlzJmrxT/WvxnpcLl1N
+         t3hhUE8TepLC51Yu0JLK7w8sQzpL+q0BwRduZxUNKIHiLoBz1uCXXQrt4S9WYbNWk2EY
+         CCziEOQXia6Pe1sU674zHieHY25xQGBSAlPkx2e0Og7w/lbO1V+94LrYiz6gPrbw2qfw
+         ua9Q==
+X-Gm-Message-State: AOAM5308WXYO+8L9umFhP3xP2HhpHG3AzGZ3M3ClvuyPuM5RZGzmCARO
+        ByHNMkoVFmovKWUtNgcXDA==
+X-Google-Smtp-Source: ABdhPJySWGj+x0Hi8zbrlVaFg82BBb5KUi35oGG9P+zK3XUXlyw0S3QakYsFzPn0pzs9rO9TYNDsEg==
+X-Received: by 2002:a9d:65d7:: with SMTP id z23mr1380659oth.131.1603142054307;
+        Mon, 19 Oct 2020 14:14:14 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v11sm221060otj.73.2020.10.19.14.14.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 14:14:13 -0700 (PDT)
+Received: (nullmailer pid 3612712 invoked by uid 1000);
+        Mon, 19 Oct 2020 21:14:12 -0000
+Date:   Mon, 19 Oct 2020 16:14:12 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, linuxppc-dev@lists.ozlabs.org,
+        devicetree@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com,
+        alsa-devel@alsa-project.org, robh+dt@kernel.org,
+        nicoleotsuka@gmail.com, broonie@kernel.org, festevam@gmail.com,
+        Xiubo.Lee@gmail.com, perex@perex.cz, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: fsl_spdif: Add new compatible
+ string for i.MX8QM
+Message-ID: <20201019211412.GA3612681@bogus>
+References: <1602739728-4433-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602739728-4433-1-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19 2020 at 13:26, Ira Weiny wrote:
-> On Mon, Oct 19, 2020 at 11:32:50AM +0200, Thomas Gleixner wrote:
-> Sorry, let me clarify.  After this patch we have.
->
-> typedef union irqentry_state {
-> 	bool	exit_rcu;
-> 	bool	lockdep;
-> } irqentry_state_t;
->
-> Which reflects the mutual exclusion of the 2 variables.
+On Thu, 15 Oct 2020 13:28:47 +0800, Shengjiu Wang wrote:
+> Add new compatible string "fsl,imx8qm-spdif" for supporting spdif
+> module on i.MX8QM.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  Documentation/devicetree/bindings/sound/fsl,spdif.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Huch? From the patch I gave you:
-
- #ifndef irqentry_state
- typedef struct irqentry_state {
- 	bool    exit_rcu;
-+       bool    lockdep;
- } irqentry_state_t;
- #endif
-
-How is that a union?
-
-> But then when the pkrs stuff is added the union changes back to a structure and
-> looks like this.
-
-So you want:
-
-  1) Move stuff to struct irqentry_state (my patch)
-
-  2) Change it to a union and pass it as pointer at the same time
-
-  3) Change it back to struct to add PKRS
-
-> Is that clear?
-
-What's clear is that the above is nonsense. We can just do
-
- #ifndef irqentry_state
- typedef struct irqentry_state {
- 	union {
-         	bool    exit_rcu;
-                bool    lockdep;
-        };        
- } irqentry_state_t;
- #endif
-
-right in the patch which I gave you. Because that actually makes sense.
-
-Thanks,
-
-        tglx
+Acked-by: Rob Herring <robh@kernel.org>
