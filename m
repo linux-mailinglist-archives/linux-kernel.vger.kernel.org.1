@@ -2,101 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D505B2927F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1112292801
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgJSNOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:14:53 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:60910 "EHLO z5.mailgun.us"
+        id S1728074AbgJSNPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:15:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727860AbgJSNOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:14:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603113289; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=EDT6u1q6ACEvrBc2BppeDYMdoHFAYde7oPctSzlqmv4=; b=YYOQCoH9MadfRT35Mam++br342aVCtjAmqJd+HrDcl/I7jdqN8w28fcFEJazQ9zy99y6/8H5
- UTKbaWT+GnNS/GodfpLrEHWYiAnK3tNh9qSrREAaPocwV4zSV1mKPNYqwlTbuQYsPyC+jdmz
- sqqIpmoxCB0uBsKrQ5X53/dVW1A=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f8d9149588858a304e43740 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 13:14:49
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A2E2CC43382; Mon, 19 Oct 2020 13:14:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1727860AbgJSNPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:15:30 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E4E74C433FF;
-        Mon, 19 Oct 2020 13:14:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E4E74C433FF
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-To:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
-        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
-Subject: [PATCH v2 3/3] dt-bindings: drm/msm/gpu: Add cooling device support
-Date:   Mon, 19 Oct 2020 18:44:28 +0530
-Message-Id: <1603113268-21161-3-git-send-email-akhilpo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603113268-21161-1-git-send-email-akhilpo@codeaurora.org>
-References: <1603113268-21161-1-git-send-email-akhilpo@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D64922203;
+        Mon, 19 Oct 2020 13:15:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603113328;
+        bh=27msb1S4BcbbJu49vog+yRYGPSReChpwq3Hep2AcYw8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wXKW4mQMNTJ0xMUuPDRSkJqUEfbMVPTN0bVyIy0I7XYSPzvbXOjE8/BOtM+FHI2y1
+         yg2+OmJVV05QxMfL6O4i11oqNmGXTYWhPK65NgVUgX8E8FBQ/lVvGHM4Cm8sCztOA1
+         Fzc+jLOBUFLIvzzoAEjKgNxlA56UH33jYCy9KLN4=
+Date:   Mon, 19 Oct 2020 15:16:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Allen <allen.lkml@gmail.com>
+Cc:     linux-pci@vger.kernel.org, bhelgaas@google.com, ast@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Allen Pais <allen.pais@lkml.com>
+Subject: Re: [RFC] PCI: allow sysfs file owner to read the config space with
+ CAP_SYS_RAWIO
+Message-ID: <20201019131613.GA3254417@kroah.com>
+References: <20201016055235.440159-1-allen.lkml@gmail.com>
+ <20201016062027.GB569795@kroah.com>
+ <CAOMdWSJDJ-uXpis1WbG3LnOG7bMiif5Q4Maafv_a=55Y_qypfQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOMdWSJDJ-uXpis1WbG3LnOG7bMiif5Q4Maafv_a=55Y_qypfQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add cooling device support to gpu. A cooling device is bound to a
-thermal zone to allow thermal mitigation.
+On Mon, Oct 19, 2020 at 06:30:16PM +0530, Allen wrote:
+> > >
+> > >  Access to pci config space is explictly checked with CAP_SYS_ADMIN
+> > > in order to read configuration space past the frist 64B.
+> > >
+> > >  Since the path is only for reading, could we use CAP_SYS_RAWIO?
+> >
+> > Why?  What needs this reduced capability?
+> 
+> Thanks for the review.
+> 
+> We need read access to /sys/bus/pci/devices/,  We need write access to config,
+> remove, rescan & enable files under the device directory for each PCIe
+> functions & the downstream PCIe port.
+> 
+> We need r/w access to sysfs to unbind and rebind the root complex.
 
-Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
----
- Documentation/devicetree/bindings/display/msm/gpu.txt | 7 +++++++
- 1 file changed, 7 insertions(+)
+That didn't answer my question at all.
 
-diff --git a/Documentation/devicetree/bindings/display/msm/gpu.txt b/Documentation/devicetree/bindings/display/msm/gpu.txt
-index 1af0ff1..a496381 100644
---- a/Documentation/devicetree/bindings/display/msm/gpu.txt
-+++ b/Documentation/devicetree/bindings/display/msm/gpu.txt
-@@ -39,6 +39,10 @@ Required properties:
-         a4xx Snapdragon SoCs. See
-         Documentation/devicetree/bindings/sram/qcom,ocmem.yaml.
- 
-+Optional properties:
-+- #cooling-cells: The value must be 2. Please refer
-+	Documentation/devicetree/bindings/thermal/thermal.txt for detail.
-+
- Example 3xx/4xx:
- 
- / {
-@@ -61,6 +65,7 @@ Example 3xx/4xx:
- 		power-domains = <&mmcc OXILICX_GDSC>;
- 		operating-points-v2 = <&gpu_opp_table>;
- 		iommus = <&gpu_iommu 0>;
-+		#cooling-cells = <2>;
- 	};
- 
- 	gpu_sram: ocmem@fdd00000 {
-@@ -98,6 +103,8 @@ Example a6xx (with GMU):
- 		reg = <0x5000000 0x40000>, <0x509e000 0x10>;
- 		reg-names = "kgsl_3d0_reg_memory", "cx_mem";
- 
-+		#cooling-cells = <2>;
-+
- 		/*
- 		 * Look ma, no clocks! The GPU clocks and power are
- 		 * controlled entirely by the GMU
--- 
-2.7.4
+Why can't you have the process that wants to do all of the above, have
+admin rights as well?  Doing all of that is _very_ low-level and can
+cause all sorts of horrible things to happen to your machine, and is not
+really "raw io" in the traditional sense at all, right?
 
+greg k-h
