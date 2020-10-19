@@ -2,118 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A2C292D0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5A7292D2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729229AbgJSRpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728931AbgJSRpo (ORCPT
+        id S1729916AbgJSRx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:53:29 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:51958 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726005AbgJSRx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:45:44 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E404BC0613D0;
-        Mon, 19 Oct 2020 10:45:43 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id q25so666554ioh.4;
-        Mon, 19 Oct 2020 10:45:43 -0700 (PDT)
+        Mon, 19 Oct 2020 13:53:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5Ne5Wbe/Wv6RezTzGvLCUYSaLkqqUma+8gMhHmnQkq4=;
-        b=b8hwvShsesualaW80EBT7PLqjjvEokHnLHpFvWiVQ5rku3RooxyEthshBzvkzI/JjU
-         TN/5g5VBCLflp+0YgfzY3rBs2Ti7PX8Tb1vDx5MHuithbF63RKJ81RjN7CCjAwlcX3xt
-         1rOT2Vb8m4TXp+DRf2R+AnVGaIBYVsEWSeM1QK1Bpxvx10IzReD1OtBk+ZqqDZnufNrp
-         efhRDhywr5rzUMqH8V2OfOkPKGZg6lalDu23N5y33NNCZhZbXQcpfrAQzxn7jdVPjtAa
-         NTyO4GcaEZFgl0Wf0xOMi2UCdmtYiBrjkFcWalhow9w8MSXIWrhLfHE4/7kbwiuepCWm
-         FaUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5Ne5Wbe/Wv6RezTzGvLCUYSaLkqqUma+8gMhHmnQkq4=;
-        b=YdyagZZ6mvTDgfag/KuAMdaqeuedBP24ICg14DvVRwP3rhN+JSI8lQogzzBz2HWz6z
-         10fH4spb+ilQkQW32RJEFzXSEt7r6q03xLxMC3x6l2KLpHpw2wx80lrU/p+T0lozUUoz
-         oc6+eFWVPXVODyickIqaZtulttsA+iOWpOOFBViRw+KYmCFp82Mf9r+VmPGl15QiNRop
-         OUbJpt0Ba9FmYe6oKtSR5i+a+zs5foc9QGoUGt4EhXWKMda3hBDo7PhUl7aQG1WQSUnG
-         NwO7BvQLR3+huOL8VmPkZIvlGWotVqdSJVaDpDOXxQRx/UboHIfdihfb2Yqk9gYK/8IY
-         CEkA==
-X-Gm-Message-State: AOAM530Oh8LnjexluZbzLJ1Vni4bJalM3qRUFTCScrVufXeYY2jNZqSw
-        k5cpr7zyd6Jfl4vhe/P5L7A=
-X-Google-Smtp-Source: ABdhPJzLgLISVItWgE7W/RCRGJmBU+BTJ1NRbXev9Vz5RSP6xpYE+JW64IrHk5aTnawd/RhHmGlqRA==
-X-Received: by 2002:a02:380c:: with SMTP id b12mr970416jaa.9.1603129543146;
-        Mon, 19 Oct 2020 10:45:43 -0700 (PDT)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:75c9:416d:1d67:486f])
-        by smtp.gmail.com with ESMTPSA id 128sm406261iow.50.2020.10.19.10.45.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 10:45:42 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] arm64: dts: imx8mn: Add node for SPDIF
-Date:   Mon, 19 Oct 2020 12:45:28 -0500
-Message-Id: <20201019174529.289499-5-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201019174529.289499-1-aford173@gmail.com>
-References: <20201019174529.289499-1-aford173@gmail.com>
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1603130007; x=1634666007;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:mime-version:content-transfer-encoding;
+  bh=t1VzdQy2NBR4DKX4hGEZc6mXqEZFpQga7kkpLT4rmc8=;
+  b=TCg8FOzew02DO5a13rWdSKO9NZtRrKoRi2GGGTmJvVkWStJneIQOUy3O
+   37CM/nP0UZtYQYEMJ6gluV+L1evw+meBp0AFkRi9Lm9aPPwdLowh/UKKI
+   5ZMeVkCNzKIlVL/8mHlc1R1EE510MZQexFjttQViAd1rGCYrJpRcL+I8j
+   w=;
+X-IronPort-AV: E=Sophos;i="5.77,395,1596499200"; 
+   d="scan'208";a="60609562"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-76e0922c.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 19 Oct 2020 17:45:59 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2c-76e0922c.us-west-2.amazon.com (Postfix) with ESMTPS id 2ED3EA86EB;
+        Mon, 19 Oct 2020 17:45:55 +0000 (UTC)
+Received: from EX13D20UWC002.ant.amazon.com (10.43.162.163) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 19 Oct 2020 17:45:54 +0000
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13D20UWC002.ant.amazon.com (10.43.162.163) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 19 Oct 2020 17:45:54 +0000
+Received: from EX13D20UWC001.ant.amazon.com ([10.43.162.244]) by
+ EX13D20UWC001.ant.amazon.com ([10.43.162.244]) with mapi id 15.00.1497.006;
+ Mon, 19 Oct 2020 17:45:54 +0000
+From:   "Graf (AWS), Alexander" <graf@amazon.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [PATCH] KVM: VMX: Forbid userspace MSR filters for x2APIC
+Thread-Topic: [PATCH] KVM: VMX: Forbid userspace MSR filters for x2APIC
+Thread-Index: AQHWpj+x3+JT+Cl9gkCqCDyMCFO5/w==
+Date:   Mon, 19 Oct 2020 17:45:54 +0000
+Message-ID: <618E2129-7AB5-4F0D-A6C9-E782937FE935@amazon.de>
+References: <20201019170519.1855564-1-pbonzini@redhat.com>
+In-Reply-To: <20201019170519.1855564-1-pbonzini@redhat.com>
+Accept-Language: en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX8M Nano can support SPDIF which is compatible to the
-IP used on the i.MX35.
 
-Add the node.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+> Am 19.10.2020 um 19:08 schrieb Paolo Bonzini <pbonzini@redhat.com>:
+> =
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index 3ab9486736ca..4b32c5aa355d 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -334,6 +334,30 @@ micfil: micfil@30080000 {
- 					status = "disabled";
- 				};
- 
-+				spdif1: spdif@30090000 {
-+					compatible = "fsl,imx35-spdif";
-+					reg = <0x30090000 0x10000>;
-+					interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&clk IMX8MN_CLK_AUDIO_AHB>, /* core */
-+						 <&clk IMX8MN_CLK_24M>, /* rxtx0 */
-+						 <&clk IMX8MN_CLK_SPDIF1>, /* rxtx1 */
-+						 <&clk IMX8MN_CLK_DUMMY>, /* rxtx2 */
-+						 <&clk IMX8MN_CLK_DUMMY>, /* rxtx3 */
-+						 <&clk IMX8MN_CLK_DUMMY>, /* rxtx4 */
-+						 <&clk IMX8MN_CLK_AUDIO_AHB>, /* rxtx5 */
-+						 <&clk IMX8MN_CLK_DUMMY>, /* rxtx6 */
-+						 <&clk IMX8MN_CLK_DUMMY>, /* rxtx7 */
-+						 <&clk IMX8MN_CLK_DUMMY>; /* spba */
-+					clock-names = "core", "rxtx0",
-+						      "rxtx1", "rxtx2",
-+						      "rxtx3", "rxtx4",
-+						      "rxtx5", "rxtx6",
-+						      "rxtx7", "spba";
-+					dmas = <&sdma2 28 18 0>, <&sdma2 29 18 0>;
-+					dma-names = "rx", "tx";
-+					status = "disabled";
-+				};
-+
- 				sai7: sai@300b0000 {
- 					compatible = "fsl,imx8mq-sai",
- 						     "fsl,imx6sx-sai";
--- 
-2.25.1
+> Allowing userspace to intercept reads to x2APIC MSRs when APICV is
+> fully enabled for the guest simply can't work.   But more in general,
+> if the LAPIC is in-kernel, allowing accessed by userspace would be very
+> confusing.  If userspace wants to intercept x2APIC MSRs, then it should
+> first disable in-kernel APIC.
+> =
+
+> We could in principle allow userspace to intercept reads and writes to TP=
+R,
+> and writes to EOI and SELF_IPI, but while that could be made it work, it
+> would still be silly.
+> =
+
+> Cc: Alexander Graf <graf@amazon.com>
+> Cc: Aaron Lewis <aaronlewis@google.com>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+> arch/x86/kvm/x86.c | 17 +++++++++++++++++
+> 1 file changed, 17 insertions(+)
+> =
+
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index c4015a43cc8a..0faf733538f4 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -5246,6 +5246,13 @@ static int kvm_add_msr_filter(struct kvm *kvm, str=
+uct kvm_msr_filter_range *user
+>        return r;
+> }
+> =
+
+> +static bool range_overlaps_x2apic(struct kvm_msr_filter_range *range)
+> +{
+> +       u32 start =3D range->base;
+> +       u32 end =3D start + range->nmsrs;
+> +       return start <=3D 0x8ff && end > 0x800;
+> +}
+> +
+> static int kvm_vm_ioctl_set_msr_filter(struct kvm *kvm, void __user *argp)
+> {
+>        struct kvm_msr_filter __user *user_msr_filter =3D argp;
+> @@ -5257,6 +5264,16 @@ static int kvm_vm_ioctl_set_msr_filter(struct kvm =
+*kvm, void __user *argp)
+>        if (copy_from_user(&filter, user_msr_filter, sizeof(filter)))
+>                return -EFAULT;
+> =
+
+> +       /*
+> +        * In principle it would be possible to trap x2apic ranges
+> +        * if !lapic_in_kernel.  This however would be complicated
+> +        * because KVM_X86_SET_MSR_FILTER can be called before
+> +        * KVM_CREATE_IRQCHIP or KVM_ENABLE_CAP.
+> +        */
+> +       for (i =3D 0; i < ARRAY_SIZE(filter.ranges); i++)
+> +               if (range_overlaps_x2apic(&filter.ranges[i]))
+> +                       return -EINVAL;
+
+What if the default action of the filter is to "deny"? Then only an MSR fil=
+ter to allow access to x2apic MSRs would make the full filtering logic adhe=
+re to the constraints, no?
+
+Also, this really deserves a comment in the API documentation :).
+
+In fact, I think a pure comment in documentation is enough. Just make x2api=
+c && filter on them "undefined behavior".
+
+
+Alex
+
+> +
+>        kvm_clear_msr_filter(kvm);
+> =
+
+>        default_allow =3D !(filter.flags & KVM_MSR_FILTER_DEFAULT_DENY);
+> --
+> 2.26.2
+> =
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
