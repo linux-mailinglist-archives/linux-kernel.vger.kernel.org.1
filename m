@@ -2,103 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DA0292681
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10882926BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgJSLkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:40:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44484 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726222AbgJSLkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:40:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603107613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SSs1O1InoOlCF59eFFQsx8VtfWEtNgznhwL4lQxQydU=;
-        b=F1HkXC8CTRjdHRaMQnpslvAIzpzB81yHyVDyrEzXQAj72BQucTwGVouULydotSEQJIR4mC
-        rpP/J1o5etlaR5L6XTTU+io6aumU4xmKVprAouxkrOSFbI3V3V6xI9F0KcIGPvTp9sOG8I
-        LgoTvUk5pScVkMiNAlLBCRV3tVteIDI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3A38BAC55;
-        Mon, 19 Oct 2020 11:40:13 +0000 (UTC)
-Date:   Mon, 19 Oct 2020 13:40:11 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Xianting Tian <tian.xianting@h3c.com>
-Cc:     axboe@kernel.dk, raghavendra.kt@linux.vnet.ibm.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] blk-mq: remove the calling of local_memory_node()
-Message-ID: <20201019114011.GE27114@dhcp22.suse.cz>
-References: <20201019082047.31113-1-tian.xianting@h3c.com>
+        id S1728268AbgJSLwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:52:24 -0400
+Received: from mail.prodrive-technologies.com ([212.61.153.67]:56398 "EHLO
+        mail.prodrive-technologies.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726619AbgJSLwY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 07:52:24 -0400
+X-Greylist: delayed 573 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Oct 2020 07:52:23 EDT
+Received: from mail.prodrive-technologies.com (localhost.localdomain [127.0.0.1])
+        by localhost (Email Security Appliance) with SMTP id 7F37032EAF_F8D7BB8B;
+        Mon, 19 Oct 2020 11:42:48 +0000 (GMT)
+Received: from mail.prodrive-technologies.com (exc05.bk.prodrive.nl [10.1.1.214])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.prodrive-technologies.com", Issuer "GlobalSign RSA OV SSL CA 2018" (verified OK))
+        by mail.prodrive-technologies.com (Sophos Email Appliance) with ESMTPS id E5BB330504_F8D7BB7F;
+        Mon, 19 Oct 2020 11:42:47 +0000 (GMT)
+Received: from EXC03.bk.prodrive.nl (10.1.1.212) by EXC05.bk.prodrive.nl
+ (10.1.1.214) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Mon, 19
+ Oct 2020 13:42:47 +0200
+Received: from lnxdevrm01.prodrive.nl (10.1.2.33) by EXC03.bk.prodrive.nl
+ (10.1.1.212) with Microsoft SMTP Server id 15.1.2106.2 via Frontend
+ Transport; Mon, 19 Oct 2020 13:42:47 +0200
+From:   Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>
+CC:     <martijn.de.gouw@prodrive-technologies.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        "Chuck Lever" <chuck.lever@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, NeilBrown <neilb@suse.de>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Roberto Bergantinos Corpas" <rbergant@redhat.com>,
+        "open list:NFS, SUNRPC, AND LOCKD CLIENTS" 
+        <linux-nfs@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH] SUNRPC: fix copying of multiple pages in gss_read_proxy_verf()
+Date:   Mon, 19 Oct 2020 13:42:27 +0200
+Message-ID: <20201019114229.52973-1-martijn.de.gouw@prodrive-technologies.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019082047.31113-1-tian.xianting@h3c.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SASI-RCODE: 200
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19-10-20 16:20:47, Xianting Tian wrote:
-> We don't need to check whether the node is memoryless numa node before
-> calling allocator interface. SLUB(and SLAB,SLOB) relies on the page
-> allocator to pick a node. Page allocator should deal with memoryless
-> nodes just fine. It has zonelists constructed for each possible nodes.
-> And it will automatically fall back into a node which is closest to the
-> requested node. As long as __GFP_THISNODE is not enforced of course.
-> 
-> The code comments of kmem_cache_alloc_node() of SLAB also showed this:
->  * Fallback to other node is possible if __GFP_THISNODE is not set.
-> 
-> blk-mq code doesn't set __GFP_THISNODE, so we can remove the calling
-> of local_memory_node().
+When the passed token is longer than 4032 bytes, the remaining part
+of the token must be copied from the rqstp->rq_arg.pages. But the
+copy must make sure it happens in a consecutive way.
 
-yes, this is indeed the case. I cannot really judge the blg-mq code but
-it seems to be unnecessary. Maybe there are some subtle details not
-explained by bffed457160ab though.
+Signed-off-by: Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>
+---
+ net/sunrpc/auth_gss/svcauth_gss.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-> Fixes: bffed457160ab ("blk-mq: Avoid memoryless numa node encoded in hctx numa_node")
-
-But the existing code is not broken. It just overdoes what needs to be
-done. So effectively bffed457160ab was not needed. I do not think that
-Fixes is really necessary.
-
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> ---
->  block/blk-mq-cpumap.c | 2 +-
->  block/blk-mq.c        | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/block/blk-mq-cpumap.c b/block/blk-mq-cpumap.c
-> index 0157f2b34..3db84d319 100644
-> --- a/block/blk-mq-cpumap.c
-> +++ b/block/blk-mq-cpumap.c
-> @@ -89,7 +89,7 @@ int blk_mq_hw_queue_to_node(struct blk_mq_queue_map *qmap, unsigned int index)
->  
->  	for_each_possible_cpu(i) {
->  		if (index == qmap->mq_map[i])
-> -			return local_memory_node(cpu_to_node(i));
-> +			return cpu_to_node(i);
->  	}
->  
->  	return NUMA_NO_NODE;
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index cdced4aca..48f8366b2 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -2737,7 +2737,7 @@ static void blk_mq_init_cpu_queues(struct request_queue *q,
->  		for (j = 0; j < set->nr_maps; j++) {
->  			hctx = blk_mq_map_queue_type(q, j, i);
->  			if (nr_hw_queues > 1 && hctx->numa_node == NUMA_NO_NODE)
-> -				hctx->numa_node = local_memory_node(cpu_to_node(i));
-> +				hctx->numa_node = cpu_to_node(i);
->  		}
->  	}
->  }
-> -- 
-> 2.17.1
-
+diff --git a/net/sunrpc/auth_gss/svcauth_gss.c b/net/sunrpc/auth_gss/svcauth_gss.c
+index 258b04372f85..bd4678db9d76 100644
+--- a/net/sunrpc/auth_gss/svcauth_gss.c
++++ b/net/sunrpc/auth_gss/svcauth_gss.c
+@@ -1147,9 +1147,9 @@ static int gss_read_proxy_verf(struct svc_rqst *rqstp,
+ 			       struct gssp_in_token *in_token)
+ {
+ 	struct kvec *argv = &rqstp->rq_arg.head[0];
+-	unsigned int page_base, length;
+-	int pages, i, res;
+-	size_t inlen;
++	unsigned int length, pgto_offs, pgfrom_offs;
++	int pages, i, res, pgto, pgfrom;
++	size_t inlen, to_offs, from_offs;
+ 
+ 	res = gss_read_common_verf(gc, argv, authp, in_handle);
+ 	if (res)
+@@ -1177,17 +1177,24 @@ static int gss_read_proxy_verf(struct svc_rqst *rqstp,
+ 	memcpy(page_address(in_token->pages[0]), argv->iov_base, length);
+ 	inlen -= length;
+ 
+-	i = 1;
+-	page_base = rqstp->rq_arg.page_base;
++	to_offs = length;
++	from_offs = rqstp->rq_arg.page_base;
+ 	while (inlen) {
+-		length = min_t(unsigned int, inlen, PAGE_SIZE);
+-		memcpy(page_address(in_token->pages[i]),
+-		       page_address(rqstp->rq_arg.pages[i]) + page_base,
++		pgto = to_offs >> PAGE_SHIFT;
++		pgfrom = from_offs >> PAGE_SHIFT;
++		pgto_offs = to_offs & ~PAGE_MASK;
++		pgfrom_offs = from_offs & ~PAGE_MASK;
++
++		length = min_t(unsigned int, inlen,
++			 min_t(unsigned int, PAGE_SIZE - pgto_offs,
++			       PAGE_SIZE - pgfrom_offs));
++		memcpy(page_address(in_token->pages[pgto]) + pgto_offs,
++		       page_address(rqstp->rq_arg.pages[pgfrom]) + pgfrom_offs,
+ 		       length);
+ 
++		to_offs += length;
++		from_offs += length;
+ 		inlen -= length;
+-		page_base = 0;
+-		i++;
+ 	}
+ 	return 0;
+ }
 -- 
-Michal Hocko
-SUSE Labs
+2.20.1
+
