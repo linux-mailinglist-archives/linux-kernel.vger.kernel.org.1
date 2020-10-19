@@ -2,237 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D3E292C24
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA05292C37
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731053AbgJSRDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:03:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731033AbgJSRDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:03:00 -0400
-Received: from localhost.localdomain (unknown [194.230.155.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C98AC205ED;
-        Mon, 19 Oct 2020 17:02:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603126979;
-        bh=5m3PXqqc5gUg7E17UxkNthGmAsWQFVOiTy+EyGvAX4Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aQaCuB1baKgVuEgGfaK+keOXYRuF+p6Tu69qWkmnh9KfdEYe3Fl9Can/ka6Kh+cBW
-         9Ormi2H9eLAiCk5FEJTn+ym8zGQu+bFxpQD6ijs/mH+dCGDj7GiIPqlxv8PT2odLN4
-         5gTE0TQ/oVDM7CzcA5R9vUJ6aTRac8LbGJOyD44M=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh@kernel.org>
-Subject: [PATCH v5 1/4] dt-bindings: media: imx258: add bindings for IMX258 sensor
-Date:   Mon, 19 Oct 2020 19:02:44 +0200
-Message-Id: <20201019170247.92002-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1731129AbgJSRD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:03:26 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:32896 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730926AbgJSRCr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 13:02:47 -0400
+Date:   Mon, 19 Oct 2020 17:02:44 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603126965;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e8ek/MHNvjx+EwcgMnr8LVpLx35mWzxIKmXstJ4BxBs=;
+        b=t8sui3wly760BKOGst8dqKX/nLV1W6MCRg7ZsnKsrkGObhmN8pywSQE1kmp+MyZXyrHyHC
+        0gTMJDsDZ/MJOReKFmK60plXh6u85aUQZiUHjG7DjR/bPwpnWx4MZt8FjtX1asZ7nkGkWr
+        Vc4DqfOepN0KTvmgCwpuy3UE8CL4dlPmbcnit5zpzaoUK1pgJ4Ljc2N12omH3Jek2kQU6S
+        FfllJxUyWbSNQDp4p7tCltMkL9QRIBEqnthDFfYGOI/IAXmjbQnAmO3PhOJSd1r0qJ7Hfa
+        fahwbVe0OwD1O2Ice9gMMzqiHo3OQBugTzy/QeMPQJ+S3jVwzFVBstb8PyMYnA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603126965;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e8ek/MHNvjx+EwcgMnr8LVpLx35mWzxIKmXstJ4BxBs=;
+        b=Cg5y6AEKfqmK1ZTL82W8+0z/HqlROmevVjEYnVOmU8ei8p1ERSq+ByItnPb54iUtROYk7A
+        7HlBQk2szjKzzbAQ==
+From:   "tip-bot2 for Leonid Bloch" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/urgent] USB: serial: option: Add Telit FT980-KS composition
+Cc:     Leonid Bloch <lb.workbox@gmail.com>, stable@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <ce86bc05-f4e2-b199-0cdc-792715e3f275@asocscloud.com>
+References: <ce86bc05-f4e2-b199-0cdc-792715e3f275@asocscloud.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <160312696484.7002.7375378127471146676.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for the IMX258 camera sensor.  The bindings, just like the
-driver, are quite limited, e.g. do not support regulator supplies.
+The following commit has been merged into the perf/urgent branch of tip:
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Commit-ID:     da6f40842515774026d5bfad297491eb513c40cc
+Gitweb:        https://git.kernel.org/tip/da6f40842515774026d5bfad297491eb513c40cc
+Author:        Leonid Bloch <lb.workbox@gmail.com>
+AuthorDate:    Sun, 04 Oct 2020 18:58:13 +03:00
+Committer:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CommitterDate: Sat, 17 Oct 2020 08:31:21 +02:00
+
+USB: serial: option: Add Telit FT980-KS composition
+
+commit 924a9213358fb92fa3c3225d6d042aa058167405 upstream.
+
+This commit adds the following Telit FT980-KS composition:
+
+0x1054: rndis, diag, adb, nmea, modem, modem, aux
+
+AT commands can be sent to /dev/ttyUSB2.
+
+Signed-off-by: Leonid Bloch <lb.workbox@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/ce86bc05-f4e2-b199-0cdc-792715e3f275@asocscloud.com
+Link: https://lore.kernel.org/r/20201004155813.2342-1-lb.workbox@gmail.com
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
+ drivers/usb/serial/option.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Changes since v4:
-1. Add clock-lanes,
-2. Add Rob's review,
-3. Add one more example and extend existing one,
-4. Add common clock properties (assigned-*).
-
-Changes since v3:
-1. Document also two lane setup.
-
-Changes since v2:
-1. Remove clock-frequency, add reset GPIOs, add supplies.
-2. Use additionalProperties.
-
-Changes since v1:
-1. None
----
- .../devicetree/bindings/media/i2c/imx258.yaml | 140 ++++++++++++++++++
- MAINTAINERS                                   |   1 +
- 2 files changed, 141 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/i2c/imx258.yaml
-
-diff --git a/Documentation/devicetree/bindings/media/i2c/imx258.yaml b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
-new file mode 100644
-index 000000000000..4a3471fb88a1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/i2c/imx258.yaml
-@@ -0,0 +1,140 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/i2c/imx258.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Sony IMX258 13 Mpixel CMOS Digital Image Sensor
-+
-+maintainers:
-+  - Krzysztof Kozlowski <krzk@kernel.org>
-+
-+description: |-
-+  IMX258 is a diagonal 5.867mm (Type 1/3.06) 13 Mega-pixel CMOS active pixel
-+  type stacked image sensor with a square pixel array of size 4208 x 3120. It
-+  is programmable through I2C interface.  Image data is sent through MIPI
-+  CSI-2.
-+
-+properties:
-+  compatible:
-+    const: sony,imx258
-+
-+  assigned-clocks: true
-+  assigned-clock-parents: true
-+  assigned-clock-rates: true
-+
-+  clocks:
-+    description:
-+      Clock frequency from 6 to 27 MHz.
-+    maxItems: 1
-+
-+  reg:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    description: |-
-+      Reference to the GPIO connected to the XCLR pin, if any.
-+
-+  vana-supply:
-+    description:
-+      Analog voltage (VANA) supply, 2.7 V
-+
-+  vdig-supply:
-+    description:
-+      Digital I/O voltage (VDIG) supply, 1.2 V
-+
-+  vif-supply:
-+    description:
-+      Interface voltage (VIF) supply, 1.8 V
-+
-+  # See ../video-interfaces.txt for more details
-+  port:
-+    type: object
-+    properties:
-+      endpoint:
-+        type: object
-+        properties:
-+          clock-lanes:
-+            const: 0
-+
-+          data-lanes:
-+            oneOf:
-+              - items:
-+                  - const: 1
-+                  - const: 2
-+                  - const: 3
-+                  - const: 4
-+              - items:
-+                  - const: 1
-+                  - const: 2
-+
-+          link-frequencies:
-+            allOf:
-+              - $ref: /schemas/types.yaml#/definitions/uint64-array
-+            description:
-+              Allowed data bus frequencies.
-+
-+        required:
-+          - clock-lanes
-+          - data-lanes
-+          - link-frequencies
-+
-+required:
-+  - compatible
-+  - reg
-+  - port
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        sensor@6c {
-+            compatible = "sony,imx258";
-+            reg = <0x6c>;
-+            clocks = <&imx258_clk>;
-+
-+            port {
-+                endpoint {
-+                    remote-endpoint = <&csi1_ep>;
-+                    clock-lanes = <0>;
-+                    data-lanes = <1 2 3 4>;
-+                    link-frequencies = /bits/ 64 <320000000>;
-+                };
-+            };
-+        };
-+    };
-+
-+    /* Oscillator on the camera board */
-+    imx258_clk: clk {
-+        compatible = "fixed-clock";
-+        #clock-cells = <0>;
-+        clock-frequency = <19200000>;
-+    };
-+
-+  - |
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        sensor@6c {
-+            compatible = "sony,imx258";
-+            reg = <0x6c>;
-+            clocks = <&imx258_clk>;
-+
-+            assigned-clocks = <&imx258_clk>;
-+            assigned-clock-rates = <19200000>;
-+
-+            port {
-+                endpoint {
-+                    remote-endpoint = <&csi1_ep>;
-+                    clock-lanes = <0>;
-+                    data-lanes = <1 2 3 4>;
-+                    link-frequencies = /bits/ 64 <633600000>;
-+                };
-+            };
-+        };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5b9621ca2b31..68f30a283a2c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16262,6 +16262,7 @@ M:	Sakari Ailus <sakari.ailus@linux.intel.com>
- L:	linux-media@vger.kernel.org
- S:	Maintained
- T:	git git://linuxtv.org/media_tree.git
-+F:	Documentation/devicetree/bindings/media/i2c/imx258.yaml
- F:	drivers/media/i2c/imx258.c
- 
- SONY IMX274 SENSOR DRIVER
--- 
-2.25.1
-
+diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
+index a65e620..2a3bfd6 100644
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1187,6 +1187,8 @@ static const struct usb_device_id option_ids[] = {
+ 	  .driver_info = NCTRL(2) | RSVD(3) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1053, 0xff),	/* Telit FN980 (ECM) */
+ 	  .driver_info = NCTRL(0) | RSVD(1) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1054, 0xff),	/* Telit FT980-KS */
++	  .driver_info = NCTRL(2) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910_DUAL_MODEM),
