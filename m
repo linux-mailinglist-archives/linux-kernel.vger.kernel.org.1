@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4B229253D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95238292542
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgJSKMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:12:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:54102 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725921AbgJSKMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:12:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B3BA101E;
-        Mon, 19 Oct 2020 03:12:43 -0700 (PDT)
-Received: from bogus (unknown [10.57.13.246])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 729FD3F66E;
-        Mon, 19 Oct 2020 03:12:40 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 11:12:41 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
-        georgi.djakov@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
- -EPROBE_DEFER
-Message-ID: <20201019101241.GB12908@bogus>
-References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
- <20201015180555.gacdzkofpibkdn2e@bogus>
- <20201016042434.org6ibdqsqbzcdww@vireshk-i7>
- <20201016060021.sotk72u4hioctg7o@bogus>
- <20201016111222.lvakbmjhlrocpogt@bogus>
- <20201019045827.kl6qnx6gidhzjkrs@vireshk-i7>
- <20201019091723.GA12087@bogus>
- <20201019092411.b3znjxebay3puq2j@vireshk-i7>
+        id S1726741AbgJSKOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgJSKOC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 06:14:02 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B2AC0613CE;
+        Mon, 19 Oct 2020 03:14:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4ZUsuMrR+ngWpncutSCoMS/lWOgKT6Cj9cHkeDMetR0=; b=usqFcIX/i+y71mXlgiCmt07zPf
+        3GhE+28+QPqGVJEeCsK6m/+gyJ2SoyTGn6vthGjNUeXDKMBvpztWgc6iZXcpYvzluOq5ZFdb1GpZF
+        jeVyYJ78fusnRlk8MH7yyIeehMAolr8QLdll8bczFg7EW1AupGLl+Qv3r4H0/Qgmq/LOo7gUPJxpi
+        h2ep0USqn2voW1yuaECtBbzehj6yAeWYqtbyC6Nkh0BP1NugiBOV/5buw1x97OU9Et3nvMoscX57L
+        ZvS1/r8M5QLWM6cD4qEwb1tlDq0CmouxSIHCgn6hYxEzBC0qHRrUnPaZNodjwoGsv222RX5rh7epH
+        wDakJl8g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kUSAt-0002S3-1F; Mon, 19 Oct 2020 10:13:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ACA9A3035D4;
+        Mon, 19 Oct 2020 12:13:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 93F622B07595D; Mon, 19 Oct 2020 12:13:53 +0200 (CEST)
+Date:   Mon, 19 Oct 2020 12:13:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Mike Galbraith <umgwanakikbuti@gmail.com>, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, bigeasy@linutronix.de,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] zram: Fix __zram_bvec_{read,write}() locking order
+Message-ID: <20201019101353.GJ2628@hirez.programming.kicks-ass.net>
+References: <CABXGCsOL0pW0Ghh-w5d12P75ve6FS9Rgmzm6DvsYbJY-jMTCdg@mail.gmail.com>
+ <20201016124009.GQ2611@hirez.programming.kicks-ass.net>
+ <20201016153324.GA1976566@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201019092411.b3znjxebay3puq2j@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201016153324.GA1976566@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 02:54:11PM +0530, Viresh Kumar wrote:
-> On 19-10-20, 10:17, Sudeep Holla wrote:
-> > On Mon, Oct 19, 2020 at 10:28:27AM +0530, Viresh Kumar wrote:
-> > > On 16-10-20, 12:12, Sudeep Holla wrote:
-> > > > On Fri, Oct 16, 2020 at 07:00:21AM +0100, Sudeep Holla wrote:
-> > > > > On Fri, Oct 16, 2020 at 09:54:34AM +0530, Viresh Kumar wrote:
-> > > > > > On 15-10-20, 19:05, Sudeep Holla wrote:
-> > > > > > > OK, this breaks with SCMI which doesn't provide clocks but manage OPPs
-> > > > > > > directly. Before this change clk_get(dev..) was allowed to fail and
-> > > > > > > --EPROBE_DEFER was not an error.
-> > > > > >
-> > > > > > I think the change in itself is fine. We should be returning from
-> > > > > > there if we get EPROBE_DEFER. The question is rather why are you
-> > > > > > getting EPROBE_DEFER here ?
-> > > > > >
-> > > > >
-> > > > > Ah OK, I didn't spend too much time, saw -EPROBE_DEFER, just reverted
-> > > > > this patch and it worked. I need to check it in detail yet.
-> > > > >
-> > > > 
-> > > > You confused me earlier. As I said there will be no clock provider
-> > > > registered for SCMI CPU/Dev DVFS.
-> > > > 	opp_table->clk = clk_get(dev, NULL);
-> > > > will always return -EPROBE_DEFER as there is no clock provider for dev.
-> > > > But this change now propagates that error to caller of dev_pm_opp_add
-> > > > which means we can't add opp to a device if there are no clock providers.
-> > > > This breaks for DVFS which don't operate separately with clocks and
-> > > > regulators.
-> > >
-> > > The CPUs DT node shouldn't have a clock property in such a case and I
-> > > would expect an error instead of EPROBE_DEFER then. Isn't it ?
-> > 
-> > Ideally yes, but for legacy reasons clocks property has been used for
-> > providing OPP/DVFS handle too. While we can change and add new property
-> > for that, it will still break old bindings.
-> 
-> I am not sure I understood it all. So does your platform have the
-> clock-names property or not for the CPUs ? And how will something
-> break here ?
-> 
 
-Yes it has clocks property but used by SCMI(for CPUFreq/DevFreq) and not
-by any clock provider driver. E.g. the issue you will see if "clocks"
-property is used instead of "qcom,freq-domain" on Qcom parts.
+Mikhail reported a lockdep spat detailing how __zram_bvec_read() and
+__zram_bvec_write() use zstrm->lock and zspage->lock in opposite order.
 
-On SCMI, we have used clocks property to represent perf domain which I
-understand is not ideal but it is there 🙁.
+Reported-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+---
+ drivers/block/zram/zram_drv.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
--- 
-Regards,
-Sudeep
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index 9100ac36670a..c1e2c2e1cde8 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1216,10 +1216,11 @@ static void zram_free_page(struct zram *zram, size_t index)
+ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+ 				struct bio *bio, bool partial_io)
+ {
+-	int ret;
++	struct zcomp_strm *zstrm;
+ 	unsigned long handle;
+ 	unsigned int size;
+ 	void *src, *dst;
++	int ret;
+ 
+ 	zram_slot_lock(zram, index);
+ 	if (zram_test_flag(zram, index, ZRAM_WB)) {
+@@ -1250,6 +1251,9 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+ 
+ 	size = zram_get_obj_size(zram, index);
+ 
++	if (size != PAGE_SIZE)
++		zstrm = zcomp_stream_get(zram->comp);
++
+ 	src = zs_map_object(zram->mem_pool, handle, ZS_MM_RO);
+ 	if (size == PAGE_SIZE) {
+ 		dst = kmap_atomic(page);
+@@ -1257,8 +1261,6 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+ 		kunmap_atomic(dst);
+ 		ret = 0;
+ 	} else {
+-		struct zcomp_strm *zstrm = zcomp_stream_get(zram->comp);
+-
+ 		dst = kmap_atomic(page);
+ 		ret = zcomp_decompress(zstrm, src, size, dst);
+ 		kunmap_atomic(dst);
