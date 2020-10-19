@@ -2,133 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1118F2928F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 694A52928FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729104AbgJSOJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:09:45 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:17483 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728716AbgJSOJo (ORCPT
+        id S1729147AbgJSOKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728716AbgJSOKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:09:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1603116585; x=1634652585;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=Ki44p0C7lY3Gp0xv8oa5Py8ZvXO/ROvffQCfHj98tmA=;
-  b=nAI8MLz4HCKyGIUdv+BJH839IY6jw/DdQ84HYtDEJccIjm/RLG2T60Di
-   cMitcHAX5DWI9v2zW8zEzIXmO+I3ZWdfPVziaNMsN+HKiV4y4pEmBDdj8
-   DCaSrX0t235hb1mYntC/70bp5+xGAYp4Phklh/F9D5xJoLGbem/pIgjeS
-   IhUp6QCe1eBVhGhDvewd9Qlh34JRyzCWE+oDBG0jV1ugMszS5sKsK0uzK
-   mQNIp638aIAT/gMCSTApb0Wmc8g4M0ZXsSW0Yt5gYMZGtfn2HycgkNWKS
-   ghK/CAp2Y7kYGrafRqOEF/z4F+xEUEU8+A2L08q2VRDQfEnS1oKqzEBTR
-   w==;
-IronPort-SDR: u4O2Y3wRZUDKWEU4BfR/UXYt9WIB/B3Pyglj49Kw3BDRI7rSbiZOdMlMbi9G+ss5RKT40+rm8y
- GVw2Mq5iPFkykP2NfcKHZmrxRI/mQP0HD8UnaIz/Bbj1ai8kvO6r0wIHP0mCayXkrP5PUtUHyp
- 8zp4EBTt1hud94ttc4zmy4Zn+EipHdZgs36MR8CU9xJHRps8I9gYm9ELxLGuDeJmMivVL+GwCF
- y9JSV43P4/Tw6rlqquFHjeXY0hQwMghKu4bTWMul5zItRT+ID7EydEe+lcOXHySU7EVdSOO8kq
- XS0=
-X-IronPort-AV: E=Sophos;i="5.77,394,1596470400"; 
-   d="scan'208";a="154757385"
-Received: from mail-sn1nam02lp2055.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.36.55])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Oct 2020 22:09:44 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WGQo7e0kvzA6/TZcQgAuQNAfWdIe0F+/UFdS9BINHW2fBIzC3TVSxX6CiA/wfxBn+dJMzgrriDL869lOKALnEGWb4YZpRoyHavnntNqLG7m5BU+2vmUDKZspHz7Yjzhj1ikVeaaHcqPdxkNMVG9aG6st2Ukdti3X4RCcHTEuiLO82hLBXWUZE711SanxS5K4VmwRYS/R/OevjBqMGAEuSz/vQTVh9HLjVt1H5aDiQ/fXhYPGF0pxf9jZwODTxrbRIAx9H0kxSLJZWTakMx3tJHfGifWADV3w7j5hHyKo1RsiybkkHV+5wls35DP0s07bCqwF95Isz4aNFNNtfnnRbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/3e1q9BoZaQXgrj/pdSk/UP/brJzC73ZPNCKm14V8B8=;
- b=IjRx1OL4Rclhq/em/MRtnNXvkk1S1Zv2DICuPbUyUbDyGy4GqNXfudVSGNzL94z+MRtuiHfi5AbizXByrUVL2PKCzSA3LXs0OZAcPYcLvP2wKsw4InRTVqH+YJOzEkx2jniqP0eXYFFoJSndFwFDrl2DJyADDfslYk6kT2n5Wc9eu2bJDWsd5gfgmjfiir7560ld6DlKwU2+VLiPnR+QewuqVIO0hh9ldDnPy2BBYSYkibZ9XOJ56vZEFTq6lphEmg0QGuba3YXMSIYEPQ3K5EDMj+6XE5QfAXCDAr9qLzAXbEHw52BXgF7WgX9XquasWbVppYKlR3v034JFAkIPnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Mon, 19 Oct 2020 10:10:16 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C30C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:10:16 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id j8so5794367pjy.5
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:10:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/3e1q9BoZaQXgrj/pdSk/UP/brJzC73ZPNCKm14V8B8=;
- b=KLwGHSR2D3NmAPNuaKFgwwYYr8+q7PwHwdszyO4E4DCgWE15Q1un8V2B6hkQhO8GwY0ovLXlygHiwc4Qkck8oclqq3mADY/q2BzdjeZ46cduotX7+OVFxwZPm0xu32+5vNT1YLdVrSvia1c1oAMK8+ChnDXRNY9X6S1c1FEYuNo=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3597.namprd04.prod.outlook.com
- (2603:10b6:803:45::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Mon, 19 Oct
- 2020 14:09:41 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::619a:567c:d053:ce25]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::619a:567c:d053:ce25%6]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
- 14:09:40 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Hui Su <sh_def@163.com>, "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] blk: use REQ_OP_WRITE instead of hard code
-Thread-Topic: [PATCH] blk: use REQ_OP_WRITE instead of hard code
-Thread-Index: AQHWpiEFu+/IMnkTMUW1yQ9XseklJg==
-Date:   Mon, 19 Oct 2020 14:09:40 +0000
-Message-ID: <SN4PR0401MB3598441A5D53ED264496CF419B1E0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20201019135059.GA16475@rlk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: 163.com; dkim=none (message not signed)
- header.d=none;163.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a61:53e:3c01:9550:141d:bfe3:44cb]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 56114b20-50dc-43e9-5ca0-08d874389f23
-x-ms-traffictypediagnostic: SN4PR0401MB3597:
-x-microsoft-antispam-prvs: <SN4PR0401MB3597BFBD2CD40A35AF1E2CBF9B1E0@SN4PR0401MB3597.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2zWwM6NsGcZaSvUnud0EzyR8EZiE2PL/Skgl9YOKhcJ1hu106q0VONig6+GHwjcD445bAwu/G/j1dZzSJ3WdjmkMhbQ7MLfkjfDGeHKQFSXEni4V7seFDEpm/8RNghhpqj/sGNrpiFwt2FwktvzMwFcJZj5Lz/CGe4zUHlGNb5U3UuvzK86zptua47w0OIaBZKwNUrVkhzkaeGbFtYc8KbhAZg+/hbaJTjDiQx+6VpZOjoj3oAXc3BY+epoT3kj4w94V7p0ORbgcaioVWqF+AN/jRL2SdGuuGtZRr4pPGubXm7IUPm8cCxs1yB3tXgA4Z74iVBGNq5AxakOOA+u0hw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(376002)(39860400002)(366004)(316002)(86362001)(8676002)(55016002)(9686003)(110136005)(186003)(33656002)(5660300002)(52536014)(66946007)(7696005)(66556008)(66476007)(53546011)(66446008)(64756008)(6506007)(76116006)(91956017)(2906002)(478600001)(4744005)(83380400001)(8936002)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Y/XRuPa5wo/+OFn5qnHPiboocVcl3RePzE++Fecch9P/rVhwsW678CPU6redaYs4heF5zzDH2SkB9ZKkBX2Xn+O6pbmRTYclsnf25nnHpVh12f+F+IHfbtXaC62HgTE/M8jxe8ZdF18k6CM0dFB1+PoEPehcCuCWAIj619EJj5X6MDRiCTVGcM0QqJK5DKb836pB1ckhssUKjaCcQf/wchEZyTkMjXNerS2lbkSY5Fye16IWpjqmhNzAlyz206GmIC1LeOgta2SAyUNVJ7ozBkkON2HB5FPCEqTpbzJDGXX3a7sIyaZ3zfJbTNwA0RJ273JXJ+Msh0R2SpcsfalaUBq5EZis6BArlHU/k9pj/a0UxQxVMu2yjqnrsf9LILUpHxz771kB7pOkdDoa1KLWPdnQ0uXX9pASd36D8Asqw+gQcl0KKrlz1DSxsLhXNihQZPBhxAMmWZ1iOP5nm6nVepFODfczWP1b+JrSWzoTgBrdmWV4njdUzvKfodp70W32yYJ/5gCfe/CnKCJav68ZSUSO00Y9mcBqKOnqaDFup+9PRAHiNktxf/fHX9c7doM2Rsaay9vX5OphC5m7iy4jn9Hol1TpZkp+a5z50hxXcCSyu+lccOTdKBG18wQr9ioy8kTwq9pH4RZ9g2+jac4IM41kYcplZt1mVbZ2S3FPAJ3pDKz0xLRnUP/Xrot0A1CIkdh4ZzmRJv54gGSfM2ylWw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=0x0f.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6+WsrhoyC+JrQFZTcl3DCWJnD0CqoqCFHUTm6b9tCCw=;
+        b=qcGN5/o5r/XV13JNsNqld4FWnPXR67wk9dguz8TXU8HqXbrA40SPGrCvBi4NJoGSV1
+         4hWuPp50jFDwmGLpjfmcvHBXANVL2HPnPWiTfyL2DGaqU2zYNWHuWQ0NNld34/P5kW6M
+         0aBfFmwKlmX9U4HrmBCznpf9+H8NfBNvsYh/4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6+WsrhoyC+JrQFZTcl3DCWJnD0CqoqCFHUTm6b9tCCw=;
+        b=hqbuuNQBvIdIlvTrjKMEtZXpBvVR0uSrYGSGubESg7ffTih/hdYB8+N/5OxbruI9NA
+         dARP2cuuoiFiQTtvGBlo2KR1zk4ckfKnmI5u6SHTSOYfBijaqvifPmyhHe3UfAAOcb0z
+         vCoTF/QDBNG1L2pPBnXGG+H5UUr9i5Q+Yq3/l1Vyw7IthUq/+rWrAC4DHi5FXX54ubPn
+         gjJaWnywj1FpjtSeRvdWQ5+rniOXeFhfmDNt5LFshPj9y0tKLoOR4gTkeSLZpgkBzrow
+         GBqDLu8Lsa54wEfQNR+bXEHySVem2E8TQh6rmgRgc1EydnEqDppLgrjpnL34kK6P4NDt
+         AKxA==
+X-Gm-Message-State: AOAM530qkCIwvuHDvf2ToJVs8YE5Uv8Ei4uXy7CHwnY3clQm5vvcFrKS
+        cSkGKR6145CQK5Z7KnKoi+km/A==
+X-Google-Smtp-Source: ABdhPJxhT0SgjSefK46NYqt2jQXMLGLYqIJCdoFCundLghVKFKCMm+XeLTi0PyXihiutMjbKZgaQGA==
+X-Received: by 2002:a17:90a:7d12:: with SMTP id g18mr17918776pjl.89.1603116616076;
+        Mon, 19 Oct 2020 07:10:16 -0700 (PDT)
+Received: from shiro.work (p1268123-ipngn200803sizuokaden.shizuoka.ocn.ne.jp. [118.13.124.123])
+        by smtp.googlemail.com with ESMTPSA id 131sm78999pfy.5.2020.10.19.07.10.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 07:10:15 -0700 (PDT)
+From:   Daniel Palmer <daniel@0x0f.com>
+To:     linux-gpio@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linus.walleij@linaro.org,
+        Daniel Palmer <daniel@0x0f.com>
+Subject: [PATCH v2 0/5] Add GPIO support for MStar/SigmaStar ARMv7
+Date:   Mon, 19 Oct 2020 23:10:03 +0900
+Message-Id: <20201019141008.871177-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56114b20-50dc-43e9-5ca0-08d874389f23
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 14:09:40.8161
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cFEY3tK+OxYvviypG8mHn6xtitpkGRG3GYGsmSyaqyo5QftJn/NiTUKUij6kkv0/X1/WhYl5XYRi49reqtuUlVSXmlKraYGT+pwp/akD4bU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3597
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2020 16:06, Hui Su wrote:=0A=
-> use REQ_OP_WRITE instead of hard code in=0A=
-> op_is_write().=0A=
-> =0A=
-> Signed-off-by: Hui Su <sh_def@163.com>=0A=
-> ---=0A=
->  include/linux/blk_types.h | 2 +-=0A=
->  1 file changed, 1 insertion(+), 1 deletion(-)=0A=
-> =0A=
-> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h=0A=
-> index 7d7c13238fdb..7b9b02378c24 100644=0A=
-> --- a/include/linux/blk_types.h=0A=
-> +++ b/include/linux/blk_types.h=0A=
-> @@ -440,7 +440,7 @@ static inline void bio_set_op_attrs(struct bio *bio, =
-unsigned op,=0A=
->  =0A=
->  static inline bool op_is_write(unsigned int op)=0A=
->  {=0A=
-> -	return (op & 1);=0A=
-> +	return (op & REQ_OP_WRITE);=0A=
-=0A=
-op_is_write() returns true for every req_op that writes to a device (they a=
-ll have =0A=
-the lowest bit set), while REQ_OP_WRITE means a WRITE. You'll change the se=
-mantics=0A=
-with this patch.=0A=
+At the moment the MStar/SigmaStar support is only really
+capable of shell from an initramfs and not much else.
+
+Most of the interesting drivers are blocked on clock and pinctrl
+drivers and those are going to take me a little while to get cleaned
+up.
+
+Clock and pinctrl aren't needed for basic GPIO to work (all pins
+start off as GPIOs..) and it makes it possible to actually do something
+so this series adds everything that is needed for the main GPIO
+block in these chips.
+
+Changes since v1:
+
+- Moves the binding header commit before the yaml commit
+  
+- Fixes the license on the binding header to include BSD-2-Clause
+
+- The driver has been reworked to use the gpiolib irqchip functionality
+  as suggested by Linus[0]. I think I got this right. The gpio controller
+  doesn't actually do anything with interrupts itself.. It just happens
+  to have 4 lines that are also wired to lines on one of the interrupt
+  controllers.
+
+- Now that the driver is an interrupt controller in it's own right for
+  the gpio lines that have associated interrupts the binding description
+  has been updated to add the interrupt-controller bits and remove the
+  description of the interrupt-names that described how the interrupts
+  used to be passed in.
+
+Daniel Palmer (5):
+  dt-bindings: gpio: Add a binding header for the MSC313 GPIO driver
+  dt-bindings: gpio: Binding for MStar MSC313 GPIO controller
+  gpio: msc313: MStar MSC313 GPIO driver
+  ARM: mstar: Add gpio controller to MStar base dtsi
+  ARM: mstar: Fill in GPIO controller properties for infinity
+
+ .../bindings/gpio/mstar,msc313-gpio.yaml      |  61 +++
+ MAINTAINERS                                   |   3 +
+ arch/arm/boot/dts/mstar-infinity.dtsi         |   7 +
+ arch/arm/boot/dts/mstar-v7.dtsi               |  10 +
+ drivers/gpio/Kconfig                          |   9 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-msc313.c                    | 406 ++++++++++++++++++
+ include/dt-bindings/gpio/msc313-gpio.h        |  95 ++++
+ 8 files changed, 592 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/mstar,msc313-gpio.yaml
+ create mode 100644 drivers/gpio/gpio-msc313.c
+ create mode 100644 include/dt-bindings/gpio/msc313-gpio.h
+
+-- 
+2.28.0
+
