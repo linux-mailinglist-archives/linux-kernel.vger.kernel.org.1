@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41B429295E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A398E292959
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729491AbgJSOb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728311AbgJSOb0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:31:26 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A57C0613CE;
-        Mon, 19 Oct 2020 07:31:26 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id cq12so10501483edb.2;
-        Mon, 19 Oct 2020 07:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NK1LgREI0grlGA48q0LtomCwz/5B/5iMVXhRLFRzRu4=;
-        b=ofu92/Wh94NyihEjSyRw0rLG9de1gsHCTSSgjasjE6Na9acvd3ZxxJgab97VVfNNin
-         omety/hO40VF/gHPpSP0Tl/8tr2fpBWpoJhjyI3MgKsUvsh5XzdwW70nJqXnW28Czm/d
-         fd5rzwwzX3JD2zAxgBSm9XLPsApb5W6AoGdxaLEg9gbOXYo8MtEz8q6+xF2Qm1rC+Vb9
-         XliKMjBGys6QhbG+CxCPS6YQjunTfYd14nc1rw0z43knYdzuFhaN9/5g/RXpWhmaWkM0
-         i43x7SjycFqzJBLo6XD/0Nav/9BM5pv+XAPTgxiy76GFfvoxVRjOMGVc8UujDyXd9Kj7
-         XqAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NK1LgREI0grlGA48q0LtomCwz/5B/5iMVXhRLFRzRu4=;
-        b=CY+Hw86B/SjixSYi9AHLW1TjSnJDKMVgaWbRko6k7z9A6TG6RZ8R8UiU5Uh93TWIfQ
-         H4ze2J0ayVd/tssyM6LJ0r3suaPTh1OYGE5NPf2JrHzvzHrAY2EG6ocUjit5EGyrtvHm
-         W/kYtrPc9R4oSH9yM/Jiuh740PsVI2WVwF1aDdKHapdYVpksM+aiqq/YNBk0zE+l6SOw
-         AX9BToJjHZLa5VxZ+oFlhGR87SE31FDw1NKmIZLZ4eIkpWnBY5YGnVssowADUkEldU5s
-         4bR3Tz4vA0uFljCJeeIfl++SuCkE7P457HQ1KolmpzuPOjXe4Ce0W6CWO9npp0QxJvD3
-         U1KQ==
-X-Gm-Message-State: AOAM533fR4YRFKM1o3TcDaat8DK+yMnUWYRTYndtDZKBzYACqnl8tD6j
-        4UEIrS9XAsQoJqjoJv6wcQw=
-X-Google-Smtp-Source: ABdhPJytlnwdS3LMPlKFbzRg/UyWOvHdc461PBbrWGNT8bH7bBuodDLpq+6U4lGgDLrFxbJ+0Fif0Q==
-X-Received: by 2002:aa7:d4d8:: with SMTP id t24mr32228edr.247.1603117884937;
-        Mon, 19 Oct 2020 07:31:24 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id y32sm2459726edy.4.2020.10.19.07.31.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 07:31:24 -0700 (PDT)
-Subject: Re: [PATCH 3/5] pwm: pwm-mediatek: Add MT8183 SoC support
-To:     Fabien Parent <fparent@baylibre.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org
-Cc:     robh+dt@kernel.org, lee.jones@linaro.org,
-        u.kleine-koenig@pengutronix.de, thierry.reding@gmail.com
-References: <20201019140705.1518822-1-fparent@baylibre.com>
- <20201019140705.1518822-4-fparent@baylibre.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <53afa92c-b32f-eff7-95a8-3fe12db5e8fd@gmail.com>
-Date:   Mon, 19 Oct 2020 16:30:17 +0200
+        id S1729397AbgJSOaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:30:52 -0400
+Received: from mga17.intel.com ([192.55.52.151]:32073 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728311AbgJSOaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 10:30:52 -0400
+IronPort-SDR: nlrNmEKiZeuma0j5clowhi30IM8XoWxzhWa83PD2nhGuEQkQxQoo/ir3RQG3RKi2sZfoyPQaLW
+ U5+sF4QfXzDg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="146898228"
+X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
+   d="scan'208";a="146898228"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 07:30:34 -0700
+IronPort-SDR: tFFxFJaFbK0i/Ju4iSoPLeUjnyU6qGPiO5d9PWjuaFuTQFAWIHbASKyasOGAdgzXLCFD0PWTFj
+ fhNjjVwDpMQA==
+X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
+   d="scan'208";a="522018617"
+Received: from haixinlu-mobl1.amr.corp.intel.com (HELO [10.212.84.56]) ([10.212.84.56])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 07:30:32 -0700
+Subject: Re: [PATCH v39 05/24] x86/sgx: Add wrappers for ENCLS leaf functions
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-6-jarkko.sakkinen@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <a1ec29d2-41ab-fbac-6a06-8755742328d9@intel.com>
+Date:   Mon, 19 Oct 2020 07:30:32 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201019140705.1518822-4-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201003045059.665934-6-jarkko.sakkinen@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 19/10/2020 16:07, Fabien Parent wrote:
-> Add PWM support for the MT8183 SoC
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
-> ---
->   drivers/pwm/pwm-mediatek.c | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/pwm/pwm-mediatek.c b/drivers/pwm/pwm-mediatek.c
-> index 108881619aea..9052b500b8f0 100644
-> --- a/drivers/pwm/pwm-mediatek.c
-> +++ b/drivers/pwm/pwm-mediatek.c
-> @@ -314,6 +314,12 @@ static const struct pwm_mediatek_of_data mt7629_pwm_data = {
->   	.has_ck_26m_sel = false,
->   };
->   
-> +static const struct pwm_mediatek_of_data mt8183_pwm_data = {
-> +	.num_pwms = 4,
-> +	.pwm45_fixup = false,
-> +	.has_ck_26m_sel = true,
-> +};
+On 10/2/20 9:50 PM, Jarkko Sakkinen wrote:
+> +/**
+> + * encls_failed() - Check if an ENCLS leaf function failed
+> + * @ret:	the return value of an ENCLS leaf function call
+> + *
+> + * Check if an ENCLS leaf function failed. This happens when the leaf function
+> + * causes a fault that is not caused by an EPCM conflict or when the leaf
+> + * function returns a non-zero value.
+> + */
+> +static inline bool encls_failed(int ret)
+> +{
+> +	int epcm_trapnr;
 > +
->   static const struct pwm_mediatek_of_data mt8516_pwm_data = {
->   	.num_pwms = 5,
->   	.pwm45_fixup = false,
-> @@ -326,6 +332,7 @@ static const struct of_device_id pwm_mediatek_of_match[] = {
->   	{ .compatible = "mediatek,mt7623-pwm", .data = &mt7623_pwm_data },
->   	{ .compatible = "mediatek,mt7628-pwm", .data = &mt7628_pwm_data },
->   	{ .compatible = "mediatek,mt7629-pwm", .data = &mt7629_pwm_data },
-> +	{ .compatible = "mediatek,mt8183-pwm", .data = &mt8183_pwm_data },
->   	{ .compatible = "mediatek,mt8516-pwm", .data = &mt8516_pwm_data },
->   	{ },
->   };
-> 
+> +	if (boot_cpu_has(X86_FEATURE_SGX2))
+> +		epcm_trapnr = X86_TRAP_PF;
+> +	else
+> +		epcm_trapnr = X86_TRAP_GP;
+
+So, the SDM makes it sound like the only thing that changes from
+SGX1->SGX2 is the ENCLS leafs supported.  Since the kernel doesn't use
+any SGX2 leaf functions, this would imply there is some other
+architecture change which is visible.  *But* I don't see any evidence of
+this in the SDM, at least from a quick scan.
+
+Why is this here?
+
+> +	if (ret & ENCLS_FAULT_FLAG)
+> +		return ENCLS_TRAPNR(ret) != epcm_trapnr;
+> +
+> +	return !!ret;
+> +}
+
+
