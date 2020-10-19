@@ -2,173 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59918292A8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3E6292A7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730298AbgJSPhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
+        id S1730051AbgJSPcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730060AbgJSPhG (ORCPT
+        with ESMTP id S1729075AbgJSPcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:37:06 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EAAC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:37:05 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id f37so10825268otf.12
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:37:05 -0700 (PDT)
+        Mon, 19 Oct 2020 11:32:53 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4DBC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:32:52 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id l16so516644ilj.9
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:32:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZuObq9whWGDMmuO49RORrwrhqdb/dKbIiBCbbe3MZ+8=;
-        b=C6WGncCyg42oqfIwbZX16QroJD8lscb0ArhpyKgf4GkpPaB4D7iGfaU9Bzj0g6qSis
-         0372FjoZBSTHj262jqlLl96tMRrEQlDhd2XZt52kuE8stnuNjDOnmewwjwBBcOHHu+Gy
-         0Q8lHEIs6Te5T37TFUENmQIe6g9VQHWikMFvW0WU2M/i5mk5JwTme3rLDmv9kr611/Ry
-         lPruuQAiILKYVUYEs06XzhPcbaQCdS70pbv4o2s4uqjv+zjseP3FhCkf3c4r0mxiv063
-         wam1WtZWQLuxojz+ymhE1L3ftMqDYk7NBmwRXcQMfEA/J0Cwtjc7XlzQYw2dUupN2J4t
-         H0Yg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G6IqZPH/xvsjeV+KO4PrfwtgG9S8DY4P3ygKvGFV+Wk=;
+        b=Y/TH7WtZNNRhTiDN1VAyBBdljrCIJKN6XT05Ag7KnMLwK12/Ung3jtuMQBGYi5vmhL
+         72/8lisWN3QniaCEz9Ib59crBAL4W1ZrUu/PaALYAA96srEE+L40iZ2Fnizhbkk2angL
+         n6p7BdbI7RXC6n4N5OwCcPTdftLKF1OCH+NUNUPpmCAhDrhdkH82Rv1C7nl9I/ojaHcV
+         kmS7yyp69BJmWKnQSo8qs4q3hxKII5v/b9LrtNGumGkzr/60C+mgBR70JPZ1kZ0Da7c/
+         NnasKweHHQHA+GwqdLowZhENOTy302Sg6tYVr8qE71tIiiRNXAfefesK4386lqvMYonD
+         vH1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZuObq9whWGDMmuO49RORrwrhqdb/dKbIiBCbbe3MZ+8=;
-        b=uiXGNR/QXFwVAkuyFWQj//ZvbjOTQiGM3RvC1B7avUz0IRDiyRN9UkH+9PhynpQVGu
-         DF2qWnWVIuqNzXaYJtcoYuWjxX2mJHDonppedUhBrv/8xGFo5QkrDgpP+xIw6hqifBcO
-         tH1Hz6+kMNKq5bKt8GKpyP7vOTIFpPjw5WvCLW71eQ2nzZ5BuC2gsADToPemqJ/3oHrv
-         rrLc7GVJ2dmAEPBpMsL0oSOU8x3Vzkc9Hg2HpnXofXgYBQDa5IDMiA9Gg56Z63wzUy0+
-         Bf3hpbm7APR90DquJjB6W0c4AVc4HiGvOgNKOckonEI75vtROimvYburVb/FF7o78zL9
-         2ANw==
-X-Gm-Message-State: AOAM533MniCUDaorvP1TIShi81bDVaet7yqwWfvwwZaQfJ0DFwvtVYLL
-        G238qcpOw7jykJvBNe7LB3D6rA==
-X-Google-Smtp-Source: ABdhPJxyQj0BxuHZkdFy97PqND3qA9PIazxUOwIJ6MKfl9YWhfxFCeAHoSjERQkg821O8disXAds2w==
-X-Received: by 2002:a9d:6c8a:: with SMTP id c10mr384950otr.293.1603121825018;
-        Mon, 19 Oct 2020 08:37:05 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id p21sm3497994oto.21.2020.10.19.08.37.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 08:37:04 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 10:31:59 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] iommu/arm-smmu-qcom: Read back stream mappings
-Message-ID: <20201019153159.GC6705@builder.lan>
-References: <20201017043907.2656013-1-bjorn.andersson@linaro.org>
- <20201017043907.2656013-3-bjorn.andersson@linaro.org>
- <5eeecd0e-e3f3-f805-12d5-633284a29074@arm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G6IqZPH/xvsjeV+KO4PrfwtgG9S8DY4P3ygKvGFV+Wk=;
+        b=N/d8D1plAioxttygQcdxrAy1cfYmRf9/Ivr6AqBgrsv18Uvil4mldM5yKL/RHNwjhP
+         A9APYXXnRFAkvhD3Y/25mJzO1LzNPC6DqslKiokle0mZiiPhhbC3hvGRpn0WGiv66NKl
+         e/DCFcptK/kyyeJEzBh3OVAOIo/0hhjIS/gwJP7DvS7SpNeszwo28/enIqaUQx3sFtdM
+         yUHrOVwA9E7aFx2U0mTgRIoKDsAKsuhah3m0w2fnn/gReuL+h11xzF4TSq1lQ9Cvq3P5
+         0E92DN7oZBuURdCFYW+R07q87qT9nwyIz3aoJYQWVnSV7w0R29DDp79E4nYCokrjttmH
+         T9fQ==
+X-Gm-Message-State: AOAM531noPso1Jz6sDoznXH7sXV3j4gsitNUKpzpeYzMpaKm9LV0LQPW
+        B1HIqdOn7fxKw77K7z4utIRgew==
+X-Google-Smtp-Source: ABdhPJybmO34vOS8G/CY+b47HRjCg2ALL11YTrOppEKdrvmkSd2kXA82tTKNLtwzSN0eoE8vTukKMg==
+X-Received: by 2002:a92:dc8f:: with SMTP id c15mr387228iln.293.1603121571501;
+        Mon, 19 Oct 2020 08:32:51 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id z200sm65790iof.47.2020.10.19.08.32.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 08:32:50 -0700 (PDT)
+Subject: Re: [PATCH] zram: Fix __zram_bvec_{read,write}() locking order
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Minchan Kim <minchan@kernel.org>
+Cc:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Mike Galbraith <umgwanakikbuti@gmail.com>, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, bigeasy@linutronix.de,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <CABXGCsOL0pW0Ghh-w5d12P75ve6FS9Rgmzm6DvsYbJY-jMTCdg@mail.gmail.com>
+ <20201016124009.GQ2611@hirez.programming.kicks-ass.net>
+ <20201016153324.GA1976566@google.com>
+ <20201019101353.GJ2628@hirez.programming.kicks-ass.net>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b50bdd18-941b-cc05-2be3-6288f227be4d@kernel.dk>
+Date:   Mon, 19 Oct 2020 09:32:49 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5eeecd0e-e3f3-f805-12d5-633284a29074@arm.com>
+In-Reply-To: <20201019101353.GJ2628@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19 Oct 09:03 CDT 2020, Robin Murphy wrote:
-
-> On 2020-10-17 05:39, Bjorn Andersson wrote:
-> > The Qualcomm boot loader configures stream mapping for the peripherals
-> > that it accesses and in particular it sets up the stream mapping for the
-> > display controller to be allowed to scan out a splash screen or EFI
-> > framebuffer.
-> > 
-> > Read back the stream mappings during initialization and make the
-> > arm-smmu driver maintain the streams in bypass mode.
-> > 
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> > 
-> > Changes since v3:
-> > - Extracted from different patch in v3.
-> > - Now configures the stream as BYPASS, rather than translate, which should work
-> >    for platforms with working S2CR handling as well.
-> > 
-> >   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 24 ++++++++++++++++++++++
-> >   1 file changed, 24 insertions(+)
-> > 
-> > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > index be4318044f96..0089048342dd 100644
-> > --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > @@ -23,6 +23,29 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
-> >   	{ }
-> >   };
-> > +static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
-> > +{
-> > +	u32 smr;
-> > +	int i;
-> > +
-> > +	for (i = 0; i < smmu->num_mapping_groups; i++) {
-> > +		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
-> > +
-> > +		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
-> > +			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
-> > +			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
-> > +			smmu->smrs[i].valid = true;
-> > +
-> > +			smmu->s2crs[i].type = S2CR_TYPE_BYPASS;
-> > +			smmu->s2crs[i].privcfg = S2CR_PRIVCFG_DEFAULT;
-> > +			smmu->s2crs[i].cbndx = 0xff;
-> > +			smmu->s2crs[i].count++;
+On 10/19/20 4:13 AM, Peter Zijlstra wrote:
 > 
-> FWIW I don't think you actually need to adjust the count here - the SMR
-> being valid should already prevent the whole SME from being reassigned until
-> the display probes, at which point it should "take over" the SMR based on
-> matching values and claim the "initial" refcount. After that you're back
-> into the standard flow. It might be a little unintuitive to have something
-> in a valid but "unused" state, but arguably it's entirely accurate in terms
-> of the software abstraction here.
-> 
-> Otherwise, you end up making boot-time SMRs - so potentially all SMRs after
-> a kexec - effectively immutable, since even after Linux has taken control of
-> the whole system such that they *could* be reassigned safely, there's still
-> this undroppable refcount hanging around preventing it.
-> 
+> Mikhail reported a lockdep spat detailing how __zram_bvec_read() and
+> __zram_bvec_write() use zstrm->lock and zspage->lock in opposite order.
 
-I did increment the count here to make sure the stream mapping do
-survive a probe deferral of the display controller (which is rather
-common when you have some bridge chip hanging off it).
+Applied, thanks.
 
-But after digging through the code further I've convinced myself that
-the sme won't be freed while the device is pending probe deferral.
+-- 
+Jens Axboe
 
-So I will drop this.
-
-> That said, for a mobile SoC use-case if you have enough SMRs for all your
-> stream IDs and don't have any kind of device hotplug, that restriction
-> shouldn't make much difference in practice, so I'm not too concerned either
-> way. Otherwise this is as nice and tidy as I'd hoped :)
-
-I agree, I'm quite happy with where we are now!
-
-Thanks,
-Bjorn
-
-> 
-> Robin.
-> 
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >   static int qcom_smmu_def_domain_type(struct device *dev)
-> >   {
-> >   	const struct of_device_id *match =
-> > @@ -61,6 +84,7 @@ static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
-> >   }
-> >   static const struct arm_smmu_impl qcom_smmu_impl = {
-> > +	.cfg_probe = qcom_smmu_cfg_probe,
-> >   	.def_domain_type = qcom_smmu_def_domain_type,
-> >   	.reset = qcom_smmu500_reset,
-> >   };
-> > 
