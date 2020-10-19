@@ -2,84 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE18292A18
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F8F292A1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729988AbgJSPNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
+        id S1730025AbgJSPOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729717AbgJSPNC (ORCPT
+        with ESMTP id S1729544AbgJSPOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:13:02 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6A7C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:13:01 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a28so454787ljn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:13:01 -0700 (PDT)
+        Mon, 19 Oct 2020 11:14:35 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A337C0613CE;
+        Mon, 19 Oct 2020 08:14:35 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id dt13so14384995ejb.12;
+        Mon, 19 Oct 2020 08:14:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zk46YEU8AFrJPMd2DZK0YXhrQs/eaI3r0nLePqJ0ljY=;
-        b=QfCrOWagyVz1D/JQhVoyJQsbYNAjvQ/iL7mZq7ErUA3+oG3FeUeyngHtmr1rE78TW2
-         jEnzyi82NX2BxtlxZFHebEGmu38P5zJj9WCs6+iSqnxIoj5aGi0JeTWr3DPX+dP3+yKX
-         ROusE4YeJT4cVzU+K8MYz96BljmWIdtJ4HuB9/BgDhjxhYPDGT9OUp0VhAxFbSPCyCJz
-         DYeUCyUbDI2Esf8lS0dCx3esOjAXoE4j9oDYLRJMVAOtEtegY53K58fX77sPIETx8NZO
-         JuHNAesgnTu5m+RsUsU2DJ5hVSNRke6vMLvbfwGKTfX1Qwu/jUJ7of6sDfo5LButNPCA
-         FYZg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=k5HKd5Dvm+PlmQWNtjdNQ6J81HIZ/9KCp/3Jwtpcssc=;
+        b=ddobrC7lYIkh7S1IKtscl3NNuKCvcMX6IEgHPwvFIZFbsHW4OfZYYazaUnaKzPRVIK
+         CKU55gIYVcM/9FHaGMvlFxzC1r2huOZ8mjBXjYP2CWqxDyBuXsEVCDxmxIDIPeExSJRY
+         OghIyHdkCsSD8KXiWcdXiLtCydIbCHHOJ+Lb6BoSfkNj1gTQ/Q2qLc0SZ1uyUZ5hI9c1
+         hRx8Knlort1CVMhBFspVp7+clQ3/KKbWBawK1lA2CaHxeKLV3Oo5OsCSZIrmkPNtN/ju
+         vLkN1t2T0QuvTehhSdKZWoUV34OHlS9pT6FncMqh6nWdXKqMLIH4i8YFAtqH5RnZY2R+
+         h7hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zk46YEU8AFrJPMd2DZK0YXhrQs/eaI3r0nLePqJ0ljY=;
-        b=VX7AGb08uW4nT76HZ89Foyh533wdTHTc5pY5CL469pjjhLFHuKK6y77qBKMMp+v74n
-         MP2BL92lMUn0m4b409rDA3upH7YlFYbYbcVWVYKLq20uexOF3tcrRyODuF9ARUAwwEYs
-         fIri2SNszwAIkGGPLGddd/+PmqSIlr+0juOCXE2KB9BkSXNy4/w9VSW+1O35cDp4E7LL
-         8/65dAO8ExX4lQ1ZXPT1+QJJaqn+xsqfuaNcUIBdz3j7VLIcyWZ/5B3V5S6sCKGg7Fu7
-         qYvtPj2eX3mPZw9OdKfxv7DmKdUN07zNAT/Tx2O7oVSjspUHSrWSDJUIHRBisgOa4Vjv
-         R4Cw==
-X-Gm-Message-State: AOAM532FA1RJgdduZlasvhifdkc/ZriefIBgJ9zLf7dSDCNBUubLRFSw
-        izmQGL3cQTJMM3Skg7CqqysSicLfyBH/e/TshA6/Kw==
-X-Google-Smtp-Source: ABdhPJyy1bxdUdOPXMnQ5eKDGPZT8n6dCCKjJ9rZMIhGQSyK/ZSc4sXbGHMHJl0Se48FIReMKBaaBIn4QgIzJEXOaiw=
-X-Received: by 2002:a2e:b60e:: with SMTP id r14mr223627ljn.77.1603120379795;
- Mon, 19 Oct 2020 08:12:59 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k5HKd5Dvm+PlmQWNtjdNQ6J81HIZ/9KCp/3Jwtpcssc=;
+        b=QLJH0N5iYavCDQGU93EjTK0dzExOrh+lnybbOB1lVOS4dLkTFuA4n8HgZeX63jWMWm
+         agHjOqbgmO9xNe36NwTzn71EgQwhKBXr+mM+YlzoPrq+GNvpqA+Kkamgspc3T8gJOxQd
+         acCZKOflFGKuBc5BAm40FWqDJYu6PlYiG2L6/QM4PRplEb0SzlV5/oUu1vZiziRA8jKv
+         WOGSguLAlStCldZZ/Q6irngiNeUw3XZb1dROv5CkcGOLwzufjK5IFDCrfgccHNjibTKN
+         mnR3X3x1f+zFWElPJo4hMTP0L4fm6ZXr/UXPUALQUO1lN4u8HxHmCEduQgVQiDbc7YpL
+         N2uA==
+X-Gm-Message-State: AOAM530/7lwyBuw/68X7PSpiXN+Ri0dI0H0PgXcHsPET/QrL/8BF5X2T
+        ziRhWKbFLgdbXiBBHo1mN9U=
+X-Google-Smtp-Source: ABdhPJwkNiFb2lN6FLk3b7+NSS9qfzUjlDcr/p+hf7yimWmeWx7m0sBipByrZWa1e5cRwwxLpQM3Ig==
+X-Received: by 2002:a17:906:8c6:: with SMTP id o6mr369350eje.304.1603120474210;
+        Mon, 19 Oct 2020 08:14:34 -0700 (PDT)
+Received: from debian64.daheim (pd9e29b8a.dip0.t-ipconnect.de. [217.226.155.138])
+        by smtp.gmail.com with ESMTPSA id a19sm11494812edb.84.2020.10.19.08.14.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 08:14:33 -0700 (PDT)
+Received: from localhost.daheim ([127.0.0.1])
+        by debian64.daheim with esmtp (Exim 4.94)
+        (envelope-from <chunkeey@gmail.com>)
+        id 1kUWro-0009z5-4Z; Mon, 19 Oct 2020 17:14:32 +0200
+Subject: Re: [PATCH] wireless: remove unneeded break
+To:     trix@redhat.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, ath9k-devel@qca.qualcomm.com,
+        johannes.berg@intel.com, emmanuel.grumbach@intel.com,
+        luciano.coelho@intel.com, linuxwifi@intel.com,
+        chunkeey@googlemail.com, pkshih@realtek.com, sara.sharon@intel.com,
+        tova.mussai@intel.com, nathan.errera@intel.com,
+        lior2.cohen@intel.com, john@phrozen.org, shaul.triebitz@intel.com,
+        shahar.s.matityahu@intel.com, Larry.Finger@lwfinger.net,
+        zhengbin13@huawei.com, christophe.jaillet@wanadoo.fr,
+        yanaijie@huawei.com, joe@perches.com, saurav.girepunje@gmail.com
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20201019150507.20574-1-trix@redhat.com>
+From:   Christian Lamparter <chunkeey@gmail.com>
+Message-ID: <b31478ea-979a-1c9c-65db-32325233a715@gmail.com>
+Date:   Mon, 19 Oct 2020 17:14:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-References: <20201013153504.92602-1-songmuchun@bytedance.com>
-In-Reply-To: <20201013153504.92602-1-songmuchun@bytedance.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 19 Oct 2020 08:12:48 -0700
-Message-ID: <CALvZod49YJkG7z+Bnben2pUbw=TyXrHJE1wWt9HbY_85oNpXNA@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: Remove unused mod_memcg_obj_state()
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Chris Down <chris@chrisdown.name>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201019150507.20574-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 8:36 AM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> Since commit:
->
->   991e7673859e ("mm: memcontrol: account kernel stack per node")
->
-> There is no user of the mod_memcg_obj_state(). This patch just remove
-> it. Also rework type of the idx parameter of the mod_objcg_state()
-> from int to enum node_stat_item.
->
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+On 19/10/2020 17:05, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> A break is not needed if it is preceded by a return or goto
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> diff --git a/drivers/net/wireless/intersil/p54/eeprom.c b/drivers/net/wireless/intersil/p54/eeprom.c
+> index 5bd35c147e19..3ca9d26df174 100644
+> --- a/drivers/net/wireless/intersil/p54/eeprom.c
+> +++ b/drivers/net/wireless/intersil/p54/eeprom.c
+> @@ -870,7 +870,6 @@ int p54_parse_eeprom(struct ieee80211_hw *dev, void *eeprom, int len)
+>   			} else {
+>   				goto good_eeprom;
+>   			}
+> -			break;
+Won't the compiler (gcc) now complain about a missing fallthrough annotation?
+>   		default:
+>   			break;
+>   		}
+
+Cheers,
+Christian
