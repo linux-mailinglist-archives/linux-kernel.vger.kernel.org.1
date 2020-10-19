@@ -2,60 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C696C2926BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6E42926C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbgJSLwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:52:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726015AbgJSLwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:52:39 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C6302080D;
-        Mon, 19 Oct 2020 11:52:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603108358;
-        bh=JnT9sHQRIZ3jZpGC9ANCu7yXrVu9WDXvQ3urEiT7Vxk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eBN01PXE0XDenSuu6kOiyfxPJAv9vezu+f1ivm25Ec1241EK3EIHJIndkXL+8Wvv/
-         IEiUi0DttLAlHXku3dDWgnrpXwdDlehYkPU280YGE808uhi/clwVc9OvlOMVCHa0Qm
-         gff2Oac3+VltTgwVx4SbviQ/cZyun8Nea/Z8hdCE=
-Date:   Mon, 19 Oct 2020 07:52:36 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.9 035/111] ipv6/icmp: l3mdev: Perform icmp
- error route lookup on source device routing table (v2)
-Message-ID: <20201019115236.GA4060117@sasha-vm>
-References: <20201018191807.4052726-1-sashal@kernel.org>
- <20201018191807.4052726-35-sashal@kernel.org>
- <20201018124004.5f8c50a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <842ae8c4-44ef-2005-18d5-80e00c140107@gmail.com>
+        id S1728343AbgJSLxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728310AbgJSLxT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 07:53:19 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9A4C0613D4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 04:53:19 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id g16so5191105pjv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 04:53:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Z+gSYblY8NkfGQSbLmozzDZs5asdwzWvh7768mPtO9s=;
+        b=XS3BOfhZ6wpZ3SMcTCdY3IDH1ZiebSfGZrpaWC9+0LAgJJNQo8svsFA8sO+qY6PSYy
+         idJ46N5+9XeShGyWx8qztUtORYmY4zjtfevrMsfE+KXotYYP2Zs+oGykadbXmS0Q12Mp
+         VxZnB7TVoNhzQInNf92GjTO/UX4bOW8eFMQdzhp0FYyp5OdH5Kf/aXzkborNUpiLGo1M
+         7rBH5YvE3cZddYbF2Hr5Rwipf4jfND0ou0BqFtIJ3qgzbv1XDXswWExOOQvOTHaWYqnH
+         +SdZWjvYJdlC7/ItG69n5NDRtjZsZVsLpW8jWkvNqW7zqvoAhGe7RbhJNWvB426dX9oS
+         k7Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Z+gSYblY8NkfGQSbLmozzDZs5asdwzWvh7768mPtO9s=;
+        b=Zy/rox/Wt22qlIN+bjPu68MHAzPDmzX/7QUh52pUaLfNkcMUWNRo1lgngUbJLUpirD
+         bXvFWtACUZ0l5JJ9sKtjed1xhB8nJa6l+E0j/q5Q/7k2NROpycZayxbWT+s3jYws6dhl
+         rviDytHNSUV+vnOpANG53XoGWzyHWN+il1RDqjc3UL4hqDoQ4CYhvkGpouqzn8YkGx8f
+         rW5ikZhjdGW6ccRn5YeIG6pYowhjfuK7yz/XOKkI2CLFWjXxvyNwOtBvvubv/66ZwTjl
+         4ROamL+1wqVNZC5HItsef2cphym8NlZnKlU6SPMGyrStCF5W21RDgQjiQLMhkpyAuNZc
+         lNlA==
+X-Gm-Message-State: AOAM532l6UQfNaJa0i78JDbQR/myOdViZcf3+eds9SeIg1B5f1vLBwqR
+        yHrmVDYxKxoU/21uFNTIrW36SgRc1vsBcg==
+X-Google-Smtp-Source: ABdhPJzHdRjYha/PRBdIpAk/bNTVr/5NFo87H+jbEReoGLJsabSjJJvfuRujXvEVRCDVeMv7X1y96A==
+X-Received: by 2002:a17:902:b283:b029:d3:d779:94fd with SMTP id u3-20020a170902b283b02900d3d77994fdmr16297318plr.8.1603108398506;
+        Mon, 19 Oct 2020 04:53:18 -0700 (PDT)
+Received: from nebulus.mtv.corp.google.com ([2620:15c:211:200:4a0f:cfff:fe35:d61b])
+        by smtp.gmail.com with ESMTPSA id w68sm12128099pfb.108.2020.10.19.04.53.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 04:53:17 -0700 (PDT)
+From:   Mark Salyzyn <salyzyn@android.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, Mark Salyzyn <salyzyn@android.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-security-module@vger.kernel.org,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Amir Goldstein <amir73il@gmail.com>, linux-doc@vger.kernel.org,
+        John Stultz <john.stultz@linaro.org>
+Subject: [PATCH v16 2/4] overlayfs: handle XATTR_NOSECURITY flag for get xattr method
+Date:   Mon, 19 Oct 2020 04:52:37 -0700
+Message-Id: <20201019115239.2732422-3-salyzyn@android.com>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+In-Reply-To: <20201019115239.2732422-1-salyzyn@android.com>
+References: <20201019115239.2732422-1-salyzyn@android.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <842ae8c4-44ef-2005-18d5-80e00c140107@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 07:40:12PM -0600, David Ahern wrote:
->On 10/18/20 1:40 PM, Jakub Kicinski wrote:
->> This one got applied a few days ago, and the urgency is low so it may be
->> worth letting it see at least one -rc release ;)
->
->agreed
+Because of the overlayfs getxattr recursion, the incoming inode fails
+to update the selinux sid resulting in avc denials being reported
+against a target context of u:object_r:unlabeled:s0.
 
-Definitely - AUTOSEL patches get extra soaking time before getting
-queued up. This is more of a request to make sure it's not doing
-anything silly.
+Solution is to respond to the XATTR_NOSECURITY flag in get xattr
+method that calls the __vfs_getxattr handler instead so that the
+context can be read in, rather than being denied with an -EACCES
+when vfs_getxattr handler is called.
 
+For the use case where access is to be blocked by the security layer.
+
+The path then would be security(dentry) ->
+__vfs_getxattr({dentry...XATTR_NOSECURITY}) ->
+handler->get({dentry...XATTR_NOSECURITY}) ->
+__vfs_getxattr({realdentry...XATTR_NOSECURITY}) ->
+lower_handler->get({realdentry...XATTR_NOSECURITY}) which
+would report back through the chain data and success as expected,
+the logging security layer at the top would have the data to
+determine the access permissions and report back to the logs and
+the caller that the target context was blocked.
+
+For selinux this would solve the cosmetic issue of the selinux log
+and allow audit2allow to correctly report the rule needed to address
+the access problem.
+
+Check impure, opaque, origin & meta xattr with no sepolicy audit
+(using __vfs_getxattr) since these operations are internal to
+overlayfs operations and do not disclose any data.  This became
+an issue for credential override off since sys_admin would have
+been required by the caller; whereas would have been inherently
+present for the creator since it performed the mount.
+
+This is a change in operations since we do not check in the new
+ovl_do_getxattr function if the credential override is off or not.
+Reasoning is that the sepolicy check is unnecessary overhead,
+especially since the check can be expensive.
+
+Because for override credentials off, this affects _everyone_ that
+underneath performs private xattr calls without the appropriate
+sepolicy permissions and sys_admin capability.  Providing blanket
+support for sys_admin would be bad for all possible callers.
+
+For the override credentials on, this will affect only the mounter,
+should it lack sepolicy permissions. Not considered a security
+problem since mounting by definition has sys_admin capabilities,
+but sepolicy contexts would still need to be crafted.
+
+It should be noted that there is precedence, __vfs_getxattr is used
+in other filesystems for their own internal trusted xattr management.
+
+Signed-off-by: Mark Salyzyn <salyzyn@android.com>
+To: linux-fsdevel@vger.kernel.org
+To: linux-unionfs@vger.kernel.org
+Cc: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-security-module@vger.kernel.org
+Cc: kernel-team@android.com
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Amir Goldstein <amir73il@gmail.com>
+Cc: linux-doc@vger.kernel.org
+Cc: John Stultz <john.stultz@linaro.org>
+
+v16 - rebase and merge internal getxattr operations patch
+
+v15 - revert to v13 because xattr_gs_args rejected.
+
+v14 - rebase to use xattr_gs_args.
+
+v13 - rebase to use __vfs_getxattr flags option.
+
+v12 - Added back to patch series as get xattr with flag option.
+
+v11 - Squashed out of patch series and replaced with per-thread flag
+      solution.
+
+v10 - Added to patch series as __get xattr method.
+---
+ fs/overlayfs/inode.c     | 5 +++--
+ fs/overlayfs/overlayfs.h | 4 ++--
+ fs/overlayfs/super.c     | 4 ++--
+ 3 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+index b584dca845ba..2b14291beb86 100644
+--- a/fs/overlayfs/inode.c
++++ b/fs/overlayfs/inode.c
+@@ -378,7 +378,7 @@ int ovl_xattr_set(struct dentry *dentry, struct inode *inode, const char *name,
+ }
+ 
+ int ovl_xattr_get(struct dentry *dentry, struct inode *inode, const char *name,
+-		  void *value, size_t size)
++		  void *value, size_t size, int flags)
+ {
+ 	ssize_t res;
+ 	const struct cred *old_cred;
+@@ -386,7 +386,8 @@ int ovl_xattr_get(struct dentry *dentry, struct inode *inode, const char *name,
+ 		ovl_i_dentry_upper(inode) ?: ovl_dentry_lower(dentry);
+ 
+ 	old_cred = ovl_override_creds(dentry->d_sb);
+-	res = vfs_getxattr(realdentry, name, value, size);
++	res = __vfs_getxattr(realdentry, d_inode(realdentry), name,
++			     value, size, flags);
+ 	revert_creds(old_cred);
+ 	return res;
+ }
+diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
+index f8880aa2ba0e..3033f0c4de5f 100644
+--- a/fs/overlayfs/overlayfs.h
++++ b/fs/overlayfs/overlayfs.h
+@@ -184,7 +184,7 @@ static inline ssize_t ovl_do_getxattr(struct ovl_fs *ofs, struct dentry *dentry,
+ 				      size_t size)
+ {
+ 	const char *name = ovl_xattr(ofs, ox);
+-	return vfs_getxattr(dentry, name, value, size);
++	return __vfs_getxattr(dentry, name, value, size, XATTR_NOSECURITY);
+ }
+ 
+ static inline int ovl_do_setxattr(struct ovl_fs *ofs, struct dentry *dentry,
+@@ -439,7 +439,7 @@ int ovl_permission(struct inode *inode, int mask);
+ int ovl_xattr_set(struct dentry *dentry, struct inode *inode, const char *name,
+ 		  const void *value, size_t size, int flags);
+ int ovl_xattr_get(struct dentry *dentry, struct inode *inode, const char *name,
+-		  void *value, size_t size);
++		  void *value, size_t size, int flags);
+ ssize_t ovl_listxattr(struct dentry *dentry, char *list, size_t size);
+ struct posix_acl *ovl_get_acl(struct inode *inode, int type);
+ int ovl_update_time(struct inode *inode, struct timespec64 *ts, int flags);
+diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+index f41353ba1e68..d447958badc2 100644
+--- a/fs/overlayfs/super.c
++++ b/fs/overlayfs/super.c
+@@ -930,7 +930,7 @@ ovl_posix_acl_xattr_get(const struct xattr_handler *handler,
+ 			struct dentry *dentry, struct inode *inode,
+ 			const char *name, void *buffer, size_t size, int flags)
+ {
+-	return ovl_xattr_get(dentry, inode, handler->name, buffer, size);
++	return ovl_xattr_get(dentry, inode, handler->name, buffer, size, flags);
+ }
+ 
+ static int __maybe_unused
+@@ -1012,7 +1012,7 @@ static int ovl_other_xattr_get(const struct xattr_handler *handler,
+ 			       const char *name, void *buffer, size_t size,
+ 			       int flags)
+ {
+-	return ovl_xattr_get(dentry, inode, name, buffer, size);
++	return ovl_xattr_get(dentry, inode, name, buffer, size, flags);
+ }
+ 
+ static int ovl_other_xattr_set(const struct xattr_handler *handler,
 -- 
-Thanks,
-Sasha
+2.29.0.rc1.297.gfa9743e501-goog
+
