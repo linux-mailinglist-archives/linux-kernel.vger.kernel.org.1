@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F97C292F89
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE708292F8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731810AbgJSUf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:35:59 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:56518 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731714AbgJSUf6 (ORCPT
+        id S1729029AbgJSUjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:39:02 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:33822 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbgJSUjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:35:58 -0400
-Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09JKUmxH027004;
-        Mon, 19 Oct 2020 20:35:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pps0720;
- bh=2LS0LsGZahfJhbJjbIE39ei2BmedNdC5yuafNBCSBVU=;
- b=Y2cqiUj2Vynp/6Li0FurCdSJMUa9a90xij1ZfgWE6X8l00VuCbvwuPMTPH6/GpPx0zNW
- zb0ILkL4oUFbl753XL9iOV3fcyj3BP9gewsFBbPq//9CgoIPioPG85RstrYBdvG9BuPC
- n4UzznymEoLQNIZRcw6JsBXtzYEriQUd6ZRkx53HiAOcAVR+epktmK0pyaX1Z0v5WL/F
- LMQs3s8BLvhlCix79nzfLDT/U+DB1LUvL6xatPq7bP+v7VYrsw55nvnz3+FEkQFM0l5L
- mjygVAyJVevK8I4Vv17AlOEtWBGSDFSzyH5jQ0hy/LW10KQIs+Kcbkee6o7yNQjz6v8i kg== 
-Received: from g2t2353.austin.hpe.com (g2t2353.austin.hpe.com [15.233.44.26])
-        by mx0b-002e3701.pphosted.com with ESMTP id 347swnusbp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Oct 2020 20:35:36 +0000
-Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
-        by g2t2353.austin.hpe.com (Postfix) with ESMTP id 38BF882;
-        Mon, 19 Oct 2020 20:35:35 +0000 (UTC)
-Received: from swahl-home.5wahls.com (unknown [16.214.129.62])
-        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id DCE233D;
-        Mon, 19 Oct 2020 20:35:33 +0000 (UTC)
-Date:   Mon, 19 Oct 2020 15:35:33 -0500
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Steve Wahl <steve.wahl@hpe.com>, Robin Holt <robinmholt@gmail.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Russ Anderson <russ.anderson@hpe.com>
-Subject: [PATCH] MAINTAINERS: Some SGI-related cleanup
-Message-ID: <20201019203533.GA1203217@swahl-home.5wahls.com>
+        Mon, 19 Oct 2020 16:39:02 -0400
+Received: by mail-ot1-f66.google.com with SMTP id d28so1074703ote.1;
+        Mon, 19 Oct 2020 13:39:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DYddQU4UmJhBV2hj39VvFU9j8HHrjFAVMCOmBvcqf8Y=;
+        b=N80Kb0EQpWrrsqa0eFxGxCP7TBXMmEOKXbBxV9zqmRh6MWlFEVZIdY7LXOnyN7vBiR
+         XbTfMwvSbL4SU20mp43VuRN9ytSmZnNfxJNfY1YqmAHn0dxoEGQ1EvBgcF3+aonIyCUB
+         o5iAtWESFaSq/9If2bC/rp1SPwZkU7mTN4VjYcV8t4NdNSSty5/4SZ7zOnVZs5w9/ixr
+         zcD1od30IjoNaPGDynVhH4b8k6DDdV1RjmBZqmk+KcplAQnOQfyZt2B4LAKebcnIhiw1
+         +7tz4jSK6m4m0qoxx2hkDS9g3kf7GbFC7OVdW7QqDKkfQZfNq74leDc9V5M55UF0tHkd
+         1PwA==
+X-Gm-Message-State: AOAM5336/I+gU0Y8NRrOKpmpIaBOpAK50zftqekfMt8DDAL+xta9Iy37
+        zhf5Vkb6KXtqYTQJkSwx4/BGYlHPgbyMKkFuTHIyurE4
+X-Google-Smtp-Source: ABdhPJzo/A8cCQDUetrDham0YsV5hx820o5oRYgmq+rK4MamFGbepXPxBDVlI0fTf7F0MjJT4sePqXyMofhxY8CcAd4=
+X-Received: by 2002:a9d:3b76:: with SMTP id z109mr1263426otb.250.1603139941234;
+ Mon, 19 Oct 2020 13:39:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email 2.26.2
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-19_10:2020-10-16,2020-10-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 impostorscore=0 mlxscore=0 priorityscore=1501 adultscore=0
- malwarescore=0 suspectscore=0 phishscore=0 spamscore=0 clxscore=1015
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010190139
+References: <20201019113240.11516-1-geert@linux-m68k.org> <1968b7a6-a553-c882-c386-4b4fde2d7a87@tessares.net>
+In-Reply-To: <1968b7a6-a553-c882-c386-4b4fde2d7a87@tessares.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 19 Oct 2020 22:38:49 +0200
+Message-ID: <CAMuHMdUDpVVejmrr3ayxnN=tgHrgDmUCVMG0VJht1Y-FUUv42Q@mail.gmail.com>
+Subject: Re: [PATCH] mptcp: MPTCP_KUNIT_TESTS should depend on MPTCP instead
+ of selecting it
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, mptcp@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UV platforms are the only ones who currently use the XP/XPC/XPNET
-Driver, so it seems fair HPE should take some responsibility as
-maintainers of it; so add Mike Travis and Steve Wahl.  Cliff
-Whickman's email address is no longer valid, so remove it. Robin Holt
-was contacted and wishes to remain as a maintainer.
+Hi Matthieu,
 
-Update Dimitri Sivanich's email address for the SGI GRU driver.
+On Mon, Oct 19, 2020 at 5:47 PM Matthieu Baerts
+<matthieu.baerts@tessares.net> wrote:
+> On 19/10/2020 13:32, Geert Uytterhoeven wrote:
+> > MPTCP_KUNIT_TESTS selects MPTCP, thus enabling an optional feature the
+> > user may not want to enable.  Fix this by making the test depend on
+> > MPTCP instead.
+>
+> I think the initial intension was to select MPTCP to have an easy way to
+> enable all KUnit tests. We imitated what was and is still done in
+> fs/ext4/Kconfig.
+>
+> But it probably makes sense to depend on MPTCP instead of selecting it.
+> So that's fine for me. But then please also send a patch to ext4
+> maintainer to do the same there.
 
-Add Mike Travis to HPE Superdome Flex (UV) platform.
+Thanks, good point.  I didn't notice, as I did have ext4 enabled anyway.
+Will send a patch for ext4.  Looks like ext4 and MPTCP where the only
+test modules selecting their dependencies.
 
-Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
-Acked-By: Robin Holt <robinmholt@gmail.com>
-Cc: Mike Travis <mike.travis@hpe.com>
-Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
----
+> Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 
-Third sending: increase distribution list.  Someday I may get this
-right the first time.  (My appologies if you've seen this thrice.)
+Thanks!
 
-Second sending was due to a Return-Path: problem with my email config. My
-apologies if you've seen this twice.
----
- MAINTAINERS | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9350506a1127..3a18b48a5221 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15671,13 +15671,14 @@ F:	include/linux/sfp.h
- K:	phylink\.h|struct\s+phylink|\.phylink|>phylink_|phylink_(autoneg|clear|connect|create|destroy|disconnect|ethtool|helper|mac|mii|of|set|start|stop|test|validate)
- 
- SGI GRU DRIVER
--M:	Dimitri Sivanich <sivanich@sgi.com>
-+M:	Dimitri Sivanich <dimitri.sivanich@hpe.com>
- S:	Maintained
- F:	drivers/misc/sgi-gru/
- 
- SGI XP/XPC/XPNET DRIVER
--M:	Cliff Whickman <cpw@sgi.com>
- M:	Robin Holt <robinmholt@gmail.com>
-+M:	Steve Wahl <steve.wahl@hpe.com>
-+R:	Mike Travis <mike.travis@hpe.com>
- S:	Maintained
- F:	drivers/misc/sgi-xp/
- 
-@@ -18905,6 +18906,7 @@ F:	arch/x86/platform
- 
- X86 PLATFORM UV HPE SUPERDOME FLEX
- M:	Steve Wahl <steve.wahl@hpe.com>
-+R:	Mike Travis <mike.travis@hpe.com>
- R:	Dimitri Sivanich <dimitri.sivanich@hpe.com>
- R:	Russ Anderson <russ.anderson@hpe.com>
- S:	Supported
+                        Geert
+
 -- 
-2.26.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
