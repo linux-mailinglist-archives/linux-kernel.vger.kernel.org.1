@@ -2,388 +2,782 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1ADA292120
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2395D292123
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730793AbgJSCZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 22:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730740AbgJSCZL (ORCPT
+        id S1730850AbgJSC0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 22:26:46 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:38373 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730740AbgJSC0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 22:25:11 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1116EC061755
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 19:25:10 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id a17so4493569pju.1
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 19:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oycxUIbLy+GIbZrwsw2OQtaFMAps2/oYqPAOhn7npOA=;
-        b=nyHrX6Bz4WwkqbqiR/vRLgDN5Nf2qD+eCq/9RPg69Z+QDLI3x3zRHiK2coez0exlv6
-         zdHELzx/XATemLh2Q2AzRWCPBzw+46geJ9K+P99PzY2InT4dguRLN6KrFiXrxnkqU4WX
-         8yRXFTLV4qkK4Kp1C3xTjMApVgGns6nZYWGsAcMNY6vQIphSydfEX6Ea/dnPK/F9Cur6
-         P8CTuTWQ1iWdEkEM0vREzQmH6Z0VEWL746fqxnWZzcNK70UX857l0NwM1ZTpjirWYqzM
-         rZROGJ2BE0TI+r/g8IA/2sfI59Uxeuw6+qBVrNvTzkXgb8DMDsVh8DIq4sdg2SHPo6FN
-         i7Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oycxUIbLy+GIbZrwsw2OQtaFMAps2/oYqPAOhn7npOA=;
-        b=iwemtqCD61IH0wVEseDMS4wvzhWQBLlZnMnHgxISvRsc5x6sbTIOG2syfkGmJgK8G9
-         TEtQJEIS58k5k97FdWCHbt14yS4iLE95Yq9A9kMOzFKtbNnRpZSSzTjyScRIGI4bbBdQ
-         zx0/MGIeKdH9BevZq6g7Vpk2e0OpThu64AT9V4J0Lml9GD69rJx2dwQ2FWikn5J+Lp3G
-         xErHCILFJSlGxa4AeK4h2otOQ8LvCYxWD0DBMFJ/z+Z8vTYwSR3IB0AVJGcuRUSHufXd
-         zoW8IYnPBfw3UhBBl3xqxRdAIu+lz86msEbzLjjiNr7LOF26qGUqIdU9egAg3t0SK/8o
-         hHaA==
-X-Gm-Message-State: AOAM5330Tz5pernMB+lizMBPKVs16BQ5gLQlx2Jacza+9R/wDRK4h4sO
-        OqH10+M4wN5blpmqOl+Rz1iHxLdBlRC/GL8H
-X-Google-Smtp-Source: ABdhPJxPKX080BiV5v4tnkaa4400x4k3rK1j5sWpdbJiqRkeH+/9Uq3FM5Vb9dMKmDOh5ZtI6PGX5A==
-X-Received: by 2002:a17:902:bb8c:b029:d2:2503:e458 with SMTP id m12-20020a170902bb8cb02900d22503e458mr14936892pls.18.1603074309433;
-        Sun, 18 Oct 2020 19:25:09 -0700 (PDT)
-Received: from [192.168.10.88] (124-171-83-152.dyn.iinet.net.au. [124.171.83.152])
-        by smtp.gmail.com with UTF8SMTPSA id fh19sm6948594pjb.38.2020.10.18.19.25.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Oct 2020 19:25:08 -0700 (PDT)
-Subject: Re: [PATCH 8/9] dma-mapping: move large parts of <linux/dma-direct.h>
- to kernel/dma
-To:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org
-Cc:     linux-arch@vger.kernel.org, Sekhar Nori <nsekhar@ti.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <20200930085548.920261-1-hch@lst.de>
- <20200930085548.920261-9-hch@lst.de>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Message-ID: <afaf49d9-5465-4b1a-dac1-91688ba4abbf@ozlabs.ru>
-Date:   Mon, 19 Oct 2020 13:25:02 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:82.0) Gecko/20100101
- Thunderbird/82.0
+        Sun, 18 Oct 2020 22:26:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UCPnUdK_1603074391;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCPnUdK_1603074391)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 19 Oct 2020 10:26:31 +0800
+Date:   Mon, 19 Oct 2020 10:26:30 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: Re: [PATCH v1 25/29] virtio-mem: Big Block Mode (BBM) memory hotplug
+Message-ID: <20201019022630.GB54484@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-26-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200930085548.920261-9-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012125323.17509-26-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 30/09/2020 18:55, Christoph Hellwig wrote:
-> Most of the dma_direct symbols should only be used by direct.c and
-> mapping.c, so move them to kernel/dma.  In fact more of dma-direct.h
-> should eventually move, but that will require more coordination with
-> other subsystems.
-
-Because of this change, 
-http://patchwork.ozlabs.org/project/linuxppc-dev/patch/20200713062348.100552-1-aik@ozlabs.ru/ 
-does not work anymore.
-
-Should I send a patch moving 
-dma_direct_map_sg/dma_direct_map_page/+unmap back to include/ or there 
-is a better idea? thanks,
-
-
+On Mon, Oct 12, 2020 at 02:53:19PM +0200, David Hildenbrand wrote:
+>Currently, we do not support device block sizes that exceed the Linux
+>memory block size. For example, having a device block size of 1 GiB (e.g.,
+>gigantic pages in the hypervisor) won't work with 128 MiB Linux memory
+>blocks.
+>
+>Let's implement Big Block Mode (BBM), whereby we add/remove at least
+>one Linux memory block at a time. With a 1 GiB device block size, a Big
+>Block (BB) will cover 8 Linux memory blocks.
+>
+>We'll keep registering the online_page_callback machinery, it will be used
+>for safe memory hotunplug in BBM next.
+>
+>Note: BBM is properly prepared for variable-sized Linux memory
+>blocks that we might see in the future. So we won't care how many Linux
+>memory blocks a big block actually spans, and how the memory notifier is
+>called.
+>
+>Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>Cc: Jason Wang <jasowang@redhat.com>
+>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>Cc: Michal Hocko <mhocko@kernel.org>
+>Cc: Oscar Salvador <osalvador@suse.de>
+>Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+>Cc: Andrew Morton <akpm@linux-foundation.org>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
+>---
+> drivers/virtio/virtio_mem.c | 484 ++++++++++++++++++++++++++++++------
+> 1 file changed, 402 insertions(+), 82 deletions(-)
+>
+>diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>index e68d0d99590c..4d396ef98a92 100644
+>--- a/drivers/virtio/virtio_mem.c
+>+++ b/drivers/virtio/virtio_mem.c
+>@@ -30,12 +30,18 @@ MODULE_PARM_DESC(unplug_online, "Try to unplug online memory");
+> /*
+>  * virtio-mem currently supports the following modes of operation:
+>  *
+>- * * Sub Block Mode (SBM): A Linux memory block spans 1..X subblocks (SB). The
+>+ * * Sub Block Mode (SBM): A Linux memory block spans 2..X subblocks (SB). The
+>  *   size of a Sub Block (SB) is determined based on the device block size, the
+>  *   pageblock size, and the maximum allocation granularity of the buddy.
+>  *   Subblocks within a Linux memory block might either be plugged or unplugged.
+>  *   Memory is added/removed to Linux MM in Linux memory block granularity.
+>  *
+>+ * * Big Block Mode (BBM): A Big Block (BB) spans 1..X Linux memory blocks.
+>+ *   Memory is added/removed to Linux MM in Big Block granularity.
+>+ *
+>+ * The mode is determined automatically based on the Linux memory block size
+>+ * and the device block size.
+>+ *
+>  * User space / core MM (auto onlining) is responsible for onlining added
+>  * Linux memory blocks - and for selecting a zone. Linux Memory Blocks are
+>  * always onlined separately, and all memory within a Linux memory block is
+>@@ -61,6 +67,19 @@ enum virtio_mem_sbm_mb_state {
+> 	VIRTIO_MEM_SBM_MB_COUNT
+> };
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   include/linux/dma-direct.h | 106 ---------------------------------
->   kernel/dma/direct.c        |   2 +-
->   kernel/dma/direct.h        | 119 +++++++++++++++++++++++++++++++++++++
->   kernel/dma/mapping.c       |   2 +-
->   4 files changed, 121 insertions(+), 108 deletions(-)
->   create mode 100644 kernel/dma/direct.h
+>+/*
+>+ * State of a Big Block (BB) in BBM, covering 1..X Linux memory blocks.
+>+ */
+>+enum virtio_mem_bbm_bb_state {
+>+	/* Unplugged, not added to Linux. Can be reused later. */
+>+	VIRTIO_MEM_BBM_BB_UNUSED = 0,
+>+	/* Plugged, not added to Linux. Error on add_memory(). */
+>+	VIRTIO_MEM_BBM_BB_PLUGGED,
+>+	/* Plugged and added to Linux. */
+>+	VIRTIO_MEM_BBM_BB_ADDED,
+>+	VIRTIO_MEM_BBM_BB_COUNT
+>+};
+>+
+> struct virtio_mem {
+> 	struct virtio_device *vdev;
 > 
-> diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
-> index 38ed3b55034d50..a2d6640c42c04e 100644
-> --- a/include/linux/dma-direct.h
-> +++ b/include/linux/dma-direct.h
-> @@ -120,114 +120,8 @@ struct page *dma_direct_alloc_pages(struct device *dev, size_t size,
->   void dma_direct_free_pages(struct device *dev, size_t size,
->   		struct page *page, dma_addr_t dma_addr,
->   		enum dma_data_direction dir);
-> -int dma_direct_get_sgtable(struct device *dev, struct sg_table *sgt,
-> -		void *cpu_addr, dma_addr_t dma_addr, size_t size,
-> -		unsigned long attrs);
-> -bool dma_direct_can_mmap(struct device *dev);
-> -int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
-> -		void *cpu_addr, dma_addr_t dma_addr, size_t size,
-> -		unsigned long attrs);
->   int dma_direct_supported(struct device *dev, u64 mask);
-> -bool dma_direct_need_sync(struct device *dev, dma_addr_t dma_addr);
-> -int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
-> -		enum dma_data_direction dir, unsigned long attrs);
->   dma_addr_t dma_direct_map_resource(struct device *dev, phys_addr_t paddr,
->   		size_t size, enum dma_data_direction dir, unsigned long attrs);
-> -size_t dma_direct_max_mapping_size(struct device *dev);
->   
-> -#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
-> -    defined(CONFIG_SWIOTLB)
-> -void dma_direct_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
-> -		int nents, enum dma_data_direction dir);
-> -#else
-> -static inline void dma_direct_sync_sg_for_device(struct device *dev,
-> -		struct scatterlist *sgl, int nents, enum dma_data_direction dir)
-> -{
-> -}
-> -#endif
-> -
-> -#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) || \
-> -    defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) || \
-> -    defined(CONFIG_SWIOTLB)
-> -void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
-> -		int nents, enum dma_data_direction dir, unsigned long attrs);
-> -void dma_direct_sync_sg_for_cpu(struct device *dev,
-> -		struct scatterlist *sgl, int nents, enum dma_data_direction dir);
-> -#else
-> -static inline void dma_direct_unmap_sg(struct device *dev,
-> -		struct scatterlist *sgl, int nents, enum dma_data_direction dir,
-> -		unsigned long attrs)
-> -{
-> -}
-> -static inline void dma_direct_sync_sg_for_cpu(struct device *dev,
-> -		struct scatterlist *sgl, int nents, enum dma_data_direction dir)
-> -{
-> -}
-> -#endif
-> -
-> -static inline void dma_direct_sync_single_for_device(struct device *dev,
-> -		dma_addr_t addr, size_t size, enum dma_data_direction dir)
-> -{
-> -	phys_addr_t paddr = dma_to_phys(dev, addr);
-> -
-> -	if (unlikely(is_swiotlb_buffer(paddr)))
-> -		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_DEVICE);
-> -
-> -	if (!dev_is_dma_coherent(dev))
-> -		arch_sync_dma_for_device(paddr, size, dir);
-> -}
-> -
-> -static inline void dma_direct_sync_single_for_cpu(struct device *dev,
-> -		dma_addr_t addr, size_t size, enum dma_data_direction dir)
-> -{
-> -	phys_addr_t paddr = dma_to_phys(dev, addr);
-> -
-> -	if (!dev_is_dma_coherent(dev)) {
-> -		arch_sync_dma_for_cpu(paddr, size, dir);
-> -		arch_sync_dma_for_cpu_all();
-> -	}
-> -
-> -	if (unlikely(is_swiotlb_buffer(paddr)))
-> -		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_CPU);
-> -
-> -	if (dir == DMA_FROM_DEVICE)
-> -		arch_dma_mark_clean(paddr, size);
-> -}
-> -
-> -static inline dma_addr_t dma_direct_map_page(struct device *dev,
-> -		struct page *page, unsigned long offset, size_t size,
-> -		enum dma_data_direction dir, unsigned long attrs)
-> -{
-> -	phys_addr_t phys = page_to_phys(page) + offset;
-> -	dma_addr_t dma_addr = phys_to_dma(dev, phys);
-> -
-> -	if (unlikely(swiotlb_force == SWIOTLB_FORCE))
-> -		return swiotlb_map(dev, phys, size, dir, attrs);
-> -
-> -	if (unlikely(!dma_capable(dev, dma_addr, size, true))) {
-> -		if (swiotlb_force != SWIOTLB_NO_FORCE)
-> -			return swiotlb_map(dev, phys, size, dir, attrs);
-> -
-> -		dev_WARN_ONCE(dev, 1,
-> -			     "DMA addr %pad+%zu overflow (mask %llx, bus limit %llx).\n",
-> -			     &dma_addr, size, *dev->dma_mask, dev->bus_dma_limit);
-> -		return DMA_MAPPING_ERROR;
-> -	}
-> -
-> -	if (!dev_is_dma_coherent(dev) && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> -		arch_sync_dma_for_device(phys, size, dir);
-> -	return dma_addr;
-> -}
-> -
-> -static inline void dma_direct_unmap_page(struct device *dev, dma_addr_t addr,
-> -		size_t size, enum dma_data_direction dir, unsigned long attrs)
-> -{
-> -	phys_addr_t phys = dma_to_phys(dev, addr);
-> -
-> -	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> -		dma_direct_sync_single_for_cpu(dev, addr, size, dir);
-> -
-> -	if (unlikely(is_swiotlb_buffer(phys)))
-> -		swiotlb_tbl_unmap_single(dev, phys, size, size, dir, attrs);
-> -}
->   #endif /* _LINUX_DMA_DIRECT_H */
-> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> index 87697c86f0b82a..bf9f77623022bb 100644
-> --- a/kernel/dma/direct.c
-> +++ b/kernel/dma/direct.c
-> @@ -7,13 +7,13 @@
->   #include <linux/memblock.h> /* for max_pfn */
->   #include <linux/export.h>
->   #include <linux/mm.h>
-> -#include <linux/dma-direct.h>
->   #include <linux/dma-map-ops.h>
->   #include <linux/scatterlist.h>
->   #include <linux/pfn.h>
->   #include <linux/vmalloc.h>
->   #include <linux/set_memory.h>
->   #include <linux/slab.h>
-> +#include "direct.h"
->   
->   /*
->    * Most architectures use ZONE_DMA for the first 16 Megabytes, but some use it
-> diff --git a/kernel/dma/direct.h b/kernel/dma/direct.h
-> new file mode 100644
-> index 00000000000000..b9861557873768
-> --- /dev/null
-> +++ b/kernel/dma/direct.h
-> @@ -0,0 +1,119 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2018 Christoph Hellwig.
-> + *
-> + * DMA operations that map physical memory directly without using an IOMMU.
-> + */
-> +#ifndef _KERNEL_DMA_DIRECT_H
-> +#define _KERNEL_DMA_DIRECT_H
-> +
-> +#include <linux/dma-direct.h>
-> +
-> +int dma_direct_get_sgtable(struct device *dev, struct sg_table *sgt,
-> +		void *cpu_addr, dma_addr_t dma_addr, size_t size,
-> +		unsigned long attrs);
-> +bool dma_direct_can_mmap(struct device *dev);
-> +int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
-> +		void *cpu_addr, dma_addr_t dma_addr, size_t size,
-> +		unsigned long attrs);
-> +bool dma_direct_need_sync(struct device *dev, dma_addr_t dma_addr);
-> +int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
-> +		enum dma_data_direction dir, unsigned long attrs);
-> +size_t dma_direct_max_mapping_size(struct device *dev);
-> +
-> +#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
-> +    defined(CONFIG_SWIOTLB)
-> +void dma_direct_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
-> +		int nents, enum dma_data_direction dir);
-> +#else
-> +static inline void dma_direct_sync_sg_for_device(struct device *dev,
-> +		struct scatterlist *sgl, int nents, enum dma_data_direction dir)
-> +{
-> +}
-> +#endif
-> +
-> +#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) || \
-> +    defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) || \
-> +    defined(CONFIG_SWIOTLB)
-> +void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
-> +		int nents, enum dma_data_direction dir, unsigned long attrs);
-> +void dma_direct_sync_sg_for_cpu(struct device *dev,
-> +		struct scatterlist *sgl, int nents, enum dma_data_direction dir);
-> +#else
-> +static inline void dma_direct_unmap_sg(struct device *dev,
-> +		struct scatterlist *sgl, int nents, enum dma_data_direction dir,
-> +		unsigned long attrs)
-> +{
-> +}
-> +static inline void dma_direct_sync_sg_for_cpu(struct device *dev,
-> +		struct scatterlist *sgl, int nents, enum dma_data_direction dir)
-> +{
-> +}
-> +#endif
-> +
-> +static inline void dma_direct_sync_single_for_device(struct device *dev,
-> +		dma_addr_t addr, size_t size, enum dma_data_direction dir)
-> +{
-> +	phys_addr_t paddr = dma_to_phys(dev, addr);
-> +
-> +	if (unlikely(is_swiotlb_buffer(paddr)))
-> +		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_DEVICE);
-> +
-> +	if (!dev_is_dma_coherent(dev))
-> +		arch_sync_dma_for_device(paddr, size, dir);
-> +}
-> +
-> +static inline void dma_direct_sync_single_for_cpu(struct device *dev,
-> +		dma_addr_t addr, size_t size, enum dma_data_direction dir)
-> +{
-> +	phys_addr_t paddr = dma_to_phys(dev, addr);
-> +
-> +	if (!dev_is_dma_coherent(dev)) {
-> +		arch_sync_dma_for_cpu(paddr, size, dir);
-> +		arch_sync_dma_for_cpu_all();
-> +	}
-> +
-> +	if (unlikely(is_swiotlb_buffer(paddr)))
-> +		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_CPU);
-> +
-> +	if (dir == DMA_FROM_DEVICE)
-> +		arch_dma_mark_clean(paddr, size);
-> +}
-> +
-> +static inline dma_addr_t dma_direct_map_page(struct device *dev,
-> +		struct page *page, unsigned long offset, size_t size,
-> +		enum dma_data_direction dir, unsigned long attrs)
-> +{
-> +	phys_addr_t phys = page_to_phys(page) + offset;
-> +	dma_addr_t dma_addr = phys_to_dma(dev, phys);
-> +
-> +	if (unlikely(swiotlb_force == SWIOTLB_FORCE))
-> +		return swiotlb_map(dev, phys, size, dir, attrs);
-> +
-> +	if (unlikely(!dma_capable(dev, dma_addr, size, true))) {
-> +		if (swiotlb_force != SWIOTLB_NO_FORCE)
-> +			return swiotlb_map(dev, phys, size, dir, attrs);
-> +
-> +		dev_WARN_ONCE(dev, 1,
-> +			     "DMA addr %pad+%zu overflow (mask %llx, bus limit %llx).\n",
-> +			     &dma_addr, size, *dev->dma_mask, dev->bus_dma_limit);
-> +		return DMA_MAPPING_ERROR;
-> +	}
-> +
-> +	if (!dev_is_dma_coherent(dev) && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> +		arch_sync_dma_for_device(phys, size, dir);
-> +	return dma_addr;
-> +}
-> +
-> +static inline void dma_direct_unmap_page(struct device *dev, dma_addr_t addr,
-> +		size_t size, enum dma_data_direction dir, unsigned long attrs)
-> +{
-> +	phys_addr_t phys = dma_to_phys(dev, addr);
-> +
-> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> +		dma_direct_sync_single_for_cpu(dev, addr, size, dir);
-> +
-> +	if (unlikely(is_swiotlb_buffer(phys)))
-> +		swiotlb_tbl_unmap_single(dev, phys, size, size, dir, attrs);
-> +}
-> +#endif /* _KERNEL_DMA_DIRECT_H */
-> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-> index 335ba183e0956a..51bb8fa8eb8948 100644
-> --- a/kernel/dma/mapping.c
-> +++ b/kernel/dma/mapping.c
-> @@ -7,7 +7,6 @@
->    */
->   #include <linux/memblock.h> /* for max_pfn */
->   #include <linux/acpi.h>
-> -#include <linux/dma-direct.h>
->   #include <linux/dma-map-ops.h>
->   #include <linux/export.h>
->   #include <linux/gfp.h>
-> @@ -15,6 +14,7 @@
->   #include <linux/slab.h>
->   #include <linux/vmalloc.h>
->   #include "debug.h"
-> +#include "direct.h"
->   
->   /*
->    * Managed DMA API
+>@@ -113,6 +132,9 @@ struct virtio_mem {
+> 	atomic64_t offline_size;
+> 	uint64_t offline_threshold;
 > 
+>+	/* If set, the driver is in SBM, otherwise in BBM. */
+>+	bool in_sbm;
+>+
+> 	struct {
+> 		/* Id of the first memory block of this device. */
+> 		unsigned long first_mb_id;
+>@@ -151,9 +173,27 @@ struct virtio_mem {
+> 		unsigned long *sb_states;
+> 	} sbm;
+> 
+>+	struct {
+>+		/* Id of the first big block of this device. */
+>+		unsigned long first_bb_id;
+>+		/* Id of the last usable big block of this device. */
+>+		unsigned long last_usable_bb_id;
+>+		/* Id of the next device bock to prepare when needed. */
+>+		unsigned long next_bb_id;
+>+
+>+		/* Summary of all big block states. */
+>+		unsigned long bb_count[VIRTIO_MEM_BBM_BB_COUNT];
+>+
+>+		/* One byte state per big block. See sbm.mb_states. */
+>+		uint8_t *bb_states;
+>+
+>+		/* The block size used for (un)plugged, adding/removing. */
+>+		uint64_t bb_size;
+>+	} bbm;
+>+
+> 	/*
+>-	 * Mutex that protects the sbm.mb_count, sbm.mb_states, and
+>-	 * sbm.sb_states.
+>+	 * Mutex that protects the sbm.mb_count, sbm.mb_states,
+>+	 * sbm.sb_states, bbm.bb_count, and bbm.bb_states
+> 	 *
+> 	 * When this lock is held the pointers can't change, ONLINE and
+> 	 * OFFLINE blocks can't change the state and no subblocks will get
+>@@ -247,6 +287,24 @@ static unsigned long virtio_mem_mb_id_to_phys(unsigned long mb_id)
+> 	return mb_id * memory_block_size_bytes();
+> }
+> 
+>+/*
+>+ * Calculate the big block id of a given address.
+>+ */
+>+static unsigned long virtio_mem_phys_to_bb_id(struct virtio_mem *vm,
+>+					      uint64_t addr)
+>+{
+>+	return addr / vm->bbm.bb_size;
+>+}
+>+
+>+/*
+>+ * Calculate the physical start address of a given big block id.
+>+ */
+>+static uint64_t virtio_mem_bb_id_to_phys(struct virtio_mem *vm,
+>+					 unsigned long bb_id)
+>+{
+>+	return bb_id * vm->bbm.bb_size;
+>+}
+>+
+> /*
+>  * Calculate the subblock id of a given address.
+>  */
+>@@ -259,6 +317,67 @@ static unsigned long virtio_mem_phys_to_sb_id(struct virtio_mem *vm,
+> 	return (addr - mb_addr) / vm->sbm.sb_size;
+> }
+> 
+>+/*
+>+ * Set the state of a big block, taking care of the state counter.
+>+ */
+>+static void virtio_mem_bbm_set_bb_state(struct virtio_mem *vm,
+>+					unsigned long bb_id,
+>+					enum virtio_mem_bbm_bb_state state)
+>+{
+>+	const unsigned long idx = bb_id - vm->bbm.first_bb_id;
+>+	enum virtio_mem_bbm_bb_state old_state;
+>+
+>+	old_state = vm->bbm.bb_states[idx];
+>+	vm->bbm.bb_states[idx] = state;
+>+
+>+	BUG_ON(vm->bbm.bb_count[old_state] == 0);
+>+	vm->bbm.bb_count[old_state]--;
+>+	vm->bbm.bb_count[state]++;
+>+}
+>+
+>+/*
+>+ * Get the state of a big block.
+>+ */
+>+static enum virtio_mem_bbm_bb_state virtio_mem_bbm_get_bb_state(struct virtio_mem *vm,
+>+								unsigned long bb_id)
+>+{
+>+	return vm->bbm.bb_states[bb_id - vm->bbm.first_bb_id];
+>+}
+>+
+>+/*
+>+ * Prepare the big block state array for the next big block.
+>+ */
+>+static int virtio_mem_bbm_bb_states_prepare_next_bb(struct virtio_mem *vm)
+>+{
+>+	unsigned long old_bytes = vm->bbm.next_bb_id - vm->bbm.first_bb_id;
+>+	unsigned long new_bytes = old_bytes + 1;
+>+	int old_pages = PFN_UP(old_bytes);
+>+	int new_pages = PFN_UP(new_bytes);
+>+	uint8_t *new_array;
+>+
+>+	if (vm->bbm.bb_states && old_pages == new_pages)
+>+		return 0;
+>+
+>+	new_array = vzalloc(new_pages * PAGE_SIZE);
+>+	if (!new_array)
+>+		return -ENOMEM;
+>+
+>+	mutex_lock(&vm->hotplug_mutex);
+>+	if (vm->bbm.bb_states)
+>+		memcpy(new_array, vm->bbm.bb_states, old_pages * PAGE_SIZE);
+>+	vfree(vm->bbm.bb_states);
+>+	vm->bbm.bb_states = new_array;
+>+	mutex_unlock(&vm->hotplug_mutex);
+>+
+>+	return 0;
+>+}
+>+
+>+#define virtio_mem_bbm_for_each_bb(_vm, _bb_id, _state) \
+>+	for (_bb_id = vm->bbm.first_bb_id; \
+>+	     _bb_id < vm->bbm.next_bb_id && _vm->bbm.bb_count[_state]; \
+>+	     _bb_id++) \
+>+		if (virtio_mem_bbm_get_bb_state(_vm, _bb_id) == _state)
+>+
+> /*
+>  * Set the state of a memory block, taking care of the state counter.
+>  */
+>@@ -504,6 +623,17 @@ static int virtio_mem_sbm_add_mb(struct virtio_mem *vm, unsigned long mb_id)
+> 	return virtio_mem_add_memory(vm, addr, size);
+> }
+> 
+>+/*
+>+ * See virtio_mem_add_memory(): Try adding a big block.
+>+ */
+>+static int virtio_mem_bbm_add_bb(struct virtio_mem *vm, unsigned long bb_id)
+>+{
+>+	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
+>+	const uint64_t size = vm->bbm.bb_size;
+>+
+>+	return virtio_mem_add_memory(vm, addr, size);
+>+}
+>+
+> /*
+>  * Try removing memory from Linux. Will only fail if memory blocks aren't
+>  * offline.
+>@@ -731,20 +861,33 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+> 	struct memory_notify *mhp = arg;
+> 	const unsigned long start = PFN_PHYS(mhp->start_pfn);
+> 	const unsigned long size = PFN_PHYS(mhp->nr_pages);
+>-	const unsigned long mb_id = virtio_mem_phys_to_mb_id(start);
+> 	int rc = NOTIFY_OK;
+>+	unsigned long id;
+> 
+> 	if (!virtio_mem_overlaps_range(vm, start, size))
+> 		return NOTIFY_DONE;
+> 
+>-	/*
+>-	 * Memory is onlined/offlined in memory block granularity. We cannot
+>-	 * cross virtio-mem device boundaries and memory block boundaries. Bail
+>-	 * out if this ever changes.
+>-	 */
+>-	if (WARN_ON_ONCE(size != memory_block_size_bytes() ||
+>-			 !IS_ALIGNED(start, memory_block_size_bytes())))
+>-		return NOTIFY_BAD;
+>+	if (vm->in_sbm) {
+>+		id = virtio_mem_phys_to_mb_id(start);
+>+		/*
+>+		 * In SBM, we add memory in separate memory blocks - we expect
+>+		 * it to be onlined/offlined in the same granularity. Bail out
+>+		 * if this ever changes.
+>+		 */
+>+		if (WARN_ON_ONCE(size != memory_block_size_bytes() ||
+>+				 !IS_ALIGNED(start, memory_block_size_bytes())))
+>+			return NOTIFY_BAD;
+>+	} else {
+>+		id = virtio_mem_phys_to_bb_id(vm, start);
+>+		/*
+>+		 * In BBM, we only care about onlining/offlining happening
+>+		 * within a single big block, we don't care about the
+>+		 * actual granularity as we don't track individual Linux
+>+		 * memory blocks.
+>+		 */
+>+		if (WARN_ON_ONCE(id != virtio_mem_phys_to_bb_id(vm, start + size - 1)))
+>+			return NOTIFY_BAD;
+>+	}
+> 
+> 	/*
+> 	 * Avoid circular locking lockdep warnings. We lock the mutex
+>@@ -763,7 +906,8 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+> 			break;
+> 		}
+> 		vm->hotplug_active = true;
+>-		virtio_mem_sbm_notify_going_offline(vm, mb_id);
+>+		if (vm->in_sbm)
+>+			virtio_mem_sbm_notify_going_offline(vm, id);
+> 		break;
+> 	case MEM_GOING_ONLINE:
+> 		mutex_lock(&vm->hotplug_mutex);
+>@@ -773,10 +917,12 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+> 			break;
+> 		}
+> 		vm->hotplug_active = true;
+>-		rc = virtio_mem_sbm_notify_going_online(vm, mb_id);
+>+		if (vm->in_sbm)
+>+			rc = virtio_mem_sbm_notify_going_online(vm, id);
+> 		break;
+> 	case MEM_OFFLINE:
+>-		virtio_mem_sbm_notify_offline(vm, mb_id);
+>+		if (vm->in_sbm)
+>+			virtio_mem_sbm_notify_offline(vm, id);
+> 
+> 		atomic64_add(size, &vm->offline_size);
+> 		/*
+>@@ -790,7 +936,8 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+> 		mutex_unlock(&vm->hotplug_mutex);
+> 		break;
+> 	case MEM_ONLINE:
+>-		virtio_mem_sbm_notify_online(vm, mb_id);
+>+		if (vm->in_sbm)
+>+			virtio_mem_sbm_notify_online(vm, id);
+> 
+> 		atomic64_sub(size, &vm->offline_size);
+> 		/*
+>@@ -809,7 +956,8 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+> 	case MEM_CANCEL_OFFLINE:
+> 		if (!vm->hotplug_active)
+> 			break;
+>-		virtio_mem_sbm_notify_cancel_offline(vm, mb_id);
+>+		if (vm->in_sbm)
+>+			virtio_mem_sbm_notify_cancel_offline(vm, id);
+> 		vm->hotplug_active = false;
+> 		mutex_unlock(&vm->hotplug_mutex);
+> 		break;
+>@@ -980,27 +1128,29 @@ static void virtio_mem_fake_offline_cancel_offline(unsigned long pfn,
+> static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
+> {
+> 	const unsigned long addr = page_to_phys(page);
+>-	const unsigned long mb_id = virtio_mem_phys_to_mb_id(addr);
+>+	unsigned long id, sb_id;
+> 	struct virtio_mem *vm;
+>-	int sb_id;
+>+	bool do_online;
+> 
+>-	/*
+>-	 * We exploit here that subblocks have at least MAX_ORDER_NR_PAGES.
+>-	 * size/alignment and that this callback is is called with such a
+>-	 * size/alignment. So we cannot cross subblocks and therefore
+>-	 * also not memory blocks.
+>-	 */
+> 	rcu_read_lock();
+> 	list_for_each_entry_rcu(vm, &virtio_mem_devices, next) {
+> 		if (!virtio_mem_contains_range(vm, addr, PFN_PHYS(1 << order)))
+> 			continue;
+> 
+>-		sb_id = virtio_mem_phys_to_sb_id(vm, addr);
+>-		/*
+>-		 * If plugged, online the pages, otherwise, set them fake
+>-		 * offline (PageOffline).
+>-		 */
+>-		if (virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id, 1))
+>+		if (vm->in_sbm) {
+>+			/*
+>+			 * We exploit here that subblocks have at least
+>+			 * MAX_ORDER_NR_PAGES size/alignment - so we cannot
+>+			 * cross subblocks within one call.
+>+			 */
+>+			id = virtio_mem_phys_to_mb_id(addr);
+>+			sb_id = virtio_mem_phys_to_sb_id(vm, addr);
+>+			do_online = virtio_mem_sbm_test_sb_plugged(vm, id,
+>+								   sb_id, 1);
+>+		} else {
+>+			do_online = true;
+>+		}
+>+		if (do_online)
+> 			generic_online_page(page, order);
+> 		else
+> 			virtio_mem_set_fake_offline(PFN_DOWN(addr), 1 << order,
+>@@ -1180,6 +1330,32 @@ static int virtio_mem_sbm_unplug_sb(struct virtio_mem *vm, unsigned long mb_id,
+> 	return rc;
+> }
+> 
+>+/*
+>+ * Request to unplug a big block.
+>+ *
+>+ * Will not modify the state of the big block.
+>+ */
+>+static int virtio_mem_bbm_unplug_bb(struct virtio_mem *vm, unsigned long bb_id)
+>+{
+>+	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
+>+	const uint64_t size = vm->bbm.bb_size;
+>+
+>+	return virtio_mem_send_unplug_request(vm, addr, size);
+>+}
+>+
+>+/*
+>+ * Request to plug a big block.
+>+ *
+>+ * Will not modify the state of the big block.
+>+ */
+>+static int virtio_mem_bbm_plug_bb(struct virtio_mem *vm, unsigned long bb_id)
+>+{
+>+	const uint64_t addr = virtio_mem_bb_id_to_phys(vm, bb_id);
+>+	const uint64_t size = vm->bbm.bb_size;
+>+
+>+	return virtio_mem_send_plug_request(vm, addr, size);
+>+}
+>+
+> /*
+>  * Unplug the desired number of plugged subblocks of a offline or not-added
+>  * memory block. Will fail if any subblock cannot get unplugged (instead of
+>@@ -1365,10 +1541,7 @@ static int virtio_mem_sbm_plug_any_sb(struct virtio_mem *vm,
+> 	return 0;
+> }
+> 
+>-/*
+>- * Try to plug the requested amount of memory.
+>- */
+>-static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+>+static int virtio_mem_sbm_plug_request(struct virtio_mem *vm, uint64_t diff)
+> {
+> 	uint64_t nb_sb = diff / vm->sbm.sb_size;
+> 	unsigned long mb_id;
+>@@ -1435,6 +1608,112 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+> 	return rc;
+> }
+> 
+>+/*
+>+ * Plug a big block and add it to Linux.
+>+ *
+>+ * Will modify the state of the big block.
+>+ */
+>+static int virtio_mem_bbm_plug_and_add_bb(struct virtio_mem *vm,
+>+					  unsigned long bb_id)
+>+{
+>+	int rc;
+>+
+>+	if (WARN_ON_ONCE(virtio_mem_bbm_get_bb_state(vm, bb_id) !=
+>+			 VIRTIO_MEM_BBM_BB_UNUSED))
+>+		return -EINVAL;
+>+
+>+	rc = virtio_mem_bbm_plug_bb(vm, bb_id);
+>+	if (rc)
+>+		return rc;
+>+	virtio_mem_bbm_set_bb_state(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED);
+>+
+>+	rc = virtio_mem_bbm_add_bb(vm, bb_id);
+>+	if (rc) {
+>+		if (!virtio_mem_bbm_unplug_bb(vm, bb_id))
+>+			virtio_mem_bbm_set_bb_state(vm, bb_id,
+>+						    VIRTIO_MEM_BBM_BB_UNUSED);
+>+		else
+>+			/* Retry from the main loop. */
+>+			virtio_mem_bbm_set_bb_state(vm, bb_id,
+>+						    VIRTIO_MEM_BBM_BB_PLUGGED);
+>+		return rc;
+>+	}
+>+	return 0;
+>+}
+>+
+>+/*
+>+ * Prepare tracking data for the next big block.
+>+ */
+>+static int virtio_mem_bbm_prepare_next_bb(struct virtio_mem *vm,
+>+					  unsigned long *bb_id)
+>+{
+>+	int rc;
+>+
+>+	if (vm->bbm.next_bb_id > vm->bbm.last_usable_bb_id)
+>+		return -ENOSPC;
+>+
+>+	/* Resize the big block state array if required. */
+>+	rc = virtio_mem_bbm_bb_states_prepare_next_bb(vm);
+>+	if (rc)
+>+		return rc;
+>+
+>+	vm->bbm.bb_count[VIRTIO_MEM_BBM_BB_UNUSED]++;
+>+	*bb_id = vm->bbm.next_bb_id;
+>+	vm->bbm.next_bb_id++;
+>+	return 0;
+>+}
+>+
+>+static int virtio_mem_bbm_plug_request(struct virtio_mem *vm, uint64_t diff)
+>+{
+>+	uint64_t nb_bb = diff / vm->bbm.bb_size;
+>+	unsigned long bb_id;
+>+	int rc;
+>+
+>+	if (!nb_bb)
+>+		return 0;
+>+
+>+	/* Try to plug and add unused big blocks */
+>+	virtio_mem_bbm_for_each_bb(vm, bb_id, VIRTIO_MEM_BBM_BB_UNUSED) {
+>+		if (!virtio_mem_could_add_memory(vm, vm->bbm.bb_size))
+>+			return -ENOSPC;
+>+
+>+		rc = virtio_mem_bbm_plug_and_add_bb(vm, bb_id);
+>+		if (!rc)
+>+			nb_bb--;
+>+		if (rc || !nb_bb)
+>+			return rc;
+>+		cond_resched();
+>+	}
+>+
+>+	/* Try to prepare, plug and add new big blocks */
+>+	while (nb_bb) {
+>+		if (!virtio_mem_could_add_memory(vm, vm->bbm.bb_size))
+>+			return -ENOSPC;
+>+
+>+		rc = virtio_mem_bbm_prepare_next_bb(vm, &bb_id);
+>+		if (rc)
+>+			return rc;
+>+		rc = virtio_mem_bbm_plug_and_add_bb(vm, bb_id);
+>+		if (!rc)
+>+			nb_bb--;
+>+		if (rc)
+>+			return rc;
+>+		cond_resched();
+>+	}
+>+
+>+	return 0;
+>+}
+>+
+>+/*
+>+ * Try to plug the requested amount of memory.
+>+ */
+>+static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+>+{
+>+	if (vm->in_sbm)
+>+		return virtio_mem_sbm_plug_request(vm, diff);
+>+	return virtio_mem_bbm_plug_request(vm, diff);
+>+}
+>+
+> /*
+>  * Unplug the desired number of plugged subblocks of an offline memory block.
+>  * Will fail if any subblock cannot get unplugged (instead of skipping it).
+>@@ -1573,10 +1852,7 @@ static int virtio_mem_sbm_unplug_any_sb_online(struct virtio_mem *vm,
+> 	return 0;
+> }
+> 
+>-/*
+>- * Try to unplug the requested amount of memory.
+>- */
+>-static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+>+static int virtio_mem_sbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
+> {
+> 	uint64_t nb_sb = diff / vm->sbm.sb_size;
+> 	unsigned long mb_id;
+>@@ -1642,20 +1918,42 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+> 	return rc;
+> }
+> 
+>+/*
+>+ * Try to unplug the requested amount of memory.
+>+ */
+>+static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+>+{
+>+	if (vm->in_sbm)
+>+		return virtio_mem_sbm_unplug_request(vm, diff);
+>+	return -EBUSY;
+>+}
+>+
+> /*
+>  * Try to unplug all blocks that couldn't be unplugged before, for example,
+>  * because the hypervisor was busy.
+>  */
+> static int virtio_mem_unplug_pending_mb(struct virtio_mem *vm)
+> {
+>-	unsigned long mb_id;
+>+	unsigned long id;
+> 	int rc;
+> 
+>-	virtio_mem_sbm_for_each_mb(vm, mb_id, VIRTIO_MEM_SBM_MB_PLUGGED) {
+>-		rc = virtio_mem_sbm_unplug_mb(vm, mb_id);
+>+	if (!vm->in_sbm) {
+>+		virtio_mem_bbm_for_each_bb(vm, id,
+>+					   VIRTIO_MEM_BBM_BB_PLUGGED) {
+>+			rc = virtio_mem_bbm_unplug_bb(vm, id);
+>+			if (rc)
+>+				return rc;
+>+			virtio_mem_bbm_set_bb_state(vm, id,
+>+						    VIRTIO_MEM_BBM_BB_UNUSED);
+>+		}
+>+		return 0;
+>+	}
+>+
+>+	virtio_mem_sbm_for_each_mb(vm, id, VIRTIO_MEM_SBM_MB_PLUGGED) {
+>+		rc = virtio_mem_sbm_unplug_mb(vm, id);
+> 		if (rc)
+> 			return rc;
+>-		virtio_mem_sbm_set_mb_state(vm, mb_id,
+>+		virtio_mem_sbm_set_mb_state(vm, id,
+> 					    VIRTIO_MEM_SBM_MB_UNUSED);
+> 	}
+> 
+>@@ -1681,7 +1979,13 @@ static void virtio_mem_refresh_config(struct virtio_mem *vm)
+> 			usable_region_size, &usable_region_size);
+> 	end_addr = vm->addr + usable_region_size;
+> 	end_addr = min(end_addr, phys_limit);
+>-	vm->sbm.last_usable_mb_id = virtio_mem_phys_to_mb_id(end_addr) - 1;
+>+
+>+	if (vm->in_sbm)
+>+		vm->sbm.last_usable_mb_id =
+>+					 virtio_mem_phys_to_mb_id(end_addr) - 1;
+>+	else
+>+		vm->bbm.last_usable_bb_id =
+>+				     virtio_mem_phys_to_bb_id(vm, end_addr) - 1;
+> 
+> 	/* see if there is a request to change the size */
+> 	virtio_cread_le(vm->vdev, struct virtio_mem_config, requested_size,
+>@@ -1804,6 +2108,7 @@ static int virtio_mem_init_vq(struct virtio_mem *vm)
+> static int virtio_mem_init(struct virtio_mem *vm)
+> {
+> 	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
+>+	uint64_t sb_size, addr;
+> 	uint16_t node_id;
+> 
+> 	if (!vm->vdev->config->get) {
+>@@ -1836,16 +2141,6 @@ static int virtio_mem_init(struct virtio_mem *vm)
+> 	if (vm->nid == NUMA_NO_NODE)
+> 		vm->nid = memory_add_physaddr_to_nid(vm->addr);
+> 
+>-	/*
+>-	 * We always hotplug memory in memory block granularity. This way,
+>-	 * we have to wait for exactly one memory block to online.
+>-	 */
+>-	if (vm->device_block_size > memory_block_size_bytes()) {
+>-		dev_err(&vm->vdev->dev,
+>-			"The block size is not supported (too big).\n");
+>-		return -EINVAL;
+>-	}
+>-
+> 	/* bad device setup - warn only */
+> 	if (!IS_ALIGNED(vm->addr, memory_block_size_bytes()))
+> 		dev_warn(&vm->vdev->dev,
+>@@ -1865,20 +2160,35 @@ static int virtio_mem_init(struct virtio_mem *vm)
+> 	 * - Is required for now for alloc_contig_range() to work reliably -
+> 	 *   it doesn't properly handle smaller granularity on ZONE_NORMAL.
+> 	 */
+>-	vm->sbm.sb_size = max_t(uint64_t, MAX_ORDER_NR_PAGES,
+>-				pageblock_nr_pages) * PAGE_SIZE;
+>-	vm->sbm.sb_size = max_t(uint64_t, vm->device_block_size,
+>-				vm->sbm.sb_size);
+>-	vm->sbm.sbs_per_mb = memory_block_size_bytes() / vm->sbm.sb_size;
+>+	sb_size = max_t(uint64_t, MAX_ORDER_NR_PAGES,
+>+			pageblock_nr_pages) * PAGE_SIZE;
+>+	sb_size = max_t(uint64_t, vm->device_block_size, sb_size);
+>+
+>+	if (sb_size < memory_block_size_bytes()) {
+>+		/* SBM: At least two subblocks per Linux memory block. */
+>+		vm->in_sbm = true;
+>+		vm->sbm.sb_size = sb_size;
+>+		vm->sbm.sbs_per_mb = memory_block_size_bytes() /
+>+				     vm->sbm.sb_size;
+>+
+>+		/* Round up to the next full memory block */
+>+		addr = vm->addr + memory_block_size_bytes() - 1;
+>+		vm->sbm.first_mb_id = virtio_mem_phys_to_mb_id(addr);
+>+		vm->sbm.next_mb_id = vm->sbm.first_mb_id;
+>+	} else {
+>+		/* BBM: At least one Linux memory block. */
+>+		vm->bbm.bb_size = vm->device_block_size;
+> 
+>-	/* Round up to the next full memory block */
+>-	vm->sbm.first_mb_id = virtio_mem_phys_to_mb_id(vm->addr - 1 +
+>-						       memory_block_size_bytes());
+>-	vm->sbm.next_mb_id = vm->sbm.first_mb_id;
+>+		vm->bbm.first_bb_id = virtio_mem_phys_to_bb_id(vm, vm->addr);
+
+Per my understanding, vm->addr is not guaranteed to be bb_size aligned, right?
+
+Why not round up to next big block?
+
+>+		vm->bbm.next_bb_id = vm->bbm.first_bb_id;
+>+	}
+> 
+> 	/* Prepare the offline threshold - make sure we can add two blocks. */
+> 	vm->offline_threshold = max_t(uint64_t, 2 * memory_block_size_bytes(),
+> 				      VIRTIO_MEM_DEFAULT_OFFLINE_THRESHOLD);
+>+	/* In BBM, we also want at least two big blocks. */
+>+	vm->offline_threshold = max_t(uint64_t, 2 * vm->bbm.bb_size,
+>+				      vm->offline_threshold);
+> 
+> 	dev_info(&vm->vdev->dev, "start address: 0x%llx", vm->addr);
+> 	dev_info(&vm->vdev->dev, "region size: 0x%llx", vm->region_size);
+>@@ -1886,8 +2196,12 @@ static int virtio_mem_init(struct virtio_mem *vm)
+> 		 (unsigned long long)vm->device_block_size);
+> 	dev_info(&vm->vdev->dev, "memory block size: 0x%lx",
+> 		 memory_block_size_bytes());
+>-	dev_info(&vm->vdev->dev, "subblock size: 0x%llx",
+>-		 (unsigned long long)vm->sbm.sb_size);
+>+	if (vm->in_sbm)
+>+		dev_info(&vm->vdev->dev, "subblock size: 0x%llx",
+>+			 (unsigned long long)vm->sbm.sb_size);
+>+	else
+>+		dev_info(&vm->vdev->dev, "big block size: 0x%llx",
+>+			 (unsigned long long)vm->bbm.bb_size);
+> 	if (vm->nid != NUMA_NO_NODE && IS_ENABLED(CONFIG_NUMA))
+> 		dev_info(&vm->vdev->dev, "nid: %d", vm->nid);
+> 
+>@@ -2044,22 +2358,24 @@ static void virtio_mem_remove(struct virtio_device *vdev)
+> 	cancel_work_sync(&vm->wq);
+> 	hrtimer_cancel(&vm->retry_timer);
+> 
+>-	/*
+>-	 * After we unregistered our callbacks, user space can online partially
+>-	 * plugged offline blocks. Make sure to remove them.
+>-	 */
+>-	virtio_mem_sbm_for_each_mb(vm, mb_id,
+>-				   VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
+>-		rc = virtio_mem_sbm_remove_mb(vm, mb_id);
+>-		BUG_ON(rc);
+>-		virtio_mem_sbm_set_mb_state(vm, mb_id,
+>-					    VIRTIO_MEM_SBM_MB_UNUSED);
+>+	if (vm->in_sbm) {
+>+		/*
+>+		 * After we unregistered our callbacks, user space can online
+>+		 * partially plugged offline blocks. Make sure to remove them.
+>+		 */
+>+		virtio_mem_sbm_for_each_mb(vm, mb_id,
+>+					   VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
+>+			rc = virtio_mem_sbm_remove_mb(vm, mb_id);
+>+			BUG_ON(rc);
+>+			virtio_mem_sbm_set_mb_state(vm, mb_id,
+>+						    VIRTIO_MEM_SBM_MB_UNUSED);
+>+		}
+>+		/*
+>+		 * After we unregistered our callbacks, user space can no longer
+>+		 * offline partially plugged online memory blocks. No need to
+>+		 * worry about them.
+>+		 */
+> 	}
+>-	/*
+>-	 * After we unregistered our callbacks, user space can no longer
+>-	 * offline partially plugged online memory blocks. No need to worry
+>-	 * about them.
+>-	 */
+> 
+> 	/* unregister callbacks */
+> 	unregister_virtio_mem_device(vm);
+>@@ -2078,8 +2394,12 @@ static void virtio_mem_remove(struct virtio_device *vdev)
+> 	}
+> 
+> 	/* remove all tracking data - no locking needed */
+>-	vfree(vm->sbm.mb_states);
+>-	vfree(vm->sbm.sb_states);
+>+	if (vm->in_sbm) {
+>+		vfree(vm->sbm.mb_states);
+>+		vfree(vm->sbm.sb_states);
+>+	} else {
+>+		vfree(vm->bbm.bb_states);
+>+	}
+> 
+> 	/* reset the device and cleanup the queues */
+> 	vdev->config->reset(vdev);
+>-- 
+>2.26.2
 
 -- 
-Alexey
+Wei Yang
+Help you, Help me
