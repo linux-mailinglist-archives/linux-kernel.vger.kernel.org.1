@@ -2,86 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE708292F8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B410292F93
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729029AbgJSUjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:39:02 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:33822 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgJSUjC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:39:02 -0400
-Received: by mail-ot1-f66.google.com with SMTP id d28so1074703ote.1;
-        Mon, 19 Oct 2020 13:39:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DYddQU4UmJhBV2hj39VvFU9j8HHrjFAVMCOmBvcqf8Y=;
-        b=N80Kb0EQpWrrsqa0eFxGxCP7TBXMmEOKXbBxV9zqmRh6MWlFEVZIdY7LXOnyN7vBiR
-         XbTfMwvSbL4SU20mp43VuRN9ytSmZnNfxJNfY1YqmAHn0dxoEGQ1EvBgcF3+aonIyCUB
-         o5iAtWESFaSq/9If2bC/rp1SPwZkU7mTN4VjYcV8t4NdNSSty5/4SZ7zOnVZs5w9/ixr
-         zcD1od30IjoNaPGDynVhH4b8k6DDdV1RjmBZqmk+KcplAQnOQfyZt2B4LAKebcnIhiw1
-         +7tz4jSK6m4m0qoxx2hkDS9g3kf7GbFC7OVdW7QqDKkfQZfNq74leDc9V5M55UF0tHkd
-         1PwA==
-X-Gm-Message-State: AOAM5336/I+gU0Y8NRrOKpmpIaBOpAK50zftqekfMt8DDAL+xta9Iy37
-        zhf5Vkb6KXtqYTQJkSwx4/BGYlHPgbyMKkFuTHIyurE4
-X-Google-Smtp-Source: ABdhPJzo/A8cCQDUetrDham0YsV5hx820o5oRYgmq+rK4MamFGbepXPxBDVlI0fTf7F0MjJT4sePqXyMofhxY8CcAd4=
-X-Received: by 2002:a9d:3b76:: with SMTP id z109mr1263426otb.250.1603139941234;
- Mon, 19 Oct 2020 13:39:01 -0700 (PDT)
+        id S1730671AbgJSUji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:39:38 -0400
+Received: from 8bytes.org ([81.169.241.247]:34062 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725823AbgJSUji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 16:39:38 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id AE03E52D; Mon, 19 Oct 2020 22:39:36 +0200 (CEST)
+Date:   Mon, 19 Oct 2020 22:39:35 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] x86/boot/compressed/64: Check SEV encryption in
+ 64-bit boot-path
+Message-ID: <20201019203935.GG3635@8bytes.org>
+References: <20201019151121.826-1-joro@8bytes.org>
+ <20201019151121.826-4-joro@8bytes.org>
+ <20201019170008.GA2701355@rani.riverdale.lan>
+ <20201019175447.GA2720155@rani.riverdale.lan>
 MIME-Version: 1.0
-References: <20201019113240.11516-1-geert@linux-m68k.org> <1968b7a6-a553-c882-c386-4b4fde2d7a87@tessares.net>
-In-Reply-To: <1968b7a6-a553-c882-c386-4b4fde2d7a87@tessares.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 19 Oct 2020 22:38:49 +0200
-Message-ID: <CAMuHMdUDpVVejmrr3ayxnN=tgHrgDmUCVMG0VJht1Y-FUUv42Q@mail.gmail.com>
-Subject: Re: [PATCH] mptcp: MPTCP_KUNIT_TESTS should depend on MPTCP instead
- of selecting it
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>
-Cc:     Paolo Abeni <pabeni@redhat.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, mptcp@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019175447.GA2720155@rani.riverdale.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthieu,
+On Mon, Oct 19, 2020 at 01:54:47PM -0400, Arvind Sankar wrote:
+> Also, isn't it possible that the initial page tables we're running on
+> have already been messed with and have the C-bit in the wrong location,
+> so that this write happens decrypted?
 
-On Mon, Oct 19, 2020 at 5:47 PM Matthieu Baerts
-<matthieu.baerts@tessares.net> wrote:
-> On 19/10/2020 13:32, Geert Uytterhoeven wrote:
-> > MPTCP_KUNIT_TESTS selects MPTCP, thus enabling an optional feature the
-> > user may not want to enable.  Fix this by making the test depend on
-> > MPTCP instead.
->
-> I think the initial intension was to select MPTCP to have an easy way to
-> enable all KUnit tests. We imitated what was and is still done in
-> fs/ext4/Kconfig.
->
-> But it probably makes sense to depend on MPTCP instead of selecting it.
-> So that's fine for me. But then please also send a patch to ext4
-> maintainer to do the same there.
+The code assumes that the page-table it is running on has the correct C
+bit position set and that the code which set it up verified that it is
+correct. For the kernel itself this is true, at least, but when booting
+via UEFI the check also needs to happen in the firmware.
 
-Thanks, good point.  I didn't notice, as I did have ext4 enabled anyway.
-Will send a patch for ext4.  Looks like ext4 and MPTCP where the only
-test modules selecting their dependencies.
+Note that the possibilies are limited when the hypervisor reports the
+wrong C bit position because code fetches always assume encryption, even
+when the C bit is cleared in the page-table. So a wrong C bit position
+in the decompression stub would write the kernel image to memory
+unencrypted and executing it would not be possible.
 
-> Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Regards,
 
-Thanks!
+	Joerg
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
