@@ -2,132 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A0F29239B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87C42923BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729022AbgJSI2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 04:28:11 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:45123 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728871AbgJSI2L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 04:28:11 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2848E5C0130;
-        Mon, 19 Oct 2020 04:28:10 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 19 Oct 2020 04:28:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=hvPud9xYcTtOWwv0mvRc3kappZB
-        DFlvPQqKJCgiHFTo=; b=DmkQ7YiwbycXprZ0Ty4hqHn5N3ZT0u5r2JsS/i03nlT
-        JuLhSyEPTBqO5SMgBbMLPCwdeCtwB73YNJaIuQuNQCtxvoAOASnJurs/r09vZAKo
-        WkMFL5Gw7Oa3VWjVGUha3Rv0s7XiUb7LNtbKCDcE7fZG8qyYNyII2vRmyQrAl3qX
-        6ObMCTgPj/KxhqlOE+yyATKVzCN+iafCJMXN4g4otpTQdBG8F4oXBWwKh5MZkF0s
-        VSzT+aToPxOVBqF1o4cXLBqCoGWm8MgDLV5Guw7GaBIUhKtshvQiZR6BmKMK78n1
-        NfTs0F6juFu82f/Yb8SB4OpjEtjvLJa/xc23bhaELGw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=hvPud9
-        xYcTtOWwv0mvRc3kappZBDFlvPQqKJCgiHFTo=; b=a773T+JyU+0AYy4E3yIkTy
-        AZtkKA/MgksnjHOZaAOlwjffy3hiSbG59ClcCLulSAJQViP43y9wXTiyBkDS5CrE
-        otSEkV25kBzvFVJ/kdBzecFFu+4j6wVje+JAJP2PE7ZA+l/u18zE6gP91wGdpW1A
-        GxRMtw7GwEFzNa7pqXBT+8PdDCGYJejSKHcY3tx1FEvB2hiFk0LafdS6nX6NCzhh
-        x7KUjeL9y9iQ6ShQACTtp4Zp72hmU9UJSWS030K/GeEeJBx1icCyT54AHS6YXikI
-        zjNfxmI11OspZk8xinki3gNOoEzTp/zQSs/TxCmA9NreWEkLUe9ENMcNDeUEjZdw
-        ==
-X-ME-Sender: <xms:GU6NX5u3uYyERTNmuBJDrWoNUOTPJLSalCPBwCCcC0t73S44925A0Q>
-    <xme:GU6NXyeL4rpc6FMXG2efDab8acwkR3XVBL5A8BC5-4VKSRvPrBb-GbtCn7amutZ7n
-    96GTmvh-2T2csHtQ3w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjedugddthecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:GU6NX8yhzizyLmF4Cd-CFNBfWe0EdVmR_lq5o6i1tvrPKyemz-gH7w>
-    <xmx:GU6NXwOYSw6O1hQsxrnFVFU7SpWnp1dcZT8gnj4xPgkYwfyxLKrJlA>
-    <xmx:GU6NX58vyvmv6K-saDBFIuh4XmDdWrtSa3Zce6D5ncli8GIzvIlR2A>
-    <xmx:Gk6NXyMtsdj6_1SbimQnQO2iaiwAvpOi9_OzVj2wZ6Zj1G-5QPyslQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8D2523280069;
-        Mon, 19 Oct 2020 04:28:09 -0400 (EDT)
-Date:   Mon, 19 Oct 2020 10:28:08 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/17] ASoC: sun8i-codec: Protect the clock rate while
- streams are open
-Message-ID: <20201019082808.rg3xvo3yjg5g4xpa@gilmour.lan>
-References: <20201014061941.4306-1-samuel@sholland.org>
- <20201014061941.4306-13-samuel@sholland.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="v4z4ql2j7u3o4bzk"
+        id S1729364AbgJSIhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 04:37:00 -0400
+Received: from gate.crashing.org ([63.228.1.57]:34801 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728239AbgJSIhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 04:37:00 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 09J8WSVC005033;
+        Mon, 19 Oct 2020 03:32:28 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 09J8WPVE005032;
+        Mon, 19 Oct 2020 03:32:25 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Mon, 19 Oct 2020 03:32:25 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Joel Stanley <joel@jms.id.au>, Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arch@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] asm-generic: Force inlining of get_order() to work around gcc10 poor decision
+Message-ID: <20201019083225.GN2672@gate.crashing.org>
+References: <96c6172d619c51acc5c1c4884b80785c59af4102.1602949927.git.christophe.leroy@csgroup.eu> <CACPK8XfgK0Bj3sLjKCi80jS6vK34FN5BTkU8FvBGcMR=RQn4Xw@mail.gmail.com> <0bd0afae-f043-2811-944b-c94d90e231d2@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201014061941.4306-13-samuel@sholland.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0bd0afae-f043-2811-944b-c94d90e231d2@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 19, 2020 at 07:50:41AM +0200, Christophe Leroy wrote:
+> Le 19/10/2020 à 06:55, Joel Stanley a écrit :
+> >>In the old days, marking a function 'static inline' was forcing
+> >>GCC to inline, but since commit ac7c3e4ff401 ("compiler: enable
+> >>CONFIG_OPTIMIZE_INLINING forcibly") GCC may decide to not inline
+> >>a function.
+> >>
+> >>It looks like GCC 10 is taking poor decisions on this.
 
---v4z4ql2j7u3o4bzk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >1952 bytes smaller with your patch applied. Did you raise this with
+> >anyone from GCC?
+> 
+> Yes I did, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97445
+> 
+> For the time being, it's at a standstill.
 
-On Wed, Oct 14, 2020 at 01:19:36AM -0500, Samuel Holland wrote:
-> The codec's clock input is shared among all AIFs, and shared with other
-> audio-related hardware in the SoC, including I2S and SPDIF controllers.
-> To ensure sample rates selected by userspace or by codec2codec DAI links
-> are maintained, the clock rate must be protected while it is in use.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  sound/soc/sunxi/Kconfig       |  1 +
->  sound/soc/sunxi/sun8i-codec.c | 29 +++++++++++++++++++++++++++--
->  2 files changed, 28 insertions(+), 2 deletions(-)
->=20
-> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-> index 9cd7009cb570..69b9d8515335 100644
-> --- a/sound/soc/sunxi/Kconfig
-> +++ b/sound/soc/sunxi/Kconfig
-> @@ -9,16 +9,17 @@ config SND_SUN4I_CODEC
->  	help
->  	  Select Y or M to add support for the Codec embedded in the Allwinner
->  	  A10 and affiliated SoCs.
-> =20
->  config SND_SUN8I_CODEC
->  	tristate "Allwinner SUN8I audio codec"
->  	depends on OF
->  	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
-> +	select COMMON_CLK
+The kernel should just use __always_inline if that is what it *wants*;
+that is true here most likely.  GCC could perhaps improve its heuristics
+so that it no longer thinks these functions are often too big for
+inlining (they *are* pretty big, but not after basic optimisations with
+constant integer arguments).
 
-Wouldn't a depends on make more sense here? It's kind of weird to pull
-it from a driver when the platform that would run it has no CCF support.
 
-With this changed,
-Acked-by: Maxime Ripard <mripard@kernel.org>
-
-Maxime
-
---v4z4ql2j7u3o4bzk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX41OGAAKCRDj7w1vZxhR
-xQhOAPwOUwuCKg39NXFLVb2FZToE1sU0iiqk/p9JBsaPJ9LthwD/QQh2z9ZfLgOY
-cdUSIOR2DvfhcRU4bILpVGNxfQ910gI=
-=UebJ
------END PGP SIGNATURE-----
-
---v4z4ql2j7u3o4bzk--
+Segher
