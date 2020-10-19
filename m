@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B00292CFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B15292D06
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728308AbgJSRmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:42:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50210 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727689AbgJSRmj (ORCPT
+        id S1728450AbgJSRnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726138AbgJSRnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:42:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603129357;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mReA3kFCX+myyiXgiYscelnLZR7Th5JMT/d6TpCbjKM=;
-        b=gSenhv9dTBKbpZpEbzYDgwZR8CYhSbFcc9jm2sR/s4S+ieRDw5UEW1aPirSsUsIGLtZpz1
-        TI+sQt/3PvfE2Oojxq4Ehk7fxO+f0cz65jqqfia+C1tZ+5FDMfbIhUh6xZnmJCcHgj7Ig8
-        MCUmIlrHHmtVGRwPvN4B2IDb8AZeYD0=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-pUlWtUP8MpKMxkPVLCgPRg-1; Mon, 19 Oct 2020 13:42:36 -0400
-X-MC-Unique: pUlWtUP8MpKMxkPVLCgPRg-1
-Received: by mail-wr1-f69.google.com with SMTP id p6so143803wrm.23
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:42:36 -0700 (PDT)
+        Mon, 19 Oct 2020 13:43:39 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E7BC0613CE;
+        Mon, 19 Oct 2020 10:43:39 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id c21so1040714ljj.0;
+        Mon, 19 Oct 2020 10:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=0vrWp9pDBfjblkGus7WCqC4oVtXZHu9bkKVvgRqfJGA=;
+        b=m1F1+vh/eEYSo2a3Ta/q+PMJkFsWw6jIAD9ZPvAyKdlQH7nsz4NtpHU+wAtQ+S5ANh
+         hCSC3x0QHVKLT4Ev/fOF72amwXKpf7OxknxMD1gjZ09g7u3Pok2UsChz/pth3zgzE/na
+         DXVpTyId1naSsI8T+opQ+7ym+EcHyKWQNBfOClNGZemblk0dx3fmMkxf+m3nffM12W9y
+         dy1jnB5cEL9i5C//t/rr9XBOWp8epGqzCdziyrJLRCkzlz4IXNC4mvfzIqcjib/SB9lv
+         C9bPCqoPuhW+4cC0K/N03ZbThEMOqvQKZU9QhoTEiUHMhzOQ9iIenL5oSy+em4HoJtgx
+         G60g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mReA3kFCX+myyiXgiYscelnLZR7Th5JMT/d6TpCbjKM=;
-        b=C1sDxPRFYZ8S57zlMAcqj5QCFPq/M3kTgwCd/EHK+jk5PU/WcrZ+zafiE7m3qjfD7/
-         etTIoQZOtDGQVSHSSlBZ3Pr9K9p9ub0TzT+NIXJH/JVdU5bV7y4N3Y4ie73w+xrIH6np
-         KhPuMSDDAAgKlR9rrX2l8VzAo0Hykf1Yt/onNguc8PA1wxb586AxKEGLxWEXSA6aGpna
-         45ahi8r4lPIZo+VyRrYucJNEw6RT6FJfwWWuTgmZqfEXKn2fH4/B+hDGymjE4hPwSeMZ
-         BO7JmHii0BEKSxCy/JUYpbhX5s9CSFSJnd2l2IZLpslNjPxgmOe/lua5huVLN2ddRUvv
-         PFmQ==
-X-Gm-Message-State: AOAM531mDSSoXcKAD1hMRG04sC5fU0qb2QJ1936xVyJzGh7FE4k5WFmA
-        itRvU0ULljF67cNVFBtVfHX39ld7yxSUm8zQvIZobm+3/uTm6Dna/Yzn1WLWNzW+hHoF+DkwtXe
-        P7girMuks8oIs7bwlM1Ytmkcf
-X-Received: by 2002:a1c:dd85:: with SMTP id u127mr359489wmg.33.1603129355126;
-        Mon, 19 Oct 2020 10:42:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxazz8vOXvEcDHpQHW1+LpvFk1J3aJizL23Ex5gCpbmbM8wq6DtaFvuDnkLDGC1NY8eSb4o7A==
-X-Received: by 2002:a1c:dd85:: with SMTP id u127mr359472wmg.33.1603129354885;
-        Mon, 19 Oct 2020 10:42:34 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b25sm333844wmj.21.2020.10.19.10.42.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 10:42:34 -0700 (PDT)
-Subject: Re: [PATCH v2 15/20] kvm: x86/mmu: Support dirty logging for the TDP
- MMU
-To:     Ben Gardon <bgardon@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20201014182700.2888246-1-bgardon@google.com>
- <20201014182700.2888246-16-bgardon@google.com>
- <f5e558b2-dab8-ca9e-6870-0c69d683703a@redhat.com>
- <CANgfPd9UgKK6tr9ArQsDB9ys4Ne=RVkDccY_Za4r4SSHWV46cQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <099dd316-4409-7430-d543-3a33a0ad2df1@redhat.com>
-Date:   Mon, 19 Oct 2020 19:42:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <CANgfPd9UgKK6tr9ArQsDB9ys4Ne=RVkDccY_Za4r4SSHWV46cQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=0vrWp9pDBfjblkGus7WCqC4oVtXZHu9bkKVvgRqfJGA=;
+        b=Dc/2j4twOiJ0GURMYi9QlnVWrl0osYsGsLaW5TQhPgKavJHn7tnVa9uVsFU5vN3fuj
+         jZDYRxd7/+qE+2gIjDNZTWeflQ22WBfDhzsMa1WRv3WdBLioJNeHCkjTEvlOYH7g9IfX
+         9MkcRQmxB3CrZ0JutcuySP5zpDtE2DVB84lGG0evETjM8LSs1Q2UX7dKBMjOb2HtfNJf
+         CSFyP5g7cou+jcbMCdN2FQ8YFjJTfif/Am+tk5qsTU6vEBauW3TtIOeNG9Er7USTQ7He
+         aDv974DSqj2NXEw6PScTMaOtmqwp3F0RHBvDQqnuvGM0h2cavAkHhTQaQARnoAeL5g0K
+         MqsA==
+X-Gm-Message-State: AOAM533ztA4cCd6koCnymrYBP+C/v+uKksv8+bBLWHJoYdo5fsQND6N8
+        8/GiaushdhKnvzSQb6FRv9iCYienCiIZ5A==
+X-Google-Smtp-Source: ABdhPJw5tjN+paj+xrwRXiSeXGqzW2Mu5QDoGZjT9BgbnWvfsMNDjjKCtMCS+eUuFs3odSY4cub/Tw==
+X-Received: by 2002:a2e:83c9:: with SMTP id s9mr454939ljh.168.1603129417240;
+        Mon, 19 Oct 2020 10:43:37 -0700 (PDT)
+Received: from [192.168.7.20] (95-25-113-230.broadband.corbina.ru. [95.25.113.230])
+        by smtp.gmail.com with ESMTPSA id z10sm76647lfd.159.2020.10.19.10.43.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 19 Oct 2020 10:43:36 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] spi: spi-sun6i: implement DMA-based transfer mode
+From:   Alexander Kochetkov <al.kochet@gmail.com>
+In-Reply-To: <20201019082129.myxpxla5xwoqwldo@gilmour.lan>
+Date:   Mon, 19 Oct 2020 20:43:34 +0300
+Cc:     Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4EC91DD5-5611-4B48-B6FC-00690B400584@gmail.com>
+References: <20201015154740.20825-1-al.kochet@gmail.com>
+ <20201019082129.myxpxla5xwoqwldo@gilmour.lan>
+To:     Maxime Ripard <maxime@cerno.tech>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/20 19:07, Ben Gardon wrote:
-> On Fri, Oct 16, 2020 at 9:18 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->>
->> On 14/10/20 20:26, Ben Gardon wrote:
->>>
->>> +     if (kvm->arch.tdp_mmu_enabled)
->>> +             kvm_tdp_mmu_clear_dirty_pt_masked(kvm, slot,
->>> +                             slot->base_gfn + gfn_offset, mask, true);
->>
->> This was "false" in v1, I need --verbose for this change. :)
-> 
-> I don't think this changed from v1. Note that there are two callers in
-> mmu.c - kvm_mmu_write_protect_pt_masked and
-> kvm_mmu_clear_dirty_pt_masked. One calls with wrprot = true and the
-> other with wrprot = false.
 
-Ah, I messed up fixing the conflicts.
 
-Paolo
+> 19 =D0=BE=D0=BA=D1=82. 2020 =D0=B3., =D0=B2 11:21, Maxime Ripard =
+<maxime@cerno.tech> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BB(=D0=B0):
+>=20
+> Hi!
+>=20
+> On Thu, Oct 15, 2020 at 06:47:40PM +0300, Alexander Kochetkov wrote:
+>> DMA-based transfer will be enabled if data length is larger than FIFO =
+size
+>> (64 bytes for A64). This greatly reduce number of interrupts for
+>> transferring data.
+>>=20
+>> For smaller data size PIO mode will be used. In PIO mode whole buffer =
+will
+>> be loaded into FIFO.
+>>=20
+>> If driver failed to request DMA channels then it fallback for PIO =
+mode.
+>>=20
+>> Tested on SOPINE (https://www.pine64.org/sopine/)
+>>=20
+>> Signed-off-by: Alexander Kochetkov <al.kochet@gmail.com>
+>=20
+> Thanks for working on this, it's been a bit overdue
 
+Hi, Maxime!
+
+We did custom A64 based computation module for our product.
+Do you mean that A64 is obsolete or EOL product?
+If so, can you recommend active replacement for A64 from Allwinner same =
+price?
+
+Alexander=
