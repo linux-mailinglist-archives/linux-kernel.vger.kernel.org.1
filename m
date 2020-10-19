@@ -2,157 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2932925C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8026E2925FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgJSK1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:27:44 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:62856 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726880AbgJSK1o (ORCPT
+        id S1726952AbgJSKlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726619AbgJSKlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:27:44 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201019102740epoutp01f49bc822239d319a1f1acd0144e3de7c~-XewDEP4S0239402394epoutp01B
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:27:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201019102740epoutp01f49bc822239d319a1f1acd0144e3de7c~-XewDEP4S0239402394epoutp01B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603103260;
-        bh=yDoDNggOg225OrRqSzF1Bazr7Llyp7wh5Skp9ddw+sE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=tqtSjjqN0J/CyHqud8XhIJe2YsS5jLLchn7D+Z/iQbmhafUN9rRsveinPyIho2H8v
-         gibGLwwlcDjawTb9CBJHsBFDH+gHqrLw05R1V7/Cp+gTMGM6P4ymywCyv3xNizYFXz
-         F+plIiExPtscarsXOZA/Y3QjHO6Z/7jPf6gx0T5w=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20201019102739epcas1p42e5bfcd73ff2fa8b98b3cd0e920fd705~-XevXOg6F0830008300epcas1p4u;
-        Mon, 19 Oct 2020 10:27:39 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.152]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4CFCcn42zwzMqYkj; Mon, 19 Oct
-        2020 10:27:37 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0C.1B.10463.91A6D8F5; Mon, 19 Oct 2020 19:27:37 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20201019102736epcas1p32f607ce884d698b00f7f3a4c89f7fbbb~-XesqXydC0660906609epcas1p3T;
-        Mon, 19 Oct 2020 10:27:36 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201019102736epsmtrp21ee944d31054f04479a958947c9f1f89~-XespcpP31185611856epsmtrp2z;
-        Mon, 19 Oct 2020 10:27:36 +0000 (GMT)
-X-AuditID: b6c32a38-efbff700000028df-f5-5f8d6a195582
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FB.EE.08604.81A6D8F5; Mon, 19 Oct 2020 19:27:36 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201019102736epsmtip27f942c8dd0686286e094a9cede41c278~-XesV_66R0681806818epsmtip2S;
-        Mon, 19 Oct 2020 10:27:36 +0000 (GMT)
-Subject: Re: [PATCH v3 2/2] PM / devfreq: Add governor attribute flag for
- specifc sysfs nodes
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Cc:     leonard.crestez@nxp.com, lukasz.luba@arm.com,
-        enric.balletbo@collabora.com, hl@rock-chips.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, abel.vesa@nxp.com,
-        k.konieczny@samsung.com, b.zolnierkie@samsung.com,
-        chanwoo@kernel.org, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com
-Organization: Samsung Electronics
-Message-ID: <d198e358-f636-2f52-1d73-098f8bebffbf@samsung.com>
-Date:   Mon, 19 Oct 2020 19:41:01 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Mon, 19 Oct 2020 06:41:22 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAA6C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 03:41:21 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id e7so5753398pfn.12
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 03:41:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=SuEDhoJkqZJTj7Ov1JxCpKbJQtXKdi4rudiaNc91CPk=;
+        b=sV+ZRnVSAA3TCbr5+o4E+zdAOtqCSZuOgIsYzYym4X2igxk+ywt4cMwpwovtALdgVH
+         FHCTZfDUQq04/Q6eWHHFnY+WKNfnnmw7YqcTr0iM8TLAm142vTQM4bhe6P9sR+maUh6c
+         6AIeExUlyoAjOBXtu57dy0I+ovV9HB66ZLvk6p/EGD4nEhsLflK7wD+qCMo60PZxdcq4
+         T9ubskgwW5RpSk+ZmPv/j9fmuFZugvuJDVagj2eBF9/PBdCSAy2gNwL6OVLjbxtnZDn9
+         xHnyRq5yTvSOmGyzM3jzB06E9vRrtSZHzuvnGHCl+Llw9pIhyFsJKxTOg1PzAGoHk4Ue
+         9MmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=SuEDhoJkqZJTj7Ov1JxCpKbJQtXKdi4rudiaNc91CPk=;
+        b=hm7hlUWdNJlwVVvPZPEItpJKqfk09o1ZTszLH9CpSj0as/4YOMXzfE2xVli1azkIsB
+         nV6ufHNteXs3MeuDkJtH+HlR9MtYQUPXFheXewWIEwwJzXHjpQXo0NpcQ/w9fvY3Iz0L
+         xawmBGHaWojFFwS9VZoa8y6Aa00MQKWHqwUT5CkIwx4xHH52QzphZhdaAewb9Ew8yc9z
+         ZHVFVVqgc+8YvY/nTMzHhZ5ZGbLmtJERR2sH046R9vlWXxcncQVgBWUfaARmIja9ZQO2
+         tKrNhn9vdAtEbA24zwsskUwnvo4SjtJKp8F26cFtO/gXYaooMQgUwx5Ht5FxRRfPNf+Q
+         HrnA==
+X-Gm-Message-State: AOAM533tneo6bISNBoqey5aG9wG3BY32yxXieMkAsVfrKdeC1zKaesbL
+        PaifsOUtE6NyKQi5KFddWDuYDw==
+X-Google-Smtp-Source: ABdhPJywR3QEuPX62DL9SYja3y35mo4Od/94mLJEfqPGVLRCbYPB/ZYzGYHkv/4h0y8d6wlQVOls5A==
+X-Received: by 2002:a62:2905:0:b029:15b:57ef:3356 with SMTP id p5-20020a6229050000b029015b57ef3356mr13599525pfp.36.1603104081404;
+        Mon, 19 Oct 2020 03:41:21 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([64.120.119.108])
+        by smtp.gmail.com with ESMTPSA id j24sm11009314pjn.9.2020.10.19.03.41.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 19 Oct 2020 03:41:20 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 18:41:15 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
+Subject: Re: [PATCH v2 07/14] perf arm-spe: Refactor address packet handling
+Message-ID: <20201019104115.GA7187@leoy-ThinkPad-X240s>
+References: <20200929133917.9224-1-leo.yan@linaro.org>
+ <20200929133917.9224-8-leo.yan@linaro.org>
+ <2e9a9499-4596-2a07-4d44-30e319206c12@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1db2fb62-0b82-409d-20a7-c2ef376d4580@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0xTVxzO6eP21q1yrIBHNIjXmE0USimFqwNnpm6Nw8GeCWroOnpDEWib
-        e2ERCRsojIdjwxCSrkFExpBHN0YlUKuE0FUXXkOHCIjdXOgmEShQHKtD4/oy47/vd37fd77z
-        /c45OFs4hYXgGeocilYrsghsHafrp12iiM0nK+VRtrtbyaZfbwCyQ9fOJc9P3OGQbUvTgDRM
-        WQDp+nGATRbrGzhkvVPHJYfPzPHIZtsSlxw112LkcqUVkOWP9Rh56Uwxj5wqasbIJ+Y6zgEo
-        M9QZgMxkawSyq3obT2ZsLcdklWcdmKzDYWLJnul7ObKvOluBbNkYmsw/lhmvohRKig6j1Gka
-        ZYY6PYF4+335Qbk0NkocId5LxhFhakU2lUAcSkyOeDMjy52DCPtUkZXrXkpWMAwh2h9Pa3Jz
-        qDCVhslJICitMku7VxvJKLKZXHV6ZJome584Kipa6iZ+nKnSGbq52mH8VE19Pa8QrGAVgI8j
-        GIMW255xK8A6XAhNAJUUtbB8hROg3zpW2b5iBSDXQAnvhaS0rtTP6gHo+blKv34BoFqX08va
-        COVosn2F7cEYDEe9MxNew0BYgKy3H2AeARs2s5ChfZjjaQTA7WjMNQ08WAD3o/nvrSwP5sCd
-        qG1u1isOgh+h/q5iP2cD6v/G7tXy4euoumvJy2HDTeie/SLLh7eh7vlabwYEXTiaWRhj+TIc
-        Qg5rJfDhjejRz53+bCFo2dHjH00+aum3Yj5xGUCdvbe4voYE9X5X7d4IdzvsQu1mkW95O7q6
-        egH4jNcjx99fcj0UBAWo7Auhj7IDjT6w+Y+wGX1bWo5VAUK/Jo5+TQT9mgj6/83qAacVBFNa
-        JjudYsTamLX3bQTeVx5OmsCF+cVIC2DhwAIQziYCBSkbKuRCgVKRd5qiNXI6N4tiLEDqHvB5
-        dkhQmsb9TdQ5crE0WiKRkDHiWKlYTGwSPN1dJhfCdEUOlUlRWop+oWPh/JBC1jbnQUGE3bw4
-        ePR62dBCtW22aWu8ceeWi+zDiYOi8ap7/+J5Txt1E9c+qzCE8uFNla3kWtKcY8L0y0suZmQo
-        eOCyPdEYfvfI6In7x45nvrMFDil7/onVTexhhJ1Xaq4YdnfM5j0pv9/33uOUT8ZhI736SlHq
-        SSruz2lefkEtVcCLDw/mNtTxxuLevRSSz3t+c+xzOH58h2j6yI23Aj6Q/KGm26IfpmCp0Jha
-        U1Y4bk06ahqx/HW7qeVs3w/OO5fN1wdrTrCSZmbOvdb9sGDf0qS0ubB4j1kVNHLqdO38ra81
-        B5QfVh0OyKPrQtf//nJog2D+VWVFXOBsov2RpS9wfGwy9Q2Cw6gU4nA2zSj+A88TQkxuBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCIsWRmVeSWpSXmKPExsWy7bCSvK5EVm+8wcaHJhbLLh1ltNg4Yz2r
-        xcQbV1gsVn98zGix5vYhRosfG04xW7TMWsRiseDTDFaLs01v2C1W3P3IanF51xw2i8+9Rxgt
-        Or/MYrNY2NTCbnG7cQWbxc9d81gcBDzWzFvD6LHj7hJGj52z7rJ7bFrVyebR2/yOzWPjux1M
-        Hn9n7Wfx6NuyitHj8ya5AM4oLpuU1JzMstQifbsErowZa7azFpzlqJi6YAF7A+M3ti5GTg4J
-        AROJ9nntTF2MXBxCArsZJd6s2coCkZCUmHbxKHMXIweQLSxx+HAxRM1bRon5Z/awg9QIC8RL
-        3Fz/jRnEZhPQktj/4gbYUBGBWolXq6ezgtjMAiuYJBZ+FoJoXs4k8W/vWSaQBL+AosTVH48Z
-        QWxeATuJt2uPgMVZBFQlVr95DTZIVCBMYueSx0wQNYISJ2c+ATuOU8BeYvK2j2wQC9Ql/sy7
-        xAxhi0vcejKfCcKWl9j+dg7zBEbhWUjaZyFpmYWkZRaSlgWMLKsYJVMLinPTc4sNCwzzUsv1
-        ihNzi0vz0vWS83M3MYIjWktzB+P2VR/0DjEycTAeYpTgYFYS4Y0U7IoX4k1JrKxKLcqPLyrN
-        SS0+xCjNwaIkznujcGGckEB6YklqdmpqQWoRTJaJg1Oqgck6KmfKslul4rfydl2IZ22N/rXL
-        0cNCd7v6TjGBXpb/lXcEN9kd3hvuFzPl5crbBXx+u55t792pOjOmydHTR/yW0uHHWyf1HVzv
-        u6bRtaa+UfrEN/tDC5W2Zgpb37R/rHrJ61LFuxXTSz+0LolrldZ1+LXDI3/b0hO7/fTkBF+I
-        NOwIzzzdGVdyTD84tjbtq9XV545/us807mv+6bzkh0+K8RfrhoCt1YufPVyZMffDZS4WK5Us
-        P1/rqi8xTzq2nuz39GX8qbSWb2rk7PvnOmzzyxfG/6h6tr+Nkd+KMbH2WtGsM+HnGyfLrX7H
-        J8Rp3GR/TKvGeE7ZE99vUXJ3MsLFdrcJTsx5dW2eCOvr2UosxRmJhlrMRcWJAELi1pFXAwAA
-X-CMS-MailID: 20201019102736epcas1p32f607ce884d698b00f7f3a4c89f7fbbb
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201007045340epcas1p3b4d0f9187f5330a45d20d9d9b79f1767
-References: <20201007050703.20759-1-cw00.choi@samsung.com>
-        <CGME20201007045340epcas1p3b4d0f9187f5330a45d20d9d9b79f1767@epcas1p3.samsung.com>
-        <20201007050703.20759-3-cw00.choi@samsung.com>
-        <4cb8ece7-9399-9ee0-5f93-6c19630308d6@gmail.com>
-        <1db2fb62-0b82-409d-20a7-c2ef376d4580@samsung.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2e9a9499-4596-2a07-4d44-30e319206c12@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/20 1:11 PM, Chanwoo Choi wrote:
-> On 10/19/20 9:39 AM, Dmitry Osipenko wrote:
->> ...
->>> @@ -1361,6 +1373,9 @@ static ssize_t governor_store(struct device *dev, struct device_attribute *attr,
->>>  		goto out;
->>>  	}
->>>  
->>> +	remove_sysfs_files(df, df->governor);
->>> +	create_sysfs_files(df, governor);
->>> +
->>>  	prev_governor = df->governor;
->>>  	df->governor = governor;
->>>  	strncpy(df->governor_name, governor->name, DEVFREQ_NAME_LEN);
->>> @@ -1460,39 +1475,6 @@ static ssize_t target_freq_show(struct device *dev,
->>>  }
->>
->> The further code may revert df->governor to the prev_governor or set it
-> 
-> prev_governor is better. I'll change it.
-> 
->> to NULL. The create_sysfs_files(df->governor) should be invoked at the
+Hi Andre,
 
-Also, when creating and removing the sysfs files, devfreq instance is needed
-because of df->dev.kobj. So, *_sysfs_files need the two parameters.
+On Mon, Oct 19, 2020 at 10:01:28AM +0100, André Przywara wrote:
 
->> very end of the governor_store() and only in a case of success.
-> 
-> OK. I'll add more exception handling code.
-> 
-> 
+[...]
 
+> > diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> > index cc18a1e8c212..9d3de163d47c 100644
+> > --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> > +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> > @@ -24,36 +24,37 @@
+> >  
+> >  static u64 arm_spe_calc_ip(int index, u64 payload)
+> >  {
+> > -	u8 *addr = (u8 *)&payload;
+> > -	int ns, el;
+> > +	u64 ns, el;
+> 
+> This (and the "u64 vs. u8[]" changes below) looks like a nice cleanup.
+>
+> >  	/* Instruction virtual address or Branch target address */
+> >  	if (index == SPE_ADDR_PKT_HDR_INDEX_INS ||
+> >  	    index == SPE_ADDR_PKT_HDR_INDEX_BRANCH) {
+> > -		ns = addr[7] & SPE_ADDR_PKT_NS;
+> > -		el = (addr[7] & SPE_ADDR_PKT_EL_MASK) >> SPE_ADDR_PKT_EL_OFFSET;
+> > +		ns = payload & SPE_ADDR_PKT_INST_VA_NS;
+> > +		el = (payload & SPE_ADDR_PKT_INST_VA_EL_MASK)
+> > +			>> SPE_ADDR_PKT_INST_VA_EL_SHIFT;
+> 
+> So if I see this correctly, this _EL_SHIFT and _EL_MASK are only used
+> together, and only to read values, not to construct them.
+> So can you fuse them together in the header file below, like:
+> 	el = SPE_ADDR_PKT_INST_VA_GET_EL(payload);
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Agreed that this is more neat.
+
+> That should help readablity, I guess, while still keeping the actual
+> numbers in one place. _SHIFT and _MASK are useful when we use them to
+> both extract *and construct* values, but here we only parse the buffer.
+> 
+> Similar for other places where you just extract bits from a bitfield or
+> integer.
+
+Will apply the suggestion crossing the patch set.
+
+Thanks a lot for your reviewing and suggestions.
+
+Leo
