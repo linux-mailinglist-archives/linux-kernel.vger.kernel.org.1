@@ -2,105 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D227292264
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD284292278
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgJSGSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 02:18:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37224 "EHLO mail.kernel.org"
+        id S1726714AbgJSGXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 02:23:10 -0400
+Received: from mga17.intel.com ([192.55.52.151]:53538 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726553AbgJSGSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 02:18:25 -0400
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A6AA2225A;
-        Mon, 19 Oct 2020 06:18:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603088304;
-        bh=wKpuJqtLejAYL1/cOYs8uVFSeuewCEtx062tOnUPBFI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=y/J6T4loLP9EdxP94W3+SK+2kJMOxEOudgoxxqQe/jI0hfeQl8uob39vMceN7aq3K
-         zcxwhP57XhondUyazh/tfqAJiGMVbHMwRNZ9aBL6BLNgTCQo7tE1sjaO7OsBFcb2RY
-         7ZHqsIQixvicIZ2ScU1WC9RKDnL3P/3pl4gCwun8=
-Received: by mail-lf1-f48.google.com with SMTP id a7so12693884lfk.9;
-        Sun, 18 Oct 2020 23:18:24 -0700 (PDT)
-X-Gm-Message-State: AOAM5333/ZoQBxXxPujknsNC+lhrVKJTebTnH4Yp/5YlCM3fCEDdk8M6
-        RdLWAvt0H82x/1Zah0JYyVultM678u1L5/mk3zU=
-X-Google-Smtp-Source: ABdhPJwKk/IhJUSPjlmgqhubcVjpH3v5MZtvWi+xOTHvDbupcZoakPgVCU8E2uQLb1yuLQWop4xYSXLcvj4phEqjU5k=
-X-Received: by 2002:a19:c703:: with SMTP id x3mr4833030lff.105.1603088302460;
- Sun, 18 Oct 2020 23:18:22 -0700 (PDT)
+        id S1726626AbgJSGXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 02:23:10 -0400
+IronPort-SDR: LwA7XxHDLwe1TnEW2Lye60tsNFghm1ELKinsTSvbrP+8nNGG/luEcT5f0yqbzuRqetrbt39lgF
+ 7IO1oi57A05g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="146836239"
+X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
+   d="scan'208";a="146836239"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:23:04 -0700
+IronPort-SDR: WijY2TQCLEfpUw0fX8sEtdIPCeJugv1LtVcbw8O6+yYh+fZ8gXiyqiey5OntJ5Ws6UVoHtDb6R
+ xuZYyPTYSA5A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
+   d="scan'208";a="521892306"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 18 Oct 2020 23:23:02 -0700
+Received: from [10.226.38.24] (vramuthx-MOBL1.gar.corp.intel.com [10.226.38.24])
+        by linux.intel.com (Postfix) with ESMTP id 68A6B5808A3;
+        Sun, 18 Oct 2020 23:22:59 -0700 (PDT)
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Subject: Re: [PATCH v1 2/6] dt-bindings: spi: Convert cadence-quadspi.txt to
+ cadence-quadspi.yaml
+To:     Mark Brown <broonie@kernel.org>
+Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        miquel.raynal@bootlin.com, simon.k.r.goldschmidt@gmail.com,
+        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com
+References: <20201016093138.28871-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201016093138.28871-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201016161844.GH5274@sirena.org.uk>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <1afb6b7a-94ec-b324-99f3-4c4d4529e581@linux.intel.com>
+Date:   Mon, 19 Oct 2020 14:22:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <20201017110651.GA1602260@dragonet>
-In-Reply-To: <20201017110651.GA1602260@dragonet>
-From:   Song Liu <song@kernel.org>
-Date:   Sun, 18 Oct 2020 23:18:11 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW583=org7AOR-W2vcQV3pTBxin2LG1tb3On=x6VtjXvxQ@mail.gmail.com>
-Message-ID: <CAPhsuW583=org7AOR-W2vcQV3pTBxin2LG1tb3On=x6VtjXvxQ@mail.gmail.com>
-Subject: Re: WARNING in md_ioctl
-To:     "Dae R. Jeong" <dae.r.jeong@kaist.ac.kr>
-Cc:     yjkwon@kaist.ac.kr, linux-raid <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201016161844.GH5274@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 4:13 AM Dae R. Jeong <dae.r.jeong@kaist.ac.kr> wrote:
->
-> Hi,
->
-> I looked into the warning "WARNING in md_ioctl" found by Syzkaller.
-> (https://syzkaller.appspot.com/bug?id=fbf9eaea2e65bfcabb4e2750c3ab0892867edea1)
-> I suspect that it is caused by a race between two concurrenct ioctl()s as belows.
->
-> CPU1 (md_ioctl())                          CPU2 (md_ioctl())
-> ------                                     ------
-> set_bit(MD_CLOSING, &mddev->flags);
-> did_set_md_closing = true;
->                                            WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
->
-> if(did_set_md_closing)
->     clear_bit(MD_CLOSING, &mddev->flags);
->
-> If the above is correct, this warning is introduced
-> in the commit 065e519e("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop").
-> Could you please take a look into this?
+Hi Mark,
 
-This is an interesting case. We try to protect against concurrent
-ioctl via mddev->openers:
+On 17/10/2020 12:18 am, Mark Brown wrote:
+> On Fri, Oct 16, 2020 at 05:31:34PM +0800, Ramuthevar,Vadivel MuruganX wrote:
+>> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+>>
+>> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
+>> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
+> 
+> Please make YAML conversions the last thing in any patch series -
+> there's sometimes a backlog on reviews as the DT maintainers are very
+> busy so this means that delays with them don't hold the rest of the
+> series up.
+Thank you for the comment and suggestions...
+Sure, will do that accordingly.
 
-                if (mddev->pers && atomic_read(&mddev->openers) > 1) {
-                        mutex_unlock(&mddev->open_mutex);
-                        err = -EBUSY;
-                        goto out;
-                }
-
-But in this case, we are sending multiple ioctl from the same fd, so
-openers == 1.
-
-We can probably do something like:
-
-diff --git i/drivers/md/md.c w/drivers/md/md.c
-index 6072782070230..49442a3f4605b 100644
---- i/drivers/md/md.c
-+++ w/drivers/md/md.c
-@@ -7591,8 +7591,10 @@ static int md_ioctl(struct block_device *bdev,
-fmode_t mode,
-                        err = -EBUSY;
-                        goto out;
-                }
--               WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
--               set_bit(MD_CLOSING, &mddev->flags);
-+               if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
-+                       err = -EBUSY;
-+                       goto out;
-+               }
-                did_set_md_closing = true;
-                mutex_unlock(&mddev->open_mutex);
-                sync_blockdev(bdev);
-
-Could you please test whether this fixes the issue?
-
-Thanks,
-Song
+Regards
+Vadivel
+> 
