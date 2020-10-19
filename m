@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C79292D83
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89EB292D89
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730710AbgJSS1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 14:27:25 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:50792 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729369AbgJSS1Z (ORCPT
+        id S1730801AbgJSS22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 14:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729369AbgJSS21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 14:27:25 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 8ABE11C0B76; Mon, 19 Oct 2020 20:27:22 +0200 (CEST)
-Date:   Mon, 19 Oct 2020 20:27:21 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Joe Perches <joe@perches.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: sysfs filenames with spaces
-Message-ID: <20201019182721.GA14004@duo.ucw.cz>
-References: <9b6f5c32d244131dbd63b55b085b3b4173144b4b.camel@perches.com>
- <20201013171754.GA29185@duo.ucw.cz>
- <575e7e2eb77ee5c26c3ac8fb6cb863890e971a16.camel@perches.com>
+        Mon, 19 Oct 2020 14:28:27 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A89C0613CE;
+        Mon, 19 Oct 2020 11:28:26 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id c3so426810ybl.0;
+        Mon, 19 Oct 2020 11:28:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZL5YDl6hNmbkB+VpLWE2qHhC7lZo4UK+RqjNiE2QNK4=;
+        b=EtoIW9Jh2ojao1SiML3i0pk9oVO+o8TncTVzbAFpFbQtolDxYIvQZzSoPVGaYv6VXI
+         9iQplBLr9221apT92qhuI8c65N1y6mNzD866ckA66sfMVIZXshSe5bcvxG81x2vbPGfY
+         +f6hHWLULw4axD0cw9Lh4s9iGZij7vR75YLAypDGmzzahnLHs+ZFGWhfJ3RqqQ0F+EAa
+         5Hb13YAFuEQzqlSt51DrWl+tj3CCvbP9MxFWj3iAKftCF9ssw313XfU2XymQd+32nfEV
+         PhrGT5Lm/gXMLEJrMIWWlA4qVVYzpxEY3VT+wecLr3ZBFVLdi5z4O0C7PuACCacuBm3M
+         G1uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZL5YDl6hNmbkB+VpLWE2qHhC7lZo4UK+RqjNiE2QNK4=;
+        b=aVNN03h+LE5rMl1dyjbMGV8R/pptlGvi+W8pIcWp/WTZWbRdyOlyg1YLN6Cwn2yYtF
+         PRlubnGHE8B043G3Cj9PzoTzmpUP6iqm8FXmlC7sa0OinevZDjaI5Q34cJODl3bW50fx
+         b+NPn1OxpEacJrDqK1k3ndmAzdtzaKH0vGFnlTArUs4w0xojTamDTXeyJKp8FUNs85Ys
+         Z6bK653EXQckxZqISjvtgrkjBFP/ApP+uZnSLxOjsiSrjzOe6k09RH5ufOkPlrptIo7U
+         ZinErnnYjpyVk0drFjnDMa90WGBGBQrtWCx9V0Qvc+nrdzTRPPMkt7nVeAoilTDoCyGD
+         RDxA==
+X-Gm-Message-State: AOAM530CVD4LmxQZb36VkpWVSanz+VEb+0DcF2lWXeTGCYcuu/g+UCBl
+        tVJPM/wkTPY36mU+PN4uR+AzkAD+xWspTTHLaMY=
+X-Google-Smtp-Source: ABdhPJzMdWOJYtBlbNpUHOt6MIZx+gCaEELEjrSHkVKLh/kkizysAtv930DbisYV9sY+77EdbA0GVk1Z/Bad5INjipE=
+X-Received: by 2002:a25:cb10:: with SMTP id b16mr746460ybg.459.1603132105610;
+ Mon, 19 Oct 2020 11:28:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="vkogqOf2sHV7VnPd"
-Content-Disposition: inline
-In-Reply-To: <575e7e2eb77ee5c26c3ac8fb6cb863890e971a16.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201019173846.1021-1-trix@redhat.com>
+In-Reply-To: <20201019173846.1021-1-trix@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 19 Oct 2020 11:28:14 -0700
+Message-ID: <CAEf4BzZMAeH71jT6foAcrarURXmTnDyb-qhJthoh8GqhDZ-PRw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: remove unneeded break
+To:     trix@redhat.com
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 19, 2020 at 10:38 AM <trix@redhat.com> wrote:
+>
+> From: Tom Rix <trix@redhat.com>
+>
+> A break is not needed if it is preceded by a return
+>
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
 
---vkogqOf2sHV7VnPd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Probably refactoring left over, looks good:
 
-On Tue 2020-10-13 12:48:49, Joe Perches wrote:
-> On Tue, 2020-10-13 at 19:17 +0200, Pavel Machek wrote:
-> > On Mon 2020-10-05 19:41:15, Joe Perches wrote:
-> > > This doesn't seem like a great idea to me.
-> > >=20
-> > > For my system I've got:
-> > >=20
-> > > /sys/devices/platform/Fixed MDIO bus.0/
-> > > /sys/bus/platform/drivers/int3401 thermal/
-> > > /sys/bus/platform/drivers/int3403 thermal/
-> > > /sys/bus/platform/drivers/int3400 thermal/
-> > > /sys/bus/mdio_bus/drivers/Generic PHY/
-> > > /sys/bus/mdio_bus/drivers/Generic Clause 45 PHY/
-> > > /sys/bus/pnp/drivers/i8042 aux/
-> > > /sys/bus/pnp/drivers/i8042 kbd/
-> > > /sys/bus/i2c/drivers/CHT Whiskey Cove PMIC/
-> > >=20
-> > > Could these filenames be avoided in the future or
-> > > even renamed today?
-> >=20
-> > Does not look like great idea to me, either. Hmm. Is there filename
-> > with "/" in it? :-)
-> >=20
-> > But I guess you'd need to cc relevant maintainers and that this is
-> > going to be a bit of whack-a-mole.
->=20
-> An option might be to convert any invalid filename
-> via an alloc and substitution in sysfs_add_file
-> and similar free in sysfs_remove_file.
->=20
-> Emitting a logging message describing any new name
-> would be useful too.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-I believe that would be dangerous... renaming existing entries and
-risking duplicities.
-
-But ... some kind of warning when such entry is created might be good,
-we'd then fix them manually.
-
-Best regards,
-								Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---vkogqOf2sHV7VnPd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX43aiQAKCRAw5/Bqldv6
-8uVrAJ9S6jPaYGU2xO1irvScMx5MhPf3DACfZ9m0O55biK5H45pXCfG474toIto=
-=ssDG
------END PGP SIGNATURE-----
-
---vkogqOf2sHV7VnPd--
+>  kernel/bpf/syscall.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 1110ecd7d1f3..8f50c9c19f1b 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2913,7 +2913,6 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
+>         case BPF_CGROUP_INET_INGRESS:
+>         case BPF_CGROUP_INET_EGRESS:
+>                 return BPF_PROG_TYPE_CGROUP_SKB;
+> -               break;
+>         case BPF_CGROUP_INET_SOCK_CREATE:
+>         case BPF_CGROUP_INET_SOCK_RELEASE:
+>         case BPF_CGROUP_INET4_POST_BIND:
+> --
+> 2.18.1
+>
