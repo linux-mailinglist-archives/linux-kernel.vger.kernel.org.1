@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC6C292816
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E95F329281E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgJSNVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727297AbgJSNVw (ORCPT
+        id S1728097AbgJSN1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:27:33 -0400
+Received: from mail.efficios.com ([167.114.26.124]:39214 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727811AbgJSN1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:21:52 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAE9C0613CE;
-        Mon, 19 Oct 2020 06:21:51 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id u17so12347297oie.3;
-        Mon, 19 Oct 2020 06:21:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E3Lz+f5H2qnCm4YPaUNgSzjSIKDYKn6c8ZxYUYNfS1w=;
-        b=JFS4SpmyPt5ZOjC7dlCnr4rKUh/FWhWLlYxEQ7unXai0oPrxai1RJZlmpbxaZtjqn/
-         WsGr4jpeEPexCxQElREO/n28ABT1DPKZYLoqDlvKtvyQ/ZKRwW/a14TvIaEjgQzPjrIe
-         amwUZzmIfhkqG9mdD5iBJ7dmY3T3wU1+9qXLCRNYcooTOcthVz/YDa5+ltTYvh3bd4U5
-         ZZldtf0fyU0QWKczckMPiuuMqQovFlOA2TXVhOl5NEES/bzIIhaTajDMlxUJTGLLdlyT
-         wcjnk1LxwGfMwHXbMO1NGsA67qPltFCIRb3RzlJrJ2bIEVtvcOyLYf9nF9TSWeQLF5aS
-         hq3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E3Lz+f5H2qnCm4YPaUNgSzjSIKDYKn6c8ZxYUYNfS1w=;
-        b=uiT1C2ZT4Q4uTes/rb9UbLjWKsm+2gPdoT0FTx0vCsKK1K2RFjKKnmrkNcaiTQwlfW
-         xeCOxTqOqYOcLNHEhzP9F0el/CP1epdm0/CH4ikTa9z8Ai35IwdJYCZKKneILpNl4sKN
-         ipjwwt6snEsNluE+wX4eExDSytt2S1QnPHxwN1OoJXZ6kbDIkJWuXxFuMzu/e+yNq4IA
-         qGhAIsSILb21nPy86oU9TrTbBv5DJB5a496sUPIma9vUOXvSAnj/rM07oSDnvL0+9IIw
-         4q2op7vXWYucrSDjXA7MFSrsCRwafsGUx2ysRzas3k2wYzIYE/zi7DlLUTkekQrJdyDh
-         cVfQ==
-X-Gm-Message-State: AOAM531JrcVM7KmNHVcKxHhOFc8aS7qVoTGDA5p84eJOwds0EqC+Q2eF
-        68sJMk7oW3YpWgCcFE5dAT4t14cEkyzF5m8xrDM=
-X-Google-Smtp-Source: ABdhPJyJ8FZf8rCCzlAoa9tjv/hbnEkXiWU94wZJumCKipG5ZENn745vfPepWrBUB7XWR7xR6+/WY28kSGyZruv7OX4=
-X-Received: by 2002:aca:4dd2:: with SMTP id a201mr10963292oib.135.1603113711085;
- Mon, 19 Oct 2020 06:21:51 -0700 (PDT)
+        Mon, 19 Oct 2020 09:27:33 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 920DC255067;
+        Mon, 19 Oct 2020 09:27:32 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id OKcVfHdU06_6; Mon, 19 Oct 2020 09:27:32 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 58E70255482;
+        Mon, 19 Oct 2020 09:27:32 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 58E70255482
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1603114052;
+        bh=bmNV45YBApcUaejX/sOoSoY9E3QAjn7c8WF2xY0RGX8=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=JGzAGoR6/zgOYTW7umULfGPJPJiM9GnG4oAFY/kYjrGBMphI4EWlk2hSGnPQ0ujur
+         wfvIvJo+dvKwQbPksVk/9BshI62ObUceIy5VQIxYBeLL5pjDlnx3FoTjNQup9rShTi
+         JNBVpnFMhBU6bW6J3Vh8ElDOhnNfoqxQTR8jKymw7KSgUG3/Qa6NVUg56exPDxC2M2
+         g6mvEt44qX3ZXfE1K2c8aSaKLZnI9YDIcYpLD3ua4Yxw4mp3/K6gbSztlTPG909kId
+         vc3JdnEYm1GPIiA8dcJnTjRhfK1ztAeX1Sr9jQqRh9E1qC9JL2RkVyqtZiwSCW9Y2U
+         +M32lXc0Xbm4Q==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id RgxRZ73nwax1; Mon, 19 Oct 2020 09:27:32 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 4C5AB25523E;
+        Mon, 19 Oct 2020 09:27:32 -0400 (EDT)
+Date:   Mon, 19 Oct 2020 09:27:32 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Rong Chen <rong.a.chen@intel.com>,
+        Anton Blanchard <anton@au.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        lkp <lkp@lists.01.org>, 0day robot <lkp@intel.com>
+Message-ID: <104775100.27222.1603114052224.JavaMail.zimbra@efficios.com>
+Subject: Unreliable will-it-scale context_switch1 test on 0day bot
 MIME-Version: 1.0
-References: <20201016055235.440159-1-allen.lkml@gmail.com> <20201016062027.GB569795@kroah.com>
- <CAOMdWSJDJ-uXpis1WbG3LnOG7bMiif5Q4Maafv_a=55Y_qypfQ@mail.gmail.com> <20201019131613.GA3254417@kroah.com>
-In-Reply-To: <20201019131613.GA3254417@kroah.com>
-From:   Allen <allen.lkml@gmail.com>
-Date:   Mon, 19 Oct 2020 18:51:39 +0530
-Message-ID: <CAOMdWS+F=cCK=Rgy-0xk4_mqUFMn1PQBWR8u3JwqTP2AVifxsA@mail.gmail.com>
-Subject: Re: [RFC] PCI: allow sysfs file owner to read the config space with CAP_SYS_RAWIO
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        ast@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Allen Pais <allen.pais@lkml.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
+Thread-Index: ksY51HzN7+LfIgm53yYh1p91s0pyBw==
+Thread-Topic: Unreliable will-it-scale context_switch1 test on 0day bot
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > >
-> > > >  Access to pci config space is explictly checked with CAP_SYS_ADMIN
-> > > > in order to read configuration space past the frist 64B.
-> > > >
-> > > >  Since the path is only for reading, could we use CAP_SYS_RAWIO?
-> > >
-> > > Why?  What needs this reduced capability?
-> >
-> > Thanks for the review.
-> >
-> > We need read access to /sys/bus/pci/devices/,  We need write access to config,
-> > remove, rescan & enable files under the device directory for each PCIe
-> > functions & the downstream PCIe port.
-> >
-> > We need r/w access to sysfs to unbind and rebind the root complex.
->
-> That didn't answer my question at all.
+Hi,
 
-Sorry about that, breaking it down:
+I pointed out an issue with the will-it-scale context_switch1 test run by the 0day bot on
+October 7, 2020, and got no reply.
 
-When the machine first boots, the VFIO device bindings under /dev/vfio
-are not present.
+Until this issue is solved, the results of those tests are basically pure noise when run on
+SMT hardware:
 
-root@localhost:/tmp# ls -l /dev/vfio/
-total 0
-crw-rw-rw-. 1 root root 10, 196 Jan  5 01:47 vfio
+https://lore.kernel.org/lkml/1183082664.11002.1602082242482.JavaMail.zimbra@efficios.com/
 
-We have an agent which needs to run the following commands (We get
-access denied here and need permissions to do this).
-echo -n xxxx yyyy > /sys/module/vfio_pci/drivers/pci:vfio-pci/new_id
-echo -n xxxx yyyy > /sys/module/vfio_pci/drivers/pci:vfio-pci/new_id
+Who is maintaining those tests and the 0day bot ?
 
-And we want to avoid handing CAP_SYS_ADMIN here. Which is why the
-thought about CAP_SYS_RAWIO.
->
-> Why can't you have the process that wants to do all of the above, have
-> admin rights as well?  Doing all of that is _very_ low-level and can
-> cause all sorts of horrible things to happen to your machine, and is not
-> really "raw io" in the traditional sense at all, right?
+Thanks,
 
-
-If the above approach is going to cause the system to do horrible things,
-then I'll drop the idea.
+Mathieu
 
 -- 
-       - Allen
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
