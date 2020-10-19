@@ -2,97 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA282925B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A122925BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgJSKYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgJSKYn (ORCPT
+        id S1726868AbgJSK0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:26:48 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:47333 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726760AbgJSKYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:24:43 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD23C0613CE;
-        Mon, 19 Oct 2020 03:24:43 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id d3so12217813wma.4;
-        Mon, 19 Oct 2020 03:24:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DMW0yCt5PBQfW3WFVdC3B0AANBzYHJJxzkQs00mLzDU=;
-        b=LKKgD50zTmIM0cMSAE/AvUDkwu/kdSsZ0L95UgKa3KWLBAjnaSiWy1XHl+SdcRqEV3
-         IQE/moIhIeabtBKHMoROAOuKwuPkgmFo0f8fwML+IguoHnBOiuyuv+mQ2N28vq+7hO0z
-         1bA/5KGrtkXxRzGVQmzHYNj+YDoAnbUhDK5vTJDwEYvTfrucI1LrYns1/fES2K5VyN48
-         YTzw572i9QZEsNGaJMd0/NwKZqNde/TgGQ68LcbQEsJoJUs3bpaReIvTrIRsvloxsORF
-         o3Qa9GlsO0fooOT2rs6I6fPRmEpx/Ky7xtBbaa0CqwskxUSg0U2rwHmlbHfuFQNrPxT6
-         BwTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DMW0yCt5PBQfW3WFVdC3B0AANBzYHJJxzkQs00mLzDU=;
-        b=MKFVDSZckfZYGcxnZOk2j5RhuCFxXsZjAHaWe5oFFKap8RwBOjiJjL9lIFfzslYLut
-         /ezJmyega3F2I8lVsTtHv103UnsPf6YXbyG7EsGzA2cZPMMv7FydVEtT0olTHaalJnXA
-         0azJgrQuiFE1OzrjKKUO3MiKv/aopHpoiU2kZvZgwaNrwzrBSRFAC83MOFkxyZTY8XHg
-         AJZQFr5I1bc2UceHdVKfr4R7h6ZCL3fqWcFHYuTDZjPXF34NDNcFfA2oq/D6hzJ3X0zo
-         2RNJeHcI4B9fGgVAbuuJQsgGIrWU3S/NvxieJhDiujF4gqznbYlkRP8wX0hGC5TqJSA6
-         x77w==
-X-Gm-Message-State: AOAM531dY4yXBQJJAhwtKHw33ireCknPOHLy1ZviX23Gc6wub1MsqFE6
-        zEP0CQGCq9qP7I0GRJhAI7o=
-X-Google-Smtp-Source: ABdhPJxbSA06zBvEt/c3tORxcj/AmyLbEGYsK6l2y/z5MVdKIojHim9Mbimp5qDS8XKjW333ug8wiw==
-X-Received: by 2002:a7b:cc89:: with SMTP id p9mr17644734wma.4.1603103082028;
-        Mon, 19 Oct 2020 03:24:42 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id t13sm15863863wmj.15.2020.10.19.03.24.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 03:24:41 -0700 (PDT)
-Subject: Re: [PATCH 1/2] dt-bindings: dma: mtk-apdma: add bindings for MT8516
- SOC
-To:     Fabien Parent <fparent@baylibre.com>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org
-Cc:     robh+dt@kernel.org, vkoul@kernel.org, sean.wang@mediatek.com
-References: <20201015123315.334919-1-fparent@baylibre.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <9308a487-ed84-6112-d612-a8a777ee0dee@gmail.com>
-Date:   Mon, 19 Oct 2020 12:24:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 19 Oct 2020 06:24:48 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 38166580558;
+        Mon, 19 Oct 2020 06:24:46 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 19 Oct 2020 06:24:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=Td6tAGmJFIbrreS4S0VbmmmyOxu
+        q1F5FXo5CYCYTRrU=; b=tLvxFNdEHvCoy1VNz055wzFMI1uNlL1JXvy9gp+bzPE
+        TpFX7yCLwpr0kfy0wbC6x8eYyC9+c6+S9mWYZZlqleboZJHg4RsV12dulh3WyDpQ
+        XYm0jR/v2w1wiem7dVs6Q5xsh8yD3k9TaeMeN2eLJaloOA8+V/RCFuKh6MheixPR
+        Xzkgjs2M87ZBpm3pqTOdZws3Rmu/JmnnQ0ygd9uob0WgR9CbWB0uqlH+xmsyozue
+        KIr/rYmL3TRuIz8mddfT+qxJFQHAonKtWpxGdOkMg+Siyqs6RTpVsZV8PMN2mpA7
+        0SsbDjmhbwT3daFLc4/+L0nJ2QnnxVdTvdumzyAGexQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Td6tAG
+        mJFIbrreS4S0VbmmmyOxuq1F5FXo5CYCYTRrU=; b=aUGDBfbVD6+IYzxw3fpDfU
+        tTmMvGQNagv6IC7KmRUYN87zCx8MtinmQe2i6kIxmVT3ywhnoM2jSyWinQHqd9xT
+        06YJq/RMjN99/bnijz1UskLoH8fOov9gKdloDVb78tO5zxK9f3Kdq1cSUc7dLrf/
+        WZci/WLDtVFFOUEyJe7Gvaw4BB6f9BrKmKt46FkNLivX1kvpk4WMTAlryK3xOHRg
+        ZPO6wzB1a78GxaIxnVs+w9irmoL//FfCsx6MZjS1K7EiEHreSidNUcxCNXLN1TF2
+        dckufScOwdog0mYIrCkk825s8akN1OwoRoR4kdgm4U7zqVXbPWBwelmag+8IU3wg
+        ==
+X-ME-Sender: <xms:bGmNXzf3R2fEqFfFDNOe_V3kvIdwQqdjuIKCSTmOXfTZgPcKLDlfkw>
+    <xme:bGmNX5PIaYIs-Fc87ZYpJbguO5Sn80sEI9rsmVSS1DadXdnI49OoU1n7bnXIRyWbP
+    osZJo0v6o3DY0a2jzo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjedugddvkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
+    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:bGmNX8jQIurR8RYJbjDho-dL_giZeln_ecHe2tw50Wy7MTfw7pVsbA>
+    <xmx:bGmNX08BqiVxdp2pgo8Xtv5bLNZ9KYFtPkyHvd6efmVhhyfU7UfS8g>
+    <xmx:bGmNX_tMp7lzYO8dd5DZSWPTGUyHTv0AgwocgL9eSIous9IYDNvWEg>
+    <xmx:bmmNX4FMhrM3gmHXxgyWcQD4jbB3CsH2_li18NtmLBSOoabOHXFuKQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 60A3C3064682;
+        Mon, 19 Oct 2020 06:24:44 -0400 (EDT)
+Date:   Mon, 19 Oct 2020 12:24:43 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Subject: Re: [PATCH v6 02/14] ASoC: sun4i-i2s: Change set_chan_cfg() params
+Message-ID: <20201019102443.uk3t2jcqc7x7rxdi@gilmour.lan>
+References: <20201003141950.455829-1-peron.clem@gmail.com>
+ <20201003141950.455829-3-peron.clem@gmail.com>
+ <20201005121307.v6jpyeyfi4kxc2cl@gilmour.lan>
+ <CAJiuCcdd6_kzsxEERZbj2Budjmuyv6gV_sPG8LjLY=fk+MO8zQ@mail.gmail.com>
+ <20201012121536.z5d7kecdxaabw35n@gilmour.lan>
+ <0d6f0693-5ca9-9b48-4d33-a969bd5b1b1b@sholland.org>
 MIME-Version: 1.0
-In-Reply-To: <20201015123315.334919-1-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="urhrplc5wjap7cxi"
+Content-Disposition: inline
+In-Reply-To: <0d6f0693-5ca9-9b48-4d33-a969bd5b1b1b@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--urhrplc5wjap7cxi
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 15/10/2020 14:33, Fabien Parent wrote:
-> Add bindings to APDMA for MT8516 SoC. MT8516 is compatible with MT6577.
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+Hi Samuel,
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+On Mon, Oct 12, 2020 at 08:15:30PM -0500, Samuel Holland wrote:
+> On 10/12/20 7:15 AM, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > On Mon, Oct 05, 2020 at 03:23:12PM +0200, Cl=E9ment P=E9ron wrote:
+> >> On Mon, 5 Oct 2020 at 14:13, Maxime Ripard <maxime@cerno.tech> wrote:
+> >>>
+> >>> On Sat, Oct 03, 2020 at 04:19:38PM +0200, Cl=E9ment P=E9ron wrote:
+> >>>> As slots and slot_width can be set manually using set_tdm().
+> >>>> These values are then kept in sun4i_i2s struct.
+> >>>> So we need to check if these values are setted or not
+> >>>> in the struct.
+> >>>>
+> >>>> Avoid to check for this logic in set_chan_cfg(). This will
+> >>>> duplicate the same check instead pass the required values
+> >>>> as params to set_chan_cfg().
+> >>>>
+> >>>> This will also avoid a bug when we will enable 20/24bits support,
+> >>>> i2s->slot_width is not actually used in the lrck_period computation.
+> >>>>
+> >>>> Suggested-by: Samuel Holland <samuel@sholland.org>
+> >>>> Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
+> >>>> ---
+> >>>>  sound/soc/sunxi/sun4i-i2s.c | 36 ++++++++++++++--------------------=
+--
+> >>>>  1 file changed, 14 insertions(+), 22 deletions(-)
+> >>>>
+> >>>> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s=
+=2Ec
+> >>>> index c5ccd423e6d3..1f577dbc20a6 100644
+> >>>> --- a/sound/soc/sunxi/sun4i-i2s.c
+> >>>> +++ b/sound/soc/sunxi/sun4i-i2s.c
+> >>>> @@ -177,8 +177,9 @@ struct sun4i_i2s_quirks {
+> >>>>       unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *=
+);
+> >>>>       s8      (*get_sr)(const struct sun4i_i2s *, int);
+> >>>>       s8      (*get_wss)(const struct sun4i_i2s *, int);
+> >>>> -     int     (*set_chan_cfg)(const struct sun4i_i2s *,
+> >>>> -                             const struct snd_pcm_hw_params *);
+> >>>> +     int     (*set_chan_cfg)(const struct sun4i_i2s *i2s,
+> >>>> +                             unsigned int channels,  unsigned int s=
+lots,
+> >>>> +                             unsigned int slot_width);
+> >>>>       int     (*set_fmt)(const struct sun4i_i2s *, unsigned int);
+> >>>>  };
+> >>>>
+> >>>> @@ -414,10 +415,9 @@ static s8 sun8i_i2s_get_sr_wss(const struct sun=
+4i_i2s *i2s, int width)
+> >>>>  }
+> >>>>
+> >>>>  static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> >>>> -                               const struct snd_pcm_hw_params *para=
+ms)
+> >>>> +                               unsigned int channels, unsigned int =
+slots,
+> >>>> +                               unsigned int slot_width)
+> >>>>  {
+> >>>> -     unsigned int channels =3D params_channels(params);
+> >>>> -
+> >>>>       /* Map the channels for playback and capture */
+> >>>>       regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG, 0x7654321=
+0);
+> >>>>       regmap_write(i2s->regmap, SUN4I_I2S_RX_CHAN_MAP_REG, 0x0000321=
+0);
+> >>>> @@ -434,15 +434,11 @@ static int sun4i_i2s_set_chan_cfg(const struct=
+ sun4i_i2s *i2s,
+> >>>>  }
+> >>>>
+> >>>>  static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> >>>> -                               const struct snd_pcm_hw_params *para=
+ms)
+> >>>> +                               unsigned int channels, unsigned int =
+slots,
+> >>>> +                               unsigned int slot_width)
+> >>>>  {
+> >>>> -     unsigned int channels =3D params_channels(params);
+> >>>> -     unsigned int slots =3D channels;
+> >>>>       unsigned int lrck_period;
+> >>>>
+> >>>> -     if (i2s->slots)
+> >>>> -             slots =3D i2s->slots;
+> >>>> -
+> >>>>       /* Map the channels for playback and capture */
+> >>>>       regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x7654321=
+0);
+> >>>>       regmap_write(i2s->regmap, SUN8I_I2S_RX_CHAN_MAP_REG, 0x7654321=
+0);
+> >>>> @@ -467,11 +463,11 @@ static int sun8i_i2s_set_chan_cfg(const struct=
+ sun4i_i2s *i2s,
+> >>>>       case SND_SOC_DAIFMT_DSP_B:
+> >>>>       case SND_SOC_DAIFMT_LEFT_J:
+> >>>>       case SND_SOC_DAIFMT_RIGHT_J:
+> >>>> -             lrck_period =3D params_physical_width(params) * slots;
+> >>>> +             lrck_period =3D slot_width * slots;
+> >>>>               break;
+> >>>>
+> >>>>       case SND_SOC_DAIFMT_I2S:
+> >>>> -             lrck_period =3D params_physical_width(params);
+> >>>> +             lrck_period =3D slot_width;
+> >>>>               break;
+> >>>>
+> >>>>       default:
+> >>>> @@ -490,15 +486,11 @@ static int sun8i_i2s_set_chan_cfg(const struct=
+ sun4i_i2s *i2s,
+> >>>>  }
+> >>>>
+> >>>>  static int sun50i_h6_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+> >>>> -                                   const struct snd_pcm_hw_params *=
+params)
+> >>>> +                                   unsigned int channels, unsigned =
+int slots,
+> >>>> +                                   unsigned int slot_width)
+> >>>>  {
+> >>>> -     unsigned int channels =3D params_channels(params);
+> >>>> -     unsigned int slots =3D channels;
+> >>>>       unsigned int lrck_period;
+> >>>>
+> >>>> -     if (i2s->slots)
+> >>>> -             slots =3D i2s->slots;
+> >>>> -
+> >>>>       /* Map the channels for playback and capture */
+> >>>>       regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP0_REG, 0xFE=
+DCBA98);
+> >>>>       regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x76=
+543210);
+> >>>> @@ -525,11 +517,11 @@ static int sun50i_h6_i2s_set_chan_cfg(const st=
+ruct sun4i_i2s *i2s,
+> >>>>       case SND_SOC_DAIFMT_DSP_B:
+> >>>>       case SND_SOC_DAIFMT_LEFT_J:
+> >>>>       case SND_SOC_DAIFMT_RIGHT_J:
+> >>>> -             lrck_period =3D params_physical_width(params) * slots;
+> >>>> +             lrck_period =3D slot_width * slots;
+> >>>>               break;
+> >>>>
+> >>>>       case SND_SOC_DAIFMT_I2S:
+> >>>> -             lrck_period =3D params_physical_width(params);
+> >>>> +             lrck_period =3D slot_width;
+> >>>>               break;
+> >>>>
+> >>>>       default:
+> >>>> @@ -565,7 +557,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_su=
+bstream *substream,
+> >>>>       if (i2s->slot_width)
+> >>>>               slot_width =3D i2s->slot_width;
+> >>>>
+> >>>> -     ret =3D i2s->variant->set_chan_cfg(i2s, params);
+> >>>> +     ret =3D i2s->variant->set_chan_cfg(i2s, channels, slots, slot_=
+width);
+> >>>
+> >>> Isn't slots and slot_width set to 0 here ?
+> >>
+> >> No, there is still a check before calling the set_cfg function.
+> >>
+> >>   unsigned int slot_width =3D params_physical_width(params);
+> >>   unsigned int channels =3D params_channels(params);
+> >>   unsigned int slots =3D channels;
+> >>
+> >>   if (i2s->slots)
+> >>   slots =3D i2s->slots;
+> >>
+> >>   if (i2s->slot_width)
+> >>   slot_width =3D i2s->slot_width;
+> >>
+> >> ret =3D i2s->variant->set_chan_cfg(i2s, channels, slots, slot_width);
+> >>
+> >> So slot_width will be equal to params_physical_width(params);
+> >> like before
+> >=20
+> > Still, it's not obvious what slots and slot_width are going to be set to
+> > in a non-TDM setup where that doesn't really make much sense.
+>=20
+> My understanding is:
+>=20
+> "slots" is channels per frame + padding slots, regardless of format.
+> "slot_width" is bits per sample + padding bits, regardless of format.
+>=20
+> Some formats may require or prohibit certain padding, but that has no
+> effect on the definitions.
+>=20
+> That seems clear to me? At least that's what I implemented (and you
+> acked) in sun8i-codec.
 
-> ---
->   Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt b/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt
-> index 2117db0ce4f2..fef9c1eeb264 100644
-> --- a/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt
-> +++ b/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt
-> @@ -4,6 +4,7 @@ Required properties:
->   - compatible should contain:
->     * "mediatek,mt2712-uart-dma" for MT2712 compatible APDMA
->     * "mediatek,mt6577-uart-dma" for MT6577 and all of the above
-> +  * "mediatek,mt8516-uart-dma", "mediatek,mt6577" for MT8516 SoC
->   
->   - reg: The base address of the APDMA register bank.
->   
-> 
+Yeah I guess you're right. I'd still like at least a comment on top of
+the function making that clear so that no-one's confused
+
+Maxime
+
+--urhrplc5wjap7cxi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX41pawAKCRDj7w1vZxhR
+xYUgAP0fS7UeBMbxq9TXFjjdmI4nhIkUjidFQu6rAq5B7fp2dAEAuuQOWfOG/d5x
+iCm5/7j2TfRmAZ0Ztp4lqlRorX0uZgw=
+=qa21
+-----END PGP SIGNATURE-----
+
+--urhrplc5wjap7cxi--
