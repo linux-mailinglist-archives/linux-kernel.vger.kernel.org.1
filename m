@@ -2,88 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EA6292B8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F23292B90
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730552AbgJSQcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:32:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56688 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730404AbgJSQcL (ORCPT
+        id S1730363AbgJSQdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:33:37 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:45149 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729849AbgJSQdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:32:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603125131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4C7GwC2vuW9nIIIjv9Ux8aNhEET+El5KATGOMKXjdxY=;
-        b=a83DZX7UHSU6l+NWrmGo1wN8btKRhjaQKFwzmKP+y4ZMPQeexabr2CQCKp0OprnZQ8diwF
-        WtlDxP+Al/e/LJ0Cwhg8PNV9NZSa72IDxAUFdtoAM3pEG3l1s1YXrV60V2Ir/oMUwtO0hG
-        je9hKG8IYO8Ag/xWWe7zAVOYOU5UvHk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-70-vKPtc9m4PC23wBY-ez77BA-1; Mon, 19 Oct 2020 12:32:09 -0400
-X-MC-Unique: vKPtc9m4PC23wBY-ez77BA-1
-Received: by mail-wm1-f70.google.com with SMTP id s12so105118wmj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:32:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4C7GwC2vuW9nIIIjv9Ux8aNhEET+El5KATGOMKXjdxY=;
-        b=a0irHOuWd/0dXkqDTBNHWZU7wLVToVF1gHPLnUt4gTYgmwyw+4WPg4JsfuWMD4wb3e
-         bYx/UI1ugksICD3RFFNvx8zGWZbiMfigXC/KaSpalU3Ua2lNfs5jhbaMLOEd49W9GOm7
-         HvaXo5kqqbh98cLs0kHFMwCI5RmrAgdeyNKm9xykIflD/NmgusNZucp2wMCWXMZ/Xwze
-         r39buJ+bdkj2Wd+gLwpD9V703gKR5CMW827hhRvqhbyNUmeYR/C0agXUtA/8CgQjAlpM
-         qNAkwTPTyFhKauJ5B0fjseuliWnmn5GS8b7Mldsap2xOkR4LEAcUiVGfzdc3rrDtl6sl
-         i64Q==
-X-Gm-Message-State: AOAM530mvCTMyx0F05tQuneL+Ege12751ywHbgozbAbR7Kovq2wQggwk
-        XegaRzu+pJSXjBpkDfAqgSUDIPR/xBRYM7X1tCFlC4iWmICfxK0NugFbJfZTlRg0BArlggKgPmj
-        IcE3HhM50h6MpSXXTXn/UzaMT
-X-Received: by 2002:a7b:cbd1:: with SMTP id n17mr40447wmi.29.1603125127938;
-        Mon, 19 Oct 2020 09:32:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzmmzI6Xy18s7Y4Z04FTmBQZ1vbpn96nBmr0M7V6FxutTh3mnkiTw1okMvWReJLtqtswYU0Iw==
-X-Received: by 2002:a7b:cbd1:: with SMTP id n17mr40427wmi.29.1603125127752;
-        Mon, 19 Oct 2020 09:32:07 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j17sm270116wrw.68.2020.10.19.09.32.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 09:32:07 -0700 (PDT)
-To:     Peter Xu <peterx@redhat.com>, Alexander Graf <graf@amazon.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Aaron Lewis <aaronlewis@google.com>
-References: <20201005195532.8674-1-sean.j.christopherson@intel.com>
- <20201005195532.8674-3-sean.j.christopherson@intel.com>
- <bcb15eb1-8d3e-ff6d-d11f-667884584f1f@amazon.com>
- <20201007164431.GE6026@xz-x1>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 2/2] KVM: VMX: Ignore userspace MSR filters for x2APIC
- when APICV is enabled
-Message-ID: <5258c516-dc01-9377-1cf6-6a9ccd51d41d@redhat.com>
-Date:   Mon, 19 Oct 2020 18:32:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 19 Oct 2020 12:33:36 -0400
+Received: from [192.168.1.155] ([77.2.107.242]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1Mjjzx-1k22eG17yF-00lC5i; Mon, 19 Oct 2020 18:33:23 +0200
+Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
+ driver
+To:     Ed W <lists@wildgooses.com>, linux-kernel@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org
+References: <20200921215919.3072-1-lists@wildgooses.com>
+ <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
+ <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
+ <65efe44a-bbef-f982-462a-385fffe493a0@wildgooses.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <2eb878bf-3ec7-362f-73b3-4192dd183390@metux.net>
+Date:   Mon, 19 Oct 2020 18:33:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201007164431.GE6026@xz-x1>
+In-Reply-To: <65efe44a-bbef-f982-462a-385fffe493a0@wildgooses.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Language: tl
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:hfmAgZ+ZCxJe6x/tpIb/S4CcmfiDBwEn76cyitZ1Y7p00Ybhk69
+ IY9gsTMvAJOGmn3QFG8e+lZMJBpns761Ug3TF37EeIoS0edqRGETFAUZPOeGqTX4CKgD8mi
+ tuTUzwtkw0A3Jyu/3i0PdneFUIhX6OmbDa3NT8XXXo6gWpmLozy7v/3rPSNd7pKKLBVtjob
+ 3t2XvTwR8EiSWe9LQi3rA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uBth9DTdfU8=:8vkOnjpFh/iM4t5LCstxNb
+ plRiouRN2cf18YumDk0ojcv9+d5UOjyscR6KphVy26uj1sAdR8IgL/V7SxrtIhf977gAB80fc
+ 3VkgNbUfeafkFNbORzQ9H4+pfOGsNxO8Nhf49L2BYGXQ2L1FSd13GdgEq+2y7797dfg/mPj+X
+ hsN/d6wFcIS9img08F7EI7dECOUkw8AMW+bBks3fmD/2DC0/yMZYJhv8Upvv8Kl7tDBugx2Uu
+ lkx9iNYNOnTVU6tH299TK20mh4yXG6XatkMScugNK3pQKKo9p943AV4ScbR5kFPtG7m3g9iBu
+ dg0ixyWgDxDaoSSVM7UOedeetgrQVT7l2RGbH7WLqj1DMENuDKn6cnskxgBwrlrfB0t2ppvAH
+ b0O0k5RrglifiW81hDbcQbVUXrf3bekMkOjis8kiFMw12B7tyT4vUqeRkGlIG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/20 18:44, Peter Xu wrote:
-> If we want to forbid apicv msrs, should we even fail KVM_X86_SET_MSR_FILTER
-> directly then?
+On 13.10.20 23:40, Ed W wrote:
 
-Yes, probably it should.  I'll send a patch shortly.
+> But why are users "in the field" 
 
-Paolo
+"field" here means litterlly field. Far away from any human being.
 
+> updating a kernel willy nilly without also updating the userland
+> software that talks to it? 
+
+Of course, we're always testing. Obviously, in the lab, not in the
+field. And we don't wanna have to adapt existing, well tested, embedded
+applications for dozens of BIOS versions, which might or might not
+have certain functionality (it's not just for LEDs, but all the other
+gpio-attached devices, eg. keys, mpcie reset, simsw, ...), etc.
+
+> Why is the kernel upgrade trivial, but the fw upgrade is not an option?
+
+Because technicians have to fly out to the installations and replace
+the whole board (no, certainly no remote updates of the BIOS). The costs
+per installation are a factor of the board price.
+
+> Why not also update the app or setup a udev rule?
+
+Again, BIOS version specific. And it's a not just a udev rule, it's
+a lot of paper work in the application qualification.
+
+This is an embedded device, not an cheap office pc.
+
+> I would understand if we were talking something fairly major, 
+> but it's the case of matching a
+> filename that YOU changed from an old name to the current name and it's now changing back to the
+> original name?
+
+I did not change anything, I wrote a completely new driver with full
+gpio support and attached devices.
+
+pcengine folks ignored it for a long time, suddenly the started adding
+incompatible stuff to their newer firmware.
+
+> That's extremely disingenuous!!
+
+No, its correct. The apuv1 board (more precisely its SoC) has a
+completely different FCH. The old driver had some rudimentary support
+just for the front leds, which actually worked properly on none of my
+testing boards. I've did several surveys in the apu community -
+everybody was using some userland program doing raw iomem access
+(/dev/mem). Haven't found a single Distro that ever shipped that old
+driver.
+
+> It USED to work for the APU2-4 except that YOU removed support for APU2-4 from that module!!
+
+Yes, I've proposed removing it, because I could not find a single person
+who actually used it on apu2/3/4 boards. This might have to with the
+fact that folks were happy that they now could use other gpio-connected
+devices, too.
+
+And, BTW, it did conflict with the new driver.
+
+Note: the old driver is *only* for LEDs, not gpios as such, nor other
+gpio-attached devices.
+
+<skipping stuff that already had been answered>
+
+> - Your LED based SIM toggle HAS already gone. So you have another example of userspace being broken
+> right there. (Seems that this rule isn't so concrete?). 
+
+Without my knowledge and ackknowledge as the maintainer !
+
+> So you already need to (significantly?)
+> adjust your userspace code - I'm not seeing how/why the LED change is such a blocker?
+
+simsw isn't actively used in the field, the other gpio-consumers (leds,
+keys, reset, ...) are used in the field. litterally field.
+
+simsw was a quick shot on purpose, planned to be replaced by rfkill or
+portmux. Both still experimental and nothing ready for mainline yet.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
