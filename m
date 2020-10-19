@@ -2,292 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1F429242B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21FD29243A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729216AbgJSJCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:02:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:52860 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728419AbgJSJCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:02:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8835930E;
-        Mon, 19 Oct 2020 02:02:17 -0700 (PDT)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D33823F66E;
-        Mon, 19 Oct 2020 02:02:15 -0700 (PDT)
-Subject: Re: [PATCH v2 07/14] perf arm-spe: Refactor address packet handling
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
-References: <20200929133917.9224-1-leo.yan@linaro.org>
- <20200929133917.9224-8-leo.yan@linaro.org>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
- 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
- i4aIXCH3Wv6K
-Organization: ARM Ltd.
-Message-ID: <2e9a9499-4596-2a07-4d44-30e319206c12@arm.com>
-Date:   Mon, 19 Oct 2020 10:01:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730020AbgJSJDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:03:22 -0400
+Received: from mail-eopbgr40054.outbound.protection.outlook.com ([40.107.4.54]:58862
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729772AbgJSJDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 05:03:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lF2Dkr7l3lkuh06RVCz+39Ay5JrjmBQ5yqm87pjgyzN+goL4EumOpA7FxQiruaXuFxYGlEYGVLqUxRiNTN64uv0iJouVQFCM7HSXxZR37Ul5dLnOab/bwlim5aX/JSMPJD3QXFD41xuaM7oosoBB0qxSURLqVjQrXUMcZ6Q4NSVNA6iPrb4ZfveBtAktU98uagAqs1sQk+BS1163u6U0UHAjAgw/Ve4Fvcnab+NBEnYbmW18tr87rQJej9OvKjHhTnwFNrtSgLTySpxog0haYyugYfRBNkmU29vkNKMidufqvvSmxZvBS4Uxo5I/TOUGOqlmvjOb7gKGymgKNYsj6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pcFU4Spcnn+N2esTXDkYB/bUx5lVmuk1m809xlJmUp8=;
+ b=Yh7U3vvXB2D62geA06steyTNbwQYQmU7VU9v5Ly49agu3BRnRuWoNWnwIkNUls8oFStmCeKyMwktlOxMAWjc8mlS6qPPMKkiCzjCaCiABggau6CXHGaZ2yWg69YcuWO4EKldCy82IlqdG4Yi2dQwmmPJo8B5pyMQzqj6nzXhDvVQko9UVSJ9TLUg2DsWM6H77dYEi/OTACNYoyYlCP+8cGabp4qKZt0RXUXdz6OoGFu6q+dQ2au4JGiSS6EKthlqcLRHowMZXcr0aW3hlALC0IlRBGlQEAVHYL229cfL6qLeerf8/d1BXotDvlQ/7ZuVGrUlJr5HGf0Au4HM/S4qiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pcFU4Spcnn+N2esTXDkYB/bUx5lVmuk1m809xlJmUp8=;
+ b=LH8UU2Or8+4VkgQBsTIC4dP0zcmneLlt65LvLy3NuJwQOzIHcXJIFaBXSJUrcWUAGIsgCkLVBuNavJHEZ1Sp3VPWhX3DgHDda1zlv1XMUMaYrDhWJPLE5G/jA2v6rzZqjbQhoF6xKewLusa17NvDVwtHOR46dhWVpczTL34u8HA=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB7PR04MB5497.eurprd04.prod.outlook.com (2603:10a6:10:8a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Mon, 19 Oct
+ 2020 09:03:13 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3c3a:58b9:a1cc:cbcc]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3c3a:58b9:a1cc:cbcc%9]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 09:03:13 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        Aisheng Dong <aisheng.dong@nxp.com>
+CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, Ying Liu <victor.liu@nxp.com>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V2 8/8] can: flexcan: add CAN wakeup function for i.MX8QM
+Thread-Topic: [PATCH V2 8/8] can: flexcan: add CAN wakeup function for i.MX8QM
+Thread-Index: AQHWpe2XWfxDML5yskGVs3LoA/x/dKmelDOAgAACi3CAAATLAIAAAG5g
+Date:   Mon, 19 Oct 2020 09:03:12 +0000
+Message-ID: <DB8PR04MB67957F30D89ABFCF0801D741E61E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20201019155737.26577-1-qiangqing.zhang@nxp.com>
+ <20201019155737.26577-9-qiangqing.zhang@nxp.com>
+ <3ca1d3e9-ef13-283f-8301-68c657628e41@pengutronix.de>
+ <DB8PR04MB679531F0491CB52DC05DE624E61E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
+ <0e871906-e179-a2ea-1379-d0194c9d58fe@pengutronix.de>
+In-Reply-To: <0e871906-e179-a2ea-1379-d0194c9d58fe@pengutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-Mentions: aisheng.dong@nxp.com
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: fea6c6fb-507a-43c5-3847-08d8740dcf21
+x-ms-traffictypediagnostic: DB7PR04MB5497:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB5497F934B446046E94A6F198E61E0@DB7PR04MB5497.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ry1CUIa+ssWoH5PZLfcuOrRpVuZngXAHjUzX2pq7Q+hlAmQCLTjfziS5FjH0VoJ/Ip+vjMZ5l5LaR8UMKlxKFxv+OVy39xa1DEWnWYcKfsHdpx9RjtQ91ooyf2a0aqeuaALRSjHoyUE/UQQQbiEc8FprqjXfocCgRb+vH7bwiIdgdkOUKKgqRl9mLsSBS1057youYSENoh8F9hKAFcGx6LWInyqpM4whldVuT2C12waNJ2bjFWLFXTqZuhqILulizHOwyQ0GIWvVKuXAAKrYPoQ/eIFnQU5tdUOy3X+IhQtltOVXHxghoU1wQHTfOAprlutN1OUn8j+SQKHpgMp0yQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(366004)(376002)(86362001)(478600001)(52536014)(8676002)(2906002)(4326008)(71200400001)(33656002)(8936002)(83380400001)(6506007)(53546011)(7696005)(5660300002)(6636002)(26005)(76116006)(64756008)(316002)(66446008)(186003)(66476007)(66946007)(66556008)(9686003)(110136005)(55016002)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: r9xOp2FeGImgKS03+ANhe4ckEVon02uunKloLkvWjPP+Dt+CWPsSxeAMle1/5O/7JMGWv1Q5oW2mKfbOdWP38F8uv+bzJJ/25L4534ssEVIMt9Bv2BO72bOR7FlxhIVOJJDwqfe3V1ikxm5aYbP7TiyUv1rT3w6tj4wJIU34iHCB7u9rXZmrnExaQvTQpPsbg11h5i5cP/F+2Sf1iVU2yJe5otGR8lf1dfsj2fzCwCk6KGmpHjmWOp/v77zxV5FiK+KYba/CZS2m+VPgM6T7IF+Ps99qGYp3pcBgS0AjecA1lqEAyhcnUh8uHcWbyeY6o/38WAngKgGV7KTtrDDQEMSps2MTkyb9CXgVG0tNxPM3Z6Ypf4JekBJLk0wKq6uyU9B5x4mOE7n7HtWavy5yCc4VTZzS3une2g5w/aOyciHFOwFsg7wC006vnGnBoAmOkyYME7ewepdUCH+ilzY4m+tnGiq/8rJ8hVtKDA1s2ld9O0nqO3+IAf/VNKlWy+CW4bEHe5SO8mOvJ5jtb8oqT9D8zSYlceTCzy5oN5OFOrL59o5tZbpMHxprJlnGFTgHvkvjyHVNk5bQhAb3Yk/Q/+KzubdT+VJL1r24s/eFNcsaUWlWoPiGyo2z8DhPBrQaWlPA05Fx3aRk10XmFQuGtQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20200929133917.9224-8-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fea6c6fb-507a-43c5-3847-08d8740dcf21
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 09:03:12.9292
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VJarVpn/zIjbcbXWIJQREd/97IiGa/WjuuKot95bsSUb1BjWqQ6+yYUL6ZZTdUjJWJDu/snOcL5YJLjdMGjipg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5497
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/09/2020 14:39, Leo Yan wrote:
-
-Hi Leo,
-
-> This patch is to refactor address packet handling, it defines macros for
-> address packet's header and payload, these macros are used by decoder
-> and the dump flow.
-
-So I was thinking about these next few patches a bit. I understand that
-it's common ground to not use numbers in code directly, but put names to
-them (and there is good rationale for that).
-
-However those long and complicated names don't make it really easier to
-read, I think.
-
-See below for an idea:
-
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  .../util/arm-spe-decoder/arm-spe-decoder.c    | 33 ++++++++++---------
->  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 25 +++++++-------
->  .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 27 ++++++++++-----
->  3 files changed, 49 insertions(+), 36 deletions(-)
-> 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> index cc18a1e8c212..9d3de163d47c 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> @@ -24,36 +24,37 @@
->  
->  static u64 arm_spe_calc_ip(int index, u64 payload)
->  {
-> -	u8 *addr = (u8 *)&payload;
-> -	int ns, el;
-> +	u64 ns, el;
-
-This (and the "u64 vs. u8[]" changes below) looks like a nice cleanup.
->  	/* Instruction virtual address or Branch target address */
->  	if (index == SPE_ADDR_PKT_HDR_INDEX_INS ||
->  	    index == SPE_ADDR_PKT_HDR_INDEX_BRANCH) {
-> -		ns = addr[7] & SPE_ADDR_PKT_NS;
-> -		el = (addr[7] & SPE_ADDR_PKT_EL_MASK) >> SPE_ADDR_PKT_EL_OFFSET;
-> +		ns = payload & SPE_ADDR_PKT_INST_VA_NS;
-> +		el = (payload & SPE_ADDR_PKT_INST_VA_EL_MASK)
-> +			>> SPE_ADDR_PKT_INST_VA_EL_SHIFT;
-
-So if I see this correctly, this _EL_SHIFT and _EL_MASK are only used
-together, and only to read values, not to construct them.
-So can you fuse them together in the header file below, like:
-	el = SPE_ADDR_PKT_INST_VA_GET_EL(payload);
-
-That should help readablity, I guess, while still keeping the actual
-numbers in one place. _SHIFT and _MASK are useful when we use them to
-both extract *and construct* values, but here we only parse the buffer.
-
-Similar for other places where you just extract bits from a bitfield or
-integer.
-
-Cheers,
-Andre
-
-
-> +
-> +		/* Clean highest byte */
-> +		payload &= SPE_ADDR_PKT_ADDR_MASK;
->  
->  		/* Fill highest byte for EL1 or EL2 (VHE) mode */
-> -		if (ns && (el == SPE_ADDR_PKT_EL1 || el == SPE_ADDR_PKT_EL2))
-> -			addr[7] = 0xff;
-> -		/* Clean highest byte for other cases */
-> -		else
-> -			addr[7] = 0x0;
-> +		if (ns && (el == SPE_ADDR_PKT_INST_VA_EL1 ||
-> +			   el == SPE_ADDR_PKT_INST_VA_EL2))
-> +			payload |= 0xffULL << SPE_ADDR_PKT_ADDR_BYTE7_SHIFT;
->  
->  	/* Data access virtual address */
->  	} else if (index == SPE_ADDR_PKT_HDR_INDEX_DATA_VIRT) {
->  
-> +		/* Clean tags */
-> +		payload &= SPE_ADDR_PKT_ADDR_MASK;
-> +
->  		/* Fill highest byte if bits [48..55] is 0xff */
-> -		if (addr[6] == 0xff)
-> -			addr[7] = 0xff;
-> -		/* Otherwise, cleanup tags */
-> -		else
-> -			addr[7] = 0x0;
-> +		if ((payload >> 48) == 0xffULL)
-> +			payload |= 0xffULL << SPE_ADDR_PKT_ADDR_BYTE7_SHIFT;
->  
->  	/* Data access physical address */
->  	} else if (index == SPE_ADDR_PKT_HDR_INDEX_DATA_PHYS) {
-> -		/* Cleanup byte 7 */
-> -		addr[7] = 0x0;
-> +		/* Clean highest byte */
-> +		payload &= SPE_ADDR_PKT_ADDR_MASK;
->  	} else {
->  		pr_err("unsupported address packet index: 0x%x\n", index);
->  	}
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> index e738bd04f209..b51a2207e4a0 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> @@ -13,9 +13,6 @@
->  
->  #include "arm-spe-pkt-decoder.h"
->  
-> -#define NS_FLAG		BIT(63)
-> -#define EL_FLAG		(BIT(62) | BIT(61))
-> -
->  #if __BYTE_ORDER == __BIG_ENDIAN
->  #define le16_to_cpu bswap_16
->  #define le32_to_cpu bswap_32
-> @@ -166,9 +163,10 @@ static int arm_spe_get_addr(const unsigned char *buf, size_t len,
->  {
->  	packet->type = ARM_SPE_ADDRESS;
->  	if (ext_hdr)
-> -		packet->index = ((buf[0] & 0x3) << 3) | (buf[1] & 0x7);
-> +		packet->index = (((buf[0] & SPE_ADDR_PKT_HDR_EXT_INDEX_MASK) << 3) |
-> +				  (buf[1] & SPE_ADDR_PKT_HDR_INDEX_MASK));
->  	else
-> -		packet->index = buf[0] & 0x7;
-> +		packet->index = buf[0] & SPE_ADDR_PKT_HDR_INDEX_MASK;
->  
->  	return arm_spe_get_payload(buf, len, ext_hdr, packet);
->  }
-> @@ -403,18 +401,21 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
->  		return arm_spe_pkt_snprintf(&buf, &blen, "%s %lld", name, payload);
->  	case ARM_SPE_ADDRESS:
->  		switch (idx) {
-> -		case 0:
-> -		case 1: ns = !!(packet->payload & NS_FLAG);
-> -			el = (packet->payload & EL_FLAG) >> 61;
-> -			payload &= ~(0xffULL << 56);
-> +		case SPE_ADDR_PKT_HDR_INDEX_INS:
-> +		case SPE_ADDR_PKT_HDR_INDEX_BRANCH:
-> +			ns = !!(packet->payload & SPE_ADDR_PKT_INST_VA_NS);
-> +			el = (packet->payload & SPE_ADDR_PKT_INST_VA_EL_MASK)
-> +				>> SPE_ADDR_PKT_INST_VA_EL_SHIFT;
-> +			payload &= SPE_ADDR_PKT_ADDR_MASK;
->  			return arm_spe_pkt_snprintf(&buf, &blen,
->  					"%s 0x%llx el%d ns=%d",
->  				        (idx == 1) ? "TGT" : "PC", payload, el, ns);
-> -		case 2:
-> +		case SPE_ADDR_PKT_HDR_INDEX_DATA_VIRT:
->  			return arm_spe_pkt_snprintf(&buf, &blen,
->  						    "VA 0x%llx", payload);
-> -		case 3:	ns = !!(packet->payload & NS_FLAG);
-> -			payload &= ~(0xffULL << 56);
-> +		case SPE_ADDR_PKT_HDR_INDEX_DATA_PHYS:
-> +			ns = !!(packet->payload & SPE_ADDR_PKT_INST_VA_NS);
-> +			payload &= SPE_ADDR_PKT_ADDR_MASK;
->  			return arm_spe_pkt_snprintf(&buf, &blen,
->  						    "PA 0x%llx ns=%d", payload, ns);
->  		default:
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> index a30fe3c5ab67..88d2231c76da 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> @@ -61,19 +61,30 @@ struct arm_spe_pkt {
->  #define SPE_HEADER_SZ_SHIFT		(4)
->  #define SPE_HEADER_SZ_MASK		GENMASK_ULL(5, 4)
->  
-> +/* Address packet header */
-> +#define SPE_ADDR_PKT_HDR_INDEX_MASK		GENMASK_ULL(2, 0)
->  #define SPE_ADDR_PKT_HDR_INDEX_INS		(0x0)
->  #define SPE_ADDR_PKT_HDR_INDEX_BRANCH		(0x1)
->  #define SPE_ADDR_PKT_HDR_INDEX_DATA_VIRT	(0x2)
->  #define SPE_ADDR_PKT_HDR_INDEX_DATA_PHYS	(0x3)
->  
-> -#define SPE_ADDR_PKT_NS				BIT(7)
-> -#define SPE_ADDR_PKT_CH				BIT(6)
-> -#define SPE_ADDR_PKT_EL_OFFSET			(5)
-> -#define SPE_ADDR_PKT_EL_MASK			(0x3 << SPE_ADDR_PKT_EL_OFFSET)
-> -#define SPE_ADDR_PKT_EL0			(0)
-> -#define SPE_ADDR_PKT_EL1			(1)
-> -#define SPE_ADDR_PKT_EL2			(2)
-> -#define SPE_ADDR_PKT_EL3			(3)
-> +#define SPE_ADDR_PKT_HDR_EXT_INDEX_MASK		GENMASK_ULL(1, 0)
-> +
-> +/* Address packet payload for data access physical address */
-> +#define SPE_ADDR_PKT_ADDR_BYTE7_SHIFT		(56)
-> +#define SPE_ADDR_PKT_ADDR_MASK			GENMASK_ULL(55, 0)
-> +
-> +#define SPE_ADDR_PKT_DATA_PA_NS			BIT(63)
-> +#define SPE_ADDR_PKT_DATA_PA_CH			BIT(62)
-> +
-> +/* Address packet payload for instrcution virtual address */
-> +#define SPE_ADDR_PKT_INST_VA_NS			BIT(63)
-> +#define SPE_ADDR_PKT_INST_VA_EL_SHIFT		(61)
-> +#define SPE_ADDR_PKT_INST_VA_EL_MASK		GENMASK_ULL(62, 61)
-> +#define SPE_ADDR_PKT_INST_VA_EL0		(0)
-> +#define SPE_ADDR_PKT_INST_VA_EL1		(1)
-> +#define SPE_ADDR_PKT_INST_VA_EL2		(2)
-> +#define SPE_ADDR_PKT_INST_VA_EL3		(3)
->  
->  const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
->  
-> 
-
+DQpIaSBNYXJjLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMg
+S2xlaW5lLUJ1ZGRlIDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMjDlubQxMOaciDE5
+5pelIDE2OjQyDQo+IFRvOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPjsg
+cm9iaCtkdEBrZXJuZWwub3JnOw0KPiBzaGF3bmd1b0BrZXJuZWwub3JnOyBzLmhhdWVyQHBlbmd1
+dHJvbml4LmRlDQo+IENjOiBrZXJuZWxAcGVuZ3V0cm9uaXguZGU7IGRsLWxpbnV4LWlteCA8bGlu
+dXgtaW14QG54cC5jb20+OyBZaW5nIExpdQ0KPiA8dmljdG9yLmxpdUBueHAuY29tPjsgbGludXgt
+Y2FuQHZnZXIua2VybmVsLm9yZzsgUGFua2FqIEJhbnNhbA0KPiA8cGFua2FqLmJhbnNhbEBueHAu
+Y29tPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVs
+Lm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIFYyIDgvOF0gY2FuOiBmbGV4Y2FuOiBhZGQgQ0FO
+IHdha2V1cCBmdW5jdGlvbiBmb3INCj4gaS5NWDhRTQ0KPiANCj4gT24gMTAvMTkvMjAgMTA6Mzkg
+QU0sIEpvYWtpbSBaaGFuZyB3cm90ZToNCj4gPj4+ICsjZGVmaW5lIEZMRVhDQU5fSU1YX1NDX1Jf
+Q0FOKHgpCQkoSU1YX1NDX1JfQ0FOXzAgKyAoeCkpDQo+ID4+DQo+ID4+IFdoeSBub3QgbW92ZSBp
+dCBpbnRvIHRoZSBhcHByb3ByaWF0ZSBzdmMgaGVhZGVyIGZpbGU/DQo+ID4NCj4gPiBTb3JyeSwg
+bm90IHF1aXRlIHVuZGVyc3RhbmQuIFdoaWNoIGZpbGUgZG8geW91IG1lYW4gdGhlIGFwcHJvcHJp
+YXRlDQo+ID4gc3ZjIGhlYWRlciBmaWxlPyBJcyBpdCBpbmNsdWRlL2R0LWJpbmRpbmdzL2Zpcm13
+YXJlL2lteC9yc3JjLmg/DQo+IA0KPiB5ZXMsIEkgbWVhbnQgdGhhdDoNCj4gDQo+ID4gaW5jbHVk
+ZS9kdC1iaW5kaW5ncy9maXJtd2FyZS9pbXgvcnNyYy5oOjExMTojZGVmaW5lIElNWF9TQ19SX0NB
+Tl8wDQo+IDEwNQ0KDQpBcyBJIGNhbiBzZWUgaW4gcnNyYy5oIGZpbGUsIGl0IGp1c3QgbGlzdCBl
+YWNoIHJlc291cmNlIHNlcXVlbnRpYWxseSwgYW5kIHRoZXJlIGlzIGEgbm90ZSBpbiB0aGUgY29t
+bWVudHM6DQoiTm90ZSBpdGVtcyBmcm9tIGxpc3Qgc2hvdWxkIG5ldmVyIGJlIGNoYW5nZWQgb3Ig
+cmVtb3ZlZCAob25seSBhZGRlZCB0byBhdCB0aGUgZW5kIG9mIHRoZSBsaXN0KS4iDQpTbyB0aGUg
+ZHJpdmVyIGF1dGhvciBkb2Vzbid0IHdhbnQgYW55IHNjdSB1c2VycyB0byBjaGFuZ2UgdGhlc2Ug
+cmVzb3VyY2UgbWFjcm8uIElmIHdlIG9ubHkgZG8gYmVsb3cgY2hhbmdlIGZvciBDQU4sIGJ1dCBr
+ZWVwIG90aGVyIGRldmljZXMgdW5jaGFuZ2VkLA0KSXQgd291bGQgYmUgdmVyeSBzdHJhbmdlLiBB
+bmQgSSB0aGluayB0aGlzIGNvZGUgY2hhbmdlIGNvdWxkIG5vdCBiZSBhY2NlcHRlZC4gVGhlcmUg
+bWF5IGJlIGFub3RoZXIgY29uc2lkZXJhdGlvbiwgbm93IHdlIG9ubHkgaGFzIDMgQ0FOIGluc3Rh
+bmNlcywgaG93IGNhbiB3ZSBoYW5kbGUNCmlmIGxhdGVyIFNvQ3MgaGF2ZSBtb3JlIENBTiBpbnN0
+YW5jZXMsIGFuZCB0aGV5IHN0aWxsIHdhbnQgdG8gcmV1c2UgdGhpcyBoZWFkZXIgZmlsZS4gVGhp
+cyBpcyBhbHNvIHJlYXNvbiBJIHByZWZlciB0byB1c2UgdGhlc2UgZGVmaW5lZCBtYWNyb3MgZGly
+ZWN0bHkgaW4gZmxleGNhbiBkcml2ZXIuIA0KDQotLS0gYS9pbmNsdWRlL2R0LWJpbmRpbmdzL2Zp
+cm13YXJlL2lteC9yc3JjLmgNCisrKyBiL2luY2x1ZGUvZHQtYmluZGluZ3MvZmlybXdhcmUvaW14
+L3JzcmMuaA0KQEAgLTEwOCw5ICsxMDgsNyBAQA0KICNkZWZpbmUgSU1YX1NDX1JfQURDXzEgICAg
+ICAgICAgICAgICAgIDEwMg0KICNkZWZpbmUgSU1YX1NDX1JfRlRNXzAgICAgICAgICAgICAgICAg
+IDEwMw0KICNkZWZpbmUgSU1YX1NDX1JfRlRNXzEgICAgICAgICAgICAgICAgIDEwNA0KLSNkZWZp
+bmUgSU1YX1NDX1JfQ0FOXzAgICAgICAgICAgICAgICAgIDEwNQ0KLSNkZWZpbmUgSU1YX1NDX1Jf
+Q0FOXzEgICAgICAgICAgICAgICAgIDEwNg0KLSNkZWZpbmUgSU1YX1NDX1JfQ0FOXzIgICAgICAg
+ICAgICAgICAgIDEwNw0KKyNkZWZpbmUgSU1YX1NDX1JfQ0FOKHgpICAgICAgICAgICAgICAgICAo
+MTA1ICsgKHgpKQ0KICNkZWZpbmUgSU1YX1NDX1JfRE1BXzFfQ0gwICAgICAgICAgICAgIDEwOA0K
+ICNkZWZpbmUgSU1YX1NDX1JfRE1BXzFfQ0gxICAgICAgICAgICAgIDEwOQ0KICNkZWZpbmUgSU1Y
+X1NDX1JfRE1BXzFfQ0gyICAgICAgICAgICAgIDExMA0KIA0KQWRkIEBBaXNoZW5nIERvbmcsIGNv
+dWxkIGFib3ZlIGNvZGUgY2hhbmdlcyBjYW4gYmUgYWNjZXB0ZWQgYnkgeW91Pw0KDQpCZXN0IFJl
+Z2FyZHMsDQpKb2FraW0gWmhhbmcNCg==
