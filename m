@@ -2,386 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C996F292936
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2B8292940
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729202AbgJSOXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:23:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23941 "EHLO
+        id S1729293AbgJSOZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:25:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55853 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728311AbgJSOXq (ORCPT
+        by vger.kernel.org with ESMTP id S1728344AbgJSOZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:23:46 -0400
+        Mon, 19 Oct 2020 10:25:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603117423;
+        s=mimecast20190719; t=1603117539;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=hist2VJBj3Hg6pe/kvjFzOIwP9Y1Urk91DbUes32Z1o=;
-        b=YG4uGiQdd28PBy0qSVUGfNK3GQgEAzSiFveDZHp3cG1g8qm4ANmA3HejwPp9eAUMcSq8Gz
-        SC9/IQBSa/ceZLvynntojHtMpQxmA9uzvmpR2eTVB9X5d2iU9uEpDL5DrcUkeovHPE9F/C
-        Z3pvq3vyR+MVMP/z46KUkyxmI3K73mE=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-222-SUEyK-JiNXysAyyH31e99g-1; Mon, 19 Oct 2020 10:23:42 -0400
-X-MC-Unique: SUEyK-JiNXysAyyH31e99g-1
-Received: by mail-qk1-f200.google.com with SMTP id s14so2681541qke.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:23:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=hist2VJBj3Hg6pe/kvjFzOIwP9Y1Urk91DbUes32Z1o=;
-        b=n2UcPogPuNmwF7yQGUZFXlHFw/ahJP6qa2I1CksGBUaetQnxPxl4vf6aoIAK3ywTno
-         2QAZVU/4R4Gf1uWSDm2rquueNCV3oU+QasFUTgH9i1J3x8UCPiD4TSvsuVkXgxROcIrm
-         sH8CoKpAB2zmPLlwqtXPr3XvVJ2VsPhCSYV/VRE6cC9oWXhtsUewc5EpWHqKoljUjwuf
-         jrA3hozIFsvMcwo2LzyIB33OCwsotZXFSOIo5klqfHUu3n6midMwO9vU4m9jToeSy4Qe
-         aluTyF0L41aNKlqo9WdZKzS7dWNDZ0c54a8crxQuD3IyaghrYFSb9jW2qdw1banKGdyw
-         rL8g==
-X-Gm-Message-State: AOAM5308R9Du7AjFtWtLaQm194okyNq9P8oAP3W3Snp/Nb4XV79U8SsJ
-        Sm58YDuilBakMiXPoPOUSeA6ND3Muz4gBtg/SyhMNmqOkXww7X2AODNaSiXy0nq8pq7k3kQJjtw
-        nUiNL80q/Ug5qbXmhW6of1vNn
-X-Received: by 2002:a0c:8d05:: with SMTP id r5mr2084329qvb.31.1603117420310;
-        Mon, 19 Oct 2020 07:23:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxSqjcv+5ZQBO/s6MPbADZWWRy0Omeq3E6TAGYS2mwIpc75suoZG1EYKN/uea08lKO8wgI3hw==
-X-Received: by 2002:a0c:8d05:: with SMTP id r5mr2084293qvb.31.1603117419983;
-        Mon, 19 Oct 2020 07:23:39 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 69sm79851qko.48.2020.10.19.07.23.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 07:23:39 -0700 (PDT)
-From:   trix@redhat.com
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        subbu.seetharaman@broadcom.com, ketan.mukadam@broadcom.com,
-        jitendra.bhivare@broadcom.com, skashyap@marvell.com,
-        jhasan@marvell.com, hare@suse.de, don.brace@microchip.com,
-        linux@highpoint-tech.com, brking@us.ibm.com,
-        intel-linux-scu@intel.com, artur.paszkiewicz@intel.com,
-        james.smart@broadcom.com, dick.kennedy@broadcom.com,
-        yokota@netlab.is.tsukuba.ac.jp, njavali@marvell.com,
-        Kai.Makisara@kolumbus.fi, willy@infradead.org
-Cc:     GR-QLogic-Storage-Upstream@marvell.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, storagedev@microchip.com,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] scsi: remove unneeded break
-Date:   Mon, 19 Oct 2020 07:23:33 -0700
-Message-Id: <20201019142333.16584-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=MT/WNqC6EgLiO4GkBuuIgykI1RT/PfUPjn74i6i4TYo=;
+        b=fNXIf8mlL/UeDzKVbx4U+dHV/00hW0GL5UtEjz9UthEWMugY7KiHNYUaUUETeGs3IrhsA1
+        eVNOmeZOenE5rPTVr2ygzA4WMHbxC+/jugI8DF8z28WvPrs1YRg3axOOD3XHFFcTquP5Rp
+        XWzMEnioLWgZ7NNdAY3Vkf6zRP5AgLY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-CNAgqwshNBGyahbJdOcaJA-1; Mon, 19 Oct 2020 10:25:35 -0400
+X-MC-Unique: CNAgqwshNBGyahbJdOcaJA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1555818B6458;
+        Mon, 19 Oct 2020 14:25:30 +0000 (UTC)
+Received: from [10.10.115.9] (ovpn-115-9.rdu2.redhat.com [10.10.115.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A85425D9EF;
+        Mon, 19 Oct 2020 14:25:15 +0000 (UTC)
+Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping
+ CPUs
+To:     Marcelo Tosatti <mtosatti@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, lgoncalv@redhat.com
+References: <20200928183529.471328-1-nitesh@redhat.com>
+ <20200928183529.471328-5-nitesh@redhat.com>
+ <20201016122046.GP2611@hirez.programming.kicks-ass.net>
+ <79f382a7-883d-ff42-394d-ec4ce81fed6a@redhat.com>
+ <20201019111137.GL2628@hirez.programming.kicks-ass.net>
+ <20201019140005.GB17287@fuller.cnet>
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+Autocrypt: addr=nitesh@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ VujM7c/b4pps
+Organization: Red Hat Inc,
+Message-ID: <48a2a9a1-d664-6770-e088-27a7786e0f7b@redhat.com>
+Date:   Mon, 19 Oct 2020 10:25:14 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20201019140005.GB17287@fuller.cnet>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=nitesh@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="tWEQL0MQ6sfQOw0wFm7bzfs6AmDdw7Dc7"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--tWEQL0MQ6sfQOw0wFm7bzfs6AmDdw7Dc7
+Content-Type: multipart/mixed; boundary="dqzUao2zxl46IcY3BVznZvZYz5G7v1wy1"
 
-A break is not needed if it is preceded by a return or goto
+--dqzUao2zxl46IcY3BVznZvZYz5G7v1wy1
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/scsi/aic94xx/aic94xx_task.c |  1 -
- drivers/scsi/be2iscsi/be_mgmt.c     |  4 ----
- drivers/scsi/bnx2fc/bnx2fc_hwi.c    |  1 -
- drivers/scsi/fcoe/fcoe.c            |  1 -
- drivers/scsi/hpsa.c                 |  1 -
- drivers/scsi/hptiop.c               |  1 -
- drivers/scsi/ipr.c                  |  1 -
- drivers/scsi/isci/phy.c             |  2 --
- drivers/scsi/lpfc/lpfc_debugfs.c    | 12 ++++--------
- drivers/scsi/lpfc/lpfc_init.c       |  1 -
- drivers/scsi/lpfc/lpfc_scsi.c       |  1 -
- drivers/scsi/lpfc/lpfc_sli.c        |  3 ---
- drivers/scsi/mvumi.c                |  1 -
- drivers/scsi/pcmcia/nsp_cs.c        |  2 --
- drivers/scsi/qla2xxx/qla_mbx.c      |  1 -
- drivers/scsi/st.c                   |  1 -
- drivers/scsi/sym53c8xx_2/sym_hipd.c |  1 -
- 17 files changed, 4 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/scsi/aic94xx/aic94xx_task.c b/drivers/scsi/aic94xx/aic94xx_task.c
-index f923ed019d4a..ed034192b3c3 100644
---- a/drivers/scsi/aic94xx/aic94xx_task.c
-+++ b/drivers/scsi/aic94xx/aic94xx_task.c
-@@ -269,7 +269,6 @@ static void asd_task_tasklet_complete(struct asd_ascb *ascb,
- 	case TA_I_T_NEXUS_LOSS:
- 		opcode = dl->status_block[0];
- 		goto Again;
--		break;
- 	case TF_INV_CONN_HANDLE:
- 		ts->resp = SAS_TASK_UNDELIVERED;
- 		ts->stat = SAS_DEVICE_UNKNOWN;
-diff --git a/drivers/scsi/be2iscsi/be_mgmt.c b/drivers/scsi/be2iscsi/be_mgmt.c
-index 96d6e384b2b2..0d4928567265 100644
---- a/drivers/scsi/be2iscsi/be_mgmt.c
-+++ b/drivers/scsi/be2iscsi/be_mgmt.c
-@@ -1244,18 +1244,14 @@ beiscsi_adap_family_disp(struct device *dev, struct device_attribute *attr,
- 	case OC_DEVICE_ID2:
- 		return snprintf(buf, PAGE_SIZE,
- 				"Obsolete/Unsupported BE2 Adapter Family\n");
--		break;
- 	case BE_DEVICE_ID2:
- 	case OC_DEVICE_ID3:
- 		return snprintf(buf, PAGE_SIZE, "BE3-R Adapter Family\n");
--		break;
- 	case OC_SKH_ID1:
- 		return snprintf(buf, PAGE_SIZE, "Skyhawk-R Adapter Family\n");
--		break;
- 	default:
- 		return snprintf(buf, PAGE_SIZE,
- 				"Unknown Adapter Family: 0x%x\n", dev_id);
--		break;
- 	}
- }
- 
-diff --git a/drivers/scsi/bnx2fc/bnx2fc_hwi.c b/drivers/scsi/bnx2fc/bnx2fc_hwi.c
-index 08992095ce7a..b37b0a9ec12d 100644
---- a/drivers/scsi/bnx2fc/bnx2fc_hwi.c
-+++ b/drivers/scsi/bnx2fc/bnx2fc_hwi.c
-@@ -770,7 +770,6 @@ static void bnx2fc_process_unsol_compl(struct bnx2fc_rport *tgt, u16 wqe)
- 			} else
- 				printk(KERN_ERR PFX "SRR in progress\n");
- 			goto ret_err_rqe;
--			break;
- 		default:
- 			break;
- 		}
-diff --git a/drivers/scsi/fcoe/fcoe.c b/drivers/scsi/fcoe/fcoe.c
-index 0f9274960dc6..a4be6f439c47 100644
---- a/drivers/scsi/fcoe/fcoe.c
-+++ b/drivers/scsi/fcoe/fcoe.c
-@@ -1894,7 +1894,6 @@ static int fcoe_device_notification(struct notifier_block *notifier,
- 		mutex_unlock(&fcoe_config_mutex);
- 		fcoe_ctlr_device_delete(fcoe_ctlr_to_ctlr_dev(ctlr));
- 		goto out;
--		break;
- 	case NETDEV_FEAT_CHANGE:
- 		fcoe_netdev_features_change(lport, netdev);
- 		break;
-diff --git a/drivers/scsi/hpsa.c b/drivers/scsi/hpsa.c
-index 83ce4f11a589..45136e3a4efc 100644
---- a/drivers/scsi/hpsa.c
-+++ b/drivers/scsi/hpsa.c
-@@ -7442,7 +7442,6 @@ static int find_PCI_BAR_index(struct pci_dev *pdev, unsigned long pci_bar_addr)
- 				dev_warn(&pdev->dev,
- 				       "base address is invalid\n");
- 				return -1;
--				break;
- 			}
- 		}
- 		if (offset == pci_bar_addr - PCI_BASE_ADDRESS_0)
-diff --git a/drivers/scsi/hptiop.c b/drivers/scsi/hptiop.c
-index 6a2561f26e38..db4c7a7ff4dd 100644
---- a/drivers/scsi/hptiop.c
-+++ b/drivers/scsi/hptiop.c
-@@ -758,7 +758,6 @@ static void hptiop_finish_scsi_req(struct hptiop_hba *hba, u32 tag,
- 		scp->result = SAM_STAT_CHECK_CONDITION;
- 		memcpy(scp->sense_buffer, &req->sg_list, SCSI_SENSE_BUFFERSIZE);
- 		goto skip_resid;
--		break;
- 
- 	default:
- 		scp->result = DRIVER_INVALID << 24 | DID_ABORT << 16;
-diff --git a/drivers/scsi/ipr.c b/drivers/scsi/ipr.c
-index b0aa58d117cc..e451102b9a29 100644
---- a/drivers/scsi/ipr.c
-+++ b/drivers/scsi/ipr.c
-@@ -9487,7 +9487,6 @@ static pci_ers_result_t ipr_pci_error_detected(struct pci_dev *pdev,
- 	case pci_channel_io_perm_failure:
- 		ipr_pci_perm_failure(pdev);
- 		return PCI_ERS_RESULT_DISCONNECT;
--		break;
- 	default:
- 		break;
- 	}
-diff --git a/drivers/scsi/isci/phy.c b/drivers/scsi/isci/phy.c
-index 7041e2e3ab48..1b87d9080ebe 100644
---- a/drivers/scsi/isci/phy.c
-+++ b/drivers/scsi/isci/phy.c
-@@ -753,7 +753,6 @@ enum sci_status sci_phy_event_handler(struct isci_phy *iphy, u32 event_code)
- 		default:
- 			phy_event_warn(iphy, state, event_code);
- 			return SCI_FAILURE;
--			break;
- 		}
- 		return SCI_SUCCESS;
- 	case SCI_PHY_SUB_AWAIT_IAF_UF:
-@@ -958,7 +957,6 @@ enum sci_status sci_phy_event_handler(struct isci_phy *iphy, u32 event_code)
- 		default:
- 			phy_event_warn(iphy, state, event_code);
- 			return SCI_FAILURE_INVALID_STATE;
--			break;
- 		}
- 		return SCI_SUCCESS;
- 	default:
-diff --git a/drivers/scsi/lpfc/lpfc_debugfs.c b/drivers/scsi/lpfc/lpfc_debugfs.c
-index c9a327b13e5c..325081ac6553 100644
---- a/drivers/scsi/lpfc/lpfc_debugfs.c
-+++ b/drivers/scsi/lpfc/lpfc_debugfs.c
-@@ -3341,7 +3341,6 @@ lpfc_idiag_pcicfg_read(struct file *file, char __user *buf, size_t nbytes,
- 		break;
- 	case LPFC_PCI_CFG_BROWSE: /* browse all */
- 		goto pcicfg_browse;
--		break;
- 	default:
- 		/* illegal count */
- 		len = 0;
-@@ -4381,7 +4380,7 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
- 			}
- 		}
- 		goto error_out;
--		break;
-+
- 	case LPFC_IDIAG_CQ:
- 		/* MBX complete queue */
- 		if (phba->sli4_hba.mbx_cq &&
-@@ -4433,7 +4432,7 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
- 			}
- 		}
- 		goto error_out;
--		break;
-+
- 	case LPFC_IDIAG_MQ:
- 		/* MBX work queue */
- 		if (phba->sli4_hba.mbx_wq &&
-@@ -4447,7 +4446,7 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
- 			goto pass_check;
- 		}
- 		goto error_out;
--		break;
-+
- 	case LPFC_IDIAG_WQ:
- 		/* ELS work queue */
- 		if (phba->sli4_hba.els_wq &&
-@@ -4487,9 +4486,8 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
- 				}
- 			}
- 		}
--
- 		goto error_out;
--		break;
-+
- 	case LPFC_IDIAG_RQ:
- 		/* HDR queue */
- 		if (phba->sli4_hba.hdr_rq &&
-@@ -4514,10 +4512,8 @@ lpfc_idiag_queacc_write(struct file *file, const char __user *buf,
- 			goto pass_check;
- 		}
- 		goto error_out;
--		break;
- 	default:
- 		goto error_out;
--		break;
- 	}
- 
- pass_check:
-diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
-index ca25e54bb782..b6090357e8a5 100644
---- a/drivers/scsi/lpfc/lpfc_init.c
-+++ b/drivers/scsi/lpfc/lpfc_init.c
-@@ -7196,7 +7196,6 @@ lpfc_init_api_table_setup(struct lpfc_hba *phba, uint8_t dev_grp)
- 				"1431 Invalid HBA PCI-device group: 0x%x\n",
- 				dev_grp);
- 		return -ENODEV;
--		break;
- 	}
- 	return 0;
- }
-diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
-index 983eeb0e3d07..c3b02dab6e5c 100644
---- a/drivers/scsi/lpfc/lpfc_scsi.c
-+++ b/drivers/scsi/lpfc/lpfc_scsi.c
-@@ -4284,7 +4284,6 @@ lpfc_scsi_api_table_setup(struct lpfc_hba *phba, uint8_t dev_grp)
- 				"1418 Invalid HBA PCI-device group: 0x%x\n",
- 				dev_grp);
- 		return -ENODEV;
--		break;
- 	}
- 	phba->lpfc_rampdown_queue_depth = lpfc_rampdown_queue_depth;
- 	phba->lpfc_scsi_cmd_iocb_cmpl = lpfc_scsi_cmd_iocb_cmpl;
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index e158cd77d387..0f18f1ba8a28 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -9189,7 +9189,6 @@ lpfc_mbox_api_table_setup(struct lpfc_hba *phba, uint8_t dev_grp)
- 				"1420 Invalid HBA PCI-device group: 0x%x\n",
- 				dev_grp);
- 		return -ENODEV;
--		break;
- 	}
- 	return 0;
- }
-@@ -10072,7 +10071,6 @@ lpfc_sli4_iocb2wqe(struct lpfc_hba *phba, struct lpfc_iocbq *iocbq,
- 				"2014 Invalid command 0x%x\n",
- 				iocbq->iocb.ulpCommand);
- 		return IOCB_ERROR;
--		break;
- 	}
- 
- 	if (iocbq->iocb_flag & LPFC_IO_DIF_PASS)
-@@ -10234,7 +10232,6 @@ lpfc_sli_api_table_setup(struct lpfc_hba *phba, uint8_t dev_grp)
- 				"1419 Invalid HBA PCI-device group: 0x%x\n",
- 				dev_grp);
- 		return -ENODEV;
--		break;
- 	}
- 	phba->lpfc_get_iocb_from_iocbq = lpfc_get_iocb_from_iocbq;
- 	return 0;
-diff --git a/drivers/scsi/mvumi.c b/drivers/scsi/mvumi.c
-index 0354898d7cac..2f7a52bd653a 100644
---- a/drivers/scsi/mvumi.c
-+++ b/drivers/scsi/mvumi.c
-@@ -2296,7 +2296,6 @@ static int mvumi_cfg_hw_reg(struct mvumi_hba *mhba)
- 		break;
- 	default:
- 		return -1;
--		break;
- 	}
- 
- 	return 0;
-diff --git a/drivers/scsi/pcmcia/nsp_cs.c b/drivers/scsi/pcmcia/nsp_cs.c
-index bc5a623519e7..bb3b3884f968 100644
---- a/drivers/scsi/pcmcia/nsp_cs.c
-+++ b/drivers/scsi/pcmcia/nsp_cs.c
-@@ -1102,8 +1102,6 @@ static irqreturn_t nspintr(int irq, void *dev_id)
- 		nsp_index_write(base, SCSIBUSCTRL, SCSI_ATN | AUTODIRECTION | ACKENB);
- 		return IRQ_HANDLED;
- 
--		break;
--
- 	case PH_RESELECT:
- 		//nsp_dbg(NSP_DEBUG_INTR, "phase reselect");
- 		// *sync_neg = SYNC_NOT_YET;
-diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
-index 07afd0d8a8f3..40af7f1524ce 100644
---- a/drivers/scsi/qla2xxx/qla_mbx.c
-+++ b/drivers/scsi/qla2xxx/qla_mbx.c
-@@ -4030,7 +4030,6 @@ qla24xx_report_id_acquisition(scsi_qla_host_t *vha,
- 
- 			set_bit(N2N_LOGIN_NEEDED, &vha->dpc_flags);
- 			return;
--			break;
- 		case TOPO_FL:
- 			ha->current_topology = ISP_CFG_FL;
- 			break;
-diff --git a/drivers/scsi/st.c b/drivers/scsi/st.c
-index e2e5356a997d..43f7624508a9 100644
---- a/drivers/scsi/st.c
-+++ b/drivers/scsi/st.c
-@@ -2846,7 +2846,6 @@ static int st_int_ioctl(struct scsi_tape *STp, unsigned int cmd_in, unsigned lon
- 	case MTNOP:
- 		DEBC_printk(STp, "No op on tape.\n");
- 		return 0;	/* Should do something ? */
--		break;
- 	case MTRETEN:
- 		cmd[0] = START_STOP;
- 		if (STp->immediate) {
-diff --git a/drivers/scsi/sym53c8xx_2/sym_hipd.c b/drivers/scsi/sym53c8xx_2/sym_hipd.c
-index a9fe092a4906..255a2d48d421 100644
---- a/drivers/scsi/sym53c8xx_2/sym_hipd.c
-+++ b/drivers/scsi/sym53c8xx_2/sym_hipd.c
-@@ -4596,7 +4596,6 @@ static void sym_int_sir(struct sym_hcb *np)
- 					scr_to_cpu(np->lastmsg), np->msgout[0]);
- 			}
- 			goto out_clrack;
--			break;
- 		default:
- 			goto out_reject;
- 		}
--- 
-2.18.1
+On 10/19/20 10:00 AM, Marcelo Tosatti wrote:
+> On Mon, Oct 19, 2020 at 01:11:37PM +0200, Peter Zijlstra wrote:
+>> On Sun, Oct 18, 2020 at 02:14:46PM -0400, Nitesh Narayan Lal wrote:
+
+[...]
+
+>>>> Also, do we really need to have that conditional on hk_cpus <
+>>>> num_online_cpus()? That is, why can't we do this unconditionally?
+>>> FWIU most of the drivers using this API already restricts the number of
+>>> vectors based on the num_online_cpus, if we do it unconditionally we ca=
+n
+>>> unnecessary duplicate the restriction for cases where we don't have any
+>>> isolated CPUs.
+>> unnecessary isn't really a concern here, this is a slow path. What's
+>> important is code clarity.
+
+Right, I can skip that check then.
+
+>>
+>>> Also, different driver seems to take different factors into considerati=
+on
+>>> along with num_online_cpus while finding the max_vecs to request, for
+>>> example in the case of mlx5:
+>>> MLX5_CAP_GEN(dev, num_ports) * num_online_cpus() +
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 MLX5_EQ_VEC_COMP_BASE
+>>>
+>>> Having hk_cpus < num_online_cpus() helps us ensure that we are only
+>>> changing the behavior when we have isolated CPUs.
+>>>
+>>> Does that make sense?
+>> That seems to want to allocate N interrupts per cpu (plus some random
+>> static amount, which seems weird, but whatever). This patch breaks that.
+> On purpose. For the isolated CPUs we don't want network device=20
+> interrupts (in this context).
+>
+>> So I think it is important to figure out what that driver really wants
+>> in the nohz_full case. If it wants to retain N interrupts per CPU, and
+>> only reduce the number of CPUs, the proposed interface is wrong.
+> It wants N interrupts per non-isolated (AKA housekeeping) CPU.
+> Zero interrupts for isolated interrupts.
+
+Right, otherwise we may end up in a situation where we run out of per CPU
+vectors while we move the IRQs from isolated CPUs to housekeeping.
+
+
+--=20
+Thanks
+Nitesh
+
+
+--dqzUao2zxl46IcY3BVznZvZYz5G7v1wy1--
+
+--tWEQL0MQ6sfQOw0wFm7bzfs6AmDdw7Dc7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEkXcoRVGaqvbHPuAGo4ZA3AYyozkFAl+NocoACgkQo4ZA3AYy
+oznqZg/7Ba39pu3NNBm56g84DMb36tVrJu7NGjL1p/BI+UMF6RMW/6BAK5zLJX0t
+To4aDzAVptZcfUHW8S5Xqfk94ElvXB8eV65pqd3/iNpATBYQfJhTxz4iTb5/wc6Y
+uDKrPyCqbBQzzX9MAcO2LRE84q1tmepHsqtXvTGHKXniZA/6R0jtur4fmPiESbwZ
+MchNGZidx9EMHz3uh3K1RChZtygCjt7zlWjJL/3BAlnNZSatoQ4RJb2jOJ9LsE99
+iuv7wXx6CK1bH6YWi7tH3GWzgLIgMO8Tmilhj4mGN25ltKFsLU4s0NI+qn3QaLIZ
+x2w9oym5FBS6MgPg4j25ClCHW0DMKGvaHts0i2pkQN54L37RqJPdY+xpyISxvb5c
+c6CC0u3fe0WhCHJMQJoiFVi5KTzNCFEze0gCAzZCGSl88b8VSzABIV6ASCaZb9rN
+N5KcEIfEcHPohf9d82iwi3w9qg/t3SeIscykei+h4qQfPXtbI4KHUd7E9PoCdryE
+/w4d3jUZAV4t5LKbBCAZzOUciZufiVBOzxEldgwfcSfOMWqj3ESkzhjgfj2NTHNV
+mItfwmyOg/p/hbFadCRhvmYl7mtNbX8VF+POHPxb8MnlItt5ZifpEerhHEhuZ4Ur
+ifigoCEuMCVvs8XgjRiJ2q/cjkJRG5D/3NqxPXoVMPdnyGOi/L0=
+=mjOW
+-----END PGP SIGNATURE-----
+
+--tWEQL0MQ6sfQOw0wFm7bzfs6AmDdw7Dc7--
 
