@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9348292B3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D995292B43
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730476AbgJSQNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:13:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47642 "EHLO mail.kernel.org"
+        id S1730538AbgJSQNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:13:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:32928 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730320AbgJSQNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:13:39 -0400
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40DD32225F;
-        Mon, 19 Oct 2020 16:13:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603124018;
-        bh=Xrci6+aiYQ+sMtZrSdB+hUvGFLT0OrXhk3iQny/zoqk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Iinhh9ErJ7aTDJIPbu/sJHpgnZ3In91sSV86R3N2aK5I7tkMFiqHmaZvLQEyQNPEa
-         gGjpQJsaEKVuEJcUZHHJJcs1SsRZBAJxea7kuMKz7GnZAnH9n4VR9HIJg+oTYZSabH
-         WrN62OYRn7ZFnz31xZR3wegYEZ0SiQaPEkdJsh3s=
-Received: by mail-ej1-f47.google.com with SMTP id qp15so14710589ejb.3;
-        Mon, 19 Oct 2020 09:13:38 -0700 (PDT)
-X-Gm-Message-State: AOAM533c88XcNAWo3s5S6wzWzdLtdigXowC28S3DNFD9fE8P5gWAoH58
-        FFmnDzcRvtuyyH15HU7g73ZW6uxOjFPDaddC2G0=
-X-Google-Smtp-Source: ABdhPJypXMaGS9Gg7VJ1UdDd/ekgmgHor/+gwcb4XtdBOSb0fwLU+G4oE9HlSVzQ8GFUd4BAzc9WCqE3v5c02F/qT80=
-X-Received: by 2002:a17:906:5247:: with SMTP id y7mr574082ejm.503.1603124016721;
- Mon, 19 Oct 2020 09:13:36 -0700 (PDT)
+        id S1730504AbgJSQNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 12:13:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2263F1FB;
+        Mon, 19 Oct 2020 09:13:47 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF6953F66B;
+        Mon, 19 Oct 2020 09:13:45 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 17:13:31 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     "Z.q. Hou" <zhiqiang.hou@nxp.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh@kernel.org>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michael Walle <michael@walle.cc>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
+ dw_child_pcie_ops
+Message-ID: <20201019161311.GA9813@e121166-lin.cambridge.arm.com>
+References: <CAL_JsqLdQY_DqpduaTv4hMDM_-cvZ_+s8W+HdOuZVVYjTO4yxw@mail.gmail.com>
+ <HE1PR0402MB337180458625B05D1529535384390@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+ <20200928093911.GB12010@e121166-lin.cambridge.arm.com>
+ <HE1PR0402MB33713A623A37D08AE3253DEB84320@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+ <DM5PR12MB1276D80424F88F8A9243D5E2DA320@DM5PR12MB1276.namprd12.prod.outlook.com>
+ <CAL_JsqJJxq2jZzbzZffsrPxnoLJdWLLS-7bG-vaqyqs5NkQhHQ@mail.gmail.com>
+ <9ac53f04-f2e8-c5f9-e1f7-e54270ec55a0@ti.com>
+ <CAL_JsqJEp8yyctJYUjHM4Ti6ggPb4ouYM_WDvpj_PiobnAozBw@mail.gmail.com>
+ <67ac959f-561e-d1a0-2d89-9a85d5f92c72@ti.com>
+ <HE1PR0402MB3371684F1578E953F881CE5484070@HE1PR0402MB3371.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <20201011024831.3868571-1-daniel@0x0f.com> <20201011024831.3868571-2-daniel@0x0f.com>
- <CACRpkdZDyp83AiGkX9eFe2_w9eK1NXREFG896DZfPUaHboy+0g@mail.gmail.com>
-In-Reply-To: <CACRpkdZDyp83AiGkX9eFe2_w9eK1NXREFG896DZfPUaHboy+0g@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 19 Oct 2020 18:13:22 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPecUBTqbyiQQRdSPq_YuBAF+ut3RbM9AcW8nyciJyw8ig@mail.gmail.com>
-Message-ID: <CAJKOXPecUBTqbyiQQRdSPq_YuBAF+ut3RbM9AcW8nyciJyw8ig@mail.gmail.com>
-Subject: Re: [PATCH 1/5] dt-bindings: gpio: Binding for MStar MSC313 GPIO controller
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Daniel Palmer <daniel@0x0f.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <HE1PR0402MB3371684F1578E953F881CE5484070@HE1PR0402MB3371.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 at 18:36, Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Sun, Oct 11, 2020 at 4:48 AM Daniel Palmer <daniel@0x0f.com> wrote:
->
-> > Add a binding description for the MStar/SigmaStar GPIO controller
-> > found in the MSC313 and later ARMv7 SoCs.
-> >
-> > Signed-off-by: Daniel Palmer <daniel@0x0f.com>
->
-> I think Krzysztof is working on some generic bindings that
-> will make it easier to write YAML GPIO controller bindings,
-> but I don't know the status of them. I would be happy to merge
-> them early for v5.11 though.
+On Mon, Oct 12, 2020 at 04:41:11AM +0000, Z.q. Hou wrote:
 
-Hi,
+[...]
 
-The generic GPIO controller dtschema got dropped because Rob wants it
-to be part of dtschema (outside of kernel) and then
-relicensing/rewriting property descriptions plays a role. Only the
-GPIO hogs went to common dtschema package.
+> > >> Yeah, I don't see any registers in the DRA7x PCIe wrapper for
+> > >> disabling error forwarding.
+> > >
+> > > It's a DWC port logic register AFAICT, but perhaps not present in all
+> > versions.
+> > 
+> > Okay. I see there's a register PCIECTRL_PL_AXIS_SLV_ERR_RESP which has a
+> > reset value of 0.
+> > 
+> > It has four bit-fields, RESET_TIMEOUT_ERR_MAP, NO_VID_ERR_MAP,
+> > DBI_ERR_MAP and SLAVE_ERR_MAP. I'm not seeing any difference in
+> > behavior if I set all these bits. Maybe it requires platform support too. I'll
+> > check this with our design team.
+> 
+> In DWC v4.40a databook, there is a bit AMBA_ERROR_RESPONSE_GLOBAL
+> which controls if enable the error forwarding. The *MAP bits only
+> determine which error (SLVERR or DECERR) will be forwarded to AXI/AHB
+> bus.
 
-Therefore as of now, one should include all generic properties
-directly in the GPIO controller bindings.
+I have not seen a follow-up to this but I would like to, still keen
+on avoiding this patch if possible - if this is port logic it should
+be common across controllers implementations I assume.
 
-Best regards,
-Krzysztof
+Gustavo, Kishon ?
+
+Thanks,
+Lorenzo
+
+> Thanks,
+> Zhiqiang
+> 
+> > 
+> > Meanwhile would it be okay to add linkup check atleast for DRA7X so that
+> > we could have it booting in linux-next?
+> > 
+> > Thanks
+> > Kishon
