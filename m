@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2B32929BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B662929C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729737AbgJSOt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:49:27 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:46867 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729546AbgJSOt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:49:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603118966; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=SdjfHLMdpVTBMrEL+U0iqbpL1vfRm8mz6fh4D3U3ygg=; b=kjf6mbCEyeLbPdrUiw6OCKEJnAWX0nm35BrlkB41tf3yjknWgwB1sfNpng8xZa0bgzgQwWfw
- 0kLZcQ9VJgwJvJKi2Ccswn4zglwddi77TN0nPyNBh6nicZRFV8pjCqjPdak7TcF/0wkceyR5
- QWTTJ1/UWdAY7OBF+KRHAWVMWfs=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f8da772a03b63d6738ee116 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 14:49:22
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C4B1BC43382; Mon, 19 Oct 2020 14:49:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729681AbgJSOva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729075AbgJSOva (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 10:51:30 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653BCC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:51:30 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f07840018db507abdfe4647.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:8400:18db:507a:bdfe:4647])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 62E40C433CB;
-        Mon, 19 Oct 2020 14:49:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 62E40C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Mon, 19 Oct 2020 08:49:17 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 423D91EC0258;
+        Mon, 19 Oct 2020 16:51:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603119086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=55DcUWTTEf6LYwS1k2VcM5sfD39qw4yGxz0DPc+2a10=;
+        b=hcNLIxly52TuMvvFbzsglwPvifTiltSz24mrDOCkwmrZN8Nbbsu96c25wNNF3rD9GbtkAb
+        vh/3aGI7RkvdaxR+i/Wto89KNwOmazAHG269qLLE4rhbWnL1LpYxr7g0kwpdR2IVMnQqOO
+        ajDynDTK/Zg2OxCJv5VpGIZmpKHYsB4=
+Date:   Mon, 19 Oct 2020 16:51:15 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
         linux-kernel@vger.kernel.org
-Subject: Re: [Freedreno] [PATCH] drm/msm: Remove redundant null check
-Message-ID: <20201019144917.GA31882@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Tian Tao <tiantao6@hisilicon.com>, robdclark@gmail.com,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <1603087462-37505-1-git-send-email-tiantao6@hisilicon.com>
+Subject: Re: [PATCH v3 1/4] x86/boot/64: Explicitly map boot_params and
+ command line
+Message-ID: <20201019145115.GB24325@zn.tnic>
+References: <20201016173232.GI8483@zn.tnic>
+ <20201016200404.1615994-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1603087462-37505-1-git-send-email-tiantao6@hisilicon.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201016200404.1615994-1-nivedita@alum.mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 02:04:22PM +0800, Tian Tao wrote:
-> clk_prepare_enable() and clk_disable_unprepare() will check
-> NULL clock parameter, so It is not necessary to add additional checks.
-
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
-
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+On Fri, Oct 16, 2020 at 04:04:01PM -0400, Arvind Sankar wrote:
+> Commits
+> 
+>   ca0e22d4f011 ("x86/boot/compressed/64: Always switch to own page table")
+>   8570978ea030 ("x86/boot/compressed/64: Don't pre-map memory in KASLR code")
+> 
+> set up a new page table in the decompressor stub, but without explicit
+> mappings for boot_params and the kernel command line, relying on the #PF
+> handler instead.
+> 
+> This is fragile, as boot_params and the command line mappings are
+> required for the main kernel. If EARLY_PRINTK and RANDOMIZE_BASE are
+> disabled, a QEMU/OVMF boot never accesses the command line in the
+> decompressor stub, and so it never gets mapped. The main kernel accesses
+> it from the identity mapping if AMD_MEM_ENCRYPT is enabled, and will
+> crash.
+> 
+> Fix this by adding back the explicit mapping of boot_params and the
+> command line.
+> 
+> Note: the changes also removed the explicit mapping of the main kernel,
+> with the result that .bss and .brk may not be in the identity mapping,
+> but those don't get accessed by the main kernel before it switches to
+> its own page tables.
+> 
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Reviewed-by: Joerg Roedel <jroedel@suse.de>
 > ---
->  drivers/gpu/drm/msm/msm_gpu.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+>  arch/x86/boot/compressed/head_64.S      |  3 +++
+>  arch/x86/boot/compressed/ident_map_64.c | 24 +++++++++++++++++++++---
+>  2 files changed, 24 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-> index 57ddc94..25bc654 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.c
-> +++ b/drivers/gpu/drm/msm/msm_gpu.c
-> @@ -175,15 +175,12 @@ static int disable_clk(struct msm_gpu *gpu)
->  
->  static int enable_axi(struct msm_gpu *gpu)
->  {
-> -	if (gpu->ebi1_clk)
-> -		clk_prepare_enable(gpu->ebi1_clk);
-> -	return 0;
-> +	return clk_prepare_enable(gpu->ebi1_clk);
->  }
->  
->  static int disable_axi(struct msm_gpu *gpu)
->  {
-> -	if (gpu->ebi1_clk)
-> -		clk_disable_unprepare(gpu->ebi1_clk);
-> +	clk_disable_unprepare(gpu->ebi1_clk);
->  	return 0;
->  }
->  
-> -- 
-> 2.7.4
-> 
-> _______________________________________________
-> Freedreno mailing list
-> Freedreno@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/freedreno
+> diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+> index 1c80f1738fd9..3976b4e92e1b 100644
+> --- a/arch/x86/boot/compressed/head_64.S
+> +++ b/arch/x86/boot/compressed/head_64.S
+> @@ -544,6 +544,9 @@ SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
+>  	pushq	%rsi
+>  	call	set_sev_encryption_mask
+>  	call	load_stage2_idt
+> +	/* Pass boot_params to initialize_identity_maps */
+> +	popq	%rdi
+> +	pushq	%rdi
+
+Any reason why you're not doing
+
+	movq    (%rsp), %rdi
+
+here instead?
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
