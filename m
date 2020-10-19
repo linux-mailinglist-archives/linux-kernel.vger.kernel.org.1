@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6AD292DD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A58292DDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730932AbgJSS40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 14:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        id S1730910AbgJSS7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 14:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727681AbgJSS40 (ORCPT
+        with ESMTP id S1727681AbgJSS7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 14:56:26 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05C2C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:56:25 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id x7so539410eje.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:56:25 -0700 (PDT)
+        Mon, 19 Oct 2020 14:59:20 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA90C0613CE;
+        Mon, 19 Oct 2020 11:59:20 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id k25so963482ioh.7;
+        Mon, 19 Oct 2020 11:59:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RLocozs5mbe7AkMYzaqpP1i1qJatxmouRrdruwt75Oo=;
-        b=SUgkMpSeKR9pxdYjl+vNR90oMTmi2vfyrxitjrBaRFgZlA9T0Bg7UCvJRgbkUFj8oD
-         GA5TrYQ1gsvqtggr57LCs0nrQdU8ktnqdO/NFtb+Z+8TFVxMWdoq7RdoJ/JFUe+zyM5j
-         LfnJCslB2mine0mhx7MsgjzqU8aOgy1zhmbr5F4W6SWxuHzJzKYwmQMU1cmOa0hd/7RN
-         WWBJolOR4Vgbfzk0BywBwHd6nVC2oVe2jqX9/HOzAtAzodM9R1CPtYsUi5DtxtqcEtfF
-         qFtFN12tKm0EItNgC6Uz+Mdcse5g6eSG/wtUrcoKG6MW5LiU+sgTY3B0j2Pv4N2jtaUK
-         haUQ==
+        bh=M5x9XsX6bugHbxc6Lf+avQGPGc1m0dcjvoBpjbAMIo0=;
+        b=J2k3/AFXZl88bLHwbndRa5qLGvTl9eV5G+onfb/NjzBxv+GhMoCIcKm+CTtTYIlpu2
+         TQp019+opsp2xWLV0Z3JEq7VDL+nP2loWSf/2Y3ONeKyQRiQ+sZHlNTwhg+kX3w3rR9+
+         ftO3qDRlxFFYgiyyMW+iJy3ks5Ihn8M4xN6/z9uEEKsoJbJU+odf8xD4ygyVEL93uxFY
+         QTxMXyuW1x/GpegzVZXV65szFdtlpXZXqzdbAUl/PjzIQz8F7VS/V011AgvHPHFGlOXA
+         11EhfSTFH4WKm8/kEYeRmIfwYsCAoHEhuw1Moy45GWXU5+1mHf/zHTuTXDfQhuqnfEFX
+         Hjdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RLocozs5mbe7AkMYzaqpP1i1qJatxmouRrdruwt75Oo=;
-        b=i0Wanh2YBef/455ekSmt5x6rYeJ36LOyxWEMQ/L2roS6J53L0G94vqaZGQVDAH3meh
-         NB0KrHNzSg0ffkReQRt+fVD96rfYx3Dx4doXRwdLPJYw7hVDv2FcoLLDsg5kqqwnyQaS
-         s7zX8f5TnWs+W4xFglyYyA7YqKxZ+7otsGv3uhGGUaXvxw5Foq8fOs6lkDYUd9j9cB1V
-         5unyXBnm9IsYmOcGjQkir5kcr1YWXcLPeKtoFbK+0BOKQGa4L2h3p+Q1deUeio2eDKWv
-         xpHs76thHkaoNq3s1ERyjmBiIISSOAjBK/Hliq5EaFI0wjBUACRB2mo+6WUTJdRTbVL1
-         /uCg==
-X-Gm-Message-State: AOAM533Ob8mjNUWgukZvaEjOOWyA9PBmFys++sQoS9mWLB4+xSyzyprO
-        xg2LJuVC74NGZJs2nHXUKVOeEw==
-X-Google-Smtp-Source: ABdhPJxnzG1+v1cAInX66kZTH1zNkf1PABNQOw5MZFqEbuBoFHUbZZ1/rnw8zFnCkuOznZsDawCFzA==
-X-Received: by 2002:a17:906:4d10:: with SMTP id r16mr1402335eju.68.1603133784402;
-        Mon, 19 Oct 2020 11:56:24 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:2450:102f:d6a:80be:1251:f194:889a])
-        by smtp.gmail.com with ESMTPSA id u26sm707236eds.2.2020.10.19.11.56.23
+        bh=M5x9XsX6bugHbxc6Lf+avQGPGc1m0dcjvoBpjbAMIo0=;
+        b=DtTk71B4HRCrYHtkN9MiyuEmBZN6b/UaXLUhlEJem0U0ZtLkzf3lTJonxEYUPnzSs+
+         gx6cneTffSQX7B+SWUzeGzvagUky7guFxeqS9unalOGOmO+G8/u/nYHShwiH9cKU7ImY
+         BCQL3RhgOH57qO+EY1DYczpke2SnViKJhDFmJCfjwKqKv2B68tmz9QmxkSRdICr50/1C
+         QwiAAyWthNiDgMSyQkNCY5/LBNs29qLAMdk+Y1GBhQ0pbylEPNjz1AmcTcv3qzCtO+Cx
+         92XXXenbyuKs6q0lp0D7nCq+kwno4d+sHMvemBFPItMgEreLDYDQ+eqIyTXpOvvSXUDO
+         /INA==
+X-Gm-Message-State: AOAM533zb6tb4OcmFGNFNtgIwQpv6pu+jq95H8+BVD+lCNGT/sjODDSV
+        wGD5W1hOliAFOVBm8AZFB726BhIIcQ==
+X-Google-Smtp-Source: ABdhPJyjwsYgkDUBJ3+EJ0I645+jH5uXhu+jpv8syVAUp/5dSz7B8F1W145DwBNmCjCI453wHONG0g==
+X-Received: by 2002:a05:6602:1306:: with SMTP id h6mr738846iov.160.1603133959141;
+        Mon, 19 Oct 2020 11:59:19 -0700 (PDT)
+Received: from moria.home.lan ([2601:19b:c500:a1:7285:c2ff:fed5:c918])
+        by smtp.gmail.com with ESMTPSA id t12sm538770ilh.18.2020.10.19.11.59.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 11:56:23 -0700 (PDT)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     Loic Poulain <loic.poulain@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, Todor Tomov <todor.too@gmail.com>,
-        linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Robert Foss <robert.foss@linaro.org>
-Subject: [RESEND PATCH v1] MAINTAINERS: camss: Add Robert Foss as co-maintainer
-Date:   Mon, 19 Oct 2020 20:56:20 +0200
-Message-Id: <20201019185620.493967-1-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 19 Oct 2020 11:59:18 -0700 (PDT)
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        akpm@linux-foundation.org, sfrench@samba.org,
+        linux-cifs@vger.kernel.org
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>
+Subject: [PATCH 1/2] cifs: convert to add_to_page_cache()
+Date:   Mon, 19 Oct 2020 14:59:10 -0400
+Message-Id: <20201019185911.2909471-1-kent.overstreet@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I would like to contribute some of my time to co-maintain the CAMSS
-driver. I'm currently working to extend CAMSS to new hardware platforms.
+This is just open coding add_to_page_cache(), and the next patch will
+delete add_to_page_cache_locked().
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
 ---
+ fs/cifs/file.c | 21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
 
-I'd like to volunteer as co-maintainer or maintainer. Currently I don't
-know how active Todor is, but if he is inactive or indeed would like to
-hand over the full maintainership, that would also be ok with me.
-
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5919b758c708..45fea22ed28b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14443,6 +14443,7 @@ W:	https://wireless.wiki.kernel.org/en/users/Drivers/ath9k
- F:	drivers/net/wireless/ath/ath9k/
+diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+index be46fab4c9..a17a21181e 100644
+--- a/fs/cifs/file.c
++++ b/fs/cifs/file.c
+@@ -4296,20 +4296,12 @@ readpages_get_pages(struct address_space *mapping, struct list_head *page_list,
  
- QUALCOMM CAMERA SUBSYSTEM DRIVER
-+M:	Robert Foss <robert.foss@linaro.org>
- M:	Todor Tomov <todor.too@gmail.com>
- L:	linux-media@vger.kernel.org
- S:	Maintained
+ 	page = lru_to_page(page_list);
+ 
+-	/*
+-	 * Lock the page and put it in the cache. Since no one else
+-	 * should have access to this page, we're safe to simply set
+-	 * PG_locked without checking it first.
+-	 */
+-	__SetPageLocked(page);
+-	rc = add_to_page_cache_locked(page, mapping,
+-				      page->index, gfp);
++	rc = add_to_page_cache(page, mapping,
++			       page->index, gfp);
+ 
+ 	/* give up if we can't stick it in the cache */
+-	if (rc) {
+-		__ClearPageLocked(page);
++	if (rc)
+ 		return rc;
+-	}
+ 
+ 	/* move first page to the tmplist */
+ 	*offset = (loff_t)page->index << PAGE_SHIFT;
+@@ -4328,12 +4320,9 @@ readpages_get_pages(struct address_space *mapping, struct list_head *page_list,
+ 		if (*bytes + PAGE_SIZE > rsize)
+ 			break;
+ 
+-		__SetPageLocked(page);
+-		rc = add_to_page_cache_locked(page, mapping, page->index, gfp);
+-		if (rc) {
+-			__ClearPageLocked(page);
++		rc = add_to_page_cache(page, mapping, page->index, gfp);
++		if (rc)
+ 			break;
+-		}
+ 		list_move_tail(&page->lru, tmplist);
+ 		(*bytes) += PAGE_SIZE;
+ 		expected_index++;
 -- 
-2.25.1
+2.28.0
 
