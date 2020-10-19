@@ -2,277 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EE02929AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476BC2929B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729676AbgJSOnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:43:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27765 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728311AbgJSOnY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:43:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603118602;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=HS9j6NFClw0xbf6pUYexyg09LSF+fCEmAaVviysMnkA=;
-        b=TaE6ksg86rpg5iH+qAkOv23k15+o21kd7RNg7np8fdlO4vuuy8AwJD+ZCoVazW1UtVRGRf
-        QVxgddQhiMm8Ra2OVT8rYVRLIha6sMVvCmdYFkAgz/9/oDqAJdyD6L2a3cFgla1M/ja2QT
-        fqWB0/WTlhnNHh1N6wVLCesq908wezY=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-zzNzyYeCMQ6kMD_4W0AQmA-1; Mon, 19 Oct 2020 10:43:19 -0400
-X-MC-Unique: zzNzyYeCMQ6kMD_4W0AQmA-1
-Received: by mail-qk1-f200.google.com with SMTP id j185so7361893qkf.7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:43:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=HS9j6NFClw0xbf6pUYexyg09LSF+fCEmAaVviysMnkA=;
-        b=J7Fejcu4APVcr1E2FXfprzdVzYhiSfrb15pZSjg268tI3Ua7nJNupZOZrbn2X/PAGc
-         UZK80ad+8s+3xM/pjcxIyIL6+MRitQsKferL3bC2cfvVKI1VmzDg1ibQSAKwaD9wXj6z
-         90PTS5yUAXd0XH1Ovd7ZQwegCaSZavgG912rsyxxidmJzFr7Fm4rl7HHVw4uor1C+cgF
-         HRFpqS9wDCvA1Wj+KAhXpNUe3knioB/A0aRB1OOwayAa9CKZTxf2pdV+JLd9CZsOx4si
-         IcrNioFYdmqilcEOsFQqdiKk5LSUuHZ60A/Hwr8MjjTfR9IIQt0p1342x4sm0lPxrWfM
-         3NQg==
-X-Gm-Message-State: AOAM532hFbq170q9ASBeMpsKDDaPlGQYdQWITaeKEvYpQ/uYwSn5wVNN
-        bwpmmGGsPnDLOmCLSaZzjykSUSZw5qSC8VPVH1XUIws5oRVQ/ZriYJVo6oUOHkfhTPgrT+cHrbp
-        C4CZJMu2jIXHADudroyvg3zx3
-X-Received: by 2002:ac8:937:: with SMTP id t52mr15592697qth.268.1603118598556;
-        Mon, 19 Oct 2020 07:43:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzAjzy0z6rzYX/CmMgw+uXDi5Q1r8M21MiqKjUC0Nu0rYOLfUvcBlanK5Bdn1pFWCESWLn7oQ==
-X-Received: by 2002:ac8:937:: with SMTP id t52mr15592664qth.268.1603118598290;
-        Mon, 19 Oct 2020 07:43:18 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id j8sm107460qke.38.2020.10.19.07.43.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 07:43:17 -0700 (PDT)
-From:   trix@redhat.com
-To:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, issor.oruam@gmail.com,
-        Anthony.Koo@amd.com, Rodrigo.Siqueira@amd.com, Tony.Cheng@amd.com,
-        Charlene.Liu@amd.com, yogesh.mohanmarimuthu@amd.com,
-        Aric.Cyr@amd.com, Igor.Kravchenko@amd.com,
-        colin.king@canonical.com, tao.zhou1@amd.com, Dennis.Li@amd.com,
-        mario.kleiner.de@gmail.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] drm/amdgpu: remove unneeded break
-Date:   Mon, 19 Oct 2020 07:43:11 -0700
-Message-Id: <20201019144311.18260-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1729685AbgJSOqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:46:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729544AbgJSOq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 10:46:29 -0400
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EC8922363;
+        Mon, 19 Oct 2020 14:46:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603118788;
+        bh=sxNaubuw0OZbW//Pxm72DxQgEeL3MpSJajy+J0BcGeU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IlaIHgyjUfkrn6CoxU1sQz/8HIV91QC6DS+IIIbMXmcDoGPrRG9tE2gCyu0RiVmub
+         ipIbCKws/HD9iO1ZwKe22p8pO1DAxdq8M2SW2HQ/iCD0/TFjKyqL7089bG2mTvcHx/
+         FxduBistdEo+xLa3nr8Y+o6XGHeZahTMflFvfCBw=
+Received: by mail-oi1-f174.google.com with SMTP id q136so160783oic.8;
+        Mon, 19 Oct 2020 07:46:28 -0700 (PDT)
+X-Gm-Message-State: AOAM531LxdCTTFMKz4BN34H9B/2GG3ahEvRA0xeCRHm9fUGyk27qPoh9
+        tEI4IoLdpMMx7tyM1IsVc94IRFZfkMkDe4mPSA==
+X-Google-Smtp-Source: ABdhPJy/bZ5mp3HXxfrjbdO45/5KPmXIlsBvCmjdKKhG8cmzKBt8D2qQPaPwbrHEQPknJkjzT9rpNNis2gy1Tnutdas=
+X-Received: by 2002:aca:4c52:: with SMTP id z79mr63855oia.147.1603118787576;
+ Mon, 19 Oct 2020 07:46:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201017211035.257110-1-luka.kovacic@sartura.hr> <20201017211035.257110-2-luka.kovacic@sartura.hr>
+In-Reply-To: <20201017211035.257110-2-luka.kovacic@sartura.hr>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 19 Oct 2020 09:46:16 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+_DisDsaVQQkOJzPXHs4s8dK6oeVTJ6dM-1JUc1yTBdw@mail.gmail.com>
+Message-ID: <CAL_Jsq+_DisDsaVQQkOJzPXHs4s8dK6oeVTJ6dM-1JUc1yTBdw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/6] dt-bindings: Add iEi vendor prefix and iEi
+ WT61P803 PUZZLE driver bindings
+To:     Luka Kovacic <luka.kovacic@sartura.hr>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux HWMON List <linux-hwmon@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Robert Marko <robert.marko@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Sat, Oct 17, 2020 at 4:10 PM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
+>
+> Add the iEi WT61P803 PUZZLE Device Tree bindings for MFD, HWMON and LED
+> drivers. A new vendor prefix is also added accordingly for
+> IEI Integration Corp.
 
-A break is not needed if it is preceded by a return or break
+Please resend with the DT list CCed if you want this reviewed and so
+that automated checks run.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/gpu/drm/amd/display/dc/dce/dce_transform.c      | 1 -
- drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c | 7 -------
- drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c | 7 -------
- drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c | 7 -------
- drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c | 7 -------
- drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c   | 7 -------
- drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c   | 7 -------
- 7 files changed, 43 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
-index 2a32b66959ba..130a0a0c8332 100644
---- a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
-@@ -1330,7 +1330,6 @@ static bool configure_graphics_mode(
- 			REG_SET(OUTPUT_CSC_CONTROL, 0,
- 				OUTPUT_CSC_GRPH_MODE, 0);
- 			break;
--			break;
- 		case COLOR_SPACE_SRGB_LIMITED:
- 			/* TV RGB */
- 			REG_SET(OUTPUT_CSC_CONTROL, 0,
-diff --git a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
-index d741787f75dc..42c7d157da32 100644
---- a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
-@@ -418,25 +418,18 @@ static int map_transmitter_id_to_phy_instance(
- 	switch (transmitter) {
- 	case TRANSMITTER_UNIPHY_A:
- 		return 0;
--	break;
- 	case TRANSMITTER_UNIPHY_B:
- 		return 1;
--	break;
- 	case TRANSMITTER_UNIPHY_C:
- 		return 2;
--	break;
- 	case TRANSMITTER_UNIPHY_D:
- 		return 3;
--	break;
- 	case TRANSMITTER_UNIPHY_E:
- 		return 4;
--	break;
- 	case TRANSMITTER_UNIPHY_F:
- 		return 5;
--	break;
- 	case TRANSMITTER_UNIPHY_G:
- 		return 6;
--	break;
- 	default:
- 		ASSERT(0);
- 		return 0;
-diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
-index 2bbfa2e176a9..382581c4a674 100644
---- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
-@@ -471,25 +471,18 @@ static int map_transmitter_id_to_phy_instance(
- 	switch (transmitter) {
- 	case TRANSMITTER_UNIPHY_A:
- 		return 0;
--	break;
- 	case TRANSMITTER_UNIPHY_B:
- 		return 1;
--	break;
- 	case TRANSMITTER_UNIPHY_C:
- 		return 2;
--	break;
- 	case TRANSMITTER_UNIPHY_D:
- 		return 3;
--	break;
- 	case TRANSMITTER_UNIPHY_E:
- 		return 4;
--	break;
- 	case TRANSMITTER_UNIPHY_F:
- 		return 5;
--	break;
- 	case TRANSMITTER_UNIPHY_G:
- 		return 6;
--	break;
- 	default:
- 		ASSERT(0);
- 		return 0;
-diff --git a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
-index b622b4b1dac3..7b4b2304bbff 100644
---- a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
-@@ -446,25 +446,18 @@ static int map_transmitter_id_to_phy_instance(
- 	switch (transmitter) {
- 	case TRANSMITTER_UNIPHY_A:
- 		return 0;
--	break;
- 	case TRANSMITTER_UNIPHY_B:
- 		return 1;
--	break;
- 	case TRANSMITTER_UNIPHY_C:
- 		return 2;
--	break;
- 	case TRANSMITTER_UNIPHY_D:
- 		return 3;
--	break;
- 	case TRANSMITTER_UNIPHY_E:
- 		return 4;
--	break;
- 	case TRANSMITTER_UNIPHY_F:
- 		return 5;
--	break;
- 	case TRANSMITTER_UNIPHY_G:
- 		return 6;
--	break;
- 	default:
- 		ASSERT(0);
- 		return 0;
-diff --git a/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c b/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
-index 16fe7344702f..3d782b7c86cb 100644
---- a/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
-@@ -383,25 +383,18 @@ static int map_transmitter_id_to_phy_instance(
- 	switch (transmitter) {
- 	case TRANSMITTER_UNIPHY_A:
- 		return 0;
--	break;
- 	case TRANSMITTER_UNIPHY_B:
- 		return 1;
--	break;
- 	case TRANSMITTER_UNIPHY_C:
- 		return 2;
--	break;
- 	case TRANSMITTER_UNIPHY_D:
- 		return 3;
--	break;
- 	case TRANSMITTER_UNIPHY_E:
- 		return 4;
--	break;
- 	case TRANSMITTER_UNIPHY_F:
- 		return 5;
--	break;
- 	case TRANSMITTER_UNIPHY_G:
- 		return 6;
--	break;
- 	default:
- 		ASSERT(0);
- 		return 0;
-diff --git a/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c b/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
-index 5a5a9cb77acb..e9dd78c484d6 100644
---- a/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
-@@ -453,25 +453,18 @@ static int map_transmitter_id_to_phy_instance(
- 	switch (transmitter) {
- 	case TRANSMITTER_UNIPHY_A:
- 		return 0;
--	break;
- 	case TRANSMITTER_UNIPHY_B:
- 		return 1;
--	break;
- 	case TRANSMITTER_UNIPHY_C:
- 		return 2;
--	break;
- 	case TRANSMITTER_UNIPHY_D:
- 		return 3;
--	break;
- 	case TRANSMITTER_UNIPHY_E:
- 		return 4;
--	break;
- 	case TRANSMITTER_UNIPHY_F:
- 		return 5;
--	break;
- 	case TRANSMITTER_UNIPHY_G:
- 		return 6;
--	break;
- 	default:
- 		ASSERT(0);
- 		return 0;
-diff --git a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
-index 0eae8cd35f9a..9dbf658162cd 100644
---- a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
-@@ -458,25 +458,18 @@ static int map_transmitter_id_to_phy_instance(
- 	switch (transmitter) {
- 	case TRANSMITTER_UNIPHY_A:
- 		return 0;
--	break;
- 	case TRANSMITTER_UNIPHY_B:
- 		return 1;
--	break;
- 	case TRANSMITTER_UNIPHY_C:
- 		return 2;
--	break;
- 	case TRANSMITTER_UNIPHY_D:
- 		return 3;
--	break;
- 	case TRANSMITTER_UNIPHY_E:
- 		return 4;
--	break;
- 	case TRANSMITTER_UNIPHY_F:
- 		return 5;
--	break;
- 	case TRANSMITTER_UNIPHY_G:
- 		return 6;
--	break;
- 	default:
- 		ASSERT(0);
- 		return 0;
--- 
-2.18.1
-
+>
+> Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> Cc: Robert Marko <robert.marko@sartura.hr>
+> ---
+>  .../hwmon/iei,wt61p803-puzzle-hwmon.yaml      | 41 ++++++++++
+>  .../leds/iei,wt61p803-puzzle-leds.yaml        | 45 ++++++++++
+>  .../bindings/mfd/iei,wt61p803-puzzle.yaml     | 82 +++++++++++++++++++
+>  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+>  4 files changed, 170 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+>  create mode 100644 Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml b/Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+> new file mode 100644
+> index 000000000000..37f0030df237
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+> @@ -0,0 +1,41 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/iei,wt61p803-puzzle-hwmon.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: iEi WT61P803 PUZZLE MCU HWMON module from IEI Integration Corp.
+> +
+> +maintainers:
+> +  - Luka Kovacic <luka.kovacic@sartura.hr>
+> +
+> +description: |
+> +  This module is a part of the iEi WT61P803 PUZZLE MFD device. For more details
+> +  see Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml.
+> +
+> +  The HWMON module is a sub-node of the MCU node in the Device Tree.
+> +
+> +properties:
+> +  compatible:
+> +    const: iei,wt61p803-puzzle-hwmon
+> +
+> +patternProperties:
+> +  "^fan-group@[0-1]$":
+> +    type: object
+> +    properties:
+> +      reg:
+> +        minimum: 0
+> +        maximum: 1
+> +        description:
+> +          Fan group ID
+> +      cooling-levels:
+> +        maxItems: 255
+> +        description:
+> +          Cooling levels for the fans (PWM value mapping)
+> +    description: |
+> +      Properties for each fan group.
+> +    required:
+> +      - reg
+> +
+> +required:
+> +  - compatible
+> diff --git a/Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml b/Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+> new file mode 100644
+> index 000000000000..0d353e5803bf
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+> @@ -0,0 +1,45 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/iei,wt61p803-puzzle-leds.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: iEi WT61P803 PUZZLE MCU LED module from IEI Integration Corp.
+> +
+> +maintainers:
+> +  - Luka Kovacic <luka.kovacic@sartura.hr>
+> +
+> +description: |
+> +  This module is a part of the iEi WT61P803 PUZZLE MFD device. For more details
+> +  see Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml.
+> +
+> +  The LED module is a sub-node of the MCU node in the Device Tree.
+> +
+> +properties:
+> +  compatible:
+> +    const: iei,wt61p803-puzzle-leds
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^led@0$":
+> +    type: object
+> +    $ref: common.yaml
+> +    description: |
+> +      Properties for a single LED.
+> +
+> +    properties:
+> +      reg:
+> +        description:
+> +          Index of the LED. Only one LED is supported at the moment.
+> +        minimum: 0
+> +        maximum: 0
+> +
+> +required:
+> +  - compatible
+> +  - "#address-cells"
+> +  - "#size-cells"
+> diff --git a/Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml b/Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+> new file mode 100644
+> index 000000000000..79a232d75093
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/iei,wt61p803-puzzle.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: iEi WT61P803 PUZZLE MCU from IEI Integration Corp.
+> +
+> +maintainers:
+> +  - Luka Kovacic <luka.kovacic@sartura.hr>
+> +
+> +description: |
+> +  iEi WT61P803 PUZZLE MCU is embedded in some iEi Puzzle series boards.
+> +  It's used for controlling system power states, fans, LEDs and temperature
+> +  sensors.
+> +
+> +  For Device Tree bindings of other sub-modules (HWMON, LEDs) refer to the
+> +  binding documents under the respective subsystem directories.
+> +
+> +properties:
+> +  compatible:
+> +    const: iei,wt61p803-puzzle
+> +
+> +  current-speed:
+> +    description:
+> +      Serial bus speed in bps
+> +    maxItems: 1
+> +
+> +  enable-beep: true
+> +
+> +  iei-wt61p803-hwmon:
+> +    $ref: ../hwmon/iei,wt61p803-puzzle-hwmon.yaml
+> +
+> +  leds:
+> +    $ref: ../leds/iei,wt61p803-puzzle-leds.yaml
+> +
+> +required:
+> +  - compatible
+> +  - current-speed
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/leds/common.h>
+> +    serial {
+> +        status = "okay";
+> +        mcu {
+> +            compatible = "iei,wt61p803-puzzle";
+> +            current-speed = <115200>;
+> +            enable-beep;
+> +
+> +            leds {
+> +                compatible = "iei,wt61p803-puzzle-leds";
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +
+> +                led@0 {
+> +                    reg = <0>;
+> +                    function = LED_FUNCTION_POWER;
+> +                    color = <LED_COLOR_ID_BLUE>;
+> +                };
+> +            };
+> +
+> +            iei-wt61p803-puzzle-hwmon {
+> +                compatible = "iei,wt61p803-puzzle-hwmon";
+> +
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +
+> +                fan-group@0 {
+> +                    #cooling-cells = <2>;
+> +                    reg = <0x00>;
+> +                    cooling-levels = <64 102 170 230 250>;
+> +                };
+> +
+> +                fan-group@1 {
+> +                    #cooling-cells = <2>;
+> +                    reg = <0x01>;
+> +                    cooling-levels = <64 102 170 230 250>;
+> +                };
+> +            };
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 63996ab03521..5f2595f0b2ad 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -467,6 +467,8 @@ patternProperties:
+>      description: IC Plus Corp.
+>    "^idt,.*":
+>      description: Integrated Device Technologies, Inc.
+> +  "^iei,.*":
+> +    description: IEI Integration Corp.
+>    "^ifi,.*":
+>      description: Ingenieurburo Fur Ic-Technologie (I/F/I)
+>    "^ilitek,.*":
+> --
+> 2.26.2
+>
