@@ -2,110 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD0029300E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48C8293011
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731721AbgJSUsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:48:55 -0400
-Received: from mga18.intel.com ([134.134.136.126]:59815 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727005AbgJSUsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:48:54 -0400
-IronPort-SDR: +jNfbTBwyn6dzbb6osDG2vHRlxfB9aPI5dUNxOzMAPfvNfecOzgeu+m0Cw73eX/arbmydgKo23
- Zfg9eJXPReYg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="154888477"
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="154888477"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 13:48:51 -0700
-IronPort-SDR: cm1QVCVsRcaS10+hBK6utHuUhevmVBlc4cJKrj49U6pb0dwq8QReRCEBLlkySAKqOjkn0Y036f
- F+utmTuTbIow==
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="315785615"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 13:48:51 -0700
-Date:   Mon, 19 Oct 2020 13:48:50 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
-Message-ID: <20201019204848.GB23072@linux.intel.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-13-jarkko.sakkinen@linux.intel.com>
- <5f194bf0-ced1-66e1-b6a2-503741a3e7f1@intel.com>
- <20201018042633.GI68722@linux.intel.com>
- <f6fe37ee-7b5c-15b6-6823-2500582e7921@intel.com>
+        id S1731816AbgJSUtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:49:25 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:42987 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727723AbgJSUtZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 16:49:25 -0400
+Received: by mail-ot1-f67.google.com with SMTP id h62so1052386oth.9;
+        Mon, 19 Oct 2020 13:49:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VF8WhyOYxc6TogxeINHMmYzt1J7GZgkJjEGtMkCxL0s=;
+        b=kFWwECKoOgax1l+C/pIqggrq5da9fo2HUVa4A8jyEqqmmivkkxF+hD/kfBxISfE7dT
+         qidv+T68p+tBM0ibX2WLiFHzN6wh1hZtUkRkKUjKsX3wMro0yhVFfGnFGQi6HIB5b0BP
+         ZH/xmNeoj19x8U+C3Z/516t7ZSi4Hfq5XSBNN9g9HPhAOEzoBeD4zLh747vDnrjCCiR4
+         If35UpWPJxcJjRm7TgkwYuNbFhBBgLIuuuwkC7ASmrjxfb4sdMumK6y0gSwkmHJwcjlt
+         p5u3WMA/b13ZodDyHGQ8XE+s1BsLqIS1/bN2STLVlmJfZwfiz9hSKQfbP3+xxFqLOGbq
+         uNVA==
+X-Gm-Message-State: AOAM531snPJglXGYbyV7L5xtyi5347Wd0WcVd9Uj+IqKnlesI2e1mbwI
+        CKlKPE432CN6XMoLow8zEQXF6bLtYg==
+X-Google-Smtp-Source: ABdhPJzZxIr6EV5zzMSKx7mzxwW0uKsXstbfyfnAtrTiSwNA3TVRZvQdOp3Gaeb64pihflei2otyPQ==
+X-Received: by 2002:a9d:6e17:: with SMTP id e23mr1207141otr.354.1603140564245;
+        Mon, 19 Oct 2020 13:49:24 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l184sm300548ooc.10.2020.10.19.13.49.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 13:49:23 -0700 (PDT)
+Received: (nullmailer pid 3579377 invoked by uid 1000);
+        Mon, 19 Oct 2020 20:49:22 -0000
+Date:   Mon, 19 Oct 2020 15:49:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        linux-renesas-soc@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 4/5] media: dt-bindings: media: renesas,drif: Add
+ r8a77965 support
+Message-ID: <20201019204922.GA3579303@bogus>
+References: <20201014155719.15120-1-fabrizio.castro.jz@renesas.com>
+ <20201014155719.15120-5-fabrizio.castro.jz@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f6fe37ee-7b5c-15b6-6823-2500582e7921@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201014155719.15120-5-fabrizio.castro.jz@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 01:21:09PM -0700, Dave Hansen wrote:
-> On 10/17/20 9:26 PM, Jarkko Sakkinen wrote:
-> >>> +long sgx_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
-> >>> +{
-> >>> +	struct sgx_encl *encl = filep->private_data;
-> >>> +	int ret, encl_flags;
-> >>> +
-> >>> +	encl_flags = atomic_fetch_or(SGX_ENCL_IOCTL, &encl->flags);
-> >>> +	if (encl_flags & SGX_ENCL_IOCTL)
-> >>> +		return -EBUSY;
-> >>
-> >> Is the SGX_ENCL_IOCTL bit essentially just a lock to single-thread
-> >> ioctl()s?  Should we name it as such?
-> > 
-> > Yes. It makes the concurrency overally easier if we can assume that
-> > only a single ioctl is in progress. There is no good reason to do
-> > them in parallel.
-> > 
-> > E.g. when you add pages you want to do that serially because the
-> > order changes the MRENCLAVE.
+On Wed, 14 Oct 2020 16:57:18 +0100, Fabrizio Castro wrote:
+> The r8a77965 (a.k.a. R-Car M3-N) device tree schema is
+> compatible with the already documented R-Car Gen3 devices.
 > 
-> There are also hardware concurrency requirements, right?  A bunch of the
-> SGX functions seem not not even support being called in parallel.
-
-Yes, and the driver, even when "holding" SGX_ENCL_IOCTL, takes encl->lock
-when executing an ENCLS leaf.  The separate IOCTL flag avoids complications
-with reclaim, specifically it allows the ioctls to initiate reclaim without
-hitting a deadlock.
-
-Reclaim needs to take encl->lock, e.g. to do ENCLS[EBLOCK], and reclaim is by
-default initiated during allocation if there are no pages available.  I.e. if
-an ioctl() simply held encl->lock, it would deadlock in the scenario where it
-triggered reclaim on the current enclave.
-
-In other words, the flag is necessary even if it weren't being used a lock
-primitive, e.g. it'd still need to exist even if encl->lock were taken to set
-and check the flag.  The atomic shenanigans were added as an optimization to
-allow reclaim in parallel with the bulk of the ioctl flows, and partly because
-using atomic_fetch_or() avoided having to drop encl->lock in an error flow,
-i.e. yielded less code.
-
-> > So should I rename it as SGX_ENCL_IOCTL_LOCKED?
+> Document r8a77965 support within renesas,drif.yaml.
 > 
-> I'd rather not see hand-rolled locking primitives frankly.
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> v3->v4:
+> * No change
+> v2->v3:
+> * New patch
+> 
+>  Documentation/devicetree/bindings/media/renesas,drif.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-IOCTL_IN_PROGRESS would be my vote if we want a more descriptive name.
+Acked-by: Rob Herring <robh@kernel.org>
