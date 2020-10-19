@@ -2,196 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287EC29284C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D304292856
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgJSNiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:38:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728275AbgJSNiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:38:54 -0400
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CDF42223C;
-        Mon, 19 Oct 2020 13:38:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603114733;
-        bh=QLl//rSYnpjI4XjsLivmaRA2q702aMuao3NMwW0AZCU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZJ0UeatYQoCfuwjODgSFqcdGke2T/VzdRlInpmZ8BW5LGWfYNWT6Us7AD7LSvghAw
-         ovGl1TIHvNQ1Sik3JLTWfyDAndg1U+svVh3VWmUaKrDtjgiTDSyC7LZJHgri7Y4Lum
-         sBVeb1uXisrOJIxuAsOY6PKTBBO7RZkwfiv/NJgs=
-Received: by mail-ot1-f44.google.com with SMTP id e20so10432464otj.11;
-        Mon, 19 Oct 2020 06:38:53 -0700 (PDT)
-X-Gm-Message-State: AOAM530TEX2PGRION19xoUwOSsLg6yhtDxFyg4kuwTBINxxZoPXRgCbB
-        zw+jg7fyyOYnANSDZ8amaF+RjCOhH5R/jHvdug==
-X-Google-Smtp-Source: ABdhPJxPScoNZrlBxS9IlCTidVRXbPv6VWkKWABPQ2lSmgTF04BwvvKmDYpcVnycQB3EFkkwQ2mstx5y1VG7XAji/kU=
-X-Received: by 2002:a9d:7993:: with SMTP id h19mr10559otm.129.1603114732682;
- Mon, 19 Oct 2020 06:38:52 -0700 (PDT)
+        id S1728369AbgJSNjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:39:21 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:55344 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727297AbgJSNjV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:39:21 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09JDA4Ku003772;
+        Mon, 19 Oct 2020 09:38:51 -0400
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2107.outbound.protection.outlook.com [104.47.55.107])
+        by mx0a-00128a01.pphosted.com with ESMTP id 347tf66f44-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Oct 2020 09:38:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Oh8THCtnVnFjr7igkt4L6XaGtOKZeAdW9uoaXnYuvX44ByNpW54LlVC9ZuNQtVKsa3PNKNk7gs1iQkjdvk8YRGfbxuI4SCQUsuA0uoIi8AzHraZM+mfT21jPThM0MBBmrmiu+H6qTw8s00Y6oYq6Di/ceBpHE0dLN/oQOLluQZw6u6hv9wte8pvOMWdu0bWMs0URRk7p8+cM4EgiVjWeB427PAw56eI2Z4knDe3ejZV5PFCRWvliZwQwAuQyNUT7Avs9xLLTS4zVEvC/pzU9tYo5tJdZmm8vglzd6w/C2CpbAXgk4Iyv7JNXvxYp+hJW4X/69r5xruD1eHiz9wGoAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iYby/wboJeGZ8LJxsROl//q+hIF/9Qqm4KMWOPvglr8=;
+ b=Yt++TAfA495K6DLJsPZXkNQGZmf5ou0kfDJk9ngShP5sYhIgoV5QuZIXDUJ1hdpo58Jd6RYnoWouZjLWhA1YYACmegqSqNg6OGfzvgXBlc9fncFdGbtu9MsCG+xY0F9S2EgibciNYhAgOg9jCa88mQ1LudfpIULM24AHceoY6LSiGMHGpVfCEjpuPXqJPdbqBvDgBDOX6XUCJVX3gDxfw1cSWnAwxYzdT8k6qMfvwgdf8mMqIg39Kdzp6lj6s7+4B0JOZ8Q5+7dQNgr07Ee4BaG4GywzdA3YQmpNd31lezovqGJWh4McjNQ+/xdGnXTfZdHTiAjjb2yWkqDYOOyutQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iYby/wboJeGZ8LJxsROl//q+hIF/9Qqm4KMWOPvglr8=;
+ b=bAAIr8Fjoq27XF63wqexeDex2KBaw37OdXu5MMknvtWuU1ytLuxPIDNLQGvMfK2l0bAX+ymimJ/DcQhrYbQD4a+ZDFbgULWHxToalSu8CiqWbZaFl+YMVckhXPPw6PKhqeQ/vZsk7MwhuIDicXo7HM7yQ85GQbqrLmoVONh7BV4=
+Received: from DM6PR03MB4411.namprd03.prod.outlook.com (2603:10b6:5:10f::14)
+ by DM6PR03MB5209.namprd03.prod.outlook.com (2603:10b6:5:245::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Mon, 19 Oct
+ 2020 13:38:50 +0000
+Received: from DM6PR03MB4411.namprd03.prod.outlook.com
+ ([fe80::f457:143e:f83b:26cf]) by DM6PR03MB4411.namprd03.prod.outlook.com
+ ([fe80::f457:143e:f83b:26cf%4]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 13:38:49 +0000
+From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "Sa, Nuno" <Nuno.Sa@analog.com>, "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>
+Subject: RE: [PATCH] ASoC: adau1977: remove platform data and move micbias
+ bindings include
+Thread-Topic: [PATCH] ASoC: adau1977: remove platform data and move micbias
+ bindings include
+Thread-Index: AQHWpgWE3Z1Iz2EjTE2H2I7CnJvccame5HGAgAAJElA=
+Date:   Mon, 19 Oct 2020 13:38:49 +0000
+Message-ID: <DM6PR03MB44111745EE9A6FE8B989D6A2F91E0@DM6PR03MB4411.namprd03.prod.outlook.com>
+References: <20201019105313.24862-1-alexandru.ardelean@analog.com>
+ <20201019130331.GA4904@sirena.org.uk>
+In-Reply-To: <20201019130331.GA4904@sirena.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcYWFyZGVsZWFc?=
+ =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
+ =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy02ZTk2ZWU2Yi0xMjEwLTExZWItYTVhMy00MTU2?=
+ =?us-ascii?Q?NDUwMDAwMzBcYW1lLXRlc3RcNmU5NmVlNmQtMTIxMC0xMWViLWE1YTMtNDE1?=
+ =?us-ascii?Q?NjQ1MDAwMDMwYm9keS50eHQiIHN6PSIxNTA0IiB0PSIxMzI0NzU4ODMzNTkz?=
+ =?us-ascii?Q?NDc4OTkiIGg9IkZoNlRZZHlSaFNxUEF1RGRsTWU1S0N6bFk3OD0iIGlkPSIi?=
+ =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUVvQ0FB?=
+ =?us-ascii?Q?QzdwUEF3SGFiV0FZT1ViRzA0WllMWmc1UnNiVGhsZ3RrREFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQURhQVFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFFQUFRQUJBQUFBS1ZJV2JnQUFBQUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFh?=
+ =?us-ascii?Q?UUJmQUhNQVpRQmpBSFVBY2dCbEFGOEFjQUJ5QUc4QWFnQmxBR01BZEFCekFG?=
+ =?us-ascii?Q?OEFaZ0JoQUd3QWN3QmxBRjhBWmdCdkFITUFhUUIwQUdrQWRnQmxBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR0VBWkFCcEFGOEFjd0JsQUdNQWRR?=
+ =?us-ascii?Q?QnlBR1VBWHdCd0FISUFid0JxQUdVQVl3QjBBSE1BWHdCMEFHa0FaUUJ5QURF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
+ =?us-ascii?Q?QUFBQUNlQUFBQVlRQmtBR2tBWHdCekFHVUFZd0IxQUhJQVpRQmZBSEFBY2dC?=
+ =?us-ascii?Q?dkFHb0FaUUJqQUhRQWN3QmZBSFFBYVFCbEFISUFNZ0FBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFBPT0iLz48L21l?=
+ =?us-ascii?Q?dGE+?=
+x-dg-rorf: true
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=analog.com;
+x-originating-ip: [188.27.128.55]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 46086ed9-b714-4c7c-0afb-08d874344fcf
+x-ms-traffictypediagnostic: DM6PR03MB5209:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR03MB5209E54B6EF1AF1115A6A09CF91E0@DM6PR03MB5209.namprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oEtu7kYaZWG0LaQt+jWDBSwcd6oorPoEyj+7s2Ibe4RS05WrjnKADBTbSpIcKywTN28JKaok2OxEX82j9FmepZDFRBLNQ48AehVfh9RXUQZouQvTCaKlXpN2eWlu8MgtOGwl0m37IhU944Lx5Fax5wLLdpvDE1KtUbIACesbFwqq4aXsz6Bk+VGQK1f3w0dSIz4ItDH/YyV1kDf8yfWVmFr5M7I58ZUNwVe6+F6Yz+fOeeUNI0IjBJ811FZsgrqBtdD86oaYxlzKz9rJ6LgrcWHbe/FVhA3fMKKX+XMJ/LBRXLTvsjiKGJGIExXASxE1hVayyb0+be0WZel22O3VUGlCxKXP2BE21/ohIDAKdz17yqj6vMlSMIfpNbDZwfI9fvSy1zSd9eRuKwB3MmhCsw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4411.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(366004)(396003)(376002)(66446008)(316002)(66946007)(66556008)(64756008)(4326008)(9686003)(2906002)(86362001)(26005)(66476007)(54906003)(7696005)(52536014)(6916009)(6506007)(8936002)(83380400001)(55016002)(33656002)(53546011)(5660300002)(966005)(478600001)(186003)(76116006)(71200400001)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: e/HxosKTJQUf1FAo3rgPamqZqtpwM7F8UdGei2Umj+oNA3rsCQocpK2ltCNLPzOTA3lhpDFy/BQ+2ILw19YZw/+KaNQB/SLY5uOLg3wWQQxcIObsaU/LTcdUqd5oAHMgEyrsBOWntL6QvF5kN4p5ppHc8j+XtqbSqBXm+l1uRkTe23Py9NAaZ+xCGMF8hQpyAkgq1l2RR5ARdujYHgr9dyrJG4sTibyJ/RftBz+R78eKRlukTg0t3KHeB+zKgeT5Ms11DJpxJ69utrxhKB3wZzk5Kv4hXf5ZgsRzt6gnjxUPO6aKZ7rODZpZhYKPz+4AN9KqdS1bhLzNWX3DDd9sa+K4EM/2JVD2Nk4eUxtj0vaHurEoGGf3UFpFyKwilKbOBzMYhu/hTNbZ/CrSpQC3uYzpXp3KhKPm0j4MPuO5JypJVENusK3RLztmVhYbO+D1+o9QhdeUdVNQZbOGGx7zJnahswJfRFo8HmwZp9MhXjdOamBiO8J6Zhantf7AnwiQS3hLzucaHcfGtERp5gyCNJilHxDCK7N+uz9rhuv8/kBRUmZ4Y7+8au3o9EJk5ePKHAzzJel3OVqmSTP534ELj9nbZVuOBAl5lOKEIXmX6Nyq3UrtNVgcsUlpDV2xbHyLes+BhjomT8GwgDbEVj3elw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <CGME20201019094739eucas1p18cd4c7e5a0197393d2e7c5c6fcc2777d@eucas1p1.samsung.com>
- <20201019094715.15343-1-m.szyprowski@samsung.com> <20201019094715.15343-3-m.szyprowski@samsung.com>
-In-Reply-To: <20201019094715.15343-3-m.szyprowski@samsung.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 19 Oct 2020 08:38:40 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+X3w=1-_SpXPTdO_UGg5er9vU-XETT-NbS96LSfNLUVQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+X3w=1-_SpXPTdO_UGg5er9vU-XETT-NbS96LSfNLUVQ@mail.gmail.com>
-Subject: Re: [PATCH 2/6] Documetation: dt-bindings: add the
- samsung,exynos-pcie binding
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4411.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 46086ed9-b714-4c7c-0afb-08d874344fcf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 13:38:49.8075
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Gq13vm1EfRkAlP2x2BmZnACHk8sHcgDTUgzXenMyE0l4aJ3Lvd1V7KryiUtVeZb4lLeL1iFmD/zGNjaOjQBlcxmv0Sy1DPuNizTWeAQGrgM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB5209
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-19_05:2020-10-16,2020-10-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 bulkscore=0 phishscore=0 adultscore=0 clxscore=1015
+ impostorscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010190093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 4:47 AM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> From: Jaehoon Chung <jh80.chung@samsung.com>
->
-> Add dt-bindings for the Samsung Exynos PCIe controller (Exynos5433
-> variant).
->
-> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
-> [mszyprow: updated the binding to latest driver changes, rewrote it in yaml,
->            rewrote commit message]
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->  .../bindings/pci/samsung,exynos-pcie.yaml     | 106 ++++++++++++++++++
->  1 file changed, 106 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
->
-> diff --git a/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
-> new file mode 100644
-> index 000000000000..48fb569c238c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
-> @@ -0,0 +1,104 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/samsung,exynos-pcie.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Samsung SoC series PCIe Host Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Jaehoon Chung <jh80.chung@samsung.com>
-> +
-> +description: |+
-> +  Exynos5433 SoC PCIe host controller is based on the Synopsys DesignWare
-> +  PCIe IP and thus inherits all the common properties defined in
-> +  designware-pcie.txt.
-> +
-> +allOf:
-> +  - $ref: /schemas/pci/pci-bus.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - samsung,exynos5433-pcie
-> +
-> +  reg:
-> +    items:
-> +      - description: External Local Bus interface (ELBI) registers.
-> +      - description: Data Bus Interface (DBI) registers.
-> +      - description: PCIe configuration space region.
-> +
-> +  reg-names:
-> +    items:
-> +      - const: elbi
-> +      - const: bdi
 
-dbi
+> -----Original Message-----
+> From: Mark Brown <broonie@kernel.org>
+> Sent: Monday, October 19, 2020 4:04 PM
+> To: Ardelean, Alexandru <alexandru.Ardelean@analog.com>
+> Cc: linux-kernel@vger.kernel.org; alsa-devel@alsa-project.org;
+> lgirdwood@gmail.com; lars@metafoo.de; Sa, Nuno <Nuno.Sa@analog.com>;
+> perex@perex.cz; tiwai@suse.com
+> Subject: Re: [PATCH] ASoC: adau1977: remove platform data and move micbia=
+s
+> bindings include
+>=20
+> [External]
+>=20
+> On Mon, Oct 19, 2020 at 01:53:13PM +0300, Alexandru Ardelean wrote:
+> > The change removes the platform_data include/definition. It only
+> > contains some values for the MICBIAS.
+> > These are moved into 'dt-bindings/sound/adi,adau1977.h' so that they
+> > can be used inside device-trees. When moving then, they need to be
+> > converted to pre-compiler defines, so that the DT compiler can understa=
+nd
+> them.
+>=20
+> This is missing an update of the binding documentation for the new proper=
+ty.
 
-> +      - const: config
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: PCIe bridge clock
-> +      - description: PCIe bus clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pcie
-> +      - const: pcie_bus
-> +
-> +  phys:
-> +    maxItems: 1
-> +
-> +  phy-names:
-> +    const: pcie-phy
+Umm, if referring to the 'adi,micbias' property, that isn't new:
+https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/tree/Docu=
+mentation/devicetree/bindings/sound/adi,adau1977.txt#n26
 
-Kind of a pointless name.
-
-> +
-> +  vdd10-supply:
-> +    description:
-> +      Phandle to a regulator that provides 1.0V power to the PCIe block.
-> +
-> +  vdd18-supply:
-> +    description:
-> +      Phandle to a regulator that provides 1.8V power to the PCIe block.
-> +
-> +required:
-> +  - reg
-> +  - reg-names
-> +  - interrupts
-> +  - interrupt-names
-> +  - clocks
-> +  - clock-names
-> +  - phys
-> +  - phy-names
-> +  - vdd10-supply
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/exynos5433.h>
-> +
-> +    pcie: pcie@15700000 {
-> +        compatible = "samsung,exynos5433-pcie";
-> +        reg = <0x156b0000 0x1000>, <0x15700000 0x1000>, <0x0c000000 0x1000>;
-> +        reg-names = "elbi", "dbi", "config";
-> +        #address-cells = <3>;
-> +        #size-cells = <2>;
-> +        #interrupt-cells = <1>;
-> +        device_type = "pci";
-> +        interrupts = <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&cmu_fsys CLK_PCIE>, <&cmu_fsys CLK_PCLK_PCIE_PHY>;
-> +        clock-names = "pcie", "pcie_bus";
-> +        phys = <&pcie_phy>;
-> +        phy-names = "pcie-phy";
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&pcie_bus &pcie_wlanen>;
-> +        num-lanes = <1>;
-> +        bus-range = <0x00 0xff>;
-> +        ranges = <0x81000000 0 0         0x0c001000 0 0x00010000>,
-> +                 <0x82000000 0 0x0c011000 0x0c011000 0 0x03feefff>;
-> +        vdd10-supply = <&ldo6_reg>;
-> +        vdd18-supply = <&ldo7_reg>;
-> +        iterrupt-map-mask = <0 0 0 0>;
-
-typo
-
-> +        interrupt-map = <0 0 0 0 &gic GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>;
-> +    };
-> --
-> 2.17.1
->
+This just removes any left-over platform-data stuff; which admittedly shoul=
+d have been done earlier.
+I also started a conversion of the old binding from text to yaml.
+I'll probably have that ready in a couple of days.
