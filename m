@@ -2,89 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABB429247C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CAC29247E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730219AbgJSJRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:17:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:53092 "EHLO foss.arm.com"
+        id S1730253AbgJSJSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:18:32 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:63713 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729941AbgJSJRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:17:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6174A30E;
-        Mon, 19 Oct 2020 02:17:53 -0700 (PDT)
-Received: from bogus (unknown [10.57.13.246])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7EA003F66E;
-        Mon, 19 Oct 2020 02:17:50 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 10:17:48 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
-        georgi.djakov@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
- -EPROBE_DEFER
-Message-ID: <20201019091723.GA12087@bogus>
-References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
- <20201015180555.gacdzkofpibkdn2e@bogus>
- <20201016042434.org6ibdqsqbzcdww@vireshk-i7>
- <20201016060021.sotk72u4hioctg7o@bogus>
- <20201016111222.lvakbmjhlrocpogt@bogus>
- <20201019045827.kl6qnx6gidhzjkrs@vireshk-i7>
+        id S1727987AbgJSJSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 05:18:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603099112; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=214UCzHFLDONI35AQrRDMUkpfaFdQ/OBZ1szzBN82CI=;
+ b=OwjFGJRlka+S3VPFKTq3n5nt6LQVzA40dB85OXEzoKgCnT2hGP4kh7yDPP6gDece7ZQNQ6Kj
+ EE0FlqoEWLfjac4G9d2y5lDPoFLgOFufidRmf1Urp5gchGy4Q66QJRfbFzDBwe0YWbsHBl5W
+ Yys7UK+wpbC03bJzQl60Hjxbh9I=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f8d59cc57b88ccb5608102e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 09:18:04
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4C427C43382; Mon, 19 Oct 2020 09:18:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5E61CC433FE;
+        Mon, 19 Oct 2020 09:18:03 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019045827.kl6qnx6gidhzjkrs@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 19 Oct 2020 17:18:03 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     jaegeuk@kernel.org, Asutosh Das <asutoshd@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: Re: [PATCH v2] scsi: ufs: fix clkgating on/off correctly
+In-Reply-To: <20201016211826.GA3441410@google.com>
+References: <20201016060259.390029-1-jaegeuk@kernel.org>
+ <20201016211826.GA3441410@google.com>
+Message-ID: <b03c5b39506381577ea049a38a342adf@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 10:28:27AM +0530, Viresh Kumar wrote:
-> On 16-10-20, 12:12, Sudeep Holla wrote:
-> > On Fri, Oct 16, 2020 at 07:00:21AM +0100, Sudeep Holla wrote:
-> > > On Fri, Oct 16, 2020 at 09:54:34AM +0530, Viresh Kumar wrote:
-> > > > On 15-10-20, 19:05, Sudeep Holla wrote:
-> > > > > OK, this breaks with SCMI which doesn't provide clocks but manage OPPs
-> > > > > directly. Before this change clk_get(dev..) was allowed to fail and
-> > > > > --EPROBE_DEFER was not an error.
-> > > >
-> > > > I think the change in itself is fine. We should be returning from
-> > > > there if we get EPROBE_DEFER. The question is rather why are you
-> > > > getting EPROBE_DEFER here ?
-> > > >
-> > >
-> > > Ah OK, I didn't spend too much time, saw -EPROBE_DEFER, just reverted
-> > > this patch and it worked. I need to check it in detail yet.
-> > >
-> > 
-> > You confused me earlier. As I said there will be no clock provider
-> > registered for SCMI CPU/Dev DVFS.
-> > 	opp_table->clk = clk_get(dev, NULL);
-> > will always return -EPROBE_DEFER as there is no clock provider for dev.
-> > But this change now propagates that error to caller of dev_pm_opp_add
-> > which means we can't add opp to a device if there are no clock providers.
-> > This breaks for DVFS which don't operate separately with clocks and
-> > regulators.
->
-> The CPUs DT node shouldn't have a clock property in such a case and I
-> would expect an error instead of EPROBE_DEFER then. Isn't it ?
+On 2020-10-17 05:18, jaegeuk@kernel.org wrote:
+> The below call stack prevents clk_gating at every IO completion.
+> We can remove the condition, ufshcd_any_tag_in_use(), since 
+> clkgating_work
+> will check it again.
 
-Ideally yes, but for legacy reasons clocks property has been used for
-providing OPP/DVFS handle too. While we can change and add new property
-for that, it will still break old bindings.
+Thanks for fixing it, actually we have noticed this for a while.
+It used to work well, please add a Fixes tag or mention the commit
+which breaks clk gating functionality - the commit which introduces
+func ufshcd_any_tag_in_use().
 
---
 Regards,
-Sudeep
+
+Can Guo.
+
+> 
+> ufshcd_complete_requests(struct ufs_hba *hba)
+>   ufshcd_transfer_req_compl()
+>     __ufshcd_transfer_req_compl()
+>       __ufshcd_release(hba)
+>         if (ufshcd_any_tag_in_use() == 1)
+>            return;
+>   ufshcd_tmc_handler(hba);
+>     blk_mq_tagset_busy_iter();
+> 
+> In addition, we have to avoid gate_work, if it was disabled.
+> 
+> Cc: Alim Akhtar <alim.akhtar@samsung.com>
+> Cc: Avri Altman <avri.altman@wdc.com>
+> Cc: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+> 
+> Change log from v1:
+>  - change the patch subject
+>  - fix clkgate.is_enable to work
+> 
+>  drivers/scsi/ufs/ufshcd.c | 5 +++--
+>  drivers/scsi/ufs/ufshcd.h | 5 +++++
+>  2 files changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index a2db8182663d..75e8a76f20c7 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -1729,9 +1729,10 @@ static void __ufshcd_release(struct ufs_hba 
+> *hba)
+> 
+>  	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended
+>  		|| hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL
+> -		|| ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks
+> +		|| hba->outstanding_tasks
+>  		|| hba->active_uic_cmd || hba->uic_async_done
+> -		|| ufshcd_eh_in_progress(hba))
+> +		|| ufshcd_eh_in_progress(hba)
+> +		|| ufshcd_is_clkgating_enabled(hba))
+>  		return;
+> 
+>  	hba->clk_gating.state = REQ_CLKS_OFF;
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 8344d8cb3678..09e59cb86e69 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -814,6 +814,11 @@ static inline bool
+> ufshcd_is_auto_hibern8_supported(struct ufs_hba *hba)
+>  		!(hba->quirks & UFSHCD_QUIRK_BROKEN_AUTO_HIBERN8);
+>  }
+> 
+> +static inline bool ufshcd_is_clkgating_enabled(struct ufs_hba *hba)
+> +{
+> +	return hba->clk_gating.is_enabled;
+> +}
+> +
+>  static inline bool ufshcd_is_auto_hibern8_enabled(struct ufs_hba *hba)
+>  {
+>  	return FIELD_GET(UFSHCI_AHIBERN8_TIMER_MASK, hba->ahit) ? true : 
+> false;
