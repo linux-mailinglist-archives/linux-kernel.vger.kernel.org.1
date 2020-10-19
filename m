@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C10292381
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B702923A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728871AbgJSITh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 04:19:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49494 "EHLO mail.kernel.org"
+        id S1729050AbgJSIbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 04:31:11 -0400
+Received: from smtp.h3c.com ([60.191.123.50]:45106 "EHLO h3cspam02-ex.h3c.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728781AbgJSITh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 04:19:37 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DA872225F;
-        Mon, 19 Oct 2020 08:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603095576;
-        bh=1Z6GkNNCLc/Ru7IMkiC0ql5jezqPmhpjXzrpxYKJbbE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hwHnfMEG4pCtPEAYIRIhQuQzztVUyjcdpf7gs+irKqKYuMNVNxD2ZRlrhByawlaRG
-         K6OPtMMHM3RrrrFlbBK6YtCBFn7rOixdNqs+m+4WseSR5hOHYHHVoq8vzmMBvNp8BK
-         ZsF8GthSHimfAjP94KwmuOwxSYEtkRWLn667gk7c=
-Received: by pali.im (Postfix)
-        id 14817B70; Mon, 19 Oct 2020 10:19:34 +0200 (CEST)
-Date:   Mon, 19 Oct 2020 10:19:33 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andre Heider <a.heider@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: dts: marvell: espressobin: Update link to V7
- schematic
-Message-ID: <20201019081933.32w6flugk55n2i4q@pali>
-References: <20200925084306.16309-1-pali@kernel.org>
- <20201005133513.8649-1-pali@kernel.org>
+        id S1728871AbgJSIbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 04:31:10 -0400
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam02-ex.h3c.com with ESMTPS id 09J8USuc021549
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 19 Oct 2020 16:30:28 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 19 Oct 2020 16:30:31 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <axboe@kernel.dk>, <raghavendra.kt@linux.vnet.ibm.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <mhocko@suse.com>, Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] blk-mq: remove the calling of local_memory_node()
+Date:   Mon, 19 Oct 2020 16:20:47 +0800
+Message-ID: <20201019082047.31113-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201005133513.8649-1-pali@kernel.org>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 09J8USuc021549
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gregory, it is OK now?
+We don't need to check whether the node is memoryless numa node before
+calling allocator interface. SLUB(and SLAB,SLOB) relies on the page
+allocator to pick a node. Page allocator should deal with memoryless
+nodes just fine. It has zonelists constructed for each possible nodes.
+And it will automatically fall back into a node which is closest to the
+requested node. As long as __GFP_THISNODE is not enforced of course.
 
-On Monday 05 October 2020 15:35:13 Pali Rohár wrote:
-> Up-to-date version of V7 schematic is on new URL linked from official
-> tech-spec webpage http://espressobin.net/tech-spec/
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> 
-> ---
-> Changes in V2:
-> * Added commit description
-> ---
->  arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts | 2 +-
->  arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts      | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> index e225dce64b9e..4775a7eda481 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> @@ -8,7 +8,7 @@
->   *
->   */
->  /*
-> - * Schematic available at http://wiki.espressobin.net/tiki-download_file.php?fileId=200
-> + * Schematic available at http://espressobin.net/wp-content/uploads/2020/05/ESPRESSObin_V7-0_Schematic.pdf
->   */
->  
->  /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> index 44dbe9a21cc7..c47a93978386 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> @@ -8,7 +8,7 @@
->   *
->   */
->  /*
-> - * Schematic available at http://wiki.espressobin.net/tiki-download_file.php?fileId=200
-> + * Schematic available at http://espressobin.net/wp-content/uploads/2020/05/ESPRESSObin_V7-0_Schematic.pdf
->   */
->  
->  /dts-v1/;
-> -- 
-> 2.20.1
-> 
+The code comments of kmem_cache_alloc_node() of SLAB also showed this:
+ * Fallback to other node is possible if __GFP_THISNODE is not set.
+
+blk-mq code doesn't set __GFP_THISNODE, so we can remove the calling
+of local_memory_node().
+
+Fixes: bffed457160ab ("blk-mq: Avoid memoryless numa node encoded in hctx numa_node")
+
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+---
+ block/blk-mq-cpumap.c | 2 +-
+ block/blk-mq.c        | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/block/blk-mq-cpumap.c b/block/blk-mq-cpumap.c
+index 0157f2b34..3db84d319 100644
+--- a/block/blk-mq-cpumap.c
++++ b/block/blk-mq-cpumap.c
+@@ -89,7 +89,7 @@ int blk_mq_hw_queue_to_node(struct blk_mq_queue_map *qmap, unsigned int index)
+ 
+ 	for_each_possible_cpu(i) {
+ 		if (index == qmap->mq_map[i])
+-			return local_memory_node(cpu_to_node(i));
++			return cpu_to_node(i);
+ 	}
+ 
+ 	return NUMA_NO_NODE;
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index cdced4aca..48f8366b2 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2737,7 +2737,7 @@ static void blk_mq_init_cpu_queues(struct request_queue *q,
+ 		for (j = 0; j < set->nr_maps; j++) {
+ 			hctx = blk_mq_map_queue_type(q, j, i);
+ 			if (nr_hw_queues > 1 && hctx->numa_node == NUMA_NO_NODE)
+-				hctx->numa_node = local_memory_node(cpu_to_node(i));
++				hctx->numa_node = cpu_to_node(i);
+ 		}
+ 	}
+ }
+-- 
+2.17.1
+
