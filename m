@@ -2,297 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F135E292324
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C22629231F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728046AbgJSHzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 03:55:45 -0400
-Received: from mga09.intel.com ([134.134.136.24]:55908 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727420AbgJSHzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 03:55:44 -0400
-IronPort-SDR: OpQOdNiXvLDW/sWnmSUEZk9sxmSmS2FfYTlYFhhminVkB/Ofc5jT59F/9cNlH0mq6exL5FXAkx
- ZlEgbpISviSQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="167101322"
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="167101322"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 00:55:42 -0700
-IronPort-SDR: ZD1cm0C3tCiHhoLCaYKfEalY1mMSkTbel5V33l9Br86FINuvC76hKRmBpkywkO6+BBvQIVBPaK
- owFvNIdaTxLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
-   d="scan'208";a="347341205"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Oct 2020 00:55:40 -0700
-Date:   Mon, 19 Oct 2020 15:50:32 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     Tom Rix <trix@redhat.com>, "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>, yilun.xu@intel.com
-Subject: Re: [PATCH 1/2] fpga: dfl: add driver_override support
-Message-ID: <20201019075032.GA28746@yilunxu-OptiPlex-7050>
-References: <1602828151-24784-1-git-send-email-yilun.xu@intel.com>
- <1602828151-24784-2-git-send-email-yilun.xu@intel.com>
- <63d7730b-d9b8-c75d-16f6-3ebb507aabaa@redhat.com>
- <20201019040612.GA16172@yilunxu-OptiPlex-7050>
- <DM6PR11MB38198EB8547974F62518EA66851E0@DM6PR11MB3819.namprd11.prod.outlook.com>
+        id S1728005AbgJSHyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 03:54:10 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:34255 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727420AbgJSHyK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 03:54:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UCTl6m-_1603094046;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCTl6m-_1603094046)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 19 Oct 2020 15:54:06 +0800
+Date:   Mon, 19 Oct 2020 15:54:06 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: Re: [PATCH v1 29/29] virtio-mem: Big Block Mode (BBM) - safe memory
+ hotunplug
+Message-ID: <20201019075406.GE54484@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-30-david@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM6PR11MB38198EB8547974F62518EA66851E0@DM6PR11MB3819.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201012125323.17509-30-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 03:46:23PM +0800, Wu, Hao wrote:
-> > On Fri, Oct 16, 2020 at 09:21:50AM -0700, Tom Rix wrote:
-> > >
-> > > On 10/15/20 11:02 PM, Xu Yilun wrote:
-> > > > Add support for overriding the default matching of a dfl device to a dfl
-> > > > driver. It follows the same way that can be used for PCI and platform
-> > > > devices. This patch adds the 'driver_override' sysfs file.
-> > > >
-> > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > > ---
-> > > >  Documentation/ABI/testing/sysfs-bus-dfl | 28 ++++++++++++++---
-> > > >  drivers/fpga/dfl.c                      | 54
-> > ++++++++++++++++++++++++++++++++-
-> > > >  include/linux/dfl.h                     |  2 ++
-> > > >  3 files changed, 79 insertions(+), 5 deletions(-)
-> > > >
-> > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl
-> > b/Documentation/ABI/testing/sysfs-bus-dfl
-> > > > index 23543be..db7e8d3 100644
-> > > > --- a/Documentation/ABI/testing/sysfs-bus-dfl
-> > > > +++ b/Documentation/ABI/testing/sysfs-bus-dfl
-> > > > @@ -1,15 +1,35 @@
-> > > >  What:/sys/bus/dfl/devices/dfl_dev.X/type
-> > > > -Date:Aug 2020
-> > > > -KernelVersion:5.10
-> > > > +Date:Oct 2020
-> > > > +KernelVersion:5.11
-> > > >  Contact:Xu Yilun <yilun.xu@intel.com>
-> > > >  Description:Read-only. It returns type of DFL FIU of the device.
-> > Now DFL
-> > > >  supports 2 FIU types, 0 for FME, 1 for PORT.
-> > > >  Format: 0x%x
-> > > >
-> > > >  What:/sys/bus/dfl/devices/dfl_dev.X/feature_id
-> > > > -Date:Aug 2020
-> > > > -KernelVersion:5.10
-> > > > +Date:Oct 2020
-> > > > +KernelVersion:5.11
-> > > >  Contact:Xu Yilun <yilun.xu@intel.com>
-> > > >  Description:Read-only. It returns feature identifier local to its DFL
-> > FIU
-> > > >  type.
-> > > >  Format: 0x%x
-> > >
-> > > These updates, do not match the comment.
-> > >
-> > > Consider splitting this out.
-> >
-> > I'm sorry it's a typo. The above code should not be changed.
-> >
-> > >
-> > > > +
-> > > > +What:           /sys/bus/dfl/devices/.../driver_override
-> > > > +Date:           Oct 2020
-> > > > +KernelVersion:  5.11
-> > > > +Contact:        Xu Yilun <yilun.xu@intel.com>
-> > > I am looking at description and trying to make it consistent with sysfs-bus-
-> > pci
-> > > > +Description:    This file allows the driver for a device to be specified.
-> > >
-> > > 'to be specified which will override the standard dfl bus feature id to driver
-> > mapping.'
-> >
-> > Yes, it could be improved.
-> >
-> > Actually now it is the "type" and "feature id" matching, the 2 fields
-> > are defined for dfl_driver.id_table. In future for dfl v1, it may be
-> > GUID matching, which will be added to id_table. So how about we make it
-> > more generic:
-> >
-> > 'to be specified which will override the standard ID table matching.'
-> >
-> > >
-> > >
-> > > >  When
-> > > > +                specified, only a driver with a name matching the value written
-> > > > +                to driver_override will have an opportunity to bind to the
-> > > > +                device. The override is specified by writing a string to the
-> > > > +                driver_override file (echo dfl-uio-pdev > driver_override) and
-> > > > +                may be cleared with an empty string (echo > driver_override).
-> > > > +                This returns the device to standard matching rules binding.
-> > > > +                Writing to driver_override does not automatically unbind the
-> > > > +                device from its current driver or make any attempt to
-> > > > +                automatically load the specified driver.  If no driver with a
-> > > > +                matching name is currently loaded in the kernel, the device
-> > > > +                will not bind to any driver.  This also allows devices to
-> > > > +                opt-out of driver binding using a driver_override name such as
-> > > > +                "none".  Only a single driver may be specified in the override,
-> > > > +                there is no support for parsing delimiters.
-> > > > diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
-> > > > index 511b20f..bc35750 100644
-> > > > --- a/drivers/fpga/dfl.c
-> > > > +++ b/drivers/fpga/dfl.c
-> > > > @@ -262,6 +262,10 @@ static int dfl_bus_match(struct device *dev,
-> > struct device_driver *drv)
-> > > >  struct dfl_driver *ddrv = to_dfl_drv(drv);
-> > > >  const struct dfl_device_id *id_entry;
-> > > >
-> > > > +/* When driver_override is set, only bind to the matching driver */
-> > > > +if (ddev->driver_override)
-> > > > +return !strcmp(ddev->driver_override, drv->name);
-> > > > +
-> > > >  id_entry = ddrv->id_table;
-> > > >  if (id_entry) {
-> > > >  while (id_entry->feature_id) {
-> > > > @@ -303,6 +307,53 @@ static int dfl_bus_uevent(struct device *dev,
-> > struct kobj_uevent_env *env)
-> > > >        ddev->type, ddev->feature_id);
-> > > >  }
-> > > >
-> > >
-> > > I am looking at other implementations of driver_override* and looking for
-> > consistency.
-> > >
-> > > > +static ssize_t driver_override_show(struct device *dev,
-> > > > +    struct device_attribute *attr, char *buf)
-> > > > +{
-> > > > +struct dfl_device *ddev = to_dfl_dev(dev);
-> > > > +ssize_t len;
-> > > > +
-> > > > +device_lock(dev);
-> > > > +len = sprintf(buf, "%s\n", ddev->driver_override);
-> > > len = snprintf(buf, PAGE_SIZE ...
-> >
-> > It is good to me.
-> >
-> > Some bus drivers use snprintf, some use sprintf.
-> >
-> > I think it is reasonable snprintf is used here, unlike %d, %u ... it is
-> > uncertain for the output size of %s.
-> 
-> you limited the size < a page in store function for driver_override?
+On Mon, Oct 12, 2020 at 02:53:23PM +0200, David Hildenbrand wrote:
+>Let's add a safe mechanism to unplug memory, avoiding long/endless loops
+>when trying to offline memory - similar to in SBM.
+>
+>Fake-offline all memory (via alloc_contig_range()) before trying to
+>offline+remove it. Use this mode as default, but allow to enable the other
+>mode explicitly (which could give better memory hotunplug guarantees in
 
-Yes. So normally the sprintf should be OK. But I think it may be safer
-if the driver_override pointer is corrupted in some unexpected cases.
+I don't get the point how unsafe mode would have a better guarantees?
 
-Thanks,
-Yilun
+>some environments).
+>
+>The "unsafe" mode can be enabled e.g., via virtio_mem.bbm_safe_unplug=0
+>on the cmdline.
+>
+>Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>Cc: Jason Wang <jasowang@redhat.com>
+>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>Cc: Michal Hocko <mhocko@kernel.org>
+>Cc: Oscar Salvador <osalvador@suse.de>
+>Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+>Cc: Andrew Morton <akpm@linux-foundation.org>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
+>---
+> drivers/virtio/virtio_mem.c | 97 ++++++++++++++++++++++++++++++++++++-
+> 1 file changed, 95 insertions(+), 2 deletions(-)
+>
+>diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>index 6bcd0acbff32..09f11489be6f 100644
+>--- a/drivers/virtio/virtio_mem.c
+>+++ b/drivers/virtio/virtio_mem.c
+>@@ -37,6 +37,11 @@ module_param(bbm_block_size, ulong, 0444);
+> MODULE_PARM_DESC(bbm_block_size,
+> 		 "Big Block size in bytes. Default is 0 (auto-detection).");
+> 
+>+static bool bbm_safe_unplug = true;
+>+module_param(bbm_safe_unplug, bool, 0444);
+>+MODULE_PARM_DESC(bbm_safe_unplug,
+>+	     "Use a safe unplug mechanism in BBM, avoiding long/endless loops");
+>+
+> /*
+>  * virtio-mem currently supports the following modes of operation:
+>  *
+>@@ -87,6 +92,8 @@ enum virtio_mem_bbm_bb_state {
+> 	VIRTIO_MEM_BBM_BB_PLUGGED,
+> 	/* Plugged and added to Linux. */
+> 	VIRTIO_MEM_BBM_BB_ADDED,
+>+	/* All online parts are fake-offline, ready to remove. */
+>+	VIRTIO_MEM_BBM_BB_FAKE_OFFLINE,
+> 	VIRTIO_MEM_BBM_BB_COUNT
+> };
+> 
+>@@ -889,6 +896,32 @@ static void virtio_mem_sbm_notify_cancel_offline(struct virtio_mem *vm,
+> 	}
+> }
+> 
+>+static void virtio_mem_bbm_notify_going_offline(struct virtio_mem *vm,
+>+						unsigned long bb_id,
+>+						unsigned long pfn,
+>+						unsigned long nr_pages)
+>+{
+>+	/*
+>+	 * When marked as "fake-offline", all online memory of this device block
+>+	 * is allocated by us. Otherwise, we don't have any memory allocated.
+>+	 */
+>+	if (virtio_mem_bbm_get_bb_state(vm, bb_id) !=
+>+	    VIRTIO_MEM_BBM_BB_FAKE_OFFLINE)
+>+		return;
+>+	virtio_mem_fake_offline_going_offline(pfn, nr_pages);
+>+}
+>+
+>+static void virtio_mem_bbm_notify_cancel_offline(struct virtio_mem *vm,
+>+						 unsigned long bb_id,
+>+						 unsigned long pfn,
+>+						 unsigned long nr_pages)
+>+{
+>+	if (virtio_mem_bbm_get_bb_state(vm, bb_id) !=
+>+	    VIRTIO_MEM_BBM_BB_FAKE_OFFLINE)
+>+		return;
+>+	virtio_mem_fake_offline_cancel_offline(pfn, nr_pages);
+>+}
+>+
+> /*
+>  * This callback will either be called synchronously from add_memory() or
+>  * asynchronously (e.g., triggered via user space). We have to be careful
+>@@ -949,6 +982,10 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+> 		vm->hotplug_active = true;
+> 		if (vm->in_sbm)
+> 			virtio_mem_sbm_notify_going_offline(vm, id);
+>+		else
+>+			virtio_mem_bbm_notify_going_offline(vm, id,
+>+							    mhp->start_pfn,
+>+							    mhp->nr_pages);
+> 		break;
+> 	case MEM_GOING_ONLINE:
+> 		mutex_lock(&vm->hotplug_mutex);
+>@@ -999,6 +1036,10 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+> 			break;
+> 		if (vm->in_sbm)
+> 			virtio_mem_sbm_notify_cancel_offline(vm, id);
+>+		else
+>+			virtio_mem_bbm_notify_cancel_offline(vm, id,
+>+							     mhp->start_pfn,
+>+							     mhp->nr_pages);
+> 		vm->hotplug_active = false;
+> 		mutex_unlock(&vm->hotplug_mutex);
+> 		break;
+>@@ -1189,7 +1230,13 @@ static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
+> 			do_online = virtio_mem_sbm_test_sb_plugged(vm, id,
+> 								   sb_id, 1);
+> 		} else {
+>-			do_online = true;
+>+			/*
+>+			 * If the whole block is marked fake offline, keep
+>+			 * everything that way.
+>+			 */
+>+			id = virtio_mem_phys_to_bb_id(vm, addr);
+>+			do_online = virtio_mem_bbm_get_bb_state(vm, id) !=
+>+				    VIRTIO_MEM_BBM_BB_FAKE_OFFLINE;
+> 		}
+> 		if (do_online)
+> 			generic_online_page(page, order);
+>@@ -1969,15 +2016,50 @@ static int virtio_mem_sbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
+> static int virtio_mem_bbm_offline_remove_and_unplug_bb(struct virtio_mem *vm,
+> 						       unsigned long bb_id)
+> {
+>+	const unsigned long start_pfn = PFN_DOWN(virtio_mem_bb_id_to_phys(vm, bb_id));
+>+	const unsigned long nr_pages = PFN_DOWN(vm->bbm.bb_size);
+>+	unsigned long end_pfn = start_pfn + nr_pages;
+>+	unsigned long pfn;
+>+	struct page *page;
+> 	int rc;
+> 
+> 	if (WARN_ON_ONCE(virtio_mem_bbm_get_bb_state(vm, bb_id) !=
+> 			 VIRTIO_MEM_BBM_BB_ADDED))
+> 		return -EINVAL;
+> 
+>+	if (bbm_safe_unplug) {
+>+		/*
+>+		 * Start by fake-offlining all memory. Once we marked the device
+>+		 * block as fake-offline, all newly onlined memory will
+>+		 * automatically be kept fake-offline. Protect from concurrent
+>+		 * onlining/offlining until we have a consistent state.
+>+		 */
+>+		mutex_lock(&vm->hotplug_mutex);
+>+		virtio_mem_bbm_set_bb_state(vm, bb_id,
+>+					    VIRTIO_MEM_BBM_BB_FAKE_OFFLINE);
+>+
+
+State is set here.
+
+>+		for (pfn = start_pfn; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
+>+			page = pfn_to_online_page(pfn);
+>+			if (!page)
+>+				continue;
+>+
+>+			rc = virtio_mem_fake_offline(pfn, PAGES_PER_SECTION);
+>+			if (rc) {
+>+				end_pfn = pfn;
+>+				goto rollback_safe_unplug;
+>+			}
+>+		}
+>+		mutex_unlock(&vm->hotplug_mutex);
+>+	}
+>+
+> 	rc = virtio_mem_bbm_offline_and_remove_bb(vm, bb_id);
+>-	if (rc)
+>+	if (rc) {
+>+		if (bbm_safe_unplug) {
+>+			mutex_lock(&vm->hotplug_mutex);
+>+			goto rollback_safe_unplug;
+>+		}
+> 		return rc;
+>+	}
+> 
+> 	rc = virtio_mem_bbm_unplug_bb(vm, bb_id);
+> 	if (rc)
+
+And changed to PLUGGED or UNUSED based on rc.
+
+>@@ -1987,6 +2069,17 @@ static int virtio_mem_bbm_offline_remove_and_unplug_bb(struct virtio_mem *vm,
+> 		virtio_mem_bbm_set_bb_state(vm, bb_id,
+> 					    VIRTIO_MEM_BBM_BB_UNUSED);
+> 	return rc;
+>+
+>+rollback_safe_unplug:
+>+	for (pfn = start_pfn; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
+>+		page = pfn_to_online_page(pfn);
+>+		if (!page)
+>+			continue;
+>+		virtio_mem_fake_online(pfn, PAGES_PER_SECTION);
+>+	}
+>+	virtio_mem_bbm_set_bb_state(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED);
+
+And changed to ADDED if failed.
+
+>+	mutex_unlock(&vm->hotplug_mutex);
+>+	return rc;
+> }
+
+So in which case, the bbm state is FAKE_OFFLINE during
+virtio_mem_bbm_notify_going_offline() and
+virtio_mem_bbm_notify_cancel_offline() ?
 
 > 
-> Hao
-> 
-> >
-> > > > +device_unlock(dev);
-> > > > +return len;
-> > > > +}
-> > > > +
-> > > > +static ssize_t driver_override_store(struct device *dev,
-> > > > +     struct device_attribute *attr,
-> > > > +     const char *buf, size_t count)
-> > > > +{
-> > > > +struct dfl_device *ddev = to_dfl_dev(dev);
-> > > > +char *driver_override, *old, *cp;
-> > > > +
-> > > > +/* We need to keep extra room for a newline */
-> > > > +if (count >= (PAGE_SIZE - 1))
-> > > > +return -EINVAL;
-> > > > +
-> > > > +driver_override = kstrndup(buf, count, GFP_KERNEL);
-> > > > +if (!driver_override)
-> > > > +return -ENOMEM;
-> > > > +
-> > > > +cp = strchr(driver_override, '\n');
-> > > > +if (cp)
-> > > > +*cp = '\0';
-> > > > +
-> > > > +device_lock(dev);
-> > > > +old = ddev->driver_override;
-> > > > +if (strlen(driver_override)) {
-> > > > +ddev->driver_override = driver_override;
-> > > > +} else {
-> > > > +kfree(driver_override);
-> > > > +ddev->driver_override = NULL;
-> > > > +}
-> > > > +device_unlock(dev);
-> > > > +
-> > > > +kfree(old);
-> > > > +
-> > > > +return count;
-> > > > +}
-> > > > +static DEVICE_ATTR_RW(driver_override);
-> > > > +
-> > > >  static ssize_t
-> > > >  type_show(struct device *dev, struct device_attribute *attr, char *buf)
-> > > >  {
-> > > > @@ -324,6 +375,7 @@ static DEVICE_ATTR_RO(feature_id);
-> > > >  static struct attribute *dfl_dev_attrs[] = {
-> > > >  &dev_attr_type.attr,
-> > > >  &dev_attr_feature_id.attr,
-> > > > +&dev_attr_driver_override.attr,
-> > > >  NULL,
-> > > >  };
-> > > >  ATTRIBUTE_GROUPS(dfl_dev);
-> > > > @@ -469,7 +521,7 @@ static int dfl_devs_add(struct
-> > dfl_feature_platform_data *pdata)
-> > > >
-> > > >  int __dfl_driver_register(struct dfl_driver *dfl_drv, struct module *owner)
-> > > >  {
-> > > > -if (!dfl_drv || !dfl_drv->probe || !dfl_drv->id_table)
-> > > > +if (!dfl_drv || !dfl_drv->probe)
-> > >
-> > > id_table is still needed for the normal case.
-> > >
-> > > Instead of removing this check, could you add something like
-> > >
-> > > || (!dfl_drv->is_override && !dfl_drv->id_table)
-> >
-> > I don't think it is needed. Seems is_override and !id_table are duplicated
-> > conditions for this implementation. And it may make confusing, e.g. could
-> > a driver been force matched when is_override is not set?
-> >
-> > I think we could make it simple, if the dfl driver didn't provide the
-> > id_table, normally it could not match any device. I think it could be
-> > easily understood by dfl driver developers.
-> >
-> >
-> > Thanks,
-> > Yilun
-> >
-> > >
-> > > Tom
-> > >
-> > > >  return -EINVAL;
-> > > >
-> > > >  dfl_drv->drv.owner = owner;
-> > > > diff --git a/include/linux/dfl.h b/include/linux/dfl.h
-> > > > index 7affba2f..e1b2471 100644
-> > > > --- a/include/linux/dfl.h
-> > > > +++ b/include/linux/dfl.h
-> > > > @@ -32,6 +32,7 @@ enum dfl_id_type {
-> > > >   * @num_irqs: number of IRQs supported by this dfl device.
-> > > >   * @cdev: pointer to DFL FPGA container device this dfl device belongs to.
-> > > >   * @id_entry: matched id entry in dfl driver's id table.
-> > > > + * @driver_override: driver name to force a match
-> > > >   */
-> > > >  struct dfl_device {
-> > > >  struct device dev;
-> > > > @@ -43,6 +44,7 @@ struct dfl_device {
-> > > >  unsigned int num_irqs;
-> > > >  struct dfl_fpga_cdev *cdev;
-> > > >  const struct dfl_device_id *id_entry;
-> > > > +char *driver_override;
-> > > >  };
-> > > >
-> > > >  /**
+> /*
+>-- 
+>2.26.2
+
+-- 
+Wei Yang
+Help you, Help me
