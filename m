@@ -2,316 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A24292607
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3B129260A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727322AbgJSKtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35604 "EHLO
+        id S1727398AbgJSKt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727261AbgJSKtp (ORCPT
+        with ESMTP id S1726606AbgJSKt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:49:45 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879A9C0613CE;
-        Mon, 19 Oct 2020 03:49:45 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id z5so7410169ejw.7;
-        Mon, 19 Oct 2020 03:49:45 -0700 (PDT)
+        Mon, 19 Oct 2020 06:49:56 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85108C0613CE;
+        Mon, 19 Oct 2020 03:49:56 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id b6so3130206pju.1;
+        Mon, 19 Oct 2020 03:49:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LPW2LNyeKFvIQH84bFwBzSg7A+5XzqRmLomDH/oRFCI=;
-        b=vPVINmcsW30aqhQX711zuDF8jAZrTsoLPDffXiDb/5K1yGysVXGdn9hoXx4QjsF12T
-         HGM589ryl5x+MK7QBGSM1YQL2XPaxQHu4vCbulL166lOJ5orUGfIIBEiokwgIHHivSgF
-         HiStMWOpZvC0VACOCRPNOs6Jo03aJTIoQ3Gk0UGvj1h880K2BnDS8wCpuX9Id22MHv5W
-         aklxDw1o5L8RY0dKtW7BHpQDM3g28ctWu6l+b0aVhAj9vkDb+10RKgjv84F/4TUCwAcO
-         CPg2nCklg8vqVOykvIqp6xuWZqR4xa/Im0fh1rvaH46SXq9Z7OhL7aLjdaPeuMiKeZhu
-         DyYQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BZeXQB503+W7irppENYUXNUt9TL7p7KQ2c0tGFSb0Ww=;
+        b=Q7uTNJ6d2CLKNsu67mfAofdTcCvVFozvXWJ6iIEn3DJqYkhNRKYpY2xX8lBjDbOOFN
+         Y8I+H46ZSOVSPWni8neUPrJQ6JrmNEhwoQF3ppOCFnK5y4+242b5ZI9wD4TE8tnCGqCT
+         MYlsjeWl6pkcCBtW6i8ALiLL3nKIAews+q3npApTaqIJHvZQ9VXrRDlO6w0/X3nTNwaF
+         HdKjFKUo70U+OXywVkqbPNfMU8uny27ENVw7VYLC3pcyYtX7G32uhvNPBLZqMGUn7B7p
+         tQqeUu8THLcgHU10a3lkUv1Wc3DVGoEcSZSBBZaR98KiTQpE+sNx7hs0d4oRAOOyPTMf
+         yRzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LPW2LNyeKFvIQH84bFwBzSg7A+5XzqRmLomDH/oRFCI=;
-        b=FyaBGEG4J6AOgZgJv1CL07Vn2am0ITpI5FiuRRLzpnVl4R928MVP9+5wafdbVksAFA
-         H3NU5AtfuewOfLbcUrGWUaiBcACZ1cflYGR1qJhToH76OjfyswxeXfipzomlcHDl/tKF
-         PY5gAQqplLTLM/1lYVr5y4Sk0cp4A8x444kTinotg4L+KwDUt9nqaTtvKKDypgK+/Wy7
-         b/ftxwwBIWlxXM+ulo4YkeFTt5qKenPz64RXxy1Hh7s/+tJzY+WWJmwkXTF4J21uyriY
-         1i1yVBlNqVnvTJgf/PktrU548x+/OlyubUWgWIWNSZrkkm9c8X/SQbf+rT1RY9lW2eEd
-         AQaw==
-X-Gm-Message-State: AOAM530k5gR1azoiMZqGJtRAIxA/YTsEzivt+tKc5HszIi3OM3f+yDWu
-        r3JhA7fbZrz/TZUvHd100t3aJT8Jfct4vA4GMMw=
-X-Google-Smtp-Source: ABdhPJzs/QwXM+6qyB3xZVQRXvPxlcUbyhL01xDLyKXBL+4ZR7AXMcbaFXrrPKGhm4beq99nfiX6KbA9oYT4ug5v9oA=
-X-Received: by 2002:a17:906:6409:: with SMTP id d9mr16477255ejm.344.1603104584159;
- Mon, 19 Oct 2020 03:49:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BZeXQB503+W7irppENYUXNUt9TL7p7KQ2c0tGFSb0Ww=;
+        b=KtNAPcqkdmhZO0daRK6eo3ytEOf9Lp+SQhCbDZxCvI8nAgeIDEVNIf0bqXxRtSH3nI
+         B8M+3oawFoyXiJMeGjbfdYB2syLRx4K8PENHVn+ePnb5VBwNeSMDNJBDDdh3woeL7nJ5
+         mgo4sBESHVhVw4GSNKYTrH6HPTzmoU+XJq6ySW+U3PN6XlGaq5sQVvt7dG1uKEjh35Lj
+         aQulJk2O9DLpPzUt1ifaQL37/JyqXzYO5VOVuW+A+y+32DAFJpdEP+jjxxKGuGdLNCU4
+         rGleztaPlPsUwyDY9mOZmENggcU1glJjFiGqXGWlS+ij4gX0HhNRaLFJ+rhuoSD/XlPZ
+         u9ew==
+X-Gm-Message-State: AOAM530AAWExfYv5n/uiv/CjoPS08qXXPkdXYXM56ggn+yd7MHObKDu6
+        zVz5gLCexQnLS+XMaIU6Wbk=
+X-Google-Smtp-Source: ABdhPJwD9HD7pSgL5Ol97zW0d1cfKEe8k5iy5UGa6MeEf+b8hl7dAmKnMLFAmMkpyEV3aRcxRNWvFQ==
+X-Received: by 2002:a17:902:7284:b029:d5:e92b:fe67 with SMTP id d4-20020a1709027284b02900d5e92bfe67mr3139202pll.44.1603104596095;
+        Mon, 19 Oct 2020 03:49:56 -0700 (PDT)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:b903:ac74:ad6d:beb7])
+        by smtp.gmail.com with ESMTPSA id f4sm11194694pjs.8.2020.10.19.03.49.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 03:49:55 -0700 (PDT)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net] drivers/net/wan/hdlc: In hdlc_rcv, check to make sure dev is an HDLC device
+Date:   Mon, 19 Oct 2020 03:49:42 -0700
+Message-Id: <20201019104942.364914-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201016203037.GA90074@bjorn-Precision-5520> <20201016222902.GA112659@bjorn-Precision-5520>
-In-Reply-To: <20201016222902.GA112659@bjorn-Precision-5520>
-From:   Ethan Zhao <xerces.zhao@gmail.com>
-Date:   Mon, 19 Oct 2020 18:49:32 +0800
-Message-ID: <CAKF3qh3NDvQAwb922faHgja+YoDydCtg5sugEQ8T2ti+3WSn5Q@mail.gmail.com>
-Subject: Re: [PATCH v9 12/15] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Sean V Kelley <seanvk.dev@oregontracks.org>,
-        Jonathan.Cameron@huawei.com, Bjorn Helgaas <bhelgaas@google.com>,
-        rafael.j.wysocki@intel.com, Ashok Raj <ashok.raj@intel.com>,
-        tony.luck@intel.com,
-        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>,
-        qiuxu.zhuo@intel.com, linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Christoph Hellwig <hch@lst.de>, Sinan Kaya <okaya@kernel.org>,
-        Keith Busch <kbusch@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 6:29 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> [+cc Christoph, Ethan, Sinan, Keith; sorry should have cc'd you to
-> begin with since you're looking at this code too.  Particularly
-> interested in your thoughts about whether we should be touching
-> PCI_ERR_ROOT_COMMAND and PCI_ERR_ROOT_STATUS when we don't own AER.]
+The hdlc_rcv function is used as hdlc_packet_type.func to process any
+skb received in the kernel with skb->protocol == htons(ETH_P_HDLC).
+The purpose of this function is to provide second-stage processing for
+skbs not assigned a "real" L3 skb->protocol value in the first stage.
 
-aer_root_reset() function has a prefix  'aer_', looks like it's a
-function of aer driver, will
-only be called by aer driver at runtime. if so it's up to the
-owner/aer to know if OSPM is
-granted to init. while actually some of the functions and runtime service of
-aer driver is also shared by GHES driver (running time) and DPC driver
-(compiling time ?)
-etc. then it is confused now.
+This function assumes the device from which the skb is received is an
+HDLC device (a device created by this module). It assumes that
+netdev_priv(dev) returns a pointer to "struct hdlc_device".
 
-Shall we move some of the shared functions and running time service to
-pci/err.c ?
-if so , just like pcie_do_recovery(), it's share by firmware_first  mode GHES
-ghes_probe()
-->ghes_irq_func
-  ->ghes_proc
-    ->ghes_do_proc()
-      ->ghes_handle_aer()
-        ->aer_recover_work_func()
-          ->pcie_do_recovery()
-            ->aer_root_reset()
+However, it is possible that some driver in the kernel (not necessarily
+in our control) submits a received skb with skb->protocol ==
+htons(ETH_P_HDLC), from a non-HDLC device. In this case, the skb would
+still be received by hdlc_rcv. This will cause problems.
 
-and aer driver etc.  if aer wants to do some access might conflict
-with firmware(or
-firmware in embedded controller) should check _OSC_ etc first.  blindly issue
-PCI_ERR_ROOT_COMMAND  or clear PCI_ERR_ROOT_STATUS *likely*
-cause errors by error handling itself.
+hdlc_rcv should be able to recognize and drop invalid skbs. It should
+first make sure "dev" is actually an HDLC device, before starting its
+processing.
 
-Thanks,
-Ethan
+To reliably check if a device is an HDLC device, we can check if its
+dev->netdev_ops->ndo_start_xmit == hdlc_start_xmit, because all HDLC
+devices are required to set their ndo_start_xmit to hdlc_start_xmit
+(and all non-HDLC devices would not set their ndo_start_xmit to this).
 
->
-> On Fri, Oct 16, 2020 at 03:30:37PM -0500, Bjorn Helgaas wrote:
-> > [+to Jonathan]
-> >
-> > On Thu, Oct 15, 2020 at 05:11:10PM -0700, Sean V Kelley wrote:
-> > > From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> > >
-> > > When attempting error recovery for an RCiEP associated with an RCEC device,
-> > > there needs to be a way to update the Root Error Status, the Uncorrectable
-> > > Error Status and the Uncorrectable Error Severity of the parent RCEC.  In
-> > > some non-native cases in which there is no OS-visible device associated
-> > > with the RCiEP, there is nothing to act upon as the firmware is acting
-> > > before the OS.
-> > >
-> > > Add handling for the linked RCEC in AER/ERR while taking into account
-> > > non-native cases.
-> > >
-> > > Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> > > Link: https://lore.kernel.org/r/20201002184735.1229220-12-seanvk.dev@oregontracks.org
-> > > Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-> > > Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> > > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > ---
-> > >  drivers/pci/pcie/aer.c | 53 ++++++++++++++++++++++++++++++------------
-> > >  drivers/pci/pcie/err.c | 20 ++++++++--------
-> > >  2 files changed, 48 insertions(+), 25 deletions(-)
-> > >
-> > > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> > > index 65dff5f3457a..083f69b67bfd 100644
-> > > --- a/drivers/pci/pcie/aer.c
-> > > +++ b/drivers/pci/pcie/aer.c
-> > > @@ -1357,27 +1357,50 @@ static int aer_probe(struct pcie_device *dev)
-> > >   */
-> > >  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
-> > >  {
-> > > -   int aer = dev->aer_cap;
-> > > +   int type = pci_pcie_type(dev);
-> > > +   struct pci_dev *root;
-> > > +   int aer = 0;
-> > > +   int rc = 0;
-> > >     u32 reg32;
-> > > -   int rc;
-> > >
-> > > +   if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END)
-> >
-> > "type == PCI_EXP_TYPE_RC_END"
-> >
-> > > +           /*
-> > > +            * The reset should only clear the Root Error Status
-> > > +            * of the RCEC. Only perform this for the
-> > > +            * native case, i.e., an RCEC is present.
-> > > +            */
-> > > +           root = dev->rcec;
-> > > +   else
-> > > +           root = dev;
-> > >
-> > > -   /* Disable Root's interrupt in response to error messages */
-> > > -   pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> > > -   reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-> > > -   pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> > > +   if (root)
-> > > +           aer = dev->aer_cap;
-> > >
-> > > -   rc = pci_bus_error_reset(dev);
-> > > -   pci_info(dev, "Root Port link has been reset\n");
-> > > +   if (aer) {
-> > > +           /* Disable Root's interrupt in response to error messages */
-> > > +           pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> > > +           reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
-> > > +           pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> >
-> > Not directly related to *this* patch, but my assumption was that in
-> > the APEI case, the firmware should retain ownership of the AER
-> > Capability, so the OS should not touch PCI_ERR_ROOT_COMMAND and
-> > PCI_ERR_ROOT_STATUS.
-> >
-> > But this code appears to ignore that ownership.  Jonathan, you must
-> > have looked at this recently for 068c29a248b6 ("PCI/ERR: Clear PCIe
-> > Device Status errors only if OS owns AER").  Do you have any insight
-> > about this?
-> >
-> > > -   /* Clear Root Error Status */
-> > > -   pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> > > -   pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
-> > > +           /* Clear Root Error Status */
-> > > +           pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> > > +           pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
-> > >
-> > > -   /* Enable Root Port's interrupt in response to error messages */
-> > > -   pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> > > -   reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
-> > > -   pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> > > +           /* Enable Root Port's interrupt in response to error messages */
-> > > +           pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
-> > > +           reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
-> > > +           pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
-> > > +   }
-> > > +
-> > > +   if ((type == PCI_EXP_TYPE_RC_EC) || (type == PCI_EXP_TYPE_RC_END)) {
-> > > +           if (pcie_has_flr(root)) {
-> > > +                   rc = pcie_flr(root);
-> > > +                   pci_info(dev, "has been reset (%d)\n", rc);
-> > > +           }
-> > > +   } else {
-> > > +           rc = pci_bus_error_reset(root);
-> >
-> > Don't we want "dev" for both the FLR and pci_bus_error_reset()?  I
-> > think "root == dev" except when dev is an RCiEP.  When dev is an
-> > RCiEP, "root" is the RCEC (if present), and we want to reset the
-> > RCiEP, not the RCEC.
-> >
-> > > +           pci_info(dev, "Root Port link has been reset (%d)\n", rc);
-> > > +   }
-> >
-> > There are a couple changes here that I think should be split out.
-> >
-> > Based on my theory that when firmware retains control of AER, the OS
-> > should not touch PCI_ERR_ROOT_COMMAND and PCI_ERR_ROOT_STATUS, and any
-> > updates to them would have to be done by firmware before we get here,
-> > I suggested reordering this:
-> >
-> >   - clear PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
-> >   - do reset
-> >   - clear PCI_ERR_ROOT_STATUS (for APEI, presumably done by firmware?)
-> >   - enable PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
-> >
-> > to this:
-> >
-> >   - clear PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
-> >   - clear PCI_ERR_ROOT_STATUS
-> >   - enable PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
-> >   - do reset
-> >
-> > If my theory is correct, I think we should still reorder this, but:
-> >
-> >   - It's a significant behavior change that deserves its own patch so
-> >     we can document/bisect/revert.
-> >
-> >   - I'm not sure why we clear the PCI_ERR_ROOT_COMMAND error reporting
-> >     bits.  In the new "clear COMMAND, clear STATUS, enable COMMAND"
-> >     order, it looks superfluous.  There's no reason to disable error
-> >     reporting while clearing the status bits.
-> >
-> >     The current "clear, reset, enable" order suggests that the reset
-> >     might cause errors that we should ignore.  I don't know whether
-> >     that's the case or not.  It dates from 6c2b374d7485 ("PCI-Express
-> >     AER implemetation: AER core and aerdriver"), which doesn't
-> >     elaborate.
-> >
-> >   - Should we also test for OS ownership of AER before touching
-> >     PCI_ERR_ROOT_STATUS?
-> >
-> >   - If we remove the PCI_ERR_ROOT_COMMAND fiddling (and I tentatively
-> >     think we *should* unless we can justify it), that would also
-> >     deserve its own patch.  Possibly (1) remove PCI_ERR_ROOT_COMMAND
-> >     fiddling, (2) reorder PCI_ERR_ROOT_STATUS clearing and reset, (3)
-> >     test for OS ownership of AER (?), (4) the rest of this patch.
-> >
-> > >     return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
-> > >  }
-> > > diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> > > index 7883c9791562..cbc5abfe767b 100644
-> > > --- a/drivers/pci/pcie/err.c
-> > > +++ b/drivers/pci/pcie/err.c
-> > > @@ -148,10 +148,10 @@ static int report_resume(struct pci_dev *dev, void *data)
-> > >
-> > >  /**
-> > >   * pci_walk_bridge - walk bridges potentially AER affected
-> > > - * @bridge:        bridge which may be a Port, an RCEC with associated RCiEPs,
-> > > - *         or an RCiEP associated with an RCEC
-> > > - * @cb:            callback to be called for each device found
-> > > - * @userdata:      arbitrary pointer to be passed to callback
-> > > + * @bridge   bridge which may be an RCEC with associated RCiEPs,
-> > > + *           or a Port.
-> > > + * @cb       callback to be called for each device found
-> > > + * @userdata arbitrary pointer to be passed to callback.
-> > >   *
-> > >   * If the device provided is a bridge, walk the subordinate bus, including
-> > >   * any bridged devices on buses under this bus.  Call the provided callback
-> > > @@ -164,8 +164,14 @@ static void pci_walk_bridge(struct pci_dev *bridge,
-> > >                         int (*cb)(struct pci_dev *, void *),
-> > >                         void *userdata)
-> > >  {
-> > > +   /*
-> > > +    * In a non-native case where there is no OS-visible reporting
-> > > +    * device the bridge will be NULL, i.e., no RCEC, no Downstream Port.
-> > > +    */
-> > >     if (bridge->subordinate)
-> > >             pci_walk_bus(bridge->subordinate, cb, userdata);
-> > > +   else if (bridge->rcec)
-> > > +           cb(bridge->rcec, userdata);
-> > >     else
-> > >             cb(bridge, userdata);
-> > >  }
-> > > @@ -194,12 +200,6 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-> > >     pci_dbg(bridge, "broadcast error_detected message\n");
-> > >     if (state == pci_channel_io_frozen) {
-> > >             pci_walk_bridge(bridge, report_frozen_detected, &status);
-> > > -           if (type == PCI_EXP_TYPE_RC_END) {
-> > > -                   pci_warn(dev, "subordinate device reset not possible for RCiEP\n");
-> > > -                   status = PCI_ERS_RESULT_NONE;
-> > > -                   goto failed;
-> > > -           }
-> > > -
-> > >             status = reset_subordinates(bridge);
-> > >             if (status != PCI_ERS_RESULT_RECOVERED) {
-> > >                     pci_warn(bridge, "subordinate device reset failed\n");
-> > > --
-> > > 2.28.0
-> > >
+Cc: Krzysztof Halasa <khc@pm.waw.pl>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ drivers/net/wan/hdlc.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wan/hdlc.c b/drivers/net/wan/hdlc.c
+index 9b00708676cf..0a392fb9aff8 100644
+--- a/drivers/net/wan/hdlc.c
++++ b/drivers/net/wan/hdlc.c
+@@ -46,7 +46,15 @@ static struct hdlc_proto *first_proto;
+ static int hdlc_rcv(struct sk_buff *skb, struct net_device *dev,
+ 		    struct packet_type *p, struct net_device *orig_dev)
+ {
+-	struct hdlc_device *hdlc = dev_to_hdlc(dev);
++	struct hdlc_device *hdlc;
++
++	/* First make sure "dev" is an HDLC device */
++	if (dev->netdev_ops->ndo_start_xmit != hdlc_start_xmit) {
++		kfree_skb(skb);
++		return NET_RX_SUCCESS;
++	}
++
++	hdlc = dev_to_hdlc(dev);
+ 
+ 	if (!net_eq(dev_net(dev), &init_net)) {
+ 		kfree_skb(skb);
+-- 
+2.25.1
+
