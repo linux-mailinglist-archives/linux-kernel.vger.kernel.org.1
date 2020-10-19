@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F275F292274
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A009292275
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgJSGUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 02:20:09 -0400
-Received: from mga04.intel.com ([192.55.52.120]:16893 "EHLO mga04.intel.com"
+        id S1727045AbgJSGUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 02:20:15 -0400
+Received: from mga03.intel.com ([134.134.136.65]:7791 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726939AbgJSGUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 02:20:08 -0400
-IronPort-SDR: SwIDUsGrfR4DuX4xR6br4nrH06AIGMAFrfOrcwuOXkx8sU0qCRHHFVmk2R16SBAm4ilP/e5AQR
- x/HUpqRt6WLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="164360586"
+        id S1727038AbgJSGUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 02:20:15 -0400
+IronPort-SDR: nrmnlnPkbwrPLjOPD1UanIjw1kbKBX2fNsB39RrcPp22iAhLsS/K/XDmlU4iTsadl782aWOJpL
+ 0wo8Y/ggcRxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="167050911"
 X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
-   d="scan'208";a="164360586"
+   d="scan'208";a="167050911"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:20:08 -0700
-IronPort-SDR: ygJBw3xMatRWDbpeKGEPLQ8hOwu7QBdH6elKcOt4N14DJrdBWuBRCDXHdol4+B4liWixlI9Wpa
- AZZB57xFm0ow==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:20:14 -0700
+IronPort-SDR: idIVoPcFbi6X4IrDJktO/fEzMtTTltv3meK47JlyPXOacbFdpds8e4VC3pQiz2vmFecHCfAQfr
+ 0oy6H7YhlSow==
 X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
-   d="scan'208";a="301281685"
+   d="scan'208";a="532505035"
 Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:20:02 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:20:09 -0700
 From:   shuo.a.liu@intel.com
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -38,9 +38,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Shuo Liu <shuo.a.liu@intel.com>,
         Zhi Wang <zhi.a.wang@intel.com>,
         Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH v5 15/17] virt: acrn: Introduce ioeventfd
-Date:   Mon, 19 Oct 2020 14:18:01 +0800
-Message-Id: <20201019061803.13298-16-shuo.a.liu@intel.com>
+Subject: [PATCH v5 16/17] virt: acrn: Introduce irqfd
+Date:   Mon, 19 Oct 2020 14:18:02 +0800
+Message-Id: <20201019061803.13298-17-shuo.a.liu@intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201019061803.13298-1-shuo.a.liu@intel.com>
 References: <20201019061803.13298-1-shuo.a.liu@intel.com>
@@ -52,18 +52,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shuo Liu <shuo.a.liu@intel.com>
 
-ioeventfd is a mechanism to register PIO/MMIO regions to trigger an
-eventfd signal when written to by a User VM. ACRN userspace can register
-any arbitrary I/O address with a corresponding eventfd and then pass the
-eventfd to a specific end-point of interest for handling.
+irqfd is a mechanism to inject a specific interrupt to a User VM using a
+decoupled eventfd mechanism.
 
-Vhost is a kernel-level virtio server which uses eventfd for signalling.
-To support vhost on ACRN, ioeventfd is introduced in HSM.
+Vhost is a kernel-level virtio server which uses eventfd for interrupt
+injection. To support vhost on ACRN, irqfd is introduced in HSM.
 
-A new I/O client dedicated to ioeventfd is associated with a User VM
-during VM creation. HSM provides ioctls to associate an I/O region with
-a eventfd. The I/O client signals a eventfd once its corresponding I/O
-region is matched with an I/O request.
+HSM provides ioctls to associate a virtual Message Signaled Interrupt
+(MSI) with an eventfd. The corresponding virtual MSI will be injected
+into a User VM once the eventfd got signal.
 
 Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
 Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
@@ -74,105 +71,91 @@ Cc: Yu Wang <yu1.wang@intel.com>
 Cc: Reinette Chatre <reinette.chatre@intel.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/virt/acrn/Kconfig     |   1 +
- drivers/virt/acrn/Makefile    |   2 +-
- drivers/virt/acrn/acrn_drv.h  |  10 ++
- drivers/virt/acrn/hsm.c       |   8 +
- drivers/virt/acrn/ioeventfd.c | 273 ++++++++++++++++++++++++++++++++++
- drivers/virt/acrn/vm.c        |   2 +
- include/uapi/linux/acrn.h     |  29 ++++
- 7 files changed, 324 insertions(+), 1 deletion(-)
- create mode 100644 drivers/virt/acrn/ioeventfd.c
+ drivers/virt/acrn/Makefile   |   2 +-
+ drivers/virt/acrn/acrn_drv.h |  10 ++
+ drivers/virt/acrn/hsm.c      |   7 ++
+ drivers/virt/acrn/irqfd.c    | 235 +++++++++++++++++++++++++++++++++++
+ drivers/virt/acrn/vm.c       |   3 +
+ include/uapi/linux/acrn.h    |  15 +++
+ 6 files changed, 271 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/virt/acrn/irqfd.c
 
-diff --git a/drivers/virt/acrn/Kconfig b/drivers/virt/acrn/Kconfig
-index 36c80378c30c..3e1a61c9d8d8 100644
---- a/drivers/virt/acrn/Kconfig
-+++ b/drivers/virt/acrn/Kconfig
-@@ -2,6 +2,7 @@
- config ACRN_HSM
- 	tristate "ACRN Hypervisor Service Module"
- 	depends on ACRN_GUEST
-+	select EVENTFD
- 	help
- 	  ACRN Hypervisor Service Module (HSM) is a kernel module which
- 	  communicates with ACRN userspace through ioctls and talks to
 diff --git a/drivers/virt/acrn/Makefile b/drivers/virt/acrn/Makefile
-index 21721cbf6a80..755b583b32ca 100644
+index 755b583b32ca..08ce641dcfa1 100644
 --- a/drivers/virt/acrn/Makefile
 +++ b/drivers/virt/acrn/Makefile
 @@ -1,3 +1,3 @@
  # SPDX-License-Identifier: GPL-2.0
  obj-$(CONFIG_ACRN_HSM)	:= acrn.o
--acrn-y := hsm.o vm.o mm.o ioreq.o
-+acrn-y := hsm.o vm.o mm.o ioreq.o ioeventfd.o
+-acrn-y := hsm.o vm.o mm.o ioreq.o ioeventfd.o
++acrn-y := hsm.o vm.o mm.o ioreq.o ioeventfd.o irqfd.o
 diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
-index 5b824fa1ee57..c66c620b9f10 100644
+index c66c620b9f10..8354d0d5881c 100644
 --- a/drivers/virt/acrn/acrn_drv.h
 +++ b/drivers/virt/acrn/acrn_drv.h
-@@ -158,6 +158,9 @@ extern rwlock_t acrn_vm_list_lock;
-  * @ioreq_page:			The page of the I/O request shared buffer
-  * @pci_conf_addr:		Address of a PCI configuration access emulation
-  * @monitor_page:		Page of interrupt statistics of User VM
-+ * @ioeventfds_lock:		Lock to protect ioeventfds list
-+ * @ioeventfds:			List to link all hsm_ioeventfd
-+ * @ioeventfd_client:		I/O client for ioeventfds of the VM
+@@ -161,6 +161,9 @@ extern rwlock_t acrn_vm_list_lock;
+  * @ioeventfds_lock:		Lock to protect ioeventfds list
+  * @ioeventfds:			List to link all hsm_ioeventfd
+  * @ioeventfd_client:		I/O client for ioeventfds of the VM
++ * @irqfds_lock:		Lock to protect irqfds list
++ * @irqfds:			List to link all hsm_irqfd
++ * @irqfd_wq:			Workqueue for irqfd async shutdown
   */
  struct acrn_vm {
  	struct list_head		list;
-@@ -174,6 +177,9 @@ struct acrn_vm {
- 	struct page			*ioreq_page;
- 	u32				pci_conf_addr;
- 	struct page			*monitor_page;
-+	struct mutex			ioeventfds_lock;
-+	struct list_head		ioeventfds;
-+	struct acrn_ioreq_client	*ioeventfd_client;
+@@ -180,6 +183,9 @@ struct acrn_vm {
+ 	struct mutex			ioeventfds_lock;
+ 	struct list_head		ioeventfds;
+ 	struct acrn_ioreq_client	*ioeventfd_client;
++	struct mutex			irqfds_lock;
++	struct list_head		irqfds;
++	struct workqueue_struct		*irqfd_wq;
  };
  
  struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
-@@ -206,4 +212,8 @@ void acrn_ioreq_range_del(struct acrn_ioreq_client *client,
+@@ -216,4 +222,8 @@ int acrn_ioeventfd_init(struct acrn_vm *vm);
+ int acrn_ioeventfd_config(struct acrn_vm *vm, struct acrn_ioeventfd *args);
+ void acrn_ioeventfd_deinit(struct acrn_vm *vm);
  
- int acrn_msi_inject(struct acrn_vm *vm, u64 msi_addr, u64 msi_data);
- 
-+int acrn_ioeventfd_init(struct acrn_vm *vm);
-+int acrn_ioeventfd_config(struct acrn_vm *vm, struct acrn_ioeventfd *args);
-+void acrn_ioeventfd_deinit(struct acrn_vm *vm);
++int acrn_irqfd_init(struct acrn_vm *vm);
++int acrn_irqfd_config(struct acrn_vm *vm, struct acrn_irqfd *args);
++void acrn_irqfd_deinit(struct acrn_vm *vm);
 +
  #endif /* __ACRN_HSM_DRV_H */
 diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-index 9565b4d64ab7..16f0280148f3 100644
+index 16f0280148f3..c7290e177b1e 100644
 --- a/drivers/virt/acrn/hsm.c
 +++ b/drivers/virt/acrn/hsm.c
-@@ -111,6 +111,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
- 	struct acrn_vcpu_regs *cpu_regs;
- 	struct acrn_ioreq_notify notify;
- 	struct acrn_ptdev_irq *irq_info;
-+	struct acrn_ioeventfd ioeventfd;
+@@ -115,6 +115,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
  	struct acrn_vm_memmap memmap;
  	struct acrn_msi_entry *msi;
  	struct acrn_pcidev *pcidev;
-@@ -309,6 +310,13 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
++	struct acrn_irqfd irqfd;
+ 	struct page *page;
+ 	u64 cstate_cmd;
+ 	int ret = 0;
+@@ -317,6 +318,12 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
  
- 		ret = pmcmd_ioctl(cstate_cmd, (void __user *)ioctl_param);
+ 		ret = acrn_ioeventfd_config(vm, &ioeventfd);
  		break;
-+	case ACRN_IOCTL_IOEVENTFD:
-+		if (copy_from_user(&ioeventfd, (void __user *)ioctl_param,
-+				   sizeof(ioeventfd)))
++	case ACRN_IOCTL_IRQFD:
++		if (copy_from_user(&irqfd, (void __user *)ioctl_param,
++				   sizeof(irqfd)))
 +			return -EFAULT;
-+
-+		ret = acrn_ioeventfd_config(vm, &ioeventfd);
++		ret = acrn_irqfd_config(vm, &irqfd);
 +		break;
  	default:
  		dev_dbg(acrn_dev.this_device, "Unknown IOCTL 0x%x!\n", cmd);
  		ret = -ENOTTY;
-diff --git a/drivers/virt/acrn/ioeventfd.c b/drivers/virt/acrn/ioeventfd.c
+diff --git a/drivers/virt/acrn/irqfd.c b/drivers/virt/acrn/irqfd.c
 new file mode 100644
-index 000000000000..ac4037e9f947
+index 000000000000..a8766d528e29
 --- /dev/null
-+++ b/drivers/virt/acrn/ioeventfd.c
-@@ -0,0 +1,273 @@
++++ b/drivers/virt/acrn/irqfd.c
+@@ -0,0 +1,235 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * ACRN HSM eventfd - use eventfd objects to signal expected I/O requests
++ * ACRN HSM irqfd: use eventfd objects to inject virtual interrupts
 + *
 + * Copyright (C) 2020 Intel Corporation. All rights reserved.
 + *
@@ -182,331 +165,282 @@ index 000000000000..ac4037e9f947
 + */
 +
 +#include <linux/eventfd.h>
++#include <linux/file.h>
++#include <linux/poll.h>
 +#include <linux/slab.h>
 +
 +#include "acrn_drv.h"
 +
++static LIST_HEAD(acrn_irqfd_clients);
++static DEFINE_MUTEX(acrn_irqfds_mutex);
++
 +/**
-+ * struct hsm_ioeventfd - Properties of HSM ioeventfd
-+ * @list:	Entry within &acrn_vm.ioeventfds of ioeventfds of a VM
-+ * @eventfd:	Eventfd of the HSM ioeventfd
-+ * @addr:	Address of I/O range
-+ * @data:	Data for matching
-+ * @length:	Length of I/O range
-+ * @type:	Type of I/O range (ACRN_IOREQ_TYPE_MMIO/ACRN_IOREQ_TYPE_PORTIO)
-+ * @wildcard:	Data matching or not
++ * struct hsm_irqfd - Properties of HSM irqfd
++ * @vm:		Associated VM pointer
++ * @wait:	Entry of wait-queue
++ * @shutdown:	Async shutdown work
++ * @eventfd:	Associated eventfd
++ * @list:	Entry within &acrn_vm.irqfds of irqfds of a VM
++ * @pt:		Structure for select/poll on the associated eventfd
++ * @msi:	MSI data
 + */
-+struct hsm_ioeventfd {
-+	struct list_head	list;
++struct hsm_irqfd {
++	struct acrn_vm		*vm;
++	wait_queue_entry_t	wait;
++	struct work_struct	shutdown;
 +	struct eventfd_ctx	*eventfd;
-+	u64			addr;
-+	u64			data;
-+	int			length;
-+	int			type;
-+	bool			wildcard;
++	struct list_head	list;
++	poll_table		pt;
++	struct acrn_msi_entry	msi;
 +};
 +
-+static inline int ioreq_type_from_flags(int flags)
++static void acrn_irqfd_inject(struct hsm_irqfd *irqfd)
 +{
-+	return flags & ACRN_IOEVENTFD_FLAG_PIO ?
-+		       ACRN_IOREQ_TYPE_PORTIO : ACRN_IOREQ_TYPE_MMIO;
++	struct acrn_vm *vm = irqfd->vm;
++
++	acrn_msi_inject(vm, irqfd->msi.msi_addr,
++			irqfd->msi.msi_data);
 +}
 +
-+static void acrn_ioeventfd_shutdown(struct acrn_vm *vm, struct hsm_ioeventfd *p)
++static void hsm_irqfd_shutdown(struct hsm_irqfd *irqfd)
 +{
-+	lockdep_assert_held(&vm->ioeventfds_lock);
++	u64 cnt;
 +
-+	eventfd_ctx_put(p->eventfd);
-+	list_del(&p->list);
-+	kfree(p);
++	lockdep_assert_held(&irqfd->vm->irqfds_lock);
++
++	/* remove from wait queue */
++	list_del_init(&irqfd->list);
++	eventfd_ctx_remove_wait_queue(irqfd->eventfd, &irqfd->wait, &cnt);
++	eventfd_ctx_put(irqfd->eventfd);
++	kfree(irqfd);
 +}
 +
-+static bool hsm_ioeventfd_is_conflict(struct acrn_vm *vm,
-+				      struct hsm_ioeventfd *ioeventfd)
++static void hsm_irqfd_shutdown_work(struct work_struct *work)
 +{
-+	struct hsm_ioeventfd *p;
++	struct hsm_irqfd *irqfd;
++	struct acrn_vm *vm;
 +
-+	lockdep_assert_held(&vm->ioeventfds_lock);
++	irqfd = container_of(work, struct hsm_irqfd, shutdown);
++	vm = irqfd->vm;
++	mutex_lock(&vm->irqfds_lock);
++	if (!list_empty(&irqfd->list))
++		hsm_irqfd_shutdown(irqfd);
++	mutex_unlock(&vm->irqfds_lock);
++}
 +
-+	/* Either one is wildcard, the data matching will be skipped. */
-+	list_for_each_entry(p, &vm->ioeventfds, list)
-+		if (p->eventfd == ioeventfd->eventfd &&
-+		    p->addr == ioeventfd->addr &&
-+		    p->type == ioeventfd->type &&
-+		    (p->wildcard || ioeventfd->wildcard ||
-+			p->data == ioeventfd->data))
-+			return true;
++/* Called with wqh->lock held and interrupts disabled */
++static int hsm_irqfd_wakeup(wait_queue_entry_t *wait, unsigned int mode,
++			    int sync, void *key)
++{
++	unsigned long poll_bits = (unsigned long)key;
++	struct hsm_irqfd *irqfd;
++	struct acrn_vm *vm;
 +
-+	return false;
++	irqfd = container_of(wait, struct hsm_irqfd, wait);
++	vm = irqfd->vm;
++	if (poll_bits & POLLIN)
++		/* An event has been signaled, inject an interrupt */
++		acrn_irqfd_inject(irqfd);
++
++	if (poll_bits & POLLHUP)
++		/* Do shutdown work in thread to hold wqh->lock */
++		queue_work(vm->irqfd_wq, &irqfd->shutdown);
++
++	return 0;
++}
++
++static void hsm_irqfd_poll_func(struct file *file, wait_queue_head_t *wqh,
++				poll_table *pt)
++{
++	struct hsm_irqfd *irqfd;
++
++	irqfd = container_of(pt, struct hsm_irqfd, pt);
++	add_wait_queue(wqh, &irqfd->wait);
 +}
 +
 +/*
-+ * Assign an eventfd to a VM and create a HSM ioeventfd associated with the
-+ * eventfd. The properties of the HSM ioeventfd are built from a &struct
-+ * acrn_ioeventfd.
++ * Assign an eventfd to a VM and create a HSM irqfd associated with the
++ * eventfd. The properties of the HSM irqfd are built from a &struct
++ * acrn_irqfd.
 + */
-+static int acrn_ioeventfd_assign(struct acrn_vm *vm,
-+				 struct acrn_ioeventfd *args)
++static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
 +{
-+	struct eventfd_ctx *eventfd;
-+	struct hsm_ioeventfd *p;
-+	int ret;
++	struct eventfd_ctx *eventfd = NULL;
++	struct hsm_irqfd *irqfd, *tmp;
++	unsigned int events;
++	struct fd f;
++	int ret = 0;
 +
-+	/* Check for range overflow */
-+	if (args->addr + args->len < args->addr)
-+		return -EINVAL;
++	irqfd = kzalloc(sizeof(*irqfd), GFP_KERNEL);
++	if (!irqfd)
++		return -ENOMEM;
 +
-+	/*
-+	 * Currently, acrn_ioeventfd is used to support vhost. 1,2,4,8 width
-+	 * accesses can cover vhost's requirements.
-+	 */
-+	if (!(args->len == 1 || args->len == 2 ||
-+	      args->len == 4 || args->len == 8))
-+		return -EINVAL;
++	irqfd->vm = vm;
++	memcpy(&irqfd->msi, &args->msi, sizeof(args->msi));
++	INIT_LIST_HEAD(&irqfd->list);
++	INIT_WORK(&irqfd->shutdown, hsm_irqfd_shutdown_work);
 +
-+	eventfd = eventfd_ctx_fdget(args->fd);
-+	if (IS_ERR(eventfd))
-+		return PTR_ERR(eventfd);
++	f = fdget(args->fd);
++	if (!f.file) {
++		ret = -EBADF;
++		goto out;
++	}
 +
-+	p = kzalloc(sizeof(*p), GFP_KERNEL);
-+	if (!p) {
-+		ret = -ENOMEM;
++	eventfd = eventfd_ctx_fileget(f.file);
++	if (IS_ERR(eventfd)) {
++		ret = PTR_ERR(eventfd);
 +		goto fail;
 +	}
 +
-+	INIT_LIST_HEAD(&p->list);
-+	p->addr = args->addr;
-+	p->length = args->len;
-+	p->eventfd = eventfd;
-+	p->type = ioreq_type_from_flags(args->flags);
++	irqfd->eventfd = eventfd;
 +
 +	/*
-+	 * ACRN_IOEVENTFD_FLAG_DATAMATCH flag is set in virtio 1.0 support, the
-+	 * writing of notification register of each virtqueue may trigger the
-+	 * notification. There is no data matching requirement.
++	 * Install custom wake-up handling to be notified whenever underlying
++	 * eventfd is signaled.
 +	 */
-+	if (args->flags & ACRN_IOEVENTFD_FLAG_DATAMATCH)
-+		p->data = args->data;
-+	else
-+		p->wildcard = true;
++	init_waitqueue_func_entry(&irqfd->wait, hsm_irqfd_wakeup);
++	init_poll_funcptr(&irqfd->pt, hsm_irqfd_poll_func);
 +
-+	mutex_lock(&vm->ioeventfds_lock);
-+
-+	if (hsm_ioeventfd_is_conflict(vm, p)) {
-+		ret = -EEXIST;
-+		goto unlock_fail;
++	mutex_lock(&vm->irqfds_lock);
++	list_for_each_entry(tmp, &vm->irqfds, list) {
++		if (irqfd->eventfd != tmp->eventfd)
++			continue;
++		ret = -EBUSY;
++		mutex_unlock(&vm->irqfds_lock);
++		goto fail;
 +	}
++	list_add_tail(&irqfd->list, &vm->irqfds);
++	mutex_unlock(&vm->irqfds_lock);
 +
-+	/* register the I/O range into ioreq client */
-+	ret = acrn_ioreq_range_add(vm->ioeventfd_client, p->type,
-+				   p->addr, p->addr + p->length - 1);
-+	if (ret < 0)
-+		goto unlock_fail;
++	/* Check the pending event in this stage */
++	events = f.file->f_op->poll(f.file, &irqfd->pt);
 +
-+	list_add_tail(&p->list, &vm->ioeventfds);
-+	mutex_unlock(&vm->ioeventfds_lock);
++	if (events & POLLIN)
++		acrn_irqfd_inject(irqfd);
 +
++	fdput(f);
 +	return 0;
-+
-+unlock_fail:
-+	mutex_unlock(&vm->ioeventfds_lock);
-+	kfree(p);
 +fail:
-+	eventfd_ctx_put(eventfd);
++	if (eventfd && !IS_ERR(eventfd))
++		eventfd_ctx_put(eventfd);
++
++	fdput(f);
++out:
++	kfree(irqfd);
 +	return ret;
 +}
 +
-+static int acrn_ioeventfd_deassign(struct acrn_vm *vm,
-+				   struct acrn_ioeventfd *args)
++static int acrn_irqfd_deassign(struct acrn_vm *vm,
++			       struct acrn_irqfd *args)
 +{
-+	struct hsm_ioeventfd *p;
++	struct hsm_irqfd *irqfd, *tmp;
 +	struct eventfd_ctx *eventfd;
 +
 +	eventfd = eventfd_ctx_fdget(args->fd);
 +	if (IS_ERR(eventfd))
 +		return PTR_ERR(eventfd);
 +
-+	mutex_lock(&vm->ioeventfds_lock);
-+	list_for_each_entry(p, &vm->ioeventfds, list) {
-+		if (p->eventfd != eventfd)
-+			continue;
-+
-+		acrn_ioreq_range_del(vm->ioeventfd_client, p->type,
-+				     p->addr, p->addr + p->length - 1);
-+		acrn_ioeventfd_shutdown(vm, p);
-+		break;
++	mutex_lock(&vm->irqfds_lock);
++	list_for_each_entry_safe(irqfd, tmp, &vm->irqfds, list) {
++		if (irqfd->eventfd == eventfd) {
++			hsm_irqfd_shutdown(irqfd);
++			break;
++		}
 +	}
-+	mutex_unlock(&vm->ioeventfds_lock);
-+
++	mutex_unlock(&vm->irqfds_lock);
 +	eventfd_ctx_put(eventfd);
-+	return 0;
-+}
-+
-+static struct hsm_ioeventfd *hsm_ioeventfd_match(struct acrn_vm *vm, u64 addr,
-+						 u64 data, int len, int type)
-+{
-+	struct hsm_ioeventfd *p = NULL;
-+
-+	lockdep_assert_held(&vm->ioeventfds_lock);
-+
-+	list_for_each_entry(p, &vm->ioeventfds, list) {
-+		if (p->type == type && p->addr == addr && p->length >= len &&
-+		    (p->wildcard || p->data == data))
-+			return p;
-+	}
-+
-+	return NULL;
-+}
-+
-+static int acrn_ioeventfd_handler(struct acrn_ioreq_client *client,
-+				  struct acrn_io_request *req)
-+{
-+	struct hsm_ioeventfd *p;
-+	u64 addr, val;
-+	int size;
-+
-+	if (req->type == ACRN_IOREQ_TYPE_MMIO) {
-+		/*
-+		 * I/O requests are dispatched by range check only, so a
-+		 * acrn_ioreq_client need process both READ and WRITE accesses
-+		 * of same range. READ accesses are safe to be ignored here
-+		 * because virtio PCI devices write the notify registers for
-+		 * notification.
-+		 */
-+		if (req->reqs.mmio_request.direction == ACRN_IOREQ_DIR_READ) {
-+			/* reading does nothing and return 0 */
-+			req->reqs.mmio_request.value = 0;
-+			return 0;
-+		}
-+		addr = req->reqs.mmio_request.address;
-+		size = req->reqs.mmio_request.size;
-+		val = req->reqs.mmio_request.value;
-+	} else {
-+		if (req->reqs.pio_request.direction == ACRN_IOREQ_DIR_READ) {
-+			/* reading does nothing and return 0 */
-+			req->reqs.pio_request.value = 0;
-+			return 0;
-+		}
-+		addr = req->reqs.pio_request.address;
-+		size = req->reqs.pio_request.size;
-+		val = req->reqs.pio_request.value;
-+	}
-+
-+	mutex_lock(&client->vm->ioeventfds_lock);
-+	p = hsm_ioeventfd_match(client->vm, addr, val, size, req->type);
-+	if (p)
-+		eventfd_signal(p->eventfd, 1);
-+	mutex_unlock(&client->vm->ioeventfds_lock);
 +
 +	return 0;
 +}
 +
-+int acrn_ioeventfd_config(struct acrn_vm *vm, struct acrn_ioeventfd *args)
++int acrn_irqfd_config(struct acrn_vm *vm, struct acrn_irqfd *args)
 +{
 +	int ret;
 +
-+	if (args->flags & ACRN_IOEVENTFD_FLAG_DEASSIGN)
-+		ret = acrn_ioeventfd_deassign(vm, args);
++	if (args->flags & ACRN_IRQFD_FLAG_DEASSIGN)
++		ret = acrn_irqfd_deassign(vm, args);
 +	else
-+		ret = acrn_ioeventfd_assign(vm, args);
++		ret = acrn_irqfd_assign(vm, args);
 +
 +	return ret;
 +}
 +
-+int acrn_ioeventfd_init(struct acrn_vm *vm)
++int acrn_irqfd_init(struct acrn_vm *vm)
 +{
-+	char name[ACRN_NAME_LEN];
++	INIT_LIST_HEAD(&vm->irqfds);
++	mutex_init(&vm->irqfds_lock);
++	vm->irqfd_wq = alloc_workqueue("acrn_irqfd-%u", 0, 0, vm->vmid);
++	if (!vm->irqfd_wq)
++		return -ENOMEM;
 +
-+	mutex_init(&vm->ioeventfds_lock);
-+	INIT_LIST_HEAD(&vm->ioeventfds);
-+	snprintf(name, sizeof(name), "ioeventfd-%u", vm->vmid);
-+	vm->ioeventfd_client = acrn_ioreq_client_create(vm,
-+							acrn_ioeventfd_handler,
-+							NULL, false, name);
-+	if (!vm->ioeventfd_client) {
-+		dev_err(acrn_dev.this_device, "Failed to create ioeventfd ioreq client!\n");
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(acrn_dev.this_device, "VM %u ioeventfd init.\n", vm->vmid);
++	dev_dbg(acrn_dev.this_device, "VM %u irqfd init.\n", vm->vmid);
 +	return 0;
 +}
 +
-+void acrn_ioeventfd_deinit(struct acrn_vm *vm)
++void acrn_irqfd_deinit(struct acrn_vm *vm)
 +{
-+	struct hsm_ioeventfd *p, *next;
++	struct hsm_irqfd *irqfd, *next;
 +
-+	dev_dbg(acrn_dev.this_device, "VM %u ioeventfd deinit.\n", vm->vmid);
-+	acrn_ioreq_client_destroy(vm->ioeventfd_client);
-+	mutex_lock(&vm->ioeventfds_lock);
-+	list_for_each_entry_safe(p, next, &vm->ioeventfds, list)
-+		acrn_ioeventfd_shutdown(vm, p);
-+	mutex_unlock(&vm->ioeventfds_lock);
++	dev_dbg(acrn_dev.this_device, "VM %u irqfd deinit.\n", vm->vmid);
++	destroy_workqueue(vm->irqfd_wq);
++	mutex_lock(&vm->irqfds_lock);
++	list_for_each_entry_safe(irqfd, next, &vm->irqfds, list)
++		hsm_irqfd_shutdown(irqfd);
++	mutex_unlock(&vm->irqfds_lock);
 +}
 diff --git a/drivers/virt/acrn/vm.c b/drivers/virt/acrn/vm.c
-index 38304aeef181..3c671b03b273 100644
+index 3c671b03b273..7f152a74b591 100644
 --- a/drivers/virt/acrn/vm.c
 +++ b/drivers/virt/acrn/vm.c
-@@ -50,6 +50,7 @@ struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
- 	list_add(&vm->list, &acrn_vm_list);
+@@ -51,6 +51,7 @@ struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
  	write_unlock_bh(&acrn_vm_list_lock);
  
-+	acrn_ioeventfd_init(vm);
+ 	acrn_ioeventfd_init(vm);
++	acrn_irqfd_init(vm);
  	dev_dbg(acrn_dev.this_device, "VM %u created.\n", vm->vmid);
  	return vm;
  }
-@@ -67,6 +68,7 @@ int acrn_vm_destroy(struct acrn_vm *vm)
- 	list_del_init(&vm->list);
+@@ -69,7 +70,9 @@ int acrn_vm_destroy(struct acrn_vm *vm)
  	write_unlock_bh(&acrn_vm_list_lock);
  
-+	acrn_ioeventfd_deinit(vm);
+ 	acrn_ioeventfd_deinit(vm);
++	acrn_irqfd_deinit(vm);
  	acrn_ioreq_deinit(vm);
++
  	if (vm->monitor_page) {
  		put_page(vm->monitor_page);
+ 		vm->monitor_page = NULL;
 diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
-index 9fed7209a8ef..7a99124c7d4d 100644
+index 7a99124c7d4d..75a687838a43 100644
 --- a/include/uapi/linux/acrn.h
 +++ b/include/uapi/linux/acrn.h
-@@ -385,6 +385,32 @@ enum acrn_pm_cmd_type {
- 	ACRN_PMCMD_GET_CX_DATA,
+@@ -411,6 +411,19 @@ struct acrn_ioeventfd {
+ 	__u64	data;
  };
  
-+#define ACRN_IOEVENTFD_FLAG_PIO		0x01
-+#define ACRN_IOEVENTFD_FLAG_DATAMATCH	0x02
-+#define ACRN_IOEVENTFD_FLAG_DEASSIGN	0x04
++#define ACRN_IRQFD_FLAG_DEASSIGN	0x01
 +/**
-+ * struct acrn_ioeventfd - Data to operate a &struct hsm_ioeventfd
-+ * @fd:		The fd of eventfd associated with a hsm_ioeventfd
-+ * @flags:	Logical-OR of ACRN_IOEVENTFD_FLAG_*
-+ * @addr:	The start address of IO range of ioeventfd
-+ * @len:	The length of IO range of ioeventfd
-+ * @reserved:	Reserved
-+ * @data:	Data for data matching
-+ *
-+ * Without flag ACRN_IOEVENTFD_FLAG_DEASSIGN, ioctl ACRN_IOCTL_IOEVENTFD
-+ * creates a &struct hsm_ioeventfd with properties originated from &struct
-+ * acrn_ioeventfd. With flag ACRN_IOEVENTFD_FLAG_DEASSIGN, ioctl
-+ * ACRN_IOCTL_IOEVENTFD destroys the &struct hsm_ioeventfd matching the fd.
++ * struct acrn_irqfd - Data to operate a &struct hsm_irqfd
++ * @fd:		The fd of eventfd associated with a hsm_irqfd
++ * @flags:	Logical-OR of ACRN_IRQFD_FLAG_*
++ * @msi:	Info of MSI associated with the irqfd
 + */
-+struct acrn_ioeventfd {
-+	__u32	fd;
-+	__u32	flags;
-+	__u64	addr;
-+	__u32	len;
-+	__u32	reserved;
-+	__u64	data;
++struct acrn_irqfd {
++	__s32			fd;
++	__u32			flags;
++	struct acrn_msi_entry	msi;
 +};
 +
  /* The ioctl type, documented in ioctl-number.rst */
  #define ACRN_IOCTL_TYPE			0xA2
  
-@@ -439,4 +465,7 @@ enum acrn_pm_cmd_type {
- #define ACRN_IOCTL_PM_GET_CPU_STATE	\
- 	_IOWR(ACRN_IOCTL_TYPE, 0x60, __u64)
+@@ -467,5 +480,7 @@ struct acrn_ioeventfd {
  
-+#define ACRN_IOCTL_IOEVENTFD		\
-+	_IOW(ACRN_IOCTL_TYPE, 0x70, struct acrn_ioeventfd)
-+
+ #define ACRN_IOCTL_IOEVENTFD		\
+ 	_IOW(ACRN_IOCTL_TYPE, 0x70, struct acrn_ioeventfd)
++#define ACRN_IOCTL_IRQFD		\
++	_IOW(ACRN_IOCTL_TYPE, 0x71, struct acrn_irqfd)
+ 
  #endif /* _UAPI_ACRN_H */
 -- 
 2.28.0
