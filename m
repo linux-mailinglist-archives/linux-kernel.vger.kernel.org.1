@@ -2,132 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60500292E81
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5552F292ED8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731100AbgJSTaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:30:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730021AbgJSTaq (ORCPT
+        id S1731466AbgJSTwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:52:51 -0400
+Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.176]:8858 "EHLO
+        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731413AbgJSTwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:30:46 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB72C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:30:44 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id c20so547583pfr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:30:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EU0W4JOrAsDzHZM0eV3e2S82ZfAJTNvMxl+0MvAvfDg=;
-        b=fo55FkmpDj2Wd4crXqqRBUpvhedGsQAZs0ESCJjBuDL3zYKONdan7hYDQFaCu3xvL4
-         Pd0w+dTDPRCOLS1wEK6lbWHhMJVFXRIzmk0axXsy5lmZmczHwGodHywaotzBd26ID2mh
-         Rk+w3lBoII+3/Al9kOh6oLl/qZORekVRmEokgc9pOeocR9Ts+DUkGSrmpDqcf6FygnRE
-         XTBStEHrM5sbXsD4LKaLGQeocyFnv3mZfFbUOBtMTygMPBIGqotlHBAiqwIIHoX+A6Y3
-         mu4/ptCbNp57ytRdurmXG2ll2s76//3jR9ZVtLAIgFMNSmMTugXuFlVbQOgIzQzTSxiz
-         wnqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EU0W4JOrAsDzHZM0eV3e2S82ZfAJTNvMxl+0MvAvfDg=;
-        b=ofHf+T0pjy0f4aGxeWfIbfCpzS8tyx2G/tcqNgvlTe8kegkuosgUtGjBBISyP22uFT
-         zmuglsGflvptLTXQVW08pjmc0tbu/XX14n3EFXqIsNBJtUQrcAy1w+FhoJX/vCGvtoj6
-         voOsc/hr3nGH64pVWkCSxzI67/6oCiocawUg/Fl3VNwvdLTwWpkJA+hvKyAaHFtW9KFc
-         8UZP09XHtBIieE5ya03ufvzCPNuWDFDzeorxEI6mGVXikAfWvzdFO7r3JBuU39AmzHBs
-         nYjdWWTCYwjj14BSpND6SxWeHVw5oDHJx1U0nX4eq2IoQhAms+fZ0GtzKG7nn36DW8Kx
-         4LYg==
-X-Gm-Message-State: AOAM5332UAE1AW7g3C4kBLUUFomIlWlasdvBc3sZ31rsv9hAq106ugSL
-        +ZDOigZYc84y713CTu3TsMV9Lm8UYEQHUykrwWQ6cQ==
-X-Google-Smtp-Source: ABdhPJwDXgjoOZFe5sUJ+y5bswoNcDzvWO8SoMgKBYYDcSFtvREyvztwYPGgp8ewpMupFHP/ZGUuP9U3zMq3LtWyj10=
-X-Received: by 2002:a63:f74a:: with SMTP id f10mr1082418pgk.263.1603135843831;
- Mon, 19 Oct 2020 12:30:43 -0700 (PDT)
+        Mon, 19 Oct 2020 15:52:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1603137161;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=U0R1Sq91GObq8553H4S/sRacdhsc+BjJcMDhxKXX/vY=;
+        b=Xo2bvtRA5tIM766RrZVpnly/e+GirJe4hku4SvRS+KbwZi4LBxwaJxrHSowST7eOz5
+        ypYZr1wijRFR672hQrnb/IWzLim0KiBztXfO/eD6heS39jih3VVQuoheBQjhpW6nALM7
+        YZkZnwyZYYR/mOoJkvxRCPR02P71Pz+G13xvyN663XCH2Y1Zosa2yxPZuszlkW+9OfN2
+        mP2eqMEiqqaxs0aYJaIloy0XkUL2ZyyuB6IcBqdtlxPYGfd8RzHIctKrZqhH3Q1asYWm
+        F+rzPug59yLCWrPAqZFEUEcs3iurKWBXKMpRGlyogYTUlAHK1EX+RKM5UHHF5ij05roK
+        bqCg==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJPSb3t0="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
+        with ESMTPSA id C0b627w9JJptU6x
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 19 Oct 2020 21:51:55 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Torsten Duwe <duwe@lst.de>
+Cc:     Willy Tarreau <w@1wt.eu>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-crypto@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>
+Subject: [PATCH v36 02/13] LRNG - allocate one DRNG instance per NUMA node
+Date:   Mon, 19 Oct 2020 21:31:53 +0200
+Message-ID: <2117666.iZASKD2KPV@positron.chronox.de>
+In-Reply-To: <3073852.aeNJFYEL58@positron.chronox.de>
+References: <20200921075857.4424-1-nstange@suse.de> <20201016172619.GA18410@lst.de> <3073852.aeNJFYEL58@positron.chronox.de>
 MIME-Version: 1.0
-References: <20201014110132.2680-1-mark@klomp.org> <20201017120135.4004-1-mark@klomp.org>
-In-Reply-To: <20201017120135.4004-1-mark@klomp.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 19 Oct 2020 12:30:32 -0700
-Message-ID: <CAKwvOdnXPs7-0Q8tdDiNGAWDpT3tc6EkjhDhZLdogwokG4JhUg@mail.gmail.com>
-Subject: Re: [PATCH V2] Only add -fno-var-tracking-assignments workaround for
- old GCC versions.
-To:     Mark Wielaard <mark@klomp.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        linux-toolchains@vger.kernel.org,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 5:02 AM Mark Wielaard <mark@klomp.org> wrote:
->
-> Some old GCC versions between 4.5.0 and 4.9.1 might miscompile code
-> with -fvar-tracking-assingments (which is enabled by default with -g -O2).
-> commit 2062afb4f added -fno-var-tracking-assignments unconditionally to
-> work around this. But newer versions of GCC no longer have this bug, so
-> only add it for versions of GCC before 5.0. This allows various tools
-> such as a perf probe or gdb debuggers or systemtap to resolve variable
-> locations using dwarf locations in more code.
->
-> Changes in V2:
-> - Update commit message explaining purpose.
-> - Explicitly mention GCC version in comment.
-> - Wrap workaround in ifdef CONFIG_CC_IS_GCC
->
-> Signed-off-by: Mark Wielaard <mark@klomp.org>
-> Acked-by: Ian Rogers <irogers@google.com>
-> Reviewed-by: Andi Kleen <andi@firstfloor.org>
-> Cc: linux-toolchains@vger.kernel.org
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Segher Boessenkool <segher@kernel.crashing.org>
-> Cc: Florian Weimer <fw@deneb.enyo.de>
-> Cc: Sedat Dilek <sedat.dilek@gmail.com>
-> ---
->  Makefile | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/Makefile b/Makefile
-> index 51540b291738..964754b4cedf 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -813,7 +813,11 @@ KBUILD_CFLAGS      += -ftrivial-auto-var-init=zero
->  KBUILD_CFLAGS  += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
->  endif
->
-> -DEBUG_CFLAGS   := $(call cc-option, -fno-var-tracking-assignments)
-> +# Workaround for GCC versions < 5.0
-> +# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
-> +ifdef CONFIG_CC_IS_GCC
-> +DEBUG_CFLAGS   := $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
+In order to improve NUMA-locality when serving getrandom(2) requests,
+allocate one DRNG instance per node.
 
-Thanks for adding the comment. That will help us find+remove this when
-the kernel's minimum supported version of GCC advances to gcc-5.  The
-current minimum supported version of GCC according to
-Documentation/process/changes.rst is gcc-4.9 (so anything older is
-irrelevant, and we drop support for it).  If gcc 4.9 supports
-`-fno-var-tracking-assignments` (it looks like it does:
-https://godbolt.org/z/oa53f5), then we should drop the `cc-option`
-call, which will save us a compiler invocation for each invocation of
-`make`.
+The DRNG instance that is present right from the start of the kernel is
+reused as the first per-NUMA-node DRNG. For all remaining online NUMA
+nodes a new DRNG instance is allocated.
 
-> +endif
->
->  ifdef CONFIG_DEBUG_INFO
->  ifdef CONFIG_DEBUG_INFO_SPLIT
-> --
-> 2.18.4
->
+During boot time, the multiple DRNG instances are seeded sequentially.
+With this, the first DRNG instance (referenced as the initial DRNG
+in the code) is completely seeded with 256 bits of entropy before the
+next DRNG instance is completely seeded.
+
+When random numbers are requested, the NUMA-node-local DRNG is checked
+whether it has been already fully seeded. If this is not the case, the
+initial DRNG is used to serve the request.
+
+CC: Torsten Duwe <duwe@lst.de>
+CC: "Eric W. Biederman" <ebiederm@xmission.com>
+CC: "Alexander E. Patrakov" <patrakov@gmail.com>
+CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
+CC: "Theodore Y. Ts'o" <tytso@mit.edu>
+CC: Willy Tarreau <w@1wt.eu>
+CC: Matthew Garrett <mjg59@srcf.ucam.org>
+CC: Vito Caputo <vcaputo@pengaru.com>
+CC: Andreas Dilger <adilger.kernel@dilger.ca>
+CC: Jan Kara <jack@suse.cz>
+CC: Ray Strode <rstrode@redhat.com>
+CC: William Jon McCann <mccann@jhu.edu>
+CC: zhangjs <zachary@baishancloud.com>
+CC: Andy Lutomirski <luto@kernel.org>
+CC: Florian Weimer <fweimer@redhat.com>
+CC: Lennart Poettering <mzxreary@0pointer.de>
+CC: Nicolai Stange <nstange@suse.de>
+CC: Eric Biggers <ebiggers@kernel.org>
+Reviewed-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+Reviewed-by: Roman Drahtmueller <draht@schaltsekun.de>
+Tested-by: Roman Drahtm=FCller <draht@schaltsekun.de>
+Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+Tested-by: Neil Horman <nhorman@redhat.com>
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+=2D--
+ drivers/char/lrng/Makefile        |   2 +
+ drivers/char/lrng/lrng_internal.h |   5 ++
+ drivers/char/lrng/lrng_numa.c     | 108 ++++++++++++++++++++++++++++++
+ 3 files changed, 115 insertions(+)
+ create mode 100644 drivers/char/lrng/lrng_numa.c
+
+diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
+index e72e01c15bb9..29724c65287d 100644
+=2D-- a/drivers/char/lrng/Makefile
++++ b/drivers/char/lrng/Makefile
+@@ -7,3 +7,5 @@ obj-y				+=3D lrng_pool.o lrng_aux.o \
+ 				   lrng_sw_noise.o lrng_archrandom.o \
+ 				   lrng_drng.o lrng_chacha20.o \
+ 				   lrng_interfaces.o
++
++obj-$(CONFIG_NUMA)		+=3D lrng_numa.o
+diff --git a/drivers/char/lrng/lrng_internal.h b/drivers/char/lrng/lrng_int=
+ernal.h
+index f9b80ce42341..f858effcf710 100644
+=2D-- a/drivers/char/lrng/lrng_internal.h
++++ b/drivers/char/lrng/lrng_internal.h
+@@ -219,8 +219,13 @@ int lrng_drng_get_sleep(u8 *outbuf, u32 outbuflen);
+ void lrng_drng_force_reseed(void);
+ void lrng_drng_seed_work(struct work_struct *dummy);
+=20
++#ifdef CONFIG_NUMA
++struct lrng_drng **lrng_drng_instances(void);
++void lrng_drngs_numa_alloc(void);
++#else	/* CONFIG_NUMA */
+ static inline struct lrng_drng **lrng_drng_instances(void) { return NULL; }
+ static inline void lrng_drngs_numa_alloc(void) { return; }
++#endif /* CONFIG_NUMA */
+=20
+ /************************** Entropy pool management **********************=
+*****/
+=20
+diff --git a/drivers/char/lrng/lrng_numa.c b/drivers/char/lrng/lrng_numa.c
+new file mode 100644
+index 000000000000..7f1f0dade1b6
+=2D-- /dev/null
++++ b/drivers/char/lrng/lrng_numa.c
+@@ -0,0 +1,108 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++/*
++ * LRNG NUMA support
++ *
++ * Copyright (C) 2016 - 2020, Stephan Mueller <smueller@chronox.de>
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/lrng.h>
++#include <linux/slab.h>
++
++#include "lrng_internal.h"
++
++static struct lrng_drng **lrng_drng __read_mostly =3D NULL;
++
++struct lrng_drng **lrng_drng_instances(void)
++{
++	return smp_load_acquire(&lrng_drng);
++}
++
++/* Allocate the data structures for the per-NUMA node DRNGs */
++static void _lrng_drngs_numa_alloc(struct work_struct *work)
++{
++	struct lrng_drng **drngs;
++	struct lrng_drng *lrng_drng_init =3D lrng_drng_init_instance();
++	u32 node;
++	bool init_drng_used =3D false;
++
++	mutex_lock(&lrng_crypto_cb_update);
++
++	/* per-NUMA-node DRNGs are already present */
++	if (lrng_drng)
++		goto unlock;
++
++	drngs =3D kcalloc(nr_node_ids, sizeof(void *), GFP_KERNEL|__GFP_NOFAIL);
++	for_each_online_node(node) {
++		struct lrng_drng *drng;
++
++		if (!init_drng_used) {
++			drngs[node] =3D lrng_drng_init;
++			init_drng_used =3D true;
++			continue;
++		}
++
++		drng =3D kmalloc_node(sizeof(struct lrng_drng),
++				     GFP_KERNEL|__GFP_NOFAIL, node);
++		memset(drng, 0, sizeof(lrng_drng));
++
++		drng->crypto_cb =3D lrng_drng_init->crypto_cb;
++		drng->drng =3D drng->crypto_cb->lrng_drng_alloc(
++					LRNG_DRNG_SECURITY_STRENGTH_BYTES);
++		if (IS_ERR(drng->drng)) {
++			kfree(drng);
++			goto err;
++		}
++
++		drng->hash =3D drng->crypto_cb->lrng_hash_alloc();
++		if (IS_ERR(drng->hash)) {
++			drng->crypto_cb->lrng_drng_dealloc(drng->drng);
++			kfree(drng);
++			goto err;
++		}
++
++		mutex_init(&drng->lock);
++		spin_lock_init(&drng->spin_lock);
++		rwlock_init(&drng->hash_lock);
++
++		/*
++		 * No reseeding of NUMA DRNGs from previous DRNGs as this
++		 * would complicate the code. Let it simply reseed.
++		 */
++		lrng_drng_reset(drng);
++		drngs[node] =3D drng;
++
++		lrng_pool_inc_numa_node();
++		pr_info("DRNG and entropy pool read hash for NUMA node %d allocated\n",
++			node);
++	}
++
++	/* counterpart to smp_load_acquire in lrng_drng_instances */
++	if (!cmpxchg_release(&lrng_drng, NULL, drngs))
++		goto unlock;
++
++err:
++	for_each_online_node(node) {
++		struct lrng_drng *drng =3D drngs[node];
++
++		if (drng =3D=3D lrng_drng_init)
++			continue;
++
++		if (drng) {
++			drng->crypto_cb->lrng_drng_dealloc(drng->drng);
++			kfree(drng);
++		}
++	}
++	kfree(drngs);
++
++unlock:
++	mutex_unlock(&lrng_crypto_cb_update);
++}
++
++static DECLARE_WORK(lrng_drngs_numa_alloc_work, _lrng_drngs_numa_alloc);
++
++void lrng_drngs_numa_alloc(void)
++{
++	schedule_work(&lrng_drngs_numa_alloc_work);
++}
+=2D-=20
+2.26.2
 
 
--- 
-Thanks,
-~Nick Desaulniers
+
+
