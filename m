@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9AD292D1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0BA3292D1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728706AbgJSRtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:49:31 -0400
-Received: from mga04.intel.com ([192.55.52.120]:20524 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgJSRtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:49:31 -0400
-IronPort-SDR: aur93pqpt1dL6DKErzEXzL6wS/56NLg7E/7VstCVbZHzTSkMUn1K4ht/f2G5HrsWJI1lpsu2Y5
- tEzxnvie1PnQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="164460521"
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="164460521"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 10:49:30 -0700
-IronPort-SDR: ZO6wpV7jwCCbX2srP5jN3gUyHrfgKRdfIa+5aNSC66P7owyFI6lnRJZSx1K6zkWtg4aoO1aQSo
- NRANWuGW4KbA==
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="522075727"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 10:49:29 -0700
-Date:   Mon, 19 Oct 2020 10:49:28 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 01/24] x86/cpufeatures: x86/msr: Add Intel SGX
- hardware bits
-Message-ID: <20201019174928.GA22358@linux.intel.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-2-jarkko.sakkinen@linux.intel.com>
- <fb556734-6347-31ba-3595-67a25f4ebf0d@intel.com>
+        id S1728540AbgJSRvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:51:42 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:36112 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgJSRvl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 13:51:41 -0400
+Received: by mail-wr1-f66.google.com with SMTP id x7so727972wrl.3;
+        Mon, 19 Oct 2020 10:51:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2H48pFUB04Yx3mpVrK6vWlmBBdtDZ5EYUnmrXaYeElA=;
+        b=Xo59NDRQaOafOXgV3wv5+JCHKuDiRZTzZ+beiRCbELvp4I7jJK74oqn1mY4vQk4R3x
+         vN5o0d3e5wybJBf960uOFngbqGWMBe+MPxxpoFyG0jOYY6YiYbOVpvb+JDF/SOEmhaKd
+         TujNrjR5EccTxJK2tHXLED69SXOJbFxm9Scb0cg0gSfuVPk1VHtj4vji+RNgLG3Ltlfi
+         nhdm7d0f1Q/T1zYwr2CQRbyWHGpOS8iW4RAp0clNdr4MKSlCjOK3uLMx9BUvaI+RRA3m
+         K7x57Qxe7ShObyZjoZc6OORGB7hWOwwCvToSAk9n3e484k6oN8+wTuVJsCdV35yN56wi
+         YaGg==
+X-Gm-Message-State: AOAM5338IpZ4tIS9EICC86kuZS+huspAvedCynW41p0oKbQtjLLzJiyS
+        SwTipK6oMbUO3UoYdX2MrNo=
+X-Google-Smtp-Source: ABdhPJykSgWfRfKmIpCPlKj8qTWqT2VkcWJR7uBqAqq+7PgShL1PCaQgUlUNP7HKaJe2TaQ0G07VSA==
+X-Received: by 2002:adf:a51d:: with SMTP id i29mr391951wrb.409.1603129900170;
+        Mon, 19 Oct 2020 10:51:40 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id h3sm548094wrw.78.2020.10.19.10.51.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 10:51:39 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 19:51:36 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: defconfig: Enable additional sound drivers on
+ i.MX8M Mini
+Message-ID: <20201019175136.GA94694@kozik-lap>
+References: <20201008212706.870115-1-aford173@gmail.com>
+ <20201008212706.870115-3-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <fb556734-6347-31ba-3595-67a25f4ebf0d@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201008212706.870115-3-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 07:10:58AM -0700, Dave Hansen wrote:
-> On 10/2/20 9:50 PM, Jarkko Sakkinen wrote:
-> > 
-> > Add X86_FEATURE_SGX1 and X86_FEATURE_SGX2 from CPUID.(EAX=12H, ECX=0),
-> > which describe the level of SGX support available [1].
+On Thu, Oct 08, 2020 at 04:27:06PM -0500, Adam Ford wrote:
+> The i.MX8M Mini has micfil and SPDIF support but the drivers
+> are not being loaded.
 > 
-> The SDM says there are 6 leaf functions added with SGX2 (SDM Vol 3D
-> Table 36-2):
+> This patch updates the defconfig to add support for these drivers.
 > 
-> ENCLS[EAUG]
-> ENCLS[EMODPR]
-> ENCLS[EMODT]
-> ENCLU[EACCEPT]
-> ENCLU[EMODPE]
-> ENCLU[EACCEPTCOPY]
-> 
-> But I don't see *ANY* of those in use in this patch set.  I know we
-> added a bunch of infrastructure around mitigating if EMODPE got *used*,
-> but does the kernel need to change its behavior if SGX1 vs. SGX2 is
-> supported?
-> 
-> BTW, the SG2 bit is defined:
-> 
-> 	Bit 01: SGX2. If 1, Indicates Intel SGX supports the collection
-> 	of SGX2 leaf functions.
-> 
-> which makes me think it's for leaf functions only.
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-As mentioned in the other thread, SGX1 hardware takes an erratum on the #PF
-behavior of the EPCM, i.e. on SGX2+, EPCM violations generate #PF with
-PFEC.SGX=1, whereas SGX1 hardware will #GP.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Best regards,
+Krzysztof
