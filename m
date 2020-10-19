@@ -2,72 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1A32927E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC4D2927E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgJSNGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:06:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57470 "EHLO mx2.suse.de"
+        id S1727791AbgJSNK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:10:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:57322 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbgJSNGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:06:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603112798;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=67anET1QIVAw8PGuoKV0jgAb85p9V9aPY7HbWEgrbgM=;
-        b=noHyyocaqDpI/sEGx2l/xuLEhYEFzDh40rGduuiAe0QW/iZdvA0Ax/FPPprACgxLV2tQBH
-        WyUjxBd9HdjFpFut9cVq4BbT5/gJBnKyR864qOgQQxha/PZ9Km1I9liOWBelJBaZEMloV7
-        FBkHkgUfcCH7O248e2HKkUxQeFdaJ/w=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7A974AC97;
-        Mon, 19 Oct 2020 13:06:38 +0000 (UTC)
-Date:   Mon, 19 Oct 2020 15:06:37 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     pintu@codeaurora.org
-Cc:     willy@infradead.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, linux-mm@kvack.org, pintu.ping@gmail.com
-Subject: Re: [PATCH] mm/util.c: Add error logs for commitment overflow
-Message-ID: <20201019130637.GJ27114@dhcp22.suse.cz>
-References: <1601639861-32171-1-git-send-email-pintu@codeaurora.org>
- <20201002121726.GF4555@dhcp22.suse.cz>
- <adaf346febe6bb6fbdcedb8709e35bcb@codeaurora.org>
- <20201005072011.GP4555@dhcp22.suse.cz>
- <0e9255fcac61ae6ce90bbdde6421b148@codeaurora.org>
+        id S1726931AbgJSNK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:10:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D7C5D6E;
+        Mon, 19 Oct 2020 06:10:57 -0700 (PDT)
+Received: from e123083-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5CA9B3F719;
+        Mon, 19 Oct 2020 06:10:55 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 15:10:52 +0200
+From:   Morten Rasmussen <morten.rasmussen@arm.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, guohanjun@huawei.com,
+        Will Deacon <will@kernel.org>, linuxarm@huawei.com,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        valentin.schneider@arm.com
+Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
+Message-ID: <20201019131052.GC8004@e123083-lin>
+References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
+ <20201019103522.GK2628@hirez.programming.kicks-ass.net>
+ <20201019123226.00006705@Huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0e9255fcac61ae6ce90bbdde6421b148@codeaurora.org>
+In-Reply-To: <20201019123226.00006705@Huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19-10-20 08:32:34, pintu@codeaurora.org wrote:
-[...]
-> b) This can be invoked from many places so we are adding the logging at
-> wrong layer?
-> If so, any other better places which can be explored?
+Hi Jonathan,
 
-dup_mmap?
-
-> c) Adding logging at kernel layer is not the right approach to tackle this
-> problem ?
+On Mon, Oct 19, 2020 at 01:32:26PM +0100, Jonathan Cameron wrote:
+> On Mon, 19 Oct 2020 12:35:22 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> d) Another thing we can do is, update the man page with more detailed
-> information about this commitment overflow ?
+> > On Fri, Oct 16, 2020 at 11:27:02PM +0800, Jonathan Cameron wrote:
+> > > Both ACPI and DT provide the ability to describe additional layers of
+> > > topology between that of individual cores and higher level constructs
+> > > such as the level at which the last level cache is shared.
+> > > In ACPI this can be represented in PPTT as a Processor Hierarchy
+> > > Node Structure [1] that is the parent of the CPU cores and in turn
+> > > has a parent Processor Hierarchy Nodes Structure representing
+> > > a higher level of topology.
+> > > 
+> > > For example Kunpeng 920 has clusters of 4 CPUs.  These do not share
+> > > any cache resources, but the interconnect topology is such that
+> > > the cost to transfer ownership of a cacheline between CPUs within
+> > > a cluster is lower than between CPUs in different clusters on the same
+> > > die.   Hence, it can make sense to deliberately schedule threads
+> > > sharing data to a single cluster.
+> > > 
+> > > This patch simply exposes this information to userspace libraries
+> > > like hwloc by providing cluster_cpus and related sysfs attributes.
+> > > PoC of HWLOC support at [2].
+> > > 
+> > > Note this patch only handle the ACPI case.
+> > > 
+> > > Special consideration is needed for SMT processors, where it is
+> > > necessary to move 2 levels up the hierarchy from the leaf nodes
+> > > (thus skipping the processor core level).  
+> 
+> Hi Peter,
+> 
+> > 
+> > I'm confused by all of this. The core level is exactly what you seem to
+> > want.
+> 
+> It's the level above the core, whether in an multi-threaded core
+> or a single threaded core.   This may correspond to the level
+> at which caches are shared (typically L3).  Cores are already well
+> represented via thread_siblings and similar.  Extra confusion is that
+> the current core_siblings (deprecated) sysfs interface, actually reflects
+> the package level and ignores anything in between core and
+> package (such as die on x86)
+> 
+> So in a typical system with a hierarchical interconnect you would have
+> 
+> thread
+> core
+> cluster (possibly multiple layers as mentioned in Brice's reply).
+> die
+> package
+> 
+> Unfortunately as pointed out in other branches of this thread, there is
+> no consistent generic name.  I'm open to suggestions!
 
-This is a good thing in general
+IIUC, you are actually proposing another "die" level? I'm not sure if we
+can actually come up with a generic name since interconnects are highly
+implementation dependent.
 
-> e) May be returning ENOMEM (Cannot allocate memory) from VM path is slightly
-> misleading for user space folks even though there are enough memory?
-> => Either we can introduce ENOVMEM (Cannot create virtual memory mapping)
-> => Or, update the documentation with approach to further debug this issue?
+How is you memory distributed? Do you already have NUMA nodes? If you
+want to keep tasks together, it might make sense to define the clusters
+(in your case) as NUMA nodes.
 
-No, it is close to impossible to add a new error code for interface that
-is used so heavily.
+> Both ACPI PPTT and DT provide generic structures to represent layers of
+> topology.   They don't name as such, but in ACPI there are flags to indicate
+> package, core, thread.
 
--- 
-Michal Hocko
-SUSE Labs
+I think that is because those are the only ones that a fairly generic
+:-) It is also the only ones that scheduler cares about (plus NUMA).
+
+> 
+> For example, in zen2 this would correspond to a 'core complex' consisting
+> 4 CPU cores (each one 2 threads) sharing some local L3 cache.
+> https://en.wikichip.org/wiki/amd/microarchitectures/zen_2
+> In zen3 it looks like this level will be the same as that for the die.
+> 
+> Given they used the name in knights landing (and as is pointed out in
+> another branch of this thread, it's the CPUID description) I think Intel
+> calls these 'tiles' (anyone confirm that?) 
+> 
+> A similar concept exists for some ARM processors. 
+> https://en.wikichip.org/wiki/hisilicon/microarchitectures/taishan_v110
+> CCLs in the diagram on that page.
+> 
+> Centriq 2400 had 2 core 'duplexes' which shared l2.
+> https://www.anandtech.com/show/11737/analyzing-falkors-microarchitecture-a-deep-dive-into-qualcomms-centriq-2400-for-windows-server-and-linux/3
+> 
+> From the info release at hotchips, it looks like the thunderx3 deploys
+> a similar ring interconnect with groups of cores, each with 4 threads.
+> Not sure what they plan to call them yet though or whether they will chose
+> to represent that layer of the topology in their firmware tables.
+> 
+> Arms CMN600 interconnect also support such 'clusters' though I have no idea
+> if anyone has used it in this form yet.  In that case, they are called
+> "processor compute clusters"
+> https://developer.arm.com/documentation/100180/0103/
+> 
+> Xuantie-910 is cluster based as well (shares l2).
+> 
+> So in many cases the cluster level corresponds to something we already have
+> visibility of due to cache sharing etc, but that isn't true in kunpeng 920.
+
+The problem I see is that the benefit of keeping tasks together due to
+the interconnect layout might vary significantly between systems. So if
+we introduce a new cpumask for cluster it has to have represent roughly
+the same system properties otherwise generic software consuming this
+information could be tricked.
+
+If there is a provable benefit of having interconnect grouping
+information, I think it would be better represented by a distance matrix
+like we have for NUMA.
+
+Morten
