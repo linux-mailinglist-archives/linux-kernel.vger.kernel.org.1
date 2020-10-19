@@ -2,466 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF28292F53
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39141292F70
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731581AbgJSUYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:24:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgJSUYt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:24:49 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF244C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:24:48 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id h1so431077pll.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:24:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=o7DrpRWoz2RQerdYhTa7KrqyCDFiXKRis0WKnV8M5h8=;
-        b=JJ1VxKFcqm/HhKEPkq6APDyJcVTp219znzvsOfGhmKU5x4oakvYlujHdN4unH1gsav
-         QWzcZ8EYM2PEuhGEENM2UImZLByQNzIF7Pl+r/DAtmqsozfaRSo7/RGWapaY8z47NbUT
-         Ai/rnUZsYNB9coipRBCKiKBtg41R2K0fvGfs6uYJJiC8CDsIcDRD5BaWuImluoQJr/l9
-         L5ICwmbcVLJetGhVtYdMQFCGB4RTq9aB9bL5mX5B56kD32cnwzCLiE6gflhS3KssBZ9C
-         aRoyYwpxfNAEcV5Zf/G5woqKS5JQylPUaagjfuqylPYXBwJOJTrCq+myfvfIIViEvywZ
-         jCxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=o7DrpRWoz2RQerdYhTa7KrqyCDFiXKRis0WKnV8M5h8=;
-        b=WDJShSbWlWwPRStBajpYJnd99JY5uPjQcQGRr+oCjSRnN+1ox87W/TofEulGy32yIX
-         x/vyFnemavv3DyEvEhn22Ec48iZQya9DWU7GfWI7IfutgYuXyF5Lzpv4vf/Xpv8HTS/d
-         OjItdZfjaJQb6NBcrj+lGTnY9iKF1HYBF8cd1WCSlXgq1Xfx3c5sUReByc0UMlNGYXmM
-         u47PQMypND2/RLASgZg9GVHHMWE8i54H/pkb2/2nZuOr+KKaoGhohBWVNpBNGjzhPMZW
-         PwFb6sWOTn2xgSBST1cVfzj2j+yfOOAYslAKRm/k5LGL4XpCuscM1Uv/2XYW8SKcpyA0
-         81hQ==
-X-Gm-Message-State: AOAM53108gfG/N/SQFap0OA0WTfnDpxpOKferQWGebPvxfpp6H9KceC+
-        ua9bXrhRJUqKxehJvd78fPWT/70clmYfhw==
-X-Google-Smtp-Source: ABdhPJzsx7awNrhKyoxXrikpt8wiXrw0GddE9FcWFUzZMys9ElQqLZqWKQYIfgq7mZKlBJXML00wsDXM8X5G7Q==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a17:902:b78c:b029:d4:da94:8766 with SMTP
- id e12-20020a170902b78cb02900d4da948766mr1684830pls.31.1603139087479; Mon, 19
- Oct 2020 13:24:47 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 13:24:31 -0700
-Message-Id: <20201019202431.3472335-1-dlatypov@google.com>
+        id S1731698AbgJSUaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:30:03 -0400
+Received: from gate.crashing.org ([63.228.1.57]:40215 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726118AbgJSUaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 16:30:02 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 09JKOgDo021151;
+        Mon, 19 Oct 2020 15:24:42 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 09JKOfT6021149;
+        Mon, 19 Oct 2020 15:24:41 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Mon, 19 Oct 2020 15:24:41 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] powerpc: Fix pre-update addressing in inline assembly
+Message-ID: <20201019202441.GU2672@gate.crashing.org>
+References: <5ffcb064f695d5285bf1faab91bffa3f9245fc26.1603109522.git.christophe.leroy@csgroup.eu> <fbcdb173cc42da62f00285dfef8c2f7d4960b5c7.1603109522.git.christophe.leroy@csgroup.eu>
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH] wireguard: convert selftest/{counter,ratelimiter}.c to KUnit
-From:   Daniel Latypov <dlatypov@google.com>
-To:     Jason@zx2c4.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Latypov <dlatypov@google.com>,
-        David Miller <davem@davemloft.net>,
-        Brendan Higgins <brendanhiggins@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fbcdb173cc42da62f00285dfef8c2f7d4960b5c7.1603109522.git.christophe.leroy@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These tests already focus on testing individual functions that can run
-in a more minimal environment like KUnit.
+On Mon, Oct 19, 2020 at 12:12:48PM +0000, Christophe Leroy wrote:
+> In several places, inline assembly uses the "%Un" modifier
+> to enable the use of instruction with pre-update addressing,
 
-The primary motivation for this change it to make it faster and easier
-to run these tests, and thus encourage the addition of more test cases.
+Calling this "pre-update" is misleading: the register is not updated
+before the address is generated (or the memory access done!), and the
+addressing is exactly the same as the "non-u" insn would use.  It is
+called an "update form" instruction, because (at the same time as doing
+the memory access, logically anyway) it writes back the address used to
+the base register.
 
-E.g.
-Test timing after make mrproper: 47.418s building, 0.000s running
-With an incremental build: 3.891s building, 0.000s running
+> but the associated "<>" constraint is missing.
 
-KUnit also provides a bit more structure, like tracking overall
-pass/fail status and printing failure messages like
->  # wg_packet_counter_test: EXPECTATION FAILED at drivers/net/wireguard/counter_test.c:32
->  Expected counter_validate(counter, (COUNTER_WINDOW_SIZE + 1)) == false, but
+But that is just fine.  Pointless, sure, but not a bug.
 
-Note: so we no longer need to track test_num in counter_test.c.
-But deleting the /*1*/ test_num comments means git (with the default
-threshold) no longer recognizes that the file was moved.
+> Use UPD_CONSTR macro everywhere %Un modifier is used.
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
-Cc: Jason A. Donenfeld <Jason@zx2c4.com>
-Cc: David Miller <davem@davemloft.net>
-Cc: Brendan Higgins <brendanhiggins@google.com>
----
- drivers/net/Kconfig                           | 12 ++++
- .../{selftest/counter.c => counter_test.c}    | 45 ++++++------
- drivers/net/wireguard/main.c                  |  3 +-
- drivers/net/wireguard/queueing.h              |  4 --
- drivers/net/wireguard/ratelimiter.c           |  4 +-
- .../ratelimiter.c => ratelimiter_test.c}      | 68 +++++++++++--------
- drivers/net/wireguard/receive.c               |  6 +-
- 7 files changed, 80 insertions(+), 62 deletions(-)
- rename drivers/net/wireguard/{selftest/counter.c => counter_test.c} (73%)
- rename drivers/net/wireguard/{selftest/ratelimiter.c => ratelimiter_test.c} (85%)
+Eww.  My poor stomach.
 
-diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
-index c3dbe64e628e..208ed162bcc0 100644
---- a/drivers/net/Kconfig
-+++ b/drivers/net/Kconfig
-@@ -114,6 +114,18 @@ config WIREGUARD_DEBUG
- 
- 	  Say N here unless you know what you're doing.
- 
-+config WIREGUARD_KUNIT_TEST
-+	tristate "KUnit tests for WireGuard"
-+	default KUNIT_ALL_TESTS
-+	depends on KUNIT && WIREGUARD
-+	help
-+	  This enables KUnit tests for Wireguard.
-+
-+	  For more information on KUnit and unit tests in general please refer
-+	  to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+	  Say N here unless you know what you're doing.
-+
- config EQUALIZER
- 	tristate "EQL (serial line load balancing) support"
- 	help
-diff --git a/drivers/net/wireguard/selftest/counter.c b/drivers/net/wireguard/counter_test.c
-similarity index 73%
-rename from drivers/net/wireguard/selftest/counter.c
-rename to drivers/net/wireguard/counter_test.c
-index ec3c156bf91b..167153fc249f 100644
---- a/drivers/net/wireguard/selftest/counter.c
-+++ b/drivers/net/wireguard/counter_test.c
-@@ -3,32 +3,23 @@
-  * Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-  */
- 
--#ifdef DEBUG
--bool __init wg_packet_counter_selftest(void)
-+#include <kunit/test.h>
-+
-+static void wg_packet_counter_test(struct kunit *test)
- {
- 	struct noise_replay_counter *counter;
--	unsigned int test_num = 0, i;
--	bool success = true;
-+	unsigned int i;
- 
--	counter = kmalloc(sizeof(*counter), GFP_KERNEL);
--	if (unlikely(!counter)) {
--		pr_err("nonce counter self-test malloc: FAIL\n");
--		return false;
--	}
-+	counter = kunit_kmalloc(test, sizeof(*counter), GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, counter);
- 
- #define T_INIT do {                                    \
- 		memset(counter, 0, sizeof(*counter));  \
- 		spin_lock_init(&counter->lock);        \
- 	} while (0)
- #define T_LIM (COUNTER_WINDOW_SIZE + 1)
--#define T(n, v) do {                                                  \
--		++test_num;                                           \
--		if (counter_validate(counter, n) != (v)) {            \
--			pr_err("nonce counter self-test %u: FAIL\n",  \
--			       test_num);                             \
--			success = false;                              \
--		}                                                     \
--	} while (0)
-+#define T(n, v) \
-+		KUNIT_EXPECT_EQ(test, counter_validate(counter, n), v)
- 
- 	T_INIT;
- 	/*  1 */ T(0, true);
-@@ -102,10 +93,18 @@ bool __init wg_packet_counter_selftest(void)
- #undef T
- #undef T_LIM
- #undef T_INIT
--
--	if (success)
--		pr_info("nonce counter self-tests: pass\n");
--	kfree(counter);
--	return success;
- }
--#endif
-+
-+static struct kunit_case wg_packet_counter_test_cases[] = {
-+	KUNIT_CASE(wg_packet_counter_test),
-+	{}
-+};
-+
-+static struct kunit_suite wg_packet_counter_test_suite = {
-+	.name = "wg_packet_counter",
-+	.test_cases = wg_packet_counter_test_cases,
-+};
-+
-+kunit_test_suites(&wg_packet_counter_test_suite);
-+
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/net/wireguard/main.c b/drivers/net/wireguard/main.c
-index 7a7d5f1a80fc..bfd3312d5133 100644
---- a/drivers/net/wireguard/main.c
-+++ b/drivers/net/wireguard/main.c
-@@ -22,8 +22,7 @@ static int __init mod_init(void)
- 	int ret;
- 
- #ifdef DEBUG
--	if (!wg_allowedips_selftest() || !wg_packet_counter_selftest() ||
--	    !wg_ratelimiter_selftest())
-+	if (!wg_allowedips_selftest())
- 		return -ENOTRECOVERABLE;
- #endif
- 	wg_noise_init();
-diff --git a/drivers/net/wireguard/queueing.h b/drivers/net/wireguard/queueing.h
-index dfb674e03076..5d428ddf176f 100644
---- a/drivers/net/wireguard/queueing.h
-+++ b/drivers/net/wireguard/queueing.h
-@@ -186,8 +186,4 @@ static inline void wg_queue_enqueue_per_peer_napi(struct sk_buff *skb,
- 	wg_peer_put(peer);
- }
- 
--#ifdef DEBUG
--bool wg_packet_counter_selftest(void);
--#endif
--
- #endif /* _WG_QUEUEING_H */
-diff --git a/drivers/net/wireguard/ratelimiter.c b/drivers/net/wireguard/ratelimiter.c
-index 3fedd1d21f5e..f7a7c48aee40 100644
---- a/drivers/net/wireguard/ratelimiter.c
-+++ b/drivers/net/wireguard/ratelimiter.c
-@@ -220,4 +220,6 @@ void wg_ratelimiter_uninit(void)
- 	mutex_unlock(&init_lock);
- }
- 
--#include "selftest/ratelimiter.c"
-+#if IS_ENABLED(CONFIG_WIREGUARD_KUNIT_TEST)
-+#include "ratelimiter_test.c"
-+#endif
-diff --git a/drivers/net/wireguard/selftest/ratelimiter.c b/drivers/net/wireguard/ratelimiter_test.c
-similarity index 85%
-rename from drivers/net/wireguard/selftest/ratelimiter.c
-rename to drivers/net/wireguard/ratelimiter_test.c
-index 007cd4457c5f..a49f508cccb2 100644
---- a/drivers/net/wireguard/selftest/ratelimiter.c
-+++ b/drivers/net/wireguard/ratelimiter_test.c
-@@ -3,8 +3,7 @@
-  * Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-  */
- 
--#ifdef DEBUG
--
-+#include <kunit/test.h>
- #include <linux/jiffies.h>
- 
- static const struct {
-@@ -32,7 +31,7 @@ static __init unsigned int maximum_jiffies_at_index(int index)
- 
- static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
- 			       struct sk_buff *skb6, struct ipv6hdr *hdr6,
--			       int *test)
-+			       int *test_num)
- {
- 	unsigned long loop_start_time;
- 	int i;
-@@ -51,7 +50,7 @@ static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
- 		if (wg_ratelimiter_allow(skb4, &init_net) !=
- 					expected_results[i].result)
- 			return -EXFULL;
--		++(*test);
-+		++(*test_num);
- 
- 		hdr4->saddr = htonl(ntohl(hdr4->saddr) + i + 1);
- 		if (time_is_before_jiffies(loop_start_time +
-@@ -59,7 +58,7 @@ static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
- 			return -ETIMEDOUT;
- 		if (!wg_ratelimiter_allow(skb4, &init_net))
- 			return -EXFULL;
--		++(*test);
-+		++(*test_num);
- 
- 		hdr4->saddr = htonl(ntohl(hdr4->saddr) - i - 1);
- 
-@@ -72,7 +71,7 @@ static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
- 		if (wg_ratelimiter_allow(skb6, &init_net) !=
- 					expected_results[i].result)
- 			return -EXFULL;
--		++(*test);
-+		++(*test_num);
- 
- 		hdr6->saddr.in6_u.u6_addr32[0] =
- 			htonl(ntohl(hdr6->saddr.in6_u.u6_addr32[0]) + i + 1);
-@@ -81,7 +80,7 @@ static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
- 			return -ETIMEDOUT;
- 		if (!wg_ratelimiter_allow(skb6, &init_net))
- 			return -EXFULL;
--		++(*test);
-+		++(*test_num);
- 
- 		hdr6->saddr.in6_u.u6_addr32[0] =
- 			htonl(ntohl(hdr6->saddr.in6_u.u6_addr32[0]) - i - 1);
-@@ -95,7 +94,7 @@ static __init int timings_test(struct sk_buff *skb4, struct iphdr *hdr4,
- }
- 
- static __init int capacity_test(struct sk_buff *skb4, struct iphdr *hdr4,
--				int *test)
-+				int *test_num)
- {
- 	int i;
- 
-@@ -104,45 +103,45 @@ static __init int capacity_test(struct sk_buff *skb4, struct iphdr *hdr4,
- 
- 	if (atomic_read(&total_entries))
- 		return -EXFULL;
--	++(*test);
-+	++(*test_num);
- 
- 	for (i = 0; i <= max_entries; ++i) {
- 		hdr4->saddr = htonl(i);
- 		if (wg_ratelimiter_allow(skb4, &init_net) != (i != max_entries))
- 			return -EXFULL;
--		++(*test);
-+		++(*test_num);
- 	}
- 	return 0;
- }
- 
--bool __init wg_ratelimiter_selftest(void)
-+static void wg_ratelimiter_test(struct kunit *test)
- {
- 	enum { TRIALS_BEFORE_GIVING_UP = 5000 };
- 	bool success = false;
--	int test = 0, trials;
-+	int test_num = 0, trials;
- 	struct sk_buff *skb4, *skb6 = NULL;
- 	struct iphdr *hdr4;
- 	struct ipv6hdr *hdr6 = NULL;
- 
- 	if (IS_ENABLED(CONFIG_KASAN) || IS_ENABLED(CONFIG_UBSAN))
--		return true;
-+		return;
- 
- 	BUILD_BUG_ON(MSEC_PER_SEC % PACKETS_PER_SECOND != 0);
- 
- 	if (wg_ratelimiter_init())
- 		goto out;
--	++test;
-+	++test_num;
- 	if (wg_ratelimiter_init()) {
- 		wg_ratelimiter_uninit();
- 		goto out;
- 	}
--	++test;
-+	++test_num;
- 	if (wg_ratelimiter_init()) {
- 		wg_ratelimiter_uninit();
- 		wg_ratelimiter_uninit();
- 		goto out;
- 	}
--	++test;
-+	++test_num;
- 
- 	skb4 = alloc_skb(sizeof(struct iphdr), GFP_KERNEL);
- 	if (unlikely(!skb4))
-@@ -151,7 +150,7 @@ bool __init wg_ratelimiter_selftest(void)
- 	hdr4 = (struct iphdr *)skb_put(skb4, sizeof(*hdr4));
- 	hdr4->saddr = htonl(8182);
- 	skb_reset_network_header(skb4);
--	++test;
-+	++test_num;
- 
- #if IS_ENABLED(CONFIG_IPV6)
- 	skb6 = alloc_skb(sizeof(struct ipv6hdr), GFP_KERNEL);
-@@ -164,7 +163,7 @@ bool __init wg_ratelimiter_selftest(void)
- 	hdr6->saddr.in6_u.u6_addr32[0] = htonl(1212);
- 	hdr6->saddr.in6_u.u6_addr32[1] = htonl(289188);
- 	skb_reset_network_header(skb6);
--	++test;
-+	++test_num;
- #endif
- 
- 	for (trials = TRIALS_BEFORE_GIVING_UP;;) {
-@@ -173,16 +172,16 @@ bool __init wg_ratelimiter_selftest(void)
- 		ret = timings_test(skb4, hdr4, skb6, hdr6, &test_count);
- 		if (ret == -ETIMEDOUT) {
- 			if (!trials--) {
--				test += test_count;
-+				test_num += test_count;
- 				goto err;
- 			}
- 			msleep(500);
- 			continue;
- 		} else if (ret < 0) {
--			test += test_count;
-+			test_num += test_count;
- 			goto err;
- 		} else {
--			test += test_count;
-+			test_num += test_count;
- 			break;
- 		}
- 	}
-@@ -192,13 +191,13 @@ bool __init wg_ratelimiter_selftest(void)
- 
- 		if (capacity_test(skb4, hdr4, &test_count) < 0) {
- 			if (!trials--) {
--				test += test_count;
-+				test_num += test_count;
- 				goto err;
- 			}
- 			msleep(50);
- 			continue;
- 		}
--		test += test_count;
-+		test_num += test_count;
- 		break;
- 	}
- 
-@@ -216,11 +215,20 @@ bool __init wg_ratelimiter_selftest(void)
- 	/* Uninit one extra time to check underflow detection. */
- 	wg_ratelimiter_uninit();
- out:
--	if (success)
--		pr_info("ratelimiter self-tests: pass\n");
--	else
--		pr_err("ratelimiter self-test %d: FAIL\n", test);
--
--	return success;
-+	if (!success)
-+		KUNIT_FAIL(test, "test #%d failed", test_num);
- }
--#endif
-+
-+static struct kunit_case wg_ratelimiter_test_cases[] = {
-+	KUNIT_CASE(wg_ratelimiter_test),
-+	{}
-+};
-+
-+static struct kunit_suite wg_ratelimiter_test_suite = {
-+	.name = "wg_ratelimiter",
-+	.test_cases = wg_ratelimiter_test_cases,
-+};
-+
-+kunit_test_suites(&wg_ratelimiter_test_suite);
-+
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/net/wireguard/receive.c b/drivers/net/wireguard/receive.c
-index 2c9551ea6dc7..30d3d9685e8d 100644
---- a/drivers/net/wireguard/receive.c
-+++ b/drivers/net/wireguard/receive.c
-@@ -336,8 +336,6 @@ static bool counter_validate(struct noise_replay_counter *counter, u64 their_cou
- 	return ret;
- }
- 
--#include "selftest/counter.c"
--
- static void wg_packet_consume_data_done(struct wg_peer *peer,
- 					struct sk_buff *skb,
- 					struct endpoint *endpoint)
-@@ -588,3 +586,7 @@ void wg_packet_receive(struct wg_device *wg, struct sk_buff *skb)
- err:
- 	dev_kfree_skb(skb);
- }
-+
-+#if IS_ENABLED(CONFIG_WIREGUARD_KUNIT_TEST)
-+#include "counter_test.c"
-+#endif
+Have you verified that update form is *correct* in all these, and that
+we even *want* this there?
 
-base-commit: 7cf726a59435301046250c42131554d9ccc566b8
--- 
-2.29.0.rc1.297.gfa9743e501-goog
 
+Segher
