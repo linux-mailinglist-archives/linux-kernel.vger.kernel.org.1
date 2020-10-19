@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C9B292AD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CFA292AD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730390AbgJSPuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:50:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42703 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730097AbgJSPuK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:50:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603122608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ty3fQUKhXBYaOFrkQdMkSNwWJaJQlG2vHLExq4dp6RE=;
-        b=hOx8jdhtJOuOZOEH4IHMedt1ZXwiLS3jjP2zcsys2gt1KNAZAUykXmMY6ySN06Qkhln0Jw
-        STGgQkYN314DVNYRS0pylEI0eJTbuY5tZDz32V5aYSQOK/xbARklyZKWJsaMxLSRXPYtXT
-        iq6ms7+ktDpA5x/gBU2cDn9ExWuvjiA=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-41-S4blPusaOrCkGMAh9XVOpw-1; Mon, 19 Oct 2020 11:50:07 -0400
-X-MC-Unique: S4blPusaOrCkGMAh9XVOpw-1
-Received: by mail-wm1-f72.google.com with SMTP id u207so92062wmu.4
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:50:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ty3fQUKhXBYaOFrkQdMkSNwWJaJQlG2vHLExq4dp6RE=;
-        b=l+6KSfX7BzrXYJZ94PySO5bC5kZq3q59TQXQONNl32waSJ9EwJaEsTj+kBLU/RXWJV
-         LFB146gsCSt5ex8eJDWrjZWymOdfJRqdfXIrnLauHgBIQi5mRYZMO2LNuY0sgggmZvP2
-         5ub+CFnL4C/3M5L936qPlmaInJOduZxKSOoxVbCSXLsRYZ3DX/NAjmlbA/KNEE4QTfyu
-         aAMRHQGERXX9RLkBb3u7jsm3dN0NnYM1uR9XVeitFoiC4n0BkTimU19MhuwIphDhPTWB
-         d89DaRgdiUuRrfr7o4qbwsq/H1zGZpG/YdIoftb23KIT1d4S6AxMrW/YhyrZjFSNutif
-         +Nzg==
-X-Gm-Message-State: AOAM531EYhiKwM20UG+FfBZ2MSm3W/9Q0h7oGrnW0TbIKez2sWjfjeVR
-        UDCWcvDn4zSQ8MmPi5xh+LNcEIGiVJ/Ix5qr9jVMfwl2ih+4JXXX2Vu1N2NKdlwAqV1QHUtQGbV
-        7d1ju2LK+3uSuiBe1YM9oXWg5
-X-Received: by 2002:a5d:4ed2:: with SMTP id s18mr231486wrv.36.1603122605689;
-        Mon, 19 Oct 2020 08:50:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTR9iZFcc8IIQX9dGK47DUaftCuX1iqMBs11sOiu81jGa42Cgb3n3WCC85QiisviGSCa5o2A==
-X-Received: by 2002:a5d:4ed2:: with SMTP id s18mr231457wrv.36.1603122605454;
-        Mon, 19 Oct 2020 08:50:05 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id 4sm170402wrn.48.2020.10.19.08.50.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 08:50:04 -0700 (PDT)
-Subject: Re: [PATCH 2/4] kvm x86/mmu: Make struct kernel_param_ops definitions
- const
-To:     Ben Gardon <bgardon@google.com>, Joe Perches <joe@perches.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <cover.1601770305.git.joe@perches.com>
- <ed95eef4f10fc1317b66936c05bc7dd8f943a6d5.1601770305.git.joe@perches.com>
- <CANgfPd8_Crt0VO3phV7ec55ghSLiJzmzTypNvnZAYq=uJL8r8Q@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <dc79b272-0d32-a08c-d8ee-3d601bd47d5d@redhat.com>
-Date:   Mon, 19 Oct 2020 17:50:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1730430AbgJSPua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:50:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730097AbgJSPua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 11:50:30 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6888722282;
+        Mon, 19 Oct 2020 15:50:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603122629;
+        bh=olmZlieHxEbqTfHRVsL2oAfy+yaGtPgTvl39J02JTEg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E83vm0gVRi98OaCJ9yUuPMkTjZWdatdXa9DnZN89UkGdCPuqAfCsEpnnmCLpT0HLw
+         9RaKLKoL/lOHI8AUhzwKC92vjtVS6v8wTbcfoBerdhnPQM16gBPHtHMCEh+kFv57KW
+         h1/aInMj2Mxegz3eqfo1a3h5frV1QRfDxbOsZAI8=
+Date:   Mon, 19 Oct 2020 11:50:28 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     David Ahern <dsahern@gmail.com>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.9 035/111] ipv6/icmp: l3mdev: Perform icmp
+ error route lookup on source device routing table (v2)
+Message-ID: <20201019155028.GC4060117@sasha-vm>
+References: <20201018191807.4052726-1-sashal@kernel.org>
+ <20201018191807.4052726-35-sashal@kernel.org>
+ <20201018124004.5f8c50a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <842ae8c4-44ef-2005-18d5-80e00c140107@gmail.com>
+ <20201019115236.GA4060117@sasha-vm>
+ <20201019083327.34c2cbc4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd8_Crt0VO3phV7ec55ghSLiJzmzTypNvnZAYq=uJL8r8Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201019083327.34c2cbc4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/20 19:14, Ben Gardon wrote:
-> Reviewed-by: Ben Gardon <bgardon@google.com>
+On Mon, Oct 19, 2020 at 08:33:27AM -0700, Jakub Kicinski wrote:
+>On Mon, 19 Oct 2020 07:52:36 -0400 Sasha Levin wrote:
+>> On Sun, Oct 18, 2020 at 07:40:12PM -0600, David Ahern wrote:
+>> >On 10/18/20 1:40 PM, Jakub Kicinski wrote:
+>> >> This one got applied a few days ago, and the urgency is low so it may be
+>> >> worth letting it see at least one -rc release ;)
+>> >
+>> >agreed
+>>
+>> Definitely - AUTOSEL patches get extra soaking time before getting
+>> queued up. This is more of a request to make sure it's not doing
+>> anything silly.
+>
+>Could you put a number on "extra soaking time"?
+>
+>I'm asking mostly out of curiosity :)
 
-Queued, thanks.
+The AUTOSEL process adds at least another week into the flow, this means
+that the fastest this patch will go in into a released kernel is about 2
+weeks from now.
 
-Paolo
-
+-- 
+Thanks,
+Sasha
