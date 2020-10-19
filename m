@@ -2,96 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2B9293146
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 00:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5469B293148
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 00:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388214AbgJSWdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 18:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729840AbgJSWdG (ORCPT
+        id S2388229AbgJSWeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 18:34:31 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:60221 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388204AbgJSWea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 18:33:06 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0ECC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 15:33:06 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id e10so852246pfj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 15:33:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YRjo2HvYrN2YlB7PX+blFf8vNEJz+jYGbB/nTBk0Ba8=;
-        b=OC1dGuQQU6DMsWrKaHis4dloEGAs6n41NTtAe9LMiaBcJ2/K05WNyxvaq3h1OtI6TH
-         Kb4YbJhU16bT6ftitK6musRNCmsn5BcYU4gPT30kNnP6dq+jIJtWlXQrmv3jVAeRMkPv
-         0L1pc3rfXNArykrq0o3ZFqtB7llzIqY/nSSsg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YRjo2HvYrN2YlB7PX+blFf8vNEJz+jYGbB/nTBk0Ba8=;
-        b=Vzxm9mnQwPdX72m82gF0xnEkxXdG+4lWjqv16AciU4qs4n9mlWD+G3jpgmwzzuNibH
-         +mJu9nbPan0au5vFlPfOyGilCmqWY+Y0d9tWx2zoFQwqOK58SeFWWNSCQ12Sg5K5u9Ha
-         UIDcTSzNp2lTH75ACmdxePEdv5VVEIx3dYF8eNkUUL/edDJHFIuyWHGfpyuDh1Au1nKh
-         k6Ry0NX2dMCRzk+6ol5+PL8sAuVk5JXjoPy8zIKvafXh5Hm7np6BQKfO4S0yFZPAExr/
-         e/9qg/2l2Bi9esHMzuhTet8DT5BJrirTnyQialWxpp+wX68OOQuhgGHhju04lS3w+BJ0
-         halA==
-X-Gm-Message-State: AOAM533nhm97BIS/E3JRAo0hQc7JKBuBuQXr6NPX3mt2UxLk56Hc3psb
-        hwKjC3HPuSNPf35nV9+K35DfNg==
-X-Google-Smtp-Source: ABdhPJyTbuytBMp2b9itw0xRGEp0pJ/7XBda2m5Bgy8XEUYi7Nw/fAI/195+z3HlU3iNnktZRLY8BA==
-X-Received: by 2002:a63:f84c:: with SMTP id v12mr29801pgj.125.1603146786040;
-        Mon, 19 Oct 2020 15:33:06 -0700 (PDT)
-Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:2b94])
-        by smtp.gmail.com with ESMTPSA id s20sm10897pfu.112.2020.10.19.15.33.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 15:33:05 -0700 (PDT)
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rafael.j.wysocki@intel.com, swboyd@chromium.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-pm@vger.kernel.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH 1/1] kobject: Don't emit change events if not in sysfs
-Date:   Mon, 19 Oct 2020 15:32:57 -0700
-Message-Id: <20201019153232.1.I797f9874972a07fc381fe586b6748ce71c7b1fda@changeid>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-In-Reply-To: <20201019223257.261223-1-abhishekpandit@chromium.org>
-References: <20201019223257.261223-1-abhishekpandit@chromium.org>
+        Mon, 19 Oct 2020 18:34:30 -0400
+X-Greylist: delayed 71429 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Oct 2020 18:34:29 EDT
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id E15BD806B5;
+        Tue, 20 Oct 2020 11:34:27 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1603146867;
+        bh=Agves5U+ubCgP0FKT8aF6/zpHp5isWfipr7MJkw6vH8=;
+        h=From:To:Cc:Subject:Date;
+        b=TcGONhUUeLkgY4dM9KJc1he5tvNRoNUQoBTyAJTbzn1quDrNMGTSAokzMANRyUlGs
+         jqViivxMnsjRhJsCRora0+NDbidqzHiyu/Km53hosurZf+99XTYoGTs+MxYB3Enart
+         BrBEhaZJ6TsVEyeiXmwe1C1Dn4wTy+SUK31TbHhd9E/UapwVA5MXqKQuwMLbszSLE2
+         I70/aBLm1I8en94/lHiRevBDJcq4VfxH0hfrwM+sbmydNuU/PW79w3/DfyKZKXZ2dg
+         92QpH7YCF32g4mFmzKLOa7rGhkOvl2HfgLAtMPkDLQ9GXOaxyGsolavCwkwa3pg+Lq
+         XHcNXQomj/y6w==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f8e14730000>; Tue, 20 Oct 2020 11:34:27 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 79E6713EEBB;
+        Tue, 20 Oct 2020 11:34:27 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id A8013283A9C; Tue, 20 Oct 2020 11:34:27 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     jdelvare@suse.com, linux@roeck-us.net,
+        Tobi Wulff <tobi.wulff@alliedtelesis.co.nz>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH 0/2] hwmon: (adt7470) driver updates
+Date:   Tue, 20 Oct 2020 11:34:21 +1300
+Message-Id: <20201019223423.31488-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a check to make sure the kobj is created and in sysfs before sending
-a change event notification. Otherwise, udev rules that depend on the
-change notification may find that the path that changed doesn't actually
-exist.
+This series updates the adt7470 driver to add error handling by using reg=
+map.
 
-Fixes: a45aca510b73b7 (PM: sleep: core: Emit changed uevent on wakeup_sysfs_add/remove)
-Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
----
+Chris Packham (2):
+  hwmon: (adt7470) Create functions for updating readings and limits
+  hwmon: (adt7470) Convert to regmap
 
- lib/kobject_uevent.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/hwmon/adt7470.c | 538 +++++++++++++++++++++++++++-------------
+ 1 file changed, 366 insertions(+), 172 deletions(-)
 
-diff --git a/lib/kobject_uevent.c b/lib/kobject_uevent.c
-index 7998affa45d49a..f08197e907d5ce 100644
---- a/lib/kobject_uevent.c
-+++ b/lib/kobject_uevent.c
-@@ -473,6 +473,11 @@ int kobject_uevent_env(struct kobject *kobj, enum kobject_action action,
- 	if (action == KOBJ_REMOVE)
- 		kobj->state_remove_uevent_sent = 1;
- 
-+	if (action == KOBJ_CHANGE && !kobj->state_in_sysfs) {
-+		pr_debug("kobject: can't emit KOBJ_CHANGE until in sysfs\n");
-+		return -EINVAL;
-+	}
-+
- 	pr_debug("kobject: '%s' (%p): %s\n",
- 		 kobject_name(kobj), kobj, __func__);
- 
--- 
-2.29.0.rc1.297.gfa9743e501-goog
+--=20
+2.28.0
 
