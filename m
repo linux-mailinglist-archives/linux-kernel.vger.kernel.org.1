@@ -2,166 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D304292856
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3DE29285A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgJSNjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:39:21 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:55344 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727297AbgJSNjV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:39:21 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09JDA4Ku003772;
-        Mon, 19 Oct 2020 09:38:51 -0400
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2107.outbound.protection.outlook.com [104.47.55.107])
-        by mx0a-00128a01.pphosted.com with ESMTP id 347tf66f44-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Oct 2020 09:38:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Oh8THCtnVnFjr7igkt4L6XaGtOKZeAdW9uoaXnYuvX44ByNpW54LlVC9ZuNQtVKsa3PNKNk7gs1iQkjdvk8YRGfbxuI4SCQUsuA0uoIi8AzHraZM+mfT21jPThM0MBBmrmiu+H6qTw8s00Y6oYq6Di/ceBpHE0dLN/oQOLluQZw6u6hv9wte8pvOMWdu0bWMs0URRk7p8+cM4EgiVjWeB427PAw56eI2Z4knDe3ejZV5PFCRWvliZwQwAuQyNUT7Avs9xLLTS4zVEvC/pzU9tYo5tJdZmm8vglzd6w/C2CpbAXgk4Iyv7JNXvxYp+hJW4X/69r5xruD1eHiz9wGoAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iYby/wboJeGZ8LJxsROl//q+hIF/9Qqm4KMWOPvglr8=;
- b=Yt++TAfA495K6DLJsPZXkNQGZmf5ou0kfDJk9ngShP5sYhIgoV5QuZIXDUJ1hdpo58Jd6RYnoWouZjLWhA1YYACmegqSqNg6OGfzvgXBlc9fncFdGbtu9MsCG+xY0F9S2EgibciNYhAgOg9jCa88mQ1LudfpIULM24AHceoY6LSiGMHGpVfCEjpuPXqJPdbqBvDgBDOX6XUCJVX3gDxfw1cSWnAwxYzdT8k6qMfvwgdf8mMqIg39Kdzp6lj6s7+4B0JOZ8Q5+7dQNgr07Ee4BaG4GywzdA3YQmpNd31lezovqGJWh4McjNQ+/xdGnXTfZdHTiAjjb2yWkqDYOOyutQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iYby/wboJeGZ8LJxsROl//q+hIF/9Qqm4KMWOPvglr8=;
- b=bAAIr8Fjoq27XF63wqexeDex2KBaw37OdXu5MMknvtWuU1ytLuxPIDNLQGvMfK2l0bAX+ymimJ/DcQhrYbQD4a+ZDFbgULWHxToalSu8CiqWbZaFl+YMVckhXPPw6PKhqeQ/vZsk7MwhuIDicXo7HM7yQ85GQbqrLmoVONh7BV4=
-Received: from DM6PR03MB4411.namprd03.prod.outlook.com (2603:10b6:5:10f::14)
- by DM6PR03MB5209.namprd03.prod.outlook.com (2603:10b6:5:245::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Mon, 19 Oct
- 2020 13:38:50 +0000
-Received: from DM6PR03MB4411.namprd03.prod.outlook.com
- ([fe80::f457:143e:f83b:26cf]) by DM6PR03MB4411.namprd03.prod.outlook.com
- ([fe80::f457:143e:f83b:26cf%4]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
- 13:38:49 +0000
-From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Sa, Nuno" <Nuno.Sa@analog.com>, "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>
-Subject: RE: [PATCH] ASoC: adau1977: remove platform data and move micbias
- bindings include
-Thread-Topic: [PATCH] ASoC: adau1977: remove platform data and move micbias
- bindings include
-Thread-Index: AQHWpgWE3Z1Iz2EjTE2H2I7CnJvccame5HGAgAAJElA=
-Date:   Mon, 19 Oct 2020 13:38:49 +0000
-Message-ID: <DM6PR03MB44111745EE9A6FE8B989D6A2F91E0@DM6PR03MB4411.namprd03.prod.outlook.com>
-References: <20201019105313.24862-1-alexandru.ardelean@analog.com>
- <20201019130331.GA4904@sirena.org.uk>
-In-Reply-To: <20201019130331.GA4904@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcYWFyZGVsZWFc?=
- =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
- =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy02ZTk2ZWU2Yi0xMjEwLTExZWItYTVhMy00MTU2?=
- =?us-ascii?Q?NDUwMDAwMzBcYW1lLXRlc3RcNmU5NmVlNmQtMTIxMC0xMWViLWE1YTMtNDE1?=
- =?us-ascii?Q?NjQ1MDAwMDMwYm9keS50eHQiIHN6PSIxNTA0IiB0PSIxMzI0NzU4ODMzNTkz?=
- =?us-ascii?Q?NDc4OTkiIGg9IkZoNlRZZHlSaFNxUEF1RGRsTWU1S0N6bFk3OD0iIGlkPSIi?=
- =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUVvQ0FB?=
- =?us-ascii?Q?QzdwUEF3SGFiV0FZT1ViRzA0WllMWmc1UnNiVGhsZ3RrREFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQURhQVFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFFQUFRQUJBQUFBS1ZJV2JnQUFBQUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFh?=
- =?us-ascii?Q?UUJmQUhNQVpRQmpBSFVBY2dCbEFGOEFjQUJ5QUc4QWFnQmxBR01BZEFCekFG?=
- =?us-ascii?Q?OEFaZ0JoQUd3QWN3QmxBRjhBWmdCdkFITUFhUUIwQUdrQWRnQmxBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR0VBWkFCcEFGOEFjd0JsQUdNQWRR?=
- =?us-ascii?Q?QnlBR1VBWHdCd0FISUFid0JxQUdVQVl3QjBBSE1BWHdCMEFHa0FaUUJ5QURF?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
- =?us-ascii?Q?QUFBQUNlQUFBQVlRQmtBR2tBWHdCekFHVUFZd0IxQUhJQVpRQmZBSEFBY2dC?=
- =?us-ascii?Q?dkFHb0FaUUJqQUhRQWN3QmZBSFFBYVFCbEFISUFNZ0FBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFBPT0iLz48L21l?=
- =?us-ascii?Q?dGE+?=
-x-dg-rorf: true
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=analog.com;
-x-originating-ip: [188.27.128.55]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 46086ed9-b714-4c7c-0afb-08d874344fcf
-x-ms-traffictypediagnostic: DM6PR03MB5209:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR03MB5209E54B6EF1AF1115A6A09CF91E0@DM6PR03MB5209.namprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oEtu7kYaZWG0LaQt+jWDBSwcd6oorPoEyj+7s2Ibe4RS05WrjnKADBTbSpIcKywTN28JKaok2OxEX82j9FmepZDFRBLNQ48AehVfh9RXUQZouQvTCaKlXpN2eWlu8MgtOGwl0m37IhU944Lx5Fax5wLLdpvDE1KtUbIACesbFwqq4aXsz6Bk+VGQK1f3w0dSIz4ItDH/YyV1kDf8yfWVmFr5M7I58ZUNwVe6+F6Yz+fOeeUNI0IjBJ811FZsgrqBtdD86oaYxlzKz9rJ6LgrcWHbe/FVhA3fMKKX+XMJ/LBRXLTvsjiKGJGIExXASxE1hVayyb0+be0WZel22O3VUGlCxKXP2BE21/ohIDAKdz17yqj6vMlSMIfpNbDZwfI9fvSy1zSd9eRuKwB3MmhCsw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4411.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(366004)(396003)(376002)(66446008)(316002)(66946007)(66556008)(64756008)(4326008)(9686003)(2906002)(86362001)(26005)(66476007)(54906003)(7696005)(52536014)(6916009)(6506007)(8936002)(83380400001)(55016002)(33656002)(53546011)(5660300002)(966005)(478600001)(186003)(76116006)(71200400001)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: e/HxosKTJQUf1FAo3rgPamqZqtpwM7F8UdGei2Umj+oNA3rsCQocpK2ltCNLPzOTA3lhpDFy/BQ+2ILw19YZw/+KaNQB/SLY5uOLg3wWQQxcIObsaU/LTcdUqd5oAHMgEyrsBOWntL6QvF5kN4p5ppHc8j+XtqbSqBXm+l1uRkTe23Py9NAaZ+xCGMF8hQpyAkgq1l2RR5ARdujYHgr9dyrJG4sTibyJ/RftBz+R78eKRlukTg0t3KHeB+zKgeT5Ms11DJpxJ69utrxhKB3wZzk5Kv4hXf5ZgsRzt6gnjxUPO6aKZ7rODZpZhYKPz+4AN9KqdS1bhLzNWX3DDd9sa+K4EM/2JVD2Nk4eUxtj0vaHurEoGGf3UFpFyKwilKbOBzMYhu/hTNbZ/CrSpQC3uYzpXp3KhKPm0j4MPuO5JypJVENusK3RLztmVhYbO+D1+o9QhdeUdVNQZbOGGx7zJnahswJfRFo8HmwZp9MhXjdOamBiO8J6Zhantf7AnwiQS3hLzucaHcfGtERp5gyCNJilHxDCK7N+uz9rhuv8/kBRUmZ4Y7+8au3o9EJk5ePKHAzzJel3OVqmSTP534ELj9nbZVuOBAl5lOKEIXmX6Nyq3UrtNVgcsUlpDV2xbHyLes+BhjomT8GwgDbEVj3elw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728415AbgJSNkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:40:37 -0400
+Received: from mga12.intel.com ([192.55.52.136]:22802 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727297AbgJSNkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:40:36 -0400
+IronPort-SDR: rA1ZFieciEYwJ4Pce9Gr2xFNcjnJwruCWopXC+Z0UR72ION7DGxdhcwu2e5Q7V/45BbcjbNaAj
+ rmOxDEsKfqeQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="146326075"
+X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
+   d="scan'208";a="146326075"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 06:40:35 -0700
+IronPort-SDR: npG9+iRyZIj6XQbQ0DCadUWqYUO7CDilKyUvCA2YU4ExEnVWMZc918p8kC6d7WczqWVWdUJAha
+ TLktJRO78WcQ==
+X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
+   d="scan'208";a="522003864"
+Received: from haixinlu-mobl1.amr.corp.intel.com (HELO [10.212.84.56]) ([10.212.84.56])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 06:40:34 -0700
+Subject: Re: [PATCH v39 08/24] x86/sgx: Initialize metadata for Enclave Page
+ Cache (EPC) sections
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Serge Ayoun <serge.ayoun@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-9-jarkko.sakkinen@linux.intel.com>
+ <20201019084558.GA1155569@kapsi.fi>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <271c12d9-1a01-b7f4-82c1-b0ce8f86b2b7@intel.com>
+Date:   Mon, 19 Oct 2020 06:40:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4411.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 46086ed9-b714-4c7c-0afb-08d874344fcf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 13:38:49.8075
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Gq13vm1EfRkAlP2x2BmZnACHk8sHcgDTUgzXenMyE0l4aJ3Lvd1V7KryiUtVeZb4lLeL1iFmD/zGNjaOjQBlcxmv0Sy1DPuNizTWeAQGrgM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB5209
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-19_05:2020-10-16,2020-10-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 bulkscore=0 phishscore=0 adultscore=0 clxscore=1015
- impostorscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010190093
+In-Reply-To: <20201019084558.GA1155569@kapsi.fi>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/19/20 1:45 AM, Jarkko Sakkinen wrote:
+> On Sat, Oct 03, 2020 at 07:50:43AM +0300, Jarkko Sakkinen wrote:
+>> +config INTEL_SGX
+> Since the directory for this was renamed some iterations ago from
+> arch/x86/kernel/cpu/sgx to intel_sgx given the feedback from Boris,
+> I'm wondering should this also be renamed as X86_SGX?
 
-> -----Original Message-----
-> From: Mark Brown <broonie@kernel.org>
-> Sent: Monday, October 19, 2020 4:04 PM
-> To: Ardelean, Alexandru <alexandru.Ardelean@analog.com>
-> Cc: linux-kernel@vger.kernel.org; alsa-devel@alsa-project.org;
-> lgirdwood@gmail.com; lars@metafoo.de; Sa, Nuno <Nuno.Sa@analog.com>;
-> perex@perex.cz; tiwai@suse.com
-> Subject: Re: [PATCH] ASoC: adau1977: remove platform data and move micbia=
-s
-> bindings include
->=20
-> [External]
->=20
-> On Mon, Oct 19, 2020 at 01:53:13PM +0300, Alexandru Ardelean wrote:
-> > The change removes the platform_data include/definition. It only
-> > contains some values for the MICBIAS.
-> > These are moved into 'dt-bindings/sound/adi,adau1977.h' so that they
-> > can be used inside device-trees. When moving then, they need to be
-> > converted to pre-compiler defines, so that the DT compiler can understa=
-nd
-> them.
->=20
-> This is missing an update of the binding documentation for the new proper=
-ty.
+I say yes for two reasons:
 
-Umm, if referring to the 'adi,micbias' property, that isn't new:
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/tree/Docu=
-mentation/devicetree/bindings/sound/adi,adau1977.txt#n26
+We're recently adding a prohibition against vendors adding
+VENDOR_FEATURE, preferring "FEATURE" instead.  But, I seriously doubt
+anyone else is going to to to the effort that Intel did here.
 
-This just removes any left-over platform-data stuff; which admittedly shoul=
-d have been done earlier.
-I also started a conversion of the old binding from text to yaml.
-I'll probably have that ready in a couple of days.
+Also "SGX" is short enough that I can imagine someone else plausibly
+wanting to do CONFIG_SGX for something else.
+
+So, I'm OK with keeping "INTEL_SGX", but I'd also be fine with "X86_SGX".
