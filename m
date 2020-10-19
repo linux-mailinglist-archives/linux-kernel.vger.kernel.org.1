@@ -2,168 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EAB6292603
+	by mail.lfdr.de (Postfix) with ESMTP id ECAD0292604
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727228AbgJSKsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:48:30 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:18314 "EHLO m42-4.mailgun.net"
+        id S1727250AbgJSKse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:48:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53298 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726363AbgJSKs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:48:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603104509; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=xxGZPCC2kGg8VEh9eO8FJdvr+4W1EmUawi5stFvGDE4=; b=mxN28h0uyap4hftyEMJqezxOwCZskcFnalZ4N83r1eDNPuUmAE0C3rTG/27Sn3P89aibvc+E
- VcJY5EOzoxcBROH+bNvlEKfRINfNPn5k25RVnLJR+JYoqlDeunA/GaMwFE7MUc+Sd6QPd0uq
- fsEwXdzNFbonzggzcuvdbr00+zA=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f8d6ee4ad37af35ec551cfe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 10:48:04
- GMT
-Sender: zhenhuah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 50F52C433F1; Mon, 19 Oct 2020 10:48:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from zhenhuah-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zhenhuah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 64AE0C433C9;
-        Mon, 19 Oct 2020 10:48:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 64AE0C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zhenhuah@codeaurora.org
-From:   Zhenhua Huang <zhenhuah@codeaurora.org>
-To:     akpm@linux-foundation.org
-Cc:     Zhenhua Huang <zhenhuah@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz
-Subject: [PATCH v2] mm: fix page_owner initializing issue for arm32
-Date:   Mon, 19 Oct 2020 18:47:52 +0800
-Message-Id: <1603104472-5804-1-git-send-email-zhenhuah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1727037AbgJSKsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 06:48:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 54CCBACAC;
+        Mon, 19 Oct 2020 10:48:29 +0000 (UTC)
+To:     "Xu, Yanfei" <yanfei.xu@windriver.com>, akpm@linux-foundation.org,
+        david@redhat.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20201019083632.25417-1-yanfei.xu@windriver.com>
+ <57730b8a-f5d7-d6c7-3961-3fa95701aba5@suse.cz>
+ <4aa294a0-c256-7e89-55af-6a7c790eec4d@windriver.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v2] mm/compaction: Rename 'start_pfn' to
+ 'iteration_start_pfn' in compact_zone()
+Message-ID: <0480a649-9f49-90fe-fbf2-be1d2df306f0@suse.cz>
+Date:   Mon, 19 Oct 2020 12:48:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
+MIME-Version: 1.0
+In-Reply-To: <4aa294a0-c256-7e89-55af-6a7c790eec4d@windriver.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Page owner of pages used by page owner itself used is missing on arm32 targets.
-The reason is dummy_handle and failure_handle is not initialized correctly.
-Buddy allocator is used to initialize these two handles. However, buddy
-allocator is not ready when page owner calls it. This change fixed that by
-initializing page owner after buddy initialization.
+On 10/19/20 12:29 PM, Xu, Yanfei wrote:
+> 
+> 
+> On 10/19/20 5:40 PM, Vlastimil Babka wrote:
+>> On 10/19/20 10:36 AM, yanfei.xu@windriver.com wrote:
+>>> From: Yanfei Xu <yanfei.xu@windriver.com>
+>>>
+>>> There are two 'start_pfn' declared in compact_zone() which have
+>>> different meaning. Rename the second one to 'iteration_start_pfn'
+>>> to prevent trace_mm_compaction_end() from tracing an undesirable
+>>> value.
+>> 
+>> "to prevent confusion.", because trace_mm_compaction_end() has the
+>> correct value even before the patch - the second start_pfn is out
+>> of scope at that point.
+>> 
+>> Thanks
+>>
+> In the while-statement, the second start_pfn is always be reassigned the
+> value of cc->migrate_pfn in every loop, also the cc->migrate_pfn might
+> be changed in the loop. Does trace_mm_compaction_end() really want to
+> trace the new assinged start_pfn?
 
-The working flow before and after this change are:
-original logic:
-1. allocated memory for page_ext(using memblock).
-2. invoke the init callback of page_ext_ops like
-page_owner(using buddy allocator).
-3. initialize buddy.
+compact_zone()
+{
+     unsigned long start_pfn = cc->zone->zone_start_pfn;
 
-after this change:
-1. allocated memory for page_ext(using memblock).
-2. initialize buddy.
-3. invoke the init callback of page_ext_ops like
-page_owner(using buddy allocator).
+     while ((ret = compact_finished(cc)) == COMPACT_CONTINUE) {
+         unsigned long start_pfn = cc->migrate_pfn;
+	...
+     }
 
-with the change, failure/dummy_handle can get its correct value and
-page owner output for example has the one for page owner itself:
-Page allocated via order 2, mask 0x6202c0(GFP_USER|__GFP_NOWARN), pid 1006, ts
-67278156558 ns
-PFN 543776 type Unmovable Block 531 type Unmovable Flags 0x0()
- init_page_owner+0x28/0x2f8
- invoke_init_callbacks_flatmem+0x24/0x34
- start_kernel+0x33c/0x5d8
-   (null)
+     trace_mm_compaction_end(start_pfn, cc->migrate_pfn, ...)
+}
 
-Signed-off-by: Zhenhua Huang <zhenhuah@codeaurora.org>
----
- include/linux/page_ext.h |  8 ++++++++
- init/main.c              |  2 ++
- mm/page_ext.c            | 10 ++++++++--
- 3 files changed, 18 insertions(+), 2 deletions(-)
+Unless my C knowledge fails me completely, the start_pfn in the while loop is a 
+new different local variable that shadows the start_pfn from compact_zone() 
+level, but does not modify its value. After while loop finishes, start_pfn has 
+still the value assigned at
+compact_zone() beginning and that's what tracepoint sees.
 
-diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
-index cfce186..aff81ba 100644
---- a/include/linux/page_ext.h
-+++ b/include/linux/page_ext.h
-@@ -44,8 +44,12 @@ static inline void page_ext_init_flatmem(void)
- {
- }
- extern void page_ext_init(void);
-+static inline void page_ext_init_flatmem_late(void)
-+{
-+}
- #else
- extern void page_ext_init_flatmem(void);
-+extern void page_ext_init_flatmem_late(void);
- static inline void page_ext_init(void)
- {
- }
-@@ -76,6 +80,10 @@ static inline void page_ext_init(void)
- {
- }
- 
-+static inline void page_ext_init_flatmem_late(void)
-+{
-+}
-+
- static inline void page_ext_init_flatmem(void)
- {
- }
-diff --git a/init/main.c b/init/main.c
-index 130376e..b34c475 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -818,6 +818,8 @@ static void __init mm_init(void)
- 	init_debug_pagealloc();
- 	report_meminit();
- 	mem_init();
-+	/* page_owner must be initialized after buddy is ready */
-+	page_ext_init_flatmem_late();
- 	kmem_cache_init();
- 	kmemleak_init();
- 	pgtable_init();
-diff --git a/mm/page_ext.c b/mm/page_ext.c
-index a3616f7..16b161f2 100644
---- a/mm/page_ext.c
-+++ b/mm/page_ext.c
-@@ -99,12 +99,19 @@ static void __init invoke_init_callbacks(void)
- 	}
- }
- 
-+#ifndef CONFIG_SPARSEMEM
-+void __init page_ext_init_flatmem_late(void)
-+{
-+	invoke_init_callbacks();
-+}
-+#endif
-+
- static inline struct page_ext *get_entry(void *base, unsigned long index)
- {
- 	return base + page_ext_size * index;
- }
- 
--#if !defined(CONFIG_SPARSEMEM)
-+#ifndef CONFIG_SPARSEMEM
- 
- 
- void __meminit pgdat_page_ext_init(struct pglist_data *pgdat)
-@@ -177,7 +184,6 @@ void __init page_ext_init_flatmem(void)
- 			goto fail;
- 	}
- 	pr_info("allocated %ld bytes of page_ext\n", total_usage);
--	invoke_init_callbacks();
- 	return;
- 
- fail:
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+So renaming the variable in while loop is not a bug fix, but removing confusion.
+
+> Without the patch： 566e54e11（mm, compaction: remove last_migrated_pfn
+> from compact_control）, there is only one start_pfn which has a fixed
+> value. The trace_mm_compaction_end() trace it too.
+> 
+> Thus, I think the tracepoint might get an undesireble value.:)
+> 
+> Thanks,
+> Yanfei
+> 
+>>> BTW, remove an useless semicolon.
+>>>
+>>> Acked-by: David Hildenbrand <david@redhat.com>
+>>> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>>> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+>>> ---
+>>> v1->v2:
+>>> Rename 'start_pfn' to 'iteration_start_pfn' and change commit messages.
+>>>
+>>>   mm/compaction.c | 7 +++----
+>>>   1 file changed, 3 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/mm/compaction.c b/mm/compaction.c
+>>> index 176dcded298e..ccd27c739fd6 100644
+>>> --- a/mm/compaction.c
+>>> +++ b/mm/compaction.c
+>>> @@ -2272,7 +2272,7 @@ compact_zone(struct compact_control *cc, struct 
+>>> capture_control *capc)
+>>>       while ((ret = compact_finished(cc)) == COMPACT_CONTINUE) {
+>>>           int err;
+>>> -        unsigned long start_pfn = cc->migrate_pfn;
+>>> +        unsigned long iteration_start_pfn = cc->migrate_pfn;
+>>>           /*
+>>>            * Avoid multiple rescans which can happen if a page cannot be
+>>> @@ -2284,7 +2284,7 @@ compact_zone(struct compact_control *cc, struct 
+>>> capture_control *capc)
+>>>            */
+>>>           cc->rescan = false;
+>>>           if (pageblock_start_pfn(last_migrated_pfn) ==
+>>> -            pageblock_start_pfn(start_pfn)) {
+>>> +            pageblock_start_pfn(iteration_start_pfn)) {
+>>>               cc->rescan = true;
+>>>           }
+>>> @@ -2308,8 +2308,7 @@ compact_zone(struct compact_control *cc, struct 
+>>> capture_control *capc)
+>>>               goto check_drain;
+>>>           case ISOLATE_SUCCESS:
+>>>               update_cached = false;
+>>> -            last_migrated_pfn = start_pfn;
+>>> -            ;
+>>> +            last_migrated_pfn = iteration_start_pfn;
+>>>           }
+>>>           err = migrate_pages(&cc->migratepages, compaction_alloc,
+>>>
+>> 
+>> 
+> 
 
