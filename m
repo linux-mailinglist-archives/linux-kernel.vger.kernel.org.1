@@ -2,163 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 783FE292C5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A963C292C60
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730825AbgJSRLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:11:45 -0400
-Received: from mail-co1nam11on2060.outbound.protection.outlook.com ([40.107.220.60]:52960
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730186AbgJSRLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:11:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=duNTZFEBjVppEE08A+3JcGVL5u/bXBestDVf+obkRTtC/tJNJ5D74GgQ3rD0CknQZacRQa+DctT0EZ7KUdm7xcfpqUuK/EJj56N+CpMOuC0FeKivFcr6LyzOy5FHK2e1WyUrGjw8rqN64qJWPaDGSPvfyFw3qlzNXAsKoHThYjVZOy3XLRi8/2nUg/kUdEvWsiWUkxNV4CW6qGXQ6PVGMzEZeTjz8KnClvXfapxOCA0Ao1P0oSpGZwSkVdH82ultk4lzZMO4mHklXH61drrcSQ3BCCrRpajjfgzhqwbPH8CeOwhWVqUwg/dP2rsIEt+o1OypT6VD8VDiOogXwUAv3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qq8euBMDQqGWidJipXSz6c5Ve5AvJpNiZkT3wHG+HL0=;
- b=cUoo8VKf8HLgd5kWUdc7c3ISGs4vFh1kGxorOxtkAJT5o7WyI2PQG9s1LsQHhY8+yp5ePkuQzSnKogRF6ufn55AXRP3IWCXge7RsZHVuN9D61AtW8swX0nXfk+aWOpJOAmfFwk/2ARTPZmXNfvW4NJ7QjUjVCaib5DmEcqpBGeY8fCdDcq9NdiBJqxrk7nM5SHoqW+mg91pDBzg8GfTSEWniMnopsdkxHlmamZqwhL162jzyIrNMDzq9hI5MOYPMU+Am0qAFBmnQYYsrra7uXuHkLeGtWkoDrYF74ErNJPJZtROx/c8Y0oNALe+DFc9Nw/XEXUYRrqQXJGBj8cP5IA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1730877AbgJSRNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730186AbgJSRND (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 13:13:03 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81892C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:13:03 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id p16so950024ilq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:13:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qq8euBMDQqGWidJipXSz6c5Ve5AvJpNiZkT3wHG+HL0=;
- b=Tkcm2l5UsWRMOnLNB/boUUewjzTk69BaVEcXVlEXJ7C0Ia5exfuNawdPTV3mka7K/x0If9p8tdJB+MU2aoIwJsRZdSBqrHGQev7VwtZk2rjjDRmoItDFTDfhfv++ar+5Z+9eB3cdgV4H0t2GPSsyhzI1nNRvxeguxBilcJdGFfQ=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR12MB1836.namprd12.prod.outlook.com (2603:10b6:3:114::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3477.22; Mon, 19 Oct 2020 17:11:39 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::e442:c052:8a2c:5fba]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::e442:c052:8a2c:5fba%6]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
- 17:11:39 +0000
-Subject: Re: AMD SME encrpytion and PCI BAR pages to user space
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        kvm@vger.kernel.org,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Alexander Potapenko <glider@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Rik van Riel <riel@redhat.com>,
-        Larry Woodman <lwoodman@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Toshimitsu Kani <toshi.kani@hpe.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <20201019152556.GA560082@nvidia.com>
- <4b9f13bf-3f82-1aed-c7be-0eaecebc5d82@amd.com>
- <20201019170029.GU6219@nvidia.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <d0e18bf8-b591-6af8-198d-82f629cda695@amd.com>
-Date:   Mon, 19 Oct 2020 12:11:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201019170029.GU6219@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SA9PR10CA0018.namprd10.prod.outlook.com
- (2603:10b6:806:a7::23) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5RDu94x4BYZJnG/qs56Rfu0KDVan1/VqP6NcDqGm6Sw=;
+        b=n8PqptnwPe6qFuVdJc5Yfdz9JyHNfdnLoogUqqiHeZwGNRhJdMcRXIsp9hr21hkH9R
+         d3eM9aevySrDxkwgIQQO7Ag0ZXmoTI928AQE6x5og+in2qzDhBhDdFouqOO/WGCstBLD
+         srVA5CqOXqOINtOhh52y2YtigPi2ZhPfRzpz3GI5dH5j0Yb2Qnj3Cv6RWc/AKrUzA7Hb
+         zq2BD86JF1xf56/dDxOTaK7DZzTict8Zd+PuwU9k9txhZ+4oZgPIEvmQAtTbHPCrJVeC
+         ct2GDBvAyjswK534ilkug7IYDXlSUkZiXYhPEZxZcTi0TYdi0jwvcDqSe3WV12fGnaPo
+         +DZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5RDu94x4BYZJnG/qs56Rfu0KDVan1/VqP6NcDqGm6Sw=;
+        b=Jnx4N3yXWn9rl6+ytgjoJGmf8Xgi3MnyOltGzG+rPHEXoImskMOjgb12W7k4sIHgUk
+         vJPezlim4uFoUGbNroW7YC1ezpdejIxFHeep118s+YylO6yCMUkupdZ0CvFM0Z1K1M2M
+         9KA3GajbetJGbfuz9vZRjJ8tQoK8iN4CoHhRRnEnul29AW0HOU9rnFZcUXFbZ7XEa8vZ
+         +qXhKZfG1Q2U9sLLBoPqzf3BSh2YnT4JsjoNghEF7qGpZcRBZ0VT6vVEtqDUuh3hiLxh
+         7nERu8fhB/Unmv4kvl9+StEzaNaNtjLEYBll2sjqFHHpNLsf8Lo2LZ7BEy3Yfmf8s8NF
+         hZgA==
+X-Gm-Message-State: AOAM530otJ0ttLCcR5/CWxC7WWdF8HktSigNiMF2b9KngcF7vNLn7VcA
+        VisBtSgWZgWaWdLSsDRqL/4=
+X-Google-Smtp-Source: ABdhPJywHLMkAUMZ6jYk+Gmv6jDg0VYRPSZinQb2gMX+QqRu5xHS2GXIpD0ALkctEW21UzF9ciBEHQ==
+X-Received: by 2002:a92:7742:: with SMTP id s63mr855535ilc.74.1603127582768;
+        Mon, 19 Oct 2020 10:13:02 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id r17sm332509iov.7.2020.10.19.10.13.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 10:13:01 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Mon, 19 Oct 2020 13:12:59 -0400
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] x86/boot/64: Explicitly map boot_params and
+ command line
+Message-ID: <20201019171259.GC2701355@rani.riverdale.lan>
+References: <20201016173232.GI8483@zn.tnic>
+ <20201016200404.1615994-1-nivedita@alum.mit.edu>
+ <20201019145115.GB24325@zn.tnic>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.118] (165.204.77.1) by SA9PR10CA0018.namprd10.prod.outlook.com (2603:10b6:806:a7::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Mon, 19 Oct 2020 17:11:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: bbc001ad-1e08-4874-7040-08d874520af4
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1836:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1836BA0D98269B58ADC8B041EC1E0@DM5PR12MB1836.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QsU8LbbCRygctQ+zzgg1N5OAi7fOh7/L440T1wTlQBliDVQuFiyVn/MP8Z8vBtAj78URyNhJNSMicmoyTOszuxhX3dGRNrz1xBw0JfNcjKnIwVwSJi6MwEzw1JdpdrvSB053zdSBw9C65tQaRRI+JYdjNidoKZsN468GESvtpQgmDnIZ465UthZKlMANY235Eh464wKqGxYvUgKd9EjK718MyYn7k6Sddq1xxPIE2u0Axxl8TxsWgoJG53GdxazlfolwyGF4AOYftPyvyFiGyVcvTXdlopBawkMw8CLj5EsRqbO1AI+10BarNKaEkcOB3cJM3hl3gjxB9hdsidDO7uf/LBudJfM48Wlrt/PMEt+qq2u0ypnvgdT0rgyz4p9Y
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(346002)(376002)(396003)(36756003)(8676002)(66556008)(66476007)(53546011)(31696002)(7416002)(66946007)(6916009)(16576012)(956004)(316002)(186003)(16526019)(26005)(2616005)(8936002)(52116002)(6486002)(2906002)(31686004)(83380400001)(478600001)(54906003)(86362001)(4326008)(5660300002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: E2dmv38yDCygXBVOlD9LtxMTXgv7JoY43ff3+p2x68p4ddmRExlFDZaSyoIPTD6y7IzTGnc8TYxvGSqQQpzxMywNrEvyyLeZFRUKkcD5HC688iJ6fP+I4nze8x91xX7hQfGt9r0winEDr/aipkUmFtVV02qHdCpBf/FFbQ4ZDalt7KG0FfRhlHcbAWQN+l/2kXCcIvj3n3gkJoPtU3cdw5JHJJqLNCjSOCjc6aIiTSCyLW85a1Ss6g9uh0VcPkjuYR8MbdUYB5iEEcR2JL7/mjfhjA/OKoyuT7illJ0ubaEJA0bbnU9KZoURFUau6bDrMmcmqZVri+iebRp3t7bWOiqb0mZauw09vY9cnO13fE7cY56VGPo/AdDwybeEVWBdrAFmjDEl4RxJ6MbY0r0tAy1Fzpjl0Nq5U48Zmevl0eRiG1J/d6qQG0Cv+PpBSYXdiNXFaO8IRgZEMWiZ81GnSczjg89daWmd/7/+vUfczcdK3pIlksIg2ND1FRvIdiYwjBrk0ZMkHqiQv0HsojA2eX5OFtAB1Ij/SijU1dozqGvNqTbj6uC66/gRdYo/mIhjGqGp7l6kZHFSj0pqC/FfkyOQHBAdmXf3FwXa76LD0dtPDeyRqPDWP6/b2v0ybEGUhkjZcNu6FhKsEbV4e4zgSg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bbc001ad-1e08-4874-7040-08d874520af4
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2020 17:11:39.6025
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CoWU2lJhGZ/7w3qku+SI15zQawhfDOkKulw8IQ451agVNli1wyCGd/rxrX7nC/Rg+pIvNTrAFXRnmq472pcwLQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1836
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201019145115.GB24325@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/20 12:00 PM, Jason Gunthorpe wrote:
-> On Mon, Oct 19, 2020 at 11:36:16AM -0500, Tom Lendacky wrote:
+On Mon, Oct 19, 2020 at 04:51:15PM +0200, Borislav Petkov wrote:
+> On Fri, Oct 16, 2020 at 04:04:01PM -0400, Arvind Sankar wrote:
+> > Commits
+> > 
+> >   ca0e22d4f011 ("x86/boot/compressed/64: Always switch to own page table")
+> >   8570978ea030 ("x86/boot/compressed/64: Don't pre-map memory in KASLR code")
+> > 
+> > set up a new page table in the decompressor stub, but without explicit
+> > mappings for boot_params and the kernel command line, relying on the #PF
+> > handler instead.
+> > 
+> > This is fragile, as boot_params and the command line mappings are
+> > required for the main kernel. If EARLY_PRINTK and RANDOMIZE_BASE are
+> > disabled, a QEMU/OVMF boot never accesses the command line in the
+> > decompressor stub, and so it never gets mapped. The main kernel accesses
+> > it from the identity mapping if AMD_MEM_ENCRYPT is enabled, and will
+> > crash.
+> > 
+> > Fix this by adding back the explicit mapping of boot_params and the
+> > command line.
+> > 
+> > Note: the changes also removed the explicit mapping of the main kernel,
+> > with the result that .bss and .brk may not be in the identity mapping,
+> > but those don't get accessed by the main kernel before it switches to
+> > its own page tables.
+> > 
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > Reviewed-by: Joerg Roedel <jroedel@suse.de>
+> > ---
+> >  arch/x86/boot/compressed/head_64.S      |  3 +++
+> >  arch/x86/boot/compressed/ident_map_64.c | 24 +++++++++++++++++++++---
+> >  2 files changed, 24 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+> > index 1c80f1738fd9..3976b4e92e1b 100644
+> > --- a/arch/x86/boot/compressed/head_64.S
+> > +++ b/arch/x86/boot/compressed/head_64.S
+> > @@ -544,6 +544,9 @@ SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
+> >  	pushq	%rsi
+> >  	call	set_sev_encryption_mask
+> >  	call	load_stage2_idt
+> > +	/* Pass boot_params to initialize_identity_maps */
+> > +	popq	%rdi
+> > +	pushq	%rdi
 > 
->>> Is RDMA missing something? I don't see anything special in VFIO for
->>> instance and the two are very similar - does VFIO work with SME, eg
->>> DPDK or something unrelated to virtualization?
->>
->> If user space is mapping un-encrypted memory, then, yes, it would seem
->> that there is a gap in the support where the pgprot_decrypted() would be
->> needed in order to override the protection map.
+> Any reason why you're not doing
 > 
-> It isn't "memory" it is PCI BAR pages, eg memory mapped IO
-
-Right, I understand that.
-
+> 	movq    (%rsp), %rdi
 > 
->>> Is there a reason not to just add prot_decrypted() to
->>> io_remap_pfn_range()? Is there use cases where a caller actually wants
->>> encrypted io memory?
->>
->> As long as you never have physical memory / ram being mapped in this path,
->> it seems that applying pgprot_decrypted() would be ok.
+> here instead?
 > 
-> I think the word 'io' implies this is the case..
 
-Heh, you would think so, but I found quite a few things that used ioremap
-instead of memremap when developing this.
-
-> 
-> Let me make a patch for this avenue then, I think it is not OK to add
-> pgprot_decrypted to every driver.. We already have the special
-> distinction with io and non-io remap, that seems better.
-
-Yup, seems reasonable.
-
-> 
->>> I saw your original patch series edited a few drivers this way, but
->>> not nearly enough. So I feel like I'm missing something.. Does vfio
->>> work with SME? I couldn't find any sign of it calling prot_decrypted()
->>> either?
->>
->> I haven't tested SME with VFIO/DPDK.
-> 
-> Hum, I assume it is broken also. Actually quite a swath of drivers
-> and devices will be broken under this :\
-
-Not sure what you mean by the last statement - in general or when running
-under VFIO/DPDK? In general, traditional in kernel drivers work just fine
-under SME without any changes.
-
-Thanks,
-Tom
-
-> 
-> Jason
-> 
+No real reason. This will disappear anyway in the cleanup patch.
