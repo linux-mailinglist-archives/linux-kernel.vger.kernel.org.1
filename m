@@ -2,69 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9058D29230A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54661292312
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgJSHjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 03:39:52 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:48121 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727768AbgJSHjw (ORCPT
+        id S1727915AbgJSHkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 03:40:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727612AbgJSHkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 03:39:52 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 09J7anxl039002;
-        Mon, 19 Oct 2020 15:36:49 +0800 (GMT-8)
-        (envelope-from dylan_hung@aspeedtech.com)
-Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 19 Oct
- 2020 15:39:25 +0800
-From:   Dylan Hung <dylan_hung@aspeedtech.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ratbert@faraday-tech.com>,
-        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH] net: ftgmac100: Fix missing TX-poll issue
-Date:   Mon, 19 Oct 2020 15:39:08 +0800
-Message-ID: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 19 Oct 2020 03:40:42 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B4EC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 00:40:42 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id b23so5534010pgb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 00:40:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ag/JRF53hl/24d8LgF+tPsIRiLpqiB7/nPdIcvK8ymI=;
+        b=LjkRYRM93jiOPWZE8K+5mkRVDGsSAuxKV4N6zYZ1rok9GGy76x2KDqDVr4W7VOiphq
+         LabuYL4L3meO9HUdfBkFnOuamD/20qyjNgxRkaEi72NROy8/5WwiA9oonGIHx2BLDhsw
+         xkXik+SzFSlT8PMmXhsiK11zqPnNybzr0CV8SwV3Y/qGkEj3PITdEI5L/gFpkKN2tFBF
+         w4chyuecLZxObXXNfHWdp2xptANqykX6m1zxGsZAZohhMl40fELs4PdWeounwGCRVI4D
+         PVGWP0UNaa0ZU+BPYJoshiojMjZuIM0xWE7hnnwhcoe1J0c1TmfmxqIjp6A8DmSWQ0Iv
+         XGpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ag/JRF53hl/24d8LgF+tPsIRiLpqiB7/nPdIcvK8ymI=;
+        b=tmc2GKXMP8vf9jAYDVuW5gjHX6vpPLRWk19LfLAFTlqxVRW3M9M+PmUV0MNwUDGhB8
+         SxFScUgZuuI4Ux1emOUhc+h+RCP75nE19vFAaVsq6N38I0h61Vl7Mrv6aFld8r4P+B0j
+         VnyaQSdlg6L20vrYhfU9TIwGdtGvqMX/zXcfRJby7xTY5NsjoKoXPRPFrfxcheocuozU
+         vnNpsZ9VFUp/xObjlzdPQWen+oNBTGNtW2GkEByWsyW/003YqZb9OGq2TN+gCk6qEFAu
+         TXpJ8LP3UHVxUBzWO9gr05zB81uF0XRTHkkb4CGNlAAnLBZfQVJK3mg2PK7RFK/l45YZ
+         EAmQ==
+X-Gm-Message-State: AOAM532l5VbCZyWbkTGyi30bhCIutsnEM/CjKYientMiqW+tEDOe3gJJ
+        8Nlh8JWP8Amxqd4OzJ/Wt9yeAA==
+X-Google-Smtp-Source: ABdhPJzWusAGH/8TOEyY/iJVPtyWitpV+TQxC1r/p3JRnt7WK0xWB9EZOqJTQKJpDqfwI2D8LiDteA==
+X-Received: by 2002:a63:cc53:: with SMTP id q19mr13211292pgi.339.1603093241504;
+        Mon, 19 Oct 2020 00:40:41 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id 194sm10694048pfz.182.2020.10.19.00.40.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 19 Oct 2020 00:40:40 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 13:10:37 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
+Message-ID: <20201019074037.75oueqxny5fhrsxt@vireshk-i7>
+References: <cover.1594707424.git.viresh.kumar@linaro.org>
+ <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
+ <20200716115605.GR10769@hirez.programming.kicks-ass.net>
+ <681fb3e8-d645-2558-38de-b39b372499de@arm.com>
+ <CAKfTPtA+BPegK2h6PQMFs+p4dpxO+sk1FDQuOfJvSpGCJ-rBrA@mail.gmail.com>
+ <20200730062414.uq3ip7ukpu7nkiyg@vireshk-mac-ubuntu>
+ <bc99342a-48ee-ce30-0116-4ba5c76787c2@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.10.9]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 09J7anxl039002
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc99342a-48ee-ce30-0116-4ba5c76787c2@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cpu accesses the register and the memory via different bus/path on
-aspeed soc.  So we can not guarantee that the tx-poll command
-(register access) is always behind the tx descriptor (memory).  In other
-words, the HW may start working even the data is not yet ready.  By
-adding a dummy read after the last data write, we can ensure the data
-are pushed to the memory, then guarantee the processing sequence
+On 30-07-20, 12:16, Lukasz Luba wrote:
+> Hi Viresh,
+> 
+> On 7/30/20 7:24 AM, Viresh Kumar wrote:
+> > On 17-07-20, 11:46, Vincent Guittot wrote:
+> > > On Thu, 16 Jul 2020 at 16:24, Lukasz Luba <lukasz.luba@arm.com> wrote:
+> > > > On 7/16/20 12:56 PM, Peter Zijlstra wrote:
+> > > > > Currently cpufreq_cooling appears to estimate the CPU energy usage by
+> > > > > calculating the percentage of idle time using the per-cpu cpustat stuff,
+> > > > > which is pretty horrific.
+> > > > 
+> > > > Even worse, it then *samples* the *current* CPU frequency at that
+> > > > particular point in time and assumes that when the CPU wasn't idle
+> > > > during that period - it had *this* frequency...
+> > > 
+> > > So there is 2 problems in the power calculation of cpufreq cooling device :
+> > > - How to get an accurate utilization level of the cpu which is what
+> > > this patch is trying to fix because using idle time is just wrong
+> > > whereas scheduler utilization is frequency invariant
+> > 
+> > Since this patch is targeted only towards fixing this particular
+> > problem, should I change something in the patch to make it acceptable
+> > ?
+> > 
+> > > - How to get power estimate from this utilization level. And as you
+> > > pointed out, using the current freq which is not accurate.
+> > 
+> > This should be tackled separately I believe.
+> > 
+> 
+> I don't think that these two are separate. Furthermore, I think we
+> would need this kind of information also in future in the powercap.
+> I've discussed with Daniel this possible scenario.
+> 
+> We have a vendor who presented issue with the IPA input power and
+> pointed out these issues. Unfortunately, I don't have this vendor
+> phone but I assume it can last a few minutes without changing the
+> max allowed OPP. Based on their plots the frequency driven by the
+> governor is changing, also the idles are present during the IPA period.
+> 
+> Please give me a few days, because I am also plumbing these stuff
+> and would like to present it. These two interfaces: involving cpufreq
+> driver or fallback mode for utilization and EM.
 
-Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
----
- drivers/net/ethernet/faraday/ftgmac100.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Its been almost 3 months, do we have any update for this? We really
+would like to get this patchset merged in some form as it provides a
+simple update and I think more work can be done by anyone over it in
+future.
 
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-index 00024dd41147..9a99a87f29f3 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -804,7 +804,8 @@ static netdev_tx_t ftgmac100_hard_start_xmit(struct sk_buff *skb,
- 	 * before setting the OWN bit on the first descriptor.
- 	 */
- 	dma_wmb();
--	first->txdes0 = cpu_to_le32(f_ctl_stat);
-+	WRITE_ONCE(first->txdes0, cpu_to_le32(f_ctl_stat));
-+	READ_ONCE(first->txdes0);
- 
- 	/* Update next TX pointer */
- 	priv->tx_pointer = pointer;
 -- 
-2.17.1
-
+viresh
