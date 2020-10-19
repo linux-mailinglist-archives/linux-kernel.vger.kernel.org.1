@@ -2,108 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD9B292AB4
+	by mail.lfdr.de (Postfix) with ESMTP id ACAF9292AB6
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730415AbgJSPok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:44:40 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:45553 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730388AbgJSPok (ORCPT
+        id S1730320AbgJSPoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730106AbgJSPom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:44:40 -0400
-Received: from [192.168.1.155] ([77.2.107.242]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MBE3k-1kaYgU0oYg-00Ckb9; Mon, 19 Oct 2020 17:44:28 +0200
-Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
- driver
-To:     Hans de Goede <hdegoede@redhat.com>, Ed W <lists@wildgooses.com>,
+        Mon, 19 Oct 2020 11:44:42 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCA2C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:44:41 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d3so307097wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:44:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ZKAL2hZ3qOMWxJzH1IwKgv2j9AVNcU1OrEysy54jR20=;
+        b=FQdQEmvxir1K1aSRwc/YD4OVhWIMURxeuwSI9q/LNHwUOw91nTK9CTKgBWOc/AgZEd
+         5RIIYazWw8sNuCWtZMasBoU/vyV3T+ET1FUyoh+jurtniuoLYL8lKeCvnNdjk7bpySfc
+         ZQSf9esLS8szzSzrUyms+bCdcYe3U35tH/skc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=ZKAL2hZ3qOMWxJzH1IwKgv2j9AVNcU1OrEysy54jR20=;
+        b=j/tKQvCDkzjFOCyPZ2qNQVHk/nhLB98MoBCA+ypGST9vhFKzz5iO1P04xYcej026/t
+         w9pHtMe9pMqe4SSP+vc1rC8fGu6GDYSu/Jcyat3E0BbDoLG2bwn9ymLvpO8XVjy+6t6X
+         qAugb8TlPgW8RpQQnaQ1lmMtYsNScP2KWjt5LWVFpF8CAI7/wiGU5FHY1cCM6+dvV1KD
+         27MWq+rBjFKEKacr2chif5axs9WlaIOA/6aGdhwM9jWRIaNujGemNueVKSeFGGHDK67b
+         FqgR9BuwEpm28m4qxN/8BPJQra8OOvJv9Yj9fqSCV7r9ilvO3OdgnwbyfSFK163anqFz
+         MB7Q==
+X-Gm-Message-State: AOAM5319GUloSuhjj2jvsCzP60b/VO0fYHD4DGVx9X5FXtDUUSjtzYMC
+        BF12TmooXkDknZSnp5Yo/YjFbg==
+X-Google-Smtp-Source: ABdhPJx+1Aku6RCS8tZ4DS52dzWXQ674ssKWd4gf8//xA0eTRcqBv49MCEwytlX/u9Aulak9Afz9VQ==
+X-Received: by 2002:a1c:9854:: with SMTP id a81mr40477wme.72.1603122280474;
+        Mon, 19 Oct 2020 08:44:40 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f17sm486108wme.22.2020.10.19.08.44.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 08:44:39 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 17:44:37 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org
-References: <20200921215919.3072-1-lists@wildgooses.com>
- <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
- <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
- <65efe44a-bbef-f982-462a-385fffe493a0@wildgooses.com>
- <0de126c4-f2aa-a817-0a38-32bf3ede84d1@redhat.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <e727d039-8dea-1a40-48b9-792b6053807c@metux.net>
-Date:   Mon, 19 Oct 2020 17:44:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+Subject: Re: [PATCH v2 0/3] drm/panel: mantix panel reset fixes
+Message-ID: <20201019154437.GE401619@phenom.ffwll.local>
+Mail-Followup-To: Sam Ravnborg <sam@ravnborg.org>,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>, Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1602584953.git.agx@sigxcpu.org>
+ <20201016142916.GA1184974@ravnborg.org>
+ <20201017091307.GA2885@bogon.m.sigxcpu.org>
+ <20201017104736.GA2822081@ravnborg.org>
 MIME-Version: 1.0
-In-Reply-To: <0de126c4-f2aa-a817-0a38-32bf3ede84d1@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:dXpUIHRfWT5BcBULeI6C3vO+0OYCk7YAbl0tD+Ga1iGSzCkFhdH
- bzPyS5WuDKman6O01IM2eCaulW1iS2zj7dpI1OjC6XCnW5vV2tHyAIYojHH0FWVHKUx1Q3E
- /2oSPKIf3Y+Yw7hs5fJkPyPYueLm41VrKQ4DNAG3zcVwohlqly5TUtA3+O1oU+hrImDQGdG
- QkoZ4tya3l1VD9/Nezkzw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oi9ueL6afnM=:l/JGmFuLohUNZ5OkGYAQz4
- kocRukoezDLcXg5WFzU+t+FY5AEsjWdCA980yc6MD/sUuopivybknohnp3jKFnl0jytPk3yQV
- n7T5kmzCW5PyMcl4fe1NWPIUCT92P1YTMmrrclaAoDmKZnfGRc0uHOZfwbUO4/D36XUe2E/Qk
- RfojzivK3wYRyqQbKJ6ae8PlIH3UfKehmLWqZvmXuebRaEVyeCabayzPq7ihgqwp4PbHGmOR4
- sW9cw28I1BoTQ9MlK/TfmWbeiEiBLVlGci9BY3e8aheb+aXGepZpSfjMHYez9k2k8MPc0dJBN
- ug0NDP4ZSeWMpKIoLQ25inGmCV8CMu5VK/esdYNsub/L6JxDPwTPSnuDOeT/J+WwQPbgfVd+K
- AJnj8KEvIXIOMGfSqx8KehEsXoceHcd4snG+lYcWFrQMvDGkEcnfpLYxD0C9/
+In-Reply-To: <20201017104736.GA2822081@ravnborg.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.10.20 10:41, Hans de Goede wrote:
-
-Hi,
-
-> Keep the current LED/gpio setup code, but make executing it conditional
-> on the BIOS version and skip the LED/gpio setup when the new BIOS is
-> present to avoid having duplicate LED entries, etc. in that case.
+On Sat, Oct 17, 2020 at 12:47:36PM +0200, Sam Ravnborg wrote:
+> Hi Guido.
 > 
-> I guess this would still break userspace because if I understand things
-> correctly the new ACPI based setup uses different LED names ? That
-> seems unfortunate, but I guess that from the kernel pov we can just
-> blame the BIOS for this, and since we definitely do not want duplicate
-> LED entries for the same LED, this seems the least bad choice.
+> On Sat, Oct 17, 2020 at 11:13:07AM +0200, Guido G¸nther wrote:
+> > Hi Sam,
+> > On Fri, Oct 16, 2020 at 04:29:16PM +0200, Sam Ravnborg wrote:
+> > > Hi Guido.
+> > > On Tue, Oct 13, 2020 at 12:32:45PM +0200, Guido G¸nther wrote:
+> > [..snip..]
+> > > > 
+> > > > Changes from v1:
+> > > >  - As per review comments by Fabio Estevam
+> > > >    https://lore.kernel.org/dri-devel/CAOMZO5B5ECcConvKej=RcaF8wvOxgq7nUzKJ-ad0aSAOzUqtbQ@mail.gmail.com/
+> > > >    - Fix typo in commit messages
+> > > >  - As per review comments by Rob Herring
+> > > >    https://lore.kernel.org/dri-devel/20200929174624.GA832332@bogus/
+> > > >    - Don't use an array of reset lines
+> > > > 
+> > > > Guido G¸nther (3):
+> > > >   drm/panel: mantix: Don't dereference NULL mode
+> > > >   drm/panel: mantix: Fix panel reset
+> > > >   dt-binding: display: Require two resets on mantix panel
+> > > 
+> > > All applied to drm-misc-next and pushed out.
+> > > And then I remembered you had commit right - sigh.
+> > 
+> > Thanks! Is there any special care needed to get that into 5.10? The
+> > driver landed there in 72967d5616d3f0c714f8eb6c4e258179a9031c45.
+> 
+> As the patches was applied to drm-misc-next the easiet path would
+> be to cherry-pick them and apply to drm-misc-fixes.
+> dim has cherry-pick support - try to use it rahter than doing it by
+> hand.
 
-Sorry, but not fine. When a newer box is taken from storage into
-production (eg. replacement or new installation), application breaks.
-LED isn't the only problem, also affects buttons.
+drm-misc-next-fixes while we're between freeze and merge window end:
 
-The whole reaons why I invested all the time for writing general
-purpose drivers (fch-gpio is separate from board driver) and bringing
-it to mainline was having clean and generic support for these boards,
-instead of having to carry around special patch queues forever and
-in near future just using stock distro kernel. I guess that's the
-main reason for very most mainlined drivers. This will be defeated
-as soon as the whole thing becomes board/bios specific again.
+https://drm.pages.freedesktop.org/maintainer-tools/committer-drm-misc.html#where-do-i-apply-my-patch
 
-I purposely slept ofter the naming several times, to make sure it's
-future proof and tells exactly what these leds are for. Otherwise I
-could just have picked numbers and fruits.
+Cheers, Daniel
 
-Please don't change the names. Field relies on them.
+> 
 
-Actually, I've already considered adding another workaround for removing
-the ACPI gpio/leds. Haven't had the time for a close analysis the acpi
-bytecode actually does, and what the kernel actually makes out of it.
-As soon as I encounter an conflict (eg. locks the iomem from gpio-amd
-fch, messes up gpio states, etc), I'll have to go that route. There
-already have been bug reports in that direction (eg. simsw and reset
-issues), which I could not yet reproduce (on the older bios versions).
-
-
-
---mtx
+> When you apply to drm-misc-fixes include a Fixes: tag so the tooling
+> will pick the patches automagically.
+> 
+> In hindsight the patches should have carried a Fixes: tag from a start
+> and should have been applied to drm-misc-fixes from a start too.
+> 
+> I have done something like above once or twice but anyway reach out if
+> you have questions. Or ask at #dri-devel.
+> 
+> 	Sam
 
 -- 
----
-Hinweis: unverschl√ºsselte E-Mails k√∂nnen leicht abgeh√∂rt und manipuliert
-werden ! F√ºr eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schl√ºssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
