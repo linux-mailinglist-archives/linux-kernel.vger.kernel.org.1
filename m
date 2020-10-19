@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63212922CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CA82922CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbgJSHGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 03:06:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60640 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727223AbgJSHGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 03:06:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603091211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cZoc8etLME1TcrchebfctJW/RG6gpIbgrhS4J7nrH+g=;
-        b=MOLs08/jyBYO0a8WqiloLXgfVyXyoZierMjNWwvdlcmN77l6XFYgA7MYYyDvuTGsswptlF
-        N3u5xlF8itd5qQzYmVyxYlt3AaTgjmHqfyz/ZQZXhtGM4U7oEICAlcwHJaA+MFWE6Z0haC
-        QvZ+pe7dZthbQ3cQf/K/B0OwnCAavCQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C15E4B8FC;
-        Mon, 19 Oct 2020 07:06:50 +0000 (UTC)
-Date:   Mon, 19 Oct 2020 09:06:44 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tianxianting <tian.xianting@h3c.com>
-Cc:     "cl@linux.com" <cl@linux.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>
-Subject: Re: [PATCH] mm: Make allocator take care of memoryless numa node
-Message-ID: <20201019070644.GB27114@dhcp22.suse.cz>
-References: <20201012082739.15661-1-tian.xianting@h3c.com>
- <20201012150554.GE29725@dhcp22.suse.cz>
- <10ae851702e346369db44e1ec9c830fb@h3c.com>
+        id S1727350AbgJSHHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 03:07:15 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:45931 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727223AbgJSHHO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 03:07:14 -0400
+Received: by mail-oi1-f193.google.com with SMTP id j7so11346720oie.12
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 00:07:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H+vdqjMSZj52aMc57EWgyBmxbziFgHH2zS7JDhtiRqQ=;
+        b=sHljkpciaA3R65eN9tMTPZCILOY4mUbO07/8azlCrgp1vAm+sKosG217yIW45a6uho
+         a1JXsTsdPKALnEoz/8kghpW9+fBGfijtC7gWnwA1IcvcSGcvAASNAmRyy8+jFx/ddU6x
+         n+bJXYuQ4OiicgcEO8uTvmYHXusHB1i0A/BEtKmGOyGSe2Tw5hZZHxi70yRTbQxEFXXv
+         GTBn/ujjkakUKbxO0zotDWgzPRuky+q7OvQ9OT5qu69z9fts+P6WnaUiEN8z1sYz+N6x
+         zC6tIZfBKANQHSyxhf4taYjD8xm9eI95FAZZChVIVpssuoOMhpHaCydcvL6llBZyR+yb
+         LxUw==
+X-Gm-Message-State: AOAM532Sb1AXPSGBn1VKrwHSD+SUWCtNfOFOCsNi/leM2UapY+gdFcMP
+        XrW42hj0Vjkplfh/7ZDV35D+OagD57j7Td6YJYot5hQM
+X-Google-Smtp-Source: ABdhPJwdtwJCsUSWVnHL9Jsg0Pl8vmRd4uAolsZ9MtbZxGxCkleaMtJmbdUygZF4xFzc4nKSZYSk0LspsGKYX9vmQDQ=
+X-Received: by 2002:a05:6808:8f5:: with SMTP id d21mr6917318oic.153.1603091232857;
+ Mon, 19 Oct 2020 00:07:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <10ae851702e346369db44e1ec9c830fb@h3c.com>
+References: <c5e23b45562373d632fccb8bc04e563abba4dd1d.camel@perches.com>
+In-Reply-To: <c5e23b45562373d632fccb8bc04e563abba4dd1d.camel@perches.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 19 Oct 2020 09:07:00 +0200
+Message-ID: <CAMuHMdVVm+1_n9D40bcLB__8Bt7pDbwj014-Q3BJrC2WRuz96Q@mail.gmail.com>
+Subject: Re: [PATCH V2] checkpatch: Enable GIT_DIR environment use to set git
+ repository location
+To:     Joe Perches <joe@perches.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@shadowen.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 18-10-20 14:18:37, Tianxianting wrote:
-> Thanks for the comments
-> I found in current code, there are two places to call
-> local_memory_node(node) before calling kzalloc_node(), I think we can
-> remove them?
+On Sun, Oct 18, 2020 at 8:45 PM Joe Perches <joe@perches.com> wrote:
+> If set, use the environment variable GIT_DIR to change the
+> default .git location of the kernel git tree.
+>
+> If GIT_DIR is unset, keep using the current ".git" default.
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-I am not sure which code you are talking about. git grep shows me 2
-places in blk-mq code (e.g. bffed457160ab) and that looks quite bogus to
-me. Bring that up with the respective maintainer and Raghavendra.
-The changelog doesn't really describe any problem, if there is any. But
-from the allocator semantic point of view memory less nodes are to be
-expected and the allocator should fallback to the proper node. As long
-as __GFP_THISNODE is not enforced of course.
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-Michal Hocko
-SUSE Labs
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
