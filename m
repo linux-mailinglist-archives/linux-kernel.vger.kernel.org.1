@@ -2,62 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9672922C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6567C2922C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727232AbgJSHCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 03:02:42 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:44846 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726242AbgJSHCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 03:02:42 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A7EE5CA68E2D7D2CD371;
-        Mon, 19 Oct 2020 15:02:38 +0800 (CST)
-Received: from [10.67.103.212] (10.67.103.212) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 19 Oct 2020 15:02:29 +0800
-Subject: Re: [PATCH v3 0/2] uacce: fix some coding styles
-To:     <linux-accelerators@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <zhangfei.gao@linaro.org>
-References: <1600855762-10031-1-git-send-email-yekai13@huawei.com>
-From:   "yekai(A)" <yekai13@huawei.com>
-Message-ID: <f3c3371f-40aa-9a64-4238-d7e8d4f91713@huawei.com>
-Date:   Mon, 19 Oct 2020 15:02:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1727264AbgJSHD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 03:03:28 -0400
+Received: from smtp1.kaist.ac.kr ([143.248.5.228]:58611 "EHLO
+        smtp1.kaist.ac.kr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727239AbgJSHD1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 03:03:27 -0400
+Received: from unknown (HELO mail1.kaist.ac.kr) (143.248.5.69)
+        by 143.248.5.228 with ESMTP; 19 Oct 2020 16:03:16 +0900
+X-Original-SENDERIP: 143.248.5.69
+X-Original-MAILFROM: dae.r.jeong@kaist.ac.kr
+X-Original-RCPTTO: linux-kernel@vger.kernel.org
+Received: from kaist.ac.kr (143.248.133.220)
+        by kaist.ac.kr with ESMTP imoxion SensMail SmtpServer 7.0
+        id <64f8815d385e48338e62a2fd4ede2b9d> from <dae.r.jeong@kaist.ac.kr>;
+        Mon, 19 Oct 2020 16:03:20 +0900
+Date:   Mon, 19 Oct 2020 16:03:19 +0900
+From:   "Dae R. Jeong" <dae.r.jeong@kaist.ac.kr>
+To:     Song Liu <song@kernel.org>
+Cc:     yjkwon@kaist.ac.kr, linux-raid <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: WARNING in md_ioctl
+Message-ID: <20201019070319.GA1811280@dragonet>
+References: <20201017110651.GA1602260@dragonet>
+ <CAPhsuW583=org7AOR-W2vcQV3pTBxin2LG1tb3On=x6VtjXvxQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1600855762-10031-1-git-send-email-yekai13@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.212]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW583=org7AOR-W2vcQV3pTBxin2LG1tb3On=x6VtjXvxQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hartman
+> diff --git i/drivers/md/md.c w/drivers/md/md.c
+> index 6072782070230..49442a3f4605b 100644
+> --- i/drivers/md/md.c
+> +++ w/drivers/md/md.c
+> @@ -7591,8 +7591,10 @@ static int md_ioctl(struct block_device *bdev,
+> fmode_t mode,
+>                         err = -EBUSY;
+>                         goto out;
+>                 }
+> -               WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
+> -               set_bit(MD_CLOSING, &mddev->flags);
+> +               if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
+> +                       err = -EBUSY;
+> +                       goto out;
+> +               }
+>                 did_set_md_closing = true;
+>                 mutex_unlock(&mddev->open_mutex);
+>                 sync_blockdev(bdev);
+> 
+> Could you please test whether this fixes the issue?
 
-Could you help to take this patch?
-Thanks.
+Since &mddev->open_mutex is held when testing a bit of mddev->flags, I
+modified the code just a little bit by putting mutex_unlock() as
+belows.
 
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 98bac4f304ae..643f7f5be49b 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -7590,8 +7590,11 @@ static int md_ioctl(struct block_device *bdev, fmode_t mode,
+ 			err = -EBUSY;
+ 			goto out;
+ 		}
+-		WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
+-		set_bit(MD_CLOSING, &mddev->flags);
++		if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
++			mutex_unlock(&mddev->open_mutex);
++			err = -EBUSY;
++			goto out;
++		}
+ 		did_set_md_closing = true;
+ 		mutex_unlock(&mddev->open_mutex);
+ 		sync_blockdev(bdev);
 
-On 2020/9/23 18:09, Kai Ye wrote:
-> 1. delete some redundant code.
-> 2. modify the module author information. "Hisilicon"
-> spelling is error.
->
-> Changes v2 -> v3:
-> 	Two things, splited to two patches.
-> Changes v1 -> v2:
-> 	deleted extra NULL pointer check in uacce_fops.
->
-> Kai Ye (2):
->    uacce: fix some coding styles
->    uacce: modify the module author information.
->
->   drivers/misc/uacce/uacce.c | 13 +------------
->   1 file changed, 1 insertion(+), 12 deletions(-)
->
+The warning no longer recurs (of course, we removed
+WARN_ON_ONCE()). As I am not familiar with this code, I do not see any
+other problem.
+
+Best regards,
+Dae R. Jeong
+
 
