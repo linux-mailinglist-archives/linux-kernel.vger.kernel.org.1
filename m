@@ -2,135 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E302922C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63212922CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727301AbgJSHFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 03:05:48 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:39973 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727223AbgJSHFs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 03:05:48 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5202F5C006B;
-        Mon, 19 Oct 2020 03:05:46 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 19 Oct 2020 03:05:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=EMlZBo15epeEdVjKu5nXc3zhaks
-        PLbuojCDzDSKauhc=; b=Ff1Tz88cw07JCNE4wxm2z6vwZsWuT4T2rTUS33F7n6q
-        XHFHexp9DeQs0nK222i5ND3s7PA3kVEMZq8HNrYIYKWoPRRVdzleJBZlzPIJgynx
-        9lQlNeNp4bV2ND9OOkMcsoN9C2ZKLjUYOOMC8XBTErt8ofG3/DQG9ZClExOy2jRG
-        PcVoIDAvSeHCWqsHCRdGp6d7bPvSmMTqhjWsGnqqR0E8N/J1Zx7y617FPLUImR6h
-        vt293NCnps/TY4gMxNuR4d6j4IE2c9LWPjuhpjA8s136sa+i+e0+f4YyGAWrXGty
-        qp7Tx7ovldoxBGZTiEN+kVlYbb/A66nMuPJKsBN9K4A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=EMlZBo
-        15epeEdVjKu5nXc3zhaksPLbuojCDzDSKauhc=; b=S0aG4V4Ttx2iboTB84z+Qk
-        rPBcyuX74KZPKeB8akRNaQbKeSUcKrPmZt1JI+IY4r6Wee7ttUVvmhljdzBFTag3
-        +Nc/BnamdgFPvmg5ICJAWOpWEZ9bNWC8BMWtV4eqamRDEv8Sgyx56Pu7OPPdy5l6
-        aCtzktK9FiH67N2sblZ/19CHSWcK972pf291mznvK02sOUELJ3XD9U4IeMhsfBT2
-        HX/KHn/whI34h9pg4EIpYOB7MvX5UQ2YfmXdcU8+aWf7AzYhfzjWi9+ssR9/VS6u
-        vd/ZHAob/vR9KX17xkdZ+xq1cpNJGyVQbZXgyrCmzqTGwpeXUhU2MVLAxjFS4PBA
-        ==
-X-ME-Sender: <xms:yTqNX-cqtwIHTbGfPUFl7TEkveLK8FXQBKfa-mePJHiMKg3dMpJmBw>
-    <xme:yTqNX4Pqct-PJ6r-mDFWPZWopx3H1ztG64VazfANd_CDLEs71Mqtz4s052vCY26BU
-    tI9LTg9rIDUCcIfOu8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjedtgdduudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:yTqNX_jjwyTB9cmAPjm6YYEHWRjgVLf1f5tioFUgBObHpyCpm4G90Q>
-    <xmx:yTqNX79MvCNBtrT4ybXiYm4B-ahC07KmJRsdRMO0iJaHWgzVw19_VA>
-    <xmx:yTqNX6sLeAKjJZOOSie0enk7n8ruV7nu4K936cte2dSZ9ZKkKXLjuQ>
-    <xmx:yjqNX-LelQ6K03fZPfyQjFspX5PBVBSEXqWhhWTj5UASO6x_lJN_Ng>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 287113280059;
-        Mon, 19 Oct 2020 03:05:45 -0400 (EDT)
-Date:   Mon, 19 Oct 2020 09:05:41 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Alexander Kochetkov <al.kochet@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: spi-sun6i: enable autosuspend feature
-Message-ID: <20201019070541.qy3v2r3sg5itdhds@gilmour.lan>
-References: <20201016083826.31427-1-al.kochet@gmail.com>
+        id S1727334AbgJSHGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 03:06:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60640 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727223AbgJSHGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 03:06:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603091211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cZoc8etLME1TcrchebfctJW/RG6gpIbgrhS4J7nrH+g=;
+        b=MOLs08/jyBYO0a8WqiloLXgfVyXyoZierMjNWwvdlcmN77l6XFYgA7MYYyDvuTGsswptlF
+        N3u5xlF8itd5qQzYmVyxYlt3AaTgjmHqfyz/ZQZXhtGM4U7oEICAlcwHJaA+MFWE6Z0haC
+        QvZ+pe7dZthbQ3cQf/K/B0OwnCAavCQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C15E4B8FC;
+        Mon, 19 Oct 2020 07:06:50 +0000 (UTC)
+Date:   Mon, 19 Oct 2020 09:06:44 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tianxianting <tian.xianting@h3c.com>
+Cc:     "cl@linux.com" <cl@linux.com>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>
+Subject: Re: [PATCH] mm: Make allocator take care of memoryless numa node
+Message-ID: <20201019070644.GB27114@dhcp22.suse.cz>
+References: <20201012082739.15661-1-tian.xianting@h3c.com>
+ <20201012150554.GE29725@dhcp22.suse.cz>
+ <10ae851702e346369db44e1ec9c830fb@h3c.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zqg3emlloxikctnv"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201016083826.31427-1-al.kochet@gmail.com>
+In-Reply-To: <10ae851702e346369db44e1ec9c830fb@h3c.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun 18-10-20 14:18:37, Tianxianting wrote:
+> Thanks for the comments
+> I found in current code, there are two places to call
+> local_memory_node(node) before calling kzalloc_node(), I think we can
+> remove them?
 
---zqg3emlloxikctnv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Fri, Oct 16, 2020 at 11:38:26AM +0300, Alexander Kochetkov wrote:
-> If SPI is used for periodic polling any sensor, significant delays
-> sometimes appear. Switching on module clocks during resume lead to delays.
-> Enabling autosuspend mode causes the controller to not suspend between
-> SPI transfers and the delays disappear.
->=20
-> Signed-off-by: Alexander Kochetkov <al.kochet@gmail.com>
-> ---
->  drivers/spi/spi-sun6i.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
-> index 38e5b8af7da6..4cc0280e934c 100644
-> --- a/drivers/spi/spi-sun6i.c
-> +++ b/drivers/spi/spi-sun6i.c
-> @@ -22,6 +22,8 @@
-> =20
->  #include <linux/spi/spi.h>
-> =20
-> +#define SUN6I_AUTOSUSPEND_TIMEOUT	2000
-> +
->  #define SUN6I_FIFO_DEPTH		128
->  #define SUN8I_FIFO_DEPTH		64
-> =20
-> @@ -639,9 +641,10 @@ static int sun6i_spi_probe(struct platform_device *p=
-dev)
->  		goto err_free_dma_rx;
->  	}
-> =20
-> +	pm_runtime_set_autosuspend_delay(&pdev->dev, SUN6I_AUTOSUSPEND_TIMEOUT);
-> +	pm_runtime_use_autosuspend(&pdev->dev);
->  	pm_runtime_set_active(&pdev->dev);
->  	pm_runtime_enable(&pdev->dev);
-> -	pm_runtime_idle(&pdev->dev);
-
-You should also mention why pm_runtime_idle isn't useful anymore in your
-commit log.
-
-Thanks!
-Maxime
-
---zqg3emlloxikctnv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX406jQAKCRDj7w1vZxhR
-xQZMAP9MvzwkJ7KYvidr8Tqy6Uun4yiI03CcELJ3laGSQezVEwD/diF7Gju+JH4x
-NZedwB1YqwnhUGqHXmb8Mf8hYxkjMgY=
-=bZcy
------END PGP SIGNATURE-----
-
---zqg3emlloxikctnv--
+I am not sure which code you are talking about. git grep shows me 2
+places in blk-mq code (e.g. bffed457160ab) and that looks quite bogus to
+me. Bring that up with the respective maintainer and Raghavendra.
+The changelog doesn't really describe any problem, if there is any. But
+from the allocator semantic point of view memory less nodes are to be
+expected and the allocator should fallback to the proper node. As long
+as __GFP_THISNODE is not enforced of course.
+-- 
+Michal Hocko
+SUSE Labs
