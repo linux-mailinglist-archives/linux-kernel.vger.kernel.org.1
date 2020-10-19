@@ -2,140 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1560292EAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27AF292EB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731329AbgJSTnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731238AbgJSTm3 (ORCPT
+        id S1731359AbgJSTpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:45:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33720 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731344AbgJSTp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:42:29 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D33C0613DB
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:42:27 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id hk7so375108pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=no6WOfZDuAXhTDfVia9Vunkz4L7BthY0F8m0jo4//vs=;
-        b=vqIoQqfPtCUD7ceHGEmbvFqqUZd/9dE0IpLQQ4p4nyONBXQMSFxBG5OzgCaJfT8eu8
-         Ez0DMwUntzcU9c2WJzs/WqMvxG3bzlj0mstlcz+E4fW0gt02sZNjrL1HdU6SHVwmCE5R
-         WFeHYzJRJuPZspqj8YJ2wlUmUN4Mc8MNrI6kLekCJ8yejCepkvkgEUeb7TbpDze1NnEh
-         TP2SjhqdakZDUedR00qYjd62k5W2m7FgfHIpcuS/rhjqMGxVL3Apppn+UDRO/ftdIfoh
-         duvoKavmXDacw9mysFV+xdp1Tg4QxCPiDxNSeCeZyO+34Y2S1kYSdX61NJzSKhmGsX5T
-         HLpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=no6WOfZDuAXhTDfVia9Vunkz4L7BthY0F8m0jo4//vs=;
-        b=IlSUd82ZkxB6iZXu+ABGt94ziio+D22iuG/5eEZTOcrV6rOWLnhz/oeEPD/hgDUliX
-         P1dlbqXZ5qHUyWfw0DuF0NNsbE7de/K+arXNOFwMl21bu03DARuXeUAa9DGC9aJgGAAC
-         bDaT2q3+su5CmeKb6B9kUpX9chAcJ+vxkunI5CDpuofjv3iOYnBTHPvTHxXN8sh3eTIL
-         etxqidqMCu2jjU48ogk65M8ClOaZYXl2JP857PddP3UP3jgZAUYOSPdqtGcpfal8z8fi
-         Ly/FQZx1aqKwOty4dmZ2VnClCtKb2BOFRPcgz2sqDTKa53KUGDkUz8CHoCUYj4tiMkxE
-         fW8g==
-X-Gm-Message-State: AOAM533/3HY1HZ+EE8CtrKx/0OKvnyqzAZAKyvhK0OFRJWKXcbDxy00p
-        ZKNejZHeM/nv7wBeFl72XUaEF102U4Iz4MfnX0TDwg==
-X-Google-Smtp-Source: ABdhPJxy4K+2uRaBuhFTeTSlHPetqrP1uAAP7dKvm6UBZz10SCa23PJUxb54E5JJmlle9J/y892Qp+TTrKvO4GeNXIk=
-X-Received: by 2002:a17:90a:ee87:: with SMTP id i7mr921476pjz.25.1603136546933;
- Mon, 19 Oct 2020 12:42:26 -0700 (PDT)
+        Mon, 19 Oct 2020 15:45:27 -0400
+Date:   Mon, 19 Oct 2020 19:44:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603136685;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sOdik0Y+lrIjbp3po9kuZpanyt1dLCgOmvmW4L9QxXc=;
+        b=HRmzgZDKyOscl2E5rHcZd619yq7IuPKQJuooi/XoFySXh+ijo5fVVU5KpZ+0PEX6cxmJxT
+        ikADryOZk8awOFYF+KvjXFQB/CmWC/L+1L6zEjSY3nXadTa6HUrOph0wuNyZeueyJVdnBA
+        qorWZ0HNGYkxXwwBgBvGqgzwypxvFBzhP3m0HM+apeAcdPau3sstNI9JwK5FsOrellI3wE
+        5HOjY/KqJKMGZVONdmJYfLBG/dwlUa4UY0MFMpjvPfxsC5MB0SeUChItiHHjqoLI1Ur4Jk
+        On2o74RPEXoVcH8TnTWfhw1lf9wBM2DWFZ6RNgG7J+09ZsUg1FW5sFbOA+VxbQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603136685;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sOdik0Y+lrIjbp3po9kuZpanyt1dLCgOmvmW4L9QxXc=;
+        b=vpU8s1Fli+VpX6fb7t7cOVgj91hC4Z7BZD/VWWt7vy5/nffs0/ad5eXkuPGkxvJ7OgdbiR
+        X/QdEHJRT7EGBQDA==
+From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/seves] x86/boot/64: Explicitly map boot_params and command line
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>, Joerg Roedel <jroedel@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201016200404.1615994-1-nivedita@alum.mit.edu>
+References: <20201016200404.1615994-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-References: <20201017160928.12698-1-trix@redhat.com> <20201018054332.GB593954@kroah.com>
-In-Reply-To: <20201018054332.GB593954@kroah.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 19 Oct 2020 12:42:15 -0700
-Message-ID: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
-Subject: Re: [RFC] treewide: cleanup unreachable breaks
-To:     Tom Rix <trix@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        nouveau@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        industrypack-devel@lists.sourceforge.net,
-        linux-media@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-can@vger.kernel.org,
-        Network Development <netdev@vger.kernel.org>,
-        intel-wired-lan@lists.osuosl.org, ath10k@lists.infradead.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com, linux-nfc@lists.01.org,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-pci@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, patches@opensource.cirrus.com,
-        storagedev@microchip.com, devel@driverdev.osuosl.org,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        usb-storage@lists.one-eyed-alien.net,
-        linux-watchdog@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        bpf <bpf@vger.kernel.org>, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        George Burgess <gbiv@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160313668395.7002.7778590955397923179.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 10:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
-> > From: Tom Rix <trix@redhat.com>
-> >
-> > This is a upcoming change to clean up a new warning treewide.
-> > I am wondering if the change could be one mega patch (see below) or
-> > normal patch per file about 100 patches or somewhere half way by collecting
-> > early acks.
->
-> Please break it up into one-patch-per-subsystem, like normal, and get it
-> merged that way.
->
-> Sending us a patch, without even a diffstat to review, isn't going to
-> get you very far...
+The following commit has been merged into the x86/seves branch of tip:
 
-Tom,
-If you're able to automate this cleanup, I suggest checking in a
-script that can be run on a directory.  Then for each subsystem you
-can say in your commit "I ran scripts/fix_whatever.py on this subdir."
- Then others can help you drive the tree wide cleanup.  Then we can
-enable -Wunreachable-code-break either by default, or W=2 right now
-might be a good idea.
+Commit-ID:     b17a45b6e53f6613118b2e5cfc4a992cc50deb2c
+Gitweb:        https://git.kernel.org/tip/b17a45b6e53f6613118b2e5cfc4a992cc50deb2c
+Author:        Arvind Sankar <nivedita@alum.mit.edu>
+AuthorDate:    Fri, 16 Oct 2020 16:04:01 -04:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 19 Oct 2020 19:39:50 +02:00
 
-Ah, George (gbiv@, cc'ed), did an analysis recently of
-`-Wunreachable-code-loop-increment`, `-Wunreachable-code-break`, and
-`-Wunreachable-code-return` for Android userspace.  From the review:
-```
-Spoilers: of these, it seems useful to turn on
--Wunreachable-code-loop-increment and -Wunreachable-code-return by
-default for Android
-...
-While these conventions about always having break arguably became
-obsolete when we enabled -Wfallthrough, my sample turned up zero
-potential bugs caught by this warning, and we'd need to put a lot of
-effort into getting a clean tree. So this warning doesn't seem to be
-worth it.
-```
-Looks like there's an order of magnitude of `-Wunreachable-code-break`
-than the other two.
+x86/boot/64: Explicitly map boot_params and command line
 
-We probably should add all 3 to W=2 builds (wrapped in cc-option).
-I've filed https://github.com/ClangBuiltLinux/linux/issues/1180 to
-follow up on.
--- 
-Thanks,
-~Nick Desaulniers
+Commits
+
+  ca0e22d4f011 ("x86/boot/compressed/64: Always switch to own page table")
+  8570978ea030 ("x86/boot/compressed/64: Don't pre-map memory in KASLR code")
+
+set up a new page table in the decompressor stub, but without explicit
+mappings for boot_params and the kernel command line, relying on the #PF
+handler instead.
+
+This is fragile, as boot_params and the command line mappings are
+required for the main kernel. If EARLY_PRINTK and RANDOMIZE_BASE are
+disabled, a QEMU/OVMF boot never accesses the command line in the
+decompressor stub, and so it never gets mapped. The main kernel accesses
+it from the identity mapping if AMD_MEM_ENCRYPT is enabled, and will
+crash.
+
+Fix this by adding back the explicit mapping of boot_params and the
+command line.
+
+Note: the changes also removed the explicit mapping of the main kernel,
+with the result that .bss and .brk may not be in the identity mapping,
+but those don't get accessed by the main kernel before it switches to
+its own page tables.
+
+ [ bp: Pass boot_params with a MOV %rsp... instead of PUSH/POP. Use
+   block formatting for the comment. ]
+
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
+Link: https://lkml.kernel.org/r/20201016200404.1615994-1-nivedita@alum.mit.edu
+---
+ arch/x86/boot/compressed/head_64.S      |  3 +++
+ arch/x86/boot/compressed/ident_map_64.c | 23 ++++++++++++++++++++---
+ 2 files changed, 23 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index 1c80f17..017de6c 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -544,6 +544,9 @@ SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
+ 	pushq	%rsi
+ 	call	set_sev_encryption_mask
+ 	call	load_stage2_idt
++
++	/* Pass boot_params to initialize_identity_maps() */
++	movq	(%rsp), %rdi
+ 	call	initialize_identity_maps
+ 	popq	%rsi
+ 
+diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
+index c6f7aef..a5e5db6 100644
+--- a/arch/x86/boot/compressed/ident_map_64.c
++++ b/arch/x86/boot/compressed/ident_map_64.c
+@@ -33,6 +33,12 @@
+ #define __PAGE_OFFSET __PAGE_OFFSET_BASE
+ #include "../../mm/ident_map.c"
+ 
++#define _SETUP
++#include <asm/setup.h>	/* For COMMAND_LINE_SIZE */
++#undef _SETUP
++
++extern unsigned long get_cmd_line_ptr(void);
++
+ /* Used by PAGE_KERN* macros: */
+ pteval_t __default_kernel_pte_mask __read_mostly = ~0;
+ 
+@@ -101,8 +107,10 @@ static void add_identity_map(unsigned long start, unsigned long end)
+ }
+ 
+ /* Locates and clears a region for a new top level page table. */
+-void initialize_identity_maps(void)
++void initialize_identity_maps(void *rmode)
+ {
++	unsigned long cmdline;
++
+ 	/* Exclude the encryption mask from __PHYSICAL_MASK */
+ 	physical_mask &= ~sme_me_mask;
+ 
+@@ -143,10 +151,19 @@ void initialize_identity_maps(void)
+ 	}
+ 
+ 	/*
+-	 * New page-table is set up - map the kernel image and load it
+-	 * into cr3.
++	 * New page-table is set up - map the kernel image, boot_params and the
++	 * command line. The uncompressed kernel requires boot_params and the
++	 * command line to be mapped in the identity mapping. Map them
++	 * explicitly here in case the compressed kernel does not touch them,
++	 * or does not touch all the pages covering them.
+ 	 */
+ 	add_identity_map((unsigned long)_head, (unsigned long)_end);
++	boot_params = rmode;
++	add_identity_map((unsigned long)boot_params, (unsigned long)(boot_params + 1));
++	cmdline = get_cmd_line_ptr();
++	add_identity_map(cmdline, cmdline + COMMAND_LINE_SIZE);
++
++	/* Load the new page-table. */
+ 	write_cr3(top_level_pgt);
+ }
+ 
