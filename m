@@ -2,149 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1191292D30
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A2C292D43
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730061AbgJSRyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbgJSRyv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:54:51 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCFEC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:54:51 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id l16so1082929ilj.9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:54:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rEZB5GRTmrZaMNj/Rw5xKbbXCRlbpKBqsdzVrJzTdY4=;
-        b=HBdC+kz7196kPgrjSBHu3cxIvP9ZP74ZfnWlVCdTJWg+3snACvtAfSvskVjcTyZxPy
-         0nc5xbsllBdzIk7XemJCx4laR5kjfu6VYTa217IeyE+1rOA1tGHPNiSNpUqjbhDKUUOP
-         Gb4GTb3+U/WYvSNZscNHe5gc7AR3OWSwAmx6i0VlgIn1xKaSmT2Vx5A3YYkld52Ixsd5
-         cqwnIQEHK5xqTsPhKjXZBqryc+g/4yhYMtgw2rRG5thFL2weMOXbdMCYl//YQFPKZ/k3
-         XUMf4NsAnn/5evp3yIB4caGRKs+OtBZmuTaVdr7ZBVLPWGF1km2pInJp1c2C7ZM5WteP
-         Ysfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=rEZB5GRTmrZaMNj/Rw5xKbbXCRlbpKBqsdzVrJzTdY4=;
-        b=eZrHh+xMy28zUQ8HQx4NVowloKSS0V3tETnMyE6fp9VnWuSKQRcHYJ1h3yFI1MSgAb
-         WIY8fTFsXo4Q7niQ+vU/1uAuBh3LWommmJie69xZEtyQTid15+TxyPD4E4bE8pg5ZfVq
-         1f5MLmwWErwwEiq05XSXrmoZ9I0q2mWEnAGOe/cfEVjRb5me2N/hR849cWgy+NEKyF7H
-         AfET1D/sIOmKyFD1OIvb/EKjPgM4IV/zFd2z9xQ4R6TJcylzgVbVoqjulD2oIyV1JMWR
-         2u463IwUD7ZOhBetxefTb6Z4U2+mPnNzKxduIoaUdb7OSGaUEg6cXrqC4yWAkxn73EF4
-         ENTw==
-X-Gm-Message-State: AOAM5317ygitTLMo/RKK0deY6w8RXWWsa2w7sQTVMZP3h3p/1yzaorLO
-        Wwo3tcZbZ6YAj5IExxJWMEw=
-X-Google-Smtp-Source: ABdhPJzRoOIf7CbwQtdrVb4m+w+T3PjPfwtv3E+MY8QA0E7OLYAVJLadenm8ANjc+QYjhewdSSiR3Q==
-X-Received: by 2002:a92:1303:: with SMTP id 3mr964428ilt.117.1603130090484;
-        Mon, 19 Oct 2020 10:54:50 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id p15sm403853ioh.27.2020.10.19.10.54.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 10:54:49 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 19 Oct 2020 13:54:47 -0400
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        Joerg Roedel <jroedel@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] x86/boot/compressed/64: Check SEV encryption in
- 64-bit boot-path
-Message-ID: <20201019175447.GA2720155@rani.riverdale.lan>
-References: <20201019151121.826-1-joro@8bytes.org>
- <20201019151121.826-4-joro@8bytes.org>
- <20201019170008.GA2701355@rani.riverdale.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1730564AbgJSR7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:59:32 -0400
+Received: from gate.crashing.org ([63.228.1.57]:40218 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730454AbgJSR7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 13:59:32 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 09JHt4hN012442;
+        Mon, 19 Oct 2020 12:55:05 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 09JHt2nP012434;
+        Mon, 19 Oct 2020 12:55:02 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Mon, 19 Oct 2020 12:55:02 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Joel Stanley <joel@jms.id.au>, Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arch@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] asm-generic: Force inlining of get_order() to work around gcc10 poor decision
+Message-ID: <20201019175502.GO2672@gate.crashing.org>
+References: <96c6172d619c51acc5c1c4884b80785c59af4102.1602949927.git.christophe.leroy@csgroup.eu> <CACPK8XfgK0Bj3sLjKCi80jS6vK34FN5BTkU8FvBGcMR=RQn4Xw@mail.gmail.com> <0bd0afae-f043-2811-944b-c94d90e231d2@csgroup.eu> <20201019083225.GN2672@gate.crashing.org> <188e00e1-ae41-693e-1d05-f8d87e7ee696@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201019170008.GA2701355@rani.riverdale.lan>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <188e00e1-ae41-693e-1d05-f8d87e7ee696@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 01:00:08PM -0400, Arvind Sankar wrote:
-> On Mon, Oct 19, 2020 at 05:11:19PM +0200, Joerg Roedel wrote:
-> > From: Joerg Roedel <jroedel@suse.de>
-> > 
-> > Check whether the hypervisor reported the correct C-bit when running as
-> > an SEV guest. Using a wrong C-bit position could be used to leak
-> > sensitive data from the guest to the hypervisor.
-> > 
-> > The check function is in arch/x86/kernel/sev_verify_cbit.S so that it
-> > can be re-used in the running kernel image.
-> > 
-> > Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> > ---
+On Mon, Oct 19, 2020 at 10:54:40AM +0200, Christophe Leroy wrote:
+> Le 19/10/2020 à 10:32, Segher Boessenkool a écrit :
+> >The kernel should just use __always_inline if that is what it *wants*;
+> >that is true here most likely.  GCC could perhaps improve its heuristics
+> >so that it no longer thinks these functions are often too big for
+> >inlining (they *are* pretty big, but not after basic optimisations with
+> >constant integer arguments).
 > 
-> > +
-> > +	/* Store value to memory and keep it in %r10 */
-> > +	movq	%r10, sev_check_data(%rip)
-> > +
+> Yes I guess __always_inline is to be added on functions like this defined 
+> in headers for exactly that, and that's the purpose of this patch.
 > 
-> Does there need to be a cache flush/invalidation between this and the
-> read below to avoid just reading back from cache, or will the hardware
-> take care of that?
+> However I find it odd that get_order() is outlined by GCC even in some 
+> object files that don't use it at all, for instance in fs/pipe.o
 
-Also, isn't it possible that the initial page tables we're running on
-have already been messed with and have the C-bit in the wrong location,
-so that this write happens decrypted?
+It is (arguably) too big too always inline if you do not consider that
+__builtin_constant_p will remove half of the function one way or
+another.  Not sure if that is what happens here, but now we have a PR
+(thanks!) and we will find out.
 
-> 
-> > +	/* Backup current %cr3 value to restore it later */
-> > +	movq	%cr3, %r11
-> > +
-> > +	/* Switch to new %cr3 - This might unmap the stack */
-> > +	movq	%rdi, %cr3
-> 
-> Does there need to be a TLB flush after this? When executed from the
-> main kernel's head code, CR4.PGE is enabled, and if the original page
-> mapping had the global bit set (the decompressor stub sets that in the
-> identity mapping), won't the read below still use the original encrypted
-> mapping if we don't explicitly flush it?
-> 
-> > +
-> > +	/*
-> > +	 * Compare value in %r10 with memory location - If C-Bit is incorrect
-> > +	 * this would read the encrypted data and make the check fail.
-> > +	 */
-> > +	cmpq	%r10, sev_check_data(%rip)
-> > +
-> > +	/* Restore old %cr3 */
-> > +	movq	%r11, %cr3
-> > +
-> > +	/* Check CMPQ result */
-> > +	je	3f
-> > +
-> > +	/*
-> > +	 * The check failed - Prevent any forward progress to prevent ROP
-> > +	 * attacks, invalidate the stack and go into a hlt loop.
-> > +	 */
-> > +	xorq	%rsp, %rsp
-> > +	subq	$0x1000, %rsp
-> > +2:	hlt
-> > +	jmp 2b
-> > +3:
-> > +#endif
-> > +	ret
-> > +SYM_FUNC_END(sev_verify_cbit)
-> > +
-> > -- 
-> > 2.28.0
-> > 
+
+Segher
