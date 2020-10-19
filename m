@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB041292AA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB75B292A9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730325AbgJSPmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:42:35 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:54974 "EHLO huawei.com"
+        id S1730286AbgJSPme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:42:34 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:54956 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730224AbgJSPme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730247AbgJSPme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Oct 2020 11:42:34 -0400
 Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id CD300BCC271466CF4279;
+        by Forcepoint Email with ESMTP id BE4A67AA0AF1ABCA8751;
         Mon, 19 Oct 2020 23:42:27 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 19 Oct 2020 23:42:17 +0800
+ 14.3.487.0; Mon, 19 Oct 2020 23:42:18 +0800
 From:   John Garry <john.garry@huawei.com>
 To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
@@ -25,9 +25,9 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <yeyunfeng@huawei.com>
 CC:     <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
         John Garry <john.garry@huawei.com>
-Subject: [PATCH 1/2] perf jevents: Tidy error handling
-Date:   Mon, 19 Oct 2020 23:38:27 +0800
-Message-ID: <1603121908-53543-2-git-send-email-john.garry@huawei.com>
+Subject: [PATCH 2/2] perf jevents: Add test for arch std events
+Date:   Mon, 19 Oct 2020 23:38:28 +0800
+Message-ID: <1603121908-53543-3-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1603121908-53543-1-git-send-email-john.garry@huawei.com>
 References: <1603121908-53543-1-git-send-email-john.garry@huawei.com>
@@ -39,150 +39,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is much duplication in the error handling for directory traversing
-for processing JSONs.
+Recently there was an undetected breakage for std arch event support.
 
-Factor out the common code to tidy a bit.
+Add support in "PMU events" testcase to detect such breakages.
+
+For this, the "test" arch needs has support added to process std arch
+events. And a test event is added for the test, ifself.
+
+Also add a few code comments to help understand the code a bit better.
 
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- tools/perf/pmu-events/jevents.c | 81 ++++++++++++++-------------------
- 1 file changed, 33 insertions(+), 48 deletions(-)
+ .../perf/pmu-events/arch/test/arch-std-events.json |  8 ++++++++
+ .../perf/pmu-events/arch/test/test_cpu/cache.json  |  5 +++++
+ tools/perf/pmu-events/jevents.c                    |  4 ++++
+ tools/perf/tests/pmu-events.c                      | 14 ++++++++++++++
+ 4 files changed, 31 insertions(+)
+ create mode 100644 tools/perf/pmu-events/arch/test/arch-std-events.json
+ create mode 100644 tools/perf/pmu-events/arch/test/test_cpu/cache.json
 
+diff --git a/tools/perf/pmu-events/arch/test/arch-std-events.json b/tools/perf/pmu-events/arch/test/arch-std-events.json
+new file mode 100644
+index 000000000000..43f6f729d6ae
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/test/arch-std-events.json
+@@ -0,0 +1,8 @@
++[
++    {
++        "PublicDescription": "Attributable Level 3 cache access, read",
++        "EventCode": "0x40",
++        "EventName": "L3_CACHE_RD",
++        "BriefDescription": "L3 cache access, read"
++    }
++]
+diff --git a/tools/perf/pmu-events/arch/test/test_cpu/cache.json b/tools/perf/pmu-events/arch/test/test_cpu/cache.json
+new file mode 100644
+index 000000000000..036d0efdb2bb
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/test/test_cpu/cache.json
+@@ -0,0 +1,5 @@
++[
++    {
++	 "ArchStdEvent": "L3_CACHE_RD"
++    }
++]
+\ No newline at end of file
 diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index e47644cab3fa..ed2374661665 100644
+index ed2374661665..6d099f645811 100644
 --- a/tools/perf/pmu-events/jevents.c
 +++ b/tools/perf/pmu-events/jevents.c
-@@ -1100,12 +1100,13 @@ static int process_one_file(const char *fpath, const struct stat *sb,
-  */
- int main(int argc, char *argv[])
- {
--	int rc, ret = 0;
-+	int rc, ret = 0, empty_map = 0;
- 	int maxfds;
- 	char ldirname[PATH_MAX];
- 	const char *arch;
- 	const char *output_file;
- 	const char *start_dirname;
-+	char *err_string_ext = "";
- 	struct stat stbuf;
- 
- 	prog = basename(argv[0]);
-@@ -1133,7 +1134,8 @@ int main(int argc, char *argv[])
- 	/* If architecture does not have any event lists, bail out */
- 	if (stat(ldirname, &stbuf) < 0) {
- 		pr_info("%s: Arch %s has no PMU event lists\n", prog, arch);
--		goto empty_map;
-+		empty_map = 1;
-+		goto err_close_eventsfp;
- 	}
- 
- 	/* Include pmu-events.h first */
-@@ -1150,75 +1152,58 @@ int main(int argc, char *argv[])
- 	 */
- 
- 	maxfds = get_maxfds();
--	mapfile = NULL;
- 	rc = nftw(ldirname, preprocess_arch_std_files, maxfds, 0);
--	if (rc && verbose) {
--		pr_info("%s: Error preprocessing arch standard files %s\n",
--			prog, ldirname);
--		goto empty_map;
--	} else if (rc < 0) {
--		/* Make build fail */
--		fclose(eventsfp);
--		free_arch_std_events();
--		return 1;
--	} else if (rc) {
--		goto empty_map;
--	}
-+	if (rc)
-+		goto err_processing_std_arch_event_dir;
- 
- 	rc = nftw(ldirname, process_one_file, maxfds, 0);
--	if (rc && verbose) {
--		pr_info("%s: Error walking file tree %s\n", prog, ldirname);
--		goto empty_map;
--	} else if (rc < 0) {
--		/* Make build fail */
--		fclose(eventsfp);
--		free_arch_std_events();
--		ret = 1;
--		goto out_free_mapfile;
--	} else if (rc) {
--		goto empty_map;
--	}
-+	if (rc)
-+		goto err_processing_dir;
+@@ -1162,6 +1162,10 @@ int main(int argc, char *argv[])
  
  	sprintf(ldirname, "%s/test", start_dirname);
  
- 	rc = nftw(ldirname, process_one_file, maxfds, 0);
--	if (rc && verbose) {
--		pr_info("%s: Error walking file tree %s rc=%d for test\n",
--			prog, ldirname, rc);
--		goto empty_map;
--	} else if (rc < 0) {
--		/* Make build fail */
--		free_arch_std_events();
--		ret = 1;
--		goto out_free_mapfile;
--	} else if (rc) {
--		goto empty_map;
--	}
++	rc = nftw(ldirname, preprocess_arch_std_files, maxfds, 0);
 +	if (rc)
-+		goto err_processing_dir;
++		goto err_processing_std_arch_event_dir;
++
+ 	rc = nftw(ldirname, process_one_file, maxfds, 0);
+ 	if (rc)
+ 		goto err_processing_dir;
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index d3517a74d95e..ad2b21591275 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -14,8 +14,10 @@
+ #include "util/parse-events.h"
  
- 	if (close_table)
- 		print_events_table_suffix(eventsfp);
+ struct perf_pmu_test_event {
++	/* used for matching against events from generated pmu-events.c */
+ 	struct pmu_event event;
  
- 	if (!mapfile) {
- 		pr_info("%s: No CPU->JSON mapping?\n", prog);
--		goto empty_map;
-+		empty_map = 1;
-+		goto err_close_eventsfp;
- 	}
++	/* used for matching against event aliases */
+ 	/* extra events for aliases */
+ 	const char *alias_str;
  
--	if (process_mapfile(eventsfp, mapfile)) {
-+	rc = process_mapfile(eventsfp, mapfile);
-+	fclose(eventsfp);
-+	if (rc) {
- 		pr_info("%s: Error processing mapfile %s\n", prog, mapfile);
- 		/* Make build fail */
--		fclose(eventsfp);
--		free_arch_std_events();
- 		ret = 1;
-+		goto err_out;
- 	}
- 
-+	free_arch_std_events();
-+	free(mapfile);
-+	return 0;
- 
--	goto out_free_mapfile;
--
--empty_map:
-+err_processing_std_arch_event_dir:
-+	err_string_ext = " for std arch event";
-+err_processing_dir:
-+	if (verbose || rc > 0) {
-+		pr_info("%s: Error walking file tree %s%s\n", prog, ldirname,
-+			err_string_ext);
-+		empty_map = 1;
-+	} else {
-+		ret = 1;
-+	}
-+err_close_eventsfp:
- 	fclose(eventsfp);
--	create_empty_mapping(output_file);
-+	if (empty_map)
-+		create_empty_mapping(output_file);
-+err_out:
- 	free_arch_std_events();
--out_free_mapfile:
- 	free(mapfile);
- 	return ret;
+@@ -78,6 +80,17 @@ static struct perf_pmu_test_event test_cpu_events[] = {
+ 		.alias_str = "umask=0,(null)=0x30d40,event=0x3a",
+ 		.alias_long_desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
+ 	},
++	{
++		.event = {
++			.name = "l3_cache_rd",
++			.event = "event=0x40",
++			.desc = "L3 cache access, read",
++			.long_desc = "Attributable Level 3 cache access, read",
++			.topic = "cache",
++		},
++		.alias_str = "event=0x40",
++		.alias_long_desc = "Attributable Level 3 cache access, read",
++	},
+ 	{ /* sentinel */
+ 		.event = {
+ 			.name = NULL,
+@@ -357,6 +370,7 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
  }
+ 
+ 
++/* Test that aliases generated are as expected */
+ static int test_aliases(void)
+ {
+ 	struct perf_pmu *pmu = NULL;
 -- 
 2.26.2
 
