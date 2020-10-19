@@ -2,176 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C635A292B62
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9A5292B63
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730587AbgJSQXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730434AbgJSQUy (ORCPT
+        id S1730509AbgJSQXo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Oct 2020 12:23:44 -0400
+Received: from smtprelay0115.hostedemail.com ([216.40.44.115]:45380 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730442AbgJSQV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:20:54 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27D2C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:20:54 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id n15so430372wrq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NquwAUtO1k5i5bPjA/6Py77lhQ8QXVvkcQCgWKnQuCs=;
-        b=og8ramQf9sUtFVbzkR2N1L5JVY7fl5vqFumGCX37IuFrwBZohlHS3fcDuQnKKbhvjg
-         YQ9vlyvZM2nvKNMmOXEFGTlCnErnK7KOQtO04/z5TEiF4HLnTcrq/faQk+3dOSiJhzp5
-         nq3Au8CWIfrbgBtVYnnMFi47NZ8mr/ADK/7kqD44xyhLYqGvLD8fLgmFAH+lneXwAF9c
-         ZV67QHyNwggh1+rhvJm/mYkOP6ZsQyx2b6ZrTpPI9xlmVt4hx4wOSPPutt+bXBH0dxY8
-         6UxvRt7DPAn9AucLUUHJVHilwnd6nx2wNbzhZImGn6UyXB92E6hKZ/kqEwEvHiBe2age
-         cvqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NquwAUtO1k5i5bPjA/6Py77lhQ8QXVvkcQCgWKnQuCs=;
-        b=VtfQNnE5NnGG2K8FWYdXqH9tC3pTjKgSuV1+TwCWurB6/Qp9Axk1lx/xCQAQmN/nuB
-         kCC9iDCWRyVsn07XS/KpZp9yJ2LuB+kxjacoI+18OgAHLevAZEiuPQOk22kQF8P0y4cd
-         HHDjG9nbWU1UDqWcX2/jAh4ZOkldfznIqGOFye+1RSHUfvzRQ0bONK/tILaCY4J7zbQH
-         bICULCcU6OiwcRQsQweGUxtIQNMmn+H/OVL4dF84wFDMAyIInlCj/+Q69VFPAuaU/64o
-         Kojr0OAXNgm2jqQlX9D8f7/mImYBU+6U1jlC6HufD3dyCk+fu0cM2mhVEQC9LQ3alyU+
-         vIPw==
-X-Gm-Message-State: AOAM533E9g2x1WRi7WjuDgyXuT155OI/KDGcoUcqGfrL/2Vs3sBhRLbY
-        s10BXyF7AiWI6QcaXzlnaHNOpLbahEhwbwmmDItlqg==
-X-Google-Smtp-Source: ABdhPJyFKRjTbf4Img22qvtoTOSEtWeI2Ns9xaDrFoggwFXR+1sUqnPcPhvQs+5FSwcEWBxD64/1RhjDNRiotLBTXzQ=
-X-Received: by 2002:adf:b19c:: with SMTP id q28mr327822wra.119.1603124453120;
- Mon, 19 Oct 2020 09:20:53 -0700 (PDT)
+        Mon, 19 Oct 2020 12:21:26 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 36D2E18029129;
+        Mon, 19 Oct 2020 16:20:54 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1513:1515:1516:1518:1521:1535:1543:1593:1594:1711:1730:1747:1777:1792:1981:2194:2199:2393:2559:2562:2828:2894:2897:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3871:3872:4321:5007:6119:6737:6738:7576:7903:8660:10004:10400:10450:10455:10848:11026:11232:11473:11657:11658:11914:12043:12048:12297:12555:12740:12895:12986:13138:13148:13230:13231:13439:14096:14097:14181:14659:14721:19904:19999:21080:21433:21611:21627:21939:21966:21972:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: rub62_36025de27238
+X-Filterd-Recvd-Size: 5430
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 19 Oct 2020 16:20:49 +0000 (UTC)
+Message-ID: <5964d734e81c198421bb7f6516dabcad37c1740d.camel@perches.com>
+Subject: Re: [PATCH] wireless: remove unneeded break
+From:   Joe Perches <joe@perches.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Christian Lamparter <chunkeey@gmail.com>, trix@redhat.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        ath9k-devel@qca.qualcomm.com, johannes.berg@intel.com,
+        emmanuel.grumbach@intel.com, luciano.coelho@intel.com,
+        linuxwifi@intel.com, chunkeey@googlemail.com, pkshih@realtek.com,
+        sara.sharon@intel.com, tova.mussai@intel.com,
+        nathan.errera@intel.com, lior2.cohen@intel.com, john@phrozen.org,
+        shaul.triebitz@intel.com, shahar.s.matityahu@intel.com,
+        Larry.Finger@lwfinger.net, zhengbin13@huawei.com,
+        christophe.jaillet@wanadoo.fr, yanaijie@huawei.com,
+        saurav.girepunje@gmail.com
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Date:   Mon, 19 Oct 2020 09:20:48 -0700
+In-Reply-To: <fb38b96a-b666-1a6d-211d-b79278a8d878@embeddedor.com>
+References: <20201019150507.20574-1-trix@redhat.com>
+         <b31478ea-979a-1c9c-65db-32325233a715@gmail.com>
+         <859112e91c3d221dc599e381dbaecb90dd6467a1.camel@perches.com>
+         <fb38b96a-b666-1a6d-211d-b79278a8d878@embeddedor.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <1602152121-240367-10-git-send-email-john.garry@huawei.com>
- <20201018085031.GK11647@shao2-debian> <CAP-5=fWg4W_fpu-uTZkh-ZoL_7nvqU4F_2LqQgKFvBkfn174HQ@mail.gmail.com>
- <602e6bb8-a4ac-fae7-ed61-edf252e08d9a@huawei.com>
-In-Reply-To: <602e6bb8-a4ac-fae7-ed61-edf252e08d9a@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 19 Oct 2020 09:20:41 -0700
-Message-ID: <CAP-5=fWuUVkn35Ep7TQpFvdVJHi8MntAAbRAXVCU_1bYM2rPeQ@mail.gmail.com>
-Subject: Re: [perf metricgroup] fcc9c5243c: perf-sanity-tests.Parse_and_process_metrics.fail
-To:     John Garry <john.garry@huawei.com>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linuxarm@huawei.com, LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        zhangshaokun@hisilicon.com, James Clark <james.clark@arm.com>,
-        linux-imx@nxp.com, 0day robot <lkp@intel.com>, lkp@lists.01.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 2:51 AM John Garry <john.garry@huawei.com> wrote:
->
-> On 19/10/2020 00:30, Ian Rogers wrote:
-> > On Sun, Oct 18, 2020 at 1:51 AM kernel test robot <rong.a.chen@intel.com> wrote:
-> >>
-> >> Greeting,
-> >>
-> >> FYI, we noticed the following commit (built with gcc-9):
-> >>
-> >> commit: fcc9c5243c478f104014daf4d23db86098d2aef0 ("perf metricgroup: Hack a fix for aliases when covering multiple PMUs")
-> >> url: https://github.com/0day-ci/linux/commits/John-Garry/perf-pmu-events-Support-event-aliasing-for-system-PMUs/20201008-182049
-> >>
-> >>
-> >> in testcase: perf-sanity-tests
-> >> version: perf-x86_64-c85fb28b6f99-1_20201008
-> >> with following parameters:
-> >>
-> >>          perf_compiler: gcc
-> >>          ucode: 0xdc
-> >>
-> >>
-> >>
-> >> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
-> >>
-> >> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> >
-> > I believe this is a Skylake and there is a known bug in the Skylake
-> > metric DRAM_Parallel_Reads as described here:
-> > https://lore.kernel.org/lkml/CAP-5=fXejVaQa9qfW66cY77qB962+jbe8tT5bsLoOOcFmODnWQ@mail.gmail.com/
-> > Fixing the bug needs more knowledge than what is available in manuals.
-> > Hopefully Intel can take a look.
-> >
-> > Thanks,
-> > Ian
->
-> So this named patch ("perf metricgroup: Hack a fix for aliases...") is
-> breaking test #67 on my machine also, which is a broadwell.
+On Mon, 2020-10-19 at 10:54 -0500, Gustavo A. R. Silva wrote:
+> On 10/19/20 10:21, Joe Perches wrote:
+> > On Mon, 2020-10-19 at 17:14 +0200, Christian Lamparter wrote:
+> > > On 19/10/2020 17:05, trix@redhat.com wrote:
+> > > > From: Tom Rix <trix@redhat.com>
+> > > > 
+> > > > A break is not needed if it is preceded by a return or goto
+> > > > 
+> > > > Signed-off-by: Tom Rix <trix@redhat.com>
+> > > > diff --git a/drivers/net/wireless/intersil/p54/eeprom.c b/drivers/net/wireless/intersil/p54/eeprom.c
+[]
+> > > > @@ -870,7 +870,6 @@ int p54_parse_eeprom(struct ieee80211_hw *dev, void *eeprom, int len)
+> > > >   			} else {
+> > > >   				goto good_eeprom;
+> > > >   			}
+> > > > -			break;
+> > > Won't the compiler (gcc) now complain about a missing fallthrough annotation?
+> 
+> Clang would definitely complain about this.
 
-Thanks for taking a look John. If you want help you can send the
-output of "perf test 67 -vvv" to me. It is possible Broadwell has
-similar glitches in the json to Skylake. I tested the original test on
-server parts as I can access them as cloud machines.
+As far as I can tell, clang 10.0.0 doesn't complain.
 
-> I will have a look, but I was hoping that Ian would have a proper fix
-> for this on top of ("perf metricgroup: Fix uncore metric expressions"),
-> which now looks to be merged.
+This compiles without fallthrough complaint
 
-I still have these changes to look at in my inbox but I'm assuming
-they're good :-) Sorry for not getting to them, but it's good they are
-merged.
+from make V=1 W=123 CC=clang drivers/net/wireless/intersil/p54/eeprom.o
+with -Wimplicit-fallthrough added
 
-Thanks,
-Ian
+$ clang -Wp,-MMD,drivers/net/wireless/intersil/p54/.eeprom.o.d  -nostdinc -isystem /usr/local/lib/clang/10.0.0/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -Qunused-arguments -DKBUILD_EXTRA_WARN1 -DKBUILD_EXTRA_WARN2 -DKBUILD_EXTRA_WARN3 -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Wno-format-security -std=gnu89 -no-integrated-as -Werror=unknown-warning-option -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -m64 -mno-80387 -mstack-alignment=8 -mtune=generic -mno-red-zone -mcmodel=kernel -DCONFIG_X86_X32_ABI -Wno-sign-compare -fno-asynchronous-unwind-tables -mretpoline-external-thunk -fno-delete-null-pointer-checks -Wno-address-of-packed-member -O2 -Wframe-larger-than=2048 -fstack-protector-strong -Wno-format-invalid-specifier -Wno-gnu -mno-global-merge -Wno-unused-const-variable -ftrivial-auto-var-init=pattern -pg -mfentry -DCC_USING_FENTRY -falign-functions=32 -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wno-array-bounds -fno-strict-overflow -fno-stack-check -Werror=date-time -Werror=incompatible-pointer-types -fcf-protection=none -Wextra -Wunused -Wno-unused-parameter -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wmissing-include-dirs -Wunused-const-variable -Wno-missing-field-initializers -Wno-sign-compare -Wno-type-limits -Wcast-align -Wdisabled-optimization -Wnested-externs -Wshadow -Wmissing-field-initializers -Wtype-limits -Wunused-macros -Wbad-function-cast -Wcast-qual -Wconversion -Wpacked -Wpadded -Wpointer-arith -Wredundant-decls -Wsign-compare -Wswitch-default     -fsanitize=kernel-address -mllvm -asan-mapping-offset=0xdffffc0000000000  -mllvm -asan-globals=1  -mllvm -asan-instrumentation-with-call-threshold=0  -mllvm -asan-stack=0   --param asan-instrument-allocas=1   -fsanitize-coverage=trace-pc -fsanitize-coverage=trace-cmp -Wimplicit-fallthrough    -DKBUILD_MODFILE='"drivers/net/wireless/intersil/p54/p54common"' -DKBUILD_BASENAME='"eeprom"' -DKBUILD_MODNAME='"p54common"' -c -o drivers/net/wireless/intersil/p54/eeprom.o drivers/net/wireless/intersil/p54/eeprom.c
 
-> Thanks!
->
-> >
-> >>
-> >>
-> >> If you fix the issue, kindly add following tag
-> >> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> >>
-> >>
-> >> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 67
-> >> 67: Parse and process metrics                             : FAILED!
-> >> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 68
-> >> 68: x86 rdpmc                                             : Ok
-> >> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 69
-> >> 69: Convert perf time to TSC                              : Ok
-> >> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 70
-> >> 70: DWARF unwind                                          : Ok
-> >> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 71
-> >> 71: x86 instruction decoder - new instructions            : Ok
-> >> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 72
-> >> 72: Intel PT packet decoder                               : Ok
-> >> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 73
-> >> 73: x86 bp modify                                         : Ok
-> >> 2020-10-16 19:31:53 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 74
-> >> 74: probe libc's inet_pton & backtrace it with ping       : Ok
-> >> 2020-10-16 19:31:54 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 75
-> >> 75: Zstd perf.data compression/decompression              : Ok
-> >>
-> >>
-> >>
-> >> To reproduce:
-> >>
-> >>          git clone https://github.com/intel/lkp-tests.git
-> >>          cd lkp-tests
-> >>          bin/lkp install job.yaml  # job file is attached in this email
-> >>          bin/lkp run     job.yaml
-> >>
-> >>
-> >>
-> >> Thanks,
-> >> Rong Chen
-> >>
-> > .
-> >
->
+
