@@ -2,70 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06BB2924A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD502924AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730427AbgJSJdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:33:37 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7813 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgJSJdh (ORCPT
+        id S1730435AbgJSJfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgJSJfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:33:37 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8d5d640000>; Mon, 19 Oct 2020 02:33:24 -0700
-Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 19 Oct
- 2020 09:33:35 +0000
-Subject: Re: [PATCH V2] cpufreq: tegra186: Fix initial frequency
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200824145907.331899-1-jonathanh@nvidia.com>
- <20200825055003.qfsuktsv7cyouxei@vireshk-i7>
- <09ac354e-a55b-5300-12ae-3f24c8f8b193@nvidia.com>
- <20201016040700.wzfegk7hmabxgpff@vireshk-i7>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <9c37db70-9406-8005-3478-dc4a5e94c566@nvidia.com>
-Date:   Mon, 19 Oct 2020 10:33:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 19 Oct 2020 05:35:22 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B16C0613CE;
+        Mon, 19 Oct 2020 02:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Zox4iuTUh5FhfHMfr5Q1+3mfA7F/sioi7RToa5+WOak=; b=1cTRPkWVb54NZZ9RoS/xBCH//y
+        bQ8J6UD4Msz4eTlusz0Mg0XUPKXXee9CpA39JXkycYwfkuyW38XvZxx+Ov+bC+orngC/knAgKRe+V
+        RSUEzGr/pQne1U7t+uJT4Ysxl9Fpg7ljYx9s0FfTJaon0FQp5khD6hZW6u9s5G0zQWlm88iGLMExl
+        F7eXrCeoL/Iljfckg/PyFFE4SBgQQ6pDjaupvcpSCYQez3wm478Lf2zsTglmh+ANgPSXtxSN1OpD6
+        gPVw+tJxsfEjTgFZbH/pINcQlGxLK7zMigefRp0S20SP1O49vayTSnvv+EhM8QiQl4oc6BbeVvwcB
+        veDuI0Gw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kURZL-0005n6-V6; Mon, 19 Oct 2020 09:35:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6C3083011E6;
+        Mon, 19 Oct 2020 11:35:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4E27A21447780; Mon, 19 Oct 2020 11:35:02 +0200 (CEST)
+Date:   Mon, 19 Oct 2020 11:35:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V3 2/9] x86/fpu: Refactor arch_set_user_pkey_access()
+ for PKS support
+Message-ID: <20201019093502.GH2628@hirez.programming.kicks-ass.net>
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-3-ira.weiny@intel.com>
+ <20201016105743.GK2611@hirez.programming.kicks-ass.net>
+ <20201017033202.GV2046448@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201016040700.wzfegk7hmabxgpff@vireshk-i7>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603100004; bh=VHebAihr/c2PZr14hnXiYRQ8vQU8fQUxo/cFXOuEh2Q=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=HeYT97qQVqeWGZlRuvP9OUi2vQMHWmf6sDJpAjzMVlda+bol8jjAc6qoVTlHXyoby
-         9VbybSpJYAOCJlRAUghNqlKXJzr9/nznf5NOpjUGX/5B9mpK4opUrdVSoF6JxlwAPI
-         UhCZdoUNe7l1ikkYYlPtcz5oh8R8o/tlj2qQGWTJw03rWqtPKhJtRyGFxZpBfzdzz0
-         D4B7Q1cbl0x8SRKc93A3fUjHLiTZYkpAbl6G2P0EdK+w8DnPejSMqNCWVsEMd1xKwQ
-         x6o3rI+FoybqTVElcjxzFY1lzHCfaGJu/C4cc2sYVgVpxx9W5WWReXPdC1bQ1W2DNM
-         6ZZ/KijI1WFWQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201017033202.GV2046448@iweiny-DESK2.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 16/10/2020 05:07, Viresh Kumar wrote:
-> On 15-10-20, 15:03, Jon Hunter wrote:
->> If not too late, would you mind dropping this patch for v5.10?
+On Fri, Oct 16, 2020 at 08:32:03PM -0700, Ira Weiny wrote:
+> On Fri, Oct 16, 2020 at 12:57:43PM +0200, Peter Zijlstra wrote:
+> > On Fri, Oct 09, 2020 at 12:42:51PM -0700, ira.weiny@intel.com wrote:
+> > > From: Fenghua Yu <fenghua.yu@intel.com>
+> > > 
+> > > Define a helper, update_pkey_val(), which will be used to support both
+> > > Protection Key User (PKU) and the new Protection Key for Supervisor
+> > > (PKS) in subsequent patches.
+> > > 
+> > > Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> > > ---
+> > >  arch/x86/include/asm/pkeys.h |  2 ++
+> > >  arch/x86/kernel/fpu/xstate.c | 22 ++++------------------
+> > >  arch/x86/mm/pkeys.c          | 21 +++++++++++++++++++++
+> > >  3 files changed, 27 insertions(+), 18 deletions(-)
+> > 
+> > This is not from Fenghua.
+> > 
+> >   https://lkml.kernel.org/r/20200717085442.GX10769@hirez.programming.kicks-ass.net
+> > 
+> > This is your patch based on the code I wrote.
 > 
-> It is already part of Linus's master now.
+> Ok, I apologize.  Yes the code below was all yours.
+> 
+> Is it ok to add?
+> 
+> Co-developed-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+> 
 
-OK, thanks. I will send a revert for this once rc1 is out.
-
-Cheers
-Jon
-
--- 
-nvpublic
+Sure, thanks!
