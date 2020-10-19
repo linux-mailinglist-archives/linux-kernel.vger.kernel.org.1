@@ -2,143 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFF129275F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 14:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABD1292767
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 14:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbgJSMeZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Oct 2020 08:34:25 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2987 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726336AbgJSMeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 08:34:25 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 47EBE7CE85F91DD3CCD3;
-        Mon, 19 Oct 2020 13:34:23 +0100 (IST)
-Received: from localhost (10.52.126.130) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 19 Oct
- 2020 13:34:22 +0100
-Date:   Mon, 19 Oct 2020 13:32:26 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     <linux-acpi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, <guohanjun@huawei.com>,
-        Will Deacon <will@kernel.org>, <linuxarm@huawei.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        <valentin.schneider@arm.com>
-Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
-Message-ID: <20201019123226.00006705@Huawei.com>
-In-Reply-To: <20201019103522.GK2628@hirez.programming.kicks-ass.net>
-References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
-        <20201019103522.GK2628@hirez.programming.kicks-ass.net>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1727173AbgJSMge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 08:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgJSMge (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 08:36:34 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C07C0613CE;
+        Mon, 19 Oct 2020 05:36:33 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id j18so5955472pfa.0;
+        Mon, 19 Oct 2020 05:36:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+IfHdmrtrv7otmFjk0VFjYsi8am5SoJYfDZn7Odg9ks=;
+        b=FCxvk7rIOyC+X6GUmHiNsy0mJ/C9wmgoMDAVThoszbRGA2kcJWbqvt4whfWZuMrd3e
+         pJR/v5PyRCz0/ECXgA5r8ao3jxGp+fHhqymslaoXyibzydh2Y4NXRzciL4TBAXHtPKlJ
+         amiZiaCoKXzzwQbvFUOyfqukdrOPUB3ABlW5Tpd2Fj2g11Mn4wXbtPGjSIIdsQM8Qwud
+         KBq3VSPZP5+d87/tnJIuj3XWxb+/sBg+ttZW2bBP8k1Ze7w0n5DPEM+RsPg9urqJE/2W
+         n30OG5mx/hcjNfr+MjHHsBwrblqTxbCp6A8q4THVyjqyGbCLhM9xrmgkTq3IZzO6Dcib
+         bzlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+IfHdmrtrv7otmFjk0VFjYsi8am5SoJYfDZn7Odg9ks=;
+        b=b25/GSCLvWRR2Sf7D6VPDBtHxBfS/V1VQUwFrTcdPopBtEHzAg39PdeCmRHVJz6qfR
+         5FZQvz9qrkXBymBQ/6lNb1ENGjlCxIBfyKECLH4xfSKT/i1U9oFmat5L9bJFmeIkb+iU
+         VuHN9CmfiMZhBK9P8/3+cAmRaaRRfiGj+yp+fvpeyoxAqFFhVmimu/n2GINkSAnUpM1F
+         bu2BTJEm7SBU1TGT0Asd6JxzxNDKZeW8IHH1r5mUqbTg8RNl0vFP1Q+lGu29naHwSzxL
+         3g/oRfnnO5i1jaizE0y3LU4xFer8WFWX1ul+J+/yvs0vN0gpG2Jzw9MXq57/25060bL8
+         goew==
+X-Gm-Message-State: AOAM531j+TePSA9Azcs1tlMvp+77cDEUVgEYTKGv3bo+zv6d6eI/jYWK
+        KVaZ92THl/pmlFgg1xgYTw==
+X-Google-Smtp-Source: ABdhPJwqR7O6RVpQ3SkuAp7z4wPratZdwY+vM2/A2iDJoPq+hvwPjuNkA46qkJFjR9qkIgh9rfMW7Q==
+X-Received: by 2002:a63:560a:: with SMTP id k10mr14086693pgb.350.1603110993220;
+        Mon, 19 Oct 2020 05:36:33 -0700 (PDT)
+Received: from [127.0.0.1] ([103.7.29.7])
+        by smtp.gmail.com with ESMTPSA id a11sm3681517pfn.125.2020.10.19.05.36.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 05:36:32 -0700 (PDT)
+Subject: Re: [PATCH v4] KVM: Check the allocation of pv cpu mask
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        Haiwei Li <lihaiwei@tencent.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201017175436.17116-1-lihaiwei.kernel@gmail.com>
+ <87r1pu4fxv.fsf@vitty.brq.redhat.com>
+From:   Haiwei Li <lihaiwei.kernel@gmail.com>
+Message-ID: <0330c9df-7ede-815b-0e6e-10fb883eda35@gmail.com>
+Date:   Mon, 19 Oct 2020 20:36:22 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.52.126.130]
-X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+In-Reply-To: <87r1pu4fxv.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Oct 2020 12:35:22 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+On 20/10/19 19:23, Vitaly Kuznetsov wrote:
+> lihaiwei.kernel@gmail.com writes:
+> 
+>> From: Haiwei Li <lihaiwei@tencent.com>
+>>
+>> check the allocation of per-cpu __pv_cpu_mask. Init
+>> 'send_IPI_mask_allbutself' only when successful and check the allocation
+>> of __pv_cpu_mask in 'kvm_flush_tlb_others'.
+>>
+>> Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+>> ---
+>> v1 -> v2:
+>>   * add CONFIG_SMP for kvm_send_ipi_mask_allbutself to prevent build error
+>> v2 -> v3:
+>>   * always check the allocation of __pv_cpu_mask in kvm_flush_tlb_others
+>> v3 -> v4:
+>>   * mov kvm_setup_pv_ipi to kvm_alloc_cpumask and get rid of kvm_apic_init
+>>
+>>   arch/x86/kernel/kvm.c | 53 +++++++++++++++++++++++++++++--------------
+>>   1 file changed, 36 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+>> index 42c6e0deff9e..be28203cc098 100644
+>> --- a/arch/x86/kernel/kvm.c
+>> +++ b/arch/x86/kernel/kvm.c
+>> @@ -547,16 +547,6 @@ static void kvm_send_ipi_mask_allbutself(const struct cpumask *mask, int vector)
+>>   	__send_ipi_mask(local_mask, vector);
+>>   }
+>>   
+>> -/*
+>> - * Set the IPI entry points
+>> - */
+>> -static void kvm_setup_pv_ipi(void)
+>> -{
+>> -	apic->send_IPI_mask = kvm_send_ipi_mask;
+>> -	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
+>> -	pr_info("setup PV IPIs\n");
+>> -}
+>> -
+>>   static void kvm_smp_send_call_func_ipi(const struct cpumask *mask)
+>>   {
+>>   	int cpu;
+>> @@ -619,6 +609,11 @@ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
+>>   	struct kvm_steal_time *src;
+>>   	struct cpumask *flushmask = this_cpu_cpumask_var_ptr(__pv_cpu_mask);
+>>   
+>> +	if (unlikely(!flushmask)) {
+>> +		native_flush_tlb_others(cpumask, info);
+>> +		return;
+>> +	}
+>> +
+>>   	cpumask_copy(flushmask, cpumask);
+>>   	/*
+>>   	 * We have to call flush only on online vCPUs. And
+>> @@ -732,10 +727,6 @@ static uint32_t __init kvm_detect(void)
+>>   
+>>   static void __init kvm_apic_init(void)
+>>   {
+>> -#if defined(CONFIG_SMP)
+>> -	if (pv_ipi_supported())
+>> -		kvm_setup_pv_ipi();
+>> -#endif
+>>   }
+> 
+> Do we still need the now-empty function?
 
-> On Fri, Oct 16, 2020 at 11:27:02PM +0800, Jonathan Cameron wrote:
-> > Both ACPI and DT provide the ability to describe additional layers of
-> > topology between that of individual cores and higher level constructs
-> > such as the level at which the last level cache is shared.
-> > In ACPI this can be represented in PPTT as a Processor Hierarchy
-> > Node Structure [1] that is the parent of the CPU cores and in turn
-> > has a parent Processor Hierarchy Nodes Structure representing
-> > a higher level of topology.
-> > 
-> > For example Kunpeng 920 has clusters of 4 CPUs.  These do not share
-> > any cache resources, but the interconnect topology is such that
-> > the cost to transfer ownership of a cacheline between CPUs within
-> > a cluster is lower than between CPUs in different clusters on the same
-> > die.   Hence, it can make sense to deliberately schedule threads
-> > sharing data to a single cluster.
-> > 
-> > This patch simply exposes this information to userspace libraries
-> > like hwloc by providing cluster_cpus and related sysfs attributes.
-> > PoC of HWLOC support at [2].
-> > 
-> > Note this patch only handle the ACPI case.
-> > 
-> > Special consideration is needed for SMT processors, where it is
-> > necessary to move 2 levels up the hierarchy from the leaf nodes
-> > (thus skipping the processor core level).  
-
-Hi Peter,
+It's not necessary. I will remove it.
 
 > 
-> I'm confused by all of this. The core level is exactly what you seem to
-> want.
+>>   
+>>   static void __init kvm_init_platform(void)
+>> @@ -765,10 +756,18 @@ static __init int activate_jump_labels(void)
+>>   }
+>>   arch_initcall(activate_jump_labels);
+>>   
+>> +static void kvm_free_cpumask(void)
+>> +{
+>> +	unsigned int cpu;
+>> +
+>> +	for_each_possible_cpu(cpu)
+>> +		free_cpumask_var(per_cpu(__pv_cpu_mask, cpu));
+>> +}
+>> +
+>>   static __init int kvm_alloc_cpumask(void)
+>>   {
+>>   	int cpu;
+>> -	bool alloc = false;
+>> +	bool alloc = false, alloced = true;
+>>   
+>>   	if (!kvm_para_available() || nopv)
+>>   		return 0;
+>> @@ -783,10 +782,30 @@ static __init int kvm_alloc_cpumask(void)
+>>   
+>>   	if (alloc)
+>>   		for_each_possible_cpu(cpu) {
+>> -			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
+>> -				GFP_KERNEL, cpu_to_node(cpu));
+>> +			if (!zalloc_cpumask_var_node(
+>> +				per_cpu_ptr(&__pv_cpu_mask, cpu),
+>> +				GFP_KERNEL, cpu_to_node(cpu))) {
+>> +				alloced = false;
+>> +				break;
+>> +			}
+>>   		}
+>>   
+>> +#if defined(CONFIG_SMP)
+>> +	/* Set the IPI entry points */
+>> +	if (pv_ipi_supported()) {
+> 
+> What if we define pv_ipi_supported() in !CONFIG_SMP case as 'false'?
+> 
+> The code we have above:
+> 
+>          if (pv_tlb_flush_supported())
+> 		alloc = true;
+> 
+> #if defined(CONFIG_SMP)
+>          if (pv_ipi_supported())
+> 		alloc = true;
+> #endif
+> 
+>        	if (alloc)
+> ...
+> 
+> will transform into 'if (pv_tlb_flush_supported() ||
+> pv_ipi_supported())' and we'll get rid of 'alloc' variable.
+> 
+> Also, we can probably get rid of this new 'alloced' variable and switch
+> to checking if the cpumask for the last CPU in cpu_possible_mask is not
+> NULL.
 
-It's the level above the core, whether in an multi-threaded core
-or a single threaded core.   This may correspond to the level
-at which caches are shared (typically L3).  Cores are already well
-represented via thread_siblings and similar.  Extra confusion is that
-the current core_siblings (deprecated) sysfs interface, actually reflects
-the package level and ignores anything in between core and
-package (such as die on x86)
+Get it. It's a good point. I will do it. Thanks for your patience and 
+kindness.
 
-So in a typical system with a hierarchical interconnect you would have
+>   
+>> +		apic->send_IPI_mask = kvm_send_ipi_mask;
+>> +		if (alloced)
+>> +			apic->send_IPI_mask_allbutself =
+>> +				kvm_send_ipi_mask_allbutself;
+>> +		pr_info("setup PV IPIs\n");
+> 
+> I'd rather not set 'apic->send_IPI_mask = kvm_send_ipi_mask' in case we
+> failed to alloc cpumask too. It is weird that in case of an allocation
+> failure *some* IPIs will use the PV path and some won't. It's going to
+> be a nightmare to debug.
 
-thread
-core
-cluster (possibly multiple layers as mentioned in Brice's reply).
-die
-package
+Agree. And 'pv_ops.mmu.tlb_remove_table = tlb_remove_table' should not 
+be set either. What do you think? Thanks.
 
-Unfortunately as pointed out in other branches of this thread, there is
-no consistent generic name.  I'm open to suggestions!
-
-Both ACPI PPTT and DT provide generic structures to represent layers of
-topology.   They don't name as such, but in ACPI there are flags to indicate
-package, core, thread. 
-
-For example, in zen2 this would correspond to a 'core complex' consisting
-4 CPU cores (each one 2 threads) sharing some local L3 cache.
-https://en.wikichip.org/wiki/amd/microarchitectures/zen_2
-In zen3 it looks like this level will be the same as that for the die.
-
-Given they used the name in knights landing (and as is pointed out in
-another branch of this thread, it's the CPUID description) I think Intel
-calls these 'tiles' (anyone confirm that?) 
-
-A similar concept exists for some ARM processors. 
-https://en.wikichip.org/wiki/hisilicon/microarchitectures/taishan_v110
-CCLs in the diagram on that page.
-
-Centriq 2400 had 2 core 'duplexes' which shared l2.
-https://www.anandtech.com/show/11737/analyzing-falkors-microarchitecture-a-deep-dive-into-qualcomms-centriq-2400-for-windows-server-and-linux/3
-
-From the info release at hotchips, it looks like the thunderx3 deploys
-a similar ring interconnect with groups of cores, each with 4 threads.
-Not sure what they plan to call them yet though or whether they will chose
-to represent that layer of the topology in their firmware tables.
-
-Arms CMN600 interconnect also support such 'clusters' though I have no idea
-if anyone has used it in this form yet.  In that case, they are called
-"processor compute clusters"
-https://developer.arm.com/documentation/100180/0103/
-
-Xuantie-910 is cluster based as well (shares l2).
-
-So in many cases the cluster level corresponds to something we already have
-visibility of due to cache sharing etc, but that isn't true in kunpeng 920.
-
-Thanks,
-
-Jonathan
-
-
+     Haiwei Li
