@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279572926CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D7F2926D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728380AbgJSLxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728369AbgJSLxe (ORCPT
+        id S1726977AbgJSLy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:54:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45166 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726249AbgJSLy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:53:34 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E5AC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 04:53:31 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id n9so5880045pgt.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 04:53:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EAcwqmNfAmwXwu0i3bIxz+R5/n4Ik+l7yKLbYmcgPlU=;
-        b=NOmBCwJXEnbqMWKYp9EX+FUE3rN7d6I9+W7Ynhnl4DEacejiUrwDLCdRnPBa/GxfLs
-         ew0NegylxLreYjG5HPKEKbOIvmzALCiwkoe/KKmhRfW1cGRSwAcWwN2/tt960eRMzSpC
-         JIgxoo11zZU75AgazfyIL26vlZTXCDcH4R1f4nO6AOW/wFxCevWNAdvIdSK7udmaTZ9d
-         rxbG7nb9UQ4pxhKVwB8bpH8NJwSrjU36VZaF37q25K3/3pFZ0H8lhC8Wdd5iyNZEWOj3
-         z1pZ8LTm+iLjkCPGpEtxgNczwDi3myTAoKIQt3RGVNQnImg2UlvxoZgfWt2hbnsP25kw
-         QVsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EAcwqmNfAmwXwu0i3bIxz+R5/n4Ik+l7yKLbYmcgPlU=;
-        b=tRzvu/7fUNWXvLglOx5w1f5edQWcrVZl6uIzyt7Cfz3xNqZl8q4aKxwXAq9dwD52b5
-         k3iRqM4vCT8S6DVK62tvOlIQFSiimCn57BWc8vBOFe4fgWMRAM33GAkV+tt47VGKfFjE
-         ZJu2uTpzqfxNeQHyk7taZ+I++3747dYUINevnOdV0Upcll9vGEN68dYtHjbt/Q568Mzd
-         Q1i4cptvSalkvlJzKOxg81J6nNWP+wrrGyPKY1FP+q47/BDt6mL4jwj8bciEX/87341y
-         dvR2S8Pcma3zLQc812zZPoZcLH6uHwVFqm8BfncpPgPan0CQPqIVeFb2EvzFwpuwWl9i
-         VkeA==
-X-Gm-Message-State: AOAM5330UjwM6G/bN4Ck2Tn3MhVqzXxjA/9SDbzBma2nxFan+tPWXsQa
-        t+xcisdVDyGwcNp2wPy/5NKwqVTaMsrGvQ==
-X-Google-Smtp-Source: ABdhPJzLV5deOuiOvJDiKiswUd9e+45wYwwm0xVwiV3R4XXfSmm1D60wGrwFS//kaC1mgMkBVkh4oA==
-X-Received: by 2002:a65:5c86:: with SMTP id a6mr13918432pgt.227.1603108411168;
-        Mon, 19 Oct 2020 04:53:31 -0700 (PDT)
-Received: from nebulus.mtv.corp.google.com ([2620:15c:211:200:4a0f:cfff:fe35:d61b])
-        by smtp.gmail.com with ESMTPSA id w68sm12128099pfb.108.2020.10.19.04.53.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 04:53:30 -0700 (PDT)
-From:   Mark Salyzyn <salyzyn@android.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com, John Stultz <john.stultz@linaro.org>,
-        Mark Salyzyn <salyzyn@google.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH v16 4/4] overlayfs: inode_owner_or_capable called during execv
-Date:   Mon, 19 Oct 2020 04:52:39 -0700
-Message-Id: <20201019115239.2732422-5-salyzyn@android.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-In-Reply-To: <20201019115239.2732422-1-salyzyn@android.com>
-References: <20201019115239.2732422-1-salyzyn@android.com>
+        Mon, 19 Oct 2020 07:54:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603108495;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=syJyp0LZAACFoq8I2v22ukFUQBSHrf8TktVNFyazXaM=;
+        b=NKc+eQg40hb5VyDZ0jACx6jOtv/LayqfyqvFHXpIGF/9GY0LvjpmcH2r/9Iz+tZ6h1CUb6
+        zl1KuxGWVBgdkw1FS5xoPCOOhYgH2EKBQtaPDDC4/mY6w1sD9n0dWWKR6oUiwmCIZiljfp
+        czWj0mUoT/jy/F0xUNe+jp8lQFcLeWA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-PE9Of15rPs6GGKWQecEMog-1; Mon, 19 Oct 2020 07:54:51 -0400
+X-MC-Unique: PE9Of15rPs6GGKWQecEMog-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30F3418A8220;
+        Mon, 19 Oct 2020 11:54:50 +0000 (UTC)
+Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 185AD6EF41;
+        Mon, 19 Oct 2020 11:54:46 +0000 (UTC)
+Subject: Re: [PATCH v3] mm/compaction: Rename 'start_pfn' to
+ 'iteration_start_pfn' in compact_zone()
+To:     yanfei.xu@windriver.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        pankaj.gupta.linux@gmail.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20201019115044.1571-1-yanfei.xu@windriver.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <2dfd5820-ca92-8a73-6dcb-00b6ce6c735a@redhat.com>
+Date:   Mon, 19 Oct 2020 13:54:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201019115044.1571-1-yanfei.xu@windriver.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Stultz <john.stultz@linaro.org>
+On 19.10.20 13:50, yanfei.xu@windriver.com wrote:
+> From: Yanfei Xu <yanfei.xu@windriver.com>
+> 
+> There are two 'start_pfn' declared in compact_zone() which have
+> different meaning. Rename the second one to 'iteration_start_pfn'
+> to prevent confusion.
+> 
+> BTW, remove an useless semicolon.
+> 
+> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> Acked-by: David Hildenbrand <david@redhat.com>
 
-Using old_creds as an indication that we are not overriding the
-credentials, bypass call to inode_owner_or_capable.  This solves
-a problem with all execv calls being blocked when using the caller's
-credentials.
+^ huh, where does that come from? (you should only add acks in case they
+were explicitly spelled out)
 
-Signed-off-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Mark Salyzyn <salyzyn@google.com>
-Fixes: 05acefb4872da ("ovl: check permission to open real file")
-To: linux-fsdevel@vger.kernel.org
-To: linux-unionfs@vger.kernel.org
-Cc: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-security-module@vger.kernel.org
-Cc: kernel-team@android.com
+Anyhow, now you can keep it :)
 
-v16 - introduced fix over rebased series
----
- fs/overlayfs/file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: David Hildenbrand <david@redhat.com>
 
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index b1357bb067d9..9ab9663b02d8 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -53,7 +53,7 @@ static struct file *ovl_open_realfile(const struct file *file,
- 	err = inode_permission(realinode, MAY_OPEN | acc_mode);
- 	if (err) {
- 		realfile = ERR_PTR(err);
--	} else if (!inode_owner_or_capable(realinode)) {
-+	} else if (old_cred && !inode_owner_or_capable(realinode)) {
- 		realfile = ERR_PTR(-EPERM);
- 	} else {
- 		realfile = open_with_fake_path(&file->f_path, flags, realinode,
+
 -- 
-2.29.0.rc1.297.gfa9743e501-goog
+Thanks,
+
+David / dhildenb
 
