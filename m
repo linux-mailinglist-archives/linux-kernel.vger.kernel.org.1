@@ -2,83 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78FB292EBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBEA292EBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729474AbgJSTqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:46:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32263 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728196AbgJSTqi (ORCPT
+        id S1731150AbgJSTrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:47:32 -0400
+Received: from sonic309-21.consmr.mail.ne1.yahoo.com ([66.163.184.147]:41062
+        "EHLO sonic309-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728228AbgJSTrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:46:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603136797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=Z3Uaguy4PFk7zRxrw5xvopojDJel6cr7qQmABwkgRi0=;
-        b=GjCqXM1hoBfT2EiHe+YIFDt225dzvR6B7gx90xY82RhQpxmvs8i1jnb9a9pviCrqtXjpg4
-        VeK+f1IMAiUV9AZsJ4SLx7bMdtItLiAgf/Qu53FmoG0kIz1da5oT8AioxJd1fblJa1y4Tt
-        4X/zihdv8lZbIEyChs7Y5pHuaAkdBR4=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-338-P-mHY863MZeHv6smRGU4_w-1; Mon, 19 Oct 2020 15:46:33 -0400
-X-MC-Unique: P-mHY863MZeHv6smRGU4_w-1
-Received: by mail-qt1-f197.google.com with SMTP id h31so740308qtd.14
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:46:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Z3Uaguy4PFk7zRxrw5xvopojDJel6cr7qQmABwkgRi0=;
-        b=pTFTciObdq5DIu0O7sHhTIA/ssc4b5B16SuBccOvGRDqs+6uGrAJ5yn6NQg0yuF+Z/
-         2VbojfmDQpDBlf5s85h3tr5qbTcH2oY9zhAakBroWR8HOaeeK+1Ooq1GjPhnwpISoq7t
-         ne1eGh1B4Bc2IzX5QIJFnvD+o5o1Ywdx7Wl2DQQogLMG8PdRXXGvWO5Sg5PV/jsZDUC6
-         kkKbwh5COm1W6QGlUfxjC+3rP9KmabiDkfVvGUYbFKEdNUzGjMY2PAgSDSnisXCMNVe7
-         RxDqpLIx23i/qhj/qhngev4ZT2lP9PWy65B9eVPbJ1WcvID8K+OndvXDgdfEP3k4f8i7
-         Ed6Q==
-X-Gm-Message-State: AOAM531+aj/RwpffuooDVevnzO3i+FEaY4UIT13hfn3286lvzl5iV56I
-        yej+uug3A3LiQy7nEMH9/wiKvzr08GsRfkLEHvdkluXGHo42LMCpgOKttT2tBBgPZKOYeCw7UNG
-        QxlDD0VNGFMoONkDiIC6RFGrR
-X-Received: by 2002:ac8:688b:: with SMTP id m11mr1075087qtq.177.1603136793002;
-        Mon, 19 Oct 2020 12:46:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPXjLjBdBx9FQbkQGR60NJWf1BsDk5g87MBk0Rv1aYtAC1pfI2thPSbrgRj4hNgFrRHpT4sg==
-X-Received: by 2002:ac8:688b:: with SMTP id m11mr1075070qtq.177.1603136792808;
-        Mon, 19 Oct 2020 12:46:32 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id t140sm445830qke.100.2020.10.19.12.46.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 12:46:32 -0700 (PDT)
-From:   trix@redhat.com
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] char: lp: remove unneeded break
-Date:   Mon, 19 Oct 2020 12:46:28 -0700
-Message-Id: <20201019194628.14731-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Mon, 19 Oct 2020 15:47:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603136851; bh=wMqcY+1+xzZpq40CBU4bY3tP7WHdEhFlqGtQtFHhz5U=; h=Date:From:Reply-To:Subject:References:From:Subject; b=r17DO8AD3L8WNj6hAKcum/nlKK3gIylBdp0ZR/KkfLu1XopYsw6GSDPCLyZTpAI88d3SgVuHkn3SBJ31SwgXrOs7ZjOIoKMk+YBjkrWHxyR5IRv14TX08T1OBgidU9Hjyv7cNHjXHBgx9fs7M6joV55t4E+hOcWQ8RGsTCheMTTUiRqPcjwbYiBs7TYdxUnYpLv0oMsm0OAHQPVAcQUD7DbS9ZBsx75lDbYmylfB9TEud+rZW3kxJrOvHerBdCyAMboBwInKZHa4TCvebJIlidoL5qAJgxarwjxqrmebhW9Kau6hW/CYoDeBvUPekXG0wkqi3SPCdF+vY820xiHWwg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603136851; bh=xErx/nqwuisZhbKdJ6VXgRUzhx6MddOmTa2fKZzS6B0=; h=Date:From:Subject; b=EWp2sf4fbKAHDoUMD/gbvKMAPefKxQ5Xn1ilMH281+GSCSrkmw08VpWgAGbBy+fqXIljcjak+CuGAAJnZZQgPDPGU0zif91RMOcLTtCn1ffZk5OfbCiq+vBoqLGiP3PMFmG31jD3URgWsVYIFm+74t/eftQjCb026kXhCk2FwmJykBT+L8RkgiQX5ft9Fvis4S/OaMwg96uxjF/QtcJ2qrEkLsQJUBoAz10uKX+p8+YG6Qzvj7+5ZHMMpqlrsep6S9Kkp9zs1v+jJanf+BTZTCA8bzEuA7TmZiJb8AJjD+kwrJv+WDjT9Ufy3Q3x2CQ6oNTrA58FyM45NxbUON24RQ==
+X-YMail-OSG: fIVXydgVM1l6Pz9LA12j8JlEvpzRLTcPyPcTy2By_gfjHxO_b.QaMnU6QLZqNxz
+ vtQH6xZlRVmmAuUZtdL4Yf1ZT5yMSq3iDFXDk1y0jZqtggzC1nCbu6C.AY1JMzen6ObdEAeHTlfN
+ DQfCR1psL7xZ1T_EX7iw.vBxnSyGxHfjHjRN15pPJ2ThZ476FQsMH.DggCVRtuzlNlT5ozj2IZwT
+ DmEXmdJYO0oRR_bgLae.RsGquKBur56CC_5rk6saenHJnBIAa85hBsQkKfqUe7D1pRjWBeH2F.sN
+ K0nSOixY2t4YOtfp_lxPzIDmS.EEqfBSSjrFcXm83lO68pC8cN3oScAYiQD_oD0DyDd3z5FNEEH.
+ 3aW7xUJqdHw5CcJ9INTYhGZlZ7ajjXyp5QTVL_HDoNV4FavJM5CK1.xoF6OOacep3Lx0u.HAfzq_
+ bZTp_X6nz26O5SLNXT45.72UIok3LHDe8_VcHxn_t4UJHqcGRRVxBt7XcqoZCx3Y4KvrpkfWTwF6
+ CoGErC4Tw61gWFZ_dYSk9lFh3TRP1k1GMZvZk2u8Z6razUuBK6ouyGiCMpv6H2Caekv_IEdcUJmK
+ ROQKhQoi.4CXQwXVw451Cz1LMmBuiPhNtOE3kog_gQIu98nEIaNG7LKyUpcDrn_UWKy0HPaCfk.w
+ J47nKEpfssbGCvfuhxHGkcCPZHx4dqaTTQK8UvFYQHXGR_M.jmay40Ij5dmrF1LWATscHJWIjlVe
+ ppaYuySKwiaiVF6iml83iUZjiWPUMF4IhP4aa9u2emAdeFGVi1XRNAExhlDspT8AMNSJsjRLWoxO
+ Ve5Ci4Ez6XorZpRGHCzdvxDwjVF_3UqpRGtYy8aXZq7lxmmjC5Ubt9asQ9oxfC.QDDrAjlp1T6ka
+ z7RcejfGBwwYozF8w8X5.ovdToI5ECVAT5Rk8zcIwS7ikHyf5YUUVeREpS3a.C1zOnpy5hUXYFIu
+ CmWnnTQ5jvq8uhGCyL4Bbk0KdppOXaoG2BmsNN3FSfDHq3JEZlsyuK4pBaVKGv3wdSzbaw67gHRZ
+ 3s3toiZlZoP0rsa3A0IIVpUxV5GlVuWnG7s_LVJHN60OubTx4ARz9ell7DCecVCFwRKcsfEY0adt
+ EsHfrQfNSkrPBhftGGDbpfXVVg7fvGLhKvuqa3tcPpf1TDN1VAR3gmDu8wqo.W_ymL3aPYva1Hc4
+ TKDgfuYODeqaGfDf1IYqY9HYI1LImXTZBc6KU54G6xB14_b5h6Oxj9HpxiXGw7Tknp0Ve93TK7T2
+ 5viqExdB77cIXlx6ff6qdTF.bVBII3pQu_5._sdBWOC6clJGWzFnsN7ukW5aAprD17wRmEx1hq5B
+ iGxaSOzNQkkzOe2_CfU94edvRqG2TLhXVy4jC51nOMieIeBpdNDvlYLrGYHZmP_ogrI2gcM69L_C
+ VFRdiTAv.OoGaUSPTbcmWNFqgkne2XIHtHWna29rmG7bgL4vnd9Plr23VY05hUiYW6XXVXBmZfaA
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Mon, 19 Oct 2020 19:47:31 +0000
+Date:   Mon, 19 Oct 2020 19:47:29 +0000 (UTC)
+From:   CUSTOMER CENTER <customercenter739@gmail.com>
+Reply-To: customercenter739@gmail.com
+Message-ID: <1464613815.1194965.1603136849633@mail.yahoo.com>
+Subject: Greetings to you
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1464613815.1194965.1603136849633.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16868 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:79.0) Gecko/20100101 Firefox/79.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
 
-A break is not needed if it is preceded by a return
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/char/lp.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/char/lp.c b/drivers/char/lp.c
-index 0ec73917d8dd..862c2fd933c7 100644
---- a/drivers/char/lp.c
-+++ b/drivers/char/lp.c
-@@ -622,7 +622,6 @@ static int lp_do_ioctl(unsigned int minor, unsigned int cmd,
- 			break;
- 		case LPSETIRQ:
- 			return -EINVAL;
--			break;
- 		case LPGETIRQ:
- 			if (copy_to_user(argp, &LP_IRQ(minor),
- 					sizeof(int)))
--- 
-2.18.1
-
+Greetings to you
+We are writing this letter to you from LinkedIn Company we know that
+this message may come to you as a surprise you have
+been selected as our new-branch manager in your country; for more
+about the position reply us via this E-mail:
+(info.customer01@consultant.com)The position cannot stop your business
+or the work you are doing already.
+Regards.Mr.Jeff.
+Whatsapp +16205060599
