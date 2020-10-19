@@ -2,178 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7482925DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C142925E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgJSKbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:31:06 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:33883 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726791AbgJSKbF (ORCPT
+        id S1727155AbgJSKdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726791AbgJSKdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:31:05 -0400
-Received: by mail-wm1-f65.google.com with SMTP id k21so1768294wmi.1;
-        Mon, 19 Oct 2020 03:31:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y7i1TyZUzmXRsY5pIxFL2MFRDCxpc5Am6FYuPxwF2JM=;
-        b=dOlj1cc4iHLM7eX8S2LYO+Ix7GuvosGE/z4PSID6oCz1x4bRjNaRbfazpr5eiPX/ns
-         0mfAhI/7rfw3U5DOof9ywhT1ShNDqAUbVthUUKGVto7d/KTWfDdVrAe9wcnGdJ2UuyDR
-         aX9zZQJVwWcgea/F/+RAMTLHiV8sJqj/yNuprJ/aPWHHgi5twDF9bMG+8A8aaQOC0492
-         /rMzeh7aEtMyNQ0VMDzkd8T+r4Y+HUBQqkkkv0DxtPM7WBi4/E0GekSSTqVMAdvD3LTs
-         kmyuhnGOLPFvqYB6x5S/Bb4cQ/lC4JQJN9aypx4KR48J1ApAfmhQ2AQ4ApJb1KKJKffo
-         XlUw==
-X-Gm-Message-State: AOAM532PSGlQGAaqL+tfGU0tOli2s4bWftTs9ogtVUYEPKYI2GMEjNuM
-        jOz3yt5AdzkpjEk7M0eMggc=
-X-Google-Smtp-Source: ABdhPJzv+DIuqd5ahzA1hbcPTTIGhKeXBZqDPa3ze3Rv54OxSc12Y4upe+A5hdcUtmovpn6m5MPzrQ==
-X-Received: by 2002:a7b:cb8c:: with SMTP id m12mr17665894wmi.12.1603103463585;
-        Mon, 19 Oct 2020 03:31:03 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id t12sm17586959wrm.25.2020.10.19.03.31.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 03:31:02 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 12:31:00 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 6/6] arm64: dts: exynos: add the WiFi/PCIe support to
- TM2(e) boards
-Message-ID: <20201019103100.GA53305@kozik-lap>
-References: <20201019094715.15343-1-m.szyprowski@samsung.com>
- <CGME20201019094741eucas1p1b4934cd5024a18804fcee921294acee0@eucas1p1.samsung.com>
- <20201019094715.15343-7-m.szyprowski@samsung.com>
+        Mon, 19 Oct 2020 06:33:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9BFC0613CE;
+        Mon, 19 Oct 2020 03:33:14 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603103593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aKA2eYNo0tRyWFjey5VCWB5m13CWJjS0iw4yD8SF5eA=;
+        b=CcX6tzElPYUO1nkyuBaVspg5k5BMlZFQwZ5U6J62eNeDgRzE43paXiUfw6tMROG+fSrvf6
+        igYtCsmr+HeLVWDguz3XoGUG7A5EBYAgEwvCGzn+JjhxQ2gQJO5RoF/8R0lO2KagpqSyLP
+        8MbfMZ2EeQPNs4HU30xnP46OE/mnkj2lI+2Uw4bMFQB7nnySRG3p0fAnbNHS7WuM3zEgBt
+        Z1FDIPlDpnUhRlC3Tr4aXoRWKNboLi5SyBUemkQOseNGrFJMPgBQP6bo141QoWrk1+ZAoj
+        o5LiWhELHrjAPkYwcYWv7NYbCK2qyvVQxBggLVOE4d1ZBEC7p1NyWlaXci8pYw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603103593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aKA2eYNo0tRyWFjey5VCWB5m13CWJjS0iw4yD8SF5eA=;
+        b=/GKktdwwjmHvEG5j+CWj85M5AdiombMk4VRDFF3rcm886EWbj5sYrcLuRner9OKKdfEiLc
+        66LXrH04JdYYo3Ag==
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Remove __napi_schedule_irqoff?
+In-Reply-To: <20201018101947.419802df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <01af7f4f-bd05-b93e-57ad-c2e9b8726e90@gmail.com> <20201017162949.0a6dd37a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <CANn89i+q=q_LNDzE23y74Codh5EY0HHi_tROsEL2yJAdRjh-vQ@mail.gmail.com> <668a1291-e7f0-ef71-c921-e173d4767a14@gmail.com> <20201018101947.419802df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Date:   Mon, 19 Oct 2020 12:33:12 +0200
+Message-ID: <87ft6aa4k7.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201019094715.15343-7-m.szyprowski@samsung.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 11:47:15AM +0200, Marek Szyprowski wrote:
-> From: Jaehoon Chung <jh80.chung@samsung.com>
-> 
-> Add the nodes relevant to PCIe PHY and PCIe support. PCIe is used for the
-> WiFi interface (Broadcom Limited BCM4358 802.11ac Wireless LAN SoC).
-> 
-> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
-> [mszyprow: rewrote commit message, reworked board/generic dts/dtsi split]
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->  .../boot/dts/exynos/exynos5433-pinctrl.dtsi   |  2 +-
->  .../dts/exynos/exynos5433-tm2-common.dtsi     | 24 ++++++++++++-
->  arch/arm64/boot/dts/exynos/exynos5433.dtsi    | 36 +++++++++++++++++++
->  3 files changed, 60 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/exynos/exynos5433-pinctrl.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-pinctrl.dtsi
-> index 9df7c65593a1..32a6518517e5 100644
-> --- a/arch/arm64/boot/dts/exynos/exynos5433-pinctrl.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/exynos5433-pinctrl.dtsi
-> @@ -329,7 +329,7 @@
->  	};
->  
->  	pcie_bus: pcie_bus {
-> -		samsung,pins = "gpr3-4", "gpr3-5", "gpr3-6", "gpr3-7";
-> +		samsung,pins = "gpr3-4", "gpr3-5", "gpr3-6";
->  		samsung,pin-function = <EXYNOS_PIN_FUNC_3>;
->  		samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
->  	};
-> diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-> index 829fea23d4ab..ef45ef86c48d 100644
-> --- a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-> @@ -969,6 +969,25 @@
->  	bus-width = <4>;
->  };
->  
-> +&pcie {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pcie_bus &pcie_wlanen>;
-> +	vdd10-supply = <&ldo6_reg>;
-> +	vdd18-supply = <&ldo7_reg>;
-> +	assigned-clocks = <&cmu_fsys CLK_MOUT_SCLK_PCIE_100_USER>,
-> +			<&cmu_top CLK_MOUT_SCLK_PCIE_100>;
-> +	assigned-clock-parents = <&cmu_top CLK_SCLK_PCIE_100_FSYS>,
-> +			<&cmu_top CLK_MOUT_BUS_PLL_USER>;
-> +	assigned-clock-rates = <0>, <100000000>;
-> +	interrupt-map-mask = <0 0 0 0>;
-> +	interrupt-map = <0 0 0 0 &gic GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>;
-> +};
-> +
-> +&pcie_phy {
-> +	status = "okay";
-> +};
-> +
->  &ppmu_d0_general {
->  	status = "okay";
->  	events {
-> @@ -1085,8 +1104,11 @@
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&initial_ese>;
->  
-> +	pcie_wlanen: pcie-wlanen {
-> +		PIN(INPUT, gpj2-0, UP, FAST_SR4);
-> +	};
-> +
->  	initial_ese: initial-state {
-> -		PIN(INPUT, gpj2-0, DOWN, FAST_SR1);
->  		PIN(INPUT, gpj2-1, DOWN, FAST_SR1);
->  		PIN(INPUT, gpj2-2, DOWN, FAST_SR1);
->  	};
-> diff --git a/arch/arm64/boot/dts/exynos/exynos5433.dtsi b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-> index 8eb4576da8f3..be2d1753d1d1 100644
-> --- a/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-> @@ -1029,6 +1029,11 @@
->  			reg = <0x145f0000 0x1038>;
->  		};
->  
-> +		syscon_fsys: syscon@156f0000 {
-> +			compatible = "syscon";
-> +			reg = <0x156f0000 0x1044>;
-> +		};
-> +
->  		gsc_0: video-scaler@13c00000 {
->  			compatible = "samsung,exynos5433-gsc";
->  			reg = <0x13c00000 0x1000>;
-> @@ -1830,6 +1835,37 @@
->  				status = "disabled";
->  			};
->  		};
-> +
-> +		pcie_phy: pcie-phy@15680000 {
-> +			compatible = "samsung,exynos5433-pcie-phy";
-> +			reg = <0x15680000 0x1000>;
-> +			samsung,pmu-syscon = <&pmu_system_controller>;
-> +			samsung,fsys-sysreg = <&syscon_fsys>;
-> +			#phy-cells = <0>;
-> +			status = "disabled";
-> +		};
-> +
-> +		pcie: pcie@15700000 {
-> +			compatible = "samsung,exynos5433-pcie";
-> +			reg = <0x156b0000 0x1000>, <0x15700000 0x1000>,
-> +			      <0x0c000000 0x1000>;
+On Sun, Oct 18 2020 at 10:19, Jakub Kicinski wrote:
+> On Sun, 18 Oct 2020 10:20:41 +0200 Heiner Kallweit wrote:
+>> >> Otherwise a non-solution could be to make IRQ_FORCED_THREADING
+>> >> configurable.  
+>> > 
+>> > I have to say I do not understand why we want to defer to a thread the
+>> > hard IRQ that we use in NAPI model.
+>> >   
+>> Seems like the current forced threading comes with the big hammer and
+>> thread-ifies all hard irq's. To avoid this all NAPI network drivers
+>> would have to request the interrupt with IRQF_NO_THREAD.
 
-dtc should complain here:
-arch/arm64/boot/dts/exynos/exynos5433.dtsi:1848.23-1868.5: Warning (simple_bus_reg): /soc@0/pcie@15700000: simple-bus unit address format error, expected "156b0000"
+In a !RT kernel, forced threading (via commandline option) is mostly a
+debug aid. It's pretty useful when something crashes in hard interrupt
+context which usually takes the whole machine down. It's rather unlikely
+to be used on production systems, and if so then the admin surely should
+know what he's doing.
 
-> +			reg-names = "elbi", "dbi", "config";
+> Right, it'd work for some drivers. Other drivers try to take spin locks
+> in their IRQ handlers.
 
-This does not match your own bindings:
-pcie@15700000: reg-names:1: 'bdi' was expected
-pcie@15700000: 'interrupt-names' is a required property
+I checked a few which do and some of these spinlocks just protect
+register access and are not used for more complex serialization. So
+these could be converted to raw spinlocks because their scope is short
+and limited. But yes, you are right that this might be an issue in
+general.
 
-Best regards,
-Krzysztof
+> What gave me a pause was that we have a busy loop in napi_schedule_prep:
+>
+> bool napi_schedule_prep(struct napi_struct *n)
+> {
+> 	unsigned long val, new;
+>
+> 	do {
+> 		val = READ_ONCE(n->state);
+> 		if (unlikely(val & NAPIF_STATE_DISABLE))
+> 			return false;
+> 		new = val | NAPIF_STATE_SCHED;
+>
+> 		/* Sets STATE_MISSED bit if STATE_SCHED was already set
+> 		 * This was suggested by Alexander Duyck, as compiler
+> 		 * emits better code than :
+> 		 * if (val & NAPIF_STATE_SCHED)
+> 		 *     new |= NAPIF_STATE_MISSED;
+> 		 */
+> 		new |= (val & NAPIF_STATE_SCHED) / NAPIF_STATE_SCHED *
+> 						   NAPIF_STATE_MISSED;
+> 	} while (cmpxchg(&n->state, val, new) != val);
+>
+> 	return !(val & NAPIF_STATE_SCHED);
+> }
+>
+>
+> Dunno how acceptable this is to run in an IRQ handler on RT..
+
+In theory it's bad, but I don't think it's a big deal in reality.
+
+Thanks,
+
+        tglx
