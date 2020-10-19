@@ -2,373 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3455292EEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73C1292E83
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731577AbgJSTxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:53:31 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.179]:8852 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731414AbgJSTwq (ORCPT
+        id S1731269AbgJSTch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:32:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41224 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731067AbgJSTcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:52:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1603137161;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=GT0wcQHlgU/1MyN2U88fd3rq7pEA11XXtEYFsHX3OpU=;
-        b=NDfyDG5qp87vOV5kNnGcKxbty0T5YRnBQJ3yiqAQ3aajDmOVORQ1gp3NO0Q+atv5qh
-        zWXxZrAWpgCx5KIkETiThmPZW50mnQMXxbb4VQ9Rsx1pND1bH5VOGFy547hqYVTqj4VI
-        bNiNXy8FjV2fhTEz1exGH75BAkqXP7/zIqha1fJR6lgM/95jTg75dz5pi26rfA3NbAep
-        26UC0i7BEGQZhqiLp7JhqACIrhla6fGGUsOIMpIlhjGcVR4vg8wnlkPZaE/EC4S3b0y8
-        +6rhCANLOHBoreuXIky4TjpvhjgJzXGfFo253v4ijHXJnHkTGrLQq+VLm+HFq/gDK13l
-        rgNQ==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJPSb3t0="
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
-        with ESMTPSA id C0b627w9JJpqU6w
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 19 Oct 2020 21:51:52 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Torsten Duwe <duwe@lst.de>
-Cc:     Willy Tarreau <w@1wt.eu>, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        linux-crypto@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>
-Subject: [PATCH v36 03/13] LRNG - sysctls and /proc interface
-Date:   Mon, 19 Oct 2020 21:32:24 +0200
-Message-ID: <20822658.EfDdHjke4D@positron.chronox.de>
-In-Reply-To: <3073852.aeNJFYEL58@positron.chronox.de>
-References: <20200921075857.4424-1-nstange@suse.de> <20201016172619.GA18410@lst.de> <3073852.aeNJFYEL58@positron.chronox.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+        Mon, 19 Oct 2020 15:32:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603135955;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=fz8ym4oVc1gCQn9wZPkVIpRLpAccmzB83wmPoGnAnN8=;
+        b=PHCDxXa6I6lFyg6CmmE2WgOdju4w72/3MHBbUfZLHSNSgOreDVhRqHsM7w0099bXLDP+71
+        ZpwfgDv8Rv6PhX4HSiSJs5jEeRKOEbyftf6V2uprdJF2/6usDKztIK4rnJwbAA7DJCHGyz
+        zOmuknuYe6OT+925mHcCM/sVgwz1/hQ=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-449-hr6ScYcdOKCOYCeAeoY0NA-1; Mon, 19 Oct 2020 15:32:33 -0400
+X-MC-Unique: hr6ScYcdOKCOYCeAeoY0NA-1
+Received: by mail-qk1-f197.google.com with SMTP id b7so459028qkh.20
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:32:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fz8ym4oVc1gCQn9wZPkVIpRLpAccmzB83wmPoGnAnN8=;
+        b=TknwOLFHVv1zDDUhRpSqF3mT0mVNNiEp7pFDVOEbm1LWZq606j7OnUowKfpDS7dyHe
+         jaD6PuG+7uWOo3VGz/zv0sDh8vQ/JTQEkvqVGjSpvIMQoUnmD68SCc2j0639OtxQUUdE
+         meXH+eCVxXyhd8+nzur9qxqANr4EMdJ4yuI4RO3J0WYht5ATZdU6EWRfuIRAQ9rHHrNu
+         mj9+5XIAMKt8+ATt5CmYtW3hiZ1tZUGwAL0xZKyyj++JVR3LlvkVs1xgK98EJbxbYsAl
+         GaeIkMaAHQtJna9Pv1qXU/62NB0GU+WrE8vKjgy5JzA6xhABqerR6e9UKkDKkOAgFrF7
+         47Dw==
+X-Gm-Message-State: AOAM5311gz2QyLED3CWizGiRKQun5pEwRbSEkt2OmQcf+suLLKaTfczb
+        Xsy78hwWMovDnGEL8sBpKrb17+FCPCPSwqEMTpqb/dA0s3PCYc2jcbAaIhk03bW782RCk+Rxtga
+        GB0KTJEx8F7jorCEEj6OzvUaP
+X-Received: by 2002:a37:a81:: with SMTP id 123mr1126134qkk.487.1603135953015;
+        Mon, 19 Oct 2020 12:32:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyjGKFVGD5PW0deM0q0Np4e7HM1MOF3o5e1OcEKDr5d7giAMlnDl+MCUlT/s9+zXspoOECLhA==
+X-Received: by 2002:a37:a81:: with SMTP id 123mr1126109qkk.487.1603135952765;
+        Mon, 19 Oct 2020 12:32:32 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id n38sm355058qtb.91.2020.10.19.12.32.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 12:32:32 -0700 (PDT)
+From:   trix@redhat.com
+To:     siglesias@igalia.com, jens.taprogge@taprogge.org,
+        gregkh@linuxfoundation.org, arnd@arndb.de
+Cc:     industrypack-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] ipack: iopctal: remove unneeded break
+Date:   Mon, 19 Oct 2020 12:32:27 -0700
+Message-Id: <20201019193227.12738-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LRNG sysctl interface provides the same controls as the existing
-/dev/random implementation. These sysctls behave identically and are
-implemented identically. The goal is to allow a possible merge of the
-existing /dev/random implementation with this implementation which
-implies that this patch tries have a very close similarity. Yet, all
-sysctls are documented at [1].
+From: Tom Rix <trix@redhat.com>
 
-In addition, it provides the file lrng_type which provides details about
-the LRNG:
+A break is not needed if it is preceded by a return
 
-=2D the name of the DRNG that produces the random numbers for /dev/random,
-/dev/urandom, getrandom(2)
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/ipack/devices/ipoctal.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-=2D the hash used to produce random numbers from the entropy pool
-
-=2D the number of secondary DRNG instances
-
-=2D indicator whether the LRNG operates SP800-90B compliant
-
-=2D indicator whether a high-resolution timer is identified - only with a
-high-resolution timer the interrupt noise source will deliver sufficient
-entropy
-
-=2D indicator whether the LRNG has been minimally seeded (i.e. is the
-secondary DRNG seeded with at least 128 bits of of entropy)
-
-=2D indicator whether the LRNG has been fully seeded (i.e. is the
-secondary DRNG seeded with at least 256 bits of entropy)
-
-[1] https://www.chronox.de/lrng.html
-
-CC: Torsten Duwe <duwe@lst.de>
-CC: "Eric W. Biederman" <ebiederm@xmission.com>
-CC: "Alexander E. Patrakov" <patrakov@gmail.com>
-CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
-CC: "Theodore Y. Ts'o" <tytso@mit.edu>
-CC: Willy Tarreau <w@1wt.eu>
-CC: Matthew Garrett <mjg59@srcf.ucam.org>
-CC: Vito Caputo <vcaputo@pengaru.com>
-CC: Andreas Dilger <adilger.kernel@dilger.ca>
-CC: Jan Kara <jack@suse.cz>
-CC: Ray Strode <rstrode@redhat.com>
-CC: William Jon McCann <mccann@jhu.edu>
-CC: zhangjs <zachary@baishancloud.com>
-CC: Andy Lutomirski <luto@kernel.org>
-CC: Florian Weimer <fweimer@redhat.com>
-CC: Lennart Poettering <mzxreary@0pointer.de>
-CC: Nicolai Stange <nstange@suse.de>
-Reviewed-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-Reviewed-by: Roman Drahtmueller <draht@schaltsekun.de>
-Tested-by: Roman Drahtm=FCller <draht@schaltsekun.de>
-Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-Tested-by: Neil Horman <nhorman@redhat.com>
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
-=2D--
- drivers/char/lrng/Makefile          |   1 +
- drivers/char/lrng/lrng_interfaces.c |   2 -
- drivers/char/lrng/lrng_internal.h   |   4 +
- drivers/char/lrng/lrng_proc.c       | 182 ++++++++++++++++++++++++++++
- 4 files changed, 187 insertions(+), 2 deletions(-)
- create mode 100644 drivers/char/lrng/lrng_proc.c
-
-diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
-index 29724c65287d..ac97f0b11cb7 100644
-=2D-- a/drivers/char/lrng/Makefile
-+++ b/drivers/char/lrng/Makefile
-@@ -9,3 +9,4 @@ obj-y				+=3D lrng_pool.o lrng_aux.o \
- 				   lrng_interfaces.o
-=20
- obj-$(CONFIG_NUMA)		+=3D lrng_numa.o
-+obj-$(CONFIG_SYSCTL)		+=3D lrng_proc.o
-diff --git a/drivers/char/lrng/lrng_interfaces.c b/drivers/char/lrng/lrng_i=
-nterfaces.c
-index 19d01d3f7492..b55de97523ad 100644
-=2D-- a/drivers/char/lrng/lrng_interfaces.c
-+++ b/drivers/char/lrng/lrng_interfaces.c
-@@ -38,8 +38,6 @@ static DECLARE_WAIT_QUEUE_HEAD(lrng_write_wait);
- static DECLARE_WAIT_QUEUE_HEAD(lrng_init_wait);
- static struct fasync_struct *fasync;
-=20
-=2Dstruct ctl_table random_table[];
-=2D
- /********************************** Helper *******************************=
-****/
-=20
- /* Is the DRNG seed level too low? */
-diff --git a/drivers/char/lrng/lrng_internal.h b/drivers/char/lrng/lrng_int=
-ernal.h
-index f858effcf710..2f8c14ffbaf3 100644
-=2D-- a/drivers/char/lrng/lrng_internal.h
-+++ b/drivers/char/lrng/lrng_internal.h
-@@ -113,7 +113,11 @@ void lrng_cc20_init_state_boot(struct chacha20_state *=
-state);
-=20
- /********************************** /proc ********************************=
-*****/
-=20
-+#ifdef CONFIG_SYSCTL
-+void lrng_pool_inc_numa_node(void);
-+#else
- static inline void lrng_pool_inc_numa_node(void) { }
-+#endif
-=20
- /****************************** LRNG interfaces **************************=
-*****/
-=20
-diff --git a/drivers/char/lrng/lrng_proc.c b/drivers/char/lrng/lrng_proc.c
-new file mode 100644
-index 000000000000..b2985a2ae0f7
-=2D-- /dev/null
-+++ b/drivers/char/lrng/lrng_proc.c
-@@ -0,0 +1,182 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-+/*
-+ * LRNG proc and sysctl interfaces
-+ *
-+ * Copyright (C) 2016 - 2020, Stephan Mueller <smueller@chronox.de>
-+ */
-+
-+#include <linux/lrng.h>
-+#include <linux/proc_fs.h>
-+#include <linux/seq_file.h>
-+#include <linux/sysctl.h>
-+#include <linux/uuid.h>
-+
-+#include "lrng_internal.h"
-+#include "lrng_sw_noise.h"
-+
-+/*
-+ * This function is used to return both the bootid UUID, and random
-+ * UUID.  The difference is in whether table->data is NULL; if it is,
-+ * then a new UUID is generated and returned to the user.
-+ *
-+ * If the user accesses this via the proc interface, the UUID will be
-+ * returned as an ASCII string in the standard UUID format; if via the
-+ * sysctl system call, as 16 bytes of binary data.
-+ */
-+static int lrng_proc_do_uuid(struct ctl_table *table, int write,
-+			     void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	struct ctl_table fake_table;
-+	unsigned char buf[64], tmp_uuid[16], *uuid;
-+
-+	uuid =3D table->data;
-+	if (!uuid) {
-+		uuid =3D tmp_uuid;
-+		generate_random_uuid(uuid);
-+	} else {
-+		static DEFINE_SPINLOCK(bootid_spinlock);
-+
-+		spin_lock(&bootid_spinlock);
-+		if (!uuid[8])
-+			generate_random_uuid(uuid);
-+		spin_unlock(&bootid_spinlock);
-+	}
-+
-+	sprintf(buf, "%pU", uuid);
-+
-+	fake_table.data =3D buf;
-+	fake_table.maxlen =3D sizeof(buf);
-+
-+	return proc_dostring(&fake_table, write, buffer, lenp, ppos);
-+}
-+
-+static int lrng_proc_do_entropy(struct ctl_table *table, int write,
-+				void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	struct ctl_table fake_table;
-+	int entropy_count;
-+
-+	entropy_count =3D lrng_avail_entropy();
-+
-+	fake_table.data =3D &entropy_count;
-+	fake_table.maxlen =3D sizeof(entropy_count);
-+
-+	return proc_dointvec(&fake_table, write, buffer, lenp, ppos);
-+}
-+
-+static int lrng_proc_do_poolsize(struct ctl_table *table, int write,
-+				 void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	struct ctl_table fake_table;
-+	int entropy_count;
-+
-+	/* LRNG can at most retain entropy in per-CPU pools and aux pool */
-+	entropy_count =3D lrng_get_digestsize() * (num_online_cpus() + 1);
-+
-+	fake_table.data =3D &entropy_count;
-+	fake_table.maxlen =3D sizeof(entropy_count);
-+
-+	return proc_dointvec(&fake_table, write, buffer, lenp, ppos);
-+}
-+
-+static int lrng_min_write_thresh;
-+static int lrng_max_write_thresh =3D LRNG_MAX_DIGESTSIZE;
-+static char lrng_sysctl_bootid[16];
-+static int lrng_drng_reseed_max_min;
-+
-+struct ctl_table random_table[] =3D {
-+	{
-+		.procname	=3D "poolsize",
-+		.maxlen		=3D sizeof(int),
-+		.mode		=3D 0444,
-+		.proc_handler	=3D lrng_proc_do_poolsize,
-+	},
-+	{
-+		.procname	=3D "entropy_avail",
-+		.maxlen		=3D sizeof(int),
-+		.mode		=3D 0444,
-+		.proc_handler	=3D lrng_proc_do_entropy,
-+	},
-+	{
-+		.procname	=3D "write_wakeup_threshold",
-+		.data		=3D &lrng_write_wakeup_bits,
-+		.maxlen		=3D sizeof(int),
-+		.mode		=3D 0644,
-+		.proc_handler	=3D proc_dointvec_minmax,
-+		.extra1		=3D &lrng_min_write_thresh,
-+		.extra2		=3D &lrng_max_write_thresh,
-+	},
-+	{
-+		.procname	=3D "boot_id",
-+		.data		=3D &lrng_sysctl_bootid,
-+		.maxlen		=3D 16,
-+		.mode		=3D 0444,
-+		.proc_handler	=3D lrng_proc_do_uuid,
-+	},
-+	{
-+		.procname	=3D "uuid",
-+		.maxlen		=3D 16,
-+		.mode		=3D 0444,
-+		.proc_handler	=3D lrng_proc_do_uuid,
-+	},
-+	{
-+		.procname       =3D "urandom_min_reseed_secs",
-+		.data           =3D &lrng_drng_reseed_max_time,
-+		.maxlen         =3D sizeof(int),
-+		.mode           =3D 0644,
-+		.proc_handler   =3D proc_dointvec,
-+		.extra1		=3D &lrng_drng_reseed_max_min,
-+	},
-+	{ }
-+};
-+
-+/* Number of online DRNGs */
-+static u32 numa_drngs =3D 1;
-+
-+void lrng_pool_inc_numa_node(void)
-+{
-+	numa_drngs++;
-+}
-+
-+static int lrng_proc_type_show(struct seq_file *m, void *v)
-+{
-+	struct lrng_drng *lrng_drng_init =3D lrng_drng_init_instance();
-+	unsigned long flags =3D 0;
-+	unsigned char buf[350];
-+
-+	lrng_drng_lock(lrng_drng_init, &flags);
-+	snprintf(buf, sizeof(buf),
-+		 "DRNG name: %s\n"
-+		 "Hash for reading entropy pool: %s\n"
-+		 "Hash for operating aux entropy pool: %s\n"
-+		 "LRNG security strength in bits: %d\n"
-+		 "per-CPU interrupt collection size: %u\n"
-+		 "number of DRNG instances: %u\n"
-+		 "SP800-90B compliance: %s\n"
-+		 "High-resolution timer: %s\n"
-+		 "LRNG minimally seeded: %s\n"
-+		 "LRNG fully seeded: %s\n",
-+		 lrng_drng_init->crypto_cb->lrng_drng_name(),
-+		 lrng_drng_init->crypto_cb->lrng_hash_name(),
-+		 lrng_drng_init->crypto_cb->lrng_hash_name(),
-+		 lrng_security_strength(),
-+		 LRNG_DATA_NUM_VALUES,
-+		 numa_drngs,
-+		 lrng_sp80090b_compliant() ? "true" : "false",
-+		 lrng_pool_highres_timer() ? "true" : "false",
-+		 lrng_state_min_seeded() ? "true" : "false",
-+		 lrng_state_fully_seeded() ? "true" : "false");
-+	lrng_drng_unlock(lrng_drng_init, &flags);
-+
-+	seq_write(m, buf, strlen(buf));
-+
-+	return 0;
-+}
-+
-+static int __init lrng_proc_type_init(void)
-+{
-+	proc_create_single("lrng_type", 0444, NULL, &lrng_proc_type_show);
-+	return 0;
-+}
-+
-+module_init(lrng_proc_type_init);
-=2D-=20
-2.26.2
-
-
-
+diff --git a/drivers/ipack/devices/ipoctal.c b/drivers/ipack/devices/ipoctal.c
+index d480a514c983..3940714e4397 100644
+--- a/drivers/ipack/devices/ipoctal.c
++++ b/drivers/ipack/devices/ipoctal.c
+@@ -544,7 +544,6 @@ static void ipoctal_set_termios(struct tty_struct *tty,
+ 		break;
+ 	default:
+ 		return;
+-		break;
+ 	}
+ 
+ 	baud = tty_get_baud_rate(tty);
+-- 
+2.18.1
 
