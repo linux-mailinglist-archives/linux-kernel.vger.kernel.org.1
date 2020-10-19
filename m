@@ -2,183 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D9B292276
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D227292264
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727062AbgJSGUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 02:20:23 -0400
-Received: from mga07.intel.com ([134.134.136.100]:40284 "EHLO mga07.intel.com"
+        id S1726651AbgJSGSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 02:18:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727025AbgJSGUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 02:20:23 -0400
-IronPort-SDR: RjuSa1CNE4qYm90ylCfPTgVjH4OvgldsW2M0b2prbdeP9f3tTLohDZyP0o5RLdkacjj66wnYgV
- yKMcGioivxqw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="231167715"
-X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
-   d="scan'208";a="231167715"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:20:21 -0700
-IronPort-SDR: cBHapaXe6PgmMvqa10V2B2nvmk9mjUa+CCCsgK5bdzhXyx7KbUua0Kn6u+4zuaq8SKf67YBGhn
- HM64irF0PpPg==
-X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
-   d="scan'208";a="331794950"
-Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:20:16 -0700
-From:   shuo.a.liu@intel.com
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuo Liu <shuo.a.liu@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH v5 17/17] virt: acrn: Introduce an interface for Service VM to control vCPU
-Date:   Mon, 19 Oct 2020 14:18:03 +0800
-Message-Id: <20201019061803.13298-18-shuo.a.liu@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201019061803.13298-1-shuo.a.liu@intel.com>
-References: <20201019061803.13298-1-shuo.a.liu@intel.com>
+        id S1726553AbgJSGSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 02:18:25 -0400
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A6AA2225A;
+        Mon, 19 Oct 2020 06:18:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603088304;
+        bh=wKpuJqtLejAYL1/cOYs8uVFSeuewCEtx062tOnUPBFI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=y/J6T4loLP9EdxP94W3+SK+2kJMOxEOudgoxxqQe/jI0hfeQl8uob39vMceN7aq3K
+         zcxwhP57XhondUyazh/tfqAJiGMVbHMwRNZ9aBL6BLNgTCQo7tE1sjaO7OsBFcb2RY
+         7ZHqsIQixvicIZ2ScU1WC9RKDnL3P/3pl4gCwun8=
+Received: by mail-lf1-f48.google.com with SMTP id a7so12693884lfk.9;
+        Sun, 18 Oct 2020 23:18:24 -0700 (PDT)
+X-Gm-Message-State: AOAM5333/ZoQBxXxPujknsNC+lhrVKJTebTnH4Yp/5YlCM3fCEDdk8M6
+        RdLWAvt0H82x/1Zah0JYyVultM678u1L5/mk3zU=
+X-Google-Smtp-Source: ABdhPJwKk/IhJUSPjlmgqhubcVjpH3v5MZtvWi+xOTHvDbupcZoakPgVCU8E2uQLb1yuLQWop4xYSXLcvj4phEqjU5k=
+X-Received: by 2002:a19:c703:: with SMTP id x3mr4833030lff.105.1603088302460;
+ Sun, 18 Oct 2020 23:18:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201017110651.GA1602260@dragonet>
+In-Reply-To: <20201017110651.GA1602260@dragonet>
+From:   Song Liu <song@kernel.org>
+Date:   Sun, 18 Oct 2020 23:18:11 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW583=org7AOR-W2vcQV3pTBxin2LG1tb3On=x6VtjXvxQ@mail.gmail.com>
+Message-ID: <CAPhsuW583=org7AOR-W2vcQV3pTBxin2LG1tb3On=x6VtjXvxQ@mail.gmail.com>
+Subject: Re: WARNING in md_ioctl
+To:     "Dae R. Jeong" <dae.r.jeong@kaist.ac.kr>
+Cc:     yjkwon@kaist.ac.kr, linux-raid <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuo Liu <shuo.a.liu@intel.com>
+On Sat, Oct 17, 2020 at 4:13 AM Dae R. Jeong <dae.r.jeong@kaist.ac.kr> wrote:
+>
+> Hi,
+>
+> I looked into the warning "WARNING in md_ioctl" found by Syzkaller.
+> (https://syzkaller.appspot.com/bug?id=fbf9eaea2e65bfcabb4e2750c3ab0892867edea1)
+> I suspect that it is caused by a race between two concurrenct ioctl()s as belows.
+>
+> CPU1 (md_ioctl())                          CPU2 (md_ioctl())
+> ------                                     ------
+> set_bit(MD_CLOSING, &mddev->flags);
+> did_set_md_closing = true;
+>                                            WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
+>
+> if(did_set_md_closing)
+>     clear_bit(MD_CLOSING, &mddev->flags);
+>
+> If the above is correct, this warning is introduced
+> in the commit 065e519e("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop").
+> Could you please take a look into this?
 
-ACRN supports partition mode to achieve real-time requirements. In
-partition mode, a CPU core can be dedicated to a vCPU of User VM. The
-local APIC of the dedicated CPU core can be passthrough to the User VM.
-The Service VM controls the assignment of the CPU cores.
+This is an interesting case. We try to protect against concurrent
+ioctl via mddev->openers:
 
-Introduce an interface for the Service VM to remove the control of CPU
-core from hypervisor perspective so that the CPU core can be a dedicated
-CPU core of User VM.
+                if (mddev->pers && atomic_read(&mddev->openers) > 1) {
+                        mutex_unlock(&mddev->open_mutex);
+                        err = -EBUSY;
+                        goto out;
+                }
 
-Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Zhi Wang <zhi.a.wang@intel.com>
-Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc: Yu Wang <yu1.wang@intel.com>
-Cc: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/virt/acrn/hsm.c       | 48 +++++++++++++++++++++++++++++++++++
- drivers/virt/acrn/hypercall.h | 14 ++++++++++
- 2 files changed, 62 insertions(+)
+But in this case, we are sending multiple ioctl from the same fd, so
+openers == 1.
 
-diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-index c7290e177b1e..8c3799cc0313 100644
---- a/drivers/virt/acrn/hsm.c
-+++ b/drivers/virt/acrn/hsm.c
-@@ -9,6 +9,7 @@
-  *	Yakui Zhao <yakui.zhao@intel.com>
-  */
- 
-+#include <linux/cpu.h>
- #include <linux/io.h>
- #include <linux/mm.h>
- #include <linux/module.h>
-@@ -341,6 +342,52 @@ static int acrn_dev_release(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
-+static ssize_t remove_cpu_store(struct device *dev,
-+				struct device_attribute *attr,
-+				const char *buf, size_t count)
-+{
-+	u64 cpu, lapicid;
-+	int ret;
-+
-+	if (kstrtoull(buf, 0, &cpu) < 0)
-+		return -EINVAL;
-+
-+	if (cpu >= num_possible_cpus() || cpu == 0 || !cpu_is_hotpluggable(cpu))
-+		return -EINVAL;
-+
-+	if (cpu_online(cpu))
-+		remove_cpu(cpu);
-+
-+	lapicid = cpu_data(cpu).apicid;
-+	dev_dbg(dev, "Try to remove cpu %lld with lapicid %lld\n", cpu, lapicid);
-+	ret = hcall_sos_remove_cpu(lapicid);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to remove cpu %lld!\n", cpu);
-+		goto fail_remove;
-+	}
-+
-+	return count;
-+
-+fail_remove:
-+	add_cpu(cpu);
-+	return ret;
-+}
-+static DEVICE_ATTR_WO(remove_cpu);
-+
-+static struct attribute *acrn_attrs[] = {
-+	&dev_attr_remove_cpu.attr,
-+	NULL
-+};
-+
-+static struct attribute_group acrn_attr_group = {
-+	.attrs = acrn_attrs,
-+};
-+
-+static const struct attribute_group *acrn_attr_groups[] = {
-+	&acrn_attr_group,
-+	NULL
-+};
-+
- static const struct file_operations acrn_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= acrn_dev_open,
-@@ -352,6 +399,7 @@ struct miscdevice acrn_dev = {
- 	.minor	= MISC_DYNAMIC_MINOR,
- 	.name	= "acrn_hsm",
- 	.fops	= &acrn_fops,
-+	.groups	= acrn_attr_groups,
- };
- 
- static int __init hsm_init(void)
-diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
-index e640632366f0..0cfad05bd1a9 100644
---- a/drivers/virt/acrn/hypercall.h
-+++ b/drivers/virt/acrn/hypercall.h
-@@ -13,6 +13,9 @@
- 
- #define HC_ID 0x80UL
- 
-+#define HC_ID_GEN_BASE			0x0UL
-+#define HC_SOS_REMOVE_CPU		_HC_ID(HC_ID, HC_ID_GEN_BASE + 0x01)
-+
- #define HC_ID_VM_BASE			0x10UL
- #define HC_CREATE_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x00)
- #define HC_DESTROY_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x01)
-@@ -42,6 +45,17 @@
- #define HC_ID_PM_BASE			0x80UL
- #define HC_PM_GET_CPU_STATE		_HC_ID(HC_ID, HC_ID_PM_BASE + 0x00)
- 
-+/**
-+ * hcall_sos_remove_cpu() - Remove a vCPU of Service VM
-+ * @cpu: The vCPU to be removed
-+ *
-+ * Return: 0 on success, <0 on failure
-+ */
-+static inline long hcall_sos_remove_cpu(u64 cpu)
-+{
-+	return acrn_hypercall1(HC_SOS_REMOVE_CPU, cpu);
-+}
-+
- /**
-  * hcall_create_vm() - Create a User VM
-  * @vminfo:	Service VM GPA of info of User VM creation
--- 
-2.28.0
+We can probably do something like:
 
+diff --git i/drivers/md/md.c w/drivers/md/md.c
+index 6072782070230..49442a3f4605b 100644
+--- i/drivers/md/md.c
++++ w/drivers/md/md.c
+@@ -7591,8 +7591,10 @@ static int md_ioctl(struct block_device *bdev,
+fmode_t mode,
+                        err = -EBUSY;
+                        goto out;
+                }
+-               WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
+-               set_bit(MD_CLOSING, &mddev->flags);
++               if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
++                       err = -EBUSY;
++                       goto out;
++               }
+                did_set_md_closing = true;
+                mutex_unlock(&mddev->open_mutex);
+                sync_blockdev(bdev);
+
+Could you please test whether this fixes the issue?
+
+Thanks,
+Song
