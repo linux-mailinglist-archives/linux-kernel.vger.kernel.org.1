@@ -2,66 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CB7292702
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 14:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F72729267C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgJSMLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 08:11:09 -0400
-Received: from m15111.mail.126.com ([220.181.15.111]:42118 "EHLO
-        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726249AbgJSMLJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 08:11:09 -0400
-X-Greylist: delayed 1849 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Oct 2020 08:11:08 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=0gw4hOkCV2VI5B0MD3
-        VgbMMqagNWtz7m5fojK0FM+mc=; b=gcCXOxi2JLLFkWlHbXMBgnFWugp6U+5DI7
-        etV9poOpJclwAcDI5R/0yDiyXGbq3rRtrttrZ0zHiixCG0Lru6lgYK/ftY3V9rHE
-        O8w8PgZZ93xV2rcq6G0sW0QYudo+UGFnftczVRmCWZkYS1xDoyKQ5Z8mA734f01l
-        0UgPemG0o=
-Received: from localhost.localdomain (unknown [36.112.86.14])
-        by smtp1 (Coremail) with SMTP id C8mowABHCkrmeo1fTJVBKg--.33783S2;
-        Mon, 19 Oct 2020 19:39:19 +0800 (CST)
-From:   Defang Bo <bodefang@126.com>
-To:     davem@davemloft.net, johan@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Defang Bo <bodefang@126.com>
-Subject: [PATCH] nfc: Ensure presence of NFC_ATTR_FIRMWARE_NAME attribute in nfc_genl_fw_download()
-Date:   Mon, 19 Oct 2020 19:38:58 +0800
-Message-Id: <1603107538-4744-1-git-send-email-bodefang@126.com>
-X-Mailer: git-send-email 1.9.1
-X-CM-TRANSID: C8mowABHCkrmeo1fTJVBKg--.33783S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XFyDZw13XF43Zw4kGF4kJFb_yoWDKFXEyF
-        WFv3yv9w15XF4rCw47Aw1SvFySgw1fWF18AFySkrZrZryF93W5urn2q39xGF1fWw4jyasx
-        XFySgryfG343AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnw0ePUUUUU==
-X-Originating-IP: [36.112.86.14]
-X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbitQfC11pECOkg1wAAsv
+        id S1728114AbgJSLiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:38:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:15665 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728047AbgJSLiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 07:38:18 -0400
+IronPort-SDR: IF/xl5HcHj3phV+3h1Op20Ofo3G6rU7a4U86gc7pCvYSr39+rS4zEfoTJtpzgjgqGr6soOyRsY
+ ATAMDI1AdX1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="146869686"
+X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
+   d="scan'208";a="146869686"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 04:38:16 -0700
+IronPort-SDR: PbkTmHVEmjXGmdMl0H8O1XhKYU9rMrzqJz526ydTKNlgjX6y0Q79gbWatYhc6f32hIxxMpNIS5
+ vlUgZj0epi1A==
+X-IronPort-AV: E=Sophos;i="5.77,394,1596524400"; 
+   d="scan'208";a="523086943"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 04:38:14 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kUTVV-00AY4g-CS; Mon, 19 Oct 2020 14:39:17 +0300
+Date:   Mon, 19 Oct 2020 14:39:17 +0300
+From:   "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>
+To:     "Sia, Jee Heng" <jee.heng.sia@intel.com>
+Cc:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        Alexey Brodkin <Alexey.Brodkin@synopsys.com>
+Subject: Re: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
+ AxiDMA
+Message-ID: <20201019113917.GM4077@smile.fi.intel.com>
+References: <20201012042200.29787-1-jee.heng.sia@intel.com>
+ <MWHPR12MB18065E87CEE3FD28868EBB9BDE030@MWHPR12MB1806.namprd12.prod.outlook.com>
+ <DM5PR1101MB22185FFAE24516B90B13D255DA1E0@DM5PR1101MB2218.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM5PR1101MB22185FFAE24516B90B13D255DA1E0@DM5PR1101MB2218.namprd11.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-check that the NFC_ATTR_FIRMWARE_NAME attributes are provided by the netlink client prior to accessing them.This prevents potential unhandled NULL pointer
-dereference exceptions which can be triggered by malicious user-mode programs, if they omit one or both of these attributes. Just similar to commit <a0323b979f81>("nfc: Ensure presence of required attributes in the activate_target handler").
+On Mon, Oct 19, 2020 at 01:22:03AM +0000, Sia, Jee Heng wrote:
+> > From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+> > Sent: 16 October 2020 10:51 PM
 
-Signed-off-by: Defang Bo <bodefang@126.com>
----
- net/nfc/netlink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > Hi Sia,
+> > 
+> > Is this patch series available in some public git repo?
+> [>>] We do not have public git repo, but the patch series are tested on kernel v5.9
 
-diff --git a/net/nfc/netlink.c b/net/nfc/netlink.c
-index e894254..8709f3d 100644
---- a/net/nfc/netlink.c
-+++ b/net/nfc/netlink.c
-@@ -1217,7 +1217,7 @@ static int nfc_genl_fw_download(struct sk_buff *skb, struct genl_info *info)
- 	u32 idx;
- 	char firmware_name[NFC_FIRMWARE_NAME_MAXSIZE + 1];
- 
--	if (!info->attrs[NFC_ATTR_DEVICE_INDEX])
-+	if (!info->attrs[NFC_ATTR_DEVICE_INDEX] || !info->attrs[NFC_ATTR_FIRMWARE_NAME])
- 		return -EINVAL;
- 
- 	idx = nla_get_u32(info->attrs[NFC_ATTR_DEVICE_INDEX]);
+Sia, can you fork a kernel repository on GitHub or GitLab and create there a
+branch with this series based on v5.9?
+
+> > I want to test it on our HW with DW AXI DMAC.
+
+Eugeniy, to be honest, it's not a big deal to create one either with help of
+lore.kernel.org or patchwork [1].
+
+For your convenience (disclaimer, I can't guarantee I haven't missed something
+here) I published it here [2]. Note, I didn't compile it.
+
+[1]: https://patchwork.kernel.org/project/linux-dmaengine/cover/20201012042200.29787-1-jee.heng.sia@intel.com/
+[2]: https://gitlab.com/andy-shev/next/-/tree/topic/dw-dma-axi
+
 -- 
-1.9.1
+With Best Regards,
+Andy Shevchenko
+
 
