@@ -2,113 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EF7292847
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287EC29284C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgJSNh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:37:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52577 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727297AbgJSNh5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:37:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603114676;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mS8bITCyzTOP2XiCenDLyc/N0OBdUAE0vG9p0LTiHC0=;
-        b=dbN5F1BOOpQ1/0ptlzjrTNkjkrmgrgWaktiHCc7wu9jq0heMd/LwpwXn5xYonMv2HutO/T
-        MrUiC+sZCM1xoAb27kDfYUei4oCRBs7yeCKlVx8gEmsWGvU46hxG1qWqQ0xeSDPZdX4eeC
-        947zmGPYaewBUQY1eqzvHNoCTNiSxdU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314-Yx8BS9dIOiiPLs-LkVquvA-1; Mon, 19 Oct 2020 09:37:54 -0400
-X-MC-Unique: Yx8BS9dIOiiPLs-LkVquvA-1
-Received: by mail-wm1-f69.google.com with SMTP id z7so4570031wme.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 06:37:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mS8bITCyzTOP2XiCenDLyc/N0OBdUAE0vG9p0LTiHC0=;
-        b=bEaRTKvdSet3Nfuw8GbbFmeRZkbhWlzRhXYwYGK9u1uWYVljxYx7QKVY9FO3ky9lmW
-         0L7Gq+nINTuHSTTUQGkmQVZ/pXHMPXtwn43K8cQ9dn5/ehHjNRdcCdDTKfqKuY9vzjTf
-         i3s3DltL7pJZLV7C0ENgo4KiL3e/A15A15HBEFLKsYVm5LA2MGauoCC5fvv7Wik81B8t
-         nrbM9Zm8zIvn8Wh6ShDghYPMLpjjEc20Azi6GALpG1DNyRV3G6gvNti0fycqG28kV9f1
-         z2SpKblm6n6W9yJUONMD0PXBzazXdtuxCcdX5iPeueUgTO60eo5kykxIwjlDT/Q7JoWg
-         zXxg==
-X-Gm-Message-State: AOAM530j/LzpZiHYUMPzwQDaRXkVzF1HaOs1yVhZLs5ECQyt+RVmVTc5
-        aIMh0Rcj92fK5sOiDeQZrQIXVvmK6VJxmChLjXGmFwEJV/njSPaGC27Jo5tUEYxDhzPe15S5E0p
-        UYZWPy4mmFeq79/oNcOz0hzJJ
-X-Received: by 2002:a5d:6cc8:: with SMTP id c8mr18748402wrc.233.1603114672884;
-        Mon, 19 Oct 2020 06:37:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxAbCwKwVrnG9IjlEBOZo1+niRf9C9XuEZwHILJgt8/gQc3q9lqDdmd/vrjTfgDna8KJRZWMA==
-X-Received: by 2002:a5d:6cc8:: with SMTP id c8mr18748381wrc.233.1603114672632;
-        Mon, 19 Oct 2020 06:37:52 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x81sm81282wmb.11.2020.10.19.06.37.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 06:37:52 -0700 (PDT)
-Subject: Re: [PATCH 00/35] Enhance memory utilization with DMEMFS
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Joao Martins <joao.m.martins@oracle.com>
-Cc:     yulei zhang <yulei.kernel@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Haiwei Li <lihaiwei.kernel@gmail.com>,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jane Y Chu <jane.chu@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-References: <cover.1602093760.git.yuleixzhang@tencent.com>
- <bdd0250e-4e14-f407-a584-f39af12c4e09@oracle.com>
- <CACZOiM2qKhogXQ_DXzWjGM5UCeCuEqT6wnR=f2Wi_T45_uoYHQ@mail.gmail.com>
- <b963565b-61d8-89d3-1abd-50cd8c8daad5@oracle.com>
- <CACZOiM26GPtqkGyecG=NGuB3etipV5-KgN+s19_U1WJrFxtYPQ@mail.gmail.com>
- <98be093d-c869-941a-6dd9-fb16356f763b@oracle.com>
- <CAPcyv4jZ7XTnYd7vLQ18xij7d+80jU0zLs+ykS2frY-LMPS=Nw@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <3626f5ff-b6a0-0811-5899-703a0714897d@redhat.com>
-Date:   Mon, 19 Oct 2020 15:37:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1728364AbgJSNiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:38:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728275AbgJSNiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:38:54 -0400
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CDF42223C;
+        Mon, 19 Oct 2020 13:38:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603114733;
+        bh=QLl//rSYnpjI4XjsLivmaRA2q702aMuao3NMwW0AZCU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZJ0UeatYQoCfuwjODgSFqcdGke2T/VzdRlInpmZ8BW5LGWfYNWT6Us7AD7LSvghAw
+         ovGl1TIHvNQ1Sik3JLTWfyDAndg1U+svVh3VWmUaKrDtjgiTDSyC7LZJHgri7Y4Lum
+         sBVeb1uXisrOJIxuAsOY6PKTBBO7RZkwfiv/NJgs=
+Received: by mail-ot1-f44.google.com with SMTP id e20so10432464otj.11;
+        Mon, 19 Oct 2020 06:38:53 -0700 (PDT)
+X-Gm-Message-State: AOAM530TEX2PGRION19xoUwOSsLg6yhtDxFyg4kuwTBINxxZoPXRgCbB
+        zw+jg7fyyOYnANSDZ8amaF+RjCOhH5R/jHvdug==
+X-Google-Smtp-Source: ABdhPJxPScoNZrlBxS9IlCTidVRXbPv6VWkKWABPQ2lSmgTF04BwvvKmDYpcVnycQB3EFkkwQ2mstx5y1VG7XAji/kU=
+X-Received: by 2002:a9d:7993:: with SMTP id h19mr10559otm.129.1603114732682;
+ Mon, 19 Oct 2020 06:38:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4jZ7XTnYd7vLQ18xij7d+80jU0zLs+ykS2frY-LMPS=Nw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CGME20201019094739eucas1p18cd4c7e5a0197393d2e7c5c6fcc2777d@eucas1p1.samsung.com>
+ <20201019094715.15343-1-m.szyprowski@samsung.com> <20201019094715.15343-3-m.szyprowski@samsung.com>
+In-Reply-To: <20201019094715.15343-3-m.szyprowski@samsung.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 19 Oct 2020 08:38:40 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+X3w=1-_SpXPTdO_UGg5er9vU-XETT-NbS96LSfNLUVQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+X3w=1-_SpXPTdO_UGg5er9vU-XETT-NbS96LSfNLUVQ@mail.gmail.com>
+Subject: Re: [PATCH 2/6] Documetation: dt-bindings: add the
+ samsung,exynos-pcie binding
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10/20 00:25, Dan Williams wrote:
-> Now, with recent device-dax extensions, it
-> also has a coarse grained memory management system for  physical
-> address-space partitioning and a path for struct-page-less backing for
-> VMs. What feature gaps remain vs dmemfs, and can those gaps be closed
-> with incremental improvements to the 2 existing memory-management
-> systems?
+On Mon, Oct 19, 2020 at 4:47 AM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> From: Jaehoon Chung <jh80.chung@samsung.com>
+>
+> Add dt-bindings for the Samsung Exynos PCIe controller (Exynos5433
+> variant).
+>
+> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
+> [mszyprow: updated the binding to latest driver changes, rewrote it in yaml,
+>            rewrote commit message]
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>  .../bindings/pci/samsung,exynos-pcie.yaml     | 106 ++++++++++++++++++
+>  1 file changed, 106 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
+> new file mode 100644
+> index 000000000000..48fb569c238c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
+> @@ -0,0 +1,104 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/samsung,exynos-pcie.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Samsung SoC series PCIe Host Controller Device Tree Bindings
+> +
+> +maintainers:
+> +  - Jaehoon Chung <jh80.chung@samsung.com>
+> +
+> +description: |+
+> +  Exynos5433 SoC PCIe host controller is based on the Synopsys DesignWare
+> +  PCIe IP and thus inherits all the common properties defined in
+> +  designware-pcie.txt.
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - samsung,exynos5433-pcie
+> +
+> +  reg:
+> +    items:
+> +      - description: External Local Bus interface (ELBI) registers.
+> +      - description: Data Bus Interface (DBI) registers.
+> +      - description: PCIe configuration space region.
+> +
+> +  reg-names:
+> +    items:
+> +      - const: elbi
+> +      - const: bdi
 
-If I understand correctly, devm_memremap_pages() on ZONE_DEVICE memory
-would still create the "struct page" albeit lazily?  KVM then would use
-the usual get_user_pages() path.
+dbi
 
-Looking more closely at the implementation of dmemfs, I don't understand
-is why dmemfs needs VM_DMEM etc. and cannot provide access to mmap-ed
-memory using remap_pfn_range and VM_PFNMAP, just like /dev/mem.  If it
-did that KVM would get physical addresses using fixup_user_fault and
-never need pfn_to_page() or get_user_pages().  I'm not saying that would
-instantly be an approval, but it would make remove a lot of hooks.
+> +      - const: config
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: PCIe bridge clock
+> +      - description: PCIe bus clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pcie
+> +      - const: pcie_bus
+> +
+> +  phys:
+> +    maxItems: 1
+> +
+> +  phy-names:
+> +    const: pcie-phy
 
-Paolo
+Kind of a pointless name.
 
+> +
+> +  vdd10-supply:
+> +    description:
+> +      Phandle to a regulator that provides 1.0V power to the PCIe block.
+> +
+> +  vdd18-supply:
+> +    description:
+> +      Phandle to a regulator that provides 1.8V power to the PCIe block.
+> +
+> +required:
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - interrupt-names
+> +  - clocks
+> +  - clock-names
+> +  - phys
+> +  - phy-names
+> +  - vdd10-supply
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/exynos5433.h>
+> +
+> +    pcie: pcie@15700000 {
+> +        compatible = "samsung,exynos5433-pcie";
+> +        reg = <0x156b0000 0x1000>, <0x15700000 0x1000>, <0x0c000000 0x1000>;
+> +        reg-names = "elbi", "dbi", "config";
+> +        #address-cells = <3>;
+> +        #size-cells = <2>;
+> +        #interrupt-cells = <1>;
+> +        device_type = "pci";
+> +        interrupts = <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&cmu_fsys CLK_PCIE>, <&cmu_fsys CLK_PCLK_PCIE_PHY>;
+> +        clock-names = "pcie", "pcie_bus";
+> +        phys = <&pcie_phy>;
+> +        phy-names = "pcie-phy";
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&pcie_bus &pcie_wlanen>;
+> +        num-lanes = <1>;
+> +        bus-range = <0x00 0xff>;
+> +        ranges = <0x81000000 0 0         0x0c001000 0 0x00010000>,
+> +                 <0x82000000 0 0x0c011000 0x0c011000 0 0x03feefff>;
+> +        vdd10-supply = <&ldo6_reg>;
+> +        vdd18-supply = <&ldo7_reg>;
+> +        iterrupt-map-mask = <0 0 0 0>;
+
+typo
+
+> +        interrupt-map = <0 0 0 0 &gic GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>;
+> +    };
+> --
+> 2.17.1
+>
