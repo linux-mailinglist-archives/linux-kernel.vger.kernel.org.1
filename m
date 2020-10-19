@@ -2,128 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F3E2927B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 14:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBB92927B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 14:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbgJSMzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 08:55:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46958 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726336AbgJSMzh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 08:55:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603112135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ticZMXdjFyuhy7AlqQJ6aW1BCbz8bmeqkMyCMuPVBrQ=;
-        b=g+MOJIA4H1ahTv14ks8ZehSUdr7w3TQKF8+/oVOVzz9gakazCni0XFPnYsltVmiQoHvfpX
-        p3S89hp8HcYFZOSvXazY31U/+SlnIyb2XSzAIFpT5USyDCdKYGafPeZ9Vkcdw+rPMKewUo
-        6enafYwMXaqWKGkqOb4V9HSIWWhDxF8=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-XrYC_mLBPiite6eTAKzQtg-1; Mon, 19 Oct 2020 08:55:34 -0400
-X-MC-Unique: XrYC_mLBPiite6eTAKzQtg-1
-Received: by mail-qt1-f198.google.com with SMTP id h31so6113010qtd.14
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 05:55:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ticZMXdjFyuhy7AlqQJ6aW1BCbz8bmeqkMyCMuPVBrQ=;
-        b=cDTGt1YDuEAYdQCw65AXcgsc5fdtFX9WSVe9tUPA9Fr8Pao8LoCby8lkwED/i8CPxX
-         RyeJJkWnievdrkylo2rvuAr+9DvNYe83OVclnDAfFHb8gEpPcwoMtpS4nGuauwOshCt7
-         ZnViDhdh0DTPbEOxYN14NLGVzrNKeaqoXuyRMDWPW0h4nrWQpiCmvzN/69ClN7+0PjPy
-         NKSk7aCzvu3XOc02ZXWQOqurRs8xo21q2HNcuAXNL7ZGWQLbbKS+wyeuvjx0/cobNj4B
-         D1BSjf0MqB1CODRBLDK3gcrfZssd3Oq1A6MQE/SzczwemuX63SrBehojL7X7VXMTj1Kz
-         ocwg==
-X-Gm-Message-State: AOAM531+QbzvsmcxUo5RmL30YYkSPUzDL4gzk3ycuWMqtxUxtIJAopgP
-        mJUd/yVmpyd46Cv/3a5gFuYN8O5iAQ+N5fTlIcdUtvqNgO9CKiiN8JoJe0AsE+tpSIaUuindelG
-        /S7W0qFGM/B6GBN9Nr/1MVqqI
-X-Received: by 2002:ac8:6ec7:: with SMTP id f7mr14275226qtv.45.1603112133309;
-        Mon, 19 Oct 2020 05:55:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzxLA2eF0bNDpUfMI2wAfc8LZq4aaTUjKQgRbAsiAJUaZNudtOj8D0MCnF/brfSxzHb1cBOiA==
-X-Received: by 2002:ac8:6ec7:: with SMTP id f7mr14275204qtv.45.1603112133039;
-        Mon, 19 Oct 2020 05:55:33 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id z69sm4136661qkb.7.2020.10.19.05.55.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 05:55:32 -0700 (PDT)
-Subject: Re: [PATCH] checkpatch: Allow --fix removal of unnecessary break
- statements
-To:     Joe Perches <joe@perches.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Julia Lawall <julia.lawall@inria.fr>, linux-kernel@vger.kernel.org,
-        cocci <cocci@systeme.lip6.fr>
-References: <20201017160928.12698-1-trix@redhat.com>
- <f530b7aeecbbf9654b4540cfa20023a4c2a11889.camel@perches.com>
- <alpine.DEB.2.22.394.2010172016370.9440@hadrien>
- <dfe24da760056e31d90ff639b47c494263b5f4a7.camel@perches.com>
- <a15ada1f-9bad-612e-e841-934bff088f38@redhat.com>
- <49c87dede8d06ba90ecb3200b2a773860d61a3c8.camel@perches.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <c02aed9b-ab6c-1054-1e8a-4006f2a75f94@redhat.com>
-Date:   Mon, 19 Oct 2020 05:55:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1727482AbgJSMzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 08:55:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727332AbgJSMzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 08:55:45 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98A6F222BA;
+        Mon, 19 Oct 2020 12:55:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603112144;
+        bh=y4Ld2IaKjGmIN1elN0FhvRwU9UgaCyx25hueIiCiNK8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=V9QHrxwu9+A3Einr5uHzpudzhlSqIbwQTDSR4q4euLcjUHjifnEPq0fRNu6RSpjsL
+         0e3A7YKiP0wZzYF74VXPqoyXqRJA4l8Z1TDSlsEBbXNeMTXl6Xz/Q4AZ1Pj/0qz4zE
+         Sf1kOyYbl8fERQiuxcO4TFNoXDBeAAkXi5/DKqRs=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kUUhS-002QC6-NQ; Mon, 19 Oct 2020 13:55:42 +0100
 MIME-Version: 1.0
-In-Reply-To: <49c87dede8d06ba90ecb3200b2a773860d61a3c8.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 19 Oct 2020 13:55:42 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        catalin.marinas@arm.com, will@kernel.org
+Subject: Re: [PATCH] perf: arm_spe: Use Inner Shareable DSB when draining the
+ buffer
+In-Reply-To: <20201019122455.GD34028@C02TD0UTHF1T.local>
+References: <20201006150520.161985-1-alexandru.elisei@arm.com>
+ <87ft6r4bgd.wl-maz@kernel.org>
+ <8fa8af94-ab08-b43a-95e4-55a13de09efe@arm.com>
+ <20201019122455.GD34028@C02TD0UTHF1T.local>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <6878fd559ca5c63a251c47c271df7c5e@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: mark.rutland@arm.com, alexandru.elisei@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-10-19 13:24, Mark Rutland wrote:
+> On Tue, Oct 06, 2020 at 05:13:31PM +0100, Alexandru Elisei wrote:
+>> Hi Marc,
+>> 
+>> Thank you for having a look at the patch!
+>> 
+>> On 10/6/20 4:32 PM, Marc Zyngier wrote:
+>> > Hi Alex,
+>> >
+>> > On Tue, 06 Oct 2020 16:05:20 +0100,
+>> > Alexandru Elisei <alexandru.elisei@arm.com> wrote:
+>> >> From ARM DDI 0487F.b, page D9-2807:
+>> >>
+>> >> "Although the Statistical Profiling Extension acts as another observer in
+>> >> the system, for determining the Shareability domain of the DSB
+>> >> instructions, the writes of sample records are treated as coming from the
+>> >> PE that is being profiled."
+>> >>
+>> >> Similarly, on page D9-2801:
+>> >>
+>> >> "The memory type and attributes that are used for a write by the
+>> >> Statistical Profiling Extension to the Profiling Buffer is taken from the
+>> >> translation table entries for the virtual address being written to. That
+>> >> is:
+>> >> - The writes are treated as coming from an observer that is coherent with
+>> >>   all observers in the Shareability domain that is defined by the
+>> >>   translation tables."
+>> >>
+>> >> All the PEs are in the Inner Shareable domain, use a DSB ISH to make sure
+>> >> writes to the profiling buffer have completed.
+>> > I'm a bit sceptical of this change. The SPE writes are per-CPU, and
+>> > all we are trying to ensure is that the CPU we are running on has
+>> > drained its own queue of accesses.
+>> >
+>> > The accesses being made within the IS domain doesn't invalidate the
+>> > fact that they are still per-CPU, because "the writes of sample
+>> > records are treated as coming from the PE that is being profiled.".
+>> >
+>> > So why should we have an IS-wide synchronisation for accesses that are
+>> > purely local?
+>> 
+>> I think I might have misunderstood how perf spe works. Below is my 
+>> original train
+>> of thought.
+>> 
+>> In the buffer management event interrupt we drain the buffer, and if 
+>> the buffer is
+>> full, we call arm_spe_perf_aux_output_end() -> perf_aux_output_end(). 
+>> The comment
+>> for perf_aux_output_end() says "Commit the data written by hardware 
+>> into the ring
+>> buffer by adjusting aux_head and posting a PERF_RECORD_AUX into the 
+>> perf buffer.
+>> It is the pmu driver's responsibility to observe ordering rules of the 
+>> hardware,
+>> so that all the data is externally visible before this is called." My 
+>> conclusion
+>> was that after we drain the buffer, the data must be visible to all 
+>> CPUs.
+> 
+> FWIW, this reasoning sounds correct to me. The DSB NSH will be
+> sufficient to drain the buffer, but we need the DSB ISH to ensure that
+> it's visbile to other CPUs at the instant we call 
+> perf_aux_output_end().
 
-On 10/18/20 1:19 PM, Joe Perches wrote:
-> On Sun, 2020-10-18 at 13:07 -0700, Tom Rix wrote:
->> I like!
-> []
->> could add a '|break' here to catch the couple
-> []
->> break;
->>
->> break;
-> Unfortunately, checkpatch is really stupid and it
-> wouldn't catch those
-> cases as there are blank lines
-> between the existing consecutive break
-> statements.
->
-> It would catch
->
-> 	break;
-> 	break;
->
-> but there aren't any of those so it seems unlikely
-> to be a very useful addition.
+Right. I think I missed that last bit (and Alex's email at the same 
+time).
 
-Unusual, but there are a couple of these.
+> Otherwise, if CPU x is reading the ring-buffer written by CPU y, it
+> might see the aux buffer pointers updated before the samples are
+> viisble, and hence read junk from the buffer.
+> 
+> We can add a comment to that effect (or rework perf_aux_output_end()
+> somehow to handle that ordering).
 
-Here's one from my rfc diff
+I'd rather this is done in perf_aux_output_end(), as a full blown DSB 
+ISH
+on guest entry is pretty harsh... It would also nicely split the 
+responsibilities:
 
-diff --git a/sound/soc/codecs/wcd-clsh-v2.c b/sound/soc/codecs/wcd-clsh-v2.c
-index 1be82113c59a..817d8259758c 100644
---- a/sound/soc/codecs/wcd-clsh-v2.c
-+++ b/sound/soc/codecs/wcd-clsh-v2.c
-@@ -478,11 +478,10 @@ static int _wcd_clsh_ctrl_set_state(struct wcd_clsh_ctrl *ctrl, int req_state,
-         wcd_clsh_state_hph_l(ctrl, req_state, is_enable, mode);
-         break;
-     case WCD_CLSH_STATE_HPHR:
-         wcd_clsh_state_hph_r(ctrl, req_state, is_enable, mode);
-         break;
--        break;
-     case WCD_CLSH_STATE_LO:
-         wcd_clsh_state_lo(ctrl, req_state, is_enable, mode);
-         break;
-     default:
-         break;
+- KVM stops SPE and make sure the output is drained
+- Perf makes the data visible to all CPUs
 
-Tom
+Thoughts?
 
->
-
+         M.
+-- 
+Jazz is not dead. It just smells funny...
