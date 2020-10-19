@@ -2,95 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF942292E86
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914FC292EE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731131AbgJSTeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:34:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55507 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730956AbgJSTeD (ORCPT
+        id S1731556AbgJSTxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:53:20 -0400
+Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.122]:19933 "EHLO
+        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731447AbgJSTwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:34:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603136042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=Kq5VxBu2z8uXUidFjxUtgnQ0vBBkojXZgIAYG1rS13k=;
-        b=XwisfWL1yDp8tjCx3C/o+yb35YDUfpHhNmDHKMMQkvlo618NOvPKmtzxfz6QEub/6HtMRK
-        jNmJ8pOvBxib7By4WeSp4UzijpIGxoVMj65CfurmiHc3JF7imWUIcQ36NKXZghuY9IKTkr
-        QuA44Tm7WOqehGyB+ui2W+woWrrqzOc=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-jLt2kfnlOfqs3uMiGpmVog-1; Mon, 19 Oct 2020 15:34:00 -0400
-X-MC-Unique: jLt2kfnlOfqs3uMiGpmVog-1
-Received: by mail-qt1-f199.google.com with SMTP id b41so687653qtk.21
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:34:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Kq5VxBu2z8uXUidFjxUtgnQ0vBBkojXZgIAYG1rS13k=;
-        b=JXpO8X7IQWFGZw0FXSrxbyQD61gZSGmS115ihn7yky19mrNXX1BjJPH9OK9sH/dQlu
-         8FOul+3LKijODiCAWHxi4I+6+bH6lLcLnhHCDtUVoLVZMVo6rusWh7x8ADSJHrQq2Y7U
-         krwkJpWCtlAy6pqG+Sd+dnDcvZJxa0Avv8PzGedTpRoFVIfa47qfylLCm6IanwRV1WHc
-         cfZQ6O8om6suDVkBCJ1tEw4VIGXTHhApGm23QoeioPtjgh+D+ieGCFzvBj2VjnrqRHWb
-         /WtLrTT3Q2t5qLZIOk/wsucXxNJJYZChjraGtlVKI6VJpP76hoKG5hoDKqfqv+vmsHXs
-         eaMA==
-X-Gm-Message-State: AOAM532Aqglh8XvMVLWxOIwDY4fFR8sEmEJHAWzAiMtBPfA4bLxopk2q
-        fyRo0hjb1fqR2tGHAc8yWhoTGfgKphLCfzuK9lHzF/q42v4+SQ9ObWwoDPPaamPxlD8Mn+bgWps
-        lVurWn2ZnjTmeUmMzK4Mt0IOo
-X-Received: by 2002:a05:620a:998:: with SMTP id x24mr1093532qkx.160.1603136040061;
-        Mon, 19 Oct 2020 12:34:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyRBOMiv5G17G7LD/7F/VAfAiG22qRDwWAIDg5xLV1iQptDtvpB+4Rtxa35qcp0KfqWXbJFEQ==
-X-Received: by 2002:a05:620a:998:: with SMTP id x24mr1093513qkx.160.1603136039870;
-        Mon, 19 Oct 2020 12:33:59 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id h8sm358550qto.46.2020.10.19.12.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 12:33:59 -0700 (PDT)
-From:   trix@redhat.com
-To:     matti.vaittinen@fi.rohmeurope.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com
-Cc:     linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] gpio: bd70528: remove unneeded break
-Date:   Mon, 19 Oct 2020 12:33:53 -0700
-Message-Id: <20201019193353.13066-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Mon, 19 Oct 2020 15:52:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1603137167;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=p/c4wY2BpgATfLLqFmyeUSjYkAeQ0oZyLAA6FSe5VDs=;
+        b=aFymrRo8aybEok5qObCOsrHVTMgOXegGwTJdQKxlrTCvU6Pt/djK2OTBi+GJNTZ2dL
+        QyQagDpfPgb6NohS3AFB4B4/nsSeMK2NpexrNNf9NnrSCWRf5X501UlXrNJlkLvgbmsu
+        2RcoQXcd1M9OraP33e5o88P3dPm/Pxi9dCChEBZU5DEfNL8lU9RkYNrCOlYpdv2uzDc6
+        /u6YvzsjezCxJT7wcuIVcfTmPQPkj5Hk91a3aNGBVO+P97C30RvTdw+TcJWvUQttOJqR
+        i3fW5gEArEvJjKzAwyKCr3BfwrmLkBnfY4WJiEPngoaSyjDBv8NDAq1/4wDkCK2EhKUt
+        d/qQ==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJPSb3t0="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
+        with ESMTPSA id C0b627w9JJpkU6t
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 19 Oct 2020 21:51:46 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Torsten Duwe <duwe@lst.de>
+Cc:     Willy Tarreau <w@1wt.eu>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-crypto@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>
+Subject: [PATCH v36 06/13] crypto: DRBG - externalize DRBG functions for LRNG
+Date:   Mon, 19 Oct 2020 21:34:24 +0200
+Message-ID: <5549894.MhkbZ0Pkbq@positron.chronox.de>
+In-Reply-To: <3073852.aeNJFYEL58@positron.chronox.de>
+References: <20200921075857.4424-1-nstange@suse.de> <20201016172619.GA18410@lst.de> <3073852.aeNJFYEL58@positron.chronox.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+This patch allows several DRBG functions to be called by the LRNG kernel
+code paths outside the drbg.c file.
 
-A break is not needed if it is preceded by a return
+CC: Torsten Duwe <duwe@lst.de>
+CC: "Eric W. Biederman" <ebiederm@xmission.com>
+CC: "Alexander E. Patrakov" <patrakov@gmail.com>
+CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
+CC: "Theodore Y. Ts'o" <tytso@mit.edu>
+CC: Willy Tarreau <w@1wt.eu>
+CC: Matthew Garrett <mjg59@srcf.ucam.org>
+CC: Vito Caputo <vcaputo@pengaru.com>
+CC: Andreas Dilger <adilger.kernel@dilger.ca>
+CC: Jan Kara <jack@suse.cz>
+CC: Ray Strode <rstrode@redhat.com>
+CC: William Jon McCann <mccann@jhu.edu>
+CC: zhangjs <zachary@baishancloud.com>
+CC: Andy Lutomirski <luto@kernel.org>
+CC: Florian Weimer <fweimer@redhat.com>
+CC: Lennart Poettering <mzxreary@0pointer.de>
+CC: Nicolai Stange <nstange@suse.de>
+Reviewed-by: Roman Drahtmueller <draht@schaltsekun.de>
+Tested-by: Roman Drahtm=FCller <draht@schaltsekun.de>
+Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+Tested-by: Neil Horman <nhorman@redhat.com>
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+=2D--
+ crypto/drbg.c         | 16 ++++++++++------
+ include/crypto/drbg.h |  7 +++++++
+ 2 files changed, 17 insertions(+), 6 deletions(-)
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/gpio/gpio-bd70528.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/gpio/gpio-bd70528.c b/drivers/gpio/gpio-bd70528.c
-index 45b3da8da336..931e5765fe92 100644
---- a/drivers/gpio/gpio-bd70528.c
-+++ b/drivers/gpio/gpio-bd70528.c
-@@ -71,17 +71,14 @@ static int bd70528_gpio_set_config(struct gpio_chip *chip, unsigned int offset,
- 					  GPIO_OUT_REG(offset),
- 					  BD70528_GPIO_DRIVE_MASK,
- 					  BD70528_GPIO_OPEN_DRAIN);
--		break;
- 	case PIN_CONFIG_DRIVE_PUSH_PULL:
- 		return regmap_update_bits(bdgpio->chip.regmap,
- 					  GPIO_OUT_REG(offset),
- 					  BD70528_GPIO_DRIVE_MASK,
- 					  BD70528_GPIO_PUSH_PULL);
--		break;
- 	case PIN_CONFIG_INPUT_DEBOUNCE:
- 		return bd70528_set_debounce(bdgpio, offset,
- 					    pinconf_to_config_argument(config));
--		break;
- 	default:
- 		break;
+diff --git a/crypto/drbg.c b/crypto/drbg.c
+index 3132967a1749..58b1de903def 100644
+=2D-- a/crypto/drbg.c
++++ b/crypto/drbg.c
+@@ -113,7 +113,7 @@
+  * the SHA256 / AES 256 over other ciphers. Thus, the favored
+  * DRBGs are the latest entries in this array.
+  */
+=2Dstatic const struct drbg_core drbg_cores[] =3D {
++const struct drbg_core drbg_cores[] =3D {
+ #ifdef CONFIG_CRYPTO_DRBG_CTR
+ 	{
+ 		.flags =3D DRBG_CTR | DRBG_STRENGTH128,
+@@ -190,6 +190,7 @@ static const struct drbg_core drbg_cores[] =3D {
+ 	},
+ #endif /* CONFIG_CRYPTO_DRBG_HMAC */
+ };
++EXPORT_SYMBOL(drbg_cores);
+=20
+ static int drbg_uninstantiate(struct drbg_state *drbg);
+=20
+@@ -205,7 +206,7 @@ static int drbg_uninstantiate(struct drbg_state *drbg);
+  * Return: normalized strength in *bytes* value or 32 as default
+  *	   to counter programming errors
+  */
+=2Dstatic inline unsigned short drbg_sec_strength(drbg_flag_t flags)
++unsigned short drbg_sec_strength(drbg_flag_t flags)
+ {
+ 	switch (flags & DRBG_STRENGTH_MASK) {
+ 	case DRBG_STRENGTH128:
+@@ -218,6 +219,7 @@ static inline unsigned short drbg_sec_strength(drbg_fla=
+g_t flags)
+ 		return 32;
  	}
--- 
-2.18.1
+ }
++EXPORT_SYMBOL(drbg_sec_strength);
+=20
+ /*
+  * FIPS 140-2 continuous self test for the noise source
+@@ -1214,7 +1216,7 @@ static int drbg_seed(struct drbg_state *drbg, struct =
+drbg_string *pers,
+ }
+=20
+ /* Free all substructures in a DRBG state without the DRBG state structure=
+ */
+=2Dstatic inline void drbg_dealloc_state(struct drbg_state *drbg)
++void drbg_dealloc_state(struct drbg_state *drbg)
+ {
+ 	if (!drbg)
+ 		return;
+@@ -1235,12 +1237,13 @@ static inline void drbg_dealloc_state(struct drbg_s=
+tate *drbg)
+ 		drbg->fips_primed =3D false;
+ 	}
+ }
++EXPORT_SYMBOL(drbg_dealloc_state);
+=20
+ /*
+  * Allocate all sub-structures for a DRBG state.
+  * The DRBG state structure must already be allocated.
+  */
+=2Dstatic inline int drbg_alloc_state(struct drbg_state *drbg)
++int drbg_alloc_state(struct drbg_state *drbg)
+ {
+ 	int ret =3D -ENOMEM;
+ 	unsigned int sb_size =3D 0;
+@@ -1321,6 +1324,7 @@ static inline int drbg_alloc_state(struct drbg_state =
+*drbg)
+ 	drbg_dealloc_state(drbg);
+ 	return ret;
+ }
++EXPORT_SYMBOL(drbg_alloc_state);
+=20
+ /*************************************************************************
+  * DRBG interface functions
+@@ -1890,8 +1894,7 @@ static int drbg_kcapi_sym_ctr(struct drbg_state *drbg,
+  *
+  * return: flags
+  */
+=2Dstatic inline void drbg_convert_tfm_core(const char *cra_driver_name,
+=2D					 int *coreref, bool *pr)
++void drbg_convert_tfm_core(const char *cra_driver_name, int *coreref, bool=
+ *pr)
+ {
+ 	int i =3D 0;
+ 	size_t start =3D 0;
+@@ -1918,6 +1921,7 @@ static inline void drbg_convert_tfm_core(const char *=
+cra_driver_name,
+ 		}
+ 	}
+ }
++EXPORT_SYMBOL(drbg_convert_tfm_core);
+=20
+ static int drbg_kcapi_init(struct crypto_tfm *tfm)
+ {
+diff --git a/include/crypto/drbg.h b/include/crypto/drbg.h
+index c4165126937e..71d53e028e6d 100644
+=2D-- a/include/crypto/drbg.h
++++ b/include/crypto/drbg.h
+@@ -278,4 +278,11 @@ enum drbg_prefixes {
+ 	DRBG_PREFIX3
+ };
+=20
++extern int drbg_alloc_state(struct drbg_state *drbg);
++extern void drbg_dealloc_state(struct drbg_state *drbg);
++extern void drbg_convert_tfm_core(const char *cra_driver_name, int *corere=
+f,
++				  bool *pr);
++extern const struct drbg_core drbg_cores[];
++extern unsigned short drbg_sec_strength(drbg_flag_t flags);
++
+ #endif /* _DRBG_H */
+=2D-=20
+2.26.2
+
+
+
 
