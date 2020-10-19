@@ -2,138 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C622926AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E8E2926B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgJSLvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:51:03 -0400
-Received: from mail-mw2nam12on2046.outbound.protection.outlook.com ([40.107.244.46]:57185
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726631AbgJSLvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:51:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b4+LdHkKLTQOHRc+WPwg80aE58HP3xmrfORwU4rS1+ppktbNWxWTF1SMOSb9V7Lfvia5JiEh2mPfP7tZp2z5EPgN9T7IO9eMcnZZtRD6yHMvdYcCnOJ3F6i/R6+3bdQQCRpyL48fkPi51hUQepK6T0Ttut5S0tNDZV/m2D22bDBEdXnRVe4qQ0w/w0gZFLihHtquD+w55whY7ROPFYHn9ENwn+yn8k5z/P2sQPcZ/Sg3zsgsDOYslSQZ4efFIzE7o2FEbA8MOi5qdLcCuiD0/ekZFbiNsOPreCe7qG5JmVk7j5VHbEpYpqZYigzkIQM56iTqSfr5BAX6qWbIEOZtzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pCpJaLr+R9sEAAwoJm+/m1uI/4+Nq1viuVJqSyePLm8=;
- b=Rdz5fhhjppJDBF9JhV9q8AYFvT4ynkMOWeM0/wmex6aWt8F+yUGz5Fc0hYjqaif5OzoS7NMTUERylV5Z7HYaT3eGx6YDNnPfemtQ8+Y+kx9pcsWBwvlrZtTJgV8XrrCt+/Eu/RfmvZs49GdMJcs3NgmCbmxuhE3TjX8/F5jO4dq8hOrqoNjto+nVq2H4mWQvQyeoMDrlCoRTkyX5+QcKnald72VM09ZjGkKTwqqAnAvxMtpEzCXPxDjXbNfz9tD6ozoiLgZ62lxr4KR0FRFlwf8eykHWwwrzDtf+apr6iAUmHVkLi7vct5IKmZvh4GQ7HyXBTlT5Sgg7bg0rrG4Qxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pCpJaLr+R9sEAAwoJm+/m1uI/4+Nq1viuVJqSyePLm8=;
- b=G72MRzMnnaeT7+wdqDdWfAqUlBDY0wyM19kBXoEkBE8Tb3cNTKc4ZHqGkKjpklupQRCHeL9dDDeHMTofMylKFr+d96/GVEZ0X9Y6Fw6+4Q4KvLdDrINlZlIso3j8lovwkUJ1GXkMQNLu51oLwtygUJ+Ob1x0TJnRMJze6aucstI=
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BY5PR11MB4370.namprd11.prod.outlook.com (2603:10b6:a03:1c3::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Mon, 19 Oct
- 2020 11:50:57 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::adbd:559a:4a78:f09b]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::adbd:559a:4a78:f09b%6]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
- 11:50:57 +0000
-From:   yanfei.xu@windriver.com
-To:     akpm@linux-foundation.org, david@redhat.com, vbabka@suse.cz,
-        pankaj.gupta.linux@gmail.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] mm/compaction: Rename 'start_pfn' to 'iteration_start_pfn' in compact_zone()
-Date:   Mon, 19 Oct 2020 19:50:44 +0800
-Message-Id: <20201019115044.1571-1-yanfei.xu@windriver.com>
-X-Mailer: git-send-email 2.18.2
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR04CA0089.apcprd04.prod.outlook.com
- (2603:1096:202:15::33) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
+        id S1728214AbgJSLv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:51:59 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44994 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726631AbgJSLv6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 07:51:58 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09JBpZ2T129745;
+        Mon, 19 Oct 2020 06:51:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603108295;
+        bh=oMc8cxidC4soC6sm/F1kZtDKNR1nvxlXtZ5poHhthHQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=fDe7e3cSbI9jovMwv6rXNZr5Wi5uuDPe7fJzo5ztVvr9o+mD/e107XDVYlef2LUZZ
+         0LgFbXY5A7ulq5ea9WgGFWiN3sP+4BhCRff/FOtSrJAHdtB70/SgH3qmvhzHFhRP6A
+         z9ENYcGa8z2r1tU8JrBPW/2zpRHVDcljbg77cRaM=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09JBpZC4087478
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 19 Oct 2020 06:51:35 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 19
+ Oct 2020 06:51:35 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 19 Oct 2020 06:51:35 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09JBpWLC122421;
+        Mon, 19 Oct 2020 06:51:33 -0500
+Subject: Re: [PATCH v2 2/2] irqchip/ti-sci-inta: Add support for unmapped
+ event handling
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <nm@ti.com>, <t-kristo@ti.com>, <ssantosh@kernel.org>,
+        <tglx@linutronix.de>, <jason@lakedaemon.net>, <robh+dt@kernel.org>,
+        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20200930074559.18028-1-peter.ujfalusi@ti.com>
+ <20200930074559.18028-3-peter.ujfalusi@ti.com>
+ <af9ce252820bab9a21207ef2173da9fd@kernel.org>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <6e501bf0-e4d7-7ce3-2d61-536d0fa29627@ti.com>
+Date:   Mon, 19 Oct 2020 14:52:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-lpggp1.wrs.com (60.247.85.82) by HK2PR04CA0089.apcprd04.prod.outlook.com (2603:1096:202:15::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22 via Frontend Transport; Mon, 19 Oct 2020 11:50:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 56a89ea1-9433-4f91-8175-08d874253d8d
-X-MS-TrafficTypeDiagnostic: BY5PR11MB4370:
-X-Microsoft-Antispam-PRVS: <BY5PR11MB4370A08C80559454129E25DFE41E0@BY5PR11MB4370.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:115;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fvHUDKt9Ljxg1vADE1MfbROL+jRbB/JQjf5Mtj3Va/AK1uxTEkv1WDhkcaM2I/uHBAch4uGrvhtXi2deBHc3Tyqy9+HOhboX7owV1442xuL/1zHvEy7kNANfzl0QA6qA0G1NPFX5eAg/EE+CEmzjgffq+YH1DmMVBYHDUK4uZECQFbNhJ7pKYAofg1O/h3nSEvfgYr0ZeKEyfBpJN4pCPZVPwVteRzNxVR4E88uCaG/AMdycY2GcJ10YNo+v22qVr1NLHSCGYMv+KdhL3ky2sIW/eDfi4wS5QcP+wT3rJ7dHyYl/dimc2V8WQM8LASRi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(136003)(346002)(396003)(366004)(376002)(8936002)(4326008)(86362001)(6512007)(9686003)(36756003)(6666004)(66556008)(66946007)(66476007)(83380400001)(8676002)(26005)(52116002)(2906002)(6486002)(478600001)(1076003)(6506007)(16526019)(186003)(316002)(956004)(2616005)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Yx/93bbY8u5iD3/5w9WcDTb21INvyhxCFrb/D81aYp2EhY78320AvTO/pgnDaqTH4OoxnlQW7P27emH6acJk1PVjCGhNRwMYlfF2HednRANFdl3bDg2xLWd9HOsdHsAD+yJGjWNQpvw051mEgUGCXe/X3VzOn9mj2X5n5QmFbPvNgrH+ESkvHxzKFA8bgaAE3HdSrSikypH41eJ8rjTxmS+mPTTK0vgNUGxQ4xZOvG52iVcEQ/AAfnWSjmkLIWn/HAQYQphtpFALRNiR5Rim158GsOuBaeM68UZP8qII6t+dIXjAAjjN0Ep0FTFFGaz0pc6B5sIzSg0jDNCAv+escZg0ABKXoOuRSkzOSzLtiBzh2CMdVyW6ljplZvNwtP8uwQrIvA6FJbXc63SjQdPoqw8Fh6fjMg0Myb8849k0hn3/QEOcbATnxHvC1mYitnacfsmZUZwKlT/DIsQUpFZA8mIDf8rHHNDFV/12kDKtpqHcPPFyBTqzqj+up1H5Kk9cBL9z53PvtiEFB+yEa3IfcrG6km5cWiXU5yo7ZlIWlEN83A7aDlARgCnzsBrvPdOKcGMUphlVdHkte1VikoXUU3qrhsvy0Ue/MAoVhLDZrK8s9L6i1LwEU0YkD11IsoCDPF51DvdJPxAEoZech3Xx2w==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56a89ea1-9433-4f91-8175-08d874253d8d
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2020 11:50:57.0439
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 61GGK79z9ajHF0TI0dHwOrypCLuePSKITkqCjqrB8r060xGSXafZigOSAVe6wFHUnA7E098PLboBIr+vH3BmkA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4370
+In-Reply-To: <af9ce252820bab9a21207ef2173da9fd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yanfei Xu <yanfei.xu@windriver.com>
+Marc,
 
-There are two 'start_pfn' declared in compact_zone() which have
-different meaning. Rename the second one to 'iteration_start_pfn'
-to prevent confusion.
+On 30/09/2020 11.33, Marc Zyngier wrote:
+> On 2020-09-30 08:45, Peter Ujfalusi wrote:
+>> The DMA (BCDMA/PKTDMA and their rings/flows) events are under the INTA's
+>> supervision as unmapped events in AM64.
+> 
+> What does "unmapped event" mean? An event that doesn't require a mapping?
+> Or an internally generated event? Or a proxy event?
+> 
+>>
+>> In order to keep the current SW stack working, the INTA driver must
+>> replace
+>> the dev_id with it's own when a request comes for BCDMA or PKTDMA
+>> resources.
+> 
+> This seems to support my second option. Please clarify what you mean
+> exactly.
 
-BTW, remove an useless semicolon.
+Looks like I forgot to reply on the other comments...
 
-Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-Acked-by: David Hildenbrand <david@redhat.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Acked-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
----
-v1->v2:
-    Rename 'start_pfn' to 'iteration_start_pfn'.
-v2->v3:
-    improves commit messages.
+> 
+>>
+>> Implement parsing of the optional "ti,unmapped-event-sources" phandle
+>> array
+>> to get the sci-dev-ids of the devices where the unmapped events
+>> originate.
+>>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> ---
+>>  drivers/irqchip/irq-ti-sci-inta.c | 72 +++++++++++++++++++++++++++++--
+>>  1 file changed, 68 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/irqchip/irq-ti-sci-inta.c
+>> b/drivers/irqchip/irq-ti-sci-inta.c
+>> index bc863ef7998d..00f5b34863c5 100644
+>> --- a/drivers/irqchip/irq-ti-sci-inta.c
+>> +++ b/drivers/irqchip/irq-ti-sci-inta.c
+>> @@ -85,6 +85,8 @@ struct ti_sci_inta_vint_desc {
+>>   * @base:        Base address of the memory mapped IO registers
+>>   * @pdev:        Pointer to platform device.
+>>   * @ti_sci_id:        TI-SCI device identifier
+>> + * @difu_cnt:        Number of TI-SCI device identifiers for unmapped
+>> events
+>> + * @dev_ids_for_unmapped: Pointer to an array of TI-SCI device
+>> identifiers
+>>   */
+>>  struct ti_sci_inta_irq_domain {
+>>      const struct ti_sci_handle *sci;
+>> @@ -96,11 +98,33 @@ struct ti_sci_inta_irq_domain {
+>>      void __iomem *base;
+>>      struct platform_device *pdev;
+>>      u32 ti_sci_id;
+>> +
+>> +    int difu_cnt;
+> 
+> I like silly acronyms as much as the next man, but please adopt
+> sensible names. unmapped_cnt, or something.
 
- mm/compaction.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+It is silly to my taste as well...
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 6e0ee5641788..ee1f8439369e 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2271,7 +2271,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
- 
- 	while ((ret = compact_finished(cc)) == COMPACT_CONTINUE) {
- 		int err;
--		unsigned long start_pfn = cc->migrate_pfn;
-+		unsigned long iteration_start_pfn = cc->migrate_pfn;
- 
- 		/*
- 		 * Avoid multiple rescans which can happen if a page cannot be
-@@ -2283,7 +2283,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
- 		 */
- 		cc->rescan = false;
- 		if (pageblock_start_pfn(last_migrated_pfn) ==
--		    pageblock_start_pfn(start_pfn)) {
-+		    pageblock_start_pfn(iteration_start_pfn)) {
- 			cc->rescan = true;
- 		}
- 
-@@ -2307,8 +2307,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
- 			goto check_drain;
- 		case ISOLATE_SUCCESS:
- 			update_cached = false;
--			last_migrated_pfn = start_pfn;
--			;
-+			last_migrated_pfn = iteration_start_pfn;
- 		}
- 
- 		err = migrate_pages(&cc->migratepages, compaction_alloc,
--- 
-2.18.2
+> 
+>> +    u32 *dev_ids_for_unmapped;
+> 
+> unmapped_dev_ids?
 
+OK, I will came up with more reasobnable names.
+
+> 
+>>  };
+>>
+>>  #define to_vint_desc(e, i) container_of(e, struct
+>> ti_sci_inta_vint_desc, \
+>>                      events[i])
+>>
+>> +static u16 ti_sci_inta_get_dev_id(struct ti_sci_inta_irq_domain *inta,
+>> +                  u32 hwirq)
+>> +{
+>> +    u16 dev_id = HWIRQ_TO_DEVID(hwirq);
+>> +    int i;
+>> +
+>> +    if (inta->difu_cnt == 0)
+>> +        return dev_id;
+>> +
+>> +    for (i = 0; i < inta->difu_cnt; i++) {
+>> +        if (dev_id == inta->dev_ids_for_unmapped[i]) {
+>> +            dev_id = inta->ti_sci_id;
+> 
+> ti_sci_id is a u32, and you are implicitly casting it as u16.
+> One of the two is wrong.
+
+Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml
+defines the ti,sci-dev-id as u32.
+I will store them in u16 array in ti_sci_inta_get_unmapped_sources()
+
+> 
+>> +            break;
+>> +        }
+>> +    }
+>> +
+>> +    return dev_id;
+>> +}
+>> +
+>>  /**
+>>   * ti_sci_inta_irq_handler() - Chained IRQ handler for the vint irqs
+>>   * @desc:    Pointer to irq_desc corresponding to the irq
+>> @@ -251,7 +275,7 @@ static struct ti_sci_inta_event_desc
+>> *ti_sci_inta_alloc_event(struct ti_sci_inta
+>>      u16 dev_id, dev_index;
+>>      int err;
+>>
+>> -    dev_id = HWIRQ_TO_DEVID(hwirq);
+>> +    dev_id = ti_sci_inta_get_dev_id(inta, hwirq);
+>>      dev_index = HWIRQ_TO_IRQID(hwirq);
+>>
+>>      event_desc = &vint_desc->events[free_bit];
+>> @@ -352,14 +376,15 @@ static void ti_sci_inta_free_irq(struct
+>> ti_sci_inta_event_desc *event_desc,
+>>  {
+>>      struct ti_sci_inta_vint_desc *vint_desc;
+>>      struct ti_sci_inta_irq_domain *inta;
+>> +    u16 dev_id;
+>>
+>>      vint_desc = to_vint_desc(event_desc, event_desc->vint_bit);
+>>      inta = vint_desc->domain->host_data;
+>> +    dev_id = ti_sci_inta_get_dev_id(inta, hwirq);
+>>      /* free event irq */
+>>      mutex_lock(&inta->vint_mutex);
+>>      inta->sci->ops.rm_irq_ops.free_event_map(inta->sci,
+>> -                         HWIRQ_TO_DEVID(hwirq),
+>> -                         HWIRQ_TO_IRQID(hwirq),
+>> +                         dev_id, HWIRQ_TO_IRQID(hwirq),
+>>                           inta->ti_sci_id,
+>>                           vint_desc->vint_id,
+>>                           event_desc->global_event,
+>> @@ -562,7 +587,6 @@ static void
+>> ti_sci_inta_msi_set_desc(msi_alloc_info_t *arg,
+>>      arg->desc = desc;
+>>      arg->hwirq = TO_HWIRQ(pdev->id, desc->inta.dev_index);
+>>  }
+>> -
+>>  static struct msi_domain_ops ti_sci_inta_msi_ops = {
+>>      .set_desc    = ti_sci_inta_msi_set_desc,
+>>  };
+>> @@ -574,6 +598,42 @@ static struct msi_domain_info
+>> ti_sci_inta_msi_domain_info = {
+>>      .chip    = &ti_sci_inta_msi_irq_chip,
+>>  };
+>>
+>> +static int ti_sci_inta_get_unmapped_sources(struct
+>> ti_sci_inta_irq_domain *inta)
+>> +{
+>> +    struct device *dev = &inta->pdev->dev;
+>> +    struct device_node *node = dev_of_node(dev);
+>> +    struct of_phandle_iterator it;
+>> +    int count, err, ret, i;
+>> +
+>> +    count = of_count_phandle_with_args(node,
+>> "ti,unmapped-event-sources",
+>> +                       NULL);
+>> +    if (count <= 0)
+>> +        return 0;
+>> +
+>> +    inta->dev_ids_for_unmapped = devm_kcalloc(dev, count,
+>> +                    sizeof(*inta->dev_ids_for_unmapped),
+>> +                    GFP_KERNEL);
+>> +    if (!inta->dev_ids_for_unmapped)
+>> +        return -ENOMEM;
+>> +
+>> +    i = 0;
+>> +    of_for_each_phandle(&it, err, node, "ti,unmapped-event-sources",
+>> +                NULL, 0) {
+>> +        ret = of_property_read_u32(it.node, "ti,sci-dev-id",
+>> +                       &inta->dev_ids_for_unmapped[i++]);
+>> +        if (ret) {
+>> +            dev_err(dev, "ti,sci-dev-id read failure for %s\n",
+>> +                of_node_full_name(it.node));
+> 
+> Use the printk format specifier instead of of_node_full_name.
+
+OK.
+
+> 
+>> +            of_node_put(it.node);
+>> +            return ret;
+>> +        }
+>> +    }
+>> +
+>> +    inta->difu_cnt = count;
+>> +
+>> +    return 0;
+>> +}
+>> +
+>>  static int ti_sci_inta_irq_domain_probe(struct platform_device *pdev)
+>>  {
+>>      struct irq_domain *parent_domain, *domain, *msi_domain;
+>> @@ -629,6 +689,10 @@ static int ti_sci_inta_irq_domain_probe(struct
+>> platform_device *pdev)
+>>      if (IS_ERR(inta->base))
+>>          return PTR_ERR(inta->base);
+>>
+>> +    ret = ti_sci_inta_get_unmapped_sources(inta);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>>      domain = irq_domain_add_linear(dev_of_node(dev),
+>>                         ti_sci_get_num_resources(inta->vint),
+>>                         &ti_sci_inta_irq_domain_ops, inta);
+> 
+>         M.
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
