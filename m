@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15A3292EC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51587292EC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731171AbgJSTsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:48:11 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:60885
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728196AbgJSTsL (ORCPT
+        id S1731329AbgJSTu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:50:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59092 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726718AbgJSTu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:48:11 -0400
-X-IronPort-AV: E=Sophos;i="5.77,395,1596492000"; 
-   d="scan'208";a="362224214"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 21:48:08 +0200
-Date:   Mon, 19 Oct 2020 21:48:07 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Waiman Long <longman@redhat.com>
-cc:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Gilles Muller <Gilles.Muller@inria.fr>
-Subject: Re: slowdown due to reader-owned rwsem time-based spinning
-In-Reply-To: <ddbf4694-10c2-cd7e-b0ed-3ae54f262bde@redhat.com>
-Message-ID: <alpine.DEB.2.22.394.2010192143290.2781@hadrien>
-References: <alpine.DEB.2.22.394.2010151315190.2869@hadrien> <ddbf4694-10c2-cd7e-b0ed-3ae54f262bde@redhat.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Mon, 19 Oct 2020 15:50:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603137026;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=gurUpVJY92BNatRtGPJGA4twsuCjo97EHFL7kW3iTCQ=;
+        b=XLnTGFYerF/s/BWk8RQaN5NFGSPyz+4u9C42+qylp2Fd0ZDvSecOn6J+WAONYWf8Az6dcQ
+        lo/F31Qc84MceTqC8qsCQMMUJ4ZWI6D5LDqMkmALTEFOFbv8kx69Ja8cxiH05G7s7bw8gf
+        XcINTp0MxzByaC8JRpEcNmN9ssII/bE=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-bTTapj3ROkSE3QJiOh-7Qg-1; Mon, 19 Oct 2020 15:50:24 -0400
+X-MC-Unique: bTTapj3ROkSE3QJiOh-7Qg-1
+Received: by mail-qk1-f198.google.com with SMTP id j185so530500qkf.7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:50:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=gurUpVJY92BNatRtGPJGA4twsuCjo97EHFL7kW3iTCQ=;
+        b=RL6HEAzroW0zjVSk6N6Zh6CPTUnORCegGyO5YE5Fxnpg8DTkW0m810jtzP21LpQFah
+         QvJtI+LG2CHwK1f7kmikJUsQ7sJn6wmIwv5m5VJvaM6+ctaW5HM7pM9qRNydrThwFavf
+         o1i6JYn/7oJs6bHFndEx4LDb3+3H18QNcHeGgIxzPnK1V89kut0K29aUqky5YKlliNah
+         SFpG7AVxXcY6jOpqi415u8ao5wzZ4hTt0mPWYg/ZKO30j4jDPub3iDa+/liu4ZyPj/Ea
+         YI7xeTKn/GFcB/hPKqqfc/onqf0r+akzHUfNKZjB3Na/6+SJhnsa5Xxa0jkvP6z02o5U
+         9H6w==
+X-Gm-Message-State: AOAM533dE80U2hLnz7o4/Cs9m2aTdfWqvSkoGYGEgaumNrTVWlDFz6Hm
+        eSO5g4u5Ig3VkhSQS7WGhw1uQJnBQyZZr5Qo90VOHUyXJGp/OQ6UFJxoXN1uQst8Z4UcNYZmZzy
+        mbxepzMiwbL0c6gzddAydeekI
+X-Received: by 2002:ac8:705b:: with SMTP id y27mr1114111qtm.192.1603137023758;
+        Mon, 19 Oct 2020 12:50:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyvDlls0C3FPTa4CLaTFO3RK5ocpNR7SlP5iafd30354sGejOe41Jo8FGhAcBQn8KNGmwvqIQ==
+X-Received: by 2002:ac8:705b:: with SMTP id y27mr1114095qtm.192.1603137023534;
+        Mon, 19 Oct 2020 12:50:23 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l25sm401073qtf.18.2020.10.19.12.50.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 12:50:22 -0700 (PDT)
+From:   trix@redhat.com
+To:     konrad.wilk@oracle.com, axboe@kernel.dk
+Cc:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] block: xen-blkback: remove unneeded break
+Date:   Mon, 19 Oct 2020 12:50:16 -0700
+Message-Id: <20201019195016.15337-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
+A break is not needed if it is preceded by a goto
 
-On Mon, 19 Oct 2020, Waiman Long wrote:
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/block/xen-blkback/blkback.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> On 10/15/20 7:38 AM, Julia Lawall wrote:
-> > Hello,
-> >
-> > Phoenix is an implementation of map reduce:
-> >
-> > https://github.com/kozyraki/phoenix
-> >
-> > The phoenix-2.0/tests subdirectory contains some benchmarks, including
-> > word_count.
-> >
-> > At the same time, on my server, since v5.8, the kernel has changed from
-> > using the governor intel_pstate by default to using intel_cpufreq.
-> > Intel_cpufreq causes kworkers to run on all cores every 0.004 seconds,
-> > while intel_pstate involves very few such stray processes.
-> >
-> > Suprisingly, all those kworkers cause the word_count benchmark to run 2-3
-> > times faster.  I bisected the problem back to the following commit, whcih
-> > was introduced in v5.3:
-> >
-> > commit 7d43f1ce9dd075d8b2aa3ad1f3970ef386a5c358
-> > Author: Waiman Long <longman@redhat.com>
-> > Date:   Mon May 20 16:59:13 2019 -0400
-> >
-> >      locking/rwsem: Enable time-based spinning on reader-owned rwsem
-> >
-> > Representative traces are attached.  word_count_5.9pwrsvpassive_1.pdf is
-> > the one with the kworkers.
-> >
-> > I don't know the Phoenix code in detail, but the problem seems to be in
-> > the infrastructure not the specific word count aplication, because most of
-> > the benchmarks seem to suffer similarly.  Some of the other benchmarks
-> > seem to take a variable and long amount of time to get started in the
-> > active mode, so perhaps the problem could be in reading the initial
-> > dataset.
-> >
-> > Before I plunge into it, do you have any suggestions as to what could be
-> > the problem?
->
-> I am a bit confused as to what you are looking for. So you said this patch
-> make the benchmark run 2-3 times faster. Is this a problem? What are you
-> trying to achieve? Is it to make the passive case similar to the active case?
+diff --git a/drivers/block/xen-blkback/blkback.c b/drivers/block/xen-blkback/blkback.c
+index adfc9352351d..f769fbd1b4c4 100644
+--- a/drivers/block/xen-blkback/blkback.c
++++ b/drivers/block/xen-blkback/blkback.c
+@@ -1269,7 +1269,6 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
+ 	default:
+ 		operation = 0; /* make gcc happy */
+ 		goto fail_response;
+-		break;
+ 	}
+ 
+ 	/* Check that the number of segments is sane. */
+-- 
+2.18.1
 
-Sorry, it seems that I was not clear.  Prior to the commit above the
-active case had good performance,  The patch caused the active case to
-slow down by 2-3 times.  Adding lots of kworkers that interrupt the
-threads eliminated the slowdown.
-
->
-> What this patch does is to allow writer waiting for a rwsem to spin for a
-> while hoping the readers will release the lock soon to acquire the lock.
-> Before that, the writer will go to sleep immediately when the rwsem is owned
-> by readers. Probably because of that, the kworkers keep on running for a much
-> longer time as long as there are no other tasks competing for the CPUs.
-
-No, the kworkers don't run for a long time.  My hypothesis is that the
-kworkers interrupt a thread that is spinning waiting for a lock and thus
-allow the thread that is holding the lock to run.
-
-julia
