@@ -2,130 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BF2292480
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE06129248D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730276AbgJSJTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:19:12 -0400
-Received: from mail-eopbgr1320118.outbound.protection.outlook.com ([40.107.132.118]:42720
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727987AbgJSJTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:19:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CPuorc39Qk6Z4TGNX4IM0WXC4/jUsd6fDyETPNPjLPembhbK4z9aQtGuMuquuUVAAlKcZv4pnw2GS8VseVjR8r9JuPatLXni8uC0tX6F4DUAfi+7vdwtOvI8v0Dl9tPE2IewFMOw9aG6Ij0I48tIDnwCxl8j9LHqYk2vP7YvhDgzJZbBLs6iFW+Cj4iz/cFb9fa56e84y/8E5uqK/nfcw9gWxf5qA5B6N1avnXo9TuRMSRpgYgKWoFiPnTCl3uhPsVcvDSqfM5+IoETf0jF5UNmkmk5EG1DNsb5CN9lvu4MXqXo1BqNQfsuuNIbFl4/zvFD9QCa9F+XSAEWjoaWM3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i3nA9icBgmk1bz8JAvkfvrJNiP5P3mnxIJqg8vKHLcM=;
- b=kSE1FYSI7NMCjwCZuH035HfaLwNJc39E8wJr8PvDkB6mV9xvSQQFky7rvxTrbgNpmYx2KAOjY6UQvFWGLmUl2vEp0S9Uj16CscrT05/6BkXZHdOOTKZGUlgdco2ueVmIZYz/VnF1cpJK6C005WStryBMGT5z1Npc3T98Z9yaHTYPMtNFw1DopBDuD4xbU1CwyGtHXfiEUnDP79IyGNNaue1k5dqmmHCHvAmBcLizzNoqip6cwCZyR9+yt5q24ThY45KK68VnzFBcgu2aWIMuPqOmNFfab+7d+hqXxE7i1UGBpIuHQFXvVZniybZy81YyUJlSaOM8F8V3eKLBkLy5SQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from PS1PR0601MB1849.apcprd06.prod.outlook.com (2603:1096:803:6::17)
- by PSAPR06MB4086.apcprd06.prod.outlook.com (2603:1096:301:2a::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.18; Mon, 19 Oct
- 2020 09:19:07 +0000
-Received: from PS1PR0601MB1849.apcprd06.prod.outlook.com
- ([fe80::31d5:24c7:7ac6:a5cc]) by PS1PR0601MB1849.apcprd06.prod.outlook.com
- ([fe80::31d5:24c7:7ac6:a5cc%7]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
- 09:19:07 +0000
-From:   Dylan Hung <dylan_hung@aspeedtech.com>
-To:     Joel Stanley <joel@jms.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Po-Yu Chuang <ratbert@faraday-tech.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: RE: [PATCH] net: ftgmac100: Fix missing TX-poll issue
-Thread-Topic: [PATCH] net: ftgmac100: Fix missing TX-poll issue
-Thread-Index: AQHWper5b6m5IMpmJk2Uyk3yAiWzCqmen8qAgAAAVTA=
-Date:   Mon, 19 Oct 2020 09:19:07 +0000
-Message-ID: <PS1PR0601MB1849B2D01A2D9C2EEF6D58069C1E0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
-References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
- <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
-In-Reply-To: <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: jms.id.au; dkim=none (message not signed)
- header.d=none;jms.id.au; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 96fbdecb-4d72-4647-02a3-08d8741007ef
-x-ms-traffictypediagnostic: PSAPR06MB4086:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PSAPR06MB4086203C53338912B8366B7C9C1E0@PSAPR06MB4086.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nX+M0Ij2497GkHoenT9ZoJupDiOhNtJhXBxWXUlvra9usxa3LociU2jt/ymqrjGs/skVFkw39WEWwGeZjStyxuOezXUvwdNosWC4lE8yVyq0wXg6DpVUA48taQrJ/bY/uCDtb4cgh3JYNMjeRzZTLD2iA1yeeKM4UHow3qd9hyqdOtY1l5cDSgR4g/jr4RAIODv1SyRUqCYYdNCOGFH6oa1tgduQm50UEo/V90tjPJ1+zqhjtLo2xfR2//Op9p+0c4Pr7MRfr+7Zxux9c/vfsu6byJANaMniB+aOl5adOQvuY7VMioq1QfTuuXQO8SXU
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS1PR0601MB1849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(396003)(136003)(346002)(376002)(366004)(86362001)(110136005)(71200400001)(8936002)(54906003)(7696005)(8676002)(316002)(66476007)(76116006)(5660300002)(52536014)(33656002)(64756008)(9686003)(66556008)(66446008)(66946007)(83380400001)(107886003)(186003)(4326008)(26005)(478600001)(55236004)(6506007)(53546011)(55016002)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: yRZY8T4vG8nqlXUYteHXrbC6weUf58b7bcHFuf+yT51h47vaDYN7zK5J0tRhPHmaWvYsKZJJmcK2SVuztw3Htuhyuq/jcjKD1WsSAHu8jIoGD2Q2z9OsE4N3316+AoD4XQpN59qZZdD68Y8RwO2WFYMbdo4tlVtvBmKaOcgcB5xT+rmcyDGdRhcDlp+Vz8ilu5k3QfasUfJdFDKpxA977Vc/kG4aUO+oRVm60Jmc/Ux2U8mYEWzpmwLJkFa+T1wq0fw5tTRk81tNoiR/wkxlFJnut08C/y1q2e+WSJKmE6RfK7mDRojCauDuBrYiL5VpV2+gPAiFyP67W4pTT1cIAu6Bkf/mtA+FB6H+MHtAqSurMGvt1tc7EDzb8H1fP081g8vWYSW9hM2n+FAMyIUjyQfSm0A+YCc9tFQNmUTnwSxJoCKBuaZAwSp4hI08Nkdf2DJQbQiDhVHrcCQIueVHaiestqdEuY59PsDIzAomRvB4gKqBt9TxZK7jIpKLnJJhpG1tN9UdmXPkIGP40+uTmlN1tC5ar3mxX93nPO3qCZdVSel4DXdHDBK4JxFbcKnA9e9hNkJjk7+lY1hftQpy9Ekpg148SO9H+y2C/frMl6C5Ym87KYNTfLn1dwb0uXkUHv/W0dqdaEC/kj7JCiPlPQ==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1730253AbgJSJYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726593AbgJSJYQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 05:24:16 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39358C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 02:24:15 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t4so2056989plq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 02:24:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zDPrPOvZEKInNhwxCz6Kajh6JAVRQjyNuOBoRhsFWd0=;
+        b=y9O9ia6I2iPQ99hdVJUQ2A0pW9t0LpBkLFxvcu/z5pJYAUGkH5R5sfnYmsE67S7e6l
+         Dx8BUA8fqM/CLgvKo86Rx1heiv+QywLmP27iyfcPNSH4QHOL9U364HxyqdjqFDC67SJ1
+         0tfuMNuc/EbuKFlMacDoUfenokJ3tR8WOfcxgRZuAQmFbsjGIdFDY8UttIN5Ybsd7lBO
+         2PetuDNeDcKtsnifWV96diusXYxtEa77rcsQAwm8VquzsXbIwlQLUIGS+CNudVLF6cKi
+         AHYaBG5TiuWJWNysketU4d+gYR2iQl1ebEtipdB5bfAMl+ChRTfuY5KcxhGdaEwnruPp
+         +xxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zDPrPOvZEKInNhwxCz6Kajh6JAVRQjyNuOBoRhsFWd0=;
+        b=FChtPf4+SEx05YwfEkBCAjuV69u4OJxXnRyooABrX76W9cBKJAiNUl3qb49B8l0Kel
+         alJjzX6EnhLz+rXDAy6QAi8CcEIn1Y0pFceHYmuCxGnEZT17ZkQf5vBgQ0vSMegAA/xS
+         IYmmYYeswKdFWZf2Vyp0KgAFLQA6EEHiThW6qDE4T1Xxc1hzN/kruiR7bIz3lFlISfPr
+         QoQiYrL1urab4P4hS4IKwUBKwAyRb2K/Bar54Hgi8rmUcQhXdMD3QGH/SuaFFKv/C2og
+         LJ7LStWiAzduqFIIWDqOu6SIhIn87w6GcWhLqHHhPPMEn6w7wtg+UiIHRxQ2uMPaAvuz
+         UiJw==
+X-Gm-Message-State: AOAM530RksVZzPMViBRRDqAQas4dHv8KRPCgyiKbPWHyhSMWMaRPOXHO
+        MfLi5pPmeozoyYquqM/b/EiJBg==
+X-Google-Smtp-Source: ABdhPJxQ1Levsqfyr7yBr0kDuJiUWjT2K9EdyHdohTH48iuSU9mm0S6IMTCm2SVo2FfsLAKqWfp/hw==
+X-Received: by 2002:a17:90b:1541:: with SMTP id ig1mr17153160pjb.125.1603099454559;
+        Mon, 19 Oct 2020 02:24:14 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id r19sm11087364pjo.23.2020.10.19.02.24.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 19 Oct 2020 02:24:13 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 14:54:11 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
+        georgi.djakov@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
+ -EPROBE_DEFER
+Message-ID: <20201019092411.b3znjxebay3puq2j@vireshk-i7>
+References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
+ <20201015180555.gacdzkofpibkdn2e@bogus>
+ <20201016042434.org6ibdqsqbzcdww@vireshk-i7>
+ <20201016060021.sotk72u4hioctg7o@bogus>
+ <20201016111222.lvakbmjhlrocpogt@bogus>
+ <20201019045827.kl6qnx6gidhzjkrs@vireshk-i7>
+ <20201019091723.GA12087@bogus>
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PS1PR0601MB1849.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96fbdecb-4d72-4647-02a3-08d8741007ef
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 09:19:07.2788
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4hhPDxvuksDfiCc8Fci/0CaYYFxG8AvvgkXqOEvjJq2cQGyTBiNcfjp0Uo0PTk3w9XAyhKgnFGeSG+yW5nJ1lKcHo5zjQksxSl+fsrHB40Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR06MB4086
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019091723.GA12087@bogus>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSm9lbCwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2VsIFN0
-YW5sZXkgW21haWx0bzpqb2VsQGptcy5pZC5hdV0NCj4gU2VudDogTW9uZGF5LCBPY3RvYmVyIDE5
-LCAyMDIwIDQ6NTcgUE0NCj4gVG86IER5bGFuIEh1bmcgPGR5bGFuX2h1bmdAYXNwZWVkdGVjaC5j
-b20+OyBCZW5qYW1pbiBIZXJyZW5zY2htaWR0DQo+IDxiZW5oQGtlcm5lbC5jcmFzaGluZy5vcmc+
-DQo+IENjOiBEYXZpZCBTIC4gTWlsbGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0PjsgSmFrdWIgS2lj
-aW5za2kNCj4gPGt1YmFAa2VybmVsLm9yZz47IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IExpbnV4
-IEtlcm5lbCBNYWlsaW5nIExpc3QNCj4gPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBQ
-by1ZdSBDaHVhbmcgPHJhdGJlcnRAZmFyYWRheS10ZWNoLmNvbT47DQo+IGxpbnV4LWFzcGVlZCA8
-bGludXgtYXNwZWVkQGxpc3RzLm96bGFicy5vcmc+OyBPcGVuQk1DIE1haWxsaXN0DQo+IDxvcGVu
-Ym1jQGxpc3RzLm96bGFicy5vcmc+OyBCTUMtU1cgPEJNQy1TV0Bhc3BlZWR0ZWNoLmNvbT4NCj4g
-U3ViamVjdDogUmU6IFtQQVRDSF0gbmV0OiBmdGdtYWMxMDA6IEZpeCBtaXNzaW5nIFRYLXBvbGwg
-aXNzdWUNCj4gDQo+IE9uIE1vbiwgMTkgT2N0IDIwMjAgYXQgMDc6MzksIER5bGFuIEh1bmcgPGR5
-bGFuX2h1bmdAYXNwZWVkdGVjaC5jb20+DQo+IHdyb3RlOg0KPiA+DQo+ID4gVGhlIGNwdSBhY2Nl
-c3NlcyB0aGUgcmVnaXN0ZXIgYW5kIHRoZSBtZW1vcnkgdmlhIGRpZmZlcmVudCBidXMvcGF0aCBv
-bg0KPiA+IGFzcGVlZCBzb2MuICBTbyB3ZSBjYW4gbm90IGd1YXJhbnRlZSB0aGF0IHRoZSB0eC1w
-b2xsIGNvbW1hbmQNCj4gDQo+IEp1c3QgdGhlIDI2MDAsIG9yIG90aGVyIHZlcnNpb25zIHRvbz8N
-Cg0KSnVzdCB0aGUgMjYwMC4gIEFuZCB0aGlzIGlzc3VlIG9ubHkgb2NjdXJyZWQgb24gRXRoZXJu
-ZXQgbWFjLg0KDQo+IA0KPiA+IChyZWdpc3RlciBhY2Nlc3MpIGlzIGFsd2F5cyBiZWhpbmQgdGhl
-IHR4IGRlc2NyaXB0b3IgKG1lbW9yeSkuICBJbg0KPiA+IG90aGVyIHdvcmRzLCB0aGUgSFcgbWF5
-IHN0YXJ0IHdvcmtpbmcgZXZlbiB0aGUgZGF0YSBpcyBub3QgeWV0IHJlYWR5Lg0KPiA+IEJ5DQo+
-IA0KPiBldmVuIGlmIHRoZQ0KPiANCj4gPiBhZGRpbmcgYSBkdW1teSByZWFkIGFmdGVyIHRoZSBs
-YXN0IGRhdGEgd3JpdGUsIHdlIGNhbiBlbnN1cmUgdGhlIGRhdGENCj4gPiBhcmUgcHVzaGVkIHRv
-IHRoZSBtZW1vcnksIHRoZW4gZ3VhcmFudGVlIHRoZSBwcm9jZXNzaW5nIHNlcXVlbmNlDQo+ID4N
-Cj4gPiBTaWduZWQtb2ZmLWJ5OiBEeWxhbiBIdW5nIDxkeWxhbl9odW5nQGFzcGVlZHRlY2guY29t
-Pg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9mYXJhZGF5L2Z0Z21hYzEwMC5j
-IHwgMyArKy0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlv
-bigtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ZhcmFkYXkv
-ZnRnbWFjMTAwLmMNCj4gPiBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ZhcmFkYXkvZnRnbWFjMTAw
-LmMNCj4gPiBpbmRleCAwMDAyNGRkNDExNDcuLjlhOTlhODdmMjlmMyAxMDA2NDQNCj4gPiAtLS0g
-YS9kcml2ZXJzL25ldC9ldGhlcm5ldC9mYXJhZGF5L2Z0Z21hYzEwMC5jDQo+ID4gKysrIGIvZHJp
-dmVycy9uZXQvZXRoZXJuZXQvZmFyYWRheS9mdGdtYWMxMDAuYw0KPiA+IEBAIC04MDQsNyArODA0
-LDggQEAgc3RhdGljIG5ldGRldl90eF90DQo+IGZ0Z21hYzEwMF9oYXJkX3N0YXJ0X3htaXQoc3Ry
-dWN0IHNrX2J1ZmYgKnNrYiwNCj4gPiAgICAgICAgICAqIGJlZm9yZSBzZXR0aW5nIHRoZSBPV04g
-Yml0IG9uIHRoZSBmaXJzdCBkZXNjcmlwdG9yLg0KPiA+ICAgICAgICAgICovDQo+ID4gICAgICAg
-ICBkbWFfd21iKCk7DQo+ID4gLSAgICAgICBmaXJzdC0+dHhkZXMwID0gY3B1X3RvX2xlMzIoZl9j
-dGxfc3RhdCk7DQo+ID4gKyAgICAgICBXUklURV9PTkNFKGZpcnN0LT50eGRlczAsIGNwdV90b19s
-ZTMyKGZfY3RsX3N0YXQpKTsNCj4gPiArICAgICAgIFJFQURfT05DRShmaXJzdC0+dHhkZXMwKTsN
-Cj4gDQo+IEkgdW5kZXJzdGFuZCB3aGF0IHlvdSdyZSB0cnlpbmcgdG8gZG8gaGVyZSwgYnV0IEkn
-bSBub3Qgc3VyZSB0aGF0IHRoaXMgaXMgdGhlDQo+IGNvcnJlY3Qgd2F5IHRvIGdvIGFib3V0IGl0
-Lg0KPiANCj4gSXQgZG9lcyBjYXVzZSB0aGUgY29tcGlsZXIgdG8gcHJvZHVjZSBhIHN0b3JlIGFu
-ZCB0aGVuIGEgbG9hZC4NCj4gDQo+ID4NCj4gPiAgICAgICAgIC8qIFVwZGF0ZSBuZXh0IFRYIHBv
-aW50ZXIgKi8NCj4gPiAgICAgICAgIHByaXYtPnR4X3BvaW50ZXIgPSBwb2ludGVyOw0KPiA+IC0t
-DQo+ID4gMi4xNy4xDQo+ID4NCg==
+On 19-10-20, 10:17, Sudeep Holla wrote:
+> On Mon, Oct 19, 2020 at 10:28:27AM +0530, Viresh Kumar wrote:
+> > On 16-10-20, 12:12, Sudeep Holla wrote:
+> > > On Fri, Oct 16, 2020 at 07:00:21AM +0100, Sudeep Holla wrote:
+> > > > On Fri, Oct 16, 2020 at 09:54:34AM +0530, Viresh Kumar wrote:
+> > > > > On 15-10-20, 19:05, Sudeep Holla wrote:
+> > > > > > OK, this breaks with SCMI which doesn't provide clocks but manage OPPs
+> > > > > > directly. Before this change clk_get(dev..) was allowed to fail and
+> > > > > > --EPROBE_DEFER was not an error.
+> > > > >
+> > > > > I think the change in itself is fine. We should be returning from
+> > > > > there if we get EPROBE_DEFER. The question is rather why are you
+> > > > > getting EPROBE_DEFER here ?
+> > > > >
+> > > >
+> > > > Ah OK, I didn't spend too much time, saw -EPROBE_DEFER, just reverted
+> > > > this patch and it worked. I need to check it in detail yet.
+> > > >
+> > > 
+> > > You confused me earlier. As I said there will be no clock provider
+> > > registered for SCMI CPU/Dev DVFS.
+> > > 	opp_table->clk = clk_get(dev, NULL);
+> > > will always return -EPROBE_DEFER as there is no clock provider for dev.
+> > > But this change now propagates that error to caller of dev_pm_opp_add
+> > > which means we can't add opp to a device if there are no clock providers.
+> > > This breaks for DVFS which don't operate separately with clocks and
+> > > regulators.
+> >
+> > The CPUs DT node shouldn't have a clock property in such a case and I
+> > would expect an error instead of EPROBE_DEFER then. Isn't it ?
+> 
+> Ideally yes, but for legacy reasons clocks property has been used for
+> providing OPP/DVFS handle too. While we can change and add new property
+> for that, it will still break old bindings.
+
+I am not sure I understood it all. So does your platform have the
+clock-names property or not for the CPUs ? And how will something
+break here ?
+
+-- 
+viresh
