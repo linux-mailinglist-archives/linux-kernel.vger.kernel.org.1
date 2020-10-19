@@ -2,74 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03719293077
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26F4293079
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732987AbgJSV1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 17:27:01 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:37517 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727453AbgJSV1A (ORCPT
+        id S1732994AbgJSV31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 17:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727865AbgJSV30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 17:27:00 -0400
-Received: by mail-oi1-f196.google.com with SMTP id t77so1668559oie.4;
-        Mon, 19 Oct 2020 14:27:00 -0700 (PDT)
+        Mon, 19 Oct 2020 17:29:26 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E367BC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 14:29:25 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id t4so458309plq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 14:29:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZfDVboFUi3PL20oeahZURT/wAnBCLrU/u8rK/q4mNM4=;
+        b=IIzfpDadzNjwKyZ5cvtnhOoML0jGSc4vEqrP+U3PY2m/SaTdm71GVeNequFbvKgRqG
+         R1HDGwHlE2x4D6ZN+qrYkllFLT/Uv1+xCZhAbo001dGropx1jl9T4PAFsIwWYTgSRzqJ
+         cYdb+6l58JjznjXjuVtb3msoZ0nHhnscoaZRa/jAb1y9QU6IqIO/qnADwyjkbUHTKh11
+         JqAT31AjB+RRopsIChKWzeBjdO1DI0Sn4uxlOdhoVLaTQOzcEHlt1gqTqT5QK63AqXf+
+         e2y7xwogZ3kbRGF5MbtFLvufZTnQVBnLLlk3leJqxGX165FfHcsnyUYECj2C5CTVcB6E
+         qTvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=42ogECBDpzk2B5hmCqC8GkPZe7LO6DVjQPS1WqgAupk=;
-        b=KdAX1eL76U9nJzL+hI7hBSVrB0uYTNm7p7m99CZCWYByM+8TIVS/EuBoEpGlLLJs7g
-         u6+bMWZ0o2noi1Y3nzpWMtDYOrjVNO55BlY0x90nTY0s9jDEyzchcWY3ZwxtJEAhugUT
-         WXXaNSTYxjrBG6sTLmF7y061AE6ld9lhOfsT5Fkg6HyGQIET4mr0fbhvEh2oiuTUq6jN
-         Y1nlKOFAlWhUuv+BjtS1ieCQ7MCskFc9txT1ZL2geu45Srq8tJo+LqPwvctTjU3Fu+ML
-         30QyJjtmdH8U9n8gsVyK7Ul/u82zpVY3wj5gEneL3/FjKbyVkCLufCgMMBOCMcONznP9
-         STCQ==
-X-Gm-Message-State: AOAM531meRiUkodNn9MpumoMZHgbZv0AKfBa/nlEmNV1SB90FhDV30ZX
-        3eSLiapcEpGNCi8yYwKnkg==
-X-Google-Smtp-Source: ABdhPJyrNwSPp+oizqlohV+Jk9na5ohcz5ZJi2MZq3Mv+DPJMT15e364TpcafQ8LYV7NQH+/2SdFag==
-X-Received: by 2002:aca:dd08:: with SMTP id u8mr1013442oig.85.1603142819915;
-        Mon, 19 Oct 2020 14:26:59 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k51sm236334otc.46.2020.10.19.14.26.58
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ZfDVboFUi3PL20oeahZURT/wAnBCLrU/u8rK/q4mNM4=;
+        b=ame6mQ3y0m7ijRxxfqIOgTgPfFIAtWfV5rgu4tsSCVOFU8YsD9kGN+MvdZ20Xd4jjA
+         t3HjS1s+HwwbMmPt/fotGFloUrVa242VUQH2STv/8Y7x0uOB35I2hn/HzBHl9ddfxXsm
+         JBFjL2nhkMiU11IiFEVjflTWwIzcpZb1JIjgRWg7JZE7KFFq1QgvgmnXHNazGzzM4sAl
+         0D2vHVt+a6Cx7o6hGUYVoZWShJ/nUUYG2TrcpA8kW8Fq+We0PicAJ186eQxEkunCKmQR
+         iYtvSzbTnLVJftsmt5K2w9XrHawKZFDQJEmqZ5dOneeqO2SYjDaXYqNQXqlS87nPHhdW
+         0LIw==
+X-Gm-Message-State: AOAM531S5cOdYBfFZcntAanzHHjyEuI0D9RcCpKtnv8vS6RuiP3dJh9D
+        XZmVWHIsfxUv+/yjNgiwLhtYpQ==
+X-Google-Smtp-Source: ABdhPJzVaGDA6wX2KJ6cd/pzhLTg3CGDeACAttfyO3vDd6Mgdnf5ad6gmSm7BQSW4xbE8phWqISXyQ==
+X-Received: by 2002:a17:902:6845:b029:d4:d1d5:2139 with SMTP id f5-20020a1709026845b02900d4d1d52139mr1779774pln.53.1603142965213;
+        Mon, 19 Oct 2020 14:29:25 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id j23sm478919pgh.31.2020.10.19.14.29.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 14:26:59 -0700 (PDT)
-Received: (nullmailer pid 3630412 invoked by uid 1000);
-        Mon, 19 Oct 2020 21:26:58 -0000
-Date:   Mon, 19 Oct 2020 16:26:58 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     simon.k.r.goldschmidt@gmail.com, richard@nod.at,
-        qi-ming.wu@intel.com, vigneshr@ti.com, linux-spi@vger.kernel.org,
-        broonie@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        cheol.yong.kim@intel.com, tudor.ambarus@microchip.com,
-        miquel.raynal@bootlin.com, dinguyen@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/6] spi: Move cadence-quadspi.txt to
- Documentation/devicetree/bindings/spi
-Message-ID: <20201019212658.GA3630377@bogus>
-References: <20201016093138.28871-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201016093138.28871-2-vadivel.muruganx.ramuthevar@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016093138.28871-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+        Mon, 19 Oct 2020 14:29:24 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 14:29:24 -0700 (PDT)
+X-Google-Original-Date: Mon, 19 Oct 2020 14:29:23 PDT (-0700)
+Subject:     Re: [PATCH v4 0/5] Unify NUMA implementation between ARM64 & RISC-V
+In-Reply-To: <CAOnJCULba4qEO-8MmTDw5rWBep9mPUdq-iA-UpBN=-SXB13nmg@mail.gmail.com>
+CC:     Atish Patra <Atish.Patra@wdc.com>, linux-kernel@vger.kernel.org,
+        wangkefeng.wang@huawei.com, david@redhat.com,
+        catalin.marinas@arm.com, Jonathan.Cameron@huawei.com,
+        zong.li@sifive.com, linux-riscv@lists.infradead.org,
+        will@kernel.org, linux-arch@vger.kernel.org, justin.he@arm.com,
+        anup@brainfault.org, rafael@kernel.org, steven.price@arm.com,
+        greentime.hu@sifive.com, aou@eecs.berkeley.edu,
+        Arnd Bergmann <arnd@arndb.de>, anshuman.khandual@arm.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>, rppt@kernel.org,
+        akpm@linux-foundation.org, nsaenzjulienne@suse.de
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     atishp@atishpatra.org
+Message-ID: <mhng-c28b83e1-43b5-4798-8f9e-da7292fa8d12@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 17:31:33 +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> Move the Documentation/devicetree/bindings/mtd/cadence-quadspi.txt to
-> Documentation/devicetree/bindings/spi/
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> ---
->  Documentation/devicetree/bindings/{mtd => spi}/cadence-quadspi.txt | 0
->  1 file changed, 0 insertions(+), 0 deletions(-)
->  rename Documentation/devicetree/bindings/{mtd => spi}/cadence-quadspi.txt (100%)
-> 
+On Tue, 13 Oct 2020 13:19:35 PDT (-0700), atishp@atishpatra.org wrote:
+> On Mon, Oct 5, 2020 at 5:18 PM Atish Patra <atish.patra@wdc.com> wrote:
+>>
+>> This series attempts to move the ARM64 numa implementation to common
+>> code so that RISC-V can leverage that as well instead of reimplementing
+>> it again.
+>>
+>> RISC-V specific bits are based on initial work done by Greentime Hu [1] but
+>> modified to reuse the common implementation to avoid duplication.
+>>
+>> [1] https://lkml.org/lkml/2020/1/10/233
+>>
+>> This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
+>> It would be great if somebody can test it on numa capable ARM64 hardware platforms.
+>> This patch series doesn't modify the maintainers list for the common code (arch_numa)
+>> as I am not sure if somebody from ARM64 community or Greg should take up the
+>> maintainership. Ganapatrao was the original author of the arm64 version.
+>> I would be happy to update that in the next revision once it is decided.
+>>
+>> # numactl --hardware
+>> available: 2 nodes (0-1)
+>> node 0 cpus: 0 1 2 3
+>> node 0 size: 486 MB
+>> node 0 free: 470 MB
+>> node 1 cpus: 4 5 6 7
+>> node 1 size: 424 MB
+>> node 1 free: 408 MB
+>> node distances:
+>> node   0   1
+>>   0:  10  20
+>>   1:  20  10
+>> # numactl -show
+>> policy: default
+>> preferred node: current
+>> physcpubind: 0 1 2 3 4 5 6 7
+>> cpubind: 0 1
+>> nodebind: 0 1
+>> membind: 0 1
+>>
+>> The patches are also available at
+>> https://github.com/atishp04/linux/tree/5.10_numa_unified_v4
+>>
+>> For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
+>> https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
+>>
+>> Testing:
+>> RISC-V:
+>> Tested in Qemu and 2 socket OmniXtend FPGA.
+>>
+>> ARM64:
+>> 2 socket kunpeng920 (4 nodes around 250G a node)
+>> Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>>
+>> There may be some minor conflicts with Mike's cleanup series [2] depending on the
+>> order in which these two series are being accepted. I can rebase on top his series
+>> if required.
+>>
+>> [2] https://lkml.org/lkml/2020/8/18/754
+>>
+>> Changes from v3->v4:
+>> 1. Removed redundant duplicate header.
+>> 2. Added Reviewed-by tags.
+>>
+>> Changes from v2->v3:
+>> 1. Added Acked-by/Reviewed-by tags.
+>> 2. Replaced asm/acpi.h with linux/acpi.h
+>> 3. Defined arch_acpi_numa_init as static.
+>>
+>> Changes from v1->v2:
+>> 1. Replaced ARM64 specific compile time protection with ACPI specific ones.
+>> 2. Dropped common pcibus_to_node changes. Added required changes in RISC-V.
+>> 3. Fixed few typos.
+>>
+>> Atish Patra (4):
+>> numa: Move numa implementation to common code
+>> arm64, numa: Change the numa init functions name to be generic
+>> riscv: Separate memory init from paging init
+>> riscv: Add numa support for riscv64 platform
+>>
+>> Greentime Hu (1):
+>> riscv: Add support pte_protnone and pmd_protnone if
+>> CONFIG_NUMA_BALANCING
+>>
+>> arch/arm64/Kconfig                            |  1 +
+>> arch/arm64/include/asm/numa.h                 | 45 +----------------
+>> arch/arm64/kernel/acpi_numa.c                 | 13 -----
+>> arch/arm64/mm/Makefile                        |  1 -
+>> arch/arm64/mm/init.c                          |  4 +-
+>> arch/riscv/Kconfig                            | 31 +++++++++++-
+>> arch/riscv/include/asm/mmzone.h               | 13 +++++
+>> arch/riscv/include/asm/numa.h                 |  8 +++
+>> arch/riscv/include/asm/pci.h                  | 14 ++++++
+>> arch/riscv/include/asm/pgtable.h              | 21 ++++++++
+>> arch/riscv/kernel/setup.c                     | 11 ++++-
+>> arch/riscv/kernel/smpboot.c                   | 12 ++++-
+>> arch/riscv/mm/init.c                          | 10 +++-
+>> drivers/base/Kconfig                          |  6 +++
+>> drivers/base/Makefile                         |  1 +
+>> .../mm/numa.c => drivers/base/arch_numa.c     | 30 ++++++++++--
+>> include/asm-generic/numa.h                    | 49 +++++++++++++++++++
+>> 17 files changed, 199 insertions(+), 71 deletions(-)
+>> create mode 100644 arch/riscv/include/asm/mmzone.h
+>> create mode 100644 arch/riscv/include/asm/numa.h
+>> rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (95%)
+>> create mode 100644 include/asm-generic/numa.h
+>>
+>> --
+>> 2.25.1
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>
+> Ping ?
 
-Acked-by: Rob Herring <robh@kernel.org>
+This has been at the top of my inbox for a week or two now, I just haven't
+gotten around to taking a look yet because of all the other fires going on.
+Sorry.
