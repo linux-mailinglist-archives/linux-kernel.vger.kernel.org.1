@@ -2,232 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690682929E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12C62929EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729756AbgJSO73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:59:29 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:31608 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729223AbgJSO72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:59:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603119567; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=I/SKOMpzOnnwt8n9VF8We3fcphMOzmAuFiM8CKtC4dU=; b=rBKoOYRAfrn1S2IgeXt3EQ4YJnrxl6GJ6Wo74OxtK/5OWeBrcntqKLIXbGAE49QrV7LTd9wj
- yUQ+TOx/djSMm9WcWcxDOWemkrpKqGeNWf0T2OayEQljZLATfTfAKeR2mu5udjDtC4T8AVSE
- 8U5/qHx4NuBhNlxuB08fjsu4920=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f8da9cf856d9308b534b4a1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 14:59:27
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 45A17C43382; Mon, 19 Oct 2020 14:59:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A67A0C433F1;
-        Mon, 19 Oct 2020 14:59:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A67A0C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Mon, 19 Oct 2020 08:59:22 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
-Subject: Re: [PATCH 2/2] drm/msm: Fix duplicate gpu node in icc summary
-Message-ID: <20201019145922.GB31882@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
-References: <1603113558-23330-1-git-send-email-akhilpo@codeaurora.org>
- <1603113558-23330-2-git-send-email-akhilpo@codeaurora.org>
+        id S1729815AbgJSPA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:00:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21330 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729715AbgJSPA4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 11:00:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603119654;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eeEwkWd2inwelOxnZFWrV6qJ4loEm7oC47tsgU5zrNE=;
+        b=KzK3Y4PrPBqzVLK5EXFDXijQAaMHftHhFoZ7WePp24M9Rxe1w4kRDnyEKxNUegT0Lp7rcq
+        Jp56FcRiRyeTkmLW6zqdLlpwNm0BOi8aG2bPjPHI+87rKedwHw5KgHPjUfiywbG6vAz0v3
+        wajCgFHxNV774WTwCJdJd3FvAfDX/io=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-MPWqHqjbOOW5I_js7_UaFA-1; Mon, 19 Oct 2020 11:00:53 -0400
+X-MC-Unique: MPWqHqjbOOW5I_js7_UaFA-1
+Received: by mail-wm1-f70.google.com with SMTP id z7so37442wme.8
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:00:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eeEwkWd2inwelOxnZFWrV6qJ4loEm7oC47tsgU5zrNE=;
+        b=uJM07U02OtpBoWYaghPC951G7LQZMsdPi8O7pnjMYJ49PJN8X18LZmZVzv4XrFHZ5j
+         z4GphffadU8zq304SYQUOaMt0BfXkr/FbD3ca85ZTBR8fuqmhU6LWsCtLeTuJxKY/vLY
+         bhuOfF8RUHDWIgFwD6eUOjKKU06lyusPq9MtqSkAb2zTM+qlycBOjpmI6JSag0Ho6Hgl
+         GtHso/fY0xNiI/YylzozLNhjDTirWloXQy1YtjZGQ69sU8+3U29w8DnT9DYNXyxe6nlv
+         qccJt0GikKmR01bjGwxTQ/rdbFW5CfDIGrUB2RnzKoA+o45DSIrM+wH32Yz/PTaaN9Os
+         HQDQ==
+X-Gm-Message-State: AOAM531rAk2rL9rKm1BriA8C8e1MYykDK8uMq9asbVvHmS+R6zsBie6u
+        oe5jRVEHR05Ggl5/O0p3+fYLFjsJB/Rwt8rBM8EDVWNyHqhbZ1wqzfIqIqW4gpQxpGiIiJgiXyy
+        t48ZCGAOlQJWN9c3TGb7LbMoQ
+X-Received: by 2002:a7b:c081:: with SMTP id r1mr17940597wmh.158.1603119650819;
+        Mon, 19 Oct 2020 08:00:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx1K7foO6zAsERSnzDbqpvWg8Yzks+2b30SB3/GCrweUhcJIelqhNOTssKhNwAEMU36/iuvgw==
+X-Received: by 2002:a7b:c081:: with SMTP id r1mr17940572wmh.158.1603119650551;
+        Mon, 19 Oct 2020 08:00:50 -0700 (PDT)
+Received: from redhat.com (bzq-79-176-118-93.red.bezeqint.net. [79.176.118.93])
+        by smtp.gmail.com with ESMTPSA id e15sm8898wro.13.2020.10.19.08.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 08:00:49 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 11:00:45 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Jann Horn <jannh@google.com>, Willy Tarreau <w@1wt.eu>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        "Catangiu, Adrian Costin" <acatan@amazon.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:VIRTIO GPU DRIVER" 
+        <virtualization@lists.linux-foundation.org>,
+        "Graf (AWS), Alexander" <graf@amazon.de>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>, bonzini@gnu.org,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>, oridgar@gmail.com,
+        ghammer@redhat.com, Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Qemu Developers <qemu-devel@nongnu.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
+Message-ID: <20201019105118-mutt-send-email-mst@kernel.org>
+References: <CAG48ez1ZtvjOs2CEq8-EMosPCd_o7WQ3Mz_+1mDe7OrH2arxFA@mail.gmail.com>
+ <20201017053712.GA14105@1wt.eu>
+ <CAG48ez1h0ynXfGap_KiHiPVTfcB8NBQJ-2dnj08ZNfuhrW0jWA@mail.gmail.com>
+ <20201017064442.GA14117@1wt.eu>
+ <CAG48ez3pXLC+eqAXDCniM0a+5yP2XJODDkZqiUTZUOttCE_LbA@mail.gmail.com>
+ <CAHmME9qHGSF8w3DoyCP+ud_N0MAJ5_8zsUWx=rxQB1mFnGcu9w@mail.gmail.com>
+ <20201018114625-mutt-send-email-mst@kernel.org>
+ <CALCETrXBJZnKXo2QLKVWSgAhSMdwEVHeut6pRw4P92CR_5A-fQ@mail.gmail.com>
+ <20201018115524-mutt-send-email-mst@kernel.org>
+ <CALCETrUeRAhmEFR6EFXz8HzDYd2doZ2TMyZmu1pU_-yAPA6KDw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1603113558-23330-2-git-send-email-akhilpo@codeaurora.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CALCETrUeRAhmEFR6EFXz8HzDYd2doZ2TMyZmu1pU_-yAPA6KDw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 06:49:18PM +0530, Akhil P Oommen wrote:
-> On targets with a6xx gpu, there is a duplicate gpu icc node listed in
-> the interconnect summary. On these targets, calling
-
-This first sentence is confusing to me. I think the following few sentences do
-a better job of explaining what you are trying to do.
-
-> dev_pm_opp_of_add_table() api initializes the icc nodes for gpu indirectly.
-> So we should avoid using of_icc_get() api in the common probe path. To fix
-> this, we can move of_icc_get() to target specific code where it is
-> required.
-
-> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/adreno/a3xx_gpu.c   | 21 +++++++++++++++++++--
->  drivers/gpu/drm/msm/adreno/a4xx_gpu.c   | 20 ++++++++++++++++++--
->  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 29 +----------------------------
->  3 files changed, 38 insertions(+), 32 deletions(-)
+On Sun, Oct 18, 2020 at 09:14:00AM -0700, Andy Lutomirski wrote:
+> On Sun, Oct 18, 2020 at 8:59 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Sun, Oct 18, 2020 at 08:54:36AM -0700, Andy Lutomirski wrote:
+> > > On Sun, Oct 18, 2020 at 8:52 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > >
+> > > > On Sat, Oct 17, 2020 at 03:24:08PM +0200, Jason A. Donenfeld wrote:
+> > > > > 4c. The guest kernel maintains an array of physical addresses that are
+> > > > > MADV_WIPEONFORK. The hypervisor knows about this array and its
+> > > > > location through whatever protocol, and before resuming a
+> > > > > moved/snapshotted/duplicated VM, it takes the responsibility for
+> > > > > memzeroing this memory. The huge pro here would be that this
+> > > > > eliminates all races, and reduces complexity quite a bit, because the
+> > > > > hypervisor can perfectly synchronize its bringup (and SMP bringup)
+> > > > > with this, and it can even optimize things like on-disk memory
+> > > > > snapshots to simply not write out those pages to disk.
+> > > > >
+> > > > > A 4c-like approach seems like it'd be a lot of bang for the buck -- we
+> > > > > reuse the existing mechanism (MADV_WIPEONFORK), so there's no new
+> > > > > userspace API to deal with, and it'd be race free, and eliminate a lot
+> > > > > of kernel complexity.
+> > > >
+> > > > Clearly this has a chance to break applications, right?
+> > > > If there's an app that uses this as a non-system-calls way
+> > > > to find out whether there was a fork, it will break
+> > > > when wipe triggers without a fork ...
+> > > > For example, imagine:
+> > > >
+> > > > MADV_WIPEONFORK
+> > > > copy secret data to MADV_DONTFORK
+> > > > fork
+> > > >
+> > > >
+> > > > used to work, with this change it gets 0s instead of the secret data.
+> > > >
+> > > >
+> > > > I am also not sure it's wise to expose each guest process
+> > > > to the hypervisor like this. E.g. each process needs a
+> > > > guest physical address of its own then. This is a finite resource.
+> > > >
+> > > >
+> > > > The mmap interface proposed here is somewhat baroque, but it is
+> > > > certainly simple to implement ...
+> > >
+> > > Wipe of fork/vmgenid/whatever could end up being much more problematic
+> > > than it naively appears -- it could be wiped in the middle of a read.
+> > > Either the API needs to handle this cleanly, or we need something more
+> > > aggressive like signal-on-fork.
+> > >
+> > > --Andy
+> >
+> >
+> > Right, it's not on fork, it's actually when process is snapshotted.
+> >
+> > If we assume it's CRIU we care about, then I
+> > wonder what's wrong with something like
+> > MADV_CHANGEONPTRACE_SEIZE
+> > and basically say it's X bytes which change the value...
 > 
-> diff --git a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-> index f29c77d..93da668 100644
-> --- a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-> @@ -519,6 +519,8 @@ struct msm_gpu *a3xx_gpu_init(struct drm_device *dev)
->  	struct msm_gpu *gpu;
->  	struct msm_drm_private *priv = dev->dev_private;
->  	struct platform_device *pdev = priv->gpu_pdev;
-> +	struct icc_path *ocmem_icc_path;
-> +	struct icc_path *icc_path;
->  	int ret;
->  
->  	if (!pdev) {
-> @@ -566,13 +568,28 @@ struct msm_gpu *a3xx_gpu_init(struct drm_device *dev)
->  		goto fail;
->  	}
->  
-> +	icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
-> +	ret = IS_ERR(icc_path);
-> +	if (ret)
-> +		goto fail;
-> +
-> +	ocmem_icc_path = devm_of_icc_get(&pdev->dev, "ocmem");
-> +	ret = IS_ERR(ocmem_icc_path);
-> +	if (ret) {
-> +		/* allow -ENODATA, ocmem icc is optional */
-> +		if (ret != -ENODATA)
-> +			goto fail;
-> +		ocmem_icc_path = NULL;
-> +	}
-> +
-> +
->  	/*
->  	 * Set the ICC path to maximum speed for now by multiplying the fastest
->  	 * frequency by the bus width (8). We'll want to scale this later on to
->  	 * improve battery life.
->  	 */
-> -	icc_set_bw(gpu->icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
-> -	icc_set_bw(gpu->ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
-> +	icc_set_bw(icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
-> +	icc_set_bw(ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+> I feel like we may be approaching this from the wrong end.  Rather
+> than saying "what data structure can the kernel expose that might
+> plausibly be useful", how about we try identifying some specific
+> userspace needs and see what a good solution could look like.  I can
+> identify two major cryptographic use cases:
 
-This seems reasonable but I hope we can get somebody to sign off on a real a3xx
-part.
+Well, I'm aware of a non-cryptographic use-case:
+https://bugzilla.redhat.com/show_bug.cgi?id=1118834
 
->  
->  	return gpu;
->  
-> diff --git a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-> index 2b93b33..c0be3a0 100644
-> --- a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-> @@ -648,6 +648,8 @@ struct msm_gpu *a4xx_gpu_init(struct drm_device *dev)
->  	struct msm_gpu *gpu;
->  	struct msm_drm_private *priv = dev->dev_private;
->  	struct platform_device *pdev = priv->gpu_pdev;
-> +	struct icc_path *ocmem_icc_path;
-> +	struct icc_path *icc_path;
->  	int ret;
->  
->  	if (!pdev) {
-> @@ -694,13 +696,27 @@ struct msm_gpu *a4xx_gpu_init(struct drm_device *dev)
->  		goto fail;
->  	}
->  
-> +	icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
-> +	ret = IS_ERR(icc_path);
-> +	if (ret)
-> +		goto fail;
-> +
-> +	ocmem_icc_path = devm_of_icc_get(&pdev->dev, "ocmem");
-> +	ret = IS_ERR(ocmem_icc_path);
-> +	if (ret) {
-> +		/* allow -ENODATA, ocmem icc is optional */
-> +		if (ret != -ENODATA)
-> +			goto fail;
-> +		ocmem_icc_path = NULL;
-> +	}
-> +
->  	/*
->  	 * Set the ICC path to maximum speed for now by multiplying the fastest
->  	 * frequency by the bus width (8). We'll want to scale this later on to
->  	 * improve battery life.
->  	 */
-> -	icc_set_bw(gpu->icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
-> -	icc_set_bw(gpu->ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
-> +	icc_set_bw(icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
-> +	icc_set_bw(ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+this seems to just ask for the guest to have a way to detect that
+a VM cloning triggered.
 
-Less confident we can find any 4xx fans to test this, but if a3xx works then so
-should this (in theory).
-
->  	return gpu;
->  
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> index fd8f491..6e3b820 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> @@ -920,35 +920,8 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->  
->  	ret = msm_gpu_init(drm, pdev, &adreno_gpu->base, &funcs->base,
->  			adreno_gpu->info->name, &adreno_gpu_config);
-> -	if (ret)
-> -		return ret;
-> -
-> -	/*
-> -	 * The legacy case, before "interconnect-names", only has a
-> -	 * single interconnect path which is equivalent to "gfx-mem"
-> -	 */
-> -	if (!of_find_property(dev->of_node, "interconnect-names", NULL)) {
-> -		gpu->icc_path = of_icc_get(dev, NULL);
-> -	} else {
-> -		gpu->icc_path = of_icc_get(dev, "gfx-mem");
-> -		gpu->ocmem_icc_path = of_icc_get(dev, "ocmem");
-> -	}
->  
-> -	if (IS_ERR(gpu->icc_path)) {
-> -		ret = PTR_ERR(gpu->icc_path);
-> -		gpu->icc_path = NULL;
-> -		return ret;
-> -	}
-> -
-> -	if (IS_ERR(gpu->ocmem_icc_path)) {
-> -		ret = PTR_ERR(gpu->ocmem_icc_path);
-> -		gpu->ocmem_icc_path = NULL;
-> -		/* allow -ENODATA, ocmem icc is optional */
-> -		if (ret != -ENODATA)
-> -			return ret;
-> -	}
-> -
-> -	return 0;
-> +	return ret;
-
-This could go even further:
-
-return msm_gpu_init(...);
-
->  }
->  
->  void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
-> -- 
-> 2.7.4
-> 
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+MST
+
