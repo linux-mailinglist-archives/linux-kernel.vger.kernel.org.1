@@ -2,216 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B22292DA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD701292DB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730737AbgJSSkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 14:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
+        id S1730917AbgJSSn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 14:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730464AbgJSSkh (ORCPT
+        with ESMTP id S1730895AbgJSSn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 14:40:37 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED744C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:40:36 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id b15so826970iod.13
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:40:36 -0700 (PDT)
+        Mon, 19 Oct 2020 14:43:26 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580D3C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:43:25 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id b15so839559iod.13
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:43:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=M9iLeKVp3nEaJ65+HjYKGrEoohnZIpxfdaQ1MUWPtik=;
-        b=XOBQwAqFu1fNKsYXa1rDfMAvWGF1Lyv0OQg5cOxKv+52V+dAgknCxWle4pmYrjrGWF
-         Ts85Ms5oP6tqYqLt9H+yt61luBwVw95BSEQm72ffhTqpRZpe70TnSuNh4cRYXrgjeYuA
-         bN0GgubH43uabNyI8ZkCxHp5uwVB4iA1vgoP4xX9dt2Lf70uanwld8k+VXgjHpCfSRId
-         lodC4OX2UK8lCE/4VzHkUIdf6SAvANJCXC1mIH5ra19atDE6QEIHIminYcwT9CeeY85j
-         zPhPCWFuRthLziVp6fgDOeBpDdfchlMM0OPFG+cALWf5Pf+cxKL5HsaBuMTDP3uAMhR2
-         UsZA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XS0b41HJUJUqgJ5lkLHS/Jz0mUrtabIGSzld1xEhiLY=;
+        b=ir9bJ0Xz8Qh7mhbng1X4z3mYPFaJwefOpeicuAqbfOrUlnrKft0l4Y+orq5vragl/i
+         g0cIy90g/N9UBPEVsyrSPed6Pb9dhgG88ex4yUpPLuko5abT3E/Q0MmcS9WDO9xoitbM
+         KVbI//mNp5qBrEPTf+4pDS2i1lAf/nm08NGo0b1MrcnUXVk/wwnbTbkpHUJVm9kXfW//
+         M+w7+oBcgI/w7+cxteVTEfuHYo3M/nGcXw3/jNiIeQG6CAwK/rJdNoi+CCCBtHkegfp/
+         pvKLJsGqDQ2qGltmC25UQbObpMlP1nxjziF4yqc2bA8M/YnUZlNffjB5/PZIUhhL1Fk5
+         Uvng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=M9iLeKVp3nEaJ65+HjYKGrEoohnZIpxfdaQ1MUWPtik=;
-        b=ciL1MQQsugNXpalc3A9Tup85BOjD96Xhrpho8v7uX9y+0RMEghAFwCWJEBhuVL+86Q
-         mxwmyH2xRxOAl4Lo4FCIgzAyzvwMHkSqbEZVC7OEZsbezvo0dlKf9LhuMLBxaNjMNlav
-         ccyzEoq4w8rfstAlHBYGrsA0hOuKhD6TJyvhi+s7lEovrXGZ/GJZGbdAwHK1SD6hJT4V
-         3wj8ELu4qPz+d0IWPnes1XbAXxCFeZ9whx1RJPsPoPr8ft79Dvh72mIxqF3Oy8EbL3f/
-         D6e+2L93rRkNEKeGY/PBRFlb4lDTeGPyw2a7KRrPDmph8DV7dYvvozZeYWQrjr4ocOhE
-         7/1A==
-X-Gm-Message-State: AOAM531hqnoYhfQGT0YGjK4Ex2Iwv8oXp6N02mxyN3yXui5ewp7qSlLt
-        s1fQW27EIyogtAlT7+wU4Cs3Sw==
-X-Google-Smtp-Source: ABdhPJwGuj/LaDCk9GYBi2KaN9NrA7sl8nQaLWLXCPHIlpaB0MoKs+G4iOZ2D9dgWP3hsGlstOygWg==
-X-Received: by 2002:a6b:7942:: with SMTP id j2mr664217iop.73.1603132836151;
-        Mon, 19 Oct 2020 11:40:36 -0700 (PDT)
-Received: from maple.netwinder.org (rfs.netwinder.org. [206.248.184.2])
-        by smtp.gmail.com with ESMTPSA id t26sm436320ioi.11.2020.10.19.11.40.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 11:40:35 -0700 (PDT)
-From:   Ralph Siemsen <ralph.siemsen@linaro.org>
-To:     akpm@linux-foundation.org
-Cc:     charante@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mgorman@techsingularity.net,
-        vinmenon@codeaurora.org, stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ralph Siemsen <ralph.siemsen@linaro.org>
-Subject: Re: [PATCH] mm, page_alloc: skip ->watermark_boost for atomic order-0 allocations-fix
-Date:   Mon, 19 Oct 2020 14:40:17 -0400
-Message-Id: <20201019184017.6340-1-ralph.siemsen@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200617171518.96211e345de65c54b9343a3a@linux-foundation.org>
-References: <20200617171518.96211e345de65c54b9343a3a@linux-foundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XS0b41HJUJUqgJ5lkLHS/Jz0mUrtabIGSzld1xEhiLY=;
+        b=qNfDT6IZRn1f6eoIKMLx3VFanPxWuRROP7YjXFSPTocuNLMD3qdfF7ec36ixUP0qkV
+         o6eHhg/PM61Co/ZlKLdTW8mgbPgrmo9XpLJh/2tPKMV+6AnlPxQOfhSp9ViXLQhfeUXq
+         Cmvqz8jMDNavM/JCk6aEb/HTVvg12aFJy4aebTjgItM9EICsPQmHeaI3V41Unzq6Czyy
+         Q8vdd/r3eConGx/RDwqUXn3Wa05MJKlHSrafkoHp6w++rhPZM2rnrAIPlfwhRmdn5R4q
+         cuvq9A06gNrWX8WuVfCG4EZBIP6ekFrdop+XnDE0eiPJBz88laMjSCWTUpcKl01HvGWI
+         9U4Q==
+X-Gm-Message-State: AOAM533dQShSi0Sh+M87+ssNusIF1UIDwDbByhHmSz0ED5d9658JcmA5
+        gVnLkliFnqGdh/wYEBKscP5uK6SnntJUfC0dQY+Jrw==
+X-Google-Smtp-Source: ABdhPJxJAhL3IVfX23GRdC+ITCUP/phL4EJ1fYf/dYu5u9+SppORNH4yVRdNUGLOsnSubsAxikaKvN6MUW8UjZo5oW4=
+X-Received: by 2002:a05:6638:d49:: with SMTP id d9mr1165361jak.85.1603133004559;
+ Mon, 19 Oct 2020 11:43:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200917032226.820371-1-thara.gopinath@linaro.org>
+In-Reply-To: <20200917032226.820371-1-thara.gopinath@linaro.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Date:   Mon, 19 Oct 2020 14:42:48 -0400
+Message-ID: <CALD-y_wQeuUq=0+_TGWYwOAcM4zdmGbtCMYZ+Oa587HtzHHqVQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/8] Introduce warming in thermal framework
+To:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        lukasz.luba@arm.com, amitk@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 16 Sep 2020 at 23:22, Thara Gopinath <thara.gopinath@linaro.org> wrote:
+>
+> Thermal framework today supports monitoring for rising temperatures and
+> subsequently initiating cooling action in case of a thermal trip point
+> being crossed. There are scenarios where a SoC need warming mitigating
+> action to be activated if the temperature falls below a cetain permissible
+> limit.  Since warming action can be considered mirror opposite of cooling
+> action, most of the thermal framework can be re-used to achieve this. The
+> key assumption in this patch series is that a device can act either as a
+> warming device or a cooling device and not as both.
+>
+> In order to support warming three extensions are needed in the thermal
+> framework.
+>
+> 1. Indication that a trip point is being monitored for falling temperature
+> and not rising temperature. We discussed two different ways to achieve this
+> during LPC. First option is to introduce a new trip type to indicate that a
+> trip is a cold trip(THERMAL_TRIP_COLD). The second option is to introduce a
+> new property for trip point that will indicate whether a trip point is
+> being monitored for rising temperature or falling temperature. The patch
+> series(patches 1-4) chooses the second approach since it allows trip points
+> of any type to be monitored for rising or falling temperature.Also this was
+> the preferred approach when discussed during LPC. The approach that
+> introduces a new cold trip type was posted on the list earlier as a RFC and
+> can be found at [1].
+>
+> 2. Extend the exisitng governors to handle monitoring of falling
+> temperature. The patch series(patches 5 & 6) extends the step wise governor
+> to monitor the falling temperature.Other governors return doing nothing if
+> the trip point they are being called for is being monitored for falling
+> temperature. The governors' mitigate function is called "throttle" in the
+> thermal framework and with this patch series it is a misnomer as the
+> function is called for both throttling and warming up. Ideally
+> "throttle" should be renamed to "mitigate" to improve readability of code.
+> The renaming is not part of this series.
+>
+> 3. Finally, the cooling device framework itself can be reused for a warming
+> device. As stated before a device can act either as a warming device or a
+> cooling device and not as both.  With this the cooling state in the
+> framework can be considered as mitigating state with 0 as the state with no
+> thermal mitigation and higher the number higher the thermal mitigation.
+> Again what affects the code readability and comprehension is the term
+> "cooling" which is a misnomer here. Ideally the term "cooling" should be
+> renamed to "mitigating" and hence thermal_cooling_device will become
+> thermal_mitgating_device. The renaming is not part of the patch series as
+> even though the renaming is a simple search-replace, it will change a lot
+> of files.  The patch series(patches 7 & 8) instead introduces a minimal set
+> of _warming_device_ apis to register and unregister warming devices which
+> internally is identical to the _cooling_device_ counterpart.
 
-Please consider applying the patch from this thread to 5.8.y:
-commit f80b08fc44536a311a9f3182e50f318b79076425
+Gentle ping for review..
 
-The fix should also go into 5.4.y, however the patch needs some minor
-adjustments due to surrounding context differences. Attached below is a
-version I have tested against 5.4.71.
+>
+> 1. https://lkml.org/lkml/2020/7/10/639
+>
+> Thara Gopinath (8):
+>   dt-bindings: thermal: Introduce monitor-falling parameter to thermal
+>     trip point binding
+>   thermal: Introduce new property monitor_type for trip point.
+>   thermal: thermal_of: Extend thermal dt driver to support
+>     bi-directional monitoring of a thermal trip point.
+>   thermal:core:Add genetlink notifications for monitoring falling
+>     temperature
+>   thermal: gov_step_wise: Extend thermal step-wise governor to monitor
+>     falling temperature.
+>   thermal: Modify thermal governors to do nothing for trip points being
+>     monitored for falling temperature
+>   thermal:core: Add is_warming_dev and supporting warming device api's
+>     to the cooling dev framework.
+>   soc:qcom:qcom_aoss: Change cooling_device_register to
+>     warming_device_register
+>
+>  .../bindings/thermal/thermal-zones.yaml       |   7 ++
+>  drivers/soc/qcom/qcom_aoss.c                  |   6 +-
+>  drivers/thermal/gov_bang_bang.c               |  12 ++
+>  drivers/thermal/gov_fair_share.c              |  12 ++
+>  drivers/thermal/gov_power_allocator.c         |  12 ++
+>  drivers/thermal/gov_step_wise.c               |  62 +++++++---
+>  drivers/thermal/thermal_core.c                | 113 +++++++++++++++---
+>  drivers/thermal/thermal_core.h                |   2 +
+>  drivers/thermal/thermal_of.c                  |  22 ++++
+>  include/linux/thermal.h                       |   9 ++
+>  include/uapi/linux/thermal.h                  |   5 +
+>  11 files changed, 226 insertions(+), 36 deletions(-)
+>
+> --
+> 2.25.1
+>
 
-This solves a "page allocation failure" error that can be reproduced
-both on physical hardware, and also under qemu-system-arm. The test
-consists of repeatedly running md5sum on a large file. In my tests the
-file contains 1GB of random data, while the system has only 256MB RAM. 
-No other tasks are running or consuming significant memory. 
 
-After some time (between 1 and 200 iterations) the kernel reports a page
-allocation failure. Additional failures occur fairly quickly thereafter.
-The md5sum is correctly computed in each case. The OOM is not invoked.
-The backtrace shows a 0-order GFP_ATOMIC was requested, with quite a
-bit of memory available, and yet the allocation fails.
-
-Similar error also occurs when "md5sum" is replaced by "scp" or "nc".
-The backtrace again shows a 0-order with GFP_ATOMIC that fails, with
-plenty of memory available according to the Mem-Info dump.
-
-The problem does not occur under 4.9.y or 4.19.y. Bisction has found
-that the problem started to occur with 688fcbfc06e4 ("mm/vmalloc: modify
-struct vmap_area to reduce its size") during the 5.4 dev cycle.
-
-I can provide additional logs and details if interested.
-
-Thanks,
-Ralph
-
-Below is the f80b08fc445 commit, tweaked to apply to 5.4.y.
-
-From: Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH] mm, page_alloc: skip ->waternark_boost for atomic order-0
- allocations
-
-[upstream commit f80b08fc44536a311a9f3182e50f318b79076425
- with context adjusted to match linux-5.4.y]
-
-When boosting is enabled, it is observed that rate of atomic order-0
-allocation failures are high due to the fact that free levels in the
-system are checked with ->watermark_boost offset.  This is not a problem
-for sleepable allocations but for atomic allocations which looks like
-regression.
-
-This problem is seen frequently on system setup of Android kernel running
-on Snapdragon hardware with 4GB RAM size.  When no extfrag event occurred
-in the system, ->watermark_boost factor is zero, thus the watermark
-configurations in the system are:
-
-   _watermark = (
-          [WMARK_MIN] = 1272, --> ~5MB
-          [WMARK_LOW] = 9067, --> ~36MB
-          [WMARK_HIGH] = 9385), --> ~38MB
-   watermark_boost = 0
-
-After launching some memory hungry applications in Android which can cause
-extfrag events in the system to an extent that ->watermark_boost can be
-set to max i.e.  default boost factor makes it to 150% of high watermark.
-
-   _watermark = (
-          [WMARK_MIN] = 1272, --> ~5MB
-          [WMARK_LOW] = 9067, --> ~36MB
-          [WMARK_HIGH] = 9385), --> ~38MB
-   watermark_boost = 14077, -->~57MB
-
-With default system configuration, for an atomic order-0 allocation to
-succeed, having free memory of ~2MB will suffice.  But boosting makes the
-min_wmark to ~61MB thus for an atomic order-0 allocation to be successful
-system should have minimum of ~23MB of free memory(from calculations of
-zone_watermark_ok(), min = 3/4(min/2)).  But failures are observed despite
-system is having ~20MB of free memory.  In the testing, this is
-reproducible as early as first 300secs since boot and with furtherlowram
-configurations(<2GB) it is observed as early as first 150secs since boot.
-
-These failures can be avoided by excluding the ->watermark_boost in
-watermark caluculations for atomic order-0 allocations.
-
-[akpm@linux-foundation.org: fix comment grammar, reflow comment]
-[charante@codeaurora.org: fix suggested by Mel Gorman]
-  Link: http://lkml.kernel.org/r/31556793-57b1-1c21-1a9d-22674d9bd938@codeaurora.org
-
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Vinayak Menon <vinmenon@codeaurora.org>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Link: http://lkml.kernel.org/r/1589882284-21010-1-git-send-email-charante@codeaurora.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Ralph Siemsen <ralph.siemsen@linaro.org>
----
- mm/page_alloc.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index aff0bb4629bd..b0e9ea4c220e 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3484,7 +3484,8 @@ bool zone_watermark_ok(struct zone *z, unsigned int order, unsigned long mark,
- }
- 
- static inline bool zone_watermark_fast(struct zone *z, unsigned int order,
--		unsigned long mark, int classzone_idx, unsigned int alloc_flags)
-+				unsigned long mark, int classzone_idx,
-+				unsigned int alloc_flags, gfp_t gfp_mask)
- {
- 	long free_pages = zone_page_state(z, NR_FREE_PAGES);
- 	long cma_pages = 0;
-@@ -3505,8 +3506,23 @@ static inline bool zone_watermark_fast(struct zone *z, unsigned int order,
- 	if (!order && (free_pages - cma_pages) > mark + z->lowmem_reserve[classzone_idx])
- 		return true;
- 
--	return __zone_watermark_ok(z, order, mark, classzone_idx, alloc_flags,
--					free_pages);
-+	if (__zone_watermark_ok(z, order, mark, classzone_idx, alloc_flags,
-+					free_pages))
-+		return true;
-+	/*
-+	 * Ignore watermark boosting for GFP_ATOMIC order-0 allocations
-+	 * when checking the min watermark. The min watermark is the
-+	 * point where boosting is ignored so that kswapd is woken up
-+	 * when below the low watermark.
-+	 */
-+	if (unlikely(!order && (gfp_mask & __GFP_ATOMIC) && z->watermark_boost
-+		&& ((alloc_flags & ALLOC_WMARK_MASK) == WMARK_MIN))) {
-+		mark = z->_watermark[WMARK_MIN];
-+		return __zone_watermark_ok(z, order, mark, classzone_idx,
-+					alloc_flags, free_pages);
-+	}
-+
-+	return false;
- }
- 
- bool zone_watermark_ok_safe(struct zone *z, unsigned int order,
-@@ -3647,7 +3663,8 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
- 
- 		mark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
- 		if (!zone_watermark_fast(zone, order, mark,
--				       ac_classzone_idx(ac), alloc_flags)) {
-+				       ac_classzone_idx(ac), alloc_flags,
-+				       gfp_mask)) {
- 			int ret;
- 
- #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
 -- 
-2.17.1
-
+Warm Regards
+Thara
