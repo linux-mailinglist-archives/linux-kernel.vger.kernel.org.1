@@ -2,270 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF3A292197
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 06:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC566292194
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 06:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgJSELZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 00:11:25 -0400
-Received: from mga02.intel.com ([134.134.136.20]:11130 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbgJSELY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 00:11:24 -0400
-IronPort-SDR: 8qCPiYkJQYVaXoAQgCdo2spPaUzLFybMdSmN3B3RAeYaZcaZl3qa2QsEomB8oaYedlM2ko7DOU
- Yv8iSk65GFZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="153902789"
-X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
-   d="scan'208";a="153902789"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 21:11:23 -0700
-IronPort-SDR: f4UyFY44hpO4eulCnuIdOe1BHsgHRfzeKvIavXqKXb0uluT9UTxB/mafUUtrPaMslnF4DGhSRO
- P+AaWxTutnqg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
-   d="scan'208";a="522965851"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga005.fm.intel.com with ESMTP; 18 Oct 2020 21:11:20 -0700
-Date:   Mon, 19 Oct 2020 12:06:13 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        lgoncalv@redhat.com, hao.wu@intel.com, yilun.xu@intel.com
-Subject: Re: [PATCH 1/2] fpga: dfl: add driver_override support
-Message-ID: <20201019040612.GA16172@yilunxu-OptiPlex-7050>
-References: <1602828151-24784-1-git-send-email-yilun.xu@intel.com>
- <1602828151-24784-2-git-send-email-yilun.xu@intel.com>
- <63d7730b-d9b8-c75d-16f6-3ebb507aabaa@redhat.com>
+        id S1726540AbgJSEI5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Oct 2020 00:08:57 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:33508 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbgJSEI4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 00:08:56 -0400
+Received: by mail-lf1-f67.google.com with SMTP id l2so12468460lfk.0;
+        Sun, 18 Oct 2020 21:08:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Opolm4cc3xkSXr8hVN2RdLWSRKL0yVq0IDyWQr6WV0k=;
+        b=GscUleyt2spXZDRGHkaKkYE81fdHOzks5R3Y23V8FiQ9zf+dhOeMKiqxuLVwLRIN/0
+         WQUp2mGmTwJt0BQkPQQnMfsR8pMHc3Xmn2avQrOUF1Xk4U44d0pl0WxYP/wKJCio14Ti
+         /IMUT+pJMBhjAx/R6NTBgDCa2j+g2S1Ei3p5O7dmNehW+KAewTZ4XINTsnuik42HKqk4
+         dBakYBuUd/XxefqnK1qiqcwU4fQnKZIGLtT79lCTxrBHkRRuScH8AMxZNrBhkoALackI
+         YRBJ4pBrR4j9+KvWbo3ilhhppLb/L4AxwENBhGkYwPhhFFIH4MNEYT0Z/dEMdkji0Ysk
+         4RVQ==
+X-Gm-Message-State: AOAM531NM1n4WRFNGI0So0rtUy4pkVnyY93Rihs6fbHHCm3GWg0p4Twc
+        KyQeW70W6r5QeMRv+6PcrKWhyEoXkYo4zg==
+X-Google-Smtp-Source: ABdhPJwEz6OkcPzlD7CycirQ8yIGV47azS5wBWf65LJMv7qx0sSRDaBJqnWt4C9IPEdxjpqf9s0Rwg==
+X-Received: by 2002:a05:6512:3b1:: with SMTP id v17mr4821004lfp.262.1603080533975;
+        Sun, 18 Oct 2020 21:08:53 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id m132sm3082487lfa.34.2020.10.18.21.08.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Oct 2020 21:08:53 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id a28so5579022ljn.3;
+        Sun, 18 Oct 2020 21:08:53 -0700 (PDT)
+X-Received: by 2002:a2e:8116:: with SMTP id d22mr5301246ljg.331.1603080532846;
+ Sun, 18 Oct 2020 21:08:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63d7730b-d9b8-c75d-16f6-3ebb507aabaa@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20201018172409.1754775-1-peron.clem@gmail.com> <CAJiuCce+VHusdYPv7QutYvCcCByz=nRcBotPNL6E=jA4U4=YoA@mail.gmail.com>
+In-Reply-To: <CAJiuCce+VHusdYPv7QutYvCcCByz=nRcBotPNL6E=jA4U4=YoA@mail.gmail.com>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 19 Oct 2020 12:08:42 +0800
+X-Gmail-Original-Message-ID: <CAGb2v65szCZyu+Gm0igGmyRGZRwvTr+0O-QYAMyTk8n_V7Ne-Q@mail.gmail.com>
+Message-ID: <CAGb2v65szCZyu+Gm0igGmyRGZRwvTr+0O-QYAMyTk8n_V7Ne-Q@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: allwinner: beelink-gs1: Enable both RGMII
+ RX/TX delay
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 09:21:50AM -0700, Tom Rix wrote:
-> 
-> On 10/15/20 11:02 PM, Xu Yilun wrote:
-> > Add support for overriding the default matching of a dfl device to a dfl
-> > driver. It follows the same way that can be used for PCI and platform
-> > devices. This patch adds the 'driver_override' sysfs file.
+On Mon, Oct 19, 2020 at 1:57 AM Clément Péron <peron.clem@gmail.com> wrote:
+>
+> Hi,
+>
+> On Sun, 18 Oct 2020 at 19:24, Clément Péron <peron.clem@gmail.com> wrote:
 > >
-> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > Before the commit:
+> > net: phy: realtek: fix rtl8211e rx/tx delay config
+> bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
+>
+> With the hash for reference it's better :)
+> Clement
+>
+> >
+> > The software overwrite for RX/TX delays of the RTL8211e were not
+> > working properly and the Beelink GS1 had both RX/TX delay of RGMII
+> > interface set using pull-up on the TXDLY and RXDLY pins.
+> >
+> > Now that these delays are working properly they overwrite the HW
+> > config and set this to 'rgmii' meaning no delay on both RX/TX.
+> > This makes the ethernet of this board not working anymore.
+> >
+> > Set the phy-mode to 'rgmii-id' meaning RGMII with RX/TX delays
+> > in the device-tree to keep the correct configuration.
+> >
+> > Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Beelink GS1 board")
+> > Signed-off-by: Clément Péron <peron.clem@gmail.com>
+
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+
+For reference, the driver fix for dwmac enabling the other RGMII modes
+
+    f1239d8aa84d ("net: stmmac: dwmac-sun8i: Allow all RGMII modes")
+
+was merged in v5.5 and was backported to relevant stable kernels.
+
 > > ---
-> >  Documentation/ABI/testing/sysfs-bus-dfl | 28 ++++++++++++++---
-> >  drivers/fpga/dfl.c                      | 54 ++++++++++++++++++++++++++++++++-
-> >  include/linux/dfl.h                     |  2 ++
-> >  3 files changed, 79 insertions(+), 5 deletions(-)
+> >  arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > >
-> > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl b/Documentation/ABI/testing/sysfs-bus-dfl
-> > index 23543be..db7e8d3 100644
-> > --- a/Documentation/ABI/testing/sysfs-bus-dfl
-> > +++ b/Documentation/ABI/testing/sysfs-bus-dfl
-> > @@ -1,15 +1,35 @@
-> >  What:		/sys/bus/dfl/devices/dfl_dev.X/type
-> > -Date:		Aug 2020
-> > -KernelVersion:	5.10
-> > +Date:		Oct 2020
-> > +KernelVersion:	5.11
-> >  Contact:	Xu Yilun <yilun.xu@intel.com>
-> >  Description:	Read-only. It returns type of DFL FIU of the device. Now DFL
-> >  		supports 2 FIU types, 0 for FME, 1 for PORT.
-> >  		Format: 0x%x
-> >  
-> >  What:		/sys/bus/dfl/devices/dfl_dev.X/feature_id
-> > -Date:		Aug 2020
-> > -KernelVersion:	5.10
-> > +Date:		Oct 2020
-> > +KernelVersion:	5.11
-> >  Contact:	Xu Yilun <yilun.xu@intel.com>
-> >  Description:	Read-only. It returns feature identifier local to its DFL FIU
-> >  		type.
-> >  		Format: 0x%x
-> 
-> These updates, do not match the comment.
-> 
-> Consider splitting this out.
-
-I'm sorry it's a typo. The above code should not be changed.
-
-> 
-> > +
-> > +What:           /sys/bus/dfl/devices/.../driver_override
-> > +Date:           Oct 2020
-> > +KernelVersion:  5.11
-> > +Contact:        Xu Yilun <yilun.xu@intel.com>
-> I am looking at description and trying to make it consistent with sysfs-bus-pci
-> > +Description:    This file allows the driver for a device to be specified.
-> 
-> 'to be specified which will override the standard dfl bus feature id to driver mapping.'
-
-Yes, it could be improved.
-
-Actually now it is the "type" and "feature id" matching, the 2 fields
-are defined for dfl_driver.id_table. In future for dfl v1, it may be
-GUID matching, which will be added to id_table. So how about we make it
-more generic:
-
-'to be specified which will override the standard ID table matching.'
-
-> 
-> 
-> >  When
-> > +                specified, only a driver with a name matching the value written
-> > +                to driver_override will have an opportunity to bind to the
-> > +                device. The override is specified by writing a string to the
-> > +                driver_override file (echo dfl-uio-pdev > driver_override) and
-> > +                may be cleared with an empty string (echo > driver_override).
-> > +                This returns the device to standard matching rules binding.
-> > +                Writing to driver_override does not automatically unbind the
-> > +                device from its current driver or make any attempt to
-> > +                automatically load the specified driver.  If no driver with a
-> > +                matching name is currently loaded in the kernel, the device
-> > +                will not bind to any driver.  This also allows devices to
-> > +                opt-out of driver binding using a driver_override name such as
-> > +                "none".  Only a single driver may be specified in the override,
-> > +                there is no support for parsing delimiters.
-> > diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
-> > index 511b20f..bc35750 100644
-> > --- a/drivers/fpga/dfl.c
-> > +++ b/drivers/fpga/dfl.c
-> > @@ -262,6 +262,10 @@ static int dfl_bus_match(struct device *dev, struct device_driver *drv)
-> >  	struct dfl_driver *ddrv = to_dfl_drv(drv);
-> >  	const struct dfl_device_id *id_entry;
-> >  
-> > +	/* When driver_override is set, only bind to the matching driver */
-> > +	if (ddev->driver_override)
-> > +		return !strcmp(ddev->driver_override, drv->name);
-> > +
-> >  	id_entry = ddrv->id_table;
-> >  	if (id_entry) {
-> >  		while (id_entry->feature_id) {
-> > @@ -303,6 +307,53 @@ static int dfl_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
-> >  			      ddev->type, ddev->feature_id);
-> >  }
-> >  
-> 
-> I am looking at other implementations of driver_override* and looking for consistency.
-> 
-> > +static ssize_t driver_override_show(struct device *dev,
-> > +				    struct device_attribute *attr, char *buf)
-> > +{
-> > +	struct dfl_device *ddev = to_dfl_dev(dev);
-> > +	ssize_t len;
-> > +
-> > +	device_lock(dev);
-> > +	len = sprintf(buf, "%s\n", ddev->driver_override);
-> len = snprintf(buf, PAGE_SIZE ...
-
-It is good to me.
-
-Some bus drivers use snprintf, some use sprintf.
-
-I think it is reasonable snprintf is used here, unlike %d, %u ... it is
-uncertain for the output size of %s.
-
-> > +	device_unlock(dev);
-> > +	return len;
-> > +}
-> > +
-> > +static ssize_t driver_override_store(struct device *dev,
-> > +				     struct device_attribute *attr,
-> > +				     const char *buf, size_t count)
-> > +{
-> > +	struct dfl_device *ddev = to_dfl_dev(dev);
-> > +	char *driver_override, *old, *cp;
-> > +
-> > +	/* We need to keep extra room for a newline */
-> > +	if (count >= (PAGE_SIZE - 1))
-> > +		return -EINVAL;
-> > +
-> > +	driver_override = kstrndup(buf, count, GFP_KERNEL);
-> > +	if (!driver_override)
-> > +		return -ENOMEM;
-> > +
-> > +	cp = strchr(driver_override, '\n');
-> > +	if (cp)
-> > +		*cp = '\0';
-> > +
-> > +	device_lock(dev);
-> > +	old = ddev->driver_override;
-> > +	if (strlen(driver_override)) {
-> > +		ddev->driver_override = driver_override;
-> > +	} else {
-> > +		kfree(driver_override);
-> > +		ddev->driver_override = NULL;
-> > +	}
-> > +	device_unlock(dev);
-> > +
-> > +	kfree(old);
-> > +
-> > +	return count;
-> > +}
-> > +static DEVICE_ATTR_RW(driver_override);
-> > +
-> >  static ssize_t
-> >  type_show(struct device *dev, struct device_attribute *attr, char *buf)
-> >  {
-> > @@ -324,6 +375,7 @@ static DEVICE_ATTR_RO(feature_id);
-> >  static struct attribute *dfl_dev_attrs[] = {
-> >  	&dev_attr_type.attr,
-> >  	&dev_attr_feature_id.attr,
-> > +	&dev_attr_driver_override.attr,
-> >  	NULL,
-> >  };
-> >  ATTRIBUTE_GROUPS(dfl_dev);
-> > @@ -469,7 +521,7 @@ static int dfl_devs_add(struct dfl_feature_platform_data *pdata)
-> >  
-> >  int __dfl_driver_register(struct dfl_driver *dfl_drv, struct module *owner)
-> >  {
-> > -	if (!dfl_drv || !dfl_drv->probe || !dfl_drv->id_table)
-> > +	if (!dfl_drv || !dfl_drv->probe)
-> 
-> id_table is still needed for the normal case.
-> 
-> Instead of removing this check, could you add something like
-> 
-> || (!dfl_drv->is_override && !dfl_drv->id_table)
-
-I don't think it is needed. Seems is_override and !id_table are duplicated
-conditions for this implementation. And it may make confusing, e.g. could
-a driver been force matched when is_override is not set?
-
-I think we could make it simple, if the dfl driver didn't provide the
-id_table, normally it could not match any device. I think it could be
-easily understood by dfl driver developers.
-
-
-Thanks,
-Yilun
-
-> 
-> Tom
-> 
-> >  		return -EINVAL;
-> >  
-> >  	dfl_drv->drv.owner = owner;
-> > diff --git a/include/linux/dfl.h b/include/linux/dfl.h
-> > index 7affba2f..e1b2471 100644
-> > --- a/include/linux/dfl.h
-> > +++ b/include/linux/dfl.h
-> > @@ -32,6 +32,7 @@ enum dfl_id_type {
-> >   * @num_irqs: number of IRQs supported by this dfl device.
-> >   * @cdev: pointer to DFL FPGA container device this dfl device belongs to.
-> >   * @id_entry: matched id entry in dfl driver's id table.
-> > + * @driver_override: driver name to force a match
-> >   */
-> >  struct dfl_device {
-> >  	struct device dev;
-> > @@ -43,6 +44,7 @@ struct dfl_device {
-> >  	unsigned int num_irqs;
-> >  	struct dfl_fpga_cdev *cdev;
-> >  	const struct dfl_device_id *id_entry;
-> > +	char *driver_override;
-> >  };
-> >  
-> >  /**
+> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > index a364cb4e5b3f..6ab53860e447 100644
+> > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > @@ -99,7 +99,7 @@ &ehci0 {
+> >  &emac {
+> >         pinctrl-names = "default";
+> >         pinctrl-0 = <&ext_rgmii_pins>;
+> > -       phy-mode = "rgmii";
+> > +       phy-mode = "rgmii-id";
+> >         phy-handle = <&ext_rgmii_phy>;
+> >         phy-supply = <&reg_aldo2>;
+> >         status = "okay";
+> > --
+> > 2.25.1
+> >
