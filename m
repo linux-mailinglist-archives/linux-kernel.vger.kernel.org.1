@@ -2,76 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40068292349
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D55929234B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728142AbgJSIAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 04:00:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39058 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727966AbgJSIAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 04:00:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BBCC3B04F;
-        Mon, 19 Oct 2020 08:00:45 +0000 (UTC)
-Subject: Re: [PATCH 3/3] vt: keyboard, extend func_buf_lock to readers
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Minh Yuan <yuanmingbuaa@gmail.com>
-References: <20201016122412.31767-1-jslaby@suse.cz>
- <20201016122412.31767-3-jslaby@suse.cz> <20201016132044.GA1798163@kroah.com>
-From:   Jiri Slaby <jslaby@suse.cz>
-Message-ID: <502f12ae-ac08-bb3c-ee6a-cd0baf34059c@suse.cz>
-Date:   Mon, 19 Oct 2020 10:00:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1728275AbgJSICL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 04:02:11 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:60361 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727349AbgJSICK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 04:02:10 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id C04B65C0095;
+        Mon, 19 Oct 2020 04:02:08 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 19 Oct 2020 04:02:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=diNf4gTcrGJ3qa0p8X7gPbgadP9
+        Y6IqpNfM6jM0Hh4s=; b=kAbZFMELq71mZJsxYiaOkfub4NfLFEp0pfqTNqSiWiI
+        5cndcP2tzMq/RatcPS9C0r7wDMdzqKZo0LzHhv0ejAAjGa/32H3JKAEHHdn9oP1w
+        CBOEZ75Z8LYaGyXr1YqKEfwtBDyKDCMQE3VunuOkp4CeT79KPiA0WU93vEhgyifq
+        2viPhTiGG1c8gfk/50f9p+MeDJxtiQnZfC7fldkhDhyNiqI1MVeaZcIqOEZBvl05
+        M4u4JnQ6JbcsqmLC8zgkiYqw5I7PioLyyJc7jLAoLbZQWzJETcKS6xsklsu7Oin8
+        QjyzNg/r754rFmMuvr7PFIMpz+pm8AQxzG2AHBVdlbg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=diNf4g
+        TcrGJ3qa0p8X7gPbgadP9Y6IqpNfM6jM0Hh4s=; b=VmHzEZ0VVY8T439Rwth8S7
+        fZ1CNVi+bY9aqsV6vm65SnIPugNFtlGxSgB1hQ0sYPAq+cHvNn2Y+2dpbBjD1bgV
+        o9QQckRZhbEwF3i1npTkTqyPRSJO+DkJB1LB/GfgW8gheO60XEUoyQhazhxC0zeq
+        iFDBCbdHHpvTE4ZzuMcTagoSAwY0tSYabZVtv4/X5AVH8jKZo2rsXI9Lc55fyMGe
+        mNYR8h0uNHxCXXz3LhzqhkAdRUnjNRx7PhVh2zVbJ88x6w/E5Xp3C96eHgeZJQzD
+        IprjYBV/iIGrrOJ/msOpU3jQTdl+c6wujNNivlFBjet3XqY8q9rFRuLbPIHyA2oQ
+        ==
+X-ME-Sender: <xms:_0eNXwBEuUobue-BrwHJKTcLk0F1N_fX8rEYv2QFhd8udxWFRPwzOg>
+    <xme:_0eNXygQ8DtBOLaNks7RKApsd1vFtuv8QeADj4j7ckg5EYvdamOIccOWP8YG2dq0d
+    YHXHJWpwJLIp4e7JP8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeduucetufdoteggodetrfdotffvucfrrh
+    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
+    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
+    epfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhmvgcutfhi
+    phgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvghrnh
+    epleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieehgedunecu
+    kfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:_0eNXzkp-79Lj1PlzXJ2Xt6z9PLIl4_1htmKqbBLnc-SIdpglcKwuA>
+    <xmx:_0eNX2wvaRhWEvjIux5iXOs5c16JEVlOzFZy96arHkuQZx-9-XHcsQ>
+    <xmx:_0eNX1T9N4EyZ2N9ThHfkNj0mnZ85Ab9Ph-s8UuDZZeOW64A9ZyNww>
+    <xmx:AEiNX-JE4Ru2m5pstkhKS7RaMarYyYgN_BqIhcBmkJFBsIsKL55v8w>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 77AE4328006A;
+        Mon, 19 Oct 2020 04:02:05 -0400 (EDT)
+Date:   Mon, 19 Oct 2020 10:02:02 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chen-Yu Tsai <wens@csie.org>, linux-rtc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] rtc: sun6i: Fix memleak in sun6i_rtc_clk_init
+Message-ID: <20201019080202.kgjoksz27dgyov7q@gilmour.lan>
+References: <20201018072810.4249-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-In-Reply-To: <20201016132044.GA1798163@kroah.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="eysahoho2ly5z2pe"
+Content-Disposition: inline
+In-Reply-To: <20201018072810.4249-1-dinghao.liu@zju.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16. 10. 20, 15:20, Greg KH wrote:
-> On Fri, Oct 16, 2020 at 02:24:12PM +0200, Jiri Slaby wrote:
->> Both read-side users of func_table/func_buf need locking. Without that,
->> one can easily confuse the code by repeatedly setting altering strings
->> like:
->> while (1)
->> 	for (a = 0; a < 2; a++) {
->> 		struct kbsentry kbs = {};
->> 		strcpy((char *)kbs.kb_string, a ? ".\n" : "88888\n");
->> 		ioctl(fd, KDSKBSENT, &kbs);
->> 	}
->>
->> When that program runs, one can get unexpected output by holding F1
->> (note the unxpected period on the last line):
->> .
->> 88888
->> .8888
->>
->> So protect all accesses to 'func_table' (and func_buf) by preexisting
->> 'func_buf_lock'.
->>
->> It is easy in 'k_fn' handler as 'puts_queue' is expected not to sleep.
->> On the other hand, KDGKBSENT needs a local (atomic) copy of the string
->> because copy_to_user can sleep.
->>
->> Likely fixes CVE-2020-25656.
->>
->> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
->> Reported-by: Minh Yuan <yuanmingbuaa@gmail.com>
->> ---
->>   drivers/tty/vt/keyboard.c | 26 +++++++++++++++++++++-----
->>   1 file changed, 21 insertions(+), 5 deletions(-)
-> 
-> So all 3 of these should go to 5.10-final?
 
-Let me try to eliminate also patch 1/3 which I now think is possible.
+--eysahoho2ly5z2pe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-js
-suse labs
+Hi,
+
+On Sun, Oct 18, 2020 at 03:28:10PM +0800, Dinghao Liu wrote:
+> When clk_hw_register_fixed_rate_with_accuracy() fails,
+> clk_data should be freed. It's the same for the subsequent
+> two error paths, but we should also unregister the already
+> registered clocks in them.
+>=20
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>=20
+> Changelog:
+>=20
+> v2: - Unregister the already registered clocks on failure.
+> ---
+>  drivers/rtc/rtc-sun6i.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
+> index e2b8b150bcb4..6de0d3ad736a 100644
+> --- a/drivers/rtc/rtc-sun6i.c
+> +++ b/drivers/rtc/rtc-sun6i.c
+> @@ -272,7 +272,7 @@ static void __init sun6i_rtc_clk_init(struct device_n=
+ode *node,
+>  								300000000);
+>  	if (IS_ERR(rtc->int_osc)) {
+>  		pr_crit("Couldn't register the internal oscillator\n");
+> -		return;
+> +		goto err;
+>  	}
+> =20
+>  	parents[0] =3D clk_hw_get_name(rtc->int_osc);
+> @@ -290,7 +290,8 @@ static void __init sun6i_rtc_clk_init(struct device_n=
+ode *node,
+>  	rtc->losc =3D clk_register(NULL, &rtc->hw);
+>  	if (IS_ERR(rtc->losc)) {
+>  		pr_crit("Couldn't register the LOSC clock\n");
+> -		return;
+> +		clk_hw_unregister_fixed_rate(rtc->int_osc);
+> +		goto err;
+>  	}
+
+The point of having labels for the error sequence is to avoid to
+duplicate the error handling code in each and every error code path.
+
+You should add another label for the fixed rate clock unregistration
+
+Maxime
+
+--eysahoho2ly5z2pe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX41H+gAKCRDj7w1vZxhR
+xRfqAQCbiVNT+UE2hgDn0u6dUdHY1NXEECYdu7ux/kYlBLIZAQD+JfV+wU7KONeu
+VRxjm3n3KRutZdb3BR0GnnVRQ4MWGAI=
+=Jfv5
+-----END PGP SIGNATURE-----
+
+--eysahoho2ly5z2pe--
