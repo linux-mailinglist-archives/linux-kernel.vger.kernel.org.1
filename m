@@ -2,150 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0B7292187
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 05:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB272921B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 06:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731777AbgJSD6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 23:58:15 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:54150 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731752AbgJSD6O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 23:58:14 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201019035810epoutp045beb2e1ecd317d7f405d010831dd4edc~-SKrRg8nG0733507335epoutp04g
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 03:58:10 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201019035810epoutp045beb2e1ecd317d7f405d010831dd4edc~-SKrRg8nG0733507335epoutp04g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603079890;
-        bh=m+psVG5ydnEfTR+95veMJooA8oISCSXl0ADz2z9f3vc=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=tDDmGefdbi8lV8Y4493ZWzVFk9z9ERA1rj4yVgEidB/kV5Q9/wrIQ//wRF0wqvR+f
-         FTY31B4j0iseor4nej03oWbGqHpQRq1dE5Lf7qDo/EzPKF4yCpqShsAbPlqcexITU5
-         I1vAajgJWnxpwH/n3bpwDdN0+ZVKaHZRo2PwIPPo=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20201019035810epcas1p3082bbc6b2c88c010f4851f8e07ef3e9e~-SKqgSgrs1980819808epcas1p3K;
-        Mon, 19 Oct 2020 03:58:10 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.154]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4CF2zM3VXrzMqYkg; Mon, 19 Oct
-        2020 03:58:07 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        82.F1.10463.FCE0D8F5; Mon, 19 Oct 2020 12:58:07 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201019035806epcas1p22dc6646d6f40e36a4797ad00fa46dd42~-SKnh7cv32489824898epcas1p24;
-        Mon, 19 Oct 2020 03:58:06 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201019035806epsmtrp13b638c0179070576732b49b1624337f3~-SKnb2NaH2438224382epsmtrp1B;
-        Mon, 19 Oct 2020 03:58:06 +0000 (GMT)
-X-AuditID: b6c32a38-efbff700000028df-48-5f8d0ecfbbdd
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C0.03.08745.ECE0D8F5; Mon, 19 Oct 2020 12:58:06 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201019035806epsmtip1c9effe648e0cf6e3afc88f0fa608f611~-SKnJExgc1389113891epsmtip1E;
-        Mon, 19 Oct 2020 03:58:06 +0000 (GMT)
-Subject: Re: [PATCH v3 2/2] PM / devfreq: Add governor attribute flag for
- specifc sysfs nodes
-To:     Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Cc:     leonard.crestez@nxp.com, lukasz.luba@arm.com,
-        enric.balletbo@collabora.com, hl@rock-chips.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, abel.vesa@nxp.com,
-        k.konieczny@samsung.com, b.zolnierkie@samsung.com,
-        chanwoo@kernel.org, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <1db2fb62-0b82-409d-20a7-c2ef376d4580@samsung.com>
-Date:   Mon, 19 Oct 2020 13:11:31 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        id S1727780AbgJSEVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 00:21:21 -0400
+Received: from mga03.intel.com ([134.134.136.65]:62985 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726829AbgJSEVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 00:21:21 -0400
+IronPort-SDR: l0ADPkkzMAm2Cb+nAHn7G423Sm060KYV8xAXAqpzjleJVGC8mTdVqAQ2pLrLR0pB+Ft32hLEKV
+ HiSOTHP0Edgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="167038080"
+X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
+   d="scan'208";a="167038080"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 21:21:19 -0700
+IronPort-SDR: gZLkU2VUp1jBbjZhH4QJ12xpaJjHzib55aLfLKcfFaLhdc9xj+++0/QhAP4qWBEVWSrgkkXoRy
+ ZK0H2Ml5w0UA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
+   d="scan'208";a="320135635"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga006.jf.intel.com with ESMTP; 18 Oct 2020 21:21:17 -0700
+Date:   Mon, 19 Oct 2020 12:16:09 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        lgoncalv@redhat.com, hao.wu@intel.com, yilun.xu@intel.com
+Subject: Re: [PATCH 2/2] fpga: dfl: add the userspace I/O device support for
+  DFL devices
+Message-ID: <20201019041609.GB16172@yilunxu-OptiPlex-7050>
+References: <1602828151-24784-1-git-send-email-yilun.xu@intel.com>
+ <1602828151-24784-3-git-send-email-yilun.xu@intel.com>
+ <cba18e8f-009b-0732-c91e-88bd58445271@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4cb8ece7-9399-9ee0-5f93-6c19630308d6@gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFJsWRmVeSWpSXmKPExsWy7bCmnu55vt54g5PzJS2WXTrKaLFxxnpW
-        i4k3rrBYrP74mNFize1DjBY/NpxitmiZtYjFYsGnGawWZ5vesFusuPuR1eLyrjlsFp97jzBa
-        dH6ZxWaxsKmF3eJ24wo2i5+75rE4CHismbeG0WPH3SWMHjtn3WX32LSqk82jt/kdm8fGdzuY
-        PP7O2s/i0bdlFaPH501yAZxR2TYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5
-        ibmptkouPgG6bpk5QH8oKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgosC/SKE3OL
-        S/PS9ZLzc60MDQyMTIEKE7Izvl6bzF7wgq3ib/95lgbG/axdjJwcEgImEk+XfmPqYuTiEBLY
-        wSixb+pOFgjnE6PE1KUP2CGcz4wSFz/sZYdp+fByJ1i7kMAuRolPBxwgit4zSjy48B0sISwQ
-        L3Fz/TdmEFtEoFbiyMUHbCBFzAIrmCTWrD/LApJgE9CS2P/iBhuIzS+gKHH1x2NGEJtXwE7i
-        /rT5YNtYBFQlti94CGaLCoRJnNzWAlUjKHFy5hOwOZwCthKX360Hm8MsIC5x68l8JghbXmL7
-        2znMIIslBH5wSDTc3Qb1govErNPnoCEgLPHq+BaouJTEy/42KLtaYuXJI2wQzR2MElv2X4Bq
-        MJbYv3Qy0AYOoA2aEut36UOEFSV2/p7LCLGYT+Ld1x5WkBIJAV6JjjYhiBJlicsP7jJB2JIS
-        i9s72SYwKs1C8s4sJC/MQvLCLIRlCxhZVjGKpRYU56anFhsWmCBH9yZGcCLXstjBOPftB71D
-        jEwcjIcYJTiYlUR4IwW74oV4UxIrq1KL8uOLSnNSiw8xmgIDeCKzlGhyPjCX5JXEG5oaGRsb
-        W5gYmpkaGiqJ8/7R7ogXEkhPLEnNTk0tSC2C6WPi4JRqYJLhli5qrNV4Xhv1nT3N4+Pvy8fP
-        LjRdIpIjrZzfoP9x+z3XxtWWV1xK+Pb+tJ8eJLTmRFnsn8j7Syq+HP78/9kfUe/yEqNZaZmx
-        Kbpykxi2LgucmvRXeIv19uS54odrM9TK/lxwPNJx6dq7aP/TC82+l6WYv5xkVqHtUX94tbjC
-        Hrufr9efLxJiW3mi68Cc9vv2Le77s8+1LKiUCWdS/j3FZUqImvJ+i3pen9OOBa/tDmQr73sb
-        NfvfjRLfS9IKWvNn8B2exWYlaN/2Sq/31dFvMslXD6zdVl/O7caw8lR3XEjrRYHdnzyu1ykd
-        5bBwCC35nm/xLvSi7sufy/cnfPx+o0HeNVpytfGdspvvdiqxFGckGmoxFxUnAgDFiERkbQQA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsWy7bCSnO45vt54gyMrVS2WXTrKaLFxxnpW
-        i4k3rrBYrP74mNFize1DjBY/NpxitmiZtYjFYsGnGawWZ5vesFusuPuR1eLyrjlsFp97jzBa
-        dH6ZxWaxsKmF3eJ24wo2i5+75rE4CHismbeG0WPH3SWMHjtn3WX32LSqk82jt/kdm8fGdzuY
-        PP7O2s/i0bdlFaPH501yAZxRXDYpqTmZZalF+nYJXBlfr01mL3jBVvG3/zxLA+N+1i5GTg4J
-        AROJDy93gtlCAjsYJZ6f5YOIS0pMu3iUuYuRA8gWljh8uLiLkQuo5C2jxNee+UwgNcIC8RI3
-        139jBrFFBGolXq2eDjaHWWAFk8TCz0IQMz8xSryYawhiswloSex/cYMNxOYXUJS4+uMxI4jN
-        K2AncX/afHYQm0VAVWL7godgtqhAmMTOJY+ZIGoEJU7OfMICYnMK2EpcfreeDWKXusSfeZeY
-        IWxxiVtPIG5jFpCX2P52DvMERuFZSNpnIWmZhaRlFpKWBYwsqxglUwuKc9Nziw0LjPJSy/WK
-        E3OLS/PS9ZLzczcxgqNZS2sH455VH/QOMTJxMB5ilOBgVhLhjRTsihfiTUmsrEotyo8vKs1J
-        LT7EKM3BoiTO+3XWwjghgfTEktTs1NSC1CKYLBMHp1QDU9nKHNHjL3jXhJ86mB3Et/vWxBe/
-        llTknjA6rO/55J6+9+SiP3zdotU2Mx2W3XqVpxu4K7mzLrHufXH114f8LzU5rkWl7T5bYVVx
-        6OCPxW67t0SHJMadYvuW5r/cVmH2fKfEmDXpP50zEzoSA/vXrF+w4Ja56r2SzVzfr2/YFxGx
-        o3vROxsr/qyeWKnY3kyFwB1n5YzMe4q2O7tKLLhSx7m7drPipqs5xxUZ7xy9aumzfvapPboy
-        Ggrt+np3l30+eNz497b/pUocNxs5H+9ZtrvxsPCDJdG/5Pa3KN3wvckZ6/ifWVLyx8fG1do7
-        xTqXxsf1M+iZsRbtjK3fHLArM600wtF4Vc1vh9b5M+bcUWIpzkg01GIuKk4EAHzXfChVAwAA
-X-CMS-MailID: 20201019035806epcas1p22dc6646d6f40e36a4797ad00fa46dd42
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201007045340epcas1p3b4d0f9187f5330a45d20d9d9b79f1767
-References: <20201007050703.20759-1-cw00.choi@samsung.com>
-        <CGME20201007045340epcas1p3b4d0f9187f5330a45d20d9d9b79f1767@epcas1p3.samsung.com>
-        <20201007050703.20759-3-cw00.choi@samsung.com>
-        <4cb8ece7-9399-9ee0-5f93-6c19630308d6@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cba18e8f-009b-0732-c91e-88bd58445271@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/20 9:39 AM, Dmitry Osipenko wrote:
-> ...
->> @@ -1361,6 +1373,9 @@ static ssize_t governor_store(struct device *dev, struct device_attribute *attr,
->>  		goto out;
->>  	}
->>  
->> +	remove_sysfs_files(df, df->governor);
->> +	create_sysfs_files(df, governor);
->> +
->>  	prev_governor = df->governor;
->>  	df->governor = governor;
->>  	strncpy(df->governor_name, governor->name, DEVFREQ_NAME_LEN);
->> @@ -1460,39 +1475,6 @@ static ssize_t target_freq_show(struct device *dev,
->>  }
+On Fri, Oct 16, 2020 at 09:36:00AM -0700, Tom Rix wrote:
 > 
-> The further code may revert df->governor to the prev_governor or set it
+> On 10/15/20 11:02 PM, Xu Yilun wrote:
+> > This patch supports the DFL drivers be written in userspace. This is
+> > realized by exposing the userspace I/O device interfaces. The driver
+> > leverages the uio_pdrv_genirq, it adds the uio_pdrv_genirq platform
+> > device with the DFL device's resources, and let the generic UIO platform
+> > device driver provide support to userspace access to kernel interrupts
+> > and memory locations.
+> >
+> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > ---
+> >  drivers/fpga/Kconfig        | 10 ++++++
+> >  drivers/fpga/Makefile       |  1 +
+> >  drivers/fpga/dfl-uio-pdev.c | 83 +++++++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 94 insertions(+)
+> >  create mode 100644 drivers/fpga/dfl-uio-pdev.c
+> >
+> > diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> > index 5d7f0ae..e054722 100644
+> > --- a/drivers/fpga/Kconfig
+> > +++ b/drivers/fpga/Kconfig
+> > @@ -202,6 +202,16 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
+> >  	  the card. It also instantiates the SPI master (spi-altera) for
+> >  	  the card's BMC (Board Management Controller).
+> >  
+> > +config FPGA_DFL_UIO_PDEV
+> > +	tristate "FPGA DFL Driver for Userspace I/O platform devices"
+> > +	depends on FPGA_DFL && UIO_PDRV_GENIRQ
+> > +	help
+> > +	  Enable this to allow some DFL drivers be written in userspace. It
+> > +	  adds the uio_pdrv_genirq platform device with the DFL device's
+> > +	  resources, and let the generic UIO platform device driver provide
+> 'and lets the'
 
-prev_governor is better. I'll change it.
+Yes.
 
-> to NULL. The create_sysfs_files(df->governor) should be invoked at the
-> very end of the governor_store() and only in a case of success.
+> > +	  support to userspace access to kernel interrupts and memory
+> > +	  locations.
+> > +
+> >  config FPGA_DFL_PCI
+> >  	tristate "FPGA DFL PCIe Device Driver"
+> >  	depends on PCI && FPGA_DFL
+> > diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+> > index 18dc9885..e07b3d5 100644
+> > --- a/drivers/fpga/Makefile
+> > +++ b/drivers/fpga/Makefile
+> > @@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-afu-dma-region.o
+> >  dfl-afu-objs += dfl-afu-error.o
+> >  
+> >  obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
+> > +obj-$(CONFIG_FPGA_DFL_UIO_PDEV)	+= dfl-uio-pdev.o
+> >  
+> >  # Drivers for FPGAs which implement DFL
+> >  obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
+> > diff --git a/drivers/fpga/dfl-uio-pdev.c b/drivers/fpga/dfl-uio-pdev.c
+> > new file mode 100644
+> > index 0000000..d35b846
+> > --- /dev/null
+> > +++ b/drivers/fpga/dfl-uio-pdev.c
+> > @@ -0,0 +1,83 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * DFL driver for Userspace I/O platform devices
+> > + *
+> > + * Copyright (C) 2020 Intel Corporation, Inc.
+> > + */
+> > +#include <linux/dfl.h>
+> > +#include <linux/errno.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/uio_driver.h>
+> > +
+> > +#define DRIVER_NAME "dfl-uio-pdev"
+> > +
+> > +static int dfl_uio_pdev_probe(struct dfl_device *ddev)
+> > +{
+> > +	struct device *dev = &ddev->dev;
+> > +	struct platform_device_info pdevinfo = { 0 };
+> > +	struct uio_info uio_pdata = { 0 };
+> > +	struct platform_device *uio_pdev;
+> > +	struct resource *res;
+> > +	int i, idx = 0;
+> 
+> idx is not needed.
 
-OK. I'll add more exception handling code.
+I could remove the idx. But I think I could ++res during the resource
+filling.
 
+Thanks,
+Yilun
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+> 
+> > +
+> > +	pdevinfo.name = "uio_pdrv_genirq";
+> > +
+> > +	res = kcalloc(ddev->num_irqs + 1, sizeof(*res), GFP_KERNEL);
+> > +	if (!res)
+> > +		return -ENOMEM;
+> > +
+> > +	res[idx].parent = &ddev->mmio_res;
+> res[0].parent =
+> > +	res[idx].flags = IORESOURCE_MEM;
+> > +	res[idx].start = ddev->mmio_res.start;
+> > +	res[idx].end = ddev->mmio_res.end;
+> > +	++idx;
+> > +
+> > +	/* then add irq resource */
+> > +	for (i = 0; i < ddev->num_irqs; i++) {
+> > +		res[idx].flags = IORESOURCE_IRQ;
+> 
+> res[i+1].flags =
+> 
+> Tom
+> 
+> > +		res[idx].start = ddev->irqs[i];
+> > +		res[idx].end = ddev->irqs[i];
+> > +		++idx;
+> > +	}
+> > +
+> > +	uio_pdata.name = DRIVER_NAME;
+> > +	uio_pdata.version = "0";
+> > +
+> > +	pdevinfo.res = res;
+> > +	pdevinfo.num_res = idx;
+> > +	pdevinfo.parent = &ddev->dev;
+> > +	pdevinfo.id = PLATFORM_DEVID_AUTO;
+> > +	pdevinfo.data = &uio_pdata;
+> > +	pdevinfo.size_data = sizeof(uio_pdata);
+> > +
+> > +	uio_pdev = platform_device_register_full(&pdevinfo);
+> > +	if (!IS_ERR(uio_pdev))
+> > +		dev_set_drvdata(dev, uio_pdev);
+> > +
+> > +	kfree(res);
+> > +
+> > +	return PTR_ERR_OR_ZERO(uio_pdev);
+> > +}
+> > +
+> > +static void dfl_uio_pdev_remove(struct dfl_device *ddev)
+> > +{
+> > +	struct platform_device *uio_pdev = dev_get_drvdata(&ddev->dev);
+> > +
+> > +	platform_device_unregister(uio_pdev);
+> > +}
+> > +
+> > +static struct dfl_driver dfl_uio_pdev_driver = {
+> > +	.drv	= {
+> > +		.name       = DRIVER_NAME,
+> > +	},
+> > +	.probe	= dfl_uio_pdev_probe,
+> > +	.remove	= dfl_uio_pdev_remove,
+> > +};
+> > +module_dfl_driver(dfl_uio_pdev_driver);
+> > +
+> > +MODULE_DESCRIPTION("DFL driver for Userspace I/O platform devices");
+> > +MODULE_AUTHOR("Intel Corporation");
+> > +MODULE_LICENSE("GPL v2");
