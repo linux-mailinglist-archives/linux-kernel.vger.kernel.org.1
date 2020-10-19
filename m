@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEE5292887
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C35292889
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728696AbgJSNsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:48:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:57948 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728507AbgJSNsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:48:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E5A1D6E;
-        Mon, 19 Oct 2020 06:48:08 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7ACF33F66E;
-        Mon, 19 Oct 2020 06:48:06 -0700 (PDT)
-References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com> <20201019103522.GK2628@hirez.programming.kicks-ass.net> <20201019123226.00006705@Huawei.com> <20201019131052.GC8004@e123083-lin>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Morten Rasmussen <morten.rasmussen@arm.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, guohanjun@huawei.com,
-        Will Deacon <will@kernel.org>, linuxarm@huawei.com,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Jeremy Linton <Jeremy.Linton@arm.com>
-Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
-In-reply-to: <20201019131052.GC8004@e123083-lin>
-Date:   Mon, 19 Oct 2020 14:48:02 +0100
-Message-ID: <jhjh7qqqqct.mognet@arm.com>
+        id S1728704AbgJSNsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728405AbgJSNsk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:48:40 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C92C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 06:48:40 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id r127so14210235lff.12
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 06:48:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lvmvIl62QxxYsRuevZ4ZPz8m9zlF6eoCr1pNFZNeDvs=;
+        b=GFs8v2SjypMqXg6oTSGYrihPPFXDpWYZdfEmtpwvIGCtQgl/eTXWGMn7glIOUJNlCS
+         L4TnJqoK1D26JI1+aGd8HafqSMDjOnHWdEmpxQfOgNNTppNMzHOo6f0On8T0VVYYmur1
+         oEOVJJDQciDQFAStYkjy/vKKYWve7dQpnEBiYM1KIY1vz+bbgmsTJwtCrYMbvZvwoD/+
+         8FIY5/x0CsZYPpOsuHV3kG4BvZXKPrw6JHF2CI1dUeJstj0LsHs30w7UAbpOR2RhCNOH
+         iPZR5m54arZVtw0m1paw4YVz+mX2Hz2YmWtSUAQ57enc62iGDsrVnPz4b/qeS00hNIN8
+         upLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lvmvIl62QxxYsRuevZ4ZPz8m9zlF6eoCr1pNFZNeDvs=;
+        b=fSMKlR9VeXyJQ4R5o04lSPwEgHQlCozViMELTbAKoBL3SRY4MlOM62pPzhC79gQMoJ
+         /R0GZc5yDwXSVCHyHpE3Wo8cX0tfA+ERyCxhQ26lmRBMQVVocgUQ17Ec6w+jXJfTeU04
+         Y387surXdKMbljYs8t9JTEQpfAFbcNUfxEHAOp0ZH3kuKW4UQ8n7ChDjU94lSJ4BZbPe
+         bqI12Ejgs80LhVEohGbb6FvnNdlqlucqx023YF1ubwAWeI9HmF++UVAlF5ogxZRREDAx
+         /RnFp6abDwoUfuTKdc93mlnIgpQaIuyoaugvrpWAmJZ9IlyLRboLrbrqt408SwaRwdQs
+         GtGg==
+X-Gm-Message-State: AOAM5315+6mIvqReYR4B+hsJK5XWTPpRdMz+ypFsrV8jb8qUD88rgipA
+        UruoxNaTsvRM9G/lA4an44MNvgqhwJbhp7CBudnwZkCcBph1DA==
+X-Google-Smtp-Source: ABdhPJxMmoMICERYWMHmh24WCSuO7fGjQ3abrirvhmBz7oLlTqWrO88FLAxzgw+xdqrOkZoqTJ9smtS+SCzJIBk7USA=
+X-Received: by 2002:a19:191:: with SMTP id 139mr5337669lfb.502.1603115318472;
+ Mon, 19 Oct 2020 06:48:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CACRpkda1B3LcGWc1PhXNgi-6JxapiKY4F_94c6dk4eBLgVGBJg@mail.gmail.com>
+ <20201010192509.9098-1-paul@crapouillou.net>
+In-Reply-To: <20201010192509.9098-1-paul@crapouillou.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 19 Oct 2020 15:48:27 +0200
+Message-ID: <CACRpkdZMC--Ejvbd0CU7+jTrtddGmu_01=SsuuQTGasZLi9wxg@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: ingenic: Fix invalid SSI pins
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Zhou Yanjie <zhouyanjie@wanyeetech.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Artur Rojek <contact@artur-rojek.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 10, 2020 at 9:25 PM Paul Cercueil <paul@crapouillou.net> wrote:
 
-+Cc Jeremy
-
-On 19/10/20 14:10, Morten Rasmussen wrote:
-> Hi Jonathan,
-> The problem I see is that the benefit of keeping tasks together due to
-> the interconnect layout might vary significantly between systems. So if
-> we introduce a new cpumask for cluster it has to have represent roughly
-> the same system properties otherwise generic software consuming this
-> information could be tricked.
+> The values for the SSI pins on GPIO chips D and E were off by 0x20.
 >
-> If there is a provable benefit of having interconnect grouping
-> information, I think it would be better represented by a distance matrix
-> like we have for NUMA.
->
-> Morten
+> Fixes: d3ef8c6b2286 ("pinctrl: Ingenic: Add SSI pins support for JZ4770 and JZ4780.")
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Reported-by: Artur Rojek <contact@artur-rojek.eu>
 
-That's my queue to paste some of that stuff I've been rambling on and off
-about!
+Patch applied for fixes. Thanks!
 
-With regards to cache / interconnect layout, I do believe that if we
-want to support in the scheduler itself then we should leverage some
-distance table rather than to create X extra scheduler topology levels.
-
-I had a chat with Jeremy on the ACPI side of that sometime ago. IIRC given
-that SLIT gives us a distance value between any two PXM, we could directly
-express core-to-core distance in that table. With that (and if that still
-lets us properly discover NUMA node spans), we could let the scheduler
-build dynamic NUMA-like topology levels representing the inner quirks of
-the cache / interconnect layout.
-
-It's mostly pipe dreams for now, but there seems to be more and more
-hardware where that would make sense; somewhat recently the PowerPC guys
-added something to their arch-specific code in that regards.
+Yours,
+Linus Walleij
