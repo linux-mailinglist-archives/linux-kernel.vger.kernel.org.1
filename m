@@ -2,146 +2,486 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4186929240B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0136229241E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729935AbgJSI5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 04:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729840AbgJSI5v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 04:57:51 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3124C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 01:57:50 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e23so9499581wme.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 01:57:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ogDCWMdcaa0Z4/CzpxfIpiSL8y3Vo9lU4sTY4Eysh1k=;
-        b=LbKHZxjFTUYR/3Aza6Bn0skBosqtMSsvICyW6m4+spi0+Z7N10d55AwHWtt7DNDnJs
-         ZU6I29yWgKGMbWQPB212kWGa8GMwb/7176AC2f+hipXWkWC/UwSG/HpLLhru5OlrHG7C
-         6pSg6SBWy+an1FB3dtAzq6UKjvtvcBqcEVlg22XmeTwJE/c3dWWHxC+7n9VJEkb6YVhS
-         J9O1fMrM4IjuCD53lLq2zYVz8cxeKmGFKO1L1mJXxMzbyxgbs25dFFcUCPrViZpv7Yh4
-         rbYjZJv8iV3rX8XF+gyT/g54GTz5WHgQtIrNxEgXxdDRRcM6Rc2Ci5fzhrGOdEi+1COo
-         kLBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ogDCWMdcaa0Z4/CzpxfIpiSL8y3Vo9lU4sTY4Eysh1k=;
-        b=tTJ3IXrIKeypSZsbQ71BFKLqT+5CsQSRyYai8ARHkaVcJuyvddmP+bWSqUDT/QmFyd
-         59wyd1u1FSbcex3Lpu2kghBmwv4ueOqDy9vLkC3vOQ/j6Wxa/5YGVJCPVm7jK6rfqeGD
-         Hy8xrCh6b8npIgBRD2mVAM4JXdHqD6Fx7XTRRVD9x37exhiTiIq4/W10wuIlMJEV0A6o
-         SS7S6FVcQXUtN7+mM8y2Lb0ZIYghz/OX/MTpa6W0bIjeFsGVpBhxxYFYmYImzPnVxf1h
-         D9nWW6NGouQ1XJjLHa3BehnSITV+hed8sPKPDS1zaCyr9/pppOSznBcL0TowySZa7viD
-         DpLA==
-X-Gm-Message-State: AOAM5301fxbHTImuLZrLlniY5z4AgTvX96Xbm7fJGpYl7r5t6wg/gROo
-        NKKvNPxwombf/FJPn1+yR9m78w==
-X-Google-Smtp-Source: ABdhPJxdACivWNFDzPF6OwbsRDiV1uIjTY5vu6yd+w3SHlwmduaQIWaVQb64MI4YkQg8E5jLLYtwxQ==
-X-Received: by 2002:a1c:9647:: with SMTP id y68mr16421247wmd.101.1603097869328;
-        Mon, 19 Oct 2020 01:57:49 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:4c04:e3e3:70da:b5c6? ([2a01:e35:2ec0:82b0:4c04:e3e3:70da:b5c6])
-        by smtp.gmail.com with ESMTPSA id m12sm17171001wrs.92.2020.10.19.01.57.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 01:57:48 -0700 (PDT)
-Subject: Re: [PATCH v4 0/4] drm: panel: add support for TDO tl070wsh30 panel
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     thierry.reding@gmail.com, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20200915121912.4347-1-narmstrong@baylibre.com>
- <9f720791-2718-205f-d101-0811a679f54e@baylibre.com>
- <20201017060858.GA2242298@ravnborg.org>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <acffd2ab-3c0d-c66c-0a03-ccf417610fea@baylibre.com>
-Date:   Mon, 19 Oct 2020 10:57:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201017060858.GA2242298@ravnborg.org>
-Content-Type: text/plain; charset=utf-8
+        id S1729640AbgJSJAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:00:38 -0400
+Received: from mail-vi1eur05on2051.outbound.protection.outlook.com ([40.107.21.51]:43329
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728419AbgJSJAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 05:00:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a1OeRg3hTYvIifY2TXfKOjfS/Cs3nZY8bdk/eG0djNey1EX9i+OomWkd2vf04tjK4DV7snywd6r1dfoYqS+mzTjHODjlYe/OyfFjpmnBdOgpAT9mkLEtXx9hwbldl4mS3LyQCOT+D0G0kd1AMjBnOqx3WZnXELGm+DqUkUxUiCek4Dp7A/inX2+KpOqlNjTbKbWzTbYcOUAxdekwsL59BNupf2kzRv79j/mEXpmyAHrmSItacp9LEefLHhICBKZJtP0p5soSPsc+isBDgi2+lw5fTTLHQeT2VnP8vqDlOM5e3Q3vwAlcSE7Za4zvEfkREQ/zKwTyh2hC2WT55rVPeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rN4bhehC0ZQCjP92+gec1RqegxFs9cmdOMPqF8PTCzQ=;
+ b=jEazsR9ppsfv2TFmGF0bvmLssNQ5GJXvWKCT5U/N++Dwfne0DtXiBU/qxUEefILDpQWR4Ih+hBlh2ec6fqvTqBBYTJaPPP6/DwfL8/ie1YVgBNa9sqyveeA5nUoD2fP6lW3XWzpzVLVqfcmOY0GgUInxfr2aIWZEdHNQtRsf/TP+DiA4/mTeF1+Unt13tm3o9dc46bbis7F1H23OR2CKAFnZFga5agQWLVuO+3KqE1n50UbuvWObt4VJbglkgASRpxy0wDXwfosynoH5rrFqMC/f1EpBYOTHzv1FiBmmIPEL18XaHw4KiM7UlBVx0hSmzuCA9pts3rK/h38CMO9r3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rN4bhehC0ZQCjP92+gec1RqegxFs9cmdOMPqF8PTCzQ=;
+ b=pUpCOVZeE81g2oB/CloLjhc0x907TlNGbwi56S+5mSvJ6C+vpv5lkQt83kEtjsNoBrnmIHYhpHmUjeLJWECxKD7Jil1db1PDDhg5h2IdBTyTlwdpornJnivnNS81//nNwIK6pfTo8KEJUSszU33igxZtphEtOF2c4oOKIvc7Prk=
+Received: from AM7PR04MB6885.eurprd04.prod.outlook.com (2603:10a6:20b:10d::24)
+ by AM7PR04MB6967.eurprd04.prod.outlook.com (2603:10a6:20b:108::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Mon, 19 Oct
+ 2020 09:00:33 +0000
+Received: from AM7PR04MB6885.eurprd04.prod.outlook.com
+ ([fe80::a90d:1d14:7235:b56f]) by AM7PR04MB6885.eurprd04.prod.outlook.com
+ ([fe80::a90d:1d14:7235:b56f%4]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 09:00:33 +0000
+From:   Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+To:     Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Varun Sethi <V.Sethi@nxp.com>, Leo Li <leoyang.li@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Kuldeep Singh <kuldeep.singh@nxp.com>
+Subject: RE: [PATCH v3 2/2] arm64: dts: lx2160a: add device tree for
+ lx2162aqds board
+Thread-Topic: [PATCH v3 2/2] arm64: dts: lx2160a: add device tree for
+ lx2162aqds board
+Thread-Index: AQHWlkeuodA6cP2CUE+mv343XFniRamev/Qw
+Date:   Mon, 19 Oct 2020 09:00:33 +0000
+Message-ID: <AM7PR04MB6885980FC5B035B955D009BA8E1E0@AM7PR04MB6885.eurprd04.prod.outlook.com>
+References: <1599059610-7570-2-git-send-email-meenakshi.aggarwal@nxp.com>
+ <1601373718-13218-1-git-send-email-meenakshi.aggarwal@nxp.com>
+ <1601373718-13218-3-git-send-email-meenakshi.aggarwal@nxp.com>
+In-Reply-To: <1601373718-13218-3-git-send-email-meenakshi.aggarwal@nxp.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [110.235.228.227]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 139b333c-be8b-44f0-f71a-08d8740d7001
+x-ms-traffictypediagnostic: AM7PR04MB6967:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM7PR04MB69670AF5461B30C48781F52D8E1E0@AM7PR04MB6967.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2657;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: I785qC/vquXPjPT2wTicGBQqugDCX5kfRMTNhES/UneFiepcPgCIcNfSWHJRG73yhOtcX1gIS4rhItljTmtswijzOMhziSiv5nHN5UO/P7v3QyzLu3CHSAlw/Q89I0d9vAKcn1kZKYnaOWHtokeVtIZ77M/AiNbg3dQ9qIXm+Q/IwGrJWFLwD+L23g2RKPj0wItg/gsghHhItCXylaKPY9VmjtZ7cCaIpaVyXxYQIB2HRtXG4ANiSInIKdbwaCtVsNwugCqvDlkImJXguBQa/COczXTCLzk/32KPIXNAOJ9gal9XMRR+SbA4DSXGYfqk
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6885.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(346002)(366004)(136003)(110136005)(8936002)(76116006)(66556008)(6506007)(53546011)(66476007)(66446008)(64756008)(44832011)(55016002)(8676002)(54906003)(66946007)(4326008)(9686003)(71200400001)(86362001)(26005)(186003)(316002)(478600001)(83380400001)(7696005)(52536014)(5660300002)(2906002)(33656002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Xpf0JcuSV3CdTf9VVvHkrTwrl4U4Mfbxt4mpg1mAbICpDWbaewhkOnhBME+gzImu6vJhJyaWnDroMkYhYOQsjBVkzU5v7wSg1j/RN4VoufXMEBvz2ZZl8qMxF0mSwB0milPP/f3AaUBrZYhJocmW3MMXeYZDW3H7SL13H6ZXEjmOhFy6PP1MLyH0TfpYz+l0NHCThAgS2Xdl3RMbnBa7q9teHSJbxiS+Ir8I5oqkOMkfruLauCJ5JTOIHVM5o1GqsrreCF184nJtqpmjZ5P4rhhsqDMQOTgcxKcLCI9LoZiaIexGai59a2NGmV8HzoywDlKO7n5+ztbv0RzT4wqTXrdjvAwsX3uYY9iqXKGnemDKpS1yn8fGdgAcbvixyswXHmMkG3apaI0AVC1Uck9hGUVITw8iMmpXdXoQe9pkiONJt5QxnaI8xP0QlBlwoHnUb6Dct8VjQbijfX9aFWO9VDhp7oY2nqHU2l69J0XDoXivZyooNCnyDuvClyrGQenaLuSM7EfMapBPv7pjotiNFbQARcHGJYZt9ohQczUN9GbL0jKy4PWkXK04XfUzxWHjKKznFYODkRj39+6JhM6QNjYMh1PLpReUTzqnRJvd99nvcDXYnYiJ1jtFW/pjfaIGSvD6Gv8vM67roJLoSmcYFA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6885.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 139b333c-be8b-44f0-f71a-08d8740d7001
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 09:00:33.4583
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XhLxE0HWd0Cnp+0N4kUlh9UDGc+oKMly2wKoWpGzaxmVN0tyn5xzmaZA1Zlgvs+uOTpPEnN5jqz15JEtprQtz6jBxOK8f5Ech8mqVIVxb4Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6967
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/2020 08:08, Sam Ravnborg wrote:
-> Hi Neil.
-> 
-> On Tue, Sep 29, 2020 at 11:25:17AM +0200, Neil Armstrong wrote:
->> Hi Sam,
->>
->> Is there anything more to change ?
-> Sorry for taking so long to get back to you on this.
-> 
-> All patches looks good and are:
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-> 
-> I assume you will apply the patches.
+Hi,
 
-Indeed,
+Any further comments?
 
-Thanks !
+Thanks,
+Meenakshi
 
-Applying to drm-misc-next
-
-> 
-> 	Sam
-> 
+> -----Original Message-----
+> From: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+> Sent: Tuesday, September 29, 2020 3:33 PM
+> To: shawnguo@kernel.org; robh+dt@kernel.org; Varun Sethi
+> <V.Sethi@nxp.com>; Leo Li <leoyang.li@nxp.com>; linux-arm-
+> kernel@lists.infradead.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Cc: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>; Ioana Ciornei
+> <ioana.ciornei@nxp.com>; Kuldeep Singh <kuldeep.singh@nxp.com>
+> Subject: [PATCH v3 2/2] arm64: dts: lx2160a: add device tree for lx2162aq=
+ds
+> board
+>=20
+> From: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+>=20
+> Add device tree support for LX2162AQDS board.
+> LX2162A has same die as of LX2160A with different packaging.
+>=20
+> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> Signed-off-by: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/Makefile            |   1 +
+>  arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts | 334
+> ++++++++++++++++++++++
+>  2 files changed, 335 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
+>=20
+> diff --git a/arch/arm64/boot/dts/freescale/Makefile
+> b/arch/arm64/boot/dts/freescale/Makefile
+> index 903c0eb..0edc8ab 100644
+> --- a/arch/arm64/boot/dts/freescale/Makefile
+> +++ b/arch/arm64/boot/dts/freescale/Makefile
+> @@ -27,6 +27,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) +=3D fsl-lx2160a-
+> clearfog-cx.dtb
+>  dtb-$(CONFIG_ARCH_LAYERSCAPE) +=3D fsl-lx2160a-honeycomb.dtb
+>  dtb-$(CONFIG_ARCH_LAYERSCAPE) +=3D fsl-lx2160a-qds.dtb
+>  dtb-$(CONFIG_ARCH_LAYERSCAPE) +=3D fsl-lx2160a-rdb.dtb
+> +dtb-$(CONFIG_ARCH_LAYERSCAPE) +=3D fsl-lx2162a-qds.dtb
+>=20
+>  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mm-beacon-kit.dtb
+>  dtb-$(CONFIG_ARCH_MXC) +=3D imx8mm-evk.dtb diff --git
+> a/arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
+> b/arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
+> new file mode 100644
+> index 0000000..b29174e
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/fsl-lx2162a-qds.dts
+> @@ -0,0 +1,334 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT) // // Device Tree file for
+> +LX2162AQDS // // Copyright 2020 NXP
+> +
+> +/dts-v1/;
+> +
+> +#include "fsl-lx2160a.dtsi"
+> +
+> +/ {
+> +	model =3D "NXP Layerscape LX2162AQDS";
+> +	compatible =3D "nxp,lx2162a-qds", "fsl,lx2160a";
+> +
+> +	aliases {
+> +		crypto =3D &crypto;
+> +		serial0 =3D &uart0;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path =3D "serial0:115200n8";
+> +	};
+> +
+> +	sb_3v3: regulator-sb3v3 {
+> +		compatible =3D "regulator-fixed";
+> +		regulator-name =3D "LTM4619-3.3VSB";
+> +		regulator-min-microvolt =3D <3300000>;
+> +		regulator-max-microvolt =3D <3300000>;
+> +	};
+> +
+> +	mdio-mux-1 {
+> +		compatible =3D "mdio-mux-multiplexer";
+> +		mux-controls =3D <&mux 0>;
+> +		mdio-parent-bus =3D <&emdio1>;
+> +		#address-cells=3D<1>;
+> +		#size-cells =3D <0>;
+> +
+> +		mdio@0 { /* On-board RTL8211F PHY #1 RGMII1 */
+> +			reg =3D <0x00>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +
+> +			rgmii_phy1: ethernet-phy@1 {
+> +				compatible =3D "ethernet-phy-id001c.c916";
+> +				reg =3D <0x1>;
+> +				eee-broken-1000t;
+> +			};
+> +		};
+> +
+> +		mdio@8 { /* On-board RTL8211F PHY #2 RGMII2 */
+> +			reg =3D <0x8>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +
+> +			rgmii_phy2: ethernet-phy@2 {
+> +				compatible =3D "ethernet-phy-id001c.c916";
+> +				reg =3D <0x2>;
+> +				eee-broken-1000t;
+> +			};
+> +		};
+> +
+> +		mdio@18 { /* Slot #1 */
+> +			reg =3D <0x18>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@19 { /* Slot #2 */
+> +			reg =3D <0x19>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@1a { /* Slot #3 */
+> +			reg =3D <0x1a>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@1b { /* Slot #4 */
+> +			reg =3D <0x1b>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@1c { /* Slot #5 */
+> +			reg =3D <0x1c>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@1d { /* Slot #6 */
+> +			reg =3D <0x1d>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@1e { /* Slot #7 */
+> +			reg =3D <0x1e>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@1f { /* Slot #8 */
+> +			reg =3D <0x1f>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +	};
+> +
+> +	mdio-mux-2 {
+> +		compatible =3D "mdio-mux-multiplexer";
+> +		mux-controls =3D <&mux 1>;
+> +		mdio-parent-bus =3D <&emdio2>;
+> +		#address-cells=3D<1>;
+> +		#size-cells =3D <0>;
+> +
+> +		mdio@0 { /* Slot #1 (secondary EMI) */
+> +			reg =3D <0x00>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@1 { /* Slot #2 (secondary EMI) */
+> +			reg =3D <0x01>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@2 { /* Slot #3 (secondary EMI) */
+> +			reg =3D <0x02>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@3 { /* Slot #4 (secondary EMI) */
+> +			reg =3D <0x03>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@4 { /* Slot #5 (secondary EMI) */
+> +			reg =3D <0x04>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@5 { /* Slot #6 (secondary EMI) */
+> +			reg =3D <0x05>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@6 { /* Slot #7 (secondary EMI) */
+> +			reg =3D <0x06>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +
+> +		mdio@7 { /* Slot #8 (secondary EMI) */
+> +			reg =3D <0x07>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +	};
+> +};
+> +
+> +&crypto {
+> +	status =3D "okay";
+> +};
+> +
+> +&dpmac17 {
+> +	phy-handle =3D <&rgmii_phy1>;
+> +	phy-connection-type =3D "rgmii-id";
+> +};
+> +
+> +&dpmac18 {
+> +	phy-handle =3D <&rgmii_phy2>;
+> +	phy-connection-type =3D "rgmii-id";
+> +};
+> +
+> +&dspi0 {
+> +	status =3D "okay";
+> +
+> +	dflash0: flash@0 {
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <1>;
+> +		compatible =3D "jedec,spi-nor";
+> +		reg =3D <0>;
+> +		spi-max-frequency =3D <1000000>;
+> +	};
+> +};
+> +
+> +&dspi1 {
+> +	status =3D "okay";
+> +
+> +	dflash1: flash@0 {
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <1>;
+> +		compatible =3D "jedec,spi-nor";
+> +		reg =3D <0>;
+> +		spi-max-frequency =3D <1000000>;
+> +	};
+> +};
+> +
+> +&dspi2 {
+> +	status =3D "okay";
+> +
+> +	dflash2: flash@0 {
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <1>;
+> +		compatible =3D "jedec,spi-nor";
+> +		reg =3D <0>;
+> +		spi-max-frequency =3D <1000000>;
+> +	};
+> +};
+> +
+> +&emdio1 {
+> +	status =3D "okay";
+> +};
+> +
+> +&emdio2 {
+> +	status =3D "okay";
+> +};
+> +
+> +&esdhc0 {
+> +	status =3D "okay";
+> +};
+> +
+> +&esdhc1 {
+> +	status =3D "okay";
+> +};
+> +
+> +&fspi {
+> +	status =3D "okay";
+> +
+> +	mt35xu512aba0: flash@0 {
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <1>;
+> +		compatible =3D "jedec,spi-nor";
+> +		m25p,fast-read;
+> +		spi-max-frequency =3D <50000000>;
+> +		reg =3D <0>;
+> +		spi-rx-bus-width =3D <8>;
+> +		spi-tx-bus-width =3D <8>;
+> +	};
+> +};
+> +
+> +&i2c0 {
+> +	status =3D "okay";
+> +
+> +	fpga@66 {
+> +		compatible =3D "fsl,lx2160aqds-fpga", "fsl,fpga-qixis-i2c",
+> +			     "simple-mfd";
+> +		reg =3D <0x66>;
+> +
+> +		mux: mux-controller {
+> +			compatible =3D "reg-mux";
+> +			#mux-control-cells =3D <1>;
+> +			mux-reg-masks =3D <0x54 0xf8>, /* 0: reg 0x54, bits 7:3
+> */
+> +					<0x54 0x07>; /* 1: reg 0x54, bit 2:0 */
+> +		};
+> +	};
+> +
+> +	i2c-mux@77 {
+> +		compatible =3D "nxp,pca9547";
+> +		reg =3D <0x77>;
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <0>;
+> +
+> +		i2c@2 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <0x2>;
+> +
+> +			power-monitor@40 {
+> +				compatible =3D "ti,ina220";
+> +				reg =3D <0x40>;
+> +				shunt-resistor =3D <500>;
+> +			};
+> +
+> +			power-monitor@41 {
+> +				compatible =3D "ti,ina220";
+> +				reg =3D <0x41>;
+> +				shunt-resistor =3D <1000>;
+> +			};
+> +		};
+> +
+> +		i2c@3 {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +			reg =3D <0x3>;
+> +
+> +			temperature-sensor@4c {
+> +				compatible =3D "nxp,sa56004";
+> +				reg =3D <0x4c>;
+> +				vcc-supply =3D <&sb_3v3>;
+> +			};
+> +
+> +			rtc@51 {
+> +				compatible =3D "nxp,pcf2129";
+> +				reg =3D <0x51>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&sata0 {
+> +	status =3D "okay";
+> +};
+> +
+> +&sata1 {
+> +	status =3D "okay";
+> +};
+> +
+> +&sata2 {
+> +	status =3D "okay";
+> +};
+> +
+> +&sata3 {
+> +	status =3D "okay";
+> +};
+> +
+> +&uart0 {
+> +	status =3D "okay";
+> +};
+> +
+> +&uart1 {
+> +	status =3D "okay";
+> +};
+> +
+> +&usb0 {
+> +	status =3D "okay";
+> +};
+> --
+> 2.7.4
 
