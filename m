@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6D6292A32
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D16292A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730092AbgJSPSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:18:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53744 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729849AbgJSPSG (ORCPT
+        id S1730051AbgJSPVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:21:18 -0400
+Received: from smtprelay0120.hostedemail.com ([216.40.44.120]:44846 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729538AbgJSPVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:18:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603120685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eBCguRNOfJllp0/NwaH8eTnMNWpZQS4LUPzl0zBKDS8=;
-        b=CS16TRmMk9ppJU8SPAqPDaMpMqr+k3Dww0Fb1fApsy4p3/TxCYa0e6+X9zm4ZbQlSPlsE5
-        gGf4i3DOsNyg38B7kZopsfocQsZQvbjlr3TjOyoT8mytAsGCdVHeaQsjEzX1FICL/fR3xK
-        qNDMbvCdXDclHbuXDMoiEsFv/z2Ujoo=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-vzPueXO7Po6HzajaQMqrjA-1; Mon, 19 Oct 2020 11:18:03 -0400
-X-MC-Unique: vzPueXO7Po6HzajaQMqrjA-1
-Received: by mail-wm1-f72.google.com with SMTP id o15so71619wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:18:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eBCguRNOfJllp0/NwaH8eTnMNWpZQS4LUPzl0zBKDS8=;
-        b=rZJH/4YVFL6eij8Tc9dOtJ2pbsdRUAZ9qPL+iXUhdxC66vLfpu85NBohnew+kfVyEn
-         VoqqynqOZXOy0oorA8APeL7wVTS1MNJIVahvSXE5AR7hmcFiUOLQS6eR9rKdpRNPekAi
-         RgfE4Q5eHMrO3DOvHsDhU4s/Ucn6ZV5uV7ibQLaC1eKMv13QbOq6jik5NIcP621ap2zR
-         JWBU/God/QStfrt3L3cczR2gygBjdSig+Va6f/r/61qNMf+gkIpeSxUI7zbaFL53Dnml
-         nPZkKAUo3am4lWnfXAQCJEZcOpHoKmFh30Lu+2G3oPTyKvRKgXH1k9QhEDR8rk6vLnN3
-         Wd7w==
-X-Gm-Message-State: AOAM5305q0SbyhvMdplrBQAAg3sTXhkfQSEop1rQbL5z8g08XsorcM2H
-        cVvaOtYiwgHBGthRhya8vHcN5Fqy7vawIdVkmSadvJNcI0r31QtLWIv3Z1kOBCTZhwsAZHEcemF
-        aJO2ycGh1a9w7yYRwO8mWidwA
-X-Received: by 2002:a5d:4fc5:: with SMTP id h5mr964wrw.145.1603120679957;
-        Mon, 19 Oct 2020 08:17:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWFhrFkA1K5rxHXvfwUbrF2K0FMCTnE2rtnx+2maY1gGUIwZkJLmkLXmqp8oLhPjcNOmX5lA==
-X-Received: by 2002:a5d:4fc5:: with SMTP id h5mr932wrw.145.1603120679721;
-        Mon, 19 Oct 2020 08:17:59 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id w5sm356911wmg.42.2020.10.19.08.17.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 08:17:58 -0700 (PDT)
-Subject: Re: [PATCH] x86/kvm: Update the comment about asynchronous page fault
- in exc_page_fault()
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org
-Cc:     kvm@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-References: <20201002154313.1505327-1-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8ee54faa-b204-ccec-da42-8029f834b80e@redhat.com>
-Date:   Mon, 19 Oct 2020 17:17:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 19 Oct 2020 11:21:17 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 4E940837F27E;
+        Mon, 19 Oct 2020 15:21:16 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3871:3872:4321:5007:6737:6738:7576:7903:9040:10004:10400:10450:10455:10848:11232:11657:11658:11914:12043:12048:12297:12555:12740:12760:12895:12986:13069:13311:13357:13439:14181:14659:14721:19904:19999:21080:21627:21990:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: maid96_3f0c95a27238
+X-Filterd-Recvd-Size: 2972
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 19 Oct 2020 15:21:11 +0000 (UTC)
+Message-ID: <859112e91c3d221dc599e381dbaecb90dd6467a1.camel@perches.com>
+Subject: Re: [PATCH] wireless: remove unneeded break
+From:   Joe Perches <joe@perches.com>
+To:     Christian Lamparter <chunkeey@gmail.com>, trix@redhat.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        ath9k-devel@qca.qualcomm.com, johannes.berg@intel.com,
+        emmanuel.grumbach@intel.com, luciano.coelho@intel.com,
+        linuxwifi@intel.com, chunkeey@googlemail.com, pkshih@realtek.com,
+        sara.sharon@intel.com, tova.mussai@intel.com,
+        nathan.errera@intel.com, lior2.cohen@intel.com, john@phrozen.org,
+        shaul.triebitz@intel.com, shahar.s.matityahu@intel.com,
+        Larry.Finger@lwfinger.net, zhengbin13@huawei.com,
+        christophe.jaillet@wanadoo.fr, yanaijie@huawei.com,
+        saurav.girepunje@gmail.com
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Date:   Mon, 19 Oct 2020 08:21:10 -0700
+In-Reply-To: <b31478ea-979a-1c9c-65db-32325233a715@gmail.com>
+References: <20201019150507.20574-1-trix@redhat.com>
+         <b31478ea-979a-1c9c-65db-32325233a715@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20201002154313.1505327-1-vkuznets@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/10/20 17:43, Vitaly Kuznetsov wrote:
-> KVM was switched to interrupt-based mechanism for 'page ready' event
-> delivery in Linux-5.8 (see commit 2635b5c4a0e4 ("KVM: x86: interrupt based
-> APF 'page ready' event delivery")) and #PF (ab)use for 'page ready' event
-> delivery was removed. Linux guest switched to this new mechanism
-> exclusively in 5.9 (see commit b1d405751cd5 ("KVM: x86: Switch KVM guest to
-> using interrupts for page ready APF delivery")) so it is not possible to
-> get older KVM (APF mechanism won't be enabled). Update the comment in
-> exc_page_fault() to reflect the new reality.
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/mm/fault.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index 6e3e8a124903..3cf77592ac54 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -1446,11 +1446,14 @@ DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
->  	prefetchw(&current->mm->mmap_lock);
->  
->  	/*
-> -	 * KVM has two types of events that are, logically, interrupts, but
-> -	 * are unfortunately delivered using the #PF vector.  These events are
-> -	 * "you just accessed valid memory, but the host doesn't have it right
-> -	 * now, so I'll put you to sleep if you continue" and "that memory
-> -	 * you tried to access earlier is available now."
-> +	 * KVM uses #PF vector to deliver 'page not present' events to guests
-> +	 * (asynchronous page fault mechanism). The event happens when a
-> +	 * userspace task is trying to access some valid (from guest's point of
-> +	 * view) memory which is not currently mapped by the host (e.g. the
-> +	 * memory is swapped out). Note, the corresponding "page ready" event
-> +	 * which is injected when the memory becomes available, is delived via
-> +	 * an interrupt mechanism and not a #PF exception
-> +	 * (see arch/x86/kernel/kvm.c: sysvec_kvm_asyncpf_interrupt()).
->  	 *
->  	 * We are relying on the interrupted context being sane (valid RSP,
->  	 * relevant locks not held, etc.), which is fine as long as the
-> 
+On Mon, 2020-10-19 at 17:14 +0200, Christian Lamparter wrote:
+> On 19/10/2020 17:05, trix@redhat.com wrote:
+> > From: Tom Rix <trix@redhat.com>
+> > 
+> > A break is not needed if it is preceded by a return or goto
+> > 
+> > Signed-off-by: Tom Rix <trix@redhat.com>
+> > diff --git a/drivers/net/wireless/intersil/p54/eeprom.c b/drivers/net/wireless/intersil/p54/eeprom.c
+> > index 5bd35c147e19..3ca9d26df174 100644
+> > --- a/drivers/net/wireless/intersil/p54/eeprom.c
+> > +++ b/drivers/net/wireless/intersil/p54/eeprom.c
+> > @@ -870,7 +870,6 @@ int p54_parse_eeprom(struct ieee80211_hw *dev, void *eeprom, int len)
+> >   			} else {
+> >   				goto good_eeprom;
+> >   			}
+> > -			break;
+> Won't the compiler (gcc) now complain about a missing fallthrough annotation?
+> >   		default:
+> >   			break;
+> >   		}
 
-Queued, thanks.
+No, though the code would be clearer like:
+---
+diff --git a/drivers/net/wireless/intersil/p54/eeprom.c b/drivers/net/wireless/intersil/p54/eeprom.c
+index 5bd35c147e19..233fa072d96d 100644
+--- a/drivers/net/wireless/intersil/p54/eeprom.c
++++ b/drivers/net/wireless/intersil/p54/eeprom.c
+@@ -867,10 +867,8 @@ int p54_parse_eeprom(struct ieee80211_hw *dev, void *eeprom, int len)
+ 					 "test!\n");
+ 				err = -ENOMSG;
+ 				goto err;
+-			} else {
+-				goto good_eeprom;
+ 			}
+-			break;
++			goto good_eeprom;
+ 		default:
+ 			break;
+ 		}
 
-Paolo
 
