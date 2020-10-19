@@ -2,84 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF112927EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B692927F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727840AbgJSNNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:13:36 -0400
-Received: from foss.arm.com ([217.140.110.172]:57386 "EHLO foss.arm.com"
+        id S1727881AbgJSNOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:14:44 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:47101 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbgJSNNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:13:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05118D6E;
-        Mon, 19 Oct 2020 06:13:35 -0700 (PDT)
-Received: from e123083-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 043063F719;
-        Mon, 19 Oct 2020 06:13:32 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 15:13:30 +0200
-From:   Morten Rasmussen <morten.rasmussen@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, guohanjun@huawei.com,
-        Will Deacon <will@kernel.org>, linuxarm@huawei.com,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        valentin.schneider@arm.com
-Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
-Message-ID: <20201019131330.GD8004@e123083-lin>
-References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
- <20201019103522.GK2628@hirez.programming.kicks-ass.net>
- <20201019123226.00006705@Huawei.com>
- <20201019125053.GM2628@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019125053.GM2628@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1727860AbgJSNOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:14:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603113282; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=YWRFkB+XMT2TvJJHD+s7CUrnpfH9KpreuyKx59Umksw=; b=fTViB5boXpgezJ4Yxnc5ymliC0HFY7zN3xNxz7HIVl9NZ1U9F5/e7SAaDw7JTyXlUrZrqmk9
+ HjRhc1Ib45+s4JcnYdYlwuZrrrjU/mZqQQrGhJ4Z35H4T9urUxw7/cwOfBQ9iSv6PRKqkoCe
+ cEWfnYzGySQDwZyjuR2sLf3MvAc=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f8d91424f8cc67c31b26268 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 13:14:42
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 91036C433FE; Mon, 19 Oct 2020 13:14:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9DC73C433F1;
+        Mon, 19 Oct 2020 13:14:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9DC73C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+Subject: [PATCH v2 1/3] drm/msm: Add support for GPU cooling
+Date:   Mon, 19 Oct 2020 18:44:26 +0530
+Message-Id: <1603113268-21161-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 02:50:53PM +0200, Peter Zijlstra wrote:
-> On Mon, Oct 19, 2020 at 01:32:26PM +0100, Jonathan Cameron wrote:
-> > On Mon, 19 Oct 2020 12:35:22 +0200
-> > Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > > I'm confused by all of this. The core level is exactly what you seem to
-> > > want.
-> > 
-> > It's the level above the core, whether in an multi-threaded core
-> > or a single threaded core.   This may correspond to the level
-> > at which caches are shared (typically L3).  Cores are already well
-> > represented via thread_siblings and similar.  Extra confusion is that
-> > the current core_siblings (deprecated) sysfs interface, actually reflects
-> > the package level and ignores anything in between core and
-> > package (such as die on x86)
-> 
-> That seems wrong. core-mask should be whatever cores share L3. So on a
-> Intel Core2-Quad (just to pick an example) you should have 4 CPU in a
-> package, but only 2 CPUs for the core-mask.
-> 
-> It just so happens that L3 and package were the same for a long while in
-> x86 land, although recent chips started breaking that trend.
-> 
-> And I know nothing about the core-mask being depricated; it's what the
-> scheduler uses. It's not going anywhere.
+Register GPU as a devfreq cooling device so that it can be passively
+cooled by the thermal framework.
 
-Don't get confused over the user-space topology and the scheduler
-topology, they are _not_ the same despite having similar names for some
-things :-)
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+---
+Changes in v2:
+	1. Update the dt bindings documentation
 
-> So if your 'cluster' is a group of single cores (possibly with SMT) that
-> do not share cache but have a faster cache connection and you want them
-> to behave as-if they were a multi-core group that did share cache, then
-> core-mask it is.
+ drivers/gpu/drm/msm/msm_gpu.c | 12 ++++++++++++
+ drivers/gpu/drm/msm/msm_gpu.h |  2 ++
+ 2 files changed, 14 insertions(+)
 
-In the scheduler, yes. There is no core-mask exposed to user-space.
+diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+index 55d1648..9f9db46 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.c
++++ b/drivers/gpu/drm/msm/msm_gpu.c
+@@ -14,6 +14,7 @@
+ #include <generated/utsrelease.h>
+ #include <linux/string_helpers.h>
+ #include <linux/devfreq.h>
++#include <linux/devfreq_cooling.h>
+ #include <linux/devcoredump.h>
+ #include <linux/sched/task.h>
+ 
+@@ -107,9 +108,18 @@ static void msm_devfreq_init(struct msm_gpu *gpu)
+ 	if (IS_ERR(gpu->devfreq.devfreq)) {
+ 		DRM_DEV_ERROR(&gpu->pdev->dev, "Couldn't initialize GPU devfreq\n");
+ 		gpu->devfreq.devfreq = NULL;
++		return;
+ 	}
+ 
+ 	devfreq_suspend_device(gpu->devfreq.devfreq);
++
++	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
++			gpu->devfreq.devfreq);
++	if (IS_ERR(gpu->cooling)) {
++		DRM_DEV_ERROR(&gpu->pdev->dev,
++				"Couldn't register GPU cooling device\n");
++		gpu->cooling = NULL;
++	}
+ }
+ 
+ static int enable_pwrrail(struct msm_gpu *gpu)
+@@ -1005,4 +1015,6 @@ void msm_gpu_cleanup(struct msm_gpu *gpu)
+ 		gpu->aspace->mmu->funcs->detach(gpu->aspace->mmu);
+ 		msm_gem_address_space_put(gpu->aspace);
+ 	}
++
++	devfreq_cooling_unregister(gpu->cooling);
+ }
+diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+index 6c9e1fd..9a8f20d 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.h
++++ b/drivers/gpu/drm/msm/msm_gpu.h
+@@ -147,6 +147,8 @@ struct msm_gpu {
+ 	struct msm_gpu_state *crashstate;
+ 	/* True if the hardware supports expanded apriv (a650 and newer) */
+ 	bool hw_apriv;
++
++	struct thermal_cooling_device *cooling;
+ };
+ 
+ static inline struct msm_gpu *dev_to_gpu(struct device *dev)
+-- 
+2.7.4
 
-We have to be clear about whether we discuss scheduler or user-space
-topology :-)
