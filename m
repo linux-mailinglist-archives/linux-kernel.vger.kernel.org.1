@@ -2,60 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B302292808
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F868292811
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgJSNSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:18:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47158 "EHLO mx2.suse.de"
+        id S1728286AbgJSNTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:19:41 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:47183 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726931AbgJSNSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:18:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603113524;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v7WfNYUczwmH5kd5aVp7TEjtwO+BlARGhkxvUJGVTF0=;
-        b=GD0WHEFrCzHMg5Z0lQPfieggrhYlzjuX855mHBK97YmlA1j7G7uzqYtkKXsUj9o8vOwWe3
-        yhdqR/DCHUPH/woBF0h8XxL8eXKaMXFmKfS/KJh6IpOzs8dDshVhrBGIyVDAcqXvMSLeDv
-        NrL90hTRKpHYke2rvNy4kyQHhKoflM0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3006FB7F1;
-        Mon, 19 Oct 2020 13:18:44 +0000 (UTC)
-Date:   Mon, 19 Oct 2020 15:18:43 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Fabian Frederick <fabf@skynet.be>, stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] reboot: fix overflow parsing reboot cpu number
-Message-ID: <20201019131843.GB26718@alley>
-References: <20201016180907.171957-1-mcroce@linux.microsoft.com>
- <20201016180907.171957-2-mcroce@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016180907.171957-2-mcroce@linux.microsoft.com>
+        id S1728009AbgJSNTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:19:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603113579; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=/ZGUMfp1A0aHVNO/vay/6ICqzhjKvdAharx01TPBxAI=; b=AxXvHj7t3S2/99a7KedWzL0JzVDLwX/CBelqZj7fDSq9inihl9pykNvxurUVj2XKRNMYR7I4
+ 6wwo4R70G4jccXBhDHAC4QNyRSmgt6v/qrzXVJ83WxkUEvYiMEpkUKiAbmtm5h28J49oJsqH
+ f16MLs7TSW8/pYflfMYCV8C8xHE=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f8d9262aad2c3cd1c41ccb6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 13:19:30
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 92F83C433FF; Mon, 19 Oct 2020 13:19:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 73B34C433CB;
+        Mon, 19 Oct 2020 13:19:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 73B34C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno@lists.freedesktop.org
+Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
+        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
+Subject: [PATCH 1/2] drm/msm: Implement shutdown callback for adreno
+Date:   Mon, 19 Oct 2020 18:49:17 +0530
+Message-Id: <1603113558-23330-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-10-16 20:09:06, Matteo Croce wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
-> 
-> Limit the CPU number to num_possible_cpus(), because setting it
-> to a value lower than INT_MAX but higher than NR_CPUS produces the
-> following error on reboot and shutdown:
-> 
-> Fixes: 1b3a5d02ee07 ("reboot: move arch/x86 reboot= handling to generic kernel")
-> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+Implement the shutdown callback for adreno gpu platform device
+to safely shutdown it before a system reboot. This helps to avoid
+futher transactions from gpu after the smmu is moved to bypass mode.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+---
+ drivers/gpu/drm/msm/adreno/adreno_device.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Best Regards,
-Petr
+diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+index 58e03b2..87c8b03 100644
+--- a/drivers/gpu/drm/msm/adreno/adreno_device.c
++++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+@@ -475,6 +475,11 @@ static int adreno_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static void adreno_shutdown(struct platform_device *pdev)
++{
++	pm_runtime_force_suspend(&pdev->dev);
++}
++
+ static const struct of_device_id dt_match[] = {
+ 	{ .compatible = "qcom,adreno" },
+ 	{ .compatible = "qcom,adreno-3xx" },
+@@ -509,6 +514,7 @@ static const struct dev_pm_ops adreno_pm_ops = {
+ static struct platform_driver adreno_driver = {
+ 	.probe = adreno_probe,
+ 	.remove = adreno_remove,
++	.shutdown = adreno_shutdown,
+ 	.driver = {
+ 		.name = "adreno",
+ 		.of_match_table = dt_match,
+-- 
+2.7.4
+
