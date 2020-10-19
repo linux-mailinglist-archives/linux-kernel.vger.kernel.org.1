@@ -2,121 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F19B292947
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433DE29294A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729397AbgJSO1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:27:19 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2991 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728311AbgJSO1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:27:18 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id D268999E714A7DA46F91;
-        Mon, 19 Oct 2020 15:27:16 +0100 (IST)
-Received: from localhost (10.227.96.57) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 19 Oct
- 2020 15:27:16 +0100
-Date:   Mon, 19 Oct 2020 15:27:15 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-CC:     Morten Rasmussen <morten.rasmussen@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        <linux-acpi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, <guohanjun@huawei.com>,
-        Will Deacon <will@kernel.org>, <linuxarm@huawei.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Jeremy Linton <Jeremy.Linton@arm.com>,
-        Jerome Glisse <jglisse@redhat.com>
-Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
-Message-ID: <20201019142715.00005fb1@huawei.com>
-In-Reply-To: <jhjh7qqqqct.mognet@arm.com>
-References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
-        <20201019103522.GK2628@hirez.programming.kicks-ass.net>
-        <20201019123226.00006705@Huawei.com>
-        <20201019131052.GC8004@e123083-lin>
-        <jhjh7qqqqct.mognet@arm.com>
-Organization: Huawei tech. R&D (UK)  Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1729433AbgJSO1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728311AbgJSO1m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 10:27:42 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA6AC0613CE;
+        Mon, 19 Oct 2020 07:27:41 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x7so11737616wrl.3;
+        Mon, 19 Oct 2020 07:27:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=J4XrE9HXCwR/KsIjqo1txSO+XN0eoJhfpbzWewRFJS4=;
+        b=uxS9qthpVn3xJuHFts06PWunbbuZJSC4Fc/PvBwMhICn2Na9aaKscOIwWYX/J4F3Al
+         ZfO670d04wzxjcAKPJsXo7WatjigwbNqg0VIf/YF8KW717LoKsIJ/hQXex4GDfWXu4Jx
+         Vz20/NPw1O9Aw/FQy50u8BSKb/YwGbWBoxlK3RtUk53KjAupDw58jIp+caYbrFGXGIdP
+         RgAaMsRpeB2bGZxLdf8qcCFBcwRZzPFBrdx5rTYwpVFeUwKTKaEyZ6cM+gu0zcXgTLGo
+         kSkxmM7HxUqAg9dqguSYzD98ZJ5I/1TUZKeIPW4Ipm0zZ1vy+45yI0i8NlSB6JpUkOYH
+         NcSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=J4XrE9HXCwR/KsIjqo1txSO+XN0eoJhfpbzWewRFJS4=;
+        b=ldza+qnsS1pE99vIY/0CELKtRyInTWIfZXdAZhTZh41bNXdqNDFNC6HOUl97Dqo8Wo
+         lYFMRd4IeMj4rZ4VPZr/5L+b6M9JuADNKTvDE2pYwudIwKeOmimhWQBZtEAGyXZkWIvd
+         SgizqbDUesUyx8hAoujjjTBsW0smq8nQzt2DUMo6ZVr6dGBNR6UVkzDz4t6ekCXgNiY2
+         D6hoL0JqZDmn7KXWZrQTATH9QeeB2ikbacZumK0teZx1q1pWHOyfcqiHctkfChi42BbL
+         tVU7NHzggNny4t7n1WWj383SCoszy1kjGdPa/tZ3XzzpG16fuByJ+8VkzYOm9wRLuett
+         0rGw==
+X-Gm-Message-State: AOAM531TOJAyPgAlR+uBICM4PRDd0bIPIpHoSdNNqJfTG6aLf0F/q2pq
+        bSoTf/c4KAW9M2pPVmTuVA4=
+X-Google-Smtp-Source: ABdhPJxclmK5tJHztft/7mXls1Pr5LGv+p9qBjz187C5S/MF0DBGSXopG+EkdGf+Fugo0q/XVD5QDg==
+X-Received: by 2002:adf:8290:: with SMTP id 16mr21330161wrc.103.1603117660325;
+        Mon, 19 Oct 2020 07:27:40 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.119.110])
+        by smtp.gmail.com with ESMTPSA id s185sm261888wmf.3.2020.10.19.07.27.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 07:27:39 -0700 (PDT)
+Subject: Re: [PATCH 2/5] pwm: pwm-mediatek: always use bus clock
+To:     Fabien Parent <fparent@baylibre.com>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org
+Cc:     robh+dt@kernel.org, lee.jones@linaro.org,
+        u.kleine-koenig@pengutronix.de, thierry.reding@gmail.com
+References: <20201019140705.1518822-1-fparent@baylibre.com>
+ <20201019140705.1518822-3-fparent@baylibre.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <0f2dc182-868c-43c3-8ae8-999e7cf1d986@gmail.com>
+Date:   Mon, 19 Oct 2020 16:27:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <20201019140705.1518822-3-fparent@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.227.96.57]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Oct 2020 14:48:02 +0100
-Valentin Schneider <valentin.schneider@arm.com> wrote:
 
-> +Cc Jeremy
+
+On 19/10/2020 16:07, Fabien Parent wrote:
+> The MediaTek PWM IP can sometimes use the 26MHz source clock to generate
+> the PWM signal, but the driver currently assumes that we always use
+> the PWM bus clock to generate the PWM signal.
 > 
-> On 19/10/20 14:10, Morten Rasmussen wrote:
-> > Hi Jonathan,
-> > The problem I see is that the benefit of keeping tasks together due to
-> > the interconnect layout might vary significantly between systems. So if
-> > we introduce a new cpumask for cluster it has to have represent roughly
-> > the same system properties otherwise generic software consuming this
-> > information could be tricked.
-> >
-> > If there is a provable benefit of having interconnect grouping
-> > information, I think it would be better represented by a distance matrix
-> > like we have for NUMA.
-> >
-> > Morten  
+> This commit modifies the PWM driver in order to force the PWM IP to
+> always use the bus clock as source clock.
 > 
-> That's my queue to paste some of that stuff I've been rambling on and off
-> about!
+> I do not have the datasheet of all the MediaTek SoC, so I don't know
+> if the register to choose the source clk is present in all the SoCs
+> or only in subset. As a consequence I made this change optional by
+> using a platform data paremeter to says whether this register is
+> supported or not. On all the SoC I don't have the datasheet
+> (MT2712, MT7622, MT7623, MT7628, MT7629) I kept the behavior
+> to be the same as before this change.
 > 
-> With regards to cache / interconnect layout, I do believe that if we
-> want to support in the scheduler itself then we should leverage some
-> distance table rather than to create X extra scheduler topology levels.
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+> ---
+>   drivers/pwm/pwm-mediatek.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
 > 
-> I had a chat with Jeremy on the ACPI side of that sometime ago. IIRC given
-> that SLIT gives us a distance value between any two PXM, we could directly
-> express core-to-core distance in that table. With that (and if that still
-> lets us properly discover NUMA node spans), we could let the scheduler
-> build dynamic NUMA-like topology levels representing the inner quirks of
-> the cache / interconnect layout.
-
-You would rapidly run into the problem SLIT had for numa node description.
-There is no consistent description of distance and except in the vaguest
-sense or 'nearer' it wasn't any use for anything.   That is why HMAT
-came along. It's far from perfect but it is a step up.
-
-I can't see how you'd generalize those particular tables to do anything
-for intercore comms without breaking their use for NUMA, but something
-a bit similar might work.
-
-A lot of thought has gone in (and meeting time) to try an improve the
-situation for complex topology around NUMA.  Whilst there are differences
-in representing the internal interconnects and caches it seems like a somewhat
-similar problem.  The issue there is it is really really hard to describe
-this stuff with enough detail to be useful, but simple enough to be usable.
-
-https://lore.kernel.org/linux-mm/20181203233509.20671-1-jglisse@redhat.com/
-
+> diff --git a/drivers/pwm/pwm-mediatek.c b/drivers/pwm/pwm-mediatek.c
+> index ab001ce55178..108881619aea 100644
+> --- a/drivers/pwm/pwm-mediatek.c
+> +++ b/drivers/pwm/pwm-mediatek.c
+> @@ -30,12 +30,14 @@
+>   #define PWM45DWIDTH_FIXUP	0x30
+>   #define PWMTHRES		0x30
+>   #define PWM45THRES_FIXUP	0x34
+> +#define PWM_CK_26M_SEL		0x210
+>   
+>   #define PWM_CLK_DIV_MAX		7
+>   
+>   struct pwm_mediatek_of_data {
+>   	unsigned int num_pwms;
+>   	bool pwm45_fixup;
+> +	bool has_ck_26m_sel;
+>   };
+>   
+>   /**
+> @@ -132,6 +134,10 @@ static int pwm_mediatek_config(struct pwm_chip *chip, struct pwm_device *pwm,
+>   	if (ret < 0)
+>   		return ret;
+>   
+> +	/* Make sure we use the bus clock and not the 26MHz clock */
+> +	if (pc->soc->has_ck_26m_sel)
+> +		writel(0, pc->regs + PWM_CK_26M_SEL);
+> +
+>   	/* Using resolution in picosecond gets accuracy higher */
+>   	resolution = (u64)NSEC_PER_SEC * 1000;
+>   	do_div(resolution, clk_get_rate(pc->clk_pwms[pwm->hwpwm]));
+> @@ -281,31 +287,37 @@ static int pwm_mediatek_remove(struct platform_device *pdev)
+>   static const struct pwm_mediatek_of_data mt2712_pwm_data = {
+>   	.num_pwms = 8,
+>   	.pwm45_fixup = false,
+> +	.has_ck_26m_sel = false,
+>   };
+>   
+>   static const struct pwm_mediatek_of_data mt7622_pwm_data = {
+>   	.num_pwms = 6,
+>   	.pwm45_fixup = false,
+> +	.has_ck_26m_sel = false,
+>   };
+>   
+>   static const struct pwm_mediatek_of_data mt7623_pwm_data = {
+>   	.num_pwms = 5,
+>   	.pwm45_fixup = true,
+> +	.has_ck_26m_sel = false,
+>   };
+>   
+>   static const struct pwm_mediatek_of_data mt7628_pwm_data = {
+>   	.num_pwms = 4,
+>   	.pwm45_fixup = true,
+> +	.has_ck_26m_sel = false,
+>   };
+>   
+>   static const struct pwm_mediatek_of_data mt7629_pwm_data = {
+>   	.num_pwms = 1,
+>   	.pwm45_fixup = false,
+> +	.has_ck_26m_sel = false,
+>   };
+>   
+>   static const struct pwm_mediatek_of_data mt8516_pwm_data = {
+>   	.num_pwms = 5,
+>   	.pwm45_fixup = false,
+> +	.has_ck_26m_sel = true,
+>   };
+>   
+>   static const struct of_device_id pwm_mediatek_of_match[] = {
 > 
-> It's mostly pipe dreams for now, but there seems to be more and more
-> hardware where that would make sense; somewhat recently the PowerPC guys
-> added something to their arch-specific code in that regards.
-
-Pipe dream == something to work on ;)
-
-ACPI has a nice code first model of updating the spec now, so we can discuss
-this one in public, and propose spec changes only once we have an implementation
-proven.
-
-Note I'm not proposing we put the cluster stuff in the scheduler, just
-provide it as a hint to userspace.
-
-Jonathan
-
