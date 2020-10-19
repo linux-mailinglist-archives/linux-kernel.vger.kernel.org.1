@@ -2,97 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 303962922BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9672922C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727223AbgJSHCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 03:02:22 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:38675 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727175AbgJSHCW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 03:02:22 -0400
-Received: by mail-lj1-f193.google.com with SMTP id m20so10723747ljj.5;
-        Mon, 19 Oct 2020 00:02:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wEeufKCObi+IpynLWe9WQXVzx+1s6haXoiocpLiNQWo=;
-        b=CTUa5PA0sM21/wJoCQIcDKj4u48uBDatapYtrzgOdf59bzPCXOoe4Afu5bSlw3fxEg
-         9w4zthNHRfKOz1QVliJ8+bnUg/AL49dcmVX/oFbX0G5Jf85+7qMgM+dh54RiFIFxxlWC
-         2A+9c7WfDg8uF9ibPeuM83AzC78nMHZYvgxhWq/smYLq0KgITBqOoP5dQhpOLvrgnkQb
-         lenINQ+YiBY1mBlOvWtbzRlmwHfXg+HJi7/BEdVC52VUmf54nPfpXkBXDGub/inKUfpI
-         sMMrJN/RycvH6jBkISqLaSFRS00B1j6UHzignVlXnJn9uAjHE7BLzv3nHX56CnF3mBK3
-         JiFA==
-X-Gm-Message-State: AOAM533ohz9xy9njN9GOOyxR5MfQX2XurqXxmyxMiUhVkMNRYnfRjbhF
-        PUCuJAiK+UPTPJ50NhN+fZw=
-X-Google-Smtp-Source: ABdhPJzO8A67rktquY4rITqfyjaoRASffHIkslIvibA+CK2ltevaV9KMlSuD/8bGwnWkHIXM8KDtJQ==
-X-Received: by 2002:a2e:9951:: with SMTP id r17mr6173655ljj.37.1603090938756;
-        Mon, 19 Oct 2020 00:02:18 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id v4sm3437678ljk.80.2020.10.19.00.02.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 00:02:17 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kUPBS-0000EE-8I; Mon, 19 Oct 2020 09:02:18 +0200
-Date:   Mon, 19 Oct 2020 09:02:18 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>,
-        Daniel Caujolle-Bert <f1rmb.daniel@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.9 054/111] USB: cdc-acm: handle broken union
- descriptors
-Message-ID: <20201019070218.GO26280@localhost>
-References: <20201018191807.4052726-1-sashal@kernel.org>
- <20201018191807.4052726-54-sashal@kernel.org>
+        id S1727232AbgJSHCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 03:02:42 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:44846 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726242AbgJSHCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 03:02:42 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A7EE5CA68E2D7D2CD371;
+        Mon, 19 Oct 2020 15:02:38 +0800 (CST)
+Received: from [10.67.103.212] (10.67.103.212) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 19 Oct 2020 15:02:29 +0800
+Subject: Re: [PATCH v3 0/2] uacce: fix some coding styles
+To:     <linux-accelerators@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangfei.gao@linaro.org>
+References: <1600855762-10031-1-git-send-email-yekai13@huawei.com>
+From:   "yekai(A)" <yekai13@huawei.com>
+Message-ID: <f3c3371f-40aa-9a64-4238-d7e8d4f91713@huawei.com>
+Date:   Mon, 19 Oct 2020 15:02:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201018191807.4052726-54-sashal@kernel.org>
+In-Reply-To: <1600855762-10031-1-git-send-email-yekai13@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.103.212]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 03:17:10PM -0400, Sasha Levin wrote:
-> From: Johan Hovold <johan@kernel.org>
-> 
-> [ Upstream commit 960c7339de27c6d6fec13b54880501c3576bb08d ]
-> 
-> Handle broken union functional descriptors where the master-interface
-> doesn't exist or where its class is of neither Communication or Data
-> type (as required by the specification) by falling back to
-> "combined-interface" probing.
-> 
-> Note that this still allows for handling union descriptors with switched
-> interfaces.
-> 
-> This specifically makes the Whistler radio scanners TRX series devices
-> work with the driver without adding further quirks to the device-id
-> table.
-> 
-> Reported-by: Daniel Caujolle-Bert <f1rmb.daniel@gmail.com>
-> Tested-by: Daniel Caujolle-Bert <f1rmb.daniel@gmail.com>
-> Acked-by: Oliver Neukum <oneukum@suse.com>
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> Link: https://lore.kernel.org/r/20200921135951.24045-3-johan@kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+Hi Hartman
 
-I was surprised to see this picked up by AUTOSEL since I remember adding
-a stable tag to this patch (to v2, changed my mind since v1) -- and it's
-there in the lore link above.
+Could you help to take this patch?
+Thanks.
 
-Greg, just to make sure this wasn't due to a b4 bug; did you drop the
-stable tag on purpose when applying?
 
-The tag-order has been reshuffled by b4 too it seems (I know, some
-people think that's ok) so maybe it fell out in the process.
+On 2020/9/23 18:09, Kai Ye wrote:
+> 1. delete some redundant code.
+> 2. modify the module author information. "Hisilicon"
+> spelling is error.
+>
+> Changes v2 -> v3:
+> 	Two things, splited to two patches.
+> Changes v1 -> v2:
+> 	deleted extra NULL pointer check in uacce_fops.
+>
+> Kai Ye (2):
+>    uacce: fix some coding styles
+>    uacce: modify the module author information.
+>
+>   drivers/misc/uacce/uacce.c | 13 +------------
+>   1 file changed, 1 insertion(+), 12 deletions(-)
+>
 
-Johan
