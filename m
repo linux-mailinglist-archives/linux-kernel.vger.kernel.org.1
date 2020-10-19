@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F5B292F81
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33698292F85
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731812AbgJSUfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
+        id S1731789AbgJSUfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731770AbgJSUet (ORCPT
+        with ESMTP id S1731774AbgJSUew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:34:49 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57382C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:34:49 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id a17so418861pju.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:34:49 -0700 (PDT)
+        Mon, 19 Oct 2020 16:34:52 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE67C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:34:50 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id lw2so451970pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=eac2eJkbULJAn6wCUm/Bl8+weiuvIgiBhtMaMSxo0p4=;
-        b=bCztEImPToOLpt4Vrgm2bFee+ACyaRaMzUI8kK8C/PWxoJCmHDWnCT+nK8qpT6+DXJ
-         uOSMipESKk5A9eFh8IGFO2yD7ShORqDqO+ORkjsJ+rgYJfyDhHm4/C2pDXn7FXUF+4Z3
-         fd5cftKW3BNHyQAR8+mGuGg87KKsaci7El24plXo4hQdIdFVbMFJRsVPUK4AtPUS0zPf
-         0cDuTOKuXtwUB3gY5bHIMjEPRIadI4JyphBJMbcW1RBOQrApxwNraHndqCX/+g7XmfLV
-         NIFUIsIphGzMjiCo6sFNIxlf3ZVf6xDp16cXYKmO6kyBhAZlQEF9RDNuQlDpaEaInMVt
-         Uekg==
+        bh=9LSb4MsWmnhqv7P8LvZUfJsJgEOQfxCKy2CzVLdM3ZQ=;
+        b=bQK7ILBdCQYW8HvGsyAb4czAgM5fOvsQ1MNY1rimW3UtgnAW4oUuTdsIXButboPGGP
+         130T8DXNdQfkZ8LEaWRm2Trw+CeScpB6hzIsF91vDAy4OFd7nvebg6XeX+st6GqsAlh9
+         Cq8y9n+PDl6NJJzPiPLb+2IAzAV/7Tk7HCEU0Z6kjsEQ0Z+wt7xxbgiBqw4rXWudDAwt
+         dE84n/9/s3ab/G5B9Cnox+KAIsk4OpaJCqbbziQk6IDPDLdTKTJn9XRS1rXQYWys67Hn
+         3751wzAyVzH0OcLo2pc4jRhiV+PzIm+BTKBL/bXqsdgGpn1wPF0jnS9g6BO82iXgUp+F
+         Wtdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eac2eJkbULJAn6wCUm/Bl8+weiuvIgiBhtMaMSxo0p4=;
-        b=cfw54mjEx3Yko+GBsQVu4v2CWg1RIdzTIHgCpXkjGRU6kwQ1diMMXIbJbdUBzkEas+
-         PabrkyoHl0fHzHEcw6At5QGkt8rd0+cMeg2qPMmSHRtM8OdoqRZfdpRKjN1+eNciFM7I
-         xjDK8qGNQWOnyxAhnqKp7FDBMM2pQlC143H3S3QTOmEN0SqV/6ht+VKSS7JFIxxfNuw/
-         r8/w5EkSUVVrj7rdwknS8bdd1DseuFoKGAgiC4OlwHirkzwK6OR2lzEKzJICkEvOQGBL
-         JGISrGgFbjysWye8Dyf5J87aZN4VaPFaTFiUmsKFS+Oem33InOS4WUv0Kyejv8LQIwF/
-         Z6oA==
-X-Gm-Message-State: AOAM533Q7nsgus+bKyowAQMrDF6cm25j2QLfw1hFy77bHvv3D9FEhBsn
-        t5fV4n6wVZIIM+zflw147kfxLLfa6dPM0g==
-X-Google-Smtp-Source: ABdhPJz2/jTHYJG+YV8EPnH1F6PIcRNTNWnKolK/dOC8uBilBuLeN2P5VhPJLd8W1ft77hBPANBcAg==
-X-Received: by 2002:a17:902:b113:b029:d3:c5c2:e667 with SMTP id q19-20020a170902b113b02900d3c5c2e667mr1564512plr.35.1603139688848;
-        Mon, 19 Oct 2020 13:34:48 -0700 (PDT)
+        bh=9LSb4MsWmnhqv7P8LvZUfJsJgEOQfxCKy2CzVLdM3ZQ=;
+        b=W+LBjclMjPWdKq6AALvMMQE8UdH/obppqphcbZq7WxKCUUgO3tss5l6sM8HM/eU04W
+         3pvZGP84L/qXlv0OVHgt+BTyl9BCjluaE0NAHWHmhfLg2iaPIh6gGQPlWAx8RnQfV0rp
+         E7UJ2xeLm/kECqST9uAKo7wq0zoe9tNm3zZNPXE/wAAzo8CaAC9AOIdyK6Y/myOIj1Nd
+         Qr/rZFJmHYPEdrHSl6P+cpsefL9U1ZsCbmtRjeroW0jjZdF+UIo6Kx6rkdVUR6uucFZ9
+         8I3PhcAJiza9+P0A+QVH75sfm71NxJOGIFfElU4WX9POhVmyFAEk7N49TcKbedE8e4dI
+         F9iw==
+X-Gm-Message-State: AOAM5331/botwTiz3PNgFKpgRpPv2mbvWLDX2XDKYRFSbtGd2gWalXIQ
+        EkoLUI7n9JuYAjrAmGMv3Vv0vw==
+X-Google-Smtp-Source: ABdhPJydhgu/wnfIiSagBci6RRrvNzXr8Du0s5+kc6cy4ODlxhu4buiDEt8Y0eoS4ijdCZL53v2Q+Q==
+X-Received: by 2002:a17:90b:193:: with SMTP id t19mr1229670pjs.54.1603139690145;
+        Mon, 19 Oct 2020 13:34:50 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id q123sm631847pfq.56.2020.10.19.13.34.47
+        by smtp.gmail.com with ESMTPSA id q123sm631847pfq.56.2020.10.19.13.34.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 13:34:48 -0700 (PDT)
+        Mon, 19 Oct 2020 13:34:49 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     ohad@wizery.com, bjorn.andersson@linaro.org
 Cc:     guennadi.liakhovetski@linux.intel.com, arnaud.pouliquen@st.com,
         linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 7/8] rpmsg: Make rpmsg_{register|unregister}_device() public
-Date:   Mon, 19 Oct 2020 14:34:37 -0600
-Message-Id: <20201019203438.501174-8-mathieu.poirier@linaro.org>
+Subject: [PATCH v3 8/8] rpmsg: Turn name service into a stand alone driver
+Date:   Mon, 19 Oct 2020 14:34:38 -0600
+Message-Id: <20201019203438.501174-9-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201019203438.501174-1-mathieu.poirier@linaro.org>
 References: <20201019203438.501174-1-mathieu.poirier@linaro.org>
@@ -64,71 +64,328 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make function rpmsg_register_device() and rpmsg_unregister_device()
-functions public so that they can be used by other clients.  While
-doing so get rid of two obsolete function, i.e register_rpmsg_device()
-and unregister_rpmsg_device(), to prevent confusion.
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Make the RPMSG name service announcement a stand alone driver so that it
+can be reused by other subsystems.  It is also the first step in making the
+functionatlity transport independent, i.e that is not tied to virtIO.
+
+Co-developed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- drivers/rpmsg/rpmsg_internal.h |  4 ----
- include/linux/rpmsg.h          | 12 ++++++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/rpmsg/Kconfig            |   8 +++
+ drivers/rpmsg/Makefile           |   1 +
+ drivers/rpmsg/rpmsg_ns.c         | 108 +++++++++++++++++++++++++++++++
+ drivers/rpmsg/virtio_rpmsg_bus.c |  86 ++++++------------------
+ include/linux/rpmsg_ns.h         |  17 +++++
+ 5 files changed, 153 insertions(+), 67 deletions(-)
+ create mode 100644 drivers/rpmsg/rpmsg_ns.c
 
-diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
-index 810dd95cc9bd..0721294ed415 100644
---- a/drivers/rpmsg/rpmsg_internal.h
-+++ b/drivers/rpmsg/rpmsg_internal.h
-@@ -74,10 +74,6 @@ struct rpmsg_endpoint_ops {
- 			     poll_table *wait);
+diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+index f96716893c2a..c3fc75e6514b 100644
+--- a/drivers/rpmsg/Kconfig
++++ b/drivers/rpmsg/Kconfig
+@@ -15,6 +15,14 @@ config RPMSG_CHAR
+ 	  in /dev. They make it possible for user-space programs to send and
+ 	  receive rpmsg packets.
+ 
++config RPMSG_NS
++	tristate "RPMSG name service announcement"
++	depends on RPMSG
++	help
++	  Say Y here to enable the support of the name service announcement
++	  channel that probes the associated RPMsg device on remote endpoint
++	  service announcement.
++
+ config RPMSG_MTK_SCP
+ 	tristate "MediaTek SCP"
+ 	depends on MTK_SCP
+diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
+index ffe932ef6050..8d452656f0ee 100644
+--- a/drivers/rpmsg/Makefile
++++ b/drivers/rpmsg/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_RPMSG)		+= rpmsg_core.o
+ obj-$(CONFIG_RPMSG_CHAR)	+= rpmsg_char.o
++obj-$(CONFIG_RPMSG_NS)		+= rpmsg_ns.o
+ obj-$(CONFIG_RPMSG_MTK_SCP)	+= mtk_rpmsg.o
+ qcom_glink-objs			:= qcom_glink_native.o qcom_glink_ssr.o
+ obj-$(CONFIG_RPMSG_QCOM_GLINK) += qcom_glink.o
+diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
+new file mode 100644
+index 000000000000..8e26824ca328
+--- /dev/null
++++ b/drivers/rpmsg/rpmsg_ns.c
+@@ -0,0 +1,108 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) STMicroelectronics 2020 - All Rights Reserved
++ */
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/rpmsg.h>
++#include <linux/rpmsg_ns.h>
++
++#include "rpmsg_internal.h"
++
++/* invoked when a name service announcement arrives */
++static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
++		       void *priv, u32 src)
++{
++	struct rpmsg_ns_msg *msg = data;
++	struct rpmsg_device *newch;
++	struct rpmsg_channel_info chinfo;
++	struct device *dev = rpdev->dev.parent;
++	int ret;
++
++#if defined(CONFIG_DYNAMIC_DEBUG)
++	dynamic_hex_dump("NS announcement: ", DUMP_PREFIX_NONE, 16, 1,
++			 data, len, true);
++#endif
++
++	if (len != sizeof(*msg)) {
++		dev_err(dev, "malformed ns msg (%d)\n", len);
++		return -EINVAL;
++	}
++
++	/* don't trust the remote processor for null terminating the name */
++	msg->name[RPMSG_NAME_SIZE - 1] = '\0';
++
++	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
++	chinfo.src = RPMSG_ADDR_ANY;
++	chinfo.dst = rpmsg32_to_cpu(rpdev, msg->addr);
++
++	dev_info(dev, "%sing channel %s addr 0x%x\n",
++		 rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY ?
++		 "destroy" : "creat", msg->name, chinfo.dst);
++
++	if (rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY) {
++		ret = rpmsg_release_channel(rpdev, &chinfo);
++		if (ret)
++			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
++	} else {
++		newch = rpmsg_create_channel(rpdev, &chinfo);
++		if (!newch)
++			dev_err(dev, "rpmsg_create_channel failed\n");
++	}
++
++	return 0;
++}
++
++static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
++{
++	struct rpmsg_endpoint *ns_ept;
++	struct rpmsg_channel_info ns_chinfo = {
++		.src = RPMSG_NS_ADDR,
++		.dst = RPMSG_NS_ADDR,
++		.name = "name_service",
++	};
++
++	/*
++	 * Create the NS announcement service endpoint associated to the RPMsg
++	 * device. The endpoint will be automatically destroyed when the RPMsg
++	 * device will be deleted.
++	 */
++	ns_ept = rpmsg_create_ept(rpdev, rpmsg_ns_cb, NULL, ns_chinfo);
++	if (!ns_ept) {
++		dev_err(&rpdev->dev, "failed to create the ns ept\n");
++		return -ENOMEM;
++	}
++	rpdev->ept = ns_ept;
++
++	return 0;
++}
++
++static struct rpmsg_driver rpmsg_ns_driver = {
++	.drv.name = "rpmsg_ns",
++	.probe = rpmsg_ns_probe,
++};
++
++static int rpmsg_ns_init(void)
++{
++	int ret;
++
++	ret = register_rpmsg_driver(&rpmsg_ns_driver);
++	if (ret < 0)
++		pr_err("%s: Failed to register rpmsg driver\n", __func__);
++
++	return ret;
++}
++postcore_initcall(rpmsg_ns_init);
++
++static void rpmsg_ns_exit(void)
++{
++	unregister_rpmsg_driver(&rpmsg_ns_driver);
++}
++module_exit(rpmsg_ns_exit);
++
++MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
++MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
++MODULE_ALIAS("rpmsg_ns");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+index e14390a81265..97ad471a3cae 100644
+--- a/drivers/rpmsg/virtio_rpmsg_bus.c
++++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+@@ -49,7 +49,6 @@
+  * @endpoints_lock: lock of the endpoints set
+  * @sendq:	wait queue of sending contexts waiting for a tx buffers
+  * @sleepers:	number of senders that are waiting for a tx buffer
+- * @ns_ept:	the bus's name service endpoint
+  *
+  * This structure stores the rpmsg state of a given virtio remote processor
+  * device (there might be several virtio proc devices for each physical
+@@ -68,7 +67,6 @@ struct virtproc_info {
+ 	struct mutex endpoints_lock;
+ 	wait_queue_head_t sendq;
+ 	atomic_t sleepers;
+-	struct rpmsg_endpoint *ns_ept;
  };
  
--int rpmsg_register_device(struct rpmsg_device *rpdev);
--int rpmsg_unregister_device(struct device *parent,
--			    struct rpmsg_channel_info *chinfo);
+ /* The feature bitmap for virtio rpmsg */
+@@ -810,69 +808,14 @@ static void rpmsg_xmit_done(struct virtqueue *svq)
+ 	wake_up_interruptible(&vrp->sendq);
+ }
+ 
+-/* invoked when a name service announcement arrives */
+-static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
+-		       void *priv, u32 src)
+-{
+-	struct rpmsg_ns_msg *msg = data;
+-	struct rpmsg_device *newch;
+-	struct rpmsg_channel_info chinfo;
+-	struct virtproc_info *vrp = priv;
+-	struct device *dev = &vrp->vdev->dev;
+-	bool little_endian = virtio_is_little_endian(vrp->vdev);
+-	int ret;
 -
- struct device *rpmsg_find_device(struct device *parent,
- 				 struct rpmsg_channel_info *chinfo);
- 
-diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-index 97098a90c496..8ee1b1dab657 100644
---- a/include/linux/rpmsg.h
-+++ b/include/linux/rpmsg.h
-@@ -164,8 +164,9 @@ static inline __rpmsg64 cpu_to_rpmsg64(struct rpmsg_device *rpdev, u64 val)
- 
- #if IS_ENABLED(CONFIG_RPMSG)
- 
--int register_rpmsg_device(struct rpmsg_device *dev);
--void unregister_rpmsg_device(struct rpmsg_device *dev);
-+int rpmsg_register_device(struct rpmsg_device *rpdev);
-+int rpmsg_unregister_device(struct device *parent,
-+			    struct rpmsg_channel_info *chinfo);
- int __register_rpmsg_driver(struct rpmsg_driver *drv, struct module *owner);
- void unregister_rpmsg_driver(struct rpmsg_driver *drv);
- void rpmsg_destroy_ept(struct rpmsg_endpoint *);
-@@ -188,15 +189,18 @@ __poll_t rpmsg_poll(struct rpmsg_endpoint *ept, struct file *filp,
- 
- #else
- 
--static inline int register_rpmsg_device(struct rpmsg_device *dev)
-+static inline int rpmsg_register_device(struct rpmsg_device *rpdev)
+-#if defined(CONFIG_DYNAMIC_DEBUG)
+-	dynamic_hex_dump("NS announcement: ", DUMP_PREFIX_NONE, 16, 1,
+-			 data, len, true);
+-#endif
+-
+-	if (len != sizeof(*msg)) {
+-		dev_err(dev, "malformed ns msg (%d)\n", len);
+-		return -EINVAL;
+-	}
+-
+-	/*
+-	 * the name service ept does _not_ belong to a real rpmsg channel,
+-	 * and is handled by the rpmsg bus itself.
+-	 * for sanity reasons, make sure a valid rpdev has _not_ sneaked
+-	 * in somehow.
+-	 */
+-	if (rpdev) {
+-		dev_err(dev, "anomaly: ns ept has an rpdev handle\n");
+-		return -EINVAL;
+-	}
+-
+-	/* don't trust the remote processor for null terminating the name */
+-	msg->name[RPMSG_NAME_SIZE - 1] = '\0';
+-
+-	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
+-	chinfo.src = RPMSG_ADDR_ANY;
+-	chinfo.dst = __rpmsg32_to_cpu(little_endian, msg->addr);
+-
+-	dev_info(dev, "%sing channel %s addr 0x%x\n",
+-		 __rpmsg32_to_cpu(little_endian, msg->flags) & RPMSG_NS_DESTROY ?
+-		 "destroy" : "creat", msg->name, chinfo.dst);
+-
+-	if (__rpmsg32_to_cpu(little_endian, msg->flags) & RPMSG_NS_DESTROY) {
+-		ret = rpmsg_unregister_device(&vrp->vdev->dev, &chinfo);
+-		if (ret)
+-			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
+-	} else {
+-		newch = __rpmsg_create_channel(vrp, &chinfo);
+-		if (!newch)
+-			dev_err(dev, "rpmsg_create_channel failed\n");
+-	}
+-
+-	return 0;
+-}
+-
+ static int rpmsg_probe(struct virtio_device *vdev)
  {
- 	return -ENXIO;
- }
+ 	vq_callback_t *vq_cbs[] = { rpmsg_recv_done, rpmsg_xmit_done };
+ 	static const char * const names[] = { "input", "output" };
+ 	struct virtqueue *vqs[2];
+ 	struct virtproc_info *vrp;
++	struct virtio_rpmsg_channel *vch;
++	struct rpmsg_device *rpdev_ns;
+ 	void *bufs_va;
+ 	int err = 0, i;
+ 	size_t total_buf_space;
+@@ -948,14 +891,26 @@ static int rpmsg_probe(struct virtio_device *vdev)
  
--static inline void unregister_rpmsg_device(struct rpmsg_device *dev)
-+static inline int rpmsg_unregister_device(struct device *parent,
-+					  struct rpmsg_channel_info *chinfo)
- {
- 	/* This shouldn't be possible */
- 	WARN_ON(1);
+ 	/* if supported by the remote processor, enable the name service */
+ 	if (virtio_has_feature(vdev, VIRTIO_RPMSG_F_NS)) {
+-		/* a dedicated endpoint handles the name service msgs */
+-		vrp->ns_ept = __rpmsg_create_ept(vrp, NULL, rpmsg_ns_cb,
+-						vrp, RPMSG_NS_ADDR);
+-		if (!vrp->ns_ept) {
+-			dev_err(&vdev->dev, "failed to create the ns ept\n");
++		vch = kzalloc(sizeof(*vch), GFP_KERNEL);
++		if (!vch) {
+ 			err = -ENOMEM;
+ 			goto free_coherent;
+ 		}
 +
-+	return -ENXIO;
- }
++		/* Link the channel to our vrp */
++		vch->vrp = vrp;
++
++		/* Assign public information to the rpmsg_device */
++		rpdev_ns = &vch->rpdev;
++		rpdev_ns->ops = &virtio_rpmsg_ops;
++		rpdev_ns->little_endian = virtio_is_little_endian(vrp->vdev);
++
++		rpdev_ns->dev.parent = &vrp->vdev->dev;
++		rpdev_ns->dev.release = virtio_rpmsg_release_device;
++
++		err = rpmsg_ns_register_device(rpdev_ns);
++		if (err)
++			goto free_coherent;
+ 	}
  
- static inline int __register_rpmsg_driver(struct rpmsg_driver *drv,
+ 	/*
+@@ -1008,9 +963,6 @@ static void rpmsg_remove(struct virtio_device *vdev)
+ 	if (ret)
+ 		dev_warn(&vdev->dev, "can't remove rpmsg device: %d\n", ret);
+ 
+-	if (vrp->ns_ept)
+-		__rpmsg_destroy_ept(vrp, vrp->ns_ept);
+-
+ 	idr_destroy(&vrp->endpoints);
+ 
+ 	vdev->config->del_vqs(vrp->vdev);
+diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
+index bb479f430080..42786bb759b5 100644
+--- a/include/linux/rpmsg_ns.h
++++ b/include/linux/rpmsg_ns.h
+@@ -39,4 +39,21 @@ enum rpmsg_ns_flags {
+ /* Address 53 is reserved for advertising remote services */
+ #define RPMSG_NS_ADDR			(53)
+ 
++/**
++ * rpmsg_ns_register_device() - register name service device based on rpdev
++ * @rpdev: prepared rpdev to be used for creating endpoints
++ *
++ * This function wraps rpmsg_register_device() preparing the rpdev for use as
++ * basis for the rpmsg name service device.
++ */
++static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
++{
++       strcpy(rpdev->id.name, "rpmsg_ns");
++       rpdev->driver_override = "rpmsg_ns";
++       rpdev->src = RPMSG_NS_ADDR;
++       rpdev->dst = RPMSG_NS_ADDR;
++
++       return rpmsg_register_device(rpdev);
++}
++
+ #endif
 -- 
 2.25.1
 
