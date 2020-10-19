@@ -2,109 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A402922B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63AB2922B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbgJSG5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 02:57:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:50572 "EHLO foss.arm.com"
+        id S1727205AbgJSG7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 02:59:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55750 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727130AbgJSG5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 02:57:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3F94D6E;
-        Sun, 18 Oct 2020 23:57:07 -0700 (PDT)
-Received: from [10.163.77.151] (unknown [10.163.77.151])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFA253F66E;
-        Sun, 18 Oct 2020 23:57:04 -0700 (PDT)
-Subject: Re: [PATCH 2/2] arm64: allow hotpluggable sections to be offlined
-To:     David Hildenbrand <david@redhat.com>,
-        Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>
-References: <c5f96b483158871ff65377884955fb0106e43951.1602899443.git.sudaraja@codeaurora.org>
- <04C5B822-70DF-47CF-9F76-2A31843B01E8@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <7b614485-fe2d-9167-dfc9-d6affdb28c88@arm.com>
-Date:   Mon, 19 Oct 2020 12:26:36 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726985AbgJSG7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 02:59:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603090754;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WWTtNyRQpspwMkK1R2rGtDqE4M7Gn98Si984Ule9Ss0=;
+        b=cqeUAM00YSlx6flc2JUsczFqRhNqcAHUth3ItSDuz5RcBKns5y+UKj2SW04npGOzplO9YM
+        /DT91Bj0wyvPOyrLrw46mVjU+B12frH9ptun+N2UOsv+OH9mbOggNw76bVK0FqY9/zWm78
+        7bxFH5SZVDMwDg8OtCuas7X2YC2oOf8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3FE19ABD5;
+        Mon, 19 Oct 2020 06:59:14 +0000 (UTC)
+Date:   Mon, 19 Oct 2020 08:59:12 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shijie Luo <luoshijie1@huawei.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, osalvador@suse.de,
+        linmiaohe@huawei.com, linfeilong@huawei.com
+Subject: Re: [PATCH V2] mm: fix potential pte_unmap_unlock pte error
+Message-ID: <20201019065912.GA27114@dhcp22.suse.cz>
+References: <20201017021151.28104-1-luoshijie1@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <04C5B822-70DF-47CF-9F76-2A31843B01E8@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201017021151.28104-1-luoshijie1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 16-10-20 22:11:51, Shijie Luo wrote:
+> When flags don't have MPOL_MF_MOVE or MPOL_MF_MOVE_ALL bits, code breaks
+>  and passing origin pte - 1 to pte_unmap_unlock seems like not a good idea.
 
+This would really benefit from some improvements. It is preferable to
+provide a user visibile effect of the patch. I would propose this, feel
+free to reuse parts as you find fit.
+"
+queue_pages_pte_range can run in MPOL_MF_MOVE_ALL mode which doesn't
+migrate misplaced pages but returns with EIO when encountering such a
+page. Since a7f40cfe3b7a ("mm: mempolicy: make mbind() return -EIO when
+MPOL_MF_STRICT is specified") and early break on the first pte in the
+range results in pte_unmap_unlock on an underflow pte. This can lead to
+lockups later on when somebody tries to lock the pte resp.
+page_table_lock again..
 
-On 10/17/2020 01:04 PM, David Hildenbrand wrote:
-> 
->> Am 17.10.2020 um 04:03 schrieb Sudarshan Rajagopalan <sudaraja@codeaurora.org>:
->>
->> ﻿On receiving the MEM_GOING_OFFLINE notification, we disallow offlining of
->> any boot memory by checking if section_early or not. With the introduction
->> of SECTION_MARK_HOTPLUGGABLE, allow boot mem sections that are marked as
->> hotpluggable with this bit set to be offlined and removed. This now allows
->> certain boot mem sections to be offlined.
->>
-> 
-> The check (notifier) is in arm64 code. I don‘t see why you cannot make such decisions completely in arm64 code? Why would you have to mark sections?
-> 
-> Also, I think I am missing from *where* the code that marks sections removable is even called? Who makes such decisions?
+Fixes: a7f40cfe3b7a ("mm: mempolicy: make mbind() return -EIO when
+MPOL_MF_STRICT is specified")
+"
 
-From the previous patch.
+> Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+> Signed-off-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-+EXPORT_SYMBOL_GPL(mark_memory_hotpluggable);
+No need to add my s-o-b.
 
+> ---
+>  mm/mempolicy.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> This feels wrong. 
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 3fde772ef5ef..3ca4898f3f24 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -525,7 +525,7 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
+>  	unsigned long flags = qp->flags;
+>  	int ret;
+>  	bool has_unmovable = false;
+> -	pte_t *pte;
+> +	pte_t *pte, *mapped_pte;
+>  	spinlock_t *ptl;
+>  
+>  	ptl = pmd_trans_huge_lock(pmd, vma);
+> @@ -539,7 +539,7 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
+>  	if (pmd_trans_unstable(pmd))
+>  		return 0;
+>  
+> -	pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
+> +	mapped_pte = pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
+>  	for (; addr != end; pte++, addr += PAGE_SIZE) {
+>  		if (!pte_present(*pte))
+>  			continue;
+> @@ -571,7 +571,7 @@ static int queue_pages_pte_range(pmd_t *pmd, unsigned long addr,
+>  		} else
+>  			break;
+>  	}
+> -	pte_unmap_unlock(pte - 1, ptl);
+> +	pte_unmap_unlock(mapped_pte, ptl);
+>  	cond_resched();
+>  
+>  	if (has_unmovable)
+> -- 
+> 2.19.1
 > 
->> Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Gavin Shan <gshan@redhat.com>
->> Cc: Logan Gunthorpe <logang@deltatee.com>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Steven Price <steven.price@arm.com>
->> Cc: Suren Baghdasaryan <surenb@google.com>
->> ---
->> arch/arm64/mm/mmu.c | 2 +-
->> 1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
->> index 75df62fea1b6..fb8878698672 100644
->> --- a/arch/arm64/mm/mmu.c
->> +++ b/arch/arm64/mm/mmu.c
->> @@ -1487,7 +1487,7 @@ static int prevent_bootmem_remove_notifier(struct notifier_block *nb,
->>
->>    for (; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
->>        ms = __pfn_to_section(pfn);
->> -        if (early_section(ms))
->> +        if (early_section(ms) && !removable_section(ms))
 
-Till challenges related to boot memory removal on arm64 platform get
-resolved, no portion of boot memory can be offlined. Let alone via a
-driver making such decisions.
-
->>            return NOTIFY_BAD;
->>    }
->>    return NOTIFY_OK;
->> -- 
->> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
->> a Linux Foundation Collaborative Project
->>
-> 
-> 
+-- 
+Michal Hocko
+SUSE Labs
