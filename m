@@ -2,95 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D45292CF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58D6292CF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727681AbgJSRio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:38:44 -0400
-Received: from mga05.intel.com ([192.55.52.43]:3385 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgJSRio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:38:44 -0400
-IronPort-SDR: 6QNar7c2ScLOkgZ7EO2D9jNDDa1TuqBTsORTg5ON9eJHiVmesr4xbMmPKDkw4y+9Myre9WGc7F
- G/y3eS79SXKw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="251767294"
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="251767294"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 10:38:44 -0700
-IronPort-SDR: h9gTNV91jXeK4rF3ZmFqRqfezlbO+S+1Qumj3cOgPg2iF9NH3Hbq4IPJziGLDbUbT8n0RL780u
- SK0j1v53b0Bw==
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="523191053"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 10:38:43 -0700
-Date:   Mon, 19 Oct 2020 10:38:41 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 05/24] x86/sgx: Add wrappers for ENCLS leaf functions
-Message-ID: <20201019173840.GA22119@linux.intel.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-6-jarkko.sakkinen@linux.intel.com>
- <a1ec29d2-41ab-fbac-6a06-8755742328d9@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a1ec29d2-41ab-fbac-6a06-8755742328d9@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S1728483AbgJSRiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:38:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44926 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726124AbgJSRiz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 13:38:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603129134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=bCZfT5E3im0lNOm7GQVPs0SnshcVMlnSl2CIjv8kRzg=;
+        b=XuRj984d4Ni4B4gOQIkJ1fjsDSTQTYC2CJgK7nE/Un8TdX0LAjj5t978iVp5KFJ6zH3o5U
+        7eEw6N4LFfH6Wus6D6KcDbvrbYSBBGdKcbWc2WE3y+LCg73w1VkTCow7xDD9gFc3LGfahu
+        YOHit4SMBZWQAug5yd3C2gzk0HwQ/vI=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-SE2nPwyJMoms2J7lCjvbBw-1; Mon, 19 Oct 2020 13:38:52 -0400
+X-MC-Unique: SE2nPwyJMoms2J7lCjvbBw-1
+Received: by mail-qt1-f197.google.com with SMTP id t4so394651qtd.23
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:38:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=bCZfT5E3im0lNOm7GQVPs0SnshcVMlnSl2CIjv8kRzg=;
+        b=kEo5PslxYHmhJ4Z/QhUgAP7lbgRR3JOpblX/ze/riySMurkJFncIWJaCWCInXpzLlI
+         vd71dw4aYJ3cpqfNt525KArCaUcEM1wjvxflPZmh8YDueLcm4rVCs9s1dgNrPFZ7+d12
+         NDke6y2ArY7h/gD8zkWSE2qB+6zS4Ajp/D2ZOiXsEzMjKF0WboQD6c6EftHfF0n3n1oc
+         ZVK3Bwml/sCftbtKDCDetPeeoS0wYyzFpL4OP96V4xqZhn8Yq4e1ugz8MDeSHq+laCHB
+         MAJCOVg/C9WoQT8i4VCbGLBwfWC1+r/mcY1rOomOCb7l5Sr//xW2w+WvZV35lMfdamRh
+         4m5w==
+X-Gm-Message-State: AOAM530W4z1mEBuQOTv4OFVQ7Ca3GnjV3yjOFnSaJ7HjzzSJalJKCB23
+        MV52kTUXrTi4EY1PXzRIHp7qKe3mbDZMUwvMuojwtObslaavlq4Ia78qFg2KmB0G5Ym/Z1bXgZJ
+        6sCF3VaIZt3QPFNqkyRwuLfPd
+X-Received: by 2002:ac8:937:: with SMTP id t52mr569991qth.268.1603129132249;
+        Mon, 19 Oct 2020 10:38:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwKieAoqgQ8WMfOwsu+ME8feLE9yc+3oESLds+QyAt+bmkqHnhzOFlfz8uddoFFD0ZWch2otg==
+X-Received: by 2002:ac8:937:: with SMTP id t52mr569971qth.268.1603129132059;
+        Mon, 19 Oct 2020 10:38:52 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a200sm296706qkb.66.2020.10.19.10.38.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 10:38:51 -0700 (PDT)
+From:   trix@redhat.com
+To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
+        john.fastabend@gmail.com, kpsingh@chromium.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] bpf: remove unneeded break
+Date:   Mon, 19 Oct 2020 10:38:46 -0700
+Message-Id: <20201019173846.1021-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 07:30:32AM -0700, Dave Hansen wrote:
-> On 10/2/20 9:50 PM, Jarkko Sakkinen wrote:
-> > +/**
-> > + * encls_failed() - Check if an ENCLS leaf function failed
-> > + * @ret:	the return value of an ENCLS leaf function call
-> > + *
-> > + * Check if an ENCLS leaf function failed. This happens when the leaf function
-> > + * causes a fault that is not caused by an EPCM conflict or when the leaf
-> > + * function returns a non-zero value.
-> > + */
-> > +static inline bool encls_failed(int ret)
-> > +{
-> > +	int epcm_trapnr;
-> > +
-> > +	if (boot_cpu_has(X86_FEATURE_SGX2))
-> > +		epcm_trapnr = X86_TRAP_PF;
-> > +	else
-> > +		epcm_trapnr = X86_TRAP_GP;
-> 
-> So, the SDM makes it sound like the only thing that changes from
-> SGX1->SGX2 is the ENCLS leafs supported.  Since the kernel doesn't use
-> any SGX2 leaf functions, this would imply there is some other
-> architecture change which is visible.  *But* I don't see any evidence of
-> this in the SDM, at least from a quick scan.
-> 
-> Why is this here?
+From: Tom Rix <trix@redhat.com>
 
-SGX1 CPUs take an erratum on the #PF behavior, e.g. "KBW90 Violation of Intel
-SGX Access-Control Requirements Produce #GP Instead of #PF".
+A break is not needed if it is preceded by a return
 
-https://www.intel.com/content/dam/www/public/us/en/documents/specification-updates/xeon-e3-1200v6-spec-update.pdf
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ kernel/bpf/syscall.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> > +	if (ret & ENCLS_FAULT_FLAG)
-> > +		return ENCLS_TRAPNR(ret) != epcm_trapnr;
-> > +
-> > +	return !!ret;
-> > +}
-> 
-> 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 1110ecd7d1f3..8f50c9c19f1b 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2913,7 +2913,6 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
+ 	case BPF_CGROUP_INET_INGRESS:
+ 	case BPF_CGROUP_INET_EGRESS:
+ 		return BPF_PROG_TYPE_CGROUP_SKB;
+-		break;
+ 	case BPF_CGROUP_INET_SOCK_CREATE:
+ 	case BPF_CGROUP_INET_SOCK_RELEASE:
+ 	case BPF_CGROUP_INET4_POST_BIND:
+-- 
+2.18.1
+
