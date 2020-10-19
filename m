@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B15292D06
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF523292D08
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728450AbgJSRnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgJSRnj (ORCPT
+        id S1728504AbgJSRop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:44:45 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33174 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbgJSRop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:43:39 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E7BC0613CE;
-        Mon, 19 Oct 2020 10:43:39 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id c21so1040714ljj.0;
-        Mon, 19 Oct 2020 10:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=0vrWp9pDBfjblkGus7WCqC4oVtXZHu9bkKVvgRqfJGA=;
-        b=m1F1+vh/eEYSo2a3Ta/q+PMJkFsWw6jIAD9ZPvAyKdlQH7nsz4NtpHU+wAtQ+S5ANh
-         hCSC3x0QHVKLT4Ev/fOF72amwXKpf7OxknxMD1gjZ09g7u3Pok2UsChz/pth3zgzE/na
-         DXVpTyId1naSsI8T+opQ+7ym+EcHyKWQNBfOClNGZemblk0dx3fmMkxf+m3nffM12W9y
-         dy1jnB5cEL9i5C//t/rr9XBOWp8epGqzCdziyrJLRCkzlz4IXNC4mvfzIqcjib/SB9lv
-         C9bPCqoPuhW+4cC0K/N03ZbThEMOqvQKZU9QhoTEiUHMhzOQ9iIenL5oSy+em4HoJtgx
-         G60g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=0vrWp9pDBfjblkGus7WCqC4oVtXZHu9bkKVvgRqfJGA=;
-        b=Dc/2j4twOiJ0GURMYi9QlnVWrl0osYsGsLaW5TQhPgKavJHn7tnVa9uVsFU5vN3fuj
-         jZDYRxd7/+qE+2gIjDNZTWeflQ22WBfDhzsMa1WRv3WdBLioJNeHCkjTEvlOYH7g9IfX
-         9MkcRQmxB3CrZ0JutcuySP5zpDtE2DVB84lGG0evETjM8LSs1Q2UX7dKBMjOb2HtfNJf
-         CSFyP5g7cou+jcbMCdN2FQ8YFjJTfif/Am+tk5qsTU6vEBauW3TtIOeNG9Er7USTQ7He
-         aDv974DSqj2NXEw6PScTMaOtmqwp3F0RHBvDQqnuvGM0h2cavAkHhTQaQARnoAeL5g0K
-         MqsA==
-X-Gm-Message-State: AOAM533ztA4cCd6koCnymrYBP+C/v+uKksv8+bBLWHJoYdo5fsQND6N8
-        8/GiaushdhKnvzSQb6FRv9iCYienCiIZ5A==
-X-Google-Smtp-Source: ABdhPJw5tjN+paj+xrwRXiSeXGqzW2Mu5QDoGZjT9BgbnWvfsMNDjjKCtMCS+eUuFs3odSY4cub/Tw==
-X-Received: by 2002:a2e:83c9:: with SMTP id s9mr454939ljh.168.1603129417240;
-        Mon, 19 Oct 2020 10:43:37 -0700 (PDT)
-Received: from [192.168.7.20] (95-25-113-230.broadband.corbina.ru. [95.25.113.230])
-        by smtp.gmail.com with ESMTPSA id z10sm76647lfd.159.2020.10.19.10.43.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 19 Oct 2020 10:43:36 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] spi: spi-sun6i: implement DMA-based transfer mode
-From:   Alexander Kochetkov <al.kochet@gmail.com>
-In-Reply-To: <20201019082129.myxpxla5xwoqwldo@gilmour.lan>
-Date:   Mon, 19 Oct 2020 20:43:34 +0300
-Cc:     Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <4EC91DD5-5611-4B48-B6FC-00690B400584@gmail.com>
-References: <20201015154740.20825-1-al.kochet@gmail.com>
- <20201019082129.myxpxla5xwoqwldo@gilmour.lan>
-To:     Maxime Ripard <maxime@cerno.tech>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Mon, 19 Oct 2020 13:44:45 -0400
+Date:   Mon, 19 Oct 2020 17:44:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603129483;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5mjSGryX3vSNb47lPps7fktM/hIU6q64W5ctVkJiukQ=;
+        b=udLRbdJI38yDtSB1f4RKF/piNy79MFSmaz5ZR0kxEDH8rbdse/BSWqDzMz/H5Lie1DMYxW
+        hl5VPaL+0Cwz7pGm4OEZbz/DF8V/pr+3m/AboL56p1jEaAEryvZkPFRmG1E1e4DBzKkOA3
+        s7jXWg3Uc+QAuM/LDet9DAWHJxoX5GhkLkKdzVRTd3H72MQHn5Pg1TfwPx9sp8nJcEJTqt
+        1uppzafLmmprC3Kk9UqI+V9stJc5wPFA9qqrxGis12alFH0fYCz46iLaa+2kNU9DCdXas+
+        BWwYF38M6fG8SZ4RBnpuONHttcidCkAXryww2dVHzYZFDfPtzKl/NzR0HiCrqw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603129483;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5mjSGryX3vSNb47lPps7fktM/hIU6q64W5ctVkJiukQ=;
+        b=a+DpWjQAWk31kuTbHYeskxUp1d3H/Np3SXwcI4+yZjhdEHAIdbPzMo0k9XlLZ419no0nb+
+        LjEEnx7xAlkh8EDA==
+From:   "tip-bot2 for Al Grant" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/urgent] perf: correct SNOOPX field offset
+Cc:     Al Grant <al.grant@foss.arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Andi Kleen <ak@linux.intel.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <4ac9f5cc-4388-b34a-9999-418a4099415d@foss.arm.com>
+References: <4ac9f5cc-4388-b34a-9999-418a4099415d@foss.arm.com>
+MIME-Version: 1.0
+Message-ID: <160312948187.7002.13059882687948612179.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the perf/urgent branch of tip:
 
+Commit-ID:     f3d301c1f2f5676465cdf3259737ea19cc82731f
+Gitweb:        https://git.kernel.org/tip/f3d301c1f2f5676465cdf3259737ea19cc82731f
+Author:        Al Grant <al.grant@foss.arm.com>
+AuthorDate:    Mon, 21 Sep 2020 21:46:37 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Mon, 19 Oct 2020 19:39:22 +02:00
 
-> 19 =D0=BE=D0=BA=D1=82. 2020 =D0=B3., =D0=B2 11:21, Maxime Ripard =
-<maxime@cerno.tech> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BB(=D0=B0):
->=20
-> Hi!
->=20
-> On Thu, Oct 15, 2020 at 06:47:40PM +0300, Alexander Kochetkov wrote:
->> DMA-based transfer will be enabled if data length is larger than FIFO =
-size
->> (64 bytes for A64). This greatly reduce number of interrupts for
->> transferring data.
->>=20
->> For smaller data size PIO mode will be used. In PIO mode whole buffer =
-will
->> be loaded into FIFO.
->>=20
->> If driver failed to request DMA channels then it fallback for PIO =
-mode.
->>=20
->> Tested on SOPINE (https://www.pine64.org/sopine/)
->>=20
->> Signed-off-by: Alexander Kochetkov <al.kochet@gmail.com>
->=20
-> Thanks for working on this, it's been a bit overdue
+perf: correct SNOOPX field offset
 
-Hi, Maxime!
+perf_event.h has macros that define the field offsets in the
+data_src bitmask in perf records. The SNOOPX and REMOTE offsets
+were both 37. These are distinct fields, and the bitfield layout
+in perf_mem_data_src confirms that SNOOPX should be at offset 38.
 
-We did custom A64 based computation module for our product.
-Do you mean that A64 is obsolete or EOL product?
-If so, can you recommend active replacement for A64 from Allwinner same =
-price?
+Fixes: 52839e653b5629bd ("perf tools: Add support for printing new mem_info encodings")
+Signed-off-by: Al Grant <al.grant@foss.arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Link: https://lkml.kernel.org/r/4ac9f5cc-4388-b34a-9999-418a4099415d@foss.arm.com
+---
+ include/uapi/linux/perf_event.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Alexander=
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index 077e7ee..b95d3c4 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -1196,7 +1196,7 @@ union perf_mem_data_src {
+ 
+ #define PERF_MEM_SNOOPX_FWD	0x01 /* forward */
+ /* 1 free */
+-#define PERF_MEM_SNOOPX_SHIFT	37
++#define PERF_MEM_SNOOPX_SHIFT  38
+ 
+ /* locked instruction */
+ #define PERF_MEM_LOCK_NA	0x01 /* not available */
