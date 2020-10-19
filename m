@@ -2,81 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CD729308D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD714293093
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733165AbgJSVda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 17:33:30 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:54596 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728674AbgJSVd3 (ORCPT
+        id S1733219AbgJSVfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 17:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733210AbgJSVfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 17:33:29 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09JLXJTa081335;
-        Mon, 19 Oct 2020 16:33:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603143199;
-        bh=MYBlZarUrlPO7E58bB4slnmUf3eUSYKSIci/SgYIH+0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=e46/AfHIe57kA+wWonLoz5H6BpH4IW3XgoIQofRaDAihXNpi9dpT2+iM/9kOS8lhs
-         zI9kcbDGBSl94M4mSoAH2751o/bBBpsKpvsMpH4ssZCcqDnz/zYBY8Ff7/0ddz5lET
-         lxT0tM4DIuLyMSvdkzr5jyDrua5haLfEGabWc2/k=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09JLXJxo020434
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Oct 2020 16:33:19 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 19
- Oct 2020 16:33:19 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 19 Oct 2020 16:33:19 -0500
-Received: from [10.250.70.26] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09JLXI3S046728;
-        Mon, 19 Oct 2020 16:33:18 -0500
-Subject: Re: [PATCH net-next 2/2] net: phy: dp83td510: Add support for the
- DP83TD510 Ethernet PHY
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201008162347.5290-1-dmurphy@ti.com>
- <20201008162347.5290-3-dmurphy@ti.com> <20201016220240.GM139700@lunn.ch>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <31cbfec4-3f1c-d760-3035-2ff9ec43e4b7@ti.com>
-Date:   Mon, 19 Oct 2020 16:33:18 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 19 Oct 2020 17:35:15 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491BAC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 14:35:15 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id y20so1679002iod.5
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 14:35:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CN0bQxKJkdcKJBjwvzgGWcX5vlVJWJkhBAisHK3glqI=;
+        b=poFCyAQbQtgZYozTVKwBGhba69C9R2VOpfR1iB0iElMus57vyyz10YsJB878DKPliS
+         kN73S07IJiB8OYmcccldcZonVDJCILp65e87Vf1nE4OzUvOTuaF1/x8PzORo4VxJMaYc
+         Z+mDBDRf9bN6NInVliqmqoGyzwBt0Mwph5OnSUtheXfQit7/rXWwETHYFbqzZvrVO8Ky
+         3BWEVScOiJ/Thf8K+jSlS7lQNOKyoKQVyErxvrTEGVxAK3QRv/bvyrdB733Va/pI1WMG
+         4JThrWGVDVn9DDRShxybwafgkdfbXYTvesdZwLlWX3YQRDT4m64J6olTMzca5LdFOF5L
+         jtOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CN0bQxKJkdcKJBjwvzgGWcX5vlVJWJkhBAisHK3glqI=;
+        b=Xm0J6Cn6BXEbYU2M+qr9TUtOkNagUhbwFiZejCHlVlsuUgngNsKYWoNOQdxKUDYagr
+         1fCV8GAazel6+AzwrxvLiryZeCsgSz9OfVzjg6BpyGkoSIPc2T8aenXM3+RvdVDgRNuz
+         H+e6VQd6mCt1EMLIepmF1qbU3wxwdSyvATbTJgZgJDVLW7PUfUOSmLEBax50qt/Z3nyQ
+         D6+rIus/xy1K0j8gtFypKKdxM9g3TefC0cSyP/D3XZvKEs50/iEXlnOxstZdWKfiMPm+
+         1R5Erkotupbk0usG+vh1QHeSGmWBqPVBATwFW5CMVZ9ppamIM41HFerjNnAuQGpN/nuC
+         ocaA==
+X-Gm-Message-State: AOAM531uBAW9CknCXn4uu+0OdiSVtNuycB+H8q9pkjy6sNzEy43Sq5Y+
+        8spmBfefomk5hJ0y5tQLiJpm/+W2h7NBiDgJFTz+7Q==
+X-Google-Smtp-Source: ABdhPJw4mQAJXYE67VbfXCXw8FFkQWxvEARRSqm1Z8RIqdlt6/XcS+mKeyENnU8XkmzZf9eX++gROLYZIf3rsQUjrn0=
+X-Received: by 2002:a5e:cb45:: with SMTP id h5mr1257113iok.172.1603143314653;
+ Mon, 19 Oct 2020 14:35:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201016220240.GM139700@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201017211035.257110-1-luka.kovacic@sartura.hr>
+ <20201017211035.257110-5-luka.kovacic@sartura.hr> <CAHp75VdQnNXdhs52+WFt4bQKwZ3u5euFd3d65XU+-sMSFjt8jA@mail.gmail.com>
+In-Reply-To: <CAHp75VdQnNXdhs52+WFt4bQKwZ3u5euFd3d65XU+-sMSFjt8jA@mail.gmail.com>
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+Date:   Mon, 19 Oct 2020 23:35:03 +0200
+Message-ID: <CADZsf3ZtrK1M1QQtVLOhx7tBk7k73M5P+A1kyx=t8RA4m=Hhpg@mail.gmail.com>
+Subject: Re: [PATCH v5 4/6] drivers: leds: Add the iEi WT61P803 PUZZLE LED driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Robert Marko <robert.marko@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
+Hello Andy,
 
-On 10/16/20 5:02 PM, Andrew Lunn wrote:
-> On Thu, Oct 08, 2020 at 11:23:47AM -0500, Dan Murphy wrote:
->> The DP83TD510E is an ultra-low power Ethernet physical layer transceiver
->> that supports 10M single pair cable.
-> Hi Dan
+On Sun, Oct 18, 2020 at 8:50 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> I think you are going to have to add
-> ETHTOOL_LINK_MODE_10baseT1_Full_BIT? We already have 100T1 and 1000T1,
-> but not 10T1 :-(
+> On Sun, Oct 18, 2020 at 12:18 AM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
+> >
+> > Add support for the iEi WT61P803 PUZZLE LED driver.
+> > Currently only the front panel power LED is supported.
+> >
+> > This driver depends on the iEi WT61P803 PUZZLE MFD driver.
+>
+> ...
 
-The data sheet says 10baseT1L.  Which is not there either and seems to 
-be the latest 802.3cg spec and has a greater max distance and used for 
-IoT and Automotive.
+I'll expand the description a bit.
 
-Dan
+>
+> > +/**
+> > + * struct iei_wt61p803_puzzle_led - MCU LED Driver
+> > + *
+> > + * @mcu:               MCU struct pointer
+> > + * @response_buffer    Global MCU response buffer allocation
+> > + * @lock:              General mutex lock to protect simultaneous R/W access to led_power_state
+> > + * @led_power_state:   State of the front panel power LED
+> > + * @cdev:              LED classdev
+> > + */
+> > +struct iei_wt61p803_puzzle_led {
+> > +       struct iei_wt61p803_puzzle *mcu;
+> > +       unsigned char *response_buffer;
+> > +       struct mutex lock;
+> > +       int led_power_state;
+>
+> > +       struct led_classdev cdev;
+>
+> If you are using container_of() and move this member to be first, you
+> will effectively make the container_of() a no-op.
+>
+> > +};
+> > +
+> > +static inline struct iei_wt61p803_puzzle_led *cdev_to_iei_wt61p803_puzzle_led
+> > +       (struct led_classdev *led_cdev)
+> > +{
+> > +       return dev_get_drvdata(led_cdev->dev->parent);
+>
+> Why not simply call container_of()
 
+I agree, container_of() is much cleaner, when used here.
 
->       Andrew
+>
+> > +}
+>
+> ...
+>
+> > +       ret = fwnode_property_read_u32(child, "reg", &reg);
+> > +       if (ret || reg > 1) {
+> > +               dev_err(dev, "Could not register 'reg' (%lu)\n", (unsigned long)reg);
+>
+> When you cast explicitly during printf() you are doing something wrong
+> in 99.9% cases.
+> What's wrong with %u in this case?
+
+I'll remove the cast, %u should be okay.
+
+>
+> > +               ret = -EINVAL;
+> > +               goto err_child_node;
+> > +       }
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+
+Kind regards,
+Luka
