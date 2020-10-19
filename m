@@ -2,139 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21FD29243A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D774129242D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730020AbgJSJDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:03:22 -0400
-Received: from mail-eopbgr40054.outbound.protection.outlook.com ([40.107.4.54]:58862
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729772AbgJSJDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:03:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lF2Dkr7l3lkuh06RVCz+39Ay5JrjmBQ5yqm87pjgyzN+goL4EumOpA7FxQiruaXuFxYGlEYGVLqUxRiNTN64uv0iJouVQFCM7HSXxZR37Ul5dLnOab/bwlim5aX/JSMPJD3QXFD41xuaM7oosoBB0qxSURLqVjQrXUMcZ6Q4NSVNA6iPrb4ZfveBtAktU98uagAqs1sQk+BS1163u6U0UHAjAgw/Ve4Fvcnab+NBEnYbmW18tr87rQJej9OvKjHhTnwFNrtSgLTySpxog0haYyugYfRBNkmU29vkNKMidufqvvSmxZvBS4Uxo5I/TOUGOqlmvjOb7gKGymgKNYsj6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pcFU4Spcnn+N2esTXDkYB/bUx5lVmuk1m809xlJmUp8=;
- b=Yh7U3vvXB2D62geA06steyTNbwQYQmU7VU9v5Ly49agu3BRnRuWoNWnwIkNUls8oFStmCeKyMwktlOxMAWjc8mlS6qPPMKkiCzjCaCiABggau6CXHGaZ2yWg69YcuWO4EKldCy82IlqdG4Yi2dQwmmPJo8B5pyMQzqj6nzXhDvVQko9UVSJ9TLUg2DsWM6H77dYEi/OTACNYoyYlCP+8cGabp4qKZt0RXUXdz6OoGFu6q+dQ2au4JGiSS6EKthlqcLRHowMZXcr0aW3hlALC0IlRBGlQEAVHYL229cfL6qLeerf8/d1BXotDvlQ/7ZuVGrUlJr5HGf0Au4HM/S4qiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pcFU4Spcnn+N2esTXDkYB/bUx5lVmuk1m809xlJmUp8=;
- b=LH8UU2Or8+4VkgQBsTIC4dP0zcmneLlt65LvLy3NuJwQOzIHcXJIFaBXSJUrcWUAGIsgCkLVBuNavJHEZ1Sp3VPWhX3DgHDda1zlv1XMUMaYrDhWJPLE5G/jA2v6rzZqjbQhoF6xKewLusa17NvDVwtHOR46dhWVpczTL34u8HA=
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB7PR04MB5497.eurprd04.prod.outlook.com (2603:10a6:10:8a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Mon, 19 Oct
- 2020 09:03:13 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3c3a:58b9:a1cc:cbcc]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3c3a:58b9:a1cc:cbcc%9]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
- 09:03:13 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        Aisheng Dong <aisheng.dong@nxp.com>
-CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, Ying Liu <victor.liu@nxp.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH V2 8/8] can: flexcan: add CAN wakeup function for i.MX8QM
-Thread-Topic: [PATCH V2 8/8] can: flexcan: add CAN wakeup function for i.MX8QM
-Thread-Index: AQHWpe2XWfxDML5yskGVs3LoA/x/dKmelDOAgAACi3CAAATLAIAAAG5g
-Date:   Mon, 19 Oct 2020 09:03:12 +0000
-Message-ID: <DB8PR04MB67957F30D89ABFCF0801D741E61E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <20201019155737.26577-1-qiangqing.zhang@nxp.com>
- <20201019155737.26577-9-qiangqing.zhang@nxp.com>
- <3ca1d3e9-ef13-283f-8301-68c657628e41@pengutronix.de>
- <DB8PR04MB679531F0491CB52DC05DE624E61E0@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <0e871906-e179-a2ea-1379-d0194c9d58fe@pengutronix.de>
-In-Reply-To: <0e871906-e179-a2ea-1379-d0194c9d58fe@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-Mentions: aisheng.dong@nxp.com
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: fea6c6fb-507a-43c5-3847-08d8740dcf21
-x-ms-traffictypediagnostic: DB7PR04MB5497:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB5497F934B446046E94A6F198E61E0@DB7PR04MB5497.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ry1CUIa+ssWoH5PZLfcuOrRpVuZngXAHjUzX2pq7Q+hlAmQCLTjfziS5FjH0VoJ/Ip+vjMZ5l5LaR8UMKlxKFxv+OVy39xa1DEWnWYcKfsHdpx9RjtQ91ooyf2a0aqeuaALRSjHoyUE/UQQQbiEc8FprqjXfocCgRb+vH7bwiIdgdkOUKKgqRl9mLsSBS1057youYSENoh8F9hKAFcGx6LWInyqpM4whldVuT2C12waNJ2bjFWLFXTqZuhqILulizHOwyQ0GIWvVKuXAAKrYPoQ/eIFnQU5tdUOy3X+IhQtltOVXHxghoU1wQHTfOAprlutN1OUn8j+SQKHpgMp0yQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(136003)(366004)(376002)(86362001)(478600001)(52536014)(8676002)(2906002)(4326008)(71200400001)(33656002)(8936002)(83380400001)(6506007)(53546011)(7696005)(5660300002)(6636002)(26005)(76116006)(64756008)(316002)(66446008)(186003)(66476007)(66946007)(66556008)(9686003)(110136005)(55016002)(54906003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: r9xOp2FeGImgKS03+ANhe4ckEVon02uunKloLkvWjPP+Dt+CWPsSxeAMle1/5O/7JMGWv1Q5oW2mKfbOdWP38F8uv+bzJJ/25L4534ssEVIMt9Bv2BO72bOR7FlxhIVOJJDwqfe3V1ikxm5aYbP7TiyUv1rT3w6tj4wJIU34iHCB7u9rXZmrnExaQvTQpPsbg11h5i5cP/F+2Sf1iVU2yJe5otGR8lf1dfsj2fzCwCk6KGmpHjmWOp/v77zxV5FiK+KYba/CZS2m+VPgM6T7IF+Ps99qGYp3pcBgS0AjecA1lqEAyhcnUh8uHcWbyeY6o/38WAngKgGV7KTtrDDQEMSps2MTkyb9CXgVG0tNxPM3Z6Ypf4JekBJLk0wKq6uyU9B5x4mOE7n7HtWavy5yCc4VTZzS3une2g5w/aOyciHFOwFsg7wC006vnGnBoAmOkyYME7ewepdUCH+ilzY4m+tnGiq/8rJ8hVtKDA1s2ld9O0nqO3+IAf/VNKlWy+CW4bEHe5SO8mOvJ5jtb8oqT9D8zSYlceTCzy5oN5OFOrL59o5tZbpMHxprJlnGFTgHvkvjyHVNk5bQhAb3Yk/Q/+KzubdT+VJL1r24s/eFNcsaUWlWoPiGyo2z8DhPBrQaWlPA05Fx3aRk10XmFQuGtQ==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729745AbgJSJCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:02:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728441AbgJSJCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 05:02:32 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74E5F20874;
+        Mon, 19 Oct 2020 09:02:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603098150;
+        bh=28Umo+dUCWvTW7k3AsLzQcpGNBwHaFvS+CBJrNnSSW8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yMVaX4GYAZ6AhnXgePY4Geaqm1SWXzxUpTMiQorsb164+m56m9acj+K65LHWlEr9F
+         +1ptwFBz6+J+M9Yqm5J/EITzckmeIW4zbOkDPhZpI5HZ/hErBw6zQ4A/0rsh8ru2nB
+         Satx9Z0IO+Acvi1jj+UiEJp17canvOBbCz0c05E4=
+Date:   Mon, 19 Oct 2020 11:03:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH 1/2] fpga: dfl: add driver_override support
+Message-ID: <20201019090316.GA3237088@kroah.com>
+References: <1602828151-24784-1-git-send-email-yilun.xu@intel.com>
+ <1602828151-24784-2-git-send-email-yilun.xu@intel.com>
+ <63d7730b-d9b8-c75d-16f6-3ebb507aabaa@redhat.com>
+ <20201019040612.GA16172@yilunxu-OptiPlex-7050>
+ <20201019085233.GB28746@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fea6c6fb-507a-43c5-3847-08d8740dcf21
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2020 09:03:12.9292
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VJarVpn/zIjbcbXWIJQREd/97IiGa/WjuuKot95bsSUb1BjWqQ6+yYUL6ZZTdUjJWJDu/snOcL5YJLjdMGjipg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5497
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019085233.GB28746@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpIaSBNYXJjLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMg
-S2xlaW5lLUJ1ZGRlIDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMjDlubQxMOaciDE5
-5pelIDE2OjQyDQo+IFRvOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPjsg
-cm9iaCtkdEBrZXJuZWwub3JnOw0KPiBzaGF3bmd1b0BrZXJuZWwub3JnOyBzLmhhdWVyQHBlbmd1
-dHJvbml4LmRlDQo+IENjOiBrZXJuZWxAcGVuZ3V0cm9uaXguZGU7IGRsLWxpbnV4LWlteCA8bGlu
-dXgtaW14QG54cC5jb20+OyBZaW5nIExpdQ0KPiA8dmljdG9yLmxpdUBueHAuY29tPjsgbGludXgt
-Y2FuQHZnZXIua2VybmVsLm9yZzsgUGFua2FqIEJhbnNhbA0KPiA8cGFua2FqLmJhbnNhbEBueHAu
-Y29tPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVs
-Lm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIFYyIDgvOF0gY2FuOiBmbGV4Y2FuOiBhZGQgQ0FO
-IHdha2V1cCBmdW5jdGlvbiBmb3INCj4gaS5NWDhRTQ0KPiANCj4gT24gMTAvMTkvMjAgMTA6Mzkg
-QU0sIEpvYWtpbSBaaGFuZyB3cm90ZToNCj4gPj4+ICsjZGVmaW5lIEZMRVhDQU5fSU1YX1NDX1Jf
-Q0FOKHgpCQkoSU1YX1NDX1JfQ0FOXzAgKyAoeCkpDQo+ID4+DQo+ID4+IFdoeSBub3QgbW92ZSBp
-dCBpbnRvIHRoZSBhcHByb3ByaWF0ZSBzdmMgaGVhZGVyIGZpbGU/DQo+ID4NCj4gPiBTb3JyeSwg
-bm90IHF1aXRlIHVuZGVyc3RhbmQuIFdoaWNoIGZpbGUgZG8geW91IG1lYW4gdGhlIGFwcHJvcHJp
-YXRlDQo+ID4gc3ZjIGhlYWRlciBmaWxlPyBJcyBpdCBpbmNsdWRlL2R0LWJpbmRpbmdzL2Zpcm13
-YXJlL2lteC9yc3JjLmg/DQo+IA0KPiB5ZXMsIEkgbWVhbnQgdGhhdDoNCj4gDQo+ID4gaW5jbHVk
-ZS9kdC1iaW5kaW5ncy9maXJtd2FyZS9pbXgvcnNyYy5oOjExMTojZGVmaW5lIElNWF9TQ19SX0NB
-Tl8wDQo+IDEwNQ0KDQpBcyBJIGNhbiBzZWUgaW4gcnNyYy5oIGZpbGUsIGl0IGp1c3QgbGlzdCBl
-YWNoIHJlc291cmNlIHNlcXVlbnRpYWxseSwgYW5kIHRoZXJlIGlzIGEgbm90ZSBpbiB0aGUgY29t
-bWVudHM6DQoiTm90ZSBpdGVtcyBmcm9tIGxpc3Qgc2hvdWxkIG5ldmVyIGJlIGNoYW5nZWQgb3Ig
-cmVtb3ZlZCAob25seSBhZGRlZCB0byBhdCB0aGUgZW5kIG9mIHRoZSBsaXN0KS4iDQpTbyB0aGUg
-ZHJpdmVyIGF1dGhvciBkb2Vzbid0IHdhbnQgYW55IHNjdSB1c2VycyB0byBjaGFuZ2UgdGhlc2Ug
-cmVzb3VyY2UgbWFjcm8uIElmIHdlIG9ubHkgZG8gYmVsb3cgY2hhbmdlIGZvciBDQU4sIGJ1dCBr
-ZWVwIG90aGVyIGRldmljZXMgdW5jaGFuZ2VkLA0KSXQgd291bGQgYmUgdmVyeSBzdHJhbmdlLiBB
-bmQgSSB0aGluayB0aGlzIGNvZGUgY2hhbmdlIGNvdWxkIG5vdCBiZSBhY2NlcHRlZC4gVGhlcmUg
-bWF5IGJlIGFub3RoZXIgY29uc2lkZXJhdGlvbiwgbm93IHdlIG9ubHkgaGFzIDMgQ0FOIGluc3Rh
-bmNlcywgaG93IGNhbiB3ZSBoYW5kbGUNCmlmIGxhdGVyIFNvQ3MgaGF2ZSBtb3JlIENBTiBpbnN0
-YW5jZXMsIGFuZCB0aGV5IHN0aWxsIHdhbnQgdG8gcmV1c2UgdGhpcyBoZWFkZXIgZmlsZS4gVGhp
-cyBpcyBhbHNvIHJlYXNvbiBJIHByZWZlciB0byB1c2UgdGhlc2UgZGVmaW5lZCBtYWNyb3MgZGly
-ZWN0bHkgaW4gZmxleGNhbiBkcml2ZXIuIA0KDQotLS0gYS9pbmNsdWRlL2R0LWJpbmRpbmdzL2Zp
-cm13YXJlL2lteC9yc3JjLmgNCisrKyBiL2luY2x1ZGUvZHQtYmluZGluZ3MvZmlybXdhcmUvaW14
-L3JzcmMuaA0KQEAgLTEwOCw5ICsxMDgsNyBAQA0KICNkZWZpbmUgSU1YX1NDX1JfQURDXzEgICAg
-ICAgICAgICAgICAgIDEwMg0KICNkZWZpbmUgSU1YX1NDX1JfRlRNXzAgICAgICAgICAgICAgICAg
-IDEwMw0KICNkZWZpbmUgSU1YX1NDX1JfRlRNXzEgICAgICAgICAgICAgICAgIDEwNA0KLSNkZWZp
-bmUgSU1YX1NDX1JfQ0FOXzAgICAgICAgICAgICAgICAgIDEwNQ0KLSNkZWZpbmUgSU1YX1NDX1Jf
-Q0FOXzEgICAgICAgICAgICAgICAgIDEwNg0KLSNkZWZpbmUgSU1YX1NDX1JfQ0FOXzIgICAgICAg
-ICAgICAgICAgIDEwNw0KKyNkZWZpbmUgSU1YX1NDX1JfQ0FOKHgpICAgICAgICAgICAgICAgICAo
-MTA1ICsgKHgpKQ0KICNkZWZpbmUgSU1YX1NDX1JfRE1BXzFfQ0gwICAgICAgICAgICAgIDEwOA0K
-ICNkZWZpbmUgSU1YX1NDX1JfRE1BXzFfQ0gxICAgICAgICAgICAgIDEwOQ0KICNkZWZpbmUgSU1Y
-X1NDX1JfRE1BXzFfQ0gyICAgICAgICAgICAgIDExMA0KIA0KQWRkIEBBaXNoZW5nIERvbmcsIGNv
-dWxkIGFib3ZlIGNvZGUgY2hhbmdlcyBjYW4gYmUgYWNjZXB0ZWQgYnkgeW91Pw0KDQpCZXN0IFJl
-Z2FyZHMsDQpKb2FraW0gWmhhbmcNCg==
+On Mon, Oct 19, 2020 at 04:52:33PM +0800, Xu Yilun wrote:
+> On Mon, Oct 19, 2020 at 12:06:13PM +0800, Xu Yilun wrote:
+> > On Fri, Oct 16, 2020 at 09:21:50AM -0700, Tom Rix wrote:
+> > > 
+> > > On 10/15/20 11:02 PM, Xu Yilun wrote:
+> > > > Add support for overriding the default matching of a dfl device to a dfl
+> > > > driver. It follows the same way that can be used for PCI and platform
+> > > > devices. This patch adds the 'driver_override' sysfs file.
+> > > >
+> > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > > ---
+> > > >  Documentation/ABI/testing/sysfs-bus-dfl | 28 ++++++++++++++---
+> > > >  drivers/fpga/dfl.c                      | 54 ++++++++++++++++++++++++++++++++-
+> > > >  include/linux/dfl.h                     |  2 ++
+> > > >  3 files changed, 79 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl b/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > index 23543be..db7e8d3 100644
+> > > > --- a/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > +++ b/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > @@ -1,15 +1,35 @@
+> > > >  What:		/sys/bus/dfl/devices/dfl_dev.X/type
+> > > > -Date:		Aug 2020
+> > > > -KernelVersion:	5.10
+> > > > +Date:		Oct 2020
+> > > > +KernelVersion:	5.11
+> > > >  Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > >  Description:	Read-only. It returns type of DFL FIU of the device. Now DFL
+> > > >  		supports 2 FIU types, 0 for FME, 1 for PORT.
+> > > >  		Format: 0x%x
+> > > >  
+> > > >  What:		/sys/bus/dfl/devices/dfl_dev.X/feature_id
+> > > > -Date:		Aug 2020
+> > > > -KernelVersion:	5.10
+> > > > +Date:		Oct 2020
+> > > > +KernelVersion:	5.11
+> > > >  Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > >  Description:	Read-only. It returns feature identifier local to its DFL FIU
+> > > >  		type.
+> > > >  		Format: 0x%x
+> > > 
+> > > These updates, do not match the comment.
+> > > 
+> > > Consider splitting this out.
+> > 
+> > I'm sorry it's a typo. The above code should not be changed.
+> > 
+> > > 
+> > > > +
+> > > > +What:           /sys/bus/dfl/devices/.../driver_override
+> > > > +Date:           Oct 2020
+> > > > +KernelVersion:  5.11
+> > > > +Contact:        Xu Yilun <yilun.xu@intel.com>
+> > > I am looking at description and trying to make it consistent with sysfs-bus-pci
+> > > > +Description:    This file allows the driver for a device to be specified.
+> > > 
+> > > 'to be specified which will override the standard dfl bus feature id to driver mapping.'
+> > 
+> > Yes, it could be improved.
+> > 
+> > Actually now it is the "type" and "feature id" matching, the 2 fields
+> > are defined for dfl_driver.id_table. In future for dfl v1, it may be
+> > GUID matching, which will be added to id_table. So how about we make it
+> > more generic:
+> > 
+> > 'to be specified which will override the standard ID table matching.'
+> > 
+> > > 
+> > > 
+> > > >  When
+> > > > +                specified, only a driver with a name matching the value written
+> > > > +                to driver_override will have an opportunity to bind to the
+> > > > +                device. The override is specified by writing a string to the
+> > > > +                driver_override file (echo dfl-uio-pdev > driver_override) and
+> > > > +                may be cleared with an empty string (echo > driver_override).
+> > > > +                This returns the device to standard matching rules binding.
+> > > > +                Writing to driver_override does not automatically unbind the
+> > > > +                device from its current driver or make any attempt to
+> > > > +                automatically load the specified driver.  If no driver with a
+> > > > +                matching name is currently loaded in the kernel, the device
+> > > > +                will not bind to any driver.  This also allows devices to
+> > > > +                opt-out of driver binding using a driver_override name such as
+> > > > +                "none".  Only a single driver may be specified in the override,
+> > > > +                there is no support for parsing delimiters.
+> > > > diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+> > > > index 511b20f..bc35750 100644
+> > > > --- a/drivers/fpga/dfl.c
+> > > > +++ b/drivers/fpga/dfl.c
+> > > > @@ -262,6 +262,10 @@ static int dfl_bus_match(struct device *dev, struct device_driver *drv)
+> > > >  	struct dfl_driver *ddrv = to_dfl_drv(drv);
+> > > >  	const struct dfl_device_id *id_entry;
+> > > >  
+> > > > +	/* When driver_override is set, only bind to the matching driver */
+> > > > +	if (ddev->driver_override)
+> > > > +		return !strcmp(ddev->driver_override, drv->name);
+> > > > +
+> > > >  	id_entry = ddrv->id_table;
+> > > >  	if (id_entry) {
+> > > >  		while (id_entry->feature_id) {
+> > > > @@ -303,6 +307,53 @@ static int dfl_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
+> > > >  			      ddev->type, ddev->feature_id);
+> > > >  }
+> > > >  
+> > > 
+> > > I am looking at other implementations of driver_override* and looking for consistency.
+> > > 
+> > > > +static ssize_t driver_override_show(struct device *dev,
+> > > > +				    struct device_attribute *attr, char *buf)
+> > > > +{
+> > > > +	struct dfl_device *ddev = to_dfl_dev(dev);
+> > > > +	ssize_t len;
+> > > > +
+> > > > +	device_lock(dev);
+> > > > +	len = sprintf(buf, "%s\n", ddev->driver_override);
+> > > len = snprintf(buf, PAGE_SIZE ...
+> > 
+> > It is good to me.
+> > 
+> > Some bus drivers use snprintf, some use sprintf.
+> > 
+> > I think it is reasonable snprintf is used here, unlike %d, %u ... it is
+> > uncertain for the output size of %s.
+> 
+> Sorry, I checked the Documentation/filesystems/sysfs.rst again and found
+> I didn't remember it correctly.
+> 
+> The snprintf is must not be used, sprintf() or scnprintf() should be
+> used. So I prefer sprintf() here, following other implementations.
+> 
+> sprintf() should be safe here, as we already limited the input of
+> driver_override string to less then PAGE_SIZE on store().
+
+As already mentioned, please use sysfs_emit() instead.
+
+thanks,
+
+greg k-h
