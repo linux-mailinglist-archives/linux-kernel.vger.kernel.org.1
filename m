@@ -2,128 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AB3292D3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88138292D3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730209AbgJSR63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:58:29 -0400
-Received: from mga09.intel.com ([134.134.136.24]:50913 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728897AbgJSR63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:58:29 -0400
-IronPort-SDR: u7zfHVVpOiPHYG4l1bYS2v2Wq6wJBBPHR5Hm3dIst3kfVWAyZPrVFEHVhh8AqZ2ufRBONzwMln
- 0vd2grIDi0rw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="167189145"
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="167189145"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 10:58:28 -0700
-IronPort-SDR: pRe9WnxncbEp4R3by2ChI7uuxTECbyWwkQc6gzrSw2/doEIqsbLTJ0VukZQ8ZqkybWKkHOAFRn
- lw52fjMhdzsg==
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="522077823"
-Received: from haixinlu-mobl1.amr.corp.intel.com (HELO [10.212.84.56]) ([10.212.84.56])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 10:58:27 -0700
-Subject: Re: [PATCH v39 05/24] x86/sgx: Add wrappers for ENCLS leaf functions
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-6-jarkko.sakkinen@linux.intel.com>
- <a1ec29d2-41ab-fbac-6a06-8755742328d9@intel.com>
- <20201019173840.GA22119@linux.intel.com>
- <b3224f09-c853-f99a-a0a1-8c983076d25b@intel.com>
- <20201019175353.GB22358@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <274d996d-44fc-08d5-993c-d947537fc6a6@intel.com>
-Date:   Mon, 19 Oct 2020 10:58:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730310AbgJSR7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729556AbgJSR7O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 13:59:14 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61495C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:59:14 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id az3so181702pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hiVYdmseDgTcf3ogCK/hiyF3Du3HoHohHT9xW6cSjbU=;
+        b=rp4gVOZ/0TZkEXcBRNNDAjMSBz4a4MMv1hG8aQjzCZR3BgEno0zsegcn5V8WeNuH/Z
+         1i7we6rQmvpbkHePnHpfcihRFHYNZgRbrVPe3Z/rqpB/mD9zGrMyPya+GgwQUsOYq/bq
+         fYNdp/rvYi5nGYliKaFNwcUv6x1L7uYvrmGb6mo9sRhwVQgb7tD4k3CO2DR39xVhi6OK
+         shS1MN90Zw7jlAFPTONwcElPD3Tm5bKXYtbIZYeRObmgXMoGMZCbP2m9aXVx1iDn6Eum
+         mshRUdW3oDQLlS+TDe6CNEK95qTt+NVcEa9TGTdWyM2tD1L6xvIneU/pgNnjDilassea
+         Zm0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hiVYdmseDgTcf3ogCK/hiyF3Du3HoHohHT9xW6cSjbU=;
+        b=aqYXP2q8NXKlEyS8ff/2DJlPX5eO14teOdFuK+Yd9FjGR+jMIV7zi+9tWSj+DCaMmK
+         0vRDnUTqxokYFYnMaqtORfxpJ4lzPBfKKPMNh6o5yT125pfkK4fUGlbEpnn2cb9NKwZo
+         t8BXyvREP+0vKjjMYYxBMesfWOgPUsL1I28QJG5LmzBOslwQxv5xQbZNOSo8/CoXzpU6
+         zYrtz9pSJdJRfCHtqxOYcAeYDXxQHGrNa9cLah+PBfB8x2pM6aObVPx1D3nuIUExQTS6
+         iARq7i7i+/nM000G7EXmar8LSIr0ZsTVL3PnATupdqCCIMYxH+la9I3zDx27IQEFrJOW
+         zPYw==
+X-Gm-Message-State: AOAM533RjEq62vmA0v8aauKutDNTBsF8aiwRrXJ8KCTUSOeWhpMsPwr/
+        ZmQxBvMg37YDccmkeTMIkBdHcw==
+X-Google-Smtp-Source: ABdhPJylBSbG1cp6q7D7Bk4B6OIwKr2+3mjvnsHeP4/9U0stoa7Kf1nkb6X5JoMiVB6S1RxQH6Tlcw==
+X-Received: by 2002:a17:90b:17c4:: with SMTP id me4mr528341pjb.91.1603130353779;
+        Mon, 19 Oct 2020 10:59:13 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id e2sm175304pjw.13.2020.10.19.10.59.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 10:59:13 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 11:59:11 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     bjorn.andersson@linaro.org, o.rempel@pengutronix.de,
+        robh+dt@kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        Richard Zhu <hongxing.zhu@nxp.com>
+Subject: Re: [PATCH V2 6/7] remoteproc: imx_rproc: support i.MX8MQ/M
+Message-ID: <20201019175911.GD496175@xps15>
+References: <20200927064131.24101-1-peng.fan@nxp.com>
+ <20200927064131.24101-7-peng.fan@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20201019175353.GB22358@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200927064131.24101-7-peng.fan@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/20 10:53 AM, Sean Christopherson wrote:
->>> SGX1 CPUs take an erratum on the #PF behavior, e.g. "KBW90 Violation of Intel
->>> SGX Access-Control Requirements Produce #GP Instead of #PF".
->>>
->>> https://www.intel.com/content/dam/www/public/us/en/documents/specification-updates/xeon-e3-1200v6-spec-update.pdf
->> OK, but that's only for "Intel ® Xeon ® E3-1200 v6 Processor Family",
->> specifically stepping B-0.  That's far from a broad erratum.  I *see* it
->> in other errata lists, but I still think this is too broad.
->>
->> Also, what if a hypervisor masks the SGX2 cpuid bit on SGX2-capable
->> hardware?  Won't the hardware still exhibit the erratum?
->>
->> I don't think we can control model-specific errata behavior with an
->> architectural CPUID bit.
-> Hmm, true.  Checking for #PF _or_ #GP on SGX1 CPUs would be my first choice.
-> ENCLS #GPs for other reasons, most of which would indicate a kernel bug.  It'd
-> be nice to limit the "#GP is expected, sort of" behavior to CPUs that might be
-> affected by an erratum.
+On Sun, Sep 27, 2020 at 02:41:30PM +0800, Peng Fan wrote:
+> Add i.MX8MQ dev/sys addr map and configuration data structure
+> i.MX8MM share i.MX8MQ settings.
+> 
+> Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/imx_rproc.c | 40 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index bd3a42892b22..0f69f3f745ab 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -90,6 +90,34 @@ struct imx_rproc {
+>  	struct clk			*clk;
+>  };
+>  
+> +static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
+> +	/* dev addr , sys addr  , size	    , flags */
+> +	/* TCML - alias */
+> +	{ 0x00000000, 0x007e0000, 0x00020000, 0 },
+> +	/* OCRAM_S */
+> +	{ 0x00180000, 0x00180000, 0x00008000, 0 },
+> +	/* OCRAM */
+> +	{ 0x00900000, 0x00900000, 0x00020000, 0 },
+> +	/* OCRAM */
+> +	{ 0x00920000, 0x00920000, 0x00020000, 0 },
+> +	/* QSPI Code - alias */
+> +	{ 0x08000000, 0x08000000, 0x08000000, 0 },
+> +	/* DDR (Code) - alias */
+> +	{ 0x10000000, 0x80000000, 0x0FFE0000, 0 },
+> +	/* TCML */
+> +	{ 0x1FFE0000, 0x007E0000, 0x00020000, ATT_OWN },
+> +	/* TCMU */
+> +	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN },
+> +	/* OCRAM_S */
+> +	{ 0x20180000, 0x00180000, 0x00008000, ATT_OWN },
+> +	/* OCRAM */
+> +	{ 0x20200000, 0x00900000, 0x00020000, ATT_OWN },
+> +	/* OCRAM */
+> +	{ 0x20220000, 0x00920000, 0x00020000, ATT_OWN },
+> +	/* DDR (Data) */
+> +	{ 0x40000000, 0x40000000, 0x80000000, 0 },
+> +};
+> +
+>  static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
+>  	/* dev addr , sys addr  , size	    , flags */
+>  	/* OCRAM_S (M4 Boot code) - alias */
+> @@ -140,6 +168,16 @@ static const struct imx_rproc_att imx_rproc_att_imx6sx[] = {
+>  	{ 0x80000000, 0x80000000, 0x60000000, 0 },
+>  };
+>  
+> +static const struct imx_rproc_dcfg imx_rproc_cfg_imx8mq = {
+> +	.src_reg	= IMX7D_SRC_SCR,
+> +	.src_mask	= IMX7D_M4_RST_MASK,
+> +	.src_start	= IMX7D_M4_START,
+> +	.src_stop	= IMX7D_M4_STOP,
+> +	.att		= imx_rproc_att_imx8mq,
+> +	.att_size	= ARRAY_SIZE(imx_rproc_att_imx8mq),
+> +	.elf_mem_hook	= true,
+> +};
+> +
+>  static const struct imx_rproc_dcfg imx_rproc_cfg_imx7d = {
+>  	.src_reg	= IMX7D_SRC_SCR,
+>  	.src_mask	= IMX7D_M4_RST_MASK,
+> @@ -517,6 +555,8 @@ static int imx_rproc_remove(struct platform_device *pdev)
+>  static const struct of_device_id imx_rproc_of_match[] = {
+>  	{ .compatible = "fsl,imx7d-cm4", .data = &imx_rproc_cfg_imx7d },
+>  	{ .compatible = "fsl,imx6sx-cm4", .data = &imx_rproc_cfg_imx6sx },
+> +	{ .compatible = "fsl,imx8mq-cm4", .data = &imx_rproc_cfg_imx8mq },
+> +	{ .compatible = "fsl,imx8mm-cm4", .data = &imx_rproc_cfg_imx8mq },
 
-Yes, agreed.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-We need a model/family/stepping list of all the affected CPUs, and a
-normal old match_cpu() or whatever.  If a hypervisor lies about
-model/family/stepping, then the fallout is on them, not the guest.
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, imx_rproc_of_match);
+> -- 
+> 2.28.0
+> 
