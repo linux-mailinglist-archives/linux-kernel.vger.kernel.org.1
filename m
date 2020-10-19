@@ -2,170 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3DD292EB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E30D292EB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731348AbgJSTpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731347AbgJSTp0 (ORCPT
+        id S1731374AbgJSTpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:45:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22444 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731325AbgJSTp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:45:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9830DC0613CE;
-        Mon, 19 Oct 2020 12:44:47 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 19:44:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603136685;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cTuNdage0WBYVvdQKrTjSQ+VVq/d9cKEAOBNhVywkew=;
-        b=EocJ2sSttykz9hS/dn7AjIhyrG6/p2B3E9FvLg2AKhkCy93QuHRKrc4mxZxSL+55r1rRpu
-        b268yJvw5q1ky5QuvEdBPth7ErBZ9/aM1p0fwuH1zSCahIRTxUEnAxG7djONSSNGZ1pj81
-        LObITPtvAhJAm8r/OqiNbgcwR5burKKo/kq22soqcSe2osgC/1ow8LGXlDx1rMb67uLdJ4
-        GM2yC44ooDxUXzSekQZZpAr5+X19PVOi6d+/ok+HJLuoBcSBt9BrNd8VwBqJx+KkYvJizy
-        dQmCtMJNV1LtAOfft1/F25m+tanMbsCCX7Axisvp8sXgsEdK065GVyo9MfOi4g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603136685;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cTuNdage0WBYVvdQKrTjSQ+VVq/d9cKEAOBNhVywkew=;
-        b=HV22sEM33dDQWM1YY1+fFs1mHwBM5jRR2PnDERYayduyAwaRzD/N+nUo+ODBFvxUvY87K4
-        DEpetjG+NjdowKCg==
-From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/boot/64: Initialize 5-level paging variables earlier
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@suse.de>, Joerg Roedel <jroedel@suse.de>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201010191110.4060905-1-nivedita@alum.mit.edu>
-References: <20201010191110.4060905-1-nivedita@alum.mit.edu>
-MIME-Version: 1.0
-Message-ID: <160313668501.7002.10607211582490063283.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Mon, 19 Oct 2020 15:45:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603136712;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=Hb08AltmgsRmhtwJsTFuAg4pMIkcbc9NuPKooD4kYfc=;
+        b=Iun/M7bKQASeOYR49mcF1PGqyLTEbLN7E3xO5siYY0wEP8EBqA20HuX4AyFgHiwCbeEowu
+        dqYE/1dtyyt13+o7VlKPv8OUsxcNqbyjedOphSDrC3cg0djllU3Cxe4rGILMTnYTXTaRWJ
+        UrnZwC5xwzbcSIbrNkOCakJ8DGT59rI=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544-aqFKYCjIO8KDlpiB4qbHDQ-1; Mon, 19 Oct 2020 15:45:10 -0400
+X-MC-Unique: aqFKYCjIO8KDlpiB4qbHDQ-1
+Received: by mail-qk1-f197.google.com with SMTP id x5so528170qkn.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:45:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Hb08AltmgsRmhtwJsTFuAg4pMIkcbc9NuPKooD4kYfc=;
+        b=iCdh+ZnQSVNkGBQ0gCIVNUe+epktpT8S3OlDWm3oohrE2ryPueZgdOKGmYf9w4tJJr
+         XjlXezjp6SmzZOHy2zqaLddGZ2QLTAqdEVR5rJpyVF7EkWD6HUh3PcqvMB1JvMTf5Azy
+         JCbP4IixEaeyBQdcAY68fjoiRR1bNZdHt4sj1gjGfTrcRYaMC3iZXncikrSYUQSqRDx2
+         nNekyK3uHJbW4aGxdd5VIRql6tVGUFR8NQTahtTSaRm5sY2x5pPqlUOsqBpGFx0y+95l
+         evLEoUcfbfHepVZxJqceU31mof87ZzsfaeRTrdZuvRPVnIY6TUx0a+vpU+D15m0mkieW
+         stHg==
+X-Gm-Message-State: AOAM5301yCeCNO7I3xsyJ1Eizhz3BRzmJ31a6lfnIgZoVOa+J5GUS7f4
+        hNj7gYpkuqfRZTrsIS0e6ar26d/0xsDcqqU6WlS3snMqiLSaj3OKtDrQmDH7mvnohisJmRuEGsH
+        U+Vl1C4gTV05EOed5+AkEM7bF
+X-Received: by 2002:a37:9282:: with SMTP id u124mr1206425qkd.463.1603136708862;
+        Mon, 19 Oct 2020 12:45:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx58oVjzz/M7zy9xycRk1BT9+VEbkeqK7y8Ysr5VeNHk7h4hHRhEmzOgvJQP4p8ZuY5af35Yw==
+X-Received: by 2002:a37:9282:: with SMTP id u124mr1206386qkd.463.1603136708442;
+        Mon, 19 Oct 2020 12:45:08 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id d142sm435877qke.125.2020.10.19.12.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 12:45:07 -0700 (PDT)
+From:   trix@redhat.com
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] char: mwave: remove unneeded break
+Date:   Mon, 19 Oct 2020 12:45:03 -0700
+Message-Id: <20201019194503.14426-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/seves branch of tip:
+From: Tom Rix <trix@redhat.com>
 
-Commit-ID:     e5ceb9a02402b984feecb95a82239be151c9f4e2
-Gitweb:        https://git.kernel.org/tip/e5ceb9a02402b984feecb95a82239be151c9f4e2
-Author:        Arvind Sankar <nivedita@alum.mit.edu>
-AuthorDate:    Sat, 10 Oct 2020 15:11:10 -04:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 19 Oct 2020 12:47:21 +02:00
+A break is not needed if it is preceded by a return
 
-x86/boot/64: Initialize 5-level paging variables earlier
-
-Commit
-
-  ca0e22d4f011 ("x86/boot/compressed/64: Always switch to own page table")
-
-started using a new set of pagetables even without KASLR.
-
-After that commit, initialize_identity_maps() is called before the
-5-level paging variables are setup in choose_random_location(), which
-will not work if 5-level paging is actually enabled.
-
-Fix this by moving the initialization of __pgtable_l5_enabled,
-pgdir_shift and ptrs_per_p4d into cleanup_trampoline(), which is called
-immediately after the finalization of whether the kernel is executing
-with 4- or 5-level paging. This will be earlier than anything that might
-require those variables, and keeps the 4- vs 5-level paging code all in
-one place.
-
-Fixes: ca0e22d4f011 ("x86/boot/compressed/64: Always switch to own page table")
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Joerg Roedel <jroedel@suse.de>
-Tested-by: Joerg Roedel <jroedel@suse.de>
-Tested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Link: https://lkml.kernel.org/r/20201010191110.4060905-1-nivedita@alum.mit.edu
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- arch/x86/boot/compressed/ident_map_64.c |  6 ------
- arch/x86/boot/compressed/kaslr.c        |  8 --------
- arch/x86/boot/compressed/pgtable_64.c   | 16 ++++++++++++++++
- 3 files changed, 16 insertions(+), 14 deletions(-)
+ drivers/char/mwave/mwavedd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
-index 063a60e..c6f7aef 100644
---- a/arch/x86/boot/compressed/ident_map_64.c
-+++ b/arch/x86/boot/compressed/ident_map_64.c
-@@ -33,12 +33,6 @@
- #define __PAGE_OFFSET __PAGE_OFFSET_BASE
- #include "../../mm/ident_map.c"
+diff --git a/drivers/char/mwave/mwavedd.c b/drivers/char/mwave/mwavedd.c
+index e43c876a9223..11272d605ecd 100644
+--- a/drivers/char/mwave/mwavedd.c
++++ b/drivers/char/mwave/mwavedd.c
+@@ -403,7 +403,6 @@ static long mwave_ioctl(struct file *file, unsigned int iocmd,
+ 	
+ 		default:
+ 			return -ENOTTY;
+-			break;
+ 	} /* switch */
  
--#ifdef CONFIG_X86_5LEVEL
--unsigned int __pgtable_l5_enabled;
--unsigned int pgdir_shift = 39;
--unsigned int ptrs_per_p4d = 1;
--#endif
--
- /* Used by PAGE_KERN* macros: */
- pteval_t __default_kernel_pte_mask __read_mostly = ~0;
- 
-diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index b59547c..b92fffb 100644
---- a/arch/x86/boot/compressed/kaslr.c
-+++ b/arch/x86/boot/compressed/kaslr.c
-@@ -840,14 +840,6 @@ void choose_random_location(unsigned long input,
- 		return;
- 	}
- 
--#ifdef CONFIG_X86_5LEVEL
--	if (__read_cr4() & X86_CR4_LA57) {
--		__pgtable_l5_enabled = 1;
--		pgdir_shift = 48;
--		ptrs_per_p4d = 512;
--	}
--#endif
--
- 	boot_params->hdr.loadflags |= KASLR_FLAG;
- 
- 	if (IS_ENABLED(CONFIG_X86_32))
-diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compressed/pgtable_64.c
-index 7d0394f..5def167 100644
---- a/arch/x86/boot/compressed/pgtable_64.c
-+++ b/arch/x86/boot/compressed/pgtable_64.c
-@@ -8,6 +8,13 @@
- #define BIOS_START_MIN		0x20000U	/* 128K, less than this is insane */
- #define BIOS_START_MAX		0x9f000U	/* 640K, absolute maximum */
- 
-+#ifdef CONFIG_X86_5LEVEL
-+/* __pgtable_l5_enabled needs to be in .data to avoid being cleared along with .bss */
-+unsigned int __section(.data) __pgtable_l5_enabled;
-+unsigned int __section(.data) pgdir_shift = 39;
-+unsigned int __section(.data) ptrs_per_p4d = 1;
-+#endif
-+
- struct paging_config {
- 	unsigned long trampoline_start;
- 	unsigned long l5_required;
-@@ -198,4 +205,13 @@ void cleanup_trampoline(void *pgtable)
- 
- 	/* Restore trampoline memory */
- 	memcpy(trampoline_32bit, trampoline_save, TRAMPOLINE_32BIT_SIZE);
-+
-+	/* Initialize variables for 5-level paging */
-+#ifdef CONFIG_X86_5LEVEL
-+	if (__read_cr4() & X86_CR4_LA57) {
-+		__pgtable_l5_enabled = 1;
-+		pgdir_shift = 48;
-+		ptrs_per_p4d = 512;
-+	}
-+#endif
- }
+ 	PRINTK_2(TRACE_MWAVE, "mwavedd::mwave_ioctl, exit retval %x\n", retval);
+-- 
+2.18.1
+
