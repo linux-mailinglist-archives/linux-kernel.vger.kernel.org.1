@@ -2,144 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB75B292A9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6734292A95
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730286AbgJSPme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:42:34 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:54956 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730247AbgJSPme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:42:34 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id BE4A67AA0AF1ABCA8751;
-        Mon, 19 Oct 2020 23:42:27 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 19 Oct 2020 23:42:18 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <kjain@linux.ibm.com>,
-        <irogers@google.com>, <yao.jin@linux.intel.com>,
-        <yeyunfeng@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH 2/2] perf jevents: Add test for arch std events
-Date:   Mon, 19 Oct 2020 23:38:28 +0800
-Message-ID: <1603121908-53543-3-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1603121908-53543-1-git-send-email-john.garry@huawei.com>
-References: <1603121908-53543-1-git-send-email-john.garry@huawei.com>
+        id S1730098AbgJSPkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:40:03 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:43953 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729075AbgJSPkC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 11:40:02 -0400
+Received: by mail-ot1-f67.google.com with SMTP id k68so6422415otk.10;
+        Mon, 19 Oct 2020 08:40:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sQXDksdWJB9OPOkEy4qlnDk19u+YPFVgLo+Sa2g/Kho=;
+        b=OQjvnSQZbqZoff/o1/9S3Cxm+FCAs+VPOmMFjejuvAYsrEDyEb4s92f1AVXjPwbkNl
+         OZDMpWyuePDLSKsiU9+j2fyNS7alwFVcfHX3Kt3j0FPdbEy4eFjJgAQvDPhZCdNLdGn/
+         W7LDX4SP52tbDGKOgi6kiyMUb+ripD61w+WnxyNtfaBt4Mho8fHu4cCQLPZoKZWPUSWK
+         xrbbgCZV7G6EfeOd8FWjJ7QK88s+r9SyFCIilh5iF7Z1x/Diw4A5EJH1bN+NRTTYVIDl
+         9SJuo7pif39chQTnYcwFM8mhAcZ1ZC5edVChiY+Kwj+CLUfOyVH8RwvAHmFXvOClwJTL
+         x13Q==
+X-Gm-Message-State: AOAM5302Gle0wvmYfEK+IXJ000ceAcsSkwuPwX9ZLHO6/n1cioWYs9B3
+        cyjZ+hFrf8IIcqJYeqQfhYkWCmuCo4Lm0zA7ths=
+X-Google-Smtp-Source: ABdhPJxV2jiT94je+9YQXAAdxh67yLt2Jd6HQXV8DuJOBcna4yNKkadtyZwauQAoMC/xI6EG+zjmgpvrHH3dhX2Ku+k=
+X-Received: by 2002:a05:6830:18cd:: with SMTP id v13mr447185ote.206.1603122001657;
+ Mon, 19 Oct 2020 08:40:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+References: <CAGXk5yoNxZBD9gX-8RvtsqAwB4rO=hFQKBewFhOGoMO171aJVA@mail.gmail.com>
+ <20201016181722.884812-1-wvw@google.com>
+In-Reply-To: <20201016181722.884812-1-wvw@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 19 Oct 2020 17:39:50 +0200
+Message-ID: <CAJZ5v0jaftAQv9-=5YucNnm__Z7NWRWmN2mCO07i0ZhV9K5EsQ@mail.gmail.com>
+Subject: Re: [PATCH] sched: cpufreq_schedutil: restore cached freq when next_f
+ is not changed
+To:     Wei Wang <wvw@google.com>
+Cc:     Wei Wang <wei.vince.wang@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Quentin Perret <qperret@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently there was an undetected breakage for std arch event support.
+On Fri, Oct 16, 2020 at 8:17 PM Wei Wang <wvw@google.com> wrote:
+>
+> We have the raw cached freq to reduce the chance in calling cpufreq
+> driver where it could be costly in some arch/SoC.
+>
+> Currently, the raw cached freq will be reset when next_f is changed for
+> correctness. This patch changes it to maintain the cached value instead
+> of dropping it to honor the purpose of the cached value.
+>
+> This is adapted from https://android-review.googlesource.com/1352810/
+>
+> Signed-off-by: Wei Wang <wvw@google.com>
+> ---
+>  kernel/sched/cpufreq_schedutil.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> index 5ae7b4e6e8d6..e254745a82cb 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -441,6 +441,7 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
+>         unsigned long util, max;
+>         unsigned int next_f;
+>         bool busy;
+> +       unsigned int cached_freq = sg_policy->cached_raw_freq;
+>
+>         sugov_iowait_boost(sg_cpu, time, flags);
+>         sg_cpu->last_update = time;
+> @@ -464,8 +465,8 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
+>         if (busy && next_f < sg_policy->next_freq) {
+>                 next_f = sg_policy->next_freq;
+>
+> -               /* Reset cached freq as next_freq has changed */
+> -               sg_policy->cached_raw_freq = 0;
+> +               /* Restore cached freq as next_freq has changed */
+> +               sg_policy->cached_raw_freq = cached_freq;
+>         }
+>
+>         /*
+> --
 
-Add support in "PMU events" testcase to detect such breakages.
+Applied as 5.10-rc material with edited subject and rewritten changelog.
 
-For this, the "test" arch needs has support added to process std arch
-events. And a test event is added for the test, ifself.
-
-Also add a few code comments to help understand the code a bit better.
-
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- .../perf/pmu-events/arch/test/arch-std-events.json |  8 ++++++++
- .../perf/pmu-events/arch/test/test_cpu/cache.json  |  5 +++++
- tools/perf/pmu-events/jevents.c                    |  4 ++++
- tools/perf/tests/pmu-events.c                      | 14 ++++++++++++++
- 4 files changed, 31 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/test/arch-std-events.json
- create mode 100644 tools/perf/pmu-events/arch/test/test_cpu/cache.json
-
-diff --git a/tools/perf/pmu-events/arch/test/arch-std-events.json b/tools/perf/pmu-events/arch/test/arch-std-events.json
-new file mode 100644
-index 000000000000..43f6f729d6ae
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/test/arch-std-events.json
-@@ -0,0 +1,8 @@
-+[
-+    {
-+        "PublicDescription": "Attributable Level 3 cache access, read",
-+        "EventCode": "0x40",
-+        "EventName": "L3_CACHE_RD",
-+        "BriefDescription": "L3 cache access, read"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/test/test_cpu/cache.json b/tools/perf/pmu-events/arch/test/test_cpu/cache.json
-new file mode 100644
-index 000000000000..036d0efdb2bb
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/test/test_cpu/cache.json
-@@ -0,0 +1,5 @@
-+[
-+    {
-+	 "ArchStdEvent": "L3_CACHE_RD"
-+    }
-+]
-\ No newline at end of file
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index ed2374661665..6d099f645811 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -1162,6 +1162,10 @@ int main(int argc, char *argv[])
- 
- 	sprintf(ldirname, "%s/test", start_dirname);
- 
-+	rc = nftw(ldirname, preprocess_arch_std_files, maxfds, 0);
-+	if (rc)
-+		goto err_processing_std_arch_event_dir;
-+
- 	rc = nftw(ldirname, process_one_file, maxfds, 0);
- 	if (rc)
- 		goto err_processing_dir;
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index d3517a74d95e..ad2b21591275 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -14,8 +14,10 @@
- #include "util/parse-events.h"
- 
- struct perf_pmu_test_event {
-+	/* used for matching against events from generated pmu-events.c */
- 	struct pmu_event event;
- 
-+	/* used for matching against event aliases */
- 	/* extra events for aliases */
- 	const char *alias_str;
- 
-@@ -78,6 +80,17 @@ static struct perf_pmu_test_event test_cpu_events[] = {
- 		.alias_str = "umask=0,(null)=0x30d40,event=0x3a",
- 		.alias_long_desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
- 	},
-+	{
-+		.event = {
-+			.name = "l3_cache_rd",
-+			.event = "event=0x40",
-+			.desc = "L3 cache access, read",
-+			.long_desc = "Attributable Level 3 cache access, read",
-+			.topic = "cache",
-+		},
-+		.alias_str = "event=0x40",
-+		.alias_long_desc = "Attributable Level 3 cache access, read",
-+	},
- 	{ /* sentinel */
- 		.event = {
- 			.name = NULL,
-@@ -357,6 +370,7 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
- }
- 
- 
-+/* Test that aliases generated are as expected */
- static int test_aliases(void)
- {
- 	struct perf_pmu *pmu = NULL;
--- 
-2.26.2
-
+Thanks!
