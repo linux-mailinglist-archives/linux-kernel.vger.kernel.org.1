@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51587292EC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D29A292ECA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731329AbgJSTu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:50:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59092 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726718AbgJSTu1 (ORCPT
+        id S1731389AbgJSTwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:52:11 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:46217 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727936AbgJSTwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:50:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603137026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=gurUpVJY92BNatRtGPJGA4twsuCjo97EHFL7kW3iTCQ=;
-        b=XLnTGFYerF/s/BWk8RQaN5NFGSPyz+4u9C42+qylp2Fd0ZDvSecOn6J+WAONYWf8Az6dcQ
-        lo/F31Qc84MceTqC8qsCQMMUJ4ZWI6D5LDqMkmALTEFOFbv8kx69Ja8cxiH05G7s7bw8gf
-        XcINTp0MxzByaC8JRpEcNmN9ssII/bE=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-bTTapj3ROkSE3QJiOh-7Qg-1; Mon, 19 Oct 2020 15:50:24 -0400
-X-MC-Unique: bTTapj3ROkSE3QJiOh-7Qg-1
-Received: by mail-qk1-f198.google.com with SMTP id j185so530500qkf.7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:50:24 -0700 (PDT)
+        Mon, 19 Oct 2020 15:52:11 -0400
+Received: by mail-oo1-f66.google.com with SMTP id c25so189061ooe.13;
+        Mon, 19 Oct 2020 12:52:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=gurUpVJY92BNatRtGPJGA4twsuCjo97EHFL7kW3iTCQ=;
-        b=RL6HEAzroW0zjVSk6N6Zh6CPTUnORCegGyO5YE5Fxnpg8DTkW0m810jtzP21LpQFah
-         QvJtI+LG2CHwK1f7kmikJUsQ7sJn6wmIwv5m5VJvaM6+ctaW5HM7pM9qRNydrThwFavf
-         o1i6JYn/7oJs6bHFndEx4LDb3+3H18QNcHeGgIxzPnK1V89kut0K29aUqky5YKlliNah
-         SFpG7AVxXcY6jOpqi415u8ao5wzZ4hTt0mPWYg/ZKO30j4jDPub3iDa+/liu4ZyPj/Ea
-         YI7xeTKn/GFcB/hPKqqfc/onqf0r+akzHUfNKZjB3Na/6+SJhnsa5Xxa0jkvP6z02o5U
-         9H6w==
-X-Gm-Message-State: AOAM533dE80U2hLnz7o4/Cs9m2aTdfWqvSkoGYGEgaumNrTVWlDFz6Hm
-        eSO5g4u5Ig3VkhSQS7WGhw1uQJnBQyZZr5Qo90VOHUyXJGp/OQ6UFJxoXN1uQst8Z4UcNYZmZzy
-        mbxepzMiwbL0c6gzddAydeekI
-X-Received: by 2002:ac8:705b:: with SMTP id y27mr1114111qtm.192.1603137023758;
-        Mon, 19 Oct 2020 12:50:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyvDlls0C3FPTa4CLaTFO3RK5ocpNR7SlP5iafd30354sGejOe41Jo8FGhAcBQn8KNGmwvqIQ==
-X-Received: by 2002:ac8:705b:: with SMTP id y27mr1114095qtm.192.1603137023534;
-        Mon, 19 Oct 2020 12:50:23 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l25sm401073qtf.18.2020.10.19.12.50.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ew7/s5Mi9EkVfqC8BR7HcDgW3goCt7jOkM9uew3ofiU=;
+        b=cNh+WMwM9Mb1R8VspktMNHszAMelB+NAvrC4pMvWVCcqXwBo3lbH3OJWL+Hzf7PG1X
+         qqNpBpQ52am8OI/OxREJR8bFozMgyCi5oxcf2sW5y83yWNiRMELhoQa/3fC3n2UhD5+I
+         Xhq0//vsRWjUmKLBcmwO0SfaDo42J31nXDA010KPBk4q3KOJEJsistiBbdtoBTyt14Ht
+         p+gAlt3oh4fX2IFSQtvE2TpdR/HcWUopWZyA8AtEpDjJGuO+KNE/KnrA1LpUpvG4KYX/
+         OIV19M1qYt3NYqy/v+xdJHkvaaJgB6xfuUOdk/LhRZscTtcwMRVokiceOeLQuattb2K6
+         A90A==
+X-Gm-Message-State: AOAM530bTc9ZSoyZC384+6UE4bJi7K1AC5H4hvOGcLHYAXgSDj9Xd4Ew
+        TDF6aPNnfs9YmU5jvJmpTg==
+X-Google-Smtp-Source: ABdhPJx+NoGSxSoi6odZZ4oAHUazygsVlzgZNKOkBE39HHPuHBmnPyEk+8k3NTDuCDyeWFPZvZSRXw==
+X-Received: by 2002:a4a:5a06:: with SMTP id v6mr1100844ooa.69.1603137130314;
+        Mon, 19 Oct 2020 12:52:10 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t84sm201473oih.35.2020.10.19.12.52.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 12:50:22 -0700 (PDT)
-From:   trix@redhat.com
-To:     konrad.wilk@oracle.com, axboe@kernel.dk
-Cc:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] block: xen-blkback: remove unneeded break
-Date:   Mon, 19 Oct 2020 12:50:16 -0700
-Message-Id: <20201019195016.15337-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Mon, 19 Oct 2020 12:52:09 -0700 (PDT)
+Received: (nullmailer pid 3500572 invoked by uid 1000);
+        Mon, 19 Oct 2020 19:52:07 -0000
+Date:   Mon, 19 Oct 2020 14:52:07 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     linux-kernel@vger.kernel.org, srv_heupstream@mediatek.com,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: spmi: document binding for the
+ Mediatek SPMI controller
+Message-ID: <20201019195207.GA3499610@bogus>
+References: <1602864634-23489-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1602864634-23489-2-git-send-email-hsin-hsiung.wang@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602864634-23489-2-git-send-email-hsin-hsiung.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Sat, 17 Oct 2020 00:10:33 +0800, Hsin-Hsiung Wang wrote:
+> This adds documentation for the SPMI controller found on Mediatek SoCs.
+> 
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> ---
+>  .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      | 70 +++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+> 
 
-A break is not needed if it is preceded by a goto
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/block/xen-blkback/blkback.c | 1 -
- 1 file changed, 1 deletion(-)
+My bot found errors running 'make dt_binding_check' on your patch:
 
-diff --git a/drivers/block/xen-blkback/blkback.c b/drivers/block/xen-blkback/blkback.c
-index adfc9352351d..f769fbd1b4c4 100644
---- a/drivers/block/xen-blkback/blkback.c
-+++ b/drivers/block/xen-blkback/blkback.c
-@@ -1269,7 +1269,6 @@ static int dispatch_rw_block_io(struct xen_blkif_ring *ring,
- 	default:
- 		operation = 0; /* make gcc happy */
- 		goto fail_response;
--		break;
- 	}
- 
- 	/* Check that the number of segments is sane. */
--- 
-2.18.1
+Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.example.dts:19:18: fatal error: dt-bindings/clock/mt8192-clk.h: No such file or directory
+   19 |         #include <dt-bindings/clock/mt8192-clk.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1366: dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1383441
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
 
