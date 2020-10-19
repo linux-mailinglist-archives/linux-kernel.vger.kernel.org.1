@@ -2,119 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75DA2926DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542142926E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 14:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726646AbgJSL7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:59:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726239AbgJSL7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:59:45 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CDD8322268;
-        Mon, 19 Oct 2020 11:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603108785;
-        bh=xXDbAKNUCfLYB41p8lNKI+uLH9Q6GhC1oI5JuyCZbq0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MBdvLMQwLD8e4lGKoUJzoW64XIc/c33jJ34K8Irt502/bAAsXzmonvcLzSvkJcw4g
-         xfZsagWWyCuPTIfjqzkUvgH1mV8iUZ96yHr0OQjcxEEv4wIX/a+Pps5gv6VnjMzhfN
-         DuUCq2T7Vn+sAH9HkuXnwmv7yakAUsh1j3oVOQgc=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kUTpH-002PRY-0I; Mon, 19 Oct 2020 12:59:43 +0100
+        id S1726716AbgJSMEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 08:04:47 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:53573 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726015AbgJSMEq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 08:04:46 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201019120428euoutp0142dc87cc44a8627d6f8f597c812f565f~-YzRKHQhw0380103801euoutp01w
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:04:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201019120428euoutp0142dc87cc44a8627d6f8f597c812f565f~-YzRKHQhw0380103801euoutp01w
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603109068;
+        bh=J03U/1SdKjL9qcicYqjiprNSvz33NcM7GNhEKlLdi1k=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=QNgK9fiLghNEesvwAuWNivALNTe1ntFfqTzXJnnhtuUTeEswlnI5wB19NtD4lDAZr
+         1pjWNgz/SHcYCCcYWqJeWZcKpw2mOFatdbPGBY6HkN5lwFsmn+pJujwvpZ3p6PC7aU
+         jMZECSNJwJG3V4qQe9EKyqfEjIAxq5D5UKof8W4o=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201019120420eucas1p231819231aedec593bed7d4c09bc1c6f0~-YzJKrLU73115931159eucas1p2b;
+        Mon, 19 Oct 2020 12:04:20 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id F8.E1.06456.3C08D8F5; Mon, 19
+        Oct 2020 13:04:19 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201019120419eucas1p26a296cc89b171e85642c6255872e23f0~-YzI1Sg3h2331523315eucas1p2r;
+        Mon, 19 Oct 2020 12:04:19 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201019120419eusmtrp10eeddeab3025d3cdfc205e215ca7f5f9~-YzI0mabQ0980409804eusmtrp1w;
+        Mon, 19 Oct 2020 12:04:19 +0000 (GMT)
+X-AuditID: cbfec7f2-7efff70000001938-8e-5f8d80c3cc58
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 00.29.06314.3C08D8F5; Mon, 19
+        Oct 2020 13:04:19 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201019120419eusmtip1413898dbe763aa5cbd3ccd24fc19203d~-YzIrdOLo2443224432eusmtip1p;
+        Mon, 19 Oct 2020 12:04:19 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v3] net: mii: Report advertised link capabilities when
+ autonegotiation is off
+Date:   Mon, 19 Oct 2020 14:04:15 +0200
+Message-Id: <20201019120415.1416-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 19 Oct 2020 12:59:42 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
-        jason@lakedaemon.net, mark.rutland@arm.com,
-        julien.thierry.kdev@gmail.com, dianders@chromium.org,
-        daniel.thompson@linaro.org, jason.wessel@windriver.com,
-        msys.mizuma@gmail.com, ito-yuichi@fujitsu.com,
-        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/5] arm64: smp: Allocate and setup IPI as NMI
-In-Reply-To: <1602673931-28782-4-git-send-email-sumit.garg@linaro.org>
-References: <1602673931-28782-1-git-send-email-sumit.garg@linaro.org>
- <1602673931-28782-4-git-send-email-sumit.garg@linaro.org>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <1c68b74251dc72b0cd74706280ea96f7@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: sumit.garg@linaro.org, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, jason@lakedaemon.net, mark.rutland@arm.com, julien.thierry.kdev@gmail.com, dianders@chromium.org, daniel.thompson@linaro.org, jason.wessel@windriver.com, msys.mizuma@gmail.com, ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SbTBUYRSed+/d3Wtr9VriJJOxJcMUkdGdyKTxY/3zu5lo4w4mi3YR+ZHK
+        JN/5KGymDBnLJB+tDYNyMyj5LiGMEfloSllmS1LWZfLvOc85z3me885LERIt35oKi4hmlBHy
+        cKlAROo6fvUef5WYEXiir9OT7ptgCbq2oJpPF/UlkXTJUgGf7tdl8ulRVoPooaYiAc3ea0F0
+        VfuEkO4otjwrkg0NDxAybcUoT9aonhDK6ipTBLLGBj1PlqmtRDJ93SF/4XmRVzATHhbLKF28
+        L4pCDTdwVJtl3P3JcUEiWpakIhMKsDssNrcJjViCNQhalu1SkWgTryCY3kgTcoUewQa7xN9R
+        5A2rEdcoR9D0p4XHFXMIkqv1AuOUAPtAVlkX39iwwKsIZj7XbEkI3IqgcTKPSEUUZY4DISk/
+        wCggsT00PfsmMNJifBrGVhI4N1tILn++tVOMzeB14QxpxPuwEzy5+WELE5szt+ofEMb1gFuF
+        0Df2G3FiX0gZ7CI5bA6LnVohh22gOzedNHoBvg65OR6cNh2Brujn9rwnjPeubeUhsCNUN7lw
+        tA9Mv8zmc1JTGPlqxkUwhRxdPsHRYrhze/t1j8DTrObthdaQsajZDiaDGkMxcRfZqXcdpt51
+        jPq/bzEiKpEVE6NShDAq1wjmqrNKrlDFRIQ4B0Uq6tDmX+re6FxuQKuDl1iEKSTdK56KTA+U
+        8OWxqngFi4AipBbicz3dARJxsDz+GqOMDFTGhDMqFh2kSKmV+GTJwgUJDpFHM5cZJopR7nR5
+        lIl1IiomSv20jmtnPs3NWxoc3qSx2lMvuhZWjvq5QYL735p1fwNhbzNQVjXnkV0rbKufVWcV
+        5jz20tSO/Ei9MhInynTzGpMeIPUF33E/bduuSB6oqJlKsHH40uut8U1+aL1eNT+g2B/U2YMi
+        9xxuEX3MefSuufK9pvQtO7vi53BMPS4lVaFyVydCqZL/A40vDjBHAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsVy+t/xu7qHG3rjDX59VLU4f/cQs8XGGetZ
+        Leacb2GxWPR+BqvFhW19rBY3D61gtLi8aw6bxaGpexkt1h65y25xbIGYA5fH5WsXmT22rLzJ
+        5LFz1l12j02rOtk8du74zOTRt2UVo8fnTXIB7FF6NkX5pSWpChn5xSW2StGGFkZ6hpYWekYm
+        lnqGxuaxVkamSvp2NimpOZllqUX6dgl6Gd8bBQoOilVMu3eHrYHxk1AXIyeHhICJxJRrsxi7
+        GLk4hASWMkr8OL6RtYuRAyghJbFybjpEjbDEn2tdbBA1TxklPl+dxQaSYBNwlOhfeoIVJCEi
+        8JtRYsvReWAOs8A+Ron9Rxezg1QJC8RKLF51AqyDRUBVYtfmd2wgG3gFrCRufamG2CAv0b58
+        O1gJr4CgxMmZT1hASpgF1CXWzwM7lF9AS2JN03UWEJsZqLx562zmCYwCs5B0zELomIWkagEj
+        8ypGkdTS4tz03GJDveLE3OLSvHS95PzcTYzAuNp27OfmHYyXNgYfYhTgYFTi4X2Q3xMvxJpY
+        VlyZe4hRgoNZSYTX6ezpOCHelMTKqtSi/Pii0pzU4kOMpkDfTGSWEk3OB8Z8Xkm8oamhuYWl
+        obmxubGZhZI4b4fAwRghgfTEktTs1NSC1CKYPiYOTqkGRo9dAiF72vkitZNvdeqU3Ntsco1f
+        yMfGTTKkgyHD8EJMo/hnt/pZd556ZAsy3g7xPnnyo86UCM69ScfcP33eULI73SYkcsqMS44P
+        Sy1NXRjX5jdeLuao84ytv6kkdICrrUZw272rEgHWAjs95QtK1d+lr0uYxKLQ/tnDaNep8KIy
+        7o+H5mcpsRRnJBpqMRcVJwIAYD2UH8ECAAA=
+X-CMS-MailID: 20201019120419eucas1p26a296cc89b171e85642c6255872e23f0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201019120419eucas1p26a296cc89b171e85642c6255872e23f0
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201019120419eucas1p26a296cc89b171e85642c6255872e23f0
+References: <CGME20201019120419eucas1p26a296cc89b171e85642c6255872e23f0@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-14 12:12, Sumit Garg wrote:
-> Allocate an unused IPI that can be turned as NMI using ipi_nmi 
-> framework.
+Unify the set of information returned by mii_ethtool_get_link_ksettings(),
+mii_ethtool_gset() and phy_ethtool_ksettings_get(). Make the mii_*()
+functions report advertised settings when autonegotiation if disabled.
 
-This doesn't do any allocation, as far as I can see. It relies on
-the initial grant from the interrupt controller to be larger than
-what the kernel currently uses.
+Suggested-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+---
+This is the third version of ("net: phy: Prevent reporting advertised
+modes when autoneg is off")  patch[1] that started as change for phy.c
+to make phy_ethtool_ksettings_get() work like mii_*() below. After
+suggestions from Russell King came v2[2].
 
-> Also, invoke corresponding NMI setup/teardown APIs.
-> 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->  arch/arm64/kernel/smp.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index 82e75fc..129ebfb 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -43,6 +43,7 @@
->  #include <asm/daifflags.h>
->  #include <asm/kvm_mmu.h>
->  #include <asm/mmu_context.h>
-> +#include <asm/nmi.h>
->  #include <asm/numa.h>
->  #include <asm/processor.h>
->  #include <asm/smp_plat.h>
-> @@ -962,6 +963,8 @@ static void ipi_setup(int cpu)
-> 
->  	for (i = 0; i < nr_ipi; i++)
->  		enable_percpu_irq(ipi_irq_base + i, 0);
-> +
-> +	ipi_nmi_setup(cpu);
->  }
-> 
->  #ifdef CONFIG_HOTPLUG_CPU
-> @@ -974,6 +977,8 @@ static void ipi_teardown(int cpu)
-> 
->  	for (i = 0; i < nr_ipi; i++)
->  		disable_percpu_irq(ipi_irq_base + i);
-> +
-> +	ipi_nmi_teardown(cpu);
->  }
->  #endif
-> 
-> @@ -995,6 +1000,9 @@ void __init set_smp_ipi_range(int ipi_base, int n)
->  		irq_set_status_flags(ipi_base + i, IRQ_HIDDEN);
->  	}
-> 
-> +	if (n > nr_ipi)
-> +		set_smp_ipi_nmi(ipi_base + nr_ipi);
-> +
->  	ipi_irq_base = ipi_base;
-> 
->  	/* Setup the boot CPU immediately */
+Following Andrew Lunn's suggestions[2] to report advertised parameters even
+when autonegotiation is off I decided to drop changes to phy.c and make
+appropriate to mii.c
 
-Thanks,
+Changes in v3:
+  - drop changes to phy.c
+  - introduce changes to mii.c
 
-         M.
+Changes in v2:
+  - clear lp_advertising
+  - set ETHTOOL_LINK_MODE_TP_BIT and ETHTOOL_LINK_MODE_MII_BIT in advertising
+
+[1] https://lore.kernel.org/lkml/20201014125650.12137-1-l.stelmach@samsung.com/ 
+[2] https://lore.kernel.org/lkml/20201015084435.24368-1-l.stelmach@samsung.com/
+
+ drivers/net/mii.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/mii.c b/drivers/net/mii.c
+index f6a97c859f3a..e71ebb933266 100644
+--- a/drivers/net/mii.c
++++ b/drivers/net/mii.c
+@@ -84,15 +84,16 @@ int mii_ethtool_gset(struct mii_if_info *mii, struct ethtool_cmd *ecmd)
+  		ctrl1000 = mii->mdio_read(dev, mii->phy_id, MII_CTRL1000);
+ 		stat1000 = mii->mdio_read(dev, mii->phy_id, MII_STAT1000);
+ 	}
++
++	ecmd->advertising |= mii_get_an(mii, MII_ADVERTISE);
++	if (mii->supports_gmii)
++		ecmd->advertising |=
++			mii_ctrl1000_to_ethtool_adv_t(ctrl1000);
++
+ 	if (bmcr & BMCR_ANENABLE) {
+ 		ecmd->advertising |= ADVERTISED_Autoneg;
+ 		ecmd->autoneg = AUTONEG_ENABLE;
+ 
+-		ecmd->advertising |= mii_get_an(mii, MII_ADVERTISE);
+-		if (mii->supports_gmii)
+-			ecmd->advertising |=
+-					mii_ctrl1000_to_ethtool_adv_t(ctrl1000);
+-
+ 		if (bmsr & BMSR_ANEGCOMPLETE) {
+ 			ecmd->lp_advertising = mii_get_an(mii, MII_LPA);
+ 			ecmd->lp_advertising |=
+@@ -171,14 +172,15 @@ void mii_ethtool_get_link_ksettings(struct mii_if_info *mii,
+ 		ctrl1000 = mii->mdio_read(dev, mii->phy_id, MII_CTRL1000);
+ 		stat1000 = mii->mdio_read(dev, mii->phy_id, MII_STAT1000);
+ 	}
++
++	advertising |= mii_get_an(mii, MII_ADVERTISE);
++	if (mii->supports_gmii)
++		advertising |= mii_ctrl1000_to_ethtool_adv_t(ctrl1000);
++
+ 	if (bmcr & BMCR_ANENABLE) {
+ 		advertising |= ADVERTISED_Autoneg;
+ 		cmd->base.autoneg = AUTONEG_ENABLE;
+ 
+-		advertising |= mii_get_an(mii, MII_ADVERTISE);
+-		if (mii->supports_gmii)
+-			advertising |= mii_ctrl1000_to_ethtool_adv_t(ctrl1000);
+-
+ 		if (bmsr & BMSR_ANEGCOMPLETE) {
+ 			lp_advertising = mii_get_an(mii, MII_LPA);
+ 			lp_advertising |=
 -- 
-Jazz is not dead. It just smells funny...
+2.26.2
+
