@@ -2,200 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210F429307F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A602C293081
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733036AbgJSVaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 17:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733026AbgJSVaV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 17:30:21 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9089C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 14:30:19 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id gv6so524344pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 14:30:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rZYhKAIK/CTzJe6R9x8W3sg50ZvbSzRMIoJEcrLqu8M=;
-        b=DudHOiERuzz1tDVL7EiSQZgiTARWZcg9wEuAuIbrh5pgEIPiGpBImyOgToTQv/pgaE
-         +sicT7TABXgY80atmdgByVdIRRhZGXOZJ8JCkfkQW8ES7g124jJOhYZtAkG6DZG07jxY
-         qlVUo7NTyHFBrydg1Z8L7rsTBkgjEtnQRxjG+mwbgmEUlb8qK7su7n5Z+fFlzZbfnPKO
-         B4eh1hPPqII+d5UbguzcnW7tEh6zqVWIMO5jeCDK4dgqnMWRMKlCqU8Xqeo/TvXaWuJA
-         krdz2MgDNZz9Z7QKL1TnjXyvfPAV1vBFEvqYoYAeH1lWx0/5pXz/rcpTfunF6LetGUJl
-         +6fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=rZYhKAIK/CTzJe6R9x8W3sg50ZvbSzRMIoJEcrLqu8M=;
-        b=T4EqQo/jC9gKIxLF3f1fUT8OwSexFSMty6xGJnYpjrxGXSCZ9nJw/7hF3Z2ivqHn/8
-         UCb9TOuZKDNKotKiq16N8M5iXBMOMvIAf/MAdBaNv0FHCWLX/QEKw7jL3h+FaMgYW2TR
-         0pO94VtCMM6xlIy75gOORm8nfs1KLMYufhv3nEHC8g00Bcisecx8QvqqDKFCPS4xRINa
-         cav1FYLomMbhiJP7XiRuTJMQMioLzlcKPZ0RYWAHzk4e/YkzlkGW7psSAh+XQAmF3SbQ
-         0/tTuZo33stDaUae6Z0jZF8TsS51HJTHVd5WYJyKY0aruzYIZ/PYwNQIJRYtguBXlEv0
-         IgFQ==
-X-Gm-Message-State: AOAM5331oIkVkuC9aBfQZSXIm9FbCygVe8wU1kUWqFmtRU3Be4M6dsb8
-        EJhJ2YDlSDbsjzUVvlKo/h5shw==
-X-Google-Smtp-Source: ABdhPJydXDOsEfhE0j4FbL9oG0N/NdSa7o6K3hd4CmeFvLTqrW6uI9We/mYNiVAfXvj0SNTjMgqFOA==
-X-Received: by 2002:a17:902:c1d2:b029:d3:e6e9:c391 with SMTP id c18-20020a170902c1d2b02900d3e6e9c391mr1794898plc.49.1603143019231;
-        Mon, 19 Oct 2020 14:30:19 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id u65sm688776pfc.11.2020.10.19.14.30.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 14:30:18 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 14:30:18 -0700 (PDT)
-X-Google-Original-Date: Mon, 19 Oct 2020 14:30:17 PDT (-0700)
-Subject:     Re: [GIT PULL] RISC-V Patches for the 5.10 Merge Window, Part 1
-In-Reply-To: <CAMj1kXHsguWaxqOVDuD0PTSW0+dJPcEaJOMEcPRB86ORA_ggeg@mail.gmail.com>
-CC:     atishp@atishpatra.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     ardb@kernel.org
-Message-ID: <mhng-8bba103a-a680-4a21-829b-bf260590e1cd@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1733073AbgJSVbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 17:31:13 -0400
+Received: from mga17.intel.com ([192.55.52.151]:10447 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733039AbgJSVbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 17:31:11 -0400
+IronPort-SDR: Xh7rBnV2ccaAPNT19RzzqvVqJ2N5nWhmLizzV3VQA6IK7fkI6UHqMGtPXw8c8Kjae7rdVaU48U
+ rrpu8+t4cSLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="146962948"
+X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
+   d="scan'208";a="146962948"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 14:31:08 -0700
+IronPort-SDR: 1kt9jZOtoekxl6mGH3ucNF+7squprmoqQ5AiMFacq2KUEYAbYdIyCQaDuIOox4Jy8pW1HMU5m8
+ hpqnKfUm/RHw==
+X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
+   d="scan'208";a="532786087"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 14:31:07 -0700
+Date:   Mon, 19 Oct 2020 14:31:05 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     "Dr. Greg" <greg@enjellic.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20201019213105.GE23072@linux.intel.com>
+References: <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com>
+ <20200924230501.GA20095@linux.intel.com>
+ <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com>
+ <20200925000052.GA20333@linux.intel.com>
+ <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
+ <20200925194304.GE31528@linux.intel.com>
+ <230ce6da-7820-976f-f036-a261841d626f@intel.com>
+ <20200928005347.GB6704@linux.intel.com>
+ <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com>
+ <20201018084920.GA19255@wind.enjellic.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201018084920.GA19255@wind.enjellic.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Oct 2020 14:21:33 PDT (-0700), ardb@kernel.org wrote:
-> On Mon, 19 Oct 2020 at 23:00, Palmer Dabbelt <palmer@dabbelt.com> wrote:
->>
->> On Mon, 19 Oct 2020 13:43:27 PDT (-0700), atishp@atishpatra.org wrote:
->> > On Mon, Oct 19, 2020 at 12:08 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->> >>
->> >> The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
->> >>
->> >>   Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
->> >>
->> >> are available in the Git repository at:
->> >>
->> >>   git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.10-mw0
->> >>
->> >> for you to fetch changes up to de22d2107ced3cc5355cc9dbbd85e44183546bd5:
->> >>
->> >>   RISC-V: Add page table dump support for uefi (2020-10-02 14:31:33 -0700)
->> >>
->> >> ----------------------------------------------------------------
->> >> RISC-V Patches for the 5.10 Merge Window, Part 1
->> >>
->> >> This contains a handful of cleanups and new features, including:
->> >>
->> >> * A handful of cleanups for our page fault handling.
->> >> * Improvements to how we fill out cacheinfo.
->> >> * Support for EFI-based systems.
->> >>
->> >> ---
->> >>
->> >> This contains a merge from the EFI tree that was necessary as some of the EFI
->> >> support landed over there.  It's my first time doing something like this,
->> >>
->> >> I haven't included the set_fs stuff because the base branch it depends on
->> >> hasn't been merged yet.  I'll probably have another merge window PR, as
->> >> there's more in flight (most notably the fix for new binutils I just sent out),
->> >> but I figured there was no reason to delay this any longer.
->> >>
->> >> There is one merge conflict, which is between my fixes and for-next branches:
->> >>
->> >>     diff --cc arch/riscv/kernel/vmlinux.lds.S
->> >>     index 67db80e12d1f,9795359cb9da..ffaa3da375c2
->> >>     --- a/arch/riscv/kernel/vmlinux.lds.S
->> >>     +++ b/arch/riscv/kernel/vmlinux.lds.S
->> >>     @@@ -66,8 -71,11 +70,13 @@@ SECTION
->> >>                     _etext = .;
->> >>             }
->> >>
->> >>      +      INIT_DATA_SECTION(16)
->> >>      +
->> >>     + #ifdef CONFIG_EFI
->> >>     +       . = ALIGN(PECOFF_SECTION_ALIGNMENT);
->> >>     +       __pecoff_text_end = .;
->> >>     + #endif
->> >>     +
->> >>             /* Start of data section */
->> >>             _sdata = .;
->> >>             RO_DATA(SECTION_ALIGN)
->> >>
->> >> ----------------------------------------------------------------
->> >> Anup Patel (1):
->> >>       RISC-V: Move DT mapping outof fixmap
->> >>
->> >> Ard Biesheuvel (3):
->> >>       efi/libstub: arm32: Base FDT and initrd placement on image address
->> >>       efi/libstub: Export efi_low_alloc_above() to other units
->> >>       efi/libstub: arm32: Use low allocation for the uncompressed kernel
->> >>
->> >
->> > I thought these 3 were being taken through the EFI tree. I already see
->> > them in the master branch.
->> >
->> > 762cd288fc4a efi/libstub: arm32: Use low allocation for the uncompressed kernel
->> > 1a895dbf4b66 efi/libstub: Export efi_low_alloc_above() to other units
->> > 6208857b8f7e efi/libstub: arm32: Base FDT and initrd placement on image address
->>
->> I see them in Linus' master with those exact hashes, so IIUC this is all OK?  I
->> guess I just assumed they were supposed to show up in the shortlog, but it's my
->> first time trying one of these multi-tree merges so maybe I screwed something
->> up?
->>
->> I obtained these by merging a tag from the EFI tree (that's already been
->> merged) into my tree, which looks OK to me:
->>
->>     commit 8a3f30c4319dc70547f11c18da2e7b5987543aa1
->>     gpg: Signature made Fri 02 Oct 2020 02:30:05 PM PDT
->>     gpg:                using RSA key 2B3C3747446843B24A943A7A2E1319F35FBB1889
->>     gpg:                issuer "palmer@dabbelt.com"
->>     gpg: Good signature from "Palmer Dabbelt <palmer@dabbelt.com>" [ultimate]
->>     gpg:                 aka "Palmer Dabbelt <palmerdabbelt@google.com>" [ultimate]
->>     merged tag 'efi-riscv-shared-for-v5.10'
->>     gpg: Signature made Wed 16 Sep 2020 08:57:07 AM PDT
->>     gpg:                using RSA key 9CD2A0DA6AD8F7330175E2BBC237207E9574FA7D
->>     gpg: Good signature from "Adriaan (Ard) Biesheuvel <ard.biesheuvel@linaro.org>" [unknown]
->>     gpg:                 aka "Adriaan (Ard) Biesheuvel <ard.biesheuvel@gmail.com>" [unknown]
->>     gpg:                 aka "Adriaan (Ard) Biesheuvel <ardb@kernel.org>" [unknown]
->>     gpg:                 aka "Adriaan (Ard) Biesheuvel <ard.biesheuvel@arm.com>" [unknown]
->>     gpg: WARNING: This key is not certified with a trusted signature!
->>     gpg:          There is no indication that the signature belongs to the owner.
->>     Primary key fingerprint: F43D 0332 8115 A198 C900  1688 3D20 0E9C A632 9909
->>          Subkey fingerprint: 9CD2 A0DA 6AD8 F733 0175  E2BB C237 207E 9574 FA7D
->>     Merge: 54701a0d12e2 762cd288fc4a
->>     Author: Palmer Dabbelt <palmerdabbelt@google.com>
->>     Date:   Fri Oct 2 14:29:51 2020 -0700
->>
->>         Merge tag 'efi-riscv-shared-for-v5.10' of ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/efi/efi into for-next
->>
->>         Stable branch for v5.10 shared between the EFI and RISC-V trees
->>
->>         The RISC-V EFI boot and runtime support will be merged for v5.10 via
->>         the RISC-V tree. However, it incorporates some changes that conflict
->>         with other EFI changes that are in flight, so this tag serves as a
->>         shared base that allows those conflicts to be resolved beforehand.
->>
->>         * tag 'efi-riscv-shared-for-v5.10' of ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/efi/efi:
->>           efi/libstub: arm32: Use low allocation for the uncompressed kernel
->>           efi/libstub: Export efi_low_alloc_above() to other units
->>           efi/libstub: arm32: Base FDT and initrd placement on image address
->>           efi: Rename arm-init to efi-init common for all arch
->>           include: pe.h: Add RISC-V related PE definition
->>
->> I think the actual issue here is just that whatever I pointed git to when
->> generating the PR didn't contain the merge of the shared code yet, so
->> git-shortlog included it?
->>
->
-> This all looks fine. Usually in such cases, you don't know which
-> branch will gets pulled first, so it makes sense for each PR to
-> describe the shared changes.
+On Sun, Oct 18, 2020 at 03:49:20AM -0500, Dr. Greg wrote:
+> Is this even a relevant control if we cede the notion of dynamically
+> loadable enclave code, which is the objective of SGX2 hardware, which
+> will in all likelihood be the only relevant hardware implementation in
+> the future?
 
-OK, good to know -- I'd just been pointing my PRs at Linus' latest tag, rather
-than directly at master, as it's less of a moving target.  Sounds like that's a
-reasonable thing to do, so I'll probably keep doing it (unless I forget ;))
-
-Linus: Looks like this was all actually fine, but LMK if you have any issues.
+Yes, it's still relevant.  Giving the thumbs up to dynamically loadable code is
+not a purely binary decision, e.g. a user/admin can allow RW->RX transitions
+but still disallow full RWX permissions.
