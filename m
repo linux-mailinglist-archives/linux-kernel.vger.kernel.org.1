@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2062924B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEC52924BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729210AbgJSJhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+        id S1727614AbgJSJj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727556AbgJSJhl (ORCPT
+        with ESMTP id S1727460AbgJSJj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:37:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38C6C0613CE;
-        Mon, 19 Oct 2020 02:37:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=O3B5SDSSGOQ/+MQUdt0Hy/pyKJ8BUU2Uw0eRUC0gQJw=; b=UjWOH0rqHpfO2evvAot8XfZPhm
-        Ujz8nN5NXFhX2X4ST7K3yr0FRVocJcnYRDv/x7ri2cofoF0tNd4LH43/uNrRKlRuD7TzTxbBiCxfy
-        f08AUp6A/Do8cyTspB4hlKZPrmm2mETomhSipdZAEa6fN7de/Z1evQijJAVE/MGG/DxVM2iU4Qn1q
-        FUGEOKLtigWd+T+4WYYGb9bKOVXkDEghzmKrV64OZSbp3a8dondpd2YaqnxT8BjrOR+snVk2sP+AP
-        w4nUUDdb7ykKA7E8PI1XyPVgSG1NlxEHDdKwSNLo4JS+pBVzA5E8S9e3uLAZUr0QXqTZzSQjS9Nvy
-        WFDYp1rg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kURbQ-0003ky-22; Mon, 19 Oct 2020 09:37:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B242E3012C3;
-        Mon, 19 Oct 2020 11:37:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A127821447780; Mon, 19 Oct 2020 11:37:14 +0200 (CEST)
-Date:   Mon, 19 Oct 2020 11:37:14 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V3 4/9] x86/pks: Preserve the PKRS MSR on context
- switch
-Message-ID: <20201019093714.GI2628@hirez.programming.kicks-ass.net>
-References: <20201009194258.3207172-1-ira.weiny@intel.com>
- <20201009194258.3207172-5-ira.weiny@intel.com>
- <429789d3-ab5b-49c3-65c3-f0fc30a12516@intel.com>
- <20201016111226.GN2611@hirez.programming.kicks-ass.net>
- <20201017051410.GW2046448@iweiny-DESK2.sc.intel.com>
+        Mon, 19 Oct 2020 05:39:56 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58746C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 02:39:56 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id c141so13369117lfg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 02:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=Zr6WnALleQdZ1gAu/9D/xHkeePuW/Rb5f5x+BjyZdvg=;
+        b=QIZK1nPiYC8ZcBELzS0IhBjf2JVtl2pfb6qrQ3tvwUDVXBlwVtwylABNDe+B1zla7Y
+         4Vxvnco/Aaz+iSSXy0jvfBZ0MxnRgXNYK4RbjZPlazVd6Nx2hWOz22/L3PbqH+JC9R8d
+         o5aEwj1/9yLPSL5k09s+wGxMoN607qd0Nlk4sQzZxFSQjVvlNZQHfcYY6ekSOlWDvi1p
+         uwRw4dm2E2K6Esaag7J/8HRZ/50pPk6XCfXXHc+w7p0muDgo4S8J1Yos6ZxNvOg3mvBS
+         lQz08nf9yUCvitd+cpH+c3++Kq54QIk1uy3QliAP26mrIuoDP5DADjvT4VNtm2j/o0A4
+         HJDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=Zr6WnALleQdZ1gAu/9D/xHkeePuW/Rb5f5x+BjyZdvg=;
+        b=TWugUfe3j+sr4Fo1aHIOwKwPwsXp3dK07iU0FB0QOiB8wy4CMlTUrtDk2leww6PpK0
+         trlOa0N1rQc9aJcn9cQ4jkXJGqugtYxm/WxNkFQ4YOdlSEKZv8NkCefbdYGZiIiis5YR
+         iKpVSdRzwgwCAGnCG168o/E71T2PinkYnVI+vqq5ie962aGKliXweFvzv8Ujd6cS2yNP
+         q5yLtcjoVHT71Omq9op/lbe9ldRR3rcVSAih9SQpJSZxZMKXb3NlT0hn0tN98PLnpupx
+         9jSvPck6lTbz8qoPJq8ScCPU2NM9BxQJul5TiJx5YjF8XpQQ+GfbrRn+1DvVxUu/6EWI
+         r8kg==
+X-Gm-Message-State: AOAM532Iq4THHJneL+atvnwF+J5i2y1qwzMlWKaXV+n1x6FGXxd5eqlL
+        6wMypO4vtwbG0rIP+yAw5J3f77DmtyxLdC/kpgo=
+X-Google-Smtp-Source: ABdhPJyf2mEr0WsePg7MajeAkiSaCxxrmRRA/9PRDTw1l4Q9jKVVKmcv5SSF/7RxvEsOtgiY9dKUUvP+ZGwxjgzbWd4=
+X-Received: by 2002:ac2:43af:: with SMTP id t15mr5016382lfl.42.1603100394685;
+ Mon, 19 Oct 2020 02:39:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201017051410.GW2046448@iweiny-DESK2.sc.intel.com>
+Reply-To: salif.musa211@gmail.com
+Sender: uslif12@gmail.com
+Received: by 2002:a19:88d6:0:0:0:0:0 with HTTP; Mon, 19 Oct 2020 02:39:54
+ -0700 (PDT)
+From:   Salif Musa <salif.musa212@gmail.com>
+Date:   Mon, 19 Oct 2020 10:39:54 +0100
+X-Google-Sender-Auth: 0GcHAIJjIbzrP9Qw6dr59MDPLSA
+Message-ID: <CAKVqExfGjP9SgEWgeKVc1wokh9ymZQ6K0=AXAZq6SzHDxVTMoA@mail.gmail.com>
+Subject: TREAT AS URGENT/ REPLY FOR MORE DETAILS
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 10:14:10PM -0700, Ira Weiny wrote:
-> > so it either needs to
-> > explicitly do so, or have an assertion that preemption is indeed
-> > disabled.
-> 
-> However, I don't think I understand clearly.  Doesn't [get|put]_cpu_ptr()
-> handle the preempt_disable() for us? 
+-- 
+Hi friend
 
-It does.
 
-> Is it not sufficient to rely on that?
 
-It is.
+I am a banker in ADB BANK. I want to transfer an abandoned sum of
+USD15.6Million to your Bank account. 40/percent will be your share.
 
-> Dave's comment seems to be the opposite where we need to eliminate preempt
-> disable before calling write_pkrs().
-> 
-> FWIW I think I'm mistaken in my response to Dave regarding the
-> preempt_disable() in pks_update_protection().
+No risk involved but keeps it as secret. Contact me for more details.
+Please reply me through my alternative email id only (salif.musa211@gmail.com)
+for confidential reasons.
 
-Dave's concern is that we're calling with with preemption already
-disabled so disabling it again is superfluous.
+
+Yours
+Dr Salif Musa
