@@ -2,115 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB62A2924A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06BB2924A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730413AbgJSJcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgJSJcx (ORCPT
+        id S1730427AbgJSJdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:33:37 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7813 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgJSJdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:32:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C52C0613CE;
-        Mon, 19 Oct 2020 02:32:53 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603099971;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4fyNCJtixmMQLpdN/DZHToMwce+xzNTC2SZe9HVysp4=;
-        b=Us4WBN074EyLmI/JAtZBFMM/L+H+96RGsyD0V7+tfhvUas/oAmUlLH+yR30O2esPxSv9mr
-        jMuqsa8LFt5XnodL9ZmM56R9euqMVoibL41CNwTA8c6mx3GPKXbVQfFWTxqJ+b4UnuXY8E
-        3utbQZBo3wsSF5dUhNB521STjUF+aQk4nCm2rc5zMx9ws1/VsSWCH8K3W8Z+Ki9mI3VTM1
-        zgz2hY/F8S5aKztuXoA1alyNzBPmneHbpfLGVXOv5e+uYT7HstuVl3ve68rHneBaoLLIlo
-        /uQTRkrtHYbo4SfLwJBoGcv2JSbkkxgqfPkEWJxvHC9c0q4FfHzQ8PoSQyC7tA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603099971;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4fyNCJtixmMQLpdN/DZHToMwce+xzNTC2SZe9HVysp4=;
-        b=n5qkv4DinDVT1DFRGYUsWn49/iHAKpipcTZl3lLbCBeUXx8M0W6uKRs9bA2WqnEiErHMR4
-        hejKs03ygBJ/CRAQ==
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V3 6/9] x86/entry: Pass irqentry_state_t by reference
-In-Reply-To: <20201019053639.GA3713473@iweiny-DESK2.sc.intel.com>
-References: <20201009194258.3207172-1-ira.weiny@intel.com> <20201009194258.3207172-7-ira.weiny@intel.com> <20201016114510.GO2611@hirez.programming.kicks-ass.net> <87lfg6tjnq.fsf@nanos.tec.linutronix.de> <20201019053639.GA3713473@iweiny-DESK2.sc.intel.com>
-Date:   Mon, 19 Oct 2020 11:32:50 +0200
-Message-ID: <87k0vma7ct.fsf@nanos.tec.linutronix.de>
+        Mon, 19 Oct 2020 05:33:37 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8d5d640000>; Mon, 19 Oct 2020 02:33:24 -0700
+Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 19 Oct
+ 2020 09:33:35 +0000
+Subject: Re: [PATCH V2] cpufreq: tegra186: Fix initial frequency
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200824145907.331899-1-jonathanh@nvidia.com>
+ <20200825055003.qfsuktsv7cyouxei@vireshk-i7>
+ <09ac354e-a55b-5300-12ae-3f24c8f8b193@nvidia.com>
+ <20201016040700.wzfegk7hmabxgpff@vireshk-i7>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <9c37db70-9406-8005-3478-dc4a5e94c566@nvidia.com>
+Date:   Mon, 19 Oct 2020 10:33:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201016040700.wzfegk7hmabxgpff@vireshk-i7>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603100004; bh=VHebAihr/c2PZr14hnXiYRQ8vQU8fQUxo/cFXOuEh2Q=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=HeYT97qQVqeWGZlRuvP9OUi2vQMHWmf6sDJpAjzMVlda+bol8jjAc6qoVTlHXyoby
+         9VbybSpJYAOCJlRAUghNqlKXJzr9/nznf5NOpjUGX/5B9mpK4opUrdVSoF6JxlwAPI
+         UhCZdoUNe7l1ikkYYlPtcz5oh8R8o/tlj2qQGWTJw03rWqtPKhJtRyGFxZpBfzdzz0
+         D4B7Q1cbl0x8SRKc93A3fUjHLiTZYkpAbl6G2P0EdK+w8DnPejSMqNCWVsEMd1xKwQ
+         x6o3rI+FoybqTVElcjxzFY1lzHCfaGJu/C4cc2sYVgVpxx9W5WWReXPdC1bQ1W2DNM
+         6ZZ/KijI1WFWQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18 2020 at 22:37, Ira Weiny wrote:
-> On Fri, Oct 16, 2020 at 02:55:21PM +0200, Thomas Gleixner wrote:
->> Subject: x86/entry: Move nmi entry/exit into common code
->> From: Thomas Gleixner <tglx@linutronix.de>
->> Date: Fri, 11 Sep 2020 10:09:56 +0200
->> 
->> Add blurb here.
->
-> How about:
->
-> To prepare for saving PKRS values across NMI's we lift the
-> idtentry_[enter|exit]_nmi() to the common code.  Rename them to
-> irqentry_nmi_[enter|exit]() to reflect the new generic nature and store the
-> state in the same irqentry_state_t structure as the other irqentry_*()
-> functions.  Finally, differentiate the state being stored between the NMI and
-> IRQ path by adding 'lockdep' to irqentry_state_t.
 
-No. This has absolutely nothing to do with PKRS. It's a cleanup valuable
-by itself and that's how it should have been done right away.
+On 16/10/2020 05:07, Viresh Kumar wrote:
+> On 15-10-20, 15:03, Jon Hunter wrote:
+>> If not too late, would you mind dropping this patch for v5.10?
+> 
+> It is already part of Linus's master now.
 
-So the proper changelog is:
+OK, thanks. I will send a revert for this once rc1 is out.
 
-  Lockdep state handling on NMI enter and exit is nothing specific to
-  X86. It's not any different on other architectures. Also the extra
-  state type is not necessary, irqentry_state_t can carry the necessary
-  information as well.
+Cheers
+Jon
 
-  Move it to common code and extend irqentry_state_t to carry lockdep
-  state.
-
->> --- a/include/linux/entry-common.h
->> +++ b/include/linux/entry-common.h
->> @@ -343,6 +343,7 @@ void irqentry_exit_to_user_mode(struct p
->>  #ifndef irqentry_state
->>  typedef struct irqentry_state {
->>  	bool	exit_rcu;
->> +	bool	lockdep;
->>  } irqentry_state_t;
->
-> Building on what Peter said do you agree this should be made into a union?
->
-> It may not be strictly necessary in this patch but I think it would reflect the
-> mutual exclusivity better and could be changed easy enough in the follow on
-> patch which adds the pkrs state.
-
-Why the heck should it be changed in a patch which adds something
-completely different?
-
-Either it's mutually exclusive or not and if so it want's to be done in
-this patch and not in a change which extends the struct for other
-reasons.
-
-Thanks,
-
-        tglx
-
-
+-- 
+nvpublic
