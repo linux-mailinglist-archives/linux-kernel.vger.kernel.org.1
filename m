@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8598292F29
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F03292F31
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729450AbgJSUIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:08:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51507 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727068AbgJSUIM (ORCPT
+        id S1729892AbgJSUJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:09:04 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:35705 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgJSUJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:08:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603138091;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=KK+mSkHQM5HW+MdXjp7VAFTxoyS91vnFOwsUGhSxPmk=;
-        b=eGmPzzv7MXKBFRDcyt1m721D31IZ+sbIG1MzShfBH+AppGeVHR5GbvlMoFNOMuUARXCZec
-        UklisL7hTASPdisVIsFnBUR+2dKTYc0PoqofbT3IWyX6pgFB1KCoWlaaJqH2bWyaVwY1O9
-        IFaAUKM/OeSzK2mlcTm6DVQIi3HzOj4=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-491-zE5znyafN3m7WKazD1szWQ-1; Mon, 19 Oct 2020 16:08:10 -0400
-X-MC-Unique: zE5znyafN3m7WKazD1szWQ-1
-Received: by mail-qk1-f199.google.com with SMTP id v186so573510qkb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:08:10 -0700 (PDT)
+        Mon, 19 Oct 2020 16:09:04 -0400
+Received: by mail-oi1-f195.google.com with SMTP id w141so1378106oia.2;
+        Mon, 19 Oct 2020 13:09:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=KK+mSkHQM5HW+MdXjp7VAFTxoyS91vnFOwsUGhSxPmk=;
-        b=OUZzOSZciRN1QVumslEjGvw/a2Fh6o+QN9Mx5YYBq2yZKQ6rubMm8E2IHq77nfWlgw
-         oxOlq0AxmxWxJ0qkwWk3f1Qrw7YlHJTgcLqusIMFT5BnRYTpxHYhA6nQL2nwEMgSec+y
-         RzI+LhmKwZzG/9Csd7Bu78DCrNhorwUiSW+dD1nRf2T/aQSgdcEcwFvUaPhlREnk0l3Z
-         sIedXQosmNU7OGtPVTuFBBAiGOCwn05yfNQ9Ux0D0EjU/mnS8+WmyTpD865+Qjio7869
-         KAmx7yCjwMyNE8i9VDCWqffHihlgUH8wV5xZZlGUcQ4VBUCIID1OB+u55OGHf1pa76b4
-         EeQQ==
-X-Gm-Message-State: AOAM5309hU2plM56YhfmeDx63IlKxhsDHGVpO1Bd6giRJafRKkifuzL9
-        SXiyfISz5YCXzZdcjHvG/FYEy4T7mPWc7W5P9UE42OU9Lp6LR61ObrpShjz/e1w0m1mPGybmX88
-        KdZpxDs4P9NkCtYZQJzux0BdD
-X-Received: by 2002:a0c:85e3:: with SMTP id o90mr1341845qva.46.1603138089416;
-        Mon, 19 Oct 2020 13:08:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy/B0cMfcKSl+OJKqaoY4gQIekN4uoRC3m2jozT4QZRyFc8HTBa07dDHNkHwR5uD/T2TIbMmg==
-X-Received: by 2002:a0c:85e3:: with SMTP id o90mr1341824qva.46.1603138089200;
-        Mon, 19 Oct 2020 13:08:09 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id u2sm369407qtw.40.2020.10.19.13.08.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QMKtewLYPP6tMQVtj4mNNEqIIxGrRSZg6gyxLvKazTE=;
+        b=ND7b09LvutXyqsW0OmNitlL6mwcO+IKCLgeCu0E7KvvvWUHgamNkdR1GaqQkwVBRjN
+         KFY2CGrqu58dn/4139gMsLnskaN0zKyFF5AfOVMGAGnRcYJAye97QaN6lHelVHIiGOxq
+         aBN0JUEclgMw1LJpfkjyGrZ3h4nT6wtRouJe8WDLRLIvOzaphFobp7tlQ3ClAt4anZjI
+         oHCaghuwQAQKR4dsLa3FCi7arGWDLexpFll/fbLEcrUFPhohDEDc4iEiUyD5F34Nj5s/
+         6o8hGv/YJqEySEO+b5udER2d1QhoRD4ZNoK2YcG5XLWQxl4bviXYDXjUGR24WD7SfZye
+         UX1A==
+X-Gm-Message-State: AOAM533xdLGJK4itAI/eNquyU7UtIvGiuZnGZ+Xfi9FcJsm4Xiqtmf2K
+        g/OXJVIP1WzO/IuWVzDbVUia/d1SXQ==
+X-Google-Smtp-Source: ABdhPJz/VKBoYDlXHVBPp/z69rzZd2jUBU4G1RSqcEx3aclXL/87oJay7IsitKDGtyVmSbSSsSbATA==
+X-Received: by 2002:aca:cdd8:: with SMTP id d207mr730753oig.64.1603138143247;
+        Mon, 19 Oct 2020 13:09:03 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j75sm219474oih.10.2020.10.19.13.09.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 13:08:08 -0700 (PDT)
-From:   trix@redhat.com
-To:     tony.luck@intel.com, bp@alien8.de, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com
-Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] x86/mce: remove unneeded break
-Date:   Mon, 19 Oct 2020 13:08:03 -0700
-Message-Id: <20201019200803.17619-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Mon, 19 Oct 2020 13:09:02 -0700 (PDT)
+Received: (nullmailer pid 3523438 invoked by uid 1000);
+        Mon, 19 Oct 2020 20:09:01 -0000
+Date:   Mon, 19 Oct 2020 15:09:01 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH 3/6] Documetation: dt-bindings: add the
+ samsung,exynos-pcie-phy binding
+Message-ID: <20201019200901.GA3522961@bogus>
+References: <20201019094715.15343-1-m.szyprowski@samsung.com>
+ <CGME20201019094739eucas1p17424b1224bf2a1a5b16c33deb4209166@eucas1p1.samsung.com>
+ <20201019094715.15343-4-m.szyprowski@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019094715.15343-4-m.szyprowski@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Mon, 19 Oct 2020 11:47:12 +0200, Marek Szyprowski wrote:
+> From: Jaehoon Chung <jh80.chung@samsung.com>
+> 
+> Add dt-bindings for the Samsung Exynos PCIe PHY controller (Exynos5433
+> variant).
+> 
+> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
+> [mszyprow: updated the binding to latest driver changes, rewrote it in yaml,
+> 	   rewrote commit message]
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>  .../bindings/phy/samsung,exynos-pcie-phy.yaml | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/samsung,exynos-pcie-phy.yaml
+> 
 
-A break is not needed if it is preceded by a return
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- arch/x86/kernel/cpu/mce/core.c | 2 --
- 1 file changed, 2 deletions(-)
+My bot found errors running 'make dt_binding_check' on your patch:
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 1c08cb9eb9f6..16ce86aed8e2 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1811,11 +1811,9 @@ static int __mcheck_cpu_ancient_init(struct cpuinfo_x86 *c)
- 	case X86_VENDOR_INTEL:
- 		intel_p5_mcheck_init(c);
- 		return 1;
--		break;
- 	case X86_VENDOR_CENTAUR:
- 		winchip_mcheck_init(c);
- 		return 1;
--		break;
- 	default:
- 		return 0;
- 	}
--- 
-2.18.1
+./Documentation/devicetree/bindings/phy/samsung,exynos-pcie-phy.yaml:51:4: [error] no new line character at the end of file (new-line-at-end-of-file)
+make[1]: *** [Documentation/devicetree/bindings/Makefile:59: Documentation/devicetree/bindings/processed-schema-examples.json] Error 123
+make: *** [Makefile:1366: dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1384137
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
 
