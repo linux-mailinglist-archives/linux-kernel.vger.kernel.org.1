@@ -2,55 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC11293209
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 01:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07441293216
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 01:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389073AbgJSXd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 19:33:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727092AbgJSXd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 19:33:58 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2389091AbgJSXmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 19:42:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35474 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726995AbgJSXmF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 19:42:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603150924;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hy5Toxs0EKUklsBebnq/S505L/qncNcBB4kBuZErIU4=;
+        b=eTKd6QyXXvFbrlwUYUqK6+gFj7QxS0hd4kPR6hfJDuhgyQ6a5fiz8SlbCTtrOEBQ6S6bzA
+        a66kHFWO9THrfAYSH/I7MWd10XOTYvD2ZbGGf4L6ZT756Vx353H5XSvjvr1eCKces1sMpp
+        nKSBxwJ+kI+ozu89azvtQOtkRwJepkg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-eEQdHWqWM7OJlXKeoomt-g-1; Mon, 19 Oct 2020 19:42:02 -0400
+X-MC-Unique: eEQdHWqWM7OJlXKeoomt-g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1FAB2222F;
-        Mon, 19 Oct 2020 23:33:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603150437;
-        bh=PXeFeuESIa+daODZU6VawXuXsXXTOP2d+OWVNl8JNiw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ecimiw/VTzR4Bfomfg6D9rJbJSri0iYKDxBGgxcEHLLyJcOYGV3ACMJajRkj3hwI5
-         6qQ7ZnJEo5Y7oKy83Hd1Zds06qlBdVbPfIli7dBFVd0Kq7JGPkugbQQ+z2zpq9FjHc
-         m8ywN7NQjmKlslGWhSWY78Fn+yJrPsZkCscASinQ=
-Date:   Mon, 19 Oct 2020 19:33:56 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rich Felker <dalias@libc.org>
-Subject: Re: [PATCH AUTOSEL 5.9 026/111] seccomp: kill process instead of
- thread for unknown actions
-Message-ID: <20201019233356.GF4060117@sasha-vm>
-References: <20201018191807.4052726-1-sashal@kernel.org>
- <20201018191807.4052726-26-sashal@kernel.org>
- <202010191627.EAD97F5E@keescook>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A1C3E1895806;
+        Mon, 19 Oct 2020 23:42:00 +0000 (UTC)
+Received: from treble (ovpn-112-186.rdu2.redhat.com [10.10.112.186])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8C6501002C03;
+        Mon, 19 Oct 2020 23:41:58 +0000 (UTC)
+Date:   Mon, 19 Oct 2020 18:41:55 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] arm64: Implement reliable stack trace
+Message-ID: <20201019234155.q26jkm22fhnnztiw@treble>
+References: <20201012172605.10715-1-broonie@kernel.org>
+ <alpine.LSU.2.21.2010151533490.14094@pobox.suse.cz>
+ <20201015141612.GC50416@C02TD0UTHF1T.local>
+ <20201015154951.GD4390@sirena.org.uk>
+ <20201015212931.mh4a5jt7pxqlzxsg@treble>
+ <20201016121534.GC5274@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202010191627.EAD97F5E@keescook>
+In-Reply-To: <20201016121534.GC5274@sirena.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 04:28:19PM -0700, Kees Cook wrote:
->Hi Sasha,
->
->I'd prefer this was not backported -- it's not a bug fix, and if the
->behavioral change is actually disruptive, I'd like to keep the fall-out
->contained. :)
+On Fri, Oct 16, 2020 at 01:15:34PM +0100, Mark Brown wrote:
+> 
+> Yes, exactly - just copying the existing implementations and hoping that
+> it's sensible/relevant and covers everything that's needed.  It's not
+> entirely clear what a reliable stacktrace is expected to do that a
+> normal stacktrace doesn't do beyond returning an error code.
 
-Now dropped, thanks!
+While in the end there may not be much of a difference between normal
+and reliable stacktraces beyond returning an error code, it still
+requires beefing up the unwinder's error detection abilities.
+
+> > > The searching for a defined thread entry point for example isn't
+> > > entirely visible in the implementations.
+> 
+> > For now I'll speak only of x86, because I don't quite remember how
+> > powerpc does it.
+> 
+> > For thread entry points, aka the "end" of the stack:
+> 
+> > - For ORC, the end of the stack is either pt_regs, or -- when unwinding
+> >   from kthreads, idle tasks, or irqs/exceptions in entry code --
+> >   UNWIND_HINT_EMPTY (found by the unwinder's check for orc->end.
+> 
+> >   [ Admittedly the implementation needs to be cleaned up a bit.  EMPTY
+> >     is too broad and needs to be split into UNDEFINED and ENTRY. ]
+> 
+> > - For frame pointers, by convention, the end of the stack for all tasks
+> >   is a defined stack offset: end of stack page - sizeof(pt_regs).
+> 
+> > And yes, all that needs to be documented.
+> 
+> Ah, I'd have interpreted "defined thread entry point" as meaning
+> expecting to find specific functions appering at the end of the stack
+> rather than meaning positively identifying the end of the stack - for
+> arm64 we use a NULL frame pointer to indicate this in all situations.
+> In that case that's one bit that is already clear.
+
+I think a NULL frame pointer isn't going to be robust enough.  For
+example NULL could easily be introduced by a corrupt stack, or by asm
+frame pointer misuse.
 
 -- 
-Thanks,
-Sasha
+Josh
+
