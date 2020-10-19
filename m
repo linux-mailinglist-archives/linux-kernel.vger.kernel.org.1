@@ -2,164 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3677B292D7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBE7292D74
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730844AbgJSSYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 14:24:03 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:6928 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730619AbgJSSYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 14:24:03 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CFQBH5NCgz9v6J9;
-        Mon, 19 Oct 2020 20:23:51 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id rtSOtVo1XFjp; Mon, 19 Oct 2020 20:23:51 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CFQBH4Kcnz9v6J7;
-        Mon, 19 Oct 2020 20:23:51 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5CBDD8B7BF;
-        Mon, 19 Oct 2020 20:23:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id n9mNzIxfnIUM; Mon, 19 Oct 2020 20:23:57 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 756CA8B79E;
-        Mon, 19 Oct 2020 20:23:56 +0200 (CEST)
-Subject: Re: [PATCH 3/3] powerpc: Fix pre-update addressing in inline assembly
-To:     kernel test robot <lkp@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <fbcdb173cc42da62f00285dfef8c2f7d4960b5c7.1603109522.git.christophe.leroy@csgroup.eu>
- <202010192300.35IC9AK7-lkp@intel.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <2253e9bc-8fe1-e823-2cc4-45ba9fe66d1f@csgroup.eu>
-Date:   Mon, 19 Oct 2020 20:23:21 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1730654AbgJSSWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 14:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727328AbgJSSWr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 14:22:47 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7392C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:22:47 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id e20so508228otj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Y5fNqoL1fwVXzRoGLdhjgGjKn0H5ZhfiH9MEwllD/6E=;
+        b=OTz9mUw0OYOkF+/xpWHYVhItGhBW6akviDkDx1yCTgro7wI2gTIkIonv6xdt4B4uuw
+         gslPeIfjwSYj39iPXBJZAhq9tJruKkYVR5wwfJV1IzfXuat2vAQGzRQw+D94UU/BHXrt
+         anK2LjGHLKW1i17ayHJh3wwgG8K8VTsZwP4vzNvCKrQwXq/2cHt8ldkIqSgXz4P8lOTp
+         20q8teCg7ioBGrKxxo24rhD/R02SS7Tj5vr4kJAFoS6HvIHKZ0fLjCD7BIPN2eph2BB+
+         zHL3pVc+idQf+fYjuc+FLxmnc9JvxuLOMQw6u8U2BR4TevDJnbKT7Gduugq+W1ZYotXV
+         P6ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Y5fNqoL1fwVXzRoGLdhjgGjKn0H5ZhfiH9MEwllD/6E=;
+        b=XRATjwsmP2feEc3uFl6I/Kr8XZJvJsjkwlt8l23MXMPUEoj8GCPJLmt+PE9yiskjyj
+         9JKgOuM5EmBdsz8BIbTJZV0+riXL5H4fWHQe9Ii1nOGjhHzMc2U1Qbrx53QDazjMrf91
+         M8eZ7iG6dEbHcg6Vl1tdTiA27fJACTcZlkq4yX7FPcMKSYcJ5lLe+i/GziWtZER7A8J1
+         /D0GSAxRPllqiMxO3yZGCMQR2ZnV0gQsJvJnhE5RqNy51a32EY6k5p43FATXm6NGwJ/R
+         NoSxKbF+W4cJ7XZHTXnrCDhSbbBWCyW2Aj7KIkk2xk/V3NaKyyqJWXkjWEEVFMoE49Or
+         Wguw==
+X-Gm-Message-State: AOAM530pXN62Aikmbwdogtm+dNezt0EnL8gy6gSAR1OD+1AzqXThL4Sy
+        yv9Tm0sS7zamDvB1WnZHbMnMKA==
+X-Google-Smtp-Source: ABdhPJz3wQQ65x7rCRGuRiOD/lEinJpwbkX3sUptNu3HmaIQTCVTBlcQfpdKY5yqjTfNAFucQx80DQ==
+X-Received: by 2002:a05:6830:19fd:: with SMTP id t29mr868207ott.307.1603131767028;
+        Mon, 19 Oct 2020 11:22:47 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id o8sm175296oog.47.2020.10.19.11.22.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 11:22:46 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Rob Clark <robdclark@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH v5 2/3] iommu/arm-smmu-qcom: Read back stream mappings
+Date:   Mon, 19 Oct 2020 11:23:22 -0700
+Message-Id: <20201019182323.3162386-3-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201019182323.3162386-1-bjorn.andersson@linaro.org>
+References: <20201019182323.3162386-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <202010192300.35IC9AK7-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Qualcomm boot loader configures stream mapping for the peripherals
+that it accesses and in particular it sets up the stream mapping for the
+display controller to be allowed to scan out a splash screen or EFI
+framebuffer.
 
+Read back the stream mappings during initialization and make the
+arm-smmu driver maintain the streams in bypass mode.
 
-Le 19/10/2020 à 17:35, kernel test robot a écrit :
-> Hi Christophe,
-> 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on powerpc/next]
-> [also build test ERROR on linus/master next-20201016]
-> [cannot apply to kvm-ppc/kvm-ppc-next mpe/next v5.9]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Christophe-Leroy/powerpc-uaccess-Don-t-use-m-constraint-with-GCC-4-9/20201019-201504
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
-> config: powerpc64-randconfig-r012-20201019 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 094e9f4779eb9b5c6a49014f2f80b8cbb833572f)
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # install powerpc64 cross compiling tool for clang build
->          # apt-get install binutils-powerpc64-linux-gnu
->          # https://github.com/0day-ci/linux/commit/d57fd8d270993414b8c0414d7be4b03cc3de1856
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Christophe-Leroy/powerpc-uaccess-Don-t-use-m-constraint-with-GCC-4-9/20201019-201504
->          git checkout d57fd8d270993414b8c0414d7be4b03cc3de1856
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->     In file included from arch/powerpc/kernel/asm-offsets.c:14:
->     In file included from include/linux/compat.h:14:
->     In file included from include/linux/sem.h:5:
->     In file included from include/uapi/linux/sem.h:5:
->     In file included from include/linux/ipc.h:5:
->     In file included from include/linux/spinlock.h:51:
->     In file included from include/linux/preempt.h:78:
->     In file included from ./arch/powerpc/include/generated/asm/preempt.h:1:
->     In file included from include/asm-generic/preempt.h:5:
->     In file included from include/linux/thread_info.h:21:
->     In file included from arch/powerpc/include/asm/current.h:13:
->     In file included from arch/powerpc/include/asm/paca.h:31:
->     In file included from arch/powerpc/include/asm/atomic.h:13:
->     In file included from arch/powerpc/include/asm/ppc_asm.h:9:
->     In file included from arch/powerpc/include/asm/processor.h:40:
->>> arch/powerpc/include/asm/ptrace.h:288:20: error: use of undeclared identifier 'THREAD_SIZE'
->             return ((addr & ~(THREAD_SIZE - 1))  ==
->                               ^
->     arch/powerpc/include/asm/ptrace.h:289:35: error: use of undeclared identifier 'THREAD_SIZE'
->                     (kernel_stack_pointer(regs) & ~(THREAD_SIZE - 1)));
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
 
-Most likely a circular inclusion problem.
+Changes since v4:
+- Don't increment s2cr[i]->count, as this is not actually needed to survive
+  probe deferral
 
-I'll have to put it in a header that doesn't include pile of other stuff. The least bad candidate 
-seems to be asm-const.h
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 23 ++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-Christophe
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index be4318044f96..48627fcf6bed 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -23,6 +23,28 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+ 	{ }
+ };
+ 
++static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
++{
++	u32 smr;
++	int i;
++
++	for (i = 0; i < smmu->num_mapping_groups; i++) {
++		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
++
++		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
++			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
++			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
++			smmu->smrs[i].valid = true;
++
++			smmu->s2crs[i].type = S2CR_TYPE_BYPASS;
++			smmu->s2crs[i].privcfg = S2CR_PRIVCFG_DEFAULT;
++			smmu->s2crs[i].cbndx = 0xff;
++		}
++	}
++
++	return 0;
++}
++
+ static int qcom_smmu_def_domain_type(struct device *dev)
+ {
+ 	const struct of_device_id *match =
+@@ -61,6 +83,7 @@ static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
+ }
+ 
+ static const struct arm_smmu_impl qcom_smmu_impl = {
++	.cfg_probe = qcom_smmu_cfg_probe,
+ 	.def_domain_type = qcom_smmu_def_domain_type,
+ 	.reset = qcom_smmu500_reset,
+ };
+-- 
+2.28.0
 
->                                                     ^
->     In file included from arch/powerpc/kernel/asm-offsets.c:21:
->     include/linux/mman.h:137:9: warning: division by zero is undefined [-Wdivision-by-zero]
->                    _calc_vm_trans(flags, MAP_LOCKED,     VM_LOCKED    ) |
->                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->     include/linux/mman.h:115:21: note: expanded from macro '_calc_vm_trans'
->        : ((x) & (bit1)) / ((bit1) / (bit2))))
->                         ^ ~~~~~~~~~~~~~~~~~
->     include/linux/mman.h:138:9: warning: division by zero is undefined [-Wdivision-by-zero]
->                    _calc_vm_trans(flags, MAP_SYNC,       VM_SYNC      );
->                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->     include/linux/mman.h:115:21: note: expanded from macro '_calc_vm_trans'
->        : ((x) & (bit1)) / ((bit1) / (bit2))))
->                         ^ ~~~~~~~~~~~~~~~~~
->     2 warnings and 2 errors generated.
->     make[2]: *** [scripts/Makefile.build:117: arch/powerpc/kernel/asm-offsets.s] Error 1
->     make[2]: Target '__build' not remade because of errors.
->     make[1]: *** [Makefile:1202: prepare0] Error 2
->     make[1]: Target 'prepare' not remade because of errors.
->     make: *** [Makefile:185: __sub-make] Error 2
->     make: Target 'prepare' not remade because of errors.
-> 
-> vim +/THREAD_SIZE +288 arch/powerpc/include/asm/ptrace.h
-> 
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  275
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  276  /**
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  277   * regs_within_kernel_stack() - check the address in the stack
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  278   * @regs:      pt_regs which contains kernel stack pointer.
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  279   * @addr:      address which is checked.
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  280   *
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  281   * regs_within_kernel_stack() checks @addr is within the kernel stack page(s).
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  282   * If @addr is within the kernel stack, it returns true. If not, returns false.
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  283   */
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  284
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  285  static inline bool regs_within_kernel_stack(struct pt_regs *regs,
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  286  						unsigned long addr)
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  287  {
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07 @288  	return ((addr & ~(THREAD_SIZE - 1))  ==
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  289  		(kernel_stack_pointer(regs) & ~(THREAD_SIZE - 1)));
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  290  }
-> 359e4284a3f37ab Mahesh Salgaonkar 2010-04-07  291
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
