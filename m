@@ -2,142 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56975292112
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1ADA292120
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730736AbgJSCMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 22:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
+        id S1730793AbgJSCZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 22:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729096AbgJSCMh (ORCPT
+        with ESMTP id S1730740AbgJSCZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 22:12:37 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D94C061755;
-        Sun, 18 Oct 2020 19:12:36 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id x13so5104359pgp.7;
-        Sun, 18 Oct 2020 19:12:36 -0700 (PDT)
+        Sun, 18 Oct 2020 22:25:11 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1116EC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 19:25:10 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a17so4493569pju.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 19:25:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gSSl7RKNAw4tXQ+N5vKZ2jZJD5C6ie1Zau5pO0NfS3A=;
-        b=FriraFrvI8WUy/RmtdBiB3O1Qi4b9xT+2FZ8vZkw1mAOityQotStjN5+IVkEIO3PUe
-         0JUumqLSCXD5kg4Y+Q951HX2HASHS8qcymHBC0NVIgQnKYVXbB/O9jLyqa456L1dAMrG
-         O7ZMzUdHqUrnEmdB6j5o17io/GZmnitH/1ofkUsnjl5Le9Ccj6rqSZF/rXGH3/N9SxgW
-         KyXZc7DBi7UoYLr/BHKBFlLQ9e7wEN4/Pxu3XhmvLiHan+fZHg7VxW/qwpUB3dfcsrqp
-         Zt6tuoOVXGAs3Gr+OZUJPOiveyq4gsSzSRnkc/wlaJWiGfa+gEKivOpVjndaXNmzdMR5
-         U/Fw==
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oycxUIbLy+GIbZrwsw2OQtaFMAps2/oYqPAOhn7npOA=;
+        b=nyHrX6Bz4WwkqbqiR/vRLgDN5Nf2qD+eCq/9RPg69Z+QDLI3x3zRHiK2coez0exlv6
+         zdHELzx/XATemLh2Q2AzRWCPBzw+46geJ9K+P99PzY2InT4dguRLN6KrFiXrxnkqU4WX
+         8yRXFTLV4qkK4Kp1C3xTjMApVgGns6nZYWGsAcMNY6vQIphSydfEX6Ea/dnPK/F9Cur6
+         P8CTuTWQ1iWdEkEM0vREzQmH6Z0VEWL746fqxnWZzcNK70UX857l0NwM1ZTpjirWYqzM
+         rZROGJ2BE0TI+r/g8IA/2sfI59Uxeuw6+qBVrNvTzkXgb8DMDsVh8DIq4sdg2SHPo6FN
+         i7Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gSSl7RKNAw4tXQ+N5vKZ2jZJD5C6ie1Zau5pO0NfS3A=;
-        b=kbBSh9TjbDarV8PvivVmtXmIyuqEhLizFQ6wZMfYDKjbfBRK5twAoXM9wy4uTzR0ex
-         oAXTFr475nLHpdyxpXGLNKVsTVvcb+V16GRkMyJd0QHjAbhNaa1mSq+4k77pa37wnA6C
-         qggCIKny6VzPa8OvYDjzAW4ABYE5YmjLk98K4SK6+fRgY64pORKQKyM6cQMnIFHjWuO8
-         j59xCkTrbKxzkKiaxzNapcmnmEBZSLm5d3I8KiOFi8+hJWyqJRTbTlRu4rfGqkK0eDdx
-         p9oRn9KFWMhL1UOP+PpwjEWQGMDJzn1mww6u8gUQSYoRG5VyNHxXapl/YHhkzqY51Mkh
-         bTmQ==
-X-Gm-Message-State: AOAM5304Ltw+Du4Cj7bRjKtj7kEi3/gWc2MS0FXwEUBfCR6j5oPHzDpd
-        msWTXPUzI0QxyGoFbKdJohI=
-X-Google-Smtp-Source: ABdhPJyYeS2LbFnbuBj/B6mZ7VbBUXLnH/sbxZdr3GizUZWY3LYOLd+Rh1PpzDh5SVfp2nH3ZxE8zA==
-X-Received: by 2002:a62:1c53:0:b029:155:e9e:d1da with SMTP id c80-20020a621c530000b02901550e9ed1damr14542999pfc.14.1603073556327;
-        Sun, 18 Oct 2020 19:12:36 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id q8sm9994570pfg.118.2020.10.18.19.12.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Oct 2020 19:12:35 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Mon, 19 Oct 2020 10:12:16 +0800
-To:     Benjamin Poirier <benjamin.poirier@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/7] staging: qlge: replace ql_* with qlge_* to avoid
- namespace clashes with other qlogic drivers
-Message-ID: <20201019021216.we4py3d2kqesaa6i@Rk>
-References: <20201014104306.63756-1-coiby.xu@gmail.com>
- <20201014104306.63756-2-coiby.xu@gmail.com>
- <20201015010136.GB31835@f3>
- <20201016231631.efwu5a4a5f3jnrzv@Rk>
- <20201018110253.GA21325@f3>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oycxUIbLy+GIbZrwsw2OQtaFMAps2/oYqPAOhn7npOA=;
+        b=iwemtqCD61IH0wVEseDMS4wvzhWQBLlZnMnHgxISvRsc5x6sbTIOG2syfkGmJgK8G9
+         TEtQJEIS58k5k97FdWCHbt14yS4iLE95Yq9A9kMOzFKtbNnRpZSSzTjyScRIGI4bbBdQ
+         zx0/MGIeKdH9BevZq6g7Vpk2e0OpThu64AT9V4J0Lml9GD69rJx2dwQ2FWikn5J+Lp3G
+         xErHCILFJSlGxa4AeK4h2otOQ8LvCYxWD0DBMFJ/z+Z8vTYwSR3IB0AVJGcuRUSHufXd
+         zoW8IYnPBfw3UhBBl3xqxRdAIu+lz86msEbzLjjiNr7LOF26qGUqIdU9egAg3t0SK/8o
+         hHaA==
+X-Gm-Message-State: AOAM5330Tz5pernMB+lizMBPKVs16BQ5gLQlx2Jacza+9R/wDRK4h4sO
+        OqH10+M4wN5blpmqOl+Rz1iHxLdBlRC/GL8H
+X-Google-Smtp-Source: ABdhPJxPKX080BiV5v4tnkaa4400x4k3rK1j5sWpdbJiqRkeH+/9Uq3FM5Vb9dMKmDOh5ZtI6PGX5A==
+X-Received: by 2002:a17:902:bb8c:b029:d2:2503:e458 with SMTP id m12-20020a170902bb8cb02900d22503e458mr14936892pls.18.1603074309433;
+        Sun, 18 Oct 2020 19:25:09 -0700 (PDT)
+Received: from [192.168.10.88] (124-171-83-152.dyn.iinet.net.au. [124.171.83.152])
+        by smtp.gmail.com with UTF8SMTPSA id fh19sm6948594pjb.38.2020.10.18.19.25.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Oct 2020 19:25:08 -0700 (PDT)
+Subject: Re: [PATCH 8/9] dma-mapping: move large parts of <linux/dma-direct.h>
+ to kernel/dma
+To:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org
+Cc:     linux-arch@vger.kernel.org, Sekhar Nori <nsekhar@ti.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <20200930085548.920261-1-hch@lst.de>
+ <20200930085548.920261-9-hch@lst.de>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <afaf49d9-5465-4b1a-dac1-91688ba4abbf@ozlabs.ru>
+Date:   Mon, 19 Oct 2020 13:25:02 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:82.0) Gecko/20100101
+ Thunderbird/82.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201018110253.GA21325@f3>
+In-Reply-To: <20200930085548.920261-9-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 08:02:53PM +0900, Benjamin Poirier wrote:
->On 2020-10-17 07:16 +0800, Coiby Xu wrote:
->> On Thu, Oct 15, 2020 at 10:01:36AM +0900, Benjamin Poirier wrote:
->> > On 2020-10-14 18:43 +0800, Coiby Xu wrote:
->> > > To avoid namespace clashes with other qlogic drivers and also for the
->> > > sake of naming consistency, use the "qlge_" prefix as suggested in
->> > > drivers/staging/qlge/TODO.
->> > >
->> > > Suggested-by: Benjamin Poirier <benjamin.poirier@gmail.com>
->> > > Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->> > > ---
->> > >  drivers/staging/qlge/TODO           |    4 -
->> > >  drivers/staging/qlge/qlge.h         |  190 ++--
->> > >  drivers/staging/qlge/qlge_dbg.c     | 1073 ++++++++++++-----------
->> > >  drivers/staging/qlge/qlge_ethtool.c |  231 ++---
->> > >  drivers/staging/qlge/qlge_main.c    | 1257 +++++++++++++--------------
->> > >  drivers/staging/qlge/qlge_mpi.c     |  352 ++++----
->> > >  6 files changed, 1551 insertions(+), 1556 deletions(-)
->> > >
->> > > diff --git a/drivers/staging/qlge/TODO b/drivers/staging/qlge/TODO
->> > > index f93f7428f5d5..5ac55664c3e2 100644
->> > > --- a/drivers/staging/qlge/TODO
->> > > +++ b/drivers/staging/qlge/TODO
->> > > @@ -28,10 +28,6 @@
->> > >  * the driver has a habit of using runtime checks where compile time checks are
->> > >    possible (ex. ql_free_rx_buffers(), ql_alloc_rx_buffers())
->> > >  * reorder struct members to avoid holes if it doesn't impact performance
->> > > -* in terms of namespace, the driver uses either qlge_, ql_ (used by
->> > > -  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
->> > > -  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
->> > > -  prefix.
->> >
->> > You only renamed ql -> qlge. The prefix needs to be added where there is
->> > currently none like the second example of that text.
->>
->> On second thoughts, these structs like ob_mac_iocb_req are defined in
->> local headers and there is no mixed usage. So even when we want to
->> build this diver and other qlogic drivers into the kernel instead of
->> as separate modules, it won't lead to real problems, is it right?
->
->Using cscope or ctags and searching for ob_mac_iocb_req will yield
->ambiguous results. It might also make things more difficult if using a
->debugger.
->
-Even if I have been using gtags, I didn't realize it. Thank you for
-explaining it to me.
->Looking at other drivers (ex. ice, mlx5), they use a prefix for their
->private types, just like for their static functions, even though it's
->not absolutely necessary. I think it's helpful when reading the code
->because it quickly shows that it is something that was defined in the
->driver, not in some subsystem.
->
-Good point!
 
->I didn't think about it earlier but it would have been better to leave
->out this renaming to a subsequent patchset, since this change is
->unrelated to the debugging features.
 
-It seems it's more reasonable to do renaming first. So in a sense, the
-renaming is a preparatory step for the debugging features.
+On 30/09/2020 18:55, Christoph Hellwig wrote:
+> Most of the dma_direct symbols should only be used by direct.c and
+> mapping.c, so move them to kernel/dma.  In fact more of dma-direct.h
+> should eventually move, but that will require more coordination with
+> other subsystems.
 
---
-Best regards,
-Coiby
+Because of this change, 
+http://patchwork.ozlabs.org/project/linuxppc-dev/patch/20200713062348.100552-1-aik@ozlabs.ru/ 
+does not work anymore.
+
+Should I send a patch moving 
+dma_direct_map_sg/dma_direct_map_page/+unmap back to include/ or there 
+is a better idea? thanks,
+
+
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   include/linux/dma-direct.h | 106 ---------------------------------
+>   kernel/dma/direct.c        |   2 +-
+>   kernel/dma/direct.h        | 119 +++++++++++++++++++++++++++++++++++++
+>   kernel/dma/mapping.c       |   2 +-
+>   4 files changed, 121 insertions(+), 108 deletions(-)
+>   create mode 100644 kernel/dma/direct.h
+> 
+> diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
+> index 38ed3b55034d50..a2d6640c42c04e 100644
+> --- a/include/linux/dma-direct.h
+> +++ b/include/linux/dma-direct.h
+> @@ -120,114 +120,8 @@ struct page *dma_direct_alloc_pages(struct device *dev, size_t size,
+>   void dma_direct_free_pages(struct device *dev, size_t size,
+>   		struct page *page, dma_addr_t dma_addr,
+>   		enum dma_data_direction dir);
+> -int dma_direct_get_sgtable(struct device *dev, struct sg_table *sgt,
+> -		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+> -		unsigned long attrs);
+> -bool dma_direct_can_mmap(struct device *dev);
+> -int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
+> -		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+> -		unsigned long attrs);
+>   int dma_direct_supported(struct device *dev, u64 mask);
+> -bool dma_direct_need_sync(struct device *dev, dma_addr_t dma_addr);
+> -int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
+> -		enum dma_data_direction dir, unsigned long attrs);
+>   dma_addr_t dma_direct_map_resource(struct device *dev, phys_addr_t paddr,
+>   		size_t size, enum dma_data_direction dir, unsigned long attrs);
+> -size_t dma_direct_max_mapping_size(struct device *dev);
+>   
+> -#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
+> -    defined(CONFIG_SWIOTLB)
+> -void dma_direct_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
+> -		int nents, enum dma_data_direction dir);
+> -#else
+> -static inline void dma_direct_sync_sg_for_device(struct device *dev,
+> -		struct scatterlist *sgl, int nents, enum dma_data_direction dir)
+> -{
+> -}
+> -#endif
+> -
+> -#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) || \
+> -    defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) || \
+> -    defined(CONFIG_SWIOTLB)
+> -void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
+> -		int nents, enum dma_data_direction dir, unsigned long attrs);
+> -void dma_direct_sync_sg_for_cpu(struct device *dev,
+> -		struct scatterlist *sgl, int nents, enum dma_data_direction dir);
+> -#else
+> -static inline void dma_direct_unmap_sg(struct device *dev,
+> -		struct scatterlist *sgl, int nents, enum dma_data_direction dir,
+> -		unsigned long attrs)
+> -{
+> -}
+> -static inline void dma_direct_sync_sg_for_cpu(struct device *dev,
+> -		struct scatterlist *sgl, int nents, enum dma_data_direction dir)
+> -{
+> -}
+> -#endif
+> -
+> -static inline void dma_direct_sync_single_for_device(struct device *dev,
+> -		dma_addr_t addr, size_t size, enum dma_data_direction dir)
+> -{
+> -	phys_addr_t paddr = dma_to_phys(dev, addr);
+> -
+> -	if (unlikely(is_swiotlb_buffer(paddr)))
+> -		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_DEVICE);
+> -
+> -	if (!dev_is_dma_coherent(dev))
+> -		arch_sync_dma_for_device(paddr, size, dir);
+> -}
+> -
+> -static inline void dma_direct_sync_single_for_cpu(struct device *dev,
+> -		dma_addr_t addr, size_t size, enum dma_data_direction dir)
+> -{
+> -	phys_addr_t paddr = dma_to_phys(dev, addr);
+> -
+> -	if (!dev_is_dma_coherent(dev)) {
+> -		arch_sync_dma_for_cpu(paddr, size, dir);
+> -		arch_sync_dma_for_cpu_all();
+> -	}
+> -
+> -	if (unlikely(is_swiotlb_buffer(paddr)))
+> -		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_CPU);
+> -
+> -	if (dir == DMA_FROM_DEVICE)
+> -		arch_dma_mark_clean(paddr, size);
+> -}
+> -
+> -static inline dma_addr_t dma_direct_map_page(struct device *dev,
+> -		struct page *page, unsigned long offset, size_t size,
+> -		enum dma_data_direction dir, unsigned long attrs)
+> -{
+> -	phys_addr_t phys = page_to_phys(page) + offset;
+> -	dma_addr_t dma_addr = phys_to_dma(dev, phys);
+> -
+> -	if (unlikely(swiotlb_force == SWIOTLB_FORCE))
+> -		return swiotlb_map(dev, phys, size, dir, attrs);
+> -
+> -	if (unlikely(!dma_capable(dev, dma_addr, size, true))) {
+> -		if (swiotlb_force != SWIOTLB_NO_FORCE)
+> -			return swiotlb_map(dev, phys, size, dir, attrs);
+> -
+> -		dev_WARN_ONCE(dev, 1,
+> -			     "DMA addr %pad+%zu overflow (mask %llx, bus limit %llx).\n",
+> -			     &dma_addr, size, *dev->dma_mask, dev->bus_dma_limit);
+> -		return DMA_MAPPING_ERROR;
+> -	}
+> -
+> -	if (!dev_is_dma_coherent(dev) && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> -		arch_sync_dma_for_device(phys, size, dir);
+> -	return dma_addr;
+> -}
+> -
+> -static inline void dma_direct_unmap_page(struct device *dev, dma_addr_t addr,
+> -		size_t size, enum dma_data_direction dir, unsigned long attrs)
+> -{
+> -	phys_addr_t phys = dma_to_phys(dev, addr);
+> -
+> -	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> -		dma_direct_sync_single_for_cpu(dev, addr, size, dir);
+> -
+> -	if (unlikely(is_swiotlb_buffer(phys)))
+> -		swiotlb_tbl_unmap_single(dev, phys, size, size, dir, attrs);
+> -}
+>   #endif /* _LINUX_DMA_DIRECT_H */
+> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> index 87697c86f0b82a..bf9f77623022bb 100644
+> --- a/kernel/dma/direct.c
+> +++ b/kernel/dma/direct.c
+> @@ -7,13 +7,13 @@
+>   #include <linux/memblock.h> /* for max_pfn */
+>   #include <linux/export.h>
+>   #include <linux/mm.h>
+> -#include <linux/dma-direct.h>
+>   #include <linux/dma-map-ops.h>
+>   #include <linux/scatterlist.h>
+>   #include <linux/pfn.h>
+>   #include <linux/vmalloc.h>
+>   #include <linux/set_memory.h>
+>   #include <linux/slab.h>
+> +#include "direct.h"
+>   
+>   /*
+>    * Most architectures use ZONE_DMA for the first 16 Megabytes, but some use it
+> diff --git a/kernel/dma/direct.h b/kernel/dma/direct.h
+> new file mode 100644
+> index 00000000000000..b9861557873768
+> --- /dev/null
+> +++ b/kernel/dma/direct.h
+> @@ -0,0 +1,119 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2018 Christoph Hellwig.
+> + *
+> + * DMA operations that map physical memory directly without using an IOMMU.
+> + */
+> +#ifndef _KERNEL_DMA_DIRECT_H
+> +#define _KERNEL_DMA_DIRECT_H
+> +
+> +#include <linux/dma-direct.h>
+> +
+> +int dma_direct_get_sgtable(struct device *dev, struct sg_table *sgt,
+> +		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+> +		unsigned long attrs);
+> +bool dma_direct_can_mmap(struct device *dev);
+> +int dma_direct_mmap(struct device *dev, struct vm_area_struct *vma,
+> +		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+> +		unsigned long attrs);
+> +bool dma_direct_need_sync(struct device *dev, dma_addr_t dma_addr);
+> +int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
+> +		enum dma_data_direction dir, unsigned long attrs);
+> +size_t dma_direct_max_mapping_size(struct device *dev);
+> +
+> +#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
+> +    defined(CONFIG_SWIOTLB)
+> +void dma_direct_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
+> +		int nents, enum dma_data_direction dir);
+> +#else
+> +static inline void dma_direct_sync_sg_for_device(struct device *dev,
+> +		struct scatterlist *sgl, int nents, enum dma_data_direction dir)
+> +{
+> +}
+> +#endif
+> +
+> +#if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) || \
+> +    defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) || \
+> +    defined(CONFIG_SWIOTLB)
+> +void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
+> +		int nents, enum dma_data_direction dir, unsigned long attrs);
+> +void dma_direct_sync_sg_for_cpu(struct device *dev,
+> +		struct scatterlist *sgl, int nents, enum dma_data_direction dir);
+> +#else
+> +static inline void dma_direct_unmap_sg(struct device *dev,
+> +		struct scatterlist *sgl, int nents, enum dma_data_direction dir,
+> +		unsigned long attrs)
+> +{
+> +}
+> +static inline void dma_direct_sync_sg_for_cpu(struct device *dev,
+> +		struct scatterlist *sgl, int nents, enum dma_data_direction dir)
+> +{
+> +}
+> +#endif
+> +
+> +static inline void dma_direct_sync_single_for_device(struct device *dev,
+> +		dma_addr_t addr, size_t size, enum dma_data_direction dir)
+> +{
+> +	phys_addr_t paddr = dma_to_phys(dev, addr);
+> +
+> +	if (unlikely(is_swiotlb_buffer(paddr)))
+> +		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_DEVICE);
+> +
+> +	if (!dev_is_dma_coherent(dev))
+> +		arch_sync_dma_for_device(paddr, size, dir);
+> +}
+> +
+> +static inline void dma_direct_sync_single_for_cpu(struct device *dev,
+> +		dma_addr_t addr, size_t size, enum dma_data_direction dir)
+> +{
+> +	phys_addr_t paddr = dma_to_phys(dev, addr);
+> +
+> +	if (!dev_is_dma_coherent(dev)) {
+> +		arch_sync_dma_for_cpu(paddr, size, dir);
+> +		arch_sync_dma_for_cpu_all();
+> +	}
+> +
+> +	if (unlikely(is_swiotlb_buffer(paddr)))
+> +		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_CPU);
+> +
+> +	if (dir == DMA_FROM_DEVICE)
+> +		arch_dma_mark_clean(paddr, size);
+> +}
+> +
+> +static inline dma_addr_t dma_direct_map_page(struct device *dev,
+> +		struct page *page, unsigned long offset, size_t size,
+> +		enum dma_data_direction dir, unsigned long attrs)
+> +{
+> +	phys_addr_t phys = page_to_phys(page) + offset;
+> +	dma_addr_t dma_addr = phys_to_dma(dev, phys);
+> +
+> +	if (unlikely(swiotlb_force == SWIOTLB_FORCE))
+> +		return swiotlb_map(dev, phys, size, dir, attrs);
+> +
+> +	if (unlikely(!dma_capable(dev, dma_addr, size, true))) {
+> +		if (swiotlb_force != SWIOTLB_NO_FORCE)
+> +			return swiotlb_map(dev, phys, size, dir, attrs);
+> +
+> +		dev_WARN_ONCE(dev, 1,
+> +			     "DMA addr %pad+%zu overflow (mask %llx, bus limit %llx).\n",
+> +			     &dma_addr, size, *dev->dma_mask, dev->bus_dma_limit);
+> +		return DMA_MAPPING_ERROR;
+> +	}
+> +
+> +	if (!dev_is_dma_coherent(dev) && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> +		arch_sync_dma_for_device(phys, size, dir);
+> +	return dma_addr;
+> +}
+> +
+> +static inline void dma_direct_unmap_page(struct device *dev, dma_addr_t addr,
+> +		size_t size, enum dma_data_direction dir, unsigned long attrs)
+> +{
+> +	phys_addr_t phys = dma_to_phys(dev, addr);
+> +
+> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> +		dma_direct_sync_single_for_cpu(dev, addr, size, dir);
+> +
+> +	if (unlikely(is_swiotlb_buffer(phys)))
+> +		swiotlb_tbl_unmap_single(dev, phys, size, size, dir, attrs);
+> +}
+> +#endif /* _KERNEL_DMA_DIRECT_H */
+> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+> index 335ba183e0956a..51bb8fa8eb8948 100644
+> --- a/kernel/dma/mapping.c
+> +++ b/kernel/dma/mapping.c
+> @@ -7,7 +7,6 @@
+>    */
+>   #include <linux/memblock.h> /* for max_pfn */
+>   #include <linux/acpi.h>
+> -#include <linux/dma-direct.h>
+>   #include <linux/dma-map-ops.h>
+>   #include <linux/export.h>
+>   #include <linux/gfp.h>
+> @@ -15,6 +14,7 @@
+>   #include <linux/slab.h>
+>   #include <linux/vmalloc.h>
+>   #include "debug.h"
+> +#include "direct.h"
+>   
+>   /*
+>    * Managed DMA API
+> 
+
+-- 
+Alexey
