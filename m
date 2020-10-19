@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1BF292BE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D44292BEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730761AbgJSQwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
+        id S1730652AbgJSQyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730498AbgJSQwS (ORCPT
+        with ESMTP id S1730322AbgJSQyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:52:18 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302E0C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:52:18 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id h6so324558lfj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:52:18 -0700 (PDT)
+        Mon, 19 Oct 2020 12:54:41 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B002FC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:54:39 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id l2so364506lfk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:54:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2cWK+DL6XyfhBEyDFclHAiApf+xy/GsC3/T+E6jZJ9g=;
-        b=R9ehEU9wWrfJofck/gWfeOapDJ+wkaO4ulGVCO8sIZ3YBH2eN9GJjaYyyOf3ujJKY9
-         PPz94Zq0X6qKiMN7izLsoNVCxZshQHrXyf5bHfmqTYDENfuyVspXiCpk4YvRP5JLuOxV
-         dYtRkSEcYli4JP71OK2MlqOla27EN1rL+AqzU=
+        bh=WWe1nyT09mfP995hqz7RZGWn3qxoOPoS4oyItVvSHIA=;
+        b=OuBRRIaNVW4sTCoqWv1mPmTw7hVN3ZKuzZpOcOF5DDEf/55sVq99t/SFPfjSK/56KA
+         oCp/8BNdCL7+xQJJXdjtBzwqWKHzB6VfZxcXStrY/0/16UcUNhMpE/0lPrPazKKI11Hm
+         q9wLB13d9P9GsiPO66kJn/lpgvunLWukaHsNI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2cWK+DL6XyfhBEyDFclHAiApf+xy/GsC3/T+E6jZJ9g=;
-        b=Qis+uvTEpGtpKaPd4FP8PNkwHUD3mcrQS4WeJbMfC63xJuLMbiMJWgDPbSF05yh0d+
-         6xRoyQIq9XChaeKDmGTz4OqeMnUCX1c+o4xjDLHy6+vkRAn3XE1u94mScRJefIDrafmD
-         jQOdk9E2JHz6LsOPhB7mXWue8ttkiESNcJQ7i3pFZV0vNj5gVZzAWn+4CcZMeuApAgbL
-         /t+k7RDiiD5PMqP9mxYMOaeIvcP0BSW40mYloQkm+ob5yFMI2/s7ZheFWdAd13fx9dI9
-         GL1Gj9bFmJMBoUwuU1vxbJI5TB6OmC1wdXOiN1iwMe/oEKdt4sFSEpPYNcASAHaWdHfi
-         U5ZA==
-X-Gm-Message-State: AOAM531BDhKnKbOYCAL3o4uw+cdrrlVWG48gQr5VaDmVwOgW43vT6Con
-        hnOyCSFlUEY3exvD3BUaI4fQh1s/wrX0fw==
-X-Google-Smtp-Source: ABdhPJyVexXPnHdFugMt1KILUT+XkpmeX2mwtCAbSrBMXXnEzXFv0592M+Cm53SBIRL2xcFDrw2drw==
-X-Received: by 2002:a19:146:: with SMTP id 67mr175549lfb.75.1603126336294;
-        Mon, 19 Oct 2020 09:52:16 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id i124sm53725lfd.236.2020.10.19.09.52.12
+        bh=WWe1nyT09mfP995hqz7RZGWn3qxoOPoS4oyItVvSHIA=;
+        b=CcBLftbAAZ/E51nygbOJl8qeEpYSKhldVv27nMnDGfDOuxuPQXyjo4mDbpINKlWyWt
+         +P4BbKvYBxIXCK5UMdLEZJ8lwHIAJO4CJYJp4u/v6PfvsFzRwc0khUUyorgDUT0oxH5D
+         isKPoN6YyHHhRN8Cq3C0MCCqC591PlH57L0iG6YtwnVxkfci6FoT10h6R9Q6uXiZHKIr
+         vynDOqOtSbEKwrstparlxvghcYmt3D2pHsU2TvEsd32mVFvXfDt2L5zAc7p7NDFuHqov
+         hT5BTVuPYhvbz7DWoJ1EagCHmAiHb4wbode9xLUYDH83KPFk097imzpR3uSDqDpGiE5K
+         W+VA==
+X-Gm-Message-State: AOAM530r5tIWztpGcCsNKT/lsBse+b0KHxmbsw81akjBarlVU6QApjdV
+        DYF/1ZTU4F7euiZmH7YtAbNz5XoXHlt54A==
+X-Google-Smtp-Source: ABdhPJxVjjLnHKm1OtsZo+SetO4+BPlLjyOT4/K5o7uPpBqyo/KzcmkjpfveH8kODiMS6FwbqEI+Qg==
+X-Received: by 2002:a19:7009:: with SMTP id h9mr206539lfc.201.1603126477889;
+        Mon, 19 Oct 2020 09:54:37 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id v20sm67966ljg.111.2020.10.19.09.54.36
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 09:52:12 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id c21so855979ljj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:52:12 -0700 (PDT)
-X-Received: by 2002:a2e:8092:: with SMTP id i18mr368068ljg.314.1603126331829;
- Mon, 19 Oct 2020 09:52:11 -0700 (PDT)
+        Mon, 19 Oct 2020 09:54:37 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id h20so798658lji.9
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:54:36 -0700 (PDT)
+X-Received: by 2002:a2e:9955:: with SMTP id r21mr380357ljj.124.1603126476431;
+ Mon, 19 Oct 2020 09:54:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201012141451.GA3425471@gmail.com> <CAHk-=whE1rajA5Kzqey802zwv-82yrK5qc=nR3xRo5f38t-K8A@mail.gmail.com>
- <20201019032400.GD3249@paulmck-ThinkPad-P72>
-In-Reply-To: <20201019032400.GD3249@paulmck-ThinkPad-P72>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 19 Oct 2020 09:51:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whyQF4voB8GHa2VjzS6H-k41ZHda5+dFqKrDcUY28FqGQ@mail.gmail.com>
-Message-ID: <CAHk-=whyQF4voB8GHa2VjzS6H-k41ZHda5+dFqKrDcUY28FqGQ@mail.gmail.com>
-Subject: Re: [GIT PULL] RCU changes for v5.10
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
+References: <20201016222523.364218-1-evgreen@chromium.org> <20201016152454.v3.2.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
+ <CAHp75VfsM+ysz_tr_h0rJpspcZAToiV+H5KDCi7J=LCEO0sFxQ@mail.gmail.com>
+In-Reply-To: <CAHp75VfsM+ysz_tr_h0rJpspcZAToiV+H5KDCi7J=LCEO0sFxQ@mail.gmail.com>
+From:   Evan Green <evgreen@chromium.org>
+Date:   Mon, 19 Oct 2020 09:53:59 -0700
+X-Gmail-Original-Message-ID: <CAE=gft5cd4v=THHuBPAeB5ApgH+TAPiEukZiG0pC33RsZ4AriQ@mail.gmail.com>
+Message-ID: <CAE=gft5cd4v=THHuBPAeB5ApgH+TAPiEukZiG0pC33RsZ4AriQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] i2c: i2c-mux-gpio: Enable this driver in ACPI land
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Peter Rosin <peda@axentia.se>, Wolfram Sang <wsa@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 8:24 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+On Sun, Oct 18, 2020 at 11:58 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> On CONFIG_PREEMPT_COUNT, got it.  It would be OK for RCU to use
-> preempt_count() for some debugging or specialty kernel, but not across
-> the board.
+> On Sat, Oct 17, 2020 at 8:30 AM Evan Green <evgreen@chromium.org> wrote:
+> >
+> > Enable i2c-mux-gpio devices to be defined via ACPI. The idle-state
+> > property translates directly to a fwnode_property_*() call. The child
+> > reg property translates naturally into _ADR in ACPI.
+> >
+> > The i2c-parent binding is a relic from the days when the bindings
+> > dictated that all direct children of an I2C controller had to be I2C
+> > devices. These days that's no longer required. The i2c-mux can sit as a
+> > direct child of its parent controller, which is where it makes the most
+> > sense from a hardware description perspective. For the ACPI
+> > implementation we'll assume that's always how the i2c-mux-gpio is
+> > instantiated.
+>
+> Can you tell me if the following is relevant to what you are looking for?
+> https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-mux.c#L393
 
-Right - that was what I thought you were asking originally.
+I don't think so, but let me know if I'm reading between the lines incorrectly.
 
-I don't think a driver or random piece of code like that should ever
-use "preempt_count()" on its own - partly because the rules are
-subtle, but partly simply because drivers have no business with those
-kinds of low-level things.
+The code you pointed to links the newly-minted fake i2c controller
+back together with its ACPI node. This is important, since I think
+that's how child I2C devices underneath the fake busses get populated
+in ACPI land. But the paragraph above is discussing how to identify
+the parent adapter (ie the real hardware) for an i2c-mux-gpio device.
 
-But yeah, for some core stuff like RCU, using preempt_count() for
-debugging etc makes sense. Just not to change _behavior_, because
-preempt_count on its own is almost entirely meaningless. It's just one
-(local) part of so much state. Again, partly because preempt count
-isn't necessarily always meaningful due to config settings, but partly
-because there are just so many other things like "are interrupts
-disabled" or "are we in an NMI context" or whatever.
+In DT-land, the i2c-mux-gpio floats at the top of the tree directly
+under /, and then uses a phandle to point to where transactions should
+be forwarded. I'm told the reason for this is historical limitations
+with the DT bindings. Rather than trying to translate the phandle over
+1:1 into ACPI-land, I'm asserting that the mux device should live
+underneath the adapter it wants to forward traffic to.
 
-And in some odd situation, depending on exactly what you do, maybe
-preempt-count can be exactly what you need, because you know
-everything else about the state statically. "preempt_enable()"
-obviously is one such thing - the whole point is "if
-CONFIG_PREEMPT_COUNT is on, then the _semantics_ of this is 'increase
-preempt count', and if it goes to zero, and we should reschedule, do
-that'".
+-Evan
 
-So it's not that preempt_count() is meaningless, but it's such a
-specialized thing that 99.9% of all code really cannot and shouldn't
-use it.
-
-           Linus
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
