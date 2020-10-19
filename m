@@ -2,53 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03D4292835
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862A9292830
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728343AbgJSNbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:31:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59642 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727952AbgJSNbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:31:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CA0C8ACDF;
-        Mon, 19 Oct 2020 13:31:36 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3B801DA8EA; Mon, 19 Oct 2020 15:30:07 +0200 (CEST)
-Date:   Mon, 19 Oct 2020 15:30:07 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Pujin Shi <shipujin.t@gmail.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] fs: btrfs: Fix incorrect printf qualifier
-Message-ID: <20201019133007.GW6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Pujin Shi <shipujin.t@gmail.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Filipe Manana <fdmanana@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201017121249.1261-1-shipujin.t@gmail.com>
+        id S1728295AbgJSNar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:30:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25127 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727297AbgJSNar (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:30:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603114245;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aDNhLJRM/nT1vY+letQJHejcGlh5BSbNPHby1Nx3QTw=;
+        b=JwBs6hVv7JWmwUWSRZ9MYFkzZ0zuuevtxe7l10FPRuuzCkvHnMJtWugCMAo0CZbe91IBzP
+        YY/rc04n2VPHZU6+UJ1055n6JBgbymrLbyYhLxIE/9iBNvhQYluBByodOf9Kgl1YcUtMh7
+        RaFTIypksrl2+TspGbZhjbqY7vo7cqI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-DMC7xye6Pm6bjRiyB6VbNw-1; Mon, 19 Oct 2020 09:30:44 -0400
+X-MC-Unique: DMC7xye6Pm6bjRiyB6VbNw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C868F876E3F;
+        Mon, 19 Oct 2020 13:30:42 +0000 (UTC)
+Received: from gimli.home (ovpn-112-77.phx2.redhat.com [10.3.112.77])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 36C345B4AD;
+        Mon, 19 Oct 2020 13:30:37 +0000 (UTC)
+Subject: [PATCH] vfio/pci: Clear token on bypass registration failure
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     alex.williamson@redhat.com
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        guomin_chen@sina.com, gchen.guomin@gmail.com
+Date:   Mon, 19 Oct 2020 07:30:37 -0600
+Message-ID: <160311419702.25406.2436004222669241097.stgit@gimli.home>
+User-Agent: StGit/0.21-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201017121249.1261-1-shipujin.t@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 08:12:49PM +0800, Pujin Shi wrote:
-> This patch addresses a compile warning:
-> fs/btrfs/extent-tree.c: In function '__btrfs_free_extent':
-> fs/btrfs/extent-tree.c:3187:4: warning: format '%lu' expects argument of type 'long unsigned int', but argument 8 has type 'unsigned int' [-Wformat=]
-> 
-> Fixes: 1c2a07f598d5 ("btrfs: extent-tree: kill BUG_ON() in __btrfs_free_extent()")
-> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
+The eventfd context is used as our irqbypass token, therefore if an
+eventfd is re-used, our token is the same.  The irqbypass code will
+return an -EBUSY in this case, but we'll still attempt to unregister
+the producer, where if that duplicate token still exists, results in
+removing the wrong object.  Clear the token of failed producers so
+that they harmlessly fall out when unregistered.
 
-Thanks, Fixes: tag updated.
+Fixes: 6d7425f109d2 ("vfio: Register/unregister irq_bypass_producer")
+Reported-by: guomin chen <guomin_chen@sina.com>
+Tested-by: guomin chen <guomin_chen@sina.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+---
+ drivers/vfio/pci/vfio_pci_intrs.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+index 1d9fb2592945..869dce5f134d 100644
+--- a/drivers/vfio/pci/vfio_pci_intrs.c
++++ b/drivers/vfio/pci/vfio_pci_intrs.c
+@@ -352,11 +352,13 @@ static int vfio_msi_set_vector_signal(struct vfio_pci_device *vdev,
+ 	vdev->ctx[vector].producer.token = trigger;
+ 	vdev->ctx[vector].producer.irq = irq;
+ 	ret = irq_bypass_register_producer(&vdev->ctx[vector].producer);
+-	if (unlikely(ret))
++	if (unlikely(ret)) {
+ 		dev_info(&pdev->dev,
+ 		"irq bypass producer (token %p) registration fails: %d\n",
+ 		vdev->ctx[vector].producer.token, ret);
+ 
++		vdev->ctx[vector].producer.token = NULL;
++	}
+ 	vdev->ctx[vector].trigger = trigger;
+ 
+ 	return 0;
+
