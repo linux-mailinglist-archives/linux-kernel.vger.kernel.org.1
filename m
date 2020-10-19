@@ -2,185 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBA929260B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B45829261C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbgJSKu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:50:28 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:41710 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726606AbgJSKu1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:50:27 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09JAeFC3031351;
-        Mon, 19 Oct 2020 06:49:27 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 347tf660yt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Oct 2020 06:49:27 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 09JAnQhT018314
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 19 Oct 2020 06:49:26 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 19 Oct
- 2020 06:49:25 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 19 Oct 2020 06:49:25 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 09JAnLLO004408;
-        Mon, 19 Oct 2020 06:49:22 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <lars@metafoo.de>,
-        <nuno.sa@analog.com>, <perex@perex.cz>, <tiwai@suse.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] ASoC: adau1977: remove platform data and move micbias bindings include
-Date:   Mon, 19 Oct 2020 13:53:13 +0300
-Message-ID: <20201019105313.24862-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-19_02:2020-10-16,2020-10-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 bulkscore=0 phishscore=0 adultscore=0 clxscore=1011
- impostorscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010190080
+        id S1727322AbgJSKzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:55:38 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:11200 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgJSKzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 06:55:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603104937; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=5C7mAG/C8vIFQ9gazzzfkLKmMxkQW868fcv5Ij6tOxs=; b=DTD/2XN4I/I22EcSXtXttsrRmGItKsJej5fYoGO+XhKGk+sKPSnE5HbSeoHsNUMaO6aDY0s9
+ P2SHpOJYTc2hMxtkbLzsNRTqMSpqdcq5zS4KCo25ccQ7mdjTaZIGYeH/Uhz5bXOA9aKKqME1
+ 2hXqYsgI0EsBoLhoHypaDbjyUs0=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f8d70a8aad2c3cd1cd036ca (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 10:55:36
+ GMT
+Sender: zhenhuah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2485AC433C9; Mon, 19 Oct 2020 10:55:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from zhenhuah-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zhenhuah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7718BC433F1;
+        Mon, 19 Oct 2020 10:55:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7718BC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zhenhuah@codeaurora.org
+From:   Zhenhua Huang <zhenhuah@codeaurora.org>
+To:     akpm@linux-foundation.org
+Cc:     Zhenhua Huang <zhenhuah@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz
+Subject: [PATCH v2] mm: fix page_owner initializing issue for arm32
+Date:   Mon, 19 Oct 2020 18:55:25 +0800
+Message-Id: <1603104925-5888-1-git-send-email-zhenhuah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The change removes the platform_data include/definition. It only contains
-some values for the MICBIAS.
-These are moved into 'dt-bindings/sound/adi,adau1977.h' so that they can be
-used inside device-trees. When moving then, they need to be converted to
-pre-compiler defines, so that the DT compiler can understand them.
+Page owner of pages used by page owner itself used is missing on arm32 targets.
+The reason is dummy_handle and failure_handle is not initialized correctly.
+Buddy allocator is used to initialize these two handles. However, buddy
+allocator is not ready when page owner calls it. This change fixed that by
+initializing page owner after buddy initialization.
 
-The driver then, also needs to include the new
-'dt-bindings/sound/adi,adau1977.h' file.
+The working flow before and after this change are:
+original logic:
+1. allocated memory for page_ext(using memblock).
+2. invoke the init callback of page_ext_ops like
+page_owner(using buddy allocator).
+3. initialize buddy.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+after this change:
+1. allocated memory for page_ext(using memblock).
+2. initialize buddy.
+3. invoke the init callback of page_ext_ops like
+page_owner(using buddy allocator).
+
+with the change, failure/dummy_handle can get its correct value and
+page owner output for example has the one for page owner itself:
+Page allocated via order 2, mask 0x6202c0(GFP_USER|__GFP_NOWARN), pid 1006, ts
+67278156558 ns
+PFN 543776 type Unmovable Block 531 type Unmovable Flags 0x0()
+ init_page_owner+0x28/0x2f8
+ invoke_init_callbacks_flatmem+0x24/0x34
+ start_kernel+0x33c/0x5d8
+   (null)
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Zhenhua Huang <zhenhuah@codeaurora.org>
 ---
- include/dt-bindings/sound/adi,adau1977.h | 15 ++++++++
- include/linux/platform_data/adau1977.h   | 44 ------------------------
- sound/soc/codecs/adau1977.c              |  9 ++---
- 3 files changed, 18 insertions(+), 50 deletions(-)
- create mode 100644 include/dt-bindings/sound/adi,adau1977.h
- delete mode 100644 include/linux/platform_data/adau1977.h
+ include/linux/page_ext.h |  8 ++++++++
+ init/main.c              |  2 ++
+ mm/page_ext.c            | 10 ++++++++--
+ 3 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/include/dt-bindings/sound/adi,adau1977.h b/include/dt-bindings/sound/adi,adau1977.h
-new file mode 100644
-index 000000000000..8eebec6570f2
---- /dev/null
-+++ b/include/dt-bindings/sound/adi,adau1977.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef __DT_BINDINGS_ADI_ADAU1977_H__
-+#define __DT_BINDINGS_ADI_ADAU1977_H__
-+
-+#define ADAU1977_MICBIAS_5V0	0x0
-+#define ADAU1977_MICBIAS_5V5	0x1
-+#define ADAU1977_MICBIAS_6V0	0x2
-+#define ADAU1977_MICBIAS_6V5	0x3
-+#define ADAU1977_MICBIAS_7V0	0x4
-+#define ADAU1977_MICBIAS_7V5	0x5
-+#define ADAU1977_MICBIAS_8V0	0x6
-+#define ADAU1977_MICBIAS_8V5	0x7
-+#define ADAU1977_MICBIAS_9V0	0x8
-+
-+#endif /* __DT_BINDINGS_ADI_ADAU1977_H__ */
-diff --git a/include/linux/platform_data/adau1977.h b/include/linux/platform_data/adau1977.h
-deleted file mode 100644
-index 86667235077a..000000000000
---- a/include/linux/platform_data/adau1977.h
-+++ /dev/null
-@@ -1,44 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * ADAU1977/ADAU1978/ADAU1979 driver
-- *
-- * Copyright 2014 Analog Devices Inc.
-- *  Author: Lars-Peter Clausen <lars@metafoo.de>
-- */
--
--#ifndef __LINUX_PLATFORM_DATA_ADAU1977_H__
--#define __LINUX_PLATFORM_DATA_ADAU1977_H__
--
--/**
-- * enum adau1977_micbias - ADAU1977 MICBIAS pin voltage setting
-- * @ADAU1977_MICBIAS_5V0: MICBIAS is set to 5.0 V
-- * @ADAU1977_MICBIAS_5V5: MICBIAS is set to 5.5 V
-- * @ADAU1977_MICBIAS_6V0: MICBIAS is set to 6.0 V
-- * @ADAU1977_MICBIAS_6V5: MICBIAS is set to 6.5 V
-- * @ADAU1977_MICBIAS_7V0: MICBIAS is set to 7.0 V
-- * @ADAU1977_MICBIAS_7V5: MICBIAS is set to 7.5 V
-- * @ADAU1977_MICBIAS_8V0: MICBIAS is set to 8.0 V
-- * @ADAU1977_MICBIAS_8V5: MICBIAS is set to 8.5 V
-- * @ADAU1977_MICBIAS_9V0: MICBIAS is set to 9.0 V
-- */
--enum adau1977_micbias {
--	ADAU1977_MICBIAS_5V0 = 0x0,
--	ADAU1977_MICBIAS_5V5 = 0x1,
--	ADAU1977_MICBIAS_6V0 = 0x2,
--	ADAU1977_MICBIAS_6V5 = 0x3,
--	ADAU1977_MICBIAS_7V0 = 0x4,
--	ADAU1977_MICBIAS_7V5 = 0x5,
--	ADAU1977_MICBIAS_8V0 = 0x6,
--	ADAU1977_MICBIAS_8V5 = 0x7,
--	ADAU1977_MICBIAS_9V0 = 0x8,
--};
--
--/**
-- * struct adau1977_platform_data - Platform configuration data for the ADAU1977
-- * @micbias: Specifies the voltage for the MICBIAS pin
-- */
--struct adau1977_platform_data {
--	enum adau1977_micbias micbias;
--};
--
--#endif
-diff --git a/sound/soc/codecs/adau1977.c b/sound/soc/codecs/adau1977.c
-index 0a36e523584c..8260f49caa24 100644
---- a/sound/soc/codecs/adau1977.c
-+++ b/sound/soc/codecs/adau1977.c
-@@ -12,7 +12,6 @@
- #include <linux/i2c.h>
- #include <linux/init.h>
- #include <linux/module.h>
--#include <linux/platform_data/adau1977.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- #include <linux/slab.h>
-@@ -24,6 +23,8 @@
- #include <sound/soc.h>
- #include <sound/tlv.h>
- 
-+#include <dt-bindings/sound/adi,adau1977.h>
-+
- #include "adau1977.h"
- 
- #define ADAU1977_REG_POWER		0x00
-@@ -881,13 +882,9 @@ static const struct snd_soc_component_driver adau1977_component_driver = {
- 
- static int adau1977_setup_micbias(struct adau1977 *adau1977)
+diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
+index cfce186..aff81ba 100644
+--- a/include/linux/page_ext.h
++++ b/include/linux/page_ext.h
+@@ -44,8 +44,12 @@ static inline void page_ext_init_flatmem(void)
  {
--	struct adau1977_platform_data *pdata = adau1977->dev->platform_data;
- 	unsigned int micbias;
+ }
+ extern void page_ext_init(void);
++static inline void page_ext_init_flatmem_late(void)
++{
++}
+ #else
+ extern void page_ext_init_flatmem(void);
++extern void page_ext_init_flatmem_late(void);
+ static inline void page_ext_init(void)
+ {
+ }
+@@ -76,6 +80,10 @@ static inline void page_ext_init(void)
+ {
+ }
  
--	if (pdata)
--		micbias = pdata->micbias;
--	else if (device_property_read_u32(adau1977->dev, "adi,micbias",
--					  &micbias))
-+	if (device_property_read_u32(adau1977->dev, "adi,micbias", &micbias))
- 		micbias = ADAU1977_MICBIAS_8V5;
++static inline void page_ext_init_flatmem_late(void)
++{
++}
++
+ static inline void page_ext_init_flatmem(void)
+ {
+ }
+diff --git a/init/main.c b/init/main.c
+index 130376e..b34c475 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -818,6 +818,8 @@ static void __init mm_init(void)
+ 	init_debug_pagealloc();
+ 	report_meminit();
+ 	mem_init();
++	/* page_owner must be initialized after buddy is ready */
++	page_ext_init_flatmem_late();
+ 	kmem_cache_init();
+ 	kmemleak_init();
+ 	pgtable_init();
+diff --git a/mm/page_ext.c b/mm/page_ext.c
+index a3616f7..16b161f2 100644
+--- a/mm/page_ext.c
++++ b/mm/page_ext.c
+@@ -99,12 +99,19 @@ static void __init invoke_init_callbacks(void)
+ 	}
+ }
  
- 	if (micbias > ADAU1977_MICBIAS_9V0) {
++#ifndef CONFIG_SPARSEMEM
++void __init page_ext_init_flatmem_late(void)
++{
++	invoke_init_callbacks();
++}
++#endif
++
+ static inline struct page_ext *get_entry(void *base, unsigned long index)
+ {
+ 	return base + page_ext_size * index;
+ }
+ 
+-#if !defined(CONFIG_SPARSEMEM)
++#ifndef CONFIG_SPARSEMEM
+ 
+ 
+ void __meminit pgdat_page_ext_init(struct pglist_data *pgdat)
+@@ -177,7 +184,6 @@ void __init page_ext_init_flatmem(void)
+ 			goto fail;
+ 	}
+ 	pr_info("allocated %ld bytes of page_ext\n", total_usage);
+-	invoke_init_callbacks();
+ 	return;
+ 
+ fail:
 -- 
-2.17.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
