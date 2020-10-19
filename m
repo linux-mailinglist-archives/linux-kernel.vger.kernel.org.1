@@ -2,73 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30FC29238E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79D4292392
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgJSIWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 04:22:48 -0400
-Received: from mail-m17613.qiye.163.com ([59.111.176.13]:47178 "EHLO
-        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728871AbgJSIWs (ORCPT
+        id S1728967AbgJSIYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 04:24:51 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:55453 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728871AbgJSIYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 04:22:48 -0400
-Received: from ubuntu.localdomain (unknown [157.0.31.124])
-        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id 9809F482893;
-        Mon, 19 Oct 2020 16:22:43 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: [PATCH] drivers/thermal: optimize the for circle to run a bit fast
-Date:   Mon, 19 Oct 2020 01:22:35 -0700
-Message-Id: <20201019082235.41773-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 19 Oct 2020 04:24:50 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id AED7D5C0126;
+        Mon, 19 Oct 2020 04:24:49 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 19 Oct 2020 04:24:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=eZsfj7CupAZnJIQGICZAq7k5F1w
+        AU3yj63NqaOPK4SY=; b=cECJZOj9uCJOc2IC1EsIrjcLxBYis0SrIEkc7TXM3tT
+        3y1HrvgHZgtr12gKzC5nbfIkAwPi+q+VfvF1VXgRkYu2D6RchPybpdzlH4HRNRRE
+        RsrmIUnciZ1S4ak0BsWygzZygGd6mKQJq8bLDhrXzwgTvz0KaoQpfvsuDpOBAHw0
+        SfhXGKl5G4vFwSOHlZvy/KH1Zo00PqVYtw32oAOsbiD5wwIGpmHuMlfp9n/zOFLZ
+        McmHY9LSS2gw/VRoWrZtIixOl1Bpe8PW2aG0DJ96AS3YLINhSFFMpPa8fOF7FobO
+        zMgeTwfxgoXEnu8ah4zuBo046EKW6e/ty/aS3bt854w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=eZsfj7
+        CupAZnJIQGICZAq7k5F1wAU3yj63NqaOPK4SY=; b=FZFDcM5FRNn2YVXqMw2s2i
+        IEgkkgfW8YI85HKbCpmy3c68YhXep46Rw5QU78ddqEHdaLkCJq94ZE5oaE0IgQ1o
+        LLactVsc5lBg4c8g5DjjIaPAdYQc966ZwNqU6GDyVJgkTvIy56EgX2a0uYNndwKG
+        yEbtJwTFe5JZ4mfK3JgW55JFrBGFbcGEP+jbSPcqzfNo9eoKelG4+FW/ixm26mrw
+        CQvLFnaCywStXLEMjKyeAZX2SmI6Z3Z5Vrk/eK2il9tzevOE8BKKHwhwrKTixTmV
+        QyAxZPWRdpTYBZvxsdZ2g0vq+NSKTauIBbh8Pk7x0Fi92DG9cct/WJG5dWuFCz+g
+        ==
+X-ME-Sender: <xms:UE2NX0MYF1oji7DHSQ3MfWMFP8HzXBvp4dmpSbxgpnegh3sNq5CGoQ>
+    <xme:UE2NX6-iW9tyZ5j_2tswgH0V5le5OPBKnm16fQeyrFZoO6XKU4T229G0s_U2Q4P1v
+    yx51l32vXAGq7sL-1M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjedugddtgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:UE2NX7TW4WzC9WO6rT5lhdE0oNSIQ9Fi-AkCKRt1PdNphuqryowwwQ>
+    <xmx:UE2NX8uO4Y3OkXhtdIOnlANs9JqmvCgGA4eZH6N6w7ryTxo-IYjChw>
+    <xmx:UE2NX8fyu_hc19VzhIbyjIQxG84BIrjCh4IhEp1NPmcoGxWsqeZEXQ>
+    <xmx:UU2NX6s2P7MSImdOpFZ2P4FZ24LKuvoetfD1obU-PCjz4TzJodMxEQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id CD43B306467E;
+        Mon, 19 Oct 2020 04:24:47 -0400 (EDT)
+Date:   Mon, 19 Oct 2020 10:24:46 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 03/17] ASoC: sun8i-codec: Enable all supported clock
+ inversions
+Message-ID: <20201019082446.bedjg7az72sqfvsl@gilmour.lan>
+References: <20201014061941.4306-1-samuel@sholland.org>
+ <20201014061941.4306-4-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTExPS0NMHR1LH0lLVkpNS0hLQk5MTUhDSk1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS09ISVVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kyo6NSo4ET8uKzEuESgPNgsL
-        HBgwCQxVSlVKTUtIS0JOTE1PSU1MVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSU9ZV1kIAVlBSUpDQzcG
-X-HM-Tid: 0a753ff41b2193bakuws9809f482893
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cqcoajix7hb5rria"
+Content-Disposition: inline
+In-Reply-To: <20201014061941.4306-4-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function thermal_zone_device_register, in the for circle, if the
-first if branch set the count bit in tz->trips_disabled, there is
-no need to set in the other if branch again.
-This change is to make the code run a bit fast and readable.
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
----
- drivers/thermal/thermal_core.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+--cqcoajix7hb5rria
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index c6d74bc1c90b..03577794eea3 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -1446,10 +1446,14 @@ thermal_zone_device_register(const char *type, int trips, int mask,
- 		goto release_device;
- 
- 	for (count = 0; count < trips; count++) {
--		if (tz->ops->get_trip_type(tz, count, &trip_type))
-+		if (tz->ops->get_trip_type(tz, count, &trip_type)) {
- 			set_bit(count, &tz->trips_disabled);
--		if (tz->ops->get_trip_temp(tz, count, &trip_temp))
-+			continue;
-+		}
-+		if (tz->ops->get_trip_temp(tz, count, &trip_temp)) {
- 			set_bit(count, &tz->trips_disabled);
-+			continue;
-+		}
- 		/* Check for bogus trip points */
- 		if (trip_temp == 0)
- 			set_bit(count, &tz->trips_disabled);
--- 
-2.28.0
+On Wed, Oct 14, 2020 at 01:19:27AM -0500, Samuel Holland wrote:
+> When using the I2S, LEFT_J, or RIGHT_J format, the hardware supports
+> independent BCLK and LRCK inversion control. When using DSP_A or DSP_B,
+> LRCK inversion is not supported. The register bit is repurposed to
+> select between DSP_A and DSP_B. Extend the driver to support this.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 
+Acked-by: Maxime Ripard <mripard@kernel.org>
+
+Maxime
+
+--cqcoajix7hb5rria
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX41NTgAKCRDj7w1vZxhR
+xayGAQCesFf8meHhbTCjVRz+uJFFlntIjlLqWTiKf7z7CgoHcgEAnhLRdd9QfEia
+IQa+m8CsOCQ/9XthACy9KU44cRcgVQM=
+=ulm+
+-----END PGP SIGNATURE-----
+
+--cqcoajix7hb5rria--
