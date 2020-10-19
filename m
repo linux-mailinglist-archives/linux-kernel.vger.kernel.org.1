@@ -2,144 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C019292942
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F19B292947
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729350AbgJSO0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:26:18 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:34874 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728344AbgJSO0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:26:18 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kUW75-002Vj0-KQ; Mon, 19 Oct 2020 16:26:15 +0200
-Date:   Mon, 19 Oct 2020 16:26:15 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     michael alayev <mic.al.linux@gmail.com>
-Cc:     vivien.didelot@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, adror@iai.co.il
-Subject: Re: Dts for eth network based on marvell's mv88e6390x crashes
- Xilinx's linux-kernel v5.4
-Message-ID: <20201019142615.GS139700@lunn.ch>
-References: <CANBsoPmgct2UTq=Cuf1rXJRitiF1mWhWwdtH2=73yyZiJbT0rg@mail.gmail.com>
- <20201016033142.GB456889@lunn.ch>
- <CANBsoPkCEZadmBaeZ=8EAOP6Ctw5deLen7yKQk__1-ZVoJE6yA@mail.gmail.com>
- <20201018155818.GB456889@lunn.ch>
- <CANBsoPm1Ln=59cGKbaA5OKdjA5dwEFA0pcg2tPUa5i2Db747Fw@mail.gmail.com>
+        id S1729397AbgJSO1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:27:19 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2991 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728311AbgJSO1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 10:27:18 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id D268999E714A7DA46F91;
+        Mon, 19 Oct 2020 15:27:16 +0100 (IST)
+Received: from localhost (10.227.96.57) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 19 Oct
+ 2020 15:27:16 +0100
+Date:   Mon, 19 Oct 2020 15:27:15 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+CC:     Morten Rasmussen <morten.rasmussen@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sudeep Holla <sudeep.holla@arm.com>, <guohanjun@huawei.com>,
+        Will Deacon <will@kernel.org>, <linuxarm@huawei.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Jeremy Linton <Jeremy.Linton@arm.com>,
+        Jerome Glisse <jglisse@redhat.com>
+Subject: Re: [RFC PATCH] topology: Represent clusters of CPUs within a die.
+Message-ID: <20201019142715.00005fb1@huawei.com>
+In-Reply-To: <jhjh7qqqqct.mognet@arm.com>
+References: <20201016152702.1513592-1-Jonathan.Cameron@huawei.com>
+        <20201019103522.GK2628@hirez.programming.kicks-ass.net>
+        <20201019123226.00006705@Huawei.com>
+        <20201019131052.GC8004@e123083-lin>
+        <jhjh7qqqqct.mognet@arm.com>
+Organization: Huawei tech. R&D (UK)  Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANBsoPm1Ln=59cGKbaA5OKdjA5dwEFA0pcg2tPUa5i2Db747Fw@mail.gmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.227.96.57]
+X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 05:05:08PM +0300, michael alayev wrote:
-> Hello Andrew,
-> 
-> 
->     > Please fix your email client and
-> 
-> 
->     > post the DT file for review. I will
-> 
->     > then point out some of the errors.
-> 
-> 
-> 
->     &gem0 {
->         status = "okay";
->         phy-mode = "rgmii-id";
->         phy-handle = <&phy0>;
+On Mon, 19 Oct 2020 14:48:02 +0100
+Valentin Schneider <valentin.schneider@arm.com> wrote:
 
-The diagram you showed had gem0 connected directly to the switch. So
-this phy-handle is wrong. Or the diagram is wrong.
+> +Cc Jeremy
+> 
+> On 19/10/20 14:10, Morten Rasmussen wrote:
+> > Hi Jonathan,
+> > The problem I see is that the benefit of keeping tasks together due to
+> > the interconnect layout might vary significantly between systems. So if
+> > we introduce a new cpumask for cluster it has to have represent roughly
+> > the same system properties otherwise generic software consuming this
+> > information could be tricked.
+> >
+> > If there is a provable benefit of having interconnect grouping
+> > information, I think it would be better represented by a distance matrix
+> > like we have for NUMA.
+> >
+> > Morten  
+> 
+> That's my queue to paste some of that stuff I've been rambling on and off
+> about!
+> 
+> With regards to cache / interconnect layout, I do believe that if we
+> want to support in the scheduler itself then we should leverage some
+> distance table rather than to create X extra scheduler topology levels.
+> 
+> I had a chat with Jeremy on the ACPI side of that sometime ago. IIRC given
+> that SLIT gives us a distance value between any two PXM, we could directly
+> express core-to-core distance in that table. With that (and if that still
+> lets us properly discover NUMA node spans), we could let the scheduler
+> build dynamic NUMA-like topology levels representing the inner quirks of
+> the cache / interconnect layout.
+
+You would rapidly run into the problem SLIT had for numa node description.
+There is no consistent description of distance and except in the vaguest
+sense or 'nearer' it wasn't any use for anything.   That is why HMAT
+came along. It's far from perfect but it is a step up.
+
+I can't see how you'd generalize those particular tables to do anything
+for intercore comms without breaking their use for NUMA, but something
+a bit similar might work.
+
+A lot of thought has gone in (and meeting time) to try an improve the
+situation for complex topology around NUMA.  Whilst there are differences
+in representing the internal interconnects and caches it seems like a somewhat
+similar problem.  The issue there is it is really really hard to describe
+this stuff with enough detail to be useful, but simple enough to be usable.
+
+https://lore.kernel.org/linux-mm/20181203233509.20671-1-jglisse@redhat.com/
 
 > 
->         mdio {
->             #address-cells = <1>;
->             #size-cells = <0>;
-> 
->             phy0: ethernet-phy@0 {
->                 compatible = "marvell";
->                 reg = <0>;
->                 device_type = "ethernet-phy";
->                 fixed-link {
->                     speed = <1000>;
->                     full-duplex;
->                 };
->             };
-> 
->             debug_phy: ethernet-phy@1 {
->             compatible = "marvell";
->             reg = <1>;
->             device_type = "ethernet-phy";
->             label = "debug-phy";
->         };
+> It's mostly pipe dreams for now, but there seems to be more and more
+> hardware where that would make sense; somewhat recently the PowerPC guys
+> added something to their arch-specific code in that regards.
 
-indentation is all wrong here.
+Pipe dream == something to work on ;)
 
->         switch0: switch@2 {
->             compatible = "marvell,mv88e6190";
->             #address-cells = <1>;
->             #size-cells = <0>;
->             reg = <2>;
-> 
->             dsa,member = <0 0>;
-> 
->             ports {
->                 #address-cells = <1>;
->                 #size-cells = <0>;
-> 
->                 switch0phy1: port@0 {
->                     reg = <0>;
->                     label = "uid208-cpu";
->                     ethernet = <&gem0>;
->                     phy-mode = "rgmii-id";
+ACPI has a nice code first model of updating the spec now, so we can discuss
+this one in public, and propose spec changes only once we have an implementation
+proven.
 
-You have gem0 using gphy-mode = "rgmii-id" as well. Both doing delays
-will not work. You should drop the one in gem0.
+Note I'm not proposing we put the cluster stuff in the scheduler, just
+provide it as a hint to userspace.
 
->                     fixed-link {
->                         speed = <1000>;
->                         full-duplex;
->                     };
->                 };
-> 
-> 
->                 port@1 {
->                     reg = <1>;
->                     label = "uid201-1A";
->                 };
-> 
->                 port@2 {
->                     reg = <2>;
->                     label = "uid202-2A-p9-1A";
->                     phy-mode = "1000base-x";
->                     fixed-link {
->                         speed = <1000>;
->                         full-duplex;
->                     };
+Jonathan
 
-Why both 1000base-x and fixed link? Do you have an SFP connected? If
-so, describe the SFP in DT.
-
->                 };
-> 
->                 switch0port10: port@10 {
->                     reg = <10>;
->                     label = "dsa";
->                     link = <&switch1port10>;
->                     phy-mode = "1000base-x";
->                     fixed-link {
->                         speed = <1000>;
->                         full-duplex;
->                     };
->                 };
-
-This is a 6390X right? Why limit it to 1000base-X when it could be
-doing 10G?
-
-      Andrew
