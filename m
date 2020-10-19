@@ -2,125 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22861292138
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1E529213B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730938AbgJSCpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 22:45:31 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:59297 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731113AbgJSCpa (ORCPT
+        id S1731191AbgJSCqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 22:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729111AbgJSCqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 22:45:30 -0400
-X-Greylist: delayed 15206 seconds by postgrey-1.27 at vger.kernel.org; Sun, 18 Oct 2020 22:45:28 EDT
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id D47DE891B0;
-        Mon, 19 Oct 2020 15:45:26 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1603075526;
-        bh=ePBdie+Xt7jaEuyYljlZ06vUlp+mmbTPp4lm0VF7Q4I=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=IUGK9pJQDIxoxUkekfUrJ9Vl8FZFxCph1S6mCOU4USl/g5g40CmVmsyDM1OIIFxG0
-         O8jhZhjHd9OV0RdFEpGg8qb5IabktYpyvbb3vGxJeJkLRE3Lte8OK7bszSPjMNsNhT
-         nB4u2s1ikQDTge80jZt6yG1df8Uo+PgDC5St+CW8X00A4TFByahOLdjFBX1F5STVye
-         dZHcwwrOR8gqFVHDvSiQvdKscNiSfMK5N2u87ndhLCUnBt1NCACa004yENVJgFWNbv
-         6v/rRG2nBhiKvvJDIm3i6RUc/vuEqYkxww97FQ1WxVYifkI/aY7KPRmoiYKsKBJ7Qe
-         wFjMFIh678T+Q==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5f8cfdc60002>; Mon, 19 Oct 2020 15:45:26 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 19 Oct 2020 15:45:26 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.006; Mon, 19 Oct 2020 15:45:26 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "olteanv@gmail.com" <olteanv@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] net: dsa: mv88e6xxx: Support serdes ports on
- MV88E6097
-Thread-Topic: [PATCH 2/2] net: dsa: mv88e6xxx: Support serdes ports on
- MV88E6097
-Thread-Index: AQHWoQc4/uQqPxKVFEaOBfkb784lwamcuA8AgABBNACAAARwgIAADggAgAAOooCAAAadgIAARtSA
-Date:   Mon, 19 Oct 2020 02:45:25 +0000
-Message-ID: <7ccfd1d2-cf03-9eca-a3d6-c68267d08f76@alliedtelesis.co.nz>
-References: <20201013021858.20530-1-chris.packham@alliedtelesis.co.nz>
- <20201013021858.20530-3-chris.packham@alliedtelesis.co.nz>
- <20201018161624.GD456889@lunn.ch>
- <b3d1d071-3bce-84f4-e9d5-f32a41c432bd@alliedtelesis.co.nz>
- <20201018202539.GJ456889@lunn.ch>
- <2e1f1ca4-b5d5-ebc8-99bf-9ad74f461d26@alliedtelesis.co.nz>
- <20201018220815.GK456889@lunn.ch>
- <862bec00-92d8-2f4a-03e5-93546e6563f6@alliedtelesis.co.nz>
-In-Reply-To: <862bec00-92d8-2f4a-03e5-93546e6563f6@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F4F4A5E622DC2344B3152F3CB7CF98DB@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Sun, 18 Oct 2020 22:46:06 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B95C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 19:46:05 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id i1so9646356wro.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 19:46:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=7V26HkKgGmmx148aRxJJhCJa2HTwJxofxiia5WgrIJ0=;
+        b=TADDJSnS6084IlUlij7J+1XwQyf0CDw/res6Hws/81NlI4OPl3m0Y9jwWOvCC3HYy8
+         84SuQ3b8ib1pztQo6M7HZyd+LCXS1yQjqDiqgdBdxP1C+ti3xq8BR1zn3FHdS7rOYQKR
+         njedkoe5I1akQe/L/2Xs1pqtyRuer6fEUwo/Q4/KUCUT7Lqx8LLE3vNvT8J3mEuCoVJ9
+         0hPkPbxDLujM7CdhDctec4OX6BCj2DW6fBSG5FjOuLbVSQaoMft8JipWh+8hTeUQVswo
+         eLxl+sZVp0ueEjBaTgBu4nCXzH8ZjX+2K15Pf6dT67an7TMXlaVOv4SdNpXBZ+AXNN9t
+         ncxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=7V26HkKgGmmx148aRxJJhCJa2HTwJxofxiia5WgrIJ0=;
+        b=e/ceUca1STZ5UEkdItxpDG8Sk+jsK2ADGSwjNCw3lHBUmFVR2E2yr9RiQOuYb5S4yA
+         PNRCec5KX+FAlXFNNsdtnB6YCIPWNNm2f8iC4CqYAwVwUR49fNi/U2xU2SGM8Ay7Uyee
+         R6A8j7zghgAlXN2nED9wr42BugjOJBlCn/eBV6FEFCepFdV6d1JDCLM2uGwjXutr4tHY
+         0KosxIQ12m9h07qLVPc/Zg/BVOetheCXvrjcTt9MXBITrUC/ZFQ3nFVillK+End0FZ2P
+         NOpzcwiXtds8KYocKZAd4AmQOVZr23Xs7YjhB0pRIYjAfdfNKsjDdI5VYMnC5YCbwLRQ
+         b8Yg==
+X-Gm-Message-State: AOAM532C/xbKyMOQKG71lj9a8WPkOlKifNqhqqmM8WOlm7rhUztfZOhY
+        tjPBgAMpNuH7jYKgyWqY5qg=
+X-Google-Smtp-Source: ABdhPJw5OtqTNTNZ7PeRrETTk9CHvwy7bEQaxGCgi/7l3VXUpCcBjOJT3n86PD6BRx/fjyL7f5ThcA==
+X-Received: by 2002:adf:8484:: with SMTP id 4mr17741191wrg.334.1603075564377;
+        Sun, 18 Oct 2020 19:46:04 -0700 (PDT)
+Received: from homer.simpson.net ([185.191.217.9])
+        by smtp.googlemail.com with ESMTPSA id c130sm15330601wma.1.2020.10.18.19.46.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Oct 2020 19:46:03 -0700 (PDT)
+Message-ID: <198af4a540faf0c11869894a2f8239cf50701b15.camel@gmail.com>
+Subject: Re: [PATCH v3 7/7] zram: Use local lock to protect per-CPU data
+From:   Mike Galbraith <umgwanakikbuti@gmail.com>
+To:     Yu Zhao <yuzhao@google.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-mm@kvack.org
+Date:   Mon, 19 Oct 2020 04:46:02 +0200
+In-Reply-To: <20201019015252.GA61728@google.com>
+References: <20200527201119.1692513-1-bigeasy@linutronix.de>
+         <20200527201119.1692513-8-bigeasy@linutronix.de>
+         <20201019015252.GA61728@google.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxOS8xMC8yMCAxMTozMSBhbSwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4NCj4gT24gMTkv
-MTAvMjAgMTE6MDggYW0sIEFuZHJldyBMdW5uIHdyb3RlOg0KPj4gT24gU3VuLCBPY3QgMTgsIDIw
-MjAgYXQgMDk6MTU6NTJQTSArMDAwMCwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4+PiBPbiAxOS8x
-MC8yMCA5OjI1IGFtLCBBbmRyZXcgTHVubiB3cm90ZToNCj4+Pj4+IEkgYXNzdW1lIHlvdSdyZSB0
-YWxraW5nIGFib3V0IHRoZSBQSFkgQ29udHJvbCBSZWdpc3RlciAwIGJpdCAxMS4gDQo+Pj4+PiBJ
-ZiBzbw0KPj4+Pj4gdGhhdCdzIGZvciB0aGUgaW50ZXJuYWwgUEhZcyBvbiBwb3J0cyAwLTcuIFBv
-cnRzIDgsIDkgYW5kIDEwIGRvbid0IA0KPj4+Pj4gaGF2ZQ0KPj4+Pj4gUEhZcy4NCj4+Pj4gSGkg
-Q2hyaXMNCj4+Pj4NCj4+Pj4gSSBoYXZlIGEgZGF0YXNoZWV0IGZvciB0aGUgNjEyMi82MTIxLCBm
-cm9tIHNvbWUgY29ybmVyIG9mIHRoZSB3ZWIsDQo+Pj4+IFBhcnQgMyBvZiAzLCBHaWdhYml0IFBI
-WXMgYW5kIFNFUkRFUy4NCj4+Pj4NCj4+Pj4gaHR0cDovL3d3dy5pbWFnZS5taWNyb3MuY29tLnBs
-L19kYW5lX3RlY2huaWN6bmVfYXV0by91aTg4ZTYxMjJiMmxrajFpMC5wZGYgDQo+Pj4+DQo+Pj4+
-DQo+Pj4+IFNlY3Rpb24gNSBvZiB0aGlzIGRvY3VtZW50IHRhbGtzDQo+Pj4+IGFib3V0IHRoZSBT
-RVJERVMgcmVnaXN0ZXJzLiBSZWdpc3RlciAwIGlzIENvbnRyb2wsIHJlZ2lzdGVyIDEgaXMNCj4+
-Pj4gU3RhdHVzIC0gRmliZXIsIHJlZ2lzdGVyIDIgYW5kIDMgYXJlIHRoZSB1c3VhbCBJRCwgNCBp
-cyBhdXRvLW5ldA0KPj4+PiBhZHZlcnRpc2VtZW50IGV0Yy4NCj4+Pj4NCj4+Pj4gV2hlcmUgdGhl
-c2UgcmVnaXN0ZXJzIGFwcGVhciBpbiB0aGUgYWRkcmVzcyBzcGFjZSBpcyBub3QgY2xlYXIgZnJv
-bQ0KPj4+PiB0aGlzIGRvY3VtZW50LiBJdCBpcyBub3JtYWxseSBpbiBkb2N1bWVudCBwYXJ0IDIg
-b2YgMywgd2hpY2ggbXkNCj4+Pj4gc2VhcmNoaW5nIG9mIHRoZSB3ZWIgZGlkIG5vdCBmaW5kLg0K
-Pj4+Pg0KPj4+PiDCoMKgwqDCoMKgIEFuZHJldw0KPj4+IEkgaGF2ZSBnb3QgdGhlIDg4RTYxMjIg
-ZGF0YXNoZWV0KHMpIGFuZCBjYW4gc2VlIHRoZSBTRVJERVMgcmVnaXN0ZXJzDQo+Pj4geW91J3Jl
-IHRhbGtpbmcgYWJvdXQgKEkgdGhpbmsgdGhleSdyZSBpbiB0aGUgc2FtZSByZWdpc3RlciBzcGFj
-ZSBhcyB0aGUNCj4+PiBidWlsdC1pbiBQSFlzKS4gSXQgbG9va3MgbGlrZSB0aGUgODhFNjA5NyBp
-cyBkaWZmZXJlbnQgaW4gdGhhdCB0aGVyZSANCj4+PiBhcmUNCj4+PiBubyBTRVJERVMgcmVnaXN0
-ZXJzIGV4cG9zZWQgKGF0IGxlYXN0IG5vdCBpbiBhIGRvY3VtZW50ZWQgd2F5KS4gTG9va2luZw0K
-Pj4+IGF0IHRoZSA4OEU2MTg1IGl0J3MgdGhlIHNhbWUgYXMgdGhlIDg4RTYwOTcuDQo+PiBIaSBD
-aHJpcw0KPj4NCj4+IEkgZmluZCBpdCBvZGQgdGhlcmUgYXJlIG5vIFNFUkRFUyByZWdpc3RlcnMu
-wqAgQ2FuIHlvdSBwb2tlIGFyb3VuZCB0aGUNCj4+IHJlZ2lzdGVyIHNwYWNlIGFuZCBsb29rIGZv
-ciBJRCByZWdpc3RlcnM/IFNlZSBpZiB0aGVyZSBhcmUgYW55IHdpdGgNCj4+IE1hcnZlbGxzIE9V
-SSwgYnV0IGRpZmZlcmVudCB0byB0aGUgY2hpcCBJRCBmb3VuZCBpbiB0aGUgcG9ydA0KPj4gcmVn
-aXN0ZXJzPw0KPiBGcm9tIG15IGV4cGVyaWVuY2Ugd2l0aCBNYXJ2ZWxsIEkgZG9uJ3QgdGhpbmsg
-aXQncyB0aGF0IG9kZC4gDQo+IFBhcnRpY3VsYXJseSBmb3IgYSAxRyBTRVJERVMgdGhlcmUncyBy
-ZWFsbHkgbm90IG11Y2ggdGhhdCBuZWVkcyANCj4gY29uZmlndXJpbmcgKGFsdGhvdWdoIHBvd2Vy
-IHVwL2Rvd24gd291bGQgYmUgbmljZSkuIEknbGwgcG9rZSBhcm91bmQgDQo+IHRoYXQgcmVnaXN0
-ZXIgc3BhY2UgdG8gc2VlIGlmIGFueXRoaW5nIGlzIHRoZXJlLg0KDQpJIHBva2VkIGFyb3VuZCB3
-aGF0IEkgdGhvdWdodCB3b3VsZCBiZSB0aGUgcmVsZXZhbnQgcmVnaXN0ZXIgc3BhY2UgYW5kIA0K
-Y291bGRuJ3QgZmluZCBhbnl0aGluZyByZXNwb25kaW5nIHRvIHRoZSByZWFkcy4NCg0KPj4+IFNv
-IGhvdyBkbyB5b3Ugd2FudCB0byBtb3ZlIHRoaXMgc2VyaWVzIGZvcndhcmQ/IEkgY2FuIHRlc3Qg
-aXQgb24gdGhlDQo+Pj4gODhFNjA5NyAoYW5kIGhhdmUgcmVzdHJpY3RlZCBpdCB0byBqdXN0IHRo
-YXQgY2hpcCBmb3Igbm93KSwgSSdtIHByZXR0eQ0KPj4+IHN1cmUgaXQnbGwgd29yayBvbiB0aGUg
-ODhFNjE4NS4gSSBkb3VidCBpdCdsbCB3b3JrIG9uIHRoZSA4OEU2MTIyIGJ1dA0KPj4+IG1heWJl
-IGl0IHdvdWxkIHdpdGggYSBkaWZmZXJlbnQgc2VyZGVzX3Bvd2VyIGZ1bmN0aW9uIChvciBldmVu
-IHRoZQ0KPj4+IG12ODhlNjM1Ml9zZXJkZXNfcG93ZXIoKSBhcyB5b3Ugc3VnZ2VzdGVkKS4NCj4+
-IE1ha2UgeW91ciBiZXN0IGd1ZXNzIGZvciB3aGF0IHlvdSBjYW5ub3QgdGVzdC4NCj4gV2lsbCBk
-by4gSSdsbCBleHBhbmQgb3V0IGF0IGxlYXN0IHRvIGNvdmVyIHRoZSA4OEU2MTg1IGluIHYyLiBJ
-IGNhbiANCj4gcHJvYmFibHkgZ3Vlc3MgYXQgdGhlIDg4RTYxMjIgYXNpZGUgZnJvbSB0aGUgYWJp
-bGl0eSB0byBwb3dlciB1cC9kb3duIA0KPiB0aGUgcmVzdCBsb29rcyB0aGUgc2FtZSBmcm9tIGds
-YW5jaW5nIHRoZSBkYXRhc2hlZXRzLg==
+On Sun, 2020-10-18 at 19:52 -0600, Yu Zhao wrote:
+> On Wed, May 27, 2020 at 10:11:19PM +0200, Sebastian Andrzej Siewior wrote:
+> > From: Mike Galbraith <umgwanakikbuti@gmail.com>
+> > 
+> > The zcomp driver uses per-CPU compression. The per-CPU data pointer is
+> > acquired with get_cpu_ptr() which implicitly disables preemption.
+> > It allocates memory inside the preempt disabled region which conflicts
+> > with the PREEMPT_RT semantics.
+> > 
+> > Replace the implicit preemption control with an explicit local lock.
+> > This allows RT kernels to substitute it with a real per CPU lock, which
+> > serializes the access but keeps the code section preemptible. On non RT
+> > kernels this maps to preempt_disable() as before, i.e. no functional
+> > change.
+> 
+> Hi,
+> 
+> This change seems to have introduced a potential deadlock. Can you
+> please take a look?
+
+Hm, looks like I'm getting undeserved credit for uncovering a locking
+bug.  In reality, Sebastian was generous with attribution of derivative
+work, so he should ge credit.. and it looks like peterz fixed it.
+
+Date: Fri, 16 Oct 2020 14:40:09 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+
+---
+
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index 9100ac36670a..c1e2c2e1cde8 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1216,10 +1216,11 @@ static void zram_free_page(struct zram *zram, size_t index)
+ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+ 				struct bio *bio, bool partial_io)
+ {
+-	int ret;
++	struct zcomp_strm *zstrm;
+ 	unsigned long handle;
+ 	unsigned int size;
+ 	void *src, *dst;
++	int ret;
+ 
+ 	zram_slot_lock(zram, index);
+ 	if (zram_test_flag(zram, index, ZRAM_WB)) {
+@@ -1250,6 +1251,9 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+ 
+ 	size = zram_get_obj_size(zram, index);
+ 
++	if (size != PAGE_SIZE)
++		zstrm = zcomp_stream_get(zram->comp);
++
+ 	src = zs_map_object(zram->mem_pool, handle, ZS_MM_RO);
+ 	if (size == PAGE_SIZE) {
+ 		dst = kmap_atomic(page);
+@@ -1257,8 +1261,6 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+ 		kunmap_atomic(dst);
+ 		ret = 0;
+ 	} else {
+-		struct zcomp_strm *zstrm = zcomp_stream_get(zram->comp);
+-
+ 		dst = kmap_atomic(page);
+ 		ret = zcomp_decompress(zstrm, src, size, dst);
+ 		kunmap_atomic(dst);
+
+
