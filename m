@@ -2,165 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D870D29301A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02C9293028
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728963AbgJSUxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:53:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39797 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728801AbgJSUxw (ORCPT
+        id S1730222AbgJSVAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 17:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728963AbgJSVAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:53:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603140831;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ljaLzhezy+nq1DMv1yiAIWoIK2NJ/V3HeecNHEJEUIQ=;
-        b=NvOkSLSawWtA0sCJCJgVr8HrNs7cQgEhbLZK05Al1dzb8nRyCUaQE1r+Aw0ILgvbalQ4oh
-        he2FTPFa2ZRi6Svshp7kv0FXAV9chUcDWec/X3GaL5t9DHYFVnbWvVts+KqwP7z5MgxltO
-        McbMzK4fN7NDUQq24ecG77kCxo6vAVU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-539-qQmKvwokOQOgVfBTKE37eQ-1; Mon, 19 Oct 2020 16:53:47 -0400
-X-MC-Unique: qQmKvwokOQOgVfBTKE37eQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2DAD1015CA2;
-        Mon, 19 Oct 2020 20:53:45 +0000 (UTC)
-Received: from krava (unknown [10.40.194.190])
-        by smtp.corp.redhat.com (Postfix) with SMTP id EECC727CCA;
-        Mon, 19 Oct 2020 20:53:43 +0000 (UTC)
-Date:   Mon, 19 Oct 2020 22:53:43 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Tommi Rantala <tommi.t.rantala@nokia.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH] perf tools: Fix crash with non-jited bpf progs
-Message-ID: <20201019205343.GA2064287@krava>
-References: <20201016114718.54332-1-tommi.t.rantala@nokia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016114718.54332-1-tommi.t.rantala@nokia.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Mon, 19 Oct 2020 17:00:45 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97965C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 14:00:45 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id e15so703826pfh.6
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 14:00:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0NTGtDn/33Pw3u4VstNPKOHvXDTy/KGjb/nhjj8rNBE=;
+        b=hZf7y6KIDAFSDpejN1MH7zjZf/OBwAdSvdZUWkxxoYD7jDqnnLROn2neG90RO0+4Eb
+         Dh3+8DKiJ7JIbcWX30Oj+fU1jN2jFWFUy6I4PBnSMkl1QyeO1UWuZkgGvaBqK/pNPAIU
+         mLpQ3emrofGATkW5BQXY/YsRjhyTLiqbmFGZ3WpF1Iiah8cdcSUJva4d2JlbeONnl77Y
+         6idBzC7s3mSA+pEuO/tnAA6HIg/4PQ4YiqlWlnH9w7yxjs6PnSoaDDoGDYyeOivTSr+Y
+         LPSc+oDz5oCWIg2FEBDldnenR4cpwBm9Cg73EmguzgWQ3wUsu9pxxtNo9+WAZ6z+FeK3
+         ESsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=0NTGtDn/33Pw3u4VstNPKOHvXDTy/KGjb/nhjj8rNBE=;
+        b=o51wVYLdIMASMYWAb7/nufCJtVSoCNyIJ7IHxpa81BMemDsHAysGBwhPG6tF9aGUFA
+         karW1GbCrXRHZAU7Ivmk83DNGHZAMrghWVVDIuBUlcnh4WC5GdOUyrgpRGO3gtphdcZS
+         kXilOBYdCfrIEdZyOrwrkNApkHrb763M32jIdWHgIS9VnfXSsGTOhZ6pY6CyT5JX/VUR
+         KSjSq6gC2m9G8c5ihDszq8rbbkCPlSJ6gDJ4sgbDOjikgIN9Z48W9GZLxeraOd03hRFA
+         wSJ4kOyaOcn6CEohxxaByeGQI8ZDs8mwcQZHyrLB3K/ZgGoAMiRE3Z9HNJMg5HbnZY8D
+         RZuA==
+X-Gm-Message-State: AOAM530ZMsQKhBlBtgHWa6ns1s74YvDH/zzi7mIM4UQ0OkA/fR7E+Bci
+        icxnx14kTki2d0VqyQUzJxg/WyUOKp8y1A==
+X-Google-Smtp-Source: ABdhPJzpGNtm7u/WtOYfzt0O6J4jb66hN7qc6BZRCnuB94Ljoi5p6ZKSdjdKRFVzggkGNyPJI1efVw==
+X-Received: by 2002:a63:5c05:: with SMTP id q5mr1381083pgb.352.1603141244766;
+        Mon, 19 Oct 2020 14:00:44 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 145sm432007pga.46.2020.10.19.14.00.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 14:00:44 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 14:00:44 -0700 (PDT)
+X-Google-Original-Date: Mon, 19 Oct 2020 14:00:34 PDT (-0700)
+Subject:     Re: [GIT PULL] RISC-V Patches for the 5.10 Merge Window, Part 1
+In-Reply-To: <CAOnJCUJBCLdFRNPNi1z+F5-cfbu8sPOrvG8LVn5GQRepxHrBDA@mail.gmail.com>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     atishp@atishpatra.org, ardb@kernel.org
+Message-ID: <mhng-02f9ec68-743e-45d3-96a9-8675c7e1147b@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 02:47:18PM +0300, Tommi Rantala wrote:
-> The addr in PERF_RECORD_KSYMBOL events for non-jited bpf progs points to
-> the bpf interpreter, ie. within kernel text section. When processing the
-> unregister event, this causes unexpected removal of vmlinux_map,
-> crashing perf later in cleanup:
-> 
->   # perf record -- timeout --signal=INT 2s /usr/share/bcc/tools/execsnoop
->   PCOMM            PID    PPID   RET ARGS
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Captured and wrote 0.208 MB perf.data (5155 samples) ]
->   perf: tools/include/linux/refcount.h:131: refcount_sub_and_test: Assertion `!(new > val)' failed.
->   Aborted (core dumped)
-> 
->   # perf script -D|grep KSYM
->   0 0xa40 [0x48]: PERF_RECORD_KSYMBOL addr ffffffffa9b6b530 len 0 type 1 flags 0x0 name bpf_prog_f958f6eb72ef5af6
->   0 0xab0 [0x48]: PERF_RECORD_KSYMBOL addr ffffffffa9b6b530 len 0 type 1 flags 0x0 name bpf_prog_8c42dee26e8cd4c2
->   0 0xb20 [0x48]: PERF_RECORD_KSYMBOL addr ffffffffa9b6b530 len 0 type 1 flags 0x0 name bpf_prog_f958f6eb72ef5af6
->   108563691893 0x33d98 [0x58]: PERF_RECORD_KSYMBOL addr ffffffffa9b6b3b0 len 0 type 1 flags 0x0 name bpf_prog_bc5697a410556fc2_syscall__execve
->   108568518458 0x34098 [0x58]: PERF_RECORD_KSYMBOL addr ffffffffa9b6b3f0 len 0 type 1 flags 0x0 name bpf_prog_45e2203c2928704d_do_ret_sys_execve
->   109301967895 0x34830 [0x58]: PERF_RECORD_KSYMBOL addr ffffffffa9b6b3b0 len 0 type 1 flags 0x1 name bpf_prog_bc5697a410556fc2_syscall__execve
->   109302007356 0x348b0 [0x58]: PERF_RECORD_KSYMBOL addr ffffffffa9b6b3f0 len 0 type 1 flags 0x1 name bpf_prog_45e2203c2928704d_do_ret_sys_execve
->   perf: tools/include/linux/refcount.h:131: refcount_sub_and_test: Assertion `!(new > val)' failed.
-> 
-> Here the addresses match the bpf interpreter:
-> 
->   # grep -e ffffffffa9b6b530 -e ffffffffa9b6b3b0 -e ffffffffa9b6b3f0 /proc/kallsyms
->   ffffffffa9b6b3b0 t __bpf_prog_run224
->   ffffffffa9b6b3f0 t __bpf_prog_run192
->   ffffffffa9b6b530 t __bpf_prog_run32
-> 
-> Fix by not allowing vmlinux_map to be removed by PERF_RECORD_KSYMBOL
-> unregister event.
-> 
-> Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
+On Mon, 19 Oct 2020 13:43:27 PDT (-0700), atishp@atishpatra.org wrote:
+> On Mon, Oct 19, 2020 at 12:08 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>>
+>> The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
+>>
+>>   Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
+>>
+>> are available in the Git repository at:
+>>
+>>   git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.10-mw0
+>>
+>> for you to fetch changes up to de22d2107ced3cc5355cc9dbbd85e44183546bd5:
+>>
+>>   RISC-V: Add page table dump support for uefi (2020-10-02 14:31:33 -0700)
+>>
+>> ----------------------------------------------------------------
+>> RISC-V Patches for the 5.10 Merge Window, Part 1
+>>
+>> This contains a handful of cleanups and new features, including:
+>>
+>> * A handful of cleanups for our page fault handling.
+>> * Improvements to how we fill out cacheinfo.
+>> * Support for EFI-based systems.
+>>
+>> ---
+>>
+>> This contains a merge from the EFI tree that was necessary as some of the EFI
+>> support landed over there.  It's my first time doing something like this,
+>>
+>> I haven't included the set_fs stuff because the base branch it depends on
+>> hasn't been merged yet.  I'll probably have another merge window PR, as
+>> there's more in flight (most notably the fix for new binutils I just sent out),
+>> but I figured there was no reason to delay this any longer.
+>>
+>> There is one merge conflict, which is between my fixes and for-next branches:
+>>
+>>     diff --cc arch/riscv/kernel/vmlinux.lds.S
+>>     index 67db80e12d1f,9795359cb9da..ffaa3da375c2
+>>     --- a/arch/riscv/kernel/vmlinux.lds.S
+>>     +++ b/arch/riscv/kernel/vmlinux.lds.S
+>>     @@@ -66,8 -71,11 +70,13 @@@ SECTION
+>>                     _etext = .;
+>>             }
+>>
+>>      +      INIT_DATA_SECTION(16)
+>>      +
+>>     + #ifdef CONFIG_EFI
+>>     +       . = ALIGN(PECOFF_SECTION_ALIGNMENT);
+>>     +       __pecoff_text_end = .;
+>>     + #endif
+>>     +
+>>             /* Start of data section */
+>>             _sdata = .;
+>>             RO_DATA(SECTION_ALIGN)
+>>
+>> ----------------------------------------------------------------
+>> Anup Patel (1):
+>>       RISC-V: Move DT mapping outof fixmap
+>>
+>> Ard Biesheuvel (3):
+>>       efi/libstub: arm32: Base FDT and initrd placement on image address
+>>       efi/libstub: Export efi_low_alloc_above() to other units
+>>       efi/libstub: arm32: Use low allocation for the uncompressed kernel
+>>
+>
+> I thought these 3 were being taken through the EFI tree. I already see
+> them in the master branch.
+>
+> 762cd288fc4a efi/libstub: arm32: Use low allocation for the uncompressed kernel
+> 1a895dbf4b66 efi/libstub: Export efi_low_alloc_above() to other units
+> 6208857b8f7e efi/libstub: arm32: Base FDT and initrd placement on image address
 
-nice, I almost forgot about non jit mode by now ;-)
+I see them in Linus' master with those exact hashes, so IIUC this is all OK?  I
+guess I just assumed they were supposed to show up in the shortlog, but it's my
+first time trying one of these multi-tree merges so maybe I screwed something
+up?
 
-Acked/Tested-by: Jiri Olsa <jolsa@redhat.com>
+I obtained these by merging a tag from the EFI tree (that's already been
+merged) into my tree, which looks OK to me:
 
-thanks,
-jirka
+    commit 8a3f30c4319dc70547f11c18da2e7b5987543aa1
+    gpg: Signature made Fri 02 Oct 2020 02:30:05 PM PDT
+    gpg:                using RSA key 2B3C3747446843B24A943A7A2E1319F35FBB1889
+    gpg:                issuer "palmer@dabbelt.com"
+    gpg: Good signature from "Palmer Dabbelt <palmer@dabbelt.com>" [ultimate]
+    gpg:                 aka "Palmer Dabbelt <palmerdabbelt@google.com>" [ultimate]
+    merged tag 'efi-riscv-shared-for-v5.10'
+    gpg: Signature made Wed 16 Sep 2020 08:57:07 AM PDT
+    gpg:                using RSA key 9CD2A0DA6AD8F7330175E2BBC237207E9574FA7D
+    gpg: Good signature from "Adriaan (Ard) Biesheuvel <ard.biesheuvel@linaro.org>" [unknown]
+    gpg:                 aka "Adriaan (Ard) Biesheuvel <ard.biesheuvel@gmail.com>" [unknown]
+    gpg:                 aka "Adriaan (Ard) Biesheuvel <ardb@kernel.org>" [unknown]
+    gpg:                 aka "Adriaan (Ard) Biesheuvel <ard.biesheuvel@arm.com>" [unknown]
+    gpg: WARNING: This key is not certified with a trusted signature!
+    gpg:          There is no indication that the signature belongs to the owner.
+    Primary key fingerprint: F43D 0332 8115 A198 C900  1688 3D20 0E9C A632 9909
+         Subkey fingerprint: 9CD2 A0DA 6AD8 F733 0175  E2BB C237 207E 9574 FA7D
+    Merge: 54701a0d12e2 762cd288fc4a
+    Author: Palmer Dabbelt <palmerdabbelt@google.com>
+    Date:   Fri Oct 2 14:29:51 2020 -0700
+    
+        Merge tag 'efi-riscv-shared-for-v5.10' of ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/efi/efi into for-next
+        
+        Stable branch for v5.10 shared between the EFI and RISC-V trees
+        
+        The RISC-V EFI boot and runtime support will be merged for v5.10 via
+        the RISC-V tree. However, it incorporates some changes that conflict
+        with other EFI changes that are in flight, so this tag serves as a
+        shared base that allows those conflicts to be resolved beforehand.
+        
+        * tag 'efi-riscv-shared-for-v5.10' of ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/efi/efi:
+          efi/libstub: arm32: Use low allocation for the uncompressed kernel
+          efi/libstub: Export efi_low_alloc_above() to other units
+          efi/libstub: arm32: Base FDT and initrd placement on image address
+          efi: Rename arm-init to efi-init common for all arch
+          include: pe.h: Add RISC-V related PE definition
 
-> ---
->  tools/perf/util/machine.c | 11 ++++++++++-
->  tools/perf/util/symbol.c  |  7 +++++++
->  tools/perf/util/symbol.h  |  2 ++
->  3 files changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> index 85587de027a5..d93d35463c61 100644
-> --- a/tools/perf/util/machine.c
-> +++ b/tools/perf/util/machine.c
-> @@ -786,11 +786,20 @@ static int machine__process_ksymbol_unregister(struct machine *machine,
->  					       union perf_event *event,
->  					       struct perf_sample *sample __maybe_unused)
->  {
-> +	struct symbol *sym;
->  	struct map *map;
->  
->  	map = maps__find(&machine->kmaps, event->ksymbol.addr);
-> -	if (map)
-> +	if (!map)
-> +		return 0;
-> +
-> +	if (map != machine->vmlinux_map)
->  		maps__remove(&machine->kmaps, map);
-> +	else {
-> +		sym = dso__find_symbol(map->dso, map->map_ip(map, map->start));
-> +		if (sym)
-> +			dso__delete_symbol(map->dso, sym);
-> +	}
->  
->  	return 0;
->  }
-> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> index 5151a8c0b791..6bf8e74ea1d1 100644
-> --- a/tools/perf/util/symbol.c
-> +++ b/tools/perf/util/symbol.c
-> @@ -515,6 +515,13 @@ void dso__insert_symbol(struct dso *dso, struct symbol *sym)
->  	}
->  }
->  
-> +void dso__delete_symbol(struct dso *dso, struct symbol *sym)
-> +{
-> +	rb_erase_cached(&sym->rb_node, &dso->symbols);
-> +	symbol__delete(sym);
-> +	dso__reset_find_symbol_cache(dso);
-> +}
-> +
->  struct symbol *dso__find_symbol(struct dso *dso, u64 addr)
->  {
->  	if (dso->last_find_result.addr != addr || dso->last_find_result.symbol == NULL) {
-> diff --git a/tools/perf/util/symbol.h b/tools/perf/util/symbol.h
-> index 03e264a27cd3..60345691db09 100644
-> --- a/tools/perf/util/symbol.h
-> +++ b/tools/perf/util/symbol.h
-> @@ -130,6 +130,8 @@ int dso__load_kallsyms(struct dso *dso, const char *filename, struct map *map);
->  
->  void dso__insert_symbol(struct dso *dso,
->  			struct symbol *sym);
-> +void dso__delete_symbol(struct dso *dso,
-> +			struct symbol *sym);
->  
->  struct symbol *dso__find_symbol(struct dso *dso, u64 addr);
->  struct symbol *dso__find_symbol_by_name(struct dso *dso, const char *name);
-> -- 
-> 2.26.2
-> 
+I think the actual issue here is just that whatever I pointed git to when
+generating the PR didn't contain the merge of the shared code yet, so
+git-shortlog included it?
 
+>> Atish Patra (8):
+>>       include: pe.h: Add RISC-V related PE definition
+>>       efi: Rename arm-init to efi-init common for all arch
+>>       RISC-V: Add early ioremap support
+>>       RISC-V: Implement late mapping page table allocation functions
+>>       RISC-V: Add PE/COFF header for EFI stub
+>>       RISC-V: Add EFI stub support.
+>>       RISC-V: Add EFI runtime services
+>>       RISC-V: Add page table dump support for uefi
+>>
+>> Palmer Dabbelt (1):
+>>       Merge tag 'efi-riscv-shared-for-v5.10' of ssh://gitolite.kernel.org/.../efi/efi into for-next
+>>
+>> Pekka Enberg (11):
+>>       riscv/mm: Simplify retry logic in do_page_fault()
+>>       riscv/mm/fault: Move no context handling to no_context()
+>>       riscv/mm/fault: Move bad area handling to bad_area()
+>>       riscv/mm/fault: Move vmalloc fault handling to vmalloc_fault()
+>>       riscv/mm/fault: Simplify fault error handling
+>>       riscv/mm/fault: Move fault error handling to mm_fault_error()
+>>       riscv/mm/fault: Simplify mm_fault_error()
+>>       riscv/mm/fault: Move FAULT_FLAG_WRITE handling in do_page_fault()
+>>       riscv/mm/fault: Move access error check to function
+>>       riscv/mm/fault: Fix inline placement in vmalloc_fault() declaration
+>>       riscv/mm/fault: Set FAULT_FLAG_INSTRUCTION flag in do_page_fault()
+>>
+>> Tian Tao (1):
+>>       RISC-V: Fix duplicate included thread_info.h
+>>
+>> Zong Li (3):
+>>       riscv: Set more data to cacheinfo
+>>       riscv: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
+>>       riscv: Add cache information in AUX vector
+>>
+>>  arch/arm/include/asm/efi.h                      |  23 +-
+>>  arch/arm64/include/asm/efi.h                    |   5 +-
+>>  arch/riscv/Kconfig                              |  25 ++
+>>  arch/riscv/Makefile                             |   1 +
+>>  arch/riscv/configs/defconfig                    |   1 +
+>>  arch/riscv/include/asm/Kbuild                   |   1 +
+>>  arch/riscv/include/asm/cacheinfo.h              |   5 +
+>>  arch/riscv/include/asm/efi.h                    |  55 ++++
+>>  arch/riscv/include/asm/elf.h                    |  13 +
+>>  arch/riscv/include/asm/fixmap.h                 |  16 +-
+>>  arch/riscv/include/asm/io.h                     |   1 +
+>>  arch/riscv/include/asm/mmu.h                    |   2 +
+>>  arch/riscv/include/asm/pgtable.h                |   5 +
+>>  arch/riscv/include/asm/sections.h               |  13 +
+>>  arch/riscv/include/uapi/asm/auxvec.h            |  24 ++
+>>  arch/riscv/kernel/Makefile                      |   2 +
+>>  arch/riscv/kernel/cacheinfo.c                   |  98 +++++--
+>>  arch/riscv/kernel/efi-header.S                  | 111 ++++++++
+>>  arch/riscv/kernel/efi.c                         |  96 +++++++
+>>  arch/riscv/kernel/head.S                        |  18 +-
+>>  arch/riscv/kernel/head.h                        |   2 -
+>>  arch/riscv/kernel/image-vars.h                  |  51 ++++
+>>  arch/riscv/kernel/setup.c                       |  18 +-
+>>  arch/riscv/kernel/vmlinux.lds.S                 |  23 +-
+>>  arch/riscv/mm/fault.c                           | 356 +++++++++++++-----------
+>>  arch/riscv/mm/init.c                            | 191 ++++++++++---
+>>  arch/riscv/mm/ptdump.c                          |  48 +++-
+>>  drivers/firmware/efi/Kconfig                    |   3 +-
+>>  drivers/firmware/efi/Makefile                   |   4 +-
+>>  drivers/firmware/efi/{arm-init.c => efi-init.c} |   0
+>>  drivers/firmware/efi/libstub/Makefile           |  10 +
+>>  drivers/firmware/efi/libstub/arm32-stub.c       | 178 +++---------
+>>  drivers/firmware/efi/libstub/arm64-stub.c       |   1 -
+>>  drivers/firmware/efi/libstub/efi-stub.c         |  59 +---
+>>  drivers/firmware/efi/libstub/efistub.h          |   7 +-
+>>  drivers/firmware/efi/libstub/relocate.c         |   4 +-
+>>  drivers/firmware/efi/libstub/riscv-stub.c       | 109 ++++++++
+>>  drivers/firmware/efi/riscv-runtime.c            | 143 ++++++++++
+>>  include/linux/pe.h                              |   3 +
+>>  39 files changed, 1275 insertions(+), 450 deletions(-)
+>>  create mode 100644 arch/riscv/include/asm/efi.h
+>>  create mode 100644 arch/riscv/include/asm/sections.h
+>>  create mode 100644 arch/riscv/kernel/efi-header.S
+>>  create mode 100644 arch/riscv/kernel/efi.c
+>>  create mode 100644 arch/riscv/kernel/image-vars.h
+>>  rename drivers/firmware/efi/{arm-init.c => efi-init.c} (100%)
+>>  create mode 100644 drivers/firmware/efi/libstub/riscv-stub.c
+>>  create mode 100644 drivers/firmware/efi/riscv-runtime.c
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
