@@ -2,273 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02C9293028
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDDE293029
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730222AbgJSVAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 17:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
+        id S1732475AbgJSVDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 17:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728963AbgJSVAp (ORCPT
+        with ESMTP id S1728752AbgJSVDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 17:00:45 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97965C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 14:00:45 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id e15so703826pfh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 14:00:45 -0700 (PDT)
+        Mon, 19 Oct 2020 17:03:43 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA89C0613CE;
+        Mon, 19 Oct 2020 14:03:43 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a1so501346pjd.1;
+        Mon, 19 Oct 2020 14:03:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0NTGtDn/33Pw3u4VstNPKOHvXDTy/KGjb/nhjj8rNBE=;
-        b=hZf7y6KIDAFSDpejN1MH7zjZf/OBwAdSvdZUWkxxoYD7jDqnnLROn2neG90RO0+4Eb
-         Dh3+8DKiJ7JIbcWX30Oj+fU1jN2jFWFUy6I4PBnSMkl1QyeO1UWuZkgGvaBqK/pNPAIU
-         mLpQ3emrofGATkW5BQXY/YsRjhyTLiqbmFGZ3WpF1Iiah8cdcSUJva4d2JlbeONnl77Y
-         6idBzC7s3mSA+pEuO/tnAA6HIg/4PQ4YiqlWlnH9w7yxjs6PnSoaDDoGDYyeOivTSr+Y
-         LPSc+oDz5oCWIg2FEBDldnenR4cpwBm9Cg73EmguzgWQ3wUsu9pxxtNo9+WAZ6z+FeK3
-         ESsA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hxBelbPygyz/yC0KrNOxkFn9uM1ejxdi1qnz/Hbxc+E=;
+        b=IAILx8K8165CKUtXluG83OHedKCocuY3KTRggkgMV19MWE+EGGMNFQEdqDdzu0iWTz
+         TwhgFJ8YsWkM0YqGnm8n+kbv26Bgt+BnjzvuKDrJShKuqBfSvobFtWf56iSS7ubyWV88
+         NIUp0b8rEAM5mI4+z/YyahUaYktEMIyWaV87hwl+Ng7cVSN7OsUpE1/+GZiCekefvFX9
+         5lhVvPTzqWV9E49TZ9Thlao8ozbxgHVFIFyOxFEE3t1jvyapL+s4o8Bm+sFCRGlaWVHm
+         3JJUA23B+fpLQeOcvtWTl7H+wYDPQ7p+wklRYIxflayoWlO20U2D4RSrkIJgP6/3cwMm
+         7BSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=0NTGtDn/33Pw3u4VstNPKOHvXDTy/KGjb/nhjj8rNBE=;
-        b=o51wVYLdIMASMYWAb7/nufCJtVSoCNyIJ7IHxpa81BMemDsHAysGBwhPG6tF9aGUFA
-         karW1GbCrXRHZAU7Ivmk83DNGHZAMrghWVVDIuBUlcnh4WC5GdOUyrgpRGO3gtphdcZS
-         kXilOBYdCfrIEdZyOrwrkNApkHrb763M32jIdWHgIS9VnfXSsGTOhZ6pY6CyT5JX/VUR
-         KSjSq6gC2m9G8c5ihDszq8rbbkCPlSJ6gDJ4sgbDOjikgIN9Z48W9GZLxeraOd03hRFA
-         wSJ4kOyaOcn6CEohxxaByeGQI8ZDs8mwcQZHyrLB3K/ZgGoAMiRE3Z9HNJMg5HbnZY8D
-         RZuA==
-X-Gm-Message-State: AOAM530ZMsQKhBlBtgHWa6ns1s74YvDH/zzi7mIM4UQ0OkA/fR7E+Bci
-        icxnx14kTki2d0VqyQUzJxg/WyUOKp8y1A==
-X-Google-Smtp-Source: ABdhPJzpGNtm7u/WtOYfzt0O6J4jb66hN7qc6BZRCnuB94Ljoi5p6ZKSdjdKRFVzggkGNyPJI1efVw==
-X-Received: by 2002:a63:5c05:: with SMTP id q5mr1381083pgb.352.1603141244766;
-        Mon, 19 Oct 2020 14:00:44 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id 145sm432007pga.46.2020.10.19.14.00.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 14:00:44 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 14:00:44 -0700 (PDT)
-X-Google-Original-Date: Mon, 19 Oct 2020 14:00:34 PDT (-0700)
-Subject:     Re: [GIT PULL] RISC-V Patches for the 5.10 Merge Window, Part 1
-In-Reply-To: <CAOnJCUJBCLdFRNPNi1z+F5-cfbu8sPOrvG8LVn5GQRepxHrBDA@mail.gmail.com>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     atishp@atishpatra.org, ardb@kernel.org
-Message-ID: <mhng-02f9ec68-743e-45d3-96a9-8675c7e1147b@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=hxBelbPygyz/yC0KrNOxkFn9uM1ejxdi1qnz/Hbxc+E=;
+        b=HRPRvs2l+hyvLxh27Zn5LpKqlz5qUa6MmIylfTVcg2vLmbTwOhLVFTWuIzjOtvekv8
+         PlKUEvZX4/K8g/+x2S9ObxQ5evB2bs1uy/XVpY5LAUxjAIxh1nhz5FLtv7bYhTzXi5bD
+         ++ZPBr7+YoR+wr22+oeEvk65mHhtYARLdlQ2uKK5SSaBETmjYew5DORLk8pajdLMsmWO
+         70UXVn/yN2kM0S7r9347llrWnug4DZTV9bIIds6J7UG3jd80QV7Wq8NZ9V3Fqek43wCe
+         ECiBEKB0V1Vh+rDiFgtqs7e61H/2QCWVY3FyAX4Vb2e9uLSwBX/4KmJuR6d2gF/XzsDj
+         QdrA==
+X-Gm-Message-State: AOAM5326HGDlaKmu64HJy883XTaTO2X1mW6XhZzQ9RWncBdoH9LrPLrB
+        HQwqNpPkS3M4WfqI7ZzPbWxR0DncJXc=
+X-Google-Smtp-Source: ABdhPJy5zvG+vnwptE2dEOjRHOku/lBADJdo9KWGqmr3b2EUIAYOq9fNn9k9d7Z9qiDjyd/xwEPdVw==
+X-Received: by 2002:a17:90a:4097:: with SMTP id l23mr1269927pjg.160.1603141422202;
+        Mon, 19 Oct 2020 14:03:42 -0700 (PDT)
+Received: from [10.67.48.230] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id e16sm365296pjr.36.2020.10.19.14.03.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 14:03:41 -0700 (PDT)
+Subject: Re: [PATCH net] net: Have netpoll bring-up DSA management interface
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     netdev@vger.kernel.org, kuba@kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Yunjian Wang <wangyunjian@huawei.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201019171746.991720-1-f.fainelli@gmail.com>
+ <20201019200258.jrtymxikwrijkvpq@skbuf>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <58b07285-bb70-3115-eb03-5e43a4abeae6@gmail.com>
+Date:   Mon, 19 Oct 2020 14:03:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201019200258.jrtymxikwrijkvpq@skbuf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Oct 2020 13:43:27 PDT (-0700), atishp@atishpatra.org wrote:
-> On Mon, Oct 19, 2020 at 12:08 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+On 10/19/20 1:02 PM, Vladimir Oltean wrote:
+> On Mon, Oct 19, 2020 at 10:17:44AM -0700, Florian Fainelli wrote:
+>> These devices also do not utilize the upper/lower linking so the
+>> check about the netpoll device having upper is not going to be a
+>> problem.
+> 
+> They do as of 2f1e8ea726e9 ("net: dsa: link interfaces with the DSA
+> master to get rid of lockdep warnings"), don't they? The question is why
+> that doesn't work, and the answer is, I believe, that the linkage needs
+> to be the other way around than DSA has it.
+
+
+
+> 
 >>
->> The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
+>> The solution adopted here is identical to the one done for
+>> net/ipv4/ipconfig.c with 728c02089a0e ("net: ipv4: handle DSA enabled
+>> master network devices"), with the network namespace scope being
+>> restricted to that of the process configuring netpoll.
+> 
+> ... and further restricted to the only network namespace that DSA
+> supports. As a side note, we should declare NETIF_F_NETNS_LOCAL_BIT for
+> DSA interfaces.
+> 
 >>
->>   Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
->>
->> are available in the Git repository at:
->>
->>   git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.10-mw0
->>
->> for you to fetch changes up to de22d2107ced3cc5355cc9dbbd85e44183546bd5:
->>
->>   RISC-V: Add page table dump support for uefi (2020-10-02 14:31:33 -0700)
->>
->> ----------------------------------------------------------------
->> RISC-V Patches for the 5.10 Merge Window, Part 1
->>
->> This contains a handful of cleanups and new features, including:
->>
->> * A handful of cleanups for our page fault handling.
->> * Improvements to how we fill out cacheinfo.
->> * Support for EFI-based systems.
->>
+>> Fixes: 04ff53f96a93 ("net: dsa: Add netconsole support")
+>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 >> ---
+>>  net/core/netpoll.c | 22 ++++++++++++++++++----
+>>  1 file changed, 18 insertions(+), 4 deletions(-)
 >>
->> This contains a merge from the EFI tree that was necessary as some of the EFI
->> support landed over there.  It's my first time doing something like this,
->>
->> I haven't included the set_fs stuff because the base branch it depends on
->> hasn't been merged yet.  I'll probably have another merge window PR, as
->> there's more in flight (most notably the fix for new binutils I just sent out),
->> but I figured there was no reason to delay this any longer.
->>
->> There is one merge conflict, which is between my fixes and for-next branches:
->>
->>     diff --cc arch/riscv/kernel/vmlinux.lds.S
->>     index 67db80e12d1f,9795359cb9da..ffaa3da375c2
->>     --- a/arch/riscv/kernel/vmlinux.lds.S
->>     +++ b/arch/riscv/kernel/vmlinux.lds.S
->>     @@@ -66,8 -71,11 +70,13 @@@ SECTION
->>                     _etext = .;
->>             }
->>
->>      +      INIT_DATA_SECTION(16)
->>      +
->>     + #ifdef CONFIG_EFI
->>     +       . = ALIGN(PECOFF_SECTION_ALIGNMENT);
->>     +       __pecoff_text_end = .;
->>     + #endif
->>     +
->>             /* Start of data section */
->>             _sdata = .;
->>             RO_DATA(SECTION_ALIGN)
->>
->> ----------------------------------------------------------------
->> Anup Patel (1):
->>       RISC-V: Move DT mapping outof fixmap
->>
->> Ard Biesheuvel (3):
->>       efi/libstub: arm32: Base FDT and initrd placement on image address
->>       efi/libstub: Export efi_low_alloc_above() to other units
->>       efi/libstub: arm32: Use low allocation for the uncompressed kernel
->>
->
-> I thought these 3 were being taken through the EFI tree. I already see
-> them in the master branch.
->
-> 762cd288fc4a efi/libstub: arm32: Use low allocation for the uncompressed kernel
-> 1a895dbf4b66 efi/libstub: Export efi_low_alloc_above() to other units
-> 6208857b8f7e efi/libstub: arm32: Base FDT and initrd placement on image address
+>> diff --git a/net/core/netpoll.c b/net/core/netpoll.c
+>> index c310c7c1cef7..960948290001 100644
+>> --- a/net/core/netpoll.c
+>> +++ b/net/core/netpoll.c
+>> @@ -29,6 +29,7 @@
+>>  #include <linux/slab.h>
+>>  #include <linux/export.h>
+>>  #include <linux/if_vlan.h>
+>> +#include <net/dsa.h>
+>>  #include <net/tcp.h>
+>>  #include <net/udp.h>
+>>  #include <net/addrconf.h>
+>> @@ -657,15 +658,15 @@ EXPORT_SYMBOL_GPL(__netpoll_setup);
+>>  
+>>  int netpoll_setup(struct netpoll *np)
+>>  {
+>> -	struct net_device *ndev = NULL;
+>> +	struct net_device *ndev = NULL, *dev = NULL;
+>> +	struct net *net = current->nsproxy->net_ns;
+>>  	struct in_device *in_dev;
+>>  	int err;
+>>  
+>>  	rtnl_lock();
+>> -	if (np->dev_name[0]) {
+>> -		struct net *net = current->nsproxy->net_ns;
+>> +	if (np->dev_name[0])
+>>  		ndev = __dev_get_by_name(net, np->dev_name);
+>> -	}
+>> +
+>>  	if (!ndev) {
+>>  		np_err(np, "%s doesn't exist, aborting\n", np->dev_name);
+>>  		err = -ENODEV;
+>> @@ -673,6 +674,19 @@ int netpoll_setup(struct netpoll *np)
+>>  	}
+>>  	dev_hold(ndev);
+>>  
+>> +	/* bring up DSA management network devices up first */
+>> +	for_each_netdev(net, dev) {
+>> +		if (!netdev_uses_dsa(dev))
+>> +			continue;
+>> +
+>> +		err = dev_change_flags(dev, dev->flags | IFF_UP, NULL);
+>> +		if (err < 0) {
+>> +			np_err(np, "%s failed to open %s\n",
+>> +			       np->dev_name, dev->name);
+>> +			goto put;
+>> +		}
+>> +	}
+>> +
+> 
+> Completely crazy and outlandish idea, I know, but what's wrong with
+> doing this in DSA?
 
-I see them in Linus' master with those exact hashes, so IIUC this is all OK?  I
-guess I just assumed they were supposed to show up in the shortlog, but it's my
-first time trying one of these multi-tree merges so maybe I screwed something
-up?
+I really do not have a problem with that approach however other stacked
+devices like 802.1Q do not do that. It certainly scales a lot better to
+do this within DSA rather than sprinkling DSA specific knowledge
+throughout the network stack. Maybe for "configuration less" stacked
+devices such as DSA, 802.1Q (bridge ports?), bond etc. it would be
+acceptable to ensure that the lower device is always brought up?
 
-I obtained these by merging a tag from the EFI tree (that's already been
-merged) into my tree, which looks OK to me:
-
-    commit 8a3f30c4319dc70547f11c18da2e7b5987543aa1
-    gpg: Signature made Fri 02 Oct 2020 02:30:05 PM PDT
-    gpg:                using RSA key 2B3C3747446843B24A943A7A2E1319F35FBB1889
-    gpg:                issuer "palmer@dabbelt.com"
-    gpg: Good signature from "Palmer Dabbelt <palmer@dabbelt.com>" [ultimate]
-    gpg:                 aka "Palmer Dabbelt <palmerdabbelt@google.com>" [ultimate]
-    merged tag 'efi-riscv-shared-for-v5.10'
-    gpg: Signature made Wed 16 Sep 2020 08:57:07 AM PDT
-    gpg:                using RSA key 9CD2A0DA6AD8F7330175E2BBC237207E9574FA7D
-    gpg: Good signature from "Adriaan (Ard) Biesheuvel <ard.biesheuvel@linaro.org>" [unknown]
-    gpg:                 aka "Adriaan (Ard) Biesheuvel <ard.biesheuvel@gmail.com>" [unknown]
-    gpg:                 aka "Adriaan (Ard) Biesheuvel <ardb@kernel.org>" [unknown]
-    gpg:                 aka "Adriaan (Ard) Biesheuvel <ard.biesheuvel@arm.com>" [unknown]
-    gpg: WARNING: This key is not certified with a trusted signature!
-    gpg:          There is no indication that the signature belongs to the owner.
-    Primary key fingerprint: F43D 0332 8115 A198 C900  1688 3D20 0E9C A632 9909
-         Subkey fingerprint: 9CD2 A0DA 6AD8 F733 0175  E2BB C237 207E 9574 FA7D
-    Merge: 54701a0d12e2 762cd288fc4a
-    Author: Palmer Dabbelt <palmerdabbelt@google.com>
-    Date:   Fri Oct 2 14:29:51 2020 -0700
-    
-        Merge tag 'efi-riscv-shared-for-v5.10' of ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/efi/efi into for-next
-        
-        Stable branch for v5.10 shared between the EFI and RISC-V trees
-        
-        The RISC-V EFI boot and runtime support will be merged for v5.10 via
-        the RISC-V tree. However, it incorporates some changes that conflict
-        with other EFI changes that are in flight, so this tag serves as a
-        shared base that allows those conflicts to be resolved beforehand.
-        
-        * tag 'efi-riscv-shared-for-v5.10' of ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/efi/efi:
-          efi/libstub: arm32: Use low allocation for the uncompressed kernel
-          efi/libstub: Export efi_low_alloc_above() to other units
-          efi/libstub: arm32: Base FDT and initrd placement on image address
-          efi: Rename arm-init to efi-init common for all arch
-          include: pe.h: Add RISC-V related PE definition
-
-I think the actual issue here is just that whatever I pointed git to when
-generating the PR didn't contain the merge of the shared code yet, so
-git-shortlog included it?
-
->> Atish Patra (8):
->>       include: pe.h: Add RISC-V related PE definition
->>       efi: Rename arm-init to efi-init common for all arch
->>       RISC-V: Add early ioremap support
->>       RISC-V: Implement late mapping page table allocation functions
->>       RISC-V: Add PE/COFF header for EFI stub
->>       RISC-V: Add EFI stub support.
->>       RISC-V: Add EFI runtime services
->>       RISC-V: Add page table dump support for uefi
->>
->> Palmer Dabbelt (1):
->>       Merge tag 'efi-riscv-shared-for-v5.10' of ssh://gitolite.kernel.org/.../efi/efi into for-next
->>
->> Pekka Enberg (11):
->>       riscv/mm: Simplify retry logic in do_page_fault()
->>       riscv/mm/fault: Move no context handling to no_context()
->>       riscv/mm/fault: Move bad area handling to bad_area()
->>       riscv/mm/fault: Move vmalloc fault handling to vmalloc_fault()
->>       riscv/mm/fault: Simplify fault error handling
->>       riscv/mm/fault: Move fault error handling to mm_fault_error()
->>       riscv/mm/fault: Simplify mm_fault_error()
->>       riscv/mm/fault: Move FAULT_FLAG_WRITE handling in do_page_fault()
->>       riscv/mm/fault: Move access error check to function
->>       riscv/mm/fault: Fix inline placement in vmalloc_fault() declaration
->>       riscv/mm/fault: Set FAULT_FLAG_INSTRUCTION flag in do_page_fault()
->>
->> Tian Tao (1):
->>       RISC-V: Fix duplicate included thread_info.h
->>
->> Zong Li (3):
->>       riscv: Set more data to cacheinfo
->>       riscv: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
->>       riscv: Add cache information in AUX vector
->>
->>  arch/arm/include/asm/efi.h                      |  23 +-
->>  arch/arm64/include/asm/efi.h                    |   5 +-
->>  arch/riscv/Kconfig                              |  25 ++
->>  arch/riscv/Makefile                             |   1 +
->>  arch/riscv/configs/defconfig                    |   1 +
->>  arch/riscv/include/asm/Kbuild                   |   1 +
->>  arch/riscv/include/asm/cacheinfo.h              |   5 +
->>  arch/riscv/include/asm/efi.h                    |  55 ++++
->>  arch/riscv/include/asm/elf.h                    |  13 +
->>  arch/riscv/include/asm/fixmap.h                 |  16 +-
->>  arch/riscv/include/asm/io.h                     |   1 +
->>  arch/riscv/include/asm/mmu.h                    |   2 +
->>  arch/riscv/include/asm/pgtable.h                |   5 +
->>  arch/riscv/include/asm/sections.h               |  13 +
->>  arch/riscv/include/uapi/asm/auxvec.h            |  24 ++
->>  arch/riscv/kernel/Makefile                      |   2 +
->>  arch/riscv/kernel/cacheinfo.c                   |  98 +++++--
->>  arch/riscv/kernel/efi-header.S                  | 111 ++++++++
->>  arch/riscv/kernel/efi.c                         |  96 +++++++
->>  arch/riscv/kernel/head.S                        |  18 +-
->>  arch/riscv/kernel/head.h                        |   2 -
->>  arch/riscv/kernel/image-vars.h                  |  51 ++++
->>  arch/riscv/kernel/setup.c                       |  18 +-
->>  arch/riscv/kernel/vmlinux.lds.S                 |  23 +-
->>  arch/riscv/mm/fault.c                           | 356 +++++++++++++-----------
->>  arch/riscv/mm/init.c                            | 191 ++++++++++---
->>  arch/riscv/mm/ptdump.c                          |  48 +++-
->>  drivers/firmware/efi/Kconfig                    |   3 +-
->>  drivers/firmware/efi/Makefile                   |   4 +-
->>  drivers/firmware/efi/{arm-init.c => efi-init.c} |   0
->>  drivers/firmware/efi/libstub/Makefile           |  10 +
->>  drivers/firmware/efi/libstub/arm32-stub.c       | 178 +++---------
->>  drivers/firmware/efi/libstub/arm64-stub.c       |   1 -
->>  drivers/firmware/efi/libstub/efi-stub.c         |  59 +---
->>  drivers/firmware/efi/libstub/efistub.h          |   7 +-
->>  drivers/firmware/efi/libstub/relocate.c         |   4 +-
->>  drivers/firmware/efi/libstub/riscv-stub.c       | 109 ++++++++
->>  drivers/firmware/efi/riscv-runtime.c            | 143 ++++++++++
->>  include/linux/pe.h                              |   3 +
->>  39 files changed, 1275 insertions(+), 450 deletions(-)
->>  create mode 100644 arch/riscv/include/asm/efi.h
->>  create mode 100644 arch/riscv/include/asm/sections.h
->>  create mode 100644 arch/riscv/kernel/efi-header.S
->>  create mode 100644 arch/riscv/kernel/efi.c
->>  create mode 100644 arch/riscv/kernel/image-vars.h
->>  rename drivers/firmware/efi/{arm-init.c => efi-init.c} (100%)
->>  create mode 100644 drivers/firmware/efi/libstub/riscv-stub.c
->>  create mode 100644 drivers/firmware/efi/riscv-runtime.c
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
+PS: if you quote below the git version, it would appear that Thunderbird
+just eats that part of the mail... another bug to submit there.
+-- 
+Florian
