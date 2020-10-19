@@ -2,64 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B410292F93
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C0F292F96
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730671AbgJSUji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:39:38 -0400
-Received: from 8bytes.org ([81.169.241.247]:34062 "EHLO theia.8bytes.org"
+        id S1731337AbgJSUkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:40:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgJSUji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:39:38 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id AE03E52D; Mon, 19 Oct 2020 22:39:36 +0200 (CEST)
-Date:   Mon, 19 Oct 2020 22:39:35 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
+        id S1726652AbgJSUkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 16:40:51 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2E54223EA;
+        Mon, 19 Oct 2020 20:40:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603140051;
+        bh=Uw6z0L+vbpRHU1EORPmt0ZY0vv0X5pRrlNUeifp5qyk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Bk2f+AkhiG3y/v0+VBUoC4vhpjsi0qG02mroI4Hte7txqcWnTW14nin9Wx5mvw7ZD
+         QIcqBv80EOyHYqU830qa9ee3fim4O4xrrj/HC2kaRw/YyhmeuVpUVmQi+JTxmQ/D5j
+         iEdofx+d1lbgwpYzotdIllt3u3A4imb7VepOvXNM=
+Date:   Mon, 19 Oct 2020 13:40:48 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc:     Geliang Tang <geliangtang@gmail.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Krystad <peter.krystad@linux.intel.com>,
+        netdev@vger.kernel.org, mptcp@lists.01.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] x86/boot/compressed/64: Check SEV encryption in
- 64-bit boot-path
-Message-ID: <20201019203935.GG3635@8bytes.org>
-References: <20201019151121.826-1-joro@8bytes.org>
- <20201019151121.826-4-joro@8bytes.org>
- <20201019170008.GA2701355@rani.riverdale.lan>
- <20201019175447.GA2720155@rani.riverdale.lan>
+Subject: Re: [MPTCP][PATCH net-next 0/2] init ahmac and port of
+ mptcp_options_received
+Message-ID: <20201019134048.11c75c9a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <7766357d-0838-1603-9967-8910aa312f65@tessares.net>
+References: <cover.1603102503.git.geliangtang@gmail.com>
+        <7766357d-0838-1603-9967-8910aa312f65@tessares.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019175447.GA2720155@rani.riverdale.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 01:54:47PM -0400, Arvind Sankar wrote:
-> Also, isn't it possible that the initial page tables we're running on
-> have already been messed with and have the C-bit in the wrong location,
-> so that this write happens decrypted?
+On Mon, 19 Oct 2020 18:27:55 +0200 Matthieu Baerts wrote:
+> Hi Geliang,
+> 
+> On 19/10/2020 12:23, Geliang Tang wrote:
+> > This patchset deals with initializations of mptcp_options_received's two
+> > fields, ahmac and port.
+> > 
+> > Geliang Tang (2):
+> >    mptcp: initialize mptcp_options_received's ahmac
+> >    mptcp: move mptcp_options_received's port initialization  
+> 
+> Thank you for these two patches. They look good to me except one detail: 
+> these two patches are for -net and not net-next.
+> 
+> I don't know if it is alright for Jakub to apply them to -net or if it 
+> is clearer to re-send them with an updated subject.
+> 
+> If it is OK to apply them to -net without a re-submit, here is my:
+> 
+> Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 
-The code assumes that the page-table it is running on has the correct C
-bit position set and that the code which set it up verified that it is
-correct. For the kernel itself this is true, at least, but when booting
-via UEFI the check also needs to happen in the firmware.
+Thanks, I can apply to net.
 
-Note that the possibilies are limited when the hypervisor reports the
-wrong C bit position because code fetches always assume encryption, even
-when the C bit is cleared in the page-table. So a wrong C bit position
-in the decompression stub would write the kernel image to memory
-unencrypted and executing it would not be possible.
+> Also, if you don't mind and while I am here, I never know: is it OK for 
+> you the maintainers to send one Acked/Reviewed-by for a whole series -- 
+> but then this is not reflected on patchwork -- or should we send one tag 
+> for each patch?
 
-Regards,
-
-	Joerg
-
+It's fine, we propagate those semi-manually, but it's not a problem.
+Hopefully patchwork will address this at some point :(
