@@ -2,168 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433DE29294A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830B329294D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729433AbgJSO1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728311AbgJSO1m (ORCPT
+        id S1729306AbgJSO2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:28:33 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:60449 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728344AbgJSO2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:27:42 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA6AC0613CE;
-        Mon, 19 Oct 2020 07:27:41 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x7so11737616wrl.3;
-        Mon, 19 Oct 2020 07:27:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J4XrE9HXCwR/KsIjqo1txSO+XN0eoJhfpbzWewRFJS4=;
-        b=uxS9qthpVn3xJuHFts06PWunbbuZJSC4Fc/PvBwMhICn2Na9aaKscOIwWYX/J4F3Al
-         ZfO670d04wzxjcAKPJsXo7WatjigwbNqg0VIf/YF8KW717LoKsIJ/hQXex4GDfWXu4Jx
-         Vz20/NPw1O9Aw/FQy50u8BSKb/YwGbWBoxlK3RtUk53KjAupDw58jIp+caYbrFGXGIdP
-         RgAaMsRpeB2bGZxLdf8qcCFBcwRZzPFBrdx5rTYwpVFeUwKTKaEyZ6cM+gu0zcXgTLGo
-         kSkxmM7HxUqAg9dqguSYzD98ZJ5I/1TUZKeIPW4Ipm0zZ1vy+45yI0i8NlSB6JpUkOYH
-         NcSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J4XrE9HXCwR/KsIjqo1txSO+XN0eoJhfpbzWewRFJS4=;
-        b=ldza+qnsS1pE99vIY/0CELKtRyInTWIfZXdAZhTZh41bNXdqNDFNC6HOUl97Dqo8Wo
-         lYFMRd4IeMj4rZ4VPZr/5L+b6M9JuADNKTvDE2pYwudIwKeOmimhWQBZtEAGyXZkWIvd
-         SgizqbDUesUyx8hAoujjjTBsW0smq8nQzt2DUMo6ZVr6dGBNR6UVkzDz4t6ekCXgNiY2
-         D6hoL0JqZDmn7KXWZrQTATH9QeeB2ikbacZumK0teZx1q1pWHOyfcqiHctkfChi42BbL
-         tVU7NHzggNny4t7n1WWj383SCoszy1kjGdPa/tZ3XzzpG16fuByJ+8VkzYOm9wRLuett
-         0rGw==
-X-Gm-Message-State: AOAM531TOJAyPgAlR+uBICM4PRDd0bIPIpHoSdNNqJfTG6aLf0F/q2pq
-        bSoTf/c4KAW9M2pPVmTuVA4=
-X-Google-Smtp-Source: ABdhPJxclmK5tJHztft/7mXls1Pr5LGv+p9qBjz187C5S/MF0DBGSXopG+EkdGf+Fugo0q/XVD5QDg==
-X-Received: by 2002:adf:8290:: with SMTP id 16mr21330161wrc.103.1603117660325;
-        Mon, 19 Oct 2020 07:27:40 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id s185sm261888wmf.3.2020.10.19.07.27.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 07:27:39 -0700 (PDT)
-Subject: Re: [PATCH 2/5] pwm: pwm-mediatek: always use bus clock
-To:     Fabien Parent <fparent@baylibre.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org
-Cc:     robh+dt@kernel.org, lee.jones@linaro.org,
-        u.kleine-koenig@pengutronix.de, thierry.reding@gmail.com
-References: <20201019140705.1518822-1-fparent@baylibre.com>
- <20201019140705.1518822-3-fparent@baylibre.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <0f2dc182-868c-43c3-8ae8-999e7cf1d986@gmail.com>
-Date:   Mon, 19 Oct 2020 16:27:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Mon, 19 Oct 2020 10:28:32 -0400
+Received: from [192.168.1.155] ([77.2.107.242]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1Mdvyi-1judMc4BMc-00b5lp; Mon, 19 Oct 2020 16:28:17 +0200
+Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
+ driver
+To:     Ed W <lists@wildgooses.com>, Hans de Goede <hdegoede@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org
+References: <20200921215919.3072-1-lists@wildgooses.com>
+ <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
+ <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
+ <9fb836bc-7d8a-b6e2-8d73-8e74a8f2e38b@redhat.com>
+ <2ecbe677-8f80-17a1-dbf9-dfffa867805c@wildgooses.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <4a6fe2bc-a4a5-c214-e7fd-2a429dc960e1@metux.net>
+Date:   Mon, 19 Oct 2020 16:28:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201019140705.1518822-3-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <2ecbe677-8f80-17a1-dbf9-dfffa867805c@wildgooses.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:xbMRXUpzFNUkny2+TfTzHE8Qceb1YpYmx4n0gU6SRm/g5vXt+8P
+ zLJ+FWd2UgGo6omcanyBbHMEQY7N4f57h6zKt/6V+yrsmhyS6a57P1/hK8WiEP5lfDXgHNA
+ EF6a/Tl05mGQeoiziC+15NiMeNWVXXPeiiFEbIB2fZd1tIxa68nZoV/vCrJ/Ztz1PXmJo37
+ Wxs+y39iAkglUVF1UBAow==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EwAfrfpyJe4=:ZrtqEuBAJTBH22ouQPfFql
+ mJMSys2lfwL7cc3rYBF4as2x9lkp2T9mg4UJoacgOHfL02EtfP1liFQnnhRiGbpAAelbIF4dR
+ VFeq1fkvr0uXVKXbyfkoh/GdtAhR6nhmuuNHDqsoFROnCbTW09iyn7zeYJ6aqobxO2WVnXKiA
+ bjUnvg0vi53Aew2h4OyT+vVwYwfQxdIl+P2bkqr0SpOw9/e+UZu2yyT2+d+qiAff619r1JDXl
+ xDPi86OJPTagfPcExHtQLtv5IO/DgVHKXgYQzq8th187DHjMm8aQ6juQeOe5c0w9LK437+FiR
+ XJZ9LodBZLlHAjrrDjPL5mh20EoWgc5m0/YKKTfE+GCpDSbzfNJKnNSKO8XEVQiTf7J9rR3aO
+ QAWjrwA6GdwwsTwDkW8lPeE7KDCFNV8U3wdSUdgyhIrvDFykYIZs8zX+0lVcA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13.10.20 23:46, Ed W wrote:
+
+> The original naming was board specific. Then Enrico (not unreasonably - I actually prefer his
+> naming) changed the naming to be non board specific. Then within 2 months PC Engines introduced ACPI
+> based config using the old names.
+
+Which "old names" are you referring to ?
+The really old apuv1 led-only driver ?
+
+> So if we are holding "userspace breakage" as the gold standard, then the original (also the current)
+> names have actually been around longest and likely cause the least userspace breakage.
+
+Exactly. Linus often stated "dont break userland" as a primary goal, and
+that with really good reasons: the kernel is *the* hardware abstraction
+layer. Having userland to deal with thousands of hardware details in
+userland would cause extreme management complexity.
+
+> Also, some other pieces of this module have already been removed (SIM Swap), so there is an existing
+> precedent for "userspace breakage" and trimming down this platform driver.
+
+Not quite. SIM swap hasn't been actually used in the field (at least as
+far as I know). And we're planning to put it into different subsystem
+(probably rfkill) anyways.
+
+> In big picture terms, changing the name of the LED device doesn't seem a huge concern to me... A
+> udev rule can setup compatibility forwards/backwards quite trivially I think?
+
+Small kernel update causes existing applications to FAIL. Applications
+now have to be changed to deal with *different* configuration, based on
+factors like BIOS version.
+
+We're dealing with embedded applications. There is no operator of these
+boxes. Maybe some times an operator of the machinary comes around - and
+needs to rely on the LEDs. Not as critial as an direction indicator in
+a car, but still important.
 
 
-On 19/10/2020 16:07, Fabien Parent wrote:
-> The MediaTek PWM IP can sometimes use the 26MHz source clock to generate
-> the PWM signal, but the driver currently assumes that we always use
-> the PWM bus clock to generate the PWM signal.
-> 
-> This commit modifies the PWM driver in order to force the PWM IP to
-> always use the bus clock as source clock.
-> 
-> I do not have the datasheet of all the MediaTek SoC, so I don't know
-> if the register to choose the source clk is present in all the SoCs
-> or only in subset. As a consequence I made this change optional by
-> using a platform data paremeter to says whether this register is
-> supported or not. On all the SoC I don't have the datasheet
-> (MT2712, MT7622, MT7623, MT7628, MT7629) I kept the behavior
-> to be the same as before this change.
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+--mtx
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
-> ---
->   drivers/pwm/pwm-mediatek.c | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/pwm/pwm-mediatek.c b/drivers/pwm/pwm-mediatek.c
-> index ab001ce55178..108881619aea 100644
-> --- a/drivers/pwm/pwm-mediatek.c
-> +++ b/drivers/pwm/pwm-mediatek.c
-> @@ -30,12 +30,14 @@
->   #define PWM45DWIDTH_FIXUP	0x30
->   #define PWMTHRES		0x30
->   #define PWM45THRES_FIXUP	0x34
-> +#define PWM_CK_26M_SEL		0x210
->   
->   #define PWM_CLK_DIV_MAX		7
->   
->   struct pwm_mediatek_of_data {
->   	unsigned int num_pwms;
->   	bool pwm45_fixup;
-> +	bool has_ck_26m_sel;
->   };
->   
->   /**
-> @@ -132,6 +134,10 @@ static int pwm_mediatek_config(struct pwm_chip *chip, struct pwm_device *pwm,
->   	if (ret < 0)
->   		return ret;
->   
-> +	/* Make sure we use the bus clock and not the 26MHz clock */
-> +	if (pc->soc->has_ck_26m_sel)
-> +		writel(0, pc->regs + PWM_CK_26M_SEL);
-> +
->   	/* Using resolution in picosecond gets accuracy higher */
->   	resolution = (u64)NSEC_PER_SEC * 1000;
->   	do_div(resolution, clk_get_rate(pc->clk_pwms[pwm->hwpwm]));
-> @@ -281,31 +287,37 @@ static int pwm_mediatek_remove(struct platform_device *pdev)
->   static const struct pwm_mediatek_of_data mt2712_pwm_data = {
->   	.num_pwms = 8,
->   	.pwm45_fixup = false,
-> +	.has_ck_26m_sel = false,
->   };
->   
->   static const struct pwm_mediatek_of_data mt7622_pwm_data = {
->   	.num_pwms = 6,
->   	.pwm45_fixup = false,
-> +	.has_ck_26m_sel = false,
->   };
->   
->   static const struct pwm_mediatek_of_data mt7623_pwm_data = {
->   	.num_pwms = 5,
->   	.pwm45_fixup = true,
-> +	.has_ck_26m_sel = false,
->   };
->   
->   static const struct pwm_mediatek_of_data mt7628_pwm_data = {
->   	.num_pwms = 4,
->   	.pwm45_fixup = true,
-> +	.has_ck_26m_sel = false,
->   };
->   
->   static const struct pwm_mediatek_of_data mt7629_pwm_data = {
->   	.num_pwms = 1,
->   	.pwm45_fixup = false,
-> +	.has_ck_26m_sel = false,
->   };
->   
->   static const struct pwm_mediatek_of_data mt8516_pwm_data = {
->   	.num_pwms = 5,
->   	.pwm45_fixup = false,
-> +	.has_ck_26m_sel = true,
->   };
->   
->   static const struct of_device_id pwm_mediatek_of_match[] = {
-> 
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
