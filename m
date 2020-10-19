@@ -2,104 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DAB292BAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B47B292BB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730564AbgJSQnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:43:23 -0400
-Received: from m12-11.163.com ([220.181.12.11]:34633 "EHLO m12-11.163.com"
+        id S1730590AbgJSQpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:45:14 -0400
+Received: from mga12.intel.com ([192.55.52.136]:42628 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729879AbgJSQnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:43:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=YC7Ho
-        mMsF1MVd69eG5Tkh0OhJDK52Iatm/gNKnLN6Hw=; b=ZgCHt8Oth4PwwxBrN3a6W
-        93pEO49qRBuDZr5JsEBMJhwcxV86eRPOm7Xsy12j4cD5yPblTAIG4Zr+E3xS7I85
-        e0FgxWw/G5v5K27H/lah7nK0uhGk+JyFe+VqHJmsC2K3uBVQPr74iH7ecXVvSe6F
-        OOSYrzO4ijI4PRpvDHnOzA=
-Received: from localhost (unknown [101.86.214.18])
-        by smtp7 (Coremail) with SMTP id C8CowAAX_dkGwo1fOyrtDw--.24180S2;
-        Tue, 20 Oct 2020 00:42:46 +0800 (CST)
-Date:   Tue, 20 Oct 2020 00:42:46 +0800
-From:   Hui Su <sh_def@163.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        id S1729879AbgJSQpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 12:45:14 -0400
+IronPort-SDR: sTRlu8KLoJhazWYTLv91SXwaoDLMZrLkpL1p71gBEs/giLRHjHF0RCjSwUlS+nLdB/vy5jQK9W
+ rSrCYhFnmv+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="146358430"
+X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
+   d="scan'208";a="146358430"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 09:45:13 -0700
+IronPort-SDR: HRIQUStE5Rp6CJJSty2yOryDk6dt6KOmxLZXvfZ4OvkzpzCpriXLlg6SyIsXME9NFSjQxKfA9E
+ a9kKFmmSMOxA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
+   d="scan'208";a="320335439"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 19 Oct 2020 09:45:13 -0700
+Received: from [10.251.22.47] (kliang2-MOBL.ccr.corp.intel.com [10.251.22.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 35C05580127;
+        Mon, 19 Oct 2020 09:45:13 -0700 (PDT)
+Subject: Re: [PATCH] perf/x86/intel: Add event constraint for
+ CYCLE_ACTIVITY.STALLS_MEM_ANY
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     peterz@infradead.org, mingo@redhat.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] block/elevator: reduce the critical section
-Message-ID: <20201019164246.GA79115@rlk>
+References: <20201019150158.31635-1-kan.liang@linux.intel.com>
+ <20201019160944.GK466880@tassilo.jf.intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <3cb8ccc8-111f-fdb1-e049-c99a9f1cd658@linux.intel.com>
+Date:   Mon, 19 Oct 2020 12:45:11 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: C8CowAAX_dkGwo1fOyrtDw--.24180S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tw4rJFWfJrWfWF1xWry3Jwb_yoW8Wr4kpr
-        sIg3sxKr1kXryxZwsrAa429w1Iq34j9r4jqryrCw10kFnrXw43W3W7Ca17XF4YyayxXFs8
-        WF1ktFWDAFWUZr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jYksDUUUUU=
-X-Originating-IP: [101.86.214.18]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiIAbCX10TB0yC3wAAsj
+In-Reply-To: <20201019160944.GK466880@tassilo.jf.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.reduce the critical section in elevator_get().
-2.reduce the critical section in elevator_get_by_features().
-3.remove the found variable.
-
-the elv_list_lock is used to protect the elv_list,
-and the operations of elevator_type does not need
-to be protected.
-
-Signed-off-by: Hui Su <sh_def@163.com>
----
- block/elevator.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/block/elevator.c b/block/elevator.c
-index 293c5c81397a..727902b31954 100644
---- a/block/elevator.c
-+++ b/block/elevator.c
-@@ -151,11 +151,11 @@ static struct elevator_type *elevator_get(struct request_queue *q,
- 		spin_lock(&elv_list_lock);
- 		e = elevator_find(name, q->required_elevator_features);
- 	}
-+	spin_unlock(&elv_list_lock);
- 
- 	if (e && !try_module_get(e->elevator_owner))
- 		e = NULL;
- 
--	spin_unlock(&elv_list_lock);
- 	return e;
- }
- 
-@@ -633,23 +633,21 @@ static struct elevator_type *elevator_get_default(struct request_queue *q)
-  */
- static struct elevator_type *elevator_get_by_features(struct request_queue *q)
- {
--	struct elevator_type *e, *found = NULL;
-+	struct elevator_type *e = NULL;
- 
- 	spin_lock(&elv_list_lock);
--
- 	list_for_each_entry(e, &elv_list, list) {
- 		if (elv_support_features(e->elevator_features,
- 					 q->required_elevator_features)) {
--			found = e;
- 			break;
- 		}
- 	}
-+	spin_unlock(&elv_list_lock);
- 
--	if (found && !try_module_get(found->elevator_owner))
--		found = NULL;
-+	if (e && !try_module_get(e->elevator_owner))
-+		e = NULL;
- 
--	spin_unlock(&elv_list_lock);
--	return found;
-+	return e;
- }
- 
- /*
--- 
-2.25.1
 
 
+On 10/19/2020 12:09 PM, Andi Kleen wrote:
+>> Reported-by: Andi Kleen<ak@linux.intel.com>
+>> Signed-off-by: Kan Liang<kan.liang@linux.intel.com>
+> I guess this should have a Fixes: tag and also be proposed for
+> stable.
+
+I will send V2 shortly to update the tag and Cc.
+
+Thanks,
+Kan
