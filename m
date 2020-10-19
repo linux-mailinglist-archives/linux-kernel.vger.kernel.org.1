@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95238292542
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4B0292544
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgJSKOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgJSKOC (ORCPT
+        id S1729074AbgJSKON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:14:13 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:40501 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgJSKON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:14:02 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B2AC0613CE;
-        Mon, 19 Oct 2020 03:14:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4ZUsuMrR+ngWpncutSCoMS/lWOgKT6Cj9cHkeDMetR0=; b=usqFcIX/i+y71mXlgiCmt07zPf
-        3GhE+28+QPqGVJEeCsK6m/+gyJ2SoyTGn6vthGjNUeXDKMBvpztWgc6iZXcpYvzluOq5ZFdb1GpZF
-        jeVyYJ78fusnRlk8MH7yyIeehMAolr8QLdll8bczFg7EW1AupGLl+Qv3r4H0/Qgmq/LOo7gUPJxpi
-        h2ep0USqn2voW1yuaECtBbzehj6yAeWYqtbyC6Nkh0BP1NugiBOV/5buw1x97OU9Et3nvMoscX57L
-        ZvS1/r8M5QLWM6cD4qEwb1tlDq0CmouxSIHCgn6hYxEzBC0qHRrUnPaZNodjwoGsv222RX5rh7epH
-        wDakJl8g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kUSAt-0002S3-1F; Mon, 19 Oct 2020 10:13:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ACA9A3035D4;
-        Mon, 19 Oct 2020 12:13:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 93F622B07595D; Mon, 19 Oct 2020 12:13:53 +0200 (CEST)
-Date:   Mon, 19 Oct 2020 12:13:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Mike Galbraith <umgwanakikbuti@gmail.com>, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, bigeasy@linutronix.de,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] zram: Fix __zram_bvec_{read,write}() locking order
-Message-ID: <20201019101353.GJ2628@hirez.programming.kicks-ass.net>
-References: <CABXGCsOL0pW0Ghh-w5d12P75ve6FS9Rgmzm6DvsYbJY-jMTCdg@mail.gmail.com>
- <20201016124009.GQ2611@hirez.programming.kicks-ass.net>
- <20201016153324.GA1976566@google.com>
+        Mon, 19 Oct 2020 06:14:13 -0400
+Received: by mail-wr1-f66.google.com with SMTP id h5so10710475wrv.7;
+        Mon, 19 Oct 2020 03:14:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9St9YBwaIdNG1DkrmYoDAHtzZomOtz2yYrj1dmUwNYY=;
+        b=sLY2mPBKtWF+IC6vn3Z3lj5t53/pnOvYR6PVDQHLjUESQF/nY9f8mYbnnlkgNZHzEw
+         2z1HjM/Qb7Yxk0NYB4I7PmwWFbj+LvLaEqM3IB4J8ICJrM0Zb37SdRsdMe/Uh9GTtwCL
+         V/r+I9URn0e8pxbF+uiWsADE/XIJpkhEHeMIIsWB/23LYXF5RgtRyP/BUdcfKTFwfbLu
+         fNOMOg2g5XhqYG96f+rl4MX8LN2egHljxCPUScRn2ee9M4KMyX9aGwfqwXOIEasPGCyR
+         q3GeJZlXKHseOQaNP/sxlQJof/gElU8wwwIOWiI0pXOlUi3qSYgk/Fc+fB8xt9gfi10F
+         /Chw==
+X-Gm-Message-State: AOAM533cyJVg9EyJe+uWEC4HfXxPaEgEjSWcJ7LVcoF8VV8KxkfQkSJc
+        /UIP6gK1VJBTHectVoWsLck=
+X-Google-Smtp-Source: ABdhPJwZex/zba0ZWy7QZHYxMyR4SAGsYleqSCpR5G7pfpF1D737D02ETx1kE5+7SBYa8h63QQAUTA==
+X-Received: by 2002:adf:f1c8:: with SMTP id z8mr20204114wro.371.1603102450855;
+        Mon, 19 Oct 2020 03:14:10 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id q6sm16106138wma.0.2020.10.19.03.14.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 03:14:09 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 12:14:07 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 3/6] Documetation: dt-bindings: add the
+ samsung,exynos-pcie-phy binding
+Message-ID: <20201019101407.GC51073@kozik-lap>
+References: <20201019094715.15343-1-m.szyprowski@samsung.com>
+ <CGME20201019094739eucas1p17424b1224bf2a1a5b16c33deb4209166@eucas1p1.samsung.com>
+ <20201019094715.15343-4-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201016153324.GA1976566@google.com>
+In-Reply-To: <20201019094715.15343-4-m.szyprowski@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 19, 2020 at 11:47:12AM +0200, Marek Szyprowski wrote:
+> From: Jaehoon Chung <jh80.chung@samsung.com>
+> 
+> Add dt-bindings for the Samsung Exynos PCIe PHY controller (Exynos5433
+> variant).
+> 
+> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
+> [mszyprow: updated the binding to latest driver changes, rewrote it in yaml,
+> 	   rewrote commit message]
 
-Mikhail reported a lockdep spat detailing how __zram_bvec_read() and
-__zram_bvec_write() use zstrm->lock and zspage->lock in opposite order.
+The same as for 2/6 - conversion of TXT to YAML is like a new patch.  It
+is quite significant work.
 
-Reported-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
----
- drivers/block/zram/zram_drv.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>  .../bindings/phy/samsung,exynos-pcie-phy.yaml | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/samsung,exynos-pcie-phy.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/samsung,exynos-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/samsung,exynos-pcie-phy.yaml
+> new file mode 100644
+> index 000000000000..ce92d1e687e7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/samsung,exynos-pcie-phy.yaml
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/phy/samsung,exynos-pcie-phy.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Samsung SoC series PCIe PHY Device Tree Bindings
+> +
+> +maintainers:
+> +  - Jaehoon Chung <jh80.chung@samsung.com>
+> +
+> +properties:
+> +  "#phy-cells":
+> +    const: 0
+> +
+> +  compatible:
+> +    enum:
+> +      - samsung,exynos5433-pcie-phy
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 9100ac36670a..c1e2c2e1cde8 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1216,10 +1216,11 @@ static void zram_free_page(struct zram *zram, size_t index)
- static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
- 				struct bio *bio, bool partial_io)
- {
--	int ret;
-+	struct zcomp_strm *zstrm;
- 	unsigned long handle;
- 	unsigned int size;
- 	void *src, *dst;
-+	int ret;
- 
- 	zram_slot_lock(zram, index);
- 	if (zram_test_flag(zram, index, ZRAM_WB)) {
-@@ -1250,6 +1251,9 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
- 
- 	size = zram_get_obj_size(zram, index);
- 
-+	if (size != PAGE_SIZE)
-+		zstrm = zcomp_stream_get(zram->comp);
-+
- 	src = zs_map_object(zram->mem_pool, handle, ZS_MM_RO);
- 	if (size == PAGE_SIZE) {
- 		dst = kmap_atomic(page);
-@@ -1257,8 +1261,6 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
- 		kunmap_atomic(dst);
- 		ret = 0;
- 	} else {
--		struct zcomp_strm *zstrm = zcomp_stream_get(zram->comp);
--
- 		dst = kmap_atomic(page);
- 		ret = zcomp_decompress(zstrm, src, size, dst);
- 		kunmap_atomic(dst);
+enum->const
+
+Best regards,
+Krzysztof
