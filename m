@@ -2,50 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806C1292C1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C186292C1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730975AbgJSRCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730905AbgJSRCo (ORCPT
+        id S1730988AbgJSRCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:02:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:32856 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730877AbgJSRCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:02:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26EB6C0613CE;
-        Mon, 19 Oct 2020 10:02:44 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 17:02:41 -0000
+        Mon, 19 Oct 2020 13:02:45 -0400
+Date:   Mon, 19 Oct 2020 17:02:42 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603126962;
+        s=2020; t=1603126963;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=nrYWyo25ScaKNT2vPb+k86yODXuKdco6xmfmcgxph3Q=;
-        b=AXOpjikWZMb9sXwq6SGRkXykQZs+WcgETL4tQ/B1TEWOH/TzqHT8DVyClsLHy4wZeEVA3Z
-        PkkDbFz5Yw7lkuD9T7wGDMu1Bx8Vw08gyto4rOKkJmbWQjzAR+/RKQjgCFDqyGKQ3rm9wG
-        ciqB/zGNzqPtaZ+AWsSsOSgERsjjDD2AcMwsZE8371mGAw0o/Ue88hLzwnXp2+5qosjQqI
-        0h4dVIhbM7+5Bfu5wbJpD/xfH3PS98BI/TRzSAPQqxhM7/ef/UU9dAVssXIveg2hOzDmaZ
-        pukrxNH2icOIdVX1YlyPB7zz13TEPBbpZ969zSdYRRhRDeUPihRzm8Cr/23wsQ==
+        bh=yu1Kt8dPnW54mmTs+LVIdbTeM1ogn52+qvOilt60iwc=;
+        b=NGwTu4pHOGipUgE1ok3WMFcUTw3IV3hG7PxI7cRAocC/b47gT5RgggrbmBPkDe4QF6Nzd/
+        8/Be+3Bn8fFMO+eAtrNJlss851SidgfF1rmZuEDMEZTRKD1IsgPgqaa+dnmAKf2NLTCCBa
+        uEujansUJkNtFKAoU1Z4Ey7u7FzdLSnswSKNYUmH7MGZvMn2g5Fum8MJm2+yOldnjLFThY
+        W7NwJ5fzEOq7UEWYpylEto6yi4dJUeqmVUZ3yDydjc4Dmwgn6fb/8IcRor2GJY1TZPa+yw
+        HBVnm64SdU1RQPXZp9EuURpB80ralIACdMFE6X40VQv7vuwYxSIoea0RvM1EpA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603126962;
+        s=2020e; t=1603126963;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=nrYWyo25ScaKNT2vPb+k86yODXuKdco6xmfmcgxph3Q=;
-        b=rjF+8fOxXfnXAL6B4svYSLLW05P013AUL5q58hFBzX7i/FrMmnWtfOqfWoBxHzCxAYYlLP
-        z3iwjCL4Ln6TEWAw==
+        bh=yu1Kt8dPnW54mmTs+LVIdbTeM1ogn52+qvOilt60iwc=;
+        b=Gel0jr25w2lP4QvqrlXJYmZi6p5IQpzRKoB82SqE9SmE9Nn/Jgw9e9II5ARzPDXeVdYcyC
+        rb33o4zakhIw8EBA==
 From:   "tip-bot2 for Jan Kara" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] reiserfs: Fix oops during mount
-Cc:     syzbot+9b33c9b118d77ff59b6f@syzkaller.appspotmail.com,
+Subject: [tip: perf/urgent] reiserfs: Initialize inode keys properly
+Cc:     syzbot+d94d02749498bb7bab4b@syzkaller.appspotmail.com,
         Jan Kara <jack@suse.cz>,
         "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <160312696166.7002.16055147787497008532.tip-bot2@tip-bot2>
+Message-ID: <160312696219.7002.5065617515683098473.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,62 +53,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     061fe185e17a1519a75eee89462f35a5360ece8b
-Gitweb:        https://git.kernel.org/tip/061fe185e17a1519a75eee89462f35a5360ece8b
+Commit-ID:     d3bb68fa8d43bcd889ce86249f73a70e3ba221aa
+Gitweb:        https://git.kernel.org/tip/d3bb68fa8d43bcd889ce86249f73a70e3ba221aa
 Author:        Jan Kara <jack@suse.cz>
-AuthorDate:    Wed, 30 Sep 2020 17:08:20 +02:00
+AuthorDate:    Mon, 21 Sep 2020 15:08:50 +02:00
 Committer:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 CommitterDate: Sat, 17 Oct 2020 08:31:22 +02:00
 
-reiserfs: Fix oops during mount
+reiserfs: Initialize inode keys properly
 
-commit c2bb80b8bdd04dfe32364b78b61b6a47f717af52 upstream.
+commit 4443390e08d34d5771ab444f601cf71b3c9634a4 upstream.
 
-With suitably crafted reiserfs image and mount command reiserfs will
-crash when trying to verify that XATTR_ROOT directory can be looked up
-in / as that recurses back to xattr code like:
-
- xattr_lookup+0x24/0x280 fs/reiserfs/xattr.c:395
- reiserfs_xattr_get+0x89/0x540 fs/reiserfs/xattr.c:677
- reiserfs_get_acl+0x63/0x690 fs/reiserfs/xattr_acl.c:209
- get_acl+0x152/0x2e0 fs/posix_acl.c:141
- check_acl fs/namei.c:277 [inline]
- acl_permission_check fs/namei.c:309 [inline]
- generic_permission+0x2ba/0x550 fs/namei.c:353
- do_inode_permission fs/namei.c:398 [inline]
- inode_permission+0x234/0x4a0 fs/namei.c:463
- lookup_one_len+0xa6/0x200 fs/namei.c:2557
- reiserfs_lookup_privroot+0x85/0x1e0 fs/reiserfs/xattr.c:972
- reiserfs_fill_super+0x2b51/0x3240 fs/reiserfs/super.c:2176
- mount_bdev+0x24f/0x360 fs/super.c:1417
-
-Fix the problem by bailing from reiserfs_xattr_get() when xattrs are not
-yet initialized.
+reiserfs_read_locked_inode() didn't initialize key length properly. Use
+_make_cpu_key() macro for key initialization so that all key member are
+properly initialized.
 
 CC: stable@vger.kernel.org
-Reported-by: syzbot+9b33c9b118d77ff59b6f@syzkaller.appspotmail.com
+Reported-by: syzbot+d94d02749498bb7bab4b@syzkaller.appspotmail.com
 Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/reiserfs/xattr.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/reiserfs/inode.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/fs/reiserfs/xattr.c b/fs/reiserfs/xattr.c
-index 28b241c..fe63a7c 100644
---- a/fs/reiserfs/xattr.c
-+++ b/fs/reiserfs/xattr.c
-@@ -674,6 +674,13 @@ reiserfs_xattr_get(struct inode *inode, const char *name, void *buffer,
- 	if (get_inode_sd_version(inode) == STAT_DATA_V1)
- 		return -EOPNOTSUPP;
+diff --git a/fs/reiserfs/inode.c b/fs/reiserfs/inode.c
+index 1509775..e43fed9 100644
+--- a/fs/reiserfs/inode.c
++++ b/fs/reiserfs/inode.c
+@@ -1551,11 +1551,7 @@ void reiserfs_read_locked_inode(struct inode *inode,
+ 	 * set version 1, version 2 could be used too, because stat data
+ 	 * key is the same in both versions
+ 	 */
+-	key.version = KEY_FORMAT_3_5;
+-	key.on_disk_key.k_dir_id = dirino;
+-	key.on_disk_key.k_objectid = inode->i_ino;
+-	key.on_disk_key.k_offset = 0;
+-	key.on_disk_key.k_type = 0;
++	_make_cpu_key(&key, KEY_FORMAT_3_5, dirino, inode->i_ino, 0, 0, 3);
  
-+	/*
-+	 * priv_root needn't be initialized during mount so allow initial
-+	 * lookups to succeed.
-+	 */
-+	if (!REISERFS_SB(inode->i_sb)->priv_root)
-+		return 0;
-+
- 	dentry = xattr_lookup(inode, name, XATTR_REPLACE);
- 	if (IS_ERR(dentry)) {
- 		err = PTR_ERR(dentry);
+ 	/* look for the object's stat data */
+ 	retval = search_item(inode->i_sb, &key, &path_to_sd);
