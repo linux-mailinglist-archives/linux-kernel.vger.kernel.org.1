@@ -2,174 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088062920C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 02:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 971032920C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 02:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730206AbgJSAzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 20:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
+        id S1730229AbgJSA5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 20:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726698AbgJSAzR (ORCPT
+        with ESMTP id S1727023AbgJSA5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 20:55:17 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC22C061755;
-        Sun, 18 Oct 2020 17:55:16 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id t4so1511942plq.13;
-        Sun, 18 Oct 2020 17:55:16 -0700 (PDT)
+        Sun, 18 Oct 2020 20:57:24 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2DAC061755;
+        Sun, 18 Oct 2020 17:57:24 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id c21so10080850ljj.0;
+        Sun, 18 Oct 2020 17:57:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+Rt56BOJl/bRW3wLKniwJW7cXJ9hWnw6gYa/kUVuwSc=;
-        b=kD5/mWhkowA2pgqZNgdK7l9xxePyAZyXwGV1X+zM9Ioz+N7wLSW4TPdxvJJ21i6HsT
-         oqq5siaFUuyhaYJZcCrnvsvMjAqSjosXD4HKxICovb20aO0RTDcv6mGLozRujN5d8eBH
-         qNpDAF2hqdEXaIlnUoudG3c/F7DgjCshsonws0f5TkV3659dUETU544ww9FFfIfrOG87
-         Ep7hCGxCIS0gRsUK1VN3tMdRyz6jHpEYq7jm+0hReNmpdkanoNxPlxixLbl+iExHF5M6
-         nbTWRhV1QxVP/F1YYtSIWYltBJNkXvgKrbTr6+982+mAUp0aUomiI/+xyKnBT3ZlD/vt
-         klBg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sq/fKrB7mG48ri9jjuKCMbdKq/hUy3mDsrWp2NWD4FI=;
+        b=HOu9dnEUMSvBwwEDFflgztbLkdZREqSdWavTEIDtuHSX8s2Hjp1sw/XWojB/TYvdGB
+         qqdgEG0WSzQdz+9aKx/hC6bUCA6F7VPhQADm6kkEYjvIR/MaUwfO99i/EPyMfp3zus6e
+         41H0kDD90PmflO5C9fqW79xiRLAW3UMespDMv+GCwqTABfx+JcSEGK0cmn9yLzkQ/rdJ
+         YqYhYnWTf/dAeUyy98xLE9UZHbZ0QCeAhQexYaJl855imtggi9tYQWImBbvygqB22WGU
+         jvgNjRCLZZSoyRHM2ov/3+HenE9WiSDxHEPYjqEZFlYDvpQZph3G+YcuSMakzksMWUdX
+         IQ3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+Rt56BOJl/bRW3wLKniwJW7cXJ9hWnw6gYa/kUVuwSc=;
-        b=aa39mkVZYKkcoOo/D4ikBDp+fjEtPA/2948MCAhORGfVG9hilySQuI7fHtOxp7o0T+
-         f+9mtrC5Ckm/nMf8jdlf/9CNvk8xsg0us918K4bt7sEMvT5t/N1w0LmGsIcTM62IHvjw
-         t8178Y6LxFetvjBDU0/4Ei7WnlCZC7aBraZUmNNYHrGeqkJhAwOfSpzjdpQBTei0cx6B
-         HW0bv5yvHOoSTW0Wi/3RSF9ATdsL1udl2s9Qpcpa11d0ZYirAytXyN34T0cAikdskYOz
-         o4Bpyv8BRgDD77t5NqMkgPTvK7MgKTL+QTWsEmsiajh49KsndAy7WynFsos0zkarq+qz
-         LXkQ==
-X-Gm-Message-State: AOAM531M+L5lEoRBn89HQGXYYYJivNB9gWxK4pWdgF5pGUoUE4SobjvC
-        2JfYGqNXakEAwNaQF+y3Lb0=
-X-Google-Smtp-Source: ABdhPJwtBh0pw3ZFUZm8ksceFnJOezgtN1JWySkFktYidxEioc0v1efLNTaDMS9uD7RnzQg2Rgu9Jg==
-X-Received: by 2002:a17:90a:400e:: with SMTP id u14mr15103805pjc.118.1603068915729;
-        Sun, 18 Oct 2020 17:55:15 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id l199sm9906039pfd.73.2020.10.18.17.55.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Oct 2020 17:55:15 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Mon, 19 Oct 2020 08:54:52 +0800
-To:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Helmut Stult <helmut.stult@schinfo.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] HID: i2c-hid: add polling mode based on connected
- GPIO chip's pin status
-Message-ID: <20201019005452.uqqwq7xrusvsptmz@Rk>
-References: <20201016131335.8121-1-coiby.xu@gmail.com>
- <T2SIcFVxZ81NUwKLDbSESA7Wpm7DYowEiii8ZaxTPtrdXZZeHLq5iZPkN5BLlp-9C6PLwUZOVwNpMdEdPSRZcAG4MmDt-tfyKZoQYJ0KHOA=@protonmail.com>
- <20201017004556.kuoxzmbvef4yr3kg@Rk>
- <FWsXxqGztJgszUpmNtKli8eOyeKP-lxFeTsjs2nQAxgYZBkT3JNTU3VdHF4GbQVS_PvKiqbfrZXI7vaUHA_lXTxjPX-WjkNEOdiMUetO8IQ=@protonmail.com>
- <20201017140541.fggujaz2klpv3cd5@Rk>
- <fRxQJHWq9ZL950ZPGFFm_LfSlMjsjrpG7Y63gd7V7iV647KR8WIfZ4-ljLeo0n4X3Gpu1KIEsMVLxQnzAtJdUdMydi_b0-vjIVb304Da1bQ=@protonmail.com>
- <BXoa8IFE81mt8sW2luHnqgFoZUBIDxRGg8SzTxqCuBMm0PPopB98-w7u1ckq77Gtj2bJCVSFFA83zOPVdP_kynQ8Zkys3B96lFTV6fUCJHM=@protonmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sq/fKrB7mG48ri9jjuKCMbdKq/hUy3mDsrWp2NWD4FI=;
+        b=m9Q9g5ifcIkCzkNE/MMBaxbJYn0E2WjvSbeoOuKPPue2HcUiTqUefeWb00sbcDCEbG
+         Wlf7vfhE9/6cp5AkTnJ4Q1nk3Az/ZdrTQUYn5UnH1JSN0FcLvB3ECYGvfx7cc2es/h9g
+         qP1N7KT8CU941AuZUclC5VRupIpBPQxSA9UOOMyVEhp5m/riZfxEeRxVfP33+63eWkJx
+         8yL0JbSYAZjjUdRTeBRyuBpJ8G7imlcRDMxeBzcEH2Ea6LTAV+tlm7gxwhHiYSJHTH9M
+         LWrnDFW2Vi9vXqY85jBryW/xrH0JAVwSgQsHtrvvVbVnj+Ghn2eM7easCU0xlrdRhwig
+         TsNQ==
+X-Gm-Message-State: AOAM532wdOTuBVSawTBxoxBqZL+iXrcQYbYH9mEBCFbW8Yb036wnK+bb
+        n1/pvJLYCJYEhi5nMARn5T0=
+X-Google-Smtp-Source: ABdhPJyK8mSOtak89RU8lRlRZ78DRh+qQB6CLZw71ATAXOw9lpLzBNtL/IBgKKlGwlOmbsJ7CvYCyA==
+X-Received: by 2002:a2e:9847:: with SMTP id e7mr2797266ljj.46.1603069042955;
+        Sun, 18 Oct 2020 17:57:22 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
+        by smtp.googlemail.com with ESMTPSA id h20sm2990253lfc.264.2020.10.18.17.57.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Oct 2020 17:57:22 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] PM / devfreq: Add governor feature flag
+To:     Chanwoo Choi <cw00.choi@samsung.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Cc:     leonard.crestez@nxp.com, lukasz.luba@arm.com,
+        enric.balletbo@collabora.com, hl@rock-chips.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, abel.vesa@nxp.com,
+        k.konieczny@samsung.com, b.zolnierkie@samsung.com,
+        chanwoo@kernel.org, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com
+References: <20201007050703.20759-1-cw00.choi@samsung.com>
+ <CGME20201007045340epcas1p4e63955385b1841f44e7a07e2d5d962c4@epcas1p4.samsung.com>
+ <20201007050703.20759-2-cw00.choi@samsung.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <83b952ab-a25e-8984-8804-1dd990eec835@gmail.com>
+Date:   Mon, 19 Oct 2020 03:57:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
+In-Reply-To: <20201007050703.20759-2-cw00.choi@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <BXoa8IFE81mt8sW2luHnqgFoZUBIDxRGg8SzTxqCuBMm0PPopB98-w7u1ckq77Gtj2bJCVSFFA83zOPVdP_kynQ8Zkys3B96lFTV6fUCJHM=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 12:23:14PM +0000, Barnabás Pőcze wrote:
->> [...]
->> > > > > > +static int i2c_hid_polling_thread(void *i2c_hid)
->> > > > > > +{
->> > > > > >
->> > > > > > -   struct i2c_hid *ihid = i2c_hid;
->> > > > > > -   struct i2c_client *client = ihid->client;
->> > > > > > -   unsigned int polling_interval_idle;
->> > > > > > -
->> > > > > > -   while (1) {
->> > > > > > -       /*
->> > > > > >
->> > > > > >
->> > > > > > -        * re-calculate polling_interval_idle
->> > > > > >
->> > > > > >
->> > > > > > -        * so the module parameters polling_interval_idle_ms can be
->> > > > > >
->> > > > > >
->> > > > > > -        * changed dynamically through sysfs as polling_interval_active_us
->> > > > > >
->> > > > > >
->> > > > > > -        */
->> > > > > >
->> > > > > >
->> > > > > > -       polling_interval_idle = polling_interval_idle_ms * 1000;
->> > > > > >
->> > > > > >
->> > > > > > -       if (test_bit(I2C_HID_READ_PENDING, &ihid->flags))
->> > > > > >
->> > > > > >
->> > > > > > -       	usleep_range(50000, 100000);
->> > > > > >
->> > > > > >
->> > > > > > -
->> > > > > > -       if (kthread_should_stop())
->> > > > > >
->> > > > > >
->> > > > > > -       	break;
->> > > > > >
->> > > > > >
->> > > > > > -
->> > > > > > -       while (interrupt_line_active(client)) {
->> > > > > >
->> > > > > >
->> > > > >
->> > > > > I realize it's quite unlikely, but can't this be a endless loop if data is coming
->> > > > > in at a high enough rate? Maybe the maximum number of iterations could be limited here?
->> > > >
->> > > > If we find HID reports are constantly read and send to front-end
->> > > > application like libinput, won't it help expose the problem of the I2C
->> > > > HiD device?
->> > > >
->> > > > >
->> > >
->> > > I'm not sure I completely understand your point. The reason why I wrote what I wrote
->> > > is that this kthread could potentially could go on forever (since `kthread_should_stop()`
->> > > is not checked in the inner while loop) if the data is supplied at a high enough rate.
->> > > That's why I said, to avoid this problem, only allow a certain number of iterations
->> > > for the inner loop, to guarantee that the kthread can stop in any case.
->> >
->> > I mean if "data is supplied at a high enough rate" does happen, this is
->> > an abnormal case and indicates a bug. So we shouldn't cover it up. We
->> > expect the user to report it to us.
->> >
->> > >
->>
->> I agree in principle, but if this abnormal case ever occurs, that'll prevent
->> this module from being unloaded since `kthread_stop()` will hang because the
->> thread is "stuck" in the inner loop, never checking `kthread_should_stop()`.
->> That's why I think it makes sense to only allow a certain number of operations
->> for the inner loop, and maybe show a warning if that's exceeded:
->>
->> for (i = 0; i < max_iter && interrupt_line_active(...); i++) {
->> ....
->> }
->>
->> WARN_ON[CE](i == max_iter[, "data is coming in at an unreasonably high rate"]);
->>
->
->I now realize that WARN_ON[CE] is probably not the best fit here, `hid_warn()` is possibly better.
->
-Thank you for the suggestion!
->
->> or something like this, where `max_iter` could possibly be some value dependent on
->> `polling_interval_active_us`, or even just a constant.
->> [...]
->
->
->Regards,
->Barnabás Pőcze
+07.10.2020 08:07, Chanwoo Choi пишет:
+> The devfreq governor is able to have the specific flag as follows
+> in order to implement the specific feature. For example, devfreq allows
+> user to change the governors on runtime via sysfs interface.
+> But, if devfreq device uses 'passive' governor, don't allow user to change
+> the governor. For this case, define the DEVFREQ_GOV_FLAT_IMMUTABLE
 
---
-Best regards,
-Coiby
+s/DEVFREQ_GOV_FLAT/DEVFREQ_GOV_FLAG/
+
+...
+>  /**
+>   * struct devfreq_governor - Devfreq policy governor
+>   * @node:		list node - contains registered devfreq governors
+>   * @name:		Governor's name
+> - * @immutable:		Immutable flag for governor. If the value is 1,
+> - *			this governor is never changeable to other governor.
+> - * @interrupt_driven:	Devfreq core won't schedule polling work for this
+> - *			governor if value is set to 1.
+> + * @flag:		Governor's feature flag
+>   * @get_target_freq:	Returns desired operating frequency for the device.
+>   *			Basically, get_target_freq will run
+>   *			devfreq_dev_profile.get_dev_status() to get the
+> @@ -50,8 +57,7 @@ struct devfreq_governor {
+>  	struct list_head node;
+>  
+>  	const char name[DEVFREQ_NAME_LEN];
+> -	const unsigned int immutable;
+> -	const unsigned int interrupt_driven;
+> +	const u64 flag;
+A plural form of flag(s) is more common, IMO.
+
+It's also possible to use a single bit:1 for the struct members. Thus,
+could you please explain what are the benefits of the "flag"?
