@@ -2,188 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F15292F14
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE54292F17
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728464AbgJSUDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726385AbgJSUDC (ORCPT
+        id S1728643AbgJSUDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:03:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34110 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726385AbgJSUDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:03:02 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4D4C0613CE;
-        Mon, 19 Oct 2020 13:03:01 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id z5so802583ejw.7;
-        Mon, 19 Oct 2020 13:03:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=18BK5QABG5QnCnKw4efSXgYTiRd7IX1w5DP5yy+9I9I=;
-        b=rFDnMP98hbleUk2ilEizlHXP674Bq3lV8+edQSDV3d11umzEPWtjx8SQmsPOSlZWEV
-         yDTXSwJg9qZUAxfjAA98CYUBOQJWs0+RPJry16l8727hgHMJc1SaDjpT+cHnZNNGoUCh
-         1Lluv4t5NPXLJpoVbn/OxAJEmguv1vLKfpxlwThO4J8lCmVKct06cv2k2wdXpgHn5GrM
-         hGLM3Eo1Gmh5tZj/CuOvR1pyFXcdIBr8iJupLy6M9rWqzWb4fAOdlqdDw7LOXXTKLBwS
-         +hQvI24VZiYj6QWwZlN2+VCV+F1bB4ZaB+h/35o/7iVrnd3+AJ9stXWE4eiNbcmBRRpr
-         7Ckw==
+        Mon, 19 Oct 2020 16:03:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603137818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=F3+eVVhD9pRO1Lc4WB7w+1NvqWHmj8ke9+eowsdGJTU=;
+        b=WO5fy13qdnCy+BB06xFJb8lTqb4Cr5nOdkWGVqJ4ZHUKFoALy3H6IK7nRXx4nHAtIRDyna
+        9KS+ZeuYQEooHxBKiZTBtKJkwxZr+pHp8Uxzyot0PMsM4FIiUwlxUqK2MiWYrx9G28VkFl
+        VxDq7G2GVyHntxMpCNcZzOjdM7s4lW0=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-127-dPxV_IEDMNS_pLqbnp7akg-1; Mon, 19 Oct 2020 16:03:37 -0400
+X-MC-Unique: dPxV_IEDMNS_pLqbnp7akg-1
+Received: by mail-qk1-f200.google.com with SMTP id x5so576936qkn.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 13:03:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=18BK5QABG5QnCnKw4efSXgYTiRd7IX1w5DP5yy+9I9I=;
-        b=PPi53IAMhUSoTVYs1+WU00aFZ0lg+LnfGB84nNOUY3baTWPithoPVTxLbRX0GmHXY8
-         2aXjyNvZ3jPMddsit53mw/4F2yGZ5LnVJvi4uUmSqLZkTQxUdtjQPQuiHOAWPU2cvcdS
-         VsCCPeVMMZ9EokrJBJ117LM8M5+SwHvWBVLigiCaWgcNuEwCV/cJge/iAJ5BjbP1AAtw
-         C3x86uOn2VNUt2e2a6hZHofSqoI1T08ipwaclWrJAMEF42PIP79jDXczd6c8Eu2zKFr2
-         U9hJ6GQp3Fy/YgFn8Rz9ql1+XT+RZtfvwkmqapJAw16T1fINcuS1U4gjPPgUbzZkU9PW
-         Ogfg==
-X-Gm-Message-State: AOAM533ZMcq3t8RAyXcRNC8VXdeirQfWyYHl3NZl2A0fqY5/SK5pJG9c
-        8nJexTcDMd3TpLft7FGGqsk=
-X-Google-Smtp-Source: ABdhPJzkCeWXmQnav763Ok076vRwgRnjdn4adsktoySJMo8mM09SCNxvBPJVR7s4jDoKLkHpD+5uWQ==
-X-Received: by 2002:a17:906:95d1:: with SMTP id n17mr1605193ejy.75.1603137780335;
-        Mon, 19 Oct 2020 13:03:00 -0700 (PDT)
-Received: from skbuf ([188.26.174.215])
-        by smtp.gmail.com with ESMTPSA id v14sm834988edy.68.2020.10.19.13.02.58
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=F3+eVVhD9pRO1Lc4WB7w+1NvqWHmj8ke9+eowsdGJTU=;
+        b=BotPRCYc/TIyTq4eXgivo4gGipGM4wRxWTJAJ5cEsAmFulTHmoqXN9ZQCmWIAWVcJ/
+         TWEUJwyz9iHhabXWX3NMgjHfkpUuvI94MqREg0aBMlTdy3Xqh8fCIrTRxkOkZ6Jvr0ku
+         hzqTeoonQlT41tx3nIn8Qsx7oYgQawGbYg6K26TxnLH9wMDtDAB/cD1LBZYGudl1aIY9
+         hbBtYVmgx5+aSdEESSvM1TiRhtwWGNP2NfhU484IVQaWa9HCSFSt89Wuo8TsJ/cUaf9Z
+         Cz5ZcJYgqffN6p8UUQFCwfSlk9zKFyhEJirf+KpD74Lg6SvYsOPQjSWlwaPasHPZeU9D
+         FfWQ==
+X-Gm-Message-State: AOAM53103mQ570VwSO/cj+sticez7olqdXAzzfg1bCbcvBO6nk4vKHNM
+        wbFXXeX3gNIw3MKBevd72DcTzI+8waUcw1byMLyk2HF3sCmgiCu6psGRlHK82CHtzAajti3QzNW
+        BBI3wU3304lIkHheFtVr/VNlp
+X-Received: by 2002:a05:622a:208:: with SMTP id b8mr1115071qtx.101.1603137816587;
+        Mon, 19 Oct 2020 13:03:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyXb/rxXb4baPbjkHkFnR27pl71Et9H9wJy5V10S3g9lhcLq1MOxErN1KlNZHkIc8VzD/YJ0A==
+X-Received: by 2002:a05:622a:208:: with SMTP id b8mr1115049qtx.101.1603137816368;
+        Mon, 19 Oct 2020 13:03:36 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id e19sm451471qkl.94.2020.10.19.13.03.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 13:02:59 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 23:02:58 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, kuba@kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Yunjian Wang <wangyunjian@huawei.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] net: Have netpoll bring-up DSA management interface
-Message-ID: <20201019200258.jrtymxikwrijkvpq@skbuf>
-References: <20201019171746.991720-1-f.fainelli@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019171746.991720-1-f.fainelli@gmail.com>
+        Mon, 19 Oct 2020 13:03:35 -0700 (PDT)
+From:   trix@redhat.com
+To:     rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
+        gregkh@linuxfoundation.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] PM: sleep: remove unneeded break
+Date:   Mon, 19 Oct 2020 13:03:30 -0700
+Message-Id: <20201019200330.16629-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 10:17:44AM -0700, Florian Fainelli wrote:
-> These devices also do not utilize the upper/lower linking so the
-> check about the netpoll device having upper is not going to be a
-> problem.
+From: Tom Rix <trix@redhat.com>
 
-They do as of 2f1e8ea726e9 ("net: dsa: link interfaces with the DSA
-master to get rid of lockdep warnings"), don't they? The question is why
-that doesn't work, and the answer is, I believe, that the linkage needs
-to be the other way around than DSA has it.
+A break is not needed if it is preceded by a return
 
-> 
-> The solution adopted here is identical to the one done for
-> net/ipv4/ipconfig.c with 728c02089a0e ("net: ipv4: handle DSA enabled
-> master network devices"), with the network namespace scope being
-> restricted to that of the process configuring netpoll.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/base/power/main.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-... and further restricted to the only network namespace that DSA
-supports. As a side note, we should declare NETIF_F_NETNS_LOCAL_BIT for
-DSA interfaces.
-
-> 
-> Fixes: 04ff53f96a93 ("net: dsa: Add netconsole support")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  net/core/netpoll.c | 22 ++++++++++++++++++----
->  1 file changed, 18 insertions(+), 4 deletions(-)
-> 
-> diff --git a/net/core/netpoll.c b/net/core/netpoll.c
-> index c310c7c1cef7..960948290001 100644
-> --- a/net/core/netpoll.c
-> +++ b/net/core/netpoll.c
-> @@ -29,6 +29,7 @@
->  #include <linux/slab.h>
->  #include <linux/export.h>
->  #include <linux/if_vlan.h>
-> +#include <net/dsa.h>
->  #include <net/tcp.h>
->  #include <net/udp.h>
->  #include <net/addrconf.h>
-> @@ -657,15 +658,15 @@ EXPORT_SYMBOL_GPL(__netpoll_setup);
->  
->  int netpoll_setup(struct netpoll *np)
->  {
-> -	struct net_device *ndev = NULL;
-> +	struct net_device *ndev = NULL, *dev = NULL;
-> +	struct net *net = current->nsproxy->net_ns;
->  	struct in_device *in_dev;
->  	int err;
->  
->  	rtnl_lock();
-> -	if (np->dev_name[0]) {
-> -		struct net *net = current->nsproxy->net_ns;
-> +	if (np->dev_name[0])
->  		ndev = __dev_get_by_name(net, np->dev_name);
-> -	}
-> +
->  	if (!ndev) {
->  		np_err(np, "%s doesn't exist, aborting\n", np->dev_name);
->  		err = -ENODEV;
-> @@ -673,6 +674,19 @@ int netpoll_setup(struct netpoll *np)
->  	}
->  	dev_hold(ndev);
->  
-> +	/* bring up DSA management network devices up first */
-> +	for_each_netdev(net, dev) {
-> +		if (!netdev_uses_dsa(dev))
-> +			continue;
-> +
-> +		err = dev_change_flags(dev, dev->flags | IFF_UP, NULL);
-> +		if (err < 0) {
-> +			np_err(np, "%s failed to open %s\n",
-> +			       np->dev_name, dev->name);
-> +			goto put;
-> +		}
-> +	}
-> +
-
-Completely crazy and outlandish idea, I know, but what's wrong with
-doing this in DSA?
-
-diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-index 33788b5c1742..e5927c4498a2 100644
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -68,8 +68,14 @@ static int dsa_slave_open(struct net_device *dev)
- 	struct dsa_port *dp = dsa_slave_to_port(dev);
- 	int err;
- 
--	if (!(master->flags & IFF_UP))
--		return -ENETDOWN;
-+	if (!(master->flags & IFF_UP)) {
-+		err = dev_change_flags(master, master->flags | IFF_UP, NULL);
-+		if (err < 0) {
-+			netdev_err(dev, "failed to open master %s\n",
-+				   master->name);
-+			goto out;
-+		}
-+	}
- 
- 	if (!ether_addr_equal(dev->dev_addr, master->dev_addr)) {
- 		err = dev_uc_add(master, dev->dev_addr);
+diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+index 205a06752ca9..c7ac49042cee 100644
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -363,7 +363,6 @@ static pm_callback_t pm_op(const struct dev_pm_ops *ops, pm_message_t state)
+ 	case PM_EVENT_THAW:
+ 	case PM_EVENT_RECOVER:
+ 		return ops->thaw;
+-		break;
+ 	case PM_EVENT_RESTORE:
+ 		return ops->restore;
+ #endif /* CONFIG_HIBERNATE_CALLBACKS */
 -- 
-2.25.1
+2.18.1
 
-It has the benefit that user space can now remove DSA-specific
-workarounds, like systemd-networkd with BindCarrier:
-https://github.com/systemd/systemd/issues/7478
-And we could remove one of the 2 bullets in the "Common pitfalls using
-DSA setups" chapter:
-https://www.kernel.org/doc/Documentation/networking/dsa/dsa.txt
-And....
-We could remove the DSA workaround from net/ipv4/ipconfig.c as well.
-Just saying.
-
->  	if (netdev_master_upper_dev_get(ndev)) {
->  		np_err(np, "%s is a slave device, aborting\n", np->dev_name);
->  		err = -EBUSY;
-> -- 
-> 2.25.1
-> 
