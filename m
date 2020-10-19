@@ -2,169 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109E12923E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C372923EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 10:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729544AbgJSItP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 04:49:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:52532 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728493AbgJSItO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 04:49:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A8E85101E;
-        Mon, 19 Oct 2020 01:49:13 -0700 (PDT)
-Received: from [10.57.14.99] (unknown [10.57.14.99])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84C043F66E;
-        Mon, 19 Oct 2020 01:49:11 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        chris.redpath@arm.com, morten.rasmussen@arm.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20200924095347.32148-3-nicola.mazzucato@arm.com>
- <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
- <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
- <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7> <20201008150317.GB20268@arm.com>
- <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
- <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7> <20201012154915.GD16519@bogus>
- <20201012165219.GA3573@arm.com>
- <17819d4d-9e7e-9a38-4227-d0d10a0749f1@arm.com>
- <20201014042531.r7iykzygkvmpsqck@vireshk-i7>
-From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
-Message-ID: <503af305-77a4-964a-ed17-8df8b4e3a546@arm.com>
-Date:   Mon, 19 Oct 2020 09:50:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729567AbgJSIu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 04:50:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45141 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728421AbgJSIu4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 04:50:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603097454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W+GLhGk+DGr7aqMMN9qogQIvYXULDe5V4KCY/zVX1ro=;
+        b=USxGFiro/JXM7mP88twPYYkPWmNHY4Sx/Bi3JP1v5H5dey/eKYccbBg9wmnhGj5qYgfpA9
+        jZBkK37P21phfZOPXYHvwx6bHQ6hsR7BH8atTmGztmvhuYdQM5qMZ2Jgw8sK8r3SXYvfof
+        m3/XeQmt8Spm4LMsMawjqHhrTmsXgRE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-zf7Z9wQlPKyxDxftXp6dLA-1; Mon, 19 Oct 2020 04:50:49 -0400
+X-MC-Unique: zf7Z9wQlPKyxDxftXp6dLA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F9F310A0B83;
+        Mon, 19 Oct 2020 08:50:48 +0000 (UTC)
+Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C8A7B50B44;
+        Mon, 19 Oct 2020 08:50:41 +0000 (UTC)
+Subject: Re: [PATCH v1 29/29] virtio-mem: Big Block Mode (BBM) - safe memory
+ hotunplug
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-30-david@redhat.com>
+ <20201019075406.GE54484@L-31X9LVDL-1304.local>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <e7f7d154-a1e3-0a89-743e-69f51c0e06fc@redhat.com>
+Date:   Mon, 19 Oct 2020 10:50:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201014042531.r7iykzygkvmpsqck@vireshk-i7>
+In-Reply-To: <20201019075406.GE54484@L-31X9LVDL-1304.local>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
-
-thank you for your suggestion on using 'opp-shared'.
-I think it could work for most of the cases we explained earlier.
-
-Summarising, there are two parts of this entire proposal:
-1) where/how to get the information: now we are focusing on taking advantage of
-'opp-shared' within an empty opp table
-2) and how/where this information will be consumed
-
-Further details below:
-
-1) a CPUFreq driver that takes the OPPs from firmware, can call
-dev_pm_opp_of_get_sharing_cpus like you suggested. When doing so, a provided
-cpumaksk will be populated with the corresponding cpus that share the same
-(empty) table opp in DT.
-All good so far.
-The current opp core is not expecting an empty table and therefore some errors
-are thrown when this happens.
-Since we are now allowing this corner-case, I am presenting below where I think
-some minor corrections may be needed:
-
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
-        struct device_node *required_np, *np;
-        int count, i;
-
-        /* Traversing the first OPP node is all we need */
-        np = of_get_next_available_child(opp_np, NULL);
-        if (!np) {
--               dev_err(dev, "Empty OPP table\n");
-+               dev_warn(dev, "Empty OPP table\n");
-+
-+               /*
-+                * With empty table we remove shared_opp. This is to leave the
-+                * responsibility to decide which opp are shared to the opp users
-+                */
-+               opp_table->shared_opp = OPP_TABLE_ACCESS_EXCLUSIVE;
-+
-                return;
-        }
-
-@@ int dev_pm_opp_of_find_icc_paths(struct device *dev,
-        int ret, i, count, num_paths;
-        struct icc_path **paths;
-
-        ret = _bandwidth_supported(dev, opp_table);
--       if (ret <= 0)
-+       if (ret == -EINVAL)
-+               return 0; /* Empty OPP table is a valid corner-case, let's not
-fail */
-+       else if (ret <= 0)
-                return ret;
-
-The above are not 'strictly' necessary to achieve the intended goal, but they
-make clearer that an empty table is now allowed and not an error anymore.
-What it is your point of view on this?
-
-In addition, I think it would also be appropriate to update the documentation
-(Documentation/devicetree/bindings/opp/opp.txt) to reflect this new case
-(required properties etc).
-Any different thoughts?
-
-2) Once the driver gets the 'performance dependencies' by
-dev_pm_opp_of_get_sharing_cpus(), this information will have to be shared with
-EAS, thermal, etc.. The natural way to do so would be to add a new cpumask like
-I proposed in this RFC.
-I see this as an improvement for the whole subsystem and a scalable choice since
-we can unambiguously provide the correct information to whoever needs it, given
-that we don't enforce "hw dependencies" for related_cpus.
-The changes would be trivial (it's in the original RFC).
-On the other hand, we can't unload this h/w detail into related_cpus IMO as we
-are dealing with per-cpu systems in this context.
-Hope it makes sense?
-
-Once we are pretty much aligned with our ideas, I can run some other tests and
-make a V3.
-
-Thank you very much,
-
-Best regards
-Nicola
-
-On 10/14/20 5:25 AM, Viresh Kumar wrote:
-> On 12-10-20, 18:18, Lukasz Luba wrote:
->> On 10/12/20 5:52 PM, Ionela Voinescu wrote:
->>> On Monday 12 Oct 2020 at 16:49:30 (+0100), Sudeep Holla wrote:
->>>> On Fri, Oct 09, 2020 at 11:09:21AM +0530, Viresh Kumar wrote:
->>>>> - I wonder if we can keep using that instead of creating new bindings
->>>>>    for exact same stuff ? Though the difference here would be that the
->>>>>    OPP may not have any other entries.
->>>>
->>>> Well summarised, sorry for chiming in late. I could have not summarised
->>>> any better. Just saw the big thread and was thinking of summarising.
->>>> If the last point on OPP is possible(i.e. no OPP entries but just use
->>>> it for fetch the information) for $subject patch is trying to achieve,
->>>> then it would be good.
-> 
-> Under normal circumstances, I wouldn't have suggested empty opp-tables
-> for sure but it doesn't seem worth adding another binding to get this
-> information out :)
-> 
->>>
->>> Just to put in my two pennies worth: using opp-shared (in possibly empty
->>> OPP table) as alternative to cpu-perf-dependencies sounds good enough
->>> to me as well.
+On 19.10.20 09:54, Wei Yang wrote:
+> On Mon, Oct 12, 2020 at 02:53:23PM +0200, David Hildenbrand wrote:
+>> Let's add a safe mechanism to unplug memory, avoiding long/endless loops
+>> when trying to offline memory - similar to in SBM.
 >>
->> +1
+>> Fake-offline all memory (via alloc_contig_range()) before trying to
+>> offline+remove it. Use this mode as default, but allow to enable the other
+>> mode explicitly (which could give better memory hotunplug guarantees in
 > 
-> Now that (almost) everyone agrees, I don't think we need to make any
-> change anywhere, in code or bindings. This should work right now as
-> well.  The code should never try to create OPP tables and the core
-> will not create one. Your driver (which want to get this information
-> out of empty OPP tables) shall call dev_pm_opp_of_get_sharing_cpus(),
-> which just parses the DT to get this information out.
+> I don't get the point how unsafe mode would have a better guarantees?
+
+It's primarily only relevant when there is a lot of concurrent action
+going on while unplugging memory. Using alloc_contig_range() on
+ZONE_MOVABLE can fail more easily than memory offlining.
+
+alloc_contig_range() doesn't try as hard as memory offlining code to
+isolate memory. There are known issues with temporary page pinning
+(e.g., when a process dies) and the PCP. (mostly discovered via CMA
+allocations)
+
+See the TODO I add in patch #14.
+
+[...]
+>>
+>> +	if (bbm_safe_unplug) {
+>> +		/*
+>> +		 * Start by fake-offlining all memory. Once we marked the device
+>> +		 * block as fake-offline, all newly onlined memory will
+>> +		 * automatically be kept fake-offline. Protect from concurrent
+>> +		 * onlining/offlining until we have a consistent state.
+>> +		 */
+>> +		mutex_lock(&vm->hotplug_mutex);
+>> +		virtio_mem_bbm_set_bb_state(vm, bb_id,
+>> +					    VIRTIO_MEM_BBM_BB_FAKE_OFFLINE);
+>> +
 > 
+> State is set here.
+> 
+>> +		for (pfn = start_pfn; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
+>> +			page = pfn_to_online_page(pfn);
+>> +			if (!page)
+>> +				continue;
+>> +
+>> +			rc = virtio_mem_fake_offline(pfn, PAGES_PER_SECTION);
+>> +			if (rc) {
+>> +				end_pfn = pfn;
+>> +				goto rollback_safe_unplug;
+>> +			}
+>> +		}
+>> +		mutex_unlock(&vm->hotplug_mutex);
+>> +	}
+>> +
+>> 	rc = virtio_mem_bbm_offline_and_remove_bb(vm, bb_id);
+>> -	if (rc)
+>> +	if (rc) {
+>> +		if (bbm_safe_unplug) {
+>> +			mutex_lock(&vm->hotplug_mutex);
+>> +			goto rollback_safe_unplug;
+>> +		}
+>> 		return rc;
+>> +	}
+>>
+>> 	rc = virtio_mem_bbm_unplug_bb(vm, bb_id);
+>> 	if (rc)
+> 
+> And changed to PLUGGED or UNUSED based on rc.
+
+Right, after offlining+remove succeeded. So no longer added to Linux.
+
+The final state depends on the success of the unplug request towards the
+hypervisor.
+
+> 
+>> @@ -1987,6 +2069,17 @@ static int virtio_mem_bbm_offline_remove_and_unplug_bb(struct virtio_mem *vm,
+>> 		virtio_mem_bbm_set_bb_state(vm, bb_id,
+>> 					    VIRTIO_MEM_BBM_BB_UNUSED);
+>> 	return rc;
+>> +
+>> +rollback_safe_unplug:
+>> +	for (pfn = start_pfn; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
+>> +		page = pfn_to_online_page(pfn);
+>> +		if (!page)
+>> +			continue;
+>> +		virtio_mem_fake_online(pfn, PAGES_PER_SECTION);
+>> +	}
+>> +	virtio_mem_bbm_set_bb_state(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED);
+> 
+> And changed to ADDED if failed.
+
+Right, back to the initial state when entering this function.
+
+> 
+>> +	mutex_unlock(&vm->hotplug_mutex);
+>> +	return rc;
+>> }
+> 
+> So in which case, the bbm state is FAKE_OFFLINE during
+> virtio_mem_bbm_notify_going_offline() and
+> virtio_mem_bbm_notify_cancel_offline() ?
+
+Exactly, so we can do our magic with fake-offline pages and our
+virtio_mem_bbm_offline_and_remove_bb() can actually succeed.
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
