@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65EA4292263
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7614A292266
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgJSGSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 02:18:23 -0400
-Received: from mga12.intel.com ([192.55.52.136]:48320 "EHLO mga12.intel.com"
+        id S1726674AbgJSGSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 02:18:30 -0400
+Received: from mga18.intel.com ([134.134.136.126]:40521 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726553AbgJSGSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 02:18:22 -0400
-IronPort-SDR: TZkozcMsoCmkzvDEp1qBvuP6tIvwx5+E6WWNQrv9opQgqsHbuzSul+T6Kco1zYKZFBseHAyalw
- 7oiu0+JPHyzw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="146270954"
+        id S1726661AbgJSGS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 02:18:29 -0400
+IronPort-SDR: SrSIMp9dTZmMOvMlwIn8mquDghQpFTQbPMZT5EzcWPIHRD3/mpTOHH8TwMykTwfsjPULiioI0b
+ 9iPkzUjqjEkw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="154766681"
 X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
-   d="scan'208";a="146270954"
+   d="scan'208";a="154766681"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:18:18 -0700
-IronPort-SDR: Q3ku1Zycc7B42w8b+11xSddbaFjh+5r7ONnsBeMEFih8BMckMRPsk0tzwO4akINYu1UmDXAGJs
- B+FkeimUCzwQ==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:18:24 -0700
+IronPort-SDR: 3ImcxTCnEGg+pvtwMYbyfWXnPRyBjHlqRrtZVPtC6OHalSPkwEakZrTo2w3Ii2jJ2tvr/bMTQ7
+ JzjcYEDnoTMg==
 X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
-   d="scan'208";a="522992213"
+   d="scan'208";a="465410514"
 Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:18:14 -0700
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 23:18:19 -0700
 From:   shuo.a.liu@intel.com
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -35,11 +35,19 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Yu Wang <yu1.wang@intel.com>,
         Reinette Chatre <reinette.chatre@intel.com>,
-        Shuo Liu <shuo.a.liu@intel.com>
-Subject: [PATCH v5 00/17] HSM driver for ACRN hypervisor
-Date:   Mon, 19 Oct 2020 14:17:46 +0800
-Message-Id: <20201019061803.13298-1-shuo.a.liu@intel.com>
+        Shuo Liu <shuo.a.liu@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH v5 01/17] docs: acrn: Introduce ACRN
+Date:   Mon, 19 Oct 2020 14:17:47 +0800
+Message-Id: <20201019061803.13298-2-shuo.a.liu@intel.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201019061803.13298-1-shuo.a.liu@intel.com>
+References: <20201019061803.13298-1-shuo.a.liu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -48,151 +56,235 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shuo Liu <shuo.a.liu@intel.com>
 
-ACRN is a Type 1 reference hypervisor stack, running directly on the bare-metal
-hardware, and is suitable for a variety of IoT and embedded device solutions.
+Add documentation on the following aspects of ACRN:
 
-ACRN implements a hybrid VMM architecture, using a privileged Service VM. The
-Service VM manages the system resources (CPU, memory, etc.) and I/O devices of
-User VMs. Multiple User VMs are supported, with each of them running Linux,
-Android OS or Windows. Both Service VM and User VMs are guest VM.
+  1) A brief introduction on the architecture of ACRN.
+  2) I/O request handling in ACRN.
 
-Below figure shows the architecture.
+To learn more about ACRN, please go to ACRN project website
+https://projectacrn.org, or the documentation page
+https://projectacrn.github.io/.
 
-                Service VM                    User VM
-      +----------------------------+  |  +------------------+
-      |        +--------------+    |  |  |                  |
-      |        |ACRN userspace|    |  |  |                  |
-      |        +--------------+    |  |  |                  |
-      |-----------------ioctl------|  |  |                  |   ...
-      |kernel space   +----------+ |  |  |                  |
-      |               |   HSM    | |  |  | Drivers          |
-      |               +----------+ |  |  |                  |
-      +--------------------|-------+  |  +------------------+
-  +---------------------hypercall----------------------------------------+
-  |                       ACRN Hypervisor                                |
-  +----------------------------------------------------------------------+
-  |                          Hardware                                    |
-  +----------------------------------------------------------------------+
-
-There is only one Service VM which could run Linux as OS.
-
-In a typical case, the Service VM will be auto started when ACRN Hypervisor is
-booted. Then the ACRN userspace (an application running in Service VM) could be
-used to start/stop User VMs by communicating with ACRN Hypervisor Service
-Module (HSM).
-
-ACRN Hypervisor Service Module (HSM) is a middle layer that allows the ACRN
-userspace and Service VM OS kernel to communicate with ACRN Hypervisor
-and manage different User VMs. This middle layer provides the following
-functionalities,
-  - Issues hypercalls to the hypervisor to manage User VMs:
-      * VM/vCPU management
-      * Memory management
-      * Device passthrough
-      * Interrupts injection
-  - I/O requests handling from User VMs.
-  - Exports ioctl through HSM char device.
-  - Exports function calls for other kernel modules
-
-ACRN is focused on embedded system. So it doesn't support some features.
-E.g.,
-  - ACRN doesn't support VM migration.
-  - ACRN doesn't support vCPU migration.
-
-This patch set adds the HSM to the Linux kernel.
-
-The basic ARCN support was merged to upstream already.
-https://lore.kernel.org/lkml/1559108037-18813-3-git-send-email-yakui.zhao@intel.com/
-
-ChangeLog:
-v5:
-  - Corrected typo in documentation.
-  - Removed unused pr_fmt().
-  - Used supported constraint with a explicit MOV to R8 at beginning of ASM for hypercall interface.
-  - Used dev_dbg() to replace dev_err() in places which might cause a DoS.
-  - Introduced acrn_vm_list_lock as a mutex for friendly review.
-  - Changed to use default attribute group list to add attribute files.
-
-v4:
-  - Used acrn_dev.this_device directly for dev_*() (Reinette)
-  - Removed the odd usage of {get|put}_device() on &acrn_dev->this_device (Greg)
-  - Removed unused log code. (Greg)
-  - Corrected the return error values. (Greg)
-  - Mentioned that HSM relies hypervisor for sanity check in acrn_dev_ioctl() comments (Greg)
-
-v3:
-  - Used {get|put}_device() helpers on &acrn_dev->this_device
-  - Moved unused code from front patches to later ones.
-  - Removed self-defined pr_fmt() and dev_fmt()
-  - Provided comments for acrn_vm_list_lock.
-
-v2:
-  - Removed API version related code. (Dave)
-  - Replaced pr_*() by dev_*(). (Greg)
-  - Used -ENOTTY as the error code of unsupported ioctl. (Greg)
-
-Shuo Liu (16):
-  docs: acrn: Introduce ACRN
-  x86/acrn: Introduce acrn_{setup, remove}_intr_handler()
-  x86/acrn: Introduce hypercall interfaces
-  virt: acrn: Introduce ACRN HSM basic driver
-  virt: acrn: Introduce VM management interfaces
-  virt: acrn: Introduce an ioctl to set vCPU registers state
-  virt: acrn: Introduce EPT mapping management
-  virt: acrn: Introduce I/O request management
-  virt: acrn: Introduce PCI configuration space PIO accesses combiner
-  virt: acrn: Introduce interfaces for PCI device passthrough
-  virt: acrn: Introduce interrupt injection interfaces
-  virt: acrn: Introduce interfaces to query C-states and P-states
-    allowed by hypervisor
-  virt: acrn: Introduce I/O ranges operation interfaces
-  virt: acrn: Introduce ioeventfd
-  virt: acrn: Introduce irqfd
-  virt: acrn: Introduce an interface for Service VM to control vCPU
-
-Yin Fengwei (1):
-  x86/acrn: Introduce an API to check if a VM is privileged
-
- .../userspace-api/ioctl/ioctl-number.rst      |   1 +
- Documentation/virt/acrn/index.rst             |  11 +
- Documentation/virt/acrn/introduction.rst      |  40 ++
- Documentation/virt/acrn/io-request.rst        |  97 +++
- Documentation/virt/index.rst                  |   1 +
- MAINTAINERS                                   |   9 +
- arch/x86/include/asm/acrn.h                   |  71 ++
- arch/x86/kernel/cpu/acrn.c                    |  33 +-
- drivers/virt/Kconfig                          |   2 +
- drivers/virt/Makefile                         |   1 +
- drivers/virt/acrn/Kconfig                     |  15 +
- drivers/virt/acrn/Makefile                    |   3 +
- drivers/virt/acrn/acrn_drv.h                  | 229 +++++++
- drivers/virt/acrn/hsm.c                       | 435 ++++++++++++
- drivers/virt/acrn/hypercall.h                 | 254 +++++++
- drivers/virt/acrn/ioeventfd.c                 | 273 ++++++++
- drivers/virt/acrn/ioreq.c                     | 645 ++++++++++++++++++
- drivers/virt/acrn/irqfd.c                     | 235 +++++++
- drivers/virt/acrn/mm.c                        | 305 +++++++++
- drivers/virt/acrn/vm.c                        | 126 ++++
- include/uapi/linux/acrn.h                     | 486 +++++++++++++
- 21 files changed, 3271 insertions(+), 1 deletion(-)
+Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Sen Christopherson <sean.j.christopherson@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Fengwei Yin <fengwei.yin@intel.com>
+Cc: Zhi Wang <zhi.a.wang@intel.com>
+Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+Cc: Yu Wang <yu1.wang@intel.com>
+Cc: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+---
+ Documentation/virt/acrn/index.rst        | 11 +++
+ Documentation/virt/acrn/introduction.rst | 40 ++++++++++
+ Documentation/virt/acrn/io-request.rst   | 97 ++++++++++++++++++++++++
+ Documentation/virt/index.rst             |  1 +
+ MAINTAINERS                              |  7 ++
+ 5 files changed, 156 insertions(+)
  create mode 100644 Documentation/virt/acrn/index.rst
  create mode 100644 Documentation/virt/acrn/introduction.rst
  create mode 100644 Documentation/virt/acrn/io-request.rst
- create mode 100644 arch/x86/include/asm/acrn.h
- create mode 100644 drivers/virt/acrn/Kconfig
- create mode 100644 drivers/virt/acrn/Makefile
- create mode 100644 drivers/virt/acrn/acrn_drv.h
- create mode 100644 drivers/virt/acrn/hsm.c
- create mode 100644 drivers/virt/acrn/hypercall.h
- create mode 100644 drivers/virt/acrn/ioeventfd.c
- create mode 100644 drivers/virt/acrn/ioreq.c
- create mode 100644 drivers/virt/acrn/irqfd.c
- create mode 100644 drivers/virt/acrn/mm.c
- create mode 100644 drivers/virt/acrn/vm.c
- create mode 100644 include/uapi/linux/acrn.h
 
-
-base-commit: 18445bf405cb331117bc98427b1ba6f12418ad17
+diff --git a/Documentation/virt/acrn/index.rst b/Documentation/virt/acrn/index.rst
+new file mode 100644
+index 000000000000..e3cf99033bdb
+--- /dev/null
++++ b/Documentation/virt/acrn/index.rst
+@@ -0,0 +1,11 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===============
++ACRN Hypervisor
++===============
++
++.. toctree::
++   :maxdepth: 1
++
++   introduction
++   io-request
+diff --git a/Documentation/virt/acrn/introduction.rst b/Documentation/virt/acrn/introduction.rst
+new file mode 100644
+index 000000000000..6b44924d5c0e
+--- /dev/null
++++ b/Documentation/virt/acrn/introduction.rst
+@@ -0,0 +1,40 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++ACRN Hypervisor Introduction
++============================
++
++The ACRN Hypervisor is a Type 1 hypervisor, running directly on the bare-metal
++hardware. It has a privileged management VM, called Service VM, to manage User
++VMs and do I/O emulation.
++
++ACRN userspace is an application running in the Service VM that emulates
++devices for a User VM based on command line configurations. ACRN Hypervisor
++Service Module (HSM) is a kernel module in the Service VM which provides
++hypervisor services to the ACRN userspace.
++
++Below figure shows the architecture.
++
++::
++
++                Service VM                    User VM
++      +----------------------------+  |  +------------------+
++      |        +--------------+    |  |  |                  |
++      |        |ACRN userspace|    |  |  |                  |
++      |        +--------------+    |  |  |                  |
++      |-----------------ioctl------|  |  |                  |   ...
++      |kernel space   +----------+ |  |  |                  |
++      |               |   HSM    | |  |  | Drivers          |
++      |               +----------+ |  |  |                  |
++      +--------------------|-------+  |  +------------------+
++  +---------------------hypercall----------------------------------------+
++  |                         ACRN Hypervisor                              |
++  +----------------------------------------------------------------------+
++  |                          Hardware                                    |
++  +----------------------------------------------------------------------+
++
++ACRN userspace allocates memory for the User VM, configures and initializes the
++devices used by the User VM, loads the virtual bootloader, initializes the
++virtual CPU state and handles I/O request accesses from the User VM. It uses
++ioctls to communicate with the HSM. HSM implements hypervisor services by
++interacting with the ACRN Hypervisor via hypercalls. HSM exports a char device
++interface (/dev/acrn_hsm) to userspace.
+diff --git a/Documentation/virt/acrn/io-request.rst b/Documentation/virt/acrn/io-request.rst
+new file mode 100644
+index 000000000000..79022a671ea7
+--- /dev/null
++++ b/Documentation/virt/acrn/io-request.rst
+@@ -0,0 +1,97 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++I/O request handling
++====================
++
++An I/O request of a User VM, which is constructed by the hypervisor, is
++distributed by the ACRN Hypervisor Service Module to an I/O client
++corresponding to the address range of the I/O request. Details of I/O request
++handling are described in the following sections.
++
++1. I/O request
++--------------
++
++For each User VM, there is a shared 4-KByte memory region used for I/O requests
++communication between the hypervisor and Service VM. An I/O request is a
++256-byte structure buffer, which is 'struct acrn_io_request', that is filled by
++an I/O handler of the hypervisor when a trapped I/O access happens in a User
++VM. ACRN userspace in the Service VM first allocates a 4-KByte page and passes
++the GPA (Guest Physical Address) of the buffer to the hypervisor. The buffer is
++used as an array of 16 I/O request slots with each I/O request slot being 256
++bytes. This array is indexed by vCPU ID.
++
++2. I/O clients
++--------------
++
++An I/O client is responsible for handling User VM I/O requests whose accessed
++GPA falls in a certain range. Multiple I/O clients can be associated with each
++User VM. There is a special client associated with each User VM, called the
++default client, that handles all I/O requests that do not fit into the range of
++any other clients. The ACRN userspace acts as the default client for each User
++VM.
++
++Below illustration shows the relationship between I/O requests shared buffer,
++I/O requests and I/O clients.
++
++::
++
++     +------------------------------------------------------+
++     |                                       Service VM     |
++     |+--------------------------------------------------+  |
++     ||      +----------------------------------------+  |  |
++     ||      | shared page            ACRN userspace  |  |  |
++     ||      |    +-----------------+  +------------+ |  |  |
++     ||   +----+->| acrn_io_request |<-+  default   | |  |  |
++     ||   |  | |  +-----------------+  | I/O client | |  |  |
++     ||   |  | |  |       ...       |  +------------+ |  |  |
++     ||   |  | |  +-----------------+                 |  |  |
++     ||   |  +-|--------------------------------------+  |  |
++     ||---|----|-----------------------------------------|  |
++     ||   |    |                             kernel      |  |
++     ||   |    |            +----------------------+     |  |
++     ||   |    |            | +-------------+  HSM |     |  |
++     ||   |    +--------------+             |      |     |  |
++     ||   |                 | | I/O clients |      |     |  |
++     ||   |                 | |             |      |     |  |
++     ||   |                 | +-------------+      |     |  |
++     ||   |                 +----------------------+     |  |
++     |+---|----------------------------------------------+  |
++     +----|-------------------------------------------------+
++          |
++     +----|-------------------------------------------------+
++     |  +-+-----------+                                     |
++     |  | I/O handler |              ACRN Hypervisor        |
++     |  +-------------+                                     |
++     +------------------------------------------------------+
++
++3. I/O request state transition
++-------------------------------
++
++The state transitions of an ACRN I/O request are as follows.
++
++::
++
++   FREE -> PENDING -> PROCESSING -> COMPLETE -> FREE -> ...
++
++- FREE: this I/O request slot is empty
++- PENDING: a valid I/O request is pending in this slot
++- PROCESSING: the I/O request is being processed
++- COMPLETE: the I/O request has been processed
++
++An I/O request in COMPLETE or FREE state is owned by the hypervisor. HSM and
++ACRN userspace are in charge of processing the others.
++
++4. Processing flow of I/O requests
++-------------------------------
++
++a. The I/O handler of the hypervisor will fill an I/O request with PENDING
++   state when a trapped I/O access happens in a User VM.
++b. The hypervisor makes an upcall, which is a notification interrupt, to
++   the Service VM.
++c. The upcall handler schedules a tasklet to dispatch I/O requests.
++d. The tasklet looks for the PENDING I/O requests, assigns them to different
++   registered clients based on the address of the I/O accesses, updates
++   their state to PROCESSING, and notifies the corresponding client to handle.
++e. The notified client handles the assigned I/O requests.
++f. The HSM updates I/O requests states to COMPLETE and notifies the hypervisor
++   of the completion via hypercalls.
+diff --git a/Documentation/virt/index.rst b/Documentation/virt/index.rst
+index de1ab81df958..c10b519507f5 100644
+--- a/Documentation/virt/index.rst
++++ b/Documentation/virt/index.rst
+@@ -11,6 +11,7 @@ Linux Virtualization Support
+    uml/user_mode_linux
+    paravirt_ops
+    guest-halt-polling
++   acrn/index
+ 
+ .. only:: html and subproject
+ 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index deaafb617361..e0fea5e464b4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -436,6 +436,13 @@ S:	Orphan
+ F:	drivers/platform/x86/wmi.c
+ F:	include/uapi/linux/wmi.h
+ 
++ACRN HYPERVISOR SERVICE MODULE
++M:	Shuo Liu <shuo.a.liu@intel.com>
++L:	acrn-dev@lists.projectacrn.org
++S:	Supported
++W:	https://projectacrn.org
++F:	Documentation/virt/acrn/
++
+ AD1889 ALSA SOUND DRIVER
+ L:	linux-parisc@vger.kernel.org
+ S:	Maintained
 -- 
 2.28.0
 
