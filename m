@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D192922DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9EC2922E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbgJSHOs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Oct 2020 03:14:48 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:43295 "EHLO h3cspam02-ex.h3c.com"
+        id S1727442AbgJSHVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 03:21:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40306 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727223AbgJSHOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 03:14:47 -0400
-Received: from DAG2EX01-BASE.srv.huawei-3com.com ([10.8.0.64])
-        by h3cspam02-ex.h3c.com with ESMTPS id 09J7EToK036675
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Oct 2020 15:14:29 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX01-BASE.srv.huawei-3com.com (10.8.0.64) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 19 Oct 2020 15:14:31 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.2106.002; Mon, 19 Oct 2020 15:14:31 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     "cl@linux.com" <cl@linux.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>
-Subject: RE: [PATCH] mm: Make allocator take care of memoryless numa node
-Thread-Topic: [PATCH] mm: Make allocator take care of memoryless numa node
-Thread-Index: AQHWoHLpCFmBht8fWEyQ1LSKDhVJgamTi1oAgAnlFDCAAJVdAIAAh0lA
-Date:   Mon, 19 Oct 2020 07:14:31 +0000
-Message-ID: <20b7b8ae56894985a1ac0187426bc248@h3c.com>
-References: <20201012082739.15661-1-tian.xianting@h3c.com>
- <20201012150554.GE29725@dhcp22.suse.cz>
- <10ae851702e346369db44e1ec9c830fb@h3c.com>
- <20201019070644.GB27114@dhcp22.suse.cz>
-In-Reply-To: <20201019070644.GB27114@dhcp22.suse.cz>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727223AbgJSHVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 03:21:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7E795AB0E;
+        Mon, 19 Oct 2020 07:21:01 +0000 (UTC)
+Subject: Re: [PATCH] au1100fb: Remove NULL pointer check before
+ clk_enable/disable
+To:     Xu Wang <vulab@iscas.ac.cn>, b.zolnierkie@samsung.com,
+        jani.nikula@intel.com, daniel.vetter@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201014082137.23320-1-vulab@iscas.ac.cn>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <6cf83ff0-eeae-5646-b068-34dbacf2d961@suse.de>
+Date:   Mon, 19 Oct 2020 09:21:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 09J7EToK036675
+In-Reply-To: <20201014082137.23320-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Michal,
-Yes, it is the commit bffed457160ab. Sorry I forgot to paste it in my previous reply.
+Hi
 
+On 14.10.20 10:21, Xu Wang wrote:
+> Because clk_enable, clk_disable, clk_prepare, and clk_unprepare already
+> checked NULL clock parameter, so the additional checks are unnecessary,
+> just remove them.
+> 
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 
------Original Message-----
-From: Michal Hocko [mailto:mhocko@suse.com] 
-Sent: Monday, October 19, 2020 3:07 PM
-To: tianxianting (RD) <tian.xianting@h3c.com>
-Cc: cl@linux.com; penberg@kernel.org; rientjes@google.com; iamjoonsoo.kim@lge.com; akpm@linux-foundation.org; linux-mm@kvack.org; linux-kernel@vger.kernel.org; kuba@kernel.org; alexei.starovoitov@gmail.com
-Subject: Re: [PATCH] mm: Make allocator take care of memoryless numa node
+Sam convinced me to merge this patch as-is with out the additional
+cleanup of the driver. So
 
-On Sun 18-10-20 14:18:37, Tianxianting wrote:
-> Thanks for the comments
-> I found in current code, there are two places to call
-> local_memory_node(node) before calling kzalloc_node(), I think we can 
-> remove them?
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 
-I am not sure which code you are talking about. git grep shows me 2 places in blk-mq code (e.g. bffed457160ab) and that looks quite bogus to me. Bring that up with the respective maintainer and Raghavendra.
-The changelog doesn't really describe any problem, if there is any. But from the allocator semantic point of view memory less nodes are to be expected and the allocator should fallback to the proper node. As long as __GFP_THISNODE is not enforced of course.
---
-Michal Hocko
-SUSE Labs
+I'll merge it into drm-misc-next.
+
+I'd still like to encourage you to send a patch for the other clk_*
+calls in au1100fb.
+
+Best regard
+Thomas
+
+> ---
+>  drivers/video/fbdev/au1100fb.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/au1100fb.c b/drivers/video/fbdev/au1100fb.c
+> index 37a6512feda0..3659dfbb81c1 100644
+> --- a/drivers/video/fbdev/au1100fb.c
+> +++ b/drivers/video/fbdev/au1100fb.c
+> @@ -560,8 +560,7 @@ int au1100fb_drv_suspend(struct platform_device *dev, pm_message_t state)
+>  	/* Blank the LCD */
+>  	au1100fb_fb_blank(VESA_POWERDOWN, &fbdev->info);
+>  
+> -	if (fbdev->lcdclk)
+> -		clk_disable(fbdev->lcdclk);
+> +	clk_disable(fbdev->lcdclk);
+>  
+>  	memcpy(&fbregs, fbdev->regs, sizeof(struct au1100fb_regs));
+>  
+> @@ -577,8 +576,7 @@ int au1100fb_drv_resume(struct platform_device *dev)
+>  
+>  	memcpy(fbdev->regs, &fbregs, sizeof(struct au1100fb_regs));
+>  
+> -	if (fbdev->lcdclk)
+> -		clk_enable(fbdev->lcdclk);
+> +	clk_enable(fbdev->lcdclk);
+>  
+>  	/* Unblank the LCD */
+>  	au1100fb_fb_blank(VESA_NO_BLANKING, &fbdev->info);
+> 
+
+-- 
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
