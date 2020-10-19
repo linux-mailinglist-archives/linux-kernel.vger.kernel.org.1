@@ -2,185 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C668F292BE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F03292BB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730783AbgJSQvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:51:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43250 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730538AbgJSQvU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:51:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603126279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=cBZ9UFopWvddrponmuXiWqW0rfQhlFg5Q+4GTd5bmAo=;
-        b=h9LlzMd9EZe/miwVLLBkoaJY85lcAHKe3y0CT/nuBtW4yaQO8BJnW30GVeyFwKFgKKqVhR
-        gUYsKCwswRoJGALNwop5L+NCYRDi0Gf/lrGcR+bjB35PP0/cyd9LbpvuuMXuCQZ8JgBZTY
-        BLoUIpmE4u6KbVm8oi517eV4Pfc6MH4=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-I_ECc6MkPJyjyFsmAvIfSg-1; Mon, 19 Oct 2020 12:51:18 -0400
-X-MC-Unique: I_ECc6MkPJyjyFsmAvIfSg-1
-Received: by mail-qt1-f197.google.com with SMTP id z22so336165qtn.15
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:51:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=cBZ9UFopWvddrponmuXiWqW0rfQhlFg5Q+4GTd5bmAo=;
-        b=UH8qwiimbxKAS9oUSgr+ANkZjYX0x2oONVJ++YJSRk982SaLc9u5yCQHBzrlKjvTzM
-         A2Z9Hz4LAAdFEIE4KdWUn8Rdynj82EZThTBd7y82XsbEraXzMsByzkIg9a1GrF2J0Qpv
-         DsOCQopMjErfg5qvYzZ34FwvEc8fnYv+ZatC3XaAkeT+qsWSuRI4GB3rPndRpVf3tA51
-         jceCT1u75c54qkfv9QqVOMsf1hnKAv/SnYTejx3wKAgusdKuBOsy0z01AOXrf6gf8hFm
-         mwf4Z29ypCjjHzzbX5uh8/WDOAN6OnoNwpzoNVwY5zNr0GAuX6uS0BB8ZU/vMvf5MBIj
-         2vWQ==
-X-Gm-Message-State: AOAM531C/PfVozZoTBcpXfJlButBYw/TPhTycezZWVvXZ+c6MeshcA3f
-        tanAtB/6XpG4DuMZKs0A5eKiE1H/a8AyQ4fZAABWX36joTnII2S4z7BRLYF/qSMqLGi/xG3pQYk
-        xZMA3uKIa+JxJgxRHOJYTOxD5
-X-Received: by 2002:a05:622a:104:: with SMTP id u4mr315299qtw.163.1603126277740;
-        Mon, 19 Oct 2020 09:51:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwbhcgQbY1OZQlcVsbQuE3XX8qH7dztlppht2P4xC4jw0d8uYlcSYrjBYxCxD+5Nytdis8Tqw==
-X-Received: by 2002:a05:622a:104:: with SMTP id u4mr315280qtw.163.1603126277499;
-        Mon, 19 Oct 2020 09:51:17 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s17sm171788qta.26.2020.10.19.09.51.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 09:51:16 -0700 (PDT)
-From:   trix@redhat.com
-To:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        gregkh@linuxfoundation.org, arnd@arndb.de
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] vme: remove unneeded break
-Date:   Mon, 19 Oct 2020 09:51:12 -0700
-Message-Id: <20201019165112.29091-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1730564AbgJSQtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:49:08 -0400
+Received: from mga12.intel.com ([192.55.52.136]:43066 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729849AbgJSQtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 12:49:07 -0400
+IronPort-SDR: 8eizNy1edeSbwonaVamyZky/0WXY7ioazpSosnkjJUx8kkQAGccePPBr1XF27F06Sl5hGUufBe
+ 36bz6U3j4aRQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="146359033"
+X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
+   d="scan'208";a="146359033"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 09:49:06 -0700
+IronPort-SDR: oiK2RFjYHsNVVqZa6B8pgPwSyVV0MbY1DxgphPSU3WzJPjycIhZxMhTyTE6I4R+NIZUgpRmeqd
+ wQ4uJo9Bj3EQ==
+X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
+   d="scan'208";a="320336768"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 09:49:06 -0700
+Date:   Mon, 19 Oct 2020 09:51:25 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jacob Pan <jacob.pan.linux@gmail.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-api@vger.kernel.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
+        Yi Sun <yi.y.sun@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v3 00/14] IOASID extensions for guest SVA
+Message-ID: <20201019095125.291915b2@jacob-builder>
+In-Reply-To: <1601329121-36979-1-git-send-email-jacob.jun.pan@linux.intel.com>
+References: <1601329121-36979-1-git-send-email-jacob.jun.pan@linux.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Hi,
 
-A break is not needed if it is preceded by a return or goto
+Any comments on this? I know we have some opens w.r.t. PASID management
+UAPI, but I think having this common kernel API features should be
+justified.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/vme/bridges/vme_tsi148.c | 7 -------
- drivers/vme/vme.c                | 9 ---------
- 2 files changed, 16 deletions(-)
+Thanks!
 
-diff --git a/drivers/vme/bridges/vme_tsi148.c b/drivers/vme/bridges/vme_tsi148.c
-index 50ae26977a02..1227ea937059 100644
---- a/drivers/vme/bridges/vme_tsi148.c
-+++ b/drivers/vme/bridges/vme_tsi148.c
-@@ -506,7 +506,6 @@ static int tsi148_slave_set(struct vme_slave_resource *image, int enabled,
- 	default:
- 		dev_err(tsi148_bridge->parent, "Invalid address space\n");
- 		return -EINVAL;
--		break;
- 	}
- 
- 	/* Convert 64-bit variables to 2x 32-bit variables */
-@@ -995,7 +994,6 @@ static int tsi148_master_set(struct vme_master_resource *image, int enabled,
- 		dev_err(tsi148_bridge->parent, "Invalid address space\n");
- 		retval = -EINVAL;
- 		goto err_aspace;
--		break;
- 	}
- 
- 	temp_ctl &= ~(3<<4);
-@@ -1503,7 +1501,6 @@ static int tsi148_dma_set_vme_src_attributes(struct device *dev, __be32 *attr,
- 	default:
- 		dev_err(dev, "Invalid address space\n");
- 		return -EINVAL;
--		break;
- 	}
- 
- 	if (cycle & VME_SUPER)
-@@ -1603,7 +1600,6 @@ static int tsi148_dma_set_vme_dest_attributes(struct device *dev, __be32 *attr,
- 	default:
- 		dev_err(dev, "Invalid address space\n");
- 		return -EINVAL;
--		break;
- 	}
- 
- 	if (cycle & VME_SUPER)
-@@ -1701,7 +1697,6 @@ static int tsi148_dma_list_add(struct vme_dma_list *list,
- 		dev_err(tsi148_bridge->parent, "Invalid source type\n");
- 		retval = -EINVAL;
- 		goto err_source;
--		break;
- 	}
- 
- 	/* Assume last link - this will be over-written by adding another */
-@@ -1738,7 +1733,6 @@ static int tsi148_dma_list_add(struct vme_dma_list *list,
- 		dev_err(tsi148_bridge->parent, "Invalid destination type\n");
- 		retval = -EINVAL;
- 		goto err_dest;
--		break;
- 	}
- 
- 	/* Fill out count */
-@@ -1964,7 +1958,6 @@ static int tsi148_lm_set(struct vme_lm_resource *lm, unsigned long long lm_base,
- 		mutex_unlock(&lm->mtx);
- 		dev_err(tsi148_bridge->parent, "Invalid address space\n");
- 		return -EINVAL;
--		break;
- 	}
- 
- 	if (cycle & VME_SUPER)
-diff --git a/drivers/vme/vme.c b/drivers/vme/vme.c
-index b398293980b6..e1a940e43327 100644
---- a/drivers/vme/vme.c
-+++ b/drivers/vme/vme.c
-@@ -52,23 +52,18 @@ static struct vme_bridge *find_bridge(struct vme_resource *resource)
- 	case VME_MASTER:
- 		return list_entry(resource->entry, struct vme_master_resource,
- 			list)->parent;
--		break;
- 	case VME_SLAVE:
- 		return list_entry(resource->entry, struct vme_slave_resource,
- 			list)->parent;
--		break;
- 	case VME_DMA:
- 		return list_entry(resource->entry, struct vme_dma_resource,
- 			list)->parent;
--		break;
- 	case VME_LM:
- 		return list_entry(resource->entry, struct vme_lm_resource,
- 			list)->parent;
--		break;
- 	default:
- 		printk(KERN_ERR "Unknown resource type\n");
- 		return NULL;
--		break;
- 	}
- }
- 
-@@ -179,7 +174,6 @@ size_t vme_get_size(struct vme_resource *resource)
- 			return 0;
- 
- 		return size;
--		break;
- 	case VME_SLAVE:
- 		retval = vme_slave_get(resource, &enabled, &base, &size,
- 			&buf_base, &aspace, &cycle);
-@@ -187,14 +181,11 @@ size_t vme_get_size(struct vme_resource *resource)
- 			return 0;
- 
- 		return size;
--		break;
- 	case VME_DMA:
- 		return 0;
--		break;
- 	default:
- 		printk(KERN_ERR "Unknown resource type\n");
- 		return 0;
--		break;
- 	}
- }
- EXPORT_SYMBOL(vme_get_size);
--- 
-2.18.1
+Jacob
 
+
+On Mon, 28 Sep 2020 14:38:27 -0700, Jacob Pan <jacob.pan.linux@gmail.com>
+wrote:
+
+> IOASID was introduced in v5.5 as a generic kernel allocator service for
+> both PCIe Process Address Space ID (PASID) and ARM SMMU's Sub Stream
+> ID. In addition to basic ID allocation, ioasid_set was defined as a
+> token that is shared by a group of IOASIDs. This set token can be used
+> for permission checking, but lack of some features to address the
+> following needs by guest Shared Virtual Address (SVA).
+> - Manage IOASIDs by group, group ownership, quota, etc.
+> - State synchronization among IOASID users
+> - Non-identity guest-host IOASID mapping
+> - Lifecycle management across many users
+> 
+> This patchset introduces the following extensions as solutions to the
+> problems above.
+> - Redefine and extend IOASID set such that IOASIDs can be managed by
+> groups.
+> - Add notifications for IOASID state synchronization
+> - Add reference counting for life cycle alignment among users
+> - Support ioasid_set private IDs, which can be used as guest IOASIDs
+> Please refer to Documentation/ioasid.rst in enclosed patch 1/9 for more
+> details.
+> 
+> This patchset only included VT-d driver as users of some of the new APIs.
+> VFIO and KVM patches are coming up to fully utilize the APIs introduced
+> here.
+> 
+> You can find this series at:
+> https://github.com/jacobpan/linux.git ioasid_v3
+> (VFIO and KVM patches will be available at this branch when published.)
+> 
+> This work is a result of collaboration with many people:
+> Liu, Yi L <yi.l.liu@intel.com>
+> Wu Hao <hao.wu@intel.com>
+> Ashok Raj <ashok.raj@intel.com>
+> Kevin Tian <kevin.tian@intel.com>
+> 
+> Thanks,
+> 
+> Jacob
+> 
+> Changelog:
+> 
+> V3:
+> - Use consistent ioasid_set_ prefix for ioasid_set level APIs
+> - Make SPID and private detach/attach APIs symmetric
+> - Use the same ioasid_put semantics as Jean-Phillippe IOASID reference
+> patch
+> - Take away the public ioasid_notify() function, notifications are now
+> emitted by IOASID core as a result of certain IOASID APIs
+> - Partition into finer incremental patches
+> - Miscellaneous cleanup, locking, exception handling fixes based on v2
+> reviews
+> 
+> V2:
+> - Redesigned ioasid_set APIs, removed set ID
+> - Added set private ID (SPID) for guest PASID usage.
+> - Add per ioasid_set notification and priority support.
+> - Back to use spinlocks and atomic notifications.
+> - Added async work in VT-d driver to perform teardown outside atomic
+> context
+> 
+> Jacob Pan (14):
+>   docs: Document IO Address Space ID (IOASID) APIs
+>   iommu/ioasid: Rename ioasid_set_data()
+>   iommu/ioasid: Add a separate function for detach data
+>   iommu/ioasid: Support setting system-wide capacity
+>   iommu/ioasid: Redefine IOASID set and allocation APIs
+>   iommu/ioasid: Introduce API to adjust the quota of an ioasid_set
+>   iommu/ioasid: Add an iterator API for ioasid_set
+>   iommu/ioasid: Add reference couting functions
+>   iommu/ioasid: Introduce ioasid_set private ID
+>   iommu/ioasid: Introduce notification APIs
+>   iommu/ioasid: Support mm type ioasid_set notifications
+>   iommu/vt-d: Remove mm reference for guest SVA
+>   iommu/vt-d: Listen to IOASID notifications
+>   iommu/vt-d: Store guest PASID during bind
+> 
+>  Documentation/driver-api/ioasid.rst | 648 ++++++++++++++++++++++++++
+>  drivers/iommu/intel/iommu.c         |  29 +-
+>  drivers/iommu/intel/pasid.h         |   1 +
+>  drivers/iommu/intel/svm.c           | 132 +++++-
+>  drivers/iommu/ioasid.c              | 890
+> ++++++++++++++++++++++++++++++++++-- include/linux/intel-iommu.h
+> |   2 + include/linux/ioasid.h              | 197 +++++++-
+>  7 files changed, 1830 insertions(+), 69 deletions(-)
+>  create mode 100644 Documentation/driver-api/ioasid.rst
+> 
+
+
+Thanks,
+
+Jacob
