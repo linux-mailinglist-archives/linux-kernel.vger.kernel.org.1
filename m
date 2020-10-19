@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2F22929D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D05A2929DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729715AbgJSO5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:57:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32522 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729096AbgJSO5E (ORCPT
+        id S1729717AbgJSO6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729594AbgJSO6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:57:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603119423;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zrEIfu12NEWVecQ6Z16uwfeUy5I8qXOuPBoK3cMjnXU=;
-        b=NKCz0HmVgetzRDPPOwOEpGk5zpJedzZ5VhX5/L/E+9taVH1yL8iDyKm/hRDudoYxx08Js0
-        YB7A0I+thl64s4ZEb94OFOx8uwNLXYFdELRBnub6iQONngyA6M3762F2bZzssFlTWAd0uz
-        pUMfnBTiNvPrcupkf18ZCH17sVK7E70=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-521-PTRCdDWGOpmzn0eRYGSE7Q-1; Mon, 19 Oct 2020 10:56:58 -0400
-X-MC-Unique: PTRCdDWGOpmzn0eRYGSE7Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3673518829E2;
-        Mon, 19 Oct 2020 14:56:57 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C594855770;
-        Mon, 19 Oct 2020 14:56:55 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] cachefiles: Drop superfluous readpages aops NULL check
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        dhowells@redhat.com, dwysocha@redhat.com,
-        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 19 Oct 2020 15:56:54 +0100
-Message-ID: <160311941493.2265023.9116264838885193100.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Mon, 19 Oct 2020 10:58:21 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC915C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:58:20 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id f8so67474vsl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:58:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tXJc1lZhZIvXLyjj/AsZOoOAw4bh6yqivRvcz8+A/WQ=;
+        b=Qr3sJTnt+f2P7nYRuso8/yLqIv2Za2b7XL6njSRbfuCMrcIQhgBuERIsu9IPxRQXWf
+         zJ2xESOoqgk1xoVfp9i9Wf3NTtLy5s76hO2KwkzeKUauLwgTswhFQU/H0vwCYl8u10Hm
+         Or/vhOIqKLH14d6G9D0ILiVULu0Lntjndshn0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tXJc1lZhZIvXLyjj/AsZOoOAw4bh6yqivRvcz8+A/WQ=;
+        b=I42/ELhuzPHZdYYxhCI9dspTRtPE/e6EZ5WD3rYRn1f4s+q+AHgM5kfuvB8opKYdt6
+         O1RJpvQfQZ3dVZ16p7nVvnDqVIQpn3X7+Zit+T9tlIpLq5SoXayMmWPXK4OidD/xnY6y
+         cPoWkvZt75d1+QDgKO6ZUuVHWmgYXW3eX1+vYRRgIYPlzNTRRgqfpy97w11DJijDLX4F
+         ojx4DzE2E+XAcXNNDZKG14Hs2Bjl6pbLwqDIzYGeSlT7i5Zu9Qx/dhVyhrAQlEvdMGKU
+         N+lfFInDcEzMCQD04+NHzfwST49fXr9+qwPd68EZ8HA7cjagLDtusW95Sh3DmlSIJUk5
+         EF1w==
+X-Gm-Message-State: AOAM533Xivcys/r6/8slRXv/DZMBEIPcR05SqIKyZBE9+bmQ/e2N/PmE
+        SCMZIITM4iiJMVysCfCMiKgVO5ISDuBv0g==
+X-Google-Smtp-Source: ABdhPJy4LWhk+cn/DRsTVQ97AH025QlNpBFNOU0Jcd7Aan+XCLwg292v+dddshAv+mbqzCRhPz87yw==
+X-Received: by 2002:a67:e30c:: with SMTP id j12mr328905vsf.1.1603119499808;
+        Mon, 19 Oct 2020 07:58:19 -0700 (PDT)
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
+        by smtp.gmail.com with ESMTPSA id j15sm4980vke.49.2020.10.19.07.58.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 07:58:19 -0700 (PDT)
+Received: by mail-vs1-f50.google.com with SMTP id l6so52426vsr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:58:18 -0700 (PDT)
+X-Received: by 2002:a67:ec9a:: with SMTP id h26mr331585vsp.34.1603119498344;
+ Mon, 19 Oct 2020 07:58:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201017020137.1251319-1-sboyd@kernel.org>
+In-Reply-To: <20201017020137.1251319-1-sboyd@kernel.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 19 Oct 2020 07:58:06 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WYFTu-J5L6usJNWtjH-FWe+o8JYWNxVYBdg5-coWaQag@mail.gmail.com>
+Message-ID: <CAD=FV=WYFTu-J5L6usJNWtjH-FWe+o8JYWNxVYBdg5-coWaQag@mail.gmail.com>
+Subject: Re: [PATCH] clk: qcom: gdsc: Keep RETAIN_FF bit set if gdsc is
+ already on
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+Hi,
 
-After the recent actions to convert readpages aops to readahead, the
-NULL checks of readpages aops in cachefiles_read_or_alloc_page() may
-hit falsely.  More badly, it's an ASSERT() call, and this panics.
+On Fri, Oct 16, 2020 at 7:01 PM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> If the GDSC is enabled out of boot but doesn't have the retain ff bit
+> set we will get confusing results where the registers that are powered
+> by the GDSC lose their contents on the first power off of the GDSC but
+> thereafter they retain their contents. This is because gdsc_init() fails
+> to make sure the RETAIN_FF bit is set when it probes the GDSC the first
+> time and thus powering off the GDSC causes the register contents to be
+> reset. We do set the RETAIN_FF bit the next time we power on the GDSC,
+> see gdsc_enable(), so that subsequent GDSC power off's don't lose
+> register contents state.
+>
+> Forcibly set the bit at device probe time so that the kernel's assumed
+> view of the GDSC is consistent with the state of the hardware. This
+> fixes a problem where the audio PLL doesn't work on sc7180 when the
+> bootloader leaves the lpass_core_hm GDSC enabled at boot (e.g. to make a
+> noise) but critically doesn't set the RETAIN_FF bit.
+>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Taniya Das <tdas@codeaurora.org>
+> Cc: Rajendra Nayak <rnayak@codeaurora.org>
+> Fixes: 173722995cdb ("clk: qcom: gdsc: Add support to enable retention of GSDCR")
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> ---
+>  drivers/clk/qcom/gdsc.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 
-Drop the superfluous NULL checks for fixing this regression.
-
-[DH: Note that cachefiles never actually used readpages, so this check was
- never actually necessary]
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208883
-BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1175245
-Fixes: 9ae326a69004 ("CacheFiles: A cache that backs onto a mounted filesystem")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Matthew Wilcox (Oracle) <willy@infradead.org>
----
-
- fs/cachefiles/rdwr.c |    2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/fs/cachefiles/rdwr.c b/fs/cachefiles/rdwr.c
-index 3080cda9e824..5b4cee71fa32 100644
---- a/fs/cachefiles/rdwr.c
-+++ b/fs/cachefiles/rdwr.c
-@@ -412,7 +412,6 @@ int cachefiles_read_or_alloc_page(struct fscache_retrieval *op,
- 
- 	inode = d_backing_inode(object->backer);
- 	ASSERT(S_ISREG(inode->i_mode));
--	ASSERT(inode->i_mapping->a_ops->readpages);
- 
- 	/* calculate the shift required to use bmap */
- 	shift = PAGE_SHIFT - inode->i_sb->s_blocksize_bits;
-@@ -712,7 +711,6 @@ int cachefiles_read_or_alloc_pages(struct fscache_retrieval *op,
- 
- 	inode = d_backing_inode(object->backer);
- 	ASSERT(S_ISREG(inode->i_mode));
--	ASSERT(inode->i_mapping->a_ops->readpages);
- 
- 	/* calculate the shift required to use bmap */
- 	shift = PAGE_SHIFT - inode->i_sb->s_blocksize_bits;
-
-
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Tested-by: Douglas Anderson <dianders@chromium.org>
