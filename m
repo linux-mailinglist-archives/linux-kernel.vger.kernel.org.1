@@ -2,181 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E8B293511
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361F0292DC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 20:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404399AbgJTGkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
+        id S1730968AbgJSStk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 14:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730785AbgJTGkS (ORCPT
+        with ESMTP id S1730871AbgJSStj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:40:18 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C61C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:40:18 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kUlJc-0007ji-Ec; Tue, 20 Oct 2020 08:40:12 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:1dbb:4a83:65c6:6f4] (unknown [IPv6:2a03:f580:87bc:d400:1dbb:4a83:65c6:6f4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 8AABE57CE99;
-        Mon, 19 Oct 2020 18:49:18 +0000 (UTC)
-Subject: Re: [PATCH v4 0/4] can: add support for ETAS ES58X CAN USB
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-can@vger.kernel.org
-Cc:     Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <e048d60f-eb8d-cc71-be18-a790e3091cdc@pengutronix.de>
-Date:   Mon, 19 Oct 2020 20:49:14 +0200
+        Mon, 19 Oct 2020 14:49:39 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A944CC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:49:37 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id u17so1094626oie.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 11:49:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ySifooXw2ScQ3PX4c9w1AsW18spuIqs990D0P9I2Ftw=;
+        b=YPhTNXg6bIvc2oeyICFenY2FOhCyBSBkFUrAjF8eD07qKzY4KjkanxTH8Tr9mR5fNX
+         qyTmk+rKgpKrfOH2DKQ6fL9JdNop4UPOApHsUP3dFqkpxKvonN/U7O5V+g5E/Gltcm+s
+         QMEX8wjU4OzZGfJvCcpAObtnmiKtjhksVgvYw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ySifooXw2ScQ3PX4c9w1AsW18spuIqs990D0P9I2Ftw=;
+        b=qCJVjKlTVnQeZ62s+tSmGQCBnnd7lh/v0LcwiK3M9B5dvciPc2bZpR+zxSNWoQSe45
+         AC3NfF8nPTodVDFy08lZCMJdVTbeOw6lTy9k0xDFKcUQc8APtAtN0nyUMze9YC9kysVY
+         pCo09+KOQs09MX7AR1MGPKz09dV5Mhd2Hqg/ekQyffL5JUJJBEw5DdqDC1JgIOiBW51c
+         +QWalDq0zS4jrbd7oaZkoEButl62VEESRG7PIhsK3dGU8lNdA1YLmGC0T1N3U6swwDjN
+         wbGKYYqPLOCRdSXMBrQcbRdymCJksV+RyQldWcisFHqLv7SZzjBuDEd0hcy5ildJcJQN
+         2hhw==
+X-Gm-Message-State: AOAM5315wszZUffq3oIy/Y61Y3cTv+ov336Zu+TB39lyjNcjgXGA5908
+        siEHeGCnHF3P5n7ysLbKQ5tuVw==
+X-Google-Smtp-Source: ABdhPJxbZI02DJYiK8MVE4qS0BX2/Lj5VpofY1/VJjXGeEiSb06T0Px46f3FML4afKrqB8wJHBAutg==
+X-Received: by 2002:aca:4dd2:: with SMTP id a201mr537225oib.135.1603133376957;
+        Mon, 19 Oct 2020 11:49:36 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id v17sm160577oic.4.2020.10.19.11.49.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 11:49:36 -0700 (PDT)
+Subject: Re: [PATCH v3] kcov, usbip: collect coverage from vhci_rx_loop
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Nazime Hande Harputluoglu <handeharput@gmail.com>,
+        Nazime Hande Harputluoglu <handeharputlu@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <e626ad10573bdc561c6f00667a31c87ee7725044.1603127827.git.andreyknvl@google.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <ca9c83b0-364a-6a26-4539-e38373a455aa@linuxfoundation.org>
+Date:   Mon, 19 Oct 2020 12:49:35 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="SJ0mY4XF7WNd2MAMQa3Q9ygJO0ACevG5E"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <e626ad10573bdc561c6f00667a31c87ee7725044.1603127827.git.andreyknvl@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SJ0mY4XF7WNd2MAMQa3Q9ygJO0ACevG5E
-Content-Type: multipart/mixed; boundary="Nly11ueWjUjyv1XjY9b0vTazUZI0obUTJ";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-can@vger.kernel.org
-Cc: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
- Wolfgang Grandegger <wg@grandegger.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Masahiro Yamada <masahiroy@kernel.org>
-Message-ID: <e048d60f-eb8d-cc71-be18-a790e3091cdc@pengutronix.de>
-Subject: Re: [PATCH v4 0/4] can: add support for ETAS ES58X CAN USB
-References: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
-In-Reply-To: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
+On 10/19/20 11:20 AM, Andrey Konovalov wrote:
+> From: Nazime Hande Harputluoglu <handeharputlu@google.com>
+> 
+> Add kcov_remote_start()/kcov_remote_stop() annotations to the
+> vhci_rx_loop() function, which is responsible for parsing USB/IP packets
+> coming into USB/IP client.
+> 
+> Since vhci_rx_loop() threads are spawned per vhci_hcd device instance, the
+> common kcov handle is used for kcov_remote_start()/stop() annotations
+> (see Documentation/dev-tools/kcov.rst for details). As the result kcov
+> can now be used to collect coverage from vhci_rx_loop() threads.
+> 
+> Signed-off-by: Nazime Hande Harputluoglu <handeharputlu@google.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> ---
+> 
+> Changes v2->v3:
+> - Fix build without KCOV enabled.
+> 
+> ---
+>   drivers/usb/usbip/usbip_common.h | 4 ++++
+>   drivers/usb/usbip/vhci_rx.c      | 7 +++++++
+>   drivers/usb/usbip/vhci_sysfs.c   | 4 ++++
+>   3 files changed, 15 insertions(+)
+> 
+> diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
+> index 8be857a4fa13..0906182011d6 100644
+> --- a/drivers/usb/usbip/usbip_common.h
+> +++ b/drivers/usb/usbip/usbip_common.h
+> @@ -277,6 +277,10 @@ struct usbip_device {
+>   		void (*reset)(struct usbip_device *);
+>   		void (*unusable)(struct usbip_device *);
+>   	} eh_ops;
+> +
+> +#ifdef CONFIG_KCOV
+> +	u64 kcov_handle;
+> +#endif
+>   };
+>   
+>   #define kthread_get_run(threadfn, data, namefmt, ...)			   \
+> diff --git a/drivers/usb/usbip/vhci_rx.c b/drivers/usb/usbip/vhci_rx.c
+> index 266024cbb64f..68ec0aa64f69 100644
+> --- a/drivers/usb/usbip/vhci_rx.c
+> +++ b/drivers/usb/usbip/vhci_rx.c
+> @@ -3,6 +3,7 @@
+>    * Copyright (C) 2003-2008 Takahiro Hirofuchi
+>    */
+>   
+> +#include <linux/kcov.h>
+>   #include <linux/kthread.h>
+>   #include <linux/slab.h>
+>   
+> @@ -261,7 +262,13 @@ int vhci_rx_loop(void *data)
+>   		if (usbip_event_happened(ud))
+>   			break;
+>   
+> +#ifdef CONFIG_KCOV
+> +		kcov_remote_start_common(ud->kcov_handle);
+> +#endif
+>   		vhci_rx_pdu(ud);
+> +#ifdef CONFIG_KCOV
+> +		kcov_remote_stop();
+> +#endif
+>   	}
 
---Nly11ueWjUjyv1XjY9b0vTazUZI0obUTJ
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+Let's move these into usbip_common.h as inline functions along
+the line of
 
-On 10/16/20 7:13 PM, Vincent Mailhol wrote:
-> The purpose of this patch series is to introduce a new CAN USB
-> driver to support ETAS USB interfaces (ES58X series).
->=20
-> During development, issues in drivers/net/can/dev.c were discovered,
-> the fix for those issues are included in this patch series.
->=20
-> We also propose to add one helper functions in include/linux/can/dev.h
-> which we think can benefit other drivers: get_can_len().
-I applied patches 1-3 to linux-can, I've changed get_can_len() -> can_get=
-_len()
-to use a common can_ prefix for all CAN related functions.
+#ifdef CONFIG_KCOV
+usbip_kcov_remote_start_common(ud)
+{
+   kcov_remote_start_common(ud->kcov_handle);
+}
 
-Marc
+usbip_kcov_remote_stop_common(ud)
+{
+   kcov_remote_stop_common(ud->kcov_handle);
+}
+#else
+stubs that do nothing
+#endif
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+>   
+>   	return 0;
+> diff --git a/drivers/usb/usbip/vhci_sysfs.c b/drivers/usb/usbip/vhci_sysfs.c
+> index be37aec250c2..e167b8a445ad 100644
+> --- a/drivers/usb/usbip/vhci_sysfs.c
+> +++ b/drivers/usb/usbip/vhci_sysfs.c
+> @@ -4,6 +4,7 @@
+>    * Copyright (C) 2015-2016 Nobuo Iwata
+>    */
+>   
+> +#include <linux/kcov.h>
+>   #include <linux/kthread.h>
+>   #include <linux/file.h>
+>   #include <linux/net.h>
+> @@ -383,6 +384,9 @@ static ssize_t attach_store(struct device *dev, struct device_attribute *attr,
+>   	vdev->ud.sockfd     = sockfd;
+>   	vdev->ud.tcp_socket = socket;
+>   	vdev->ud.status     = VDEV_ST_NOTASSIGNED;
+> +#ifdef CONFIG_KCOV
+> +	vdev->ud.kcov_handle = kcov_common_handle();
+> +#endif
 
 
---Nly11ueWjUjyv1XjY9b0vTazUZI0obUTJ--
+Same here add a usbip_kcov_handle_init(ud)
 
---SJ0mY4XF7WNd2MAMQa3Q9ygJO0ACevG5E
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+N36oACgkQqclaivrt
-76nDmgf7BlwMa3rvVvuUvc7hO+aoJrDSn32CQKTKZSbrp9xnLTlvgapjbDv6LK0X
-3Mx6Pc9pdUhwPkpiKcOkVhSQ/WDycuj7calOxlsqEXFGa96GvAQRaSSNcGk0ul7A
-dEyg8U6UEjZq/Ha1Tn9bsaEp6nHQ6lcXA0CaB+i7he9HhlH1T8hkDBmm7AypUohE
-+YgOmsA2KVzbt+K8khevPLjc+FY4B/7t/UY3DIJZjswygQS5v8Ou1iZhBx6e3KMc
-RF0K7MN/Ptlq5fmDDUfHyhSzEalTqrfktiLYQ5NhB1ySKTKJCIheLLZ32t2yhjSg
-qZtVut4icG4bl+8o6yoq6mTr5J3XtQ==
-=bNR1
------END PGP SIGNATURE-----
-
---SJ0mY4XF7WNd2MAMQa3Q9ygJO0ACevG5E--
+thanks,
+-- Shuah
