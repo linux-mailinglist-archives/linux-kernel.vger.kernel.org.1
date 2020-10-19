@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF523292D08
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB04292D0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728504AbgJSRop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:44:45 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33174 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgJSRop (ORCPT
+        id S1728775AbgJSRpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbgJSRpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:44:45 -0400
-Date:   Mon, 19 Oct 2020 17:44:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603129483;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5mjSGryX3vSNb47lPps7fktM/hIU6q64W5ctVkJiukQ=;
-        b=udLRbdJI38yDtSB1f4RKF/piNy79MFSmaz5ZR0kxEDH8rbdse/BSWqDzMz/H5Lie1DMYxW
-        hl5VPaL+0Cwz7pGm4OEZbz/DF8V/pr+3m/AboL56p1jEaAEryvZkPFRmG1E1e4DBzKkOA3
-        s7jXWg3Uc+QAuM/LDet9DAWHJxoX5GhkLkKdzVRTd3H72MQHn5Pg1TfwPx9sp8nJcEJTqt
-        1uppzafLmmprC3Kk9UqI+V9stJc5wPFA9qqrxGis12alFH0fYCz46iLaa+2kNU9DCdXas+
-        BWwYF38M6fG8SZ4RBnpuONHttcidCkAXryww2dVHzYZFDfPtzKl/NzR0HiCrqw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603129483;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5mjSGryX3vSNb47lPps7fktM/hIU6q64W5ctVkJiukQ=;
-        b=a+DpWjQAWk31kuTbHYeskxUp1d3H/Np3SXwcI4+yZjhdEHAIdbPzMo0k9XlLZ419no0nb+
-        LjEEnx7xAlkh8EDA==
-From:   "tip-bot2 for Al Grant" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf: correct SNOOPX field offset
-Cc:     Al Grant <al.grant@foss.arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Andi Kleen <ak@linux.intel.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <4ac9f5cc-4388-b34a-9999-418a4099415d@foss.arm.com>
-References: <4ac9f5cc-4388-b34a-9999-418a4099415d@foss.arm.com>
+        Mon, 19 Oct 2020 13:45:38 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3D0C0613CE;
+        Mon, 19 Oct 2020 10:45:37 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id p9so1102992ilr.1;
+        Mon, 19 Oct 2020 10:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6YLSeb9LIhegRPaLNoV9Ze3m1VztSMd0a6bBC3I1IcQ=;
+        b=Eg913XPs0tpOr3ySmlbzgpXgn6rKzd1rpv+CH9IdyLe/wXPr/hsxUt7AGOE9Yoruo+
+         MweQAgCye1MS6wjVMmkOFlyEi62Ky61l1/mE5pIEK0kE/sY/zsZf9xIRHiQjI2QHmTqo
+         mWYyQRcOqqweP9f4DhM+uoDFyT549ggOY/umVBCt2U//ZavEGt+erXoY/lkQ4ICiQP/G
+         IFjw6U6s+A18U0Y9iM4vYJpkRcjdqnI/VcBe3aoon5X/JmBJoJy4nuRFVTgZRmFkH5dH
+         rXE7k4y7+TmvJPoeHB6ujCAz/t2bayZweKvWFBJvSyAdnunaT/sXFjMJihmHUEwVDheo
+         tvwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6YLSeb9LIhegRPaLNoV9Ze3m1VztSMd0a6bBC3I1IcQ=;
+        b=axC8djLWcNwZ+0KeZBRW6+0LtV/E7gxMFwrthvY7Z8KMNRbHaNna/8/L2isF/n7K6c
+         LHM76Ulpgg5IJbzIZTAKP5fHspZF/VuWVmPhaofHedG5SpV71AHW64JYogGg5LHwYEzM
+         Cbj2X25tknq+i8qpDxBaO8857irVcP4tDq0PWQcHasPyEoI2gDeYwiHc9fYurFoe3buk
+         g8t+QkYLYZFAhpJp04j8UElUoUzCnFyDYUwn1l6Y/5gENThXKDNTyIvM/df04MlcY2oB
+         63GkUPyBmlLs6mbkVIx+RYKmD+jbKzoETbwGMyIk3gBbk5OtQpOGw1AmsWFRbHX3JpP2
+         SGpA==
+X-Gm-Message-State: AOAM530qQA/o+MikrR+Xh5co//q6/zgdaCR/9le6o8YgwOxGs6sspfBR
+        JbmtdbP64R7Ojvp4C6ODFCw=
+X-Google-Smtp-Source: ABdhPJzg+/LI1dDRTFCvPm7q/35ln29PKS2MSxMdkrA6Wt+d2vT21WbpJXsbOhx7mbS1QxgyS41ayw==
+X-Received: by 2002:a92:aad5:: with SMTP id p82mr966020ill.150.1603129537042;
+        Mon, 19 Oct 2020 10:45:37 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:75c9:416d:1d67:486f])
+        by smtp.gmail.com with ESMTPSA id 128sm406261iow.50.2020.10.19.10.45.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 10:45:36 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] arm64: dts: imx8mn: Enable Asynchronous Sample Rate Converter
+Date:   Mon, 19 Oct 2020 12:45:24 -0500
+Message-Id: <20201019174529.289499-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <160312948187.7002.13059882687948612179.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+The driver exists for the Enhanced Asynchronous Sample Rate Converter
+(EASRC) Controller, but there isn't a device tree entry for it.
 
-Commit-ID:     f3d301c1f2f5676465cdf3259737ea19cc82731f
-Gitweb:        https://git.kernel.org/tip/f3d301c1f2f5676465cdf3259737ea19cc82731f
-Author:        Al Grant <al.grant@foss.arm.com>
-AuthorDate:    Mon, 21 Sep 2020 21:46:37 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 19 Oct 2020 19:39:22 +02:00
+On the vendor kernel, they put this on a spba-bus for SDMA support.
 
-perf: correct SNOOPX field offset
+Add the the node for the spba-bus with the easrc node inside.
 
-perf_event.h has macros that define the field offsets in the
-data_src bitmask in perf records. The SNOOPX and REMOTE offsets
-were both 37. These are distinct fields, and the bitfield layout
-in perf_mem_data_src confirms that SNOOPX should be at offset 38.
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Fixes: 52839e653b5629bd ("perf tools: Add support for printing new mem_info encodings")
-Signed-off-by: Al Grant <al.grant@foss.arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Link: https://lkml.kernel.org/r/4ac9f5cc-4388-b34a-9999-418a4099415d@foss.arm.com
----
- include/uapi/linux/perf_event.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index 077e7ee..b95d3c4 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -1196,7 +1196,7 @@ union perf_mem_data_src {
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index 746faf1cf2fb..7d34281332e1 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -246,6 +246,34 @@ aips1: bus@30000000 {
+ 			#size-cells = <1>;
+ 			ranges;
  
- #define PERF_MEM_SNOOPX_FWD	0x01 /* forward */
- /* 1 free */
--#define PERF_MEM_SNOOPX_SHIFT	37
-+#define PERF_MEM_SNOOPX_SHIFT  38
- 
- /* locked instruction */
- #define PERF_MEM_LOCK_NA	0x01 /* not available */
++			spba-bus@30000000 {
++				compatible = "fsl,spba-bus", "simple-bus";
++				#address-cells = <1>;
++				#size-cells = <1>;
++				reg = <0x30000000 0x100000>;
++				ranges;
++
++				easrc: easrc@300C0000 {
++					compatible = "fsl,imx8mn-easrc";
++					reg = <0x300C0000 0x10000>;
++					interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
++					clocks = <&clk IMX8MN_CLK_ASRC_ROOT>;
++					clock-names = "mem";
++					dmas = <&sdma2 16 23 0> , <&sdma2 17 23 0>,
++					       <&sdma2 18 23 0> , <&sdma2 19 23 0>,
++					       <&sdma2 20 23 0> , <&sdma2 21 23 0>,
++					       <&sdma2 22 23 0> , <&sdma2 23 23 0>;
++					dma-names = "ctx0_rx", "ctx0_tx",
++						    "ctx1_rx", "ctx1_tx",
++						    "ctx2_rx", "ctx2_tx",
++						    "ctx3_rx", "ctx3_tx";
++					fsl,easrc-ram-script-name = "imx/easrc/easrc-imx8mn.bin";
++					fsl,asrc-rate  = <8000>;
++					fsl,asrc-width = <16>;
++					status = "disabled";
++				};
++			};
++
+ 			gpio1: gpio@30200000 {
+ 				compatible = "fsl,imx8mn-gpio", "fsl,imx35-gpio";
+ 				reg = <0x30200000 0x10000>;
+-- 
+2.25.1
+
