@@ -2,67 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3327D292CED
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B78292CF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728302AbgJSRgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:36:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:34538 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727673AbgJSRgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:36:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A032C30E;
-        Mon, 19 Oct 2020 10:36:20 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 862593F66B;
-        Mon, 19 Oct 2020 10:36:18 -0700 (PDT)
-References: <20201015110532.738127234@infradead.org> <20201015110923.910090294@infradead.org> <jhjlfg6qqum.mognet@arm.com> <BN8PR12MB29784D239007D0D6CA3F4F2A9A010@BN8PR12MB2978.namprd12.prod.outlook.com> <jhjimb7r0r5.mognet@arm.com> <BN8PR12MB2978F76887133CCA2102B7589A1E0@BN8PR12MB2978.namprd12.prod.outlook.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Tao Zhou <ouwen210@hotmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
-        tj@kernel.org
-Subject: Re: [PATCH v3 10/19] sched: Fix migrate_disable() vs set_cpus_allowed_ptr()
-In-reply-to: <BN8PR12MB2978F76887133CCA2102B7589A1E0@BN8PR12MB2978.namprd12.prod.outlook.com>
-Date:   Mon, 19 Oct 2020 18:36:16 +0100
-Message-ID: <jhjblgyqfsf.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1728176AbgJSRhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:37:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32079 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726894AbgJSRhD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 13:37:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603129022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=lYvd6Kc5MQZgVAzrvYKcsZrecx2ck/hDIb16nUNa8SU=;
+        b=HG9FUTGySO/6nT9NmUWI8HoNhVpqMz1oj83pI5CXXbfBDrOBqAikU7M7TYOs06vRZFWUFf
+        vWkgTlmM/30untIfw0MGBdEXDN7b63CT601ZXuAITz2tshikBfHxVQPgjbMCkf7Jk+dSKT
+        oOaPKlQh6aNCO9r7iRNe8gBfdNSw8VA=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-426-GauV1xN8Pq6jn1gjBu762w-1; Mon, 19 Oct 2020 13:36:59 -0400
+X-MC-Unique: GauV1xN8Pq6jn1gjBu762w-1
+Received: by mail-qv1-f71.google.com with SMTP id s8so361256qvv.18
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:36:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lYvd6Kc5MQZgVAzrvYKcsZrecx2ck/hDIb16nUNa8SU=;
+        b=LyH8x76CB+lRAEARGsXQUeta96gS3xLlVX+lyatM++7mKP3jvgvVXbnCwNvcn+zGcr
+         2frtiu4ALZBkSZOhUn9iGCzT2rjclLHX8OIZ3c/UDAd5lJALLEri3idLXZkleXtr6iIz
+         8h4FGuH8t/WKwMqyyC3oV9bl2XWoU4EGsAugV5fMUNtoPMwthDRePgS1sTuSyA7wDJd/
+         w2KV/h1daIkk+W1xnf/O1g0tX+mDFRLHEBIf9JbO3E2FFRE6xGSWSq/R0TFQXvOvEURK
+         YJCQU5ObBF9l6i6eWS+glVYAPTB24t3Nv6aU5k7jpklnzqArCpwLi2XjEyt+Zu0XuXG7
+         0WaA==
+X-Gm-Message-State: AOAM531RaJ2OXsMvwtu79sshGTJMXPVk15hEULhx9fEgZRzpgyOfwpBI
+        Cs4cYJCm1YS1/RlRWj+YK2XcAzoabXUc+TuFrL2ZjAOBqXDQ2nuoL/LbkGthk5eOmTVdGmyfeuX
+        mibmbFjQC4lQCii552UosK2S8
+X-Received: by 2002:ac8:5389:: with SMTP id x9mr575074qtp.106.1603129019008;
+        Mon, 19 Oct 2020 10:36:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx3+ziEhGgg3i43z5XMnTEnwSx2vwI9vWybcMni3mq3qdw3hxI6nEAg4xK1Cv/MhfSLFqhHkg==
+X-Received: by 2002:ac8:5389:: with SMTP id x9mr575060qtp.106.1603129018778;
+        Mon, 19 Oct 2020 10:36:58 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b8sm271101qkn.133.2020.10.19.10.36.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 10:36:58 -0700 (PDT)
+From:   trix@redhat.com
+To:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, jejb@linux.ibm.com,
+        jarkko.sakkinen@linux.intel.com, dhowells@redhat.com,
+        mortonm@chromium.org
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] security: remove unneeded break
+Date:   Mon, 19 Oct 2020 10:36:53 -0700
+Message-Id: <20201019173653.527-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
-On 19/10/20 17:32, Tao Zhou wrote:
-> Hi Valentin,
->>
->> Side thought: don't we need to NULL p->migration_pending in __sched_fork()?
->>
->
-> No need, if fork happen, the forked task will inherit that pending.
+A break is not needed if it is preceded by a return
 
-Which is what I'm worrying about. I think we can ignore migrate_disable()
-for now and just consider a task fork()'ing while another tries to
-sched_setaffinity() it; say the fork() happens just after the pending has
-been installed.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ security/integrity/ima/ima_appraise.c     | 1 -
+ security/keys/trusted-keys/trusted_tpm1.c | 1 -
+ security/safesetid/lsm.c                  | 3 ---
+ 3 files changed, 5 deletions(-)
 
-Unless I'm overthinking it, we could end up with a dangling pending
-reference, which will wreck havock to any later affine_move_task() (see the
-if (p->migration_pending) paths).
+diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
+index 3dd8c2e4314e..f400a6122b3c 100644
+--- a/security/integrity/ima/ima_appraise.c
++++ b/security/integrity/ima/ima_appraise.c
+@@ -181,7 +181,6 @@ enum hash_algo ima_get_hash_algo(struct evm_ima_xattr_data *xattr_value,
+ 		if (sig->version != 2 || xattr_len <= sizeof(*sig))
+ 			return ima_hash_algo;
+ 		return sig->hash_algo;
+-		break;
+ 	case IMA_XATTR_DIGEST_NG:
+ 		/* first byte contains algorithm id */
+ 		ret = xattr_value->data[0];
+diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
+index b9fe02e5f84f..eddc9477d42a 100644
+--- a/security/keys/trusted-keys/trusted_tpm1.c
++++ b/security/keys/trusted-keys/trusted_tpm1.c
+@@ -901,7 +901,6 @@ static int datablob_parse(char *datablob, struct trusted_key_payload *p,
+ 		break;
+ 	case Opt_err:
+ 		return -EINVAL;
+-		break;
+ 	}
+ 	return ret;
+ }
+diff --git a/security/safesetid/lsm.c b/security/safesetid/lsm.c
+index 8a176b6adbe5..1079c6d54784 100644
+--- a/security/safesetid/lsm.c
++++ b/security/safesetid/lsm.c
+@@ -125,7 +125,6 @@ static int safesetid_security_capable(const struct cred *cred,
+ 		pr_warn("Operation requires CAP_SETUID, which is not available to UID %u for operations besides approved set*uid transitions\n",
+ 			__kuid_val(cred->uid));
+ 		return -EPERM;
+-		break;
+ 	case CAP_SETGID:
+ 		/*
+ 		* If no policy applies to this task, allow the use of CAP_SETGID for
+@@ -140,11 +139,9 @@ static int safesetid_security_capable(const struct cred *cred,
+ 		pr_warn("Operation requires CAP_SETGID, which is not available to GID %u for operations besides approved set*gid transitions\n",
+ 			__kuid_val(cred->uid));
+ 		return -EPERM;
+-		break;
+ 	default:
+ 		/* Error, the only capabilities were checking for is CAP_SETUID/GID */
+ 		return 0;
+-		break;
+ 	}
+ 	return 0;
+ }
+-- 
+2.18.1
 
-> If pending is NULL, when call SCA, it will install pending. If pending
-> is not NULL, it means it is in migrate region and wait for complete.
-> If NULL pending in __sched_fork() it will install a new pending in this
-> case which is not right to me. Add a flag(ENABLE_MIGRATE) to arg will
-> differ the path where in.
->
-> Always likely miss something.
->
-> Tao
->
