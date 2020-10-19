@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF96292A63
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2360292A66
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730059AbgJSP3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729910AbgJSP3N (ORCPT
+        id S1730102AbgJSP36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 11:29:58 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:36351 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729075AbgJSP35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:29:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C3BC0613CE;
-        Mon, 19 Oct 2020 08:29:13 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 17:29:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603121351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SSA1rgI9oUHNMXQCJ0EHFIg5+7llZCrIXvKF9z6SCbw=;
-        b=yvag/1WyE7YGO01tuOZMVDXYJVVbRSZUTTDcNEFrW2Szp/K6KmRMXSdrwwJh0jiFmcGJLY
-        8KE6KOMD91iSqyY/CyDUCrqp/hAKY1ILkKnYqLfuhW8O5IW0a9jGHHDikT1fNnfmJ/Fgav
-        3C5W0+duxLTiCXtadB7bTetmmPu6616zmO3m0aie/2Hnh9nX8DmrYUIS/byQ9/x1a4ysRF
-        oviWNZFtVpiXa0WdOMA1dSkH1t4fzBXGOsEbei86vRflWSjW7Pym78fr/8t/x/6jwgyXCu
-        4Kpxjs0IEaN7cXS0MkaOiv08H5Qi3dAv7EW75YhcfDSCCrTfSiPb8yccXJa4KQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603121351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SSA1rgI9oUHNMXQCJ0EHFIg5+7llZCrIXvKF9z6SCbw=;
-        b=IQqz/onU2+jf4eNXTVcyVbj2HSt8tXuWdeTBN+hX+PstwLXy8ahJIUMMkGX0/vlc3putCI
-        MM5QglGrGXuSwfDw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Mike Galbraith <umgwanakikbuti@gmail.com>, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] zram: Fix __zram_bvec_{read,write}() locking order
-Message-ID: <20201019152909.rlnhqokqhhauq2kw@linutronix.de>
-References: <CABXGCsOL0pW0Ghh-w5d12P75ve6FS9Rgmzm6DvsYbJY-jMTCdg@mail.gmail.com>
- <20201016124009.GQ2611@hirez.programming.kicks-ass.net>
- <20201016153324.GA1976566@google.com>
- <20201019101353.GJ2628@hirez.programming.kicks-ass.net>
+        Mon, 19 Oct 2020 11:29:57 -0400
+Received: by mail-ot1-f66.google.com with SMTP id 32so10865897otm.3;
+        Mon, 19 Oct 2020 08:29:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ufauCX1mTVCFB7Ocw9R6zTidUIroDFBpcM3yia+iYYA=;
+        b=Mq/B0bNtwxPCmz9qksEdAJ30zSV3oAof7tgYIM/grEvvqD/jR209m4e4VG4mNEfFee
+         JbkPdkcS69kmbUu6ly/wytjdV/pnY63kDTnr3jfzwZFf4ptOqtyJHDDfbfp9HMXlV4HG
+         F931Okm2XiFXU6NmGcos1t0AtUZYsh4Hh7GKK3cYfIJ3SBQBl7gcuDovnv8VqvyZi/yj
+         LiSsUhM/tiPkUChvoy7ctW/oMrlTHOAEb0u51l6E2IsBtOnGmpcMp0pxNGR5Ksm9a2ul
+         8JIfBvkYUw5PTsOueAKg9zoT+ohT07ifuHzaQkA96qwkI1YOBetAGa3nbiGmddt/OkPX
+         4WPw==
+X-Gm-Message-State: AOAM533mugTb52LfrB8AsqFAZB5MKmGBj3PWx9VSwrAguibgpwJSRPBC
+        B18HR/lnIa6KQPpuPEKLmpiMAwotgapN06JhqGM=
+X-Google-Smtp-Source: ABdhPJy0cAg9mRLdvJiGO5d2Z+lYL4CHi4TBBcdKbJMJzOBjWYxOdUw4ImJi/uqHWbPDoavzmuJ/hrqbEyKGPj6AMEI=
+X-Received: by 2002:a9d:ac9:: with SMTP id 67mr368114otq.321.1603121396651;
+ Mon, 19 Oct 2020 08:29:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201019101353.GJ2628@hirez.programming.kicks-ass.net>
+References: <20201019035741.2279043-1-wei.huang2@amd.com>
+In-Reply-To: <20201019035741.2279043-1-wei.huang2@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 19 Oct 2020 17:29:45 +0200
+Message-ID: <CAJZ5v0gaQOSezJsJ7La5VC5apYj5zYL+wKAvyEB8T4w1V0TkCA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] acpi-cpufreq: Honor _PSD table setting in CPU
+ frequency control
+To:     Wei Huang <wei.huang2@amd.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-19 12:13:53 [+0200], Peter Zijlstra wrote:
-> 
-> Mikhail reported a lockdep spat detailing how __zram_bvec_read() and
-> __zram_bvec_write() use zstrm->lock and zspage->lock in opposite order.
-> 
-> Reported-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+On Mon, Oct 19, 2020 at 5:57 AM Wei Huang <wei.huang2@amd.com> wrote:
+>
+> acpi-cpufreq has a old quirk that overrides the _PSD table supplied by
+> BIOS on AMD CPUs. However the _PSD table of new AMD CPUs (Family 19h+)
+> now accurately reports the P-state dependency of CPU cores. Hence this
+> quirk needs to be fixed in order to support new CPUs' frequency control.
+>
+> Fixes: acd316248205 ("acpi-cpufreq: Add quirk to disable _PSD usage on all AMD CPUs")
+> Signed-off-by: Wei Huang <wei.huang2@amd.com>
+> ---
+>  drivers/cpufreq/acpi-cpufreq.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+> index e4ff681faaaa..1e4fbb002a31 100644
+> --- a/drivers/cpufreq/acpi-cpufreq.c
+> +++ b/drivers/cpufreq/acpi-cpufreq.c
+> @@ -691,7 +691,8 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>                 cpumask_copy(policy->cpus, topology_core_cpumask(cpu));
+>         }
+>
+> -       if (check_amd_hwpstate_cpu(cpu) && !acpi_pstate_strict) {
+> +       if (check_amd_hwpstate_cpu(cpu) && boot_cpu_data.x86 < 0x19 &&
+> +           !acpi_pstate_strict) {
+>                 cpumask_clear(policy->cpus);
+>                 cpumask_set_cpu(cpu, policy->cpus);
+>                 cpumask_copy(data->freqdomain_cpus,
+> --
 
-We have the same patch in RT. I didn't submit it with the other
-local-lock patches because this splat pops up once pin_tag() is made a
-sleeping lock. I missed the part where migrate_read_lock() can be a
-lock. So:
-
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-
-Sebastian
+Applied as 5.10-rc material under edited subject, thanks!
