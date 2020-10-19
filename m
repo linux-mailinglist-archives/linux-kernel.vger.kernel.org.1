@@ -2,136 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D318F2922A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847CA2922B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 08:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbgJSGwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 02:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726985AbgJSGwT (ORCPT
+        id S1727175AbgJSG5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 02:57:00 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:18867 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726985AbgJSG5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 02:52:19 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2D3C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 23:52:19 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kUP1e-000609-8B; Mon, 19 Oct 2020 08:52:10 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kUP1d-00025L-1N; Mon, 19 Oct 2020 08:52:09 +0200
-Date:   Mon, 19 Oct 2020 08:52:08 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Saravana Kannan <saravanak@google.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] of/platform: Create device link between simple-mfd and its
- children
-Message-ID: <20201019065208.x5k2zpuxjfhpmhdc@pengutronix.de>
-References: <20201015114346.15743-1-nsaenzjulienne@suse.de>
- <CAL_JsqLvzsdAfx56jQqPSd1r=P20C8DURKKZ9kke-L2owqr0fg@mail.gmail.com>
- <0f0b7021e85a832afd42c6f9016158d6d8b0b28b.camel@suse.de>
+        Mon, 19 Oct 2020 02:57:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1603090618;
+        s=strato-dkim-0002; d=aepfle.de;
+        h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=60lTu+SIFl3Z+SiTLMIIM/Rscx77GBIuUnPDMFu+m7E=;
+        b=Cx+dZ2VYyVYR7diTrB9Zg8Yb6xD2/7OOwycIAypQ0PVi88CLnCGDBsmDpXEcffuEd0
+        npQf4VrCl+GcmdjVD0xENotfu31E/cf4sHE5TzJaZfTL1Y8Mjxkrsv8tQ3r3sQ5WoMq4
+        SgjOmSQdwdG3qZpTIzdMq0RqTWsytf+51Rs0fnf3N8g6odX9b1aAYkXamw4S9bLsbR8n
+        t+67PeMK2yzk0JnZ8iICA3068lUL5YV9LX1vtxkYUSrG1azejMABjzb8izx/RY74k3N2
+        rA3LnFOY0fPWgAuzoh/Me6DhrEW/pMyaBvnSou9HQThCQVtce9jgkf4/3RMJ0IGIH1/v
+        Q3Wg==
+X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QLpd5ylWvMDXdoX8l8pYAcz5OTW+r+/A=="
+X-RZG-CLASS-ID: mo00
+Received: from sender
+        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
+        with ESMTPSA id e003b5w9J6uo5Yd
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 19 Oct 2020 08:56:50 +0200 (CEST)
+Date:   Mon, 19 Oct 2020 08:56:23 +0200
+From:   Olaf Hering <olaf@aepfle.de>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>
+Subject: Re: [PATCH v1] hv_balloon: disable warning when floor reached
+Message-ID: <20201019085623.2cffe580.olaf@aepfle.de>
+In-Reply-To: <MW2PR2101MB1052AAC9DE9A4829F53BB493D71E0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+References: <20201008071216.16554-1-olaf@aepfle.de>
+        <20201008091539.060c79c3.olaf@aepfle.de>
+        <20201013091717.q24ypswqgmednofr@liuwe-devbox-debian-v2>
+        <20201013111921.2fa4608c.olaf@aepfle.de>
+        <20201013094017.brwjdzoo2nxsaon5@liuwe-devbox-debian-v2>
+        <MW2PR2101MB1052AAC9DE9A4829F53BB493D71E0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+X-Mailer: Claws Mail 2020.08.19 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rzuuvg6pobgnjjut"
-Content-Disposition: inline
-In-Reply-To: <0f0b7021e85a832afd42c6f9016158d6d8b0b28b.camel@suse.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/Y4jgRNWCKTwCArZ7R3N1v+c"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---rzuuvg6pobgnjjut
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+--Sig_/Y4jgRNWCKTwCArZ7R3N1v+c
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 16, 2020 at 05:26:56PM +0200, Nicolas Saenz Julienne wrote:
-> On Fri, 2020-10-16 at 09:38 -0500, Rob Herring wrote:
-> > On Thu, Oct 15, 2020 at 6:43 AM Nicolas Saenz Julienne
-> > <nsaenzjulienne@suse.de> wrote:
-> > > 'simple-mfd' usage implies there might be some kind of resource shari=
-ng
-> > > between the parent device and its children.
-> >=20
-> > It does? No! The reason behind simple-mfd was specifically because
-> > there was no parent driver or dependency on the parent. No doubt
-> > simple-mfd has been abused.
->=20
-> Fair enough, so we're doing things wrong. Just for the record, I'm lookin=
-g at
-> RPi=B4s firmware interface:
->=20
-> 	firmware: firmware {
-> 		compatible =3D "raspberrypi,bcm2835-firmware", "simple-mfd";
-> 		#address-cells =3D <1>;
-> 		#size-cells =3D <1>;
-> 		mboxes =3D <&mailbox>;
->=20
-> 		firmware_clocks: clocks {
-> 			compatible =3D "raspberrypi,firmware-clocks";
-> 			#clock-cells =3D <1>;
-> 		};
->=20
-> 		reset: reset {
-> 			compatible =3D "raspberrypi,firmware-reset";
-> 			#reset-cells =3D <1>;
-> 		};
-> 		[...]
-> 	};
->=20
-> Note that "raspberrypi,bcm2835-firmware" has a driver, it's not just a
-> placeholder. Consumer drivers get a handle to RPi's firmware interface th=
-rough
-> the supplier's API, rpi_firmware_get(). The handle to firmware becomes
-> meaningless if it is unbinded, which I want to protect myself against.
->=20
-> A simpler solution would be to manually create a device link between both
-> devices ("raspberrypi,bcm2835-firmware" and "raspberrypi,firmware-clocks"=
- for
-> example) upon calling rpi_firmware_get(). But I wanted to try addressing =
-the
-> problem in a generic way first.
+Am Mon, 19 Oct 2020 02:58:08 +0000
+schrieb Michael Kelley <mikelley@microsoft.com>:
 
-IMHO rpi_firmware_get() should get a reference on the firmware device
-(and call try_module_get()) which prevents unbinding it.
+> I think we should take the patch.
 
-Best regards
-Uwe
+Thanks. I just briefly looked at the code, did not understand much of it. B=
+ut it feels like the math uses the wrong input. I think its is not the 'pr_=
+warn' that needs changing, the 'Fixes' tag would also be incorrect because =
+a 4.12+backports kernel does not show the warning.
 
+Olaf
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---rzuuvg6pobgnjjut
-Content-Type: application/pgp-signature; name="signature.asc"
+--Sig_/Y4jgRNWCKTwCArZ7R3N1v+c
+Content-Type: application/pgp-signature
+Content-Description: Digitale Signatur von OpenPGP
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+NN5YACgkQwfwUeK3K
-7Aki0AgAjLJyOs/xZ2fiowS1XIvogiPdro0ZzP7TwE0RjW3JEcQeCDDT3TsF6oDP
-+V9XNu55POukh7ynAQwoKJ1r3I5RGJ+2lxxv/LUl11BXYfmxIlTVFqF3JvGU2Fyl
-M1SIY9M/tc2MWcwk5ez2z18bF5s67Qa97+oUL0idMq5RGtrFnzAXud7rtYxBiXJ1
-V5CkoH2CQN9zcIEnXmBl3pjEk0xpqdOAFKc1YxVT4bqr7kWU12Raa/OxuGTCLM3Z
-ww4CjZdFJryegpVs7OUHRFuCZLoT5oeuiAmVPi1cBHIUjZgSUqq/E+uBS74qzTS3
-RmlD8JdC9+UFV0Fy9yS/IvT925kAIQ==
-=F6Pz
+iQIzBAEBCAAdFiEE97o7Um30LT3B+5b/86SN7mm1DoAFAl+NOJcACgkQ86SN7mm1
+DoA7fQ/+Kc851egDG2Hbk6LNSAKP1wqNfVlvwa3LF9h5Z7hmVyQRgmsLN5OSXoVV
+lx4uFLDO8YwIPdM0fCtBz/2CMx89FxGTG5jRXOdUSsntVQJLOOfzK4nJJvA9c2oM
+beSOMngxEx4s9Ds4/UJhi6/DyLUKrTAkPWa/cyQF3e/cb6OnZ0oKsqR4N6ePnB/k
+eVIIhiJ6IgFSOtSEMpVSLOl0qD+2fSlSmLGIEO2Jir/csDg8BbEQGxZY1xxOl/9y
+hkib50Qe9RaXhjVV7SPWEQn9e7XKGozc6cyObya8AJy4kHQ3z7APdoKinFSOJo4D
+DWdudheIM52ZpyK5B7gyaH1n4gA4T80rzCNtC8wwZt4PpINnCpxORAGKS5lF0Llu
+80qPK6k9nEATqU+x0E8WCJBDWrLQHbaDlqq/+Z9RArQIri6WZDQauXmMayE3v9GN
+EBlS8vMKhse0B2thgO23u5aemK5DW6skoEai6CVpv94NiCLrh+pax2CDr8qIwp1B
+T3OGqmUgAydhax7b1k2o8uRWzRsAhhVOAwHd7oSvQ6Su1CuHMkWNe0k6UUdFV+Vx
+6Zelz8RUrXrNmsm/qJWke+faauolkusxXHAr1YkvPzAQjm7dJDJO5npKWzD0zw/U
+8+BK8voyUzaDTaJ/FyJ6cn7yG6znyhfnMooUK6XaOW5vYSs79OY=
+=Cskk
 -----END PGP SIGNATURE-----
 
---rzuuvg6pobgnjjut--
+--Sig_/Y4jgRNWCKTwCArZ7R3N1v+c--
