@@ -2,278 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E8E2926B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72EB2926C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728214AbgJSLv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:51:59 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:44994 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726631AbgJSLv6 (ORCPT
+        id S1727439AbgJSLxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726742AbgJSLxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:51:58 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09JBpZ2T129745;
-        Mon, 19 Oct 2020 06:51:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603108295;
-        bh=oMc8cxidC4soC6sm/F1kZtDKNR1nvxlXtZ5poHhthHQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=fDe7e3cSbI9jovMwv6rXNZr5Wi5uuDPe7fJzo5ztVvr9o+mD/e107XDVYlef2LUZZ
-         0LgFbXY5A7ulq5ea9WgGFWiN3sP+4BhCRff/FOtSrJAHdtB70/SgH3qmvhzHFhRP6A
-         z9ENYcGa8z2r1tU8JrBPW/2zpRHVDcljbg77cRaM=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09JBpZC4087478
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Oct 2020 06:51:35 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 19
- Oct 2020 06:51:35 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 19 Oct 2020 06:51:35 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09JBpWLC122421;
-        Mon, 19 Oct 2020 06:51:33 -0500
-Subject: Re: [PATCH v2 2/2] irqchip/ti-sci-inta: Add support for unmapped
- event handling
-To:     Marc Zyngier <maz@kernel.org>
-CC:     <nm@ti.com>, <t-kristo@ti.com>, <ssantosh@kernel.org>,
-        <tglx@linutronix.de>, <jason@lakedaemon.net>, <robh+dt@kernel.org>,
-        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20200930074559.18028-1-peter.ujfalusi@ti.com>
- <20200930074559.18028-3-peter.ujfalusi@ti.com>
- <af9ce252820bab9a21207ef2173da9fd@kernel.org>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <6e501bf0-e4d7-7ce3-2d61-536d0fa29627@ti.com>
-Date:   Mon, 19 Oct 2020 14:52:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        Mon, 19 Oct 2020 07:53:09 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE0EC0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 04:53:09 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id bf6so2841439plb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 04:53:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cd0IbTkhiLHMnOo5qjbBSQNOqKZEtNi0Z2jN3s0JZ68=;
+        b=k5COJ/7GIPiX2Bm3xsv3BHBknU06Ek53XKH5bqWcovWXBagETrw+FGun9O5l8KxyF3
+         p/+N9AUAxZ5Nx3ng6GbEqs/gr7QqAi2ONjeBRAyLuUzttkbibtSQStSd1LwlPsJBw9cW
+         nYcZQ0ll36s80jmryDMxWBWWpdMoLbKRUQunB39/McmKqdhJY8Y1gS9H4sPik6nPW4Pt
+         v8a1GyteLqq7KN1vY8CRvSpm/f2MM4X6AkyWcZm1siLipxzhkInr2VmwIwy9H5gND44K
+         0TDn77i6LZVIpIeowPqsAlp6tC7gf45m3/7Vq3qSASM2YwasvNYNC8yZ+a67wMwKNPu0
+         ls/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cd0IbTkhiLHMnOo5qjbBSQNOqKZEtNi0Z2jN3s0JZ68=;
+        b=ZyyYEck/b1XrKQ2gg9TYSkDTfrXCeQ5YywhXZS4KoJ6BLSJcdpoQGctv0miNVYZMzh
+         dRZrF0uIvQrR2D2Rk/IJnW3/o4LL7EgjYpMtVA5d/o3kg/E9Jb0PWi8X33fBXOEpeymt
+         kpwbZKM7lMCOMPV86HsiuOhx36NMMomyCHm9F57/iWX18OsbuBdzkyqMt7+7A2EtqkeJ
+         1nrmu0q1KORiWjByovt9nBgKfT1o+0rJpkML04LPabmeY8F9aHABskuxxiEuUQ3k5KuS
+         T0J+upJHs61+CUZz6DE9yP/y11++/933Ro8pUfPdNaPi2FHgXxuoufou+4/zMf7Jjysc
+         I3pw==
+X-Gm-Message-State: AOAM531aNgriueldJkeC6ZR7eJluT94GtY5FwLjPQxLgo5AlUfog/g5a
+        2qeAGk6bt2eIq5Tg28IrjBoD46pbfX7x7Q==
+X-Google-Smtp-Source: ABdhPJwVTBnbUb5J6jLEfI/u7ZOZbeWRazgv5iGiVryaPhmMtZ2Hn3uWu6mNLAKjpLwG8Cc//WRVgg==
+X-Received: by 2002:a17:90b:4910:: with SMTP id kr16mr13164681pjb.227.1603108388434;
+        Mon, 19 Oct 2020 04:53:08 -0700 (PDT)
+Received: from nebulus.mtv.corp.google.com ([2620:15c:211:200:4a0f:cfff:fe35:d61b])
+        by smtp.gmail.com with ESMTPSA id w68sm12128099pfb.108.2020.10.19.04.53.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 04:53:07 -0700 (PDT)
+From:   Mark Salyzyn <salyzyn@android.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, Mark Salyzyn <salyzyn@android.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-doc@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [PATCH v15 0/4] overlayfs override_creds=off & nested get xattr fix
+Date:   Mon, 19 Oct 2020 04:52:35 -0700
+Message-Id: <20201019115239.2732422-1-salyzyn@android.com>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
-In-Reply-To: <af9ce252820bab9a21207ef2173da9fd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marc,
+Mark Salyzyn (3):
+  Add flags option to get xattr method paired to __vfs_getxattr
+  overlayfs: handle XATTR_NOSECURITY flag for get xattr method
+  overlayfs: override_creds=off option bypass creator_cred
 
-On 30/09/2020 11.33, Marc Zyngier wrote:
-> On 2020-09-30 08:45, Peter Ujfalusi wrote:
->> The DMA (BCDMA/PKTDMA and their rings/flows) events are under the INTA's
->> supervision as unmapped events in AM64.
-> 
-> What does "unmapped event" mean? An event that doesn't require a mapping?
-> Or an internally generated event? Or a proxy event?
-> 
->>
->> In order to keep the current SW stack working, the INTA driver must
->> replace
->> the dev_id with it's own when a request comes for BCDMA or PKTDMA
->> resources.
-> 
-> This seems to support my second option. Please clarify what you mean
-> exactly.
+Mark Salyzyn + John Stultz (1):
+  overlayfs: inode_owner_or_capable called during execv
 
-Looks like I forgot to reply on the other comments...
+The first three patches address fundamental security issues that should
+be solved regardless of the override_creds=off feature.
 
-> 
->>
->> Implement parsing of the optional "ti,unmapped-event-sources" phandle
->> array
->> to get the sci-dev-ids of the devices where the unmapped events
->> originate.
->>
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> ---
->>  drivers/irqchip/irq-ti-sci-inta.c | 72 +++++++++++++++++++++++++++++--
->>  1 file changed, 68 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/irqchip/irq-ti-sci-inta.c
->> b/drivers/irqchip/irq-ti-sci-inta.c
->> index bc863ef7998d..00f5b34863c5 100644
->> --- a/drivers/irqchip/irq-ti-sci-inta.c
->> +++ b/drivers/irqchip/irq-ti-sci-inta.c
->> @@ -85,6 +85,8 @@ struct ti_sci_inta_vint_desc {
->>   * @base:        Base address of the memory mapped IO registers
->>   * @pdev:        Pointer to platform device.
->>   * @ti_sci_id:        TI-SCI device identifier
->> + * @difu_cnt:        Number of TI-SCI device identifiers for unmapped
->> events
->> + * @dev_ids_for_unmapped: Pointer to an array of TI-SCI device
->> identifiers
->>   */
->>  struct ti_sci_inta_irq_domain {
->>      const struct ti_sci_handle *sci;
->> @@ -96,11 +98,33 @@ struct ti_sci_inta_irq_domain {
->>      void __iomem *base;
->>      struct platform_device *pdev;
->>      u32 ti_sci_id;
->> +
->> +    int difu_cnt;
-> 
-> I like silly acronyms as much as the next man, but please adopt
-> sensible names. unmapped_cnt, or something.
+The fourth adds the feature depends on these other fixes.
 
-It is silly to my taste as well...
+By default, all access to the upper, lower and work directories is the
+recorded mounter's MAC and DAC credentials.  The incoming accesses are
+checked against the caller's credentials.
 
-> 
->> +    u32 *dev_ids_for_unmapped;
-> 
-> unmapped_dev_ids?
+If the principles of least privilege are applied for sepolicy, the
+mounter's credentials might not overlap the credentials of the caller's
+when accessing the overlayfs filesystem.  For example, a file that a
+lower DAC privileged caller can execute, is MAC denied to the
+generally higher DAC privileged mounter, to prevent an attack vector.
 
-OK, I will came up with more reasobnable names.
+We add the option to turn off override_creds in the mount options; all
+subsequent operations after mount on the filesystem will be only the
+caller's credentials.  The module boolean parameter and mount option
+override_creds is also added as a presence check for this "feature",
+existence of /sys/module/overlay/parameters/overlay_creds
 
-> 
->>  };
->>
->>  #define to_vint_desc(e, i) container_of(e, struct
->> ti_sci_inta_vint_desc, \
->>                      events[i])
->>
->> +static u16 ti_sci_inta_get_dev_id(struct ti_sci_inta_irq_domain *inta,
->> +                  u32 hwirq)
->> +{
->> +    u16 dev_id = HWIRQ_TO_DEVID(hwirq);
->> +    int i;
->> +
->> +    if (inta->difu_cnt == 0)
->> +        return dev_id;
->> +
->> +    for (i = 0; i < inta->difu_cnt; i++) {
->> +        if (dev_id == inta->dev_ids_for_unmapped[i]) {
->> +            dev_id = inta->ti_sci_id;
-> 
-> ti_sci_id is a u32, and you are implicitly casting it as u16.
-> One of the two is wrong.
+Signed-off-by: Mark Salyzyn <salyzyn@android.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Amir Goldstein <amir73il@gmail.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+To: linux-fsdevel@vger.kernel.org
+To: linux-unionfs@vger.kernel.org
+Cc: linux-security-module@vger.kernel.org
+Cc: kernel-team@android.com
 
-Documentation/devicetree/bindings/arm/keystone/ti,k3-sci-common.yaml
-defines the ti,sci-dev-id as u32.
-I will store them in u16 array in ti_sci_inta_get_unmapped_sources()
+---
 
-> 
->> +            break;
->> +        }
->> +    }
->> +
->> +    return dev_id;
->> +}
->> +
->>  /**
->>   * ti_sci_inta_irq_handler() - Chained IRQ handler for the vint irqs
->>   * @desc:    Pointer to irq_desc corresponding to the irq
->> @@ -251,7 +275,7 @@ static struct ti_sci_inta_event_desc
->> *ti_sci_inta_alloc_event(struct ti_sci_inta
->>      u16 dev_id, dev_index;
->>      int err;
->>
->> -    dev_id = HWIRQ_TO_DEVID(hwirq);
->> +    dev_id = ti_sci_inta_get_dev_id(inta, hwirq);
->>      dev_index = HWIRQ_TO_IRQID(hwirq);
->>
->>      event_desc = &vint_desc->events[free_bit];
->> @@ -352,14 +376,15 @@ static void ti_sci_inta_free_irq(struct
->> ti_sci_inta_event_desc *event_desc,
->>  {
->>      struct ti_sci_inta_vint_desc *vint_desc;
->>      struct ti_sci_inta_irq_domain *inta;
->> +    u16 dev_id;
->>
->>      vint_desc = to_vint_desc(event_desc, event_desc->vint_bit);
->>      inta = vint_desc->domain->host_data;
->> +    dev_id = ti_sci_inta_get_dev_id(inta, hwirq);
->>      /* free event irq */
->>      mutex_lock(&inta->vint_mutex);
->>      inta->sci->ops.rm_irq_ops.free_event_map(inta->sci,
->> -                         HWIRQ_TO_DEVID(hwirq),
->> -                         HWIRQ_TO_IRQID(hwirq),
->> +                         dev_id, HWIRQ_TO_IRQID(hwirq),
->>                           inta->ti_sci_id,
->>                           vint_desc->vint_id,
->>                           event_desc->global_event,
->> @@ -562,7 +587,6 @@ static void
->> ti_sci_inta_msi_set_desc(msi_alloc_info_t *arg,
->>      arg->desc = desc;
->>      arg->hwirq = TO_HWIRQ(pdev->id, desc->inta.dev_index);
->>  }
->> -
->>  static struct msi_domain_ops ti_sci_inta_msi_ops = {
->>      .set_desc    = ti_sci_inta_msi_set_desc,
->>  };
->> @@ -574,6 +598,42 @@ static struct msi_domain_info
->> ti_sci_inta_msi_domain_info = {
->>      .chip    = &ti_sci_inta_msi_irq_chip,
->>  };
->>
->> +static int ti_sci_inta_get_unmapped_sources(struct
->> ti_sci_inta_irq_domain *inta)
->> +{
->> +    struct device *dev = &inta->pdev->dev;
->> +    struct device_node *node = dev_of_node(dev);
->> +    struct of_phandle_iterator it;
->> +    int count, err, ret, i;
->> +
->> +    count = of_count_phandle_with_args(node,
->> "ti,unmapped-event-sources",
->> +                       NULL);
->> +    if (count <= 0)
->> +        return 0;
->> +
->> +    inta->dev_ids_for_unmapped = devm_kcalloc(dev, count,
->> +                    sizeof(*inta->dev_ids_for_unmapped),
->> +                    GFP_KERNEL);
->> +    if (!inta->dev_ids_for_unmapped)
->> +        return -ENOMEM;
->> +
->> +    i = 0;
->> +    of_for_each_phandle(&it, err, node, "ti,unmapped-event-sources",
->> +                NULL, 0) {
->> +        ret = of_property_read_u32(it.node, "ti,sci-dev-id",
->> +                       &inta->dev_ids_for_unmapped[i++]);
->> +        if (ret) {
->> +            dev_err(dev, "ti,sci-dev-id read failure for %s\n",
->> +                of_node_full_name(it.node));
-> 
-> Use the printk format specifier instead of of_node_full_name.
+v16
+- rebase and merge of two patches.
+- add adjustment to deal with execv when overrides is off.
 
-OK.
+v15
+- Revert back to v4 with fixes from on the way from v5-v14. The single
+  structure argument passing to address the complaints about too many
+  arguments was rejected by the community.
+- Drop the udner discussion fix for an additional CAP_DAC_READ_SEARCH
+  check. Can address that independently.
+- ToDo: upstream test frame for thes security fixes (currently testing
+  is all in Android).
 
-> 
->> +            of_node_put(it.node);
->> +            return ret;
->> +        }
->> +    }
->> +
->> +    inta->difu_cnt = count;
->> +
->> +    return 0;
->> +}
->> +
->>  static int ti_sci_inta_irq_domain_probe(struct platform_device *pdev)
->>  {
->>      struct irq_domain *parent_domain, *domain, *msi_domain;
->> @@ -629,6 +689,10 @@ static int ti_sci_inta_irq_domain_probe(struct
->> platform_device *pdev)
->>      if (IS_ERR(inta->base))
->>          return PTR_ERR(inta->base);
->>
->> +    ret = ti_sci_inta_get_unmapped_sources(inta);
->> +    if (ret)
->> +        return ret;
->> +
->>      domain = irq_domain_add_linear(dev_of_node(dev),
->>                         ti_sci_get_num_resources(inta->vint),
->>                         &ti_sci_inta_irq_domain_ops, inta);
-> 
->         M.
+v14:
+- Rejoin, rebase and a few adjustments.
 
-- Péter
+v13:
+- Pull out first patch and try to get it in alone feedback, some
+  Acks, and then <crickets> because people forgot why we were doing i.
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+v12:
+- Restore squished out patch 2 and 3 in the series,
+  then change algorithm to add flags argument.
+  Per-thread flag is a large security surface.
+
+v11:
+- Squish out v10 introduced patch 2 and 3 in the series,
+  then and use per-thread flag instead for nesting.
+- Switch name to ovl_do_vds_getxattr for __vds_getxattr wrapper.
+- Add sb argument to ovl_revert_creds to match future work.
+
+v10:
+- Return NULL on CAP_DAC_READ_SEARCH
+- Add __get xattr method to solve sepolicy logging issue
+- Drop unnecessary sys_admin sepolicy checking for administrative
+  driver internal xattr functions.
+
+v6:
+- Drop CONFIG_OVERLAY_FS_OVERRIDE_CREDS.
+- Do better with the documentation, drop rationalizations.
+- pr_warn message adjusted to report consequences.
+
+v5:
+- beefed up the caveats in the Documentation
+- Is dependent on
+  "overlayfs: check CAP_DAC_READ_SEARCH before issuing exportfs_decode_fh"
+  "overlayfs: check CAP_MKNOD before issuing vfs_whiteout"
+- Added prwarn when override_creds=off
+
+v4:
+- spelling and grammar errors in text
+
+v3:
+- Change name from caller_credentials / creator_credentials to the
+  boolean override_creds.
+- Changed from creator to mounter credentials.
+- Updated and fortified the documentation.
+- Added CONFIG_OVERLAY_FS_OVERRIDE_CREDS
+
+v2:
+- Forward port changed attr to stat, resulting in a build error.
+- altered commit message.
+
+ Documentation/filesystems/locking.rst   |  2 +-
+ Documentation/filesystems/overlayfs.rst | 23 ++++++++++++++++
+ fs/9p/acl.c                             |  3 ++-
+ fs/9p/xattr.c                           |  3 ++-
+ fs/afs/xattr.c                          | 10 +++----
+ fs/btrfs/xattr.c                        |  3 ++-
+ fs/ceph/xattr.c                         |  3 ++-
+ fs/cifs/xattr.c                         |  2 +-
+ fs/ecryptfs/inode.c                     |  6 +++--
+ fs/ecryptfs/mmap.c                      |  2 +-
+ fs/erofs/xattr.c                        |  3 ++-
+ fs/ext2/xattr_security.c                |  2 +-
+ fs/ext2/xattr_trusted.c                 |  2 +-
+ fs/ext2/xattr_user.c                    |  2 +-
+ fs/ext4/xattr_security.c                |  2 +-
+ fs/ext4/xattr_trusted.c                 |  2 +-
+ fs/ext4/xattr_user.c                    |  2 +-
+ fs/f2fs/xattr.c                         |  4 +--
+ fs/fuse/xattr.c                         |  4 +--
+ fs/gfs2/xattr.c                         |  3 ++-
+ fs/hfs/attr.c                           |  2 +-
+ fs/hfsplus/xattr.c                      |  3 ++-
+ fs/hfsplus/xattr_security.c             |  3 ++-
+ fs/hfsplus/xattr_trusted.c              |  3 ++-
+ fs/hfsplus/xattr_user.c                 |  3 ++-
+ fs/jffs2/security.c                     |  3 ++-
+ fs/jffs2/xattr_trusted.c                |  3 ++-
+ fs/jffs2/xattr_user.c                   |  3 ++-
+ fs/jfs/xattr.c                          |  5 ++--
+ fs/kernfs/inode.c                       |  3 ++-
+ fs/nfs/nfs4proc.c                       |  9 ++++---
+ fs/ocfs2/xattr.c                        |  9 ++++---
+ fs/orangefs/xattr.c                     |  3 ++-
+ fs/overlayfs/copy_up.c                  |  2 +-
+ fs/overlayfs/dir.c                      | 17 +++++++-----
+ fs/overlayfs/file.c                     | 26 +++++++++---------
+ fs/overlayfs/inode.c                    | 23 ++++++++--------
+ fs/overlayfs/namei.c                    |  6 ++---
+ fs/overlayfs/overlayfs.h                |  5 ++--
+ fs/overlayfs/ovl_entry.h                |  1 +
+ fs/overlayfs/readdir.c                  |  8 +++---
+ fs/overlayfs/super.c                    | 34 ++++++++++++++++++-----
+ fs/overlayfs/util.c                     | 13 +++++++--
+ fs/posix_acl.c                          |  2 +-
+ fs/reiserfs/xattr_security.c            |  3 ++-
+ fs/reiserfs/xattr_trusted.c             |  3 ++-
+ fs/reiserfs/xattr_user.c                |  3 ++-
+ fs/squashfs/xattr.c                     |  2 +-
+ fs/ubifs/xattr.c                        |  3 ++-
+ fs/xattr.c                              | 36 ++++++++++++-------------
+ fs/xfs/xfs_xattr.c                      |  3 ++-
+ include/linux/xattr.h                   |  9 ++++---
+ include/uapi/linux/xattr.h              |  7 +++--
+ mm/shmem.c                              |  3 ++-
+ net/socket.c                            |  3 ++-
+ security/commoncap.c                    |  6 +++--
+ security/integrity/evm/evm_main.c       |  3 ++-
+ security/selinux/hooks.c                | 11 +++++---
+ security/smack/smack_lsm.c              |  5 ++--
+ 59 files changed, 237 insertions(+), 135 deletions(-)
+
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
+
