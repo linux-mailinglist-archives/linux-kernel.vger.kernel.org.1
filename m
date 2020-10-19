@@ -2,98 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC5F292B2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABC4292B24
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730596AbgJSQKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:10:01 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33567 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730390AbgJSQKB (ORCPT
+        id S1730616AbgJSQI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:08:26 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:41260 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730447AbgJSQI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:10:01 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id D99E95C01A5;
-        Mon, 19 Oct 2020 12:09:59 -0400 (EDT)
-Received: from imap10 ([10.202.2.60])
-  by compute4.internal (MEProxy); Mon, 19 Oct 2020 12:09:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=septs.pw; h=
-        mime-version:message-id:date:from:to:cc:subject:content-type; s=
-        fm1; bh=4WHFq5lnrAVJsB5ruAH8StysG8+I2TxkYMI4/A1tq5Q=; b=lX8dOeQY
-        LpLyVLAdvwHmw9qrpQyBVFbeiWekoSxFQpalzky+B4SpnT0YYj/gR5cBO/E0bTuN
-        zxlA3+6EkYy6r3DJwt3KXVyrxjpE/hds3fNB8ELiTDwaK92pz5YguCFNN1IDbx/4
-        GXorX8wCVI9jg84cq6fbCoFLqYMhTAK0TDuyG9MDkh4LCmA4ZGxTRPcOEwVD5jjb
-        BtwZSBDv3OmOk4dSNszPl0J9lBYlg7Bl+Fjz4ElINroCsPiMeACysgkiI6VH69lq
-        7+iZ89xE1eBfeSCcGvPNMX2V6sapPmAvDp+Gn++mUEe47bJEhu434qs+0g3riF5X
-        OW6iFynZABB3Mw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; bh=4WHFq5lnrAVJsB5ruAH8StysG8+I2
-        TxkYMI4/A1tq5Q=; b=iIi8UJ+hwN3GjR6CTenmpkrRLe3+HqAAufJtZ/XSoVGwl
-        ZSLfFm0tgvzO4PDanno0IAnwDFjtjOoGs9PBJykCjW/Jx+/wZ3pScHDzrqqH+TZo
-        gTSajmcuprAW8Zqmyz9VcgXreIsCiuihEL/qPoDzYrRXnqDFmVFgPvHQIwWxFT+u
-        uAnx+dKx9vcUNEdFl5R4QX/GrJAyeZOT5NHpeRXIijhxmGYuUDXKWbJCzg5prCIa
-        HOQFTv3YYmRPf1y+ENXFxIrMxqhRbLhC9BeUX9vRTpZpd28BRd6oxnQm/cVB/RbB
-        4uOTixU5PqT1d9h2en5gtnaQ13wSYRBXm2Pkw9HfA==
-X-ME-Sender: <xms:V7qNX3BQC_2_tVRXTjWyBdpQmaTNBW2XM4pIFYHUu1LNFJOWNotfqA>
-    <xme:V7qNX9j7S3cvbD-ijIqCcVsRyCBX4e3Z1tDl1Wwh84kT7Migv91C0Q867DqQMB_CY
-    bci53vg5xQqEKRRlA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjedugdelkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdduhedmnecujfgurhepofgfggfkfffhvffutgesthdtredtreertden
-    ucfhrhhomhepfdgkihihihcuvegrohdfuceokhgvrhhnvghlsehsvghpthhsrdhpfieqne
-    cuggftrfgrthhtvghrnhepffejuedtueffueduudduiefgleduhefhleeklefhgfegtdfg
-    feffieeiueehhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepkhgvrhhnvghlsehsvghpthhsrdhpfi
-X-ME-Proxy: <xmx:V7qNXymjHoKYFA9RZqKYiAhSurotckVMAFY-_mC-0mcR6tKLTgt8ow>
-    <xmx:V7qNX5y6USriLUCP2aHjhT-ushtF1BJzIVHhfv6utO0XnEP-pgoEFg>
-    <xmx:V7qNX8RgiP4MaqX8rlyA2Es65lsaget4qxI4L1WTgO2cgb9snFAGAg>
-    <xmx:V7qNX3L9Ui8g9v12-xUBjSFxeNkBgyPtyNX9qWiuNFN23ZZzQZlOEw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 71EFD20093; Mon, 19 Oct 2020 12:09:59 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-489-gf39678d-fm-20201011.001-gf39678d0
-Mime-Version: 1.0
-Message-Id: <17f8a2a3-ce0f-4be7-8544-8fdf286907d0@www.fastmail.com>
-Date:   Tue, 20 Oct 2020 00:08:06 +0800
-From:   "Ziyi Cao" <kernel@septs.pw>
-To:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Cc:     "Johan Hovold" <johan@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] usb: serial: option: add Quectel EC200T module support
-Content-Type: text/plain
+        Mon, 19 Oct 2020 12:08:26 -0400
+Received: by mail-wr1-f65.google.com with SMTP id s9so334628wro.8;
+        Mon, 19 Oct 2020 09:08:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zoO2hDHZETk3IyeB0Cl94Uv+82asuWViFYsWJmUXsmY=;
+        b=M7s0WnuEMEbRcoFCLXp83U7kuz5sPJ8bGq4/OJMIO0F/KsQryhDvXoZHktR8j8fUe3
+         MQ941POGhRvUJ2cyzgHJ+x6NZGw6dh/s6E4uRY6lybJHSa6MQIiuK3OguB6nC3mjvT+V
+         RBbvfr6GQTjCrNRpXJ3jGNNEayHtCc6jOh30CHQ4ZQFGwR9RXlajbVX7RifbUtxh9P/R
+         +zUqJD/I8/kzZxplHEXYsWoDmDKfsFZakdqlLjj4n/RhR1OSzhLBWNFob/pX3jTkLI5S
+         2eYaE4ziVnYj3IgU7Y91rqsNRin/1RWTzZgOqJbH1r92C8D3vzczosk/L4Y3MP4xa9uY
+         CX1A==
+X-Gm-Message-State: AOAM532fso6b/S7HG7GMNbv2bO/ELHlYIPiO+2oGotFR9bn+rLTgWTVZ
+        kUNODkI3EoKqRt/pUehmZ68=
+X-Google-Smtp-Source: ABdhPJzn9211CyF1TlFXeRqXKkFp4steoLCXGDe3zss3JH2vfd8GJc4eMWny+D3BIHIjIfO5L0ip7A==
+X-Received: by 2002:adf:d84e:: with SMTP id k14mr266926wrl.251.1603123703705;
+        Mon, 19 Oct 2020 09:08:23 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id f8sm201290wrw.85.2020.10.19.09.08.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 09:08:22 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 18:08:20 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     kholk11@gmail.com
+Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org, rydberg@bitmath.org,
+        priv.luk@gmail.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marijns95@gmail.com,
+        konradybcio@gmail.com, martin.botka1@gmail.com,
+        phone-devel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] dt-bindings: touchscreen: Add binding for Novatek
+ NT36xxx series driver
+Message-ID: <20201019160820.GB34785@kozik-lap>
+References: <20201017190152.12780-1-kholk11@gmail.com>
+ <20201017190152.12780-4-kholk11@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201017190152.12780-4-kholk11@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add usb product id of the Quectel EC200T module.
+On Sat, Oct 17, 2020 at 09:01:52PM +0200, kholk11@gmail.com wrote:
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> 
+> Add binding for the Novatek NT36xxx series touchscreen driver.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>  .../bindings/input/touchscreen/nt36xxx.yaml   | 59 +++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+> new file mode 100644
+> index 000000000000..1486b20d6c49
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+> @@ -0,0 +1,59 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/nt36xxx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Novatek NT36xxx series touchscreen controller Bindings
+> +
+> +maintainers:
+> +  - AngeloGioacchino Del Regno <kholk11@gmail.com>
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: novatek,nt36525
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  vdd-supply:
+> +    description: Power supply regulator for VDD pin
+> +
+> +  vio-supply:
+> +    description: Power supply regulator on VDD-IO pin
+> +
+> +unevaluatedProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      touchscreen@62 {
+> +        compatible = "novatek,nt36525";
+> +        reg = <0x62>;
+> +        interrupt-parent = <&tlmm>;
+> +        interrupts = <45 IRQ_TYPE_EDGE_RISING>;
+> +        reset-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
 
-Signed-off-by: Ziyi Cao <kernel@septs.pw>
----
- drivers/usb/serial/option.c | 2 ++
- 1 file changed, 2 insertions(+)
+reset-gpios
 
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 2a3bfd6f8..7e879233b 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -250,6 +250,7 @@ static void option_instat_callback(struct urb *urb);
- #define QUECTEL_PRODUCT_EP06			0x0306
- #define QUECTEL_PRODUCT_EM12			0x0512
- #define QUECTEL_PRODUCT_RM500Q			0x0800
-+#define QUECTEL_PRODUCT_EC200T			0x6026
- 
- #define CMOTECH_VENDOR_ID			0x16d8
- #define CMOTECH_PRODUCT_6001			0x6001
-@@ -1117,6 +1118,7 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
- 	  .driver_info = ZLP },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
- 
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_CMU_300) },
--- 
-2.25.1
+Best regards,
+Krzysztof
