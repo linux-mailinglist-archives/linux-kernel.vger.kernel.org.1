@@ -2,142 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1F3292C0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51053292C10
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730692AbgJSRAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730186AbgJSRAO (ORCPT
+        id S1730842AbgJSRAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:00:39 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:3503 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730645AbgJSRAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:00:14 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831CFC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:00:13 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id k6so493915ior.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:00:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6egaM982RqgjxcvTIgx5sfX9sE4hVawM2afWAGzirtk=;
-        b=MYi01MB8T13mPZwtbJHRnvdXtQxZWUylyMI3H1w9YAN621uOLZ3Y82rI17aKWMkBAE
-         YiOsb4WJ5M5sPzfVkYcH1LLffGBobxN/97pG/X43pv0RtdNbNHos24NWUufvqtBYvtSp
-         OvQxp23uOvj1ZGPyTQVb40QoqJxWHkPtnhHoM44D7wWaymFbUJAUDA31hpb69C+BmPQt
-         t1Px6I7e6WHr+0OKyXNbCR1B1Qs6NMBwkfdlnmDIz6wnoHir2IK2ZI4jZIdgd3U3EorV
-         TYW+bMakcszksHOZ8fmsHFa26jCGUO1JG2nQqB1VXTk49IFk9ZTP+xub59HI8zrvv68d
-         8MoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=6egaM982RqgjxcvTIgx5sfX9sE4hVawM2afWAGzirtk=;
-        b=AHexjzmzWVZwur2zyLMAo6+4uZqXq1GUz9jT5GZJShBAIA19+cfacO4q5d7D58MK6N
-         w/yLN7Xp1rgMzB51texZviZZlTVrpN2vRJIpXxq4qq0BWBSejI2PIvpC9JS6VhT6zGUy
-         zjjVIWCuhiejXgICfpFkkDhjVEITzBAxZ4YgP4s94lyrSi1hJN4yEBpbojcTrd+411l7
-         BuCrLvgWrkyA/+tJh2K4T1hwJGmEVjg48zYAplRi4hTxBPXaICszXFcH/rN5j0pK2Nfr
-         tbnPteqIk/ja744C+kwtMybtX4fTUrjYvN7Y1l5rUmj7DL3Gb1xJ3bWJJ6TzDD5oaHxG
-         4M6Q==
-X-Gm-Message-State: AOAM530bFnDe9xsEj3ZrJL0nIZxRrmUzr0EZxEF49ciplT4lOBx3fthQ
-        lGlS1O5ScTKhUB9wFjlN0RlTwLxjcXRZng==
-X-Google-Smtp-Source: ABdhPJyfxP9Wcrw4aQCqdGVRKjLYhpTzs+D2az73GqryeFpk5C6kz4b8AA9raT6rngLnVrMDNDUqHA==
-X-Received: by 2002:a6b:b7c6:: with SMTP id h189mr297804iof.41.1603126812757;
-        Mon, 19 Oct 2020 10:00:12 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id a11sm188381ilk.81.2020.10.19.10.00.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 10:00:11 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 19 Oct 2020 13:00:08 -0400
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Mon, 19 Oct 2020 13:00:39 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8dc6070005>; Mon, 19 Oct 2020 09:59:51 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 19 Oct
+ 2020 17:00:32 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
+ by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 19 Oct 2020 17:00:32 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ao5g7wQ5l4KdEVVjatUuiUzF1HR9QQGQEdAULXVahcoU1VMPDUvLlSDogC49gjQJMGySQhXO4tvG/gxk3mdiq5Rme61SZ/aw4l3EanmjbA3MFO4AlCoHcacWPciiSYVkmVtg74n+dRo7LInfgi5esyooXotBqustwfa6HX63oA1yMiOPJcZQmc+a6ZehY+uDxuuQdKGjyV8OU1e9W8B+wC6KQqVLgrwlPk+7bqNchctyJj7moEEcrQ+fxeLddYcsv74y5nbndyH10TJnmUIkFN7PU8ksIlgQ7zmB51LH435T4gH34QvY9LkYFM2JKnmg5DsIpfW3/GKuAKbiSHfzSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pdcSjjWZePS0hH/ubWLT74o1FPXKYWW71rD9/WjGt00=;
+ b=SmowLsGN0KAXz8sVtXfP4ihgWSt4t0gPYutDeOU2QiSyI8TOSUp2VvyV71pCEsZWxbpZmk9CVg2HyHU6eEpSTuKoFEmtYW5EUFJ9tiuRK1CYxz3xO3K86yLS1hnScud9+1+2PAZUce9T/x5VCxDJuD+1Kse3zYbxX9/v5hY9ZCabrOq2nafXaggvN+Fl/UnsMSpMUaeFP4lZHUOyQiQqUDBB+UAaaIbM5pYlj147v9Vb22AmkpsaXTAPaWeCNo0ThBOKzkECcs6WBMillRRfutR2P3XQodQKcQrZezLTWeICin6nVns4UntoBO4UHkkvF3CtknfSDQ4lfkvuOaWwgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3116.namprd12.prod.outlook.com (2603:10b6:5:38::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Mon, 19 Oct
+ 2020 17:00:31 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 17:00:31 +0000
+Date:   Mon, 19 Oct 2020 14:00:29 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+CC:     <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kvm@vger.kernel.org>,
+        Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        "Konrad Rzeszutek Wilk" <konrad.wilk@oracle.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "Andy Lutomirski" <luto@kernel.org>,
         "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] x86/boot/compressed/64: Check SEV encryption in
- 64-bit boot-path
-Message-ID: <20201019170008.GA2701355@rani.riverdale.lan>
-References: <20201019151121.826-1-joro@8bytes.org>
- <20201019151121.826-4-joro@8bytes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        "Paolo Bonzini" <pbonzini@redhat.com>,
+        Alexander Potapenko <glider@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Rik van Riel <riel@redhat.com>,
+        Larry Woodman <lwoodman@redhat.com>,
+        "Dave Young" <dyoung@redhat.com>,
+        Toshimitsu Kani <toshi.kani@hpe.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: AMD SME encrpytion and PCI BAR pages to user space
+Message-ID: <20201019170029.GU6219@nvidia.com>
+References: <20201019152556.GA560082@nvidia.com>
+ <4b9f13bf-3f82-1aed-c7be-0eaecebc5d82@amd.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201019151121.826-4-joro@8bytes.org>
+In-Reply-To: <4b9f13bf-3f82-1aed-c7be-0eaecebc5d82@amd.com>
+X-ClientProxiedBy: YT1PR01CA0096.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2d::35) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0096.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Mon, 19 Oct 2020 17:00:31 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kUYWL-002OXy-Ml; Mon, 19 Oct 2020 14:00:29 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603126791; bh=pdcSjjWZePS0hH/ubWLT74o1FPXKYWW71rD9/WjGt00=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=lCn/SDs70aiXrQpWqP/anl+ViQ+NtikaVW6bkKMcpy+6HB+KCpnl84LqvuulOO6iZ
+         wfS1BMN1l7eOSf/3JujExDLUZiqfrSyjQhSpQcUsMhMEh0dqWQwF2Ip8gaqnhOarkI
+         ti5jdkn6JuJSw92F3krnj3df63pzVw8NgzrpsU7rg3XIqnDLbob7DoP642Bkb2hO5H
+         7/GvBqm2PBKX2PhMkkZEovBLhDDySpmfzo6YcWJM3QeuiGe6NoUCca8Cd1+czhKw2z
+         tTyiW9JRfpsPlCVramEfX758UhYYYjgcobLOqma1CTxJ3m93GQBuJewyrdadh6rQ9O
+         AdHMVtrOm7PSA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 05:11:19PM +0200, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
+On Mon, Oct 19, 2020 at 11:36:16AM -0500, Tom Lendacky wrote:
+
+> > Is RDMA missing something? I don't see anything special in VFIO for
+> > instance and the two are very similar - does VFIO work with SME, eg
+> > DPDK or something unrelated to virtualization?
 > 
-> Check whether the hypervisor reported the correct C-bit when running as
-> an SEV guest. Using a wrong C-bit position could be used to leak
-> sensitive data from the guest to the hypervisor.
+> If user space is mapping un-encrypted memory, then, yes, it would seem
+> that there is a gap in the support where the pgprot_decrypted() would be
+> needed in order to override the protection map.
+
+It isn't "memory" it is PCI BAR pages, eg memory mapped IO
+
+> > Is there a reason not to just add prot_decrypted() to
+> > io_remap_pfn_range()? Is there use cases where a caller actually wants
+> > encrypted io memory?
 > 
-> The check function is in arch/x86/kernel/sev_verify_cbit.S so that it
-> can be re-used in the running kernel image.
+> As long as you never have physical memory / ram being mapped in this path,
+> it seems that applying pgprot_decrypted() would be ok.
+
+I think the word 'io' implies this is the case..
+
+Let me make a patch for this avenue then, I think it is not OK to add
+pgprot_decrypted to every driver.. We already have the special
+distinction with io and non-io remap, that seems better.
+
+> > I saw your original patch series edited a few drivers this way, but
+> > not nearly enough. So I feel like I'm missing something.. Does vfio
+> > work with SME? I couldn't find any sign of it calling prot_decrypted()
+> > either?
 > 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
+> I haven't tested SME with VFIO/DPDK.
 
-> +
-> +	/* Store value to memory and keep it in %r10 */
-> +	movq	%r10, sev_check_data(%rip)
-> +
+Hum, I assume it is broken also. Actually quite a swath of drivers
+and devices will be broken under this :\
 
-Does there need to be a cache flush/invalidation between this and the
-read below to avoid just reading back from cache, or will the hardware
-take care of that?
-
-> +	/* Backup current %cr3 value to restore it later */
-> +	movq	%cr3, %r11
-> +
-> +	/* Switch to new %cr3 - This might unmap the stack */
-> +	movq	%rdi, %cr3
-
-Does there need to be a TLB flush after this? When executed from the
-main kernel's head code, CR4.PGE is enabled, and if the original page
-mapping had the global bit set (the decompressor stub sets that in the
-identity mapping), won't the read below still use the original encrypted
-mapping if we don't explicitly flush it?
-
-> +
-> +	/*
-> +	 * Compare value in %r10 with memory location - If C-Bit is incorrect
-> +	 * this would read the encrypted data and make the check fail.
-> +	 */
-> +	cmpq	%r10, sev_check_data(%rip)
-> +
-> +	/* Restore old %cr3 */
-> +	movq	%r11, %cr3
-> +
-> +	/* Check CMPQ result */
-> +	je	3f
-> +
-> +	/*
-> +	 * The check failed - Prevent any forward progress to prevent ROP
-> +	 * attacks, invalidate the stack and go into a hlt loop.
-> +	 */
-> +	xorq	%rsp, %rsp
-> +	subq	$0x1000, %rsp
-> +2:	hlt
-> +	jmp 2b
-> +3:
-> +#endif
-> +	ret
-> +SYM_FUNC_END(sev_verify_cbit)
-> +
-> -- 
-> 2.28.0
-> 
+Jason
