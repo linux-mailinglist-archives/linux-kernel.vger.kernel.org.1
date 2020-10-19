@@ -2,191 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7682292207
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 06:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A981292209
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 06:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728482AbgJSEzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 00:55:41 -0400
-Received: from smtprelay0054.hostedemail.com ([216.40.44.54]:51006 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726829AbgJSEzk (ORCPT
+        id S1728581AbgJSE4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 00:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726829AbgJSE4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 00:55:40 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id DC97B1822494D;
-        Mon, 19 Oct 2020 04:55:36 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1543:1593:1594:1605:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3868:3871:4250:4321:5007:7903:7904:8531:8603:8829:8957:9036:10004:10400:10848:10946:11026:11232:11473:11657:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:13439:14093:14097:14181:14196:14659:14721:21080:21433:21627:21966:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: self88_3d141c327234
-X-Filterd-Recvd-Size: 5055
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 19 Oct 2020 04:55:34 +0000 (UTC)
-Message-ID: <e59c0c575f9d9e1af8c6fdf2911cd9d028de257f.camel@perches.com>
-Subject: Re: [PATCH] [v5] wireless: Initial driver submission for pureLiFi
- STA devices
-From:   Joe Perches <joe@perches.com>
-To:     Srinivasan Raju <srini.raju@purelifi.com>
-Cc:     mostafa.afgani@purelifi.com, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS (WIRELESS)" 
-        <linux-wireless@vger.kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
-Date:   Sun, 18 Oct 2020 21:55:33 -0700
-In-Reply-To: <20201019031744.17916-1-srini.raju@purelifi.com>
-References: <20201016063444.29822-1-srini.raju@purelifi.com>
-         <20201019031744.17916-1-srini.raju@purelifi.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 19 Oct 2020 00:56:10 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19B4C061755;
+        Sun, 18 Oct 2020 21:56:08 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 188so6854908qkk.12;
+        Sun, 18 Oct 2020 21:56:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+DdX9ApBECm+ZbNtZ5Vnyo8TdWHP3VGSlELnREVWBNY=;
+        b=XQl3RjUCuFc72C5e68vkhmCKQQgsZkb9Vh0Thw8hzOZzbVkTFD4oW0HJS4kZ6wZnO5
+         h7qwyL+8o43sy9jIkDfnRYdrivkw96E6c/JE7XY/e1BYCz2dIVIdYZHQkRQXmsM5lbNr
+         GUEcOVIgdW6FRDAW2PwuDztW/r9zSpXdfmjCw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+DdX9ApBECm+ZbNtZ5Vnyo8TdWHP3VGSlELnREVWBNY=;
+        b=D3Ssa+CgQ47ocmANvui/80qBzCbLPgDlSwbw1bYwxl+5xG9Q5HcVE1NREf1gbdSBI0
+         lxUkHRmrDL6d98cCObjTtfXy1o4L8GGTaGEeGyzn+ENVxzyA93vwMejCHj9O1aJ94h74
+         7sOMD3BoWa8+hFxlXR0MzO/5KZ9eRklxTZOqLAYhP4cwCTdn9qHdPglNvewZIOMYPi1e
+         akPa94IA3v/uQ/J6y8Fp745ePspTBZuI6lI0zkLxqjS/By+1bGUEMP15KtEOcUKDmPAz
+         u1pmfVJLAhvYlCyr/2nqLBuD54cOHPIGoL8RoqCa8IUq+XXJa8nSBgnLGiLPljJBWiDL
+         0HAg==
+X-Gm-Message-State: AOAM530rwYKlc3dE0L3zbberXNd54qtG6E9x8r6Mrpzyh1RdNpooBPjK
+        EsxfiHVAIPU3sMEeDaUehawswSjfclN/p+K59f4=
+X-Google-Smtp-Source: ABdhPJyar9udlZPgCCqFMvDSZwmLzCPi0LxWbnXc6wqf6/x0UQyWB6Sox4JOJ3/KAzY0OBVi6VParLwqDvMXazd9S60=
+X-Received: by 2002:a37:48cc:: with SMTP id v195mr15006360qka.66.1603083367899;
+ Sun, 18 Oct 2020 21:56:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <96c6172d619c51acc5c1c4884b80785c59af4102.1602949927.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <96c6172d619c51acc5c1c4884b80785c59af4102.1602949927.git.christophe.leroy@csgroup.eu>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Mon, 19 Oct 2020 04:55:55 +0000
+Message-ID: <CACPK8XfgK0Bj3sLjKCi80jS6vK34FN5BTkU8FvBGcMR=RQn4Xw@mail.gmail.com>
+Subject: Re: [PATCH] asm-generic: Force inlining of get_order() to work around
+ gcc10 poor decision
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arch@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-19 at 08:47 +0530, Srinivasan Raju wrote:
-> This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
-> and LiFi-XL USB devices.
+On Sat, 17 Oct 2020 at 15:55, Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+> When building mpc885_ads_defconfig with gcc 10.1,
+> the function get_order() appears 50 times in vmlinux:
+>
+> [linux]# ppc-linux-objdump -x vmlinux | grep get_order | wc -l
+> 50
+>
+> [linux]# size vmlinux
+>    text    data     bss     dec     hex filename
+> 3842620  675624  135160 4653404  47015c vmlinux
+>
+> In the old days, marking a function 'static inline' was forcing
+> GCC to inline, but since commit ac7c3e4ff401 ("compiler: enable
+> CONFIG_OPTIMIZE_INLINING forcibly") GCC may decide to not inline
+> a function.
+>
+> It looks like GCC 10 is taking poor decisions on this.
+>
+> get_order() compiles into the following tiny function,
+> occupying 20 bytes of text.
+>
+> 0000007c <get_order>:
+>   7c:   38 63 ff ff     addi    r3,r3,-1
+>   80:   54 63 a3 3e     rlwinm  r3,r3,20,12,31
+>   84:   7c 63 00 34     cntlzw  r3,r3
+>   88:   20 63 00 20     subfic  r3,r3,32
+>   8c:   4e 80 00 20     blr
+>
+> By forcing get_order() to be __always_inline, the size of text is
+> reduced by 1940 bytes, that is almost twice the space occupied by
+> 50 times get_order()
+>
+> [linux-powerpc]# size vmlinux
+>    text    data     bss     dec     hex filename
+> 3840680  675588  135176 4651444  46f9b4 vmlinux
 
-Mostly trivial comments:
+I see similar results with GCC 10.2 building for arm32. There are 143
+instances of get_order with aspeed_g5_defconfig.
 
-> diff --git a/drivers/net/wireless/purelifi/chip.c b/drivers/net/wireless/purelifi/chip.c
-[]
-> +int purelifi_chip_set_rate(struct purelifi_chip *chip, u8 rate)
-> +{
-> +	int r;
-> +	static struct purelifi_chip *chip_p;
+Before:
+ 9071838 2630138  186468 11888444         b5673c vmlinux
+After:
+ 9069886 2630126  186468 11886480         b55f90 vmlinux
 
-Isn't chip_p pointless?
+1952 bytes smaller with your patch applied. Did you raise this with
+anyone from GCC?
 
-> +
-> +	if (chip)
-> +		chip_p = chip;
-> +	if (!chip_p)
-> +		return -EINVAL;
-> +
-
-chip_p is otherwise unused.
-
-> diff --git a/drivers/net/wireless/purelifi/mac.c b/drivers/net/wireless/purelifi/mac.c
-[]
-> +int purelifi_mac_init_hw(struct ieee80211_hw *hw)
-> +{
-> +	int r;
-> +	struct purelifi_mac *mac = purelifi_hw_mac(hw);
-> +	struct purelifi_chip *chip = &mac->chip;
-> +
-> +	r = purelifi_chip_init_hw(chip);
-> +	if (r) {
-> +		dev_warn(purelifi_mac_dev(mac), "init hw failed (%d)\n", r);
-> +		goto out;
-> +	}
-> +
-> +	dev_dbg(purelifi_mac_dev(mac), "irq_disabled %d\n", irqs_disabled());
-> +
-> +	r = regulatory_hint(hw->wiphy, "CA");
-> +out:
-> +	return r;
-> +}
-
-Simpler without the out: label and a direct return
-
-	if (r) {
-		dev_warn(...)
-		return r;
-	}
-
-	...
-
-	return regulator_hint(hw->wiphy, "CA");
-}
-
-> +static int download_fpga(struct usb_interface *intf)
-> +{
-[]
-> +	if ((le16_to_cpu(udev->descriptor.idVendor) ==
-> +				PURELIFI_X_VENDOR_ID_0) &&
-> +	    (le16_to_cpu(udev->descriptor.idProduct) ==
-> +				PURELIFI_X_PRODUCT_ID_0)) {
-> +		fw_name = "purelifi/li_fi_x/fpga.bit";
-> +		dev_info(&intf->dev, "bit file for X selected.\n");
-> +
-> +	} else if ((le16_to_cpu(udev->descriptor.idVendor)) ==
-> +					PURELIFI_XC_VENDOR_ID_0 &&
-> +		   (le16_to_cpu(udev->descriptor.idProduct) ==
-> +					PURELIFI_XC_PRODUCT_ID_0)) {
-> +		fw_name = "purelifi/li_fi_x/fpga_xc.bit";
-> +		dev_info(&intf->dev, "bit filefor XC selected.\n");
-
-Inconsistent dev_info spacing: "file for" vs "filefor"
-
-> +	for (fw_data_i = 0; fw_data_i < fw->size;) {
-> +		int tbuf_idx;
-> +
-> +		if ((fw->size - fw_data_i) < blk_tran_len)
-> +			blk_tran_len = fw->size - fw_data_i;
-> +
-> +		fw_data = kmalloc(blk_tran_len, GFP_KERNEL);
-> +
-> +		memcpy(fw_data, &fw->data[fw_data_i], blk_tran_len);
-> +
-> +		for (tbuf_idx = 0; tbuf_idx < blk_tran_len; tbuf_idx++) {
-> +			fw_data[tbuf_idx] =
-> +				((fw_data[tbuf_idx] & 128) >> 7) |
-> +				((fw_data[tbuf_idx] &  64) >> 5) |
-> +				((fw_data[tbuf_idx] &  32) >> 3) |
-> +				((fw_data[tbuf_idx] &  16) >> 1) |
-> +				((fw_data[tbuf_idx] &   8) << 1) |
-> +				((fw_data[tbuf_idx] &   4) << 3) |
-> +				((fw_data[tbuf_idx] &   2) << 5) |
-> +				((fw_data[tbuf_idx] &   1) << 7);
-> +		}
-
-pity there isn't an u8_bit_reverse function/mechanism
-
-> +static void pretty_print_mac(struct usb_interface *intf, char *serial_number,
-> +			     unsigned char *hw_address
-> +			    )
-> +{
-> +	unsigned char i;
-> +
-> +	for (i = 0; i < ETH_ALEN; i++)
-> +		dev_info(&intf->dev, "hw_address[%d]=%x\n", i, hw_address[i]);
-
-I don't think this prettier than %pM
-
-> +}
-> +
-> +static int upload_mac_and_serial_number(struct usb_interface *intf,
-> +					unsigned char *hw_address,
-> +					unsigned char *serial_number)
-> +{
-[]
-> +	do {
-> +		unsigned char buf[8];
-> +
-> +		msleep(200);
-> +
-> +		send_vendor_request(udev, 0x40, buf, sizeof(buf));
-> +		flash.enabled = buf[0] & 0xFF;
-> +
-> +		if (flash.enabled) {
-> +			flash.sectors = ((buf[6] & 255) << 24) |
-
-buf is unsigned char[], rather pointless using & 255
-
-> diff --git a/drivers/net/wireless/purelifi/usb.h b/drivers/net/wireless/purelifi/usb.h
-[]
-> +struct station_t {
-> +   //  7...3    |    2     |     1     |     0     |
-> +   // Reserved  | Hearbeat | FIFO full | Connected |
-
-heartbeat
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
 
+
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  include/asm-generic/getorder.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/asm-generic/getorder.h b/include/asm-generic/getorder.h
+> index e9f20b813a69..f2979e3a96b6 100644
+> --- a/include/asm-generic/getorder.h
+> +++ b/include/asm-generic/getorder.h
+> @@ -26,7 +26,7 @@
+>   *
+>   * The result is undefined if the size is 0.
+>   */
+> -static inline __attribute_const__ int get_order(unsigned long size)
+> +static __always_inline __attribute_const__ int get_order(unsigned long size)
+>  {
+>         if (__builtin_constant_p(size)) {
+>                 if (!size)
+> --
+> 2.25.0
+>
