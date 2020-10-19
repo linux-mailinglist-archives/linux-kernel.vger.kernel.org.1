@@ -2,55 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62323292C20
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B10292C34
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730875AbgJSRC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:02:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:32856 "EHLO
+        id S1731114AbgJSRDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:03:19 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:32860 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730817AbgJSRCs (ORCPT
+        with ESMTP id S1730947AbgJSRCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Oct 2020 13:02:48 -0400
-Date:   Mon, 19 Oct 2020 17:02:45 -0000
+Date:   Mon, 19 Oct 2020 17:02:46 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603126966;
+        s=2020; t=1603126967;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U+GeVhEnceiZLZ5xoly4nse1k1K2fqiY9er0KngAi9o=;
-        b=I5w1gN3j/RC4TKrr/yB27PM2LGSMbLtocY/nZvNTvQrf3SGMiwqY6jGPuSLvROtiTRrJUC
-        ZMr9X3FR8mxi0dGkGaBKjZdyc9OMVun9AW9GOEVnF1pQEZvr085fo41RT5QU0NqwvLVFCu
-        O8kB8QjnhGQ8VDPGnZCGlEADX/Dsjr6Nydg5nojiSdY/4Z340JA9Pq8ro9JiEKqxAddz8l
-        8GwXpyuzqTPocSi5Y2GiFMCspwJ0Mh3fzG8OX88QX8Nq+owcecqKbwTFk3E4oWS0oRyEFi
-        mbvjqRBQ1vqhDyfFda1C0Q38+YHSmOmORQLc16ExlxoxH8mOs4ZRykFaZLLr+Q==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=I4prWtepFhy3bxtt4MIIMMRn0PYif2sTXQiyd4JFXNw=;
+        b=uWecLYAm/pNiCbLKzYYWdHStjDGMGzeuXowkxfPP3+7mT4kC1FQE/NvdZthTuIrRAMKNcw
+        +YpuzZG++S0g6RxuKhu1CZObRAvGFtgRwP9A7RuxXPR8HXs0k255d+Q07fhjYsz+d6T3Zd
+        +F/fAccfZkJnMJRLhuf7rDAJH3H9ZpQf7ay6bz3E5fcxINpcehzwap/RUHjfykXLryWECg
+        aGxtYNbNpSVMS5Jn91pREHUNg+rcDeCt/8AsSbT455Xs4BBn6tpTlz9b5b+OtMqKNiIJGh
+        qTVwQ+nbU7JiuSfZ++dodImu7ZmP9ARikgsCIcTnjNt3KKOR3NhlUqrtsHejRQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603126966;
+        s=2020e; t=1603126967;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U+GeVhEnceiZLZ5xoly4nse1k1K2fqiY9er0KngAi9o=;
-        b=vyka8NYgk8iD1rRO+Cc6+EvEpKZwyTzd/eSKybgseJWBemtrzWZYNY8LGjgb5lRzE7Bs6g
-        bLi4kMCXrUSNAEBQ==
-From:   "tip-bot2 for Wilken Gottwalt" <tip-bot2@linutronix.de>
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=I4prWtepFhy3bxtt4MIIMMRn0PYif2sTXQiyd4JFXNw=;
+        b=s0R7syjb4LvA5GpNkANc2RMnECVu0aSziF1AMS1DtFKiY5O7t8exPOhcNaGQzyxqbxK274
+        6A8IOkhFebjp4mDA==
+From:   "tip-bot2 for Luiz Augusto von Dentz" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] USB: serial: option: add Cellient MPL200 card
-Cc:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+Subject: [tip: perf/urgent] Bluetooth: MGMT: Fix not checking if BT_HS is enabled
+Cc:     Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: =?utf-8?q?=3C3db5418fe9e516f4b290736c5a199c9796025e3c=2E16017?=
- =?utf-8?q?15478=2Egit=2Ewilken=2Egottwalt=40mailbox=2Eorg=3E?=
-References: =?utf-8?q?=3C3db5418fe9e516f4b290736c5a199c9796025e3c=2E160171?=
- =?utf-8?q?5478=2Egit=2Ewilken=2Egottwalt=40mailbox=2Eorg=3E?=
 MIME-Version: 1.0
-Message-ID: <160312696536.7002.16506934025691806768.tip-bot2@tip-bot2>
+Message-ID: <160312696638.7002.14202653033190309216.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,47 +53,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     a016619f0587848b1bd7178e935956d95b41e07e
-Gitweb:        https://git.kernel.org/tip/a016619f0587848b1bd7178e935956d95b41e07e
-Author:        Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-AuthorDate:    Sat, 03 Oct 2020 11:40:29 +02:00
+Commit-ID:     a0a91211dd0ac6f24393a2917a258de5aeedb842
+Gitweb:        https://git.kernel.org/tip/a0a91211dd0ac6f24393a2917a258de5aeedb842
+Author:        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+AuthorDate:    Thu, 06 Aug 2020 11:17:14 -07:00
 Committer:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 CommitterDate: Sat, 17 Oct 2020 08:31:21 +02:00
 
-USB: serial: option: add Cellient MPL200 card
+Bluetooth: MGMT: Fix not checking if BT_HS is enabled
 
-commit 3e765cab8abe7f84cb80d4a7a973fc97d5742647 upstream.
+commit b560a208cda0297fef6ff85bbfd58a8f0a52a543 upstream.
 
-Add usb ids of the Cellient MPL200 card.
+This checks if BT_HS is enabled relecting it on MGMT_SETTING_HS instead
+of always reporting it as supported.
 
-Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/3db5418fe9e516f4b290736c5a199c9796025e3c.1601715478.git.wilken.gottwalt@mailbox.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/option.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/bluetooth/mgmt.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 0c6f160..a65e620 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -528,6 +528,7 @@ static void option_instat_callback(struct urb *urb);
- /* Cellient products */
- #define CELLIENT_VENDOR_ID			0x2692
- #define CELLIENT_PRODUCT_MEN200			0x9005
-+#define CELLIENT_PRODUCT_MPL200			0x9025
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 5bbe710..5758ccb 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -782,7 +782,8 @@ static u32 get_supported_settings(struct hci_dev *hdev)
  
- /* Hyundai Petatel Inc. products */
- #define PETATEL_VENDOR_ID			0x1ff4
-@@ -1982,6 +1983,8 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2, 0xff, 0x02, 0x01) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2, 0xff, 0x00, 0x00) },
- 	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MEN200) },
-+	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MPL200),
-+	  .driver_info = RSVD(1) | RSVD(4) },
- 	{ USB_DEVICE(PETATEL_VENDOR_ID, PETATEL_PRODUCT_NP10T_600A) },
- 	{ USB_DEVICE(PETATEL_VENDOR_ID, PETATEL_PRODUCT_NP10T_600E) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(TPLINK_VENDOR_ID, TPLINK_PRODUCT_LTE, 0xff, 0x00, 0x00) },	/* TP-Link LTE Module */
+ 		if (lmp_ssp_capable(hdev)) {
+ 			settings |= MGMT_SETTING_SSP;
+-			settings |= MGMT_SETTING_HS;
++			if (IS_ENABLED(CONFIG_BT_HS))
++				settings |= MGMT_SETTING_HS;
+ 		}
+ 
+ 		if (lmp_sc_capable(hdev))
+@@ -1815,6 +1816,10 @@ static int set_hs(struct sock *sk, struct hci_dev *hdev, void *data, u16 len)
+ 
+ 	bt_dev_dbg(hdev, "sock %p", sk);
+ 
++	if (!IS_ENABLED(CONFIG_BT_HS))
++		return mgmt_cmd_status(sk, hdev->id, MGMT_OP_SET_HS,
++				       MGMT_STATUS_NOT_SUPPORTED);
++
+ 	status = mgmt_bredr_support(hdev);
+ 	if (status)
+ 		return mgmt_cmd_status(sk, hdev->id, MGMT_OP_SET_HS, status);
