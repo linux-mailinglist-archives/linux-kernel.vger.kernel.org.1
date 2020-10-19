@@ -2,121 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E928F292AED
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 17:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF5E292327
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730466AbgJSP4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 11:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730342AbgJSP4Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:56:25 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC92C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:56:23 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id b8so349825wrn.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 08:56:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ExyTIzaV0pr3Eai44qIOEkkWvYQoFZOO2NPesnlxaJg=;
-        b=LauR/Atww+62lrIAoI0S2aXFYC3jXL8fwHGmpYG11gT0kpCJSlFHUFXzKtkFAV4O0P
-         HgNhi4Xzc7LNZ86YW6xp2qpqxF9fUjmU3Sww/YmAaNfW8lzaxOhMfDssyPcFYnBMQloE
-         zTbV1d/w/3aqdvChRUejuygCo/WdvsgMuPWKw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=ExyTIzaV0pr3Eai44qIOEkkWvYQoFZOO2NPesnlxaJg=;
-        b=aD7ZPZS9O9gQRLrjbCpgsp+67AB5DbW/deEAJCGraEHQcmLFNkaZiNY1zdnjzt7q/G
-         GXns0xYqE06VzkvKE56cNoSWTBV/IuTikDUi/lFBmieY/hDFkTZXI+pkGh7gEmVW/A6f
-         6jE6xO3IdMBNc1gpCBwkdqAQZMf0ecFKTNgoxR5P4rp/5GgJhXw7TFWPpgONFMIc3/rS
-         ZxTkJuFrjFaxM0jlucwrVevZQVeUB30sh7fALuQ7LZZ5vD4qgzyRWRCTjerWQ0INpkob
-         8rZkNJvmZ9LSuyJc26z1KJpiNJ7NPfWUUGgcDMUgV3P6KAsT8afLwwxxIxnxz723RPog
-         kz/g==
-X-Gm-Message-State: AOAM532SQt6QRryW3jOfrDZ3pUwhWZysG7mHv05MDVeLy+Y+lZWICivp
-        +JJIQgGQkijitNuQRvqOGFRjDA==
-X-Google-Smtp-Source: ABdhPJwXRObsL8ejRw2Heh5XRu+rRn4ydix5fTKFeZYFLvSwm2ojMD2la1MO54JxNhao+Rk9S4EHZg==
-X-Received: by 2002:adf:deca:: with SMTP id i10mr257359wrn.96.1603122982550;
-        Mon, 19 Oct 2020 08:56:22 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id w11sm191745wrs.26.2020.10.19.08.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 08:56:21 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 17:56:19 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Daniel Vetter <daniel@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sven Schneider <s.schneider@arkona-technologies.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2 RESEND] docs: fb: Add font_6x8 to available built-in
- fonts
-Message-ID: <20201019155619.GH401619@phenom.ffwll.local>
-Mail-Followup-To: Peilin Ye <yepeilin.cs@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sven Schneider <s.schneider@arkona-technologies.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <717bb41dda8e2ed615f3faadfbc3e215de726d38.1603037079.git.yepeilin.cs@gmail.com>
- <20201018205401.698242-1-yepeilin.cs@gmail.com>
+        id S1728130AbgJSH5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 03:57:40 -0400
+Received: from mail-db8eur05on2051.outbound.protection.outlook.com ([40.107.20.51]:63110
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727420AbgJSH5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 03:57:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eAUyn6EsHcafGrTiTUDdljdjC5P3G44xcSJXE1rYGQr6sXqz/XzX7c6e0gu5BcM3Yd+HdPGLCo9egi2zhwMkKK3BnUqi4jDBNR817MkGNQ6dOoFrP/fz61PnoQGnqkttjxSR2vtsGsWauf0NYDCwR3i65IglAZRv4wP9EZRbmwhmkapbHWlMfkyIAQF9vZp+VPgHlbnfSzKx6ZADvg+v3HzfPYv1aL/74LcQPomaHiDGDtzmiAS6ZbUwedDOt9qQrOB/Q7GjrNy0hdCZi9NemCDxR7hVkRQ2ec/4dWz6A4mtQzAEL9/Q6rG+eVSMM2fYS7Hl/++cCHBAkOTgcrjY9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2S3cLaZh3U7tr1RiNC4kvlyDKV2+/7Amw9bo0GZ6hHE=;
+ b=AQFgb9MDM0uWSAZN4Ui6pYIyUn6dQYvWlHwFTMsh7FZfwwBghD3QrSmq8pUkXdz2hLe2PxSZOCYBngAMmAzzVpzi6NoPdeaBUr9G+P0/s9CykwIRYDo+VPKN13cv8ywcNAMcCMYq7QAlTZfX8/LKV9wGxMgjcEvGTme2an8WdeTWMAK76ElKQP5sa0sc14hjDiWWBCqqWLJS2rOAEgqkzFi/3ejnH8uA6XEzTDucXQlQ/koEtpVAGaLv4gijql4+bZrsjUyMqd6QKU6IGnM1r8LH48rugq/rIux9mOxIANFApSGIupqeFpMfJRbR7eflwzCZC9S4oY+ZVN16ewRW3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2S3cLaZh3U7tr1RiNC4kvlyDKV2+/7Amw9bo0GZ6hHE=;
+ b=okXwLYTvil8r/cqs1fZqPN6m0jExjHfvMYHqxIgOSOaBQstXr7RS8MLvwp+Z2wUnfamwLy8EboHqFAmdXIgGK5AV8Yfu0ho8gXJwbsn+GBKnFejq4zU3rFs44Ht8InE0OLcFBZGeR7zOHqR1DMjnbFQ8cCoMSwECppvwlCyBJWo=
+Authentication-Results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DBAPR04MB7430.eurprd04.prod.outlook.com (2603:10a6:10:1aa::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22; Mon, 19 Oct
+ 2020 07:57:36 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3c3a:58b9:a1cc:cbcc]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3c3a:58b9:a1cc:cbcc%9]) with mapi id 15.20.3477.028; Mon, 19 Oct 2020
+ 07:57:36 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     mkl@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
+        linux-can@vger.kernel.org, pankaj.bansal@nxp.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V2 0/8] can: flexcan: add stop mode support for i.MX8QM
+Date:   Mon, 19 Oct 2020 23:57:29 +0800
+Message-Id: <20201019155737.26577-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR02CA0107.apcprd02.prod.outlook.com
+ (2603:1096:4:92::23) To DB8PR04MB6795.eurprd04.prod.outlook.com
+ (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201018205401.698242-1-yepeilin.cs@gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0107.apcprd02.prod.outlook.com (2603:1096:4:92::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20 via Frontend Transport; Mon, 19 Oct 2020 07:57:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 95bfc7cf-0d02-4b6b-6fb0-08d87404a496
+X-MS-TrafficTypeDiagnostic: DBAPR04MB7430:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DBAPR04MB74309BC14C4D15596A1D8F43E61E0@DBAPR04MB7430.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I5NEeoNHfPLbbR0dJHb/wLH05H9+6poK5tKrTMVQrTOEdB8cDUwb/+aDUiXUh5TWgM0b8fbN7+WuGkuoeGxQDNfzPLtX5npWkO6j3nL3SdNdRwWSvIKBus9xthXoDTa4uhfzxulv9sJoPsNYuRff1PtN9eomP0GYZt8IG4oi49WqzhMPE/qHMMUEYJ5YV+c8gxzeSJtvTGQzO0uHowYckuNC14mp2d1WOHdHkANI7kDjl7tKW/slmbOWUQP3QA3BQp2RhZUlAhX0Y8oE/hDdsTd1amugYB3s55YT4+A2jO2Ziqm/oZ2lelPsissb/UZk51anleOTB8kB/UKM56GUErcQOeLsTnX2fQ21xixygL3MHhRWsaV9Cd0feaqe05p9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39860400002)(376002)(346002)(136003)(1076003)(6666004)(2906002)(4326008)(956004)(2616005)(316002)(5660300002)(52116002)(36756003)(8676002)(8936002)(6512007)(6486002)(6506007)(16526019)(26005)(186003)(86362001)(66946007)(66556008)(478600001)(66476007)(83380400001)(69590400008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 61pFTQbcSfY0T/krtvn1Yg7iKWyTH0wggGy1SAupT5oVJu78yTSK6hkUCLhKjcI5219eWpbzZR1qPbKrMVLBkQ0ftO00g4xkeDAcVEUdh+O1Q4JxWolWAKQZH6TQbbvDXsbpHT6FtO4ssmaYRxvRsZpthCCWzZAVBzvGp20L2QvDkNICEdvvxX6rWGUNo2eGc9KDcuv3Z0ENl0lMK3SN6J+kH2oABkoyDNbeOWkKLm2AD2V1Fw9DgJuZAxgyN1BjYH3LEmD5bkgTMNh2eFsjr0ajFqpiqmQL07JT8KONeZSaT7hTKn90juksUQO1w0OrLBcBaCpyGqTwmqSTX7VPPwg9LfpCPPV3ufcP5PUafzr1QEfm0jvwOOYBoGk7LxW873lf9xBd0p6iydFBDslKZa1n+pFikGObYWhTllFnJU1UVzm7oHqmr9hIwsizp24Y7fbbmFr9cLw4bEWZZch8BmhFmKANXH1UVIQ+oaecwJDBKFvBep5UzctFiennbZk2RYaBs4kklyFiHzz0uQgPMuDwaRtoHl/nTBEjh0YrxmNVp2evTqQLcB5hdQ7t5A37iHXZ9LPsfrNiX70+Ld085AQ+YbpgTuLfuYT8cC+J8G3wso+sdpn4U9zd/LnCB7XqnR95bRExP1V1fdO4O0EDNQ==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95bfc7cf-0d02-4b6b-6fb0-08d87404a496
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2020 07:57:36.6074
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: u+IyQzb9pCaXi7xN51pX3zUvuKkzwU823sdXwykM9vtMzDLujuGiWJXgm1GLw/Vq/BUGd1+npFbGX+tGIvsxnQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7430
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 04:54:01PM -0400, Peilin Ye wrote:
-> Recently we added a new 6x8 font in commit e2028c8e6bf9 ("lib/fonts: add
-> font 6x8 for OLED display"). Add its name to the "compiled-in fonts"
-> list.
-> 
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> ---
-> Resending +Cc: dri-devel, sorry if I spammed.
+The first patch from Liu Ying aims to export SCU symbols for SoCs w/wo SCU,
+so that no need to check CONFIG_IMX_SCU in the specific driver.
 
-Both this and patch 1/2 with the actual bugfix merged to
-drm-misc-next-fixes, should still make it into the merge window before
--rc1.
+The following patches are flexcan fixes and add stop mode support for i.MX8QM.
 
-Thanks, Daniel
+ChangeLogs:
+V1->V2:
+	* split ECC fix patches into separate patches.
+	* free can dev if failed to setup stop mode.
+	* disable wakeup on flexcan_remove.
+	* add FLEXCAN_IMX_SC_R_CAN macro helper.
+	* fsl,can-index->fsl,scu-index.
+	* move fsl,scu-index and priv->can_idx into
+	* flexcan_setup_stop_mode_scfw()
+	* prove failed if failed to setup stop mode.
 
-> 
->  Documentation/fb/fbcon.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/fb/fbcon.rst b/Documentation/fb/fbcon.rst
-> index 9aad964b767c..57f66de2f7e1 100644
-> --- a/Documentation/fb/fbcon.rst
-> +++ b/Documentation/fb/fbcon.rst
-> @@ -81,7 +81,7 @@ C. Boot options
->  1. fbcon=font:<name>
->  
->  	Select the initial font to use. The value 'name' can be any of the
-> -	compiled-in fonts: 10x18, 6x10, 7x14, Acorn8x8, MINI4x6,
-> +	compiled-in fonts: 10x18, 6x10, 6x8, 7x14, Acorn8x8, MINI4x6,
->  	PEARL8x8, ProFont6x11, SUN12x22, SUN8x16, TER16x32, VGA8x16, VGA8x8.
->  
->  	Note, not all drivers can handle font with widths not divisible by 8,
-> -- 
-> 2.25.1
-> 
+Joakim Zhang (7):
+  dt-bindings: can: flexcan: fix fsl,clk-source property
+  can: flexcan: remove FLEXCAN_QUIRK_DISABLE_MECR quirk for LS1021A
+  can: flexcan: add ECC initialization for LX2160A
+  can: flexcan: add ECC initialization for VF610
+  dt-bindings: can: flexcan: add fsl,scu-index property to indicate a
+    resource
+  can: flexcan: rename macro FLEXCAN_QUIRK_SETUP_STOP_MODE ->
+    FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR
+  can: flexcan: add CAN wakeup function for i.MX8QM
+
+Liu Ying (1):
+  firmware: imx: always export SCU symbols
+
+ .../bindings/net/can/fsl-flexcan.txt          |   8 +-
+ drivers/net/can/flexcan.c                     | 149 +++++++++++++++---
+ include/linux/firmware/imx/ipc.h              |  15 ++
+ include/linux/firmware/imx/svc/misc.h         |  23 +++
+ 4 files changed, 168 insertions(+), 27 deletions(-)
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.17.1
+
