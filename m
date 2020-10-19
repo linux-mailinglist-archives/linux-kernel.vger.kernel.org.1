@@ -2,145 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A24C292500
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A921292508
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgJSJve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:51:34 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2986 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726249AbgJSJvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:51:33 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 2EA37F02C2EC6AA13725;
-        Mon, 19 Oct 2020 10:51:32 +0100 (IST)
-Received: from [127.0.0.1] (10.47.6.70) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 19 Oct
- 2020 10:51:30 +0100
-Subject: Re: [perf metricgroup] fcc9c5243c:
- perf-sanity-tests.Parse_and_process_metrics.fail
-To:     Ian Rogers <irogers@google.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>
-CC:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linuxarm@huawei.com>, LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        <zhangshaokun@hisilicon.com>, James Clark <james.clark@arm.com>,
-        <linux-imx@nxp.com>, 0day robot <lkp@intel.com>, <lkp@lists.01.org>
-References: <1602152121-240367-10-git-send-email-john.garry@huawei.com>
- <20201018085031.GK11647@shao2-debian>
- <CAP-5=fWg4W_fpu-uTZkh-ZoL_7nvqU4F_2LqQgKFvBkfn174HQ@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <602e6bb8-a4ac-fae7-ed61-edf252e08d9a@huawei.com>
-Date:   Mon, 19 Oct 2020 10:48:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1727847AbgJSJ4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726249AbgJSJ4F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 05:56:05 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C462C0613CE;
+        Mon, 19 Oct 2020 02:56:05 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id p21so5050437pju.0;
+        Mon, 19 Oct 2020 02:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DQpTimuAzlDszY/84TRziF9dlZoz9pu8dPHqAyzWiC0=;
+        b=aP7DWCBSkCGEQpiV7lINj+OlwLMXmBFhs/Wk/5sbR3y/Hjg2LVFGUZbHZiC30JdoaY
+         CwCNSwBEpHUBJJT3/aYOT2iKuByfg9gMrMnJWxmSlGKhJJ3+HXfGV07D1bK6j9jyQxFt
+         Y2EhO4037v/3glXJcDPGiDeLRBk7mz695vGQVtTGVslJSuNVFe4ggZHbS9I12tFRNmdL
+         Tzg6oNZURMD0aueG2V9CC/vB9l8zV0GW4rAfM8GJYV2Tn9/gM5PSb26RbzGK1Od6na1M
+         q7uR5vxPbn61CSJHwY2EvoSco/wv2vgGWkeeDqmBxMA2efvnE3GqAfGZuWmGHti2my7Z
+         9giA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DQpTimuAzlDszY/84TRziF9dlZoz9pu8dPHqAyzWiC0=;
+        b=txZmIWKju+LIgsJl2v2MSj1TESYF4tVTHyfzDaLLT4ohUNrWB0mA7yr/7zi2oRRc+q
+         UA8jJ0H+oRleiiN/F+pbAuO7cJtm9pRxZW2ZqiSW3Q2ASe8ljVClAgy/C4YO04TjFPBJ
+         VEsABeKVELvdwICfgV/hkYAxxZPv5BOwNzj2iBzevy6qoQ9FvlrtnpuSsX/1cZOLrNIc
+         oZDEuVfDVq8H46aCdNu4zbs8fRksy831MZBzTrrelTJ/pevOEb2i0fJMyHNVxUWjQP4M
+         cFd8FMFUEIwwgO1vw3Afzo/oU7lz17KAC1V88C68RFL2YVH4gJmNNVfqJLwIkWhrlHIi
+         0KXg==
+X-Gm-Message-State: AOAM531V0GDw1jqkvQRYYE5nvDZxywZwzyvAL7bYLcmbB5bw6buuoKUT
+        CiggvK071my0VnCXbHT1Fw==
+X-Google-Smtp-Source: ABdhPJyGyYH9MTCeR5rG3OoYXSgt0G+X5ge3qXoDmm42aLzcfzs8qR32UB2f4T0EJpvvUr5jV9mn8Q==
+X-Received: by 2002:a17:90a:f685:: with SMTP id cl5mr16490738pjb.210.1603101365246;
+        Mon, 19 Oct 2020 02:56:05 -0700 (PDT)
+Received: from PWN ([161.117.41.183])
+        by smtp.gmail.com with ESMTPSA id t19sm1111202pji.18.2020.10.19.02.56.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 02:56:04 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 05:55:56 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sven Schneider <s.schneider@arkona-technologies.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] Fonts: Support FONT_EXTRA_WORDS macros for font_6x8
+Message-ID: <20201019095556.GA702017@PWN>
+References: <20200820082137.5907-1-s.hauer@pengutronix.de>
+ <926453876c92caac34cba8545716a491754d04d5.1603037079.git.yepeilin.cs@gmail.com>
+ <CAKMK7uF9E24P=vzKt28=1_iaFTYD7obHs+tEPwwZPNMhh7DBrg@mail.gmail.com>
+ <20201018201811.GA697615@PWN>
+ <CAKMK7uFEmNnBdpoHYqvCUYS=nxh99gKs6P1-1pgp-ouvTSioGw@mail.gmail.com>
+ <20201018204456.GA697766@PWN>
+ <CAKMK7uEoCqaPifM7CiaNwtSe8uZ9V-7joJfXSYLjy5pedAcjOg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fWg4W_fpu-uTZkh-ZoL_7nvqU4F_2LqQgKFvBkfn174HQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.6.70]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uEoCqaPifM7CiaNwtSe8uZ9V-7joJfXSYLjy5pedAcjOg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2020 00:30, Ian Rogers wrote:
-> On Sun, Oct 18, 2020 at 1:51 AM kernel test robot <rong.a.chen@intel.com> wrote:
->>
->> Greeting,
->>
->> FYI, we noticed the following commit (built with gcc-9):
->>
->> commit: fcc9c5243c478f104014daf4d23db86098d2aef0 ("perf metricgroup: Hack a fix for aliases when covering multiple PMUs")
->> url: https://github.com/0day-ci/linux/commits/John-Garry/perf-pmu-events-Support-event-aliasing-for-system-PMUs/20201008-182049
->>
->>
->> in testcase: perf-sanity-tests
->> version: perf-x86_64-c85fb28b6f99-1_20201008
->> with following parameters:
->>
->>          perf_compiler: gcc
->>          ucode: 0xdc
->>
->>
->>
->> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
->>
->> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+On Sun, Oct 18, 2020 at 11:51:19PM +0200, Daniel Vetter wrote:
+> On Sun, Oct 18, 2020 at 10:45 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+> > I'm confused, I see it on LKML in the link above. Sure I'll resend soon.
 > 
-> I believe this is a Skylake and there is a known bug in the Skylake
-> metric DRAM_Parallel_Reads as described here:
-> https://lore.kernel.org/lkml/CAP-5=fXejVaQa9qfW66cY77qB962+jbe8tT5bsLoOOcFmODnWQ@mail.gmail.com/
-> Fixing the bug needs more knowledge than what is available in manuals.
-> Hopefully Intel can take a look.
+> My brain didn't work, sorry about the confusion.
 > 
-> Thanks,
-> Ian
+> I'll pick up the patches tomorrow, probably not a good idea I do
+> anything more today :-)
 
-So this named patch ("perf metricgroup: Hack a fix for aliases...") is 
-breaking test #67 on my machine also, which is a broadwell.
+Ah, no worries, thanks!
 
-I will have a look, but I was hoping that Ian would have a proper fix 
-for this on top of ("perf metricgroup: Fix uncore metric expressions"), 
-which now looks to be merged.
-
-Thanks!
-
-> 
->>
->>
->> If you fix the issue, kindly add following tag
->> Reported-by: kernel test robot <rong.a.chen@intel.com>
->>
->>
->> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 67
->> 67: Parse and process metrics                             : FAILED!
->> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 68
->> 68: x86 rdpmc                                             : Ok
->> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 69
->> 69: Convert perf time to TSC                              : Ok
->> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 70
->> 70: DWARF unwind                                          : Ok
->> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 71
->> 71: x86 instruction decoder - new instructions            : Ok
->> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 72
->> 72: Intel PT packet decoder                               : Ok
->> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 73
->> 73: x86 bp modify                                         : Ok
->> 2020-10-16 19:31:53 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 74
->> 74: probe libc's inet_pton & backtrace it with ping       : Ok
->> 2020-10-16 19:31:54 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 75
->> 75: Zstd perf.data compression/decompression              : Ok
->>
->>
->>
->> To reproduce:
->>
->>          git clone https://github.com/intel/lkp-tests.git
->>          cd lkp-tests
->>          bin/lkp install job.yaml  # job file is attached in this email
->>          bin/lkp run     job.yaml
->>
->>
->>
->> Thanks,
->> Rong Chen
->>
-> .
-> 
+Peilin Ye
 
