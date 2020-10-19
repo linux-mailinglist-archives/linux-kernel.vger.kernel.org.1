@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03ECA292F66
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BD4292F73
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731695AbgJSU1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:27:25 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:44940 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgJSU1Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:27:24 -0400
-Received: by mail-oi1-f193.google.com with SMTP id x62so1392830oix.11;
-        Mon, 19 Oct 2020 13:27:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Dq2Q4wYlvZqon/jVNhQ6O79+BXokYsSiy5rj/1RzZb4=;
-        b=nJvcZ+cyMGl0a1hmxR25+SFPfgYDn1D5EQh5vKfaMcoLdF/wkcbqIyamGZ+Ci2XmFN
-         FA+tfPk8wHnqKRNdGg+jPaZ5i6xVmrchEzLUHBpyWL7PcC9Zc2MSQiGP9r0+c+DZPh92
-         sKV63ZydjmI8uB/V4eUJW+kctZDrjOuuXaUR9hOeL7tv8vetukJE/Twm2PT8RwUuk3D3
-         RNoZF1+hRmiZ0XyfDQ/JDVt73U7SHCN8xCzW8Fq4hy/2TXuU9S71E1JF//NQouY0JJf5
-         CpOS6aSjoYqEuDnjxSNfDcr6HR5T4eGzjelk87J9Z5zHHXnbcH5ah3B1X0tYLG20EFx6
-         rPRg==
-X-Gm-Message-State: AOAM531wu917VJ29jJURxRVptVrjj/R5SoWiadb9tJ1OA0j6Jimpz9aF
-        AQZnfutsMdP35+aGnzQe2Q==
-X-Google-Smtp-Source: ABdhPJzWni2g3t1tjZxHgWy35dH8tTRUz7MIVaD7VeH4QWgQVVCUj74G5lDSAoDqhFF6NQoH+g+YaA==
-X-Received: by 2002:aca:1012:: with SMTP id 18mr850373oiq.30.1603139243601;
-        Mon, 19 Oct 2020 13:27:23 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b1sm187822otq.80.2020.10.19.13.27.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 13:27:22 -0700 (PDT)
-Received: (nullmailer pid 3550080 invoked by uid 1000);
-        Mon, 19 Oct 2020 20:27:22 -0000
-Date:   Mon, 19 Oct 2020 15:27:22 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: Re: [PATCH v2 3/4] dt-bindings: remoteproc: stm32_rproc: update
- syscon descriptions
-Message-ID: <20201019202722.GA3550050@bogus>
-References: <20201014125441.2457-1-arnaud.pouliquen@st.com>
- <20201014125441.2457-4-arnaud.pouliquen@st.com>
+        id S1731664AbgJSUds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:33:48 -0400
+Received: from 8bytes.org ([81.169.241.247]:34022 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726118AbgJSUds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 16:33:48 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 4770E52D; Mon, 19 Oct 2020 22:33:47 +0200 (CEST)
+Date:   Mon, 19 Oct 2020 22:33:45 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] x86/boot/compressed/64: Check SEV encryption in
+ 64-bit boot-path
+Message-ID: <20201019203345.GF3635@8bytes.org>
+References: <20201019151121.826-1-joro@8bytes.org>
+ <20201019151121.826-4-joro@8bytes.org>
+ <20201019170008.GA2701355@rani.riverdale.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014125441.2457-4-arnaud.pouliquen@st.com>
+In-Reply-To: <20201019170008.GA2701355@rani.riverdale.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 14:54:40 +0200, Arnaud Pouliquen wrote:
-> Align other syscon descriptions with st,syscfg-m4-state and
-> st,syscfg-rsc-tbl descriptions by suppressing the cells
-> description.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> ---
->  .../devicetree/bindings/remoteproc/st,stm32-rproc.yaml      | 6 ------
->  1 file changed, 6 deletions(-)
-> 
+Hi Arvind,
 
-Acked-by: Rob Herring <robh@kernel.org>
+On Mon, Oct 19, 2020 at 01:00:08PM -0400, Arvind Sankar wrote:
+> On Mon, Oct 19, 2020 at 05:11:19PM +0200, Joerg Roedel wrote:
+> > +
+> > +	/* Store value to memory and keep it in %r10 */
+> > +	movq	%r10, sev_check_data(%rip)
+> > +
+> 
+> Does there need to be a cache flush/invalidation between this and the
+> read below to avoid just reading back from cache, or will the hardware
+> take care of that?
+
+No, a cache flush is not needed. When the C bit position is correct,
+then the data will be mapped encrypted with the old and the new
+page-table. If the C bit position is wrong, the access goes to a
+different physical address.
+
+> > +	/* Backup current %cr3 value to restore it later */
+> > +	movq	%cr3, %r11
+> > +
+> > +	/* Switch to new %cr3 - This might unmap the stack */
+> > +	movq	%rdi, %cr3
+> 
+> Does there need to be a TLB flush after this? When executed from the
+> main kernel's head code, CR4.PGE is enabled, and if the original page
+> mapping had the global bit set (the decompressor stub sets that in the
+> identity mapping), won't the read below still use the original encrypted
+> mapping if we don't explicitly flush it?
+
+The check only really matters for the boot CPU, not for the secondary
+CPUs. IIRC at this point in boot CR4.PGE is still off.
+
+Regards,
+
+	Joerg
+
