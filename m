@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1572928E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFDC2928F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 16:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729310AbgJSOHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 10:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
+        id S1729224AbgJSOIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 10:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729287AbgJSOHV (ORCPT
+        with ESMTP id S1728810AbgJSOIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 10:07:21 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03EFC0613D4
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:07:19 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e17so11583802wru.12
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:07:19 -0700 (PDT)
+        Mon, 19 Oct 2020 10:08:47 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCEA3C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:08:46 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id h24so14101404ejg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 07:08:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PndEcJoIhu8Ps+w0iBL39IDLYKub+UL8r52UvlKnJPk=;
-        b=jXznkorpMbudtjKvBK4N2QF2KUBXyVi6JOt43LjMCWyqO0eI+NX5Ra79Mw6fO6R4hV
-         VQQao6w/fLm0ghZUYIZk5zVG7sGfX/Q5W/6c4jiY04AJ4mZZ7BC7Gybz9AACJs178wF/
-         NRCf2NNy/LKrKLIZkF8QxD+aJngGEvFGnsJIYdiMAy+FQqdaB3suFwIKI3pTM/2S2Rhg
-         QV8yxYmPM5QglOe4SR1YeNEdTW8UzDkYonThnq725J+DuvVxhby2SgS1U+sZ8zUvLnAB
-         6TGjK+mYNHJWehouP+Lha3mwUxtpTWDrhz1tesldO1lxVOiMxWVcRHu9kSbla0L23zyD
-         JXwg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/KfoISsApaN0NSURJOvvfJb6dwcjjrFUhXMB/UsO5u8=;
+        b=NdZ9UN+yHyzobun2pSlu10EnMwdoI5kP57Dg+V9m5zdFRPjXDmTawgoX/3q3hFLOr7
+         TR5GP/k/Lp6kZRQsnuow8o3X97atocZ1Gg0S7CVRhxF9sCC+PDl3TXsHlCw5ZYr214ny
+         d39+ustjfCO8YQY2hsjzo1g621AuJAVzgi+iHCt05Y95N7+cvHBoiwfmQS5qyExSnd6U
+         VNNSXIdBmX7tr2OAhm0mMmhtrkIqePNqGUavbKyC7caHTGUlbxS42DsK58B8keW2wtLJ
+         66lBN8ZAkgIhKatEKaGFAMpbsGtj/WH3lUykXJ8SFQGCrlYHkigOufghId9ptnzODJmi
+         c9Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PndEcJoIhu8Ps+w0iBL39IDLYKub+UL8r52UvlKnJPk=;
-        b=mxzkNUvORKnT2lyFiYy4Ak+aqA93S0UiCG4IhelmylTeh0E58FUxwyKbZXp+1B1rML
-         ZVpeRsJ2b6bgUsKr91auuXRp0I8YFsyxN0tPtFRRq03G27gPCgn8VfPOwE/FmRHVs/3z
-         3UfeKXnbMPCPWZldIhO61DLHZLsn5yjZ/aY9fXctbse9G9gbPTxjHvDXbNvDFhorxrB8
-         gASRDAjMe6+uocRf8SxZp7w2OAn6eZq4YMS6S27WrRdwp2vLWFz8UWWZ/5tBs3m9RZ/s
-         Z575Nw0n4tstPwzt1MGOPNnSg3G1BcEVCrVXSX88dSjczp5Dc3aWNO4NzpUz4RWGM1bS
-         PYww==
-X-Gm-Message-State: AOAM530liX3lzYZNkoZ/I4KsB6jlfMtVXUEUwCxzR/m5AayRv0Ddf6w0
-        cEZ+C8nsEqMvoygO1UpV+s7MHA==
-X-Google-Smtp-Source: ABdhPJxbu5w5soYFv2Gj3kP13jgoxuRXjNkYcBYnVYdc/YxGK5tt2wig/DTZ0pvnP2bONQqInoEfww==
-X-Received: by 2002:adf:ed8f:: with SMTP id c15mr19230884wro.136.1603116438263;
-        Mon, 19 Oct 2020 07:07:18 -0700 (PDT)
-Received: from localhost.localdomain (26.167.185.81.rev.sfr.net. [81.185.167.26])
-        by smtp.gmail.com with ESMTPSA id a3sm114182wmb.46.2020.10.19.07.07.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/KfoISsApaN0NSURJOvvfJb6dwcjjrFUhXMB/UsO5u8=;
+        b=I7oqEwoxROHhxLkRv3gwISGRcEGYXScHZjshpoVYvXpbmS9XfY/uwNUR08UEcztCPz
+         1iSwfv5P9MUzfBKAu64HTdGEh0DIJ4JVM8j6eXX+8Gi/AYRbiMAXPkZGITgB8ySYou0n
+         0fUnzr/BZ/H0SQzXUVWAjHu6Euy3qJsoA/xoSuhdKwbHgfPboZonLauj9YuMU5hf7g/f
+         EsJFQBjFvrm0tHUbBTG2JfiA1NFnef7vnVgaPddGVGuGzwNDXSjinMA8ISUHzPIObmZG
+         /rtiR57UQnCHs5cgOQfn8/swKquf65mtjDNFftzJNegp9b6cqwQzzpPbY2xGWJsqGrWp
+         L3HQ==
+X-Gm-Message-State: AOAM530jO+js8QqjaBtmcl/KkWvHIGGqgT0Kit7UPenFWiKF8AYcK70u
+        KalSAZM34++BPmEy8m5sdUcV0w==
+X-Google-Smtp-Source: ABdhPJwA7uw6+ZE3RVnaAj9H96KR8FzN4UrEVEZS6aUBgtDdquQPDfuzZYCFSozbMOV5OyjLm10zow==
+X-Received: by 2002:a17:906:1150:: with SMTP id i16mr96740eja.82.1603116524907;
+        Mon, 19 Oct 2020 07:08:44 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id f25sm10868868edy.52.2020.10.19.07.08.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 07:07:17 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org
-Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org, lee.jones@linaro.org,
-        u.kleine-koenig@pengutronix.de, thierry.reding@gmail.com,
-        Fabien Parent <fparent@baylibre.com>
-Subject: [PATCH 5/5] arm64: dts: mediatek: mt8183-evb: add PWM support
-Date:   Mon, 19 Oct 2020 16:07:05 +0200
-Message-Id: <20201019140705.1518822-6-fparent@baylibre.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201019140705.1518822-1-fparent@baylibre.com>
-References: <20201019140705.1518822-1-fparent@baylibre.com>
+        Mon, 19 Oct 2020 07:08:44 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 16:08:24 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
+        zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-accelerators@lists.ozlabs.org,
+        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        linux-pci@vger.kernel.org, "Lu, Baolu" <baolu.lu@intel.com>,
+        Jacon Jun Pan <jacob.jun.pan@intel.com>
+Subject: Re: [RFC PATCH 0/2] iommu: Avoid unnecessary PRI queue flushes
+Message-ID: <20201019140824.GA1478235@myrica>
+References: <20201015090028.1278108-1-jean-philippe@linaro.org>
+ <20201015182211.GA54780@otc-nc-03>
+ <20201016075923.GB1309464@myrica>
+ <20201017112525.GA47206@otc-nc-03>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201017112525.GA47206@otc-nc-03>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the pwm driver and set the pinctrl for PWM A line.
+On Sat, Oct 17, 2020 at 04:25:25AM -0700, Raj, Ashok wrote:
+> > For devices that *don't* use a stop marker, the PCIe spec says (10.4.1.2):
+> > 
+> >   To stop [using a PASID] without using a Stop Marker Message, the
+> >   function shall:
+> >   1. Stop queueing new Page Request Messages for this PASID.
+> 
+> The device driver would need to tell stop sending any new PR's.
+> 
+> >   2. Finish transmitting any multi-page Page Request Messages for this
+> >      PASID (i.e. send the Page Request Message with the L bit Set).
+> >   3. Wait for PRG Response Messages associated any outstanding Page
+> >      Request Messages for the PASID.
+> > 
+> > So they have to flush their PR themselves. And since the device driver
+> > completes this sequence before calling unbind(), then there shouldn't be
+> > any oustanding PR for the PASID, and unbind() doesn't need to flush,
+> > right?
+> 
+> I can see how the device can complete #2,3 above. But the device driver
+> isn't the one managing page-responses right. So in order for the device to
+> know the above sequence is complete, it would need to get some assist from
+> IOMMU driver?
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
----
- arch/arm64/boot/dts/mediatek/mt8183-evb.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+No the device driver just waits for the device to indicate that it has
+completed the sequence. That's what the magic stop-PASID mechanism
+described by PCIe does. In 6.20.1 "Managing PASID TLP Prefix Usage" it
+says:
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-index ae405bd8f06b..c8e1d97e564f 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-@@ -333,6 +333,12 @@ pins_spi{
- 			bias-disable;
- 		};
- 	};
-+
-+	pwm0_pin_default: pwm0 {
-+		pwm {
-+			pinmux = <PINMUX_GPIO90__FUNC_PWM_A>;
-+		};
-+	};
- };
- 
- &spi0 {
-@@ -381,3 +387,9 @@ &spi5 {
- &uart0 {
- 	status = "okay";
- };
-+
-+&pwm0 {
-+	status = "okay";
-+	pinctrl-0 = <&pwm0_pin_default>;
-+	pinctrl-names = "default";
-+};
--- 
-2.28.0
+"A Function must have a mechanism to request that it gracefully stop using
+ a specific PASID. This mechanism is device specific but must satisfy the
+ following rules:
+ [...]
+ * When the stop request mechanism indicates completion, the Function has:
+   [...]
+   * Complied with additional rules described in Address Translation
+     Services (Chapter 10 [10.4.1.2 quoted above]) if Address Translations
+     or Page Requests were issued on the behalf of this PASID."
 
+So after the device driver initiates this mechanism in the device, the
+device must be able to indicate completion of the mechanism, which
+includes completing all in-flight Page Requests. At that point the device
+driver can call unbind() knowing there is no pending PR for this PASID.
+
+Thanks,
+Jean
+
+> 
+> How does the driver know that everything host received has been responded
+> back to device?
+> 
+> > 
+> > > I'm not sure about other IOMMU's how they behave, When there is no space in
+> > > the PRQ, IOMMU auto-responds to the device. This puts the device in a
+> > > while (1) loop. The fake successful response will let the device do a ATS
+> > > lookup, and that would fail forcing the device to do another PRQ.
+> > 
+> > But in the sequence above, step 1 should ensure that the device will not
+> > send another PR for any successful response coming back at step 3.
+> 
+> True, but there could be some page-request in flight on its way to the
+> IOMMU. By draining and getting that round trip back to IOMMU we gaurantee
+> things in flight are flushed to PRQ after that Drain completes.
+> > 
+> > So I agree with the below if we suspect there could be pending PR, but
+> > given that pending PR are a stop marker thing and we don't know any device
+> > using stop markers, I wondered why I bothered implementing PRIq flush at
+> > all for SMMUv3, hence this RFC.
+> > 
+> 
+> Cheers,
+> Ashok
