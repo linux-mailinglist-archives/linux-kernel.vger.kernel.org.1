@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F6B292664
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3957292665
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 13:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgJSLc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 07:32:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39384 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725799AbgJSLc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 07:32:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603107146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dvULZg4AeKJjYxg9g9jVt+W6saMphhmth4XQTkKQjd8=;
-        b=h4IZtlhSh/78EtJvOyS2N4H//4eFnA+cMEYbE50pbZKptm1tzRraBX4dfvIRvTNo4bhAxv
-        t9gN+5gFrIx1juHpiFPlwtMIb7r8hYccTn9yDNm820pAo4UZMptDWqPDyvG2zkWAQOGvW6
-        ++VQfCbsSteKoSJScQNTy1kcSyVmVaI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0F191ABA2;
-        Mon, 19 Oct 2020 11:32:26 +0000 (UTC)
-Date:   Mon, 19 Oct 2020 13:32:24 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Shijie Luo <luoshijie1@huawei.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linmiaohe@huawei.com, linfeilong@huawei.com
-Subject: Re: [PATCH] mm: mempolicy: fix potential pte_unmap_unlock pte error
-Message-ID: <20201019113224.GD27114@dhcp22.suse.cz>
-References: <20201019074853.50856-1-luoshijie1@huawei.com>
- <20201019105029.GA18953@linux>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019105029.GA18953@linux>
+        id S1727883AbgJSLcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 07:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727882AbgJSLcq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 07:32:46 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285AAC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 04:32:46 -0700 (PDT)
+Received: from ramsan ([84.195.186.194])
+        by laurent.telenet-ops.be with bizsmtp
+        id hnYi230024C55Sk01nYiAJ; Mon, 19 Oct 2020 13:32:43 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kUTP8-000055-11; Mon, 19 Oct 2020 13:32:42 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kUTP7-00030U-VE; Mon, 19 Oct 2020 13:32:41 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Paolo Abeni <pabeni@redhat.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] mptcp: MPTCP_KUNIT_TESTS should depend on MPTCP instead of selecting it
+Date:   Mon, 19 Oct 2020 13:32:40 +0200
+Message-Id: <20201019113240.11516-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19-10-20 12:50:34, Oscar Salvador wrote:
-> On Mon, Oct 19, 2020 at 03:48:53AM -0400, Shijie Luo wrote:
-> > When flags in queue_pages_pte_range don't have MPOL_MF_MOVE or MPOL_MF_MOVE_ALL
-> >  bits, code breaks and passing origin pte - 1 to pte_unmap_unlock seems like
-> > not a good idea.
-> 
-> I think the above is already explained below?
+MPTCP_KUNIT_TESTS selects MPTCP, thus enabling an optional feature the
+user may not want to enable.  Fix this by making the test depend on
+MPTCP instead.
 
-Yes
+Fixes: a00a582203dbc43e ("mptcp: move crypto test to KUNIT")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ net/mptcp/Kconfig | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> > queue_pages_pte_range can run in MPOL_MF_MOVE_ALL mode which doesn't migrate
-> > misplaced pages but returns with EIO when encountering such a page. Since
-> > commit a7f40cfe3b7a ("mm: mempolicy: make mbind() return -EIO when MPOL_MF_STRICT
-> >  is specified") and early break on the first pte in the range results in
-> > pte_unmap_unlock on an underflow pte. This can lead to lockups later on when
-> >  somebody  tries to lock the pte resp. page_table_lock again..
-> > 
-> > Fixes: a7f40cfe3b7a ("mm: mempolicy: make mbind() return -EIO when
-> > MPOL_MF_STRICT is specified")
-
-Cc: stable
-
-is due as well. There are even security concerns and I wouldn't be
-surprised if this gained a CVE.
-
-> > Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
-> > Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> 
-> Anyway, LGTM:
-> 
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
+diff --git a/net/mptcp/Kconfig b/net/mptcp/Kconfig
+index 698bc35251609755..abb0a992d4a0855a 100644
+--- a/net/mptcp/Kconfig
++++ b/net/mptcp/Kconfig
+@@ -22,11 +22,8 @@ config MPTCP_IPV6
+ 	select IPV6
+ 	default y
+ 
+-endif
+-
+ config MPTCP_KUNIT_TESTS
+ 	tristate "This builds the MPTCP KUnit tests" if !KUNIT_ALL_TESTS
+-	select MPTCP
+ 	depends on KUNIT
+ 	default KUNIT_ALL_TESTS
+ 	help
+@@ -39,3 +36,4 @@ config MPTCP_KUNIT_TESTS
+ 
+ 	  If unsure, say N.
+ 
++endif
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
