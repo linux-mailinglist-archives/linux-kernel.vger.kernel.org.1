@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD8C292E48
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E73292E4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731044AbgJSTTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:19:05 -0400
-Received: from smtprelay0131.hostedemail.com ([216.40.44.131]:43194 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727681AbgJSTTF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:19:05 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id AC31418029210;
-        Mon, 19 Oct 2020 19:19:04 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3653:3742:3865:3866:3868:3870:3871:3874:4321:5007:6119:7903:7974:8957:9007:10004:10400:10482:10848:11026:11473:11658:11914:12043:12297:12438:12555:12760:13069:13161:13229:13311:13357:13439:13548:14093:14097:14181:14394:14659:14721:19901:19997:21080:21221:21451:21627:30054:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: sock23_240113c27239
-X-Filterd-Recvd-Size: 2522
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 19 Oct 2020 19:19:03 +0000 (UTC)
-Message-ID: <4b863be68e679546b40d50b97a4a806c03056a1c.camel@perches.com>
-Subject: [PATCH] checkpatch: Prefer static const declarations
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andy Whitcroft <apw@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 19 Oct 2020 12:19:02 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1731114AbgJSTTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:19:35 -0400
+Received: from smtp.infotech.no ([82.134.31.41]:56022 "EHLO smtp.infotech.no"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730938AbgJSTTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 15:19:35 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by smtp.infotech.no (Postfix) with ESMTP id 5ABDC204248;
+        Mon, 19 Oct 2020 21:19:32 +0200 (CEST)
+X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
+Received: from smtp.infotech.no ([127.0.0.1])
+        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id M1MqUhragf6R; Mon, 19 Oct 2020 21:19:32 +0200 (CEST)
+Received: from xtwo70.bingwo.ca (vpn.infotech.no [82.134.31.155])
+        by smtp.infotech.no (Postfix) with ESMTPA id 0AF2520414F;
+        Mon, 19 Oct 2020 21:19:30 +0200 (CEST)
+From:   Douglas Gilbert <dgilbert@interlog.com>
+To:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     martin.petersen@oracle.com, axboe@kernel.dk, bvanassche@acm.org,
+        bostroesser@gmail.com
+Subject: [PATCH v3 0/4] scatterlist: add new capabilities
+Date:   Mon, 19 Oct 2020 15:19:24 -0400
+Message-Id: <20201019191928.77845-1-dgilbert@interlog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are about 100,000 uses of 'static const <type>' but about
-400 uses
-of 'static <type> const' in the kernel where type is
-not a pointer.
+Scatter-gather lists (sgl_s) are frequently used as data carriers in
+the block layer. For example the SCSI and NVMe subsystems interchange
+data with the block layer using sgl_s. The sgl API is declared in
+<linux/scatterlist.h>
 
-The kernel almost always uses "static const" over "const static"
-as there is a compiler warning for that declaration style.
+The author has extended these transient sgl use cases to a store (i.e.
+a ramdisk) in the scsi_debug driver. Other new potential uses of sgl_s
+could be for caches. When this extra step is taken, the need to copy
+between sgl_s becomes apparent. The patchset adds sgl_copy_sgl() and
+two other sgl operations.
 
-But there is no compiler warning for "static <type> const".
+The existing sgl_alloc_order() function can be seen as a replacement
+for vmalloc() for large, long-term allocations.  For what seems like
+no good reason, sgl_alloc_order() currently restricts its total
+allocation to less than or equal to 4 GiB. vmalloc() has no such
+restriction.
 
-So add a checkpatch warning for the atypical declaration uses of.
+Changes since v2 [posted 20201018]:
+  - remove unneeded lines from sgl_memset() definition.
+  - change sg_zero_buffer() to call sgl_memset() as the former
+    is a subset.
 
-	const static <type> <foo>
-and
-	static <type> const <foo>
+Changes since v1 [posted 20201016]:
+  - Bodo Stroesser pointed out a problem with the nesting of
+    kmap_atomic() [called via sg_miter_next()] and kunmap_atomic()
+    calls [called via sg_miter_stop()] and proposed a solution that
+    simplifies the previous code.
 
-For example:
+  - the new implementation of the three functions has shorter periods
+    when pre-emption is disabled (but has more them). This should
+    make operations on large sgl_s more pre-emption "friendly" with
+    a relatively small performance hit.
 
-$ ./scripts/checkpatch.pl -f --emacs --quiet --nosummary -types=static_const arch/arm/crypto/aes-ce-glue.c
-arch/arm/crypto/aes-ce-glue.c:75: WARNING: Move const after static - use 'static const u8'
-#75: FILE: arch/arm/crypto/aes-ce-glue.c:75:
-+	static u8 const rcon[] = {
+  - sgl_memset return type changed from void to size_t and is the
+    number of bytes actually (over)written. That number is needed
+    anyway internally so may as well return it as it may be useful to
+    the caller.
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- scripts/checkpatch.pl | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+This patchset is against lk 5.9.0
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index fab38b493cef..f82ec64f4fc7 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -4207,6 +4207,18 @@ sub process {
- 			}
- 		}
- 
-+# check for const static or static <non ptr type> const declarations
-+# prefer 'static const <foo>' over 'const static <foo>' and 'static <foo> const'
-+		if ($sline =~ /^\+\s*const\s+static\s+($Type)\b/ ||
-+		    $sline =~ /^\+\s*static\s+($BasicType)\s+const\b/) {
-+			if (WARN("STATIC_CONST",
-+				 "Move const after static - use 'static const $1'\n" . $herecurr) &&
-+			    $fix) {
-+				$fixed[$fixlinenr] =~ s/\bconst\s+static\b/static const/;
-+				$fixed[$fixlinenr] =~ s/\bstatic\s+($BasicType)\s+const\b/static const $1/;
-+			}
-+		}
-+
- # check for non-global char *foo[] = {"bar", ...} declarations.
- 		if ($line =~ /^.\s+(?:static\s+|const\s+)?char\s+\*\s*\w+\s*\[\s*\]\s*=\s*\{/) {
- 			WARN("STATIC_CONST_CHAR_ARRAY",
+Douglas Gilbert (4):
+  sgl_alloc_order: remove 4 GiB limit, sgl_free() warning
+  scatterlist: add sgl_copy_sgl() function
+  scatterlist: add sgl_compare_sgl() function
+  scatterlist: add sgl_memset()
 
+ include/linux/scatterlist.h |  12 +++
+ lib/scatterlist.c           | 186 +++++++++++++++++++++++++++++++++---
+ 2 files changed, 184 insertions(+), 14 deletions(-)
+
+-- 
+2.25.1
 
