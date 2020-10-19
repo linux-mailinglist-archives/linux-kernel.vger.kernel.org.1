@@ -2,112 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D44292BEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B597292BEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730652AbgJSQyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730322AbgJSQyl (ORCPT
+        id S1730727AbgJSQzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:55:05 -0400
+Received: from smtprelay0025.hostedemail.com ([216.40.44.25]:57428 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730322AbgJSQzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:54:41 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B002FC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:54:39 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id l2so364506lfk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:54:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WWe1nyT09mfP995hqz7RZGWn3qxoOPoS4oyItVvSHIA=;
-        b=OuBRRIaNVW4sTCoqWv1mPmTw7hVN3ZKuzZpOcOF5DDEf/55sVq99t/SFPfjSK/56KA
-         oCp/8BNdCL7+xQJJXdjtBzwqWKHzB6VfZxcXStrY/0/16UcUNhMpE/0lPrPazKKI11Hm
-         q9wLB13d9P9GsiPO66kJn/lpgvunLWukaHsNI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WWe1nyT09mfP995hqz7RZGWn3qxoOPoS4oyItVvSHIA=;
-        b=CcBLftbAAZ/E51nygbOJl8qeEpYSKhldVv27nMnDGfDOuxuPQXyjo4mDbpINKlWyWt
-         +P4BbKvYBxIXCK5UMdLEZJ8lwHIAJO4CJYJp4u/v6PfvsFzRwc0khUUyorgDUT0oxH5D
-         isKPoN6YyHHhRN8Cq3C0MCCqC591PlH57L0iG6YtwnVxkfci6FoT10h6R9Q6uXiZHKIr
-         vynDOqOtSbEKwrstparlxvghcYmt3D2pHsU2TvEsd32mVFvXfDt2L5zAc7p7NDFuHqov
-         hT5BTVuPYhvbz7DWoJ1EagCHmAiHb4wbode9xLUYDH83KPFk097imzpR3uSDqDpGiE5K
-         W+VA==
-X-Gm-Message-State: AOAM530r5tIWztpGcCsNKT/lsBse+b0KHxmbsw81akjBarlVU6QApjdV
-        DYF/1ZTU4F7euiZmH7YtAbNz5XoXHlt54A==
-X-Google-Smtp-Source: ABdhPJxVjjLnHKm1OtsZo+SetO4+BPlLjyOT4/K5o7uPpBqyo/KzcmkjpfveH8kODiMS6FwbqEI+Qg==
-X-Received: by 2002:a19:7009:: with SMTP id h9mr206539lfc.201.1603126477889;
-        Mon, 19 Oct 2020 09:54:37 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id v20sm67966ljg.111.2020.10.19.09.54.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 09:54:37 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id h20so798658lji.9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:54:36 -0700 (PDT)
-X-Received: by 2002:a2e:9955:: with SMTP id r21mr380357ljj.124.1603126476431;
- Mon, 19 Oct 2020 09:54:36 -0700 (PDT)
+        Mon, 19 Oct 2020 12:55:05 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 965181802926E;
+        Mon, 19 Oct 2020 16:55:03 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2692:2693:2828:2892:3138:3139:3140:3141:3142:3350:3622:3865:3867:3868:3872:3873:4321:5007:10004:10400:11232:11658:11914:12295:12297:12555:12740:12760:12895:13069:13311:13357:13439:14659:21080:21611:21627:21740:30012:30034:30054:30075:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: air55_460ecc327238
+X-Filterd-Recvd-Size: 2011
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 19 Oct 2020 16:55:01 +0000 (UTC)
+Message-ID: <b92c72c591e6657ebb7f1984959607b3949ef58a.camel@perches.com>
+Subject: Re: [PATCH] [v6] wireless: Initial driver submission for pureLiFi
+ STA devices
+From:   Joe Perches <joe@perches.com>
+To:     Srinivasan Raju <srini.raju@purelifi.com>,
+        Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Cc:     Mostafa Afgani <mostafa.afgani@purelifi.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING DRIVERS (WIRELESS)" 
+        <linux-wireless@vger.kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>
+Date:   Mon, 19 Oct 2020 09:54:59 -0700
+In-Reply-To: <LOYP265MB1918B212C618FF60333BFD85E01E0@LOYP265MB1918.GBRP265.PROD.OUTLOOK.COM>
+References: <20201019031744.17916-1-srini.raju@purelifi.com>
+         <20201019083914.10932-1-srini.raju@purelifi.com>
+        ,<CABPxzYJaB5_zZshs3JCnPDgUZQZc+XRN+DuE3BjGjJKsiJh0uA@mail.gmail.com>
+         <LOYP265MB1918B212C618FF60333BFD85E01E0@LOYP265MB1918.GBRP265.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20201016222523.364218-1-evgreen@chromium.org> <20201016152454.v3.2.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
- <CAHp75VfsM+ysz_tr_h0rJpspcZAToiV+H5KDCi7J=LCEO0sFxQ@mail.gmail.com>
-In-Reply-To: <CAHp75VfsM+ysz_tr_h0rJpspcZAToiV+H5KDCi7J=LCEO0sFxQ@mail.gmail.com>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Mon, 19 Oct 2020 09:53:59 -0700
-X-Gmail-Original-Message-ID: <CAE=gft5cd4v=THHuBPAeB5ApgH+TAPiEukZiG0pC33RsZ4AriQ@mail.gmail.com>
-Message-ID: <CAE=gft5cd4v=THHuBPAeB5ApgH+TAPiEukZiG0pC33RsZ4AriQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] i2c: i2c-mux-gpio: Enable this driver in ACPI land
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Peter Rosin <peda@axentia.se>, Wolfram Sang <wsa@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Korsgaard <peter.korsgaard@barco.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 11:58 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Sat, Oct 17, 2020 at 8:30 AM Evan Green <evgreen@chromium.org> wrote:
-> >
-> > Enable i2c-mux-gpio devices to be defined via ACPI. The idle-state
-> > property translates directly to a fwnode_property_*() call. The child
-> > reg property translates naturally into _ADR in ACPI.
-> >
-> > The i2c-parent binding is a relic from the days when the bindings
-> > dictated that all direct children of an I2C controller had to be I2C
-> > devices. These days that's no longer required. The i2c-mux can sit as a
-> > direct child of its parent controller, which is where it makes the most
-> > sense from a hardware description perspective. For the ACPI
-> > implementation we'll assume that's always how the i2c-mux-gpio is
-> > instantiated.
->
-> Can you tell me if the following is relevant to what you are looking for?
-> https://elixir.bootlin.com/linux/latest/source/drivers/i2c/i2c-mux.c#L393
+On Mon, 2020-10-19 at 16:40 +0000, Srinivasan Raju wrote:
+> > Overall, there are many magic numbers without comments, this makes it hard to
+> > understand the code. Using defines with proper naming helps and for 802.11 stuff
+> > can use ieee80211_*/IEEE80211_* should be used.
+> 
+> Thanks for your comments Krishna, will work on them.
 
-I don't think so, but let me know if I'm reading between the lines incorrectly.
+When you do, please start adding
+changelog information below the
+---
+line to your patches.
 
-The code you pointed to links the newly-minted fake i2c controller
-back together with its ACPI node. This is important, since I think
-that's how child I2C devices underneath the fake busses get populated
-in ACPI land. But the paragraph above is discussing how to identify
-the parent adapter (ie the real hardware) for an i2c-mux-gpio device.
+It's quite a chore to figure out
+what changed between revisions.
 
-In DT-land, the i2c-mux-gpio floats at the top of the tree directly
-under /, and then uses a phandle to point to where transactions should
-be forwarded. I'm told the reason for this is historical limitations
-with the DT bindings. Rather than trying to translate the phandle over
-1:1 into ACPI-land, I'm asserting that the mux device should live
-underneath the adapter it wants to forward traffic to.
 
--Evan
-
->
-> --
-> With Best Regards,
-> Andy Shevchenko
