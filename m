@@ -2,120 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07064292FF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6D529300C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 22:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730981AbgJSUqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 16:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730147AbgJSUqY (ORCPT
+        id S1728383AbgJSUsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 16:48:25 -0400
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:39964 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727007AbgJSUsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:46:24 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EFEC0613CE;
-        Mon, 19 Oct 2020 13:46:24 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id h6so693163pgk.4;
-        Mon, 19 Oct 2020 13:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lZOmjAfebeIR7qmEAaLdEquc4ZpzVD3xby9O6rpIYDw=;
-        b=KaeucAx9Nj30YybE6s+Jf6uDf6b1cN+oLUXUan8AmuAChdfmpnDNN1NSm47rlazZtF
-         TBpVKIftFGFBzbv2LbvpRLD23lBjLepiq1T866p9/tWxlECEVBK/WvA4cgNmQfY8dmlD
-         xV5pdA1EwPp0n1zQYbcGQ8ckG+Ft4AIz7E6dTP0kynmdiEq5sElCaHk3uA7Lu0Lv1nal
-         hUG3tZSSTuZMPBvcjOjSssYMfINLT83yU+s5ZWqsxJm+IDHy0/7yTy0cL+2dRxLg1VF+
-         f6T11cHukNtctrIXRNDwmu99wPM1xlvZ1YghdQySzICISN2fTLAC70HhlIbDTD3ECEbM
-         TbIA==
+        Mon, 19 Oct 2020 16:48:25 -0400
+Received: by mail-oo1-f67.google.com with SMTP id w7so267436oow.7;
+        Mon, 19 Oct 2020 13:48:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lZOmjAfebeIR7qmEAaLdEquc4ZpzVD3xby9O6rpIYDw=;
-        b=Ss6ejEHY4MEeaxOVLjMMJi9hqfdGKgeGVfnvJZk5eOpjqA/B/RtcgOsyNnX5RDyQ4n
-         hog0qegcO5Ndhl3D/D14kxBaUQ4m1oXKN0vijkIHQ9tGPJjmdmqRS3LEE/RPJoKqq0ci
-         rQN0EifuW94Nj8h/0RBVC6oq4ncGKb5sMNt8z3GENK7/ri1n7KUXVMEBiVkwsoqp6eIz
-         nGtGklN9/XnIAPEDB95P5/kzB5Wf24lAQuAXIG46esNbeniVMVqudzQFIgj7gAW9KqSY
-         dYHxGMK+0DU7o9dpkIQoucpL03AbSQVyBrBnnHOg1ogHSEgDuSD+BEpWLomw7KsHNZbq
-         XnGQ==
-X-Gm-Message-State: AOAM532BjJabNTBV42N12JzVw4f5pdimErud2BBTMaN34r92SYFlUml5
-        NC8yNQUz8g0cDd8Y1V45RIg=
-X-Google-Smtp-Source: ABdhPJxTFXUNhuydkPVXKdX4h4Tx8iM7i4oIj42HJR551i80t3OhePRoJxTyglW8CodaOQ5oAL6aQw==
-X-Received: by 2002:a63:1a64:: with SMTP id a36mr1328463pgm.153.1603140383538;
-        Mon, 19 Oct 2020 13:46:23 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id u15sm582027pfl.215.2020.10.19.13.46.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fxa3uzHmULeVmNdtF5y01CM2QpDZ2ApdIjLlwOHG4sY=;
+        b=Va2X7wBuu+NBS4fj2JxIadcxzkqIo8mUISO+Oyy57HAI9+lxrvx2mgsdyiwlPrSw8s
+         nwEuNG8gFhb1wRtOBTg/Wv2shnk1OWm4xQ6nDykpYlxE/dfQlJxKxLTfG+OVePf6EOjc
+         JKqXwolpGT7Bj1ZZjhV+r1m021AdaycW7G4sEYtAeZoosnw0a3dCP7Xx2tLOQmDbqnox
+         P3vfxqms48sq0rrbnvcWb+hrGI6KAf8H8RfHzDJ5tpRhrsi+L5984atDO5tzNaU5T1mU
+         mdm+nvKwCj+y/EUmYeTT+SzWauwnOqVytnKs14cms1E0kIOLUP5u3pVbwYfRbN3PEOZd
+         ftzw==
+X-Gm-Message-State: AOAM532Gvt87raJf2QMrhNAlIUzPE3dX97mjhIWD57jJx/8IVSuaAgF3
+        lClEwTMhUVJXGAKcnZCsRdcDfVQ6Ew==
+X-Google-Smtp-Source: ABdhPJwl/iQfkO5suixU4PBWEHxz8p2fHudaNaiDXdTvQ5KBbgmlpr2GV9/HQXy//V7q3Emcotkdtw==
+X-Received: by 2002:a4a:dc0d:: with SMTP id p13mr1278563oov.2.1603140504163;
+        Mon, 19 Oct 2020 13:48:24 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j191sm237505oib.52.2020.10.19.13.48.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 13:46:22 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 23/23] drm/msm: Don't implicit-sync if only a single ring
-Date:   Mon, 19 Oct 2020 13:46:24 -0700
-Message-Id: <20201019204636.139997-24-robdclark@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201019204636.139997-1-robdclark@gmail.com>
-References: <20201019204636.139997-1-robdclark@gmail.com>
+        Mon, 19 Oct 2020 13:48:23 -0700 (PDT)
+Received: (nullmailer pid 3577895 invoked by uid 1000);
+        Mon, 19 Oct 2020 20:48:21 -0000
+Date:   Mon, 19 Oct 2020 15:48:21 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Mark Brown <broonie@kernel.org>, nsaenzjulienne@suse.de,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/7] Add dts for Rpi4 + Cirrus Lochnagar and codecs
+Message-ID: <20201019204821.GA3569507@bogus>
+References: <20201014145418.31838-1-rf@opensource.cirrus.com>
+ <20201014185632.GD4580@sirena.org.uk>
+ <b3376cd4-010f-cf72-8c81-1f5d22cb6454@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b3376cd4-010f-cf72-8c81-1f5d22cb6454@opensource.cirrus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Fri, Oct 16, 2020 at 02:30:08PM +0100, Richard Fitzgerald wrote:
+> On 14/10/2020 19:56, Mark Brown wrote:
+> > On Wed, Oct 14, 2020 at 03:54:11PM +0100, Richard Fitzgerald wrote:
+> > > This set of patches provides support for using the Cirrus Logic
+> > > Lochnagar audio development platform plus Cirrus Logic Madera/Arizona
+> > > codecs with the simple-card machine driver and a Raspberry Pi4. The
+> > > ultimate aim is to provide the dts file but some updates are needed to
+> > > the simple-card machine driver.
+> > 
+> > Why extend simple-card and not the more modern and flexible
+> > audio-graph-card?
+> > 
+> 
+> I'm struggling to understand how to use audio-graph-card where there are
+> multiple alternative codecs. The host I2S endpoint has to point back to
+> the codec endpoint, like this:
+> 
+> 	cpu_i2s_ep_cs47l15: endpoint {
+> 		remote-endpoint = <&cs47l15_aif1>;
+> 	};
+>
+> But obviously that depends on which codec node was enabled. Listing
+> multiple endpoints makes the whole port node disabled if any remote
+> endpoint is in a disabled node. I've tried adding status="disabled"
+> to endpoints or multiple port definitions with status="disabled" but
+> I haven't figured out a solution.
 
-If there is only a single ring (no-preemption), everything is FIFO order
-and there is no need to implicit-sync.
+Multiple endpoints is what you should do. And 'status' goes in the 
+device nodes (not the graph nodes).
 
-Mesa should probably just always use MSM_SUBMIT_NO_IMPLICIT, as behavior
-is undefined when fences are not used to synchronize buffer usage across
-contexts (which is the only case where multiple different priority rings
-could come into play).
-
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_gem_submit.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-index d784e97f233f..96832debc3b6 100644
---- a/drivers/gpu/drm/msm/msm_gem_submit.c
-+++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-@@ -277,7 +277,7 @@ static int submit_lock_objects(struct msm_gem_submit *submit)
- 	return ret;
- }
- 
--static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
-+static int submit_fence_sync(struct msm_gem_submit *submit, bool implicit_sync)
- {
- 	int i, ret = 0;
- 
-@@ -297,7 +297,7 @@ static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
- 				return ret;
- 		}
- 
--		if (no_implicit)
-+		if (!implicit_sync)
- 			continue;
- 
- 		ret = msm_gem_sync_object(&msm_obj->base, submit->ring->fctx,
-@@ -768,7 +768,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
- 	if (ret)
- 		goto out;
- 
--	ret = submit_fence_sync(submit, !!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
-+	ret = submit_fence_sync(submit, (gpu->nr_rings > 1) &&
-+			!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
- 	if (ret)
- 		goto out;
- 
--- 
-2.26.2
+Rob
 
