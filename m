@@ -2,129 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B0029223F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 07:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1540429223B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 07:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgJSFh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 01:37:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:49570 "EHLO foss.arm.com"
+        id S1726459AbgJSFhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 01:37:51 -0400
+Received: from mga07.intel.com ([134.134.136.100]:36748 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgJSFh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 01:37:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 51F8AD6E;
-        Sun, 18 Oct 2020 22:37:56 -0700 (PDT)
-Received: from [10.163.77.151] (unknown [10.163.77.151])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C64353F719;
-        Sun, 18 Oct 2020 22:37:52 -0700 (PDT)
-Subject: Re: arm64: dropping prevent_bootmem_remove_notifier
-To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Suren Baghdasaryan <surenb@google.com>, pratikp@codeaurora.org,
-        Gavin Shan <gshan@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        David Hildenbrand <david@redhat.com>,
+        id S1725306AbgJSFhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 01:37:51 -0400
+IronPort-SDR: BCttGlvxXOv8IEMavzW7QCZDOzs1MO3AV/WwrIlbEaiYnCGxWVJREPVdnNqGF0ZSMH0+EnvcXG
+ K6A+Vch2xQIA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9778"; a="231162684"
+X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
+   d="scan'208";a="231162684"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 22:37:46 -0700
+IronPort-SDR: RnOUFQmkYUDicpOlOT0tpOrIh/gyVBYXkd84kJDS4ikMZgrYuGPAp0+a9qjCzEuNsRXlsKxGfm
+ 7ykQey1Ml/Rw==
+X-IronPort-AV: E=Sophos;i="5.77,393,1596524400"; 
+   d="scan'208";a="532493630"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2020 22:37:37 -0700
+Date:   Sun, 18 Oct 2020 22:37:36 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>
-References: <de8388df2fbc5a6a33aab95831ba7db4@codeaurora.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <f125083d-4885-d174-f732-9cd96c45ddb4@arm.com>
-Date:   Mon, 19 Oct 2020 11:07:17 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V3 6/9] x86/entry: Pass irqentry_state_t by reference
+Message-ID: <20201019053639.GA3713473@iweiny-DESK2.sc.intel.com>
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-7-ira.weiny@intel.com>
+ <20201016114510.GO2611@hirez.programming.kicks-ass.net>
+ <87lfg6tjnq.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <de8388df2fbc5a6a33aab95831ba7db4@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lfg6tjnq.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sudarshan,
-
-On 10/17/2020 04:41 AM, Sudarshan Rajagopalan wrote:
+On Fri, Oct 16, 2020 at 02:55:21PM +0200, Thomas Gleixner wrote:
+> On Fri, Oct 16 2020 at 13:45, Peter Zijlstra wrote:
+> > On Fri, Oct 09, 2020 at 12:42:55PM -0700, ira.weiny@intel.com wrote:
+> >> @@ -238,7 +236,7 @@ noinstr void idtentry_exit_nmi(struct pt_regs *regs, bool restore)
+> >>  
+> >>  	rcu_nmi_exit();
+> >>  	lockdep_hardirq_exit();
+> >> -	if (restore)
+> >> +	if (irq_state->exit_rcu)
+> >>  		lockdep_hardirqs_on(CALLER_ADDR0);
+> >>  	__nmi_exit();
+> >>  }
+> >
+> > That's not nice.. The NMI path is different from the IRQ path and has a
+> > different variable. Yes, this works, but *groan*.
+> >
+> > Maybe union them if you want to avoid bloating the structure, but the
+> > above makes it really hard to read.
 > 
-> Hello Anshuman,
-> 
-> In the patch that enables memory hot-remove (commit bbd6ec605c0f ("arm64/mm: Enable memory hot remove")) for arm64, there’s a notifier put in place that prevents boot memory from being offlined and removed. Also commit text mentions that boot memory on arm64 cannot be removed. We wanted to understand more about the reasoning for this. X86 and other archs doesn’t seem to do this prevention. There’s also comment in the code that this notifier could be dropped in future if and when boot memory can be removed.
+> Right, and also that nmi entry thing should not be in x86. Something
+> like the untested below as first cleanup.
 
-Right and till then the notifier cannot be dropped. There was a lot of discussions
-around this topic during multiple iterations of memory hot remove series. Hence, I
-would just request you to please go through them first. This list here is from one
-such series (https://lwn.net/Articles/809179/) but might not be exhaustive.
-
------------------
-On arm64 platform, it is essential to ensure that the boot time discovered
-memory couldn't be hot-removed so that,
-
-1. FW data structures used across kexec are idempotent
-   e.g. the EFI memory map.
-
-2. linear map or vmemmap would not have to be dynamically split, and can
-   map boot memory at a large granularity
-
-3. Avoid penalizing paths that have to walk page tables, where we can be
-   certain that the memory is not hot-removable
------------------
-
-The primary reason being kexec which would need substantial rework otherwise.
+Ok, I see what Peter was talking about.  I've added this patch to the series.
 
 > 
-> The current logic is that only “new” memory blocks which are hot-added can later be offlined and removed. The memory that system booted up with cannot be offlined and removed. But there could be many usercases such as inter-VM memory sharing where a primary VM could offline and hot-remove a block/section of memory and lend it to secondary VM where it could hot-add it. And after usecase is done, the reverse happens where secondary VM hot-removes and gives it back to primary which can hot-add it back. In such cases, the present logic for arm64 doesn’t allow this hot-remove in primary to happen.
+> Thanks,
+> 
+>         tglx
+> ----
+> Subject: x86/entry: Move nmi entry/exit into common code
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Date: Fri, 11 Sep 2020 10:09:56 +0200
+> 
+> Add blurb here.
 
-That is not true. Each VM could just boot with a minimum boot memory which can
-not be offlined or removed but then a possible larger portion of memory can be
-hot added during the boot process itself, making them available for any future
-inter VM sharing purpose. Hence this problem could easily be solved in the user
-space itself.
+How about:
+
+To prepare for saving PKRS values across NMI's we lift the
+idtentry_[enter|exit]_nmi() to the common code.  Rename them to
+irqentry_nmi_[enter|exit]() to reflect the new generic nature and store the
+state in the same irqentry_state_t structure as the other irqentry_*()
+functions.  Finally, differentiate the state being stored between the NMI and
+IRQ path by adding 'lockdep' to irqentry_state_t.
+
+?
 
 > 
-> Also, on systems with movable zone that sort of guarantees pages to be migrated and isolated so that blocks can be offlined, this logic also defeats the purpose of having a movable zone which system can rely on memory hot-plugging, which say virt-io mem also relies on for fully plugged memory blocks.
-ZONE_MOVABLE does not really guarantee migration, isolation and removal. There
-are reasons an offline request might just fail. I agree that those reasons are
-normally not platform related but core memory gives platform an opportunity to
-decline an offlining request via a notifier. Hence ZONE_MOVABLE offline can be
-denied. Semantics wise we are still okay.
-
-This might look bit inconsistent that movablecore/kernelcore/movable_node with
-firmware sending in 'hot pluggable' memory (IIRC arm64 does not really support
-this yet), the system might end up with ZONE_MOVABLE marked boot memory which
-cannot be offlined or removed. But an offline notifier action is orthogonal.
-Hence did not block those kernel command line paths that creates ZONE_MOVABLE
-during boot to preserve existing behavior.
-
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/entry/common.c         |   34 ----------------------------------
+>  arch/x86/include/asm/idtentry.h |    3 ---
+>  arch/x86/kernel/cpu/mce/core.c  |    6 +++---
+>  arch/x86/kernel/nmi.c           |    6 +++---
+>  arch/x86/kernel/traps.c         |   13 +++++++------
+>  include/linux/entry-common.h    |   20 ++++++++++++++++++++
+>  kernel/entry/common.c           |   36 ++++++++++++++++++++++++++++++++++++
+>  7 files changed, 69 insertions(+), 49 deletions(-)
 > 
-> I understand that some region of boot RAM shouldn’t be allowed to be removed, but such regions won’t be allowed to be offlined in first place since pages cannot be migrated and isolated, example reserved pages.
-> 
-> So we’re trying to understand the reasoning for such a prevention put in place for arm64 arch alone.
 
-Primary reason being kexec. During kexec on arm64, next kernel's memory map is
-derived from firmware and not from current running kernel. So the next kernel
-will crash if it would access memory that might have been removed in running
-kernel. Until kexec on arm64 changes substantially and takes into account the
-real available memory on the current kernel, boot memory cannot be removed.
+[snip]
 
-> 
-> One possible way to solve this is by marking the required sections as “non-early” by removing the SECTION_IS_EARLY bit in its section_mem_map.
+> --- a/include/linux/entry-common.h
+> +++ b/include/linux/entry-common.h
+> @@ -343,6 +343,7 @@ void irqentry_exit_to_user_mode(struct p
+>  #ifndef irqentry_state
+>  typedef struct irqentry_state {
+>  	bool	exit_rcu;
+> +	bool	lockdep;
+>  } irqentry_state_t;
 
-That is too intrusive from core memory perspective.
+Building on what Peter said do you agree this should be made into a union?
 
- This puts these sections in the context of “memory hotpluggable” which can be offlined-removed and added-onlined which are part of boot RAM itself and doesn’t need any extra blocks to be hot added. This way of marking certain sections as “non-early” could be exported so that module drivers can set the required number of sections as “memory hotpluggable”. This could have certain checks put in place to see which sections are allowed, example only movable zone sections can be marked as “non-early”.
+It may not be strictly necessary in this patch but I think it would reflect the
+mutual exclusivity better and could be changed easy enough in the follow on
+patch which adds the pkrs state.
 
-Giving modules the right to mark memory hotpluggable ? That is too intrusive
-and would still not solve the problem with kexec.
-
-> 
-> Your thoughts on this? We are also looking for different ways to solve the problem without having to completely dropping this notifier, but just putting out the concern here about the notifier logic that is breaking our usecase which is a generic memory sharing usecase using memory hotplug feature.
-
-Completely preventing boot memory offline and removal is essential for kexec
-to work as expected afterwards. As suggested previously, splitting the VM
-memory into boot and non boot chunks during init can help work around this
-restriction effectively in userspace itself and would not require any kernel
-changes.
-
-- Anshuman
+Ira
