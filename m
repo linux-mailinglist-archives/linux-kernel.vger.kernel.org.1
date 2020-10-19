@@ -2,108 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A7E2922C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E302922C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 09:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727282AbgJSHDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 03:03:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727269AbgJSHDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 03:03:46 -0400
-Received: from localhost (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 009BF22203;
-        Mon, 19 Oct 2020 07:03:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603091025;
-        bh=ybPoRLwk9gRRObCHrDxH1kw1JCNmskeqI4YCYwMypEA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zga4ZuU/cKcUHl6owOPPlnthLPPS+62m6z6xAdPtPFnS1IziCk2q7yXRJyHgWwglo
-         Jtj2gdMIxvJDtCYLHMxC5v2iVN7MRzWgggdKixdKgTGU+HurVLAAhWaZZml4k1vpIg
-         nfXoTyRbcai2sAPKOmeFEUl4CBZRw/8ImQ2KB3OY=
-Date:   Mon, 19 Oct 2020 10:03:43 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
-Message-ID: <20201019070343.GA1141388@kapsi.fi>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-14-jarkko.sakkinen@linux.intel.com>
- <1739984e-0010-2031-1561-809a0b6380bb@intel.com>
- <20201018050311.GK68722@linux.intel.com>
+        id S1727301AbgJSHFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 03:05:48 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:39973 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727223AbgJSHFs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 03:05:48 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5202F5C006B;
+        Mon, 19 Oct 2020 03:05:46 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 19 Oct 2020 03:05:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=EMlZBo15epeEdVjKu5nXc3zhaks
+        PLbuojCDzDSKauhc=; b=Ff1Tz88cw07JCNE4wxm2z6vwZsWuT4T2rTUS33F7n6q
+        XHFHexp9DeQs0nK222i5ND3s7PA3kVEMZq8HNrYIYKWoPRRVdzleJBZlzPIJgynx
+        9lQlNeNp4bV2ND9OOkMcsoN9C2ZKLjUYOOMC8XBTErt8ofG3/DQG9ZClExOy2jRG
+        PcVoIDAvSeHCWqsHCRdGp6d7bPvSmMTqhjWsGnqqR0E8N/J1Zx7y617FPLUImR6h
+        vt293NCnps/TY4gMxNuR4d6j4IE2c9LWPjuhpjA8s136sa+i+e0+f4YyGAWrXGty
+        qp7Tx7ovldoxBGZTiEN+kVlYbb/A66nMuPJKsBN9K4A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=EMlZBo
+        15epeEdVjKu5nXc3zhaksPLbuojCDzDSKauhc=; b=S0aG4V4Ttx2iboTB84z+Qk
+        rPBcyuX74KZPKeB8akRNaQbKeSUcKrPmZt1JI+IY4r6Wee7ttUVvmhljdzBFTag3
+        +Nc/BnamdgFPvmg5ICJAWOpWEZ9bNWC8BMWtV4eqamRDEv8Sgyx56Pu7OPPdy5l6
+        aCtzktK9FiH67N2sblZ/19CHSWcK972pf291mznvK02sOUELJ3XD9U4IeMhsfBT2
+        HX/KHn/whI34h9pg4EIpYOB7MvX5UQ2YfmXdcU8+aWf7AzYhfzjWi9+ssR9/VS6u
+        vd/ZHAob/vR9KX17xkdZ+xq1cpNJGyVQbZXgyrCmzqTGwpeXUhU2MVLAxjFS4PBA
+        ==
+X-ME-Sender: <xms:yTqNX-cqtwIHTbGfPUFl7TEkveLK8FXQBKfa-mePJHiMKg3dMpJmBw>
+    <xme:yTqNX4Pqct-PJ6r-mDFWPZWopx3H1ztG64VazfANd_CDLEs71Mqtz4s052vCY26BU
+    tI9LTg9rIDUCcIfOu8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjedtgdduudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:yTqNX_jjwyTB9cmAPjm6YYEHWRjgVLf1f5tioFUgBObHpyCpm4G90Q>
+    <xmx:yTqNX79MvCNBtrT4ybXiYm4B-ahC07KmJRsdRMO0iJaHWgzVw19_VA>
+    <xmx:yTqNX6sLeAKjJZOOSie0enk7n8ruV7nu4K936cte2dSZ9ZKkKXLjuQ>
+    <xmx:yjqNX-LelQ6K03fZPfyQjFspX5PBVBSEXqWhhWTj5UASO6x_lJN_Ng>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 287113280059;
+        Mon, 19 Oct 2020 03:05:45 -0400 (EDT)
+Date:   Mon, 19 Oct 2020 09:05:41 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Alexander Kochetkov <al.kochet@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: spi-sun6i: enable autosuspend feature
+Message-ID: <20201019070541.qy3v2r3sg5itdhds@gilmour.lan>
+References: <20201016083826.31427-1-al.kochet@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zqg3emlloxikctnv"
 Content-Disposition: inline
-In-Reply-To: <20201018050311.GK68722@linux.intel.com>
+In-Reply-To: <20201016083826.31427-1-al.kochet@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 18, 2020 at 08:03:11AM +0300, Jarkko Sakkinen wrote:
-> > > +	mmap_read_lock(current->mm);
-> > > +	mutex_lock(&encl->lock);
-> > > +
-> > > +	/*
-> > > +	 * Insert prior to EADD in case of OOM.
-> > 
-> > I wouldn't say OOM.  Maybe:
-> > 
-> > 	xa_insert() and EADD can both fail.  But xa_insert() is easier
-> > 	to unwind so do it first.
-> > 
-> > >                                              EADD modifies MRENCLAVE, i.e.
-> > 
-> > What is MRENCLAVE?
-> 
-> The measurement stored in SECS. I'm wondering  with xarray, is it
-> possible to preallocate entry without inserting anything?
-> 
-> Then we could get rid of this unwind and also would not need to
-> take encl->lock in sgx_encl_may_map().
 
-I'm still a bit confused with the unfamiliar Xarray API but I think I
-got it:
+--zqg3emlloxikctnv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-1. xa_insert() with a NULL entry reserves index and more importantly
-   does the memory allocation.
-2. xa_cmpxchg() with the enclave page, if EADD and EEXTEND's succceed.
-3. xa_release() otherwise.
+Hi,
 
-This way sgx_encl_may_map() will never see a stale enclave page when it
-does the permission check, even if encl->lock is not taken.
+On Fri, Oct 16, 2020 at 11:38:26AM +0300, Alexander Kochetkov wrote:
+> If SPI is used for periodic polling any sensor, significant delays
+> sometimes appear. Switching on module clocks during resume lead to delays.
+> Enabling autosuspend mode causes the controller to not suspend between
+> SPI transfers and the delays disappear.
+>=20
+> Signed-off-by: Alexander Kochetkov <al.kochet@gmail.com>
+> ---
+>  drivers/spi/spi-sun6i.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
+> index 38e5b8af7da6..4cc0280e934c 100644
+> --- a/drivers/spi/spi-sun6i.c
+> +++ b/drivers/spi/spi-sun6i.c
+> @@ -22,6 +22,8 @@
+> =20
+>  #include <linux/spi/spi.h>
+> =20
+> +#define SUN6I_AUTOSUSPEND_TIMEOUT	2000
+> +
+>  #define SUN6I_FIFO_DEPTH		128
+>  #define SUN8I_FIFO_DEPTH		64
+> =20
+> @@ -639,9 +641,10 @@ static int sun6i_spi_probe(struct platform_device *p=
+dev)
+>  		goto err_free_dma_rx;
+>  	}
+> =20
+> +	pm_runtime_set_autosuspend_delay(&pdev->dev, SUN6I_AUTOSUSPEND_TIMEOUT);
+> +	pm_runtime_use_autosuspend(&pdev->dev);
+>  	pm_runtime_set_active(&pdev->dev);
+>  	pm_runtime_enable(&pdev->dev);
+> -	pm_runtime_idle(&pdev->dev);
 
-I mean right now I have to take both xas lock and enclave lock, which
-is terrible but this will take care of it.
+You should also mention why pm_runtime_idle isn't useful anymore in your
+commit log.
 
-I will rewrite the comment to something more reasonable, once I've done
-this code change.
+Thanks!
+Maxime
 
-The reason for doing insert first is that, if we get -ENOMEM after
-successful EADD and EEXTEND's we have a legit microarchitectural state
-but you cannot rollback a hash (MRENCLAVE), so game is anyway over
-because your data structures are not in sync.
+--zqg3emlloxikctnv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If -ENOMEM comes before, everything is still in sync and we don't have
-invalidate the enclave.
+-----BEGIN PGP SIGNATURE-----
 
-/Jarkko
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX406jQAKCRDj7w1vZxhR
+xQZMAP9MvzwkJ7KYvidr8Tqy6Uun4yiI03CcELJ3laGSQezVEwD/diF7Gju+JH4x
+NZedwB1YqwnhUGqHXmb8Mf8hYxkjMgY=
+=bZcy
+-----END PGP SIGNATURE-----
+
+--zqg3emlloxikctnv--
