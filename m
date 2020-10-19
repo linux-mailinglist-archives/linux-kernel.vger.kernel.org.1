@@ -2,137 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2BE2931BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 01:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4F22931D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 01:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388904AbgJSXFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 19:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388899AbgJSXFv (ORCPT
+        id S2388915AbgJSXRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 19:17:44 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:22179 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728436AbgJSXRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 19:05:51 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06A7C0613E2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 16:05:49 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id q25so68374ioh.4
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 16:05:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KZcwJitFojA7RhzeD/UU8gbzehCBdvf6g5ia0ZYCrq4=;
-        b=R0THCPfeT+NjRv5n7wRuWr3+iQQVH5mYQugrcFEorv7jMlZOJpq4gWO8x2sltRZ1S3
-         8+uXkfK+0xraFRPc7RLEyC+L1Eqn+lwfgcQ60rCu3Ir6T0iqCUlHxkXPI8IxQxljNihW
-         MxA7dERE+Fo0B6yhfEPLGm6gbjuMrGvt0ee7i4ozPAa6C0OwTV1SJBaz+sj8rzyyiIix
-         DQ1LhxNguLsVQ2r9xWcmCur9QDHoeimXQtC/UVpN+4Yl8O9ZbpYKUwlrKFZtzYHwjpgZ
-         iC+kREvCZvwgmOBCIm7DmgxG6/6ncKrp6QDCnbxkp/qIzrhuMyauJsg53LWTp//HSslk
-         z+3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KZcwJitFojA7RhzeD/UU8gbzehCBdvf6g5ia0ZYCrq4=;
-        b=A5lHUww8A3tTCKEinGLq3ukiP8FZKD8GMPZOtOtoc/wM4TfpAhzpIqHjHVrh4D9Wx6
-         my0ou6cRBFlqTbRGgEjT61ecJuc2pYyCdCCiOqNY6lVP4MWea4nfmUTN9HFIIfJ2pCwq
-         uRsdzMvqUA4sEylfxQEYuyu0NhA2kKUhsYOEVbGFXsyORi+tGxsX4N+pcK3JNMd9SMYt
-         3UIf+YC+1IIIK18WdvA97aY+rdZ5qsFMBBhIoF9FYXzYdM2L+NGaEbpvH66qxa5FJ3wG
-         npNNNpMVGtGYOXnGJe+y44L7Xlx0mqyUVf8LS7x6KviDiQzYAOlNbwCshC0x7fhoRPNT
-         jbGQ==
-X-Gm-Message-State: AOAM530si5fxTfsPz7LMMwRwA709RagBBXZhawvPtCe15n/MeP+QrwXF
-        j8eGHE6FBIIbNAwuU87eXpNpNA==
-X-Google-Smtp-Source: ABdhPJwE/qhLAedndnNRaUrUDMs331Onaq8Iz+VDEVRJN+4h4B5ckC67pNXDnvS9MRF/DxLJjNlnIQ==
-X-Received: by 2002:a6b:5019:: with SMTP id e25mr44377iob.123.1603148748578;
-        Mon, 19 Oct 2020 16:05:48 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id u8sm7938ilm.36.2020.10.19.16.05.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 16:05:47 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kUeDq-002hRf-LL; Mon, 19 Oct 2020 20:05:46 -0300
-Date:   Mon, 19 Oct 2020 20:05:46 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Tom Rix <trix@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
-        linux-edac@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-block@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        nouveau@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        industrypack-devel@lists.sourceforge.net,
-        linux-media@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-can@vger.kernel.org,
-        Network Development <netdev@vger.kernel.org>,
-        intel-wired-lan@lists.osuosl.org, ath10k@lists.infradead.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com, linux-nfc@lists.01.org,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-pci@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, patches@opensource.cirrus.com,
-        storagedev@microchip.com, devel@driverdev.osuosl.org,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        usb-storage@lists.one-eyed-alien.net,
-        linux-watchdog@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        bpf <bpf@vger.kernel.org>, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Mon, 19 Oct 2020 19:17:44 -0400
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 19 Oct 2020 16:17:43 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg02-sd.qualcomm.com with ESMTP; 19 Oct 2020 16:17:43 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id E832F199F; Mon, 19 Oct 2020 16:17:42 -0700 (PDT)
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
         Greg KH <gregkh@linuxfoundation.org>,
-        George Burgess <gbiv@google.com>
-Subject: Re: [RFC] treewide: cleanup unreachable breaks
-Message-ID: <20201019230546.GH36674@ziepe.ca>
-References: <20201017160928.12698-1-trix@redhat.com>
- <20201018054332.GB593954@kroah.com>
- <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
+        Guenter Roeck <linux@roeck-us.net>,
+        Joe Perches <joe@perches.com>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guru Das Srinagesh <gurus@codeaurora.org>
+Subject: [RFC PATCH RESEND v1 0/3] Add support for Qualcomm MFD PMIC register layout
+Date:   Mon, 19 Oct 2020 16:17:30 -0700
+Message-Id: <cover.1603148363.git.gurus@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 12:42:15PM -0700, Nick Desaulniers wrote:
-> On Sat, Oct 17, 2020 at 10:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
-> > > From: Tom Rix <trix@redhat.com>
-> > >
-> > > This is a upcoming change to clean up a new warning treewide.
-> > > I am wondering if the change could be one mega patch (see below) or
-> > > normal patch per file about 100 patches or somewhere half way by collecting
-> > > early acks.
-> >
-> > Please break it up into one-patch-per-subsystem, like normal, and get it
-> > merged that way.
-> >
-> > Sending us a patch, without even a diffstat to review, isn't going to
-> > get you very far...
-> 
-> Tom,
-> If you're able to automate this cleanup, I suggest checking in a
-> script that can be run on a directory.  Then for each subsystem you
-> can say in your commit "I ran scripts/fix_whatever.py on this subdir."
->  Then others can help you drive the tree wide cleanup.  Then we can
-> enable -Wunreachable-code-break either by default, or W=2 right now
-> might be a good idea.
+This is a follow-up as promised [1] to the earlier attempts [2] [3] to upstream
+the driver that has been hitherto used to handle IRQs for Qualcomm's PMICs that
+have multiple on-board peripherals when they are interfaced over the I2C
+interface.
 
-I remember using clang-modernize in the past to fix issues very
-similar to this, if clang machinery can generate the warning, can't
-something like clang-tidy directly generate the patch?
+This series is a rewrite of that driver while making use of the regmap-irq
+framework, which needs some modifications to handle the register layout of
+Qualcomm's PMICs. This is an RFC because I would like to get feedback on my
+general approach before submitting as a patch per se.
 
-You can send me a patch for drivers/infiniband/* as well
+Upon inspection of the regmap-irq framework, it was observed that the
+downstream driver was essentially replicating the framework's IRQ handling
+logic (such as adding an IRQ domain, and the interrupt handler thread that
+reads sub-irqs from a main status register). It was also observed that the
+framework could not be used as-is because:
+- Qualcomm's PMIC peripheral register layout does not follow a fixed
+  irq_reg_stride, and
+- The "IRQ TYPE" configuration register takes one bit per interrupt, which when
+  set configures that interrupt as Edge triggered, and when cleared sets it to
+  Level triggered.
+- There are two IRQ configuration registers in addition to "IRQ TYPE" that
+  further configure the IRQ type as triggered by rising-edge/level high or
+  alternatively, falling-edge/level low that have no support in the regmap-irq
+  framework currently.
 
-Thanks,
-Jason
+This patch series has been tested on an internal platform using PM8008 as a
+test MFD PMIC chip. PM8008 is a PMIC that contains 7 LDOs, 2 GPIOs, temperature
+monitoring, and can be interfaced over I2C.
+
+Both the framework modifications as well as the chip driver
+have been submitted here for review. Some details about the specific
+differences between the framework and QCOM PMICs' register layout are provided
+below using PM8008 as an example.
+
+[PM8008 peripheral register layout]
+
+Of all the peripherals in PM8008, only a few need IRQ support. They are laid
+out at the following base addresses (only four are added at the moment for
+simplicity):
+
+	0x0900, 0x2400, 0xC000, 0xC100
+
+Each peripheral is allocated a uniform size of 0x100 bytes and its IRQs are
+configured through a set of registers that are located at fixed offsets from
+the above base addresses, uniformly:
+
+	Register name	       Addr	regmap-irq equivalent	Comment
+	-----------------------------------------------------------------------
+	INT_RT_STS_OFFSET      0x10	(no equivalent)		See #1 below
+	INT_SET_TYPE_OFFSET    0x11	type_base 		See #2 below
+	INT_POL_HIGH_OFFSET    0x12	(no equivalent)		See #3 below
+	INT_POL_LOW_OFFSET     0x13	(no equivalent)		See #3 below
+	INT_LATCHED_CLR_OFFSET 0x14	ack_base
+	INT_EN_SET_OFFSET      0x15	unmask_base		See #4 below
+	INT_EN_CLR_OFFSET      0x16	mask_base		See #4 below
+	INT_LATCHED_STS_OFFSET 0x18	status_base
+
+Comments (all registers are one bit per interrupt):
+1. INT_RT_STS_OFFSET is not used by the regmap-irq, so it may be ignored.
+2. INT_SET_TYPE_OFFSET: 1 for edge trigger, 0 for level trigger.
+3. Support needs to be added for writing to INT_POL_HIGH_OFFSET and
+   INT_POL_LOW_OFFSET correctly in the framework. Set to 1 or 0 to enable or
+   disable rising-edge/level high or falling-edge/level low.
+4. Even though INT_EN_SET_OFFSET and INT_EN_CLR_OFFSET map to unmask_base and
+   mask_base in the regmap-irq framework conceptually, they are swapped in the
+   chip driver because `unmask_offset` in the framework expects unmask_base to
+   be larger than mask_base numerically. This has to be kept in mind while
+   reviewing the "mfd: Add PM8008 driver" patch below.
+
+[Summary of framework changes]
+
+The main thrust of the changes is to introduce an array of peripheral offset
+values, which are to be added to the *_base addresses in order to arrive at the
+correct register addresses per peripheral. In order to get at the first
+peripheral's addresses, the first element of this array must be zero.
+
+Since there are two new registers (INT_POL_HIGH_OFFSET and INT_POL_LOW_OFFSET),
+add support for storing the per-peripheral values and also writing to them.
+These will be used only if peripheral offsets are specified.
+
+[1] https://lore.kernel.org/lkml/20200519185757.GA13992@codeaurora.org/
+[2] https://lore.kernel.org/lkml/cover.1588037638.git.gurus@codeaurora.org/
+[3] https://lore.kernel.org/lkml/cover.1588115326.git.gurus@codeaurora.org/
+
+Guru Das Srinagesh (3):
+  regmap-irq: Add support for peripheral offsets
+  dt-bindings: mfd: Add QCOM PM8008 MFD bindings
+  mfd: Add PM8008 driver
+
+ .../bindings/mfd/qcom,pm8008-irqchip.yaml          | 103 +++++++++++
+ drivers/base/regmap/regmap-irq.c                   | 191 ++++++++++++++++----
+ drivers/mfd/Kconfig                                |  14 ++
+ drivers/mfd/Makefile                               |   1 +
+ drivers/mfd/qcom-pm8008.c                          | 197 +++++++++++++++++++++
+ include/linux/regmap.h                             |   6 +
+ 6 files changed, 478 insertions(+), 34 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml
+ create mode 100644 drivers/mfd/qcom-pm8008.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
