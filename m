@@ -2,144 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD5729212F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F958292133
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 04:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730919AbgJSCnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Oct 2020 22:43:17 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:57650 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728791AbgJSCnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Oct 2020 22:43:17 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 0E4BB91A978CEDFB0FE2;
-        Mon, 19 Oct 2020 10:43:15 +0800 (CST)
-Received: from [10.174.176.61] (10.174.176.61) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 19 Oct 2020 10:43:07 +0800
-Subject: Re: [PATCH v12 0/9] support reserving crashkernel above 4G on arm64
- kdump
-To:     Bhupesh Sharma <bhsharma@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-References: <20200907134745.25732-1-chenzhou10@huawei.com>
- <e9b1b5db-a848-468e-6baf-2f7b4d658805@oracle.com>
- <20201005170937.GA14576@gaia>
- <CACi5LpMWUmP1df8fB8psJY_cNGHF9MNn+TNK4B4edaRHvOXxGQ@mail.gmail.com>
- <20201006180012.GB31946@C02TF0J2HF1T.local>
- <CACi5LpMmccLX9p0ZXnEbWHgn2LRrVSDQZF9zBGzfZySe3TvXEQ@mail.gmail.com>
-CC:     John Donnelly <john.p.donnelly@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, RuiRui Yang <dyoung@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
-        Prabhakar Kushwaha <prabhakar.pkin@gmail.com>,
-        Simon Horman <horms@verge.net.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, <nsaenzjulienne@suse.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        <guohanjun@huawei.com>, <xiexiuqi@huawei.com>,
-        <huawei.libin@huawei.com>, <wangkefeng.wang@huawei.com>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <ab142d7d-55a7-eca6-4609-147e1605f02d@huawei.com>
-Date:   Mon, 19 Oct 2020 10:43:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1731106AbgJSCoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Oct 2020 22:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730928AbgJSCoC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Oct 2020 22:44:02 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54507C0613D4
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Oct 2020 19:44:02 -0700 (PDT)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 43B4D83645;
+        Mon, 19 Oct 2020 15:43:58 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1603075438;
+        bh=/qu5CgQc0psIBufAFeBcJ0q/ccgJ7xHHJbfe84ckgy4=;
+        h=From:To:Cc:Subject:Date;
+        b=gNr+XVjX7v4QkxoqXmnlZ9eEWrgnyJHMJ/rgaglzN1XIgZwm/tOS4Oe6U+pMLj66f
+         aH8ktqnkJjUjJ6/ouCZL//GC6d+bd45n58IahJIbgpVI7zk30wL0FTYUgUJTxwqugz
+         hn1Mfvq1crzAJGLmKwQNW2ZbuqSwSEK+wScB2wnpekQ44MaFBcpKKtb3yZx3cDgNSz
+         MmTvXe0ybOMaNKllGDRy2svzb1Fn/kbYCFbQzhANKYUguTNomMSauQeXfyJ9DUA1tx
+         uNOoAzGQRlCjJRgLxyEU6YM20WD6xazE5Cwm0zlKp8AAJqCnu3wTOMfpjD9Y6loFq8
+         XRrLfc/rDbjDg==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f8cfd6e0000>; Mon, 19 Oct 2020 15:43:58 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id D385013EEB7;
+        Mon, 19 Oct 2020 15:43:56 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 0995928006D; Mon, 19 Oct 2020 15:43:58 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v2 0/3] net: dsa: mv88e6xxx: serdes link without phy
+Date:   Mon, 19 Oct 2020 15:43:52 +1300
+Message-Id: <20201019024355.30717-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <CACi5LpMmccLX9p0ZXnEbWHgn2LRrVSDQZF9zBGzfZySe3TvXEQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.61]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhupesh,
+This small series gets my hardware into a working state. The key points a=
+re to
+make sure we don't force the link and that we ask the MAC for the link st=
+atus.
+I also have updated my dts to say `phy-mode =3D "1000base-x";` and `manag=
+ed =3D
+"in-band-status";`
 
+I've included patch #3 in this series but I don't have anything to test i=
+t on.
+It's just a guess based on the datasheets.
 
-On 2020/10/7 15:07, Bhupesh Sharma wrote:
-> Hi Catalin,
->
-> On Tue, Oct 6, 2020 at 11:30 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->> On Mon, Oct 05, 2020 at 11:12:10PM +0530, Bhupesh Sharma wrote:
->>> I think my earlier email with the test results on this series bounced
->>> off the mailing list server (for some weird reason), but I still see
->>> several issues with this patchset. I will add specific issues in the
->>> review comments for each patch again, but overall, with a crashkernel
->>> size of say 786M, I see the following issue:
->>>
->>> # cat /proc/cmdline
->>> BOOT_IMAGE=(hd7,gpt2)/vmlinuz-5.9.0-rc7+ root=<..snip..> rd.lvm.lv=<..snip..> crashkernel=786M
->>>
->>> I see two regions of size 786M and 256M reserved in low and high
->>> regions respectively, So we reserve a total of 1042M of memory, which
->>> is an incorrect behaviour:
->>>
->>> # dmesg | grep -i crash
->>> [    0.000000] Reserving 256MB of low memory at 2816MB for crashkernel (System low RAM: 768MB)
->>> [    0.000000] Reserving 786MB of memory at 654158MB for crashkernel (System RAM: 130816MB)
->>> [    0.000000] Kernel command line: BOOT_IMAGE=(hd2,gpt2)/vmlinuz-5.9.0-rc7+ root=/dev/mapper/rhel_ampere--hr330a--03-root ro rd.lvm.lv=rhel_ampere-hr330a-03/root rd.lvm.lv=rhel_ampere-hr330a-03/swap crashkernel=786M cma=1024M
->>>
->>> # cat /proc/iomem | grep -i crash
->>>   b0000000-bfffffff : Crash kernel (low)
->>>   bfcbe00000-bffcffffff : Crash kernel
->> As Chen said, that's the intended behaviour and how x86 works. The
->> requested 768M goes in the high range if there's not enough low memory
->> and an additional buffer for swiotlb is allocated, hence the low 256M.
-> I understand, but why 256M (as low) for arm64? x86_64 setups usually
-> have more system memory available as compared to several commercially
-> available arm64 setups. So is the intent, just to keep the behavior
-> similar between arm64 and x86_64?
->
-> Should we have a CONFIG option / bootarg to help one select the max
-> 'low_size'? Currently the ' low_size' value is calculated as:
->
->     /*
->          * two parts from kernel/dma/swiotlb.c:
->          * -swiotlb size: user-specified with swiotlb= or default.
->          *
->          * -swiotlb overflow buffer: now hardcoded to 32k. We round it
->          * to 8M for other buffers that may need to stay low too. Also
->          * make sure we allocate enough extra low memory so that we
->          * don't run out of DMA buffers for 32-bit devices.
->          */
->         low_size = max(swiotlb_size_or_default() + (8UL << 20), 256UL << 20);
->
-> Since many arm64 boards ship with swiotlb=0 (turned off) via kernel
-> bootargs, the low_size, still ends up being 256M in such cases,
-> whereas this 256M can be used for some other purposes - so should we
-> be limiting this to 64M and failing the crash kernel allocation
-> request (gracefully) otherwise?
->
->> We could (as an additional patch), subtract the 256M from the high
->> allocation so that you'd get a low 256M and a high 512M, not sure it's
->> worth it. Note that with a "crashkernel=768M,high" option, you still get
->> the additional low 256M, otherwise the crashkernel won't be able to
->> boot as there's no memory in ZONE_DMA. In the explicit ",high" request
->> case, I'm not sure subtracted the 256M is more intuitive.
->> In 5.11, we also hope to fix the ZONE_DMA layout for non-RPi4 platforms
->> to cover the entire 32-bit address space (i.e. identical to the current
->> ZONE_DMA32).
->>
->>> IMO, we should test this feature more before including this in 5.11
->> Definitely. That's one of the reasons we haven't queued it yet. So any
->> help with testing here is appreciated.
-> Sure, I am running more checks on this series. I will be soon back
-> with more updates.
+Chris Packham (3):
+  net: dsa: mv88e6xxx: Don't force link when using in-band-status
+  net: dsa: mv88e6xxx: Support serdes ports on MV88E6097/6095/6185
+  net: dsa: mv88e6xxx: Support serdes ports on MV88E6123/6131
 
-Sorry to bother you. I am looking forward to your review comments.
+ drivers/net/dsa/mv88e6xxx/chip.c   |  26 +++++++-
+ drivers/net/dsa/mv88e6xxx/serdes.c | 102 +++++++++++++++++++++++++++++
+ drivers/net/dsa/mv88e6xxx/serdes.h |   9 +++
+ 3 files changed, 135 insertions(+), 2 deletions(-)
 
-
-Thanks,
-Chen Zhou
->
-> Regards,
-> Bhupesh
->
-> .
->
+--=20
+2.28.0
 
