@@ -2,174 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457EC2924D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF622924F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbgJSJqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727254AbgJSJqg (ORCPT
+        id S1728837AbgJSJsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:48:15 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:36288 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728347AbgJSJsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:46:36 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFDBC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 02:46:36 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id o7so5710559pgv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 02:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ALbYyyA0vpv6/f61rJ6bmvtZlE3FbVb82jHAFZ5GC0I=;
-        b=gNmfIv1inQXz9rCn0kzNxaTJfeiqhPY344N9yQARhoFrspEFbTMOyD8Mo5+q2laVTJ
-         dljirSBQuIb1CJ16xkvkUsCLBj78B6xo1SpzN8eK1jE+s0R0H16YvGlqei3S0YjzB3HW
-         NDdyFFHsI7xQbUASKP01Lq/il8wFrj1oz5+efq0Z8Ek97jLxzyU9uloR6XPI4P4ckP7Q
-         6Ng8Eg7G4DwGn77Jzw3YLbqyv/aSe48taPsYmLP/FS0te1Q5/sFC262rrLjlx8TclVho
-         oHNzzVwsCfLCDt9WyeEKfWX0Lzmmj/ClvM7h55PLJ63qVYtWBtxYU9TZC5TPOWkIPxKL
-         2/vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ALbYyyA0vpv6/f61rJ6bmvtZlE3FbVb82jHAFZ5GC0I=;
-        b=goSM/mtSP6CpwkPPVuDh4Q5IjG5CBYhqM7SBlD5Q5GUDrc1SE/TItz0/M9Z1Rvu2xm
-         sl3tkadsiPCYWzwb9b5X6H9uQJIVVbv2+DrUfaxUbP31DUvDjGcgIGML8Ie1M0A3PTPq
-         5qhxBltcBrQljGw9WBTHvkT9Nm/dmv2mN1MgHHy87u6lGtW/teQ7hEMbf4vdrYnxJm0y
-         kMKmHtW4mwGGkndMpQXyqvhB3Va/XTM0T0WubIRSfkIZ4luv1eN27l1wrZcCM4ngkwG6
-         sY9Cq6Cx2z7YNZ08eHBsetjCCiYYXqGklYFgOYmFfI/O2/UgGoFbUplQXb5d1vgBnuLs
-         y7dA==
-X-Gm-Message-State: AOAM532x5ZTpSwhs6T2JzJiMZhNUHH9XOJ1y9tTqY5VXZ73VvEgphF9F
-        b7CoWrbsHCOFi8vSoVbxYcOSmQ==
-X-Google-Smtp-Source: ABdhPJyaEAc/o30BN9mNATaHSTN/x9ARHeUEKpl/yCRpC2Ii3rE+ByZ0EptJ4B/QdXGCoslVP9l/+Q==
-X-Received: by 2002:a63:5005:: with SMTP id e5mr13885873pgb.236.1603100796064;
-        Mon, 19 Oct 2020 02:46:36 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id e23sm11252135pfi.191.2020.10.19.02.46.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 19 Oct 2020 02:46:35 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 15:16:33 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        chris.redpath@arm.com, morten.rasmussen@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-Message-ID: <20201019094633.m3yvxurfm2xwsb6a@vireshk-i7>
-References: <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
- <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
- <20201008150317.GB20268@arm.com>
- <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
- <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
- <20201012154915.GD16519@bogus>
- <20201012165219.GA3573@arm.com>
- <17819d4d-9e7e-9a38-4227-d0d10a0749f1@arm.com>
- <20201014042531.r7iykzygkvmpsqck@vireshk-i7>
- <503af305-77a4-964a-ed17-8df8b4e3a546@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <503af305-77a4-964a-ed17-8df8b4e3a546@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        Mon, 19 Oct 2020 05:48:14 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201019094746euoutp0134b496d45e781752118eb15d85a4c36f~-W76XaCFB2362223622euoutp01t
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:47:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201019094746euoutp0134b496d45e781752118eb15d85a4c36f~-W76XaCFB2362223622euoutp01t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603100866;
+        bh=FqxW9f1+LuYbBwoXpPUvT/85NwXSuEJLmmuYl/MBjdE=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=aD+OWPvGL4cNwCcD98957LOBUwdcCOHssuJnmS+TkGGajwzxH9rdzWiVgW05J89lz
+         z5jlQ77JxNG/d247dJz2O3NKIaKDvMnhATiY/3M7HvRvnEQr0iYC9Jve1B2OrJ0KIN
+         4cTGk4Ew2MKgk5UzehKh3GACygnab8xJA755licQ=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201019094738eucas1p23cbddf92d23c54680e309a7b79345deb~-W7ymcuKb1210912109eucas1p2o;
+        Mon, 19 Oct 2020 09:47:38 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id E6.F2.05997.AB06D8F5; Mon, 19
+        Oct 2020 10:47:38 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201019094737eucas1p283ea94186450c0756442624d95de627f~-W7yQgHmN0748607486eucas1p2w;
+        Mon, 19 Oct 2020 09:47:37 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201019094737eusmtrp20ee391f9e5011271d49307a44635220b~-W7yPf7fh2596225962eusmtrp2w;
+        Mon, 19 Oct 2020 09:47:37 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-43-5f8d60ba7de2
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id D8.CB.06017.9B06D8F5; Mon, 19
+        Oct 2020 10:47:37 +0100 (BST)
+Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201019094737eusmtip1050f48de2edf96d119dcc997d9e28bdf~-W7xsOZdg1561015610eusmtip1f;
+        Mon, 19 Oct 2020 09:47:37 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     linux-samsung-soc@vger.kernel.org, linux-pci@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH 0/6] Add DW PCIe support for Exynos5433 SoCs
+Date:   Mon, 19 Oct 2020 11:47:09 +0200
+Message-Id: <20201019094715.15343-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA0VSa0hTYRju29m5ODxynIIfFgYDjQLdrIhDWlj04xAR/Qghw+Zsp03apm3O
+        0h81XElOTRvLdIm3LHVq2RIvk8xsOVG2mQo6VCoq0co/XsJMMreT9u+5vM/3vC98BCIsRyOJ
+        DE02q9XIVCJMwO8c/OWNdaSVSCW+MZRuyFfSNU4PSk+tF6B000olTo9+LcZor7cdp8cdVRjt
+        rnZhdIW3j0f/+D2P023OWZy+88qJ0z0zQ0gSybRWtwKmxzqLM7V2PWO3FWLMvQ4bYFxTXTxm
+        2R51Dk8RJMpZVUYOqxUfTxMoS7sbsKzb1I2liS+oAVhIEwgiIHUY9tu6eCYgIIRUE4DGugWU
+        IysATk/YEY4sA2ixe8B2pKTPDDijEcBi9zC2E7nvfcvzT2FUPDQtmrYMgginkuDaKu2fQah6
+        BBpKnYGXwqhEOO218P2YT0XD+dlNxI9J6hisGC1Cuba9sKW9P7AGpEpx+H7Yw+OMU7Csbo7P
+        4TD4zdWBc3gP3Oyp4XEBI4CfPG04R4oBHM+v+HdEApzxrAfWQ6j98LlDzMknYMuHRdQvQyoE
+        Ti2G+mVkC5o7HyKcTMK7BUJuOgZaXc92at+MjiEcZmDLy++B1YRUKmxwlaBlIMr6v6sWABuI
+        YPU6tYLVHdSw1+N0MrVOr1HEXc5U28HWbxn541rpBo6N9AFAEUAUTH7MLJYKUVmOLlc9ACCB
+        iMLJk+6RS0JSLsvNY7WZUq1exeoGwG6CL4ogD9UvpAophSybvcqyWax22+URQZEGUPnYV/FA
+        NE/ajBcmmzVnr72LIZPjzbXKi62ezZBcxmxU+jZ2pYuHkJ+gJ6H7qd1c9Lrqc5BEUihUZpe/
+        uCnuaMx70j1sCFEdPRO65DtvnZ6bDE67Ul56ZDz5tLG5T2HvSolG3Pv0arnU0uuObZOnDD7a
+        38sXSFbF0bfW3KiIr1PK4g8gWp3sL8Vq8X4pAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrDLMWRmVeSWpSXmKPExsVy+t/xu7o7E3rjDTYc1bVY0pRhMf/IOVaL
+        G7/aWC1WfJnJbnHhaQ+bxfnzG9gtLu+aw2Zxdt5xNosZ5/cxWbz5/YLdYu2Ru+wWrXuPsFvs
+        vHOC2YHXY828NYweO2fdZfdYsKnUY9OqTjaPvi2rGD2O39jO5PF5k1wAe5SeTVF+aUmqQkZ+
+        cYmtUrShhZGeoaWFnpGJpZ6hsXmslZGpkr6dTUpqTmZZapG+XYJeRv+OJWwFLQIVn648YW1g
+        nMLbxcjJISFgItG7bxJjFyMXh5DAUkaJ9smfmSESMhInpzWwQtjCEn+udbFBFH1ilNjwYzE7
+        SIJNwFCi6y1IgpNDRMBJ4v3ki8wgRcwCa5glGtu6mUASwgI2ErfPT2EBsVkEVCVe3P0PtoFX
+        wFZixoVuqA3yEqs3HGCewMizgJFhFaNIamlxbnpusZFecWJucWleul5yfu4mRmBIbzv2c8sO
+        xq53wYcYBTgYlXh4H+T3xAuxJpYVV+YeYpTgYFYS4XU6ezpOiDclsbIqtSg/vqg0J7X4EKMp
+        0PKJzFKiyfnAeMsriTc0NTS3sDQ0NzY3NrNQEuftEDgYIySQnliSmp2aWpBaBNPHxMEp1cBo
+        EHs0hMtkSlwA+2kXj/2v5lxjeWy89dez1SsFt9msUDmQam9azJ7xSryaKTHoiM3dF4m+tZEf
+        nQ3vS77I+bpx25667Sc2nf5xTO114RkF54D3tqwb3l5fE3Lpdd/x/6/LPXzmHp+hyT0vrFXX
+        2lF/d+yjjUvuJqimdcuWOO5ev+GhhVOfp1+JEktxRqKhFnNRcSIAzuluZH8CAAA=
+X-CMS-MailID: 20201019094737eucas1p283ea94186450c0756442624d95de627f
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201019094737eucas1p283ea94186450c0756442624d95de627f
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201019094737eucas1p283ea94186450c0756442624d95de627f
+References: <CGME20201019094737eucas1p283ea94186450c0756442624d95de627f@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-10-20, 09:50, Nicola Mazzucato wrote:
-> Hi Viresh,
-> 
-> thank you for your suggestion on using 'opp-shared'.
-> I think it could work for most of the cases we explained earlier.
-> 
-> Summarising, there are two parts of this entire proposal:
-> 1) where/how to get the information: now we are focusing on taking advantage of
-> 'opp-shared' within an empty opp table
-> 2) and how/where this information will be consumed
-> 
-> Further details below:
-> 
-> 1) a CPUFreq driver that takes the OPPs from firmware, can call
-> dev_pm_opp_of_get_sharing_cpus like you suggested. When doing so, a provided
-> cpumaksk will be populated with the corresponding cpus that share the same
-> (empty) table opp in DT.
-> All good so far.
+Dear All,
 
-Great.
+This patchset is a resurrection of the DW PCIe support for the Exynos5433
+SoCs posted long time ago here: https://lkml.org/lkml/2016/12/26/6 and
+later here: https://lkml.org/lkml/2017/12/21/296 .
 
-> The current opp core is not expecting an empty table and therefore some errors
-> are thrown when this happens.
-> Since we are now allowing this corner-case, I am presenting below where I think
-> some minor corrections may be needed:
-> 
-> --- a/drivers/opp/of.c
-> +++ b/drivers/opp/of.c
-> @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
->         struct device_node *required_np, *np;
->         int count, i;
-> 
->         /* Traversing the first OPP node is all we need */
->         np = of_get_next_available_child(opp_np, NULL);
->         if (!np) {
-> -               dev_err(dev, "Empty OPP table\n");
-> +               dev_warn(dev, "Empty OPP table\n");
-> +
-> +               /*
-> +                * With empty table we remove shared_opp. This is to leave the
-> +                * responsibility to decide which opp are shared to the opp users
-> +                */
-> +               opp_table->shared_opp = OPP_TABLE_ACCESS_EXCLUSIVE;
-> +
->                 return;
->         }
-> 
-> @@ int dev_pm_opp_of_find_icc_paths(struct device *dev,
->         int ret, i, count, num_paths;
->         struct icc_path **paths;
-> 
->         ret = _bandwidth_supported(dev, opp_table);
-> -       if (ret <= 0)
-> +       if (ret == -EINVAL)
-> +               return 0; /* Empty OPP table is a valid corner-case, let's not
-> fail */
-> +       else if (ret <= 0)
->                 return ret;
-> 
-> The above are not 'strictly' necessary to achieve the intended goal, but they
-> make clearer that an empty table is now allowed and not an error anymore.
-> What it is your point of view on this?
+In meantime the support for the Exynos5440 SoCs has been completely
+dropped from mainline kernel, as those SoCs never reached the market. The
+PCIe driver for Exynos5440 variant however has not been removed yet. This
+patchset simply reworks it to support the Exynos5433 variant. The lack of
+the need to support both variants significantly simplifies the driver
+code.
 
-Why is this stuff getting called in your case ? We shouldn't be trying
-to create an OPP table here and it should still be an error in the
-code if we are asked to parse an empty OPP table.
+Best regards,
+Marek Szyprowski
 
-> In addition, I think it would also be appropriate to update the documentation
-> (Documentation/devicetree/bindings/opp/opp.txt) to reflect this new case
-> (required properties etc).
-> Any different thoughts?
 
-Yes, this needs a small update in the required-opps section.
+Patch summary:
 
-> 2) Once the driver gets the 'performance dependencies' by
-> dev_pm_opp_of_get_sharing_cpus(), this information will have to be shared with
-> EAS, thermal, etc.. The natural way to do so would be to add a new cpumask like
-> I proposed in this RFC.
-> I see this as an improvement for the whole subsystem and a scalable choice since
-> we can unambiguously provide the correct information to whoever needs it, given
-> that we don't enforce "hw dependencies" for related_cpus.
-> The changes would be trivial (it's in the original RFC).
-> On the other hand, we can't unload this h/w detail into related_cpus IMO as we
-> are dealing with per-cpu systems in this context.
-> Hope it makes sense?
+Jaehoon Chung (5):
+  Documetation: dt-bindings: add the samsung,exynos-pcie binding
+  Documetation: dt-bindings: add the samsung,exynos-pcie-phy binding
+  phy: samsung: phy-exynos-pcie: rework driver to support Exynos5433
+    PCIe PHY
+  pci: dwc: pci-exynos: rework the driver to support Exynos5433 variant
+  arm64: dts: exynos: add the WiFi/PCIe support to TM2(e) boards
 
-I will have another look at this stuff, honestly I haven't looked at
-this in detail yet. But I do understand that we can't really use
-related-cpu here without changing its earlier meaning.
+Marek Szyprowski (1):
+  Documetation: dt-bindings: drop samsung,exynos5440-pcie binding
+
+ .../bindings/pci/samsung,exynos-pcie.yaml     | 104 ++++++
+ .../bindings/pci/samsung,exynos5440-pcie.txt  |  58 ---
+ .../bindings/phy/samsung,exynos-pcie-phy.yaml |  51 +++
+ .../boot/dts/exynos/exynos5433-pinctrl.dtsi   |   2 +-
+ .../dts/exynos/exynos5433-tm2-common.dtsi     |  24 +-
+ arch/arm64/boot/dts/exynos/exynos5433.dtsi    |  36 ++
+ drivers/pci/controller/dwc/Kconfig            |   3 +-
+ drivers/pci/controller/dwc/pci-exynos.c       | 358 +++++++-----------
+ drivers/pci/quirks.c                          |   1 +
+ drivers/phy/samsung/phy-exynos-pcie.c         | 304 ++++++---------
+ 10 files changed, 472 insertions(+), 469 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pci/samsung,exynos5440-pcie.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/samsung,exynos-pcie-phy.yaml
 
 -- 
-viresh
+2.17.1
+
