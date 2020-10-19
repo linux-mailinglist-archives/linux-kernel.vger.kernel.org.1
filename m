@@ -2,76 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B412927D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3692927D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 15:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727647AbgJSNDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 09:03:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43528 "EHLO mail.kernel.org"
+        id S1727680AbgJSNEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 09:04:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbgJSNDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 09:03:42 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1726336AbgJSNEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:04:22 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CFC222283;
-        Mon, 19 Oct 2020 13:03:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4603E21D7B;
+        Mon, 19 Oct 2020 13:04:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603112622;
-        bh=cqF7TYS+3s0vkYfvkAxCv00WvkrIIfSih7URN3Qul8Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l24sJaGjidXhXBm2OBM3hZz1mKIoxujmjvUqZUZhnTWSSvdzip5WiUxeDP1B8o7GU
-         C/RoePxFTquy9tFGAx7AZsrEpEwREYtz2EbOWF4uk5R/x32XJ0+pZlB+ef8hlenTqW
-         +GtsXW0ACDEDh8BnRIKjmPzCJKNqCaXd5t5Sf7XY=
-Date:   Mon, 19 Oct 2020 14:03:31 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        lgirdwood@gmail.com, lars@metafoo.de, nuno.sa@analog.com,
-        perex@perex.cz, tiwai@suse.com
-Subject: Re: [PATCH] ASoC: adau1977: remove platform data and move micbias
- bindings include
-Message-ID: <20201019130331.GA4904@sirena.org.uk>
-References: <20201019105313.24862-1-alexandru.ardelean@analog.com>
+        s=default; t=1603112661;
+        bh=f7aZVZxIW095a11h6Oz4CE6srePjutuTG6DDZkS52ps=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wAleNXbscVK1nEn/IfNnIyd1QJ+0X5dWPS94NFhobuiQLt7XbuP3IceqQFkSk0zeF
+         D0qaIzpLT+Evhnn/39n0+5fmsQZpEMfXBi6oVFSRQBt08nQnJmSkA5ioqHDq4OnQG6
+         ysGA+HE5Lhj/pJknm60evednwhm/loHPTldjBllE=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kUUpn-002QJl-9M; Mon, 19 Oct 2020 14:04:19 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TB36FDmn/VVEgNH/"
-Content-Disposition: inline
-In-Reply-To: <20201019105313.24862-1-alexandru.ardelean@analog.com>
-X-Cookie: FORTH IF HONK THEN
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 19 Oct 2020 14:04:19 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     LAK <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Saravana Kannan <saravanak@google.com>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH v3 03/16] arm64: Allow IPIs to be handled as normal
+ interrupts
+In-Reply-To: <CAKfTPtDjPpri5Gt6kLeFp_B_zJUZ5DYXEqtJ+0VKohU-y9bFEQ@mail.gmail.com>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-4-maz@kernel.org>
+ <CAKfTPtDjPpri5Gt6kLeFp_B_zJUZ5DYXEqtJ+0VKohU-y9bFEQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <353f13b0dcc6c7ea1b44012d9632a0cc@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: vincent.guittot@linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, Valentin.Schneider@arm.com, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, saravanak@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vincent,
 
---TB36FDmn/VVEgNH/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 2020-10-19 13:42, Vincent Guittot wrote:
+> Hi Marc,
+> 
+> On Tue, 1 Sep 2020 at 16:44, Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> In order to deal with IPIs as normal interrupts, let's add
+>> a new way to register them with the architecture code.
+>> 
+>> set_smp_ipi_range() takes a range of interrupts, and allows
+>> the arch code to request them as if the were normal interrupts.
+>> A standard handler is then called by the core IRQ code to deal
+>> with the IPI.
+>> 
+>> This means that we don't need to call irq_enter/irq_exit, and
+>> that we don't need to deal with set_irq_regs either. So let's
+>> move the dispatcher into its own function, and leave handle_IPI()
+>> as a compatibility function.
+>> 
+>> On the sending side, let's make use of ipi_send_mask, which
+>> already exists for this purpose.
+>> 
+>> One of the major difference is that we end up, in some cases
+>> (such as when performing IRQ time accounting on the scheduler
+>> IPI), end up with nested irq_enter()/irq_exit() pairs.
+>> Other than the (relatively small) overhead, there should be
+>> no consequences to it (these pairs are designed to nest
+>> correctly, and the accounting shouldn't be off).
+> 
+> While rebasing on mainline, I have faced a performance regression for
+> the benchmark:
+> perf bench sched pipe
+> on my arm64 dual quad core (hikey) and my 2 nodes x 112 CPUS (thx2)
+> 
+> The regression comes from:
+> commit: d3afc7f12987 ("arm64: Allow IPIs to be handled as normal 
+> interrupts")
 
-On Mon, Oct 19, 2020 at 01:53:13PM +0300, Alexandru Ardelean wrote:
-> The change removes the platform_data include/definition. It only contains
-> some values for the MICBIAS.
-> These are moved into 'dt-bindings/sound/adi,adau1977.h' so that they can be
-> used inside device-trees. When moving then, they need to be converted to
-> pre-compiler defines, so that the DT compiler can understand them.
+That's interesting, as this patch doesn't really change anything (most
+of the potential overhead comes in later). The only potential overhead
+I can see is that the scheduler_ipi() call is now wrapped around
+irq_enter()/irq_exit().
 
-This is missing an update of the binding documentation for the new
-property.
+> 
+>           v5.9              + this patch
+> hikey :   48818(+/- 0.31)   37503(+/- 0.15%)  -23.2%
+> thx2  :  132410(+/- 1.72)  122646(+/- 1.92%)   -7.4%
+> 
+> By + this patch,  I mean merging branch from this patch. Whereas
+> merging the previous:
+> commit: 83cfac95c018 ("genirq: Allow interrupts to be excluded from
+> /proc/interrupts")
+>  It doesn't show any regression
 
---TB36FDmn/VVEgNH/
-Content-Type: application/pgp-signature; name="signature.asc"
+Since you are running perf, can you spot where the overhead occurs?
 
------BEGIN PGP SIGNATURE-----
+Thanks,
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+NjqMACgkQJNaLcl1U
-h9AOtQf/Xp1fnxzE3EaB3q6cfcLQ/wqiYsF9GVcIOOw5jd6ouidERA5TYt/bovep
-DUvbLQW+R0TcAZcHG+OzGcjhHETO7OsQZoD5uPi0DAQwrceFh1xI3GcZNDRa+Qqd
-jdgHV50BK20Kwx83U0D1h0DFHdE2mJM7cow0S4yRMv5TZ5JZ4B7i/84Yvuu8vlT2
-K6ckEdrZL2P+u3nyXFIsBjtbrw+YcH5v0F1AAAAlkSiPoyltTbQ4tdkWVpk9R+AO
-FdwyuVH7NU5WCMkz7DuR7FNAmZFjzvDVZYYJPsgwJRqtXqq3dQk6VS5H82hk94d4
-enqPA9aKp8ywBz2S3ZS7pszUKUs1/g==
-=J4FR
------END PGP SIGNATURE-----
-
---TB36FDmn/VVEgNH/--
+         M.
+-- 
+Jazz is not dead. It just smells funny...
