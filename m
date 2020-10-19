@@ -2,121 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECC4292E04
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F884292E0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 21:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731142AbgJSTCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 15:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730464AbgJSTCv (ORCPT
+        id S1730564AbgJSTDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 15:03:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24728 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731173AbgJSTC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 15:02:51 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710A1C0613D0;
-        Mon, 19 Oct 2020 12:02:51 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t12so1373942ilh.3;
-        Mon, 19 Oct 2020 12:02:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Z6Qfl4RzyoYY0xyHHaaWegNhMwUCPvOxxsKja+GGhbE=;
-        b=cV0dH50VnNBVTXcBxLxMghFXtg7JtA+rxtgwFt1dzbeEykFAZUtQw9xYlC0vwf+Vt2
-         kZJ1DxdS26/tLjI4ixPg+6R2TJCmg75V071Siq0v/qkP4rzkBOicTKTbUe0aHc73uaR+
-         MCXG4cYKzWbeHaFxsAZrXoo0iuUpHzqKqg+X7QXfYrl87006QOSdHHNedxdnu/2Bw0hG
-         75+fpk+fmBCG7eRRMcqkIulR9XW42zYM4qwpJGkYfzc7By77LPS8WrpnT8WtWjznIczo
-         0imQZ6U1GbaEAO1iMHOcXmvST/VmphwVUu3E3/ammtqW2X/hWDWFqK57miVqm0X6FhYU
-         yIIw==
+        Mon, 19 Oct 2020 15:02:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603134177;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=uegBest9qGU95FbQlMt6mOSEsrBzbQhzO1uq0ihtkrw=;
+        b=OgAQo+fp/LkuzxkumnroxcKuw4mUQU41yef30nJV5xn3JVdb5cZKY8vNJrQIetb5cFdVQn
+        8y4ykytBPs7wq7yvEwpb3FM6SbhorG+qtiK4VYO5+0cT3CTaVEyJ1tUBm0FplGehHBgfXx
+        ETB+N5o3p/gVwONFMAXTou6mmOe2La4=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-23-lWcbq7RcP1Or-pTQT0LnqA-1; Mon, 19 Oct 2020 15:02:55 -0400
+X-MC-Unique: lWcbq7RcP1Or-pTQT0LnqA-1
+Received: by mail-qt1-f197.google.com with SMTP id d22so655603qtn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 12:02:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Z6Qfl4RzyoYY0xyHHaaWegNhMwUCPvOxxsKja+GGhbE=;
-        b=DZT5Ug43cyVpcOiN5PLuD5G2PgcCDTAf4Bq17pzlBDdKwHS3IUYljDz6JWK0DUrmEU
-         tadPjGFZ9c3tChtN+Idt8tpcNadMoyLrxIcDov7y6L7Jeoyjg3FzsHhL7P4hqX+2nxmu
-         ZvB2RC+mGwHMrCD1T6G9uXlQ58hu+ULPMmcrIWO+KRBrBWYmZi1lLKrnTkWceWRPkuJU
-         o1N1b9ovA/d9DFS6Sj3gTmrhv36qm4+kfk+XZZ+YX0EB95vB+jFZyncgZSHMRES43Lr8
-         HHL+507NKm1g46sV33ZM/n7eMJrYUaU8Zg5rrNeh4RYYk7wCiY9/Xkrvn2bN8tsWOTMy
-         ON3w==
-X-Gm-Message-State: AOAM5320cal4S5eoFji9olFmhtIs7cfuMO0GWDdGkHqEmma2D5cm72mc
-        ezR7yUGPI4iBBeA1LpVerya50HUfGg==
-X-Google-Smtp-Source: ABdhPJyLxOJViQionbY2RerrIKWmU3A/9JjljQkcLLnr1+x76pgvUpnOiWM9TgoLpafx2IZne5gEHA==
-X-Received: by 2002:a92:aa0e:: with SMTP id j14mr1244286ili.120.1603134170696;
-        Mon, 19 Oct 2020 12:02:50 -0700 (PDT)
-Received: from moria.home.lan ([2601:19b:c500:a1:7285:c2ff:fed5:c918])
-        by smtp.gmail.com with ESMTPSA id q16sm580359ilj.22.2020.10.19.12.02.49
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=uegBest9qGU95FbQlMt6mOSEsrBzbQhzO1uq0ihtkrw=;
+        b=G1U+mcFGAFxAWMHF4thDt7FBNzQyEFTErS/B8KOwQt4NCR5VMr0F8dnBHw5VjzeTRc
+         t5ZXxf3z+k099TyfvLSrXPnJ7htJqgh6x+ojsNsFob+Dzy/5TfbLRUAQmXt5QvGfES/s
+         x/Td914Cv2sL2qV7q0CPITEY1iICACbs1wSI8ohnycgYBSg0E7HJb982E9AqYlUVoeGp
+         C0yPFAA4kEYtDu/ZmBkismk9CEvJ96qOBrqnoo8lORpib62iI/fYDYS1QNxjglKH1gB1
+         wo1hDyzoPveutSpmJ97X8KTJ5em3A2Tglh32VXvZL+fwthX5an1Qka45iChXkzBHdIpD
+         RQvg==
+X-Gm-Message-State: AOAM530tFn5mDD5RXuDHU+5gbD5mPeWFXIS5TOIO1c5ldEuD3aNI6uOt
+        ZisrF21SBenVihwLOH0SB/gvOhx0Pv3LHyls8n7mKmwC+nbHt5Qgoefo1/ROKqEbD4RrEJ+nU7J
+        u/e0MUy5IlQkDUTI3rhzILm+3
+X-Received: by 2002:a0c:a945:: with SMTP id z5mr1182785qva.55.1603134174808;
+        Mon, 19 Oct 2020 12:02:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwTkR2FbOzB18YDbh5OssfhPNpOXoSRI1q3NjkKotOp6l0c/da+MJYdy6UjlSd62aH7UPyrxQ==
+X-Received: by 2002:a0c:a945:: with SMTP id z5mr1182768qva.55.1603134174632;
+        Mon, 19 Oct 2020 12:02:54 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id x91sm309284qte.69.2020.10.19.12.02.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 12:02:50 -0700 (PDT)
-From:   Kent Overstreet <kent.overstreet@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        axboe@kernel.dk
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>
-Subject: [PATCH 2/2] block: Add blk_status_to_str()
-Date:   Mon, 19 Oct 2020 15:02:41 -0400
-Message-Id: <20201019190241.2910492-2-kent.overstreet@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201019190241.2910492-1-kent.overstreet@gmail.com>
-References: <20201019190241.2910492-1-kent.overstreet@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 19 Oct 2020 12:02:54 -0700 (PDT)
+From:   trix@redhat.com
+To:     linus.walleij@linaro.org, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] pci: remove unneeded break
+Date:   Mon, 19 Oct 2020 12:02:49 -0700
+Message-Id: <20201019190249.7825-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we're going to the trouble of having these nice error strings, let's
-make them available.
+From: Tom Rix <trix@redhat.com>
 
-Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+A break is not needed if it is preceded by a return
+
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- block/blk-core.c       | 13 +++++++++----
- include/linux/blkdev.h |  1 +
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ drivers/pci/controller/pci-v3-semi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 10c08ac506..d68f24a7ee 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -213,18 +213,23 @@ int blk_status_to_errno(blk_status_t status)
- }
- EXPORT_SYMBOL_GPL(blk_status_to_errno);
- 
--static void print_req_error(struct request *req, blk_status_t status,
--		const char *caller)
-+const char *blk_status_to_str(blk_status_t status)
- {
- 	int idx = (__force int)status;
- 
- 	if (WARN_ON_ONCE(idx >= ARRAY_SIZE(blk_errors)))
--		return;
-+		return "(invalid error)";
-+	return blk_errors[idx].name;
-+}
-+EXPORT_SYMBOL_GPL(blk_status_to_str);
- 
-+static void print_req_error(struct request *req, blk_status_t status,
-+		const char *caller)
-+{
- 	printk_ratelimited(KERN_ERR
- 		"%s: %s error, dev %s, sector %llu op 0x%x:(%s) flags 0x%x "
- 		"phys_seg %u prio class %u\n",
--		caller, blk_errors[idx].name,
-+		caller, blk_status_to_str(status),
- 		req->rq_disk ? req->rq_disk->disk_name : "?",
- 		blk_rq_pos(req), req_op(req), blk_op_str(req_op(req)),
- 		req->cmd_flags & ~REQ_OP_MASK,
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 868e11face..d9e3b7b017 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -936,6 +936,7 @@ extern const char *blk_op_str(unsigned int op);
- 
- int blk_status_to_errno(blk_status_t status);
- blk_status_t errno_to_blk_status(int errno);
-+const char *blk_status_to_str(blk_status_t status);
- 
- int blk_poll(struct request_queue *q, blk_qc_t cookie, bool spin);
- 
+diff --git a/drivers/pci/controller/pci-v3-semi.c b/drivers/pci/controller/pci-v3-semi.c
+index 1f54334f09f7..154a5398633c 100644
+--- a/drivers/pci/controller/pci-v3-semi.c
++++ b/drivers/pci/controller/pci-v3-semi.c
+@@ -658,7 +658,6 @@ static int v3_get_dma_range_config(struct v3_pci *v3,
+ 	default:
+ 		dev_err(v3->dev, "illegal dma memory chunk size\n");
+ 		return -EINVAL;
+-		break;
+ 	}
+ 	val |= V3_PCI_MAP_M_REG_EN | V3_PCI_MAP_M_ENABLE;
+ 	*pci_map = val;
 -- 
-2.28.0
+2.18.1
 
