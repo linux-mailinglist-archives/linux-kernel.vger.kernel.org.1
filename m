@@ -2,128 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BF229244B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0BA292450
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 11:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730049AbgJSJGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 05:06:22 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:30702 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727235AbgJSJGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 05:06:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603098381; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=CSSINleGh6w/76KIFdxve8Idpf2dccGeHvGZNRQeQPU=; b=pQgKzs0QQkVotxq1jJ44C2bK3ouL1ok0TaQrkk11Kpn1iM+vv6exF1dl0zYDjYP4xLE01VVu
- ynPOw0d34jJZ1Wwth8ayc/3h9YHDI4lKSn4E4orpE41HYoZg75c9w/f1z1uYVYsimvpjE/AI
- w+lfAEsJgZA3Wb6sFWp/0t4d1Do=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f8d570c3711fec7b1445056 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Oct 2020 09:06:20
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 00D72C433FE; Mon, 19 Oct 2020 09:06:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 60CBEC433CB;
-        Mon, 19 Oct 2020 09:06:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 60CBEC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v2] Asoc: qcom: lpass-cpu: Fix clock disable failure
-Date:   Mon, 19 Oct 2020 14:36:03 +0530
-Message-Id: <1603098363-9251-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1730091AbgJSJHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 05:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728064AbgJSJHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 05:07:21 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13CDEC0613CE;
+        Mon, 19 Oct 2020 02:07:21 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id b23so5655635pgb.3;
+        Mon, 19 Oct 2020 02:07:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OYVQGqeoUsyygZEDJbsttq3Q79Q31R4DhEWJATOHDyo=;
+        b=UJPKh1Ot7CsnAgaopJKem4Czo9cR5N+HS+cErFD1/h65tMj7tTSVXNy4WPLu5pNcAE
+         SWnX5N0/822hEslNViFWWIMoqE9NSiD0ojggL5Ryw2F5M0YF/xip/4kpExLRv8L89n1B
+         IU8P/IoH9lANK5Ko833aYINWTheWdBFBdksLSwJ73ckRA9PVtES1cR76AWVdbMaHP/j/
+         SudfspxxZBmJYlpfRaf3CPWKVl2aQ2q3JY/yVat8tEhhqIJQcLgZt8JFjSYqOordc0AF
+         aIGHQaREB0/sKeaCYIj7y4OCGkKk/PbRdm/QV54QS0UmtO2yhW+1TPlFsEWi5zHOps4d
+         FgbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OYVQGqeoUsyygZEDJbsttq3Q79Q31R4DhEWJATOHDyo=;
+        b=lX5MhQaN70QtijSRIVr06uCuh+Vv/xTMgvA7/0qmNY7p3B+YzmK/maByQ54cYcBDqY
+         J5LQBEph6vvg5aJ4G547Rf3Qb0QryyZP+2Eisu8UuS/38kPyh/VzK8z9zBE4vCry9+2p
+         JRlokpEODBCu8k7wIzcf8Dhsbb1lLflSKNhoKWl1tRmW7VU3FNjgVuVU3oXxCG5H/toN
+         C+AzK1k8V+fBVMSgIz5bJrc1Ad4BlPNP52y8H9FGgk/1JNbZqkJWi5xm6tm1zDt2Ds4V
+         prJ9TUQLNjr9dKPxq7SAh+SJT9hq2iDOIx+7/2ZR8G24myzcLu7CbIaoHfFELASuT4s7
+         ++GA==
+X-Gm-Message-State: AOAM531aKdIc2FMF5iKZLQ3MVJIU5fJ+LL7GmCN7T5+Jo7nEGaFQ3S9C
+        rKsbKIF4XUL+IR0Rd55i9uu6QT/0TSI=
+X-Google-Smtp-Source: ABdhPJwKwqiTnb6aTiekUrUU1EAbnHPb2lAhuehaaEZngU1Dh1m6mNeXPLFqtvWtJAjeDQiI5juhlw==
+X-Received: by 2002:a62:37c4:0:b029:155:ebd8:304c with SMTP id e187-20020a6237c40000b0290155ebd8304cmr16112104pfa.73.1603098440227;
+        Mon, 19 Oct 2020 02:07:20 -0700 (PDT)
+Received: from ZB-PF0YQ8ZU.360buyad.local ([137.116.162.235])
+        by smtp.gmail.com with ESMTPSA id e1sm11263016pfd.198.2020.10.19.02.07.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 02:07:19 -0700 (PDT)
+From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org
+Cc:     netdev@vger.kernel.org, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, mst@redhat.com,
+        jasowang@redhat.com, Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Subject: [PATCH 1/2] KVM: not register a IRQ bypass producer if unsupported or disabled
+Date:   Mon, 19 Oct 2020 17:06:56 +0800
+Message-Id: <20201019090657.131-1-zhenzhong.duan@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+If Post interrupt is disabled due to hardware limit or forcely disabled
+by "intremap=nopost" parameter, return -EINVAL so that the legacy mode IRQ
+isn't registered as IRQ bypass producer.
 
-Disable MI2S bit clock from PAUSE/STOP/SUSPEND usecase instead of
-shutdown time. Acheive this by invoking clk_disable API from
-cpu daiops trigger instead of cpu daiops shutdown.
-Change non-atomic API "clk_prepare_enable" to atomic API
-"clk_enable" in trigger, as trigger is being called from atomic context.
+With this change, below message is printed:
+"vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5) registration fails: -22"
 
-Fixes: commit 7e6799d8f87d ("ASoC: qcom: lpass-cpu: Enable MI2S BCLK and LRCLK together")
+..which also hints us if a vfio or vdpa device works in PI mode or legacy
+remapping mode.
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Add a print to vdpa code just like what vfio_msi_set_vector_signal() does.
+
+Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
 ---
- sound/soc/qcom/lpass-cpu.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ arch/x86/kvm/svm/avic.c | 3 +--
+ arch/x86/kvm/vmx/vmx.c  | 5 ++---
+ drivers/vhost/vdpa.c    | 5 +++++
+ 3 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 78de888..6001049 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -80,6 +80,12 @@ static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
- 		dev_err(dai->dev, "error in enabling mi2s osr clk: %d\n", ret);
- 		return ret;
- 	}
-+	ret = clk_prepare(drvdata->mi2s_bit_clk[dai->driver->id]);
-+	if (ret) {
-+		dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
-+		clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
+diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+index ac830cd..316142a 100644
+--- a/arch/x86/kvm/svm/avic.c
++++ b/arch/x86/kvm/svm/avic.c
+@@ -814,7 +814,7 @@ int svm_update_pi_irte(struct kvm *kvm, unsigned int host_irq,
+ 
+ 	if (!kvm_arch_has_assigned_device(kvm) ||
+ 	    !irq_remapping_cap(IRQ_POSTING_CAP))
+-		return 0;
 +		return ret;
-+	}
- 	return 0;
- }
  
-@@ -88,9 +94,8 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
- {
- 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
- 
--	clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
--
- 	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
-+	clk_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
- }
- 
- static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
-@@ -303,10 +308,10 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
- 				ret);
- 
--		ret = clk_prepare_enable(drvdata->mi2s_bit_clk[id]);
-+		ret = clk_enable(drvdata->mi2s_bit_clk[id]);
- 		if (ret) {
- 			dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
--			clk_disable_unprepare(drvdata->mi2s_osr_clk[id]);
-+			clk_disable(drvdata->mi2s_osr_clk[id]);
- 			return ret;
+ 	pr_debug("SVM: %s: host_irq=%#x, guest_irq=%#x, set=%#x\n",
+ 		 __func__, host_irq, guest_irq, set);
+@@ -899,7 +899,6 @@ int svm_update_pi_irte(struct kvm *kvm, unsigned int host_irq,
  		}
- 
-@@ -324,6 +329,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 		if (ret)
- 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
- 				ret);
-+		clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
- 		break;
  	}
+ 
+-	ret = 0;
+ out:
+ 	srcu_read_unlock(&kvm->irq_srcu, idx);
+ 	return ret;
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index f0a9954..1fed6d6 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7716,12 +7716,12 @@ static int vmx_update_pi_irte(struct kvm *kvm, unsigned int host_irq,
+ 	struct kvm_lapic_irq irq;
+ 	struct kvm_vcpu *vcpu;
+ 	struct vcpu_data vcpu_info;
+-	int idx, ret = 0;
++	int idx, ret = -EINVAL;
+ 
+ 	if (!kvm_arch_has_assigned_device(kvm) ||
+ 		!irq_remapping_cap(IRQ_POSTING_CAP) ||
+ 		!kvm_vcpu_apicv_active(kvm->vcpus[0]))
+-		return 0;
++		return ret;
+ 
+ 	idx = srcu_read_lock(&kvm->irq_srcu);
+ 	irq_rt = srcu_dereference(kvm->irq_routing, &kvm->irq_srcu);
+@@ -7787,7 +7787,6 @@ static int vmx_update_pi_irte(struct kvm *kvm, unsigned int host_irq,
+ 		}
+ 	}
+ 
+-	ret = 0;
+ out:
+ 	srcu_read_unlock(&kvm->irq_srcu, idx);
+ 	return ret;
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index 62a9bb0..b20060a 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -107,6 +107,11 @@ static void vhost_vdpa_setup_vq_irq(struct vhost_vdpa *v, u16 qid)
+ 	vq->call_ctx.producer.token = vq->call_ctx.ctx;
+ 	vq->call_ctx.producer.irq = irq;
+ 	ret = irq_bypass_register_producer(&vq->call_ctx.producer);
++	if (unlikely(ret))
++		dev_info(&vdpa->dev,
++		"irq bypass producer (token %p) registration fails: %d\n",
++		vq->call_ctx.producer.token, ret);
++
+ 	spin_unlock(&vq->call_ctx.ctx_lock);
+ }
  
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+1.8.3.1
 
