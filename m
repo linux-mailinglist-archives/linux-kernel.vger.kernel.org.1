@@ -2,121 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31FD2925AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DDD22925AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 12:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgJSKW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 06:22:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34765 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726259AbgJSKW6 (ORCPT
+        id S1726606AbgJSKX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 06:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726259AbgJSKX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 06:22:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603102977;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dClCYoDEHGrmREG2sQsLlOLmsyhbsQZOxw+llhuTikA=;
-        b=imB+SIqIHx4E6/BCOR69UjLRnwgwaYHXbvyT6W8gfDGqsRyFR54Hfct310hiDyTfJdYerY
-        NguviApclcCEnj3xYsrUmJ4GsgMv17biYHufj8A0Zl+fJVYwyiGrJJA2Q0CM1ifN1E2oJb
-        XO4jNVzOkqOmG2Eg++1az8hx9gsSyyU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-103-sPW-dcUcMnKKgPRZkQiKug-1; Mon, 19 Oct 2020 06:22:55 -0400
-X-MC-Unique: sPW-dcUcMnKKgPRZkQiKug-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63CAB10199A8;
-        Mon, 19 Oct 2020 10:22:53 +0000 (UTC)
-Received: from [10.36.115.26] (ovpn-115-26.ams2.redhat.com [10.36.115.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 336545B4A4;
-        Mon, 19 Oct 2020 10:22:45 +0000 (UTC)
-Subject: Re: [PATCH v1 21/29] virtio-mem: memory notifier callbacks are
- specific to Sub Block Mode (SBM)
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-References: <20201012125323.17509-1-david@redhat.com>
- <20201012125323.17509-22-david@redhat.com>
- <20201019015724.GA54484@L-31X9LVDL-1304.local>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <794b68b2-a3da-5354-4a3b-62f94224c0a6@redhat.com>
-Date:   Mon, 19 Oct 2020 12:22:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 19 Oct 2020 06:23:28 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BEA3C0613CE;
+        Mon, 19 Oct 2020 03:23:28 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id q21so5742966pgi.13;
+        Mon, 19 Oct 2020 03:23:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hYGxHRGFXfXxMQCO99EESIGoh+K24yX2RgTqdp0oh5U=;
+        b=mQzzV8/ZTmJuSNAdZVJZxxa6lIkN+bItJ6mBN9lGPlsG8kFbRS9HWOj6aXuwwia5bi
+         wB+2TZMqBBsc2LMJJDC3loikEFDW3llawlZoujVhFrtr67nIOYMgPi+1zPL+6qzUyNqR
+         63OZEBMDGeIjN86/vhH1HPlSFso/mfmSo+ThrIPY0lbswRG++VgIwivFK4IR+6Fxg6Fg
+         w7T/eFWMbaV3S/iySzg3MBoXGAznXHot7uZh0k+x6pqUQlttTtzmWs/Vk+eJDl3FUeMp
+         sjYmh1GRQqFQwNhq2RsRSmond50ZSbQPa1M445NrY2H+YhRI1/s34vKO75uhQ+2EbeUl
+         B7bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hYGxHRGFXfXxMQCO99EESIGoh+K24yX2RgTqdp0oh5U=;
+        b=RS5P/hWTLh+qYlSXMk3DzZOkzlluXaHVgD7XHfTM2fMMPDHY2nwn9vXQz1ZkXtfVoc
+         nSfJhhSEgck6hloBO1dsE4LkbqbHDB59Tom6hKjo1gkwDMNx3+07/Ugc78DiH6co526k
+         kBiAmnbvmagmTq1zXI42SyUR7EvepgMTihSi7Bxlq64Qcbnit1Pj9bxAuwFKu05UsmI5
+         rWsHGAyZ4oKNv88Oc2oCb7VgKLezhLtqV0ySPuIK+1bRabD+NoHvvWrZTfLhFxr7aFSz
+         N9gbqGVe5TvDi6H8F8DjB0wyNpB+5zQgbeNQhyyZHa+4yNIxV4EzZwzA8MLDqArisalV
+         j0bQ==
+X-Gm-Message-State: AOAM532RvNNatAAV9bfx91urLmhP7pjyGIexyyabRsimzot5WbOrM2PC
+        l+EywaciP8/xMy6GdvU7yLUks9v7210RBA==
+X-Google-Smtp-Source: ABdhPJwdGh2lMDZNrEgg4+tugCnk8nL41Dg2ptqGSTqo2Xpi8iGiPh+LvqOPeNh0i2rA/JngC3Kn2g==
+X-Received: by 2002:a63:654:: with SMTP id 81mr13184795pgg.27.1603103007599;
+        Mon, 19 Oct 2020 03:23:27 -0700 (PDT)
+Received: from localhost ([2400:8800:300:11c:6776:f262:d64f:e94d])
+        by smtp.gmail.com with ESMTPSA id q14sm10761319pgl.38.2020.10.19.03.23.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 03:23:26 -0700 (PDT)
+From:   Geliang Tang <geliangtang@gmail.com>
+To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Krystad <peter.krystad@linux.intel.com>
+Cc:     Geliang Tang <geliangtang@gmail.com>, netdev@vger.kernel.org,
+        mptcp@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [MPTCP][PATCH net-next 0/2] init ahmac and port of mptcp_options_received
+Date:   Mon, 19 Oct 2020 18:23:14 +0800
+Message-Id: <cover.1603102503.git.geliangtang@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201019015724.GA54484@L-31X9LVDL-1304.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.10.20 03:57, Wei Yang wrote:
-> On Mon, Oct 12, 2020 at 02:53:15PM +0200, David Hildenbrand wrote:
->> Let's rename accordingly.
->>
->> Cc: "Michael S. Tsirkin" <mst@redhat.com>
->> Cc: Jason Wang <jasowang@redhat.com>
->> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
->> ---
->> drivers/virtio/virtio_mem.c | 29 +++++++++++++++--------------
->> 1 file changed, 15 insertions(+), 14 deletions(-)
->>
->> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
->> index 3a772714fec9..d06c8760b337 100644
->> --- a/drivers/virtio/virtio_mem.c
->> +++ b/drivers/virtio/virtio_mem.c
->> @@ -589,8 +589,8 @@ static bool virtio_mem_contains_range(struct virtio_mem *vm, uint64_t start,
->> 	return start >= vm->addr && start + size <= vm->addr + vm->region_size;
->> }
->>
->> -static int virtio_mem_notify_going_online(struct virtio_mem *vm,
->> -					  unsigned long mb_id)
->> +static int virtio_mem_sbm_notify_going_online(struct virtio_mem *vm,
->> +					      unsigned long mb_id)
-> 
-> Look into this patch with "virtio-mem: Big Block Mode (BBM) memory hotplug"
-> together, I thought the code is a little "complex".
-> 
-> The final logic of virtio_mem_memory_notifier_cb() looks like this:
-> 
->     virtio_mem_memory_notifier_cb()
->         if (vm->in_sbm)
-> 	    notify_xxx()
->         if (vm->in_sbm)
-> 	    notify_xxx()
-> 
-> Can we adjust this like
-> 
->     virtio_mem_memory_notifier_cb()
-> 	notify_xxx()
->             if (vm->in_sbm)
->                 return
-> 	notify_xxx()
->             if (vm->in_sbm)
->                 return
-> 
-> This style looks a little better to me.
+This patchset deals with initializations of mptcp_options_received's two
+fields, ahmac and port.
 
-Then we lose all the shared code after any of the mode-specific
-handling? Like we have in MEM_OFFLINE, MEM_ONLINE, MEM_CANCEL_OFFLINE, ...
+Geliang Tang (2):
+  mptcp: initialize mptcp_options_received's ahmac
+  mptcp: move mptcp_options_received's port initialization
 
-Don't think this will improve the situation.
+ net/mptcp/options.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 -- 
-Thanks,
-
-David / dhildenb
+2.26.2
 
