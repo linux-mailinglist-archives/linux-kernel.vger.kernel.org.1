@@ -2,198 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F47293045
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42A229304B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 23:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732621AbgJSVJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 17:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732580AbgJSVJr (ORCPT
+        id S1732647AbgJSVMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 17:12:47 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34190 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732523AbgJSVMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 17:09:47 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CC2C0613CE;
-        Mon, 19 Oct 2020 14:09:47 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t4so433430plq.13;
-        Mon, 19 Oct 2020 14:09:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hCZ1KWvdDSxD2uHRX+9E2D0ZqwsYUoJfE7/jZEJ9F84=;
-        b=oJqXKuB+GpDFpBUtfQqyDcZd3u0jtcQyEIVN7RTXzTAgfz1ZS/oxc63ht0+tQyP8Af
-         GBkY1VoPfuAtck/Sl6PH8gGimU7gLvFGCvouWsDw/3sf/bLmuyqAePmo6LVRFKA8J+vH
-         BBOJmKlIwo3wrxdtrmNJORS0t1FbHDB5JJtzQBPGNUW6DOzmSumZTU4AHnVQ2+mrUyO+
-         1nZM90t08iOxlbV//xoXRL9d9R1QtoUCfr7fSUcgHwrnhtzeiHrLfx+jSpRoUbcUrvct
-         6a3TNA5GWbBYbQQSzHMDndPyTHizyzf8/15hVaFbC7wz1dFnH+a8LN4FJlmrB+opTb3c
-         hcbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hCZ1KWvdDSxD2uHRX+9E2D0ZqwsYUoJfE7/jZEJ9F84=;
-        b=lXvwO1U5C//hty1ZtYy138gT6GSpLWp/ZDcAsNhUVhUaf7jDc4WGueAmpQ2yvIIuMq
-         nApJPhbHZPPPO/ZDJXSjnthHBO4zGhzYtNFQ9nTHaUKpnDfgmXmgE2/82GMYGKLczXAo
-         HX8mnj8oIbmzZzT8PiQRHe401V31EED4/p3I4G9JTDzkS+oeITjzZ0xOBoAH9LIrBllE
-         ACw/PD36JwMuTXQlEoGORvwzYxJNj/Fu8eS4DOL/1PhhQGoxtYyKaEnmSZw+xxuB9pdD
-         dZNcd3HmGiAQ9adKdGX2jMHeJUD5oW+f+NeKyhoISFt3vs/xk25nBsrgP1tNKiiiHxm7
-         R77Q==
-X-Gm-Message-State: AOAM5304cVZ1Fb+0+TeK64dy4Zkl5ObmCU2zW5l/zwA0etTto1/7uGdY
-        kzDaobol2CF46F8tGp0vxam43tOAmB5EUg==
-X-Google-Smtp-Source: ABdhPJzWpwqPKhjioG+JSQHkuy6g67waQRxTx9tkp/UhMtZA3wLeVAOcw3O8ude/cpWPukn8+DXzUg==
-X-Received: by 2002:a17:90a:4e0c:: with SMTP id n12mr1282766pjh.78.1603141786679;
-        Mon, 19 Oct 2020 14:09:46 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id z73sm669447pfc.75.2020.10.19.14.09.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 14:09:45 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 3/3] drm/msm/atomic: Convert to per-CRTC kthread_work
-Date:   Mon, 19 Oct 2020 14:10:53 -0700
-Message-Id: <20201019211101.143327-4-robdclark@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201019211101.143327-1-robdclark@gmail.com>
-References: <20201019211101.143327-1-robdclark@gmail.com>
+        Mon, 19 Oct 2020 17:12:47 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603141964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xDvrn3khPRCsQ3kInC9PrrCmCeDblVbtH3pwV9O3vYI=;
+        b=n9YVFtdwNtjSN+/ua96l0MsskldSlV9SMYPXxeyfZVkSroaPpJvfdUVPxpnadtpw8deZUb
+        1WHNTN+KDfNjTi5UZ+5JOsQnj3hKLVpZBmM3AvPzZbyN5ABYaSPpbmydgqCm1PW2xBsZgF
+        Q+nm3lSRfwtU5hQYk2LEyrERhPTG5W7qQM+OHhPMeEsTb8WmZ33Sr7pfpqqDyEnw+2bwPZ
+        mhZeW6+h9IbsAcKPvE8+85NjwtEUamW1g9p+fRj5XzKvrT8+oyOpngKl2sl4fiIQ1cKXKF
+        HyeHOPQrhTNVU1BJ7gA8h0b9FzwHiJulPZYt8a+b4KPuO/6HVkXyaHmcT6NS/w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603141964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xDvrn3khPRCsQ3kInC9PrrCmCeDblVbtH3pwV9O3vYI=;
+        b=9pvYjSU9yrEDoXWUmWAb3RLmG8qQCf74kogPetVI1dOtIQWI6qjPgTtxmM6U2rfV5AqgLV
+        KTo8wQwFYiESmpBw==
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V3 6/9] x86/entry: Pass irqentry_state_t by reference
+In-Reply-To: <20201019202647.GD3713473@iweiny-DESK2.sc.intel.com>
+References: <20201009194258.3207172-1-ira.weiny@intel.com> <20201009194258.3207172-7-ira.weiny@intel.com> <20201016114510.GO2611@hirez.programming.kicks-ass.net> <87lfg6tjnq.fsf@nanos.tec.linutronix.de> <20201019053639.GA3713473@iweiny-DESK2.sc.intel.com> <87k0vma7ct.fsf@nanos.tec.linutronix.de> <20201019202647.GD3713473@iweiny-DESK2.sc.intel.com>
+Date:   Mon, 19 Oct 2020 23:12:44 +0200
+Message-ID: <871rhtapir.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Mon, Oct 19 2020 at 13:26, Ira Weiny wrote:
+> On Mon, Oct 19, 2020 at 11:32:50AM +0200, Thomas Gleixner wrote:
+> Sorry, let me clarify.  After this patch we have.
+>
+> typedef union irqentry_state {
+> 	bool	exit_rcu;
+> 	bool	lockdep;
+> } irqentry_state_t;
+>
+> Which reflects the mutual exclusion of the 2 variables.
 
-Use a SCHED_FIFO kthread_worker for async atomic commits.  We have a
-hard deadline if we don't want to miss a frame.
+Huch? From the patch I gave you:
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_atomic.c | 25 ++++++++++++++++++++-----
- drivers/gpu/drm/msm/msm_drv.h    |  3 ++-
- drivers/gpu/drm/msm/msm_kms.h    | 17 +++++++++++++----
- 3 files changed, 35 insertions(+), 10 deletions(-)
+ #ifndef irqentry_state
+ typedef struct irqentry_state {
+ 	bool    exit_rcu;
++       bool    lockdep;
+ } irqentry_state_t;
+ #endif
 
-diff --git a/drivers/gpu/drm/msm/msm_atomic.c b/drivers/gpu/drm/msm/msm_atomic.c
-index 561bfa48841c..484438f1e028 100644
---- a/drivers/gpu/drm/msm/msm_atomic.c
-+++ b/drivers/gpu/drm/msm/msm_atomic.c
-@@ -103,14 +103,13 @@ static enum hrtimer_restart msm_atomic_pending_timer(struct hrtimer *t)
- {
- 	struct msm_pending_timer *timer = container_of(t,
- 			struct msm_pending_timer, timer);
--	struct msm_drm_private *priv = timer->kms->dev->dev_private;
- 
--	queue_work(priv->wq, &timer->work);
-+	kthread_queue_work(timer->worker, &timer->work);
- 
- 	return HRTIMER_NORESTART;
- }
- 
--static void msm_atomic_pending_work(struct work_struct *work)
-+static void msm_atomic_pending_work(struct kthread_work *work)
- {
- 	struct msm_pending_timer *timer = container_of(work,
- 			struct msm_pending_timer, work);
-@@ -118,14 +117,30 @@ static void msm_atomic_pending_work(struct work_struct *work)
- 	msm_atomic_async_commit(timer->kms, timer->crtc_idx);
- }
- 
--void msm_atomic_init_pending_timer(struct msm_pending_timer *timer,
-+int msm_atomic_init_pending_timer(struct msm_pending_timer *timer,
- 		struct msm_kms *kms, int crtc_idx)
- {
- 	timer->kms = kms;
- 	timer->crtc_idx = crtc_idx;
- 	hrtimer_init(&timer->timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS);
- 	timer->timer.function = msm_atomic_pending_timer;
--	INIT_WORK(&timer->work, msm_atomic_pending_work);
-+
-+	timer->worker = kthread_create_worker(0, "atomic-worker-%d", crtc_idx);
-+	if (IS_ERR(timer->worker)) {
-+		int ret = PTR_ERR(timer->worker);
-+		timer->worker = NULL;
-+		return ret;
-+	}
-+	sched_set_fifo(timer->worker->task);
-+	kthread_init_work(&timer->work, msm_atomic_pending_work);
-+
-+	return 0;
-+}
-+
-+void msm_atomic_destroy_pending_timer(struct msm_pending_timer *timer)
-+{
-+	if (timer->worker)
-+		kthread_destroy_worker(timer->worker);
- }
- 
- static bool can_do_async(struct drm_atomic_state *state,
-diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-index 5308e636a90c..f869ed67b5da 100644
---- a/drivers/gpu/drm/msm/msm_drv.h
-+++ b/drivers/gpu/drm/msm/msm_drv.h
-@@ -235,8 +235,9 @@ struct msm_pending_timer;
- 
- int msm_atomic_prepare_fb(struct drm_plane *plane,
- 			  struct drm_plane_state *new_state);
--void msm_atomic_init_pending_timer(struct msm_pending_timer *timer,
-+int msm_atomic_init_pending_timer(struct msm_pending_timer *timer,
- 		struct msm_kms *kms, int crtc_idx);
-+void msm_atomic_destroy_pending_timer(struct msm_pending_timer *timer);
- void msm_atomic_commit_tail(struct drm_atomic_state *state);
- struct drm_atomic_state *msm_atomic_state_alloc(struct drm_device *dev);
- void msm_atomic_state_clear(struct drm_atomic_state *state);
-diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
-index 0be9e6487556..26321c13f950 100644
---- a/drivers/gpu/drm/msm/msm_kms.h
-+++ b/drivers/gpu/drm/msm/msm_kms.h
-@@ -136,7 +136,8 @@ struct msm_kms;
-  */
- struct msm_pending_timer {
- 	struct hrtimer timer;
--	struct work_struct work;
-+	struct kthread_work work;
-+	struct kthread_worker *worker;
- 	struct msm_kms *kms;
- 	unsigned crtc_idx;
- };
-@@ -163,19 +164,27 @@ struct msm_kms {
- static inline int msm_kms_init(struct msm_kms *kms,
- 		const struct msm_kms_funcs *funcs)
- {
--	unsigned i;
-+	unsigned i, ret;
- 
- 	mutex_init(&kms->commit_lock);
- 	kms->funcs = funcs;
- 
--	for (i = 0; i < ARRAY_SIZE(kms->pending_timers); i++)
--		msm_atomic_init_pending_timer(&kms->pending_timers[i], kms, i);
-+	for (i = 0; i < ARRAY_SIZE(kms->pending_timers); i++) {
-+		ret = msm_atomic_init_pending_timer(&kms->pending_timers[i], kms, i);
-+		if (ret) {
-+			return ret;
-+		}
-+	}
- 
- 	return 0;
- }
- 
- static inline void msm_kms_destroy(struct msm_kms *kms)
- {
-+	unsigned i;
-+
-+	for (i = 0; i < ARRAY_SIZE(kms->pending_timers); i++)
-+		msm_atomic_destroy_pending_timer(&kms->pending_timers[i]);
- }
- 
- struct msm_kms *mdp4_kms_init(struct drm_device *dev);
--- 
-2.26.2
+How is that a union?
 
+> But then when the pkrs stuff is added the union changes back to a structure and
+> looks like this.
+
+So you want:
+
+  1) Move stuff to struct irqentry_state (my patch)
+
+  2) Change it to a union and pass it as pointer at the same time
+
+  3) Change it back to struct to add PKRS
+
+> Is that clear?
+
+What's clear is that the above is nonsense. We can just do
+
+ #ifndef irqentry_state
+ typedef struct irqentry_state {
+ 	union {
+         	bool    exit_rcu;
+                bool    lockdep;
+        };        
+ } irqentry_state_t;
+ #endif
+
+right in the patch which I gave you. Because that actually makes sense.
+
+Thanks,
+
+        tglx
