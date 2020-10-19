@@ -2,163 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F03292BB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1BF292BE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 18:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730564AbgJSQtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 12:49:08 -0400
-Received: from mga12.intel.com ([192.55.52.136]:43066 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729849AbgJSQtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 12:49:07 -0400
-IronPort-SDR: 8eizNy1edeSbwonaVamyZky/0WXY7ioazpSosnkjJUx8kkQAGccePPBr1XF27F06Sl5hGUufBe
- 36bz6U3j4aRQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="146359033"
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="146359033"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 09:49:06 -0700
-IronPort-SDR: oiK2RFjYHsNVVqZa6B8pgPwSyVV0MbY1DxgphPSU3WzJPjycIhZxMhTyTE6I4R+NIZUgpRmeqd
- wQ4uJo9Bj3EQ==
-X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="320336768"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 09:49:06 -0700
-Date:   Mon, 19 Oct 2020 09:51:25 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jacob Pan <jacob.pan.linux@gmail.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-api@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
-        Yi Sun <yi.y.sun@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v3 00/14] IOASID extensions for guest SVA
-Message-ID: <20201019095125.291915b2@jacob-builder>
-In-Reply-To: <1601329121-36979-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1601329121-36979-1-git-send-email-jacob.jun.pan@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1730761AbgJSQwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 12:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730498AbgJSQwS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 12:52:18 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302E0C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:52:18 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id h6so324558lfj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:52:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2cWK+DL6XyfhBEyDFclHAiApf+xy/GsC3/T+E6jZJ9g=;
+        b=R9ehEU9wWrfJofck/gWfeOapDJ+wkaO4ulGVCO8sIZ3YBH2eN9GJjaYyyOf3ujJKY9
+         PPz94Zq0X6qKiMN7izLsoNVCxZshQHrXyf5bHfmqTYDENfuyVspXiCpk4YvRP5JLuOxV
+         dYtRkSEcYli4JP71OK2MlqOla27EN1rL+AqzU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2cWK+DL6XyfhBEyDFclHAiApf+xy/GsC3/T+E6jZJ9g=;
+        b=Qis+uvTEpGtpKaPd4FP8PNkwHUD3mcrQS4WeJbMfC63xJuLMbiMJWgDPbSF05yh0d+
+         6xRoyQIq9XChaeKDmGTz4OqeMnUCX1c+o4xjDLHy6+vkRAn3XE1u94mScRJefIDrafmD
+         jQOdk9E2JHz6LsOPhB7mXWue8ttkiESNcJQ7i3pFZV0vNj5gVZzAWn+4CcZMeuApAgbL
+         /t+k7RDiiD5PMqP9mxYMOaeIvcP0BSW40mYloQkm+ob5yFMI2/s7ZheFWdAd13fx9dI9
+         GL1Gj9bFmJMBoUwuU1vxbJI5TB6OmC1wdXOiN1iwMe/oEKdt4sFSEpPYNcASAHaWdHfi
+         U5ZA==
+X-Gm-Message-State: AOAM531BDhKnKbOYCAL3o4uw+cdrrlVWG48gQr5VaDmVwOgW43vT6Con
+        hnOyCSFlUEY3exvD3BUaI4fQh1s/wrX0fw==
+X-Google-Smtp-Source: ABdhPJyVexXPnHdFugMt1KILUT+XkpmeX2mwtCAbSrBMXXnEzXFv0592M+Cm53SBIRL2xcFDrw2drw==
+X-Received: by 2002:a19:146:: with SMTP id 67mr175549lfb.75.1603126336294;
+        Mon, 19 Oct 2020 09:52:16 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id i124sm53725lfd.236.2020.10.19.09.52.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 09:52:12 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id c21so855979ljj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 09:52:12 -0700 (PDT)
+X-Received: by 2002:a2e:8092:: with SMTP id i18mr368068ljg.314.1603126331829;
+ Mon, 19 Oct 2020 09:52:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201012141451.GA3425471@gmail.com> <CAHk-=whE1rajA5Kzqey802zwv-82yrK5qc=nR3xRo5f38t-K8A@mail.gmail.com>
+ <20201019032400.GD3249@paulmck-ThinkPad-P72>
+In-Reply-To: <20201019032400.GD3249@paulmck-ThinkPad-P72>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 19 Oct 2020 09:51:55 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whyQF4voB8GHa2VjzS6H-k41ZHda5+dFqKrDcUY28FqGQ@mail.gmail.com>
+Message-ID: <CAHk-=whyQF4voB8GHa2VjzS6H-k41ZHda5+dFqKrDcUY28FqGQ@mail.gmail.com>
+Subject: Re: [GIT PULL] RCU changes for v5.10
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Oct 18, 2020 at 8:24 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On CONFIG_PREEMPT_COUNT, got it.  It would be OK for RCU to use
+> preempt_count() for some debugging or specialty kernel, but not across
+> the board.
 
-Any comments on this? I know we have some opens w.r.t. PASID management
-UAPI, but I think having this common kernel API features should be
-justified.
+Right - that was what I thought you were asking originally.
 
-Thanks!
+I don't think a driver or random piece of code like that should ever
+use "preempt_count()" on its own - partly because the rules are
+subtle, but partly simply because drivers have no business with those
+kinds of low-level things.
 
-Jacob
+But yeah, for some core stuff like RCU, using preempt_count() for
+debugging etc makes sense. Just not to change _behavior_, because
+preempt_count on its own is almost entirely meaningless. It's just one
+(local) part of so much state. Again, partly because preempt count
+isn't necessarily always meaningful due to config settings, but partly
+because there are just so many other things like "are interrupts
+disabled" or "are we in an NMI context" or whatever.
 
+And in some odd situation, depending on exactly what you do, maybe
+preempt-count can be exactly what you need, because you know
+everything else about the state statically. "preempt_enable()"
+obviously is one such thing - the whole point is "if
+CONFIG_PREEMPT_COUNT is on, then the _semantics_ of this is 'increase
+preempt count', and if it goes to zero, and we should reschedule, do
+that'".
 
-On Mon, 28 Sep 2020 14:38:27 -0700, Jacob Pan <jacob.pan.linux@gmail.com>
-wrote:
+So it's not that preempt_count() is meaningless, but it's such a
+specialized thing that 99.9% of all code really cannot and shouldn't
+use it.
 
-> IOASID was introduced in v5.5 as a generic kernel allocator service for
-> both PCIe Process Address Space ID (PASID) and ARM SMMU's Sub Stream
-> ID. In addition to basic ID allocation, ioasid_set was defined as a
-> token that is shared by a group of IOASIDs. This set token can be used
-> for permission checking, but lack of some features to address the
-> following needs by guest Shared Virtual Address (SVA).
-> - Manage IOASIDs by group, group ownership, quota, etc.
-> - State synchronization among IOASID users
-> - Non-identity guest-host IOASID mapping
-> - Lifecycle management across many users
-> 
-> This patchset introduces the following extensions as solutions to the
-> problems above.
-> - Redefine and extend IOASID set such that IOASIDs can be managed by
-> groups.
-> - Add notifications for IOASID state synchronization
-> - Add reference counting for life cycle alignment among users
-> - Support ioasid_set private IDs, which can be used as guest IOASIDs
-> Please refer to Documentation/ioasid.rst in enclosed patch 1/9 for more
-> details.
-> 
-> This patchset only included VT-d driver as users of some of the new APIs.
-> VFIO and KVM patches are coming up to fully utilize the APIs introduced
-> here.
-> 
-> You can find this series at:
-> https://github.com/jacobpan/linux.git ioasid_v3
-> (VFIO and KVM patches will be available at this branch when published.)
-> 
-> This work is a result of collaboration with many people:
-> Liu, Yi L <yi.l.liu@intel.com>
-> Wu Hao <hao.wu@intel.com>
-> Ashok Raj <ashok.raj@intel.com>
-> Kevin Tian <kevin.tian@intel.com>
-> 
-> Thanks,
-> 
-> Jacob
-> 
-> Changelog:
-> 
-> V3:
-> - Use consistent ioasid_set_ prefix for ioasid_set level APIs
-> - Make SPID and private detach/attach APIs symmetric
-> - Use the same ioasid_put semantics as Jean-Phillippe IOASID reference
-> patch
-> - Take away the public ioasid_notify() function, notifications are now
-> emitted by IOASID core as a result of certain IOASID APIs
-> - Partition into finer incremental patches
-> - Miscellaneous cleanup, locking, exception handling fixes based on v2
-> reviews
-> 
-> V2:
-> - Redesigned ioasid_set APIs, removed set ID
-> - Added set private ID (SPID) for guest PASID usage.
-> - Add per ioasid_set notification and priority support.
-> - Back to use spinlocks and atomic notifications.
-> - Added async work in VT-d driver to perform teardown outside atomic
-> context
-> 
-> Jacob Pan (14):
->   docs: Document IO Address Space ID (IOASID) APIs
->   iommu/ioasid: Rename ioasid_set_data()
->   iommu/ioasid: Add a separate function for detach data
->   iommu/ioasid: Support setting system-wide capacity
->   iommu/ioasid: Redefine IOASID set and allocation APIs
->   iommu/ioasid: Introduce API to adjust the quota of an ioasid_set
->   iommu/ioasid: Add an iterator API for ioasid_set
->   iommu/ioasid: Add reference couting functions
->   iommu/ioasid: Introduce ioasid_set private ID
->   iommu/ioasid: Introduce notification APIs
->   iommu/ioasid: Support mm type ioasid_set notifications
->   iommu/vt-d: Remove mm reference for guest SVA
->   iommu/vt-d: Listen to IOASID notifications
->   iommu/vt-d: Store guest PASID during bind
-> 
->  Documentation/driver-api/ioasid.rst | 648 ++++++++++++++++++++++++++
->  drivers/iommu/intel/iommu.c         |  29 +-
->  drivers/iommu/intel/pasid.h         |   1 +
->  drivers/iommu/intel/svm.c           | 132 +++++-
->  drivers/iommu/ioasid.c              | 890
-> ++++++++++++++++++++++++++++++++++-- include/linux/intel-iommu.h
-> |   2 + include/linux/ioasid.h              | 197 +++++++-
->  7 files changed, 1830 insertions(+), 69 deletions(-)
->  create mode 100644 Documentation/driver-api/ioasid.rst
-> 
-
-
-Thanks,
-
-Jacob
+           Linus
