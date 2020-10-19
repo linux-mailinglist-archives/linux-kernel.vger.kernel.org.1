@@ -2,234 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D21292CB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65348292CC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Oct 2020 19:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731227AbgJSR0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 13:26:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731187AbgJSR0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 13:26:41 -0400
-Received: from localhost.localdomain (unknown [194.230.155.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C599522314;
-        Mon, 19 Oct 2020 17:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603128400;
-        bh=9VekKCyuc32rUGeAXkmomZLwHOrivk4pY7Iug35yAUU=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=l0MdbRXi3Sk9vqBToW3jKl5mPLRUQjgfGtDe/X0LBiqInwgEFwjvarUJX0xCLCXT5
-         kU9Hp/mj4HfIdg9KWd4HRLhVxBjLxSYgNGdNi2dBUOc8p0gRAlayUaP1hdFVD1bE7G
-         MjH+otrr9k5ybae8xMVpcLX2xd26qy4VLvpBMD7c=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 4/4] media: i2c: imx258: get clock from device properties and enable it via runtime PM
-Date:   Mon, 19 Oct 2020 19:26:17 +0200
-Message-Id: <20201019172617.92815-3-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201019172617.92815-1-krzk@kernel.org>
-References: <20201019170247.92002-1-krzk@kernel.org>
- <20201019172617.92815-1-krzk@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727328AbgJSR2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 13:28:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26849 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726342AbgJSR2e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 13:28:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603128512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=HW3zBaCtD1eYq0aK8PlR42sK9/UGx1+e0AwNTosIs2M=;
+        b=fXmT3JrWqOEdoDbYTe48vqf2hUObQ1Y6xyeq4tp3cXQZ3zdKns5B0JkL2OoHwNJS03EkNo
+        J1mHmDoRXZS3clUZxCuzQ9zvTTReVptReyEWS1iHZ0SXLJDCM/6vzyP75UyRKICrbjXL2y
+        C925xMGA4LGw5WDaV5hXQdy8qYj1HU4=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-417-CTtQv7xXOtmpr7kMFJ0vYA-1; Mon, 19 Oct 2020 13:28:31 -0400
+X-MC-Unique: CTtQv7xXOtmpr7kMFJ0vYA-1
+Received: by mail-qt1-f198.google.com with SMTP id l12so378088qtu.22
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 10:28:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HW3zBaCtD1eYq0aK8PlR42sK9/UGx1+e0AwNTosIs2M=;
+        b=Iv8bT5nAFt6tr6rgPqN4u4jZQteiPqoWxGc+NP4pmsLNnlbSM8YxtYRyPgIsFcukQK
+         pmROV+QplB1xKtiXYKfjGMEuXnLP9ae670FFsSYrYutAFpve7IcNkJZlXla0t0IPIydl
+         o35GrMyPgwUycQoOrgFna93kvD/bxBtu0EFHcj1YhSjGwd5zZUkpgKeIk8uNvraPYG72
+         f3P7Yb2vlDyHhhz/gEIg+FP7HkNUw1Ou8SgVtwqDQVPex/SY8VDgbnZHBkwTMYqFUobj
+         h9z+XQzjacGfg99u10sOQOiCZOWKeqWSGoE0nov3huK0vuLeAEh8/VJ2/I2uJIvDm0RL
+         QLyQ==
+X-Gm-Message-State: AOAM531fk5mteZpZaWRhNPJTshoFSmSAf3dVBi/YVLtfZi2u3t5+od9J
+        dX0zbkdheFNaBCZTmhaSzQQj+F05afdw3s4G53ZlDWYKMeX3QkGxEGVEqF1UeOJkTOnF+A4mc1Y
+        /9g/+ZA6NobxkmZC5bB5prV3Z
+X-Received: by 2002:ac8:5bc5:: with SMTP id b5mr508606qtb.174.1603128510492;
+        Mon, 19 Oct 2020 10:28:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyEOFD1teIPDOYCpl3vtGGQdIkQYBiIWt3gTZg1nPEQPWalrkE5Eig1h7A3XXVSaJPOocNZTQ==
+X-Received: by 2002:ac8:5bc5:: with SMTP id b5mr508593qtb.174.1603128510296;
+        Mon, 19 Oct 2020 10:28:30 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id f189sm275697qkd.20.2020.10.19.10.28.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 10:28:29 -0700 (PDT)
+From:   trix@redhat.com
+To:     jic23@kernel.org, lars@metafoo.de, pmeerw@pmeerw.net,
+        khilman@baylibre.com, narmstrong@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        andy.shevchenko@gmail.com, krzk@kernel.org,
+        alexandru.ardelean@analog.com, jonathan.albrieux@gmail.com
+Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] iio: remove unneeded break
+Date:   Mon, 19 Oct 2020 10:28:24 -0700
+Message-Id: <20201019172824.32166-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IMX258 sensor driver checked in device properties for a
-clock-frequency property which actually does not mean that the clock is
-really running such frequency or is it even enabled.
+From: Tom Rix <trix@redhat.com>
 
-Get the provided clock and check it frequency.  If none is provided,
-fall back to old property.
+A break is not needed if it is preceded by a return
 
-Enable the clock when accessing the IMX258 registers and when streaming
-starts with runtime PM.
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
+ drivers/iio/adc/meson_saradc.c       | 2 --
+ drivers/iio/imu/bmi160/bmi160_core.c | 1 -
+ 2 files changed, 3 deletions(-)
 
-Changes since v4:
-1. Add missing imx258_power_off.
-
-Changes since v3:
-1. None
-
-Changes since v2:
-1. Do not try to set drvdata, wrap lines.
-2. Use dev_dbg.
-
-Changes since v1:
-1. Use runtime PM for clock toggling
----
- drivers/media/i2c/imx258.c | 73 +++++++++++++++++++++++++++++++++-----
- 1 file changed, 64 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-index ae183b0dbba9..038115471f17 100644
---- a/drivers/media/i2c/imx258.c
-+++ b/drivers/media/i2c/imx258.c
-@@ -2,6 +2,7 @@
- // Copyright (C) 2018 Intel Corporation
+diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
+index e03988698755..66dc452d643a 100644
+--- a/drivers/iio/adc/meson_saradc.c
++++ b/drivers/iio/adc/meson_saradc.c
+@@ -593,13 +593,11 @@ static int meson_sar_adc_iio_info_read_raw(struct iio_dev *indio_dev,
+ 	case IIO_CHAN_INFO_RAW:
+ 		return meson_sar_adc_get_sample(indio_dev, chan, NO_AVERAGING,
+ 						ONE_SAMPLE, val);
+-		break;
  
- #include <linux/acpi.h>
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
-@@ -68,6 +69,9 @@
- #define REG_CONFIG_MIRROR_FLIP		0x03
- #define REG_CONFIG_FLIP_TEST_PATTERN	0x02
+ 	case IIO_CHAN_INFO_AVERAGE_RAW:
+ 		return meson_sar_adc_get_sample(indio_dev, chan,
+ 						MEAN_AVERAGING, EIGHT_SAMPLES,
+ 						val);
+-		break;
  
-+/* Input clock frequency in Hz */
-+#define IMX258_INPUT_CLOCK_FREQ		19200000
-+
- struct imx258_reg {
- 	u16 address;
- 	u8 val;
-@@ -610,6 +614,8 @@ struct imx258 {
- 
- 	/* Streaming on/off */
- 	bool streaming;
-+
-+	struct clk *clk;
- };
- 
- static inline struct imx258 *to_imx258(struct v4l2_subdev *_sd)
-@@ -972,6 +978,29 @@ static int imx258_stop_streaming(struct imx258 *imx258)
- 	return 0;
- }
- 
-+static int imx258_power_on(struct device *dev)
-+{
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-+	struct imx258 *imx258 = to_imx258(sd);
-+	int ret;
-+
-+	ret = clk_prepare_enable(imx258->clk);
-+	if (ret)
-+		dev_err(dev, "failed to enable clock\n");
-+
-+	return ret;
-+}
-+
-+static int imx258_power_off(struct device *dev)
-+{
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-+	struct imx258 *imx258 = to_imx258(sd);
-+
-+	clk_disable_unprepare(imx258->clk);
-+
-+	return 0;
-+}
-+
- static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
- {
- 	struct imx258 *imx258 = to_imx258(sd);
-@@ -1199,9 +1228,28 @@ static int imx258_probe(struct i2c_client *client)
- 	int ret;
- 	u32 val = 0;
- 
--	device_property_read_u32(&client->dev, "clock-frequency", &val);
--	if (val != 19200000)
--		return -EINVAL;
-+	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
-+	if (!imx258)
-+		return -ENOMEM;
-+
-+	imx258->clk = devm_clk_get_optional(&client->dev, NULL);
-+	if (!imx258->clk) {
-+		dev_dbg(&client->dev,
-+			"no clock provided, using clock-frequency property\n");
-+
-+		device_property_read_u32(&client->dev, "clock-frequency", &val);
-+		if (val != IMX258_INPUT_CLOCK_FREQ)
-+			return -EINVAL;
-+	} else if (IS_ERR(imx258->clk)) {
-+		return dev_err_probe(&client->dev, PTR_ERR(imx258->clk),
-+				     "error getting clock\n");
-+	} else {
-+		if (clk_get_rate(imx258->clk) != IMX258_INPUT_CLOCK_FREQ) {
-+			dev_err(&client->dev,
-+				"input clock frequency not supported\n");
-+			return -EINVAL;
-+		}
-+	}
- 
- 	/*
- 	 * Check that the device is mounted upside down. The driver only
-@@ -1211,24 +1259,25 @@ static int imx258_probe(struct i2c_client *client)
- 	if (ret || val != 180)
- 		return -EINVAL;
- 
--	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
--	if (!imx258)
--		return -ENOMEM;
--
- 	/* Initialize subdev */
- 	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
- 
-+	/* Will be powered off via pm_runtime_idle */
-+	ret = imx258_power_on(&client->dev);
-+	if (ret)
-+		return ret;
-+
- 	/* Check module identity */
- 	ret = imx258_identify_module(imx258);
- 	if (ret)
--		return ret;
-+		goto error_identify;
- 
- 	/* Set default mode to max resolution */
- 	imx258->cur_mode = &supported_modes[0];
- 
- 	ret = imx258_init_controls(imx258);
- 	if (ret)
--		return ret;
-+		goto error_identify;
- 
- 	/* Initialize subdev */
- 	imx258->sd.internal_ops = &imx258_internal_ops;
-@@ -1258,6 +1307,9 @@ static int imx258_probe(struct i2c_client *client)
- error_handler_free:
- 	imx258_free_controls(imx258);
- 
-+error_identify:
-+	imx258_power_off(&client->dev);
-+
- 	return ret;
- }
- 
-@@ -1271,6 +1323,8 @@ static int imx258_remove(struct i2c_client *client)
- 	imx258_free_controls(imx258);
- 
- 	pm_runtime_disable(&client->dev);
-+	if (!pm_runtime_status_suspended(&client->dev))
-+		imx258_power_off(&client->dev);
- 	pm_runtime_set_suspended(&client->dev);
- 
- 	return 0;
-@@ -1278,6 +1332,7 @@ static int imx258_remove(struct i2c_client *client)
- 
- static const struct dev_pm_ops imx258_pm_ops = {
- 	SET_SYSTEM_SLEEP_PM_OPS(imx258_suspend, imx258_resume)
-+	SET_RUNTIME_PM_OPS(imx258_power_off, imx258_power_on, NULL)
- };
- 
- #ifdef CONFIG_ACPI
+ 	case IIO_CHAN_INFO_SCALE:
+ 		if (chan->type == IIO_VOLTAGE) {
+diff --git a/drivers/iio/imu/bmi160/bmi160_core.c b/drivers/iio/imu/bmi160/bmi160_core.c
+index 222ebb26f013..431076dc0d2c 100644
+--- a/drivers/iio/imu/bmi160/bmi160_core.c
++++ b/drivers/iio/imu/bmi160/bmi160_core.c
+@@ -486,7 +486,6 @@ static int bmi160_write_raw(struct iio_dev *indio_dev,
+ 	case IIO_CHAN_INFO_SCALE:
+ 		return bmi160_set_scale(data,
+ 					bmi160_to_sensor(chan->type), val2);
+-		break;
+ 	case IIO_CHAN_INFO_SAMP_FREQ:
+ 		return bmi160_set_odr(data, bmi160_to_sensor(chan->type),
+ 				      val, val2);
 -- 
-2.25.1
+2.18.1
 
