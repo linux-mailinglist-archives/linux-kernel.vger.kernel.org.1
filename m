@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDA8294326
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8AD294329
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391578AbgJTTir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 15:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390923AbgJTTir (ORCPT
+        id S2404619AbgJTTjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 15:39:04 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:44820 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391747AbgJTTjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 15:38:47 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CB7C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 12:38:46 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id a3so4447063ejy.11
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 12:38:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0t/6lxdfJB1VtvUS8CRTLcR9vrrpuLwBQkRpQbczdss=;
-        b=RAVu96uCHOLD8Tm3mF3Ij513xTplm/3WaVxFJRsxQvH6/Ma53nSbEdwB37DX7YGqA3
-         L3NU6hwBoZ0ZNWrfwDp7TB9I0udOnhp88Et20D3oz4Vo7eSjhLdPDOYr7aIqKoBB0zTP
-         lRm3G89BwGWyNuY1CXYr3BtGY19YCKwdpuJpkArD6L0V7qCeezDGRsaexYzEYI11NEnz
-         PlscX/yOkz6nEeddfgo/lQKlOgUxOL0ouEsOTLlf0RMlgVmAozJmPNpRP0lOazvlm4ah
-         0pVh4ICDQ8GAbks9xr39sZwYwasCGt1rhzMcF7LO5MgtOGdM/AtO8Fm8ShPNWMDFoE0/
-         Q/4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0t/6lxdfJB1VtvUS8CRTLcR9vrrpuLwBQkRpQbczdss=;
-        b=iXMtep8kdXUfeSYoLmhDxb86LxyqNsFKfkRLkRenQpOAdOfrsD95oVZ1HJ1a7aXT5W
-         NGF4YEEa9pQY344fy2OtaTb1rgm7uqTTPRNLreTw8tjZiy5n1gCpfMS3b3Ys7vfSbehW
-         zYwZV/xjXU/tdG8OaexIVpXyGsDAV4AbsJEUCIcCCYc/pXLV+Dq8kCahqo9cHAuT0G+z
-         bTcQU/N/QZfj57QvybvEJFmX4F2JJbPtjG708436hX1NNFvxR/gRcCX3bh+FG9lDZRnk
-         6lP7SNz7KyHnXtY3eMDVfF+0qeGtmj+x83dR4hzErbGCYH26kw/aAk5k/g835h47eN4P
-         OpAg==
-X-Gm-Message-State: AOAM5332MdiL4QjlUWAPLuwsRjMrJT4RBFU7ybpol/sFbr8ZKlYwNOXn
-        ea6qIurVEPRaETSNAqwmHdNrBMGP9m/y5SHMnzc=
-X-Google-Smtp-Source: ABdhPJzm0r+f90HVNAeb0yNZulVGpiqUvDFPFj8PANlV6Dz9Cf6ehgYOH7h2wBTMI8K/6QlolIQY2DPRGjQiWXWFH6s=
-X-Received: by 2002:a17:906:cc0d:: with SMTP id ml13mr4826136ejb.2.1603222725387;
- Tue, 20 Oct 2020 12:38:45 -0700 (PDT)
+        Tue, 20 Oct 2020 15:39:03 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id 29CE31F44D9D
+From:   Helen Koike <helen.koike@collabora.com>
+To:     linux-media@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        robh+dt@kernel.org, heiko@sntech.de, kernel@collabora.com,
+        hverkuil-cisco@xs4all.nl, dafna.hirschfeld@collabora.com,
+        mark.rutland@arm.com, karthik.poduval@gmail.com,
+        eddie.cai.linux@gmail.com, jbx6244@gmail.com,
+        zhengsq@rock-chips.com, robin.murphy@arm.com
+Subject: [PATCH v6 0/9] move Rockchip ISP bindings out of staging / add ISP DT nodes for RK3399
+Date:   Tue, 20 Oct 2020 16:38:41 -0300
+Message-Id: <20201020193850.1460644-1-helen.koike@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201019144809.943608-1-narmstrong@baylibre.com>
-In-Reply-To: <20201019144809.943608-1-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 20 Oct 2020 21:38:34 +0200
-Message-ID: <CAFBinCBxSdhutZQz2LFkoZwQT35gW-T2W3KX6-M5mp-XfZy2vg@mail.gmail.com>
-Subject: Re: [PATCH v2] reset: meson: make it possible to build as a module
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     p.zabel@pengutronix.de, linux-amlogic@lists.infradead.org,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 4:49 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> In order to reduce the kernel Image size on multi-platform distributions,
-> make it possible to build the reset controller driver as a module.
->
-> This partially reverts 8290924e ("reset: meson: make it explicitly non-modular")
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-> Tested-by: Kevin Hilman <khilman@baylibre.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Move the bindings out of drivers/staging and place them in
+Documentation/devicetree/bindings instead.
+
+Also, add DT nodes for RK3399 and verify with make ARCH=arm64 dtbs_check
+and make ARCH=arm64 dt_binding_check.
+
+Tested by verifying images streamed from Scarlet Chromebook
+
+Changes in v6:
+- [PATCH v6 5/9] media: staging: rkisp1: remove unecessary clocks
+  Define clocks in the top level, and use if/else schema to define how
+  many for each compatible as sugested by Rob Herring on
+  https://patchwork.linuxtv.org/project/linux-media/patch/20200722155533.252844-6-helen.koike@collabora.com/#122626
+- [PATCH v6 8/9] arm64: dts: rockchip: add isp0 node for rk3399
+  Add status = "disabled" in the isp0 node
+- Added Reviewed-by tags from Tomasz Figa
+- Added Acked-by tags from Rog Herring
+- No changes for other patches in the serie.
+
+Changes in v5:
+- Drop unit addresses in dt-bindings example for simplification and fix
+errors as suggested by Rob Herring in previous version
+- Fix typos
+- Re-write clock organization with if/then schema
+
+Changes in v4:
+- simplify clocks with "isp", "aclk" and "hclk" as suggested by
+Robin Murphy on https://patchwork.kernel.org/patch/11475007/
+
+Changes in v3:
+- dropped accepted patches
+- cleanup clocks
+- fix "no reg" error in dt-bindings parent@0 example
+- add linux-rockchip list in MAINTAINERS and reorder items
+- add Scarlet sensors dt nodes to the series
+
+Changes in v2:
+Add patches modifying bindings, as sugested by Johan Jonker in v1,
+before moving them out of staging.
+
+Eddie Cai (1):
+  arm64: dts: rockchip: add isp and sensors for Scarlet
+
+Helen Koike (7):
+  media: staging: dt-bindings: rkisp1: add missing required nodes
+  media: staging: dt-bindings: rkisp1: drop i2c unit address
+  media: staging: dt-bindings: rkisp1: re-order properties
+  media: staging: dt-bindings: rkisp1: drop parent unit address
+  media: staging: rkisp1: remove unecessary clocks
+  dt-bindings: media: rkisp1: move rockchip-isp1 bindings out of staging
+  media: MAINTAINERS: rkisp1: add path to dt-bindings
+
+Shunqian Zheng (1):
+  arm64: dts: rockchip: add isp0 node for rk3399
+
+ .../bindings/media/rockchip-isp1.yaml         | 81 ++++++++++++-------
+ MAINTAINERS                                   |  2 +
+ .../boot/dts/rockchip/rk3399-gru-scarlet.dtsi | 74 +++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi      | 26 ++++++
+ drivers/staging/media/rkisp1/rkisp1-dev.c     |  8 +-
+ 5 files changed, 157 insertions(+), 34 deletions(-)
+ rename {drivers/staging/media/rkisp1/Documentation => Documentation}/devicetree/bindings/media/rockchip-isp1.yaml (81%)
+
+-- 
+2.28.0
+
