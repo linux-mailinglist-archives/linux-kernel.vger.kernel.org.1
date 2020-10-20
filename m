@@ -2,62 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123E8293482
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F42293486
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391859AbgJTGCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:02:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391803AbgJTGCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:02:21 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5E6C2225F;
-        Tue, 20 Oct 2020 06:02:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603173741;
-        bh=JNP6a7auUSQFkVTghiv41qtMzt+jLfZdbM/n0v1EWh8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yr7jdYfY2x9Sc0ZYUeYPHpTpL1KeoxMQglirmYr2xnsSR74INaZGRPsbTCEurZXxO
-         q5qgaYmAySf6QHKK0OuBS53QcWKCZiGgRU5nJB7SV/XkZ6ma+/OpgPeYPymMu3KmgO
-         SNzw/+5Bzp2aZPSOCjMWkslTxD6h0Yt1pFIrp8hU=
-Date:   Tue, 20 Oct 2020 08:03:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Samuel Iglesias =?iso-8859-1?Q?Gons=E1lvez?= 
-        <siglesias@igalia.com>
-Cc:     trix@redhat.com, jens.taprogge@taprogge.org, arnd@arndb.de,
-        linux-kernel@vger.kernel.org,
-        industrypack-devel@lists.sourceforge.net
-Subject: Re: [Industrypack-devel] [PATCH] ipack: iopctal: remove unneeded
- break
-Message-ID: <20201020060304.GA3794112@kroah.com>
-References: <20201019193227.12738-1-trix@redhat.com>
- <82a6b8eee085b0e6df7c89d64721c3fb6719ba89.camel@igalia.com>
+        id S2391872AbgJTGDl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Oct 2020 02:03:41 -0400
+Received: from mail-eopbgr1310109.outbound.protection.outlook.com ([40.107.131.109]:11637
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2391862AbgJTGDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 02:03:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=llND5SA+M2+blDZ2PYZjFsgptg8COjLomvZcso8LcVZfNG2Lli6jh0qpIcyEvv63Ou+JDqFr5bpj1/GzJcV3Uqj7zrgKluQ51lpWnN69U2yZo5D1o7mWaPHFQkIaB3p2Of28LqVfg7+r9qmEhm2acsyGTh2vGil1TgzxBa8ACAMLP62rIcRKogKi3zzJC/PPY8B2w2/6AI6YmYmQB6rX81avEKB153UHvFW3TYS6ffycwL3Y6ERBVLo1xKyVbxx5t/qtzspVczobjTi2WhKnUSG3cuQwsQgZQ7caBEJ3zGWw7VPWE/iiq+uX0abDJVKSxzOz5v9irrS7mzFS4Elu1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m0bTPMqcgE2KaH8G3FFvxogSw8XrUYKdWoj3VnCzUow=;
+ b=DyIcm5Z1WrqhjrNPIJFfo838UEr6DCOim+AGUhBnpcq3Gp3wA1g8g/oCIS4NmtgfEXCIzf4bTqJo/wTdJlPZ6qiirwHAXbSnndYu9lVFBZ0gUIu5ofbbAZ5tVRm+TXqSGzCqnwSu+k/L8cz1J2upNt6cDh4Vj9Y2pLejcvQ8gzVAUF7UFc4Q2f59a7Ksx+6EstpDypJn6x6QyAHrJBIAbU0NfFao5Up96uxrr3pIjcmZ87Strcy9Tz5nUpMByYNq5DWn1lfL6i0xsCdQHLNmPUIFRIlxxnpEeJRnxI5IshIQ2S/eJQ9M4q/k4L70YXXS32jYM2u3fEmSlQorcDALpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
+ by HK2PR06MB3250.apcprd06.prod.outlook.com (2603:1096:202:31::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Tue, 20 Oct
+ 2020 06:03:32 +0000
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::a1a1:8859:d07a:2473]) by HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::a1a1:8859:d07a:2473%3]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
+ 06:03:32 +0000
+From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
+To:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "minyard@acm.org" <minyard@acm.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "haiyue.wang@linux.intel.com" <haiyue.wang@linux.intel.com>,
+        "cyrilbur@gmail.com" <cyrilbur@gmail.com>,
+        "rlippert@google.com" <rlippert@google.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+CC:     BMC-SW <BMC-SW@aspeedtech.com>
+Subject: RE: [PATCH v2 0/5] Remove LPC register partitioning
+Thread-Topic: [PATCH v2 0/5] Remove LPC register partitioning
+Thread-Index: AQHWmvF39eweRWKA/USnDpx5+4lpz6mgFZog
+Date:   Tue, 20 Oct 2020 06:03:32 +0000
+Message-ID: <HK0PR06MB377943740366AB328247C452911F0@HK0PR06MB3779.apcprd06.prod.outlook.com>
+References: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
+In-Reply-To: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ce2d624f-ffe7-4ef2-3814-08d874bddff4
+x-ms-traffictypediagnostic: HK2PR06MB3250:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK2PR06MB325090ED26B77B4D9008A370911F0@HK2PR06MB3250.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eUXeoETsxR4ED6pzWvaJnbfU54S2oq8ySSV3qhVIIW2xvmCqebrbM/eb6QetNMpazyZktjlwwGvSFF3Bs1O6raGZYCGHjOTEbcHJTSiWscRyPNcT+GibyiQtGJxsj90bSyQebKRlb54aX+eL9fTWwD+hi8muH7HT464HGp7vF4GWiJylSZjWUpMjk7hFeG0tRrd+LXKeZNJNAXFEvS4GcVT+yIDy6k7fR3nh0+5SGDIzA2/rT3AHX6lLadSSIhYhP/3a4/2JDk4LgVHwJAVZCK/gjE8lodLM/8aa7IvL6nWA2glmLwALzt1dz/4ARAOdTLo+2tfosoThU5TZbUYDbdLWKhq5KKJg8WhFIEaapPpqqqWSiKwEBE/14KhZAZjs
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(136003)(396003)(376002)(39840400004)(8936002)(86362001)(53546011)(76116006)(110136005)(66946007)(7696005)(6506007)(52536014)(66476007)(64756008)(66556008)(71200400001)(186003)(66446008)(316002)(55016002)(26005)(33656002)(5660300002)(9686003)(2906002)(7416002)(8676002)(4326008)(83380400001)(107886003)(478600001)(55236004)(921003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: d+p5SeuC17wgu8f3kodMTtWE4OMiIL6yaX6z735Fre029WaNGzVO/4Qn5Gk99LRzqxI1prujAo4GKvTkx4F8/s7xKgrB808PZ3SkyRBL0uVBQ90FuAnVMtbQXP7AbMx3YzlFbg9L92JHxCUYzaPn/Kd1qzKRCPt/JwlUSHIEszeq1TiGgIv4AoE4rlYFjt2rs7zpOGGyMN6bF7WjRHXGURglqEuwgMNVpGQliCi30uGKMIrcWupmEz7bJ9Q6MJ/6jdQmhcyJKJ2daYdT7i9Ax6wmTuXEZFaM09bPe1HL9arpnRspGzEM1aMGkJQNH/5wrbLthlr0N7GVGwxvLGeduVqPuScwbPbMQCrT7ZwpbDKL6Ggm+FXi+ifFgdmQLbF/jfExoLo91A9tlmepD1n7XnB9JsFtCmWHiCCyRhs2jcwtnEbK7cLMrm4MgXerC2tp8LBRompQH9FJROscEpSpcbsUc/Hlv1Sm6mD4NvGti3FfAy7LdpTLKCRR49s2jcsqdzwyrSUNwI7eVrKUJSYasJERRKK8F9fMpx3O0Ka8NWv4eGg6cy/TES3Ww2VGeJfcLZ6frBfd3lHOZHKsDr+m3lCprWd2SbD1Cov/YbmUU00rJsg4+R1WuxMzOFY+lSNgb1K/BmmjjbFkmQcl2OyT9g==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <82a6b8eee085b0e6df7c89d64721c3fb6719ba89.camel@igalia.com>
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce2d624f-ffe7-4ef2-3814-08d874bddff4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2020 06:03:32.6471
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Hys5pANDjOTgREanvnOJouvgNSVKMxBHieRDhC0RMix4KHUDgkAaymLmwKFfbBXASZo1eyOM/n7hjbH/a7yhx1A81yIpNDpxpWm4AVm14Js=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3250
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 07:50:39AM +0200, Samuel Iglesias Gonsálvez wrote:
-> Hi Tom,
-> 
-> Thanks for the patch!
-> 
-> Patch is,
-> 
-> Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-> 
-> Greg, Would you mind picking this patch through your char-misc
-> tree?
+Hi All,
 
-Will do after -rc1 is out.
+Do you have any comment on the v2 changes?
+Thanks.
 
-thanks,
+Chiawei
 
-greg k-h
+> -----Original Message-----
+> From: ChiaWei Wang <chiawei_wang@aspeedtech.com>
+> Sent: Monday, October 5, 2020 4:28 PM
+> To: lee.jones@linaro.org; robh+dt@kernel.org; joel@jms.id.au;
+> andrew@aj.id.au; minyard@acm.org; arnd@arndb.de;
+> gregkh@linuxfoundation.org; linus.walleij@linaro.org;
+> haiyue.wang@linux.intel.com; cyrilbur@gmail.com; rlippert@google.com;
+> linux-arm-kernel@lists.infradead.org; linux-aspeed@lists.ozlabs.org;
+> linux-kernel@vger.kernel.org; openbmc@lists.ozlabs.org;
+> linux-gpio@vger.kernel.org
+> Subject: [PATCH v2 0/5] Remove LPC register partitioning
+> 
+> The LPC controller has no concept of the BMC and the Host partitions.
+> The incorrect partitioning can impose unnecessary range restrictions on
+> register access through the syscon regmap interface.
+> 
+> For instance, HICRB contains the I/O port address configuration of KCS channel
+> 1/2. However, the KCS#1/#2 drivers cannot access HICRB as it is located at the
+> other LPC partition.
+> 
+> In addition, to be backward compatible, the newly added HW control bits could
+> be located at any reserved bits over the LPC addressing space.
+> 
+> Thereby, this patch series aims to remove the LPC partitioning for better driver
+> development and maintenance.
+> 
+> 
+> Changes since v1:
+> 	- Add the fix to the aspeed-lpc binding documentation.
+> 
+> Chia-Wei, Wang (5):
+>   ARM: dts: Remove LPC BMC and Host partitions
+>   soc: aspeed: Fix LPC register offsets
+>   ipmi: kcs: aspeed: Fix LPC register offsets
+>   pinctrl: aspeed-g5: Fix LPC register offsets
+>   dt-bindings: aspeed-lpc: Remove LPC partitioning
+> 
+>  .../devicetree/bindings/mfd/aspeed-lpc.txt    |  85 ++---------
+>  arch/arm/boot/dts/aspeed-g4.dtsi              |  74 ++++------
+>  arch/arm/boot/dts/aspeed-g5.dtsi              | 135 ++++++++----------
+>  arch/arm/boot/dts/aspeed-g6.dtsi              | 135 ++++++++----------
+>  drivers/char/ipmi/kcs_bmc_aspeed.c            |  13 +-
+>  drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c    |   2 +-
+>  drivers/soc/aspeed/aspeed-lpc-ctrl.c          |   6 +-
+>  drivers/soc/aspeed/aspeed-lpc-snoop.c         |  11 +-
+>  8 files changed, 176 insertions(+), 285 deletions(-)
+> 
+> --
+> 2.17.1
+
