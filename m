@@ -2,161 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5E62934B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E8E2934B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392073AbgJTGRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2403803AbgJTGRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:17:13 -0400
+Received: from mga03.intel.com ([134.134.136.65]:27136 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392062AbgJTGRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Oct 2020 02:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392050AbgJTGRF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:17:05 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE18C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:17:04 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id r9so339157uat.12
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/PMZL8djp6BBIIISqMw1ZBVOjv5yfHjbUvy/rFeeBRc=;
-        b=bxV0ZtEO2MH8NVX5uSyoFAHrBbQj0EXphUTf/KlhlEGrWa5HVyiCoOjNBomq7GX28Q
-         cJxAQiV6kBooan6p+afmfGKDZDdFCW8MJuZEDWgn4hM4LGfHcoFZ9conhev3u8zAqovu
-         bg96lp4ap7IY2ZhDqKsNIq7Ex7xhkxq8d5Q90e2T7a0Dc0bS9dwg+5dVGjuKD3xR3r8s
-         WuriK+KPMZM3In88jiy6GFSSu+n2rVOk8jWWJv1Np4BMg5sQIvAnLtbEoSRlnRnT1Mjg
-         hq2xXnTu9DEuUiRMc5uxRK5G2C1yjE4zIIW4xYSFGVlSq0zCwau/EOPlySuuN+HqzpmD
-         EZlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/PMZL8djp6BBIIISqMw1ZBVOjv5yfHjbUvy/rFeeBRc=;
-        b=PhVNRH8n4rOa/WWOtynfwsju2zRMGkXXcAbdRP/en6uG24DA9jSK+px5sK0Tm/Oew2
-         8oQze7q6jd7fsexS6JTJ/pKAgQHBHIgbfntZ9C2ZY3q5cX6421HFA7PZcPz2pbABmDNR
-         7sTbsGySYTB92c8Zz6W0KQynO9rWVXpBq8jfg/avHDHM4gbUdmkSy6Sa+e0twoVxcP8m
-         EkOXeh/1BvLvALUNIU5M74N3b7jEI+jj7R/ndxhEB/u7xTngKWwB3IkMB6cLlhwRYlNr
-         euCqBXozo3bysgc9nGIwvlMzV4YuDYXSygB3moONpgmBEQDAH+YvWUDt7ne+M/cndRpe
-         q8iA==
-X-Gm-Message-State: AOAM531yMO2jtMMQuUNa/7Dp9cDsUuuIZgzqyog1QiVjzS7gURxRzFnc
-        2VUo0duyuNg/o+CHDA6C7WyJhYLTt6U+Nmf6sf0U8w==
-X-Google-Smtp-Source: ABdhPJyUkvyqyCT6r760zl8Vb4IKJCfnU8P6FAbX8PUXsUqwUbSl6iaWnMWihJgPvl8adkp6fCiORbXFoNtmOLmeKZA=
-X-Received: by 2002:ab0:2345:: with SMTP id h5mr491919uao.1.1603174623423;
- Mon, 19 Oct 2020 23:17:03 -0700 (PDT)
+IronPort-SDR: gDr8HXeUtIUiuM5yM0wiPdGRuFJyI7bW5t/8ALVlTECro/B3nyqPZe5Hx1TS/yiAqHvsq6BR/W
+ 91frKvh7TdPw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="167251310"
+X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
+   d="scan'208";a="167251310"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 23:17:08 -0700
+IronPort-SDR: P9zN814Dr8h++thS1aPMfQDNY+hVXzMrKP8om8ABBCjXcHPWrf3f3pZG2vs9xadi/nTK1UFcsw
+ gM31vG0xs1UQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
+   d="scan'208";a="353229070"
+Received: from lkp-server01.sh.intel.com (HELO 88424da292e0) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Oct 2020 23:17:07 -0700
+Received: from kbuild by 88424da292e0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kUkxG-0000QV-El; Tue, 20 Oct 2020 06:17:06 +0000
+Date:   Tue, 20 Oct 2020 14:16:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/urgent] BUILD SUCCESS
+ f3d301c1f2f5676465cdf3259737ea19cc82731f
+Message-ID: <5f8e80c9.VpmIE6ZPfz+vFaPW%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20200929024004.244992-1-badhri@google.com> <20200929024004.244992-4-badhri@google.com>
- <20201005144618.GA154206@bogus> <CAPTae5+e74k22Vcf-cnFLFGnR-mBdb9qvN6i-E-31VexhpUSeA@mail.gmail.com>
- <CAL_JsqLqs2qZqwmCOMgCeiGsw4Hj2xMAbRYqWCphH92+8T6qUg@mail.gmail.com> <CAL_Jsq+bhEKGXoObGWbWw=1KQAovyJgvvfJe+=n7829HhKmmSw@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+bhEKGXoObGWbWw=1KQAovyJgvvfJe+=n7829HhKmmSw@mail.gmail.com>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Mon, 19 Oct 2020 23:16:27 -0700
-Message-ID: <CAPTae5L9EkFEAgEbDY-MEvCRe1_ij5gKRXHtmVee-1VjcQsE+w@mail.gmail.com>
-Subject: Re: [PATCH v9 03/15] dt-bindings: usb: Maxim type-c controller device
- tree binding document
-To:     Rob Herring <robh@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  perf/urgent
+branch HEAD: f3d301c1f2f5676465cdf3259737ea19cc82731f  perf: correct SNOOPX field offset
 
-Apologies for the delay. Was coordinating care for my parents who
-caught the COVID bug.
+elapsed time: 721m
 
-Thanks,
-Badhri
+configs tested: 143
+configs skipped: 3
 
-On Tue, Oct 13, 2020 at 6:50 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Tue, Oct 13, 2020 at 8:43 AM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Wed, Oct 7, 2020 at 7:43 PM Badhri Jagan Sridharan <badhri@google.com> wrote:
-> > >
-> > > Hi Robb,
-> > >
-> > > Thanks for the reviews ! Responses inline.
-> > >
-> > > Regards,
-> > > Badhri
-> > >
-> > > On Mon, Oct 5, 2020 at 7:46 AM Rob Herring <robh@kernel.org> wrote:
-> > > >
-> > > > On Mon, Sep 28, 2020 at 07:39:52PM -0700, Badhri Jagan Sridharan wrote:
-> > > > > Add device tree binding document for Maxim TCPCI based Type-C chip driver
-> > > > >
-> > > > > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > > > > ---
-> > > > > Changes since v1:
-> > > > > - Changing patch version to v6 to fix version number confusion.
-> > > > >
-> > > > > Changes since v6:
-> > > > > - Migrated to yaml format.
-> > > > >
-> > > > > Changes since v7:
-> > > > > - Rebase on usb-next
-> > > > >
-> > > > > Changes since v8:
-> > > > > - Fix errors from make dt_binding_check as suggested by
-> > > > >   Rob Herring.
-> > > > > ---
-> > > > >  .../devicetree/bindings/usb/maxim,tcpci.yaml  | 68 +++++++++++++++++++
-> > > > >  1 file changed, 68 insertions(+)
-> > > > >  create mode 100644 Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
-> > > > >
-> > > > > diff --git a/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
-> > > > > new file mode 100644
-> > > > > index 000000000000..f4b5f1a09b98
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
-> > > > > @@ -0,0 +1,68 @@
-> > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > +%YAML 1.2
-> > > > > +---
-> > > > > +$id: "http://devicetree.org/schemas/usb/maxim,tcpci.yaml#"
-> > > > > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> > > > > +
-> > > > > +title: Maxim TCPCI Type-C PD controller DT bindings
-> > > > > +
-> > > > > +maintainers:
-> > > > > +  - Badhri Jagan Sridharan <badhri@google.com>
-> > > > > +
-> > > > > +description: Maxim TCPCI Type-C PD controller
-> > > > > +
-> > > > > +properties:
-> > > > > +  compatible:
-> > > > > +    enum:
-> > > > > +      - maxim,tcpci
-> > > >
-> > > > Is there a datasheet for this? Searching for 'tcpci' doesn't really come
-> > > > up with anything other than this patch. Only chip I found is MAX77958.
-> > > > Bindings are for specific h/w devices.
-> > >
-> > > Unfortunately the datasheet cannot be made public yet. Has the datasheet
-> > > have to be made public before sending the bindings ?
-> >
-> > No, but we need a part number or some assurance that 'tcpci' is a specific part.
-Sure. Added the part number to the binding and changed the compatible string.
-Sending this as part of v11
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+nds32                            alldefconfig
+c6x                        evmc6457_defconfig
+powerpc                     redwood_defconfig
+parisc                generic-32bit_defconfig
+arm                     am200epdkit_defconfig
+mips                malta_qemu_32r6_defconfig
+riscv                    nommu_virt_defconfig
+mips                  decstation_64_defconfig
+powerpc                 mpc837x_mds_defconfig
+m68k                             allmodconfig
+powerpc                      mgcoge_defconfig
+arm                           spitz_defconfig
+xtensa                  audio_kc705_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                     kmeter1_defconfig
+nios2                               defconfig
+powerpc                     mpc5200_defconfig
+arm                          pxa3xx_defconfig
+sh                          landisk_defconfig
+openrisc                    or1ksim_defconfig
+arm                         nhk8815_defconfig
+nios2                         3c120_defconfig
+mips                      malta_kvm_defconfig
+arm                           sama5_defconfig
+sh                            migor_defconfig
+powerpc                      makalu_defconfig
+powerpc                      tqm8xx_defconfig
+sh                               alldefconfig
+m68k                          sun3x_defconfig
+powerpc                       holly_defconfig
+mips                       lemote2f_defconfig
+sh                         ap325rxa_defconfig
+arm                          moxart_defconfig
+powerpc                      pasemi_defconfig
+um                             i386_defconfig
+arm                             rpc_defconfig
+mips                            e55_defconfig
+mips                         tb0287_defconfig
+arm                            hisi_defconfig
+arm                          badge4_defconfig
+h8300                            alldefconfig
+alpha                            alldefconfig
+arm                          pcm027_defconfig
+sh                            shmin_defconfig
+arm                           sunxi_defconfig
+arm                           efm32_defconfig
+powerpc                    amigaone_defconfig
+powerpc                     powernv_defconfig
+sh                               j2_defconfig
+mips                         tb0226_defconfig
+powerpc                         ps3_defconfig
+sh                          rsk7269_defconfig
+arm                        mvebu_v7_defconfig
+m68k                        mvme147_defconfig
+arc                              allyesconfig
+powerpc                    socrates_defconfig
+c6x                        evmc6678_defconfig
+mips                     cu1000-neo_defconfig
+powerpc                     skiroot_defconfig
+powerpc                  mpc866_ads_defconfig
+mips                        nlm_xlp_defconfig
+arm                    vt8500_v6_v7_defconfig
+mips                        workpad_defconfig
+mips                     loongson1b_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                    ge_imp3a_defconfig
+mips                             allmodconfig
+mips                         mpc30x_defconfig
+alpha                               defconfig
+mips                         tb0219_defconfig
+sh                          urquell_defconfig
+nios2                         10m50_defconfig
+sparc64                             defconfig
+arm                           omap1_defconfig
+mips                    maltaup_xpa_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201019
+x86_64               randconfig-a002-20201019
+x86_64               randconfig-a006-20201019
+x86_64               randconfig-a003-20201019
+x86_64               randconfig-a005-20201019
+x86_64               randconfig-a001-20201019
+i386                 randconfig-a006-20201019
+i386                 randconfig-a005-20201019
+i386                 randconfig-a001-20201019
+i386                 randconfig-a003-20201019
+i386                 randconfig-a004-20201019
+i386                 randconfig-a002-20201019
+i386                 randconfig-a015-20201019
+i386                 randconfig-a013-20201019
+i386                 randconfig-a016-20201019
+i386                 randconfig-a012-20201019
+i386                 randconfig-a011-20201019
+i386                 randconfig-a014-20201019
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
->
-> I guess TCPCI is USB Type-C Port Controller Interface Specification.
->
-> That's just a protocol definition, not a chip. DT describes h/w which
-> is more than just the protocol.
->
-> Rob
+clang tested configs:
+x86_64               randconfig-a016-20201019
+x86_64               randconfig-a015-20201019
+x86_64               randconfig-a012-20201019
+x86_64               randconfig-a013-20201019
+x86_64               randconfig-a011-20201019
+x86_64               randconfig-a014-20201019
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
