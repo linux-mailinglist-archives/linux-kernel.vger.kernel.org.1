@@ -2,69 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490D9293256
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 02:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BFD293261
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 02:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389429AbgJTAYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 20:24:52 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:42034 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389418AbgJTAYv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 20:24:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UCbA75y_1603153487;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCbA75y_1603153487)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 20 Oct 2020 08:24:48 +0800
-Date:   Tue, 20 Oct 2020 08:24:47 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: Re: [PATCH v1 29/29] virtio-mem: Big Block Mode (BBM) - safe memory
- hotunplug
-Message-ID: <20201020002447.GA61630@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20201012125323.17509-1-david@redhat.com>
- <20201012125323.17509-30-david@redhat.com>
+        id S2389475AbgJTAgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 20:36:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35226 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389441AbgJTAgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 20:36:36 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 489302242C;
+        Tue, 20 Oct 2020 00:36:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603154195;
+        bh=jq/u7h99KoaQMSz59H5LmVaxbG751C0Nlkv/jdx65BQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=w9B0/9D9bie9wqWfdtCkz/Uv6ZqW0Yehh6u71LocnjL0AXq6P7Qz0iw0nYQldNGjx
+         rMwBa2gXoBiBtsaJ8A1WXKmEKbgGqnwrUP5QDqMWoy5YLu91Q5Fm650M6n81TtbDVY
+         sJOC+JhIpfljo++f0uzJ5mfdsNOGtqFw+M4E+WPs=
+Date:   Mon, 19 Oct 2020 17:36:33 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Christian Eggers <ceggers@arri.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: dsa: tag_ksz: KSZ8795 and KSZ9477 also use
+ tail tags
+Message-ID: <20201019173633.5af4ab24@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201016172449.nvfflbbkrdbzukwz@skbuf>
+References: <20201016171603.10587-1-ceggers@arri.de>
+        <20201016172449.nvfflbbkrdbzukwz@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012125323.17509-30-david@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 02:53:23PM +0200, David Hildenbrand wrote:
->Let's add a safe mechanism to unplug memory, avoiding long/endless loops
->when trying to offline memory - similar to in SBM.
->
->Fake-offline all memory (via alloc_contig_range()) before trying to
->offline+remove it. Use this mode as default, but allow to enable the other
->mode explicitly (which could give better memory hotunplug guarantees in
->some environments).
->
->The "unsafe" mode can be enabled e.g., via virtio_mem.bbm_safe_unplug=0
->on the cmdline.
->
->Cc: "Michael S. Tsirkin" <mst@redhat.com>
->Cc: Jason Wang <jasowang@redhat.com>
->Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->Cc: Michal Hocko <mhocko@kernel.org>
->Cc: Oscar Salvador <osalvador@suse.de>
->Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
->Cc: Andrew Morton <akpm@linux-foundation.org>
->Signed-off-by: David Hildenbrand <david@redhat.com>
+On Fri, 16 Oct 2020 20:24:49 +0300 Vladimir Oltean wrote:
+> On Fri, Oct 16, 2020 at 07:16:03PM +0200, Christian Eggers wrote:
+> > I added it manually because the commit ID is not from Linus' tree. Is there any
+> > value using Fixes tags with id's from other trees?  
+> 
+> Yes, that's what "git merge" does, it keeps sha1sums.
+> You should check out "git log --oneline --graph --decorate" some time.
+> Every maintainer's history is linear, and so is Linus's.
 
-Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+One thing to add is that we never rebase net or net-next trees
+(some maintainers would do that occasionally).
 
--- 
-Wei Yang
-Help you, Help me
+Applied, thanks everyone!
