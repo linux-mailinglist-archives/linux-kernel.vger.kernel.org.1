@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1878229384B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888E529384C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392946AbgJTJhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:37:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:48670 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391944AbgJTJhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:37:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59704101E;
-        Tue, 20 Oct 2020 02:37:54 -0700 (PDT)
-Received: from bogus (unknown [10.57.22.167])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 573183F66E;
-        Tue, 20 Oct 2020 02:37:51 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 10:37:45 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
-        georgi.djakov@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
- -EPROBE_DEFER
-Message-ID: <20201020093745.GA10604@bogus>
-References: <20201016060021.sotk72u4hioctg7o@bogus>
- <20201016111222.lvakbmjhlrocpogt@bogus>
- <20201019045827.kl6qnx6gidhzjkrs@vireshk-i7>
- <20201019091723.GA12087@bogus>
- <20201019092411.b3znjxebay3puq2j@vireshk-i7>
- <20201019101241.GB12908@bogus>
- <20201019103535.ksp5ackoihamam4g@vireshk-i7>
- <20201019141007.GA6358@bogus>
- <20201020050557.a3b2nk33eeyxnvl2@vireshk-i7>
- <20201020055431.ln7d57x76f7z6j5k@vireshk-i7>
+        id S2392948AbgJTJiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730625AbgJTJiR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 05:38:17 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F61C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:38:17 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id t12so1371987ilh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:38:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aQZwsNSiU9VL7BDSnCM9rvnxEFmk0HxipRLqj1HgzZY=;
+        b=EfVh6NczMYB41OnAXXD8+yco04T86KiEGP04jjZrKNntDkbYG1d8PLgOyaurm/yqUp
+         4laZ1PMF+IqdUrYO0XCNj5yH/zBinpAyxEzt6PPY2XMHg34cQ64v9R0pf+cbTV5L2xXu
+         SUHjx9rEqyjNub9NVvDAfRKwH3Bbq66wyPJs1rVKiXb2zk0MG/NgpTZL8emrqq+QnV4W
+         ODumcscw7fKvqFoXrSk7D+W5iDgyXopuBtgHMIRtajX1OnSPQGNmFx+DuINaBOgmE26x
+         pUlVmDwmDUq7S8BJz7xutW+KNWINDCLG/dzNB7gujzIpVU5k2Ydd0Xkt4gT3jbsnUFwg
+         jwTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aQZwsNSiU9VL7BDSnCM9rvnxEFmk0HxipRLqj1HgzZY=;
+        b=jEorI2cZ8UJYdWS07/9dxUe6QAucHlbI0D/sOiLRMDvNF21vWiIp8ucR4lQQJ8n5F2
+         U73JNGDxpW3auLqx6jd0xUjTCQ0mDS6Ibpe0HKXQDzGMLx+TVxC1MJ/lCW7Ss4vdVICF
+         AE945NZV3+3jVrDQFETGgcM8j+tcTFWMG37qHuNvdCjW6RbBGbn3fXXUDCapvChd8keg
+         AXxo2x5XHEK51SiAlGmX4A0ajkfOetOsPX4S3BOdmBJep+m4Frzx68kdp/cEB4jEWzJd
+         mz5lXZdAD58wQCRkY3RREiU5tIpe9dyb+IJFYhhYXy6McaFa/Ge/WYNNriHyaZLrQXb0
+         MX6g==
+X-Gm-Message-State: AOAM533ePEGzABVhEhN68sEursgNja4bqkm6EnrKNM462aKqzGR2G/hv
+        hcyMVh8BWQyxVp4jZmlVn1kh0y6yCTbs2vhWm6g=
+X-Google-Smtp-Source: ABdhPJyLraQmOVGi+IMto9MyuqYj+0pZpKNX4NQtE+/V7Udl6UIXTZElD4G6Mfjx3Qr8s2xHk4YkgoS1cMmrSRIC4iY=
+X-Received: by 2002:a92:180b:: with SMTP id 11mr1236828ily.89.1603186696774;
+ Tue, 20 Oct 2020 02:38:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020055431.ln7d57x76f7z6j5k@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201012125323.17509-1-david@redhat.com> <20201012125323.17509-16-david@redhat.com>
+ <3d85f357-590f-6180-75bc-698a5961c7ae@redhat.com>
+In-Reply-To: <3d85f357-590f-6180-75bc-698a5961c7ae@redhat.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Tue, 20 Oct 2020 11:38:05 +0200
+Message-ID: <CAM9Jb+iAGXs2xn235MAjANaXPA_+pkft8rzrSdw34E0Wb+JEiA@mail.gmail.com>
+Subject: Re: [PATCH v1 15/29] virito-mem: document Sub Block Mode (SBM)
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 11:24:32AM +0530, Viresh Kumar wrote:
-> On 20-10-20, 10:35, Viresh Kumar wrote:
-> > On 19-10-20, 15:10, Sudeep Holla wrote:
-> > > On Mon, Oct 19, 2020 at 04:05:35PM +0530, Viresh Kumar wrote:
-> > > > On 19-10-20, 11:12, Sudeep Holla wrote:
-> > > > > Yes it has clocks property but used by SCMI(for CPUFreq/DevFreq) and not
-> > > > > by any clock provider driver. E.g. the issue you will see if "clocks"
-> > > > > property is used instead of "qcom,freq-domain" on Qcom parts.
-> > > > 
-> > > > Okay, I understand. But what I still don't understand is why it fails
-> > > > for you. You have a clocks property in DT for the CPU, the OPP core
-> > > > tries to get it and will get deferred-probed, which will try probing
-> > > > at a later point of time and it shall work then. Isn't it ?
-> > > >
-> > > 
-> > > Nope unfortunately. We don't have clock provider, so clk_get will
-> > > never succeed and always return -EPROBE_DEFER.
-> > 
-> > Now this is really bad, you have a fake clocks property, how is the
-> > OPP core supposed to know it ? Damn.
-> 
-> What about instead of fixing the OPP core, which really is doing the
-> right thing, we fix your driver (as you can't fix the DT) and add a
-> dummy CPU clk to make it all work ?
+> > Let's add some documentation for the current mode - Sub Block Mode (SBM) -
+> > to prepare for a new mode - Big Block Mode (BBM).
+> >
+> > Follow-up patches will properly factor out the existing Sub Block Mode
+> > (SBM) and implement Device Block Mode (DBM).
+>
+> s/Device Block Mode (DBM)/Big Block Mode (BBM)/
 >
 
-I really would avoid that. I would rather change the binding as there is
-no single official users of that binding in the upstream tree.
-
--- 
-Regards,
-Sudeep
+Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
