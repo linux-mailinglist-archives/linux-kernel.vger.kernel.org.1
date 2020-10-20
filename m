@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7172944DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4942944DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392899AbgJTWBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 18:01:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57542 "EHLO mail.kernel.org"
+        id S2404786AbgJTWBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 18:01:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392670AbgJTWBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 18:01:02 -0400
-Subject: Re: [GIT PULL] io_uring updates for 5.9-rc1
+        id S2392670AbgJTWBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 18:01:04 -0400
+Subject: Re: [GIT PULL] Please pull NFS Client Updates for v5.10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603231262;
-        bh=B+hPgNk/8OCysXbHF9T+Wieve90kXLR5bDgiBXmTX3s=;
+        s=default; t=1603231264;
+        bh=bfvW5CJ+Dvsog6QgaelPdcXCjo+UyYF3TNk8KIsmeOQ=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=tiy3y62clykjV1J1lUeMxjU8JFZNXurpg4qIyq+1CyzdSRB/RqnC6jjBEXcSXJZ7a
-         EOYmiAUpOcEdKpvBH9Z1mBDluGXKsNqjzwJlBCA126PIizQl+Ni3TmxRdAYz8hZ8nk
-         3jozj0nuvspW9heVc9sRZGcAIub4I9Ds6rG/dZ4k=
+        b=FGNHBDJU1PvJZL/iv5zZt17eARgg33Ton0yzaTDa3PO3w7jCggoAo/jFUmh2xMjAa
+         Poy5W2CjSQ4k7SFY+mfmoQtoQh6k/K1iyo3GlN6wxP+xoS1nBBS43DcQWbyyyi14M4
+         NmrSWHKKds9K2fOpEO7VLCWmPY1aQIwfLLoPdEsg=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <a4cf582e-1f2f-4567-a32d-87736453b0fb@kernel.dk>
-References: <a4cf582e-1f2f-4567-a32d-87736453b0fb@kernel.dk>
-X-PR-Tracked-List-Id: <io-uring.vger.kernel.org>
-X-PR-Tracked-Message-Id: <a4cf582e-1f2f-4567-a32d-87736453b0fb@kernel.dk>
-X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git tags/io_uring-5.10-2020-10-20
-X-PR-Tracked-Commit-Id: 9ba0d0c81284f4ec0b24529bdba2fc68b9d6a09a
+In-Reply-To: <CAFX2JfnGTLccrN4x2FB_m8v+_gJNXCYFfQf=O50mfouiCd+Vsg@mail.gmail.com>
+References: <CAFX2JfnGTLccrN4x2FB_m8v+_gJNXCYFfQf=O50mfouiCd+Vsg@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAFX2JfnGTLccrN4x2FB_m8v+_gJNXCYFfQf=O50mfouiCd+Vsg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.linux-nfs.org/projects/anna/linux-nfs.git tags/nfs-for-5.10-1
+X-PR-Tracked-Commit-Id: 8c39076c276be0b31982e44654e2c2357473258a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4962a85696f9439970bfd84f7ce23b2721f13549
-Message-Id: <160323126242.2890.17773638816118136765.pr-tracker-bot@kernel.org>
-Date:   Tue, 20 Oct 2020 22:01:02 +0000
-To:     Jens Axboe <axboe@kernel.dk>
+X-PR-Merge-Commit-Id: 59f0e7eb2f9ffa7715ca95908797b52ba35af11a
+Message-Id: <160323126398.2890.17389048433911822002.pr-tracker-bot@kernel.org>
+Date:   Tue, 20 Oct 2020 22:01:03 +0000
+To:     Anna Schumaker <schumaker.anna@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 20 Oct 2020 08:40:46 -0600:
+The pull request you sent on Tue, 20 Oct 2020 14:55:52 -0400:
 
-> git://git.kernel.dk/linux-block.git tags/io_uring-5.10-2020-10-20
+> git://git.linux-nfs.org/projects/anna/linux-nfs.git tags/nfs-for-5.10-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4962a85696f9439970bfd84f7ce23b2721f13549
+https://git.kernel.org/torvalds/c/59f0e7eb2f9ffa7715ca95908797b52ba35af11a
 
 Thank you!
 
