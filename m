@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0127C293972
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE1D29396A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393378AbgJTKzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:55:39 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:31161 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392324AbgJTKzj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:55:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1603191339; x=1634727339;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=U3yVkHvQcrDS2rt3RLujo6WsTk7VispOOKaDDDybcRk=;
-  b=B0HjdIyZMzFdLNlmXN9PFIoxY8CcpF7ClT5Mj2O+HX3uph0iwLf3OOmg
-   Cp6iNdHDat42EV7LQXGHREm/9J7pb4U4V8208nPqL9c8UW4lpVEsawpNa
-   vqsoak+4+uzrSHFZyIpG1R0JWZrwp0YDvXhOVmXd7aDBaSJc6EK/5tOOi
-   8=;
-X-IronPort-AV: E=Sophos;i="5.77,396,1596499200"; 
-   d="scan'208";a="78136956"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 20 Oct 2020 10:55:33 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com (Postfix) with ESMTPS id 6232AA1891;
-        Tue, 20 Oct 2020 10:52:25 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 20 Oct 2020 10:52:24 +0000
-Received: from Alexanders-MacBook-Air.local (10.43.162.231) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 20 Oct 2020 10:52:22 +0000
-Subject: Re: [PATCH] KVM: VMX: Forbid userspace MSR filters for x2APIC
-To:     Paolo Bonzini <pbonzini@redhat.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <20201019170519.1855564-1-pbonzini@redhat.com>
- <618E2129-7AB5-4F0D-A6C9-E782937FE935@amazon.de>
- <c9dd6726-2783-2dfd-14d1-5cec6f69f051@redhat.com>
- <bce2aee1-bfac-0640-066b-068fa5f12cf8@amazon.de>
- <6edd5e08-92c2-40ff-57be-37b92d1ca2bc@redhat.com>
-From:   Alexander Graf <graf@amazon.de>
-Message-ID: <47eb1a4a-d015-b573-d773-e34e578ad753@amazon.de>
-Date:   Tue, 20 Oct 2020 12:52:20 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.3
+        id S2393342AbgJTKyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 06:54:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392290AbgJTKyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 06:54:24 -0400
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBC0422404;
+        Tue, 20 Oct 2020 10:54:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603191263;
+        bh=hp9UnoqlHA0qRuSh68YiQSm49gjLgBjCPA1yHdszyaI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JxZgWbDTa4whJLLURjKV37fRFsLXkAE6s/yTFKYgi5vdEfn2gStzkD1BIJ885IhSK
+         rxYEL0U9oYyI+2iVxAU0aPx11xGHOoqiPwUUne97ksM3/4n3bFbR4vosm0QFjtE5go
+         GZ8SiDF0WTbxnTBHQJ1JnfLnYzL0VsK2MzwrgcGQ=
+Received: by mail-ej1-f43.google.com with SMTP id md26so1977248ejb.10;
+        Tue, 20 Oct 2020 03:54:22 -0700 (PDT)
+X-Gm-Message-State: AOAM532WZ/pOMYpuxfc3KSkyg6pzTDL4U/X6jEuqL9gi+2wTvbCHZ0jf
+        xorNwnoyn8uFHZx4dWoU4xAGSeLLdz3m1WS9wAk=
+X-Google-Smtp-Source: ABdhPJyuih4+evGE7IK26IbJOQ7i2MpEqP7AmbQkTm1rbqJCo3zhlb5MJVxbu3M8P3axXm597GbG+llA1YVfsEzgmks=
+X-Received: by 2002:a17:907:43c0:: with SMTP id ok24mr2462537ejb.385.1603191261238;
+ Tue, 20 Oct 2020 03:54:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6edd5e08-92c2-40ff-57be-37b92d1ca2bc@redhat.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.231]
-X-ClientProxiedBy: EX13D23UWC001.ant.amazon.com (10.43.162.196) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+References: <20201019170247.92002-1-krzk@kernel.org> <20201020103833.GT13341@paasikivi.fi.intel.com>
+In-Reply-To: <20201020103833.GT13341@paasikivi.fi.intel.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Tue, 20 Oct 2020 12:54:09 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPdKHCQikYDLKDS2Y3NVyCjMYYH1pcxgaMoYgOK19vQCrQ@mail.gmail.com>
+Message-ID: <CAJKOXPdKHCQikYDLKDS2Y3NVyCjMYYH1pcxgaMoYgOK19vQCrQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] dt-bindings: media: imx258: add bindings for
+ IMX258 sensor
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAyMC4xMC4yMCAxMjozNCwgUGFvbG8gQm9uemluaSB3cm90ZToKPiAKPiBPbiAyMC8xMC8y
-MCAxMTo0OCwgQWxleGFuZGVyIEdyYWYgd3JvdGU6Cj4+Cj4+ICAgICAgY291bnQ6IDEsCj4+ICAg
-ICAgZGVmYXVsdF9hbGxvdzogZmFsc2UsCj4+ICAgICAgcmFuZ2VzOiBbCj4+ICAgICAgICAgIHsK
-Pj4gICAgICAgICAgICAgIGZsYWdzOiBLVk1fTVNSX0ZJTFRFUl9SRUFELAo+PiAgICAgICAgICAg
-ICAgbm1zcnM6IDEsCj4+ICAgICAgICAgICAgICBiYXNlOiBNU1JfRUZFUiwKPj4gICAgICAgICAg
-ICAgIGJpdG1hcDogeyAxIH0sCj4+ICAgICAgICAgIH0sCj4+ICAgICAgXSwKPj4gfQo+Pgo+PiBU
-aGF0IGZpbHRlciB3b3VsZCBzZXQgYWxsIHgyYXBpYyByZWdpc3RlcnMgdG8gImRlbnkiLCBidXQg
-d291bGQgbm90IGJlCj4+IGNhdWdodCBieSB0aGUgY29kZSBhYm92ZS4gQ29udmVyc2VseSwgYSBy
-YW5nZSB0aGF0IGV4cGxpY2l0bHkgYWxsb3dzCj4+IHgyYXBpYyByYW5nZXMgd2l0aCBkZWZhdWx0
-X2FsbG93PTAgd291bGQgYmUgcmVqZWN0ZWQgYnkgdGhpcyBwYXRjaC4KPiAKPiBZZXMsIGJ1dCB0
-aGUgaWRlYSBpcyB0aGF0IHgyYXBpYyByZWdpc3RlcnMgYXJlIGFsd2F5cyBhbGxvd2VkLCBldmVu
-Cj4gb3ZlcnJpZGluZyBkZWZhdWx0X2FsbG93LCBhbmQgdGhlcmVmb3JlIGl0IG1ha2VzIG5vIHNl
-bnNlIHRvIGhhdmUgdGhlbQo+IGluIGEgcmFuZ2UuICBUaGUgcGF0Y2ggaXMgb25seSBtYWtpbmcg
-dGhpbmdzIGZhaWwgZWFybHkgZm9yIHVzZXJzcGFjZSwKPiB0aGUgcG9saWN5IGlzIGRlZmluZWQg
-YnkgU2VhbidzIHBhdGNoLgoKSSBkb24ndCB0aGluayB3ZSBzaG91bGQgZmFpbCBvbiB0aGUgZm9s
-bG93aW5nOgoKewogICAgIGRlZmF1bHRfYWxsb3c6IGZhbHNlLAogICAgIHJhbmdlczogWwogICAg
-ICAgICB7CiAgICAgICAgICAgICBmbGFnczogS1ZNX01TUl9GSUxURVJfUkVBRCwKICAgICAgICAg
-ICAgIG5tc3JzOiA0MDk2LAogICAgICAgICAgICAgYmFzZTogMCwKICAgICAgICAgICAgIGJpdG1h
-cDogeyAxLCAxLCAxLCAxLCBbLi4uXSB9LAogICAgICAgICB9LAogICAgICAgICB7CiAgICAgICAg
-ICAgICBmbGFnczogS1ZNX01TUl9GSUxURVJfUkVBRCwKICAgICAgICAgICAgIG5tc3JzOiA0MDk2
-LAogICAgICAgICAgICAgYmFzZTogMHhjMDAwMDAwMCwKICAgICAgICAgICAgIGJpdG1hcDogeyAx
-LCAxLCAxLCAxLCBbLi4uXSB9LAogICAgICAgICB9LAogICAgIF0sCn0KCmFzIGEgd2F5IHRvIHNh
-eSAiZXZlcnl0aGluZyBpbiBub3JtYWwgcmFuZ2VzIGlzIGFsbG93ZWQsIHRoZSByZXN0IHBsZWFz
-ZSAKZGVmbGVjdCIuIE9yIGV2ZW4ganVzdCB0byBzZXQgZGVmYXVsdCBwb2xpY2llcyB3aXRoIGxl
-c3MgcmFuZ2VzLgoKT3IgdG8gc2F5IGl0IGRpZmZlcmVudGx5OiBXaHkgY2FuJ3Qgd2UganVzdCBj
-aGVjayBleHBsaWNpdGx5IGFmdGVyIApzZXR0aW5nIHVwIGFsbCBmaWx0ZXIgbGlzdHMgd2hldGhl
-ciB4MmFwaWMgTVNScyBhcmUgKmRlbmllZCo/IElmIHNvLCAKY2xlYXIgdGhlIGZpbHRlciBhbmQg
-cmV0dXJuIC1FSU5WQUwuCgpUaGF0IHN0aWxsIGxlYXZlcyB0aGUgY2FzZSB3aGVyZSB4MmFwaWMg
-aXMgbm90IGhhbmRsZWQgaW4ta2VybmVsLCBidXQgCkknbSBwZXJmZWN0bHkgaGFwcHkgdG8gaWdu
-b3JlIHRoYXQgb25lIGFzICJ1c2VyIHNwYWNlIHNob3VsZCBub3QgY2FyZSIgOikuCgoKQWxleAoK
-CgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21iSApLcmF1c2Vuc3RyLiAzOAox
-MDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3RpYW4gU2NobGFlZ2VyLCBKb25h
-dGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBDaGFybG90dGVuYnVyZyB1bnRl
-ciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1JRDogREUgMjg5IDIzNyA4NzkKCgo=
+On Tue, 20 Oct 2020 at 12:38, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+>
+> Hi Krzysztof,
+>
+> On Mon, Oct 19, 2020 at 07:02:44PM +0200, Krzysztof Kozlowski wrote:
+> > Add bindings for the IMX258 camera sensor.  The bindings, just like the
+> > driver, are quite limited, e.g. do not support regulator supplies.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> >
+> > ---
+> >
+> > Changes since v4:
+> > 1. Add clock-lanes,
+> > 2. Add Rob's review,
+> > 3. Add one more example and extend existing one,
+> > 4. Add common clock properties (assigned-*).
+>
+> Using the assigned-* clock properties may be workable for this driver at
+> the moment. But using these properties does not guarantee the external
+> clock frequency intended to be used on the hardware.
 
+It guarantees it. The clock frequency will be as expected (except if
+someone misconfigures the DTS).
+
+> Using other
+> frequencies *is not* expected to work. That applies to this driver as well.
+
+This is the binding which is HW description. According to HW datasheet
+other frequencies from described range are accepted and expected to
+work.
+
+> This, instead of the clock-frequency property, effectively removes the
+> ability to set the correct frequency from the driver, at least with current
+> set of the used APIs.
+
+It seems you confuse DT bindings with some specific driver
+implementation. Bindings do not describe the driver behavior but the
+HW. The ability to set the correct frequency from the driver is not
+removed. It was never part of the bindings and never should. It is
+part of the driver.
+
+>
+> I suppose you could add a function to set the assigned clock frequency and
+> keep it, just as clk_set_rate_exclusive does?
+>
+> Cc the common clock framework list + maintainers.
+
+The bindings have Rob review which is the DT maintainer. His
+ack/review is needed for the bindings to be accepted. What more do you
+need? Shall I point to submitting-bindings document?
+
+I am really tired of discussing this. You raise some concerns about
+driver behavior in the wrong context - in the patch for device tree
+bindings. You use the arguments about the driver while we talk about
+bindings. This is clearly not correct. I am all the time repeating
+myself - the bindings describe the hardware, not the driver.
+
+Best regards,
+Krzysztof
