@@ -2,117 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B758293A06
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483B3293A0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393044AbgJTL1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 07:27:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53757 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392925AbgJTL1q (ORCPT
+        id S2393199AbgJTLaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 07:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388385AbgJTLaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 07:27:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603193265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vJlBrtx7b8MuYro3yQ5487UyppQfsd5wQW5QKM9zah0=;
-        b=aVGdcwaCIkCgt35zM/xERdMEwg5ybxwE6ckISmuzfTnGbAz5PhXufNAfQ6uxiWw+60Fjfp
-        MZKYXmFOPF7mE8R/ZXydDHgCYyH5pbcl+uMzp8r7pFqDNJpKb3nSnxtKw0lP/VuUs6eX+f
-        pecuH8Nr6bGVricj7b4A/LDmm8v09TY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-131-S1eb4lJ8M4CZawKTkyqNKA-1; Tue, 20 Oct 2020 07:27:41 -0400
-X-MC-Unique: S1eb4lJ8M4CZawKTkyqNKA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE45A18A076B;
-        Tue, 20 Oct 2020 11:27:39 +0000 (UTC)
-Received: from [10.36.114.141] (ovpn-114-141.ams2.redhat.com [10.36.114.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A17515B4A3;
-        Tue, 20 Oct 2020 11:27:38 +0000 (UTC)
-Subject: Re: [PATCH] mm/cma.c: remove redundant cma_mutex lock
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     matthias.bgg@gmail.com, akpm@linux-foundation.org,
-        yj.chiang@mediatek.com
-References: <20201020102241.3729-1-lecopzer.chen@mediatek.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <458cdc24-f637-ef4b-19de-513ceab14f23@redhat.com>
-Date:   Tue, 20 Oct 2020 13:27:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Tue, 20 Oct 2020 07:30:17 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFB9C061755;
+        Tue, 20 Oct 2020 04:30:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=PMYAhIIQV4IvlK4zWSGt1nHdCOf2mO+8d7HFw8vOhA8=; b=HYMCqrOpOk0al4EFIZFy2yCjOl
+        SjCWYkRZv/5xlkDAzcDyCtMRDVZJHm9OFfN8SuCSBqHlchXxc2BzgEaXQ/9nLMTEX307KVin4GFAG
+        sAQKKW2+wXLrq4UjI8pbFkvoEfqmtB2jbbR6MmdJfbgwpim+UFi4Os7xQ5lPGf3W9u9ai+gs/ZnKC
+        jvyRis4zNvn2/ROIBaAn7h8wx2rK847+RZEfhACkhp9NZ6nJVpNVuvWuSak+rd2zn8027zDQ9+DU4
+        0xsaNS0h1xVQNRM0AasUXxINGxwiaVZ3BTGdnbIf2nI4VS+X1/KCj4uVYV526tEdXU5IeZHMD1CIT
+        AlefCE3Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kUpqH-0001fR-SQ; Tue, 20 Oct 2020 11:30:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0E7AD3011FE;
+        Tue, 20 Oct 2020 13:30:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EC872235C0B05; Tue, 20 Oct 2020 13:30:09 +0200 (CEST)
+Date:   Tue, 20 Oct 2020 13:30:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Christian Eggers <ceggers@arri.de>, tglx@linutronix.de,
+        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: sched: system doesn't boot since  "sched: Add new
+ migrate_disable() implementation"
+Message-ID: <20201020113009.GR2628@hirez.programming.kicks-ass.net>
+References: <1654655.1jrfHnk7pZ@n95hx1g2>
+ <20201019150935.koqbk57dmahhomdc@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201020102241.3729-1-lecopzer.chen@mediatek.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201019150935.koqbk57dmahhomdc@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.10.20 12:22, Lecopzer Chen wrote:
-> The cma_mutex which protects alloc_contig_range() was first appeared in
-> commit 7ee793a62fa8c ("cma: Remove potential deadlock situation"),
-> at that time, there is no guarantee the behavior of concurrency inside
-> alloc_contig_range().
+On Mon, Oct 19, 2020 at 05:09:35PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-10-19 12:21:06 [+0200], Christian Eggers wrote:
+> > I have problems with the latest 5.9-rt releases on i.MX6ULL (!CONFIG_SMP):
+> > 
+> …
+> > Any hints?
 > 
-> After the commit 2c7452a075d4db2dc
-> ("mm/page_isolation.c: make start_isolate_page_range() fail if already isolated")
->   > However, two subsystems (CMA and gigantic
->   > huge pages for example) could attempt operations on the same range.  If
->   > this happens, one thread may 'undo' the work another thread is doing.
->   > This can result in pageblocks being incorrectly left marked as
->   > MIGRATE_ISOLATE and therefore not available for page allocation.
-> The concurrency inside alloc_contig_range() was clarified.
-> 
-> Now we can find that hugepage and virtio call alloc_contig_range() without
-> any lock, thus cma_mutex is "redundant" in cma_alloc() now.
-> 
-> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> ---
->  mm/cma.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 7f415d7cda9f..3692a34e2353 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -38,7 +38,6 @@
->  
->  struct cma cma_areas[MAX_CMA_AREAS];
->  unsigned cma_area_count;
-> -static DEFINE_MUTEX(cma_mutex);
->  
->  phys_addr_t cma_get_base(const struct cma *cma)
->  {
-> @@ -454,10 +453,9 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->  		mutex_unlock(&cma->lock);
->  
->  		pfn = cma->base_pfn + (bitmap_no << cma->order_per_bit);
-> -		mutex_lock(&cma_mutex);
->  		ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA,
->  				     GFP_KERNEL | (no_warn ? __GFP_NOWARN : 0));
-> -		mutex_unlock(&cma_mutex);
-> +
->  		if (ret == 0) {
->  			page = pfn_to_page(pfn);
->  			break;
-> 
+> Thank you for the report. The reason is the migrate_disable()
+> implementation for !SMP.
 
-I guess this is fine. In case there is a race we return with -EBUSY -
-which is suboptimal (as it could just be a temporary issue if the other
-user backs off), but should be good enough for now.
+This should fix things I suppose. I'll fold it in.
 
-Acked-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+---
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -378,7 +378,12 @@ static inline void preempt_notifier_init
+ extern void migrate_disable(void);
+ extern void migrate_enable(void);
+ 
+-#else /* !(CONFIG_SMP && CONFIG_PREEMPT_RT) */
++#elif defined(CONFIG_PREEMPT_RT)
++
++static inline void migrate_disable(void) { }
++static inline void migrate_enable(void { }
++
++#else /* !CONFIG_PREEMPT_RT */
+ 
+ /**
+  * migrate_disable - Prevent migration of the current task
