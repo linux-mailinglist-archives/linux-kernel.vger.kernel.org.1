@@ -2,91 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0734B2935B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187C62935B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405081AbgJTHZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404957AbgJTHZl (ORCPT
+        id S2405093AbgJTH0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:26:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58438 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405066AbgJTH0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:25:41 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1878C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:25:40 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id c194so663764wme.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:25:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/kG+BFVGQXRjJ+mkrHQChx2dsZt9ERLvjJfF1uolhOs=;
-        b=plL+cBeKkhcgEoOPkXLmzqJiYdCWDjncM1NsZmzKozDX7/EXncko/dd4visTCbkKoz
-         FVwBiWYiP7BhOErruEOjUAZ0Yu1zVHwItfkP/LIiO8Yyva2nN8MZSwH/IEALG0jrFlj0
-         4AAUonQVksMpZ9psUcdGrC+dYOPhmg45eFwfSKSW6BHg8WYzwyFpIWGR2sr0nJjM7J0M
-         mQtPY5YgoWW3/swFlkwJN8ljigLiIdS8Hc53fJZ3MTliPiri/AQLLIewLgIHEtFVgxE5
-         n503uTs3wKrKFrFs+Onqv+dDu7l66uYQBOjD5yRq23qITLoK5YQBTJEZfOP3iZJeKneN
-         A0bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/kG+BFVGQXRjJ+mkrHQChx2dsZt9ERLvjJfF1uolhOs=;
-        b=V2qr/GcpPquiMi/5i4qlhh6fu3WmRhMBQlA8F9vVyaT2j0Ls96wL3BLZj2n0B85k+m
-         L+Qw4jzP+aipSnGmjRp+maQQYNN5U7qVc9AAn8MEIkX6gRcwHIeUjRLj+ZBf8nSFBWzf
-         u+k0U7IdRUm0/Iep2eC9wOXoI5DSfZq4VocomP8x+D0Y5T6dK20+e1Vmnhb8VtLn3p3L
-         UvG+e85WnHJ/Ur/AeWjbg9EQlCBM+rf+8/oUaax89mGzYNBWC4fvuVtZN7/vmgD/Q3z6
-         IATmaDHWwJkVx3otnafhGGjfEAdXIQlXjUN3cBty5s+VfRY6fjcmmpgjd4ujfYEg9XBJ
-         /6SQ==
-X-Gm-Message-State: AOAM533lzAvxSYzrSemuo2g3FpbJNjAIikoP2AKpi7KXRu0M+0cRYaiW
-        ldXuEQ/BAY2VcVo1gx/zrAgdXWEvheLn9haj
-X-Google-Smtp-Source: ABdhPJzEsj88NtvzD+ZrWDaQD7qm8tQ4VN7+gEQnQXQ3oeSWYew/8wQyY+0+RSRpxq2rM5wZ5F12lw==
-X-Received: by 2002:a1c:7213:: with SMTP id n19mr1375882wmc.188.1603178739517;
-        Tue, 20 Oct 2020 00:25:39 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:3c62:4f82:8f5f:de74])
-        by smtp.gmail.com with ESMTPSA id j5sm1487325wrx.88.2020.10.20.00.25.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 00:25:38 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     maz@kernel.org
-Cc:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
-        khilman@baylibre.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 2/2] arm64: meson: remove MESON_IRQ_GPIO selection
-Date:   Tue, 20 Oct 2020 09:25:32 +0200
-Message-Id: <20201020072532.949137-3-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201020072532.949137-1-narmstrong@baylibre.com>
-References: <20201020072532.949137-1-narmstrong@baylibre.com>
+        Tue, 20 Oct 2020 03:26:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603178765;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8jk46qzoY+qKztxyvjIvkyp4/43VUHvpWhz0wxtac/k=;
+        b=ibH/mp8YPNfF0Gc1sp2SuvzUANfUPHPWrw71Mc2dFlg18VYjiDiNLr4JywotCZS62exa+l
+        W1w7Wi47de1JmMDLju4nCZZhasQmTo8AnUZZJhsb3NIQSofN0GS6OHcTuCr34Z0wZ5ewz8
+        wsJbcNHYXFeRHwg+TPaNQuxt22EnsFc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-317-iL_J8JbLOcKUndYdXMVDFA-1; Tue, 20 Oct 2020 03:26:01 -0400
+X-MC-Unique: iL_J8JbLOcKUndYdXMVDFA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0654B87505D;
+        Tue, 20 Oct 2020 07:25:59 +0000 (UTC)
+Received: from krava (unknown [10.40.192.162])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6044B55760;
+        Tue, 20 Oct 2020 07:25:54 +0000 (UTC)
+Date:   Tue, 20 Oct 2020 09:25:53 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Joe Mario <jmario@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
+        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 7/8] perf c2c: Add option '-d llc' for sorting with
+ LLC load
+Message-ID: <20201020072553.GC2084117@krava>
+References: <20201015145041.10953-1-leo.yan@linaro.org>
+ <20201015145041.10953-8-leo.yan@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015145041.10953-8-leo.yan@linaro.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Selecting MESON_IRQ_GPIO forces it as built-in, but we may need to build it
-as a module, thus remove it here and let the "default ARCH_MESON" build as
-built-in by default with the option to switch it to module.
+On Thu, Oct 15, 2020 at 03:50:40PM +0100, Leo Yan wrote:
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- arch/arm64/Kconfig.platforms | 1 -
- 1 file changed, 1 deletion(-)
+SNIP
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index cd58f8495c45..dfb66917f665 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -157,7 +157,6 @@ config ARCH_MESON
- 	select COMMON_CLK_GXBB
- 	select COMMON_CLK_AXG
- 	select COMMON_CLK_G12A
--	select MESON_IRQ_GPIO
- 	help
- 	  This enables support for the arm64 based Amlogic SoCs
- 	  such as the s905, S905X/D, S912, A113X/D or S905X/D2
--- 
-2.25.1
+> @@ -1533,6 +1539,7 @@ static struct c2c_header percent_hitm_header[] = {
+>  	[DISPLAY_LCL] = HEADER_BOTH("Lcl", "Hitm"),
+>  	[DISPLAY_RMT] = HEADER_BOTH("Rmt", "Hitm"),
+>  	[DISPLAY_TOT] = HEADER_BOTH("Tot", "Hitm"),
+> +	[DISPLAY_LLC] = HEADER_BOTH("LLC", "Hit"),
+>  };
+>  
+>  static struct c2c_dimension dim_percent_hitm = {
+> @@ -2002,6 +2009,10 @@ static bool he__display(struct hist_entry *he, struct c2c_stats *stats)
+>  		break;
+>  	case DISPLAY_TOT:
+>  		FILTER_ENTRY(tot_hitm);
+> +		break;
+> +	case DISPLAY_LLC:
+> +		FILTER_ENTRY(tot_llchit);
+> +		break;
+>  	default:
+>  		break;
+>  	}
+> @@ -2032,6 +2043,9 @@ static inline bool is_valid_hist_entry(struct hist_entry *he)
+>  	case DISPLAY_TOT:
+>  		has_record = !!c2c_he->stats.tot_hitm;
+>  		break;
+> +	case DISPLAY_LLC:
+> +		has_record = !!c2c_he->stats.tot_llchit;
+> +		break;
+>  	default:
+>  		break;
+>  	}
+
+there's one more switch with c2c.display in percent_hitm function,
+where you did not add DISPLAY_LLC case.. I guess it should not ever
+because we will not use that column in llc display mode, but we
+should add at least some warning or that
+
+SNIP
+
+> -				"cl_rmt_hitm,"
+> -				"cl_lcl_hitm,"
+> -				"cl_stores_l1hit,"
+> -				"cl_stores_l1miss,"
+> -				"dcacheline",
+> -				NULL);
+> +	ret = hpp_list__parse(&hpp_list, cl_output, NULL);
+>  
+>  	if (WARN_ONCE(ret, "failed to setup sort entries\n"))
+>  		return;
+> @@ -2357,7 +2384,7 @@ static void print_c2c_info(FILE *out, struct perf_session *session)
+>  		fprintf(out, "%-36s: %s\n", first ? "  Events" : "", evsel__name(evsel));
+>  		first = false;
+>  	}
+> -	fprintf(out, "  Cachelines sort on                : %s HITMs\n",
+> +	fprintf(out, "  Cachelines sort on                : %s\n",
+>  		display_str[c2c.display]);
+>  	fprintf(out, "  Cacheline data grouping           : %s\n", c2c.cl_sort);
+>  }
+> @@ -2514,7 +2541,7 @@ static int perf_c2c_browser__title(struct hist_browser *browser,
+>  {
+>  	scnprintf(bf, size,
+>  		  "Shared Data Cache Line Table     "
+> -		  "(%lu entries, sorted on %s HITMs)",
+> +		  "(%lu entries, sorted on %s)",
+>  		  browser->nr_non_filtered_entries,
+>  		  display_str[c2c.display]);
+>  	return 0;
+> @@ -2720,6 +2747,8 @@ static int setup_display(const char *str)
+>  		c2c.display = DISPLAY_RMT;
+>  	else if (!strcmp(display, "lcl"))
+>  		c2c.display = DISPLAY_LCL;
+> +	else if (!strcmp(display, "llc"))
+> +		c2c.display = DISPLAY_LLC;
+
+please update man page with this
+
+>  	else {
+>  		pr_err("failed: unknown display type: %s\n", str);
+>  		return -1;
+> @@ -2766,9 +2795,10 @@ static int build_cl_output(char *cl_sort, bool no_source)
+>  	}
+>  
+>  	if (asprintf(&c2c.cl_output,
+> -		"%s%s%s%s%s%s%s%s%s%s",
+> +		"%s%s%s%s%s%s%s%s%s%s%s",
+
+why is there extra '%s' when we did not add new argument.. ?
+
+SNIP
+
+> +			     "ld_fbhit,ld_l1hit,ld_l2hit,"
+> +			     "ld_lclhit,lcl_hitm,"
+> +			     "ld_rmthit,rmt_hitm,"
+> +			     "dram_lcl,dram_rmt";
+> +	else /* c2c.display == DISPLAY_LLC */
+> +		output_str = "cl_idx,"
+> +			     "dcacheline,"
+> +			     "dcacheline_node,"
+> +			     "dcacheline_count,"
+> +			     "percent_llchit,"
+> +			     "tot_llchit,"
+> +			     "tot_recs,"
+> +			     "tot_loads,"
+> +			     "tot_stores,"
+> +			     "stores_l1hit,stores_l1miss,"
+> +			     "ld_fbhit,ld_l1hit,ld_l2hit,"
+> +			     "ld_lclhit,lcl_hitm,"
+> +			     "ld_rmthit,rmt_hitm,"
+> +			     "dram_lcl,dram_rmt";
+> +
+> +	if (c2c.display == DISPLAY_TOT)
+> +		sort_str = "tot_hitm";
+> +	else if (c2c.display == DISPLAY_RMT)
+> +		sort_str = "rmt_hitm";
+> +	else if (c2c.display == DISPLAY_LCL)
+> +		sort_str = "lcl_hitm";
+> +	else if (c2c.display == DISPLAY_LLC)
+> +		sort_str = "tot_llchit";
+> +
+
+could you please split addition of output_str/sort_str into separate
+patch and then add DISPLAY_LLC support? it'd ease up review 
+
+perhaps include also print_pareto changes in it 
+
+thanks,
+jirka
+
+> +	c2c_hists__reinit(&c2c.hists, output_str, sort_str);
+>  
+>  	ui_progress__init(&prog, c2c.hists.hists.nr_entries, "Sorting...");
+>  
+> -- 
+> 2.17.1
+> 
 
