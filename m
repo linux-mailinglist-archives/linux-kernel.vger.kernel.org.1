@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598BD294302
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24442294306
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438129AbgJTTeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 15:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438116AbgJTTeX (ORCPT
+        id S2438166AbgJTTf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 15:35:29 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14695 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438154AbgJTTf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 15:34:23 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B060CC0613CE;
-        Tue, 20 Oct 2020 12:34:21 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id l24so3055307edj.8;
-        Tue, 20 Oct 2020 12:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SW+VSHIXtiXnaj2ApmMbMQMGmNjny+0l3tNBxFDXzPQ=;
-        b=GX3Yqx/LGzHLUIjGjsF1kKPysogDyG2vVY+8s+N8PTYhKPTyh4ACcyF24+wMsvDkWV
-         HoMpNTIC+E6bYuB8fDaKiYToCjnyJy6T5P8ksA6DbiLXI/qy2awow9Wiy4i+9ico7tmr
-         g6jxHMX3ONcndVRYk8KlG6vNoPIB1NwOrTcKrEG/xos8ZEWNISy0RXB0os+sLxmUtWNF
-         mgBSgcXSWHi7HK7kT9NbcjuAFZmSoLbt447t0YfPcndqwk592RUbYmWW1b5IBWZnDxKd
-         4tKQPDU3IsTlwgNvOBhPO3gCVZHDTNVuPZstd9pobY90Gnq6dtOLbL4656x9U1Qqpt1D
-         D3og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SW+VSHIXtiXnaj2ApmMbMQMGmNjny+0l3tNBxFDXzPQ=;
-        b=n1phEfyIvTnbq23QfvnXOTnQ4aNVALg7dGGiFMTZpJgcEFnzuecmpEINLWSyo2FJ7h
-         oLcKMUU/rCwV78i77qrM8k8bDDBgufsYhMIEPDNFUMIXD/Oasimiejw1HmDB5FwyjzYd
-         IlGRSW5AJ52vhrHzFZFQ/+X3U+LNbduE87IJcIJ1GUzZ52hD2hlQIkCHZ2c64L9VPVjZ
-         k0cHK3oucKBwIzeGQpRXUAkyZNvsB6PFUtboFl5XyJyYAxHwU48mVihZ0Ss/aP94e5az
-         YV66+6cYwDGx5Mc/UaLj7wLxw3BTI4do+V06p4vfxrqgMpVHA1oIt4JHANP4K5CS/ydL
-         r72A==
-X-Gm-Message-State: AOAM5315eg5/pQ0gicBEnHvlAMSHWsPS+kuWSyBLI6/unru8b1AOyTCZ
-        1yzUs1nCbrCqno4U98bQOCera9WdPD5HJmkCG/k=
-X-Google-Smtp-Source: ABdhPJyz+B9K91a/msM+dSi3tWDZXEiIxtxc7t7+Nz5WVzNWfdgNtM43dsiSzf+FIStCK900mQNbeVT/50ZkdTQrSrg=
-X-Received: by 2002:aa7:c683:: with SMTP id n3mr4407224edq.146.1603222460451;
- Tue, 20 Oct 2020 12:34:20 -0700 (PDT)
+        Tue, 20 Oct 2020 15:35:28 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8f3ba30000>; Tue, 20 Oct 2020 12:33:55 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
+ 2020 19:35:27 +0000
+Received: from skomatineni-linux.nvidia.com (172.20.13.39) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Tue, 20 Oct 2020 19:35:27 +0000
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <hverkuil@xs4all.nl>
+CC:     <mchehab@kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 0/9] media: tegra-video: Add support for capturing from HDMI-to-CSI bridge
+Date:   Tue, 20 Oct 2020 12:36:06 -0700
+Message-ID: <1603222575-14427-1-git-send-email-skomatineni@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-References: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru> <20201020112101.19077-6-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20201020112101.19077-6-Sergey.Semin@baikalelectronics.ru>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 20 Oct 2020 21:34:09 +0200
-Message-ID: <CAFBinCA+4c6pjYFx3MW3-G=rCKon_jUXQ77pYSxXpRE9k0mpAA@mail.gmail.com>
-Subject: Re: [PATCH v3 05/16] dt-bindings: usb: usb-hcd: Add generic "usb-phy" property
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603222435; bh=vk0Z162ydt5goTkfbh7cvYRBInjh/n9d55j7/sDPyE0=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=LrEnEU6y0IcixcnHy+BlIa6VuVeT+J5yNKe507Q7CwiD6VDHjkIb+zadqIfJI/tXs
+         ghWDLx26mRLH0QjkEdHGujUGk6N5UOb9JOuC7HqGRDehPIX4SIrRqUsdk9yz0WqFAi
+         HRUAiB9Ykiz96kusImH/c4YLiH3Fr0lkQK6J1USNwfjAncjgCD5M4oZbqReJwJS3LX
+         5zqvxMGPNGJHJUCAGiAlmsGgEjMYpHHbgP+XIQjmhM87B3RxtV7jFLxW0hiN6KyLUa
+         6xpIFypV0X6PC2JyXmt78cSkJM7vWyPCPS10Hdhqs5wKMRIYksIBXFhksG7m2isfeT
+         9N7IBHfTmwhNQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 1:21 PM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
->
-> Even though the Generic PHY framework is the more preferable way of
-> setting the USB PHY up, there are still many dts-files and DT bindings
-> which rely on having the legacy "usb-phy" specified to attach particular
-> USB PHYs to USB cores. Let's have the "usb-phy" property described in
-> the generic USB HCD binding file so it would be validated against the
-> nodes in which it's specified. Mark the property as deprecated to
-> discourage the developers from using it.
->
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+This series includes below changes to allow capturing from HDMI-to-CSI bridges.
+- Add DV timing, EDID and log status V4L2 IOCTLs
+- Subscribe V4L2_EVENT_SOURCE_CHANGE
+- Implement V4L2 device notify callback to report queue error on source change
+  during active streaming.
+- Add support for NV16 V4L2 Pixel format.
+
+This series also include below fixes
+- Allow format change for subdevs that don't have crop support.
+- Correct V4L2 Pixel format for RGB888_1X24
+- Enable VI pixel transform for YUV and RGB formats.
+
+
+Sowjanya Komatineni (9):
+  media: tegra-video: Use zero crop settings if subdev has no
+    get_selection
+  media: tegra-video: Enable VI pixel transform for YUV and RGB formats
+  media: tegra-video: Fix V4L2 pixel format for RGB888_1X24
+  media: tegra-video: Add support for V4L2_PIX_FMT_NV16
+  media: tegra-video: Add DV timing support
+  media: tegra-video: Add support for EDID ioctl ops
+  media: tegra-video: Add support for VIDIOC_LOG_STATUS ioctl
+  media: tegra-video: Add support for V4L2_EVENT_SOURCE_CHANGE
+  media: tegra-video: Implement V4L2 device notify callback
+
+ drivers/staging/media/tegra-video/tegra210.c |  30 ++++-
+ drivers/staging/media/tegra-video/vi.c       | 171 ++++++++++++++++++++++++++-
+ drivers/staging/media/tegra-video/video.c    |  18 +++
+ 3 files changed, 211 insertions(+), 8 deletions(-)
+
+-- 
+2.7.4
+
