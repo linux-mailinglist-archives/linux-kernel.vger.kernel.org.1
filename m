@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F4B293BA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53B9293BA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406068AbgJTMcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:32:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405888AbgJTMcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:32:07 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A1C222265;
-        Tue, 20 Oct 2020 12:32:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603197126;
-        bh=FNskQlyvjAYQ2kRwtssvTisWlw7hhgIkump+feNnth0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rZ9Ra18GZ+F44faWs6WTiw+eQmQtzYA2X2KmekvneqthHeJVYllH19lEDFgSbyDJ/
-         tqdMBTqCDaIW8DBtvqvx7+tzk8SFLK6JRL16U4iYCUlwDGgR/OroVhUZDX2Jb4ELf5
-         e2YYWVpFbwsYACRsP++e5PWxAGP6Vp5BmsR6I9Ks=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kUqo8-002jGz-39; Tue, 20 Oct 2020 13:32:04 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 20 Oct 2020 13:32:03 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        julien.thierry.kdev@gmail.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
+        id S2406135AbgJTMdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:33:20 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:52766 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405887AbgJTMdT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:33:19 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id D67B5803071B;
+        Tue, 20 Oct 2020 12:33:16 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id p-CM0Wfp74i7; Tue, 20 Oct 2020 15:33:16 +0300 (MSK)
+Date:   Tue, 20 Oct 2020 15:33:15 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>
+CC:     Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        USB <linux-usb@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/5] arm64: Add framework to turn IPI as NMI
-In-Reply-To: <20201020122535.paym32gksuhcqtwq@holly.lan>
-References: <1602673931-28782-1-git-send-email-sumit.garg@linaro.org>
- <1602673931-28782-2-git-send-email-sumit.garg@linaro.org>
- <fbf6bfecf344a06af94e17ccabb817dd@kernel.org>
- <CAFA6WYPEw5x_3zDZSnkL23YjFWbF=VkUKefM6Ts46JLVaj2sDA@mail.gmail.com>
- <f3596e3ed70737d36f72056827d7d441@kernel.org>
- <CAFA6WYMEJb0o+PMmvLh1wDhZ+M4rChP3a1cNNoEsoMS1kDWwKA@mail.gmail.com>
- <20201020122535.paym32gksuhcqtwq@holly.lan>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <abe358694e06a6076fb5838d1231eee6@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: daniel.thompson@linaro.org, sumit.garg@linaro.org, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, jason@lakedaemon.net, mark.rutland@arm.com, julien.thierry.kdev@gmail.com, dianders@chromium.org, jason.wessel@windriver.com, msys.mizuma@gmail.com, ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Subject: Re: [PATCH 01/29] usb: dwc3: Discard synopsys,dwc3 compatibility
+ string
+Message-ID: <20201020123315.636cwjrajowihxa6@mobilestation.baikal.int>
+References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
+ <20201020115959.2658-2-Sergey.Semin@baikalelectronics.ru>
+ <CAHp75VfS-f39uyb7GcFXPzgZLktWmXTESv798LvKY3-+-GQPrw@mail.gmail.com>
+ <20201020122801.GB126891@kozik-lap>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201020122801.GB126891@kozik-lap>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-20 13:25, Daniel Thompson wrote:
-> On Tue, Oct 20, 2020 at 04:52:43PM +0530, Sumit Garg wrote:
+On Tue, Oct 20, 2020 at 02:28:01PM +0200, Krzysztof Kozlowski wrote:
+> On Tue, Oct 20, 2020 at 03:15:06PM +0300, Andy Shevchenko wrote:
+> > On Tue, Oct 20, 2020 at 3:02 PM Serge Semin
+> > <Sergey.Semin@baikalelectronics.ru> wrote:
+> > >
+> > > Syonpsys IP cores are supposed to be defined with "snps" vendor-prefix.
+> > > Discard a DW USB3 compatible string with the deprecated prefix seeing
+> > > one isn't used by any dts file anymore.
+> > 
 
-[...]
-
->> So in general, IPI as a normal IRQ is still useful for debugging but
->> it can't debug a core which is stuck in deadlock with interrupts
->> disabled.
->> 
->> And since we choose override default implementations for pseudo NMI
->> support, we need to be backwards compatible for platforms which don't
->> possess pseudo NMI support.
+> > I'm afraid it's no go.
+> > It's an ABI from the moment when the driver started supporting this
+> > compatible string.
 > 
-> Do the fallback implementations require a new IPI? The fallbacks
-> could rely on existing mechanisms such as the smp_call_function
-> family.
+> Exactly.
+> 
+> Please mark the compatible as deprecated in bindings, correct the DTSes
+> and optionally after one or two years (or any time later) remove the
+> support for deprecated bindings.
 
-Indeed. I'd be worried of using that mechanism for NMIs, but normal
-IPIs should stick to the normal cross-call stuff.
+Ok. I'll just get the original patch back then:
+https://lore.kernel.org/linux-usb/20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru/T/#m0f92acafbd740e63b7156efac58850e0757d2110
+and resend the series later after the rest of the patchset have been cooked
+a bit.
 
-The jury is still out on why this is a good idea, given that it
-doesn't work in the only interesting case (deadlocked CPUs).
+-Sergey
 
-          M.
--- 
-Jazz is not dead. It just smells funny...
+> 
+> Best regards,
+> Krzysztof
+> 
