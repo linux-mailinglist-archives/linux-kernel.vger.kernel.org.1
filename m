@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59555293668
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F14F293666
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733247AbgJTIIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 04:08:05 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:45778 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728807AbgJTIIE (ORCPT
+        id S1733223AbgJTIHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 04:07:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25831 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733119AbgJTIHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:08:04 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09K87q5W050301;
-        Tue, 20 Oct 2020 03:07:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603181272;
-        bh=TS5AoPVV1Gz5Y30jd5xdWJlQjaCcpnodCnfamrTG5IA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Hue27uv5bcWUKWp508j+p0ooMMqNQL4OO2WLEDrPCOggqVXwr8050WkTtHj1XwJKE
-         C468UtwZV3B1Z/CTYvlxFjx48xLImJZUfAklHSGbyRxoKSwb28ykWKRDvW4dmV36bp
-         gizleSzKCHcs8yKKLiArCTKWxcEerv+x6u7Ze2fY=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09K87qG7080464
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 20 Oct 2020 03:07:52 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 20
- Oct 2020 03:07:51 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 20 Oct 2020 03:07:52 -0500
-Received: from [10.250.234.189] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09K87QtZ048612;
-        Tue, 20 Oct 2020 03:07:30 -0500
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
- dw_child_pcie_ops
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "Z.q. Hou" <zhiqiang.hou@nxp.com>
-CC:     Rob Herring <robh@kernel.org>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michael Walle <michael@walle.cc>,
-        Ard Biesheuvel <ardb@kernel.org>
-References: <CAL_JsqLdQY_DqpduaTv4hMDM_-cvZ_+s8W+HdOuZVVYjTO4yxw@mail.gmail.com>
- <HE1PR0402MB337180458625B05D1529535384390@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <20200928093911.GB12010@e121166-lin.cambridge.arm.com>
- <HE1PR0402MB33713A623A37D08AE3253DEB84320@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <DM5PR12MB1276D80424F88F8A9243D5E2DA320@DM5PR12MB1276.namprd12.prod.outlook.com>
- <CAL_JsqJJxq2jZzbzZffsrPxnoLJdWLLS-7bG-vaqyqs5NkQhHQ@mail.gmail.com>
- <9ac53f04-f2e8-c5f9-e1f7-e54270ec55a0@ti.com>
- <CAL_JsqJEp8yyctJYUjHM4Ti6ggPb4ouYM_WDvpj_PiobnAozBw@mail.gmail.com>
- <67ac959f-561e-d1a0-2d89-9a85d5f92c72@ti.com>
- <HE1PR0402MB3371684F1578E953F881CE5484070@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <20201019161311.GA9813@e121166-lin.cambridge.arm.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <55d655b2-ff61-e721-33de-0d3b2e693291@ti.com>
-Date:   Tue, 20 Oct 2020 13:37:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 20 Oct 2020 04:07:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603181251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9X9z7bcSkIflMn/EuSDjY+5PXLgWKnYQvzQsm5FKNI4=;
+        b=eoCQF8gBqv8v44m8rjosk01hvvqUVYUotZO2ZUPaGuxnXqC/rdOdljjf5vzDcEuzJ0LTbm
+        O8sPSHHOzAu2MFsTcgSHsYlu3AYaZxnEQUU1gsk9h2ko4JF2G9FGEuFC/RZ7/NPnUzNvfn
+        zvBQL9Y1J3FILNrHpQJHM7xZ7C0I+D4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-430-HLrKi0ljNPu8-QPI12VGUA-1; Tue, 20 Oct 2020 04:07:28 -0400
+X-MC-Unique: HLrKi0ljNPu8-QPI12VGUA-1
+Received: by mail-wr1-f69.google.com with SMTP id q15so481716wrw.8
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:07:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9X9z7bcSkIflMn/EuSDjY+5PXLgWKnYQvzQsm5FKNI4=;
+        b=qFqiy+f0nTXZDG9LHDM2i9/pVUoCwKvgKlETN1KUDB6yl8eLUHLiQklAMQ56JauSMj
+         O+m/FGS3mQEKf/S8f9hH3d+KjrmlOnkoyiVFOafEuooy0KLHWCGuuN6glY906pwyMQ/t
+         79Nna2DE9nsIHt0EowBEHhyx5c8b0kCnmEPbt3IZneKlL6l94sDyQQutlxKS1IR+IPx6
+         zVYV6OowtOi3epe4v9O0AZFi+Vd3e8W6DfEnkVKcvLilC2GhZOyf5ByrDgZRYPVt1WNp
+         V9yAQNYGjEKRAhO6P46iKUajCXA0ZJ1UKPpcBdgSx1JfoFYa37qE8BGIgPNMlPH4rQ4E
+         u/gQ==
+X-Gm-Message-State: AOAM532D15JEFUEHjTv2623IDUm80+/ZvSMaUDFRZxv656N28ukgXxjb
+        u7eGrFvk/VJD67VM0nDwgkrCryKwIZlCwvhF6iFAZfIBvWgSF5spbbccMVbLxTb28itZ5puIxav
+        cgHopdKRGAA+/9OfgQpUOU5K+
+X-Received: by 2002:a5d:6a0d:: with SMTP id m13mr1970786wru.161.1603181247379;
+        Tue, 20 Oct 2020 01:07:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNRdNCmWfia+V+FyupuFLmwfwLBKlDsbsy04oihernE2WtCItAguN6D52h+xDVSr+M69is3Q==
+X-Received: by 2002:a5d:6a0d:: with SMTP id m13mr1970760wru.161.1603181247137;
+        Tue, 20 Oct 2020 01:07:27 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d3sm1944911wrb.66.2020.10.20.01.07.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Oct 2020 01:07:26 -0700 (PDT)
+Subject: Re: [PATCH v2 00/20] Introduce the TDP MMU
+To:     Ben Gardon <bgardon@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20201014182700.2888246-1-bgardon@google.com>
+ <f19b7f9c-ff73-c2d2-19f9-173dc8a673c3@redhat.com>
+ <CANgfPd9CpYt9bVNXWbB+2VTrndfLBezqPauDo2-n8UdKDsrzpA@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <b07db4bf-860c-57cb-6a1d-b5a151c28c9b@redhat.com>
+Date:   Tue, 20 Oct 2020 10:07:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20201019161311.GA9813@e121166-lin.cambridge.arm.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CANgfPd9CpYt9bVNXWbB+2VTrndfLBezqPauDo2-n8UdKDsrzpA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
-
-On 19/10/20 9:43 pm, Lorenzo Pieralisi wrote:
-> On Mon, Oct 12, 2020 at 04:41:11AM +0000, Z.q. Hou wrote:
+On 19/10/20 20:15, Ben Gardon wrote:
+> When getting the dirty log, we
+> follow the following steps:
+> 1. Atomically get and clear an unsigned long of the dirty bitmap
+> 2. For each GFN in the range of pages covered by the unsigned long mask:
+>     3. Clear the dirty or writable bit on the SPTE
+> 4. Copy the mask of dirty pages to be returned to userspace
 > 
-> [...]
-> 
->>>>> Yeah, I don't see any registers in the DRA7x PCIe wrapper for
->>>>> disabling error forwarding.
->>>>
->>>> It's a DWC port logic register AFAICT, but perhaps not present in all
->>> versions.
->>>
->>> Okay. I see there's a register PCIECTRL_PL_AXIS_SLV_ERR_RESP which has a
->>> reset value of 0.
->>>
->>> It has four bit-fields, RESET_TIMEOUT_ERR_MAP, NO_VID_ERR_MAP,
->>> DBI_ERR_MAP and SLAVE_ERR_MAP. I'm not seeing any difference in
->>> behavior if I set all these bits. Maybe it requires platform support too. I'll
->>> check this with our design team.
->>
->> In DWC v4.40a databook, there is a bit AMBA_ERROR_RESPONSE_GLOBAL
->> which controls if enable the error forwarding. The *MAP bits only
->> determine which error (SLVERR or DECERR) will be forwarded to AXI/AHB
->> bus.
-> 
-> I have not seen a follow-up to this but I would like to, still keen
-> on avoiding this patch if possible - if this is port logic it should
-> be common across controllers implementations I assume.
-> 
-> Gustavo, Kishon ?
+> If we mark the page as dirty in the dirty bitmap in step 3, we'll
+> report the page as dirty twice - once in this dirty log call, and
+> again in the next one. This can lead to unexpected behavior:
+> 1. Pause all vCPUs
+> 2. Get the dirty log <--- Returns all pages dirtied before the vCPUs were paused
+> 3. Get the dirty log again <--- Unexpectedly returns a non-zero number
+> of dirty pages even though no pages were actually dirtied
 
-Atleast in the TI DRA7 TRM, I could see only
-PCIECTRL_PL_AXIS_SLV_ERR_RESP and PCIECTRL_PL_AXIS_SLV_TIMEOUT register
-but no global error response bit. I'd have expected configuring
-SLV_ERR_RESP would have disabled error forwarding, but I don't see any
-change in behavior if I modify the value of PCIECTRL_PL_AXIS_SLV_ERR_RESP.
+Got it, that might also fail the dirty_log_test.  Thanks!
 
-TI PCIe controller in DRA7 is not directly connected to AXI/AHB but
-there is an intermediary bridge. So I suspect there is some issue on how
-the controller is integrated in TI platform. Since the board hangs, I
-couldn't get lot of visibility of controller state.
+Paolo
 
-Thanks
-Kishon
