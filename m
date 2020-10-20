@@ -2,188 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D72293B0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32218293B13
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394098AbgJTMRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:17:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393919AbgJTMRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:17:13 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2394287AbgJTMSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:18:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47744 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394170AbgJTMSz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:18:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603196334;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pRFnW5gWRuNF8oIJWmD5GYqoHTlkBEqfo58HkD0f8TY=;
+        b=W+wZU3uqsZjbO3V+Tg5z1dVevAvzbTE0HiWu+RH4HGSf1QwfTASbse8iGyEFZ9I5AkTeOJ
+        oNVBZRKcd92r+4nWHPjq24Xp/xWCsG+FNv3gl1Uu2WFrkqxmgk9yBjX8x9SExmOoVmSPd7
+        kwoaBOwoVVbw6vxp+M89vn7no0pbj2c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-2PWSTa4ePPS2qoetoKllmg-1; Tue, 20 Oct 2020 08:18:52 -0400
+X-MC-Unique: 2PWSTa4ePPS2qoetoKllmg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 528C12222F;
-        Tue, 20 Oct 2020 12:17:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603196232;
-        bh=kwz329hHcdb3msU9zQOvS3B2J9Hwj2jzPLYLuDYZiNA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b+AtBJObIlriv82XKfONSPirGGGZJgUlCOf+6WNBKBqe3Ta8suLxnsp7egfhpCK5i
-         1947v5+dD3jFxttlkavpKM1e4Li0kJjW5s/iX+F8fFPQrM1pFXDDuL8X4/YXBNea9i
-         rzsLxP4PdiRHAmdmeLhXsdhqD8md1Y5RyQ3lz35U=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2AA37403C2; Tue, 20 Oct 2020 09:17:10 -0300 (-03)
-Date:   Tue, 20 Oct 2020 09:17:10 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Tommi Rantala <tommi.t.rantala@nokia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74C3F8049DB;
+        Tue, 20 Oct 2020 12:18:49 +0000 (UTC)
+Received: from [10.36.114.141] (ovpn-114-141.ams2.redhat.com [10.36.114.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A3C896EF44;
+        Tue, 20 Oct 2020 12:18:43 +0000 (UTC)
+Subject: Re: [RFCv2 15/16] KVM: Unmap protected pages from direct mapping
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: Re: [PATCH] perf test: Implement skip_reason callback for watchpoint
- tests
-Message-ID: <20201020121710.GF2294271@kernel.org>
-References: <20201016131650.72476-1-tommi.t.rantala@nokia.com>
- <CAM9d7ciEBP-GMFR0xJqoqSaG2vBcXKxKv4HOR3mxzGxqji2yzg@mail.gmail.com>
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+ <20201020061859.18385-16-kirill.shutemov@linux.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <f153ef1a-a758-dec7-b39c-9990aac9d653@redhat.com>
+Date:   Tue, 20 Oct 2020 14:18:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7ciEBP-GMFR0xJqoqSaG2vBcXKxKv4HOR3mxzGxqji2yzg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20201020061859.18385-16-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Oct 20, 2020 at 03:07:15PM +0900, Namhyung Kim escreveu:
-> Hello,
-> On Fri, Oct 16, 2020 at 10:17 PM Tommi Rantala
-> <tommi.t.rantala@nokia.com> wrote:
-> >
-> > Currently reason for skipping the read only watchpoint test is only seen
-> > when running in verbose mode:
-> >
-> >   $ perf test watchpoint
-> >   23: Watchpoint                                            :
-> >   23.1: Read Only Watchpoint                                : Skip
-> >   23.2: Write Only Watchpoint                               : Ok
-> >   23.3: Read / Write Watchpoint                             : Ok
-> >   23.4: Modify Watchpoint                                   : Ok
-> >
-> >   $ perf test -v watchpoint
-> >   23: Watchpoint                                            :
-> >   23.1: Read Only Watchpoint                                :
-> >   --- start ---
-> >   test child forked, pid 60204
-> >   Hardware does not support read only watchpoints.
-> >   test child finished with -2
-> >
-> > Implement skip_reason callback for the watchpoint tests, so that it's
-> > easy to see reason why the test is skipped:
-> >
-> >   $ perf test watchpoint
-> >   23: Watchpoint                                            :
-> >   23.1: Read Only Watchpoint                                : Skip (missing hardware support)
-> >   23.2: Write Only Watchpoint                               : Ok
-> >   23.3: Read / Write Watchpoint                             : Ok
-> >   23.4: Modify Watchpoint                                   : Ok
-> >
-> > Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+On 20.10.20 08:18, Kirill A. Shutemov wrote:
+> If the protected memory feature enabled, unmap guest memory from
+> kernel's direct mappings.
 
-Thanks, applied.
+Gah, ugly. I guess this also defeats compaction, swapping, ... oh gosh.
+As if all of the encrypted VM implementations didn't bring us enough
+ugliness already (SEV extensions also don't support reboots, but can at
+least kexec() IIRC).
 
-- Arnaldo
- 
-> 
-> Thanks
-> Namhyung
-> 
-> 
-> > ---
-> >  tools/perf/tests/builtin-test.c |  1 +
-> >  tools/perf/tests/tests.h        |  1 +
-> >  tools/perf/tests/wp.c           | 21 +++++++++++++++------
-> >  3 files changed, 17 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> > index d328caaba45d..3bfad4ee31ae 100644
-> > --- a/tools/perf/tests/builtin-test.c
-> > +++ b/tools/perf/tests/builtin-test.c
-> > @@ -142,6 +142,7 @@ static struct test generic_tests[] = {
-> >                         .skip_if_fail   = false,
-> >                         .get_nr         = test__wp_subtest_get_nr,
-> >                         .get_desc       = test__wp_subtest_get_desc,
-> > +                       .skip_reason    = test__wp_subtest_skip_reason,
-> >                 },
-> >         },
-> >         {
-> > diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-> > index 4447a516c689..0630301087a6 100644
-> > --- a/tools/perf/tests/tests.h
-> > +++ b/tools/perf/tests/tests.h
-> > @@ -66,6 +66,7 @@ int test__bp_signal_overflow(struct test *test, int subtest);
-> >  int test__bp_accounting(struct test *test, int subtest);
-> >  int test__wp(struct test *test, int subtest);
-> >  const char *test__wp_subtest_get_desc(int subtest);
-> > +const char *test__wp_subtest_skip_reason(int subtest);
-> >  int test__wp_subtest_get_nr(void);
-> >  int test__task_exit(struct test *test, int subtest);
-> >  int test__mem(struct test *test, int subtest);
-> > diff --git a/tools/perf/tests/wp.c b/tools/perf/tests/wp.c
-> > index d262d6639829..9387fa76faa5 100644
-> > --- a/tools/perf/tests/wp.c
-> > +++ b/tools/perf/tests/wp.c
-> > @@ -174,10 +174,12 @@ static bool wp_ro_supported(void)
-> >  #endif
-> >  }
-> >
-> > -static void wp_ro_skip_msg(void)
-> > +static const char *wp_ro_skip_msg(void)
-> >  {
-> >  #if defined (__x86_64__) || defined (__i386__)
-> > -       pr_debug("Hardware does not support read only watchpoints.\n");
-> > +       return "missing hardware support";
-> > +#else
-> > +       return NULL;
-> >  #endif
-> >  }
-> >
-> > @@ -185,7 +187,7 @@ static struct {
-> >         const char *desc;
-> >         int (*target_func)(void);
-> >         bool (*is_supported)(void);
-> > -       void (*skip_msg)(void);
-> > +       const char *(*skip_msg)(void);
-> >  } wp_testcase_table[] = {
-> >         {
-> >                 .desc = "Read Only Watchpoint",
-> > @@ -219,16 +221,23 @@ const char *test__wp_subtest_get_desc(int i)
-> >         return wp_testcase_table[i].desc;
-> >  }
-> >
-> > +const char *test__wp_subtest_skip_reason(int i)
-> > +{
-> > +       if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
-> > +               return NULL;
-> > +       if (!wp_testcase_table[i].skip_msg)
-> > +               return NULL;
-> > +       return wp_testcase_table[i].skip_msg();
-> > +}
-> > +
-> >  int test__wp(struct test *test __maybe_unused, int i)
-> >  {
-> >         if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
-> >                 return TEST_FAIL;
-> >
-> >         if (wp_testcase_table[i].is_supported &&
-> > -           !wp_testcase_table[i].is_supported()) {
-> > -               wp_testcase_table[i].skip_msg();
-> > +           !wp_testcase_table[i].is_supported())
-> >                 return TEST_SKIP;
-> > -       }
-> >
-> >         return !wp_testcase_table[i].target_func() ? TEST_OK : TEST_FAIL;
-> >  }
-> > --
-> > 2.26.2
-> >
+Something similar is done with secretmem [1]. And people don't seem to
+like fragmenting the direct mapping (including me).
+
+[1] https://lkml.kernel.org/r/20200924132904.1391-1-rppt@kernel.org
 
 -- 
+Thanks,
 
-- Arnaldo
+David / dhildenb
+
