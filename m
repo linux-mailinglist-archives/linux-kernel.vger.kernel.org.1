@@ -2,69 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEE8293F09
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A00293F13
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408438AbgJTOwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:52:07 -0400
-Received: from sonic303-2.consmr.mail.bf2.yahoo.com ([74.6.131.41]:40097 "EHLO
-        sonic303-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728501AbgJTOwH (ORCPT
+        id S2393738AbgJTOzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392672AbgJTOzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:52:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603205524; bh=Xr0ztq1I874QeBmeccNaswBgmnu3ktiw+E0tOg3mgcg=; h=Date:From:Reply-To:Subject:References:From:Subject; b=NO533hn/4bOfqOTO0Os618MQRo/zlDcgYOecriBLceWyVwWLywn2XIyd0kdMMqfoZHdr3ncToBqT4uWo45uOEVTEqHG/zyMGlW9HDTyqnJG0A/y+3JnxAT4QJoJRggRwzjhXW68rs8UndSykLpBUm9lzZL8Df2L9wtGH3h8LH9GfmlgGpQC7vdiwahDp2njPxVmXdnF+Sa2l6VZ4Hamdt2Rdj49JybuVsSI8WVXcj7tUOZupv8DQ4NgGrF8kOOgrVLPF3KlCyswtI8Ao6OLl6r6rRVZc3qjCvFjo/WYv/+efaVmjxddg1RXBF/41jZJWaGkGI8j6FInbIPHQgAFOWw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603205524; bh=JoHkGPr6bKNC1Li9cE/5LZ07uNUquNCqwdleFiuK0Lk=; h=Date:From:Subject; b=lHAgcbSLMs5eJzSY4ihWRE5H/8ejaa9pjfIfOVFOgAap2Vj3isXDMN8NvkcBaxlalY91Cj1oHPxJyBz0K/X5ymYEz5Le8aAzvEtDNluYoiYuOEUCbXOVuRQuMPbqZFnoMsqr/hSENmhXaOP8ejb67vHtKjjbicXfHkzQvN/DcbDwcQpyAH62k5XNL/PE49NfGUgvkRTpj3p4YFH4iKg230t/ItMLfLiKaoHqlgooXqfdSK9d936x65MOubSfWovrVOH/YjBiQnqkHHXY7OzPzyNKJWKKdu0pZPrtAwtSHTws4sj8i0C8/cKBprN6CCii1WRaWSOfv8hfgpEKzmFBLw==
-X-YMail-OSG: iaecyIwVM1nOxkC287uhmkZWOQY54CXuCa0Jz1wBhBAU_7_9HnSKH0XQ8izTcsV
- kfg3VtG4FqnSXzrPCWiSDv56uf08VuoN9mN8Xi.9zokW7raGwga_VUec14oPPuGX9yFej1o5gzM1
- .PxP3X1.8XYmq_IdrUytCAhMyJf8eWefXdSYV3AJNo0.wlBS50woKjao0aWS0LIMmsunX5djpFpc
- l160DRtuq5p.psAsd_nq6Xk4mkdWtBIYf47wKYFd6MvXUzs.InJNk_utKmkF3HjGoAdI4T9m16fn
- uCMxE_DBdoGWWBRI8YHVWKzDRVoZvIgHI9zaVCUQxiix8AlCIoBg.2DxYWBa27SzoVuSpA3QDHO1
- XuNtNoHLtqWlWE8NOfAagCxvBIrx.KOMNBcwx4qXPKP47_NVvWT5oi_.T3wO0fbtq6k2iEIerB0n
- pQ1IPxXMmkS25km.sG51Bp3UIQ1_CDPrWimoBvbkxjvh3NO98Y98OfCWONap090x2tQ2wIbPEnrJ
- dfiV4YLBtAfqYyVdWqiJtmTLhagJAOoTsNaYewswFNrlJ6ZC3bM0CBvpW5BQdiPMBhRJwfIi1CxZ
- 8zmW.WpY_WfRpl1DX8VyAETJlLH.1jqSPgB0VL6OlYD0axynGM6uZu0mnTIIV_GjJv9apFAHUyTF
- MA1XUMTIITV.49uZp1RvThZC2yNIRUZ5NYNq0HuW.ERXHMlugSZdu9d4qcpBAjcLKJbWK5IFt8_K
- m5Cx4S.hsquLu3wYMwBrDCgSJ7xf20NI7us8gMdnsSSGlGlyGUx4lS.WC691gcek074WaYPt4NN.
- 1cVZBs1O7fnx1F0TGgwa1sVp7v7UWvn4McVlw.mexdWwojsS9QUI0PCZ672IWZ7jO0weN2lh54W6
- u.LzYADvhmfSGjWv2n3Q8ZiDWLyxu_6.Yl55e62wl4z9n8bAgoewCq.oizm2w_Z5AToeHiSHPlx7
- X7GSPdIlTK6fnCVO90bsvkzr1I5B31oczD8ODXBxRi_bEEqtKkI4Fs6c2FgLgHtK0Pjfopx1jyVS
- ugvVIK.6DfejdLfqeeWmvj4xRK.GPOHvTBv6Ono4smU00d5KjoSkfrQYkx74o0061wWFAy5yEhE1
- og5XNx36wbf1F.5pUHK1R8IiMzhMcASYyBMAMmeehSuZb63n4XFmADrUkyPbyycKZyzaZKjhEd6h
- LithiF_KfpisLw46hzfXoFh4BUlUHG8DyiRoEMGl5NKKIN.QwFjyzVE4fQ7DSzS8tUlTLCaaOPWj
- WkIjZG1pLFI72pdFuoRutmSJe.CzSbHdsJBk4Z6VsV0DAiZO3AZVpRw4Non6H9otwUsuQApbKgq2
- pgSkjJrnUlnXtQf_7pvuAEjmgjcQjdV7KwmAoPGcpABXheR0HMUJvA6GRohSLtAkf88c6jSleubq
- b41nuc2B.v1fzz9fQXMlFtR4aG52qrQQ93IXn0ELY48OwvHf.CA--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.bf2.yahoo.com with HTTP; Tue, 20 Oct 2020 14:52:04 +0000
-Date:   Tue, 20 Oct 2020 14:52:01 +0000 (UTC)
-From:   susancoulibaly <susancoulibaly5@gmail.com>
-Reply-To: susancoulibaly40@gmail.com
-Message-ID: <2131885044.1060890.1603205521567@mail.yahoo.com>
-Subject: Dearest
+        Tue, 20 Oct 2020 10:55:50 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19611C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:55:49 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id f21so2105100wml.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:55:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uf/L+N0SXiT5GxWzSMpW76s8MjBMaRe3gnVIlCSIR5M=;
+        b=cK9G7+OH/TUQCyR8rfJv0QoQ3SjEQsnF9XCjVN6xqr/O8yU3IlDfbvmsbTfkhxQ06f
+         q4IpVZ8VlQ3fVXlWWHGSfLpylD2IH5P4NE25315km3BTplz4wROeM/cLeRnrZhnHb/v5
+         PyAaPitLsRWmdVTipbLqX4Out+F21VmQJ/X09y763klLznhk8Wjph5Dm6ltToTwu1GKi
+         6cF9SRXzSOe+CnDRgo2LkN4n5tkvfZ7EpQsA7EkHbGt3NkoE1mD/PmAfdxkXt8UbFE9X
+         RN1mqjge119zJMoJpTqXMa+rN2apg4iQxVK+dpL4RLHKRIlCnNkTt3EAvl5wmXLl4Uz1
+         eT1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uf/L+N0SXiT5GxWzSMpW76s8MjBMaRe3gnVIlCSIR5M=;
+        b=F3YPZl80xX9/VpyyGhGYPaiFnlEatGyQ6+ZZIZWKYpuus/5Bp4Frm8rs589hCCaOZ2
+         /np0lB77MHCqorw9A8Jbz+Rpqfmq6KEvRD4quQbpdXghJViJVw/P+oqC65i6T4gxoinm
+         ALvXnAnbGCSNof6H4XWbno9or68G79c1xlUvJ+WL/+51JiwcvyxhTXBXuM+o+Iai0s1j
+         zUfq/xsa0BT5x0lwwJaJNy8B+2Zm30RAjQ5qKVTQZoT4be9FYSbDe6Cobr5NhZpbX8L8
+         arqbl5iYAb0dX1t2pEkaYZ22uRqYfKOtBA8I2n6Y+Ry0OjxO/CywqgYeznzMbg9VK3Ut
+         ymtA==
+X-Gm-Message-State: AOAM532tbTykqW4ZaSRD3G90HH5VdrKrRsSSlBVxWWKkipiQyGzWvAep
+        uX/SR7vDX93XX3jv4YuO4LDCGw==
+X-Google-Smtp-Source: ABdhPJwZTIfXIjPLWWjL97y1NfJTXN0Y2s/to/X10G0kOS41vqvGeaVeSXPhf5OZA0t9DHJLkiPgNg==
+X-Received: by 2002:a7b:ce8f:: with SMTP id q15mr3351776wmj.88.1603205747699;
+        Tue, 20 Oct 2020 07:55:47 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id 1sm3868599wre.61.2020.10.20.07.55.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Oct 2020 07:55:46 -0700 (PDT)
+Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine
+ bindings
+To:     Mark Brown <broonie@kernel.org>,
+        Cheng-yi Chiang <cychiang@chromium.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Srinivasa Rao <srivasam@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Dylan Reid <dgreid@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+References: <20200914080619.4178587-1-cychiang@chromium.org>
+ <20200914080619.4178587-3-cychiang@chromium.org>
+ <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
+ <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
+ <20201015161251.GF4390@sirena.org.uk>
+ <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
+ <20201020143711.GC9448@sirena.org.uk>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <63f1a29c-0758-97b8-ce80-fe43d91630fa@linaro.org>
+Date:   Tue, 20 Oct 2020 15:55:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20201020143711.GC9448@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-References: <2131885044.1060890.1603205521567.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16868 YMailNodin Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dearest,
- 
-I know this mail will come to you as a surprise since we haven't known or come across each other before considering the fact that I sourced your email contact through the Internet in search of trusted person who can assist me.
- 
-I am Miss Susan Warlord Ibrahim Coulibaly 24 years old female from the Republic of Ivory Coast,West Africa ,am the Daughter of Late Chief Sgt.Warlord Ibrahim Coulibaly (a.k.a General IB ). My late father was a well known Ivory Coast militia leader . He died on Thursday 28 April 2011 following a fight with the Republican Forces of Ivory Coast(FRCI). I am constrained to contact you because of the maltreatment which I am receiving from my step mother.
- 
-She planned to take away all my late father's treasury and properties from me since the unexpected death of my beloved Father. Meanwhile I wanted to travel to Europe, but she hide away my international passport and other valuable documents. Luckily she did not discover where I kept my father's File which contained important documents. Now I am presently staying in the Mission in Burkina Faso.
- 
-I am seeking for long term relationship and investment assistance. My father of blessed memory deposited the sum of US$ 27.5 Million in one bank in Burkina Faso with my name as the next of kin. I had contacted the Bank to clear the deposit but the Branch Manager told me that being a refugee, my status according to the local law does not authorize me to carry out the operation. However, he advised me to provide a trustee who will stand on my behalf. I had wanted to inform my stepmother about this deposit but I am afraid that she will not offer me anything after the release of the money.
- 
-Therefore, I decide to seek for your help in transferring the money into your bank account while I will relocate to your country and settle down with you. As you indicated your interest to help me I will give you the account number and the contact of the bank where my late beloved father deposited the money with my name as the next of kin. It is my intention to compensate you with 40% of the total money for your assistance and the balance shall be my investment in any profitable venture which you will recommend to me as have no any idea about foreign investment. Please all communications should be through this email address for confidential purpose (susancoulibaly40@gmail.com)
 
 
- 
-Thanking you a lot in anticipation of your quick response. I will give you details in my next mail after receiving your acceptance mail to help me ,
- 
-Yours sincerely
-Miss Susan Warlord Ibrahim Coulibaly
+On 20/10/2020 15:37, Mark Brown wrote:
+> I don't understand what "logic scattered in various dtsi files" means,
+> sorry.
+> 
+>> Yes, that should work to describe the dailink we are using.
+>> But a more tricky issue is how to do calls like setting PLL in dai startup ops.
+> ...
+> 
+>> I think that asking a generic machine driver to do configuration like
+>> this with only a limited interface of device property
+>> might be too much of an ask for the machine driver.
+> Richard was looking at some basic configuration for PLLs.
+> 
+>> Would you mind if I simplify the compatible string like Srinivas
+>> suggested, and send a v12?
+>> As for other two kinds of variations that I am aware of:
+>> 1. front mic / rear mic
+>> 2. replace alc5682 with adau7002
+> The CODEC change is going to be described in the DT no matter what -
+> you'll have a reference to the CODEC node but it may make sense if
+> there's enough custom code around it.  For front vs rear mic the
+> simplest thing would just be to not mention which if this is a hardware
+> fixed thing, otherwise a control.
+> 
+>> We can set different board names and different compatible strings to
+>> achieve such variation.
+>> So that it would make sense to describe configuration in compatible
+>> strings like you suggested, and also provides UCM a way to distinguish
+>> different boards.
+> I don't recall having suggested distinguishing these things with a
+> compatible string, especially not the microphones.  UCM can already use
+> the display names for the boards to distinguish things.
+
+
+Not with the compatible string!
+
+Currently card name, and long name are exactly same in all Qualcomm 
+soundcards, which makes it very difficult to identify how those boards 
+re wired up at UCM2 level. So the plan is to properly populate card long 
+name with "model" property which can include details on how things are 
+wiredup on that board.
+
+--srini
