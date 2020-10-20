@@ -2,222 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30ED29358F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA5C293593
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404873AbgJTHQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404863AbgJTHQF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:16:05 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9D8C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:16:04 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 33so712884edq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:16:04 -0700 (PDT)
+        id S2404894AbgJTHQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:16:34 -0400
+Received: from mail-eopbgr40109.outbound.protection.outlook.com ([40.107.4.109]:10387
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2404706AbgJTHQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 03:16:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d8qmGAluYGzURmex3vDda/XsivnjH8PQtQcR/tLJUWdPas8ejqaKBagHE/yqYe0mZPhDdpNULLmFVAP1rHSacRaU/7LsnSlhyFXx/q7ezA9ZEQJzCFprgsB7XvZ0KFma1JTC7QEHrQbWpLSd8Xk/5WQXo7r8LxVemMUbQuvl1v73sqswqyPXkb/0eB5BFVDZFG5hsZFZGe4nXnc0w2bMHdvN1+8B1SxCsHgfqZJbKlAfn7usaePdCpkx5uit1BxxYgrrVoVray+iMV7ZZlUoX3iJBiB2eMWBR5l1f/0Rk3QA4Ebh5Q8/EME/G3KI5PEBLOFyT+LLNjYmCeptmWAkQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZMjZ3BDEyu6+2aJ2mVgKnwgRNs9fBuz8sH2yp1fSanc=;
+ b=eNsFDrdaku/eOmQLTxRb2BLoAHpFH9OlaAv5NRC5eZ1KQZyuuALR8RsrT2KQset8Ek0KnHCujaFL0JUqAMI8QVnyrC1GYFFZER9idk69iHnI27KH6bybGc0LbVnOdoYI+7xzOC7hLTQBJ9uRpa01InujxqrfWWE1SdNZz6BViZi2zmQoZkrNAFuZdcArZq0amIxRaj/Xkv7OVAZpFP1WosLh+KehV+2RvNobHTa2soKR/2G3qk5e1+6UERdXH4BTzlayzWJUK69KyguHjkpOhy7kx+tyidr8XIY+LUVwcHL2Oh1DD98cplWBRXNcoTDWwBOKILEtLfJTKzwbbXZraQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prodrive-technologies.com; dmarc=pass action=none
+ header.from=prodrive-technologies.com; dkim=pass
+ header.d=prodrive-technologies.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=mIecWDuirM+ovjaEgwSBDfOYfjk7fqQcC+TNTCTcCUI=;
-        b=jiViQWWZGjOYzYPU4E3knTbBk9g+zPhZ6UNfF+WetzOU6EfEFYGJWiDSzjg3wqRMwf
-         AtZ1Gvkh/M5IMI2Qt3qaSx3iDRZ7cKwIrdUIZA7ePmONvXyeMG8jRzL/+0kPqp/X7Ty8
-         J7U9EEnDoTQJbvjsfXacstIVHNImfmwdWYTiYIp7+YExGEsL3Xl2vln+K84wWlssefJr
-         D5IpqdFeBCPGgRdEauPlEFvuszWUmwId1E3UchYAMEryYxC6+l1jdunVSm2XdOiipYsa
-         rZO3dJfJj4p6IIupIMZslDSn8WQjW2rimg+aCr6AxN942143mQ/rA25VAgqA/i4DvI46
-         vLrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=mIecWDuirM+ovjaEgwSBDfOYfjk7fqQcC+TNTCTcCUI=;
-        b=eZPRt4HKW2Rq1zwS05bTGMQMMgnTZuK2Sd8iVdvnU6bhvK7232C2aM/zIEd6b27mXV
-         1k55zh7Mo5mEtxosslLi+vuqdelHOz1hAw2+xXvZncotZlVbi51v/VmMXmFxzLATGxNG
-         JhektoaUkFRlzNw/cB/6AcgeI1WHlRLPHHLtI8jqBtLvirVW+OLl6UfshUA/o/wesEkZ
-         mtSEFn67ofB5ulWsgkSYLtSgCGrJenoG04jxllzJfbkN6WjLZLlkt/GouhNa9doTbSKQ
-         BzomBpSbZW74g8t220t1qPY26sY1o1DYBrcSkfgGtEfOwk5orK4Qh+aakSvAKu6P/KKK
-         aUtw==
-X-Gm-Message-State: AOAM531JlQESHGgj+gfoXtgzwSZV3Pyk7GdOib0rWuPD/ncy2R3LoWtp
-        G6PxlXA8KqAFlo5TIUNTORCNug==
-X-Google-Smtp-Source: ABdhPJy0IeUNyrOUdP+KyUgNxoZXovZ+M65NzRMznvnERz4ai2cuiN8NrPcRQI1wDCXLhlxEXd3Ucg==
-X-Received: by 2002:a50:ee0a:: with SMTP id g10mr1365515eds.248.1603178162722;
-        Tue, 20 Oct 2020 00:16:02 -0700 (PDT)
-Received: from [192.168.0.13] ([83.216.184.132])
-        by smtp.gmail.com with ESMTPSA id de16sm1292215edb.23.2020.10.20.00.16.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 20 Oct 2020 00:16:01 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: block, bfq:  lockdep circular locking dependency gripe
-From:   Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <b3ce89d21d37a1ae2234d1942c6408cbce8d4f50.camel@gmx.de>
-Date:   Tue, 20 Oct 2020 09:15:59 +0200
-Cc:     LKML <linux-kernel@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <0B8A6A8E-453E-4E6E-886A-310A84B96FF5@linaro.org>
-References: <b3ce89d21d37a1ae2234d1942c6408cbce8d4f50.camel@gmx.de>
-To:     Mike Galbraith <efault@gmx.de>
-X-Mailer: Apple Mail (2.3445.104.11)
+ d=prodrive-technologies.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZMjZ3BDEyu6+2aJ2mVgKnwgRNs9fBuz8sH2yp1fSanc=;
+ b=SOeCKn78nE3RkWLa/snaMohPWqamW5RxIA1yyKpgrtNDYSjiiCxXRacjZTHX+BgmHa13CtHE3q6TSM95GY4J69iyEcyT7Eyl85bYxEhRGFOb9K6QWPbhE7J+O2i27aeGnl9CI/aPE1BztbS8b2KdUemP4vfBJvu074LoPuZwdz8=
+Received: from AM0PR02MB3716.eurprd02.prod.outlook.com (2603:10a6:208:40::21)
+ by AM0PR02MB4546.eurprd02.prod.outlook.com (2603:10a6:208:ed::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.26; Tue, 20 Oct
+ 2020 07:16:28 +0000
+Received: from AM0PR02MB3716.eurprd02.prod.outlook.com
+ ([fe80::f108:787f:22cd:6f74]) by AM0PR02MB3716.eurprd02.prod.outlook.com
+ ([fe80::f108:787f:22cd:6f74%5]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
+ 07:16:28 +0000
+From:   Martijn de Gouw <martijn.de.gouw@prodrive-technologies.com>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+CC:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, NeilBrown <neilb@suse.de>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Roberto Bergantinos Corpas <rbergant@redhat.com>,
+        "open list:NFS, SUNRPC, AND LOCKD CLIENTS" 
+        <linux-nfs@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: fix copying of multiple pages in
+ gss_read_proxy_verf()
+Thread-Topic: [PATCH] SUNRPC: fix copying of multiple pages in
+ gss_read_proxy_verf()
+Thread-Index: AQHWpgz5jo9GE3xLcU6eFbSXAImdyqmfC1yAgAAGm4CAAGmcgIAAmiyA
+Date:   Tue, 20 Oct 2020 07:16:28 +0000
+Message-ID: <8ed0fa80-cc75-88ec-6b17-3f9cc300e9bb@prodrive-technologies.com>
+References: <20201019114229.52973-1-martijn.de.gouw@prodrive-technologies.com>
+ <20201019152301.GC32403@fieldses.org>
+ <834dc52b-34fc-fee5-0274-fdc8932040e6@prodrive-technologies.com>
+ <20201019220439.GC6692@fieldses.org>
+In-Reply-To: <20201019220439.GC6692@fieldses.org>
+Accept-Language: en-NL, en-US
+Content-Language: aa
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:24.0) Gecko/20100101
+ Thunderbird/24.0
+authentication-results: fieldses.org; dkim=none (message not signed)
+ header.d=none;fieldses.org; dmarc=none action=none
+ header.from=prodrive-technologies.com;
+x-originating-ip: [84.27.64.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ffeb5e33-93f5-4ef2-e1e1-08d874c80fe7
+x-ms-traffictypediagnostic: AM0PR02MB4546:
+x-microsoft-antispam-prvs: <AM0PR02MB45462F060E39F12F508170B2F51F0@AM0PR02MB4546.eurprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xgHltBy1PwlQq5ppXvnRNoAguwz3dEMCCG9ZN+vwUNxjYUs8h/tAUwTA8yTjGObj2e2Q1YLSzygqscuIGU2oKvWnBXpoeFTmtjjYO5sQY5yw4ZXAeqtXGInWcoq7I8meFydYchzroqjNnla5JJO4m36c86d5gmYTORSEUelWwGvOO3zIHa3RKSIYW/g0jaK5rV10TvapUEnHgQIMltOmhlTOWEVC3HjlZi0B6xn+Spxwx4xtG8y5zSXHAOywhi+pBHP+rFOvYp3UQS5iuIPLea48ggAgYKrM6CukIJbkWSyDY9ijaQCJkO721wDfF5xmlxOhygpecgGlBMEVBNmi82hOfEzDE3aSOS9jPwA4z6c7giz9UYeWAJgfQfsgdLS/
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB3716.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(39850400004)(136003)(396003)(8936002)(6512007)(54906003)(66946007)(316002)(76116006)(4326008)(8676002)(478600001)(83380400001)(31686004)(7416002)(6506007)(36756003)(66446008)(64756008)(66476007)(66556008)(86362001)(71200400001)(6486002)(6916009)(31696002)(2616005)(5660300002)(186003)(26005)(2906002)(53546011)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: J8kQ3Ec52w+Ob330U1e91Sy/Dm+861XpInbrf2TcwAFA77IzvSGQdbeJLSYL/Q4ZTuSP3mFia5TYgu7RY1FLs19W1UdGL2hpKL9T7mQjoYxF4GZicst4zm3UUw8u39wEQCBKHjoHr6mWMT1Ov9As429UPtConB8dQETeR3QgIsWQGuOtm4VpJRubpr2PfbwcIyf8PN+8eCIH+hBjgmEIl/JgVzy2gah1um7bFz2kO7D1THrboHuA/xkpXlelk93uqObzYGvtTwr6fphbXhHVSI8qAkaAcdd7eL1lgXdqG+qjN+AODM9m9v2Vkcinl2fnKSDTf3nLqH76gwzOBW7PlL17jTe1lEcTTrCUCRfjCdaRP7Jx1LkuKMWByrzm6agD5Ikr+k8JQNV/erPek23UO5wyffABUIAd8pLHTVBdwBrqc5T0x216Lnbg5471WYThdozRJqC85fj5Gox7DADkKfKB2JCk2tkwwS0Nt/cSayey/ZeOmDBYMPcNQfvJzrKFfEVMg6WFRPwV1OxpCwr6Pz9CTfINyPexADhFkMevgpQJAo63VZuh8oWWj3D/tJIQoh489BZOxAlEHTc0zay5jX+CX286GwsMHrBKquijRWwPwlc6SkuY8MYocqgTB6wMUiZHn9+g13UxvrLNJ44HsQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2898F976F9037B4687887D18696294C3@eurprd02.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: prodrive-technologies.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB3716.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ffeb5e33-93f5-4ef2-e1e1-08d874c80fe7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2020 07:16:28.0732
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 612607c9-5af7-4e7f-8976-faf1ae77be60
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zlP4Z5JuWfIA569R3GM6+Q4qtFM96MWogQWGtSvsP+EUFJ10TrlGuiwFYkgOEjtcmp8Gv+7o2uoZmURpraxDk2xcLxfnbGbVFjVsTPELuyif4GaDqJUp1pjAXhE31jPb4VhMfhLRrKksnzvP0iCH6A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR02MB4546
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-that's apparently hard to solve inside bfq. The the ioc of the task is =
-being exited while the task is still inside the code for having an I/O =
-request served. Is still normal?
-
-Thanks,
-Polo
-
-> Il giorno 20 ott 2020, alle ore 08:15, Mike Galbraith <efault@gmx.de> =
-ha scritto:
->=20
-> [ 1917.361401] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [ 1917.361406] WARNING: possible circular locking dependency detected
-> [ 1917.361413] 5.9.0.g7cf726a-master #2 Tainted: G S          E
-> [ 1917.361417] ------------------------------------------------------
-> [ 1917.361422] kworker/u16:35/15995 is trying to acquire lock:
-> [ 1917.361428] ffff89232237f7e0 (&ioc->lock){..-.}-{2:2}, at: =
-put_io_context+0x30/0x90
-> [ 1917.361440]
->               but task is already holding lock:
-> [ 1917.361445] ffff892244d2cc08 (&bfqd->lock){-.-.}-{2:2}, at: =
-bfq_insert_requests+0x89/0x680
-> [ 1917.361456]
->               which lock already depends on the new lock.
->=20
-> [ 1917.361463]
->               the existing dependency chain (in reverse order) is:
-> [ 1917.361469]
->               -> #1 (&bfqd->lock){-.-.}-{2:2}:
-> [ 1917.361479]        _raw_spin_lock_irqsave+0x3d/0x50
-> [ 1917.361484]        bfq_exit_icq_bfqq+0x48/0x3f0
-> [ 1917.361489]        bfq_exit_icq+0x13/0x20
-> [ 1917.361494]        put_io_context_active+0x55/0x80
-> [ 1917.361499]        do_exit+0x72c/0xca0
-> [ 1917.361504]        do_group_exit+0x47/0xb0
-> [ 1917.361508]        __x64_sys_exit_group+0x14/0x20
-> [ 1917.361513]        do_syscall_64+0x33/0x40
-> [ 1917.361518]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [ 1917.361523]
->               -> #0 (&ioc->lock){..-.}-{2:2}:
-> [ 1917.361532]        __lock_acquire+0x149d/0x1a70
-> [ 1917.361537]        lock_acquire+0x1a7/0x3b0
-> [ 1917.361542]        _raw_spin_lock_irqsave+0x3d/0x50
-> [ 1917.361547]        put_io_context+0x30/0x90
-> [ 1917.361552]        blk_mq_free_request+0x4f/0x140
-> [ 1917.361557]        blk_attempt_req_merge+0x19/0x30
-> [ 1917.361563]        elv_attempt_insert_merge+0x4f/0x90
-> [ 1917.361568]        blk_mq_sched_try_insert_merge+0x28/0x40
-> [ 1917.361574]        bfq_insert_requests+0x94/0x680
-> [ 1917.361579]        blk_mq_sched_insert_requests+0xd1/0x2a0
-> [ 1917.361584]        blk_mq_flush_plug_list+0x12d/0x240
-> [ 1917.361589]        blk_flush_plug_list+0xb4/0xd0
-> [ 1917.361594]        io_schedule_prepare+0x3c/0x40
-> [ 1917.361599]        io_schedule+0xb/0x40
-> [ 1917.361604]        blk_mq_get_tag+0x13a/0x250
-> [ 1917.361608]        __blk_mq_alloc_request+0x5c/0x130
-> [ 1917.361613]        blk_mq_submit_bio+0xf3/0x770
-> [ 1917.361618]        submit_bio_noacct+0x41e/0x4b0
-> [ 1917.361622]        submit_bio+0x33/0x160
-> [ 1917.361644]        ext4_io_submit+0x49/0x60 [ext4]
-> [ 1917.361661]        ext4_writepages+0x683/0x1070 [ext4]
-> [ 1917.361667]        do_writepages+0x3c/0xe0
-> [ 1917.361672]        __writeback_single_inode+0x62/0x630
-> [ 1917.361677]        writeback_sb_inodes+0x218/0x4d0
-> [ 1917.361681]        __writeback_inodes_wb+0x5f/0xc0
-> [ 1917.361686]        wb_writeback+0x283/0x490
-> [ 1917.361691]        wb_workfn+0x29a/0x670
-> [ 1917.361696]        process_one_work+0x283/0x620
-> [ 1917.361701]        worker_thread+0x39/0x3f0
-> [ 1917.361706]        kthread+0x152/0x170
-> [ 1917.361711]        ret_from_fork+0x1f/0x30
-> [ 1917.361715]
->               other info that might help us debug this:
->=20
-> [ 1917.361722]  Possible unsafe locking scenario:
->=20
-> [ 1917.361728]        CPU0                    CPU1
-> [ 1917.361731]        ----                    ----
-> [ 1917.361736]   lock(&bfqd->lock);
-> [ 1917.361740]                                lock(&ioc->lock);
-> [ 1917.361746]                                lock(&bfqd->lock);
-> [ 1917.361752]   lock(&ioc->lock);
-> [ 1917.361757]
->                *** DEADLOCK ***
->=20
-> [ 1917.361763] 5 locks held by kworker/u16:35/15995:
-> [ 1917.361767]  #0: ffff892240c9bd38 =
-((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x1fa/0x620
-> [ 1917.361778]  #1: ffff94569342fe78 =
-((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: =
-process_one_work+0x1fa/0x620
-> [ 1917.361789]  #2: ffff8921424ae0e0 =
-(&type->s_umount_key#39){++++}-{3:3}, at: trylock_super+0x16/0x50
-> [ 1917.361800]  #3: ffff8921424aaa40 =
-(&sbi->s_writepages_rwsem){.+.+}-{0:0}, at: do_writepages+0x3c/0xe0
-> [ 1917.361811]  #4: ffff892244d2cc08 (&bfqd->lock){-.-.}-{2:2}, at: =
-bfq_insert_requests+0x89/0x680
-> [ 1917.361821]
->               stack backtrace:
-> [ 1917.361827] CPU: 6 PID: 15995 Comm: kworker/u16:35 Kdump: loaded =
-Tainted: G S          E     5.9.0.g7cf726a-master #2
-> [ 1917.361833] Hardware name: MEDION MS-7848/MS-7848, BIOS =
-M7848W08.20C 09/23/2013
-> [ 1917.361840] Workqueue: writeback wb_workfn (flush-8:32)
-> [ 1917.361846] Call Trace:
-> [ 1917.361854]  dump_stack+0x77/0x97
-> [ 1917.361860]  check_noncircular+0xe7/0x100
-> [ 1917.361866]  ? __lock_acquire+0x2ce/0x1a70
-> [ 1917.361872]  ? __lock_acquire+0x149d/0x1a70
-> [ 1917.361877]  __lock_acquire+0x149d/0x1a70
-> [ 1917.361884]  lock_acquire+0x1a7/0x3b0
-> [ 1917.361889]  ? put_io_context+0x30/0x90
-> [ 1917.361894]  ? bfq_put_queue+0xcf/0x480
-> [ 1917.361901]  _raw_spin_lock_irqsave+0x3d/0x50
-> [ 1917.361906]  ? put_io_context+0x30/0x90
-> [ 1917.361911]  put_io_context+0x30/0x90
-> [ 1917.361916]  blk_mq_free_request+0x4f/0x140
-> [ 1917.361921]  blk_attempt_req_merge+0x19/0x30
-> [ 1917.361926]  elv_attempt_insert_merge+0x4f/0x90
-> [ 1917.361932]  blk_mq_sched_try_insert_merge+0x28/0x40
-> [ 1917.361937]  bfq_insert_requests+0x94/0x680
-> [ 1917.361944]  blk_mq_sched_insert_requests+0xd1/0x2a0
-> [ 1917.361950]  blk_mq_flush_plug_list+0x12d/0x240
-> [ 1917.361956]  blk_flush_plug_list+0xb4/0xd0
-> [ 1917.361962]  io_schedule_prepare+0x3c/0x40
-> [ 1917.361967]  io_schedule+0xb/0x40
-> [ 1917.361972]  blk_mq_get_tag+0x13a/0x250
-> [ 1917.361978]  ? wait_woken+0xa0/0xa0
-> [ 1917.361984]  __blk_mq_alloc_request+0x5c/0x130
-> [ 1917.361989]  blk_mq_submit_bio+0xf3/0x770
-> [ 1917.361996]  submit_bio_noacct+0x41e/0x4b0
-> [ 1917.362002]  ? submit_bio+0x33/0x160
-> [ 1917.362007]  submit_bio+0x33/0x160
-> [ 1917.362028]  ext4_io_submit+0x49/0x60 [ext4]
-> [ 1917.362045]  ext4_writepages+0x683/0x1070 [ext4]
-> [ 1917.362056]  ? do_writepages+0x3c/0xe0
-> [ 1917.362060]  do_writepages+0x3c/0xe0
-> [ 1917.362067]  ? __writeback_single_inode+0x62/0x630
-> [ 1917.362072]  __writeback_single_inode+0x62/0x630
-> [ 1917.362078]  writeback_sb_inodes+0x218/0x4d0
-> [ 1917.362087]  __writeback_inodes_wb+0x5f/0xc0
-> [ 1917.362093]  wb_writeback+0x283/0x490
-> [ 1917.362100]  ? wb_workfn+0x29a/0x670
-> [ 1917.362104]  wb_workfn+0x29a/0x670
-> [ 1917.362112]  ? process_one_work+0x283/0x620
-> [ 1917.362117]  ? process_one_work+0x251/0x620
-> [ 1917.362121]  process_one_work+0x283/0x620
-> [ 1917.362128]  worker_thread+0x39/0x3f0
-> [ 1917.362133]  ? process_one_work+0x620/0x620
-> [ 1917.362138]  kthread+0x152/0x170
-> [ 1917.362142]  ? kthread_park+0x90/0x90
-> [ 1917.362148]  ret_from_fork+0x1f/0x30
->=20
-
+SGksDQoNCk9uIDIwLTEwLTIwMjAgMDA6MDQsIEouIEJydWNlIEZpZWxkcyB3cm90ZToNCj4gT24g
+TW9uLCBPY3QgMTksIDIwMjAgYXQgMDM6NDY6MzlQTSArMDAwMCwgTWFydGlqbiBkZSBHb3V3IHdy
+b3RlOg0KPj4gSGkNCj4+DQo+PiBPbiAxOS0xMC0yMDIwIDE3OjIzLCBKLiBCcnVjZSBGaWVsZHMg
+d3JvdGU6DQo+Pj4gT24gTW9uLCBPY3QgMTksIDIwMjAgYXQgMDE6NDI6MjdQTSArMDIwMCwgTWFy
+dGlqbiBkZSBHb3V3IHdyb3RlOg0KPj4+PiBXaGVuIHRoZSBwYXNzZWQgdG9rZW4gaXMgbG9uZ2Vy
+IHRoYW4gNDAzMiBieXRlcywgdGhlIHJlbWFpbmluZyBwYXJ0DQo+Pj4+IG9mIHRoZSB0b2tlbiBt
+dXN0IGJlIGNvcGllZCBmcm9tIHRoZSBycXN0cC0+cnFfYXJnLnBhZ2VzLiBCdXQgdGhlDQo+Pj4+
+IGNvcHkgbXVzdCBtYWtlIHN1cmUgaXQgaGFwcGVucyBpbiBhIGNvbnNlY3V0aXZlIHdheS4NCj4+
+Pg0KPj4+IFRoYW5rcy4gIEFwb2xvZ2llcywgYnV0IEkgZG9uJ3QgaW1tZWRpYXRlbHkgc2VlIHdo
+ZXJlIHRoZSBjb3B5IGlzDQo+Pj4gbm9uLWNvbnNlY3V0aXZlLiAgV2hhdCBleGFjdGx5IGlzIHRo
+ZSBidWcgaW4gdGhlIGV4aXN0aW5nIGNvZGU/DQo+Pg0KPj4gSW4gdGhlIGZpcnN0IG1lbWNweSAn
+bGVuZ3RoJyBieXRlcyBhcmUgY29waWVkIGZyb20gYXJndi0+aW9iYXNlLCBidXQNCj4+IHNpbmNl
+IHRoZSBoZWFkZXIgaXMgaW4gZnJvbnQsIHRoaXMgbmV2ZXIgZmlsbHMgdGhlIHdob2xlIGZpcnN0
+IHBhZ2Ugb2YNCj4+IGluX3Rva2VuLT5wYWdlcy4NCj4+DQo+PiBUaGUgbWVtY3B5IGluIHRoZSBs
+b29wIGNvcGllcyB0aGUgZm9sbG93aW5nIGJ5dGVzLCBidXQgc3RhcnRzIHdyaXRpbmcgYXQNCj4+
+IHRoZSBuZXh0IHBhZ2Ugb2YgaW5fdG9rZW4tPnBhZ2VzLiBUaGlzIGxlYXZlcyB0aGUgbGFzdCBi
+eXRlcyBvZiBwYWdlIDANCj4+IHVud3JpdHRlbi4NCj4+DQo+PiBOZXh0IHRvIHRoYXQsIHRoZSBy
+ZW1haW5pbmcgZGF0YSBpcyBpbiBwYWdlIDAgb2YgcnFzdHAtPnJxX2FyZy5wYWdlcywNCj4+IG5v
+dCBwYWdlIDEuDQo+IA0KPiBHb3QgaXQsIHRoYW5rcy4gIExvb2tzIGxpa2UgdGhlIGN1bHByaXQg
+bWlnaHQgYmUgYSBwYXRjaCBmcm9tIGEgeWVhciBhZ28NCj4gZnJvbSBDaHVjaywgNTg2NmVmYThj
+YmZiICJTVU5SUEM6IEZpeCBzdmNhdXRoX2dzc19wcm94eV9pbml0KCkiPyAgQXQNCj4gbGVhc3Qs
+IHRoYXQncyB0aGUgbGFzdCBtYWpvciBwYXRjaCB0byB0b3VjaCB0aGlzIGNvZGUuDQoNCkkgZm91
+bmQgdGhpcyBpc3N1ZSB3aGVuIHNldHRpbmcgdXAgTkZTdjQgd2l0aCBBY3RpdmUgRGlyZWN0b3J5
+IGFzIEtEQyANCmFuZCBnc3Nwcm94eS4gVXNlcnMgd2l0aCBtYW55IGdyb3VwcyB3aGVyZSBub3Qg
+YWJsZSB0byBhY2Nlc3MgdGhlIE5GUyANCnNoYXJlcywgd2hpbGUgb3RoZXJzIGNvdWxkIGFjY2Vz
+cyB0aGVtIGp1c3QgZmluZS4gRHVyaW5nIGRlYnVnZ2luZyBJIA0KZm91bmQgdGhhdCB0aGUgdG9r
+ZW4gd2FzIG5vdCB0aGUgc2FtZSBvbiBib3RoIHNpZGVzLg0KDQpJIGRvIG5vdCBoYXZlIHRoZSBI
+VyB0byBzZXR1cCBhIHJkbWEgdmVyc2lvbiBvZiBORlN2NCwgc28gSSdtIHVuYWJsZSB0byANCnRl
+c3QgaWYgaXQgc3RpbGwgd29ya3MgdmlhIHJkbWEuDQoNClJlZ2FyZHMsIE1hcnRpam4NCg0KPiAN
+Cj4gLS1iLg0KPiANCj4+DQo+PiBSZWdhcmRzLCBNYXJ0aWpuDQo+Pg0KPj4+DQo+Pj4gLS1iLg0K
+Pj4+DQo+Pj4+DQo+Pj4+IFNpZ25lZC1vZmYtYnk6IE1hcnRpam4gZGUgR291dyA8bWFydGlqbi5k
+ZS5nb3V3QHByb2RyaXZlLXRlY2hub2xvZ2llcy5jb20+DQo+Pj4+IC0tLQ0KPj4+PiAgICBuZXQv
+c3VucnBjL2F1dGhfZ3NzL3N2Y2F1dGhfZ3NzLmMgfCAyNyArKysrKysrKysrKysrKysrKy0tLS0t
+LS0tLS0NCj4+Pj4gICAgMSBmaWxlIGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKyksIDEwIGRlbGV0
+aW9ucygtKQ0KPj4+Pg0KPj4+PiBkaWZmIC0tZ2l0IGEvbmV0L3N1bnJwYy9hdXRoX2dzcy9zdmNh
+dXRoX2dzcy5jIGIvbmV0L3N1bnJwYy9hdXRoX2dzcy9zdmNhdXRoX2dzcy5jDQo+Pj4+IGluZGV4
+IDI1OGIwNDM3MmY4NS4uYmQ0Njc4ZGI5ZDc2IDEwMDY0NA0KPj4+PiAtLS0gYS9uZXQvc3VucnBj
+L2F1dGhfZ3NzL3N2Y2F1dGhfZ3NzLmMNCj4+Pj4gKysrIGIvbmV0L3N1bnJwYy9hdXRoX2dzcy9z
+dmNhdXRoX2dzcy5jDQo+Pj4+IEBAIC0xMTQ3LDkgKzExNDcsOSBAQCBzdGF0aWMgaW50IGdzc19y
+ZWFkX3Byb3h5X3ZlcmYoc3RydWN0IHN2Y19ycXN0ICpycXN0cCwNCj4+Pj4gICAgCQkJICAgICAg
+IHN0cnVjdCBnc3NwX2luX3Rva2VuICppbl90b2tlbikNCj4+Pj4gICAgew0KPj4+PiAgICAJc3Ry
+dWN0IGt2ZWMgKmFyZ3YgPSAmcnFzdHAtPnJxX2FyZy5oZWFkWzBdOw0KPj4+PiAtCXVuc2lnbmVk
+IGludCBwYWdlX2Jhc2UsIGxlbmd0aDsNCj4+Pj4gLQlpbnQgcGFnZXMsIGksIHJlczsNCj4+Pj4g
+LQlzaXplX3QgaW5sZW47DQo+Pj4+ICsJdW5zaWduZWQgaW50IGxlbmd0aCwgcGd0b19vZmZzLCBw
+Z2Zyb21fb2ZmczsNCj4+Pj4gKwlpbnQgcGFnZXMsIGksIHJlcywgcGd0bywgcGdmcm9tOw0KPj4+
+PiArCXNpemVfdCBpbmxlbiwgdG9fb2ZmcywgZnJvbV9vZmZzOw0KPj4+PiAgICANCj4+Pj4gICAg
+CXJlcyA9IGdzc19yZWFkX2NvbW1vbl92ZXJmKGdjLCBhcmd2LCBhdXRocCwgaW5faGFuZGxlKTsN
+Cj4+Pj4gICAgCWlmIChyZXMpDQo+Pj4+IEBAIC0xMTc3LDE3ICsxMTc3LDI0IEBAIHN0YXRpYyBp
+bnQgZ3NzX3JlYWRfcHJveHlfdmVyZihzdHJ1Y3Qgc3ZjX3Jxc3QgKnJxc3RwLA0KPj4+PiAgICAJ
+bWVtY3B5KHBhZ2VfYWRkcmVzcyhpbl90b2tlbi0+cGFnZXNbMF0pLCBhcmd2LT5pb3ZfYmFzZSwg
+bGVuZ3RoKTsNCj4+Pj4gICAgCWlubGVuIC09IGxlbmd0aDsNCj4+Pj4gICAgDQo+Pj4+IC0JaSA9
+IDE7DQo+Pj4+IC0JcGFnZV9iYXNlID0gcnFzdHAtPnJxX2FyZy5wYWdlX2Jhc2U7DQo+Pj4+ICsJ
+dG9fb2ZmcyA9IGxlbmd0aDsNCj4+Pj4gKwlmcm9tX29mZnMgPSBycXN0cC0+cnFfYXJnLnBhZ2Vf
+YmFzZTsNCj4+Pj4gICAgCXdoaWxlIChpbmxlbikgew0KPj4+PiAtCQlsZW5ndGggPSBtaW5fdCh1
+bnNpZ25lZCBpbnQsIGlubGVuLCBQQUdFX1NJWkUpOw0KPj4+PiAtCQltZW1jcHkocGFnZV9hZGRy
+ZXNzKGluX3Rva2VuLT5wYWdlc1tpXSksDQo+Pj4+IC0JCSAgICAgICBwYWdlX2FkZHJlc3MocnFz
+dHAtPnJxX2FyZy5wYWdlc1tpXSkgKyBwYWdlX2Jhc2UsDQo+Pj4+ICsJCXBndG8gPSB0b19vZmZz
+ID4+IFBBR0VfU0hJRlQ7DQo+Pj4+ICsJCXBnZnJvbSA9IGZyb21fb2ZmcyA+PiBQQUdFX1NISUZU
+Ow0KPj4+PiArCQlwZ3RvX29mZnMgPSB0b19vZmZzICYgflBBR0VfTUFTSzsNCj4+Pj4gKwkJcGdm
+cm9tX29mZnMgPSBmcm9tX29mZnMgJiB+UEFHRV9NQVNLOw0KPj4+PiArDQo+Pj4+ICsJCWxlbmd0
+aCA9IG1pbl90KHVuc2lnbmVkIGludCwgaW5sZW4sDQo+Pj4+ICsJCQkgbWluX3QodW5zaWduZWQg
+aW50LCBQQUdFX1NJWkUgLSBwZ3RvX29mZnMsDQo+Pj4+ICsJCQkgICAgICAgUEFHRV9TSVpFIC0g
+cGdmcm9tX29mZnMpKTsNCj4+Pj4gKwkJbWVtY3B5KHBhZ2VfYWRkcmVzcyhpbl90b2tlbi0+cGFn
+ZXNbcGd0b10pICsgcGd0b19vZmZzLA0KPj4+PiArCQkgICAgICAgcGFnZV9hZGRyZXNzKHJxc3Rw
+LT5ycV9hcmcucGFnZXNbcGdmcm9tXSkgKyBwZ2Zyb21fb2ZmcywNCj4+Pj4gICAgCQkgICAgICAg
+bGVuZ3RoKTsNCj4+Pj4gICAgDQo+Pj4+ICsJCXRvX29mZnMgKz0gbGVuZ3RoOw0KPj4+PiArCQlm
+cm9tX29mZnMgKz0gbGVuZ3RoOw0KPj4+PiAgICAJCWlubGVuIC09IGxlbmd0aDsNCj4+Pj4gLQkJ
+cGFnZV9iYXNlID0gMDsNCj4+Pj4gLQkJaSsrOw0KPj4+PiAgICAJfQ0KPj4+PiAgICAJcmV0dXJu
+IDA7DQo+Pj4+ICAgIH0NCj4+Pj4gLS0gDQo+Pj4+IDIuMjAuMQ0KPj4NCj4+IC0tIA0KPj4gTWFy
+dGlqbiBkZSBHb3V3DQo+PiBEZXNpZ25lcg0KPj4gUHJvZHJpdmUgVGVjaG5vbG9naWVzDQo+PiBN
+b2JpbGU6ICszMSA2MyAxNyA3NiAxNjENCj4+IFBob25lOiAgKzMxIDQwIDI2IDc2IDIwMA0KDQot
+LSANCk1hcnRpam4gZGUgR291dw0KRGVzaWduZXINClByb2RyaXZlIFRlY2hub2xvZ2llcw0KTW9i
+aWxlOiArMzEgNjMgMTcgNzYgMTYxDQpQaG9uZTogICszMSA0MCAyNiA3NiAyMDANCg==
