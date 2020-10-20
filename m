@@ -2,111 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BB1293E6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7886B293E73
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407974AbgJTOQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407843AbgJTOQz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:16:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860AAC0613E6;
-        Tue, 20 Oct 2020 07:16:55 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603203413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y4j/jlD3xH1hIPmnRimMNEHfyReLuBug0kSJdYGLDZI=;
-        b=t0yRH0YFC/n/d0l325g1g0JhblRbNkPW3BVDIyb+F8lusCrsxVjj4xzkXPw/Nvwx7UxE1K
-        Vufxd0mOwUR3cEOF/abhAHTCyhgONpu/F2rFc4vz9WnR8qCTb9zjNoVHp3CbK6miOmQK0S
-        gtlGwzghB2PA3pkPRUNl+2yyboAmGJQ3UNMLbU1p4blxlri4dogPyBWNZtOEh/2gRbnLU1
-        T9+Z0A+l+7NBNxE9DjN9JMrNZsAYFjhaH/UvwP0qXuH680clZ21H4YttTc0IqLOgfALoDf
-        v/Cxy/s6qvIhBJAqVcPmGE2WZ9ynjvs9P4KYVcaq7n8qiaypdzKSzedAFM1/bg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603203413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y4j/jlD3xH1hIPmnRimMNEHfyReLuBug0kSJdYGLDZI=;
-        b=i62r4hnTA8GOzp3DZqiFe48GBrMmgNmkT35gUCsmZuKo662RRxjarZreuX1S3duTNrW69/
-        9ng1HHw/l4f6xJCg==
-To:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        helgaas@kernel.org, nitesh@redhat.com, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        lgoncalv@redhat.com
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
-In-Reply-To: <20200928183529.471328-5-nitesh@redhat.com>
-References: <20200928183529.471328-1-nitesh@redhat.com> <20200928183529.471328-5-nitesh@redhat.com>
-Date:   Tue, 20 Oct 2020 16:16:52 +0200
-Message-ID: <87v9f57zjf.fsf@nanos.tec.linutronix.de>
+        id S2407979AbgJTORl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:17:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407909AbgJTORk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 10:17:40 -0400
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B9C92098B;
+        Tue, 20 Oct 2020 14:17:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603203460;
+        bh=7rH2oCmShidqtPeA4u5rqM8J73bTkhhLU52QiXSBT40=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=loKa6NqWkAorw1V+jQUaedGQesUGpg8Ez9fJnm1t9IEMJ9eNUcaWAyTk1ZDfJTUFH
+         /796j9czwnLAg57zLBoO0ALBSNgxfnM1XnNNQwquHJtCuymT8YvUH9assDv4ixZcz9
+         DM9tMUmlifgD9y5kEG1Z7PT6qmEB21+Ejdb16j5c=
+Received: by mail-oi1-f174.google.com with SMTP id l4so2265877oii.13;
+        Tue, 20 Oct 2020 07:17:40 -0700 (PDT)
+X-Gm-Message-State: AOAM530i+ZNcXtqD7JuSvPV0Tb7C8Sbif9KV/tEGsJXTHz4Bflq51xLs
+        i6p99AEvomzkdKMWOWj2SIHt2LkpwoTlCpwpQQ==
+X-Google-Smtp-Source: ABdhPJwwMbzoJNdkar6AQtqjXlAl0kh7cMIjxwLaKPuqf0iUgqDinvcoGFpo9atKoDl182fG0by5MQwBCpuMkdye1E0=
+X-Received: by 2002:aca:4c52:: with SMTP id z79mr2072666oia.147.1603203459435;
+ Tue, 20 Oct 2020 07:17:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201020073558.3582-1-vincent.whitchurch@axis.com>
+ <CAL_JsqL=mpw9KxiYe_bMa+y4mU8ybrRnJ2LcO8jRco9C3N_n_w@mail.gmail.com> <20201020134633.3vv7hyvodg4tbro2@axis.com>
+In-Reply-To: <20201020134633.3vv7hyvodg4tbro2@axis.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 20 Oct 2020 09:17:27 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJrM4mS+tRDjipEQ8HBGgoevWHzGBWCiioMAFLnBRb63Q@mail.gmail.com>
+Message-ID: <CAL_JsqJrM4mS+tRDjipEQ8HBGgoevWHzGBWCiioMAFLnBRb63Q@mail.gmail.com>
+Subject: Re: [PATCH] of: Fix reserved-memory overlap detection
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>, kernel <kernel@axis.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28 2020 at 14:35, Nitesh Narayan Lal wrote:
->  
-> +	hk_cpus = housekeeping_num_online_cpus(HK_FLAG_MANAGED_IRQ);
+On Tue, Oct 20, 2020 at 8:46 AM Vincent Whitchurch
+<vincent.whitchurch@axis.com> wrote:
+>
+> On Tue, Oct 20, 2020 at 03:00:14PM +0200, Rob Herring wrote:
+> > On Tue, Oct 20, 2020 at 2:36 AM Vincent Whitchurch
+> > <vincent.whitchurch@axis.com> wrote:
+> > >
+> > > The reserved-memory overlap detection code fails to detect overlaps if
+> > > either of the regions starts at address 0x0.  For some reason the code
+> > > explicitly checks for and ignores such regions, but this check looks
+> > > invalid.  Remove the check and fix this detection.
+> >
+> > Wouldn't 'base' be 0 for nodes that have a 'size' and no address? The
+> > base in those cases isn't set until later when
+> > __reserved_mem_alloc_size() is called.
+>
+> Ah, yes, I guess that's why the check was there.  I see that those
+> entries have both a zero address and a zero size, so this seems to work:
+
+Yes, I think it should work.
+
+>
+> diff --git a/arch/arm/boot/dts/vexpress-v2p-ca9.dts b/arch/arm/boot/dts/vexpress-v2p-ca9.dts
+> index 623246f37448..6627e71c7283 100644
+> --- a/arch/arm/boot/dts/vexpress-v2p-ca9.dts
+> +++ b/arch/arm/boot/dts/vexpress-v2p-ca9.dts
+> @@ -81,6 +81,18 @@ vram: vram@4c000000 {
+>                         reg = <0x4c000000 0x00800000>;
+>                         no-map;
+>                 };
 > +
-> +	/*
-> +	 * If we have isolated CPUs for use by real-time tasks, to keep the
-> +	 * latency overhead to a minimum, device-specific IRQ vectors are moved
-> +	 * to the housekeeping CPUs from the userspace by changing their
-> +	 * affinity mask. Limit the vector usage to keep housekeeping CPUs from
-> +	 * running out of IRQ vectors.
-> +	 */
+> +               foo@0 {
+> +                       reg = <0x0 0x2000>;
+> +               };
+> +
+> +               bar@1000 {
+> +                       reg = <0x0 0x1000>;
 
-This is not true for managed interrupts. The interrupts affinity of
-those cannot be changed by user space.
+0x1000 base?
 
-> +	if (hk_cpus < num_online_cpus()) {
-> +		if (hk_cpus < min_vecs)
-> +			max_vecs = min_vecs;
-> +		else if (hk_cpus < max_vecs)
-> +			max_vecs = hk_cpus;
-> +	}
-
-So now with that assume a 16 core machine (HT off for simplicity)
-
-17 Requested interrupts (1 general, 16 queues)
-
-Managed interrupts will allocate
-
-   1  general interrupt which is free movable by user space
-   16 managed interrupts for queues (one per CPU)
-
-This allows the driver to have 16 queues, i.e. one queue per CPU. These
-interrupts are only used when an application on a CPU issues I/O.
-
-With the above change this will result
-
-   1  general interrupt which is free movable by user space
-   1  managed interrupts (possible affinity to all 16 CPUs, but routed
-      to housekeeping CPU as long as there is one online)
-
-So the device is now limited to a single queue which also affects the
-housekeeping CPUs because now they have to share a single queue.
-
-With larger machines this gets even worse.
-
-So no. This needs way more thought for managed interrupts and you cannot
-do that at the PCI layer. Only the affinity spreading mechanism can do
-the right thing here.
-
-Thanks,
-
-        tglx
+> +               };
+> +
+> +               baz {
+> +                       size = <0x1000>;
+> +               };
+>         };
+>
+>         clcd@10020000 {
+> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+> index 46b9371c8a33..fea9433d942a 100644
+> --- a/drivers/of/of_reserved_mem.c
+> +++ b/drivers/of/of_reserved_mem.c
+> @@ -200,6 +200,16 @@ static int __init __rmem_cmp(const void *a, const void *b)
+>         if (ra->base > rb->base)
+>                 return 1;
+>
+> +       /*
+> +        * Put the dynamic allocations (address == 0, size == 0) before static
+> +        * allocations at address 0x0 so that overlap detection works
+> +        * correctly.
+> +        */
+> +       if (ra->size < rb->size)
+> +               return -1;
+> +       if (ra->size > rb->size)
+> +               return 1;
+> +
+>         return 0;
+>  }
+>
+> @@ -212,13 +222,19 @@ static void __init __rmem_check_for_overlap(void)
+>
+>         sort(reserved_mem, reserved_mem_count, sizeof(reserved_mem[0]),
+>              __rmem_cmp, NULL);
+> +
+> +       for (i = 0; i < reserved_mem_count - 1; i++) {
+> +               struct reserved_mem *this = &reserved_mem[i];
+> +
+> +               pr_info("i %d base %x size %x\n", i, this->base, this->size);
+> +       }
+> +
+>         for (i = 0; i < reserved_mem_count - 1; i++) {
+>                 struct reserved_mem *this, *next;
+>
+>                 this = &reserved_mem[i];
+>                 next = &reserved_mem[i + 1];
+> -               if (!(this->base && next->base))
+> -                       continue;
+> +
+>                 if (this->base + this->size > next->base) {
+>                         phys_addr_t this_end, next_end;
+>
