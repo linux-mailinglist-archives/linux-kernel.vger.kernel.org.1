@@ -2,160 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7970C293ED6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21248293EDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408243AbgJTOhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:37:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408135AbgJTOhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:37:23 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S2408252AbgJTOh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408233AbgJTOh6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 10:37:58 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFF4C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:37:58 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1066002c8cb5b4e89050dd.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:6600:2c8c:b5b4:e890:50dd])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9389B21534;
-        Tue, 20 Oct 2020 14:37:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603204642;
-        bh=f6kugA3U0QakUulP0txsV8BTYj/A5215gpbs4UZBY38=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dsqyybu2MKInKfeRhYrW8vkb0ymsQrvurWgo03nA1Q5MVwC/kOLvNMmZ9Ed/8aRiL
-         ya2rx+LZfiIkoLhgcYVnyIbRP1wd4AudxWlepqbUQDEjreJCGCBeJUqwlTALe6McPJ
-         SM5qeM1oDBEh6KMnBudKKbJJ6ENN4MFTbDhuc4iM=
-Date:   Tue, 20 Oct 2020 15:37:11 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Cheng-yi Chiang <cychiang@chromium.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Srinivasa Rao <srivasam@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Dylan Reid <dgreid@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine
- bindings
-Message-ID: <20201020143711.GC9448@sirena.org.uk>
-References: <20200914080619.4178587-1-cychiang@chromium.org>
- <20200914080619.4178587-3-cychiang@chromium.org>
- <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
- <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
- <20201015161251.GF4390@sirena.org.uk>
- <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 79FB71EC04CB;
+        Tue, 20 Oct 2020 16:37:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603204676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Ga8ur2Se3KwTAI78fC2QFDfZPWYbl5RBbvnVZZoDbOM=;
+        b=UZOBjQxlduDKd+YsY8Tq+DBfHjkcim6in7HyEmXOLK1BAWsBfR+myblh4v7Q642L6Cpelb
+        6KEGmZzYA/0KqKvyc98YhfWw1HUp1X/Nw3RXkkNirfQoWk8OK0A0XU4qkqlUx9aEswYSMr
+        DW+seTFZzn9MRN6HrpzYPLLO3wOWZ10=
+Date:   Tue, 20 Oct 2020 16:37:46 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     x86-ml <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] Have insn decoder functions return success/failure
+Message-ID: <20201020143746.GG11583@zn.tnic>
+References: <20201020120232.GD11583@zn.tnic>
+ <20201020232700.5510c236d810b7f8a66779e2@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WfZ7S8PLGjBY9Voh"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
-X-Cookie: The people rule.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201020232700.5510c236d810b7f8a66779e2@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 20, 2020 at 11:27:00PM +0900, Masami Hiramatsu wrote:
+> So, if this return value is optional, it is OK to me. But the success
+> return value does NOT mean it a correctly encoded instruction.
 
---WfZ7S8PLGjBY9Voh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ok, so what is the correct way to find out whether the decoding was
+successful?
 
-On Tue, Oct 20, 2020 at 09:37:05PM +0800, Cheng-yi Chiang wrote:
+Because as it is now, it is confusing:
 
-> May I know your suggestion on Ajye's patch "ASoC: qcom: sc7180: Modify
-> machine driver for 2mic" ?
+- Which ->got field do you check?
 
-> https://lore.kernel.org/r/20200928063744.525700-3-ajye_huang@compal.corp-partner.google.com
+- Do you check all got fields like insn_complete() does?
 
-> I think adding code in the machine driver makes the intent straightforward.
-> If we want the machine driver to be fully configurable,
-> we can always add more code to handle properties like gpio, route,
-> widget (mux, text selection) passed in from the device tree.
+And the return value can be made non-optional to denote that the
+*function* that was called, was successful or not. The thing is, one
+needs to designate one function to call and say, if this function
+returns successfully, then the decode was ok.
 
-If the device has both front and rear mics and only one can be active at
-once that seems obvious and sensible.  If the devices only have one of
-these then this seems like a bad idea.
+If we want to look at only some aspects of some insn bytes, we can
+definitely make the functions which do, like insn_get_length(),
+insn_get_immediate() and all those return a value to denote that *they*
+were successful or not.
 
-> But I feel that we don't need a machine driver to be that configurable
-> from the device tree.
-> I think having the logic scattered in various dtsi files and relying
-> on manual inspection to understand the usage would be less
-> maintainable than only exposing needed property like gpio.
-> Especially in the complicated case where we need to create a mux
-> widget with callback toggling the gpio like this:
+All I'm trying to say is, *how* this insn decoder *should* be used,
+is not really entirely clear, at least to me it isn't, and we need to
+define that so that callers know what to expect.
 
-I don't understand what "logic scattered in various dtsi files" means,
-sorry.
+Does that make more sense?
 
-> Yes, that should work to describe the dailink we are using.
-> But a more tricky issue is how to do calls like setting PLL in dai startup ops.
+Thx.
 
-...
+-- 
+Regards/Gruss,
+    Boris.
 
-> I think that asking a generic machine driver to do configuration like
-> this with only a limited interface of device property
-> might be too much of an ask for the machine driver.
-
-Richard was looking at some basic configuration for PLLs.
-
-> Would you mind if I simplify the compatible string like Srinivas
-> suggested, and send a v12?
-
-> As for other two kinds of variations that I am aware of:
-
-> 1. front mic / rear mic
-> 2. replace alc5682 with adau7002
-
-The CODEC change is going to be described in the DT no matter what -
-you'll have a reference to the CODEC node but it may make sense if
-there's enough custom code around it.  For front vs rear mic the
-simplest thing would just be to not mention which if this is a hardware
-fixed thing, otherwise a control.
-
-> We can set different board names and different compatible strings to
-> achieve such variation.
-> So that it would make sense to describe configuration in compatible
-> strings like you suggested, and also provides UCM a way to distinguish
-> different boards.
-
-I don't recall having suggested distinguishing these things with a
-compatible string, especially not the microphones.  UCM can already use
-the display names for the boards to distinguish things.
-
---WfZ7S8PLGjBY9Voh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+O9hYACgkQJNaLcl1U
-h9CspAf/b7bFcvyQbodhwCE9GoK96aMXJ54K2Y9rG4bcavB0WJbLggXc4xYp/uUS
-oDymKZzLQr+vEzU9gO/inLAIXfMd2QTgLQWrrY4K/Z/q6+Wo702H2r0kwEXIpj3E
-nB2VjUldnpl0XYCmavYeVaZLep8+qTL6QixnsLQq6zrwirPeyNpfQ2iu/FLzSYX6
-EayieZWxAGuFfZkIoPg38GQqW6bZeuc8Nom0OY4Yqu/uoz29ekHKWOQm03DZyRK9
-bTCBvPjsigi/ABXue224l0WavpRxvvjRNeswkQasH9rM/OIhY4CKktbaNmUW/1mH
-FIkwdq2b8lvHefF3atCnALr5tCyx1Q==
-=1PAU
------END PGP SIGNATURE-----
-
---WfZ7S8PLGjBY9Voh--
+https://people.kernel.org/tglx/notes-about-netiquette
