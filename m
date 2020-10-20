@@ -2,107 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B125293737
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B832C293740
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389800AbgJTIz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 04:55:59 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:37302 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728314AbgJTIz6 (ORCPT
+        id S2390074AbgJTI52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 04:57:28 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5196 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389913AbgJTI51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:55:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1603184156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cyTGtx/rOF2ba2tN64af7NqljmW/O5Itii7JNFJVjGc=;
-        b=Fj4kTECECTOBrwhpGsKisDBl0/UsuJaYhM3ntN5WkQPF3HoRTDGiHV6fCVL7vuFDTdtQWq
-        NXy84ggoQcP0kaMk+d/DnOliJ8kfeU+kJzNSy1rZ0TAdajY7y0U4d9t6/SvGkeRU/qxyZD
-        P8mWKGJ+bYOTmeEFG67cNTkrYC25rSw=
-Received: from EUR02-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur02lp2051.outbound.protection.outlook.com [104.47.6.51]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-15-fSNiAbJoPxubMOIGcZQKZQ-1; Tue, 20 Oct 2020 10:55:55 +0200
-X-MC-Unique: fSNiAbJoPxubMOIGcZQKZQ-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dNxfbhf8gc/5YLzzShWYD0XrkHJm9eN+S/8H/EbERw71bDG6F23jxh/z192uC/IOJCCfARiBR0bALkvn99JE4wKhYSlQp7Yk0IhUAxEHEBlpmjMoIGJMOwYYkN/3vC3yQRDfZfPz1Cf+/BWkANsjOYD7WVDzckU+JOsO6rg7wLw1h9vBO96nTDOkPzaJWYnOXehoyrAugLCg9uwSfn88tetcBDrXwVlhsbD3Tou4ss+SxExBC0r6FjvVhOcl+uBOZ0WLllf0RH924UFAbdPCLkPTBB/LL/DiJVsZ9OQhx458rZta8O1o26DzAnByukj++eTuQVo7O+aaE6CgI0cLxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cyTGtx/rOF2ba2tN64af7NqljmW/O5Itii7JNFJVjGc=;
- b=BRR5fxG6CGDYlNu9ov9ATKZ5xi8h5yx3FRngfkqXf135zxU38DrxamsIKeN8ur2CAkR340LPinjysoTA2Oiaa0ey2X9BD/LJB+ahCQzHBA14PQPFSOENXXVTPAfGgZWf5eZtgVgEFlfs/aDcDtMbcJG489bJIthS/7V7O99VjfCFfddemU188wtAleHM2GbtoLBbg2MW0ShJ00h/6GxQQY8IGm9chJYgyvmlKblf8qmHDCbeeA6pDjG/kRvKsb59Qwz96IjBUPHO4403rxI+N0FZUsGQ03A+8hTj5uLRaIPopG5ROsoTOpaSpP9PHDfFnubY1dGuLhk1hC5Hnn8svw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
-Received: from DB7PR04MB5177.eurprd04.prod.outlook.com (2603:10a6:10:20::21)
- by DB8PR04MB6492.eurprd04.prod.outlook.com (2603:10a6:10:109::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Tue, 20 Oct
- 2020 08:55:48 +0000
-Received: from DB7PR04MB5177.eurprd04.prod.outlook.com
- ([fe80::7585:5b21:1072:f5ff]) by DB7PR04MB5177.eurprd04.prod.outlook.com
- ([fe80::7585:5b21:1072:f5ff%7]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
- 08:55:47 +0000
-Date:   Tue, 20 Oct 2020 16:55:38 +0800
-From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     devel@driverdev.osuosl.org,
-        Benjamin Poirier <benjamin.poirier@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 2/7] staging: qlge: Initialize devlink health dump
- framework
-Message-ID: <20201020085538.GD23594@syu-laptop>
-References: <20201014104306.63756-1-coiby.xu@gmail.com>
- <20201014104306.63756-3-coiby.xu@gmail.com>
- <20201020083609.GL7183@syu-laptop>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201020083609.GL7183@syu-laptop>
-X-Originating-IP: [2001:b400:e256:5604:908c:43ff:fe8c:2fe3]
-X-ClientProxiedBy: AM0PR02CA0103.eurprd02.prod.outlook.com
- (2603:10a6:208:154::44) To DB7PR04MB5177.eurprd04.prod.outlook.com
- (2603:10a6:10:20::21)
+        Tue, 20 Oct 2020 04:57:27 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09K8X4Y9136845;
+        Tue, 20 Oct 2020 04:56:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=dCRvuP1HBcvIHAPZEByuICxQSfoNWdnoOmB4XJNXBDw=;
+ b=NRDDlrR9PNHngOygoMnmuZm3ExcluZ6vpZ+BcChQIsI484/pOcl+aC7IBUiOxsuncHm7
+ ovu5OLbBXjHFoTX/V5stM1kIIZR3kYURwDvUnxvzthDofOqzU3cgLmkLDiddfy6kA9RK
+ VrTfgovQz8Ow0AUROU8vP0grOIXO1p44TeDfp/UrIbhjF4b7OqCPpg7Hgszb5gyB6MUG
+ LJdxFdQp7LzxTT4g0ADkhuTWg0VPIPnj0qEBac2yPlizdX3wEYCVStj38ul3tCAKA+t0
+ 2rvBbyMIb8N7k5ky39a5U6qRtEMzLrOfW0tkSNu5pVg6aoT7MTa3Lca9GMrBZbBUhLwB Ow== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 349uk12j45-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 04:56:53 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09K8XYZu139429;
+        Tue, 20 Oct 2020 04:56:53 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 349uk12j3x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 04:56:53 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09K8q4eK005625;
+        Tue, 20 Oct 2020 08:56:52 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma03dal.us.ibm.com with ESMTP id 347r89422s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 08:56:52 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09K8up0P62980548
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Oct 2020 08:56:51 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3FA29C6057;
+        Tue, 20 Oct 2020 08:56:51 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 18E7CC6059;
+        Tue, 20 Oct 2020 08:56:42 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.43.175])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Oct 2020 08:56:41 +0000 (GMT)
+Subject: Re: [perf metricgroup] fcc9c5243c:
+ perf-sanity-tests.Parse_and_process_metrics.fail
+To:     Ian Rogers <irogers@google.com>, John Garry <john.garry@huawei.com>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linuxarm@huawei.com, LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        zhangshaokun@hisilicon.com, James Clark <james.clark@arm.com>,
+        linux-imx@nxp.com, 0day robot <lkp@intel.com>, lkp@lists.01.org
+References: <1602152121-240367-10-git-send-email-john.garry@huawei.com>
+ <20201018085031.GK11647@shao2-debian>
+ <CAP-5=fWg4W_fpu-uTZkh-ZoL_7nvqU4F_2LqQgKFvBkfn174HQ@mail.gmail.com>
+ <602e6bb8-a4ac-fae7-ed61-edf252e08d9a@huawei.com>
+ <CAP-5=fWuUVkn35Ep7TQpFvdVJHi8MntAAbRAXVCU_1bYM2rPeQ@mail.gmail.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <6d22bbdf-1a7c-1ba9-3c1a-88600178facf@linux.ibm.com>
+Date:   Tue, 20 Oct 2020 14:26:40 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from syu-laptop (2001:b400:e256:5604:908c:43ff:fe8c:2fe3) by AM0PR02CA0103.eurprd02.prod.outlook.com (2603:10a6:208:154::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Tue, 20 Oct 2020 08:55:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6458166e-0757-47a2-c3cb-08d874d5efb2
-X-MS-TrafficTypeDiagnostic: DB8PR04MB6492:
-X-Microsoft-Antispam-PRVS: <DB8PR04MB64924F0F1EB677D25A3FBB3FBF1F0@DB8PR04MB6492.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4yebwksID1JFCBa9tiUGwsCnLzLj2NEw0WI/AFQdO2RtosAAFhUOHDu6lORDMp4Ovue9N1RJchBDlj+15ULZ63hMXsLyODVDQSsGrjCrX7UY8d4oqXYP1MVzU/+QAmbr0bbeLgF587sQR3JHs4hsyM/Trnqy5CAyJQhBSOSZIu6Ue7pWAlW4NeMzRDmTeO7IILhVzL2tgZ8aFnC/aIFUwqs4QPN+Bw1sYlnyQYeHC3DGXY+UgTI7vv2dSzGftNrM9PbCRuZc5qvjCFbV6SJhs9d0nbEppbyPsVzebei5KJZAbohvFF4YngdHjLkuBQ7aG4D9K3jCI0N7zHEZZqztvA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5177.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(396003)(366004)(376002)(346002)(16526019)(33716001)(33656002)(8676002)(54906003)(558084003)(8936002)(6496006)(186003)(55016002)(316002)(52116002)(86362001)(6666004)(2906002)(4326008)(6916009)(9686003)(1076003)(478600001)(5660300002)(66946007)(66556008)(66476007)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 8y2vG3EIY+pEEKNQu9Gm5v96aCtnDblyi2KbPS0yKG1RMvZjo2t4HXo+FbcppAuq/jKgVV1vaOQT2in9j6xelWmseQ7HXoi6wL+qoKj0N6IzxJkHeaKezC1ruz09oHhsZGit5eBWhm88BVNor3UJTQvPH1QfhT7FmvxfWV8ptHkwK9r2eiijWd9fkPLJg3BN9MUyBFIBRe9YgOuTs6VH6W9XJA1Jytsh5cUCK/U7QV1Mm9mZ2u8IiGBwje30dmz+qT1zCN+XrlY9w4npXK37gAUYu76sWV6NPK/0aSt0SB4gV6ELIDVAr72mQCNFItBgpR3vie3gxvuWzyIaR8w0rm8e4TxprVOVHPIoiCD2Y5IQ3cnCqVuddlVtwGOAW2FZINI8YlD68Ce4GGE3UZTKAz4OrjaVCeJmGOhxwLw2R2h/sOq5gPyKRySeXQRUYdv/lfGSAOdx/lu3QTXVn6XDBIy8a2mBU8zKXrJic5JTeCZtpZhuctKIvxJMeaMVuETdIISVt5lljMIvTX47+j+qyO1TWrXTjN/CXnNb2XauRr3y6PFOAURmvm8DJk2BWZA8zTY/fdakw3D13M62es1AKIUJoZ8p6g+hxD+5yd9hEW2HTsIWBerA9c2Het0AmCNkZGQ9P5RpYF4dwH2Ni0vltl5U9yZCn4fkPF30U4rfa4TCmOEnIIlvK5KfC1JDXivU0XIPALU8foCL2fGXSjpaKA==
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6458166e-0757-47a2-c3cb-08d874d5efb2
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5177.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2020 08:55:47.3310
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XEgfcem5j+zivCfDyHeErHoJDpYmztr724CUvMeo1r6jrovWXTfa6kCWlaKhfFPldpb9ZdR1bGvwWYNcn9AfTQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6492
+In-Reply-To: <CAP-5=fWuUVkn35Ep7TQpFvdVJHi8MntAAbRAXVCU_1bYM2rPeQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-20_04:2020-10-20,2020-10-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 phishscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
+ adultscore=0 spamscore=0 mlxscore=0 clxscore=1011 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010200053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 04:36:09PM +0800, Shung-Hsi Yu wrote:
-> This patch trigger the following KASAN error inside qlge_init_device().
 
-Sorry, I meant to reply to the v3 series, please ignore this email.
 
+On 10/19/20 9:50 PM, Ian Rogers wrote:
+> On Mon, Oct 19, 2020 at 2:51 AM John Garry <john.garry@huawei.com> wrote:
+>>
+>> On 19/10/2020 00:30, Ian Rogers wrote:
+>>> On Sun, Oct 18, 2020 at 1:51 AM kernel test robot <rong.a.chen@intel.com> wrote:
+>>>>
+>>>> Greeting,
+>>>>
+>>>> FYI, we noticed the following commit (built with gcc-9):
+>>>>
+>>>> commit: fcc9c5243c478f104014daf4d23db86098d2aef0 ("perf metricgroup: Hack a fix for aliases when covering multiple PMUs")
+>>>> url: https://github.com/0day-ci/linux/commits/John-Garry/perf-pmu-events-Support-event-aliasing-for-system-PMUs/20201008-182049
+>>>>
+>>>>
+>>>> in testcase: perf-sanity-tests
+>>>> version: perf-x86_64-c85fb28b6f99-1_20201008
+>>>> with following parameters:
+>>>>
+>>>>          perf_compiler: gcc
+>>>>          ucode: 0xdc
+>>>>
+>>>>
+>>>>
+>>>> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
+>>>>
+>>>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+>>>
+>>> I believe this is a Skylake and there is a known bug in the Skylake
+>>> metric DRAM_Parallel_Reads as described here:
+>>> https://lore.kernel.org/lkml/CAP-5=fXejVaQa9qfW66cY77qB962+jbe8tT5bsLoOOcFmODnWQ@mail.gmail.com/
+>>> Fixing the bug needs more knowledge than what is available in manuals.
+>>> Hopefully Intel can take a look.
+>>>
+>>> Thanks,
+>>> Ian
+>>
+>> So this named patch ("perf metricgroup: Hack a fix for aliases...") is
+>> breaking test #67 on my machine also, which is a broadwell.
+> 
+> Thanks for taking a look John. If you want help you can send the
+> output of "perf test 67 -vvv" to me. It is possible Broadwell has
+> similar glitches in the json to Skylake. I tested the original test on
+> server parts as I can access them as cloud machines.
+> 
+>> I will have a look, but I was hoping that Ian would have a proper fix
+>> for this on top of ("perf metricgroup: Fix uncore metric expressions"),
+>> which now looks to be merged.
+> 
+> I still have these changes to look at in my inbox but I'm assuming
+> they're good :-) Sorry for not getting to them, but it's good they are
+> merged.
+
+Hi Ian,
+   Checked in upstream kernel with your fix patch, in powerpc also test case 67 is passing. 
+But I am getting issue in test 10 for powerpc
+
+[command]# ./perf test 10 
+10: PMU events                                                      :
+10.1: PMU event table sanity                                        : Ok
+10.2: PMU event map aliases                                         : Ok
+10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
+10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+
+Was debugging it, issue is with commit e1c92a7fbbc5 perf tests: Add another metric parsing test.
+
+So, there we are passing different runtime parameter value in "expr__find_other and expr__parse"
+in function `metric_parse_fake`. I believe we need to send same value.
+I will send fix patch for the same.
+
+Thanks,
+Kajol Jain
+
+> 
+> Thanks,
+> Ian
+> 
+>> Thanks!
+>>
+>>>
+>>>>
+>>>>
+>>>> If you fix the issue, kindly add following tag
+>>>> Reported-by: kernel test robot <rong.a.chen@intel.com>
+>>>>
+>>>>
+>>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 67
+>>>> 67: Parse and process metrics                             : FAILED!
+>>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 68
+>>>> 68: x86 rdpmc                                             : Ok
+>>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 69
+>>>> 69: Convert perf time to TSC                              : Ok
+>>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 70
+>>>> 70: DWARF unwind                                          : Ok
+>>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 71
+>>>> 71: x86 instruction decoder - new instructions            : Ok
+>>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 72
+>>>> 72: Intel PT packet decoder                               : Ok
+>>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 73
+>>>> 73: x86 bp modify                                         : Ok
+>>>> 2020-10-16 19:31:53 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 74
+>>>> 74: probe libc's inet_pton & backtrace it with ping       : Ok
+>>>> 2020-10-16 19:31:54 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 75
+>>>> 75: Zstd perf.data compression/decompression              : Ok
+>>>>
+>>>>
+>>>>
+>>>> To reproduce:
+>>>>
+>>>>          git clone https://github.com/intel/lkp-tests.git
+>>>>          cd lkp-tests
+>>>>          bin/lkp install job.yaml  # job file is attached in this email
+>>>>          bin/lkp run     job.yaml
+>>>>
+>>>>
+>>>>
+>>>> Thanks,
+>>>> Rong Chen
+>>>>
+>>> .
+>>>
+>>
