@@ -2,264 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D60F293779
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B6729377E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392356AbgJTJDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
+        id S2392363AbgJTJDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729938AbgJTJDE (ORCPT
+        with ESMTP id S1730029AbgJTJDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:03:04 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48810C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:03:04 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id g16so584776pjv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:03:04 -0700 (PDT)
+        Tue, 20 Oct 2020 05:03:11 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0004C061755;
+        Tue, 20 Oct 2020 02:03:11 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id q136so1394354oic.8;
+        Tue, 20 Oct 2020 02:03:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4lQcBmOx+lvoDIHPYrOlN9FBXHgOaL5X05LzK3XG/XQ=;
-        b=v+he3CT+vb5JfZ0WlJ1o1sKt8IelhzSVPbdoKqDaMa3qicDs8NSBARNqrwLVI0t6Ty
-         FgKbb4XuNvDqIlCT1BG0paS4VI1ybb2zIlCfRPAwIvWTNOXyd9JfMnLdv4BF0c4MfokU
-         L1eIqY97FugKgjx2q72bTywQvQ/CsH28WNPLhWrYZ2skPK2XdPNG50i76LgNJLU1EGB1
-         Ox3jOh5jHBq41skGgbrODfSHiqO3v96xm7zzEM2m400KMkgfTtfQlpjs4fI1+Psn5Wxj
-         qedWL6RFJwzpiZY/qoMIXTAW5mWATlxDTjsW5Fl/E2wMLR6kKsqJ3NG4oXjbUjzTsK0Q
-         afbQ==
+         :cc:content-transfer-encoding;
+        bh=Gxiv9N5I/0koEZElvdg9/A3+iy5K5rnbjK1iEcbGa6w=;
+        b=gTWnFQUcx4oDfYYGX7NhU5btKE6deZ7W4mcHkGsZIFyUVPZ7MXpEeIkXcqYCiVlHmt
+         1UhX0gZV/uvWhQelB0tNQVz+6ZcUi1ij4LqZDydl3tNT5a0gsL9h3DL87WaMs/PlEJjW
+         We8PdAIVl7tF+4vvN4f0PpjZ+V0zp84H7vY+k3BAH+eDyXN2AvL0OeO7539Mq9Upx9vj
+         duA2ztsx9s0nLU5a1120UnRJ7eg57/gbcVCQFJhmNxkKIW72obHeaqP66d9e4BxN/S87
+         +OA2YDPOxNQEelAr1Hq4KLj+SsyHVg6Fwdbi0sdbXonVsFbuZm3S2aUv81hUzz6jVdGh
+         KcHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4lQcBmOx+lvoDIHPYrOlN9FBXHgOaL5X05LzK3XG/XQ=;
-        b=LOuAmpXyGoiwMi1jPkRdi1+9/+q0Qh3Ye9FQFHGE71Kw2mOzr62jsGmUkiYXa/Y8hC
-         5GwKpOZYL/tPwoeHp/iqI216Q15Ub2pD4j7tkjDaimqX3KPE2oWNXlwMwOzd02+efMrU
-         Z4mWjelMfHy0pa7EPZQQoNZnqTlUx/kWP63LQbyMXEmJcO+8c0x/NucCweS+9N11HNLG
-         8rykJhjnLjmVtZEeo96peGM85FiVtQxGXSx3BrgHkhpy7dy4aitfGYrjlJAyCGqeeUFD
-         I50uC1ah3kkYT9MYWqumd1Hqq6ST7zY+HoloxE1vnuHxr1dfAyMYa0X84oUNCq+LIbom
-         ZjKA==
-X-Gm-Message-State: AOAM531bz88IaMZBX/GtkJMB0XQQYu4JQ0YPy6xwpEY4g1MgKhotNhoz
-        O95BvxBNAwHuA/FFNYD21qJRD0i6tg9QPGB0Agm28A==
-X-Google-Smtp-Source: ABdhPJwWCzlh8uDQnkFjSqFvhNnIZyi4d3tXWB6qbOY8CvvsOGePNZT4R9Cn1vFLc3D5jU5csfuet3fJdMBQ//klqa0=
-X-Received: by 2002:a17:90a:160f:: with SMTP id n15mr1905532pja.75.1603184583629;
- Tue, 20 Oct 2020 02:03:03 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Gxiv9N5I/0koEZElvdg9/A3+iy5K5rnbjK1iEcbGa6w=;
+        b=pI7lvuUXqMJ1crSXZlgI8IfVC+8QcmCFk9VTwOrVbDMnt7uuM2Nwehnqti4F5HGKnI
+         RcwNZLAmS1mLonoXguljxi/apO1sOGkmw9iSaimvMRVHE6bEsXljzFb8FVOn3QLznVOA
+         XDwXQM9uaMcLYzIod29MIcHaE2NSyryq2FT/TcjAXvUW8DHJY9ejFlgOZUaEhc0BLqDH
+         JNSsvOZZ0x9vTHyDYSReb+BDzhcdALJ+YuclXSS4eC742veY7/DHyTjlQ+Ha7r5HjmVd
+         4qDObvuUlKdxfNyHMqsLsxCm783bFgUTlg+0+J+5DqstsW4yAAmv29FT1nNuXQYBeUVW
+         G14A==
+X-Gm-Message-State: AOAM533qCTKp2vbCa0tjUi4/mBE27c+rbHeGcRHXr4SsCX2pFG/ZRIDC
+        X2Q5+joRaW+jA9HMpKUOeng3zjY6k/L/vPR61No=
+X-Google-Smtp-Source: ABdhPJyYU82Q33GbVTHqUDSRmku/z4g0TgkTPtIKZk+UhIWZK4qKLMOEI7kJfpP70jxfQ0fbewqrBHkXUx+/NmdItnw=
+X-Received: by 2002:aca:7541:: with SMTP id q62mr1078293oic.51.1603184591254;
+ Tue, 20 Oct 2020 02:03:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201018125237.16717-1-kholk11@gmail.com> <20201018125237.16717-3-kholk11@gmail.com>
- <CAG3jFysokz0+NCHLp9-nhxG3wGVzk1TAFBwZmhMgViUr-sk-BA@mail.gmail.com>
-In-Reply-To: <CAG3jFysokz0+NCHLp9-nhxG3wGVzk1TAFBwZmhMgViUr-sk-BA@mail.gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 20 Oct 2020 11:02:51 +0200
-Message-ID: <CAG3jFysUQJXdy0ogK1shbgW1Tmk6DJbS26EaeRPMDEnObQ2_zg@mail.gmail.com>
-Subject: Re: [PATCH 2/6] media: camss: ispif: Correctly reset based on the VFE ID
-To:     kholk11@gmail.com
-Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        linux-arm-msm@vger.kernel.org,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1600859910-15855-1-git-send-email-gene.chen.richtek@gmail.com> <20201016153823.GA9890@kozik-lap>
+In-Reply-To: <20201016153823.GA9890@kozik-lap>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Tue, 20 Oct 2020 17:03:00 +0800
+Message-ID: <CAE+NS35gb_KWq3s-M9apxgr7wnNRyn7iPto8J8ZwA-jsgT=paw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: power: Add bindings document for Charger
+ support on MT6360 PMIC
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     sre@kernel.org, Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I found a build issue in this commit.
-
-
-On Tue, 20 Oct 2020 at 10:59, Robert Foss <robert.foss@linaro.org> wrote:
+Krzysztof Kozlowski <krzk@kernel.org> =E6=96=BC 2020=E5=B9=B410=E6=9C=8816=
+=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=8811:38=E5=AF=AB=E9=81=93=EF=
+=BC=9A
 >
-> Nice catch! This patch looks good to me.
->
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
->
-> On Sun, 18 Oct 2020 at 14:54, <kholk11@gmail.com> wrote:
+> On Wed, Sep 23, 2020 at 07:18:29PM +0800, Gene Chen wrote:
+> > From: Gene Chen <gene_chen@richtek.com>
 > >
-> > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> > Add bindings document for Charger support on MT6360 PMIC
 > >
-> > Resetting the ISPIF VFE0 context is wrong if we are using the VFE1
-> > for dual-camera or simply because a secondary camera is connected
-> > to it: in this case the reset will always happen on the VFE0 ctx
-> > of the ISPIF, which is .. useless.
-> >
-> > Fix this usecase by adding the ISPIF_RST_CMD_1 address and choose
-> > where to do the (or what to) reset based on the VFE line id.
-> >
-> > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
 > > ---
-> >  .../media/platform/qcom/camss/camss-ispif.c   | 87 ++++++++++++-------
-> >  .../media/platform/qcom/camss/camss-ispif.h   |  2 +-
-> >  2 files changed, 57 insertions(+), 32 deletions(-)
+> >  .../bindings/power/supply/mt6360_charger.yaml      | 44 ++++++++++++++=
+++++++++
+> >  1 file changed, 44 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/power/supply/mt63=
+60_charger.yaml
 > >
-> > diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
-> > index db94cfd6c508..252db6b33dab 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-ispif.c
-> > +++ b/drivers/media/platform/qcom/camss/camss-ispif.c
-> > @@ -26,6 +26,7 @@
-> >  #define MSM_ISPIF_NAME "msm_ispif"
-> >
-> >  #define ISPIF_RST_CMD_0                        0x008
-> > +#define ISPIF_RST_CMD_1                        0x00c
-> >  #define ISPIF_RST_CMD_0_STROBED_RST_EN         (1 << 0)
-> >  #define ISPIF_RST_CMD_0_MISC_LOGIC_RST         (1 << 1)
-> >  #define ISPIF_RST_CMD_0_SW_REG_RST             (1 << 2)
-> > @@ -179,7 +180,10 @@ static irqreturn_t ispif_isr_8x96(int irq, void *dev)
-> >         writel(0x1, ispif->base + ISPIF_IRQ_GLOBAL_CLEAR_CMD);
-> >
-> >         if ((value0 >> 27) & 0x1)
-> > -               complete(&ispif->reset_complete);
-> > +               complete(&ispif->reset_complete[0]);
+> > diff --git a/Documentation/devicetree/bindings/power/supply/mt6360_char=
+ger.yaml b/Documentation/devicetree/bindings/power/supply/mt6360_charger.ya=
+ml
+> > new file mode 100644
+> > index 0000000..711fc19
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/power/supply/mt6360_charger.yam=
+l
+> > @@ -0,0 +1,44 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/power/supply/mt6360_charger.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > > +
-> > +       if ((value3 >> 27) & 0x1)
-> > +               complete(&ispif->reset_complete[1]);
-> >
-> >         if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
-> >                 dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
-> > @@ -237,7 +241,7 @@ static irqreturn_t ispif_isr_8x16(int irq, void *dev)
-> >         writel(0x1, ispif->base + ISPIF_IRQ_GLOBAL_CLEAR_CMD);
-> >
-> >         if ((value0 >> 27) & 0x1)
-> > -               complete(&ispif->reset_complete);
-> > +               complete(&ispif->reset_complete[0]);
-> >
-> >         if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
-> >                 dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
-> > @@ -257,33 +261,17 @@ static irqreturn_t ispif_isr_8x16(int irq, void *dev)
-> >         return IRQ_HANDLED;
-> >  }
-> >
-> > -/*
-> > - * ispif_reset - Trigger reset on ISPIF module and wait to complete
-> > - * @ispif: ISPIF device
-> > - *
-> > - * Return 0 on success or a negative error code otherwise
-> > - */
-> > -static int ispif_reset(struct ispif_device *ispif)
-> > +static int ispif_vfe_reset(struct ispif_device *ispif, u8 vfe_id)
-> >  {
-> > -       unsigned long time;
-> >         u32 val;
-> > -       int ret;
-> > -
-> > -       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE0);
-> > -       if (ret < 0)
-> > -               return ret;
-> >
-> > -       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE1);
-> > -       if (ret < 0)
-> > -               return ret;
-> > -
-> > -       ret = camss_enable_clocks(ispif->nclocks_for_reset,
-> > -                                 ispif->clock_for_reset,
-> > -                                 to_device(ispif));
-> > -       if (ret < 0)
-> > -               return ret;
-> > +       if (vfe_id > (to_camss(ispif)->vfe_num - 1)) {
-> > +               dev_err(to_device(ispif),
-> > +                       "Error: asked reset for invalid VFE%d\n", vfe_id);
-> > +               return -ENOENT;
-> > +       }
-> >
-> > -       reinit_completion(&ispif->reset_complete);
-> > +       reinit_completion(&ispif->reset_complete[vfe_id]);
-> >
-> >         val = ISPIF_RST_CMD_0_STROBED_RST_EN |
-> >                 ISPIF_RST_CMD_0_MISC_LOGIC_RST |
-> > @@ -303,15 +291,51 @@ static int ispif_reset(struct ispif_device *ispif)
-> >                 ISPIF_RST_CMD_0_RDI_OUTPUT_1_MISR_RST |
-> >                 ISPIF_RST_CMD_0_RDI_OUTPUT_2_MISR_RST;
-> >
-> > -       writel_relaxed(val, ispif->base + ISPIF_RST_CMD_0);
-> > +       if (vfe_id == 1)
-> > +               writel_relaxed(val, ispif->base + ISPIF_RST_CMD_1);
-> > +       else
-> > +               writel_relaxed(val, ispif->base + ISPIF_RST_CMD_0);
-> >
-> > -       time = wait_for_completion_timeout(&ispif->reset_complete,
-> > +       time = wait_for_completion_timeout(&ispif->reset_complete[vfe_id],
+> > +title: Battery charger driver for MT6360 PMIC from MediaTek Integrated=
+.
+> > +
+> > +maintainers:
+> > +  - Gene Chen <gene_chen@richtek.com>
+> > +
+> > +description: |
+> > +  This module is part of the MT6360 MFD device.
+> > +  Provides Battery Charger, Boost for OTG devices and BC1.2 detection.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: mediatek,mt6360-chg
+> > +
+> > +  vinovp:
+> > +    description:
+> > +      Maximum CHGIN regulation voltage.
+>
+> 1. You need to describe the type.
+> 2. Use proper unit suffix (see property-units.txt).
+> 3. Is this a custom property? If yes, it misses vendor prefix. If not,
+>    most likely there is already such property. Reuse.
+>
 
-'time' is not a variable that exists in this scope, so the build fails.
+ACK
 
-> >                 msecs_to_jiffies(ISPIF_RESET_TIMEOUT_MS));
-> >         if (!time) {
-> > -               dev_err(to_device(ispif), "ISPIF reset timeout\n");
-> > -               ret = -EIO;
-> > +               dev_err(to_device(ispif),
-> > +                       "ISPIF for VFE%d reset timeout\n", vfe_id);
-> > +               return -EIO;
-> >         }
-> >
-> > +       return 0;
-> > +}
 > > +
-> > +/*
-> > + * ispif_reset - Trigger reset on ISPIF module and wait to complete
-> > + * @ispif: ISPIF device
-> > + *
-> > + * Return 0 on success or a negative error code otherwise
-> > + */
-> > +static int ispif_reset(struct ispif_device *ispif, u8 vfe_id)
-> > +{
-> > +       unsigned long time;
-> > +       int ret;
+> > +  usb-otg-vbus:
+> > +      $ref: /schemas/regulator/regulator.yaml#
+>
+> 1. Wrong indentation.
+> 2. Name should be more or less generic, so maybe
+>    "usb-otg-vbus-regulator".
+>
+
+ACK
+
 > > +
-> > +       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE0);
-> > +       if (ret < 0)
-> > +               return ret;
+> > +required:
+> > +  - compatible
+>
+> No address/reg? How does it bind?
+>
+
+This module is part of the MT6360 MFD device.
+see Documentation/devicetree/bindings/mfd/mt6360.yaml, which is
+reviewing by MFD reviewer.
+
+Should I add this to description?
+
 > > +
-> > +       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE1);
-> > +       if (ret < 0)
-> > +               return ret;
+> > +additionalProperties: false
 > > +
-> > +       ret = camss_enable_clocks(ispif->nclocks_for_reset,
-> > +                                 ispif->clock_for_reset,
-> > +                                 to_device(ispif));
-> > +       if (ret < 0)
-> > +               return ret;
-> > +
-> > +       ret = ispif_vfe_reset(ispif, vfe_id);
-> > +       if (ret)
-> > +               dev_dbg(to_device(ispif), "ISPIF Reset failed\n");
-> > +
-> >         camss_disable_clocks(ispif->nclocks_for_reset, ispif->clock_for_reset);
-> >
-> >         camss_pm_domain_off(to_camss(ispif), PM_DOMAIN_VFE0);
-> > @@ -355,7 +379,7 @@ static int ispif_set_power(struct v4l2_subdev *sd, int on)
-> >                         goto exit;
-> >                 }
-> >
-> > -               ret = ispif_reset(ispif);
-> > +               ret = ispif_reset(ispif, line->vfe_id);
-> >                 if (ret < 0) {
-> >                         pm_runtime_put_sync(dev);
-> >                         camss_disable_clocks(ispif->nclocks, ispif->clock);
-> > @@ -1192,7 +1216,8 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
-> >
-> >         mutex_init(&ispif->config_lock);
-> >
-> > -       init_completion(&ispif->reset_complete);
-> > +       for (i = 0; i < MSM_ISPIF_VFE_NUM; i++)
-> > +               init_completion(&ispif->reset_complete[i]);
-> >
-> >         return 0;
-> >  }
-> > diff --git a/drivers/media/platform/qcom/camss/camss-ispif.h b/drivers/media/platform/qcom/camss/camss-ispif.h
-> > index 1a5ba2425a42..4132174f7ea1 100644
-> > --- a/drivers/media/platform/qcom/camss/camss-ispif.h
-> > +++ b/drivers/media/platform/qcom/camss/camss-ispif.h
-> > @@ -56,7 +56,7 @@ struct ispif_device {
-> >         int nclocks;
-> >         struct camss_clock  *clock_for_reset;
-> >         int nclocks_for_reset;
-> > -       struct completion reset_complete;
-> > +       struct completion reset_complete[MSM_ISPIF_VFE_NUM];
-> >         int power_count;
-> >         struct mutex power_lock;
-> >         struct ispif_intf_cmd_reg intf_cmd[MSM_ISPIF_VFE_NUM];
-> > --
-> > 2.28.0
-> >
+> > +examples:
+> > +  - |
+> > +    mt6360_chg: chg {
+>
+> s/chg/charger/
+>
+
+ACK
+
+> > +      compatible =3D "mediatek,mt6360-chg";
+> > +      vinovp =3D <14500000>;
+>
+> Empty line break
+>
+
+ACK
+
+> Best regards,
+> Krzysztof
