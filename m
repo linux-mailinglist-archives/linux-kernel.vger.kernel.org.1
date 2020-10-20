@@ -2,664 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D96293760
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD89029374F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392271AbgJTJB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:01:26 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:53173 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390216AbgJTJBZ (ORCPT
+        id S2392179AbgJTI7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 04:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390158AbgJTI7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:01:25 -0400
+        Tue, 20 Oct 2020 04:59:39 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA771C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:59:37 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id h7so816124pfn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:59:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1603184482; x=1634720482;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=dARCre0biGrRSqz/sAes9zlAIFNWsxlae2wsWUh+NM4=;
-  b=rX9Vm00DCYlZqXYVWUa5GHI6kCoTApbz22AG2K+qMdfjkREOPDTnanXE
-   MFkyNslscL/8tOhpc5zxG6nziOKXk5fyM4Z6n3/i0AxAEh1TBZB1kHMbg
-   6rZPbk0sMlTfA9qnDV+Xt/COH9UmuIv10MyHB7NTFdpGCRt89CvEIIZhF
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.77,396,1596499200"; 
-   d="scan'208";a="86288243"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-41350382.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 20 Oct 2020 09:01:15 +0000
-Received: from EX13D31EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-41350382.us-west-2.amazon.com (Postfix) with ESMTPS id 4E7C7C2971;
-        Tue, 20 Oct 2020 09:01:12 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.237) by
- EX13D31EUB001.ant.amazon.com (10.43.166.210) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 20 Oct 2020 09:00:53 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
-        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
-        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
-        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
-        <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v22 02/18] mm/damon: Implement region based sampling
-Date:   Tue, 20 Oct 2020 10:59:24 +0200
-Message-ID: <20201020085940.13875-3-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201020085940.13875-1-sjpark@amazon.com>
-References: <20201020085940.13875-1-sjpark@amazon.com>
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OzWls94jQ8pq52AMk7jKEXrTP1OQTMot6mH/T4YUYBA=;
+        b=nU9Mwl6o0Qd+Gr4ubPUva9x2DPCXpPfPZXu0ZKfRsCipgcVSs5nalL2v/dHyHN+PKK
+         NZg+H2I9awMs+f5Rz8gPCQOvehDicp01RidO74mOR6qDsvz2EVd7y4WYmvY13GJEBJat
+         /rRigmJ7MiPP9IpK8duYKlPHOrHF3lofxbO9fHOX8NBd3iozrP7N0apAxzF2umTw/KnZ
+         l1Sjhi1SkRedW+feXqXWc3JOTLkJbW0S+gvR5SUwsgh6Qb8L6Bvu3tj1u9EEbZ2bPUdo
+         F3llTjVCnOrX1gfukYFx1nXfLOSn0X+eOUSbqRbpvPKuT6h5TS28qt7DPNI0Ok4fefoq
+         2Tkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OzWls94jQ8pq52AMk7jKEXrTP1OQTMot6mH/T4YUYBA=;
+        b=Ai0W7JI9bsa7Lk/BQPb2zZmPupwQ8whHngc9nFG8N1lQiL+9B3NKAbMcKeeG3I8LZZ
+         86ZJiDMrEvYvARM6EwXim5hwtMoIK1qVLra8ck8+8hoMLG4aP0RfCZZEGD14S8RVme8x
+         uepvDTdTAMR5aNyD4tPegh+CyYIbP3awdXyZBXbRTRGQ4Aa5Fqx11Rl7OXKnhWjR/Vpu
+         QXFYrVKpVYI7W+h7jZg1Lk5Z3tlEd6Tp9V7fXRLONnsU72mhQZvQodaFMOaalwr4KPYw
+         AaOVvHqrsrfNj4xNofy0iDZ61vV+9a7eUe7wqABcACOUNdb7EbYXE8vtY2mXbRwEufBn
+         7msw==
+X-Gm-Message-State: AOAM533DBX4PNGrNFCtkZX4grzeYHUJcd1mtB+Edbo/ihsi6F8LcdjwJ
+        n/loVqYwricno7v9/chkJIA0jyy6gaO3BJhrXJMFBHyNq2I=
+X-Google-Smtp-Source: ABdhPJx0U+unN/ZGAFVBtuf0U/TY7ARophCsIgh6K5hN4jgovZQJjCdR4A9cXgPZXOSSARJj1NKi7fUoPKkvU6+W2do=
+X-Received: by 2002:aa7:9245:0:b029:156:552a:1275 with SMTP id
+ 5-20020aa792450000b0290156552a1275mr1838556pfp.12.1603184377105; Tue, 20 Oct
+ 2020 01:59:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.237]
-X-ClientProxiedBy: EX13D41UWC001.ant.amazon.com (10.43.162.107) To
- EX13D31EUB001.ant.amazon.com (10.43.166.210)
+References: <20201018125237.16717-1-kholk11@gmail.com> <20201018125237.16717-3-kholk11@gmail.com>
+In-Reply-To: <20201018125237.16717-3-kholk11@gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 20 Oct 2020 10:59:24 +0200
+Message-ID: <CAG3jFysokz0+NCHLp9-nhxG3wGVzk1TAFBwZmhMgViUr-sk-BA@mail.gmail.com>
+Subject: Re: [PATCH 2/6] media: camss: ispif: Correctly reset based on the VFE ID
+To:     kholk11@gmail.com
+Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
+        konradybcio@gmail.com, martin.botka1@gmail.com,
+        linux-arm-msm@vger.kernel.org,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Nice catch! This patch looks good to me.
 
-DAMON separates its monitoring target address space independent high
-level logics from the target space dependent low level primitives for
-flexible support of various address spaces.
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
 
-This commit implements DAMON's target address space independent high
-level logics for basic access check and region based sampling.  Hence,
-without the target address space specific parts implementations, this
-doesn't work alone.  A reference implementation of those will be
-provided by a later commit.
-
-Basic Access Check
-==================
-
-The output of DAMON says what pages are how frequently accessed for a
-given duration.  The resolution of the access frequency is controlled by
-setting ``sampling interval`` and ``aggregation interval``.  In detail,
-DAMON checks access to each page per ``sampling interval`` and
-aggregates the results.  In other words, counts the number of the
-accesses to each page.  After each ``aggregation interval`` passes,
-DAMON calls callback functions that previously registered by users so
-that users can read the aggregated results and then clears the results.
-This can be described in below simple pseudo-code::
-
-    while monitoring_on:
-        for page in monitoring_target:
-            if accessed(page):
-                nr_accesses[page] += 1
-        if time() % aggregation_interval == 0:
-            for callback in user_registered_callbacks:
-                callback(monitoring_target, nr_accesses)
-            for page in monitoring_target:
-                nr_accesses[page] = 0
-        sleep(sampling interval)
-
-The monitoring overhead of this mechanism will arbitrarily increase as
-the size of the target workload grows.
-
-Region Based Sampling
-=====================
-
-To avoid the unbounded increase of the overhead, DAMON groups adjacent
-pages that assumed to have the same access frequencies into a region.
-As long as the assumption (pages in a region have the same access
-frequencies) is kept, only one page in the region is required to be
-checked.  Thus, for each ``sampling interval``, DAMON randomly picks one
-page in each region, waits for one ``sampling interval``, checks whether
-the page is accessed meanwhile, and increases the access frequency of
-the region if so.  Therefore, the monitoring overhead is controllable by
-setting the number of regions.  DAMON allows users to set the minimum
-and the maximum number of regions for the trade-off.
-
-This scheme, however, cannot preserve the quality of the output if the
-assumption is not guaranteed.  Next commit will address this problem.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
-Reviewed-by: Leonard Foerster <foersleo@amazon.de>
----
- include/linux/damon.h | 133 ++++++++++++++++-
- mm/damon/core.c       | 333 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 465 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 183e0edd7f43..1f7b095646c2 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -8,6 +8,8 @@
- #ifndef _DAMON_H_
- #define _DAMON_H_
- 
-+#include <linux/mutex.h>
-+#include <linux/time64.h>
- #include <linux/types.h>
- 
- /**
-@@ -23,11 +25,13 @@ struct damon_addr_range {
- /**
-  * struct damon_region - Represents a monitoring target region.
-  * @ar:			The address range of the region.
-+ * @sampling_addr:	Address of the sample for the next access check.
-  * @nr_accesses:	Access frequency of this region.
-  * @list:		List head for siblings.
-  */
- struct damon_region {
- 	struct damon_addr_range ar;
-+	unsigned long sampling_addr;
- 	unsigned int nr_accesses;
- 	struct list_head list;
- };
-@@ -50,12 +54,130 @@ struct damon_target {
- 	struct list_head list;
- };
- 
-+struct damon_ctx;
-+
- /**
-- * struct damon_ctx - Represents a context for each monitoring.
-+ * struct damon_primitive	Monitoring primitives for given use cases.
-+ *
-+ * @init_target_regions:	Constructs initial monitoring target regions.
-+ * @prepare_access_checks:	Prepares next access check of target regions.
-+ * @check_accesses:		Checks the access of target regions.
-+ * @target_valid:		Determine if the target is valid.
-+ * @cleanup:			Cleans up the context.
-+ *
-+ * DAMON can be extended for various address spaces and usages.  For this,
-+ * users should register the low level primitives for their target address
-+ * space and usecase via the &damon_ctx.primitive.  Then, the monitoring thread
-+ * calls @init_target_regions before starting the monitoring and
-+ * @prepare_access_checks, @check_accesses, and @target_valid for each
-+ * @sample_interval.
-+ *
-+ * @init_target_regions should construct proper monitoring target regions and
-+ * link those to the DAMON context struct.
-+ * @prepare_access_checks should manipulate the monitoring regions to be
-+ * prepare for the next access check.
-+ * @check_accesses should check the accesses to each region that made after the
-+ * last preparation and update the `->nr_accesses` of each region.  It should
-+ * also return max &damon_region.nr_accesses that made as a result of its
-+ * update.
-+ * @target_valid should check whether the target is still valid for the
-+ * monitoring.
-+ * @cleanup is called from @kdamond just before its termination.  After this
-+ * call, only @kdamond_lock and @kdamond will be touched.
-+ */
-+struct damon_primitive {
-+	void (*init_target_regions)(struct damon_ctx *context);
-+	void (*prepare_access_checks)(struct damon_ctx *context);
-+	unsigned int (*check_accesses)(struct damon_ctx *context);
-+	bool (*target_valid)(struct damon_target *target);
-+	void (*cleanup)(struct damon_ctx *context);
-+};
-+
-+/*
-+ * struct damon_callback	Monitoring events notification callbacks.
-+ *
-+ * @before_start:	Called before starting the monitoring.
-+ * @after_sampling:	Called after each sampling.
-+ * @after_aggregation:	Called after each aggregation.
-+ * @before_terminate:	Called before terminating the monitoring.
-+ * @private:		User private data.
-+ *
-+ * The monitoring thread (&damon_ctx->kdamond) calls @before_start and
-+ * @before_terminate just before starting the monitoring and just before
-+ * finishing the monitoring.  Therefore, those are good places for installing
-+ * and cleaning @private.
-+ *
-+ * The monitoring thread calls @after_sampling and @after_aggregation for each
-+ * of the sampling intervals and aggregation intervals, respectively.
-+ * Therefore, users can safely access the monitoring results via
-+ * &damon_ctx.targets_list without additional protection of
-+ * damon_ctx.kdamond_lock.  For the reason, users are recommended to use these
-+ * callback for the accesses to the results.
-+ *
-+ * If any callback returns non-zero, monitoring stops.
-+ */
-+struct damon_callback {
-+	void *private;
-+
-+	int (*before_start)(struct damon_ctx *context);
-+	int (*after_sampling)(struct damon_ctx *context);
-+	int (*after_aggregation)(struct damon_ctx *context);
-+	int (*before_terminate)(struct damon_ctx *context);
-+};
-+
-+/**
-+ * struct damon_ctx - Represents a context for each monitoring.  This is the
-+ * main interface that allows users to set the attributes and get the results
-+ * of the monitoring.
-+ *
-+ * @sample_interval:		The time between access samplings.
-+ * @aggr_interval:		The time between monitor results aggregations.
-+ * @nr_regions:			The number of monitoring regions.
-+ *
-+ * For each @sample_interval, DAMON checks whether each region is accessed or
-+ * not.  It aggregates and keeps the access information (number of accesses to
-+ * each region) for @aggr_interval time.  All time intervals are in
-+ * micro-seconds.
-+ *
-+ * @kdamond:		Kernel thread who does the monitoring.
-+ * @kdamond_stop:	Notifies whether kdamond should stop.
-+ * @kdamond_lock:	Mutex for the synchronizations with @kdamond.
-+ *
-+ * For each monitoring context, one kernel thread for the monitoring is
-+ * created.  The pointer to the thread is stored in @kdamond.
-+ *
-+ * Once started, the monitoring thread runs until explicitly required to be
-+ * terminated or every monitoring target is invalid.  The validity of the
-+ * targets is checked via the @target_valid callback.  The termination can also
-+ * be explicitly requested by writing non-zero to @kdamond_stop.  The thread
-+ * sets @kdamond to NULL when it terminates.  Therefore, users can know whether
-+ * the monitoring is ongoing or terminated by reading @kdamond.  Reads and
-+ * writes to @kdamond and @kdamond_stop from outside of the monitoring thread
-+ * must be protected by @kdamond_lock.
-+ *
-+ * Note that the monitoring thread protects only @kdamond and @kdamond_stop via
-+ * @kdamond_lock.  Accesses to other fields must be protected by themselves.
-+ *
-  * @targets_list:	Head of monitoring targets (&damon_target) list.
-+ *
-+ * @primitive:	Set of monitoring primitives for given use cases.
-+ * @callback:	Set of callbacks for monitoring events notifications.
-  */
- struct damon_ctx {
-+	unsigned long sample_interval;
-+	unsigned long aggr_interval;
-+	unsigned long nr_regions;
-+
-+	struct timespec64 last_aggregation;
-+
-+	struct task_struct *kdamond;
-+	bool kdamond_stop;
-+	struct mutex kdamond_lock;
-+
- 	struct list_head targets_list;	/* 'damon_target' objects */
-+
-+	struct damon_primitive primitive;
-+	struct damon_callback callback;
- };
- 
- #define damon_next_region(r) \
-@@ -90,6 +212,15 @@ void damon_free_target(struct damon_target *t);
- void damon_destroy_target(struct damon_target *t);
- unsigned int damon_nr_regions(struct damon_target *t);
- 
-+int damon_set_targets(struct damon_ctx *ctx,
-+		unsigned long *ids, ssize_t nr_ids);
-+int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
-+		unsigned long aggr_int, unsigned long nr_reg);
-+
-+int damon_nr_running_ctxs(void);
-+int damon_start(struct damon_ctx **ctxs, int nr_ctxs);
-+int damon_stop(struct damon_ctx **ctxs, int nr_ctxs);
-+
- #endif	/* CONFIG_DAMON */
- 
- #endif
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 4562b2458719..eb4ebeaa064d 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -8,12 +8,20 @@
- #define pr_fmt(fmt) "damon: " fmt
- 
- #include <linux/damon.h>
-+#include <linux/delay.h>
-+#include <linux/kthread.h>
- #include <linux/slab.h>
- 
-+/* Minimal region size.  Every damon_region is aligned by this. */
-+#define MIN_REGION PAGE_SIZE
-+
- /*
-  * Functions and macros for DAMON data structures
-  */
- 
-+static DEFINE_MUTEX(damon_lock);
-+static int nr_running_ctxs;
-+
- /*
-  * Construct a damon_region struct
-  *
-@@ -119,3 +127,328 @@ unsigned int damon_nr_regions(struct damon_target *t)
- 
- 	return nr_regions;
- }
-+
-+/**
-+ * damon_set_targets() - Set monitoring targets.
-+ * @ctx:	monitoring context
-+ * @ids:	array of target ids
-+ * @nr_ids:	number of entries in @ids
-+ *
-+ * This function should not be called while the kdamond is running.
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+int damon_set_targets(struct damon_ctx *ctx,
-+		      unsigned long *ids, ssize_t nr_ids)
-+{
-+	ssize_t i;
-+	struct damon_target *t, *next;
-+
-+	damon_for_each_target_safe(t, next, ctx)
-+		damon_destroy_target(t);
-+
-+	for (i = 0; i < nr_ids; i++) {
-+		t = damon_new_target(ids[i]);
-+		if (!t) {
-+			pr_err("Failed to alloc damon_target\n");
-+			return -ENOMEM;
-+		}
-+		damon_add_target(ctx, t);
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * damon_set_attrs() - Set attributes for the monitoring.
-+ * @ctx:		monitoring context
-+ * @sample_int:		time interval between samplings
-+ * @aggr_int:		time interval between aggregations
-+ * @nr_reg:		number of regions
-+ *
-+ * This function should not be called while the kdamond is running.
-+ * Every time interval is in micro-seconds.
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
-+		    unsigned long aggr_int, unsigned long nr_reg)
-+{
-+	if (nr_reg < 3) {
-+		pr_err("nr_regions (%lu) must be at least 3\n",
-+				nr_reg);
-+		return -EINVAL;
-+	}
-+
-+	ctx->sample_interval = sample_int;
-+	ctx->aggr_interval = aggr_int;
-+	ctx->nr_regions = nr_reg;
-+
-+	return 0;
-+}
-+
-+static bool damon_kdamond_running(struct damon_ctx *ctx)
-+{
-+	bool running;
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	running = ctx->kdamond != NULL;
-+	mutex_unlock(&ctx->kdamond_lock);
-+
-+	return running;
-+}
-+
-+static int kdamond_fn(void *data);
-+
-+/*
-+ * __damon_start() - Starts monitoring with given context.
-+ * @ctx:	monitoring context
-+ *
-+ * This function should be called while damon_lock is hold.
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+static int __damon_start(struct damon_ctx *ctx)
-+{
-+	int err = -EBUSY;
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	if (!ctx->kdamond) {
-+		err = 0;
-+		ctx->kdamond_stop = false;
-+		ctx->kdamond = kthread_create(kdamond_fn, ctx, "kdamond.%d",
-+				nr_running_ctxs);
-+		if (IS_ERR(ctx->kdamond))
-+			err = PTR_ERR(ctx->kdamond);
-+		else
-+			wake_up_process(ctx->kdamond);
-+	}
-+	mutex_unlock(&ctx->kdamond_lock);
-+
-+	return err;
-+}
-+
-+/**
-+ * damon_start() - Starts the monitorings for a given group of contexts.
-+ * @ctxs:	an array of the pointers for contexts to start monitoring
-+ * @nr_ctxs:	size of @ctxs
-+ *
-+ * This function starts a group of monitoring threads for a group of monitoring
-+ * contexts.  One thread per each context is created and run in parallel.  The
-+ * caller should handle synchronization between the threads by itself.  If a
-+ * group of threads that created by other 'damon_start()' call is currently
-+ * running, this function does nothing but returns -EBUSY.
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+int damon_start(struct damon_ctx **ctxs, int nr_ctxs)
-+{
-+	int i;
-+	int err = 0;
-+
-+	mutex_lock(&damon_lock);
-+	if (nr_running_ctxs) {
-+		mutex_unlock(&damon_lock);
-+		return -EBUSY;
-+	}
-+
-+	for (i = 0; i < nr_ctxs; i++) {
-+		err = __damon_start(ctxs[i]);
-+		if (err)
-+			break;
-+		nr_running_ctxs++;
-+	}
-+	mutex_unlock(&damon_lock);
-+
-+	return err;
-+}
-+
-+/*
-+ * __damon_stop() - Stops monitoring of given context.
-+ * @ctx:	monitoring context
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+static int __damon_stop(struct damon_ctx *ctx)
-+{
-+	mutex_lock(&ctx->kdamond_lock);
-+	if (ctx->kdamond) {
-+		ctx->kdamond_stop = true;
-+		mutex_unlock(&ctx->kdamond_lock);
-+		while (damon_kdamond_running(ctx))
-+			usleep_range(ctx->sample_interval,
-+					ctx->sample_interval * 2);
-+		return 0;
-+	}
-+	mutex_unlock(&ctx->kdamond_lock);
-+
-+	return -EPERM;
-+}
-+
-+/**
-+ * damon_stop() - Stops the monitorings for a given group of contexts.
-+ * @ctxs:	an array of the pointers for contexts to stop monitoring
-+ * @nr_ctxs:	size of @ctxs
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+int damon_stop(struct damon_ctx **ctxs, int nr_ctxs)
-+{
-+	int i, err = 0;
-+
-+	for (i = 0; i < nr_ctxs; i++) {
-+		/* nr_running_ctxs is decremented in kdamond_fn */
-+		err = __damon_stop(ctxs[i]);
-+		if (err)
-+			return err;
-+	}
-+
-+	return err;
-+}
-+
-+/*
-+ * Functions for DAMON core logics
-+ */
-+
-+/*
-+ * damon_check_reset_time_interval() - Check if a time interval is elapsed.
-+ * @baseline:	the time to check whether the interval has elapsed since
-+ * @interval:	the time interval (microseconds)
-+ *
-+ * See whether the given time interval has passed since the given baseline
-+ * time.  If so, it also updates the baseline to current time for next check.
-+ *
-+ * Return:	true if the time interval has passed, or false otherwise.
-+ */
-+static bool damon_check_reset_time_interval(struct timespec64 *baseline,
-+		unsigned long interval)
-+{
-+	struct timespec64 now;
-+
-+	ktime_get_coarse_ts64(&now);
-+	if ((timespec64_to_ns(&now) - timespec64_to_ns(baseline)) <
-+			interval * 1000)
-+		return false;
-+	*baseline = now;
-+	return true;
-+}
-+
-+/*
-+ * Check whether it is time to flush the aggregated information
-+ */
-+static bool kdamond_aggregate_interval_passed(struct damon_ctx *ctx)
-+{
-+	return damon_check_reset_time_interval(&ctx->last_aggregation,
-+			ctx->aggr_interval);
-+}
-+
-+/*
-+ * Reset the aggregated monitoring results ('nr_accesses' of each region).
-+ */
-+static void kdamond_reset_aggregated(struct damon_ctx *c)
-+{
-+	struct damon_target *t;
-+
-+	damon_for_each_target(t, c) {
-+		struct damon_region *r;
-+
-+		damon_for_each_region(r, t)
-+			r->nr_accesses = 0;
-+	}
-+}
-+
-+/*
-+ * Check whether current monitoring should be stopped
-+ *
-+ * The monitoring is stopped when either the user requested to stop, or all
-+ * monitoring targets are invalid.
-+ *
-+ * Returns true if need to stop current monitoring.
-+ */
-+static bool kdamond_need_stop(struct damon_ctx *ctx)
-+{
-+	struct damon_target *t;
-+	bool stop;
-+
-+	mutex_lock(&ctx->kdamond_lock);
-+	stop = ctx->kdamond_stop;
-+	mutex_unlock(&ctx->kdamond_lock);
-+	if (stop)
-+		return true;
-+
-+	if (!ctx->primitive.target_valid)
-+		return false;
-+
-+	damon_for_each_target(t, ctx) {
-+		if (ctx->primitive.target_valid(t))
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
-+static void set_kdamond_stop(struct damon_ctx *ctx, bool stop)
-+{
-+	mutex_lock(&ctx->kdamond_lock);
-+	ctx->kdamond_stop = stop;
-+	mutex_unlock(&ctx->kdamond_lock);
-+}
-+
-+#define kdamond_call_prmt(ctx, fn)			\
-+	do {						\
-+		if (ctx->primitive.fn)			\
-+			ctx->primitive.fn(ctx);		\
-+	} while (0)
-+
-+#define kdamond_callback(ctx, fn)				\
-+	do {							\
-+		if (ctx->callback.fn && ctx->callback.fn(ctx))	\
-+			set_kdamond_stop(ctx, true);		\
-+	} while (0)
-+
-+/*
-+ * The monitoring daemon that runs as a kernel thread
-+ */
-+static int kdamond_fn(void *data)
-+{
-+	struct damon_ctx *ctx = (struct damon_ctx *)data;
-+	struct damon_target *t;
-+	struct damon_region *r, *next;
-+
-+	pr_info("kdamond (%d) starts\n", ctx->kdamond->pid);
-+
-+	kdamond_call_prmt(ctx, init_target_regions);
-+	kdamond_callback(ctx, before_start);
-+
-+	while (!kdamond_need_stop(ctx)) {
-+		kdamond_call_prmt(ctx, prepare_access_checks);
-+		kdamond_callback(ctx, after_sampling);
-+
-+		usleep_range(ctx->sample_interval, ctx->sample_interval + 1);
-+
-+		kdamond_call_prmt(ctx, check_accesses);
-+
-+		if (kdamond_aggregate_interval_passed(ctx)) {
-+			kdamond_callback(ctx, after_aggregation);
-+			kdamond_reset_aggregated(ctx);
-+		}
-+	}
-+	damon_for_each_target(t, ctx) {
-+		damon_for_each_region_safe(r, next, t)
-+			damon_destroy_region(r);
-+	}
-+
-+	kdamond_callback(ctx, before_terminate);
-+	kdamond_call_prmt(ctx, cleanup);
-+
-+	pr_debug("kdamond (%d) finishes\n", ctx->kdamond->pid);
-+	mutex_lock(&ctx->kdamond_lock);
-+	ctx->kdamond = NULL;
-+	mutex_unlock(&ctx->kdamond_lock);
-+
-+	mutex_lock(&damon_lock);
-+	nr_running_ctxs--;
-+	mutex_unlock(&damon_lock);
-+
-+	do_exit(0);
-+}
--- 
-2.17.1
-
+On Sun, 18 Oct 2020 at 14:54, <kholk11@gmail.com> wrote:
+>
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+>
+> Resetting the ISPIF VFE0 context is wrong if we are using the VFE1
+> for dual-camera or simply because a secondary camera is connected
+> to it: in this case the reset will always happen on the VFE0 ctx
+> of the ISPIF, which is .. useless.
+>
+> Fix this usecase by adding the ISPIF_RST_CMD_1 address and choose
+> where to do the (or what to) reset based on the VFE line id.
+>
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>  .../media/platform/qcom/camss/camss-ispif.c   | 87 ++++++++++++-------
+>  .../media/platform/qcom/camss/camss-ispif.h   |  2 +-
+>  2 files changed, 57 insertions(+), 32 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
+> index db94cfd6c508..252db6b33dab 100644
+> --- a/drivers/media/platform/qcom/camss/camss-ispif.c
+> +++ b/drivers/media/platform/qcom/camss/camss-ispif.c
+> @@ -26,6 +26,7 @@
+>  #define MSM_ISPIF_NAME "msm_ispif"
+>
+>  #define ISPIF_RST_CMD_0                        0x008
+> +#define ISPIF_RST_CMD_1                        0x00c
+>  #define ISPIF_RST_CMD_0_STROBED_RST_EN         (1 << 0)
+>  #define ISPIF_RST_CMD_0_MISC_LOGIC_RST         (1 << 1)
+>  #define ISPIF_RST_CMD_0_SW_REG_RST             (1 << 2)
+> @@ -179,7 +180,10 @@ static irqreturn_t ispif_isr_8x96(int irq, void *dev)
+>         writel(0x1, ispif->base + ISPIF_IRQ_GLOBAL_CLEAR_CMD);
+>
+>         if ((value0 >> 27) & 0x1)
+> -               complete(&ispif->reset_complete);
+> +               complete(&ispif->reset_complete[0]);
+> +
+> +       if ((value3 >> 27) & 0x1)
+> +               complete(&ispif->reset_complete[1]);
+>
+>         if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
+>                 dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
+> @@ -237,7 +241,7 @@ static irqreturn_t ispif_isr_8x16(int irq, void *dev)
+>         writel(0x1, ispif->base + ISPIF_IRQ_GLOBAL_CLEAR_CMD);
+>
+>         if ((value0 >> 27) & 0x1)
+> -               complete(&ispif->reset_complete);
+> +               complete(&ispif->reset_complete[0]);
+>
+>         if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
+>                 dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
+> @@ -257,33 +261,17 @@ static irqreturn_t ispif_isr_8x16(int irq, void *dev)
+>         return IRQ_HANDLED;
+>  }
+>
+> -/*
+> - * ispif_reset - Trigger reset on ISPIF module and wait to complete
+> - * @ispif: ISPIF device
+> - *
+> - * Return 0 on success or a negative error code otherwise
+> - */
+> -static int ispif_reset(struct ispif_device *ispif)
+> +static int ispif_vfe_reset(struct ispif_device *ispif, u8 vfe_id)
+>  {
+> -       unsigned long time;
+>         u32 val;
+> -       int ret;
+> -
+> -       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE0);
+> -       if (ret < 0)
+> -               return ret;
+>
+> -       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE1);
+> -       if (ret < 0)
+> -               return ret;
+> -
+> -       ret = camss_enable_clocks(ispif->nclocks_for_reset,
+> -                                 ispif->clock_for_reset,
+> -                                 to_device(ispif));
+> -       if (ret < 0)
+> -               return ret;
+> +       if (vfe_id > (to_camss(ispif)->vfe_num - 1)) {
+> +               dev_err(to_device(ispif),
+> +                       "Error: asked reset for invalid VFE%d\n", vfe_id);
+> +               return -ENOENT;
+> +       }
+>
+> -       reinit_completion(&ispif->reset_complete);
+> +       reinit_completion(&ispif->reset_complete[vfe_id]);
+>
+>         val = ISPIF_RST_CMD_0_STROBED_RST_EN |
+>                 ISPIF_RST_CMD_0_MISC_LOGIC_RST |
+> @@ -303,15 +291,51 @@ static int ispif_reset(struct ispif_device *ispif)
+>                 ISPIF_RST_CMD_0_RDI_OUTPUT_1_MISR_RST |
+>                 ISPIF_RST_CMD_0_RDI_OUTPUT_2_MISR_RST;
+>
+> -       writel_relaxed(val, ispif->base + ISPIF_RST_CMD_0);
+> +       if (vfe_id == 1)
+> +               writel_relaxed(val, ispif->base + ISPIF_RST_CMD_1);
+> +       else
+> +               writel_relaxed(val, ispif->base + ISPIF_RST_CMD_0);
+>
+> -       time = wait_for_completion_timeout(&ispif->reset_complete,
+> +       time = wait_for_completion_timeout(&ispif->reset_complete[vfe_id],
+>                 msecs_to_jiffies(ISPIF_RESET_TIMEOUT_MS));
+>         if (!time) {
+> -               dev_err(to_device(ispif), "ISPIF reset timeout\n");
+> -               ret = -EIO;
+> +               dev_err(to_device(ispif),
+> +                       "ISPIF for VFE%d reset timeout\n", vfe_id);
+> +               return -EIO;
+>         }
+>
+> +       return 0;
+> +}
+> +
+> +/*
+> + * ispif_reset - Trigger reset on ISPIF module and wait to complete
+> + * @ispif: ISPIF device
+> + *
+> + * Return 0 on success or a negative error code otherwise
+> + */
+> +static int ispif_reset(struct ispif_device *ispif, u8 vfe_id)
+> +{
+> +       unsigned long time;
+> +       int ret;
+> +
+> +       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE0);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE1);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       ret = camss_enable_clocks(ispif->nclocks_for_reset,
+> +                                 ispif->clock_for_reset,
+> +                                 to_device(ispif));
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       ret = ispif_vfe_reset(ispif, vfe_id);
+> +       if (ret)
+> +               dev_dbg(to_device(ispif), "ISPIF Reset failed\n");
+> +
+>         camss_disable_clocks(ispif->nclocks_for_reset, ispif->clock_for_reset);
+>
+>         camss_pm_domain_off(to_camss(ispif), PM_DOMAIN_VFE0);
+> @@ -355,7 +379,7 @@ static int ispif_set_power(struct v4l2_subdev *sd, int on)
+>                         goto exit;
+>                 }
+>
+> -               ret = ispif_reset(ispif);
+> +               ret = ispif_reset(ispif, line->vfe_id);
+>                 if (ret < 0) {
+>                         pm_runtime_put_sync(dev);
+>                         camss_disable_clocks(ispif->nclocks, ispif->clock);
+> @@ -1192,7 +1216,8 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
+>
+>         mutex_init(&ispif->config_lock);
+>
+> -       init_completion(&ispif->reset_complete);
+> +       for (i = 0; i < MSM_ISPIF_VFE_NUM; i++)
+> +               init_completion(&ispif->reset_complete[i]);
+>
+>         return 0;
+>  }
+> diff --git a/drivers/media/platform/qcom/camss/camss-ispif.h b/drivers/media/platform/qcom/camss/camss-ispif.h
+> index 1a5ba2425a42..4132174f7ea1 100644
+> --- a/drivers/media/platform/qcom/camss/camss-ispif.h
+> +++ b/drivers/media/platform/qcom/camss/camss-ispif.h
+> @@ -56,7 +56,7 @@ struct ispif_device {
+>         int nclocks;
+>         struct camss_clock  *clock_for_reset;
+>         int nclocks_for_reset;
+> -       struct completion reset_complete;
+> +       struct completion reset_complete[MSM_ISPIF_VFE_NUM];
+>         int power_count;
+>         struct mutex power_lock;
+>         struct ispif_intf_cmd_reg intf_cmd[MSM_ISPIF_VFE_NUM];
+> --
+> 2.28.0
+>
