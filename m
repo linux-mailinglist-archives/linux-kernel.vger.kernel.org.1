@@ -2,239 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240F42932F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE432932FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390476AbgJTCNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 22:13:20 -0400
-Received: from mail-eopbgr70080.outbound.protection.outlook.com ([40.107.7.80]:12709
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730115AbgJTCNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 22:13:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IiBGJ+WhLN5A38kNnwiUHzQU3cKP7AVYuCvirZ+dhxV1oXM3pwNQUgpzXaPOF0JGRpx5EvQOq/JLMGqbTGDAWHx/5FaV7EJIkVCUCJjWDFQwB1JBgRlNM1xwigQooCgQdZvrIAMtjKUHSbzQAuhQ/o+lUHHP7fy0XU+sN/F5izD+ES4z6Ut8mty2hXR3wfG9XNpJWnMYwMdiZGJuvo1eoivNC8FJ06vAXOd6OwBds0I40Mm5Q4GZpbFsWuQplQgNkicL9HUAX+8OG0aKyT9O1mv+KjodqXiQ7gDQC2Z23fmY29rH2FziGcIiCXenpvkVcEqYzfv6x5+8HnI5XgrQ1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PI0G7zg5lgqK7yITh37S/LzH7OvUsVs6UNoyKZemCEY=;
- b=HPq1OoxPAouXrKEFz0fcE8ayUY4h8+CMCvDslW8P/ZUr5YS53Muc0awf3hHCPwT/N5vtndvZ0GqP7kL3xKMBj4+lzVdILXEalZbCprvqDbneDGKmODIxStL4DUsKJ7eXsDKWnorFphmDR5Xoq8S1sDxgtj6c+ph/Dm5GmB4OZmCdDmGyPQOOwqpG/pTImmaJP+oJ0//Q6vpM0WJJ5H29oSksJ7gCp0R6PGVF0NXsP4GPg5ON+leMwCHHo2OxdktWJRNZwpwU56emRsVJ1r18P3MgynltBne7mStEd05ayYVUH1HBxP/9E543CsCRk4DMExr1WAzNXVBjv/fZnDksCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PI0G7zg5lgqK7yITh37S/LzH7OvUsVs6UNoyKZemCEY=;
- b=YOa1Y0iJzdWev+PwXMQJEPAnT/ybzrx1nWDzP1P5yYGkg9IuULs0oSX07TA7mjeAadjEdCoPVAP9aI75wTngPzKatuaxhAFWgLXPEnWHB5Fj1l+Bco5lCWI6FjiHM2ioeWbs+dVN4K9BuqpQ2X0c9g3bC3Xdf9v2tun5yfuJ4zA=
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
- by HE1PR0402MB2730.eurprd04.prod.outlook.com (2603:10a6:3:e2::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Tue, 20 Oct
- 2020 02:13:14 +0000
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::f882:7106:de07:1e1e]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::f882:7106:de07:1e1e%4]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
- 02:13:14 +0000
-From:   "Z.q. Hou" <zhiqiang.hou@nxp.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>
-Subject: RE: [PATCH] PCI: dwc: Added link up check in map_bus of
- dw_child_pcie_ops
-Thread-Topic: [PATCH] PCI: dwc: Added link up check in map_bus of
- dw_child_pcie_ops
-Thread-Index: AQHWi+0seUdQCD5Vd0CU4riR8OTpR6mZcoIAgAUfDCCAAAuOgIABVTAQ
-Date:   Tue, 20 Oct 2020 02:13:13 +0000
-Message-ID: <HE1PR0402MB337161161D04C34247C1D876841F0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
-References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
- <20201015224738.GA24466@bjorn-Precision-5520>
- <HE1PR0402MB3371CD54946A513C12A5ABC2841E0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <7778161f-b87c-5499-b4e6-de0550bc165c@ti.com>
-In-Reply-To: <7778161f-b87c-5499-b4e6-de0550bc165c@ti.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c2f67bdf-b509-47f2-57a9-08d8749db38d
-x-ms-traffictypediagnostic: HE1PR0402MB2730:
-x-microsoft-antispam-prvs: <HE1PR0402MB2730446DAA6A3FE194FFAE2E841F0@HE1PR0402MB2730.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rRIauoMN4v4OSob2NEwRROQFWwmJua76HbPMPIDHilnBtjk+av9IN2jIsVTVFJt8CaPPQg0rzPZvXy6o/Yscpk1ySk4A45z7QiSWbArizGl4YWcMzrk780FXyOkMQ3sNjKTWCkgp0puI8iC3onIeSwKbmkCqFthcKKEZ9qAHhLTSN4GiUYzsVqqBTNVXJIQQsAhsai4vMHRASrEy8pfXRZ96f7BsjQlIfS10/cWjZeBj0zwfHMsSahZr2XhUQnaAyoy+Qr0EU7GB6InSNgW6+aeJB7WGdCQznNezp1J9QuRUT7o/zfQGwVvUAnF2qODb7A5MeGoBoIEKYPEWpL1IvA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(396003)(39860400002)(8676002)(83380400001)(8936002)(110136005)(54906003)(2906002)(26005)(71200400001)(86362001)(53546011)(66446008)(4326008)(33656002)(66476007)(66556008)(64756008)(55016002)(66946007)(76116006)(186003)(5660300002)(52536014)(478600001)(9686003)(6506007)(316002)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: JKlQa/e1UDE01ud4/rj03L5g1qFlXxRA0QA92jF+ryq9z5HgBi6D5t0qTet6EhbEQTWj1n8FjurHNKpIaByQdzJ0VIzOEq1epFdqU6zFv1cxR9mkW0SoMJ0ZT9K4ydY9+O2lrLXB64xS9762eo752lWxbe+tzn6DTqP9TKjULx/B2NDn/4UNlX1pcKoWNfLW9btsJsr8YUkmqM90g990wgsT8Ql4bZZ5NbV8+iDv1pe/Y3tzytqIvquOV/oJmMMhi5Biuc5oQYktRAUf9Bab67Ciwd+am92yplqocaGioMzycN7+sQFwPQfaSLX1n0CBL8oaiwjfChnfynTQKj8jrrODohwmEpdrJ1CJvR7s/cxIcURRHFSrcIwnq6CxDi3qW+kM3kXtgjjUV32TUgUGxFp+LWXynpPHJZLh6inlWCB3YE1B48hxIDCEro8gvcJtLafnTyB+yav7UmbYxvM9FQ+Hhm/3FISFg0Mcg8xh/Dos0HnTaiTPs9kkxjo6ua3oKrVvCoZeiToHmv5ws1HztElR/Z4vGu6SPCB8XEJkzAEbdGmmIrsP9HPUPYpeLqmMWNdcs9MJDVHNyOFKgwOcD/8SdPcxdoLpw1BDH3IvPnVVyxV15Uo9z9zHr+A9zwHHMrlyqJYs8EktLdC9qCn7vQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S2390506AbgJTCRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 22:17:30 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:26942 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730127AbgJTCRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 22:17:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603160249; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=CnNWiQS2XGA1YVaIGzFp8g14cZ1x0E0s29jTfLOsuXI=;
+ b=oZOmX/ofedOksjD80rg3Z9EV+bL4BL+Npw4ng8yMIsChP2KBrnBjmlrqhSess1NYF1N07rDu
+ 1sHAmhJlf5A/3mdeOw1CaL9g9/G9T9q699o6MqgHRYURudKA4+bGo57jBlP2DrrI9YwsTRSf
+ q3IUdCasv0PT5f7cSlQGqtqX6Jo=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f8e48b8bfed2afaa627272b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Oct 2020 02:17:28
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6E0C0C43391; Tue, 20 Oct 2020 02:17:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC5BEC433FE;
+        Tue, 20 Oct 2020 02:17:25 +0000 (UTC)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2f67bdf-b509-47f2-57a9-08d8749db38d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2020 02:13:14.2358
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: T7qGf3j19GOhH8HdMCaahUcCglkz9cdEBY7Zt1jzlcKZBrlV095VU3y1DcgC6eQPgFfrpmsMhh2sn4BKKUWWuQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0402MB2730
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 20 Oct 2020 10:17:25 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Jaegeuk Kim <jaegeuk@google.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: Re: [PATCH 2/4] scsi: ufs: clear UAC for FFU and RPMB LUNs
+In-Reply-To: <20201005223635.2922805-2-jaegeuk@kernel.org>
+References: <20201005223635.2922805-1-jaegeuk@kernel.org>
+ <20201005223635.2922805-2-jaegeuk@kernel.org>
+Message-ID: <3d9c3b844ac861c4cce7242e49e63059@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmpvcm4sIExvcmVuem8gYW5kIEtpc2hvbiwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
-LS0tLQ0KPiBGcm9tOiBLaXNob24gVmlqYXkgQWJyYWhhbSBJIDxraXNob25AdGkuY29tPg0KPiBT
-ZW50OiAyMDIwxOoxMNTCMTnI1SAxMzo0MQ0KPiBUbzogWi5xLiBIb3UgPHpoaXFpYW5nLmhvdUBu
-eHAuY29tPjsgQmpvcm4gSGVsZ2FhcyA8aGVsZ2Fhc0BrZXJuZWwub3JnPg0KPiBDYzogbGludXgt
-a2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtcGNpQHZnZXIua2VybmVsLm9yZzsNCj4gcm9i
-aEBrZXJuZWwub3JnOyBsb3JlbnpvLnBpZXJhbGlzaUBhcm0uY29tOyBiaGVsZ2Fhc0Bnb29nbGUu
-Y29tOw0KPiBndXN0YXZvLnBpbWVudGVsQHN5bm9wc3lzLmNvbQ0KPiBTdWJqZWN0OiBSZTogW1BB
-VENIXSBQQ0k6IGR3YzogQWRkZWQgbGluayB1cCBjaGVjayBpbiBtYXBfYnVzIG9mDQo+IGR3X2No
-aWxkX3BjaWVfb3BzDQo+IA0KPiBIaSBIb3UsDQo+IA0KPiBPbiAxOS8xMC8yMCAxMDo1NCBhbSwg
-Wi5xLiBIb3Ugd3JvdGU6DQo+ID4gSGVsbG8gQmpvcm4sDQo+ID4NCj4gPiBUaGFua3MgYSBsb3Qg
-Zm9yIHlvdXIgY29tbWVudHMhDQo+ID4NCj4gPj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0N
-Cj4gPj4gRnJvbTogQmpvcm4gSGVsZ2FhcyA8aGVsZ2Fhc0BrZXJuZWwub3JnPg0KPiA+PiBTZW50
-OiAyMDIwxOoxMNTCMTbI1SA2OjQ4DQo+ID4+IFRvOiBaLnEuIEhvdSA8emhpcWlhbmcuaG91QG54
-cC5jb20+DQo+ID4+IENjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1wY2lA
-dmdlci5rZXJuZWwub3JnOw0KPiA+PiByb2JoQGtlcm5lbC5vcmc7IGxvcmVuem8ucGllcmFsaXNp
-QGFybS5jb207IGJoZWxnYWFzQGdvb2dsZS5jb207DQo+ID4+IGd1c3Rhdm8ucGltZW50ZWxAc3lu
-b3BzeXMuY29tDQo+ID4+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIFBDSTogZHdjOiBBZGRlZCBsaW5r
-IHVwIGNoZWNrIGluIG1hcF9idXMgb2YNCj4gPj4gZHdfY2hpbGRfcGNpZV9vcHMNCj4gPj4NCj4g
-Pj4gT24gV2VkLCBTZXAgMTYsIDIwMjAgYXQgMDE6NDE6MzBQTSArMDgwMCwgWmhpcWlhbmcgSG91
-IHdyb3RlOg0KPiA+Pj4gRnJvbTogSG91IFpoaXFpYW5nIDxaaGlxaWFuZy5Ib3VAbnhwLmNvbT4N
-Cj4gPj4+DQo+ID4+PiBPbiBOWFAgTGF5ZXJzY2FwZSBwbGF0Zm9ybXMsIGl0IHJlc3VsdHMgaW4g
-U0Vycm9yIGluIHRoZSBlbnVtZXJhdGlvbg0KPiA+Pj4gb2YgdGhlIFBDSWUgY29udHJvbGxlciwg
-d2hpY2ggaXMgbm90IGNvbm5lY3Rpbmcgd2l0aCBhbiBFbmRwb2ludA0KPiA+Pj4gZGV2aWNlLiBB
-bmQgaXQgZG9lc24ndCBtYWtlIHNlbnNlIHRvIGVudW1lcmF0ZSB0aGUgRW5kcG9pbnRzIHdoZW4N
-Cj4gPj4+IHRoZSBQQ0llIGxpbmsgaXMgZG93bi4gU28gdGhpcyBwYXRjaCBhZGRlZCB0aGUgbGlu
-ayB1cCBjaGVjayB0bw0KPiA+Pj4gYXZvaWQgdG8gZmlyZSBjb25maWd1cmF0aW9uIHRyYW5zYWN0
-aW9ucyBvbiBsaW5rIGRvd24gYnVzLg0KPiA+Pg0KPiA+PiBMb3JlbnpvIGFscmVhZHkgYXBwbGll
-ZCB0aGlzLCBidXQgYSBjb3VwbGUgcXVlc3Rpb25zOg0KPiA+Pg0KPiA+PiBZb3UgY2FsbCBvdXQg
-TlhQIExheWVyc2NhcGUgc3BlY2lmaWNhbGx5LCBidXQgZG9lc24ndCB0aGlzIGFmZmVjdA0KPiA+
-PiBvdGhlciBEV0MtYmFzZWQgcGxhdGZvcm1zLCB0b28/ICBZb3UgbGF0ZXIgbWVudGlvbmVkIGlt
-eDYsIEtpc2hvbg0KPiA+PiBtZW50aW9uZWQgZHJhN3h4LCBNaWNoYWVsIG1lbnRpb25lZCBsczEw
-MjhhLCBOYXJlc2ggbWVudGlvbmVkIGxzMjA4OA0KPiA+PiAocHJvYmFibHkgYm90aCB0aGUgc2Ft
-ZSBhcyB5b3VyICJOWFAgTGF5ZXJzY2FwZSIpLg0KPiA+DQo+ID4gRm9yIE5YUCBMYXllcnNjYXBl
-IHBsYXRmb3JtcyAodGhlIGxzMTAyOGEgYW5kIGxzMjA4OGEgYXJlIGFsc28gTlhQDQo+IExheWVy
-c2NhcGUgcGxhdGZvcm0pLCBhcyB0aGUgZXJyb3IgcmVzcG9uc2UgdG8gQVhJL0FIQiB3YXMgZW5h
-YmxlZCwgaXQgd2lsbA0KPiBnZXQgVVIgZXJyb3IgYW5kIHRyaWdnZXIgU0Vycm9yIG9uIEFYSSBi
-dXMgd2hlbiBpdCBhY2Nlc3NlcyBhIG5vbi1leGlzdGVudA0KPiBCREYgb24gYSBsaW5rIGRvd24g
-YnVzLiBJJ20gbm90IGNsZWFyIGFib3V0IGhvdyBpdCBoYXBwZW5zIG9uIGRyYTd4eHggYW5kDQo+
-IGlteDYsIHNpbmNlIHRoZXkgZG9lc24ndCBlbmFibGUgdGhlIGVycm9yIHJlc3BvbnNlIHRvIEFY
-SS9BSEIuDQo+IA0KPiBUaGF0J3MgZXhhY3RseSB0aGUgY2FzZSB3aXRoIERSQTd4eCBhcyB0aGUg
-ZXJyb3IgcmVzcG9uc2UgaXMgZW5hYmxlZCBieQ0KPiBkZWZhdWx0IGluIHRoZSBwbGF0Zm9ybSBp
-bnRlZ3JhdGlvbi4NCg0KR290IGZlZWRiYWNrIGZyb20gdGhlIGlteDYgb3duZXIgdGhhdCBpbXg2
-IGxpa2UgdGhlIGRyYTd4eCBoYXMgdGhlIGVycm9yIHJlc3BvbnNlIGVuYWJsZWQgYnkgZGVmYXVs
-dC4NCk5vdyBpdCdzIGNsZWFyIHRoYXQgdGhlIHByb2JsZW0gb24gYWxsIHRoZXNlIHBsYXRmb3Jt
-cyBpcyB0aGUgc2FtZS4NCg0KVGhhbmtzLA0KWmhpcWlhbmcNCg0KPiANCj4gVGhhbmtzDQo+IEtp
-c2hvbg0KPiANCj4gPg0KPiA+Pg0KPiA+PiBUaGUgYmFja3RyYWNlIGJlbG93IGNvbnRhaW5zIGEg
-YnVuY2ggb2YgaXJyZWxldmFudCBpbmZvLiAgVGhlDQo+ID4+IHRpbWVzdGFtcHMgYXJlIHBvaW50
-bGVzcy4gIFRoZSBiYWNrdHJhY2UgcGFzdA0KPiA+PiBwY2lfc2Nhbl9zaW5nbGVfZGV2aWNlKzB4
-ODAvMHgxMDAgb3Igc28gcmVhbGx5IGRvZXNuJ3QgYWRkIGFueXRoaW5nDQo+IGVpdGhlci4NCj4g
-Pj4NCj4gPj4gSXQnZCBiZSBuaWNlIHRvIGhhdmUgYSBjb21tZW50IGluIHRoZSBjb2RlIGJlY2F1
-c2UgdGhlIGNvZGUgKmxvb2tzKg0KPiA+PiB3cm9uZyBhbmQgcmFjeS4gIFdpdGhvdXQgYSBoaW50
-LCBldmVyeWJvZHkgd2hvIHNlZXMgaXQgd2lsbCBoYXZlIHRvDQo+ID4+IGRpZyB0aHJvdWdoIHRo
-ZSBoaXN0b3J5IHRvIHNlZSB3aHkgd2UgdG9sZXJhdGUgdGhlIHJhY2UuDQo+ID4NCj4gPiBZZXMs
-IGFncmVlLCBidXQgc2VlbXMgdGhlIGNhdXNlIG9mIHRoZSBTRXJyb3Igb24gZHJhN3h4IGFuZCBp
-bXg2IGlzDQo+IGRpZmZlcmVudCBmcm9tIExheWVyc2NhcGUgcGxhdGZvcm1zLCB3ZSBuZWVkIHRv
-IG1ha2UgaXQgY2xlYXIgZmlyc3QuDQo+ID4NCj4gPiBUaGFua3MsDQo+ID4gWmhpcWlhbmcNCj4g
-Pg0KPiA+Pg0KPiA+Pj4gWyAgICAwLjgwNzc3M10gU0Vycm9yIEludGVycnVwdCBvbiBDUFUyLCBj
-b2RlIDB4YmYwMDAwMDIgLS0gU0Vycm9yDQo+ID4+PiBbICAgIDAuODA3Nzc1XSBDUFU6IDIgUElE
-OiAxIENvbW06IHN3YXBwZXIvMCBOb3QgdGFpbnRlZA0KPiA+PiA1LjkuMC1yYzUtbmV4dC0yMDIw
-MDkxNC0wMDAwMS1nZjk2NWQzZWM4NmZhICM2Nw0KPiA+Pj4gWyAgICAwLjgwNzc3Nl0gSGFyZHdh
-cmUgbmFtZTogTFMxMDQ2QSBSREIgQm9hcmQgKERUKQ0KPiA+Pj4gWyAgICAwLjgwNzc3N10gcHN0
-YXRlOiAyMDAwMDA4NSAobnpDdiBkYUlmIC1QQU4gLVVBTyBCVFlQRT0tLSkNCj4gPj4+IFsgICAg
-MC44MDc3NzhdIHBjIDogcGNpX2dlbmVyaWNfY29uZmlnX3JlYWQrMHgzYy8weGUwDQo+ID4+PiBb
-ICAgIDAuODA3Nzc4XSBsciA6IHBjaV9nZW5lcmljX2NvbmZpZ19yZWFkKzB4MjQvMHhlMA0KPiA+
-Pj4gWyAgICAwLjgwNzc3OV0gc3AgOiBmZmZmODAwMDEwMDNiN2IwDQo+ID4+PiBbICAgIDAuODA3
-NzgwXSB4Mjk6IGZmZmY4MDAwMTAwM2I3YjAgeDI4OiBmZmZmODAwMDEwMDNiYTc0DQo+ID4+PiBb
-ICAgIDAuODA3NzgyXSB4Mjc6IGZmZmYwMDA5NzFkOTY4MDAgeDI2OiBmZmZmMDAwOTZlNzdlMGE4
-DQo+ID4+PiBbICAgIDAuODA3Nzg0XSB4MjU6IGZmZmY4MDAwMTAwM2I4NzQgeDI0OiBmZmZmODAw
-MDEwMDNiOTI0DQo+ID4+PiBbICAgIDAuODA3Nzg2XSB4MjM6IDAwMDAwMDAwMDAwMDAwMDQgeDIy
-OiAwMDAwMDAwMDAwMDAwMDAwDQo+ID4+PiBbICAgIDAuODA3Nzg4XSB4MjE6IDAwMDAwMDAwMDAw
-MDAwMDAgeDIwOiBmZmZmODAwMDEwMDNiODc0DQo+ID4+PiBbICAgIDAuODA3NzkwXSB4MTk6IDAw
-MDAwMDAwMDAwMDAwMDQgeDE4OiBmZmZmZmZmZmZmZmZmZmZmDQo+ID4+PiBbICAgIDAuODA3Nzkx
-XSB4MTc6IDAwMDAwMDAwMDAwMDAwYzAgeDE2OiBmZmZmZmUwMDI1OTgxODQwDQo+ID4+PiBbICAg
-IDAuODA3NzkzXSB4MTU6IGZmZmZiOTRjNzViNjk5NDggeDE0OiA2MjIwM2EzODM2MzQyMDNhDQo+
-ID4+PiBbICAgIDAuODA3Nzk1XSB4MTM6IDY2NmU2ZjYzNWY3MjY1NjggeDEyOiAyMDJjMzEyMDNk
-MjA3MjY1DQo+ID4+PiBbICAgIDAuODA3Nzk3XSB4MTE6IDYyNmQ3NTZlM2UyZDczNzUgeDEwOiA2
-NTY4NzcyMDJjMzA3ODMwDQo+ID4+PiBbICAgIDAuODA3Nzk5XSB4OSA6IDIwM2QyMDZlNjY3NjY1
-NjQgeDggOiAwMDAwMDAwMDAwMDAwOTA4DQo+ID4+PiBbICAgIDAuODA3ODAxXSB4NyA6IDAwMDAw
-MDAwMDAwMDA5MDggeDYgOiBmZmZmODAwMDEwOTAwMDAwDQo+ID4+PiBbICAgIDAuODA3ODAyXSB4
-NSA6IGZmZmYwMDA5NmU3N2UwODAgeDQgOiAwMDAwMDAwMDAwMDAwMDAwDQo+ID4+PiBbICAgIDAu
-ODA3ODA0XSB4MyA6IDAwMDAwMDAwMDAwMDAwMDMgeDIgOiA4NGZhMzQ0MGZmN2U3MDAwDQo+ID4+
-PiBbICAgIDAuODA3ODA2XSB4MSA6IDAwMDAwMDAwMDAwMDAwMDAgeDAgOiBmZmZmODAwMDEwMDM0
-MDAwDQo+ID4+PiBbICAgIDAuODA3ODA4XSBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogQXN5
-bmNocm9ub3VzIFNFcnJvcg0KPiBJbnRlcnJ1cHQNCj4gPj4+IFsgICAgMC44MDc4MDldIENQVTog
-MiBQSUQ6IDEgQ29tbTogc3dhcHBlci8wIE5vdCB0YWludGVkDQo+ID4+IDUuOS4wLXJjNS1uZXh0
-LTIwMjAwOTE0LTAwMDAxLWdmOTY1ZDNlYzg2ZmEgIzY3DQo+ID4+PiBbICAgIDAuODA3ODEwXSBI
-YXJkd2FyZSBuYW1lOiBMUzEwNDZBIFJEQiBCb2FyZCAoRFQpDQo+ID4+PiBbICAgIDAuODA3ODEx
-XSBDYWxsIHRyYWNlOg0KPiA+Pj4gWyAgICAwLjgwNzgxMl0gIGR1bXBfYmFja3RyYWNlKzB4MC8w
-eDFjMA0KPiA+Pj4gWyAgICAwLjgwNzgxM10gIHNob3dfc3RhY2srMHgxOC8weDI4DQo+ID4+PiBb
-ICAgIDAuODA3ODE0XSAgZHVtcF9zdGFjaysweGQ4LzB4MTM0DQo+ID4+PiBbICAgIDAuODA3ODE0
-XSAgcGFuaWMrMHgxODAvMHgzOTgNCj4gPj4+IFsgICAgMC44MDc4MTVdICBhZGRfdGFpbnQrMHgw
-LzB4YjANCj4gPj4+IFsgICAgMC44MDc4MTZdICBhcm02NF9zZXJyb3JfcGFuaWMrMHg3OC8weDg4
-DQo+ID4+PiBbICAgIDAuODA3ODE3XSAgZG9fc2Vycm9yKzB4NjgvMHgxODANCj4gPj4+IFsgICAg
-MC44MDc4MThdICBlbDFfZXJyb3IrMHg4NC8weDEwMA0KPiA+Pj4gWyAgICAwLjgwNzgxOF0gIHBj
-aV9nZW5lcmljX2NvbmZpZ19yZWFkKzB4M2MvMHhlMA0KPiA+Pj4gWyAgICAwLjgwNzgxOV0gIGR3
-X3BjaWVfcmRfb3RoZXJfY29uZisweDc4LzB4MTEwDQo+ID4+PiBbICAgIDAuODA3ODIwXSAgcGNp
-X2J1c19yZWFkX2NvbmZpZ19kd29yZCsweDg4LzB4ZTgNCj4gPj4+IFsgICAgMC44MDc4MjFdICBw
-Y2lfYnVzX2dlbmVyaWNfcmVhZF9kZXZfdmVuZG9yX2lkKzB4MzAvMHgxYjANCj4gPj4+IFsgICAg
-MC44MDc4MjJdICBwY2lfYnVzX3JlYWRfZGV2X3ZlbmRvcl9pZCsweDRjLzB4NzgNCj4gPj4+IFsg
-ICAgMC44MDc4MjNdICBwY2lfc2Nhbl9zaW5nbGVfZGV2aWNlKzB4ODAvMHgxMDANCj4gPj4+IFsg
-ICAgMC44MDc4MjRdICBwY2lfc2Nhbl9zbG90KzB4MzgvMHgxMzANCj4gPj4+IFsgICAgMC44MDc4
-MjVdICBwY2lfc2Nhbl9jaGlsZF9idXNfZXh0ZW5kKzB4NTQvMHgyYTANCj4gPj4+IFsgICAgMC44
-MDc4MjZdICBwY2lfc2Nhbl9jaGlsZF9idXMrMHgxNC8weDIwDQo+ID4+PiBbICAgIDAuODA3ODI3
-XSAgcGNpX3NjYW5fYnJpZGdlX2V4dGVuZCsweDIzMC8weDU3MA0KPiA+Pj4gWyAgICAwLjgwNzgy
-OF0gIHBjaV9zY2FuX2NoaWxkX2J1c19leHRlbmQrMHgxMzQvMHgyYTANCj4gPj4+IFsgICAgMC44
-MDc4MjldICBwY2lfc2Nhbl9yb290X2J1c19icmlkZ2UrMHg2NC8weGYwDQo+ID4+PiBbICAgIDAu
-ODA3ODI5XSAgcGNpX2hvc3RfcHJvYmUrMHgxOC8weGM4DQo+ID4+PiBbICAgIDAuODA3ODMwXSAg
-ZHdfcGNpZV9ob3N0X2luaXQrMHgyMjAvMHgzNzgNCj4gPj4+IFsgICAgMC44MDc4MzFdICBsc19w
-Y2llX3Byb2JlKzB4MTA0LzB4MTQwDQo+ID4+PiBbICAgIDAuODA3ODMyXSAgcGxhdGZvcm1fZHJ2
-X3Byb2JlKzB4NTQvMHhhOA0KPiA+Pj4gWyAgICAwLjgwNzgzM10gIHJlYWxseV9wcm9iZSsweDEx
-OC8weDNlMA0KPiA+Pj4gWyAgICAwLjgwNzgzNF0gIGRyaXZlcl9wcm9iZV9kZXZpY2UrMHg1Yy8w
-eGMwDQo+ID4+PiBbICAgIDAuODA3ODM1XSAgZGV2aWNlX2RyaXZlcl9hdHRhY2grMHg3NC8weDgw
-DQo+ID4+PiBbICAgIDAuODA3ODM1XSAgX19kcml2ZXJfYXR0YWNoKzB4OGMvMHhkOA0KPiA+Pj4g
-WyAgICAwLjgwNzgzNl0gIGJ1c19mb3JfZWFjaF9kZXYrMHg3Yy8weGQ4DQo+ID4+PiBbICAgIDAu
-ODA3ODM3XSAgZHJpdmVyX2F0dGFjaCsweDI0LzB4MzANCj4gPj4+IFsgICAgMC44MDc4MzhdICBi
-dXNfYWRkX2RyaXZlcisweDE1NC8weDIwMA0KPiA+Pj4gWyAgICAwLjgwNzgzOV0gIGRyaXZlcl9y
-ZWdpc3RlcisweDY0LzB4MTIwDQo+ID4+PiBbICAgIDAuODA3ODM5XSAgX19wbGF0Zm9ybV9kcml2
-ZXJfcHJvYmUrMHg3Yy8weDE0OA0KPiA+Pj4gWyAgICAwLjgwNzg0MF0gIGxzX3BjaWVfZHJpdmVy
-X2luaXQrMHgyNC8weDMwDQo+ID4+PiBbICAgIDAuODA3ODQxXSAgZG9fb25lX2luaXRjYWxsKzB4
-NjAvMHgxZDgNCj4gPj4+IFsgICAgMC44MDc4NDJdICBrZXJuZWxfaW5pdF9mcmVlYWJsZSsweDFm
-NC8weDI0Yw0KPiA+Pj4gWyAgICAwLjgwNzg0M10gIGtlcm5lbF9pbml0KzB4MTQvMHgxMTgNCj4g
-Pj4+IFsgICAgMC44MDc4NDNdICByZXRfZnJvbV9mb3JrKzB4MTAvMHgzNA0KPiA+Pj4gWyAgICAw
-LjgwNzg1NF0gU01QOiBzdG9wcGluZyBzZWNvbmRhcnkgQ1BVcw0KPiA+Pj4gWyAgICAwLjgwNzg1
-NV0gS2VybmVsIE9mZnNldDogMHgzOTRjNjQwODAwMDAgZnJvbQ0KPiAweGZmZmY4MDAwMTAwMDAw
-MDANCj4gPj4+IFsgICAgMC44MDc4NTZdIFBIWVNfT0ZGU0VUOiAweGZmZmY4YmZkNDAwMDAwMDAN
-Cj4gPj4+IFsgICAgMC44MDc4NTZdIENQVSBmZWF0dXJlczogMHgwMjQwMDIyLDIxODA2MDAwDQo+
-ID4+PiBbICAgIDAuODA3ODU3XSBNZW1vcnkgTGltaXQ6IG5vbmUNCj4gPj4+DQo+ID4+PiBGaXhl
-czogYzJiMGMwOThmYmQxICgiUENJOiBkd2M6IFVzZSBnZW5lcmljIGNvbmZpZyBhY2Nlc3NvcnMi
-KQ0KPiA+Pj4gU2lnbmVkLW9mZi1ieTogSG91IFpoaXFpYW5nIDxaaGlxaWFuZy5Ib3VAbnhwLmNv
-bT4NCj4gPj4+IC0tLQ0KPiA+Pj4gIGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvZHdjL3BjaWUtZGVz
-aWdud2FyZS1ob3N0LmMgfCA2ICsrKysrKw0KPiA+Pj4gIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2Vy
-dGlvbnMoKykNCj4gPj4+DQo+ID4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvY29udHJvbGxl
-ci9kd2MvcGNpZS1kZXNpZ253YXJlLWhvc3QuYw0KPiA+Pj4gYi9kcml2ZXJzL3BjaS9jb250cm9s
-bGVyL2R3Yy9wY2llLWRlc2lnbndhcmUtaG9zdC5jDQo+ID4+PiBpbmRleCBjMDFjOWQyZmIzZjku
-LmU4MmI1MTg0MzBjNSAxMDA2NDQNCj4gPj4+IC0tLSBhL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIv
-ZHdjL3BjaWUtZGVzaWdud2FyZS1ob3N0LmMNCj4gPj4+ICsrKyBiL2RyaXZlcnMvcGNpL2NvbnRy
-b2xsZXIvZHdjL3BjaWUtZGVzaWdud2FyZS1ob3N0LmMNCj4gPj4+IEBAIC00NDIsNiArNDQyLDkg
-QEAgc3RhdGljIHZvaWQgX19pb21lbQ0KPiA+PiAqZHdfcGNpZV9vdGhlcl9jb25mX21hcF9idXMo
-c3RydWN0IHBjaV9idXMgKmJ1cywNCj4gPj4+ICAJc3RydWN0IHBjaWVfcG9ydCAqcHAgPSBidXMt
-PnN5c2RhdGE7DQo+ID4+PiAgCXN0cnVjdCBkd19wY2llICpwY2kgPSB0b19kd19wY2llX2Zyb21f
-cHAocHApOw0KPiA+Pj4NCj4gPj4+ICsJaWYgKCFkd19wY2llX2xpbmtfdXAocGNpKSkNCj4gPj4+
-ICsJCXJldHVybiBOVUxMOw0KPiA+Pj4gKw0KPiA+Pj4gIAlidXNkZXYgPSBQQ0lFX0FUVV9CVVMo
-YnVzLT5udW1iZXIpIHwNCj4gPj4gUENJRV9BVFVfREVWKFBDSV9TTE9UKGRldmZuKSkgfA0KPiA+
-Pj4gIAkJIFBDSUVfQVRVX0ZVTkMoUENJX0ZVTkMoZGV2Zm4pKTsNCj4gPj4+DQo+ID4+PiAtLQ0K
-PiA+Pj4gMi4xNy4xDQo+ID4+Pg0K
+On 2020-10-06 06:36, Jaegeuk Kim wrote:
+> From: Jaegeuk Kim <jaegeuk@google.com>
+> 
+> In order to conduct FFU or RPMB operations, UFS needs to clear UAC. 
+> This patch
+> clears it explicitly, so that we could get no failure given early 
+> execution.
+> 
+
+Usually it is the user's/utility's/tool's responsiblity to clear UA by 
+sending a
+request sense cmd and retry previous cmd, now we are doing it for the 
+users in driver?
+As per my understanding, driver only reports UA to SCSI layer and let 
+users decide
+what to do with it - maybe users need to do something specifically regs 
+it, but
+the change clears it even before the users get to know it.
+
+Besides, this change clears UA for W-LUs, but the UFS driver still 
+reports UA to SCSI
+layer for each SCSI device by calling scsi_report_bus_reset() in
+ufshcd_reset_and_restore(). This will make SCSI layer treat 
+sdev->expecting_cc_ua
+wrongly, because for W-LUs, their expecting_cc_ua should not be set as 
+you have
+cleared their UAs.
+
+Thanks,
+
+Can Guo.
+
+> Cc: Alim Akhtar <alim.akhtar@samsung.com>
+> Cc: Avri Altman <avri.altman@wdc.com>
+> Cc: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 70 +++++++++++++++++++++++++++++++++++----
+>  drivers/scsi/ufs/ufshcd.h |  1 +
+>  2 files changed, 65 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index d929c3d1e58cc..0bb07b50bd23e 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6841,7 +6841,6 @@ static inline void
+> ufshcd_blk_pm_runtime_init(struct scsi_device *sdev)
+>  static int ufshcd_scsi_add_wlus(struct ufs_hba *hba)
+>  {
+>  	int ret = 0;
+> -	struct scsi_device *sdev_rpmb;
+>  	struct scsi_device *sdev_boot;
+> 
+>  	hba->sdev_ufs_device = __scsi_add_device(hba->host, 0, 0,
+> @@ -6854,14 +6853,14 @@ static int ufshcd_scsi_add_wlus(struct ufs_hba 
+> *hba)
+>  	ufshcd_blk_pm_runtime_init(hba->sdev_ufs_device);
+>  	scsi_device_put(hba->sdev_ufs_device);
+> 
+> -	sdev_rpmb = __scsi_add_device(hba->host, 0, 0,
+> +	hba->sdev_rpmb = __scsi_add_device(hba->host, 0, 0,
+>  		ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_RPMB_WLUN), NULL);
+> -	if (IS_ERR(sdev_rpmb)) {
+> -		ret = PTR_ERR(sdev_rpmb);
+> +	if (IS_ERR(hba->sdev_rpmb)) {
+> +		ret = PTR_ERR(hba->sdev_rpmb);
+>  		goto remove_sdev_ufs_device;
+>  	}
+> -	ufshcd_blk_pm_runtime_init(sdev_rpmb);
+> -	scsi_device_put(sdev_rpmb);
+> +	ufshcd_blk_pm_runtime_init(hba->sdev_rpmb);
+> +	scsi_device_put(hba->sdev_rpmb);
+> 
+>  	sdev_boot = __scsi_add_device(hba->host, 0, 0,
+>  		ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_BOOT_WLUN), NULL);
+> @@ -7385,6 +7384,63 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+>  	return ret;
+>  }
+> 
+> +static int
+> +ufshcd_send_request_sense(struct ufs_hba *hba, struct scsi_device 
+> *sdp);
+> +
+> +static int ufshcd_clear_ua_wlun(struct ufs_hba *hba, u8 wlun)
+> +{
+> +	struct scsi_device *sdp;
+> +	unsigned long flags;
+> +	int ret = 0;
+> +
+> +	spin_lock_irqsave(hba->host->host_lock, flags);
+> +	if (wlun  == UFS_UPIU_UFS_DEVICE_WLUN)
+> +		sdp = hba->sdev_ufs_device;
+> +	else if (wlun  == UFS_UPIU_RPMB_WLUN)
+> +		sdp = hba->sdev_rpmb;
+> +	else
+> +		BUG_ON(1);
+> +	if (sdp) {
+> +		ret = scsi_device_get(sdp);
+> +		if (!ret && !scsi_device_online(sdp)) {
+> +			ret = -ENODEV;
+> +			scsi_device_put(sdp);
+> +		}
+> +	} else {
+> +		ret = -ENODEV;
+> +	}
+> +	spin_unlock_irqrestore(hba->host->host_lock, flags);
+> +	if (ret)
+> +		goto out_err;
+> +
+> +	ret = ufshcd_send_request_sense(hba, sdp);
+> +	scsi_device_put(sdp);
+> +out_err:
+> +	if (ret)
+> +		dev_err(hba->dev, "%s: UAC clear LU=%x ret = %d\n",
+> +				__func__, wlun, ret);
+> +	return ret;
+> +}
+> +
+> +static int ufshcd_clear_ua_wluns(struct ufs_hba *hba)
+> +{
+> +	int ret = 0;
+> +
+> +	if (!hba->wlun_dev_clr_ua)
+> +		goto out;
+> +
+> +	ret = ufshcd_clear_ua_wlun(hba, UFS_UPIU_UFS_DEVICE_WLUN);
+> +	if (!ret)
+> +		ret = ufshcd_clear_ua_wlun(hba, UFS_UPIU_RPMB_WLUN);
+> +	if (!ret)
+> +		hba->wlun_dev_clr_ua = false;
+> +out:
+> +	if (ret)
+> +		dev_err(hba->dev, "%s: Failed to clear UAC WLUNS ret = %d\n",
+> +				__func__, ret);
+> +	return ret;
+> +}
+> +
+>  /**
+>   * ufshcd_probe_hba - probe hba to detect device and initialize
+>   * @hba: per-adapter instance
+> @@ -7500,6 +7556,8 @@ static void ufshcd_async_scan(void *data,
+> async_cookie_t cookie)
+>  		pm_runtime_put_sync(hba->dev);
+>  		ufshcd_exit_clk_scaling(hba);
+>  		ufshcd_hba_exit(hba);
+> +	} else {
+> +		ufshcd_clear_ua_wluns(hba);
+>  	}
+>  }
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 363589c0bd370..8344d8cb36786 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -662,6 +662,7 @@ struct ufs_hba {
+>  	 * "UFS device" W-LU.
+>  	 */
+>  	struct scsi_device *sdev_ufs_device;
+> +	struct scsi_device *sdev_rpmb;
+> 
+>  	enum ufs_dev_pwr_mode curr_dev_pwr_mode;
+>  	enum uic_link_state uic_link_state;
