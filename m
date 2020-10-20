@@ -2,311 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F401293F67
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3E1293F75
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408630AbgJTPSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 11:18:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53802 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731735AbgJTPS3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 11:18:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603207106;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+fq27Lrjh4A+WF1/QMsoiHGG+aBtxAgUfHzjn77I/58=;
-        b=Esd+pUHck26qaIkw+pm0T+mdIIqstAzBlRPmWSX8fIuCsFb2HjBJ49jewC3Nrgu2/+6579
-        9FyqBkpG1kJ1iggJuZUbAMxxPg/o/JAjd22aI2WikSxEoInjKdJZJCEvF97+nh6ep0c8vJ
-        ro7LfotfQs/bO2XDFINXIPd4BdVP0nQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-5n0XqEwfO1i_tqMwy6QGFg-1; Tue, 20 Oct 2020 11:18:20 -0400
-X-MC-Unique: 5n0XqEwfO1i_tqMwy6QGFg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2408673AbgJTPVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 11:21:42 -0400
+Received: from correo.us.es ([193.147.175.20]:51616 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408630AbgJTPVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 11:21:40 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 6B7721761AE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 17:21:38 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 5C09C52543
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 17:21:38 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 51649E1517; Tue, 20 Oct 2020 17:21:38 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
+        version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 37CC2F7327;
+        Tue, 20 Oct 2020 17:21:36 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 20 Oct 2020 17:21:36 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E417F64145;
-        Tue, 20 Oct 2020 15:18:17 +0000 (UTC)
-Received: from localhost (ovpn-12-44.pek2.redhat.com [10.72.12.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BC9156EF45;
-        Tue, 20 Oct 2020 15:18:16 +0000 (UTC)
-Date:   Tue, 20 Oct 2020 23:18:14 +0800
-From:   "bhe@redhat.com" <bhe@redhat.com>
-To:     Rahul Gopakumar <gopakumarr@vmware.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "natechancellor@gmail.com" <natechancellor@gmail.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Rajender M <manir@vmware.com>,
-        Yiu Cho Lau <lauyiuch@vmware.com>,
-        Peter Jonasson <pjonasson@vmware.com>,
-        Venkatesh Rajaram <rajaramv@vmware.com>
-Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel
-Message-ID: <20201020151814.GU25604@MiWiFi-R3L-srv>
-References: <DM6PR05MB52921FF90FA01CC337DD23A1A4080@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201010061124.GE25604@MiWiFi-R3L-srv>
- <DM6PR05MB529281F914953691E0F52D1CA4070@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201013131735.GL25604@MiWiFi-R3L-srv>
- <DM6PR05MB52926FDAB0E58F5CFA2E892DA41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 123654301DE0;
+        Tue, 20 Oct 2020 17:21:36 +0200 (CEST)
+Date:   Tue, 20 Oct 2020 17:21:35 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Francesco Ruggeri <fruggeri@arista.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, fw@strlen.org,
+        kadlec@netfilter.org
+Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
+ re-register
+Message-ID: <20201020152135.GA19913@salvia>
+References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DM6PR05MB52926FDAB0E58F5CFA2E892DA41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
+In-Reply-To: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/20 at 01:45pm, Rahul Gopakumar wrote:
-> Hi Baoquan,
-> 
-> We had some trouble applying the patch to problem commit and the latest upstream commit. Steven (CC'ed) helped us by providing the updated draft patch. We applied it on the latest commit (3e4fb4346c781068610d03c12b16c0cfb0fd24a3), and it doesn't look like improving the performance numbers.
+On Wed, Oct 07, 2020 at 12:32:52PM -0700, Francesco Ruggeri wrote:
+> If the first packet conntrack sees after a re-register is an outgoing
+> keepalive packet with no data (SEG.SEQ = SND.NXT-1), td_end is set to
+> SND.NXT-1.
+> When the peer correctly acknowledges SND.NXT, tcp_in_window fails
+> check III (Upper bound for valid (s)ack: sack <= receiver.td_end) and
+> returns false, which cascades into nf_conntrack_in setting
+> skb->_nfct = 0 and in later conntrack iptables rules not matching.
+> In cases where iptables are dropping packets that do not match
+> conntrack rules this can result in idle tcp connections to time out.
 
-Thanks for your feedback. From the code, I am sure what the problem is,
-but I didn't test it on system with huge memory. Forget mentioning my
-draft patch is based on akpm/master branch since it's a mm issue, it
-might be a little different with linus's mainline kernel, sorry for the
-inconvenience.
-
-I will test and debug this on a server with 4T memory in our lab, and
-update if any progress.
-
-> 
-> Patch on latest commit - 20.161 secs
-> Vanilla latest commit - 19.50 secs
-
-Here, do you mean it even cost more time with the patch applied?
-
-> 
-> Here is the draft patch we tried
-> 
-> ------------------------
-> 
-> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-> index 8e7b8c6c576e..ff5fa4c3889e 100644
-> --- a/arch/ia64/mm/init.c
-> +++ b/arch/ia64/mm/init.c
-> @@ -537,7 +537,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
->  
->          if (map_start < map_end)
->                  memmap_init_zone((unsigned long)(map_end - map_start),
-> -                                args->nid, args->zone, page_to_pfn(map_start),
-> +                                args->nid, args->zone, page_to_pfn(map_start), page_to_pfn(map_end),
->                                   MEMINIT_EARLY, NULL);
->          return 0;
->  }
-> @@ -547,7 +547,7 @@ memmap_init (unsigned long size, int nid, unsigned long zone,
->               unsigned long start_pfn)
->  {
->          if (!vmem_map) {
-> -               memmap_init_zone(size, nid, zone, start_pfn,
-> +               memmap_init_zone(size, nid, zone, start_pfn, start_pfn + size,
->                                   MEMINIT_EARLY, NULL);
->          } else {
->                  struct page *start;
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 16b799a0522c..65e34b370e33 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2416,7 +2416,7 @@ extern int __meminit __early_pfn_to_nid(unsigned long pfn,
->  
->  extern void set_dma_reserve(unsigned long new_dma_reserve);
->  extern void memmap_init_zone(unsigned long, int, unsigned long, unsigned long,
-> -               enum meminit_context, struct vmem_altmap *);
-> +               unsigned long, enum meminit_context, struct vmem_altmap *);
->  extern void setup_per_zone_wmarks(void);
->  extern int __meminit init_per_zone_wmark_min(void);
->  extern void mem_init(void);
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index ce3e73e3a5c1..03fddd8f4b11 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -728,7 +728,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
->           * expects the zone spans the pfn range. All the pages in the range
->           * are reserved so nobody should be touching them so we should be safe
->           */
-> -       memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn,
-> +       memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn, 0,
->                           MEMINIT_HOTPLUG, altmap);
->  
->          set_zone_contiguous(zone);
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 780c8f023b28..fe80055ea59c 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5989,8 +5989,8 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
->   * done. Non-atomic initialization, single-pass.
->   */
->  void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
-> -               unsigned long start_pfn, enum meminit_context context,
-> -               struct vmem_altmap *altmap)
-> +               unsigned long start_pfn, unsigned long zone_end_pfn,
-> +               enum meminit_context context, struct vmem_altmap *altmap)
->  {
->          unsigned long pfn, end_pfn = start_pfn + size;
->          struct page *page;
-> @@ -6024,7 +6024,7 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
->                  if (context == MEMINIT_EARLY) {
->                          if (overlap_memmap_init(zone, &pfn))
->                                  continue;
-> -                       if (defer_init(nid, pfn, end_pfn))
-> +                       if (defer_init(nid, pfn, zone_end_pfn))
->                                  break;
->                  }
->  
-> @@ -6150,7 +6150,7 @@ void __meminit __weak memmap_init(unsigned long size, int nid,
->  
->                  if (end_pfn > start_pfn) {
->                          size = end_pfn - start_pfn;
-> -                       memmap_init_zone(size, nid, zone, start_pfn,
-> +                       memmap_init_zone(size, nid, zone, start_pfn, range_end_pfn,
->                                           MEMINIT_EARLY, NULL);
->                  }
->          }
-> 
-> 
-> ------------------------
-> 
-> We have attached default dmesg logs and also dmesg logs collected with memblock=debug kernel cmdline for both vanilla and patched kernels. Let me know if you need more info.
-> 
-> 
-> 
-> From: bhe@redhat.com <bhe@redhat.com>
-> Sent: 13 October 2020 6:47 PM
-> To: Rahul Gopakumar <gopakumarr@vmware.com>
-> Cc: linux-mm@kvack.org <linux-mm@kvack.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; akpm@linux-foundation.org <akpm@linux-foundation.org>; natechancellor@gmail.com <natechancellor@gmail.com>; ndesaulniers@google.com <ndesaulniers@google.com>; clang-built-linux@googlegroups.com <clang-built-linux@googlegroups.com>; rostedt@goodmis.org <rostedt@goodmis.org>; Rajender M <manir@vmware.com>; Yiu Cho Lau <lauyiuch@vmware.com>; Peter Jonasson <pjonasson@vmware.com>; Venkatesh Rajaram <rajaramv@vmware.com>
-> Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel 
->  
-> Hi Rahul,
-> 
-> On 10/12/20 at 05:21pm, Rahul Gopakumar wrote:
-> > Hi Baoquan,
-> > 
-> > Attached collected dmesg logs for with and without
-> > commit after adding memblock=debug to kernel cmdline.
-> 
-> Can you test below draft patch and see if it works for you? 
-> 
-> From a2ea6caef3c73ad9efb2dd2b48039065fe430bb2 Mon Sep 17 00:00:00 2001
-> From: Baoquan He <bhe@redhat.com>
-> Date: Tue, 13 Oct 2020 20:05:30 +0800
-> Subject: [PATCH] mm: make memmap defer init only take effect per zone
-> 
-> Deferred struct page init is designed to work per zone. However since
-> commit 73a6e474cb376 ("mm: memmap_init: iterate over memblock regions
-> rather that check each PFN"), the handling is mistakenly done in all memory
-> ranges inside one zone. Especially in those unmovable zones of multiple nodes,
-> memblock reservation split them into many memory ranges. This makes
-> initialized struct page more than expected in early stage, then increases
-> much boot time.
-> 
-> Let's fix it to make the memmap defer init handled in zone wide, but not in
-> memory range of one zone.
-> 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> ---
->  arch/ia64/mm/init.c | 4 ++--
->  include/linux/mm.h  | 5 +++--
->  mm/memory_hotplug.c | 2 +-
->  mm/page_alloc.c     | 6 +++---
->  4 files changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-> index ef12e097f318..27ca549ff47e 100644
-> --- a/arch/ia64/mm/init.c
-> +++ b/arch/ia64/mm/init.c
-> @@ -536,7 +536,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
->  
->          if (map_start < map_end)
->                  memmap_init_zone((unsigned long)(map_end - map_start),
-> -                                args->nid, args->zone, page_to_pfn(map_start),
-> +                                args->nid, args->zone, page_to_pfn(map_start), page_to_pfn(map_end),
->                                   MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
->          return 0;
->  }
-> @@ -546,7 +546,7 @@ memmap_init (unsigned long size, int nid, unsigned long zone,
->               unsigned long start_pfn)
->  {
->          if (!vmem_map) {
-> -               memmap_init_zone(size, nid, zone, start_pfn,
-> +               memmap_init_zone(size, nid, zone, start_pfn, start_pfn + size,
->                                   MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
->          } else {
->                  struct page *start;
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index ef360fe70aaf..5f9fc61d5be2 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2439,8 +2439,9 @@ extern int __meminit __early_pfn_to_nid(unsigned long pfn,
->  #endif
->  
->  extern void set_dma_reserve(unsigned long new_dma_reserve);
-> -extern void memmap_init_zone(unsigned long, int, unsigned long, unsigned long,
-> -               enum meminit_context, struct vmem_altmap *, int migratetype);
-> +extern void memmap_init_zone(unsigned long, int, unsigned long,
-> +               unsigned long, unsigned long, enum meminit_context,
-> +               struct vmem_altmap *, int migratetype);
->  extern void setup_per_zone_wmarks(void);
->  extern int __meminit init_per_zone_wmark_min(void);
->  extern void mem_init(void);
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index b44d4c7ba73b..f9a37e6abc1c 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -732,7 +732,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
->           * expects the zone spans the pfn range. All the pages in the range
->           * are reserved so nobody should be touching them so we should be safe
->           */
-> -       memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn,
-> +       memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn, 0,
->                           MEMINIT_HOTPLUG, altmap, migratetype);
->  
->          set_zone_contiguous(zone);
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 2ebf9ddafa3a..e8b19fdd18ec 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6044,7 +6044,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
->   * zone stats (e.g., nr_isolate_pageblock) are touched.
->   */
->  void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
-> -               unsigned long start_pfn,
-> +               unsigned long start_pfn, unsigned long zone_end_pfn,
->                  enum meminit_context context,
->                  struct vmem_altmap *altmap, int migratetype)
->  {
-> @@ -6080,7 +6080,7 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
->                  if (context == MEMINIT_EARLY) {
->                          if (overlap_memmap_init(zone, &pfn))
->                                  continue;
-> -                       if (defer_init(nid, pfn, end_pfn))
-> +                       if (defer_init(nid, pfn, zone_end_pfn))
->                                  break;
->                  }
->  
-> @@ -6194,7 +6194,7 @@ void __meminit __weak memmap_init(unsigned long size, int nid,
->  
->                  if (end_pfn > start_pfn) {
->                          size = end_pfn - start_pfn;
-> -                       memmap_init_zone(size, nid, zone, start_pfn,
-> +                       memmap_init_zone(size, nid, zone, start_pfn, range_end_pfn,
->                                           MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
->                  }
->          }
-> -- 
-> 2.17.2
-
-
-
-
-
+Applied, thanks.
