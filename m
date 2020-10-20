@@ -2,72 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F7B2938CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764432938D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405883AbgJTKEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:04:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:49004 "EHLO foss.arm.com"
+        id S2405912AbgJTKFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 06:05:18 -0400
+Received: from mga17.intel.com ([192.55.52.151]:9626 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727589AbgJTKEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:04:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 111A3101E;
-        Tue, 20 Oct 2020 03:04:02 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.53.249])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A730C3F66E;
-        Tue, 20 Oct 2020 03:03:59 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 11:03:52 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Mark Brown <broonie@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] arm64: Implement reliable stack trace
-Message-ID: <20201020100352.GA48360@C02TD0UTHF1T.local>
-References: <20201012172605.10715-1-broonie@kernel.org>
- <alpine.LSU.2.21.2010151533490.14094@pobox.suse.cz>
- <20201015141612.GC50416@C02TD0UTHF1T.local>
- <20201015154951.GD4390@sirena.org.uk>
- <20201015212931.mh4a5jt7pxqlzxsg@treble>
- <20201016111431.GB84361@C02TD0UTHF1T.local>
+        id S2405412AbgJTKFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 06:05:18 -0400
+IronPort-SDR: 4pu+Qx3YSahBQ4f9shrHwmz37sx+ZcSb9LIGB4MuH5jHCF3TylbSyY+ykPahLPrupBpUDmfVDd
+ yU5JqfD+y9QQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="147041745"
+X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
+   d="scan'208";a="147041745"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 03:05:18 -0700
+IronPort-SDR: 35GOW96f0+iCOOvX8X8vt+j0U8FL8ZJ+CjbcpGTt1NuTnA+G5U/f7dnbITHEhGicyhF70Yq6m8
+ AxXeIHh0WV5w==
+X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
+   d="scan'208";a="465879281"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 03:05:12 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id A9E252068C; Tue, 20 Oct 2020 13:05:10 +0300 (EEST)
+Date:   Tue, 20 Oct 2020 13:05:10 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
+        andriy.shevchenko@linux.intel.com, sergey.senozhatsky@gmail.com,
+        rostedt@goodmis.org, pmladek@suse.com, mchehab@kernel.org,
+        tian.shu.qiu@intel.com, bingbu.cao@intel.com, yong.zhi@intel.com,
+        rafael@kernel.org, gregkh@linuxfoundation.org, kitakar@gmail.com,
+        dan.carpenter@oracle.org
+Subject: Re: [RFC PATCH v3 1/9] software_node: Add helper function to
+ unregister arrays of software_nodes ordered parent to child
+Message-ID: <20201020100510.GS13341@paasikivi.fi.intel.com>
+References: <20201019225903.14276-1-djrscally@gmail.com>
+ <20201019225903.14276-2-djrscally@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201016111431.GB84361@C02TD0UTHF1T.local>
+In-Reply-To: <20201019225903.14276-2-djrscally@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 12:14:31PM +0100, Mark Rutland wrote:
-> Mark B's reply dropped this, but the next paragraph covered that:
+Hi Daniel, Andy,
+
+On Mon, Oct 19, 2020 at 11:58:55PM +0100, Daniel Scally wrote:
+> Software nodes that are children of another software node should be
+> unregistered before their parent. To allow easy unregistering of an array
+> of software_nodes ordered parent to child, add a helper function to loop
+> over and unregister nodes in such an array in reverse order.
 > 
-> | I was planning to send a mail once I've finished writing a test, but
-> | IIUC there are some windows where ftrace/kretprobes
-> | detection/repainting may not work, e.g. if preempted after
-> | ftrace_return_to_handler() decrements curr_ret_stack, but before the
-> | arch trampoline asm restores the original return addr. So we might
-> | need something like an in_return_trampoline() to detect and report
-> | that reliably.
+> Suggested-by: Andriy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v3:
+> 	- patch introduced.
 > 
-> ... so e.g. for a callchain A->B->C, where C is instrumented there are
-> windows where B might be missing from the trace, but the trace is
-> reported as reliable.
+>  drivers/base/swnode.c    | 21 +++++++++++++++++++++
+>  include/linux/property.h |  1 +
+>  2 files changed, 22 insertions(+)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 010828fc7..f01b1cc61 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -727,6 +727,27 @@ void software_node_unregister_nodes(const struct software_node *nodes)
+>  }
+>  EXPORT_SYMBOL_GPL(software_node_unregister_nodes);
+>  
+> +/**
+> + * software_node_unregister_nodes_reverse - Unregister an array of software
+> + * nodes in reverse order.
+> + * @nodes: Array of software nodes to be unregistered.
+> + *
+> + * NOTE: The same warning applies as with software_node_unregister_nodes.
+> + * Unless you are _sure_ that the array of nodes is ordered parent to child
+> + * it is wiser to remove them individually in the correct order.
 
-I'd missed a couple of details, and I think I see how each existing
-architecture prevents this case now.
+Could the default order in software_node_unregister_nodes() be reversed
+instead? There are no users so this should be easy to change.
 
-Josh, just to confirm the x86 case, am I right in thinking that the ORC
-unwinder will refuse to unwind from the return_to_handler and
-kretprobe_trampoline asm? IIRC objtool shouldn't build unwind info for
-those as return_to_handler is marked with SYM_CODE_{START,END}() and
-kretprobe_trampoline is marked with STACK_FRAME_NON_STANDARD().
+Doing this only one way may require enforcing the registration order in
+software_node_register_nodes(), but the end result would be safer.
 
-Both powerpc and s390 refuse to reliably unwind through exceptions, so
-they can rely on function call boundaries to keep the callchain in a
-sane state.
+What do you think?
 
-Thanks,
-Mark.
+-- 
+Regards,
+
+Sakari Ailus
