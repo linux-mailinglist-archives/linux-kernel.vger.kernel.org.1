@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB75293D89
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A95A293E03
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407616AbgJTNmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:42:12 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:34851 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407531AbgJTNmL (ORCPT
+        id S2407753AbgJTOA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:00:29 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:41608 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407726AbgJTOA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:42:11 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 578845C013A;
-        Tue, 20 Oct 2020 09:42:10 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 20 Oct 2020 09:42:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
-         h=date:from:to:cc:subject:message-id:reply-to:references
-        :mime-version:content-type:in-reply-to; s=fm3; bh=ZMa3Hsq3K6k+WS
-        uLm783S+v1/oervsBHxqi7iGWY/I4=; b=Uv/im2nZoer0hdGfr5/1zto0w7WIeF
-        0yZmxErjYDCKJevCcTc7WbpCpOMzz2BuqkVCoDlotinUlkni5oMlIyCcWWkNWLcs
-        liOKshgrPNrXFF0VZ3NTBHcJDBGtVxIOeKDFp3KMBZsFOb4i5Nj83Cqw7+fimAmm
-        vXxSmMWTyy+d2eWGxoXhK0pcpaHtsbGMK9kodpVOhC2QMZ5YJpH8I8LNmw3J3e6N
-        GVimvV2htCCqFOlMNIrT8B0PSBcH9WZZFZWMEYJK1jmjpBD/KraM6eNQERza0YV/
-        f0Lti5JcXMRyG+eZmvyBtZJYOWuU9fXKQA3Q7qnJNJEqwsl7WNaNNxIQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:reply-to:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=ZMa3Hsq3K6k+WSuLm783S+v1/oervsBHxqi7iGWY/I4=; b=DdH/db0e
-        ebewXcjVeVdw5hVlDo77I9TI1AY3bvbST2t0qrfOM+nd9PdyMWNLXBJ6p4G8DfaQ
-        WuFLLXAvLD1uFNmdPAfRLgF+I+R+vGpea0THoD/H4E5BsXHxOId9ix3x5T/DJheJ
-        2fxBtTZdvt+YHcf6OrKCxvv/TmdW5qOLhrzFO5CwJRap1faX8ANKtb1LixuNbceC
-        RBseVze5FxCtMHKl285sTq46BhSioNK11jC3DCh6uwlkSbTfTmknwyph5DwulLAU
-        eD7YandfKstBR+53JoYDot4mlcV3mb+XLN2LwLeDSPL4nhWx+Az8UqZ0+UbrNnFg
-        LcDzOrzS+cZ3Gg==
-X-ME-Sender: <xms:MemOXx91CV1zACq219WOPG7C9hXBzrgk1ooCYZ4oTlGxwrHUshvQ3Q>
-    <xme:MemOX1vUyj5AM2he_kA6MO2nBvlEDbwi4bqSZClrSDcfwfAID35DYa94bTvUMY5XK
-    ZMHi9fmT-pljX584AU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeefgdeiiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkrhhfgggtuggjfgesthdtredttderjeenucfhrhhomhepuegvnhcu
-    uehovggtkhgvlhcuoehmvgessggvnhgsohgvtghkvghlrdhnvghtqeenucggtffrrghtth
-    gvrhhnpeejtddvffehtefgkedtheevgfeileegfeehjedvhedtudeiteegtdeftdelvedv
-    ffenucfkphepvdegrdduieelrddvtddrvdehheenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmvgessggvnhgsohgvtghkvghlrdhnvght
-X-ME-Proxy: <xmx:MemOX_CEapx_CgKEyP8UMfda87_RgGDsLPhyCHvh-siyrsxjprEQKA>
-    <xmx:MemOX1em7T5_lI2PnXoeeNW58u5aziQQg0eqYj7O8B9LxGDoWzFSZw>
-    <xmx:MemOX2PBGVWfFF0nwdTwUAhbcJCAPYFAe_GUqil_YzcXtWy4jeIfTw>
-    <xmx:MumOX933Qoe5fpH4IFCmYtqROWjVDCN2FuK4bfNX9XwPeDaxvPREpw>
-Received: from localhost (unknown [24.169.20.255])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 495C53064680;
-        Tue, 20 Oct 2020 09:42:09 -0400 (EDT)
-Date:   Tue, 20 Oct 2020 09:42:08 -0400
-From:   Ben Boeckel <me@benboeckel.net>
-To:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Subject: Re: [RFC PATCH 2/2] PKCS#7: Check codeSigning EKU for kernel module
- and kexec pe verification
-Message-ID: <20201020134208.GA297878@erythro.dev.benboeckel.internal>
-Reply-To: list.lkml.keyrings@me.benboeckel.net
-References: <20201020065001.13836-1-jlee@suse.com>
- <20201020065001.13836-3-jlee@suse.com>
+        Tue, 20 Oct 2020 10:00:29 -0400
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id A18DA3B2BD6;
+        Tue, 20 Oct 2020 13:44:05 +0000 (UTC)
+X-Originating-IP: 103.82.80.92
+Received: from localhost (unknown [103.82.80.92])
+        (Authenticated sender: me@yadavpratyush.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id CCB24FF80D;
+        Tue, 20 Oct 2020 13:43:40 +0000 (UTC)
+From:   Pratyush Yadav <me@yadavpratyush.com>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com, broonie@kernel.org,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        miquel.raynal@bootlin.com, simon.k.r.goldschmidt@gmail.com,
+        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com
+Subject: Re: [RESENDPATCH v1 2/6] spi: cadence-quadspi: Disable the DAC for
+ Intel LGM SoC
+References: <20201020023226.33559-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20201020023226.33559-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+Date:   Tue, 20 Oct 2020 19:13:37 +0530
+In-Reply-To: <20201020023226.33559-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+        (Vadivel MuruganX Ramuthevar's message of "Tue, 20 Oct 2020 10:32:22
+        +0800")
+Message-ID: <87y2k1dncm.fsf@yadavpratyush.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201020065001.13836-3-jlee@suse.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 14:50:01 +0800, Lee, Chun-Yi wrote:
-> +config CHECK_CODESIGN_EKU
-> +	bool "Check codeSigning extended key usage"
-> +	depends on PKCS7_MESSAGE_PARSER=y
-> +	depends on SYSTEM_DATA_VERIFICATION
-> +	help
-> +	  This option provides support for checking the codeSigning extended
-> +	  key usage extension when verifying the signature in PKCS#7. It
-> +	  affects kernel module verification and kexec PE binary verification
-> +	  now.
+On Tue, Oct 20 2020, Ramuthevar,Vadivel MuruganX wrote:
 
-Is the "now" necessary? Isn't it implied by the option's existence?
+Hi,
 
---Ben
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+>
+> On Intel Lightning Mountain(LGM) SoCs QSPI controller do not use
+> Direct Access Controller(DAC).
+>
+> This patch adds a quirk to disable the Direct Access Controller
+> for data transfer instead it uses indirect data transfer.
+>
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> ---
+>  drivers/spi/spi-cadence-quadspi.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+> index d7b10c46fa70..3d017b484114 100644
+> --- a/drivers/spi/spi-cadence-quadspi.c
+> +++ b/drivers/spi/spi-cadence-quadspi.c
+> @@ -1106,6 +1106,13 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
+>  	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
+>  	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
+>  
+> +	/* Disable direct access controller */
+> +	if (!cqspi->use_direct_mode) {
+> +		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
+> +		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
+> +		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
+> +	}
+> +
+>  	cqspi_controller_enable(cqspi, 1);
+>  }
+>  
+> @@ -1388,6 +1395,10 @@ static const struct cqspi_driver_platdata am654_ospi = {
+>  	.quirks = CQSPI_NEEDS_WR_DELAY,
+>  };
+>  
+> +static const struct cqspi_driver_platdata intel_lgm_qspi = {
+> +	.quirks = CQSPI_DISABLE_DAC_MODE,
+> +};
+> +
+>  static const struct of_device_id cqspi_dt_ids[] = {
+>  	{
+>  		.compatible = "cdns,qspi-nor",
+> @@ -1403,6 +1414,7 @@ static const struct of_device_id cqspi_dt_ids[] = {
+>  	},
+>  	{
+>  		.compatible = "intel,lgm-qspi",
+> +		.data = &intel_lgm_qspi,
+>  	},
+>  	{ /* end of table */ }
+>  };
+
+-- 
+Regards,
+Pratyush Yadav
