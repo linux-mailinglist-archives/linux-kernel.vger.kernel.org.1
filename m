@@ -2,253 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3124729410D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50302294112
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395129AbgJTRFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 13:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395094AbgJTRFE (ORCPT
+        id S2395134AbgJTRHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 13:07:52 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22216 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389534AbgJTRHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 13:05:04 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9984AC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 10:05:03 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id lw21so3824458ejb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 10:05:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=C3MYOAyER7eRaYplTmQSfHj/vWn2iuqLFvr+uBlCcqo=;
-        b=V/PAKYc4GxLuXpfbfMJ0VbWKyR+7WMwU1gnH/2YMxkbSDus2F5e2kUtOPOxVoC8ZT8
-         9opgnVcA6VPuNqboTwrxIqtb5hjkW48s8OtJ/zJ8t+NRCaa5LQM9yC5ONYmtVU3Q6GUU
-         mUvklSgRgWxehghpVoRtCUSbLLAk/9e3gxvbiH5DVnaHE4OxUZyeQd2/i+x2d6gwMNM+
-         mh3ZvufUXbZyG9uA8NR096OFziC3Fpj3ssV+svvNfvLNiybSLx7RV7wcnOnwtbbnUtiI
-         4addjtvIv6hf+ooUbEpB6GD/qhE1nyN6d4TqRjxQp/zE4WZPCwAMncWphqcYGYhZDtuO
-         Nvyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=C3MYOAyER7eRaYplTmQSfHj/vWn2iuqLFvr+uBlCcqo=;
-        b=sIOrR8fxAjtcCkkX5eThNsUdmmhTc/4v/G9HhrUhbUohNgAAaXNO1sg9hfvl0V2KEC
-         iEzhpA2vLm/FS8cOIIOwZCX2H6qh94SNOOetDBFWnvf2p1nimh+dlDNVzYdEY8Yv/u7S
-         SKWyOvqZF/gJPKMYAKjdqKLrUYwUx6yhzPYAAjPsuHiWR/5FRRNCOaboH3tm8zW0iHGZ
-         2w9xA5DEdetsQH3HF5K1jmvwixJ2oiUvOKmYkhc3jrO3EYNMjo8xCqUkKKIOJP9xtW+K
-         x23NT6byC4AFxT8wyzD1OPRS2jljbKWmkbDvQi8xGTYKkbjZ9Rt1IL7mqB4egbLmpFtX
-         +qDQ==
-X-Gm-Message-State: AOAM531Ww1G66J4EbqVlgtwZmaCEwICofzx3rEMrx69JurzZn0IOmUsq
-        45WY8Ykc0sjP6jDvrzcTrRm1QTAPBxJQH44FpsarBg==
-X-Google-Smtp-Source: ABdhPJyt73d14bElB4Yml6R/uQKVIY6si4kfCKZNS+rE/uUq0/7JvG6q54/gPiIEvdHlSx8R8jv2pJht0NAHu9RBG+s=
-X-Received: by 2002:a17:906:4e19:: with SMTP id z25mr4369995eju.44.1603213501911;
- Tue, 20 Oct 2020 10:05:01 -0700 (PDT)
+        Tue, 20 Oct 2020 13:07:52 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09KH0Cce027153;
+        Tue, 20 Oct 2020 10:07:32 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=aOug9L2PY1geTP5x0no1Joayj3ek0GwafW1LZSea/UE=;
+ b=pLX6XUxhMnuEDCdiM/aEbvk+QMzHaS1orNOlQNhJizHlgG0Af6FFxNIAFhNnXpG/lCXo
+ 9zb1uv+7pqYcc6CXwMOnOF1ya1kNuuEUF6tGi0tYyLkwrZX2qJBGrb+FDSLuXx2Ze9ku
+ v/OIvQ/Ed0DEFVijrc8XOeQ7y3kRHICE12c= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34a1s2ruae-20
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 20 Oct 2020 10:07:31 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 20 Oct 2020 10:07:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bssAY+aCTlQ15E5nFhh2+ZFfxIAbWKKYEskZKsmWrIW3pCd7jSy7u10cZ8WAtailVdAfbVQLjIaRJX+lqrt6T1JqgyMxDWJRpztKpMgdCcZaWhTf9wbXlF2k2NG/RjLIZiF6BO/HcltCSOxv8HLjENU4snf1mfYYo9GsxEbJ680MWVr83TWz4rdQ5myd1nzUsA9BAI3EZbzSfj81gj34qWbTp+rRp8MWHs7kML0XEIsl/doKhwtD+PCnw5GJR7UEhxX/d7KTVhVOx17spjOb7/2wUc7GeRwnO/8B26OKdieuRStBbDS4BBnyEWnYOVb44Lm3oyU+i0K7UBDKJ4sUEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aOug9L2PY1geTP5x0no1Joayj3ek0GwafW1LZSea/UE=;
+ b=JQy0g7PHIoxbE5wGEVwKiC4oq8JlDqW0QVrAjVWH2AsnJq2K9DePoYDB9qR6f0BA4GfSppsaRxker8RpgLuOYVUf/Mcl4q1ytITWOkFzd4vWsjCsdk4js4YAG54MX7VcBz1AialMpMlikQwkux1MvpReLnTk15gq/a3LdCD2x0UuoIiqIR6LWVXnMGThVH4YgOFz780IhECOWZ8+y8XWe2g3S5r9a70ntjd8Mw50O1gZWnVzGpMH6izaky22Md+tqZYPAcY74DwvJvR+bQcssziEZ+IXMWBdx6hJXHjsEJ+hiRFIj773dbAP7/IyUQmZwxupTAYxh44CPbuV/LYt0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aOug9L2PY1geTP5x0no1Joayj3ek0GwafW1LZSea/UE=;
+ b=BIhLcvzcdl5n18w3qOi3MxF1h+imIR9EO88RDQk5h3D4atSC400ibs9Qz4mwfOG8DabgAjYPgXdwpbXFh14OTtJeh1onJ1JjRZQHICMJcXI2mbuRZw5/2hyTFwlISDKYDcSX2dum1GPhiW/HGdVxFIyyLsmuoyU5UvcWmT+d00k=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY5PR15MB3524.namprd15.prod.outlook.com (2603:10b6:a03:1f5::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22; Tue, 20 Oct
+ 2020 17:07:22 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
+ 17:07:22 +0000
+Date:   Tue, 20 Oct 2020 10:07:17 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Richard Palethorpe <rpalethorpe@suse.com>,
+        <ltp@lists.linux.it>, Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from
+ charging root
+Message-ID: <20201020170717.GA153102@carbon.DHCP.thefacebook.com>
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201016094702.GA95052@blackbook>
+ <20201016145308.GA312010@cmpxchg.org>
+ <20201016171502.GA102311@blackbook>
+ <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
+ <20201020162714.GC46039@blackbook>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020162714.GC46039@blackbook>
+X-Originating-IP: [2620:10d:c090:400::5:41b5]
+X-ClientProxiedBy: MWHPR21CA0026.namprd21.prod.outlook.com
+ (2603:10b6:300:129::12) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
- <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org> <20201020122015.GH2294271@kernel.org>
-In-Reply-To: <20201020122015.GH2294271@kernel.org>
-From:   Hao Luo <haoluo@google.com>
-Date:   Tue, 20 Oct 2020 10:04:50 -0700
-Message-ID: <CA+khW7gcDPAw4h=0U9mMxTJoaCyOXCMwyw34dcBp1xBKJG6xkg@mail.gmail.com>
-Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        =?UTF-8?B?w4lyaWNvIFJvbGlt?= <erico.erc@gmail.com>,
-        dwarves@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:41b5) by MWHPR21CA0026.namprd21.prod.outlook.com (2603:10b6:300:129::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.17 via Frontend Transport; Tue, 20 Oct 2020 17:07:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b8d90ae6-0594-4f09-5aaf-08d8751a9be1
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3524:
+X-Microsoft-Antispam-PRVS: <BY5PR15MB352457A2778CC98C41A2EB2EBE1F0@BY5PR15MB3524.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VNLPcpAPVkFMCGfQRsoKg8Yex9X3lNGuOHgQsF18w86bNErwWImz+oAcjFp/9HE5eNDKK4TfHGjyBUD22RBFxogA+AP1Q7YzHA8DC7mgwz6kwt7M3C6pawHRDVrkmHAvk/GkHAKpb3kurQ9sgF8NWcU4xAnk3g6EnR+N0Si8mcatyYhRUQqWYukxVEiyFk8cqBVOW0sZI9ANbl0VWlXiR6vYZeDs4DINYTzzJzPsQUeGLdXJzafBKWLznkJOB64D6ZE9kOSbROxYy6DosBQvN4vU6blGc/Vh/h0HSrXQZyHx5XGBxXaDL/bFDll/UfNVM2sJ3O9wtFKVuFazNC2Bew==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(366004)(346002)(376002)(39860400002)(83380400001)(66556008)(9686003)(186003)(8936002)(5660300002)(55016002)(478600001)(1076003)(7416002)(33656002)(16526019)(316002)(6506007)(6666004)(7696005)(4326008)(66946007)(8676002)(6916009)(86362001)(2906002)(52116002)(54906003)(66476007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: NnYZwT/pLRT8/pYXLaUacnr6AIgdG/Db7mi6us0NzEIx9sIJ6KGG4miOkpbr/V9nEC/tdJvUsT05MAkVH9CydgnDXcBKDYQ8rkWsOFC7aixyUMWIoR2u3QV5wiyv9HTrSNuzib3FWiQ+fx6JTGJ5XrAqRttUlIHD8GEB0JNdFl+UeP/9WrBDEcEpAJEr9mqFN/MYCrfV7uY+p30nCv6MuGqwcXUmyDC03Xhxh7oYuwwElzgw7fFs3YDCc3A+FcnI7xbqVysAl11WUPYOr0yRavl+lDDnxmAG9dbjUPdnzzpB5bh9POiTGRKjnO/qpZgrM9BfTdH+Xl2fpayhxEYLQhBLr6ArZgwLvB7l0ZAu9GnGqo8cXbX84WS84mntPNKNHk5VaT4a9jxrFgpXJoflyi9L3SWQgC+gBVUarBUv787lgWoxXpYHpYxS6lq6kmtI+cke3xYr0vXWpZIjjedyfVuFqCjZHhQH46OHjtIzyW2IDdWQIYxh0vRL7ZYVfSv45Md398STiixG19wC1XSEU2XOpm/k0wkzPhopZMHeoSwrQd8Ju/TuNOeJTJu/jOKXGMuj60mHoK7W/Hj5rrBEFcZWJZKku/skwe/JCgZ/ECvOmDERbPIzF21+eESuLR6oixXJIYwlLokTowmVfbS+RWWSIadN2YCIOMYhhV8hp0JAFVwyT+mnKLxRaNGO+X23
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8d90ae6-0594-4f09-5aaf-08d8751a9be1
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2020 17:07:21.9311
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: r47qdsfVyB1JlNSuJVQot2eUaesvl/GofIpjDVjiG4aYP+ZDHfRORhioZAkIH1vJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3524
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-20_10:2020-10-20,2020-10-20 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=1
+ mlxlogscore=937 adultscore=0 spamscore=0 bulkscore=0 phishscore=0
+ malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2010200116
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for reporting this and cc'ing me. I forgot to update the error
-messages when renaming the flags. I will send a patch to fix the error
-message.
+On Tue, Oct 20, 2020 at 06:27:14PM +0200, Michal Koutny wrote:
+> Hi.
+> 
+> On Mon, Oct 19, 2020 at 03:28:45PM -0700, Roman Gushchin <guro@fb.com> wrote:
+> > Currently the root memory cgroup is never charged directly, but
+> > if an ancestor cgroup is charged, the charge is propagated up to the
+> s/ancestor/descendant/
 
-The commit
+Oops, will fix, thanks!
 
-commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
-Author:     Hao Luo <haoluo@google.com>
-AuthorDate: Wed Jul 8 13:44:10 2020 -0700
+> 
+> > The root memory cgroup doesn't show the charge to a user, neither it
+> > does allow to set any limits/protections.
+> An appealing claim, I'd like this to be true...
+> 
+> > Please, note, that cgroup v1 provides root level memory.usage_in_bytes.
+> > However, it's not based on page counters (refer to mem_cgroup_usage()).
+> ...and it almost is. But there are still exposed kmem and tcpmem counters.
 
-     btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.
+Hm, I wonder what do they show given that we never set sk->sk_memcg
+to the root_mem_cgroup (see mem_cgroup_sk_alloc()) and we never charge
+the root_mem_cgroup for !slab kmem allocations (see __memcg_kmem_charge_page()).
 
-encodes kernel global variables into BTF so that bpf programs can
-directly access them. If there is no need to access kernel global
-variables, it's perfectly fine to use '--btf_encode_force' to skip
-encoding bad symbols into BTF, or '--skip_encoding_btf_vars' to skip
-encoding all global vars all together. I will add these info into the
-updated error message.
+So yeah, it's quite a mess now, and it looks like it has been broken
+in multiple places and for a while.
 
-Also cc bpf folks for attention of this bug.
+If we want these counter to function properly, then we should go into the opposite
+direction and remove the special handling of the root memory cgroup in many places.
 
-Hao
+> > To avoid multiple identical checks over the page counters
+> > code, for_each_nonroot_ancestor() macro is introduced.
+> If the assumptions behind this patch's idea were true, I think the
+> implementation would be simpler by merely (not)connecting the root
+> counters and keep the traversal as is.
 
-On Tue, Oct 20, 2020 at 5:20 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Tue, Oct 20, 2020 at 11:01:39AM +0200, Jiri Slaby escreveu:
-> > Hi,
-> >
-> > On 19. 10. 20, 1:18, =C3=89rico Rolim wrote:
-> > > I'm trying to build kernel 5.9.1 for arm64, and my dotconfig has
-> > > `CONFIG_DEBUG_INFO_BTF=3Dy`, which requires pahole for building. Howe=
-ver, pahole
-> > > version 1.18 segfaults during the build, as can be seen below:
-> > >
-> > > PAHOLE: Error: Found symbol of zero size when encoding btf (sym:
-> > > '__kvm_nvhe_arm64_ssbd_callback_required', cu:
-> > > 'arch/arm64/kernel/cpu_errata.c').
-> >
-> > The symbol is an alias coming from arch/arm64/kernel/vmlinux.lds:
-> > __kvm_nvhe_arm64_ssbd_callback_required =3D arm64_ssbd_callback_require=
-d;;
-> >
-> > > PAHOLE: Error: Use '-j' or '--force' to ignore such symbols and force
-> > > emit the btf.
-> > > scripts/link-vmlinux.sh: line 141: 43837 Segmentation fault
-> > > LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
-> > >    LD      .tmp_vmlinux.kallsyms1
-> > >    KSYM    .tmp_vmlinux.kallsyms1.o
-> > >    LD      .tmp_vmlinux.kallsyms2
-> > >    KSYM    .tmp_vmlinux.kallsyms2.o
-> > >    LD      vmlinux
-> > >    BTFIDS  vmlinux
-> > > FAILED: load BTF from vmlinux: Unknown error -2make: ***
-> > > [Makefile:1162: vmlinux] Error 255
-> > >
-> > > It is possible to force the build to continue if
-> > >
-> > >    LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
-> > >
-> > > in scripts/link-vmlinux.sh is changed to
-> > >
-> > >    LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J --btf_encode_force ${1}
-> > >
-> > > The suggested `-j` or `--force` flags don't exist, since they were re=
-moved in
-> > > [1]. I believe `--btf_encode_force` should be suggested instead.
-> >
-> > Agreed, '--btf_encode_force' makes pahole to proceed without crashes.
-> >
-> > > It should be noted that the same build, but with pahole version 1.17,=
- works
-> > > without issue, so I think this is either a regression in pahole or th=
-e script
-> > > will need to be changed for newer versions of pahole.
-> >
-> > Yeah, I observe the very same. I reported it at:
-> > https://bugzilla.suse.com/show_bug.cgi?id=3D1177921
->
-> Would it be possible to try with
-> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=3Dtmp.li=
-bbtf_encoder
-> ?
->
-> This switches to using libbpf for the BTF encoder and may have fixed
-> this problem.
->
-> - Arnaldo
->
-> > The backtrace:
-> > > (gdb) where
-> > > #0  __memmove_sse2_unaligned_erms () at
-> > ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:300
-> > > #1  0x00007ffff7f78346 in memcpy (__len=3D<optimized out>, __src=3D<o=
-ptimized
-> > out>, __dest=3D<optimized out>, __dest=3D<optimized out>, __src=3D<opti=
-mized out>,
-> > __len=3D<optimized out>) at /usr/include/bits/string_fortified.h:34
-> > > #2  gobuffer__add (gb=3D0x555555569aa0, s=3D0x7fffffffb50c, len=3D12)=
- at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/gobuffer.c:87
-> > > #3  0x00007ffff7f8671f in btf_elf__add_datasec_type
-> > (btfe=3Dbtfe@entry=3D0x555555569a40,
-> > section_name=3Dsection_name@entry=3D0x7ffff7fa43ad ".data..percpu",
-> > var_secinfo_buf=3Dvar_secinfo_buf@entry=3D0x555555569ac0) at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf.c:721
-> > > #4  0x00007ffff7f8d766 in btf_elf__encode (flags=3D0 '\000',
-> > btfe=3D0x555555569a40) at /usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf=
-.c:857
-> > > #5  btf_elf__encode (btfe=3D0x555555569a40, flags=3D<optimized out>) =
-at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf.h:71
-> > > #6  0x00007ffff7f7fc70 in btf_encoder__encode () at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/btf_encoder.c:213
-> > > #7  0x00007ffff7f80d17 in cu__encode_btf (cu=3D0x55555638d9b0, verbos=
-e=3D0,
-> > force=3Dfalse, skip_encoding_vars=3Dfalse) at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/btf_encoder.c:255
-> > > #8  0x000055555555ac4d in pahole_stealer (cu=3D0x55555638d9b0,
-> > conf_load=3D<optimized out>) at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/pahole.c:2366
-> > > #9  0x00007ffff7f89dab in finalize_cu (cus=3D0x5555555622d0,
-> > dcu=3D0x7fffffffd080, conf=3D0x5555555610e0 <conf_load>, cu=3D0x5555563=
-8d9b0) at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2473
-> > > #10 finalize_cu_immediately (conf=3D0x5555555610e0 <conf_load>,
-> > dcu=3D0x7fffffffd080, cu=3D0x55555638d9b0, cus=3D0x5555555622d0) at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2317
-> > > #11 cus__load_module (cus=3Dcus@entry=3D0x5555555622d0, conf=3D0x5555=
-555610e0
-> > <conf_load>, mod=3Dmod@entry=3D0x555555564760, dw=3D0x555555565960,
-> > elf=3Delf@entry=3D0x555555562360, filename=3D0x7fffffffe846 "ss") at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2473
-> > > #12 0x00007ffff7f8a0f1 in cus__process_dwflmod (dwflmod=3D0x555555564=
-760,
-> > userdata=3D<optimized out>, name=3D<optimized out>, base=3D<optimized o=
-ut>,
-> > arg=3D0x7fffffffe1b0) at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2518
-> > > #13 0x00007ffff7d4f571 in dwfl_getmodules () from /usr/lib64/libdw.so=
-.1
-> > > #14 0x00007ffff7f823ed in cus__process_file (filename=3D0x7fffffffe84=
-6 "ss",
-> > fd=3D3, conf=3D<optimized out>, cus=3D0x5555555622d0) at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2571
-> > > #15 dwarf__load_file (cus=3D0x5555555622d0, conf=3D<optimized out>,
-> > filename=3D0x7fffffffe846 "ss") at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2588
-> > > #16 0x00007ffff7f76771 in cus__load_file (cus=3Dcus@entry=3D0x5555555=
-622d0,
-> > conf=3Dconf@entry=3D0x5555555610e0 <conf_load>, filename=3D0x7fffffffe8=
-46 "ss") at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarves.c:1958
-> > > #17 0x00007ffff7f798a8 in cus__load_files (cus=3D0x5555555622d0,
-> > conf=3D0x5555555610e0 <conf_load>, filenames=3D0x7fffffffe518) at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarves.c:2316
-> > > #18 0x00005555555576fc in main (argc=3D3, argv=3D0x7fffffffe508) at
-> > /usr/src/debug/dwarves-1.18-1.1.x86_64/pahole.c:2687
-> >
-> >
-> > I suspect:
-> > commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
-> > Author:     Hao Luo <haoluo@google.com>
-> > AuthorDate: Wed Jul 8 13:44:10 2020 -0700
-> >
-> >     btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.
-> >
-> >
-> > Which added this machinery (btf_elf__add_datasec_type in particular).
-> >
-> > > - [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/p=
-ahole.c?h=3Dv1.18&id=3D1abc001417b579b86a9b27ff88c9095d8f498a46
-> > >
-> > > Thanks,
-> > > =C3=89rico
-> > >
-> >
-> >
-> > --
-> > js
-> > suse labs
->
-> --
->
-> - Arnaldo
+We use some fields in root page counters to calculate protections:
+see propagate_protected_usage().
+
+Thanks!
