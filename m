@@ -2,279 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF02294174
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6E529417D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391344AbgJTR3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 13:29:46 -0400
-Received: from mga07.intel.com ([134.134.136.100]:41785 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395372AbgJTR3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 13:29:46 -0400
-IronPort-SDR: uc0mmsROVs05X7I3NqbYfXOl+3Mym/ZhP60Z3YiozDN2Y21ITNLwTUtdKAhPd8xhWGkBeumDEj
- m1s1pjOkr7qA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="231444215"
-X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
-   d="scan'208";a="231444215"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 10:29:44 -0700
-IronPort-SDR: SqScpvwPfGLx6n+SNpJqcFwJ5diV55xjIwuTyl5Nj4lHyQ6jjy/9E+bKyXG/2D4j+S5hy1npEo
- SpapDIzAUVXw==
-X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
-   d="scan'208";a="533155421"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 10:29:44 -0700
-Date:   Tue, 20 Oct 2020 10:29:44 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFCv2 08/16] KVM: Use GUP instead of copy_from/to_user() to
- access guest memory
-Message-ID: <20201020172944.GA165907@iweiny-DESK2.sc.intel.com>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
- <20201020061859.18385-9-kirill.shutemov@linux.intel.com>
+        id S2395511AbgJTReU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 13:34:20 -0400
+Received: from mail-mw2nam12on2104.outbound.protection.outlook.com ([40.107.244.104]:43808
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726282AbgJTReU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 13:34:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ednHSXUdPY+ChlrXroFoqm38ctqTDDgnYwylVGUbFWwCcoJvNDTD/BpmtlYyOJyWyO8tHwEc4bZHirG5eHmrBzOLGE5wGostwau8GYDxkUbfdXEag8/kXZPds5FimeHP+QzI1iYekFDapvCchcsgRBguXEyqHDGKqIwtQKU4/Um/AfGmKJxGhu/BEU/77Yy0sBKoswNe53ANx99WSSS17kgCjCiSatmTa9jUrDvJthY+L81AjrrNZ6M8uh4jxt8OMAgK3ZKpVMw3DrNcxOUxT/X++ePbBy712N2+JZmd9ymsqTESWnvNeiUbdcr6J57lIOVLcnjtURPLGM6LEgEJBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ljhKytHx+CFmYBZVnLB1kNatWcJstmsrjA3CuSPDERY=;
+ b=Iw1KcOO8vjPqsV69Clyfd46eoisx3JbYywiVot4wfS203pM18mfhXs8/bYcgLIrZFJpkp4h45CQXoI1O5ax8aOX5Mg6oV0iH4KUb7GM+oapW/whR5Q56lWKeTFyglaq9hXBaXPvbnxjHtIQrhBTMPWcYWvYZkwb6Fh67ADdWBMd4uIj5AhR0rhJOvPBKsLWylJCNivu0QQ+mr0rb3r0IrrUCBB67/sX0grDNmIV29kYgbdHiNOWuk5Yrfusg8GytzBOcbF/FybwZrXV7aJOL93ZDEHYKLidv017AFyKcV5A/DKaQDx7k6PAYYJA87ApTMaE63c2hvPK9hj71LhJz6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ljhKytHx+CFmYBZVnLB1kNatWcJstmsrjA3CuSPDERY=;
+ b=VF7pAJR5VUBnTP1z/aNGGJV69G++aQTW9yEdny6LZF68cspigWqISRbfRr4iNuSa1suScnBnLOilvRPK6ryZt7IwcOsJZUdRC2KQCYn4uXj7/fUNoQvZvSP1WgfP2u+A8Lhw1QFf3Xt4bsdCFPjKRo4dD3lDfNqqDO/9MuLhjAw=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from BN6PR01MB2468.prod.exchangelabs.com (2603:10b6:404:53::8) by
+ BN8PR01MB5697.prod.exchangelabs.com (2603:10b6:408:b6::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3477.21; Tue, 20 Oct 2020 17:34:15 +0000
+Received: from BN6PR01MB2468.prod.exchangelabs.com
+ ([fe80::4946:4492:370a:a3f3]) by BN6PR01MB2468.prod.exchangelabs.com
+ ([fe80::4946:4492:370a:a3f3%9]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
+ 17:34:15 +0000
+From:   Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     patches@amperecomputing.com, linux-kernel@vger.kernel.org,
+        Anshuman.Khandual@arm.com, Valentin.Schneider@arm.com,
+        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+Subject: [PATCH] arm64: NUMA: Kconfig: Increase max number of nodes
+Date:   Tue, 20 Oct 2020 10:34:09 -0700
+Message-Id: <20201020173409.1266576-1-vanshikonda@os.amperecomputing.com>
+X-Mailer: git-send-email 2.28.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [4.28.12.214]
+X-ClientProxiedBy: CY4PR14CA0036.namprd14.prod.outlook.com
+ (2603:10b6:903:101::22) To BN6PR01MB2468.prod.exchangelabs.com
+ (2603:10b6:404:53::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020061859.18385-9-kirill.shutemov@linux.intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from amperecomputing.com (4.28.12.214) by CY4PR14CA0036.namprd14.prod.outlook.com (2603:10b6:903:101::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Tue, 20 Oct 2020 17:34:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bbf0e1f6-33e6-48bf-9bf7-08d8751e5d6c
+X-MS-TrafficTypeDiagnostic: BN8PR01MB5697:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN8PR01MB5697FF2BFF91BEC6466175649D1F0@BN8PR01MB5697.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3GsphlQKXBCQIUXQw4fjnCDC/HqnchU521yXsMsxK1V2cgoTCt6QkIsdWgDKrRzFMLrLRVzB9c/kHCaFt3Fmoq718f9VYYPyiWUvHinJ79JHlr6oLdXz6oxh7ebIxSUCgW6+DTVwfO1DuLlyJs43Pv4xXExr2gDq94mq+J34lY/RRAre/Uvx6R2cAdi9coEIFLoCBCr5oVPXhQKfaJXgZhPexbQi4FaGLjx6AdWdx4XxwVP+QAsc6NfHd9okPj2/xtLZfS5VYq/K9OYYbUQzks89XZPuItodv/y8FZHZZ7eTQiwfeMcYoAh52VRbf/+8jH/p31ypHclDV4h/o1fKbw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR01MB2468.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39830400003)(396003)(366004)(8936002)(66946007)(16526019)(186003)(86362001)(2906002)(83380400001)(66556008)(4744005)(6916009)(52116002)(478600001)(8886007)(2616005)(66476007)(316002)(6666004)(26005)(107886003)(8676002)(4326008)(1076003)(5660300002)(956004)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 1MbEBmSWZNfmQ7YZqPHP3GInj+72jbPcl59CuMIIetxmYybumC/3xJClmP3WHqZXWuBOfjEuDOKA9WsocUA3IyoIh/JOe+hHKwfid5UIOPyu0K0cAt76TgG6owNqBNUf0gfIVOHO1Wujr6tIck2/maoFDrYKs2vJktCfEK4GTrmiXJ98GQ2c/kU9fL1UKFfJp8aXWXlvnbY4nqLUZrp8srO11e5jlXyWdgSNWbfXzxkYypYy/3wZ1gkRzMePBSuriAtvZ1nelnRBkoXXBl/DNNldoD/4Z27ITVBzb7vRZ6MMzG/Gzg/mZpcoEWGzPYhN/wQzyY1NxVr+NgKaiktqlEUY6uCL4HCl6R8K1l/NgwK1zpCWr63d1wOsOt5Qd8nx5LP7ear1miw5loBzNKgUPX3T780b19xbeXGg0UyT7L8nVlNZKN0jw7F/6x162/KfkfDUWLKVR3mz8t4KdttGURnNxLpiTJqsFUBkCHgs/8Ub8CTMBrJWxTbBC40BIoVlWEkudc7/rI2rpr3QNMnOXLT+iEkFAQH7Do9F2LqKZy00hDiC/4NtxJs5cY3ICudRynfzleqorUn06JaSSyIBPVG8jJOoJ59XZzopj1v0O8rE6FKeRHafafpKnMIy/1ywNpskBeERe5D2MY1CAPcwuw==
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbf0e1f6-33e6-48bf-9bf7-08d8751e5d6c
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR01MB2468.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2020 17:34:15.2911
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fpUp6YgcveKlrZZiGra+6cVuTdWNr2Dkp9Kyo9xfWDFhgEjNBVE+VGfogWbouWdkwQLpRVgE+X0RCv8VUDLNfCkSw3eBNFvuFahqv9Oy6uLOEcpPa9EIiEzRfVKIefFj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR01MB5697
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 09:18:51AM +0300, Kirill A. Shutemov wrote:
-> New helpers copy_from_guest()/copy_to_guest() to be used if KVM memory
-> protection feature is enabled.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> ---
->  include/linux/kvm_host.h |  4 ++
->  virt/kvm/kvm_main.c      | 90 +++++++++++++++++++++++++++++++---------
->  2 files changed, 75 insertions(+), 19 deletions(-)
-> 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 05e3c2fb3ef7..380a64613880 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -504,6 +504,7 @@ struct kvm {
->  	struct srcu_struct irq_srcu;
->  	pid_t userspace_pid;
->  	unsigned int max_halt_poll_ns;
-> +	bool mem_protected;
->  };
->  
->  #define kvm_err(fmt, ...) \
-> @@ -728,6 +729,9 @@ void kvm_set_pfn_dirty(kvm_pfn_t pfn);
->  void kvm_set_pfn_accessed(kvm_pfn_t pfn);
->  void kvm_get_pfn(kvm_pfn_t pfn);
->  
-> +int copy_from_guest(void *data, unsigned long hva, int len, bool protected);
-> +int copy_to_guest(unsigned long hva, const void *data, int len, bool protected);
-> +
->  void kvm_release_pfn(kvm_pfn_t pfn, bool dirty, struct gfn_to_pfn_cache *cache);
->  int kvm_read_guest_page(struct kvm *kvm, gfn_t gfn, void *data, int offset,
->  			int len);
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index cf88233b819a..a9884cb8c867 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -2313,19 +2313,70 @@ static int next_segment(unsigned long len, int offset)
->  		return len;
->  }
->  
-> +int copy_from_guest(void *data, unsigned long hva, int len, bool protected)
-> +{
-> +	int offset = offset_in_page(hva);
-> +	struct page *page;
-> +	int npages, seg;
-> +
-> +	if (!protected)
-> +		return __copy_from_user(data, (void __user *)hva, len);
-> +
-> +	might_fault();
-> +	kasan_check_write(data, len);
-> +	check_object_size(data, len, false);
-> +
-> +	while ((seg = next_segment(len, offset)) != 0) {
-> +		npages = get_user_pages_unlocked(hva, 1, &page, 0);
-> +		if (npages != 1)
-> +			return -EFAULT;
-> +		memcpy(data, page_address(page) + offset, seg);
-> +		put_page(page);
-> +		len -= seg;
-> +		hva += seg;
-> +		offset = 0;
+The current arm64 max NUMA nodes default to 4. Today's arm64 systems can
+reach or exceed 16. Increase the number to 64 (matching x86_64).
 
-Why is data not updated on each iteration?
+Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+---
+ arch/arm64/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int copy_to_guest(unsigned long hva, const void *data, int len, bool protected)
-> +{
-> +	int offset = offset_in_page(hva);
-> +	struct page *page;
-> +	int npages, seg;
-> +
-> +	if (!protected)
-> +		return __copy_to_user((void __user *)hva, data, len);
-> +
-> +	might_fault();
-> +	kasan_check_read(data, len);
-> +	check_object_size(data, len, true);
-> +
-> +	while ((seg = next_segment(len, offset)) != 0) {
-> +		npages = get_user_pages_unlocked(hva, 1, &page, FOLL_WRITE);
-> +		if (npages != 1)
-> +			return -EFAULT;
-> +		memcpy(page_address(page) + offset, data, seg);
-> +		put_page(page);
-> +		len -= seg;
-> +		hva += seg;
-> +		offset = 0;
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 893130ce1626..3e69d3c981be 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -980,7 +980,7 @@ config NUMA
+ config NODES_SHIFT
+ 	int "Maximum NUMA Nodes (as a power of 2)"
+ 	range 1 10
+-	default "2"
++	default "6"
+ 	depends on NEED_MULTIPLE_NODES
+ 	help
+ 	  Specify the maximum number of NUMA Nodes available on the target
+-- 
+2.28.0
 
-Same question?  Doesn't this result in *data being copied to multiple pages?
-
-Ira
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
-> -				 void *data, int offset, int len)
-> +				 void *data, int offset, int len,
-> +				 bool protected)
->  {
-> -	int r;
->  	unsigned long addr;
->  
->  	addr = gfn_to_hva_memslot_prot(slot, gfn, NULL);
->  	if (kvm_is_error_hva(addr))
->  		return -EFAULT;
-> -	r = __copy_from_user(data, (void __user *)addr + offset, len);
-> -	if (r)
-> -		return -EFAULT;
-> -	return 0;
-> +	return copy_from_guest(data, addr + offset, len, protected);
->  }
->  
->  int kvm_read_guest_page(struct kvm *kvm, gfn_t gfn, void *data, int offset,
-> @@ -2333,7 +2384,8 @@ int kvm_read_guest_page(struct kvm *kvm, gfn_t gfn, void *data, int offset,
->  {
->  	struct kvm_memory_slot *slot = gfn_to_memslot(kvm, gfn);
->  
-> -	return __kvm_read_guest_page(slot, gfn, data, offset, len);
-> +	return __kvm_read_guest_page(slot, gfn, data, offset, len,
-> +				     kvm->mem_protected);
->  }
->  EXPORT_SYMBOL_GPL(kvm_read_guest_page);
->  
-> @@ -2342,7 +2394,8 @@ int kvm_vcpu_read_guest_page(struct kvm_vcpu *vcpu, gfn_t gfn, void *data,
->  {
->  	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
->  
-> -	return __kvm_read_guest_page(slot, gfn, data, offset, len);
-> +	return __kvm_read_guest_page(slot, gfn, data, offset, len,
-> +				     vcpu->kvm->mem_protected);
->  }
->  EXPORT_SYMBOL_GPL(kvm_vcpu_read_guest_page);
->  
-> @@ -2415,7 +2468,8 @@ int kvm_vcpu_read_guest_atomic(struct kvm_vcpu *vcpu, gpa_t gpa,
->  EXPORT_SYMBOL_GPL(kvm_vcpu_read_guest_atomic);
->  
->  static int __kvm_write_guest_page(struct kvm_memory_slot *memslot, gfn_t gfn,
-> -			          const void *data, int offset, int len)
-> +			          const void *data, int offset, int len,
-> +				  bool protected)
->  {
->  	int r;
->  	unsigned long addr;
-> @@ -2423,7 +2477,8 @@ static int __kvm_write_guest_page(struct kvm_memory_slot *memslot, gfn_t gfn,
->  	addr = gfn_to_hva_memslot(memslot, gfn);
->  	if (kvm_is_error_hva(addr))
->  		return -EFAULT;
-> -	r = __copy_to_user((void __user *)addr + offset, data, len);
-> +
-> +	r = copy_to_guest(addr + offset, data, len, protected);
->  	if (r)
->  		return -EFAULT;
->  	mark_page_dirty_in_slot(memslot, gfn);
-> @@ -2435,7 +2490,8 @@ int kvm_write_guest_page(struct kvm *kvm, gfn_t gfn,
->  {
->  	struct kvm_memory_slot *slot = gfn_to_memslot(kvm, gfn);
->  
-> -	return __kvm_write_guest_page(slot, gfn, data, offset, len);
-> +	return __kvm_write_guest_page(slot, gfn, data, offset, len,
-> +				      kvm->mem_protected);
->  }
->  EXPORT_SYMBOL_GPL(kvm_write_guest_page);
->  
-> @@ -2444,7 +2500,8 @@ int kvm_vcpu_write_guest_page(struct kvm_vcpu *vcpu, gfn_t gfn,
->  {
->  	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
->  
-> -	return __kvm_write_guest_page(slot, gfn, data, offset, len);
-> +	return __kvm_write_guest_page(slot, gfn, data, offset, len,
-> +				      vcpu->kvm->mem_protected);
->  }
->  EXPORT_SYMBOL_GPL(kvm_vcpu_write_guest_page);
->  
-> @@ -2560,7 +2617,7 @@ int kvm_write_guest_offset_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
->  	if (unlikely(!ghc->memslot))
->  		return kvm_write_guest(kvm, gpa, data, len);
->  
-> -	r = __copy_to_user((void __user *)ghc->hva + offset, data, len);
-> +	r = copy_to_guest(ghc->hva + offset, data, len, kvm->mem_protected);
->  	if (r)
->  		return -EFAULT;
->  	mark_page_dirty_in_slot(ghc->memslot, gpa >> PAGE_SHIFT);
-> @@ -2581,7 +2638,6 @@ int kvm_read_guest_offset_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
->  				 unsigned long len)
->  {
->  	struct kvm_memslots *slots = kvm_memslots(kvm);
-> -	int r;
->  	gpa_t gpa = ghc->gpa + offset;
->  
->  	BUG_ON(len + offset > ghc->len);
-> @@ -2597,11 +2653,7 @@ int kvm_read_guest_offset_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
->  	if (unlikely(!ghc->memslot))
->  		return kvm_read_guest(kvm, gpa, data, len);
->  
-> -	r = __copy_from_user(data, (void __user *)ghc->hva + offset, len);
-> -	if (r)
-> -		return -EFAULT;
-> -
-> -	return 0;
-> +	return copy_from_guest(data, ghc->hva + offset, len, kvm->mem_protected);
->  }
->  EXPORT_SYMBOL_GPL(kvm_read_guest_offset_cached);
->  
-> -- 
-> 2.26.2
-> 
-> 
