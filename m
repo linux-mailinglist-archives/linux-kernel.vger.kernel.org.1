@@ -2,88 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058FA2935F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122972935EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405333AbgJTHkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:40:21 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:36733 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405308AbgJTHkT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:40:19 -0400
-Received: by mail-oi1-f196.google.com with SMTP id u17so1219785oie.3;
-        Tue, 20 Oct 2020 00:40:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MphawCggZoPyPLPjOXzPYGZL3RA+kXoFqq50s1cKbPA=;
-        b=EfJ+eEd2kz28e/2VVafp28Vkpx9TxwmSI0jGg5zrBJXNggCddrzoc7kD713isApArz
-         O/9nkW72cwlaRHkTrT09QCvfJGkJRG9CKOs8jJq87tiUHgUIZ2u+KcVF3B1hgNZ5uA/E
-         S1lu6sni+DeHS8JOU1msDSl5c03JbvqvQ1ugwQrgKlNWxsEK5D79C0qtaq85t3jOP3Kw
-         6GXwnqinr3TzaRw/EF/FjCMB7ddCT87mv4yiot8DZQ+XbYB69oFPM1OQtxucikbkpJmK
-         e3Y/9kk/q1h9y8nHDwgvHZOw2nMTWBJHOAXmGg8enkge1J9hUd0I9XAYguJtj8NOmcG2
-         xU+g==
-X-Gm-Message-State: AOAM531hYIPSUI49CwLUy3kQr1MhO90yK6A9Z1oNRIpWV18XwEXo1Ccw
-        FQCzWe44gwb1AHaiLjCNXjmK0QqGa4N2DX0L1QA=
-X-Google-Smtp-Source: ABdhPJyfi/DdUPsxmzKRpKKKW0CKJyIiG/pHw6av94t0zAWOI2HIbQXGQIaG17RxvjCsdgV+mSmRFi3GNy15DLE6koY=
-X-Received: by 2002:aca:c490:: with SMTP id u138mr1010902oif.54.1603179617218;
- Tue, 20 Oct 2020 00:40:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201019113240.11516-1-geert@linux-m68k.org> <1968b7a6-a553-c882-c386-4b4fde2d7a87@tessares.net>
- <CAMuHMdUDpVVejmrr3ayxnN=tgHrgDmUCVMG0VJht1Y-FUUv42Q@mail.gmail.com>
-In-Reply-To: <CAMuHMdUDpVVejmrr3ayxnN=tgHrgDmUCVMG0VJht1Y-FUUv42Q@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 20 Oct 2020 09:40:06 +0200
-Message-ID: <CAMuHMdWEKszUOA6Q9Y+vpLdRnq3wstCj1ubV=8iUKZAQkew_wg@mail.gmail.com>
-Subject: Re: [PATCH] mptcp: MPTCP_KUNIT_TESTS should depend on MPTCP instead
- of selecting it
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>
-Cc:     Paolo Abeni <pabeni@redhat.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, mptcp@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730686AbgJTHkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:40:11 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:27169 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727697AbgJTHkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 03:40:11 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CFls314W6z9tydJ;
+        Tue, 20 Oct 2020 09:40:07 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id C9kvLNdzMfGo; Tue, 20 Oct 2020 09:40:07 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CFls30G4Pz9tydG;
+        Tue, 20 Oct 2020 09:40:07 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 09D168B7CB;
+        Tue, 20 Oct 2020 09:40:08 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id kpFTTju4Mral; Tue, 20 Oct 2020 09:40:07 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id AB69F8B767;
+        Tue, 20 Oct 2020 09:40:07 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 74143667B6; Tue, 20 Oct 2020 07:40:07 +0000 (UTC)
+Message-Id: <212d3bc4a52ca71523759517bb9c61f7e477c46a.1603179582.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 1/3] powerpc/uaccess: Don't use "m<>" constraint with GCC
+ 4.9
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        mathieu.desnoyers@efficios.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Tue, 20 Oct 2020 07:40:07 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 10:38 PM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> On Mon, Oct 19, 2020 at 5:47 PM Matthieu Baerts
-> <matthieu.baerts@tessares.net> wrote:
-> > On 19/10/2020 13:32, Geert Uytterhoeven wrote:
-> > > MPTCP_KUNIT_TESTS selects MPTCP, thus enabling an optional feature the
-> > > user may not want to enable.  Fix this by making the test depend on
-> > > MPTCP instead.
-> >
-> > I think the initial intension was to select MPTCP to have an easy way to
-> > enable all KUnit tests. We imitated what was and is still done in
-> > fs/ext4/Kconfig.
-> >
-> > But it probably makes sense to depend on MPTCP instead of selecting it.
-> > So that's fine for me. But then please also send a patch to ext4
-> > maintainer to do the same there.
->
-> Thanks, good point.  I didn't notice, as I did have ext4 enabled anyway.
-> Will send a patch for ext4.  Looks like ext4 and MPTCP where the only
-> test modules selecting their dependencies.
+GCC 4.9 sometimes fails to build with "m<>" constraint in
+inline assembly.
 
-FTR, "[PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead
-of  selecting it"
-https://lore.kernel.org/lkml/20201020073740.29081-1-geert@linux-m68k.org/
+  CC      lib/iov_iter.o
+In file included from ./arch/powerpc/include/asm/cmpxchg.h:6:0,
+                 from ./arch/powerpc/include/asm/atomic.h:11,
+                 from ./include/linux/atomic.h:7,
+                 from ./include/linux/crypto.h:15,
+                 from ./include/crypto/hash.h:11,
+                 from lib/iov_iter.c:2:
+lib/iov_iter.c: In function 'iovec_from_user.part.30':
+./arch/powerpc/include/asm/uaccess.h:287:2: error: 'asm' operand has impossible constraints
+  __asm__ __volatile__(    \
+  ^
+./include/linux/compiler.h:78:42: note: in definition of macro 'unlikely'
+ # define unlikely(x) __builtin_expect(!!(x), 0)
+                                          ^
+./arch/powerpc/include/asm/uaccess.h:583:34: note: in expansion of macro 'unsafe_op_wrap'
+ #define unsafe_get_user(x, p, e) unsafe_op_wrap(__get_user_allowed(x, p), e)
+                                  ^
+./arch/powerpc/include/asm/uaccess.h:329:10: note: in expansion of macro '__get_user_asm'
+  case 4: __get_user_asm(x, (u32 __user *)ptr, retval, "lwz"); break; \
+          ^
+./arch/powerpc/include/asm/uaccess.h:363:3: note: in expansion of macro '__get_user_size_allowed'
+   __get_user_size_allowed(__gu_val, __gu_addr, __gu_size, __gu_err); \
+   ^
+./arch/powerpc/include/asm/uaccess.h:100:2: note: in expansion of macro '__get_user_nocheck'
+  __get_user_nocheck((x), (ptr), sizeof(*(ptr)), false)
+  ^
+./arch/powerpc/include/asm/uaccess.h:583:49: note: in expansion of macro '__get_user_allowed'
+ #define unsafe_get_user(x, p, e) unsafe_op_wrap(__get_user_allowed(x, p), e)
+                                                 ^
+lib/iov_iter.c:1663:3: note: in expansion of macro 'unsafe_get_user'
+   unsafe_get_user(len, &uiov[i].iov_len, uaccess_end);
+   ^
+make[1]: *** [scripts/Makefile.build:283: lib/iov_iter.o] Error 1
 
+Define a UPD_CONSTR macro that is "<>" by default and
+only "" with GCC prior to GCC 5.
 
-Gr{oetje,eeting}s,
+Fixes: fcf1f26895a4 ("powerpc/uaccess: Add pre-update addressing to __put_user_asm_goto()")
+Fixes: 2f279eeb68b8 ("powerpc/uaccess: Add pre-update addressing to __get_user_asm() and __put_user_asm()")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
+---
+v2: Moved UPD_CONSTR to asm-const.h to avoid circular inclusion issues with patch 3.
+---
+ arch/powerpc/include/asm/asm-const.h | 13 +++++++++++++
+ arch/powerpc/include/asm/uaccess.h   |  4 ++--
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
-                        Geert
-
+diff --git a/arch/powerpc/include/asm/asm-const.h b/arch/powerpc/include/asm/asm-const.h
+index 082c1538c562..0ce2368bd20f 100644
+--- a/arch/powerpc/include/asm/asm-const.h
++++ b/arch/powerpc/include/asm/asm-const.h
+@@ -11,4 +11,17 @@
+ #  define __ASM_CONST(x)	x##UL
+ #  define ASM_CONST(x)		__ASM_CONST(x)
+ #endif
++
++/*
++ * Inline assembly memory constraint
++ *
++ * GCC 4.9 doesn't properly handle pre update memory constraint "m<>"
++ *
++ */
++#if defined(GCC_VERSION) && GCC_VERSION < 50000
++#define UPD_CONSTR ""
++#else
++#define UPD_CONSTR "<>"
++#endif
++
+ #endif /* _ASM_POWERPC_ASM_CONST_H */
+diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+index 604d705f1bb8..8f27ea48fadb 100644
+--- a/arch/powerpc/include/asm/uaccess.h
++++ b/arch/powerpc/include/asm/uaccess.h
+@@ -223,7 +223,7 @@ do {								\
+ 		"1:	" op "%U1%X1 %0,%1	# put_user\n"	\
+ 		EX_TABLE(1b, %l2)				\
+ 		:						\
+-		: "r" (x), "m<>" (*addr)				\
++		: "r" (x), "m"UPD_CONSTR (*addr)		\
+ 		:						\
+ 		: label)
+ 
+@@ -294,7 +294,7 @@ extern long __get_user_bad(void);
+ 		".previous\n"				\
+ 		EX_TABLE(1b, 3b)			\
+ 		: "=r" (err), "=r" (x)			\
+-		: "m<>" (*addr), "i" (-EFAULT), "0" (err))
++		: "m"UPD_CONSTR (*addr), "i" (-EFAULT), "0" (err))
+ 
+ #ifdef __powerpc64__
+ #define __get_user_asm2(x, addr, err)			\
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
