@@ -2,69 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C395293E19
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD9F293E21
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407832AbgJTOFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:05:53 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:36698 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407816AbgJTOFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:05:53 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kUsGd-002ftA-OS; Tue, 20 Oct 2020 16:05:35 +0200
-Date:   Tue, 20 Oct 2020 16:05:35 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] net: dsa: mv88e6xxx: Don't force link when using
- in-band-status
-Message-ID: <20201020140535.GE139700@lunn.ch>
-References: <20201020034558.19438-1-chris.packham@alliedtelesis.co.nz>
- <20201020034558.19438-2-chris.packham@alliedtelesis.co.nz>
- <20201020101552.GB1551@shell.armlinux.org.uk>
- <20201020154940.60357b6c@nic.cz>
+        id S2407853AbgJTOGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407726AbgJTOGi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 10:06:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D886C061755;
+        Tue, 20 Oct 2020 07:06:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=JRvHlEJrGZFiOQKd1c2qmCNGUvUh3oAWJT1Un94riZY=; b=gvRL5jmqVlrSmqjtvh0XTnm3LD
+        56PFyUXzXu+eC4lCU08E0kxKs8Q/QA/WRfHBOm00tJjhrRZXpO1qjQqsT5JzYwi6qvhCO37cF+3vJ
+        H0jxwJjRpia5kUbKeSu3x5RbPTurkjqzcbJVRIgudqWxJzpcKVCafy2tR8NVho4grfwF5JXi9uZoQ
+        T2cYSdOWENtQIW7gGGUveU0tgHXwoYGyzr/ujhAMB0KW8GgGr1q+LopITW5r6mGYAcUUo1W+gx6t5
+        PkpXw7UABl4GafrQhHi37PsNqzJpSiX1DnfNZsHMbuYPZFM9E4p09sPMHp2G2NTw0D2Pam0ukZZoc
+        FknIoJLw==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kUsHZ-0006kQ-VG; Tue, 20 Oct 2020 14:06:34 +0000
+Subject: Re: [PATCH] PCI: export pci_find_host_bridge() to fix MFD build error
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        linux-mips@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>
+References: <20201019061453.32295-1-rdunlap@infradead.org>
+ <20201020080219.GA21011@infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <45b16450-320b-86fd-603e-4fb311c6f4bd@infradead.org>
+Date:   Tue, 20 Oct 2020 07:06:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020154940.60357b6c@nic.cz>
+In-Reply-To: <20201020080219.GA21011@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 03:49:40PM +0200, Marek Behun wrote:
-> On Tue, 20 Oct 2020 11:15:52 +0100
-> Russell King - ARM Linux admin <linux@armlinux.org.uk> wrote:
+On 10/20/20 1:02 AM, Christoph Hellwig wrote:
+> On Sun, Oct 18, 2020 at 11:14:53PM -0700, Randy Dunlap wrote:
+>> Fix a build error in drivers/mfd/ioc.o by exporting
+>> pci_find_host_bridge().
+>>
+>> ERROR: modpost: "pci_find_host_bridge" [drivers/mfd/ioc3.ko] undefined!
 > 
-> > On Tue, Oct 20, 2020 at 04:45:56PM +1300, Chris Packham wrote:
-> > > When a port is configured with 'managed = "in-band-status"' don't force
-> > > the link up, the switch MAC will detect the link status correctly.
-> > > 
-> > > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> > > Reviewed-by: Andrew Lunn <andrew@lunn.ch>  
-> > 
-> > I thought we had issues with the 88E6390 where the PCS does not
-> > update the MAC with its results. Isn't this going to break the
-> > 6390? Andrew?
-> > 
+> I think the mfd code should be fixed to not depend on such an internal
+> symbol instead.
 > 
-> Russell, I tested this patch on Turris MOX with 6390 on port 9 (cpu
-> port) which is configured in devicetree as 2500base-x, in-band-status,
-> and it works...
-> 
-> Or will this break on user ports?
 
-User ports is what needs testing, ideally with an SFP.
+Thanks for commenting. and I am not surprised.
 
-There used to be explicit code which when the SERDES reported link up,
-the MAC was configured in software with the correct speed etc. With
-the move to pcs APIs, it is less obvious how this works now, does it
-still software configure the MAC, or do we have the right magic so
-that the hardware updates itself.
+Adding Cc: for Thomas and Lee.
 
-     Andrew
+-- 
+~Randy
+
