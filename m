@@ -2,102 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D469293768
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7711829376B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392289AbgJTJBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392277AbgJTJBl (ORCPT
+        id S2392300AbgJTJBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:01:48 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:35978 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392287AbgJTJBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:01:41 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83843C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:01:41 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e17so1136292wru.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=q4O6c5ivLmf5Ylkh4llF14kt1PENj2Zzl8IB9YFIIj4=;
-        b=m6eHkmT8IEJpYr2gcGiLGKBcZkF81y5O8Z+qXZPwHQyM4EyEn/vONmrRSoD8KUP1X+
-         +zCT0rHB77mVw1NrAGD4FB0+FjB2+Pml1pNdF4eHUPW6OzP+3RCTaMgWkjDxb2oAtPVa
-         Lf9ePlf8LP2nNXfB12DYW7AuoMFitb84Wq47bEvGocLpm8o+k1XlLgeqE4kURGu5SVMW
-         nUzOxwwdDkDlDG9sWmobczknUQmwuEw6lSqWewhvb4A8dRKK/2xhkJGxWR73GJgSI2ET
-         GaJLk2oN/ShfwRoUSXiKlub1gN9+CJ1Qr3f3iXdnWy/1iKeyvlZIrEzqCLc6V44NvHNy
-         94zA==
+        Tue, 20 Oct 2020 05:01:44 -0400
+Received: by mail-ej1-f67.google.com with SMTP id qp15so1560997ejb.3;
+        Tue, 20 Oct 2020 02:01:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=q4O6c5ivLmf5Ylkh4llF14kt1PENj2Zzl8IB9YFIIj4=;
-        b=Dfq15Vr+r8x8dDjCAFg1FQhdMvW3K8V/4jICdesC+ZjSmPXARzJ5lPoDoKbWAndqOm
-         9noroqkR1Z5+HKhLjJWUSE0fIg5hK+iSqKAAuWVAcyICWPHH9uX8bXQdO6Q5ifNFA+L1
-         2+8kzBQocvuJavIz1wCVPfZQSY0v/n+XqkI/3kYjtv3PPthWdAi0oSyAP2XVW7CdZ+t6
-         9DD061JwDQx93fh8S1378Q9y4aF1OMvcwaeJtVl9YEgQM5GjW5rPpir4e3BMb/VW8j8l
-         aHwhXQHxy0gP5xQlXOCKF0UB05Y8RXxE/Ihe6zTvkqHeKbR39PuJ4qxaiEo3d/zZea7Y
-         dCMw==
-X-Gm-Message-State: AOAM531GqY2fdtQI0emsM+P1P5DnPa1ARutcozMdjKZnOz86Ht/iK0HK
-        4jYxWxZlb+RlW2UW3bRsqvLdOg==
-X-Google-Smtp-Source: ABdhPJzTL0aKsgR/snCSdeHOMhJQnqO/Ml9Vj2IqzAyO5HT5bSkRr7fMGxq3FQUW7rb/RaUFkcwrdQ==
-X-Received: by 2002:adf:d4c5:: with SMTP id w5mr2420156wrk.226.1603184500233;
+        bh=I21QrYRSiNW5Fssisck9nCnQyQHsM9KlA2IytBaQecs=;
+        b=V/UYjcanYovhp88wg3EA2rZigT5o8Ee8c4liLQ9keUAo6LDAzEscl/u6n8AlDcobsw
+         cmEzHe74MALPJ3pcY7RJY/eS1NeQTX0XiAV0EyUM08DPzd0fDyxqlWtvG5CWjWmJzMpw
+         s8ASBiH8jVzev5fG+6LySj7f65Pf6minXBNoDgB2DgPnfp97FaD03nm7U9Vq9/vbMz4u
+         qzip/pGzyf0a49tnRXffTzuooKqdf+iK6IWpjLXUc8KhzQtCl+KqbTt5KVFfu/mIY0cv
+         8f0t7Q7YvRY13xQ3hn6fmeVzobl90o99ofQvnv/nD1hnivGLJA7ISq2sxBTcc0yfXRm7
+         cSiw==
+X-Gm-Message-State: AOAM531G5/YilYgCjzwhd6K9zbqROX8CTsuS1whb2yIyeQnDooSlWJVD
+        AFBbwX8LoFrcWcUUKIenFDQ=
+X-Google-Smtp-Source: ABdhPJyVLCqbMqQ78S+5jQwOw0nWKVI/MYFYMbSlKL+Tu8reYDA1DB3CuTq/CJJyxWE1AsRG5yHQuw==
+X-Received: by 2002:a17:906:d8a3:: with SMTP id qc3mr2127262ejb.183.1603184501961;
+        Tue, 20 Oct 2020 02:01:41 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id e11sm1630465edq.5.2020.10.20.02.01.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Tue, 20 Oct 2020 02:01:40 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id 71sm2057313wrm.20.2020.10.20.02.01.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 20 Oct 2020 02:01:39 -0700 (PDT)
-Subject: Re: [PATCH v3 0/4] clk: qcom : add sm8250 LPASS GFM drivers
-To:     Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20201016141241.5839-1-srinivas.kandagatla@linaro.org>
- <160314732379.884498.15569172477533491589@swboyd.mtv.corp.google.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <af7d64f5-aa30-2965-3c2c-ca72aed1ae49@linaro.org>
-Date:   Tue, 20 Oct 2020 10:01:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
+To:     =?UTF-8?Q?=c3=89rico_Rolim?= <erico.erc@gmail.com>,
+        dwarves@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Hao Luo <haoluo@google.com>
+References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org>
+Date:   Tue, 20 Oct 2020 11:01:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <160314732379.884498.15569172477533491589@swboyd.mtv.corp.google.com>
+In-Reply-To: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On 19. 10. 20, 1:18, Érico Rolim wrote:
+> I'm trying to build kernel 5.9.1 for arm64, and my dotconfig has
+> `CONFIG_DEBUG_INFO_BTF=y`, which requires pahole for building. However, pahole
+> version 1.18 segfaults during the build, as can be seen below:
+> 
+> PAHOLE: Error: Found symbol of zero size when encoding btf (sym:
+> '__kvm_nvhe_arm64_ssbd_callback_required', cu:
+> 'arch/arm64/kernel/cpu_errata.c').
+
+The symbol is an alias coming from arch/arm64/kernel/vmlinux.lds:
+__kvm_nvhe_arm64_ssbd_callback_required = arm64_ssbd_callback_required;;
+
+> PAHOLE: Error: Use '-j' or '--force' to ignore such symbols and force
+> emit the btf.
+> scripts/link-vmlinux.sh: line 141: 43837 Segmentation fault
+> LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
+>    LD      .tmp_vmlinux.kallsyms1
+>    KSYM    .tmp_vmlinux.kallsyms1.o
+>    LD      .tmp_vmlinux.kallsyms2
+>    KSYM    .tmp_vmlinux.kallsyms2.o
+>    LD      vmlinux
+>    BTFIDS  vmlinux
+> FAILED: load BTF from vmlinux: Unknown error -2make: ***
+> [Makefile:1162: vmlinux] Error 255
+> 
+> It is possible to force the build to continue if
+> 
+>    LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
+> 
+> in scripts/link-vmlinux.sh is changed to
+> 
+>    LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J --btf_encode_force ${1}
+> 
+> The suggested `-j` or `--force` flags don't exist, since they were removed in
+> [1]. I believe `--btf_encode_force` should be suggested instead.
+
+Agreed, '--btf_encode_force' makes pahole to proceed without crashes.
+
+> It should be noted that the same build, but with pahole version 1.17, works
+> without issue, so I think this is either a regression in pahole or the script
+> will need to be changed for newer versions of pahole.
+
+Yeah, I observe the very same. I reported it at:
+https://bugzilla.suse.com/show_bug.cgi?id=1177921
+
+The backtrace:
+ > (gdb) where
+ > #0  __memmove_sse2_unaligned_erms () at 
+../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:300
+ > #1  0x00007ffff7f78346 in memcpy (__len=<optimized out>, 
+__src=<optimized out>, __dest=<optimized out>, __dest=<optimized out>, 
+__src=<optimized out>, __len=<optimized out>) at 
+/usr/include/bits/string_fortified.h:34
+ > #2  gobuffer__add (gb=0x555555569aa0, s=0x7fffffffb50c, len=12) at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/gobuffer.c:87
+ > #3  0x00007ffff7f8671f in btf_elf__add_datasec_type 
+(btfe=btfe@entry=0x555555569a40, 
+section_name=section_name@entry=0x7ffff7fa43ad ".data..percpu", 
+var_secinfo_buf=var_secinfo_buf@entry=0x555555569ac0) at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf.c:721
+ > #4  0x00007ffff7f8d766 in btf_elf__encode (flags=0 '\000', 
+btfe=0x555555569a40) at /usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf.c:857
+ > #5  btf_elf__encode (btfe=0x555555569a40, flags=<optimized out>) at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf.h:71
+ > #6  0x00007ffff7f7fc70 in btf_encoder__encode () at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/btf_encoder.c:213
+ > #7  0x00007ffff7f80d17 in cu__encode_btf (cu=0x55555638d9b0, 
+verbose=0, force=false, skip_encoding_vars=false) at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/btf_encoder.c:255
+ > #8  0x000055555555ac4d in pahole_stealer (cu=0x55555638d9b0, 
+conf_load=<optimized out>) at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/pahole.c:2366
+ > #9  0x00007ffff7f89dab in finalize_cu (cus=0x5555555622d0, 
+dcu=0x7fffffffd080, conf=0x5555555610e0 <conf_load>, cu=0x55555638d9b0) 
+at /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2473
+ > #10 finalize_cu_immediately (conf=0x5555555610e0 <conf_load>, 
+dcu=0x7fffffffd080, cu=0x55555638d9b0, cus=0x5555555622d0) at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2317
+ > #11 cus__load_module (cus=cus@entry=0x5555555622d0, 
+conf=0x5555555610e0 <conf_load>, mod=mod@entry=0x555555564760, 
+dw=0x555555565960, elf=elf@entry=0x555555562360, filename=0x7fffffffe846 
+"ss") at /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2473
+ > #12 0x00007ffff7f8a0f1 in cus__process_dwflmod 
+(dwflmod=0x555555564760, userdata=<optimized out>, name=<optimized out>, 
+base=<optimized out>, arg=0x7fffffffe1b0) at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2518
+ > #13 0x00007ffff7d4f571 in dwfl_getmodules () from /usr/lib64/libdw.so.1
+ > #14 0x00007ffff7f823ed in cus__process_file (filename=0x7fffffffe846 
+"ss", fd=3, conf=<optimized out>, cus=0x5555555622d0) at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2571
+ > #15 dwarf__load_file (cus=0x5555555622d0, conf=<optimized out>, 
+filename=0x7fffffffe846 "ss") at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2588
+ > #16 0x00007ffff7f76771 in cus__load_file 
+(cus=cus@entry=0x5555555622d0, conf=conf@entry=0x5555555610e0 
+<conf_load>, filename=0x7fffffffe846 "ss") at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarves.c:1958
+ > #17 0x00007ffff7f798a8 in cus__load_files (cus=0x5555555622d0, 
+conf=0x5555555610e0 <conf_load>, filenames=0x7fffffffe518) at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarves.c:2316
+ > #18 0x00005555555576fc in main (argc=3, argv=0x7fffffffe508) at 
+/usr/src/debug/dwarves-1.18-1.1.x86_64/pahole.c:2687
 
 
-On 19/10/2020 23:42, Stephen Boyd wrote:
-> Quoting Srinivas Kandagatla (2020-10-16 07:12:37)
->> This patchset adds support for GFM Muxes found in LPASS
->> (Low Power Audio SubSystem) IP in Audio Clock Controller
->> and Always ON clock controller.
->>
->> Clocks derived from these muxes are consumed by LPASS Digital Codec.
->> Currently the driver for Audio and Always ON clock controller only
->> supports GFM Muxes, however it should be easy to add more clock
->> support when required
->>
->> Changes since v2:
->> - updated Kconfig text and help as suggested by Stephen
->> - removed unnecessary header file include
->> - use fw_name instead of name for parents
->> - use devm_platform_ioremap_resource
->>
->> verified dt_binding_check to pass on linux master,
-> Which linux master? Can you try on linux-next?
+I suspect:
+commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
+Author:     Hao Luo <haoluo@google.com>
+AuthorDate: Wed Jul 8 13:44:10 2020 -0700
 
-I meant linus master branch. However I learned that Bot runs only based 
-on rc1 tag (5.9-rc1 in this case) which is why its still reporting this 
-errors even though the dependent patches are already in linus master branch!
+     btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.
 
-I will resend this version patchset once rc1 is out!
 
-thanks,
-srini
+Which added this machinery (btf_elf__add_datasec_type in particular).
+
+> - [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/pahole.c?h=v1.18&id=1abc001417b579b86a9b27ff88c9095d8f498a46
+> 
+> Thanks,
+> Érico
+> 
+
+
+-- 
+js
+suse labs
