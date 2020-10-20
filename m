@@ -2,182 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7711829376B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44E5293777
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392300AbgJTJBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:01:48 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:35978 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392287AbgJTJBo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:01:44 -0400
-Received: by mail-ej1-f67.google.com with SMTP id qp15so1560997ejb.3;
-        Tue, 20 Oct 2020 02:01:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I21QrYRSiNW5Fssisck9nCnQyQHsM9KlA2IytBaQecs=;
-        b=V/UYjcanYovhp88wg3EA2rZigT5o8Ee8c4liLQ9keUAo6LDAzEscl/u6n8AlDcobsw
-         cmEzHe74MALPJ3pcY7RJY/eS1NeQTX0XiAV0EyUM08DPzd0fDyxqlWtvG5CWjWmJzMpw
-         s8ASBiH8jVzev5fG+6LySj7f65Pf6minXBNoDgB2DgPnfp97FaD03nm7U9Vq9/vbMz4u
-         qzip/pGzyf0a49tnRXffTzuooKqdf+iK6IWpjLXUc8KhzQtCl+KqbTt5KVFfu/mIY0cv
-         8f0t7Q7YvRY13xQ3hn6fmeVzobl90o99ofQvnv/nD1hnivGLJA7ISq2sxBTcc0yfXRm7
-         cSiw==
-X-Gm-Message-State: AOAM531G5/YilYgCjzwhd6K9zbqROX8CTsuS1whb2yIyeQnDooSlWJVD
-        AFBbwX8LoFrcWcUUKIenFDQ=
-X-Google-Smtp-Source: ABdhPJyVLCqbMqQ78S+5jQwOw0nWKVI/MYFYMbSlKL+Tu8reYDA1DB3CuTq/CJJyxWE1AsRG5yHQuw==
-X-Received: by 2002:a17:906:d8a3:: with SMTP id qc3mr2127262ejb.183.1603184501961;
-        Tue, 20 Oct 2020 02:01:41 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id e11sm1630465edq.5.2020.10.20.02.01.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 02:01:40 -0700 (PDT)
-Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
-To:     =?UTF-8?Q?=c3=89rico_Rolim?= <erico.erc@gmail.com>,
-        dwarves@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Hao Luo <haoluo@google.com>
-References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org>
-Date:   Tue, 20 Oct 2020 11:01:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S2392347AbgJTJCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:02:45 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15237 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390264AbgJTJCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 05:02:44 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 04FD0A8AF70E46EE5E23;
+        Tue, 20 Oct 2020 17:02:42 +0800 (CST)
+Received: from [10.174.178.174] (10.174.178.174) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 20 Oct 2020 17:02:35 +0800
+Subject: [PATCH resend] vgacon: fix a UAF in do_update_region()
+To:     Sam Ravnborg <sam@ravnborg.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <b.zolnierkie@samsung.com>, <linux-fbdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <yangyingliang@huawei.com>
+References: <20200713110445.553974-1-yangyingliang@huawei.com>
+ <20201017122506.GA2838103@ravnborg.org>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <60b42c70-0166-747d-2063-7ecce463a933@huawei.com>
+Date:   Tue, 20 Oct 2020 17:02:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201017122506.GA2838103@ravnborg.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+I got a UAF report in do_update_region() when I doing fuzz test.
 
-On 19. 10. 20, 1:18, Érico Rolim wrote:
-> I'm trying to build kernel 5.9.1 for arm64, and my dotconfig has
-> `CONFIG_DEBUG_INFO_BTF=y`, which requires pahole for building. However, pahole
-> version 1.18 segfaults during the build, as can be seen below:
-> 
-> PAHOLE: Error: Found symbol of zero size when encoding btf (sym:
-> '__kvm_nvhe_arm64_ssbd_callback_required', cu:
-> 'arch/arm64/kernel/cpu_errata.c').
+[   51.161905] BUG: KASAN: use-after-free in do_update_region+0x579/0x600
+[   51.161918] Read of size 2 at addr ffff888000100000 by task test/295
 
-The symbol is an alias coming from arch/arm64/kernel/vmlinux.lds:
-__kvm_nvhe_arm64_ssbd_callback_required = arm64_ssbd_callback_required;;
+[   51.161957] CPU: 2 PID: 295 Comm: test Not tainted 5.7.0+ #975
+[   51.161969] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+[   51.161976] Call Trace:
+[   51.162001]  dump_stack+0xc6/0x11e
+[   51.162019]  ? do_update_region+0x579/0x600
+[   51.162047]  print_address_description.constprop.6+0x1a/0x220
+[   51.162083]  ? vprintk_func+0x66/0xed
+[   51.162100]  ? do_update_region+0x579/0x600
+[   51.162112]  ? do_update_region+0x579/0x600
+[   51.162128]  kasan_report.cold.9+0x37/0x7c
+[   51.162151]  ? do_update_region+0x579/0x600
+[   51.162173]  do_update_region+0x579/0x600
+[   51.162207]  ? con_get_trans_old+0x230/0x230
+[   51.162229]  ? retint_kernel+0x10/0x10
+[   51.162278]  csi_J+0x557/0xa00
+[   51.162307]  do_con_trol+0x49af/0x5cc0
+[   51.162330]  ? lock_downgrade+0x720/0x720
+[   51.162347]  ? reset_palette+0x1b0/0x1b0
+[   51.162369]  ? lockdep_hardirqs_on_prepare+0x379/0x540
+[   51.162393]  ? notifier_call_chain+0x11b/0x160
+[   51.162438]  do_con_write.part.24+0xb0a/0x1a30
+[   51.162501]  ? do_con_trol+0x5cc0/0x5cc0
+[   51.162522]  ? console_unlock+0x7b8/0xb00
+[   51.162555]  ? __mutex_unlock_slowpath+0xd4/0x670
+[   51.162574]  ? this_tty+0xe0/0xe0
+[   51.162589]  ? console_unlock+0x559/0xb00
+[   51.162605]  ? wait_for_completion+0x260/0x260
+[   51.162638]  con_write+0x31/0xb0
+[   51.162658]  n_tty_write+0x4fa/0xd40
+[   51.162710]  ? n_tty_read+0x1800/0x1800
+[   51.162730]  ? prepare_to_wait_exclusive+0x270/0x270
+[   51.162754]  ? __might_fault+0x175/0x1b0
+[   51.162783]  tty_write+0x42b/0x8d0
+[   51.162795]  ? n_tty_read+0x1800/0x1800
+[   51.162825]  ? tty_lookup_driver+0x450/0x450
+[   51.162848]  __vfs_write+0x7c/0x100
+[   51.162875]  vfs_write+0x1c9/0x510
+[   51.162901]  ksys_write+0xff/0x200
+[   51.162918]  ? __ia32_sys_read+0xb0/0xb0
+[   51.162940]  ? do_syscall_64+0x1a/0x520
+[   51.162957]  ? lockdep_hardirqs_on_prepare+0x379/0x540
+[   51.162984]  do_syscall_64+0xa1/0x520
+[   51.163008]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
 
-> PAHOLE: Error: Use '-j' or '--force' to ignore such symbols and force
-> emit the btf.
-> scripts/link-vmlinux.sh: line 141: 43837 Segmentation fault
-> LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
->    LD      .tmp_vmlinux.kallsyms1
->    KSYM    .tmp_vmlinux.kallsyms1.o
->    LD      .tmp_vmlinux.kallsyms2
->    KSYM    .tmp_vmlinux.kallsyms2.o
->    LD      vmlinux
->    BTFIDS  vmlinux
-> FAILED: load BTF from vmlinux: Unknown error -2make: ***
-> [Makefile:1162: vmlinux] Error 255
-> 
-> It is possible to force the build to continue if
-> 
->    LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
-> 
-> in scripts/link-vmlinux.sh is changed to
-> 
->    LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J --btf_encode_force ${1}
-> 
-> The suggested `-j` or `--force` flags don't exist, since they were removed in
-> [1]. I believe `--btf_encode_force` should be suggested instead.
+After vgacon_set_origin() is called in set_origin(), the vc_origin is
+set to vga_vram_base, the vc_pos should between vga_vram_base and
+vga_vram_end. But we still use vc_screenbuf_size, if the vga_vram_size
+is smaller than vc_screenbuf_size, vc_pos may be out of bound, using it
+will cause a use-after-free(or out-of-bounds). Fix this by calling
+vc_resize() if vga_vram_size is smaller than vc_screenbuf_size.
 
-Agreed, '--btf_encode_force' makes pahole to proceed without crashes.
+Signed-off-by: Yang Yingliang<yangyingliang@huawei.com>
+---
+  drivers/video/console/vgacon.c | 3 +++
+  1 file changed, 3 insertions(+)
 
-> It should be noted that the same build, but with pahole version 1.17, works
-> without issue, so I think this is either a regression in pahole or the script
-> will need to be changed for newer versions of pahole.
+diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
+index 998b0de..2ee3d62 100644
+--- a/drivers/video/console/vgacon.c
++++ b/drivers/video/console/vgacon.c
+@@ -1336,6 +1336,9 @@ static int vgacon_set_origin(struct vc_data *c)
+  	if (vga_is_gfx ||	/* We don't play origin tricks in graphic modes */
+  	    (console_blanked && !vga_palette_blanked))	/* Nor we write to blanked screens */
+  		return 0;
++
++	if (c->vc_screenbuf_size > vga_vram_size)
++		vc_resize(c, screen_info.orig_video_cols, screen_info.orig_video_lines);
+  	c->vc_origin = c->vc_visible_origin = vga_vram_base;
+  	vga_set_mem_top(c);
+  	vga_rolled_over = 0;
 
-Yeah, I observe the very same. I reported it at:
-https://bugzilla.suse.com/show_bug.cgi?id=1177921
-
-The backtrace:
- > (gdb) where
- > #0  __memmove_sse2_unaligned_erms () at 
-../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:300
- > #1  0x00007ffff7f78346 in memcpy (__len=<optimized out>, 
-__src=<optimized out>, __dest=<optimized out>, __dest=<optimized out>, 
-__src=<optimized out>, __len=<optimized out>) at 
-/usr/include/bits/string_fortified.h:34
- > #2  gobuffer__add (gb=0x555555569aa0, s=0x7fffffffb50c, len=12) at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/gobuffer.c:87
- > #3  0x00007ffff7f8671f in btf_elf__add_datasec_type 
-(btfe=btfe@entry=0x555555569a40, 
-section_name=section_name@entry=0x7ffff7fa43ad ".data..percpu", 
-var_secinfo_buf=var_secinfo_buf@entry=0x555555569ac0) at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf.c:721
- > #4  0x00007ffff7f8d766 in btf_elf__encode (flags=0 '\000', 
-btfe=0x555555569a40) at /usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf.c:857
- > #5  btf_elf__encode (btfe=0x555555569a40, flags=<optimized out>) at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf.h:71
- > #6  0x00007ffff7f7fc70 in btf_encoder__encode () at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/btf_encoder.c:213
- > #7  0x00007ffff7f80d17 in cu__encode_btf (cu=0x55555638d9b0, 
-verbose=0, force=false, skip_encoding_vars=false) at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/btf_encoder.c:255
- > #8  0x000055555555ac4d in pahole_stealer (cu=0x55555638d9b0, 
-conf_load=<optimized out>) at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/pahole.c:2366
- > #9  0x00007ffff7f89dab in finalize_cu (cus=0x5555555622d0, 
-dcu=0x7fffffffd080, conf=0x5555555610e0 <conf_load>, cu=0x55555638d9b0) 
-at /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2473
- > #10 finalize_cu_immediately (conf=0x5555555610e0 <conf_load>, 
-dcu=0x7fffffffd080, cu=0x55555638d9b0, cus=0x5555555622d0) at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2317
- > #11 cus__load_module (cus=cus@entry=0x5555555622d0, 
-conf=0x5555555610e0 <conf_load>, mod=mod@entry=0x555555564760, 
-dw=0x555555565960, elf=elf@entry=0x555555562360, filename=0x7fffffffe846 
-"ss") at /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2473
- > #12 0x00007ffff7f8a0f1 in cus__process_dwflmod 
-(dwflmod=0x555555564760, userdata=<optimized out>, name=<optimized out>, 
-base=<optimized out>, arg=0x7fffffffe1b0) at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2518
- > #13 0x00007ffff7d4f571 in dwfl_getmodules () from /usr/lib64/libdw.so.1
- > #14 0x00007ffff7f823ed in cus__process_file (filename=0x7fffffffe846 
-"ss", fd=3, conf=<optimized out>, cus=0x5555555622d0) at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2571
- > #15 dwarf__load_file (cus=0x5555555622d0, conf=<optimized out>, 
-filename=0x7fffffffe846 "ss") at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2588
- > #16 0x00007ffff7f76771 in cus__load_file 
-(cus=cus@entry=0x5555555622d0, conf=conf@entry=0x5555555610e0 
-<conf_load>, filename=0x7fffffffe846 "ss") at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarves.c:1958
- > #17 0x00007ffff7f798a8 in cus__load_files (cus=0x5555555622d0, 
-conf=0x5555555610e0 <conf_load>, filenames=0x7fffffffe518) at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/dwarves.c:2316
- > #18 0x00005555555576fc in main (argc=3, argv=0x7fffffffe508) at 
-/usr/src/debug/dwarves-1.18-1.1.x86_64/pahole.c:2687
-
-
-I suspect:
-commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
-Author:     Hao Luo <haoluo@google.com>
-AuthorDate: Wed Jul 8 13:44:10 2020 -0700
-
-     btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.
-
-
-Which added this machinery (btf_elf__add_datasec_type in particular).
-
-> - [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/pahole.c?h=v1.18&id=1abc001417b579b86a9b27ff88c9095d8f498a46
-> 
-> Thanks,
-> Érico
-> 
-
-
--- 
-js
-suse labs
