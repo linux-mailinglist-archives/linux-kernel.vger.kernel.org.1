@@ -2,140 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505D029403D
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2F629403F
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730362AbgJTQLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 12:11:34 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:22325 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394457AbgJTQKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 12:10:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603210223; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=XvlHKEFFXv5PkxuWl23fXuNfCB22Cwbykpq1imIZEOU=;
- b=dUjxF3lBXfz/xs2mvxOntTP3R9h2aj1Gu9zVjXpMlbT3fm4hY+Zal0GHYHnSbo+yqKImbdrG
- SCcMqq3JuJMdZF8Nl9KaalHZWXrNsGYqqJRFURLIPIJoz75ubP3eGoaeD+RWk1ycjj2szw9k
- NAibhUj2rFzgvdfnldzMI2ZSDso=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f8f0be5ad37af35ec54954f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Oct 2020 16:10:13
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3D0A8C43387; Tue, 20 Oct 2020 16:10:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 663ACC433CB;
-        Tue, 20 Oct 2020 16:10:12 +0000 (UTC)
+        id S2394483AbgJTQLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 12:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394466AbgJTQLR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 12:11:17 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0146C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:11:15 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id n6so2837700wrm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Jj25L1gQWKRXM7zU+DXisJyRnu6Otv0ZXY8L4OY+gv8=;
+        b=hGHBzToEYmixn/mjgL4keECzrrWu91M0r9rb+yuGJfIehZBtHSCj6LQqqhhUUFFi4f
+         rvuJbB7od6cZCExN46rKZiNERmSkuOrBLGwbCdOYogkai3zDwInkrMnc1CXWStHckXkw
+         ubBBXKdJe61wUda3uJHgiQReBgIiY3vboeEmUwz1qO9BNKW1N3yFRgj/4CjA7zkd8qZ1
+         6vq4JNYpMUc8/PzAz4kO8h0eiRtDlTS2Z+BVWa4iSqkADl6duw/wyCWJSUG7b2vEHNfT
+         EWvA2zDuCXqBDqD25224ge/I9VVVBjN1GK6mbj80o+z2MkZMAVI0pGcWCsT/ygMrH6Jy
+         lRrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Jj25L1gQWKRXM7zU+DXisJyRnu6Otv0ZXY8L4OY+gv8=;
+        b=lQegW1Dvtd2kRqqJEiIXAMtXMA41OaIMKrfjtebwqgIUKKCJ57NaKdMpRvzpceDqJ7
+         a8XoS6doa9c2lBalxVvATsyLlOOzL6aNl061pAlrUgQPp9g9rC8G4+QK+z9aDhmLLsfQ
+         bittw7BVUgogLTjbiKpqZu1Xqvw353dOUa2M8PrweSlEfVLYLrXKD1Ghm4JUS5Fa5Dts
+         y5Moe1rl1j9TdShYw7+RJiDVNAvXv+X7Kgj6fKw/qHNaURf/jgDvK9yBmA8iL+16tpW8
+         p2vs0OWZvp811VhqdXn56W1nR2Zpw/wgoUqPA/ZIBEBrU2U6tyUKadzrAmSNzHO1evQs
+         B5Fg==
+X-Gm-Message-State: AOAM530WByUKZ7D6CtZfZTtdo0moIfUCcjHCYiUS3IZcNhfj8ovRx5MN
+        9+C45cxFD4QwTuIGlYr3Bcgv5Q==
+X-Google-Smtp-Source: ABdhPJyLzreKRuc9O8TZcdkHhc1XX+t9ChNyHgH/VbumTlthJ7p5WqltaBYKp6EVZ7DpnRcK5lB3iw==
+X-Received: by 2002:adf:ee4c:: with SMTP id w12mr4204599wro.22.1603210274085;
+        Tue, 20 Oct 2020 09:11:14 -0700 (PDT)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:218e:7be8:b4e2:8030? ([2a01:e35:2ec0:82b0:218e:7be8:b4e2:8030])
+        by smtp.gmail.com with ESMTPSA id q7sm3588823wrr.39.2020.10.20.09.11.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Oct 2020 09:11:13 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: amlogic: add missing ethernet reset ID
+To:     Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20201020120141.298240-1-jbrunet@baylibre.com>
+ <68ee4022-df9b-c36e-b828-bc93d6507473@baylibre.com>
+ <7hft69kl4f.fsf@baylibre.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ ZaTUOEkgIor5losDrePdPgE=
+Organization: Baylibre
+Message-ID: <6fb3199f-f5a6-fa00-94df-9c5a40f394b6@baylibre.com>
+Date:   Tue, 20 Oct 2020 18:11:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 20 Oct 2020 21:40:12 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     mike.leach@linaro.org, coresight@lists.linaro.org,
-        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        denik@google.com, leo.yan@linaro.org, peterz@infradead.org
-Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-In-Reply-To: <5ad6acdc69c1c2e1e17f5c701a09b7e1@codeaurora.org>
-References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
- <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
- <707b7860-0daa-d3e3-1f0f-17e1b05feae2@arm.com>
- <5ad6acdc69c1c2e1e17f5c701a09b7e1@codeaurora.org>
-Message-ID: <8affc09d4045812e2f5a065695b375de@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <7hft69kl4f.fsf@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-14 21:29, Sai Prakash Ranjan wrote:
-> On 2020-10-14 18:46, Suzuki K Poulose wrote:
->> On 10/14/2020 10:36 AM, Sai Prakash Ranjan wrote:
->>> On 2020-10-13 22:05, Suzuki K Poulose wrote:
->>>> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
->>>>> There was a report of NULL pointer dereference in ETF enable
->>>>> path for perf CS mode with PID monitoring. It is almost 100%
->>>>> reproducible when the process to monitor is something very
->>>>> active such as chrome and with ETF as the sink and not ETR.
->>>>> Currently in a bid to find the pid, the owner is dereferenced
->>>>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
->>>>> owner being NULL, we get a NULL pointer dereference.
->>>>> 
->>>>> Looking at the ETR and other places in the kernel, ETF and the
->>>>> ETB are the only places trying to dereference the task(owner)
->>>>> in tmc_enable_etf_sink_perf() which is also called from the
->>>>> sched_in path as in the call trace. Owner(task) is NULL even
->>>>> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
->>>>> cache the PID in alloc_buffer() callback and it is done as part
->>>>> of etm_setup_aux() when allocating buffer for ETR sink, we never
->>>>> dereference this NULL pointer and we are safe. So lets do the
->>>> 
->>>> The patch is necessary to fix some of the issues. But I feel it is
->>>> not complete. Why is it safe earlier and not later ? I believe we 
->>>> are
->>>> simply reducing the chances of hitting the issue, by doing this 
->>>> earlier than
->>>> later. I would say we better fix all instances to make sure that the
->>>> event->owner is valid. (e.g, I can see that the for kernel events
->>>> event->owner == -1 ?)
->>>> 
->>>> struct task_struct *tsk = READ_ONCE(event->owner);
->>>> 
->>>> if (!tsk || is_kernel_event(event))
->>>>    /* skip ? */
->>>> 
->>> 
->>> Looking at it some more, is_kernel_event() is not exposed
->>> outside events core and probably for good reason. Why do
->>> we need to check for this and not just tsk?
->> 
->> Because the event->owner could be :
->> 
->>  = NULL
->>  = -1UL  // kernel event
->>  = valid.
->> 
+On 20/10/2020 16:49, Kevin Hilman wrote:
+> Neil Armstrong <narmstrong@baylibre.com> writes:
 > 
-> Yes I understood that part, but here we were trying to
-> fix the NULL pointer dereference right and hence the
-> question as to why we need to check for kernel events?
-> I am no expert in perf but I don't see anywhere in the
-> kernel checking for is_kernel_event(), so I am a bit
-> skeptical if exporting that is actually right or not.
+>> On 20/10/2020 14:01, Jerome Brunet wrote:
+>>> From: Anand Moon <linux.amoon@gmail.com>
+>>>
+>>> Add reset external reset of the ethernet mac controller
+>>>
+>>> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+>>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> 
+> [...]
+> 
+>> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+> 
+> Neil, do we need this in u-boot also?  I seem to have network issues in
+> u-boot on board with external PHY running mainline u-boot.
+
+Yes, U-boot supports it, but simply does "reset_deassert", so I don't think
+it would have any impact, the real issue is the PHY reset.
+
+Without a proper reset line, no idea how to do that cleanly.
+
+Neil
+
+> 
+> Kevin
 > 
 
-I have stress tested with the original patch many times
-now, i.e., without a check for event->owner and is_kernel_event()
-and didn't observe any crash. Plus on ETR where this was already
-done, no crashes were reported till date and with ETF, the issue
-was quickly reproducible, so I am fairly confident that this
-doesn't just delay the original issue but actually fixes
-it. I will run an overnight test again to confirm this.
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
