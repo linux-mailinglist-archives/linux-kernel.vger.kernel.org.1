@@ -2,256 +2,401 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD89029374F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0C729376D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392179AbgJTI7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 04:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390158AbgJTI7j (ORCPT
+        id S2392310AbgJTJBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:01:54 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:33806 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729372AbgJTJBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:59:39 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA771C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:59:37 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id h7so816124pfn.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:59:37 -0700 (PDT)
+        Tue, 20 Oct 2020 05:01:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OzWls94jQ8pq52AMk7jKEXrTP1OQTMot6mH/T4YUYBA=;
-        b=nU9Mwl6o0Qd+Gr4ubPUva9x2DPCXpPfPZXu0ZKfRsCipgcVSs5nalL2v/dHyHN+PKK
-         NZg+H2I9awMs+f5Rz8gPCQOvehDicp01RidO74mOR6qDsvz2EVd7y4WYmvY13GJEBJat
-         /rRigmJ7MiPP9IpK8duYKlPHOrHF3lofxbO9fHOX8NBd3iozrP7N0apAxzF2umTw/KnZ
-         l1Sjhi1SkRedW+feXqXWc3JOTLkJbW0S+gvR5SUwsgh6Qb8L6Bvu3tj1u9EEbZ2bPUdo
-         F3llTjVCnOrX1gfukYFx1nXfLOSn0X+eOUSbqRbpvPKuT6h5TS28qt7DPNI0Ok4fefoq
-         2Tkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OzWls94jQ8pq52AMk7jKEXrTP1OQTMot6mH/T4YUYBA=;
-        b=Ai0W7JI9bsa7Lk/BQPb2zZmPupwQ8whHngc9nFG8N1lQiL+9B3NKAbMcKeeG3I8LZZ
-         86ZJiDMrEvYvARM6EwXim5hwtMoIK1qVLra8ck8+8hoMLG4aP0RfCZZEGD14S8RVme8x
-         uepvDTdTAMR5aNyD4tPegh+CyYIbP3awdXyZBXbRTRGQ4Aa5Fqx11Rl7OXKnhWjR/Vpu
-         QXFYrVKpVYI7W+h7jZg1Lk5Z3tlEd6Tp9V7fXRLONnsU72mhQZvQodaFMOaalwr4KPYw
-         AaOVvHqrsrfNj4xNofy0iDZ61vV+9a7eUe7wqABcACOUNdb7EbYXE8vtY2mXbRwEufBn
-         7msw==
-X-Gm-Message-State: AOAM533DBX4PNGrNFCtkZX4grzeYHUJcd1mtB+Edbo/ihsi6F8LcdjwJ
-        n/loVqYwricno7v9/chkJIA0jyy6gaO3BJhrXJMFBHyNq2I=
-X-Google-Smtp-Source: ABdhPJx0U+unN/ZGAFVBtuf0U/TY7ARophCsIgh6K5hN4jgovZQJjCdR4A9cXgPZXOSSARJj1NKi7fUoPKkvU6+W2do=
-X-Received: by 2002:aa7:9245:0:b029:156:552a:1275 with SMTP id
- 5-20020aa792450000b0290156552a1275mr1838556pfp.12.1603184377105; Tue, 20 Oct
- 2020 01:59:37 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1603184512; x=1634720512;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=w/JSqe9EhMqEdSn91HD19xQaMzZawG3lkv7krg0C2Ow=;
+  b=qE5MYwzS4ospZ5WwTadNWoU5sVWUW7o/IvmRssuc9p0Mqhj5CXcbEqig
+   vXMdufZLnkCL5w5pbmUz52WkOZ+xa3EGfWhNfNuqp8sTBdxtEO8lE+Fwu
+   9AyxHfYzVq491hOir2qQehztlkqWOGmlp2U1YbijTYQFZEa9U+cYMoCb8
+   8=;
+X-IronPort-AV: E=Sophos;i="5.77,396,1596499200"; 
+   d="scan'208";a="85041161"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 20 Oct 2020 09:01:45 +0000
+Received: from EX13D31EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com (Postfix) with ESMTPS id 4064EA2424;
+        Tue, 20 Oct 2020 09:01:32 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.237) by
+ EX13D31EUB001.ant.amazon.com (10.43.166.210) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 20 Oct 2020 09:01:13 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
+        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v22 03/18] mm/damon: Adaptively adjust regions
+Date:   Tue, 20 Oct 2020 10:59:25 +0200
+Message-ID: <20201020085940.13875-4-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201020085940.13875-1-sjpark@amazon.com>
+References: <20201020085940.13875-1-sjpark@amazon.com>
 MIME-Version: 1.0
-References: <20201018125237.16717-1-kholk11@gmail.com> <20201018125237.16717-3-kholk11@gmail.com>
-In-Reply-To: <20201018125237.16717-3-kholk11@gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 20 Oct 2020 10:59:24 +0200
-Message-ID: <CAG3jFysokz0+NCHLp9-nhxG3wGVzk1TAFBwZmhMgViUr-sk-BA@mail.gmail.com>
-Subject: Re: [PATCH 2/6] media: camss: ispif: Correctly reset based on the VFE ID
-To:     kholk11@gmail.com
-Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        linux-arm-msm@vger.kernel.org,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.237]
+X-ClientProxiedBy: EX13D41UWC001.ant.amazon.com (10.43.162.107) To
+ EX13D31EUB001.ant.amazon.com (10.43.166.210)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nice catch! This patch looks good to me.
+From: SeongJae Park <sjpark@amazon.de>
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Even somehow the initial monitoring target regions are well constructed
+to fulfill the assumption (pages in same region have similar access
+frequencies), the data access pattern can be dynamically changed.  This
+will result in low monitoring quality.  To keep the assumption as much
+as possible, DAMON adaptively merges and splits each region based on
+their access frequency.
 
-On Sun, 18 Oct 2020 at 14:54, <kholk11@gmail.com> wrote:
->
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
->
-> Resetting the ISPIF VFE0 context is wrong if we are using the VFE1
-> for dual-camera or simply because a secondary camera is connected
-> to it: in this case the reset will always happen on the VFE0 ctx
-> of the ISPIF, which is .. useless.
->
-> Fix this usecase by adding the ISPIF_RST_CMD_1 address and choose
-> where to do the (or what to) reset based on the VFE line id.
->
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  .../media/platform/qcom/camss/camss-ispif.c   | 87 ++++++++++++-------
->  .../media/platform/qcom/camss/camss-ispif.h   |  2 +-
->  2 files changed, 57 insertions(+), 32 deletions(-)
->
-> diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
-> index db94cfd6c508..252db6b33dab 100644
-> --- a/drivers/media/platform/qcom/camss/camss-ispif.c
-> +++ b/drivers/media/platform/qcom/camss/camss-ispif.c
-> @@ -26,6 +26,7 @@
->  #define MSM_ISPIF_NAME "msm_ispif"
->
->  #define ISPIF_RST_CMD_0                        0x008
-> +#define ISPIF_RST_CMD_1                        0x00c
->  #define ISPIF_RST_CMD_0_STROBED_RST_EN         (1 << 0)
->  #define ISPIF_RST_CMD_0_MISC_LOGIC_RST         (1 << 1)
->  #define ISPIF_RST_CMD_0_SW_REG_RST             (1 << 2)
-> @@ -179,7 +180,10 @@ static irqreturn_t ispif_isr_8x96(int irq, void *dev)
->         writel(0x1, ispif->base + ISPIF_IRQ_GLOBAL_CLEAR_CMD);
->
->         if ((value0 >> 27) & 0x1)
-> -               complete(&ispif->reset_complete);
-> +               complete(&ispif->reset_complete[0]);
-> +
-> +       if ((value3 >> 27) & 0x1)
-> +               complete(&ispif->reset_complete[1]);
->
->         if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
->                 dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
-> @@ -237,7 +241,7 @@ static irqreturn_t ispif_isr_8x16(int irq, void *dev)
->         writel(0x1, ispif->base + ISPIF_IRQ_GLOBAL_CLEAR_CMD);
->
->         if ((value0 >> 27) & 0x1)
-> -               complete(&ispif->reset_complete);
-> +               complete(&ispif->reset_complete[0]);
->
->         if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
->                 dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
-> @@ -257,33 +261,17 @@ static irqreturn_t ispif_isr_8x16(int irq, void *dev)
->         return IRQ_HANDLED;
->  }
->
-> -/*
-> - * ispif_reset - Trigger reset on ISPIF module and wait to complete
-> - * @ispif: ISPIF device
-> - *
-> - * Return 0 on success or a negative error code otherwise
-> - */
-> -static int ispif_reset(struct ispif_device *ispif)
-> +static int ispif_vfe_reset(struct ispif_device *ispif, u8 vfe_id)
->  {
-> -       unsigned long time;
->         u32 val;
-> -       int ret;
-> -
-> -       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE0);
-> -       if (ret < 0)
-> -               return ret;
->
-> -       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE1);
-> -       if (ret < 0)
-> -               return ret;
-> -
-> -       ret = camss_enable_clocks(ispif->nclocks_for_reset,
-> -                                 ispif->clock_for_reset,
-> -                                 to_device(ispif));
-> -       if (ret < 0)
-> -               return ret;
-> +       if (vfe_id > (to_camss(ispif)->vfe_num - 1)) {
-> +               dev_err(to_device(ispif),
-> +                       "Error: asked reset for invalid VFE%d\n", vfe_id);
-> +               return -ENOENT;
-> +       }
->
-> -       reinit_completion(&ispif->reset_complete);
-> +       reinit_completion(&ispif->reset_complete[vfe_id]);
->
->         val = ISPIF_RST_CMD_0_STROBED_RST_EN |
->                 ISPIF_RST_CMD_0_MISC_LOGIC_RST |
-> @@ -303,15 +291,51 @@ static int ispif_reset(struct ispif_device *ispif)
->                 ISPIF_RST_CMD_0_RDI_OUTPUT_1_MISR_RST |
->                 ISPIF_RST_CMD_0_RDI_OUTPUT_2_MISR_RST;
->
-> -       writel_relaxed(val, ispif->base + ISPIF_RST_CMD_0);
-> +       if (vfe_id == 1)
-> +               writel_relaxed(val, ispif->base + ISPIF_RST_CMD_1);
-> +       else
-> +               writel_relaxed(val, ispif->base + ISPIF_RST_CMD_0);
->
-> -       time = wait_for_completion_timeout(&ispif->reset_complete,
-> +       time = wait_for_completion_timeout(&ispif->reset_complete[vfe_id],
->                 msecs_to_jiffies(ISPIF_RESET_TIMEOUT_MS));
->         if (!time) {
-> -               dev_err(to_device(ispif), "ISPIF reset timeout\n");
-> -               ret = -EIO;
-> +               dev_err(to_device(ispif),
-> +                       "ISPIF for VFE%d reset timeout\n", vfe_id);
-> +               return -EIO;
->         }
->
-> +       return 0;
-> +}
-> +
-> +/*
-> + * ispif_reset - Trigger reset on ISPIF module and wait to complete
-> + * @ispif: ISPIF device
-> + *
-> + * Return 0 on success or a negative error code otherwise
-> + */
-> +static int ispif_reset(struct ispif_device *ispif, u8 vfe_id)
-> +{
-> +       unsigned long time;
-> +       int ret;
-> +
-> +       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE0);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE1);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       ret = camss_enable_clocks(ispif->nclocks_for_reset,
-> +                                 ispif->clock_for_reset,
-> +                                 to_device(ispif));
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       ret = ispif_vfe_reset(ispif, vfe_id);
-> +       if (ret)
-> +               dev_dbg(to_device(ispif), "ISPIF Reset failed\n");
-> +
->         camss_disable_clocks(ispif->nclocks_for_reset, ispif->clock_for_reset);
->
->         camss_pm_domain_off(to_camss(ispif), PM_DOMAIN_VFE0);
-> @@ -355,7 +379,7 @@ static int ispif_set_power(struct v4l2_subdev *sd, int on)
->                         goto exit;
->                 }
->
-> -               ret = ispif_reset(ispif);
-> +               ret = ispif_reset(ispif, line->vfe_id);
->                 if (ret < 0) {
->                         pm_runtime_put_sync(dev);
->                         camss_disable_clocks(ispif->nclocks, ispif->clock);
-> @@ -1192,7 +1216,8 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
->
->         mutex_init(&ispif->config_lock);
->
-> -       init_completion(&ispif->reset_complete);
-> +       for (i = 0; i < MSM_ISPIF_VFE_NUM; i++)
-> +               init_completion(&ispif->reset_complete[i]);
->
->         return 0;
->  }
-> diff --git a/drivers/media/platform/qcom/camss/camss-ispif.h b/drivers/media/platform/qcom/camss/camss-ispif.h
-> index 1a5ba2425a42..4132174f7ea1 100644
-> --- a/drivers/media/platform/qcom/camss/camss-ispif.h
-> +++ b/drivers/media/platform/qcom/camss/camss-ispif.h
-> @@ -56,7 +56,7 @@ struct ispif_device {
->         int nclocks;
->         struct camss_clock  *clock_for_reset;
->         int nclocks_for_reset;
-> -       struct completion reset_complete;
-> +       struct completion reset_complete[MSM_ISPIF_VFE_NUM];
->         int power_count;
->         struct mutex power_lock;
->         struct ispif_intf_cmd_reg intf_cmd[MSM_ISPIF_VFE_NUM];
-> --
-> 2.28.0
->
+For each ``aggregation interval``, it compares the access frequencies of
+adjacent regions and merges those if the frequency difference is small.
+Then, after it reports and clears the aggregated access frequency of
+each region, it splits each region into two or three regions if the
+total number of regions will not exceed the user-specified maximum
+number of regions after the split.
+
+In this way, DAMON provides its best-effort quality and minimal overhead
+while keeping the upper-bound overhead that users set.
+
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Reviewed-by: Leonard Foerster <foersleo@amazon.de>
+---
+ include/linux/damon.h |  11 ++-
+ mm/damon/core.c       | 196 ++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 195 insertions(+), 12 deletions(-)
+
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index 1f7b095646c2..0797bdfbfc24 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -132,7 +132,8 @@ struct damon_callback {
+  *
+  * @sample_interval:		The time between access samplings.
+  * @aggr_interval:		The time between monitor results aggregations.
+- * @nr_regions:			The number of monitoring regions.
++ * @min_nr_regions:		The minimum number of monitoring regions.
++ * @max_nr_regions:		The maximum number of monitoring regions.
+  *
+  * For each @sample_interval, DAMON checks whether each region is accessed or
+  * not.  It aggregates and keeps the access information (number of accesses to
+@@ -166,7 +167,8 @@ struct damon_callback {
+ struct damon_ctx {
+ 	unsigned long sample_interval;
+ 	unsigned long aggr_interval;
+-	unsigned long nr_regions;
++	unsigned long min_nr_regions;
++	unsigned long max_nr_regions;
+ 
+ 	struct timespec64 last_aggregation;
+ 
+@@ -214,8 +216,9 @@ unsigned int damon_nr_regions(struct damon_target *t);
+ 
+ int damon_set_targets(struct damon_ctx *ctx,
+ 		unsigned long *ids, ssize_t nr_ids);
+-int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
+-		unsigned long aggr_int, unsigned long nr_reg);
++int damon_set_attrs(struct damon_ctx *ctx,
++		unsigned long sample_int, unsigned long aggr_int,
++		unsigned long min_nr_reg, unsigned long max_nr_reg);
+ 
+ int damon_nr_running_ctxs(void);
+ int damon_start(struct damon_ctx **ctxs, int nr_ctxs);
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index eb4ebeaa064d..ed364b42721d 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -10,6 +10,7 @@
+ #include <linux/damon.h>
+ #include <linux/delay.h>
+ #include <linux/kthread.h>
++#include <linux/random.h>
+ #include <linux/slab.h>
+ 
+ /* Minimal region size.  Every damon_region is aligned by this. */
+@@ -19,6 +20,9 @@
+  * Functions and macros for DAMON data structures
+  */
+ 
++/* Get a random number in [l, r) */
++#define damon_rand(l, r) (l + prandom_u32_max(r - l))
++
+ static DEFINE_MUTEX(damon_lock);
+ static int nr_running_ctxs;
+ 
+@@ -164,29 +168,57 @@ int damon_set_targets(struct damon_ctx *ctx,
+  * @ctx:		monitoring context
+  * @sample_int:		time interval between samplings
+  * @aggr_int:		time interval between aggregations
+- * @nr_reg:		number of regions
++ * @min_nr_reg:		minimal number of regions
++ * @max_nr_reg:		maximum number of regions
+  *
+  * This function should not be called while the kdamond is running.
+  * Every time interval is in micro-seconds.
+  *
+  * Return: 0 on success, negative error code otherwise.
+  */
+-int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
+-		    unsigned long aggr_int, unsigned long nr_reg)
++int damon_set_attrs(struct damon_ctx *ctx,
++		    unsigned long sample_int, unsigned long aggr_int,
++		    unsigned long min_nr_reg, unsigned long max_nr_reg)
+ {
+-	if (nr_reg < 3) {
+-		pr_err("nr_regions (%lu) must be at least 3\n",
+-				nr_reg);
++	if (min_nr_reg < 3) {
++		pr_err("min_nr_regions (%lu) must be at least 3\n",
++				min_nr_reg);
++		return -EINVAL;
++	}
++	if (min_nr_reg > max_nr_reg) {
++		pr_err("invalid nr_regions.  min (%lu) > max (%lu)\n",
++				min_nr_reg, max_nr_reg);
+ 		return -EINVAL;
+ 	}
+ 
+ 	ctx->sample_interval = sample_int;
+ 	ctx->aggr_interval = aggr_int;
+-	ctx->nr_regions = nr_reg;
++	ctx->min_nr_regions = min_nr_reg;
++	ctx->max_nr_regions = max_nr_reg;
+ 
+ 	return 0;
+ }
+ 
++/* Returns the size upper limit for each monitoring region */
++static unsigned long damon_region_sz_limit(struct damon_ctx *ctx)
++{
++	struct damon_target *t;
++	struct damon_region *r;
++	unsigned long sz = 0;
++
++	damon_for_each_target(t, ctx) {
++		damon_for_each_region(r, t)
++			sz += r->ar.end - r->ar.start;
++	}
++
++	if (ctx->min_nr_regions)
++		sz /= ctx->min_nr_regions;
++	if (sz < MIN_REGION)
++		sz = MIN_REGION;
++
++	return sz;
++}
++
+ static bool damon_kdamond_running(struct damon_ctx *ctx)
+ {
+ 	bool running;
+@@ -357,6 +389,146 @@ static void kdamond_reset_aggregated(struct damon_ctx *c)
+ 	}
+ }
+ 
++#define sz_damon_region(r) (r->ar.end - r->ar.start)
++
++/*
++ * Merge two adjacent regions into one region
++ */
++static void damon_merge_two_regions(struct damon_region *l,
++				struct damon_region *r)
++{
++	unsigned long sz_l = sz_damon_region(l), sz_r = sz_damon_region(r);
++
++	l->nr_accesses = (l->nr_accesses * sz_l + r->nr_accesses * sz_r) /
++			(sz_l + sz_r);
++	l->ar.end = r->ar.end;
++	damon_destroy_region(r);
++}
++
++#define diff_of(a, b) (a > b ? a - b : b - a)
++
++/*
++ * Merge adjacent regions having similar access frequencies
++ *
++ * t		target affected by this merge operation
++ * thres	'->nr_accesses' diff threshold for the merge
++ * sz_limit	size upper limit of each region
++ */
++static void damon_merge_regions_of(struct damon_target *t, unsigned int thres,
++				   unsigned long sz_limit)
++{
++	struct damon_region *r, *prev = NULL, *next;
++
++	damon_for_each_region_safe(r, next, t) {
++		if (prev && prev->ar.end == r->ar.start &&
++		    diff_of(prev->nr_accesses, r->nr_accesses) <= thres &&
++		    sz_damon_region(prev) + sz_damon_region(r) <= sz_limit)
++			damon_merge_two_regions(prev, r);
++		else
++			prev = r;
++	}
++}
++
++/*
++ * Merge adjacent regions having similar access frequencies
++ *
++ * threshold	'->nr_accesses' diff threshold for the merge
++ * sz_limit	size upper limit of each region
++ *
++ * This function merges monitoring target regions which are adjacent and their
++ * access frequencies are similar.  This is for minimizing the monitoring
++ * overhead under the dynamically changeable access pattern.  If a merge was
++ * unnecessarily made, later 'kdamond_split_regions()' will revert it.
++ */
++static void kdamond_merge_regions(struct damon_ctx *c, unsigned int threshold,
++				  unsigned long sz_limit)
++{
++	struct damon_target *t;
++
++	damon_for_each_target(t, c)
++		damon_merge_regions_of(t, threshold, sz_limit);
++}
++
++/*
++ * Split a region in two smaller regions
++ *
++ * r		the region to be split
++ * sz_r		size of the first sub-region that will be made
++ */
++static void damon_split_region_at(struct damon_ctx *ctx,
++				  struct damon_region *r, unsigned long sz_r)
++{
++	struct damon_region *new;
++
++	new = damon_new_region(r->ar.start + sz_r, r->ar.end);
++	r->ar.end = new->ar.start;
++
++	damon_insert_region(new, r, damon_next_region(r));
++}
++
++/* Split every region in the given target into 'nr_subs' regions */
++static void damon_split_regions_of(struct damon_ctx *ctx,
++				     struct damon_target *t, int nr_subs)
++{
++	struct damon_region *r, *next;
++	unsigned long sz_region, sz_sub = 0;
++	int i;
++
++	damon_for_each_region_safe(r, next, t) {
++		sz_region = r->ar.end - r->ar.start;
++
++		for (i = 0; i < nr_subs - 1 &&
++				sz_region > 2 * MIN_REGION; i++) {
++			/*
++			 * Randomly select size of left sub-region to be at
++			 * least 10 percent and at most 90% of original region
++			 */
++			sz_sub = ALIGN_DOWN(damon_rand(1, 10) *
++					sz_region / 10, MIN_REGION);
++			/* Do not allow blank region */
++			if (sz_sub == 0 || sz_sub >= sz_region)
++				continue;
++
++			damon_split_region_at(ctx, r, sz_sub);
++			sz_region = sz_sub;
++		}
++	}
++}
++
++/*
++ * Split every target region into randomly-sized small regions
++ *
++ * This function splits every target region into random-sized small regions if
++ * current total number of the regions is equal or smaller than half of the
++ * user-specified maximum number of regions.  This is for maximizing the
++ * monitoring accuracy under the dynamically changeable access patterns.  If a
++ * split was unnecessarily made, later 'kdamond_merge_regions()' will revert
++ * it.
++ */
++static void kdamond_split_regions(struct damon_ctx *ctx)
++{
++	struct damon_target *t;
++	unsigned int nr_regions = 0;
++	static unsigned int last_nr_regions;
++	int nr_subregions = 2;
++
++	damon_for_each_target(t, ctx)
++		nr_regions += damon_nr_regions(t);
++
++	if (nr_regions > ctx->max_nr_regions / 2)
++		return;
++
++	/* Maybe the middle of the region has different access frequency */
++	if (last_nr_regions == nr_regions &&
++			nr_regions < ctx->max_nr_regions / 3)
++		nr_subregions = 3;
++
++	damon_for_each_target(t, ctx)
++		damon_split_regions_of(ctx, t, nr_subregions);
++
++	last_nr_regions = nr_regions;
++}
++
+ /*
+  * Check whether current monitoring should be stopped
+  *
+@@ -414,23 +586,31 @@ static int kdamond_fn(void *data)
+ 	struct damon_ctx *ctx = (struct damon_ctx *)data;
+ 	struct damon_target *t;
+ 	struct damon_region *r, *next;
++	unsigned int max_nr_accesses = 0;
++	unsigned long sz_limit = 0;
+ 
+ 	pr_info("kdamond (%d) starts\n", ctx->kdamond->pid);
+ 
+ 	kdamond_call_prmt(ctx, init_target_regions);
+ 	kdamond_callback(ctx, before_start);
+ 
++	sz_limit = damon_region_sz_limit(ctx);
++
+ 	while (!kdamond_need_stop(ctx)) {
+ 		kdamond_call_prmt(ctx, prepare_access_checks);
+ 		kdamond_callback(ctx, after_sampling);
+ 
+ 		usleep_range(ctx->sample_interval, ctx->sample_interval + 1);
+ 
+-		kdamond_call_prmt(ctx, check_accesses);
++		if (ctx->primitive.check_accesses)
++			max_nr_accesses = ctx->primitive.check_accesses(ctx);
+ 
+ 		if (kdamond_aggregate_interval_passed(ctx)) {
++			kdamond_merge_regions(ctx, max_nr_accesses / 10,
++					sz_limit);
+ 			kdamond_callback(ctx, after_aggregation);
+ 			kdamond_reset_aggregated(ctx);
++			kdamond_split_regions(ctx);
+ 		}
+ 	}
+ 	damon_for_each_target(t, ctx) {
+-- 
+2.17.1
+
