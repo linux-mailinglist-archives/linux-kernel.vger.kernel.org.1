@@ -2,125 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206E82935D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FA12935AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731371AbgJTHcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:32:53 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:36876 "EHLO inva020.nxp.com"
+        id S2404970AbgJTHXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:23:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53574 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405194AbgJTHct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:32:49 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4734E1A0794;
-        Tue, 20 Oct 2020 09:32:47 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 619361A074F;
-        Tue, 20 Oct 2020 09:32:39 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id F103840327;
-        Tue, 20 Oct 2020 09:32:26 +0200 (CEST)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
-        UNGLinuxDriver@microchip.com, vinicius.gomes@intel.com,
-        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
-        jiri@mellanox.com, idosch@mellanox.com,
-        alexandre.belloni@bootlin.com, kuba@kernel.org,
-        xiaoliang.yang_1@nxp.com, po.liu@nxp.com, claudiu.manoil@nxp.com,
-        alexandru.marginean@nxp.com, vladimir.oltean@nxp.com,
-        leoyang.li@nxp.com, mingkai.hu@nxp.com
-Subject: [PATCH v1 net-next 5/5] net: dsa: felix: add police action for tc flower offload
-Date:   Tue, 20 Oct 2020 15:23:21 +0800
-Message-Id: <20201020072321.36921-6-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201020072321.36921-1-xiaoliang.yang_1@nxp.com>
-References: <20201020072321.36921-1-xiaoliang.yang_1@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1730739AbgJTHXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 03:23:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603178622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M4hNooVwRH4pvvVMO83tz/yia6U6s9X5qMtsKqTTIcE=;
+        b=phkdfIbJ/cVcm/qeun8CAvcUwNTRS5lHBszmhl+PIETT2VN9Y5zKFE/oLbZjirXhFAo0o2
+        CMd62sRinNfxcfgPdHHC68BXHO5/ZLJ7bHAa0zfsR0VtpercbA8Khh2ZQB3t246o0IUPvH
+        gRZ/XIlz4Hfdxh8IKgctSuHmEnMVBso=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 592D5AAD0;
+        Tue, 20 Oct 2020 07:23:42 +0000 (UTC)
+Date:   Tue, 20 Oct 2020 09:23:40 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
+        andriy.shevchenko@linux.intel.com, sergey.senozhatsky@gmail.com,
+        rostedt@goodmis.org, mchehab@kernel.org, tian.shu.qiu@intel.com,
+        bingbu.cao@intel.com, sakari.ailus@linux.intel.com,
+        yong.zhi@intel.com, rafael@kernel.org, gregkh@linuxfoundation.org,
+        kitakar@gmail.com, dan.carpenter@oracle.org
+Subject: Re: [RFC PATCH v3 2/9] lib/test_printf.c: Use helper function to
+ unwind array of software_nodes
+Message-ID: <20201020072026.GD26718@alley>
+References: <20201019225903.14276-1-djrscally@gmail.com>
+ <20201019225903.14276-3-djrscally@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019225903.14276-3-djrscally@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add police action to set flow meter table which is defined
-in IEEE802.1Qci. Flow metering is two rates two buckets and three color
-marker to policing the frames, we only enable one rate one bucket in
-this patch.
+On Mon 2020-10-19 23:58:56, Daniel Scally wrote:
+> Use the new software_node_unregister_nodes_reverse() function to
+> unwind this array in a cleaner way.
+> 
+> Suggested-by: Andriy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
 
-Flow metering shares a same policer pool with VCAP policers, it calls
-ocelot_vcap_policer_add() and ocelot_vcap_policer_del() to set flow
-meter table.
+If the new API gets accepted:
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
----
- drivers/net/dsa/ocelot/felix_flower.c | 32 +++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+Acked-by: Petr Mladek <pmladek@suse.com>
 
-diff --git a/drivers/net/dsa/ocelot/felix_flower.c b/drivers/net/dsa/ocelot/felix_flower.c
-index 71894dcc0af2..d58a2357bab1 100644
---- a/drivers/net/dsa/ocelot/felix_flower.c
-+++ b/drivers/net/dsa/ocelot/felix_flower.c
-@@ -363,6 +363,8 @@ static void felix_list_stream_filter_del(struct ocelot *ocelot, u32 index)
- 		if (tmp->index == index) {
- 			if (tmp->sg_valid)
- 				felix_list_gate_del(ocelot, tmp->sgid);
-+			if (tmp->fm_valid)
-+				ocelot_vcap_policer_del(ocelot, tmp->fmid);
- 
- 			z = refcount_dec_and_test(&tmp->refcount);
- 			if (z) {
-@@ -466,6 +468,8 @@ static int felix_psfp_set(struct ocelot *ocelot,
- 	if (ret) {
- 		if (sfi->sg_valid)
- 			felix_list_gate_del(ocelot, sfi->sgid);
-+		if (sfi->fm_valid)
-+			ocelot_vcap_policer_del(ocelot, sfi->fmid);
- 		return ret;
- 	}
- 
-@@ -559,7 +563,9 @@ int felix_flower_stream_replace(struct ocelot *ocelot, int port,
- 	struct felix_streamid stream = {0};
- 	struct felix_stream_gate_conf *sgi;
- 	const struct flow_action_entry *a;
-+	struct ocelot_policer pol;
- 	int ret, size, i;
-+	u64 rate, burst;
- 	u32 index;
- 
- 	ret = felix_flower_parse_key(f, &stream);
-@@ -595,6 +601,32 @@ int felix_flower_stream_replace(struct ocelot *ocelot, int port,
- 			stream.sfid_valid = 1;
- 			kfree(sgi);
- 			break;
-+		case FLOW_ACTION_POLICE:
-+			if (f->common.chain_index != OCELOT_PSFP_CHAIN) {
-+				NL_SET_ERR_MSG_MOD(extack,
-+						   "Police action only be offloaded to PSFP chain");
-+				return -EOPNOTSUPP;
-+			}
-+
-+			index = a->police.index + FELIX_POLICER_PSFP_BASE;
-+			if (index > FELIX_POLICER_PSFP_MAX)
-+				return -EINVAL;
-+
-+			rate = a->police.rate_bytes_ps;
-+			burst = rate * PSCHED_NS2TICKS(a->police.burst);
-+			pol = (struct ocelot_policer) {
-+				.burst = div_u64(burst, PSCHED_TICKS_PER_SEC),
-+				.rate = div_u64(rate, 1000) * 8,
-+			};
-+			ret = ocelot_vcap_policer_add(ocelot, index, &pol);
-+			if (ret)
-+				return ret;
-+
-+			sfi.fm_valid = 1;
-+			sfi.fmid = index;
-+			sfi.maxsdu = a->police.mtu;
-+			stream.sfid_valid = 1;
-+			break;
- 		default:
- 			return -EOPNOTSUPP;
- 		}
--- 
-2.17.1
-
+Best Regards,
+Petr
