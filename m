@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9603029359B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58150293589
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404903AbgJTHRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:17:12 -0400
-Received: from mga09.intel.com ([134.134.136.24]:53719 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726124AbgJTHRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:17:12 -0400
-IronPort-SDR: i3wJyDXz9VP42skEepGlEdBq/jOfBt5Vc7rvR7MpiPSCU6P53OYVW+opUjWVoG1/20AxGFWxit
- r7sdnXTNLJ5A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="167287121"
-X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
-   d="scan'208";a="167287121"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 00:17:11 -0700
-IronPort-SDR: DBnv6vGrhQydhBtdhMIpzgRRmcF0NXZvtyxrNAgYhks1DLKHZYzr3g1hG3iBtMbOpCjLxFgpW5
- kjMr4rD/1FTw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
-   d="scan'208";a="320550642"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga006.jf.intel.com with ESMTP; 20 Oct 2020 00:17:07 -0700
-Date:   Tue, 20 Oct 2020 15:11:58 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH 1/2] fpga: dfl: add driver_override support
-Message-ID: <20201020071158.GC28746@yilunxu-OptiPlex-7050>
-References: <1602828151-24784-1-git-send-email-yilun.xu@intel.com>
- <1602828151-24784-2-git-send-email-yilun.xu@intel.com>
- <63d7730b-d9b8-c75d-16f6-3ebb507aabaa@redhat.com>
- <20201019040612.GA16172@yilunxu-OptiPlex-7050>
- <f767b9a0-1db8-7ced-6bd9-5ee1f58d40da@redhat.com>
+        id S1730008AbgJTHNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728706AbgJTHNA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 03:13:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0A0C061755;
+        Tue, 20 Oct 2020 00:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WCNIsXqbUXOzIVXmiOYfRO/Rzg9TJllAtewiaSP3GKM=; b=ZxA8J6JPfMDUEAIlDegD6VN7Mw
+        kTiSBVZpDoHIFc4FUAK5xxpb0h6osBndnpMCaK/V1S6gc0r57wzZp9JD6kkTt+hkDnUGLeZCVRIVP
+        IKEFiR3euGhM133RXC6Fp3cWuP6Oml7l8/eoDxl361J46PF0VmzPOtnnImaWoSmmmyDGhIjNqpL+x
+        5s7tw6oaMt3QnNrabjpPBEfwikdlJBvW9w7+fapOwvAHAj6CRWWlY230ozrl2jLS1CnOmgtU7cuU+
+        QQVzmuM2RoJrYg5qyKb0gyilwxREcsCLvLj4/LkszvTE0hBeN6YQ+NXqSlRqODdHQowUqhPJQn8Wc
+        LApoqxOw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kUloh-0002R6-8F; Tue, 20 Oct 2020 07:12:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 914613011FE;
+        Tue, 20 Oct 2020 09:12:17 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 807E02038FA06; Tue, 20 Oct 2020 09:12:17 +0200 (CEST)
+Date:   Tue, 20 Oct 2020 09:12:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFCv2 15/16] KVM: Unmap protected pages from direct mapping
+Message-ID: <20201020071217.GU2611@hirez.programming.kicks-ass.net>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+ <20201020061859.18385-16-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f767b9a0-1db8-7ced-6bd9-5ee1f58d40da@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201020061859.18385-16-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >>>  int __dfl_driver_register(struct dfl_driver *dfl_drv, struct module *owner)
-> >>>  {
-> >>> -	if (!dfl_drv || !dfl_drv->probe || !dfl_drv->id_table)
-> >>> +	if (!dfl_drv || !dfl_drv->probe)
-> >> id_table is still needed for the normal case.
-> >>
-> >> Instead of removing this check, could you add something like
-> >>
-> >> || (!dfl_drv->is_override && !dfl_drv->id_table)
-> > I don't think it is needed. Seems is_override and !id_table are duplicated
-> > conditions for this implementation. And it may make confusing, e.g. could
-> > a driver been force matched when is_override is not set?
-> >
-> > I think we could make it simple, if the dfl driver didn't provide the
-> > id_table, normally it could not match any device. I think it could be
-> > easily understood by dfl driver developers.
-> >
-> Then an ASSERT should be added in dfl_bus_match() for id_entry.
+On Tue, Oct 20, 2020 at 09:18:58AM +0300, Kirill A. Shutemov wrote:
+> If the protected memory feature enabled, unmap guest memory from
+> kernel's direct mappings.
+> 
+> Migration and KSM is disabled for protected memory as it would require a
+> special treatment.
 
-I didn't get your idea. What Assertion should be added for id_entry?
-BUG_ON(id_entry == NULL)? Then dfl-uio-pdev can't be inserted before
-driver_override is set.
-
-I think it is normal case that a driver is successfully registered but
-doesn't match any device because it provides no id_table.
-
-Thanks,
-Yilun.
+How isn't disabling migration a problem? Are we going to back allocation
+by CMA instead?
