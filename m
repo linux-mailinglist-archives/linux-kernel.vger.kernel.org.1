@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2B42932DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 03:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27522932D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 03:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390296AbgJTBoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 21:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
+        id S2390200AbgJTBos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 21:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390205AbgJTBoh (ORCPT
+        with ESMTP id S2390246AbgJTBok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 21:44:37 -0400
+        Mon, 19 Oct 2020 21:44:40 -0400
 Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C98C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:37 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id p15so607584ioh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CE6C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:40 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id k6so593544ior.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HDJtUziN9hXOYg4zFHFJKo0bkwSTQiXwKmD5T0Pc/LQ=;
-        b=ayhwrU/beXWlJqGhuwcg66dGmMlj7SRo+F0RKk3nFjDNSmMKWtM3P7UQ4SLOvOFGH2
-         ppXGWMUBDAnmw63yCWGah3FMlZ4vo7BiK0/NxOvAfjU+iSm+iFpSVXX+RM/3CzJIIFzH
-         x2XyyuVr5PoNr0pTAxw5fu7KY/CjdOe36PpBg=
+        bh=f3SgsUK223+FY6bJR4gSyQVMXeQ4H0d1HsyCtBOHPqw=;
+        b=TlO5nj34zgGg58rYhyDRNX0zsp1+srEi1hxq/zZUf1nWA2yyLd73GQ/Km5dMCzzYcS
+         46GuPbVh7mSdoiYpOcxjo10bM/f3Vj6Es1FtemE+tTvAMUk8KFaSSFqmTh0anhyjFsML
+         fJw5/FIhF+qK0RpklYZ5hyJUnBLdFTnEzLXT8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HDJtUziN9hXOYg4zFHFJKo0bkwSTQiXwKmD5T0Pc/LQ=;
-        b=GM9PCmuqsJxZn33kPm7ubtpDQOqoXJ9FtQLXUphutDeQECFoNYjBkDsxJCzuNZ9cI1
-         7GYoNE664CVA6lLUkOHTbUA1LVGf61n08v1/gXCjkc8frrQEk/JqgQ+CYuZnyoarR9Jq
-         ZzyFjfiUleFBe9LTwYKU42f45AsQIRllvbwTgA33/2nGNH6FQSbft6rpa4FSHVBLygWw
-         f3TXq4XnTBxk0/6KX0V9q3A6DUX0pYi8I29seKjVwydHnVGJgZr/2CGVfnb5kei8gRtr
-         gCXLOBOdlUGotHzeHC303e8Rg4xXQlLh4x3PzyA7wF9Vx5mh/7cnSHOD1q2us3HupGi+
-         BnRQ==
-X-Gm-Message-State: AOAM530ibikV1Y7C4DsogsFZJpXg9lplxpMgUkW4chw1HNNO6rW7mhO7
-        OWto0q4UKvDaH2W6owlWYGeEvg==
-X-Google-Smtp-Source: ABdhPJx3pz4X3ehrCehdmN64kT4XetSaSt0avXh9idACIje3yXGLYAtAG47u7algDWjht1OnqPpxUw==
-X-Received: by 2002:a6b:f416:: with SMTP id i22mr472209iog.161.1603158276604;
-        Mon, 19 Oct 2020 18:44:36 -0700 (PDT)
+        bh=f3SgsUK223+FY6bJR4gSyQVMXeQ4H0d1HsyCtBOHPqw=;
+        b=iO1/F7r9XyDLKTNIqS6IaWl2vD9q0RJHX+R8iL1OWlY3Ngh2ypLPxUgPDWwpBwzGNN
+         vRH+UgiWhBUlIDQFDWJ76Iwg2HxoCrzZs0Foe2ozCXODPJaIxmvVRn4ZtcWejLC/5wTU
+         ATHgkCTSC6c/CAGGtexM2u+j1ZrmqGJM/9qHcQayHueP+68gYqNVp4sCUlWrm/iiwvrq
+         wwnUn86ip5WrYv2XE+XTbL4yeeDiLse2KZew3vsJm9HSN35omaOaqxmzENtA+ElS7ACX
+         wuFgxFYtH9yrma7ODaw/hQqGrT8NqgjydjZH5iyuIQvg7GdOFxilESAtAUK5XLaIc/Hf
+         /cig==
+X-Gm-Message-State: AOAM530VW16YQ6sCgzBcyQnjOy42VZ1w3YXr7L4iiFPyMeKjYzHp/+S/
+        2JAYn/HKnzhbhaufEEWnLOf2TPyBX6KfNw==
+X-Google-Smtp-Source: ABdhPJz0Lri6gEUUj9fBNlU/jL+EX+iGB6qNOA1AA+lIuzvCdXI5ZOnprivi4YM0vEKhnHehGEO0Ug==
+X-Received: by 2002:a6b:8f92:: with SMTP id r140mr462094iod.81.1603158279651;
+        Mon, 19 Oct 2020 18:44:39 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id t22sm485306ili.9.2020.10.19.18.44.33
+        by smtp.gmail.com with ESMTPSA id t22sm485306ili.9.2020.10.19.18.44.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 18:44:36 -0700 (PDT)
+        Mon, 19 Oct 2020 18:44:38 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -75,9 +75,9 @@ Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
         chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Tim Chen <tim.c.chen@intel.com>
-Subject: [PATCH v8 -tip 17/26] sched: Split the cookie and setup per-task cookie on fork
-Date:   Mon, 19 Oct 2020 21:43:27 -0400
-Message-Id: <20201020014336.2076526-18-joel@joelfernandes.org>
+Subject: [PATCH v8 -tip 18/26] sched: Add a per-thread core scheduling interface
+Date:   Mon, 19 Oct 2020 21:43:28 -0400
+Message-Id: <20201020014336.2076526-19-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 In-Reply-To: <20201020014336.2076526-1-joel@joelfernandes.org>
 References: <20201020014336.2076526-1-joel@joelfernandes.org>
@@ -87,333 +87,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to prevent interference and clearly support both per-task and CGroup
-APIs, split the cookie into 2 and allow it to be set from either per-task, or
-CGroup API. The final cookie is the combined value of both and is computed when
-the stop-machine executes during a change of cookie.
+Add a per-thread core scheduling interface which allows a thread to share a
+core with another thread, or have a core exclusively for itself.
 
-Also, for the per-task cookie, it will get weird if we use pointers of any
-emphemeral objects. For this reason, introduce a refcounted object who's sole
-purpose is to assign unique cookie value by way of the object's pointer.
-
-While at it, refactor the CGroup code a bit. Future patches will introduce more
-APIs and support.
+ChromeOS uses core-scheduling to securely enable hyperthreading.  This cuts
+down the keypress latency in Google docs from 150ms to 50ms while improving
+the camera streaming frame rate by ~3%.
 
 Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/linux/sched.h |   2 +
- kernel/sched/core.c   | 241 ++++++++++++++++++++++++++++++++++++++++--
- kernel/sched/debug.c  |   4 +
- 3 files changed, 236 insertions(+), 11 deletions(-)
+ include/linux/sched.h            |  2 ++
+ include/uapi/linux/prctl.h       |  3 ++
+ kernel/sched/core.c              | 51 +++++++++++++++++++++++++++++---
+ kernel/sys.c                     |  3 ++
+ tools/include/uapi/linux/prctl.h |  3 ++
+ 5 files changed, 58 insertions(+), 4 deletions(-)
 
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index fe6f225bfbf9..c6034c00846a 100644
+index c6034c00846a..4cb76575afa8 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -688,6 +688,8 @@ struct task_struct {
- #ifdef CONFIG_SCHED_CORE
- 	struct rb_node			core_node;
- 	unsigned long			core_cookie;
-+	unsigned long			core_task_cookie;
-+	unsigned long			core_group_cookie;
- 	unsigned int			core_occupation;
+@@ -2078,11 +2078,13 @@ void sched_core_unsafe_enter(void);
+ void sched_core_unsafe_exit(void);
+ bool sched_core_wait_till_safe(unsigned long ti_check);
+ bool sched_core_kernel_protected(void);
++int sched_core_share_pid(pid_t pid);
+ #else
+ #define sched_core_unsafe_enter(ignore) do { } while (0)
+ #define sched_core_unsafe_exit(ignore) do { } while (0)
+ #define sched_core_wait_till_safe(ignore) do { } while (0)
+ #define sched_core_kernel_protected(ignore) do { } while (0)
++#define sched_core_share_pid(pid_t pid) do { } while (0)
  #endif
  
+ #endif
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index c334e6a02e5f..217b0482aea1 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -248,4 +248,7 @@ struct prctl_mm_map {
+ #define PR_SET_IO_FLUSHER		57
+ #define PR_GET_IO_FLUSHER		58
+ 
++/* Request the scheduler to share a core */
++#define PR_SCHED_CORE_SHARE		59
++
+ #endif /* _LINUX_PRCTL_H */
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index bab4ea2f5cd8..30a9e4cb5ce1 100644
+index 30a9e4cb5ce1..a0678614a056 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -346,11 +346,14 @@ void sched_core_put(void)
- 	mutex_unlock(&sched_core_mutex);
+@@ -310,6 +310,7 @@ static int __sched_core_stopper(void *data)
  }
  
-+static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2);
-+
- #else /* !CONFIG_SCHED_CORE */
+ static DEFINE_MUTEX(sched_core_mutex);
++static DEFINE_MUTEX(sched_core_tasks_mutex);
+ static int sched_core_count;
  
- static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
- static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
- static bool sched_core_enqueued(struct task_struct *task) { return false; }
-+static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2) { }
- 
- #endif /* CONFIG_SCHED_CORE */
- 
-@@ -3583,6 +3586,20 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
- #endif
- #ifdef CONFIG_SCHED_CORE
+ static void __sched_core_enable(void)
+@@ -3588,8 +3589,9 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
  	RB_CLEAR_NODE(&p->core_node);
-+
-+	/*
-+	 * Tag child via per-task cookie only if parent is tagged via per-task
-+	 * cookie. This is independent of, but can be additive to the CGroup tagging.
-+	 */
-+	if (current->core_task_cookie) {
-+
-+		/* If it is not CLONE_THREAD fork, assign a unique per-task tag. */
-+		if (!(clone_flags & CLONE_THREAD)) {
-+			return sched_core_share_tasks(p, p);
-+               }
-+		/* Otherwise share the parent's per-task tag. */
-+		return sched_core_share_tasks(p, current);
-+	}
- #endif
- 	return 0;
- }
-@@ -9177,6 +9194,217 @@ static u64 cpu_rt_period_read_uint(struct cgroup_subsys_state *css,
- #endif /* CONFIG_RT_GROUP_SCHED */
  
- #ifdef CONFIG_SCHED_CORE
-+/*
-+ * A simple wrapper around refcount. An allocated sched_core_cookie's
-+ * address is used to compute the cookie of the task.
-+ */
-+struct sched_core_cookie {
-+	refcount_t refcnt;
-+};
-+
-+/*
-+ * sched_core_tag_requeue - Common helper for all interfaces to set a cookie.
-+ * @p: The task to assign a cookie to.
-+ * @cookie: The cookie to assign.
-+ * @group: is it a group interface or a per-task interface.
-+ *
-+ * This function is typically called from a stop-machine handler.
-+ */
-+void sched_core_tag_requeue(struct task_struct *p, unsigned long cookie, bool group)
+ 	/*
+-	 * Tag child via per-task cookie only if parent is tagged via per-task
+-	 * cookie. This is independent of, but can be additive to the CGroup tagging.
++	 * If parent is tagged via per-task cookie, tag the child (either with
++	 * the parent's cookie, or a new one). The final cookie is calculated
++	 * by concatenating the per-task cookie with that of the CGroup's.
+ 	 */
+ 	if (current->core_task_cookie) {
+ 
+@@ -9301,7 +9303,7 @@ static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2
+ 	unsigned long cookie;
+ 	int ret = -ENOMEM;
+ 
+-	mutex_lock(&sched_core_mutex);
++	mutex_lock(&sched_core_tasks_mutex);
+ 
+ 	/*
+ 	 * NOTE: sched_core_get() is done by sched_core_alloc_task_cookie() or
+@@ -9400,10 +9402,51 @@ static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2
+ 
+ 	ret = 0;
+ out_unlock:
+-	mutex_unlock(&sched_core_mutex);
++	mutex_unlock(&sched_core_tasks_mutex);
+ 	return ret;
+ }
+ 
++/* Called from prctl interface: PR_SCHED_CORE_SHARE */
++int sched_core_share_pid(pid_t pid)
 +{
-+	if (!p)
-+		return;
++	struct task_struct *task;
++	int err;
 +
-+	if (group)
-+		p->core_group_cookie = cookie;
-+	else
-+		p->core_task_cookie = cookie;
-+
-+	/* Use up half of the cookie's bits for task cookie and remaining for group cookie. */
-+	p->core_cookie = (p->core_task_cookie <<
-+				(sizeof(unsigned long) * 4)) + p->core_group_cookie;
-+
-+	if (sched_core_enqueued(p)) {
-+		sched_core_dequeue(task_rq(p), p);
-+		if (!p->core_task_cookie)
-+			return;
-+	}
-+
-+	if (sched_core_enabled(task_rq(p)) &&
-+			p->core_cookie && task_on_rq_queued(p))
-+		sched_core_enqueue(task_rq(p), p);
-+}
-+
-+/* Per-task interface */
-+static unsigned long sched_core_alloc_task_cookie(void)
-+{
-+	struct sched_core_cookie *ptr =
-+		kmalloc(sizeof(struct sched_core_cookie), GFP_KERNEL);
-+
-+	if (!ptr)
-+		return 0;
-+	refcount_set(&ptr->refcnt, 1);
-+
-+	/*
-+	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-+	 * is done after the stopper runs.
-+	 */
-+	sched_core_get();
-+	return (unsigned long)ptr;
-+}
-+
-+static bool sched_core_get_task_cookie(unsigned long cookie)
-+{
-+	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-+
-+	/*
-+	 * NOTE: sched_core_put() is not done by put_task_cookie(). Instead, it
-+	 * is done after the stopper runs.
-+	 */
-+	sched_core_get();
-+	return refcount_inc_not_zero(&ptr->refcnt);
-+}
-+
-+static void sched_core_put_task_cookie(unsigned long cookie)
-+{
-+	struct sched_core_cookie *ptr = (struct sched_core_cookie *)cookie;
-+
-+	if (refcount_dec_and_test(&ptr->refcnt))
-+		kfree(ptr);
-+}
-+
-+struct sched_core_task_write_tag {
-+	struct task_struct *tasks[2];
-+	unsigned long cookies[2];
-+};
-+
-+/*
-+ * Ensure that the task has been requeued. The stopper ensures that the task cannot
-+ * be migrated to a different CPU while its core scheduler queue state is being updated.
-+ * It also makes sure to requeue a task if it was running actively on another CPU.
-+ */
-+static int sched_core_task_join_stopper(void *data)
-+{
-+	struct sched_core_task_write_tag *tag = (struct sched_core_task_write_tag *)data;
-+	int i;
-+
-+	for (i = 0; i < 2; i++)
-+		sched_core_tag_requeue(tag->tasks[i], tag->cookies[i], false /* !group */);
-+
-+	return 0;
-+}
-+
-+static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
-+{
-+	struct sched_core_task_write_tag wr = {}; /* for stop machine. */
-+	bool sched_core_put_after_stopper = false;
-+	unsigned long cookie;
-+	int ret = -ENOMEM;
-+
-+	mutex_lock(&sched_core_mutex);
-+
-+	/*
-+	 * NOTE: sched_core_get() is done by sched_core_alloc_task_cookie() or
-+	 *       sched_core_put_task_cookie(). However, sched_core_put() is done
-+	 *       by this function *after* the stopper removes the tasks from the
-+	 *       core queue, and not before. This is just to play it safe.
-+	 */
-+	if (t2 == NULL) {
-+		if (t1->core_task_cookie) {
-+			sched_core_put_task_cookie(t1->core_task_cookie);
-+			sched_core_put_after_stopper = true;
-+			wr.tasks[0] = t1; /* Keep wr.cookies[0] reset for t1. */
-+		}
-+	} else if (t1 == t2) {
-+		/* Assign a unique per-task cookie solely for t1. */
-+
-+		cookie = sched_core_alloc_task_cookie();
-+		if (!cookie)
-+			goto out_unlock;
-+
-+		if (t1->core_task_cookie) {
-+			sched_core_put_task_cookie(t1->core_task_cookie);
-+			sched_core_put_after_stopper = true;
-+		}
-+		wr.tasks[0] = t1;
-+		wr.cookies[0] = cookie;
-+	} else
-+	/*
-+	 * 		t1		joining		t2
-+	 * CASE 1:
-+	 * before	0				0
-+	 * after	new cookie			new cookie
-+	 *
-+	 * CASE 2:
-+	 * before	X (non-zero)			0
-+	 * after	0				0
-+	 *
-+	 * CASE 3:
-+	 * before	0				X (non-zero)
-+	 * after	X				X
-+	 *
-+	 * CASE 4:
-+	 * before	Y (non-zero)			X (non-zero)
-+	 * after	X				X
-+	 */
-+	if (!t1->core_task_cookie && !t2->core_task_cookie) {
-+		/* CASE 1. */
-+		cookie = sched_core_alloc_task_cookie();
-+		if (!cookie)
-+			goto out_unlock;
-+
-+		/* Add another reference for the other task. */
-+		if (!sched_core_get_task_cookie(cookie)) {
-+			return -EINVAL;
-+			goto out_unlock;
-+		}
-+
-+		wr.tasks[0] = t1;
-+		wr.tasks[1] = t2;
-+		wr.cookies[0] = wr.cookies[1] = cookie;
-+
-+	} else if (t1->core_task_cookie && !t2->core_task_cookie) {
-+		/* CASE 2. */
-+		sched_core_put_task_cookie(t1->core_task_cookie);
-+		sched_core_put_after_stopper = true;
-+
-+		wr.tasks[0] = t1; /* Reset cookie for t1. */
-+
-+	} else if (!t1->core_task_cookie && t2->core_task_cookie) {
-+		/* CASE 3. */
-+		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-+			ret = -EINVAL;
-+			goto out_unlock;
-+		}
-+
-+		wr.tasks[0] = t1;
-+		wr.cookies[0] = t2->core_task_cookie;
-+
++	if (pid == 0) { /* Recent current task's cookie. */
++		/* Resetting a cookie requires privileges. */
++		if (current->core_task_cookie)
++			if (!capable(CAP_SYS_ADMIN))
++				return -EPERM;
++		task = NULL;
 +	} else {
-+		/* CASE 4. */
-+		if (!sched_core_get_task_cookie(t2->core_task_cookie)) {
-+			ret = -EINVAL;
-+			goto out_unlock;
++		rcu_read_lock();
++		task = pid ? find_task_by_vpid(pid) : current;
++		if (!task) {
++			rcu_read_unlock();
++			return -ESRCH;
 +		}
-+		sched_core_put_task_cookie(t1->core_task_cookie);
-+		sched_core_put_after_stopper = true;
 +
-+		wr.tasks[0] = t1;
-+		wr.cookies[0] = t2->core_task_cookie;
++		get_task_struct(task);
++
++		/*
++		 * Check if this process has the right to modify the specified
++		 * process. Use the regular "ptrace_may_access()" checks.
++		 */
++		if (!ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
++			rcu_read_unlock();
++			err = -EPERM;
++			goto out_put;
++		}
++		rcu_read_unlock();
 +	}
 +
-+	stop_machine(sched_core_task_join_stopper, (void *)&wr, NULL);
-+
-+	if (sched_core_put_after_stopper)
-+		sched_core_put();
-+
-+	ret = 0;
-+out_unlock:
-+	mutex_unlock(&sched_core_mutex);
-+	return ret;
++	err = sched_core_share_tasks(current, task);
++out_put:
++	if (task)
++		put_task_struct(task);
++	return err;
 +}
 +
-+/* CGroup interface */
+ /* CGroup interface */
  static u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
  {
- 	struct task_group *tg = css_tg(css);
-@@ -9207,18 +9435,9 @@ static int __sched_write_tag(void *data)
- 	 * when we set cgroup tag to 0 when the loop is done below.
- 	 */
- 	while ((p = css_task_iter_next(&it))) {
--		p->core_cookie = !!val ? (unsigned long)tg : 0UL;
--
--		if (sched_core_enqueued(p)) {
--			sched_core_dequeue(task_rq(p), p);
--			if (!p->core_cookie)
--				continue;
--		}
--
--		if (sched_core_enabled(task_rq(p)) &&
--		    p->core_cookie && task_on_rq_queued(p))
--			sched_core_enqueue(task_rq(p), p);
-+		unsigned long cookie = !!val ? (unsigned long)tg : 0UL;
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 6401880dff74..17911b8680b1 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -2530,6 +2530,9 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
  
-+		sched_core_tag_requeue(p, cookie, true /* group */);
- 	}
- 	css_task_iter_end(&it);
+ 		error = (current->flags & PR_IO_FLUSHER) == PR_IO_FLUSHER;
+ 		break;
++	case PR_SCHED_CORE_SHARE:
++		error = sched_core_share_pid(arg2);
++		break;
+ 	default:
+ 		error = -EINVAL;
+ 		break;
+diff --git a/tools/include/uapi/linux/prctl.h b/tools/include/uapi/linux/prctl.h
+index 07b4f8131e36..9318f643c4b3 100644
+--- a/tools/include/uapi/linux/prctl.h
++++ b/tools/include/uapi/linux/prctl.h
+@@ -238,4 +238,7 @@ struct prctl_mm_map {
+ #define PR_SET_IO_FLUSHER		57
+ #define PR_GET_IO_FLUSHER		58
  
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index c8fee8d9dfd4..88bf45267672 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -1024,6 +1024,10 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
- 		__PS("clock-delta", t1-t0);
- 	}
- 
-+#ifdef CONFIG_SCHED_CORE
-+	__PS("core_cookie", p->core_cookie);
-+#endif
++/* Request the scheduler to share a core */
++#define PR_SCHED_CORE_SHARE		59
 +
- 	sched_show_numa(p, m);
- }
- 
+ #endif /* _LINUX_PRCTL_H */
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
