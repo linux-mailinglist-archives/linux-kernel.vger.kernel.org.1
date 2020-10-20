@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFDC293BDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736DE293BDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406330AbgJTMig convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Oct 2020 08:38:36 -0400
-Received: from mailout06.rmx.de ([94.199.90.92]:58086 "EHLO mailout06.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406223AbgJTMig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:38:36 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout06.rmx.de (Postfix) with ESMTPS id 4CFtTN6PJ5z9yxw;
-        Tue, 20 Oct 2020 14:38:32 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4CFtT21pd1z2xGP;
-        Tue, 20 Oct 2020 14:38:14 +0200 (CEST)
-Received: from n95hx1g2.localnet (192.168.54.87) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Tue, 20 Oct
- 2020 14:38:06 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        <tglx@linutronix.de>, <linux-rt-users@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: sched: system doesn't boot since  "sched: Add new migrate_disable() implementation"
-Date:   Tue, 20 Oct 2020 14:38:06 +0200
-Message-ID: <3306981.cWQ2TMxoAe@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <20201020113009.GR2628@hirez.programming.kicks-ass.net>
-References: <1654655.1jrfHnk7pZ@n95hx1g2> <20201019150935.koqbk57dmahhomdc@linutronix.de> <20201020113009.GR2628@hirez.programming.kicks-ass.net>
+        id S2406318AbgJTMiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:38:22 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:34735 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406208AbgJTMiV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:38:21 -0400
+Received: by mail-wr1-f66.google.com with SMTP id i1so1946229wro.1;
+        Tue, 20 Oct 2020 05:38:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sCAzGCkxAJS3QlgrbYIRbXlNmhdT/0i2DpUXZfdaEjI=;
+        b=Y3kqfsKymMJxjolnLkIkp9v4OMCKbY3HDKrtDmspcT5qvhafV9ZGhXP6mXq+HW82QO
+         xGfm3nc42rCXUU2kPvpPk23EDiEd7tcTEcDYy8Y7x5Abr6U7UzWTVeGO1r6Ry1FFa4yE
+         fLjcJ04cbYe4js0a3+e+Iw10GjkXd+sJH+FSINGrMsIg/TOuR6g3Fh7qIL7pPIG+6pw4
+         CwVFCCAc4eq+ykoujkNPLU2qHCPb2fGNVgKfy5uvmJNK0pv+Ms5+eivniG01EImftaAe
+         2pSYEjXF/gnixBLV9y4LETVTGO6ORbxWYssOi2RIQRJ9AAc3dTCDUCi1qvBEZ1/wN5gu
+         5Frw==
+X-Gm-Message-State: AOAM530y0AP2qQFtILb3QWPZcn0XYmygvVbgg0h/6jXvkjJDoZz3lO9r
+        IzYHEwFi01JD88xOwMfiAno=
+X-Google-Smtp-Source: ABdhPJzP87nGP+zRq7oU13xo36adkNHri9YodfysJBp6ywOxu++5gLSynVhnDoAKx2V1SiafO/n07w==
+X-Received: by 2002:a5d:5748:: with SMTP id q8mr3280781wrw.299.1603197497943;
+        Tue, 20 Oct 2020 05:38:17 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id v6sm2952473wrp.69.2020.10.20.05.38.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 05:38:16 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 14:38:14 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 14/29] mips: dts: ralink: mt7628a: Harmonize EHCI/OHCI DT
+ nodes name
+Message-ID: <20201020123814.GK127386@kozik-lap>
+References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
+ <20201020115959.2658-15-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [192.168.54.87]
-X-RMX-ID: 20201020-143818-4CFtT21pd1z2xGP-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201020115959.2658-15-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, 20 October 2020, 13:30:09 CEST, Peter Zijlstra wrote:
-> On Mon, Oct 19, 2020 at 05:09:35PM +0200, Sebastian Andrzej Siewior wrote:
-> > On 2020-10-19 12:21:06 [+0200], Christian Eggers wrote:
-> > > I have problems with the latest 5.9-rt releases on i.MX6ULL (!
-CONFIG_SMP):
-> > …
-> > 
-> > > Any hints?
-> > 
-> > Thank you for the report. The reason is the migrate_disable()
-> > implementation for !SMP.
+On Tue, Oct 20, 2020 at 02:59:44PM +0300, Serge Semin wrote:
+> In accordance with the Generic EHCI/OHCI bindings the corresponding node
+> name is suppose to comply with the Generic USB HCD DT schema, which
+> requires the USB nodes to have the name acceptable by the regexp:
+> "^usb(@.*)?" . Make sure the "generic-ehci" and "generic-ohci"-compatible
+> nodes are correctly named.
 > 
-> This should fix things I suppose. I'll fold it in.
-> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 > ---
-> --- a/include/linux/preempt.h
-> +++ b/include/linux/preempt.h
-> @@ -378,7 +378,12 @@ static inline void preempt_notifier_init
->  extern void migrate_disable(void);
->  extern void migrate_enable(void);
-> 
-> -#else /* !(CONFIG_SMP && CONFIG_PREEMPT_RT) */
-> +#elif defined(CONFIG_PREEMPT_RT)
-> +
-> +static inline void migrate_disable(void) { }
-> +static inline void migrate_enable(void { }
-closing bracket missing
+>  arch/mips/boot/dts/ralink/mt7628a.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +
-> +#else /* !CONFIG_PREEMPT_RT */
-> 
->  /**
->   * migrate_disable - Prevent migration of the current task
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-I didn't understand much of you discussion with Sebastian,
-but my system is able to boot now.
-
-# uname -r
-5.9.0-rt16+
-
-Best regards
-Christian
-
-
-
+Best regards,
+Krzysztof
