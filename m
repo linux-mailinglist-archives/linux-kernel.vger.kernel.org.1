@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287D82932D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 03:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FEA2932D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 03:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390346AbgJTBo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 21:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34742 "EHLO
+        id S2390337AbgJTBox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 21:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390238AbgJTBot (ORCPT
+        with ESMTP id S2390327AbgJTBov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 21:44:49 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D922AC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:48 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id w17so298463ilg.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:48 -0700 (PDT)
+        Mon, 19 Oct 2020 21:44:51 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A92C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:51 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id l16so269384ilt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jEEPcR9HeiT8Ochzutp5X/YG2vopWuTHOXMJMMPo+eA=;
-        b=dt0Gus6XYxsnpn8cVWyKMe21VbcQZFqnB/7qij4nWX3xRxzKDZR/QiZvgva/HViqGr
-         pwmOu32QAYp/FVWQaYBse5x+GkBMRr4O/5W59W5HvwT5EfZS/Tye/qexOIA+3blfp5+2
-         IBwTcOHN3w3WbhjFgW8DNvtvztuqFIXKRB554=
+        bh=SYRuExtbSgWjM4FYX9nCK6I1/Pc07M5b5kD77e19zKs=;
+        b=LlG484iMib0jL0GPGukjEQ3DL6YTJU0PjdixF56M1scF3k2e4TqSo8q2vUDde9AzJJ
+         n5UFQdlYgHpxTJEi/Ndkg+6o/YOm0BFGp5p29Bz1HWAfbPKbtZo7hbxltapZ631elOVp
+         3bc5M9ce38R7z3mW3fcDNW8mZxkdwxFM7+dOs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jEEPcR9HeiT8Ochzutp5X/YG2vopWuTHOXMJMMPo+eA=;
-        b=l9v3lF1fsVQVXQmkRwgQuFFC8h7orZemurAvD5n7hm4Gtf7/5ligKupTq/52WLT//S
-         tX32aCONnjC+9xhLZumATGl+qm1tBEX18VNtJYckturXysk09EzoKpqHv262jNzp0MNm
-         b9SRoQac9WFREh/G4sRyYRrizSpZzPbaXCUaJlB93FZYNP/PgDk5OKSAPKnpO4zNE3+I
-         F2YM3+QyYIv7MTzhV1VAFlx6h2wKCk5zMFS466XnN5EHqypnhWG+8bltbcHzBw4P6k5q
-         BYg8d2FGVViDsvi+DPyjPpAUAvAlNl+Vd1CCvQBXA+bEBNtunnvCGko/Y2n5ciAxFqHb
-         rpvA==
-X-Gm-Message-State: AOAM530arFHY3VfFXFmRmujytqTGZvJ1LoNESXpe+wmv3+b+779HlgWM
-        prW2Y3COoWytPO9AKn7c9HIxeg==
-X-Google-Smtp-Source: ABdhPJznYp7dScRin2eLE67+qOgNmj//Sc9fHJYDfv8GLTeAVO/FkGagvbZxw3HHvdzlDzSXeaB/HA==
-X-Received: by 2002:a92:3650:: with SMTP id d16mr240061ilf.29.1603158288281;
-        Mon, 19 Oct 2020 18:44:48 -0700 (PDT)
+        bh=SYRuExtbSgWjM4FYX9nCK6I1/Pc07M5b5kD77e19zKs=;
+        b=VFWSxzS3OgYMInZkjaF3aQY1aq4FcN9s4JWQx38/klrrsW56kD+hgfS4TQ/lKeMCT7
+         xP89UVH1ANqYuZnqdOMTGM7mnP+fQaVVmlqitxXxVUjkbd6qDqbYRByM4rao6b3WmLmT
+         MOOf6V40J4HlmcnAznqwkoW9z5kSYutATaKKcRFyYc+8tFkR1SaBDk6Oc6NkzSlbzcR9
+         RplN+GGmNUq/tceVqU1e0tnP+DodM3bF7Pz5TS6JT6uIoUpGRMFy709cQJxey02G0OG7
+         RjQxoM//WmmdumGRG8aizfmcXH6blPI7ktqLTJNMcgOpRyFL9NWCOdOLVJ78loKb70BI
+         Z10g==
+X-Gm-Message-State: AOAM531K8eWHavNyNnIkpOYYbATSaWYZDVL8SdrtAk2eSZXef2jSC65R
+        n/txVl13UjZ1aYpFA3OXNXfpQw==
+X-Google-Smtp-Source: ABdhPJwPa9seXOoLAWqrvdnPYhYYR1KaMUU/hhDyuFi/TXq+8CHYhwFpotLHJGi6fqVJOYhym7BH8g==
+X-Received: by 2002:a92:bb57:: with SMTP id w84mr241736ili.41.1603158291116;
+        Mon, 19 Oct 2020 18:44:51 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id t22sm485306ili.9.2020.10.19.18.44.45
+        by smtp.gmail.com with ESMTPSA id t22sm485306ili.9.2020.10.19.18.44.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 18:44:47 -0700 (PDT)
+        Mon, 19 Oct 2020 18:44:50 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -75,9 +75,9 @@ Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
         chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Tim Chen <tim.c.chen@intel.com>
-Subject: [PATCH v8 -tip 21/26] sched: Handle task addition to CGroup
-Date:   Mon, 19 Oct 2020 21:43:31 -0400
-Message-Id: <20201020014336.2076526-22-joel@joelfernandes.org>
+Subject: [PATCH v8 -tip 22/26] sched/debug: Add CGroup node for printing group cookie if SCHED_DEBUG
+Date:   Mon, 19 Oct 2020 21:43:32 -0400
+Message-Id: <20201020014336.2076526-23-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 In-Reply-To: <20201020014336.2076526-1-joel@joelfernandes.org>
 References: <20201020014336.2076526-1-joel@joelfernandes.org>
@@ -87,57 +87,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to earlier patches, the old way of computing a task's cookie when it
-is added to a CGroup,is outdated. Update it by fetching the group's
-cookie using the new helpers.
+This will be used by kselftest to verify the CGroup cookie value that is
+set by the CGroup interface.
 
 Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/sched/core.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ kernel/sched/core.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 61e1dcf11000..1321c26a8385 100644
+index 1321c26a8385..b3afbba5abe1 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -8505,6 +8505,9 @@ void sched_offline_group(struct task_group *tg)
- 	spin_unlock_irqrestore(&task_group_lock, flags);
+@@ -9520,6 +9520,13 @@ static u64 cpu_core_tag_color_read_u64(struct cgroup_subsys_state *css, struct c
+ 	return tg->core_tag_color;
  }
  
-+#define SCHED_CORE_GROUP_COOKIE_MASK ((1UL << (sizeof(unsigned long) * 4)) - 1)
-+static unsigned long cpu_core_get_group_cookie(struct task_group *tg);
++#ifdef CONFIG_SCHED_DEBUG
++static u64 cpu_core_group_cookie_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
++{
++	return cpu_core_get_group_cookie(css_tg(css));
++}
++#endif
 +
- static void sched_change_group(struct task_struct *tsk, int type)
- {
- 	struct task_group *tg;
-@@ -8519,11 +8522,13 @@ static void sched_change_group(struct task_struct *tsk, int type)
- 	tg = autogroup_task_group(tsk, tg);
- 
- #ifdef CONFIG_SCHED_CORE
--	if ((unsigned long)tsk->sched_task_group == tsk->core_cookie)
--		tsk->core_cookie = 0UL;
-+	if (tsk->core_group_cookie) {
-+		tsk->core_group_cookie = 0UL;
-+		tsk->core_cookie &= ~SCHED_CORE_GROUP_COOKIE_MASK;
-+	}
- 
--	if (tg->core_tagged /* && !tsk->core_cookie ? */)
--		tsk->core_cookie = (unsigned long)tg;
-+	tsk->core_group_cookie = cpu_core_get_group_cookie(tg);
-+	tsk->core_cookie |= tsk->core_group_cookie;
+ struct write_core_tag {
+ 	struct cgroup_subsys_state *css;
+ 	unsigned long cookie;
+@@ -9695,6 +9702,14 @@ static struct cftype cpu_legacy_files[] = {
+ 		.read_u64 = cpu_core_tag_color_read_u64,
+ 		.write_u64 = cpu_core_tag_color_write_u64,
+ 	},
++#ifdef CONFIG_SCHED_DEBUG
++	/* Read the effective cookie (color+tag) of the group. */
++	{
++		.name = "core_group_cookie",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.read_u64 = cpu_core_group_cookie_read_u64,
++	},
++#endif
  #endif
- 
- 	tsk->sched_task_group = tg;
-@@ -9471,7 +9476,7 @@ static unsigned long cpu_core_get_group_cookie(struct task_group *tg)
- 
- 		if (tg->core_tagged) {
- 			unsigned long cookie = ((unsigned long)tg << 8) | color;
--			cookie &= (1UL << (sizeof(unsigned long) * 4)) - 1;
-+			cookie &= SCHED_CORE_GROUP_COOKIE_MASK;
- 			return cookie;
- 		}
- 	}
+ #ifdef CONFIG_UCLAMP_TASK_GROUP
+ 	{
+@@ -9882,6 +9897,14 @@ static struct cftype cpu_files[] = {
+ 		.read_u64 = cpu_core_tag_color_read_u64,
+ 		.write_u64 = cpu_core_tag_color_write_u64,
+ 	},
++#ifdef CONFIG_SCHED_DEBUG
++	/* Read the effective cookie (color+tag) of the group. */
++	{
++		.name = "core_group_cookie",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.read_u64 = cpu_core_group_cookie_read_u64,
++	},
++#endif
+ #endif
+ #ifdef CONFIG_CFS_BANDWIDTH
+ 	{
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
