@@ -2,206 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F422293D47
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AEE293D4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407437AbgJTNYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:24:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406741AbgJTNYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:24:53 -0400
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A137920BED;
-        Tue, 20 Oct 2020 13:24:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603200292;
-        bh=ZaKgderQG4KKZH6fH+HyuZTcQv1aic4HE94Cqcbe1RY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oMLMoBv80hIxboOAiLeXVWq+xzfjYExK0+aAYH/Glp3Pe78NPfGerVw9m4mjjYFrO
-         M90N8EAaloVWWbe8yl6W/TqmoF1pgWGDlbLJgLWBW5P9lALjjJCnv/wjH64R8OG/aR
-         A5AfKmrc+BaDOCNR8+8jSrmF0NgQBfbGZwiG/Z0o=
-Received: by mail-ot1-f46.google.com with SMTP id e20so1654908otj.11;
-        Tue, 20 Oct 2020 06:24:52 -0700 (PDT)
-X-Gm-Message-State: AOAM533NUApPLFWs9U1he4YaaCutDk0dqBtomQ3vCF7Lh9GQuJy8W3gp
-        tsYmn4ER/wa8RN+g4w/khRI3gPBwO9nhRW1aIw==
-X-Google-Smtp-Source: ABdhPJydcSIKB2h68GX/LgNGhYJ62BnuNy3smEVojrJZ6JNICv7hKDMocPUZoKv8WcFtfUrf9fI4R28od7lNCSbidaw=
-X-Received: by 2002:a9d:5e14:: with SMTP id d20mr1611217oti.107.1603200291871;
- Tue, 20 Oct 2020 06:24:51 -0700 (PDT)
+        id S2407457AbgJTN0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407291AbgJTN0T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 09:26:19 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7803C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:26:17 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 13so1786005wmf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:26:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jiEZwt1UVrshiu353nvFC1zKZwvPuTjPD9AQIUaHUPQ=;
+        b=YK2Jal9lJPuDGvNZgEhVpYxQR6C0JKOZhXubZAtjOGmvnFZUULMyZXNg1aDkkedl0N
+         fa106fGFd/uUlgBz50Ae0VGRitHCgNs7vqRFtFEPu81PCfWYZBefOnit0JiEki37WKKy
+         ZNIgHsL5bQyV4iQHk3Iz3TYlegkjKWreRKVL8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jiEZwt1UVrshiu353nvFC1zKZwvPuTjPD9AQIUaHUPQ=;
+        b=EhTJtFGH6svmNocx6xB/M7v69W2MMEMuPxY+0pjKQMIdJglgdd8PCPi3r5raAgadwD
+         o5KEzzurbJMfzDweYlvp8crHhHU1V3KyC8V6XB0lBOo99V6Ud8QQCJMBLwl+rEHz6Y+b
+         ac64o6GFOtBDUtrGMDArqm2aWjQo6V0jP37k8LBH0dhgAtTEvhTroHVwc3PCyQsM1cT+
+         7MLI9YgsS4XTibyki/UhGLZOBJ6T0mISVVnYrKFfkpnv3qNW5ONIAk2RP40PS+VtysCa
+         JJamQFHNoN+8NoQAt0ev/+fHtUq/OjFHmH9IrphvKb+w884GzBf7+LK91i/WmrRXvTMV
+         vrsQ==
+X-Gm-Message-State: AOAM533gdsxDFtF+rPvSRsPcKZUMxQrYIJmoC7YJU/7fogi7ozIBCSnm
+        rYFOAbAYbJAESEW03FiuZtNBUbDDmPywUWKErMFfJg==
+X-Google-Smtp-Source: ABdhPJxOSCaohNlotFC3fJ/SO8FGZ+IX/HeJ18+Z+rLPcpFl4yVk1/rmqgj7plCYZ+/rQ6+2hKvySr4nP9kWyidWceU=
+X-Received: by 2002:a1c:7518:: with SMTP id o24mr3045570wmc.137.1603200376398;
+ Tue, 20 Oct 2020 06:26:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
- <1602859382-19505-12-git-send-email-spujar@nvidia.com> <20201019221612.GA3690258@bogus>
- <f6d098fa-cbc2-7563-a68c-5d00d71d128f@nvidia.com>
-In-Reply-To: <f6d098fa-cbc2-7563-a68c-5d00d71d128f@nvidia.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 20 Oct 2020 08:24:39 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+5mLqHBOhsjA6KnjFbyKymoyr9ubVG7ehWvE7GdTACrg@mail.gmail.com>
-Message-ID: <CAL_Jsq+5mLqHBOhsjA6KnjFbyKymoyr9ubVG7ehWvE7GdTACrg@mail.gmail.com>
-Subject: Re: [PATCH v4 11/15] ASoC: dt-bindings: tegra: Add json-schema for
- Tegra audio graph card
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree@vger.kernel.org,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        sharadg@nvidia.com, mkumard@nvidia.com, viswanathl@nvidia.com,
-        rlokhande@nvidia.com, dramesh@nvidia.com, atalambedu@nvidia.com,
-        nwartikar@nvidia.com, Stephen Warren <swarren@nvidia.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>
+References: <20201019141008.871177-1-daniel@0x0f.com> <20201019141008.871177-4-daniel@0x0f.com>
+ <CAHp75Vf5iUzKp32CqBbv_5MRo8q8CyBPsBcgzKsww6BFtGJwUA@mail.gmail.com>
+In-Reply-To: <CAHp75Vf5iUzKp32CqBbv_5MRo8q8CyBPsBcgzKsww6BFtGJwUA@mail.gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Tue, 20 Oct 2020 22:26:50 +0900
+Message-ID: <CAFr9PXnhqS+3nbt8ZG8PKpkp=tFraxFQUb5ym1a2FtzmRgF4VA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] gpio: msc313: MStar MSC313 GPIO driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 1:16 AM Sameer Pujar <spujar@nvidia.com> wrote:
->
->
-> >> Add YAML schema for Tegra audio graph sound card DT bindings. It uses the
-> >> same DT bindings provided by generic audio graph driver. Along with this
-> >> few standard clock DT bindings are added which are specifically required
-> >> for Tegra audio.
-> >>
-> >> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> >> ---
-> >>   .../sound/nvidia,tegra-audio-graph-card.yaml       | 158 +++++++++++++++++++++
-> >>   1 file changed, 158 insertions(+)
-> >>   create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
-> >> new file mode 100644
-> >> index 0000000..284d185
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
-> >> @@ -0,0 +1,158 @@
-> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >> +%YAML 1.2
-> >> +---
-> >> +$id: http://devicetree.org/schemas/sound/nvidia,tegra-audio-graph-card.yaml#
-> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >> +
-> >> +title: Audio Graph based Tegra sound card driver
-> >> +
-> >> +description: |
-> >> +  This is based on generic audio graph card driver along with additional
-> >> +  customizations for Tegra platforms. It uses the same bindings with
-> >> +  additional standard clock DT bindings required for Tegra.
-> >> +
-> >> +  See{LINUX}/Documentation/devicetree/bindings/sound/audio-graph-card.yaml
-> > You should be able to just $ref this at the top level.
->
-> I am seeing one problem while using $ref like below.
-> allOf:
->    - $ref: /schemas/sound/audio-graph-card.yaml
->
-> I see below while running doc validator.
-> "Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.example.dt.yaml:
-> tegra_sound: compatible:0: 'audio-graph-card' was expected"
->
-> Is there a way to avoid this?
+Hi Andy,
 
-Adjust the schemas so the constraints match. You can't say it must be
-one thing in one place and something else here. Your choices are:
-
-- Drop compatible from audio-graph-card.yaml. You can define a 2nd
-schema that references audio-graph-card.yaml and defines the
-compatible.
-- Use 'contains' in audio-graph-card.yaml and then make
-'audio-graph-card' a fallback here.
-
-The best option depends on what existing users have.
-
-> >> +maintainers:
-> >> +  - Jon Hunter <jonathanh@nvidia.com>
-> >> +  - Sameer Pujar <spujar@nvidia.com>
-> >> +
-> >> +properties:
-> >> +  compatible:
-> >> +    items:
-> >> +      - enum:
-> >> +          - nvidia,tegra210-audio-graph-card
-> >> +          - nvidia,tegra186-audio-graph-card
-> >> +
+On Tue, 20 Oct 2020 at 20:59, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > +config GPIO_MSC313
+> > +       bool "MStar MSC313 GPIO support"
 >
-> >> +  dais:
-> >> +    $ref: /schemas/sound/audio-graph-card.yaml#/properties/dais
-> >> +
-> >> +  label:
-> >> +    $ref: /schemas/sound/simple-card.yaml#/properties/label
-> >> +
-> >> +  pa-gpios:
-> >> +    $ref: /schemas/sound/audio-graph-card.yaml#/properties/pa-gpios
-> >> +
-> >> +  widgets:
-> >> +    $ref: /schemas/sound/simple-card.yaml#/definitions/widgets
-> >> +
-> >> +  routing:
-> >> +    $ref: /schemas/sound/simple-card.yaml#/definitions/routing
-> >> +
-> >> +  mclk-fs:
-> >> +    $ref: /schemas/sound/simple-card.yaml#/definitions/mclk-fs
-> >> +
-> >> +  prefix:
-> >> +    $ref: /schemas/sound/simple-card.yaml#/definitions/prefix
-> > And drop all of these.
->
-> Could not re-use because of above compatible problem. Also require some
-> additional properties for Tegra.
->
-> >> +
-> >> +  clocks:
-> >> +   minItems: 2
-> >> +
-> >> +  clock-names:
-> >> +   minItems: 2
-> > Don't need this.
->
-> This is required for Tegra audio graph card to update clock rates at
-> runtime.
+> Why boolean?
 
-I mean you can drop 'minItems: 2' as it is redundant. The 'items' list
-size implies the size.
+Because it's a built in driver. I could change it to tristate/a module
+but I didn't think it needed to be one.
+The machines this is used on generally only have 64 or 128MB of RAM so
+the kernel is usually built without modules and only the totally
+required stuff built in.
 
-> >> +   items:
-> >> +     - const: pll_a
-> >> +     - const: plla_out0
-> >> +
-> >> +  assigned-clocks:
-> >> +    minItems: 1
-> >> +    maxItems: 3
-> >> +
-> >> +  assigned-clock-parents:
-> >> +    minItems: 1
-> >> +    maxItems: 3
-> >> +
-> >> +  assigned-clock-rates:
-> >> +    minItems: 1
-> >> +    maxItems: 3
-> >> +
+> > +       default y if ARCH_MSTARV7
 >
-> It is required for initialisation of above clocks with specific rates.
+> Simply
+>        default ARCH_MSTARV7
+> should work as well.
 >
-> >> +  ports:
-> >> +    $ref: /schemas/sound/audio-graph-card.yaml#/properties/ports
-> >> +
-> >> +patternProperties:
-> >> +  "^port(@[0-9a-f]+)?$":
-> >> +    $ref: /schemas/sound/audio-graph-card.yaml#/definitions/port
-> > And these can be dropped. Unless what each port is is Tegra specific.
->
-> May be I can drop this if I could just directly include
-> audio-graph-card.yaml and extend required properties for Tegra.
+> Are you planning to extend this to other boards?
 
-There are numerous examples of doing that.
+I think I copy/pasted the block above there. I'll fix this up.
 
-Rob
+As for other boards. I think this GPIO controller is only present in
+MStar's SoCs and some MediaTek SoCs that inherited parts from MStar
+after MediaTek bought them. Like the MStar interrupt controller is
+present in some MediaTek TV chips.
+
+>
+> > +       depends on ARCH_MSTARV7
+> > +       select GPIOLIB_IRQCHIP
+> > +       help
+> > +         Say Y here to support GPIO on MStar MSC313 and later SoCs.
+>
+> Please, be more specific. Also it's recommended to have a module name
+> to be included (but let's understand first why it's not a module)
+
+Ok. I'll rework that. As for it not being a module. I can make it
+possible to build it
+as a module. I just didn't really think it needed to be one.
+
+> > +#include <linux/of_device.h>
+> > +#include <linux/of_irq.h>
+> > +#include <linux/gpio/driver.h>
+>
+> I believe this should be reworked.
+> For example, it misses mod_devicetable.h, bits.h, io.h, types.h, etc, but has
+
+I'll look at this again.
+
+> > +/* These bits need to be saved to correctly restore the
+> > + * gpio state when resuming from suspend to memory.
+> > + */
+>
+> /*
+>  * For this subsystem the comment style for multi-line
+>  * like this.
+>  */
+
+Sorry, I'll fix these up.
+
+> > +#ifdef CONFIG_MACH_INFINITY
+>
+> Does it make any sense?
+>
+> > +#endif
+
+It doesn't make a lot of sense right now but it makes a bit more sense
+when the support for the mercury chips is added. They have their own
+set of offsets
+for the used pins. I cut that out of this series because I haven't
+fully reverse engineered all of the pins for those chips yet so the
+support for them has a lot of guesses and notes in the code.
+
+Anyhow, with only 64MB of RAM I thought it made sense to not compile
+in the mercury tables when support for those machines isn't enabled.
+I'll drop the if/defs for the next version.
+
+> > +static struct irq_chip msc313_gpio_irqchip = {
+> > +       .name = "GPIO",
+>
+> Is this name good enough?
+>
+
+There is only one GPIO block in the chips this is for so I think it's
+unique at least.
+
+> > +       gpiochip->label = DRIVER_NAME;
+>
+> Not good. When you use user space how do you distinguish if more than
+> one chip appears in the system?
+
+So far there is only ever one of these GPIO controller for the whole system.
+There is another GPIO block in the system but it uses another driver
+as the register layout is totally different.
+
+Thank you for all of the comments. Sorry about the multiple style issues.
+I thought checkpatch had my back on that.
+
+Thanks,
+
+Daniel
