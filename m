@@ -2,182 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88918293868
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1C0293874
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403913AbgJTJot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403895AbgJTJos (ORCPT
+        id S2404001AbgJTJsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:48:22 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:11609 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728775AbgJTJsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:44:48 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85909C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:44:48 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kUoC2-00038u-R3; Tue, 20 Oct 2020 11:44:34 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:c351:f59d:74d9:d207] (unknown [IPv6:2a03:f580:87bc:d400:c351:f59d:74d9:d207])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id BB56E57DD4C;
-        Tue, 20 Oct 2020 09:44:32 +0000 (UTC)
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
-        linux-can@vger.kernel.org, pankaj.bansal@nxp.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Subject: Re: [PATCH V3 00/10] can: flexcan: add stop mode support for i.MX8QM
-Message-ID: <8b4796f5-6d63-7bb9-35c9-bf1055a1bee3@pengutronix.de>
-Date:   Tue, 20 Oct 2020 11:44:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 20 Oct 2020 05:48:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1603187301; x=1634723301;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=j/NUF3xtHrXDreYAVOkD2ynQtHTp+nkCsES1G/39Yp8=;
+  b=RzZ/YSEFx3pj0UWOC//+73Diu6STOJ00lg1MTkXI3R0uhGrsNzj22fnI
+   HkAVx2jmGtWnlS/0KfkfFdwX9ElKrENqmgpnlqSZ8PQwK/Dijn42rYoeZ
+   zJCsPQxO8RQGafkzf8MvTAq97BhDFtzkV7I48btp+uxPpHOyRpHYz/du0
+   M=;
+X-IronPort-AV: E=Sophos;i="5.77,396,1596499200"; 
+   d="scan'208";a="78118472"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-42f764a0.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 20 Oct 2020 09:48:14 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1e-42f764a0.us-east-1.amazon.com (Postfix) with ESMTPS id 31173BA6E4;
+        Tue, 20 Oct 2020 09:48:11 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 20 Oct 2020 09:48:11 +0000
+Received: from Alexanders-MacBook-Air.local (10.43.162.231) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 20 Oct 2020 09:48:10 +0000
+Subject: Re: [PATCH] KVM: VMX: Forbid userspace MSR filters for x2APIC
+To:     Paolo Bonzini <pbonzini@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <20201019170519.1855564-1-pbonzini@redhat.com>
+ <618E2129-7AB5-4F0D-A6C9-E782937FE935@amazon.de>
+ <c9dd6726-2783-2dfd-14d1-5cec6f69f051@redhat.com>
+From:   Alexander Graf <graf@amazon.de>
+Message-ID: <bce2aee1-bfac-0640-066b-068fa5f12cf8@amazon.de>
+Date:   Tue, 20 Oct 2020 11:48:07 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.3
 MIME-Version: 1.0
-In-Reply-To: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Ktz5MUDdbZmwtP1rDPyXdqUjwlMfIAmLj"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <c9dd6726-2783-2dfd-14d1-5cec6f69f051@redhat.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.231]
+X-ClientProxiedBy: EX13D44UWB001.ant.amazon.com (10.43.161.32) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Ktz5MUDdbZmwtP1rDPyXdqUjwlMfIAmLj
-Content-Type: multipart/mixed; boundary="Ohg8Jewx5uRnY0ffIl87D42yutcctTpcn";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
- shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc: kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
- linux-can@vger.kernel.org, pankaj.bansal@nxp.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <8b4796f5-6d63-7bb9-35c9-bf1055a1bee3@pengutronix.de>
-Subject: Re: [PATCH V3 00/10] can: flexcan: add stop mode support for i.MX8QM
-References: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
+CgpPbiAyMC4xMC4yMCAxMToyNywgUGFvbG8gQm9uemluaSB3cm90ZToKPiAKPiBPbiAxOS8xMC8y
+MCAxOTo0NSwgR3JhZiAoQVdTKSwgQWxleGFuZGVyIHdyb3RlOgo+Pj4gKyAgICAgICAgKiBJbiBw
+cmluY2lwbGUgaXQgd291bGQgYmUgcG9zc2libGUgdG8gdHJhcCB4MmFwaWMgcmFuZ2VzCj4+PiAr
+ICAgICAgICAqIGlmICFsYXBpY19pbl9rZXJuZWwuICBUaGlzIGhvd2V2ZXIgd291bGQgYmUgY29t
+cGxpY2F0ZWQKPj4+ICsgICAgICAgICogYmVjYXVzZSBLVk1fWDg2X1NFVF9NU1JfRklMVEVSIGNh
+biBiZSBjYWxsZWQgYmVmb3JlCj4+PiArICAgICAgICAqIEtWTV9DUkVBVEVfSVJRQ0hJUCBvciBL
+Vk1fRU5BQkxFX0NBUC4KPj4+ICsgICAgICAgICovCj4+PiArICAgICAgIGZvciAoaSA9IDA7IGkg
+PCBBUlJBWV9TSVpFKGZpbHRlci5yYW5nZXMpOyBpKyspCj4+PiArICAgICAgICAgICAgICAgaWYg
+KHJhbmdlX292ZXJsYXBzX3gyYXBpYygmZmlsdGVyLnJhbmdlc1tpXSkpCj4+PiArICAgICAgICAg
+ICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsKPj4KPj4gV2hhdCBpZiB0aGUgZGVmYXVsdCBh
+Y3Rpb24gb2YgdGhlIGZpbHRlciBpcyB0byAiZGVueSI/IFRoZW4gb25seSBhbgo+PiBNU1IgZmls
+dGVyIHRvIGFsbG93IGFjY2VzcyB0byB4MmFwaWMgTVNScyB3b3VsZCBtYWtlIHRoZSBmdWxsCj4+
+IGZpbHRlcmluZyBsb2dpYyBhZGhlcmUgdG8gdGhlIGNvbnN0cmFpbnRzLCBubz8KPiAKPiBSaWdo
+dDsgb3IgbW9yZSBwcmVjaXNlbHksIHRoYXQgaXMgaGFuZGxlZCBieSBTZWFuJ3MgcGF0Y2ggdGhh
+dCBoZSBoYWQKPiBwb3N0ZWQgZWFybGllci4gIFRoaXMgcGF0Y2ggb25seSBtYWtlcyBpdCBpbXBv
+c3NpYmxlIHRvIHNldCB1cCBzdWNoIGEKPiBmaWx0ZXIuCgpXaGF0IEknbSBzYXlpbmcgaXMgdGhh
+dCBhICJmaWx0ZXIgcnVsZSIgY2FuIGVpdGhlciBtZWFuICJhbGxvdyIgb3IgCiJkZW55Ii4gSGVy
+ZSB5b3UncmUgb25seSBjaGVja2luZyBpZiB0aGVyZSBpcyBhIHJ1bGUuIFdoYXQgeW91IHdhbnQg
+dG8gCmZpbHRlciBmb3IgaXMgd2hldGhlciB0aGVyZSBpcyBhIGRlbnlpbmcgcnVsZSAoaW5jbHVk
+aW5nIGRlZmF1bHQgCmZhbGxiYWNrKSBmb3IgeDJhcGljIGFmdGVyIGFsbCBydWxlcyBhcmUgaW4g
+cGxhY2UuCgpJbWFnaW5lIHlvdSBhZGQgdGhlIGZvbGxvd2luZyBmaWx0ZXI6Cgp7CiAgICAgY291
+bnQ6IDEsCiAgICAgZGVmYXVsdF9hbGxvdzogZmFsc2UsCiAgICAgcmFuZ2VzOiBbCiAgICAgICAg
+IHsKICAgICAgICAgICAgIGZsYWdzOiBLVk1fTVNSX0ZJTFRFUl9SRUFELAogICAgICAgICAgICAg
+bm1zcnM6IDEsCiAgICAgICAgICAgICBiYXNlOiBNU1JfRUZFUiwKICAgICAgICAgICAgIGJpdG1h
+cDogeyAxIH0sCiAgICAgICAgIH0sCiAgICAgXSwKfQoKVGhhdCBmaWx0ZXIgd291bGQgc2V0IGFs
+bCB4MmFwaWMgcmVnaXN0ZXJzIHRvICJkZW55IiwgYnV0IHdvdWxkIG5vdCBiZSAKY2F1Z2h0IGJ5
+IHRoZSBjb2RlIGFib3ZlLiBDb252ZXJzZWx5LCBhIHJhbmdlIHRoYXQgZXhwbGljaXRseSBhbGxv
+d3MgCngyYXBpYyByYW5nZXMgd2l0aCBkZWZhdWx0X2FsbG93PTAgd291bGQgYmUgcmVqZWN0ZWQg
+YnkgdGhpcyBwYXRjaC4KCgpBbGV4CgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgR2VybWFu
+eSBHbWJICktyYXVzZW5zdHIuIDM4CjEwMTE3IEJlcmxpbgpHZXNjaGFlZnRzZnVlaHJ1bmc6IENo
+cmlzdGlhbiBTY2hsYWVnZXIsIEpvbmF0aGFuIFdlaXNzCkVpbmdldHJhZ2VuIGFtIEFtdHNnZXJp
+Y2h0IENoYXJsb3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMgQgpTaXR6OiBCZXJsaW4KVXN0LUlE
+OiBERSAyODkgMjM3IDg3OQoKCg==
 
---Ohg8Jewx5uRnY0ffIl87D42yutcctTpcn
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 10/20/20 5:53 PM, Joakim Zhang wrote:
-> The first patch from Liu Ying aims to export SCU symbols for SoCs w/wo =
-SCU,
-> so that no need to check CONFIG_IMX_SCU in the specific driver.
->=20
-> The following patches are flexcan fixes and add stop mode support for i=
-=2EMX8QM.
-
-I've applied 3,4,5 to linux-can/testing. I'll take 6 to linux-can, too as=
- soon
-as it has a better description.
-
-Who will take care of 1, 9?
-
-The dt-bindings changes have to wait until the conversion to yaml is fini=
-shed.
-This and the rest will go via can-next to net-next.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---Ohg8Jewx5uRnY0ffIl87D42yutcctTpcn--
-
---Ktz5MUDdbZmwtP1rDPyXdqUjwlMfIAmLj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+OsXwACgkQqclaivrt
-76meqwf9HRDKtakjiLQLuGpclXCK1k+ZmvPhfCzUhTosphXKIgquu89qgxbCEuCd
-jW/jemT5LcEINmym0CVKUxT5MBxTkYrQkhGaRWOFq9mAEhV+cAQojYiu00ANI4LE
-q6mLjrHKFMBGyYVH1ysBXTJqbi7obfizOD5W8JwFQB+w0cT4/LLcJRw1KVwaF7EV
-funKT9o5DofoEqk1bUXwg5FyVv7RqCA4T9+ukAsV6yvTMhVdfa9zu8Lht8msYpMv
-2WF8y1Jvz/YIlPQggNWzjxWNJVqpKsU6Gf62JL1l2U5Nclh7wPAwZo0pbJLtH6Py
-wtCHOo46MhQZ9kBD+VPLAE9veTu99A==
-=EZX9
------END PGP SIGNATURE-----
-
---Ktz5MUDdbZmwtP1rDPyXdqUjwlMfIAmLj--
