@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CF1293D02
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 135EA293D08
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406834AbgJTNMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
+        id S2407091AbgJTNN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406467AbgJTNMr (ORCPT
+        with ESMTP id S2406919AbgJTNN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:12:47 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0A2C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:12:47 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f21so1724183wml.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:12:47 -0700 (PDT)
+        Tue, 20 Oct 2020 09:13:26 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A87C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:13:24 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d81so1729896wmc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:13:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:autocrypt:organization:message-id
          :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=6QGtUT5pKCXlcaUGePzDcFENyJMU8dFZvbygcAE8W+Y=;
-        b=P84m/P6ZFjlCJscybhA9LvUvEcZS0iVMkSOETtTB2pveXH3kDiMPvzen3CLOHkyt+L
-         GDeAbVVquevVOsehpxzFa29MpQVr/s+yv+lE88xZEW6iM++xed5vRAC/sabDulnqOyFs
-         wtC1YYao9nKBNdIz7IQ/wi+iuO8qxmsdRyGLaoFrQATR5H4mRIfQ//T/i5UpLR2SzPl7
-         dnZqCLgdyO4jIscjZ7uhpavrkAnaM5qQg0AtNYqgyKQrLHOBAR8erMusfX3Uqw3dxID5
-         XKlXYiJ791ydOWhw3VQ/ZH/QTROSeSU0dSIa8DoicZFL3dvQyVQvAlaGjar1c3QSKHaj
-         bQZw==
+        bh=/bOW84mx2W/6cuiWIRBgbizZhs0ZkEGlfJQ1O97P0Lk=;
+        b=fdNfdL58k6u8rACoS6oyEZS/UrQybQQILdQoePUT8MumU9pAj7diz0fvhHVcM4KblP
+         Bas5XpnN1Bq6BmzhD/5jOoKrYRIsvDV/WXduAjZAfEKUJZpzZWAOm8WLq6CxbenKlQ3/
+         pyg0iu1clPB6QDCbTUIcUhM15kqDB+uFtdyZGVIm3l/wBrXppySwvsU0XGQcmjl4VrhM
+         mxCjT9Q/qiR4qIwExieMMLdRhrVXIRwYlTFcdXQvWR3MW1CEdWY0y6an3pDQI6/O/Ydo
+         DmKZ1WDd0NMPYpLF4QlsgVVoDvwVIuGSGdSukJmDdPxwppHSV7P/1YaY+POdfHCh83Xj
+         LfZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :organization:message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=6QGtUT5pKCXlcaUGePzDcFENyJMU8dFZvbygcAE8W+Y=;
-        b=JKj+x38cWQP7yK2qmvkowqeGiwHKskLXAXdyMoV3BKXxcBKuy1KdPLYaxb2yKM2ACF
-         yb6asi2+VN+/zxOMHk9koVZzHe3cRgax5f2XmYmropkhQhpZb7+pS0oAltziT2iHw4J1
-         iCpTeFfPBUD64PgzIVQ8rGwwEbIJiAsAyp8sNgyJ9YpY5Y01stSbAoyWyDtTQaLpbwuU
-         /CCU7sTC+3dPMj/nC/CVLA5tCDdmArhYDBnZdKzue9EiVcBuS5xY+d2POJTPGux5r7KT
-         2EfGjoubIl0bTRW9o/CaOe2pf7hHHGKGLLZ1mnHB0attkzZILZ9zudpCjvkOqfhihgAm
-         p1uw==
-X-Gm-Message-State: AOAM532Svjs8sIEUIJYOFuqCgyCQPgOE7Ck/FWz3FIRv8JFSduNw/58l
-        DOxF6trIKGjCgJ5afAho0RUFBw==
-X-Google-Smtp-Source: ABdhPJy4oy+/1QSFY06SZ2UFsPcYtbK/Lf8IyBfUlsVzP9SfNF+CxPtvNEFlRcO2mwAs5ghJGI79QA==
-X-Received: by 2002:a7b:ce14:: with SMTP id m20mr2828662wmc.20.1603199565716;
-        Tue, 20 Oct 2020 06:12:45 -0700 (PDT)
+        bh=/bOW84mx2W/6cuiWIRBgbizZhs0ZkEGlfJQ1O97P0Lk=;
+        b=RMycPlHWldZVGaxp7GBeci5t3uwLc56nkoA/7tuosGbZSnQEru6RpwmXCtNUwRyrRP
+         5DfSopCIWC1Z7e0zGYe9TK8SL4xnnP9Zs+StouW2WQZGXnZgNv62R7Fq09JIH4UXUmJe
+         5Iq6HZ1sT4jWj0dzBq8FRVJ1D0Ij4o23sEodsz8K92Sjjv5aP8E4EkjqPfEIe7LzYOzI
+         b3ThCbR+YjAoNJe8oXdjP9kdCfxD2EOgueAFl0oFmVg01irFC7DOiEtcMhQdr7IELkmM
+         dkP0sm7EC/qA3KaIkLzPoDYiXXn+WTdFkZ9QHofGnl16hY0nh0L/IBf+ae2n5Get7hAG
+         osLQ==
+X-Gm-Message-State: AOAM532yTdPzmPDSY61xWLNvwmqz8oHn1Lt+CuUuF3U0+/QDbF1JzM4L
+        CfbX+Id9fuPH2wE1PKHak9esdw==
+X-Google-Smtp-Source: ABdhPJyDE2oEsfxurrAGlYz0RWZ5oZB5Bj6HplPfiPT4GwQNP4VpUJQpr2te7iGwJJEa+cEpkAGAXA==
+X-Received: by 2002:a7b:c3d3:: with SMTP id t19mr1211467wmj.139.1603199603237;
+        Tue, 20 Oct 2020 06:13:23 -0700 (PDT)
 Received: from ?IPv6:2a01:e35:2ec0:82b0:218e:7be8:b4e2:8030? ([2a01:e35:2ec0:82b0:218e:7be8:b4e2:8030])
-        by smtp.gmail.com with ESMTPSA id i33sm3175868wri.79.2020.10.20.06.12.43
+        by smtp.gmail.com with ESMTPSA id o3sm3120560wru.15.2020.10.20.06.13.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 06:12:44 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: amlogic: add missing ethernet reset ID
+        Tue, 20 Oct 2020 06:13:22 -0700 (PDT)
+Subject: Re: [PATCH] arm64: meson: ship only the necessary clock controllers
 To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20201020120141.298240-1-jbrunet@baylibre.com>
+        linux-arm-kernel@lists.infradead.org
+References: <20201020075034.172825-1-jbrunet@baylibre.com>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  mQENBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -108,12 +109,12 @@ Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  VsbXrP9BZ6snXyHfebPnno/te5XRqZTL9aJOytB/1iUna+1MAwBxGFPvqeEUUyT+gx1l3Acl
  ZaTUOEkgIor5losDrePdPgE=
 Organization: Baylibre
-Message-ID: <68ee4022-df9b-c36e-b828-bc93d6507473@baylibre.com>
-Date:   Tue, 20 Oct 2020 15:12:43 +0200
+Message-ID: <124ff599-62ba-1c59-6fcc-5deab5012528@baylibre.com>
+Date:   Tue, 20 Oct 2020 15:13:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201020120141.298240-1-jbrunet@baylibre.com>
+In-Reply-To: <20201020075034.172825-1-jbrunet@baylibre.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -121,66 +122,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/2020 14:01, Jerome Brunet wrote:
-> From: Anand Moon <linux.amoon@gmail.com>
+On 20/10/2020 09:50, Jerome Brunet wrote:
+> There now the menu entries for the amlogic clock controllers.
+> Do not select these when ARM64 is enabled so it possible to ship only the
+> required.
 > 
-> Add reset external reset of the ethernet mac controller
-> 
-> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 > Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 > ---
->  arch/arm64/boot/dts/amlogic/meson-axg.dtsi        | 2 ++
->  arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 2 ++
->  arch/arm64/boot/dts/amlogic/meson-gx.dtsi         | 3 +++
->  3 files changed, 7 insertions(+)
+>  arch/arm64/Kconfig.platforms | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-> index fae48efae83e..724ee179b316 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-> @@ -227,6 +227,8 @@ ethmac: ethernet@ff3f0000 {
->  				      "timing-adjustment";
->  			rx-fifo-depth = <4096>;
->  			tx-fifo-depth = <2048>;
-> +			resets = <&reset RESET_ETHERNET>;
-> +			reset-names = "stmmaceth";
->  			status = "disabled";
->  		};
->  
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-> index c95ebe615176..8514fe6a275a 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-> @@ -224,6 +224,8 @@ ethmac: ethernet@ff3f0000 {
->  				      "timing-adjustment";
->  			rx-fifo-depth = <4096>;
->  			tx-fifo-depth = <2048>;
-> +			resets = <&reset RESET_ETHERNET>;
-> +			reset-names = "stmmaceth";
->  			status = "disabled";
->  
->  			mdio0: mdio {
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-> index 0edd137151f8..726b91d3a905 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-> @@ -13,6 +13,7 @@
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/power/meson-gxbb-power.h>
-> +#include <dt-bindings/reset/amlogic,meson-gxbb-reset.h>
->  #include <dt-bindings/thermal/thermal.h>
->  
->  / {
-> @@ -575,6 +576,8 @@ ethmac: ethernet@c9410000 {
->  			interrupt-names = "macirq";
->  			rx-fifo-depth = <4096>;
->  			tx-fifo-depth = <2048>;
-> +			resets = <&reset RESET_ETHERNET>;
-> +			reset-names = "stmmaceth";
->  			power-domains = <&pwrc PWRC_GXBB_ETHERNET_MEM_ID>;
->  			status = "disabled";
->  		};
+> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+> index cd58f8495c45..b22d1bdd6eb6 100644
+> --- a/arch/arm64/Kconfig.platforms
+> +++ b/arch/arm64/Kconfig.platforms
+> @@ -154,9 +154,6 @@ config ARCH_MESON
+>  	bool "Amlogic Platforms"
+>  	select PINCTRL
+>  	select PINCTRL_MESON
+> -	select COMMON_CLK_GXBB
+> -	select COMMON_CLK_AXG
+> -	select COMMON_CLK_G12A
+>  	select MESON_IRQ_GPIO
+>  	help
+>  	  This enables support for the arm64 based Amlogic SoCs
 > 
 
 Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
