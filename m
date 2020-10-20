@@ -2,118 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C64293D75
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00F5293D83
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407543AbgJTNjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:39:09 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:37730 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407502AbgJTNjI (ORCPT
+        id S2407601AbgJTNl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407501AbgJTNl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:39:08 -0400
-Received: by mail-oi1-f195.google.com with SMTP id t77so2169715oie.4;
-        Tue, 20 Oct 2020 06:39:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BxJlx6pvHjP1AQK4j2Jcw8y8hDgZxG6mfPqiNVIjJ5w=;
-        b=fmv3MmA4LpzkZbt42HD1T67yi5xrd0Tyah+lrFpqfjtNRpoNMotAQ3HPrYdz8fHH6L
-         Tf7RaZctRHOeqgvuJkaEp3XKBtdTd9KWRmfmEWiJOKcBjBQ9EiMokD2kP/VFNo2sFKuo
-         oLjabfjK0SHJYOLLj//9K5Oqt1W4s+agf8M2kn7c+RfjHHtWswz1Is6aufXv4cFvj5zJ
-         TY+7HLneInETpGsTM8zu0rg0CL6FCEgCX8AwOT9kMw3JJBMLO3MdRnJvikBOAz5vl/IB
-         bXHNtGuu3KOhzvlrM4nwUCRLNukj0o1EUP5g+2a7NpH7vV47pbz+3qc4Y4/I6TAbK3Pe
-         HK2g==
-X-Gm-Message-State: AOAM531SBRKC8D3PEK/FrZKpZM/qqmK96of7nWvWAY0TqZH3/ObV0YAv
-        45Jjl0EUopkY9O6Eo/MGQVR3yBF/itsMIi7NFps=
-X-Google-Smtp-Source: ABdhPJzT6cqLpBvUBXFLCluyCa/o4pUCtLFkTS9+V0g2qzG7LFC5myzDh1BcSd4EZ5XfyRV7z12YT6pHGoYvw/u1fkY=
-X-Received: by 2002:aca:5256:: with SMTP id g83mr1936922oib.71.1603201146736;
- Tue, 20 Oct 2020 06:39:06 -0700 (PDT)
+        Tue, 20 Oct 2020 09:41:58 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF67C061755;
+        Tue, 20 Oct 2020 06:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=4vW5VXilK7EsyfO4dPaDcP262lkk9u9nP43QqAXpv9o=; b=xkc15xWP2oUKBp63sflEvxBDBa
+        Cpz/U6a/YNxBc/GNqwflCrTWWfEnyhrLvKzVxy+FNRknLqEYUNB6RhdwWPKMlvpQ4xg7JJ/XkBilo
+        q7QUjhv/WsWPwJYdXhdtx4Lc9qd+kJFDDpNK43AiN9vO3W9DwLBNGGD8Utslryom4kWhPhxq9EPIL
+        BnLhrFaS/HluTGI3ucPrvi3dw9glxbYSgWze+TZEVpJFl0jRmBuSUzCD+61w4HQG0vtlthLswWD2P
+        DQGya+IzO4qKZq3IEzmvSILgNefksN9ddf4HKEg8Um06/WO2s6mSuXXZ5C9rOnnBV1n6U4WzsDQxO
+        41v7xSXw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kUrtL-00034B-NM; Tue, 20 Oct 2020 13:41:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 964AC304D28;
+        Tue, 20 Oct 2020 15:41:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6C545203280A1; Tue, 20 Oct 2020 15:41:28 +0200 (CEST)
+Date:   Tue, 20 Oct 2020 15:41:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, lgoncalv@redhat.com
+Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to
+ housekeeping CPUs
+Message-ID: <20201020134128.GT2628@hirez.programming.kicks-ass.net>
+References: <20200928183529.471328-1-nitesh@redhat.com>
+ <20200928183529.471328-5-nitesh@redhat.com>
+ <20201016122046.GP2611@hirez.programming.kicks-ass.net>
+ <79f382a7-883d-ff42-394d-ec4ce81fed6a@redhat.com>
+ <20201019111137.GL2628@hirez.programming.kicks-ass.net>
+ <20201019140005.GB17287@fuller.cnet>
+ <20201020073055.GY2611@hirez.programming.kicks-ass.net>
+ <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com>
 MIME-Version: 1.0
-References: <20201019225903.14276-1-djrscally@gmail.com>
-In-Reply-To: <20201019225903.14276-1-djrscally@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 20 Oct 2020 15:38:55 +0200
-Message-ID: <CAJZ5v0g2hQV9RNq3LZqrpQ5LP0rR+fxwdWcwwnzWh1g2dLdmjw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/9] Add functionality to ipu3-cio2 driver allowing
- software_node connections to sensors on platforms designed for Windows
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Rob Herring <robh@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        tian.shu.qiu@intel.com, Bingbu Cao <bingbu.cao@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        yong.zhi@intel.com, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kitakar@gmail.com, dan.carpenter@oracle.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Fix the Linus Walleij's address.]
+On Tue, Oct 20, 2020 at 09:00:01AM -0400, Nitesh Narayan Lal wrote:
+>=20
+> On 10/20/20 3:30 AM, Peter Zijlstra wrote:
+> > On Mon, Oct 19, 2020 at 11:00:05AM -0300, Marcelo Tosatti wrote:
+> >>> So I think it is important to figure out what that driver really wants
+> >>> in the nohz_full case. If it wants to retain N interrupts per CPU, and
+> >>> only reduce the number of CPUs, the proposed interface is wrong.
+> >> It wants N interrupts per non-isolated (AKA housekeeping) CPU.
+> > Then the patch is wrong and the interface needs changing from @min_vecs,
+> > @max_vecs to something that expresses the N*nr_cpus relation.
+>=20
+> Reading Marcelo's comment again I think what is really expected is 1
+> interrupt per non-isolated (housekeeping) CPU (not N interrupts).
 
-On Tue, Oct 20, 2020 at 12:59 AM Daniel Scally <djrscally@gmail.com> wrote:
->
-> Hello all
->
-> This series adds support to the ipu3-cio2 driver for fwnode connections
-> between cio2 and sensors to be defined via software_nodes. The final patch
-> in the series deals wholly with those changes - the preceding patches are
-> either supporting changes to accommodate that or incidental fixes along
-> the way:
->
-> 1/9 adds a function to drivers/base/swnode.c unwinding arrays of software
-> nodes in reverse order
->
-> 2/9 uses that function in lib/test_printf.c
->
-> 3/9 fixes what seems to me to be a bug in the existing swnode.c code in
-> that software_node_get_next_child() does not increase the refcount of the
-> returned node (in contrast to, for example, of_get_next_child_node() which
-> does increase the count)
->
-> 4/9 adds the fwnode_graph*() family of functions to the software_node
-> implementation
->
-> 5/9 adds a T: entry to MAINTAINERS for the ipu3-cio2 driver
->
-> 6/9 renames the ipu3-cio2.c file to ipu3-cio2-main.c and fixes Makefile
-> to accommodate that change
->
-> 7/9 alters the ipu3-cio2 driver to check if the pci_dev's fwnode is a
-> software_node and pass flags to fwnode_graph_get_endpoint_by_id() if so
->
-> 8/9 alters match_fwnode() in v4l2-async.c to additionally try to match on
-> a fwnode_handle's secondary if the primary doesn't match
->
-> 9/9 alters the ipu3-cio2 driver to do the actual building of software_node
-> connections between the sensor devices and the cio2 device.
->
-> This is still not ready for integration - hence the RFC label - as there
-> is ongoing work to extend the ipu3-cio2 driver further to parse ACPI
-> to discover resources such as regulators and GPIOs that are defined there
-> in unusual ways and map them to the sensor devices so that their drivers
-> can consume them transparently through the usual frameworks. Given this
-> has changed quite extensively from v2 though, I wanted to submit it for
-> feedback at this point in case it needs further large scale change.
+Then what is the point of them asking for N*nr_cpus when there is no
+isolation?
 
-I would appreciate it if you posted the next version of this series
-(all patches) to linux-acpi@vger.kernel.org for easier review.
+Either everybody wants 1 interrupts per CPU and we can do the clamp
+unconditionally, in which case we should go fix this user, or they want
+multiple per cpu and we should go fix the interface.
 
-Thanks!
+It cannot be both.
