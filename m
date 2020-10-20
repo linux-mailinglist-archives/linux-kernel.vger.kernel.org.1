@@ -2,71 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD9F293E21
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C75293E25
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407853AbgJTOGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
+        id S2407859AbgJTOHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407726AbgJTOGi (ORCPT
+        with ESMTP id S2407765AbgJTOHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:06:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D886C061755;
-        Tue, 20 Oct 2020 07:06:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=JRvHlEJrGZFiOQKd1c2qmCNGUvUh3oAWJT1Un94riZY=; b=gvRL5jmqVlrSmqjtvh0XTnm3LD
-        56PFyUXzXu+eC4lCU08E0kxKs8Q/QA/WRfHBOm00tJjhrRZXpO1qjQqsT5JzYwi6qvhCO37cF+3vJ
-        H0jxwJjRpia5kUbKeSu3x5RbPTurkjqzcbJVRIgudqWxJzpcKVCafy2tR8NVho4grfwF5JXi9uZoQ
-        T2cYSdOWENtQIW7gGGUveU0tgHXwoYGyzr/ujhAMB0KW8GgGr1q+LopITW5r6mGYAcUUo1W+gx6t5
-        PkpXw7UABl4GafrQhHi37PsNqzJpSiX1DnfNZsHMbuYPZFM9E4p09sPMHp2G2NTw0D2Pam0ukZZoc
-        FknIoJLw==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kUsHZ-0006kQ-VG; Tue, 20 Oct 2020 14:06:34 +0000
-Subject: Re: [PATCH] PCI: export pci_find_host_bridge() to fix MFD build error
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        linux-mips@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Thomas Bogendoerfer <tbogendoerfer@suse.de>
-References: <20201019061453.32295-1-rdunlap@infradead.org>
- <20201020080219.GA21011@infradead.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <45b16450-320b-86fd-603e-4fb311c6f4bd@infradead.org>
-Date:   Tue, 20 Oct 2020 07:06:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 20 Oct 2020 10:07:30 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F65EC061755;
+        Tue, 20 Oct 2020 07:07:30 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id z2so2348389ilh.11;
+        Tue, 20 Oct 2020 07:07:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1lBTu54CE46HbIpamog6b+bIOObBI3JzssghUHuWI3o=;
+        b=nP+etFNqv0sHkZDmtCRhJ1xgocs2Q6P+ogmJvNJhHcdiITJjln9o6gzzxriLngcTXh
+         R54cDMtdADlowipqvFCmfZRUVWIGeF02z8ewIbx0JgrpfiDX5Q8GsyaBA7O78Hv8pUgh
+         vzwX61iBHQw90LWfBUJd7uKhY2PILiTI0/qz5YAGFjlAqrv5Ua+BzywyTWIcp76Qng1G
+         R5P5gWu/G1mnf5FR7W/86gBMXQPuveVmRY+/ceRvxmxcVa1O3EHSdRzpClwPEMEJSnqQ
+         +00rktb5vH+FwNvgj6TsjNYAhwNuj827mnJB7cjRd6CiTUDGhwhAd0LqZgFLGWU/pdZP
+         S4eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=1lBTu54CE46HbIpamog6b+bIOObBI3JzssghUHuWI3o=;
+        b=skngr64QqavHRJaFGSsNBHx9xNCBIwyvJ3XJhlsJbi/atqMjs5hFpenxhZZovnSKWz
+         CS4XkBXD2jLF4U64VsgCubZ5M2UYjomZCl37VOR/6X0LZCXy+0yBvW0KV0wXa5r2Wibm
+         ha3xGeXl56LyXf4n4PcsNjfuB7H8+bY6YaatRodnyt0xC2AReO+x2NQlwkgJwZSAa2ak
+         Kst0mAvLSjJlipe4IcY7wR75aXliIQMw8qnWyF/ahSiUS5u1aG1BNd92ViJczrE/2jRo
+         I21JqywmIXkJqI+y8IWtp9vp/58KZxp52DQiyiWEO5ysy3c+KavzvI8J9Z4zOPUl8yN8
+         N1sQ==
+X-Gm-Message-State: AOAM530Wvfw9M/Ep5TaxZbXmtLgzFRmfWQuAPWi5gDmxXY77faJe4u7f
+        hGhEbkyUJ5XxLZTKKQV114I=
+X-Google-Smtp-Source: ABdhPJwwUjL7yZ2R75M5d9LbePEMBc5lyYqPoG87sntcDFZDMD1wFGg2h6O3XdgXZuCZwotMsygBXA==
+X-Received: by 2002:a05:6e02:970:: with SMTP id q16mr2132632ilt.69.1603202849775;
+        Tue, 20 Oct 2020 07:07:29 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id f13sm2132026ilf.85.2020.10.20.07.07.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 07:07:28 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 20 Oct 2020 10:07:26 -0400
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Arvind Sankar' <nivedita@alum.mit.edu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/5] crypto: lib/sha256 - Unroll SHA256 loop 8 times
+ intead of 64
+Message-ID: <20201020140726.GB2996696@rani.riverdale.lan>
+References: <20201019153016.2698303-1-nivedita@alum.mit.edu>
+ <20201019153016.2698303-5-nivedita@alum.mit.edu>
+ <1324eb3519d54ddd9469d30a94c11823@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <20201020080219.GA21011@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1324eb3519d54ddd9469d30a94c11823@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/20 1:02 AM, Christoph Hellwig wrote:
-> On Sun, Oct 18, 2020 at 11:14:53PM -0700, Randy Dunlap wrote:
->> Fix a build error in drivers/mfd/ioc.o by exporting
->> pci_find_host_bridge().
->>
->> ERROR: modpost: "pci_find_host_bridge" [drivers/mfd/ioc3.ko] undefined!
+On Tue, Oct 20, 2020 at 07:41:33AM +0000, David Laight wrote:
+> From: Arvind Sankar> Sent: 19 October 2020 16:30
+> > To: Herbert Xu <herbert@gondor.apana.org.au>; David S. Miller <davem@davemloft.net>; linux-
+> > crypto@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Subject: [PATCH 4/5] crypto: lib/sha256 - Unroll SHA256 loop 8 times intead of 64
+> > 
+> > This reduces code size substantially (on x86_64 with gcc-10 the size of
+> > sha256_update() goes from 7593 bytes to 1952 bytes including the new
+> > SHA256_K array), and on x86 is slightly faster than the full unroll.
 > 
-> I think the mfd code should be fixed to not depend on such an internal
-> symbol instead.
+> The speed will depend on exactly which cpu type is used.
+> It is even possible that the 'not unrolled at all' loop
+> (with the all the extra register moves) is faster on some x86-64 cpu.
+
+Yes, I should have mentioned this was tested on a Broadwell Xeon, at
+least on that processor, no unrolling is a measurable performance loss.
+But the hope is that 8x unroll should be generally enough unrolling that
+64x is unlikely to speed it up more, and so has no advantage over 8x.
+
 > 
+> > 
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > ---
+> >  lib/crypto/sha256.c | 164 ++++++++------------------------------------
+> >  1 file changed, 28 insertions(+), 136 deletions(-)
+> > 
+> > diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
+> > index c6bfeacc5b81..9f0b71d41ea0 100644
+> > --- a/lib/crypto/sha256.c
+> > +++ b/lib/crypto/sha256.c
+> > @@ -18,6 +18,17 @@
+> >  #include <crypto/sha.h>
+> >  #include <asm/unaligned.h>
+> ...
+> > 
+> > +#define SHA256_ROUND(i, a, b, c, d, e, f, g, h) do {		\
+> > +	u32 t1, t2;						\
+> > +	t1 = h + e1(e) + Ch(e, f, g) + SHA256_K[i] + W[i];	\
+> > +	t2 = e0(a) + Maj(a, b, c);    d += t1;    h = t1 + t2;	\
+> 
+> Split to 3 lines.
 
-Thanks for commenting. and I am not surprised.
+This was the way the code was before, but I can reformat it, sure.
 
-Adding Cc: for Thomas and Lee.
+> 
+> If you can put SHA256_K[] and W[] into a struct then the
+> compiler can use the same register to address into both
+> arrays (using an offset of 64*4 for the second one).
+> (ie keep the two arrays, not an array of struct).
+> This should reduce the register pressure slightly.
 
--- 
-~Randy
+I can try that, could copy the data in sha256_update() so it's amortized
+over the whole input.
 
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
