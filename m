@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA2029331C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7A3293323
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390642AbgJTCa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 22:30:28 -0400
-Received: from mga17.intel.com ([192.55.52.151]:35351 "EHLO mga17.intel.com"
+        id S2389642AbgJTCcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 22:32:41 -0400
+Received: from mga17.intel.com ([192.55.52.151]:35544 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390632AbgJTCa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 22:30:27 -0400
-IronPort-SDR: qsI0C5aQ+yhKRWlIUUVlJpoLMVl+NT3RPP/0zX4dYBcQiGC8AsGRAOxZ3kSxeNVlTvlfPS7kg6
- owlUKrEb6v0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="146997265"
+        id S1730531AbgJTCck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 22:32:40 -0400
+IronPort-SDR: cr7D2/XZiL37RY1NYidgKqx/+ataxijykKXHavxmwERS5w2/XtpAgKlUNTudy2SM1ZG8iK/VTD
+ jIAvesH2jRmg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="146998045"
 X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="146997265"
+   d="scan'208";a="146998045"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 19:30:25 -0700
-IronPort-SDR: 0TwJnPIV8BBHDzoqtZwaXbKtfNGo+7eLLagVRusAGw/GgS5dFJsWaoxmiCi3+KEmSGUdPYeKZE
- 8vmirPZP/yVA==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 19:32:39 -0700
+IronPort-SDR: y7nckqLta++frvlVUm8gPcT+pCHZ3MiDiN8t5OLq/S0SM+eTDZyJeeEZF+c/Sadct+Gdy/P789
+ dsAnqlR9gTfQ==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
-   d="scan'208";a="465756282"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 19:30:19 -0700
-Date:   Tue, 20 Oct 2020 10:30:17 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yakui Zhao <yakui.zhao@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH v5 04/17] x86/acrn: Introduce hypercall interfaces
-Message-ID: <20201020023017.GA12408@shuo-intel.sh.intel.com>
-References: <20201019061803.13298-1-shuo.a.liu@intel.com>
- <20201019061803.13298-5-shuo.a.liu@intel.com>
- <20201019221515.GA2875488@rani.riverdale.lan>
- <20201020013809.GA11038@shuo-intel.sh.intel.com>
- <20201020020851.GA2996696@rani.riverdale.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201020020851.GA2996696@rani.riverdale.lan>
-User-Agent: Mutt/1.8.3 (2017-05-23)
+   d="scan'208";a="532863361"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga005.jf.intel.com with ESMTP; 19 Oct 2020 19:32:35 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     vigneshr@ti.com, tudor.ambarus@microchip.com, broonie@kernel.org,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
+        simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
+        richard@nod.at, cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [RESENDPATCH v1 0/6] spi: cadence-quadspi: Add QSPI controller support for Intel LGM SoC
+Date:   Tue, 20 Oct 2020 10:32:20 +0800
+Message-Id: <20201020023226.33559-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19.Oct'20 at 22:08:51 -0400, Arvind Sankar wrote:
->On Tue, Oct 20, 2020 at 09:38:09AM +0800, Shuo A Liu wrote:
->> On Mon 19.Oct'20 at 18:15:15 -0400, Arvind Sankar wrote:
->> >On Mon, Oct 19, 2020 at 02:17:50PM +0800, shuo.a.liu@intel.com wrote:
->> >> From: Shuo Liu <shuo.a.liu@intel.com>
->> >>
->> >> The Service VM communicates with the hypervisor via conventional
->> >> hypercalls. VMCALL instruction is used to make the hypercalls.
->> >>
->> >> ACRN hypercall ABI:
->> >>   * Hypercall number is in R8 register.
->> >>   * Up to 2 parameters are in RDI and RSI registers.
->> >>   * Return value is in RAX register.
->> >>
->> >> Introduce the ACRN hypercall interfaces. Because GCC doesn't support R8
->> >> register as direct register constraints, use supported constraint as
->> >> input with a explicit MOV to R8 in beginning of asm.
->> >>
->> >> +static inline long acrn_hypercall0(unsigned long hcall_id)
->> >> +{
->> >> +	long result;
->> >> +
->> >> +	asm volatile("movl %1, %%r8d\n\t"
->> >> +		     "vmcall\n\t"
->> >> +		     : "=a" (result)
->> >> +		     : "ir" (hcall_id)
->> >
->> >Is the hypercall id an unsigned long (64 bits) or an unsigned int (32
->> >bits)? This will generate broken assembly if the "r" option is chosen,
->> >eg something like
->> >	movl %rdi, %r8d
->>
->> Yes, it can be an unsigned long. So do MOV explicitly.
->>
->> 	asm volatile("movq %1, %%r8\n\t"
->> 		     "vmcall\n\t"
->> 		     : "=a" (result)
->> 		     : "ir" (hcall_id)
->>
->> Thanks
->
->All the hypercall ID's defined seem to be only 32 bits though?
+Add QSPI controller support for Intel LGM SoC.
 
-Yes, they are.
-The paramter is unsigned long, use movq to align it.
+Note from Vignesh(mtd subsystem maintainer):
+This series is a subset of "[PATCH v12 0/4] spi: cadence-quadspi: Add
+support for the Cadence QSPI controller" by Ramuthevar,Vadivel MuruganX
+<vadivel.muruganx.ramuthevar@linux.intel.com> that intended to move
+cadence-quadspi driver to spi-mem framework
+
+Those patches were trying to accomplish too many things in a single set
+of patches and need to split into smaller patches. This is reduced
+version of above series.
+
+Changes that are intended to make migration easy are split into separate
+patches. Patches 1 to 3 drop features that cannot be supported under
+spi-mem at the moment (backward compatibility is maintained).
+Patch 4-5 are trivial cleanups. Patch 6 does the actual conversion to
+spi-mem and patch 7 moves the driver to drivers/spi folder.
+
+I have tested both INDAC mode (used by non TI platforms like Altera
+SoCFPGA) and DAC mode (used by TI platforms) on TI EVMs.
+
+Patches to move move bindings over to
+"Documentation/devicetree/bindings/spi/" directory and also conversion
+of bindig doc to YAML will be posted separately.  Support for Intel
+platform would follow that.
+
+Reference:
+        https://lkml.org/lkml/2020/6/1/50
+
+---
+resend-v1:
+  - As per Mark's suggestion , reorder the patch series 1-3 driver
+    support patches, series 4-6 dt-bindings patches.
+v1:
+  - initial version 
+
+
+Ramuthevar Vadivel Murugan (6):
+  spi: cadence-quadspi: Add QSPI support for Intel LGM SoC
+  spi: cadence-quadspi: Disable the DAC for Intel LGM SoC
+  spi: cadence-quadspi: Add multi-chipselect support for Intel LGM SoC
+  spi: Move cadence-quadspi.txt to Documentation/devicetree/bindings/spi
+  dt-bindings: spi: Convert cadence-quadspi.txt to cadence-quadspi.yaml
+  dt-bindings: spi: Add compatible for Intel LGM SoC
+
+ .../devicetree/bindings/mtd/cadence-quadspi.txt    |  67 ---------
+ .../devicetree/bindings/spi/cadence-quadspi.yaml   | 149 +++++++++++++++++++++
+ drivers/spi/Kconfig                                |   2 +-
+ drivers/spi/spi-cadence-quadspi.c                  |  29 ++++
+ 4 files changed, 179 insertions(+), 68 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/cadence-quadspi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
+
+-- 
+2.11.0
+
