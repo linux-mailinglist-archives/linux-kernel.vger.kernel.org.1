@@ -2,308 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737A8293A5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F923293A87
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393928AbgJTL73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 07:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393854AbgJTL72 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 07:59:28 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BF0C061755;
-        Tue, 20 Oct 2020 04:59:28 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id e15so1056324pfh.6;
-        Tue, 20 Oct 2020 04:59:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2G39uyzDlYr7wYhISE9BbPWobKRmjy0rPum9vOydAa0=;
-        b=mgC6LjU8DSsFbAQPr0jZutUqOpzb8vX8bkeXuDn66cMYqXMx0EuBwVP4fdnSLKeBSu
-         cBFc3sFukkNqVZGHftDowtBM21D0mDYxM0Fr4YXUHxae7Jz6LhtJ7GTelQmV+/vScyV/
-         F9xXgo6JBSxQGIkRbxk6V4qngnGZxkdVUVLVuE/hbCulaXzVTAB1M4QTunhclsew9lTA
-         /QjQPfQnQKqYjhDHshYjWhx4MseLmMiCNyxzLzFzm7kr1H9dKOyjBuUFYNe1lf9ounox
-         iLtD/+6GxSTYuAbuT1NZDxyK5RQN6ubj2a+4rD5YdDnuz7HHULj5aNBK09k8PIcfppAw
-         sPAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2G39uyzDlYr7wYhISE9BbPWobKRmjy0rPum9vOydAa0=;
-        b=hVZsqfTmW3TBpVpa/zTWfNQeIk/Gk6kIGZfnHeVzl+twR93CPK+uEgLC/uwk7w4Ldo
-         B+D1MEeFMDavDwj/tGpD0PoxeuWaucW7zzzAxJrCzjJRqXff3xV8KSZx1ypII0zDh2fV
-         2M5aRhpdmlc9Ezbq3XH7x7+Jfi6ax7KL7lRFdL/wxiCs/i8MC/FJC806/Ps3S+EiU71x
-         0XAMfrEzZImbEazQ8WgfvWKpQSza8Fyc/Gx1yERWY92xGVTW9OUiua8E5WDFUOOVMaWG
-         6eC4oCLEmKROf1Iib+3jOnZIUoZ/+ziinpmVy7hBNWREOIrs07OYSOUVG70FFS+kWWkQ
-         K5Kg==
-X-Gm-Message-State: AOAM533Kbb8QbWnSXN0AOiV21fPDiAhbQESlf8zB66nK3i2p1Iayxvvn
-        uWtjsjMPXVS90B967dogum+cxGLVU/3lOdPWk+cjNmcpvq021XGT
-X-Google-Smtp-Source: ABdhPJzKAFhbTyFBSVI5GzFfezctKXEOPINvEBjVDs3F+C9oFP1ZbeeR0tat6x4qjSbZK2cXf0I3c5FMA8gBrO1mdU4=
-X-Received: by 2002:a62:343:0:b029:15c:e33c:faff with SMTP id
- 64-20020a6203430000b029015ce33cfaffmr2319787pfd.7.1603195167974; Tue, 20 Oct
- 2020 04:59:27 -0700 (PDT)
+        id S2393919AbgJTMBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:01:11 -0400
+Received: from mga18.intel.com ([134.134.136.126]:8216 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394132AbgJTMBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:01:06 -0400
+IronPort-SDR: DHgkFjFUWJKseVlNDVPcIQnpY4BkkUifIiG5JIZFagNSTEZ3947xvrGhF3HNLfzYxK26j8VVy5
+ 7L56Hs4oTHEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="154978389"
+X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
+   d="scan'208";a="154978389"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 05:01:04 -0700
+IronPort-SDR: zzKV3P7kDS4bP8U7KFDCk//wulR8UGagUlyrToflc2poQu9DhyzwJrtrOW7GwCtTDp6ICsZX67
+ kFuFsZMaD0WQ==
+X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
+   d="scan'208";a="522354589"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 05:01:00 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id B2FF82062D; Tue, 20 Oct 2020 15:00:58 +0300 (EEST)
+Date:   Tue, 20 Oct 2020 15:00:58 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v5 1/4] dt-bindings: media: imx258: add bindings for
+ IMX258 sensor
+Message-ID: <20201020120058.GU13341@paasikivi.fi.intel.com>
+References: <20201019170247.92002-1-krzk@kernel.org>
+ <20201020103833.GT13341@paasikivi.fi.intel.com>
+ <CAJKOXPdKHCQikYDLKDS2Y3NVyCjMYYH1pcxgaMoYgOK19vQCrQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201019141008.871177-1-daniel@0x0f.com> <20201019141008.871177-4-daniel@0x0f.com>
-In-Reply-To: <20201019141008.871177-4-daniel@0x0f.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 20 Oct 2020 15:00:17 +0300
-Message-ID: <CAHp75Vf5iUzKp32CqBbv_5MRo8q8CyBPsBcgzKsww6BFtGJwUA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] gpio: msc313: MStar MSC313 GPIO driver
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJKOXPdKHCQikYDLKDS2Y3NVyCjMYYH1pcxgaMoYgOK19vQCrQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 5:11 PM Daniel Palmer <daniel@0x0f.com> wrote:
->
-> This adds a driver that supports the GPIO block found in
-> MStar/SigmaStar ARMv7 SoCs.
->
-> The controller seems to support 128 lines but where they
-> are wired up differs between chips and no currently known
-> chip uses anywhere near 128 lines so there needs to be some
-> per-chip data to collect together what lines actually have
-> physical pins attached and map the right names to them.
->
-> The core peripherals seem to use the same lines on the
-> currently known chips but the lines used for the sensor
-> interface, lcd controller etc pins seem to be totally
-> different between the infinity and mercury chips
->
-> The code tries to collect all of the re-usable names,
-> offsets etc together so that it's easy to build the extra
-> per-chip data for other chips in the future.
->
-> So far this only supports the MSC313 and MSC313E chips.
->
-> Support for the SSC8336N (mercury5) is trivial to add once
-> all of the lines have been mapped out.
-
-...
-
-> +config GPIO_MSC313
-> +       bool "MStar MSC313 GPIO support"
-
-Why boolean?
-
-> +       default y if ARCH_MSTARV7
-
-Simply
-       default ARCH_MSTARV7
-should work as well.
-
-Are you planning to extend this to other boards?
-
-> +       depends on ARCH_MSTARV7
-> +       select GPIOLIB_IRQCHIP
-> +       help
-> +         Say Y here to support GPIO on MStar MSC313 and later SoCs.
-
-Please, be more specific. Also it's recommended to have a module name
-to be included (but let's understand first why it's not a module)
-
-...
-
-> +/*
-> + * Copyright (C) 2020 Daniel Palmer<daniel@thingy.jp>
-> + */
-
-One line.
-
-...
-
-> +#include <linux/of_device.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/gpio/driver.h>
-
-I believe this should be reworked.
-For example, it misses mod_devicetable.h, bits.h, io.h, types.h, etc, but has
-
-...
-
-> +/* These bits need to be saved to correctly restore the
-> + * gpio state when resuming from suspend to memory.
-> + */
-
-/*
- * For this subsystem the comment style for multi-line
- * like this.
- */
-
-...
-
-> +#ifdef CONFIG_MACH_INFINITY
-
-Does it make any sense?
-
-> +#endif
-
-...
-
-> +       return readb_relaxed(gpio->base + gpio->gpio_data->offsets[offset])
-> +                       & MSC313_GPIO_IN;
-
-Usual pattern is to leave operators on the previous line.
-
-...
-
-> +static struct irq_chip msc313_gpio_irqchip = {
-> +       .name = "GPIO",
-
-Is this name good enough?
-
-> +       .irq_eoi = irq_chip_eoi_parent,
-> +       .irq_mask = irq_chip_mask_parent,
-> +       .irq_unmask = irq_chip_unmask_parent,
-> +       .irq_set_type = irq_chip_set_type_parent,
-> +};
-
-...
-
-> +static int msc313e_gpio_child_to_parent_hwirq(struct gpio_chip *chip,
-> +                                            unsigned int child,
-> +                                            unsigned int child_type,
-> +                                            unsigned int *parent,
-> +                                            unsigned int *parent_type)
-> +{
-> +       struct msc313_gpio *priv = gpiochip_get_data(chip);
-> +       unsigned int offset = priv->gpio_data->offsets[child];
-> +       int ret = -EINVAL;
-> +
-> +       /* only the spi0 pins have interrupts on the parent
-> +        * on all of the known chips and so far they are all
-> +        * mapped to the same place
-> +        */
-
-Comment style!
-
-> +       if (offset >= OFF_SPI0_CZ && offset <= OFF_SPI0_DO) {
-> +               *parent_type = child_type;
-> +               *parent = ((offset - OFF_SPI0_CZ) >> 2) + 28;
-> +               ret = 0;
-> +       }
-> +
-> +       return ret;
-
-Oh, can, for a starter, we use a regular (not-so-twisted) pattern
-
-  if (...)
-    return -EINVAL;
-  ...
-  return 0;
-
-?
-
-> +}
-
-...
-
-> +       gpio->saved = devm_kzalloc(&pdev->dev, gpio->gpio_data->num * sizeof(*gpio->saved), GFP_KERNEL);
-
-devm_kcalloc()
-
-> +       if (!gpio->saved)
-> +               return -ENOMEM;
-
-...
-
-> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       gpio->base = devm_ioremap_resource(&pdev->dev, res);
-
-devm_platform_ioremap_resource()
-
-> +       if (IS_ERR(gpio->base))
-> +               return PTR_ERR(gpio->base);
-
-...
-
-> +       gpiochip->label = DRIVER_NAME;
-
-Not good. When you use user space how do you distinguish if more than
-one chip appears in the system?
-
-...
-
-> +       ret = gpiochip_add_data(gpiochip, gpio);
-> +       return ret;
-
-return ...(...);
-
-Why not devm_gpiochip_add_data() ?
-
-...
-
-> +static const struct of_device_id msc313_gpio_of_match[] = {
-
-> +#ifdef CONFIG_MACH_INFINITY
-
-To me this makes no sense.
-
-> +       {
-> +               .compatible = "mstar,msc313-gpio",
-> +               .data = &msc313_data,
-> +       },
-> +#endif
-> +       { }
-> +};
-
-...
-
-> +/* The GPIO controller loses the state of the registers when the
-> + * SoC goes into suspend to memory mode so we need to save some
-> + * of the register bits before suspending and put it back when resuming
-> + */
-
-Comment style!
-
-> +
-
-Redundant blank line.
-
-...
-
-> +static int __maybe_unused msc313_gpio_resume(struct device *dev)
-> +{
-
-> +}
-
-> +
-
-Redundant blank line.
-
-> +static SIMPLE_DEV_PM_OPS(msc313_gpio_ops, msc313_gpio_suspend, msc313_gpio_resume);
-
-...
-
-> +static struct platform_driver msc313_gpio_driver = {
-> +       .driver = {
-> +               .name = DRIVER_NAME,
-> +               .of_match_table = msc313_gpio_of_match,
-> +               .pm = &msc313_gpio_ops,
-
-You still allow to unbind.
-
-> +       },
-> +       .probe = msc313_gpio_probe,
-> +};
-
-> +
-
-Redundant blank line.
-
-> +builtin_platform_driver(msc313_gpio_driver);
-
-Why?
+Hi Krzysztof,
+
+On Tue, Oct 20, 2020 at 12:54:09PM +0200, Krzysztof Kozlowski wrote:
+> On Tue, 20 Oct 2020 at 12:38, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+> >
+> > Hi Krzysztof,
+> >
+> > On Mon, Oct 19, 2020 at 07:02:44PM +0200, Krzysztof Kozlowski wrote:
+> > > Add bindings for the IMX258 camera sensor.  The bindings, just like the
+> > > driver, are quite limited, e.g. do not support regulator supplies.
+> > >
+> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > >
+> > > ---
+> > >
+> > > Changes since v4:
+> > > 1. Add clock-lanes,
+> > > 2. Add Rob's review,
+> > > 3. Add one more example and extend existing one,
+> > > 4. Add common clock properties (assigned-*).
+> >
+> > Using the assigned-* clock properties may be workable for this driver at
+> > the moment. But using these properties does not guarantee the external
+> > clock frequency intended to be used on the hardware.
+> 
+> It guarantees it. The clock frequency will be as expected (except if
+> someone misconfigures the DTS).
+
+Is that guaranteed?
+
+I'm not saying no to the approach, but if we change how camera sensor DT
+bindings are defined, I'd prefer an informed decision is made on the
+matter.
+
+> 
+> > Using other
+> > frequencies *is not* expected to work. That applies to this driver as well.
+> 
+> This is the binding which is HW description. According to HW datasheet
+> other frequencies from described range are accepted and expected to
+> work.
+
+As per datasheet, yes, different external clock frequencies can be used.
+But the link frequency is still not independent of the external clock
+frequency.
+
+The properties of the sensor's PLL tree determines what can be achieved
+given a certain external clock frequency. So picking a wrong external clock
+frequency quite possibly means that none of the designated link frequencies
+are available, rendering the sensor inoperable.
+
+> 
+> > This, instead of the clock-frequency property, effectively removes the
+> > ability to set the correct frequency from the driver, at least with current
+> > set of the used APIs.
+> 
+> It seems you confuse DT bindings with some specific driver
+> implementation. Bindings do not describe the driver behavior but the
+> HW. The ability to set the correct frequency from the driver is not
+> removed. It was never part of the bindings and never should. It is
+> part of the driver.
+> 
+> >
+> > I suppose you could add a function to set the assigned clock frequency and
+> > keep it, just as clk_set_rate_exclusive does?
+> >
+> > Cc the common clock framework list + maintainers.
+> 
+> The bindings have Rob review which is the DT maintainer. His
+> ack/review is needed for the bindings to be accepted. What more do you
+> need? Shall I point to submitting-bindings document?
+> 
+> I am really tired of discussing this. You raise some concerns about
+> driver behavior in the wrong context - in the patch for device tree
+> bindings. You use the arguments about the driver while we talk about
+> bindings. This is clearly not correct. I am all the time repeating
+> myself - the bindings describe the hardware, not the driver.
+
+My concerns are not related to the current driver implementation nor the
+driver patches in this set.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+
+Sakari Ailus
