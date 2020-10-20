@@ -2,104 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07441293216
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 01:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2778293231
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 02:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389091AbgJSXmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 19:42:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35474 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726995AbgJSXmF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 19:42:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603150924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hy5Toxs0EKUklsBebnq/S505L/qncNcBB4kBuZErIU4=;
-        b=eTKd6QyXXvFbrlwUYUqK6+gFj7QxS0hd4kPR6hfJDuhgyQ6a5fiz8SlbCTtrOEBQ6S6bzA
-        a66kHFWO9THrfAYSH/I7MWd10XOTYvD2ZbGGf4L6ZT756Vx353H5XSvjvr1eCKces1sMpp
-        nKSBxwJ+kI+ozu89azvtQOtkRwJepkg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-508-eEQdHWqWM7OJlXKeoomt-g-1; Mon, 19 Oct 2020 19:42:02 -0400
-X-MC-Unique: eEQdHWqWM7OJlXKeoomt-g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2389173AbgJTAEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 20:04:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389142AbgJTAEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 20:04:21 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A1C3E1895806;
-        Mon, 19 Oct 2020 23:42:00 +0000 (UTC)
-Received: from treble (ovpn-112-186.rdu2.redhat.com [10.10.112.186])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8C6501002C03;
-        Mon, 19 Oct 2020 23:41:58 +0000 (UTC)
-Date:   Mon, 19 Oct 2020 18:41:55 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] arm64: Implement reliable stack trace
-Message-ID: <20201019234155.q26jkm22fhnnztiw@treble>
-References: <20201012172605.10715-1-broonie@kernel.org>
- <alpine.LSU.2.21.2010151533490.14094@pobox.suse.cz>
- <20201015141612.GC50416@C02TD0UTHF1T.local>
- <20201015154951.GD4390@sirena.org.uk>
- <20201015212931.mh4a5jt7pxqlzxsg@treble>
- <20201016121534.GC5274@sirena.org.uk>
+        by mail.kernel.org (Postfix) with ESMTPSA id A86A1223FD;
+        Tue, 20 Oct 2020 00:04:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603152261;
+        bh=S9zp0TC3cfY9IrdSk+gNx2tHLTqXGmIK2HdMgzoCCug=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HBZCO9oRR3Z51OHruKzDo3vIX9rjMk2Tq4fDULVI8SWWPL8YsiG9THAkjGTG264QN
+         WUnAsiUq6u9OqAaiyEe52rpIWR7Ez7SEUruhN4TIU2w/xuu3OMRwX+tLjO3sxIrbGP
+         6m7OgfkbyfZtxN1cyL/QmWN1LSYVfTUgM/OcW/v0=
+Date:   Mon, 19 Oct 2020 17:04:19 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Valentin Vidic <vvidic@valentin-vidic.from.hr>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Philip Rischel <rischelp@idt.com>,
+        Florian Fainelli <florian@openwrt.org>,
+        Roman Yeryomin <roman@advem.lv>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Martin Habets <mhabets@solarflare.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] net: korina: cast KSEG0 address to pointer in kfree
+Message-ID: <20201019170419.5349577b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201018184255.28989-1-vvidic@valentin-vidic.from.hr>
+References: <20201016194611.GK8773@valentin-vidic.from.hr>
+        <20201018184255.28989-1-vvidic@valentin-vidic.from.hr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201016121534.GC5274@sirena.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 01:15:34PM +0100, Mark Brown wrote:
+On Sun, 18 Oct 2020 20:42:55 +0200 Valentin Vidic wrote:
+> Fixes gcc warning:
 > 
-> Yes, exactly - just copying the existing implementations and hoping that
-> it's sensible/relevant and covers everything that's needed.  It's not
-> entirely clear what a reliable stacktrace is expected to do that a
-> normal stacktrace doesn't do beyond returning an error code.
+> passing argument 1 of 'kfree' makes pointer from integer without a cast
+> 
+> Fixes: 3af5f0f5c74e ("net: korina: fix kfree of rx/tx descriptor array")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
 
-While in the end there may not be much of a difference between normal
-and reliable stacktraces beyond returning an error code, it still
-requires beefing up the unwinder's error detection abilities.
-
-> > > The searching for a defined thread entry point for example isn't
-> > > entirely visible in the implementations.
-> 
-> > For now I'll speak only of x86, because I don't quite remember how
-> > powerpc does it.
-> 
-> > For thread entry points, aka the "end" of the stack:
-> 
-> > - For ORC, the end of the stack is either pt_regs, or -- when unwinding
-> >   from kthreads, idle tasks, or irqs/exceptions in entry code --
-> >   UNWIND_HINT_EMPTY (found by the unwinder's check for orc->end.
-> 
-> >   [ Admittedly the implementation needs to be cleaned up a bit.  EMPTY
-> >     is too broad and needs to be split into UNDEFINED and ENTRY. ]
-> 
-> > - For frame pointers, by convention, the end of the stack for all tasks
-> >   is a defined stack offset: end of stack page - sizeof(pt_regs).
-> 
-> > And yes, all that needs to be documented.
-> 
-> Ah, I'd have interpreted "defined thread entry point" as meaning
-> expecting to find specific functions appering at the end of the stack
-> rather than meaning positively identifying the end of the stack - for
-> arm64 we use a NULL frame pointer to indicate this in all situations.
-> In that case that's one bit that is already clear.
-
-I think a NULL frame pointer isn't going to be robust enough.  For
-example NULL could easily be introduced by a corrupt stack, or by asm
-frame pointer misuse.
-
--- 
-Josh
-
+Applied, thank you!
