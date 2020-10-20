@@ -2,129 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B56293806
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5760129380A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392798AbgJTJbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
+        id S2392884AbgJTJc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391608AbgJTJbe (ORCPT
+        with ESMTP id S2391709AbgJTJc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:31:34 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2147C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:31:34 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id y20so2149258iod.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:31:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c1d+Zez1C7TJp2V/M7gloZZDa6B2Q1pBXGW4tp7F2Tc=;
-        b=IILOe44hszLDN0gM1FvqvW8P36lRbz40j8nIat7HaRBwAf8cUIyfng7y0F5eqUSWv1
-         KJQq2rNIPvXvWWCsspnwYavCyKJMs4Lh8z1bJcbTwXNYKO1Mgmh/a5MxLvRCE7EF0mq8
-         i7mn/SppKUqyUFW2v4kSkOlU27lDGRiSZQCboda9b7XDRbs5NEXqx2avoKbgGf1pigvA
-         WTGIIiJcWIlhM4LVwKmc2y+dCurkXx1Q0IurO0lfFxNWlp5B1ppswp3pVzw6UziVG8UR
-         l8DxTkFlEgfdhOaMxUu7a1Co5M8nlG3A0vTi7c1OYWNCvdDEfh47xOTZKf3IvruWnVic
-         Sttw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c1d+Zez1C7TJp2V/M7gloZZDa6B2Q1pBXGW4tp7F2Tc=;
-        b=HtrADZGXkC7+sGUc6+TBS6WCqF4SZ5Y0SdYuJA/fNTJ86C0Zq9Nw9vLLVys/TEHeIW
-         AOiXrVoEorZm9ijvHkdEqVIR681RFaUrnxyhIOyEw3Sbc4vP8iC84EIVGcXoo7/1hDg9
-         LO7Rb0eLEBZ4hcSg6EQ1S4Qo0+S8R7f9RMjgEnDZ0cG/aUHIgbCEMgJANUy5w/hjAOq/
-         Ubp5peBjO8T49497Qb7b5ZSQ1wQGUEZDHWxcJDTXVL99dC0Wr5IIKMRANjdZVQD9CgBB
-         yMt9BU1MMEo+YH+DsLw+cnyDDIl7rdWdlhsCwqz1kLApo4t2DnytT0k9MKbg4V722MeC
-         Z1cA==
-X-Gm-Message-State: AOAM531483MlQd0ifhkdEs314H7m/O0fFjFxG8DxJUvUeiz0a+qiilRo
-        ccA8tpBZVU8OFQHC98YP+WBeMr+LyItJ68D+Pbc=
-X-Google-Smtp-Source: ABdhPJznLmmwvQYVlItbSscxu5FuYmgMkcVyecex17AQfgeclUxqq2jebYandzI0DeRpkyAu7yFJQJxOfgsdy8OcVys=
-X-Received: by 2002:a02:6c07:: with SMTP id w7mr1271900jab.46.1603186293902;
- Tue, 20 Oct 2020 02:31:33 -0700 (PDT)
+        Tue, 20 Oct 2020 05:32:26 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E3EC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:32:26 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f106600748f54fac26d0739.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:6600:748f:54fa:c26d:739])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9D9461EC0258;
+        Tue, 20 Oct 2020 11:32:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603186344;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=zQSMKQsleLY8ITX+I3NDELePsK4U9vilbjl6nMGkcG0=;
+        b=Twmzew3gMfZQf974h+00fcxkBGK02qITCu1dbq4+6sIRwMxg+NG5g/b2+IjO+EKlJ24pEZ
+        Blcv3j1fxc0ONI/gL0EyXliGFM3f39FXy1GhatGCc1KcHg+ySke+IPFkYEBg1+BhYvgdhS
+        X2IRvVOu+e7lMTXNFdoYKiS/c0n2GwE=
+Date:   Tue, 20 Oct 2020 11:32:14 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-nvdimm@lists.01.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86, libnvdimm/test: Remove COPY_MC_TEST
+Message-ID: <20201020093214.GB11583@zn.tnic>
+References: <160316688322.3374697.8648308115165836243.stgit@dwillia2-desk3.amr.corp.intel.com>
 MIME-Version: 1.0
-References: <20201012125323.17509-1-david@redhat.com> <20201012125323.17509-13-david@redhat.com>
-In-Reply-To: <20201012125323.17509-13-david@redhat.com>
-From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Date:   Tue, 20 Oct 2020 11:31:22 +0200
-Message-ID: <CAM9Jb+gH=5HoCVNWS2njNT+aEK5tqEaTZtiTJsEh3ajLwKw9BA@mail.gmail.com>
-Subject: Re: [PATCH v1 12/29] virtio-mem: factor out fake-offlining into virtio_mem_fake_offline()
-To:     David Hildenbrand <david@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <160316688322.3374697.8648308115165836243.stgit@dwillia2-desk3.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> ... which now matches virtio_mem_fake_online(). We'll reuse this
-> functionality soon.
->
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+On Mon, Oct 19, 2020 at 09:08:03PM -0700, Dan Williams wrote:
+> The COPY_MC_TEST facility has served its purpose for validating the
+> early termination conditions of the copy_mc_fragile() implementation.
+> Remove it and the EXPORT_SYMBOL_GPL of copy_mc_fragile().
+> 
+> Reported-by: Borislav Petkov <bp@alien8.de>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Vishal Verma <vishal.l.verma@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 > ---
->  drivers/virtio/virtio_mem.c | 34 ++++++++++++++++++++++++----------
->  1 file changed, 24 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-> index 00d1cfca4713..d132bc54ef57 100644
-> --- a/drivers/virtio/virtio_mem.c
-> +++ b/drivers/virtio/virtio_mem.c
-> @@ -832,6 +832,27 @@ static void virtio_mem_fake_online(unsigned long pfn, unsigned long nr_pages)
->         }
->  }
->
-> +/*
-> + * Try to allocate a range, marking pages fake-offline, effectively
-> + * fake-offlining them.
-> + */
-> +static int virtio_mem_fake_offline(unsigned long pfn, unsigned long nr_pages)
-> +{
-> +       int rc;
-> +
-> +       rc = alloc_contig_range(pfn, pfn + nr_pages, MIGRATE_MOVABLE,
-> +                               GFP_KERNEL);
-> +       if (rc == -ENOMEM)
-> +               /* whoops, out of memory */
-> +               return rc;
-> +       if (rc)
-> +               return -EBUSY;
-> +
-> +       virtio_mem_set_fake_offline(pfn, nr_pages, true);
-> +       adjust_managed_page_count(pfn_to_page(pfn), -nr_pages);
-> +       return 0;
-> +}
-> +
->  static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
->  {
->         const unsigned long addr = page_to_phys(page);
-> @@ -1335,17 +1356,10 @@ static int virtio_mem_mb_unplug_sb_online(struct virtio_mem *vm,
->
->         start_pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
->                              sb_id * vm->subblock_size);
-> -       rc = alloc_contig_range(start_pfn, start_pfn + nr_pages,
-> -                               MIGRATE_MOVABLE, GFP_KERNEL);
-> -       if (rc == -ENOMEM)
-> -               /* whoops, out of memory */
-> -               return rc;
-> -       if (rc)
-> -               return -EBUSY;
->
-> -       /* Mark it as fake-offline before unplugging it */
-> -       virtio_mem_set_fake_offline(start_pfn, nr_pages, true);
-> -       adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
-> +       rc = virtio_mem_fake_offline(start_pfn, nr_pages);
-> +       if (rc)
-> +               return rc;
->
->         /* Try to unplug the allocated memory */
->         rc = virtio_mem_mb_unplug_sb(vm, mb_id, sb_id, count);
+>  arch/x86/Kconfig.debug              |    3 -
+>  arch/x86/include/asm/copy_mc_test.h |   75 -------------------------
+>  arch/x86/lib/copy_mc.c              |    4 -
+>  arch/x86/lib/copy_mc_64.S           |   10 ---
+>  tools/testing/nvdimm/test/nfit.c    |  103 -----------------------------------
+>  5 files changed, 195 deletions(-)
+>  delete mode 100644 arch/x86/include/asm/copy_mc_test.h
 
-Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+I love patches removing code. ACK.
+
+I'll take this through tip after -rc1.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
