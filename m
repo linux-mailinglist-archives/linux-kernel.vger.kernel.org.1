@@ -2,115 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFDD294502
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9A2294504
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438987AbgJTWPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 18:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
+        id S2438997AbgJTWP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 18:15:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438978AbgJTWPP (ORCPT
+        with ESMTP id S2438967AbgJTWP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 18:15:15 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A78C0613CE;
-        Tue, 20 Oct 2020 15:15:15 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id e20so55382otj.11;
-        Tue, 20 Oct 2020 15:15:15 -0700 (PDT)
+        Tue, 20 Oct 2020 18:15:58 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9393C0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 15:15:58 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id w11so120104pll.8
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 15:15:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Rv4qFTv25KqnYnglUjSv+IYVPK04sSlNOwpw43zg4F4=;
-        b=TiVvp3IQiVH8w3fbaITLMtKf4RVlIR8Nf2Xtw7/DPUl7cZTFG8o8Ihbu6sQUVtRCTu
-         4wQmWvElKnod+aMvkCFRKTTCMJd4XgfhGVF2MABgscH/PVNeDc6yBOwk0EcsU09ORd9V
-         Vqu0PfaE1P+u6OG7gXPibLZRFGnn3wyd6iW54vF3Rqr/T3ZyHOyA+YP/7yyrJ1QjZzHt
-         y0qdCTTLrPUw0bplS7h6yDSn1vKGahEIWUToflYHswNuQPL1QV7OgOyRbqMvodlNEn+i
-         dneIZaO5YanWAPkFW8K+FWXDDpdka4uAMPXqUbgtTmW/Owd3mRRIO9DRSvJIsAwcNra2
-         bJlA==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=Byl068bSjplKbL4+PGKJ1dC619S+qOz8jD1tUz0XwHk=;
+        b=KE+PETcp6MXxJp2h7R+7wX6TA7o0bnwOzHNuKMnSSWmLWLDVi3exXozEpC2/oJlQN8
+         +KRIahNRWZR0vRBqf05eo1Ca/0Copjo/AjJwsptmk2Bqoyw0eP6VNszY2u4x5ZaFVSkZ
+         BbyHVYsoDxQI619GGH5gKMoNNbSkLn0vaviZk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Rv4qFTv25KqnYnglUjSv+IYVPK04sSlNOwpw43zg4F4=;
-        b=UEcP03puo2Z7HHsuwP9J/GbhasCBNgEV/dpJo5WEeXga2qMSGAnpqBxttZxKqMKr5M
-         fuvxXzfZV/zQaDYKOoFffRCwB4z/HDj42frhGxgidaZICf6wDH5pfae1/P9rp3R5al8V
-         +Fp+a+T7pMaeIIw0LvEFbL4LnyLkAS5YOKLa5xyIqEpdTs6s+6n/O3NvuaeF9Sy0duGG
-         Y9zhP9IukCq9dgnPV0Gwpl81Av0Ch9uZcvsX5iXh//xBS6rP999Wr0ENOnpHvL1yAayM
-         C5tyACrhlKrty3zDLjx2fKuXQdZi/YCrUUr3+0dkDRQRBCtsPUcLdiYhzFSDMWe6n+CT
-         Jopw==
-X-Gm-Message-State: AOAM5300h9XCXt8N9r1s01enI9/h3Kj0FFWFuIsJt4SRrUmfamJIyVCD
-        v2PoYEu4gTsAmzNMeikRHoY=
-X-Google-Smtp-Source: ABdhPJwPJhdXClV6mKkVtb4k+SG2MQb/0NO1UmCNo7vCUuPUkba2a1oHY5yrWEL8/StWEZCb8LAAog==
-X-Received: by 2002:a05:6830:4d:: with SMTP id d13mr377764otp.67.1603232114779;
-        Tue, 20 Oct 2020 15:15:14 -0700 (PDT)
-Received: from nuclearis2-1.lan (c-98-195-139-126.hsd1.tx.comcast.net. [98.195.139.126])
-        by smtp.gmail.com with ESMTPSA id 81sm57005oti.79.2020.10.20.15.15.13
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=Byl068bSjplKbL4+PGKJ1dC619S+qOz8jD1tUz0XwHk=;
+        b=aVLfziGspTsMootoiGPTiaBYvHglkSHEjpor1UIBvJDPjtbF8UVvVLs2Om1q7WfyHd
+         k5ZuLPImMQStczjeVOGCeB4gatyXTGaUZ5DzIstXMwVVusSfdadJVPVLCBsRNN20eKFd
+         9Dq/HYDlcTa9Lb/vUavDYOrwxtUi/2zvTO5mlsoJ8FEF0Nd/5/fdHJxzUqUAATuInF1M
+         DQuKpHk8jwymSmKM10/1jtxI+EUgouxDX6U21+CYzDUxUduBCEO87SnUHfE4UBhwzHlc
+         6JbFJh14hpHt1bozNNoUjVoIklRovefx5tI6Fjlbi+Nc/WrzaoLMZr7lsIsUaOXSkYtK
+         /Z0g==
+X-Gm-Message-State: AOAM532M7KaPfyW5GYO39wuEBu6k3owqEz2azXWOsztx4DWhzTmRUKx7
+        kr2Neo7/Bu0AfrsfpOBmlElOkw==
+X-Google-Smtp-Source: ABdhPJyhGqquEURVzCUWjkxaXE1f4ZbyUwHjKWuvLzMw7wyKxAe9p8Ze3hRndsQEWKczhrZO5Thjvw==
+X-Received: by 2002:a17:902:b7c3:b029:d4:bc6e:8aae with SMTP id v3-20020a170902b7c3b02900d4bc6e8aaemr269153plz.12.1603232158094;
+        Tue, 20 Oct 2020 15:15:58 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id e196sm50988pfh.128.2020.10.20.15.15.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 15:15:14 -0700 (PDT)
-From:   Alexandru Gagniuc <mr.nuke.me@gmail.com>
-To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     sam@ravnborg.org, Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-        Rob Herring <robh@kernel.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mark Brown <broonie@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 3/3] dt-bindings: display: sii902x: Add supply bindings
-Date:   Tue, 20 Oct 2020 17:14:59 -0500
-Message-Id: <20201020221501.260025-3-mr.nuke.me@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200928173056.1674274-1-mr.nuke.me@gmail.com>
-References: <20200928173056.1674274-1-mr.nuke.me@gmail.com>
+        Tue, 20 Oct 2020 15:15:57 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201020165959.7441-1-khsieh@codeaurora.org>
+References: <20201020165959.7441-1-khsieh@codeaurora.org>
+Subject: Re: [PATCH] drm/msm/dp: skip checking LINK_STATUS_UPDATED bit
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run
+Date:   Tue, 20 Oct 2020 15:15:55 -0700
+Message-ID: <160323215566.884498.14018580767640192186@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sii902x chip family requires IO and core voltages to reach the
-correct voltage before chip initialization. Add binding for describing
-the two supplies.
+Quoting Kuogee Hsieh (2020-10-20 09:59:59)
+> No need to check LINK_STATuS_UPDATED bit before
 
-Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-Acked-by: Rob Herring <robh@kernel.org>
----
-Changes since v1, v2:
-  * Nothing. version incremented to stay in sync with sii902x regulator patch
-  * Added Rob's acked-by line
+LINK_STATUS_UPDATED?
 
- Documentation/devicetree/bindings/display/bridge/sii902x.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+> return 6 bytes of link status during link training.
 
-diff --git a/Documentation/devicetree/bindings/display/bridge/sii902x.txt b/Documentation/devicetree/bindings/display/bridge/sii902x.txt
-index 0d1db3f9da84..02c21b584741 100644
---- a/Documentation/devicetree/bindings/display/bridge/sii902x.txt
-+++ b/Documentation/devicetree/bindings/display/bridge/sii902x.txt
-@@ -8,6 +8,8 @@ Optional properties:
- 	- interrupts: describe the interrupt line used to inform the host
- 	  about hotplug events.
- 	- reset-gpios: OF device-tree gpio specification for RST_N pin.
-+	- iovcc-supply: I/O Supply Voltage (1.8V or 3.3V)
-+	- cvcc12-supply: Digital Core Supply Voltage (1.2V)
- 
- 	HDMI audio properties:
- 	- #sound-dai-cells: <0> or <1>. <0> if only i2s or spdif pin
-@@ -54,6 +56,8 @@ Example:
- 		compatible = "sil,sii9022";
- 		reg = <0x39>;
- 		reset-gpios = <&pioA 1 0>;
-+		iovcc-supply = <&v3v3_hdmi>;
-+		cvcc12-supply = <&v1v2_hdmi>;
- 
- 		#sound-dai-cells = <0>;
- 		sil,i2s-data-lanes = < 0 1 2 >;
--- 
-2.26.2
+Why?
 
+> This patch also fix phy compliance test link rate
+> conversion error.
+
+How?
+
+>=20
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+
+Any Fixes: tag?
+
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c | 20 ++++++--------------
+>  drivers/gpu/drm/msm/dp/dp_link.c | 24 +++++++++++-------------
+>  2 files changed, 17 insertions(+), 27 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp=
+_ctrl.c
+> index 6bdaec778c4c..76e891c91c6e 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> @@ -1061,23 +1061,15 @@ static bool dp_ctrl_train_pattern_set(struct dp_c=
+trl_private *ctrl,
+>  static int dp_ctrl_read_link_status(struct dp_ctrl_private *ctrl,
+>                                     u8 *link_status)
+>  {
+> -       int len =3D 0;
+> -       u32 const offset =3D DP_LANE_ALIGN_STATUS_UPDATED - DP_LANE0_1_ST=
+ATUS;
+> -       u32 link_status_read_max_retries =3D 100;
+> -
+> -       while (--link_status_read_max_retries) {
+> -               len =3D drm_dp_dpcd_read_link_status(ctrl->aux,
+> -                       link_status);
+> -               if (len !=3D DP_LINK_STATUS_SIZE) {
+> -                       DRM_ERROR("DP link status read failed, err: %d\n"=
+, len);
+> -                       return len;
+> -               }
+> +       int ret =3D 0, len;
+> =20
+> -               if (!(link_status[offset] & DP_LINK_STATUS_UPDATED))
+> -                       return 0;
+> +       len =3D drm_dp_dpcd_read_link_status(ctrl->aux, link_status);
+> +       if (len !=3D DP_LINK_STATUS_SIZE) {
+> +               DRM_ERROR("DP link status read failed, err: %d\n", len);
+> +               ret =3D len;
+
+Could this be positive if the len is greater than 0 but not
+DP_LINK_STATUS_SIZE? Maybe the check should be len < 0? We certainly
+don't want to return some smaller size from this function, right?
+
+>         }
+> =20
+> -       return -ETIMEDOUT;
+> +       return ret;
+>  }
+> =20
+>  static int dp_ctrl_link_train_1(struct dp_ctrl_private *ctrl,
+> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp=
+_link.c
+> index c811da515fb3..58d65daae3b3 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_link.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
+> @@ -773,7 +773,8 @@ static int dp_link_process_link_training_request(stru=
+ct dp_link_private *link)
+>                         link->request.test_lane_count);
+> =20
+>         link->dp_link.link_params.num_lanes =3D link->request.test_lane_c=
+ount;
+> -       link->dp_link.link_params.rate =3D link->request.test_link_rate;
+> +       link->dp_link.link_params.rate =3D
+> +               drm_dp_bw_code_to_link_rate(link->request.test_link_rate);
+
+Why are we storing bw_code in test_link_rate? This looks very confusing.
+
+> =20
+>         return 0;
+>  }
