@@ -2,85 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B063B293F02
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B3B293F05
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408411AbgJTOty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730956AbgJTOtx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:49:53 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9981AC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:49:53 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id h4so1096764pjk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:49:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=Fg6pNbj6ALE21jJQou7VGOk/llHej9K+3C1jIB5kjaI=;
-        b=s5HEKF5YDQgHaPTun57X+Qrt1B3vtLMKSsqq+t3SWWhZ18Xiq1hyvXrUGb6YkModH2
-         bLg9eQViAONwRN/GttLbHK3reudUxphCoxnSjBdLJ0nSkNbfzeISraprjopY+7fgVld6
-         X6X7AdX7Y0ZdG3ECdBCboFnAA/XOXtvBMkSWtdNIK4EEQ+988LUer+A/dNQzB33Qbpzr
-         U06DX9SrMSi8jPGBZuQf9QYP0i65I1qUW+AL88fGzqwmvdByofbtEOp+QxL/eg+EUyM6
-         uGFag4kQTmY0N0v2j/6Ik0YfonjPH3gmkejGLie8L0B6mYhDm0G8ub10g5S8KyJN4yyL
-         WnhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Fg6pNbj6ALE21jJQou7VGOk/llHej9K+3C1jIB5kjaI=;
-        b=HDHQ40O9XyB/0bDAHNyhhyaIh+hGY8QoYz3kV/WoYjGjvbIGVyk7X80XmNrnlgwjEL
-         HaKjzULLOmPlWbuCVyAylNCo4J8lUr7fUp1ImfxkL4Em9O+knYm7YhCBjRSH2uwReplC
-         KldS+q8AP75csqg4TSo55NwD+YCPUoEsRmZ1rfHH8HMmFzf56XAR/+gm3pStmQZ7Er1G
-         ozEMpmVT9si6FLGJIW2U6pUzV68UPjpqqTR65zELBoq0MUwUfkktnzhUFAK5m/W7UjNI
-         dbj606QITbjha/hSGWajb97Tm03oJW8VCbRKUwIlfq0VmXHCDmnbw34vG0f1gSIyOFFY
-         iooA==
-X-Gm-Message-State: AOAM532Jbz1Hru3DXreqeF6C+JgdXSh/Q9uy4ouzvXunuxUWz5yBTJB6
-        253rXN1ixVCzd+m2wdFd2UlZug==
-X-Google-Smtp-Source: ABdhPJzxJ1bssrjG06M7ZqnzU+aSs+/Cyuw10gkAHVZv9CuVKhvM3uNw+Zbvn2KmqaYehwh3HQQRMg==
-X-Received: by 2002:a17:90a:e697:: with SMTP id s23mr2996501pjy.16.1603205393066;
-        Tue, 20 Oct 2020 07:49:53 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id y22sm2706794pfr.62.2020.10.20.07.49.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 07:49:52 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Anand Moon <linux.amoon@gmail.com>,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: amlogic: add missing ethernet reset ID
-In-Reply-To: <68ee4022-df9b-c36e-b828-bc93d6507473@baylibre.com>
-References: <20201020120141.298240-1-jbrunet@baylibre.com> <68ee4022-df9b-c36e-b828-bc93d6507473@baylibre.com>
-Date:   Tue, 20 Oct 2020 07:49:52 -0700
-Message-ID: <7hft69kl4f.fsf@baylibre.com>
+        id S2408418AbgJTOud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:50:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33048 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408369AbgJTOuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 10:50:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 47EE6AE5C;
+        Tue, 20 Oct 2020 14:50:31 +0000 (UTC)
+To:     Axel Rasmussen <axelrasmussen@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20201009220524.485102-1-axelrasmussen@google.com>
+ <20201009220524.485102-3-axelrasmussen@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v3 2/2] mmap_lock: add tracepoints around lock acquisition
+Message-ID: <1b9238b7-17f2-6c1e-b37e-cf65424f504b@suse.cz>
+Date:   Tue, 20 Oct 2020 16:50:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201009220524.485102-3-axelrasmussen@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neil Armstrong <narmstrong@baylibre.com> writes:
+On 10/10/20 12:05 AM, Axel Rasmussen wrote:
+> The goal of these tracepoints is to be able to debug lock contention
+> issues. This lock is acquired on most (all?) mmap / munmap / page fault
+> operations, so a multi-threaded process which does a lot of these can
+> experience significant contention.
+> 
+> We trace just before we start acquisition, when the acquisition returns
+> (whether it succeeded or not), and when the lock is released (or
+> downgraded). The events are broken out by lock type (read / write).
+> 
+> The events are also broken out by memcg path. For container-based
+> workloads, users often think of several processes in a memcg as a single
+> logical "task", so collecting statistics at this level is useful.
+> 
+> The end goal is to get latency information. This isn't directly included
+> in the trace events. Instead, users are expected to compute the time
+> between "start locking" and "acquire returned", using e.g. synthetic
+> events or BPF. The benefit we get from this is simpler code.
+> 
+> Because we use tracepoint_enabled() to decide whether or not to trace,
+> this patch has effectively no overhead unless tracepoints are enabled at
+> runtime. If tracepoints are enabled, there is a performance impact, but
+> how much depends on exactly what e.g. the BPF program does.
+> 
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-> On 20/10/2020 14:01, Jerome Brunet wrote:
->> From: Anand Moon <linux.amoon@gmail.com>
->> 
->> Add reset external reset of the ethernet mac controller
->> 
->> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
->> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Yeah I agree with this approach that follows the page ref one.
 
-[...]
+...
 
-> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+> diff --git a/mm/mmap_lock.c b/mm/mmap_lock.c
+> new file mode 100644
+> index 000000000000..b849287bd12a
+> --- /dev/null
+> +++ b/mm/mmap_lock.c
+> @@ -0,0 +1,87 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#define CREATE_TRACE_POINTS
+> +#include <trace/events/mmap_lock.h>
+> +
+> +#include <linux/mm.h>
+> +#include <linux/cgroup.h>
+> +#include <linux/memcontrol.h>
+> +#include <linux/mmap_lock.h>
+> +#include <linux/percpu.h>
+> +#include <linux/smp.h>
+> +#include <linux/trace_events.h>
+> +
+> +/*
+> + * We have to export these, as drivers use mmap_lock, and our inline functions
+> + * in the header check if the tracepoint is enabled. They can't be GPL, as e.g.
+> + * the nvidia driver is an existing caller of this code.
 
-Neil, do we need this in u-boot also?  I seem to have network issues in
-u-boot on board with external PHY running mainline u-boot.
+I don't think this argument works in the kernel community. I would just remove 
+this comment.
 
-Kevin
+> + */
+> +EXPORT_SYMBOL(__tracepoint_mmap_lock_start_locking);
+> +EXPORT_SYMBOL(__tracepoint_mmap_lock_acquire_returned);
+> +EXPORT_SYMBOL(__tracepoint_mmap_lock_released);
+
+You can use EXPORT_TRACEPOINT_SYMBOL() here.
+
+> +#ifdef CONFIG_MEMCG
+> +
+> +DEFINE_PER_CPU(char[MAX_FILTER_STR_VAL], trace_memcg_path);
+> +
+> +/*
+> + * Write the given mm_struct's memcg path to a percpu buffer, and return a
+> + * pointer to it. If the path cannot be determined, the buffer will contain the
+> + * empty string.
+> + *
+> + * Note: buffers are allocated per-cpu to avoid locking, so preemption must be
+> + * disabled by the caller before calling us, and re-enabled only after the
+> + * caller is done with the pointer.
+> + */
+> +static const char *get_mm_memcg_path(struct mm_struct *mm)
+> +{
+> +	struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
+> +
+> +	if (memcg != NULL && likely(memcg->css.cgroup != NULL)) {
+> +		char *buf = this_cpu_ptr(trace_memcg_path);
+> +
+> +		cgroup_path(memcg->css.cgroup, buf, MAX_FILTER_STR_VAL);
+> +		return buf;
+> +	}
+> +	return "";
+> +}
+> +
+> +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
+> +	do {                                                                   \
+> +		if (trace_mmap_lock_##type##_enabled()) {                      \
+
+Is this check really needed? We only got called from the functions inlined in 
+the .h file because tracepoint_enabled() was true in the first place, so this 
+seems redundant.
+
+> +			get_cpu();                                             \
+> +			trace_mmap_lock_##type(mm, get_mm_memcg_path(mm),      \
+> +					       ##__VA_ARGS__);                 \
+> +			put_cpu();                                             \
+> +		}                                                              \
+> +	} while (0)
+> +
+> +#else /* !CONFIG_MEMCG */
+> +
+> +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
+> +	trace_mmap_lock_##type(mm, "", ##__VA_ARGS__)
+> +
+> +#endif /* CONFIG_MEMCG */
+> +
+> +/*
+> + * Trace calls must be in a separate file, as otherwise there's a circular
+> + * dependency between linux/mmap_lock.h and trace/events/mmap_lock.h.
+> + */
+> +
+> +void __mmap_lock_do_trace_start_locking(struct mm_struct *mm, bool write)
+> +{
+> +	TRACE_MMAP_LOCK_EVENT(start_locking, mm, write, true);
+
+Seems wasteful to have an always-true success field here. Yeah, not reusing the 
+same event class for all three tracepoints means more code, but for tracing 
+efficiency it's worth it, IMHO.
+
+> +}
+> +EXPORT_SYMBOL(__mmap_lock_do_trace_start_locking);
+> +
+> +void __mmap_lock_do_trace_acquire_returned(struct mm_struct *mm, bool write,
+> +					   bool success)
+> +{
+> +	TRACE_MMAP_LOCK_EVENT(acquire_returned, mm, write, success);
+> +}
+> +EXPORT_SYMBOL(__mmap_lock_do_trace_acquire_returned);
+> +
+> +void __mmap_lock_do_trace_released(struct mm_struct *mm, bool write)
+> +{
+> +	TRACE_MMAP_LOCK_EVENT(released, mm, write, true);
+
+Ditto.
+
+> +}
+> +EXPORT_SYMBOL(__mmap_lock_do_trace_released);
+> 
 
