@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EF429456F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 01:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09F3294576
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 01:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410600AbgJTX1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 19:27:18 -0400
-Received: from mail-eopbgr20063.outbound.protection.outlook.com ([40.107.2.63]:5995
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404465AbgJTX1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 19:27:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QkZTUK5vr1aFRrcyvkP5OtyIb6iApgGLTi25fP1vHH11VY4uRibrk7rvc+5ej3NwYezwPwEKT5h///NQkclXz6TRiguWRcODnVEoD/nMbg3k8wQUP/w4M2vBeK+yu0QWTjQeMlhADyHw8LK/4fjSbxjzaqz0t4EKu4XWBxPV8X7Png3z++wuH60IJYy6sO31GpTnDiVb29wxPTBK0wRjFsldw/CQRnG559mIrbTlV9e1BUZcHrM+husH6B3I1XC8T/sIMnSHKCNVIfl2uglTUzNQXJMc+5z4npOFlEA9kA3oobD/l+dl+1aIUVtGAPjPjCpDMA15tFw0UgD4OI2inQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=divFz0G2ajVCfUa0qUewQq/Tu144gf1HwCjBmwAxSXM=;
- b=GnVR78yC+f/hempjsFZXKweWFcmbYCepQAZ6SVadXfCwqK4C881SVaYNqW6y0un0UWhl9+y1r3s3TbbSZwXxDrdGYNQeEm6sli4w55mfqrW16mE+rRhfAz8a7A3WxjI3mE4uFh/HUqloiNEEz1gK7jNGTzGfRUFmywMgej8SYlzZtuS3y6VB2viMzDoV1HC+zi+bBW6aq7Hxc/dQW9/rCkcLKf2miH7IOmZLE+KXYI0nmUJNsZ2GjyDBM5VAm53yHnZA6VbkYW+G3fn/wrC8fpNWUuG0qSGPylgDx6uNgCzzYZ1gSKIDPlhNDUGO3/dRZp9MMsmcOYvIzC7Ua4qcOQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=divFz0G2ajVCfUa0qUewQq/Tu144gf1HwCjBmwAxSXM=;
- b=pW0ETnBclm06u/KeaitdWdLn+Enq4BFVsVM3z/bRLO1kLO8zGnYbdTIxCW95XzbRDdCGht6JgSx8b3+24WhAicFyGpYJAIgSMT8nOEeaSs6WvUdBZagdOUy/saPFDrt72FPQHvssOJoObPfHjLN5n1iEqYYaLE1GmWEAg666So4=
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
- by VI1PR04MB6271.eurprd04.prod.outlook.com (2603:10a6:803:f7::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Tue, 20 Oct
- 2020 23:27:14 +0000
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3477.029; Tue, 20 Oct 2020
- 23:27:14 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
-        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "vishal@chelsio.com" <vishal@chelsio.com>,
-        "saeedm@mellanox.com" <saeedm@mellanox.com>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandru Marginean <alexandru.marginean@nxp.com>,
-        Leo Li <leoyang.li@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>
-Subject: Re: [PATCH v1 net-next 2/5] net: mscc: ocelot: set vcap IS2 chain to
- goto PSFP chain
-Thread-Topic: [PATCH v1 net-next 2/5] net: mscc: ocelot: set vcap IS2 chain to
- goto PSFP chain
-Thread-Index: AQHWprMxGi9VamOEPU28heaWaxH4LKmhI62A
-Date:   Tue, 20 Oct 2020 23:27:14 +0000
-Message-ID: <20201020232713.vyu3afhnhicf6xn2@skbuf>
-References: <20201020072321.36921-1-xiaoliang.yang_1@nxp.com>
- <20201020072321.36921-3-xiaoliang.yang_1@nxp.com>
-In-Reply-To: <20201020072321.36921-3-xiaoliang.yang_1@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.26.174.215]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: bca08593-e796-4a42-9b33-08d8754fad38
-x-ms-traffictypediagnostic: VI1PR04MB6271:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB62718272C018F303F51D5FC5E01F0@VI1PR04MB6271.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ByH6EAzbZ3joSTxHAwQctXpww434UfmX3yZ9S6akoJfM2AJKJ7pL8nfbZSB6aw7+mQeEcvj5NJzVId/7CoqYohgo/nvIyEC41nndQBeGQYlNtKOfdxJdgbC/OiqnPAUnNVQ/oAjG16IXSOKGuvFu6CpkZG7B+M1FoTQOwBjshWlYI5Db21V3D6NUzbJqNEwvHYh2iLULHzjw7UomAE6ruIQ7UBHpsIGdn2l6Vxo7ewHWfzvxpFqkY0agunH3GhMUsDZaBDLytBykSnbbh7paxjK2HbERq+zlrlNYDlsuxryvKB9Ge4TXz+YWVrqtS6L0
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(136003)(39860400002)(346002)(396003)(376002)(6636002)(71200400001)(66946007)(66556008)(91956017)(2906002)(64756008)(6512007)(9686003)(8676002)(66446008)(8936002)(66476007)(6486002)(44832011)(7416002)(76116006)(86362001)(33716001)(83380400001)(5660300002)(54906003)(6862004)(186003)(26005)(6506007)(4326008)(478600001)(1076003)(316002)(4744005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: RitzU51SFH61ZsGNTkg9/M3ALmNtb0zQkMoyfZA/8WES0z2o2A9nPGkU9JfDBt60jC8FV3w4bhqNYolIxLv3qeaP4QTEhLtjZCpy+OcDw4t1kcCEsmiqtQ89Dta8M76ru9KdiIWKfCR/zIquLOGSp9qjJ5IioID7ZWRzUkYusksRdxBdbNFwm+Cw8AmfljxtblgumclNkoQyCvcWDxJdZ41/kdfS+2wCkM8BhoqoM2JXYnW6Kkf9PKFH1ajkSXJowYXL6l/ZidUPz4ZpYiLBG6xLnoQuCITMYq5IIHHo4KTBq8ksfL6jXH8ifG8XoAOPo0YefLgcsObSrIB7DDw87M9LbeIoYlY+HDugK5Mz4tUU5EiqxNIiVrC8TFfFuyKNf8n23dglyUUev3OwbOi+61OZ/XLfqqYZOtnUN7F5g1uD4U6Wd5tQEZLLyX++RXyoRaSbTKigzm/xOlPA0Mja2QWu2mQ+pZ9H2KlsREIk5fIoAPsk0m0s6c4WCSo2oMT1A2ZSxjm99LMjuoJeYDcnSqHBrF1NGHcBEYAxMI6YTXHJiPkS5SzqaLRQMSxyzf0/FDh8le1coo68AqPRSkm2pmQ2EzhiL/Tl2ryyA5niRvTE4cdswLlUJnV+8u28E/wIMlSN1OsmjWFQA2iV3TzfXw==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D7B2A85FCE3D2043BB69004FEE54A960@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bca08593-e796-4a42-9b33-08d8754fad38
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2020 23:27:14.0910
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tQYrr5OhAxduuupjONyxrjOv46FTe9riK58gBPWJzv2tOcZW7q5p9LX3bkAfVmKD5exQDQSxzt5BDfS5Etfajg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6271
+        id S2410601AbgJTXcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 19:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403818AbgJTXcs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 19:32:48 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99D7C0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 16:32:46 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id b12so260905qte.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 16:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=E9uxO3CjxUS2kC6NcJgLaAvLCBGXBzIc+1gLUHWGOek=;
+        b=LB2sZ/NbYi//qqW3C37gTvqG+ngqGM3cMsQL7BgMqthFE+/XGYKIwm9VoEns+T6E4W
+         XGddkM0BpRHry/DrBJpP7b/X9dx9M2VzQj/uKP5G1wN4Z85ffdRT8qQd1GBy8oBqKUog
+         IOy38cWVyhi9AGd1IqgWwBe2RJUNbyrIwSPuRQN2shBN+lPlQnXQGr6zSka+9BtzLfec
+         lROvUCuILrrCnXyf0naC8eozoMJdmir1bljgQMxOtCICZj/UGwJoP0dAWxGkyZgsjcc9
+         udLNzpyGCuYkp1UTfnIpt+pThW5mT2DVzz5dEzUHrwOVZdGPm1TV5YScWKNSzoFw0UQz
+         gGUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=E9uxO3CjxUS2kC6NcJgLaAvLCBGXBzIc+1gLUHWGOek=;
+        b=CI/tfTqTtebfruNQkihExfBvsKUK+foNTxL2BiFrUlG8EqPvE7tZ+9W6rGHicNdTrY
+         egCwVjpD7MvJFRAhwEBfwQIHWUAoIb315iKPz53KT1zrDCL2CoFTTUijH7ejQoLQ6tyq
+         jzHYz2k88nVBOgVYGUBlpjPiGKZCtPrVk9Kc4/h05nA2rTIgKmct7Vu3O/Et2z2+jB+0
+         FiCPXdQ3IsKm6lbyrpk7uCAkvL8hIWxkFM1eublmztfY4z913zQxEE8z1niG0ZW42mNO
+         vciVCdDbtcWADYLcS38w9PQmoBW3SjCOy0WKZqo0P0W+z4L+zgVNK41ou9uu/AxX7URw
+         A1kw==
+X-Gm-Message-State: AOAM532+AfnYTXpQoSW0zLvXpD5x6c+M/xfs5SFoTH6qAnGPrkV9K/+f
+        2NGF+2nETcq5TVz8/fSWBaGiFLd5PUp39A==
+X-Google-Smtp-Source: ABdhPJws7EK3mtUONqq0sUL0LOCu+Y4SMSgouYWHDftgo5x/ed8PQNzB12o6a7vIUTNBQifWcHQJbcQfkDtOFw==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
+ (user=dlatypov job=sendgmr) by 2002:a05:6214:184c:: with SMTP id
+ d12mr266418qvy.11.1603236765716; Tue, 20 Oct 2020 16:32:45 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 16:32:19 -0700
+Message-Id: <20201020233219.4146059-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+Subject: [PATCH] kunit: tool: fix extra trailing \n in parsed test output
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 03:23:18PM +0800, Xiaoliang Yang wrote:
-> VSC9959 supports Per-Stream Filtering and Policing(PSFP), which is
-> processing after VCAP blocks. We set this block on chain 30000 and
-> set vcap IS2 chain to goto PSFP chain if hardware support.
->=20
-> An example set is:
-> 	> tc filter add dev swp0 ingress chain 21000 flower
-> 		skip_sw action goto chain 30000
->=20
-> Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-> ---
+For simplcity, strip all trailing whitespace from parsed output.
+I imagine no one is printing out meaningful trailing whitespace via
+KUNIT_FAIL() or similar, and that if they are, they really shouldn't.
 
-I will defer to Microchip people whether 30000 is a good chain number
-for TSN offloads. Do you have other ingress VCAPs that you would like to
-number 30000?=
+At some point, the lines from `isolate_kunit_output()` started having
+trailing \n, which results in artifacty output like this:
+
+$ ./tools/testing/kunit/kunit.py run
+[16:16:46] [FAILED] example_simple_test
+[16:16:46]     # example_simple_test: EXPECTATION FAILED at lib/kunit/kunit-example-test.c:29
+
+[16:16:46]     Expected 1 + 1 == 3, but
+
+[16:16:46]         1 + 1 == 2
+
+[16:16:46]         3 == 3
+
+[16:16:46]     not ok 1 - example_simple_test
+
+[16:16:46]
+
+After this change:
+[16:16:46]     # example_simple_test: EXPECTATION FAILED at lib/kunit/kunit-example-test.c:29
+[16:16:46]     Expected 1 + 1 == 3, but
+[16:16:46]         1 + 1 == 2
+[16:16:46]         3 == 3
+[16:16:46]     not ok 1 - example_simple_test
+[16:16:46]
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ tools/testing/kunit/kunit_parser.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 8019e3dd4c32..e68b1c66a73f 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -342,7 +342,8 @@ def parse_run_tests(kernel_output) -> TestResult:
+ 	total_tests = 0
+ 	failed_tests = 0
+ 	crashed_tests = 0
+-	test_result = parse_test_result(list(isolate_kunit_output(kernel_output)))
++	test_result = parse_test_result(list(
++            l.rstrip() for l in isolate_kunit_output(kernel_output)))
+ 	if test_result.status == TestStatus.NO_TESTS:
+ 		print(red('[ERROR] ') + yellow('no tests run!'))
+ 	elif test_result.status == TestStatus.FAILURE_TO_PARSE_TESTS:
+
+base-commit: c4d6fe7311762f2e03b3c27ad38df7c40c80cc93
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
+
