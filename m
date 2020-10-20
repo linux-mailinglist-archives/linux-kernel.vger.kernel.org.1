@@ -2,68 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB57293878
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C8B29387F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404056AbgJTJsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:48:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:48786 "EHLO foss.arm.com"
+        id S2404451AbgJTJwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:52:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:48822 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404045AbgJTJsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:48:46 -0400
+        id S1731041AbgJTJwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 05:52:12 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 231BF101E;
-        Tue, 20 Oct 2020 02:48:46 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DDB713F66E;
-        Tue, 20 Oct 2020 02:48:44 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 10:48:39 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     "Z.q. Hou" <zhiqiang.hou@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Michael Walle <michael@walle.cc>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
- dw_child_pcie_ops
-Message-ID: <20201020094839.GA21935@e121166-lin.cambridge.arm.com>
-References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
- <CAL_JsqJwgNUpWFTq2YWowDUigndSOB4rUcVm0a_U=FEpEmk94Q@mail.gmail.com>
- <HE1PR0402MB3371F8191538F47E8249F048843F0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <CAL_JsqLdQY_DqpduaTv4hMDM_-cvZ_+s8W+HdOuZVVYjTO4yxw@mail.gmail.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47554101E;
+        Tue, 20 Oct 2020 02:52:11 -0700 (PDT)
+Received: from bogus (unknown [10.57.22.167])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3AB383F66E;
+        Tue, 20 Oct 2020 02:52:08 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 10:52:05 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
+        georgi.djakov@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
+ -EPROBE_DEFER
+Message-ID: <20201020095205.GB10604@bogus>
+References: <20201019045827.kl6qnx6gidhzjkrs@vireshk-i7>
+ <20201019091723.GA12087@bogus>
+ <20201019092411.b3znjxebay3puq2j@vireshk-i7>
+ <20201019101241.GB12908@bogus>
+ <20201019103535.ksp5ackoihamam4g@vireshk-i7>
+ <20201019141007.GA6358@bogus>
+ <20201020050557.a3b2nk33eeyxnvl2@vireshk-i7>
+ <20201020055431.ln7d57x76f7z6j5k@vireshk-i7>
+ <20201020093745.GA10604@bogus>
+ <20201020094134.natqnyp4zpfw3p5p@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqLdQY_DqpduaTv4hMDM_-cvZ_+s8W+HdOuZVVYjTO4yxw@mail.gmail.com>
+In-Reply-To: <20201020094134.natqnyp4zpfw3p5p@vireshk-i7>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 09:27:40AM -0600, Rob Herring wrote:
-
-[...]
-
-> > > Maybe a link down just never happens once up, but if so, then we only need
-> > > to check it once and fail probe.
-> >
-> > Many customers connect the FPGA Endpoint, which may establish PCIe link
-> > after the PCIe enumeration and then rescan the PCIe bus, so I think it should
-> > not exit the probe of root port even if there is not link up during enumeration.
+On Tue, Oct 20, 2020 at 03:11:34PM +0530, Viresh Kumar wrote:
+> On 20-10-20, 10:37, Sudeep Holla wrote:
+> > On Tue, Oct 20, 2020 at 11:24:32AM +0530, Viresh Kumar wrote:
+> > > On 20-10-20, 10:35, Viresh Kumar wrote:
+> > > > On 19-10-20, 15:10, Sudeep Holla wrote:
+> > > > > On Mon, Oct 19, 2020 at 04:05:35PM +0530, Viresh Kumar wrote:
+> > > > > > On 19-10-20, 11:12, Sudeep Holla wrote:
+> > > > > > > Yes it has clocks property but used by SCMI(for CPUFreq/DevFreq) and not
+> > > > > > > by any clock provider driver. E.g. the issue you will see if "clocks"
+> > > > > > > property is used instead of "qcom,freq-domain" on Qcom parts.
+> > > > > > 
+> > > > > > Okay, I understand. But what I still don't understand is why it fails
+> > > > > > for you. You have a clocks property in DT for the CPU, the OPP core
+> > > > > > tries to get it and will get deferred-probed, which will try probing
+> > > > > > at a later point of time and it shall work then. Isn't it ?
+> > > > > >
+> > > > > 
+> > > > > Nope unfortunately. We don't have clock provider, so clk_get will
+> > > > > never succeed and always return -EPROBE_DEFER.
+> > > > 
+> > > > Now this is really bad, you have a fake clocks property, how is the
+> > > > OPP core supposed to know it ? Damn.
+> > > 
+> > > What about instead of fixing the OPP core, which really is doing the
+> > > right thing, we fix your driver (as you can't fix the DT) and add a
+> > > dummy CPU clk to make it all work ?
+> > >
+> > 
+> > I really would avoid that. I would rather change the binding as there is
+> > no single official users of that binding in the upstream tree.
 > 
-> That's a good reason. I want to unify the behavior here as it varies
-> per platform currently and wasn't sure which way to go.
+> But how will you solve backward compatibility thing then ?
+> 
 
-We don't need to fail probe - just skip enumeration. Is there an IRQ
-event associated with link coming up ? Scanning the bus can be done
-upon link-up IRQ.
+I am just betting on the fact that no users upstream means no backward
+compatibility needed. If someone raises issue we need to add backward
+compatibility with dummy clk as you suggested.
 
-For platforms that forward the link down as an SError this still does
-not solve the problem (if the link goes down unexpectedly) but I
-question their design in the first place, this patch does not fix their
-behaviour regardless.
-
-Lorenzo
+-- 
+Regards,
+Sudeep
