@@ -2,76 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB932943F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA452943F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409549AbgJTUhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 16:37:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:55930 "EHLO foss.arm.com"
+        id S2409568AbgJTUhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 16:37:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409539AbgJTUhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:37:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB7CCD6E;
-        Tue, 20 Oct 2020 13:37:18 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D66F93F719;
-        Tue, 20 Oct 2020 13:37:17 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: [PATCH 2/2] firmware: arm_scmi: Move away from clock devicetree bindings
-Date:   Tue, 20 Oct 2020 21:37:10 +0100
-Message-Id: <20201020203710.10100-2-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201020203710.10100-1-sudeep.holla@arm.com>
-References: <20201020203710.10100-1-sudeep.holla@arm.com>
+        id S2409556AbgJTUhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 16:37:38 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8816F2224A;
+        Tue, 20 Oct 2020 20:37:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603226258;
+        bh=XBAXsJHUIh/+mN7SPuRDyEtONViRC+xODcGlgkYavhs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d7vR50K2xNLEXigSR6Frzb+C625m+1+FGiXuZmFRBMN1q5EhhXx2s+itZpOJfMBKy
+         tmKTjd79POBrhA9xwn8f46h67fIolwcRsXuLTfMVg0lNZ4gy7CFIBMLJfdPzmlCYq1
+         ypCJg32++eRsqgayiVnCeW9O1uvU6ynExv+5TcYU=
+Date:   Tue, 20 Oct 2020 13:37:32 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, allan.nielsen@microchip.com,
+        joergen.andreasen@microchip.com, UNGLinuxDriver@microchip.com,
+        vinicius.gomes@intel.com, michael.chan@broadcom.com,
+        vishal@chelsio.com, saeedm@mellanox.com, jiri@mellanox.com,
+        idosch@mellanox.com, alexandre.belloni@bootlin.com, po.liu@nxp.com,
+        claudiu.manoil@nxp.com, alexandru.marginean@nxp.com,
+        vladimir.oltean@nxp.com, leoyang.li@nxp.com, mingkai.hu@nxp.com
+Subject: Re: [PATCH v1 net-next 0/5] net: dsa: felix: psfp support on
+Message-ID: <20201020133732.035d8df4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201020072321.36921-1-xiaoliang.yang_1@nxp.com>
+References: <20201020072321.36921-1-xiaoliang.yang_1@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
--EPROBE_DEFER") handles -EPROBE_DEFER for the clock/interconnects within
-_allocate_opp_table() which is called from dev_pm_opp_add and it
-now propagates the error back to the caller.
+On Tue, 20 Oct 2020 15:23:16 +0800 Xiaoliang Yang wrote:
+> This patch series add gate and police action for tc flower offload to
+> support Per-Stream Filtering and Policing(PSFP), which is defined in
+> IEEE802.1Qci.
+> 
+> There is also a TC flower offload to set up VCAPs on ocelot driver.
+> Because VCAPs use chain 10000-21255, we set chain 30000 to offload to
+> gate and police action to run PSFP module.
 
-This breaks SCMI performance domains as we will never succeed to add any
-OPPs. A quick fix would be to register dummy clocks which is completely
-ugly and bigger fix which may break with some other change in future.
+We have already sent a pull request for 5.10 and therefore net-next 
+is closed for new drivers, features, and code refactoring.
 
-It is better to add separate binding for the same and use it. A separate
-SCMI performance domain binding is introduced and let us use it here.
+Please repost when net-next reopens after 5.10-rc1 is cut.
 
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/firmware/arm_scmi/perf.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+(http://vger.kernel.org/~davem/net-next.html will not be up to date 
+ this time around, sorry about that).
 
-diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
-index 3e1e87012c95..e2a47b3eead1 100644
---- a/drivers/firmware/arm_scmi/perf.c
-+++ b/drivers/firmware/arm_scmi/perf.c
-@@ -629,13 +629,13 @@ static void scmi_perf_domain_init_fc(const struct scmi_handle *handle,
- /* Device specific ops */
- static int scmi_dev_domain_id(struct device *dev)
- {
--	struct of_phandle_args clkspec;
-+	struct of_phandle_args spec;
-
--	if (of_parse_phandle_with_args(dev->of_node, "clocks", "#clock-cells",
--				       0, &clkspec))
-+	if (of_parse_phandle_with_args(dev->of_node, "arm,scmi-perf-domain",
-+				       "#perf-domain-cells", 0, &spec))
- 		return -EINVAL;
-
--	return clkspec.args[0];
-+	return spec.args[0];
- }
-
- static int scmi_dvfs_device_opps_add(const struct scmi_handle *handle,
---
-2.17.1
-
+RFC patches sent for review only are obviously welcome at any time.
