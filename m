@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7252943EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831622943F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409480AbgJTUde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 16:33:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47494 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731214AbgJTUde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:33:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2A927ACDB;
-        Tue, 20 Oct 2020 20:33:33 +0000 (UTC)
-Date:   Tue, 20 Oct 2020 21:33:31 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] mm: don't wake kswapd prematurely when watermark
- boosting is disabled
-Message-ID: <20201020203331.GB32041@suse.de>
-References: <20201020175833.397286-1-hannes@cmpxchg.org>
+        id S2409528AbgJTUfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 16:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392293AbgJTUfN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 16:35:13 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CF6C0613CE;
+        Tue, 20 Oct 2020 13:35:13 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CG53L0yM5z9s0b;
+        Wed, 21 Oct 2020 07:35:10 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1603226110;
+        bh=/BKLmz8KuUCichDKSvDy9oaVl59rQgUgtVfs6NSGaOI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Be5FAUpYfmjkmr0V489hbYSn1wJ/y7phukDPRhirB38fGX+VSAd0W81fs/VSG+noP
+         ymghrQn3b38oMGVR67FAFmO1Nusg7F6l8KYwcnI3zsXvotvYfqQOIp4fQbOBu6a0e0
+         hd7+m0r38bechJNyhBGIq+517uXLqvQsQtZ5G+QUovw7droZ5wEnqJl+P/04y9NvWy
+         qsGRy/BbN4owga5zh+m5Gf1I2CIpj9h7llweRx8byZQXnbs82nYC1XTJAExQribl1d
+         72S7hlktEIQbG6ywPcRWdqNZ0un08mk6D91YnpjSTw2UrOqZjO5NPtQ+oTFuADbyEc
+         N5B3eekmr+2kQ==
+Date:   Wed, 21 Oct 2020 07:35:09 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the gfs2 tree
+Message-ID: <20201021073509.167428ef@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201020175833.397286-1-hannes@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/t867eCqFdgx4gJiwFwet8_X";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 01:58:33PM -0400, Johannes Weiner wrote:
-> On 2-node NUMA hosts we see bursts of kswapd reclaim and subsequent
-> pressure spikes and stalls from cache refaults while there is plenty
-> of free memory in the system.
-> 
-> Usually, kswapd is woken up when all eligible nodes in an allocation
-> are full. But the code related to watermark boosting can wake kswapd
-> on one full node while the other one is mostly empty. This may be
-> justified to fight fragmentation, but is currently unconditionally
-> done whether watermark boosting is occurring or not.
-> 
-> In our case, many of our workloads' throughput scales with available
-> memory, and pure utilization is a more tangible concern than trends
-> around longer-term fragmentation. As a result we generally disable
-> watermark boosting.
-> 
-> Wake kswapd only woken when watermark boosting is requested.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+--Sig_/t867eCqFdgx4gJiwFwet8_X
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This makes sense to the extent that I would support adding
+Hi all,
 
-Fixes: 1c30844d2dfe ("mm: reclaim small amounts of memory when an external fragmentation event occurs")
+Commit
 
-With or without that;
+  955584707816 ("gfs2: Fix comments to glock_hash_walk")
 
-Acked-by: Mel Gorman <mgorman@suse.de>
+is missing a Signed-off-by from its committer.
 
--- 
-Mel Gorman
-SUSE Labs
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/t867eCqFdgx4gJiwFwet8_X
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+PSf0ACgkQAVBC80lX
+0GxLiAf/Ug3cald03R9c8KW6ZExutxvnob03iv/xtSHWp6JYPC1BCEkltJtL+DKg
+OnRDATzeeyFwSCTw1qxV+GvZvnwwOxcEksETSo/OZz1yyQHqN+n2xVaDKPxBzaQV
+nLAcVwvVumuwQfTsBbDAbWDeeFEbyX9cgMzvEB/aW28VeSMVyriSeLySZjmq69Ez
+s5mKIosz/o67zcAL81oD0yCW+8OP+KBpZl7FSE/8n3RRd67u2gxqXnhObS9paawU
+fvYgjwC+y+kyF+ZGxN4fQ1XE0INCYyrPjuHG4QbNKMyma0Zg7hgEV9+OGvSjg3RJ
+W/06AgxvwhM808t3AFrI/G9MMPN0cA==
+=A4I8
+-----END PGP SIGNATURE-----
+
+--Sig_/t867eCqFdgx4gJiwFwet8_X--
