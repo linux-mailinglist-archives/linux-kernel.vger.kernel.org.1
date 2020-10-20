@@ -2,97 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89492933C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 06:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06EA2933D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 06:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725926AbgJTEDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 00:03:17 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17794 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJTEDR (ORCPT
+        id S2391476AbgJTEOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 00:14:51 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:58649 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729864AbgJTEOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 00:03:17 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8e61280000>; Mon, 19 Oct 2020 21:01:44 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
- 2020 04:03:16 +0000
-Received: from skomatineni-linux.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 20 Oct 2020 04:03:16 +0000
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <digetx@gmail.com>, <skomatineni@nvidia.com>
-CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>
-Subject: [PATCH v1] i2c: tegra: Fix i2c_writesl() to use writel() instead of writesl()
-Date:   Mon, 19 Oct 2020 21:03:54 -0700
-Message-ID: <1603166634-13639-1-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-X-NVConfidentiality: public
+        Tue, 20 Oct 2020 00:14:51 -0400
+X-UUID: 55dbc959f2024547948100cc806277d6-20201020
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=xdhsTKWvOT25dyntXEsCjiRj2p554GKQn1cVdp+H27Y=;
+        b=M9/QArr/Qy4voORa+X5T2jcMczENP1nHNVcuqRkfPQ06BzNvRnCSDesjnGFNVqUYeL0At9+SAba58B5cF1NDJ2C90xUGMISUGiComMZjQJVjtDN4DyHQDCuuDYb8T92mzOC9yA+4rfZEnr3Ytz8Dq19N0S1XNidVvXw5G1BTK0o=;
+X-UUID: 55dbc959f2024547948100cc806277d6-20201020
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 669263551; Tue, 20 Oct 2020 12:04:28 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 20 Oct 2020 12:04:26 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 20 Oct 2020 12:04:26 +0800
+Message-ID: <1603166666.31677.1.camel@mtksdaap41>
+Subject: Re: [PATCH v4 1/2] dt-bindings: spmi: document binding for the
+ Mediatek SPMI controller
+From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Stephen Boyd <sboyd@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>
+Date:   Tue, 20 Oct 2020 12:04:26 +0800
+In-Reply-To: <20201019195454.GB3499610@bogus>
+References: <1602864634-23489-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <1602864634-23489-2-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <20201019195454.GB3499610@bogus>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603166504; bh=k0OpCwKOIS1mzOf9rDffepCbD0hVHg+ZBxopLq0hOT0=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
-         MIME-Version:Content-Type;
-        b=msQieKyHswBsMpmzAhUyhwrV5hazjv2iGfCMdcVaXmfLWmKaAFqarqmmRaHim6pWs
-         9X94Mx2vHymB0IfZcIvOAoIAp76+PFnbktb0uOcUEwCSSELvoZj2u6FgHxxAsLGENl
-         dXQhXIKj6oLi3VDiwqWbku/9nms2fcrr6WSaNla8EuAHTF/EClR+hfeEOeuXsyxrbY
-         u/mdUaEMed9caeh59PuuTrbiK5AjIp/0hZs/7bXw+D0ILTTtvB1DEijE+4tjJ2i8Si
-         RrKLbzi5FDhy07SNMzFqjY9xGNkBOrVaXTwClJVp2hi/7jjq9XV/PFaTPbdDVMavJY
-         sOO46WV/ufKOg==
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VI I2C don't have DMA support and uses PIO mode all the time.
-
-Current driver uses writesl() to fill TX FIFO based on available
-empty slots and with this seeing strange silent hang during any I2C
-register access after filling TX FIFO with 8 words.
-
-Using writel() followed by i2c_readl() in a loop to write all words
-to TX FIFO instead of using writesl() helps for large transfers in
-PIO mode.
-
-So, this patch updates i2c_writesl() API to use writel() in a loop
-instead of writesl().
-
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
----
- drivers/i2c/busses/i2c-tegra.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
-index 6f08c0c..274bf3a 100644
---- a/drivers/i2c/busses/i2c-tegra.c
-+++ b/drivers/i2c/busses/i2c-tegra.c
-@@ -333,10 +333,13 @@ static u32 i2c_readl(struct tegra_i2c_dev *i2c_dev, unsigned int reg)
- 	return readl_relaxed(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
- }
- 
--static void i2c_writesl(struct tegra_i2c_dev *i2c_dev, void *data,
-+static void i2c_writesl(struct tegra_i2c_dev *i2c_dev, u32 *data,
- 			unsigned int reg, unsigned int len)
- {
--	writesl(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg), data, len);
-+	while (len--) {
-+		writel(*data++, i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
-+		i2c_readl(i2c_dev, I2C_INT_STATUS);
-+	}
- }
- 
- static void i2c_readsl(struct tegra_i2c_dev *i2c_dev, void *data,
-@@ -811,7 +814,7 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_dev *i2c_dev)
- 		i2c_dev->msg_buf_remaining = buf_remaining;
- 		i2c_dev->msg_buf = buf + words_to_transfer * BYTES_PER_FIFO_WORD;
- 
--		i2c_writesl(i2c_dev, buf, I2C_TX_FIFO, words_to_transfer);
-+		i2c_writesl(i2c_dev, (u32 *)buf, I2C_TX_FIFO, words_to_transfer);
- 
- 		buf += words_to_transfer * BYTES_PER_FIFO_WORD;
- 	}
--- 
-2.7.4
+SGksDQoNCk9uIE1vbiwgMjAyMC0xMC0xOSBhdCAxNDo1NCAtMDUwMCwgUm9iIEhlcnJpbmcgd3Jv
+dGU6DQo+IE9uIFNhdCwgT2N0IDE3LCAyMDIwIGF0IDEyOjEwOjMzQU0gKzA4MDAsIEhzaW4tSHNp
+dW5nIFdhbmcgd3JvdGU6DQo+ID4gVGhpcyBhZGRzIGRvY3VtZW50YXRpb24gZm9yIHRoZSBTUE1J
+IGNvbnRyb2xsZXIgZm91bmQgb24gTWVkaWF0ZWsgU29Dcy4NCj4gPiANCj4gPiBTaWduZWQtb2Zm
+LWJ5OiBIc2luLUhzaXVuZyBXYW5nIDxoc2luLWhzaXVuZy53YW5nQG1lZGlhdGVrLmNvbT4NCj4g
+PiAtLS0NCj4gDQo+IElmIHlvdSBoYXZlIGEgZGVwZW5kZW5jeSBzdWNoIGFzIHRoZSBpbmNsdWRl
+LCBwbGVhc2Ugbm90ZSBpdCBoZXJlLg0KPiANClNvcnJ5LCBJIGRvbid0IGFkZCB0aGUgbmVjZXNz
+YXJ5IHBhdGNoc2V0WzFdIGludG8gdGhlIGNvbW1pdCBtZXNzYWdlLg0KSSB3aWxsIHVwZGF0ZSBp
+dCBpbiB0aGUgbmV4dCBwYXRjaC4NCg0KWzFdDQpodHRwczovL3BhdGNod29yay5rZXJuZWwub3Jn
+L3Byb2plY3QvbGludXgtbWVkaWF0ZWsvbGlzdC8/c2VyaWVzPTM0MjU5Mw0KDQo+ID4gIC4uLi9i
+aW5kaW5ncy9zcG1pL210ayxzcG1pLW10ay1wbWlmLnlhbWwgICAgICB8IDcwICsrKysrKysrKysr
+KysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDcwIGluc2VydGlvbnMoKykNCj4gPiAgY3Jl
+YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcG1pL210
+ayxzcG1pLW10ay1wbWlmLnlhbWwNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwbWkvbXRrLHNwbWktbXRrLXBtaWYueWFtbCBiL0RvY3Vt
+ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcG1pL210ayxzcG1pLW10ay1wbWlmLnlhbWwN
+Cj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uOTk0NTIw
+MGEzNWIzDQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9zcG1pL210ayxzcG1pLW10ay1wbWlmLnlhbWwNCj4gPiBAQCAtMCwwICsx
+LDcwIEBADQo+ID4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wIE9SIEJTRC0y
+LUNsYXVzZSkNCj4gPiArJVlBTUwgMS4yDQo+ID4gKy0tLQ0KPiA+ICskaWQ6IGh0dHA6Ly9kZXZp
+Y2V0cmVlLm9yZy9zY2hlbWFzL3NwbWkvbXRrLHNwbWktbXRrLXBtaWYueWFtbCMNCj4gPiArJHNj
+aGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjDQo+ID4g
+Kw0KPiA+ICt0aXRsZTogTWVkaWF0ZWsgU1BNSSBDb250cm9sbGVyIERldmljZSBUcmVlIEJpbmRp
+bmdzDQo+ID4gKw0KPiA+ICttYWludGFpbmVyczoNCj4gPiArICAtIEhzaW4tSHNpdW5nIFdhbmcg
+PGhzaW4taHNpdW5nLndhbmdAbWVkaWF0ZWsuY29tPg0KPiA+ICsNCj4gPiArZGVzY3JpcHRpb246
+IHwrDQo+ID4gKyAgT24gTWVkaWFUZWsgU29DcyB0aGUgUE1JQyBpcyBjb25uZWN0ZWQgdmlhIFNQ
+TUkgYW5kIHRoZSBjb250cm9sbGVyIGFsbG93cw0KPiA+ICsgIGZvciBtdWx0aXBsZSBTb0NzIHRv
+IGNvbnRyb2wgYSBzaW5nbGUgU1BNSSBtYXN0ZXIuDQo+IA0KPiBOZWVkIGEgJHJlZiB0byBzcG1p
+LnlhbWwuDQo+IA0KVGhhbmtzLCBJIHdpbGwgdXBkYXRlIGl0IGluIHRoZSBuZXh0IHBhdGNoLg0K
+PiA+ICsNCj4gPiArcHJvcGVydGllczoNCj4gPiArICBjb21wYXRpYmxlOg0KPiA+ICsgICAgY29u
+c3Q6IG1lZGlhdGVrLG10Njg3My1zcG1pDQo+ID4gKw0KPiA+ICsgIHJlZzoNCj4gPiArICAgIG1p
+bkl0ZW1zOiAyDQo+ID4gKyAgICBtYXhJdGVtczogMg0KPiA+ICsNCj4gPiArICByZWctbmFtZXM6
+DQo+ID4gKyAgICBpdGVtczoNCj4gPiArICAgICAgLSBjb25zdDogInBtaWYiDQo+ID4gKyAgICAg
+IC0gY29uc3Q6ICJzcG1pbXN0Ig0KPiANCj4gRG9uJ3QgbmVlZCBxdW90ZXMNCj4gDQpUaGFua3Ms
+IEkgd2lsbCB1cGRhdGUgaXQgaW4gdGhlIG5leHQgcGF0Y2guDQo+ID4gKw0KPiA+ICsgIGNsb2Nr
+czoNCj4gPiArICAgIG1pbkl0ZW1zOiAzDQo+ID4gKyAgICBtYXhJdGVtczogMw0KPiA+ICsNCj4g
+PiArICBjbG9jay1uYW1lczoNCj4gPiArICAgIGl0ZW1zOg0KPiA+ICsgICAgICAtIGNvbnN0OiAi
+cG1pZl9zeXNfY2siDQo+ID4gKyAgICAgIC0gY29uc3Q6ICJwbWlmX3Rtcl9jayINCj4gPiArICAg
+ICAgLSBjb25zdDogInNwbWltc3RfY2xrX211eCINCj4gPiArDQo+ID4gKyAgYXNzaWduZWQtY2xv
+Y2tzOg0KPiA+ICsgICAgbWF4SXRlbXM6IDENCj4gPiArDQo+ID4gKyAgYXNzaWduZWQtY2xvY2st
+cGFyZW50czoNCj4gPiArICAgIG1heEl0ZW1zOiAxDQo+ID4gKw0KPiA+ICtyZXF1aXJlZDoNCj4g
+PiArICAtIGNvbXBhdGlibGUNCj4gPiArICAtIHJlZw0KPiA+ICsgIC0gcmVnLW5hbWVzDQo+ID4g
+KyAgLSBjbG9ja3MNCj4gPiArICAtIGNsb2NrLW5hbWVzDQo+IA0KPiB1bmV2YWx1YXRlZFByb3Bl
+cnRpZXM6IGZhbHNlDQo+IA0KVGhhbmtzLCBJIHdpbGwgdXBkYXRlIGl0IGluIHRoZSBuZXh0IHBh
+dGNoLg0KPiA+ICsNCj4gPiArZXhhbXBsZXM6DQo+ID4gKyAgLSB8DQo+ID4gKyAgICAjaW5jbHVk
+ZSA8ZHQtYmluZGluZ3MvY2xvY2svbXQ4MTkyLWNsay5oPg0KPiA+ICsNCj4gPiArICAgIHNwbWk6
+IHNwbWlAMTAwMjcwMDAgew0KPiA+ICsgICAgICAgIGNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2
+ODczLXNwbWkiOw0KPiA+ICsgICAgICAgIHJlZyA9IDwwIDB4MTAwMjcwMDAgMCAweDAwMGUwMD4s
+DQo+ID4gKyAgICAgICAgICAgICAgPDAgMHgxMDAyOTAwMCAwIDB4MDAwMTAwPjsNCj4gPiArICAg
+ICAgICByZWctbmFtZXMgPSAicG1pZiIsICJzcG1pbXN0IjsNCj4gPiArICAgICAgICBjbG9ja3Mg
+PSA8JmluZnJhY2ZnIENMS19JTkZSQV9QTUlDX0FQPiwNCj4gPiArICAgICAgICAgICAgICAgICA8
+JmluZnJhY2ZnIENMS19JTkZSQV9QTUlDX1RNUj4sDQo+ID4gKyAgICAgICAgICAgICAgICAgPCZ0
+b3Bja2dlbiBDTEtfVE9QX1NQTUlfTVNUX1NFTD47DQo+ID4gKyAgICAgICAgY2xvY2stbmFtZXMg
+PSAicG1pZl9zeXNfY2siLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgInBtaWZfdG1yX2Nr
+IiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICJzcG1pbXN0X2Nsa19tdXgiOw0KPiA+ICsg
+ICAgICAgIGFzc2lnbmVkLWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9QV1JBUF9VTFBPU0Nf
+U0VMPjsNCj4gPiArICAgICAgICBhc3NpZ25lZC1jbG9jay1wYXJlbnRzID0gPCZ0b3Bja2dlbiBD
+TEtfVE9QX09TQ19EMTA+Ow0KPiA+ICsgICAgfTsNCj4gPiArLi4uDQo+ID4gLS0gDQo+ID4gMi4x
+OC4wDQoNCg==
 
