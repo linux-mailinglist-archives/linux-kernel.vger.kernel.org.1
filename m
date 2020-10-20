@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE1C29420F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559B1294218
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389236AbgJTSXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 14:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389047AbgJTSXK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 14:23:10 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB75C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 11:23:09 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t18so1466450plo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 11:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=CGezKt8+BAuUHnil2rfwxd3Pmi+sSBHeojI9UUx5xrg=;
-        b=OAUsMyidsIALp35M4Ul9aaHprY/IoitbkhQMJnLoTxMgoAUvC8SYA403Ml+x0KZYNC
-         wsrkfQi8RGqUrEgJ7eJv95KV5fuFTsOv6nTVh7qz2yd3nHH431m4w5VXbHMxkSxRz1S4
-         nZEFLMbVrgpVn96sqtaxERVn53hv0FEwKORJFZsW/hxAVdAH/NnWoaHbGzvL1C1xNaIe
-         vyQ+WImL69bCtR/Ucn3GmIDZu7T8UZyHwJgzxRh4tf32u2Toquy+UKmexyKtBm7Q0blE
-         tO5hS//Ln8XLFANDXI/zFozi3hQ5iVCzwzPTwB+/yMZkB7iGKH/T2JapvERkPTyN0rSW
-         2mTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=CGezKt8+BAuUHnil2rfwxd3Pmi+sSBHeojI9UUx5xrg=;
-        b=EvXhaqXETKwk90wfqV3tHdTS+nQH7O4drrU9wY8XCRnjRzk4DnTAf9a4MEaFDowgMN
-         UGPr83xxgPmvCsCD5LtcvKbLv1NY6UVihtmaCHa3c4ixDAPTo42PejNy0vhdsf4q9Waz
-         La43bSIzv/F5vBOv0+bJCIBPeHfVYiIfXOmBa/52OKVz/8oBPxF8YRa0VXQF4we9RRhz
-         b6xVHKudUjRpf02irIAQS4Hmwu+mX5ro6/rxK+Scgdfd6U1a4EFzm+eg+49U7s7i8RGh
-         7z/j6fL1rW+KWAaaXwiyqeunjC3u6zNdOyY1jqj8SRfLCr4fld3WxpvltNI9ZkgnbjU5
-         GGUw==
-X-Gm-Message-State: AOAM53219zA+ntOxUby8ODPe34jYPeFb+h/7MgMag4ZSB+txwkIASkG6
-        KvIYY1FxVMmY8uZcWll5Goiafw==
-X-Google-Smtp-Source: ABdhPJwJP/QHntOT4Ht2WctrUeVjfJBnner2IqBs3k6WUAjTpDxRuiWt9Ns5DdzA5YrNT1JRsVME0w==
-X-Received: by 2002:a17:90a:bb08:: with SMTP id u8mr4090034pjr.227.1603218189255;
-        Tue, 20 Oct 2020 11:23:09 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id w16sm2860558pfn.148.2020.10.20.11.23.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 11:23:08 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>, maz@kernel.org
-Cc:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build as a module
-In-Reply-To: <20201020072532.949137-2-narmstrong@baylibre.com>
-References: <20201020072532.949137-1-narmstrong@baylibre.com> <20201020072532.949137-2-narmstrong@baylibre.com>
-Date:   Tue, 20 Oct 2020 11:23:08 -0700
-Message-ID: <7hsga8kb8z.fsf@baylibre.com>
+        id S2390119AbgJTS1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 14:27:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729045AbgJTS1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 14:27:09 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D14CB20BED;
+        Tue, 20 Oct 2020 18:27:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603218429;
+        bh=syF2yjpdpv6c6cBwA8S43bD1UXqKlZkbBSViMVykC9o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2oH7zma9kUc8nVWM9keXK5k/FJ9VCUK19MGKEFn2QD7Mh1kQ54OJByq/0UTUjxoIr
+         5zeTNGYHnqFjnTQWjGSOLyAS63Ov9cSIr3Aq6t/dtLX2AenO6dOid8w76U2gYr/UOz
+         +6kWzb9C+NaZxNBdNOYciRnoRnsQ4pvHUzEQ1QLU=
+Date:   Tue, 20 Oct 2020 11:27:07 -0700
+From:   jaegeuk@kernel.org
+To:     Can Guo <cang@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: Re: [PATCH 3/4] scsi: ufs: use WQ_HIGHPRI for gating work
+Message-ID: <20201020182707.GA1087816@google.com>
+References: <20201005223635.2922805-1-jaegeuk@kernel.org>
+ <20201005223635.2922805-3-jaegeuk@kernel.org>
+ <5c383fd90a0e97dbd1fffc35574133c9@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5c383fd90a0e97dbd1fffc35574133c9@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neil Armstrong <narmstrong@baylibre.com> writes:
+On 10/20, Can Guo wrote:
+> On 2020-10-06 06:36, Jaegeuk Kim wrote:
+> > From: Jaegeuk Kim <jaegeuk@google.com>
+> > 
+> > Must have WQ_MEM_RECLAIM
+> > ``WQ_MEM_RECLAIM``
+> >   All wq which might be used in the memory reclaim paths **MUST**
+> >   have this flag set.  The wq is guaranteed to have at least one
+> >   execution context regardless of memory pressure.
+> > 
+> 
+> The commit msg is not telling the same story as the change/title does.
 
-> In order to reduce the kernel Image size on multi-platform distributions,
-> make it possible to build the Amlogic GPIO IRQ controller as a module
-> by switching it to a platform driver.
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+This message explains why we need to keep WQ_MEM_RECLAIM when adding WQ_HIGHPRI.
 
-Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-Tested-by: Kevin Hilman <khilman@baylibre.com>
+Thanks,
 
-Tested as a module on meson-sm1-khadas-vim3l where the wired networking
-uses GPIO IRQs.
-
-Kevin
+> 
+> Regards,
+> 
+> Can Guo.
+> 
+> > Cc: Alim Akhtar <alim.akhtar@samsung.com>
+> > Cc: Avri Altman <avri.altman@wdc.com>
+> > Cc: Can Guo <cang@codeaurora.org>
+> > Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+> > ---
+> >  drivers/scsi/ufs/ufshcd.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> > index 0bb07b50bd23e..76e95963887be 100644
+> > --- a/drivers/scsi/ufs/ufshcd.c
+> > +++ b/drivers/scsi/ufs/ufshcd.c
+> > @@ -1849,7 +1849,7 @@ static void ufshcd_init_clk_gating(struct ufs_hba
+> > *hba)
+> >  	snprintf(wq_name, ARRAY_SIZE(wq_name), "ufs_clk_gating_%d",
+> >  		 hba->host->host_no);
+> >  	hba->clk_gating.clk_gating_workq = alloc_ordered_workqueue(wq_name,
+> > -							   WQ_MEM_RECLAIM);
+> > +					WQ_MEM_RECLAIM | WQ_HIGHPRI);
+> > 
+> >  	hba->clk_gating.is_enabled = true;
