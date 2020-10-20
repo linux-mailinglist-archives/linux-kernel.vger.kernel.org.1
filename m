@@ -2,79 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A532935DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78FB2935DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731422AbgJTHeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60270 "EHLO
+        id S1731497AbgJTHf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728470AbgJTHeM (ORCPT
+        with ESMTP id S1731417AbgJTHf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:34:12 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00057C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:34:11 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CFlk721Hdz9sSC;
-        Tue, 20 Oct 2020 18:34:07 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1603179249;
-        bh=zmNZh+ZEQ1WLOU/BNA8riKCW5xmCis1MYfzfQimpEhU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=nHptS6F7eySdFEovSb7+ia+qEJhEV8hvOW501LZ5tAy7yGP/NwRkMUc/KWA3EGUCn
-         MIpS2dnkLcal5HRvI0rbwRbnFrpf85pcgdhClRbyusVQQSzu7vID+lehXEsoBBCeLt
-         DzOJGdn9OhAw30d1uknjCAwoXHvKh0u30Oh0MYpfYjMyYYpm1uUSQdXmx+HwctEUov
-         Bs9B2s0iQHwajUSoqxnlSytMZ/itgVtPBqzhRQHArtsi5XM8Xgti9Klq0/xJs9SniZ
-         QCfp7Idhh+C30SKUgGrj9pBuRKxpFnr8DM2as+9n10LXjbwdcL53ZSQetX7MmEm22+
-         xcs8AV8BBiPkw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        "Christopher M. Riedl" <cmr@codefail.de>
-Subject: Re: [PATCH 3/8] powerpc: Mark functions called inside uaccess blocks w/ 'notrace'
-In-Reply-To: <20201016094132.GI2611@hirez.programming.kicks-ass.net>
-References: <20201015150159.28933-1-cmr@codefail.de> <20201015150159.28933-4-cmr@codefail.de> <20201016065616.GB9343@infradead.org> <20201016094132.GI2611@hirez.programming.kicks-ass.net>
-Date:   Tue, 20 Oct 2020 18:34:06 +1100
-Message-ID: <87v9f5xsep.fsf@mpe.ellerman.id.au>
+        Tue, 20 Oct 2020 03:35:28 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2707CC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:35:27 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id g12so823652wrp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:35:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OQmPt/tsW+HEDpe5xrLjZAgYGGi4SsWx2wHRRbyaLCk=;
+        b=Xaj8HufkrIOIGFyU041LaS2NHh85dVEh/A6HQALiW1KbY9KP+2CGqr8G9UAg/0W3jC
+         UXAlRnIEeF7em+Grap4x3/W3wOX5cIi7ubZnewRHaRHlutasP5GbCyXYnQC4TUXVcUtD
+         1b2VuGvt7umuHn6fjGK5SrYKmzqmer+/O6Sb+KOChZ814gBC2thvDrwvJNtGGukLhkIF
+         wmaZ8faZIfSMaVc/tzd9MBQUcRZ21kBe56EEmuurC/RFbSTTluQwfVd75d92q6CX1B49
+         QOaMgS0x5cspfwhAZR+oSBKZdlV9qKk+UGQ8D/Kyh+1IPAFvkodU5dy6LBmlOTIJXj1l
+         1gJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OQmPt/tsW+HEDpe5xrLjZAgYGGi4SsWx2wHRRbyaLCk=;
+        b=CmrtfTQCMUNTsHhohU02zJjD5UYcYySnT62D+CAM3tqaA6VwezLLGBlmptrzlhje2G
+         Rqgs0EffHE7zb/FcjBT7nk8v1xvdN0HVluutAUoNVjvWsYeIV/xgRYenoiTFkNs3s3RI
+         w3zbm397HV0vqZEN1hpKnnIj3HZ47DG3eKWvx+YAljBgB5Ir327pkR5XCFXGYMUweP31
+         OGrs4iSrOdFUSO1wBIA13X3M4xynHnxco9wS7Peu0iWW65t6ckkl/QnHEIpl9cp/iuso
+         V3nVnJCRSsRaJLbwb6B6XJsQT6vZvmK5Ny/vlnVlYcufBvlnW4U3g2mGn4xNbPNoNaIm
+         w1bg==
+X-Gm-Message-State: AOAM530YrPrvWoAkVuqmB8M1oG3qYoJhEYcH4tE79TnzDwzMMnoOAcjB
+        VpjflPB+NlDYyKMDYUTIZc7xUQ==
+X-Google-Smtp-Source: ABdhPJwJhMusNjyYU9HLc0n1BQp5qSSpjfmaREGTGllyXc0ludIpaQZgaVGHxhCQg0b8x0hyiI5hbQ==
+X-Received: by 2002:adf:9504:: with SMTP id 4mr1928821wrs.27.1603179325854;
+        Tue, 20 Oct 2020 00:35:25 -0700 (PDT)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id g83sm1344119wmf.15.2020.10.20.00.35.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 00:35:25 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] net: ethernet: mtk-star-emac: select REGMAP_MMIO
+Date:   Tue, 20 Oct 2020 09:35:15 +0200
+Message-Id: <20201020073515.22769-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
-> On Fri, Oct 16, 2020 at 07:56:16AM +0100, Christoph Hellwig wrote:
->> On Thu, Oct 15, 2020 at 10:01:54AM -0500, Christopher M. Riedl wrote:
->> > Functions called between user_*_access_begin() and user_*_access_end()
->> > should be either inlined or marked 'notrace' to prevent leaving
->> > userspace access exposed. Mark any such functions relevant to signal
->> > handling so that subsequent patches can call them inside uaccess blocks.
->> 
->> I don't think running this much code with uaccess enabled is a good
->> idea.  Please refactor the code to reduce the criticial sections with
->> uaccess enabled.
->> 
->> Btw, does powerpc already have the objtool validation that we don't
->> accidentally jump out of unsafe uaccess critical sections?
->
-> It does not, there was some effort on that a while ago, but I suspect
-> they're waiting for the ARM64 effort to land and build on that.
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Right, we don't have objtool support.
+The driver depends on mmio regmap API but doesn't select the appropriate
+Kconfig option. This fixes it.
 
-We would definitely like objtool support at least for this uaccess
-checking, I'm sure we have some escapes.
+Fixes: 8c7bd5a454ff ("net: ethernet: mtk-star-emac: new driver")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/net/ethernet/mediatek/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-There was someone working on it in their own-time but last I heard that
-was still WIP.
+diff --git a/drivers/net/ethernet/mediatek/Kconfig b/drivers/net/ethernet/mediatek/Kconfig
+index 62a820b1eb16..3362b148de23 100644
+--- a/drivers/net/ethernet/mediatek/Kconfig
++++ b/drivers/net/ethernet/mediatek/Kconfig
+@@ -17,6 +17,7 @@ config NET_MEDIATEK_SOC
+ config NET_MEDIATEK_STAR_EMAC
+ 	tristate "MediaTek STAR Ethernet MAC support"
+ 	select PHYLIB
++	select REGMAP_MMIO
+ 	help
+ 	  This driver supports the ethernet MAC IP first used on
+ 	  MediaTek MT85** SoCs.
+-- 
+2.28.0
 
-I didn't realise the ARM64 support was still not merged, so yeah having
-that land first would probably simplify things, but we still need
-someone who has time to work on it.
-
-cheers
