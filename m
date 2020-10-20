@@ -2,107 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DC72941E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D3F2941EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437258AbgJTSH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 14:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387755AbgJTSHZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 14:07:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E4CC0613CE;
-        Tue, 20 Oct 2020 11:07:25 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603217243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LeMXYg7iCMItsZtXLmmRK9fkfNd0wXBuje5zWxjuqWQ=;
-        b=qDHag5jUtcYY1ospfAJ+zlutOQbY3+C0bC9EPi1EZMpn+II8KgaYDpV1LAVI8GtoyzAz6J
-        0Ds6sLaCTexJ078RLsCQxHKLok/8wlwLzz4KqDEVDWN37BqpL8cHOin3Vc2lrbvKhnk9fU
-        gTtCZ9OIDpyIrU0KF0Ri4iTj3PX6nCApRbwgEoELwTGCqc2e7AGW9/iyDB1qKEi+56dCCz
-        pCGsFGG8IS/h6Jc+Kh+h9BZUwe79z9lfowsxuyYixjtt4jcsb8SAUm1cXvAIUnIXt6g0CW
-        GokjEdpt/RccHcAqCUC59MCkh0mKevqzmZTL7RGJRdmm6fEF5rqg9H7QDIC5Gw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603217243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LeMXYg7iCMItsZtXLmmRK9fkfNd0wXBuje5zWxjuqWQ=;
-        b=1iCD6Fdka9UkLf2kiE9clDl7+fPycl4tRaJS8aQELf+C9KC9wIeAZui9dMdNqM+0kS1mxw
-        uyB16tsCz17uoMBQ==
-To:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        lgoncalv@redhat.com
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
-In-Reply-To: <3bca9eb1-a318-1fc6-9eee-aacc0293a193@redhat.com>
-References: <20200928183529.471328-1-nitesh@redhat.com> <20200928183529.471328-5-nitesh@redhat.com> <87v9f57zjf.fsf@nanos.tec.linutronix.de> <3bca9eb1-a318-1fc6-9eee-aacc0293a193@redhat.com>
-Date:   Tue, 20 Oct 2020 20:07:23 +0200
-Message-ID: <87lfg093fo.fsf@nanos.tec.linutronix.de>
+        id S2437305AbgJTSJn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Oct 2020 14:09:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:54862 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388059AbgJTSJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 14:09:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E179231B;
+        Tue, 20 Oct 2020 11:09:41 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1FE8F3F719;
+        Tue, 20 Oct 2020 11:09:41 -0700 (PDT)
+References: <20201020173409.1266576-1-vanshikonda@os.amperecomputing.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+Cc:     linux-arm-kernel@lists.infradead.org, patches@amperecomputing.com,
+        linux-kernel@vger.kernel.org, Anshuman.Khandual@arm.com
+Subject: Re: [PATCH] arm64: NUMA: Kconfig: Increase max number of nodes
+In-reply-to: <20201020173409.1266576-1-vanshikonda@os.amperecomputing.com>
+Date:   Tue, 20 Oct 2020 19:09:36 +0100
+Message-ID: <jhj7drkrcpr.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20 2020 at 12:18, Nitesh Narayan Lal wrote:
-> On 10/20/20 10:16 AM, Thomas Gleixner wrote:
->> With the above change this will result
->>
->>    1  general interrupt which is free movable by user space
->>    1  managed interrupts (possible affinity to all 16 CPUs, but routed
->>       to housekeeping CPU as long as there is one online)
->>
->> So the device is now limited to a single queue which also affects the
->> housekeeping CPUs because now they have to share a single queue.
->>
->> With larger machines this gets even worse.
+
+Hi,
+
+Nit on the subject: this only increases the default, the max is still 2¹⁰.
+
+On 20/10/20 18:34, Vanshidhar Konda wrote:
+> The current arm64 max NUMA nodes default to 4. Today's arm64 systems can
+> reach or exceed 16. Increase the number to 64 (matching x86_64).
 >
-> Yes, the change can impact the performance, however, if we don't do that we
-> may have a latency impact instead. Specifically, on larger systems where
-> most of the CPUs are isolated as we will definitely fail in moving all of the
-> IRQs away from the isolated CPUs to the housekeeping.
-
-For non managed interrupts I agree.
-
->> So no. This needs way more thought for managed interrupts and you cannot
->> do that at the PCI layer.
+> Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+> ---
+>  arch/arm64/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Maybe we should not be doing anything in the case of managed IRQs as they
-> are anyways pinned to the housekeeping CPUs as long as we have the
-> 'managed_irq' option included in the kernel cmdline.
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 893130ce1626..3e69d3c981be 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -980,7 +980,7 @@ config NUMA
+>  config NODES_SHIFT
+>       int "Maximum NUMA Nodes (as a power of 2)"
+>       range 1 10
+> -	default "2"
+> +	default "6"
 
-Exactly. For the PCI side this vector limiting has to be restricted to
-the non managed case.
+This leads to more statically allocated memory for things like node to CPU
+maps (see uses of MAX_NUMNODES), but that shouldn't be too much of an
+issue.
 
->>  Only the affinity spreading mechanism can do
->> the right thing here.
->
-> I can definitely explore this further.
->
-> However, IMHO we would still need a logic to prevent the devices from
-> creating excess vectors.
+AIUI this also directly correlates to how many more page->flags bits are
+required: are we sure the max 10 works on any aarch64 platform? I'm
+genuinely asking here, given that I'm mostly a stranger to the mm
+world. The default should be something we're somewhat confident works
+everywhere.
 
-Managed interrupts are preventing exactly that by pinning the interrupts
-and queues to one or a set of CPUs, which prevents vector exhaustion on
-CPU hotplug.
-
-Non-managed, yes that is and always was a problem. One of the reasons
-why managed interrupts exist.
-
-Thanks,
-
-        tglx
+>       depends on NEED_MULTIPLE_NODES
+>       help
+>         Specify the maximum number of NUMA Nodes available on the target
