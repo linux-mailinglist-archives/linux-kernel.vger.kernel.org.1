@@ -2,153 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2F629403F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BD1294046
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394483AbgJTQLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 12:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
+        id S2394498AbgJTQNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 12:13:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394466AbgJTQLR (ORCPT
+        with ESMTP id S2394489AbgJTQNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 12:11:17 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0146C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:11:15 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id n6so2837700wrm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:11:15 -0700 (PDT)
+        Tue, 20 Oct 2020 12:13:33 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2DCCC0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:13:33 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id b8so4221842ioh.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:13:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Jj25L1gQWKRXM7zU+DXisJyRnu6Otv0ZXY8L4OY+gv8=;
-        b=hGHBzToEYmixn/mjgL4keECzrrWu91M0r9rb+yuGJfIehZBtHSCj6LQqqhhUUFFi4f
-         rvuJbB7od6cZCExN46rKZiNERmSkuOrBLGwbCdOYogkai3zDwInkrMnc1CXWStHckXkw
-         ubBBXKdJe61wUda3uJHgiQReBgIiY3vboeEmUwz1qO9BNKW1N3yFRgj/4CjA7zkd8qZ1
-         6vq4JNYpMUc8/PzAz4kO8h0eiRtDlTS2Z+BVWa4iSqkADl6duw/wyCWJSUG7b2vEHNfT
-         EWvA2zDuCXqBDqD25224ge/I9VVVBjN1GK6mbj80o+z2MkZMAVI0pGcWCsT/ygMrH6Jy
-         lRrw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NaxRi7kvLJ1FskAsBPACru6r029rXEomACB+lv9Amw4=;
+        b=H6B1qgktg82wnkl+cqaDJxP6x4cwURPzrKMC2/ZRrfV7jmpUXZVjsxoNuPjLXYE5gv
+         MRY3sOsHBClN5xYEmq7QiZAgyFKmQvRmA2vghUiXlxKfkhNqp23TOn/oHwY6ApVFC4ai
+         xRIDXhzLA3PFm1QkE42bJAeSWkQwRlgZu3ObCxLWCWhmRzPMZNyx0Vndk1EO471xelCj
+         Q5xotjOPGRnbYA5hLpjmsz7uuTxs5b1P8FR99/2iyKzrTm39eOkBzBPTQmXbYUjXAQEU
+         GQzlqlGp1FUVuudby0dvbb4U9yh9NqtVSd25D1CmS9sC4hmzTKd3Q32ScK8evBykBxEI
+         p8WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Jj25L1gQWKRXM7zU+DXisJyRnu6Otv0ZXY8L4OY+gv8=;
-        b=lQegW1Dvtd2kRqqJEiIXAMtXMA41OaIMKrfjtebwqgIUKKCJ57NaKdMpRvzpceDqJ7
-         a8XoS6doa9c2lBalxVvATsyLlOOzL6aNl061pAlrUgQPp9g9rC8G4+QK+z9aDhmLLsfQ
-         bittw7BVUgogLTjbiKpqZu1Xqvw353dOUa2M8PrweSlEfVLYLrXKD1Ghm4JUS5Fa5Dts
-         y5Moe1rl1j9TdShYw7+RJiDVNAvXv+X7Kgj6fKw/qHNaURf/jgDvK9yBmA8iL+16tpW8
-         p2vs0OWZvp811VhqdXn56W1nR2Zpw/wgoUqPA/ZIBEBrU2U6tyUKadzrAmSNzHO1evQs
-         B5Fg==
-X-Gm-Message-State: AOAM530WByUKZ7D6CtZfZTtdo0moIfUCcjHCYiUS3IZcNhfj8ovRx5MN
-        9+C45cxFD4QwTuIGlYr3Bcgv5Q==
-X-Google-Smtp-Source: ABdhPJyLzreKRuc9O8TZcdkHhc1XX+t9ChNyHgH/VbumTlthJ7p5WqltaBYKp6EVZ7DpnRcK5lB3iw==
-X-Received: by 2002:adf:ee4c:: with SMTP id w12mr4204599wro.22.1603210274085;
-        Tue, 20 Oct 2020 09:11:14 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:218e:7be8:b4e2:8030? ([2a01:e35:2ec0:82b0:218e:7be8:b4e2:8030])
-        by smtp.gmail.com with ESMTPSA id q7sm3588823wrr.39.2020.10.20.09.11.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 09:11:13 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: amlogic: add missing ethernet reset ID
-To:     Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Anand Moon <linux.amoon@gmail.com>,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20201020120141.298240-1-jbrunet@baylibre.com>
- <68ee4022-df9b-c36e-b828-bc93d6507473@baylibre.com>
- <7hft69kl4f.fsf@baylibre.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <6fb3199f-f5a6-fa00-94df-9c5a40f394b6@baylibre.com>
-Date:   Tue, 20 Oct 2020 18:11:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NaxRi7kvLJ1FskAsBPACru6r029rXEomACB+lv9Amw4=;
+        b=iBUTr1aQBUOerhQE+h49e0336eZgOvTYBoQ8M2J9E+s6Naz7LDjbhlHbdS9hysom65
+         p6JiVsZek2JUZxdLq06Xwl5WyEcQ7lMFDk5NbPiV03xKoOG4GcJ6L/gLycia7jS7DIHo
+         9WAYmSWuPFsTg4TeUFYNjO1WyIw8mZtlw42336SrszuK/4fLEt0l5lCpcrak0Z6A33Dm
+         rsRe0H0LM8cNkq1SgyHO9D/bgS17rvd6tZr53IrghMfq7QHE5Yzrp+/sh4BHDKyUTfld
+         a/X+LhxXSFnr9eWT4JOYz7KtC+2i3Kx+lL16nyKaduAc/HSx+3GvU2v2je2BQ+RQ0H/m
+         vO9g==
+X-Gm-Message-State: AOAM530mim2Yct90jx/q5afDQAbCt7z7tpWO+/08ATH5GqzBTsWcdL4T
+        JKC92wSippoMZLUILbOAMdNnTDJCyQ/l5qeac0cXNw==
+X-Google-Smtp-Source: ABdhPJyr5FuIimEj3h/NbXNgXiQl7kbObhHVPO2vIADQz81HzFwgSvEapxqytCPNdPED3Ofk7V1LQWRF/FPZS5eY4HQ=
+X-Received: by 2002:a02:a60f:: with SMTP id c15mr2775749jam.48.1603210412874;
+ Tue, 20 Oct 2020 09:13:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7hft69kl4f.fsf@baylibre.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201019224556.3536790-1-dlatypov@google.com> <20201020080943.GY4077@smile.fi.intel.com>
+In-Reply-To: <20201020080943.GY4077@smile.fi.intel.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 20 Oct 2020 09:13:21 -0700
+Message-ID: <CAGS_qxpPJJXa_fzeaapyAwjWKFdyzHgN7ZZgLE5V=6YR5VD1Sg@mail.gmail.com>
+Subject: Re: [PATCH] lib: add basic KUnit test for lib/math
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/2020 16:49, Kevin Hilman wrote:
-> Neil Armstrong <narmstrong@baylibre.com> writes:
-> 
->> On 20/10/2020 14:01, Jerome Brunet wrote:
->>> From: Anand Moon <linux.amoon@gmail.com>
->>>
->>> Add reset external reset of the ethernet mac controller
->>>
->>> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
->>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> 
-> [...]
-> 
->> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-> 
-> Neil, do we need this in u-boot also?  I seem to have network issues in
-> u-boot on board with external PHY running mainline u-boot.
+On Tue, Oct 20, 2020 at 1:08 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Mon, Oct 19, 2020 at 03:45:56PM -0700, Daniel Latypov wrote:
+> > Add basic test coverage for files that don't require any config options:
+> > * gcd.c
+> > * lcm.c
+> > * int_sqrt.c
+> > * reciprocal_div.c
+> > (Ignored int_pow.c since it's a simple textbook algorithm.)
+> >
+> > These tests aren't particularly interesting, but
+> > * they're chosen as easy to understand examples of how to write tests
+> > * provides a place to add tests for any new files in this dir
+> > * written so adding new test cases to cover edge cases should be easy
+>
+> Is documentation not enough?
+>
+> I have recently wrote my first KUnit test and I found documentation pretty good
+> for the start. I think we actually need more complex examples in the code (and
+> useful).
 
-Yes, U-boot supports it, but simply does "reset_deassert", so I don't think
-it would have any impact, the real issue is the PHY reset.
+I should have been more clear.
+The documentation clearly covers the mechanics of how to set up a test
+suite with some test cases and KUNIT_EXPECT_* calls.
 
-Without a proper reset line, no idea how to do that cleanly.
+But it doesn't provide much guidance in the way of _how_ to structure tests.
+Or how to use more advanced features, e.g. there are only two files
+tree-wide using the _MSG variants of macros:
+$ ag KUNIT_.*MSG -l --ignore include/kunit/test.h
+fs/ext4/inode-test.c
+lib/bitfield_kunit.c
+(And both happen to be written by people working on/with KUnit).
 
-Neil
+While the _MSG macros are not perfect, they add some context when
+calling KUNIT_* in a loop.
+I already see some tests merged that probably would benefit from using it.
+Considering the perspective of an outsider whose change broke one of
+those tests, they'd need to first edit the test to add more debug info
+to even understand what failed.
 
-> 
-> Kevin
-> 
+But I can see a case for mentioning the _MSG variants in the example
+test or Documentation/kunit instead of this patch.
+There doesn't seem to be any mention of them at present in the docs.
 
+To put it in kunit_example_test.c (and have the value be clear), we'd
+need something like
+@@ -27,6 +28,9 @@ static void example_simple_test(struct kunit *test)
+         * behavior matched what was expected.
+         */
+        KUNIT_EXPECT_EQ(test, 1 + 1, 2);
++
++       for (x = 0; x < 2; ++x)
++               KUNIT_EXPECT_EQ_MSG(test, 42, myfunc(x), "myfunc(%d)", x);
+ }
+
+Using and testing an actual function like gcd() et al. felt a bit
+better than adding a trivial function there.
+
+>
+> So, I'm in doubt these test are a good point to start with.
+
+If the above still seems too contrived, I can take a look at where to
+update kunit/usage.rst instead.
+
+
+
+
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
