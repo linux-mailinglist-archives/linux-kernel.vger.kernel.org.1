@@ -2,85 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431A52943B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB61C2943C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409358AbgJTUHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 16:07:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409326AbgJTUHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:07:37 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 241A82225F;
-        Tue, 20 Oct 2020 20:07:35 +0000 (UTC)
-Date:   Tue, 20 Oct 2020 16:07:32 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: sched: Reenable interrupts in do sched_yield()
-Message-ID: <20201020160732.5f8fc24e@oasis.local.home>
-In-Reply-To: <87o8kw93n4.fsf@nanos.tec.linutronix.de>
-References: <87r1pt7y5c.fsf@nanos.tec.linutronix.de>
-        <20201020113830.378b4a4c@gandalf.local.home>
-        <87o8kw93n4.fsf@nanos.tec.linutronix.de>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2409395AbgJTUQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 16:16:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409388AbgJTUQz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 16:16:55 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9450BC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 13:16:55 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id j18so93550pfa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 13:16:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=46RFYozjOUrCT47DTNQygaXDa0U+oyBU4TtGuU6XNI4=;
+        b=GCHVRghA7TeXHOUfpK8XK0MgAeLsh6HEk8QgnUB8L2yCL2zOT3M6p5SwYT0wLxsnKG
+         ZEaY9YWd86FRdLWyCHsCtvol72hfc0jItncd9ghOxvuhpi8g7ugEEtDsTNJ9ogWkSOMX
+         vzJIaSmfV304rau7rEvZ98LpWLIP1sVdgEqEC7xjyMvHub870EJbjSIGnq7B9aYekCa/
+         a/qBt2p813YIWeNZRHmJcndjfqdAio4yvWkjhGogr1bYvSy/f40UZmiNWh+HOReLSjm2
+         NDPHNcC8KDwwWadxDamjweTZQ9zPQaOKLMADpJZ752+SomEr6LFbWxOchVr9XxfcMl3c
+         mTmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=46RFYozjOUrCT47DTNQygaXDa0U+oyBU4TtGuU6XNI4=;
+        b=jsSbz7Eq2vIMc7LIjppBD5dDpeLIrBp8b7KeeP4L0jamm/dOE7cc02k66fPOCa2Vrw
+         yqStjyrjKplLbNfTNz2Ba6rEwufGTDX2S/OoqFeKRhbUIN4dQ48dvtwfUBARfUZlkCF2
+         ypiwH0DHknmZ0EjtLkYGJAD+bSer6X823IQ8vG/hQPea6mJ+oTWjt8U/MM8UJwCNh7gr
+         1WEtIh8FgjwkW8xXUlF59aqzxa1m7z5je2jm0/abP7smO+CyJdEzog2kwuQB6t6XD4VY
+         Kb/vNYCN8BHcqcWTdhXZ/J+oEQ8twMWZOGk+OJOr1MWKSEB7aQgKsTh7klioMLdmj6oo
+         G7ZA==
+X-Gm-Message-State: AOAM531Q3g+PuegBV41CQNkM+bjNTYg3HD782LsLk2rlNU2mZ8EcnJvO
+        ITm5t56ofOrQ8wrGzv1cXCgSk9TZo6GRlBHreOq3IQ==
+X-Google-Smtp-Source: ABdhPJxhzEcDxnQbUj+JT015TazLvxkNXCfo9dZTKFxf4yePhzBsAZxDhe3cue6Irvla0qzlx31G36qNCtX49jixXDk=
+X-Received: by 2002:a63:70d:: with SMTP id 13mr35019pgh.263.1603225014754;
+ Tue, 20 Oct 2020 13:16:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201016175339.2429280-1-ndesaulniers@google.com> <160319373854.2175971.17968938488121846972.b4-ty@kernel.org>
+In-Reply-To: <160319373854.2175971.17968938488121846972.b4-ty@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 20 Oct 2020 13:16:43 -0700
+Message-ID: <CAKwvOd=ZJjYOVubjHN6DFuopMP7jg9PAxGHhOPVu6KefPMNfkg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
+To:     Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Smith <Peter.Smith@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020 20:02:55 +0200
-Thomas Gleixner <tglx@linutronix.de> wrote:
-
-> On Tue, Oct 20 2020 at 11:38, Steven Rostedt wrote:
-> > On Tue, 20 Oct 2020 16:46:55 +0200
-> > Thomas Gleixner <tglx@linutronix.de> wrote:
-> >  
-> >> -	/*
-> >> -	 * Since we are going to call schedule() anyway, there's
-> >> -	 * no need to preempt or enable interrupts:  
+On Tue, Oct 20, 2020 at 10:57 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Fri, 16 Oct 2020 10:53:39 -0700, Nick Desaulniers wrote:
+> > With CONFIG_EXPERT=y, CONFIG_KASAN=y, CONFIG_RANDOMIZE_BASE=n,
+> > CONFIG_RELOCATABLE=n, we observe the following failure when trying to
+> > link the kernel image with LD=ld.lld:
 > >
-> > I think the above comment still makes sense, just needs to be tweeked:
+> > error: section: .exit.data is not contiguous with other relro sections
 > >
-> > 	/*
-> > 	 * Since we are going to call schedule() anyway, there's
-> > 	 * no need to allow preemption after releasing the rq lock.  
-> >> -	 */  
-> >
-> > Especially, since we are now enabling interrupts, which is likely to
-> > trigger a preemption.  
-> 
-> sched_preempt_enable_no_resched() still enables preemption. It just
-> avoids the check. And it still allows preemption when an interrupt
-> triggering preemption happens between sched_preempt_enable_no_resched()
-> and __schedule() disabling preemption/interrupts.
-> 
-> So no, your new variant is just differently bogus and misleading.
+> > ld.lld defaults to -z relro while ld.bfd defaults to -z norelro. This
+> > was previously fixed, but only for CONFIG_RELOCATABLE=y.
+>
+> Applied to arm64 (for-next/core), thanks!
+>
+> [1/1] arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
+>       https://git.kernel.org/arm64/c/3b92fa7485eb
 
-What I wrote wasn't exactly what I meant. What I meant to have:
+IF we wanted to go further and remove `-z norelro`, or even enable `-z
+relro` for aarch64, then we would have to detangle some KASAN/GCOV
+generated section discard spaghetti.  Fangrui did some more digging
+and found that .fini_array.* sections were relro (read only after
+relocations, IIUC), so adding them to EXIT_DATA
+(include/asm-generic/vmlinux.lds.h) was causing them to get included
+in .exit.data (arch/arm64/kernel/vmlinux.lds.S) making that relro.
+There's some history here with commits:
 
-	/*
-	 * Since we are going to call schedule() anyways, there's
-	 * no need to do the preemption check when the rq_lock is released.
-	 */
+- e41f501d39126 ("vmlinux.lds: account for destructor sections")
+- 8dcf86caa1e3da ("vmlinux.lds.h: Fix incomplete .text.exit discards")
+- d812db78288d7 ("vmlinux.lds.h: Avoid KASAN and KCSAN's unwanted sections")
 
-That is, to document why we have the preempt_disable() before the unlock:
+It seems the following works for quite a few different
+configs/toolchains I played with, but the big IF is whether enabling
+`-z relro` is worthwhile?  If the kernel does respect that mapping,
+then I assume that's a yes, but I haven't checked yet whether relro is
+respected within the kernel (`grep -rn RELRO` turns up nothing
+interesting).  I also haven't checked yet whether all supported
+versions of GNU ld.bfd support -z relro (guessing not, since a quick
+test warns: `aarch64-linux-gnu-ld: warning: -z relro ignored` for
+v2.34.90.20200706, may be holding it wrong).
 
-	preempt_disable();
-	rq_unlock_irq(rq, &rf);
-	sched_preempt_enable_no_resched();
+(Fangrui also filed https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97507
+in regards to GCOV+GCC)
 
+diff --git a/include/asm-generic/vmlinux.lds.h
+b/include/asm-generic/vmlinux.lds.h
+index cd14444bf600..64578c998e53 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -744,7 +744,6 @@
 
--- Steve
+ #define EXIT_DATA                                                      \
+        *(.exit.data .exit.data.*)                                      \
+-       *(.fini_array .fini_array.*)                                    \
+        *(.dtors .dtors.*)                                              \
+        MEM_DISCARD(exit.data*)                                         \
+        MEM_DISCARD(exit.rodata*)
+@@ -995,6 +994,7 @@
+ #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KCSAN)
+ # ifdef CONFIG_CONSTRUCTORS
+ #  define SANITIZER_DISCARDS                                           \
++       *(.fini_array .fini_array.*)                                    \
+        *(.eh_frame)
+ # else
+ #  define SANITIZER_DISCARDS                                           \
+@@ -1005,8 +1005,16 @@
+ # define SANITIZER_DISCARDS
+ #endif
+
++#if defined(CONFIG_GCOV_KERNEL) && defined(CONFIG_CC_IS_GCC)
++# define GCOV_DISCARDS                                                 \
++       *(.fini_array .fini_array.*)
++#else
++# define GCOV_DISCARDS
++#endif
++
+ #define COMMON_DISCARDS
+         \
+        SANITIZER_DISCARDS                                              \
++       GCOV_DISCARDS                                                   \
+        *(.discard)                                                     \
+        *(.discard.*)                                                   \
+        *(.modinfo)                                                     \
+-- 
+Thanks,
+~Nick Desaulniers
