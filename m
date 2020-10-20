@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD98829343D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 07:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0408D293443
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 07:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391611AbgJTFUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 01:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
+        id S2391628AbgJTF24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 01:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391604AbgJTFUS (ORCPT
+        with ESMTP id S2391619AbgJTF24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 01:20:18 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA98C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 22:20:18 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id f21so572928qko.5
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 22:20:18 -0700 (PDT)
+        Tue, 20 Oct 2020 01:28:56 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6944C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 22:28:55 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d23so403674pll.7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 22:28:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z9wYYqXSCH9hJsvZCRRfPmiplKII60fDiq3y/0UOTRQ=;
-        b=nFj+RhH527dSF15OyCknqBlNqu/5E4YnS1qpIFJZvkK0948u69zvGZW4bKEqndnMFz
-         8yyx70GM4gugorWaNi9Kci+S9s4l/cZTT/4+wlXS78kRrYtRgPdN4mgLPQ6Xh7ovioJR
-         gUO2EnXkClA3Rx+rf65BWHug7V0rfi7T4GnGTpLU0Ez5EEZ0aXY6b1Ga9I8unR45iRM4
-         righHXZWlAPHkljP5Y23955u2C47+j6rgw7tV/zyL1TqZpFVY8JhWYzmwEGFLnHsz/i1
-         ido0lhbQv3Uryk5j7uKTd5JqVqzYSe8vbOBMaxvzBaZ7BX2Bq64/CxUZqemmfqlASOAn
-         ioog==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=V64RutUaOwaP5aDYnM06DL8iwrCFkhKNHW2ldYIGiQU=;
+        b=jwrqTIQg5vEhaej5X1jLnZdiNwefkZBXvjCSPGiJrHkvN8S9lIm701X706lYw9vT8/
+         Nd3rU2BUKhdh2iLoX/X9eYH+fpwyHWRsoH+lhxzwtvoD3CJVlusj6B6JIelSrTzUfXNv
+         QHi/4pzErElf8bZtdv9SVf9x0Abl0xFB2Lkyn4JScnF4IRWIeEuHUbPV5mL6o9SbMRix
+         8VektMERlKZcg6yHnIncGD9yGAvpPUBGHv8Csd8Z94lHnoKKHGfTwWwN+nYws0HsXDaR
+         Y3e8mE1rvyur6unfBWPM89LmuaoIT4m8K+jlqAUXNTH0xbpzXZhpkaqY3uKpdXx6Zr76
+         G7Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z9wYYqXSCH9hJsvZCRRfPmiplKII60fDiq3y/0UOTRQ=;
-        b=rvficZHWNgqiYYGgzyHbmdOxf1genNnGDlTvAptAotL6n5sb8VOJV2/IlyPlcyuFeJ
-         x+bsiGo+5Q/t4AhZxMkfCwDMJkThx1cLzXalz4CMSLXiQDBY3gM7/hpoXHaAfYY+/zJa
-         X/gkKIa0rI7UfNd71kfkk3UpEKK11KlPeYjP+mDnPPddmqc2ddIvynzjD+gMq1RWC+YD
-         Vs+pfR8qVsj1IEUqsQ+JM3gZCNRljL14BfZBMGT3RrvAZZQvcjOBom8JKd2L0OBoVShb
-         DcakM5MGsEXHTfL9LPiIosnc48ZmCsz8+hvWcWOwhACR24Nxc9Rxajku6/+/UT5rJVNB
-         epmw==
-X-Gm-Message-State: AOAM53307XnbllWrv9KBFBjc8lrOpZCdIX5lqNiZGy3yayKptW6/+psr
-        rVkkjmRh13DVPVGuDMBKlpzX7PbvVXcH8L/Pz2HrYA==
-X-Google-Smtp-Source: ABdhPJyx8CWXpC5StOxXKhwfKyIBUtcww66CulSXXuA5OMvHecs0nRH1A9mqu15lKale74SmTIIJ6I71TjzxvW0MI9I=
-X-Received: by 2002:a37:9301:: with SMTP id v1mr1244436qkd.350.1603171216987;
- Mon, 19 Oct 2020 22:20:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=V64RutUaOwaP5aDYnM06DL8iwrCFkhKNHW2ldYIGiQU=;
+        b=E3zi0Akiz+U+tmNwktGllEZO7Az8leBOxA6EYOXc2xTenRYP7dYDNUu/GGcMC9OXb1
+         jxUg4XSE2TFSKop+nzjWrbuF/kELYgigjx2BUzoDu9D0WDwS9iOEWdVE+JingfS0KLfA
+         oA5WD4WlUqlDSyvQyOyNeZ+JO1dm+jVcB8rrdkUHQS0nZsVMCZhSqUryDw8LAkv7xmFW
+         KqMqQ7gHnBATrwBT3XL2x+afyT3vDYqfBfDzb+jmB+vv0OE+f2E4HHgmjSKV8dWoqDUY
+         UZ2K271LT4z/gTctavx52AKVLlyzYH+KRaEb1S1korHvuqZcGNpvSRKl8/cajdvmBJj+
+         3/Xw==
+X-Gm-Message-State: AOAM532xv1mhfRXFgnkFIMLjKQViS8jGy2tvbq12GjD0ACum5V0LhNRe
+        O+s9vvlQ8ctCWWpY0EdWlL6gfw==
+X-Google-Smtp-Source: ABdhPJwOBhGWC1kgQAgUC91RYOw+S+vXLwM4y9Gt97e90Ego3+evTcRVb3XquuNwtQgwfox2xLJQnA==
+X-Received: by 2002:a17:90a:ae15:: with SMTP id t21mr1310706pjq.91.1603171735306;
+        Mon, 19 Oct 2020 22:28:55 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id f15sm701964pfk.21.2020.10.19.22.28.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 19 Oct 2020 22:28:54 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 10:58:52 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Aisheng Dong <aisheng.dong@nxp.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH] opp: Don't always remove static OPPs in
+ _of_add_opp_table_v1()
+Message-ID: <20201020052852.bt4jx3hd4dlncwdk@vireshk-i7>
+References: <2c73ab54717ef358b118ea0cfb727b1427e7730a.1602648719.git.viresh.kumar@linaro.org>
+ <AM6PR04MB496659599D41F6B88036420680020@AM6PR04MB4966.eurprd04.prod.outlook.com>
+ <20201015043103.m6ghom52sqssh24z@vireshk-i7>
 MIME-Version: 1.0
-References: <cover.1602708025.git.andreyknvl@google.com> <CANpmjNN3Ax2_CfxXixh8-NipXOx7s8vprg23ua-M_tvUKZGq0Q@mail.gmail.com>
-In-Reply-To: <CANpmjNN3Ax2_CfxXixh8-NipXOx7s8vprg23ua-M_tvUKZGq0Q@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 20 Oct 2020 07:20:05 +0200
-Message-ID: <CACT4Y+a=twL5eKnpZE18g4j57+PEYMPC0Loyx_mepn4u+hJTxg@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/8] kasan: hardware tag-based mode for production use
- on arm64
-To:     Marco Elver <elver@google.com>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Serban Constantinescu <serbanc@google.com>,
-        Kostya Serebryany <kcc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015043103.m6ghom52sqssh24z@vireshk-i7>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 2:23 PM Marco Elver <elver@google.com> wrote:
->
-> On Wed, 14 Oct 2020 at 22:44, Andrey Konovalov <andreyknvl@google.com> wrote:
-> [...]
-> > A question to KASAN maintainers: what would be the best way to support the
-> > "off" mode? I see two potential approaches: add a check into each kasan
-> > callback (easier to implement, but we still call kasan callbacks, even
-> > though they immediately return), or add inline header wrappers that do the
-> > same.
->
-> This is tricky, because we don't know how bad the performance will be
-> if we keep them as calls. We'd have to understand the performance
-> impact of keeping them as calls, and if the performance impact is
-> acceptable or not.
->
-> Without understanding the performance impact, the only viable option I
-> see is to add __always_inline kasan_foo() wrappers, which use the
-> static branch to guard calls to __kasan_foo().
+On 15-10-20, 10:01, Viresh Kumar wrote:
+> On 15-10-20, 02:35, Aisheng Dong wrote:
+> > Hi Viresh
+> > 
+> > Thanks for the quick fix.
+> > 
+> > > From: Viresh Kumar <viresh.kumar@linaro.org>
+> > > Sent: Wednesday, October 14, 2020 12:26 PM
+> > > 
+> > > The patch missed returning 0 early in case of success and hence the static OPPs
+> > > got removed by mistake. Fix it.
+> > > 
+> > > Fixes: 90d46d71cce2 ("opp: Handle multiple calls for same OPP table in
+> > > _of_add_opp_table_v1()")
+> > > Reported-by: Aisheng Dong <aisheng.dong@nxp.com>
+> > > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > 
+> > Tested-by: Dong Aisheng <aisheng.dong@nxp.com>
+> 
+> Thanks.
+> 
+> Rafael: Please apply this one directly for 5.10-rc. Thanks.
 
-This sounds reasonable to me.
+Rafael: Ping.
+
+-- 
+viresh
