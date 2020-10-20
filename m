@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391322937ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD71E2937EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392766AbgJTJW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391402AbgJTJW5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:22:57 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821D2C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:22:56 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id g7so1282134ilr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wWmw1NV7gbWNc2BoUTFwu8FGKZUBcJpPXw0NA4jr4Bk=;
-        b=EDKxuR4EF785e5FhWc5bAAo35H3YMcr75neMvBR5SA6OpTLU2UxaqTvB+dzjheFuUY
-         nSSCIdMUg7u2EmPyHfEHbo/cPxAuyDUZs7GJXMkSjGh4pj4RIw3jnWZ1v2vGeFS9PYpQ
-         qHvuMAe2n+UHlnsZCBRMqLyqlrP4Lfu8fcUNdFoB5VwXEooCom3oAO5jcYK9PwS8lCNk
-         L3U2o6TFqod2uOs9IcWezcd1bB78LvJKEllgAHnBtVQFJV2qwIMtwANCOJ4AXlnyqxHI
-         i2XJSXhDYZAG08oos6LHJxlMq29f+GB+Wn7Z+ydeeGurwT6JunzkwQ4f8ANe0qwONtpV
-         9FHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wWmw1NV7gbWNc2BoUTFwu8FGKZUBcJpPXw0NA4jr4Bk=;
-        b=hsACK/R2tLvYLk6gE7h4gbzj9g937Ss7fYsiFufmRKliTwN/5PdougUEMDyMjTwLrD
-         KwN8L+LnpbvxfgccBmXdzVJRN+1+rhvHijiIcNkItfcXPTlx8URcf3A4anT/qmuPvSAs
-         S11DJ5slXshK515t51NOXGN1xYed533MZZXhvsB/Gae5eATZxttpYu8XLpDu5SF4EdDb
-         e45YpxWAqv0q09n1pAJOSN9UqkoYgy8nDMP3YNRzmONYhO1SKf168goAPKIUdnfy/EMw
-         FzN2tfvIaFlV9XTaVthXCRnFNS0uOPWYESms9yKXYaXXa01s725keFufVzbCAsorY7IV
-         wo3w==
-X-Gm-Message-State: AOAM532v9F/zoQnlCiDTArcMWRXHUG7xtjPuvJ664sDPUQKnbL6o/kpd
-        uLREW15ZpxlBnpNZ0in//8/H1EfAxWRdcNbp0EY=
-X-Google-Smtp-Source: ABdhPJxC+ot7T75FkO1+J7+MSBrDulfWIWZX0EZ1N+ymQwTAx7MbhOvrWo8aFRRXyJXXAYSqJ7JWigVNX8dWGt9hUYo=
-X-Received: by 2002:a92:180b:: with SMTP id 11mr1207045ily.89.1603185775910;
- Tue, 20 Oct 2020 02:22:55 -0700 (PDT)
+        id S2392761AbgJTJVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:21:53 -0400
+Received: from mga02.intel.com ([134.134.136.20]:39820 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389774AbgJTJVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 05:21:52 -0400
+IronPort-SDR: 5JBgU44g+TrFdC0ZBcHouBFEpKFZ1+taYM1SCCia4G/1MEc9utgN08O/ck6M6I5UUvcQxAYdai
+ 8fM1lK6oZCtw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="154122944"
+X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
+   d="scan'208";a="154122944"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 02:21:52 -0700
+IronPort-SDR: jrYPBsOzch3McB0zJ8KupDFQdkV/vJIjRFZwvWsfkjn97QzeEwMAvQ4W5PTRHUXPQlwK94YIbN
+ Ofz7V/51Pung==
+X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
+   d="scan'208";a="532983246"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 02:21:45 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kUnqw-00BJzh-Ow; Tue, 20 Oct 2020 12:22:46 +0300
+Date:   Tue, 20 Oct 2020 12:22:46 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
+        pmladek@suse.com, mchehab@kernel.org, tian.shu.qiu@intel.com,
+        bingbu.cao@intel.com, sakari.ailus@linux.intel.com,
+        yong.zhi@intel.com, rafael@kernel.org, gregkh@linuxfoundation.org,
+        kitakar@gmail.com, dan.carpenter@oracle.org
+Subject: Re: [RFC PATCH v3 1/9] software_node: Add helper function to
+ unregister arrays of software_nodes ordered parent to child
+Message-ID: <20201020092246.GE4077@smile.fi.intel.com>
+References: <20201019225903.14276-1-djrscally@gmail.com>
+ <20201019225903.14276-2-djrscally@gmail.com>
 MIME-Version: 1.0
-References: <20201012125323.17509-1-david@redhat.com> <20201012125323.17509-8-david@redhat.com>
-In-Reply-To: <20201012125323.17509-8-david@redhat.com>
-From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Date:   Tue, 20 Oct 2020 11:22:45 +0200
-Message-ID: <CAM9Jb+iiLy-7BB7J3S2yiEhWpn1VxKG_VuwGK82gq0+=8QvQKw@mail.gmail.com>
-Subject: Re: [PATCH v1 07/29] virtio-mem: generalize virtio_mem_overlaps_range()
-To:     David Hildenbrand <david@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019225903.14276-2-djrscally@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Avoid using memory block ids. While at it, use uint64_t for
-> address/size.
->
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  drivers/virtio/virtio_mem.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-> index 821143db14fe..37a0e338ae4a 100644
-> --- a/drivers/virtio/virtio_mem.c
-> +++ b/drivers/virtio/virtio_mem.c
-> @@ -489,14 +489,10 @@ static int virtio_mem_translate_node_id(struct virtio_mem *vm, uint16_t node_id)
->   * Test if a virtio-mem device overlaps with the given range. Can be called
->   * from (notifier) callbacks lockless.
->   */
-> -static bool virtio_mem_overlaps_range(struct virtio_mem *vm,
-> -                                     unsigned long start, unsigned long size)
-> +static bool virtio_mem_overlaps_range(struct virtio_mem *vm, uint64_t start,
-> +                                     uint64_t size)
->  {
-> -       unsigned long dev_start = virtio_mem_mb_id_to_phys(vm->first_mb_id);
-> -       unsigned long dev_end = virtio_mem_mb_id_to_phys(vm->last_mb_id) +
-> -                               memory_block_size_bytes();
-> -
-> -       return start < dev_end && dev_start < start + size;
-> +       return start < vm->addr + vm->region_size && vm->addr < start + size;
->  }
+On Mon, Oct 19, 2020 at 11:58:55PM +0100, Daniel Scally wrote:
+> Software nodes that are children of another software node should be
+> unregistered before their parent. To allow easy unregistering of an array
+> of software_nodes ordered parent to child, add a helper function to loop
+> over and unregister nodes in such an array in reverse order.
 
-Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Suggested-by: Andriy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+For all patches Andriy -> Andy (email stays as above!).
+
+...
+
+> +/**
+> + * software_node_unregister_nodes_reverse - Unregister an array of software
+> + * nodes in reverse order.
+
+Can you shrink this to one line?
+
+Something like dropping ' in reverse order.' and adding it below...
+
+> + * @nodes: Array of software nodes to be unregistered.
+> + *
+
+...like here to explain reversed order?
+
+> + * NOTE: The same warning applies as with software_node_unregister_nodes.
+
+software_node_unregister_nodes()
+
+> + * Unless you are _sure_ that the array of nodes is ordered parent to child
+> + * it is wiser to remove them individually in the correct order.
+> + */
+> +void software_node_unregister_nodes_reverse(const struct software_node *nodes)
+> +{
+> +	unsigned int i = 0;
+> +
+> +	while (nodes[i].name)
+> +		i++;
+> +
+> +	while (i--)
+> +		software_node_unregister(&nodes[i]);
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
