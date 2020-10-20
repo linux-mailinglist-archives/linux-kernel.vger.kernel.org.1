@@ -2,111 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B663293ECC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC531293ED4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408145AbgJTOdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40872 "EHLO
+        id S2408231AbgJTOhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408012AbgJTOdS (ORCPT
+        with ESMTP id S1728712AbgJTOg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:33:18 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4946C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:33:16 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id j13so2507553ilc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jj9glYe0gvbVcAodw3qv6Kp672I6hibQ7u2mjdDL0BQ=;
-        b=FDIUTpY+EczYabB3zudGGYlm2bXqozLmyLzyoExIYHR74w7QRpS4sJspfDnhCBQCrZ
-         rDd6xn+vxM6k6oRSHVwJXr3Oy8ZpCNUJNYIDIYgK1AMsFVKsONCeeVXSgJk7Y08FTrWA
-         iA0AT8GwhxKQG/+b2KElJWMiC7kHIBANpiJlNLyRM1bDcROLideHgki/V5BsFGYhldei
-         dLfg8wswxwhDzKBZu9wAGVCHSL81rzqFqwU0QfNbvw3d9OKPqvQWF3BkCvQDW+dyeuSh
-         yiSy+cbks/hvdd8CPM6hXenTJqxHoKLjeA5yunkUiPruWS+V5aBNkaPvnhnHHitc+3NK
-         4z8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=jj9glYe0gvbVcAodw3qv6Kp672I6hibQ7u2mjdDL0BQ=;
-        b=bq7Bb2l8ionPii3MKw0d90rn5xK0P1pU/DhkzfbgQ5eC0fsZF2P9DV4nV91HStN2JH
-         0N4lZRhbuY8f6mOiAQ/6lCiAcMgium2r48NwPKTiAB84DMJNuNufgacRKyEQL5YWpNjl
-         B6vRCEqKU3AnsBjcE4Eyu5bWt5u0ubUhYTQQusdRWbRGFggF1HsGfR0t+Nw0YhAJwNJv
-         QC+JDnJcJzVkfTZoGUvqwWpYrzZ07SA/bB+MicExLVfaGOZY0PgLG25i1aJaD4ZDWg+c
-         3scGWMLIsuUeVU+aNyLRJGR+QqUr9gSHFYtNsgP+eNcaRxoAd3A8Uxj99MgZPpbQPKuY
-         E3fA==
-X-Gm-Message-State: AOAM5322byL5iL6/nAV2tg+Mcg+9sPWnD5E/nkM+94SBzdpEwFq3BLZc
-        Vlj90ZjV21Zj74FTKnDqips=
-X-Google-Smtp-Source: ABdhPJyYF9qRrSJYkXVPlgaKnxArlTa7yCTr5aX9oZ+hVDLUhiaThsqvbF3cotHBSetaSWUETWVayA==
-X-Received: by 2002:a05:6e02:4c8:: with SMTP id f8mr2034088ils.159.1603204396133;
-        Tue, 20 Oct 2020 07:33:16 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id d14sm1820275ila.42.2020.10.20.07.33.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 07:33:15 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 20 Oct 2020 10:33:12 -0400
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        Tue, 20 Oct 2020 10:36:59 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A46C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8H3150gj3obwP8uh+NX1JstVv2SvYj4QAxAa8GSKXIM=; b=WjXrkfTZTNc4OPe1FvNLTC18Fp
+        0UbNjNK7vRSBRd35ZCARbvEe4k2Y2PFMoQjXY/hZYhDLKsTvmu61a9HwS2B7ZIhl3B/L127Tm54BS
+        Kxf2/YA8PlmZflelcC89E237IT/8IBRj1wlYR/LG7UWsUgIXxExnvx/vejl8UYj5NHhbxzz1/CO49
+        qAXqdOGD++6upErA6dnAHot5TRlCn/qPZGMGoJZWB9vyErFOj+usMHymMCmerpoMT/1K6u44KeBNb
+        paKZwehp+ZnMKpNIwFZh+OsQT78NDwFmWkEN4Cj6OCrfQdeN9u5reyc0zwSQsG9CUvT+jgstcWNvd
+        8JcbHRcA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kUsks-0008Fo-MG; Tue, 20 Oct 2020 14:36:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E14C93012C3;
+        Tue, 20 Oct 2020 16:36:48 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C701C21463183; Tue, 20 Oct 2020 16:36:48 +0200 (CEST)
+Date:   Tue, 20 Oct 2020 16:36:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] x86/boot/compressed/64: Check SEV encryption in
- 64-bit boot-path
-Message-ID: <20201020143312.GE2996696@rani.riverdale.lan>
-References: <20201019151121.826-1-joro@8bytes.org>
- <20201019151121.826-4-joro@8bytes.org>
- <20201019170008.GA2701355@rani.riverdale.lan>
- <20201019175447.GA2720155@rani.riverdale.lan>
- <20201019203935.GG3635@8bytes.org>
- <20201019213106.GB2815942@rani.riverdale.lan>
- <20201020085957.GF9328@suse.de>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>, linux-mm@kvack.org
+Subject: Re: [PATCH 1/3] sched: fix exit_mm vs membarrier (v4)
+Message-ID: <20201020143648.GU2628@hirez.programming.kicks-ass.net>
+References: <20201020134715.13909-1-mathieu.desnoyers@efficios.com>
+ <20201020134715.13909-2-mathieu.desnoyers@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201020085957.GF9328@suse.de>
+In-Reply-To: <20201020134715.13909-2-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 10:59:57AM +0200, Joerg Roedel wrote:
-> On Mon, Oct 19, 2020 at 05:31:06PM -0400, Arvind Sankar wrote:
-> > Is it possible to take advantage of this to make the check independent
-> > of the original page tables? i.e. switch to the new pagetables, then
-> > write into .data or .bss the opcodes for a function that does
-> > 	movabs	$imm64, %rax
-> > 	jmp	*%rdi	// avoid using stack for the return
-> > filling in the imm64 with the RDRAND value, and then try to execute it.
-> > If the C-bit value is wrong, this will probably crash, and at any rate
-> > shouldn't return with the correct value in %rax.
-> 
-> That could work, but is not reliable. When the C bit is wrong the CPU
-> would essentially execute random data, which could also be a valid
-> instruction stream. A crash is not guaranteed.
-> 
+On Tue, Oct 20, 2020 at 09:47:13AM -0400, Mathieu Desnoyers wrote:
+> +void membarrier_update_current_mm(struct mm_struct *next_mm)
+> +{
+> +	struct rq *rq = this_rq();
+> +	int membarrier_state = 0;
+> +
+> +	if (next_mm)
+> +		membarrier_state = atomic_read(&next_mm->membarrier_state);
+> +	if (READ_ONCE(rq->membarrier_state) == membarrier_state)
+> +		return;
+> +	WRITE_ONCE(rq->membarrier_state, membarrier_state);
+> +}
 
-That doesn't feel like a big loss: if a malicious hypervisor wanted to
-induce completely random code execution, it can do that anyway by just
-messing with the guest-to-host translation, no?
+This is suspisioucly similar to membarrier_switch_mm().
 
-We would need to avoid calling this in the secondary cpu startup, I guess.
+Would something like so make sense?
 
-I was hoping to be able to clean up the identity mapping in
-__startup_64(), which currently maps the entire kernel using wraparound
-entries, to just map the head page of the kernel, since AFAICT nothing
-else is actually used from the identity mapping after switching to the
-new page tables. But we'd need to keep it to support this check.
+---
+--- a/kernel/sched/membarrier.c
++++ b/kernel/sched/membarrier.c
+@@ -206,14 +206,7 @@ void membarrier_exec_mmap(struct mm_stru
+ 
+ void membarrier_update_current_mm(struct mm_struct *next_mm)
+ {
+-	struct rq *rq = this_rq();
+-	int membarrier_state = 0;
+-
+-	if (next_mm)
+-		membarrier_state = atomic_read(&next_mm->membarrier_state);
+-	if (READ_ONCE(rq->membarrier_state) == membarrier_state)
+-		return;
+-	WRITE_ONCE(rq->membarrier_state, membarrier_state);
++	membarrier_switch_mm(this_rq(), NULL, next_mm);
+ }
+ 
+ static int membarrier_global_expedited(void)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index d2621155393c..3d589c2ffd28 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2645,12 +2645,14 @@ static inline void membarrier_switch_mm(struct rq *rq,
+ 					struct mm_struct *prev_mm,
+ 					struct mm_struct *next_mm)
+ {
+-	int membarrier_state;
++	int membarrier_state = 0;
+ 
+ 	if (prev_mm == next_mm)
+ 		return;
+ 
+-	membarrier_state = atomic_read(&next_mm->membarrier_state);
++	if (next_mm)
++		membarrier_state = atomic_read(&next_mm->membarrier_state);
++
+ 	if (READ_ONCE(rq->membarrier_state) == membarrier_state)
+ 		return;
+ 
