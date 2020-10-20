@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C76293C12
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDB1293C15
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406495AbgJTMoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:44:22 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:39255 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406485AbgJTMoW (ORCPT
+        id S2406512AbgJTMof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:44:35 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:36329 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406500AbgJTMoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:44:22 -0400
-Received: by mail-ot1-f68.google.com with SMTP id f10so1573708otb.6;
-        Tue, 20 Oct 2020 05:44:20 -0700 (PDT)
+        Tue, 20 Oct 2020 08:44:34 -0400
+Received: by mail-wm1-f66.google.com with SMTP id e2so1725727wme.1;
+        Tue, 20 Oct 2020 05:44:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WWPewNSOY3SiiT7uUQmWm+BqSC1/njsbhzjqRt/2knw=;
-        b=HjxrBUJ509tB7KCxym89LkgZHij1fxfVH//sJKuB4Yw/6TCsx3lXVWsv4us8gvZOiy
-         h+oDZ7GIyF+Pp2arwenbDSL3ST2d7CZT7F37dS82I9koL3z1BuWe5CgQHNaNXcFEo/ha
-         13/eQ94vpa/NL71cI94w2DpE61IGI9H8nThahK6ttFby8Oqiyoxqyi4L9t/VybZfBPwT
-         aLYwZP8hz1hB7alE22iQexINqe0uvVfKMJBnorKDMoq7wJwVFxl59aPSBQtG+moL5Y4c
-         EAxcjSfC0NJLWLTumoueSF+EdPrSA6s6qxk2lHIomqY3BhjRkwDbJDj2D5W7vZ+UNzFz
-         UZmg==
-X-Gm-Message-State: AOAM532SwmVJcDldg/VmGmp9tXq7jb1/3ljlP+mGoElMZIb3bcWgdxKE
-        hqfUQhfL6Ry7cziQZdqe2PYbGXPBCCnziG5uaoQ=
-X-Google-Smtp-Source: ABdhPJyX+2+jJiqejYrdJK/32fDTwvhU81MkMEoY8uYHEhJzDEFkSQ/6zJS0ZRJ5mX268k3UQ9Oj2qsiTbYoIidVi+k=
-X-Received: by 2002:a9d:734f:: with SMTP id l15mr1676996otk.260.1603197859733;
- Tue, 20 Oct 2020 05:44:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201019225903.14276-1-djrscally@gmail.com> <20201019225903.14276-4-djrscally@gmail.com>
-In-Reply-To: <20201019225903.14276-4-djrscally@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 20 Oct 2020 14:44:08 +0200
-Message-ID: <CAJZ5v0g=2rQkEr-_QnhvLLgaPyX8OhUHe27n-XZ98q31BHBEPA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 3/9] software_node: Fix failure to hold refcount in software_node_get_next_child
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Rob Herring <robh@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        tian.shu.qiu@intel.com, Bingbu Cao <bingbu.cao@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        yong.zhi@intel.com, "Rafael J. Wysocki" <rafael@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IzZX4zGGwluZ70Rb48zONj29b5Z7XTIenJHYm8MJX6U=;
+        b=R9y6LLdqu19zCUOVcHWCf2aRzwTUxAaPyrKCM8hsgieDig4ecaRRsU+TtR2B2skGhS
+         s5BPzbOnDAo1Ja8lHgqmiSg9XUpd6UjwoS6/WAjNTcafgWGzBSngGBKBpwcUmJaJRVpf
+         Qvkd1bvugT2hPU7UyPEMF9uwJfJ5vAd3Z9WO+a9v5GUSkqx0iay+NpZq9Qpa9PBudM2F
+         gICTQP+Zsyx/7UbwUn9h5LAW05W7fnqu2LfjMEGgVfmM4sbBlmDcsqnVJf3vVjOhxgKw
+         a66f2NM9hZcrS875nhQBN+jAYNrFpzbm3g/hbwLhYWXOOSbDkHu7Vhlk6HPA4acdyR1d
+         rj3A==
+X-Gm-Message-State: AOAM531unJFlI8SJdWXUxP24nDIYxFOOLFEGBWTzpSlw7JU+iM+F1d+2
+        Y5vhdjdyPsV/62c4aflBPokWh2V8hLQjK+a2
+X-Google-Smtp-Source: ABdhPJyGjKoqZPYMot+a1OkS+n8PXkomZ+8CgF1E4gXdXXoRvO2bbYazsP6IjtG1H/mg+x6uuoXGnQ==
+X-Received: by 2002:a1c:6643:: with SMTP id a64mr2861815wmc.142.1603197872185;
+        Tue, 20 Oct 2020 05:44:32 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id u2sm2554384wme.1.2020.10.20.05.44.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 05:44:31 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 14:44:28 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kitakar@gmail.com, dan.carpenter@oracle.org
-Content-Type: text/plain; charset="UTF-8"
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
+Message-ID: <20201020124428.GX127386@kozik-lap>
+References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
+ <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 12:59 AM Daniel Scally <djrscally@gmail.com> wrote:
->
-> The software_node_get_next_child() function currently does not hold a kref
-> to the child software_node; fix that.
->
-> Fixes: 59abd83672f7 ("drivers: base: Introducing software nodes to the firmware node framework")
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+On Tue, Oct 20, 2020 at 02:59:59PM +0300, Serge Semin wrote:
+> In accordance with the DWC USB3 bindings the corresponding node
+> name is suppose to comply with the Generic USB HCD DT schema, which
+> requires the USB nodes to have the name acceptable by the regexp:
+> "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
+> named.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 > ---
-> Changes in v3:
->         - split out from the full software_node_graph*() patch
->
->  drivers/base/swnode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index f01b1cc61..741149b90 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -450,7 +450,7 @@ software_node_get_next_child(const struct fwnode_handle *fwnode,
->                 c = list_next_entry(c, entry);
->         else
->                 c = list_first_entry(&p->children, struct swnode, entry);
-> -       return &c->fwnode;
-> +       return software_node_get(&c->fwnode);
->  }
->
->  static struct fwnode_handle *
-> --
+>  arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 4 ++--
+>  arch/arm64/boot/dts/qcom/ipq8074.dtsi        | 4 ++--
+>  arch/arm64/boot/dts/qcom/msm8996.dtsi        | 4 ++--
+>  arch/arm64/boot/dts/qcom/msm8998.dtsi        | 2 +-
+>  arch/arm64/boot/dts/qcom/qcs404-evb.dtsi     | 2 +-
+>  arch/arm64/boot/dts/qcom/qcs404.dtsi         | 4 ++--
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi         | 2 +-
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi         | 4 ++--
+>  arch/arm64/boot/dts/qcom/sm8150.dtsi         | 2 +-
+>  9 files changed, 14 insertions(+), 14 deletions(-)
+> 
 
-This should be sent as a separate fix AFAICS.
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Best regards,
+Krzysztof
