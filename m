@@ -2,225 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBE4293D66
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AACD9293D6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407497AbgJTNeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:34:20 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14091 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407488AbgJTNeU (ORCPT
+        id S2407508AbgJTNhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407478AbgJTNhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:34:20 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8ee6fe0001>; Tue, 20 Oct 2020 06:32:46 -0700
-Received: from [10.40.203.32] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
- 2020 13:34:10 +0000
-Subject: Re: [PATCH] PCI: dwc: Use ATU regions to map memory regions
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-CC:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
-        <bhelgaas@google.com>, <amurray@thegoodpenguin.co.uk>,
-        <robh@kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
-References: <20201005121351.32516-1-vidyas@nvidia.com>
- <e633d496-0c4b-f6f5-00a9-c98fb3ed9f61@nvidia.com>
- <20201020132037.GB25784@e121166-lin.cambridge.arm.com>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <85e0d8f8-9dfe-b71b-f039-96eaf8f4c350@nvidia.com>
-Date:   Tue, 20 Oct 2020 19:03:59 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
+        Tue, 20 Oct 2020 09:37:35 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C60FC0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:37:34 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h7so2182962wre.4
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Dd/4tB1jhfJBU76uhWYvJK/M1Y4WZsbkyJFSG8k8QQo=;
+        b=TPK9GUXwppf2mM1kCN3ve/x60CKUztqZ+989Nh8aqFSLGa+l7mbzE/LqA70BHIvGZz
+         9t62mD+eV+mTcXERLQfsqGiscvH12E6jUFihaaN9G4Q/H5OP5vn/D7cAcdZLOAKnGAP4
+         3CcOZMOSIaLcag5ahYLat4UtdM8iVyx44UW/o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Dd/4tB1jhfJBU76uhWYvJK/M1Y4WZsbkyJFSG8k8QQo=;
+        b=k0A6Gm7c5vS9S493Dfd57bDjO94MMfjz4C+aQymqyHmKruorCMNJH4Sn62M2OE6sBR
+         REWt9/Mp9XVQj4kzMxJT1FiPgii6JyKxkEaI6joQ6ZPnl57twrUKaut67UbpxKUgLwXi
+         Vam09utfV3mJqX9EMfWRX6HjO+LeBp2rDHYfB+S4XOtBBf/b2R0IKDFuyvDdktUvXDue
+         6W1mQnFQfLYITbpj97BvW9wxQdmzrEdSKH3lt3Nx3eZx5O//Zww6LhPZJ+doJoxo5Fzf
+         VmBFHZ04b5Yx+6pIcBWL/6LOX8seBWIu8fjGTuCKTBc2Gb3JjPd9XKn6tnX+v9mGuYlq
+         QxDw==
+X-Gm-Message-State: AOAM530uYWXbFbgBvWoeseyGN6MVRcBxLscC9gKs+F6zwOVploWGRwn1
+        lvkTPCC8ozxPCC5bl+LPrrCiIdfouAZVgB80N9EimA==
+X-Google-Smtp-Source: ABdhPJxbiebIvIYWJ8VjSbDQyhf4y6aT7O3DnC5CYOzHre4Bqv+imNt5qgF8Ub9UZZ8/En/AxSVEIthwU9StfwKT0vc=
+X-Received: by 2002:adf:cc82:: with SMTP id p2mr3646265wrj.177.1603201052544;
+ Tue, 20 Oct 2020 06:37:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201020132037.GB25784@e121166-lin.cambridge.arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603200766; bh=XbjLOg79CmuDWc3lI/dtwF7N4cCKVsmRoy588r0C9b8=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=biLwzaOQjMtXV08V8H5XnF6vEDAAtr7jkdqr+pSW/7FbTq3wiy87JK7X10ICJlPTM
-         h5/VzUaI5fuou8D5HzpVNWYh8pj9Z0fPRjJV3LDCsZnHJjkbxKWcNQ1EBYNw8f2/lY
-         pAK/zkH4F1Cs6zKR8TZng+n4fBOlVE68L5ODHNUsE5ud0GHLApzKfLPLbB64AkX8iH
-         bR1C1pTC3j/MMBR7HAuqeeXcxWyQ5coS2ocnBUVckXudGJOcdJ4Pf1PLcsjWDkMKWD
-         cilnlxHhYQzhhZ7clEX5kwLE0br/VhZ/z91HMH1A88LIQcqPwnRJtMZL8gk0PHcj8j
-         6s26MW2ErP1EA==
+References: <20200914080619.4178587-1-cychiang@chromium.org>
+ <20200914080619.4178587-3-cychiang@chromium.org> <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
+ <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com> <20201015161251.GF4390@sirena.org.uk>
+In-Reply-To: <20201015161251.GF4390@sirena.org.uk>
+From:   Cheng-yi Chiang <cychiang@chromium.org>
+Date:   Tue, 20 Oct 2020 21:37:05 +0800
+Message-ID: <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
+Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Srinivasa Rao <srivasam@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Dylan Reid <dgreid@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 16, 2020 at 12:13 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Oct 15, 2020 at 03:59:26PM +0800, Cheng-yi Chiang wrote:
+> > On Tue, Oct 13, 2020 at 6:36 PM Srinivas Kandagatla
+>
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    const: qcom,sc7180-sndcard-rt5682-m98357-1mic
+>
+> > > This information can come from the dai link description itself, why
+> > > should compatible string have this information?
+>
+> > I think dailink description is not enough to specify everything
+> > machine driver needs to know.
+> > E.g. there is a variation where there are front mic and rear mic. We
+> > need to tell the machine driver about it so
+> > it can create proper widget, route, and controls.
+>
+> That sounds like something that could be better described with
+> properties (including for example the existing bindings used for setting
+> up things like analogue outputs and DAPM routes)?
+>
 
+Hi Mark, thank you for the comments.
 
-On 10/20/2020 6:50 PM, Lorenzo Pieralisi wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On Mon, Oct 19, 2020 at 11:21:54AM +0530, Vidya Sagar wrote:
->> Hi Lorenzo, Rob, Gustavo,
->> Could you please review this change?
-> 
-> Next cycle - we are in the middle of the merge window and I am not
-> queueing any more patches.
+May I know your suggestion on Ajye's patch "ASoC: qcom: sc7180: Modify
+machine driver for 2mic" ?
 
-Thanks for the update.
-FWIW, PCIe is broken on Tegra194 with Rob's patches (which got accepted 
-already) and without the current patch.
+https://lore.kernel.org/r/20200928063744.525700-3-ajye_huang@compal.corp-partner.google.com
 
-Thanks,
-Vidya Sagar
+I think adding code in the machine driver makes the intent straightforward.
+If we want the machine driver to be fully configurable,
+we can always add more code to handle properties like gpio, route,
+widget (mux, text selection) passed in from the device tree.
+But I feel that we don't need a machine driver to be that configurable
+from the device tree.
+I think having the logic scattered in various dtsi files and relying
+on manual inspection to understand the usage would be less
+maintainable than only exposing needed property like gpio.
+Especially in the complicated case where we need to create a mux
+widget with callback toggling the gpio like this:
 
-> 
-> Thanks,
-> Lorenzo
-> 
->> Thanks,
->> Vidya Sagar
->>
->> On 10/5/2020 5:43 PM, Vidya Sagar wrote:
->>> Use ATU region-3 and region-0 to setup mapping for prefetchable and
->>> non-prefetchable memory regions respectively only if their respective CPU
->>> and bus addresses are different.
->>>
->>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
->>> ---
->>>    .../pci/controller/dwc/pcie-designware-host.c | 44 ++++++++++++++++---
->>>    drivers/pci/controller/dwc/pcie-designware.c  | 12 ++---
->>>    drivers/pci/controller/dwc/pcie-designware.h  |  4 +-
->>>    3 files changed, 48 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
->>> index 317ff512f8df..cefde8e813e9 100644
->>> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
->>> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
->>> @@ -515,9 +515,40 @@ static struct pci_ops dw_pcie_ops = {
->>>      .write = pci_generic_config_write,
->>>    };
->>> +static void dw_pcie_setup_mem_atu(struct pcie_port *pp,
->>> +                             struct resource_entry *win)
->>> +{
->>> +   struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->>> +
->>> +   if (win->res->flags & IORESOURCE_PREFETCH && pci->num_viewport >= 4 &&
->>> +       win->offset) {
->>> +           dw_pcie_prog_outbound_atu(pci,
->>> +                                     PCIE_ATU_REGION_INDEX3,
->>> +                                     PCIE_ATU_TYPE_MEM,
->>> +                                     win->res->start,
->>> +                                     win->res->start - win->offset,
->>> +                                     resource_size(win->res));
->>> +   } else if (win->res->flags & IORESOURCE_PREFETCH &&
->>> +              pci->num_viewport < 4) {
->>> +           dev_warn(pci->dev,
->>> +                    "Insufficient ATU regions to map Prefetchable memory\n");
->>> +   } else if (win->offset) {
->>> +           if (upper_32_bits(resource_size(win->res)))
->>> +                   dev_warn(pci->dev,
->>> +                            "Memory resource size exceeds max for 32 bits\n");
->>> +           dw_pcie_prog_outbound_atu(pci,
->>> +                                     PCIE_ATU_REGION_INDEX0,
->>> +                                     PCIE_ATU_TYPE_MEM,
->>> +                                     win->res->start,
->>> +                                     win->res->start - win->offset,
->>> +                                     resource_size(win->res));
->>> +   }
->>> +}
->>> +
->>>    void dw_pcie_setup_rc(struct pcie_port *pp)
->>>    {
->>>      u32 val, ctrl, num_ctrls;
->>> +   struct resource_entry *win;
->>>      struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->>>      /*
->>> @@ -572,13 +603,14 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
->>>       * ATU, so we should not program the ATU here.
->>>       */
->>>      if (pp->bridge->child_ops == &dw_child_pcie_ops) {
->>> -           struct resource_entry *entry =
->>> -                   resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
->>> +           resource_list_for_each_entry(win, &pp->bridge->windows) {
->>> +                   switch (resource_type(win->res)) {
->>> +                   case IORESOURCE_MEM:
->>> +                           dw_pcie_setup_mem_atu(pp, win);
->>> +                           break;
->>> +                   }
->>> +           }
->>> -           dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX0,
->>> -                                     PCIE_ATU_TYPE_MEM, entry->res->start,
->>> -                                     entry->res->start - entry->offset,
->>> -                                     resource_size(entry->res));
->>>              if (pci->num_viewport > 2)
->>>                      dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX2,
->>>                                                PCIE_ATU_TYPE_IO, pp->io_base,
->>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
->>> index 3c1f17c78241..6033689abb15 100644
->>> --- a/drivers/pci/controller/dwc/pcie-designware.c
->>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
->>> @@ -227,7 +227,7 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
->>>    static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->>>                                           int index, int type,
->>>                                           u64 cpu_addr, u64 pci_addr,
->>> -                                        u32 size)
->>> +                                        u64 size)
->>>    {
->>>      u32 retries, val;
->>>      u64 limit_addr = cpu_addr + size - 1;
->>> @@ -244,8 +244,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->>>                               lower_32_bits(pci_addr));
->>>      dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
->>>                               upper_32_bits(pci_addr));
->>> -   dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
->>> -                            type | PCIE_ATU_FUNC_NUM(func_no));
->>> +   val = type | PCIE_ATU_FUNC_NUM(func_no);
->>> +   val = upper_32_bits(size - 1) ?
->>> +           val | PCIE_ATU_INCREASE_REGION_SIZE : val;
->>> +   dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
->>>      dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
->>>                               PCIE_ATU_ENABLE);
->>> @@ -266,7 +268,7 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->>>    static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
->>>                                      int index, int type, u64 cpu_addr,
->>> -                                   u64 pci_addr, u32 size)
->>> +                                   u64 pci_addr, u64 size)
->>>    {
->>>      u32 retries, val;
->>> @@ -310,7 +312,7 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
->>>    }
->>>    void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index, int type,
->>> -                          u64 cpu_addr, u64 pci_addr, u32 size)
->>> +                          u64 cpu_addr, u64 pci_addr, u64 size)
->>>    {
->>>      __dw_pcie_prog_outbound_atu(pci, 0, index, type,
->>>                                  cpu_addr, pci_addr, size);
->>> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
->>> index 97c7063b9e89..b81a1813cf9e 100644
->>> --- a/drivers/pci/controller/dwc/pcie-designware.h
->>> +++ b/drivers/pci/controller/dwc/pcie-designware.h
->>> @@ -80,10 +80,12 @@
->>>    #define PCIE_ATU_VIEWPORT         0x900
->>>    #define PCIE_ATU_REGION_INBOUND           BIT(31)
->>>    #define PCIE_ATU_REGION_OUTBOUND  0
->>> +#define PCIE_ATU_REGION_INDEX3             0x3
->>>    #define PCIE_ATU_REGION_INDEX2            0x2
->>>    #define PCIE_ATU_REGION_INDEX1            0x1
->>>    #define PCIE_ATU_REGION_INDEX0            0x0
->>>    #define PCIE_ATU_CR1                      0x904
->>> +#define PCIE_ATU_INCREASE_REGION_SIZE      BIT(13)
->>>    #define PCIE_ATU_TYPE_MEM         0x0
->>>    #define PCIE_ATU_TYPE_IO          0x2
->>>    #define PCIE_ATU_TYPE_CFG0                0x4
->>> @@ -295,7 +297,7 @@ void dw_pcie_upconfig_setup(struct dw_pcie *pci);
->>>    int dw_pcie_wait_for_link(struct dw_pcie *pci);
->>>    void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index,
->>>                             int type, u64 cpu_addr, u64 pci_addr,
->>> -                          u32 size);
->>> +                          u64 size);
->>>    void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
->>>                                int type, u64 cpu_addr, u64 pci_addr,
->>>                                u32 size);
->>>
++static const char * const dmic_mux_text[] = {
++       "Front Mic",
++       "Rear Mic",
++};
++
++static SOC_ENUM_SINGLE_DECL(sc7180_dmic_enum,
++                           SND_SOC_NOPM, 0, dmic_mux_text);
++
++static const struct snd_kcontrol_new sc7180_dmic_mux_control =
++       SOC_DAPM_ENUM_EXT("DMIC Select Mux", sc7180_dmic_enum,
++                         dmic_get, dmic_set);
++
++SND_SOC_DAPM_MUX("Dmic Mux", SND_SOC_NOPM, 0, 0, &sc7180_dmic_mux_control),
+
+Passing all the logic along with the callback of dmic_get, dmic_set
+from the device tree would be too hard to maintain.
+
+> > The codec combination also matters. There will be a variation where
+> > rt5682 is replaced with adau7002 for dmic.
+> > Although machine driver can derive some information by looking at dailink,
+> > I think specifying it explicitly in the compatible string is easier to
+> > tell what machine driver should do, e.g.
+> > setting PLL related to rt5682 or not.
+>
+> These feel more like things that fit with compatible, though please take
+> a look at Morimoto-san's (CCed) work on generic sound cards for more
+> complex devices:
+>
+>    https://lore.kernel.org/alsa-devel/87imbeybq5.wl-kuninori.morimoto.gx@renesas.com/
+>
+> This is not yet implemented but it'd be good to make sure that the
+> Qualcomm systems can be handled too in future.
+
+Yes, that should work to describe the dailink we are using.
+But a more tricky issue is how to do calls like setting PLL in dai startup ops.
+
+                /* Configure PLL1 for codec */
+                ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
+                                          DEFAULT_MCLK_RATE, RT5682_PLL1_FREQ);
+
+I think that asking a generic machine driver to do configuration like
+this with only a limited interface of device property
+might be too much of an ask for the machine driver.
+
+>
+> > You can see widget, route, controls are used according to the configuration.
+> > The alternative approach is to check whether "dmic-gpio" property
+> > exists to decide adding these stuff or not.
+> > But it makes the intent less easier to understand.
+>
+> OTOH if you have lots of compatibles then it can get hard to work out
+> exactly which one corresponds to a given board.
+
+Totally agree. Glad we have only three variations up to now.
+
+Would you mind if I simplify the compatible string like Srinivas
+suggested, and send a v12?
+
+As for other two kinds of variations that I am aware of:
+
+1. front mic / rear mic
+2. replace alc5682 with adau7002
+
+We can set different board names and different compatible strings to
+achieve such variation.
+So that it would make sense to describe configuration in compatible
+strings like you suggested, and also provides UCM a way to distinguish
+different boards.
+What do you think ?
+
+Thanks!
