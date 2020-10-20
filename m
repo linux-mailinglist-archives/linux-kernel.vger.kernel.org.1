@@ -2,147 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885CB29397B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63C8293986
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393396AbgJTK5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:57:41 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:50619 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390175AbgJTK5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:57:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603191460; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=kDyFGrjqjzvUGZvCqxfuCVT1uxHJbiGv9HnASJOiAKE=;
- b=AYxJdObfzcWIehBt55Z/AUdF+49cC0r4hq4h8gPEQegzuX5hqcGY277NCnu9BbjwpnWLJK0L
- 1rIrcXiZQ/QQHDvYe7ZosJ+B5b/r9Ve/wwxJoEjrtrBSUb1N4/Pwp8LccXhNAyDgN4ykyQNF
- IA6fJYJyzNNXFoYI26YFhuWo9RQ=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f8ec2a3a03b63d6739e0167 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Oct 2020 10:57:39
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C2B4CC433CB; Tue, 20 Oct 2020 10:57:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 387BCC433C9;
-        Tue, 20 Oct 2020 10:57:38 +0000 (UTC)
+        id S2393428AbgJTLBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 07:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392406AbgJTLBg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 07:01:36 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC34C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 04:01:34 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id h7so989387pfn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 04:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BxAYr2sFB3M55J3MySzPgg9HcO1IPfrCWJA+c9nDhwg=;
+        b=wXgX62b0D8vcdXwNsi47cgqrQ4OAEHe/LTs7wKNjiZVx3vGvqt1Q7JeOnUNzqDOQ2+
+         Npobpnm7EUIkvc6nfu0DKvdCM+YoY74j/htMAltCDKYn/EwGxqorKBTFgFo6lqQRQsIo
+         bNr1j0Vndr4tvxM5W9BW6EzqpkEwUULM6L4+ohoIToW3Nd2Cg1JsFUUL8eTpRa9x3VQU
+         L4J9A0RqEGmHDLLMHvfUfjJz0nr4oOSRz94N+DEMfe5DC2zonxevhesgPjxUszmwYaHu
+         8Zqp6kz9I3k7+58I41yYFVi3FQqIt2609vBB2kKQVKSvX9vJsQeQ34RIAIjh9oe2+pHN
+         1MdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BxAYr2sFB3M55J3MySzPgg9HcO1IPfrCWJA+c9nDhwg=;
+        b=YgbdHXjidjB5fqv7sJDaNQstnTivGK8l9p6mBsiocyjNG5kJi7Zrt8ZT3XhaYh/O9d
+         wGulcUX1ZDxi5Tvq3R66dvBpHuuQ00tnuFxVqsnK9zfEDF7C3Ya783AMg+3SwxVKbImK
+         crfbE8K06GYFVewStrhxmFFNsCbkM2uaKis20YHFTKmK0DGv6pIy3FGuDsw9wq7E0Uf4
+         TAC30oWF+y5QWQD63nyBea2Oj2zgpO9bXMeRoBLI9e652m3FNBIWBp8aguj8z8QDHpwR
+         8O7ThVcDEt1kAlakOsgjGtF+glVHaAPLOp13lG7gNN0cnVBBzrOIlwHdIL7Vbyx7CVR4
+         qTsA==
+X-Gm-Message-State: AOAM533ao4inPYgVdEDpBm8csEe9CmBczk3xrxvJhyu4z2bcx9zzN/w0
+        fH4M1p8lHfIxk1TbjEY1NqnaRfJ7rma8tA==
+X-Google-Smtp-Source: ABdhPJyXjZjZR3KxkQQdtD1qmYQ+1KSWxfWiXSvRuxxGUrBX8s5yprlvLHfXrHVyvAxG806mF+TZnw==
+X-Received: by 2002:a63:165b:: with SMTP id 27mr2106910pgw.197.1603191694421;
+        Tue, 20 Oct 2020 04:01:34 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id b15sm1668976pju.16.2020.10.20.04.01.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Oct 2020 04:01:33 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        anmar.oueja@linaro.org, Arnd Bergmann <arnd@arndb.de>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dcookies: Make dcookies depend on CONFIG_OPROFILE
+Date:   Tue, 20 Oct 2020 16:31:27 +0530
+Message-Id: <51a9a594a38ae6e0982e78976cf046fb55b63a8e.1603191669.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 20 Oct 2020 18:57:38 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     jaegeuk@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: Re: [PATCH v2] scsi: ufs: fix clkgating on/off correctly
-In-Reply-To: <20201016211826.GA3441410@google.com>
-References: <20201016060259.390029-1-jaegeuk@kernel.org>
- <20201016211826.GA3441410@google.com>
-Message-ID: <5a59c4c4ec0959223fe0e879f2dd9d91@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-17 05:18, jaegeuk@kernel.org wrote:
-> The below call stack prevents clk_gating at every IO completion.
-> We can remove the condition, ufshcd_any_tag_in_use(), since 
-> clkgating_work
-> will check it again.
-> 
-> ufshcd_complete_requests(struct ufs_hba *hba)
->   ufshcd_transfer_req_compl()
->     __ufshcd_transfer_req_compl()
->       __ufshcd_release(hba)
->         if (ufshcd_any_tag_in_use() == 1)
->            return;
->   ufshcd_tmc_handler(hba);
->     blk_mq_tagset_busy_iter();
-> 
-> In addition, we have to avoid gate_work, if it was disabled.
-> 
-> Cc: Alim Akhtar <alim.akhtar@samsung.com>
-> Cc: Avri Altman <avri.altman@wdc.com>
-> Cc: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
-> 
-> Change log from v1:
->  - change the patch subject
->  - fix clkgate.is_enable to work
-> 
->  drivers/scsi/ufs/ufshcd.c | 5 +++--
->  drivers/scsi/ufs/ufshcd.h | 5 +++++
->  2 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index a2db8182663d..75e8a76f20c7 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1729,9 +1729,10 @@ static void __ufshcd_release(struct ufs_hba 
-> *hba)
-> 
->  	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended
->  		|| hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL
-> -		|| ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks
-> +		|| hba->outstanding_tasks
->  		|| hba->active_uic_cmd || hba->uic_async_done
-> -		|| ufshcd_eh_in_progress(hba))
-> +		|| ufshcd_eh_in_progress(hba)
-> +		|| ufshcd_is_clkgating_enabled(hba))
+From: Arnd Bergmann <arnd@arndb.de>
 
-I guess you want it to be "!ufshcd_is_clkgating_enabled(hba)" - if
-clk gating is enabled, we should let gating happen but not bail, right?
+The dcookies stuff is used only with OPROFILE and there is no need to
+build it if CONFIG_OPROFILE isn't enabled. Build it depending on
+CONFIG_OPROFILE instead of CONFIG_PROFILING.
 
-That said, I don't think we need to check whether clk gating is enabled 
-or
-not here, since ufshcd_clkgating_store() manipulates 
-clk_gating->active_reqs
-in an atomic way. If someone disables clk gating -> 
-clk_gating->active_reqs++,
-this check becomes TURE on the very first condition.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+[ Viresh: Update the name in #endif part ]
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ fs/Makefile              | 2 +-
+ include/linux/dcookies.h | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-So the very fisrt patch looks better to me.
+diff --git a/fs/Makefile b/fs/Makefile
+index 7bb2a05fda1f..a7b3d9ff8db5 100644
+--- a/fs/Makefile
++++ b/fs/Makefile
+@@ -64,7 +64,7 @@ obj-$(CONFIG_SYSFS)		+= sysfs/
+ obj-$(CONFIG_CONFIGFS_FS)	+= configfs/
+ obj-y				+= devpts/
+ 
+-obj-$(CONFIG_PROFILING)		+= dcookies.o
++obj-$(CONFIG_OPROFILE)		+= dcookies.o
+ obj-$(CONFIG_DLM)		+= dlm/
+  
+ # Do not add any filesystems before this line
+diff --git a/include/linux/dcookies.h b/include/linux/dcookies.h
+index ddfdac20cad0..8617c1871398 100644
+--- a/include/linux/dcookies.h
++++ b/include/linux/dcookies.h
+@@ -11,7 +11,7 @@
+ #define DCOOKIES_H
+  
+ 
+-#ifdef CONFIG_PROFILING
++#ifdef CONFIG_OPROFILE
+  
+ #include <linux/dcache.h>
+ #include <linux/types.h>
+@@ -64,6 +64,6 @@ static inline int get_dcookie(const struct path *path, unsigned long *cookie)
+ 	return -ENOSYS;
+ }
+ 
+-#endif /* CONFIG_PROFILING */
++#endif /* CONFIG_OPROFILE */
+ 
+ #endif /* DCOOKIES_H */
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
-Thanks,
-
-Can Guo.
-
->  		return;
-> 
->  	hba->clk_gating.state = REQ_CLKS_OFF;
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 8344d8cb3678..09e59cb86e69 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -814,6 +814,11 @@ static inline bool
-> ufshcd_is_auto_hibern8_supported(struct ufs_hba *hba)
->  		!(hba->quirks & UFSHCD_QUIRK_BROKEN_AUTO_HIBERN8);
->  }
-> 
-> +static inline bool ufshcd_is_clkgating_enabled(struct ufs_hba *hba)
-> +{
-> +	return hba->clk_gating.is_enabled;
-> +}
-> +
->  static inline bool ufshcd_is_auto_hibern8_enabled(struct ufs_hba *hba)
->  {
->  	return FIELD_GET(UFSHCI_AHIBERN8_TIMER_MASK, hba->ahit) ? true : 
-> false;
