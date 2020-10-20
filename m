@@ -2,480 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8A429340F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 06:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108B1293421
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 06:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391505AbgJTE3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 00:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391493AbgJTE3J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 00:29:09 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCF1C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 21:29:09 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id 16so770144oix.9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 21:29:09 -0700 (PDT)
+        id S2391518AbgJTEm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 00:42:56 -0400
+Received: from mail-eopbgr1320129.outbound.protection.outlook.com ([40.107.132.129]:52973
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2391382AbgJTEm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 00:42:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JdnJ+RO0geOLG/SCeQ/gvmcgOZe/J52HejfbTHQ/ArGItCU1uZzpe4EWYdOaUdP5HlXFKWqD4PtAu6+tzk4cVKHJVka3nKStJzuRBPHCDa15/1fYBswh4BbAERNPHroCszDjDCDu6/LMSX2VH7NGRzEm05QwXe1O2t9XKlPrdunWp0rmq99PyHYelf/r2c4dVmISzi9XPZt4DtLqLp7tYZTNsU4k01EN/xbOGo63G/cZwiYdqxOSmfj+z4wequjo38jG3kUMvrXiVRwxlhlJWCCJ1xoLfbj+1VVN64vro8IGyGQREXIdXJ5T4EbihrB1Jr+V9VhWQcdatYo5hz70BQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QWM4DXjhGfLABCefLHfcGyqVcy0duIDR+ZQO2IrjM2I=;
+ b=Oa+d6XRAl9Q6H1gZdloQb6v2qQZzLPulWWTjlnErXWFGb6KWshN4u5h7YirsP2AP02YYfPhS8AQHxgCa7QcrVjVppx7RbzVRI6kB+JGkBPm0UcUzGVLXnX880eJEuWZpFzLdnOCq4qU3N8WyP2FUgVN1yAcNZhz5JmmC7eqiHjOj3/IbWVMQpQAV4fWydK4ZPdCcbrHp5VlYWadofmnzAwF0to90Tp2JAlt9V9EEdyRPTf0tMGvY/bLu4SHhb7zYf4aoySn+nHFHUfJGrnTnR4MBfc66mtzts33VnLRh7nUFG3h7VQydabOysPwVLFLYq/kF+QRgdKiYr7PJzBRIiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Uo7/xKk6OiCydhv1k2dC1b5/6JAdwL9IQp4Nu6SKW0c=;
-        b=b/SDVYplJ9l/YwE0wst0UnsLrXEIw9PeEOMw9MEKyGmR3CAAudlITJLXFpiimCuZ2W
-         cF6bgdg6B8fZ3YyNkqHakdM0y2MyqUP2zaGQLx/jL419cietHSLlY29fl3C8FwnSnYgI
-         8gb5/9dCTouGJgSDVwbtL82fSk5a/koYyQQFg39gOQEhHCrf7xuE/LEMWJ6O0HwHZSNU
-         15BuypzJ12rSw3L8HcxPG8/1Zo5vnCggezU2A7Wv9LaD8kPRSnk/EdAR10VFrGGxjcfF
-         /iLUv1UvgjxmrrAjj2r3sHGoORVis2qfXswXKEvDqUa97GvX/+AIVnZvYJuvWLMogvUq
-         qGNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Uo7/xKk6OiCydhv1k2dC1b5/6JAdwL9IQp4Nu6SKW0c=;
-        b=A4e8JqOsFkGxxOcKB4UWYdsIwOhSxGlJlXzXdVZjkcHN5Fuign2cjvn8+XB1uZUXPI
-         XU9zWbAAp8BMnS5rsdyRzIuZx51uf80RePCYiij+ne50YJb+4Yg91gpALiEf5ljfS0lE
-         mZJ4fXSvdKiieHoxOTFMqMR3QI9Ts1jodKacCVRfhMvOJKd7EVH35sHrphU+KZ7yKcJp
-         eti4DPslLf+QzRi6a8oL+K/O7AqSMOrF26MMNBQO7FdT4j76Pt4S/RFKkxTfYR47v9e4
-         3dt9NGR/p+a0g/sV5qdcvDxt/QQgqbvGinjcbd7ivMutkqPzflsezH4/YjzEog05ShKf
-         w8eA==
-X-Gm-Message-State: AOAM531Zu7fqZhj9TfrrH81Vuffx2L9m7iAc+jXPxgdsDijVTujFHbwE
-        e94vl3FlObFbS+clyBLuVeqBlA==
-X-Google-Smtp-Source: ABdhPJwI6I/W/3GeE15jq8w1RzZH5ZOCw6Qs1Xe2VLlMJ0QRFhSPKz3VfW9WIMcpYNj163ag+vM0Qw==
-X-Received: by 2002:aca:c7ca:: with SMTP id x193mr600305oif.8.1603168148627;
-        Mon, 19 Oct 2020 21:29:08 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w125sm202336oib.48.2020.10.19.21.29.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 21:29:07 -0700 (PDT)
-Date:   Mon, 19 Oct 2020 23:24:03 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QWM4DXjhGfLABCefLHfcGyqVcy0duIDR+ZQO2IrjM2I=;
+ b=Hx01r+Nuvk9kGeuQEKuC9E1FBjSa9IFWIFC/0nzhMrcgpwQdsNWe63JG08PvWsPQ16p6P3uVhaxKqGQHpZzcs+g9upGAFZSGaI4S5xIX1+wQEXFEOumgSM7RoPmI3TM3h0em6VtfG7W4bosJKoCVYZEA4b4AMzvdieJ7txjS6n8=
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
+ by TY2PR01MB3545.jpnprd01.prod.outlook.com (2603:1096:404:d1::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Tue, 20 Oct
+ 2020 04:42:50 +0000
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::bcba:dccf:7d4c:c883]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::bcba:dccf:7d4c:c883%4]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
+ 04:42:50 +0000
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
         Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Martin Botka <martin.botka1@gmail.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v5 2/4] leds: Add driver for Qualcomm LPG
-Message-ID: <20201020042403.GE6705@builder.lan>
-References: <20201017052057.2698588-1-bjorn.andersson@linaro.org>
- <20201017052057.2698588-3-bjorn.andersson@linaro.org>
- <CAHp75VeVbK1Wx2BEPghtEbEghqDAF2jFFN9=ARLEw-rvTUZ3yw@mail.gmail.com>
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 08/20] dt-bindings: usb: renesas-xhci: Refer to the
+ usb-xhci.yaml file
+Thread-Topic: [PATCH 08/20] dt-bindings: usb: renesas-xhci: Refer to the
+ usb-xhci.yaml file
+Thread-Index: AQHWohLFbtOMYgZ0fEaKABdhF8ofKKmf8mkw
+Date:   Tue, 20 Oct 2020 04:42:50 +0000
+Message-ID: <TY2PR01MB36921A342B4374B5853E65ACD81F0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
+ <20201014101402.18271-9-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201014101402.18271-9-Sergey.Semin@baikalelectronics.ru>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: baikalelectronics.ru; dkim=none (message not signed)
+ header.d=none;baikalelectronics.ru; dmarc=none action=none
+ header.from=renesas.com;
+x-originating-ip: [240f:60:5f3e:1:65e1:c1da:e357:e253]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e0cf67bd-d839-4138-7e5b-08d874b2999d
+x-ms-traffictypediagnostic: TY2PR01MB3545:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TY2PR01MB3545068EE83E8730E96958E7D81F0@TY2PR01MB3545.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WK+A4gfG7J/J/BaMXioWzGIRdUVMHAIw7lUTC0zHI5w545+g2C8hRBQ1WxltcUfS/Umi5VT88Fzuw3GCdEHZCcWZGqcoExclXScuNpyRjjQsRZg4HYr8ju9PF9FmgcPt9OxvvXqv4IdRzDduciHb1NImXrVjn0b7jLD5GUTEhiC4DqmMlwm3ygRgPnqRHTEoEoL7n4FnCQ29fwfe9tzDNruYTRrPiCjyQcUx3xxKkbprLtAi7+GngKsAgXnJK4Ew/WMnEN9M/5Ix/IiSwSorjW8uIWTG78+QjZDy8yD5n0QgSlVKe7eVkiZnmH9cPvRA60Ni9Jc72TeF54d2pGBe9w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39860400002)(136003)(366004)(5660300002)(33656002)(4744005)(66476007)(7696005)(64756008)(66446008)(66556008)(71200400001)(83380400001)(55016002)(478600001)(76116006)(52536014)(54906003)(6506007)(110136005)(66946007)(316002)(186003)(2906002)(7416002)(8676002)(8936002)(86362001)(4326008)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 63VNagmqy5xD2WZ2ibAAdmzeqZTyq86rB5d/TCL4GajNI+zgTti5RQbRNV+b/JQaeAiG4id8tUM2ZgNPRh3LllCgugKRDFOVPwOHgvbuoROXx9A9k4I5NkiHF3sOvNBeSDQJvH7SKvoDBV4j/zfdaV5v9qe4IhikpyzxzCE4ipI/FqI6VYPNP+VDqwcbGOCdMqoTJR6Khs0zs/BPBjLDf84B8oP2r2dw2afoV06vGt1RjkBJvuIwSx5oD3T8cVDbf/W4QfwxCL3AArOQuA9r+v3O80d8ilcQ+huyF7VJED11NGAmgiN/6C23jSgZHpkktGS8mgij8BU3IWd8jX4rvpmfQQU3eO72j8xBAVGBVRqkMlzJ4hSk7dA17MiCUwa2VqJIuZZKWMyX1M/R2y5zwU9L/M+F7eIH74vEt2uuJUsURgGXmXnaZFByUXXoiOG4OJOIQGnEdi3ZzBg41h1khKzhsxBsds4OGWZs46vjKuzZOXZ13CF4jXEaJNJG+7WlZf1eor/yD32Eu7VRnbN9UjOGsaso0/5oEe2CsNaLzZoOXlxqYVz2I9WH+1gmSJ9cinFH2uvc9bCrARk6QANQb1T4id0/kLnFFQDPGgZkYriz6IoTLOzBeg7YK33EhZO5rxTq/QiwCXpKzDPnfnp37NnpueatJItb2RQu5fSaPhdSKbSR/jEm3HzDPgO4xx35CfQjJPTib2+I/e+lX/KT9g==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeVbK1Wx2BEPghtEbEghqDAF2jFFN9=ARLEw-rvTUZ3yw@mail.gmail.com>
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0cf67bd-d839-4138-7e5b-08d874b2999d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2020 04:42:50.0672
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nfoSYQ9pjI04ARJCJ3LLt8z6Ll4Dq26ZGNr5aZQaLKsR3ah9pXIQNg/t/+no8h8sDgWWdBP79DG78gQ28KGykaLF2cHTwzKzt+YoJcwD/87P18Uv+9Gc50S+fSJx7IF2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB3545
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 18 Oct 15:12 CDT 2020, Andy Shevchenko wrote:
+Hi,
 
-> On Sat, Oct 17, 2020 at 8:41 AM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
-> > PMICs from Qualcomm. It can operate on fixed parameters or based on a
-> > lookup-table, altering the duty cycle over time - which provides the
-> > means for e.g. hardware assisted transitions of LED brightness.
-> 
-> > +config LEDS_QCOM_LPG
-> > +       tristate "LED support for Qualcomm LPG"
-> > +       depends on LEDS_CLASS_MULTICOLOR
-> > +       depends on OF
-> > +       depends on SPMI
-> 
-> 
-> > +#include <linux/of.h>
-> > +#include <linux/of_device.h>
-> 
-> ...
-> 
-> > +struct lpg {
-> > +       struct device *dev;
-> > +       struct regmap *map;
-> 
-> Can't you derive the former from the latter?
-> 
+> From: Serge Semin, Sent: Wednesday, October 14, 2020 7:14 PM
+>=20
+> With minor peculiarities (like uploading some vendor-specific firmware)
+> these are just Generic xHCI controllers fully compatible with its
+> properties. Make sure the Renesas USB xHCI DT nodes are also validated
+> against the Generic xHCI DT schema.
+>=20
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> ---
 
-No, because map->dev is actually the dev->parent.
+Thank you for the patch!
 
-> > +
-> > +       struct pwm_chip pwm;
-> > +
-> > +       const struct lpg_data *data;
-> > +
-> > +       u32 lut_base;
-> > +       u32 lut_size;
-> > +       unsigned long *lut_bitmap;
-> > +
-> > +       u32 triled_base;
-> > +       u32 triled_src;
-> > +
-> > +       struct lpg_channel *channels;
-> > +       unsigned int num_channels;
-> > +};
-> 
-> ...
-> 
-> > +static int lpg_lut_store(struct lpg *lpg, struct led_pattern *pattern,
-> > +                        size_t len, unsigned int *lo_idx, unsigned int *hi_idx)
-> > +{
-> > +       unsigned int idx;
-> > +       u8 val[2];
-> 
-> __be16 val;
-> 
-> > +       int i;
-> > +
-> > +       /* Hardware does not behave when LO_IDX == HI_IDX */
-> > +       if (len == 1)
-> > +               return -EINVAL;
-> > +
-> > +       idx = bitmap_find_next_zero_area(lpg->lut_bitmap, lpg->lut_size,
-> > +                                        0, len, 0);
-> > +       if (idx >= lpg->lut_size)
-> > +               return -ENOMEM;
-> > +
-> > +       for (i = 0; i < len; i++) {
-> > +               val[0] = pattern[i].brightness & 0xff;
-> > +               val[1] = pattern[i].brightness >> 8;
-> 
-> cpu_to_be16();
-> 
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-I like it, but isn't that a le16?
+Best regards,
+Yoshihiro Shimoda
 
-> > +
-> > +               regmap_bulk_write(lpg->map,
-> > +                                 lpg->lut_base + LPG_LUT_REG(idx + i), val, 2);
-> > +       }
-> > +
-> > +       bitmap_set(lpg->lut_bitmap, idx, len);
-> > +
-> > +       *lo_idx = idx;
-> > +       *hi_idx = idx + len - 1;
-> > +
-> > +       return 0;
-> > +}
-> 
-> ...
-> 
-> > +static void lpg_calc_freq(struct lpg_channel *chan, unsigned int period_us)
-> > +{
-> > +       int             n, m, clk, div;
-> > +       int             best_m, best_div, best_clk;
-> > +       unsigned int    last_err, cur_err, min_err;
-> > +       unsigned int    tmp_p, period_n;
-> > +
-> > +       if (period_us == chan->period_us)
-> > +               return;
-> > +
-> > +       /* PWM Period / N */
-> > +       if (period_us < ((unsigned int)(-1) / NSEC_PER_USEC)) {
-> 
-> Please, replace all these -1 with castings to unsigned types with
-> corresponding limits, like
-> UINT_MAX here.
-> 
-
-Sure thing.
-
-> > +               period_n = (period_us * NSEC_PER_USEC) >> 6;
-> > +               n = 6;
-> > +       } else {
-> > +               period_n = (period_us >> 9) * NSEC_PER_USEC;
-> > +               n = 9;
-> > +       }
-> 
-> Why inconsistency in branches? Can you rather derive n and calculate
-> only once like
-> 
->            period_n = (period_us >> n) * NSEC_PER_USEC;
-> 
-> ?
-
-I inherited this piece from the downstream driver and I assume that the
-purpose was to avoid loss of precision. I will review this and if
-nothing else it seems like I would be able to cast period_us to more
-bits, do the multiply and then shift - in both cases.
-
-> 
-> > +       min_err = (unsigned int)(-1);
-> > +       last_err = (unsigned int)(-1);
-> > +       best_m = 0;
-> > +       best_clk = 0;
-> > +       best_div = 0;
-> > +       for (clk = 0; clk < NUM_PWM_CLK; clk++) {
-> > +               for (div = 0; div < NUM_PWM_PREDIV; div++) {
-> > +                       /* period_n = (PWM Period / N) */
-> > +                       /* tmp_p = (Pre-divide * Clock Period) * 2^m */
-> > +                       tmp_p = lpg_clk_table[div][clk];
-> > +                       for (m = 0; m <= NUM_EXP; m++) {
-> > +                               if (period_n > tmp_p)
-> > +                                       cur_err = period_n - tmp_p;
-> > +                               else
-> > +                                       cur_err = tmp_p - period_n;
-> > +
-> > +                               if (cur_err < min_err) {
-> > +                                       min_err = cur_err;
-> > +                                       best_m = m;
-> > +                                       best_clk = clk;
-> > +                                       best_div = div;
-> > +                               }
-> > +
-> > +                               if (m && cur_err > last_err)
-> > +                                       /* Break for bigger cur_err */
-> > +                                       break;
-> > +
-> > +                               last_err = cur_err;
-> > +                               tmp_p <<= 1;
-> > +                       }
-> > +               }
-> > +       }
-> > +
-> > +       /* Use higher resolution */
-> > +       if (best_m >= 3 && n == 6) {
-> > +               n += 3;
-> > +               best_m -= 3;
-> > +       }
-> > +
-> > +       chan->clk = best_clk;
-> > +       chan->pre_div = best_div;
-> > +       chan->pre_div_exp = best_m;
-> > +       chan->pwm_size = n;
-> > +
-> > +       chan->period_us = period_us;
-> > +}
-> > +
-> > +static void lpg_calc_duty(struct lpg_channel *chan, unsigned int duty_us)
-> > +{
-> > +       unsigned long max = (1 << chan->pwm_size) - 1;
-> 
-> BIT() ?
-> 
-> > +       unsigned long val;
-> > +
-> > +       /* Figure out pwm_value with overflow handling */
-> 
-> > +       if (duty_us < 1 << (sizeof(val) * 8 - chan->pwm_size))
-> 
-> BITS_PER_TYPE, but actually BITS_PER_LONG here.
-> 
-> BIT(BITS_PER_LONG - ...)
-> 
-
-Again, this seems to just be a question of avoiding overflow of the 32
-bit duty_us. I'll double check the math here as well.
-
-> > +               val = (duty_us << chan->pwm_size) / chan->period_us;
-> > +       else
-> > +               val = duty_us / (chan->period_us >> chan->pwm_size);
-> > +
-> > +       if (val > max)
-> > +               val = max;
-> > +
-> > +       chan->pwm_value = val;
-> > +}
-> 
-> ...
-> 
-> > +static void lpg_enable_glitch(struct lpg_channel *chan)
-> > +{
-> > +       struct lpg *lpg = chan->lpg;
-> > +
-> > +       regmap_update_bits(lpg->map, chan->base + PWM_TYPE_CONFIG_REG,
-> > +                          LPG_ENABLE_GLITCH_REMOVAL, 0);
-> > +}
-> 
-> Here and everywhere else when function declared as void there is no
-> possibility to know if we do something useful or already screwed up
-> the things.
-> 
-
-Ultimately these are all coming from led_classdev->brightness_set, which
-is a void function. So there isn't much benefit of propagating this
-error upwards, today.
-
-> > +static void lpg_apply_pwm_value(struct lpg_channel *chan)
-> > +{
-> > +       u8 val[] = { chan->pwm_value & 0xff, chan->pwm_value >> 8 };
-> 
-> 
-> __le16 and cpu_to_le16()
-> 
-
-Sounds good.
-
-> > +       struct lpg *lpg = chan->lpg;
-> > +
-> > +       if (!chan->enabled)
-> > +               return;
-> > +
-> > +       regmap_bulk_write(lpg->map, chan->base + PWM_VALUE_REG, val, 2);
-> > +}
-> 
-> > +#define LPG_PATTERN_CONFIG_LO_TO_HI    BIT(4)
-> > +#define LPG_PATTERN_CONFIG_REPEAT      BIT(3)
-> > +#define LPG_PATTERN_CONFIG_TOGGLE      BIT(2)
-> > +#define LPG_PATTERN_CONFIG_PAUSE_HI    BIT(1)
-> > +#define LPG_PATTERN_CONFIG_PAUSE_LO    BIT(0)
-> 
-> Did I miss bits.h inclusion at the beginning of the file?
-> 
-
-Will add this.
-
-> ...
-> 
-> > +static int lpg_blink_set(struct lpg_led *led,
-> > +                        unsigned long delay_on, unsigned long delay_off)
-> > +{
-> > +       struct lpg_channel *chan;
-> > +       unsigned int period_us;
-> > +       unsigned int duty_us;
-> > +       int i;
-> > +
-> > +       if (!delay_on && !delay_off) {
-> > +               delay_on = 500;
-> > +               delay_off = 500;
-> > +       }
-> 
-> Homegrown duty cycle?
-> I mean, why simply not to pass the duty cycle in percentage in the first place?
-> 
-
-Can you explain what you're saying here.
-
-> > +       duty_us = delay_on * USEC_PER_MSEC;
-> > +       period_us = (delay_on + delay_off) * USEC_PER_MSEC;
-> > +
-> > +       for (i = 0; i < led->num_channels; i++) {
-> > +               chan = led->channels[i];
-> > +
-> > +               lpg_calc_freq(chan, period_us);
-> > +               lpg_calc_duty(chan, duty_us);
-> > +
-> > +               chan->enabled = true;
-> > +               chan->ramp_enabled = false;
-> > +
-> > +               lpg_apply(chan);
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> 
-> > +#define interpolate(x1, y1, x2, y2, x) \
-> > +       ((y1) + ((y2) - (y1)) * ((x) - (x1)) / ((x2) - (x1)))
-> 
-> Can you rather create a generic one under lib/ or start include/linux/math.h ?
-> 
-
-Forgot about this, but I've seen one on LKML, will find it and work on
-getting that accepted.
-
-> https://elixir.bootlin.com/linux/latest/A/ident/interpolate
-> 
-> ...
-> 
-> > +out:
-> 
-> Useless label.
-> 
-> > +       return ret;
-> 
-> ...
-> 
-> > +       ret = of_property_read_u32(np, "color", &color);
-> > +       if (ret < 0 && ret != -EINVAL)
-> 
-> This check is fishy. Either you have optional property or not, in the
-> latter case return any error code.
-> 
-
-There's three possible outcomes here:
-1) We found _one_ integer in the property, color is assigned and 0 is
-returned.
-2) We found no property named "color", -EINVAL is returned without color
-being modified.
-3) We found a property but it wasn't a single u32 value so a negative
-error (not EINVAL) is returned.
-
-> > +               return ret;
-> > +
-> > +       chan->color = color;
-> 
-> So, it may be -EINVAL?!
-> 
-
-So color will either be the value or the property color, or if omitted
-LED_COLOR_ID_GREEN.
-
-> > +       ret = of_property_read_u32_array(np, "qcom,dtest", dtest, 2);
-> > +       if (ret < 0 && ret != -EINVAL) {
-> > +               dev_err(lpg->dev, "malformed qcom,dtest of %pOFn\n", np);
-> > +               return ret;
-> > +       } else if (!ret) {
-> > +               chan->dtest_line = dtest[0];
-> > +               chan->dtest_value = dtest[1];
-> > +       }
-> 
-> Ditto.
-> 
-
-We're in !ret and as such dtest is initialized.
-
-> ...
-> 
-> > +       ret = of_property_read_u32(np, "color", &color);
-> > +       if (ret < 0 && ret != -EINVAL)
-> > +               return ret;
-> 
-> Ditto.
-> 
-
-As above, if no property color is specified, color remains 0 here which
-is not LED_COLOR_ID_MULTI and this is a single channel LED without its
-color specified.
-
-> ...
-> 
-> > +       size = sizeof(*led) + num_channels * sizeof(struct lpg_channel *);
-> 
-> Use respective helpers from overflow.h.
-> 
-
-Will do, thanks.
-
-> > +       led = devm_kzalloc(lpg->dev, size, GFP_KERNEL);
-> > +       if (!led)
-> > +               return -ENOMEM;
-> 
-> ...
-> 
-> > +static const struct of_device_id lpg_of_table[] = {
-> > +       { .compatible = "qcom,pm8916-pwm", .data = &pm8916_pwm_data },
-> > +       { .compatible = "qcom,pm8941-lpg", .data = &pm8941_lpg_data },
-> > +       { .compatible = "qcom,pm8994-lpg", .data = &pm8994_lpg_data },
-> > +       { .compatible = "qcom,pmi8994-lpg", .data = &pmi8994_lpg_data },
-> > +       { .compatible = "qcom,pmi8998-lpg", .data = &pmi8998_lpg_data },
-> 
-> > +       {},
-> 
-> No comma needed for terminator lines.
-> 
-
-Will drop.
-
-> > +};
-
-Thank you Andy for the review!
-
-Regards,
-Bjorn
