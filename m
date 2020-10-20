@@ -2,198 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE001293814
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E33293817
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392899AbgJTJeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50678 "EHLO
+        id S2392914AbgJTJeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:34:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390997AbgJTJeR (ORCPT
+        with ESMTP id S2392907AbgJTJen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:34:17 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C263C061755;
-        Tue, 20 Oct 2020 02:34:17 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id n6so1253104wrm.13;
-        Tue, 20 Oct 2020 02:34:17 -0700 (PDT)
+        Tue, 20 Oct 2020 05:34:43 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7563BC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:34:43 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id d24so1272883ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:34:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DZC7gQVRgBkfWFSy4Zj0mTKth7u/ZD8XS8fXZxizUy4=;
-        b=IumYBix4dOjEkprdR2mNebMgHhFIvNFq+vI89F7vyQsd9ertKFtlsxLwLQxhIlxyN8
-         IRL7I422iKjhxmTYnW7zMjs8f+YrYhcI8s5/OMRg41xBfHR2NgxfSYDd4vY1+gmEAtQi
-         bXiD6+Rx0kKVJukqS8sez8jxkHnuooFpUrFnAVP6rloFT1TQkc3BLeVW2lF9KXv5Y8wO
-         X3ozM++tOEP93gtStz/73ED+vX5jNc+DrBHluaiZ4vPGHsMcSdhNVmYhAP34IdMEYVUB
-         r3F5IAIAgHyueJZYKCOI7+LArUtpsQo8MSL57/utcImUic67AG5AxuBJ+mMKUV1mIfEF
-         59rw==
+         :mime-version;
+        bh=Yy0e2KzQZjsdApoOL3xxTvEy01p/cHiTbfoFKLpzkLw=;
+        b=r0Gowq4KsjQc1Kw06cn0h4mKLRbV0fdyq8nSJ80Jcg3DxwL/+DhAQN69mv4fS6QDO1
+         GkdKwaMJcst0zYVXCq5AamRhDNnBtN+DtxlaDu4pLEDSUSZMcHzMfaXLplcJnhQAMTRu
+         jnVUTJIxs49m2hXQ0Qn2nmOPyeVSxmiYfn/J2DZAPJIB1MInzADoWOyaax+Ytl7rvblF
+         zMJCcj2ol7CAl+w6Pi6hGN6MSKpDrLOrPXWPs0BBN/xQaMKry2kjt7P0aIUTfzcbdbmh
+         zxvHWh4rw0GpsymQJJdcSiCGO/gmB25vfFqjxzAxHwexVEbfXjYY3DCYQmUjrVfmeYX1
+         hruw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DZC7gQVRgBkfWFSy4Zj0mTKth7u/ZD8XS8fXZxizUy4=;
-        b=sv//qjjL9Egr6EspHUFK9Ei2lLe5y0CV2sDAyC53BPVVGksY9ZRINJV57nlhG/FFIF
-         pPfmqsP/U2zxRonA1wTdlCVTyva9pgmeejYq5Xzrl4OxrFkghK2n2DyqR2w4lQq/wowS
-         XpkBHb+HczNS6WoxB0ovj9IZI1tBh/pmRCwKqU+WOnej4pVF58sv2xWFFAnfcQ3rIrUf
-         juN0ssg8FIJL6XkXUrZmLUhx6Z/5mOKcM8eWbRYXYAdV8kyK1fP8LergSMkjt8Blbqg0
-         q1CBZJgyCUF95aRozlEUucf3CHB8MWRHsWcVqBLgonmz7Enw/ZTx8Uc9gHVIv0HuqGpp
-         wZ3w==
-X-Gm-Message-State: AOAM533zLbrEW/gJ2+5+oYazWAMIi1D728RZkAmeJAgyijYlxXUSBG2M
-        ipuAF2zxAoxeJ2b4fcaG1lM=
-X-Google-Smtp-Source: ABdhPJwvF17tk2TsJf4n9cht1KkWY3WRDWH263MXgqWDABkKMkVl5bJdYE1AraEZUbzNgodFxFxsMQ==
-X-Received: by 2002:adf:e70a:: with SMTP id c10mr2365742wrm.425.1603186455930;
-        Tue, 20 Oct 2020 02:34:15 -0700 (PDT)
-Received: from AHABDELS-M-J3JG ([173.38.220.56])
-        by smtp.gmail.com with ESMTPSA id p11sm2046557wrm.44.2020.10.20.02.34.14
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Tue, 20 Oct 2020 02:34:15 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 11:34:13 +0200
-From:   Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-To:     Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-Cc:     Reji Thomas <rejithomas.d@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Mathieu Xhonneux <m.xhonneux@gmail.com>,
-        andrea.mayer@uniroma2.it
-Subject: Re: [PATCH v2] IPv6: sr: Fix End.X nexthop to use oif.
-Message-Id: <20201020113413.9413e2910e549a5722911004@gmail.com>
-In-Reply-To: <20201020112829.d689c849c85f4d5448c8f62d@gmail.com>
-References: <20201015082119.68287-1-rejithomas@juniper.net>
-        <20201018160147.6b3c940a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAA8Zg7Gcua1=6CgSkJ-z8uKJneDjedB4z6zm2a+DcYt-_YcmSQ@mail.gmail.com>
-        <20201020112829.d689c849c85f4d5448c8f62d@gmail.com>
-X-Mailer: Sylpheed 3.4.1 (GTK+ 2.24.21; x86_64-apple-darwin10.8.0)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+         :references:mime-version;
+        bh=Yy0e2KzQZjsdApoOL3xxTvEy01p/cHiTbfoFKLpzkLw=;
+        b=HF/1CDZMnSe9bZ286UyJfMmZBENkI7mrv6kmeqNJotBMF1PCI0U+vRTyw5nn9oL/B/
+         p2LO0JiCQF0Zt/MxKirvQRbOqbUD9q5InUrqUjb3rawBLFaRt9VD3q0/rjPQIfseFtIw
+         aItY7GFgdWr66nAkFWKLBVHZv6ZOADkr9eromXbxfaEVkMXFfGJpkAX5wujsbJIrzCV3
+         NClaLOHaa5S9eO5OfLOZ8thY1QBKgKBJXLK7rwJ/a8OtBCy/HEervHtexn1rkr200uVW
+         +t2Bt1umOxIEC7vUwyxua1CUt0AMUDS7PfOa5gc/SwzGP19vpw/3iizFsDo2bXHGzM60
+         IDIQ==
+X-Gm-Message-State: AOAM531x1k4CnprYf7EaY/v+QKxX26gIQoMU2lB40cOOnJhI/EXU3+pJ
+        13AmIVt5UHzjivp3FyvgBvg=
+X-Google-Smtp-Source: ABdhPJwegxqVKeKQ0SqpNnibIq8OtPU7i8FiHpkO+sBsKsGhxrJf7yoyOoA3O2/TeVLH2bdzMCrsaw==
+X-Received: by 2002:a2e:3004:: with SMTP id w4mr789169ljw.35.1603186481995;
+        Tue, 20 Oct 2020 02:34:41 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id l8sm212200lfk.203.2020.10.20.02.34.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 02:34:41 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 12:34:30 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Karol Herbst <karolherbst@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        nouveau@lists.freedesktop.org
+Subject: Re: [PATCH] x86/mm/kmmio: correctly handle kzalloc return
+Message-ID: <20201020123430.44968cb4@eldfell>
+In-Reply-To: <20201020084345.96823-1-dmugil2000@gmail.com>
+References: <20201020084345.96823-1-dmugil2000@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/kNxw96BEn+M0PYEUFx6pYAH"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are submitting the patch for End.DT4. End.DX4 is already there. 
+--Sig_/kNxw96BEn+M0PYEUFx6pYAH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-So the optional parameter and OIF applies directly to End.X/End.DX6/End.DX4.
- 
+On Tue, 20 Oct 2020 14:13:44 +0530
+Mugilraj Dhavachelvan <dmugil2000@gmail.com> wrote:
 
-On Tue, 20 Oct 2020 11:28:29 +0200
-Ahmed Abdelsalam <ahabdels.dev@gmail.com> wrote:
+> Replacing return value -1 to error code
+>=20
+> Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+> ---
+>  arch/x86/mm/kmmio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/x86/mm/kmmio.c b/arch/x86/mm/kmmio.c
+> index be020a7bc414..15430520c232 100644
+> --- a/arch/x86/mm/kmmio.c
+> +++ b/arch/x86/mm/kmmio.c
+> @@ -386,7 +386,7 @@ static int add_kmmio_fault_page(unsigned long addr)
+> =20
+>  	f =3D kzalloc(sizeof(*f), GFP_ATOMIC);
+>  	if (!f)
+> -		return -1;
+> +		return -ENOMEN;
+> =20
+>  	f->count =3D 1;
+>  	f->addr =3D addr;
 
-> Jakub, Reji, 
-> 
-> Andrea (CC'ed) and I have been working on a patch that could solve this issue. 
-> The patch allows to provide optional parameters to when SRv6 behavior. 
-> The OIF can be provided as an optional parameter when configuring SRv6 End.X, 
-> End.DX6 or End.DX4 (we are submiting in the next couple of days to support End.DX4). 
-> 
-> We can submit the optional parameter again. Then Reji can leverage this to provide OIF
-> as an optional parameters. 
-> 
-> Would you agree ? 
-> 
-> Thanks 
-> Ahmed 
->  
-> 
-> 
-> On Mon, 19 Oct 2020 09:25:12 +0530
-> Reji Thomas <rejithomas.d@gmail.com> wrote:
-> 
-> > Hi,
-> > 
-> > Please find my replies inline below.
-> > 
-> > Regards
-> > Reji
-> > 
-> > On Mon, Oct 19, 2020 at 4:31 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> > >
-> > > On Thu, 15 Oct 2020 13:51:19 +0530 Reji Thomas wrote:
-> > > > Currently End.X action doesn't consider the outgoing interface
-> > > > while looking up the nexthop.This breaks packet path functionality
-> > > > specifically while using link local address as the End.X nexthop.
-> > > > The patch fixes this by enforcing End.X action to have both nh6 and
-> > > > oif and using oif in lookup.It seems this is a day one issue.
-> > > >
-> > > > Fixes: 140f04c33bbc ("ipv6: sr: implement several seg6local actions")
-> > > > Signed-off-by: Reji Thomas <rejithomas@juniper.net>
-> > >
-> > > David, Mathiey - any comments?
-> > >
-> > > > @@ -239,6 +250,8 @@ static int input_action_end(struct sk_buff *skb, struct seg6_local_lwt *slwt)
-> > > >  static int input_action_end_x(struct sk_buff *skb, struct seg6_local_lwt *slwt)
-> > > >  {
-> > > >       struct ipv6_sr_hdr *srh;
-> > > > +     struct net_device *odev;
-> > > > +     struct net *net = dev_net(skb->dev);
-> > >
-> > > Order longest to shortest.
-> > Sorry. Will fix it.
-> > 
-> > >
-> > >
-> > > >
-> > > >       srh = get_and_validate_srh(skb);
-> > > >       if (!srh)
-> > > > @@ -246,7 +259,11 @@ static int input_action_end_x(struct sk_buff *skb, struct seg6_local_lwt *slwt)
-> > > >
-> > > >       advance_nextseg(srh, &ipv6_hdr(skb)->daddr);
-> > > >
-> > > > -     seg6_lookup_nexthop(skb, &slwt->nh6, 0);
-> > > > +     odev = dev_get_by_index_rcu(net, slwt->oif);
-> > > > +     if (!odev)
-> > > > +             goto drop;
-> > >
-> > > Are you doing this lookup just to make sure that oif exists?
-> > > Looks a little wasteful for fast path, but more importantly
-> > > it won't be backward compatible, right? See below..
-> > >
-> > Please see reply below.
-> > 
-> > > > +
-> > > > +     seg6_strict_lookup_nexthop(skb, &slwt->nh6, odev->ifindex, 0);
-> > > >
-> > > >       return dst_input(skb);
-> > > >
-> > >
-> > > > @@ -566,7 +583,8 @@ static struct seg6_action_desc seg6_action_table[] = {
-> > > >       },
-> > > >       {
-> > > >               .action         = SEG6_LOCAL_ACTION_END_X,
-> > > > -             .attrs          = (1 << SEG6_LOCAL_NH6),
-> > > > +             .attrs          = ((1 << SEG6_LOCAL_NH6) |
-> > > > +                                (1 << SEG6_LOCAL_OIF)),
-> > > >               .input          = input_action_end_x,
-> > > >       },
-> > > >       {
-> > >
-> > > If you set this parse_nla_action() will reject all
-> > > SEG6_LOCAL_ACTION_END_X without OIF.
-> > >
-> > > As you say the OIF is only required for using link local addresses,
-> > > so this change breaks perfectly legitimate configurations.
-> > >
-> > > Can we instead only warn about the missing OIF, and only do that when
-> > > nh is link local?
-> > >
-> > End.X is defined as an adjacency-sid and is used to select a specific link to a
-> > neighbor for both global and link-local addresses. The intention was
-> > to drop the
-> > packet even for global addresses if the route via the specific
-> > interface is not found.
-> > Alternatively(believe semantically correct for End.X definition) I
-> > could do a neighbor lookup
-> > for nexthop address over specific interface and send the packet out.
-> > 
-> > > Also doesn't SEG6_LOCAL_ACTION_END_DX6 need a similar treatment?
-> > 
-> > Yes. I will update the patch for End.DX6 based on the patch finalized for End.X.
-> 
-> 
-> -- 
-> Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+Hi,
+
+did you even build-test this?
+
+Why did you write this patch? What does it achieve?
 
 
--- 
-Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+Thanks,
+pq
+
+--Sig_/kNxw96BEn+M0PYEUFx6pYAH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAl+OryYACgkQI1/ltBGq
+qqeYBA//XVRjP/OgzYv+hLE7Dv4qtIQH3SuKcWS9kLcK2mVxoo12wErFrVjY+hfu
+03qjkW2k9JU6WfwlusYHHpkgW4lb1ucUeev5uZPBn8mi5mRGp79GgLDdkqUe9bZi
+dSyNNiZDYfSKDgM9E3F5wYZmEUBj83l0dIh6FTPGdO4KKW0X1tc+/FTqByGBpuH7
+tuawXLtBGIi3HG1l/VmWwVQ/X2TlqPP3EmJntjjBXvKOV/53xAZ8Z+2e2Ce/EAK3
+l+UozLCLKxEH1NmSurV4aeb/6PiZiEsitUzqiitjUQjPdnUvwWk1zUfUbBkl6zwU
+5Vdjub2eKGE2vx79eBq/mIXN9btzH7Bzd8bZPu/BDfyKO3DD1W9dOKH/o3BiXlbD
+K7fkW8o7oDf9jSIEUmm3hQNA3XkVrfWunDQ0oQPHHn2O06YD+8CCz97zlVmBBNK3
+l7JoXB3/kIBAlCSXXWSvL7AkoHJdJp+dMuK1IQycwSs3OAPBt/SiDutSjMq0veKn
+/mT2mxh0pkm7FN9hupj0G9N5+EmafdksuyWXLGSAk1Z5WTMG711xB+rMeb+E7DAd
+uQGZkFcq4j6RW1dQY4Z86mzlKDovCxL4KwMBJS0lR4Df9gBct23eQ9Z6LK34RTw1
+e0qDXwXqkpXJ44SttdB8bOm0bIpzL/CsK/wZmkTMA085/8zhTKc=
+=yGB5
+-----END PGP SIGNATURE-----
+
+--Sig_/kNxw96BEn+M0PYEUFx6pYAH--
