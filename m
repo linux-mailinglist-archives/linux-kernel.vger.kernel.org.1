@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F14F293666
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE54929366B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733223AbgJTIHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 04:07:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25831 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733119AbgJTIHc (ORCPT
+        id S1733307AbgJTIIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 04:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729484AbgJTIIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:07:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603181251;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9X9z7bcSkIflMn/EuSDjY+5PXLgWKnYQvzQsm5FKNI4=;
-        b=eoCQF8gBqv8v44m8rjosk01hvvqUVYUotZO2ZUPaGuxnXqC/rdOdljjf5vzDcEuzJ0LTbm
-        O8sPSHHOzAu2MFsTcgSHsYlu3AYaZxnEQUU1gsk9h2ko4JF2G9FGEuFC/RZ7/NPnUzNvfn
-        zvBQL9Y1J3FILNrHpQJHM7xZ7C0I+D4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-430-HLrKi0ljNPu8-QPI12VGUA-1; Tue, 20 Oct 2020 04:07:28 -0400
-X-MC-Unique: HLrKi0ljNPu8-QPI12VGUA-1
-Received: by mail-wr1-f69.google.com with SMTP id q15so481716wrw.8
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:07:28 -0700 (PDT)
+        Tue, 20 Oct 2020 04:08:35 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9628C061755;
+        Tue, 20 Oct 2020 01:08:33 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id b19so626499pld.0;
+        Tue, 20 Oct 2020 01:08:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=rzBULe/uYcMd2biNuOUoirZAkyxIgwm/ep0g4irabeM=;
+        b=j/qOX1CRjCJljSPZcb4bbGCVW1mLmUhTrHVtbJJD/ootbD5oyfz7Fz7cYl+sKaEV/J
+         zwn5rw4FwvyqtCGrgfHPwUlBHVCPFzmYriPiwLP0alcRJr225m7heK1Q7oDdkb6mEFZD
+         P8nSv2V9SBMxwbJZhYT+7//xInnXXSyxnQLfkGaYxSluWV/DVxxZkt+YL/iI3d1NWdvD
+         //IZ++RIcxlotD776gTmQHqiwv7/2lObpeTlwOAUtRPgUUAAfmq+KZzQslEIGojJ8MDZ
+         A/LtdXToA44/J6eNbLs7PDuWWs8RUbrcz/zhT2Ko/e7v5pjn+HTyFOPjvTNB1Kc7QYM+
+         V0Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9X9z7bcSkIflMn/EuSDjY+5PXLgWKnYQvzQsm5FKNI4=;
-        b=qFqiy+f0nTXZDG9LHDM2i9/pVUoCwKvgKlETN1KUDB6yl8eLUHLiQklAMQ56JauSMj
-         O+m/FGS3mQEKf/S8f9hH3d+KjrmlOnkoyiVFOafEuooy0KLHWCGuuN6glY906pwyMQ/t
-         79Nna2DE9nsIHt0EowBEHhyx5c8b0kCnmEPbt3IZneKlL6l94sDyQQutlxKS1IR+IPx6
-         zVYV6OowtOi3epe4v9O0AZFi+Vd3e8W6DfEnkVKcvLilC2GhZOyf5ByrDgZRYPVt1WNp
-         V9yAQNYGjEKRAhO6P46iKUajCXA0ZJ1UKPpcBdgSx1JfoFYa37qE8BGIgPNMlPH4rQ4E
-         u/gQ==
-X-Gm-Message-State: AOAM532D15JEFUEHjTv2623IDUm80+/ZvSMaUDFRZxv656N28ukgXxjb
-        u7eGrFvk/VJD67VM0nDwgkrCryKwIZlCwvhF6iFAZfIBvWgSF5spbbccMVbLxTb28itZ5puIxav
-        cgHopdKRGAA+/9OfgQpUOU5K+
-X-Received: by 2002:a5d:6a0d:: with SMTP id m13mr1970786wru.161.1603181247379;
-        Tue, 20 Oct 2020 01:07:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNRdNCmWfia+V+FyupuFLmwfwLBKlDsbsy04oihernE2WtCItAguN6D52h+xDVSr+M69is3Q==
-X-Received: by 2002:a5d:6a0d:: with SMTP id m13mr1970760wru.161.1603181247137;
-        Tue, 20 Oct 2020 01:07:27 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id d3sm1944911wrb.66.2020.10.20.01.07.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 01:07:26 -0700 (PDT)
-Subject: Re: [PATCH v2 00/20] Introduce the TDP MMU
-To:     Ben Gardon <bgardon@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20201014182700.2888246-1-bgardon@google.com>
- <f19b7f9c-ff73-c2d2-19f9-173dc8a673c3@redhat.com>
- <CANgfPd9CpYt9bVNXWbB+2VTrndfLBezqPauDo2-n8UdKDsrzpA@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b07db4bf-860c-57cb-6a1d-b5a151c28c9b@redhat.com>
-Date:   Tue, 20 Oct 2020 10:07:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <CANgfPd9CpYt9bVNXWbB+2VTrndfLBezqPauDo2-n8UdKDsrzpA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=rzBULe/uYcMd2biNuOUoirZAkyxIgwm/ep0g4irabeM=;
+        b=KcjQ55OB4TctQpK/+ye9TCWr/A7Q4hTl/tUDhwm5Fa97i2tSqcBLKQ7E9yWd4+tgRR
+         NxwsQP30ZUIDhlYl5I4gLForKUXOID554vCgJkbovysuAvphBJJtxb3C7oP8cSvALUjx
+         a51rDDOzFelQl8Ncl/Mpu84kklQugLEWWCUxOpyZHU8kCxY7eJy70fhHTUkCVpVB3X6j
+         fZhdPlZE9I4eVxOqXcODgEObmkR0rbNRSCE57C6jlGXnqJFBOZoQWRj1LuqShAR5nEFh
+         wjDYdCX/0UTpdg3T/4IHpndbsAysDS7iQ6GIhAv2ZlDUKLS7RKewe88zYuEh7L3BKVpr
+         G0Dg==
+X-Gm-Message-State: AOAM5324w1kq/r/u0f/cfLTlk4Y4rQsspUirubNiRnXGuYRugugLlxkv
+        DxrV+VTEOpEMIOIG7x9DvhQ=
+X-Google-Smtp-Source: ABdhPJxp3MGSbm/SruzI53jPOkaZngQ8AJL0GjxKIqfl83yNMouMYtjKJnWWKQDl5lHM1Ow2n1VjfQ==
+X-Received: by 2002:a17:90a:2c0c:: with SMTP id m12mr995977pjd.44.1603181313257;
+        Tue, 20 Oct 2020 01:08:33 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:477:195c:4b74:c749:e0fe:9e69])
+        by smtp.gmail.com with ESMTPSA id 17sm1347270pfi.55.2020.10.20.01.08.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Oct 2020 01:08:32 -0700 (PDT)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     jic23@kernel.org, robh+dt@kernel.org, matthias.bgg@gmail.com
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: [PATCH v7 0/3] iio: adc: mt6360: Add ADC driver for MT6360
+Date:   Tue, 20 Oct 2020 16:07:44 +0800
+Message-Id: <1603181267-15610-1-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/20 20:15, Ben Gardon wrote:
-> When getting the dirty log, we
-> follow the following steps:
-> 1. Atomically get and clear an unsigned long of the dirty bitmap
-> 2. For each GFN in the range of pages covered by the unsigned long mask:
->     3. Clear the dirty or writable bit on the SPTE
-> 4. Copy the mask of dirty pages to be returned to userspace
-> 
-> If we mark the page as dirty in the dirty bitmap in step 3, we'll
-> report the page as dirty twice - once in this dirty log call, and
-> again in the next one. This can lead to unexpected behavior:
-> 1. Pause all vCPUs
-> 2. Get the dirty log <--- Returns all pages dirtied before the vCPUs were paused
-> 3. Get the dirty log again <--- Unexpectedly returns a non-zero number
-> of dirty pages even though no pages were actually dirtied
+In-Reply-To: 
 
-Got it, that might also fail the dirty_log_test.  Thanks!
+This patch series add MT6360 ADC support contains driver, testing document
+and binding document
 
-Paolo
+Gene Chen (2)
+  dt-bindings: iio: adc: add bindings doc for MT6360 ADC
+  Documentation: ABI: testing: mt6360: Add ADC sysfs guideline
+  iio: adc: mt6360: Add ADC driver for MT6360
+
+ Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360                 |   78 ++
+ Documentation/devicetree/bindings/iio/adc/mediatek,mt6360-adc.yaml |   34 
+ drivers/iio/adc/Kconfig                                            |   11 
+ drivers/iio/adc/Makefile                                           |    1 
+ drivers/iio/adc/mt6360-adc.c                                       |  372 ++++++++++
+ 5 files changed, 496 insertions(+)
+
+changelogs between v1 & v2
+ - adc: use IIO_CHAN_INFO_PROCESSED only
+ - adc: use devm_iio_triggered_buffer_setup
+ - adc: use use s64 to record timestamp
+
+changelogs between v2 & v3
+ - Rearrange include file order by alphabet
+ - Set line length constraint below 100
+ - Add Document for testing adc sysfs node guideline
+ - Set compiler 64 bit aligned when handle iio timestamp
+
+changelogs between v3 & v4
+ - Fix sysfs guideline description
+ - Replace iio channel processed by raw/scale/offset
+ - Add comment of read adc flow for special HW design
+
+changelogs between v4 & v5
+ - Rename dt-bindings aligned to file name
+ - Aligned sysfs node name with driver and add VBUSDIVX description
+ - Add ADC channel sysfs node "*_labels"
+
+changelogs between v5 & v6
+ - Memset aligned adc data
+ - Remove strong casting void pointer
+
+changelogs between v6 & v7
+ - Avoid adc polling infinite loop
 
