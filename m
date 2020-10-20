@@ -2,175 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540FA293517
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7446A29351D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404438AbgJTGlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
+        id S2404456AbgJTGoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404421AbgJTGla (ORCPT
+        with ESMTP id S1730691AbgJTGoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:41:30 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CD8C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:41:30 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id w25so192457oos.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:41:30 -0700 (PDT)
+        Tue, 20 Oct 2020 02:44:11 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017E5C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:44:11 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id l28so721111lfp.10
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:44:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=i5LGZ4Z5//+lRNXTDf6tlbBsdMMt7/nvH3Q3EoFvv7s=;
-        b=Seh8wX3yNDbz2GaumO8yPfsIcVs44ueyV8duc/RD0O/2j5QVWjxuAfj7ov8QrLl/1t
-         2Ifriom0ENn+iNMhZNB38+XJdOd0Lla1+8RFcFXYGYJPlJJCLLJU0QjBQXyS1HYKM7Bf
-         L7/yRX2oScLVkIun/Ob1qL4X33j2g8VWH/kRA=
+        bh=fKisSdPFhHMNCtICMhbcUEw2QFiANpq0wtVTr5Ou8mA=;
+        b=pczU+Uf/yI647JWhv0sya2r4YrL9tI4JWCh6LvA9chOvYy2GPBsRbEcTC20uK+3d6E
+         rFY5Ijutq6Aqt+btCji2ciQ/aMCrRRuCVyN+bB1C1tcjLN2RIReFjomdZiLY3Oohp2iQ
+         BxsAJXNfO1swTyvUzivQOWeLDKMvhwkQplSJzMdJcBLE+savmOmxCZ73APJpj+grPYpf
+         XHtE2s326Yq/nWId6foQABkSQosJ7jRCMezMiLuI01YXOmKjtCkI/EV9g7REp2aNOGxa
+         d1heWwjBQ0zzxTSYWoumVf/sNlmsF9n+ZTsApPCHtloEtp4oAigfLkoNNFzE0sQ/9sB8
+         VTsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=i5LGZ4Z5//+lRNXTDf6tlbBsdMMt7/nvH3Q3EoFvv7s=;
-        b=JLljKF8ZBzNd/OQPr0mrA99qD7oI/bj6MyXFUcErcl0Ro1B87F2Kor2P8rSl/lwWXE
-         7z6uBUxgNpzwKaqHqUDUrycawvnMQIRmlBvOJEI7vK9+OwliGHWk+eQL+fs0iML/RB4c
-         d+cr+ACnjUF6E5K39AR/EYss8iEPLPHzIfQrQI182NMr2dVThGAk40X/nkOEOFOmkWZK
-         KfXL5ad3+TOJvkCH1uDRAIuROUsEOIoJusctvmw2BOWPvtTFbocy0MC35UBJtqbSsLOB
-         HiVV6xhBBMk71c6ksoHsFUVyTWuf8ldwrXtxqvlDKqbaNtiaaWo3Ac4t9JMLrsv8O5fY
-         CfIg==
-X-Gm-Message-State: AOAM533RsccU7BABUhHUqHDycfPJpMYPsQbwLN0Nr1sNuIyPiB2DoJzQ
-        +YyDVedB96ewX8GI73F3B30rERPjImEvwQ==
-X-Google-Smtp-Source: ABdhPJyhsN5uaMKvlXQl5Y5oQReHnCySzG4ZVTobVuwwGV6Ep5uJo6bmBKs5B8dvR8IKWK+MJalxOA==
-X-Received: by 2002:a4a:95cb:: with SMTP id p11mr758950ooi.89.1603176089538;
-        Mon, 19 Oct 2020 23:41:29 -0700 (PDT)
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com. [209.85.167.181])
-        by smtp.gmail.com with ESMTPSA id d64sm289431oia.11.2020.10.19.23.41.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 23:41:28 -0700 (PDT)
-Received: by mail-oi1-f181.google.com with SMTP id q136so1060766oic.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:41:28 -0700 (PDT)
-X-Received: by 2002:a05:6808:8c:: with SMTP id s12mr808474oic.55.1603176087864;
- Mon, 19 Oct 2020 23:41:27 -0700 (PDT)
+        bh=fKisSdPFhHMNCtICMhbcUEw2QFiANpq0wtVTr5Ou8mA=;
+        b=rjwGpJw4irxs9DrmrMDIHAzDLTHxhofzr4/pZAK5D0rKPqXtk1ONrQGtDiI/Cu+0a0
+         DU1zNjMut8seli4krTBRcE/OMAgJSZbO0MzpnTpXcQEH+CJKvmTvStiyxMqYx4hDb/Lj
+         CLUsNpF7HjszD5uYJcdLb8yh7v2U3zaZqpNYuqBP6Jcoxbww2qDjs9OUN2usO/3UYVIW
+         TZ/GbyffKnEeTcLxP1502dTCkuL8+8j8Rh8BFPZ6tNHLVgHslV1e2VBmQ4Ygl/+B6M1S
+         BfdDzttix+oju7lyK2Z54hLtAsaPjz83Mo1Xz/Ew0P30LNYJRwHChoveJ8zT6Ih1UOJu
+         x+YQ==
+X-Gm-Message-State: AOAM531QPEutKRCZVNCBIDSodMQePNVethOcSvLfViziAlu133ee5lTv
+        9EALNWcp0bYkuUVcvNzv+9dI4a7POtJNks3VD568aA==
+X-Google-Smtp-Source: ABdhPJxCfdB+h+Yd0esHC1CUz+lgNJ2ChJECAocPjHWHYswWINkY1Vts8K7Hv2oG2TJTut9zB+s4+DYfxlB6AcqL55g=
+X-Received: by 2002:a05:6512:2029:: with SMTP id s9mr405613lfs.273.1603176249396;
+ Mon, 19 Oct 2020 23:44:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201009084533.2405320-1-acourbot@chromium.org> <CAMfZQbw4wFzcocXXGavYdt+o8ydUoW4rSw4QnnrbZgwWUnp7Nw@mail.gmail.com>
-In-Reply-To: <CAMfZQbw4wFzcocXXGavYdt+o8ydUoW4rSw4QnnrbZgwWUnp7Nw@mail.gmail.com>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Tue, 20 Oct 2020 15:41:16 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MV=hyZ=yOv++ivd2peGyRntGB4iwgDNwF4RGORFYXRNWQ@mail.gmail.com>
-Message-ID: <CAPBb6MV=hyZ=yOv++ivd2peGyRntGB4iwgDNwF4RGORFYXRNWQ@mail.gmail.com>
-Subject: Re: [PATCH] venus: vdec: return parsed crop information from stream
-To:     Fritz Koenig <frkoenig@chromium.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <1602673931-28782-1-git-send-email-sumit.garg@linaro.org>
+ <1602673931-28782-2-git-send-email-sumit.garg@linaro.org> <fbf6bfecf344a06af94e17ccabb817dd@kernel.org>
+In-Reply-To: <fbf6bfecf344a06af94e17ccabb817dd@kernel.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 20 Oct 2020 12:13:57 +0530
+Message-ID: <CAFA6WYPEw5x_3zDZSnkL23YjFWbF=VkUKefM6Ts46JLVaj2sDA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/5] arm64: Add framework to turn IPI as NMI
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Mark Rutland <mark.rutland@arm.com>,
+        julien.thierry.kdev@gmail.com,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 7:19 AM Fritz Koenig <frkoenig@chromium.org> wrote:
+On Mon, 19 Oct 2020 at 17:07, Marc Zyngier <maz@kernel.org> wrote:
 >
-> It looks like only h.264 streams are populating the event.input_crop
-> struct when receiving the HFI_INDEX_EXTRADATA_INPUT_CROP message in
-> event_seq_changed().  vp8/vp9 streams end up with the struct filled
-> with 0.
-
-Indeed. :( I guess we can fallback to the previous behavior of using
-the coded resolution as visible rect when the reported visible rect's
-area is 0. That will preserve the previous behavior until the firmware
-starts reporting this information for all encoded streams.
-
->
-> On Fri, Oct 9, 2020 at 1:45 AM Alexandre Courbot <acourbot@chromium.org> wrote:
+> On 2020-10-14 12:12, Sumit Garg wrote:
+> > Introduce framework to turn an IPI as NMI using pseudo NMIs. In case a
+> > particular platform doesn't support pseudo NMIs, then request IPI as a
+> > regular IRQ.
 > >
-> > Per the stateful codec specification, VIDIOC_G_SELECTION with a target
-> > of V4L2_SEL_TGT_COMPOSE is supposed to return the crop area of capture
-> > buffers containing the decoded frame. Until now the driver did not get
-> > that information from the firmware and just returned the dimensions of
-> > CAPTURE buffers.
+> > The main motivation for this feature is to have an IPI that can be
+> > leveraged to invoke NMI functions on other CPUs. And current
+> > prospective
+> > users are NMI backtrace and KGDB CPUs round-up whose support is added
+> > via future patches.
 > >
-> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 > > ---
-> >  drivers/media/platform/qcom/venus/core.h |  1 +
-> >  drivers/media/platform/qcom/venus/vdec.c | 21 ++++++++++++++++-----
-> >  2 files changed, 17 insertions(+), 5 deletions(-)
+> >  arch/arm64/include/asm/nmi.h | 16 +++++++++
+> >  arch/arm64/kernel/Makefile   |  2 +-
+> >  arch/arm64/kernel/ipi_nmi.c  | 77
+> > ++++++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 94 insertions(+), 1 deletion(-)
+> >  create mode 100644 arch/arm64/include/asm/nmi.h
+> >  create mode 100644 arch/arm64/kernel/ipi_nmi.c
 > >
-> > diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-> > index 7b79a33dc9d6..3bc129a4f817 100644
-> > --- a/drivers/media/platform/qcom/venus/core.h
-> > +++ b/drivers/media/platform/qcom/venus/core.h
-> > @@ -361,6 +361,7 @@ struct venus_inst {
-> >         unsigned int streamon_cap, streamon_out;
-> >         u32 width;
-> >         u32 height;
-> > +       struct v4l2_rect crop;
-> >         u32 out_width;
-> >         u32 out_height;
-> >         u32 colorspace;
-> > diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-> > index ea13170a6a2c..ee74346f0cae 100644
-> > --- a/drivers/media/platform/qcom/venus/vdec.c
-> > +++ b/drivers/media/platform/qcom/venus/vdec.c
-> > @@ -325,6 +325,10 @@ static int vdec_s_fmt(struct file *file, void *fh, struct v4l2_format *f)
-> >
-> >         inst->width = format.fmt.pix_mp.width;
-> >         inst->height = format.fmt.pix_mp.height;
-> > +       inst->crop.top = 0;
-> > +       inst->crop.left = 0;
-> > +       inst->crop.width = inst->width;
-> > +       inst->crop.height = inst->height;
-> >
-> >         if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-> >                 inst->fmt_out = fmt;
-> > @@ -343,6 +347,9 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
-> >             s->type != V4L2_BUF_TYPE_VIDEO_OUTPUT)
-> >                 return -EINVAL;
-> >
-> > +       s->r.top = 0;
-> > +       s->r.left = 0;
+> > diff --git a/arch/arm64/include/asm/nmi.h
+> > b/arch/arm64/include/asm/nmi.h
+> > new file mode 100644
+> > index 0000000..3433c55
+> > --- /dev/null
+> > +++ b/arch/arm64/include/asm/nmi.h
+> > @@ -0,0 +1,16 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef __ASM_NMI_H
+> > +#define __ASM_NMI_H
 > > +
-> >         switch (s->target) {
-> >         case V4L2_SEL_TGT_CROP_BOUNDS:
-> >         case V4L2_SEL_TGT_CROP_DEFAULT:
-> > @@ -363,16 +370,12 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
-> >         case V4L2_SEL_TGT_COMPOSE:
-> >                 if (s->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
-> >                         return -EINVAL;
-> > -               s->r.width = inst->out_width;
-> > -               s->r.height = inst->out_height;
-> > +               s->r = inst->crop;
-> >                 break;
-> >         default:
-> >                 return -EINVAL;
-> >         }
+> > +#ifndef __ASSEMBLER__
+> > +
+> > +#include <linux/cpumask.h>
+> > +
+> > +extern void arch_send_call_nmi_func_ipi_mask(cpumask_t *mask);
+> > +
+> > +void set_smp_ipi_nmi(int ipi);
+> > +void ipi_nmi_setup(int cpu);
+> > +void ipi_nmi_teardown(int cpu);
+> > +
+> > +#endif /* !__ASSEMBLER__ */
+> > +#endif
+> > diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+> > index bbaf0bc..525a1e0 100644
+> > --- a/arch/arm64/kernel/Makefile
+> > +++ b/arch/arm64/kernel/Makefile
+> > @@ -17,7 +17,7 @@ obj-y                       := debug-monitors.o entry.o irq.o fpsimd.o              \
+> >                          return_address.o cpuinfo.o cpu_errata.o              \
+> >                          cpufeature.o alternative.o cacheinfo.o               \
+> >                          smp.o smp_spin_table.o topology.o smccc-call.o       \
+> > -                        syscall.o proton-pack.o
+> > +                        syscall.o proton-pack.o ipi_nmi.o
 > >
-> > -       s->r.top = 0;
-> > -       s->r.left = 0;
-> > -
-> >         return 0;
-> >  }
+> >  targets                      += efi-entry.o
 > >
-> > @@ -1309,6 +1312,10 @@ static void vdec_event_change(struct venus_inst *inst,
-> >
-> >         inst->width = format.fmt.pix_mp.width;
-> >         inst->height = format.fmt.pix_mp.height;
-> > +       inst->crop.left = ev_data->input_crop.left;
-> > +       inst->crop.top = ev_data->input_crop.top;
-> > +       inst->crop.width = ev_data->input_crop.width;
-> > +       inst->crop.height = ev_data->input_crop.height;
-> >
-> >         inst->out_width = ev_data->width;
-> >         inst->out_height = ev_data->height;
-> > @@ -1412,6 +1419,10 @@ static void vdec_inst_init(struct venus_inst *inst)
-> >         inst->fmt_cap = &vdec_formats[0];
-> >         inst->width = frame_width_min(inst);
-> >         inst->height = ALIGN(frame_height_min(inst), 32);
-> > +       inst->crop.left = 0;
-> > +       inst->crop.top = 0;
-> > +       inst->crop.width = inst->width;
-> > +       inst->crop.height = inst->height;
-> >         inst->out_width = frame_width_min(inst);
-> >         inst->out_height = frame_height_min(inst);
-> >         inst->fps = 30;
-> > --
-> > 2.28.0.1011.ga647a8990f-goog
-> >
+> > diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
+> > new file mode 100644
+> > index 0000000..a959256
+> > --- /dev/null
+> > +++ b/arch/arm64/kernel/ipi_nmi.c
+> > @@ -0,0 +1,77 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * NMI support for IPIs
+> > + *
+> > + * Copyright (C) 2020 Linaro Limited
+> > + * Author: Sumit Garg <sumit.garg@linaro.org>
+> > + */
+> > +
+> > +#include <linux/interrupt.h>
+> > +#include <linux/irq.h>
+> > +#include <linux/smp.h>
+> > +
+> > +#include <asm/nmi.h>
+> > +
+> > +static struct irq_desc *ipi_desc __read_mostly;
+> > +static int ipi_id __read_mostly;
+> > +static bool is_nmi __read_mostly;
+> > +
+> > +void arch_send_call_nmi_func_ipi_mask(cpumask_t *mask)
+> > +{
+> > +     if (WARN_ON_ONCE(!ipi_desc))
+> > +             return;
+> > +
+> > +     __ipi_send_mask(ipi_desc, mask);
+> > +}
+> > +
+> > +static irqreturn_t ipi_nmi_handler(int irq, void *data)
+> > +{
+> > +     /* nop, NMI handlers for special features can be added here. */
+> > +
+> > +     return IRQ_HANDLED;
+>
+> This definitely is the *wrong* default. If nothing is explicitly
+> handling the interrupt, it should be reported as such to the core
+> code to be disabled if this happens too often.
+
+Okay will fix default as "IRQ_NONE".
+
+>
+> > +}
+> > +
+> > +void ipi_nmi_setup(int cpu)
+>
+> The naming is awful. "ipi" is nowhere specific enough (we already have
+> another 7 of them), and this doesn't necessarily uses pseudo-NMIs, since
+> you are requesting IRQs.
+
+How about following naming conventions?
+
+- dynamic_ipi_setup()
+- dynamic_ipi_teardown()
+- set_smp_dynamic_ipi()
+
+>
+> > +{
+> > +     if (!ipi_desc)
+> > +             return;
+> > +
+> > +     if (is_nmi) {
+> > +             if (!prepare_percpu_nmi(ipi_id))
+> > +                     enable_percpu_nmi(ipi_id, IRQ_TYPE_NONE);
+> > +     } else {
+> > +             enable_percpu_irq(ipi_id, IRQ_TYPE_NONE);
+>
+> I'm not keen on this. Normal IRQs can't reliably work, so why do you
+> even bother with this?
+
+Yeah I agree but we need to support existing functionality for kgdb
+roundup and sysrq backtrace using normal IRQs as well.
+
+>
+> > +     }
+> > +}
+> > +
+> > +void ipi_nmi_teardown(int cpu)
+> > +{
+> > +     if (!ipi_desc)
+> > +             return;
+> > +
+> > +     if (is_nmi) {
+> > +             disable_percpu_nmi(ipi_id);
+> > +             teardown_percpu_nmi(ipi_id);
+> > +     } else {
+> > +             disable_percpu_irq(ipi_id);
+> > +     }
+> > +}
+> > +
+> > +void __init set_smp_ipi_nmi(int ipi)
+> > +{
+> > +     int err;
+> > +
+> > +     err = request_percpu_nmi(ipi, ipi_nmi_handler, "IPI", &cpu_number);
+> > +     if (err) {
+> > +             err = request_percpu_irq(ipi, ipi_nmi_handler, "IPI",
+> > +                                      &cpu_number);
+> > +             WARN_ON(err);
+> > +             is_nmi = false;
+> > +     } else {
+> > +             is_nmi = true;
+> > +     }
+> > +
+> > +     ipi_desc = irq_to_desc(ipi);
+> > +     irq_set_status_flags(ipi, IRQ_HIDDEN);
+> > +     ipi_id = ipi;
+>
+> Updating global state without checking for errors doesn't seem
+> like a great move.
+
+Are you worried about failure from request_percpu_irq()? If yes, there
+is an explicit warning for that and if you like I can add an
+additional check while updating the global state.
+
+BTW, this is written on an existing pattern as for other 7 IPIs requests [1].
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/kernel/smp.c#n988
+
+-Sumit
+
+>
+>          M.
+> --
+> Jazz is not dead. It just smells funny...
