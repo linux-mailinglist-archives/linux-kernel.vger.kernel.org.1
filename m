@@ -2,172 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B6729377E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB0029378E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392363AbgJTJDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730029AbgJTJDL (ORCPT
+        id S2392392AbgJTJGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:06:01 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:25480 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392385AbgJTJGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:03:11 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0004C061755;
-        Tue, 20 Oct 2020 02:03:11 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id q136so1394354oic.8;
-        Tue, 20 Oct 2020 02:03:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Gxiv9N5I/0koEZElvdg9/A3+iy5K5rnbjK1iEcbGa6w=;
-        b=gTWnFQUcx4oDfYYGX7NhU5btKE6deZ7W4mcHkGsZIFyUVPZ7MXpEeIkXcqYCiVlHmt
-         1UhX0gZV/uvWhQelB0tNQVz+6ZcUi1ij4LqZDydl3tNT5a0gsL9h3DL87WaMs/PlEJjW
-         We8PdAIVl7tF+4vvN4f0PpjZ+V0zp84H7vY+k3BAH+eDyXN2AvL0OeO7539Mq9Upx9vj
-         duA2ztsx9s0nLU5a1120UnRJ7eg57/gbcVCQFJhmNxkKIW72obHeaqP66d9e4BxN/S87
-         +OA2YDPOxNQEelAr1Hq4KLj+SsyHVg6Fwdbi0sdbXonVsFbuZm3S2aUv81hUzz6jVdGh
-         KcHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Gxiv9N5I/0koEZElvdg9/A3+iy5K5rnbjK1iEcbGa6w=;
-        b=pI7lvuUXqMJ1crSXZlgI8IfVC+8QcmCFk9VTwOrVbDMnt7uuM2Nwehnqti4F5HGKnI
-         RcwNZLAmS1mLonoXguljxi/apO1sOGkmw9iSaimvMRVHE6bEsXljzFb8FVOn3QLznVOA
-         XDwXQM9uaMcLYzIod29MIcHaE2NSyryq2FT/TcjAXvUW8DHJY9ejFlgOZUaEhc0BLqDH
-         JNSsvOZZ0x9vTHyDYSReb+BDzhcdALJ+YuclXSS4eC742veY7/DHyTjlQ+Ha7r5HjmVd
-         4qDObvuUlKdxfNyHMqsLsxCm783bFgUTlg+0+J+5DqstsW4yAAmv29FT1nNuXQYBeUVW
-         G14A==
-X-Gm-Message-State: AOAM533qCTKp2vbCa0tjUi4/mBE27c+rbHeGcRHXr4SsCX2pFG/ZRIDC
-        X2Q5+joRaW+jA9HMpKUOeng3zjY6k/L/vPR61No=
-X-Google-Smtp-Source: ABdhPJyYU82Q33GbVTHqUDSRmku/z4g0TgkTPtIKZk+UhIWZK4qKLMOEI7kJfpP70jxfQ0fbewqrBHkXUx+/NmdItnw=
-X-Received: by 2002:aca:7541:: with SMTP id q62mr1078293oic.51.1603184591254;
- Tue, 20 Oct 2020 02:03:11 -0700 (PDT)
+        Tue, 20 Oct 2020 05:06:01 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09K91xnn019320;
+        Tue, 20 Oct 2020 11:05:32 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=STMicroelectronics;
+ bh=NZzu2K/oEgGHbi70pVpopywkpHKaiBZ4Zxl3bo9Olfs=;
+ b=XYZuNQbEtfUOVgDytzvOn26G0q3yIPSasW1oziDkVRwDjie6UBT2ayjd59NHeISTaS4Q
+ s8PFeqGu4xOihkZ/lHm/uAwV1cY8VEk8di7a6W6y9fYruQ8WlfbiV0LT4MV2DvNnyYSU
+ g8c8y0SadqnurXcckZvZj1WpA3cmK3c149c8yfeXr+nkg6rJvmZ7dEzs9bCuDNaCwNON
+ 4ifFh3fn2f7JUcGaEmlc6ieyP9vFhrI7tIWcwReC8kTYO1GCFVs7hZeXi87dB44DMaJu
+ juLE6QyLQPkiaieKKSjl+hcZG3qvVmD3hGYpKvJn5ON/hFuLThnowLwv/FDI4HAHPWBr hQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 347pcwse1r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 11:05:32 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6843B10002A;
+        Tue, 20 Oct 2020 11:05:24 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 36D882BCA3D;
+        Tue, 20 Oct 2020 11:05:24 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct 2020 11:05:23
+ +0200
+From:   Olivier Moysan <olivier.moysan@st.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <alexandre.torgue@st.com>,
+        <arnaud.patard@rtp-net.org>, <olivier.moysan@st.com>
+CC:     <alsa-devel@alsa-project.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>, <arnaud.pouliquen@st.com>
+Subject: [PATCH] ASoC: cs42l51: manage mclk shutdown delay
+Date:   Tue, 20 Oct 2020 11:04:57 +0200
+Message-ID: <20201020090457.340-1-olivier.moysan@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <1600859910-15855-1-git-send-email-gene.chen.richtek@gmail.com> <20201016153823.GA9890@kozik-lap>
-In-Reply-To: <20201016153823.GA9890@kozik-lap>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Tue, 20 Oct 2020 17:03:00 +0800
-Message-ID: <CAE+NS35gb_KWq3s-M9apxgr7wnNRyn7iPto8J8ZwA-jsgT=paw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: power: Add bindings document for Charger
- support on MT6360 PMIC
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     sre@kernel.org, Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-20_04:2020-10-20,2020-10-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Krzysztof Kozlowski <krzk@kernel.org> =E6=96=BC 2020=E5=B9=B410=E6=9C=8816=
-=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=8811:38=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> On Wed, Sep 23, 2020 at 07:18:29PM +0800, Gene Chen wrote:
-> > From: Gene Chen <gene_chen@richtek.com>
-> >
-> > Add bindings document for Charger support on MT6360 PMIC
-> >
-> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > ---
-> >  .../bindings/power/supply/mt6360_charger.yaml      | 44 ++++++++++++++=
-++++++++
-> >  1 file changed, 44 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/power/supply/mt63=
-60_charger.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/power/supply/mt6360_char=
-ger.yaml b/Documentation/devicetree/bindings/power/supply/mt6360_charger.ya=
-ml
-> > new file mode 100644
-> > index 0000000..711fc19
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/power/supply/mt6360_charger.yam=
-l
-> > @@ -0,0 +1,44 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/power/supply/mt6360_charger.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Battery charger driver for MT6360 PMIC from MediaTek Integrated=
-.
-> > +
-> > +maintainers:
-> > +  - Gene Chen <gene_chen@richtek.com>
-> > +
-> > +description: |
-> > +  This module is part of the MT6360 MFD device.
-> > +  Provides Battery Charger, Boost for OTG devices and BC1.2 detection.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: mediatek,mt6360-chg
-> > +
-> > +  vinovp:
-> > +    description:
-> > +      Maximum CHGIN regulation voltage.
->
-> 1. You need to describe the type.
-> 2. Use proper unit suffix (see property-units.txt).
-> 3. Is this a custom property? If yes, it misses vendor prefix. If not,
->    most likely there is already such property. Reuse.
->
+A delay must be introduced before the shutdown down of the mclk,
+as stated in CS42L51 datasheet. Otherwise the codec may
+produce some noise after the end of DAPM power down sequence.
+The delay between DAC and CLOCK_SUPPLY widgets is too short.
+Add a delay in mclk shutdown request to manage the shutdown delay
+explicitly. From experiments, at least 10ms delay is necessary.
+Set delay to 20ms as recommended in Documentation/timers/timers-howto.rst
+when using msleep().
 
-ACK
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+Recommended Power-Down Sequence:
+(see https://statics.cirrus.com/pubs/proDatasheet/CS42L51_F2.pdf)
+1.    Mute the DACs and ADCs.
+2.    Disable soft ramp and zero-cross volume transitions
+3.    Set the PDN bit to 1.
+4.    Wait at least 100 μs.
+The codec will be fully powered down after this 100 μs delay.
+Prior to the removal of the master clock(MCLK),
+this delay of at least 100 μs must be implemented after step 3
+to avoid premature disruption of the codec’s power down sequence.
+---
+ sound/soc/codecs/cs42l51.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-> > +
-> > +  usb-otg-vbus:
-> > +      $ref: /schemas/regulator/regulator.yaml#
->
-> 1. Wrong indentation.
-> 2. Name should be more or less generic, so maybe
->    "usb-otg-vbus-regulator".
->
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 097c4e8d9950..d151a1aa313e 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -254,8 +254,25 @@ static const struct snd_soc_dapm_widget cs42l51_dapm_widgets[] = {
+ 		&cs42l51_adcr_mux_controls),
+ };
+ 
++static int mclk_event(struct snd_soc_dapm_widget *w,
++		      struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
++	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(comp);
++
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		return clk_prepare_enable(cs42l51->mclk_handle);
++
++	/* Delay mclk shutdown to fulfill power-down sequence requirements */
++	msleep(20);
++	clk_disable_unprepare(cs42l51->mclk_handle);
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget cs42l51_dapm_mclk_widgets[] = {
+-	SND_SOC_DAPM_CLOCK_SUPPLY("MCLK")
++	SND_SOC_DAPM_SUPPLY("MCLK", SND_SOC_NOPM, 0, 0, mclk_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+ };
+ 
+ static const struct snd_soc_dapm_route cs42l51_routes[] = {
+-- 
+2.17.1
 
-ACK
-
-> > +
-> > +required:
-> > +  - compatible
->
-> No address/reg? How does it bind?
->
-
-This module is part of the MT6360 MFD device.
-see Documentation/devicetree/bindings/mfd/mt6360.yaml, which is
-reviewing by MFD reviewer.
-
-Should I add this to description?
-
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    mt6360_chg: chg {
->
-> s/chg/charger/
->
-
-ACK
-
-> > +      compatible =3D "mediatek,mt6360-chg";
-> > +      vinovp =3D <14500000>;
->
-> Empty line break
->
-
-ACK
-
-> Best regards,
-> Krzysztof
