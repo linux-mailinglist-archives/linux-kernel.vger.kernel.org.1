@@ -2,154 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7545E2937BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727962937C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392625AbgJTJOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        id S2392630AbgJTJOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391111AbgJTJOI (ORCPT
+        with ESMTP id S1729357AbgJTJOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:14:08 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08232C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:14:08 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h20so1218618lji.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:14:07 -0700 (PDT)
+        Tue, 20 Oct 2020 05:14:46 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3D6C0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:14:46 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id o9so693486plx.10
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:14:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1XILf1TitNgPwZdU8rNRrEBNDtKYyonEO028htn0pzI=;
-        b=nB2l+1HXl3dOaS2PZrVTIcr3p5/9SMKS8f12EVEk7KK23Q+s0Xc9TgNw3iFzlgyVUq
-         Znoapr+g0WvqnuBYbdFI1pM0Q2X6tN3NVfT0Po1XlaJqlwdKkFrPglO8vupj8OxQCSIe
-         RuGDF6Awfnk5mBBfiDmPUMsPJnE4bQTgqzYguiozr6cLJ7AUxqHgeDPJ3FEieaubUptE
-         KxEHOGIrcTsktonxP6s7JNZnMJ86c4NSpDGVjHeWLp8jX69PFHLMOyLzWpWlv9IYnItt
-         EPdpKOIielY7CU8G/xn3Sh2zNfmPWK2E1He8hcxekBTXBCzYgChe7WcISBFSUsBtVRJN
-         bPoQ==
+        bh=GgUTm7wJH0+BRi8dDrO/9JHL4EFO+jAdr22a/R5dUE4=;
+        b=eMtxHibWARRLqoeW4sCOa4QI9fV0tMk9huMSb4iZpL7QmvStdAiADhOCqPLKdjLYN9
+         0+dCfmlFFHela6luwDNMF/Tv6a/d+cjSdRTO13hSNiJ4oLu4/YT0xIM3+wQpvpxEE82X
+         M7kPWKXpaVeflEQhOiSq+BWx9up3X76B+okSsx1etsLl8F9F7MYSiyBBHf1Y3uNzMQJL
+         drp4qsvCfMTtpMIxL3BEfGjx/3ZMJKbPNYnsSttD95PBTdWblDkI0MHPy46N3eWsXgh8
+         rhiaBY1KBskWfyRQiXWDkkSvAG7lwXFWZLqWVR/T0/PfDF3jVlGFyU0nQSoQkZLmBoV4
+         6ZPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1XILf1TitNgPwZdU8rNRrEBNDtKYyonEO028htn0pzI=;
-        b=VzkvpS3uOELs025FxoDXoCoBpAWQPI+8PAxdoULq9iRhvs0UpwMu5oyUN0F0FABshP
-         RHVNrA/b1pQiy+csIwZMeNlN9BBQ40orxUqHBPHmzszUpEj+NcwmMvdJcRTQDPLE3edb
-         Bqf71rszCUXRL10v17n+2yrPhFq3FRTVTJ5S1/PyLmx6CvDsczD7JoJj2aWZTLKiHaVx
-         duT4Vn/g9g2QVpDX49Ii4DU3+dN2EjEyw/sPguvxVYobOENMbZkuw+3VhaZ5ykNxsVYe
-         c1eWy0IkJBHPBU/urc1KNjTdFNaoRqrISti80UQgBx5PPcQ9lU40kc46R0Xo3ebbHNR2
-         mIbg==
-X-Gm-Message-State: AOAM530cTQeMKjP31JOs1YADPDCzUn5iE80QRoqUvgUmG+501p60ohYT
-        k5P/nZp7hp3G9hplsB2pygulxOk2ux8st29wTY5IdQ==
-X-Google-Smtp-Source: ABdhPJwqIdRN9gUyRMuuZtvq5jmDOe1lXpoqg4zoq+txYg23wb/Fm+E3mLWSHk4kXm2XfRq0c7Icy4j5w+05FLzl6IE=
-X-Received: by 2002:a2e:a41b:: with SMTP id p27mr835731ljn.30.1603185246494;
- Tue, 20 Oct 2020 02:14:06 -0700 (PDT)
+        bh=GgUTm7wJH0+BRi8dDrO/9JHL4EFO+jAdr22a/R5dUE4=;
+        b=mM66cVNpyqdC73LxqRF/p5WjkEMGvplkoeZlf01R08WAvJ/Q2ZHpMKAiun2efZm/D3
+         uONIs31L0+SgZYTeUFMu1FSju2rze9bbQgMeGht7gwKJLsER+fXDJhFzUHlebsc70GX1
+         9W0L0qCfQUuMu6L1w7EU3SaG/B3vNQkjpi9eRFZrF8Gh2YyS0x6hHyDmvDLYrafFOaMB
+         ekdvbHPA9TreIHkuMJGFVkRWL7m4CB+75w9qt/nxfdsmM0Wrowt96R91LfVZZM1X8ASC
+         eaDAUDR43TxTTD4nyyZrZEuoIxgze2Lc/dJCdeq2Kn4QmADYw7eQ5+EeoheitpRJiL/S
+         7RMA==
+X-Gm-Message-State: AOAM533Q9my3ckR2NZN0ebplENDM2TfwdNwCAdFc9FuOP/w9hJE9gXhw
+        Mr1QuemJpdeQoTlHdEAYvFgYu/VOdeX9S6aCo9fMyA==
+X-Google-Smtp-Source: ABdhPJw35ny+DmJ64Kw4jWL/AzIFdAaUCgdu6gfPtMx7VHnN5OGS4XD7HvYfKSSjQd3rybheCX+98kTo9aEJoO8q5to=
+X-Received: by 2002:a17:90a:160f:: with SMTP id n15mr1940273pja.75.1603185285795;
+ Tue, 20 Oct 2020 02:14:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <1602673931-28782-1-git-send-email-sumit.garg@linaro.org>
- <1602673931-28782-6-git-send-email-sumit.garg@linaro.org> <d4a4a37b93f34da79b87519181bffb97@kernel.org>
-In-Reply-To: <d4a4a37b93f34da79b87519181bffb97@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 20 Oct 2020 14:43:54 +0530
-Message-ID: <CAFA6WYMe02J6Laa0PWDW4849KGnw8Hu2H5d6UfppeaaE4-Z0vw@mail.gmail.com>
-Subject: Re: [PATCH v5 5/5] arm64: ipi_nmi: Add support for NMI backtrace
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        julien.thierry.kdev@gmail.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201018125237.16717-1-kholk11@gmail.com> <20201018125237.16717-4-kholk11@gmail.com>
+In-Reply-To: <20201018125237.16717-4-kholk11@gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 20 Oct 2020 11:14:34 +0200
+Message-ID: <CAG3jFysZbg_2XBjPryY1DN0xqu6VLzed6tLmoVeJ3NTb7dA22w@mail.gmail.com>
+Subject: Re: [PATCH 3/6] media: camss: vfe: Add support for VFE 4.8
+To:     kholk11@gmail.com
+Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
+        konradybcio@gmail.com, martin.botka1@gmail.com,
+        linux-arm-msm@vger.kernel.org,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Oct 2020 at 17:50, Marc Zyngier <maz@kernel.org> wrote:
+Hey Angelo,
+
+The VFE abstraction layers are something I've been looking at too, and
+there's no neat solution that both eliminates code duplication,
+separates revisions into individual files, and still avoids creating
+even more abstraction layers. So while combining vfe47 and vfe48 looks
+and feels a bit cluttered, I think it is a necessary evil.
+
+I've got some minor nits below.
+
+On Sun, 18 Oct 2020 at 14:54, <kholk11@gmail.com> wrote:
 >
-> On 2020-10-14 12:12, Sumit Garg wrote:
-> > Enable NMI backtrace support on arm64 using IPI turned as an NMI
-> > leveraging pseudo NMIs support. It is now possible for users to get a
-> > backtrace of a CPU stuck in hard-lockup using magic SYSRQ.
-> >
-> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > ---
-> >  arch/arm64/include/asm/irq.h |  6 ++++++
-> >  arch/arm64/kernel/ipi_nmi.c  | 12 +++++++++++-
-> >  2 files changed, 17 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/include/asm/irq.h
-> > b/arch/arm64/include/asm/irq.h
-> > index b2b0c64..e840bf1 100644
-> > --- a/arch/arm64/include/asm/irq.h
-> > +++ b/arch/arm64/include/asm/irq.h
-> > @@ -6,6 +6,12 @@
-> >
-> >  #include <asm-generic/irq.h>
-> >
-> > +#ifdef CONFIG_SMP
-> > +extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
-> > +                                        bool exclude_self);
-> > +#define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
-> > +#endif
-> > +
-> >  struct pt_regs;
-> >
-> >  static inline int nr_legacy_irqs(void)
-> > diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
-> > index e0a9e03..e1dc19d 100644
-> > --- a/arch/arm64/kernel/ipi_nmi.c
-> > +++ b/arch/arm64/kernel/ipi_nmi.c
-> > @@ -9,6 +9,7 @@
-> >  #include <linux/interrupt.h>
-> >  #include <linux/irq.h>
-> >  #include <linux/kgdb.h>
-> > +#include <linux/nmi.h>
-> >  #include <linux/smp.h>
-> >
-> >  #include <asm/nmi.h>
-> > @@ -25,12 +26,21 @@ void arch_send_call_nmi_func_ipi_mask(cpumask_t
-> > *mask)
-> >       __ipi_send_mask(ipi_desc, mask);
-> >  }
-> >
-> > +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool
-> > exclude_self)
-> > +{
-> > +     nmi_trigger_cpumask_backtrace(mask, exclude_self,
-> > +                                   arch_send_call_nmi_func_ipi_mask);
-> > +}
-> > +
-> >  static irqreturn_t ipi_nmi_handler(int irq, void *data)
-> >  {
-> >       unsigned int cpu = smp_processor_id();
-> >
-> > -     ipi_kgdb_nmicallback(cpu, get_irq_regs());
-> > +     if (nmi_cpu_backtrace(get_irq_regs()))
-> > +             goto out;
-> >
-> > +     ipi_kgdb_nmicallback(cpu, get_irq_regs());
-> > +out:
-> >       return IRQ_HANDLED;
-> >  }
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 >
-> Can't you have *both* a request for a backtrace and a KGDB call?
-> It really shouldn't be either/or. It also outlines how well shared
-> interrupts work with edge triggered signalling...
-
-Unfortunately, NMIs doesn't seem to support shared mode [1].
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/irq/manage.c#n1480
-
--Sumit
-
+> Add the support for VFE 4.8 in the camss-vfe-4-7 driver, as this one
+> really is a minor revision, requiring the very same management and
+> basically having the same register layout as VFE 4.7, but needing
+> a different QoS and DS configuration, using a different register to
+> enable the wm and habing the same UB size for both instances (instead
+> of a different size between instance 0 and 1).
 >
->          M.
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>  .../media/platform/qcom/camss/camss-vfe-4-7.c | 129 ++++++++++++++++--
+>  drivers/media/platform/qcom/camss/camss-vfe.h |   1 +
+>  2 files changed, 122 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-7.c b/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
+> index 0dca8bf9281e..e48d58a4a9d1 100644
+> --- a/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
+> @@ -133,6 +133,11 @@
+>  #define VFE_0_BUS_BDG_QOS_CFG_7                0x420
+>  #define VFE_0_BUS_BDG_QOS_CFG_7_CFG    0x0001aaa9
+>
+> +#define VFE48_0_BUS_BDG_QOS_CFG_0_CFG  0xaaa5aaa5
+> +#define VFE48_0_BUS_BDG_QOS_CFG_3_CFG  0xaa55aaa5
+> +#define VFE48_0_BUS_BDG_QOS_CFG_4_CFG  0xaa55aa55
+> +#define VFE48_0_BUS_BDG_QOS_CFG_7_CFG  0x0005aa55
+> +
+>  #define VFE_0_BUS_BDG_DS_CFG_0         0x424
+>  #define VFE_0_BUS_BDG_DS_CFG_0_CFG     0xcccc0011
+>  #define VFE_0_BUS_BDG_DS_CFG_1         0x428
+> @@ -153,6 +158,9 @@
+>  #define VFE_0_BUS_BDG_DS_CFG_16                0x464
+>  #define VFE_0_BUS_BDG_DS_CFG_16_CFG    0x40000103
+>
+> +#define VFE48_0_BUS_BDG_DS_CFG_0_CFG   0xcccc1111
+> +#define VFE48_0_BUS_BDG_DS_CFG_16_CFG  0x00000110
+> +
+>  #define VFE_0_RDI_CFG_x(x)             (0x46c + (0x4 * (x)))
+>  #define VFE_0_RDI_CFG_x_RDI_STREAM_SEL_SHIFT   28
+>  #define VFE_0_RDI_CFG_x_RDI_STREAM_SEL_MASK    (0xf << 28)
+> @@ -231,6 +239,9 @@
+>  #define VFE_0_REALIGN_BUF_CFG_CR_ODD_PIXEL     BIT(3)
+>  #define VFE_0_REALIGN_BUF_CFG_HSUB_ENABLE      BIT(4)
+>
+> +#define VFE48_0_BUS_IMAGE_MASTER_CMD           0xcec
+> +#define VFE48_0_BUS_IMAGE_MASTER_n_SHIFT(x)    (2 * (x))
+> +
+>  #define CAMIF_TIMEOUT_SLEEP_US 1000
+>  #define CAMIF_TIMEOUT_ALL_US 1000000
+>
+> @@ -246,7 +257,7 @@ static void vfe_hw_version_read(struct vfe_device *vfe, struct device *dev)
+>         dev_err(dev, "VFE HW Version = 0x%08x\n", hw_version);
+>  }
+>
+> -static u16 vfe_get_ub_size(u8 vfe_id)
+> +static u16 vfe47_get_ub_size(u8 vfe_id)
+>  {
+>         if (vfe_id == 0)
+>                 return MSM_VFE_VFE0_UB_SIZE_RDI;
+> @@ -299,7 +310,7 @@ static void vfe_halt_clear(struct vfe_device *vfe)
+>         writel_relaxed(0x0, vfe->base + VFE_0_BUS_BDG_CMD);
+>  }
+>
+> -static void vfe_wm_enable(struct vfe_device *vfe, u8 wm, u8 enable)
+> +static void vfe47_wm_enable(struct vfe_device *vfe, u8 wm, u8 enable)
+>  {
+>         if (enable)
+>                 vfe_reg_set(vfe, VFE_0_BUS_IMAGE_MASTER_n_WR_CFG(wm),
+> @@ -883,7 +894,7 @@ static void vfe_set_clamp_cfg(struct vfe_device *vfe)
+>         writel_relaxed(val, vfe->base + VFE_0_CLAMP_ENC_MIN_CFG);
+>  }
+>
+> -static void vfe_set_qos(struct vfe_device *vfe)
+> +static void vfe47_set_qos(struct vfe_device *vfe)
+>  {
+>         u32 val = VFE_0_BUS_BDG_QOS_CFG_0_CFG;
+>         u32 val7 = VFE_0_BUS_BDG_QOS_CFG_7_CFG;
+> @@ -898,7 +909,7 @@ static void vfe_set_qos(struct vfe_device *vfe)
+>         writel_relaxed(val7, vfe->base + VFE_0_BUS_BDG_QOS_CFG_7);
+>  }
+>
+> -static void vfe_set_ds(struct vfe_device *vfe)
+> +static void vfe47_set_ds(struct vfe_device *vfe)
+>  {
+>         u32 val = VFE_0_BUS_BDG_DS_CFG_0_CFG;
+>         u32 val16 = VFE_0_BUS_BDG_DS_CFG_16_CFG;
+> @@ -1098,11 +1109,113 @@ static irqreturn_t vfe_isr(int irq, void *dev)
+>
+>  const struct vfe_hw_ops vfe_ops_4_7 = {
+>         .hw_version_read = vfe_hw_version_read,
+> -       .get_ub_size = vfe_get_ub_size,
+> +       .get_ub_size = vfe47_get_ub_size,
+> +       .global_reset = vfe_global_reset,
+> +       .halt_request = vfe_halt_request,
+> +       .halt_clear = vfe_halt_clear,
+> +       .wm_enable = vfe47_wm_enable,
+> +       .wm_frame_based = vfe_wm_frame_based,
+> +       .wm_line_based = vfe_wm_line_based,
+> +       .wm_set_framedrop_period = vfe_wm_set_framedrop_period,
+> +       .wm_set_framedrop_pattern = vfe_wm_set_framedrop_pattern,
+> +       .wm_set_ub_cfg = vfe_wm_set_ub_cfg,
+> +       .bus_reload_wm = vfe_bus_reload_wm,
+> +       .wm_set_ping_addr = vfe_wm_set_ping_addr,
+> +       .wm_set_pong_addr = vfe_wm_set_pong_addr,
+> +       .wm_get_ping_pong_status = vfe_wm_get_ping_pong_status,
+> +       .bus_enable_wr_if = vfe_bus_enable_wr_if,
+> +       .bus_connect_wm_to_rdi = vfe_bus_connect_wm_to_rdi,
+> +       .wm_set_subsample = vfe_wm_set_subsample,
+> +       .bus_disconnect_wm_from_rdi = vfe_bus_disconnect_wm_from_rdi,
+> +       .set_xbar_cfg = vfe_set_xbar_cfg,
+> +       .set_realign_cfg = vfe_set_realign_cfg,
+> +       .set_rdi_cid = vfe_set_rdi_cid,
+> +       .reg_update = vfe_reg_update,
+> +       .reg_update_clear = vfe_reg_update_clear,
+> +       .enable_irq_wm_line = vfe_enable_irq_wm_line,
+> +       .enable_irq_pix_line = vfe_enable_irq_pix_line,
+> +       .enable_irq_common = vfe_enable_irq_common,
+> +       .set_demux_cfg = vfe_set_demux_cfg,
+> +       .set_scale_cfg = vfe_set_scale_cfg,
+> +       .set_crop_cfg = vfe_set_crop_cfg,
+> +       .set_clamp_cfg = vfe_set_clamp_cfg,
+> +       .set_qos = vfe47_set_qos,
+> +       .set_ds = vfe47_set_ds,
+> +       .set_cgc_override = vfe_set_cgc_override,
+> +       .set_camif_cfg = vfe_set_camif_cfg,
+> +       .set_camif_cmd = vfe_set_camif_cmd,
+> +       .set_module_cfg = vfe_set_module_cfg,
+> +       .camif_wait_for_stop = vfe_camif_wait_for_stop,
+> +       .isr_read = vfe_isr_read,
+> +       .violation_read = vfe_violation_read,
+> +       .isr = vfe_isr,
+> +};
+
+I would consider splitting the assignments that aren't related to
+vfe48 support out into another commit. The ones that are vfe48 related
+can stay in this commit.
+
+> +
+> +static u16 vfe48_get_ub_size(u8 vfe_id)
+> +{
+> +       /* On VFE4.8 the ub-size is the same on both instances */
+> +       return MSM_VFE_VFE0_UB_SIZE_RDI;
+> +}
+> +
+> +static void vfe48_wm_enable(struct vfe_device *vfe, u8 wm, u8 enable)
+> +{
+> +       if (enable)
+> +               writel_relaxed(2 << VFE48_0_BUS_IMAGE_MASTER_n_SHIFT(wm),
+> +                              vfe->base + VFE48_0_BUS_IMAGE_MASTER_CMD);
+> +       else
+> +               writel_relaxed(1 << VFE48_0_BUS_IMAGE_MASTER_n_SHIFT(wm),
+> +                              vfe->base + VFE48_0_BUS_IMAGE_MASTER_CMD);
+> +       wmb();
+
+checkpatch rightly complains about this wmb() call being uncommented.
+None or nearly none of the other wmb() calls are documented, but I
+think it would be good practice to start documenting their purpose in
+order to increase long-term maintainability.
+
+> +}
+> +
+> +static void vfe48_set_qos(struct vfe_device *vfe)
+> +{
+> +       u32 val = VFE48_0_BUS_BDG_QOS_CFG_0_CFG;
+> +       u32 val3 = VFE48_0_BUS_BDG_QOS_CFG_3_CFG;
+> +       u32 val4 = VFE48_0_BUS_BDG_QOS_CFG_4_CFG;
+> +       u32 val7 = VFE48_0_BUS_BDG_QOS_CFG_7_CFG;
+> +
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_QOS_CFG_0);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_QOS_CFG_1);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_QOS_CFG_2);
+> +       writel_relaxed(val3, vfe->base + VFE_0_BUS_BDG_QOS_CFG_3);
+> +       writel_relaxed(val4, vfe->base + VFE_0_BUS_BDG_QOS_CFG_4);
+> +       writel_relaxed(val4, vfe->base + VFE_0_BUS_BDG_QOS_CFG_5);
+> +       writel_relaxed(val4, vfe->base + VFE_0_BUS_BDG_QOS_CFG_6);
+> +       writel_relaxed(val7, vfe->base + VFE_0_BUS_BDG_QOS_CFG_7);
+> +}
+> +
+> +static void vfe48_set_ds(struct vfe_device *vfe)
+> +{
+> +       u32 val = VFE48_0_BUS_BDG_DS_CFG_0_CFG;
+> +       u32 val16 = VFE48_0_BUS_BDG_DS_CFG_16_CFG;
+> +
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_0);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_1);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_2);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_3);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_4);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_5);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_6);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_7);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_8);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_9);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_10);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_11);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_12);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_13);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_14);
+> +       writel_relaxed(val, vfe->base + VFE_0_BUS_BDG_DS_CFG_15);
+> +       writel_relaxed(val16, vfe->base + VFE_0_BUS_BDG_DS_CFG_16);
+> +}
+> +
+> +const struct vfe_hw_ops vfe_ops_4_8 = {
+> +       .hw_version_read = vfe_hw_version_read,
+> +       .get_ub_size = vfe48_get_ub_size,
+>         .global_reset = vfe_global_reset,
+>         .halt_request = vfe_halt_request,
+>         .halt_clear = vfe_halt_clear,
+> -       .wm_enable = vfe_wm_enable,
+> +       .wm_enable = vfe48_wm_enable,
+>         .wm_frame_based = vfe_wm_frame_based,
+>         .wm_line_based = vfe_wm_line_based,
+>         .wm_set_framedrop_period = vfe_wm_set_framedrop_period,
+> @@ -1128,8 +1241,8 @@ const struct vfe_hw_ops vfe_ops_4_7 = {
+>         .set_scale_cfg = vfe_set_scale_cfg,
+>         .set_crop_cfg = vfe_set_crop_cfg,
+>         .set_clamp_cfg = vfe_set_clamp_cfg,
+> -       .set_qos = vfe_set_qos,
+> -       .set_ds = vfe_set_ds,
+> +       .set_qos = vfe48_set_qos,
+> +       .set_ds = vfe48_set_ds,
+>         .set_cgc_override = vfe_set_cgc_override,
+>         .set_camif_cfg = vfe_set_camif_cfg,
+>         .set_camif_cmd = vfe_set_camif_cmd,
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.h b/drivers/media/platform/qcom/camss/camss-vfe.h
+> index a90b0d2cc6de..5bce6736e4bb 100644
+> --- a/drivers/media/platform/qcom/camss/camss-vfe.h
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe.h
+> @@ -180,5 +180,6 @@ void msm_vfe_get_vfe_line_id(struct media_entity *entity, enum vfe_line_id *id);
+>
+>  extern const struct vfe_hw_ops vfe_ops_4_1;
+>  extern const struct vfe_hw_ops vfe_ops_4_7;
+> +extern const struct vfe_hw_ops vfe_ops_4_8;
+>
+>  #endif /* QC_MSM_CAMSS_VFE_H */
 > --
-> Jazz is not dead. It just smells funny...
+> 2.28.0
+>
