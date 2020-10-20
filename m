@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD2C29447F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 23:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24299294499
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 23:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409891AbgJTVYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 17:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
+        id S2438702AbgJTVeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 17:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727238AbgJTVYH (ORCPT
+        with ESMTP id S2438690AbgJTVeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 17:24:07 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF1EC0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 14:24:07 -0700 (PDT)
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 52B6B806B7;
-        Wed, 21 Oct 2020 10:24:05 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1603229045;
-        bh=0ivsRHeT+t3HrWxbqemy5pdAuw1H/86srNARdUIHiP4=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=rGL0GJJRZLZFLUzqci7nUrRLxmykpLbs+lJrl25qAnxUZveMn805gX8DuitX4AYI3
-         L7l93PhYXfnlKPyKMxPum8whdiywVkHhBqVpWm9YaB5jySK3AQ2t8vc7XYBbDdtnIl
-         jCfISaCVUD+kcQcZY7BIlq/+MiuuSfzFpTCbBdChng7R30N4LFWGSu0hRsSFl7qarS
-         DPdUlBGoxPkVLSYSK/k0HLtXodPFY0O0VkZjPy5wTK9An+pTrJMKbRaJL0m9l/4ZQ1
-         l1/2elykpFFV1G5yBKHjoAxWVmZknZ3JvGj6PLpWbVegVv7dpvIDIf1rtyPa6jwO5W
-         SM1nKtFGQVo0g==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5f8f55760001>; Wed, 21 Oct 2020 10:24:06 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 21 Oct 2020 10:24:04 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.006; Wed, 21 Oct 2020 10:24:04 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     "andrew@lunn.ch" <andrew@lunn.ch>,
+        Tue, 20 Oct 2020 17:34:11 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B61C0613CE;
+        Tue, 20 Oct 2020 14:34:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=CL33xukGyQD+kFedH3Y6PzDp2/gvvtq/BTuy+H/0srM=; b=EKGLaCPw8o9py9uEATTS1AOcE
+        3mllTzLkCFAO3IOvTYTqNn5DsEy+uHGfaWuIFHaDreXJJKBZPUw2H6Ixmc/rslU3+IlFcAJlfpzxq
+        1EzH/ktt5zb73CmqcLBefOUReR9b4zDdpH/yHC+Loq2/X2s7NY1K/FQPLL7l4hdgFzfzTbdc988/i
+        6X+oVpxFEGrtjRLQIToTjS1weaAU7K1B5MGMNTRBP8W4QP4B6ymDpqw8dL63QaMt3nRJ4YYIUl2ze
+        RflMRIMJy0TyAwvtiWwdxO3fOcbiXTw606mAfCWHCzKxUfMZvtx0Hs+d5/TZSeqMwbZKlBO5goA4A
+        LP30vz/sA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48824)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kUzGg-00080f-3T; Tue, 20 Oct 2020 22:34:06 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kUzGd-0005cW-DK; Tue, 20 Oct 2020 22:34:03 +0100
+Date:   Tue, 20 Oct 2020 22:34:03 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     "andrew@lunn.ch" <andrew@lunn.ch>,
         "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
         "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
         "olteanv@gmail.com" <olteanv@gmail.com>,
@@ -50,48 +48,58 @@ CC:     "andrew@lunn.ch" <andrew@lunn.ch>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH v3 3/3] net: dsa: mv88e6xxx: Support serdes ports on
  MV88E6123/6131
-Thread-Topic: [PATCH v3 3/3] net: dsa: mv88e6xxx: Support serdes ports on
- MV88E6123/6131
-Thread-Index: AQHWppOIHo6sjfIsxk6UhS3TBwc3O6mfbbqAgAC53AA=
-Date:   Tue, 20 Oct 2020 21:24:04 +0000
-Message-ID: <d4f6fab0-8099-7cc2-dfce-bd7a3363c131@alliedtelesis.co.nz>
+Message-ID: <20201020213403.GH1551@shell.armlinux.org.uk>
 References: <20201020034558.19438-1-chris.packham@alliedtelesis.co.nz>
  <20201020034558.19438-4-chris.packham@alliedtelesis.co.nz>
  <20201020101851.GC1551@shell.armlinux.org.uk>
-In-Reply-To: <20201020101851.GC1551@shell.armlinux.org.uk>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <46F921CF8320284AB2383F39140BC84E@atlnz.lc>
-Content-Transfer-Encoding: base64
+ <d4f6fab0-8099-7cc2-dfce-bd7a3363c131@alliedtelesis.co.nz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d4f6fab0-8099-7cc2-dfce-bd7a3363c131@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAyMC8xMC8yMCAxMToxOCBwbSwgUnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4IGFkbWluIHdy
-b3RlOg0KPiBPbiBUdWUsIE9jdCAyMCwgMjAyMCBhdCAwNDo0NTo1OFBNICsxMzAwLCBDaHJpcyBQ
-YWNraGFtIHdyb3RlOg0KPj4gK3ZvaWQgbXY4OGU2MTIzX3NlcmRlc19nZXRfcmVncyhzdHJ1Y3Qg
-bXY4OGU2eHh4X2NoaXAgKmNoaXAsIGludCBwb3J0LCB2b2lkICpfcCkNCj4+ICt7DQo+PiArCXUx
-NiAqcCA9IF9wOw0KPj4gKwl1MTYgcmVnOw0KPj4gKwlpbnQgaTsNCj4+ICsNCj4+ICsJaWYgKG12
-ODhlNnh4eF9zZXJkZXNfZ2V0X2xhbmUoY2hpcCwgcG9ydCkgPT0gMCkNCj4+ICsJCXJldHVybjsN
-Cj4+ICsNCj4+ICsJZm9yIChpID0gMDsgaSA8IDI2OyBpKyspIHsNCj4+ICsJCW12ODhlNnh4eF9w
-aHlfcmVhZChjaGlwLCBwb3J0LCBpLCAmcmVnKTsNCj4gU2hvdWxkbid0IHRoaXMgZGVhbCB3aXRo
-IGEgZmFpbGVkIHJlYWQgaW4gc29tZSB3YXksIHJhdGhlciB0aGFuIGp1c3QNCj4gYXNzaWduaW5n
-IHRoZSBsYXN0IG9yIHBvc3NpYmx5IHVuaW5pdGlhbGlzZWQgdmFsdWUgdG8gcFtpXSA/DQoNCm12
-ODhlNjM5MF9zZXJkZXNfZ2V0X3JlZ3MoKSBhbmQgbXY4OGU2MzUyX3NlcmRlc19nZXRfcmVncygp
-IGFsc28gaWdub3JlIA0KdGhlIGVycm9yLiBUaGUgZ2VuZXJpYyBtdjg4ZTZ4eHhfZ2V0X3JlZ3Mo
-KSBtZW1zZXRzIHBbXSB0byAweGZmIHNvIGlmIA0KdGhlIHNlcmRlc19nZXRfcmVncyBmdW5jdGlv
-bnMganVzdCBsZWZ0IGl0IGFsb25lIHdlJ2QgcmV0dXJuIDB4ZmZmZiANCndoaWNoIGlzIHByb2Jh
-Ymx5IGJldHRlciB0aGFuIHJlcGVhdGluZyB0aGUgbGFzdCB2YWx1ZSBhbHRob3VnaCBpdCdzIA0K
-c3RpbGwgYW1iaWd1b3VzIGJlY2F1c2UgMHhmZmZmIGlzIGEgdmFsaWQgdmFsdWUgZm9yIHBsZW50
-eSBvZiB0aGVzZSANCnJlZ2lzdGVycy4NCg0KU2luY2UgaXQgbG9va3MgbGlrZSBJIG5lZWQgdG8g
-Y29tZSB1cCB3aXRoIGFuIGFsdGVybmF0aXZlIHRvIHBhdGNoICMxIA0KSSdsbCBjb25jZW50cmF0
-ZSBvbiB0aGF0IGJ1dCBtYWtpbmcgdGhlIHNlcmRlc19nZXRfcmVncygpIGEgbGl0dGxlIG1vcmUg
-DQplcnJvciB0b2xlcmFudCBpcyBhIGNsZWFudXAgSSBjYW4gZWFzaWx5IHRhY2sgb24gb250byB0
-aGlzIHNlcmllcy4NCg==
+On Tue, Oct 20, 2020 at 09:24:04PM +0000, Chris Packham wrote:
+> 
+> On 20/10/20 11:18 pm, Russell King - ARM Linux admin wrote:
+> > On Tue, Oct 20, 2020 at 04:45:58PM +1300, Chris Packham wrote:
+> >> +void mv88e6123_serdes_get_regs(struct mv88e6xxx_chip *chip, int port, void *_p)
+> >> +{
+> >> +	u16 *p = _p;
+> >> +	u16 reg;
+> >> +	int i;
+> >> +
+> >> +	if (mv88e6xxx_serdes_get_lane(chip, port) == 0)
+> >> +		return;
+> >> +
+> >> +	for (i = 0; i < 26; i++) {
+> >> +		mv88e6xxx_phy_read(chip, port, i, &reg);
+> > Shouldn't this deal with a failed read in some way, rather than just
+> > assigning the last or possibly uninitialised value to p[i] ?
+> 
+> mv88e6390_serdes_get_regs() and mv88e6352_serdes_get_regs() also ignore 
+> the error. The generic mv88e6xxx_get_regs() memsets p[] to 0xff so if 
+> the serdes_get_regs functions just left it alone we'd return 0xffff 
+> which is probably better than repeating the last value although it's 
+> still ambiguous because 0xffff is a valid value for plenty of these 
+> registers.
+> 
+> Since it looks like I need to come up with an alternative to patch #1 
+> I'll concentrate on that but making the serdes_get_regs() a little more 
+> error tolerant is a cleanup I can easily tack on onto this series.
+
+Yep, it looks like they all suffer the same problem. Interestingly,
+mv88e6xxx_get_regs() does handle the error by avoiding writing the
+register entry (so it gets left as 0xffff.)
+
+Incidentally, that's also the value you'll get when reading from a
+PHY that doesn't respond, since the MDIO data line is pulled high
+when undriven.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
