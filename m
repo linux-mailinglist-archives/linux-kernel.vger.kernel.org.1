@@ -2,120 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55002940A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FAB02940B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394778AbgJTQkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 12:40:09 -0400
-Received: from mga03.intel.com ([134.134.136.65]:24589 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387765AbgJTQkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 12:40:09 -0400
-IronPort-SDR: Zskibe4fzMQ5nMuv8p/SVRcW8tfYMGz6vw/Xu8VQs8zwEL4jGFb19JCbZwsp/fPH712I69/VuB
- auq9vQ8twTYw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="167330795"
-X-IronPort-AV: E=Sophos;i="5.77,397,1596524400"; 
-   d="scan'208";a="167330795"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 09:40:04 -0700
-IronPort-SDR: MoYFv3g53SAR0EFIb6i0dukRHdLLl8fsDnFqcj06Q4tcaNv6xZzgBKy/8/bgaBTFdgv7YwWv4O
- QAE+1UeOOkxg==
-X-IronPort-AV: E=Sophos;i="5.77,397,1596524400"; 
-   d="scan'208";a="522439848"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 09:40:02 -0700
-Date:   Tue, 20 Oct 2020 09:40:00 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     "Dr. Greg" <greg@enjellic.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20201020163959.GB28909@linux.intel.com>
-References: <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com>
- <20200925000052.GA20333@linux.intel.com>
- <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
- <20200925194304.GE31528@linux.intel.com>
- <230ce6da-7820-976f-f036-a261841d626f@intel.com>
- <20200928005347.GB6704@linux.intel.com>
- <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com>
- <20201018084920.GA19255@wind.enjellic.com>
- <20201019213105.GE23072@linux.intel.com>
- <20201020100118.GA6957@wind.enjellic.com>
+        id S2394786AbgJTQmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 12:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387937AbgJTQmT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 12:42:19 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC075C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:42:17 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id v19so2534054edx.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:42:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I0Me8GLYPnUizRcS83SCdg5n9DP3MyuxXWUGsX9kdwo=;
+        b=tfuJ2Gp25HcoLn6vQzFg/FlpBDVrTJM4WZSgfzcc71/zuwb0Z8cOnvVDcVg7AvWetz
+         GCQc0hSrAqL9XyYGWEdE/WHErNG5NwiM5gYRiS/Dma7YyZ/uKKX0UQEqHNOvUsToYLEz
+         gKcG3ooORmkHxsVLC8HexjR4k1Iznz7r+NHxCur1rf47A9/IRfzPLMW3d2G8bvCcT2ua
+         LC6mV4VONnO5tXddBXbeMhC7r6Dkb5arC6K3ULSyW0F38DmQpJCAKkbfL8iqCrcvV/Ow
+         nKYxKk27OmxwFsD/yIPmnbHjMCB59eESmtQhAD9oGOfpAr11KUzuq5JDZ3PzBnCnMGHt
+         HqQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I0Me8GLYPnUizRcS83SCdg5n9DP3MyuxXWUGsX9kdwo=;
+        b=RUdMlJ+LrvbI2lTIas+gLksPaKY3SSL0U5UKFSoCTh/3bfpSdmdWvpTspxTCPBrDCk
+         CECjdNYK5QVYpZePkk4lcFZbXpHl+bJ/AjpHTVvFVua8MVJnltwRWM0dCCbZ0IHtd/br
+         iQT51JHVgnVUCEt7rplR8SIGFcT3+nvKyL7c7kRZVHQZ7jt6QR08RhtyvY+e2WYUV+PI
+         x7fJZN8rjABfJGsV13Jv+/JRPqUk6Ajm4O9VwBYFr+4mPN49khJb6lDrW7F6ou4wfFiS
+         /+JaQieXcvdh3aNT7hd3N43234GVMhW4MfMVxt910Wv6knWLsAkcSZIzoFqNO4tY198s
+         8TcQ==
+X-Gm-Message-State: AOAM532tveCj0GGaACSIBuKZj6jG/VGKsIhw1ETbJHBcs/LjjyzBvF5/
+        bWa8BLyI4liEvFIDC7KjzlFcKzzWyfs7ZawSTAoG9w==
+X-Google-Smtp-Source: ABdhPJwmj1gLFyiZCwLnUyczZ5AtIrV1PckIn++9ZnSSTXEbEsuDOOrXLOt8ass9IoAu0owy+lwv/OR68pPkcbeDkWE=
+X-Received: by 2002:aa7:c390:: with SMTP id k16mr3866300edq.40.1603212136160;
+ Tue, 20 Oct 2020 09:42:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020100118.GA6957@wind.enjellic.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20201013003203.4168817-1-samitolvanen@google.com>
+ <20201013003203.4168817-14-samitolvanen@google.com> <202010141548.47CB1BC@keescook>
+In-Reply-To: <202010141548.47CB1BC@keescook>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 20 Oct 2020 09:42:05 -0700
+Message-ID: <CABCJKuf8=2A5fAY0rEZAWBw7q-PO8iFvmubGy4bj6GLZ7k8c9g@mail.gmail.com>
+Subject: Re: [PATCH v6 13/25] kbuild: lto: merge module sections
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
+        X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 05:01:18AM -0500, Dr. Greg wrote:
-> On Mon, Oct 19, 2020 at 02:31:05PM -0700, Sean Christopherson wrote:
-> 
-> Good morning, I hope the day is starting well for everyone.
-> 
-> > On Sun, Oct 18, 2020 at 03:49:20AM -0500, Dr. Greg wrote:
-> > > Is this even a relevant control if we cede the notion of dynamically
-> > > loadable enclave code, which is the objective of SGX2 hardware, which
-> > > will in all likelihood be the only relevant hardware implementation in
-> > > the future?
-> 
-> > Yes, it's still relevant.  Giving the thumbs up to dynamically
-> > loadable code is not a purely binary decision, e.g. a user/admin can
-> > allow RW->RX transitions but still disallow full RWX permissions.
-> 
-> With respect to the security issue at hand, the only relevant issue
-> would seem to be if a page had write permissions at one time in its
-> trajectory to having execute permisions, isn't this correct?
+On Wed, Oct 14, 2020 at 3:49 PM Kees Cook <keescook@chromium.org> wrote:
+> In looking at this again -- is this ifdef needed? Couldn't this be done
+> unconditionally? (Which would make it an independent change...)
 
-No.  RW->RX has different properties than RWX.  E.g. an enclave that
-dynamically loads code is not the same thing as an enclave that allows
-simultaneously writing and executing a page.
+No, I suppose it's not needed. I can drop the ifdef from the next version.
 
-> The next paragraph of my reply wasn't included in your reply, but I
-> did state that the mprotect hook would be relevant if its purpose was
-> to disallow this permission trajectory and in the process disable
-> enclave dynamic code loading and execution.
-> 
-> So to assist everyone in understanding this issue and the security
-> implications involved, is the ultimate purpose of the mprotect hook to
-> disable dynamic code loading?
-
-No, it's to provide line of sight to enforcing granular LSM checks on enclave
-pages.  Jumping back to the RWX thing, as a defense in depth measure, a policy
-owner could set an SELinux policy to never allow RWX, even for enclaves that
-dynamically load code.
-
-Whether or not having per-page granluarity on enclave permission checks is
-valuable/interesting is debatable, e.g. it's why LSM integration is notably
-absent from the this series.  But, adding the ->mprotect() hook is relatively
-cheap and can always be removed if it's deemed unnecessary in the long run.
-The reverse is not true; omitting ->mprotect() commits the kernel to an ABI
-that is either ugly and potentially painful (require all enclaves to declare
-full RWX permissions), or flat out prevents adding granular LSM support in
-the future (do nothing).
+Sami
