@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5593F293AA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8634F293AD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394055AbgJTMA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:00:27 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:51980 "EHLO
+        id S2405564AbgJTMCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:02:48 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:52058 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393968AbgJTMAV (ORCPT
+        with ESMTP id S2393970AbgJTMAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Oct 2020 08:00:21 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id D40DE8030816;
-        Tue, 20 Oct 2020 12:00:18 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 5995A803071C;
+        Tue, 20 Oct 2020 12:00:19 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id EHIphe-cfQKv; Tue, 20 Oct 2020 15:00:18 +0300 (MSK)
+        with ESMTP id 9WNRu8GWigpf; Tue, 20 Oct 2020 15:00:18 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        <bcm-kernel-feedback-list@broadcom.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-snps-arc@lists.infradead.org>
-Subject: [PATCH 06/29] arc: dts: Harmonize EHCI/OHCI DT nodes name
-Date:   Tue, 20 Oct 2020 14:59:36 +0300
-Message-ID: <20201020115959.2658-7-Sergey.Semin@baikalelectronics.ru>
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 07/29] arm: dts: bcm53x: Harmonize EHCI/OHCI DT nodes name
+Date:   Tue, 20 Oct 2020 14:59:37 +0300
+Message-ID: <20201020115959.2658-8-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -53,106 +53,56 @@ requires the USB nodes to have the name acceptable by the regexp:
 nodes are correctly named.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Acked-by: Alexey Brodkin <abrodkin@synopsys.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- arch/arc/boot/dts/axc003.dtsi        | 4 ++--
- arch/arc/boot/dts/axc003_idu.dtsi    | 4 ++--
- arch/arc/boot/dts/axs10x_mb.dtsi     | 4 ++--
- arch/arc/boot/dts/hsdk.dts           | 4 ++--
- arch/arc/boot/dts/vdk_axs10x_mb.dtsi | 2 +-
- 5 files changed, 9 insertions(+), 9 deletions(-)
+ arch/arm/boot/dts/bcm5301x.dtsi | 4 ++--
+ arch/arm/boot/dts/bcm53573.dtsi | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arc/boot/dts/axc003.dtsi b/arch/arc/boot/dts/axc003.dtsi
-index ac8e1b463a70..256ecffbc31e 100644
---- a/arch/arc/boot/dts/axc003.dtsi
-+++ b/arch/arc/boot/dts/axc003.dtsi
-@@ -103,11 +103,11 @@ ethernet@18000 {
- 			dma-coherent;
- 		};
+diff --git a/arch/arm/boot/dts/bcm5301x.dtsi b/arch/arm/boot/dts/bcm5301x.dtsi
+index 0016720ce530..bf5656d79a55 100644
+--- a/arch/arm/boot/dts/bcm5301x.dtsi
++++ b/arch/arm/boot/dts/bcm5301x.dtsi
+@@ -261,7 +261,7 @@ usb2: usb2@21000 {
  
--		ehci@40000 {
-+		usb@40000 {
- 			dma-coherent;
- 		};
+ 			interrupt-parent = <&gic>;
  
--		ohci@60000 {
-+		usb@60000 {
- 			dma-coherent;
- 		};
+-			ehci: ehci@21000 {
++			ehci: usb@21000 {
+ 				#usb-cells = <0>;
  
-diff --git a/arch/arc/boot/dts/axc003_idu.dtsi b/arch/arc/boot/dts/axc003_idu.dtsi
-index 9da21e7fd246..6eda28cbd15e 100644
---- a/arch/arc/boot/dts/axc003_idu.dtsi
-+++ b/arch/arc/boot/dts/axc003_idu.dtsi
-@@ -110,11 +110,11 @@ ethernet@18000 {
- 			dma-coherent;
- 		};
- 
--		ehci@40000 {
-+		usb@40000 {
- 			dma-coherent;
- 		};
- 
--		ohci@60000 {
-+		usb@60000 {
- 			dma-coherent;
- 		};
- 
-diff --git a/arch/arc/boot/dts/axs10x_mb.dtsi b/arch/arc/boot/dts/axs10x_mb.dtsi
-index 99d3e7175bf7..b64435385304 100644
---- a/arch/arc/boot/dts/axs10x_mb.dtsi
-+++ b/arch/arc/boot/dts/axs10x_mb.dtsi
-@@ -87,13 +87,13 @@ gmac: ethernet@18000 {
- 			mac-address = [00 00 00 00 00 00]; /* Filled in by U-Boot */
- 		};
- 
--		ehci@40000 {
-+		usb@40000 {
- 			compatible = "generic-ehci";
- 			reg = < 0x40000 0x100 >;
- 			interrupts = < 8 >;
- 		};
- 
--		ohci@60000 {
-+		usb@60000 {
- 			compatible = "generic-ohci";
- 			reg = < 0x60000 0x100 >;
- 			interrupts = < 8 >;
-diff --git a/arch/arc/boot/dts/hsdk.dts b/arch/arc/boot/dts/hsdk.dts
-index dcaa44e408ac..fdd4f7f635d3 100644
---- a/arch/arc/boot/dts/hsdk.dts
-+++ b/arch/arc/boot/dts/hsdk.dts
-@@ -234,7 +234,7 @@ phy0: ethernet-phy@0 { /* Micrel KSZ9031 */
+ 				compatible = "generic-ehci";
+@@ -283,7 +283,7 @@ ehci_port2: port@2 {
+ 				};
  			};
- 		};
  
--		ohci@60000 {
-+		usb@60000 {
- 			compatible = "snps,hsdk-v1.0-ohci", "generic-ohci";
- 			reg = <0x60000 0x100>;
- 			interrupts = <15>;
-@@ -242,7 +242,7 @@ ohci@60000 {
- 			dma-coherent;
- 		};
+-			ohci: ohci@22000 {
++			ohci: usb@22000 {
+ 				#usb-cells = <0>;
  
--		ehci@40000 {
-+		usb@40000 {
- 			compatible = "snps,hsdk-v1.0-ehci", "generic-ehci";
- 			reg = <0x40000 0x100>;
- 			interrupts = <15>;
-diff --git a/arch/arc/boot/dts/vdk_axs10x_mb.dtsi b/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
-index cbb179770293..90a412026e64 100644
---- a/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
-+++ b/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
-@@ -46,7 +46,7 @@ ethernet@18000 {
- 			clock-names = "stmmaceth";
- 		};
+ 				compatible = "generic-ohci";
+diff --git a/arch/arm/boot/dts/bcm53573.dtsi b/arch/arm/boot/dts/bcm53573.dtsi
+index 4af8e3293cff..51546fccc616 100644
+--- a/arch/arm/boot/dts/bcm53573.dtsi
++++ b/arch/arm/boot/dts/bcm53573.dtsi
+@@ -135,7 +135,7 @@ usb2: usb2@4000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
  
--		ehci@40000 {
-+		usb@40000 {
- 			compatible = "generic-ehci";
- 			reg = < 0x40000 0x100 >;
- 			interrupts = < 8 >;
+-			ehci: ehci@4000 {
++			ehci: usb@4000 {
+ 				compatible = "generic-ehci";
+ 				reg = <0x4000 0x1000>;
+ 				interrupt-parent = <&gic>;
+@@ -155,7 +155,7 @@ ehci_port2: port@2 {
+ 				};
+ 			};
+ 
+-			ohci: ohci@d000 {
++			ohci: usb@d000 {
+ 				#usb-cells = <0>;
+ 
+ 				compatible = "generic-ohci";
 -- 
 2.27.0
 
