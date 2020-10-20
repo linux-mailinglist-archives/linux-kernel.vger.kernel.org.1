@@ -2,147 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15E8293262
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 02:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2869929326D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 02:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389492AbgJTAle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 20:41:34 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:20925 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389484AbgJTAld (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 20:41:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UCax3nK_1603154490;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCax3nK_1603154490)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 20 Oct 2020 08:41:31 +0800
-Date:   Tue, 20 Oct 2020 08:41:30 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Subject: Re: [PATCH v1 09/29] virtio-mem: don't always trigger the workqueue
- when offlining memory
-Message-ID: <20201020004130.GB61232@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20201012125323.17509-1-david@redhat.com>
- <20201012125323.17509-10-david@redhat.com>
- <20201016040301.GJ86495@L-31X9LVDL-1304.local>
- <82afba4e-66e2-ce05-c092-267301b66de9@redhat.com>
- <20201018035725.GA50506@L-31X9LVDL-1304>
- <5103e899-0ca2-0804-dee8-772b5737d34d@redhat.com>
+        id S2389554AbgJTArc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 20:47:32 -0400
+Received: from mga11.intel.com ([192.55.52.93]:64902 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726962AbgJTArc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 20:47:32 -0400
+IronPort-SDR: tZHHj0OFKgTZN9X0t4k/0R/lsO0ngx4cDlwBfeLP78rW0i3S/E5RjYhoiGn0Kgt4sth38yX88W
+ pykMdmvVZ0xw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="163647153"
+X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
+   d="scan'208";a="163647153"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 17:47:27 -0700
+IronPort-SDR: yt8PMKX5i0nD6Cvc25Lfs8jIaYpSsqt3MTkW2S9RAU+kwvEjmHuI1ws4denvIxXoFRZZnhbXt2
+ XKZqXV88SGYg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
+   d="scan'208";a="465728431"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga004.jf.intel.com with ESMTP; 19 Oct 2020 17:47:25 -0700
+Date:   Tue, 20 Oct 2020 08:42:16 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH 1/2] fpga: dfl: add driver_override support
+Message-ID: <20201020004216.GD16172@yilunxu-OptiPlex-7050>
+References: <1602828151-24784-1-git-send-email-yilun.xu@intel.com>
+ <1602828151-24784-2-git-send-email-yilun.xu@intel.com>
+ <63d7730b-d9b8-c75d-16f6-3ebb507aabaa@redhat.com>
+ <20201019040612.GA16172@yilunxu-OptiPlex-7050>
+ <20201019085233.GB28746@yilunxu-OptiPlex-7050>
+ <20201019090316.GA3237088@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5103e899-0ca2-0804-dee8-772b5737d34d@redhat.com>
+In-Reply-To: <20201019090316.GA3237088@kroah.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 11:04:40AM +0200, David Hildenbrand wrote:
->On 18.10.20 05:57, Wei Yang wrote:
->> On Fri, Oct 16, 2020 at 11:18:39AM +0200, David Hildenbrand wrote:
->>> On 16.10.20 06:03, Wei Yang wrote:
->>>> On Mon, Oct 12, 2020 at 02:53:03PM +0200, David Hildenbrand wrote:
->>>>> Let's trigger from offlining code when we're not allowed to touch online
->> 
->> Here "touch" means "unplug"? If so, maybe s/touch/unplug/ would be more easy
->> to understand.
->
->Yes, much better.
->
->[...]
->
->> I am trying to get more understanding about the logic of virtio_mem_retry().
->> 
->> Current logic seems clear to me. There are four places to trigger it:
->> 
->>     * notify_offline
->>     * notify_online
->>     * timer_expired
->>     * config_changed
->> 
->> In this patch, we try to optimize the first case, notify_offline.
->
->Yes.
->
->> 
->> Now, we would always trigger retry when one of our memory block get offlined.
->> Per my understanding, this logic is correct while missed one case (or be more
->> precise, not handle one case timely). The case this patch wants to improve is
->> virtio_mem_mb_remove(). If my understanding is correct.
->> 
->
->Yes, that's one part of it. Read below.
->
->>    virtio_mem_run_wq()
->>        virtio_mem_unplug_request()
->>            virtio_mem_mb_unplug_any_sb_offline()
->>  	      virtio_mem_mb_remove()             --- 1
->>            virtio_mem_mb_unplug_any_sb_online()
->>               virtio_mem_mb_offline_and_remove() --- 2
->> 
->> The above is two functions this patch adjusts. For 2), it will offline the
->> memory block, thus will trigger virtio_mem_retry() originally. But for 1), the
->> memory block is already offlined, so virtio_mem_retry() will not be triggered
->> originally. This is the case we want to improve in this patch. Instead of wait
->> for timer expire, we trigger retry immediately after unplug/remove an offlined
->> memory block.
->> 
->> And after this change, this patch still adjust the original
->> virtio_mem_notify_offline() path to just trigger virtio_mem_retry() when
->> unplug_online is false. (This means the offline event is notified from user
->> space instead of from unplug event).
->> 
->> If my above analysis is correct, I got one small suggestion for this patch.
->> Instead of adjust current notify_offline handling, how about just trigger
->> retry during virtio_mem_mb_remove()? Since per my understanding, we just want
->> to do immediate trigger retry when unplug an offlined memory block.
->
->I probably should have added the following to the patch description:
->
->"This is a preparation for Big Block Mode (BBM), whereby we can see some
->temporary offlining of memory blocks without actually making progress"
->
->Imagine you have a Big Block that spans to Linux memory blocks. Assume
->the first Linux memory blocks has no unmovable data on it.
->
->Assume you call offline_and_remove_memory()
->
->1. Try to offline the first block. Works, notifiers triggered.
->virtio_mem_retry().
+On Mon, Oct 19, 2020 at 11:03:16AM +0200, Greg KH wrote:
+> On Mon, Oct 19, 2020 at 04:52:33PM +0800, Xu Yilun wrote:
+> > On Mon, Oct 19, 2020 at 12:06:13PM +0800, Xu Yilun wrote:
+> > > On Fri, Oct 16, 2020 at 09:21:50AM -0700, Tom Rix wrote:
+> > > > 
+> > > > On 10/15/20 11:02 PM, Xu Yilun wrote:
+> > > > > Add support for overriding the default matching of a dfl device to a dfl
+> > > > > driver. It follows the same way that can be used for PCI and platform
+> > > > > devices. This patch adds the 'driver_override' sysfs file.
+> > > > >
+> > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > > > ---
+> > > > >  Documentation/ABI/testing/sysfs-bus-dfl | 28 ++++++++++++++---
+> > > > >  drivers/fpga/dfl.c                      | 54 ++++++++++++++++++++++++++++++++-
+> > > > >  include/linux/dfl.h                     |  2 ++
+> > > > >  3 files changed, 79 insertions(+), 5 deletions(-)
+> > > > >
+> > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl b/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > index 23543be..db7e8d3 100644
+> > > > > --- a/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > +++ b/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > @@ -1,15 +1,35 @@
+> > > > >  What:		/sys/bus/dfl/devices/dfl_dev.X/type
+> > > > > -Date:		Aug 2020
+> > > > > -KernelVersion:	5.10
+> > > > > +Date:		Oct 2020
+> > > > > +KernelVersion:	5.11
+> > > > >  Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > > >  Description:	Read-only. It returns type of DFL FIU of the device. Now DFL
+> > > > >  		supports 2 FIU types, 0 for FME, 1 for PORT.
+> > > > >  		Format: 0x%x
+> > > > >  
+> > > > >  What:		/sys/bus/dfl/devices/dfl_dev.X/feature_id
+> > > > > -Date:		Aug 2020
+> > > > > -KernelVersion:	5.10
+> > > > > +Date:		Oct 2020
+> > > > > +KernelVersion:	5.11
+> > > > >  Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > > >  Description:	Read-only. It returns feature identifier local to its DFL FIU
+> > > > >  		type.
+> > > > >  		Format: 0x%x
+> > > > 
+> > > > These updates, do not match the comment.
+> > > > 
+> > > > Consider splitting this out.
+> > > 
+> > > I'm sorry it's a typo. The above code should not be changed.
+> > > 
+> > > > 
+> > > > > +
+> > > > > +What:           /sys/bus/dfl/devices/.../driver_override
+> > > > > +Date:           Oct 2020
+> > > > > +KernelVersion:  5.11
+> > > > > +Contact:        Xu Yilun <yilun.xu@intel.com>
+> > > > I am looking at description and trying to make it consistent with sysfs-bus-pci
+> > > > > +Description:    This file allows the driver for a device to be specified.
+> > > > 
+> > > > 'to be specified which will override the standard dfl bus feature id to driver mapping.'
+> > > 
+> > > Yes, it could be improved.
+> > > 
+> > > Actually now it is the "type" and "feature id" matching, the 2 fields
+> > > are defined for dfl_driver.id_table. In future for dfl v1, it may be
+> > > GUID matching, which will be added to id_table. So how about we make it
+> > > more generic:
+> > > 
+> > > 'to be specified which will override the standard ID table matching.'
+> > > 
+> > > > 
+> > > > 
+> > > > >  When
+> > > > > +                specified, only a driver with a name matching the value written
+> > > > > +                to driver_override will have an opportunity to bind to the
+> > > > > +                device. The override is specified by writing a string to the
+> > > > > +                driver_override file (echo dfl-uio-pdev > driver_override) and
+> > > > > +                may be cleared with an empty string (echo > driver_override).
+> > > > > +                This returns the device to standard matching rules binding.
+> > > > > +                Writing to driver_override does not automatically unbind the
+> > > > > +                device from its current driver or make any attempt to
+> > > > > +                automatically load the specified driver.  If no driver with a
+> > > > > +                matching name is currently loaded in the kernel, the device
+> > > > > +                will not bind to any driver.  This also allows devices to
+> > > > > +                opt-out of driver binding using a driver_override name such as
+> > > > > +                "none".  Only a single driver may be specified in the override,
+> > > > > +                there is no support for parsing delimiters.
+> > > > > diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+> > > > > index 511b20f..bc35750 100644
+> > > > > --- a/drivers/fpga/dfl.c
+> > > > > +++ b/drivers/fpga/dfl.c
+> > > > > @@ -262,6 +262,10 @@ static int dfl_bus_match(struct device *dev, struct device_driver *drv)
+> > > > >  	struct dfl_driver *ddrv = to_dfl_drv(drv);
+> > > > >  	const struct dfl_device_id *id_entry;
+> > > > >  
+> > > > > +	/* When driver_override is set, only bind to the matching driver */
+> > > > > +	if (ddev->driver_override)
+> > > > > +		return !strcmp(ddev->driver_override, drv->name);
+> > > > > +
+> > > > >  	id_entry = ddrv->id_table;
+> > > > >  	if (id_entry) {
+> > > > >  		while (id_entry->feature_id) {
+> > > > > @@ -303,6 +307,53 @@ static int dfl_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
+> > > > >  			      ddev->type, ddev->feature_id);
+> > > > >  }
+> > > > >  
+> > > > 
+> > > > I am looking at other implementations of driver_override* and looking for consistency.
+> > > > 
+> > > > > +static ssize_t driver_override_show(struct device *dev,
+> > > > > +				    struct device_attribute *attr, char *buf)
+> > > > > +{
+> > > > > +	struct dfl_device *ddev = to_dfl_dev(dev);
+> > > > > +	ssize_t len;
+> > > > > +
+> > > > > +	device_lock(dev);
+> > > > > +	len = sprintf(buf, "%s\n", ddev->driver_override);
+> > > > len = snprintf(buf, PAGE_SIZE ...
+> > > 
+> > > It is good to me.
+> > > 
+> > > Some bus drivers use snprintf, some use sprintf.
+> > > 
+> > > I think it is reasonable snprintf is used here, unlike %d, %u ... it is
+> > > uncertain for the output size of %s.
+> > 
+> > Sorry, I checked the Documentation/filesystems/sysfs.rst again and found
+> > I didn't remember it correctly.
+> > 
+> > The snprintf is must not be used, sprintf() or scnprintf() should be
+> > used. So I prefer sprintf() here, following other implementations.
+> > 
+> > sprintf() should be safe here, as we already limited the input of
+> > driver_override string to less then PAGE_SIZE on store().
+> 
+> As already mentioned, please use sysfs_emit() instead.
 
-After this patch, the virtio_mem_retry() is remove here.
+Yes, I'll do it.
 
->2. Try to offline the second block. Does not work.
->3. Re-online first block.
->4. Exit to main loop, exit workqueue.
+Thanks,
+Yilun
 
-Since offline_and_remove_memory() doesn't succeed, virtio_mem_retry() is not
-triggered.
-
->5. Retry immediately (due to virtio_mem_retry()), go to 1.
-
-So we won't have endless loop.
-
->
->So, you'll keep retrying forever. Found while debugging that exact issue :)
->
-
-If this is the case, my suggestion is to record it in the changelog.
-Otherwise, we may lose this corner case which is important to this change.
-
->
->-- 
->Thanks,
->
->David / dhildenb
-
--- 
-Wei Yang
-Help you, Help me
+> 
+> thanks,
+> 
+> greg k-h
