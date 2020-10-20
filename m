@@ -2,103 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61DCE2942C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A86F32942C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437998AbgJTTO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 15:14:29 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:52766 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390695AbgJTTO2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 15:14:28 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09KJENMj040352;
-        Tue, 20 Oct 2020 14:14:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603221263;
-        bh=rq754Vqcj0asto5tv94NCjKiITcNWnK048kvmYNEa5I=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=y2KYYxZNNv/oYZ6cVgehV4Mz6FZWaeCKg72DWyS79aZqPGA9lLQXuaxb95TrMT+Bv
-         wP2ixEk/LvFccJA69L7ZuqY1UTmsfQv4YxLFY0kFT7Z2P+NQ/Dw4aCIP0uP95LbEAf
-         9LtSrV90F4U0CsdkwSUUDxwi9bbw+pzysFir8Gxc=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09KJENxV037733
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 20 Oct 2020 14:14:23 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 20
- Oct 2020 14:14:23 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 20 Oct 2020 14:14:23 -0500
-Received: from [10.250.39.65] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09KJEMep055605;
-        Tue, 20 Oct 2020 14:14:22 -0500
-Subject: Re: [PATCH net-next v2 2/3] dt-bindings: dp83td510: Add binding for
- DP83TD510 Ethernet PHY
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201020171221.730-1-dmurphy@ti.com>
- <20201020171221.730-3-dmurphy@ti.com> <20201020185601.GJ139700@lunn.ch>
- <20201020190717.GK139700@lunn.ch>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <331e3c73-38ca-3224-c682-5ed3a4ed9f73@ti.com>
-Date:   Tue, 20 Oct 2020 14:14:17 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2438027AbgJTTPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 15:15:47 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:63255 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437999AbgJTTPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 15:15:47 -0400
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8f37600001>; Wed, 21 Oct 2020 03:15:44 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
+ 2020 19:15:44 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 20 Oct 2020 19:15:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PLk47c7LirqXN8gWhw1M524x8fRr6Ziv7ybaTR5TXIF7U8nfQu5mc+xSauiPFHhBV85q9uxjyLeOelsNvQQ2HYmRlHIdQZVCUxB6mcNMSJzPV1xnpE73r3syJbGcpRDi3r481RBg6sgmzYJJX11S/AYWn0AjQ08eNLsEVejGCfSpafUFrQrvzZeuAAV0jZbbOB2U92AJjfuVzB/Meo0WOv8QjL51xh7zAYlFBFROsgV/G86nMIZGmOUDmJG2DyQsJWZXigrVoAo3vNMxjDRygCwavet6ROgQT+2Wf+JjumTsmk14vH7Dx8gkAC9MPoly6lpHp8sp8oWdCSlmokzDJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8XrSliCG5twkvtPWgvbBPq+Pd5LMQX7D0QJyPZ2GljE=;
+ b=PDK7Z11bDTfBCEarqYWXeiq2dNmRw2Jh9laypRvqzAWaH/MlpGYXIe5fgfE6VP0/CmCNAjYFEIlq3T7bNdXFkBtoJP7XTInsDZTFCQ9r0p5lh6ISIZtAbKlO65UQ4PrZUOIx10oo15TmPHWMfWy0jZG12lPu7hGZ5kWLTtUWGzRcMx3empirIi2pvEXVwzZr/aLjiN6Tphd0Zi/0mQ+OCaV8odvm0ieUHzf3IWfby8yJQttPBf6GLkDvDPWdlkJKb+3fWARwtD5dVKmfMSrV1JW4TlNH2emYmAi7FIB6SKrGmPTiJw41KJcCjC4DBww8uTGHWh5vDtvBwvIgwF5QlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB2439.namprd12.prod.outlook.com (2603:10b6:4:b4::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Tue, 20 Oct
+ 2020 19:15:42 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
+ 19:15:42 +0000
+Date:   Tue, 20 Oct 2020 16:15:40 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jann Horn <jannh@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        <linux-um@lists.infradead.org>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [PATCH resend v3 2/2] exec: Broadly lock nascent mm until
+ setup_arg_pages()
+Message-ID: <20201020191540.GM6219@nvidia.com>
+References: <20201016225713.1971256-1-jannh@google.com>
+ <20201016225713.1971256-3-jannh@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201016225713.1971256-3-jannh@google.com>
+X-ClientProxiedBy: MN2PR18CA0013.namprd18.prod.outlook.com
+ (2603:10b6:208:23c::18) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <20201020190717.GK139700@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR18CA0013.namprd18.prod.outlook.com (2603:10b6:208:23c::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Tue, 20 Oct 2020 19:15:42 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kUx6i-0033Qn-R6; Tue, 20 Oct 2020 16:15:40 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603221344; bh=8XrSliCG5twkvtPWgvbBPq+Pd5LMQX7D0QJyPZ2GljE=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=XBVk3fkHDF1qXwO9U3nvWhPHvhlyo7HxsYCMBm7iCQjSAo3YpSip0QXRDpHvXTOn2
+         guY2dmsTSXhjndQCyp1Cheh0jW11fp0wK4N+fjoLNXpbxzcaP4clplknhn3vV56nRZ
+         hsg1CaMBSMuElovaTrUFZ+aPvry+fIxz6WILD6OX+HrrbKWITAFUbIRZ8JDPhBLqHH
+         1vitkc9XFvzlvGplhSH5CRXvRpoYTWO4Kv9vpq2YhswWg4Vi3X6MgH5XdQmE79xtq7
+         RJwRXkcnr2ncCfFkpLoez9+YwlLHxiJv+IFpKy1/27+ZosYFhfujM4LqdmD/oeG8ft
+         8sMq8VJaPepOg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew
+On Sat, Oct 17, 2020 at 12:57:13AM +0200, Jann Horn wrote:
+> @@ -374,17 +366,12 @@ static int bprm_mm_init(struct linux_binprm *bprm)
+>  	task_unlock(current->group_leader);
+>  
+>  	err = __bprm_mm_init(bprm);
+> -	if (err)
+> -		goto err;
+> -
+> -	return 0;
+> -
+> -err:
+> -	if (mm) {
+> -		bprm->mm = NULL;
+> -		mmdrop(mm);
+> -	}
+> +	if (!err)
+> +		return 0;
+>  
+> +	bprm->mm = NULL;
+> +	mmap_write_unlock(mm);
+> +	mmdrop(mm);
+>  	return err;
 
-On 10/20/20 2:07 PM, Andrew Lunn wrote:
->> Humm. Are 1v and 2.4v advertised so it can be auto negotiated? Maybe a
->> PHY tunable is not correct? Is this voltage selection actually more
->> like pause and EEE?
-> [Goes and looks at the datasheet]
->
-> Register 0x20E, bit 13:
->
-> 1 = Advertise that the 10BASE-T1L PHY has increased transmit/
-> receive level ability
-> 0 = Do not advertise that the 10BASE-T1L PHY has increased
-> transmit/receive level ability (default)
->
-> So does this mean 2.4v?
+nit, but prefer 'success-oriented-flow' eg invert the 'if (!err)' and
+put the error unwind in the {}
 
-This can also be strapped to a certain voltage level.  The device may 
-not have the regulators on board to drive a 2.4v signal. 1v signal AVDD 
-is 1.8v and 2.4v the AVDD needs to be at least 3.3v
+> @@ -1545,6 +1532,18 @@ void setup_new_exec(struct linux_binprm * bprm)
+>  	me->mm->task_size = TASK_SIZE;
+>  	mutex_unlock(&me->signal->exec_update_mutex);
+>  	mutex_unlock(&me->signal->cred_guard_mutex);
+> +
+> +	if (!IS_ENABLED(CONFIG_MMU)) {
+> +		/*
+> +		 * On MMU, setup_arg_pages() wants to access bprm->vma after
+> +		 * this point, so we can't drop the mmap lock yet.
+> +		 * On !MMU, we have neither setup_arg_pages() nor bprm->vma,
+> +		 * so we should drop the lock here.
+> +		 */
+> +		mmap_write_unlock(bprm->mm);
+> +		mmput(bprm->mm);
+> +		bprm->mm = NULL;
+> +	}
 
+The only thing I dislike about this is how tricky the lock lifetime
+is, it all looks correct, but expecting the setup_arg_pages() or
+setup_new_exec() to unlock (depending!) is quite tricky.
 
-This Strap defines the voltage level
-requested by PHY during auto
-negotiation. It is reflected in bit 12 of
-0x20E. While using Force mode for
-Linkup, the strap controls the output
-voltage and reflects in bit 12 of 0x18F6
+It feels like it would be clearer to have an explicit function to do
+this, like 'release_brp_mm()' indicating that current->mm is now the
+only way to get the mm and it must be locked.
 
-Bit 12
+Or, more practically, the load_binary functionc can now call
+vm_mmap().
 
-1 = Enable 2.4 Vpp operating mode
-0 = Enable 1.0 Vpp operating mode
+Anyhow, it took a bit to study all the parts but I think it looks
+right as is.
 
-So maybe this is a hybrid of tunable for master/slave and a DT for 
-voltage level since the ability of the board to drive the signal can vary.
-
-Dan
-
-
->   	Andrew
+Jason
