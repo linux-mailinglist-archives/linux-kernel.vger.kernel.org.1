@@ -2,220 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8AC293D9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BEB293DA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407662AbgJTNrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:47:24 -0400
-Received: from mail.efficios.com ([167.114.26.124]:43586 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407645AbgJTNrV (ORCPT
+        id S2407685AbgJTNt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407630AbgJTNt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:47:21 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C43632D91D1;
-        Tue, 20 Oct 2020 09:47:20 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 8UytBngmCBcE; Tue, 20 Oct 2020 09:47:20 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C31C62D8D7D;
-        Tue, 20 Oct 2020 09:47:19 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com C31C62D8D7D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1603201639;
-        bh=evGcJcZu7eb5xkZgGi9gbAmIj12E+WcIcJugnrtvDDM=;
-        h=From:To:Date:Message-Id;
-        b=CRE9mfL/B+vjvnlK676wVdJiqAPeWhe0xZ3oGJHNKR9P/BjDaejQ2h59XDrieQFUd
-         InSmJ+4CH+/+13YNz1nDaoc6j/AayWDGzQI8ApC1rQ0ZE8HPARxQJa4O9rgGDDA0pV
-         54AOmoKAezns0fS9Sl5XbA/G5C+utoE4s54zu/RPC2ApqRptc51BIcMHLDDXzBFBA7
-         fnm1kC8EPmer+SHf7wISWXIV2t9fbP4RC2c86RsLdG+R0dYEN9ewkRT6xjN6VeRvVo
-         Tm8Ctg/X9lEdnGMArzjWC7kHy4kzW2+IK43wUqk3FgTKKAYEuY6jTje+OlOOXjuPnW
-         MpSGCwaje4CBQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gdVJCw0HO2SI; Tue, 20 Oct 2020 09:47:19 -0400 (EDT)
-Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id 439202D91CD;
-        Tue, 20 Oct 2020 09:47:19 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Will Deacon <will@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-Subject: [PATCH 3/3] sched: membarrier: document memory ordering scenarios
-Date:   Tue, 20 Oct 2020 09:47:15 -0400
-Message-Id: <20201020134715.13909-4-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201020134715.13909-1-mathieu.desnoyers@efficios.com>
-References: <20201020134715.13909-1-mathieu.desnoyers@efficios.com>
+        Tue, 20 Oct 2020 09:49:28 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB29C0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:49:27 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id c141so2185807lfg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:49:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=1o8TpeHhno8OE2SrDdQUqRsdXAVOC0TzkDg0pRysRCg=;
+        b=cicVnczstWRFH9gw+EuYx/lkIIBZzIw/xFGQDmuS3kVvj7vDkCCzApdH1mGBpMoiA9
+         UtpBzyMmwiraaOs2MZMRvwTopaDFxaacSqLiI/IFdi8hKKrlZORdjZIJsLS3cLypFks/
+         Bda/wOENIgPWwOMRaDoliBIRfRwHPiY6madPv88jbUecOdIdC863Zw3wYV4k28/eBqGi
+         W2EDYSVlOfa6oSB3jXwakuWfGlTrNxPtkIc3sHP4hip+5nDyO4AZhVF1W7eZd1S7ISnM
+         q/XrxAC2qb0wuhsp5epuANvG0/N4WWTpFeq7y8QxSVLZcING1Hvt56ZqLKl9e4GR5Zim
+         1olw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=1o8TpeHhno8OE2SrDdQUqRsdXAVOC0TzkDg0pRysRCg=;
+        b=EHIHHlMtupJ2bDBWIZAguY9VPBg+rwWBvExdTMuZAEP5LidMcnrUUPY9HkYVT/8kT7
+         eTLIPXvWmup2WmOJIqKTOllAB4hsdLXZ2gCoGlTh4tdlPuj/1S0dJhjPOQ/GMxUQhblS
+         nbCb5CFF9pi2ToRoLDqG8GDZvAUfS+iZcyEzbQfOfV7rnbttiAJHb1fP4TmTfJ+KPZz7
+         nPPKmRX73J7zlFt6G18mJvYxVgLvzh1FbvM2w1a5KpFukqVukqH8tZxZ4AbB4pPlQzb/
+         I95JJv60Q1s0qDsspSn0XpVOnAu5qUCSofdcKndADGsHzw+5KYAr1EM7aFxQQp2zXT3E
+         NtOg==
+X-Gm-Message-State: AOAM5334+c3hkltKHDPhKWYe9EW1DdJlFpU2nOk7ZqYtzyKFrnU8xuT/
+        L9S4xFusk2W8Zi/WwIXeVuq8VA==
+X-Google-Smtp-Source: ABdhPJwzV88aVC3wAh1fZRh2Qt1Fuvww50QbPS9U7q8Lm6OYo/M98+w8nswpqWagGg+ahtm5dpfxOw==
+X-Received: by 2002:ac2:5a05:: with SMTP id q5mr976885lfn.592.1603201766368;
+        Tue, 20 Oct 2020 06:49:26 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id o17sm319166lfb.55.2020.10.20.06.49.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 06:49:25 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 2039A102328; Tue, 20 Oct 2020 16:49:24 +0300 (+03)
+Date:   Tue, 20 Oct 2020 16:49:24 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [RFCv2 00/16] KVM protected memory extension
+Message-ID: <20201020134924.2i4z4kp6bkiheqws@box>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+ <87ft6949x8.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87ft6949x8.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document membarrier ordering scenarios in membarrier.c. Thanks to Alan
-Stern for refreshing my memory. Now that I have those in mind, it seems
-appropriate to serialize them to comments for posterity.
+On Tue, Oct 20, 2020 at 09:46:11AM +0200, Vitaly Kuznetsov wrote:
+> "Kirill A. Shutemov" <kirill@shutemov.name> writes:
+> 
+> > == Background / Problem ==
+> >
+> > There are a number of hardware features (MKTME, SEV) which protect guest
+> > memory from some unauthorized host access. The patchset proposes a purely
+> > software feature that mitigates some of the same host-side read-only
+> > attacks.
+> >
+> >
+> > == What does this set mitigate? ==
+> >
+> >  - Host kernel ”accidental” access to guest data (think speculation)
+> >
+> >  - Host kernel induced access to guest data (write(fd, &guest_data_ptr, len))
+> >
+> >  - Host userspace access to guest data (compromised qemu)
+> >
+> >  - Guest privilege escalation via compromised QEMU device emulation
+> >
+> > == What does this set NOT mitigate? ==
+> >
+> >  - Full host kernel compromise.  Kernel will just map the pages again.
+> >
+> >  - Hardware attacks
+> >
+> >
+> > The second RFC revision addresses /most/ of the feedback.
+> >
+> > I still didn't found a good solution to reboot and kexec. Unprotect all
+> > the memory on such operations defeat the goal of the feature. Clearing up
+> > most of the memory before unprotecting what is required for reboot (or
+> > kexec) is tedious and error-prone.
+> > Maybe we should just declare them unsupported?
+> 
+> Making reboot unsupported is a hard sell. Could you please elaborate on
+> why you think that "unprotect all" hypercall (or rather a single
+> hypercall supporting both protecting/unprotecting) defeats the purpose
+> of the feature?
 
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alan Stern <stern@rowland.harvard.edu>
----
- kernel/sched/membarrier.c | 128 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 128 insertions(+)
+If guest has some data that it prefers not to leak to the host and use the
+feature for the purpose, share all the memory to get through reboot is a
+very weak point.
 
-diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-index 8b93b6844901..943bdf5e9108 100644
---- a/kernel/sched/membarrier.c
-+++ b/kernel/sched/membarrier.c
-@@ -6,6 +6,134 @@
-  */
- #include "sched.h"
- 
-+/*
-+ * For documentation purposes, here are some membarrier ordering
-+ * scenarios to keep in mind:
-+ *
-+ * A) Userspace thread execution after IPI vs membarrier's memory
-+ *    barrier before sending the IPI
-+ *
-+ * Userspace variables:
-+ *
-+ * int x = 0, y = 0;
-+ *
-+ * The memory barrier at the start of membarrier() on CPU0 is necessary in
-+ * order to enforce the guarantee that any writes occurring on CPU0 before
-+ * the membarrier() is executed will be visible to any code executing on
-+ * CPU1 after the IPI-induced memory barrier:
-+ *
-+ *         CPU0                              CPU1
-+ *
-+ *         x = 1
-+ *         membarrier():
-+ *           a: smp_mb()
-+ *           b: send IPI                       IPI-induced mb
-+ *           c: smp_mb()
-+ *         r2 = y
-+ *                                           y = 1
-+ *                                           barrier()
-+ *                                           r1 = x
-+ *
-+ *                     BUG_ON(r1 == 0 && r2 == 0)
-+ *
-+ * The write to y and load from x by CPU1 are unordered by the hardware,
-+ * so it's possible to have "r1 = x" reordered before "y = 1" at any
-+ * point after (b).  If the memory barrier at (a) is omitted, then "x = 1"
-+ * can be reordered after (a) (although not after (c)), so we get r1 == 0
-+ * and r2 == 0.  This violates the guarantee that membarrier() is
-+ * supposed by provide.
-+ *
-+ * The timing of the memory barrier at (a) has to ensure that it executes
-+ * before the IPI-induced memory barrier on CPU1.
-+ *
-+ * B) Userspace thread execution before IPI vs membarrier's memory
-+ *    barrier after completing the IPI
-+ *
-+ * Userspace variables:
-+ *
-+ * int x = 0, y = 0;
-+ *
-+ * The memory barrier at the end of membarrier() on CPU0 is necessary in
-+ * order to enforce the guarantee that any writes occurring on CPU1 before
-+ * the membarrier() is executed will be visible to any code executing on
-+ * CPU0 after the membarrier():
-+ *
-+ *         CPU0                              CPU1
-+ *
-+ *                                           x = 1
-+ *                                           barrier()
-+ *                                           y = 1
-+ *         r2 = y
-+ *         membarrier():
-+ *           a: smp_mb()
-+ *           b: send IPI                       IPI-induced mb
-+ *           c: smp_mb()
-+ *         r1 = x
-+ *         BUG_ON(r1 == 0 && r2 == 1)
-+ *
-+ * The writes to x and y are unordered by the hardware, so it's possible to
-+ * have "r2 = 1" even though the write to x doesn't execute until (b).  If
-+ * the memory barrier at (c) is omitted then "r1 = x" can be reordered
-+ * before (b) (although not before (a)), so we get "r1 = 0".  This violates
-+ * the guarantee that membarrier() is supposed to provide.
-+ *
-+ * The timing of the memory barrier at (c) has to ensure that it executes
-+ * after the IPI-induced memory barrier on CPU1.
-+ *
-+ * C) Scheduling userspace thread -> kthread -> userspace thread vs membarrier
-+ *
-+ *           CPU0                            CPU1
-+ *
-+ *           membarrier():
-+ *           a: smp_mb()
-+ *                                           d: switch to kthread (includes mb)
-+ *           b: read rq->curr->mm == NULL
-+ *                                           e: switch to user (includes mb)
-+ *           c: smp_mb()
-+ *
-+ * Using the scenario from (A), we can show that (a) needs to be paired
-+ * with (e). Using the scenario from (B), we can show that (c) needs to
-+ * be paired with (d).
-+ *
-+ * D) exit_mm vs membarrier
-+ *
-+ * Two thread groups are created, A and B.  Thread group B is created by
-+ * issuing clone from group A with flag CLONE_VM set, but not CLONE_THREAD.
-+ * Let's assume we have a single thread within each thread group (Thread A
-+ * and Thread B).  Thread A runs on CPU0, Thread B runs on CPU1.
-+ *
-+ *           CPU0                            CPU1
-+ *
-+ *           membarrier():
-+ *             a: smp_mb()
-+ *                                           exit_mm():
-+ *                                             d: smp_mb()
-+ *                                             e: current->mm = NULL
-+ *             b: read rq->curr->mm == NULL
-+ *             c: smp_mb()
-+ *
-+ * Using scenario (B), we can show that (c) needs to be paired with (d).
-+ *
-+ * E) kthread_{use,unuse}_mm vs membarrier
-+ *
-+ *           CPU0                            CPU1
-+ *
-+ *           membarrier():
-+ *           a: smp_mb()
-+ *                                           kthread_unuse_mm()
-+ *                                             d: smp_mb()
-+ *                                             e: current->mm = NULL
-+ *           b: read rq->curr->mm == NULL
-+ *                                           kthread_use_mm()
-+ *                                             f: current->mm = mm
-+ *                                             g: smp_mb()
-+ *           c: smp_mb()
-+ *
-+ * Using the scenario from (A), we can show that (a) needs to be paired
-+ * with (g). Using the scenario from (B), we can show that (c) needs to
-+ * be paired with (d).
-+ */
-+
- /*
-  * Bitmask made from a "or" of all commands within enum membarrier_cmd,
-  * except MEMBARRIER_CMD_QUERY.
+> 
+> clean up *all* its memory upon reboot, however:
+> - It may only clean up the most sensitive parts. This should probably be
+> done even without this new feature and even on bare metal (think about
+> next boot target being malicious).
+> - The attack window shrinks significantly. "Speculative" bugs require
+> time to exploit and it will only remain open until it boots up again
+> (few seconds).
+
+Maybe it would be cleaner to handle reboot in userspace? If we got the VM
+rebooted, just reconstruct it from scratch as if it would be new boot.
+
 -- 
-2.17.1
-
+ Kirill A. Shutemov
