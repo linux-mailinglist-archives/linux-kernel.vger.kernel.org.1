@@ -2,155 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686FA2934C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826E82934DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403951AbgJTGTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48564 "EHLO
+        id S2404088AbgJTGVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403897AbgJTGTO (ORCPT
+        with ESMTP id S2404076AbgJTGVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:19:14 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E78FC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:19:14 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id m20so746982ljj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:19:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=P1ZYdJ+48hESkuHQ/ZsaZHpWMaHGaWqk6TiKgGiH9uk=;
-        b=d2jXg+GKr/U9ky+di6Pjj65rEOr97pO3dwozUnliTUnv1Qv9Q2TuAgC8IEHLG/EQuw
-         DKuDYgSdeHQq8jTcfxrBKvbvkxwxjRrJq52cWR0Ir5bIH8OSpPK5LJmwPA7McOQwyCzV
-         NDh+ERmP7yjlgXPEJgE/9Feow0m/be5I7IM+IsuJCjiMYomnibh63f9Yxm1vQafnbBAZ
-         BcjvCzWRgWWr+i2/FDzXt0Mh46L9UL9hcL2QLTqh7wNOk6YCuKFryCJfrne2iiMTwj7u
-         feCZU1reswc+eprlM23CpudlU/4fEiqdOYZSNVIh9qV2uyktYuq6LDH4AvTI1bQwcB40
-         e4Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=P1ZYdJ+48hESkuHQ/ZsaZHpWMaHGaWqk6TiKgGiH9uk=;
-        b=Zj2fMqdwdjL9UxPU0FtBzJeUdqWfWwKhI6eGSYCAcq5URskveTP2nCB3i19wKM2YRo
-         yQif+xrVWIm/PUWZLoCpD1J/3o+Uq1rU2h2QbbnLy76PtjsB0IJhVwx0d6mjCH3GBCi6
-         O0Mvk9JnQgFDweb3A44Kar+FzhOILer1gJk83+gN7KA3314dYJrFYoGpn96IZ6MRJuY0
-         yHHDz1AI70Hj48p9suNiwG4H4S1e5u/lPfymc6nDpv7Wq8zl8JIWweXyWEH5WjwuLfqq
-         joiW6iDGqrdaDDdD7pFycqRI3RRlPE6FKbSjoE6g92P006Cx5zfRwjzwYzqb2IzeXs72
-         ss1w==
-X-Gm-Message-State: AOAM533kYLXK2MOeOIgqm3YcDzDX89sYAt5zhdbwJhkvKac+lnVQiV72
-        2YftutkNijkQcyM33p00+lx7bQ==
-X-Google-Smtp-Source: ABdhPJx4OTPXoR7QAQvHaAogNS+nSnlzEId+sAo8GQE1S8lBt0CtaocrLea19BD5ZB7UVB4nJWmOzw==
-X-Received: by 2002:a2e:b5d7:: with SMTP id g23mr535144ljn.61.1603174752853;
-        Mon, 19 Oct 2020 23:19:12 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id a7sm139248lfl.2.2020.10.19.23.19.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 23:19:09 -0700 (PDT)
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 3C9F0102F6F; Tue, 20 Oct 2020 09:19:02 +0300 (+03)
-To:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [RFCv2 16/16] mm: Do not use zero page for VM_KVM_PROTECTED VMAs
-Date:   Tue, 20 Oct 2020 09:18:59 +0300
-Message-Id: <20201020061859.18385-17-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+        Tue, 20 Oct 2020 02:21:39 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A41C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:21:38 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1kUl1T-00064i-6m; Tue, 20 Oct 2020 08:21:27 +0200
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1kUl1R-00030o-NA; Tue, 20 Oct 2020 08:21:25 +0200
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     wim@linux-watchdog.org, linux@roeck-us.net
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, Ahmad Fatoum <a.fatoum@pengutronix.de>
+Subject: [PATCH v2 0/2] watchdog: f71808e_wdt: migrate to new kernel API
+Date:   Tue, 20 Oct 2020 08:21:10 +0200
+Message-Id: <20201020062112.6762-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Presence of zero pages in the mapping would disclose content of the
-mapping. Don't use them if KVM memory protection is enabled.
+This series migrates the driver to use first the driver model, then
+the new kernel watchdog API.
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
----
- arch/s390/include/asm/pgtable.h | 2 +-
- include/linux/mm.h              | 4 ++--
- mm/huge_memory.c                | 3 +--
- mm/memory.c                     | 3 +--
- 4 files changed, 5 insertions(+), 7 deletions(-)
+I tested it on a f81866.
 
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index b55561cc8786..72ca3b3f04cb 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -543,7 +543,7 @@ static inline int mm_alloc_pgste(struct mm_struct *mm)
-  * In the case that a guest uses storage keys
-  * faults should no longer be backed by zero pages
-  */
--#define mm_forbids_zeropage mm_has_pgste
-+#define vma_forbids_zeropage(vma) mm_has_pgste(vma->vm_mm)
- static inline int mm_uses_skeys(struct mm_struct *mm)
- {
- #ifdef CONFIG_PGSTE
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 74efc51e63f0..ee713b7c2819 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -130,8 +130,8 @@ extern int mmap_rnd_compat_bits __read_mostly;
-  * s390 does this to prevent multiplexing of hardware bits
-  * related to the physical page in case of virtualization.
-  */
--#ifndef mm_forbids_zeropage
--#define mm_forbids_zeropage(X)	(0)
-+#ifndef vma_forbids_zeropage
-+#define vma_forbids_zeropage(vma) vma_is_kvm_protected(vma)
- #endif
- 
- /*
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 40974656cb43..383614b24c4f 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -709,8 +709,7 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
- 		return VM_FAULT_OOM;
- 	if (unlikely(khugepaged_enter(vma, vma->vm_flags)))
- 		return VM_FAULT_OOM;
--	if (!(vmf->flags & FAULT_FLAG_WRITE) &&
--			!mm_forbids_zeropage(vma->vm_mm) &&
-+	if (!(vmf->flags & FAULT_FLAG_WRITE) && !vma_forbids_zeropage(vma) &&
- 			transparent_hugepage_use_zero_page()) {
- 		pgtable_t pgtable;
- 		struct page *zero_page;
-diff --git a/mm/memory.c b/mm/memory.c
-index e28bd5f902a7..9907ffe00490 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3495,8 +3495,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 		return 0;
- 
- 	/* Use the zero-page for reads */
--	if (!(vmf->flags & FAULT_FLAG_WRITE) &&
--			!mm_forbids_zeropage(vma->vm_mm)) {
-+	if (!(vmf->flags & FAULT_FLAG_WRITE) && !vma_forbids_zeropage(vma)) {
- 		entry = pte_mkspecial(pfn_pte(my_zero_pfn(vmf->address),
- 						vma->vm_page_prot));
- 		vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
+v1 had a wrong title (f71808e_wdt: migrate to kernel). It's available here:
+https://lore.kernel.org/linux-watchdog/20200611191750.28096-1-a.fatoum@pengutronix.de/
+
+v1 -> v2:
+    - reworked to platform device/driver pair (Guenther)
+    - squashed identifier renaming into the patches that touch
+      the respective lines anyway
+    - fixed checkpatch.pl nitpicks (Guenther)
+    - fixed locally used variable declared without static (0-day)
+    - fixed unneded line break due to old line limit (Guenther)
+    - renamed struct fintek_wdog_data to struct fintek_wdt
+
+Ahmad Fatoum (2):
+  watchdog: f71808e_wdt: refactor to platform device/driver pair
+  watchdog: f71808e_wdt: migrate to new kernel watchdog API
+
+ drivers/watchdog/Kconfig       |   1 +
+ drivers/watchdog/f71808e_wdt.c | 815 ++++++++++++---------------------
+ 2 files changed, 292 insertions(+), 524 deletions(-)
+
 -- 
-2.26.2
+2.28.0
 
