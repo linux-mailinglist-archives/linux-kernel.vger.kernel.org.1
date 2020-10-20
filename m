@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D832944BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 23:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3388F2944BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 23:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392361AbgJTVyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 17:54:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:56448 "EHLO foss.arm.com"
+        id S2409959AbgJTVyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 17:54:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:56464 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390508AbgJTVyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 17:54:12 -0400
+        id S2390254AbgJTVyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 17:54:39 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C56091FB;
-        Tue, 20 Oct 2020 14:54:11 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C0F821FB;
+        Tue, 20 Oct 2020 14:54:38 -0700 (PDT)
 Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 15DC43F66B;
-        Tue, 20 Oct 2020 14:54:09 -0700 (PDT)
-Subject: Re: [PATCH v2 08/14] perf arm-spe: Refactor context packet handling
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C18703F66B;
+        Tue, 20 Oct 2020 14:54:36 -0700 (PDT)
+Subject: Re: [PATCH v2 09/14] perf arm-spe: Refactor counter packet handling
 To:     Leo Yan <leo.yan@linaro.org>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -31,7 +31,7 @@ To:     Leo Yan <leo.yan@linaro.org>,
         Dave Martin <Dave.Martin@arm.com>,
         linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
 References: <20200929133917.9224-1-leo.yan@linaro.org>
- <20200929133917.9224-9-leo.yan@linaro.org>
+ <20200929133917.9224-10-leo.yan@linaro.org>
 From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
 Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
  xsFNBFNPCKMBEAC+6GVcuP9ri8r+gg2fHZDedOmFRZPtcrMMF2Cx6KrTUT0YEISsqPoJTKld
@@ -77,12 +77,12 @@ Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
  fDO4SAgJMIl6H5awliCY2zQvLHysS/Wb8QuB09hmhLZ4AifdHyF1J5qeePEhgTA+BaUbiUZf
  i4aIXCH3Wv6K
 Organization: ARM Ltd.
-Message-ID: <94b559ce-8239-efb4-7e28-b648e3ff5170@arm.com>
-Date:   Tue, 20 Oct 2020 22:53:16 +0100
+Message-ID: <6080472e-a117-e36d-ec4a-80f7ef93b3fb@arm.com>
+Date:   Tue, 20 Oct 2020 22:53:47 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200929133917.9224-9-leo.yan@linaro.org>
+In-Reply-To: <20200929133917.9224-10-leo.yan@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -91,43 +91,94 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 29/09/2020 14:39, Leo Yan wrote:
-> Minor refactoring to use macro for index mask.
+
+Hi,
+
+> This patch defines macros for counter packet header, and uses macro to
+> replace hard code values for packet parsing.
 > 
 > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  .../util/arm-spe-decoder/arm-spe-pkt-decoder.c  | 17 ++++++++++-------
+>  .../util/arm-spe-decoder/arm-spe-pkt-decoder.h  |  9 +++++++++
+>  2 files changed, 19 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index 00a2cd1af422..ed0f4c74dfc5 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -150,10 +150,13 @@ static int arm_spe_get_counter(const unsigned char *buf, size_t len,
+>  			       const unsigned char ext_hdr, struct arm_spe_pkt *packet)
+>  {
+>  	packet->type = ARM_SPE_COUNTER;
+> -	if (ext_hdr)
+> -		packet->index = ((buf[0] & 0x3) << 3) | (buf[1] & 0x7);
+> -	else
+> -		packet->index = buf[0] & 0x7;
+> +	if (ext_hdr) {
+> +		packet->index  = (buf[1] & SPE_CNT_PKT_HDR_INDEX_MASK);
+> +		packet->index |= ((buf[0] & SPE_CNT_PKT_HDR_EXT_INDEX_MASK)
+> +			<< SPE_CNT_PKT_HDR_EXT_INDEX_SHIFT);
+> +	} else {
+> +		packet->index = buf[0] & SPE_CNT_PKT_HDR_INDEX_MASK;
 
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+That looks suspiciously similar to the extended header in the address
+packet. Can you use the same name for that?
+And, similar to the address packet, what about:
+	packet->index |= SPE_PKT_EXT_HEADER_INDEX(buf[0]);
+
+(merging the mask and the shift in the macro definition)
+
+> +	}
+>  
+>  	return arm_spe_get_payload(buf, len, ext_hdr, packet);
+>  }
+> @@ -431,17 +434,17 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+>  			return ret;
+>  
+>  		switch (idx) {
+> -		case 0:
+> +		case SPE_CNT_PKT_HDR_INDEX_TOTAL_LAT:
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, "TOT");
+>  			if (ret < 0)
+>  				return ret;
+>  			break;
+> -		case 1:
+> +		case SPE_CNT_PKT_HDR_INDEX_ISSUE_LAT:
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, "ISSUE");
+>  			if (ret < 0)
+>  				return ret;
+>  			break;
+> -		case 2:
+> +		case SPE_CNT_PKT_HDR_INDEX_TRANS_LAT:
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, "XLAT");
+>  			if (ret < 0)
+>  				return ret;
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> index 62db4ff91832..18667a63f5ba 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> @@ -89,6 +89,15 @@ struct arm_spe_pkt {
+>  /* Context packet header */
+>  #define SPE_CTX_PKT_HDR_INDEX_MASK		GENMASK_ULL(1, 0)
+>  
+> +/* Counter packet header */
+> +#define SPE_CNT_PKT_HDR_INDEX_MASK		GENMASK_ULL(2, 0)
+> +#define SPE_CNT_PKT_HDR_INDEX_TOTAL_LAT		(0x0)
+> +#define SPE_CNT_PKT_HDR_INDEX_ISSUE_LAT		(0x1)
+> +#define SPE_CNT_PKT_HDR_INDEX_TRANS_LAT		(0x2)
+
+I think the Linux kernel coding style does not mention parentheses just
+around numbers, so just 0x2 would suffice, for instance.
+See section 12) in Documentation/process/coding-style.rst
 
 Cheers,
 Andre
 
-> ---
->  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 2 +-
->  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h | 3 +++
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> index b51a2207e4a0..00a2cd1af422 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> @@ -134,7 +134,7 @@ static int arm_spe_get_context(const unsigned char *buf, size_t len,
->  			       struct arm_spe_pkt *packet)
->  {
->  	packet->type = ARM_SPE_CONTEXT;
-> -	packet->index = buf[0] & 0x3;
-> +	packet->index = buf[0] & SPE_CTX_PKT_HDR_INDEX_MASK;
->  	return arm_spe_get_payload(buf, len, 0, packet);
->  }
->  
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> index 88d2231c76da..62db4ff91832 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> @@ -86,6 +86,9 @@ struct arm_spe_pkt {
->  #define SPE_ADDR_PKT_INST_VA_EL2		(2)
->  #define SPE_ADDR_PKT_INST_VA_EL3		(3)
->  
-> +/* Context packet header */
-> +#define SPE_CTX_PKT_HDR_INDEX_MASK		GENMASK_ULL(1, 0)
+
+> +
+> +#define SPE_CNT_PKT_HDR_EXT_INDEX_MASK		GENMASK_ULL(1, 0)
+> +#define SPE_CNT_PKT_HDR_EXT_INDEX_SHIFT		(3)
 > +
 >  const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
 >  
