@@ -2,129 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B69293302
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D80A29330E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390548AbgJTCUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 22:20:03 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:35222 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390538AbgJTCUC (ORCPT
+        id S2390579AbgJTC3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 22:29:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50033 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730427AbgJTC3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 22:20:02 -0400
-Received: from mailhost.synopsys.com (sv2-mailhost2.synopsys.com [10.205.2.134])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Mon, 19 Oct 2020 22:29:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603160941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1KxxLVKoaWNk/UcWabDXog7LeDPLrAENYaxCZHkvRPc=;
+        b=TiAmV6qJbVUIU19MaIYld4XbzGthK6FypR31LJpZwi/aGf5Thuny/2Bph7eqFkPEadU41M
+        rHZBnAAL6T3kcElrnpFsz75vXcEni2G/HhPukCvpLPp2/R83c08bOSZL/Y5pZVKNZgzdHE
+        IItGdJ6V3CcgRmu43tGUAbVaoGmPqkA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-345-Y7qnAA4wMz2_zxMRqL709A-1; Mon, 19 Oct 2020 22:28:57 -0400
+X-MC-Unique: Y7qnAA4wMz2_zxMRqL709A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id C20CEC00A7;
-        Tue, 20 Oct 2020 02:20:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1603160402; bh=Y5kCe7twpvpAVlRszOPR/AKOY980wsss/eMlLX4vYD0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BBmBAqsYTIqhj205PkATalZZvP46q05w9Z39AokxS6jNjbgwvyI6Vp5ICtTOZMHW2
-         0qUkxeL4fMoGxP/Jdz8+l+3iL6xSgiG9p5zw0yfKAUG39pKhDk+IoDTRrcZTizKeSu
-         dpCvP+pWz1uF/wEVqcQYvKGwxVShiXpUJc1OXj2H6Cl7qi+EaCa9855TS7VoTH9FXt
-         quDzntNpYJFjy4FKAOLJheRDcmY8NS5OE1ffGKq2DIqVGhbOIO8BxRathzGgwWF8lw
-         CBiZlknCU56RX58qXSCUnsbtLGJymWZaT2MTKbMtG0UQFmk4yagUtdropjiNoCZqI0
-         IfqEhmCvC3ctw==
-Received: from vineetg-Latitude-7400.internal.synopsys.com (unknown [10.13.183.89])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 37221A0099;
-        Tue, 20 Oct 2020 02:19:58 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To:     stable@vger.kernel.org
-Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        Waldemar Brodkorb <wbx@uclibc-ng.org>
-Subject: [PATCH] Revert "ARC: entry: fix potential EFA clobber when TIF_SYSCALL_TRACE"
-Date:   Mon, 19 Oct 2020 19:19:57 -0700
-Message-Id: <20201020021957.1260521-1-vgupta@synopsys.com>
-X-Mailer: git-send-email 2.25.1
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A7351882FB5;
+        Tue, 20 Oct 2020 02:28:55 +0000 (UTC)
+Received: from localhost (ovpn-12-159.pek2.redhat.com [10.72.12.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 07B0955798;
+        Tue, 20 Oct 2020 02:28:51 +0000 (UTC)
+Date:   Tue, 20 Oct 2020 10:28:49 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Alexander Egorenkov <egorenar@linux.ibm.com>
+Cc:     dyoung@redhat.com, vgoyal@redhat.com, lijiang@redhat.com,
+        ebiederm@xmission.com, akpm@linux-foundation.org,
+        ktkhai@virtuozzo.com, keescook@chromium.org,
+        christian.brauner@ubuntu.com, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] kdump: append uts_namespace.name offset to
+ VMCOREINFO
+Message-ID: <20201020022849.GT25604@MiWiFi-R3L-srv>
+References: <20200930102328.396488-1-egorenar@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930102328.396488-1-egorenar@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 00fdec98d9881bf5173af09aebd353ab3b9ac729.
-(but only from 5.2 and prior kernels)
+On 09/30/20 at 12:23pm, Alexander Egorenkov wrote:
+> The offset of the field 'init_uts_ns.name' has changed
+> since commit 9a56493f6942 ("uts: Use generic ns_common::count").
+> 
+> Link: https://lore.kernel.org/r/159644978167.604812.1773586504374412107.stgit@localhost.localdomain
+> 
+> Make the offset of the field 'uts_namespace.name' available
+> in VMCOREINFO because tools like 'crash-utility' and
+> 'makedumpfile' must be able to read it from crash dumps.
+> 
+> Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
 
-The original commit was a preventive fix based on code-review and was
-auto-picked for stable back-port (for better or worse).
-It was OK for v5.3+ kernels, but turned up needing an implicit change
-68e5c6f073bcf70 "(ARC: entry: EV_Trap expects r10 (vs. r9) to have
- exception cause)" merged in v5.3 which itself was not backported.
-So to summarize the stable backport of this patch for v5.2 and prior
-kernels is busted and it won't boot.
+Ack, thanks.
 
-The obvious solution is backport 68e5c6f073bcf70 but that is a pain as
-it doesn't revert cleanly and each of affected kernels (so far v4.19,
-v4.14, v4.9, v4.4) needs a slightly different massaged varaint.
-So the easier fix is to simply revert the backport from 5.2 and prior.
-The issue was not a big deal as it would cause strace to sporadically
-not work correctly.
+Acked-by: Baoquan He <bhe@redhat.com>
 
-Waldemar Brodkorb first reported this when running ARC uClibc regressions
-on latest stable kernels (with offending backport). Once he bisected it,
-the analysis was trivial, so thx to him for this.
-
-Reported-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
-Bisected-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
-Cc: stable <stable@vger.kernel.org> # 5.2 and prior
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
----
- arch/arc/kernel/entry.S | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arc/kernel/entry.S b/arch/arc/kernel/entry.S
-index ea00c8a17f07..60406ec62eb8 100644
---- a/arch/arc/kernel/entry.S
-+++ b/arch/arc/kernel/entry.S
-@@ -165,6 +165,7 @@ END(EV_Extension)
- tracesys:
- 	; save EFA in case tracer wants the PC of traced task
- 	; using ERET won't work since next-PC has already committed
-+	lr  r12, [efa]
- 	GET_CURR_TASK_FIELD_PTR   TASK_THREAD, r11
- 	st  r12, [r11, THREAD_FAULT_ADDR]	; thread.fault_address
- 
-@@ -207,9 +208,15 @@ tracesys_exit:
- ; Breakpoint TRAP
- ; ---------------------------------------------
- trap_with_param:
--	mov r0, r12	; EFA in case ptracer/gdb wants stop_pc
-+
-+	; stop_pc info by gdb needs this info
-+	lr  r0, [efa]
- 	mov r1, sp
- 
-+	; Now that we have read EFA, it is safe to do "fake" rtie
-+	;   and get out of CPU exception mode
-+	FAKE_RET_FROM_EXCPN
-+
- 	; Save callee regs in case gdb wants to have a look
- 	; SP will grow up by size of CALLEE Reg-File
- 	; NOTE: clobbers r12
-@@ -236,10 +243,6 @@ ENTRY(EV_Trap)
- 
- 	EXCEPTION_PROLOGUE
- 
--	lr  r12, [efa]
--
--	FAKE_RET_FROM_EXCPN
--
- 	;============ TRAP 1   :breakpoints
- 	; Check ECR for trap with arg (PROLOGUE ensures r10 has ECR)
- 	bmsk.f 0, r10, 7
-@@ -247,6 +250,9 @@ ENTRY(EV_Trap)
- 
- 	;============ TRAP  (no param): syscall top level
- 
-+	; First return from Exception to pure K mode (Exception/IRQs renabled)
-+	FAKE_RET_FROM_EXCPN
-+
- 	; If syscall tracing ongoing, invoke pre-post-hooks
- 	GET_CURR_THR_INFO_FLAGS   r10
- 	btst r10, TIF_SYSCALL_TRACE
--- 
-2.25.1
+> ---
+> 
+> v2 -> v3:
+>  * Added documentation to vmcoreinfo.rst
+>  * Use the short form of the commit reference
+> 
+> v1 -> v2:
+>  * Improved commit message
+>  * Added link to the discussion of the uts namespace changes
+> 
+>  Documentation/admin-guide/kdump/vmcoreinfo.rst | 6 ++++++
+>  kernel/crash_core.c                            | 1 +
+>  2 files changed, 7 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/kdump/vmcoreinfo.rst b/Documentation/admin-guide/kdump/vmcoreinfo.rst
+> index e44a6c01f336..3861a25faae1 100644
+> --- a/Documentation/admin-guide/kdump/vmcoreinfo.rst
+> +++ b/Documentation/admin-guide/kdump/vmcoreinfo.rst
+> @@ -39,6 +39,12 @@ call.
+>  User-space tools can get the kernel name, host name, kernel release
+>  number, kernel version, architecture name and OS type from it.
+>  
+> +(uts_namespace, name)
+> +---------------------
+> +
+> +Offset of the name's member. Crash Utility and Makedumpfile get
+> +the start address of the init_uts_ns.name from this.
+> +
+>  node_online_map
+>  ---------------
+>  
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index 106e4500fd53..173fdc261882 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -447,6 +447,7 @@ static int __init crash_save_vmcoreinfo_init(void)
+>  	VMCOREINFO_PAGESIZE(PAGE_SIZE);
+>  
+>  	VMCOREINFO_SYMBOL(init_uts_ns);
+> +	VMCOREINFO_OFFSET(uts_namespace, name);
+>  	VMCOREINFO_SYMBOL(node_online_map);
+>  #ifdef CONFIG_MMU
+>  	VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
+> -- 
+> 2.26.2
+> 
 
