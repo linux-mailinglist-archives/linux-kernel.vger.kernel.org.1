@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F452945A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 01:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A6F2945AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 01:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410716AbgJTXvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 19:51:31 -0400
+        id S2439554AbgJTXwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 19:52:36 -0400
 Received: from mga01.intel.com ([192.55.52.88]:63669 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439354AbgJTXva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 19:51:30 -0400
-IronPort-SDR: WN9RnGLLvEsWwP4KOzv5fG2xpn52z31lS42T0xMmV4mVVGha7EwN1j8SUSvhfSH3BiP2w9sIst
- LBapcSeMrqDQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="184942258"
+        id S2410706AbgJTXvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 19:51:31 -0400
+IronPort-SDR: YNbAjC578OstTMSGECav50ZA1dsgzZvxJ7r0dykn+7hvuWD1w7gHTlaRnLLLV5TcFtTRqzOSm3
+ 7EninBlmcFEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="184942259"
 X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
-   d="scan'208";a="184942258"
+   d="scan'208";a="184942259"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 16:51:29 -0700
-IronPort-SDR: 9KZ1pfm29Jm/Xi5q0ky1DQG8YJGK6vv9AXRsU1vNvOxzp5Z9/4w5bx31v3n8lvBeTFW79uDjIh
- 8aq32KKnSd8w==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 16:51:30 -0700
+IronPort-SDR: Xn7EkVZLUwXPVrP4hG5I/yvwgoR17nkK0lao3HQjX/k8bCw2ho9i7ngplr2A/oyfYsupzlzei1
+ tyER8hp8x1Xw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
-   d="scan'208";a="320833816"
+   d="scan'208";a="320833821"
 Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
   by orsmga006.jf.intel.com with ESMTP; 20 Oct 2020 16:51:29 -0700
 From:   Fenghua Yu <fenghua.yu@intel.com>
@@ -39,9 +39,9 @@ To:     "Shuah Khan" <shuah@kernel.org>,
 Cc:     "linux-kselftest" <linux-kselftest@vger.kernel.org>,
         "linux-kernel" <linux-kernel@vger.kernel.org>,
         Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH v3 02/21] selftests/resctrl: Fix typo
-Date:   Tue, 20 Oct 2020 23:51:07 +0000
-Message-Id: <20201020235126.1871815-3-fenghua.yu@intel.com>
+Subject: [PATCH v3 03/21] selftests/resctrl: Fix typo in help text
+Date:   Tue, 20 Oct 2020 23:51:08 +0000
+Message-Id: <20201020235126.1871815-4-fenghua.yu@intel.com>
 X-Mailer: git-send-email 2.29.0
 In-Reply-To: <20201020235126.1871815-1-fenghua.yu@intel.com>
 References: <20201020235126.1871815-1-fenghua.yu@intel.com>
@@ -53,34 +53,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Reinette Chatre <reinette.chatre@intel.com>
 
-The format "%sok" is used to print results of a test. If the test passes,
-the empty string is printed and if the test fails "not " is printed. This
-results in output of "ok" when test passes and "not ok"
-when test fails.
-
-Fix one instance where "not" (without a space) is printed on test
-failure resulting in output of "notok" on test failure.
+Add a missing newline to the help text printed and fixup the next line
+to line it up to previous line for improved readability.
 
 Fixes: 78941183d1b1 ("selftests/resctrl: Add Cache QoS Monitoring (CQM) selftest")
 Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
 Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
 ---
- tools/testing/selftests/resctrl/cmt_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/resctrl/resctrl_tests.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing/selftests/resctrl/cmt_test.c
-index 13b01e010238..6ffb56c6a1e2 100644
---- a/tools/testing/selftests/resctrl/cmt_test.c
-+++ b/tools/testing/selftests/resctrl/cmt_test.c
-@@ -58,7 +58,7 @@ static void show_cache_info(unsigned long sum_llc_occu_resc, int no_of_bits,
- 	else
- 		res = false;
- 
--	printf("%sok CMT: diff within %d, %d\%%\n", res ? "" : "not",
-+	printf("%sok CMT: diff within %d, %d\%%\n", res ? "" : "not ",
- 	       MAX_DIFF, (int)MAX_DIFF_PERCENT);
- 
- 	printf("# diff: %ld\n", avg_diff);
+diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+index 35a91cab1b88..b2a560c0c5dc 100644
+--- a/tools/testing/selftests/resctrl/resctrl_tests.c
++++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+@@ -37,8 +37,8 @@ void detect_amd(void)
+ static void cmd_help(void)
+ {
+ 	printf("usage: resctrl_tests [-h] [-b \"benchmark_cmd [options]\"] [-t test list] [-n no_of_bits]\n");
+-	printf("\t-b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CMT");
+-	printf("\t default benchmark is builtin fill_buf\n");
++	printf("\t-b benchmark_cmd [options]: run specified benchmark for MBM, MBA and CMT\n");
++	printf("\t   default benchmark is builtin fill_buf\n");
+ 	printf("\t-t test list: run tests specified in the test list, ");
+ 	printf("e.g. -t mbm, mba, cmt, cat\n");
+ 	printf("\t-n no_of_bits: run cache tests using specified no of bits in cache bit mask\n");
 -- 
 2.29.0
 
