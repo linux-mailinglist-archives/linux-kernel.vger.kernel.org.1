@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB09293AF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEDF293AF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394116AbgJTMG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:06:28 -0400
-Received: from mga02.intel.com ([134.134.136.20]:53193 "EHLO mga02.intel.com"
+        id S2404056AbgJTMGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:06:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393999AbgJTMG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:06:27 -0400
-IronPort-SDR: j3wCLvqRsMY84Oz8hFSIoM0Oe577WgyOd4/EqjjpTr0VVYapO2pIea9gn+1oqATmil2DeQUPSz
- 9hTArwx2BDng==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="154138354"
-X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
-   d="scan'208";a="154138354"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 05:06:27 -0700
-IronPort-SDR: 2sFYuGjqOi3pw8XFi+yYwrUwIN/TtMjL6TENxRXWuVyPCqDafH1HRsRD8sEvHoqgSLlRCCaDYn
- r4vye6O7Pgtg==
-X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
-   d="scan'208";a="358498529"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 05:06:17 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 493E92062D; Tue, 20 Oct 2020 15:06:15 +0300 (EEST)
-Date:   Tue, 20 Oct 2020 15:06:15 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux.walleij@linaro.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        pmladek@suse.com, mchehab@kernel.org, tian.shu.qiu@intel.com,
-        bingbu.cao@intel.com, yong.zhi@intel.com, rafael@kernel.org,
-        gregkh@linuxfoundation.org, kitakar@gmail.com,
-        dan.carpenter@oracle.org
-Subject: Re: [RFC PATCH v3 7/9] ipu3-cio2: Check if pci_dev->dev's fwnode is
- a software_node in cio2_parse_firmware() and set
- FWNODE_GRAPH_DEVICE_DISABLED if so
-Message-ID: <20201020120615.GV13341@paasikivi.fi.intel.com>
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-8-djrscally@gmail.com>
- <20201020091958.GC4077@smile.fi.intel.com>
+        id S2394080AbgJTMGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:06:38 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A32AB20691;
+        Tue, 20 Oct 2020 12:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603195597;
+        bh=jGPSdlUUbqB/K1MtveeqGOu3jhDkOt/EewiXt4GbuyQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hUG+/CP6yrEYCXYlyxAiVDhRnUOLeN4S/n+IO+AzJIOTiM0++Y1sxuRbZT5+VHTuV
+         +hCsK1Ipu3JuwEOB9f+S6nPU0JppMN4d+4kbyS/bMaVjdBAZBLrE9GBY5twDhpOahS
+         kLxKS5XrGtQbzwTnXXpOugGY3P3u4ZApsxa/mlMg=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2D165403C2; Tue, 20 Oct 2020 09:06:35 -0300 (-03)
+Date:   Tue, 20 Oct 2020 09:06:35 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf mem2node: Improve warning if detected no memory
+ nodes
+Message-ID: <20201020120635.GC2294271@kernel.org>
+References: <20201019003613.8399-1-leo.yan@linaro.org>
+ <20201020060627.GA2084117@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201020091958.GC4077@smile.fi.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201020060627.GA2084117@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On Tue, Oct 20, 2020 at 12:19:58PM +0300, Andy Shevchenko wrote:
-> On Mon, Oct 19, 2020 at 11:59:01PM +0100, Daniel Scally wrote:
-> > fwnode_graph_get_endpoint_by_id() will optionally parse enabled devices
-> > only; that status being determined through the .device_is_available() op
-> > of the device's fwnode. As software_nodes don't have that operation and
-> > adding it is meaningless, we instead need to check if the device's fwnode
-> > is a software_node and if so pass the appropriate flag to disable that
-> > check
+Em Tue, Oct 20, 2020 at 08:06:27AM +0200, Jiri Olsa escreveu:
+> On Mon, Oct 19, 2020 at 08:36:13AM +0800, Leo Yan wrote:
+> > Some archs (e.g. x86 and Arm64) don't enable the configuration
+> > CONFIG_MEMORY_HOTPLUG by default, if this configuration is not enabled
+> > when build the kernel image, the SysFS for memory nodes will be missed.
+> > This results in perf tool has no chance to catpure the memory nodes
+> > information, when perf tool reports the result and detects no memory
+> > nodes, it outputs "assertion failed at util/mem2node.c:99".
+> > 
+> > The output log doesn't give out reason for the failure and users have no
+> > clue for how to fix it.  This patch changes to use explicit way for
+> > warning: it tells user that detected no memory nodes and suggests to
+> > enable CONFIG_MEMORY_HOTPLUG for kernel building.
+> > 
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > 
-> Period.
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> thanks,
+> jirka
 > 
-> I'm wondering if actually this can be hidden in fwnode_graph_get_endpoint_by_id().
-
-The device availability test is actually there for a reason. Some firmware
-implementations put all the potential devices in the tables and only one
-(of some) of them are available.
-
-Could this be implemented so that if the node is a software node, then get
-its parent and then see if that is available?
-
-I guess that could be implemented in software node ops. Any opinions?
+> > ---
+> >  tools/perf/util/mem2node.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/util/mem2node.c b/tools/perf/util/mem2node.c
+> > index c84f5841c7ab..03a7d7b27737 100644
+> > --- a/tools/perf/util/mem2node.c
+> > +++ b/tools/perf/util/mem2node.c
+> > @@ -96,7 +96,8 @@ int mem2node__init(struct mem2node *map, struct perf_env *env)
+> >  
+> >  	/* Cut unused entries, due to merging. */
+> >  	tmp_entries = realloc(entries, sizeof(*entries) * j);
+> > -	if (tmp_entries || WARN_ON_ONCE(j == 0))
+> > +	if (tmp_entries ||
+> > +	    WARN_ONCE(j == 0, "No memory nodes, is CONFIG_MEMORY_HOTPLUG enabled?\n"))
+> >  		entries = tmp_entries;
+> >  
+> >  	for (i = 0; i < j; i++) {
+> > -- 
+> > 2.17.1
+> > 
+> 
 
 -- 
-Kind regards,
 
-Sakari Ailus
+- Arnaldo
