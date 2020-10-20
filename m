@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9745F293FEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DBB293FF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436891AbgJTPvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 11:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436880AbgJTPvm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 11:51:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2670AC061755;
-        Tue, 20 Oct 2020 08:51:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=xVKeiMQ1XLylJ8rSbId/RCAy2iAQfbZGLGK+XA6rX94=; b=UtVJOPbFEz+23s9lduIazooL87
-        wyK5qqwT/ZkhpfUlFSF2AenPee7/3CibKkGNLxmaIDAvl9lFhYiKR/r9hulwNnAQyYEHbTO12ApcL
-        c2O4G2GaQtKYzJV6PSIJPUlzIeH+Agp8lsakx54ZRrVwopiPUi1oE8WpSRpATr1FekEHFVItUoRXQ
-        2i4DZyaw/Wq43wBLN3/e9eANpJZ0V9P+cnxiapGgazXjb4cUXQS3a4bF418vEArFtI5hs5xl0QbNg
-        h4JhiENXQjY7JIdWdcEK33KuDWKrn+mgr6btmjMs9YNVZLWGCK8FNuZ5YwByRjFfGU3SEMwPUBLLM
-        ln7AjsxQ==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kUtvF-0004kW-AN; Tue, 20 Oct 2020 15:51:37 +0000
-Subject: Re: [PATCH] PCI: export pci_find_host_bridge() to fix MFD build error
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        linux-mips@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Thomas Bogendoerfer <tbogendoerfer@suse.de>
-References: <20201019061453.32295-1-rdunlap@infradead.org>
- <20201020080219.GA21011@infradead.org>
- <45b16450-320b-86fd-603e-4fb311c6f4bd@infradead.org>
-Message-ID: <84b55881-21ba-aa5b-7b56-7d8e411771f9@infradead.org>
-Date:   Tue, 20 Oct 2020 08:51:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2436900AbgJTPwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 11:52:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50760 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436797AbgJTPwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 11:52:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2661AAE95;
+        Tue, 20 Oct 2020 15:52:08 +0000 (UTC)
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-mm <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+References: <31ef1305-1fd4-8159-a2ca-e9968a568ff0@csgroup.eu>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: mm: Question about the use of 'accessed' flags and pte_young()
+ helper
+Message-ID: <ed3d1e19-b18b-d10e-2c86-0fb7ce3a431d@suse.cz>
+Date:   Tue, 20 Oct 2020 17:52:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <45b16450-320b-86fd-603e-4fb311c6f4bd@infradead.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <31ef1305-1fd4-8159-a2ca-e9968a568ff0@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/20 7:06 AM, Randy Dunlap wrote:
-> On 10/20/20 1:02 AM, Christoph Hellwig wrote:
->> On Sun, Oct 18, 2020 at 11:14:53PM -0700, Randy Dunlap wrote:
->>> Fix a build error in drivers/mfd/ioc.o by exporting
->>> pci_find_host_bridge().
->>>
->>> ERROR: modpost: "pci_find_host_bridge" [drivers/mfd/ioc3.ko] undefined!
->>
->> I think the mfd code should be fixed to not depend on such an internal
->> symbol instead.
->>
+On 10/8/20 11:49 AM, Christophe Leroy wrote:
+> In a 10 years old commit
+> (https://github.com/linuxppc/linux/commit/d069cb4373fe0d451357c4d3769623a7564dfa9f), powerpc 8xx has
+> made the handling of PTE accessed bit conditional to CONFIG_SWAP.
+> Since then, this has been extended to some other powerpc variants.
 > 
-> Thanks for commenting. and I am not surprised.
+> That commit means that when CONFIG_SWAP is not selected, the accessed bit is not set by SW TLB miss
+> handlers, leading to pte_young() returning garbage, or should I say possibly returning false
+> allthough a page has been accessed since its access flag was reset.
 > 
-> Adding Cc: for Thomas and Lee.
+> Looking at various mm/ places, pte_young() is used independent of CONFIG_SWAP
+> 
+> Is it still valid the not manage accessed flags when CONFIG_SWAP is not selected ?
 
-BTW, if someone wants to use the MFD ioc3 driver now,
-without any source code patches, they can just build it in
-(SGI_MFD_IOC3=y) instead of building it as a loadable module.
+AFAIK it's wrong, reclaim needs it to detect accessed pages on inactive list, 
+via page_referenced(), including file pages (page cache) where CONFIG_SWAP plays 
+no role. Maybe it was different 10 years ago.
 
-It builds successfully and can use pci_find_host_bridge().
-pci_find_host_bridge() just isn't exported for loadable modules.
+> If yes, should pte_young() always return true in that case ?
 
-So this could be useful (PCI=y):
+It should best work as intended. If not possible, true is maybe better, as false 
+will lead to inactive file list thrashing.
 
-config SGI_MFD_IOC3
-	tristate "SGI IOC3 core driver"
-	depends on PCI=y && MIPS && 64BIT
-	select MFD_CORE
-
--- 
-~Randy
+> While we are at it, I'm wondering whether powerpc should redefine arch_faults_on_old_pte()
+> On some variants of powerpc, accessed flag is managed by HW. On others, it is managed by SW TLB miss
+> handlers via page fault handling.
+> 
+> Thanks
+> Christophe
+> 
 
