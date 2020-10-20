@@ -2,140 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D651F293599
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D3429359C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404917AbgJTHRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
+        id S2404931AbgJTHRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728632AbgJTHRF (ORCPT
+        with ESMTP id S2404918AbgJTHRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:17:05 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F46C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:17:03 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id b1so814398lfp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oqfbzt/qDzJfLfhorr1LgGLqTXS/OCrC1Rjql2HHPMM=;
-        b=pixOfe/LlMMXGSm5PFqV3GzwGaKRnNcGMQ53dh3WqtVVHs0AD14SBQ+hAFp9Q2lVRx
-         yiXswGWtZ/4iFHOPdQjxW6wcevek2jcW50T8J7cTP5ToK6xYthpqI4rrxp81Xkp33Q5/
-         xV5GIvIS3aX0bkgfKjQhX3RRMnD82YVvIIW54i+i5Idjd3GF+C5VQi2jwc9tcuOj/p0W
-         gQJmjen7UIpB64+r0H5CUmYRCQuAiJwOfWrAplFfZk46xxPudigz2StWhTrUWMzVr4Dj
-         xqy9cdhyLRFT0RQ4RR8ZaiokWwu4rhmu0KfGjpUXYcgn1/LDhMitUbw43wYvCkSunBjs
-         ZXRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oqfbzt/qDzJfLfhorr1LgGLqTXS/OCrC1Rjql2HHPMM=;
-        b=giJYvECNbQjJA6iqUOAXCaROgm9Df6kreJGwdVgvLWADMQnkUJU6wnBWns7pt/+KEq
-         knsJBQ9S5LXSvPHql2JchAoXBoD/QFdPz2KQE621IRntDYd6tH2vlvOscd4qkdO2DCUw
-         NcO+vSFvAXngQ7MsBeh08y0IgqnXIYtnmoPBXlQpxfe0SVo+YV1HsqDysJCO3LVohoTA
-         QJhLHaql3mKsk6qsgzvjOxYABmQrh+7W46ml5QrhC87BC7xbqZqcnldPMFHBmc8J2zgm
-         2V/Xau02VojId7WRWHDG4GU920aedbZ06qNu/o+VW+XrrjbVGtwzT19ZWEN+A/XBPVAh
-         MMoA==
-X-Gm-Message-State: AOAM532y/tpLcikWB8yDT8AoKqs0PjPfgc7M8NMtQ2koqmGCiW64LSpv
-        Q7gwnNJ14vtZMUzBV7R4KQxtX9RmrfjonVvZDKvXtQ==
-X-Google-Smtp-Source: ABdhPJyljvU8t34fPXWrkGHEmjcTnmj0A7FHynrsuw2TPqALkHhNoboqAWhvd41VpIUiw+zC9Vv/rdO+co9ft5k0ZCk=
-X-Received: by 2002:a05:6512:2029:: with SMTP id s9mr445264lfs.273.1603178222429;
- Tue, 20 Oct 2020 00:17:02 -0700 (PDT)
+        Tue, 20 Oct 2020 03:17:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF25EC061755;
+        Tue, 20 Oct 2020 00:17:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KH+Wc+ZSZBRXANth+UedKqqJT2BNiT7bzC2sGu6QJ4k=; b=SuptBZhIOFnIn4Qgl/o3eWLNPl
+        DZG970jCNvRXV8TYuPW8QiHdgmt3jNZcAUc+7rsy1pvdug//5g9pI5tTyeeah9R2qo1Vl9qc0YG1L
+        UC1rEUx1A5mbJG4VUmwOd4NGhXJVaCzp8aXCmGtDMP7/G8/FEvlPTac2gfU94hYEpclltA+k8Byf7
+        GDs1h7tbastBWW+DH78OcJG9nE62DHy5m3Tt0/b0nSr0NOFKcJJN9rWgvuJ3cdcSn51xQJgw9dzIW
+        q3AcAXwQFkZ83Wtg9g3HZ2ApNhoccKFA/ffNSNGFcsmNaASxCq8HNLh5EyK7ri9ZI5xm0q0Abdl2j
+        yjgcZm0w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kUltF-0002gW-QN; Tue, 20 Oct 2020 07:17:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3DF74304D2B;
+        Tue, 20 Oct 2020 09:17:01 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2BDFD2038FA06; Tue, 20 Oct 2020 09:17:01 +0200 (CEST)
+Date:   Tue, 20 Oct 2020 09:17:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFCv2 11/16] KVM: Protected memory extension
+Message-ID: <20201020071701.GV2611@hirez.programming.kicks-ass.net>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+ <20201020061859.18385-12-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
-References: <1602673931-28782-1-git-send-email-sumit.garg@linaro.org>
- <1602673931-28782-4-git-send-email-sumit.garg@linaro.org> <1c68b74251dc72b0cd74706280ea96f7@kernel.org>
-In-Reply-To: <1c68b74251dc72b0cd74706280ea96f7@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 20 Oct 2020 12:46:51 +0530
-Message-ID: <CAFA6WYODXzOoH=NiurikiK6wepsdfmnmUd4BzEJnguaSGzW7GQ@mail.gmail.com>
-Subject: Re: [PATCH v5 3/5] arm64: smp: Allocate and setup IPI as NMI
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        julien.thierry.kdev@gmail.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020061859.18385-12-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Oct 2020 at 17:29, Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2020-10-14 12:12, Sumit Garg wrote:
-> > Allocate an unused IPI that can be turned as NMI using ipi_nmi
-> > framework.
->
-> This doesn't do any allocation, as far as I can see. It relies on
-> the initial grant from the interrupt controller to be larger than
-> what the kernel currently uses.
->
+On Tue, Oct 20, 2020 at 09:18:54AM +0300, Kirill A. Shutemov wrote:
+> +int __kvm_protect_memory(unsigned long start, unsigned long end, bool protect)
+> +{
+> +	struct mm_struct *mm = current->mm;
+> +	struct vm_area_struct *vma, *prev;
+> +	int ret;
+> +
+> +	if (mmap_write_lock_killable(mm))
+> +		return -EINTR;
+> +
+> +	ret = -ENOMEM;
+> +	vma = find_vma(current->mm, start);
+> +	if (!vma)
+> +		goto out;
+> +
+> +	ret = -EINVAL;
+> +	if (vma->vm_start > start)
+> +		goto out;
+> +
+> +	if (start > vma->vm_start)
+> +		prev = vma;
+> +	else
+> +		prev = vma->vm_prev;
+> +
+> +	ret = 0;
+> +	while (true) {
+> +		unsigned long newflags, tmp;
+> +
+> +		tmp = vma->vm_end;
+> +		if (tmp > end)
+> +			tmp = end;
+> +
+> +		newflags = vma->vm_flags;
+> +		if (protect)
+> +			newflags |= VM_KVM_PROTECTED;
+> +		else
+> +			newflags &= ~VM_KVM_PROTECTED;
+> +
+> +		/* The VMA has been handled as part of other memslot */
+> +		if (newflags == vma->vm_flags)
+> +			goto next;
+> +
+> +		ret = mprotect_fixup(vma, &prev, start, tmp, newflags);
+> +		if (ret)
+> +			goto out;
+> +
+> +next:
+> +		start = tmp;
+> +		if (start < prev->vm_end)
+> +			start = prev->vm_end;
+> +
+> +		if (start >= end)
+> +			goto out;
+> +
+> +		vma = prev->vm_next;
+> +		if (!vma || vma->vm_start != start) {
+> +			ret = -ENOMEM;
+> +			goto out;
+> +		}
+> +	}
+> +out:
+> +	mmap_write_unlock(mm);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(__kvm_protect_memory);
 
-Okay, will update the commit message as s/Allocate/Assign/.
-
--Sumit
-
-> > Also, invoke corresponding NMI setup/teardown APIs.
-> >
-> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > ---
-> >  arch/arm64/kernel/smp.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> > index 82e75fc..129ebfb 100644
-> > --- a/arch/arm64/kernel/smp.c
-> > +++ b/arch/arm64/kernel/smp.c
-> > @@ -43,6 +43,7 @@
-> >  #include <asm/daifflags.h>
-> >  #include <asm/kvm_mmu.h>
-> >  #include <asm/mmu_context.h>
-> > +#include <asm/nmi.h>
-> >  #include <asm/numa.h>
-> >  #include <asm/processor.h>
-> >  #include <asm/smp_plat.h>
-> > @@ -962,6 +963,8 @@ static void ipi_setup(int cpu)
-> >
-> >       for (i = 0; i < nr_ipi; i++)
-> >               enable_percpu_irq(ipi_irq_base + i, 0);
-> > +
-> > +     ipi_nmi_setup(cpu);
-> >  }
-> >
-> >  #ifdef CONFIG_HOTPLUG_CPU
-> > @@ -974,6 +977,8 @@ static void ipi_teardown(int cpu)
-> >
-> >       for (i = 0; i < nr_ipi; i++)
-> >               disable_percpu_irq(ipi_irq_base + i);
-> > +
-> > +     ipi_nmi_teardown(cpu);
-> >  }
-> >  #endif
-> >
-> > @@ -995,6 +1000,9 @@ void __init set_smp_ipi_range(int ipi_base, int n)
-> >               irq_set_status_flags(ipi_base + i, IRQ_HIDDEN);
-> >       }
-> >
-> > +     if (n > nr_ipi)
-> > +             set_smp_ipi_nmi(ipi_base + nr_ipi);
-> > +
-> >       ipi_irq_base = ipi_base;
-> >
-> >       /* Setup the boot CPU immediately */
->
-> Thanks,
->
->          M.
-> --
-> Jazz is not dead. It just smells funny...
+Since migration will be disabled after this; should the above not (at
+the very least) force compaction before proceeding to lock the pages in?
