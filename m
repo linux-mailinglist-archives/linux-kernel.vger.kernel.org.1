@@ -2,108 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CDF4293E68
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0318C293E6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407949AbgJTOPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37914 "EHLO
+        id S2407960AbgJTOQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407844AbgJTOPw (ORCPT
+        with ESMTP id S2407953AbgJTOQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:15:52 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F91EC061755;
-        Tue, 20 Oct 2020 07:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=zZPoxFXO5m2rbDewqd3HClJfiW/hLSLuYz3sV0fm4Cw=; b=f1jw3LJMbyiSZ/gcVvusllVjw
-        vtADPZXiZRsd+LluEyGlt9xIvcXgabULeLfNn12nErvogtIhHrS/WeV9d8iYAO6Oq5qogXkPtBQDx
-        6l0vy74ftSuhCgO9vcup9a14LEtH+OX7n1j4mbBlg4+mw24CliAK2M7sBGnTLzv0YCdHjKHjMNAY/
-        KLhEi21F9t2SLFJI8uv3VpKuTElHj46raXTBOrFXtAS4Yjea5ELm+Jb+PsWWBQGepxBaR3B4Rgm72
-        MgjNZKZQ6WcOG0xQFOkaP1mDl3hSFyKA7YMo5DMEiWjYHxxFPL4tbgfbgLj+Zl0S7BOuOOf18n6mx
-        N04qTO6Ng==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48692)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kUsQO-0007aD-5X; Tue, 20 Oct 2020 15:15:40 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kUsQ9-0005LV-66; Tue, 20 Oct 2020 15:15:25 +0100
-Date:   Tue, 20 Oct 2020 15:15:25 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Marek Behun <marek.behun@nic.cz>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] net: dsa: mv88e6xxx: Don't force link when using
- in-band-status
-Message-ID: <20201020141525.GD1551@shell.armlinux.org.uk>
-References: <20201020034558.19438-1-chris.packham@alliedtelesis.co.nz>
- <20201020034558.19438-2-chris.packham@alliedtelesis.co.nz>
- <20201020101552.GB1551@shell.armlinux.org.uk>
- <20201020154940.60357b6c@nic.cz>
- <20201020140535.GE139700@lunn.ch>
+        Tue, 20 Oct 2020 10:16:07 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD28C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:16:06 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id r9so1086501ioo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:16:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=32BE8Lw2EekcRQTEoc+aBUf5ggWGrIHOAoQDVJrUFIs=;
+        b=aKKC/WpSNLS0ZloKX1oIt5oU8woPen0JYuAflN051jkQ6QbgEFy5tcwcgeFPOXV2qT
+         pGVXiYjFAxsMb8psGma2DWab3CpNpJKePbjO9DISful0WXJHQJB5H5ff9ITRWsbvYrDi
+         ugc+rKZ7OubyjB1DaX5ZSgB4GD/WbaVreTO6TqvpxOhT0n45fAyx7+0s5AOpH7WPtYxc
+         X1ffmVh7V0z3PErh0l2iRaKThRarIde/lIgUr004meDGYGTjjIfnqQ8LSF0v4bsfNZNp
+         sjuFR3m9AcG5kjLaE1hykvTMuzL7mc1KPkjfceZsYrbJ1t5x63h2BJREJwxbtq6siXfw
+         XyJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=32BE8Lw2EekcRQTEoc+aBUf5ggWGrIHOAoQDVJrUFIs=;
+        b=WvfvarhIIt34COzoyAQ02ow8exGw3Rq4XWcneiriW0ogmNxL01tv84tgRhUy2YtcVC
+         X/VZQTFDJcTGorcqijyGeSLVU+8m/tCJcW8ZFqy2dlej9AwdFoJ2DdElwINDoaoxwF/P
+         anfSXZeoOOGKg5Uli00YmVeW7PA4z4BcHB2D+PbqxQp+0BL/R/7OlM0SkpOy7FZGxXHV
+         7O5bf1jwnfA1n0MelLsD8kh3dBfkziKxZIC2ki4TRd8vNQZICNuvlyu4HIkFXKg99Y3u
+         yHcqUKEN1Rw/qgT1CwB/Dut1Ij8tiAkUuYXUyq4a1vhaRsAgvInquyaC3+GAymxT/z1w
+         WjiA==
+X-Gm-Message-State: AOAM5302zke+rSDtVKDinWJ/ko2WBuJjgEwZ3bLsfHNKNTIWHUyLPqL8
+        AxrFg/K5F9XRJJEVpVQ/uSU=
+X-Google-Smtp-Source: ABdhPJxBT1shb+gY5zGfOd1rNyTjxgLfEv55JM5ahsBi3iqTKd75ZVqxsbbFVMPrD5WMLe5cABZThg==
+X-Received: by 2002:a6b:7947:: with SMTP id j7mr2327233iop.143.1603203365706;
+        Tue, 20 Oct 2020 07:16:05 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id p66sm2253630ilb.48.2020.10.20.07.16.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 07:16:04 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 20 Oct 2020 10:16:02 -0400
+To:     Shuo A Liu <shuo.a.liu@intel.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH v5 04/17] x86/acrn: Introduce hypercall interfaces
+Message-ID: <20201020141602.GD2996696@rani.riverdale.lan>
+References: <20201019061803.13298-1-shuo.a.liu@intel.com>
+ <20201019061803.13298-5-shuo.a.liu@intel.com>
+ <20201019221515.GA2875488@rani.riverdale.lan>
+ <20201020013809.GA11038@shuo-intel.sh.intel.com>
+ <20201020020851.GA2996696@rani.riverdale.lan>
+ <20201020023017.GA12408@shuo-intel.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201020140535.GE139700@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20201020023017.GA12408@shuo-intel.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 04:05:35PM +0200, Andrew Lunn wrote:
-> On Tue, Oct 20, 2020 at 03:49:40PM +0200, Marek Behun wrote:
-> > On Tue, 20 Oct 2020 11:15:52 +0100
-> > Russell King - ARM Linux admin <linux@armlinux.org.uk> wrote:
-> > 
-> > > On Tue, Oct 20, 2020 at 04:45:56PM +1300, Chris Packham wrote:
-> > > > When a port is configured with 'managed = "in-band-status"' don't force
-> > > > the link up, the switch MAC will detect the link status correctly.
-> > > > 
-> > > > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> > > > Reviewed-by: Andrew Lunn <andrew@lunn.ch>  
-> > > 
-> > > I thought we had issues with the 88E6390 where the PCS does not
-> > > update the MAC with its results. Isn't this going to break the
-> > > 6390? Andrew?
-> > > 
-> > 
-> > Russell, I tested this patch on Turris MOX with 6390 on port 9 (cpu
-> > port) which is configured in devicetree as 2500base-x, in-band-status,
-> > and it works...
-> > 
-> > Or will this break on user ports?
+On Tue, Oct 20, 2020 at 10:30:17AM +0800, Shuo A Liu wrote:
+> On Mon 19.Oct'20 at 22:08:51 -0400, Arvind Sankar wrote:
+> >On Tue, Oct 20, 2020 at 09:38:09AM +0800, Shuo A Liu wrote:
+> >> On Mon 19.Oct'20 at 18:15:15 -0400, Arvind Sankar wrote:
+> >> >On Mon, Oct 19, 2020 at 02:17:50PM +0800, shuo.a.liu@intel.com wrote:
+> >> >> From: Shuo Liu <shuo.a.liu@intel.com>
+> >> >>
+> >> >> The Service VM communicates with the hypervisor via conventional
+> >> >> hypercalls. VMCALL instruction is used to make the hypercalls.
+> >> >>
+> >> >> ACRN hypercall ABI:
+> >> >>   * Hypercall number is in R8 register.
+> >> >>   * Up to 2 parameters are in RDI and RSI registers.
+> >> >>   * Return value is in RAX register.
+> >> >>
+> >> >> Introduce the ACRN hypercall interfaces. Because GCC doesn't support R8
+> >> >> register as direct register constraints, use supported constraint as
+> >> >> input with a explicit MOV to R8 in beginning of asm.
+> >> >>
+> >> >> +static inline long acrn_hypercall0(unsigned long hcall_id)
+> >> >> +{
+> >> >> +	long result;
+> >> >> +
+> >> >> +	asm volatile("movl %1, %%r8d\n\t"
+> >> >> +		     "vmcall\n\t"
+> >> >> +		     : "=a" (result)
+> >> >> +		     : "ir" (hcall_id)
+> >> >
+> >> >Is the hypercall id an unsigned long (64 bits) or an unsigned int (32
+> >> >bits)? This will generate broken assembly if the "r" option is chosen,
+> >> >eg something like
+> >> >	movl %rdi, %r8d
+> >>
+> >> Yes, it can be an unsigned long. So do MOV explicitly.
+> >>
+> >> 	asm volatile("movq %1, %%r8\n\t"
+> >> 		     "vmcall\n\t"
+> >> 		     : "=a" (result)
+> >> 		     : "ir" (hcall_id)
+> >>
+> >> Thanks
+> >
+> >All the hypercall ID's defined seem to be only 32 bits though?
 > 
-> User ports is what needs testing, ideally with an SFP.
-> 
-> There used to be explicit code which when the SERDES reported link up,
-> the MAC was configured in software with the correct speed etc. With
-> the move to pcs APIs, it is less obvious how this works now, does it
-> still software configure the MAC, or do we have the right magic so
-> that the hardware updates itself.
+> Yes, they are.
+> The paramter is unsigned long, use movq to align it.
 
-It's still there. The speed/duplex etc are read from the serdes PHY
-via mv88e6390_serdes_pcs_get_state(). When the link comes up, we
-pass the negotiated link parameters read from there to the link_up()
-functions. For ports where mv88e6xxx_port_ppu_updates() returns false
-(no external PHY) we update the port's speed and duplex setting and
-(currently, before this patch) force the link up.
-
-That was the behaviour before I converted the code, the one that you
-referred to. I had assumed the code was correct, and _none_ of the
-speed, duplex, nor link state was propagated from the serdes PCS to
-the port on the 88E6390 - hence why the code you refer to existed.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+I don't understand what you mean by alignment here, but I was asking why
+hcall_id is unsigned long and not unsigned int (or u32) if you only need
+32 bits?
