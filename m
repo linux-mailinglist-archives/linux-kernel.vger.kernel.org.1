@@ -2,110 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01F6293499
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD1629349B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391950AbgJTGMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:12:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55645 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391943AbgJTGML (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:12:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603174330;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X2bbNCyi2EBWUT4bh/BUzR0gKWHNYcDtD9otqK0dudk=;
-        b=I7F5ZiJ2b7edj9g0VT4nfQBOobveLdcOR65k2o2XGQqDfxoEo7ANGnZCoZD6yF0uCMXGPF
-        19HUI4UL0nq7x2IqcEAS96Da1bGmpeJQsj5qnfQgBmoNuryvfyXYsIdcyxVTcY9GzbNm34
-        F9dx3mE0IpbamJhY9Iabq/7eJJMiCMA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-62-lzUE9TjIPh64DdiQD0tJTA-1; Tue, 20 Oct 2020 02:12:07 -0400
-X-MC-Unique: lzUE9TjIPh64DdiQD0tJTA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 716F31074653;
-        Tue, 20 Oct 2020 06:12:05 +0000 (UTC)
-Received: from krava (unknown [10.40.192.162])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 18D4D5B4B3;
-        Tue, 20 Oct 2020 06:12:00 +0000 (UTC)
-Date:   Tue, 20 Oct 2020 08:11:59 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        Nick Gasson <nick.gasson@arm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/2] perf: Make tsc testing as a common testing case
-Message-ID: <20201020061159.GB2084117@krava>
-References: <20201019100236.23675-1-leo.yan@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019100236.23675-1-leo.yan@linaro.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S2391959AbgJTGMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:12:49 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:56354 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2391951AbgJTGMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 02:12:48 -0400
+Received: from localhost.localdomain (unknown [210.32.148.79])
+        by mail-app3 (Coremail) with SMTP id cC_KCgCXOZjLf45ft7M5AA--.20850S4;
+        Tue, 20 Oct 2020 14:12:31 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-rtc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v3] rtc: sun6i: Fix memleak in sun6i_rtc_clk_init
+Date:   Tue, 20 Oct 2020 14:12:26 +0800
+Message-Id: <20201020061226.6572-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgCXOZjLf45ft7M5AA--.20850S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF1rGw18Kr47uFW7Jw1UJrb_yoW8AFWrp3
+        4rJ3y5Krs7tan7u3yktFyUAF98G3WxKFWxury5Cwna9rn5CFyrGr47Ga40yF1UZr4xZ3ya
+        vF40y3y5uF4UZr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv21xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l
+        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+        ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7VUjHUDJUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgATBlZdtQf4pwABsw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 06:02:34PM +0800, Leo Yan wrote:
-> This patch set is to move tsc testing from x86 specific to common
-> testing case.  Since Arnaldo found the building failure for patch set
-> v4 [1], the first four patches have been merged but the last two patches
-> were left out; this patch set is to resend the last two patches with
-> fixed the building failure (by removing the header "arch-tests.h" from the
-> testing code).
-> 
-> These two patches have been tested on x86_64 and Arm64.  Though I don't
-> test them on archs MIPS, PowerPC, etc, I tried to search every header so
-> ensure included headers are supported for all archs.
-> 
-> These two patches have been rebased on the perf/core branch with its
-> latest commit 744aec4df2c5 ("perf c2c: Update documentation for metrics
-> reorganization").
-> 
-> Changes from v5:
-> * Found the merging confliction on latest perf/core, so rebased it.
-> 
-> [1] https://lore.kernel.org/patchwork/cover/1305382/#1505752
-> 
-> 
-> Leo Yan (2):
->   perf tests tsc: Make tsc testing as a common testing
->   perf tests tsc: Add checking helper is_supported()
+When clk_hw_register_fixed_rate_with_accuracy() fails,
+clk_data should be freed. It's the same for the subsequent
+two error paths, but we should also unregister the already
+registered clocks in them.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
 
-thanks,
-jirka
+Changelog:
 
-> 
->  tools/perf/arch/x86/include/arch-tests.h      |  1 -
->  tools/perf/arch/x86/tests/Build               |  1 -
->  tools/perf/arch/x86/tests/arch-tests.c        |  4 ----
->  tools/perf/tests/Build                        |  1 +
->  tools/perf/tests/builtin-test.c               |  5 +++++
->  .../{arch/x86 => }/tests/perf-time-to-tsc.c   | 19 +++++++++++++++----
->  tools/perf/tests/tests.h                      |  2 ++
->  7 files changed, 23 insertions(+), 10 deletions(-)
->  rename tools/perf/{arch/x86 => }/tests/perf-time-to-tsc.c (92%)
-> 
-> -- 
-> 2.17.1
-> 
+v2: - Unregister the already registered clocks on failure.
+
+v3: - Add a new label 'err_register' to unify code style.
+---
+ drivers/rtc/rtc-sun6i.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
+index e2b8b150bcb4..f2818cdd11d8 100644
+--- a/drivers/rtc/rtc-sun6i.c
++++ b/drivers/rtc/rtc-sun6i.c
+@@ -272,7 +272,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node,
+ 								300000000);
+ 	if (IS_ERR(rtc->int_osc)) {
+ 		pr_crit("Couldn't register the internal oscillator\n");
+-		return;
++		goto err;
+ 	}
+ 
+ 	parents[0] = clk_hw_get_name(rtc->int_osc);
+@@ -290,7 +290,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node,
+ 	rtc->losc = clk_register(NULL, &rtc->hw);
+ 	if (IS_ERR(rtc->losc)) {
+ 		pr_crit("Couldn't register the LOSC clock\n");
+-		return;
++		goto err_register;
+ 	}
+ 
+ 	of_property_read_string_index(node, "clock-output-names", 1,
+@@ -301,7 +301,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node,
+ 					  &rtc->lock);
+ 	if (IS_ERR(rtc->ext_losc)) {
+ 		pr_crit("Couldn't register the LOSC external gate\n");
+-		return;
++		goto err_register;
+ 	}
+ 
+ 	clk_data->num = 2;
+@@ -314,6 +314,8 @@ static void __init sun6i_rtc_clk_init(struct device_node *node,
+ 	of_clk_add_hw_provider(node, of_clk_hw_onecell_get, clk_data);
+ 	return;
+ 
++err_register:
++	clk_hw_unregister_fixed_rate(rtc->int_osc);
+ err:
+ 	kfree(clk_data);
+ }
+-- 
+2.17.1
 
