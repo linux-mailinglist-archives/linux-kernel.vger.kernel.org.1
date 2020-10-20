@@ -2,155 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89F629393E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45136293941
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393240AbgJTKfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
+        id S2393247AbgJTKgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 06:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392115AbgJTKfo (ORCPT
+        with ESMTP id S2392130AbgJTKgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:35:44 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A03C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:35:43 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id v22so586038ply.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:35:43 -0700 (PDT)
+        Tue, 20 Oct 2020 06:36:21 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4529BC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:36:21 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id hk7so762035pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:36:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k40p/TeTSBCnYnmdeXcl5d+yUSPbyw9jvLg468r2bq0=;
-        b=CkH8rcRgSS61NJ0Nk7uX4ybp4pUswOiSBKXWxnHqkXFFG1I5B9UhQTDXbnO4dR6tEt
-         Zgils15Hn+Uo/WI/KpYz9cwb5SqXBic9T4ZFcqzoExoRsUHiROexKTtohb9HboqvQDcg
-         ao+WEbs/Po/vW2No+kjSaBl7sA9BBsi1lXaIyrnkNqLMmXyXllDOleF1SQ0cFAXBTWrG
-         MvDCCVyHfNxdMNBu6VtfG1vnYrNTu8Fxkzy1e4OB71qF/N1RrfmfgwzPjoEeH5/iGBGY
-         JINmDFYiGhdb62uzfr8TuCrfMrSMdTP+n8SSMDsPnQHUSrMt+WUPD6O7CQ8kkFplL20z
-         hwIg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xMyFD9aGKc1uxqgQqPeeOsvhMt6C8yiL5bwMNHZ2olo=;
+        b=GSMeM7NOjHfz41kQrfcTjo3+JWRn+PyrY3mFZMC2M7Mzs89wRF4FVzkzCX3S6+NOjB
+         zk57fp2xG9nMX7vfnuakibqPWCHF1dqli5JQZVtB7epDQDX30IRoXNZNw3hRhLvcnMG7
+         pes7iP9/6KdH0Aapb3g1e+xoPbZaOv/6/fxiCR7M4yzDnA5/Rhel6MyoO5DGRKiGrrJV
+         Re7WID/H5J23z/hqNWh87jJhavo/A8n1jxkgzhsk1Fi/uRIRUG7aLhk45P0gGFXKlA7m
+         I4wxUl0djcYJMx/BiPlyYNVL7TnodAnUuhUoUKuQGpOIs/lcPuNVZu9cVeL2aShEwg0a
+         vJMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k40p/TeTSBCnYnmdeXcl5d+yUSPbyw9jvLg468r2bq0=;
-        b=d6Qp5jg0L32mFAYGuYqRZqMZa2MCPyTOAV5L3iisfBL6Ma8bn327N9yqL9cziYMvLy
-         uOzZGWNhRiFjr+OE5/6klBWakdLT8n76WTBnyNFB/0PsbYWg6Tcpku+0MBagEu39oGC5
-         kqiGKt+HbNll0qT0bWErC1wLDFfkgAk/CCPg1bcbhFhJt++aDXWQAidrG3A87LErJ0E5
-         Rgb3RiMik4x0He7ZWGTvGy6WQ87pBT1MUMTQdeggcmeMBTL/ov9rA0eawX+rQftC7T3L
-         h2ysdTTWyhcEUt5tgKmdHqfM4442Z7nHU48Go+z9AJqpAkeOe01qpY+zzigV6M1mhvly
-         ev5A==
-X-Gm-Message-State: AOAM532BL0yDfITkGIu5gCWoRcNvKMDEji6FfblHENm9vvLHZMatpNIt
-        jTrWTmig/N0S031v8qIv65JSFBoiiXSCD3yXCuafAQ==
-X-Google-Smtp-Source: ABdhPJxGTD2sg1dy+OBDXRxwUamj9At+GgAySaXyHJO4hLCK1PcnnEbJUi66rwy84mMzTtDPxlDHIVv2XITElCAfJdk=
-X-Received: by 2002:a17:90a:160f:: with SMTP id n15mr2190488pja.75.1603190143362;
- Tue, 20 Oct 2020 03:35:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xMyFD9aGKc1uxqgQqPeeOsvhMt6C8yiL5bwMNHZ2olo=;
+        b=gg5z6rVPOUF0MNtUpHGJSaX/yBXXVCCj9/uWOfEFbH8w3xaLAqJBe74wd1IE9L6+XG
+         FkNRA62AeTuzKR1Bw0tpNJctZUgR73jue7qTz5AVf65MWFDXbMv/cOclQ886wQ7XOUKH
+         VKSxd+c1MlLPXEAxOJ/35D4YYdJIU5QXGbRcA9+E+2mJ+UbCVqXdmfzsOZzOU+ORRmxJ
+         FrCC88iXVwpdB03oz1sItPbPNseRbkbhU5kmhE8tQY8sy7Q6/BSs47iGgBeJ+khMfyB6
+         v4fBETQokQ62Ym4+w8RANib22QM+Ma9iaLbovPOu2dd6smzwNOa32KbgpN5NNzupwKYg
+         Ic3A==
+X-Gm-Message-State: AOAM532TfV892+KNt1sDgpQjP3DZhXONQ4GXWer0+wiTqdZlllXmPeRg
+        fK468hOb+MlohwPHQF8nG9xdUQ==
+X-Google-Smtp-Source: ABdhPJxk4To5ufiwxPrTIXU0TYP0McrQLZP7E8JHmy9qgb+tIux4p/Hw0G7cVl1LQfteqOAETflXLw==
+X-Received: by 2002:a17:902:c252:b029:d3:d480:9e10 with SMTP id 18-20020a170902c252b02900d3d4809e10mr2364704plg.47.1603190180695;
+        Tue, 20 Oct 2020 03:36:20 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id 70sm1792610pfu.203.2020.10.20.03.36.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Oct 2020 03:36:19 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 16:06:17 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Dave Gerlach <d-gerlach@ti.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, sbhanu@codeaurora.org,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Stephen Boyd <sboyd@kernel.org>, nm@ti.com
+Subject: Re: WARNING: at drivers/opp/core.c:678
+ dev_pm_opp_set_rate+0x4cc/0x5d4 - on arm x15
+Message-ID: <20201020103617.qramu2ejlp44qxcz@vireshk-i7>
+References: <CA+G9fYvK5UkERLuBSRH5t2=j5==dbtw45GTMta9MafyJDqFsFA@mail.gmail.com>
+ <20200827094651.3grvs6ungv3dh7y3@vireshk-i7>
+ <20200827211832.3ebeda8a@canb.auug.org.au>
+ <20200828045128.y7ybkd7dnvn4h6dt@vireshk-i7>
+ <CA+G9fYsn1S-SieuP85-Z4qKO+aNyqJarrBR0xx0X-YbtF9eo0g@mail.gmail.com>
+ <20200831044132.jb7aflr2sfbart2z@vireshk-i7>
+ <CA+G9fYsLd77Wuz6Fdwr0w4eFvs=rX5ooewrztFtSe7MeyRJeGQ@mail.gmail.com>
+ <20200831060203.7guhirtxb72odow2@vireshk-i7>
+ <CA+G9fYv5WKQkDvjZsc+xth54X_MK3qUmuUTXhUDVUHpS3UhNpQ@mail.gmail.com>
+ <20201016054551.jwxk2xdvvnk7o5yy@vireshk-i7>
 MIME-Version: 1.0
-References: <20201018125237.16717-1-kholk11@gmail.com> <20201018125237.16717-7-kholk11@gmail.com>
-In-Reply-To: <20201018125237.16717-7-kholk11@gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 20 Oct 2020 12:35:32 +0200
-Message-ID: <CAG3jFyt+rf_efCw3TLR9R4aHSfBaAh9tKwcp7yhyVys64iaqLA@mail.gmail.com>
-Subject: Re: [PATCH 6/6] media: camss: csiphy: Set rate on csiX_phy clock on SDM630/660
-To:     kholk11@gmail.com
-Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        linux-arm-msm@vger.kernel.org,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016054551.jwxk2xdvvnk7o5yy@vireshk-i7>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good to me.
+On 16-10-20, 11:15, Viresh Kumar wrote:
+> +Dave,
+> 
+> On 15-10-20, 15:26, Naresh Kamboju wrote:
+> > The arm x15 boot failed on Linus 's mainline version 5.9.0.
+> 
+> Don't mention the version as this doesn't give the right information.
+> You tested it over 5.9 + 5.10-rc1 material.
+> 
+> > I have listed the latest commits on drivers/opp/ .
+> > 
+> > metadata:
+> >   git branch: master
+> >   git repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
+> >   git commit: 3e4fb4346c781068610d03c12b16c0cfb0fd24a3
+> >   git describe: v5.9-4105-g3e4fb4346c78
+> >   make_kernelversion: 5.9.0
+> >   kernel-config:
+> > https://builds.tuxbuild.com/2BB2g61t29VaadVLXEl4cQ/kernel.config
+> > 
+> > 
+> > ------------[ cut here ]------------
+> > [   13.530971] sdhci-omap 4809c000.mmc: Got CD GPIO
+> > [   13.535647] WARNING: CPU: 0 PID: 137 at drivers/opp/core.c:678
+> > dev_pm_opp_set_rate+0x4cc/0x5d4
+> 
+> Looks like the stuff from drivers/opp/ti-opp-supply.c supply didn't
+> work as expected.
+> 
+> One of the major changes came with these patches:
+> 
+> dc279ac6e5b4 cpufreq: dt: Refactor initialization to handle probe deferral properly
+> dd461cd9183f opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER
+> 
+> And that's where I think it may have gone wrong.
+> 
+> Dave: Will you (or someone else from TI) can have a look at it as well
+> ?
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
+http://lore.kernel.org/lkml/be911bcddc1dbf4a152513cb3d83f8eed7d2574c.1603189831.git.viresh.kumar@linaro.org
 
-On Sun, 18 Oct 2020 at 14:53, <kholk11@gmail.com> wrote:
->
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
->
-> The SDM630/660 SoCs (and variants) have another clock source
-> for the PHY, which must be set to a rate that's equal or
-> greater than the CSI PHY timer clock: failing to do this
-> will produce PHY overflows when trying to get a stream from
-> a very high bandwidth camera sensor and outputting no frame
-> or a partial one.
->
-> Since I haven't found any usecase in which the csiX_phy
-> clock needs to be higher than the csiXphy_timer, let's just
-> set the same rate on both, which seems to work just perfect.
->
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  .../media/platform/qcom/camss/camss-csiphy.c  | 22 ++++++++++++++++---
->  .../media/platform/qcom/camss/camss-csiphy.h  |  1 +
->  2 files changed, 20 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> index c00f25aac21b..a5d717d022a5 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> @@ -113,9 +113,7 @@ static int csiphy_set_clock_rates(struct csiphy_device *csiphy)
->         for (i = 0; i < csiphy->nclocks; i++) {
->                 struct camss_clock *clock = &csiphy->clock[i];
->
-> -               if (!strcmp(clock->name, "csiphy0_timer") ||
-> -                   !strcmp(clock->name, "csiphy1_timer") ||
-> -                   !strcmp(clock->name, "csiphy2_timer")) {
-> +               if (csiphy->rate_set[i]) {
->                         u8 bpp = csiphy_get_bpp(csiphy->formats,
->                                         csiphy->nformats,
->                                         csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
-> @@ -611,6 +609,13 @@ int msm_csiphy_subdev_init(struct camss *camss,
->         if (!csiphy->clock)
->                 return -ENOMEM;
->
-> +       csiphy->rate_set = devm_kcalloc(dev,
-> +                                       csiphy->nclocks,
-> +                                       sizeof(*csiphy->rate_set),
-> +                                       GFP_KERNEL);
-> +       if (!csiphy->rate_set)
-> +               return -ENOMEM;
-> +
->         for (i = 0; i < csiphy->nclocks; i++) {
->                 struct camss_clock *clock = &csiphy->clock[i];
->
-> @@ -638,6 +643,17 @@ int msm_csiphy_subdev_init(struct camss *camss,
->
->                 for (j = 0; j < clock->nfreqs; j++)
->                         clock->freq[j] = res->clock_rate[i][j];
-> +
-> +               if (!strcmp(clock->name, "csiphy0_timer") ||
-> +                   !strcmp(clock->name, "csiphy1_timer") ||
-> +                   !strcmp(clock->name, "csiphy2_timer"))
-> +                       csiphy->rate_set[i] = true;
-> +
-> +               if (camss->version == CAMSS_660 &&
-> +                   (!strcmp(clock->name, "csi0_phy") ||
-> +                    !strcmp(clock->name, "csi1_phy") ||
-> +                    !strcmp(clock->name, "csi2_phy")))
-> +                       csiphy->rate_set[i] = true;
->         }
->
->         return 0;
-> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.h b/drivers/media/platform/qcom/camss/camss-csiphy.h
-> index 376f865ad383..f7967ef836dc 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csiphy.h
-> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.h
-> @@ -66,6 +66,7 @@ struct csiphy_device {
->         u32 irq;
->         char irq_name[30];
->         struct camss_clock *clock;
-> +       bool *rate_set;
->         int nclocks;
->         u32 timer_clk_rate;
->         struct csiphy_config cfg;
-> --
-> 2.28.0
->
+I think this will fix it now.
+
+-- 
+viresh
