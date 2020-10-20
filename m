@@ -2,112 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4EF2943A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5992943A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405414AbgJTT4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 15:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732547AbgJTT4M (ORCPT
+        id S1733303AbgJTT7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 15:59:43 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16717 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733111AbgJTT7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 15:56:12 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6F9C0613D1;
-        Tue, 20 Oct 2020 12:56:10 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id y12so3903453wrp.6;
-        Tue, 20 Oct 2020 12:56:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=EkvUPGzG0rYC8VoHFkrJiY63RC96TCBG8SeqvdWrfUk=;
-        b=XZpCl+eLNOKORnr7rN2yeY8275Ljse0jgfD73ILYlz5YqCXAS4YWVaoG+21dbAvlnj
-         tk38f8C14anItDhPugcWZ7SzLqB41sB4awoUWavoXtTRng1Jl6mGz6I6CZYz/IzFJrc6
-         yGVzyrh4iu/KKsDxDO1OcH+rr5cHRXK9fGFpwjlvI9bgD5wuRUtIF5rgNJjvyhmqCcDo
-         xxOY3HdnKOBpykwWD9nSLXvGUKN7V5BpJ4FclZmDEAU48RujvxH2yOA1gMmAz47fXI3f
-         mGDnk6h+H+G2AB5TovlJESsZNJTLYiqa55QmF1tzVUS+O2APkdhUozDr4PDvDj6QW4IR
-         NRRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=EkvUPGzG0rYC8VoHFkrJiY63RC96TCBG8SeqvdWrfUk=;
-        b=GJ8XdjUCfRbvTfpJlZeoFuGc6ZRiz4zu3FrAozE7+BymsZC50+LmqPv25anLQErB5X
-         a+BY/vr7gYeEVb+qApbADVlnXc2PFL/SjbV9K7JuGw6BQ9uXLyAA9hdiMv541DqMD+KY
-         5UBsxMXC06slqndOZglmTPgJ5KpgZ0FKn8Mu1t4snWex2Kfv+U4bODJelyjhJ5PXwKD5
-         X3HnzQsIWq/hISsASt88mj68/63eb2MU4Vxta647AQ6ypW5ST5797FlVJ7fUREbcJpau
-         cpHdM+2aUtxB5Jz1H/mhjdE6SMsJUfZaT7hNELBpKHUtpELR5bqaKhFD8ERpzUI3K8+w
-         lY6Q==
-X-Gm-Message-State: AOAM531/mx8bxsWnLOOOXZpTixyg4GYPO9e9wBOdVWNhHVr5aSfObPkj
-        f3E1x2TJotxK/VvTRRon8qE=
-X-Google-Smtp-Source: ABdhPJyi2YTy1Eeqzqumz/PUvtqlJaX+IsttYqw1axedeULsvn6o9h1Uaz+FpTEt12vAjmS+LeyoNQ==
-X-Received: by 2002:a5d:62cf:: with SMTP id o15mr63142wrv.49.1603223769350;
-        Tue, 20 Oct 2020 12:56:09 -0700 (PDT)
-Received: from [192.168.1.211] ([2.26.187.29])
-        by smtp.gmail.com with ESMTPSA id x18sm4821181wrg.4.2020.10.20.12.56.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 12:56:08 -0700 (PDT)
-Subject: Re: [RFC PATCH v3 7/9] ipu3-cio2: Check if pci_dev->dev's fwnode is a
- software_node in cio2_parse_firmware() and set FWNODE_GRAPH_DEVICE_DISABLED
- if so
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        pmladek@suse.com, mchehab@kernel.org, tian.shu.qiu@intel.com,
-        bingbu.cao@intel.com, yong.zhi@intel.com, rafael@kernel.org,
-        gregkh@linuxfoundation.org, kitakar@gmail.com,
-        dan.carpenter@oracle.org
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-8-djrscally@gmail.com>
- <20201020091958.GC4077@smile.fi.intel.com>
- <20201020120615.GV13341@paasikivi.fi.intel.com>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <32bbb4db-17d7-b9d1-950f-8f29d67539c3@gmail.com>
-Date:   Tue, 20 Oct 2020 20:56:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 20 Oct 2020 15:59:43 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8f41510001>; Tue, 20 Oct 2020 12:58:09 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
+ 2020 19:59:39 +0000
+Received: from vidyas-desktop.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Tue, 20 Oct 2020 19:59:35 +0000
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
+        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
+        <amurray@thegoodpenguin.co.uk>, <robh@kernel.org>,
+        <treding@nvidia.com>, <jonathanh@nvidia.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
+        <sagar.tv@gmail.com>
+Subject: [PATCH V2] PCI: dwc: Add support to handle prefetchable memory mapping
+Date:   Wed, 21 Oct 2020 01:29:31 +0530
+Message-ID: <20201020195931.12470-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201005121351.32516-1-vidyas@nvidia.com>
+References: <20201005121351.32516-1-vidyas@nvidia.com>
+X-NVConfidentiality: public
 MIME-Version: 1.0
-In-Reply-To: <20201020120615.GV13341@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603223889; bh=YrKgQJFgKpLpIV8ji6foeY6U+aKitqNhwNzyZefr8Pc=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+         References:X-NVConfidentiality:MIME-Version:Content-Type;
+        b=Q3EBT5kWfZrjpKsOkH/w0fRu8ZnQrUKs1EQuFHqI4tpM2rpjLLbDkc74TZRJAcuUb
+         QkmA/P+WRqL4ADk6Empc1cTfzksCABSJpknuj7aMR3EEQy3A8i7VXWWOvaOTCNEaB+
+         ScrFZRHvgsr7rhMhUqKtoKmvnytIMsfekXzp/w37DOS14TK3vqOMyCHJHLk9ft2Cip
+         VE3Q3vHeXbEB6dA+br67lkmS4q0laTtGECXs++YXaDsNnHj5l+xWnslnmyiR59ysp0
+         IcILJ61jvN76ryDnXNkYAh3Pvp7nnIJrMvVyEUhubsiGzo0eDIJ0AxW+UGg7ClFwmO
+         SGq91+aeMZvUg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari
+DWC sub-system currently doesn't differentiate between prefetchable and
+non-prefetchable memory aperture entries in the 'ranges' property and
+provides ATU mapping only for the first memory aperture entry out of all
+the entries present. This was introduced by the
+commit 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources").
+Mapping for a memory apreture is required if its CPU address and the bus
+address are different and the current mechanism works only if the memory
+aperture which needs mapping happens to be the first entry. It doesn't
+work either if the memory aperture that needs mapping is not the first
+entry or if both prefetchable and non-prefetchable apertures need mapping.
 
-On 20/10/2020 13:06, Sakari Ailus wrote:
-> Hi Andy,
->
-> On Tue, Oct 20, 2020 at 12:19:58PM +0300, Andy Shevchenko wrote:
->> On Mon, Oct 19, 2020 at 11:59:01PM +0100, Daniel Scally wrote:
->>> fwnode_graph_get_endpoint_by_id() will optionally parse enabled devices
->>> only; that status being determined through the .device_is_available() op
->>> of the device's fwnode. As software_nodes don't have that operation and
->>> adding it is meaningless, we instead need to check if the device's fwnode
->>> is a software_node and if so pass the appropriate flag to disable that
->>> check
->> Period.
->>
->> I'm wondering if actually this can be hidden in fwnode_graph_get_endpoint_by_id().
-> The device availability test is actually there for a reason. Some firmware
-> implementations put all the potential devices in the tables and only one
-> (of some) of them are available.
->
-> Could this be implemented so that if the node is a software node, then get
-> its parent and then see if that is available?
->
-> I guess that could be implemented in software node ops. Any opinions?
-Actually when considering the cio2 device, it seems that
-set_secondary_fwnode() actually overwrites the _primary_, given
-fwnode_is_primary(dev->fwnode) returns false. So in at least some cases,
-this wouldn't work.
+This patch fixes this issue by differentiating between prefetchable and
+non-prefetchable apertures in the 'ranges' property there by removing the
+dependency on the order in which they are specified and adds support for
+mapping prefetchable aperture using ATU region-3 if required.
+
+Fixes: 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources")
+Link: http://patchwork.ozlabs.org/project/linux-pci/patch/20200513190855.23318-1-vidyas@nvidia.com/
+
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+---
+V2:
+* Rewrote commit subject and description
+* Addressed review comments from Lorenzo
+
+ .../pci/controller/dwc/pcie-designware-host.c | 42 ++++++++++++++++---
+ drivers/pci/controller/dwc/pcie-designware.c  | 12 +++---
+ drivers/pci/controller/dwc/pcie-designware.h  |  4 +-
+ 3 files changed, 46 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index db547ee6ff3a..dae6da39bb90 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -521,9 +521,42 @@ static struct pci_ops dw_pcie_ops = {
+ 	.write = pci_generic_config_write,
+ };
+ 
++static void dw_pcie_setup_mem_atu(struct pcie_port *pp,
++				  struct resource_entry *win)
++{
++	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
++
++	/* Check for prefetchable memory aperture */
++	if (win->res->flags & IORESOURCE_PREFETCH && win->offset) {
++		/* Number of view ports must at least be 4 to enable mapping */
++		if (pci->num_viewport < 4) {
++			dev_warn(pci->dev,
++				 "Insufficient ATU regions to map Prefetchable memory\n");
++		} else {
++			dw_pcie_prog_outbound_atu(pci,
++						  PCIE_ATU_REGION_INDEX3,
++						  PCIE_ATU_TYPE_MEM,
++						  win->res->start,
++						  win->res->start - win->offset,
++						  resource_size(win->res));
++		}
++	} else if (win->offset) { /* Non-prefetchable memory aperture */
++		if (upper_32_bits(resource_size(win->res)))
++			dev_warn(pci->dev,
++				 "Memory resource size exceeds max for 32 bits\n");
++		dw_pcie_prog_outbound_atu(pci,
++					  PCIE_ATU_REGION_INDEX0,
++					  PCIE_ATU_TYPE_MEM,
++					  win->res->start,
++					  win->res->start - win->offset,
++					  resource_size(win->res));
++	}
++}
++
+ void dw_pcie_setup_rc(struct pcie_port *pp)
+ {
+ 	u32 val, ctrl, num_ctrls;
++	struct resource_entry *win;
+ 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+ 
+ 	/*
+@@ -578,13 +611,10 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
+ 	 * ATU, so we should not program the ATU here.
+ 	 */
+ 	if (pp->bridge->child_ops == &dw_child_pcie_ops) {
+-		struct resource_entry *entry =
+-			resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
++		resource_list_for_each_entry(win, &pp->bridge->windows)
++			if (resource_type(win->res) == IORESOURCE_MEM)
++				dw_pcie_setup_mem_atu(pp, win);
+ 
+-		dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX0,
+-					  PCIE_ATU_TYPE_MEM, entry->res->start,
+-					  entry->res->start - entry->offset,
+-					  resource_size(entry->res));
+ 		if (pci->num_viewport > 2)
+ 			dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX2,
+ 						  PCIE_ATU_TYPE_IO, pp->io_base,
+diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+index c2dea8fc97c8..b5e438b70cd5 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.c
++++ b/drivers/pci/controller/dwc/pcie-designware.c
+@@ -228,7 +228,7 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
+ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+ 					     int index, int type,
+ 					     u64 cpu_addr, u64 pci_addr,
+-					     u32 size)
++					     u64 size)
+ {
+ 	u32 retries, val;
+ 	u64 limit_addr = cpu_addr + size - 1;
+@@ -245,8 +245,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+ 				 lower_32_bits(pci_addr));
+ 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
+ 				 upper_32_bits(pci_addr));
+-	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
+-				 type | PCIE_ATU_FUNC_NUM(func_no));
++	val = type | PCIE_ATU_FUNC_NUM(func_no);
++	val = upper_32_bits(size - 1) ?
++		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
++	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
+ 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
+ 				 PCIE_ATU_ENABLE);
+ 
+@@ -267,7 +269,7 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+ 
+ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+ 					int index, int type, u64 cpu_addr,
+-					u64 pci_addr, u32 size)
++					u64 pci_addr, u64 size)
+ {
+ 	u32 retries, val;
+ 
+@@ -311,7 +313,7 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+ }
+ 
+ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index, int type,
+-			       u64 cpu_addr, u64 pci_addr, u32 size)
++			       u64 cpu_addr, u64 pci_addr, u64 size)
+ {
+ 	__dw_pcie_prog_outbound_atu(pci, 0, index, type,
+ 				    cpu_addr, pci_addr, size);
+diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+index 9d2f511f13fa..21dd06831b50 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.h
++++ b/drivers/pci/controller/dwc/pcie-designware.h
+@@ -80,10 +80,12 @@
+ #define PCIE_ATU_VIEWPORT		0x900
+ #define PCIE_ATU_REGION_INBOUND		BIT(31)
+ #define PCIE_ATU_REGION_OUTBOUND	0
++#define PCIE_ATU_REGION_INDEX3		0x3
+ #define PCIE_ATU_REGION_INDEX2		0x2
+ #define PCIE_ATU_REGION_INDEX1		0x1
+ #define PCIE_ATU_REGION_INDEX0		0x0
+ #define PCIE_ATU_CR1			0x904
++#define PCIE_ATU_INCREASE_REGION_SIZE	BIT(13)
+ #define PCIE_ATU_TYPE_MEM		0x0
+ #define PCIE_ATU_TYPE_IO		0x2
+ #define PCIE_ATU_TYPE_CFG0		0x4
+@@ -295,7 +297,7 @@ void dw_pcie_upconfig_setup(struct dw_pcie *pci);
+ int dw_pcie_wait_for_link(struct dw_pcie *pci);
+ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index,
+ 			       int type, u64 cpu_addr, u64 pci_addr,
+-			       u32 size);
++			       u64 size);
+ void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
+ 				  int type, u64 cpu_addr, u64 pci_addr,
+ 				  u32 size);
+-- 
+2.17.1
+
