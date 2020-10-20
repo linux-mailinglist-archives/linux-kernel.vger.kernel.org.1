@@ -2,188 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AA9294271
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4005A29427C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437731AbgJTSsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 14:48:03 -0400
-Received: from mail.efficios.com ([167.114.26.124]:36852 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437713AbgJTSr7 (ORCPT
+        id S2437721AbgJTSwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 14:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727791AbgJTSwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 14:47:59 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C440C2DD550;
-        Tue, 20 Oct 2020 14:47:57 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id icPB035Au0zd; Tue, 20 Oct 2020 14:47:57 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3E6482DD726;
-        Tue, 20 Oct 2020 14:47:57 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3E6482DD726
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1603219677;
-        bh=0G55Jjn+yLDTEo95H/YMY9F6JPADwDSbuwGNt0k6SXk=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=OTU3/AMQIYUoqdwfh2PdKV1GQ7jHj34ZYf2SlbsgfYtKVThUkR9TV6v9jpF1dhrRH
-         zOCKlMnhzptwj/sxL12cHRwM3o+aiEa0xBqMpF9cPR6KIQ8Gqqd+sIhiQ4TIcaT5gH
-         d6NJnVx8wlcwXwDrInz+0kHT52RErZbaJhsERQYSVGQ9/VUYqbRoNAEzs/8umtmJcZ
-         mmzMYns6wop3n4zdP3aKqmJqGcVWei+D0hC+Q+yyXNJeN8I9Ixd4p1vp3YvfzVsJGz
-         OFIGRUV/rA4lITr2cJlUWC0pmohrLkyRDRFGJ2vRlu5qNRAi5aQSWz6X3Yd3aofz5q
-         Sv0vRFFWU3htg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id dQDrfJVEjK7e; Tue, 20 Oct 2020 14:47:57 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 2DB262DD7A6;
-        Tue, 20 Oct 2020 14:47:57 -0400 (EDT)
-Date:   Tue, 20 Oct 2020 14:47:57 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        carlos <carlos@redhat.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <1247061646.32339.1603219677094.JavaMail.zimbra@efficios.com>
-In-Reply-To: <873631yp8t.fsf@oldenburg2.str.redhat.com>
-References: <20200925181518.4141-1-mathieu.desnoyers@efficios.com> <87r1qm2atk.fsf@oldenburg2.str.redhat.com> <905713397.71512.1601314192367.JavaMail.zimbra@efficios.com> <873631yp8t.fsf@oldenburg2.str.redhat.com>
-Subject: Re: [RFC PATCH 1/2] rseq: Implement KTLS prototype for x86-64
+        Tue, 20 Oct 2020 14:52:04 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0049FC0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 11:52:03 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h5so3496243wrv.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 11:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jYFdycc4cemOIaYFUQzd2hjpOFiC6YIkhXB4IeoEDOc=;
+        b=dbg1dsucJfSwBHh00T6Mc9TxIy2cA3D0xo1Vm098iBuTl3wM9obmhlk2Rgw+3Fe9DE
+         lhn/KcJI0CzGJ6oaNtkW3L2DYRWLDfMqxzbcRxS7Ipt1zizebN8Dh7Zxgafe7FBS9DOS
+         DhU2QoyTkvFT2KdsWGAohFct9ghNqDtSzxfoY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jYFdycc4cemOIaYFUQzd2hjpOFiC6YIkhXB4IeoEDOc=;
+        b=PTvE/U+jI9J/7iqvJPIJW7Z95+0wKJJUcAUCKrU0h57LMCXf2bn/Lt3DPCPZzzgtLM
+         7X+0J/Tv/359fLrEGtu3a2qbpNxDCqPSj5iV4w7zfryQ3KLMnD/CCBht1jZuPV3vN5YB
+         aRiRSInT4ioTbEOHtvbdzq976JLL+CZOIDvrHXmpenZ9r6dhN+6r6t1WkJV8bKjBB6Lz
+         KHGmAKtKdDg8ojMm5XEn0xWFznMpkYYkbneNdtuWAhv9fA2pJ0I+vZMH/kcHTnL6vlc+
+         0+Ww36d1d0CnMwZeeWVrjuMY75dlMk8ADCNqi3n4mgiyUQUKOhS/DpF05+xePkc8yCyu
+         DbXg==
+X-Gm-Message-State: AOAM531S55Sonr5fHP8bxvz2oEDQJ+tkWzEFK9T1roOhnyaqmbT6GstD
+        htbI6Cyo72wSnibPaTyjjpT10UTZoYac/vZbY7dxYQ==
+X-Google-Smtp-Source: ABdhPJzwG1O5oS9ghCKoJUxg59+XPLW7h0AAeoCd9EgHF2nhb1cMfI/IvqKJePI2HX9vcvnVxX2frJft2ThKtBNDJrA=
+X-Received: by 2002:a5d:4001:: with SMTP id n1mr5162648wrp.426.1603219922351;
+ Tue, 20 Oct 2020 11:52:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
-Thread-Topic: rseq: Implement KTLS prototype for x86-64
-Thread-Index: i/hhmILYI0bX65bbHI+Ec7cJZSCn7Q==
+References: <20200914080619.4178587-1-cychiang@chromium.org>
+ <20200914080619.4178587-3-cychiang@chromium.org> <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
+ <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
+ <20201015161251.GF4390@sirena.org.uk> <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
+ <20201020143711.GC9448@sirena.org.uk>
+In-Reply-To: <20201020143711.GC9448@sirena.org.uk>
+From:   Cheng-yi Chiang <cychiang@chromium.org>
+Date:   Wed, 21 Oct 2020 02:51:33 +0800
+Message-ID: <CAFv8NwKuLjLeM1KLeV8Br2TZC8L7DO6KWHL=pXvhAUV5+wSBPg@mail.gmail.com>
+Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Srinivasa Rao <srivasam@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Dylan Reid <dgreid@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Sep 29, 2020, at 4:13 AM, Florian Weimer fweimer@redhat.com wrote:
+On Tue, Oct 20, 2020 at 10:37 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Oct 20, 2020 at 09:37:05PM +0800, Cheng-yi Chiang wrote:
+>
+> > May I know your suggestion on Ajye's patch "ASoC: qcom: sc7180: Modify
+> > machine driver for 2mic" ?
+>
+> > https://lore.kernel.org/r/20200928063744.525700-3-ajye_huang@compal.corp-partner.google.com
+>
+> > I think adding code in the machine driver makes the intent straightforward.
+> > If we want the machine driver to be fully configurable,
+> > we can always add more code to handle properties like gpio, route,
+> > widget (mux, text selection) passed in from the device tree.
+>
+> If the device has both front and rear mics and only one can be active at
+> once that seems obvious and sensible.  If the devices only have one of
+> these then this seems like a bad idea.
+>
 
-> * Mathieu Desnoyers:
-> 
->>> So we have a bootstrap issue here that needs to be solved, I think.
->>
->> The one thing I'm not sure about is whether the vDSO interface is indeed
->> superior to KTLS, or if it is just the model we are used to.
->>
->> AFAIU, the current use-cases for vDSO is that an application calls into
->> glibc, which then calls the vDSO function exposed by the kernel. I wonder
->> whether the vDSO indirection is really needed if we typically have a glibc
->> function used as indirection ? For an end user, what is the benefit of vDSO
->> over accessing KTLS data directly from glibc ?
-> 
-> I think the kernel can only reasonably maintain a single userspace data
-> structure.  It's not reasonable to update several versions of the data
-> structure in parallel.
+trogdor board: only front mic.
+pompom board: having both front mic and rear mic. Only one of them
+will be used at a time. It is toggled by mixer control backed by a
+gpio.
 
-I disagree with your statement. Considering that the kernel needs to keep
-ABI compatibility for whatever it exposes to user-space, claiming that it
-should never update several versions of data structures exposed to user-space
-in parallel means that once a data structure is exposed to user-space as ABI
-in a certain way, it can never ever change in the future, even if we find
-a better way to do things.
+My proposed solution: instead of using compatible strings, expose only
+dmic-gpio property.
+When the machine driver sees this property, it uses the dapm widgets
+and controls created in the machine driver.
 
-It makes more sense to allow multiple data structures to be updated
-in parallel until older ones become deprecated/unused/irrelevant, at
-which point those can be configured out at build time and eventually
-phased out after years of deprecation. Having the ability to update multiple
-data structures in user-space with replicated information is IMHO necessary
-to allow creation of new/better accelerated ABIs.
+> > But I feel that we don't need a machine driver to be that configurable
+> > from the device tree.
+> > I think having the logic scattered in various dtsi files and relying
+> > on manual inspection to understand the usage would be less
+> > maintainable than only exposing needed property like gpio.
+> > Especially in the complicated case where we need to create a mux
+> > widget with callback toggling the gpio like this:
+>
+> I don't understand what "logic scattered in various dtsi files" means,
+> sorry.
+>
+I mean I don't want to use device property to pass in widget name,
+type, text and callbacks.
+Let me give an example:
 
-> 
-> This means that glibc would have to support multiple kernel data
-> structures, and users might lose userspace acceleration after a kernel
-> update, until they update glibc as well.  The glibc update should be
-> ABI-compatible, but someone would still have to backport it, apply it to
-> container images, etc.
+- Board trogdor uses front mic, rt5682, and max98357a.
+- Board pompom is based on board trogdor, but it has front mic and rear mic.
+If we somehow managed to add the code to pass in widget, route, type,
+text, and callbacks needed for dmic control, we will need to put a
+bunch of properties in trogdor-pompom.dtsi file.
+- Board ABC is based on trogdor as well, and it has front mic and rear
+mic, but with a different speaker amp.
 
-No. If the kernel ever exposes a data structure to user-space as ABI,
-then it needs to stay there, and not break userspace. Hence the need to
-duplicate information provided to user-space if need be, so we can move
-on to better ABIs without breaking the old ones.
+To use widget, route, type, text and callbacks for front mic and rear
+mic, in trogdor-ABC.dtsi file we would copy some properties used in
+trogdor-pompom.dtsi file. To support the different combination of
+codec, we would need some modification of the route and widget.
 
-> 
-> What's worse, the glibc code would be quite hard to test because we
-> would have to keep around multiple kernel versions to exercise all the
-> different data structure variants.
-> 
-> In contrast, the vDSO code always matches the userspace data structures,
-> is always updated at the same time, and tested together.  That looks
-> like a clear win to me.
+Now the support of front mic and rear mic switch is scattered in
+trogdor-ABC.dtsi and trogdor-pompom.dtsi files.
+For example, when we change the code to parse or build the widget and
+route, we need to fix both trogdor-pompom.dtsi and trogdor-ABC.dtsi.
 
-For cases where the overhead of vDSO is not an issue, I agree that it
-makes things tidier than directly accessing a data structure. The
-documentation of the ABI becomes much simpler as well.
+Alternatively, if we only expose dmic-gpio property and put
+surrounding code in the machine driver, we can use this dmic-gpio
+property, plus the sound card name to identify the needed widget and
+route.
 
-> 
->> If we decide that using KTLS from a vDSO function is indeed a requirement,
->> then, as you point out, the thread_pointer is available as ABI, but we miss
->> the KTLS offset.
->>
->> Some ideas on how we could solve this: we could either make the KTLS
->> offset part of the ABI (fixed offset), or save the offset near the
->> thread pointer at a location that would become ABI. It would have to
->> be already populated with something which can help detect the case
->> where a vDSO is called from a thread which does not populate KTLS
->> though. Is that even remotely doable ?
-> 
-> I don't know.
-> 
-> We could decide that these accelerated system calls must only be called
-> with a valid TCB.  That's unavoidable if the vDSO sets errno directly,
-> so it's perhaps not a big loss.  It's also backwards-compatible because
-> existing TCB-less code won't know about those new vDSO entrypoints.
-> Calling into glibc from a TCB-less thread has always been undefined.
-> TCB-less code would have to make direct, non-vDSO system calls, as today.
-> 
-> For discovering the KTLS offset, a per-process page at a fixed offset
-> from the vDSO code (i.e., what real shared objects already do for global
-> data) could store this offset.  This way, we could entirely avoid an ABI
-> dependency.
+> > Yes, that should work to describe the dailink we are using.
+> > But a more tricky issue is how to do calls like setting PLL in dai startup ops.
+>
+> ...
+>
+> > I think that asking a generic machine driver to do configuration like
+> > this with only a limited interface of device property
+> > might be too much of an ask for the machine driver.
+>
+> Richard was looking at some basic configuration for PLLs.
 
-Or as Andy mentioned, we would simply pass the ktls offset as argument to
-the vDSO ? It seems simple enough. Would it fit all our use-cases including
-errno ?
+That sounds promising. If we don't need to include the codec driver
+header file explicitly, that can make machine drivers simpler.
+Maybe for most of the simple cases we don't even need a dedicated
+machine driver.
 
-> 
-> We'll see what will break once we have the correct TID after vfork. 8->
-> glibc currently supports malloc-after-vfork as an extension, and
-> a lot of software depends on it (OpenJDK, for example).
+>
+> > Would you mind if I simplify the compatible string like Srinivas
+> > suggested, and send a v12?
+>
+> > As for other two kinds of variations that I am aware of:
+>
+> > 1. front mic / rear mic
+> > 2. replace alc5682 with adau7002
+>
+> The CODEC change is going to be described in the DT no matter what -
+> you'll have a reference to the CODEC node but it may make sense if
+> there's enough custom code around it.  For front vs rear mic the
+> simplest thing would just be to not mention which if this is a hardware
+> fixed thing, otherwise a control.
+>
 
-I am not sure to see how that is related to ktls ?
+Would you suggest checking whether the codec node is a rt5682 node,
+and call required PLL calls accordingly ?
 
-> 
->>> With the latter, we could
->>> directly expose the vDSO implementation to applications, assuming that
->>> we agree that the vDSO will not fail with ENOSYS to request fallback to
->>> the system call, but will itself perform the system call.
->>
->> We should not forget the fields needed by rseq as well: the rseq_cs
->> pointer and the cpu_id fields need to be accessed directly from the
->> rseq critical section, without function call. Those use-cases require
->> that applications and library can know the KTLS offset and size and
->> use those fields directly.
-> 
-> Yes, but those offsets could be queried using a function from the vDSO
-> (or using a glibc interface, to simplify linking).
+"For front vs rear mic the simplest thing would just be to not mention
+which if this is a hardware fixed thing, otherwise a control."
+Sorry I am not sure if I understand this correctly. Please correct me
+if I am wrong.
 
-Good point!
+- For default case having 1 mic: not mention this at all
+- For front mic / rear mic case: see gpio property and use an
+additional control.
 
-Thanks,
+> > We can set different board names and different compatible strings to
+> > achieve such variation.
+> > So that it would make sense to describe configuration in compatible
+> > strings like you suggested, and also provides UCM a way to distinguish
+> > different boards.
+>
+> I don't recall having suggested distinguishing these things with a
+> compatible string, especially not the microphones.  UCM can already use
+> the display names for the boards to distinguish things.
 
-Mathieu
+My apology that I made the wrong interpretation when I read your reply
+"These feel more like things that fit with compatible" regarding
+replacing alc5682 with adau7002. Please let me know which one solution
+you prefer:
+-  deriving this information from codec node
+-  deriving this information from different sound card name
 
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Thanks so much!
