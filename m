@@ -2,104 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E09F29412D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D510294137
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395296AbgJTRMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 13:12:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
+        id S2395343AbgJTRPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 13:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395281AbgJTRMs (ORCPT
+        with ESMTP id S1730018AbgJTRPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 13:12:48 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2943C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 10:12:47 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id z5so4664729iob.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 10:12:47 -0700 (PDT)
+        Tue, 20 Oct 2020 13:15:13 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9885C0613CE;
+        Tue, 20 Oct 2020 10:15:12 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id b138so2563510yba.5;
+        Tue, 20 Oct 2020 10:15:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uuwjwEOljJttC3noIZOCqqIYBreVk2fr4VN47y7vKW0=;
-        b=nI7HbAUOrvYxqv+a3U5hwk/Kh9Q98OQfNbOJ73Yuw6hcN6zzn9knWePxv95cp+BG/M
-         9tSTYZoDJM1icx9CZJGQC2PcPZauAUjgWnUdJ/jz0KQJbY/+CM54Bfg7tRBwX1QhNlO1
-         eAMkFs3P/LvN4c9R67BK93XBVHZymqE0XvdHX3RNZ3yshuwYRfovQcWJ72eAsR6ypcZS
-         6N0spBKVrFevrYAF+bqzo75Eaj5T+uji486M8zhDOc6Jq63UZ3hHrmat+So8h4mY3ydv
-         wvHrF1lAAXhodxOavRAbkX1vIeSHW/NP2Q4EAxZom8qXRlvac3lRITw0LFEuOU/ZrhP+
-         JoBw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IMAkat+pr5AcmRrqVNZdhPbCE53YYvyE9XEgmZQh4KQ=;
+        b=Spbm/aKU6Nigo9+i+NndMi/GW83wFIUo938iEB5K/8GZR/P7SQnT7TmcxWb/W/l7+M
+         6v4Snd7hw6TnRROtOp4w8vTbM7GwCBuwzl+CnjmU8pDuM0ziq5fYH/9iI+JlXk6dbLBe
+         BhrlnatlDFlvnycknRLSMAxZyzXjfYzplXGpMERyC+Qeu7/kbCMFyNTi2UrZnbyN29E0
+         kHrHUkxljeM+WQENLvmBa2gpsj3RQpZQ+bRJLHV58g2cBF3j6f7cKYYbf+hXhwPk6xSp
+         B9V4kNgoDv0KMo5BcDFtmMCrzWJCMDcxtszjgPDLQHs5CwBmavcuah24LAA6BrOVTJyq
+         negw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uuwjwEOljJttC3noIZOCqqIYBreVk2fr4VN47y7vKW0=;
-        b=OLVvstWTaDm6Ze64TCFiuUQFBXb7rVdtR7cHKHPA46XHdySXQi00vuEMtEJibcZ7cd
-         caHSnGZkUTwEEwPG7aBifBJB0HDxljOQ781cOV2ZRe6eXmvWYx10buBrfqoqT2rDCOsS
-         RIJ0wxF975ZHvjQ7E4v6EXM2GX6MsAZy/f+aYkuGo1JcwwSnW0blYFfivNSGkWnWZQtE
-         5gP2MsGmKbsXRUyu9rBz+6wzYDLRfIkv9f7xjt1bjsGVdMANYsz61IQkUgr7xpchId3A
-         2k4U1zEqDxHrZ4VJfuiyDwVhfJQJ7+TwX0dLxcpWJ0P/T+ksBPJCA4uqAbjC943s7KMa
-         p71A==
-X-Gm-Message-State: AOAM533/cARXwzkvjyLLpAIQHugfLmF9LTNowRDX3GOTyRQDQOt1TE7X
-        Cpm1tscMkWsBrIa1aUKxlgxJRDtrKdtIEg==
-X-Google-Smtp-Source: ABdhPJzLcAqWQAnL9JZbL136zAtVfHGD+BPO3V1uevd2c1UDhNfmSisEKSW1CvHYDCir0oF1WJtLCQ==
-X-Received: by 2002:a6b:8e4b:: with SMTP id q72mr2895071iod.104.1603213963873;
-        Tue, 20 Oct 2020 10:12:43 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id e17sm2370658ile.60.2020.10.20.10.12.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 10:12:43 -0700 (PDT)
-Subject: Re: dmar compile failure in -git
-From:   Jens Axboe <axboe@kernel.dk>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     joro@8bytes.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <d090c378-bfb4-34bc-7091-64e2b83925de@kernel.dk>
- <D8207C14-26C9-420D-9AA4-1E6D3F2F2191@infradead.org>
- <5646206e-ca52-4b1f-6182-4cb760ba712a@kernel.dk>
-Message-ID: <90feb2ec-95c4-ddd6-4378-8ef56ddd2b5e@kernel.dk>
-Date:   Tue, 20 Oct 2020 11:12:42 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IMAkat+pr5AcmRrqVNZdhPbCE53YYvyE9XEgmZQh4KQ=;
+        b=t5dVbEiLmQaFG4M97glY4ByuGVhekWOAAffbgeNK3uONRCdzcwaLZ+3/OxES5gQ2ID
+         hKwogZTgwLMogJ7ZAdUpiTofopFNS6emUp9zvO0SJIvtd6hJGsLtXgRnn/SQat5xhFkG
+         RuQUjAu5YcV1lqvJ+lI6aJwHsUrtFeTOm26XSUwF/KelAfltJyVlWYIAVErMFbMbhNHc
+         3jPe1xB9JgP7OzEv0b4KGPw/y67/4cLvVmM9auKqTQY9FoyrsEzQHDpAf5Bv3rTnDLgs
+         PjFrIvqYt/x13SU1tk550XrUqnZCQ5JuIrx/Mhv96ym6H9sfanNeTqC1PdCUv27cYytS
+         d/8w==
+X-Gm-Message-State: AOAM530vu5mEjZxs409vT+0ZUq4ez23klIaLBPfMXMhulx+K3U0Wp2Vk
+        /TiqRkPuu/3v5qaM4aqe9+OnueqJ/2A2TJ8i6lg=
+X-Google-Smtp-Source: ABdhPJz5MwUa16z/QjSEWXsmtin1xAnYxDeT9G19ciJL5EqNz/xWP/NXU/NzFOZH8LHtwhuJ10Ji1PPXe84KHhQT52M=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr5538938ybe.403.1603214112091;
+ Tue, 20 Oct 2020 10:15:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5646206e-ca52-4b1f-6182-4cb760ba712a@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
+ <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org>
+In-Reply-To: <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 20 Oct 2020 10:15:01 -0700
+Message-ID: <CAEf4BzZBpnFx+03xE-a9wA1zHbH+HfEQPDWN5cdZ6y1wa9y7tA@mail.gmail.com>
+Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     =?UTF-8?B?w4lyaWNvIFJvbGlt?= <erico.erc@gmail.com>,
+        dwarves@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/20 10:26 AM, Jens Axboe wrote:
-> On Sat, Oct 17, 2020 at 1:03 AM David Woodhouse <dwmw2@infradead.org> wrote:
->> On 16 October 2020 22:23:46 BST, Jens Axboe <axboe@kernel.dk> wrote:
->>> Hi,
->>>
->>> Ran into this one yesterday:
->>>
->>> drivers/iommu/intel/dmar.c: In function ‘free_iommu’:
->>> drivers/iommu/intel/dmar.c:1139:41: error: ‘struct iommu_device’ has no
->>> member named ‘ops’
->>> 1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
->>>      |                                         ^
->>> make[3]: *** [scripts/Makefile.build:283: drivers/iommu/intel/dmar.o]
->>> Error 1
->>> make[3]: *** Waiting for unfinished jobs....
->>> make[2]: *** [scripts/Makefile.build:500: drivers/iommu/intel] Error 2
->>> make[1]: *** [scripts/Makefile.build:500: drivers/iommu] Error 2
->>> make: *** [Makefile:1777: drivers] Error 2
->>>
->>> which is due to the config I use:
->>
->> Thanks. Should be fixed by
->> https://www.mail-archive.com/iommu@lists.linux-foundation.org/msg45697.html
-> 
-> Can we please get this known build breakage fix upstream? It keeps
-> breaking my test box compiles, which is pretty annoying.
+On Tue, Oct 20, 2020 at 3:51 AM Jiri Slaby <jirislaby@kernel.org> wrote:
+>
+> Hi,
+>
+> On 19. 10. 20, 1:18, =C3=89rico Rolim wrote:
+> > I'm trying to build kernel 5.9.1 for arm64, and my dotconfig has
+> > `CONFIG_DEBUG_INFO_BTF=3Dy`, which requires pahole for building. Howeve=
+r, pahole
+> > version 1.18 segfaults during the build, as can be seen below:
+> >
+> > PAHOLE: Error: Found symbol of zero size when encoding btf (sym:
+> > '__kvm_nvhe_arm64_ssbd_callback_required', cu:
+> > 'arch/arm64/kernel/cpu_errata.c').
+>
+> The symbol is an alias coming from arch/arm64/kernel/vmlinux.lds:
+> __kvm_nvhe_arm64_ssbd_callback_required =3D arm64_ssbd_callback_required;=
+;
 
-Nevermind, looks like it went upstream about the same time as I sent
-this email. Thanks!
+What's readelf's output for that symbol? If it's legal for SST_OBJECT
+to have size zero, then we should just skip those in pahole. But it
+shouldn't crash in either case, of course. But as Arnaldo mentioned,
+that code changed significantly recently, so please check with latest
+pahole from tmp.libbtf_encoder branch.
 
--- 
-Jens Axboe
+>
+> > PAHOLE: Error: Use '-j' or '--force' to ignore such symbols and force
+> > emit the btf.
+> > scripts/link-vmlinux.sh: line 141: 43837 Segmentation fault
+> > LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
+> >    LD      .tmp_vmlinux.kallsyms1
+> >    KSYM    .tmp_vmlinux.kallsyms1.o
+> >    LD      .tmp_vmlinux.kallsyms2
+> >    KSYM    .tmp_vmlinux.kallsyms2.o
+> >    LD      vmlinux
+> >    BTFIDS  vmlinux
+> > FAILED: load BTF from vmlinux: Unknown error -2make: ***
+> > [Makefile:1162: vmlinux] Error 255
+> >
+> > It is possible to force the build to continue if
+> >
+> >    LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
+> >
+> > in scripts/link-vmlinux.sh is changed to
+> >
+> >    LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J --btf_encode_force ${1}
+> >
+> > The suggested `-j` or `--force` flags don't exist, since they were remo=
+ved in
+> > [1]. I believe `--btf_encode_force` should be suggested instead.
+>
+> Agreed, '--btf_encode_force' makes pahole to proceed without crashes.
+>
+> > It should be noted that the same build, but with pahole version 1.17, w=
+orks
+> > without issue, so I think this is either a regression in pahole or the =
+script
+> > will need to be changed for newer versions of pahole.
+>
+> Yeah, I observe the very same. I reported it at:
+> https://bugzilla.suse.com/show_bug.cgi?id=3D1177921
+>
+> The backtrace:
 
+[...]
+
+>
+>
+> I suspect:
+> commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
+> Author:     Hao Luo <haoluo@google.com>
+> AuthorDate: Wed Jul 8 13:44:10 2020 -0700
+>
+>      btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.
+>
+>
+> Which added this machinery (btf_elf__add_datasec_type in particular).
+>
+> > - [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/pah=
+ole.c?h=3Dv1.18&id=3D1abc001417b579b86a9b27ff88c9095d8f498a46
+> >
+> > Thanks,
+> > =C3=89rico
+> >
+>
+>
+> --
+> js
+> suse labs
