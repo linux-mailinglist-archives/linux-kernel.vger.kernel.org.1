@@ -2,67 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B05F293DAA
+	by mail.lfdr.de (Postfix) with ESMTP id F0D0B293DAD
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407701AbgJTNtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407689AbgJTNtp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:49:45 -0400
-Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8B4C061755;
-        Tue, 20 Oct 2020 06:49:45 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id 4EAF413FC95;
-        Tue, 20 Oct 2020 15:49:42 +0200 (CEST)
-Date:   Tue, 20 Oct 2020 15:49:40 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] net: dsa: mv88e6xxx: Don't force link when using
- in-band-status
-Message-ID: <20201020154940.60357b6c@nic.cz>
-In-Reply-To: <20201020101552.GB1551@shell.armlinux.org.uk>
-References: <20201020034558.19438-1-chris.packham@alliedtelesis.co.nz>
-        <20201020034558.19438-2-chris.packham@alliedtelesis.co.nz>
-        <20201020101552.GB1551@shell.armlinux.org.uk>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2407710AbgJTNtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:49:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52560 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407704AbgJTNtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 09:49:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 49988AD72;
+        Tue, 20 Oct 2020 13:49:48 +0000 (UTC)
+References: <87lfg2ob83.fsf@suse.de>
+ <20201019095812.25710-1-rpalethorpe@suse.com>
+ <CALvZod6FNH3cZfZxLSFXtQR5bV_2Tese0793Ve9rd1YNW22MKg@mail.gmail.com>
+ <87mu0hwik7.fsf@suse.de>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Richard Palethorpe <rpalethorpe@suse.de>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        "LTP List" <ltp@lists.linux.it>, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Christoph Lameter" <cl@linux.com>,
+        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v3] mm: memcg/slab: Stop reparented obj_cgroups from
+ charging root
+Reply-To: rpalethorpe@suse.de
+In-reply-to: <87mu0hwik7.fsf@suse.de>
+Date:   Tue, 20 Oct 2020 14:49:47 +0100
+Message-ID: <87eeltvwg4.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020 11:15:52 +0100
-Russell King - ARM Linux admin <linux@armlinux.org.uk> wrote:
+Hello,
 
-> On Tue, Oct 20, 2020 at 04:45:56PM +1300, Chris Packham wrote:
-> > When a port is configured with 'managed = "in-band-status"' don't force
-> > the link up, the switch MAC will detect the link status correctly.
-> > 
-> > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>  
-> 
-> I thought we had issues with the 88E6390 where the PCS does not
-> update the MAC with its results. Isn't this going to break the
-> 6390? Andrew?
-> 
+Richard Palethorpe <rpalethorpe@suse.de> writes:
 
-Russell, I tested this patch on Turris MOX with 6390 on port 9 (cpu
-port) which is configured in devicetree as 2500base-x, in-band-status,
-and it works...
+> Hello Shakeel,
+>
+> Shakeel Butt <shakeelb@google.com> writes:
+>>>
+>>> V3: Handle common case where use_hierarchy=1 and update description.
+>>>
+>>>  mm/memcontrol.c | 7 +++++--
+>>>  1 file changed, 5 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>>> index 6877c765b8d0..34b8c4a66853 100644
+>>> --- a/mm/memcontrol.c
+>>> +++ b/mm/memcontrol.c
+>>> @@ -291,7 +291,7 @@ static void obj_cgroup_release(struct percpu_ref *ref)
+>>>
+>>>         spin_lock_irqsave(&css_set_lock, flags);
+>>>         memcg = obj_cgroup_memcg(objcg);
+>>> -       if (nr_pages)
+>>> +       if (nr_pages && (!mem_cgroup_is_root(memcg) || memcg->use_hierarchy))
+>>
+>> If we have non-root memcg with use_hierarchy as 0 and this objcg was
+>> reparented then this __memcg_kmem_uncharge() can potentially underflow
+>> the page counter and give the same warning.
+>
+> Yes, although the kernel considers such a config to be broken, and
+> prints a warning to the log, it does allow it.
 
-Or will this break on user ports?
+Actually this can not happen because if use_hierarchy=0 then the objcg
+will be reparented to root.
+
+>
+>>
+>> We never set root_mem_cgroup->objcg, so, no need to check for root
+>
+> I don't think that is relevant as we get the memcg from objcg->memcg
+> which is set during reparenting. I suppose however, we can determine if
+> the objcg was reparented by inspecting memcg->objcg.
+>
+>> here. I think checking just memcg->use_hierarchy should be sufficient.
+>
+> If we just check use_hierarchy then objects directly charged to the
+> memcg where use_hierarchy=0 will not be uncharged. However, maybe it is
+> better to check if it was reparented and if use_hierarchy=0.
+
+-- 
+Thank you,
+Richard.
