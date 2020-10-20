@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C262932CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 03:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C452932D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 03:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728753AbgJTBoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 21:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
+        id S2390245AbgJTBoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 21:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390221AbgJTBo0 (ORCPT
+        with ESMTP id S2390215AbgJTBo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 21:44:26 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95FB2C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:25 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id k21so553827ioa.9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:25 -0700 (PDT)
+        Mon, 19 Oct 2020 21:44:28 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DF9C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:28 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id z2so277898ilh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FvCU8749s6UO4C1fmtLG2I+trwtHfiQ+NwF+pb4gDnM=;
-        b=Wx8JfFGOx4IlRGjuMSM17fJW6QL4iOF3D2zw7pvkHlD5xo3tGQJmKcLh+3jtCT2O/7
-         TwX/FRaWCjYzBMpjBkIE2/6jXoo9n+Gh3BvWCxbjH3PDFsdbsvPwQ9G3i84PmCSMMwM8
-         /jjtYg9SM2JJrLH0y/6tC0974HTLzi8hfSlRw=
+        bh=XhAgMxTS7FfrTqbn56ueMD2c1ZEFO5mefcH6CTcX4Lk=;
+        b=sxmA9+QgClJD5dFZcx9OJB/9pGKo8MtzWP09NaVve7lizrAKmJUO4PJ7Y0nxdKWjHM
+         5Jri84L80ilytpPSOuZs/NriReCWaYT7CE6Ms/Jal4MDhXrfYq5FZ1WJXYN4FmCvTNAE
+         qyOtInr68ifGvHz2tMTBzDGXBcZ8tw3Byp7Ik=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FvCU8749s6UO4C1fmtLG2I+trwtHfiQ+NwF+pb4gDnM=;
-        b=OXu9YH8pUOI5ovOO453nycxySPMefXmoHROpsj62s/pMHv8BXbgqAKnQkcyVhoKwpw
-         5+gpsQKsHgfy/R1D0TFDhd1eDFs2Epzx93SJdZXE0dQP+n6uIhqZFH+idO61s+kt3H5P
-         GAOFXOGrMTSaPGWg+wCUq3b2I2mmuZ/mPk4RGSI6DLPt2Y2nWOFqjq2P+LrZsTVtDB1r
-         mYdm5N/tXP3ebwFF66S76uP+fOsMMVhSO80JbdcHsGQPUWweGwdSz0utH3vePjM7yglt
-         wESfgkvA7wHynuDQASrs8nafglSAt/hQlUeTeb5dF96bkd/7nael7xCCePX0RdOWIC3D
-         mSvg==
-X-Gm-Message-State: AOAM533Ugj9hCfTZzVyVJfOyxAAqCKfdJcTLvF0fC7YOoJB99KeZtxBX
-        3HGC2bRRYaeyh+Imq2j4YAIyhA==
-X-Google-Smtp-Source: ABdhPJyvkjcnlKJfUgk44Lmpmf85NkqMCi7ESG/b5MxYyD+Bf50Pl3c7W87blmUfk7AXVxPaPDsN1g==
-X-Received: by 2002:a5d:898c:: with SMTP id m12mr479403iol.196.1603158264870;
-        Mon, 19 Oct 2020 18:44:24 -0700 (PDT)
+        bh=XhAgMxTS7FfrTqbn56ueMD2c1ZEFO5mefcH6CTcX4Lk=;
+        b=DPlWYAWy4YVnA0+bZgf5QWzy338AfNWEC5aaYth4PMOAowfiY+ncYsEK2R5s1xr27V
+         FOmarXbBwIyZYUEdjEBv5UA8BoNhRLZdx6veZfKgdyP/OmPnuQNpIYGzw2R2nwC7EUu3
+         n5IEV8VXSg4qhwVV6QxAeVNlkpp/q3n2sUJ7elSTiZ2o78bORtPO+D0vgdSzdU9a5Wcf
+         eOSZw0TVN4gtRlxZ9GGFVVF/3wu6CSJBEoRpgW8f9lZ7FJXdUEbdKnNObyBNwU0Aktmx
+         s5dgipvHgF4U1TBZ/qFZcoyCcRvgTqFKdGyddAhC8eWfjB4++7QT0c85EUqXgGnTfStU
+         n20Q==
+X-Gm-Message-State: AOAM531s7efi1CCJgBGq7FZFTVLCNIrI1khTaTdBQlriF+pWSaBjbJKE
+        eHWiAfN2Wkw21OgRB7xgBDZqRg==
+X-Google-Smtp-Source: ABdhPJzIvhXNa7OYJ/VFoeecUXx/7Dwmt6K+tnmASiy2gvtq8DqG4HlMvdK7FNbhIrdsYjHUdrHm5g==
+X-Received: by 2002:a92:b00e:: with SMTP id x14mr275750ilh.4.1603158267791;
+        Mon, 19 Oct 2020 18:44:27 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id t22sm485306ili.9.2020.10.19.18.44.22
+        by smtp.gmail.com with ESMTPSA id t22sm485306ili.9.2020.10.19.18.44.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 18:44:24 -0700 (PDT)
+        Mon, 19 Oct 2020 18:44:27 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -73,11 +73,11 @@ Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
         Dhaval Giani <dhaval.giani@oracle.com>,
         Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
         chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v8 -tip 13/26] kernel/entry: Add support for core-wide protection of kernel-mode
-Date:   Mon, 19 Oct 2020 21:43:23 -0400
-Message-Id: <20201020014336.2076526-14-joel@joelfernandes.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: [PATCH v8 -tip 14/26] entry/idle: Enter and exit kernel protection during idle entry and exit
+Date:   Mon, 19 Oct 2020 21:43:24 -0400
+Message-Id: <20201020014336.2076526-15-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 In-Reply-To: <20201020014336.2076526-1-joel@joelfernandes.org>
 References: <20201020014336.2076526-1-joel@joelfernandes.org>
@@ -87,416 +87,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Core-scheduling prevents hyperthreads in usermode from attacking each
-other, but it does not do anything about one of the hyperthreads
-entering the kernel for any reason. This leaves the door open for MDS
-and L1TF attacks with concurrent execution sequences between
-hyperthreads.
+Add a generic_idle_{enter,exit} helper function to enter and exit kernel
+protection when entering and exiting idle, respectively.
 
-This patch therefore adds support for protecting all syscall and IRQ
-kernel mode entries. Care is taken to track the outermost usermode exit
-and entry using per-cpu counters. In cases where one of the hyperthreads
-enter the kernel, no additional IPIs are sent. Further, IPIs are avoided
-when not needed - example: idle and non-cookie HTs do not need to be
-forced into kernel mode.
-
-More information about attacks:
-For MDS, it is possible for syscalls, IRQ and softirq handlers to leak
-data to either host or guest attackers. For L1TF, it is possible to leak
-to guest attackers. There is no possible mitigation involving flushing
-of buffers to avoid this since the execution of attacker and victims
-happen concurrently on 2 or more HTs.
-
-Cc: Julien Desfossez <jdesfossez@digitalocean.com>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>
-Cc: Aaron Lu <aaron.lwe@gmail.com>
-Cc: Aubrey Li <aubrey.li@linux.intel.com>
-Cc: Tim Chen <tim.c.chen@intel.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Co-developed-by: Vineeth Pillai <viremana@linux.microsoft.com>
 Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- .../admin-guide/kernel-parameters.txt         |   7 +
- include/linux/entry-common.h                  |   2 +-
- include/linux/sched.h                         |  12 +
- kernel/entry/common.c                         |  25 +-
- kernel/sched/core.c                           | 229 ++++++++++++++++++
- kernel/sched/sched.h                          |   3 +
- 6 files changed, 275 insertions(+), 3 deletions(-)
+ include/linux/entry-common.h | 18 ++++++++++++++++++
+ kernel/sched/idle.c          | 11 ++++++-----
+ 2 files changed, 24 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 3236427e2215..48567110f709 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4678,6 +4678,13 @@
- 
- 	sbni=		[NET] Granch SBNI12 leased line adapter
- 
-+	sched_core_protect_kernel=
-+			[SCHED_CORE] Pause SMT siblings of a core running in
-+			user mode, if at least one of the siblings of the core
-+			is running in kernel mode. This is to guarantee that
-+			kernel data is not leaked to tasks which are not trusted
-+			by the kernel.
-+
- 	sched_debug	[KNL] Enables verbose scheduler debug messages.
- 
- 	schedstats=	[KNL,X86] Enable or disable scheduled statistics.
 diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-index 474f29638d2c..260216de357b 100644
+index 260216de357b..879562d920f2 100644
 --- a/include/linux/entry-common.h
 +++ b/include/linux/entry-common.h
-@@ -69,7 +69,7 @@
+@@ -402,4 +402,22 @@ void irqentry_exit_cond_resched(void);
+  */
+ void noinstr irqentry_exit(struct pt_regs *regs, irqentry_state_t state);
  
- #define EXIT_TO_USER_MODE_WORK						\
- 	(_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_UPROBE |		\
--	 _TIF_NEED_RESCHED | _TIF_PATCH_PENDING |			\
-+	 _TIF_NEED_RESCHED | _TIF_PATCH_PENDING | _TIF_UNSAFE_RET |	\
- 	 ARCH_EXIT_TO_USER_MODE_WORK)
- 
- /**
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index d38e904dd603..fe6f225bfbf9 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2071,4 +2071,16 @@ int sched_trace_rq_nr_running(struct rq *rq);
- 
- const struct cpumask *sched_trace_rd_span(struct root_domain *rd);
- 
-+#ifdef CONFIG_SCHED_CORE
-+void sched_core_unsafe_enter(void);
-+void sched_core_unsafe_exit(void);
-+bool sched_core_wait_till_safe(unsigned long ti_check);
-+bool sched_core_kernel_protected(void);
-+#else
-+#define sched_core_unsafe_enter(ignore) do { } while (0)
-+#define sched_core_unsafe_exit(ignore) do { } while (0)
-+#define sched_core_wait_till_safe(ignore) do { } while (0)
-+#define sched_core_kernel_protected(ignore) do { } while (0)
-+#endif
-+
- #endif
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 0a1e20f8d4e8..c8dc6b1b1f40 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -137,6 +137,26 @@ static __always_inline void exit_to_user_mode(void)
- /* Workaround to allow gradual conversion of architecture code */
- void __weak arch_do_signal(struct pt_regs *regs) { }
- 
-+unsigned long exit_to_user_get_work(void)
++/**
++ * generic_idle_enter - Called during entry into idle for housekeeping.
++ */
++static inline void generic_idle_enter(void)
 +{
-+	unsigned long ti_work = READ_ONCE(current_thread_info()->flags);
-+
-+	if (IS_ENABLED(CONFIG_SCHED_CORE) && !sched_core_kernel_protected())
-+		return ti_work;
-+
-+#ifdef CONFIG_SCHED_CORE
-+	ti_work &= EXIT_TO_USER_MODE_WORK;
-+	if ((ti_work & _TIF_UNSAFE_RET) == ti_work) {
-+		sched_core_unsafe_exit();
-+		if (sched_core_wait_till_safe(EXIT_TO_USER_MODE_WORK)) {
-+			sched_core_unsafe_enter(); /* not exiting to user yet. */
-+		}
-+	}
-+
-+	return READ_ONCE(current_thread_info()->flags);
-+#endif
++	/* Entering idle ends the protected kernel region. */
++	sched_core_unsafe_exit();
 +}
 +
- static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
- 					    unsigned long ti_work)
++/**
++ * generic_idle_enter - Called when exiting idle for housekeeping.
++ */
++static inline void generic_idle_exit(void)
++{
++	/* Exiting idle (re)starts the protected kernel region. */
++	sched_core_unsafe_enter();
++}
++
+ #endif
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index a74926be80ac..029ba61576f2 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -8,6 +8,7 @@
+  */
+ #include "sched.h"
+ 
++#include <linux/entry-common.h>
+ #include <trace/events/power.h>
+ 
+ /* Linker adds these: start and end of __cpuidle functions */
+@@ -54,6 +55,7 @@ __setup("hlt", cpu_idle_nopoll_setup);
+ 
+ static noinline int __cpuidle cpu_idle_poll(void)
  {
-@@ -175,7 +195,7 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
- 		 * enabled above.
- 		 */
- 		local_irq_disable_exit_to_user();
--		ti_work = READ_ONCE(current_thread_info()->flags);
-+		ti_work = exit_to_user_get_work();
++	generic_idle_enter();
+ 	trace_cpu_idle(0, smp_processor_id());
+ 	stop_critical_timings();
+ 	rcu_idle_enter();
+@@ -66,6 +68,7 @@ static noinline int __cpuidle cpu_idle_poll(void)
+ 	rcu_idle_exit();
+ 	start_critical_timings();
+ 	trace_cpu_idle(PWR_EVENT_EXIT, smp_processor_id());
++	generic_idle_exit();
+ 
+ 	return 1;
+ }
+@@ -156,11 +159,7 @@ static void cpuidle_idle_call(void)
+ 		return;
  	}
  
- 	/* Return the latest work state for arch_exit_to_user_mode() */
-@@ -184,9 +204,10 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+-	/*
+-	 * The RCU framework needs to be told that we are entering an idle
+-	 * section, so no more rcu read side critical sections and one more
+-	 * step to the grace period
+-	 */
++	generic_idle_enter();
  
- static void exit_to_user_mode_prepare(struct pt_regs *regs)
- {
--	unsigned long ti_work = READ_ONCE(current_thread_info()->flags);
-+	unsigned long ti_work;
- 
- 	lockdep_assert_irqs_disabled();
-+	ti_work = exit_to_user_get_work();
- 
- 	if (unlikely(ti_work & EXIT_TO_USER_MODE_WORK))
- 		ti_work = exit_to_user_mode_loop(regs, ti_work);
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 02db5b024768..5a7aeaa914e3 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -76,6 +76,27 @@ __read_mostly int scheduler_running;
- 
- #ifdef CONFIG_SCHED_CORE
- 
-+DEFINE_STATIC_KEY_TRUE(sched_core_protect_kernel);
-+static int __init set_sched_core_protect_kernel(char *str)
-+{
-+	unsigned long val = 0;
+ 	if (cpuidle_not_available(drv, dev)) {
+ 		tick_nohz_idle_stop_tick();
+@@ -225,6 +224,8 @@ static void cpuidle_idle_call(void)
+ 	 */
+ 	if (WARN_ON_ONCE(irqs_disabled()))
+ 		local_irq_enable();
 +
-+	if (!str)
-+		return 0;
-+
-+	if (!kstrtoul(str, 0, &val) && !val)
-+		static_branch_disable(&sched_core_protect_kernel);
-+
-+	return 1;
-+}
-+__setup("sched_core_protect_kernel=", set_sched_core_protect_kernel);
-+
-+/* Is the kernel protected by core scheduling? */
-+bool sched_core_kernel_protected(void)
-+{
-+	return static_branch_likely(&sched_core_protect_kernel);
-+}
-+
- DEFINE_STATIC_KEY_FALSE(__sched_core_enabled);
- 
- /* kernel prio, less is more */
-@@ -4596,6 +4617,214 @@ static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
- 	return a->core_cookie == b->core_cookie;
++	generic_idle_exit();
  }
  
-+/*
-+ * Handler to attempt to enter kernel. It does nothing because the exit to
-+ * usermode or guest mode will do the actual work (of waiting if needed).
-+ */
-+static void sched_core_irq_work(struct irq_work *work)
-+{
-+	return;
-+}
-+
-+static inline void init_sched_core_irq_work(struct rq *rq)
-+{
-+	init_irq_work(&rq->core_irq_work, sched_core_irq_work);
-+}
-+
-+/*
-+ * sched_core_wait_till_safe - Pause the caller's hyperthread until the core
-+ * exits the core-wide unsafe state. Obviously the CPU calling this function
-+ * should not be responsible for the core being in the core-wide unsafe state
-+ * otherwise it will deadlock.
-+ *
-+ * @ti_check: We spin here with IRQ enabled and preempt disabled. Break out of
-+ *            the loop if TIF flags are set and notify caller about it.
-+ *
-+ * IRQs should be disabled.
-+ */
-+bool sched_core_wait_till_safe(unsigned long ti_check)
-+{
-+	bool restart = false;
-+	struct rq *rq;
-+	int cpu;
-+
-+	/* We clear the thread flag only at the end, so need to check for it. */
-+	ti_check &= ~_TIF_UNSAFE_RET;
-+
-+	cpu = smp_processor_id();
-+	rq = cpu_rq(cpu);
-+
-+	if (!sched_core_enabled(rq))
-+		goto ret;
-+
-+	/* Down grade to allow interrupts to prevent stop_machine lockups.. */
-+	preempt_disable();
-+	local_irq_enable();
-+
-+	/*
-+	 * Wait till the core of this HT is not in an unsafe state.
-+	 *
-+	 * Pair with smp_store_release() in sched_core_unsafe_exit().
-+	 */
-+	while (smp_load_acquire(&rq->core->core_unsafe_nest) > 0) {
-+		cpu_relax();
-+		if (READ_ONCE(current_thread_info()->flags) & ti_check) {
-+			restart = true;
-+			break;
-+		}
-+	}
-+
-+	/* Upgrade it back to the expectations of entry code. */
-+	local_irq_disable();
-+	preempt_enable();
-+
-+ret:
-+	if (!restart)
-+		clear_tsk_thread_flag(current, TIF_UNSAFE_RET);
-+
-+	return restart;
-+}
-+
-+/*
-+ * Enter the core-wide IRQ state. Sibling will be paused if it is running
-+ * 'untrusted' code, until sched_core_unsafe_exit() is called. Every attempt to
-+ * avoid sending useless IPIs is made. Must be called only from hard IRQ
-+ * context.
-+ */
-+void sched_core_unsafe_enter(void)
-+{
-+	const struct cpumask *smt_mask;
-+	unsigned long flags;
-+	struct rq *rq;
-+	int i, cpu;
-+
-+	if (!static_branch_likely(&sched_core_protect_kernel))
-+		return;
-+
-+	/* Ensure that on return to user/guest, we check whether to wait. */
-+	if (current->core_cookie)
-+		set_tsk_thread_flag(current, TIF_UNSAFE_RET);
-+
-+	local_irq_save(flags);
-+	cpu = smp_processor_id();
-+	rq = cpu_rq(cpu);
-+	if (!sched_core_enabled(rq))
-+		goto ret;
-+
-+	/* Count unsafe_enter() calls received without unsafe_exit() on this CPU. */
-+	rq->core_this_unsafe_nest++;
-+
-+	/* Should not nest: enter() should only pair with exit(). */
-+	if (WARN_ON_ONCE(rq->core_this_unsafe_nest != 1))
-+		goto ret;
-+
-+	raw_spin_lock(rq_lockp(rq));
-+	smt_mask = cpu_smt_mask(cpu);
-+
-+	/* Contribute this CPU's unsafe_enter() to core-wide unsafe_enter() count. */
-+	WRITE_ONCE(rq->core->core_unsafe_nest, rq->core->core_unsafe_nest + 1);
-+
-+	if (WARN_ON_ONCE(rq->core->core_unsafe_nest == UINT_MAX))
-+		goto unlock;
-+
-+	if (irq_work_is_busy(&rq->core_irq_work)) {
-+		/*
-+		 * Do nothing more since we are in an IPI sent from another
-+		 * sibling to enforce safety. That sibling would have sent IPIs
-+		 * to all of the HTs.
-+		 */
-+		goto unlock;
-+	}
-+
-+	/*
-+	 * If we are not the first ones on the core to enter core-wide unsafe
-+	 * state, do nothing.
-+	 */
-+	if (rq->core->core_unsafe_nest > 1)
-+		goto unlock;
-+
-+	/* Do nothing more if the core is not tagged. */
-+	if (!rq->core->core_cookie)
-+		goto unlock;
-+
-+	for_each_cpu(i, smt_mask) {
-+		struct rq *srq = cpu_rq(i);
-+
-+		if (i == cpu || cpu_is_offline(i))
-+			continue;
-+
-+		if (!srq->curr->mm || is_task_rq_idle(srq->curr))
-+			continue;
-+
-+		/* Skip if HT is not running a tagged task. */
-+		if (!srq->curr->core_cookie && !srq->core_pick)
-+			continue;
-+
-+		/*
-+		 * Force sibling into the kernel by IPI. If work was already
-+		 * pending, no new IPIs are sent. This is Ok since the receiver
-+		 * would already be in the kernel, or on its way to it.
-+		 */
-+		irq_work_queue_on(&srq->core_irq_work, i);
-+	}
-+unlock:
-+	raw_spin_unlock(rq_lockp(rq));
-+ret:
-+	local_irq_restore(flags);
-+}
-+
-+/*
-+ * Process any work need for either exiting the core-wide unsafe state, or for
-+ * waiting on this hyperthread if the core is still in this state.
-+ *
-+ * @idle: Are we called from the idle loop?
-+ */
-+void sched_core_unsafe_exit(void)
-+{
-+	unsigned long flags;
-+	unsigned int nest;
-+	struct rq *rq;
-+	int cpu;
-+
-+	if (!static_branch_likely(&sched_core_protect_kernel))
-+		return;
-+
-+	local_irq_save(flags);
-+	cpu = smp_processor_id();
-+	rq = cpu_rq(cpu);
-+
-+	/* Do nothing if core-sched disabled. */
-+	if (!sched_core_enabled(rq))
-+		goto ret;
-+
-+	/*
-+	 * Can happen when a process is forked and the first return to user
-+	 * mode is a syscall exit. Either way, there's nothing to do.
-+	 */
-+	if (rq->core_this_unsafe_nest == 0)
-+		goto ret;
-+
-+	rq->core_this_unsafe_nest--;
-+
-+	/* enter() should be paired with exit() only. */
-+	if (WARN_ON_ONCE(rq->core_this_unsafe_nest != 0))
-+		goto ret;
-+
-+	raw_spin_lock(rq_lockp(rq));
-+	/*
-+	 * Core-wide nesting counter can never be 0 because we are
-+	 * still in it on this CPU.
-+	 */
-+	nest = rq->core->core_unsafe_nest;
-+	WARN_ON_ONCE(!nest);
-+
-+	/* Pair with smp_load_acquire() in sched_core_wait_till_safe(). */
-+	smp_store_release(&rq->core->core_unsafe_nest, nest - 1);
-+	raw_spin_unlock(rq_lockp(rq));
-+ret:
-+	local_irq_restore(flags);
-+}
-+
- // XXX fairness/fwd progress conditions
  /*
-  * Returns
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index f7e2d8a3be8e..4bcf3b1ddfb3 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1059,12 +1059,15 @@ struct rq {
- 	unsigned int		core_enabled;
- 	unsigned int		core_sched_seq;
- 	struct rb_root		core_tree;
-+	struct irq_work		core_irq_work; /* To force HT into kernel */
-+	unsigned int		core_this_unsafe_nest;
- 
- 	/* shared state */
- 	unsigned int		core_task_seq;
- 	unsigned int		core_pick_seq;
- 	unsigned long		core_cookie;
- 	unsigned char		core_forceidle;
-+	unsigned int		core_unsafe_nest;
- #endif
- };
- 
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
