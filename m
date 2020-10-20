@@ -2,52 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4942944DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2080C2944E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404786AbgJTWBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 18:01:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57566 "EHLO mail.kernel.org"
+        id S2438861AbgJTWCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 18:02:01 -0400
+Received: from mga09.intel.com ([134.134.136.24]:12286 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392670AbgJTWBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 18:01:04 -0400
-Subject: Re: [GIT PULL] Please pull NFS Client Updates for v5.10
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603231264;
-        bh=bfvW5CJ+Dvsog6QgaelPdcXCjo+UyYF3TNk8KIsmeOQ=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=FGNHBDJU1PvJZL/iv5zZt17eARgg33Ton0yzaTDa3PO3w7jCggoAo/jFUmh2xMjAa
-         Poy5W2CjSQ4k7SFY+mfmoQtoQh6k/K1iyo3GlN6wxP+xoS1nBBS43DcQWbyyyi14M4
-         NmrSWHKKds9K2fOpEO7VLCWmPY1aQIwfLLoPdEsg=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAFX2JfnGTLccrN4x2FB_m8v+_gJNXCYFfQf=O50mfouiCd+Vsg@mail.gmail.com>
-References: <CAFX2JfnGTLccrN4x2FB_m8v+_gJNXCYFfQf=O50mfouiCd+Vsg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAFX2JfnGTLccrN4x2FB_m8v+_gJNXCYFfQf=O50mfouiCd+Vsg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.linux-nfs.org/projects/anna/linux-nfs.git tags/nfs-for-5.10-1
-X-PR-Tracked-Commit-Id: 8c39076c276be0b31982e44654e2c2357473258a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 59f0e7eb2f9ffa7715ca95908797b52ba35af11a
-Message-Id: <160323126398.2890.17389048433911822002.pr-tracker-bot@kernel.org>
-Date:   Tue, 20 Oct 2020 22:01:03 +0000
-To:     Anna Schumaker <schumaker.anna@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S2393297AbgJTWCB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 18:02:01 -0400
+IronPort-SDR: cUm1QtxOsuLL1KNdzUI8oz/dn24cfCzxHM5CSvUPYipZ4MZzKmfiADnUKaUU6lqClFjNiXYVc1
+ xbXlLLJkRYjA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="167402789"
+X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
+   d="scan'208";a="167402789"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 15:02:00 -0700
+IronPort-SDR: SDvlJ7R/uvctTTXAgbabzL6A8JomQVIrmC8a8NdhXDwLV2ZwgBW7c11bOTo5UlF+0Fm0u2Aam9
+ f50ahWPNGLNg==
+X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
+   d="scan'208";a="522522811"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 15:02:00 -0700
+Date:   Tue, 20 Oct 2020 15:01:58 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Chenyi Qiang <chenyi.qiang@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RESEND v4 1/2] KVM: VMX: Convert vcpu_vmx.exit_reason to a union
+Message-ID: <20201020220158.GA9031@linux.intel.com>
+References: <20201012033542.4696-1-chenyi.qiang@intel.com>
+ <20201012033542.4696-2-chenyi.qiang@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012033542.4696-2-chenyi.qiang@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 20 Oct 2020 14:55:52 -0400:
+On Mon, Oct 12, 2020 at 11:35:41AM +0800, Chenyi Qiang wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+> 
+> Convert vcpu_vmx.exit_reason from a u32 to a union (of size u32).  The
+> full VM_EXIT_REASON field is comprised of a 16-bit basic exit reason in
+> bits 15:0, and single-bit modifiers in bits 31:16.
+> 
+> Historically, KVM has only had to worry about handling the "failed
+> VM-Entry" modifier, which could only be set in very specific flows and
+> required dedicated handling.  I.e. manually stripping the FAILED_VMENTRY
+> bit was a somewhat viable approach.  But even with only a single bit to
+> worry about, KVM has had several bugs related to comparing a basic exit
+> reason against the full exit reason store in vcpu_vmx.
+> 
+> Upcoming Intel features, e.g. SGX, will add new modifier bits that can
+> be set on more or less any VM-Exit, as opposed to the significantly more
+> restricted FAILED_VMENTRY, i.e. correctly handling everything in one-off
+> flows isn't scalable.  Tracking exit reason in a union forces code to
+> explicitly choose between consuming the full exit reason and the basic
+> exit, and is a convenient way to document and access the modifiers.
+> 
+> No functional change intended.
+> 
+> Cc: Xiaoyao Li <xiaoyao.li@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 
-> git://git.linux-nfs.org/projects/anna/linux-nfs.git tags/nfs-for-5.10-1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/59f0e7eb2f9ffa7715ca95908797b52ba35af11a
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+This needs your SOB since you are involved in the handling of the patch.
