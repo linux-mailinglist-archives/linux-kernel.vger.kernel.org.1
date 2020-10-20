@@ -2,37 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BBC29352A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB6529351F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404534AbgJTGrZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Oct 2020 02:47:25 -0400
-Received: from host-58103343.fivenetwork.com ([58.146.103.243]:57575 "EHLO
-        waseda.jp" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404466AbgJTGrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:47:25 -0400
-Reply-To: info@free221.com
-From:   "FM" <matsuba7@waseda.jp>
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?44Kr44OK44OA44Kq44OV44Kh44O8?=
-Date:   20 Oct 2020 12:14:03 +0530
-Message-ID: <20201020121403.64CD7D531F3D73E8@waseda.jp>
+        id S2404466AbgJTGoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731178AbgJTGoR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 02:44:17 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6E7C061755;
+        Mon, 19 Oct 2020 23:44:17 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id l85so1055085oih.10;
+        Mon, 19 Oct 2020 23:44:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MFOC5MSfgXpVUcpJFvepm9LoCBUyxU58dQ3kENmA2dU=;
+        b=rE9NI/S/p9SvnsP2ThZmuLSQCes4KW77g+ZROKqi9zQ4BRyD7j8L3qAXRGY48tDEXB
+         DVCVdi+bIimBHadB2S37aNu3DzzFKphM/kG45PJO7l+kd734QFl9innU/HfWG6kCwDzw
+         l0HKuSwIx5NEiJnNS2n4U3+DwbVgAhSFfhZpu0uVBWFRBFhlyr7NqU1bbxKl1z/H4UE4
+         aTQrp+jajh0mCnsH8CIqNDg7aegBRdbhH6RCkCS4DxseTzhxvjECNzfp2VlQOgAJlpfi
+         +uQdkC8pS6xfGU5wiOJx6m5loPyY7Kod6LTMdP+wf3Li0aORhXNL3t+aIHmZBz+TNE7M
+         l/mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MFOC5MSfgXpVUcpJFvepm9LoCBUyxU58dQ3kENmA2dU=;
+        b=gzrUL3DU9akGnOGURI5LOulojmEGWYZ+wRQ+LrRReiDMwFV6UldrH1tTssugaPYxlo
+         pnMZ6rnPaV29VdQ2NKedqf3oiO2XRXLezZ3E3hfF3EObBWbqC8WtfhYRR1mzxC6a/Aui
+         5QcLfjXtULSaN4nMLndV9nwVmcx50alEiweqjx9n6SZ3ZHMZcNehthZdzODT/8QxMsmj
+         vKpS6fusJqSBIrdftakgTpIobTgxxztq3+EnqsO+T9Om4ypvYAp9YVW5MA3ghj8S49F3
+         fkDjoLyY8WNWIe7oiRydclNtRwwUnxw6cd559EA5++RBxE3JfGfARzVoqD4RqIbqvnff
+         hmdg==
+X-Gm-Message-State: AOAM530fvku6PPfer0rxD0JPhPJKDK3JmPOMIqu+gpmzW/9sj1f4ICV5
+        b0mc2uddmSx9p5ohPjFkDGFgBw4B0j6dseqTjBM=
+X-Google-Smtp-Source: ABdhPJzG7nn0LcryOMolANMp07rqbpB+dGxlfZixfoXAINNXhstjyOp90IJVHVwDvcF55dsz8L/CfOf3slRK9oAkKDo=
+X-Received: by 2002:aca:518b:: with SMTP id f133mr920277oib.23.1603176256498;
+ Mon, 19 Oct 2020 23:44:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+References: <1602034966-3524-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1602034966-3524-3-git-send-email-gene.chen.richtek@gmail.com> <5a9b31c4-739c-06fc-2015-ed474993ad22@gmail.com>
+In-Reply-To: <5a9b31c4-739c-06fc-2015-ed474993ad22@gmail.com>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Tue, 20 Oct 2020 14:44:04 +0800
+Message-ID: <CAE+NS35Y41mFKNhj+54BeeSYFu2J9BtvMWOxyMcf9a==39cbdA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] leds: mt6360: Add LED driver for MT6360
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ご挨拶、
- 
-私の名前は、カナダ有数の暗号通貨交換プラットフォームの1つである最高コンプライアンス責任者であるFelixです。 
-これは私からあなたへの秘密の秘密のメッセージであり、そのように扱われることを要求します。
- 
-故人の口座保有者が所有する清算されたBTC口座から生じた900万米ドルを超える資金に関する緊急事項（取引）についてご連絡いたします
-。 私の計画と、私があなたの返事を受け取り、あなたの信頼を得た後、私が最初にあなたに連絡することを選んだ理由をあなたに知らせます。
- 
-たくさんの感謝とあなたの返事を楽しみにしています。
- 
-フェリックス。
+Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B410=E6=
+=9C=889=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=885:51=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+>
+> Hi Gene,
+>
+> On 10/7/20 3:42 AM, Gene Chen wrote:
+> > From: Gene Chen <gene_chen@richtek.com>
+> >
+> > Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mod=
+e,
+> > 3-channel RGB LED support Register/Flash/Breath Mode, and 1-channel for
+> > moonlight LED.
+> >
+> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> > ---
+> >   drivers/leds/Kconfig       |  12 +
+> >   drivers/leds/Makefile      |   1 +
+> >   drivers/leds/leds-mt6360.c | 783 ++++++++++++++++++++++++++++++++++++=
++++++++++
+> >   3 files changed, 796 insertions(+)
+> >   create mode 100644 drivers/leds/leds-mt6360.c
+> >
+> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> > index 1c181df..c7192dd 100644
+> > --- a/drivers/leds/Kconfig
+> > +++ b/drivers/leds/Kconfig
+> > @@ -271,6 +271,18 @@ config LEDS_MT6323
+> >         This option enables support for on-chip LED drivers found on
+> >         Mediatek MT6323 PMIC.
+> >
+> > +config LEDS_MT6360
+> > +     tristate "LED Support for Mediatek MT6360 PMIC"
+> > +     depends on LEDS_CLASS_FLASH && OF
+> > +     depends on LEDS_CLASS_MULTICOLOR
+>
+> Since CONFIG_LED_CLASS_MULTICOLOR can be turned off you need to have
+> below instead:
+>
+> depends on LEDS_CLASS_MULTICOLOR || !!LEDS_CLASS_MULTICOLOR
+>
+> Unless you want to prevent enabling the driver without RGB LED,
+> but that does not seem to be reasonable at first glance.
+>
+
+May I change to "select LEDS_CLASS_MULTICOLOR"?
+I suppose RGB always use multicolor mode.
+
+> > +     depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
+> > +     depends on MFD_MT6360
+> > +     help
+> > +       This option enables support for dual Flash LED drivers found on
+> > +       Mediatek MT6360 PMIC.
+> > +       Independent current sources supply for each flash LED support t=
+orch
+> > +       and strobe mode.
+> > +
+>
+> --
+> Best regards,
+> Jacek Anaszewski
