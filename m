@@ -2,133 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB6529351F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DCA29352D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404466AbgJTGoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731178AbgJTGoR (ORCPT
+        id S2404548AbgJTGsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:48:07 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:39234 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404540AbgJTGsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:44:17 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6E7C061755;
-        Mon, 19 Oct 2020 23:44:17 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id l85so1055085oih.10;
-        Mon, 19 Oct 2020 23:44:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MFOC5MSfgXpVUcpJFvepm9LoCBUyxU58dQ3kENmA2dU=;
-        b=rE9NI/S/p9SvnsP2ThZmuLSQCes4KW77g+ZROKqi9zQ4BRyD7j8L3qAXRGY48tDEXB
-         DVCVdi+bIimBHadB2S37aNu3DzzFKphM/kG45PJO7l+kd734QFl9innU/HfWG6kCwDzw
-         l0HKuSwIx5NEiJnNS2n4U3+DwbVgAhSFfhZpu0uVBWFRBFhlyr7NqU1bbxKl1z/H4UE4
-         aTQrp+jajh0mCnsH8CIqNDg7aegBRdbhH6RCkCS4DxseTzhxvjECNzfp2VlQOgAJlpfi
-         +uQdkC8pS6xfGU5wiOJx6m5loPyY7Kod6LTMdP+wf3Li0aORhXNL3t+aIHmZBz+TNE7M
-         l/mA==
+        Tue, 20 Oct 2020 02:48:06 -0400
+Received: by mail-il1-f199.google.com with SMTP id b6so1106797ilm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:48:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MFOC5MSfgXpVUcpJFvepm9LoCBUyxU58dQ3kENmA2dU=;
-        b=gzrUL3DU9akGnOGURI5LOulojmEGWYZ+wRQ+LrRReiDMwFV6UldrH1tTssugaPYxlo
-         pnMZ6rnPaV29VdQ2NKedqf3oiO2XRXLezZ3E3hfF3EObBWbqC8WtfhYRR1mzxC6a/Aui
-         5QcLfjXtULSaN4nMLndV9nwVmcx50alEiweqjx9n6SZ3ZHMZcNehthZdzODT/8QxMsmj
-         vKpS6fusJqSBIrdftakgTpIobTgxxztq3+EnqsO+T9Om4ypvYAp9YVW5MA3ghj8S49F3
-         fkDjoLyY8WNWIe7oiRydclNtRwwUnxw6cd559EA5++RBxE3JfGfARzVoqD4RqIbqvnff
-         hmdg==
-X-Gm-Message-State: AOAM530fvku6PPfer0rxD0JPhPJKDK3JmPOMIqu+gpmzW/9sj1f4ICV5
-        b0mc2uddmSx9p5ohPjFkDGFgBw4B0j6dseqTjBM=
-X-Google-Smtp-Source: ABdhPJzG7nn0LcryOMolANMp07rqbpB+dGxlfZixfoXAINNXhstjyOp90IJVHVwDvcF55dsz8L/CfOf3slRK9oAkKDo=
-X-Received: by 2002:aca:518b:: with SMTP id f133mr920277oib.23.1603176256498;
- Mon, 19 Oct 2020 23:44:16 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=xoUgzEnPQ6/X80FmYbYW0/0mCz5nmTUL7rKcid47d28=;
+        b=fJJOc2khO9CqYqjsMJrjBJK2kITw6i/GyECVtAuQjnOngkq0Mf8jloQGaQdS+fWvYR
+         S801v+e6jMVd+xDJxhz8A5bCOEsbvUZr6gAH8KiTKrubunGqBJ3kwBKdfPQp5FsjKxG/
+         oD0CF62hPLKVXB6uziWVAMBDMsSwaBobK0h2TLdurmEnk+utfF+oHFkjYc29tGdQL9Ii
+         Wm1gSQmQli5eCfBD8XjTKiG49KS+Grfcb0JkfimSyJsS3h3Z3IMU/My/DeAQ/H6b/pmF
+         BCIBZTgqQ3neFNf2LxsioWNF7q/kQjJUarAwE1PQWeqkXg5vzF0kgBaxS8uWdAFKJ1WP
+         7ysA==
+X-Gm-Message-State: AOAM530njB03CgR7LKbNi6WrPUxERocFP/kjvWopmZMgsbXnmQ4wWC34
+        8RmSpIQl/HU8D5BIqCTs1eI/WYMh5HeALHQCtvt+l1KUyHr/
+X-Google-Smtp-Source: ABdhPJyGMNov82rgny3Yeg72erq1MjQrtHmagsPQohT0VIL9IxEQU8WhTJSlS7CKYOXFkxq0a20bZYFdJkYVTr/yvtrHpzZZH3hB
 MIME-Version: 1.0
-References: <1602034966-3524-1-git-send-email-gene.chen.richtek@gmail.com>
- <1602034966-3524-3-git-send-email-gene.chen.richtek@gmail.com> <5a9b31c4-739c-06fc-2015-ed474993ad22@gmail.com>
-In-Reply-To: <5a9b31c4-739c-06fc-2015-ed474993ad22@gmail.com>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Tue, 20 Oct 2020 14:44:04 +0800
-Message-ID: <CAE+NS35Y41mFKNhj+54BeeSYFu2J9BtvMWOxyMcf9a==39cbdA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] leds: mt6360: Add LED driver for MT6360
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
+X-Received: by 2002:a92:a307:: with SMTP id a7mr824391ili.97.1603176485856;
+ Mon, 19 Oct 2020 23:48:05 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 23:48:05 -0700
+In-Reply-To: <0000000000009dd95205a7b7f3bf@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f3ad7805b2149c19@google.com>
+Subject: Re: general protection fault in __switch_to_asm
+From:   syzbot <syzbot+fe6eeea133f070606074@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bp@alien8.de, daniel.vetter@ffwll.ch,
+        ggherdovich@suse.cz, gregkh@linuxfoundation.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, linux@dominikbrodowski.net,
+        mhiramat@kernel.org, mingo@redhat.com,
+        penguin-kernel@I-love.SAKURA.ne.jp,
+        penguin-kernel@i-love.sakura.ne.jp, peterz@infradead.org,
+        rafael.j.wysocki@intel.com, rkovhaev@gmail.com,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B410=E6=
-=9C=889=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=885:51=E5=AF=AB=E9=81=
-=93=EF=BC=9A
->
-> Hi Gene,
->
-> On 10/7/20 3:42 AM, Gene Chen wrote:
-> > From: Gene Chen <gene_chen@richtek.com>
-> >
-> > Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mod=
-e,
-> > 3-channel RGB LED support Register/Flash/Breath Mode, and 1-channel for
-> > moonlight LED.
-> >
-> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > ---
-> >   drivers/leds/Kconfig       |  12 +
-> >   drivers/leds/Makefile      |   1 +
-> >   drivers/leds/leds-mt6360.c | 783 ++++++++++++++++++++++++++++++++++++=
-+++++++++
-> >   3 files changed, 796 insertions(+)
-> >   create mode 100644 drivers/leds/leds-mt6360.c
-> >
-> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> > index 1c181df..c7192dd 100644
-> > --- a/drivers/leds/Kconfig
-> > +++ b/drivers/leds/Kconfig
-> > @@ -271,6 +271,18 @@ config LEDS_MT6323
-> >         This option enables support for on-chip LED drivers found on
-> >         Mediatek MT6323 PMIC.
-> >
-> > +config LEDS_MT6360
-> > +     tristate "LED Support for Mediatek MT6360 PMIC"
-> > +     depends on LEDS_CLASS_FLASH && OF
-> > +     depends on LEDS_CLASS_MULTICOLOR
->
-> Since CONFIG_LED_CLASS_MULTICOLOR can be turned off you need to have
-> below instead:
->
-> depends on LEDS_CLASS_MULTICOLOR || !!LEDS_CLASS_MULTICOLOR
->
-> Unless you want to prevent enabling the driver without RGB LED,
-> but that does not seem to be reasonable at first glance.
->
+syzbot suspects this issue was fixed by commit:
 
-May I change to "select LEDS_CLASS_MULTICOLOR"?
-I suppose RGB always use multicolor mode.
+commit 033724d6864245a11f8e04c066002e6ad22b3fd0
+Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Date:   Wed Jul 15 01:51:02 2020 +0000
 
-> > +     depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
-> > +     depends on MFD_MT6360
-> > +     help
-> > +       This option enables support for dual Flash LED drivers found on
-> > +       Mediatek MT6360 PMIC.
-> > +       Independent current sources supply for each flash LED support t=
-orch
-> > +       and strobe mode.
-> > +
->
-> --
-> Best regards,
-> Jacek Anaszewski
+    fbdev: Detect integer underflow at "struct fbcon_ops"->clear_margins.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17f3766f900000
+start commit:   04300d66 Merge tag 'riscv-for-linus-5.8-rc7' of git://git...
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f87a5e4232fdb267
+dashboard link: https://syzkaller.appspot.com/bug?extid=fe6eeea133f070606074
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1575d102900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15dd6ac0900000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fbdev: Detect integer underflow at "struct fbcon_ops"->clear_margins.
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
