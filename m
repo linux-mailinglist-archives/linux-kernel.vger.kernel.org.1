@@ -2,198 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC02294120
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1C9294122
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395221AbgJTRKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 13:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395212AbgJTRKb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 13:10:31 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD38FC0613CE;
-        Tue, 20 Oct 2020 10:10:30 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id h196so2553348ybg.4;
-        Tue, 20 Oct 2020 10:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o8bJWogw44BNpGh0N1sglmlnpyMYbnS/gX2LPW8mIHU=;
-        b=LGgXEMsKKo6KaV6pIFg6AM1v/HwY6IBJTH4Wn0IFoYdwG5YpK/pQICa/DXVfaD9fNe
-         0DBG5nRFm6xOo+0zm0nsZvwRy/2xrhp2VQsd8pyjoTHbOZHULs4z6ln5D+UdNxtOES5P
-         10XBmyZQfNGuH21C4jzSa9zDRkyZ/PcESo83YrSyHj0tpxiApUCMHbFOIThhYMQx3VLe
-         /Icfv2QoLk+rhcJs1MmiGVykI3D19QC0uF2kDG23UQINq5wWT7dxqwP2ID5jT4GSPyOr
-         7RkXViMiPSAVhMfZdYw7b2MFEZFRZFhA3jwXJuBBTuX8mdzFlsFGqDd8t4hnepEMemy7
-         b1zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o8bJWogw44BNpGh0N1sglmlnpyMYbnS/gX2LPW8mIHU=;
-        b=JGla488CJjinOko7BTCiIrPmLBh95j4i9toa4aCNIK//i9TE1wbdxqNCv/Ru7WFLzk
-         g8HzK2PSBQEbP7HZRvxVdHH+fNgVzxZNt7jZIbpM+Qcqn7dGYFfi/oiQq2XQKQowUexk
-         /SZv2zDjFtXto3fOi+4qocLFRHMReoac90Pj6DBrxZCEWqNO4OnEPe6IgG/A8+pmFWfa
-         fdgvE5lQu6gam07AirJYff9d8GhpdV8cQBrNt+DpqVX7O5AI0/EcnRdOZ5llZWgX62Rs
-         WYQvv/9wK0AcLz8/iELPGDRs+1GLb6gDCoY/D7oEJI2FN+btmWpnXX3l43XehNAnGpS9
-         rPmA==
-X-Gm-Message-State: AOAM530BuHrG+6yniP9ttaHd7Qbfhk3mRh+ErZfMr8Knk5rupgKthuMb
-        QEXtrT16CxJTUXdjepj/BPylYYq+7ps8ggIVS+Y=
-X-Google-Smtp-Source: ABdhPJxAMn6WL22yz3j0NiswyRDYh5IymMUCTPm7I0g0TPmvZGXOauVy/NFd+jUmnfUzPKDkWe6zFbv1fW+X4nGRIIs=
-X-Received: by 2002:a25:5382:: with SMTP id h124mr5265591ybb.425.1603213829960;
- Tue, 20 Oct 2020 10:10:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
- <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org> <20201020122015.GH2294271@kernel.org>
- <CA+khW7gcDPAw4h=0U9mMxTJoaCyOXCMwyw34dcBp1xBKJG6xkg@mail.gmail.com>
-In-Reply-To: <CA+khW7gcDPAw4h=0U9mMxTJoaCyOXCMwyw34dcBp1xBKJG6xkg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 20 Oct 2020 10:10:19 -0700
-Message-ID: <CAEf4BzYDvvthK_S7EecsTO3HAVXiAf6AqHaiEWbf9+K7sjMiLA@mail.gmail.com>
-Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
-To:     Hao Luo <haoluo@google.com>
+        id S2395229AbgJTRKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 13:10:36 -0400
+Received: from mga09.intel.com ([134.134.136.24]:49918 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395212AbgJTRKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 13:10:32 -0400
+IronPort-SDR: c6OX2zy3CSlayJTd4ftx2pIRRArsUiY2QECRsz7LU2FerkHPgUrqIjD70n3kOdB6kUY+AfaBxP
+ PkcFg1QwIfLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="167367324"
+X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
+   d="scan'208";a="167367324"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 10:10:31 -0700
+IronPort-SDR: MzWGBYn6nrIEJqhjGB+Ku9czOfC1wCGGa0MBnM9lArw+jY/E/6mgXOzfqzWPyKMcR0LAFUz1Pa
+ Bq4+fvN1VMEA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
+   d="scan'208";a="316094297"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP; 20 Oct 2020 10:10:31 -0700
+Received: from [10.249.231.55] (abudanko-mobl.ccr.corp.intel.com [10.249.231.55])
+        by linux.intel.com (Postfix) with ESMTP id 28C575804D6;
+        Tue, 20 Oct 2020 10:10:28 -0700 (PDT)
+Subject: Re: [PATCH v1 02/15] perf report: output trace file name in raw trace
+ dump
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Andi Kleen <ak@linux.intel.com>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        =?UTF-8?B?w4lyaWNvIFJvbGlt?= <erico.erc@gmail.com>,
-        dwarves@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+ <87e2050b-37e6-8ed8-e1e0-cfa074b030fa@linux.intel.com>
+ <20201012160144.GA466880@tassilo.jf.intel.com>
+ <42d5395a-71f5-63e1-f7c9-fd76e2b8bee4@linux.intel.com>
+ <a1c21077-0383-aa29-cc79-a8921916c63f@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <19dd0fa0-c236-6042-8ba6-48b4696e66bb@linux.intel.com>
+Date:   Tue, 20 Oct 2020 20:10:27 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <a1c21077-0383-aa29-cc79-a8921916c63f@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 10:05 AM Hao Luo <haoluo@google.com> wrote:
->
-> Thanks for reporting this and cc'ing me. I forgot to update the error
-> messages when renaming the flags. I will send a patch to fix the error
-> message.
->
-> The commit
->
-> commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
-> Author:     Hao Luo <haoluo@google.com>
-> AuthorDate: Wed Jul 8 13:44:10 2020 -0700
->
->      btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.
->
-> encodes kernel global variables into BTF so that bpf programs can
-> directly access them. If there is no need to access kernel global
-> variables, it's perfectly fine to use '--btf_encode_force' to skip
-> encoding bad symbols into BTF, or '--skip_encoding_btf_vars' to skip
-> encoding all global vars all together. I will add these info into the
-> updated error message.
->
-> Also cc bpf folks for attention of this bug.
 
-I've already fixed the message as part of
-2e719cca6672 ("btf_encoder: revamp how per-CPU variables are encoded")
+On 20.10.2020 19:31, Alexey Budankov wrote:
+> 
+> On 12.10.2020 20:06, Alexey Budankov wrote:
+>>
+>> On 12.10.2020 19:01, Andi Kleen wrote:
+>>> On Mon, Oct 12, 2020 at 11:54:24AM +0300, Alexey Budankov wrote:
+>>>> @@ -180,7 +183,8 @@ static int ordered_events__deliver_event(struct ordered_events *oe,
+>>>>  						    ordered_events);
+>>>>  
+>>>>  	return perf_session__deliver_event(session, event->event,
+>>>> -					   session->tool, event->file_offset);
+>>>> +					   session->tool, event->file_offset,
+>>>> +					   event->file_path);
+>>>
+>>> Wouldn't it be better to pass "event" around now, which would contain at least
+>>> four of the arguments.
+>>>
+>>> These functions are getting entirely too many arguments.
+>>
+>> Well, either approach is possible, and even shrink of two arguments kept at session object.
+>> However changing function signature more than posted can cause bigger adjustments all over
+>> the code. So this needs more evaluation prior implementation. 
+> 
+> After brief evaluation it still doesn't look easy. The simplest thing
+> I could imagine is to probably combine file_path and file_offset at a
+> struct object on stack and then pass the object by the reference along
+> function calls. I expect it will roughly cause the same amount of changes
+> in the code and saves one argument (GP register). It is not that much
+> but still. However I don't see issues with passing even 6 args on stack.
 
-It's currently still in the tmp.libbtf_encoder branch in pahole repo.
+Sorry - "passing 6 args to a function call"
 
->
-> Hao
->
-> On Tue, Oct 20, 2020 at 5:20 AM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > Em Tue, Oct 20, 2020 at 11:01:39AM +0200, Jiri Slaby escreveu:
-> > > Hi,
-> > >
-> > > On 19. 10. 20, 1:18, =C3=89rico Rolim wrote:
-> > > > I'm trying to build kernel 5.9.1 for arm64, and my dotconfig has
-> > > > `CONFIG_DEBUG_INFO_BTF=3Dy`, which requires pahole for building. Ho=
-wever, pahole
-> > > > version 1.18 segfaults during the build, as can be seen below:
-> > > >
-> > > > PAHOLE: Error: Found symbol of zero size when encoding btf (sym:
-> > > > '__kvm_nvhe_arm64_ssbd_callback_required', cu:
-> > > > 'arch/arm64/kernel/cpu_errata.c').
-> > >
-> > > The symbol is an alias coming from arch/arm64/kernel/vmlinux.lds:
-> > > __kvm_nvhe_arm64_ssbd_callback_required =3D arm64_ssbd_callback_requi=
-red;;
-> > >
-> > > > PAHOLE: Error: Use '-j' or '--force' to ignore such symbols and for=
-ce
-> > > > emit the btf.
-> > > > scripts/link-vmlinux.sh: line 141: 43837 Segmentation fault
-> > > > LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
-> > > >    LD      .tmp_vmlinux.kallsyms1
-> > > >    KSYM    .tmp_vmlinux.kallsyms1.o
-> > > >    LD      .tmp_vmlinux.kallsyms2
-> > > >    KSYM    .tmp_vmlinux.kallsyms2.o
-> > > >    LD      vmlinux
-> > > >    BTFIDS  vmlinux
-> > > > FAILED: load BTF from vmlinux: Unknown error -2make: ***
-> > > > [Makefile:1162: vmlinux] Error 255
-> > > >
-> > > > It is possible to force the build to continue if
-> > > >
-> > > >    LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
-> > > >
-> > > > in scripts/link-vmlinux.sh is changed to
-> > > >
-> > > >    LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J --btf_encode_force ${1}
-> > > >
-> > > > The suggested `-j` or `--force` flags don't exist, since they were =
-removed in
-> > > > [1]. I believe `--btf_encode_force` should be suggested instead.
-> > >
-> > > Agreed, '--btf_encode_force' makes pahole to proceed without crashes.
-> > >
-> > > > It should be noted that the same build, but with pahole version 1.1=
-7, works
-> > > > without issue, so I think this is either a regression in pahole or =
-the script
-> > > > will need to be changed for newer versions of pahole.
-> > >
-> > > Yeah, I observe the very same. I reported it at:
-> > > https://bugzilla.suse.com/show_bug.cgi?id=3D1177921
-> >
-> > Would it be possible to try with
-> > https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=3Dtmp.=
-libbtf_encoder
-> > ?
-> >
-> > This switches to using libbpf for the BTF encoder and may have fixed
-> > this problem.
-> >
-> > - Arnaldo
-> >
-
-[...]
-
-> > >
-> > >
-> > > I suspect:
-> > > commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
-> > > Author:     Hao Luo <haoluo@google.com>
-> > > AuthorDate: Wed Jul 8 13:44:10 2020 -0700
-> > >
-> > >     btf_encoder: Teach pahole to store percpu variables in vmlinux BT=
-F.
-> > >
-> > >
-> > > Which added this machinery (btf_elf__add_datasec_type in particular).
-> > >
-> > > > - [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit=
-/pahole.c?h=3Dv1.18&id=3D1abc001417b579b86a9b27ff88c9095d8f498a46
-> > > >
-> > > > Thanks,
-> > > > =C3=89rico
-> > > >
-> > >
-> > >
-> > > --
-> > > js
-> > > suse labs
-> >
-> > --
-> >
-> > - Arnaldo
