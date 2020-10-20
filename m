@@ -2,155 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57D7294282
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AAF294292
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437767AbgJTSwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 14:52:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60900 "EHLO
+        id S2437901AbgJTS4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 14:56:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53679 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2437759AbgJTSwf (ORCPT
+        by vger.kernel.org with ESMTP id S2437892AbgJTS4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 14:52:35 -0400
+        Tue, 20 Oct 2020 14:56:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603219953;
+        s=mimecast20190719; t=1603220179;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=oyUoHsRQhW9Pp4iIO9savPkdYtOE6vEjDDEEmlMww18=;
-        b=KRf3NvWHkK2GE7nXgomITyNOOrR7WuvachroMvY5YU5nP+WSwLX8FqQ46zzbOF1EH8RNct
-        fc/gMptPgis+R1LRcfOazl6ugjpbCXppnc+B5yHujXsvsbiQ3WvXs8QkljAyZg+le2eVBF
-        DVqksy0pPDl8OFLG7UUS/2znGUWj/Fc=
+        bh=YdO7VVKSSR3KqLBqFdeONpl2/d1Zi5UPOH4yHHzJxiw=;
+        b=GdLAkHcvQh5k8GjxthDeOv7KIufyvqA+G1L20HV9M1pudfpn38vPxm7Z3T9GdBGdd9oz88
+        q/DR0EndEkL8MVT/TXhKulDbOrONZI0lQM71M8da6vWU5uEoi6KIkUHEaythy+88TEZ1Il
+        uEJM8149Di2iGEbAaM12D2fdpzwBHLI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-K36-fE2_MKaUTN0-WM3Zrg-1; Tue, 20 Oct 2020 14:52:29 -0400
-X-MC-Unique: K36-fE2_MKaUTN0-WM3Zrg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-442-IDcqqmmoPQKA7EDGwu_iRw-1; Tue, 20 Oct 2020 14:56:17 -0400
+X-MC-Unique: IDcqqmmoPQKA7EDGwu_iRw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9055257050;
-        Tue, 20 Oct 2020 18:52:26 +0000 (UTC)
-Received: from treble (ovpn-120-130.rdu2.redhat.com [10.10.120.130])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C7FC65B4B3;
-        Tue, 20 Oct 2020 18:52:20 +0000 (UTC)
-Date:   Tue, 20 Oct 2020 13:52:17 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 921E86408B;
+        Tue, 20 Oct 2020 18:56:16 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-5.gru2.redhat.com [10.97.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5F82228545;
+        Tue, 20 Oct 2020 18:56:10 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 5093D405D8D2; Tue, 20 Oct 2020 15:52:45 -0300 (-03)
+Date:   Tue, 20 Oct 2020 15:52:45 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-Message-ID: <20201020185217.ilg6w5l7ujau2246@treble>
-References: <20201013003203.4168817-1-samitolvanen@google.com>
- <20201013003203.4168817-23-samitolvanen@google.com>
- <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
- <20201015102216.GB2611@hirez.programming.kicks-ass.net>
- <20201015203942.f3kwcohcwwa6lagd@treble>
- <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
+        linux-kernel@vger.kernel.org,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [patch 1/2] nohz: only wakeup a single target cpu when kicking a
+ task
+Message-ID: <20201020185245.GA3577@fuller.cnet>
+References: <20201007180151.623061463@redhat.com>
+ <20201007180229.724302019@redhat.com>
+ <20201008122256.GW2628@hirez.programming.kicks-ass.net>
+ <20201008175409.GB14207@fuller.cnet>
+ <20201008195444.GB86389@lothringen>
+ <20201013171328.GA19284@fuller.cnet>
+ <20201014083321.GA2628@hirez.programming.kicks-ass.net>
+ <20201014234053.GA86158@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20201014234053.GA86158@lothringen>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 09:45:06AM -0700, Sami Tolvanen wrote:
-> On Thu, Oct 15, 2020 at 1:39 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > On Thu, Oct 15, 2020 at 12:22:16PM +0200, Peter Zijlstra wrote:
-> > > On Thu, Oct 15, 2020 at 01:23:41AM +0200, Jann Horn wrote:
-> > >
-> > > > It would probably be good to keep LTO and non-LTO builds in sync about
-> > > > which files are subjected to objtool checks. So either you should be
-> > > > removing the OBJECT_FILES_NON_STANDARD annotations for anything that
-> > > > is linked into the main kernel (which would be a nice cleanup, if that
-> > > > is possible),
-> > >
-> > > This, I've had to do that for a number of files already for the limited
-> > > vmlinux.o passes we needed for noinstr validation.
-> >
-> > Getting rid of OBJECT_FILES_NON_STANDARD is indeed the end goal, though
-> > I'm not sure how practical that will be for some of the weirder edge
-> > case.
-> >
-> > On a related note, I have some old crypto cleanups which need dusting
-> > off.
+On Thu, Oct 15, 2020 at 01:40:53AM +0200, Frederic Weisbecker wrote:
+> On Wed, Oct 14, 2020 at 10:33:21AM +0200, Peter Zijlstra wrote:
+> > On Tue, Oct 13, 2020 at 02:13:28PM -0300, Marcelo Tosatti wrote:
+> > 
+> > > > Yes but if the task isn't running, run_posix_cpu_timers() doesn't have
+> > > > anything to elapse. So indeed we can spare the IPI if the task is not
+> > > > running. Provided ordering makes sure that the task sees the new dependency
+> > > > when it schedules in of course.
+> > > 
+> > > True.
+> > > 
+> > >  * p->on_cpu <- { 0, 1 }:
+> > >  *
+> > >  *   is set by prepare_task() and cleared by finish_task() such that it will be
+> > >  *   set before p is scheduled-in and cleared after p is scheduled-out, both
+> > >  *   under rq->lock. Non-zero indicates the task is running on its CPU.
+> > > 
+> > > 
+> > > CPU-0 (tick_set_dep)            CPU-1 (task switch)
+> > > 
+> > > STORE p->tick_dep_mask
+> > > smp_mb() (atomic_fetch_or())
+> > > LOAD p->on_cpu
+> > > 
+> > > 
+> > >                                 context_switch(prev, next)
+> > >                                 STORE next->on_cpu = 1
+> > >                                 ...                             [*]
+> > > 
+> > >                                 LOAD current->tick_dep_mask
+> > > 
+> > 
+> > That load is in tick_nohz_task_switch() right? (which BTW is placed
+> > completely wrong) You could easily do something like the below I
+> > suppose.
+> > 
+> > diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> > index 81632cd5e3b7..2a5fafe66bb0 100644
+> > --- a/kernel/time/tick-sched.c
+> > +++ b/kernel/time/tick-sched.c
+> > @@ -410,6 +410,14 @@ void __tick_nohz_task_switch(void)
+> >  	ts = this_cpu_ptr(&tick_cpu_sched);
+> >  
+> >  	if (ts->tick_stopped) {
+> > +		/*
+> > +		 * tick_set_dep()		(this)
+> > +		 *
+> > +		 * STORE p->tick_dep_mask	STORE p->on_cpu
+> > +		 * smp_mb()			smp_mb()
+> > +		 * LOAD p->on_cpu		LOAD p->tick_dep_mask
+> > +		 */
+> > +		smp_mb();
+> >  		if (atomic_read(&current->tick_dep_mask) ||
+> >  		    atomic_read(&current->signal->tick_dep_mask))
+> >  			tick_nohz_full_kick();
 > 
-> Building allyesconfig with this series and LTO enabled, I still see
-> the following objtool warnings for vmlinux.o, grouped by source file:
+> It would then need to be unconditional (whatever value of ts->tick_stopped).
+> Assuming the tick isn't stopped, we may well have an interrupt firing right
+> after schedule() which doesn't see the new value of tick_dep_map.
 > 
-> arch/x86/entry/entry_64.S:
-> __switch_to_asm()+0x0: undefined stack state
-> .entry.text+0xffd: sibling call from callable instruction with
-> modified stack frame
-> .entry.text+0x48: stack state mismatch: cfa1=7-8 cfa2=-1+0
+> Alternatively, we could rely on p->on_rq which is set to TASK_ON_RQ_QUEUED
+> at wake up time, prior to the schedule() full barrier. Of course that doesn't
+> mean that the task is actually the one running on the CPU but it's a good sign,
+> considering that we are running in nohz_full mode and it's usually optimized
+> for single task mode.
 
-Not sure what this one's about, there's no OBJECT_FILES_NON_STANDARD?
+Unfortunately that would require exporting p->on_rq which is internal to
+the scheduler, locklessly.
 
-> arch/x86/entry/entry_64_compat.S:
-> .entry.text+0x1754: unsupported instruction in callable function
-> .entry.text+0x1634: redundant CLD
-> .entry.text+0x15fd: stack state mismatch: cfa1=7-8 cfa2=-1+0
-> .entry.text+0x168c: stack state mismatch: cfa1=7-8 cfa2=-1+0
+(can surely do that if you prefer!)
 
-Ditto.
+> 
+> Also setting a remote task's tick dependency is only used by posix cpu timer
+> in case the user has the bad taste to enqueue on a task running in nohz_full
+> mode. It shouldn't deserve an unconditional full barrier in the schedule path.
+> 
+> If the target is current, as is used by RCU, I guess we can keep a special
+> treatment.
 
-> arch/x86/kernel/head_64.S:
-> .head.text+0xfb: unsupported instruction in callable function
+To answer PeterZ's original question:
 
-Ditto.
+"So we need to kick the CPU unconditionally, or only when the task is
+actually running? AFAICT we only care about current->tick_dep_mask."
 
-> arch/x86/kernel/acpi/wakeup_64.S:
-> do_suspend_lowlevel()+0x116: sibling call from callable instruction
-> with modified stack frame
+If there is a task sharing signals, executing on a remote CPU, yes that remote CPU 
+should be awakened.
 
-We'll need to look at how to handle this one.
+Could skip the IPI if the remote process is not running, however for 
+the purposes of low latency isolated processes, this optimization is
+not necessary.
 
-> arch/x86/crypto/camellia-aesni-avx2-asm_64.S:
-> camellia_cbc_dec_32way()+0xb3: stack state mismatch: cfa1=7+520 cfa2=7+8
-> camellia_ctr_32way()+0x1a: stack state mismatch: cfa1=7+520 cfa2=7+8
+So the last posted patchset is good enough for isolated low latency processes.
 
-I can clean off my patches for all the crypto warnings.
+Do you guys want me to do something or can you take the series as it is?
 
-> arch/x86/lib/retpoline.S:
-> __x86_retpoline_rdi()+0x10: return with modified stack frame
-> __x86_retpoline_rdi()+0x0: stack state mismatch: cfa1=7+32 cfa2=7+8
-> __x86_retpoline_rdi()+0x0: stack state mismatch: cfa1=7+32 cfa2=-1+0
-
-Is this with upstream?  I thought we fixed that with
-UNWIND_HINT_RET_OFFSET.
-
-> Josh, Peter, any thoughts on what would be the preferred way to fix
-> these, or how to tell objtool to ignore this code?
-
-One way or another, the patches need to be free of warnings before
-getting merged.  I can help, though I'm traveling and only have limited
-bandwidth for at least the rest of the month.
-
-Ideally we'd want to have objtool understand everything, with no
-whitelisting, but some cases (e.g. suspend code) can be tricky.
-
-I wouldn't be opposed to embedding the whitelist in the binary, in a
-discardable section.  It should be relatively easy, but as I mentioned I
-may or may not have time to work on it for a bit.  I'm working half
-days, and now the ocean beckons from the window of my camper.
-
--- 
-Josh
+> > re tick_nohz_task_switch() being placed wrong, it should probably be
+> > placed before finish_lock_switch(). Something like so.
+> > 
+> > 
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index cf044580683c..5c92c959824f 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -4084,6 +4084,7 @@ static struct rq *finish_task_switch(struct task_struct *prev)
+> >  	vtime_task_switch(prev);
+> >  	perf_event_task_sched_in(prev, current);
+> >  	finish_task(prev);
+> > +	tick_nohz_task_switch();
+> >  	finish_lock_switch(rq);
+> >  	finish_arch_post_lock_switch();
+> >  	kcov_finish_switch(current);
+> > @@ -4121,7 +4122,6 @@ static struct rq *finish_task_switch(struct task_struct *prev)
+> >  		put_task_struct_rcu_user(prev);
+> >  	}
+> >  
+> > -	tick_nohz_task_switch();
+> 
+> IIRC, we wanted to keep it outside rq lock because it shouldn't it...
 
