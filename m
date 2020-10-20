@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C0B293C26
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DDD293C27
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406597AbgJTMr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:47:29 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:45795 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406408AbgJTMr2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:47:28 -0400
-Received: by mail-wr1-f67.google.com with SMTP id e17so1953657wru.12;
-        Tue, 20 Oct 2020 05:47:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KvJQA+Q+e5Z9wPDLjRmu3ONt1k4GttLd7/AaewkwhiE=;
-        b=pBsBZiwmKJRGxORJX0S20/NPe8nQCCUVVqV0/q12oK/a0eVzsgGm3ZMveYFMr375JV
-         2CDyvH5Bq6cj0edtcMDmBQqK+j8FqghAyfVbAWO+cryQWvwgckWALkIkY8lVM9Fd/RF+
-         adW4bPRzL8vVkGjQYtYYg0Vu7/amAU2Yvl3lnS9sQkwg74aYBU5h3xc/CcWcoMk6L34D
-         iJ5Y9YMNbAGOKf6h8ZRn8/quejvOVTlD3OcgDzfasYjMNpUomAkh76nNcETb/iU27aYx
-         JYmzBJXONPIKj+FaswwZxQGv53AyfeWT1OfYrqJjjpF1GYU5Zm64ov2rTgsxlM60vvM4
-         ciJQ==
-X-Gm-Message-State: AOAM5321rV3b4nVDyvUcFfxwY3d22j9jvho83vtIlqnV7PrG59U8aAwF
-        V4SdwRxVbcmFxtsf8SNwctM=
-X-Google-Smtp-Source: ABdhPJw+FAODArwz99ehub8tp1gBdHMTIm7G3ZxRt2ocggJztRwWof7f87ccXJi8q+YzSQXzGYrpxg==
-X-Received: by 2002:a5d:6407:: with SMTP id z7mr3549813wru.271.1603198046534;
-        Tue, 20 Oct 2020 05:47:26 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id b25sm2537084wmj.21.2020.10.20.05.47.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 05:47:25 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 14:47:22 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 27/29] arm64: dts: layerscape: Harmonize DWC USB3 DT
- nodes name
-Message-ID: <20201020124722.GA128217@kozik-lap>
-References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
- <20201020115959.2658-28-Sergey.Semin@baikalelectronics.ru>
+        id S2406612AbgJTMrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:47:33 -0400
+Received: from mga09.intel.com ([134.134.136.24]:17337 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406408AbgJTMrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:47:31 -0400
+IronPort-SDR: 2YY5ZbnXLKYCSld7mxX7xrs2nTSMTDbpr2OlFN4FqdA2HhfguVMJ1r4EIYiPkPwdoNapzjyaJe
+ gukk96k7jxKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="167319105"
+X-IronPort-AV: E=Sophos;i="5.77,397,1596524400"; 
+   d="scan'208";a="167319105"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 05:47:30 -0700
+IronPort-SDR: kAVLCB4RupND9uUWmn26k6SJRCJbLtbuRawIljFVd+ITvyLkXt7FId8CXkbZUW3SCaYDueHK8G
+ a8n3G2bJKIOg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,397,1596524400"; 
+   d="scan'208";a="332244362"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 20 Oct 2020 05:47:25 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id BB5B9376; Tue, 20 Oct 2020 15:47:24 +0300 (EEST)
+Date:   Tue, 20 Oct 2020 15:47:24 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFCv2 05/16] x86/kvm: Make VirtIO use DMA API in KVM guest
+Message-ID: <20201020124724.mk66h5ulm3xwdksc@black.fi.intel.com>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+ <20201020061859.18385-6-kirill.shutemov@linux.intel.com>
+ <20201020080658.GA21238@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201020115959.2658-28-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201020080658.GA21238@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 02:59:57PM +0300, Serge Semin wrote:
-> In accordance with the DWC USB3 bindings the corresponding node
-> name is suppose to comply with the Generic USB HCD DT schema, which
-> requires the USB nodes to have the name acceptable by the regexp:
-> "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> named.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> ---
->  arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi | 4 ++--
->  arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi | 6 +++---
->  arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 4 ++--
->  arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 4 ++--
->  4 files changed, 9 insertions(+), 9 deletions(-)
-> 
+On Tue, Oct 20, 2020 at 09:06:58AM +0100, Christoph Hellwig wrote:
+> NAK.  Any virtio implementation that needs special DMA OPS treatment
+> needs to set the VIRTIO_F_ACCESS_PLATFORM bit.  The only reason the
+> Xen hack existst is because it slipped in a long time ago and we can't
+> fix that any more.
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Thanks. Will fix.
 
-Best regards,
-Krzysztof
+-- 
+ Kirill A. Shutemov
