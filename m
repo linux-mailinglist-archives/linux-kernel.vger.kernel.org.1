@@ -2,158 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0427293EC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B663293ECC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408133AbgJTOcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:32:14 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48168 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730422AbgJTOcN (ORCPT
+        id S2408145AbgJTOdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408012AbgJTOdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:32:13 -0400
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kUsgN-0000qz-BC; Tue, 20 Oct 2020 14:32:11 +0000
-Date:   Tue, 20 Oct 2020 16:32:10 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Giuseppe Scrivano <gscrivan@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        containers@lists.linux-foundation.org, linux@rasmusvillemoes.dk,
-        viro@zeniv.linux.org.uk
-Subject: Re: [PATCH v2 2/2] selftests: add tests for CLOSE_RANGE_CLOEXEC
-Message-ID: <20201020143210.uwwdinaj45iom4oi@wittgenstein>
-References: <20201019102654.16642-1-gscrivan@redhat.com>
- <20201019102654.16642-3-gscrivan@redhat.com>
+        Tue, 20 Oct 2020 10:33:18 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4946C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:33:16 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id j13so2507553ilc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:33:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jj9glYe0gvbVcAodw3qv6Kp672I6hibQ7u2mjdDL0BQ=;
+        b=FDIUTpY+EczYabB3zudGGYlm2bXqozLmyLzyoExIYHR74w7QRpS4sJspfDnhCBQCrZ
+         rDd6xn+vxM6k6oRSHVwJXr3Oy8ZpCNUJNYIDIYgK1AMsFVKsONCeeVXSgJk7Y08FTrWA
+         iA0AT8GwhxKQG/+b2KElJWMiC7kHIBANpiJlNLyRM1bDcROLideHgki/V5BsFGYhldei
+         dLfg8wswxwhDzKBZu9wAGVCHSL81rzqFqwU0QfNbvw3d9OKPqvQWF3BkCvQDW+dyeuSh
+         yiSy+cbks/hvdd8CPM6hXenTJqxHoKLjeA5yunkUiPruWS+V5aBNkaPvnhnHHitc+3NK
+         4z8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=jj9glYe0gvbVcAodw3qv6Kp672I6hibQ7u2mjdDL0BQ=;
+        b=bq7Bb2l8ionPii3MKw0d90rn5xK0P1pU/DhkzfbgQ5eC0fsZF2P9DV4nV91HStN2JH
+         0N4lZRhbuY8f6mOiAQ/6lCiAcMgium2r48NwPKTiAB84DMJNuNufgacRKyEQL5YWpNjl
+         B6vRCEqKU3AnsBjcE4Eyu5bWt5u0ubUhYTQQusdRWbRGFggF1HsGfR0t+Nw0YhAJwNJv
+         QC+JDnJcJzVkfTZoGUvqwWpYrzZ07SA/bB+MicExLVfaGOZY0PgLG25i1aJaD4ZDWg+c
+         3scGWMLIsuUeVU+aNyLRJGR+QqUr9gSHFYtNsgP+eNcaRxoAd3A8Uxj99MgZPpbQPKuY
+         E3fA==
+X-Gm-Message-State: AOAM5322byL5iL6/nAV2tg+Mcg+9sPWnD5E/nkM+94SBzdpEwFq3BLZc
+        Vlj90ZjV21Zj74FTKnDqips=
+X-Google-Smtp-Source: ABdhPJyYF9qRrSJYkXVPlgaKnxArlTa7yCTr5aX9oZ+hVDLUhiaThsqvbF3cotHBSetaSWUETWVayA==
+X-Received: by 2002:a05:6e02:4c8:: with SMTP id f8mr2034088ils.159.1603204396133;
+        Tue, 20 Oct 2020 07:33:16 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id d14sm1820275ila.42.2020.10.20.07.33.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 07:33:15 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 20 Oct 2020 10:33:12 -0400
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] x86/boot/compressed/64: Check SEV encryption in
+ 64-bit boot-path
+Message-ID: <20201020143312.GE2996696@rani.riverdale.lan>
+References: <20201019151121.826-1-joro@8bytes.org>
+ <20201019151121.826-4-joro@8bytes.org>
+ <20201019170008.GA2701355@rani.riverdale.lan>
+ <20201019175447.GA2720155@rani.riverdale.lan>
+ <20201019203935.GG3635@8bytes.org>
+ <20201019213106.GB2815942@rani.riverdale.lan>
+ <20201020085957.GF9328@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201019102654.16642-3-gscrivan@redhat.com>
+In-Reply-To: <20201020085957.GF9328@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First, thank you for the selftests. That's great to see!
-
-Could you please add a short explanation what you're testing here to the
-commit message?
-
-On Mon, Oct 19, 2020 at 12:26:54PM +0200, Giuseppe Scrivano wrote:
-> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
-> ---
->  .../testing/selftests/core/close_range_test.c | 74 +++++++++++++++++++
->  1 file changed, 74 insertions(+)
+On Tue, Oct 20, 2020 at 10:59:57AM +0200, Joerg Roedel wrote:
+> On Mon, Oct 19, 2020 at 05:31:06PM -0400, Arvind Sankar wrote:
+> > Is it possible to take advantage of this to make the check independent
+> > of the original page tables? i.e. switch to the new pagetables, then
+> > write into .data or .bss the opcodes for a function that does
+> > 	movabs	$imm64, %rax
+> > 	jmp	*%rdi	// avoid using stack for the return
+> > filling in the imm64 with the RDRAND value, and then try to execute it.
+> > If the C-bit value is wrong, this will probably crash, and at any rate
+> > shouldn't return with the correct value in %rax.
 > 
-> diff --git a/tools/testing/selftests/core/close_range_test.c b/tools/testing/selftests/core/close_range_test.c
-> index c99b98b0d461..c9db282158bb 100644
-> --- a/tools/testing/selftests/core/close_range_test.c
-> +++ b/tools/testing/selftests/core/close_range_test.c
-> @@ -11,6 +11,7 @@
->  #include <string.h>
->  #include <syscall.h>
->  #include <unistd.h>
-> +#include <sys/resource.h>
->  
->  #include "../kselftest_harness.h"
->  #include "../clone3/clone3_selftests.h"
-> @@ -23,6 +24,10 @@
->  #define CLOSE_RANGE_UNSHARE	(1U << 1)
->  #endif
->  
-> +#ifndef CLOSE_RANGE_CLOEXEC
-> +#define CLOSE_RANGE_CLOEXEC	(1U << 2)
-> +#endif
-> +
->  static inline int sys_close_range(unsigned int fd, unsigned int max_fd,
->  				  unsigned int flags)
->  {
-> @@ -224,4 +229,73 @@ TEST(close_range_unshare_capped)
->  	EXPECT_EQ(0, WEXITSTATUS(status));
->  }
->  
-> +TEST(close_range_cloexec)
-> +{
-> +	int i, ret;
-> +	int open_fds[101];
-> +	struct rlimit rlimit;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(open_fds); i++) {
-> +		int fd;
-> +
-> +		fd = open("/dev/null", O_RDONLY);
-> +		ASSERT_GE(fd, 0) {
-> +			if (errno == ENOENT)
-> +				XFAIL(return, "Skipping test since /dev/null does not exist");
-> +		}
-> +
-> +		open_fds[i] = fd;
-> +	}
-> +
-> +	ret = sys_close_range(1000, 1000, CLOSE_RANGE_CLOEXEC);
-> +	if (ret < 0) {
-> +		if (errno == ENOSYS)
-> +			XFAIL(return, "close_range() syscall not supported");
-> +		if (errno == EINVAL)
-> +			XFAIL(return, "close_range() doesn't support CLOSE_RANGE_CLOEXEC");
-> +	}
-> +
-> +	/* Ensure the FD_CLOEXEC bit is set also with a resource limit in place.  */
-> +	EXPECT_EQ(0, getrlimit(RLIMIT_NOFILE, &rlimit));
-> +	rlimit.rlim_cur = 25;
-> +	EXPECT_EQ(0, setrlimit(RLIMIT_NOFILE, &rlimit));
-
-I usually prefer to call ASSERT_* to abort at the first true failure
-before moving on. And I think all the EXPECT_*()s here should be
-ASSERT_*()s because that are all hard failures imho.
-
-Apart from that this looks good.
-
-> +
-> +	/* Set close-on-exec for two ranges: [0-50] and [75-100].  */
-> +	ret = sys_close_range(open_fds[0], open_fds[50], CLOSE_RANGE_CLOEXEC);
-> +	EXPECT_EQ(0, ret);
-> +	ret = sys_close_range(open_fds[75], open_fds[100], CLOSE_RANGE_CLOEXEC);
-> +	EXPECT_EQ(0, ret);
-> +
-> +	for (i = 0; i <= 50; i++) {
-> +		int flags = fcntl(open_fds[i], F_GETFD);
-> +
-> +		EXPECT_GT(flags, -1);
-> +		EXPECT_EQ(flags & FD_CLOEXEC, FD_CLOEXEC);
-> +	}
-> +
-> +	for (i = 51; i <= 74; i++) {
-> +		int flags = fcntl(open_fds[i], F_GETFD);
-> +
-> +		EXPECT_GT(flags, -1);
-> +		EXPECT_EQ(flags & FD_CLOEXEC, 0);
-> +	}
-> +
-> +	for (i = 75; i <= 100; i++) {
-> +		int flags = fcntl(open_fds[i], F_GETFD);
-> +
-> +		EXPECT_GT(flags, -1);
-> +		EXPECT_EQ(flags & FD_CLOEXEC, FD_CLOEXEC);
-> +	}
-> +
-> +	/* Test a common pattern.  */
-> +	ret = sys_close_range(3, UINT_MAX, CLOSE_RANGE_CLOEXEC);
-> +	for (i = 0; i <= 100; i++) {
-> +		int flags = fcntl(open_fds[i], F_GETFD);
-> +
-> +		EXPECT_GT(flags, -1);
-> +		EXPECT_EQ(flags & FD_CLOEXEC, FD_CLOEXEC);
-> +	}
-> +}
-> +
-> +
->  TEST_HARNESS_MAIN
-> -- 
-> 2.26.2
+> That could work, but is not reliable. When the C bit is wrong the CPU
+> would essentially execute random data, which could also be a valid
+> instruction stream. A crash is not guaranteed.
 > 
-> _______________________________________________
-> Containers mailing list
-> Containers@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/containers
+
+That doesn't feel like a big loss: if a malicious hypervisor wanted to
+induce completely random code execution, it can do that anyway by just
+messing with the guest-to-host translation, no?
+
+We would need to avoid calling this in the secondary cpu startup, I guess.
+
+I was hoping to be able to clean up the identity mapping in
+__startup_64(), which currently maps the entire kernel using wraparound
+entries, to just map the head page of the kernel, since AFAICT nothing
+else is actually used from the identity mapping after switching to the
+new page tables. But we'd need to keep it to support this check.
