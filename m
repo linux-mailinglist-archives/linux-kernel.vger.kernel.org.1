@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4953329382F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1878229384B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405768AbgJTJg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405753AbgJTJgy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:36:54 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37B9C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:36:52 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id m11so849299qvt.11
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:36:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=r3JzWUNRrjq682a06yIScf4/krvhqrY6PtINhDvgCTc=;
-        b=jNnueWZgP0hwxnWozjesm/JVD1/uoPvY7/+6OPyoWzNYfPM2OBr5L3e30WeWbYkX7i
-         g5KaYozep/eGB8kn6FkGQgfhEW1ZVoBhePHvWgCyNz9S641EGAWvL6FWQcDHO3VowqJ2
-         LztVnUlhG0N0EQvHQiu+K0mcFAqGDVfxJse0W3+Ie/bLP069GRglRfNS19znRj2pTKlC
-         Uc0mn+mB3SVOOyNlm9mTCEwXTZtnEonhU0qh3QCbDXo5+uLbAxE2o/10xVhv+0zZ6LKb
-         jl2K0KS+F8FYFA3TnRneZ1106cyvXXZawhde9BG2sKrq8xrl1WRZcUPKd90SPV3C/Viz
-         1QFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=r3JzWUNRrjq682a06yIScf4/krvhqrY6PtINhDvgCTc=;
-        b=eKAEObLHgkaslNnIENt7bREmrqeiyZz/1ygAXQJCrtJVpABWJyr3RyC1hsu1dcSi84
-         fzgpbz9IisVQXHQHFaVu2Z5W625FdbvVCfwiSvsERCXZfZRTaiXvoFj6V8WURzxzcBsW
-         IyBYBGVsfG84JPMkCPgyIj8NZrCOV1wnKohI6mokBLGI90DNJOWMCbDeI5r1ht3dZSj2
-         RVAIKWWxcT1mQKCfsZcxCl2WRIWdAbmCtZAsJK2ZRj8v6Ne3BN3c3dk33iKrp81xO2f+
-         1h6e9ASaACDG5MI/cjCRHM8QT9tL1mcpciYrxgbqqnDc09l2angrYP97NbswT+5hYFED
-         r5Jw==
-X-Gm-Message-State: AOAM532Tal+NtA3tn50cqgoJqV6gvRFLjzqvBF8UsFcIe/CCR3KuN7ph
-        alZZfXubmOJscoVd/3SwljJlNBCKVYM=
-X-Google-Smtp-Source: ABdhPJyTHPscP95/S9HiCZTpVZgRDFJES7WtA9XrSALnIO/5o9I/qTrCxXOEpoAq5Oq4K6Kv8thbg73zAqE=
-Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:1:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:ad4:44a8:: with SMTP id n8mr2393037qvt.29.1603186612161;
- Tue, 20 Oct 2020 02:36:52 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 02:36:27 -0700
-In-Reply-To: <20201020093627.256885-1-badhri@google.com>
-Message-Id: <20201020093627.256885-11-badhri@google.com>
-Mime-Version: 1.0
-References: <20201020093627.256885-1-badhri@google.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH v11 10/10] usb: typec: tcpci_maxim: Enable auto discharge disconnect
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        id S2392946AbgJTJhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:37:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:48670 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391944AbgJTJhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 05:37:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59704101E;
+        Tue, 20 Oct 2020 02:37:54 -0700 (PDT)
+Received: from bogus (unknown [10.57.22.167])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 573183F66E;
+        Tue, 20 Oct 2020 02:37:51 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 10:37:45 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Badhri Jagan Sridharan <badhri@google.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
+        georgi.djakov@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
+ -EPROBE_DEFER
+Message-ID: <20201020093745.GA10604@bogus>
+References: <20201016060021.sotk72u4hioctg7o@bogus>
+ <20201016111222.lvakbmjhlrocpogt@bogus>
+ <20201019045827.kl6qnx6gidhzjkrs@vireshk-i7>
+ <20201019091723.GA12087@bogus>
+ <20201019092411.b3znjxebay3puq2j@vireshk-i7>
+ <20201019101241.GB12908@bogus>
+ <20201019103535.ksp5ackoihamam4g@vireshk-i7>
+ <20201019141007.GA6358@bogus>
+ <20201020050557.a3b2nk33eeyxnvl2@vireshk-i7>
+ <20201020055431.ln7d57x76f7z6j5k@vireshk-i7>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020055431.ln7d57x76f7z6j5k@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable auto discharge disconnect for Maxim TCPC.
+On Tue, Oct 20, 2020 at 11:24:32AM +0530, Viresh Kumar wrote:
+> On 20-10-20, 10:35, Viresh Kumar wrote:
+> > On 19-10-20, 15:10, Sudeep Holla wrote:
+> > > On Mon, Oct 19, 2020 at 04:05:35PM +0530, Viresh Kumar wrote:
+> > > > On 19-10-20, 11:12, Sudeep Holla wrote:
+> > > > > Yes it has clocks property but used by SCMI(for CPUFreq/DevFreq) and not
+> > > > > by any clock provider driver. E.g. the issue you will see if "clocks"
+> > > > > property is used instead of "qcom,freq-domain" on Qcom parts.
+> > > > 
+> > > > Okay, I understand. But what I still don't understand is why it fails
+> > > > for you. You have a clocks property in DT for the CPU, the OPP core
+> > > > tries to get it and will get deferred-probed, which will try probing
+> > > > at a later point of time and it shall work then. Isn't it ?
+> > > >
+> > > 
+> > > Nope unfortunately. We don't have clock provider, so clk_get will
+> > > never succeed and always return -EPROBE_DEFER.
+> > 
+> > Now this is really bad, you have a fake clocks property, how is the
+> > OPP core supposed to know it ? Damn.
+> 
+> What about instead of fixing the OPP core, which really is doing the
+> right thing, we fix your driver (as you can't fix the DT) and add a
+> dummy CPU clk to make it all work ?
+>
 
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
-Changes since v1:
-- Changing patch version to v6 to fix version number confusion.
+I really would avoid that. I would rather change the binding as there is
+no single official users of that binding in the upstream tree.
 
-Changes since v6:
-- Rebase on usb-next.
-
-Changes since v7:
-- Heikki's suggestion:
-Moved the actual write of TCPC_VBUS_SINK_DISCONNECT_THRES
-register to tcpci code.
-
-Changes since v8:
-- Moved the logic to program the default values of
-  TCPC_VBUS_SINK_DISCONNECT_THRESH into the tcpci code.
-
-Changes since v9:
-- none.
-
-Changes since v10:
--Added Reviewed-by: Heikki Krogerus
----
- drivers/usb/typec/tcpm/tcpci_maxim.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-index aa54b0cf7a64..3c6812daec3c 100644
---- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-+++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-@@ -441,6 +441,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
- 	chip->data.TX_BUF_BYTE_x_hidden = true;
- 	chip->data.init = tcpci_init;
- 	chip->data.frs_sourcing_vbus = max_tcpci_frs_sourcing_vbus;
-+	chip->data.auto_discharge_disconnect = true;
- 
- 	max_tcpci_init_regs(chip);
- 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
 -- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+Regards,
+Sudeep
