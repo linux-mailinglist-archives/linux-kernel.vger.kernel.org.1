@@ -2,198 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A132943CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030972943D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409411AbgJTUXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 16:23:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409395AbgJTUXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:23:03 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E78F22247;
-        Tue, 20 Oct 2020 20:23:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603225382;
-        bh=2hnesLcpm3R76sy9b11vA1g23v/WgZDpcGHN6Rt8i9Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=K/XQw6tBLbVRMO+ydKudJvg24LQ01pLrnQGt1cgLEC9Hb9AAFhyUquS2vV+ueo/5j
-         oTzueb0V+OD4Cusyt5hkqoQo+kbn+m8n5cBy11xHHQ7vGz0qsBZaQFjyxs9ra11oBf
-         shnwjnYt5tatymD0WaEs5Pi1krUxRQOkucT4wB2E=
-Date:   Tue, 20 Oct 2020 15:23:00 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jon Derrick <jonathan.derrick@intel.com>
-Cc:     linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrzej Jakowski <andrzej.jakowski@linux.intel.com>,
-        Sushma Kalakota <sushmax.kalakota@intel.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@intel.com>
-Subject: Re: [PATCH 6/6] PCI: vmd: Disable MSI/X remapping when possible
-Message-ID: <20201020202300.GA394066@bjorn-Precision-5520>
+        id S2409462AbgJTU0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 16:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409411AbgJTU0n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 16:26:43 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F5DC0613CE;
+        Tue, 20 Oct 2020 13:26:42 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id n6so4069506wrm.13;
+        Tue, 20 Oct 2020 13:26:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GRDowTMD/B/aM8Vilpj3Q1yA7p1GXJzFf43kGQzygwo=;
+        b=ulR6tNd23JxYymvbJ+dNOMzHuFJrQqcrbddwWlxHlmFezevH5ivFxh7sNXNeReKAot
+         TtUTOTxyA7M9xNCPInyIuH28Rl2ieJ+OoYykoNJ8tlUmje1FFIYHUypRN3w4WeqtPIz6
+         7ycbYOC893EEDkWbjQKE8X3MkX38w5WSLUHu683OmcZ00VFoXjmGW7KX/8+n9sXHTtER
+         1HhskBAs5CwarLXaAF6foHEn/sC8Lg9allOFBEK8uWPgvRn/l+GrmhfFbuIMDxYduQGY
+         dZ+lCZXKPxIExSD+RBatZ09Yx2VMVVFqXloHKb3AcS0PzY6+vFkNXZrjJ6kE8TXJ2UYJ
+         CWbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GRDowTMD/B/aM8Vilpj3Q1yA7p1GXJzFf43kGQzygwo=;
+        b=N4tQkU83Dmh7ELWlPYe/cchkdXys+fF5ve8AqcYehNMi8Z0WJaGFcOvrdIPm1kbve/
+         3tp08uIVEkBy103qec7Qsx69G3CtowzPZe6g1FQwkaBzayZ0CW8L1a7vvMXJxcysskKZ
+         FT3Q1d8/bqBOQkU6mV3ICnXBV7EBsmuhikQCe9X2il0U2E4pwbbG3rooPPr4D2wvA2/d
+         XiHS4oP/tzHY3Yi1Fn76/z5lo5Cj39iktRt4mRbiMniNg0VR3KG6Ud9xY45bc8Cvk0lu
+         O8wKiuwnEAk1Kliw8/EkgcGNfw5q4Gq3UfzQKcRbQwrz7TgUdvdIW8iRewXAwwoNGSQX
+         jk4w==
+X-Gm-Message-State: AOAM5331Ms+D6SgapfUZdVaQNGAD3FigB9n/alBsTftysS78CQfoUvWR
+        MFJ072Sg0nwr407W/9GuVijwydZN+h39QHr2sTE=
+X-Google-Smtp-Source: ABdhPJzzUvAYACoH6eSL4YBFTZRcY53dLwg+34P2ct9pX97I6f0E+1gfhBhjLEp6Bpx3sCnY6KzBM4UusbeIZGqOUXA=
+X-Received: by 2002:a1c:b486:: with SMTP id d128mr4535862wmf.164.1603225600790;
+ Tue, 20 Oct 2020 13:26:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728194945.14126-7-jonathan.derrick@intel.com>
+References: <20201019211101.143327-1-robdclark@gmail.com> <20201020082404.GJ401619@phenom.ffwll.local>
+ <CAF6AEGuT6ZSpitNS0eBcjKhAVW1QBg+uPJQQkBLckOk=_GBx=A@mail.gmail.com>
+ <CAKMK7uEg-iz2zK6E0RFA-JQ+GfjuUcnrdu+e_3FWq9E9_9WUZA@mail.gmail.com>
+ <CAF6AEGuF_76hMHa-n7VYHY+sSKGTt=gTBh8r+2992Bhx-RE61A@mail.gmail.com>
+ <CAKMK7uEHSsgVDsFnpedx2_w0B8ST3RKA1O62NXOtDr2bCrie+A@mail.gmail.com>
+ <CAF6AEGtfLpueGUF_2oWzAt2KCHh0mmF4fDnNRHB3P5H_-Xn=6A@mail.gmail.com> <CAKMK7uEsv36Y3ZiKdtHFCSxv_Wywm6M2nZ1BxpjOCfF46UKZpw@mail.gmail.com>
+In-Reply-To: <CAKMK7uEsv36Y3ZiKdtHFCSxv_Wywm6M2nZ1BxpjOCfF46UKZpw@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 20 Oct 2020 13:26:29 -0700
+Message-ID: <CAF6AEGs+=pw=ufKQwwb2xCBzVjeQs_W9-4TT5BDWDucQUhmduA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] drm/msm: kthread_worker conversion
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Roy Spliet <nouveau@spliet.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        tongtiangen <tongtiangen@huawei.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Drew Davenport <ddavenport@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 01:49:45PM -0600, Jon Derrick wrote:
-> VMD will retransmit child device MSI/X using its own MSI/X table and
-> requester-id. This limits the number of MSI/X available to the whole
-> child device domain to the number of VMD MSI/X interrupts. Some VMD
-> devices have a mode where this remapping can be disabled, allowing child
-> device interrupts to bypass processing with the VMD MSI/X domain
-> interrupt handler and going straight the child device interrupt handler,
-> allowing for better performance and scaling. The requester-id still gets
-> changed to the VMD endpoint's requester-id, and the interrupt remapping
-> handlers have been updated to properly set IRTE for child device
-> interrupts to the VMD endpoint's context.
-> 
-> Some VMD platforms have existing production BIOS which rely on MSI/X
-> remapping and won't explicitly program the MSI/X remapping bit. This
-> re-enables MSI/X remapping on unload.
-> 
-> Disabling MSI/X remapping is only available for Icelake Server and
-> client VMD products.
+On Tue, Oct 20, 2020 at 11:14 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Tue, Oct 20, 2020 at 7:23 PM Rob Clark <robdclark@gmail.com> wrote:
+> >
+> > On Tue, Oct 20, 2020 at 10:02 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > >
+> > > On Tue, Oct 20, 2020 at 5:08 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > >
+> > > > On Tue, Oct 20, 2020 at 7:29 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > >
+> > > > > On Tue, Oct 20, 2020 at 4:01 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > > > >
+> > > > > > On Tue, Oct 20, 2020 at 1:24 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > > > >
+> > > > > > > On Mon, Oct 19, 2020 at 02:10:50PM -0700, Rob Clark wrote:
+> > > > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > > > >
+> > > > > > > > In particular, converting the async atomic commit (for cursor updates,
+> > > > > > > > etc) to SCHED_FIFO kthread_worker helps with some cases where we
+> > > > > > > > wouldn't manage to flush the updates within the 1ms-before-vblank
+> > > > > > > > deadline resulting in fps drops when there is cursor movement.
+> > > > > > > >
+> > > > > > > > Rob Clark (3):
+> > > > > > > >   drm/msm/gpu: Convert retire/recover work to kthread_worker
+> > > > > > > >   drm/msm/kms: Update msm_kms_init/destroy
+> > > > > > > >   drm/msm/atomic: Convert to per-CRTC kthread_work
+> > > > > > >
+> > > > > > > So i915 has it's own commit worker already for $reasons, but I don't think
+> > > > > > > that's a good path to go down with more drivers. And the problem seems
+> > > > > > > entirely generic in nature ...
+> > > > > >
+> > > > > > I'm not *entirely* sure what your point is here?  This is just
+> > > > > > migrating away from a shared ordered wq to per-crtc kthread so that we
+> > > > > > don't miss vblank deadlines for silly reasons (and then stall on the
+> > > > > > next frame's pageflip because we are still waiting for the cursor
+> > > > > > update to latch).  Kind of like vblank-work but scheduled prior to,
+> > > > > > rather than after, vblank.
+> > > > > >
+> > > > > > And you're right that the problem is partially generic.. hw that (a)
+> > > > > > doesn't have true async (cursor and/or otherwise) updates, and (b) has
+> > > > > > various flush bits that latch register updates on vblank, is not that
+> > > > > > uncommon.  But the current atomic helper API would have to be a bit
+> > > > > > redesigned to look more like the interface between msm_atomic and the
+> > > > > > display backend.  That is a fair bit of churn for re-using a small bit
+> > > > > > of code.
+> > > > >
+> > > > > I was making some assumptions about what you're doing, and I was
+> > > > > wrong. So I went and tried to understand what's actually going on
+> > > > > here.
+> > > > >
+> > > > > I'm trying to understand what exactly you've added with that async msm
+> > > > > support 2d99ced787e3d. I think this breaks the state structure update
+> > > > > model, you can't access any ->state pointers from the commit functions
+> > > > > after you've called drm_atomic_helper_commit_hw_done, or you might
+> > > > > have a use after free. And that seems to be happening from this commit
+> > > > > work thing you added to your existing commit work that the atomic
+> > > > > helpers provide already.
+> > > > >
+> > > > > The various commit functions seem to grab various state objects by
+> > > > > just chasing pointers from the objects (instead of the
+> > > > > drm_atomic_state stuff), so this all feels like it's yolo
+> > > > > free-wheeling.
+> > > > >
+> > > > > You also seem to be using the async_commit stuff from the atomic
+> > > > > helpers (which is actually synchronous (i.e. blocking) from the pov of
+> > > > > how the code runs, but seems to be for mdp5 only and not others. Also
+> > > > > your can_do_async still checks for legacy_cursor_update (maybe a
+> > > > > leftover, or needed on !mdp5 platforms) and ->async_update.
+> > > > >
+> > > > > I'm thoroughly confused how this all works.
+> > > >
+> > > > The legacy_cursor_update is really the thing that motivated the async
+> > > > commit support in the first place.  Sadly we still have userspace that
+> > > > expects to be able to use legacy cursor API, and that it will be
+> > > > nonblocking (and not cause fps drop).  (I'm not a fan of the legacy
+> > > > cursor UAPI.. don't hate the player..)
+> > >
+> > > Yeah this is why we have these atomic_async_check/commit functions,
+> > > and msm is even using them for mdp5. Not hating the player here at
+> > > all.
+> > >
+> > > > The premise is to do everything in terms of crtc_mask, although yeah,
+> > > > it looks like there are a few points that need to look at things like
+> > > > crtc->state->active.  The only point in msm-atomic itself that does
+> > > > this is vblank_get/put(), possibly we can fix drm_vblank instead and
+> > > > drop that workaround (see 43906812eaab06423f56af5cca9a9fcdbb4ac454)
+> > > >
+> > > > The rest of the async part is really just supposed to be writing the
+> > > > appropriate flush reg(s) and waiting until flush completes, although
+> > > > dpu's excess layering makes this harder than it needs to be.
+> > > >
+> > > > In practice, the kms->wait_flush() at the top of
+> > > > msm_atomic_commit_tail() will block until a pending async commit
+> > > > completes (this is where we hit the fps drop if we miss vblank
+> > > > deadline), so I don't *think* you can trigger a use-after-free.  But
+> > > > the dpu code could be better cleaned up to have less obj->state
+> > > > dereference in the kms->flush_commit(crtc_mask)/etc path.
+> > >
+> > > Hm this is more or less what the atomic_async_commit/check stuff was
+> > > meant to help facilitate too, and now msm is using that for mdp5, but
+> > > not for other pieces. That seems very confusing.
+> > >
+> > > Also I'm not sure how this works if you still end up flushing anyway,
+> > > since then you'd be back to doing everything in-order. Or will an
+> > > normal atomic flip push all the cursor updates to the next frame (in
+> > > which case you really should be able to do this all with async helpers
+> > > we have instead of hand-rolling a bunch of it in strange places).
+> >
+> > So, "flush" from the core-atomic part is writing all the various
+> > registers (overlay scanout bo/format/position/etc).. this is all done
+> > at the normal time (ie. whenever we get the cursor update).  The only
+> > thing we defer until close-to-vblank is writing the hw flush registers
+> > (ie. registers with bitmasks of the various hw blocks to latch on
+> > vblank).
+> >
+> > So a cursor update applies the state normally, from the PoV of
+> > sequence of atomic updates.  But tries to defer writing the flush regs
+> > so we can merge in future cursor updates and/or pageflip into the same
+> > frame.
+> >
+> > Modulo the stuff that derefs kmsobj->state but shouldn't, I think (at
+> > least for hw that works this way with flush registers) this is a
+> > better approach to handling cursor updates.  The mdp5 async cursor
+> > stuff predates dpu, and I've just not had a chance to update mdp5 to
+> > use the new async flush path yet.
+>
+> The trouble is that this is moving back to legacy_cursor_update hack
+> instead of retiring it for good, so I'm not super thrilled about this.
 
-I'm trying to button up the PCI pull request.  I'm updating Lorenzo's
-pci/vmd branch for other reasons, and I notice it still contains this
-commit: 67b219dc3a6d ("PCI: vmd: Disable MSI/X remapping when
-possible").
+state->async==true for cursor updates would work for me.. at the end
+of the day, it doesn't really matter that it is a cursor plane, or
+what the UAPI was, just that it is async.
 
-I want to remove "MSI/X" from the commit log and comments of that
-commit because I don't know what "MSI/X" means.
+> Can't we do the register update from atomic_async_commit, and then
+> latch the timed worker, so that it all fits into the bigger thing?
+> Maybe also subsume the mdp5 stuff like that.
 
-Should I replace it with "MSI" or "MSI-X" or "MSI/MSI-X"?  Something
-else?  When possible, I want to use exactly the same terminology as
-the PCIe spec to avoid ambiguity.
+The current async update path replaced a previous async commit
+implementation, which might have been using atomic_async_commit?  I'd
+have to dig back thru git history.  The big problem with it was that
+an async commit could race with a sync/nonblock commit, and one of the
+paths could write flush regs while other is still updating regs.
 
-It talks about "MSI/X table", which makes me think it should be
-"MSI-X", since plain MSI does not have a table.
+The important thing about the current async approach is the separation
+of commit and flush, and the kms->wait_flush() at the top of
+commit_tail() which serializes hw updates and flush, so we don't have
+problems with racing commits.  I'm not sure how that would fit in with
+atomic_async_commit().
 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> Signed-off-by: Jon Derrick <jonathan.derrick@intel.com>
-> ---
->  drivers/pci/controller/vmd.c | 58 +++++++++++++++++++++++++++++++-----
->  1 file changed, 50 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-> index 3214d785fa5d..e8cde2c390b9 100644
-> --- a/drivers/pci/controller/vmd.c
-> +++ b/drivers/pci/controller/vmd.c
-> @@ -53,6 +53,12 @@ enum vmd_features {
->  	 * vendor-specific capability space
->  	 */
->  	VMD_FEAT_HAS_MEMBAR_SHADOW_VSCAP	= (1 << 2),
-> +
-> +	/*
-> +	 * Device remaps MSI/X transactions into its MSI/X table and requires
-> +	 * VMD MSI domain for child device interrupt handling
-> +	 */
-> +	VMD_FEAT_REMAPS_MSI			= (1 << 3),
->  };
->  
->  /*
-> @@ -298,6 +304,15 @@ static struct msi_domain_info vmd_msi_domain_info = {
->  	.chip		= &vmd_msi_controller,
->  };
->  
-> +static void vmd_enable_msi_remapping(struct vmd_dev *vmd, bool enable)
-> +{
-> +	u16 reg;
-> +
-> +	pci_read_config_word(vmd->dev, PCI_REG_VMCONFIG, &reg);
-> +	reg = enable ? (reg & ~0x2) : (reg | 0x2);
-> +	pci_write_config_word(vmd->dev, PCI_REG_VMCONFIG, reg);
-> +}
-> +
->  static int vmd_create_irq_domain(struct vmd_dev *vmd)
->  {
->  	struct fwnode_handle *fn;
-> @@ -318,6 +333,13 @@ static int vmd_create_irq_domain(struct vmd_dev *vmd)
->  
->  static void vmd_remove_irq_domain(struct vmd_dev *vmd)
->  {
-> +	/*
-> +	 * Some production BIOS won't enable remapping between soft reboots.
-> +	 * Ensure remapping is restored before unloading the driver
-> +	 */
-> +	if (!vmd->msix_count)
-> +		vmd_enable_msi_remapping(vmd, true);
-> +
->  	if (vmd->irq_domain) {
->  		struct fwnode_handle *fn = vmd->irq_domain->fwnode;
->  
-> @@ -606,6 +628,27 @@ static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
->  			return ret;
->  	}
->  
-> +	/*
-> +	 * Currently MSI remapping must be enabled in guest passthrough mode
-> +	 * due to some missing interrupt remapping plumbing. This is probably
-> +	 * acceptable because the guest is usually CPU-limited and MSI
-> +	 * remapping doesn't become a performance bottleneck.
-> +	 */
-> +	if (features & VMD_FEAT_REMAPS_MSI || offset[0] || offset[1]) {
-> +		ret = vmd_alloc_irqs(vmd);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	/*
-> +	 * Disable remapping for performance if possible based on if VMD IRQs
-> +	 * had been allocated.
-> +	 */
-> +	if (vmd->msix_count)
-> +		vmd_enable_msi_remapping(vmd, true);
-> +	else
-> +		vmd_enable_msi_remapping(vmd, false);
-> +
->  	/*
->  	 * Certain VMD devices may have a root port configuration option which
->  	 * limits the bus range to between 0-127, 128-255, or 224-255
-> @@ -674,9 +717,11 @@ static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
->  
->  	sd->node = pcibus_to_node(vmd->dev->bus);
->  
-> -	ret = vmd_create_irq_domain(vmd);
-> -	if (ret)
-> -		return ret;
-> +	if (vmd->msix_count) {
-> +		ret = vmd_create_irq_domain(vmd);
-> +		if (ret)
-> +			return ret;
-> +	}
->  
->  	pci_add_resource(&resources, &vmd->resources[0]);
->  	pci_add_resource_offset(&resources, &vmd->resources[1], offset[0]);
-> @@ -738,10 +783,6 @@ static int vmd_probe(struct pci_dev *dev, const struct pci_device_id *id)
->  	    dma_set_mask_and_coherent(&dev->dev, DMA_BIT_MASK(32)))
->  		return -ENODEV;
->  
-> -	err = vmd_alloc_irqs(vmd);
-> -	if (err)
-> -		return err;
-> -
->  	spin_lock_init(&vmd->cfg_lock);
->  	pci_set_drvdata(dev, vmd);
->  	err = vmd_enable_domain(vmd, (unsigned long) id->driver_data);
-> @@ -809,7 +850,8 @@ static SIMPLE_DEV_PM_OPS(vmd_dev_pm_ops, vmd_suspend, vmd_resume);
->  
->  static const struct pci_device_id vmd_ids[] = {
->  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_VMD_201D),
-> -		.driver_data = VMD_FEAT_HAS_MEMBAR_SHADOW_VSCAP,},
-> +		.driver_data = VMD_FEAT_HAS_MEMBAR_SHADOW_VSCAP |
-> +				VMD_FEAT_REMAPS_MSI,},
->  	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_VMD_28C0),
->  		.driver_data = VMD_FEAT_HAS_MEMBAR_SHADOW |
->  				VMD_FEAT_HAS_BUS_RESTRICTIONS,},
-> -- 
-> 2.27.0
-> 
+> And that commit worker then probably needs the minimal amount of state
+> protected by a spinlock or similar, so they're not trampling over each
+> other. At least I'm still not seeing how you both make stuff async and
+> prevent havoc when an update races with the commit worker. Or can that
+> only happen for cursor commits, where we don't care when the cursor is
+> very rarely misplaced because the hw takes an inconsistent update.
+
+preventing the race is a combination of the locking (which recently
+slightly changed and switched to per-crtc locks) and the
+kms->wait_flush() which ensures previous updates have flushed.
+
+BR,
+-R
+
+> -Daniel
+>
+>
+> > BR,
+> > -R
+> >
+> > > You probably still need the worker to push out the update at the right
+> > > time, and I'm not sure what some good locking for that is. At least
+> > > I'm not really seeing how you sync that worker against a racing update
+> > > for the next cursor move.
+> > > -Daniel
+> > >
+> > >
+> > > > BR,
+> > > > -R
+> > > >
+> > > > > I do agree though that you probably want this to be a real time fifo
+> > > > > kthread worker, like for the vblank worker. Except now that I looked,
+> > > > > I'm not sure it's actually working intended and correct.
+> > > > > -Daniel
+> > > > >
+> > > > > > BR,
+> > > > > > -R
+> > > > > >
+> > > > > > > -Daniel
+> > > > > > >
+> > > > > > > >
+> > > > > > > >  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |  3 +--
+> > > > > > > >  drivers/gpu/drm/msm/adreno/a5xx_preempt.c |  6 ++---
+> > > > > > > >  drivers/gpu/drm/msm/adreno/a6xx_gmu.c     |  4 +--
+> > > > > > > >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 +--
+> > > > > > > >  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c   |  8 +++++-
+> > > > > > > >  drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c  |  8 +++++-
+> > > > > > > >  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c  | 11 ++++++---
+> > > > > > > >  drivers/gpu/drm/msm/disp/mdp_kms.h        |  9 +++++--
+> > > > > > > >  drivers/gpu/drm/msm/msm_atomic.c          | 25 +++++++++++++++----
+> > > > > > > >  drivers/gpu/drm/msm/msm_drv.h             |  3 ++-
+> > > > > > > >  drivers/gpu/drm/msm/msm_gpu.c             | 30 +++++++++++++++--------
+> > > > > > > >  drivers/gpu/drm/msm/msm_gpu.h             | 13 +++++++---
+> > > > > > > >  drivers/gpu/drm/msm/msm_kms.h             | 23 ++++++++++++++---
+> > > > > > > >  13 files changed, 104 insertions(+), 43 deletions(-)
+> > > > > > > >
+> > > > > > > > --
+> > > > > > > > 2.26.2
+> > > > > > > >
+> > > > > > > > _______________________________________________
+> > > > > > > > dri-devel mailing list
+> > > > > > > > dri-devel@lists.freedesktop.org
+> > > > > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > > > > >
+> > > > > > > --
+> > > > > > > Daniel Vetter
+> > > > > > > Software Engineer, Intel Corporation
+> > > > > > > http://blog.ffwll.ch
+> > > > > > _______________________________________________
+> > > > > > dri-devel mailing list
+> > > > > > dri-devel@lists.freedesktop.org
+> > > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > > >
+> > > > >
+> > > > >
+> > > > > --
+> > > > > Daniel Vetter
+> > > > > Software Engineer, Intel Corporation
+> > > > > http://blog.ffwll.ch
+> > >
+> > >
+> > >
+> > > --
+> > > Daniel Vetter
+> > > Software Engineer, Intel Corporation
+> > > http://blog.ffwll.ch
+>
+>
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
