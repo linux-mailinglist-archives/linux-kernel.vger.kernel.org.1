@@ -2,48 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E5D2940C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145742940C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394825AbgJTQqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 12:46:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52814 "EHLO mail.kernel.org"
+        id S2394832AbgJTQqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 12:46:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733221AbgJTQqE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 12:46:04 -0400
-Subject: Re: [git pull] IOMMU Fixes for Linux since iommu-updates-v5.10
+        id S2394817AbgJTQqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 12:46:05 -0400
+Subject: Re: [GIT PULL] ARC changes for 5.10-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603212364;
-        bh=xg+oRsnPfUU6aXZECsaUkYM5mm8ivkatSd5ywRmNj1o=;
+        bh=LQPiQPmS9JRz9yams9x2cA8qS2ds1jJjHVTUV12Mh1c=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=LcFX2hl9XzLfQqG3iOLFmNW96G4uOwD3iyHJ3CD9LY1msNb9aY707J3q6vBuVHJgm
-         BcIuqiunxVXN2j1OjbWW7u4+8ilGStGUDobGRjun0FDOFVhXGN+sE6AU+pS2o5ueXB
-         prs7pf/TFsr0vWdBWcfFIvDwKbAtlGWvfqdQPCRs=
+        b=bd5IEG7xnL4SUIeD3rTEPvZSqSWyDnWGtf2S/4WG30dK4uAfFwOO+EaVjeJk8GK7R
+         9aSJMP6XdjExotd34CvIbc34VJ11TIXXHORog1SQKJWlhqMTwPWuljKr6Gur/XqU46
+         cN7BIzgqv8kV4uy1CInJKAgUM3CIcfQqynMlDikU=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201019154418.GA25261@8bytes.org>
-References: <20201019154418.GA25261@8bytes.org>
+In-Reply-To: <bbd3efb4-39d2-1d2f-b4c5-0f68dd6f481f@synopsys.com>
+References: <bbd3efb4-39d2-1d2f-b4c5-0f68dd6f481f@synopsys.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201019154418.GA25261@8bytes.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fix-v5.10
-X-PR-Tracked-Commit-Id: 9def3b1a07c41e21c68a0eb353e3e569fdd1d2b1
+X-PR-Tracked-Message-Id: <bbd3efb4-39d2-1d2f-b4c5-0f68dd6f481f@synopsys.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vgupta/arc.git/ tags/arc-5.10-rc1
+X-PR-Tracked-Commit-Id: 6364d1b41cc382db3b03cf33c57b6007ee8f09cf
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5c7e3f3f5cbc31118914ceee969154582ad3aa6b
-Message-Id: <160321236432.11581.15305611521366285712.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: b32649b863623d89fec83aa27d19c28715c4fae3
+Message-Id: <160321236462.11581.12800103264500445363.pr-tracker-bot@kernel.org>
 Date:   Tue, 20 Oct 2020 16:46:04 +0000
-To:     Joerg Roedel <joro@8bytes.org>
+To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+        lkml <linux-kernel@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        "Ofer Levi(SW)" <oferle@nvidia.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Noam Camus <noamikong@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 19 Oct 2020 17:44:23 +0200:
+The pull request you sent on Tue, 20 Oct 2020 01:57:21 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fix-v5.10
+> git://git.kernel.org/pub/scm/linux/kernel/git/vgupta/arc.git/ tags/arc-5.10-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5c7e3f3f5cbc31118914ceee969154582ad3aa6b
+https://git.kernel.org/torvalds/c/b32649b863623d89fec83aa27d19c28715c4fae3
 
 Thank you!
 
