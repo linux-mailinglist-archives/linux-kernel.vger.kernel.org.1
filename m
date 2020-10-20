@@ -2,111 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC4329334B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D3C29335A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390804AbgJTCtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 22:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728493AbgJTCtc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 22:49:32 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC04C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 19:49:32 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id e10so301274pfj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 19:49:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Frk7zgU5/nDcK1Z9WL1wdRxPp+yWRhCSNMyOmTrl8PY=;
-        b=zpRr5UoRWSvjmprmWBZHrLiG1GLGZ+zG2glyaEWNFLPw0Idq34SL3dj3kUsVzSBhW+
-         0wqzhaEfwIQr8fE4LxOwLxc/+Ggu9g3MfbU+JZwfASC1/J7CJx/skmxUJ6DOoaI/jpmh
-         nSjaicbvvSUV/g6adebTKYK7UGUay6guAhODark6OBEoJDHLz1iV4LYaS9MFXH0HjIsE
-         YXH5rpVMsRmsjQx8+nmz85kOI5aRoSUr0G2JfhIDHXgT6Tw196uri9XT2K2vhDeXSqvI
-         jNXPCW1q7p7t6Pg3oSw6fvaDXoLwBb1zGXlbPgGJahEfIeEALnafh+5mhMkplC51Van+
-         sgwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Frk7zgU5/nDcK1Z9WL1wdRxPp+yWRhCSNMyOmTrl8PY=;
-        b=T8MULdD3fIblUiEODMRH3RpwhPsgU+rczdMTqS2+SIpiqJ7liG/6dXmWLp3nyKVBdJ
-         0jnWrhGHz7dpBJPLuFWtFzKUcoIx+XcfnFZkct7oir4itGMtO7WhTxiaN63q+AolLHj4
-         tcNBvuAFoXsn4sW01O2T96jPlDU80pHsLmwmKYB2op4GOe1Dr+l3Sff9ee61p1jvd9JA
-         44Q+eLmTkGFyo+66i5zhPYnNLurz4xValU8UtW9/BYWVAWOJxWt85meEWQKdWz/fnBA7
-         e1rify2fYySSd293IEonAgM18a3yfHxQgHxCOO2KjzK94ilswbWvo/nuYPd6tV/3S8dM
-         by0g==
-X-Gm-Message-State: AOAM5337HR4c0BlMCGk5dVTA7wg0PwD5AHF2jvuifnGGCBdgMyt9X9jb
-        7Hujv4SRRm1xh6hnw/IPV3VdLg==
-X-Google-Smtp-Source: ABdhPJylloWIkQPbnl9qWtNs60y8ZC1K1x4M6S1IEEkcrCijD4iBjDovdVHH/pxpGsgui8Nb/BwnVQ==
-X-Received: by 2002:a63:4765:: with SMTP id w37mr837073pgk.332.1603162172004;
-        Mon, 19 Oct 2020 19:49:32 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([64.120.119.108])
-        by smtp.gmail.com with ESMTPSA id k78sm291823pfd.194.2020.10.19.19.49.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 19 Oct 2020 19:49:31 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 10:49:25 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>, kan.liang@linux.intel.com,
-        mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
-        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        David Miller <davem@davemloft.net>
-Subject: Re: [PATCH V9 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
-Message-ID: <20201020024925.GB13630@leoy-ThinkPad-X240s>
-References: <20201001135749.2804-1-kan.liang@linux.intel.com>
- <20201001135749.2804-2-kan.liang@linux.intel.com>
- <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
- <20201009093750.GD29594@willie-the-truck>
- <20201009095300.GI2628@hirez.programming.kicks-ass.net>
+        id S2390881AbgJTCx0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Oct 2020 22:53:26 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:17530 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390804AbgJTCxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 22:53:25 -0400
+Received: from DAG2EX09-IDC.srv.huawei-3com.com ([10.8.0.72])
+        by h3cspam01-ex.h3c.com with ESMTPS id 09K2qjIx075291
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 20 Oct 2020 10:52:45 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX09-IDC.srv.huawei-3com.com (10.8.0.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 20 Oct 2020 10:52:46 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.2106.002; Tue, 20 Oct 2020 10:52:46 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Michal Hocko <mhocko@suse.com>
+CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "raghavendra.kt@linux.vnet.ibm.com" 
+        <raghavendra.kt@linux.vnet.ibm.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] blk-mq: remove the calling of local_memory_node()
+Thread-Topic: [PATCH] blk-mq: remove the calling of local_memory_node()
+Thread-Index: AQHWpfIblb4hxO1wEUaIIqHsdHbO2qmeRzOAgAGEP4A=
+Date:   Tue, 20 Oct 2020 02:52:46 +0000
+Message-ID: <eadeb35dc2ea4b9c9df6b36b9e9f19e2@h3c.com>
+References: <20201019082047.31113-1-tian.xianting@h3c.com>
+ <20201019114011.GE27114@dhcp22.suse.cz>
+In-Reply-To: <20201019114011.GE27114@dhcp22.suse.cz>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009095300.GI2628@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 09K2qjIx075291
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 11:53:00AM +0200, Peter Zijlstra wrote:
-> On Fri, Oct 09, 2020 at 10:37:51AM +0100, Will Deacon wrote:
-> > On Fri, Oct 09, 2020 at 11:09:27AM +0200, Peter Zijlstra wrote:
-> 
-> > > Patch 4 makes it all far worse by exposing it to pretty much everybody.
-> > > 
-> > > Now, I think we can fix at least the user mappings with the below delta,
-> > > but if archs are using non-page-table MMU sizes we'll need arch helpers.
-> > > 
-> > > ARM64 is in that last boat.
-> > > 
-> > > Will, can you live with the below, if not, what would you like to do,
-> > > make the entire function __weak so that you can override it, or hook
-> > > into it somewhere?
-> > 
-> > Hmm, so I don't think we currently have any PMUs that set 'data->addr'
-> > on arm64, in which case maybe none of this currently matters for us.
-> > 
-> > However, I must admit that I couldn't figure out exactly what gets exposed
-> > to userspace when the backend drivers don't look at the sample_type or
-> > do anything with the addr field.
-> 
-> Patch 4:
-> 
->   https://lkml.kernel.org/r/20201001135749.2804-5-kan.liang@linux.intel.com
-> 
-> is the one that exposes this to everybody with perf support. It will
-> then report the page-size for the code address (SAMPLE_IP).
+Thanks Michal,
+Hi, raghavendra, Jens
+Could you help comment this issue? Thanks in advance.
 
-I can see there have another potentail customer to use page-size is
-Arm SPE, but Arm SPE is hardware trace based sample but not interrupt
-based sample.  For this case, I think this patch set cannot be
-directly applied to the AUX trace data.
+-----Original Message-----
+From: Michal Hocko [mailto:mhocko@suse.com] 
+Sent: Monday, October 19, 2020 7:40 PM
+To: tianxianting (RD) <tian.xianting@h3c.com>
+Cc: axboe@kernel.dk; raghavendra.kt@linux.vnet.ibm.com; linux-block@vger.kernel.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-mq: remove the calling of local_memory_node()
 
-Thanks,
-Leo
+On Mon 19-10-20 16:20:47, Xianting Tian wrote:
+> We don't need to check whether the node is memoryless numa node before 
+> calling allocator interface. SLUB(and SLAB,SLOB) relies on the page 
+> allocator to pick a node. Page allocator should deal with memoryless 
+> nodes just fine. It has zonelists constructed for each possible nodes.
+> And it will automatically fall back into a node which is closest to 
+> the requested node. As long as __GFP_THISNODE is not enforced of course.
+> 
+> The code comments of kmem_cache_alloc_node() of SLAB also showed this:
+>  * Fallback to other node is possible if __GFP_THISNODE is not set.
+> 
+> blk-mq code doesn't set __GFP_THISNODE, so we can remove the calling 
+> of local_memory_node().
+
+yes, this is indeed the case. I cannot really judge the blg-mq code but it seems to be unnecessary. Maybe there are some subtle details not explained by bffed457160ab though.
+
+> Fixes: bffed457160ab ("blk-mq: Avoid memoryless numa node encoded in 
+> hctx numa_node")
+
+But the existing code is not broken. It just overdoes what needs to be done. So effectively bffed457160ab was not needed. I do not think that Fixes is really necessary.
+
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  block/blk-mq-cpumap.c | 2 +-
+>  block/blk-mq.c        | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/block/blk-mq-cpumap.c b/block/blk-mq-cpumap.c index 
+> 0157f2b34..3db84d319 100644
+> --- a/block/blk-mq-cpumap.c
+> +++ b/block/blk-mq-cpumap.c
+> @@ -89,7 +89,7 @@ int blk_mq_hw_queue_to_node(struct blk_mq_queue_map 
+> *qmap, unsigned int index)
+>  
+>  	for_each_possible_cpu(i) {
+>  		if (index == qmap->mq_map[i])
+> -			return local_memory_node(cpu_to_node(i));
+> +			return cpu_to_node(i);
+>  	}
+>  
+>  	return NUMA_NO_NODE;
+> diff --git a/block/blk-mq.c b/block/blk-mq.c index 
+> cdced4aca..48f8366b2 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -2737,7 +2737,7 @@ static void blk_mq_init_cpu_queues(struct request_queue *q,
+>  		for (j = 0; j < set->nr_maps; j++) {
+>  			hctx = blk_mq_map_queue_type(q, j, i);
+>  			if (nr_hw_queues > 1 && hctx->numa_node == NUMA_NO_NODE)
+> -				hctx->numa_node = local_memory_node(cpu_to_node(i));
+> +				hctx->numa_node = cpu_to_node(i);
+>  		}
+>  	}
+>  }
+> --
+> 2.17.1
+
+--
+Michal Hocko
+SUSE Labs
