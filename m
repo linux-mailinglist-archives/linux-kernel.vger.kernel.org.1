@@ -2,192 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D931E293580
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1E9293582
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404833AbgJTHHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:07:10 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:57464 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404793AbgJTHHK (ORCPT
+        id S2404845AbgJTHHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404740AbgJTHHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:07:10 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09K6vhij026952;
-        Tue, 20 Oct 2020 09:07:03 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=AbyBXYQMSY/j33fnHvZd5ZjDsC1/dkjqZFY4XRJQcKA=;
- b=sRIpVF35CnK+MYwqZTM1q4+KLAXJi9U3gbBiy9WabEZHiSNGInFQj6WXMeKy/INmAogi
- Z9r9lmOwVcRcILhVRtUOpJf1Vlt22DLV1DWuw4LUWyZPncIl1cFvF11PH/j2oFUoX3Kd
- bdvjMfpruytB9/nS4z9FnTMG4dQ2AXO0se7AZ2OEEq8RNQxep5nF15mRcIC0K7zUe8jL
- UdzJiaTOof+fxwH2C51tv34fw0noiB2+z6Rmr9wTcQwUU2DyImrNLHSztvKQMl5KgK6o
- kI8E62XHWSgEuaKcBvH9Ew8LC8eNT+Kv1fy1Ij9p3FgZhncQaqnKV65Z1eIgNKCO4s3A Ig== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 347qgg15hh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Oct 2020 09:07:03 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 08B87100034;
-        Tue, 20 Oct 2020 09:07:03 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EA3182ADA19;
-        Tue, 20 Oct 2020 09:07:02 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.46) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
- 2020 09:07:01 +0200
-Subject: Re: [PATCH v3 3/8] rpmsg: Move structure rpmsg_ns_msg to header file
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
-CC:     "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201019203438.501174-1-mathieu.poirier@linaro.org>
- <20201019203438.501174-4-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <95a5b23a-a2f6-bb62-4bc3-28fc16afadb4@st.com>
-Date:   Tue, 20 Oct 2020 09:07:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 20 Oct 2020 03:07:37 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E643CC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:07:36 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 184so806294lfd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:07:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X8McS5lbaBCf5JTK6wcTtTbcIkoyUi8hMk2YmNfJw8M=;
+        b=e1Y8DGWy8PvUo/hwsGgNr/SxdVXPOv2DnsuZU21mBVE0a25+BM9fRGatglVVPp9dE7
+         Lj1eLuXIUt6uQviUNHRz8UMfE7RvzoKm4fQ0fvZxduLALc0et0o6Z+aLVK+Kdg5Xgj9Q
+         28dFK/a8fFtDoZwXlcR7MoOwy2Efmluo1+anAYmYnGchJFYr4fdJUQVVzVrFVp+F/gfB
+         7UIUFT/uaTidTjc+5wmTzbtkd35BESS4VV6UbgNlcqV4/YHG+1LR39Dtr/GQ8up7Oq7a
+         o/0XT1U70IqMREyAVcpkU7ZCRhNWbcYcdAcWvdVSYbFYo/y8aCFSYswwyFbA1P7L4whR
+         SpvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X8McS5lbaBCf5JTK6wcTtTbcIkoyUi8hMk2YmNfJw8M=;
+        b=R+Ggqimx87SVNPjcDoz/a+K/a8VvNNhLMD2SzXDyqhipXfBTJeq8A0YTELqPDmD1rn
+         ZLTGjT/1r157NMR+lviGhokcgV1xUvsl001531MO+zbxmZcpXeHxd1Wue30ubFpn3QVp
+         bGDTU3C/ICzS+wYICLp7RCl6+1XlwCkWBihTnDkT+nad75X10zcyC8VDt3txndw/NC1d
+         tR0tNlFDoKzRY7ijf9alsiA6AuQC5lstsTI/eBQJZqymiu14n7X01cC8DSjj1Jw3dECe
+         Cz/UdFf+Hw/3P1RCO7pzhkf/dYtRTAbHfe73smi6ijzgd/YivXrL1eJ1NRlI9Qk9J8dl
+         oV1g==
+X-Gm-Message-State: AOAM533vkkAgUJ4m+p8fzoQzYwTs7rFJS5j/axWAtDW9IRZE6vsEMlDI
+        JfExrmNDb2pUJO5SmZZeXxbm1nmAABdAFssYLiFYBw==
+X-Google-Smtp-Source: ABdhPJze6CEfoi8/vvii5B8d0+u1FpywdGMBPFXjnDIeIpd5UubkRRY//yghku8Ufl5i5OH4rN/5B3WrTxn8dIcS/Dk=
+X-Received: by 2002:ac2:55b2:: with SMTP id y18mr465214lfg.419.1603177655367;
+ Tue, 20 Oct 2020 00:07:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201019203438.501174-4-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-20_03:2020-10-16,2020-10-20 signatures=0
+References: <1602673931-28782-1-git-send-email-sumit.garg@linaro.org>
+ <1602673931-28782-2-git-send-email-sumit.garg@linaro.org> <b366c68fe0b365892aa4324be90235d6@kernel.org>
+In-Reply-To: <b366c68fe0b365892aa4324be90235d6@kernel.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 20 Oct 2020 12:37:24 +0530
+Message-ID: <CAFA6WYN18oe9143offQ1V5RwnYZmvy29vPR0SKFtpkdOePezsQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/5] arm64: Add framework to turn IPI as NMI
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Mark Rutland <mark.rutland@arm.com>,
+        julien.thierry.kdev@gmail.com,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 19 Oct 2020 at 17:26, Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2020-10-14 12:12, Sumit Garg wrote:
+> > Introduce framework to turn an IPI as NMI using pseudo NMIs. In case a
+> > particular platform doesn't support pseudo NMIs, then request IPI as a
+> > regular IRQ.
+> >
+> > The main motivation for this feature is to have an IPI that can be
+> > leveraged to invoke NMI functions on other CPUs. And current
+> > prospective
+> > users are NMI backtrace and KGDB CPUs round-up whose support is added
+> > via future patches.
+> >
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  arch/arm64/include/asm/nmi.h | 16 +++++++++
+> >  arch/arm64/kernel/Makefile   |  2 +-
+> >  arch/arm64/kernel/ipi_nmi.c  | 77
+> > ++++++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 94 insertions(+), 1 deletion(-)
+> >  create mode 100644 arch/arm64/include/asm/nmi.h
+> >  create mode 100644 arch/arm64/kernel/ipi_nmi.c
+>
+> [...]
+>
+> > +     irq_set_status_flags(ipi, IRQ_HIDDEN);
+>
+> Another thing is this. Why are you hiding this from /proc/interrupts?
+> The only reason the other IPIs are hidden is that displaying them as
+> "normal" interrupts would be a change in userspace ABI.
+>
+> In your case, this is something new that can perfectly appear as
+> a standard interrupt (and I don't see how you'd display the
+> statistics otherwise).
 
+Makes sense. I will remove this flag for this IPI so that it can be
+displayed as a standard interrupt.
 
-On 10/19/20 10:34 PM, Mathieu Poirier wrote:
-> Move structure rpmsg_ns_msg to its own header file so that
-> it can be used by other entities.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+-Sumit
 
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-
-Thanks,
-Arnaud
-
-> ---
->  drivers/rpmsg/virtio_rpmsg_bus.c | 32 +-----------------------
->  include/linux/rpmsg_ns.h         | 42 ++++++++++++++++++++++++++++++++
->  2 files changed, 43 insertions(+), 31 deletions(-)
->  create mode 100644 include/linux/rpmsg_ns.h
-> 
-> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> index 8927bcad56fd..1f8154ee1e90 100644
-> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> @@ -20,6 +20,7 @@
->  #include <linux/of_device.h>
->  #include <linux/rpmsg.h>
->  #include <linux/rpmsg_byteorder.h>
-> +#include <linux/rpmsg_ns.h>
->  #include <linux/scatterlist.h>
->  #include <linux/slab.h>
->  #include <linux/sched.h>
-> @@ -93,34 +94,6 @@ struct rpmsg_hdr {
->  	u8 data[];
->  } __packed;
->  
-> -/**
-> - * struct rpmsg_ns_msg - dynamic name service announcement message
-> - * @name: name of remote service that is published
-> - * @addr: address of remote service that is published
-> - * @flags: indicates whether service is created or destroyed
-> - *
-> - * This message is sent across to publish a new service, or announce
-> - * about its removal. When we receive these messages, an appropriate
-> - * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
-> - * or ->remove() handler of the appropriate rpmsg driver will be invoked
-> - * (if/as-soon-as one is registered).
-> - */
-> -struct rpmsg_ns_msg {
-> -	char name[RPMSG_NAME_SIZE];
-> -	__rpmsg32 addr;
-> -	__rpmsg32 flags;
-> -} __packed;
-> -
-> -/**
-> - * enum rpmsg_ns_flags - dynamic name service announcement flags
-> - *
-> - * @RPMSG_NS_CREATE: a new remote service was just created
-> - * @RPMSG_NS_DESTROY: a known remote service was just destroyed
-> - */
-> -enum rpmsg_ns_flags {
-> -	RPMSG_NS_CREATE		= 0,
-> -	RPMSG_NS_DESTROY	= 1,
-> -};
->  
->  /**
->   * @vrp: the remote processor this channel belongs to
-> @@ -162,9 +135,6 @@ struct virtio_rpmsg_channel {
->   */
->  #define RPMSG_RESERVED_ADDRESSES	(1024)
->  
-> -/* Address 53 is reserved for advertising remote services */
-> -#define RPMSG_NS_ADDR			(53)
-> -
->  static void virtio_rpmsg_destroy_ept(struct rpmsg_endpoint *ept);
->  static int virtio_rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len);
->  static int virtio_rpmsg_sendto(struct rpmsg_endpoint *ept, void *data, int len,
-> diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
-> new file mode 100644
-> index 000000000000..bb479f430080
-> --- /dev/null
-> +++ b/include/linux/rpmsg_ns.h
-> @@ -0,0 +1,42 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef _LINUX_RPMSG_NS_H
-> +#define _LINUX_RPMSG_NS_H
-> +
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/types.h>
-> +#include <linux/rpmsg_byteorder.h>
-> +
-> +/**
-> + * struct rpmsg_ns_msg - dynamic name service announcement message
-> + * @name: name of remote service that is published
-> + * @addr: address of remote service that is published
-> + * @flags: indicates whether service is created or destroyed
-> + *
-> + * This message is sent across to publish a new service, or announce
-> + * about its removal. When we receive these messages, an appropriate
-> + * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
-> + * or ->remove() handler of the appropriate rpmsg driver will be invoked
-> + * (if/as-soon-as one is registered).
-> + */
-> +struct rpmsg_ns_msg {
-> +	char name[RPMSG_NAME_SIZE];
-> +	__rpmsg32 addr;
-> +	__rpmsg32 flags;
-> +} __packed;
-> +
-> +/**
-> + * enum rpmsg_ns_flags - dynamic name service announcement flags
-> + *
-> + * @RPMSG_NS_CREATE: a new remote service was just created
-> + * @RPMSG_NS_DESTROY: a known remote service was just destroyed
-> + */
-> +enum rpmsg_ns_flags {
-> +	RPMSG_NS_CREATE		= 0,
-> +	RPMSG_NS_DESTROY	= 1,
-> +};
-> +
-> +/* Address 53 is reserved for advertising remote services */
-> +#define RPMSG_NS_ADDR			(53)
-> +
-> +#endif
-> 
+>
+>          M.
+> --
+> Jazz is not dead. It just smells funny...
