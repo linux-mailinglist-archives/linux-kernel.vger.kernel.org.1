@@ -2,196 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72560293807
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B56293806
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392870AbgJTJbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50244 "EHLO
+        id S2392798AbgJTJbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:31:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391608AbgJTJbh (ORCPT
+        with ESMTP id S2391608AbgJTJbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:31:37 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3D4C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:31:36 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kUnzG-0001cS-RV; Tue, 20 Oct 2020 11:31:22 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:c351:f59d:74d9:d207] (unknown [IPv6:2a03:f580:87bc:d400:c351:f59d:74d9:d207])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 21F5B57DD00;
-        Tue, 20 Oct 2020 09:31:21 +0000 (UTC)
-Subject: Re: [PATCH V3 06/10] can: flexcan: disable wakeup in flexcan_remove()
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
-        linux-can@vger.kernel.org, pankaj.bansal@nxp.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
- <20201020155402.30318-7-qiangqing.zhang@nxp.com>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <c5a5a84a-1ed0-5413-d909-074d8ad6b102@pengutronix.de>
-Date:   Tue, 20 Oct 2020 11:31:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 20 Oct 2020 05:31:34 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2147C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:31:34 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id y20so2149258iod.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:31:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c1d+Zez1C7TJp2V/M7gloZZDa6B2Q1pBXGW4tp7F2Tc=;
+        b=IILOe44hszLDN0gM1FvqvW8P36lRbz40j8nIat7HaRBwAf8cUIyfng7y0F5eqUSWv1
+         KJQq2rNIPvXvWWCsspnwYavCyKJMs4Lh8z1bJcbTwXNYKO1Mgmh/a5MxLvRCE7EF0mq8
+         i7mn/SppKUqyUFW2v4kSkOlU27lDGRiSZQCboda9b7XDRbs5NEXqx2avoKbgGf1pigvA
+         WTGIIiJcWIlhM4LVwKmc2y+dCurkXx1Q0IurO0lfFxNWlp5B1ppswp3pVzw6UziVG8UR
+         l8DxTkFlEgfdhOaMxUu7a1Co5M8nlG3A0vTi7c1OYWNCvdDEfh47xOTZKf3IvruWnVic
+         Sttw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c1d+Zez1C7TJp2V/M7gloZZDa6B2Q1pBXGW4tp7F2Tc=;
+        b=HtrADZGXkC7+sGUc6+TBS6WCqF4SZ5Y0SdYuJA/fNTJ86C0Zq9Nw9vLLVys/TEHeIW
+         AOiXrVoEorZm9ijvHkdEqVIR681RFaUrnxyhIOyEw3Sbc4vP8iC84EIVGcXoo7/1hDg9
+         LO7Rb0eLEBZ4hcSg6EQ1S4Qo0+S8R7f9RMjgEnDZ0cG/aUHIgbCEMgJANUy5w/hjAOq/
+         Ubp5peBjO8T49497Qb7b5ZSQ1wQGUEZDHWxcJDTXVL99dC0Wr5IIKMRANjdZVQD9CgBB
+         yMt9BU1MMEo+YH+DsLw+cnyDDIl7rdWdlhsCwqz1kLApo4t2DnytT0k9MKbg4V722MeC
+         Z1cA==
+X-Gm-Message-State: AOAM531483MlQd0ifhkdEs314H7m/O0fFjFxG8DxJUvUeiz0a+qiilRo
+        ccA8tpBZVU8OFQHC98YP+WBeMr+LyItJ68D+Pbc=
+X-Google-Smtp-Source: ABdhPJznLmmwvQYVlItbSscxu5FuYmgMkcVyecex17AQfgeclUxqq2jebYandzI0DeRpkyAu7yFJQJxOfgsdy8OcVys=
+X-Received: by 2002:a02:6c07:: with SMTP id w7mr1271900jab.46.1603186293902;
+ Tue, 20 Oct 2020 02:31:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201020155402.30318-7-qiangqing.zhang@nxp.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="fpmcvrT9jKgjPv8v1lLH0pK21s5zKTdW4"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201012125323.17509-1-david@redhat.com> <20201012125323.17509-13-david@redhat.com>
+In-Reply-To: <20201012125323.17509-13-david@redhat.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Tue, 20 Oct 2020 11:31:22 +0200
+Message-ID: <CAM9Jb+gH=5HoCVNWS2njNT+aEK5tqEaTZtiTJsEh3ajLwKw9BA@mail.gmail.com>
+Subject: Re: [PATCH v1 12/29] virtio-mem: factor out fake-offlining into virtio_mem_fake_offline()
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---fpmcvrT9jKgjPv8v1lLH0pK21s5zKTdW4
-Content-Type: multipart/mixed; boundary="aBs1oQwEY8mJWK1jjnehG7QfsR5xXmQte";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
- shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc: kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
- linux-can@vger.kernel.org, pankaj.bansal@nxp.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <c5a5a84a-1ed0-5413-d909-074d8ad6b102@pengutronix.de>
-Subject: Re: [PATCH V3 06/10] can: flexcan: disable wakeup in flexcan_remove()
-References: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
- <20201020155402.30318-7-qiangqing.zhang@nxp.com>
-In-Reply-To: <20201020155402.30318-7-qiangqing.zhang@nxp.com>
-
---aBs1oQwEY8mJWK1jjnehG7QfsR5xXmQte
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
-
-On 10/20/20 5:53 PM, Joakim Zhang wrote:
-> Disable wakeup in flexcan_remove().
-
-The patch looks good, please explain why this is needed.
-
-Marc
-
->=20
-> Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-> Fixes: 915f9666421c ("can: flexcan: add support for DT property 'wakeup=
--source'")
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> ... which now matches virtio_mem_fake_online(). We'll reuse this
+> functionality soon.
+>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
->  drivers/net/can/flexcan.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-> index 06f94b6f0ebe..881799bd9c5e 100644
-> --- a/drivers/net/can/flexcan.c
-> +++ b/drivers/net/can/flexcan.c
-> @@ -2062,6 +2062,8 @@ static int flexcan_remove(struct platform_device =
-*pdev)
+>  drivers/virtio/virtio_mem.c | 34 ++++++++++++++++++++++++----------
+>  1 file changed, 24 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+> index 00d1cfca4713..d132bc54ef57 100644
+> --- a/drivers/virtio/virtio_mem.c
+> +++ b/drivers/virtio/virtio_mem.c
+> @@ -832,6 +832,27 @@ static void virtio_mem_fake_online(unsigned long pfn, unsigned long nr_pages)
+>         }
+>  }
+>
+> +/*
+> + * Try to allocate a range, marking pages fake-offline, effectively
+> + * fake-offlining them.
+> + */
+> +static int virtio_mem_fake_offline(unsigned long pfn, unsigned long nr_pages)
+> +{
+> +       int rc;
+> +
+> +       rc = alloc_contig_range(pfn, pfn + nr_pages, MIGRATE_MOVABLE,
+> +                               GFP_KERNEL);
+> +       if (rc == -ENOMEM)
+> +               /* whoops, out of memory */
+> +               return rc;
+> +       if (rc)
+> +               return -EBUSY;
+> +
+> +       virtio_mem_set_fake_offline(pfn, nr_pages, true);
+> +       adjust_managed_page_count(pfn_to_page(pfn), -nr_pages);
+> +       return 0;
+> +}
+> +
+>  static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
 >  {
->  	struct net_device *dev =3D platform_get_drvdata(pdev);
-> =20
-> +	device_set_wakeup_enable(&pdev->dev, false);
-> +	device_set_wakeup_capable(&pdev->dev, false);
->  	unregister_flexcandev(dev);
->  	pm_runtime_disable(&pdev->dev);
->  	free_candev(dev);
->=20
+>         const unsigned long addr = page_to_phys(page);
+> @@ -1335,17 +1356,10 @@ static int virtio_mem_mb_unplug_sb_online(struct virtio_mem *vm,
+>
+>         start_pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
+>                              sb_id * vm->subblock_size);
+> -       rc = alloc_contig_range(start_pfn, start_pfn + nr_pages,
+> -                               MIGRATE_MOVABLE, GFP_KERNEL);
+> -       if (rc == -ENOMEM)
+> -               /* whoops, out of memory */
+> -               return rc;
+> -       if (rc)
+> -               return -EBUSY;
+>
+> -       /* Mark it as fake-offline before unplugging it */
+> -       virtio_mem_set_fake_offline(start_pfn, nr_pages, true);
+> -       adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
+> +       rc = virtio_mem_fake_offline(start_pfn, nr_pages);
+> +       if (rc)
+> +               return rc;
+>
+>         /* Try to unplug the allocated memory */
+>         rc = virtio_mem_mb_unplug_sb(vm, mb_id, sb_id, count);
 
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---aBs1oQwEY8mJWK1jjnehG7QfsR5xXmQte--
-
---fpmcvrT9jKgjPv8v1lLH0pK21s5zKTdW4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+OrmQACgkQqclaivrt
-76nvaAf/RHGvBElUwEduDte/ZADA7kXFNv5xLVd6l4ltxgirFSpswl5oFPG+5du/
-VIMCS8E5oj2qn093h4CWZejQjlruMXbATh8Rc7uLh5vbH5191h3Rn8PIvSE7Mr8J
-TOPV9c1jU+p3+t+TNo6VhpcCyMTnmHHpCpnPRBW6zU8zkS5P4KPXW1SnHjPA97P2
-D9Qh4T3tf1qaEzYvMpTJCL8WWeF3vPDk+mwM3+SnYDDimmAL2QpJkIZa5M8rOpSu
-8Pq6U4LVF0LAUXcU9KjbNTZ+M19Heu/vhd6l+wq6ZkM32MLdZOWxVARIMLCUYl7w
-/xygeSTVKRC+NeRdjCqswk9bkW+40g==
-=WQaX
------END PGP SIGNATURE-----
-
---fpmcvrT9jKgjPv8v1lLH0pK21s5zKTdW4--
+Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
