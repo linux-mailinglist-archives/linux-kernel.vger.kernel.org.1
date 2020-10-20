@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0DC293318
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E518129331E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390628AbgJTCaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 22:30:21 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:41872 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390611AbgJTCaV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 22:30:21 -0400
-X-UUID: db9b1113f116439b854c52e598c87f49-20201020
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Meq6SMM9NCGXd0ezAvIYe7RYnC+ZkZUEfKlU7K9AvO0=;
-        b=Jk3PsQHlj1xArPyMeyfpnbKcv8E0Skq620YzqEKS9shjuBWWNJZWqErb2tm24GM+wS4C6G8/ukwDEe8ZVNSbxjmY5dFu9/aOllDD/Jt4gBV8GId/IksqGvsX39L3qbgzAxIKOxJf4PiuKEluxbRRrk3LDilcSIWnjKQ6af78HLc=;
-X-UUID: db9b1113f116439b854c52e598c87f49-20201020
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1283119071; Tue, 20 Oct 2020 10:30:13 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Oct
- 2020 10:30:10 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 20 Oct 2020 10:30:10 +0800
-Message-ID: <1603161010.29336.138.camel@mhfsdcap03>
-Subject: Re: [PATCH v2 1/8] dt-bindings: phy: convert phy-mtk-xsphy.txt to
- YAML schema
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "CK Hu" <ck.hu@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Min Guo <min.guo@mediatek.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-usb@vger.kernel.org>
-Date:   Tue, 20 Oct 2020 10:30:10 +0800
-In-Reply-To: <20201016170003.GA1562276@bogus>
-References: <20201013085207.17749-1-chunfeng.yun@mediatek.com>
-         <20201016170003.GA1562276@bogus>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S2390655AbgJTCbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 22:31:00 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:24729 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390609AbgJTCbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 22:31:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603161059; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=IkpvxoQzggIcAY4nLVzLSfhxrsSSTOJ1BW/qHQMn9SE=;
+ b=sCt2RVxYO5UVitmlbRiTsz7/oBy41PNiSWhUs9fyO/htL4LrfzapJxDh7vPNeIUDqU8Xn9Sk
+ G9NQCtSKLRHRZOO7qO7e24DGq1XNWvsbrSeBoFjuowAjy+7NkUHi1qKP44yoZfs4PcAJXQzM
+ KtzC31BNJksAToYs2H6Sb0yXNQw=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f8e4bba3711fec7b17a43fc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Oct 2020 02:30:18
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5B9DAC433F1; Tue, 20 Oct 2020 02:30:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 66641C433FE;
+        Tue, 20 Oct 2020 02:30:16 +0000 (UTC)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: DBCCCD990EB25D087AF48EDB6BFB253E0AAAA7B568F8028A17DF86A16663C7DB2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 20 Oct 2020 10:30:16 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Jaegeuk Kim <jaegeuk@google.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: Re: [PATCH 1/4] scsi: ufs: atomic update for clkgating_enable
+In-Reply-To: <20201005223635.2922805-1-jaegeuk@kernel.org>
+References: <20201005223635.2922805-1-jaegeuk@kernel.org>
+Message-ID: <61df6574cf7b845e1b1f72cda0b0ee02@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTEwLTE2IGF0IDEyOjAwIC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gVHVlLCBPY3QgMTMsIDIwMjAgYXQgMDQ6NTI6MDBQTSArMDgwMCwgQ2h1bmZlbmcgWXVuIHdy
-b3RlOg0KPiA+IENvbnZlcnQgcGh5LW10ay14c3BoeS50eHQgdG8gWUFNTCBzY2hlbWEgbWVkaWF0
-ZWsseHNwaHkueWFtbA0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1
-bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiB2MjogbW9kaWZ5IGRlc2NyaXB0
-aW9uIGFuZCBjb21wYXRpYmxlIGRlZmluaXRpb24gc3VnZ2VzdGVkIGJ5IFJvYg0KPiA+IC0tLQ0K
-PiA+ICAuLi4vYmluZGluZ3MvcGh5L21lZGlhdGVrLHhzcGh5LnlhbWwgICAgICAgICAgfCAyMDAg
-KysrKysrKysrKysrKysrKysrDQo+ID4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9waHkt
-bXRrLXhzcGh5LnR4dCB8IDEwOSAtLS0tLS0tLS0tDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMjAw
-IGluc2VydGlvbnMoKyksIDEwOSBkZWxldGlvbnMoLSkNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0
-IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkvbWVkaWF0ZWsseHNwaHkueWFt
-bA0KPiA+ICBkZWxldGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL3BoeS9waHktbXRrLXhzcGh5LnR4dA0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21lZGlhdGVrLHhzcGh5LnlhbWwgYi9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21lZGlhdGVrLHhzcGh5LnlhbWwNCj4g
-PiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uODY1MTFmMTky
-NzdhDQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9waHkvbWVkaWF0ZWsseHNwaHkueWFtbA0KPiA+IEBAIC0wLDAgKzEsMjAwIEBA
-DQo+ID4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wLW9ubHkgT1IgQlNELTIt
-Q2xhdXNlKQ0KPiA+ICsjIENvcHlyaWdodCAoYykgMjAyMCBNZWRpYVRlaw0KPiA+ICslWUFNTCAx
-LjINCj4gPiArLS0tDQo+ID4gKyRpZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvcGh5
-L21lZGlhdGVrLHhzcGh5LnlhbWwjDQo+ID4gKyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9y
-Zy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KPiA+ICsNCj4gPiArdGl0bGU6IE1lZGlhVGVrIFhT
-LVBIWSBDb250cm9sbGVyIERldmljZSBUcmVlIEJpbmRpbmdzDQo+ID4gKw0KPiA+ICttYWludGFp
-bmVyczoNCj4gPiArICAtIENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4N
-Cj4gPiArDQo+ID4gK2Rlc2NyaXB0aW9uOiB8DQo+ID4gKyAgVGhlIFhTLVBIWSBjb250cm9sbGVy
-IHN1cHBvcnRzIHBoeXNpY2FsIGxheWVyIGZ1bmN0aW9uYWxpdHkgZm9yIFVTQjMuMQ0KPiA+ICsg
-IEdFTjIgY29udHJvbGxlciBvbiBNZWRpYVRlayBTb0NzLg0KWy4uLl0NCj4gPiArDQo+ID4gKyAg
-cmFuZ2VzOiB0cnVlDQo+ID4gKw0KPiA+ICsgIG1lZGlhdGVrLHNyYy1yZWYtY2xrLW1oejoNCj4g
-PiArICAgIGRlc2NyaXB0aW9uOg0KPiA+ICsgICAgICBGcmVxdWVuY3kgb2YgcmVmZXJlbmNlIGNs
-b2NrIGZvciBzbGV3IHJhdGUgY2FsaWJyYXRlDQo+ID4gKyAgICAkcmVmOiAvc2NoZW1hcy90eXBl
-cy55YW1sIy9kZWZpbml0aW9ucy91aW50MzINCj4gDQo+IFByb3BlcnRpZXMgd2l0aCBhIHN0YW5k
-YXJkIHVuaXQgc3VmZml4IGRvbid0IG5lZWQgYSB0eXBlLg0KT2ssIHdpbGwgcmVtb3ZlIGl0LCBh
-bmQgYWxzbyBkbyBpdCBmb3Igb3RoZXIgcGF0Y2hlcywgdGhhbmtzDQoNCj4gPiAtLSANClsuLi5d
-DQo+ID4gMi4xOC4wDQoNCg==
+On 2020-10-06 06:36, Jaegeuk Kim wrote:
+> From: Jaegeuk Kim <jaegeuk@google.com>
+> 
+> When giving a stress test which enables/disables clkgating, we hit 
+> device
+> timeout sometimes. This patch avoids subtle racy condition to address 
+> it.
+> 
+> Cc: Alim Akhtar <alim.akhtar@samsung.com>
+> Cc: Avri Altman <avri.altman@wdc.com>
+> Cc: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 1d157ff58d817..d929c3d1e58cc 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -1791,19 +1791,19 @@ static ssize_t
+> ufshcd_clkgate_enable_store(struct device *dev,
+>  		return -EINVAL;
+> 
+>  	value = !!value;
+> +
+> +	spin_lock_irqsave(hba->host->host_lock, flags);
+>  	if (value == hba->clk_gating.is_enabled)
+>  		goto out;
+> 
+> -	if (value) {
+> -		ufshcd_release(hba);
+> -	} else {
+> -		spin_lock_irqsave(hba->host->host_lock, flags);
+> +	if (value)
+> +		hba->clk_gating.active_reqs--;
+> +	else
+>  		hba->clk_gating.active_reqs++;
+> -		spin_unlock_irqrestore(hba->host->host_lock, flags);
+> -	}
+> 
+>  	hba->clk_gating.is_enabled = value;
+>  out:
+> +	spin_unlock_irqrestore(hba->host->host_lock, flags);
+>  	return count;
+>  }
 
+I agree that we should protect the flag "is_enabled" with spin lock,
+but I prefer the old logic of calling ufshcd_release() instead of
+just doing hba->clk_gating.active_reqs--, you can use 
+__ufshcd_release(),
+which is free of locking.
+
+Thanks,
+
+Can Guo.
