@@ -2,118 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44E5293777
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D60F293779
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392347AbgJTJCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:02:45 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15237 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390264AbgJTJCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:02:44 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 04FD0A8AF70E46EE5E23;
-        Tue, 20 Oct 2020 17:02:42 +0800 (CST)
-Received: from [10.174.178.174] (10.174.178.174) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 20 Oct 2020 17:02:35 +0800
-Subject: [PATCH resend] vgacon: fix a UAF in do_update_region()
-To:     Sam Ravnborg <sam@ravnborg.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <b.zolnierkie@samsung.com>, <linux-fbdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <yangyingliang@huawei.com>
-References: <20200713110445.553974-1-yangyingliang@huawei.com>
- <20201017122506.GA2838103@ravnborg.org>
-From:   Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <60b42c70-0166-747d-2063-7ecce463a933@huawei.com>
-Date:   Tue, 20 Oct 2020 17:02:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2392356AbgJTJDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729938AbgJTJDE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 05:03:04 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48810C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:03:04 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id g16so584776pjv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:03:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4lQcBmOx+lvoDIHPYrOlN9FBXHgOaL5X05LzK3XG/XQ=;
+        b=v+he3CT+vb5JfZ0WlJ1o1sKt8IelhzSVPbdoKqDaMa3qicDs8NSBARNqrwLVI0t6Ty
+         FgKbb4XuNvDqIlCT1BG0paS4VI1ybb2zIlCfRPAwIvWTNOXyd9JfMnLdv4BF0c4MfokU
+         L1eIqY97FugKgjx2q72bTywQvQ/CsH28WNPLhWrYZ2skPK2XdPNG50i76LgNJLU1EGB1
+         Ox3jOh5jHBq41skGgbrODfSHiqO3v96xm7zzEM2m400KMkgfTtfQlpjs4fI1+Psn5Wxj
+         qedWL6RFJwzpiZY/qoMIXTAW5mWATlxDTjsW5Fl/E2wMLR6kKsqJ3NG4oXjbUjzTsK0Q
+         afbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4lQcBmOx+lvoDIHPYrOlN9FBXHgOaL5X05LzK3XG/XQ=;
+        b=LOuAmpXyGoiwMi1jPkRdi1+9/+q0Qh3Ye9FQFHGE71Kw2mOzr62jsGmUkiYXa/Y8hC
+         5GwKpOZYL/tPwoeHp/iqI216Q15Ub2pD4j7tkjDaimqX3KPE2oWNXlwMwOzd02+efMrU
+         Z4mWjelMfHy0pa7EPZQQoNZnqTlUx/kWP63LQbyMXEmJcO+8c0x/NucCweS+9N11HNLG
+         8rykJhjnLjmVtZEeo96peGM85FiVtQxGXSx3BrgHkhpy7dy4aitfGYrjlJAyCGqeeUFD
+         I50uC1ah3kkYT9MYWqumd1Hqq6ST7zY+HoloxE1vnuHxr1dfAyMYa0X84oUNCq+LIbom
+         ZjKA==
+X-Gm-Message-State: AOAM531bz88IaMZBX/GtkJMB0XQQYu4JQ0YPy6xwpEY4g1MgKhotNhoz
+        O95BvxBNAwHuA/FFNYD21qJRD0i6tg9QPGB0Agm28A==
+X-Google-Smtp-Source: ABdhPJwWCzlh8uDQnkFjSqFvhNnIZyi4d3tXWB6qbOY8CvvsOGePNZT4R9Cn1vFLc3D5jU5csfuet3fJdMBQ//klqa0=
+X-Received: by 2002:a17:90a:160f:: with SMTP id n15mr1905532pja.75.1603184583629;
+ Tue, 20 Oct 2020 02:03:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201017122506.GA2838103@ravnborg.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-CFilter-Loop: Reflected
+References: <20201018125237.16717-1-kholk11@gmail.com> <20201018125237.16717-3-kholk11@gmail.com>
+ <CAG3jFysokz0+NCHLp9-nhxG3wGVzk1TAFBwZmhMgViUr-sk-BA@mail.gmail.com>
+In-Reply-To: <CAG3jFysokz0+NCHLp9-nhxG3wGVzk1TAFBwZmhMgViUr-sk-BA@mail.gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 20 Oct 2020 11:02:51 +0200
+Message-ID: <CAG3jFysUQJXdy0ogK1shbgW1Tmk6DJbS26EaeRPMDEnObQ2_zg@mail.gmail.com>
+Subject: Re: [PATCH 2/6] media: camss: ispif: Correctly reset based on the VFE ID
+To:     kholk11@gmail.com
+Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
+        konradybcio@gmail.com, martin.botka1@gmail.com,
+        linux-arm-msm@vger.kernel.org,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a UAF report in do_update_region() when I doing fuzz test.
+I found a build issue in this commit.
 
-[   51.161905] BUG: KASAN: use-after-free in do_update_region+0x579/0x600
-[   51.161918] Read of size 2 at addr ffff888000100000 by task test/295
 
-[   51.161957] CPU: 2 PID: 295 Comm: test Not tainted 5.7.0+ #975
-[   51.161969] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-[   51.161976] Call Trace:
-[   51.162001]  dump_stack+0xc6/0x11e
-[   51.162019]  ? do_update_region+0x579/0x600
-[   51.162047]  print_address_description.constprop.6+0x1a/0x220
-[   51.162083]  ? vprintk_func+0x66/0xed
-[   51.162100]  ? do_update_region+0x579/0x600
-[   51.162112]  ? do_update_region+0x579/0x600
-[   51.162128]  kasan_report.cold.9+0x37/0x7c
-[   51.162151]  ? do_update_region+0x579/0x600
-[   51.162173]  do_update_region+0x579/0x600
-[   51.162207]  ? con_get_trans_old+0x230/0x230
-[   51.162229]  ? retint_kernel+0x10/0x10
-[   51.162278]  csi_J+0x557/0xa00
-[   51.162307]  do_con_trol+0x49af/0x5cc0
-[   51.162330]  ? lock_downgrade+0x720/0x720
-[   51.162347]  ? reset_palette+0x1b0/0x1b0
-[   51.162369]  ? lockdep_hardirqs_on_prepare+0x379/0x540
-[   51.162393]  ? notifier_call_chain+0x11b/0x160
-[   51.162438]  do_con_write.part.24+0xb0a/0x1a30
-[   51.162501]  ? do_con_trol+0x5cc0/0x5cc0
-[   51.162522]  ? console_unlock+0x7b8/0xb00
-[   51.162555]  ? __mutex_unlock_slowpath+0xd4/0x670
-[   51.162574]  ? this_tty+0xe0/0xe0
-[   51.162589]  ? console_unlock+0x559/0xb00
-[   51.162605]  ? wait_for_completion+0x260/0x260
-[   51.162638]  con_write+0x31/0xb0
-[   51.162658]  n_tty_write+0x4fa/0xd40
-[   51.162710]  ? n_tty_read+0x1800/0x1800
-[   51.162730]  ? prepare_to_wait_exclusive+0x270/0x270
-[   51.162754]  ? __might_fault+0x175/0x1b0
-[   51.162783]  tty_write+0x42b/0x8d0
-[   51.162795]  ? n_tty_read+0x1800/0x1800
-[   51.162825]  ? tty_lookup_driver+0x450/0x450
-[   51.162848]  __vfs_write+0x7c/0x100
-[   51.162875]  vfs_write+0x1c9/0x510
-[   51.162901]  ksys_write+0xff/0x200
-[   51.162918]  ? __ia32_sys_read+0xb0/0xb0
-[   51.162940]  ? do_syscall_64+0x1a/0x520
-[   51.162957]  ? lockdep_hardirqs_on_prepare+0x379/0x540
-[   51.162984]  do_syscall_64+0xa1/0x520
-[   51.163008]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+On Tue, 20 Oct 2020 at 10:59, Robert Foss <robert.foss@linaro.org> wrote:
+>
+> Nice catch! This patch looks good to me.
+>
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+>
+> On Sun, 18 Oct 2020 at 14:54, <kholk11@gmail.com> wrote:
+> >
+> > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> >
+> > Resetting the ISPIF VFE0 context is wrong if we are using the VFE1
+> > for dual-camera or simply because a secondary camera is connected
+> > to it: in this case the reset will always happen on the VFE0 ctx
+> > of the ISPIF, which is .. useless.
+> >
+> > Fix this usecase by adding the ISPIF_RST_CMD_1 address and choose
+> > where to do the (or what to) reset based on the VFE line id.
+> >
+> > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> > ---
+> >  .../media/platform/qcom/camss/camss-ispif.c   | 87 ++++++++++++-------
+> >  .../media/platform/qcom/camss/camss-ispif.h   |  2 +-
+> >  2 files changed, 57 insertions(+), 32 deletions(-)
+> >
+> > diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
+> > index db94cfd6c508..252db6b33dab 100644
+> > --- a/drivers/media/platform/qcom/camss/camss-ispif.c
+> > +++ b/drivers/media/platform/qcom/camss/camss-ispif.c
+> > @@ -26,6 +26,7 @@
+> >  #define MSM_ISPIF_NAME "msm_ispif"
+> >
+> >  #define ISPIF_RST_CMD_0                        0x008
+> > +#define ISPIF_RST_CMD_1                        0x00c
+> >  #define ISPIF_RST_CMD_0_STROBED_RST_EN         (1 << 0)
+> >  #define ISPIF_RST_CMD_0_MISC_LOGIC_RST         (1 << 1)
+> >  #define ISPIF_RST_CMD_0_SW_REG_RST             (1 << 2)
+> > @@ -179,7 +180,10 @@ static irqreturn_t ispif_isr_8x96(int irq, void *dev)
+> >         writel(0x1, ispif->base + ISPIF_IRQ_GLOBAL_CLEAR_CMD);
+> >
+> >         if ((value0 >> 27) & 0x1)
+> > -               complete(&ispif->reset_complete);
+> > +               complete(&ispif->reset_complete[0]);
+> > +
+> > +       if ((value3 >> 27) & 0x1)
+> > +               complete(&ispif->reset_complete[1]);
+> >
+> >         if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
+> >                 dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
+> > @@ -237,7 +241,7 @@ static irqreturn_t ispif_isr_8x16(int irq, void *dev)
+> >         writel(0x1, ispif->base + ISPIF_IRQ_GLOBAL_CLEAR_CMD);
+> >
+> >         if ((value0 >> 27) & 0x1)
+> > -               complete(&ispif->reset_complete);
+> > +               complete(&ispif->reset_complete[0]);
+> >
+> >         if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
+> >                 dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
+> > @@ -257,33 +261,17 @@ static irqreturn_t ispif_isr_8x16(int irq, void *dev)
+> >         return IRQ_HANDLED;
+> >  }
+> >
+> > -/*
+> > - * ispif_reset - Trigger reset on ISPIF module and wait to complete
+> > - * @ispif: ISPIF device
+> > - *
+> > - * Return 0 on success or a negative error code otherwise
+> > - */
+> > -static int ispif_reset(struct ispif_device *ispif)
+> > +static int ispif_vfe_reset(struct ispif_device *ispif, u8 vfe_id)
+> >  {
+> > -       unsigned long time;
+> >         u32 val;
+> > -       int ret;
+> > -
+> > -       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE0);
+> > -       if (ret < 0)
+> > -               return ret;
+> >
+> > -       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE1);
+> > -       if (ret < 0)
+> > -               return ret;
+> > -
+> > -       ret = camss_enable_clocks(ispif->nclocks_for_reset,
+> > -                                 ispif->clock_for_reset,
+> > -                                 to_device(ispif));
+> > -       if (ret < 0)
+> > -               return ret;
+> > +       if (vfe_id > (to_camss(ispif)->vfe_num - 1)) {
+> > +               dev_err(to_device(ispif),
+> > +                       "Error: asked reset for invalid VFE%d\n", vfe_id);
+> > +               return -ENOENT;
+> > +       }
+> >
+> > -       reinit_completion(&ispif->reset_complete);
+> > +       reinit_completion(&ispif->reset_complete[vfe_id]);
+> >
+> >         val = ISPIF_RST_CMD_0_STROBED_RST_EN |
+> >                 ISPIF_RST_CMD_0_MISC_LOGIC_RST |
+> > @@ -303,15 +291,51 @@ static int ispif_reset(struct ispif_device *ispif)
+> >                 ISPIF_RST_CMD_0_RDI_OUTPUT_1_MISR_RST |
+> >                 ISPIF_RST_CMD_0_RDI_OUTPUT_2_MISR_RST;
+> >
+> > -       writel_relaxed(val, ispif->base + ISPIF_RST_CMD_0);
+> > +       if (vfe_id == 1)
+> > +               writel_relaxed(val, ispif->base + ISPIF_RST_CMD_1);
+> > +       else
+> > +               writel_relaxed(val, ispif->base + ISPIF_RST_CMD_0);
+> >
+> > -       time = wait_for_completion_timeout(&ispif->reset_complete,
+> > +       time = wait_for_completion_timeout(&ispif->reset_complete[vfe_id],
 
-After vgacon_set_origin() is called in set_origin(), the vc_origin is
-set to vga_vram_base, the vc_pos should between vga_vram_base and
-vga_vram_end. But we still use vc_screenbuf_size, if the vga_vram_size
-is smaller than vc_screenbuf_size, vc_pos may be out of bound, using it
-will cause a use-after-free(or out-of-bounds). Fix this by calling
-vc_resize() if vga_vram_size is smaller than vc_screenbuf_size.
+'time' is not a variable that exists in this scope, so the build fails.
 
-Signed-off-by: Yang Yingliang<yangyingliang@huawei.com>
----
-  drivers/video/console/vgacon.c | 3 +++
-  1 file changed, 3 insertions(+)
-
-diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
-index 998b0de..2ee3d62 100644
---- a/drivers/video/console/vgacon.c
-+++ b/drivers/video/console/vgacon.c
-@@ -1336,6 +1336,9 @@ static int vgacon_set_origin(struct vc_data *c)
-  	if (vga_is_gfx ||	/* We don't play origin tricks in graphic modes */
-  	    (console_blanked && !vga_palette_blanked))	/* Nor we write to blanked screens */
-  		return 0;
-+
-+	if (c->vc_screenbuf_size > vga_vram_size)
-+		vc_resize(c, screen_info.orig_video_cols, screen_info.orig_video_lines);
-  	c->vc_origin = c->vc_visible_origin = vga_vram_base;
-  	vga_set_mem_top(c);
-  	vga_rolled_over = 0;
-
+> >                 msecs_to_jiffies(ISPIF_RESET_TIMEOUT_MS));
+> >         if (!time) {
+> > -               dev_err(to_device(ispif), "ISPIF reset timeout\n");
+> > -               ret = -EIO;
+> > +               dev_err(to_device(ispif),
+> > +                       "ISPIF for VFE%d reset timeout\n", vfe_id);
+> > +               return -EIO;
+> >         }
+> >
+> > +       return 0;
+> > +}
+> > +
+> > +/*
+> > + * ispif_reset - Trigger reset on ISPIF module and wait to complete
+> > + * @ispif: ISPIF device
+> > + *
+> > + * Return 0 on success or a negative error code otherwise
+> > + */
+> > +static int ispif_reset(struct ispif_device *ispif, u8 vfe_id)
+> > +{
+> > +       unsigned long time;
+> > +       int ret;
+> > +
+> > +       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE0);
+> > +       if (ret < 0)
+> > +               return ret;
+> > +
+> > +       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE1);
+> > +       if (ret < 0)
+> > +               return ret;
+> > +
+> > +       ret = camss_enable_clocks(ispif->nclocks_for_reset,
+> > +                                 ispif->clock_for_reset,
+> > +                                 to_device(ispif));
+> > +       if (ret < 0)
+> > +               return ret;
+> > +
+> > +       ret = ispif_vfe_reset(ispif, vfe_id);
+> > +       if (ret)
+> > +               dev_dbg(to_device(ispif), "ISPIF Reset failed\n");
+> > +
+> >         camss_disable_clocks(ispif->nclocks_for_reset, ispif->clock_for_reset);
+> >
+> >         camss_pm_domain_off(to_camss(ispif), PM_DOMAIN_VFE0);
+> > @@ -355,7 +379,7 @@ static int ispif_set_power(struct v4l2_subdev *sd, int on)
+> >                         goto exit;
+> >                 }
+> >
+> > -               ret = ispif_reset(ispif);
+> > +               ret = ispif_reset(ispif, line->vfe_id);
+> >                 if (ret < 0) {
+> >                         pm_runtime_put_sync(dev);
+> >                         camss_disable_clocks(ispif->nclocks, ispif->clock);
+> > @@ -1192,7 +1216,8 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
+> >
+> >         mutex_init(&ispif->config_lock);
+> >
+> > -       init_completion(&ispif->reset_complete);
+> > +       for (i = 0; i < MSM_ISPIF_VFE_NUM; i++)
+> > +               init_completion(&ispif->reset_complete[i]);
+> >
+> >         return 0;
+> >  }
+> > diff --git a/drivers/media/platform/qcom/camss/camss-ispif.h b/drivers/media/platform/qcom/camss/camss-ispif.h
+> > index 1a5ba2425a42..4132174f7ea1 100644
+> > --- a/drivers/media/platform/qcom/camss/camss-ispif.h
+> > +++ b/drivers/media/platform/qcom/camss/camss-ispif.h
+> > @@ -56,7 +56,7 @@ struct ispif_device {
+> >         int nclocks;
+> >         struct camss_clock  *clock_for_reset;
+> >         int nclocks_for_reset;
+> > -       struct completion reset_complete;
+> > +       struct completion reset_complete[MSM_ISPIF_VFE_NUM];
+> >         int power_count;
+> >         struct mutex power_lock;
+> >         struct ispif_intf_cmd_reg intf_cmd[MSM_ISPIF_VFE_NUM];
+> > --
+> > 2.28.0
+> >
