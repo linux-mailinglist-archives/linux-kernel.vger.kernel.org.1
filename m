@@ -2,79 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD3C29333B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B82C29333D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390642AbgJTCeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 22:34:25 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:42075 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730254AbgJTCeZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 22:34:25 -0400
-X-UUID: 680b7d3e367349aab9d080b2064a0d36-20201020
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=GUA1hbpU/msavICMu4ZyZUeoilqfTnK1HnnKU2S01BA=;
-        b=lNdYo+NogUdsjYDTXcmU71GYt71aAd2j9xbMzUWIWwFdi/cuzBZeAwa7+sHFjzhf55Q9zQUI4dmBrE9HTEjxCYZ8Dq2J8FpXnbAhJVQaApmXag8S+JOmX2aaPjlxHqsn/Qz/likmejM72/SFsqGH/JhQ0+sR9QgV4BnqVOAlGvw=;
-X-UUID: 680b7d3e367349aab9d080b2064a0d36-20201020
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1918381547; Tue, 20 Oct 2020 10:34:22 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Oct
- 2020 10:34:04 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 20 Oct 2020 10:34:04 +0800
-Message-ID: <1603161244.29336.142.camel@mhfsdcap03>
-Subject: Re: [PATCH v2 2/8] dt-bindings: phy: convert phy-mtk-tphy.txt to
- YAML schema
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "CK Hu" <ck.hu@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Min Guo <min.guo@mediatek.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-usb@vger.kernel.org>
-Date:   Tue, 20 Oct 2020 10:34:04 +0800
-In-Reply-To: <20201016170552.GA1580710@bogus>
-References: <20201013085207.17749-1-chunfeng.yun@mediatek.com>
-         <20201013085207.17749-2-chunfeng.yun@mediatek.com>
-         <20201016170552.GA1580710@bogus>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1730574AbgJTCf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 22:35:56 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:62653 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730415AbgJTCfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 22:35:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603161354; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7V0ug32c1j1PP+hx2W4Yh8PnNSTX3h6faSFkylQvda0=;
+ b=eywAp/bzcf6xLmnT8DVIciT6wPjO73Z780V5fzkAMxmESyxoaVyiAApDbXfPnICOZCDEjVIV
+ Z4zH7I7HFhUp1767zub88j2OF/e0/icqfpDQx+UKRaXr+Y4ic12uUFp6AKK0nxml2WkCFASR
+ OBdaFldpM4J5E9QgXgjBY4Rptyc=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f8e4d0aaad2c3cd1c610815 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Oct 2020 02:35:54
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DAA79C43382; Tue, 20 Oct 2020 02:35:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31967C433FE;
+        Tue, 20 Oct 2020 02:35:53 +0000 (UTC)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 204DA36F181E521CDF8CC1E6221ACDE0FAA6F121DEDB71CF4B5AED7B259FEB042000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 20 Oct 2020 10:35:53 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: ufs: Make sure clk scaling happens only when hba is
+ runtime ACTIVE
+In-Reply-To: <1600758548-28576-1-git-send-email-cang@codeaurora.org>
+References: <1600758548-28576-1-git-send-email-cang@codeaurora.org>
+Message-ID: <67c4ae5998765daa674a4df696d8d673@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTEwLTE2IGF0IDEyOjA1IC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gVHVlLCBPY3QgMTMsIDIwMjAgYXQgMDQ6NTI6MDFQTSArMDgwMCwgQ2h1bmZlbmcgWXVuIHdy
-b3RlOg0KPiA+IENvbnZlcnQgcGh5LW10ay10cGh5LnR4dCB0byBZQU1MIHNjaGVtYSBtZWRpYXRl
-ayx0cGh5LnlhbWwNCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVuZmVuZyBZdW4gPGNodW5m
-ZW5nLnl1bkBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gdjI6IG1vZGlmeSBkZXNjcmlwdGlv
-biBhbmQgY29tcGF0aWJsZQ0KPiA+IC0tLQ0KPiA+ICAuLi4vYmluZGluZ3MvcGh5L21lZGlhdGVr
-LHRwaHkueWFtbCAgICAgICAgICAgfCAyNjMgKysrKysrKysrKysrKysrKysrDQo+ID4gIC4uLi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9waHktbXRrLXRwaHkudHh0ICB8IDE2MiAtLS0tLS0tLS0t
-LQ0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDI2MyBpbnNlcnRpb25zKCspLCAxNjIgZGVsZXRpb25z
-KC0pDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDc1NSBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvcGh5L21lZGlhdGVrLHRwaHkueWFtbA0KPiANCj4gQWxzbywgbmVlZCB0byBmaXggdGhl
-IG1vZGUuDQpPaywgdGhhbmtzDQoNCj4gDQo+ID4gIGRlbGV0ZSBtb2RlIDEwMDY0NCBEb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L3BoeS1tdGstdHBoeS50eHQNCg0K
+Hi Stanley,
 
+On 2020-09-22 15:09, Can Guo wrote:
+> If someone plays with the UFS clk scaling devfreq governor through 
+> sysfs,
+> ufshcd_devfreq_scale may be called even when hba is not runtime ACTIVE,
+> which can lead to unexpected error. We cannot just protect it by 
+> calling
+> pm_runtime_get_sync, because that may cause racing problem since hba
+> runtime suspend ops needs to suspend clk scaling. In order to fix it, 
+> call
+> pm_runtime_get_noresume and check hba's runtime status, then only 
+> proceed
+> if hba is runtime ACTIVE, otherwise just bail.
+> 
+> governor_store
+>  devfreq_performance_handler
+>   update_devfreq
+>    devfreq_set_target
+>     ufshcd_devfreq_target
+>      ufshcd_devfreq_scale
+> 
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index e4cb994..847f355 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -1294,8 +1294,15 @@ static int ufshcd_devfreq_target(struct device 
+> *dev,
+>  	}
+>  	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
+> 
+> +	pm_runtime_get_noresume(hba->dev);
+> +	if (!pm_runtime_active(hba->dev)) {
+> +		pm_runtime_put_noidle(hba->dev);
+> +		ret = -EAGAIN;
+> +		goto out;
+> +	}
+>  	start = ktime_get();
+>  	ret = ufshcd_devfreq_scale(hba, scale_up);
+> +	pm_runtime_put(hba->dev);
+> 
+>  	trace_ufshcd_profile_clk_scaling(dev_name(hba->dev),
+>  		(scale_up ? "up" : "down"),
+
+Could you please review this one since we may be the only two
+users of clk scaling?
+
+Thanks,
+
+Can Guo.
