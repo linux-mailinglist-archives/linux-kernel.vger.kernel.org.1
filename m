@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFCE293A30
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E318C293A39
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393614AbgJTLmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 07:42:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393580AbgJTLmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 07:42:19 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2393795AbgJTLp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 07:45:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23316 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392661AbgJTLpZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 07:45:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603194324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wDwUpRJnTUQ2pS+wnEOM7NYhKs7UkxzW53goaPdV3ss=;
+        b=NThpCLB8NVGr9z51KSKzu/9VjXUJYW/fXByiNInqzoDybRVaJVgarcgKAIfjX2fPoqIt0p
+        PdgyOzlftix3egtsSEG8K4FBKpFdRsoBOox40EWDwzS5XwKvrPjsu96hfecyHEhjPYpU9t
+        JcBOyuhFUOIvgYyrur5sebSbZB/1ylA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-501-PqmBdmdjM3Ggnc8VcMLgLg-1; Tue, 20 Oct 2020 07:45:20 -0400
+X-MC-Unique: PqmBdmdjM3Ggnc8VcMLgLg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADF862224A;
-        Tue, 20 Oct 2020 11:42:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603194139;
-        bh=OkGC61mG2V3nA0YISOyNn4m3xw11hTw/4PbaYssCzGk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bbcz/YNWgoqf2RfJOoC4JT9jLWT0Pho6jrXXbEgHUT3FiNuZwIvHjg+n0bQ0HT899
-         Dy1BrosPjEaCBikd0mm3ttihYfeZK1YIX4Yn49jT57uJWfFHjkDzZQkQ8K97N4iD25
-         CKCVIHVGJfjURV0grZW5LDPjSDtdBp+oNVvVR+QQ=
-Date:   Tue, 20 Oct 2020 13:43:02 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Joseph Jang <josephjang@google.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        jonglin@google.com, woodylin@google.com, markcheng@google.com
-Subject: Re: [PATCH] power: suspend: Replace dpm_watchdog by sleep timer
-Message-ID: <20201020114302.GB554297@kroah.com>
-References: <20201020095611.1763815-1-josephjang@google.com>
- <20201020110810.GA194512@kroah.com>
- <CAPaOXETgmHATQMM55C+2BKTQDyEnXYjknhWY7KB1jqKYynE-+g@mail.gmail.com>
- <20201020114234.GA554297@kroah.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7CDD1074658;
+        Tue, 20 Oct 2020 11:45:18 +0000 (UTC)
+Received: from redhat.com (ovpn-112-214.ams2.redhat.com [10.36.112.214])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 847DA5D9EF;
+        Tue, 20 Oct 2020 11:45:13 +0000 (UTC)
+Date:   Tue, 20 Oct 2020 07:45:09 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        kernel test robot <lkp@intel.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH net v2] Revert "virtio-net: ethtool configurable RXCSUM"
+Message-ID: <20201020073651-mutt-send-email-mst@kernel.org>
+References: <20201018103122.454967-1-mst@redhat.com>
+ <20201019121500.4620e276@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201020114234.GA554297@kroah.com>
+In-Reply-To: <20201019121500.4620e276@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 01:42:34PM +0200, Greg Kroah-Hartman wrote:
-> A: Because it messes up the order in which people normally read text.
-> Q: Why is top-posting such a bad thing?
-> A: Top-posting.
-> Q: What is the most annoying thing in e-mail?
+On Mon, Oct 19, 2020 at 12:15:00PM -0700, Jakub Kicinski wrote:
+> On Mon, 19 Oct 2020 13:32:12 -0400 Michael S. Tsirkin wrote:
+> > This reverts commit 3618ad2a7c0e78e4258386394d5d5f92a3dbccf8.
+> > 
+> > When the device does not have a control vq (e.g. when using a
+> > version of QEMU based on upstream v0.10 or older, or when specifying
+> > ctrl_vq=off,ctrl_rx=off,ctrl_vlan=off,ctrl_rx_extra=off,ctrl_mac_addr=off
+> > for the device on the QEMU command line), that commit causes a crash:
 > 
-> A: No.
-> Q: Should I include quotations after my reply?
+> Hi Michael!
 > 
-> http://daringfireball.net/2007/07/on_top
+> Only our very first (non-resend) version got into patchwork:
 > 
-> On Tue, Oct 20, 2020 at 07:11:56PM +0800, Joseph Jang wrote:
-> > It is the same version, I just changed the commit message and removed
-> > dpm_watchdog.
+> https://patchwork.ozlabs.org/project/netdev/list/?submitter=2235&state=*
 > 
-> That is not the "same version", you need to properly version your
-> patches when you send them as the documentation states to.
-> 
-> Otherwise your patches will just be ignored.
+> Any ideas why?
 
-And you sent out html email which was rejected by the mailing lists :(
+I really don't! Any ideas?
+
+-- 
+MST
+
