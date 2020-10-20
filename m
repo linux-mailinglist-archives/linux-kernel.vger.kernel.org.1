@@ -2,185 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207AA294349
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCF5294356
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409096AbgJTTjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 15:39:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43150 "EHLO mail.kernel.org"
+        id S2438300AbgJTTkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 15:40:35 -0400
+Received: from mga17.intel.com ([192.55.52.151]:5254 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409074AbgJTTjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 15:39:37 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89CFF2225D;
-        Tue, 20 Oct 2020 19:39:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603222776;
-        bh=UdgnNWumPxY1W96SexJ8p035CUKD9xNftds7uTA3ZK8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H+SgDQ1yyKmeI7/XvknsTfx3uKsx0C4YIEiaKTndN+kZHjVJccqivzcHeSqv/1DKK
-         iCB3+nwQLtxtab1fEN+Zo69syX/jDw+7kTuRtWvK5ikn8DeNKfxdBnCG40uijfbVoS
-         EhWcV3WGdtk+RaJj4lEO5WJeTflpJgATgvtBei0U=
-Date:   Tue, 20 Oct 2020 20:39:25 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Cheng-yi Chiang <cychiang@chromium.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Srinivasa Rao <srivasam@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Dylan Reid <dgreid@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine
- bindings
-Message-ID: <20201020193925.GF9448@sirena.org.uk>
-References: <20200914080619.4178587-1-cychiang@chromium.org>
- <20200914080619.4178587-3-cychiang@chromium.org>
- <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
- <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
- <20201015161251.GF4390@sirena.org.uk>
- <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
- <20201020143711.GC9448@sirena.org.uk>
- <CAFv8NwKuLjLeM1KLeV8Br2TZC8L7DO6KWHL=pXvhAUV5+wSBPg@mail.gmail.com>
+        id S2391240AbgJTTkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 15:40:35 -0400
+IronPort-SDR: DxT6w3PT7J9ZbSTTUN77WVn7+bp9bvgBaxxYdtFpdcOZVh+JoRq8/ypJ20DUmAJW47wdA8yLEt
+ pGDTUBwc7otg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="147124120"
+X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
+   d="scan'208";a="147124120"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 12:40:35 -0700
+IronPort-SDR: lKKN9o+cmfN8r5MJTXuYQQF2Yn3ddakE2BqBGYRWuVg6UAXvylNyB6yeKqXiXpnbiFujKIyaVr
+ 2+HrpdvP9HZA==
+X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
+   d="scan'208";a="522490173"
+Received: from pnaik-mobl.amr.corp.intel.com (HELO [10.213.163.220]) ([10.213.163.220])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 12:40:34 -0700
+Subject: Re: [PATCH] x86/msr: do not warn on writes to OC_MAILBOX
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Sultan Alsawaf <sultan@kerneltoast.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        kitsunyan <kitsunyan@airmail.cc>,
+        "Brown, Len" <len.brown@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20200908172558.GG25236@zn.tnic>
+ <CAHmME9pKfvPGf97BM1=VdUL1uU_8aOoc4+QOu6b51XnPz3SkRA@mail.gmail.com>
+ <20200908173656.GI25236@zn.tnic>
+ <CAHmME9pVO01mj8vgKPEX7a6pZDRSfX62e2Ow8R=L79hLSJoaMA@mail.gmail.com>
+ <20200908180112.GK25236@zn.tnic>
+ <20200908191838.GA2014@sultan-box.localdomain>
+ <20200908193029.GM25236@zn.tnic>
+ <fa447f6b7c7f03cc0c55573d5736889cee81a1e6.camel@linux.intel.com>
+ <20201019171539.GF24325@zn.tnic>
+ <ae3367ab7d4eb4778b51f798436ab975d7f8a303.camel@linux.intel.com>
+ <20201020174741.GJ11583@zn.tnic>
+ <2147d5853a5a3e0d753fcc0a4ed330f61b29aa83.camel@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <1188ee0f-f3cb-988f-474d-618bd5a5b879@intel.com>
+Date:   Tue, 20 Oct 2020 12:40:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oFbHfjnMgUMsrGjO"
-Content-Disposition: inline
-In-Reply-To: <CAFv8NwKuLjLeM1KLeV8Br2TZC8L7DO6KWHL=pXvhAUV5+wSBPg@mail.gmail.com>
-X-Cookie: The people rule.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <2147d5853a5a3e0d753fcc0a4ed330f61b29aa83.camel@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/20/20 11:40 AM, Srinivas Pandruvada wrote:
+> On Tue, 2020-10-20 at 19:47 +0200, Borislav Petkov wrote:
+>> On Tue, Oct 20, 2020 at 10:21:48AM -0700, Srinivas Pandruvada wrote:
+>>> These command id are model specific. There is no guarantee that
+>>> even
+>>> meaning changes. So I don't think we should write any code in
+>>> kernel
+>>> which can't stick.
+>> Ok, is there a common *set* of values present on all models
+> Sorry, don't know.
 
---oFbHfjnMgUMsrGjO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So, the question is: Is Intel willing to document this on a sufficient
+number of models that folks can make a sane driver out of it?
 
-On Wed, Oct 21, 2020 at 02:51:33AM +0800, Cheng-yi Chiang wrote:
-> On Tue, Oct 20, 2020 at 10:37 PM Mark Brown <broonie@kernel.org> wrote:
+Srinivas, that seems like a pretty sane thing for the community to ask.
+ We've got random folks poking at MSRs and we don't know whether they're
+nuts or not and whether we should spew warnings of disdain.  Seems like
+it would be in Intel's best interests to understand what users are doing
+with this MSR and to try to make sure they're not doing stuff which is
+too nutty, or at least give them the chance of avoiding warnings if
+they're being nice.
 
-> > If the device has both front and rear mics and only one can be active at
-> > once that seems obvious and sensible.  If the devices only have one of
-> > these then this seems like a bad idea.
+Sounds like Borislav is willing to help give Intel's customers a nicer
+interface.  Mostly we from Intel would have to go dig out the docs for
+as many models as we can, and make sure we're allowed to talk about it
+publicly.
 
-> trogdor board: only front mic.
-> pompom board: having both front mic and rear mic. Only one of them
-> will be used at a time. It is toggled by mixer control backed by a
-> gpio.
-
-> My proposed solution: instead of using compatible strings, expose only
-> dmic-gpio property.
-> When the machine driver sees this property, it uses the dapm widgets
-> and controls created in the machine driver.
-
-Yes, that is what I would expect.
-
-> > I don't understand what "logic scattered in various dtsi files" means,
-> > sorry.
-
-> I mean I don't want to use device property to pass in widget name,
-> type, text and callbacks.
-> Let me give an example:
-
-> - Board trogdor uses front mic, rt5682, and max98357a.
-> - Board pompom is based on board trogdor, but it has front mic and rear mic.
-> If we somehow managed to add the code to pass in widget, route, type,
-> text, and callbacks needed for dmic control, we will need to put a
-> bunch of properties in trogdor-pompom.dtsi file.
-
-Most of this code is already there as part of the generic card
-infrastructure, the only thing that stands out for me is the GPIO to
-switch between the front and rear mics.
-
-> - Board ABC is based on trogdor as well, and it has front mic and rear
-> mic, but with a different speaker amp.
-
-> To use widget, route, type, text and callbacks for front mic and rear
-> mic, in trogdor-ABC.dtsi file we would copy some properties used in
-> trogdor-pompom.dtsi file. To support the different combination of
-> codec, we would need some modification of the route and widget.
-
-It shouldn't be hugely difficult to split the DT files up usually, and
-ideally they'd be small enough that just having an entirely new sound
-bit isn't the end of the world.  Again I'm just not clear what you're
-seeing here.
-
-> > The CODEC change is going to be described in the DT no matter what -
-> > you'll have a reference to the CODEC node but it may make sense if
-> > there's enough custom code around it.  For front vs rear mic the
-> > simplest thing would just be to not mention which if this is a hardware
-> > fixed thing, otherwise a control.
-
-> Would you suggest checking whether the codec node is a rt5682 node,
-> and call required PLL calls accordingly ?
-
-Potentially, or there might be so little shared that it's just a
-separate machine driver.
-
-> "For front vs rear mic the simplest thing would just be to not mention
-> which if this is a hardware fixed thing, otherwise a control."
-> Sorry I am not sure if I understand this correctly. Please correct me
-> if I am wrong.
-
-> - For default case having 1 mic: not mention this at all
-> - For front mic / rear mic case: see gpio property and use an
-> additional control.
-
-Yes.
-
-> "These feel more like things that fit with compatible" regarding
-> replacing alc5682 with adau7002. Please let me know which one solution
-> you prefer:
-> -  deriving this information from codec node
-> -  deriving this information from different sound card name
-
-To an extent this depends on how different the CODECs and general setup
-are but a different CODEC is something that often justifies a separate
-compatible.  Of course you also have an awful lot of systems that work
-with the generic card drivers and all different kinds of CPU and CODEC,
-usually because the driver doesn't need to know anything about the
-implementation of either.
-
---oFbHfjnMgUMsrGjO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+PPOwACgkQJNaLcl1U
-h9Aikwf/cynQzcrnT9zavQbVgUM4IpP4TyshlCrJfrrtg2rnigRO/tJDK7eYQvoU
-i8t45o6LbCdnh6avdl5zMLxi3tRLw3DAArA7f6OqW+3qH654iwE8Xdu8qg757bLy
-kX50QfhefTMQqL3DGFNdORYWx3HB3PI8u5SWN9akkAxFJksNBKw4CjdsipJ6BgRj
-k4t4u0owVRNJRuG/egx2TNt8/FziiX29lTQPrtRQsgae7au3O4POXzvYYoxeeOYS
-fUuzo+wdtgqImF8sXYdRpRQ6a3sCgcXW5qWZhjmmbtPvIlTx3cHuwNnQDy7xGUjB
-XO/DmKtA4HIUE0BNgckWhNOQHVcTjw==
-=ybKE
------END PGP SIGNATURE-----
-
---oFbHfjnMgUMsrGjO--
+I dunno.  Maybe we should try it for *one* model and see how it goes.
+Maybe start with the one we're already poking from inside the kernel.
