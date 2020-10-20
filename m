@@ -2,228 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB44293692
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D3B293696
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388191AbgJTIPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 04:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388119AbgJTIPj (ORCPT
+        id S2388249AbgJTIQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 04:16:23 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:47830 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726917AbgJTIQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:15:39 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4273C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:15:38 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id q15so900744qkq.23
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:15:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:mime-version:message-id:date:subject:from:to:cc;
-        bh=Tc7Bz9gy61qOrfg1fSZV7f1gZUivwPbNWorgjp0wz0E=;
-        b=iRLHFNyNGpxy+Zr6d0oSqreOdjz9Vhf85U05YEjRE+UJaPbBKihYGDY8pwhkaebKI8
-         yYxzBe/49PdJ3wLF7K34s4N4R4KgfyP/V0piYq0QJHduMwjZhZK0Blo7QA9hWYQ0jtuA
-         lRQZRlUB/a3fEuZYFh2Zku8FD4TAZCg0czC9Z0I3opIqwUwquceC+8CyzM8LWeSWMJJs
-         rKTOxpKr/mZ4aT6D4XTvX2ATCDUDYV52fbaKRDmHjrI8SmC/fG+vxRh8+9TpX396r76M
-         5TNYTJQGDkDRpwmvVfTSQ/eAKcLa9enYiFp1Dwp3ty0PwJwP1QCuTg5P9xttSHVU3zZJ
-         9Ktg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:mime-version:message-id:date:subject:from
-         :to:cc;
-        bh=Tc7Bz9gy61qOrfg1fSZV7f1gZUivwPbNWorgjp0wz0E=;
-        b=DkybjvWj1OQFoVoNRUYly6w3KD25LfLWmbQqtRsc+Z73DJS9c/WckHMJ5JQ5cNGG/s
-         CmtIC6N3cDBsLZoDuJyUZjG1XXosrNU0WZ+Vt4tfVoyNq4NM5QSZqAkOTO+Vbo7Ydqm6
-         LPWdbJgIgt+1L9PEwAVZSPjJ8MKHK8X3ssU1FPhuiTaE8FEx3oMBaZZlvaY+g+zzqj7x
-         5KzaWW566jksEwFalAlqvOGY+q7UIazzggBtsGf/ZguFOp3T2hWqfNBlHOrL26l+Zo87
-         XAZlA3RjAXymSQ/Ve/Mas0G6Q+iGA9J0cMOe/Jl17xHq9akCUjY0eQwCcBJb/MQzn/LF
-         gMYw==
-X-Gm-Message-State: AOAM533boYyQK8LlMFBcoOHOGuvD6F9gQl3qz0dOx7lLt1tEUinqX63d
-        Bi58CuiTGCQzZy+Hf8eE5TSPbP66sgDIVX2z
-X-Google-Smtp-Source: ABdhPJzEJgW5uEZOYEmXPnD9/vBOPhbDyExODRo14aZXYPsM3kKJ4njYM7nHILkgpuHSellbiV+DoofEtZhHfc8n
-Sender: "josephjang via sendgmr" 
-        <josephjang@josephjang-p920.ntc.corp.google.com>
+        Tue, 20 Oct 2020 04:16:22 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09K8G6Ng053466;
+        Tue, 20 Oct 2020 03:16:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603181766;
+        bh=5/s9j3Ob5eJZaHs5Srca0Co8+TevhNJfJIAUERIj7tk=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=EKshNLkON095RcIhp/C6mMEaqrvLAFlf3xcfoix1230vJCg+Zx8i9H89un+qKZFrL
+         SR++07m4426mw7jKdCx+V9xW1HEEyllzV45UKX8OYO+YiEYFkEm23fZzP2ruvHz2i8
+         F3vB/yVBEtNlZ6OuHu7vnHV8patmKQvBwSZ8oPAk=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09K8G6v7096187
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 20 Oct 2020 03:16:06 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 20
+ Oct 2020 03:16:06 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 20 Oct 2020 03:16:06 -0500
+Received: from [10.250.234.189] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09K8FqWG111796;
+        Tue, 20 Oct 2020 03:15:54 -0500
+Subject: Re: [PATCH v7 00/18] Implement NTB Controller using multiple PCI EP
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Jon Mason <jdmason@kudzu.us>, Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, Rob Herring <robh@kernel.org>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-ntb@googlegroups.com>
+References: <20200930153519.7282-1-kishon@ti.com>
+ <fe2db298-2116-7f52-80bd-a3d01a9a1521@ti.com>
+Message-ID: <72ebe7db-86cd-6827-03ff-bde32c10dc7e@ti.com>
+Date:   Tue, 20 Oct 2020 13:45:45 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:7220:84ff:fe09:41e0])
- (user=josephjang job=sendgmr) by 2002:ad4:48c6:: with SMTP id
- v6mr2058351qvx.11.1603181737974; Tue, 20 Oct 2020 01:15:37 -0700 (PDT)
-Message-ID: <000000000000011a8805b215d69a@google.com>
-Date:   Tue, 20 Oct 2020 08:15:38 +0000
-Subject: [PATCH] power: suspend: Add suspend timeout handler
-From:   <josephjang@google.com>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org, rjw@rjwysocki.net,
-        pavel@ucw.cz, len.brown@intel.com, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        jonglin@google.com, woodylin@google.com, markcheng@google.com,
-        josephjang@google.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+In-Reply-To: <fe2db298-2116-7f52-80bd-a3d01a9a1521@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Tue, Oct 20, 2020 at 02:22:26PM +0800, Joseph Jang wrote:
-> > Add sleep timer and timeout handler to prevent device stuck during  
-> suspend/
-> > resume process. The timeout handler will dump disk sleep task at first
-> > round timeout and trigger kernel panic at second round timeout.
-> > The default timer for each round is defined in
-> > CONFIG_PM_SLEEP_TIMER_TIMEOUT.
-> >
-> > Signed-off-by: Joseph Jang <josephjang@google.com>
-> > ---
-> >  MAINTAINERS                   |  2 +
-> >  include/linux/console.h       |  1 +
-> >  include/linux/suspend_timer.h | 90 +++++++++++++++++++++++++++++++++++
+Hi,
 
-> Why is this file in include/linux/ if you only ever call it from one .c
-> file?
+On 05/10/20 11:27 am, Kishon Vijay Abraham I wrote:
+> Hi Jon Mason, Allen Hubbe, Dave Jiang,
+> 
+> On 30/09/20 9:05 pm, Kishon Vijay Abraham I wrote:
+>> This series is about implementing SW defined Non-Transparent Bridge (NTB)
+>> using multiple endpoint (EP) instances. This series has been tested using
+>> 2 endpoint instances in J7 connected to J7 board on one end and DRA7 board
+>> on the other end. However there is nothing platform specific for the NTB
+>> functionality.
+> 
+> This series has two patches that adds to drivers/ntb/ directory.
+> [PATCH v7 15/18] NTB: Add support for EPF PCI-Express Non-Transparent
+> Bridge and [PATCH v7 16/18] NTB: tool: Enable the NTB/PCIe link on the
+> local or remote side of bridge.
+> 
+> If you can review and Ack the above patches, Lorenzo can queue it along
+> with the rest of the series.
+> 
+> Thanks for your help in advance.
 
-I just refer to include/linux/suspend.h and create a new header file in the  
-same folder.
-If you have a better location for the new header file, please feel free to  
-let me know.
+Gentle ping on this series.
 
-> > --- /dev/null
-> > +++ b/include/linux/suspend_timer.h
-> > @@ -0,0 +1,90 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef _LINUX_SLEEP_TIMER_H
-> > +#define _LINUX_SLEEP_TIMER_H
-> > +
-> > +#include <linux/sched/debug.h>
-> > +
-> > +#ifdef CONFIG_PM_SLEEP_MONITOR
-> > +struct sleep_timer {
-> > +     struct task_struct      *tsk;
-> > +     struct timer_list       timer;
-> > +};
-> > +
-> > +#define DECLARE_SLEEP_TIMER(st) > > +     struct sleep_timer st
-> > +
-> > +/**
-> > + * init_sleep_timer - Initialize sleep timer.
-> > + * @st: Sleep timer to initialize.
-> > + * @func: Sleep timer timeout handler.
-> > + */
-> > +static void init_sleep_timer(struct sleep_timer *st, void (*func))
-> > +{
-> > +     struct timer_list *timer = &st->timer;
-> > +
-> > +     timer_setup(timer, func, 0);
-> > +}
-> > +
-> > +/**
-> > + * start_sleep_timer - Enable sleep timer to monitor suspend thread.
-> > + * @st: Sleep timer to enable.
-> > + */
-> > +static void start_sleep_timer(struct sleep_timer *st)
-> > +{
-> > +     struct timer_list *timer = &st->timer;
-> > +
-> > +     st->tsk = current;
-> > +
-> > +     /* use same timeout value for both suspend and resume */
-> > +     timer->expires = jiffies + HZ * CONFIG_PM_SLEEP_TIMER_TIMEOUT;
-> > +     add_timer(timer);
-> > +}
-> > +
-> > +/**
-> > + * stop_sleep_timer - Disable sleep timer.
-> > + * @st: sleep timer to disable.
-> > + */
-> > +static void stop_sleep_timer(struct sleep_timer *st)
-> > +{
-> > +     struct timer_list *timer = &st->timer;
-> > +
-> > +     del_timer_sync(timer);
-> > +}
-> > +
-> > +/**
-> > + * sleep_timeout_handler - sleep timer timeout handler.
-> > + * @t: The timer list that sleep timer depends on.
-> > + *
-> > + * Called when suspend thread has timeout suspending or resuming.
-> > + * Dump all uninterruptible tasks' call stack and call panic() to
-> > + * reboot system in second round timeout.
-> > + */
-> > +static void sleep_timeout_handler(struct timer_list *t)
-> > +{
-> > +     struct sleep_timer *st = from_timer(st, t, timer);
-> > +     static int timeout_count;
-> > +
-> > +     pr_info("Sleep timeout (timer is %d seconds)\n",
-> > +             (CONFIG_PM_SLEEP_TIMER_TIMEOUT));
-> > +     show_stack(st->tsk, NULL, KERN_EMERG);
-> > +     show_state_filter(TASK_UNINTERRUPTIBLE);
-> > +
-> > +     if (timeout_count < 1) {
-> > +             timeout_count++;
-> > +             start_sleep_timer(st);
-> > +             return;
-> > +     }
-> > +
-> > +     if (console_is_suspended())
-> > +             resume_console();
-> > +
-> > +     panic("Sleep timeout and panic\n");
-> > +}
-> > +#else
-> > +#define DECLARE_SLEEP_TIMER(st)
-> > +#define init_sleep_timer(x, y)
-> > +#define start_sleep_timer(x)
-> > +#define stop_sleep_timer(x)
-> > +#endif
-> > +
-> > +#endif /* _LINUX_SLEEP_TIMER_H */
-> > diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
-> > index a7320f07689d..9e2b274db0c1 100644
-> > --- a/kernel/power/Kconfig
-> > +++ b/kernel/power/Kconfig
-> > @@ -207,6 +207,21 @@ config PM_SLEEP_DEBUG
-> >       def_bool y
-> >       depends on PM_DEBUG && PM_SLEEP
-> >
-> > +config PM_SLEEP_MONITOR
-> > +     bool "Linux kernel suspend/resume process monitor"
-> > +     depends on PM_SLEEP
-> > +     help
-> > +     This option will enable sleep timer to prevent device stuck
-> > +     during suspend/resume process. Sleep timeout handler will dump
-> > +     disk sleep task at first round timeout and trigger kernel panic
-> > +     at second round timeout. The timer for each round is defined in
-> > +     CONFIG_PM_SLEEP_TIMER_TIMEOUT.
-
-> I thought we already had a watchdog for all of this, why not just always
-> add this to that code, for that config option?
-
-
-Yes, we already have DPM_WATCHDOG to monitor device power management.
-But we really hit the suspend hang issue that DPM_WATCHDOG cannot cover.
-We propose a wide coverage debug feature like PM_SLEEP_MONITOR which
-not only covers PM but also core PM hang issues.
-
-And DPM_WATCHDOG is for device driver power management in  
-drivers/base/power/main.c
-and PM_SLEEP_MONITOR locate is for core power management in  
-kernel/power/suspend.c.
-I think it is fine for users to select whether they need device PM only or  
-not.
-
-
-> And why isn't the watchdog sufficient for you?  Why are you "open
-> coding" a watchdog timer logic here at all???
-
-
-Yes, we refer to DPM_WATCHDOG to extend the watchdog debugging for core PM.
-Because we really hit a real case that was not covered by DPM_WATCHDOG.
-I think PM_SLEEP_MONITOR is an extension debug feature from DPM_WATCHDOG.
-
-
-> thanks,
-
-> greg k-h
-
-
-Thank you,
-Joseph.
+Thanks
+Kishon
+> 
+> Best Regards,
+> Kishon
+> 
+>>
+>> This was presented in Linux Plumbers Conference. Link to presentation
+>> and video can be found @ [1]
+>>
+>> RFC patch series can be found @ [2]
+>> v1 patch series can be found @ [3]
+>> v2 patch series can be found @ [4]
+>> v3 patch series can be found @ [5]
+>> v4 patch series can be found @ [6]
+>> v5 patch series can be found @ [7]
+>> v6 patch series can be found @ [8]
+>>
+>> Changes from v6:
+>> 1) Fixed issues when multiple NTB devices are creating using multiple
+>>    functions
+>> 2) Fixed issue with writing scratchpad register
+>> 3) Created a video demo @ [9]
+>>
+>> Changes from v5:
+>> 1) Fixed a formatting issue in Kconfig pointed out by Randy
+>> 2) Checked for Error or Null in pci_epc_add_epf()
+>>
+>> Changes from v4:
+>> 1) Fixed error condition checks in pci_epc_add_epf()
+>>
+>> Changes from v3:
+>> 1) Fixed Documentation edits suggested by Randy Dunlap <rdunlap@infradead.org>
+>>
+>> Changes from v2:
+>> 1) Add support for the user to create sub-directory of 'EPF Device'
+>>    directory (for endpoint function specific configuration using
+>>    configfs).
+>> 2) Add documentation for NTB specific attributes in configfs
+>> 3) Check for PCI_CLASS_MEMORY_RAM (PCIe class) before binding ntb_hw_epf
+>>    driver
+>> 4) Other documentation fixes
+>>
+>> Changes from v1:
+>> 1) As per Rob's comment, removed support for creating NTB function
+>>    device from DT
+>> 2) Add support to create NTB EPF device using configfs (added support in
+>>    configfs to associate primary and secondary EPC with EPF.
+>>
+>> Changes from RFC:
+>> 1) Converted the DT binding patches to YAML schema and merged the
+>>    DT binding patches together
+>> 2) NTB documentation is converted to .rst
+>> 3) One HOST can now interrupt the other HOST using MSI-X interrupts
+>> 4) Added support for teardown of memory window and doorbell
+>>    configuration
+>> 5) Add support to provide support 64-bit memory window size from
+>>    DT
+>>
+>> [1] -> https://linuxplumbersconf.org/event/4/contributions/395/
+>> [2] -> http://lore.kernel.org/r/20190926112933.8922-1-kishon@ti.com
+>> [3] -> http://lore.kernel.org/r/20200514145927.17555-1-kishon@ti.com
+>> [4] -> http://lore.kernel.org/r/20200611130525.22746-1-kishon@ti.com
+>> [5] -> http://lore.kernel.org/r/20200904075052.8911-1-kishon@ti.com
+>> [6] -> http://lore.kernel.org/r/20200915042110.3015-1-kishon@ti.com
+>> [7] -> http://lore.kernel.org/r/20200918064227.1463-1-kishon@ti.com
+>> [8] -> http://lore.kernel.org/r/20200924092519.17082-1-kishon@ti.com
+>> [9] -> https://youtu.be/dLKKxrg5-rY
+>>
+>> Kishon Vijay Abraham I (18):
+>>   Documentation: PCI: Add specification for the *PCI NTB* function
+>>     device
+>>   PCI: endpoint: Make *_get_first_free_bar() take into account 64 bit
+>>     BAR
+>>   PCI: endpoint: Add helper API to get the 'next' unreserved BAR
+>>   PCI: endpoint: Make *_free_bar() to return error codes on failure
+>>   PCI: endpoint: Remove unused pci_epf_match_device()
+>>   PCI: endpoint: Add support to associate secondary EPC with EPF
+>>   PCI: endpoint: Add support in configfs to associate two EPCs with EPF
+>>   PCI: endpoint: Add pci_epc_ops to map MSI irq
+>>   PCI: endpoint: Add pci_epf_ops for epf drivers to expose function
+>>     specific attrs
+>>   PCI: endpoint: Allow user to create sub-directory of 'EPF Device'
+>>     directory
+>>   PCI: cadence: Implement ->msi_map_irq() ops
+>>   PCI: cadence: Configure LM_EP_FUNC_CFG based on epc->function_num_map
+>>   PCI: endpoint: Add EP function driver to provide NTB functionality
+>>   PCI: Add TI J721E device to pci ids
+>>   NTB: Add support for EPF PCI-Express Non-Transparent Bridge
+>>   NTB: tool: Enable the NTB/PCIe link on the local or remote side of
+>>     bridge
+>>   Documentation: PCI: Add configfs binding documentation for pci-ntb
+>>     endpoint function
+>>   Documentation: PCI: Add userguide for PCI endpoint NTB function
+>>
+>>  .../PCI/endpoint/function/binding/pci-ntb.rst |   38 +
+>>  Documentation/PCI/endpoint/index.rst          |    3 +
+>>  .../PCI/endpoint/pci-endpoint-cfs.rst         |   10 +
+>>  .../PCI/endpoint/pci-ntb-function.rst         |  351 +++
+>>  Documentation/PCI/endpoint/pci-ntb-howto.rst  |  160 ++
+>>  drivers/misc/pci_endpoint_test.c              |    1 -
+>>  drivers/ntb/hw/Kconfig                        |    1 +
+>>  drivers/ntb/hw/Makefile                       |    1 +
+>>  drivers/ntb/hw/epf/Kconfig                    |    6 +
+>>  drivers/ntb/hw/epf/Makefile                   |    1 +
+>>  drivers/ntb/hw/epf/ntb_hw_epf.c               |  755 ++++++
+>>  drivers/ntb/test/ntb_tool.c                   |    1 +
+>>  .../pci/controller/cadence/pcie-cadence-ep.c  |   60 +-
+>>  drivers/pci/endpoint/functions/Kconfig        |   12 +
+>>  drivers/pci/endpoint/functions/Makefile       |    1 +
+>>  drivers/pci/endpoint/functions/pci-epf-ntb.c  | 2114 +++++++++++++++++
+>>  drivers/pci/endpoint/functions/pci-epf-test.c |   13 +-
+>>  drivers/pci/endpoint/pci-ep-cfs.c             |  176 +-
+>>  drivers/pci/endpoint/pci-epc-core.c           |  130 +-
+>>  drivers/pci/endpoint/pci-epf-core.c           |  105 +-
+>>  include/linux/pci-epc.h                       |   39 +-
+>>  include/linux/pci-epf.h                       |   28 +-
+>>  include/linux/pci_ids.h                       |    1 +
+>>  23 files changed, 3934 insertions(+), 73 deletions(-)
+>>  create mode 100644 Documentation/PCI/endpoint/function/binding/pci-ntb.rst
+>>  create mode 100644 Documentation/PCI/endpoint/pci-ntb-function.rst
+>>  create mode 100644 Documentation/PCI/endpoint/pci-ntb-howto.rst
+>>  create mode 100644 drivers/ntb/hw/epf/Kconfig
+>>  create mode 100644 drivers/ntb/hw/epf/Makefile
+>>  create mode 100644 drivers/ntb/hw/epf/ntb_hw_epf.c
+>>  create mode 100644 drivers/pci/endpoint/functions/pci-epf-ntb.c
+>>
