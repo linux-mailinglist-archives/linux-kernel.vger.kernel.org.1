@@ -2,60 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8068F29399B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A93C29399D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393477AbgJTLGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 07:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393449AbgJTLGt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 07:06:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F03C061755;
-        Tue, 20 Oct 2020 04:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Y8tm4EXpO/+dnvlvRNR45vf5nYEzmrYDbgkTOvPsrbg=; b=CJhxfcOTCLGmRVnDt3CM/VeBpE
-        icKiLykiLwVt9cy2SBi1P+AUxSPXWsQpPwMvQ9EW21WFreJmHJQwK+I1f6gekdAmf2XqEe68z3EBr
-        7i98Z1JQUydG4dFsHKWfDkgj0pwudkV+CaDUoQj2dyRBEer1U99LLqiwT5Y2hZTKCHgRmRyxUxSK1
-        aed6cw/sMv06l2zLKeFSndUZfQl21qyU8T0R4Tpgw8v4XxzCj5asw4FSOnNN05DCB3f0oBkU2BThj
-        1o7Za8wz5kd1iuyvVABiskZXH1y7vtt5R+cR+YeVOf4RMZ3O/hCRG4M8058KwJZ4hLE4o1kW8HTan
-        PxiaNatg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kUpTU-0000S2-DB; Tue, 20 Oct 2020 11:06:41 +0000
-Date:   Tue, 20 Oct 2020 12:06:40 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     David Howells <dhowells@redhat.com>, torvalds@linux-foundation.org,
-        Takashi Iwai <tiwai@suse.de>, dwysocha@redhat.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-afs@lists.infradead.org
-Subject: Re: [PATCH] cachefiles: Drop superfluous readpages aops NULL check
-Message-ID: <20201020110640.GY20115@casper.infradead.org>
-References: <160311941493.2265023.9116264838885193100.stgit@warthog.procyon.org.uk>
- <20201020075307.GA17780@infradead.org>
+        id S2393485AbgJTLH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 07:07:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392472AbgJTLH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 07:07:29 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC03021741;
+        Tue, 20 Oct 2020 11:07:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603192047;
+        bh=HTmxmKIf9MzMYvHSBAlNECRzB9g2RAoZ+MmrBvP8i8I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bmxh5iJz8dDiq6NkpSvntHoic3gce2bQcvXgaOcOLitxMmwhkuCKuC0JGghGUPn4+
+         0czu2h0BSwh2NVAn811gUiabFba5KoTmfLs6TjK2aRcD8a8vzvaIeRRBNGA5N7rZVp
+         5Qv/9Tom0CoyKJHt+7gUKC1vsxRNNPeCrU2nw+Ng=
+Date:   Tue, 20 Oct 2020 13:08:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joseph Jang <josephjang@google.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        jonglin@google.com, woodylin@google.com, markcheng@google.com
+Subject: Re: [PATCH] power: suspend: Replace dpm_watchdog by sleep timer
+Message-ID: <20201020110810.GA194512@kroah.com>
+References: <20201020095611.1763815-1-josephjang@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201020075307.GA17780@infradead.org>
+In-Reply-To: <20201020095611.1763815-1-josephjang@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 08:53:07AM +0100, Christoph Hellwig wrote:
-> Hmm,
+On Tue, Oct 20, 2020 at 05:56:11PM +0800, Joseph Jang wrote:
+> Since dpm_watchdog just cover device power management,
+> we proposed sleep timer to cover not only device power management
+> issues, but also core power management hand issue.
 > 
-> what prevents us from killing of the last ->readpages instance?
-> Leaving half-finished API conversions in the tree usually doesn't end
-> well..
+> Add sleep timer and timeout handler to prevent device stuck during suspend/
+> resume process. The timeout handler will dump disk sleep task at first
+> round timeout and trigger kernel panic at second round timeout.
+> The default timer for each round is defined in
+> CONFIG_PM_SLEEP_TIMER_TIMEOUT.
+> 
+> Signed-off-by: Joseph Jang <josephjang@google.com>
+> ---
+>  drivers/base/power/main.c    | 69 ---------------------------
+>  include/linux/console.h      |  1 +
+>  kernel/power/Kconfig         | 27 ++++++-----
+>  kernel/power/suspend.c       | 19 ++++++++
+>  kernel/power/suspend_timer.h | 90 ++++++++++++++++++++++++++++++++++++
+>  kernel/printk/printk.c       |  5 ++
+>  6 files changed, 128 insertions(+), 83 deletions(-)
+>  create mode 100644 kernel/power/suspend_timer.h
 
-Dave's working on it.  Git tree:
+Is this different from your previous patches?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-iter
+If so, you need to properly version them, and put below the --- line
+what changed.  Otherwise it is impossible to review.
 
-(we've been collaborating and some of the prerequisites have trickled
-into Linus' tree this merge window, eg the readahead changes)
+Please fix up.
+
+thanks,
+
+greg k-h
