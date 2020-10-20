@@ -2,95 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B8B2936F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170482936F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392106AbgJTIop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 04:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389334AbgJTIoo (ORCPT
+        id S2389319AbgJTIog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 04:44:36 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:45682 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389304AbgJTIof (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:44:44 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D10C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:44:43 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id v22so441296ply.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:44:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=npY3XpZ1WJkzBlC4QeIItPlhppwYJDvN6wAnSiJqkk4=;
-        b=d5KRK+lAAduNlPfivlmVntV0dRiwGVstNHD1SoFQZHyAOFWdms/0ESHmFRguL1oZUm
-         r+6bsMs2s4+1J5By+h70CKYpgUOxZjJ7Sut+HyUehkBqzQ28jeVk44gTMPvxWONy+Bdy
-         xLah6x21WHRc3sYeE2hXGEmHGfMwZurhJuz6fpoeWY7t+1JZ2eg8K8fVU2ugcYlNyS/D
-         gHCNKqnmSvcK7Tm38y4xjmy6EX4Ouv1L8LfkcF/OFoxSYIMkkYemAxLeXUrjX4r/VGbp
-         LeRdyoSoCWGPi4w8coabO6F1a9Am6Ul6rdMd4VKa8YRwzh+oOBPYf/eyb6nsgAfkMDBT
-         6Shg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=npY3XpZ1WJkzBlC4QeIItPlhppwYJDvN6wAnSiJqkk4=;
-        b=d8MkS5icow1brvHq1xrmFlTFupmtRyGTqr86fn/7S2fsh9/0SUyrwSHiCb/dq814SY
-         1aKEUUxQpcOvMGdy02gozGUipKCLiQPQyf2KfsfjgPzsxT17Pvmog7FwHoomxBOv1bGI
-         IwUJxPAHSZDv6kJErSq3Uj63EY5b2vUWobMjPjKH1nSPqcvJdL/7IQEy2EjKqnppaR26
-         oxc9t7mChfnvrWcsVlVfWHfvKEhsD7K+wMWb+J6PsBMhw/0l2nuZLw2cK25BxJgHcjQV
-         n99bmH7S+RZwIGHV5Ys+jclEeC0e0PGMeMXyytqOhcsXRV5Yo4LGcOuW/L/TsRCyz0pk
-         WW9g==
-X-Gm-Message-State: AOAM532QimLcD3uhIn/Tgp4m3/Mmr+zKUouzGG28YC3Oz2Qfp36mrgMb
-        Ik8UlUmpIbnMM/jfPbIuTa4=
-X-Google-Smtp-Source: ABdhPJy0KshjnIva7Meea2Ko5m0iAPPCsedajlu8jwqMHPL+ziWAx64CDJM9j0yWa1K0yNDQIx/SDw==
-X-Received: by 2002:a17:90a:678a:: with SMTP id o10mr1902383pjj.180.1603183482568;
-        Tue, 20 Oct 2020 01:44:42 -0700 (PDT)
-Received: from localhost.localdomain ([117.246.150.152])
-        by smtp.googlemail.com with ESMTPSA id y15sm1241581pjt.41.2020.10.20.01.44.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 01:44:41 -0700 (PDT)
-From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
-Cc:     dmugil2000@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Karol Herbst <karolherbst@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        nouveau@lists.freedesktop.org
-Subject: [PATCH] x86/mm/kmmio: correctly handle kzalloc return
-Date:   Tue, 20 Oct 2020 14:13:44 +0530
-Message-Id: <20201020084345.96823-1-dmugil2000@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 20 Oct 2020 04:44:35 -0400
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201020084433epoutp04c712146a0ed9552e69dfa56d8c862693~-puAUPX1s2157221572epoutp04S
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 08:44:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201020084433epoutp04c712146a0ed9552e69dfa56d8c862693~-puAUPX1s2157221572epoutp04S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603183473;
+        bh=lz40hHps79hqNfcnD+cI3oHpIVLgeD6CDqiBeBo/A8M=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Rx9IunAtzDT5HkmNrd/VFhVR2TmUebfgTkm9CWSCahfAyVwMIKK4qU7muocS/YtcL
+         TfzHkSYzFDAmMeDIarR8ia1YN7j9duMXHfWMV4pf88L7nnKccKH0vxAk2tI45iMDSZ
+         WPgYuiDYYuhD2js0nkA+x834dvRnJwUVqDzlx1XU=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20201020084433epcas2p4cbaa3d6b62ac518b6dc2907314aeeacf~-pt-8mS9-2009820098epcas2p4c;
+        Tue, 20 Oct 2020 08:44:33 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.191]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4CFnHM1KdnzMqYks; Tue, 20 Oct
+        2020 08:44:31 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B3.C4.09908.E63AE8F5; Tue, 20 Oct 2020 17:44:30 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20201020084429epcas2p3685bcb89c3ab1cacefb183384dcb2b6e~-pt8N9Klx1163711637epcas2p3V;
+        Tue, 20 Oct 2020 08:44:29 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201020084429epsmtrp26e7e060944491e80b04cf5bed8c37873~-pt8NQfXL3034530345epsmtrp22;
+        Tue, 20 Oct 2020 08:44:29 +0000 (GMT)
+X-AuditID: b6c32a48-139ff700000026b4-60-5f8ea36e030a
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A8.8B.08604.D63AE8F5; Tue, 20 Oct 2020 17:44:29 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.229.9.51]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201020084429epsmtip163ac5d1c869d0dcc3ece584d2081c6aa~-pt8CZHLb0582605826epsmtip1V;
+        Tue, 20 Oct 2020 08:44:29 +0000 (GMT)
+From:   Chanho Park <chanho61.park@samsung.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chanho Park <chanho61.park@samsung.com>
+Subject: [PATCH] scsi: ufs: make sure scan sequence for multiple hosts
+Date:   Tue, 20 Oct 2020 17:44:22 +0900
+Message-Id: <20201020084422.109585-1-chanho61.park@samsung.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLKsWRmVeSWpSXmKPExsWy7bCmhW7e4r54g113NS0ezNvGZvHy51U2
+        i8v7tS0W3djGZHF51xw2i+7rO9gslh//x+TA7jFh0QFGj49Pb7F49G1ZxejxeZOcR/uBbqYA
+        1qgcm4zUxJTUIoXUvOT8lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygK5QU
+        yhJzSoFCAYnFxUr6djZF+aUlqQoZ+cUltkqpBSk5BYaGBXrFibnFpXnpesn5uVaGBgZGpkCV
+        CTkZH958YS+4LFgx8esdxgbGvXxdjJwcEgImEm//fGPvYuTiEBLYwSix/tIfJgjnE6PEp389
+        TCBVQgLfGCUm3NCC6Tj37gcLRNFeRomXk5ZCOR8ZJX5P2scOUsUmoCux5fkrxi5GDg4RASOJ
+        a6s8QWqYBaYzShxc+ZENpEZYwE1i5/5zrCA1LAKqEhO6lUHCvAL2EqvP72SBWCYv8bR3OTNE
+        XFDi5MwnYHFmoHjz1tnMEDWn2CV+LAqFsF0kvkyBOEFCQFji1fEtULaUxOd3e9kg7HqJFY+a
+        mEHukRDoAXpg2j+oQfYSM58uZQK5h1lAU2L9Ln0QU0JAWeLILai1fBIdh/+yQ4R5JTrahCAa
+        1SUObJ8OdbGsRPecz6wQtofE3XfHWSFBGCvx4Px81gmM8rOQPDMLyTOzEPYuYGRexSiWWlCc
+        m55abFRgghylmxjB6VDLYwfj7Lcf9A4xMnEwHmKU4GBWEuGdwNoXL8SbklhZlVqUH19UmpNa
+        fIjRFBi6E5mlRJPzgQk5ryTe0NTIzMzA0tTC1MzIQkmcV0WvI15IID2xJDU7NbUgtQimj4mD
+        U6qBKXl+Z+cn1aytrMtsXPXeKxj/+fbjXfN5qSm3popYdfNesN/3Kr5XOWaJfNo/fdckdgHP
+        g+8nynxIt1aN/fWU2e1jjMYZ8//f52abzV9/7hM/R8L16t8bur3YM2v+J/9ayfQw7sbtZBl9
+        7nsf7vbxm65dyTj9YMtrK3ethScvrTXbvFHos3zizQ9d2udEJQuDJTd8vRXtcvTbw5bD9Xo1
+        qWuefGJgeXN62lERvxP212Km3zp1vPvfvHt7PlnUFe16l6Lp0cW88FDXSrcHRYdVHgprpV1L
+        yNaeskZSyIaj6o1wyf2c/wcfLXx2d/f9FbWxQuE5WbPrBCrM1NZsUfGwZS9VXByy3vzbNZnY
+        9rbtwUosxRmJhlrMRcWJABtuQNkQBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHLMWRmVeSWpSXmKPExsWy7bCSnG7u4r54gyeNvBYP5m1js3j58yqb
+        xeX92haLbmxjsri8aw6bRff1HWwWy4//Y3Jg95iw6ACjx8ent1g8+rasYvT4vEnOo/1AN1MA
+        axSXTUpqTmZZapG+XQJXxoc3X9gLLgtWTPx6h7GBcS9fFyMnh4SAicS5dz9Yuhi5OIQEdjNK
+        HHlzmR0iISvx7N0OKFtY4n7LEVaIoveMEq/W3QRLsAnoSmx5/ooRxBYBmjTj1juwImaB2YwS
+        e44vBksIC7hJ7Nx/DijBwcEioCoxoVsZJMwrYC+x+vxOFogF8hJPe5czQ8QFJU7OfAIWZwaK
+        N2+dzTyBkW8WktQsJKkFjEyrGCVTC4pz03OLDQsM81LL9YoTc4tL89L1kvNzNzGCg1RLcwfj
+        9lUf9A4xMnEwHmKU4GBWEuGdwNoXL8SbklhZlVqUH19UmpNafIhRmoNFSZz3RuHCOCGB9MSS
+        1OzU1ILUIpgsEwenVANT0z99o2VK6rtSl+Uff66o9OvW8+Rp2c4XSpy4jZ0ZfvP6WV5Q+SMn
+        sXhbCsPMIx+fn6oyU/njLnY7r1Yras2XdN6sqzJ9+Vd7Z9R+3fgq12156RXOWE0BzxL+0N5V
+        E/XFWI+f/TkpJvnDYUWx49Fm0+YysuvaBP2sjdn7y+rni7cH+gS/8DzNYX0Ry+/xVTQx5e+U
+        mCtvWrim1F8QU0qenR1XITxfrGOxXpHj+poTfE/f8oRKztl7YV25yhIZ1g0RV7/VFUrMder3
+        y+d2uvqn6OqR+IvzGZk/Xss1n6L31+XyOh3nzekZ8VbHAp8df2vhmMIivYgtIujVJu5LjS9l
+        eBhmTNx/rE/4kt6dzBlKLMUZiYZazEXFiQDaXxrZwQIAAA==
+X-CMS-MailID: 20201020084429epcas2p3685bcb89c3ab1cacefb183384dcb2b6e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201020084429epcas2p3685bcb89c3ab1cacefb183384dcb2b6e
+References: <CGME20201020084429epcas2p3685bcb89c3ab1cacefb183384dcb2b6e@epcas2p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replacing return value -1 to error code
+By doing scan as asynchronous way, scsi device scannning can be out of
+order execution. It is no problem if there is a ufs host but the scsi
+device name of each host can be changed according to the scan sequences.
 
-Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+Ideal Case) host0 scan first
+host0 will be started from /dev/sda
+ -> /dev/sdb (BootLUN0 of host0)
+ -> /dev/sdc (BootLUN1 of host1)
+host1 will be started from /dev/sdd
+
+This might be an ideal case and we can easily find the host device by
+this mappinng.
+
+However, Abnormal Case) host1 scan first,
+host1 will be started from /dev/sda and host0 will be followed later.
+
+To make sure the scan sequences according to the host, we can use a
+bitmap which hosts are scanned and wait until previous hosts are
+finished to scan.
+
+Signed-off-by: Chanho Park <chanho61.park@samsung.com>
 ---
- arch/x86/mm/kmmio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/mm/kmmio.c b/arch/x86/mm/kmmio.c
-index be020a7bc414..15430520c232 100644
---- a/arch/x86/mm/kmmio.c
-+++ b/arch/x86/mm/kmmio.c
-@@ -386,7 +386,7 @@ static int add_kmmio_fault_page(unsigned long addr)
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index b8f573a02713..1ced5996e988 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -13,6 +13,7 @@
+ #include <linux/devfreq.h>
+ #include <linux/nls.h>
+ #include <linux/of.h>
++#include <linux/bitmap.h>
+ #include <linux/bitfield.h>
+ #include <linux/blk-pm.h>
+ #include <linux/blkdev.h>
+@@ -214,6 +215,10 @@ static struct ufs_dev_fix ufs_fixups[] = {
+ 	END_FIX
+ };
  
- 	f = kzalloc(sizeof(*f), GFP_ATOMIC);
- 	if (!f)
--		return -1;
-+		return -ENOMEN;
++/* Ordered scan host */
++static unsigned long scanned_hosts = 0;
++static wait_queue_head_t scan_wq = __WAIT_QUEUE_HEAD_INITIALIZER(scan_wq);
++
+ static irqreturn_t ufshcd_tmc_handler(struct ufs_hba *hba);
+ static void ufshcd_async_scan(void *data, async_cookie_t cookie);
+ static int ufshcd_reset_and_restore(struct ufs_hba *hba);
+@@ -7709,8 +7714,13 @@ static void ufshcd_async_scan(void *data, async_cookie_t cookie)
+ 	if (ret)
+ 		goto out;
  
- 	f->count = 1;
- 	f->addr = addr;
+-	/* Probe and add UFS logical units  */
++	/* Probe and add UFS logical units. Sequential scan by host_no */
++	wait_event(scan_wq,
++		   find_first_zero_bit(&scanned_hosts, hba->host->max_id) ==
++		   hba->host->host_no);
+ 	ret = ufshcd_add_lus(hba);
++	set_bit(hba->host->host_no, &scanned_hosts);
++	wake_up(&scan_wq);
+ out:
+ 	/*
+ 	 * If we failed to initialize the device or the device is not
 -- 
-2.25.1
+2.28.0
 
