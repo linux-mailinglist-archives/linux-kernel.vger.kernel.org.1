@@ -2,103 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB14293939
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89F629393E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393234AbgJTKey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:34:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42456 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392120AbgJTKex (ORCPT
+        id S2393240AbgJTKfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 06:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392115AbgJTKfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:34:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603190092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q96jnE0zL/+3eV1zXo6SJcOjLpLSsjofFz0lkEdY9WI=;
-        b=fOzj4D5z7YBxhlyNDi/Y6ONpjdIv9jDaJ4ynA+JTWmkFa08kbi+/iKWZb6n4QxmbGXekpJ
-        i694eWgV3/jW9xRTXIvGKbu9H25cQWRikL+ieOS2eQYg67IQZQ/Lr1AJLNiH1tU2qbiSKL
-        56KjDtua4nP/jgexk+MXggCal1zEByU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-284-sXH1ULZoMuOw_ewUlA1O6w-1; Tue, 20 Oct 2020 06:34:50 -0400
-X-MC-Unique: sXH1ULZoMuOw_ewUlA1O6w-1
-Received: by mail-wm1-f69.google.com with SMTP id c204so300124wmd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:34:50 -0700 (PDT)
+        Tue, 20 Oct 2020 06:35:44 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A03C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:35:43 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id v22so586038ply.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:35:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k40p/TeTSBCnYnmdeXcl5d+yUSPbyw9jvLg468r2bq0=;
+        b=CkH8rcRgSS61NJ0Nk7uX4ybp4pUswOiSBKXWxnHqkXFFG1I5B9UhQTDXbnO4dR6tEt
+         Zgils15Hn+Uo/WI/KpYz9cwb5SqXBic9T4ZFcqzoExoRsUHiROexKTtohb9HboqvQDcg
+         ao+WEbs/Po/vW2No+kjSaBl7sA9BBsi1lXaIyrnkNqLMmXyXllDOleF1SQ0cFAXBTWrG
+         MvDCCVyHfNxdMNBu6VtfG1vnYrNTu8Fxkzy1e4OB71qF/N1RrfmfgwzPjoEeH5/iGBGY
+         JINmDFYiGhdb62uzfr8TuCrfMrSMdTP+n8SSMDsPnQHUSrMt+WUPD6O7CQ8kkFplL20z
+         hwIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=q96jnE0zL/+3eV1zXo6SJcOjLpLSsjofFz0lkEdY9WI=;
-        b=HaGpaTjVVuBUZEiUQxLJqsg84XzsZuWWtFSKjPeQBP8n94azQJVDVUZe4EdCL1F/03
-         SA9EqylryVrlahTzeAYqzxak5UiPdj2Wg6teaPJZlizVkbnHk+IOzJBS3GJNJmeLayne
-         S62BUHw+sSgJ7UWdu9MtbVf61CocMTBjjVRer97cX5AM/nh1cLEDNLQkzbBryt6TtrXN
-         nGIKJkuwNtUoAfpqOD69Dw/AU14VJ3wHIHEr7wMZ0sfH9J+vfIzkck7uBrIh3cisr095
-         AliBOpdHEpvPP/dC+6RBkBfdGNl5zuobyE8oskbRpRqLM/6p/psSfbSRP/QSx0Ee6LjE
-         5lsQ==
-X-Gm-Message-State: AOAM531oPvEIkhCliNzxvXDGT50I+Qlw0cUv139apGnsd6LPTmExSqOL
-        rwRKFDqKqNCjZLeqO5E4usxJYgGm9ioXfz47X4z/OHB8IRXMjI1P2olPYx2TMc4ocfvZrNB+WLK
-        3U7eShldyYBHQC/eOkL2NeQdM
-X-Received: by 2002:a1c:87:: with SMTP id 129mr2170664wma.103.1603190089055;
-        Tue, 20 Oct 2020 03:34:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwK0vtophc5uwVNCm9j+6rJW4gkhbpN0w4IRqerxSf208yGjd3VCwoUYBlm7xrrgEKKeeDtfQ==
-X-Received: by 2002:a1c:87:: with SMTP id 129mr2170619wma.103.1603190088421;
-        Tue, 20 Oct 2020 03:34:48 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x81sm2016034wmb.11.2020.10.20.03.34.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 03:34:47 -0700 (PDT)
-Subject: Re: [PATCH] KVM: VMX: Forbid userspace MSR filters for x2APIC
-To:     Alexander Graf <graf@amazon.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <20201019170519.1855564-1-pbonzini@redhat.com>
- <618E2129-7AB5-4F0D-A6C9-E782937FE935@amazon.de>
- <c9dd6726-2783-2dfd-14d1-5cec6f69f051@redhat.com>
- <bce2aee1-bfac-0640-066b-068fa5f12cf8@amazon.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6edd5e08-92c2-40ff-57be-37b92d1ca2bc@redhat.com>
-Date:   Tue, 20 Oct 2020 12:34:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k40p/TeTSBCnYnmdeXcl5d+yUSPbyw9jvLg468r2bq0=;
+        b=d6Qp5jg0L32mFAYGuYqRZqMZa2MCPyTOAV5L3iisfBL6Ma8bn327N9yqL9cziYMvLy
+         uOzZGWNhRiFjr+OE5/6klBWakdLT8n76WTBnyNFB/0PsbYWg6Tcpku+0MBagEu39oGC5
+         kqiGKt+HbNll0qT0bWErC1wLDFfkgAk/CCPg1bcbhFhJt++aDXWQAidrG3A87LErJ0E5
+         Rgb3RiMik4x0He7ZWGTvGy6WQ87pBT1MUMTQdeggcmeMBTL/ov9rA0eawX+rQftC7T3L
+         h2ysdTTWyhcEUt5tgKmdHqfM4442Z7nHU48Go+z9AJqpAkeOe01qpY+zzigV6M1mhvly
+         ev5A==
+X-Gm-Message-State: AOAM532BL0yDfITkGIu5gCWoRcNvKMDEji6FfblHENm9vvLHZMatpNIt
+        jTrWTmig/N0S031v8qIv65JSFBoiiXSCD3yXCuafAQ==
+X-Google-Smtp-Source: ABdhPJxGTD2sg1dy+OBDXRxwUamj9At+GgAySaXyHJO4hLCK1PcnnEbJUi66rwy84mMzTtDPxlDHIVv2XITElCAfJdk=
+X-Received: by 2002:a17:90a:160f:: with SMTP id n15mr2190488pja.75.1603190143362;
+ Tue, 20 Oct 2020 03:35:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bce2aee1-bfac-0640-066b-068fa5f12cf8@amazon.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201018125237.16717-1-kholk11@gmail.com> <20201018125237.16717-7-kholk11@gmail.com>
+In-Reply-To: <20201018125237.16717-7-kholk11@gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 20 Oct 2020 12:35:32 +0200
+Message-ID: <CAG3jFyt+rf_efCw3TLR9R4aHSfBaAh9tKwcp7yhyVys64iaqLA@mail.gmail.com>
+Subject: Re: [PATCH 6/6] media: camss: csiphy: Set rate on csiX_phy clock on SDM630/660
+To:     kholk11@gmail.com
+Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
+        konradybcio@gmail.com, martin.botka1@gmail.com,
+        linux-arm-msm@vger.kernel.org,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/20 11:48, Alexander Graf wrote:
-> 
->     count: 1,
->     default_allow: false,
->     ranges: [
->         {
->             flags: KVM_MSR_FILTER_READ,
->             nmsrs: 1,
->             base: MSR_EFER,
->             bitmap: { 1 },
->         },
->     ],
-> }
-> 
-> That filter would set all x2apic registers to "deny", but would not be
-> caught by the code above. Conversely, a range that explicitly allows
-> x2apic ranges with default_allow=0 would be rejected by this patch.
+Looks good to me.
 
-Yes, but the idea is that x2apic registers are always allowed, even
-overriding default_allow, and therefore it makes no sense to have them
-in a range.  The patch is only making things fail early for userspace,
-the policy is defined by Sean's patch.
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
 
-Paolo
-
+On Sun, 18 Oct 2020 at 14:53, <kholk11@gmail.com> wrote:
+>
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+>
+> The SDM630/660 SoCs (and variants) have another clock source
+> for the PHY, which must be set to a rate that's equal or
+> greater than the CSI PHY timer clock: failing to do this
+> will produce PHY overflows when trying to get a stream from
+> a very high bandwidth camera sensor and outputting no frame
+> or a partial one.
+>
+> Since I haven't found any usecase in which the csiX_phy
+> clock needs to be higher than the csiXphy_timer, let's just
+> set the same rate on both, which seems to work just perfect.
+>
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>  .../media/platform/qcom/camss/camss-csiphy.c  | 22 ++++++++++++++++---
+>  .../media/platform/qcom/camss/camss-csiphy.h  |  1 +
+>  2 files changed, 20 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
+> index c00f25aac21b..a5d717d022a5 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
+> @@ -113,9 +113,7 @@ static int csiphy_set_clock_rates(struct csiphy_device *csiphy)
+>         for (i = 0; i < csiphy->nclocks; i++) {
+>                 struct camss_clock *clock = &csiphy->clock[i];
+>
+> -               if (!strcmp(clock->name, "csiphy0_timer") ||
+> -                   !strcmp(clock->name, "csiphy1_timer") ||
+> -                   !strcmp(clock->name, "csiphy2_timer")) {
+> +               if (csiphy->rate_set[i]) {
+>                         u8 bpp = csiphy_get_bpp(csiphy->formats,
+>                                         csiphy->nformats,
+>                                         csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
+> @@ -611,6 +609,13 @@ int msm_csiphy_subdev_init(struct camss *camss,
+>         if (!csiphy->clock)
+>                 return -ENOMEM;
+>
+> +       csiphy->rate_set = devm_kcalloc(dev,
+> +                                       csiphy->nclocks,
+> +                                       sizeof(*csiphy->rate_set),
+> +                                       GFP_KERNEL);
+> +       if (!csiphy->rate_set)
+> +               return -ENOMEM;
+> +
+>         for (i = 0; i < csiphy->nclocks; i++) {
+>                 struct camss_clock *clock = &csiphy->clock[i];
+>
+> @@ -638,6 +643,17 @@ int msm_csiphy_subdev_init(struct camss *camss,
+>
+>                 for (j = 0; j < clock->nfreqs; j++)
+>                         clock->freq[j] = res->clock_rate[i][j];
+> +
+> +               if (!strcmp(clock->name, "csiphy0_timer") ||
+> +                   !strcmp(clock->name, "csiphy1_timer") ||
+> +                   !strcmp(clock->name, "csiphy2_timer"))
+> +                       csiphy->rate_set[i] = true;
+> +
+> +               if (camss->version == CAMSS_660 &&
+> +                   (!strcmp(clock->name, "csi0_phy") ||
+> +                    !strcmp(clock->name, "csi1_phy") ||
+> +                    !strcmp(clock->name, "csi2_phy")))
+> +                       csiphy->rate_set[i] = true;
+>         }
+>
+>         return 0;
+> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.h b/drivers/media/platform/qcom/camss/camss-csiphy.h
+> index 376f865ad383..f7967ef836dc 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csiphy.h
+> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.h
+> @@ -66,6 +66,7 @@ struct csiphy_device {
+>         u32 irq;
+>         char irq_name[30];
+>         struct camss_clock *clock;
+> +       bool *rate_set;
+>         int nclocks;
+>         u32 timer_clk_rate;
+>         struct csiphy_config cfg;
+> --
+> 2.28.0
+>
