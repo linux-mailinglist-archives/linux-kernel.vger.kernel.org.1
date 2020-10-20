@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FCC294417
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70058294422
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409615AbgJTUqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 16:46:04 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44746 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2409605AbgJTUqE (ORCPT
+        id S2409675AbgJTU5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 16:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409666AbgJTU5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:46:04 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09KKWPTd122429;
-        Tue, 20 Oct 2020 16:45:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=U7hAfLRFpDnoLp+5xAJTUGs7elyAAlYCvElKRXv9yxM=;
- b=defH04U+tyDenGAyJyRTLTHOTniann/mtO7I20pLS+419gmWk/TbeYm+I1MpmSNiKXQA
- vadM4DTelUHloam7Y12L6WgiQYJHgdrnDhDdpCX+Ju7I7LPv2ekagSYurp59OLUofNSz
- Tr2pyis47uy9kqw8UADW+UdG9qTuPAwKsShw/fm6Gmn9H+++3DiHiCDcGPkh6UZ/aax+
- 5SdQegDUYMYiA4rJKKTiZA5ssEs4ZNCQFhK4DsvTnz5LIwk7XRbwvjUvbpgppvab6+/b
- dPAzSU8eOdgJJyiKEmGF3e6AjnD32qkaDcMQdjDksQMBhhOCBIx/IhCMM2dj3RI816+i oQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34a6qq8stb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Oct 2020 16:45:58 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09KKZNh2134434;
-        Tue, 20 Oct 2020 16:45:57 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34a6qq8ss2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Oct 2020 16:45:57 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09KKfuVT002853;
-        Tue, 20 Oct 2020 20:45:54 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma01fra.de.ibm.com with ESMTP id 347r881vb4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Oct 2020 20:45:54 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09KKjqpW28312006
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Oct 2020 20:45:52 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 484805204F;
-        Tue, 20 Oct 2020 20:45:52 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.35.199])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 1903A52051;
-        Tue, 20 Oct 2020 20:45:49 +0000 (GMT)
-Message-ID: <9aeb4532d84e9d52444d67ff2d2e0e6c438e0a7d.camel@linux.ibm.com>
-Subject: Re: [PATCH] security: remove unneeded break
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     trix@redhat.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, jejb@linux.ibm.com,
-        jarkko.sakkinen@linux.intel.com, dhowells@redhat.com,
-        mortonm@chromium.org
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, keyrings@vger.kernel.org
-Date:   Tue, 20 Oct 2020 16:45:49 -0400
-In-Reply-To: <20201019173653.527-1-trix@redhat.com>
-References: <20201019173653.527-1-trix@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+        Tue, 20 Oct 2020 16:57:25 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78D1C0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 13:57:23 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id q4so2036300plr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 13:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=/RGCU7ap3HF2iad3K5ifvAbm1VKVest4nIA1lp5zRUg=;
+        b=Nsjih2BM6k0hwoOiuAl3xXh/LkIZ7E4F8ELN3CaIOLjDRipQgydKDAmcdqKm/0OuK5
+         1X7kNdlMXyZzBjPc95TVgTMEbEM/i1tsUZl11c4KztvaFoJ1WFyasl3VYY2WOvuTw/kW
+         DOt0dZLdJoW60lzdqjr5XiepVyc2SEIKbf9GwmOqFICJmRz85qR65cPrWrQ5JNXlPucT
+         VOzMIl074h83cN+8mpD8Kq8nnpmLdK+BZtgssiUs99c+B4q62cOwtYG1cUL5Pxhr6GEH
+         34nIishRuq9r2LJQ+9OvEwkmXDdwPT/RxLxQA6eStBhWci1bKfidJ0AvQPzcYTjVHEHT
+         4ilA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=/RGCU7ap3HF2iad3K5ifvAbm1VKVest4nIA1lp5zRUg=;
+        b=i4YoHckC8pzlxNjv5V69mQM+n8v2O0i0ZEIEWGv4DJLTmGkU6elT6PCKt6PsksE91M
+         /hDia7PM5K/QyFYPZUuD/7zU6SoYP8boq3C+EY/9n6nNZEhvTmrypGdpj7kj89GvPg9s
+         IpL7hzS5WRHCdtVJqEd0ePNCLTNM8xW0GxSvoKjBIFtjSh0nFWAEEmY+3yp6GqJGfUor
+         3A3SMhQtJi2+qQzMqat1jgRegcBD05LQevZB+1HALLGY85fKPWOsarGi6BFOD/Ov6HQ1
+         KDBdKc1G4uZKT535cXiVbrD37NQ1CZ83T6tS42OhRJrXVfgBrUzSOjiTbQ1fqUBlP61u
+         c4EQ==
+X-Gm-Message-State: AOAM531F3dd4OoD27Nw80DGGEUGB3mE2eAMIGWdriUZ6psEK1Gx7oNr3
+        kY+i5e7X6d0MtaFGhDTWUQk6Zx4=
+X-Google-Smtp-Source: ABdhPJwiY6L7c4ZSUDvGKzhoFwXOunuGUJKPBV8l4cAguKrfhX9IOnUtvrjXf5hs8iA+oqQZT74ruBU=
+Sender: "xii via sendgmr" <xii@hvdc.svl.corp.google.com>
+X-Received: from hvdc.svl.corp.google.com ([2620:15c:2cd:202:cad3:ffff:feb5:feb4])
+ (user=xii job=sendgmr) by 2002:a17:90a:109:: with SMTP id b9mr92280pjb.35.1603227443065;
+ Tue, 20 Oct 2020 13:57:23 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 13:57:03 -0700
+Message-Id: <20201020205704.1741543-1-xii@google.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-20_12:2020-10-20,2020-10-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- mlxlogscore=793 lowpriorityscore=0 malwarescore=0 priorityscore=1501
- clxscore=1011 spamscore=0 mlxscore=0 suspectscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010200135
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+Subject: [PATCH v2 0/1] Touch kernel watchdog with sched count
+From:   Xi Wang <xii@google.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Don <joshdon@google.com>, linux-kernel@vger.kernel.org,
+        Xi Wang <xii@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-19 at 10:36 -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> A break is not needed if it is preceded by a return
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+The main purpose of kernel watchdog is to test whether scheduler can
+still schedule tasks on a cpu. In order to reduce latency / jitter
+from periodically invoking watchdog reset in thread context, we can
+simply test if pick_next_task can run. This is done by forcing resched
+and checking rq->sched_count. Compared to actually resetting watchdog
+from cpu stop / migration threads, we lose coverage on: a migration
+thread actually get picked and we actually context switch to the
+migration thread. These steps are unlikely to silently fail. The
+change would provide nearly the same level of protection with less
+overhead.
 
-Recently "fall through" comments were added before any case statement
-without a preceeding break.  Have you made sure these changes won't be
-flagged.   Assuming you have,
+With this patch we can still switch back to the old method with the
+boot option watchdog_touch_with_thread. However code for the old
+method can be completely removed in the future.
 
-Acked-by: Mimi Zohar <zohar@linux.ibm.com>
 
-Mimi
+v2:
+ - Use sched_count instead of having sched calling into watchdog code
+ - Remove the sysctl and add a boot option, which can be removed later
+ - Changed the subject line
+  
+
+
+Xi Wang (1):
+  sched: watchdog: Touch kernel watchdog with sched count
+
+ include/linux/sched.h |  4 ++++
+ kernel/sched/core.c   | 23 ++++++++++++++++++++--
+ kernel/sched/sched.h  |  6 +++++-
+ kernel/watchdog.c     | 44 +++++++++++++++++++++++++++++++++++++------
+ 4 files changed, 68 insertions(+), 9 deletions(-)
+
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
 
