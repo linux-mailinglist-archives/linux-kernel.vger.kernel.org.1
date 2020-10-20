@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD6A293AAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723D5293A78
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404940AbgJTMBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:01:46 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:52058 "EHLO
+        id S2394098AbgJTMAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:00:45 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:52080 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394036AbgJTMA1 (ORCPT
+        with ESMTP id S2394038AbgJTMA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:00:27 -0400
+        Tue, 20 Oct 2020 08:00:28 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id B054F8030171;
-        Tue, 20 Oct 2020 12:00:25 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 7F3DA803017D;
+        Tue, 20 Oct 2020 12:00:26 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8ch5ML-j4Lm6; Tue, 20 Oct 2020 15:00:25 +0300 (MSK)
+        with ESMTP id Djs0T4vD8y25; Tue, 20 Oct 2020 15:00:26 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kukjin Kim <kgene@kernel.org>
+        Santosh Shilimkar <ssantosh@kernel.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-samsung-soc@vger.kernel.org>
-Subject: [PATCH 19/29] arm: dts: exynos: Harmonize DWC USB3 DT nodes name
-Date:   Tue, 20 Oct 2020 14:59:49 +0300
-Message-ID: <20201020115959.2658-20-Sergey.Semin@baikalelectronics.ru>
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 20/29] arm: dts: keystone: Harmonize DWC USB3 DT nodes name
+Date:   Tue, 20 Oct 2020 14:59:50 +0300
+Message-ID: <20201020115959.2658-21-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -52,45 +52,45 @@ named.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 ---
- arch/arm/boot/dts/exynos5250.dtsi | 2 +-
- arch/arm/boot/dts/exynos54xx.dtsi | 4 ++--
+ arch/arm/boot/dts/keystone-k2e.dtsi | 4 ++--
+ arch/arm/boot/dts/keystone.dtsi     | 2 +-
  2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/exynos5250.dtsi b/arch/arm/boot/dts/exynos5250.dtsi
-index 6daeba7d6b49..4983f8192822 100644
---- a/arch/arm/boot/dts/exynos5250.dtsi
-+++ b/arch/arm/boot/dts/exynos5250.dtsi
-@@ -629,7 +629,7 @@ usb_dwc3 {
- 			#size-cells = <1>;
- 			ranges;
+diff --git a/arch/arm/boot/dts/keystone-k2e.dtsi b/arch/arm/boot/dts/keystone-k2e.dtsi
+index fa1b8499c5a7..b8f152e7af7f 100644
+--- a/arch/arm/boot/dts/keystone-k2e.dtsi
++++ b/arch/arm/boot/dts/keystone-k2e.dtsi
+@@ -52,7 +52,7 @@ &soc0 {
  
--			usbdrd_dwc3: dwc3@12000000 {
-+			usbdrd_dwc3: usb@12000000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x12000000 0x10000>;
- 				interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm/boot/dts/exynos54xx.dtsi b/arch/arm/boot/dts/exynos54xx.dtsi
-index 8aa5117e58ce..339243d19a80 100644
---- a/arch/arm/boot/dts/exynos54xx.dtsi
-+++ b/arch/arm/boot/dts/exynos54xx.dtsi
-@@ -148,7 +148,7 @@ usbdrd3_0: usb3-0 {
- 			#size-cells = <1>;
- 			ranges;
+ 		usb: usb@2680000 {
+ 			interrupts = <GIC_SPI 152 IRQ_TYPE_EDGE_RISING>;
+-			dwc3@2690000 {
++			usb@2690000 {
+ 				interrupts = <GIC_SPI 152 IRQ_TYPE_EDGE_RISING>;
+ 			};
+ 		};
+@@ -78,7 +78,7 @@ keystone_usb1: usb@25000000 {
+ 			dma-ranges;
+ 			status = "disabled";
  
--			usbdrd_dwc3_0: dwc3@12000000 {
-+			usbdrd_dwc3_0: usb@12000000 {
+-			usb1: dwc3@25010000 {
++			usb1: usb@25010000 {
  				compatible = "snps,dwc3";
- 				reg = <0x12000000 0x10000>;
- 				interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
-@@ -170,7 +170,7 @@ usbdrd3_1: usb3-1 {
- 			#size-cells = <1>;
- 			ranges;
+ 				reg = <0x25010000 0x70000>;
+ 				interrupts = <GIC_SPI 414 IRQ_TYPE_EDGE_RISING>;
+diff --git a/arch/arm/boot/dts/keystone.dtsi b/arch/arm/boot/dts/keystone.dtsi
+index 8d046a1b690c..fc9fdc857ae8 100644
+--- a/arch/arm/boot/dts/keystone.dtsi
++++ b/arch/arm/boot/dts/keystone.dtsi
+@@ -217,7 +217,7 @@ keystone_usb0: usb@2680000 {
+ 			dma-ranges;
+ 			status = "disabled";
  
--			usbdrd_dwc3_1: dwc3@12400000 {
-+			usbdrd_dwc3_1: usb@12400000 {
+-			usb0: dwc3@2690000 {
++			usb0: usb@2690000 {
  				compatible = "snps,dwc3";
- 				reg = <0x12400000 0x10000>;
- 				phys = <&usbdrd_phy1 0>, <&usbdrd_phy1 1>;
+ 				reg = <0x2690000 0x70000>;
+ 				interrupts = <GIC_SPI 393 IRQ_TYPE_EDGE_RISING>;
 -- 
 2.27.0
 
