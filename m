@@ -2,97 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E1F29348A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7994A29348D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391885AbgJTGDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:03:54 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8334 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391875AbgJTGDx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:03:53 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8e7d6b0004>; Mon, 19 Oct 2020 23:02:19 -0700
-Received: from [10.25.98.225] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
- 2020 06:03:41 +0000
-Subject: Re: [PATCH v4 10/15] ASoC: dt-bindings: tegra: Add graph bindings
-To:     Rob Herring <robh@kernel.org>
-CC:     <broonie@kernel.org>, <lgirdwood@gmail.com>,
-        <kuninori.morimoto.gx@renesas.com>,
-        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
-        <tiwai@suse.com>, <p.zabel@pengutronix.de>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
-        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
-        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
-        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
-        <nicoleotsuka@gmail.com>
-References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
- <1602859382-19505-11-git-send-email-spujar@nvidia.com>
- <20201019221105.GA3679866@bogus>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <741b6ffe-a2b3-c657-4113-d0c6316a4050@nvidia.com>
-Date:   Tue, 20 Oct 2020 11:33:37 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2391713AbgJTGE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:04:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35164 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730607AbgJTGE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 02:04:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ED383ACF3;
+        Tue, 20 Oct 2020 06:04:23 +0000 (UTC)
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201016094702.GA95052@blackbook> <20201016145308.GA312010@cmpxchg.org>
+ <20201016171502.GA102311@blackbook>
+ <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Richard Palethorpe <rpalethorpe@suse.de>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, ltp@lists.linux.it,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Christoph Lameter" <cl@linux.com>,
+        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from
+ charging root
+Reply-To: rpalethorpe@suse.de
+In-reply-to: <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
+Date:   Tue, 20 Oct 2020 07:04:22 +0100
+Message-ID: <87k0vlwhzt.fsf@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20201019221105.GA3679866@bogus>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603173739; bh=BiUKj9cP/yQT8cx2ubZAZ1aX0UMw0lA+ciOeajWUPVg=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=G9fw4FIscUh231vtUhUS7Zp7vgk4ElJPav83qReqGsFuyzTZZlZUbVhVIHB4ZjBB3
-         D7oh58seobnJ5UZc9JAiDlvubyovDaE5rduZg+/mDcCtfBJfWuoT6yFhBLrhg3A9zr
-         gwvuOT8grfuhLxGGJfu+E3mQU8IzlRrEgZTdQqzpeGvwaaGpAiwXbNMiFhsuHj0QB0
-         i7PjCaCnipn1tcwvzyfSp/zY6jPW+sSssT7nyXcC3gDQJQnSRuIKExQN2n7LWXMKf6
-         01KCH/XO83RJYuXX2E7BhasM+sqUKFmOb8oGEYIn013Z7zRADUd8drHM6Rce9YL/gL
-         EiBkdA4fKCOWw==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Roman,
 
->> Add device tree binding properties of generic graph to ASoC component
->> devices. This allows to define audio ports out of these components or
->> DAIs and audio graph based sound card can be realised with this.
->>
->> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->> ---
->>   Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml  | 7 +++++++
->>   .../devicetree/bindings/sound/nvidia,tegra210-admaif.yaml          | 7 +++++++
->>   Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml  | 7 +++++++
->>   Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml  | 7 +++++++
->>   Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml   | 7 +++++++
->>   5 files changed, 35 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
->> index ed2fb32..23875b1 100644
->> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
->> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
->> @@ -55,6 +55,13 @@ properties:
->>         The name can be "DSPK1" or "DSPKx", where x depends on the maximum
->>         available instances on a Tegra SoC.
->>
->> +  ports:
->> +    $ref: /schemas/sound/audio-graph-card.yaml#/definitions/ports
->> +
+Roman Gushchin <guro@fb.com> writes:
 
->> +patternProperties:
->> +  "^port(@[0-9a-f]+)?$":
->> +    $ref: /schemas/sound/audio-graph-card.yaml#/definitions/port
-> You should have either 'ports' or a single 'port' (yes, the graph
-> binding allowed multiple port nodes without 'ports', but that should be
-> deprecated IMO)
+> On Fri, Oct 16, 2020 at 07:15:02PM +0200, Michal Koutny wrote:
+>> On Fri, Oct 16, 2020 at 10:53:08AM -0400, Johannes Weiner <hannes@cmpxchg.org> wrote:
+>> > The central try_charge() function charges recursively all the way up
+>> > to and including the root.
+>> Except for use_hiearchy=0 (which is the case here as Richard
+>> wrote). The reparenting is hence somewhat incompatible with
+>> new_parent.use_hiearchy=0 :-/
+>> 
+>> > We should clean this up one way or another: either charge the root or
+>> > don't, but do it consistently.
+>> I agree this'd be good to unify. One upside of excluding root memcg from
+>> charging is that users are spared from the charging overhead when memcg
+>> tree is not created.  (Actually, I thought that was the reason for this
+>> exception.)
+>
+> Yeah, I'm completely on the same page. Moving a process to the root memory
+> cgroup is currently a good way to estimate the memory cgroup overhead.
+>
+> How about the patch below, which consistently avoids charging the root
+> memory cgroup? It seems like it doesn't add too many checks.
+>
+> Thanks!
+>
+> --
+>
+> From f50ea74d8f118b9121da3754acdde630ddc060a7 Mon Sep 17 00:00:00 2001
+> From: Roman Gushchin <guro@fb.com>
+> Date: Mon, 19 Oct 2020 14:37:35 -0700
+> Subject: [PATCH RFC] mm: memcontrol: do not charge the root memory cgroup
+>
+> Currently the root memory cgroup is never charged directly, but
+> if an ancestor cgroup is charged, the charge is propagated up to the
+> root memory cgroup. The root memory cgroup doesn't show the charge
+> to a user, neither it does allow to set any limits/protections.
+> So the information about the current charge is completely useless.
+>
+> Avoiding to charge the root memory cgroup allows to:
+> 1) simplify the model and the code, so, hopefully, fewer bugs will
+>    be introduced in the future;
+> 2) avoid unnecessary atomic operations, which are used to (un)charge
+>    corresponding root page counters.
+>
+> In the default hierarchy case or if use_hiearchy == true, it's very
+> straightforward: when the page counters tree is traversed to the root,
+> the root page counter (the one with parent == NULL), should be
+> skipped. To avoid multiple identical checks over the page counters
+> code, for_each_nonroot_ancestor() macro is introduced.
+>
+> To handle the use_hierarchy == false case without adding custom
+> checks, let's make page counters of all non-root memory cgroup
+> direct ascendants of the corresponding root memory cgroup's page
+> counters. In this case for_each_nonroot_ancestor() will work correctly
+> as well.
+>
+> Please, note, that cgroup v1 provides root level memory.usage_in_bytes.
+> However, it's not based on page counters (refer to mem_cgroup_usage()).
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> ---
+>  mm/memcontrol.c   | 21 ++++++++++++++++-----
+>  mm/page_counter.c | 21 ++++++++++++---------
+>  2 files changed, 28 insertions(+), 14 deletions(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 2636f8bad908..34cac7522e74 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5339,17 +5339,28 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+>  		memcg->swappiness = mem_cgroup_swappiness(parent);
+>  		memcg->oom_kill_disable = parent->oom_kill_disable;
+>  	}
+> -	if (parent && parent->use_hierarchy) {
+> +	if (!parent) {
+> +		/* root memory cgroup */
+> +		page_counter_init(&memcg->memory, NULL);
+> +		page_counter_init(&memcg->swap, NULL);
+> +		page_counter_init(&memcg->kmem, NULL);
+> +		page_counter_init(&memcg->tcpmem, NULL);
+> +	} else if (parent->use_hierarchy) {
+>  		memcg->use_hierarchy = true;
+>  		page_counter_init(&memcg->memory, &parent->memory);
+>  		page_counter_init(&memcg->swap, &parent->swap);
+>  		page_counter_init(&memcg->kmem, &parent->kmem);
+>  		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
+>  	} else {
+> -		page_counter_init(&memcg->memory, NULL);
+> -		page_counter_init(&memcg->swap, NULL);
+> -		page_counter_init(&memcg->kmem, NULL);
+> -		page_counter_init(&memcg->tcpmem, NULL);
+> +		/*
+> +		 * If use_hierarchy == false, consider all page counters direct
+> +		 * descendants of the corresponding root level counters.
+> +		 */
+> +		page_counter_init(&memcg->memory, &root_mem_cgroup->memory);
+> +		page_counter_init(&memcg->swap, &root_mem_cgroup->swap);
+> +		page_counter_init(&memcg->kmem, &root_mem_cgroup->kmem);
+> +		page_counter_init(&memcg->tcpmem, &root_mem_cgroup->tcpmem);
+> +
+>  		/*
+>  		 * Deeper hierachy with use_hierarchy == false doesn't make
+>  		 * much sense so let cgroup subsystem know about this
 
-OK, will drop this and just use 'port' here.
+Perhaps in this case, where the hierarchy is broken, objcgs should also
+be reparented directly to root? Otherwise it will still be possible to
+underflow the counter in a descendant of root which has use_hierarchy=0,
+but also has children.
+
+> diff --git a/mm/page_counter.c b/mm/page_counter.c
+> index b24a60b28bb0..8901b184b9d5 100644
+> --- a/mm/page_counter.c
+> +++ b/mm/page_counter.c
+> @@ -13,6 +13,9 @@
+>  #include <linux/bug.h>
+>  #include <asm/page.h>
+>  
+> +#define for_each_nonroot_ancestor(c, counter) \
+> +	for ((c) = (counter); ((c) && ((c)->parent)); (c) = (c)->parent)
+> +
+>  static void propagate_protected_usage(struct page_counter *c,
+>  				      unsigned long usage)
+>  {
+> @@ -20,9 +23,6 @@ static void propagate_protected_usage(struct page_counter *c,
+>  	unsigned long low, min;
+>  	long delta;
+>  
+> -	if (!c->parent)
+> -		return;
+> -
+>  	min = READ_ONCE(c->min);
+>  	if (min || atomic_long_read(&c->min_usage)) {
+>  		protected = min(usage, min);
+> @@ -68,7 +68,7 @@ void page_counter_charge(struct page_counter *counter, unsigned long nr_pages)
+>  {
+>  	struct page_counter *c;
+>  
+> -	for (c = counter; c; c = c->parent) {
+> +	for_each_nonroot_ancestor(c, counter) {
+>  		long new;
+>  
+>  		new = atomic_long_add_return(nr_pages, &c->usage);
+> @@ -97,7 +97,7 @@ bool page_counter_try_charge(struct page_counter *counter,
+>  {
+>  	struct page_counter *c;
+>  
+> -	for (c = counter; c; c = c->parent) {
+> +	for_each_nonroot_ancestor(c, counter) {
+>  		long new;
+>  		/*
+>  		 * Charge speculatively to avoid an expensive CAS.  If
+> @@ -137,8 +137,11 @@ bool page_counter_try_charge(struct page_counter *counter,
+>  	return true;
+>  
+>  failed:
+> -	for (c = counter; c != *fail; c = c->parent)
+> +	for_each_nonroot_ancestor(c, counter) {
+> +		if (c == *fail)
+> +			break;
+>  		page_counter_cancel(c, nr_pages);
+> +	}
+>  
+>  	return false;
+>  }
+> @@ -152,7 +155,7 @@ void page_counter_uncharge(struct page_counter *counter, unsigned long nr_pages)
+>  {
+>  	struct page_counter *c;
+>  
+> -	for (c = counter; c; c = c->parent)
+> +	for_each_nonroot_ancestor(c, counter)
+>  		page_counter_cancel(c, nr_pages);
+>  }
+>  
+> @@ -211,7 +214,7 @@ void page_counter_set_min(struct page_counter *counter, unsigned long nr_pages)
+>  
+>  	WRITE_ONCE(counter->min, nr_pages);
+>  
+> -	for (c = counter; c; c = c->parent)
+> +	for_each_nonroot_ancestor(c, counter)
+>  		propagate_protected_usage(c, atomic_long_read(&c->usage));
+>  }
+>  
+> @@ -228,7 +231,7 @@ void page_counter_set_low(struct page_counter *counter, unsigned long nr_pages)
+>  
+>  	WRITE_ONCE(counter->low, nr_pages);
+>  
+> -	for (c = counter; c; c = c->parent)
+> +	for_each_nonroot_ancestor(c, counter)
+>  		propagate_protected_usage(c, atomic_long_read(&c->usage));
+>  }
+
+
+-- 
+Thank you,
+Richard.
