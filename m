@@ -2,216 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6367293F5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F401293F67
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408616AbgJTPOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 11:14:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408605AbgJTPOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 11:14:49 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2408630AbgJTPSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 11:18:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53802 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731735AbgJTPS3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 11:18:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603207106;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+fq27Lrjh4A+WF1/QMsoiHGG+aBtxAgUfHzjn77I/58=;
+        b=Esd+pUHck26qaIkw+pm0T+mdIIqstAzBlRPmWSX8fIuCsFb2HjBJ49jewC3Nrgu2/+6579
+        9FyqBkpG1kJ1iggJuZUbAMxxPg/o/JAjd22aI2WikSxEoInjKdJZJCEvF97+nh6ep0c8vJ
+        ro7LfotfQs/bO2XDFINXIPd4BdVP0nQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-5n0XqEwfO1i_tqMwy6QGFg-1; Tue, 20 Oct 2020 11:18:20 -0400
+X-MC-Unique: 5n0XqEwfO1i_tqMwy6QGFg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A85B2224B;
-        Tue, 20 Oct 2020 15:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603206888;
-        bh=0u4Fv1fqrTFQ3Wp/EIuAvFVLUv/j7BCakcnneOAU5xs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NZMb+McCVdq/q6SuDog4g30r0l0prtO/gCN9O6gVcsaPkBYbZzxJe6dZwLnFZWph2
-         M0351LwXFAFPqpU9MMwcNqhFS0QuVRVoKOoQZN62uuHbU7C0DFfQ43/cynxfCiq2I3
-         SzdZPNgixrYnmyKSYQ7VBaaXvm9F8NGbIFGYgg7c=
-Received: by mail-ot1-f49.google.com with SMTP id m22so2042483ots.4;
-        Tue, 20 Oct 2020 08:14:48 -0700 (PDT)
-X-Gm-Message-State: AOAM532//9BZEJr4+zFqCCVAm+Ii88FFsGHQwWtDP75Zy7s/kr4ci+D8
-        DJkVS8eVu4tdKEH8MADrCevdB56VwCmI3PDT8g==
-X-Google-Smtp-Source: ABdhPJz41UgbNkwtnCErGlmIpBGGzSTn7CHQ0TMdTIes7cHjDhnkd7e5tesUj1dAccQoyfMFCtdYvIGbHA+Y3i2/bE0=
-X-Received: by 2002:a9d:5e14:: with SMTP id d20mr1941932oti.107.1603206887469;
- Tue, 20 Oct 2020 08:14:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200722155533.252844-1-helen.koike@collabora.com>
- <20200722155533.252844-6-helen.koike@collabora.com> <CAL_Jsq+qB=yUtHKKujiUWrsq+W-3ggM3B_SuuDzfYEheczn=8g@mail.gmail.com>
- <2dcdda41-bdb4-55a8-557f-8175983effb5@collabora.com>
-In-Reply-To: <2dcdda41-bdb4-55a8-557f-8175983effb5@collabora.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 20 Oct 2020 10:14:35 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+-8Jyms3LJBjTxABcuTa5GduXtJ1jdOgp7xcPoQzdtGQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+-8Jyms3LJBjTxABcuTa5GduXtJ1jdOgp7xcPoQzdtGQ@mail.gmail.com>
-Subject: Re: [PATCH v5 5/9] media: staging: rkisp1: remove unecessary clocks
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     devicetree@vger.kernel.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E417F64145;
+        Tue, 20 Oct 2020 15:18:17 +0000 (UTC)
+Received: from localhost (ovpn-12-44.pek2.redhat.com [10.72.12.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BC9156EF45;
+        Tue, 20 Oct 2020 15:18:16 +0000 (UTC)
+Date:   Tue, 20 Oct 2020 23:18:14 +0800
+From:   "bhe@redhat.com" <bhe@redhat.com>
+To:     Rahul Gopakumar <gopakumarr@vmware.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mark Rutland <mark.rutland@arm.com>, karthik.poduval@gmail.com,
-        Johan Jonker <jbx6244@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Eddie Cai <eddie.cai.linux@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "natechancellor@gmail.com" <natechancellor@gmail.com>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        Rajender M <manir@vmware.com>,
+        Yiu Cho Lau <lauyiuch@vmware.com>,
+        Peter Jonasson <pjonasson@vmware.com>,
+        Venkatesh Rajaram <rajaramv@vmware.com>
+Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel
+Message-ID: <20201020151814.GU25604@MiWiFi-R3L-srv>
+References: <DM6PR05MB52921FF90FA01CC337DD23A1A4080@DM6PR05MB5292.namprd05.prod.outlook.com>
+ <20201010061124.GE25604@MiWiFi-R3L-srv>
+ <DM6PR05MB529281F914953691E0F52D1CA4070@DM6PR05MB5292.namprd05.prod.outlook.com>
+ <20201013131735.GL25604@MiWiFi-R3L-srv>
+ <DM6PR05MB52926FDAB0E58F5CFA2E892DA41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DM6PR05MB52926FDAB0E58F5CFA2E892DA41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 11:46 AM Helen Koike <helen.koike@collabora.com> wrote:
->
-> Hi Rob,
->
-> Thnaks for your reply.
->
-> On 9/22/20 11:24 AM, Rob Herring wrote:
-> > On Wed, Jul 22, 2020 at 9:56 AM Helen Koike <helen.koike@collabora.com> wrote:
-> >>
-> >> aclk_isp_wrap is a child of aclk_isp, and hclk_isp_wrap is a child of
-> >> hclk_isp, thus we can remove parents from the list.
-> >>
-> >> Also, for the isp0, we only need the ISP clock, ACLK and HCLK.
-> >> In the future we'll need a pixel clock for RK3288 and RK3399, and a JPEG
-> >> clock for RK3288.
-> >>
-> >> So with the goal to cleanup the dt-bindings and remove it from staging,
-> >> simplify clock names to isp, aclk and hclk.
-> >>
-> >> Assigned clocks are meant to refer to the full path in the clock tree,
-> >> i.e. the leaf in the tree.
-> >> For instance, in RK3399, the clock responsible for ACLK (ISP AXI CLOCK)
-> >> is aclk_isp0_wrapper.
-> >>
-> >> For reference, this is the isp clock topology on RK3399:
-> >>
-> >>  xin24m
-> >>     pll_npll
-> >>        npll
-> >>           clk_isp1
-> >>           clk_isp0
-> >>     pll_cpll
-> >>        cpll
-> >>           aclk_isp1
-> >>              aclk_isp1_noc
-> >>              hclk_isp1
-> >>                 aclk_isp1_wrapper
-> >>                 hclk_isp1_noc
-> >>           aclk_isp0
-> >>              hclk_isp1_wrapper
-> >>              aclk_isp0_wrapper
-> >>              aclk_isp0_noc
-> >>              hclk_isp0
-> >>                 hclk_isp0_wrapper
-> >>                 hclk_isp0_noc
-> >>  pclkin_isp1_wrapper
-> >>
-> >> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> >>
-> >> ---
-> >> Changes in V5:
-> >> - Use if/then schema as suggested by Rob Herring on
-> >> https://patchwork.linuxtv.org/project/linux-media/patch/20200702191322.2639681-6-helen.koike@collabora.com/#119729
-> >>
-> >> Changes in V4:
-> >> - update binding according to suggestion by Robin Murphy
-> >> on https://patchwork.kernel.org/patch/11475007/
-> >>
-> >> Changes in V3:
-> >> - this is a new patch in the series
-> >> ---
-> >>  .../bindings/media/rockchip-isp1.yaml         | 50 ++++++++++++-------
-> >>  drivers/staging/media/rkisp1/rkisp1-dev.c     |  8 ++-
-> >>  2 files changed, 36 insertions(+), 22 deletions(-)
-> >>
-> >> diff --git a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> >> index 62a6b9c959498..23c677d15037a 100644
-> >> --- a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> >> +++ b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-> >> @@ -24,20 +24,10 @@ properties:
-> >>      maxItems: 1
-> >>
-> >>    clocks:
-> >> -    items:
-> >> -      - description: ISP clock
-> >> -      - description: ISP AXI clock clock
-> >> -      - description: ISP AXI clock  wrapper clock
-> >> -      - description: ISP AHB clock clock
-> >> -      - description: ISP AHB wrapper clock
-> >> +    minItems: 3
-> >
-> > You need maxItems here too or it will always be 3.
-> >
-> >>
-> >>    clock-names:
-> >> -    items:
-> >> -      - const: clk_isp
-> >> -      - const: aclk_isp
-> >> -      - const: aclk_isp_wrap
-> >> -      - const: hclk_isp
-> >> -      - const: hclk_isp_wrap
-> >> +    minItems: 3
-> >>
-> >>    iommus:
-> >>      maxItems: 1
-> >> @@ -116,6 +106,34 @@ required:
-> >>    - power-domains
-> >>    - ports
-> >>
-> >> +if:
-> >> +  properties:
-> >> +    compatible:
-> >> +      contains:
-> >> +        const: rockchip,rk3399-cif-isp
-> >> +then:
-> >> +  properties:
-> >> +    clocks:
-> >> +      maxItems: 4
-> >> +      minItems: 3
-> >
-> > For a single compatible you shouldn't really have a variable number of clocks.
->
-> I'm not entirely sure how to make this separation, since isp0 and isp1 (not yet supported)
-> would use the same compatible.
-> Unless if we separate in two compatibles, but maybe this is an overhead just for an extra clock.
-> What do you think?
+On 10/20/20 at 01:45pm, Rahul Gopakumar wrote:
+> Hi Baoquan,
+> 
+> We had some trouble applying the patch to problem commit and the latest upstream commit. Steven (CC'ed) helped us by providing the updated draft patch. We applied it on the latest commit (3e4fb4346c781068610d03c12b16c0cfb0fd24a3), and it doesn't look like improving the performance numbers.
 
-In that case, it's fine.
+Thanks for your feedback. From the code, I am sure what the problem is,
+but I didn't test it on system with huge memory. Forget mentioning my
+draft patch is based on akpm/master branch since it's a mm issue, it
+might be a little different with linus's mainline kernel, sorry for the
+inconvenience.
 
->
-> >
-> >> +      items:
-> >> +        # isp0 and isp1
-> >> +        - description: ISP clock
-> >> +        - description: ISP AXI clock
-> >> +        - description: ISP AHB clock
-> >> +        # only for isp1
-> >> +        - description: ISP Pixel clock
-> >> +    clock-names:
-> >> +      maxItems: 4
-> >> +      minItems: 3
-> >> +      items:
-> >> +        # isp0 and isp1
-> >> +        - const: isp
-> >> +        - const: aclk
-> >> +        - const: hclk
-> >> +        # only for isp1
-> >> +        - const: pclk_isp
-> >
-> > Don't you need an 'else' clause. For not rockchip,rk3399-cif-isp,
-> > there's no definition of what clocks there are.
->
-> There is only one compatible defined for now, rk3288 will be added later.
-> The idea to add if/then is to make it easier to add rk3288:
->
-> https://patchwork.kernel.org/project/linux-media/patch/20200406073017.19462-4-karthik.poduval@gmail.com/
+I will test and debug this on a server with 4T memory in our lab, and
+update if any progress.
 
-Hopefully, the clock names will be aligned? Looks like they are the
-same with just 1 additional clock. Ideally, you define them all at the
-top level and the if/then schema just defines how many clocks for each
-compatible.
+> 
+> Patch on latest commit - 20.161 secs
+> Vanilla latest commit - 19.50 secs
 
-Rob
+Here, do you mean it even cost more time with the patch applied?
+
+> 
+> Here is the draft patch we tried
+> 
+> ------------------------
+> 
+> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
+> index 8e7b8c6c576e..ff5fa4c3889e 100644
+> --- a/arch/ia64/mm/init.c
+> +++ b/arch/ia64/mm/init.c
+> @@ -537,7 +537,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
+>  
+>          if (map_start < map_end)
+>                  memmap_init_zone((unsigned long)(map_end - map_start),
+> -                                args->nid, args->zone, page_to_pfn(map_start),
+> +                                args->nid, args->zone, page_to_pfn(map_start), page_to_pfn(map_end),
+>                                   MEMINIT_EARLY, NULL);
+>          return 0;
+>  }
+> @@ -547,7 +547,7 @@ memmap_init (unsigned long size, int nid, unsigned long zone,
+>               unsigned long start_pfn)
+>  {
+>          if (!vmem_map) {
+> -               memmap_init_zone(size, nid, zone, start_pfn,
+> +               memmap_init_zone(size, nid, zone, start_pfn, start_pfn + size,
+>                                   MEMINIT_EARLY, NULL);
+>          } else {
+>                  struct page *start;
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 16b799a0522c..65e34b370e33 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2416,7 +2416,7 @@ extern int __meminit __early_pfn_to_nid(unsigned long pfn,
+>  
+>  extern void set_dma_reserve(unsigned long new_dma_reserve);
+>  extern void memmap_init_zone(unsigned long, int, unsigned long, unsigned long,
+> -               enum meminit_context, struct vmem_altmap *);
+> +               unsigned long, enum meminit_context, struct vmem_altmap *);
+>  extern void setup_per_zone_wmarks(void);
+>  extern int __meminit init_per_zone_wmark_min(void);
+>  extern void mem_init(void);
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index ce3e73e3a5c1..03fddd8f4b11 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -728,7 +728,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
+>           * expects the zone spans the pfn range. All the pages in the range
+>           * are reserved so nobody should be touching them so we should be safe
+>           */
+> -       memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn,
+> +       memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn, 0,
+>                           MEMINIT_HOTPLUG, altmap);
+>  
+>          set_zone_contiguous(zone);
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 780c8f023b28..fe80055ea59c 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5989,8 +5989,8 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
+>   * done. Non-atomic initialization, single-pass.
+>   */
+>  void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
+> -               unsigned long start_pfn, enum meminit_context context,
+> -               struct vmem_altmap *altmap)
+> +               unsigned long start_pfn, unsigned long zone_end_pfn,
+> +               enum meminit_context context, struct vmem_altmap *altmap)
+>  {
+>          unsigned long pfn, end_pfn = start_pfn + size;
+>          struct page *page;
+> @@ -6024,7 +6024,7 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
+>                  if (context == MEMINIT_EARLY) {
+>                          if (overlap_memmap_init(zone, &pfn))
+>                                  continue;
+> -                       if (defer_init(nid, pfn, end_pfn))
+> +                       if (defer_init(nid, pfn, zone_end_pfn))
+>                                  break;
+>                  }
+>  
+> @@ -6150,7 +6150,7 @@ void __meminit __weak memmap_init(unsigned long size, int nid,
+>  
+>                  if (end_pfn > start_pfn) {
+>                          size = end_pfn - start_pfn;
+> -                       memmap_init_zone(size, nid, zone, start_pfn,
+> +                       memmap_init_zone(size, nid, zone, start_pfn, range_end_pfn,
+>                                           MEMINIT_EARLY, NULL);
+>                  }
+>          }
+> 
+> 
+> ------------------------
+> 
+> We have attached default dmesg logs and also dmesg logs collected with memblock=debug kernel cmdline for both vanilla and patched kernels. Let me know if you need more info.
+> 
+> 
+> 
+> From: bhe@redhat.com <bhe@redhat.com>
+> Sent: 13 October 2020 6:47 PM
+> To: Rahul Gopakumar <gopakumarr@vmware.com>
+> Cc: linux-mm@kvack.org <linux-mm@kvack.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; akpm@linux-foundation.org <akpm@linux-foundation.org>; natechancellor@gmail.com <natechancellor@gmail.com>; ndesaulniers@google.com <ndesaulniers@google.com>; clang-built-linux@googlegroups.com <clang-built-linux@googlegroups.com>; rostedt@goodmis.org <rostedt@goodmis.org>; Rajender M <manir@vmware.com>; Yiu Cho Lau <lauyiuch@vmware.com>; Peter Jonasson <pjonasson@vmware.com>; Venkatesh Rajaram <rajaramv@vmware.com>
+> Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel 
+>  
+> Hi Rahul,
+> 
+> On 10/12/20 at 05:21pm, Rahul Gopakumar wrote:
+> > Hi Baoquan,
+> > 
+> > Attached collected dmesg logs for with and without
+> > commit after adding memblock=debug to kernel cmdline.
+> 
+> Can you test below draft patch and see if it works for you? 
+> 
+> From a2ea6caef3c73ad9efb2dd2b48039065fe430bb2 Mon Sep 17 00:00:00 2001
+> From: Baoquan He <bhe@redhat.com>
+> Date: Tue, 13 Oct 2020 20:05:30 +0800
+> Subject: [PATCH] mm: make memmap defer init only take effect per zone
+> 
+> Deferred struct page init is designed to work per zone. However since
+> commit 73a6e474cb376 ("mm: memmap_init: iterate over memblock regions
+> rather that check each PFN"), the handling is mistakenly done in all memory
+> ranges inside one zone. Especially in those unmovable zones of multiple nodes,
+> memblock reservation split them into many memory ranges. This makes
+> initialized struct page more than expected in early stage, then increases
+> much boot time.
+> 
+> Let's fix it to make the memmap defer init handled in zone wide, but not in
+> memory range of one zone.
+> 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  arch/ia64/mm/init.c | 4 ++--
+>  include/linux/mm.h  | 5 +++--
+>  mm/memory_hotplug.c | 2 +-
+>  mm/page_alloc.c     | 6 +++---
+>  4 files changed, 9 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
+> index ef12e097f318..27ca549ff47e 100644
+> --- a/arch/ia64/mm/init.c
+> +++ b/arch/ia64/mm/init.c
+> @@ -536,7 +536,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
+>  
+>          if (map_start < map_end)
+>                  memmap_init_zone((unsigned long)(map_end - map_start),
+> -                                args->nid, args->zone, page_to_pfn(map_start),
+> +                                args->nid, args->zone, page_to_pfn(map_start), page_to_pfn(map_end),
+>                                   MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
+>          return 0;
+>  }
+> @@ -546,7 +546,7 @@ memmap_init (unsigned long size, int nid, unsigned long zone,
+>               unsigned long start_pfn)
+>  {
+>          if (!vmem_map) {
+> -               memmap_init_zone(size, nid, zone, start_pfn,
+> +               memmap_init_zone(size, nid, zone, start_pfn, start_pfn + size,
+>                                   MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
+>          } else {
+>                  struct page *start;
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index ef360fe70aaf..5f9fc61d5be2 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2439,8 +2439,9 @@ extern int __meminit __early_pfn_to_nid(unsigned long pfn,
+>  #endif
+>  
+>  extern void set_dma_reserve(unsigned long new_dma_reserve);
+> -extern void memmap_init_zone(unsigned long, int, unsigned long, unsigned long,
+> -               enum meminit_context, struct vmem_altmap *, int migratetype);
+> +extern void memmap_init_zone(unsigned long, int, unsigned long,
+> +               unsigned long, unsigned long, enum meminit_context,
+> +               struct vmem_altmap *, int migratetype);
+>  extern void setup_per_zone_wmarks(void);
+>  extern int __meminit init_per_zone_wmark_min(void);
+>  extern void mem_init(void);
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index b44d4c7ba73b..f9a37e6abc1c 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -732,7 +732,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
+>           * expects the zone spans the pfn range. All the pages in the range
+>           * are reserved so nobody should be touching them so we should be safe
+>           */
+> -       memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn,
+> +       memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn, 0,
+>                           MEMINIT_HOTPLUG, altmap, migratetype);
+>  
+>          set_zone_contiguous(zone);
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 2ebf9ddafa3a..e8b19fdd18ec 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -6044,7 +6044,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
+>   * zone stats (e.g., nr_isolate_pageblock) are touched.
+>   */
+>  void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
+> -               unsigned long start_pfn,
+> +               unsigned long start_pfn, unsigned long zone_end_pfn,
+>                  enum meminit_context context,
+>                  struct vmem_altmap *altmap, int migratetype)
+>  {
+> @@ -6080,7 +6080,7 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
+>                  if (context == MEMINIT_EARLY) {
+>                          if (overlap_memmap_init(zone, &pfn))
+>                                  continue;
+> -                       if (defer_init(nid, pfn, end_pfn))
+> +                       if (defer_init(nid, pfn, zone_end_pfn))
+>                                  break;
+>                  }
+>  
+> @@ -6194,7 +6194,7 @@ void __meminit __weak memmap_init(unsigned long size, int nid,
+>  
+>                  if (end_pfn > start_pfn) {
+>                          size = end_pfn - start_pfn;
+> -                       memmap_init_zone(size, nid, zone, start_pfn,
+> +                       memmap_init_zone(size, nid, zone, start_pfn, range_end_pfn,
+>                                           MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
+>                  }
+>          }
+> -- 
+> 2.17.2
+
+
+
+
+
