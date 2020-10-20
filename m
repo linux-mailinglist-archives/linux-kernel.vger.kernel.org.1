@@ -2,151 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F42293486
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E1F29348A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391872AbgJTGDl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Oct 2020 02:03:41 -0400
-Received: from mail-eopbgr1310109.outbound.protection.outlook.com ([40.107.131.109]:11637
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2391862AbgJTGDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:03:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=llND5SA+M2+blDZ2PYZjFsgptg8COjLomvZcso8LcVZfNG2Lli6jh0qpIcyEvv63Ou+JDqFr5bpj1/GzJcV3Uqj7zrgKluQ51lpWnN69U2yZo5D1o7mWaPHFQkIaB3p2Of28LqVfg7+r9qmEhm2acsyGTh2vGil1TgzxBa8ACAMLP62rIcRKogKi3zzJC/PPY8B2w2/6AI6YmYmQB6rX81avEKB153UHvFW3TYS6ffycwL3Y6ERBVLo1xKyVbxx5t/qtzspVczobjTi2WhKnUSG3cuQwsQgZQ7caBEJ3zGWw7VPWE/iiq+uX0abDJVKSxzOz5v9irrS7mzFS4Elu1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m0bTPMqcgE2KaH8G3FFvxogSw8XrUYKdWoj3VnCzUow=;
- b=DyIcm5Z1WrqhjrNPIJFfo838UEr6DCOim+AGUhBnpcq3Gp3wA1g8g/oCIS4NmtgfEXCIzf4bTqJo/wTdJlPZ6qiirwHAXbSnndYu9lVFBZ0gUIu5ofbbAZ5tVRm+TXqSGzCqnwSu+k/L8cz1J2upNt6cDh4Vj9Y2pLejcvQ8gzVAUF7UFc4Q2f59a7Ksx+6EstpDypJn6x6QyAHrJBIAbU0NfFao5Up96uxrr3pIjcmZ87Strcy9Tz5nUpMByYNq5DWn1lfL6i0xsCdQHLNmPUIFRIlxxnpEeJRnxI5IshIQ2S/eJQ9M4q/k4L70YXXS32jYM2u3fEmSlQorcDALpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
- by HK2PR06MB3250.apcprd06.prod.outlook.com (2603:1096:202:31::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Tue, 20 Oct
- 2020 06:03:32 +0000
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::a1a1:8859:d07a:2473]) by HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::a1a1:8859:d07a:2473%3]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
- 06:03:32 +0000
-From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "minyard@acm.org" <minyard@acm.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "haiyue.wang@linux.intel.com" <haiyue.wang@linux.intel.com>,
-        "cyrilbur@gmail.com" <cyrilbur@gmail.com>,
-        "rlippert@google.com" <rlippert@google.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-CC:     BMC-SW <BMC-SW@aspeedtech.com>
-Subject: RE: [PATCH v2 0/5] Remove LPC register partitioning
-Thread-Topic: [PATCH v2 0/5] Remove LPC register partitioning
-Thread-Index: AQHWmvF39eweRWKA/USnDpx5+4lpz6mgFZog
-Date:   Tue, 20 Oct 2020 06:03:32 +0000
-Message-ID: <HK0PR06MB377943740366AB328247C452911F0@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
-In-Reply-To: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ce2d624f-ffe7-4ef2-3814-08d874bddff4
-x-ms-traffictypediagnostic: HK2PR06MB3250:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK2PR06MB325090ED26B77B4D9008A370911F0@HK2PR06MB3250.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eUXeoETsxR4ED6pzWvaJnbfU54S2oq8ySSV3qhVIIW2xvmCqebrbM/eb6QetNMpazyZktjlwwGvSFF3Bs1O6raGZYCGHjOTEbcHJTSiWscRyPNcT+GibyiQtGJxsj90bSyQebKRlb54aX+eL9fTWwD+hi8muH7HT464HGp7vF4GWiJylSZjWUpMjk7hFeG0tRrd+LXKeZNJNAXFEvS4GcVT+yIDy6k7fR3nh0+5SGDIzA2/rT3AHX6lLadSSIhYhP/3a4/2JDk4LgVHwJAVZCK/gjE8lodLM/8aa7IvL6nWA2glmLwALzt1dz/4ARAOdTLo+2tfosoThU5TZbUYDbdLWKhq5KKJg8WhFIEaapPpqqqWSiKwEBE/14KhZAZjs
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(136003)(396003)(376002)(39840400004)(8936002)(86362001)(53546011)(76116006)(110136005)(66946007)(7696005)(6506007)(52536014)(66476007)(64756008)(66556008)(71200400001)(186003)(66446008)(316002)(55016002)(26005)(33656002)(5660300002)(9686003)(2906002)(7416002)(8676002)(4326008)(83380400001)(107886003)(478600001)(55236004)(921003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: d+p5SeuC17wgu8f3kodMTtWE4OMiIL6yaX6z735Fre029WaNGzVO/4Qn5Gk99LRzqxI1prujAo4GKvTkx4F8/s7xKgrB808PZ3SkyRBL0uVBQ90FuAnVMtbQXP7AbMx3YzlFbg9L92JHxCUYzaPn/Kd1qzKRCPt/JwlUSHIEszeq1TiGgIv4AoE4rlYFjt2rs7zpOGGyMN6bF7WjRHXGURglqEuwgMNVpGQliCi30uGKMIrcWupmEz7bJ9Q6MJ/6jdQmhcyJKJ2daYdT7i9Ax6wmTuXEZFaM09bPe1HL9arpnRspGzEM1aMGkJQNH/5wrbLthlr0N7GVGwxvLGeduVqPuScwbPbMQCrT7ZwpbDKL6Ggm+FXi+ifFgdmQLbF/jfExoLo91A9tlmepD1n7XnB9JsFtCmWHiCCyRhs2jcwtnEbK7cLMrm4MgXerC2tp8LBRompQH9FJROscEpSpcbsUc/Hlv1Sm6mD4NvGti3FfAy7LdpTLKCRR49s2jcsqdzwyrSUNwI7eVrKUJSYasJERRKK8F9fMpx3O0Ka8NWv4eGg6cy/TES3Ww2VGeJfcLZ6frBfd3lHOZHKsDr+m3lCprWd2SbD1Cov/YbmUU00rJsg4+R1WuxMzOFY+lSNgb1K/BmmjjbFkmQcl2OyT9g==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S2391885AbgJTGDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:03:54 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8334 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391875AbgJTGDx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 02:03:53 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8e7d6b0004>; Mon, 19 Oct 2020 23:02:19 -0700
+Received: from [10.25.98.225] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
+ 2020 06:03:41 +0000
+Subject: Re: [PATCH v4 10/15] ASoC: dt-bindings: tegra: Add graph bindings
+To:     Rob Herring <robh@kernel.org>
+CC:     <broonie@kernel.org>, <lgirdwood@gmail.com>,
+        <kuninori.morimoto.gx@renesas.com>,
+        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
+        <tiwai@suse.com>, <p.zabel@pengutronix.de>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
+        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
+        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
+        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
+        <nicoleotsuka@gmail.com>
+References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
+ <1602859382-19505-11-git-send-email-spujar@nvidia.com>
+ <20201019221105.GA3679866@bogus>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <741b6ffe-a2b3-c657-4113-d0c6316a4050@nvidia.com>
+Date:   Tue, 20 Oct 2020 11:33:37 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce2d624f-ffe7-4ef2-3814-08d874bddff4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2020 06:03:32.6471
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Hys5pANDjOTgREanvnOJouvgNSVKMxBHieRDhC0RMix4KHUDgkAaymLmwKFfbBXASZo1eyOM/n7hjbH/a7yhx1A81yIpNDpxpWm4AVm14Js=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3250
+In-Reply-To: <20201019221105.GA3679866@bogus>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603173739; bh=BiUKj9cP/yQT8cx2ubZAZ1aX0UMw0lA+ciOeajWUPVg=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=G9fw4FIscUh231vtUhUS7Zp7vgk4ElJPav83qReqGsFuyzTZZlZUbVhVIHB4ZjBB3
+         D7oh58seobnJ5UZc9JAiDlvubyovDaE5rduZg+/mDcCtfBJfWuoT6yFhBLrhg3A9zr
+         gwvuOT8grfuhLxGGJfu+E3mQU8IzlRrEgZTdQqzpeGvwaaGpAiwXbNMiFhsuHj0QB0
+         i7PjCaCnipn1tcwvzyfSp/zY6jPW+sSssT7nyXcC3gDQJQnSRuIKExQN2n7LWXMKf6
+         01KCH/XO83RJYuXX2E7BhasM+sqUKFmOb8oGEYIn013Z7zRADUd8drHM6Rce9YL/gL
+         EiBkdA4fKCOWw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
 
-Do you have any comment on the v2 changes?
-Thanks.
+>> Add device tree binding properties of generic graph to ASoC component
+>> devices. This allows to define audio ports out of these components or
+>> DAIs and audio graph based sound card can be realised with this.
+>>
+>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+>> ---
+>>   Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml  | 7 +++++++
+>>   .../devicetree/bindings/sound/nvidia,tegra210-admaif.yaml          | 7 +++++++
+>>   Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml  | 7 +++++++
+>>   Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml  | 7 +++++++
+>>   Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml   | 7 +++++++
+>>   5 files changed, 35 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
+>> index ed2fb32..23875b1 100644
+>> --- a/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
+>> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
+>> @@ -55,6 +55,13 @@ properties:
+>>         The name can be "DSPK1" or "DSPKx", where x depends on the maximum
+>>         available instances on a Tegra SoC.
+>>
+>> +  ports:
+>> +    $ref: /schemas/sound/audio-graph-card.yaml#/definitions/ports
+>> +
 
-Chiawei
+>> +patternProperties:
+>> +  "^port(@[0-9a-f]+)?$":
+>> +    $ref: /schemas/sound/audio-graph-card.yaml#/definitions/port
+> You should have either 'ports' or a single 'port' (yes, the graph
+> binding allowed multiple port nodes without 'ports', but that should be
+> deprecated IMO)
 
-> -----Original Message-----
-> From: ChiaWei Wang <chiawei_wang@aspeedtech.com>
-> Sent: Monday, October 5, 2020 4:28 PM
-> To: lee.jones@linaro.org; robh+dt@kernel.org; joel@jms.id.au;
-> andrew@aj.id.au; minyard@acm.org; arnd@arndb.de;
-> gregkh@linuxfoundation.org; linus.walleij@linaro.org;
-> haiyue.wang@linux.intel.com; cyrilbur@gmail.com; rlippert@google.com;
-> linux-arm-kernel@lists.infradead.org; linux-aspeed@lists.ozlabs.org;
-> linux-kernel@vger.kernel.org; openbmc@lists.ozlabs.org;
-> linux-gpio@vger.kernel.org
-> Subject: [PATCH v2 0/5] Remove LPC register partitioning
-> 
-> The LPC controller has no concept of the BMC and the Host partitions.
-> The incorrect partitioning can impose unnecessary range restrictions on
-> register access through the syscon regmap interface.
-> 
-> For instance, HICRB contains the I/O port address configuration of KCS channel
-> 1/2. However, the KCS#1/#2 drivers cannot access HICRB as it is located at the
-> other LPC partition.
-> 
-> In addition, to be backward compatible, the newly added HW control bits could
-> be located at any reserved bits over the LPC addressing space.
-> 
-> Thereby, this patch series aims to remove the LPC partitioning for better driver
-> development and maintenance.
-> 
-> 
-> Changes since v1:
-> 	- Add the fix to the aspeed-lpc binding documentation.
-> 
-> Chia-Wei, Wang (5):
->   ARM: dts: Remove LPC BMC and Host partitions
->   soc: aspeed: Fix LPC register offsets
->   ipmi: kcs: aspeed: Fix LPC register offsets
->   pinctrl: aspeed-g5: Fix LPC register offsets
->   dt-bindings: aspeed-lpc: Remove LPC partitioning
-> 
->  .../devicetree/bindings/mfd/aspeed-lpc.txt    |  85 ++---------
->  arch/arm/boot/dts/aspeed-g4.dtsi              |  74 ++++------
->  arch/arm/boot/dts/aspeed-g5.dtsi              | 135 ++++++++----------
->  arch/arm/boot/dts/aspeed-g6.dtsi              | 135 ++++++++----------
->  drivers/char/ipmi/kcs_bmc_aspeed.c            |  13 +-
->  drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c    |   2 +-
->  drivers/soc/aspeed/aspeed-lpc-ctrl.c          |   6 +-
->  drivers/soc/aspeed/aspeed-lpc-snoop.c         |  11 +-
->  8 files changed, 176 insertions(+), 285 deletions(-)
-> 
-> --
-> 2.17.1
-
+OK, will drop this and just use 'port' here.
