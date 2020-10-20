@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E318C293A39
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06389293A3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393795AbgJTLp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 07:45:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23316 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392661AbgJTLpZ (ORCPT
+        id S2393813AbgJTLpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 07:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393579AbgJTLpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 07:45:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603194324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wDwUpRJnTUQ2pS+wnEOM7NYhKs7UkxzW53goaPdV3ss=;
-        b=NThpCLB8NVGr9z51KSKzu/9VjXUJYW/fXByiNInqzoDybRVaJVgarcgKAIfjX2fPoqIt0p
-        PdgyOzlftix3egtsSEG8K4FBKpFdRsoBOox40EWDwzS5XwKvrPjsu96hfecyHEhjPYpU9t
-        JcBOyuhFUOIvgYyrur5sebSbZB/1ylA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-PqmBdmdjM3Ggnc8VcMLgLg-1; Tue, 20 Oct 2020 07:45:20 -0400
-X-MC-Unique: PqmBdmdjM3Ggnc8VcMLgLg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7CDD1074658;
-        Tue, 20 Oct 2020 11:45:18 +0000 (UTC)
-Received: from redhat.com (ovpn-112-214.ams2.redhat.com [10.36.112.214])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 847DA5D9EF;
-        Tue, 20 Oct 2020 11:45:13 +0000 (UTC)
-Date:   Tue, 20 Oct 2020 07:45:09 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        kernel test robot <lkp@intel.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH net v2] Revert "virtio-net: ethtool configurable RXCSUM"
-Message-ID: <20201020073651-mutt-send-email-mst@kernel.org>
-References: <20201018103122.454967-1-mst@redhat.com>
- <20201019121500.4620e276@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Tue, 20 Oct 2020 07:45:50 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51571C061755;
+        Tue, 20 Oct 2020 04:45:50 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o3so909595pgr.11;
+        Tue, 20 Oct 2020 04:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E+sMvGQJ6Sbqoq9aGV8WWCZd3SUHN9ACUz/+BbiQqU0=;
+        b=NLt0GHi9O1TZ+qqT7Z+NtNn0ZdJbC2Zs5PKB8cm3YI3quK0FbaB4oIZcCW0z0E6ukm
+         A+sMkPsnHXBXQc9u4oDNh1hBD+I31CBUwflLsr8C6hwoMFUngCvHT3t3svRSyJEOQHPt
+         F7gFoivZ24Y1oT2v1KGZ+jMW99VJSY5+aKlEliRpS3+aphEQ1w52zRAePWl3YldYok2z
+         5bNACDFcYuv19ED8BQS66PFjisxdBSe1omFrP12DvD+m3ciXl6b+OiU70QIi4QvMYDWc
+         o1v4QKWmVYRZKSLg/EqTaAytp8as6U0uLLLGwJvP3yOvv2lcbaMRnn7XIDFn4jCY3fEX
+         JRgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E+sMvGQJ6Sbqoq9aGV8WWCZd3SUHN9ACUz/+BbiQqU0=;
+        b=ttEmSEpkrGnxFeVGcB3BpCPcoSyAqKE7AJQqDGkY07zWlqT+q+WvAUU7aO/vtQd8tQ
+         Cx2R8/GQb1hfB7Xe/OlHKzU91fPy16fO1OnfhU++HfueO/E+KCbIt5XaqFAZVRe3AFtY
+         KeYJcbedRiAx3QdhckgR0AHh4AkDP8T0CeAINT8qqA7O4ZU6dwRpxtSoGyaoh0n1nVId
+         cdWGzVkaFsWcNzMXIPnG968MzqVHd5Y4DJxAk8pQMibR2hRq9hI5BUa8oMXJQAw0+PpU
+         6xcx5nofp8bKMWuJ/x0AiiCUgdmJwxg3RH9Sm61OxsvXXXPoDZhDIlYR5rSgWb8q52+O
+         lDkg==
+X-Gm-Message-State: AOAM533TC+iA0RZon148ZFvURrmWCbEK7L04yaMLdTQMyQz1SFUdQRKr
+        juiiL/ROW4XgW+p+FHzAqZ0pAjFUlESOlFM3DxI=
+X-Google-Smtp-Source: ABdhPJxZSsmUQZk1HAQQXbs0xwM781Dn5B1XLSDQzVljRre2Ya9BcURW4popkBCcFnC7fltKYOs3FF8Pb5xzeDmcw3M=
+X-Received: by 2002:a63:f908:: with SMTP id h8mr2330043pgi.203.1603194349831;
+ Tue, 20 Oct 2020 04:45:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019121500.4620e276@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20201019193353.13066-1-trix@redhat.com> <5b13773306265f89366b86afba71d2b4a4130e2b.camel@fi.rohmeurope.com>
+In-Reply-To: <5b13773306265f89366b86afba71d2b4a4130e2b.camel@fi.rohmeurope.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 20 Oct 2020 14:46:38 +0300
+Message-ID: <CAHp75VdxXw0_W+MytA72sBfYT6nr=xHc+tTsTp7GPLnR9EgOVg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: bd70528: remove unneeded break
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 12:15:00PM -0700, Jakub Kicinski wrote:
-> On Mon, 19 Oct 2020 13:32:12 -0400 Michael S. Tsirkin wrote:
-> > This reverts commit 3618ad2a7c0e78e4258386394d5d5f92a3dbccf8.
-> > 
-> > When the device does not have a control vq (e.g. when using a
-> > version of QEMU based on upstream v0.10 or older, or when specifying
-> > ctrl_vq=off,ctrl_rx=off,ctrl_vlan=off,ctrl_rx_extra=off,ctrl_mac_addr=off
-> > for the device on the QEMU command line), that commit causes a crash:
-> 
-> Hi Michael!
-> 
-> Only our very first (non-resend) version got into patchwork:
-> 
-> https://patchwork.ozlabs.org/project/netdev/list/?submitter=2235&state=*
-> 
-> Any ideas why?
+On Tue, Oct 20, 2020 at 2:26 PM Vaittinen, Matti
+<Matti.Vaittinen@fi.rohmeurope.com> wrote:
+> On Mon, 2020-10-19 at 12:33 -0700, trix@redhat.com wrote:
 
-I really don't! Any ideas?
+> > -             break;
+> My personal taste is also to omit these breaks but I am pretty sure I
+> saw some tooling issuing a warning about falling through the switch-
+> case back when I wrote this. Most probably checkpatch didn't like that
+> back then. Anyways - if you have no warnings from any of the tools -
+> this indeed looks better (to me) without the break :)
+
+JFYI: it's a clang which actually *is* complaining for an extra break.
 
 -- 
-MST
-
+With Best Regards,
+Andy Shevchenko
