@@ -2,89 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7379294068
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B273529406B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394576AbgJTQXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 12:23:17 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:60545 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394563AbgJTQXR (ORCPT
+        id S2394585AbgJTQX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 12:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727004AbgJTQX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 12:23:17 -0400
-Received: from localhost.localdomain ([82.252.146.14]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1MvrRB-1kBaLT25Nn-00stxd; Tue, 20 Oct 2020 18:23:08 +0200
-From:   Laurent Vivier <laurent@vivier.eu>
-To:     linux-kernel@vger.kernel.org
-Cc:     Joshua Thompson <funaho@jurai.org>, linux-serial@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Laurent Vivier <laurent@vivier.eu>
-Subject: [PATCH] serial: pmac_zilog: don't init if zilog is not available
-Date:   Tue, 20 Oct 2020 18:23:03 +0200
-Message-Id: <20201020162303.1730562-1-laurent@vivier.eu>
-X-Mailer: git-send-email 2.26.2
+        Tue, 20 Oct 2020 12:23:56 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EEEC0613CE;
+        Tue, 20 Oct 2020 09:23:56 -0700 (PDT)
+Received: from [IPv6:2003:c7:cf43:5b00:28a3:2f4e:277d:2227] (p200300c7cf435b0028a32f4e277d2227.dip0.t-ipconnect.de [IPv6:2003:c7:cf43:5b00:28a3:2f4e:277d:2227])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id C8B441F451DF;
+        Tue, 20 Oct 2020 17:23:54 +0100 (BST)
+Subject: Re: [PATCH] media: staging: rkisp1: rsz: make const array static,
+ makes object smaller
+To:     Colin King <colin.king@canonical.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201020144655.53251-1-colin.king@canonical.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <07b92ab9-bade-623e-395d-89320d9f88f6@collabora.com>
+Date:   Tue, 20 Oct 2020 18:23:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:bKHy5QQSiE77OMXPCG5t3IA6kn0O8DJhl6MV+YUQP93v0wYpsUL
- coTYiKGAtOBLA3PVaVWj8x5zDK9kGX+W2jYNGYsoMOJ+HEuJCUxIACpOjZfKt0VmMqsTss8
- oVtH8p5n8HCTCqiQGfX6xdIAfG94PL2nv6jie7AOlG5rdMQJGKfXBCXpbqfcyprrUMeyXxf
- NqH1bsfQST/Ym95UPoE9g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WAQu6MsbUZI=:DFWpJUDEp0IFwkElkkrpXo
- fbfo3nBHI5roarW7M3YyaoC2urbG0Wl54DII91AjRRDRFDIPBvsdVe6SyIdkp1XTHv23+208W
- 1deQ6qZf6K+8yFpZg4eHwgbC1J6bbAsrlMorSD5kryvSmqf9RmcKceASTgaXYVchQkBAWMbTW
- DhRZVLW0B/EbxqSlc1b33ezKElxQ/7t+i97CdaI6zVx9yUvyWyWcwkkKKu9WFiHW9ID7DcQaU
- EF1pa4ZTBMYNZMVfm2Wyg1IvAw31QxpAODLRC6yNqa3u773bhhj5j8nBQGB1mXjhNn9m8Sn4+
- 5/Z++c17HCYYREiU6APO4nHMwSEWx0mdRuJ6vvwHU9ev2lmbdWm9xEDKb6M/CP85weFnoXQhf
- wC9IO5lNPF/yfso1AexECLSOeCM858pne4EXT6dXRQSIlFi0wjA/OMTgj/3Imr5AncWUmfkSx
- +kIltyMbVA==
+In-Reply-To: <20201020144655.53251-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can avoid to probe for the Zilog device (and generate ugly kernel warning)
-if kernel is built for Mac but not on a Mac.
+Hi, thanks,
 
-Signed-off-by: Laurent Vivier <laurent@vivier.eu>
----
- drivers/tty/serial/pmac_zilog.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Am 20.10.20 um 16:46 schrieb Colin King:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Don't populate the const array dev_names on the stack but instead it
+> static. Makes the object code smaller by 15 bytes.
+> 
+> Before:
+>     text	   data	    bss	    dec	    hex	filename
+>    17091	   2648	     64	  19803	   4d5b	media/rkisp1/rkisp1-resizer.o
+> 
+> After:
+>     text	   data	    bss	    dec	    hex	filename
+>    17012	   2712	     64	  19788	   4d4c	media/rkisp1/rkisp1-resizer.o
 
-diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
-index 063484b22523..d1d2e55983c3 100644
---- a/drivers/tty/serial/pmac_zilog.c
-+++ b/drivers/tty/serial/pmac_zilog.c
-@@ -1867,6 +1867,12 @@ static struct platform_driver pmz_driver = {
- static int __init init_pmz(void)
- {
- 	int rc, i;
-+
-+#ifdef CONFIG_MAC
-+	if (!MACH_IS_MAC)
-+		return -ENODEV;
-+#endif
-+
- 	printk(KERN_INFO "%s\n", version);
- 
- 	/* 
-@@ -2034,6 +2040,11 @@ static int __init pmz_console_setup(struct console *co, char *options)
- 
- static int __init pmz_console_init(void)
- {
-+#ifdef CONFIG_MAC
-+	if (!MACH_IS_MAC)
-+		return -ENODEV;
-+#endif
-+
- 	/* Probe ports */
- 	pmz_probe();
- 
--- 
-2.26.2
+On the other hand the data segment is 64 bytes bigger.
+I don't know what is more important to save.
+Anyway, the rkisp1-capture.c does the same with the names
+so it is better to be consistent.
 
+Thanks,
+Dafna
+
+> 
+> (gcc version 10.2.0)
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   drivers/staging/media/rkisp1/rkisp1-resizer.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/rkisp1/rkisp1-resizer.c b/drivers/staging/media/rkisp1/rkisp1-resizer.c
+> index 1687d82e6c68..7ca5b47c5bf5 100644
+> --- a/drivers/staging/media/rkisp1/rkisp1-resizer.c
+> +++ b/drivers/staging/media/rkisp1/rkisp1-resizer.c
+> @@ -763,8 +763,10 @@ static void rkisp1_rsz_unregister(struct rkisp1_resizer *rsz)
+>   
+>   static int rkisp1_rsz_register(struct rkisp1_resizer *rsz)
+>   {
+> -	const char * const dev_names[] = {RKISP1_RSZ_MP_DEV_NAME,
+> -					  RKISP1_RSZ_SP_DEV_NAME};
+> +	static const char * const dev_names[] = {
+> +		RKISP1_RSZ_MP_DEV_NAME,
+> +		RKISP1_RSZ_SP_DEV_NAME
+> +	};
+>   	struct media_pad *pads = rsz->pads;
+>   	struct v4l2_subdev *sd = &rsz->sd;
+>   	int ret;
+> 
