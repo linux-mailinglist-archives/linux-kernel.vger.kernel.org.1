@@ -2,137 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C72293934
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB14293939
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393204AbgJTKeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393196AbgJTKeM (ORCPT
+        id S2393234AbgJTKey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 06:34:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42456 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392120AbgJTKex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:34:12 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A54C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:34:12 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id t4so789900plq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lzpOtrfPfcWZHMhbxVFAso3zmbyoevosVU5DoDXv9Mo=;
-        b=aFT/cvThLhB55POIco8f/0mBdHT6mm5N58HYnifs0+xmoXJGYGXbBKPREXkS+cFCQS
-         RCnHZ3A6Eckgu6OLSlpaeAMyf5cdMlxUwtM4nc6KJSEyh8hducwWZ8bsLqqc2OBwSSi8
-         l7NvWgCoz0ZnQrM5t5ujJ9wXl3EmlTzDhcyMfMEzAkhTshBp76UJYVU7oEUNCXl8eb7C
-         sGFmUrn+Y/Mk/6yohvnuL5gbKfyGFAPV5xCJRCZ0aJeaVEpuz24slRs6lMoOIOOVHMOP
-         h9iYaspH0lFM8rGN5lgqcSgNrgR6b6tmFJv7nWdUQh6GRkls+Xt2N2tSm6OgliPxrObb
-         ItGg==
+        Tue, 20 Oct 2020 06:34:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603190092;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q96jnE0zL/+3eV1zXo6SJcOjLpLSsjofFz0lkEdY9WI=;
+        b=fOzj4D5z7YBxhlyNDi/Y6ONpjdIv9jDaJ4ynA+JTWmkFa08kbi+/iKWZb6n4QxmbGXekpJ
+        i694eWgV3/jW9xRTXIvGKbu9H25cQWRikL+ieOS2eQYg67IQZQ/Lr1AJLNiH1tU2qbiSKL
+        56KjDtua4nP/jgexk+MXggCal1zEByU=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-284-sXH1ULZoMuOw_ewUlA1O6w-1; Tue, 20 Oct 2020 06:34:50 -0400
+X-MC-Unique: sXH1ULZoMuOw_ewUlA1O6w-1
+Received: by mail-wm1-f69.google.com with SMTP id c204so300124wmd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:34:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lzpOtrfPfcWZHMhbxVFAso3zmbyoevosVU5DoDXv9Mo=;
-        b=Bkdnk5/bumfNC08Z0/aY4NGawY8STF+AM5IGvmbZIMtjooJT5oQdATT5+tyFP51rxm
-         RwcqVkud0iU/PyKkuTaXqnGOn/Nap1rTYgJ99yJDumcuiuIMq+Lyn2urrKd/+pDDH4qe
-         dXgQ5sdIaTrIDGFHuDtEkdhuY+CG72n2aYRDzdl1FIgsXzUZEDt2KSJnBKjhXdPrly3r
-         eVXwq3BsV4CAp1hMC57L0PDBYD+eTrv+5yJy+6ga3csjazfN5TF3IpjjScQO2zaExdiv
-         LZTpowRkKo6YSCQvvHZ9F3tfa6TJQBn1z5W4Ddpp7VXYI5tmEucDAQ7YybJLKi5FKsy/
-         DYGQ==
-X-Gm-Message-State: AOAM531Ni//iDmGYvw+tgXmQf/jrIjA+YTUsAJKSj+F9w0Zk9eq2qDZM
-        V3G5Eza+oy6grXY/h6/fmi6jMnaTv01P7LZ4xQvVlg==
-X-Google-Smtp-Source: ABdhPJz4n96xfPtY7Qq/t0m+t19dxP/ixRJkoSC+czGLraIr6/v6So2kOZ1/BVGLeGlkn+Rba/TOHCWRGEho0Ld2KC4=
-X-Received: by 2002:a17:90a:58f:: with SMTP id i15mr49869pji.19.1603190051635;
- Tue, 20 Oct 2020 03:34:11 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=q96jnE0zL/+3eV1zXo6SJcOjLpLSsjofFz0lkEdY9WI=;
+        b=HaGpaTjVVuBUZEiUQxLJqsg84XzsZuWWtFSKjPeQBP8n94azQJVDVUZe4EdCL1F/03
+         SA9EqylryVrlahTzeAYqzxak5UiPdj2Wg6teaPJZlizVkbnHk+IOzJBS3GJNJmeLayne
+         S62BUHw+sSgJ7UWdu9MtbVf61CocMTBjjVRer97cX5AM/nh1cLEDNLQkzbBryt6TtrXN
+         nGIKJkuwNtUoAfpqOD69Dw/AU14VJ3wHIHEr7wMZ0sfH9J+vfIzkck7uBrIh3cisr095
+         AliBOpdHEpvPP/dC+6RBkBfdGNl5zuobyE8oskbRpRqLM/6p/psSfbSRP/QSx0Ee6LjE
+         5lsQ==
+X-Gm-Message-State: AOAM531oPvEIkhCliNzxvXDGT50I+Qlw0cUv139apGnsd6LPTmExSqOL
+        rwRKFDqKqNCjZLeqO5E4usxJYgGm9ioXfz47X4z/OHB8IRXMjI1P2olPYx2TMc4ocfvZrNB+WLK
+        3U7eShldyYBHQC/eOkL2NeQdM
+X-Received: by 2002:a1c:87:: with SMTP id 129mr2170664wma.103.1603190089055;
+        Tue, 20 Oct 2020 03:34:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwK0vtophc5uwVNCm9j+6rJW4gkhbpN0w4IRqerxSf208yGjd3VCwoUYBlm7xrrgEKKeeDtfQ==
+X-Received: by 2002:a1c:87:: with SMTP id 129mr2170619wma.103.1603190088421;
+        Tue, 20 Oct 2020 03:34:48 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x81sm2016034wmb.11.2020.10.20.03.34.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Oct 2020 03:34:47 -0700 (PDT)
+Subject: Re: [PATCH] KVM: VMX: Forbid userspace MSR filters for x2APIC
+To:     Alexander Graf <graf@amazon.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <20201019170519.1855564-1-pbonzini@redhat.com>
+ <618E2129-7AB5-4F0D-A6C9-E782937FE935@amazon.de>
+ <c9dd6726-2783-2dfd-14d1-5cec6f69f051@redhat.com>
+ <bce2aee1-bfac-0640-066b-068fa5f12cf8@amazon.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <6edd5e08-92c2-40ff-57be-37b92d1ca2bc@redhat.com>
+Date:   Tue, 20 Oct 2020 12:34:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20201018125237.16717-1-kholk11@gmail.com> <20201018125237.16717-6-kholk11@gmail.com>
-In-Reply-To: <20201018125237.16717-6-kholk11@gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 20 Oct 2020 12:34:00 +0200
-Message-ID: <CAG3jFyv33Y+sD20Wm21kBhogO0BORw4n00U1e3Ts2hZabGQ+jA@mail.gmail.com>
-Subject: Re: [PATCH 5/6] media: dt-bindings: media: qcom,camss: Add bindings
- for SDM660 camss
-To:     kholk11@gmail.com
-Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        linux-arm-msm@vger.kernel.org,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <bce2aee1-bfac-0640-066b-068fa5f12cf8@amazon.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good to me.
+On 20/10/20 11:48, Alexander Graf wrote:
+> 
+>     count: 1,
+>     default_allow: false,
+>     ranges: [
+>         {
+>             flags: KVM_MSR_FILTER_READ,
+>             nmsrs: 1,
+>             base: MSR_EFER,
+>             bitmap: { 1 },
+>         },
+>     ],
+> }
+> 
+> That filter would set all x2apic registers to "deny", but would not be
+> caught by the code above. Conversely, a range that explicitly allows
+> x2apic ranges with default_allow=0 would be rejected by this patch.
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Yes, but the idea is that x2apic registers are always allowed, even
+overriding default_allow, and therefore it makes no sense to have them
+in a range.  The patch is only making things fail early for userspace,
+the policy is defined by Sean's patch.
 
-On Sun, 18 Oct 2020 at 14:53, <kholk11@gmail.com> wrote:
->
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
->
-> Add bindings for qcom,sdm660-camss in order to support the camera
-> subsystem on SDM630/660 and SDA variants.
->
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  Documentation/devicetree/bindings/media/qcom,camss.txt | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/media/qcom,camss.txt b/Documentation/devicetree/bindings/media/qcom,camss.txt
-> index 09eb6ed99114..498234629e21 100644
-> --- a/Documentation/devicetree/bindings/media/qcom,camss.txt
-> +++ b/Documentation/devicetree/bindings/media/qcom,camss.txt
-> @@ -8,6 +8,7 @@ Qualcomm Camera Subsystem
->         Definition: Should contain one of:
->                 - "qcom,msm8916-camss"
->                 - "qcom,msm8996-camss"
-> +               - "qcom,sdm660-camss"
->  - reg:
->         Usage: required
->         Value type: <prop-encoded-array>
-> @@ -64,30 +65,36 @@ Qualcomm Camera Subsystem
->         Value type: <stringlist>
->         Definition: Should contain the following entries:
->                 - "top_ahb"
-> +               - "throttle_axi"        (660 only)
->                 - "ispif_ahb"
->                 - "csiphy0_timer"
->                 - "csiphy1_timer"
->                 - "csiphy2_timer"       (8996 only)
-> +               - "csiphy_ahb2crif"     (660 only)
->                 - "csi0_ahb"
->                 - "csi0"
->                 - "csi0_phy"
->                 - "csi0_pix"
->                 - "csi0_rdi"
-> +               - "cphy_csid0"          (660 only)
->                 - "csi1_ahb"
->                 - "csi1"
->                 - "csi1_phy"
->                 - "csi1_pix"
->                 - "csi1_rdi"
-> +               - "cphy_csid1"          (660 only)
->                 - "csi2_ahb"            (8996 only)
->                 - "csi2"                (8996 only)
->                 - "csi2_phy"            (8996 only)
->                 - "csi2_pix"            (8996 only)
->                 - "csi2_rdi"            (8996 only)
-> +               - "cphy_csid2"          (660 only)
->                 - "csi3_ahb"            (8996 only)
->                 - "csi3"                (8996 only)
->                 - "csi3_phy"            (8996 only)
->                 - "csi3_pix"            (8996 only)
->                 - "csi3_rdi"            (8996 only)
-> +               - "cphy_csid3"          (660 only)
->                 - "ahb"
->                 - "vfe0"
->                 - "csi_vfe0"
-> --
-> 2.28.0
->
+Paolo
+
