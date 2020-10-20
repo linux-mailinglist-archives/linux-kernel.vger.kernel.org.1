@@ -2,70 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF41F294289
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7340829428A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437779AbgJTSy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 14:54:29 -0400
-Received: from smtprelay0058.hostedemail.com ([216.40.44.58]:58230 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2437740AbgJTSy3 (ORCPT
+        id S2437861AbgJTSzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 14:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437854AbgJTSzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 14:54:29 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 6D6A21802150E;
-        Tue, 20 Oct 2020 18:54:28 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7903:8957:9025:10004:10400:11232:11658:11914:12043:12050:12297:12740:12760:12895:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21451:21627:21939:30012:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: shoe55_10129fa27242
-X-Filterd-Recvd-Size: 2143
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 20 Oct 2020 18:54:26 +0000 (UTC)
-Message-ID: <0cdbe9c56d73402be9e3b36a662c68515abcfae9.camel@perches.com>
-Subject: Re: [RFC] treewide: cleanup unreachable breaks
-From:   Joe Perches <joe@perches.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Tom Rix <trix@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        George Burgess <gbiv@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@ziepe.ca>
-Date:   Tue, 20 Oct 2020 11:54:25 -0700
-In-Reply-To: <CAKwvOdmhqq0DT5csX6W8xDF=nuXgJJ_Rtc2xf++=Q9uA4tZEvw@mail.gmail.com>
-References: <20201017160928.12698-1-trix@redhat.com>
-         <20201018054332.GB593954@kroah.com>
-         <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
-         <3bc5c2e3b3edc22a4d167ec807ecdaaf8dcda76d.camel@perches.com>
-         <CAKwvOdmhqq0DT5csX6W8xDF=nuXgJJ_Rtc2xf++=Q9uA4tZEvw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 20 Oct 2020 14:55:14 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27545C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 11:55:14 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t9so3505294wrq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 11:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mScZ8ah2UgtXD/hHaoKN6/WZjy3yp0sHiaOHV6wLFW8=;
+        b=kC1bm7nzh6+1h/Q0nN45KdnVbW/OI5uUooOLQ2Vs/LpFzRvJnYRUV+JwP0kcW7T4QR
+         41jNfWJ2Z9lO48O89PVVflQTzDH60CTncg14/nyfU9FIEeibQS8Vrf68eqVidtcHz3vp
+         3lByNPbOMsEb9+VEVy4e6EqFieABTbe7vnr3g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mScZ8ah2UgtXD/hHaoKN6/WZjy3yp0sHiaOHV6wLFW8=;
+        b=ZtoDtaK94dxCgp1ZEBAU9B6jiTJ5XDmLHQIxUehHoHZ7CVksL5JmknEpKQCY3hnvU2
+         83+VlPcbsximeK6vBDPJe/ZT7CM/U6AAButEwfBhloOian6ZA00N5jD6GwsV0xA2pPJA
+         SEP1DluOVsdzmB45ROCw/udHguaVWGZimmZcF8wjmyIJJJweCK0URO6kHb+7/1+z3IY/
+         XBwbcD3fuzxfzmJ/RABvHyE5awd5Gd96zCDj0/6GiaHTlcOumnPNS2s4ZOG0ecFA2XcA
+         duAffiJ6nFmNjbGKfWvidYuqQ2VPkzr8cemfoVnEvsKhKY9UazGFbemZa8ox4Ky5F+YQ
+         bUWQ==
+X-Gm-Message-State: AOAM533xkJBHUkoBGOk5drDw/ibiG+62bUfzHylwme9VU9MBqFbxDkFS
+        3frTe2XUCwKTJ2RnWMrxBRWBo3pLEazXcYIJbEF8Cg==
+X-Google-Smtp-Source: ABdhPJxsMtKaYZKishW1LFkqqTjFYaAFJFl/nN/EX/ADY7U9joK0FSO7QV5LU0tzsLkN7u78bKqbrTQK/Z5k/u4nUP8=
+X-Received: by 2002:a5d:49ca:: with SMTP id t10mr5023373wrs.404.1603220112425;
+ Tue, 20 Oct 2020 11:55:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200914080619.4178587-1-cychiang@chromium.org>
+ <20200914080619.4178587-3-cychiang@chromium.org> <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
+ <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
+ <20201015161251.GF4390@sirena.org.uk> <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
+ <20201020143711.GC9448@sirena.org.uk> <63f1a29c-0758-97b8-ce80-fe43d91630fa@linaro.org>
+In-Reply-To: <63f1a29c-0758-97b8-ce80-fe43d91630fa@linaro.org>
+From:   Cheng-yi Chiang <cychiang@chromium.org>
+Date:   Wed, 21 Oct 2020 02:54:43 +0800
+Message-ID: <CAFv8NwJ-+f146Ss9Mk=nEXjm1B--ZwhAgnfx-cTi7DGEKqC1-Q@mail.gmail.com>
+Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Srinivasa Rao <srivasam@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Dylan Reid <dgreid@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-20 at 11:51 -0700, Nick Desaulniers wrote:
-> On Tue, Oct 20, 2020 at 11:42 AM Joe Perches <joe@perches.com> wrote:
-> > On Mon, 2020-10-19 at 12:42 -0700, Nick Desaulniers wrote:
-> > > We probably should add all 3 to W=2 builds (wrapped in cc-option).
-> > > I've filed https://github.com/ClangBuiltLinux/linux/issues/1180 to
-> > > follow up on.
-> > 
-> > I suggest using W=1 as people that are doing cleanups
-> > generally use that and not W=123 or any other style.
-> > 
-> > Every other use of W= is still quite noisy and these
-> > code warnings are relatively trivially to fix up.
-> 
-> The 0day bot folks have enabled W=1 recently; hence the uptick in
-> reports of -Wimplicit-function-declaration.
-> 
-> If it gets added to W=1, it's effectively "on by default" for new code
-> tested by 0day bot.
+On Tue, Oct 20, 2020 at 10:55 PM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+>
+>
+> On 20/10/2020 15:37, Mark Brown wrote:
+> > I don't understand what "logic scattered in various dtsi files" means,
+> > sorry.
+> >
+> >> Yes, that should work to describe the dailink we are using.
+> >> But a more tricky issue is how to do calls like setting PLL in dai startup ops.
+> > ...
+> >
+> >> I think that asking a generic machine driver to do configuration like
+> >> this with only a limited interface of device property
+> >> might be too much of an ask for the machine driver.
+> > Richard was looking at some basic configuration for PLLs.
+> >
+> >> Would you mind if I simplify the compatible string like Srinivas
+> >> suggested, and send a v12?
+> >> As for other two kinds of variations that I am aware of:
+> >> 1. front mic / rear mic
+> >> 2. replace alc5682 with adau7002
+> > The CODEC change is going to be described in the DT no matter what -
+> > you'll have a reference to the CODEC node but it may make sense if
+> > there's enough custom code around it.  For front vs rear mic the
+> > simplest thing would just be to not mention which if this is a hardware
+> > fixed thing, otherwise a control.
+> >
+> >> We can set different board names and different compatible strings to
+> >> achieve such variation.
+> >> So that it would make sense to describe configuration in compatible
+> >> strings like you suggested, and also provides UCM a way to distinguish
+> >> different boards.
+> > I don't recall having suggested distinguishing these things with a
+> > compatible string, especially not the microphones.  UCM can already use
+> > the display names for the boards to distinguish things.
+>
+>
+> Not with the compatible string!
+>
+> Currently card name, and long name are exactly same in all Qualcomm
+> soundcards, which makes it very difficult to identify how those boards
+> re wired up at UCM2 level. So the plan is to properly populate card long
+> name with "model" property which can include details on how things are
+> wiredup on that board.
+>
+> --srini
 
-And that would mean these get fixed faster no?
-Isn't that a good thing?
+Hi Srini,
+Thanks for taking a look.
+Let me try to clarify your comments in case there is any misunderstanding.
 
+I understand your request on having different board variations using
+different sound card names through model property, and I totally agree
+with that.
+As for compatible strings, do you insist on having all the board
+variations using exactly the same compatible string ?
+
+Thanks!
