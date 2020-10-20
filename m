@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C452932D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 03:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AB62932D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 03:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390245AbgJTBoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 21:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
+        id S2390276AbgJTBon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 21:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390215AbgJTBo2 (ORCPT
+        with ESMTP id S2390144AbgJTBoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 21:44:28 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DF9C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:28 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id z2so277898ilh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:28 -0700 (PDT)
+        Mon, 19 Oct 2020 21:44:32 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC5CC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:31 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id g7so274539ilr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XhAgMxTS7FfrTqbn56ueMD2c1ZEFO5mefcH6CTcX4Lk=;
-        b=sxmA9+QgClJD5dFZcx9OJB/9pGKo8MtzWP09NaVve7lizrAKmJUO4PJ7Y0nxdKWjHM
-         5Jri84L80ilytpPSOuZs/NriReCWaYT7CE6Ms/Jal4MDhXrfYq5FZ1WJXYN4FmCvTNAE
-         qyOtInr68ifGvHz2tMTBzDGXBcZ8tw3Byp7Ik=
+        bh=nJ13MDUW9MMRHtOkQofTGOGJvsIORCj9T6F6FUaxXLo=;
+        b=JLCE90v77jdAP9mhtr4peUNu8gOJ9stLjdHuV31ZS829hr1WrHdIgutHp9sOVdXx+R
+         FnWE/UOea3zPuP0ZrLSqD2a6h5OueQVZSCgYEmdDa5SSrbKAHzCT2NvBMP8WLaZ8mB2p
+         tGt+6b91KJ4dXP/B4FHUMR0PEQ2MQasYbip2Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XhAgMxTS7FfrTqbn56ueMD2c1ZEFO5mefcH6CTcX4Lk=;
-        b=DPlWYAWy4YVnA0+bZgf5QWzy338AfNWEC5aaYth4PMOAowfiY+ncYsEK2R5s1xr27V
-         FOmarXbBwIyZYUEdjEBv5UA8BoNhRLZdx6veZfKgdyP/OmPnuQNpIYGzw2R2nwC7EUu3
-         n5IEV8VXSg4qhwVV6QxAeVNlkpp/q3n2sUJ7elSTiZ2o78bORtPO+D0vgdSzdU9a5Wcf
-         eOSZw0TVN4gtRlxZ9GGFVVF/3wu6CSJBEoRpgW8f9lZ7FJXdUEbdKnNObyBNwU0Aktmx
-         s5dgipvHgF4U1TBZ/qFZcoyCcRvgTqFKdGyddAhC8eWfjB4++7QT0c85EUqXgGnTfStU
-         n20Q==
-X-Gm-Message-State: AOAM531s7efi1CCJgBGq7FZFTVLCNIrI1khTaTdBQlriF+pWSaBjbJKE
-        eHWiAfN2Wkw21OgRB7xgBDZqRg==
-X-Google-Smtp-Source: ABdhPJzIvhXNa7OYJ/VFoeecUXx/7Dwmt6K+tnmASiy2gvtq8DqG4HlMvdK7FNbhIrdsYjHUdrHm5g==
-X-Received: by 2002:a92:b00e:: with SMTP id x14mr275750ilh.4.1603158267791;
-        Mon, 19 Oct 2020 18:44:27 -0700 (PDT)
+        bh=nJ13MDUW9MMRHtOkQofTGOGJvsIORCj9T6F6FUaxXLo=;
+        b=RKl++QZB0m+64WfSWQ2B8lbrNkas8zkkiO/FujV+4CGlnnKEy8eUEdqsY9SG3y3Yqj
+         z4A6HJS4/0gWJfRD41VLoI9eFXSR1qYUNlpz/xnLvJyIaUDFF2hb2bm4VV45z0zkT03d
+         YbZqVwl+ajSTLaRa4mQNUtLNLa9KH9ffH3IlUhY6GEApCVpQFX1a9ffdAqPksQqpxxyX
+         iCDe6/UZy7QzTTYKV22WMxL4syLsqgCUqPd5wi/8oTwGPzIy4TDokr0q0Zyw8ycesymE
+         mhASViNkIwh0lct1AXgZIe4inYPtvv7WTm5ydggHoPKs8bfxYHnZzuwI8SLHdO7Oh2UM
+         87fw==
+X-Gm-Message-State: AOAM530q8HLJtL5FObhOFPNitkGV982C+6ZIigxAMdaZ9Ey2Tjmb9FmN
+        Fc8fVNIsrU30IM1DG+Y0eGGCAw==
+X-Google-Smtp-Source: ABdhPJyDsM1n4Gw3V8mUt9nHaMxq7KUSTKQTERNB+dQLwYx+pGeZqjyoLTfYooR7jrChc7yXAaKfvw==
+X-Received: by 2002:a92:ce45:: with SMTP id a5mr236844ilr.308.1603158270689;
+        Mon, 19 Oct 2020 18:44:30 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id t22sm485306ili.9.2020.10.19.18.44.25
+        by smtp.gmail.com with ESMTPSA id t22sm485306ili.9.2020.10.19.18.44.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 18:44:27 -0700 (PDT)
+        Mon, 19 Oct 2020 18:44:30 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -75,9 +75,9 @@ Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
         chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Tim Chen <tim.c.chen@intel.com>
-Subject: [PATCH v8 -tip 14/26] entry/idle: Enter and exit kernel protection during idle entry and exit
-Date:   Mon, 19 Oct 2020 21:43:24 -0400
-Message-Id: <20201020014336.2076526-15-joel@joelfernandes.org>
+Subject: [PATCH v8 -tip 15/26] entry/kvm: Protect the kernel when entering from guest
+Date:   Mon, 19 Oct 2020 21:43:25 -0400
+Message-Id: <20201020014336.2076526-16-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 In-Reply-To: <20201020014336.2076526-1-joel@joelfernandes.org>
 References: <20201020014336.2076526-1-joel@joelfernandes.org>
@@ -87,93 +87,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a generic_idle_{enter,exit} helper function to enter and exit kernel
-protection when entering and exiting idle, respectively.
+From: Vineeth Pillai <viremana@linux.microsoft.com>
+
+Similar to how user to kernel mode transitions are protected in earlier
+patches, protect the entry into kernel from guest mode as well.
 
 Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
 ---
- include/linux/entry-common.h | 18 ++++++++++++++++++
- kernel/sched/idle.c          | 11 ++++++-----
- 2 files changed, 24 insertions(+), 5 deletions(-)
+ arch/x86/kvm/x86.c        |  3 +++
+ include/linux/entry-kvm.h | 12 ++++++++++++
+ kernel/entry/kvm.c        | 13 +++++++++++++
+ 3 files changed, 28 insertions(+)
 
-diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-index 260216de357b..879562d920f2 100644
---- a/include/linux/entry-common.h
-+++ b/include/linux/entry-common.h
-@@ -402,4 +402,22 @@ void irqentry_exit_cond_resched(void);
-  */
- void noinstr irqentry_exit(struct pt_regs *regs, irqentry_state_t state);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index ce856e0ece84..05a281f3ef28 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8540,6 +8540,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 	 */
+ 	smp_mb__after_srcu_read_unlock();
  
-+/**
-+ * generic_idle_enter - Called during entry into idle for housekeeping.
-+ */
-+static inline void generic_idle_enter(void)
-+{
-+	/* Entering idle ends the protected kernel region. */
-+	sched_core_unsafe_exit();
-+}
++	kvm_exit_to_guest_mode(vcpu);
 +
-+/**
-+ * generic_idle_enter - Called when exiting idle for housekeeping.
-+ */
-+static inline void generic_idle_exit(void)
-+{
-+	/* Exiting idle (re)starts the protected kernel region. */
-+	sched_core_unsafe_enter();
-+}
-+
- #endif
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index a74926be80ac..029ba61576f2 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -8,6 +8,7 @@
-  */
- #include "sched.h"
- 
-+#include <linux/entry-common.h>
- #include <trace/events/power.h>
- 
- /* Linker adds these: start and end of __cpuidle functions */
-@@ -54,6 +55,7 @@ __setup("hlt", cpu_idle_nopoll_setup);
- 
- static noinline int __cpuidle cpu_idle_poll(void)
- {
-+	generic_idle_enter();
- 	trace_cpu_idle(0, smp_processor_id());
- 	stop_critical_timings();
- 	rcu_idle_enter();
-@@ -66,6 +68,7 @@ static noinline int __cpuidle cpu_idle_poll(void)
- 	rcu_idle_exit();
- 	start_critical_timings();
- 	trace_cpu_idle(PWR_EVENT_EXIT, smp_processor_id());
-+	generic_idle_exit();
- 
- 	return 1;
- }
-@@ -156,11 +159,7 @@ static void cpuidle_idle_call(void)
- 		return;
+ 	/*
+ 	 * This handles the case where a posted interrupt was
+ 	 * notified with kvm_vcpu_kick.
+@@ -8633,6 +8635,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 		}
  	}
  
--	/*
--	 * The RCU framework needs to be told that we are entering an idle
--	 * section, so no more rcu read side critical sections and one more
--	 * step to the grace period
--	 */
-+	generic_idle_enter();
++	kvm_enter_from_guest_mode(vcpu);
+ 	local_irq_enable();
+ 	preempt_enable();
  
- 	if (cpuidle_not_available(drv, dev)) {
- 		tick_nohz_idle_stop_tick();
-@@ -225,6 +224,8 @@ static void cpuidle_idle_call(void)
- 	 */
- 	if (WARN_ON_ONCE(irqs_disabled()))
- 		local_irq_enable();
-+
-+	generic_idle_exit();
+diff --git a/include/linux/entry-kvm.h b/include/linux/entry-kvm.h
+index 0cef17afb41a..32aabb7f3e6d 100644
+--- a/include/linux/entry-kvm.h
++++ b/include/linux/entry-kvm.h
+@@ -77,4 +77,16 @@ static inline bool xfer_to_guest_mode_work_pending(void)
  }
+ #endif /* CONFIG_KVM_XFER_TO_GUEST_WORK */
  
- /*
++/**
++ * kvm_enter_from_guest_mode - Hook called just after entering kernel from guest.
++ * @vcpu:   Pointer to the current VCPU data
++ */
++void kvm_enter_from_guest_mode(struct kvm_vcpu *vcpu);
++
++/**
++ * kvm_exit_to_guest_mode - Hook called just before entering guest from kernel.
++ * @vcpu:   Pointer to the current VCPU data
++ */
++void kvm_exit_to_guest_mode(struct kvm_vcpu *vcpu);
++
+ #endif
+diff --git a/kernel/entry/kvm.c b/kernel/entry/kvm.c
+index eb1a8a4c867c..b0b7facf4374 100644
+--- a/kernel/entry/kvm.c
++++ b/kernel/entry/kvm.c
+@@ -49,3 +49,16 @@ int xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcpu)
+ 	return xfer_to_guest_mode_work(vcpu, ti_work);
+ }
+ EXPORT_SYMBOL_GPL(xfer_to_guest_mode_handle_work);
++
++void kvm_enter_from_guest_mode(struct kvm_vcpu *vcpu)
++{
++	sched_core_unsafe_enter();
++}
++EXPORT_SYMBOL_GPL(kvm_enter_from_guest_mode);
++
++void kvm_exit_to_guest_mode(struct kvm_vcpu *vcpu)
++{
++	sched_core_unsafe_exit();
++	sched_core_wait_till_safe(XFER_TO_GUEST_MODE_WORK);
++}
++EXPORT_SYMBOL_GPL(kvm_exit_to_guest_mode);
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
