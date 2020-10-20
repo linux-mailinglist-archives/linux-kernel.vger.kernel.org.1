@@ -2,171 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E448293863
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88918293868
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403823AbgJTJn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
+        id S2403913AbgJTJot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403799AbgJTJn6 (ORCPT
+        with ESMTP id S2403895AbgJTJos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:43:58 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335CDC0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:43:58 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id i62so345432vkb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:43:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JjdyFK6+77JSWhbhdO2ZuxNLLPayu81xI0vhP8ntxQg=;
-        b=La4o7i2OJsXMD4q5xRA5hBGQ5Qm6dQDBPA6bArJvJ43aVe8GWjIxy8b7M1LH8agwSG
-         kljQUdppVQQXxJBGFVQEfCX0oVR6VA2JLx0HGKeQNmgNYUfBysfQbrIN97E89/8LXYgY
-         XqEuBEJxClQrOnk7OaiwLtikTTRgUkeO1xPCUwtrv2iEew5a8CV39kopu6qQ6QoWKbch
-         +dAhoYoSWkeZHcMufzoBgR5DKBz6/HsobzkejfOs8ktw6pvybqwR9fH/Non/Ho92Rq89
-         KnDXdq62t4AgQM9L7+8dau1A4RGG5V1RU8sCF/XrKXvrN5aSIe7AT2sO5T4nTKyE5FiT
-         d6Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JjdyFK6+77JSWhbhdO2ZuxNLLPayu81xI0vhP8ntxQg=;
-        b=A3EQBSAYmj5MN4WBhUsyV/oe/K3yd7HBN8HkkCsdOaWUXPIDmsiTrVtEknBYYUoYXy
-         g8um2/jwawQ/KKo6QMxt3NJDmokDh3d4UXdNwDkb9hUS7Ze/5wqoZOcYGKWy3jKSsri/
-         1VToVKLOBcacwiqfmByfGVIR7VwWazjTLUjVrC9yB/wTMeThg4YsfMBnSYhZfsGtQ03D
-         2uJghpk6WtuRrd7YWYY/NrYC8T9gvBFFF2ISEgdjusyqx6sv3QfZJrhlxBx0SObAjRtq
-         ixjQGw6lCLuPSgDAP98FQ7FbM5/Pxh5H+ohvwz9fFJsxAYQ7Iv3gxf++TfmIFzT1EK1p
-         mWiw==
-X-Gm-Message-State: AOAM5310+o2oYn2JVYyoLmypv61MeX8TeuWSkad7eo0+8YJBhdoLHHkm
-        0G94X05tvKucDwhCwotOGg/V8BjiWiFr+TpsR91osA==
-X-Google-Smtp-Source: ABdhPJzkuNHgpTCH+/hhwKeV4xliCj2/L+Rcgp4UrCsWbP2a8i4WMUdSDm0bzpFM+VfJlMqNfnN2DaanwcokO38O5x0=
-X-Received: by 2002:a1f:38cb:: with SMTP id f194mr837808vka.22.1603187036941;
- Tue, 20 Oct 2020 02:43:56 -0700 (PDT)
+        Tue, 20 Oct 2020 05:44:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85909C0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:44:48 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kUoC2-00038u-R3; Tue, 20 Oct 2020 11:44:34 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:c351:f59d:74d9:d207] (unknown [IPv6:2a03:f580:87bc:d400:c351:f59d:74d9:d207])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id BB56E57DD4C;
+        Tue, 20 Oct 2020 09:44:32 +0000 (UTC)
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
+        linux-can@vger.kernel.org, pankaj.bansal@nxp.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Subject: Re: [PATCH V3 00/10] can: flexcan: add stop mode support for i.MX8QM
+Message-ID: <8b4796f5-6d63-7bb9-35c9-bf1055a1bee3@pengutronix.de>
+Date:   Tue, 20 Oct 2020 11:44:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200929024004.244992-1-badhri@google.com> <20200929024004.244992-6-badhri@google.com>
- <20201006182940.GA2574941@bogus> <CAPTae5L6UFGNJ0pxxfFAS3=KDNDVU-WDW-OHk6prLStbe+EaOQ@mail.gmail.com>
- <CAL_JsqKxW9BeFQGsLqa-ZRurR8gDDrTSaDYs=mj7TYtF9ZDiYQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqKxW9BeFQGsLqa-ZRurR8gDDrTSaDYs=mj7TYtF9ZDiYQ@mail.gmail.com>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Tue, 20 Oct 2020 02:43:20 -0700
-Message-ID: <CAPTae5LiTmgH+Nn7L3y47oy-QkZBSusq3aqwGvt=dYy7_dbQhw@mail.gmail.com>
-Subject: Re: [PATCH v9 05/15] dt-bindings: connector: Add property to set
- initial current cap for FRS
-To:     Rob Herring <robh@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Amelie Delaunay <amelie.delaunay@st.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Ktz5MUDdbZmwtP1rDPyXdqUjwlMfIAmLj"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 7:16 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Oct 7, 2020 at 8:07 PM Badhri Jagan Sridharan <badhri@google.com> wrote:
-> >
-> > On Tue, Oct 6, 2020 at 11:29 AM Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Mon, Sep 28, 2020 at 07:39:54PM -0700, Badhri Jagan Sridharan wrote:
-> > > > This change adds frs-typec-current which allows setting the initial current
-> > > > capability of the new source when vSafe5V is applied during PD3.0
-> > > > sink Fast Role Swap.
-> > >
-> > > Shouldn't you Cc the person you copied this from?
-> > Not sure whether I get this comment. The patch wasn't copied. Maybe you were
-> > expecting me to CC amelie.delaunay@st.com ? if so, just now CC'ed.
-> >
-> > >
-> > >
-> > > > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > > > ---
-> > > > Changes since v1:
-> > > > - Changing patch version to v6 to fix version number confusion.
-> > > >
-> > > > Changes since v6:
-> > > > - Removed the redundant usb-connector.txt that I created by mistake.
-> > > > - Moved to yaml.
-> > > >
-> > > > Changes since v7:
-> > > > - Rebase
-> > > >
-> > > > Changes since v8:
-> > > > - Redefine new-source-frs-typec-current as string enums to address
-> > > >   Rob Herring's comment.
-> > > > ---
-> > > >  .../bindings/connector/usb-connector.yaml     | 26 +++++++++++++++++++
-> > > >  include/dt-bindings/usb/pd.h                  | 10 +++++++
-> > > >  2 files changed, 36 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> > > > index 9bd52e63c935..0b8cd08a8678 100644
-> > > > --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> > > > +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> > > > @@ -142,6 +142,32 @@ properties:
-> > > >      required:
-> > > >        - port@0
-> > > >
-> > > > +  new-source-frs-typec-current:
-> > > > +    description: Initial current capability of the new source when vSafe5V
-> > > > +      is applied during PD3.0 Fast Role Swap. "Table 6-14 Fixed Supply PDO - Sink"
-> > > > +      of "USB Power Delivery Specification Revision 3.0, Version 1.2" provides the
-> > > > +      different power levels and "6.4.1.3.1.6 Fast Role Swap USB Type-C Current"
-> > > > +      provides a detailed description of the field. The sink PDO from current source
-> > > > +      reflects the current source's(i.e. transmitter of the FRS signal) power
-> > > > +      requirement during fr swap. The current sink (i.e. receiver of the FRS signal),
-> > > > +      a.k.a new source, should check if it will be able to satisfy the current source's,
-> > > > +      new sink's, requirement during frswap before enabling the frs signal reception.
-> > > > +      This property refers to maximum current capability that the current sink can
-> > > > +      satisfy. During FRS, VBUS voltage is at 5V, as the partners are in implicit
-> > > > +      contract, hence, the power level is only a function of the current capability.
-> > > > +      "not-supported" implies sink to source fast role swap not supported.
-> > > > +      "default" refers to default USB power level as described by
-> > > > +      "Table 6-14 Fixed Supply PDO - Sink".
-> > > > +      "1.5A" refers to 1.5A@5V.
-> > > > +      "3.0A" refers to 3.0A@5V.
-> > >
-> > >
-> > > > +
-> > > > +    $ref: /schemas/types.yaml#/definitions/string
-> > > > +    enum:
-> > > > +      - not-supported
-> > > > +      - default
-> > > > +      - 1.5A
-> > > > +      - 3.0A
-> > >
-> > > What happens if the property is not present?
-> >
-> > The behavior would be the same as "not-supported".
->
-> Then you don't need 'not-supported'.
->
-> >
-> > >
-> > > I'm not crazy about mixing strings and what could be a number.
-> >
-> > v8 version[1] of the patch was using uint32. I moved to using strings
-> > as you were asking to unify with the approach in [2]. Since [3] was using
-> > string enums, I moved to that. I don't have a strong preference here, so
-> > I can move back to using u32 if you feel so.
->
-> Since the u32 values are based on the USB spec, I think I prefer that.
-> Should be easier to deal with in the driver than doing strcmp's.
-Done. Sent out as v11 of the patch.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Ktz5MUDdbZmwtP1rDPyXdqUjwlMfIAmLj
+Content-Type: multipart/mixed; boundary="Ohg8Jewx5uRnY0ffIl87D42yutcctTpcn";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
+ shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc: kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
+ linux-can@vger.kernel.org, pankaj.bansal@nxp.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <8b4796f5-6d63-7bb9-35c9-bf1055a1bee3@pengutronix.de>
+Subject: Re: [PATCH V3 00/10] can: flexcan: add stop mode support for i.MX8QM
+References: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
 
-Thanks,
-Badhri
+--Ohg8Jewx5uRnY0ffIl87D42yutcctTpcn
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
->
-> Rob
+On 10/20/20 5:53 PM, Joakim Zhang wrote:
+> The first patch from Liu Ying aims to export SCU symbols for SoCs w/wo =
+SCU,
+> so that no need to check CONFIG_IMX_SCU in the specific driver.
+>=20
+> The following patches are flexcan fixes and add stop mode support for i=
+=2EMX8QM.
+
+I've applied 3,4,5 to linux-can/testing. I'll take 6 to linux-can, too as=
+ soon
+as it has a better description.
+
+Who will take care of 1, 9?
+
+The dt-bindings changes have to wait until the conversion to yaml is fini=
+shed.
+This and the rest will go via can-next to net-next.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--Ohg8Jewx5uRnY0ffIl87D42yutcctTpcn--
+
+--Ktz5MUDdbZmwtP1rDPyXdqUjwlMfIAmLj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+OsXwACgkQqclaivrt
+76meqwf9HRDKtakjiLQLuGpclXCK1k+ZmvPhfCzUhTosphXKIgquu89qgxbCEuCd
+jW/jemT5LcEINmym0CVKUxT5MBxTkYrQkhGaRWOFq9mAEhV+cAQojYiu00ANI4LE
+q6mLjrHKFMBGyYVH1ysBXTJqbi7obfizOD5W8JwFQB+w0cT4/LLcJRw1KVwaF7EV
+funKT9o5DofoEqk1bUXwg5FyVv7RqCA4T9+ukAsV6yvTMhVdfa9zu8Lht8msYpMv
+2WF8y1Jvz/YIlPQggNWzjxWNJVqpKsU6Gf62JL1l2U5Nclh7wPAwZo0pbJLtH6Py
+wtCHOo46MhQZ9kBD+VPLAE9veTu99A==
+=EZX9
+-----END PGP SIGNATURE-----
+
+--Ktz5MUDdbZmwtP1rDPyXdqUjwlMfIAmLj--
