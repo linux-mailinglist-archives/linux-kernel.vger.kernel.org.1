@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FAF2935EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058FA2935F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731557AbgJTHip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728466AbgJTHio (ORCPT
+        id S2405333AbgJTHkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:40:21 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:36733 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405308AbgJTHkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:38:44 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BD4C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:38:44 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id i7ei230074C55Sk017eiU3; Tue, 20 Oct 2020 09:38:42 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kUmEE-0004U3-2V; Tue, 20 Oct 2020 09:38:42 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kUmEE-0007c7-1F; Tue, 20 Oct 2020 09:38:42 +0200
+        Tue, 20 Oct 2020 03:40:19 -0400
+Received: by mail-oi1-f196.google.com with SMTP id u17so1219785oie.3;
+        Tue, 20 Oct 2020 00:40:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MphawCggZoPyPLPjOXzPYGZL3RA+kXoFqq50s1cKbPA=;
+        b=EfJ+eEd2kz28e/2VVafp28Vkpx9TxwmSI0jGg5zrBJXNggCddrzoc7kD713isApArz
+         O/9nkW72cwlaRHkTrT09QCvfJGkJRG9CKOs8jJq87tiUHgUIZ2u+KcVF3B1hgNZ5uA/E
+         S1lu6sni+DeHS8JOU1msDSl5c03JbvqvQ1ugwQrgKlNWxsEK5D79C0qtaq85t3jOP3Kw
+         6GXwnqinr3TzaRw/EF/FjCMB7ddCT87mv4yiot8DZQ+XbYB69oFPM1OQtxucikbkpJmK
+         e3Y/9kk/q1h9y8nHDwgvHZOw2nMTWBJHOAXmGg8enkge1J9hUd0I9XAYguJtj8NOmcG2
+         xU+g==
+X-Gm-Message-State: AOAM531hYIPSUI49CwLUy3kQr1MhO90yK6A9Z1oNRIpWV18XwEXo1Ccw
+        FQCzWe44gwb1AHaiLjCNXjmK0QqGa4N2DX0L1QA=
+X-Google-Smtp-Source: ABdhPJyfi/DdUPsxmzKRpKKKW0CKJyIiG/pHw6av94t0zAWOI2HIbQXGQIaG17RxvjCsdgV+mSmRFi3GNy15DLE6koY=
+X-Received: by 2002:aca:c490:: with SMTP id u138mr1010902oif.54.1603179617218;
+ Tue, 20 Oct 2020 00:40:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201019113240.11516-1-geert@linux-m68k.org> <1968b7a6-a553-c882-c386-4b4fde2d7a87@tessares.net>
+ <CAMuHMdUDpVVejmrr3ayxnN=tgHrgDmUCVMG0VJht1Y-FUUv42Q@mail.gmail.com>
+In-Reply-To: <CAMuHMdUDpVVejmrr3ayxnN=tgHrgDmUCVMG0VJht1Y-FUUv42Q@mail.gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
+Date:   Tue, 20 Oct 2020 09:40:06 +0200
+Message-ID: <CAMuHMdWEKszUOA6Q9Y+vpLdRnq3wstCj1ubV=8iUKZAQkew_wg@mail.gmail.com>
+Subject: Re: [PATCH] mptcp: MPTCP_KUNIT_TESTS should depend on MPTCP instead
+ of selecting it
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
         "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
-        Peter Krystad <peter.krystad@linux.intel.com>
-Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] mptcp: MPTCP_IPV6 should depend on IPV6 instead of selecting it
-Date:   Tue, 20 Oct 2020 09:38:39 +0200
-Message-Id: <20201020073839.29226-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
+        netdev <netdev@vger.kernel.org>, mptcp@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MPTCP_IPV6 selects IPV6, thus enabling an optional feature the user may
-not want to enable.  Fix this by making MPTCP_IPV6 depend on IPV6, like
-is done for all other IPv6 features.
+On Mon, Oct 19, 2020 at 10:38 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Mon, Oct 19, 2020 at 5:47 PM Matthieu Baerts
+> <matthieu.baerts@tessares.net> wrote:
+> > On 19/10/2020 13:32, Geert Uytterhoeven wrote:
+> > > MPTCP_KUNIT_TESTS selects MPTCP, thus enabling an optional feature the
+> > > user may not want to enable.  Fix this by making the test depend on
+> > > MPTCP instead.
+> >
+> > I think the initial intension was to select MPTCP to have an easy way to
+> > enable all KUnit tests. We imitated what was and is still done in
+> > fs/ext4/Kconfig.
+> >
+> > But it probably makes sense to depend on MPTCP instead of selecting it.
+> > So that's fine for me. But then please also send a patch to ext4
+> > maintainer to do the same there.
+>
+> Thanks, good point.  I didn't notice, as I did have ext4 enabled anyway.
+> Will send a patch for ext4.  Looks like ext4 and MPTCP where the only
+> test modules selecting their dependencies.
 
-Fixes: f870fa0b5768842c ("mptcp: Add MPTCP socket stubs")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- net/mptcp/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+FTR, "[PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead
+of  selecting it"
+https://lore.kernel.org/lkml/20201020073740.29081-1-geert@linux-m68k.org/
 
-diff --git a/net/mptcp/Kconfig b/net/mptcp/Kconfig
-index abb0a992d4a0855a..8936604b3bf9d76d 100644
---- a/net/mptcp/Kconfig
-+++ b/net/mptcp/Kconfig
-@@ -19,7 +19,7 @@ config INET_MPTCP_DIAG
- 
- config MPTCP_IPV6
- 	bool "MPTCP: IPv6 support for Multipath TCP"
--	select IPV6
-+	depends on IPV6
- 	default y
- 
- config MPTCP_KUNIT_TESTS
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.17.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
