@@ -2,261 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21CE29360A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F20293610
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405425AbgJTHqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:46:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25935 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731276AbgJTHqR (ORCPT
+        id S2405422AbgJTHsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727536AbgJTHst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:46:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603179976;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sgXxImGcNfTdpL1HttYiv+7vAWjr3xqbtqxgsUpAur8=;
-        b=Wgt+Am48e3HEEcJa5/saVHAFDgm9fByhqh99VoWotkuZvpewsqP6KG+LHdwQ2Z3rlHPKlP
-        eRBLT0WWKi/MRZcsUQDMILrVRnFjABL8/EbeA1+uYdNxGhVZeILe/wFpo106YIXnGp0ph2
-        Ky4Ss+ae8GZ0UV0fWmSZC/NtUENjEFs=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-I_ENaHYuNXaHk8VouJJXmA-1; Tue, 20 Oct 2020 03:46:14 -0400
-X-MC-Unique: I_ENaHYuNXaHk8VouJJXmA-1
-Received: by mail-ej1-f69.google.com with SMTP id z19so495719eja.10
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:46:14 -0700 (PDT)
+        Tue, 20 Oct 2020 03:48:49 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD80FC061755;
+        Tue, 20 Oct 2020 00:48:50 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id z5so1257328ejw.7;
+        Tue, 20 Oct 2020 00:48:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=twqsZzBZbpmbth9P3/d5RUUDvLm4p+PgbnCnaNPBX8A=;
+        b=EeAzwdsLl5ESHsfOeD0E5yAQUYMH5ZRnPAjcTxuxk7IkErmRxSc0jTAfqERc62WQoL
+         36h4Sfm3Md44eOkHIvDkVDEEDhcGERmHPGg9/6BB0Iwyqdkl2hyZQDib7ZcJ/biZrfbh
+         Z1KNuvhabN38BC4OF3hZ5avFEOPv/B1rctHN53qigToSC5A4Cb1fUBI0+jmta74HJ4pt
+         K8I+JZ2/ZSP2bHxrTahWGvv1aC2gcv3Fava6nkJixwxaoPfNEClzE33ZOMENpL8U4OSw
+         xqo+WoAfedCMENg8YVojkndECHXQ6Ri0qiIRqAKKw2Lh77c7Y+gZ8WH38314v121oU4O
+         lyCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=sgXxImGcNfTdpL1HttYiv+7vAWjr3xqbtqxgsUpAur8=;
-        b=RD6P6qAy/WVmZWpOcwiLhbeeHssBmGhZg3vU4VsVgHf1Ns27i5Z6k5bNCP8k2p4S5s
-         5iUWerhGsskdWqW3kS23hR1ebn5fezSouWQ5A88dY5ywSA/eS3iLDUC2Pjj+KWudFcCs
-         E91rcRLRegxDPJN9t/CxEcAzbK9jjqTjFK9GkrbAYbLr0TJgajQeFfch1J+BtV/bUr+/
-         iMv0cTLBKTEb0hm7MNaTGKAxJiedKkHGC9Drrwlhdvqr8xfNrkYKZHdHBV6gc/LfMNGn
-         X0XtI5eLPEYDZQZhq0eQX18WhQBECcOE/+8Xt1FelUwq7J1tJcvnGj4Prdfr3x8e5G2s
-         eemw==
-X-Gm-Message-State: AOAM531PMzzxwyUuK6uCILlZZwYUhAqLdAfmSSSvDxIpRvzbyzc7yedL
-        FOeRpyyOteQTot8vXt4G2jxZWAefIVAMBBqDYOx6s5laNMeajjgIEWBUgKrS4HOB53Eczfy9zKx
-        CDmOiBuPD8DWRgBPUZF/ibe7r
-X-Received: by 2002:a50:fa42:: with SMTP id c2mr1518499edq.282.1603179973463;
-        Tue, 20 Oct 2020 00:46:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzJ70UdcNwULC3ElIfnIU9WUEldW55FxNekhN61q+78PDLzJKQH8MyQOM4YfsYMYec8XQbuZw==
-X-Received: by 2002:a50:fa42:: with SMTP id c2mr1518467edq.282.1603179973177;
-        Tue, 20 Oct 2020 00:46:13 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id h4sm1363839edj.1.2020.10.20.00.46.11
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=twqsZzBZbpmbth9P3/d5RUUDvLm4p+PgbnCnaNPBX8A=;
+        b=d/rktKsDgf03xlfWjyw8mFheubHJwuHbBfyDWx6wdAG0tiNLWt0bp1ihaf7iX5gqu5
+         A17/P1AqLbfK+f3EZaUhE3UytyumSM9PgOqUlMIesT4LL8hmPMBzSve83chXIe6CrLnk
+         kwH7aoEjDRv/wiSD0dz5x3vCjjEa5+R01K8H39Cs3IgKCMBep/ix9lMk9LaSVbMbQH8j
+         1pfoopg13asRtiYnlG8EuFdTvnjs99i2eC2lqW5RcxJob3sK3Hi821hxsrNQdDD+yVXA
+         2vYaAQulWitVrRogZFt2MGd0XqallBDnpyP940MXm0/BmHZlEJ3pnfUpOUWyAhXN7iWP
+         NNdw==
+X-Gm-Message-State: AOAM533DLcF6O+vItC3IbbWERq/1SGe0pjG5x31VHHZd4pTph90yxf7O
+        ywfifDh2JbwkEd5+q4zj21A=
+X-Google-Smtp-Source: ABdhPJzCsnGCLKKzoyNkL5YtRW1r9cg3qeQsfhw/ATmq+hOtMiG65FcwkNTY4HrbNhEy1+cJryxsqQ==
+X-Received: by 2002:a17:906:7254:: with SMTP id n20mr1789979ejk.382.1603180129400;
+        Tue, 20 Oct 2020 00:48:49 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id o13sm1426008ejr.120.2020.10.20.00.48.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 00:46:12 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe\, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen\, Andi" <andi.kleen@intel.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [RFCv2 00/16] KVM protected memory extension
-In-Reply-To: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
-Date:   Tue, 20 Oct 2020 09:46:11 +0200
-Message-ID: <87ft6949x8.fsf@vitty.brq.redhat.com>
+        Tue, 20 Oct 2020 00:48:47 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 09:48:46 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     jonathanh@nvidia.com, digetx@gmail.com,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v1] i2c: tegra: Fix i2c_writesl() to use writel() instead
+ of writesl()
+Message-ID: <20201020074846.GA1877013@ulmo>
+References: <1603166634-13639-1-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wac7ysb48OaltWcw"
+Content-Disposition: inline
+In-Reply-To: <1603166634-13639-1-git-send-email-skomatineni@nvidia.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Kirill A. Shutemov" <kirill@shutemov.name> writes:
 
-> == Background / Problem ==
->
-> There are a number of hardware features (MKTME, SEV) which protect guest
-> memory from some unauthorized host access. The patchset proposes a purely
-> software feature that mitigates some of the same host-side read-only
-> attacks.
->
->
-> == What does this set mitigate? ==
->
->  - Host kernel ”accidental” access to guest data (think speculation)
->
->  - Host kernel induced access to guest data (write(fd, &guest_data_ptr, len))
->
->  - Host userspace access to guest data (compromised qemu)
->
->  - Guest privilege escalation via compromised QEMU device emulation
->
-> == What does this set NOT mitigate? ==
->
->  - Full host kernel compromise.  Kernel will just map the pages again.
->
->  - Hardware attacks
->
->
-> The second RFC revision addresses /most/ of the feedback.
->
-> I still didn't found a good solution to reboot and kexec. Unprotect all
-> the memory on such operations defeat the goal of the feature. Clearing up
-> most of the memory before unprotecting what is required for reboot (or
-> kexec) is tedious and error-prone.
-> Maybe we should just declare them unsupported?
+--wac7ysb48OaltWcw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Making reboot unsupported is a hard sell. Could you please elaborate on
-why you think that "unprotect all" hypercall (or rather a single
-hypercall supporting both protecting/unprotecting) defeats the purpose
-of the feature?
+On Mon, Oct 19, 2020 at 09:03:54PM -0700, Sowjanya Komatineni wrote:
+> VI I2C don't have DMA support and uses PIO mode all the time.
+>=20
+> Current driver uses writesl() to fill TX FIFO based on available
+> empty slots and with this seeing strange silent hang during any I2C
+> register access after filling TX FIFO with 8 words.
+>=20
+> Using writel() followed by i2c_readl() in a loop to write all words
+> to TX FIFO instead of using writesl() helps for large transfers in
+> PIO mode.
+>=20
+> So, this patch updates i2c_writesl() API to use writel() in a loop
+> instead of writesl().
+>=20
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegr=
+a.c
+> index 6f08c0c..274bf3a 100644
+> --- a/drivers/i2c/busses/i2c-tegra.c
+> +++ b/drivers/i2c/busses/i2c-tegra.c
+> @@ -333,10 +333,13 @@ static u32 i2c_readl(struct tegra_i2c_dev *i2c_dev,=
+ unsigned int reg)
+>  	return readl_relaxed(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
+>  }
+> =20
+> -static void i2c_writesl(struct tegra_i2c_dev *i2c_dev, void *data,
+> +static void i2c_writesl(struct tegra_i2c_dev *i2c_dev, u32 *data,
+>  			unsigned int reg, unsigned int len)
+>  {
+> -	writesl(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg), data, len);
+> +	while (len--) {
+> +		writel(*data++, i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
+> +		i2c_readl(i2c_dev, I2C_INT_STATUS);
+> +	}
+>  }
+> =20
+>  static void i2c_readsl(struct tegra_i2c_dev *i2c_dev, void *data,
+> @@ -811,7 +814,7 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_de=
+v *i2c_dev)
+>  		i2c_dev->msg_buf_remaining =3D buf_remaining;
+>  		i2c_dev->msg_buf =3D buf + words_to_transfer * BYTES_PER_FIFO_WORD;
+> =20
+> -		i2c_writesl(i2c_dev, buf, I2C_TX_FIFO, words_to_transfer);
+> +		i2c_writesl(i2c_dev, (u32 *)buf, I2C_TX_FIFO, words_to_transfer);
 
-(Leaving kexec aside for a while) Yes, it is not easy for a guest to
-clean up *all* its memory upon reboot, however:
-- It may only clean up the most sensitive parts. This should probably be
-done even without this new feature and even on bare metal (think about
-next boot target being malicious).
-- The attack window shrinks significantly. "Speculative" bugs require
-time to exploit and it will only remain open until it boots up again
-(few seconds).
+I've thought a bit more about this and I wonder if we're simply reading
+out the wrong value for tx_fifo_avail and therefore end up overflowing
+the TX FIFO. Have you checked what the value is for tx_fifo_avail when
+this silent hang occurs? Given that this is specific to the VI I2C I'm
+wondering if this is perhaps a hardware bug where we read the wrong TX
+FIFO available count.
 
->
-> == Series Overview ==
->
-> The hardware features protect guest data by encrypting it and then
-> ensuring that only the right guest can decrypt it.  This has the
-> side-effect of making the kernel direct map and userspace mapping
-> (QEMU et al) useless.  But, this teaches us something very useful:
-> neither the kernel or userspace mappings are really necessary for normal
-> guest operations.
->
-> Instead of using encryption, this series simply unmaps the memory. One
-> advantage compared to allowing access to ciphertext is that it allows bad
-> accesses to be caught instead of simply reading garbage.
->
-> Protection from physical attacks needs to be provided by some other means.
-> On Intel platforms, (single-key) Total Memory Encryption (TME) provides
-> mitigation against physical attacks, such as DIMM interposers sniffing
-> memory bus traffic.
->
-> The patchset modifies both host and guest kernel. The guest OS must enable
-> the feature via hypercall and mark any memory range that has to be shared
-> with the host: DMA regions, bounce buffers, etc. SEV does this marking via a
-> bit in the guest’s page table while this approach uses a hypercall.
->
-> For removing the userspace mapping, use a trick similar to what NUMA
-> balancing does: convert memory that belongs to KVM memory slots to
-> PROT_NONE: all existing entries converted to PROT_NONE with mprotect() and
-> the newly faulted in pages get PROT_NONE from the updated vm_page_prot.
-> The new VMA flag -- VM_KVM_PROTECTED -- indicates that the pages in the
-> VMA must be treated in a special way in the GUP and fault paths. The flag
-> allows GUP to return the page even though it is mapped with PROT_NONE, but
-> only if the new GUP flag -- FOLL_KVM -- is specified. Any userspace access
-> to the memory would result in SIGBUS. Any GUP access without FOLL_KVM
-> would result in -EFAULT.
->
-> Removing userspace mapping of the guest memory from QEMU process can help
-> to address some guest privilege escalation attacks. Consider the case when
-> unprivileged guest user exploits bug in a QEMU device emulation to gain
-> access to data it cannot normally have access within the guest.
->
-> Any anonymous page faulted into the VM_KVM_PROTECTED VMA gets removed from
-> the direct mapping with kernel_map_pages(). Note that kernel_map_pages() only
-> flushes local TLB. I think it's a reasonable compromise between security and
-> perfromance.
->
-> Zapping the PTE would bring the page back to the direct mapping after clearing.
-> At least for now, we don't remove file-backed pages from the direct mapping.
-> File-backed pages could be accessed via read/write syscalls. It adds
-> complexity.
->
-> Occasionally, host kernel has to access guest memory that was not made
-> shared by the guest. For instance, it happens for instruction emulation.
-> Normally, it's done via copy_to/from_user() which would fail with -EFAULT
-> now. We introduced a new pair of helpers: copy_to/from_guest(). The new
-> helpers acquire the page via GUP, map it into kernel address space with
-> kmap_atomic()-style mechanism and only then copy the data.
->
-> For some instruction emulation copying is not good enough: cmpxchg
-> emulation has to have direct access to the guest memory. __kvm_map_gfn()
-> is modified to accommodate the case.
->
-> The patchset is on top of v5.9
->
-> Kirill A. Shutemov (16):
->   x86/mm: Move force_dma_unencrypted() to common code
->   x86/kvm: Introduce KVM memory protection feature
->   x86/kvm: Make DMA pages shared
->   x86/kvm: Use bounce buffers for KVM memory protection
->   x86/kvm: Make VirtIO use DMA API in KVM guest
->   x86/kvmclock: Share hvclock memory with the host
->   x86/realmode: Share trampoline area if KVM memory protection enabled
->   KVM: Use GUP instead of copy_from/to_user() to access guest memory
->   KVM: mm: Introduce VM_KVM_PROTECTED
->   KVM: x86: Use GUP for page walk instead of __get_user()
->   KVM: Protected memory extension
->   KVM: x86: Enabled protected memory extension
->   KVM: Rework copy_to/from_guest() to avoid direct mapping
->   KVM: Handle protected memory in __kvm_map_gfn()/__kvm_unmap_gfn()
->   KVM: Unmap protected pages from direct mapping
->   mm: Do not use zero page for VM_KVM_PROTECTED VMAs
->
->  arch/powerpc/kvm/book3s_64_mmu_hv.c    |   2 +-
->  arch/powerpc/kvm/book3s_64_mmu_radix.c |   2 +-
->  arch/s390/include/asm/pgtable.h        |   2 +-
->  arch/x86/Kconfig                       |  11 +-
->  arch/x86/include/asm/cpufeatures.h     |   1 +
->  arch/x86/include/asm/io.h              |   6 +-
->  arch/x86/include/asm/kvm_para.h        |   5 +
->  arch/x86/include/asm/pgtable_types.h   |   1 +
->  arch/x86/include/uapi/asm/kvm_para.h   |   3 +-
->  arch/x86/kernel/kvm.c                  |  20 +++
->  arch/x86/kernel/kvmclock.c             |   2 +-
->  arch/x86/kernel/pci-swiotlb.c          |   3 +-
->  arch/x86/kvm/Kconfig                   |   1 +
->  arch/x86/kvm/cpuid.c                   |   3 +-
->  arch/x86/kvm/mmu/mmu.c                 |   6 +-
->  arch/x86/kvm/mmu/paging_tmpl.h         |  10 +-
->  arch/x86/kvm/x86.c                     |   9 +
->  arch/x86/mm/Makefile                   |   2 +
->  arch/x86/mm/ioremap.c                  |  16 +-
->  arch/x86/mm/mem_encrypt.c              |  51 ------
->  arch/x86/mm/mem_encrypt_common.c       |  62 +++++++
->  arch/x86/mm/pat/set_memory.c           |   7 +
->  arch/x86/realmode/init.c               |   7 +-
->  drivers/virtio/virtio_ring.c           |   4 +
->  include/linux/kvm_host.h               |  11 +-
->  include/linux/kvm_types.h              |   1 +
->  include/linux/mm.h                     |  21 ++-
->  include/uapi/linux/kvm_para.h          |   5 +-
->  mm/gup.c                               |  20 ++-
->  mm/huge_memory.c                       |  31 +++-
->  mm/ksm.c                               |   2 +
->  mm/memory.c                            |  18 +-
->  mm/mmap.c                              |   3 +
->  mm/rmap.c                              |   4 +
->  virt/kvm/Kconfig                       |   3 +
->  virt/kvm/async_pf.c                    |   2 +-
->  virt/kvm/kvm_main.c                    | 238 +++++++++++++++++++++----
->  virt/lib/Makefile                      |   1 +
->  virt/lib/mem_protected.c               | 193 ++++++++++++++++++++
->  39 files changed, 666 insertions(+), 123 deletions(-)
->  create mode 100644 arch/x86/mm/mem_encrypt_common.c
->  create mode 100644 virt/lib/mem_protected.c
+Thierry
 
--- 
-Vitaly
+--wac7ysb48OaltWcw
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+OlloACgkQ3SOs138+
+s6HCaw/+LQuIAv3gsJoa2SGq9zYaceHoXp93kkAyTvGO9HDT29Q8gf+faoLrk/cH
+rSCfYtwqcwJvGfxUg3Z9gbRwuc6B/xph0RKQbS9YxC7sVxU710Qp3jGWMayc1efk
+akO2WhDX9Dj1MNX+KDSR0jX9I0sAoBorjyiUovuPKTHkMkqUN7dP9PZPzvqwXVR+
+W/40fWxPP3WFc8rL4Z4VdPLSTStnvtjQx1nc+2IF0nqLnU/bm+5cMiOSpwdw5RLW
+ursbuj+gyZDLZRHplw4xCjc/kjycGDHFEJyA2rNnepefBQZXWjDGlJGXRvwl6FPw
+AmI4Vbc/dZkbi+Y/j8mVZeNk6RF7PaRjJUBsg/OvNZh4ebDvQpsHp+9AreLZ99a7
+l4NsR43yD/oS8EuRZISryRU1R2p3WsPeMx/uRr9jpdJwj6Cld39uAh9w3oDcjdCx
+EYx3AKLz2u6QMdYABkIa3iFbq7kwe2pZ5aNHuNTyjMmHYdaSnLP2CU1Hna7Dzs3D
+vsODCc0NPCzfAtpF8X/I8u2qZyZzDNH3gXxXE0hH7aPaiy1sSyf8uATyrp3dVj1q
+EQ0B8lUHp6gI1NM7wZeiJMbFqTdUqmcNAn62M/A+Mx/7Am+JgdEJhf8LoJOJvq90
+EDnmtVv9Ru8I0ucLKRKRQnW03RVh5GkKbwi5Z5ItNTg6efUqYVU=
+=PrtH
+-----END PGP SIGNATURE-----
+
+--wac7ysb48OaltWcw--
