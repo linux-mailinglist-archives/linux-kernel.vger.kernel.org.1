@@ -2,140 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAAD293D73
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C64293D75
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407531AbgJTNjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:39:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48458 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407502AbgJTNjF (ORCPT
+        id S2407543AbgJTNjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:39:09 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:37730 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407502AbgJTNjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:39:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603201143;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VQMvJLX2BrM7Ofm/MK81zOtT07moMREVSxUbza9t1T8=;
-        b=ghVLRWnLOjT20XaOonPD5lCDxlnsLmVuBUg8yp7Qw/lsBEO4+4gYyIKyTwZUNM387r/BU7
-        6idE7KW5If9QWNBhvA1t6d3bkRlKGkS3lFvftaI9tr9CMgc6ytJ+ScYJ+Q3HMKMGaSHcq1
-        16V02It6vu5OWT57j/K13doPscbq6e8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-414-yeLC_vgmOsOZJqBBgaZjPg-1; Tue, 20 Oct 2020 09:38:59 -0400
-X-MC-Unique: yeLC_vgmOsOZJqBBgaZjPg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4473A1006C8A;
-        Tue, 20 Oct 2020 13:38:58 +0000 (UTC)
-Received: from [10.36.114.141] (ovpn-114-141.ams2.redhat.com [10.36.114.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 841FA5C1C2;
-        Tue, 20 Oct 2020 13:38:53 +0000 (UTC)
-Subject: Re: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at
- mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Mina Almasry <almasrymina@google.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Michal Privoznik <mprivozn@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Tejun Heo <tj@kernel.org>
-References: <c1ea7548-622c-eda7-66f4-e4ae5b6ee8fc@redhat.com>
- <563d1eef-b780-835a-ebf0-88ae111b20c2@redhat.com>
- <CAHS8izPEHZunoeXYS5ONfRoSRMpC7DQwtpjJ8g4nXiddTfNoaA@mail.gmail.com>
- <65a1946f-dbf9-5767-5b51-9c1b786051d1@redhat.com>
- <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
- <c78634ee-0d6f-c98c-3c2a-8cb500c0ae47@oracle.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <b24380ad-b87c-a3a1-d25e-ee30c10ed0d2@redhat.com>
-Date:   Tue, 20 Oct 2020 15:38:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Tue, 20 Oct 2020 09:39:08 -0400
+Received: by mail-oi1-f195.google.com with SMTP id t77so2169715oie.4;
+        Tue, 20 Oct 2020 06:39:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BxJlx6pvHjP1AQK4j2Jcw8y8hDgZxG6mfPqiNVIjJ5w=;
+        b=fmv3MmA4LpzkZbt42HD1T67yi5xrd0Tyah+lrFpqfjtNRpoNMotAQ3HPrYdz8fHH6L
+         Tf7RaZctRHOeqgvuJkaEp3XKBtdTd9KWRmfmEWiJOKcBjBQ9EiMokD2kP/VFNo2sFKuo
+         oLjabfjK0SHJYOLLj//9K5Oqt1W4s+agf8M2kn7c+RfjHHtWswz1Is6aufXv4cFvj5zJ
+         TY+7HLneInETpGsTM8zu0rg0CL6FCEgCX8AwOT9kMw3JJBMLO3MdRnJvikBOAz5vl/IB
+         bXHNtGuu3KOhzvlrM4nwUCRLNukj0o1EUP5g+2a7NpH7vV47pbz+3qc4Y4/I6TAbK3Pe
+         HK2g==
+X-Gm-Message-State: AOAM531SBRKC8D3PEK/FrZKpZM/qqmK96of7nWvWAY0TqZH3/ObV0YAv
+        45Jjl0EUopkY9O6Eo/MGQVR3yBF/itsMIi7NFps=
+X-Google-Smtp-Source: ABdhPJzT6cqLpBvUBXFLCluyCa/o4pUCtLFkTS9+V0g2qzG7LFC5myzDh1BcSd4EZ5XfyRV7z12YT6pHGoYvw/u1fkY=
+X-Received: by 2002:aca:5256:: with SMTP id g83mr1936922oib.71.1603201146736;
+ Tue, 20 Oct 2020 06:39:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c78634ee-0d6f-c98c-3c2a-8cb500c0ae47@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20201019225903.14276-1-djrscally@gmail.com>
+In-Reply-To: <20201019225903.14276-1-djrscally@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 20 Oct 2020 15:38:55 +0200
+Message-ID: <CAJZ5v0g2hQV9RNq3LZqrpQ5LP0rR+fxwdWcwwnzWh1g2dLdmjw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 0/9] Add functionality to ipu3-cio2 driver allowing
+ software_node connections to sensors on platforms designed for Windows
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Rob Herring <robh@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        tian.shu.qiu@intel.com, Bingbu Cao <bingbu.cao@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        yong.zhi@intel.com, "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kitakar@gmail.com, dan.carpenter@oracle.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.10.20 01:14, Mike Kravetz wrote:
-> On 10/14/20 11:31 AM, Mike Kravetz wrote:
->> On 10/14/20 11:18 AM, David Hildenbrand wrote:
->>
->> FWIW - I ran libhugetlbfs tests which do a bunch of hole punching
->> with (and without) hugetlb controller enabled and did not see this issue.
->>
-> 
-> I took a closer look after running just the fallocate_stress test
-> in libhugetlbfs.  Here are the cgroup counter values:
-> 
-> hugetlb.2MB.failcnt 0
-> hugetlb.2MB.limit_in_bytes 9223372036854771712
-> hugetlb.2MB.max_usage_in_bytes 209715200
-> hugetlb.2MB.rsvd.failcnt 0
-> hugetlb.2MB.rsvd.limit_in_bytes 9223372036854771712
-> hugetlb.2MB.rsvd.max_usage_in_bytes 601882624
-> hugetlb.2MB.rsvd.usage_in_bytes 392167424
-> hugetlb.2MB.usage_in_bytes 0
-> 
-> We did not hit the WARN_ON_ONCE(), but the 'rsvd.usage_in_bytes' value
-> is not correct in that it should be zero.   No huge page reservations
-> remain after the test.
-> 
-> HugePages_Total:    1024
-> HugePages_Free:     1024
-> HugePages_Rsvd:        0
-> HugePages_Surp:        0
-> Hugepagesize:       2048 kB
-> Hugetlb:         2097152 kB
-> 
-> To try and better understand the reservation cgroup controller, I addded
-> a few printks to the code.  While running fallocate_stress with the
-> printks, I can consistently hit the WARN_ON_ONCE() due to the counter
-> going negative.  Here are the cgroup counter values after such a run:
-> 
-> hugetlb.2MB.failcnt 0
-> hugetlb.2MB.limit_in_bytes 9223372036854771712
-> hugetlb.2MB.max_usage_in_bytes 209715200
-> hugetlb.2MB.rsvd.failcnt 3
-> hugetlb.2MB.rsvd.limit_in_bytes 9223372036854771712
-> hugetlb.2MB.rsvd.max_usage_in_bytes 251658240
-> hugetlb.2MB.rsvd.usage_in_bytes 18446744073487253504
-> hugetlb.2MB.usage_in_bytes 0
-> 
-> Again, no reserved pages after the test.
-> 
-> HugePages_Total:    1024
-> HugePages_Free:     1024
-> HugePages_Rsvd:        0
-> HugePages_Surp:        0
-> Hugepagesize:       2048 kB
-> Hugetlb:         2097152 kB
-> 
-> I have some basic hugetlb hole punch functionality tests.  Running
-> these on the kernel with added printk's does not cause any issues.
-> In order to reproduce, I need to run fallocate_stress test which
-> will cause hole punch to race with page fault.  Best guess at this
-> time is that some of the error/race detection reservation back out
-> code is not properly dealing with cgroup accounting.
-> 
-> I'll take a look at this as well.
-> 
+[Fix the Linus Walleij's address.]
 
-I'm bisecting the warning right now. Looks like it was introduced in v5.7.
+On Tue, Oct 20, 2020 at 12:59 AM Daniel Scally <djrscally@gmail.com> wrote:
+>
+> Hello all
+>
+> This series adds support to the ipu3-cio2 driver for fwnode connections
+> between cio2 and sensors to be defined via software_nodes. The final patch
+> in the series deals wholly with those changes - the preceding patches are
+> either supporting changes to accommodate that or incidental fixes along
+> the way:
+>
+> 1/9 adds a function to drivers/base/swnode.c unwinding arrays of software
+> nodes in reverse order
+>
+> 2/9 uses that function in lib/test_printf.c
+>
+> 3/9 fixes what seems to me to be a bug in the existing swnode.c code in
+> that software_node_get_next_child() does not increase the refcount of the
+> returned node (in contrast to, for example, of_get_next_child_node() which
+> does increase the count)
+>
+> 4/9 adds the fwnode_graph*() family of functions to the software_node
+> implementation
+>
+> 5/9 adds a T: entry to MAINTAINERS for the ipu3-cio2 driver
+>
+> 6/9 renames the ipu3-cio2.c file to ipu3-cio2-main.c and fixes Makefile
+> to accommodate that change
+>
+> 7/9 alters the ipu3-cio2 driver to check if the pci_dev's fwnode is a
+> software_node and pass flags to fwnode_graph_get_endpoint_by_id() if so
+>
+> 8/9 alters match_fwnode() in v4l2-async.c to additionally try to match on
+> a fwnode_handle's secondary if the primary doesn't match
+>
+> 9/9 alters the ipu3-cio2 driver to do the actual building of software_node
+> connections between the sensor devices and the cio2 device.
+>
+> This is still not ready for integration - hence the RFC label - as there
+> is ongoing work to extend the ipu3-cio2 driver further to parse ACPI
+> to discover resources such as regulators and GPIOs that are defined there
+> in unusual ways and map them to the sensor devices so that their drivers
+> can consume them transparently through the usual frameworks. Given this
+> has changed quite extensively from v2 though, I wanted to submit it for
+> feedback at this point in case it needs further large scale change.
 
--- 
-Thanks,
+I would appreciate it if you posted the next version of this series
+(all patches) to linux-acpi@vger.kernel.org for easier review.
 
-David / dhildenb
-
+Thanks!
