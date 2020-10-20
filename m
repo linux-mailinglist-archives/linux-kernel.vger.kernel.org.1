@@ -2,115 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29923294032
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505D029403D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437130AbgJTQGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 12:06:48 -0400
-Received: from vern.gendns.com ([98.142.107.122]:39302 "EHLO vern.gendns.com"
+        id S1730362AbgJTQLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 12:11:34 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:22325 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729540AbgJTQGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 12:06:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=974Pru8SQsTsWRztSFlkqkBRxzWVu5U32q4PL8EdyE0=; b=CFdn00D2yLVnQnBZSvE++F6RB2
-        hwgF2+hqz/F0vUmiYOqU0jaKg+NbntGRoJ8NITvlS2fLmSPmeVAdNLSU0FbE4o1eKZ/8N55HGaQwL
-        MipSGLiP92IMF/VwWfBSYkI5FD7RC3P/Zw5MoOHUGmhUnywHTnXKtvRNMYj5O9WM+fERe5dZUyoVG
-        U3WhL09Ez004/nBbSvA6nx14dJwQTz8yS1n+eEN6+7S/CMsxhAUZVLXh6FXBX8PSZkDbDXxAIaEvN
-        oEeStdGS5IfKzsKbh0LQzAnVgq5EM4wItLfeBOEEH3+4YYYd1IaGgKvb1iHXDLOl9iF2B2VGmFxN1
-        MI2z9Gqw==;
-Received: from [2600:1700:4830:165f::19e] (port=58074)
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1kUu9s-0005nK-CI; Tue, 20 Oct 2020 12:06:44 -0400
-Subject: Re: [PATCH v5 3/5] counter: Add character device interface
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
-References: <cover.1601170670.git.vilhelm.gray@gmail.com>
- <00be1fccc672c5207f3b04fe4cc09c29e22641f4.1601170670.git.vilhelm.gray@gmail.com>
- <cc1f7e4d-18d1-bc28-8ce3-e3edcd91bcab@lechnology.com>
- <20201018165822.GE231549@shinobu>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <f2bac8b2-108d-fa4c-cb63-8ff85ce04d1f@lechnology.com>
-Date:   Tue, 20 Oct 2020 11:06:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2394457AbgJTQKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 12:10:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603210223; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=XvlHKEFFXv5PkxuWl23fXuNfCB22Cwbykpq1imIZEOU=;
+ b=dUjxF3lBXfz/xs2mvxOntTP3R9h2aj1Gu9zVjXpMlbT3fm4hY+Zal0GHYHnSbo+yqKImbdrG
+ SCcMqq3JuJMdZF8Nl9KaalHZWXrNsGYqqJRFURLIPIJoz75ubP3eGoaeD+RWk1ycjj2szw9k
+ NAibhUj2rFzgvdfnldzMI2ZSDso=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f8f0be5ad37af35ec54954f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Oct 2020 16:10:13
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3D0A8C43387; Tue, 20 Oct 2020 16:10:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 663ACC433CB;
+        Tue, 20 Oct 2020 16:10:12 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20201018165822.GE231549@shinobu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 20 Oct 2020 21:40:12 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     mike.leach@linaro.org, coresight@lists.linaro.org,
+        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        denik@google.com, leo.yan@linaro.org, peterz@infradead.org
+Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+In-Reply-To: <5ad6acdc69c1c2e1e17f5c701a09b7e1@codeaurora.org>
+References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
+ <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
+ <707b7860-0daa-d3e3-1f0f-17e1b05feae2@arm.com>
+ <5ad6acdc69c1c2e1e17f5c701a09b7e1@codeaurora.org>
+Message-ID: <8affc09d4045812e2f5a065695b375de@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/18/20 11:58 AM, William Breathitt Gray wrote:
-> On Wed, Oct 14, 2020 at 05:40:44PM -0500, David Lechner wrote:
->> On 9/26/20 9:18 PM, William Breathitt Gray wrote:
->>> +static ssize_t counter_chrdev_read(struct file *filp, char __user *buf,
->>> +				   size_t len, loff_t *f_ps)
->>> +{
->>> +	struct counter_device *const counter = filp->private_data;
->>> +	int err;
->>> +	unsigned long flags;
->>> +	unsigned int copied;
->>> +
->>> +	if (len < sizeof(struct counter_event))
->>> +		return -EINVAL;
->>> +
->>> +	do {
->>> +		if (kfifo_is_empty(&counter->events)) {
->>> +			if (filp->f_flags & O_NONBLOCK)
->>> +				return -EAGAIN;
->>> +
->>> +			err = wait_event_interruptible(counter->events_wait,
->>> +					!kfifo_is_empty(&counter->events));
->>> +			if (err)
->>> +				return err;
->>> +		}
->>> +
->>> +		raw_spin_lock_irqsave(&counter->events_lock, flags);
->>> +		err = kfifo_to_user(&counter->events, buf, len, &copied);
->>> +		raw_spin_unlock_irqrestore(&counter->events_lock, flags);
->>> +		if (err)
->>> +			return err;
->>> +	} while (!copied);
->>> +
->>> +	return copied;
->>> +}
->>
->> All other uses of kfifo_to_user() I saw use a mutex instead of spin
->> lock. I don't see a reason for disabling interrupts here.
+On 2020-10-14 21:29, Sai Prakash Ranjan wrote:
+> On 2020-10-14 18:46, Suzuki K Poulose wrote:
+>> On 10/14/2020 10:36 AM, Sai Prakash Ranjan wrote:
+>>> On 2020-10-13 22:05, Suzuki K Poulose wrote:
+>>>> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
+>>>>> There was a report of NULL pointer dereference in ETF enable
+>>>>> path for perf CS mode with PID monitoring. It is almost 100%
+>>>>> reproducible when the process to monitor is something very
+>>>>> active such as chrome and with ETF as the sink and not ETR.
+>>>>> Currently in a bid to find the pid, the owner is dereferenced
+>>>>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
+>>>>> owner being NULL, we get a NULL pointer dereference.
+>>>>> 
+>>>>> Looking at the ETR and other places in the kernel, ETF and the
+>>>>> ETB are the only places trying to dereference the task(owner)
+>>>>> in tmc_enable_etf_sink_perf() which is also called from the
+>>>>> sched_in path as in the call trace. Owner(task) is NULL even
+>>>>> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
+>>>>> cache the PID in alloc_buffer() callback and it is done as part
+>>>>> of etm_setup_aux() when allocating buffer for ETR sink, we never
+>>>>> dereference this NULL pointer and we are safe. So lets do the
+>>>> 
+>>>> The patch is necessary to fix some of the issues. But I feel it is
+>>>> not complete. Why is it safe earlier and not later ? I believe we 
+>>>> are
+>>>> simply reducing the chances of hitting the issue, by doing this 
+>>>> earlier than
+>>>> later. I would say we better fix all instances to make sure that the
+>>>> event->owner is valid. (e.g, I can see that the for kernel events
+>>>> event->owner == -1 ?)
+>>>> 
+>>>> struct task_struct *tsk = READ_ONCE(event->owner);
+>>>> 
+>>>> if (!tsk || is_kernel_event(event))
+>>>>    /* skip ? */
+>>>> 
+>>> 
+>>> Looking at it some more, is_kernel_event() is not exposed
+>>> outside events core and probably for good reason. Why do
+>>> we need to check for this and not just tsk?
+>> 
+>> Because the event->owner could be :
+>> 
+>>  = NULL
+>>  = -1UL  // kernel event
+>>  = valid.
+>> 
 > 
-> The Counter character device interface is special in this case because
-> counter->events could be accessed from an interrupt context. This is
-> possible if counter_push_event() is called for an interrupt (as is the
-> case for the 104_quad_8 driver). In this case, we can't use mutex
-> because we can't sleep in an interrupt context, so our only option is to
-> use spin lock.
+> Yes I understood that part, but here we were trying to
+> fix the NULL pointer dereference right and hence the
+> question as to why we need to check for kernel events?
+> I am no expert in perf but I don't see anywhere in the
+> kernel checking for is_kernel_event(), so I am a bit
+> skeptical if exporting that is actually right or not.
 > 
 
+I have stress tested with the original patch many times
+now, i.e., without a check for event->owner and is_kernel_event()
+and didn't observe any crash. Plus on ETR where this was already
+done, no crashes were reported till date and with ETF, the issue
+was quickly reproducible, so I am fairly confident that this
+doesn't just delay the original issue but actually fixes
+it. I will run an overnight test again to confirm this.
 
-The way I understand it, locking is only needed for concurrent readers
-and locking between reader and writer is not needed.
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
