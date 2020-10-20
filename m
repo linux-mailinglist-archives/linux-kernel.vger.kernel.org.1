@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55586293B76
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CBF293B7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405644AbgJTMZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:25:17 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46658 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394323AbgJTMZQ (ORCPT
+        id S2405874AbgJTMZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394317AbgJTMZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:25:16 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id DD2F21C0B87; Tue, 20 Oct 2020 14:25:14 +0200 (CEST)
-Date:   Tue, 20 Oct 2020 14:25:14 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        linux-leds@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v9 1/3] tty: rename tty_kopen() and add new function
- tty_kopen_shared()
-Message-ID: <20201020122514.GB19856@duo.ucw.cz>
-References: <20201018204022.910815-1-u.kleine-koenig@pengutronix.de>
- <20201018204022.910815-2-u.kleine-koenig@pengutronix.de>
+        Tue, 20 Oct 2020 08:25:34 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B344C061755;
+        Tue, 20 Oct 2020 05:25:34 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id h20so1761911lji.9;
+        Tue, 20 Oct 2020 05:25:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ML5uAkCXg7BuNZzIK/5oJSDtl2w2jDqYSwb3Wy6qgRo=;
+        b=EN2dgWsaEbWsTqxnHNLP/4yVmb9Xsku29Dn9P97JnSm57jrFWVcGIf1tVPjH3Vop1X
+         WYBX779xvz6VaDNpWQufeY5mJxTCqpyGpHftTBTfK3wl+DbdMEFeM+V082QwXakiVoJz
+         0AUcjpEw5FuBmPj+GyWNtzE2DWGm9u0DEO56o+I7EDCd5gzaIv69fQhrMuJv8qoM93nM
+         ZXuXIbshfnD2J9Pk5uQL8GgRGonjdNjTQhjihahycKyR4KZKbz4qVGuEtqx6thztOvLw
+         sQgQXowiD0bClO6P1LXXoSYG7PzbyCjRa7JHmpJ/Us3I9XGKF5Ani/Cs9ZoWU4s4pwds
+         AqMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ML5uAkCXg7BuNZzIK/5oJSDtl2w2jDqYSwb3Wy6qgRo=;
+        b=Beb6CmszOZWkOR58UB0q49emfykjJJPRARFEx/iDQUhjalKiZ1e4O7q36UBcX3oWcy
+         HhLmCdYjzCesjW4JeZlKSjk3snF11M1FS2g7yusjhHbzcdpVfr5fLHx7n/P94Bny0le0
+         /GwQAq6AxAfdEI2QmpVG7BbW1Dd+f/k3Zf0TnrpO0+1ca2XPcPf5zDMFdSRGk0MZ6e8C
+         sN91IZJlAtgUUkgX342pAI7Anp4dFwNtzHdzuLkRM2zJc9hkm8uycNWMeURTIro1zqfk
+         FndPi85zdMZHwiJKI/9jABaKOwMnbxhJUMQyG5MEH+UUDtX1kPGt/otEn/Iy6sHGIdER
+         4sVw==
+X-Gm-Message-State: AOAM5305r4OwdZcK31ZNKjpXX07QSWblEG3PzfK6V0Wfjsdl/gQCqYu4
+        y/LEDkaE5Lfan9MJFM+m25SyPi89RXZk05tcgw==
+X-Google-Smtp-Source: ABdhPJxCfBQ6bdmOhdx4GH2VRVDFLUiGSOzY4fw/kjcUoUR25aNPPq1QlCXg34SenUnbHVFHi9gDJq8f1/QJHbCqek8=
+X-Received: by 2002:a2e:b4d0:: with SMTP id r16mr1068673ljm.470.1603196733039;
+ Tue, 20 Oct 2020 05:25:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ADZbWkCsHQ7r3kzd"
-Content-Disposition: inline
-In-Reply-To: <20201018204022.910815-2-u.kleine-koenig@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201015082119.68287-1-rejithomas@juniper.net>
+ <20201018160147.6b3c940a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAA8Zg7Gcua1=6CgSkJ-z8uKJneDjedB4z6zm2a+DcYt-_YcmSQ@mail.gmail.com> <20201019091702.5b26870c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201019091702.5b26870c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Reji Thomas <rejithomas.d@gmail.com>
+Date:   Tue, 20 Oct 2020 17:55:20 +0530
+Message-ID: <CAA8Zg7FQL6Ong+70qpbh23ooORJ0C5_mZGCP_Tjw2zYHQBKxAw@mail.gmail.com>
+Subject: Re: [PATCH v2] IPv6: sr: Fix End.X nexthop to use oif.
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Reji Thomas <rejithomas@juniper.net>, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Mathieu Xhonneux <m.xhonneux@gmail.com>,
+        David Lebrun <david.lebrun@uclouvain.be>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ADZbWkCsHQ7r3kzd
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi1
-
-> Introduce a new function tty_kopen_shared() that yields a struct
-> tty_struct. The semantic difference to tty_kopen() is that the tty is
-> expected to be used already. So rename tty_kopen() to
-> tty_kopen_exclusive() for clearness, adapt the single user and put the
-> common code in a new static helper function.
->=20
-> tty_kopen_shared is to be used to implement an LED trigger for tty
-> devices in one of the next patches.
->=20
-> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> ---
->  drivers/accessibility/speakup/spk_ttyio.c |  2 +-
->  drivers/tty/tty_io.c                      | 56 +++++++++++++++--------
->  include/linux/tty.h                       |  5 +-
->  3 files changed, 42 insertions(+), 21 deletions(-)
-
-> -struct tty_struct *tty_kopen(dev_t device)
-> +static struct tty_struct *tty_kopen(dev_t device, int shared)
->  {
-
-bool? Otherwise I see nothing obviously wrong here.
-
-But this is for Greg..
-
-Best regards,
-								Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---ADZbWkCsHQ7r3kzd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX47XKgAKCRAw5/Bqldv6
-8poUAJ47GGYkX0YR4cHDjohRyEs37ykMqACfeZ5CWvzwaW2K1qVEzjEWXbYwCZ8=
-=70vk
------END PGP SIGNATURE-----
-
---ADZbWkCsHQ7r3kzd--
+On Mon, Oct 19, 2020 at 9:47 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> If we can save the device lookup and still be semantically correct,
+> that's probably better.
+I am afraid we need to do a device lookup if I am looking up the
+neighbor. neigh_lookup
+apis expect dev to be passed. If I go through the current lookup ie
+ip6_pol_route() I can
+drop the dev lookup at risk of returning a non neighbor route as it
+exists today.
