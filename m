@@ -2,122 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA292938C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F7B2938CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405891AbgJTKCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:02:54 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:40686 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405866AbgJTKCt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:02:49 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09K9ltBt010505;
-        Tue, 20 Oct 2020 12:02:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=2owaOvNvhateHf+UNIaUTPpoUGANl3taLAS8bX1HmYA=;
- b=y5/K+sqDf2jvCUc0JDFJK1D3QpFkwEDizFsKRSsmjHAcSvjVKZL1RoF4hRHSh1RZqBBp
- iqaMJrmTfiTpdbQ7N7N2/AE2KrdyNRV13Mype0VF7sYLNoqagj6rjj5N7aNR1Ya9EiNK
- Otk9IwpEC+NeVD0KySgTmQqaAW/1oCGCf5RLCK8TuSklR+GAz44m6cQZqSuI1Net9Oji
- NNxy1T7NIbCxC7xw/Il5MHmYL3NkNSi71jYMjtSYmCqA7PTLt9msElxUw+rWKYk5g1yW
- yTF9ViEe2t4zzd3TH0dMASWJJf53J3/19LmOMFt00Uzxf6VqR6Q3ncivYzqZWhJgxcOC Rg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 347pcwsuyh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Oct 2020 12:02:37 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 35EE410002A;
-        Tue, 20 Oct 2020 12:02:37 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag1node1.st.com [10.75.127.1])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1E2692C41F8;
-        Tue, 20 Oct 2020 12:02:37 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG1NODE1.st.com (10.75.127.1)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct 2020 12:02:36
- +0200
-From:   Hugues Fruchet <hugues.fruchet@st.com>
-To:     Alexandre Torgue <alexandre.torgue@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Hugues Fruchet <hugues.fruchet@st.com>,
-        Alain Volmat <alain.volmat@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Subject: [PATCH v3 2/2] media: dt-bindings: media: st,stm32-dcmi: Add support of BT656
-Date:   Tue, 20 Oct 2020 12:02:32 +0200
-Message-ID: <1603188152-22783-3-git-send-email-hugues.fruchet@st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603188152-22783-1-git-send-email-hugues.fruchet@st.com>
-References: <1603188152-22783-1-git-send-email-hugues.fruchet@st.com>
+        id S2405883AbgJTKEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 06:04:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:49004 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727589AbgJTKEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 06:04:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 111A3101E;
+        Tue, 20 Oct 2020 03:04:02 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.53.249])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A730C3F66E;
+        Tue, 20 Oct 2020 03:03:59 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 11:03:52 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Mark Brown <broonie@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] arm64: Implement reliable stack trace
+Message-ID: <20201020100352.GA48360@C02TD0UTHF1T.local>
+References: <20201012172605.10715-1-broonie@kernel.org>
+ <alpine.LSU.2.21.2010151533490.14094@pobox.suse.cz>
+ <20201015141612.GC50416@C02TD0UTHF1T.local>
+ <20201015154951.GD4390@sirena.org.uk>
+ <20201015212931.mh4a5jt7pxqlzxsg@treble>
+ <20201016111431.GB84361@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG1NODE1.st.com
- (10.75.127.1)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-20_04:2020-10-20,2020-10-20 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016111431.GB84361@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support of BT656 parallel bus mode in DCMI.
-This mode is enabled when hsync-active & vsync-active
-fields are not specified.
+On Fri, Oct 16, 2020 at 12:14:31PM +0100, Mark Rutland wrote:
+> Mark B's reply dropped this, but the next paragraph covered that:
+> 
+> | I was planning to send a mail once I've finished writing a test, but
+> | IIUC there are some windows where ftrace/kretprobes
+> | detection/repainting may not work, e.g. if preempted after
+> | ftrace_return_to_handler() decrements curr_ret_stack, but before the
+> | arch trampoline asm restores the original return addr. So we might
+> | need something like an in_return_trampoline() to detect and report
+> | that reliably.
+> 
+> ... so e.g. for a callchain A->B->C, where C is instrumented there are
+> windows where B might be missing from the trace, but the trace is
+> reported as reliable.
 
-Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
----
- .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 30 ++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+I'd missed a couple of details, and I think I see how each existing
+architecture prevents this case now.
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-index 3fe778c..1ee521a 100644
---- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-+++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-@@ -44,6 +44,36 @@ properties:
-       bindings defined in
-       Documentation/devicetree/bindings/media/video-interfaces.txt.
- 
-+    properties:
-+      endpoint:
-+        type: object
-+
-+        properties:
-+          bus-width: true
-+
-+          hsync-active:
-+            description:
-+              If both HSYNC and VSYNC polarities are not specified, BT656
-+              embedded synchronization is selected.
-+            default: 0
-+
-+          vsync-active:
-+            description:
-+              If both HSYNC and VSYNC polarities are not specified, BT656
-+              embedded synchronization is selected.
-+            default: 0
-+
-+          pclk-sample: true
-+
-+          remote-endpoint: true
-+
-+        required:
-+          - remote-endpoint
-+
-+        additionalProperties: false
-+
-+    additionalProperties: false
-+
- required:
-   - compatible
-   - reg
--- 
-2.7.4
+Josh, just to confirm the x86 case, am I right in thinking that the ORC
+unwinder will refuse to unwind from the return_to_handler and
+kretprobe_trampoline asm? IIRC objtool shouldn't build unwind info for
+those as return_to_handler is marked with SYM_CODE_{START,END}() and
+kretprobe_trampoline is marked with STACK_FRAME_NON_STANDARD().
 
+Both powerpc and s390 refuse to reliably unwind through exceptions, so
+they can rely on function call boundaries to keep the callchain in a
+sane state.
+
+Thanks,
+Mark.
