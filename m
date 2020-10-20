@@ -2,201 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C37293449
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 07:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E6D29344D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 07:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391646AbgJTFcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 01:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391634AbgJTFcl (ORCPT
+        id S2391658AbgJTFeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 01:34:31 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16870 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730152AbgJTFeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 01:32:41 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E920C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 22:32:41 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 140so594830qko.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 22:32:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tRhg7Fh12SyPVOFGorlDmCBp88Lp1yUZv3xhgXyFBzI=;
-        b=AUOM4Zio3a90+wklb77MbeVZ7Lll43wASaYbgxrkV/UhuFQiOVmD1b2j5GyrJ6Ueee
-         uaesKLavD6mOOe9kQ/687n2ccD9LfB989X0yPAu77nM4bB9K3PcRLBy8dWDtU+S86ch4
-         exiebVp2XiEXG3KMFdPBCCp3YvXxSB7TdPPOo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tRhg7Fh12SyPVOFGorlDmCBp88Lp1yUZv3xhgXyFBzI=;
-        b=HRxvknZk425Vx1xKXwUgC1dvYa/NMX2iZyqErMA3EOJlxdvE4ylOuRYHvbuFRSIvor
-         v6OyCKZuCollteSVzD/1/lmB2hmUcsg8O3JCOP1JLRd+NAqxdE4YwI+/9nLnLb1uQdJv
-         V2nCrGJ0q4gQdMMvrMYQw+cNCs2stFz76C3TrL8Odgye/95uGOWP958b3QYV2FpaHQ8M
-         EFe7elJ1K91zZ/XTkl7fKlIk2qEN9tfGE0Tt/oAQa+eZejeYXjx5wbSIOOIL4M/M2B6E
-         mp4IGNDMI93fWn5/nY96SRUUiGy/amJuv1AjlpbeByAfCGxqYBPSdzLypyHQBErdlobd
-         7D3Q==
-X-Gm-Message-State: AOAM530UO5dTB26YojWprHx3t7GDIcdgvCh9NKugbDS5IaS0R2/WSRgk
-        ChCuN/7jYPZwjDhFBCHoyW5yng9fEa//6PYfYGo=
-X-Google-Smtp-Source: ABdhPJzYczjyTqPBcO5wcx6pKvhWIwF29gqVQ9pIRmq93o/d7ql9w2T41TNu7cJ4WAyvowwA2W0DcN1zLXYtHyF1XbE=
-X-Received: by 2002:a37:48cc:: with SMTP id v195mr1293930qka.66.1603171960110;
- Mon, 19 Oct 2020 22:32:40 -0700 (PDT)
+        Tue, 20 Oct 2020 01:34:31 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8e76da0004>; Mon, 19 Oct 2020 22:34:18 -0700
+Received: from [10.25.98.225] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
+ 2020 05:34:19 +0000
+Subject: Re: [PATCH v4 08/15] Documentation: of: Convert graph bindings to
+ json-schema
+To:     Rob Herring <robh@kernel.org>
+CC:     <broonie@kernel.org>, <lgirdwood@gmail.com>,
+        <kuninori.morimoto.gx@renesas.com>,
+        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
+        <tiwai@suse.com>, <p.zabel@pengutronix.de>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
+        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
+        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
+        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
+        <nicoleotsuka@gmail.com>
+References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
+ <1602859382-19505-9-git-send-email-spujar@nvidia.com>
+ <20201019215628.GA3650804@bogus>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <e7d87e41-c92f-9a22-f7ca-a80e080e7bf1@nvidia.com>
+Date:   Tue, 20 Oct 2020 11:04:16 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201001042927.2147800-1-andrew@aj.id.au> <CACPK8XcFhnnY8Q_DYRGo-AuRMxnVzUfCyjxRyAuFO=RSGyK=Sg@mail.gmail.com>
-In-Reply-To: <CACPK8XcFhnnY8Q_DYRGo-AuRMxnVzUfCyjxRyAuFO=RSGyK=Sg@mail.gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 20 Oct 2020 05:32:26 +0000
-Message-ID: <CACPK8XeJzHOH-ErWB8ZZS1rMVcPJx0exjnB-va-vhuvGvwFWCQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: kprobes: Avoid fortify_panic() when copying
- optprobe template
-To:     Andrew Jeffery <andrew@aj.id.au>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        mhiramat@kernel.org, labbott@redhat.com,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luka Oreskovic <luka.oreskovic@sartura.hr>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201019215628.GA3650804@bogus>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-GB
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603172058; bh=71Qu84vQi0DIkoSmwEIX9OVoUxeXBtrR1oA2TDmZDGc=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=Ke38N5q/2H7vPjiE/VhE9zx9IZ2OBv9Mg9b6NgMOlpsFAKukiMRkkG3j1CV4ZZB+D
+         4uQ7PVFpA3F9P2jhQxaXm1FIRd4dPhaQjMP1Ki0ykpdD0s2HiSWBlDg3LZJp6SKjwx
+         OvcjkQM2LDMFZzE9kE51qcbXzHbi3rkK+OFoMuSkz5966RY196hlOn609UBDPPnFE/
+         TWBEutgjaygeghEraEKKtqJwvFoO2DBHzbcFj6bG2H0y7BIggoW/o/Clxvia80Vw3S
+         asAkjWZf+Gu7aenrrkz44nwvnKKc0xPf2DIRxFw9DBU3T2XMT3RLOq0vkzuE8Ndb6G
+         S9iErsqUnvIIg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Oct 2020 at 05:20, Joel Stanley <joel@jms.id.au> wrote:
+
+>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+>> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+>> ---
+>>   Documentation/devicetree/bindings/graph.txt  | 128 -------------------=
+-
+>>   Documentation/devicetree/bindings/graph.yaml | 170 +++++++++++++++++++=
+++++++++
+>>   2 files changed, 170 insertions(+), 128 deletions(-)
+>>   delete mode 100644 Documentation/devicetree/bindings/graph.txt
+>>   create mode 100644 Documentation/devicetree/bindings/graph.yaml
+> I'd like to move this to the dtschema repository instead.
+
+Do you mean I need to separately submit this patch for dtschema repo?
+
+...
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/graph.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Common bindings for device graphs
+>> +
+>> +description: |
+>> +  The hierarchical organisation of the device tree is well suited to de=
+scribe
+>> +  control flow to devices, but there can be more complex connections be=
+tween
+>> +  devices that work together to form a logical compound device, followi=
+ng an
+>> +  arbitrarily complex graph.
+>> +  There already is a simple directed graph between devices tree nodes u=
+sing
+>> +  phandle properties pointing to other nodes to describe connections th=
+at
+>> +  can not be inferred from device tree parent-child relationships. The =
+device
+>> +  tree graph bindings described herein abstract more complex devices th=
+at can
+>> +  have multiple specifiable ports, each of which can be linked to one o=
+r more
+>> +  ports of other devices.
+>> +
+>> +  These common bindings do not contain any information about the direct=
+ion or
+>> +  type of the connections, they just map their existence. Specific prop=
+erties
+>> +  may be described by specialized bindings depending on the type of con=
+nection.
+>> +
+>> +  To see how this binding applies to video pipelines, for example, see
+>> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+>> +  Here the ports describe data interfaces, and the links between them a=
+re
+>> +  the connecting data buses. A single port with multiple connections ca=
+n
+>> +  correspond to multiple devices being connected to the same physical b=
+us.
+>> +
+>> +maintainers:
+>> +  - Philipp Zabel <p.zabel@pengutronix.de>
+>> +
+>> +definitions:
+>> +
+>> +  port:
+>> +    type: object
+>> +    description: |
+>> +      If there is more than one 'port' or more than one 'endpoint' node
+>> +      or 'reg' property present in the port and/or endpoint nodes then
+>> +      '#address-cells' and '#size-cells' properties are required in rel=
+evant
+>> +      parent node.
+> reg property.
+
+done
+
 >
-> On Thu, 1 Oct 2020 at 04:30, Andrew Jeffery <andrew@aj.id.au> wrote:
-> >
-> > Setting both CONFIG_KPROBES=y and CONFIG_FORTIFY_SOURCE=y on ARM leads
-> > to a panic in memcpy() when injecting a kprobe despite the fixes found
-> > in commit e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with
-> > FORTIFY_SOURCE") and commit 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes:
-> > optimized kprobes illegal instruction").
-> >
-> > arch/arm/include/asm/kprobes.h effectively declares
-> > the target type of the optprobe_template_entry assembly label as a u32
-> > which leads memcpy()'s __builtin_object_size() call to determine that
-> > the pointed-to object is of size four. However, the symbol is used as a handle
-> > for the optimised probe assembly template that is at least 96 bytes in size.
-> > The symbol's use despite its type blows up the memcpy() in ARM's
-> > arch_prepare_optimized_kprobe() with a false-positive fortify_panic() when it
-> > should instead copy the optimised probe template into place:
-> >
-> > ```
-> > $ sudo perf probe -a aspeed_g6_pinctrl_probe
-> > [  158.457252] detected buffer overflow in memcpy
-> >
-> > Fixes: e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with FORTIFY_SOURCE")
-> > Fixes: 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes: optimized kprobes illegal instruction")
-> > Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
-> > Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-> > Suggested-by: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+>> +
+>> +    patternProperties:
+>> +      "^endpoint(@[0-9a-f]+)?$":
+>> +        type: object
+>> +        properties:
+> reg?
+
+done
+
+>> +          remote-endpoint:
+>> +            description: |
+>> +              phandle to an 'endpoint' subnode of a remote device node.
+>> +            $ref: /schemas/types.yaml#/definitions/phandle
+>> +
+>> +  ports:
+>> +    type: object
+>> +    patternProperties:
+>> +      "^port(@[0-9a-f]+)?$":
+>> +        $ref: "#/definitions/port"
+> No reason for this to be under 'definitions'. Just move down.
+
+Would definitions be needed if some schemas want to refer the base graph=20
+schema? Or is it like they can just directly include the base schema and=20
+definitions are not really required?
+
+But what if they want to extend few properties. For example:
+
+graph.yaml
+----------
+endpoint {
+ =C2=A0=C2=A0=C2=A0 remote-endpoint =3D <>;
+};
+
+*audio-graph-card.yaml
+----------------------
+endpoint {
+ =C2=A0=C2=A0=C2=A0 remote-endpoint =3D <>;
+
+ =C2=A0=C2=A0=C2=A0 property-x;
+ =C2=A0=C2=A0=C2=A0 node-x {
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+ =C2=A0=C2=A0=C2=A0 };
+};
+
 >
-> Tested-by: Joel Stanley <joel@jms.id.au>
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
->
-> Thanks Andrew.
->
-> > ---
-> > v1 was sent some time back, in May:
-> >
-> > https://lore.kernel.org/linux-arm-kernel/20200517153959.293224-1-andrew@aj.id.au/
+>> +
+>> +properties:
+>> +  ports:
+>> +    $ref: "#/definitions/ports"
+>> +
+>> +patternProperties:
+>> +  "^port(@[0-9a-f]+)?$":
+>> +    $ref: "#/definitions/port"
+>> +
+>> +additionalProperties: false
+> This needs to be true here. But you need this within 'ports' and 'port'.
+> (I think... I think we only have extra properties within endpoint
+> nodes.)
 
-Russell, are you picking this fix up?
-
-Would you prefer it to go through someone else's tree?
-
-Cheers,
-
-Joel
-
-> >
-> > I've taken the patch that Kees' suggested in the replies and tested it.
-> > ---
-> >  arch/arm/include/asm/kprobes.h    | 22 +++++++++++-----------
-> >  arch/arm/probes/kprobes/opt-arm.c | 18 +++++++++---------
-> >  2 files changed, 20 insertions(+), 20 deletions(-)
-> >
-> > diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
-> > index 213607a1f45c..e26a278d301a 100644
-> > --- a/arch/arm/include/asm/kprobes.h
-> > +++ b/arch/arm/include/asm/kprobes.h
-> > @@ -44,20 +44,20 @@ int kprobe_exceptions_notify(struct notifier_block *self,
-> >                              unsigned long val, void *data);
-> >
-> >  /* optinsn template addresses */
-> > -extern __visible kprobe_opcode_t optprobe_template_entry;
-> > -extern __visible kprobe_opcode_t optprobe_template_val;
-> > -extern __visible kprobe_opcode_t optprobe_template_call;
-> > -extern __visible kprobe_opcode_t optprobe_template_end;
-> > -extern __visible kprobe_opcode_t optprobe_template_sub_sp;
-> > -extern __visible kprobe_opcode_t optprobe_template_add_sp;
-> > -extern __visible kprobe_opcode_t optprobe_template_restore_begin;
-> > -extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn;
-> > -extern __visible kprobe_opcode_t optprobe_template_restore_end;
-> > +extern __visible kprobe_opcode_t optprobe_template_entry[];
-> > +extern __visible kprobe_opcode_t optprobe_template_val[];
-> > +extern __visible kprobe_opcode_t optprobe_template_call[];
-> > +extern __visible kprobe_opcode_t optprobe_template_end[];
-> > +extern __visible kprobe_opcode_t optprobe_template_sub_sp[];
-> > +extern __visible kprobe_opcode_t optprobe_template_add_sp[];
-> > +extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
-> > +extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
-> > +extern __visible kprobe_opcode_t optprobe_template_restore_end[];
-> >
-> >  #define MAX_OPTIMIZED_LENGTH   4
-> >  #define MAX_OPTINSN_SIZE                               \
-> > -       ((unsigned long)&optprobe_template_end -        \
-> > -        (unsigned long)&optprobe_template_entry)
-> > +       ((unsigned long)optprobe_template_end - \
-> > +        (unsigned long)optprobe_template_entry)
-> >  #define RELATIVEJUMP_SIZE      4
-> >
-> >  struct arch_optimized_insn {
-> > diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
-> > index 7a449df0b359..c78180172120 100644
-> > --- a/arch/arm/probes/kprobes/opt-arm.c
-> > +++ b/arch/arm/probes/kprobes/opt-arm.c
-> > @@ -85,21 +85,21 @@ asm (
-> >                         "optprobe_template_end:\n");
-> >
-> >  #define TMPL_VAL_IDX \
-> > -       ((unsigned long *)&optprobe_template_val - (unsigned long *)&optprobe_template_entry)
-> > +       ((unsigned long *)optprobe_template_val - (unsigned long *)optprobe_template_entry)
-> >  #define TMPL_CALL_IDX \
-> > -       ((unsigned long *)&optprobe_template_call - (unsigned long *)&optprobe_template_entry)
-> > +       ((unsigned long *)optprobe_template_call - (unsigned long *)optprobe_template_entry)
-> >  #define TMPL_END_IDX \
-> > -       ((unsigned long *)&optprobe_template_end - (unsigned long *)&optprobe_template_entry)
-> > +       ((unsigned long *)optprobe_template_end - (unsigned long *)optprobe_template_entry)
-> >  #define TMPL_ADD_SP \
-> > -       ((unsigned long *)&optprobe_template_add_sp - (unsigned long *)&optprobe_template_entry)
-> > +       ((unsigned long *)optprobe_template_add_sp - (unsigned long *)optprobe_template_entry)
-> >  #define TMPL_SUB_SP \
-> > -       ((unsigned long *)&optprobe_template_sub_sp - (unsigned long *)&optprobe_template_entry)
-> > +       ((unsigned long *)optprobe_template_sub_sp - (unsigned long *)optprobe_template_entry)
-> >  #define TMPL_RESTORE_BEGIN \
-> > -       ((unsigned long *)&optprobe_template_restore_begin - (unsigned long *)&optprobe_template_entry)
-> > +       ((unsigned long *)optprobe_template_restore_begin - (unsigned long *)optprobe_template_entry)
-> >  #define TMPL_RESTORE_ORIGN_INSN \
-> > -       ((unsigned long *)&optprobe_template_restore_orig_insn - (unsigned long *)&optprobe_template_entry)
-> > +       ((unsigned long *)optprobe_template_restore_orig_insn - (unsigned long *)optprobe_template_entry)
-> >  #define TMPL_RESTORE_END \
-> > -       ((unsigned long *)&optprobe_template_restore_end - (unsigned long *)&optprobe_template_entry)
-> > +       ((unsigned long *)optprobe_template_restore_end - (unsigned long *)optprobe_template_entry)
-> >
-> >  /*
-> >   * ARM can always optimize an instruction when using ARM ISA, except
-> > @@ -234,7 +234,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *or
-> >         }
-> >
-> >         /* Copy arch-dep-instance from template. */
-> > -       memcpy(code, (unsigned long *)&optprobe_template_entry,
-> > +       memcpy(code, (unsigned long *)optprobe_template_entry,
-> >                         TMPL_END_IDX * sizeof(kprobe_opcode_t));
-> >
-> >         /* Adjust buffer according to instruction. */
-> > --
-> > 2.25.1
-> >
+I think currently audio-graph allows few properties at port/ports. I am=20
+not sure if Morimoto-san has plans to get rid of this.
