@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5D829365D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391AD293653
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733092AbgJTIFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 04:05:53 -0400
-Received: from pio-pvt-msa2.bahnhof.se ([79.136.2.41]:39914 "EHLO
-        pio-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733050AbgJTIFe (ORCPT
+        id S1732491AbgJTIAa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Oct 2020 04:00:30 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:42501 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727414AbgJTIA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:05:34 -0400
-X-Greylist: delayed 384 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Oct 2020 04:05:33 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 10CCE3F683;
-        Tue, 20 Oct 2020 09:59:02 +0200 (CEST)
-Authentication-Results: pio-pvt-msa2.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=flawful.org header.i=@flawful.org header.b=Zb2hyLbn;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.1
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NO_RELAYS=-0.001,
-        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
-Received: from pio-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xiSkbJdUV73x; Tue, 20 Oct 2020 09:59:01 +0200 (CEST)
-Received: by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 3CA853F583;
-        Tue, 20 Oct 2020 09:58:59 +0200 (CEST)
-Received: by flawful.org (Postfix, from userid 1001)
-        id F3569D0F; Tue, 20 Oct 2020 09:59:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flawful.org; s=mail;
-        t=1603180745; bh=1Z/yOBJ1mwXulVdv8ofe3B4igKsGHtOc+5x58n5IEvo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zb2hyLbn/gJvJFvkYr6UkWqQ9xK/ivXJw17cJS4jw6tdmFajLzLH1i3Ayo8jHXhXW
-         oavZOJ/PGWs2py9Q8yJ7l1TN+3VxU5JlFVPwhwrZwvRKrve3LdKxN/vmh4PYL8/a9p
-         2b1NbAquSoH7iwFMZDxfltVNnP4yXJ1Cby7AMPKA=
-Date:   Tue, 20 Oct 2020 09:59:04 +0200
-From:   Niklas Cassel <nks@flawful.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Nishanth Menon <nm@ti.com>, linux-pm@vger.kernel.org,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Kevin Hilman <khilman@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 1/4] power: avs: qcom-cpr: Move the driver to the qcom
- specific drivers
-Message-ID: <20201020075904.GA2575@flawful.org>
-References: <20201006160516.319830-1-ulf.hansson@linaro.org>
- <20201006160516.319830-2-ulf.hansson@linaro.org>
+        Tue, 20 Oct 2020 04:00:29 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-182-3UZfjS2sNXmKBFCHRrRCaw-1; Tue, 20 Oct 2020 09:00:26 +0100
+X-MC-Unique: 3UZfjS2sNXmKBFCHRrRCaw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 20 Oct 2020 09:00:19 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 20 Oct 2020 09:00:19 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>, kernel test robot <lkp@intel.com>,
+        "Ard Biesheuvel" <ardb@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: RE: lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes
+ is larger than 1024 bytes
+Thread-Topic: lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes
+ is larger than 1024 bytes
+Thread-Index: AQHWpi8k7bm61YvdGUSnOFfVI7UcramgIItA
+Date:   Tue, 20 Oct 2020 08:00:19 +0000
+Message-ID: <c5af8f26bcb3468eb777bb8a8c8258d6@AcuMS.aculab.com>
+References: <202010190356.fgwA7zzR-lkp@intel.com>
+ <80f9a6c79771167d119b2990910fe273c3901df0.camel@perches.com>
+In-Reply-To: <80f9a6c79771167d119b2990910fe273c3901df0.camel@perches.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201006160516.319830-2-ulf.hansson@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 06:05:13PM +0200, Ulf Hansson wrote:
-> The avs drivers are all SoC specific drivers that doesn't share any code.
-> Instead they are located in a directory, mostly to keep similar
-> functionality together. From a maintenance point of view, it makes better
-> sense to collect SoC specific drivers like these, into the SoC specific
-> directories.
+From: Joe Perches
+> Sent: 19 October 2020 16:47
+> On Mon, 2020-10-19 at 03:13 +0800, kernel test robot wrote:
+> > Hi Ard,
+> >
+> > First bad commit (maybe != root cause):
+> >
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   9d9af1007bc08971953ae915d88dc9bb21344b53
+> > commit: 5fb8ef25803ef33e2eb60b626435828b937bed75 crypto: chacha - move existing library code into
+> lib/crypto
+> > date:   11 months ago
+> > config: i386-randconfig-r023-20201019 (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> > reproduce (this is a W=1 build):
+> >         #
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5fb8ef25803ef33e2eb60b62
+> 6435828b937bed75
+> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >         git fetch --no-tags linus master
+> >         git checkout 5fb8ef25803ef33e2eb60b626435828b937bed75
+> >         # save the attached .config to linux build tree
+> >         make W=1 ARCH=i386
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All warnings (new ones prefixed by >>):
+> >
+> >    lib/crypto/chacha.c: In function 'chacha_permute':
+> > > > lib/crypto/chacha.c:65:1: warning: the frame size of 1604 bytes is larger than 1024 bytes [-
+> Wframe-larger-than=]
+> >       65 | }
+> >          | ^
+> >
+> > vim +65 lib/crypto/chacha.c
 > 
-> Therefore, let's move the qcom-cpr driver to the qcom directory.
-> 
-> Cc: Niklas Cassel <nks@flawful.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> ---
+> This seems to come from function tracing overhead.
 
-Acked-by: Niklas Cassel <nks@flawful.org>
+Are you sure?
+I've not got the x86 object, but the x86-64 version caches the 16 x[]
+values (from the parameter) in registers.
+The 32 bit cpu doesn't have enough registers, but gcc tends to
+compile assuming an infinite number.
+So it may have spilled lots of virtual registers to different
+stack locations - instead of writing the values to their 'target'
+address.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
