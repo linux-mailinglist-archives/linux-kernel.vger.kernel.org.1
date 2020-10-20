@@ -2,248 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D11F294102
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3124729410D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395113AbgJTRC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 13:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
+        id S2395129AbgJTRFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 13:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395103AbgJTRCZ (ORCPT
+        with ESMTP id S2395094AbgJTRFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 13:02:25 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645B3C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 10:02:25 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id s21so2899246oij.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 10:02:25 -0700 (PDT)
+        Tue, 20 Oct 2020 13:05:04 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9984AC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 10:05:03 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id lw21so3824458ejb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 10:05:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P4+C5p+llcwaESK7UDZfwOBx7DxHfZ9HboztqP1iS4g=;
-        b=lgMz8sdcu9sQoMGgIE+liuBWO+twfZy/QEazS/rCG3M8l/5Z7Pnh2eZLUsEcAjg7pi
-         /d1J5pYJhBXFThen+TqXCn/G7XFPZX6BohXhBND20NAeI2UfM68dJ73J8+AmkV2P+hTN
-         T5amaeHDUhBP1IY8syyaozxGAz7c22VGCvZaU=
+         :cc:content-transfer-encoding;
+        bh=C3MYOAyER7eRaYplTmQSfHj/vWn2iuqLFvr+uBlCcqo=;
+        b=V/PAKYc4GxLuXpfbfMJ0VbWKyR+7WMwU1gnH/2YMxkbSDus2F5e2kUtOPOxVoC8ZT8
+         9opgnVcA6VPuNqboTwrxIqtb5hjkW48s8OtJ/zJ8t+NRCaa5LQM9yC5ONYmtVU3Q6GUU
+         mUvklSgRgWxehghpVoRtCUSbLLAk/9e3gxvbiH5DVnaHE4OxUZyeQd2/i+x2d6gwMNM+
+         mh3ZvufUXbZyG9uA8NR096OFziC3Fpj3ssV+svvNfvLNiybSLx7RV7wcnOnwtbbnUtiI
+         4addjtvIv6hf+ooUbEpB6GD/qhE1nyN6d4TqRjxQp/zE4WZPCwAMncWphqcYGYhZDtuO
+         Nvyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P4+C5p+llcwaESK7UDZfwOBx7DxHfZ9HboztqP1iS4g=;
-        b=s1n8ldXH+kbMlzSKJOgTXjmQ4wUNN2bl092Tkl6jZvY84mMwOb0W+Js7Z2iJfGoMnz
-         71J62dFCgtwbdiQn+d5mNK8sPgqprZyN3jYoSocrSuROUQv5+TBpJ2SA1iUWa0AZCQv1
-         WuQuavLAkhE23Lq/e58fFd7/aeejFcLslqQfpbzNA6EZkkjE9PgcTfUv0mI81FGNQbIU
-         5QMmMWhCBSPI0o/XtJtb9FqDiy6oaWz8DawZC14ZHnswLBPPYXlTHIeHRPzB1lhYmntj
-         nEbKh8uZjOmhxJJWEZR714KFaDAlXUod53FWRxO7fbFwXd+S5+Xmh2CY0vQfcTAP3lJV
-         6Phw==
-X-Gm-Message-State: AOAM530PuriNwDELyvrepo+SKrTLwkjLSWkPzwWQPl5xqmbgPNqu8VhT
-        YpERZwzt69Hh01CHrJpabmadFHC4Hzw9Fs+jKLwRcQ==
-X-Google-Smtp-Source: ABdhPJziCirkuLc2wSExzSHGfg7J7PUVMZw/wNFmMnlb/m4Wq1PqAKS7o974V3wCQ/yVgCKVfDf1DWuPJoMBwnDl9Po=
-X-Received: by 2002:aca:cc01:: with SMTP id c1mr2523946oig.128.1603213344582;
- Tue, 20 Oct 2020 10:02:24 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=C3MYOAyER7eRaYplTmQSfHj/vWn2iuqLFvr+uBlCcqo=;
+        b=sIOrR8fxAjtcCkkX5eThNsUdmmhTc/4v/G9HhrUhbUohNgAAaXNO1sg9hfvl0V2KEC
+         iEzhpA2vLm/FS8cOIIOwZCX2H6qh94SNOOetDBFWnvf2p1nimh+dlDNVzYdEY8Yv/u7S
+         SKWyOvqZF/gJPKMYAKjdqKLrUYwUx6yhzPYAAjPsuHiWR/5FRRNCOaboH3tm8zW0iHGZ
+         2w9xA5DEdetsQH3HF5K1jmvwixJ2oiUvOKmYkhc3jrO3EYNMjo8xCqUkKKIOJP9xtW+K
+         x23NT6byC4AFxT8wyzD1OPRS2jljbKWmkbDvQi8xGTYKkbjZ9Rt1IL7mqB4egbLmpFtX
+         +qDQ==
+X-Gm-Message-State: AOAM531Ww1G66J4EbqVlgtwZmaCEwICofzx3rEMrx69JurzZn0IOmUsq
+        45WY8Ykc0sjP6jDvrzcTrRm1QTAPBxJQH44FpsarBg==
+X-Google-Smtp-Source: ABdhPJyt73d14bElB4Yml6R/uQKVIY6si4kfCKZNS+rE/uUq0/7JvG6q54/gPiIEvdHlSx8R8jv2pJht0NAHu9RBG+s=
+X-Received: by 2002:a17:906:4e19:: with SMTP id z25mr4369995eju.44.1603213501911;
+ Tue, 20 Oct 2020 10:05:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201019211101.143327-1-robdclark@gmail.com> <20201020082404.GJ401619@phenom.ffwll.local>
- <CAF6AEGuT6ZSpitNS0eBcjKhAVW1QBg+uPJQQkBLckOk=_GBx=A@mail.gmail.com>
- <CAKMK7uEg-iz2zK6E0RFA-JQ+GfjuUcnrdu+e_3FWq9E9_9WUZA@mail.gmail.com> <CAF6AEGuF_76hMHa-n7VYHY+sSKGTt=gTBh8r+2992Bhx-RE61A@mail.gmail.com>
-In-Reply-To: <CAF6AEGuF_76hMHa-n7VYHY+sSKGTt=gTBh8r+2992Bhx-RE61A@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 20 Oct 2020 19:02:13 +0200
-Message-ID: <CAKMK7uEHSsgVDsFnpedx2_w0B8ST3RKA1O62NXOtDr2bCrie+A@mail.gmail.com>
-Subject: Re: [PATCH 0/3] drm/msm: kthread_worker conversion
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Roy Spliet <nouveau@spliet.org>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        tongtiangen <tongtiangen@huawei.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Drew Davenport <ddavenport@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>
+References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
+ <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org> <20201020122015.GH2294271@kernel.org>
+In-Reply-To: <20201020122015.GH2294271@kernel.org>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 20 Oct 2020 10:04:50 -0700
+Message-ID: <CA+khW7gcDPAw4h=0U9mMxTJoaCyOXCMwyw34dcBp1xBKJG6xkg@mail.gmail.com>
+Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?B?w4lyaWNvIFJvbGlt?= <erico.erc@gmail.com>,
+        dwarves@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 5:08 PM Rob Clark <robdclark@gmail.com> wrote:
+Thanks for reporting this and cc'ing me. I forgot to update the error
+messages when renaming the flags. I will send a patch to fix the error
+message.
+
+The commit
+
+commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
+Author:     Hao Luo <haoluo@google.com>
+AuthorDate: Wed Jul 8 13:44:10 2020 -0700
+
+     btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.
+
+encodes kernel global variables into BTF so that bpf programs can
+directly access them. If there is no need to access kernel global
+variables, it's perfectly fine to use '--btf_encode_force' to skip
+encoding bad symbols into BTF, or '--skip_encoding_btf_vars' to skip
+encoding all global vars all together. I will add these info into the
+updated error message.
+
+Also cc bpf folks for attention of this bug.
+
+Hao
+
+On Tue, Oct 20, 2020 at 5:20 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> On Tue, Oct 20, 2020 at 7:29 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> Em Tue, Oct 20, 2020 at 11:01:39AM +0200, Jiri Slaby escreveu:
+> > Hi,
 > >
-> > On Tue, Oct 20, 2020 at 4:01 PM Rob Clark <robdclark@gmail.com> wrote:
+> > On 19. 10. 20, 1:18, =C3=89rico Rolim wrote:
+> > > I'm trying to build kernel 5.9.1 for arm64, and my dotconfig has
+> > > `CONFIG_DEBUG_INFO_BTF=3Dy`, which requires pahole for building. Howe=
+ver, pahole
+> > > version 1.18 segfaults during the build, as can be seen below:
 > > >
-> > > On Tue, Oct 20, 2020 at 1:24 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > >
-> > > > On Mon, Oct 19, 2020 at 02:10:50PM -0700, Rob Clark wrote:
-> > > > > From: Rob Clark <robdclark@chromium.org>
-> > > > >
-> > > > > In particular, converting the async atomic commit (for cursor updates,
-> > > > > etc) to SCHED_FIFO kthread_worker helps with some cases where we
-> > > > > wouldn't manage to flush the updates within the 1ms-before-vblank
-> > > > > deadline resulting in fps drops when there is cursor movement.
-> > > > >
-> > > > > Rob Clark (3):
-> > > > >   drm/msm/gpu: Convert retire/recover work to kthread_worker
-> > > > >   drm/msm/kms: Update msm_kms_init/destroy
-> > > > >   drm/msm/atomic: Convert to per-CRTC kthread_work
-> > > >
-> > > > So i915 has it's own commit worker already for $reasons, but I don't think
-> > > > that's a good path to go down with more drivers. And the problem seems
-> > > > entirely generic in nature ...
+> > > PAHOLE: Error: Found symbol of zero size when encoding btf (sym:
+> > > '__kvm_nvhe_arm64_ssbd_callback_required', cu:
+> > > 'arch/arm64/kernel/cpu_errata.c').
+> >
+> > The symbol is an alias coming from arch/arm64/kernel/vmlinux.lds:
+> > __kvm_nvhe_arm64_ssbd_callback_required =3D arm64_ssbd_callback_require=
+d;;
+> >
+> > > PAHOLE: Error: Use '-j' or '--force' to ignore such symbols and force
+> > > emit the btf.
+> > > scripts/link-vmlinux.sh: line 141: 43837 Segmentation fault
+> > > LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
+> > >    LD      .tmp_vmlinux.kallsyms1
+> > >    KSYM    .tmp_vmlinux.kallsyms1.o
+> > >    LD      .tmp_vmlinux.kallsyms2
+> > >    KSYM    .tmp_vmlinux.kallsyms2.o
+> > >    LD      vmlinux
+> > >    BTFIDS  vmlinux
+> > > FAILED: load BTF from vmlinux: Unknown error -2make: ***
+> > > [Makefile:1162: vmlinux] Error 255
 > > >
-> > > I'm not *entirely* sure what your point is here?  This is just
-> > > migrating away from a shared ordered wq to per-crtc kthread so that we
-> > > don't miss vblank deadlines for silly reasons (and then stall on the
-> > > next frame's pageflip because we are still waiting for the cursor
-> > > update to latch).  Kind of like vblank-work but scheduled prior to,
-> > > rather than after, vblank.
+> > > It is possible to force the build to continue if
 > > >
-> > > And you're right that the problem is partially generic.. hw that (a)
-> > > doesn't have true async (cursor and/or otherwise) updates, and (b) has
-> > > various flush bits that latch register updates on vblank, is not that
-> > > uncommon.  But the current atomic helper API would have to be a bit
-> > > redesigned to look more like the interface between msm_atomic and the
-> > > display backend.  That is a fair bit of churn for re-using a small bit
-> > > of code.
-> >
-> > I was making some assumptions about what you're doing, and I was
-> > wrong. So I went and tried to understand what's actually going on
-> > here.
-> >
-> > I'm trying to understand what exactly you've added with that async msm
-> > support 2d99ced787e3d. I think this breaks the state structure update
-> > model, you can't access any ->state pointers from the commit functions
-> > after you've called drm_atomic_helper_commit_hw_done, or you might
-> > have a use after free. And that seems to be happening from this commit
-> > work thing you added to your existing commit work that the atomic
-> > helpers provide already.
-> >
-> > The various commit functions seem to grab various state objects by
-> > just chasing pointers from the objects (instead of the
-> > drm_atomic_state stuff), so this all feels like it's yolo
-> > free-wheeling.
-> >
-> > You also seem to be using the async_commit stuff from the atomic
-> > helpers (which is actually synchronous (i.e. blocking) from the pov of
-> > how the code runs, but seems to be for mdp5 only and not others. Also
-> > your can_do_async still checks for legacy_cursor_update (maybe a
-> > leftover, or needed on !mdp5 platforms) and ->async_update.
-> >
-> > I'm thoroughly confused how this all works.
->
-> The legacy_cursor_update is really the thing that motivated the async
-> commit support in the first place.  Sadly we still have userspace that
-> expects to be able to use legacy cursor API, and that it will be
-> nonblocking (and not cause fps drop).  (I'm not a fan of the legacy
-> cursor UAPI.. don't hate the player..)
-
-Yeah this is why we have these atomic_async_check/commit functions,
-and msm is even using them for mdp5. Not hating the player here at
-all.
-
-> The premise is to do everything in terms of crtc_mask, although yeah,
-> it looks like there are a few points that need to look at things like
-> crtc->state->active.  The only point in msm-atomic itself that does
-> this is vblank_get/put(), possibly we can fix drm_vblank instead and
-> drop that workaround (see 43906812eaab06423f56af5cca9a9fcdbb4ac454)
->
-> The rest of the async part is really just supposed to be writing the
-> appropriate flush reg(s) and waiting until flush completes, although
-> dpu's excess layering makes this harder than it needs to be.
->
-> In practice, the kms->wait_flush() at the top of
-> msm_atomic_commit_tail() will block until a pending async commit
-> completes (this is where we hit the fps drop if we miss vblank
-> deadline), so I don't *think* you can trigger a use-after-free.  But
-> the dpu code could be better cleaned up to have less obj->state
-> dereference in the kms->flush_commit(crtc_mask)/etc path.
-
-Hm this is more or less what the atomic_async_commit/check stuff was
-meant to help facilitate too, and now msm is using that for mdp5, but
-not for other pieces. That seems very confusing.
-
-Also I'm not sure how this works if you still end up flushing anyway,
-since then you'd be back to doing everything in-order. Or will an
-normal atomic flip push all the cursor updates to the next frame (in
-which case you really should be able to do this all with async helpers
-we have instead of hand-rolling a bunch of it in strange places).
-
-You probably still need the worker to push out the update at the right
-time, and I'm not sure what some good locking for that is. At least
-I'm not really seeing how you sync that worker against a racing update
-for the next cursor move.
--Daniel
-
-
-> BR,
-> -R
->
-> > I do agree though that you probably want this to be a real time fifo
-> > kthread worker, like for the vblank worker. Except now that I looked,
-> > I'm not sure it's actually working intended and correct.
-> > -Daniel
-> >
-> > > BR,
-> > > -R
+> > >    LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
 > > >
-> > > > -Daniel
-> > > >
-> > > > >
-> > > > >  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |  3 +--
-> > > > >  drivers/gpu/drm/msm/adreno/a5xx_preempt.c |  6 ++---
-> > > > >  drivers/gpu/drm/msm/adreno/a6xx_gmu.c     |  4 +--
-> > > > >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 +--
-> > > > >  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c   |  8 +++++-
-> > > > >  drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c  |  8 +++++-
-> > > > >  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c  | 11 ++++++---
-> > > > >  drivers/gpu/drm/msm/disp/mdp_kms.h        |  9 +++++--
-> > > > >  drivers/gpu/drm/msm/msm_atomic.c          | 25 +++++++++++++++----
-> > > > >  drivers/gpu/drm/msm/msm_drv.h             |  3 ++-
-> > > > >  drivers/gpu/drm/msm/msm_gpu.c             | 30 +++++++++++++++--------
-> > > > >  drivers/gpu/drm/msm/msm_gpu.h             | 13 +++++++---
-> > > > >  drivers/gpu/drm/msm/msm_kms.h             | 23 ++++++++++++++---
-> > > > >  13 files changed, 104 insertions(+), 43 deletions(-)
-> > > > >
-> > > > > --
-> > > > > 2.26.2
-> > > > >
-> > > > > _______________________________________________
-> > > > > dri-devel mailing list
-> > > > > dri-devel@lists.freedesktop.org
-> > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > > >
-> > > > --
-> > > > Daniel Vetter
-> > > > Software Engineer, Intel Corporation
-> > > > http://blog.ffwll.ch
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > in scripts/link-vmlinux.sh is changed to
+> > >
+> > >    LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J --btf_encode_force ${1}
+> > >
+> > > The suggested `-j` or `--force` flags don't exist, since they were re=
+moved in
+> > > [1]. I believe `--btf_encode_force` should be suggested instead.
 > >
+> > Agreed, '--btf_encode_force' makes pahole to proceed without crashes.
+> >
+> > > It should be noted that the same build, but with pahole version 1.17,=
+ works
+> > > without issue, so I think this is either a regression in pahole or th=
+e script
+> > > will need to be changed for newer versions of pahole.
+> >
+> > Yeah, I observe the very same. I reported it at:
+> > https://bugzilla.suse.com/show_bug.cgi?id=3D1177921
+>
+> Would it be possible to try with
+> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=3Dtmp.li=
+bbtf_encoder
+> ?
+>
+> This switches to using libbpf for the BTF encoder and may have fixed
+> this problem.
+>
+> - Arnaldo
+>
+> > The backtrace:
+> > > (gdb) where
+> > > #0  __memmove_sse2_unaligned_erms () at
+> > ../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:300
+> > > #1  0x00007ffff7f78346 in memcpy (__len=3D<optimized out>, __src=3D<o=
+ptimized
+> > out>, __dest=3D<optimized out>, __dest=3D<optimized out>, __src=3D<opti=
+mized out>,
+> > __len=3D<optimized out>) at /usr/include/bits/string_fortified.h:34
+> > > #2  gobuffer__add (gb=3D0x555555569aa0, s=3D0x7fffffffb50c, len=3D12)=
+ at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/gobuffer.c:87
+> > > #3  0x00007ffff7f8671f in btf_elf__add_datasec_type
+> > (btfe=3Dbtfe@entry=3D0x555555569a40,
+> > section_name=3Dsection_name@entry=3D0x7ffff7fa43ad ".data..percpu",
+> > var_secinfo_buf=3Dvar_secinfo_buf@entry=3D0x555555569ac0) at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf.c:721
+> > > #4  0x00007ffff7f8d766 in btf_elf__encode (flags=3D0 '\000',
+> > btfe=3D0x555555569a40) at /usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf=
+.c:857
+> > > #5  btf_elf__encode (btfe=3D0x555555569a40, flags=3D<optimized out>) =
+at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/libbtf.h:71
+> > > #6  0x00007ffff7f7fc70 in btf_encoder__encode () at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/btf_encoder.c:213
+> > > #7  0x00007ffff7f80d17 in cu__encode_btf (cu=3D0x55555638d9b0, verbos=
+e=3D0,
+> > force=3Dfalse, skip_encoding_vars=3Dfalse) at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/btf_encoder.c:255
+> > > #8  0x000055555555ac4d in pahole_stealer (cu=3D0x55555638d9b0,
+> > conf_load=3D<optimized out>) at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/pahole.c:2366
+> > > #9  0x00007ffff7f89dab in finalize_cu (cus=3D0x5555555622d0,
+> > dcu=3D0x7fffffffd080, conf=3D0x5555555610e0 <conf_load>, cu=3D0x5555563=
+8d9b0) at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2473
+> > > #10 finalize_cu_immediately (conf=3D0x5555555610e0 <conf_load>,
+> > dcu=3D0x7fffffffd080, cu=3D0x55555638d9b0, cus=3D0x5555555622d0) at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2317
+> > > #11 cus__load_module (cus=3Dcus@entry=3D0x5555555622d0, conf=3D0x5555=
+555610e0
+> > <conf_load>, mod=3Dmod@entry=3D0x555555564760, dw=3D0x555555565960,
+> > elf=3Delf@entry=3D0x555555562360, filename=3D0x7fffffffe846 "ss") at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2473
+> > > #12 0x00007ffff7f8a0f1 in cus__process_dwflmod (dwflmod=3D0x555555564=
+760,
+> > userdata=3D<optimized out>, name=3D<optimized out>, base=3D<optimized o=
+ut>,
+> > arg=3D0x7fffffffe1b0) at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2518
+> > > #13 0x00007ffff7d4f571 in dwfl_getmodules () from /usr/lib64/libdw.so=
+.1
+> > > #14 0x00007ffff7f823ed in cus__process_file (filename=3D0x7fffffffe84=
+6 "ss",
+> > fd=3D3, conf=3D<optimized out>, cus=3D0x5555555622d0) at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2571
+> > > #15 dwarf__load_file (cus=3D0x5555555622d0, conf=3D<optimized out>,
+> > filename=3D0x7fffffffe846 "ss") at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarf_loader.c:2588
+> > > #16 0x00007ffff7f76771 in cus__load_file (cus=3Dcus@entry=3D0x5555555=
+622d0,
+> > conf=3Dconf@entry=3D0x5555555610e0 <conf_load>, filename=3D0x7fffffffe8=
+46 "ss") at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarves.c:1958
+> > > #17 0x00007ffff7f798a8 in cus__load_files (cus=3D0x5555555622d0,
+> > conf=3D0x5555555610e0 <conf_load>, filenames=3D0x7fffffffe518) at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/dwarves.c:2316
+> > > #18 0x00005555555576fc in main (argc=3D3, argv=3D0x7fffffffe508) at
+> > /usr/src/debug/dwarves-1.18-1.1.x86_64/pahole.c:2687
+> >
+> >
+> > I suspect:
+> > commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
+> > Author:     Hao Luo <haoluo@google.com>
+> > AuthorDate: Wed Jul 8 13:44:10 2020 -0700
+> >
+> >     btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.
+> >
+> >
+> > Which added this machinery (btf_elf__add_datasec_type in particular).
+> >
+> > > - [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/p=
+ahole.c?h=3Dv1.18&id=3D1abc001417b579b86a9b27ff88c9095d8f498a46
+> > >
+> > > Thanks,
+> > > =C3=89rico
+> > >
 > >
 > >
 > > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> > js
+> > suse labs
+>
+> --
+>
+> - Arnaldo
