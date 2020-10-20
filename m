@@ -2,163 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AEE293D4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC87293D59
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407457AbgJTN0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        id S2407471AbgJTNbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407291AbgJTN0T (ORCPT
+        with ESMTP id S2407459AbgJTNby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:26:19 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7803C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:26:17 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 13so1786005wmf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:26:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jiEZwt1UVrshiu353nvFC1zKZwvPuTjPD9AQIUaHUPQ=;
-        b=YK2Jal9lJPuDGvNZgEhVpYxQR6C0JKOZhXubZAtjOGmvnFZUULMyZXNg1aDkkedl0N
-         fa106fGFd/uUlgBz50Ae0VGRitHCgNs7vqRFtFEPu81PCfWYZBefOnit0JiEki37WKKy
-         ZNIgHsL5bQyV4iQHk3Iz3TYlegkjKWreRKVL8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jiEZwt1UVrshiu353nvFC1zKZwvPuTjPD9AQIUaHUPQ=;
-        b=EhTJtFGH6svmNocx6xB/M7v69W2MMEMuPxY+0pjKQMIdJglgdd8PCPi3r5raAgadwD
-         o5KEzzurbJMfzDweYlvp8crHhHU1V3KyC8V6XB0lBOo99V6Ud8QQCJMBLwl+rEHz6Y+b
-         ac64o6GFOtBDUtrGMDArqm2aWjQo6V0jP37k8LBH0dhgAtTEvhTroHVwc3PCyQsM1cT+
-         7MLI9YgsS4XTibyki/UhGLZOBJ6T0mISVVnYrKFfkpnv3qNW5ONIAk2RP40PS+VtysCa
-         JJamQFHNoN+8NoQAt0ev/+fHtUq/OjFHmH9IrphvKb+w884GzBf7+LK91i/WmrRXvTMV
-         vrsQ==
-X-Gm-Message-State: AOAM533gdsxDFtF+rPvSRsPcKZUMxQrYIJmoC7YJU/7fogi7ozIBCSnm
-        rYFOAbAYbJAESEW03FiuZtNBUbDDmPywUWKErMFfJg==
-X-Google-Smtp-Source: ABdhPJxOSCaohNlotFC3fJ/SO8FGZ+IX/HeJ18+Z+rLPcpFl4yVk1/rmqgj7plCYZ+/rQ6+2hKvySr4nP9kWyidWceU=
-X-Received: by 2002:a1c:7518:: with SMTP id o24mr3045570wmc.137.1603200376398;
- Tue, 20 Oct 2020 06:26:16 -0700 (PDT)
+        Tue, 20 Oct 2020 09:31:54 -0400
+Received: from hillosipuli.retiisi.eu (hillosipuli.retiisi.eu [IPv6:2a01:4f9:c010:4572::81:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239E1C0613CE;
+        Tue, 20 Oct 2020 06:31:53 -0700 (PDT)
+Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 1734E634C87;
+        Tue, 20 Oct 2020 16:31:47 +0300 (EEST)
+Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@retiisi.org.uk>)
+        id 1kUrjw-0000Eg-6T; Tue, 20 Oct 2020 16:31:48 +0300
+Date:   Tue, 20 Oct 2020 16:31:48 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
+        andriy.shevchenko@linux.intel.com, sergey.senozhatsky@gmail.com,
+        rostedt@goodmis.org, pmladek@suse.com, mchehab@kernel.org,
+        tian.shu.qiu@intel.com, bingbu.cao@intel.com,
+        sakari.ailus@linux.intel.com, yong.zhi@intel.com,
+        rafael@kernel.org, gregkh@linuxfoundation.org, kitakar@gmail.com,
+        dan.carpenter@oracle.org
+Subject: Re: [RFC PATCH v3 3/9] software_node: Fix failure to hold refcount
+ in software_node_get_next_child
+Message-ID: <20201020133148.GB843@valkosipuli.retiisi.org.uk>
+References: <20201019225903.14276-1-djrscally@gmail.com>
+ <20201019225903.14276-4-djrscally@gmail.com>
 MIME-Version: 1.0
-References: <20201019141008.871177-1-daniel@0x0f.com> <20201019141008.871177-4-daniel@0x0f.com>
- <CAHp75Vf5iUzKp32CqBbv_5MRo8q8CyBPsBcgzKsww6BFtGJwUA@mail.gmail.com>
-In-Reply-To: <CAHp75Vf5iUzKp32CqBbv_5MRo8q8CyBPsBcgzKsww6BFtGJwUA@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Tue, 20 Oct 2020 22:26:50 +0900
-Message-ID: <CAFr9PXnhqS+3nbt8ZG8PKpkp=tFraxFQUb5ym1a2FtzmRgF4VA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] gpio: msc313: MStar MSC313 GPIO driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019225903.14276-4-djrscally@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Hi Daniel,
 
-On Tue, 20 Oct 2020 at 20:59, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > +config GPIO_MSC313
-> > +       bool "MStar MSC313 GPIO support"
->
-> Why boolean?
+On Mon, Oct 19, 2020 at 11:58:57PM +0100, Daniel Scally wrote:
+> The software_node_get_next_child() function currently does not hold a kref
+> to the child software_node; fix that.
+> 
+> Fixes: 59abd83672f7 ("drivers: base: Introducing software nodes to the firmware node framework")
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v3:
+> 	- split out from the full software_node_graph*() patch
+> 
+>  drivers/base/swnode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index f01b1cc61..741149b90 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -450,7 +450,7 @@ software_node_get_next_child(const struct fwnode_handle *fwnode,
+>  		c = list_next_entry(c, entry);
+>  	else
+>  		c = list_first_entry(&p->children, struct swnode, entry);
+> -	return &c->fwnode;
+> +	return software_node_get(&c->fwnode);
 
-Because it's a built in driver. I could change it to tristate/a module
-but I didn't think it needed to be one.
-The machines this is used on generally only have 64 or 128MB of RAM so
-the kernel is usually built without modules and only the totally
-required stuff built in.
+I believe similarly, the function should drop the reference to the previous
+node, and not expect the caller to do this. The OF equivalent does the
+same.
 
-> > +       default y if ARCH_MSTARV7
->
-> Simply
->        default ARCH_MSTARV7
-> should work as well.
->
-> Are you planning to extend this to other boards?
+>  }
+>  
+>  static struct fwnode_handle *
 
-I think I copy/pasted the block above there. I'll fix this up.
+-- 
+Kind regards,
 
-As for other boards. I think this GPIO controller is only present in
-MStar's SoCs and some MediaTek SoCs that inherited parts from MStar
-after MediaTek bought them. Like the MStar interrupt controller is
-present in some MediaTek TV chips.
-
->
-> > +       depends on ARCH_MSTARV7
-> > +       select GPIOLIB_IRQCHIP
-> > +       help
-> > +         Say Y here to support GPIO on MStar MSC313 and later SoCs.
->
-> Please, be more specific. Also it's recommended to have a module name
-> to be included (but let's understand first why it's not a module)
-
-Ok. I'll rework that. As for it not being a module. I can make it
-possible to build it
-as a module. I just didn't really think it needed to be one.
-
-> > +#include <linux/of_device.h>
-> > +#include <linux/of_irq.h>
-> > +#include <linux/gpio/driver.h>
->
-> I believe this should be reworked.
-> For example, it misses mod_devicetable.h, bits.h, io.h, types.h, etc, but has
-
-I'll look at this again.
-
-> > +/* These bits need to be saved to correctly restore the
-> > + * gpio state when resuming from suspend to memory.
-> > + */
->
-> /*
->  * For this subsystem the comment style for multi-line
->  * like this.
->  */
-
-Sorry, I'll fix these up.
-
-> > +#ifdef CONFIG_MACH_INFINITY
->
-> Does it make any sense?
->
-> > +#endif
-
-It doesn't make a lot of sense right now but it makes a bit more sense
-when the support for the mercury chips is added. They have their own
-set of offsets
-for the used pins. I cut that out of this series because I haven't
-fully reverse engineered all of the pins for those chips yet so the
-support for them has a lot of guesses and notes in the code.
-
-Anyhow, with only 64MB of RAM I thought it made sense to not compile
-in the mercury tables when support for those machines isn't enabled.
-I'll drop the if/defs for the next version.
-
-> > +static struct irq_chip msc313_gpio_irqchip = {
-> > +       .name = "GPIO",
->
-> Is this name good enough?
->
-
-There is only one GPIO block in the chips this is for so I think it's
-unique at least.
-
-> > +       gpiochip->label = DRIVER_NAME;
->
-> Not good. When you use user space how do you distinguish if more than
-> one chip appears in the system?
-
-So far there is only ever one of these GPIO controller for the whole system.
-There is another GPIO block in the system but it uses another driver
-as the register layout is totally different.
-
-Thank you for all of the comments. Sorry about the multiple style issues.
-I thought checkpatch had my back on that.
-
-Thanks,
-
-Daniel
+Sakari Ailus
