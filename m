@@ -2,121 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB0029378E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCDB29379C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392392AbgJTJGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:06:01 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:25480 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392385AbgJTJGB (ORCPT
+        id S2392435AbgJTJHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390687AbgJTJHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:06:01 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09K91xnn019320;
-        Tue, 20 Oct 2020 11:05:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=STMicroelectronics;
- bh=NZzu2K/oEgGHbi70pVpopywkpHKaiBZ4Zxl3bo9Olfs=;
- b=XYZuNQbEtfUOVgDytzvOn26G0q3yIPSasW1oziDkVRwDjie6UBT2ayjd59NHeISTaS4Q
- s8PFeqGu4xOihkZ/lHm/uAwV1cY8VEk8di7a6W6y9fYruQ8WlfbiV0LT4MV2DvNnyYSU
- g8c8y0SadqnurXcckZvZj1WpA3cmK3c149c8yfeXr+nkg6rJvmZ7dEzs9bCuDNaCwNON
- 4ifFh3fn2f7JUcGaEmlc6ieyP9vFhrI7tIWcwReC8kTYO1GCFVs7hZeXi87dB44DMaJu
- juLE6QyLQPkiaieKKSjl+hcZG3qvVmD3hGYpKvJn5ON/hFuLThnowLwv/FDI4HAHPWBr hQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 347pcwse1r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Oct 2020 11:05:32 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6843B10002A;
-        Tue, 20 Oct 2020 11:05:24 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 36D882BCA3D;
-        Tue, 20 Oct 2020 11:05:24 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct 2020 11:05:23
- +0200
-From:   Olivier Moysan <olivier.moysan@st.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <alexandre.torgue@st.com>,
-        <arnaud.patard@rtp-net.org>, <olivier.moysan@st.com>
-CC:     <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>, <arnaud.pouliquen@st.com>
-Subject: [PATCH] ASoC: cs42l51: manage mclk shutdown delay
-Date:   Tue, 20 Oct 2020 11:04:57 +0200
-Message-ID: <20201020090457.340-1-olivier.moysan@st.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 20 Oct 2020 05:07:32 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20D7C0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:07:32 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id t14so710694pgg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:07:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=C+lXu8huo3GM/+zHeAPPhY4A4nrjQeddBfBXz8wgpYw=;
+        b=vpnE2D56Bp9ToqiKgEF4SR/yjTeNtEcbw4Md5FZN7JGxVlMJNFctFzwoN1t9ZhNuxR
+         JOiWYH4NtXEx6T5v3TWxK+afNiljExnYpQrP9y+WeX/WTv0YUCOPuDGg21eEW7Hi+syQ
+         8bYna5o+mtM8kkWfyfmjA/HX91ztH1xOjX2UdTfKt9Vs5fFL8EoSSCqYxGE/1RsBXIhD
+         CnC2hGP+KdTfovqQNH4t6r5MHKPDvGC53uSQhz3AkvBtwgRQ7zOcprIraDXr9FRg2674
+         X85v5i3UmIhn/LSU2Q9bavElRAHy0Mt2EkiKuV8SBnFqOZFKXZc+/a8kv/YK8XuJZeiY
+         IApw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=C+lXu8huo3GM/+zHeAPPhY4A4nrjQeddBfBXz8wgpYw=;
+        b=GIjTlWFxIyDXtQwGy9R2pg4Sn5ccPNtq6GE+HeOSi+5wbZavk6lbwQE6rmkgtjCAQS
+         ih5AwLthcIJ65EqQcrcjG94kzeSANA2MBX89MDj2tiWKVGLu3A9J+uG3Fn5+Rldi5mhQ
+         XlQS/99WT4SN7o2u7uyoIqhlKwXpUl1CsBPlfPvASablHgT8ftRY7p76z2kztS04waVb
+         CatyzHSDTJNuEJ/zIp3g20eJyZ8DevlFauUK7f6NXvJezsqR4jGKpjE3LoDmF5dc8rSW
+         rOfeOHvnvrzEF/34SLkwgBiVr8UhgYQx0XKJVVEM3dUv8y6xv6Y5kmrf7NPJB1IT+gT8
+         74FQ==
+X-Gm-Message-State: AOAM530vDmMJdeLtbhkuuoC9kVMlS4ATX+en5/OtmCP9nDz+af2nQiW/
+        Z2BfwoMqtGqHJYh/1+1ECzdl5w==
+X-Google-Smtp-Source: ABdhPJwfOAGHPoop8aAQY48Li/WV46JU/mutltv8U8uyGSW/+kHjlyfNLsHfL8dR+PpnrN8I2W9Fwg==
+X-Received: by 2002:a62:6202:0:b029:15c:dac8:866 with SMTP id w2-20020a6262020000b029015cdac80866mr1732194pfb.72.1603184852250;
+        Tue, 20 Oct 2020 02:07:32 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id w10sm1254300pjy.13.2020.10.20.02.07.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Oct 2020 02:07:30 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 14:37:29 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, "Menon, Nishanth" <nm@ti.com>
+Subject: Re: [PATCH v2 07/22] drm/msm: Do rpm get sooner in the submit path
+Message-ID: <20201020090729.qgqish5kqamhvatj@vireshk-i7>
+References: <20201012020958.229288-1-robdclark@gmail.com>
+ <20201012020958.229288-8-robdclark@gmail.com>
+ <20201012143555.GA438822@phenom.ffwll.local>
+ <CAF6AEGstGtBswUUiyHxT2cCm8NwZekDnMzD0J_pQH37GwS=LiA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-20_04:2020-10-20,2020-10-20 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGstGtBswUUiyHxT2cCm8NwZekDnMzD0J_pQH37GwS=LiA@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A delay must be introduced before the shutdown down of the mclk,
-as stated in CS42L51 datasheet. Otherwise the codec may
-produce some noise after the end of DAPM power down sequence.
-The delay between DAC and CLOCK_SUPPLY widgets is too short.
-Add a delay in mclk shutdown request to manage the shutdown delay
-explicitly. From experiments, at least 10ms delay is necessary.
-Set delay to 20ms as recommended in Documentation/timers/timers-howto.rst
-when using msleep().
+On 12-10-20, 08:43, Rob Clark wrote:
+> On Mon, Oct 12, 2020 at 7:35 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Sun, Oct 11, 2020 at 07:09:34PM -0700, Rob Clark wrote:
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > Unfortunately, due to an dev_pm_opp locking interaction with
+> > > mm->mmap_sem, we need to do pm get before aquiring obj locks,
+> > > otherwise we can have anger lockdep with the chain:
+> >
+> > tbh this sounds like a bug in that subsystem, since it means we cannot use
+> > said subsystem in mmap handlers either.
+> >
+> > So if you have some remapping unit or need to wake up your gpu to blt the
+> > buffer into system memory first, we're toast. That doesn't sound right. So
+> > maybe Cc: pm folks and figure out how to fix this long term properly? Imo
+> > not a good reason to hold up this patch set, since unwrangling mmap_sem
+> > tends to be work ...
+> 
+> + a couple of PM folks
+> 
+> Looks like it has been this way for quite some time, so I guess the
+> overlap between things using dev_pm_opp and mmap is low..
+> 
+> fwiw, example splat so folks can see the locking interaction I am
+> talking about.. I suspect the pm_opp interaction with mm->mmap_sem is
+> from the debugfs calls while opp_table_lock is held?
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
----
-Recommended Power-Down Sequence:
-(see https://statics.cirrus.com/pubs/proDatasheet/CS42L51_F2.pdf)
-1.    Mute the DACs and ADCs.
-2.    Disable soft ramp and zero-cross volume transitions
-3.    Set the PDN bit to 1.
-4.    Wait at least 100 μs.
-The codec will be fully powered down after this 100 μs delay.
-Prior to the removal of the master clock(MCLK),
-this delay of at least 100 μs must be implemented after step 3
-to avoid premature disruption of the codec’s power down sequence.
----
- sound/soc/codecs/cs42l51.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+I am not very sure about why this circular locking dependency is
+happening here and how exactly can we fix it. The OPP core works under
+the opp_table_lock, from within which it creates/remove the debugfs
+stuff as well.
 
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 097c4e8d9950..d151a1aa313e 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -254,8 +254,25 @@ static const struct snd_soc_dapm_widget cs42l51_dapm_widgets[] = {
- 		&cs42l51_adcr_mux_controls),
- };
- 
-+static int mclk_event(struct snd_soc_dapm_widget *w,
-+		      struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-+	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(comp);
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		return clk_prepare_enable(cs42l51->mclk_handle);
-+
-+	/* Delay mclk shutdown to fulfill power-down sequence requirements */
-+	msleep(20);
-+	clk_disable_unprepare(cs42l51->mclk_handle);
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget cs42l51_dapm_mclk_widgets[] = {
--	SND_SOC_DAPM_CLOCK_SUPPLY("MCLK")
-+	SND_SOC_DAPM_SUPPLY("MCLK", SND_SOC_NOPM, 0, 0, mclk_event,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- };
- 
- static const struct snd_soc_dapm_route cs42l51_routes[] = {
+> [   15.627855] ======================================================
+> [   15.634202] WARNING: possible circular locking dependency detected
+> [   15.640550] 5.4.70 #41 Not tainted
+> [   15.644050] ------------------------------------------------------
+> [   15.650397] chrome/1805 is trying to acquire lock:
+> [   15.655314] ffffffed90720738 (opp_table_lock){+.+.}, at:
+> _find_opp_table+0x34/0x74
+> [   15.663092]
+> [   15.663092] but task is already holding lock:
+> [   15.669082] ffffff80ff3911a8 (reservation_ww_class_mutex){+.+.},
+> at: submit_lock_objects+0x70/0x1ec
+> [   15.678369]
+> [   15.678369] which lock already depends on the new lock.
+> [   15.678369]
+> [   15.686764]
+> [   15.686764] the existing dependency chain (in reverse order) is:
+> [   15.694438]
+> [   15.694438] -> #3 (reservation_ww_class_mutex){+.+.}:
+> [   15.701146]        __mutex_lock_common+0xec/0xc0c
+> [   15.705978]        ww_mutex_lock_interruptible+0x5c/0xc4
+> [   15.711432]        msm_gem_fault+0x2c/0x124
+> [   15.715731]        __do_fault+0x40/0x16c
+> [   15.719766]        handle_mm_fault+0x7cc/0xd98
+> [   15.724337]        do_page_fault+0x230/0x3b4
+> [   15.728721]        do_translation_fault+0x5c/0x78
+> [   15.733558]        do_mem_abort+0x4c/0xb4
+> [   15.737680]        el0_da+0x1c/0x20
+> [   15.741266]
+> [   15.741266] -> #2 (&mm->mmap_sem){++++}:
+> [   15.746809]        __might_fault+0x70/0x98
+> [   15.751022]        compat_filldir+0xf8/0x48c
+> [   15.755412]        dcache_readdir+0x70/0x1dc
+> [   15.759808]        iterate_dir+0xd4/0x180
+> [   15.763931]        __arm64_compat_sys_getdents+0xa0/0x19c
+> [   15.769476]        el0_svc_common+0xa8/0x178
+> [   15.773861]        el0_svc_compat_handler+0x2c/0x40
+> [   15.778868]        el0_svc_compat+0x8/0x10
+> [   15.783075]
+> [   15.783075] -> #1 (&sb->s_type->i_mutex_key#3){++++}:
+> [   15.789788]        down_write+0x54/0x16c
+> [   15.793826]        debugfs_remove_recursive+0x50/0x158
+> [   15.799108]        opp_debug_unregister+0x34/0x114
+> [   15.804028]        dev_pm_opp_put_opp_table+0xd0/0x14c
+> [   15.809308]        dev_pm_opp_put_clkname+0x3c/0x50
+> [   15.814318]        msm_dsi_host_destroy+0xb0/0xcc
+> [   15.819149]        dsi_destroy+0x40/0x58
+> [   15.823184]        dsi_bind+0x90/0x170
+> [   15.827041]        component_bind_all+0xf0/0x208
+> [   15.831787]        msm_drm_init+0x188/0x60c
+> [   15.836084]        msm_drm_bind+0x24/0x30
+> [   15.840205]        try_to_bring_up_master+0x15c/0x1a4
+> [   15.845396]        __component_add+0x98/0x14c
+> [   15.849878]        component_add+0x28/0x34
+> [   15.854086]        dp_display_probe+0x324/0x370
+> [   15.858744]        platform_drv_probe+0x90/0xb0
+> [   15.863400]        really_probe+0x134/0x2ec
+> [   15.867699]        driver_probe_device+0x64/0xfc
+> [   15.872443]        __device_attach_driver+0x8c/0xa4
+> [   15.877459]        bus_for_each_drv+0x90/0xd8
+> [   15.881939]        __device_attach+0xc0/0x148
+> [   15.886420]        device_initial_probe+0x20/0x2c
+> [   15.891254]        bus_probe_device+0x34/0x94
+> [   15.895726]        deferred_probe_work_func+0x78/0xb4
+> [   15.900914]        process_one_work+0x30c/0x5d0
+> [   15.905573]        worker_thread+0x240/0x3f0
+> [   15.909959]        kthread+0x144/0x154
+> [   15.913809]        ret_from_fork+0x10/0x18
+> [   15.918016]
+> [   15.918016] -> #0 (opp_table_lock){+.+.}:
+> [   15.923660]        __lock_acquire+0xee4/0x2450
+> [   15.928230]        lock_acquire+0x1cc/0x210
+> [   15.932527]        __mutex_lock_common+0xec/0xc0c
+> [   15.937359]        mutex_lock_nested+0x40/0x50
+> [   15.941928]        _find_opp_table+0x34/0x74
+> [   15.946312]        dev_pm_opp_find_freq_exact+0x2c/0xdc
+> [   15.951680]        a6xx_gmu_resume+0xc8/0xecc
+> [   15.952812] fscrypt: AES-256-CTS-CBC using implementation "cts-cbc-aes-ce"
+> [   15.956161]        a6xx_pm_resume+0x148/0x200
+> [   15.956166]        adreno_resume+0x28/0x34
+> [   15.956171]        pm_generic_runtime_resume+0x34/0x48
+> [   15.956174]        __rpm_callback+0x70/0x10c
+> [   15.956176]        rpm_callback+0x34/0x8c
+> [   15.956179]        rpm_resume+0x414/0x550
+> [   15.956182]        __pm_runtime_resume+0x7c/0xa0
+> [   15.956185]        msm_gpu_submit+0x60/0x1c0
+> [   15.956190]        msm_ioctl_gem_submit+0xadc/0xb60
+> [   16.003961]        drm_ioctl_kernel+0x9c/0x118
+> [   16.008532]        drm_ioctl+0x27c/0x408
+> [   16.012562]        drm_compat_ioctl+0xcc/0xdc
+> [   16.017038]        __se_compat_sys_ioctl+0x100/0x206c
+> [   16.022224]        __arm64_compat_sys_ioctl+0x20/0x2c
+> [   16.027412]        el0_svc_common+0xa8/0x178
+> [   16.031800]        el0_svc_compat_handler+0x2c/0x40
+> [   16.036810]        el0_svc_compat+0x8/0x10
+> [   16.041021]
+> [   16.041021] other info that might help us debug this:
+> [   16.041021]
+> [   16.049235] Chain exists of:
+> [   16.049235]   opp_table_lock --> &mm->mmap_sem --> reservation_ww_class_mutex
+> [   16.049235]
+> [   16.061014]  Possible unsafe locking scenario:
+> [   16.061014]
+> [   16.067091]        CPU0                    CPU1
+> [   16.071750]        ----                    ----
+> [   16.076399]   lock(reservation_ww_class_mutex);
+> [   16.081059]                                lock(&mm->mmap_sem);
+> [   16.087134]                                lock(reservation_ww_class_mutex);
+> [   16.094369]   lock(opp_table_lock);
+> [   16.097961]
+> [   16.097961]  *** DEADLOCK ***
+> [   16.097961]
+> [   16.104038] 3 locks held by chrome/1805:
+> [   16.108068]  #0: ffffff80fb20c0d8 (&dev->struct_mutex){+.+.}, at:
+> msm_ioctl_gem_submit+0x264/0xb60
+> [   16.117264]  #1: ffffff80dd712c70
+> (reservation_ww_class_acquire){+.+.}, at:
+> msm_ioctl_gem_submit+0x8e8/0xb60
+> [   16.127357]  #2: ffffff80ff3911a8
+> (reservation_ww_class_mutex){+.+.}, at: submit_lock_objects+0x70/0x1ec
+> [   16.137089]
+> [   16.137089] stack backtrace:
+> [   16.141567] CPU: 4 PID: 1805 Comm: chrome Not tainted 5.4.70 #41
+> [   16.147733] Hardware name: Google Lazor (rev1+) with LTE (DT)
+> [   16.153632] Call trace:
+> [   16.156154]  dump_backtrace+0x0/0x158
+> [   16.159924]  show_stack+0x20/0x2c
+> [   16.163340]  dump_stack+0xc8/0x160
+> [   16.166840]  print_circular_bug+0x2c4/0x2c8
+> [   16.171144]  check_noncircular+0x1a8/0x1b0
+> [   16.175351]  __lock_acquire+0xee4/0x2450
+> [   16.179382]  lock_acquire+0x1cc/0x210
+> [   16.183146]  __mutex_lock_common+0xec/0xc0c
+> [   16.187450]  mutex_lock_nested+0x40/0x50
+> [   16.191481]  _find_opp_table+0x34/0x74
+> [   16.195344]  dev_pm_opp_find_freq_exact+0x2c/0xdc
+> [   16.200178]  a6xx_gmu_resume+0xc8/0xecc
+> [   16.204120]  a6xx_pm_resume+0x148/0x200
+> [   16.208064]  adreno_resume+0x28/0x34
+> [   16.211743]  pm_generic_runtime_resume+0x34/0x48
+> [   16.216488]  __rpm_callback+0x70/0x10c
+> [   16.220342]  rpm_callback+0x34/0x8c
+> [   16.223933]  rpm_resume+0x414/0x550
+> [   16.227524]  __pm_runtime_resume+0x7c/0xa0
+> [   16.231731]  msm_gpu_submit+0x60/0x1c0
+> [   16.235586]  msm_ioctl_gem_submit+0xadc/0xb60
+> [   16.240066]  drm_ioctl_kernel+0x9c/0x118
+> [   16.244097]  drm_ioctl+0x27c/0x408
+> [   16.247602]  drm_compat_ioctl+0xcc/0xdc
+> [   16.251546]  __se_compat_sys_ioctl+0x100/0x206c
+> [   16.256204]  __arm64_compat_sys_ioctl+0x20/0x2c
+> [   16.260861]  el0_svc_common+0xa8/0x178
+> [   16.264716]  el0_svc_compat_handler+0x2c/0x40
+> [   16.269196]  el0_svc_compat+0x8/0x10
+> 
+> BR,
+> -R
+> 
+> > -Daniel
+> >
+> > >
+> > >   opp_table_lock --> &mm->mmap_sem --> reservation_ww_class_mutex
+> > >
+> > > For an explicit fencing userspace, the impact should be minimal
+> > > as we do all the fence waits before this point.  It could result
+> > > in some needless resumes in error cases, etc.
+> > >
+> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > ---
+> > >  drivers/gpu/drm/msm/msm_gem_submit.c | 15 +++++++++++++--
+> > >  1 file changed, 13 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> > > index 002130d826aa..a9422d043bfe 100644
+> > > --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> > > +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> > > @@ -744,11 +744,20 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+> > >
+> > >       ret = submit_lookup_objects(submit, args, file);
+> > >       if (ret)
+> > > -             goto out;
+> > > +             goto out_pre_pm;
+> > >
+> > >       ret = submit_lookup_cmds(submit, args, file);
+> > >       if (ret)
+> > > -             goto out;
+> > > +             goto out_pre_pm;
+> > > +
+> > > +     /*
+> > > +      * Thanks to dev_pm_opp opp_table_lock interactions with mm->mmap_sem
+> > > +      * in the resume path, we need to to rpm get before we lock objs.
+> > > +      * Which unfortunately might involve powering up the GPU sooner than
+> > > +      * is necessary.  But at least in the explicit fencing case, we will
+> > > +      * have already done all the fence waiting.
+> > > +      */
+> > > +     pm_runtime_get_sync(&gpu->pdev->dev);
+> > >
+> > >       /* copy_*_user while holding a ww ticket upsets lockdep */
+> > >       ww_acquire_init(&submit->ticket, &reservation_ww_class);
+> > > @@ -825,6 +834,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+> > >
+> > >
+> > >  out:
+> > > +     pm_runtime_put(&gpu->pdev->dev);
+> > > +out_pre_pm:
+> > >       submit_cleanup(submit);
+> > >       if (has_ww_ticket)
+> > >               ww_acquire_fini(&submit->ticket);
+
 -- 
-2.17.1
-
+viresh
