@@ -2,149 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB6C2940D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 205DD2940D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394939AbgJTQvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 12:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
+        id S2394947AbgJTQx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 12:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727020AbgJTQvp (ORCPT
+        with ESMTP id S2388994AbgJTQxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 12:51:45 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E33BC0613CE;
-        Tue, 20 Oct 2020 09:51:43 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id o3so1415926pgr.11;
-        Tue, 20 Oct 2020 09:51:43 -0700 (PDT)
+        Tue, 20 Oct 2020 12:53:55 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EBAC0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:53:55 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id k21so1543849wmi.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:53:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yWQYEkrUrYcpDHcc8j4gHbi6CXcQwnTvGPOSpoM0kXU=;
-        b=fvQl+mkPuTXDjoa1ISTabBicTwhfuNWvlxBQ+xfUIYVJQ6t+U5JmqTGfSqHPIjuOhp
-         /LHU1eXqTFpVW47nW3TELRB5Xhc8zyl/7gyO9vsbsqzwqaUbWUD8q3JV5lkcasgvMoab
-         EDvKCMj7cwgsO2EdGmLwS17OP8mHe9G6cGK/go7FqVHLkdSQQYIP0I6HDF9GjMuE/UrW
-         Un1SI/DipOO73tj59ODWBOUCN3pOF9FelXbutzruym4/y9iOcy1dCUmWcF/iIgwRlKi3
-         tAFwVUu5NyS1PJkJZAv2e1QJD+EwThQAZHGAbsczIPExqC48Bl7UhRzYvISEaDpZkb7U
-         a9zQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AuRT7WGR1yf4Aih4FHNjLkjxaooHkzjoLX1S4xPnefg=;
+        b=mmvravx6qr3s6YNO0bOJBLaNuMkIWgh8AZesjBAF7OanfvyAXphZdX9fDDvJRMh8D2
+         a775bhb12Qw5PiRIaHWGLCzzrg55qw/vXgfWJ2D6SzzBdpuieZdJruQcE67HfldFeiIJ
+         vheS5ml4/PVyzkRxwGuTBaUxJ+6rNtDzpLXpSS7m5qq3Sn7+PWN792n5sLq0GAQnFgsj
+         PdHNc5mkjF7tNc2vaf1g3EvYV06nJKq6XpZsAXxUloQzSRJJ4YM2gVVMhxUI/NoWfjhx
+         zSfulpK1KtFtMm+0NaaEyY6Q4BskHl+FghFmn/CZMT10rHj0n73nb1c6MwPazKmo1ELY
+         okhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=yWQYEkrUrYcpDHcc8j4gHbi6CXcQwnTvGPOSpoM0kXU=;
-        b=a4NTs/Q3pswIIAS0RJVFKCj4pgRmEs8yW/W1S4QVn55KnONyVlQV/0fGf15Yl8LJSo
-         lySyNJZtl2bAfQ80Y1QlJSakGgy2bMV9q6XmgVYnYmnt5Svn38mNgFK87MGEwhMKf9hc
-         h4qIM4sjP2VnAkjvYxYvfX4wVd9GZMxp3m/HgCXM1CIothmWO8Mw2BtXVmtIW+EVADKY
-         QodvgsXY1+lniT4KH36FNy0Xo75MwVhf26dpggaBREI0+BuWsk+nVKaUUuMoQHd+60iy
-         iIHaYiR8AR9Q5mj0g2XqPYp2EQyXqq/CKlElmeeUfKlQpvRlm0ctGPPlyDPIfh/E90Tr
-         tlAg==
-X-Gm-Message-State: AOAM531P2yY6IfSFN76awv7klJWSfm08fzz7QKfKett9Vpe1SuOx6bJz
-        7Fi2EMn4pjCt4joLjq1gdrBBZYrADLE=
-X-Google-Smtp-Source: ABdhPJwtDA/QXqKVAVn7VmAvlZqcN+Wr4CCuNZkeKtJYUkH1MXJNNLHDhe4f01DU4exh6Y88OVDXng==
-X-Received: by 2002:aa7:9e4a:0:b029:152:54d1:bffa with SMTP id z10-20020aa79e4a0000b029015254d1bffamr817811pfq.6.1603212702550;
-        Tue, 20 Oct 2020 09:51:42 -0700 (PDT)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id c12sm3009372pgi.14.2020.10.20.09.51.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 09:51:41 -0700 (PDT)
-Subject: Re: [PATCH] net: dsa: bcm_sf2: make const array static, makes object
- smaller
-To:     Colin King <colin.king@canonical.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201020165029.56383-1-colin.king@canonical.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <0cdc86a4-66a0-2f1f-ba23-03b54ccacd69@gmail.com>
-Date:   Tue, 20 Oct 2020 09:51:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AuRT7WGR1yf4Aih4FHNjLkjxaooHkzjoLX1S4xPnefg=;
+        b=V8jTIokjIo8OgWxjbACOw9mMBdxvvDg5uCnZfCmPQH7Y1bTgYnvoG9ieQyWMgwUYEM
+         R2i8IaBxZ8p3ftqS8y9kk3SVY8j39in58FGbWZiwJuZAWG1EMKurawCfiLRLjfOwPYho
+         z0aIhA03gmkvQkIo/oD1IJmfP5mhh9gdnq4Re4TzSug7PaBVxGeRyYWprpac/5A92F1s
+         GMTqb3l265OGSqY8nyiW3VF3vu3ZZAl//Jh6wOAs5cT2BJnQeMCAyn93BuDXhySSCexp
+         YXgsxMamk0NhCKQnw3y4417WrRW8zYvIWC68tLjXH01qY8DAxcEoC5EmJ4UCOWPZuZ4x
+         kndw==
+X-Gm-Message-State: AOAM532VZiCO/5mM4sudkkx4wnDehwuwBPlNNijPBiMGo+TFOhJ5BGjV
+        9O6lLRgMuZYCkhQZvOrzai8nazl0pa3bpd8wFUHzww==
+X-Google-Smtp-Source: ABdhPJxZsiN4tl8k9ebwN6emgXLUOi7E9ipWQDZThzgrgCPrYYPOWGtXlW1kmVtr28RYPDnbF2TdmDYLw8cNbN6fHwE=
+X-Received: by 2002:a1c:9cd8:: with SMTP id f207mr3811262wme.76.1603212833883;
+ Tue, 20 Oct 2020 09:53:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201020165029.56383-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1602152121-240367-10-git-send-email-john.garry@huawei.com>
+ <20201018085031.GK11647@shao2-debian> <CAP-5=fWg4W_fpu-uTZkh-ZoL_7nvqU4F_2LqQgKFvBkfn174HQ@mail.gmail.com>
+ <602e6bb8-a4ac-fae7-ed61-edf252e08d9a@huawei.com> <CAP-5=fWuUVkn35Ep7TQpFvdVJHi8MntAAbRAXVCU_1bYM2rPeQ@mail.gmail.com>
+ <6d22bbdf-1a7c-1ba9-3c1a-88600178facf@linux.ibm.com>
+In-Reply-To: <6d22bbdf-1a7c-1ba9-3c1a-88600178facf@linux.ibm.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 20 Oct 2020 09:53:41 -0700
+Message-ID: <CAP-5=fUU7Smr7ij8bQTd0Gn6RimXppjSFUBYkLRROb8vbvMJXA@mail.gmail.com>
+Subject: Re: [perf metricgroup] fcc9c5243c: perf-sanity-tests.Parse_and_process_metrics.fail
+To:     kajoljain <kjain@linux.ibm.com>
+Cc:     John Garry <john.garry@huawei.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linuxarm@huawei.com, LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        zhangshaokun@hisilicon.com, James Clark <james.clark@arm.com>,
+        linux-imx@nxp.com, 0day robot <lkp@intel.com>, lkp@lists.01.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/20 9:50 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Don't populate the const array rate_table on the stack but instead it
-> static. Makes the object code smaller by 46 bytes.
-> 
-> Before:
->    text	   data	    bss	    dec	    hex	filename
->   29812	   3824	    192	  33828	   8424	drivers/net/dsa/bcm_sf2.o
-> 
-> After:
->    text	   data	    bss	    dec	    hex	filename
->   29670	   3920	    192	  33782	   83f6	drivers/net/dsa/bcm_sf2.o
-> 
-> (gcc version 10.2.0)
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On Tue, Oct 20, 2020 at 1:56 AM kajoljain <kjain@linux.ibm.com> wrote:
+>
+>
+>
+> On 10/19/20 9:50 PM, Ian Rogers wrote:
+> > On Mon, Oct 19, 2020 at 2:51 AM John Garry <john.garry@huawei.com> wrote:
+> >>
+> >> On 19/10/2020 00:30, Ian Rogers wrote:
+> >>> On Sun, Oct 18, 2020 at 1:51 AM kernel test robot <rong.a.chen@intel.com> wrote:
+> >>>>
+> >>>> Greeting,
+> >>>>
+> >>>> FYI, we noticed the following commit (built with gcc-9):
+> >>>>
+> >>>> commit: fcc9c5243c478f104014daf4d23db86098d2aef0 ("perf metricgroup: Hack a fix for aliases when covering multiple PMUs")
+> >>>> url: https://github.com/0day-ci/linux/commits/John-Garry/perf-pmu-events-Support-event-aliasing-for-system-PMUs/20201008-182049
+> >>>>
+> >>>>
+> >>>> in testcase: perf-sanity-tests
+> >>>> version: perf-x86_64-c85fb28b6f99-1_20201008
+> >>>> with following parameters:
+> >>>>
+> >>>>          perf_compiler: gcc
+> >>>>          ucode: 0xdc
+> >>>>
+> >>>>
+> >>>>
+> >>>> on test machine: 4 threads Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz with 32G memory
+> >>>>
+> >>>> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> >>>
+> >>> I believe this is a Skylake and there is a known bug in the Skylake
+> >>> metric DRAM_Parallel_Reads as described here:
+> >>> https://lore.kernel.org/lkml/CAP-5=fXejVaQa9qfW66cY77qB962+jbe8tT5bsLoOOcFmODnWQ@mail.gmail.com/
+> >>> Fixing the bug needs more knowledge than what is available in manuals.
+> >>> Hopefully Intel can take a look.
+> >>>
+> >>> Thanks,
+> >>> Ian
+> >>
+> >> So this named patch ("perf metricgroup: Hack a fix for aliases...") is
+> >> breaking test #67 on my machine also, which is a broadwell.
+> >
+> > Thanks for taking a look John. If you want help you can send the
+> > output of "perf test 67 -vvv" to me. It is possible Broadwell has
+> > similar glitches in the json to Skylake. I tested the original test on
+> > server parts as I can access them as cloud machines.
+> >
+> >> I will have a look, but I was hoping that Ian would have a proper fix
+> >> for this on top of ("perf metricgroup: Fix uncore metric expressions"),
+> >> which now looks to be merged.
+> >
+> > I still have these changes to look at in my inbox but I'm assuming
+> > they're good :-) Sorry for not getting to them, but it's good they are
+> > merged.
+>
+> Hi Ian,
+>    Checked in upstream kernel with your fix patch, in powerpc also test case 67 is passing.
+> But I am getting issue in test 10 for powerpc
+>
+> [command]# ./perf test 10
+> 10: PMU events                                                      :
+> 10.1: PMU event table sanity                                        : Ok
+> 10.2: PMU event map aliases                                         : Ok
+> 10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
+> 10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
+>
+> Was debugging it, issue is with commit e1c92a7fbbc5 perf tests: Add another metric parsing test.
+>
+> So, there we are passing different runtime parameter value in "expr__find_other and expr__parse"
+> in function `metric_parse_fake`. I believe we need to send same value.
+> I will send fix patch for the same.
+>
+> Thanks,
+> Kajol Jain
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Thanks, the fake support was done by Jiri. I do try to test on Power
+8. The awesome thing, aside from the testing nit fixes, is that the
+metrics will actually work once the test is passing :-). They may of
+course report junk.
+
+Thanks,
+Ian
+
+> >
+> > Thanks,
+> > Ian
+> >
+> >> Thanks!
+> >>
+> >>>
+> >>>>
+> >>>>
+> >>>> If you fix the issue, kindly add following tag
+> >>>> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> >>>>
+> >>>>
+> >>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 67
+> >>>> 67: Parse and process metrics                             : FAILED!
+> >>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 68
+> >>>> 68: x86 rdpmc                                             : Ok
+> >>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 69
+> >>>> 69: Convert perf time to TSC                              : Ok
+> >>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 70
+> >>>> 70: DWARF unwind                                          : Ok
+> >>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 71
+> >>>> 71: x86 instruction decoder - new instructions            : Ok
+> >>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 72
+> >>>> 72: Intel PT packet decoder                               : Ok
+> >>>> 2020-10-16 19:31:52 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 73
+> >>>> 73: x86 bp modify                                         : Ok
+> >>>> 2020-10-16 19:31:53 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 74
+> >>>> 74: probe libc's inet_pton & backtrace it with ping       : Ok
+> >>>> 2020-10-16 19:31:54 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-fcc9c5243c478f104014daf4d23db86098d2aef0/tools/perf/perf test 75
+> >>>> 75: Zstd perf.data compression/decompression              : Ok
+> >>>>
+> >>>>
+> >>>>
+> >>>> To reproduce:
+> >>>>
+> >>>>          git clone https://github.com/intel/lkp-tests.git
+> >>>>          cd lkp-tests
+> >>>>          bin/lkp install job.yaml  # job file is attached in this email
+> >>>>          bin/lkp run     job.yaml
+> >>>>
+> >>>>
+> >>>>
+> >>>> Thanks,
+> >>>> Rong Chen
+> >>>>
+> >>> .
+> >>>
+> >>
