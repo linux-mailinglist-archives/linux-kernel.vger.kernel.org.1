@@ -2,375 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6836A294156
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44391294159
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395372AbgJTRXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 13:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
+        id S2395380AbgJTRXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 13:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390879AbgJTRXh (ORCPT
+        with ESMTP id S2390934AbgJTRXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 13:23:37 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27719C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 10:23:37 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k18so2859896wmj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 10:23:37 -0700 (PDT)
+        Tue, 20 Oct 2020 13:23:43 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD8CC0613CE;
+        Tue, 20 Oct 2020 10:23:43 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id c16so2861024wmd.2;
+        Tue, 20 Oct 2020 10:23:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aHul1OxumjXdzLDFboabsxgP+T8wu9OYStK55aNunxk=;
-        b=HwMoGSohPzWVlNfG4Z/+SYlX1rZDSqxxQkRj94FVYgfvOBuVCInBTS8uEIKoC0PW6P
-         YWkueLP9ZP9VKntRpePZK+VOUMB5ZFjLrZojLdqOBZIdZJNrF511bV5Ng2y08AI3Uq3E
-         Xld/Qn4WCDjyuitZz+sRaDNQZZ6m7cMmLWM0SDt204ZrBmAkavhUQidDAJ2GUMrxIPst
-         vhCw6B5zEPRWJDNbc2gMJ6mGLl2ISM2E9gLEdrFFVawnSFBux7ujvkBsR1PCb7yUt9+x
-         eUE/aW0NgOGxTDpI0KYlnSkq7Oy2XoqyrOJE8KZQuC0UUW/OBa5RLI9bVw7GYyrLYSwu
-         DHKA==
+        bh=h2+ojPPLyBo7kK8/PUacJWkUkAXdZIz8buD6pfJ8AkM=;
+        b=VXFfDjzWnDc7Yuy7UTd3VPxvnDqie1gs4/171Zu2FWPfFEVJgFCQ+qpgFAmetnVWMZ
+         15hJDufZt2YcTa8lQX7rD0zalL932qz48pNC5BHtC0ogPL0Uu9960uiWDxRuo7CfX3wC
+         SjoosZd4XCEGPBe5F/plNTkw9CfyTgPCqB6j0DoxRkMtCNrK59St2fbjUQwJWQL81IA5
+         KKBnCE3fZtueSDggi/UOIhREzCKGXE/4sEw5fJ4YpWRhS8R4o9dJxOf8v64T0eHE/mbd
+         ICdT0FijbppHyAetdfKrJATeXFpLxtn63x9J+YlHYBhRP7SBppERVatb+kdd4GZ5h7oE
+         po3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aHul1OxumjXdzLDFboabsxgP+T8wu9OYStK55aNunxk=;
-        b=q6NuEEGrDjgJ1FIKg/nkHDHSSgERaG9wHVBTTnSB6AH2RRd8fzL/xzHwTL9lVwAQna
-         selLynyhYfXZIkJjTg2R4MFD8Fvt2wtktHLdqyJP9xl391zKG2TNFQDFfmNxo+yaOULf
-         KHNymYqFhk4q7hKPUc9rX85YsU+A4Ragzi1VJ4I/FIHsBBifY9IuinKsRxNqodH8DS74
-         TVlu+7i9S+UedxehjqP7vsJw8SLfpBAr0VVqWJSAUriscS33BFMgfJ9YdtenqH+Hkx57
-         8VMAbKVkrUiTpHuhLFTXlxzih4PitdlAuu4kRVxVLUDqebyvY3lKISsTp4d0OEHM5f2+
-         9HWw==
-X-Gm-Message-State: AOAM5313NxK8iE0RfrWETkFgEWs2jeradARh5csI2hfSetlxIAnOnFJ7
-        5xej8r18s4YVF7/ePkFhtntmkmuzONvRcOrRj59eoA==
-X-Google-Smtp-Source: ABdhPJyBz8fiCvV4lgzvnRTjIxDLzCtl8EGS2CXkKOerO4VVgWpe8sC2tT8oe6pv8aiQhwhb9gUHlr6JLMqrbzinG7A=
-X-Received: by 2002:a1c:2cc2:: with SMTP id s185mr4136218wms.77.1603214615616;
- Tue, 20 Oct 2020 10:23:35 -0700 (PDT)
+        bh=h2+ojPPLyBo7kK8/PUacJWkUkAXdZIz8buD6pfJ8AkM=;
+        b=oLknYHOZ4BYbFWP54911d2MmgrXgAGVMMC99ZVW/K3nIPknuuDJNwBxZdAXjOgDnN7
+         c8I649FldspN5f8DddV3mPKHn4jRTHV8dX19MLFi5iNiqW61+tTOPG/LSWre8pog8QKY
+         bfP0vCulTuQLNYqo5x8dyZxsu8XrHCG/jBheYPWPRKnm4YTSf/NPEqCcCmRq7Sw3apYK
+         N1ko/KGIZBqnGnmQf8OKGMSzbWPveNrA2qbcZyfaqUP0ky/jPnqZAO7lEj9DTZFucYMu
+         Awv1lLW/SRdYRpvAT3B5Tc2e0MWFHrMd/h/62rKibxEgjNizdE0zaJf+0/IAnW1VWpq2
+         Duhg==
+X-Gm-Message-State: AOAM531DbV0cu8sV8+gkC246nEjhJuzH8FvSKHFsArucDGUY/CqbEWPl
+        atfOmRQEGx6aVxwirRRB+Tb3U5MTSfQz9dem9mo=
+X-Google-Smtp-Source: ABdhPJxbqfCvW/8qBMKxeBZje9EeSD1q3IVgzvzCBIvv9dv+Ffta0OBLXAL7YLNY9ckQEZOFKFeLvpTjXxtx8zdL/FI=
+X-Received: by 2002:a1c:3243:: with SMTP id y64mr4006066wmy.175.1603214621999;
+ Tue, 20 Oct 2020 10:23:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201015170217.291916-1-vitor@massaru.org>
-In-Reply-To: <20201015170217.291916-1-vitor@massaru.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 20 Oct 2020 10:23:24 -0700
-Message-ID: <CAP-5=fV+4GijgjEPCqPZDL77HtqBO=tGzrt-PNiiO1d1xDS4kA@mail.gmail.com>
-Subject: Re: [PATCH v3] lib: kunit: add test_min_heap test conversion to KUnit
-To:     Vitor Massaru Iha <vitor@massaru.org>
-Cc:     KUnit Development <kunit-dev@googlegroups.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
+References: <20201019211101.143327-1-robdclark@gmail.com> <20201020082404.GJ401619@phenom.ffwll.local>
+ <CAF6AEGuT6ZSpitNS0eBcjKhAVW1QBg+uPJQQkBLckOk=_GBx=A@mail.gmail.com>
+ <CAKMK7uEg-iz2zK6E0RFA-JQ+GfjuUcnrdu+e_3FWq9E9_9WUZA@mail.gmail.com>
+ <CAF6AEGuF_76hMHa-n7VYHY+sSKGTt=gTBh8r+2992Bhx-RE61A@mail.gmail.com> <CAKMK7uEHSsgVDsFnpedx2_w0B8ST3RKA1O62NXOtDr2bCrie+A@mail.gmail.com>
+In-Reply-To: <CAKMK7uEHSsgVDsFnpedx2_w0B8ST3RKA1O62NXOtDr2bCrie+A@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 20 Oct 2020 10:23:30 -0700
+Message-ID: <CAF6AEGtfLpueGUF_2oWzAt2KCHh0mmF4fDnNRHB3P5H_-Xn=6A@mail.gmail.com>
+Subject: Re: [PATCH 0/3] drm/msm: kthread_worker conversion
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Roy Spliet <nouveau@spliet.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        tongtiangen <tongtiangen@huawei.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Drew Davenport <ddavenport@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 10:02 AM Vitor Massaru Iha <vitor@massaru.org> wrote:
+On Tue, Oct 20, 2020 at 10:02 AM Daniel Vetter <daniel@ffwll.ch> wrote:
 >
-> This adds the conversion of the runtime tests of test_min_heap,
-> from `lib/test_min_heap.c` to KUnit tests.
+> On Tue, Oct 20, 2020 at 5:08 PM Rob Clark <robdclark@gmail.com> wrote:
+> >
+> > On Tue, Oct 20, 2020 at 7:29 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > >
+> > > On Tue, Oct 20, 2020 at 4:01 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > >
+> > > > On Tue, Oct 20, 2020 at 1:24 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > >
+> > > > > On Mon, Oct 19, 2020 at 02:10:50PM -0700, Rob Clark wrote:
+> > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > >
+> > > > > > In particular, converting the async atomic commit (for cursor updates,
+> > > > > > etc) to SCHED_FIFO kthread_worker helps with some cases where we
+> > > > > > wouldn't manage to flush the updates within the 1ms-before-vblank
+> > > > > > deadline resulting in fps drops when there is cursor movement.
+> > > > > >
+> > > > > > Rob Clark (3):
+> > > > > >   drm/msm/gpu: Convert retire/recover work to kthread_worker
+> > > > > >   drm/msm/kms: Update msm_kms_init/destroy
+> > > > > >   drm/msm/atomic: Convert to per-CRTC kthread_work
+> > > > >
+> > > > > So i915 has it's own commit worker already for $reasons, but I don't think
+> > > > > that's a good path to go down with more drivers. And the problem seems
+> > > > > entirely generic in nature ...
+> > > >
+> > > > I'm not *entirely* sure what your point is here?  This is just
+> > > > migrating away from a shared ordered wq to per-crtc kthread so that we
+> > > > don't miss vblank deadlines for silly reasons (and then stall on the
+> > > > next frame's pageflip because we are still waiting for the cursor
+> > > > update to latch).  Kind of like vblank-work but scheduled prior to,
+> > > > rather than after, vblank.
+> > > >
+> > > > And you're right that the problem is partially generic.. hw that (a)
+> > > > doesn't have true async (cursor and/or otherwise) updates, and (b) has
+> > > > various flush bits that latch register updates on vblank, is not that
+> > > > uncommon.  But the current atomic helper API would have to be a bit
+> > > > redesigned to look more like the interface between msm_atomic and the
+> > > > display backend.  That is a fair bit of churn for re-using a small bit
+> > > > of code.
+> > >
+> > > I was making some assumptions about what you're doing, and I was
+> > > wrong. So I went and tried to understand what's actually going on
+> > > here.
+> > >
+> > > I'm trying to understand what exactly you've added with that async msm
+> > > support 2d99ced787e3d. I think this breaks the state structure update
+> > > model, you can't access any ->state pointers from the commit functions
+> > > after you've called drm_atomic_helper_commit_hw_done, or you might
+> > > have a use after free. And that seems to be happening from this commit
+> > > work thing you added to your existing commit work that the atomic
+> > > helpers provide already.
+> > >
+> > > The various commit functions seem to grab various state objects by
+> > > just chasing pointers from the objects (instead of the
+> > > drm_atomic_state stuff), so this all feels like it's yolo
+> > > free-wheeling.
+> > >
+> > > You also seem to be using the async_commit stuff from the atomic
+> > > helpers (which is actually synchronous (i.e. blocking) from the pov of
+> > > how the code runs, but seems to be for mdp5 only and not others. Also
+> > > your can_do_async still checks for legacy_cursor_update (maybe a
+> > > leftover, or needed on !mdp5 platforms) and ->async_update.
+> > >
+> > > I'm thoroughly confused how this all works.
+> >
+> > The legacy_cursor_update is really the thing that motivated the async
+> > commit support in the first place.  Sadly we still have userspace that
+> > expects to be able to use legacy cursor API, and that it will be
+> > nonblocking (and not cause fps drop).  (I'm not a fan of the legacy
+> > cursor UAPI.. don't hate the player..)
 >
-> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> Yeah this is why we have these atomic_async_check/commit functions,
+> and msm is even using them for mdp5. Not hating the player here at
+> all.
+>
+> > The premise is to do everything in terms of crtc_mask, although yeah,
+> > it looks like there are a few points that need to look at things like
+> > crtc->state->active.  The only point in msm-atomic itself that does
+> > this is vblank_get/put(), possibly we can fix drm_vblank instead and
+> > drop that workaround (see 43906812eaab06423f56af5cca9a9fcdbb4ac454)
+> >
+> > The rest of the async part is really just supposed to be writing the
+> > appropriate flush reg(s) and waiting until flush completes, although
+> > dpu's excess layering makes this harder than it needs to be.
+> >
+> > In practice, the kms->wait_flush() at the top of
+> > msm_atomic_commit_tail() will block until a pending async commit
+> > completes (this is where we hit the fps drop if we miss vblank
+> > deadline), so I don't *think* you can trigger a use-after-free.  But
+> > the dpu code could be better cleaned up to have less obj->state
+> > dereference in the kms->flush_commit(crtc_mask)/etc path.
+>
+> Hm this is more or less what the atomic_async_commit/check stuff was
+> meant to help facilitate too, and now msm is using that for mdp5, but
+> not for other pieces. That seems very confusing.
+>
+> Also I'm not sure how this works if you still end up flushing anyway,
+> since then you'd be back to doing everything in-order. Or will an
+> normal atomic flip push all the cursor updates to the next frame (in
+> which case you really should be able to do this all with async helpers
+> we have instead of hand-rolling a bunch of it in strange places).
 
-Acked-by: Ian Rogers <irogers@google.com>
+So, "flush" from the core-atomic part is writing all the various
+registers (overlay scanout bo/format/position/etc).. this is all done
+at the normal time (ie. whenever we get the cursor update).  The only
+thing we defer until close-to-vblank is writing the hw flush registers
+(ie. registers with bitmasks of the various hw blocks to latch on
+vblank).
 
-Thanks,
-Ian
+So a cursor update applies the state normally, from the PoV of
+sequence of atomic updates.  But tries to defer writing the flush regs
+so we can merge in future cursor updates and/or pageflip into the same
+frame.
 
-> ---
->   v2:
->     * change Kconfig entries to be more adherent to KUnit documentation,
->       min_heap test runs when enabling full test coverage (KUNIT_ALL_TESTS).
->     * make kconfig help more concise;
->     * fix KUNIT_TEST sufix;
->   v3:
->     * change KUNIT_EXPECT_FALSE_MSG for KUNIT_EXPECT_LE and KUNIT_EXPECT_GE
->       where they are applicable;
-> ---
->  lib/Kconfig.debug                         |  24 +++--
->  lib/Makefile                              |   2 +-
->  lib/{test_min_heap.c => min_heap_kunit.c} | 111 +++++++++++-----------
->  3 files changed, 72 insertions(+), 65 deletions(-)
->  rename lib/{test_min_heap.c => min_heap_kunit.c} (62%)
+Modulo the stuff that derefs kmsobj->state but shouldn't, I think (at
+least for hw that works this way with flush registers) this is a
+better approach to handling cursor updates.  The mdp5 async cursor
+stuff predates dpu, and I've just not had a chance to update mdp5 to
+use the new async flush path yet.
+
+BR,
+-R
+
+> You probably still need the worker to push out the update at the right
+> time, and I'm not sure what some good locking for that is. At least
+> I'm not really seeing how you sync that worker against a racing update
+> for the next cursor move.
+> -Daniel
 >
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 4f09c6505a2e..0e10ef1176de 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1915,16 +1915,6 @@ config TEST_LIST_SORT
 >
->           If unsure, say N.
+> > BR,
+> > -R
+> >
+> > > I do agree though that you probably want this to be a real time fifo
+> > > kthread worker, like for the vblank worker. Except now that I looked,
+> > > I'm not sure it's actually working intended and correct.
+> > > -Daniel
+> > >
+> > > > BR,
+> > > > -R
+> > > >
+> > > > > -Daniel
+> > > > >
+> > > > > >
+> > > > > >  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |  3 +--
+> > > > > >  drivers/gpu/drm/msm/adreno/a5xx_preempt.c |  6 ++---
+> > > > > >  drivers/gpu/drm/msm/adreno/a6xx_gmu.c     |  4 +--
+> > > > > >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 +--
+> > > > > >  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c   |  8 +++++-
+> > > > > >  drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c  |  8 +++++-
+> > > > > >  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c  | 11 ++++++---
+> > > > > >  drivers/gpu/drm/msm/disp/mdp_kms.h        |  9 +++++--
+> > > > > >  drivers/gpu/drm/msm/msm_atomic.c          | 25 +++++++++++++++----
+> > > > > >  drivers/gpu/drm/msm/msm_drv.h             |  3 ++-
+> > > > > >  drivers/gpu/drm/msm/msm_gpu.c             | 30 +++++++++++++++--------
+> > > > > >  drivers/gpu/drm/msm/msm_gpu.h             | 13 +++++++---
+> > > > > >  drivers/gpu/drm/msm/msm_kms.h             | 23 ++++++++++++++---
+> > > > > >  13 files changed, 104 insertions(+), 43 deletions(-)
+> > > > > >
+> > > > > > --
+> > > > > > 2.26.2
+> > > > > >
+> > > > > > _______________________________________________
+> > > > > > dri-devel mailing list
+> > > > > > dri-devel@lists.freedesktop.org
+> > > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > > >
+> > > > > --
+> > > > > Daniel Vetter
+> > > > > Software Engineer, Intel Corporation
+> > > > > http://blog.ffwll.ch
+> > > > _______________________________________________
+> > > > dri-devel mailing list
+> > > > dri-devel@lists.freedesktop.org
+> > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > >
+> > >
+> > >
+> > > --
+> > > Daniel Vetter
+> > > Software Engineer, Intel Corporation
+> > > http://blog.ffwll.ch
 >
-> -config TEST_MIN_HEAP
-> -       tristate "Min heap test"
-> -       depends on DEBUG_KERNEL || m
-> -       help
-> -         Enable this to turn on min heap function tests. This test is
-> -         executed only once during system boot (so affects only boot time),
-> -         or at module load time.
-> -
-> -         If unsure, say N.
-> -
->  config TEST_SORT
->         tristate "Array-based sort test"
->         depends on DEBUG_KERNEL || m
-> @@ -2256,6 +2246,20 @@ config BITS_TEST
 >
->           If unsure, say N.
 >
-> +config MIN_HEAP_KUNIT_TEST
-> +       tristate "KUnit test for Min heap" if !KUNIT_ALL_TESTS
-> +       depends on KUNIT
-> +       default KUNIT_ALL_TESTS
-> +       help
-> +         Enable this to turn on min heap function tests. This test is
-> +         executed only once during system boot (so affects only boot time),
-> +         or at module load time.
-> +
-> +         For more information on KUnit and unit tests in general please refer
-> +         to the KUnit documentation in Documentation/dev-tools/kunit/.
-> +
-> +         If unsure, say N.
-> +
->  config TEST_UDELAY
->         tristate "udelay test driver"
->         help
-> diff --git a/lib/Makefile b/lib/Makefile
-> index d862d41fdc3d..03d12e672cf8 100644
-> --- a/lib/Makefile
-> +++ b/lib/Makefile
-> @@ -68,7 +68,6 @@ CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
->  UBSAN_SANITIZE_test_ubsan.o := y
->  obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
->  obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
-> -obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
->  obj-$(CONFIG_TEST_LKM) += test_module.o
->  obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
->  obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
-> @@ -343,3 +342,4 @@ obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
->  obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
->  obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
->  obj-$(CONFIG_BITS_TEST) += test_bits.o
-> +obj-$(CONFIG_MIN_HEAP_KUNIT_TEST) += min_heap_kunit.o
-> diff --git a/lib/test_min_heap.c b/lib/min_heap_kunit.c
-> similarity index 62%
-> rename from lib/test_min_heap.c
-> rename to lib/min_heap_kunit.c
-> index d19c8080fd4d..97c5771f2b5e 100644
-> --- a/lib/test_min_heap.c
-> +++ b/lib/min_heap_kunit.c
-> @@ -7,9 +7,8 @@
->
->  #include <linux/log2.h>
->  #include <linux/min_heap.h>
-> -#include <linux/module.h>
-> -#include <linux/printk.h>
->  #include <linux/random.h>
-> +#include <kunit/test.h>
->
->  static __init bool less_than(const void *lhs, const void *rhs)
->  {
-> @@ -29,37 +28,28 @@ static __init void swap_ints(void *lhs, void *rhs)
->         *(int *)rhs = temp;
->  }
->
-> -static __init int pop_verify_heap(bool min_heap,
-> +static __init void pop_verify_heap(struct kunit *context,
-> +                               bool min_heap,
->                                 struct min_heap *heap,
->                                 const struct min_heap_callbacks *funcs)
->  {
->         int *values = heap->data;
-> -       int err = 0;
->         int last;
->
->         last = values[0];
->         min_heap_pop(heap, funcs);
->         while (heap->nr > 0) {
->                 if (min_heap) {
-> -                       if (last > values[0]) {
-> -                               pr_err("error: expected %d <= %d\n", last,
-> -                                       values[0]);
-> -                               err++;
-> -                       }
-> +            KUNIT_EXPECT_LE(context, last, values[0]);
->                 } else {
-> -                       if (last < values[0]) {
-> -                               pr_err("error: expected %d >= %d\n", last,
-> -                                       values[0]);
-> -                               err++;
-> -                       }
-> +            KUNIT_EXPECT_GE(context, last, values[0]);
->                 }
->                 last = values[0];
->                 min_heap_pop(heap, funcs);
->         }
-> -       return err;
->  }
->
-> -static __init int test_heapify_all(bool min_heap)
-> +static __init void test_heapify_all(struct kunit *context, bool min_heap)
->  {
->         int values[] = { 3, 1, 2, 4, 0x8000000, 0x7FFFFFF, 0,
->                          -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
-> @@ -73,12 +63,11 @@ static __init int test_heapify_all(bool min_heap)
->                 .less = min_heap ? less_than : greater_than,
->                 .swp = swap_ints,
->         };
-> -       int i, err;
-> +       int i;
->
->         /* Test with known set of values. */
->         min_heapify_all(&heap, &funcs);
-> -       err = pop_verify_heap(min_heap, &heap, &funcs);
-> -
-> +       pop_verify_heap(context, min_heap, &heap, &funcs);
->
->         /* Test with randomly generated values. */
->         heap.nr = ARRAY_SIZE(values);
-> @@ -86,12 +75,10 @@ static __init int test_heapify_all(bool min_heap)
->                 values[i] = get_random_int();
->
->         min_heapify_all(&heap, &funcs);
-> -       err += pop_verify_heap(min_heap, &heap, &funcs);
-> -
-> -       return err;
-> +       pop_verify_heap(context, min_heap, &heap, &funcs);
->  }
->
-> -static __init int test_heap_push(bool min_heap)
-> +static __init void test_heap_push(struct kunit *context, bool min_heap)
->  {
->         const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
->                              -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
-> @@ -106,25 +93,22 @@ static __init int test_heap_push(bool min_heap)
->                 .less = min_heap ? less_than : greater_than,
->                 .swp = swap_ints,
->         };
-> -       int i, temp, err;
-> +       int i, temp;
->
->         /* Test with known set of values copied from data. */
->         for (i = 0; i < ARRAY_SIZE(data); i++)
->                 min_heap_push(&heap, &data[i], &funcs);
-> -
-> -       err = pop_verify_heap(min_heap, &heap, &funcs);
-> +       pop_verify_heap(context, min_heap, &heap, &funcs);
->
->         /* Test with randomly generated values. */
->         while (heap.nr < heap.size) {
->                 temp = get_random_int();
->                 min_heap_push(&heap, &temp, &funcs);
->         }
-> -       err += pop_verify_heap(min_heap, &heap, &funcs);
-> -
-> -       return err;
-> +       pop_verify_heap(context, min_heap, &heap, &funcs);
->  }
->
-> -static __init int test_heap_pop_push(bool min_heap)
-> +static __init void test_heap_pop_push(struct kunit *context, bool min_heap)
->  {
->         const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
->                              -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
-> @@ -139,7 +123,7 @@ static __init int test_heap_pop_push(bool min_heap)
->                 .less = min_heap ? less_than : greater_than,
->                 .swp = swap_ints,
->         };
-> -       int i, temp, err;
-> +       int i, temp;
->
->         /* Fill values with data to pop and replace. */
->         temp = min_heap ? 0x80000000 : 0x7FFFFFFF;
-> @@ -149,8 +133,7 @@ static __init int test_heap_pop_push(bool min_heap)
->         /* Test with known set of values copied from data. */
->         for (i = 0; i < ARRAY_SIZE(data); i++)
->                 min_heap_pop_push(&heap, &data[i], &funcs);
-> -
-> -       err = pop_verify_heap(min_heap, &heap, &funcs);
-> +       pop_verify_heap(context, min_heap, &heap, &funcs);
->
->         heap.nr = 0;
->         for (i = 0; i < ARRAY_SIZE(data); i++)
-> @@ -161,34 +144,54 @@ static __init int test_heap_pop_push(bool min_heap)
->                 temp = get_random_int();
->                 min_heap_pop_push(&heap, &temp, &funcs);
->         }
-> -       err += pop_verify_heap(min_heap, &heap, &funcs);
-> +       pop_verify_heap(context, min_heap, &heap, &funcs);
-> +}
->
-> -       return err;
-> +static void __init test_heapify_all_true(struct kunit *context)
-> +{
-> +       test_heapify_all(context, true);
->  }
->
-> -static int __init test_min_heap_init(void)
-> +static void __init test_heapify_all_false(struct kunit *context)
->  {
-> -       int err = 0;
-> -
-> -       err += test_heapify_all(true);
-> -       err += test_heapify_all(false);
-> -       err += test_heap_push(true);
-> -       err += test_heap_push(false);
-> -       err += test_heap_pop_push(true);
-> -       err += test_heap_pop_push(false);
-> -       if (err) {
-> -               pr_err("test failed with %d errors\n", err);
-> -               return -EINVAL;
-> -       }
-> -       pr_info("test passed\n");
-> -       return 0;
-> +       test_heapify_all(context, true);
-> +}
-> +
-> +static void __init test_heap_push_true(struct kunit *context)
-> +{
-> +       test_heap_push(context, true);
-> +}
-> +
-> +static void __init test_heap_push_false(struct kunit *context)
-> +{
-> +       test_heap_push(context, false);
->  }
-> -module_init(test_min_heap_init);
->
-> -static void __exit test_min_heap_exit(void)
-> +static void __init test_heap_pop_push_true(struct kunit *context)
->  {
-> -       /* do nothing */
-> +       test_heap_pop_push(context, true);
->  }
-> -module_exit(test_min_heap_exit);
-> +
-> +static void __init test_heap_pop_push_false(struct kunit *context)
-> +{
-> +       test_heap_pop_push(context, false);
-> +}
-> +
-> +static struct kunit_case __refdata min_heap_test_cases[] = {
-> +       KUNIT_CASE(test_heapify_all_true),
-> +       KUNIT_CASE(test_heapify_all_false),
-> +       KUNIT_CASE(test_heap_push_true),
-> +       KUNIT_CASE(test_heap_push_false),
-> +       KUNIT_CASE(test_heap_pop_push_true),
-> +       KUNIT_CASE(test_heap_pop_push_false),
-> +       {}
-> +};
-> +
-> +static struct kunit_suite min_heap_test_suite = {
-> +       .name = "min-heap",
-> +       .test_cases = min_heap_test_cases,
-> +};
-> +
-> +kunit_test_suites(&min_heap_test_suite);
->
->  MODULE_LICENSE("GPL");
->
-> base-commit: d2585f5164c298aaaed14c2c8d313cbe7bd5b253
 > --
-> 2.26.2
->
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
