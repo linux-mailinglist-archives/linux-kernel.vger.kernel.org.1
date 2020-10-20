@@ -2,122 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83E629456B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 01:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EF429456F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 01:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410589AbgJTXZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 19:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391793AbgJTXZb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 19:25:31 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F02C0613CE;
-        Tue, 20 Oct 2020 16:25:31 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id y12so205382wrp.6;
-        Tue, 20 Oct 2020 16:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=KrtY69Bd3Ixdxm/O6NXw+p+KtjjEH9aL+39Rr1pK6J8=;
-        b=Q95JDr7d1dYjTlRUhMV1yKQnSnsatqcpA1L/wcf6RPjCMsNph5JA8GK6vGCDY1/P0c
-         K/L8y45OS8zZiaO8y58mXCcVlFbPSSb8qePltBYDABppNZqDs7SSv9bomfP7/0uO+oJS
-         8/EXLzuMXEQF6f5YRwSN0/EDLn5gbs0Hxj2FHgLui54cqsQ50yqRPTssrSmpayS7cbHb
-         FGLRSp3B/+12GnLtm7V1XXvCTQjbytPD/suPLJn2mGDfufNT5EMNWy1GTtZGc3PX/myX
-         FH88PR14MfWycCxtO/dn28g9ws3/sjPTw4/AfGiK+sHFJNHAFzH8W/mivUmjKkYQFztM
-         pAQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=KrtY69Bd3Ixdxm/O6NXw+p+KtjjEH9aL+39Rr1pK6J8=;
-        b=Ik+XeLyFx+jicEWu12JpxrxkSjFTT3H1aikHsE6m2z9qM8ZTl6vzFoeyvCjyeXvsCI
-         fWBfMz22cZOhBxvp79ndSTEzzw9Pkv2QMuLt68DHyEbxcGJ2mlKk9Umx4I3VcL+7JVpi
-         a7QcITS4CBFBt34UWnZDLhRLlT2OEdaj0L/wQ9DNJq6XIYJbMU6W8sgBKucds+7ZaSxg
-         nMAMF6iwv2P3wHfQ70fioDBtdrMuq1eYSalZl7IPePDIzFWJ27l2lJn/1kjQvBylx3se
-         PrAhRJ6P5vPWTUbhEpEyfOA23AFK0Z5jNbFXHpBzFzleqhXFuHD3i0bUPYuzgfZE7i+2
-         MMIw==
-X-Gm-Message-State: AOAM5333pDviOMUUs2LFPg9lohAQ4VV6afT2Uav+bLtyhpG1Kq/2iCBU
-        t1w78WKGhj/du3bE+DAQ4ff3QDmnHCLFyh7W
-X-Google-Smtp-Source: ABdhPJy7vDcQMfEH/tm3CnrLIPDmLRZ+9UYXjE+tfS/MBHoe7QTfHWOVU2lsjbMaCRoObbUqDh5GMQ==
-X-Received: by 2002:adf:df91:: with SMTP id z17mr739215wrl.379.1603236329885;
-        Tue, 20 Oct 2020 16:25:29 -0700 (PDT)
-Received: from [192.168.1.211] ([2.26.187.29])
-        by smtp.gmail.com with ESMTPSA id l6sm480915wrt.7.2020.10.20.16.25.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 16:25:29 -0700 (PDT)
-Subject: Re: [RFC PATCH v3 3/9] software_node: Fix failure to hold refcount in
- software_node_get_next_child
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        andriy.shevchenko@linux.intel.com, sergey.senozhatsky@gmail.com,
-        rostedt@goodmis.org, pmladek@suse.com, mchehab@kernel.org,
-        tian.shu.qiu@intel.com, bingbu.cao@intel.com,
-        sakari.ailus@linux.intel.com, yong.zhi@intel.com,
-        rafael@kernel.org, gregkh@linuxfoundation.org, kitakar@gmail.com,
-        dan.carpenter@oracle.org
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-4-djrscally@gmail.com>
- <20201020133148.GB843@valkosipuli.retiisi.org.uk>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <c1a7beba-faff-e06d-1517-5b30d777b252@gmail.com>
-Date:   Wed, 21 Oct 2020 00:25:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201020133148.GB843@valkosipuli.retiisi.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S2410600AbgJTX1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 19:27:18 -0400
+Received: from mail-eopbgr20063.outbound.protection.outlook.com ([40.107.2.63]:5995
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2404465AbgJTX1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 19:27:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QkZTUK5vr1aFRrcyvkP5OtyIb6iApgGLTi25fP1vHH11VY4uRibrk7rvc+5ej3NwYezwPwEKT5h///NQkclXz6TRiguWRcODnVEoD/nMbg3k8wQUP/w4M2vBeK+yu0QWTjQeMlhADyHw8LK/4fjSbxjzaqz0t4EKu4XWBxPV8X7Png3z++wuH60IJYy6sO31GpTnDiVb29wxPTBK0wRjFsldw/CQRnG559mIrbTlV9e1BUZcHrM+husH6B3I1XC8T/sIMnSHKCNVIfl2uglTUzNQXJMc+5z4npOFlEA9kA3oobD/l+dl+1aIUVtGAPjPjCpDMA15tFw0UgD4OI2inQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=divFz0G2ajVCfUa0qUewQq/Tu144gf1HwCjBmwAxSXM=;
+ b=GnVR78yC+f/hempjsFZXKweWFcmbYCepQAZ6SVadXfCwqK4C881SVaYNqW6y0un0UWhl9+y1r3s3TbbSZwXxDrdGYNQeEm6sli4w55mfqrW16mE+rRhfAz8a7A3WxjI3mE4uFh/HUqloiNEEz1gK7jNGTzGfRUFmywMgej8SYlzZtuS3y6VB2viMzDoV1HC+zi+bBW6aq7Hxc/dQW9/rCkcLKf2miH7IOmZLE+KXYI0nmUJNsZ2GjyDBM5VAm53yHnZA6VbkYW+G3fn/wrC8fpNWUuG0qSGPylgDx6uNgCzzYZ1gSKIDPlhNDUGO3/dRZp9MMsmcOYvIzC7Ua4qcOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=divFz0G2ajVCfUa0qUewQq/Tu144gf1HwCjBmwAxSXM=;
+ b=pW0ETnBclm06u/KeaitdWdLn+Enq4BFVsVM3z/bRLO1kLO8zGnYbdTIxCW95XzbRDdCGht6JgSx8b3+24WhAicFyGpYJAIgSMT8nOEeaSs6WvUdBZagdOUy/saPFDrt72FPQHvssOJoObPfHjLN5n1iEqYYaLE1GmWEAg666So4=
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VI1PR04MB6271.eurprd04.prod.outlook.com (2603:10a6:803:f7::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Tue, 20 Oct
+ 2020 23:27:14 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3477.029; Tue, 20 Oct 2020
+ 23:27:14 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
+        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+        "vishal@chelsio.com" <vishal@chelsio.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandru Marginean <alexandru.marginean@nxp.com>,
+        Leo Li <leoyang.li@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>
+Subject: Re: [PATCH v1 net-next 2/5] net: mscc: ocelot: set vcap IS2 chain to
+ goto PSFP chain
+Thread-Topic: [PATCH v1 net-next 2/5] net: mscc: ocelot: set vcap IS2 chain to
+ goto PSFP chain
+Thread-Index: AQHWprMxGi9VamOEPU28heaWaxH4LKmhI62A
+Date:   Tue, 20 Oct 2020 23:27:14 +0000
+Message-ID: <20201020232713.vyu3afhnhicf6xn2@skbuf>
+References: <20201020072321.36921-1-xiaoliang.yang_1@nxp.com>
+ <20201020072321.36921-3-xiaoliang.yang_1@nxp.com>
+In-Reply-To: <20201020072321.36921-3-xiaoliang.yang_1@nxp.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.26.174.215]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: bca08593-e796-4a42-9b33-08d8754fad38
+x-ms-traffictypediagnostic: VI1PR04MB6271:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB62718272C018F303F51D5FC5E01F0@VI1PR04MB6271.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ByH6EAzbZ3joSTxHAwQctXpww434UfmX3yZ9S6akoJfM2AJKJ7pL8nfbZSB6aw7+mQeEcvj5NJzVId/7CoqYohgo/nvIyEC41nndQBeGQYlNtKOfdxJdgbC/OiqnPAUnNVQ/oAjG16IXSOKGuvFu6CpkZG7B+M1FoTQOwBjshWlYI5Db21V3D6NUzbJqNEwvHYh2iLULHzjw7UomAE6ruIQ7UBHpsIGdn2l6Vxo7ewHWfzvxpFqkY0agunH3GhMUsDZaBDLytBykSnbbh7paxjK2HbERq+zlrlNYDlsuxryvKB9Ge4TXz+YWVrqtS6L0
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(136003)(39860400002)(346002)(396003)(376002)(6636002)(71200400001)(66946007)(66556008)(91956017)(2906002)(64756008)(6512007)(9686003)(8676002)(66446008)(8936002)(66476007)(6486002)(44832011)(7416002)(76116006)(86362001)(33716001)(83380400001)(5660300002)(54906003)(6862004)(186003)(26005)(6506007)(4326008)(478600001)(1076003)(316002)(4744005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: RitzU51SFH61ZsGNTkg9/M3ALmNtb0zQkMoyfZA/8WES0z2o2A9nPGkU9JfDBt60jC8FV3w4bhqNYolIxLv3qeaP4QTEhLtjZCpy+OcDw4t1kcCEsmiqtQ89Dta8M76ru9KdiIWKfCR/zIquLOGSp9qjJ5IioID7ZWRzUkYusksRdxBdbNFwm+Cw8AmfljxtblgumclNkoQyCvcWDxJdZ41/kdfS+2wCkM8BhoqoM2JXYnW6Kkf9PKFH1ajkSXJowYXL6l/ZidUPz4ZpYiLBG6xLnoQuCITMYq5IIHHo4KTBq8ksfL6jXH8ifG8XoAOPo0YefLgcsObSrIB7DDw87M9LbeIoYlY+HDugK5Mz4tUU5EiqxNIiVrC8TFfFuyKNf8n23dglyUUev3OwbOi+61OZ/XLfqqYZOtnUN7F5g1uD4U6Wd5tQEZLLyX++RXyoRaSbTKigzm/xOlPA0Mja2QWu2mQ+pZ9H2KlsREIk5fIoAPsk0m0s6c4WCSo2oMT1A2ZSxjm99LMjuoJeYDcnSqHBrF1NGHcBEYAxMI6YTXHJiPkS5SzqaLRQMSxyzf0/FDh8le1coo68AqPRSkm2pmQ2EzhiL/Tl2ryyA5niRvTE4cdswLlUJnV+8u28E/wIMlSN1OsmjWFQA2iV3TzfXw==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D7B2A85FCE3D2043BB69004FEE54A960@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bca08593-e796-4a42-9b33-08d8754fad38
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2020 23:27:14.0910
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tQYrr5OhAxduuupjONyxrjOv46FTe9riK58gBPWJzv2tOcZW7q5p9LX3bkAfVmKD5exQDQSxzt5BDfS5Etfajg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6271
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari
+On Tue, Oct 20, 2020 at 03:23:18PM +0800, Xiaoliang Yang wrote:
+> VSC9959 supports Per-Stream Filtering and Policing(PSFP), which is
+> processing after VCAP blocks. We set this block on chain 30000 and
+> set vcap IS2 chain to goto PSFP chain if hardware support.
+>=20
+> An example set is:
+> 	> tc filter add dev swp0 ingress chain 21000 flower
+> 		skip_sw action goto chain 30000
+>=20
+> Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+> ---
 
-On 20/10/2020 14:31, Sakari Ailus wrote:
-> Hi Daniel,
->
-> On Mon, Oct 19, 2020 at 11:58:57PM +0100, Daniel Scally wrote:
->> The software_node_get_next_child() function currently does not hold a kref
->> to the child software_node; fix that.
->>
->> Fixes: 59abd83672f7 ("drivers: base: Introducing software nodes to the firmware node framework")
->> Signed-off-by: Daniel Scally <djrscally@gmail.com>
->> ---
->> Changes in v3:
->> 	- split out from the full software_node_graph*() patch
->>
->>  drivers/base/swnode.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
->> index f01b1cc61..741149b90 100644
->> --- a/drivers/base/swnode.c
->> +++ b/drivers/base/swnode.c
->> @@ -450,7 +450,7 @@ software_node_get_next_child(const struct fwnode_handle *fwnode,
->>  		c = list_next_entry(c, entry);
->>  	else
->>  		c = list_first_entry(&p->children, struct swnode, entry);
->> -	return &c->fwnode;
->> +	return software_node_get(&c->fwnode);
-> I believe similarly, the function should drop the reference to the previous
-> node, and not expect the caller to do this. The OF equivalent does the
-> same.
-
-I think I prefer it this way myself, since the alternative is having to
-explicitly call *_node_get() on a returned child if you want to keep it
-but also keep iterating. But I agree that it's important to take a
-consistent approach. I'll add that too; this will mean
-swnode_graph_find_next_port() and
-software_node_graph_get_next_endpoint() in patch 4 of this series will
-need changing slightly to square away their references.
-
+I will defer to Microchip people whether 30000 is a good chain number
+for TSN offloads. Do you have other ingress VCAPs that you would like to
+number 30000?=
