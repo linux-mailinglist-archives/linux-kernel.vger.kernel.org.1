@@ -2,149 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A00293F13
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A00293F15
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393738AbgJTOzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392672AbgJTOzu (ORCPT
+        id S2394374AbgJTOzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:55:54 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:23724 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2393459AbgJTOzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:55:50 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19611C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:55:49 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f21so2105100wml.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:55:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uf/L+N0SXiT5GxWzSMpW76s8MjBMaRe3gnVIlCSIR5M=;
-        b=cK9G7+OH/TUQCyR8rfJv0QoQ3SjEQsnF9XCjVN6xqr/O8yU3IlDfbvmsbTfkhxQ06f
-         q4IpVZ8VlQ3fVXlWWHGSfLpylD2IH5P4NE25315km3BTplz4wROeM/cLeRnrZhnHb/v5
-         PyAaPitLsRWmdVTipbLqX4Out+F21VmQJ/X09y763klLznhk8Wjph5Dm6ltToTwu1GKi
-         6cF9SRXzSOe+CnDRgo2LkN4n5tkvfZ7EpQsA7EkHbGt3NkoE1mD/PmAfdxkXt8UbFE9X
-         RN1mqjge119zJMoJpTqXMa+rN2apg4iQxVK+dpL4RLHKRIlCnNkTt3EAvl5wmXLl4Uz1
-         eT1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uf/L+N0SXiT5GxWzSMpW76s8MjBMaRe3gnVIlCSIR5M=;
-        b=F3YPZl80xX9/VpyyGhGYPaiFnlEatGyQ6+ZZIZWKYpuus/5Bp4Frm8rs589hCCaOZ2
-         /np0lB77MHCqorw9A8Jbz+Rpqfmq6KEvRD4quQbpdXghJViJVw/P+oqC65i6T4gxoinm
-         ALvXnAnbGCSNof6H4XWbno9or68G79c1xlUvJ+WL/+51JiwcvyxhTXBXuM+o+Iai0s1j
-         zUfq/xsa0BT5x0lwwJaJNy8B+2Zm30RAjQ5qKVTQZoT4be9FYSbDe6Cobr5NhZpbX8L8
-         arqbl5iYAb0dX1t2pEkaYZ22uRqYfKOtBA8I2n6Y+Ry0OjxO/CywqgYeznzMbg9VK3Ut
-         ymtA==
-X-Gm-Message-State: AOAM532tbTykqW4ZaSRD3G90HH5VdrKrRsSSlBVxWWKkipiQyGzWvAep
-        uX/SR7vDX93XX3jv4YuO4LDCGw==
-X-Google-Smtp-Source: ABdhPJwZTIfXIjPLWWjL97y1NfJTXN0Y2s/to/X10G0kOS41vqvGeaVeSXPhf5OZA0t9DHJLkiPgNg==
-X-Received: by 2002:a7b:ce8f:: with SMTP id q15mr3351776wmj.88.1603205747699;
-        Tue, 20 Oct 2020 07:55:47 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id 1sm3868599wre.61.2020.10.20.07.55.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 20 Oct 2020 07:55:46 -0700 (PDT)
-Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine
- bindings
-To:     Mark Brown <broonie@kernel.org>,
-        Cheng-yi Chiang <cychiang@chromium.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Srinivasa Rao <srivasam@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Dylan Reid <dgreid@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-References: <20200914080619.4178587-1-cychiang@chromium.org>
- <20200914080619.4178587-3-cychiang@chromium.org>
- <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
- <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
- <20201015161251.GF4390@sirena.org.uk>
- <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
- <20201020143711.GC9448@sirena.org.uk>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <63f1a29c-0758-97b8-ce80-fe43d91630fa@linaro.org>
-Date:   Tue, 20 Oct 2020 15:55:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 20 Oct 2020 10:55:52 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-57-xS59UY4nNimTtYgwsOO0kw-1; Tue, 20 Oct 2020 15:55:48 +0100
+X-MC-Unique: xS59UY4nNimTtYgwsOO0kw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 20 Oct 2020 15:55:47 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 20 Oct 2020 15:55:47 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arvind Sankar' <nivedita@alum.mit.edu>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 4/5] crypto: lib/sha256 - Unroll SHA256 loop 8 times
+ intead of 64
+Thread-Topic: [PATCH 4/5] crypto: lib/sha256 - Unroll SHA256 loop 8 times
+ intead of 64
+Thread-Index: AQHWpizLtR2ktKloi0KILMfFeYMjdqmgGc8ggABdwQCAABu2AA==
+Date:   Tue, 20 Oct 2020 14:55:47 +0000
+Message-ID: <6ee12f8fa3914fbcb5e4a1388e430acd@AcuMS.aculab.com>
+References: <20201019153016.2698303-1-nivedita@alum.mit.edu>
+ <20201019153016.2698303-5-nivedita@alum.mit.edu>
+ <1324eb3519d54ddd9469d30a94c11823@AcuMS.aculab.com>
+ <20201020140726.GB2996696@rani.riverdale.lan>
+In-Reply-To: <20201020140726.GB2996696@rani.riverdale.lan>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20201020143711.GC9448@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+RnJvbTogQXJ2aW5kIFNhbmthcg0KPiBTZW50OiAyMCBPY3RvYmVyIDIwMjAgMTU6MDcNCj4gVG86
+IERhdmlkIExhaWdodCA8RGF2aWQuTGFpZ2h0QEFDVUxBQi5DT00+DQo+IA0KPiBPbiBUdWUsIE9j
+dCAyMCwgMjAyMCBhdCAwNzo0MTozM0FNICswMDAwLCBEYXZpZCBMYWlnaHQgd3JvdGU6DQo+ID4g
+RnJvbTogQXJ2aW5kIFNhbmthcj4gU2VudDogMTkgT2N0b2JlciAyMDIwIDE2OjMwDQo+ID4gPiBU
+bzogSGVyYmVydCBYdSA8aGVyYmVydEBnb25kb3IuYXBhbmEub3JnLmF1PjsgRGF2aWQgUy4gTWls
+bGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0PjsgbGludXgtDQo+ID4gPiBjcnlwdG9Admdlci5rZXJu
+ZWwub3JnDQo+ID4gPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiA+ID4gU3Vi
+amVjdDogW1BBVENIIDQvNV0gY3J5cHRvOiBsaWIvc2hhMjU2IC0gVW5yb2xsIFNIQTI1NiBsb29w
+IDggdGltZXMgaW50ZWFkIG9mIDY0DQo+ID4gPg0KPiA+ID4gVGhpcyByZWR1Y2VzIGNvZGUgc2l6
+ZSBzdWJzdGFudGlhbGx5IChvbiB4ODZfNjQgd2l0aCBnY2MtMTAgdGhlIHNpemUgb2YNCj4gPiA+
+IHNoYTI1Nl91cGRhdGUoKSBnb2VzIGZyb20gNzU5MyBieXRlcyB0byAxOTUyIGJ5dGVzIGluY2x1
+ZGluZyB0aGUgbmV3DQo+ID4gPiBTSEEyNTZfSyBhcnJheSksIGFuZCBvbiB4ODYgaXMgc2xpZ2h0
+bHkgZmFzdGVyIHRoYW4gdGhlIGZ1bGwgdW5yb2xsLg0KPiA+DQo+ID4gVGhlIHNwZWVkIHdpbGwg
+ZGVwZW5kIG9uIGV4YWN0bHkgd2hpY2ggY3B1IHR5cGUgaXMgdXNlZC4NCj4gPiBJdCBpcyBldmVu
+IHBvc3NpYmxlIHRoYXQgdGhlICdub3QgdW5yb2xsZWQgYXQgYWxsJyBsb29wDQo+ID4gKHdpdGgg
+dGhlIGFsbCB0aGUgZXh0cmEgcmVnaXN0ZXIgbW92ZXMpIGlzIGZhc3RlciBvbiBzb21lIHg4Ni02
+NCBjcHUuDQo+IA0KPiBZZXMsIEkgc2hvdWxkIGhhdmUgbWVudGlvbmVkIHRoaXMgd2FzIHRlc3Rl
+ZCBvbiBhIEJyb2Fkd2VsbCBYZW9uLCBhdA0KPiBsZWFzdCBvbiB0aGF0IHByb2Nlc3Nvciwgbm8g
+dW5yb2xsaW5nIGlzIGEgbWVhc3VyYWJsZSBwZXJmb3JtYW5jZSBsb3NzLg0KPiBCdXQgdGhlIGhv
+cGUgaXMgdGhhdCA4eCB1bnJvbGwgc2hvdWxkIGJlIGdlbmVyYWxseSBlbm91Z2ggdW5yb2xsaW5n
+IHRoYXQNCj4gNjR4IGlzIHVubGlrZWx5IHRvIHNwZWVkIGl0IHVwIG1vcmUsIGFuZCBzbyBoYXMg
+bm8gYWR2YW50YWdlIG92ZXIgOHguDQoNCihJJ3ZlIGp1c3QgbG9va2VkIGF0IHRoZSBhY3R1YWwg
+Y29kZSwgbm90IGp1c3QgdGhlIHBhdGNoLikNCg0KWWVzIEkgZG91YnQgdGhlIDY0eCB1bnJvbGwg
+d2FzIGV2ZXIgYSBzaWduaWZpY2FudCBnYWluLg0KVW5yb2xsaW5nIGNvbXBsZXRlbHkgcmVxdWly
+ZXMgYSBsb2FkIG9mIHJlZ2lzdGVyIG1vdmVzL3JlbmFtZXM7DQpwcm9iYWJseSB0b28gbWFueSB0
+byBiZSAnemVybyBjb3N0Jy4NCg0KV2l0aCBtb2Rlcm4gY3B1IHlvdSBjYW4gb2Z0ZW4gZ2V0IHRo
+ZSBsb29wIGNvbnRyb2wgaW5zdHJ1Y3Rpb25zDQonZm9yIGZyZWUnIHNvIHVucm9sbGluZyBqdXN0
+IGtpbGxzIHRoZSBJLWNhY2hlLg0KU29tZSBvZiB0aGUgY3B1IGhhdmUgbG9vcCBidWZmZXJzIGZv
+ciBkZWNvZGVkIGluc3RydWN0aW9ucywNCnVucm9sbCBiZXlvbmQgdGhhdCBzaXplIGFuZCB5b3Ug
+c3VkZGVubHkgZ2V0IHRoZSBkZWNvZGVyIGNvc3RzDQpoaXR0aW5nIHlvdSBhZ2Fpbi4NCg0KLi4u
+DQo+ID4gSWYgeW91IGNhbiBwdXQgU0hBMjU2X0tbXSBhbmQgV1tdIGludG8gYSBzdHJ1Y3QgdGhl
+biB0aGUNCj4gPiBjb21waWxlciBjYW4gdXNlIHRoZSBzYW1lIHJlZ2lzdGVyIHRvIGFkZHJlc3Mg
+aW50byBib3RoDQo+ID4gYXJyYXlzICh1c2luZyBhbiBvZmZzZXQgb2YgNjQqNCBmb3IgdGhlIHNl
+Y29uZCBvbmUpLg0KPiA+IChpZSBrZWVwIHRoZSB0d28gYXJyYXlzLCBub3QgYW4gYXJyYXkgb2Yg
+c3RydWN0KS4NCj4gPiBUaGlzIHNob3VsZCByZWR1Y2UgdGhlIHJlZ2lzdGVyIHByZXNzdXJlIHNs
+aWdodGx5Lg0KPiANCj4gSSBjYW4gdHJ5IHRoYXQsIGNvdWxkIGNvcHkgdGhlIGRhdGEgaW4gc2hh
+MjU2X3VwZGF0ZSgpIHNvIGl0J3MgYW1vcnRpemVkDQo+IG92ZXIgdGhlIHdob2xlIGlucHV0Lg0K
+DQpIYXZpbmcgbG9va2VkIG1vcmUgY2xvc2VseSB0aGUgZXh0cmEgY29weSBuZWVkZWQgaXMgcHJv
+YmFibHkNCmJpZ2dlciB0aGFuIGFueSBzYXZpbmcuDQoNCldoYXQgdGhhdCBjb2RlIG5lZWRzIGlz
+IHNvbWUgc3BlY2lhbCAzLWlucHV0IGluc3RydWN0aW9ucyA6LSkNCkl0IHdvdWxkIHdvcmsgYSBs
+b3QgYmV0dGVyIHdyaXR0ZW4gaW4gVkhETCBmb3IgYW4gZnBnYS4NCg0KCURhdmlkDQoNCi0NClJl
+Z2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0
+b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykN
+Cg==
 
-
-On 20/10/2020 15:37, Mark Brown wrote:
-> I don't understand what "logic scattered in various dtsi files" means,
-> sorry.
-> 
->> Yes, that should work to describe the dailink we are using.
->> But a more tricky issue is how to do calls like setting PLL in dai startup ops.
-> ...
-> 
->> I think that asking a generic machine driver to do configuration like
->> this with only a limited interface of device property
->> might be too much of an ask for the machine driver.
-> Richard was looking at some basic configuration for PLLs.
-> 
->> Would you mind if I simplify the compatible string like Srinivas
->> suggested, and send a v12?
->> As for other two kinds of variations that I am aware of:
->> 1. front mic / rear mic
->> 2. replace alc5682 with adau7002
-> The CODEC change is going to be described in the DT no matter what -
-> you'll have a reference to the CODEC node but it may make sense if
-> there's enough custom code around it.  For front vs rear mic the
-> simplest thing would just be to not mention which if this is a hardware
-> fixed thing, otherwise a control.
-> 
->> We can set different board names and different compatible strings to
->> achieve such variation.
->> So that it would make sense to describe configuration in compatible
->> strings like you suggested, and also provides UCM a way to distinguish
->> different boards.
-> I don't recall having suggested distinguishing these things with a
-> compatible string, especially not the microphones.  UCM can already use
-> the display names for the boards to distinguish things.
-
-
-Not with the compatible string!
-
-Currently card name, and long name are exactly same in all Qualcomm 
-soundcards, which makes it very difficult to identify how those boards 
-re wired up at UCM2 level. So the plan is to properly populate card long 
-name with "model" property which can include details on how things are 
-wiredup on that board.
-
---srini
