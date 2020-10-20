@@ -2,176 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C48A293A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B13293A49
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393883AbgJTLvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 07:51:15 -0400
-Received: from mail-bn8nam11on2081.outbound.protection.outlook.com ([40.107.236.81]:14112
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2393628AbgJTLvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 07:51:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=My0E6ZgwSnYLxw+7tjk+hBD5WZHPNKUSWOEvD2pLY/CIxtOtt4ofIzwLBHY4Lzo1BIGml5hNYOrongtUNlTa1dN/S32WGjvVJGbmt3/bH1VXybFyakqLUuqDj6YzFqxkMo9uWb/QDg38uui68Z/H9DwhxtDhzX4aWvOCg9zAodt2Mrhj6hm8nmyXLnmlAApCCABr8gxFFo8tXbqzqnkmHHuGQkisfbGO011PSLcHFUDK8kVWkPootigLvJ56u2+UdVDdKQ8ZTNy41nLSm61gkeKjbw9IrOGzJCxHh2jHBuO2zUh29G4o6BfM0Nh3z1xjcGunONxLmaAwGOSFz85/mQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qZKaeRAiqrQOkRITs12acbNwstZzN/mH4XuNomTsEWk=;
- b=gAwOjtz2erG58BdjIQn9QwjyiJLXLQfHY1HAOwDsDGr0e3Kis2VqSNWH/H8EqsVUArtB2lQsIHymPwIclJ7XVX16qSb3LaaC/IxT2WrPnBOCtsqpgE1jPwplxvpY+XimRxsBu6CHwBG3E9tLbwdEikn3r5Cdc+pPZzqi9YXQuxEHOpYlAQFe3I/PUUq5yfy0KtbsRTvL5bxMCMjv974+hmWVpR+pO40TvTzlOS2FfnlejLrBMZ7keQFDCQK+hIgQT6WFPldrdTl1RPNjDJ1ZVDuEvwcQhBxpy41OHTQEWLwzPerPJCg4zULg8VHe0UuM0XsL7R/T53yJrfnMTbIOyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qZKaeRAiqrQOkRITs12acbNwstZzN/mH4XuNomTsEWk=;
- b=mISZd5O07Zy0soijTL5GhyBR31wzBRqyUBxtmqFkw8OPVvYBhsNwZSP9nwSbJD+ySFr862GkxGqJCiSESWCm0HfrBDZN+jb7WNmOoRSX/v636n83iXH3mFWSbdagC5rOFm0cHrR+nzDUAv46t84WSwMnRu+V9YT4RxYHocjiidc=
-Authentication-Results: kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=none action=none header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BYAPR11MB3190.namprd11.prod.outlook.com (2603:10b6:a03:7b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.28; Tue, 20 Oct
- 2020 11:50:42 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::adbd:559a:4a78:f09b]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::adbd:559a:4a78:f09b%6]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
- 11:50:41 +0000
-Subject: Re: [External] Re: [PATCH] mm/memory.c: Introduce non-atomic
- __{Set,Clear}PageSwapCache
-To:     Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, osalvador@suse.de,
-        alexander.h.duyck@linux.intel.com, yang.shi@linux.alibaba.com,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hugh Dickins <hughd@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-References: <20201019101520.12283-1-songmuchun@bytedance.com>
- <20201019123137.GG27114@dhcp22.suse.cz>
- <CAMZfGtVa7n_W2QYA1a8xM3HFtPne8XcWDObytEujO47CBkwYWw@mail.gmail.com>
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-Message-ID: <1b5198a5-247c-23aa-3be7-f5821a672cc2@windriver.com>
-Date:   Tue, 20 Oct 2020 19:50:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-In-Reply-To: <CAMZfGtVa7n_W2QYA1a8xM3HFtPne8XcWDObytEujO47CBkwYWw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK0PR01CA0049.apcprd01.prod.exchangelabs.com
- (2603:1096:203:a6::13) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
+        id S2393862AbgJTLuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 07:50:54 -0400
+Received: from correo.us.es ([193.147.175.20]:35406 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393793AbgJTLux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 07:50:53 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id BE7AF116C93
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 13:50:50 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id ADF90FC59B
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 13:50:50 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id A2319FB37F; Tue, 20 Oct 2020 13:50:50 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 51AA5DA91F;
+        Tue, 20 Oct 2020 13:50:48 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 20 Oct 2020 13:50:48 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id DA6E141A3F46;
+        Tue, 20 Oct 2020 13:50:47 +0200 (CEST)
+Date:   Tue, 20 Oct 2020 13:50:47 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     saeed.mirzamohammadi@oracle.com
+Cc:     linux-kernel@vger.kernel.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH linux-5.9 1/1] net: netfilter: fix KASAN:
+ slab-out-of-bounds Read in nft_flow_rule_create
+Message-ID: <20201020115047.GA15628@salvia>
+References: <20201019172532.3906-1-saeed.mirzamohammadi@oracle.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.160] (60.247.85.82) by HK0PR01CA0049.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Tue, 20 Oct 2020 11:50:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ea6f4ffa-1bbb-42e5-7332-08d874ee5ee9
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3190:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB31903D0A66F6EC95DE426E1DE41F0@BYAPR11MB3190.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NBqvBslRIwWoRj9hG955A7oCUkJPOlxZ4CahvJVJVESvFhd0XLfu0Y+/oLonCYfJWga+z2bCySrz2cuk+7VsD4SsqjqBSjfg0Y20K1Hc1SXAQjALMtJh09GLMFwsLi+Tb1gpUBWdwbEYirDRHzfc3mhCz/bHAzr6c+YH5Qcyovk/J6ai1QTlM9k4KixYUhPyllx7PH4DS9gXKp3nL+GzgjLrSXR+ZAwiTcX7g+SH1AlO14kCNVdQHzTDgyPv2pOa4Me2TahP9doqU4WvXUgmpo2YSBj16EB1Zsl2jOJ1OcHNV9PLgFBIHxL9f/i6ui3iXA2c4mloqjRzpjA7nAzu7Q3pJ1nboGNLSD6UY10wGHZ6mKFxnTWx3CCLF4k/2dQRDvwZ2ZyuQ9JJlNj97WCA/Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(376002)(136003)(396003)(366004)(52116002)(316002)(31686004)(478600001)(5660300002)(956004)(2616005)(31696002)(186003)(6666004)(110136005)(54906003)(86362001)(7416002)(36756003)(53546011)(26005)(83380400001)(8676002)(66476007)(66556008)(16576012)(16526019)(6486002)(8936002)(2906002)(4326008)(6706004)(66946007)(78286007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: h7f9St4KxliN7JmwUu9K7S4qMRtxg2Dw+MercfpOL8JZWlYsH3ZaVgxviQOVc3RiIQyWpI3l7NgPKg8k6r/M68eIV8iYbyRvocLT4lxFxxF+YYsufApm7mK6cBzXPl60U4h6RYYcWeV2KG0s31A6eXLtjoMd+OS7OBRZXsakd5kcUh3zZeXcnjbyjod9KF6PdEW8fo5TpdiUz+OgGqqywrBIwVoV4yhq6CLEywTbclu2M7JuOWhfixIjz9FKrMmoahFofaGofyR2QKIvskuKUgE3TsZsa7Q9Lz7g5CMtjKdVYjyuXVVb4qa7zy1HNICdK3hKvDNvzbNcTwZCflCE7EPrTlVPGN6C6WqOFp/BA+O/RM8UBsZVReuXd1Vkrvb9Jqj2aQdId/OX9CvxAaIYyaMAhX4L5AETSUYOgHeEBhVuS6+jeL1WMnNKqxQbpILBb3gxt7c0xUUVUSWxiLvz/dxuVTJfIfpK4Y6RbTNps/nO6+QQIuKyrE7M/pQywutgDngy3nrxxxG4Is6wF9k5ioYkA4cKt5g0QBBZ5O7cbYnziEI6pi47OAgKVzbExE3+fYO2twdwgLt3YytuVuNPR/x9nPM5mDW74yez4QYUD87B0zRQ8NUJjo2YsEYtVIxOJDOYQ113AYYzVw00Nxm5Mw==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea6f4ffa-1bbb-42e5-7332-08d874ee5ee9
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2020 11:50:41.8200
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LAw+1RqVb7+qlvsEU4cGTf/myZRjR7ybHbnnMIHu7f0smWfiF2bxGbBunXg7q4EdELb3t8SaquqYCnI5raG1RQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3190
+Content-Type: multipart/mixed; boundary="J/dobhs11T7y2rNN"
+Content-Disposition: inline
+In-Reply-To: <20201019172532.3906-1-saeed.mirzamohammadi@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--J/dobhs11T7y2rNN
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-On 10/19/20 10:58 PM, Muchun Song wrote:
-> On Mon, Oct 19, 2020 at 8:31 PM Michal Hocko <mhocko@suse.com> wrote:
->>
->> On Mon 19-10-20 18:15:20, Muchun Song wrote:
->>> For the exclusive reference page, the non-atomic operations is enough,
->>> so replace them to non-atomic operations.
->>
->> I do expect you do not see any difference in runtime and this is mostly
->> driven by the code reading, right? Being explicit about this in the code
->> would be preferred.
+On Mon, Oct 19, 2020 at 10:25:32AM -0700, saeed.mirzamohammadi@oracle.com wrote:
+> From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
 > 
-> Yeah, just code reading.And the set_bit and __set_bit is actually different
-> on some architectures. Thanks.
+> This patch fixes the issue due to:
 > 
->>
->> No objection to the change.
->>
->>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->>
->> With an improved changelog
->> Acked-by: Michal Hocko <mhocko@suse.com>
->>
->>> ---
->>>   include/linux/page-flags.h | 2 ++
->>>   mm/memory.c                | 4 ++--
->>>   2 files changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
->>> index fbbb841a9346..ec039dde5e4b 100644
->>> --- a/include/linux/page-flags.h
->>> +++ b/include/linux/page-flags.h
->>> @@ -401,6 +401,8 @@ static __always_inline int PageSwapCache(struct page *page)
->>>   }
->>>   SETPAGEFLAG(SwapCache, swapcache, PF_NO_TAIL)
->>>   CLEARPAGEFLAG(SwapCache, swapcache, PF_NO_TAIL)
->>> +__SETPAGEFLAG(SwapCache, swapcache, PF_NO_TAIL)
->>> +__CLEARPAGEFLAG(SwapCache, swapcache, PF_NO_TAIL)
->>>   #else
->>>   PAGEFLAG_FALSE(SwapCache)
->>>   #endif
->>> diff --git a/mm/memory.c b/mm/memory.c
->>> index 2d267ef6621a..02dd62da26e0 100644
->>> --- a/mm/memory.c
->>> +++ b/mm/memory.c
->>> @@ -3128,10 +3128,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>>                                set_page_private(page, entry.val);
->>>
->>>                                /* Tell memcg to use swap ownership records */
->>> -                             SetPageSwapCache(page);
->>> +                             __SetPageSwapCache(page);
-
-Good evening, Muchun. I found there are still some places could be 
-replaced with __SetPageSwapCache（）. Such as shmem_replace_page（）, why 
-PG_locked has been set before SetPageSwapCache（） is involved.
-
-Would you please to check the rest places? :)
-
-Thanks
-
-Acked-by: Yanfei Xu <yanfei.xu@windriver.com>
-
->>>                                err = mem_cgroup_charge(page, vma->vm_mm,
->>>                                                        GFP_KERNEL);
->>> -                             ClearPageSwapCache(page);
->>> +                             __ClearPageSwapCache(page);
->>>                                if (err) {
->>>                                        ret = VM_FAULT_OOM;
->>>                                        goto out_page;
->>> --
->>> 2.20.1
->>>
->>
->> --
->> Michal Hocko
->> SUSE Labs
+> BUG: KASAN: slab-out-of-bounds in nft_flow_rule_create+0x622/0x6a2
+> net/netfilter/nf_tables_offload.c:40
+> Read of size 8 at addr ffff888103910b58 by task syz-executor227/16244
 > 
+> The error happens when expr->ops is accessed early on before performing the boundary check and after nft_expr_next() moves the expr to go out-of-bounds.
 > 
-> 
+> This patch checks the boundary condition before expr->ops that fixes the slab-out-of-bounds Read issue.
+
+Thanks. I made a slight variant of your patch.
+
+I'm attaching it, it is also fixing the problem but it introduced
+nft_expr_more() and use it everywhere.
+
+Let me know if this looks fine to you.
+
+--J/dobhs11T7y2rNN
+Content-Type: text/x-diff; charset=utf-8
+Content-Disposition: attachment; filename="0001-netfilter-fix-KASAN-slab-out-of-bounds-Read-in-nft_f.patch"
+
+From 3f60e5f489ec44e8b0a7e9e622c93be4df335fb6 Mon Sep 17 00:00:00 2001
+From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+Date: Tue, 20 Oct 2020 13:41:36 +0200
+Subject: [PATCH nf] netfilter: fix KASAN: slab-out-of-bounds Read in
+ nft_flow_rule_create
+
+This patch fixes the issue due to:
+
+BUG: KASAN: slab-out-of-bounds in nft_flow_rule_create+0x622/0x6a2
+net/netfilter/nf_tables_offload.c:40
+Read of size 8 at addr ffff888103910b58 by task syz-executor227/16244
+
+The error happens when expr->ops is accessed early on before performing the boundary check and after nft_expr_next() moves the expr to go out-of-bounds.
+
+This patch checks the boundary condition before expr->ops that fixes the slab-out-of-bounds Read issue.
+
+Add nft_expr_more() and use it to fix this problem.
+
+Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ include/net/netfilter/nf_tables.h | 6 ++++++
+ net/netfilter/nf_tables_api.c     | 6 +++---
+ net/netfilter/nf_tables_offload.c | 4 ++--
+ 3 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 3f7e56b1171e..55b4cadf290a 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -891,6 +891,12 @@ static inline struct nft_expr *nft_expr_last(const struct nft_rule *rule)
+ 	return (struct nft_expr *)&rule->data[rule->dlen];
+ }
+ 
++static inline bool nft_expr_more(const struct nft_rule *rule,
++				 const struct nft_expr *expr)
++{
++	return expr != nft_expr_last(rule) && expr->ops;
++}
++
+ static inline struct nft_userdata *nft_userdata(const struct nft_rule *rule)
+ {
+ 	return (void *)&rule->data[rule->dlen];
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 9957e0ed8658..65cb8e3c13d9 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -302,7 +302,7 @@ static void nft_rule_expr_activate(const struct nft_ctx *ctx,
+ 	struct nft_expr *expr;
+ 
+ 	expr = nft_expr_first(rule);
+-	while (expr != nft_expr_last(rule) && expr->ops) {
++	while (nft_expr_more(rule, expr)) {
+ 		if (expr->ops->activate)
+ 			expr->ops->activate(ctx, expr);
+ 
+@@ -317,7 +317,7 @@ static void nft_rule_expr_deactivate(const struct nft_ctx *ctx,
+ 	struct nft_expr *expr;
+ 
+ 	expr = nft_expr_first(rule);
+-	while (expr != nft_expr_last(rule) && expr->ops) {
++	while (nft_expr_more(rule, expr)) {
+ 		if (expr->ops->deactivate)
+ 			expr->ops->deactivate(ctx, expr, phase);
+ 
+@@ -3080,7 +3080,7 @@ static void nf_tables_rule_destroy(const struct nft_ctx *ctx,
+ 	 * is called on error from nf_tables_newrule().
+ 	 */
+ 	expr = nft_expr_first(rule);
+-	while (expr != nft_expr_last(rule) && expr->ops) {
++	while (nft_expr_more(rule, expr)) {
+ 		next = nft_expr_next(expr);
+ 		nf_tables_expr_destroy(ctx, expr);
+ 		expr = next;
+diff --git a/net/netfilter/nf_tables_offload.c b/net/netfilter/nf_tables_offload.c
+index 7c7e06624dc3..9f625724a20f 100644
+--- a/net/netfilter/nf_tables_offload.c
++++ b/net/netfilter/nf_tables_offload.c
+@@ -37,7 +37,7 @@ struct nft_flow_rule *nft_flow_rule_create(struct net *net,
+ 	struct nft_expr *expr;
+ 
+ 	expr = nft_expr_first(rule);
+-	while (expr->ops && expr != nft_expr_last(rule)) {
++	while (nft_expr_more(rule, expr)) {
+ 		if (expr->ops->offload_flags & NFT_OFFLOAD_F_ACTION)
+ 			num_actions++;
+ 
+@@ -61,7 +61,7 @@ struct nft_flow_rule *nft_flow_rule_create(struct net *net,
+ 	ctx->net = net;
+ 	ctx->dep.type = NFT_OFFLOAD_DEP_UNSPEC;
+ 
+-	while (expr->ops && expr != nft_expr_last(rule)) {
++	while (nft_expr_more(rule, expr)) {
+ 		if (!expr->ops->offload) {
+ 			err = -EOPNOTSUPP;
+ 			goto err_out;
+-- 
+2.20.1
+
+
+--J/dobhs11T7y2rNN--
