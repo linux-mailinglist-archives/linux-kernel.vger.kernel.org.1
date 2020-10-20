@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2582934FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E275293504
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404296AbgJTGaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:30:17 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:57538 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404268AbgJTGaP (ORCPT
+        id S2404327AbgJTGc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:32:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32479 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730619AbgJTGc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:30:15 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=zoucao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UCcdLet_1603175410;
-Received: from localhost(mailfrom:zoucao@linux.alibaba.com fp:SMTPD_---0UCcdLet_1603175410)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 20 Oct 2020 14:30:11 +0800
-From:   Zou Cao <zoucao@linux.alibaba.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH 2/2] fs:regfs: add panic notifier callback for saving regs
-Date:   Tue, 20 Oct 2020 14:30:08 +0800
-Message-Id: <1603175408-96164-2-git-send-email-zoucao@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1603175408-96164-1-git-send-email-zoucao@linux.alibaba.com>
-References: <1603175408-96164-1-git-send-email-zoucao@linux.alibaba.com>
+        Tue, 20 Oct 2020 02:32:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603175545;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kUV7+7Yb5gWkt6R5BK6/Nubk0EIUzqlyn1lORobljU8=;
+        b=ho/N65rGP7qEo1ynqxhUa2/H0XMAf4wx8zUWOL6dsoZoJgdEjniud3URX0CBSGyt6QPMMD
+        X/HS/bnV+iE4sXzmF7IDzAz4hrNmx93mAWwjrRYWfzKO7OsMVz/PnubccHJqCxpTdfh+eW
+        1YBgc62wwzGQdzqS51E3F2ffHsOvC48=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-123-TllFas1gNjWKqFl0xh-Dfg-1; Tue, 20 Oct 2020 02:32:24 -0400
+X-MC-Unique: TllFas1gNjWKqFl0xh-Dfg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E71A01006C8C;
+        Tue, 20 Oct 2020 06:32:21 +0000 (UTC)
+Received: from [10.72.13.171] (ovpn-13-171.pek2.redhat.com [10.72.13.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E70976EF59;
+        Tue, 20 Oct 2020 06:32:13 +0000 (UTC)
+Subject: Re: [PATCH 2/2] KVM: not link irqfd with a fake IRQ bypass producer
+To:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org
+Cc:     netdev@vger.kernel.org, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, mst@redhat.com
+References: <20201019090657.131-1-zhenzhong.duan@gmail.com>
+ <20201019090657.131-2-zhenzhong.duan@gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <7eec99d5-e36b-ee5b-5b6c-1486e453a083@redhat.com>
+Date:   Tue, 20 Oct 2020 14:32:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201019090657.131-2-zhenzhong.duan@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-register panic notifier callback for saveing regs, add a module
-param regfs_panic to enable the show reg info when panic.
 
-Signed-off-by: Zou Cao <zoucao@linux.alibaba.com>
----
- fs/regfs/inode.c | 39 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+On 2020/10/19 下午5:06, Zhenzhong Duan wrote:
+> In case failure to setup Post interrupt for an IRQ, it make no sense
+> to assign irqfd->producer to the producer.
+>
+> This change makes code more robust.
 
-diff --git a/fs/regfs/inode.c b/fs/regfs/inode.c
-index 1643fcd..6c79f73 100644
---- a/fs/regfs/inode.c
-+++ b/fs/regfs/inode.c
-@@ -46,10 +46,41 @@
- static LIST_HEAD(regfs_head);
- 
- static const struct inode_operations regfs_dir_inode_operations;
--int regfs_debug;
-+int regfs_debug = 1;
- module_param(regfs_debug, int, S_IRUGO);
- MODULE_PARM_DESC(regfs_debug, "enable regfs debug mode");
- 
-+static int regfs_panic = 1;
-+module_param(regfs_panic, int, S_IRUGO);
-+MODULE_PARM_DESC(regfs_debug, "printk the register when panic");
-+
-+//save all register val when panic
-+static int regfs_panic_event(struct notifier_block *self,
-+		 unsigned long val, void *data)
-+{
-+	struct regfs_fs_info *fsi;
-+	struct inode *inode, *next;
-+
-+
-+	list_for_each_entry(fsi, &regfs_head, regfs_head) {
-+		list_for_each_entry_safe(inode, next, &fsi->sb->s_inodes, i_sb_list) {
-+			struct regfs_inode_info *info =  REGFS_I(inode);;
-+			//save the regs val
-+			if (info->type == RES_TYPE_ITEM) {
-+				info->val = readl_relaxed(info->base + info->offset);
-+				if (regfs_panic)
-+					printk("%llx:%llx\n", (u64)(info->base + info->offset), info->val);
-+			}
-+		}
-+	}
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block regfs_panic_event_nb = {
-+	.notifier_call   = regfs_panic_event,
-+};
-+
- struct inode *regfs_get_inode(struct super_block *sb, const struct inode *dir, umode_t mode, dev_t dev)
- {
- 	struct inode *inode = new_inode(sb);
-@@ -328,6 +359,7 @@ static void init_once(void *foo)
- 
- static int __init init_regfs_fs(void)
- {
-+	int ret;
- 
- 	regfs_inode_cachep = kmem_cache_create_usercopy("regfs_inode_cache",
- 				sizeof(struct regfs_inode_info), 0,
-@@ -337,11 +369,16 @@ static int __init init_regfs_fs(void)
- 	if (!regfs_inode_cachep)
- 		return -ENOMEM;
- 
-+	ret = atomic_notifier_chain_register(&panic_notifier_list, &regfs_panic_event_nb);
-+	if (ret)
-+		pr_warn("regfs regiter panic notifier failed\n");
-+
- 	return  register_filesystem(&regfs_fs_type);
- }
- 
- static void __exit exit_regfs_fs(void)
- {
-+	atomic_notifier_chain_unregister(&panic_notifier_list, &regfs_panic_event_nb);
- 	unregister_filesystem(&regfs_fs_type);
- 	rcu_barrier();
- 	kmem_cache_destroy(regfs_inode_cachep);
--- 
-1.8.3.1
+
+It's better to describe what issue we will get without this patch.
+
+Thanks
+
+
+>
+> Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+> ---
+>   arch/x86/kvm/x86.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index ce856e0..277e961 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10683,13 +10683,14 @@ int kvm_arch_irq_bypass_add_producer(struct irq_bypass_consumer *cons,
+>   		container_of(cons, struct kvm_kernel_irqfd, consumer);
+>   	int ret;
+>   
+> -	irqfd->producer = prod;
+>   	kvm_arch_start_assignment(irqfd->kvm);
+>   	ret = kvm_x86_ops.update_pi_irte(irqfd->kvm,
+>   					 prod->irq, irqfd->gsi, 1);
+>   
+>   	if (ret)
+>   		kvm_arch_end_assignment(irqfd->kvm);
+> +	else
+> +		irqfd->producer = prod;
+>   
+>   	return ret;
+>   }
 
