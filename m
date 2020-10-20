@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F9F293845
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A24293826
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405807AbgJTJhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:37:22 -0400
+        id S2392935AbgJTJgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:36:45 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405571AbgJTJgj (ORCPT
+        with ESMTP id S2405631AbgJTJgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:36:39 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FFCC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:36:39 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id r4so1042726qta.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:36:39 -0700 (PDT)
+        Tue, 20 Oct 2020 05:36:41 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F979C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:36:41 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id a12so1460882ybc.20
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:36:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=AbwKAlpRbBzxsSe5kAQOuBfb52JpqxZSOcBoGgGmeso=;
-        b=sl1B9B4vv5eN+xZj8B9SY5vK28/8Nz1jwaPbrJE/msIPNNFFrSoEQqmU27cNWPsj7y
-         Cyss5ayFY76AwKFLzGi94YERh8DiK3EOWwCSXg1atpnwpbZc2K4KfOT2WhTDHrlxoPYV
-         QoE1lckmwc9BQVRE+r6PwlNae93PF0QRYcHcETgJwYKZ40VJLrSCR0Da/3+WEfNwYLtb
-         LUy+A76xKqOuZ37h80XOimz++QLKGagjQR1UeM06nwzTRcoY6lIZJP7SnzCbVBUCj4eY
-         UZe+MMDdbJ4TJ2MpI9eSuu6wWjp80QdchZ6TdsUmQ6JHRJ2T2EdCpe4IDuikDEWeV7pw
-         g48Q==
+        bh=68+qkqJJ0yGLVD99S4hdTLHhp4Q61Io/XotXvcoBiV8=;
+        b=ZR2wc6dslObVvINB9BUikIlKrnpZm/ejNhWBSswVwuHXvxAX9xWLlasnBYoDLa2QFX
+         S3aAcemb9GkFUrue0XxER8DBdvl91wF3vcDl7FtI8k+F4cNA+/8PcCwYjSz/Klcs37SW
+         zI7QywfZicOrHzgPcypyayEfKcsIE3m7k0jgGsDoGEh386tmay9J3AwoAPUcMit7307F
+         1kvgZAJJ33mie4RXZSuuw4BXx+AdTYXnoEWClQ+HzXuTIti4Y5YXApZgujTAoa2c+1ve
+         aGmsQoyeXW0qPmqWKsLQ3JdYooQko3Lu8UDl+FINeY1tWZGngo+nglwnFAv5W/AEPLLL
+         hWjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=AbwKAlpRbBzxsSe5kAQOuBfb52JpqxZSOcBoGgGmeso=;
-        b=AfsVsMBcWN9AFedcKmbrpaf3I3FNTVioYVDLRwnET/lRVwqoe2QaUITfMVoeFfiP0s
-         wYjo8jSDUzvseJWsNKHhFTFntCuXGp9iPU50V8BbuVVPq2QtKZQNM2V2/cS5oywVL3yg
-         UkaFYNnnmVw01pl+SwWhS3NnvRKv8ZW3/VQxdTYwJnHbgzvSzrN5e/DNzy4qBHOkL/2v
-         mGfk582GKK5DUGyOCPNda65jJU21nMlr4PBO0XqEKr7pPLVgf8fNGT5/hzadcusn5JwB
-         PboiLYHosC9ipLUXbDaln6+TZF8hTB72v2maw/3jyrNWse/FswfQZ3LAXSdLZs+4bT9b
-         2Bvw==
-X-Gm-Message-State: AOAM5320Q7uaWy4SFdw0UoEA979VTPFaYTrYUvf/s+OuC4IfvjBLwZsC
-        MBlX8Y6HfLzJpNVn4iKLINYj0AT1hlc=
-X-Google-Smtp-Source: ABdhPJzu69fZ64i2g+ZoQbQGoUr1mjfdEBTdPzFBtfaMMP+XumcOlSeSNGCvZcEGbNqKAO/YAfp54nsGZ/Q=
+        bh=68+qkqJJ0yGLVD99S4hdTLHhp4Q61Io/XotXvcoBiV8=;
+        b=OhcnZIt9PEo866U9fDL4+Hkit5jx5He1qaZqvRc9YWx++RMHomN6c0xm4qvRl8WRh9
+         J4U0AWjOFyhypDmTUZd2GB25PqjtVIBDHeYcRdoryQ80qVy5FBlZ+m1zMJ9T166YZC3J
+         uFKZLuMQBW30vWHw1VohDdkWBifVmwZUDravt6bc+Uy/gyWzX5Q2ST3r2KpOAuKenb7M
+         z9sEd8Oq6/NEZEYRak37rbVUa/zpSM6YtCxZ8LmEbpiAPQBrGZH8u5OKxmYLShdvNpDr
+         pVeUWU7Z30B9cjXIbVqgLTvATPzUfIizssYkXI1EHlpkz3m2GspYAGEoek8EyhZDAhkb
+         eubw==
+X-Gm-Message-State: AOAM533je/V6gnB7ebEafN2lfiosIbyEtIvFoC+CmHIs9I+D+SRnusSI
+        aa/lKa8UmRMUBnUnAYRAGeO7sV4LFVQ=
+X-Google-Smtp-Source: ABdhPJyil+TPK0fD0mAFL5BbejbF9pJeXKE7dbv/JGrJAocl14Pd/3zIJQ3exhUfNX3qiZIpkT8FNM8G4Os=
 Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
 X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:1:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:ad4:5184:: with SMTP id b4mr2229953qvp.26.1603186598658;
- Tue, 20 Oct 2020 02:36:38 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 02:36:20 -0700
+ (user=badhri job=sendgmr) by 2002:a25:84cd:: with SMTP id x13mr2587479ybm.430.1603186600445;
+ Tue, 20 Oct 2020 02:36:40 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 02:36:21 -0700
 In-Reply-To: <20201020093627.256885-1-badhri@google.com>
-Message-Id: <20201020093627.256885-4-badhri@google.com>
+Message-Id: <20201020093627.256885-5-badhri@google.com>
 Mime-Version: 1.0
 References: <20201020093627.256885-1-badhri@google.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH v11 03/10] usb: typec: tcpci_maxim: Fix the compatible string
+Subject: [PATCH v11 04/10] usb: typec: tcpm: Refactor logic for new-source-frs-typec-current
 From:   Badhri Jagan Sridharan <badhri@google.com>
 To:     Guenter Roeck <linux@roeck-us.net>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -72,30 +72,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changing compatible string to include the part number.
+New source's current capability is now defined through
+new-source-frs-typec-current. Refactor tcpm code to parse
+new-source-frs-typec-current and infer local port's new source current
+capability during frs.
 
 Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 ---
-V11 is the first version of the patch.
-Introduced to add chip number to the compatible property to address
-Rob Herring's comment on dt-binding patch.
----
- drivers/usb/typec/tcpm/tcpci_maxim.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v9 is the first version of this patch in this series to rebase
+TCPM code to read new source frs current from
+new-source-frs-typec-current.
 
-diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-index 723d7dd38f75..82cc257fefd4 100644
---- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-+++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-@@ -481,7 +481,7 @@ MODULE_DEVICE_TABLE(i2c, max_tcpci_id);
+Changes since v10:
+- Moving back to u32 for new-source-frs-typec-current.
+---
+ drivers/usb/typec/tcpm/tcpm.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 55535c4f66bf..561480b67bce 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -363,8 +363,8 @@ struct tcpm_port {
+ 	/* port belongs to a self powered device */
+ 	bool self_powered;
  
- #ifdef CONFIG_OF
- static const struct of_device_id max_tcpci_of_match[] = {
--	{ .compatible = "maxim,tcpc", },
-+	{ .compatible = "maxim,33359", },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, max_tcpci_of_match);
+-	/* FRS */
+-	enum frs_typec_current frs_current;
++	/* Sink FRS */
++	enum frs_typec_current new_source_frs_current;
+ 
+ 	/* Sink caps have been queried */
+ 	bool sink_cap_done;
+@@ -1713,7 +1713,7 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
+ 	unsigned int cnt = pd_header_cnt_le(msg->header);
+ 	unsigned int rev = pd_header_rev_le(msg->header);
+ 	unsigned int i;
+-	enum frs_typec_current frs_current;
++	enum frs_typec_current partner_frs_current;
+ 	bool frs_enable;
+ 	int ret;
+ 
+@@ -1786,12 +1786,13 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
+ 		for (i = 0; i < cnt; i++)
+ 			port->sink_caps[i] = le32_to_cpu(msg->payload[i]);
+ 
+-		frs_current = (port->sink_caps[0] & PDO_FIXED_FRS_CURR_MASK) >>
++		partner_frs_current = (port->sink_caps[0] & PDO_FIXED_FRS_CURR_MASK) >>
+ 			PDO_FIXED_FRS_CURR_SHIFT;
+-		frs_enable = frs_current && (frs_current <= port->frs_current);
++		frs_enable = partner_frs_current && (partner_frs_current <=
++						     port->new_source_frs_current);
+ 		tcpm_log(port,
+ 			 "Port partner FRS capable partner_frs_current:%u port_frs_current:%u enable:%c",
+-			 frs_current, port->frs_current, frs_enable ? 'y' : 'n');
++			 partner_frs_current, port->new_source_frs_current, frs_enable ? 'y' : 'n');
+ 		if (frs_enable) {
+ 			ret  = port->tcpc->enable_frs(port->tcpc, true);
+ 			tcpm_log(port, "Enable FRS %s, ret:%d\n", ret ? "fail" : "success", ret);
+@@ -4808,9 +4809,10 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
+ 
+ 	/* FRS can only be supported byb DRP ports */
+ 	if (port->port_type == TYPEC_PORT_DRP) {
+-		ret = fwnode_property_read_u32(fwnode, "frs-typec-current", &frs_current);
++		ret = fwnode_property_read_u32(fwnode, "new-source-frs-typec-current",
++					       &frs_current);
+ 		if (ret >= 0 && frs_current <= FRS_5V_3A)
+-			port->frs_current = frs_current;
++			port->new_source_frs_current = frs_current;
+ 	}
+ 
+ 	return 0;
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
