@@ -2,204 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFE9293595
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D651F293599
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404902AbgJTHQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:16:38 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:45590 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404810AbgJTHQf (ORCPT
+        id S2404917AbgJTHRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728632AbgJTHRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:16:35 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 26D402002A;
-        Tue, 20 Oct 2020 09:16:30 +0200 (CEST)
-Date:   Tue, 20 Oct 2020 09:16:28 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     "Alex G." <mr.nuke.me@gmail.com>
-Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Mark Brown <broonie@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH v2 1/2] drm/bridge: sii902x: Enable I/O and core VCC
- supplies if present
-Message-ID: <20201020071628.GA1737816@ravnborg.org>
-References: <20200924200507.1175888-1-mr.nuke.me@gmail.com>
- <20200928173056.1674274-1-mr.nuke.me@gmail.com>
- <d74c7626-8f16-db85-c23f-79bf0cc400d0@gmail.com>
+        Tue, 20 Oct 2020 03:17:05 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F46C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:17:03 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id b1so814398lfp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oqfbzt/qDzJfLfhorr1LgGLqTXS/OCrC1Rjql2HHPMM=;
+        b=pixOfe/LlMMXGSm5PFqV3GzwGaKRnNcGMQ53dh3WqtVVHs0AD14SBQ+hAFp9Q2lVRx
+         yiXswGWtZ/4iFHOPdQjxW6wcevek2jcW50T8J7cTP5ToK6xYthpqI4rrxp81Xkp33Q5/
+         xV5GIvIS3aX0bkgfKjQhX3RRMnD82YVvIIW54i+i5Idjd3GF+C5VQi2jwc9tcuOj/p0W
+         gQJmjen7UIpB64+r0H5CUmYRCQuAiJwOfWrAplFfZk46xxPudigz2StWhTrUWMzVr4Dj
+         xqy9cdhyLRFT0RQ4RR8ZaiokWwu4rhmu0KfGjpUXYcgn1/LDhMitUbw43wYvCkSunBjs
+         ZXRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oqfbzt/qDzJfLfhorr1LgGLqTXS/OCrC1Rjql2HHPMM=;
+        b=giJYvECNbQjJA6iqUOAXCaROgm9Df6kreJGwdVgvLWADMQnkUJU6wnBWns7pt/+KEq
+         knsJBQ9S5LXSvPHql2JchAoXBoD/QFdPz2KQE621IRntDYd6tH2vlvOscd4qkdO2DCUw
+         NcO+vSFvAXngQ7MsBeh08y0IgqnXIYtnmoPBXlQpxfe0SVo+YV1HsqDysJCO3LVohoTA
+         QJhLHaql3mKsk6qsgzvjOxYABmQrh+7W46ml5QrhC87BC7xbqZqcnldPMFHBmc8J2zgm
+         2V/Xau02VojId7WRWHDG4GU920aedbZ06qNu/o+VW+XrrjbVGtwzT19ZWEN+A/XBPVAh
+         MMoA==
+X-Gm-Message-State: AOAM532y/tpLcikWB8yDT8AoKqs0PjPfgc7M8NMtQ2koqmGCiW64LSpv
+        Q7gwnNJ14vtZMUzBV7R4KQxtX9RmrfjonVvZDKvXtQ==
+X-Google-Smtp-Source: ABdhPJyljvU8t34fPXWrkGHEmjcTnmj0A7FHynrsuw2TPqALkHhNoboqAWhvd41VpIUiw+zC9Vv/rdO+co9ft5k0ZCk=
+X-Received: by 2002:a05:6512:2029:: with SMTP id s9mr445264lfs.273.1603178222429;
+ Tue, 20 Oct 2020 00:17:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d74c7626-8f16-db85-c23f-79bf0cc400d0@gmail.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=pGLkceISAAAA:8 a=e5mUnYsNAAAA:8
-        a=vrf_ZfXLQi0HMj2fYoAA:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
+References: <1602673931-28782-1-git-send-email-sumit.garg@linaro.org>
+ <1602673931-28782-4-git-send-email-sumit.garg@linaro.org> <1c68b74251dc72b0cd74706280ea96f7@kernel.org>
+In-Reply-To: <1c68b74251dc72b0cd74706280ea96f7@kernel.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 20 Oct 2020 12:46:51 +0530
+Message-ID: <CAFA6WYODXzOoH=NiurikiK6wepsdfmnmUd4BzEJnguaSGzW7GQ@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] arm64: smp: Allocate and setup IPI as NMI
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Mark Rutland <mark.rutland@arm.com>,
+        julien.thierry.kdev@gmail.com,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex.
+On Mon, 19 Oct 2020 at 17:29, Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2020-10-14 12:12, Sumit Garg wrote:
+> > Allocate an unused IPI that can be turned as NMI using ipi_nmi
+> > framework.
+>
+> This doesn't do any allocation, as far as I can see. It relies on
+> the initial grant from the interrupt controller to be larger than
+> what the kernel currently uses.
+>
 
-On Mon, Oct 19, 2020 at 08:24:40PM -0500, Alex G. wrote:
-> On 9/28/20 12:30 PM, Alexandru Gagniuc wrote:
-> > On the SII9022, the IOVCC and CVCC12 supplies must reach the correct
-> > voltage before the reset sequence is initiated. On most boards, this
-> > assumption is true at boot-up, so initialization succeeds.
-> > 
-> > However, when we try to initialize the chip with incorrect supply
-> > voltages, it will not respond to I2C requests. sii902x_probe() fails
-> > with -ENXIO.
-> > 
-> > To resolve this, look for the "iovcc" and "cvcc12" regulators, and
-> > make sure they are enabled before starting the reset sequence. If
-> > these supplies are not available in devicetree, then they will default
-> > to dummy-regulator. In that case everything will work like before.
-> > 
-> > This was observed on a STM32MP157C-DK2 booting in u-boot falcon mode.
-> > On this board, the supplies would be set by the second stage
-> > bootloader, which does not run in falcon mode.
-> > 
-> > Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+Okay, will update the commit message as s/Allocate/Assign/.
+
+-Sumit
+
+> > Also, invoke corresponding NMI setup/teardown APIs.
+> >
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 > > ---
-> > Changes since v1:
-> >    * Fix return code after regulator_enable(sii902x->iovcc) fails (Fabio Estevam)
-> >    * Use dev_err_probe() instead of dev_err() where appropriate (Sam Ravnborg)
-> > 
-> >   drivers/gpu/drm/bridge/sii902x.c | 54 ++++++++++++++++++++++++++++----
-> >   1 file changed, 48 insertions(+), 6 deletions(-)
-> 
-> This patch seems to have entered fall dormancy. Did I miss somebody in the
-> CC field?
-
-I have lost the original mail/patch.
-Can you resend with one fix - see below.
-
-	Sam
-
-> 
-> Alex
-> 
-> 
-> > diff --git a/drivers/gpu/drm/bridge/sii902x.c b/drivers/gpu/drm/bridge/sii902x.c
-> > index 33fd33f953ec..d15e9f2c0d8a 100644
-> > --- a/drivers/gpu/drm/bridge/sii902x.c
-> > +++ b/drivers/gpu/drm/bridge/sii902x.c
-> > @@ -17,6 +17,7 @@
-> >   #include <linux/i2c.h>
-> >   #include <linux/module.h>
-> >   #include <linux/regmap.h>
-> > +#include <linux/regulator/consumer.h>
-> >   #include <linux/clk.h>
-> >   #include <drm/drm_atomic_helper.h>
-> > @@ -168,6 +169,8 @@ struct sii902x {
-> >   	struct drm_connector connector;
-> >   	struct gpio_desc *reset_gpio;
-> >   	struct i2c_mux_core *i2cmux;
-> > +	struct regulator *iovcc;
-> > +	struct regulator *cvcc12;
-> >   	/*
-> >   	 * Mutex protects audio and video functions from interfering
-> >   	 * each other, by keeping their i2c command sequences atomic.
-> > @@ -954,13 +957,13 @@ static const struct drm_bridge_timings default_sii902x_timings = {
-> >   		 | DRM_BUS_FLAG_DE_HIGH,
-> >   };
-> > +static int sii902x_init(struct sii902x *sii902x);
-Please re-arrange the code so this prototype is not needed.
-
+> >  arch/arm64/kernel/smp.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> > index 82e75fc..129ebfb 100644
+> > --- a/arch/arm64/kernel/smp.c
+> > +++ b/arch/arm64/kernel/smp.c
+> > @@ -43,6 +43,7 @@
+> >  #include <asm/daifflags.h>
+> >  #include <asm/kvm_mmu.h>
+> >  #include <asm/mmu_context.h>
+> > +#include <asm/nmi.h>
+> >  #include <asm/numa.h>
+> >  #include <asm/processor.h>
+> >  #include <asm/smp_plat.h>
+> > @@ -962,6 +963,8 @@ static void ipi_setup(int cpu)
+> >
+> >       for (i = 0; i < nr_ipi; i++)
+> >               enable_percpu_irq(ipi_irq_base + i, 0);
 > > +
-> >   static int sii902x_probe(struct i2c_client *client,
-> >   			 const struct i2c_device_id *id)
-> >   {
-> >   	struct device *dev = &client->dev;
-> > -	unsigned int status = 0;
-> >   	struct sii902x *sii902x;
-> > -	u8 chipid[4];
-> >   	int ret;
-> >   	ret = i2c_check_functionality(client->adapter,
-> > @@ -989,6 +992,43 @@ static int sii902x_probe(struct i2c_client *client,
-> >   	mutex_init(&sii902x->mutex);
-> > +	sii902x->iovcc = devm_regulator_get(dev, "iovcc");
-> > +	if (IS_ERR(sii902x->iovcc))
-> > +		return PTR_ERR(sii902x->iovcc);
+> > +     ipi_nmi_setup(cpu);
+> >  }
+> >
+> >  #ifdef CONFIG_HOTPLUG_CPU
+> > @@ -974,6 +977,8 @@ static void ipi_teardown(int cpu)
+> >
+> >       for (i = 0; i < nr_ipi; i++)
+> >               disable_percpu_irq(ipi_irq_base + i);
 > > +
-> > +	sii902x->cvcc12 = devm_regulator_get(dev, "cvcc12");
-> > +	if (IS_ERR(sii902x->cvcc12))
-> > +		return PTR_ERR(sii902x->cvcc12);
+> > +     ipi_nmi_teardown(cpu);
+> >  }
+> >  #endif
+> >
+> > @@ -995,6 +1000,9 @@ void __init set_smp_ipi_range(int ipi_base, int n)
+> >               irq_set_status_flags(ipi_base + i, IRQ_HIDDEN);
+> >       }
+> >
+> > +     if (n > nr_ipi)
+> > +             set_smp_ipi_nmi(ipi_base + nr_ipi);
 > > +
-> > +	ret = regulator_enable(sii902x->iovcc);
-> > +	if (ret < 0) {
-> > +		dev_err_probe(dev, ret, "Failed to enable iovcc supply");
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = regulator_enable(sii902x->cvcc12);
-> > +	if (ret < 0) {
-> > +		dev_err_probe(dev, ret, "Failed to enable cvcc12 supply");
-> > +		regulator_disable(sii902x->iovcc);
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = sii902x_init(sii902x);
-> > +	if (ret < 0) {
-> > +		regulator_disable(sii902x->cvcc12);
-> > +		regulator_disable(sii902x->iovcc);
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int sii902x_init(struct sii902x *sii902x)
-> > +{
-> > +	struct device *dev = &sii902x->i2c->dev;
-> > +	unsigned int status = 0;
-> > +	u8 chipid[4];
-> > +	int ret;
-> > +
-> >   	sii902x_reset(sii902x);
-> >   	ret = regmap_write(sii902x->regmap, SII902X_REG_TPI_RQB, 0x0);
-> > @@ -1012,11 +1052,11 @@ static int sii902x_probe(struct i2c_client *client,
-> >   	regmap_read(sii902x->regmap, SII902X_INT_STATUS, &status);
-> >   	regmap_write(sii902x->regmap, SII902X_INT_STATUS, status);
-> > -	if (client->irq > 0) {
-> > +	if (sii902x->i2c->irq > 0) {
-> >   		regmap_write(sii902x->regmap, SII902X_INT_ENABLE,
-> >   			     SII902X_HOTPLUG_EVENT);
-> > -		ret = devm_request_threaded_irq(dev, client->irq, NULL,
-> > +		ret = devm_request_threaded_irq(dev, sii902x->i2c->irq, NULL,
-> >   						sii902x_interrupt,
-> >   						IRQF_ONESHOT, dev_name(dev),
-> >   						sii902x);
-> > @@ -1031,9 +1071,9 @@ static int sii902x_probe(struct i2c_client *client,
-> >   	sii902x_audio_codec_init(sii902x, dev);
-> > -	i2c_set_clientdata(client, sii902x);
-> > +	i2c_set_clientdata(sii902x->i2c, sii902x);
-> > -	sii902x->i2cmux = i2c_mux_alloc(client->adapter, dev,
-> > +	sii902x->i2cmux = i2c_mux_alloc(sii902x->i2c->adapter, dev,
-> >   					1, 0, I2C_MUX_GATE,
-> >   					sii902x_i2c_bypass_select,
-> >   					sii902x_i2c_bypass_deselect);
-> > @@ -1051,6 +1091,8 @@ static int sii902x_remove(struct i2c_client *client)
-> >   	i2c_mux_del_adapters(sii902x->i2cmux);
-> >   	drm_bridge_remove(&sii902x->bridge);
-> > +	regulator_disable(sii902x->cvcc12);
-> > +	regulator_disable(sii902x->iovcc);
-> >   	return 0;
-> >   }
-> > 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> >       ipi_irq_base = ipi_base;
+> >
+> >       /* Setup the boot CPU immediately */
+>
+> Thanks,
+>
+>          M.
+> --
+> Jazz is not dead. It just smells funny...
