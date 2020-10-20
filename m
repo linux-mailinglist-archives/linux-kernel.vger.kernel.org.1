@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C842935A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245CC2935CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404957AbgJTHWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730921AbgJTHWN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:22:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D9CC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Xhw3H2QX3tICj9sxZ/ux9knj+Ltjn7roSmeWowve6X0=; b=qk/y7e0HKfalmfo609rXDu6iyF
-        XwpzCEQ9uETNrLkSMxq4hFjkOFEdOhPGMcBJMdzFWpZy/HLblXg5maY9yRWzSZSjw2ltBPcqCjvIo
-        VsGI+BsBkaq2QH62qs+ybi5CicrWlwK/untRW0wImlNsX+KH3nogc+PGaC13cc/o7kEbUakrOa1ng
-        f+tZd1SCqfJwJRzISBToQByzGYXz/cdVgIrGFKXovrG3bKErIZOZXBKdY1EkQc8BS0sDCxAQ7mN8U
-        svwdjMgWdPJO5vfAp6o4BdR0ytetvoHTBcYmlhAxZWl2EPfuYaZof593IJ4boKzhAny8ow29BqMry
-        rJwnKwBw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kUly4-0002yq-S3; Tue, 20 Oct 2020 07:22:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 45D773011FE;
-        Tue, 20 Oct 2020 09:22:00 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 29A3920593806; Tue, 20 Oct 2020 09:22:00 +0200 (CEST)
-Date:   Tue, 20 Oct 2020 09:22:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        id S2405154AbgJTHch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:32:37 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:36512 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405114AbgJTHcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 03:32:36 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8A9BE1A06C3;
+        Tue, 20 Oct 2020 09:32:34 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A7AAE1A03AC;
+        Tue, 20 Oct 2020 09:32:26 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5A1E740243;
+        Tue, 20 Oct 2020 09:32:16 +0200 (CEST)
+From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+To:     davem@davemloft.net, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/2] sched/cpupri: Remap CPUPRI_NORMAL to MAX_RT_PRIO-1
-Message-ID: <20201020072200.GX2611@hirez.programming.kicks-ass.net>
-References: <20200922083934.19275-1-dietmar.eggemann@arm.com>
- <20201014194858.GC2974@worktop.programming.kicks-ass.net>
- <20388bee-9534-3ca0-4916-0bd0b9852189@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20388bee-9534-3ca0-4916-0bd0b9852189@arm.com>
+Cc:     allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
+        UNGLinuxDriver@microchip.com, vinicius.gomes@intel.com,
+        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
+        jiri@mellanox.com, idosch@mellanox.com,
+        alexandre.belloni@bootlin.com, kuba@kernel.org,
+        xiaoliang.yang_1@nxp.com, po.liu@nxp.com, claudiu.manoil@nxp.com,
+        alexandru.marginean@nxp.com, vladimir.oltean@nxp.com,
+        leoyang.li@nxp.com, mingkai.hu@nxp.com
+Subject: [PATCH v1 net-next 0/5] net: dsa: felix: psfp support on
+Date:   Tue, 20 Oct 2020 15:23:16 +0800
+Message-Id: <20201020072321.36921-1-xiaoliang.yang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 04:14:16PM +0200, Dietmar Eggemann wrote:
-> On 14/10/2020 21:48, Peter Zijlstra wrote:
-> 
-> [...]
-> 
-> > +	switch (prio) {
-> > +	case CPUPRI_INVALID:
-> > +		cpupri = CPUPRI_INVALID;	/* -1 */
-> > +		break;
-> > +
-> > +	case 0...98:
-> 
-> kernel/sched/cpupri.c:54:7: error: too many decimal points in number
->    54 |  case 0...98:
->       |       ^~~~~~
-> 
-> There need to be spaces around the ellipses.
-> 
-> Otherwise LGTM.
+This patch series add gate and police action for tc flower offload to
+support Per-Stream Filtering and Policing(PSFP), which is defined in
+IEEE802.1Qci.
 
-Yah, some robot already told me. Fix this already in the queue.git
-version. Thanks for looking at it though.
+There is also a TC flower offload to set up VCAPs on ocelot driver.
+Because VCAPs use chain 10000-21255, we set chain 30000 to offload to
+gate and police action to run PSFP module.
+
+example:
+	> tc qdisc add dev swp0 clsact
+	> tc filter add dev swp0 ingress chain 0 pref 49152 flower \
+		skip_sw action goto chain 30000
+	> tc filter add dev swp0 ingress chain 30000 protocol 802.1Q \
+		flower skip_sw dst_mac  42:01:3E:72:2F:6B vlan_id 1 \
+		action gate index 1 base-time 0 \
+			sched-entry OPEN 6000 3 -1 \
+		action police index 1 rate 10Mbit burst 10000
+
+Xiaoliang Yang (5):
+  net: mscc: ocelot: add and export MAC table lookup operations
+  net: mscc: ocelot: set vcap IS2 chain to goto PSFP chain
+  net: dsa: felix: add gate action offload based on tc flower
+  net: mscc: ocelot: use index to set vcap policer
+  net: dsa: felix: add police action for tc flower offload
+
+ drivers/net/dsa/ocelot/Makefile           |   3 +-
+ drivers/net/dsa/ocelot/felix.c            |  25 +
+ drivers/net/dsa/ocelot/felix.h            |  18 +
+ drivers/net/dsa/ocelot/felix_flower.c     | 683 ++++++++++++++++++++++
+ drivers/net/dsa/ocelot/felix_vsc9959.c    |  14 +-
+ drivers/net/ethernet/mscc/ocelot.c        |  33 +-
+ drivers/net/ethernet/mscc/ocelot.h        |  13 -
+ drivers/net/ethernet/mscc/ocelot_flower.c |  19 +-
+ drivers/net/ethernet/mscc/ocelot_vcap.c   | 107 ++--
+ include/soc/mscc/ocelot.h                 |  43 +-
+ include/soc/mscc/ocelot_ana.h             |  10 +
+ 11 files changed, 903 insertions(+), 65 deletions(-)
+ create mode 100644 drivers/net/dsa/ocelot/felix_flower.c
+
+-- 
+2.17.1
+
