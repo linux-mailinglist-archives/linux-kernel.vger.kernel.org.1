@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3769293EF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDE2293EF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408383AbgJTOrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:47:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48687 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408360AbgJTOq7 (ORCPT
+        id S2408369AbgJTOq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:46:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39698 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408358AbgJTOq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:46:59 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kUsue-0002IT-6H; Tue, 20 Oct 2020 14:46:56 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: staging: rkisp1: rsz: make const array static, makes object smaller
-Date:   Tue, 20 Oct 2020 15:46:55 +0100
-Message-Id: <20201020144655.53251-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 20 Oct 2020 10:46:57 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603205215;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=tqQfoWG8Hj43S+Z/oZr1uU/U3uPsPn2aBkQ5lT15IpQ=;
+        b=n5DCKc+RqmnnXctlhduH5YqGa8/nfyVDVXDSTxNxTe5eM5f7cLu2X4OBE5iokQckUn2YN7
+        k1CrUURX3z2i1sgmmtuNdBDvvlnDh2iy+1tYgLwaLL3o27u5bo9QG6jtRwcVCvVMCByZwV
+        488utaEwhvj4KOMk3ZFt+UWJC0TSgW9AUG3EItqdDR4yJX9ImDRrWJ31AeRbZTYA/UK/bB
+        RAvfDArrUeuFkAvmfXAL4lsBv8o3kU+JWFcYQms6hPtjICLLDKMDreCm+hSuAPffTifEic
+        +20/udICAwL1WSgltPbWbRwiYUwb8dRymgL5GQbKeLGJXZ3CrTolgXs0iTxf1g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603205215;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=tqQfoWG8Hj43S+Z/oZr1uU/U3uPsPn2aBkQ5lT15IpQ=;
+        b=OB8wq1vrgyOuaug+WmzntRzJeQ8ROqAuhzwQB4HozrPgNC4mVqUbltILjmqvLSKVVfNM0Y
+        2Jyst2papMsVPXDw==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: sched: Reenable interrupts in do sched_yield()
+Date:   Tue, 20 Oct 2020 16:46:55 +0200
+Message-ID: <87r1pt7y5c.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+do_sched_yield() invokes schedule() with interrupts disabled which is
+not allowed. This goes back to the pre git era to commit a6efb709806c
+("[PATCH] irqlock patch 2.5.27-H6") in the history tree.
 
-Don't populate the const array dev_names on the stack but instead it
-static. Makes the object code smaller by 15 bytes.
+Reenable interrupts and remove the misleading comment which "explains" it.
 
-Before:
-   text	   data	    bss	    dec	    hex	filename
-  17091	   2648	     64	  19803	   4d5b	media/rkisp1/rkisp1-resizer.o
-
-After:
-   text	   data	    bss	    dec	    hex	filename
-  17012	   2712	     64	  19788	   4d4c	media/rkisp1/rkisp1-resizer.o
-
-(gcc version 10.2.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/staging/media/rkisp1/rkisp1-resizer.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/media/rkisp1/rkisp1-resizer.c b/drivers/staging/media/rkisp1/rkisp1-resizer.c
-index 1687d82e6c68..7ca5b47c5bf5 100644
---- a/drivers/staging/media/rkisp1/rkisp1-resizer.c
-+++ b/drivers/staging/media/rkisp1/rkisp1-resizer.c
-@@ -763,8 +763,10 @@ static void rkisp1_rsz_unregister(struct rkisp1_resizer *rsz)
+ kernel/sched/core.c |    6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6094,12 +6094,8 @@ static void do_sched_yield(void)
+ 	schedstat_inc(rq->yld_count);
+ 	current->sched_class->yield_task(rq);
  
- static int rkisp1_rsz_register(struct rkisp1_resizer *rsz)
- {
--	const char * const dev_names[] = {RKISP1_RSZ_MP_DEV_NAME,
--					  RKISP1_RSZ_SP_DEV_NAME};
-+	static const char * const dev_names[] = {
-+		RKISP1_RSZ_MP_DEV_NAME,
-+		RKISP1_RSZ_SP_DEV_NAME
-+	};
- 	struct media_pad *pads = rsz->pads;
- 	struct v4l2_subdev *sd = &rsz->sd;
- 	int ret;
--- 
-2.27.0
-
+-	/*
+-	 * Since we are going to call schedule() anyway, there's
+-	 * no need to preempt or enable interrupts:
+-	 */
+ 	preempt_disable();
+-	rq_unlock(rq, &rf);
++	rq_unlock_irq(rq, &rf);
+ 	sched_preempt_enable_no_resched();
+ 
+ 	schedule();
