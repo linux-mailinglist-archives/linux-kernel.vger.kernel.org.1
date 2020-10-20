@@ -2,332 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29665293FD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456D4293620
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436786AbgJTPpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 11:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436743AbgJTPpO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 11:45:14 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C393CC061755;
-        Tue, 20 Oct 2020 08:45:13 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id e2so2463781wme.1;
-        Tue, 20 Oct 2020 08:45:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Y+AoXC3EzbJKgwn1kacgBLBmXWh5IxY6XMSSNuFAlmA=;
-        b=G4BIwcc3o23aFBmNh8h4grqyZCGFB+dOkZ0zb0zKUqz4EfLawGc+MgxTNChrURo+jv
-         +ygqVDxTTaxIj9f+ZV0X1JM35rhcDDSzKF0HAHYJeP2Ors2ApXMzeG6Zte2sR+309Z+D
-         lyKnQVq86r7SZyE6+YmiiMN1g4ld1Tet3wb3BKXfkCpjK7r4Fl6xu8P3YhwbujUnUHF3
-         bNBZBrR9D6W9xqlNpck8GrM8LrCgOu462wZ1ZkBmb7LhxhWQ6eoviWlSwmq6UMNVQsbK
-         7o4UtWI77zGuopfE+tjHXiVx9EMCjOB41gKYWEl3ehwbDStb8aZoXu6bAZ7oWdP+UpCz
-         QdgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Y+AoXC3EzbJKgwn1kacgBLBmXWh5IxY6XMSSNuFAlmA=;
-        b=mvTbGiukF7DLamF1pZ4FkkPuBqm7qpzwUR1wvfRwGvKQbBTN8Nhj6qdJrfHzA/eBaM
-         7Xu8qlMocfzxBwej8Wo8gCdLBNsKTR1umBgtte7cypIafFO5rbn2OaSHBuDDICRcpoRo
-         O42JbhBEDGyG3YzbTwVDkPBRZN78SefouhSM9h2VE6i/lnnSRMNa5EzUXo2ag6o8zUqq
-         aQOAl73rUdxYDEOiMhUfByanQBrRjLbA7G9GyV9ZP86cNjzCVz7DmtLCeBearCX0X7z8
-         23ZD2rwKNTOKUer2oNnvGe+vz+uaUbqLajv7QQctLAeBCwwSn5KrrsZYmkJ4roe2GddO
-         NoCw==
-X-Gm-Message-State: AOAM5334iztvD42om2w1KSmEtu0b2tL2Zj5UHemoSaxnU3EivcgDbkQo
-        YN5M8bIf3cZQM1A/luleJoU=
-X-Google-Smtp-Source: ABdhPJxG2OMqY8zaXeIfy/mqA5/alMJhqg5on2yeOr/kXF/+cZROKXHpslE3nkQVS+nrlqZZrZorZg==
-X-Received: by 2002:a1c:5f84:: with SMTP id t126mr3553689wmb.89.1603208712360;
-        Tue, 20 Oct 2020 08:45:12 -0700 (PDT)
-Received: from stormsend.lip6.fr (dell-redha.rsr.lip6.fr. [132.227.76.3])
-        by smtp.googlemail.com with ESMTPSA id y21sm3070464wma.19.2020.10.20.08.45.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 08:45:11 -0700 (PDT)
-From:   Redha Gouicem <redha.gouicem@gmail.com>
-Cc:     julien.sopena@lip6.fr, julia.lawall@inria.fr,
-        gilles.muller@inria.fr, carverdamien@gmail.com,
-        jean-pierre.lozi@oracle.com, baptiste.lepers@sydney.edu.au,
-        nicolas.palix@univ-grenoble-alpes.fr,
-        willy.zwaenepoel@sydney.edu.au,
-        Redha Gouicem <redha.gouicem@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH 3/3] sched/fair: delay thread migration on fork/wakeup/exec
-Date:   Tue, 20 Oct 2020 17:44:41 +0200
-Message-Id: <20201020154445.119701-4-redha.gouicem@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201020154445.119701-1-redha.gouicem@gmail.com>
-References: <20201020154445.119701-1-redha.gouicem@gmail.com>
+        id S2405334AbgJTHyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:54:07 -0400
+Received: from mail-db8eur05on2069.outbound.protection.outlook.com ([40.107.20.69]:7233
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729301AbgJTHyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 03:54:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OKbENijHS4UumarTSLcatSzQW+QWB0pynprBs0uOFFPZlTqRHXhFIxJ6ALCbvCNBGHLfQLe30KjcXbw0e0K0TTc+c7eYcxdG39gLpoUUio9xwwMPLFWgJHc4gU8b2BF5RKJ8eSLnh9AqLPTvZ7K/C+/1exWyKPw0EfIcTIjQdefu4IB0rbOo2zIZeD278NGMSJ0oAuR0LImVcAyCOgMDUlzTAHfi0z94uI6G36gVGVaiJILevCv2v/hD1B69i6cTt/K3dH3eS1QMV0jWDXXU/2AwzBna4AMdeCpUGPJzpsvsb2MJzJpwZFbGnSAVji4+iegJnHxdetpU4hVIwWsiLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eJBVAKBmdr1HldLN0jZ+y/OfX62yKO5ySL4HPSkJxEs=;
+ b=i2rbxsE03WUA4RI77bpDrj+kl69tMWgfokW/RLWy+pTTD/LlEhpWkgy4tZtsOCns3WWq2RYO3kfbiUnKNhBnOG7hGCKsVztfskKeTpAy9ISPGNzvwZZ4lGyXeGSs3gmrQ1Z0boCBmOare2hBrCpLRUTK75PZVx+6ozKURLmAFWMDS/RtQ4sHX59IQ+KyB8VtPYOJ6xTCbmhqM0V7dqflp9rZpROh+wMCIfFKEisalIwpARi94RBSUsuP8AmqefwJcWIw8w8cp7Y0uFsR5ge+U6z1HErhTiUbX6LtzmuQO9IPuvEbeFY9uAFHnezPhfEV7gzCdxkiSy0Y2Ri4J9icfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eJBVAKBmdr1HldLN0jZ+y/OfX62yKO5ySL4HPSkJxEs=;
+ b=Z7UkdSJ7QhrL8+9Iv+U3orLM93iZLswhD/719RvSKQSXCnevGk2LrO9zA07PxLEFzDzmqlEGc3Ap4ZxGTYig9UBVgsfPrLUI6LfUbHZL7/blUm0R00bREM6bk0hvbNFoApG3QY/Zos/N9E4gc+oaAvPaZnv4l+9QyzZFDQ3AKTU=
+Authentication-Results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DBAPR04MB7333.eurprd04.prod.outlook.com (2603:10a6:10:1b2::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Tue, 20 Oct
+ 2020 07:54:05 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3c3a:58b9:a1cc:cbcc]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3c3a:58b9:a1cc:cbcc%9]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
+ 07:54:05 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     mkl@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
+        linux-can@vger.kernel.org, pankaj.bansal@nxp.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3 00/10] can: flexcan: add stop mode support for i.MX8QM
+Date:   Tue, 20 Oct 2020 23:53:52 +0800
+Message-Id: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SGBP274CA0015.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::27)
+ To DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SGBP274CA0015.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Tue, 20 Oct 2020 07:54:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3d561586-464a-41b5-2c52-08d874cd5142
+X-MS-TrafficTypeDiagnostic: DBAPR04MB7333:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DBAPR04MB7333308DBA99BF9950764550E61F0@DBAPR04MB7333.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YM+KJJ03uM/b01JUV7LI4OefJGt/jqWjOaCbZpUcI4S4EsARPotdtY/uHNUWryF6h0v8ITi+zLUoXpG98oTB34fF/r1gi6pe+3VAJozWVp+7MVn8YIjOLdMwqB/sudvMut7ZgHq2GCKs325apLKYuV0G/BZMub/L8xP57qnqRbx07zJ7g1ZGRUKRwbjNfoZoVZfZDdn19T0YaiFzdxiMUjMhaHz1NMUmeZjqBfrg8rWRR1A4aEpg36gsYdCk2nIsS2jivI7XbHw4DUnBBeyFiUc0Vx4hh2juE1Pqn51QIv59LZqHFs+eGZ0d7zYCbzsBrlokXY60SZeSV2JebWRso2Poi8pMl01R9FrIL+oO51SHDZmiavuOS94d5tNotape
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(39860400002)(346002)(396003)(6512007)(2906002)(66476007)(52116002)(66946007)(956004)(2616005)(36756003)(1076003)(6666004)(83380400001)(69590400008)(66556008)(26005)(316002)(4326008)(6506007)(8676002)(16526019)(5660300002)(186003)(8936002)(6486002)(478600001)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: jUDOtD0hODC0fyB3f91Rp1Vj62PfLafL7iqCitB3no8m6BU08xX6r7ZVktRZLe/30upsbz2eWkbdhRU8yajRcUBaXPGJJpgY4h4HU0ogLYNXOyRzMz/FwKGXCo8DysFkWBhqTQjeWFIrv/yxckyPVl1LffvbHPTKpUahkRcbuq6Z09Yi285fSB/mpt+NE/m13k7r1qIl+OX5/WAGFCsAYduVRuQxxjZi3UyVCCNIcpu+GSu4yLxekEwaNSLMwBafAdgEAIzyTmgaiwPxNu8ymQHlVO+dZUdfV4ozwbusOXKvis/wvmA2Dx6bwqM+PAo8DHDFrFwU0+T7ZrGG6ql0cRJwq7Ceeb5U3r3sBvW1xIkJApnU8iFZ4gqFodVdqt3PkMod23ipp5c+eW28c/CY5uVUxhba3OCg4hI+qIYqU8UnlE8ueA79UZM1z53Dny0AjY9y95FLvT/1XLMh/unGz/ygAu6ndRX1mkGYq3O5rpSBrnEMKDP3gTkBQMlJe8B8vLEQ8vMYR42uN7YiRzEQg1tbo1D5SpSrqeNHwbooJSbzf16StnZgW0Se2sX4sJP+rQRGApoDQiCbqn4y4b1ko0+UAQF/FR7s5C7UYfxt8aPx9WsYfjLn7ptttNiEGoCpVR3kjGIC/qqVCbFnu2/2lA==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d561586-464a-41b5-2c52-08d874cd5142
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2020 07:54:05.5156
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: S5a2KcK8lKO4ORHBtd7akzncyPu/UbKfRRkNaKT3eGb1Or0JTUa1n/VL/aXzPo/STYwfQdt3oKN75WDYoso+4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7333
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On CPUs that implement per-core frequency scaling (and not per-socket), it
-is beneficial to try to use cores running at a higher frequency. One way to
-do this on fork/exec/wakeup is to keep the targeted thread on its
-parent/previous/waker core, since it should already be running at a high
-frequency.
+The first patch from Liu Ying aims to export SCU symbols for SoCs w/wo SCU,
+so that no need to check CONFIG_IMX_SCU in the specific driver.
 
-This is how this works:
-   - choose the new_cpu as usual in select_task_rq_fair()
-   - if we are in a fork/exec/wakeup and new_cpu runs at a low frequency,
-     start a timer in 50us and place the
-     thread on its parent/previous/waker core
-   - if the thread is scheduled, cancel the timer
-   - if the timer expires, migrate the thread to new_cpu
+The following patches are flexcan fixes and add stop mode support for i.MX8QM.
 
-This way, if the previous cpu is too busy to be used, the thread will use
-another cpu. This is particularly useful in fork/wait patterns where the
-child thread is placed on an idle core (low frequency) and the parent
-thread waits and makes its core idle (high frequency). This patch avoids
-using a low frequency core if a higher frquency one is available.
+ChangeLogs:
+V2->V3:
+	* define IMX_SC_R_CAN(x) in rsrc.h
+	* remove error message on -EPROBE_DEFER.
+	* split disable wakeup patch into separate one.
 
-There are two configuration parameters for this feature:
-   - the frequency threshold under which we consider the core to be running
-     at a low frequency, in kHz (/proc/sys/kernel/sched_lowfreq). By
-     default, this is set to 0, which disables the delayed thread migration
-     feature.
-   - the delay of the timer, in ns
-     (/proc/sys/kernel/sched_delayed_placement)
+V1->V2:
+	* split ECC fix patches into separate patches.
+	* free can dev if failed to setup stop mode.
+	* disable wakeup on flexcan_remove.
+	* add FLEXCAN_IMX_SC_R_CAN macro helper.
+	* fsl,can-index->fsl,scu-index.
+	* move fsl,scu-index and priv->can_idx into
+	* flexcan_setup_stop_mode_scfw()
+	* prove failed if failed to setup stop mode.
 
-Co-developed-by: Damien Carver <carverdamien@gmail.com>
-Signed-off-by: Damien Carver <carverdamien@gmail.com>
-Signed-off-by: Redha Gouicem <redha.gouicem@gmail.com>
----
- include/linux/sched.h        |  4 ++++
- include/linux/sched/sysctl.h |  3 +++
- kernel/sched/core.c          | 32 +++++++++++++++++++++++++++
- kernel/sched/fair.c          | 42 +++++++++++++++++++++++++++++++++++-
- kernel/sched/sched.h         |  3 +++
- kernel/sysctl.c              | 14 ++++++++++++
- 6 files changed, 97 insertions(+), 1 deletion(-)
+Joakim Zhang (9):
+  dt-bindings: can: flexcan: fix fsl,clk-source property
+  can: flexcan: remove FLEXCAN_QUIRK_DISABLE_MECR quirk for LS1021A
+  can: flexcan: add ECC initialization for LX2160A
+  can: flexcan: add ECC initialization for VF610
+  can: flexcan: disable wakeup in flexcan_remove()
+  dt-bindings: can: flexcan: add fsl,scu-index property to indicate a
+    resource
+  can: flexcan: rename macro FLEXCAN_QUIRK_SETUP_STOP_MODE ->
+    FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR
+  dt-bindings: firmware: add IMX_SC_R_CAN(x) macro for CAN
+  can: flexcan: add CAN wakeup function for i.MX8QM
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 2bf0af19a62a..ae823d458f94 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -662,6 +662,10 @@ struct task_struct {
- 	unsigned long			wakee_flip_decay_ts;
- 	struct task_struct		*last_wakee;
- 
-+	/* Delayed placement */
-+	struct hrtimer                  delay_placement_timer;
-+	int                             delay_placement_cpu;
-+
- 	/*
- 	 * recent_used_cpu is initially set as the last CPU used by a task
- 	 * that wakes affine another task. Waker/wakee relationships can
-diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-index 3c31ba88aca5..97a1f4489910 100644
---- a/include/linux/sched/sysctl.h
-+++ b/include/linux/sched/sysctl.h
-@@ -52,6 +52,9 @@ int sched_proc_update_handler(struct ctl_table *table, int write,
- 		void *buffer, size_t *length, loff_t *ppos);
- #endif
- 
-+extern __read_mostly unsigned int sysctl_sched_delayed_placement;
-+extern __read_mostly unsigned int sysctl_sched_lowfreq;
-+
- /*
-  *  control realtime throttling:
-  *
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d6d27a6fc23c..9958b38a5b6f 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3217,6 +3217,33 @@ int sysctl_schedstats(struct ctl_table *table, int write, void *buffer,
- static inline void init_schedstats(void) {}
- #endif /* CONFIG_SCHEDSTATS */
- 
-+static enum hrtimer_restart delayed_placement_fn(struct hrtimer *data)
-+{
-+	struct task_struct *p = container_of(data, struct task_struct,
-+					     delay_placement_timer);
-+	struct rq *rq;
-+	struct rq_flags rf;
-+	bool queued, running;
-+
-+	/*
-+	 * If, by chance, p was already migrated to this cpu, no need to do
-+	 * anything. This can happen because of load balancing for example.
-+	 */
-+	if (task_cpu(p) == p->delay_placement_cpu)
-+		return HRTIMER_NORESTART;
-+
-+	rq = task_rq_lock(p, &rf);
-+
-+	queued = task_on_rq_queued(p);
-+	running = task_current(rq, p);
-+	if (queued && !running)
-+		rq = __migrate_task(rq, &rf, p, p->delay_placement_cpu);
-+
-+	task_rq_unlock(rq, p, &rf);
-+
-+	return HRTIMER_NORESTART;
-+}
-+
- /*
-  * fork()/clone()-time setup:
-  */
-@@ -3299,6 +3326,11 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
- 	plist_node_init(&p->pushable_tasks, MAX_PRIO);
- 	RB_CLEAR_NODE(&p->pushable_dl_tasks);
- #endif
-+
-+	hrtimer_init(&p->delay_placement_timer, CLOCK_MONOTONIC,
-+		     HRTIMER_MODE_REL);
-+	p->delay_placement_timer.function = delayed_placement_fn;
-+
- 	return 0;
- }
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 33699db27ed5..99c42c215477 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -84,6 +84,15 @@ static unsigned int normalized_sysctl_sched_wakeup_granularity	= 1000000UL;
- 
- const_debug unsigned int sysctl_sched_migration_cost	= 500000UL;
- 
-+/*
-+ * After fork, exec or wakeup, thread placement is delayed. This option gives
-+ * the delay in nanoseconds.
-+ *
-+ * (default: 50us)
-+ */
-+unsigned int sysctl_sched_delayed_placement = 50000;
-+unsigned int sysctl_sched_lowfreq;
-+
- int sched_thermal_decay_shift;
- static int __init setup_sched_thermal_decay_shift(char *str)
- {
-@@ -6656,6 +6665,13 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
- 	return -1;
- }
- 
-+static bool is_cpu_low_freq(int cpu)
-+{
-+	if (!sysctl_sched_lowfreq)
-+		return false;
-+	return cpu_rq(cpu)->freq <= sysctl_sched_lowfreq;
-+}
-+
- /*
-  * select_task_rq_fair: Select target runqueue for the waking task in domains
-  * that have the 'sd_flag' flag set. In practice, this is SD_BALANCE_WAKE,
-@@ -6683,7 +6699,7 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_f
- 		if (sched_energy_enabled()) {
- 			new_cpu = find_energy_efficient_cpu(p, prev_cpu);
- 			if (new_cpu >= 0)
--				return new_cpu;
-+				goto local;
- 			new_cpu = prev_cpu;
- 		}
- 
-@@ -6724,6 +6740,28 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_f
- 	}
- 	rcu_read_unlock();
- 
-+local:
-+	if (!is_cpu_low_freq(new_cpu))
-+		goto end;
-+	/*
-+	 * If fork/wake/exec, trigger an interrupt in 50us (default) to eventually steal the thread
-+	 * and place the thread locally.
-+	 */
-+	if (new_cpu == task_cpu(p))
-+		goto end;
-+
-+	if (sd_flag & (SD_BALANCE_FORK | SD_BALANCE_WAKE | SD_BALANCE_EXEC)) {
-+		p->delay_placement_cpu = new_cpu;
-+		new_cpu = task_cpu(current);
-+
-+		/* Arm timer in 50us */
-+		hrtimer_start(&p->delay_placement_timer,
-+			      ktime_set(0,
-+					sysctl_sched_delayed_placement),
-+			      HRTIMER_MODE_REL);
-+	}
-+
-+end:
- 	return new_cpu;
- }
- 
-@@ -7085,6 +7123,8 @@ done: __maybe_unused;
- 	if (hrtick_enabled(rq))
- 		hrtick_start_fair(rq, p);
- 
-+	hrtimer_try_to_cancel(&p->delay_placement_timer);
-+
- 	update_misfit_status(p, rq);
- 
- 	return p;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 7d794ab756d2..02da9ca69b4a 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2018,6 +2018,9 @@ extern void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags);
- extern const_debug unsigned int sysctl_sched_nr_migrate;
- extern const_debug unsigned int sysctl_sched_migration_cost;
- 
-+extern unsigned int sysctl_sched_delayed_placement;
-+extern unsigned int sysctl_sched_lowfreq;
-+
- #ifdef CONFIG_SCHED_HRTICK
- 
- /*
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 287862f91717..e8cc36624330 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -1712,6 +1712,20 @@ static struct ctl_table kern_table[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
-+	{
-+		.procname       = "sched_delayed_placement",
-+		.data           = &sysctl_sched_delayed_placement,
-+		.maxlen         = sizeof(unsigned int),
-+		.mode           = 0644,
-+		.proc_handler   = proc_dointvec,
-+	},
-+	{
-+		.procname       = "sched_lowfreq",
-+		.data           = &sysctl_sched_lowfreq,
-+		.maxlen         = sizeof(unsigned int),
-+		.mode           = 0644,
-+		.proc_handler   = proc_dointvec,
-+	},
- #ifdef CONFIG_SCHEDSTATS
- 	{
- 		.procname	= "sched_schedstats",
+Liu Ying (1):
+  firmware: imx: always export SCU symbols
+
+ .../bindings/net/can/fsl-flexcan.txt          |   8 +-
+ drivers/net/can/flexcan.c                     | 147 ++++++++++++++----
+ include/dt-bindings/firmware/imx/rsrc.h       |   1 +
+ include/linux/firmware/imx/ipc.h              |  15 ++
+ include/linux/firmware/imx/svc/misc.h         |  23 +++
+ 5 files changed, 167 insertions(+), 27 deletions(-)
+
 -- 
-2.28.0
+2.17.1
 
