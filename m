@@ -2,287 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C103E293754
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DD529375B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392234AbgJTJAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
+        id S2392248AbgJTJBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390221AbgJTJAA (ORCPT
+        with ESMTP id S2392186AbgJTJBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:00:00 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF8BC061755;
-        Tue, 20 Oct 2020 01:59:58 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id 1so694014ple.2;
-        Tue, 20 Oct 2020 01:59:58 -0700 (PDT)
+        Tue, 20 Oct 2020 05:01:05 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991BAC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:01:05 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id n85so762815pfd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=32DXXPaYfvqxwZc+Ufdj/EMGZ4IWPmSRmpTewywNSVQ=;
-        b=DJsnW1P05d7r36kJe9UFhBkPyK47QtTUllE/9wSt6mFWlQrqhnXzAXpXrraJ63H2PI
-         t3QICPI4dBsZEBL0SC7WbjHfST3LNuN+CzDk3y+fI2J4ou0Uc2sFUD64bG+Zj2DONrDx
-         is6kd+2TSqwo0l3NQEbnGrgz4WOe9VfSh3Y5xNZ3zQ/2eCA5fVmUtl+Pb5pjkCS9B3AZ
-         +uTv2uXtx748Osd/DvW7NtpHtHFnEHce97KWof0xhKhbvDHq2dYys35j4YMar3l4gZ0O
-         eKEsXwE+NPyQt7U+QRTtkFoOLYRMr8TYKu/9fRcnC+S9BpU3uD8RBei3KpUPZSpq4yJ/
-         lGLw==
+        d=google.com; s=20161025;
+        h=sender:mime-version:message-id:date:subject:from:to:cc;
+        bh=ffn1pbtm3m7DN0PZ3f/dZzoHyymXTXLDl2Uw/FDlJWQ=;
+        b=oZAsNybuwPff5bSX5pkPKTtloKOC4RXtfp9B3S2sC/HLdYQcuSC6UgdvHfbEWP6tTE
+         rIOC22FlFItBO98d9tGSNKBLjzCpzbvkhumX5RM80/G8RBCLFwrJ6YVT3nbnCoWenUux
+         6PxEZsE91hWuiZj7buli7QKbYYjI0b8advzL03TdUosjpUKAjbEvSuHpxZ6RSmYC+lbj
+         M8TdiYG9qft4HJcrJOqgoYDVekl9WnYQmmkWT/KElKvKWDvhWi4cuZoP1KlWSgYXP8QE
+         eua2/9sAlFkub5HKMZiPuI8H2UwGuELeB1/X06xi+Iz97Ha2Cx4IlP1EVLp6pG3vbMcl
+         rQTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=32DXXPaYfvqxwZc+Ufdj/EMGZ4IWPmSRmpTewywNSVQ=;
-        b=Ux5PUrUNWOekIDDo/cQrxv6/jp5FmfWiyL8/AO+WaNRpHAPUwbNKO41OFMVtje//7Y
-         SAXfxLbbzYtq0VbT6fXWMUui47HIwx1xhmqP7YdDAEXneyNuLAWYznchWdEI3ZZe8+1U
-         emcR7U6Je2M+dyRN9SUV8CfBG6M/Xtwx/2Ffgrk6dV5I0WRPZORgBGrhI/x+PqnRkdxb
-         90QQEtVUduY//MvbGM4Q4qjAd19L3Z1lV5nY+BtB5E6st+Rkt4GdDYMTgHyWlcWrol/S
-         Y5oRynxIMqhMDFKE5lvP0Pvq22PhszDx9o4XOo2T11RhPQ3rM7Eee8i1PtA1wvOzq/bY
-         3yig==
-X-Gm-Message-State: AOAM532ezBnZB5sWFtWB1H9lA/stSHLBgiBNm88mfBuNNcYWJDlGOvB+
-        XV6muCIezfRubneI5OeuP7/E9gi7b/W3/r66ohk=
-X-Google-Smtp-Source: ABdhPJy9hwkmHtqN6ASWpH6MTF2qZAFQwMqgbuqGxJNxCVnhfHfDYrm6umFgVnKv6i8wAf0+VfuWbMJvxUAq2uxoib0=
-X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr1938344pjb.129.1603184398230;
- Tue, 20 Oct 2020 01:59:58 -0700 (PDT)
+        h=x-gm-message-state:sender:mime-version:message-id:date:subject:from
+         :to:cc;
+        bh=ffn1pbtm3m7DN0PZ3f/dZzoHyymXTXLDl2Uw/FDlJWQ=;
+        b=XFol2upLaqrE8ds6Ke3QRRHUP+zosbFEbprs/t42rfnpPIeHN91LD2oWEu4V/Qc6Fl
+         OP/jSZ7Zt9dlJF7EXbcFgMYbz/BEPLHlQdK9MXqSmRmepEoNr2dU42Q2zLgztzQjiQkq
+         9MFvAe59Pi8EuMitsmxh5nOSl8jrj3BVLCySq8MCK3xkJVKw9jO136eFZCN3KK9kVOMG
+         0+ju1I4ac+04Gnbue/f4e8hXEsO53Bl8zwRuteJwOiOWCbSt14qQF5dWKInJl2tK6Qr3
+         VRzJqhPoXb+RJOWoHuK9p+Ojead6CCvY6QvEnJYEEM9CymSwnRVd0Xcirzs/T+addneA
+         cMOg==
+X-Gm-Message-State: AOAM533UmMULzRKJyVdv4io0Xy7jgvZC2idDaOsjW4B0BgckLsSZ8xlV
+        qHbyzNRPrNnqVKDSBoARbKc6mQ96/r714SuP
+X-Google-Smtp-Source: ABdhPJyVShypXQ1cA//oLJFxqKfsTw/7rRaogmZo1fJGh5VMzkY/z0BwL/pu5z0kgdk0h0uGaSv8lD+s1sQ+eJmk
+Sender: "josephjang via sendgmr" 
+        <josephjang@josephjang-p920.ntc.corp.google.com>
 MIME-Version: 1.0
-References: <20201019221859.56680-1-luka.kovacic@sartura.hr> <20201019221859.56680-4-luka.kovacic@sartura.hr>
-In-Reply-To: <20201019221859.56680-4-luka.kovacic@sartura.hr>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 20 Oct 2020 12:00:47 +0300
-Message-ID: <CAHp75VdnOJKwvZUOsj3bbT8tK9uZN=NufDrdhUvS886bNUpWhA@mail.gmail.com>
-Subject: Re: [PATCH v6 3/6] drivers: hwmon: Add the iEi WT61P803 PUZZLE HWMON driver
-To:     Luka Kovacic <luka.kovacic@sartura.hr>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
-        luka.perkov@sartura.hr, robert.marko@sartura.hr
-Content-Type: text/plain; charset="UTF-8"
+X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:7220:84ff:fe09:41e0])
+ (user=josephjang job=sendgmr) by 2002:a17:902:aa8a:b029:d3:c9dd:77d1 with
+ SMTP id d10-20020a170902aa8ab02900d3c9dd77d1mr2057978plr.0.1603184465071;
+ Tue, 20 Oct 2020 02:01:05 -0700 (PDT)
+Message-ID: <0000000000008d35ba05b216782a@google.com>
+Date:   Tue, 20 Oct 2020 09:01:05 +0000
+Subject: [PATCH] power: suspend: Add suspend timeout handler
+From:   <josephjang@google.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org, rjw@rjwysocki.net,
+        pavel@ucw.cz, len.brown@intel.com, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        jonglin@google.com, woodylin@google.com, markcheng@google.com,
+        josephjang@google.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 1:19 AM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
->
-> Add the iEi WT61P803 PUZZLE HWMON driver, that handles the fan speed
-> control via PWM, reading fan speed and reading on-board temperature
-> sensors.
->
-> The driver registers a HWMON device and a simple thermal cooling device to
-> enable in-kernel fan management.
->
-> This driver depends on the iEi WT61P803 PUZZLE MFD driver.
+> On Tue, Oct 20, 2020 at 08:15:38AM +0000, josephjang@google.com wrote:
+> > > On Tue, Oct 20, 2020 at 02:22:26PM +0800, Joseph Jang wrote:
+> > > > Add sleep timer and timeout handler to prevent device stuck during
+> > > suspend/
+> > > > resume process. The timeout handler will dump disk sleep task at  
+> first
+> > > > round timeout and trigger kernel panic at second round timeout.
+> > > > The default timer for each round is defined in
+> > > > CONFIG_PM_SLEEP_TIMER_TIMEOUT.
+> > > >
+> > > > Signed-off-by: Joseph Jang <josephjang@google.com>
+> > > > ---
+> > > >  MAINTAINERS                   |  2 +
+> > > >  include/linux/console.h       |  1 +
+> > > >  include/linux/suspend_timer.h | 90  
+> +++++++++++++++++++++++++++++++++++
+> >
+> > > Why is this file in include/linux/ if you only ever call it from  
+> one .c
+> > > file?
+> >
+> > I just refer to include/linux/suspend.h and create a new header file in  
+> the
+> > same folder.
+> > If you have a better location for the new header file, please feel free  
+> to
+> > let me know.
 
-...
+> Only put .h files that are needed by different .c files in the
+> include/linux/ directory.  Otherwise it should be local to where the .c
+> file is.
+> Great, use that!
 
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* iEi WT61P803 PUZZLE MCU HWMON Driver
+> > But we really hit the suspend hang issue that DPM_WATCHDOG cannot cover.
 
-Shouldn't be
-/*
- * IEI ...
+> What issue is that?
 
-?
+> > We propose a wide coverage debug feature like PM_SLEEP_MONITOR which
+> > not only covers PM but also core PM hang issues.
+> >
+> > And DPM_WATCHDOG is for device driver power management in
+> > drivers/base/power/main.c
+> > and PM_SLEEP_MONITOR locate is for core power management in
+> > kernel/power/suspend.c.
+> > I think it is fine for users to select whether they need device PM only  
+> or
+> > not.
 
-...
+> How will a user know which they should use?
 
-> +/**
-> + * struct iei_wt61p803_puzzle_thermal_cooling_device - Thermal cooling device instance
+> Why not just fix whatever is wrong with the watchdog code instead of
+> creating a new one?
 
-> + *
+> > > And why isn't the watchdog sufficient for you?  Why are you "open
+> > > coding" a watchdog timer logic here at all???
+> >
+> > Yes, we refer to DPM_WATCHDOG to extend the watchdog debugging for core  
+> PM.
+> > Because we really hit a real case that was not covered by DPM_WATCHDOG.
 
-Please, remove all these blank lines in kernel doc descriptions.
+> Then fix that!
 
-> + * @mcu_hwmon:         MCU HWMON struct pointer
-> + * @tcdev:             Thermal cooling device pointer
-> + * @name:              Thermal cooling device name
-> + * @pwm_channel:       PWM channel (0 or 1)
-> + * @cooling_levels:    Thermal cooling device cooling levels
-> + */
+> > I think PM_SLEEP_MONITOR is an extension debug feature from  
+> DPM_WATCHDOG.
 
-...
+> Please just fix the watchdog, as obviously it is not working properly.
+> Don't create something new because of that.
 
-> +struct iei_wt61p803_puzzle_hwmon {
-> +       struct iei_wt61p803_puzzle *mcu;
-> +       unsigned char *response_buffer;
-> +       bool thermal_cooling_dev_present[IEI_WT61P803_PUZZLE_HWMON_MAX_PWM_NUM];
-> +       struct iei_wt61p803_puzzle_thermal_cooling_device
-> +               *cdev[IEI_WT61P803_PUZZLE_HWMON_MAX_PWM_NUM];
+> thanks,
 
-Isn't this constant a bit too long? Perhaps drop NUM (MAX would
-suffice I think) for a starter.
+> greg k-h
 
-> +};
+Thank you Greq for promptly responding.
+I am okay to fix the DPM_WATCHDOG feature, but would like to have quick  
+sync up before start.
+Could you help?
 
-...
 
-> +       static unsigned char temp_sensor_ntc_cmd[4] = {
-> +               IEI_WT61P803_PUZZLE_CMD_HEADER_START,
-> +               IEI_WT61P803_PUZZLE_CMD_TEMP,
-> +               IEI_WT61P803_PUZZLE_CMD_TEMP_ALL
+1. Can we change the kernel config name ?
+DPM_WATCHDOG stands for Device Power Management.
+We propose PM_SLEEP_MONITOR is to cover Core PM and Device PM.
 
-+ comma.
 
-> +       };
+2. Can we create a new data structure instead of using the following struct  
+dpm_watchdog?
+struct dpm_watchdog {
+	struct device		*dev;
+	struct task_struct	*tsk;
+	struct timer_list	timer;
+};
 
-Why not to be consistent with the rest assignments, choose either
-above form, or like you have done in the below functions.
-Also, why 4?
+I list some reasons by following ...
 
-> +       size_t reply_size = 0;
+static int device_resume(struct device *dev, pm_message_t state, bool async)
+{
+	pm_callback_t callback = NULL;
+	const char *info = NULL;
+	int error = 0;
+	DECLARE_DPM_WATCHDOG_ON_STACK(wd);  <== dpm_watchdog use stack memory for  
+watchdog timer struct, but sleep timer use global memory.
 
-How is it used in all these functions?
+...<SNIP>
 
-> +       int ret;
-> +
-> +       ret = iei_wt61p803_puzzle_write_command(mcu_hwmon->mcu, temp_sensor_ntc_cmd,
-> +                                               sizeof(temp_sensor_ntc_cmd), resp_buf,
-> +                                               &reply_size);
-> +
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* Check the number of NTC values (should be 0x32/'2') */
+	if (!dpm_wait_for_superior(dev, async))
+		goto Complete;
 
-> +       if (resp_buf[3] != 0x32)
+	dpm_watchdog_set(&wd, dev);  <== dpm_watchdog need "struct device", but  
+sleep timer doesn't need it.
+	device_lock(dev);
 
-Instead of comment in the parentheses, just do it here
-" != '2')"
+...<SNIP>
 
-> +               return -EIO;
+  Unlock:
+	device_unlock(dev);
+	dpm_watchdog_clear(&wd);
 
-...
+  Complete:
+	complete_all(&dev->power.completion);
 
-> +static int iei_wt61p803_puzzle_read(struct device *dev, enum hwmon_sensor_types type,
-> +                                   u32 attr, int channel, long *val)
-> +{
-> +       struct iei_wt61p803_puzzle_hwmon *mcu_hwmon = dev_get_drvdata(dev->parent);
-> +       int ret;
-> +
-> +       switch (type) {
-> +       case hwmon_pwm:
+	TRACE_RESUME(error);
 
-> +               ret = iei_wt61p803_puzzle_read_pwm_channel(mcu_hwmon, channel, val);
-> +               return ret;
+	return error;
+}
 
-  return iei_...(...);
-in all such cases.
-
-> +       case hwmon_fan:
-> +               ret = iei_wt61p803_puzzle_read_fan_speed(mcu_hwmon, channel, val);
-> +               return ret;
-> +       case hwmon_temp:
-> +               ret = iei_wt61p803_puzzle_read_temp_sensor(mcu_hwmon, channel, val);
-> +               return ret;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +}
-
-...
-
-> +static umode_t iei_wt61p803_puzzle_is_visible(const void *data, enum hwmon_sensor_types type,
-> +                                             u32 attr, int channel)
-> +{
-> +       switch (type) {
-> +       case hwmon_pwm:
-
-> +               switch (attr) {
-> +               case hwmon_pwm_input:
-> +                       return 0644;
-> +               default:
-> +                       return 0;
-> +               }
-
-Isn't too long for
-  if (attr == ...)
-    return 0644;
-  break;
-
-...see below...
-
-> +       case hwmon_fan:
-> +               switch (attr) {
-> +               case hwmon_fan_input:
-> +                       return 0444;
-> +               default:
-> +                       return 0;
-> +               }
-> +       case hwmon_temp:
-> +               switch (attr) {
-> +               case hwmon_temp_input:
-> +                       return 0444;
-> +               default:
-> +                       return 0;
-> +               }
-
-> +       default:
-> +               return 0;
-
-break;
-
-> +       }
-
-return 0;
-
-?
-
-> +}
-
-...
-
-> +       mcu_hwmon->thermal_cooling_dev_present[pwm_channel] = true;
-> +
-
-> +       num_levels = fwnode_property_read_u8_array(child, "cooling-levels", NULL, 0);
-
-fwnode_property_count_u8()
-
-> +       if (num_levels > 0) {
-
-You can improve readability by reducing indentation level via
-replacement to negative conditional.
-
-> +               cdev = devm_kzalloc(dev, sizeof(*cdev), GFP_KERNEL);
-> +               if (!cdev)
-> +                       return -ENOMEM;
-> +
-> +               cdev->cooling_levels = devm_kzalloc(dev, num_levels, GFP_KERNEL);
-
-For the sake of cleaness, shouldn't it be devm_kmalloc_array() ?
-(Note, zeroing is not needed if you read entire array)
-
-> +               if (!cdev->cooling_levels)
-> +                       return -ENOMEM;
-> +
-> +               ret = fwnode_property_read_u8_array(child, "cooling-levels",
-> +                                                   cdev->cooling_levels,
-> +                                                   num_levels);
-> +               if (ret) {
-> +                       dev_err(dev, "Couldn't read property 'cooling-levels'");
-> +                       return ret;
-> +               }
-> +
-> +               snprintf(cdev->name, THERMAL_NAME_LENGTH, "iei_wt61p803_puzzle_%d", pwm_channel);
-> +
-> +               cdev->tcdev = devm_thermal_of_cooling_device_register(dev, NULL,
-> +                               cdev->name, cdev, &iei_wt61p803_puzzle_cooling_ops);
-> +               if (IS_ERR(cdev->tcdev))
-> +                       return PTR_ERR(cdev->tcdev);
-> +
-> +               cdev->mcu_hwmon = mcu_hwmon;
-> +               cdev->pwm_channel = pwm_channel;
-> +
-> +               mcu_hwmon->cdev[pwm_channel] = cdev;
-> +       }
-> +       return 0;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thank you,
+Joseph.
