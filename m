@@ -2,362 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC142933C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 06:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DC72933CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 06:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgJTEIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 00:08:04 -0400
-Received: from mga03.intel.com ([134.134.136.65]:63440 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725926AbgJTEIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 00:08:04 -0400
-IronPort-SDR: dy+GMUmsds8VZi02xL02M8sS6Edv/ExqnlEhMnibxVuAdlaJ7zpTFoKqxMEigf+t9T7pKkSQzT
- 3/bLK9BIhkIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="167240709"
-X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
-   d="scan'208";a="167240709"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 21:08:03 -0700
-IronPort-SDR: 2/JVEyBVr3hl5clyPqcodFyRnkb4n8pV7SuTNfruTUrmbZMqT/dXDq/Dsc7dUdOM01LRwFKuZm
- 2w8KTR9wYg/A==
-X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
-   d="scan'208";a="320509150"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 21:08:03 -0700
-Subject: [PATCH] x86, libnvdimm/test: Remove COPY_MC_TEST
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-nvdimm@lists.01.org
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org
-Date:   Mon, 19 Oct 2020 21:08:03 -0700
-Message-ID: <160316688322.3374697.8648308115165836243.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S2391352AbgJTEOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 00:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgJTEOD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 00:14:03 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F5BC0613CE;
+        Mon, 19 Oct 2020 21:14:03 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id m65so215042qte.11;
+        Mon, 19 Oct 2020 21:14:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lRPCIqgVp7JxtQIwMiyZjjVI3vzOaxsFkudHQAakCTE=;
+        b=CfVX7lB8vevBGCqExwTh3APKc1v2ezK78tU6+t1yX1lK9mrdPWEcTaJoUOE7QoFs8p
+         GJ7Ri9qfdszlYlCd3pUwR3z8S97ruE2/106lhkHvPIw+vCqbKWayS+atwy8X/gkS2SQ4
+         /mOsaA24Kj7yBhJXUdi69luiVxNI7XhEu6UME=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lRPCIqgVp7JxtQIwMiyZjjVI3vzOaxsFkudHQAakCTE=;
+        b=QB0HSyMCCknty/UzatZpfUH3NRAUu+rDEl9nFTyN2GUbz5yiVb7O+PvNqTbehk7zCX
+         D7ONL3ZXjGbX6zBsF987l9LMbi9jK9oBgR0i3j/Oa+BJMK5sMCIDXd65oRJuorSOv21S
+         gGpPQzfzfB6tiKt9NKUqgU2J0inaYJ3R7pb7a58buv/JnsMj6YC7Int+yHS0KOo8j9LD
+         myS++XbrtWFXfZ36Ju9axUduOKgzHBofrvkDOOwkHMzmGB5toaMU4Iw2qUYTF/fLMbXP
+         lyEy9EgX5ODkaLaaTV8IZ8mePQ8XDNCa9t2ns2ItLAzkb6uz4eAlopp3fZUaZZ6mmKbw
+         O2Ng==
+X-Gm-Message-State: AOAM530lI7Y9oQsmlt2WrNrQb8caH3lKCEJ7/mY4SausYBDFZAJJRMmB
+        wVlTERxVljoY4uswjB3oym6gd84mACd4kIdan8mjo8q4TBoYQw==
+X-Google-Smtp-Source: ABdhPJzfgWHW/dSSaO154QYtrEdfjSG/f3sH5C15wXCfARnDLbzc/MhtJX+jfb8/wRvEhAaYvobhKCrue9XWKekWqUY=
+X-Received: by 2002:aed:3325:: with SMTP id u34mr826567qtd.263.1603167242677;
+ Mon, 19 Oct 2020 21:14:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201019085717.32413-1-dylan_hung@aspeedtech.com>
+ <20201019085717.32413-2-dylan_hung@aspeedtech.com> <be7a978c48c9f1c6c29583350dee6168385c3039.camel@kernel.crashing.org>
+In-Reply-To: <be7a978c48c9f1c6c29583350dee6168385c3039.camel@kernel.crashing.org>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 20 Oct 2020 04:13:49 +0000
+Message-ID: <CACPK8XdECaKwdQgWFQ=sRBiCjDLXHtMKo=o-xQZPmMZyevOukQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ftgmac100: Fix race issue on TX descriptor[0]
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Dylan Hung <dylan_hung@aspeedtech.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The COPY_MC_TEST facility has served its purpose for validating the
-early termination conditions of the copy_mc_fragile() implementation.
-Remove it and the EXPORT_SYMBOL_GPL of copy_mc_fragile().
+On Mon, 19 Oct 2020 at 23:20, Benjamin Herrenschmidt
+<benh@kernel.crashing.org> wrote:
+>
+> On Mon, 2020-10-19 at 16:57 +0800, Dylan Hung wrote:
+> > These rules must be followed when accessing the TX descriptor:
+> >
+> > 1. A TX descriptor is "cleanable" only when its value is non-zero
+> > and the owner bit is set to "software"
+>
+> Can you elaborate ? What is the point of that change ? The owner bit
+> should be sufficient, why do we need to check other fields ?
 
-Reported-by: Borislav Petkov <bp@alien8.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: x86@kernel.org
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- arch/x86/Kconfig.debug              |    3 -
- arch/x86/include/asm/copy_mc_test.h |   75 -------------------------
- arch/x86/lib/copy_mc.c              |    4 -
- arch/x86/lib/copy_mc_64.S           |   10 ---
- tools/testing/nvdimm/test/nfit.c    |  103 -----------------------------------
- 5 files changed, 195 deletions(-)
- delete mode 100644 arch/x86/include/asm/copy_mc_test.h
+I would like Dylan to clarify too. The datasheet has a footnote below
+the descriptor layout:
 
-diff --git a/arch/x86/Kconfig.debug b/arch/x86/Kconfig.debug
-index 27b5e2bc6a01..80b57e7f4947 100644
---- a/arch/x86/Kconfig.debug
-+++ b/arch/x86/Kconfig.debug
-@@ -62,9 +62,6 @@ config EARLY_PRINTK_USB_XDBC
- 	  You should normally say N here, unless you want to debug early
- 	  crashes or need a very simple printk logging facility.
- 
--config COPY_MC_TEST
--	def_bool n
--
- config EFI_PGT_DUMP
- 	bool "Dump the EFI pagetable"
- 	depends on EFI
-diff --git a/arch/x86/include/asm/copy_mc_test.h b/arch/x86/include/asm/copy_mc_test.h
-deleted file mode 100644
-index e4991ba96726..000000000000
---- a/arch/x86/include/asm/copy_mc_test.h
-+++ /dev/null
-@@ -1,75 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _COPY_MC_TEST_H_
--#define _COPY_MC_TEST_H_
--
--#ifndef __ASSEMBLY__
--#ifdef CONFIG_COPY_MC_TEST
--extern unsigned long copy_mc_test_src;
--extern unsigned long copy_mc_test_dst;
--
--static inline void copy_mc_inject_src(void *addr)
--{
--	if (addr)
--		copy_mc_test_src = (unsigned long) addr;
--	else
--		copy_mc_test_src = ~0UL;
--}
--
--static inline void copy_mc_inject_dst(void *addr)
--{
--	if (addr)
--		copy_mc_test_dst = (unsigned long) addr;
--	else
--		copy_mc_test_dst = ~0UL;
--}
--#else /* CONFIG_COPY_MC_TEST */
--static inline void copy_mc_inject_src(void *addr)
--{
--}
--
--static inline void copy_mc_inject_dst(void *addr)
--{
--}
--#endif /* CONFIG_COPY_MC_TEST */
--
--#else /* __ASSEMBLY__ */
--#include <asm/export.h>
--
--#ifdef CONFIG_COPY_MC_TEST
--.macro COPY_MC_TEST_CTL
--	.pushsection .data
--	.align 8
--	.globl copy_mc_test_src
--	copy_mc_test_src:
--		.quad 0
--	EXPORT_SYMBOL_GPL(copy_mc_test_src)
--	.globl copy_mc_test_dst
--	copy_mc_test_dst:
--		.quad 0
--	EXPORT_SYMBOL_GPL(copy_mc_test_dst)
--	.popsection
--.endm
--
--.macro COPY_MC_TEST_SRC reg count target
--	leaq \count(\reg), %r9
--	cmp copy_mc_test_src, %r9
--	ja \target
--.endm
--
--.macro COPY_MC_TEST_DST reg count target
--	leaq \count(\reg), %r9
--	cmp copy_mc_test_dst, %r9
--	ja \target
--.endm
--#else
--.macro COPY_MC_TEST_CTL
--.endm
--
--.macro COPY_MC_TEST_SRC reg count target
--.endm
--
--.macro COPY_MC_TEST_DST reg count target
--.endm
--#endif /* CONFIG_COPY_MC_TEST */
--#endif /* __ASSEMBLY__ */
--#endif /* _COPY_MC_TEST_H_ */
-diff --git a/arch/x86/lib/copy_mc.c b/arch/x86/lib/copy_mc.c
-index c13e8c9ee926..80efd45a7761 100644
---- a/arch/x86/lib/copy_mc.c
-+++ b/arch/x86/lib/copy_mc.c
-@@ -10,10 +10,6 @@
- #include <asm/mce.h>
- 
- #ifdef CONFIG_X86_MCE
--/*
-- * See COPY_MC_TEST for self-test of the copy_mc_fragile()
-- * implementation.
-- */
- static DEFINE_STATIC_KEY_FALSE(copy_mc_fragile_key);
- 
- void enable_copy_mc_fragile(void)
-diff --git a/arch/x86/lib/copy_mc_64.S b/arch/x86/lib/copy_mc_64.S
-index 892d8915f609..e5f77e293034 100644
---- a/arch/x86/lib/copy_mc_64.S
-+++ b/arch/x86/lib/copy_mc_64.S
-@@ -2,14 +2,11 @@
- /* Copyright(c) 2016-2020 Intel Corporation. All rights reserved. */
- 
- #include <linux/linkage.h>
--#include <asm/copy_mc_test.h>
--#include <asm/export.h>
- #include <asm/asm.h>
- 
- #ifndef CONFIG_UML
- 
- #ifdef CONFIG_X86_MCE
--COPY_MC_TEST_CTL
- 
- /*
-  * copy_mc_fragile - copy memory with indication if an exception / fault happened
-@@ -38,8 +35,6 @@ SYM_FUNC_START(copy_mc_fragile)
- 	subl %ecx, %edx
- .L_read_leading_bytes:
- 	movb (%rsi), %al
--	COPY_MC_TEST_SRC %rsi 1 .E_leading_bytes
--	COPY_MC_TEST_DST %rdi 1 .E_leading_bytes
- .L_write_leading_bytes:
- 	movb %al, (%rdi)
- 	incq %rsi
-@@ -55,8 +50,6 @@ SYM_FUNC_START(copy_mc_fragile)
- 
- .L_read_words:
- 	movq (%rsi), %r8
--	COPY_MC_TEST_SRC %rsi 8 .E_read_words
--	COPY_MC_TEST_DST %rdi 8 .E_write_words
- .L_write_words:
- 	movq %r8, (%rdi)
- 	addq $8, %rsi
-@@ -73,8 +66,6 @@ SYM_FUNC_START(copy_mc_fragile)
- 	movl %edx, %ecx
- .L_read_trailing_bytes:
- 	movb (%rsi), %al
--	COPY_MC_TEST_SRC %rsi 1 .E_trailing_bytes
--	COPY_MC_TEST_DST %rdi 1 .E_trailing_bytes
- .L_write_trailing_bytes:
- 	movb %al, (%rdi)
- 	incq %rsi
-@@ -88,7 +79,6 @@ SYM_FUNC_START(copy_mc_fragile)
- .L_done:
- 	ret
- SYM_FUNC_END(copy_mc_fragile)
--EXPORT_SYMBOL_GPL(copy_mc_fragile)
- 
- 	.section .fixup, "ax"
- 	/*
-diff --git a/tools/testing/nvdimm/test/nfit.c b/tools/testing/nvdimm/test/nfit.c
-index 2ac0fff6dad8..9b185bf82da8 100644
---- a/tools/testing/nvdimm/test/nfit.c
-+++ b/tools/testing/nvdimm/test/nfit.c
-@@ -23,7 +23,6 @@
- #include "nfit_test.h"
- #include "../watermark.h"
- 
--#include <asm/copy_mc_test.h>
- #include <asm/mce.h>
- 
- /*
-@@ -3284,107 +3283,6 @@ static struct platform_driver nfit_test_driver = {
- 	.id_table = nfit_test_id,
- };
- 
--static char copy_mc_buf[PAGE_SIZE] __attribute__((__aligned__(PAGE_SIZE)));
--
--enum INJECT {
--	INJECT_NONE,
--	INJECT_SRC,
--	INJECT_DST,
--};
--
--static void copy_mc_test_init(char *dst, char *src, size_t size)
--{
--	size_t i;
--
--	memset(dst, 0xff, size);
--	for (i = 0; i < size; i++)
--		src[i] = (char) i;
--}
--
--static bool copy_mc_test_validate(unsigned char *dst, unsigned char *src,
--		size_t size, unsigned long rem)
--{
--	size_t i;
--
--	for (i = 0; i < size - rem; i++)
--		if (dst[i] != (unsigned char) i) {
--			pr_info_once("%s:%d: offset: %zd got: %#x expect: %#x\n",
--					__func__, __LINE__, i, dst[i],
--					(unsigned char) i);
--			return false;
--		}
--	for (i = size - rem; i < size; i++)
--		if (dst[i] != 0xffU) {
--			pr_info_once("%s:%d: offset: %zd got: %#x expect: 0xff\n",
--					__func__, __LINE__, i, dst[i]);
--			return false;
--		}
--	return true;
--}
--
--void copy_mc_test(void)
--{
--	char *inject_desc[] = { "none", "source", "destination" };
--	enum INJECT inj;
--
--	if (IS_ENABLED(CONFIG_COPY_MC_TEST)) {
--		pr_info("%s: run...\n", __func__);
--	} else {
--		pr_info("%s: disabled, skip.\n", __func__);
--		return;
--	}
--
--	for (inj = INJECT_NONE; inj <= INJECT_DST; inj++) {
--		int i;
--
--		pr_info("%s: inject: %s\n", __func__, inject_desc[inj]);
--		for (i = 0; i < 512; i++) {
--			unsigned long expect, rem;
--			void *src, *dst;
--			bool valid;
--
--			switch (inj) {
--			case INJECT_NONE:
--				copy_mc_inject_src(NULL);
--				copy_mc_inject_dst(NULL);
--				dst = &copy_mc_buf[2048];
--				src = &copy_mc_buf[1024 - i];
--				expect = 0;
--				break;
--			case INJECT_SRC:
--				copy_mc_inject_src(&copy_mc_buf[1024]);
--				copy_mc_inject_dst(NULL);
--				dst = &copy_mc_buf[2048];
--				src = &copy_mc_buf[1024 - i];
--				expect = 512 - i;
--				break;
--			case INJECT_DST:
--				copy_mc_inject_src(NULL);
--				copy_mc_inject_dst(&copy_mc_buf[2048]);
--				dst = &copy_mc_buf[2048 - i];
--				src = &copy_mc_buf[1024];
--				expect = 512 - i;
--				break;
--			}
--
--			copy_mc_test_init(dst, src, 512);
--			rem = copy_mc_fragile(dst, src, 512);
--			valid = copy_mc_test_validate(dst, src, 512, expect);
--			if (rem == expect && valid)
--				continue;
--			pr_info("%s: copy(%#lx, %#lx, %d) off: %d rem: %ld %s expect: %ld\n",
--					__func__,
--					((unsigned long) dst) & ~PAGE_MASK,
--					((unsigned long ) src) & ~PAGE_MASK,
--					512, i, rem, valid ? "valid" : "bad",
--					expect);
--		}
--	}
--
--	copy_mc_inject_src(NULL);
--	copy_mc_inject_dst(NULL);
--}
--
- static __init int nfit_test_init(void)
- {
- 	int rc, i;
-@@ -3393,7 +3291,6 @@ static __init int nfit_test_init(void)
- 	libnvdimm_test();
- 	acpi_nfit_test();
- 	device_dax_test();
--	copy_mc_test();
- 	dax_pmem_test();
- 	dax_pmem_core_test();
- #ifdef CONFIG_DEV_DAX_PMEM_COMPAT
+ - TXDES#0: Bits 27 ~ 14 are valid only when FTS = 1
+ - TXDES#1: Bits 31 ~ 0 are valid only when FTS = 1
 
+So the ownership bit (31) is not valid unless FTS is set. However,
+this isn't what his patch does. It adds checks for EDOTR.
+
+>
+> > 2. A TX descriptor is "writable" only when its value is zero
+> > regardless the edotr mask.
+>
+> Again, why is that ? Can you elaborate ? What race are you trying to
+> address here ?
+>
+> Cheers,
+> Ben.
+>
+> > Fixes: 52c0cae87465 ("ftgmac100: Remove tx descriptor accessors")
+> > Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
+> > Signed-off-by: Joel Stanley <joel@jms.id.au>
+> > ---
+> >  drivers/net/ethernet/faraday/ftgmac100.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/faraday/ftgmac100.c
+> > b/drivers/net/ethernet/faraday/ftgmac100.c
+> > index 00024dd41147..7cacbe4aecb7 100644
+> > --- a/drivers/net/ethernet/faraday/ftgmac100.c
+> > +++ b/drivers/net/ethernet/faraday/ftgmac100.c
+> > @@ -647,6 +647,9 @@ static bool ftgmac100_tx_complete_packet(struct
+> > ftgmac100 *priv)
+> >       if (ctl_stat & FTGMAC100_TXDES0_TXDMA_OWN)
+> >               return false;
+> >
+> > +     if ((ctl_stat & ~(priv->txdes0_edotr_mask)) == 0)
+> > +             return false;
+> > +
+> >       skb = priv->tx_skbs[pointer];
+> >       netdev->stats.tx_packets++;
+> >       netdev->stats.tx_bytes += skb->len;
+> > @@ -756,6 +759,9 @@ static netdev_tx_t
+> > ftgmac100_hard_start_xmit(struct sk_buff *skb,
+> >       pointer = priv->tx_pointer;
+> >       txdes = first = &priv->txdes[pointer];
+> >
+> > +     if (le32_to_cpu(txdes->txdes0) & ~priv->txdes0_edotr_mask)
+> > +             goto drop;
+> > +
+> >       /* Setup it up with the packet head. Don't write the head to
+> > the
+> >        * ring just yet
+> >        */
+> > @@ -787,6 +793,10 @@ static netdev_tx_t
+> > ftgmac100_hard_start_xmit(struct sk_buff *skb,
+> >               /* Setup descriptor */
+> >               priv->tx_skbs[pointer] = skb;
+> >               txdes = &priv->txdes[pointer];
+> > +
+> > +             if (le32_to_cpu(txdes->txdes0) & ~priv-
+> > >txdes0_edotr_mask)
+> > +                     goto dma_err;
+> > +
+> >               ctl_stat = ftgmac100_base_tx_ctlstat(priv, pointer);
+> >               ctl_stat |= FTGMAC100_TXDES0_TXDMA_OWN;
+> >               ctl_stat |= FTGMAC100_TXDES0_TXBUF_SIZE(len);
+>
