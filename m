@@ -2,88 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935FC293B71
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D72293B0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405851AbgJTMWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:22:50 -0400
-Received: from gate.crashing.org ([63.228.1.57]:52509 "EHLO gate.crashing.org"
+        id S2394098AbgJTMRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:17:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394268AbgJTMWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:22:50 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 09KCGBUp025510;
-        Tue, 20 Oct 2020 07:16:16 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 09KCGAIq025509;
-        Tue, 20 Oct 2020 07:16:10 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Tue, 20 Oct 2020 07:16:10 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        mathieu.desnoyers@efficios.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] powerpc: Fix update form addressing in inline assembly
-Message-ID: <20201020121610.GZ2672@gate.crashing.org>
-References: <212d3bc4a52ca71523759517bb9c61f7e477c46a.1603179582.git.christophe.leroy@csgroup.eu> <fcff4199459890d107a06dbc39c52668ccd0921b.1603179582.git.christophe.leroy@csgroup.eu>
-Mime-Version: 1.0
+        id S2393919AbgJTMRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:17:13 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 528C12222F;
+        Tue, 20 Oct 2020 12:17:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603196232;
+        bh=kwz329hHcdb3msU9zQOvS3B2J9Hwj2jzPLYLuDYZiNA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b+AtBJObIlriv82XKfONSPirGGGZJgUlCOf+6WNBKBqe3Ta8suLxnsp7egfhpCK5i
+         1947v5+dD3jFxttlkavpKM1e4Li0kJjW5s/iX+F8fFPQrM1pFXDDuL8X4/YXBNea9i
+         rzsLxP4PdiRHAmdmeLhXsdhqD8md1Y5RyQ3lz35U=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2AA37403C2; Tue, 20 Oct 2020 09:17:10 -0300 (-03)
+Date:   Tue, 20 Oct 2020 09:17:10 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Tommi Rantala <tommi.t.rantala@nokia.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>
+Subject: Re: [PATCH] perf test: Implement skip_reason callback for watchpoint
+ tests
+Message-ID: <20201020121710.GF2294271@kernel.org>
+References: <20201016131650.72476-1-tommi.t.rantala@nokia.com>
+ <CAM9d7ciEBP-GMFR0xJqoqSaG2vBcXKxKv4HOR3mxzGxqji2yzg@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fcff4199459890d107a06dbc39c52668ccd0921b.1603179582.git.christophe.leroy@csgroup.eu>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <CAM9d7ciEBP-GMFR0xJqoqSaG2vBcXKxKv4HOR3mxzGxqji2yzg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-On Tue, Oct 20, 2020 at 07:40:09AM +0000, Christophe Leroy wrote:
-> In several places, inline assembly uses the "%Un" modifier
-> to enable the use of instruction with update form addressing,
-> but the associated "<>" constraint is missing.
+Em Tue, Oct 20, 2020 at 03:07:15PM +0900, Namhyung Kim escreveu:
+> Hello,
+> On Fri, Oct 16, 2020 at 10:17 PM Tommi Rantala
+> <tommi.t.rantala@nokia.com> wrote:
+> >
+> > Currently reason for skipping the read only watchpoint test is only seen
+> > when running in verbose mode:
+> >
+> >   $ perf test watchpoint
+> >   23: Watchpoint                                            :
+> >   23.1: Read Only Watchpoint                                : Skip
+> >   23.2: Write Only Watchpoint                               : Ok
+> >   23.3: Read / Write Watchpoint                             : Ok
+> >   23.4: Modify Watchpoint                                   : Ok
+> >
+> >   $ perf test -v watchpoint
+> >   23: Watchpoint                                            :
+> >   23.1: Read Only Watchpoint                                :
+> >   --- start ---
+> >   test child forked, pid 60204
+> >   Hardware does not support read only watchpoints.
+> >   test child finished with -2
+> >
+> > Implement skip_reason callback for the watchpoint tests, so that it's
+> > easy to see reason why the test is skipped:
+> >
+> >   $ perf test watchpoint
+> >   23: Watchpoint                                            :
+> >   23.1: Read Only Watchpoint                                : Skip (missing hardware support)
+> >   23.2: Write Only Watchpoint                               : Ok
+> >   23.3: Read / Write Watchpoint                             : Ok
+> >   23.4: Modify Watchpoint                                   : Ok
+> >
+> > Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
 > 
-> As mentioned in previous patch, this fails with gcc 4.9, so
-> "<>" can't be used directly.
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks, applied.
+
+- Arnaldo
+ 
 > 
-> Use UPD_CONSTR macro everywhere %Un modifier is used.
+> Thanks
+> Namhyung
 > 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> 
+> > ---
+> >  tools/perf/tests/builtin-test.c |  1 +
+> >  tools/perf/tests/tests.h        |  1 +
+> >  tools/perf/tests/wp.c           | 21 +++++++++++++++------
+> >  3 files changed, 17 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> > index d328caaba45d..3bfad4ee31ae 100644
+> > --- a/tools/perf/tests/builtin-test.c
+> > +++ b/tools/perf/tests/builtin-test.c
+> > @@ -142,6 +142,7 @@ static struct test generic_tests[] = {
+> >                         .skip_if_fail   = false,
+> >                         .get_nr         = test__wp_subtest_get_nr,
+> >                         .get_desc       = test__wp_subtest_get_desc,
+> > +                       .skip_reason    = test__wp_subtest_skip_reason,
+> >                 },
+> >         },
+> >         {
+> > diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+> > index 4447a516c689..0630301087a6 100644
+> > --- a/tools/perf/tests/tests.h
+> > +++ b/tools/perf/tests/tests.h
+> > @@ -66,6 +66,7 @@ int test__bp_signal_overflow(struct test *test, int subtest);
+> >  int test__bp_accounting(struct test *test, int subtest);
+> >  int test__wp(struct test *test, int subtest);
+> >  const char *test__wp_subtest_get_desc(int subtest);
+> > +const char *test__wp_subtest_skip_reason(int subtest);
+> >  int test__wp_subtest_get_nr(void);
+> >  int test__task_exit(struct test *test, int subtest);
+> >  int test__mem(struct test *test, int subtest);
+> > diff --git a/tools/perf/tests/wp.c b/tools/perf/tests/wp.c
+> > index d262d6639829..9387fa76faa5 100644
+> > --- a/tools/perf/tests/wp.c
+> > +++ b/tools/perf/tests/wp.c
+> > @@ -174,10 +174,12 @@ static bool wp_ro_supported(void)
+> >  #endif
+> >  }
+> >
+> > -static void wp_ro_skip_msg(void)
+> > +static const char *wp_ro_skip_msg(void)
+> >  {
+> >  #if defined (__x86_64__) || defined (__i386__)
+> > -       pr_debug("Hardware does not support read only watchpoints.\n");
+> > +       return "missing hardware support";
+> > +#else
+> > +       return NULL;
+> >  #endif
+> >  }
+> >
+> > @@ -185,7 +187,7 @@ static struct {
+> >         const char *desc;
+> >         int (*target_func)(void);
+> >         bool (*is_supported)(void);
+> > -       void (*skip_msg)(void);
+> > +       const char *(*skip_msg)(void);
+> >  } wp_testcase_table[] = {
+> >         {
+> >                 .desc = "Read Only Watchpoint",
+> > @@ -219,16 +221,23 @@ const char *test__wp_subtest_get_desc(int i)
+> >         return wp_testcase_table[i].desc;
+> >  }
+> >
+> > +const char *test__wp_subtest_skip_reason(int i)
+> > +{
+> > +       if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
+> > +               return NULL;
+> > +       if (!wp_testcase_table[i].skip_msg)
+> > +               return NULL;
+> > +       return wp_testcase_table[i].skip_msg();
+> > +}
+> > +
+> >  int test__wp(struct test *test __maybe_unused, int i)
+> >  {
+> >         if (i < 0 || i >= (int)ARRAY_SIZE(wp_testcase_table))
+> >                 return TEST_FAIL;
+> >
+> >         if (wp_testcase_table[i].is_supported &&
+> > -           !wp_testcase_table[i].is_supported()) {
+> > -               wp_testcase_table[i].skip_msg();
+> > +           !wp_testcase_table[i].is_supported())
+> >                 return TEST_SKIP;
+> > -       }
+> >
+> >         return !wp_testcase_table[i].target_func() ? TEST_OK : TEST_FAIL;
+> >  }
+> > --
+> > 2.26.2
+> >
 
-Oh well, it will be easy enough to remove this wart later, so
+-- 
 
-Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
-
-> --- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-> +++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-> @@ -525,7 +525,7 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
->  		stw%U0%X0 %2,%0\n\
->  		eieio\n\
->  		stw%U1%X1 %L2,%1"
-> -	: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
-> +	: "=m"UPD_CONSTR (*ptep), "=m"UPD_CONSTR (*((unsigned char *)ptep+4))
->  	: "r" (pte) : "memory");
-
-Here it would pre-increment ptep+4.  That can never be something useful
-afaics?  The order the two operands are (either or not) pre-modified in
-the asm is not specified (GCC does not parse the asm template, by
-design), so I fail to see how this could ever work.
-
-> --- a/arch/powerpc/include/asm/nohash/pgtable.h
-> +++ b/arch/powerpc/include/asm/nohash/pgtable.h
-> @@ -200,7 +200,7 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
->  			stw%U0%X0 %2,%0\n\
->  			eieio\n\
->  			stw%U1%X1 %L2,%1"
-> -		: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
-> +		: "=m"UPD_CONSTR (*ptep), "=m"UPD_CONSTR (*((unsigned char *)ptep+4))
->  		: "r" (pte) : "memory");
-
-Same here.
-
-The rest looks fine.
-
-
-Segher
+- Arnaldo
