@@ -2,103 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F56294013
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A93629401A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437020AbgJTP6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 11:58:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53722 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2437012AbgJTP6P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 11:58:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603209493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6rKJUp/hFuoSptP9CoWz5upgdM+KXQTN0SbAhamuu80=;
-        b=Q4RW9u6B4R39gZMYKgHQZTbCdZbEC7q3J4oP8d1AWPRsHBcTLtnBIzNXVizFwkr5bkeWcf
-        6p61bmS1/0PUiKqyiam8ku4FJsPHNBHs9oiwfkDdKz9NYmqUNLogWLXcnlTvlGM2QeWmg5
-        d6IMMXTS9YR6iYNzjTuAbQOOkT/HmeE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-296-sCqQLHNnMSOZBz2EoKvXNg-1; Tue, 20 Oct 2020 11:58:09 -0400
-X-MC-Unique: sCqQLHNnMSOZBz2EoKvXNg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 99B7E186842E;
-        Tue, 20 Oct 2020 15:58:07 +0000 (UTC)
-Received: from treble (ovpn-114-84.rdu2.redhat.com [10.10.114.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 59C4F60C0F;
-        Tue, 20 Oct 2020 15:58:05 +0000 (UTC)
-Date:   Tue, 20 Oct 2020 10:58:02 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] arm64: Implement reliable stack trace
-Message-ID: <20201020155802.da6ca652hramdlnb@treble>
-References: <20201012172605.10715-1-broonie@kernel.org>
- <alpine.LSU.2.21.2010151533490.14094@pobox.suse.cz>
- <20201015141612.GC50416@C02TD0UTHF1T.local>
- <20201015154951.GD4390@sirena.org.uk>
- <20201015212931.mh4a5jt7pxqlzxsg@treble>
- <20201016111431.GB84361@C02TD0UTHF1T.local>
- <20201020100352.GA48360@C02TD0UTHF1T.local>
+        id S2437030AbgJTP7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 11:59:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:53652 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436998AbgJTP7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 11:59:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 37A961FB;
+        Tue, 20 Oct 2020 08:59:30 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D5733F66B;
+        Tue, 20 Oct 2020 08:59:28 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 16:59:22 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+        bhelgaas@google.com, amurray@thegoodpenguin.co.uk, robh@kernel.org,
+        treding@nvidia.com, jonathanh@nvidia.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH] PCI: dwc: Use ATU regions to map memory regions
+Message-ID: <20201020155922.GA27985@e121166-lin.cambridge.arm.com>
+References: <20201005121351.32516-1-vidyas@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201020100352.GA48360@C02TD0UTHF1T.local>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20201005121351.32516-1-vidyas@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 11:03:52AM +0100, Mark Rutland wrote:
-> On Fri, Oct 16, 2020 at 12:14:31PM +0100, Mark Rutland wrote:
-> > Mark B's reply dropped this, but the next paragraph covered that:
-> > 
-> > | I was planning to send a mail once I've finished writing a test, but
-> > | IIUC there are some windows where ftrace/kretprobes
-> > | detection/repainting may not work, e.g. if preempted after
-> > | ftrace_return_to_handler() decrements curr_ret_stack, but before the
-> > | arch trampoline asm restores the original return addr. So we might
-> > | need something like an in_return_trampoline() to detect and report
-> > | that reliably.
-> > 
-> > ... so e.g. for a callchain A->B->C, where C is instrumented there are
-> > windows where B might be missing from the trace, but the trace is
-> > reported as reliable.
+On Mon, Oct 05, 2020 at 05:43:51PM +0530, Vidya Sagar wrote:
+> Use ATU region-3 and region-0 to setup mapping for prefetchable and
+> non-prefetchable memory regions respectively only if their respective CPU
+> and bus addresses are different.
 > 
-> I'd missed a couple of details, and I think I see how each existing
-> architecture prevents this case now.
+
+The commit subject and log must be rewritten. You should describe
+why you are making this change, add a Link: tag to the discussion
+we had about this change and provide a reason why we are making it.
+
+Also, please add a Fixes: tag reference to the commit you are fixing.
+
+I think this is related to prefetchable handling in DT and dwc/tegra,
+we do need a link to those discussions here please.
+
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+>  .../pci/controller/dwc/pcie-designware-host.c | 44 ++++++++++++++++---
+>  drivers/pci/controller/dwc/pcie-designware.c  | 12 ++---
+>  drivers/pci/controller/dwc/pcie-designware.h  |  4 +-
+>  3 files changed, 48 insertions(+), 12 deletions(-)
 > 
-> Josh, just to confirm the x86 case, am I right in thinking that the ORC
-> unwinder will refuse to unwind from the return_to_handler and
-> kretprobe_trampoline asm? IIRC objtool shouldn't build unwind info for
-> those as return_to_handler is marked with SYM_CODE_{START,END}() and
-> kretprobe_trampoline is marked with STACK_FRAME_NON_STANDARD().
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index 317ff512f8df..cefde8e813e9 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -515,9 +515,40 @@ static struct pci_ops dw_pcie_ops = {
+>  	.write = pci_generic_config_write,
+>  };
+>  
+> +static void dw_pcie_setup_mem_atu(struct pcie_port *pp,
+> +				  struct resource_entry *win)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +
+> +	if (win->res->flags & IORESOURCE_PREFETCH && pci->num_viewport >= 4 &&
+> +	    win->offset) {
+> +		dw_pcie_prog_outbound_atu(pci,
+> +					  PCIE_ATU_REGION_INDEX3,
+> +					  PCIE_ATU_TYPE_MEM,
+> +					  win->res->start,
+> +					  win->res->start - win->offset,
+> +					  resource_size(win->res));
+> +	} else if (win->res->flags & IORESOURCE_PREFETCH &&
+> +		   pci->num_viewport < 4) {
+> +		dev_warn(pci->dev,
+> +			 "Insufficient ATU regions to map Prefetchable memory\n");
+> +	} else if (win->offset) {
+> +		if (upper_32_bits(resource_size(win->res)))
+> +			dev_warn(pci->dev,
+> +				 "Memory resource size exceeds max for 32 bits\n");
+> +		dw_pcie_prog_outbound_atu(pci,
+> +					  PCIE_ATU_REGION_INDEX0,
+> +					  PCIE_ATU_TYPE_MEM,
+> +					  win->res->start,
+> +					  win->res->start - win->offset,
+> +					  resource_size(win->res));
+> +	}
 
-Hm, return_to_handler() actually looks like a bug.  UNWIND_HINT_EMPTY
-sets end=1, which causes the ORC unwinder to treat it like entry code
-(end of the stack).  So while it does stop the unwind, it fails to
-report an error.
+This function logic must be explained - anyone else reading it should
+be able to understand it, I think it really deserves a comment.
 
-This would be fixed by the idea I previously mentioned, changing
-UNWIND_HINT_EMPTY -> UNWIND_HINT_UNDEFINED (end=0) for the non-entry
-cases.  I'll need to work up some patches.
+> +}
+> +
+>  void dw_pcie_setup_rc(struct pcie_port *pp)
+>  {
+>  	u32 val, ctrl, num_ctrls;
+> +	struct resource_entry *win;
+>  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>  
+>  	/*
+> @@ -572,13 +603,14 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
+>  	 * ATU, so we should not program the ATU here.
+>  	 */
+>  	if (pp->bridge->child_ops == &dw_child_pcie_ops) {
+> -		struct resource_entry *entry =
+> -			resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
+> +		resource_list_for_each_entry(win, &pp->bridge->windows) {
+> +			switch (resource_type(win->res)) {
+> +			case IORESOURCE_MEM:
+> +				dw_pcie_setup_mem_atu(pp, win);
+> +				break;
+> +			}
 
-> Both powerpc and s390 refuse to reliably unwind through exceptions, so
-> they can rely on function call boundaries to keep the callchain in a
-> sane state.
+Nit: an if statement would do but that's not where the problem lies.
 
-Yes, and also true for x86 frame pointers.
-
--- 
-Josh
-
+> +		}
+>  
+> -		dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX0,
+> -					  PCIE_ATU_TYPE_MEM, entry->res->start,
+> -					  entry->res->start - entry->offset,
+> -					  resource_size(entry->res));
+>  		if (pci->num_viewport > 2)
+>  			dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX2,
+>  						  PCIE_ATU_TYPE_IO, pp->io_base,
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> index 3c1f17c78241..6033689abb15 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> @@ -227,7 +227,7 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
+>  static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+>  					     int index, int type,
+>  					     u64 cpu_addr, u64 pci_addr,
+> -					     u32 size)
+> +					     u64 size)
+>  {
+>  	u32 retries, val;
+>  	u64 limit_addr = cpu_addr + size - 1;
+> @@ -244,8 +244,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+>  				 lower_32_bits(pci_addr));
+>  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
+>  				 upper_32_bits(pci_addr));
+> -	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
+> -				 type | PCIE_ATU_FUNC_NUM(func_no));
+> +	val = type | PCIE_ATU_FUNC_NUM(func_no);
+> +	val = upper_32_bits(size - 1) ?
+> +		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
+> +	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
+>  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
+>  				 PCIE_ATU_ENABLE);
+>  
+> @@ -266,7 +268,7 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+>  
+>  static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+>  					int index, int type, u64 cpu_addr,
+> -					u64 pci_addr, u32 size)
+> +					u64 pci_addr, u64 size)
+>  {
+>  	u32 retries, val;
+>  
+> @@ -310,7 +312,7 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+>  }
+>  
+>  void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index, int type,
+> -			       u64 cpu_addr, u64 pci_addr, u32 size)
+> +			       u64 cpu_addr, u64 pci_addr, u64 size)
+>  {
+>  	__dw_pcie_prog_outbound_atu(pci, 0, index, type,
+>  				    cpu_addr, pci_addr, size);
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> index 97c7063b9e89..b81a1813cf9e 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.h
+> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> @@ -80,10 +80,12 @@
+>  #define PCIE_ATU_VIEWPORT		0x900
+>  #define PCIE_ATU_REGION_INBOUND		BIT(31)
+>  #define PCIE_ATU_REGION_OUTBOUND	0
+> +#define PCIE_ATU_REGION_INDEX3		0x3
+>  #define PCIE_ATU_REGION_INDEX2		0x2
+>  #define PCIE_ATU_REGION_INDEX1		0x1
+>  #define PCIE_ATU_REGION_INDEX0		0x0
+>  #define PCIE_ATU_CR1			0x904
+> +#define PCIE_ATU_INCREASE_REGION_SIZE	BIT(13)
+>  #define PCIE_ATU_TYPE_MEM		0x0
+>  #define PCIE_ATU_TYPE_IO		0x2
+>  #define PCIE_ATU_TYPE_CFG0		0x4
+> @@ -295,7 +297,7 @@ void dw_pcie_upconfig_setup(struct dw_pcie *pci);
+>  int dw_pcie_wait_for_link(struct dw_pcie *pci);
+>  void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index,
+>  			       int type, u64 cpu_addr, u64 pci_addr,
+> -			       u32 size);
+> +			       u64 size);
+>  void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
+>  				  int type, u64 cpu_addr, u64 pci_addr,
+>  				  u32 size);
+> -- 
+> 2.17.1
+> 
