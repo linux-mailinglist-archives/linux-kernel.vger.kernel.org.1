@@ -2,189 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4E2293EB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0427293EC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408118AbgJTO3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408107AbgJTO3r (ORCPT
+        id S2408133AbgJTOcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:32:14 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48168 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730422AbgJTOcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:29:47 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43F9C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:29:47 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id t77so2348683oie.4
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:29:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Iw+9FQHNyoJkvzpR4HG8l9FMoO2YHaW76z2YEMGyQNk=;
-        b=b8klL9mJfc+hHeOGr0XuJsKHWTOT+MJczln6i0Y2pX/+ODV/m1GccK/uieJTeMCDFW
-         PSRjyHfsysfrsF2Z1aadY4bxFoB1Adrj8Ucaa4H2UOOTrynEpoUR2z4ojR6XuUGhowCV
-         RloQNtd0ndcn9whfCnU3SNC8rW2KyeBevbLOo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Iw+9FQHNyoJkvzpR4HG8l9FMoO2YHaW76z2YEMGyQNk=;
-        b=bhLkgnSBaW5lv5BzBAskgy0jFqR2o38kYYmfIRsgRExv/F9FeHz7H24il44afOXxHi
-         fsO5J/StJ1U+ON9DcWU6PKYc0G6VDz50g/hN5STNzthCEZjBHKN6JEitHiUulIZ5hj7z
-         1SIX8OOL7/tZrBSgiF6V9+hB0QXIzrSh24aL5W3ju4MPj7QUlHOY8eTONgTDnT4uWlNj
-         pU7+XaHAvD32FXDr2pPCYBIeSygyb45IxQuRvsQpLM3lwh+jkWlkJD3YVoHW6E1mBzsa
-         KHYO2HdF/Zmo71JYu5R1KbTvhE6xceOMX6+nMXNZ5Yur1dK0gzYkQcANPw/as4XyfFEE
-         W9Qw==
-X-Gm-Message-State: AOAM532gdz/usYx/lK5aP0XHXMty8Sti7W68un/5HYDHBwOISPRHA2Os
-        F8lpDjbvTZE19ILtlxupBb+GQDFQopG8C0I691/FAw==
-X-Google-Smtp-Source: ABdhPJwrebSK+BPzGtoMppzVbUL2XYzWHnimazpLvBBa8NBDpveNIQ2JAKbdpYQNu0j4KLTKpH7+TG4HRKat8/xIXgw=
-X-Received: by 2002:aca:cc01:: with SMTP id c1mr2067105oig.128.1603204186995;
- Tue, 20 Oct 2020 07:29:46 -0700 (PDT)
+        Tue, 20 Oct 2020 10:32:13 -0400
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kUsgN-0000qz-BC; Tue, 20 Oct 2020 14:32:11 +0000
+Date:   Tue, 20 Oct 2020 16:32:10 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        containers@lists.linux-foundation.org, linux@rasmusvillemoes.dk,
+        viro@zeniv.linux.org.uk
+Subject: Re: [PATCH v2 2/2] selftests: add tests for CLOSE_RANGE_CLOEXEC
+Message-ID: <20201020143210.uwwdinaj45iom4oi@wittgenstein>
+References: <20201019102654.16642-1-gscrivan@redhat.com>
+ <20201019102654.16642-3-gscrivan@redhat.com>
 MIME-Version: 1.0
-References: <20201019211101.143327-1-robdclark@gmail.com> <20201020082404.GJ401619@phenom.ffwll.local>
- <CAF6AEGuT6ZSpitNS0eBcjKhAVW1QBg+uPJQQkBLckOk=_GBx=A@mail.gmail.com>
-In-Reply-To: <CAF6AEGuT6ZSpitNS0eBcjKhAVW1QBg+uPJQQkBLckOk=_GBx=A@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 20 Oct 2020 16:29:35 +0200
-Message-ID: <CAKMK7uEg-iz2zK6E0RFA-JQ+GfjuUcnrdu+e_3FWq9E9_9WUZA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] drm/msm: kthread_worker conversion
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Roy Spliet <nouveau@spliet.org>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        tongtiangen <tongtiangen@huawei.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Drew Davenport <ddavenport@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201019102654.16642-3-gscrivan@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 4:01 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> On Tue, Oct 20, 2020 at 1:24 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Mon, Oct 19, 2020 at 02:10:50PM -0700, Rob Clark wrote:
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > In particular, converting the async atomic commit (for cursor updates,
-> > > etc) to SCHED_FIFO kthread_worker helps with some cases where we
-> > > wouldn't manage to flush the updates within the 1ms-before-vblank
-> > > deadline resulting in fps drops when there is cursor movement.
-> > >
-> > > Rob Clark (3):
-> > >   drm/msm/gpu: Convert retire/recover work to kthread_worker
-> > >   drm/msm/kms: Update msm_kms_init/destroy
-> > >   drm/msm/atomic: Convert to per-CRTC kthread_work
-> >
-> > So i915 has it's own commit worker already for $reasons, but I don't think
-> > that's a good path to go down with more drivers. And the problem seems
-> > entirely generic in nature ...
->
-> I'm not *entirely* sure what your point is here?  This is just
-> migrating away from a shared ordered wq to per-crtc kthread so that we
-> don't miss vblank deadlines for silly reasons (and then stall on the
-> next frame's pageflip because we are still waiting for the cursor
-> update to latch).  Kind of like vblank-work but scheduled prior to,
-> rather than after, vblank.
->
-> And you're right that the problem is partially generic.. hw that (a)
-> doesn't have true async (cursor and/or otherwise) updates, and (b) has
-> various flush bits that latch register updates on vblank, is not that
-> uncommon.  But the current atomic helper API would have to be a bit
-> redesigned to look more like the interface between msm_atomic and the
-> display backend.  That is a fair bit of churn for re-using a small bit
-> of code.
+First, thank you for the selftests. That's great to see!
 
-I was making some assumptions about what you're doing, and I was
-wrong. So I went and tried to understand what's actually going on
-here.
+Could you please add a short explanation what you're testing here to the
+commit message?
 
-I'm trying to understand what exactly you've added with that async msm
-support 2d99ced787e3d. I think this breaks the state structure update
-model, you can't access any ->state pointers from the commit functions
-after you've called drm_atomic_helper_commit_hw_done, or you might
-have a use after free. And that seems to be happening from this commit
-work thing you added to your existing commit work that the atomic
-helpers provide already.
+On Mon, Oct 19, 2020 at 12:26:54PM +0200, Giuseppe Scrivano wrote:
+> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+> ---
+>  .../testing/selftests/core/close_range_test.c | 74 +++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/core/close_range_test.c b/tools/testing/selftests/core/close_range_test.c
+> index c99b98b0d461..c9db282158bb 100644
+> --- a/tools/testing/selftests/core/close_range_test.c
+> +++ b/tools/testing/selftests/core/close_range_test.c
+> @@ -11,6 +11,7 @@
+>  #include <string.h>
+>  #include <syscall.h>
+>  #include <unistd.h>
+> +#include <sys/resource.h>
+>  
+>  #include "../kselftest_harness.h"
+>  #include "../clone3/clone3_selftests.h"
+> @@ -23,6 +24,10 @@
+>  #define CLOSE_RANGE_UNSHARE	(1U << 1)
+>  #endif
+>  
+> +#ifndef CLOSE_RANGE_CLOEXEC
+> +#define CLOSE_RANGE_CLOEXEC	(1U << 2)
+> +#endif
+> +
+>  static inline int sys_close_range(unsigned int fd, unsigned int max_fd,
+>  				  unsigned int flags)
+>  {
+> @@ -224,4 +229,73 @@ TEST(close_range_unshare_capped)
+>  	EXPECT_EQ(0, WEXITSTATUS(status));
+>  }
+>  
+> +TEST(close_range_cloexec)
+> +{
+> +	int i, ret;
+> +	int open_fds[101];
+> +	struct rlimit rlimit;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(open_fds); i++) {
+> +		int fd;
+> +
+> +		fd = open("/dev/null", O_RDONLY);
+> +		ASSERT_GE(fd, 0) {
+> +			if (errno == ENOENT)
+> +				XFAIL(return, "Skipping test since /dev/null does not exist");
+> +		}
+> +
+> +		open_fds[i] = fd;
+> +	}
+> +
+> +	ret = sys_close_range(1000, 1000, CLOSE_RANGE_CLOEXEC);
+> +	if (ret < 0) {
+> +		if (errno == ENOSYS)
+> +			XFAIL(return, "close_range() syscall not supported");
+> +		if (errno == EINVAL)
+> +			XFAIL(return, "close_range() doesn't support CLOSE_RANGE_CLOEXEC");
+> +	}
+> +
+> +	/* Ensure the FD_CLOEXEC bit is set also with a resource limit in place.  */
+> +	EXPECT_EQ(0, getrlimit(RLIMIT_NOFILE, &rlimit));
+> +	rlimit.rlim_cur = 25;
+> +	EXPECT_EQ(0, setrlimit(RLIMIT_NOFILE, &rlimit));
 
-The various commit functions seem to grab various state objects by
-just chasing pointers from the objects (instead of the
-drm_atomic_state stuff), so this all feels like it's yolo
-free-wheeling.
+I usually prefer to call ASSERT_* to abort at the first true failure
+before moving on. And I think all the EXPECT_*()s here should be
+ASSERT_*()s because that are all hard failures imho.
 
-You also seem to be using the async_commit stuff from the atomic
-helpers (which is actually synchronous (i.e. blocking) from the pov of
-how the code runs, but seems to be for mdp5 only and not others. Also
-your can_do_async still checks for legacy_cursor_update (maybe a
-leftover, or needed on !mdp5 platforms) and ->async_update.
+Apart from that this looks good.
 
-I'm thoroughly confused how this all works.
-
-I do agree though that you probably want this to be a real time fifo
-kthread worker, like for the vblank worker. Except now that I looked,
-I'm not sure it's actually working intended and correct.
--Daniel
-
-> BR,
-> -R
->
-> > -Daniel
-> >
-> > >
-> > >  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |  3 +--
-> > >  drivers/gpu/drm/msm/adreno/a5xx_preempt.c |  6 ++---
-> > >  drivers/gpu/drm/msm/adreno/a6xx_gmu.c     |  4 +--
-> > >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 +--
-> > >  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c   |  8 +++++-
-> > >  drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c  |  8 +++++-
-> > >  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c  | 11 ++++++---
-> > >  drivers/gpu/drm/msm/disp/mdp_kms.h        |  9 +++++--
-> > >  drivers/gpu/drm/msm/msm_atomic.c          | 25 +++++++++++++++----
-> > >  drivers/gpu/drm/msm/msm_drv.h             |  3 ++-
-> > >  drivers/gpu/drm/msm/msm_gpu.c             | 30 +++++++++++++++--------
-> > >  drivers/gpu/drm/msm/msm_gpu.h             | 13 +++++++---
-> > >  drivers/gpu/drm/msm/msm_kms.h             | 23 ++++++++++++++---
-> > >  13 files changed, 104 insertions(+), 43 deletions(-)
-> > >
-> > > --
-> > > 2.26.2
-> > >
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+> +
+> +	/* Set close-on-exec for two ranges: [0-50] and [75-100].  */
+> +	ret = sys_close_range(open_fds[0], open_fds[50], CLOSE_RANGE_CLOEXEC);
+> +	EXPECT_EQ(0, ret);
+> +	ret = sys_close_range(open_fds[75], open_fds[100], CLOSE_RANGE_CLOEXEC);
+> +	EXPECT_EQ(0, ret);
+> +
+> +	for (i = 0; i <= 50; i++) {
+> +		int flags = fcntl(open_fds[i], F_GETFD);
+> +
+> +		EXPECT_GT(flags, -1);
+> +		EXPECT_EQ(flags & FD_CLOEXEC, FD_CLOEXEC);
+> +	}
+> +
+> +	for (i = 51; i <= 74; i++) {
+> +		int flags = fcntl(open_fds[i], F_GETFD);
+> +
+> +		EXPECT_GT(flags, -1);
+> +		EXPECT_EQ(flags & FD_CLOEXEC, 0);
+> +	}
+> +
+> +	for (i = 75; i <= 100; i++) {
+> +		int flags = fcntl(open_fds[i], F_GETFD);
+> +
+> +		EXPECT_GT(flags, -1);
+> +		EXPECT_EQ(flags & FD_CLOEXEC, FD_CLOEXEC);
+> +	}
+> +
+> +	/* Test a common pattern.  */
+> +	ret = sys_close_range(3, UINT_MAX, CLOSE_RANGE_CLOEXEC);
+> +	for (i = 0; i <= 100; i++) {
+> +		int flags = fcntl(open_fds[i], F_GETFD);
+> +
+> +		EXPECT_GT(flags, -1);
+> +		EXPECT_EQ(flags & FD_CLOEXEC, FD_CLOEXEC);
+> +	}
+> +}
+> +
+> +
+>  TEST_HARNESS_MAIN
+> -- 
+> 2.26.2
+> 
 > _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> Containers mailing list
+> Containers@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/containers
