@@ -2,134 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16A2293D5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBE4293D66
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407484AbgJTNc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407304AbgJTNc6 (ORCPT
+        id S2407497AbgJTNeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:34:20 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14091 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407488AbgJTNeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:32:58 -0400
-Received: from hillosipuli.retiisi.eu (hillosipuli.retiisi.eu [IPv6:2a01:4f9:c010:4572::81:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93562C061755;
-        Tue, 20 Oct 2020 06:32:58 -0700 (PDT)
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id D8AC0634C89;
-        Tue, 20 Oct 2020 16:32:54 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1kUrl2-0000Em-2S; Tue, 20 Oct 2020 16:32:56 +0300
-Date:   Tue, 20 Oct 2020 16:32:56 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux.walleij@linaro.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        andriy.shevchenko@linux.intel.com, sergey.senozhatsky@gmail.com,
-        rostedt@goodmis.org, pmladek@suse.com, mchehab@kernel.org,
-        tian.shu.qiu@intel.com, bingbu.cao@intel.com, yong.zhi@intel.com,
-        rafael@kernel.org, gregkh@linuxfoundation.org, kitakar@gmail.com,
-        dan.carpenter@oracle.org
-Subject: Re: [RFC PATCH v3 4/9] software_node: Add support for
- fwnode_graph*() family of functions
-Message-ID: <20201020133254.GC843@valkosipuli.retiisi.org.uk>
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-5-djrscally@gmail.com>
- <20201020123556.GW13341@paasikivi.fi.intel.com>
+        Tue, 20 Oct 2020 09:34:20 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8ee6fe0001>; Tue, 20 Oct 2020 06:32:46 -0700
+Received: from [10.40.203.32] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
+ 2020 13:34:10 +0000
+Subject: Re: [PATCH] PCI: dwc: Use ATU regions to map memory regions
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
+        <bhelgaas@google.com>, <amurray@thegoodpenguin.co.uk>,
+        <robh@kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
+References: <20201005121351.32516-1-vidyas@nvidia.com>
+ <e633d496-0c4b-f6f5-00a9-c98fb3ed9f61@nvidia.com>
+ <20201020132037.GB25784@e121166-lin.cambridge.arm.com>
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <85e0d8f8-9dfe-b71b-f039-96eaf8f4c350@nvidia.com>
+Date:   Tue, 20 Oct 2020 19:03:59 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020123556.GW13341@paasikivi.fi.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201020132037.GB25784@e121166-lin.cambridge.arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603200766; bh=XbjLOg79CmuDWc3lI/dtwF7N4cCKVsmRoy588r0C9b8=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=biLwzaOQjMtXV08V8H5XnF6vEDAAtr7jkdqr+pSW/7FbTq3wiy87JK7X10ICJlPTM
+         h5/VzUaI5fuou8D5HzpVNWYh8pj9Z0fPRjJV3LDCsZnHJjkbxKWcNQ1EBYNw8f2/lY
+         pAK/zkH4F1Cs6zKR8TZng+n4fBOlVE68L5ODHNUsE5ud0GHLApzKfLPLbB64AkX8iH
+         bR1C1pTC3j/MMBR7HAuqeeXcxWyQ5coS2ocnBUVckXudGJOcdJ4Pf1PLcsjWDkMKWD
+         cilnlxHhYQzhhZ7clEX5kwLE0br/VhZ/z91HMH1A88LIQcqPwnRJtMZL8gk0PHcj8j
+         6s26MW2ErP1EA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 03:35:56PM +0300, Sakari Ailus wrote:
-> Hi Daniel, Heikki,
-> 
-> Thanks for the patch.
-> 
-> On Mon, Oct 19, 2020 at 11:58:58PM +0100, Daniel Scally wrote:
-> > From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > 
-> > This implements the remaining .graph_* callbacks in the
-> > fwnode operations vector for the software nodes. That makes
-> > the fwnode_graph*() functions available in the drivers also
-> > when software nodes are used.
-> > 
-> > The implementation tries to mimic the "OF graph" as much as
-> > possible, but there is no support for the "reg" device
-> > property. The ports will need to have the index in their
-> > name which starts with "port" (for example "port0", "port1",
-> > ...) and endpoints will use the index of the software node
-> > that is given to them during creation. The port nodes can
-> > also be grouped under a specially named "ports" subnode,
-> > just like in DT, if necessary.
-> > 
-> > The remote-endpoints are reference properties under the
-> > endpoint nodes that are named "remote-endpoint". 
-> > 
-> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > Co-developed-by: Daniel Scally <djrscally@gmail.com>
-> > Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> > ---
-> > changes in v3:
-> > 	- removed software_node_device_is_available
-> > 	- moved the change to software_node_get_next_child to a separate
-> > 	patch
-> > 	- switched to use fwnode_handle_put() in graph_get_next_endpoint()
-> > 	instead of software_node_put()
-> > 
-> > changes in v2:
-> > 	- added software_node_device_is_available
-> > 	- altered software_node_get_next_child to get references
-> > 	- altered software_node_get_next_endpoint to release references
-> > 	to ports and avoid passing invalid combinations of swnodes to
-> > 	software_node_get_next_child
-> > 	- altered swnode_graph_find_next_port to release port rather than
-> > 	old
-> >  drivers/base/swnode.c | 120 +++++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 119 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> > index 741149b90..3732530ce 100644
-> > --- a/drivers/base/swnode.c
-> > +++ b/drivers/base/swnode.c
-> > @@ -536,6 +536,120 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
-> >  	return 0;
-> >  }
-> >  
-> > +static struct fwnode_handle *
-> > +swnode_graph_find_next_port(const struct fwnode_handle *parent,
-> > +			    struct fwnode_handle *port)
-> > +{
-> > +	struct fwnode_handle *old = port;
-> > +
-> > +	while ((port = software_node_get_next_child(parent, old))) {
-> 
-> software_node_get_next_child() doesn't drop the reference of the old child
-> nor gets a reference to the returned node. Should it?
-> 
-> The function to get a named child node does.
-> 
-> It'd be nice if this was aligned. Or am I missing something?
-> 
-> This isn't really a comment on this patch though.
 
-I didn't get this patch to my @linux.intel.com account so I guess it's our
-mail servers again...
 
-Anyway, please see my comments on that and ignore this one.
+On 10/20/2020 6:50 PM, Lorenzo Pieralisi wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On Mon, Oct 19, 2020 at 11:21:54AM +0530, Vidya Sagar wrote:
+>> Hi Lorenzo, Rob, Gustavo,
+>> Could you please review this change?
+> 
+> Next cycle - we are in the middle of the merge window and I am not
+> queueing any more patches.
 
--- 
-Sakari Ailus
+Thanks for the update.
+FWIW, PCIe is broken on Tegra194 with Rob's patches (which got accepted 
+already) and without the current patch.
+
+Thanks,
+Vidya Sagar
+
+> 
+> Thanks,
+> Lorenzo
+> 
+>> Thanks,
+>> Vidya Sagar
+>>
+>> On 10/5/2020 5:43 PM, Vidya Sagar wrote:
+>>> Use ATU region-3 and region-0 to setup mapping for prefetchable and
+>>> non-prefetchable memory regions respectively only if their respective CPU
+>>> and bus addresses are different.
+>>>
+>>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+>>> ---
+>>>    .../pci/controller/dwc/pcie-designware-host.c | 44 ++++++++++++++++---
+>>>    drivers/pci/controller/dwc/pcie-designware.c  | 12 ++---
+>>>    drivers/pci/controller/dwc/pcie-designware.h  |  4 +-
+>>>    3 files changed, 48 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+>>> index 317ff512f8df..cefde8e813e9 100644
+>>> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+>>> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+>>> @@ -515,9 +515,40 @@ static struct pci_ops dw_pcie_ops = {
+>>>      .write = pci_generic_config_write,
+>>>    };
+>>> +static void dw_pcie_setup_mem_atu(struct pcie_port *pp,
+>>> +                             struct resource_entry *win)
+>>> +{
+>>> +   struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>>> +
+>>> +   if (win->res->flags & IORESOURCE_PREFETCH && pci->num_viewport >= 4 &&
+>>> +       win->offset) {
+>>> +           dw_pcie_prog_outbound_atu(pci,
+>>> +                                     PCIE_ATU_REGION_INDEX3,
+>>> +                                     PCIE_ATU_TYPE_MEM,
+>>> +                                     win->res->start,
+>>> +                                     win->res->start - win->offset,
+>>> +                                     resource_size(win->res));
+>>> +   } else if (win->res->flags & IORESOURCE_PREFETCH &&
+>>> +              pci->num_viewport < 4) {
+>>> +           dev_warn(pci->dev,
+>>> +                    "Insufficient ATU regions to map Prefetchable memory\n");
+>>> +   } else if (win->offset) {
+>>> +           if (upper_32_bits(resource_size(win->res)))
+>>> +                   dev_warn(pci->dev,
+>>> +                            "Memory resource size exceeds max for 32 bits\n");
+>>> +           dw_pcie_prog_outbound_atu(pci,
+>>> +                                     PCIE_ATU_REGION_INDEX0,
+>>> +                                     PCIE_ATU_TYPE_MEM,
+>>> +                                     win->res->start,
+>>> +                                     win->res->start - win->offset,
+>>> +                                     resource_size(win->res));
+>>> +   }
+>>> +}
+>>> +
+>>>    void dw_pcie_setup_rc(struct pcie_port *pp)
+>>>    {
+>>>      u32 val, ctrl, num_ctrls;
+>>> +   struct resource_entry *win;
+>>>      struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>>>      /*
+>>> @@ -572,13 +603,14 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
+>>>       * ATU, so we should not program the ATU here.
+>>>       */
+>>>      if (pp->bridge->child_ops == &dw_child_pcie_ops) {
+>>> -           struct resource_entry *entry =
+>>> -                   resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
+>>> +           resource_list_for_each_entry(win, &pp->bridge->windows) {
+>>> +                   switch (resource_type(win->res)) {
+>>> +                   case IORESOURCE_MEM:
+>>> +                           dw_pcie_setup_mem_atu(pp, win);
+>>> +                           break;
+>>> +                   }
+>>> +           }
+>>> -           dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX0,
+>>> -                                     PCIE_ATU_TYPE_MEM, entry->res->start,
+>>> -                                     entry->res->start - entry->offset,
+>>> -                                     resource_size(entry->res));
+>>>              if (pci->num_viewport > 2)
+>>>                      dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX2,
+>>>                                                PCIE_ATU_TYPE_IO, pp->io_base,
+>>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+>>> index 3c1f17c78241..6033689abb15 100644
+>>> --- a/drivers/pci/controller/dwc/pcie-designware.c
+>>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+>>> @@ -227,7 +227,7 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
+>>>    static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+>>>                                           int index, int type,
+>>>                                           u64 cpu_addr, u64 pci_addr,
+>>> -                                        u32 size)
+>>> +                                        u64 size)
+>>>    {
+>>>      u32 retries, val;
+>>>      u64 limit_addr = cpu_addr + size - 1;
+>>> @@ -244,8 +244,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+>>>                               lower_32_bits(pci_addr));
+>>>      dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
+>>>                               upper_32_bits(pci_addr));
+>>> -   dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
+>>> -                            type | PCIE_ATU_FUNC_NUM(func_no));
+>>> +   val = type | PCIE_ATU_FUNC_NUM(func_no);
+>>> +   val = upper_32_bits(size - 1) ?
+>>> +           val | PCIE_ATU_INCREASE_REGION_SIZE : val;
+>>> +   dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
+>>>      dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
+>>>                               PCIE_ATU_ENABLE);
+>>> @@ -266,7 +268,7 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+>>>    static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+>>>                                      int index, int type, u64 cpu_addr,
+>>> -                                   u64 pci_addr, u32 size)
+>>> +                                   u64 pci_addr, u64 size)
+>>>    {
+>>>      u32 retries, val;
+>>> @@ -310,7 +312,7 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+>>>    }
+>>>    void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index, int type,
+>>> -                          u64 cpu_addr, u64 pci_addr, u32 size)
+>>> +                          u64 cpu_addr, u64 pci_addr, u64 size)
+>>>    {
+>>>      __dw_pcie_prog_outbound_atu(pci, 0, index, type,
+>>>                                  cpu_addr, pci_addr, size);
+>>> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+>>> index 97c7063b9e89..b81a1813cf9e 100644
+>>> --- a/drivers/pci/controller/dwc/pcie-designware.h
+>>> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+>>> @@ -80,10 +80,12 @@
+>>>    #define PCIE_ATU_VIEWPORT         0x900
+>>>    #define PCIE_ATU_REGION_INBOUND           BIT(31)
+>>>    #define PCIE_ATU_REGION_OUTBOUND  0
+>>> +#define PCIE_ATU_REGION_INDEX3             0x3
+>>>    #define PCIE_ATU_REGION_INDEX2            0x2
+>>>    #define PCIE_ATU_REGION_INDEX1            0x1
+>>>    #define PCIE_ATU_REGION_INDEX0            0x0
+>>>    #define PCIE_ATU_CR1                      0x904
+>>> +#define PCIE_ATU_INCREASE_REGION_SIZE      BIT(13)
+>>>    #define PCIE_ATU_TYPE_MEM         0x0
+>>>    #define PCIE_ATU_TYPE_IO          0x2
+>>>    #define PCIE_ATU_TYPE_CFG0                0x4
+>>> @@ -295,7 +297,7 @@ void dw_pcie_upconfig_setup(struct dw_pcie *pci);
+>>>    int dw_pcie_wait_for_link(struct dw_pcie *pci);
+>>>    void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index,
+>>>                             int type, u64 cpu_addr, u64 pci_addr,
+>>> -                          u32 size);
+>>> +                          u64 size);
+>>>    void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
+>>>                                int type, u64 cpu_addr, u64 pci_addr,
+>>>                                u32 size);
+>>>
