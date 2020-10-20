@@ -2,86 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559B1294218
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA49294225
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390119AbgJTS1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 14:27:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48150 "EHLO mail.kernel.org"
+        id S2390638AbgJTScG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 14:32:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729045AbgJTS1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 14:27:09 -0400
-Received: from localhost (unknown [104.132.1.66])
+        id S2390270AbgJTScG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 14:32:06 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D14CB20BED;
-        Tue, 20 Oct 2020 18:27:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA27B21534;
+        Tue, 20 Oct 2020 18:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603218429;
-        bh=syF2yjpdpv6c6cBwA8S43bD1UXqKlZkbBSViMVykC9o=;
+        s=default; t=1603218725;
+        bh=rYkBj1ZJWTczz5/r0ofs7bNB91o9zGiASSEmBN2me+w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2oH7zma9kUc8nVWM9keXK5k/FJ9VCUK19MGKEFn2QD7Mh1kQ54OJByq/0UTUjxoIr
-         5zeTNGYHnqFjnTQWjGSOLyAS63Ov9cSIr3Aq6t/dtLX2AenO6dOid8w76U2gYr/UOz
-         +6kWzb9C+NaZxNBdNOYciRnoRnsQ4pvHUzEQ1QLU=
-Date:   Tue, 20 Oct 2020 11:27:07 -0700
-From:   jaegeuk@kernel.org
-To:     Can Guo <cang@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: Re: [PATCH 3/4] scsi: ufs: use WQ_HIGHPRI for gating work
-Message-ID: <20201020182707.GA1087816@google.com>
-References: <20201005223635.2922805-1-jaegeuk@kernel.org>
- <20201005223635.2922805-3-jaegeuk@kernel.org>
- <5c383fd90a0e97dbd1fffc35574133c9@codeaurora.org>
+        b=JYdQL3WqM7p6HeQ0EeMAIo5Q2YOfnLuT4iVy5ZEoFobMfwLlGD4IAPVmgw+BUTYAb
+         EqhiJi5sA+fXVSNRzB+d6NDWeOqxt4Y137jjticPgIoqKRJ55sa6oAYaWiKzjhDLiV
+         tkHoaxu4fBh4Yu4mpzIN7rlSt59KQPCq8o4o/hCw=
+Date:   Tue, 20 Oct 2020 20:32:46 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Laurent Vivier <laurent@vivier.eu>
+Cc:     linux-kernel@vger.kernel.org, Joshua Thompson <funaho@jurai.org>,
+        linux-serial@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH] serial: pmac_zilog: don't init if zilog is not available
+Message-ID: <20201020183246.GA912431@kroah.com>
+References: <20201020162303.1730562-1-laurent@vivier.eu>
+ <20201020162844.GA865546@kroah.com>
+ <468bbbef-4745-3b16-b6f4-30b46ebcdc33@vivier.eu>
+ <20201020173745.GA882703@kroah.com>
+ <387fd2aa-b181-c41f-0581-0a7e79a44e41@vivier.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <5c383fd90a0e97dbd1fffc35574133c9@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <387fd2aa-b181-c41f-0581-0a7e79a44e41@vivier.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20, Can Guo wrote:
-> On 2020-10-06 06:36, Jaegeuk Kim wrote:
-> > From: Jaegeuk Kim <jaegeuk@google.com>
+On Tue, Oct 20, 2020 at 08:19:26PM +0200, Laurent Vivier wrote:
+> Le 20/10/2020 à 19:37, Greg KH a écrit :
+> > On Tue, Oct 20, 2020 at 06:37:41PM +0200, Laurent Vivier wrote:
+> >> Le 20/10/2020 à 18:28, Greg KH a écrit :
+> >>> On Tue, Oct 20, 2020 at 06:23:03PM +0200, Laurent Vivier wrote:
+> >>>> We can avoid to probe for the Zilog device (and generate ugly kernel warning)
+> >>>> if kernel is built for Mac but not on a Mac.
+> >>>>
+> >>>> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+> >>>> ---
+> >>>>  drivers/tty/serial/pmac_zilog.c | 11 +++++++++++
+> >>>>  1 file changed, 11 insertions(+)
+> >>>>
+> >>>> diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
+> >>>> index 063484b22523..d1d2e55983c3 100644
+> >>>> --- a/drivers/tty/serial/pmac_zilog.c
+> >>>> +++ b/drivers/tty/serial/pmac_zilog.c
+> >>>> @@ -1867,6 +1867,12 @@ static struct platform_driver pmz_driver = {
+> >>>>  static int __init init_pmz(void)
+> >>>>  {
+> >>>>  	int rc, i;
+> >>>> +
+> >>>> +#ifdef CONFIG_MAC
+> >>>> +	if (!MACH_IS_MAC)
+> >>>> +		return -ENODEV;
+> >>>> +#endif
+> >>>
+> >>> Why is the #ifdef needed?
+> >>>
+> >>> We don't like putting #ifdef in .c files for good reasons.  Can you make
+> >>> the api check for this work with and without that #ifdef needed?
+> >>
+> >> The #ifdef is needed because this file can be compiled for PowerMac and
+> >> m68k Mac. For PowerMac, the MACH_IS_MAC is not defined, so we need the
+> >> #ifdef.
+> >>
+> >> We need the MAC_IS_MAC because the same kernel can be used with several
+> >> m68k machines, so the init_pmz can be called on a m68k machine without
+> >> the zilog device (it's a multi-targets kernel).
+> >>
+> >> You can check it's the good way to do by looking inside:
+> >>
+> >>     drivers/video/fbdev/valkyriefb.c +317
+> >>     drivers/macintosh/adb.c +316
+> >>
+> >> That are two files used by both, mac and pmac.
 > > 
-> > Must have WQ_MEM_RECLAIM
-> > ``WQ_MEM_RECLAIM``
-> >   All wq which might be used in the memory reclaim paths **MUST**
-> >   have this flag set.  The wq is guaranteed to have at least one
-> >   execution context regardless of memory pressure.
-> > 
+> > Why not fix it to work properly like other arch checks are done
+> I would be happy to do the same.
 > 
-> The commit msg is not telling the same story as the change/title does.
+> > Put it in a .h file and do the #ifdef there.  Why is this "special"?
+> 
+> I don't know.
+> 
+> Do you mean something like:
+> 
+> drivers/tty/serial/pmac_zilog.h
+> ...
+> #ifndef MACH_IS_MAC
+> #define MACH_IS_MAC (0)
+> #endif
+> ...
+> 
+> drivers/tty/serial/pmac_zilog.c
+> ...
+> static int __init pmz_console_init(void)
+> {
+>         if (!MACH_IS_MAC)
+>                 return -ENODEV;
+> ...
 
-This message explains why we need to keep WQ_MEM_RECLAIM when adding WQ_HIGHPRI.
+Yup, that would be a good start, but why is the pmac_zilog.h file
+responsible for this?  Shouldn't this be in some arch-specific file
+somewhere?
 
-Thanks,
+thanks,
 
-> 
-> Regards,
-> 
-> Can Guo.
-> 
-> > Cc: Alim Akhtar <alim.akhtar@samsung.com>
-> > Cc: Avri Altman <avri.altman@wdc.com>
-> > Cc: Can Guo <cang@codeaurora.org>
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
-> > ---
-> >  drivers/scsi/ufs/ufshcd.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > index 0bb07b50bd23e..76e95963887be 100644
-> > --- a/drivers/scsi/ufs/ufshcd.c
-> > +++ b/drivers/scsi/ufs/ufshcd.c
-> > @@ -1849,7 +1849,7 @@ static void ufshcd_init_clk_gating(struct ufs_hba
-> > *hba)
-> >  	snprintf(wq_name, ARRAY_SIZE(wq_name), "ufs_clk_gating_%d",
-> >  		 hba->host->host_no);
-> >  	hba->clk_gating.clk_gating_workq = alloc_ordered_workqueue(wq_name,
-> > -							   WQ_MEM_RECLAIM);
-> > +					WQ_MEM_RECLAIM | WQ_HIGHPRI);
-> > 
-> >  	hba->clk_gating.is_enabled = true;
+greg k-h
