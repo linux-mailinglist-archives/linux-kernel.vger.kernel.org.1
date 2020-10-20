@@ -2,179 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8F22942F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589702942FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438098AbgJTTYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 15:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
+        id S2438108AbgJTT2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 15:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438088AbgJTTYw (ORCPT
+        with ESMTP id S2391393AbgJTT2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 15:24:52 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59531C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 12:24:50 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id x1so3057882eds.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 12:24:50 -0700 (PDT)
+        Tue, 20 Oct 2020 15:28:18 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89043C0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 12:28:18 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id s9so3701698wro.8
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 12:28:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0aSlO1W7vXD8wpvCCG7wGbAKM67BTQt/FrRx6zZmumc=;
-        b=MD9d7uz3cpra2FJBi9y1hEvF1r4hdy805N/H3qRtjanKJvvmB1oAnplnX1pvJFGw3p
-         u2TpNcRLfU2Z2DTbjohMDHA66MV8G90XBOBS8mILuZVE2Tl1fio+VP73xYJigeFrlIeI
-         thKNSd2wLZ0ZiU7v9+mZ7gKsBuhfO3C5IZPR0QUG037jFS7rG71K9DGNZPifpYw5Zb3j
-         jS/9m7X8sU7ej/VKCctxs5ZOZrMHQSjQz9JjI68haEWvlWCeAR9lPPGbS1DsHCzFD131
-         9coer59bAU/KEvj4fQv6K3nmuab06BfEXpdrDvwZLwzkJFQzfVDZxEo6uSKYeFUMVvag
-         pqMA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=7lZuOiS2573E9zkuh9reAzyg21knB7StcArg0uf2+A0=;
+        b=OJ7bVtEpWB78TwcHwkWuFp88IVIgxxc2L8rIYG0zPqq+MzTPFwU5XUO54ofEusNIMF
+         u964/+pMBLLTy7+rbYoaEzfZyKJVmqWoMxzRmKV02aDdqmn6SCl5mTwExXMyGA8GQZ+8
+         XVRTvzvbQOjuKJHm2a9fIxoPCnw5QKHlS6Q2Wd5tLZG86tGqpCsTOB/jjyeSGADwKlIF
+         fqvfm4MuD06HcUpDgoBiWt8CQRKGwhPLaDPcOFZuVM/n+pz1HibiCQHbqbhq0ftii2bJ
+         2qEsJykxOqLH+LprDFSH7bXxI/7IBGG/1HoLx2tWRyRiIDD19T9Cl3kNQGiyxOGzvGFN
+         D6LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0aSlO1W7vXD8wpvCCG7wGbAKM67BTQt/FrRx6zZmumc=;
-        b=rmQ1RTArwUaAK/AjVfXEgasWiSGQXGbRe7s9xWnvXzgM7svdgCLrq8DFKVwzXxo0Y3
-         e8R1Ar2V7Ey0uY9P6XGZy2Fi37nKMyWcisa8v1DY4In237TBiu2otkgu/NZ3IoLPD6pP
-         vjBrPdt7wWWbLnbPKOHRop7rCyQKlwy2V3t+YeRCDmC7YrmjpuOVmFQ1zIBfZe9Jex2m
-         vku9mFP0x92Td2iJp5Fe5g3tn4E5aZkCwTyYVLGqdQGNCzn/vv37SprvnRBcA2gBR29Y
-         r6m/kJ64wFBreHvtyb/Yo21Q6KwSPag/9cDaoFyOZKvcTxEncVe4PVvQFcDaRzkMywIs
-         QyHg==
-X-Gm-Message-State: AOAM5322OnGa1/q9U0CME2Es8SP2mb8+eCnhqyv7M02Wx4esIqFS5KxB
-        DozNA7xmjStF/BwYrm4GamgW/bm2kF2nQgLgF+clbg==
-X-Google-Smtp-Source: ABdhPJyMOA23NnvKtSjkOLGiry9VkOkNifOIW4sa6w2YiQX+XkJh8M/nVDkTK78UH1bOaHTG4GNJ1uOJcZ3dDNt12gE=
-X-Received: by 2002:a50:88e5:: with SMTP id d92mr4494054edd.145.1603221888446;
- Tue, 20 Oct 2020 12:24:48 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=7lZuOiS2573E9zkuh9reAzyg21knB7StcArg0uf2+A0=;
+        b=jaXw8q28/Yw6XmtvaKMDvXYA/+iq0Rg15a+DcBeNx3MPIJqmC8j/z3pYK7R/QAreL4
+         A85kP7VCnK2EM5ry41aFfmEZQwxZFA5+wVo4NGnoO3ktqq1bzTwY2AU1uQ8ee5Ba1Ak3
+         +/lMA0+og2hmiJDygMiOiMCNBMxbqkt4O2QI+MBklnULVjJq5g2YLdoRc3ySkiVk9Msw
+         GToTbLWlFnyIrU+KVmzIRYSu5ysGNnp+N/NltTqhTXUN4nJqGH52vrX10PTs9mRxxyU5
+         Le7+EFK15q4vcNHV642QsL3cJG59keeIShP/wREWNCLHkjKswCuTBnEmjg4pV56XsNIr
+         W54g==
+X-Gm-Message-State: AOAM531ja3Wgn9DnFC1bztoU2+/UHQQR5MYgbIW0hyx3yc6f9lRq4Wya
+        sKwGTIxM3sfQXsW77Jli/k0aL2H4BCL5CEaSTuI=
+X-Google-Smtp-Source: ABdhPJyjM8DXw1LSrGYv9eH3FW28dS8NTRggv88avz8wuxuXSSLHxJQYtNbDoW972jYWA/D/XeMh2AZqyVVzWT7qc0w=
+X-Received: by 2002:adf:ef51:: with SMTP id c17mr5577908wrp.301.1603222097224;
+ Tue, 20 Oct 2020 12:28:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201013003203.4168817-1-samitolvanen@google.com>
- <20201013003203.4168817-23-samitolvanen@google.com> <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
- <20201015102216.GB2611@hirez.programming.kicks-ass.net> <20201015203942.f3kwcohcwwa6lagd@treble>
- <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com> <20201020185217.ilg6w5l7ujau2246@treble>
-In-Reply-To: <20201020185217.ilg6w5l7ujau2246@treble>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 20 Oct 2020 12:24:37 -0700
-Message-ID: <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
+Received: by 2002:adf:c98d:0:0:0:0:0 with HTTP; Tue, 20 Oct 2020 12:28:16
+ -0700 (PDT)
+Reply-To: mrs.sophia202@list.ru
+From:   "Mrs. Sophia Robin" <mrs.aishamuammar.gaddafi@gmail.com>
+Date:   Tue, 20 Oct 2020 12:28:16 -0700
+Message-ID: <CAKDKtgwV2Wva0-vj841LytjqeM9zg15227YsXna=5LwyZnMgfQ@mail.gmail.com>
+Subject: Hello My Dearest
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 11:52 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Tue, Oct 20, 2020 at 09:45:06AM -0700, Sami Tolvanen wrote:
-> > On Thu, Oct 15, 2020 at 1:39 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > >
-> > > On Thu, Oct 15, 2020 at 12:22:16PM +0200, Peter Zijlstra wrote:
-> > > > On Thu, Oct 15, 2020 at 01:23:41AM +0200, Jann Horn wrote:
-> > > >
-> > > > > It would probably be good to keep LTO and non-LTO builds in sync about
-> > > > > which files are subjected to objtool checks. So either you should be
-> > > > > removing the OBJECT_FILES_NON_STANDARD annotations for anything that
-> > > > > is linked into the main kernel (which would be a nice cleanup, if that
-> > > > > is possible),
-> > > >
-> > > > This, I've had to do that for a number of files already for the limited
-> > > > vmlinux.o passes we needed for noinstr validation.
-> > >
-> > > Getting rid of OBJECT_FILES_NON_STANDARD is indeed the end goal, though
-> > > I'm not sure how practical that will be for some of the weirder edge
-> > > case.
-> > >
-> > > On a related note, I have some old crypto cleanups which need dusting
-> > > off.
-> >
-> > Building allyesconfig with this series and LTO enabled, I still see
-> > the following objtool warnings for vmlinux.o, grouped by source file:
-> >
-> > arch/x86/entry/entry_64.S:
-> > __switch_to_asm()+0x0: undefined stack state
-> > .entry.text+0xffd: sibling call from callable instruction with
-> > modified stack frame
-> > .entry.text+0x48: stack state mismatch: cfa1=7-8 cfa2=-1+0
->
-> Not sure what this one's about, there's no OBJECT_FILES_NON_STANDARD?
+Hello My Dearest
 
-Correct, because with LTO, we won't have an ELF binary to process
-until we compile everything into vmlinux.o, and at that point we can
-no longer skip individual object files.
+Please I appeal to you to exercise a little patience and read through
+my mail carefully, I am contacting you personally for investment
+assistance and a long term business relationship in your Country.
 
-The sibling call warning is in
-swapgs_restore_regs_and_return_to_usermode and the stack state
-mismatch in entry_SYSCALL_64_after_hwframe.
+I am Mrs. Sophia Robin a citizen of the united state of America; I
+work in HSBC Bank in Milan Italy as a Telex Manager charge of wire
+transfer and online banking department.
 
-> > arch/x86/entry/entry_64_compat.S:
-> > .entry.text+0x1754: unsupported instruction in callable function
+I am contacting you for an important and  urgent business transaction,
+I  want the bank to transfer the money left by Dr. Cheng Chao,  A
+Chinese  Politicians who  died, March 17th 2020 without any trace of
+his family member,  he used our bank to launder money overseas through
+the help of their Political advisers. And most of the funds which him
+transferred out of the shores of China were gold and oil money that
+was supposed to have been used to develop the continent.
 
-This comes from a sysretl instruction in entry_SYSCALL_compat.
+Can you invest this money and also help the orphanage, less privileges
+and widows in your country? The amount value at ($15.5million
+Dollars), left in his account still unclaimed, if you know that you
+are capable to invest this fund into any  profitable business in your
+country kindly send me your details information as listed below to
+enable me draft you an application form of claim which you are going
+to fill with your bank account detail necessary and contact the HSBC
+Bank in Italy  for immediate transfer of the Amounted sum into your
+bank account direct  Or open an online banking for you.
 
-> > .entry.text+0x1634: redundant CLD
-> > .entry.text+0x15fd: stack state mismatch: cfa1=7-8 cfa2=-1+0
-> > .entry.text+0x168c: stack state mismatch: cfa1=7-8 cfa2=-1+0
->
-> Ditto.
+Percentage share will be 50%, for me/ 40%, for you, while 10$ is for
+the orphanage, less privileges and widows in your country.
 
-These are all from entry_SYSENTER_compat_after_hwframe.
+(1) Your full name..................................................
+(2) Your address....................................................
+(3) Your Nationality.................................................
+(4) Your Age / Sex.....................................................
+(5) Your Occupation............................................
+(6) Your marital status......................................
+(7) Your direct telephone number..................
+(8) your ID Card.......................................
 
-> > arch/x86/kernel/head_64.S:
-> > .head.text+0xfb: unsupported instruction in callable function
->
-> Ditto.
-
-This is lretq in secondary_startup_64_no_verify.
-
-> > arch/x86/crypto/camellia-aesni-avx2-asm_64.S:
-> > camellia_cbc_dec_32way()+0xb3: stack state mismatch: cfa1=7+520 cfa2=7+8
-> > camellia_ctr_32way()+0x1a: stack state mismatch: cfa1=7+520 cfa2=7+8
->
-> I can clean off my patches for all the crypto warnings.
-
-Great, sounds good.
-
-> > arch/x86/lib/retpoline.S:
-> > __x86_retpoline_rdi()+0x10: return with modified stack frame
-> > __x86_retpoline_rdi()+0x0: stack state mismatch: cfa1=7+32 cfa2=7+8
-> > __x86_retpoline_rdi()+0x0: stack state mismatch: cfa1=7+32 cfa2=-1+0
->
-> Is this with upstream?  I thought we fixed that with
-> UNWIND_HINT_RET_OFFSET.
-
-Yes, and the UNWIND_HINT_RET_OFFSET is there.
-
-> > Josh, Peter, any thoughts on what would be the preferred way to fix
-> > these, or how to tell objtool to ignore this code?
->
-> One way or another, the patches need to be free of warnings before
-> getting merged.  I can help, though I'm traveling and only have limited
-> bandwidth for at least the rest of the month.
->
-> Ideally we'd want to have objtool understand everything, with no
-> whitelisting, but some cases (e.g. suspend code) can be tricky.
->
-> I wouldn't be opposed to embedding the whitelist in the binary, in a
-> discardable section.  It should be relatively easy, but as I mentioned I
-> may or may not have time to work on it for a bit.  I'm working half
-> days, and now the ocean beckons from the window of my camper.
-
-Something similar to STACK_FRAME_NON_STANDARD()? Using that seems to
-result in "BUG: why am I validating an ignored function?" warnings, so
-I suspect some additional changes are needed.
-
-Sami
+Thanks with my best regards.
+Mrs. Sophia Robin
+Telex / Online Banking Manager
+Milan Italy  (H.S.B.C)
