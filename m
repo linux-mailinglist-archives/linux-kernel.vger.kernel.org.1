@@ -2,203 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB10C293D33
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28523293D35
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407416AbgJTNSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:18:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:51764 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407327AbgJTNSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:18:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DEBA230E;
-        Tue, 20 Oct 2020 06:18:50 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5FC33F719;
-        Tue, 20 Oct 2020 06:18:48 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 14:18:43 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Jon Mason <jdmason@kudzu.us>, Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ntb@googlegroups.com
-Subject: Re: [PATCH v7 00/18] Implement NTB Controller using multiple PCI EP
-Message-ID: <20201020131843.GA25784@e121166-lin.cambridge.arm.com>
-References: <20200930153519.7282-1-kishon@ti.com>
- <fe2db298-2116-7f52-80bd-a3d01a9a1521@ti.com>
- <72ebe7db-86cd-6827-03ff-bde32c10dc7e@ti.com>
+        id S2407434AbgJTNU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:20:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52823 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407064AbgJTNUZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 09:20:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603200025;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hjGhG7pQFy3+PaQQQ6jOV7FVy3IgvsbvzMpmnkAsMLo=;
+        b=DzouS5r8419NEtE86TQLhf5mwwz+XydHbgTo8NrtRHmPuiPTUN4iUl8h12oR72dkanmLU0
+        y8xth7BC2LuYtVwxnE/dHNncmUTzSPxuiVADp7FgcAVJk90YL9HKe0vQmb4tK2qSGrU+Fe
+        yz8YIOfcRq4WrzIX2moxQcNYGyYnuzU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-6nnLZCC-MlSWKvHuC5o9ew-1; Tue, 20 Oct 2020 09:20:22 -0400
+X-MC-Unique: 6nnLZCC-MlSWKvHuC5o9ew-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7754B803F49;
+        Tue, 20 Oct 2020 13:20:19 +0000 (UTC)
+Received: from [10.36.114.141] (ovpn-114-141.ams2.redhat.com [10.36.114.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B6AA61002C0E;
+        Tue, 20 Oct 2020 13:20:14 +0000 (UTC)
+Subject: Re: [RFCv2 15/16] KVM: Unmap protected pages from direct mapping
+From:   David Hildenbrand <david@redhat.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+ <20201020061859.18385-16-kirill.shutemov@linux.intel.com>
+ <f153ef1a-a758-dec7-b39c-9990aac9d653@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <2759b4bf-e1e3-d006-7d86-78a40348269d@redhat.com>
+Date:   Tue, 20 Oct 2020 15:20:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <72ebe7db-86cd-6827-03ff-bde32c10dc7e@ti.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <f153ef1a-a758-dec7-b39c-9990aac9d653@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 01:45:45PM +0530, Kishon Vijay Abraham I wrote:
-> Hi,
+On 20.10.20 14:18, David Hildenbrand wrote:
+> On 20.10.20 08:18, Kirill A. Shutemov wrote:
+>> If the protected memory feature enabled, unmap guest memory from
+>> kernel's direct mappings.
 > 
-> On 05/10/20 11:27 am, Kishon Vijay Abraham I wrote:
-> > Hi Jon Mason, Allen Hubbe, Dave Jiang,
-> > 
-> > On 30/09/20 9:05 pm, Kishon Vijay Abraham I wrote:
-> >> This series is about implementing SW defined Non-Transparent Bridge (NTB)
-> >> using multiple endpoint (EP) instances. This series has been tested using
-> >> 2 endpoint instances in J7 connected to J7 board on one end and DRA7 board
-> >> on the other end. However there is nothing platform specific for the NTB
-> >> functionality.
-> > 
-> > This series has two patches that adds to drivers/ntb/ directory.
-> > [PATCH v7 15/18] NTB: Add support for EPF PCI-Express Non-Transparent
-> > Bridge and [PATCH v7 16/18] NTB: tool: Enable the NTB/PCIe link on the
-> > local or remote side of bridge.
-> > 
-> > If you can review and Ack the above patches, Lorenzo can queue it along
-> > with the rest of the series.
-> > 
-> > Thanks for your help in advance.
+> Gah, ugly. I guess this also defeats compaction, swapping, ... oh gosh.
+> As if all of the encrypted VM implementations didn't bring us enough
+> ugliness already (SEV extensions also don't support reboots, but can at
+> least kexec() IIRC).
 > 
-> Gentle ping on this series.
+> Something similar is done with secretmem [1]. And people don't seem to
+> like fragmenting the direct mapping (including me).
+> 
+> [1] https://lkml.kernel.org/r/20200924132904.1391-1-rppt@kernel.org
+> 
 
-I am not queueing any more patches for this merge window - we postpone
-this series to v5.11 and in the interim it would be good to define some
-possible users.
+I just thought "hey, we might have to replace pud/pmd mappings by page
+tables when calling kernel_map_pages", this can fail with -ENOMEM, why
+isn't there proper error handling.
 
+Then I dived into __kernel_map_pages() which states:
+
+"The return value is ignored as the calls cannot fail. Large pages for
+identity mappings are not used at boot time and hence no memory
+allocations during large page split."
+
+I am probably missing something important, but how is calling
+kernel_map_pages() safe *after* booting?! I know we use it for
+debug_pagealloc(), but using it in a production-ready feature feels
+completely irresponsible. What am I missing?
+
+
+-- 
 Thanks,
-Lorenzo
 
-> Thanks
-> Kishon
-> > 
-> > Best Regards,
-> > Kishon
-> > 
-> >>
-> >> This was presented in Linux Plumbers Conference. Link to presentation
-> >> and video can be found @ [1]
-> >>
-> >> RFC patch series can be found @ [2]
-> >> v1 patch series can be found @ [3]
-> >> v2 patch series can be found @ [4]
-> >> v3 patch series can be found @ [5]
-> >> v4 patch series can be found @ [6]
-> >> v5 patch series can be found @ [7]
-> >> v6 patch series can be found @ [8]
-> >>
-> >> Changes from v6:
-> >> 1) Fixed issues when multiple NTB devices are creating using multiple
-> >>    functions
-> >> 2) Fixed issue with writing scratchpad register
-> >> 3) Created a video demo @ [9]
-> >>
-> >> Changes from v5:
-> >> 1) Fixed a formatting issue in Kconfig pointed out by Randy
-> >> 2) Checked for Error or Null in pci_epc_add_epf()
-> >>
-> >> Changes from v4:
-> >> 1) Fixed error condition checks in pci_epc_add_epf()
-> >>
-> >> Changes from v3:
-> >> 1) Fixed Documentation edits suggested by Randy Dunlap <rdunlap@infradead.org>
-> >>
-> >> Changes from v2:
-> >> 1) Add support for the user to create sub-directory of 'EPF Device'
-> >>    directory (for endpoint function specific configuration using
-> >>    configfs).
-> >> 2) Add documentation for NTB specific attributes in configfs
-> >> 3) Check for PCI_CLASS_MEMORY_RAM (PCIe class) before binding ntb_hw_epf
-> >>    driver
-> >> 4) Other documentation fixes
-> >>
-> >> Changes from v1:
-> >> 1) As per Rob's comment, removed support for creating NTB function
-> >>    device from DT
-> >> 2) Add support to create NTB EPF device using configfs (added support in
-> >>    configfs to associate primary and secondary EPC with EPF.
-> >>
-> >> Changes from RFC:
-> >> 1) Converted the DT binding patches to YAML schema and merged the
-> >>    DT binding patches together
-> >> 2) NTB documentation is converted to .rst
-> >> 3) One HOST can now interrupt the other HOST using MSI-X interrupts
-> >> 4) Added support for teardown of memory window and doorbell
-> >>    configuration
-> >> 5) Add support to provide support 64-bit memory window size from
-> >>    DT
-> >>
-> >> [1] -> https://linuxplumbersconf.org/event/4/contributions/395/
-> >> [2] -> http://lore.kernel.org/r/20190926112933.8922-1-kishon@ti.com
-> >> [3] -> http://lore.kernel.org/r/20200514145927.17555-1-kishon@ti.com
-> >> [4] -> http://lore.kernel.org/r/20200611130525.22746-1-kishon@ti.com
-> >> [5] -> http://lore.kernel.org/r/20200904075052.8911-1-kishon@ti.com
-> >> [6] -> http://lore.kernel.org/r/20200915042110.3015-1-kishon@ti.com
-> >> [7] -> http://lore.kernel.org/r/20200918064227.1463-1-kishon@ti.com
-> >> [8] -> http://lore.kernel.org/r/20200924092519.17082-1-kishon@ti.com
-> >> [9] -> https://youtu.be/dLKKxrg5-rY
-> >>
-> >> Kishon Vijay Abraham I (18):
-> >>   Documentation: PCI: Add specification for the *PCI NTB* function
-> >>     device
-> >>   PCI: endpoint: Make *_get_first_free_bar() take into account 64 bit
-> >>     BAR
-> >>   PCI: endpoint: Add helper API to get the 'next' unreserved BAR
-> >>   PCI: endpoint: Make *_free_bar() to return error codes on failure
-> >>   PCI: endpoint: Remove unused pci_epf_match_device()
-> >>   PCI: endpoint: Add support to associate secondary EPC with EPF
-> >>   PCI: endpoint: Add support in configfs to associate two EPCs with EPF
-> >>   PCI: endpoint: Add pci_epc_ops to map MSI irq
-> >>   PCI: endpoint: Add pci_epf_ops for epf drivers to expose function
-> >>     specific attrs
-> >>   PCI: endpoint: Allow user to create sub-directory of 'EPF Device'
-> >>     directory
-> >>   PCI: cadence: Implement ->msi_map_irq() ops
-> >>   PCI: cadence: Configure LM_EP_FUNC_CFG based on epc->function_num_map
-> >>   PCI: endpoint: Add EP function driver to provide NTB functionality
-> >>   PCI: Add TI J721E device to pci ids
-> >>   NTB: Add support for EPF PCI-Express Non-Transparent Bridge
-> >>   NTB: tool: Enable the NTB/PCIe link on the local or remote side of
-> >>     bridge
-> >>   Documentation: PCI: Add configfs binding documentation for pci-ntb
-> >>     endpoint function
-> >>   Documentation: PCI: Add userguide for PCI endpoint NTB function
-> >>
-> >>  .../PCI/endpoint/function/binding/pci-ntb.rst |   38 +
-> >>  Documentation/PCI/endpoint/index.rst          |    3 +
-> >>  .../PCI/endpoint/pci-endpoint-cfs.rst         |   10 +
-> >>  .../PCI/endpoint/pci-ntb-function.rst         |  351 +++
-> >>  Documentation/PCI/endpoint/pci-ntb-howto.rst  |  160 ++
-> >>  drivers/misc/pci_endpoint_test.c              |    1 -
-> >>  drivers/ntb/hw/Kconfig                        |    1 +
-> >>  drivers/ntb/hw/Makefile                       |    1 +
-> >>  drivers/ntb/hw/epf/Kconfig                    |    6 +
-> >>  drivers/ntb/hw/epf/Makefile                   |    1 +
-> >>  drivers/ntb/hw/epf/ntb_hw_epf.c               |  755 ++++++
-> >>  drivers/ntb/test/ntb_tool.c                   |    1 +
-> >>  .../pci/controller/cadence/pcie-cadence-ep.c  |   60 +-
-> >>  drivers/pci/endpoint/functions/Kconfig        |   12 +
-> >>  drivers/pci/endpoint/functions/Makefile       |    1 +
-> >>  drivers/pci/endpoint/functions/pci-epf-ntb.c  | 2114 +++++++++++++++++
-> >>  drivers/pci/endpoint/functions/pci-epf-test.c |   13 +-
-> >>  drivers/pci/endpoint/pci-ep-cfs.c             |  176 +-
-> >>  drivers/pci/endpoint/pci-epc-core.c           |  130 +-
-> >>  drivers/pci/endpoint/pci-epf-core.c           |  105 +-
-> >>  include/linux/pci-epc.h                       |   39 +-
-> >>  include/linux/pci-epf.h                       |   28 +-
-> >>  include/linux/pci_ids.h                       |    1 +
-> >>  23 files changed, 3934 insertions(+), 73 deletions(-)
-> >>  create mode 100644 Documentation/PCI/endpoint/function/binding/pci-ntb.rst
-> >>  create mode 100644 Documentation/PCI/endpoint/pci-ntb-function.rst
-> >>  create mode 100644 Documentation/PCI/endpoint/pci-ntb-howto.rst
-> >>  create mode 100644 drivers/ntb/hw/epf/Kconfig
-> >>  create mode 100644 drivers/ntb/hw/epf/Makefile
-> >>  create mode 100644 drivers/ntb/hw/epf/ntb_hw_epf.c
-> >>  create mode 100644 drivers/pci/endpoint/functions/pci-epf-ntb.c
-> >>
+David / dhildenb
+
