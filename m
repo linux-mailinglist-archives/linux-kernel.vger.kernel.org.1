@@ -2,147 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF62D293E0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D5A293E0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407781AbgJTOBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        id S2407789AbgJTOBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407773AbgJTOBK (ORCPT
+        with ESMTP id S2407761AbgJTOBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:01:10 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0315C061755;
-        Tue, 20 Oct 2020 07:01:08 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id c77so1904858wmd.4;
-        Tue, 20 Oct 2020 07:01:08 -0700 (PDT)
+        Tue, 20 Oct 2020 10:01:32 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEBEC0613CE;
+        Tue, 20 Oct 2020 07:01:31 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id w141so2252924oia.2;
+        Tue, 20 Oct 2020 07:01:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=suu/wcJskTNf+M7IZEIF/kdVRarp7s92n9POLrtQNtQ=;
-        b=FemxbPyzEmVU3hGtQqhvq06hD536ltfBzkMus+28Rh+BhyzRwIwVHTlf2PsRSwBeVQ
-         QZfOw1+kY8dUn6CxkofwFHw7cdX130vAu2TY9iz57/EaX6az/A5YN+DSDFdJAKf9jqiW
-         DVPa42gU8iSzyfuydn5IfrjBE3kOE6afAY9pphb9iMkWJlfsSkS1+WuObe9TfzRbNpf6
-         cSer68ywzQYYnTGIz95iA1xEgQMpss42vVtTSJkEnK6vKhpdKZVa3c03GjXtQ+EmwQih
-         oHttvAJsCaIlX0UXVZSe52ET8lsl87U2erbauVrbS/1EzX6uhsIZNcOosUPo83MauLCH
-         nyow==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eV8Qm7gEOxRXitBzZlCD866ixtrTlZl+PdLiNQm+4Rs=;
+        b=KIOkMaR+xgikLjNfFY6MoCOuGLLfV5odzjo6goJ8rKsRKC7ER4ZEWzrZq1+QALyz92
+         OLZjAOuB9yy9mDzUU6PTpIVHfOUc0NOl+P7JBOOJnpqG8i3ZxUEkBKMwByHIhD0TbG7G
+         6PwXpV4ynfFTKDaOukPCrazXF0DjW2CeKGCOyn+LEB4jjuwp4x0WRs83lIRvTEgO6GC0
+         kcNpf/LgBxbf6BgQB5ELNEGNOGu8JcN0ScKFoQnl2nOnxzsIoDFB97f5gLQWTlQdHyoL
+         2nPIlwMXJiWBpi7njvJQIlprd6l9jZ9mBKBk91Ljc1NW6lBj2PcHU2HngOgI3M/oJVSa
+         o42g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=suu/wcJskTNf+M7IZEIF/kdVRarp7s92n9POLrtQNtQ=;
-        b=aCfNIpRt31ZD1hKpM1uBzBoh+l/WA8PcwkBx9jg509uGx3N4tAFLGzTkciTu+950Gi
-         Tzhy6p7w9qhXnuGYf+ewQYq6LvfJFiinLfq18hvpRi22peYDu4rGphccJYQcAztRQl0j
-         Q7c//boYF0Y2fYINzBXV3AgoHgh9Qtono/fSpBAoIoX9JtA9tYvqL9vqObUQEPMhXgQB
-         OQcLOlYas3GjPlSchxy9otkfGX3Kaxfbj1HAedIB+FUpoOmevFF4yNTCSVl5h7F3fMol
-         gZwKveCFbeu5mgWsd1R4jzr5ceksw2wwpRB6kza/xoK2M/GcHhnvip6NUJbqMf5T/O5I
-         nr6w==
-X-Gm-Message-State: AOAM532vScvuWeuIAMYDexXOQ3loQhfHpEWd0GPzB6YCxyhpFfP8owtV
-        21o8ohAyIK20zTWA7ubT4GVlBp3UhTRq8pTnf1U=
-X-Google-Smtp-Source: ABdhPJya1qVEt8EOAfxUHYvr2OXktAROHxkx3oO2mjvd8SCCQHeKX9EHRe9JFEusx/bdcwxXE3k/iMXGm0nuZ/bSYUc=
-X-Received: by 2002:a1c:3243:: with SMTP id y64mr3071202wmy.175.1603202467274;
- Tue, 20 Oct 2020 07:01:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201019211101.143327-1-robdclark@gmail.com> <20201020082404.GJ401619@phenom.ffwll.local>
-In-Reply-To: <20201020082404.GJ401619@phenom.ffwll.local>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 20 Oct 2020 07:00:55 -0700
-Message-ID: <CAF6AEGuT6ZSpitNS0eBcjKhAVW1QBg+uPJQQkBLckOk=_GBx=A@mail.gmail.com>
-Subject: Re: [PATCH 0/3] drm/msm: kthread_worker conversion
-To:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Roy Spliet <nouveau@spliet.org>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eV8Qm7gEOxRXitBzZlCD866ixtrTlZl+PdLiNQm+4Rs=;
+        b=n+ztyfmV/jL3S/Ngro0ZxZN13vO8PPl84CpAxo56TOfQpAPptdpZ6HEB9Koeio+I1K
+         mTYSYTEYo6xMR2axl2/CfT9/YD2k0E/rbOd1m8GpoDkZdRR+hfZ2sXEy+x1sNxAXDDPN
+         xnWAD4GPLSZI7NsmM1juLHte1VZBpkQCFh3f70/cPoi3Bn+hw4YTXzpIoA2LwiK700b1
+         qEm81iLuTwmFr+0Km5bpXLTPJUPBn4LUVtQgTw8XBwUBCaCnpWCRnZQQ6xiOGE0Tbxr3
+         txwnVyfGB7vPt+2esVDBWwKsUhpWDVcvHhNGPNSy4EcTZjS555WPtenBxtt7KZMPpeAs
+         8zmg==
+X-Gm-Message-State: AOAM530/im/d8YQijANcNbpXRVux1szfVd8z/lbJCXxVdFnNHHhxWtqc
+        6wrkFauNV6v5qFQo58PFDd4=
+X-Google-Smtp-Source: ABdhPJz96OxyT8iyC0IE4Iv4A+26UjobchLzlieGvOBLB0JJpiOumMEENEaX6qE7xLpkRxGIN6mGSg==
+X-Received: by 2002:aca:cd0a:: with SMTP id d10mr2037540oig.52.1603202489420;
+        Tue, 20 Oct 2020 07:01:29 -0700 (PDT)
+Received: from nuclearis2-1.gtech (c-98-195-139-126.hsd1.tx.comcast.net. [98.195.139.126])
+        by smtp.gmail.com with ESMTPSA id y5sm473639ool.30.2020.10.20.07.01.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Oct 2020 07:01:28 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] drm/bridge: sii902x: Enable I/O and core VCC
+ supplies if present
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        David Airlie <airlied@linux.ie>,
+        Mark Brown <broonie@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
         open list <linux-kernel@vger.kernel.org>,
-        tongtiangen <tongtiangen@huawei.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Drew Davenport <ddavenport@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+References: <20200924200507.1175888-1-mr.nuke.me@gmail.com>
+ <20200928173056.1674274-1-mr.nuke.me@gmail.com>
+ <d74c7626-8f16-db85-c23f-79bf0cc400d0@gmail.com>
+ <20201020071628.GA1737816@ravnborg.org>
+From:   "Alex G." <mr.nuke.me@gmail.com>
+Message-ID: <5c21a4a4-717c-9f8a-9764-6e3fb9554e46@gmail.com>
+Date:   Tue, 20 Oct 2020 09:01:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20201020071628.GA1737816@ravnborg.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 1:24 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Mon, Oct 19, 2020 at 02:10:50PM -0700, Rob Clark wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > In particular, converting the async atomic commit (for cursor updates,
-> > etc) to SCHED_FIFO kthread_worker helps with some cases where we
-> > wouldn't manage to flush the updates within the 1ms-before-vblank
-> > deadline resulting in fps drops when there is cursor movement.
-> >
-> > Rob Clark (3):
-> >   drm/msm/gpu: Convert retire/recover work to kthread_worker
-> >   drm/msm/kms: Update msm_kms_init/destroy
-> >   drm/msm/atomic: Convert to per-CRTC kthread_work
->
-> So i915 has it's own commit worker already for $reasons, but I don't think
-> that's a good path to go down with more drivers. And the problem seems
-> entirely generic in nature ...
 
-I'm not *entirely* sure what your point is here?  This is just
-migrating away from a shared ordered wq to per-crtc kthread so that we
-don't miss vblank deadlines for silly reasons (and then stall on the
-next frame's pageflip because we are still waiting for the cursor
-update to latch).  Kind of like vblank-work but scheduled prior to,
-rather than after, vblank.
 
-And you're right that the problem is partially generic.. hw that (a)
-doesn't have true async (cursor and/or otherwise) updates, and (b) has
-various flush bits that latch register updates on vblank, is not that
-uncommon.  But the current atomic helper API would have to be a bit
-redesigned to look more like the interface between msm_atomic and the
-display backend.  That is a fair bit of churn for re-using a small bit
-of code.
+On 10/20/20 2:16 AM, Sam Ravnborg wrote:
+> Hi Alex.
 
-BR,
--R
+[snip]
 
-> -Daniel
->
-> >
-> >  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |  3 +--
-> >  drivers/gpu/drm/msm/adreno/a5xx_preempt.c |  6 ++---
-> >  drivers/gpu/drm/msm/adreno/a6xx_gmu.c     |  4 +--
-> >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 +--
-> >  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c   |  8 +++++-
-> >  drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c  |  8 +++++-
-> >  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c  | 11 ++++++---
-> >  drivers/gpu/drm/msm/disp/mdp_kms.h        |  9 +++++--
-> >  drivers/gpu/drm/msm/msm_atomic.c          | 25 +++++++++++++++----
-> >  drivers/gpu/drm/msm/msm_drv.h             |  3 ++-
-> >  drivers/gpu/drm/msm/msm_gpu.c             | 30 +++++++++++++++--------
-> >  drivers/gpu/drm/msm/msm_gpu.h             | 13 +++++++---
-> >  drivers/gpu/drm/msm/msm_kms.h             | 23 ++++++++++++++---
-> >  13 files changed, 104 insertions(+), 43 deletions(-)
-> >
-> > --
-> > 2.26.2
-> >
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+>>
+>>
+>>> diff --git a/drivers/gpu/drm/bridge/sii902x.c b/drivers/gpu/drm/bridge/sii902x.c
+>>> index 33fd33f953ec..d15e9f2c0d8a 100644
+>>> --- a/drivers/gpu/drm/bridge/sii902x.c
+>>> +++ b/drivers/gpu/drm/bridge/sii902x.c
+>>> @@ -17,6 +17,7 @@
+>>>    #include <linux/i2c.h>
+>>>    #include <linux/module.h>
+>>>    #include <linux/regmap.h>
+>>> +#include <linux/regulator/consumer.h>
+>>>    #include <linux/clk.h>
+>>>    #include <drm/drm_atomic_helper.h>
+>>> @@ -168,6 +169,8 @@ struct sii902x {
+>>>    	struct drm_connector connector;
+>>>    	struct gpio_desc *reset_gpio;
+>>>    	struct i2c_mux_core *i2cmux;
+>>> +	struct regulator *iovcc;
+>>> +	struct regulator *cvcc12;
+>>>    	/*
+>>>    	 * Mutex protects audio and video functions from interfering
+>>>    	 * each other, by keeping their i2c command sequences atomic.
+>>> @@ -954,13 +957,13 @@ static const struct drm_bridge_timings default_sii902x_timings = {
+>>>    		 | DRM_BUS_FLAG_DE_HIGH,
+>>>    };
+>>> +static int sii902x_init(struct sii902x *sii902x);
+> Please re-arrange the code so this prototype is not needed.
+
+I'd be happy to re-arrange things. It will make the diff look a lot 
+bigger than what it is. Is that okay?
+
+Alex
+
+>>> +
+>>>    static int sii902x_probe(struct i2c_client *client,
+>>>    			 const struct i2c_device_id *id)
+>>>    {
+>>>    	struct device *dev = &client->dev;
+>>> -	unsigned int status = 0;
+>>>    	struct sii902x *sii902x;
+>>> -	u8 chipid[4];
+>>>    	int ret;
+>>>    	ret = i2c_check_functionality(client->adapter,
+>>> @@ -989,6 +992,43 @@ static int sii902x_probe(struct i2c_client *client,
+>>>    	mutex_init(&sii902x->mutex);
+>>> +	sii902x->iovcc = devm_regulator_get(dev, "iovcc");
+>>> +	if (IS_ERR(sii902x->iovcc))
+>>> +		return PTR_ERR(sii902x->iovcc);
+>>> +
+>>> +	sii902x->cvcc12 = devm_regulator_get(dev, "cvcc12");
+>>> +	if (IS_ERR(sii902x->cvcc12))
+>>> +		return PTR_ERR(sii902x->cvcc12);
+>>> +
+>>> +	ret = regulator_enable(sii902x->iovcc);
+>>> +	if (ret < 0) {
+>>> +		dev_err_probe(dev, ret, "Failed to enable iovcc supply");
+>>> +		return ret;
+>>> +	}
+>>> +
+>>> +	ret = regulator_enable(sii902x->cvcc12);
+>>> +	if (ret < 0) {
+>>> +		dev_err_probe(dev, ret, "Failed to enable cvcc12 supply");
+>>> +		regulator_disable(sii902x->iovcc);
+>>> +		return ret;
+>>> +	}
+>>> +
+>>> +	ret = sii902x_init(sii902x);
+>>> +	if (ret < 0) {
+>>> +		regulator_disable(sii902x->cvcc12);
+>>> +		regulator_disable(sii902x->iovcc);
+>>> +	}
+>>> +
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +static int sii902x_init(struct sii902x *sii902x)
+>>> +{
+>>> +	struct device *dev = &sii902x->i2c->dev;
+>>> +	unsigned int status = 0;
+>>> +	u8 chipid[4];
+>>> +	int ret;
+>>> +
+>>>    	sii902x_reset(sii902x);
+>>>    	ret = regmap_write(sii902x->regmap, SII902X_REG_TPI_RQB, 0x0);
+>>> @@ -1012,11 +1052,11 @@ static int sii902x_probe(struct i2c_client *client,
+>>>    	regmap_read(sii902x->regmap, SII902X_INT_STATUS, &status);
+>>>    	regmap_write(sii902x->regmap, SII902X_INT_STATUS, status);
+>>> -	if (client->irq > 0) {
+>>> +	if (sii902x->i2c->irq > 0) {
+>>>    		regmap_write(sii902x->regmap, SII902X_INT_ENABLE,
+>>>    			     SII902X_HOTPLUG_EVENT);
+>>> -		ret = devm_request_threaded_irq(dev, client->irq, NULL,
+>>> +		ret = devm_request_threaded_irq(dev, sii902x->i2c->irq, NULL,
+>>>    						sii902x_interrupt,
+>>>    						IRQF_ONESHOT, dev_name(dev),
+>>>    						sii902x);
+>>> @@ -1031,9 +1071,9 @@ static int sii902x_probe(struct i2c_client *client,
+>>>    	sii902x_audio_codec_init(sii902x, dev);
+>>> -	i2c_set_clientdata(client, sii902x);
+>>> +	i2c_set_clientdata(sii902x->i2c, sii902x);
+>>> -	sii902x->i2cmux = i2c_mux_alloc(client->adapter, dev,
+>>> +	sii902x->i2cmux = i2c_mux_alloc(sii902x->i2c->adapter, dev,
+>>>    					1, 0, I2C_MUX_GATE,
+>>>    					sii902x_i2c_bypass_select,
+>>>    					sii902x_i2c_bypass_deselect);
+>>> @@ -1051,6 +1091,8 @@ static int sii902x_remove(struct i2c_client *client)
+>>>    	i2c_mux_del_adapters(sii902x->i2cmux);
+>>>    	drm_bridge_remove(&sii902x->bridge);
+>>> +	regulator_disable(sii902x->cvcc12);
+>>> +	regulator_disable(sii902x->iovcc);
+>>>    	return 0;
+>>>    }
+>>>
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
