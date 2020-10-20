@@ -2,53 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E1B293B74
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55586293B76
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394318AbgJTMX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:23:58 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:38107 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394210AbgJTMX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:23:58 -0400
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4CFt8W3RDHz9sRR; Tue, 20 Oct 2020 23:23:54 +1100 (AEDT)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>
-In-Reply-To: <20201019042716.106234-1-srikar@linux.vnet.ibm.com>
-References: <20201019042716.106234-1-srikar@linux.vnet.ibm.com>
-Subject: Re: [PATCH v2 0/2] Fixes for coregroup
-Message-Id: <160319650960.2348169.11451661238920733591.b4-ty@ellerman.id.au>
-Date:   Tue, 20 Oct 2020 23:23:54 +1100 (AEDT)
+        id S2405644AbgJTMZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:25:17 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46658 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394323AbgJTMZQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:25:16 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id DD2F21C0B87; Tue, 20 Oct 2020 14:25:14 +0200 (CEST)
+Date:   Tue, 20 Oct 2020 14:25:14 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        linux-leds@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v9 1/3] tty: rename tty_kopen() and add new function
+ tty_kopen_shared()
+Message-ID: <20201020122514.GB19856@duo.ucw.cz>
+References: <20201018204022.910815-1-u.kleine-koenig@pengutronix.de>
+ <20201018204022.910815-2-u.kleine-koenig@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ADZbWkCsHQ7r3kzd"
+Content-Disposition: inline
+In-Reply-To: <20201018204022.910815-2-u.kleine-koenig@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Oct 2020 09:57:14 +0530, Srikar Dronamraju wrote:
-> These patches fixes problems introduced by the coregroup patches.
-> The first patch we remove a redundant variable.
-> Second patch allows to boot with CONFIG_CPUMASK_OFFSTACK enabled.
-> 
-> Changelog v1->v2:
-> https://lore.kernel.org/linuxppc-dev/20201008034240.34059-1-srikar@linux.vnet.ibm.com/t/#u
-> 1. 1st patch was not part of previous posting.
-> 2. Updated 2nd patch based on comments from Michael Ellerman
-> 
-> [...]
 
-Applied to powerpc/fixes.
+--ADZbWkCsHQ7r3kzd
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1/2] powerpc/smp: Remove unnecessary variable
-      https://git.kernel.org/powerpc/c/966730a6e8524c1b5fe64358e5884605cab6ccb3
-[2/2] powerpc/smp: Use GFP_ATOMIC while allocating tmp mask
-      https://git.kernel.org/powerpc/c/84dbf66c63472069e5eb40b810731367618cd8b5
+Hi1
 
-cheers
+> Introduce a new function tty_kopen_shared() that yields a struct
+> tty_struct. The semantic difference to tty_kopen() is that the tty is
+> expected to be used already. So rename tty_kopen() to
+> tty_kopen_exclusive() for clearness, adapt the single user and put the
+> common code in a new static helper function.
+>=20
+> tty_kopen_shared is to be used to implement an LED trigger for tty
+> devices in one of the next patches.
+>=20
+> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> ---
+>  drivers/accessibility/speakup/spk_ttyio.c |  2 +-
+>  drivers/tty/tty_io.c                      | 56 +++++++++++++++--------
+>  include/linux/tty.h                       |  5 +-
+>  3 files changed, 42 insertions(+), 21 deletions(-)
+
+> -struct tty_struct *tty_kopen(dev_t device)
+> +static struct tty_struct *tty_kopen(dev_t device, int shared)
+>  {
+
+bool? Otherwise I see nothing obviously wrong here.
+
+But this is for Greg..
+
+Best regards,
+								Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--ADZbWkCsHQ7r3kzd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX47XKgAKCRAw5/Bqldv6
+8poUAJ47GGYkX0YR4cHDjohRyEs37ykMqACfeZ5CWvzwaW2K1qVEzjEWXbYwCZ8=
+=70vk
+-----END PGP SIGNATURE-----
+
+--ADZbWkCsHQ7r3kzd--
