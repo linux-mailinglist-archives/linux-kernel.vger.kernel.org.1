@@ -2,242 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3AE293D15
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225F1293D19
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407171AbgJTNOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:14:25 -0400
-Received: from mail.efficios.com ([167.114.26.124]:56014 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406356AbgJTNOY (ORCPT
+        id S2407286AbgJTNPT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Oct 2020 09:15:19 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:48172 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407274AbgJTNPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:14:24 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id DD10B2D90A9;
-        Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id btWyCFkNN-w8; Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 681AA2D9203;
-        Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 681AA2D9203
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1603199662;
-        bh=RoS4rPfU2u/tfMg7hbLKT1RRo0ZxH9EU5RKB+8Fbfzo=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=h7srYtYZpww321ht16yIrXnqb3MLoN1fNJYbztRAheglOZSNQoOUvBULqjvx2RdMT
-         EHpNWkWmU33FqcQ1gyfFH4hzaQkXxveTtC0tfJlNg3eZuILmPO3CVZGNq/XBzkSYea
-         WV2TBmAykJ9vhFE3P6ZLnlOp7JHQE0qTi6/86MTZ3loXOq3Y3nvyFDF04Giq7ucyt4
-         9AI4TAXrktNEyCx/U8VRMoKaBkOZeAW4S9hYGyNo7g8PjG8K44D5A4JWZFADK04C6d
-         DtfH9vyYqgPxmEkChZLrwt4GHTagh8ULte70e9ZxYW1j6JOBnJbl5kfgU/laWk6c+Y
-         52f/L/5TufB/A==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id rtFVh_JWgtH5; Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 54CAE2D8EC4;
-        Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
-Date:   Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Cc:     Rong Chen <rong.a.chen@intel.com>,
-        Anton Blanchard <anton@au.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        0day robot <lkp@intel.com>, lkp <lkp@lists.01.org>,
-        zhengjun xing <zhengjun.xing@intel.com>,
-        aubrey li <aubrey.li@linux.intel.com>,
-        yu c chen <yu.c.chen@intel.com>
-Message-ID: <510309749.29852.1603199662203.JavaMail.zimbra@efficios.com>
-In-Reply-To: <7131f8f9-68d1-0277-c770-c10f98a062ec@linux.intel.com>
-References: <20201002083311.GK393@shao2-debian> <1183082664.11002.1602082242482.JavaMail.zimbra@efficios.com> <7131f8f9-68d1-0277-c770-c10f98a062ec@linux.intel.com>
-Subject: Re: [LKP] Re: [sched] bdfcae1140: will-it-scale.per_thread_ops
- -37.0% regression
+        Tue, 20 Oct 2020 09:15:19 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-91-WlibNx1BNMemSMrpm2jZzw-1; Tue, 20 Oct 2020 14:15:12 +0100
+X-MC-Unique: WlibNx1BNMemSMrpm2jZzw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 20 Oct 2020 14:15:12 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 20 Oct 2020 14:15:12 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Dylan Hung' <dylan_hung@aspeedtech.com>,
+        Jakub Kicinski <kuba@kernel.org>, Joel Stanley <joel@jms.id.au>
+CC:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: RE: [PATCH] net: ftgmac100: Fix missing TX-poll issue
+Thread-Topic: [PATCH] net: ftgmac100: Fix missing TX-poll issue
+Thread-Index: AQHWper5b6m5IMpmJk2Uyk3yAiWzCqmen8qAgACopgCAALYZ4IAAd6yw
+Date:   Tue, 20 Oct 2020 13:15:11 +0000
+Message-ID: <f75555e09d47476a871669ffe017c4f8@AcuMS.aculab.com>
+References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
+        <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
+ <20201019120040.3152ea0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <PS1PR0601MB1849166CBF6D1678E6E1210C9C1F0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+In-Reply-To: <PS1PR0601MB1849166CBF6D1678E6E1210C9C1F0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
-Thread-Topic: bdfcae1140: will-it-scale.per_thread_ops -37.0% regression
-Thread-Index: A5GaeQYvMp8BfdfxguQDCHYcc/gonQ==
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Oct 19, 2020, at 11:24 PM, Xing Zhengjun zhengjun.xing@linux.intel=
-.com wrote:
+From: Dylan Hung
+> Sent: 20 October 2020 07:15
+> 
+> > -----Original Message-----
+> > From: Jakub Kicinski [mailto:kuba@kernel.org]
+> >
+> > On Mon, 19 Oct 2020 08:57:03 +0000 Joel Stanley wrote:
+> > > > diff --git a/drivers/net/ethernet/faraday/ftgmac100.c
+> > > > b/drivers/net/ethernet/faraday/ftgmac100.c
+> > > > index 00024dd41147..9a99a87f29f3 100644
+> > > > --- a/drivers/net/ethernet/faraday/ftgmac100.c
+> > > > +++ b/drivers/net/ethernet/faraday/ftgmac100.c
+> > > > @@ -804,7 +804,8 @@ static netdev_tx_t
+> > ftgmac100_hard_start_xmit(struct sk_buff *skb,
+> > > >          * before setting the OWN bit on the first descriptor.
+> > > >          */
+> > > >         dma_wmb();
+> > > > -       first->txdes0 = cpu_to_le32(f_ctl_stat);
+> > > > +       WRITE_ONCE(first->txdes0, cpu_to_le32(f_ctl_stat));
+> > > > +       READ_ONCE(first->txdes0);
+> > >
+> > > I understand what you're trying to do here, but I'm not sure that this
+> > > is the correct way to go about it.
+> > >
+> > > It does cause the compiler to produce a store and then a load.
+> 
+> Yes, the load instruction here is to guarantee the previous store is indeed
+> pushed onto the physical memory.
 
-> On 10/7/2020 10:50 PM, Mathieu Desnoyers wrote:
->> ----- On Oct 2, 2020, at 4:33 AM, Rong Chen rong.a.chen@intel.com wrote:
->>=20
->>> Greeting,
->>>
->>> FYI, we noticed a -37.0% regression of will-it-scale.per_thread_ops due=
- to
->>> commit:
->>>
->>>
->>> commit: bdfcae11403e5099769a7c8dc3262e3c4193edef ("[RFC PATCH 2/3] sche=
-d:
->>> membarrier: cover kthread_use_mm (v3)")
->>> url:
->>> https://github.com/0day-ci/linux/commits/Mathieu-Desnoyers/Membarrier-u=
-pdates/20200925-012549
->>> base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git
->>> 848785df48835eefebe0c4eb5da7690690b0a8b7
->>>
->>> in testcase: will-it-scale
->>> on test machine: 104 threads Skylake with 192G memory
->>> with following parameters:
->>>
->>> =09nr_task: 50%
->>> =09mode: thread
->>> =09test: context_switch1
->>> =09cpufreq_governor: performance
->>> =09ucode: 0x2006906
->>>
->>> test-description: Will It Scale takes a testcase and runs it from 1 thr=
-ough to n
->>> parallel copies to see if the testcase will scale. It builds both a pro=
-cess and
->>> threads based test in order to see any differences between the two.
->>> test-url: https://github.com/antonblanchard/will-it-scale
->>>
->>=20
->> Hi,
->>=20
->> I would like to report what I suspect is a random thread placement issue=
- in the
->> context_switch1 test used by the 0day bot when running on a machine with
->> hyperthread
->> enabled.
->>=20
->> AFAIU the test code uses hwloc for thread placement which should theoret=
-ically
->> ensure
->> that each thread is placed on same processing unit, core and numa node b=
-etween
->> runs.
->>=20
->> We can find the test code here:
->>=20
->> https://github.com/antonblanchard/will-it-scale/blob/master/tests/contex=
-t_switch1.c
->>=20
->> And the main file containing thread setup is here:
->>=20
->> https://github.com/antonblanchard/will-it-scale/blob/master/main.c
->>=20
->> AFAIU, the test is started without the "-m" switch, which therefore affi=
-nitizes
->> tasks on cores rather than on processing units (SMT threads).
->>=20
->> When testcase() creates the child thread with new_task(), it basically i=
-ssues:
->>=20
->>    pthread_create(&threads[nr_threads++], NULL, func, arg);
->>=20
->> passing a NULL pthread_attr_t, and not executing any pre_trampoline on t=
-he
->> child.
->> The pre_trampoline would have issued hwloc_set_thread_cpubind if it were
->> executed on
->> the child, but it's not. Therefore, we expect the cpu affinity mask of t=
-he
->> parent to
->> be copied on clone and used by the child.
->>=20
->> A quick test on a machine with hyperthreading enabled shows that the cpu
->> affinity mask
->> for the parent and child has two bits set:
->>=20
->> taskset -p 1868607
->> pid 1868607's current affinity mask: 10001
->> taskset -p 1868606
->> pid 1868606's current affinity mask: 10001
->>=20
->> So AFAIU the placement of the parent and child will be random on either =
-the same
->> processing unit, or on separate processing units within the same core.
->>=20
->> I suspect this randomness can significantly affect the performance numbe=
-r
->> between
->> runs, and trigger unwarranted performance regression warnings.
->>=20
->> Thanks,
->>=20
->> Mathieu
->>=20
-> Yes, the randomness may happen in some special cases.  But in 0-day, we
-> test multi times (>=3D3), the report is the average number.
-> For this case, we test 4 times, it is stable, the wave is =C2=B1  2%.
-> So I don't think the -37.0% regression is caused by the randomness.
->=20
-> 0/stats.json:  "will-it-scale.per_thread_ops": 105228,
-> 1/stats.json:  "will-it-scale.per_thread_ops": 100443,
-> 2/stats.json:  "will-it-scale.per_thread_ops": 98786,
-> 3/stats.json:  "will-it-scale.per_thread_ops": 102821,
->=20
-> c2daff748f0ea954 bdfcae11403e5099769a7c8dc32
-> ---------------- ---------------------------
->          %stddev     %change         %stddev
->              \          |                \
->     161714 =C2=B1  2%     -37.0%     101819 =C2=B1  2%  will-it-scale.per=
-_thread_ops
+That rather depends where the data is 'stuck'.
 
-Arguing whether this specific instance of the test is indeed a performance
-regression or not is not relevant to this discussion.
+An old sparc cpu would flush the cpu store buffer before the read.
+But a modern x86 cpu will satisfy the read from the store buffer
+for cached data.
 
-What I am pointing out here is that the test needs fixing because it genera=
-tes
-noise due to a random thread placement configuration. This issue is about w=
-hether
-we can trust the results of those tests as kernel maintainers.
+If the write is 'posted' on a PCI(e) bus then the read can't overtake it.
+But that is a memory access so shouldn't be to a PCI(e) address.
 
-So on one hand, you can fix the test. This is simple to do: make sure the t=
-hread
-affinity does not allow for this randomness on SMT.
+Shouldn't dma_wb() actually force your 'cpu to dram' queue be flushed?
+In which case you need one after writing the ring descriptor and
+before the poke of the mac engine.
 
-But you seem to argue that the test does not need to be fixed, because the =
-0day
-infrastructure in which it runs will cover for this randomness. I really do=
-ubt
-about this.
+The barrier before the descriptor write only needs to guarantee
+ordering of the writes - it can probably be a lighter barrier?
 
-If you indeed choose to argue that the test does not need fixing, then here=
- is the
-statistical analysis I am looking for:
+It might be that your dma_wmb() needs to do a write+read of
+an uncached DRAM location in order to empty the cpu to dram queue.
 
-- With the 4 runs, what are the odds that the average result for one class =
-significantly
-  differs from the other class due to this randomness. It may be small, but=
- it is certainly
-  not zero,
-- Based on those odds, and on the number of performance regression tests pe=
-rformed by 0day
-  each year, how frequently does 0day end up spamming kernel developers wit=
-h random results
-  because of this randomness ?
+	David
 
-That being said, I would really find more productive that we work together =
-on fixing the
-test rather than justifying why it can stay broken. Let me know if you have=
- specific
-questions on how to fix the test, and I'll be happy to help out.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Thanks,
-
-Mathieu
-
---=20
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
