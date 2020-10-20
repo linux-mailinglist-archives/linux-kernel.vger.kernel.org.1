@@ -2,219 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5992943A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5C12943A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733303AbgJTT7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 15:59:43 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16717 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733111AbgJTT7n (ORCPT
+        id S2405714AbgJTUBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 16:01:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57492 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728413AbgJTUBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 15:59:43 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8f41510001>; Tue, 20 Oct 2020 12:58:09 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
- 2020 19:59:39 +0000
-Received: from vidyas-desktop.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 20 Oct 2020 19:59:35 +0000
-From:   Vidya Sagar <vidyas@nvidia.com>
-To:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
-        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
-        <amurray@thegoodpenguin.co.uk>, <robh@kernel.org>,
-        <treding@nvidia.com>, <jonathanh@nvidia.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
-        <sagar.tv@gmail.com>
-Subject: [PATCH V2] PCI: dwc: Add support to handle prefetchable memory mapping
-Date:   Wed, 21 Oct 2020 01:29:31 +0530
-Message-ID: <20201020195931.12470-1-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005121351.32516-1-vidyas@nvidia.com>
-References: <20201005121351.32516-1-vidyas@nvidia.com>
-X-NVConfidentiality: public
-MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603223889; bh=YrKgQJFgKpLpIV8ji6foeY6U+aKitqNhwNzyZefr8Pc=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=Q3EBT5kWfZrjpKsOkH/w0fRu8ZnQrUKs1EQuFHqI4tpM2rpjLLbDkc74TZRJAcuUb
-         QkmA/P+WRqL4ADk6Empc1cTfzksCABSJpknuj7aMR3EEQy3A8i7VXWWOvaOTCNEaB+
-         ScrFZRHvgsr7rhMhUqKtoKmvnytIMsfekXzp/w37DOS14TK3vqOMyCHJHLk9ft2Cip
-         VE3Q3vHeXbEB6dA+br67lkmS4q0laTtGECXs++YXaDsNnHj5l+xWnslnmyiR59ysp0
-         IcILJ61jvN76ryDnXNkYAh3Pvp7nnIJrMvVyEUhubsiGzo0eDIJ0AxW+UGg7ClFwmO
-         SGq91+aeMZvUg==
+        Tue, 20 Oct 2020 16:01:45 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09KJXN2N094018;
+        Tue, 20 Oct 2020 16:00:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=SFMV7OXS/VJIluGuXA0jHf5zUIehQtYguCAirxOg1gw=;
+ b=i5fdpi9ZG46ddg9zJmrOUnwouPMiepEQqhGOtunjcOk/3nGCkWG4P0plGm3lMmXCdI6s
+ oGAyXsI8JDvHhuDtbT8h2jsU5cVQqyMO8S7RFriSwB/K/4Np3dHgapoyrQijvTJTXFbJ
+ evVHEEiQ4LxJVzTpW0XdPEJgy1tptn55bAp/hwPF5Qr2gPSzt6rQUrCclvauVkuk1pu0
+ U24JuQOf9f90f2OGloSoQjGJ49MFIDcCxAw3zKpcM+e+VVxLjKbW0da3s2KpR9B4R06A
+ nimitGvPEPGKFQdLJPxu5w090ZVOI8jBm09ER3dNYYUP6dSiMf4+OBAFHGLhsLg9wTrK 9w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34a64err3e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 16:00:47 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09KJxYEq048108;
+        Tue, 20 Oct 2020 16:00:46 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34a64err1f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 16:00:46 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09KJud1G028967;
+        Tue, 20 Oct 2020 20:00:43 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 347r881ut5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 20:00:43 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09KK0fOl33161594
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Oct 2020 20:00:41 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2485411C058;
+        Tue, 20 Oct 2020 20:00:41 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 633D811C071;
+        Tue, 20 Oct 2020 20:00:35 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.35.199])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Oct 2020 20:00:35 +0000 (GMT)
+Message-ID: <bfaadaffafa3b8c12fce7e8491ea77e22a5821a8.camel@linux.ibm.com>
+Subject: Re: [PATCH v7 1/4] powerpc: Refactor kexec functions to move arch
+ independent code to kernel
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        bauerman@linux.ibm.com, robh@kernel.org,
+        gregkh@linuxfoundation.org, james.morse@arm.com,
+        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
+        balajib@linux.microsoft.com
+Date:   Tue, 20 Oct 2020 16:00:34 -0400
+In-Reply-To: <20200930205941.1576-2-nramas@linux.microsoft.com>
+References: <20200930205941.1576-1-nramas@linux.microsoft.com>
+         <20200930205941.1576-2-nramas@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-20_11:2020-10-20,2020-10-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=2
+ adultscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999
+ priorityscore=1501 mlxscore=0 clxscore=1011 spamscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010200130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DWC sub-system currently doesn't differentiate between prefetchable and
-non-prefetchable memory aperture entries in the 'ranges' property and
-provides ATU mapping only for the first memory aperture entry out of all
-the entries present. This was introduced by the
-commit 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources").
-Mapping for a memory apreture is required if its CPU address and the bus
-address are different and the current mechanism works only if the memory
-aperture which needs mapping happens to be the first entry. It doesn't
-work either if the memory aperture that needs mapping is not the first
-entry or if both prefetchable and non-prefetchable apertures need mapping.
+Hi Lakshmi,
 
-This patch fixes this issue by differentiating between prefetchable and
-non-prefetchable apertures in the 'ranges' property there by removing the
-dependency on the order in which they are specified and adds support for
-mapping prefetchable aperture using ATU region-3 if required.
+On Wed, 2020-09-30 at 13:59 -0700, Lakshmi Ramasubramanian wrote:
+> The functions remove_ima_buffer() and delete_fdt_mem_rsv() that handle
+> carrying forward the IMA measurement logs on kexec for powerpc do not
+> have architecture specific code, but they are currently defined for
+> powerpc only.
+> 
+> remove_ima_buffer() and delete_fdt_mem_rsv() are used to remove
+> the IMA log entry from the device tree and free the memory reserved
+> for the log. These functions need to be defined even if the current
+> kernel does not support carrying forward IMA log across kexec since
+> the previous kernel could have supported that and therefore the current
+> kernel needs to free the allocation.
+> 
+> Rename remove_ima_buffer() to remove_ima_kexec_buffer().
+> Define remove_ima_kexec_buffer() and delete_fdt_mem_rsv() in kernel.
+> A later patch in this series will use these functions to free
+> the allocation, if any, made by the previous kernel for ARM64.
+> 
+> Define FDT_PROP_IMA_KEXEC_BUFFER for the chosen node, namely
+> "linux,ima-kexec-buffer", that is added to the DTB to hold
+> the address and the size of the memory reserved to carry
+> the IMA measurement log.
 
-Fixes: 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources")
-Link: http://patchwork.ozlabs.org/project/linux-pci/patch/20200513190855.23318-1-vidyas@nvidia.com/
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Reported-by: kernel test robot <lkp@intel.com> error: implicit declaration of function 'delete_fdt_mem_rsv' [-Werror,-Wimplicit-function-declaration]
 
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
----
-V2:
-* Rewrote commit subject and description
-* Addressed review comments from Lorenzo
+Much better!  This version limits unnecessarily changing the existing
+code to adding a couple of debugging statements, but that looks to be
+about it.
 
- .../pci/controller/dwc/pcie-designware-host.c | 42 ++++++++++++++++---
- drivers/pci/controller/dwc/pcie-designware.c  | 12 +++---
- drivers/pci/controller/dwc/pcie-designware.h  |  4 +-
- 3 files changed, 46 insertions(+), 12 deletions(-)
+Based on Chester Lin's "ima_arch" support for arm64 discussion, the IMA generic
+EFI support will be defined in ima/ima-efi.c.  Similarly, I think it would make sense to put the generic device tree support in ima/ima_kexec_fdt.c or ima/ima_fdt.c, as opposed to kernel/.  (Refer to my comments on 2/4 about the new file named ima_kexec_fdt.c.)
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index db547ee6ff3a..dae6da39bb90 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -521,9 +521,42 @@ static struct pci_ops dw_pcie_ops = {
- 	.write = pci_generic_config_write,
- };
- 
-+static void dw_pcie_setup_mem_atu(struct pcie_port *pp,
-+				  struct resource_entry *win)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+
-+	/* Check for prefetchable memory aperture */
-+	if (win->res->flags & IORESOURCE_PREFETCH && win->offset) {
-+		/* Number of view ports must at least be 4 to enable mapping */
-+		if (pci->num_viewport < 4) {
-+			dev_warn(pci->dev,
-+				 "Insufficient ATU regions to map Prefetchable memory\n");
-+		} else {
-+			dw_pcie_prog_outbound_atu(pci,
-+						  PCIE_ATU_REGION_INDEX3,
-+						  PCIE_ATU_TYPE_MEM,
-+						  win->res->start,
-+						  win->res->start - win->offset,
-+						  resource_size(win->res));
-+		}
-+	} else if (win->offset) { /* Non-prefetchable memory aperture */
-+		if (upper_32_bits(resource_size(win->res)))
-+			dev_warn(pci->dev,
-+				 "Memory resource size exceeds max for 32 bits\n");
-+		dw_pcie_prog_outbound_atu(pci,
-+					  PCIE_ATU_REGION_INDEX0,
-+					  PCIE_ATU_TYPE_MEM,
-+					  win->res->start,
-+					  win->res->start - win->offset,
-+					  resource_size(win->res));
-+	}
-+}
-+
- void dw_pcie_setup_rc(struct pcie_port *pp)
- {
- 	u32 val, ctrl, num_ctrls;
-+	struct resource_entry *win;
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
- 
- 	/*
-@@ -578,13 +611,10 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
- 	 * ATU, so we should not program the ATU here.
- 	 */
- 	if (pp->bridge->child_ops == &dw_child_pcie_ops) {
--		struct resource_entry *entry =
--			resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
-+		resource_list_for_each_entry(win, &pp->bridge->windows)
-+			if (resource_type(win->res) == IORESOURCE_MEM)
-+				dw_pcie_setup_mem_atu(pp, win);
- 
--		dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX0,
--					  PCIE_ATU_TYPE_MEM, entry->res->start,
--					  entry->res->start - entry->offset,
--					  resource_size(entry->res));
- 		if (pci->num_viewport > 2)
- 			dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX2,
- 						  PCIE_ATU_TYPE_IO, pp->io_base,
-diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-index c2dea8fc97c8..b5e438b70cd5 100644
---- a/drivers/pci/controller/dwc/pcie-designware.c
-+++ b/drivers/pci/controller/dwc/pcie-designware.c
-@@ -228,7 +228,7 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
- static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
- 					     int index, int type,
- 					     u64 cpu_addr, u64 pci_addr,
--					     u32 size)
-+					     u64 size)
- {
- 	u32 retries, val;
- 	u64 limit_addr = cpu_addr + size - 1;
-@@ -245,8 +245,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
- 				 lower_32_bits(pci_addr));
- 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
- 				 upper_32_bits(pci_addr));
--	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
--				 type | PCIE_ATU_FUNC_NUM(func_no));
-+	val = type | PCIE_ATU_FUNC_NUM(func_no);
-+	val = upper_32_bits(size - 1) ?
-+		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
-+	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
- 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
- 				 PCIE_ATU_ENABLE);
- 
-@@ -267,7 +269,7 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
- 
- static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
- 					int index, int type, u64 cpu_addr,
--					u64 pci_addr, u32 size)
-+					u64 pci_addr, u64 size)
- {
- 	u32 retries, val;
- 
-@@ -311,7 +313,7 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
- }
- 
- void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index, int type,
--			       u64 cpu_addr, u64 pci_addr, u32 size)
-+			       u64 cpu_addr, u64 pci_addr, u64 size)
- {
- 	__dw_pcie_prog_outbound_atu(pci, 0, index, type,
- 				    cpu_addr, pci_addr, size);
-diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index 9d2f511f13fa..21dd06831b50 100644
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -80,10 +80,12 @@
- #define PCIE_ATU_VIEWPORT		0x900
- #define PCIE_ATU_REGION_INBOUND		BIT(31)
- #define PCIE_ATU_REGION_OUTBOUND	0
-+#define PCIE_ATU_REGION_INDEX3		0x3
- #define PCIE_ATU_REGION_INDEX2		0x2
- #define PCIE_ATU_REGION_INDEX1		0x1
- #define PCIE_ATU_REGION_INDEX0		0x0
- #define PCIE_ATU_CR1			0x904
-+#define PCIE_ATU_INCREASE_REGION_SIZE	BIT(13)
- #define PCIE_ATU_TYPE_MEM		0x0
- #define PCIE_ATU_TYPE_IO		0x2
- #define PCIE_ATU_TYPE_CFG0		0x4
-@@ -295,7 +297,7 @@ void dw_pcie_upconfig_setup(struct dw_pcie *pci);
- int dw_pcie_wait_for_link(struct dw_pcie *pci);
- void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index,
- 			       int type, u64 cpu_addr, u64 pci_addr,
--			       u32 size);
-+			       u64 size);
- void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
- 				  int type, u64 cpu_addr, u64 pci_addr,
- 				  u32 size);
--- 
-2.17.1
+thanks,
+
+Mimi
 
