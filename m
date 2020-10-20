@@ -2,406 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D09F294557
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 01:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889DC29455D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 01:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410518AbgJTXK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 19:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
+        id S2439251AbgJTXLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 19:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410483AbgJTXK2 (ORCPT
+        with ESMTP id S2439242AbgJTXLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 19:10:28 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED560C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 16:10:26 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t22so185719plr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 16:10:26 -0700 (PDT)
+        Tue, 20 Oct 2020 19:11:06 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B881C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 16:11:05 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a3so52243ejy.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 16:11:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=VOGFC+9C7Ee/7QcBtFUufnDJvjCV5vtOV2Aqb8frmgk=;
-        b=GNHDwpg5z5pFPRbdWbGBnoMmZK+uoOw4XYb/0p7/OvIuWWKvjvPTQhSOhwNO17/GZE
-         v8CKS7U1hEpmo1N6biUf2aw3iHaxcTcDkN5x6VunUTydguDA18hX848AwdvAXeLlFeF2
-         N4qlrsG0NECExH0If8dmgvrw3OSAr3fdnd/Im68yoMJdoVY96w4DfH0hGnTzeJsi43ZE
-         cXkxRdEOtQYsxrs9z6SjdB2g3+7QB0PxyI8r4roxP0sSNocmsThILO7QrIr+wNL53Ao9
-         cm9ofHx5ofSZE8GY6/uB+iTV1hF8A1w1LI1xRsaEdI36BIZPJ5jY9idKZOQBIxFG2Xhj
-         qeNw==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oQrdvezJYSAFOQDr78k5AJCyrl0v3hhH//5WN2kgoBM=;
+        b=oo1/w0oelVxsAAQwsQ0ykiIfWkyo4Z3tcp4CWz9F9skAExBjVegSHj5Bmv8g7XOBw6
+         0GSwtoEhsy+zMTYshG53kWbNXDNH7eb5AW2BzM2Dc0J1WcEVhwqsPWmZdapsh4sMR9Ma
+         vZkhid0nH6RpBii5GRFd5iJFYT9oqT+cMR66xx5mcmi9G4tEmIZ57oRcHkY6saAV5u9U
+         nqzUeDbPfbedjJYWfGtHgA34Ceo90TgVXDAoROFb5Sc1knr2TW5zVTJJGx5LyVf3bmAI
+         DNpxd5ge5L0O1vrTMJtd76QXUU8aEf22TnnLbaPijcSqcRD4N9l9XL+oqmOf6DRbkG1I
+         axdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=VOGFC+9C7Ee/7QcBtFUufnDJvjCV5vtOV2Aqb8frmgk=;
-        b=Ssx7KMuUhNlzbEJaEB/rmjZ7MKineB9HEkVoyANrGUUEfNaQ3iKgSi2xhovg1FTF0p
-         JhHELQy5/EF8tGePrDK3xBm8aO9cwfteK2tsgxErpLHhZYNO3YRSEJbdH72WTsHKo493
-         1taW1uAiJ9T89hUTmxNdN+BYlYWIfX7Cz2H4YhNka2IDEhitpdS0fbWoId0rZx82v998
-         YcPDXl+dRy0axfDyy2B4266kEfBIMDvtKBd96fIYOQp0BD4PeCSjCfmarO7C5BO3QCyR
-         pJwG/tSFeLZRoQk40FpreoL5UQBgQYq+XqbycpHpa6mGSf+rQ8/YiEvLBHtEvAPNct0H
-         /lnQ==
-X-Gm-Message-State: AOAM531q1DFiw+hTtPNbSZbD66BMzyQvFdL+RBXZ8IaNhopYg7JWrzR3
-        rlmQfFkpPHCoTIoZ5QecAjLUVbVqoPr/PIK+
-X-Google-Smtp-Source: ABdhPJwdIr5BveUPeae8lCGGgOtWgJ2X5z6HuFsZeLfltQ8UDf5CjKNZc7gGdyEnVJO6KDlR688u3g==
-X-Received: by 2002:a17:902:b78c:b029:d4:da94:8766 with SMTP id e12-20020a170902b78cb02900d4da948766mr497971pls.31.1603235426121;
-        Tue, 20 Oct 2020 16:10:26 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id y15sm187181pjt.41.2020.10.20.16.10.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 16:10:25 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>, kishon@ti.com,
-        repk@triplefau.lt
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] phy: amlogic: phy-meson-axg-mipi-pcie-analog: add support for MIPI DSI analog
-In-Reply-To: <6f87aa99-e044-f7f6-802f-ea2fe8b9de6d@baylibre.com>
-References: <20200915130339.11079-1-narmstrong@baylibre.com> <20200915130339.11079-4-narmstrong@baylibre.com> <6f87aa99-e044-f7f6-802f-ea2fe8b9de6d@baylibre.com>
-Date:   Tue, 20 Oct 2020 16:10:24 -0700
-Message-ID: <7h5z74jxy7.fsf@baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oQrdvezJYSAFOQDr78k5AJCyrl0v3hhH//5WN2kgoBM=;
+        b=p5N4GvMY6fJ/p6cMu8BdwJjRPx3gXw2Q+teoYoB/rex5nMBY35PTeMkdo+vMDOeDa8
+         mmo13HgfNwErA8vPLJnS2Ei8W7asjvvVZjOi5v8SZNMcXmh7ntzP+puQK2WmUnIsZVhm
+         IHu65v31uXgea7H8JvLgFCqarlG4U/1ATd3Awm+r4mGI/gIroGMmqNYhzjaUdTRnBfom
+         sfzhxxZ/3FzFyf9TxrdrPlZJZFgy0lbv5Jn1AWOoKMHiyztABy3RVZ7YJ7+BNvO2AH4+
+         g057O0x4p6JnkM/dVAdyByhZ7lEvFu98ZLFVDzOV83eD0W7DTDk4w+y4F7WdzgAbQr+C
+         Ipsw==
+X-Gm-Message-State: AOAM531ATIo5iQlWjsm5L9x1UdpMCjOJ3Qgvz6HnrFHMf7MdrWz1xGdw
+        6bud8V+kv/EzstV9LJvccDafMtZVRfdntMaWa0qW
+X-Google-Smtp-Source: ABdhPJw0pP1X9t3t36EeA9hYaCQRGW8zWHB8n131SXlMSo9h5Uhy/9KzkMAkGla2JJpYCBV8QIKKdJzqHlqu7Kb7Iz4=
+X-Received: by 2002:a17:906:ce5a:: with SMTP id se26mr521166ejb.106.1603235464181;
+ Tue, 20 Oct 2020 16:11:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201020191732.4049987-1-salyzyn@android.com>
+In-Reply-To: <20201020191732.4049987-1-salyzyn@android.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 20 Oct 2020 19:10:53 -0400
+Message-ID: <CAHC9VhRMj-y2RsJ6HnbVYJV9j_snEqnmoNc6-wFacLG9wyqJpQ@mail.gmail.com>
+Subject: Re: [PATCH v17 0/4] overlayfs override_creds=off & nested get xattr fix
+To:     Mark Salyzyn <salyzyn@android.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-doc@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
-
-It's been another few weeks, so another slightly less gentle ping. :)
-
-Kevin
-
-Neil Armstrong <narmstrong@baylibre.com> writes:
-
-> Hi Kishon,
+On Tue, Oct 20, 2020 at 3:17 PM Mark Salyzyn <salyzyn@android.com> wrote:
 >
-> Gentle ping.
+> Mark Salyzyn (3):
+>   Add flags option to get xattr method paired to __vfs_getxattr
+>   overlayfs: handle XATTR_NOSECURITY flag for get xattr method
+>   overlayfs: override_creds=off option bypass creator_cred
 >
-> Thanks,
-> Neil
+> Mark Salyzyn + John Stultz (1):
+>   overlayfs: inode_owner_or_capable called during execv
 >
-> On 15/09/2020 15:03, Neil Armstrong wrote:
->> The AXG Analog MIPI-DSI PHY also provides functions to the PCIe PHY,
->> thus we need to have inclusive support for both interfaces at runtime.
->> 
->> This fixes the regmap get from parent node, removes cell param
->> to select a mode and implement runtime configuration & power on/off
->> for both functions since they are not exclusive.
->> 
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->> Reviewed-by: Remi Pommarel <repk@triplefau.lt>
->> ---
->>  drivers/phy/amlogic/Kconfig                   |   1 +
->>  .../amlogic/phy-meson-axg-mipi-pcie-analog.c  | 204 ++++++++++++------
->>  2 files changed, 136 insertions(+), 69 deletions(-)
->> 
->> diff --git a/drivers/phy/amlogic/Kconfig b/drivers/phy/amlogic/Kconfig
->> index 99e8a4c7f1f3..db5d0cd757e3 100644
->> --- a/drivers/phy/amlogic/Kconfig
->> +++ b/drivers/phy/amlogic/Kconfig
->> @@ -66,6 +66,7 @@ config PHY_MESON_AXG_MIPI_PCIE_ANALOG
->>  	depends on OF && (ARCH_MESON || COMPILE_TEST)
->>  	select GENERIC_PHY
->>  	select REGMAP_MMIO
->> +	select GENERIC_PHY_MIPI_DPHY
->>  	help
->>  	  Enable this to support the Meson MIPI + PCIE analog PHY
->>  	  found in Meson AXG SoCs.
->> diff --git a/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c b/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c
->> index 1431cbf885e1..6eb21551bdd9 100644
->> --- a/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c
->> +++ b/drivers/phy/amlogic/phy-meson-axg-mipi-pcie-analog.c
->> @@ -4,9 +4,13 @@
->>   *
->>   * Copyright (C) 2019 Remi Pommarel <repk@triplefau.lt>
->>   */
->> +#include <linux/bitfield.h>
->> +#include <linux/bitops.h>
->>  #include <linux/module.h>
->>  #include <linux/phy/phy.h>
->>  #include <linux/regmap.h>
->> +#include <linux/delay.h>
->> +#include <linux/mfd/syscon.h>
->>  #include <linux/platform_device.h>
->>  #include <dt-bindings/phy/phy.h>
->>  
->> @@ -14,10 +18,10 @@
->>  #define		HHI_MIPI_CNTL0_COMMON_BLOCK	GENMASK(31, 28)
->>  #define		HHI_MIPI_CNTL0_ENABLE		BIT(29)
->>  #define		HHI_MIPI_CNTL0_BANDGAP		BIT(26)
->> -#define		HHI_MIPI_CNTL0_DECODE_TO_RTERM	GENMASK(15, 12)
->> -#define		HHI_MIPI_CNTL0_OUTPUT_EN	BIT(3)
->> +#define		HHI_MIPI_CNTL0_DIF_REF_CTL1	GENMASK(25, 16)
->> +#define		HHI_MIPI_CNTL0_DIF_REF_CTL0	GENMASK(15, 0)
->>  
->> -#define HHI_MIPI_CNTL1 0x01
->> +#define HHI_MIPI_CNTL1 0x04
->>  #define		HHI_MIPI_CNTL1_CH0_CML_PDR_EN	BIT(12)
->>  #define		HHI_MIPI_CNTL1_LP_ABILITY	GENMASK(5, 4)
->>  #define		HHI_MIPI_CNTL1_LP_RESISTER	BIT(3)
->> @@ -25,100 +29,170 @@
->>  #define		HHI_MIPI_CNTL1_INPUT_SEL	BIT(1)
->>  #define		HHI_MIPI_CNTL1_PRBS7_EN		BIT(0)
->>  
->> -#define HHI_MIPI_CNTL2 0x02
->> +#define HHI_MIPI_CNTL2 0x08
->>  #define		HHI_MIPI_CNTL2_CH_PU		GENMASK(31, 25)
->>  #define		HHI_MIPI_CNTL2_CH_CTL		GENMASK(24, 19)
->>  #define		HHI_MIPI_CNTL2_CH0_DIGDR_EN	BIT(18)
->>  #define		HHI_MIPI_CNTL2_CH_DIGDR_EN	BIT(17)
->>  #define		HHI_MIPI_CNTL2_LPULPS_EN	BIT(16)
->> -#define		HHI_MIPI_CNTL2_CH_EN(n)		BIT(15 - (n))
->> +#define		HHI_MIPI_CNTL2_CH_EN		GENMASK(15, 11)
->>  #define		HHI_MIPI_CNTL2_CH0_LP_CTL	GENMASK(10, 1)
->>  
->> +#define DSI_LANE_0              (1 << 4)
->> +#define DSI_LANE_1              (1 << 3)
->> +#define DSI_LANE_CLK            (1 << 2)
->> +#define DSI_LANE_2              (1 << 1)
->> +#define DSI_LANE_3              (1 << 0)
->> +#define DSI_LANE_MASK		(0x1F)
->> +
->>  struct phy_axg_mipi_pcie_analog_priv {
->>  	struct phy *phy;
->> -	unsigned int mode;
->>  	struct regmap *regmap;
->> +	bool dsi_configured;
->> +	bool dsi_enabled;
->> +	bool powered;
->> +	struct phy_configure_opts_mipi_dphy config;
->>  };
->>  
->> -static const struct regmap_config phy_axg_mipi_pcie_analog_regmap_conf = {
->> -	.reg_bits = 8,
->> -	.val_bits = 32,
->> -	.reg_stride = 4,
->> -	.max_register = HHI_MIPI_CNTL2,
->> -};
->> +static void phy_bandgap_enable(struct phy_axg_mipi_pcie_analog_priv *priv)
->> +{
->> +	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0,
->> +			HHI_MIPI_CNTL0_BANDGAP, HHI_MIPI_CNTL0_BANDGAP);
->>  
->> -static int phy_axg_mipi_pcie_analog_power_on(struct phy *phy)
->> +	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0,
->> +			HHI_MIPI_CNTL0_ENABLE, HHI_MIPI_CNTL0_ENABLE);
->> +}
->> +
->> +static void phy_bandgap_disable(struct phy_axg_mipi_pcie_analog_priv *priv)
->>  {
->> -	struct phy_axg_mipi_pcie_analog_priv *priv = phy_get_drvdata(phy);
->> +	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0,
->> +			HHI_MIPI_CNTL0_BANDGAP, 0);
->> +	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0,
->> +			HHI_MIPI_CNTL0_ENABLE, 0);
->> +}
->>  
->> -	/* MIPI not supported yet */
->> -	if (priv->mode != PHY_TYPE_PCIE)
->> -		return -EINVAL;
->> +static void phy_dsi_analog_enable(struct phy_axg_mipi_pcie_analog_priv *priv)
->> +{
->> +	u32 reg;
->>  
->>  	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0,
->> -			   HHI_MIPI_CNTL0_BANDGAP, HHI_MIPI_CNTL0_BANDGAP);
->> +			   HHI_MIPI_CNTL0_DIF_REF_CTL1,
->> +			   FIELD_PREP(HHI_MIPI_CNTL0_DIF_REF_CTL1, 0x1b8));
->> +	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0,
->> +			   BIT(31), BIT(31));
->> +	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0,
->> +			   HHI_MIPI_CNTL0_DIF_REF_CTL0,
->> +			   FIELD_PREP(HHI_MIPI_CNTL0_DIF_REF_CTL0, 0x8));
->> +
->> +	regmap_write(priv->regmap, HHI_MIPI_CNTL1, 0x001e);
->> +
->> +	regmap_write(priv->regmap, HHI_MIPI_CNTL2,
->> +		     (0x26e0 << 16) | (0x459 << 0));
->> +
->> +	reg = DSI_LANE_CLK;
->> +	switch (priv->config.lanes) {
->> +	case 4:
->> +		reg |= DSI_LANE_3;
->> +		fallthrough;
->> +	case 3:
->> +		reg |= DSI_LANE_2;
->> +		fallthrough;
->> +	case 2:
->> +		reg |= DSI_LANE_1;
->> +		fallthrough;
->> +	case 1:
->> +		reg |= DSI_LANE_0;
->> +		break;
->> +	default:
->> +		reg = 0;
->> +	}
->> +
->> +	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL2,
->> +			   HHI_MIPI_CNTL2_CH_EN,
->> +			   FIELD_PREP(HHI_MIPI_CNTL2_CH_EN, reg));
->> +
->> +	priv->dsi_enabled = true;
->> +}
->>  
->> +static void phy_dsi_analog_disable(struct phy_axg_mipi_pcie_analog_priv *priv)
->> +{
->>  	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0,
->> -			   HHI_MIPI_CNTL0_ENABLE, HHI_MIPI_CNTL0_ENABLE);
->> -	return 0;
->> +			HHI_MIPI_CNTL0_DIF_REF_CTL1,
->> +			FIELD_PREP(HHI_MIPI_CNTL0_DIF_REF_CTL1, 0));
->> +	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0, BIT(31), 0);
->> +	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0,
->> +			HHI_MIPI_CNTL0_DIF_REF_CTL1, 0);
->> +
->> +	regmap_write(priv->regmap, HHI_MIPI_CNTL1, 0x6);
->> +
->> +	regmap_write(priv->regmap, HHI_MIPI_CNTL2, 0x00200000);
->> +
->> +	priv->dsi_enabled = false;
->>  }
->>  
->> -static int phy_axg_mipi_pcie_analog_power_off(struct phy *phy)
->> +static int phy_axg_mipi_pcie_analog_configure(struct phy *phy,
->> +					      union phy_configure_opts *opts)
->>  {
->>  	struct phy_axg_mipi_pcie_analog_priv *priv = phy_get_drvdata(phy);
->> +	int ret;
->>  
->> -	/* MIPI not supported yet */
->> -	if (priv->mode != PHY_TYPE_PCIE)
->> -		return -EINVAL;
->> +	ret = phy_mipi_dphy_config_validate(&opts->mipi_dphy);
->> +	if (ret)
->> +		return ret;
->> +
->> +	memcpy(&priv->config, opts, sizeof(priv->config));
->> +
->> +	priv->dsi_configured = true;
->> +
->> +	/* If PHY was already powered on, setup the DSI analog part */
->> +	if (priv->powered) {
->> +		/* If reconfiguring, disable & reconfigure */
->> +		if (priv->dsi_enabled)
->> +			phy_dsi_analog_disable(priv);
->> +
->> +		usleep_range(100, 200);
->> +
->> +		phy_dsi_analog_enable(priv);
->> +	}
->>  
->> -	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0,
->> -			   HHI_MIPI_CNTL0_BANDGAP, 0);
->> -	regmap_update_bits(priv->regmap, HHI_MIPI_CNTL0,
->> -			   HHI_MIPI_CNTL0_ENABLE, 0);
->>  	return 0;
->>  }
->>  
->> -static int phy_axg_mipi_pcie_analog_init(struct phy *phy)
->> +static int phy_axg_mipi_pcie_analog_power_on(struct phy *phy)
->>  {
->> +	struct phy_axg_mipi_pcie_analog_priv *priv = phy_get_drvdata(phy);
->> +
->> +	phy_bandgap_enable(priv);
->> +
->> +	if (priv->dsi_configured)
->> +		phy_dsi_analog_enable(priv);
->> +
->> +	priv->powered = true;
->> +
->>  	return 0;
->>  }
->>  
->> -static int phy_axg_mipi_pcie_analog_exit(struct phy *phy)
->> +static int phy_axg_mipi_pcie_analog_power_off(struct phy *phy)
->>  {
->> +	struct phy_axg_mipi_pcie_analog_priv *priv = phy_get_drvdata(phy);
->> +
->> +	phy_bandgap_disable(priv);
->> +
->> +	if (priv->dsi_enabled)
->> +		phy_dsi_analog_disable(priv);
->> +
->> +	priv->powered = false;
->> +
->>  	return 0;
->>  }
->>  
->>  static const struct phy_ops phy_axg_mipi_pcie_analog_ops = {
->> -	.init = phy_axg_mipi_pcie_analog_init,
->> -	.exit = phy_axg_mipi_pcie_analog_exit,
->> +	.configure = phy_axg_mipi_pcie_analog_configure,
->>  	.power_on = phy_axg_mipi_pcie_analog_power_on,
->>  	.power_off = phy_axg_mipi_pcie_analog_power_off,
->>  	.owner = THIS_MODULE,
->>  };
->>  
->> -static struct phy *phy_axg_mipi_pcie_analog_xlate(struct device *dev,
->> -						  struct of_phandle_args *args)
->> -{
->> -	struct phy_axg_mipi_pcie_analog_priv *priv = dev_get_drvdata(dev);
->> -	unsigned int mode;
->> -
->> -	if (args->args_count != 1) {
->> -		dev_err(dev, "invalid number of arguments\n");
->> -		return ERR_PTR(-EINVAL);
->> -	}
->> -
->> -	mode = args->args[0];
->> -
->> -	/* MIPI mode is not supported yet */
->> -	if (mode != PHY_TYPE_PCIE) {
->> -		dev_err(dev, "invalid phy mode select argument\n");
->> -		return ERR_PTR(-EINVAL);
->> -	}
->> -
->> -	priv->mode = mode;
->> -	return priv->phy;
->> -}
->> -
->>  static int phy_axg_mipi_pcie_analog_probe(struct platform_device *pdev)
->>  {
->>  	struct phy_provider *phy;
->> @@ -126,27 +200,20 @@ static int phy_axg_mipi_pcie_analog_probe(struct platform_device *pdev)
->>  	struct phy_axg_mipi_pcie_analog_priv *priv;
->>  	struct device_node *np = dev->of_node;
->>  	struct regmap *map;
->> -	struct resource *res;
->> -	void __iomem *base;
->>  	int ret;
->>  
->>  	priv = devm_kmalloc(dev, sizeof(*priv), GFP_KERNEL);
->>  	if (!priv)
->>  		return -ENOMEM;
->>  
->> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> -	base = devm_ioremap_resource(dev, res);
->> -	if (IS_ERR(base)) {
->> -		dev_err(dev, "failed to get regmap base\n");
->> -		return PTR_ERR(base);
->> -	}
->> -
->> -	map = devm_regmap_init_mmio(dev, base,
->> -				    &phy_axg_mipi_pcie_analog_regmap_conf);
->> +	/* Get the hhi system controller node */
->> +	map = syscon_node_to_regmap(of_get_parent(dev->of_node));
->>  	if (IS_ERR(map)) {
->> -		dev_err(dev, "failed to get HHI regmap\n");
->> +		dev_err(dev,
->> +			"failed to get HHI regmap\n");
->>  		return PTR_ERR(map);
->>  	}
->> +
->>  	priv->regmap = map;
->>  
->>  	priv->phy = devm_phy_create(dev, np, &phy_axg_mipi_pcie_analog_ops);
->> @@ -160,8 +227,7 @@ static int phy_axg_mipi_pcie_analog_probe(struct platform_device *pdev)
->>  	phy_set_drvdata(priv->phy, priv);
->>  	dev_set_drvdata(dev, priv);
->>  
->> -	phy = devm_of_phy_provider_register(dev,
->> -					    phy_axg_mipi_pcie_analog_xlate);
->> +	phy = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
->>  
->>  	return PTR_ERR_OR_ZERO(phy);
->>  }
->> 
+> The first three patches address fundamental security issues that should
+> be solved regardless of the override_creds=off feature.
+>
+> The fourth adds the feature depends on these other fixes.
+>
+> By default, all access to the upper, lower and work directories is the
+> recorded mounter's MAC and DAC credentials.  The incoming accesses are
+> checked against the caller's credentials.
+>
+> If the principles of least privilege are applied for sepolicy, the
+> mounter's credentials might not overlap the credentials of the caller's
+> when accessing the overlayfs filesystem.  For example, a file that a
+> lower DAC privileged caller can execute, is MAC denied to the
+> generally higher DAC privileged mounter, to prevent an attack vector.
+>
+> We add the option to turn off override_creds in the mount options; all
+> subsequent operations after mount on the filesystem will be only the
+> caller's credentials.  The module boolean parameter and mount option
+> override_creds is also added as a presence check for this "feature",
+> existence of /sys/module/overlay/parameters/overlay_creds
+>
+> Signed-off-by: Mark Salyzyn <salyzyn@android.com>
+> Cc: Miklos Szeredi <miklos@szeredi.hu>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: Eric W. Biederman <ebiederm@xmission.com>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Stephen Smalley <sds@tycho.nsa.gov>
+> Cc: John Stultz <john.stultz@linaro.org>
+> Cc: linux-doc@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> To: linux-fsdevel@vger.kernel.org
+> To: linux-unionfs@vger.kernel.org
+> Cc: linux-security-module@vger.kernel.org
+> Cc: kernel-team@android.com
+
+The SELinux list should also be CC'd on these patches.  For those who
+may just be seeing this, the lore link is below:
+
+https://lore.kernel.org/linux-security-module/20201020191732.4049987-1-salyzyn@android.com/T/#t
+
+-- 
+paul moore
+www.paul-moore.com
