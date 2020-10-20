@@ -2,58 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C8C2935C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A532935DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405119AbgJTHcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:32:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731280AbgJTHcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:32:17 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731422AbgJTHeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728470AbgJTHeM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 03:34:12 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00057C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:34:11 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 466AC2237B;
-        Tue, 20 Oct 2020 07:32:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603179136;
-        bh=lmarhGMgRtdYpO9BC/zBLgxGRIySPhWIx01jkmu4QJQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DOfmn2Q2kde8SFe2HnKK/9/x0BapwMkE2toRRfFKjrapfOViEZHS+Qh+Qc2ywk/SW
-         1zLi+zDEtO17Dqhi5G502FMkvKMIm0FsdPIRnWv8igFSdTyGjZCCPncwMQTRWRW5p2
-         9h8Z+shoYxJcwQTtx9TTLGQo5oSmyZ/SDXhw5r8w=
-Date:   Tue, 20 Oct 2020 09:32:59 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH 1/2] fpga: dfl: add driver_override support
-Message-ID: <20201020073259.GA3803984@kroah.com>
-References: <1602828151-24784-1-git-send-email-yilun.xu@intel.com>
- <1602828151-24784-2-git-send-email-yilun.xu@intel.com>
- <63d7730b-d9b8-c75d-16f6-3ebb507aabaa@redhat.com>
- <20201019040612.GA16172@yilunxu-OptiPlex-7050>
- <f767b9a0-1db8-7ced-6bd9-5ee1f58d40da@redhat.com>
- <20201020071158.GC28746@yilunxu-OptiPlex-7050>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CFlk721Hdz9sSC;
+        Tue, 20 Oct 2020 18:34:07 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1603179249;
+        bh=zmNZh+ZEQ1WLOU/BNA8riKCW5xmCis1MYfzfQimpEhU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=nHptS6F7eySdFEovSb7+ia+qEJhEV8hvOW501LZ5tAy7yGP/NwRkMUc/KWA3EGUCn
+         MIpS2dnkLcal5HRvI0rbwRbnFrpf85pcgdhClRbyusVQQSzu7vID+lehXEsoBBCeLt
+         DzOJGdn9OhAw30d1uknjCAwoXHvKh0u30Oh0MYpfYjMyYYpm1uUSQdXmx+HwctEUov
+         Bs9B2s0iQHwajUSoqxnlSytMZ/itgVtPBqzhRQHArtsi5XM8Xgti9Klq0/xJs9SniZ
+         QCfp7Idhh+C30SKUgGrj9pBuRKxpFnr8DM2as+9n10LXjbwdcL53ZSQetX7MmEm22+
+         xcs8AV8BBiPkw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        "Christopher M. Riedl" <cmr@codefail.de>
+Subject: Re: [PATCH 3/8] powerpc: Mark functions called inside uaccess blocks w/ 'notrace'
+In-Reply-To: <20201016094132.GI2611@hirez.programming.kicks-ass.net>
+References: <20201015150159.28933-1-cmr@codefail.de> <20201015150159.28933-4-cmr@codefail.de> <20201016065616.GB9343@infradead.org> <20201016094132.GI2611@hirez.programming.kicks-ass.net>
+Date:   Tue, 20 Oct 2020 18:34:06 +1100
+Message-ID: <87v9f5xsep.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020071158.GC28746@yilunxu-OptiPlex-7050>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 03:11:58PM +0800, Xu Yilun wrote:
-> I think it is normal case that a driver is successfully registered but
-> doesn't match any device because it provides no id_table.
+Peter Zijlstra <peterz@infradead.org> writes:
+> On Fri, Oct 16, 2020 at 07:56:16AM +0100, Christoph Hellwig wrote:
+>> On Thu, Oct 15, 2020 at 10:01:54AM -0500, Christopher M. Riedl wrote:
+>> > Functions called between user_*_access_begin() and user_*_access_end()
+>> > should be either inlined or marked 'notrace' to prevent leaving
+>> > userspace access exposed. Mark any such functions relevant to signal
+>> > handling so that subsequent patches can call them inside uaccess blocks.
+>> 
+>> I don't think running this much code with uaccess enabled is a good
+>> idea.  Please refactor the code to reduce the criticial sections with
+>> uaccess enabled.
+>> 
+>> Btw, does powerpc already have the objtool validation that we don't
+>> accidentally jump out of unsafe uaccess critical sections?
+>
+> It does not, there was some effort on that a while ago, but I suspect
+> they're waiting for the ARM64 effort to land and build on that.
 
-How is that "normal"?  What would ever cause that driver to be bound to
-a device then?
+Right, we don't have objtool support.
 
-And you better not say userspace is responsible for it...
+We would definitely like objtool support at least for this uaccess
+checking, I'm sure we have some escapes.
 
-thanks,
+There was someone working on it in their own-time but last I heard that
+was still WIP.
 
-greg k-h
+I didn't realise the ARM64 support was still not merged, so yeah having
+that land first would probably simplify things, but we still need
+someone who has time to work on it.
+
+cheers
