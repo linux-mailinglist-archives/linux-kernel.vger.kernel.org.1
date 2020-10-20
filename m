@@ -2,240 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7994A29348D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE9A293493
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391713AbgJTGE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:04:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35164 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730607AbgJTGE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:04:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ED383ACF3;
-        Tue, 20 Oct 2020 06:04:23 +0000 (UTC)
-References: <20201014190749.24607-1-rpalethorpe@suse.com>
- <20201016094702.GA95052@blackbook> <20201016145308.GA312010@cmpxchg.org>
- <20201016171502.GA102311@blackbook>
- <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Richard Palethorpe <rpalethorpe@suse.de>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, ltp@lists.linux.it,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Christoph Lameter" <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from
- charging root
-Reply-To: rpalethorpe@suse.de
-In-reply-to: <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
-Date:   Tue, 20 Oct 2020 07:04:22 +0100
-Message-ID: <87k0vlwhzt.fsf@suse.de>
+        id S2391911AbgJTGGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:06:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23070 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730596AbgJTGGi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 02:06:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603173997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MyUCx3lGcn+//ZMO1Cv2esu6vXCXBYtgBEkJ4GQi6cY=;
+        b=g1yCIPM6c39jTTFDawxajm+0JLdj4L3nA6jd4eq78YLjMLQPjG4E0i6v7XhOtOoFmGQmml
+        YoaueBRF89fmivyWIqI+7DjhxW+6rSUP4RIYCmfZf9JLJSjkPaPuH1+LXdyu79pvbKQ5IG
+        akttqxALm8etcnHAZsdUe5EuW6QRGJ4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-220-t9oc-lq3MlSixffOh4mCzg-1; Tue, 20 Oct 2020 02:06:32 -0400
+X-MC-Unique: t9oc-lq3MlSixffOh4mCzg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 359B959;
+        Tue, 20 Oct 2020 06:06:31 +0000 (UTC)
+Received: from krava (unknown [10.40.192.162])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A43BA5C1A3;
+        Tue, 20 Oct 2020 06:06:28 +0000 (UTC)
+Date:   Tue, 20 Oct 2020 08:06:27 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf mem2node: Improve warning if detected no memory
+ nodes
+Message-ID: <20201020060627.GA2084117@krava>
+References: <20201019003613.8399-1-leo.yan@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019003613.8399-1-leo.yan@linaro.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Roman,
+On Mon, Oct 19, 2020 at 08:36:13AM +0800, Leo Yan wrote:
+> Some archs (e.g. x86 and Arm64) don't enable the configuration
+> CONFIG_MEMORY_HOTPLUG by default, if this configuration is not enabled
+> when build the kernel image, the SysFS for memory nodes will be missed.
+> This results in perf tool has no chance to catpure the memory nodes
+> information, when perf tool reports the result and detects no memory
+> nodes, it outputs "assertion failed at util/mem2node.c:99".
+> 
+> The output log doesn't give out reason for the failure and users have no
+> clue for how to fix it.  This patch changes to use explicit way for
+> warning: it tells user that detected no memory nodes and suggests to
+> enable CONFIG_MEMORY_HOTPLUG for kernel building.
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-Roman Gushchin <guro@fb.com> writes:
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-> On Fri, Oct 16, 2020 at 07:15:02PM +0200, Michal Koutny wrote:
->> On Fri, Oct 16, 2020 at 10:53:08AM -0400, Johannes Weiner <hannes@cmpxchg.org> wrote:
->> > The central try_charge() function charges recursively all the way up
->> > to and including the root.
->> Except for use_hiearchy=0 (which is the case here as Richard
->> wrote). The reparenting is hence somewhat incompatible with
->> new_parent.use_hiearchy=0 :-/
->> 
->> > We should clean this up one way or another: either charge the root or
->> > don't, but do it consistently.
->> I agree this'd be good to unify. One upside of excluding root memcg from
->> charging is that users are spared from the charging overhead when memcg
->> tree is not created.  (Actually, I thought that was the reason for this
->> exception.)
->
-> Yeah, I'm completely on the same page. Moving a process to the root memory
-> cgroup is currently a good way to estimate the memory cgroup overhead.
->
-> How about the patch below, which consistently avoids charging the root
-> memory cgroup? It seems like it doesn't add too many checks.
->
-> Thanks!
->
-> --
->
-> From f50ea74d8f118b9121da3754acdde630ddc060a7 Mon Sep 17 00:00:00 2001
-> From: Roman Gushchin <guro@fb.com>
-> Date: Mon, 19 Oct 2020 14:37:35 -0700
-> Subject: [PATCH RFC] mm: memcontrol: do not charge the root memory cgroup
->
-> Currently the root memory cgroup is never charged directly, but
-> if an ancestor cgroup is charged, the charge is propagated up to the
-> root memory cgroup. The root memory cgroup doesn't show the charge
-> to a user, neither it does allow to set any limits/protections.
-> So the information about the current charge is completely useless.
->
-> Avoiding to charge the root memory cgroup allows to:
-> 1) simplify the model and the code, so, hopefully, fewer bugs will
->    be introduced in the future;
-> 2) avoid unnecessary atomic operations, which are used to (un)charge
->    corresponding root page counters.
->
-> In the default hierarchy case or if use_hiearchy == true, it's very
-> straightforward: when the page counters tree is traversed to the root,
-> the root page counter (the one with parent == NULL), should be
-> skipped. To avoid multiple identical checks over the page counters
-> code, for_each_nonroot_ancestor() macro is introduced.
->
-> To handle the use_hierarchy == false case without adding custom
-> checks, let's make page counters of all non-root memory cgroup
-> direct ascendants of the corresponding root memory cgroup's page
-> counters. In this case for_each_nonroot_ancestor() will work correctly
-> as well.
->
-> Please, note, that cgroup v1 provides root level memory.usage_in_bytes.
-> However, it's not based on page counters (refer to mem_cgroup_usage()).
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+thanks,
+jirka
+
 > ---
->  mm/memcontrol.c   | 21 ++++++++++++++++-----
->  mm/page_counter.c | 21 ++++++++++++---------
->  2 files changed, 28 insertions(+), 14 deletions(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 2636f8bad908..34cac7522e74 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5339,17 +5339,28 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
->  		memcg->swappiness = mem_cgroup_swappiness(parent);
->  		memcg->oom_kill_disable = parent->oom_kill_disable;
->  	}
-> -	if (parent && parent->use_hierarchy) {
-> +	if (!parent) {
-> +		/* root memory cgroup */
-> +		page_counter_init(&memcg->memory, NULL);
-> +		page_counter_init(&memcg->swap, NULL);
-> +		page_counter_init(&memcg->kmem, NULL);
-> +		page_counter_init(&memcg->tcpmem, NULL);
-> +	} else if (parent->use_hierarchy) {
->  		memcg->use_hierarchy = true;
->  		page_counter_init(&memcg->memory, &parent->memory);
->  		page_counter_init(&memcg->swap, &parent->swap);
->  		page_counter_init(&memcg->kmem, &parent->kmem);
->  		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
->  	} else {
-> -		page_counter_init(&memcg->memory, NULL);
-> -		page_counter_init(&memcg->swap, NULL);
-> -		page_counter_init(&memcg->kmem, NULL);
-> -		page_counter_init(&memcg->tcpmem, NULL);
-> +		/*
-> +		 * If use_hierarchy == false, consider all page counters direct
-> +		 * descendants of the corresponding root level counters.
-> +		 */
-> +		page_counter_init(&memcg->memory, &root_mem_cgroup->memory);
-> +		page_counter_init(&memcg->swap, &root_mem_cgroup->swap);
-> +		page_counter_init(&memcg->kmem, &root_mem_cgroup->kmem);
-> +		page_counter_init(&memcg->tcpmem, &root_mem_cgroup->tcpmem);
-> +
->  		/*
->  		 * Deeper hierachy with use_hierarchy == false doesn't make
->  		 * much sense so let cgroup subsystem know about this
+>  tools/perf/util/mem2node.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/mem2node.c b/tools/perf/util/mem2node.c
+> index c84f5841c7ab..03a7d7b27737 100644
+> --- a/tools/perf/util/mem2node.c
+> +++ b/tools/perf/util/mem2node.c
+> @@ -96,7 +96,8 @@ int mem2node__init(struct mem2node *map, struct perf_env *env)
+>  
+>  	/* Cut unused entries, due to merging. */
+>  	tmp_entries = realloc(entries, sizeof(*entries) * j);
+> -	if (tmp_entries || WARN_ON_ONCE(j == 0))
+> +	if (tmp_entries ||
+> +	    WARN_ONCE(j == 0, "No memory nodes, is CONFIG_MEMORY_HOTPLUG enabled?\n"))
+>  		entries = tmp_entries;
+>  
+>  	for (i = 0; i < j; i++) {
+> -- 
+> 2.17.1
+> 
 
-Perhaps in this case, where the hierarchy is broken, objcgs should also
-be reparented directly to root? Otherwise it will still be possible to
-underflow the counter in a descendant of root which has use_hierarchy=0,
-but also has children.
-
-> diff --git a/mm/page_counter.c b/mm/page_counter.c
-> index b24a60b28bb0..8901b184b9d5 100644
-> --- a/mm/page_counter.c
-> +++ b/mm/page_counter.c
-> @@ -13,6 +13,9 @@
->  #include <linux/bug.h>
->  #include <asm/page.h>
->  
-> +#define for_each_nonroot_ancestor(c, counter) \
-> +	for ((c) = (counter); ((c) && ((c)->parent)); (c) = (c)->parent)
-> +
->  static void propagate_protected_usage(struct page_counter *c,
->  				      unsigned long usage)
->  {
-> @@ -20,9 +23,6 @@ static void propagate_protected_usage(struct page_counter *c,
->  	unsigned long low, min;
->  	long delta;
->  
-> -	if (!c->parent)
-> -		return;
-> -
->  	min = READ_ONCE(c->min);
->  	if (min || atomic_long_read(&c->min_usage)) {
->  		protected = min(usage, min);
-> @@ -68,7 +68,7 @@ void page_counter_charge(struct page_counter *counter, unsigned long nr_pages)
->  {
->  	struct page_counter *c;
->  
-> -	for (c = counter; c; c = c->parent) {
-> +	for_each_nonroot_ancestor(c, counter) {
->  		long new;
->  
->  		new = atomic_long_add_return(nr_pages, &c->usage);
-> @@ -97,7 +97,7 @@ bool page_counter_try_charge(struct page_counter *counter,
->  {
->  	struct page_counter *c;
->  
-> -	for (c = counter; c; c = c->parent) {
-> +	for_each_nonroot_ancestor(c, counter) {
->  		long new;
->  		/*
->  		 * Charge speculatively to avoid an expensive CAS.  If
-> @@ -137,8 +137,11 @@ bool page_counter_try_charge(struct page_counter *counter,
->  	return true;
->  
->  failed:
-> -	for (c = counter; c != *fail; c = c->parent)
-> +	for_each_nonroot_ancestor(c, counter) {
-> +		if (c == *fail)
-> +			break;
->  		page_counter_cancel(c, nr_pages);
-> +	}
->  
->  	return false;
->  }
-> @@ -152,7 +155,7 @@ void page_counter_uncharge(struct page_counter *counter, unsigned long nr_pages)
->  {
->  	struct page_counter *c;
->  
-> -	for (c = counter; c; c = c->parent)
-> +	for_each_nonroot_ancestor(c, counter)
->  		page_counter_cancel(c, nr_pages);
->  }
->  
-> @@ -211,7 +214,7 @@ void page_counter_set_min(struct page_counter *counter, unsigned long nr_pages)
->  
->  	WRITE_ONCE(counter->min, nr_pages);
->  
-> -	for (c = counter; c; c = c->parent)
-> +	for_each_nonroot_ancestor(c, counter)
->  		propagate_protected_usage(c, atomic_long_read(&c->usage));
->  }
->  
-> @@ -228,7 +231,7 @@ void page_counter_set_low(struct page_counter *counter, unsigned long nr_pages)
->  
->  	WRITE_ONCE(counter->low, nr_pages);
->  
-> -	for (c = counter; c; c = c->parent)
-> +	for_each_nonroot_ancestor(c, counter)
->  		propagate_protected_usage(c, atomic_long_read(&c->usage));
->  }
-
-
--- 
-Thank you,
-Richard.
