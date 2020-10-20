@@ -2,169 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6387A2935B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DAE72935B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405055AbgJTHZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
+        id S2405064AbgJTHZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405036AbgJTHZH (ORCPT
+        with ESMTP id S1731255AbgJTHZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:25:07 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB811C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:25:06 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id c21so886535ljn.13
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:25:06 -0700 (PDT)
+        Tue, 20 Oct 2020 03:25:39 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC0FC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:25:38 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t9so789110wrq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:25:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uFAymQB2VOJ4KqiBW6CIIX7WVz/95SQLzKrOC+AcK7M=;
-        b=UU9fv3TX1Idl0ZF5nRqwPtZqh2KrQur59xb/KO68AV619Hi683xOkZPqV0DprRVr9C
-         pcLP4tpdvcQwwnmg6vA1E4KUlU7e4Rlb8/cTOIOxTCgwcnYUlnUsmM50q0X22F+09m3g
-         lYA0iwCXt64o8BKSbCRA+tSSFePqB+k+zXChXsNCo51epWTnXUwj3swFHL/Po7/+2j6I
-         3p0fM71PSmHp7FSRXep/2DPiMfanrUXBLnoCebm4iyn2uwonBI8CLRSDhezsFpH11bSG
-         o57k44SMRg+fbmJGatt68vRgwCRnnlAAuViJSOZbK+3tgeDB8pH1EeMdCH4jETlJbwTm
-         /+Iw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IEFMnxSYcHzHuFUbo0zFEMoIVWyQpDgYm3OYOo8liu4=;
+        b=oqUSsJfYyMR0qdVYAT8DJfdmbIuV4dzSvreEQ0KrMuR5b+nRhm5SEIDw9ka7qJ5Jdy
+         4sohRzMrOun2jayvNDiRqP70lQwW9uyx/XpKl32DApxxj3KPr1wgE6W+SN9HMvM5ADNl
+         FBE1qtMLOvkt4trdPcdRFb9wMKbNtNPJ1Bi/v+FzvxpmzxDKtwBIEkd9hBPKGbiSDGJE
+         4QeVX0hqAnZgCBFUJwEte4QkJsUcLfya79daN9HAFWxSd9SswzOeXVEGWl09r3glKwYn
+         QQ2PxYHM9gDGa5JPdZytr9n5g0HRU8IEz7x0uiQ7ud58eH5Jp9gRY4c0ey3pHKW9A2sr
+         8TNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uFAymQB2VOJ4KqiBW6CIIX7WVz/95SQLzKrOC+AcK7M=;
-        b=mGfhKnhVqYAB5MoY1pT/q9wpMDdbk4mmhHVIUaqjm38J8+0XZeDKdJ02Cops/PTk1G
-         81pQbKO6JdUsbL5W3ETvH1IDdpG4aZyzkPQcuf5CGxi4Gf0gqv61SbzYM4JUm6rg/aR4
-         EJCfrfuesZdqEgAgkjURLZxwQHuk1dr9oa2Q/ysjIdIi+G1HFTz2NwcHpTRaRkJ+RlBk
-         bGja0olFt5xEMXt/g1J0CVoTNVTa6uulQ5ZjfYxnav3i8ysHKXplUNPnbGDnSI67N6nA
-         wWPUEWOGc+yx/2Z4eu6FEzxtvBHVfVmwqcEgKf1/AadmbVH6XH+vChsnIOoJi708TCSh
-         4oTg==
-X-Gm-Message-State: AOAM5314Rjk0oh+gxgg1mypYb2a3eNjLoTQzEO6lELWV8JQa5ImcmjNm
-        xE6P0yYYt4K8QkWjezNd4bvDR+xfwDQT/sdsnqqToQ==
-X-Google-Smtp-Source: ABdhPJzICliDiG4TEYZv/LnXNOTyuv/fLxshlpvP4WJfDe5kyAJCZ1j6frOcxjozui1tsGRvMnuCxXV16CPYd6o/To8=
-X-Received: by 2002:a2e:9a9a:: with SMTP id p26mr537984lji.4.1603178705428;
- Tue, 20 Oct 2020 00:25:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IEFMnxSYcHzHuFUbo0zFEMoIVWyQpDgYm3OYOo8liu4=;
+        b=e20WJJirH0i1kHQpk/OzBr0THAD7YrD1YinAwuETCUjbrjc4A2nGHjLjKtS1nKSPHO
+         ga+NptlgS75JU3V6OgEULsv6CgEldN0lvkRW5ZkkT066T+nH6jSriPDR+TBV5oT6DCEi
+         NNu8OJJXoHqsc9j3dKnqa2UwBes4Jb4J5ikly/AUtP5OIEPyMzIJjAfpFWTRWTYkvcXy
+         CLFDSh12dGp8fJSDgNFNTboPTrM0cFAeqXRTnBTzXPBxuQK/9FXibGr87sRxZGb9BCR7
+         JIRvHEp5/A5ulcmJmxrMJkhvqMXdsLvof80oRVNOamgsbtBuv5z7IGbsL/bSwM+dA6ZA
+         eCXw==
+X-Gm-Message-State: AOAM531B0owjNXQmmidvKIRDz1Y1jv2jTZhGKPK2P5FTm2c8yW4+gNxM
+        SybQTGrsW3blPYVhJbJ3Jjm5WA==
+X-Google-Smtp-Source: ABdhPJzU3Qj+3oNMENhW9UqVjVo/iWG3zTuPR0LYynPXfimx6ZaX6hftSWYCEzTdIywouToAgX68Qg==
+X-Received: by 2002:a5d:684d:: with SMTP id o13mr1945044wrw.302.1603178736579;
+        Tue, 20 Oct 2020 00:25:36 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:3c62:4f82:8f5f:de74])
+        by smtp.gmail.com with ESMTPSA id j5sm1487325wrx.88.2020.10.20.00.25.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 00:25:35 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     maz@kernel.org
+Cc:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
+        khilman@baylibre.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH 0/2] irq-meson-gpio: make it possible to build as a module
+Date:   Tue, 20 Oct 2020 09:25:30 +0200
+Message-Id: <20201020072532.949137-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1602673931-28782-1-git-send-email-sumit.garg@linaro.org>
- <1602673931-28782-3-git-send-email-sumit.garg@linaro.org> <294754db12f4cd8a8ec9329a44e1cf02@kernel.org>
-In-Reply-To: <294754db12f4cd8a8ec9329a44e1cf02@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 20 Oct 2020 12:54:53 +0530
-Message-ID: <CAFA6WYNAVsYTLtzHQvnJOTKG5E4iUo6FNTCQ8zHzg3_hm42kOA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/5] irqchip/gic-v3: Enable support for SGIs to act as NMIs
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        julien.thierry.kdev@gmail.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Oct 2020 at 17:37, Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2020-10-14 12:12, Sumit Garg wrote:
-> > Add support to handle SGIs as regular NMIs. As SGIs or IPIs defaults to
-> > a
->
-> There is nothing "regular" about NMIs.
+In order to reduce the kernel Image size on multi-platform distributions,
+make it possible to build the Amlogic GPIO IRQ controller as a module
+by switching it to a platform driver.
 
-Okay, will do s/regular/pseudo/.
+The second patch removes MESON_IRQ_GPIO selection from ARCH_MESON to allow
+building the driver as module.
 
-> Drop "or IPIs".
-> s/defaults/default/
->
+Neil Armstrong (2):
+  irqchip: irq-meson-gpio: make it possible to build as a module
+  arm64: meson: remove MESON_IRQ_GPIO selection
 
-Ack.
+ arch/arm64/Kconfig.platforms     |  1 -
+ drivers/irqchip/Kconfig          |  5 +-
+ drivers/irqchip/irq-meson-gpio.c | 89 ++++++++++++++++++++------------
+ 3 files changed, 59 insertions(+), 36 deletions(-)
 
-> > special flow handler: handle_percpu_devid_fasteoi_ipi(), so skip NMI
-> > handler update in case of SGIs.
-> >
-> > Also, enable NMI support prior to gic_smp_init() as allocation of SGIs
-> > as IRQs/NMIs happen as part of this routine.
-> >
-> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > ---
-> >  drivers/irqchip/irq-gic-v3.c | 13 +++++++++++--
-> >  1 file changed, 11 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/irqchip/irq-gic-v3.c
-> > b/drivers/irqchip/irq-gic-v3.c
-> > index 16fecc0..5efc865 100644
-> > --- a/drivers/irqchip/irq-gic-v3.c
-> > +++ b/drivers/irqchip/irq-gic-v3.c
-> > @@ -477,6 +477,11 @@ static int gic_irq_nmi_setup(struct irq_data *d)
-> >       if (WARN_ON(gic_irq(d) >= 8192))
-> >               return -EINVAL;
-> >
-> > +     if (get_intid_range(d) == SGI_RANGE) {
-> > +             gic_irq_set_prio(d, GICD_INT_NMI_PRI);
-> > +             return 0;
-> > +     }
-> > +
->
-> Please follow the existing control flow, or rework it to be organised by
-> range.
+-- 
+2.25.1
 
-Okay.
-
->
-> >       /* desc lock should already be held */
-> >       if (gic_irq_in_rdist(d)) {
-> >               u32 idx = gic_get_ppi_index(d);
-> > @@ -514,6 +519,11 @@ static void gic_irq_nmi_teardown(struct irq_data
-> > *d)
-> >       if (WARN_ON(gic_irq(d) >= 8192))
-> >               return;
-> >
-> > +     if (get_intid_range(d) == SGI_RANGE) {
-> > +             gic_irq_set_prio(d, GICD_INT_DEF_PRI);
-> > +             return;
-> > +     }
->
-> Same here.
-
-Okay.
-
--Sumit
-
->
-> > +
-> >       /* desc lock should already be held */
-> >       if (gic_irq_in_rdist(d)) {
-> >               u32 idx = gic_get_ppi_index(d);
-> > @@ -1708,6 +1718,7 @@ static int __init gic_init_bases(void __iomem
-> > *dist_base,
-> >
-> >       gic_dist_init();
-> >       gic_cpu_init();
-> > +     gic_enable_nmi_support();
-> >       gic_smp_init();
-> >       gic_cpu_pm_init();
-> >
-> > @@ -1719,8 +1730,6 @@ static int __init gic_init_bases(void __iomem
-> > *dist_base,
-> >                       gicv2m_init(handle, gic_data.domain);
-> >       }
-> >
-> > -     gic_enable_nmi_support();
-> > -
-> >       return 0;
-> >
-> >  out_free:
->
-> Thanks,
->
->          M.
-> --
-> Jazz is not dead. It just smells funny...
