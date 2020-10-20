@@ -2,365 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DB629357C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D931E293580
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404810AbgJTHFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:05:41 -0400
-Received: from mga06.intel.com ([134.134.136.31]:40953 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404797AbgJTHFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:05:40 -0400
-IronPort-SDR: lWZ77W6L5R04Ky2irkobN1tWi1t8hAFkqKrFngETJpjBu9x9ihjq4kwmjl1/T9Nq2cxqBHWeop
- Z8uvM3pnvBiA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="228799067"
-X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
-   d="scan'208";a="228799067"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 00:05:39 -0700
-IronPort-SDR: JkUDVMQJ6bqh4I8SPe0n+OqFe+nxcWZJZpFfRcoe/VH2aIaxmzALzjfqBJunetBu7Ey9hRME4X
- drvycVYv10gA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
-   d="scan'208";a="532938891"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 20 Oct 2020 00:05:39 -0700
-Received: from [10.226.38.26] (vramuthx-mobl1.gar.corp.intel.com [10.226.38.26])
-        by linux.intel.com (Postfix) with ESMTP id B91C4580107;
-        Tue, 20 Oct 2020 00:05:36 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v1 2/6] dt-bindings: spi: Convert cadence-quadspi.txt to
- cadence-quadspi.yaml
-To:     Rob Herring <robh@kernel.org>
-Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com, broonie@kernel.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
-        simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
-        richard@nod.at, cheol.yong.kim@intel.com, qi-ming.wu@intel.com
-References: <20201016093138.28871-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201016093138.28871-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201019213553.GA3630580@bogus>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <9c5688e2-6831-c31b-85fe-5bcb0bc68be7@linux.intel.com>
-Date:   Tue, 20 Oct 2020 15:05:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S2404833AbgJTHHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:07:10 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:57464 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404793AbgJTHHK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 03:07:10 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09K6vhij026952;
+        Tue, 20 Oct 2020 09:07:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=AbyBXYQMSY/j33fnHvZd5ZjDsC1/dkjqZFY4XRJQcKA=;
+ b=sRIpVF35CnK+MYwqZTM1q4+KLAXJi9U3gbBiy9WabEZHiSNGInFQj6WXMeKy/INmAogi
+ Z9r9lmOwVcRcILhVRtUOpJf1Vlt22DLV1DWuw4LUWyZPncIl1cFvF11PH/j2oFUoX3Kd
+ bdvjMfpruytB9/nS4z9FnTMG4dQ2AXO0se7AZ2OEEq8RNQxep5nF15mRcIC0K7zUe8jL
+ UdzJiaTOof+fxwH2C51tv34fw0noiB2+z6Rmr9wTcQwUU2DyImrNLHSztvKQMl5KgK6o
+ kI8E62XHWSgEuaKcBvH9Ew8LC8eNT+Kv1fy1Ij9p3FgZhncQaqnKV65Z1eIgNKCO4s3A Ig== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 347qgg15hh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 09:07:03 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 08B87100034;
+        Tue, 20 Oct 2020 09:07:03 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EA3182ADA19;
+        Tue, 20 Oct 2020 09:07:02 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.46) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
+ 2020 09:07:01 +0200
+Subject: Re: [PATCH v3 3/8] rpmsg: Move structure rpmsg_ns_msg to header file
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
+CC:     "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201019203438.501174-1-mathieu.poirier@linaro.org>
+ <20201019203438.501174-4-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <95a5b23a-a2f6-bb62-4bc3-28fc16afadb4@st.com>
+Date:   Tue, 20 Oct 2020 09:07:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201019213553.GA3630580@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201019203438.501174-4-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-20_03:2020-10-16,2020-10-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-Thank you for review comments...
 
-On 20/10/2020 5:35 am, Rob Herring wrote:
-> On Fri, Oct 16, 2020 at 05:31:34PM +0800, Ramuthevar,Vadivel MuruganX wrote:
->> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
->> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> ---
->>   .../devicetree/bindings/spi/cadence-quadspi.txt    |  67 ----------
->>   .../devicetree/bindings/spi/cadence-quadspi.yaml   | 148 +++++++++++++++++++++
->>   2 files changed, 148 insertions(+), 67 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.txt
->>   create mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt b/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
->> deleted file mode 100644
->> index 945be7d5b236..000000000000
->> --- a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
->> +++ /dev/null
->> @@ -1,67 +0,0 @@
->> -* Cadence Quad SPI controller
->> -
->> -Required properties:
->> -- compatible : should be one of the following:
->> -	Generic default - "cdns,qspi-nor".
->> -	For TI 66AK2G SoC - "ti,k2g-qspi", "cdns,qspi-nor".
->> -	For TI AM654 SoC  - "ti,am654-ospi", "cdns,qspi-nor".
->> -- reg : Contains two entries, each of which is a tuple consisting of a
->> -	physical address and length. The first entry is the address and
->> -	length of the controller register set. The second entry is the
->> -	address and length of the QSPI Controller data area.
->> -- interrupts : Unit interrupt specifier for the controller interrupt.
->> -- clocks : phandle to the Quad SPI clock.
->> -- cdns,fifo-depth : Size of the data FIFO in words.
->> -- cdns,fifo-width : Bus width of the data FIFO in bytes.
->> -- cdns,trigger-address : 32-bit indirect AHB trigger address.
->> -
->> -Optional properties:
->> -- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
->> -- cdns,rclk-en : Flag to indicate that QSPI return clock is used to latch
->> -  the read data rather than the QSPI clock. Make sure that QSPI return
->> -  clock is populated on the board before using this property.
->> -
->> -Optional subnodes:
->> -Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
->> -custom properties:
->> -- cdns,read-delay : Delay for read capture logic, in clock cycles
->> -- cdns,tshsl-ns : Delay in nanoseconds for the length that the master
->> -                  mode chip select outputs are de-asserted between
->> -		  transactions.
->> -- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being
->> -                  de-activated and the activation of another.
->> -- cdns,tchsh-ns : Delay in nanoseconds between last bit of current
->> -                  transaction and deasserting the device chip select
->> -		  (qspi_n_ss_out).
->> -- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
->> -                  and first bit transfer.
->> -- resets	: Must contain an entry for each entry in reset-names.
->> -		  See ../reset/reset.txt for details.
->> -- reset-names	: Must include either "qspi" and/or "qspi-ocp".
->> -
->> -Example:
->> -
->> -	qspi: spi@ff705000 {
->> -		compatible = "cdns,qspi-nor";
->> -		#address-cells = <1>;
->> -		#size-cells = <0>;
->> -		reg = <0xff705000 0x1000>,
->> -		      <0xffa00000 0x1000>;
->> -		interrupts = <0 151 4>;
->> -		clocks = <&qspi_clk>;
->> -		cdns,is-decoded-cs;
->> -		cdns,fifo-depth = <128>;
->> -		cdns,fifo-width = <4>;
->> -		cdns,trigger-address = <0x00000000>;
->> -		resets = <&rst QSPI_RESET>, <&rst QSPI_OCP_RESET>;
->> -		reset-names = "qspi", "qspi-ocp";
->> -
->> -		flash0: n25q00@0 {
->> -			...
->> -			cdns,read-delay = <4>;
->> -			cdns,tshsl-ns = <50>;
->> -			cdns,tsd2d-ns = <50>;
->> -			cdns,tchsh-ns = <4>;
->> -			cdns,tslch-ns = <4>;
->> -		};
->> -	};
->> diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
->> new file mode 100644
->> index 000000000000..6ed8122a1326
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
->> @@ -0,0 +1,148 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/spi/cadence-quadspi.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Cadence Quad SPI controller
->> +
->> +maintainers:
->> +  - Vadivel Murugan <vadivel.muruganx.ramuthevar@intel.com>
->> +
->> +allOf:
->> +  - $ref: "spi-controller.yaml#"
->> +
->> +properties:
->> +  compatible:
->> +    items:
->> +      - const: cdns,qspi-nor
->> +      - const: ti,k2g-qspi, cdns,qspi-nor
->> +      - const: ti,am654-ospi, cdns,qspi-nor
+On 10/19/20 10:34 PM, Mathieu Poirier wrote:
+> Move structure rpmsg_ns_msg to its own header file so that
+> it can be used by other entities.
 > 
-> This says that compatible must be:
-> 
-> compatible = "cdns,qspi-nor", "ti,k2g-qspi, cdns,qspi-nor", "ti,am654-ospi, cdns,qspi-nor";
-> 
-> You need 'oneOf' here.
-Noted, will update.
-> 
->> +
->> +    description:
->> +      Should be one of the above supported compatible strings.
-> 
-> Drop.
-okay
-> 
->> +      optional properties
->> +      "cdns,is-decoded-cs" - Flag to indicate whether decoder is used or not.
->> +      "cdns,rclk-en" - Flag to indicate that QSPI return clock is used to latch
->> +      the read data rather than the QSPI clock. Make sure that QSPI return
->> +      clock is populated on the board before using this property.
-> 
-> Needs to be actual schema properties.
-Noted.
-> 
->> +
->> +  reg:
->> +    maxItems: 2
->> +
->> +    description:
->> +      Contains two entries, each of which is a tuple consisting of a
->> +      physical address and length. The first entry is the address and
->> +      length of the controller register set. The second entry is the
->> +      address and length of the QSPI Controller data area.
-> 
-> reg:
->    items:
->      - description: the controller register set
->      - description: the controller data area
-Noted, Thank you for the pointer.
-> 
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +    description:
->> +      Unit interrupt specifier for the controller interrupt.
-> 
-> Drop description.
-will drop.
-> 
->> +
->> +  clocks:
->> +    maxItems: 1
->> +    description:
->> +      phandle to the Quad SPI clock.
-> 
-> Drop description.
-will drop.
-> 
->> +
->> +  cdns,fifo-depth:
->> +    description:
->> +      Size of the data FIFO in words.
->> +    allOf:
-> 
-> Don't need allOf here now.
-will remove , noted
-> 
->> +      - $ref: "/schemas/types.yaml#/definitions/uint32"
->> +      - enum: [ 128, 256 ]
->> +      - default: 128
->> +
->> +  cdns,fifo-width:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      Bus width of the data FIFO in bytes.
->> +    multipleOf: 4
-> 
-> minimum/maximum?
-it's fixed width, so will add default instead of minimum/maximum.
-> 
->> +
->> +  cdns,trigger-address:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      32-bit indirect AHB trigger address.
->> +
->> +  resets:
-> 
-> How many (maxItems)?
-maxItems : 2
-> 
->> +     description:
->> +       Must contain an entry for each entry in reset-names.
->> +       See ../reset/reset.txt for details.
-> 
-> Drop.
-Noted, will drop.
-> 
->> +
->> +  reset-names:
->> +    description:
->> +      Must include either "qspi" and/or "qspi-ocp".
-> 
-> Needs to be schema constraints.
-Okay, noted.
-> 
->> +
->> +# subnode's properties
->> +patternProperties:
->> +  "@[0-9a-f]+$":
->> +    type: object
->> +    description:
->> +      flash device uses the subnodes below defined properties.
->> +
->> +  cdns,read-delay:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      Delay for read capture logic, in clock cycles.
->> +
->> +  cdns,tshsl-ns:
->> +    description: |
->> +      Delay in nanoseconds for the length that the master mode chip select
->> +      outputs are de-asserted between transactions.
->> +
->> +  cdns,tsd2d-ns:
->> +    description: |
->> +      Delay in nanoseconds between one chip select being de-activated
->> +      and the activation of another.
->> +
->> +  cdns,tchsh-ns:
->> +    description: |
->> +      Delay in nanoseconds between last bit of current transaction and
->> +      deasserting the device chip select (qspi_n_ss_out).
->> +
->> +  cdns,tslch-ns:
->> +    description: |
->> +      Delay in nanoseconds between setting qspi_n_ss_out low and
->> +      first bit transfer.
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +  - clocks
->> +  - cdns,fifo-depth
->> +  - cdns,fifo-width
->> +  - cdns,trigger-address
->> +  - resets
->> +  - reset-names
-> 
-> additionalProperties: false
-Noted, thanks!
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Regards
-Vadivel
+Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+
+Thanks,
+Arnaud
+
+> ---
+>  drivers/rpmsg/virtio_rpmsg_bus.c | 32 +-----------------------
+>  include/linux/rpmsg_ns.h         | 42 ++++++++++++++++++++++++++++++++
+>  2 files changed, 43 insertions(+), 31 deletions(-)
+>  create mode 100644 include/linux/rpmsg_ns.h
 > 
->> +
->> +examples:
->> +  - |
->> +    qspi: spi@ff705000 {
->> +      compatible = "cadence,qspi";
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +      reg = <0xff705000 0x1000>,
->> +            <0xffa00000 0x1000>;
->> +      interrupts = <0 151 4>;
->> +      clocks = <&qspi_clk>;
->> +      cdns,fifo-depth = <128>;
->> +      cdns,fifo-width = <4>;
->> +      cdns,trigger-address = <0x00000000>;
->> +      resets = <&rst 0x1>, <&rst 0x2>;
->> +      reset-names = "qspi", "qspi-ocp";
->> +
->> +      flash@0 {
->> +              compatible = "jedec,spi-nor";
->> +              reg = <0x0>;
->> +              cdns,read-delay = <4>;
->> +              cdns,tshsl-ns = <50>;
->> +              cdns,tsd2d-ns = <50>;
->> +              cdns,tchsh-ns = <4>;
->> +              cdns,tslch-ns = <4>;
->> +     };
->> +
->> +    };
->> +
->> +...
->> -- 
->> 2.11.0
->>
+> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> index 8927bcad56fd..1f8154ee1e90 100644
+> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/of_device.h>
+>  #include <linux/rpmsg.h>
+>  #include <linux/rpmsg_byteorder.h>
+> +#include <linux/rpmsg_ns.h>
+>  #include <linux/scatterlist.h>
+>  #include <linux/slab.h>
+>  #include <linux/sched.h>
+> @@ -93,34 +94,6 @@ struct rpmsg_hdr {
+>  	u8 data[];
+>  } __packed;
+>  
+> -/**
+> - * struct rpmsg_ns_msg - dynamic name service announcement message
+> - * @name: name of remote service that is published
+> - * @addr: address of remote service that is published
+> - * @flags: indicates whether service is created or destroyed
+> - *
+> - * This message is sent across to publish a new service, or announce
+> - * about its removal. When we receive these messages, an appropriate
+> - * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
+> - * or ->remove() handler of the appropriate rpmsg driver will be invoked
+> - * (if/as-soon-as one is registered).
+> - */
+> -struct rpmsg_ns_msg {
+> -	char name[RPMSG_NAME_SIZE];
+> -	__rpmsg32 addr;
+> -	__rpmsg32 flags;
+> -} __packed;
+> -
+> -/**
+> - * enum rpmsg_ns_flags - dynamic name service announcement flags
+> - *
+> - * @RPMSG_NS_CREATE: a new remote service was just created
+> - * @RPMSG_NS_DESTROY: a known remote service was just destroyed
+> - */
+> -enum rpmsg_ns_flags {
+> -	RPMSG_NS_CREATE		= 0,
+> -	RPMSG_NS_DESTROY	= 1,
+> -};
+>  
+>  /**
+>   * @vrp: the remote processor this channel belongs to
+> @@ -162,9 +135,6 @@ struct virtio_rpmsg_channel {
+>   */
+>  #define RPMSG_RESERVED_ADDRESSES	(1024)
+>  
+> -/* Address 53 is reserved for advertising remote services */
+> -#define RPMSG_NS_ADDR			(53)
+> -
+>  static void virtio_rpmsg_destroy_ept(struct rpmsg_endpoint *ept);
+>  static int virtio_rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len);
+>  static int virtio_rpmsg_sendto(struct rpmsg_endpoint *ept, void *data, int len,
+> diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
+> new file mode 100644
+> index 000000000000..bb479f430080
+> --- /dev/null
+> +++ b/include/linux/rpmsg_ns.h
+> @@ -0,0 +1,42 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef _LINUX_RPMSG_NS_H
+> +#define _LINUX_RPMSG_NS_H
+> +
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/types.h>
+> +#include <linux/rpmsg_byteorder.h>
+> +
+> +/**
+> + * struct rpmsg_ns_msg - dynamic name service announcement message
+> + * @name: name of remote service that is published
+> + * @addr: address of remote service that is published
+> + * @flags: indicates whether service is created or destroyed
+> + *
+> + * This message is sent across to publish a new service, or announce
+> + * about its removal. When we receive these messages, an appropriate
+> + * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
+> + * or ->remove() handler of the appropriate rpmsg driver will be invoked
+> + * (if/as-soon-as one is registered).
+> + */
+> +struct rpmsg_ns_msg {
+> +	char name[RPMSG_NAME_SIZE];
+> +	__rpmsg32 addr;
+> +	__rpmsg32 flags;
+> +} __packed;
+> +
+> +/**
+> + * enum rpmsg_ns_flags - dynamic name service announcement flags
+> + *
+> + * @RPMSG_NS_CREATE: a new remote service was just created
+> + * @RPMSG_NS_DESTROY: a known remote service was just destroyed
+> + */
+> +enum rpmsg_ns_flags {
+> +	RPMSG_NS_CREATE		= 0,
+> +	RPMSG_NS_DESTROY	= 1,
+> +};
+> +
+> +/* Address 53 is reserved for advertising remote services */
+> +#define RPMSG_NS_ADDR			(53)
+> +
+> +#endif
+> 
