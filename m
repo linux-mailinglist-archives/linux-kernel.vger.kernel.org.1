@@ -2,110 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5826293A33
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13916293A2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 13:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393627AbgJTLmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 07:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393485AbgJTLmp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 07:42:45 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AD5C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 04:42:45 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id n2so364258ooo.8
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 04:42:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R+o8387W9/ZCn4LvR5U6YDN3Hh+8V5WW6tTBimBSuj0=;
-        b=H4if/7cPRAnox8YksApTgg0t73vJQHSJOOVU5OQ9YHMpaBkWSqFKfMKJIuEozOz6Iw
-         EA784/M765Tisiz8tfO+LZAFAgoIf/Qj060xxXjk1c7gM+UjG2ajoZ9BOsz3gtn/dm+f
-         F9tIxwT4zJSGligcusWCJUFCe68BT/mXcn8Wk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R+o8387W9/ZCn4LvR5U6YDN3Hh+8V5WW6tTBimBSuj0=;
-        b=aoA5SL7fp5JG54YDrVoijrEOT2JYKubOh6aE3MYrzz15kSeP9sGWYYN9fU+PXcjoum
-         LTV4pEcxUgItgSR5Hwd7CVexhSubu+F7geRUTE8o8y+7s79rEsW14K/ALWOBiRqadQLi
-         r8XlotThRX7lZZ3wTw1fZIFQGaS86bhQQGhGrvkQhRM5X3aktu/ux+tbDiOLSq+tbwN/
-         y606uoPwc5CpA5BHcOid8z3ljNrIy4zuNrHwnDQCW9ue2H5f/1YFRGVnDGcxq/vY8Ou8
-         FX0KpNuXM/XVHPmkabfQnIG+FXQ6+rUX8uGxDNAbEP+SIVZJbNeJ88rYE2RNOQ95aN3M
-         us+Q==
-X-Gm-Message-State: AOAM531eJ20yhQ/rpEsutOvp1JPS/aSmho6w0jzi0FGtGLwGNuv3yYu0
-        HI9AK0Ve2ye6BLrcwl8lc0JvAqEUTXLZuncW9+7vnA==
-X-Google-Smtp-Source: ABdhPJz5jqm21tJbsKMZknC7WQ/UHndcHNg9KDxpoJgyyMcRMTewgrvULjlJHVJu7koXNwvWpY6/fG5Eck9+CfXJUFA=
-X-Received: by 2002:a4a:b503:: with SMTP id r3mr1486690ooo.28.1603194164455;
- Tue, 20 Oct 2020 04:42:44 -0700 (PDT)
+        id S2393557AbgJTLly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 07:41:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393480AbgJTLlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 07:41:52 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D91DC2098B;
+        Tue, 20 Oct 2020 11:41:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603194112;
+        bh=5pDYbga30vyj+2CHLY7BNWCxMcu6q9Ooc20QO3VIUp4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gJxuZNlkyLEffynWWK+1+GqfOG4qkwrXdMcAIsTSTFJl5S/0f1Be5oIDj9aIqzVCi
+         AG2XAYKcLSCd+thJsmmneyoMKzKaqyhx6T3jPDP4O5hqsiGfejSun8XQnTq8RMyPra
+         VBk34202VqhTWX9gIbbWWM7RbNRldDkUjEAB1OK4=
+Date:   Tue, 20 Oct 2020 13:42:34 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joseph Jang <josephjang@google.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        jonglin@google.com, woodylin@google.com, markcheng@google.com
+Subject: Re: [PATCH] power: suspend: Replace dpm_watchdog by sleep timer
+Message-ID: <20201020114234.GA554297@kroah.com>
+References: <20201020095611.1763815-1-josephjang@google.com>
+ <20201020110810.GA194512@kroah.com>
+ <CAPaOXETgmHATQMM55C+2BKTQDyEnXYjknhWY7KB1jqKYynE-+g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201012020958.229288-1-robdclark@gmail.com> <20201012020958.229288-8-robdclark@gmail.com>
- <20201012143555.GA438822@phenom.ffwll.local> <CAF6AEGstGtBswUUiyHxT2cCm8NwZekDnMzD0J_pQH37GwS=LiA@mail.gmail.com>
- <20201020090729.qgqish5kqamhvatj@vireshk-i7> <CAKMK7uHAgVUPHOPxDdt3LeAWqokxfuzqjZj4qqFkoKxFbRbRrg@mail.gmail.com>
- <20201020112413.xbk2vow2kgjky3pb@vireshk-i7>
-In-Reply-To: <20201020112413.xbk2vow2kgjky3pb@vireshk-i7>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 20 Oct 2020 13:42:33 +0200
-Message-ID: <CAKMK7uHYBCoBvTGyMHGMrt2YRrB7RFt+maWNRjApgz621hu8JA@mail.gmail.com>
-Subject: Re: [PATCH v2 07/22] drm/msm: Do rpm get sooner in the submit path
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Menon, Nishanth" <nm@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPaOXETgmHATQMM55C+2BKTQDyEnXYjknhWY7KB1jqKYynE-+g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 1:24 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 20-10-20, 12:56, Daniel Vetter wrote:
-> > Yeah that's bad practice. Generally you shouldn't need to hold locks
-> > in setup/teardown code, since there's no other thread which can
-> > possible hold a reference to anything your touching anymore. Ofc
-> > excluding quickly grabbing/dropping a lock to insert/remove objects
-> > into lists and stuff.
-> >
-> > The other reason is that especially with anything related to sysfs or
-> > debugfs, the locking dependencies you're pulling in are enormous: vfs
-> > locks pull in mm locks (due to mmap) and at that point there's pretty
-> > much nothing left you're allowed to hold while acquiring such a lock.
-> > For simple drivers this is no issue, but for fancy drivers (like gpu
-> > drivers) which need to interact with core mm) this means your
-> > subsystem is a major pain to use.
-> >
-> > Usually the correct fix is to only hold your subsystem locks in
-> > setup/teardown when absolutely required, and fix any data
-> > inconsistency issues by reordering your setup/teardown code: When you
-> > register as the last step and unregister as the first step, there's no
-> > need for any additional locking. And hence no need to call debugfs
-> > functions while holding your subsystem locks.
-> >
-> > The catch phrase I use for this is "don't solve object lifetime issues
-> > with locking". Instead use refcounting and careful ordering in
-> > setup/teardown code.
->
-> This is exactly what I have done in the OPP core, the locks were taken
-> only when really necessary, though as we have seen now I have missed
-> that at a single place and that should be fixed as well. Will do that,
-> thanks.
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
 
-Excellent. If the fix is small enough can you push it into 5.10? That
-way drm/msm doesn't have to carry the temporary solution for 5.11 (the
-issue only pops up with the locking rework, which teaches lockdep a
-few more things about what's going on as a side effect).
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+A: No.
+Q: Should I include quotations after my reply?
+
+http://daringfireball.net/2007/07/on_top
+
+On Tue, Oct 20, 2020 at 07:11:56PM +0800, Joseph Jang wrote:
+> It is the same version, I just changed the commit message and removed
+> dpm_watchdog.
+
+That is not the "same version", you need to properly version your
+patches when you send them as the documentation states to.
+
+Otherwise your patches will just be ignored.
+
+Perhaps you might want to get some more experience getting patches
+accepted before trying to change core kernel code?  Try working in
+drivers/staging/* on code cleanups?
+
+good luck!
+
+greg k-h
