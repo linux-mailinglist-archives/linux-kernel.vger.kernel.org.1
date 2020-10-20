@@ -2,197 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06CEE293C60
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2261A293CC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406575AbgJTM7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:59:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54039 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406280AbgJTM7O (ORCPT
+        id S2406860AbgJTM7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:59:06 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:39016 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406824AbgJTM7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:59:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603198752;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=Qw1F19yZpnDVsqc+HFG0m1crxeHycCzf6HaecBeRc7s=;
-        b=X3Ugqf+dL8F6xthsh8xEzOI8D2eD/OUX0Xzl3L3mWSzE9x41MvtgwGVtqhRH8hKYtHR/Mx
-        w0khEiYo4T8Awvmcod6q7C2z4rBP+o7SCjbzhx32znE/1MHrGwE2uBW5Y9wtinBopIZ9VJ
-        nwVC6uYBCJrWPOE4Ax4QWQw/JlQF0sM=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-D5FNd5hqP6eTC_3jkycV2Q-1; Tue, 20 Oct 2020 08:59:09 -0400
-X-MC-Unique: D5FNd5hqP6eTC_3jkycV2Q-1
-Received: by mail-qv1-f72.google.com with SMTP id eh4so1233851qvb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 05:59:09 -0700 (PDT)
+        Tue, 20 Oct 2020 08:59:00 -0400
+Received: by mail-wm1-f68.google.com with SMTP id d3so1765064wma.4;
+        Tue, 20 Oct 2020 05:58:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Qw1F19yZpnDVsqc+HFG0m1crxeHycCzf6HaecBeRc7s=;
-        b=uPAabRFiEmN5lJTVdH+2pzIQeT9GqEsl0uqXyWdMimb6w17gtTf3feW5RolwK1HOdg
-         1glmEMU3B4PXPxJldNssW8bzD1ut2P5UzzQII+1T+19wXnkxVdZUSHiMpMpmdawRTEZe
-         tmzzKUb05n0Z+TkFcvmP0P3c+FpL/Hn5fH1LDAXhMdtNy0iO1SCSfbHKQ12shc8bUJG1
-         KKY+NkE1m/NW4CCjpd5pqq+UlOaAAuBU2+iHk5LIWI6RTza9JftMnqClPV9MN0XYwk0+
-         NdK3NpO2K2xlAtCLo/H+iDZT9LmJAvbJYKT22L4xgyb7X4UAMxfYW4w+Tb4iN/Rfyas8
-         vfQw==
-X-Gm-Message-State: AOAM530ZqG/dHUNZ/ZPimW85/L7VX8kcBm9SSSs6yvNwMqJsFx/8Rjgm
-        9fLLQWJlkuRfBkgKfvTi6mjtW5Z6XL/XFsgOwpGe8fSiL9YK2dkMsxEDPRR52SVBIy2phrQbi+F
-        YtjRmKNCNpYh95BSeJ1xOin/D
-X-Received: by 2002:ac8:1ab4:: with SMTP id x49mr2308820qtj.39.1603198749378;
-        Tue, 20 Oct 2020 05:59:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzSYG8X66Ps2XgHiXhXkimRB74ySBTCmyKFNySnJWuGJUoj6A5ZTEg0bhWDVOn/3M0lAtzsnA==
-X-Received: by 2002:ac8:1ab4:: with SMTP id x49mr2308752qtj.39.1603198748879;
-        Tue, 20 Oct 2020 05:59:08 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id a128sm698132qkc.92.2020.10.20.05.59.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g7yvvTboaHlvdbTqO2pCkQl4isMWIbbbVcGvTuQsmWM=;
+        b=bXsQzlcfTU7xRFkbh/j0FEZP1XJ0C8zhsR8Cr9zVkjJuK+Aa0eXKaQSs5Jb9IpbT/L
+         VENALt/394+vProQlNCo8XEcIj7FMkfoWaAsyrNirCmTrS7PBxI1030SSPPnYXf6DMdu
+         YmOBMcW0A+yr8yPpkDcd+2Pl242ZNBtIVf87KrR75ptBqKPxNtrkyU+wG49UJ8XDPGg/
+         ccp7+2cw3p5/kV/h38qfeP1mtAOD6LTy85Mn+Wm3Y72GOCv+b9/HHCm5puULV7jxgYnD
+         JsW/4sAwlsSeRyvF2W4wQmLFJg4N0IeE8jAIOG8qivnu0TjmlxaF3Nfjfe7fjtro9bER
+         xsyQ==
+X-Gm-Message-State: AOAM5331xNg/gtMS0niJWKabJh90aeyBAkHXx0Kt4k1gv49Sti8XSRda
+        B+9vN2M5SvCqKsfyWnwteSo=
+X-Google-Smtp-Source: ABdhPJwYYXGPrNe0h5uGAOlzxwO/tvQ90MAO6A661TiJ2Ns4XUOEBdYCNvFTKWxhEJMdZv1HTzhTzA==
+X-Received: by 2002:a1c:2b05:: with SMTP id r5mr2767516wmr.179.1603198736809;
+        Tue, 20 Oct 2020 05:58:56 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id u195sm2603572wmu.18.2020.10.20.05.58.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 05:59:07 -0700 (PDT)
-From:   trix@redhat.com
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        ath9k-devel@qca.qualcomm.com, johannes.berg@intel.com,
-        emmanuel.grumbach@intel.com, luciano.coelho@intel.com,
-        linuxwifi@intel.com, pkshih@realtek.com, lior2.cohen@intel.com,
-        sara.sharon@intel.com, shahar.s.matityahu@intel.com,
-        nathan.errera@intel.com, tova.mussai@intel.com,
-        shaul.triebitz@intel.com, john@phrozen.org,
-        Larry.Finger@lwfinger.net, christophe.jaillet@wanadoo.fr,
-        zhengbin13@huawei.com, yanaijie@huawei.com, gustavoars@kernel.org,
-        saurav.girepunje@gmail.com, joe@perches.com
-Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH v2] wireless: remove unneeded break
-Date:   Tue, 20 Oct 2020 05:58:41 -0700
-Message-Id: <20201020125841.26791-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Tue, 20 Oct 2020 05:58:55 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 14:58:52 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v5 1/4] dt-bindings: media: imx258: add bindings for
+ IMX258 sensor
+Message-ID: <20201020125852.GA128323@kozik-lap>
+References: <20201019170247.92002-1-krzk@kernel.org>
+ <20201020103833.GT13341@paasikivi.fi.intel.com>
+ <CAJKOXPdKHCQikYDLKDS2Y3NVyCjMYYH1pcxgaMoYgOK19vQCrQ@mail.gmail.com>
+ <20201020120058.GU13341@paasikivi.fi.intel.com>
+ <20201020122621.GA126891@kozik-lap>
+ <20201020124654.GX13341@paasikivi.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201020124654.GX13341@paasikivi.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Tue, Oct 20, 2020 at 03:46:54PM +0300, Sakari Ailus wrote:
+> On Tue, Oct 20, 2020 at 02:26:21PM +0200, Krzysztof Kozlowski wrote:
+> > On Tue, Oct 20, 2020 at 03:00:58PM +0300, Sakari Ailus wrote:
+> > > Hi Krzysztof,
+> > > 
+> > > On Tue, Oct 20, 2020 at 12:54:09PM +0200, Krzysztof Kozlowski wrote:
+> > > > On Tue, 20 Oct 2020 at 12:38, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+> > > > >
+> > > > > Hi Krzysztof,
+> > > > >
+> > > > > On Mon, Oct 19, 2020 at 07:02:44PM +0200, Krzysztof Kozlowski wrote:
+> > > > > > Add bindings for the IMX258 camera sensor.  The bindings, just like the
+> > > > > > driver, are quite limited, e.g. do not support regulator supplies.
+> > > > > >
+> > > > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > > > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > > > >
+> > > > > > ---
+> > > > > >
+> > > > > > Changes since v4:
+> > > > > > 1. Add clock-lanes,
+> > > > > > 2. Add Rob's review,
+> > > > > > 3. Add one more example and extend existing one,
+> > > > > > 4. Add common clock properties (assigned-*).
+> > > > >
+> > > > > Using the assigned-* clock properties may be workable for this driver at
+> > > > > the moment. But using these properties does not guarantee the external
+> > > > > clock frequency intended to be used on the hardware.
+> > > > 
+> > > > It guarantees it. The clock frequency will be as expected (except if
+> > > > someone misconfigures the DTS).
+> > > 
+> > > Is that guaranteed?
+> > > 
+> > > I'm not saying no to the approach, but if we change how camera sensor DT
+> > > bindings are defined, I'd prefer an informed decision is made on the
+> > > matter.
+> > > 
+> > > > 
+> > > > > Using other
+> > > > > frequencies *is not* expected to work. That applies to this driver as well.
+> > > > 
+> > > > This is the binding which is HW description. According to HW datasheet
+> > > > other frequencies from described range are accepted and expected to
+> > > > work.
+> > > 
+> > > As per datasheet, yes, different external clock frequencies can be used.
+> > > But the link frequency is still not independent of the external clock
+> > > frequency.
+> > > 
+> > > The properties of the sensor's PLL tree determines what can be achieved
+> > > given a certain external clock frequency. So picking a wrong external clock
+> > > frequency quite possibly means that none of the designated link frequencies
+> > > are available, rendering the sensor inoperable.
+> > 
+> > The driver then controls the HW and knows exactly what is needed. If
+> > link frequency (which has its own DT property) requires some clock
+> > frequency, the driver will configure the clock to that value. The same
+> 
+> Well it doesn't if it doesn't get that information from DT.
 
-A break is not needed if it is preceded by a return
+It will get it - via clk_get_rate(). You do not need DT for this.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
+> The frequency is usually a range, and looking at these bindings, it's from
+> 6 MHz to 27 MHz. That'd be a lot of frequencies for a driver to try.
 
-v2: remove intersil/p54/eeprom.c
+It does not have to try all of them. Assuming link frequency is fixed,
+just use any matching (or hard-coded) input clock frequency. Since the
+input clock frequency most likely will be set with assigned-clock-rates,
+there will be no job to do for the driver at all. Unless the driver
+wants to do something more, of course.
 
----
- drivers/net/wireless/ath/ath10k/htt_rx.c             | 1 -
- drivers/net/wireless/ath/ath6kl/testmode.c           | 1 -
- drivers/net/wireless/ath/ath9k/hw.c                  | 1 -
- drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c    | 2 --
- drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c  | 1 -
- drivers/net/wireless/realtek/rtlwifi/rtl8723ae/hw.c  | 1 -
- drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c | 3 ---
- 7 files changed, 10 deletions(-)
+> 
+> > going other direction. Driver has the knowledge about both its input
+> > clock and link frequency, therefore it can make the best decision.
+> 
+> Again you're assuming a particular driver implementation.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 5c1af2021883..9c4e6cf2137a 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -3878,7 +3878,6 @@ bool ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		return ath10k_htt_rx_proc_rx_frag_ind(htt,
- 						      &resp->rx_frag_ind,
- 						      skb);
--		break;
- 	}
- 	case HTT_T2H_MSG_TYPE_TEST:
- 		break;
-diff --git a/drivers/net/wireless/ath/ath6kl/testmode.c b/drivers/net/wireless/ath/ath6kl/testmode.c
-index f3906dbe5495..89c7c4e25169 100644
---- a/drivers/net/wireless/ath/ath6kl/testmode.c
-+++ b/drivers/net/wireless/ath/ath6kl/testmode.c
-@@ -94,7 +94,6 @@ int ath6kl_tm_cmd(struct wiphy *wiphy, struct wireless_dev *wdev,
- 
- 		return 0;
- 
--		break;
- 	case ATH6KL_TM_CMD_RX_REPORT:
- 	default:
- 		return -EOPNOTSUPP;
-diff --git a/drivers/net/wireless/ath/ath9k/hw.c b/drivers/net/wireless/ath/ath9k/hw.c
-index 6609ce122e6e..b66eeb577272 100644
---- a/drivers/net/wireless/ath/ath9k/hw.c
-+++ b/drivers/net/wireless/ath/ath9k/hw.c
-@@ -2308,7 +2308,6 @@ void ath9k_hw_beaconinit(struct ath_hw *ah, u32 next_beacon, u32 beacon_period)
- 		ath_dbg(ath9k_hw_common(ah), BEACON,
- 			"%s: unsupported opmode: %d\n", __func__, ah->opmode);
- 		return;
--		break;
- 	}
- 
- 	REG_WRITE(ah, AR_BEACON_PERIOD, beacon_period);
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-index cbdebefb854a..8698ca4d30de 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-@@ -1202,13 +1202,11 @@ static int iwl_mvm_mac_ctx_send(struct iwl_mvm *mvm, struct ieee80211_vif *vif,
- 		return iwl_mvm_mac_ctxt_cmd_sta(mvm, vif, action,
- 						force_assoc_off,
- 						bssid_override);
--		break;
- 	case NL80211_IFTYPE_AP:
- 		if (!vif->p2p)
- 			return iwl_mvm_mac_ctxt_cmd_ap(mvm, vif, action);
- 		else
- 			return iwl_mvm_mac_ctxt_cmd_go(mvm, vif, action);
--		break;
- 	case NL80211_IFTYPE_MONITOR:
- 		return iwl_mvm_mac_ctxt_cmd_listener(mvm, vif, action);
- 	case NL80211_IFTYPE_P2P_DEVICE:
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c
-index 63f9ea21962f..bd9160b166c5 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c
-@@ -1226,7 +1226,6 @@ static int _rtl88ee_set_media_status(struct ieee80211_hw *hw,
- 	default:
- 		pr_err("Network type %d not support!\n", type);
- 		return 1;
--		break;
- 	}
- 
- 	/* MSR_INFRA == Link in infrastructure network;
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/hw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/hw.c
-index a36dc6e726d2..f8a1de6e9849 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/hw.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8723ae/hw.c
-@@ -1132,7 +1132,6 @@ static int _rtl8723e_set_media_status(struct ieee80211_hw *hw,
- 	default:
- 		pr_err("Network type %d not support!\n", type);
- 		return 1;
--		break;
- 	}
- 
- 	/* MSR_INFRA == Link in infrastructure network;
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
-index f41a7643b9c4..225b8cd44f23 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
-@@ -2085,12 +2085,10 @@ bool rtl8812ae_phy_config_rf_with_headerfile(struct ieee80211_hw *hw,
- 		return __rtl8821ae_phy_config_with_headerfile(hw,
- 				radioa_array_table_a, radioa_arraylen_a,
- 				_rtl8821ae_config_rf_radio_a);
--		break;
- 	case RF90_PATH_B:
- 		return __rtl8821ae_phy_config_with_headerfile(hw,
- 				radioa_array_table_b, radioa_arraylen_b,
- 				_rtl8821ae_config_rf_radio_b);
--		break;
- 	case RF90_PATH_C:
- 	case RF90_PATH_D:
- 		pr_err("switch case %#x not processed\n", rfpath);
-@@ -2116,7 +2114,6 @@ bool rtl8821ae_phy_config_rf_with_headerfile(struct ieee80211_hw *hw,
- 		return __rtl8821ae_phy_config_with_headerfile(hw,
- 			radioa_array_table, radioa_arraylen,
- 			_rtl8821ae_config_rf_radio_a);
--		break;
- 
- 	case RF90_PATH_B:
- 	case RF90_PATH_C:
--- 
-2.18.1
+Actually not, I am talking about bindings as far away from the driver
+implementation as possible.  This is why some specific frequency *is
+not* part of the bindings.
+
+> 
+> Typically only a few frequencies are really available on platforms, so a in
+> practice a driver would not be able to get any requested frequency. I
+> wouldn't start hard-coding every possible frequency to camera sensor
+> drivers
+
+If the driver cannot get requested frequency which it apparently
+requires, there is nothing more to do. It's broken HW implementation.
+The input clock must be matching requirements, regardless of what
+property you put in DT.  You can add "clock-frequency" property, you can
+even add "really-i-require-clock-frequency" but if the real HW input
+clock does not have, it won't work.
+
+IOW, adding "clock-frequency" property does not change the reality - the
+board (HW) must provide given frequency so the entire system works.
+
+> 
+> > > > > This, instead of the clock-frequency property, effectively removes the
+> > > > > ability to set the correct frequency from the driver, at least with current
+> > > > > set of the used APIs.
+> > > > 
+> > > > It seems you confuse DT bindings with some specific driver
+> > > > implementation. Bindings do not describe the driver behavior but the
+> > > > HW. The ability to set the correct frequency from the driver is not
+> > > > removed. It was never part of the bindings and never should. It is
+> > > > part of the driver.
+> > > > 
+> > > > >
+> > > > > I suppose you could add a function to set the assigned clock frequency and
+> > > > > keep it, just as clk_set_rate_exclusive does?
+> > 
+> > I did not reply to this comment, so let me know. Of course, one could
+> > add such functions. It's not a job for DT bindings, though.
+> 
+> I'm not suggesting to add it to DT binding patch. What I'm saying that with
+> this approach is looks like it may well be needed.
+
+New properties can always be added to DT. However existing properties
+cannot be removed. Their meaning or values cannot be changed.
+
+Best regards,
+Krzysztof
 
