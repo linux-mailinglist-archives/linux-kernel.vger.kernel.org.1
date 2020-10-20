@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171262943EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D091E2943EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409465AbgJTU3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 16:29:15 -0400
-Received: from mga18.intel.com ([134.134.136.126]:63437 "EHLO mga18.intel.com"
+        id S2409471AbgJTUbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 16:31:36 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:18547 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729043AbgJTU3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:29:15 -0400
-IronPort-SDR: fEUDugv1nyYhPtYS6tusqzkj92W8+9ImKPJb1yhwCDUQE1S8jNenRLd9jIGd47SNgp1SXziBWF
- ivPCVYx9N6CA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="155058814"
-X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
-   d="scan'208";a="155058814"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 13:29:14 -0700
-IronPort-SDR: 8UlM6QoB4Cha/TQLxBcu+GBUwJpDUcClXtoLykjmGNpdtIBzSvsS1eU2RYPL6M7vH76YujtI7q
- c+loA2epoNqg==
-X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
-   d="scan'208";a="392498035"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 13:29:14 -0700
-Date:   Tue, 20 Oct 2020 13:29:13 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 02/15] perf report: output trace file name in raw
- trace dump
-Message-ID: <20201020202913.GN466880@tassilo.jf.intel.com>
-References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
- <87e2050b-37e6-8ed8-e1e0-cfa074b030fa@linux.intel.com>
- <20201012160144.GA466880@tassilo.jf.intel.com>
- <42d5395a-71f5-63e1-f7c9-fd76e2b8bee4@linux.intel.com>
- <a1c21077-0383-aa29-cc79-a8921916c63f@linux.intel.com>
- <19dd0fa0-c236-6042-8ba6-48b4696e66bb@linux.intel.com>
+        id S1729052AbgJTUbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 16:31:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603225895; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=nPdQtAcetVPn/AzI0CYvXfG1JS+4MG9ZEa1ajIhuL6k=; b=lkyD0joec86VYhYjBGucHRskTkkRsBTOeT21X3a5cR2OQhFe/qfnCaMMtU/lCEn0WZ4YWQT5
+ F4hjJWwJytItqbdy2rX33pv1bndnDkXhkMD4FHn6ZZvTlhJZ0RRptI+BsU/R10k5C2Vphkol
+ I/LoRxIl3eK924L5PnmatHBWe8g=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f8f48c50764f13b00e96361 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Oct 2020 20:29:57
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A26CEC433F1; Tue, 20 Oct 2020 20:29:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9CDC9C433C9;
+        Tue, 20 Oct 2020 20:29:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9CDC9C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
+        bbhatt@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeffrey Hugo <jhugo@codeaurora.org>
+Subject: [PATCH] bus: mhi: core: fix potential operator-precedence with BHI macros
+Date:   Tue, 20 Oct 2020 14:29:45 -0600
+Message-Id: <1603225785-21368-1-git-send-email-jhugo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <19dd0fa0-c236-6042-8ba6-48b4696e66bb@linux.intel.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > After brief evaluation it still doesn't look easy. The simplest thing
-> > I could imagine is to probably combine file_path and file_offset at a
-> > struct object on stack and then pass the object by the reference along
-> > function calls. I expect it will roughly cause the same amount of changes
-> > in the code and saves one argument (GP register). It is not that much
-> > but still. However I don't see issues with passing even 6 args on stack.
-> 
-> Sorry - "passing 6 args to a function call"
+The BHI_MSMHWID and BHI_OEMPKHASH macros take a value 'n' which is
+a BHI register index. If 'n' is an expression rather than a simple
+value, there can be an operator precedence issue which can result
+in the incorrect calculation of the register offset. Adding
+parentheses around the macro parameter can prevent such issues.
 
-Ah it wasn't about code efficiency, just maintainability. Function calls
-with too many arguments are generally hard to maintain, and typically
-at some point have to be refactored anyways because they tend to grow
-even more over time.
+Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+---
+ drivers/bus/mhi/core/internal.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-But if it's too difficult, ok.
+diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+index 7989269..78e4e84 100644
+--- a/drivers/bus/mhi/core/internal.h
++++ b/drivers/bus/mhi/core/internal.h
+@@ -153,8 +153,8 @@ extern struct bus_type mhi_bus_type;
+ #define BHI_SERIALNU (0x40)
+ #define BHI_SBLANTIROLLVER (0x44)
+ #define BHI_NUMSEG (0x48)
+-#define BHI_MSMHWID(n) (0x4C + (0x4 * n))
+-#define BHI_OEMPKHASH(n) (0x64 + (0x4 * n))
++#define BHI_MSMHWID(n) (0x4C + (0x4 * (n)))
++#define BHI_OEMPKHASH(n) (0x64 + (0x4 * (n)))
+ #define BHI_RSVD5 (0xC4)
+ #define BHI_STATUS_MASK (0xC0000000)
+ #define BHI_STATUS_SHIFT (30)
+-- 
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
 
--Andi
