@@ -2,76 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D8D293908
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8689C29390B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387536AbgJTKTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733223AbgJTKTH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:19:07 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE24C061755;
-        Tue, 20 Oct 2020 03:19:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=9ZPtKI/+gVmDv9pNDlYR9rvIc/C7+2OLTkYM1hkB0jg=; b=MHeVr4qRbj08Q2ic+CNHre6H0
-        Zc5QwHxIDyEFt627qQX7Ze7LWYp1GBgBKiJalmZFM01pevnN4pK49J4sqeL5C5Ec1w5lgsrZmplUE
-        N4Tnr0jhjUwg8H0vR5m4izq/KfLp2MZbAxyu/GHhM1HKpFWMRER2EDK98VaQTXpsAGI86fGmk6xPq
-        TP0mGWtXD7vCEVF7/EczvdRkmqDLJ+qnXGMgJrNwDQJGciAvy18Vg03YigVVDoHPRm6j8yw9D7bCn
-        e8pcgy+yoKrsNW/p5QJ/LkpsnY0RxRLlrgrt01dE26/a0VTJGRTRom3dXAIfS8U+BhzjMNDMKacFp
-        9t2zDsiAA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48622)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kUojJ-000785-Go; Tue, 20 Oct 2020 11:18:57 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kUojD-0005Ch-Qb; Tue, 20 Oct 2020 11:18:51 +0100
-Date:   Tue, 20 Oct 2020 11:18:51 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] net: dsa: mv88e6xxx: Support serdes ports on
- MV88E6123/6131
-Message-ID: <20201020101851.GC1551@shell.armlinux.org.uk>
-References: <20201020034558.19438-1-chris.packham@alliedtelesis.co.nz>
- <20201020034558.19438-4-chris.packham@alliedtelesis.co.nz>
+        id S2405052AbgJTKT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 06:19:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:49230 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387544AbgJTKT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 06:19:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31D99101E;
+        Tue, 20 Oct 2020 03:19:27 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 15D843F66E;
+        Tue, 20 Oct 2020 03:19:25 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 11:19:23 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, robh@kernel.org, bhelgaas@google.com,
+        gustavo.pimentel@synopsys.com
+Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
+ dw_child_pcie_ops
+Message-ID: <20201020101923.GB21814@e121166-lin.cambridge.arm.com>
+References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
+ <20201015224738.GA24466@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201020034558.19438-4-chris.packham@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20201015224738.GA24466@bjorn-Precision-5520>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 04:45:58PM +1300, Chris Packham wrote:
-> +void mv88e6123_serdes_get_regs(struct mv88e6xxx_chip *chip, int port, void *_p)
-> +{
-> +	u16 *p = _p;
-> +	u16 reg;
-> +	int i;
-> +
-> +	if (mv88e6xxx_serdes_get_lane(chip, port) == 0)
-> +		return;
-> +
-> +	for (i = 0; i < 26; i++) {
-> +		mv88e6xxx_phy_read(chip, port, i, &reg);
+On Thu, Oct 15, 2020 at 05:47:38PM -0500, Bjorn Helgaas wrote:
+> On Wed, Sep 16, 2020 at 01:41:30PM +0800, Zhiqiang Hou wrote:
+> > From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> > 
+> > On NXP Layerscape platforms, it results in SError in the
+> > enumeration of the PCIe controller, which is not connecting
+> > with an Endpoint device. And it doesn't make sense to
+> > enumerate the Endpoints when the PCIe link is down. So this
+> > patch added the link up check to avoid to fire configuration
+> > transactions on link down bus.
+> 
+> Lorenzo already applied this, but a couple questions:
+> 
+> You call out NXP Layerscape specifically, but doesn't this affect
+> other DWC-based platforms, too?  You later mentioned imx6, Kishon
+> mentioned dra7xx, Michael mentioned ls1028a, Naresh mentioned ls2088
+> (probably both the same as your "NXP Layerscape").
+> 
+> The backtrace below contains a bunch of irrelevant info.  The
+> timestamps are pointless.  The backtrace past
+> pci_scan_single_device+0x80/0x100 or so really doesn't add anything
+> either.
+> 
+> It'd be nice to have a comment in the code because the code *looks*
+> wrong and racy.  Without a hint, everybody who sees it will have to
+> dig through the history to see why we tolerate the race.
 
-Shouldn't this deal with a failed read in some way, rather than just
-assigning the last or possibly uninitialised value to p[i] ?
+I have updated the commit log the best I could with the information
+I have, pci/dwc branch. Please all have a look and report any issue
+you may find.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+This link-up check is nonetheless broken and we should find a long
+term solution that is not relying on these shaky fixes.
+
+Lorenzo
+
+> > [    0.807773] SError Interrupt on CPU2, code 0xbf000002 -- SError
+> > [    0.807775] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
+> > [    0.807776] Hardware name: LS1046A RDB Board (DT)
+> > [    0.807777] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
+> > [    0.807778] pc : pci_generic_config_read+0x3c/0xe0
+> > [    0.807778] lr : pci_generic_config_read+0x24/0xe0
+> > [    0.807779] sp : ffff80001003b7b0
+> > [    0.807780] x29: ffff80001003b7b0 x28: ffff80001003ba74
+> > [    0.807782] x27: ffff000971d96800 x26: ffff00096e77e0a8
+> > [    0.807784] x25: ffff80001003b874 x24: ffff80001003b924
+> > [    0.807786] x23: 0000000000000004 x22: 0000000000000000
+> > [    0.807788] x21: 0000000000000000 x20: ffff80001003b874
+> > [    0.807790] x19: 0000000000000004 x18: ffffffffffffffff
+> > [    0.807791] x17: 00000000000000c0 x16: fffffe0025981840
+> > [    0.807793] x15: ffffb94c75b69948 x14: 62203a383634203a
+> > [    0.807795] x13: 666e6f635f726568 x12: 202c31203d207265
+> > [    0.807797] x11: 626d756e3e2d7375 x10: 656877202c307830
+> > [    0.807799] x9 : 203d206e66766564 x8 : 0000000000000908
+> > [    0.807801] x7 : 0000000000000908 x6 : ffff800010900000
+> > [    0.807802] x5 : ffff00096e77e080 x4 : 0000000000000000
+> > [    0.807804] x3 : 0000000000000003 x2 : 84fa3440ff7e7000
+> > [    0.807806] x1 : 0000000000000000 x0 : ffff800010034000
+> > [    0.807808] Kernel panic - not syncing: Asynchronous SError Interrupt
+> > [    0.807809] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
+> > [    0.807810] Hardware name: LS1046A RDB Board (DT)
+> > [    0.807811] Call trace:
+> > [    0.807812]  dump_backtrace+0x0/0x1c0
+> > [    0.807813]  show_stack+0x18/0x28
+> > [    0.807814]  dump_stack+0xd8/0x134
+> > [    0.807814]  panic+0x180/0x398
+> > [    0.807815]  add_taint+0x0/0xb0
+> > [    0.807816]  arm64_serror_panic+0x78/0x88
+> > [    0.807817]  do_serror+0x68/0x180
+> > [    0.807818]  el1_error+0x84/0x100
+> > [    0.807818]  pci_generic_config_read+0x3c/0xe0
+> > [    0.807819]  dw_pcie_rd_other_conf+0x78/0x110
+> > [    0.807820]  pci_bus_read_config_dword+0x88/0xe8
+> > [    0.807821]  pci_bus_generic_read_dev_vendor_id+0x30/0x1b0
+> > [    0.807822]  pci_bus_read_dev_vendor_id+0x4c/0x78
+> > [    0.807823]  pci_scan_single_device+0x80/0x100
+> > [    0.807824]  pci_scan_slot+0x38/0x130
+> > [    0.807825]  pci_scan_child_bus_extend+0x54/0x2a0
+> > [    0.807826]  pci_scan_child_bus+0x14/0x20
+> > [    0.807827]  pci_scan_bridge_extend+0x230/0x570
+> > [    0.807828]  pci_scan_child_bus_extend+0x134/0x2a0
+> > [    0.807829]  pci_scan_root_bus_bridge+0x64/0xf0
+> > [    0.807829]  pci_host_probe+0x18/0xc8
+> > [    0.807830]  dw_pcie_host_init+0x220/0x378
+> > [    0.807831]  ls_pcie_probe+0x104/0x140
+> > [    0.807832]  platform_drv_probe+0x54/0xa8
+> > [    0.807833]  really_probe+0x118/0x3e0
+> > [    0.807834]  driver_probe_device+0x5c/0xc0
+> > [    0.807835]  device_driver_attach+0x74/0x80
+> > [    0.807835]  __driver_attach+0x8c/0xd8
+> > [    0.807836]  bus_for_each_dev+0x7c/0xd8
+> > [    0.807837]  driver_attach+0x24/0x30
+> > [    0.807838]  bus_add_driver+0x154/0x200
+> > [    0.807839]  driver_register+0x64/0x120
+> > [    0.807839]  __platform_driver_probe+0x7c/0x148
+> > [    0.807840]  ls_pcie_driver_init+0x24/0x30
+> > [    0.807841]  do_one_initcall+0x60/0x1d8
+> > [    0.807842]  kernel_init_freeable+0x1f4/0x24c
+> > [    0.807843]  kernel_init+0x14/0x118
+> > [    0.807843]  ret_from_fork+0x10/0x34
+> > [    0.807854] SMP: stopping secondary CPUs
+> > [    0.807855] Kernel Offset: 0x394c64080000 from 0xffff800010000000
+> > [    0.807856] PHYS_OFFSET: 0xffff8bfd40000000
+> > [    0.807856] CPU features: 0x0240022,21806000
+> > [    0.807857] Memory Limit: none
+> > 
+> > Fixes: c2b0c098fbd1 ("PCI: dwc: Use generic config accessors")
+> > Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> > ---
+> >  drivers/pci/controller/dwc/pcie-designware-host.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > index c01c9d2fb3f9..e82b518430c5 100644
+> > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > @@ -442,6 +442,9 @@ static void __iomem *dw_pcie_other_conf_map_bus(struct pci_bus *bus,
+> >  	struct pcie_port *pp = bus->sysdata;
+> >  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> >  
+> > +	if (!dw_pcie_link_up(pci))
+> > +		return NULL;
+> > +
+> >  	busdev = PCIE_ATU_BUS(bus->number) | PCIE_ATU_DEV(PCI_SLOT(devfn)) |
+> >  		 PCIE_ATU_FUNC(PCI_FUNC(devfn));
+> >  
+> > -- 
+> > 2.17.1
+> > 
