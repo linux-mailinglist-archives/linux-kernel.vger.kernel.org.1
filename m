@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16002933BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 05:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AB22933CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 06:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391329AbgJTDwt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Oct 2020 23:52:49 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:40042 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391321AbgJTDwt (ORCPT
+        id S2389778AbgJTEKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 00:10:48 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:52500 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728339AbgJTEKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 23:52:49 -0400
-Received: by mail-lf1-f68.google.com with SMTP id a9so321401lfc.7;
-        Mon, 19 Oct 2020 20:52:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QSKcWCkaOciBpr52CFiHddOWbs/SRgpSc2aqm5gms6Y=;
-        b=poYJzxodG2eX4Awb2Gph+GfF8idgxItMAw8PHRI7jeuUOIj3i+N1vrzTB9mWv4c385
-         zjfyb3YJUrkadtE2pukTGe/1sHUqqmLYLRF9HVqGSPAnvEQU39d1Hll28Sg5HBwFvVjX
-         82aSkZXBmykksFyvZOQ5XAqDRG0PfP+6Iy/E1NtlzXmS35FrPPQuZBCHTzGOOTTyH7An
-         rQwq/k+lFqiiNYHwePXQKcTaXcuKxYF0pBpgPmJWSa6impu4bxXjPc1dL4heF8JboXcy
-         0z4YYYB1CH5Q1wltVSm+hInJsKY9tuHUde3I8EPw8+6ekGvxCJQlKH1P4VsFxJZIBR8F
-         M+Ag==
-X-Gm-Message-State: AOAM531Ssj5LCNpz8NIMRVuzX/YAMSsqsZh4K0eZ0EDmANsqcb4Ski2z
-        +NGtrJDy69s/xo2Zh0R/p4qBpCkMXOKB7A==
-X-Google-Smtp-Source: ABdhPJz3Q21Wwn0jy/k4+bMme03BagKlnkEBrWvKmoeDAb30gmiertlJS74UBreq7SbXez2TdmPRSQ==
-X-Received: by 2002:a19:838e:: with SMTP id f136mr240994lfd.16.1603165966339;
-        Mon, 19 Oct 2020 20:52:46 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id r80sm83454lff.284.2020.10.19.20.52.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 20:52:46 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id d24so320342lfa.8;
-        Mon, 19 Oct 2020 20:52:45 -0700 (PDT)
-X-Received: by 2002:a19:c88c:: with SMTP id y134mr230506lff.283.1603165965810;
- Mon, 19 Oct 2020 20:52:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201015154740.20825-1-al.kochet@gmail.com> <20201019082129.myxpxla5xwoqwldo@gilmour.lan>
- <4EC91DD5-5611-4B48-B6FC-00690B400584@gmail.com>
-In-Reply-To: <4EC91DD5-5611-4B48-B6FC-00690B400584@gmail.com>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Tue, 20 Oct 2020 11:52:34 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64ruUf7Lv-cHZTRPs-U-gOboGtTwOB3+qtxZTFyLVFLjg@mail.gmail.com>
-Message-ID: <CAGb2v64ruUf7Lv-cHZTRPs-U-gOboGtTwOB3+qtxZTFyLVFLjg@mail.gmail.com>
-Subject: Re: [PATCH] spi: spi-sun6i: implement DMA-based transfer mode
-To:     Alexander Kochetkov <al.kochet@gmail.com>
-Cc:     Maxime Ripard <maxime@cerno.tech>, Mark Brown <broonie@kernel.org>,
-        linux-spi@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        Tue, 20 Oct 2020 00:10:47 -0400
+X-UUID: 3e2d6fcab1294f4da06361514eed91eb-20201020
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=zp5jLGm63aQhYRoDx4NhNAPU064r5IJUGVEyCltzIJE=;
+        b=kBvbM70DagvRjbW3mi7d0FSxDlN41jckXJgaVjydMg/NC46nnZNb9WLl3zsddtr9APmd9TsLj1puwWXnkCOwCRwodsYpcgpFg7DiqgVM18Xw+3TVp8eMl644PKOxyjXLV+RjlipXHvv9BlA9FREJqujStiC9R3PoivXB8bFeoFs=;
+X-UUID: 3e2d6fcab1294f4da06361514eed91eb-20201020
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1822166561; Tue, 20 Oct 2020 12:00:22 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 20 Oct 2020 12:00:20 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 20 Oct 2020 12:00:21 +0800
+Message-ID: <1603166421.26597.1.camel@mtksdaap41>
+Subject: Re: [PATCH v4 1/2] dt-bindings: spmi: document binding for the
+ Mediatek SPMI controller
+From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+Date:   Tue, 20 Oct 2020 12:00:21 +0800
+In-Reply-To: <20201019195207.GA3499610@bogus>
+References: <1602864634-23489-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <1602864634-23489-2-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <20201019195207.GA3499610@bogus>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 1:43 AM Alexander Kochetkov <al.kochet@gmail.com> wrote:
->
->
->
-> > 19 окт. 2020 г., в 11:21, Maxime Ripard <maxime@cerno.tech> написал(а):
-> >
-> > Hi!
-> >
-> > On Thu, Oct 15, 2020 at 06:47:40PM +0300, Alexander Kochetkov wrote:
-> >> DMA-based transfer will be enabled if data length is larger than FIFO size
-> >> (64 bytes for A64). This greatly reduce number of interrupts for
-> >> transferring data.
-> >>
-> >> For smaller data size PIO mode will be used. In PIO mode whole buffer will
-> >> be loaded into FIFO.
-> >>
-> >> If driver failed to request DMA channels then it fallback for PIO mode.
-> >>
-> >> Tested on SOPINE (https://www.pine64.org/sopine/)
-> >>
-> >> Signed-off-by: Alexander Kochetkov <al.kochet@gmail.com>
-> >
-> > Thanks for working on this, it's been a bit overdue
->
-> Hi, Maxime!
->
-> We did custom A64 based computation module for our product.
-> Do you mean that A64 is obsolete or EOL product?
-> If so, can you recommend active replacement for A64 from Allwinner same price?
+SGksDQoNCk9uIE1vbiwgMjAyMC0xMC0xOSBhdCAxNDo1MiAtMDUwMCwgUm9iIEhlcnJpbmcgd3Jv
+dGU6DQo+IE9uIFNhdCwgMTcgT2N0IDIwMjAgMDA6MTA6MzMgKzA4MDAsIEhzaW4tSHNpdW5nIFdh
+bmcgd3JvdGU6DQo+ID4gVGhpcyBhZGRzIGRvY3VtZW50YXRpb24gZm9yIHRoZSBTUE1JIGNvbnRy
+b2xsZXIgZm91bmQgb24gTWVkaWF0ZWsgU29Dcy4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBI
+c2luLUhzaXVuZyBXYW5nIDxoc2luLWhzaXVuZy53YW5nQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0N
+Cj4gPiAgLi4uL2JpbmRpbmdzL3NwbWkvbXRrLHNwbWktbXRrLXBtaWYueWFtbCAgICAgIHwgNzAg
+KysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNzAgaW5zZXJ0aW9ucygr
+KQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL3NwbWkvbXRrLHNwbWktbXRrLXBtaWYueWFtbA0KPiA+IA0KPiANCj4gDQo+IE15IGJvdCBm
+b3VuZCBlcnJvcnMgcnVubmluZyAnbWFrZSBkdF9iaW5kaW5nX2NoZWNrJyBvbiB5b3VyIHBhdGNo
+Og0KPiANCj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwbWkvbXRrLHNwbWkt
+bXRrLXBtaWYuZXhhbXBsZS5kdHM6MTk6MTg6IGZhdGFsIGVycm9yOiBkdC1iaW5kaW5ncy9jbG9j
+ay9tdDgxOTItY2xrLmg6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkNCj4gICAgMTkgfCAgICAg
+ICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9jbG9jay9tdDgxOTItY2xrLmg+DQo+ICAgICAgIHwg
+ICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KPiBjb21w
+aWxhdGlvbiB0ZXJtaW5hdGVkLg0KPiBtYWtlWzFdOiAqKiogW3NjcmlwdHMvTWFrZWZpbGUubGli
+OjM0MjogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwbWkvbXRrLHNwbWktbXRr
+LXBtaWYuZXhhbXBsZS5kdC55YW1sXSBFcnJvciAxDQo+IG1ha2VbMV06ICoqKiBXYWl0aW5nIGZv
+ciB1bmZpbmlzaGVkIGpvYnMuLi4uDQo+IG1ha2U6ICoqKiBbTWFrZWZpbGU6MTM2NjogZHRfYmlu
+ZGluZ19jaGVja10gRXJyb3IgMg0KPiANCj4gDQo+IFNlZSBodHRwczovL3BhdGNod29yay5vemxh
+YnMub3JnL3BhdGNoLzEzODM0NDENCj4gDQo+IElmIHlvdSBhbHJlYWR5IHJhbiAnbWFrZSBkdF9i
+aW5kaW5nX2NoZWNrJyBhbmQgZGlkbid0IHNlZSB0aGUgYWJvdmUNCj4gZXJyb3IocyksIHRoZW4g
+bWFrZSBzdXJlIGR0LXNjaGVtYSBpcyB1cCB0byBkYXRlOg0KPiANCj4gcGlwMyBpbnN0YWxsIGdp
+dCtodHRwczovL2dpdGh1Yi5jb20vZGV2aWNldHJlZS1vcmcvZHQtc2NoZW1hLmdpdEBtYXN0ZXIg
+LS11cGdyYWRlDQo+IA0KPiBQbGVhc2UgY2hlY2sgYW5kIHJlLXN1Ym1pdC4NCj4gDQoNClNvcnJ5
+LCBJIGRvbid0IGFkZCB0aGUgbmVjZXNzYXJ5IHNlcmllc1sxXSBpbnRvIHRoZSBjb21taXQgbWVz
+c2FnZS4NCkkgd2lsbCB1cGRhdGUgaXQgaW4gdGhlIG5leHQgcGF0Y2gsIHRoYW5rcyBmb3IgdGhl
+IHJldmlldy4NCg0KWzFdDQpodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbGlu
+dXgtbWVkaWF0ZWsvbGlzdC8/c2VyaWVzPTM0MjU5Mw0K
 
-I believe what Maxime meant was that DMA transfer for SPI is a long
-sought-after feature, but no one had finished it.
-
-ChenYu
