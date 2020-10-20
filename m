@@ -2,98 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC3E293930
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C72293934
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393139AbgJTKd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
+        id S2393204AbgJTKeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 06:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726877AbgJTKdX (ORCPT
+        with ESMTP id S2393196AbgJTKeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:33:23 -0400
+        Tue, 20 Oct 2020 06:34:12 -0400
 Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E9DC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:33:23 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id b19so818491pld.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:33:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A54C0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:34:12 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id t4so789900plq.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0AuLkrHmDKwQ7qOPWrn9vSIKIU6u8iuaT4gQA+tnIAI=;
-        b=uCzsmEeWXFIaM7DITCIh/gB9nnxs0qfIVziUqw/n1AT64os7ZK8VUMUKUgLYJgNU1y
-         15ergUR0FUKLoDuEHQuuwj+l2A5EsyhAU+Uy0K9Dglg3gGPiCU+GCtQCKGH7pGnceGDr
-         MNixKd1tdq+DiJX11xvZwHuI4SytXDmWxktjuTiVEcl4seySsshTL4AdoBunlHu2ZHS5
-         6yxAXTXkm6Y9pvdE0s1o05o4OjWoBhpIL5/w5ZpAUGPidFaGD/tON5PxBU+Y+Eb+j2zK
-         fMe1wVBKz2L31a4MrVfk3mOsM5s3O8NJSzk/PIb9xXJfr6NNm/PdlItLAwd91u1f5Cen
-         uwTQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lzpOtrfPfcWZHMhbxVFAso3zmbyoevosVU5DoDXv9Mo=;
+        b=aFT/cvThLhB55POIco8f/0mBdHT6mm5N58HYnifs0+xmoXJGYGXbBKPREXkS+cFCQS
+         RCnHZ3A6Eckgu6OLSlpaeAMyf5cdMlxUwtM4nc6KJSEyh8hducwWZ8bsLqqc2OBwSSi8
+         l7NvWgCoz0ZnQrM5t5ujJ9wXl3EmlTzDhcyMfMEzAkhTshBp76UJYVU7oEUNCXl8eb7C
+         sGFmUrn+Y/Mk/6yohvnuL5gbKfyGFAPV5xCJRCZ0aJeaVEpuz24slRs6lMoOIOOVHMOP
+         h9iYaspH0lFM8rGN5lgqcSgNrgR6b6tmFJv7nWdUQh6GRkls+Xt2N2tSm6OgliPxrObb
+         ItGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0AuLkrHmDKwQ7qOPWrn9vSIKIU6u8iuaT4gQA+tnIAI=;
-        b=WMpLBOKYgF7vDD2+VZtZ3p+FquSUnlwexjOBpKZDtrm/eMW6A4+okUEshZ8PVpIa9x
-         F/mXi0QvA/KE+slwufOLjuMQGkd7VSmjtgRJtDx5FIa1C1HMdq9sNnYIruUk1BEgMs3T
-         IQQl03n310SU5b/YwK2cU7kRb5iCr3jTjakpBebKCBmuYHf7BpNXauRer3VJjCJmYI9B
-         Bl/TZMwdWRhEHCzMXyJZIkW42zgtgLcw1+E7B6asCmGeWVbNlqZ5ijzcuH4hP2sPbJjG
-         NSxOywAr3S5aKditytuJCSPfSa4jwLupJTn2i16GcNZNQM8XnHNWdV/rmJ0fzVPzYddz
-         cSkg==
-X-Gm-Message-State: AOAM532gd7TE0wC2f5zp4CJSzUN99aPqObrxCXtPXJkozxb9Rk41mZhQ
-        4nE14F1tYyNwE0Xk6NbYlCMLsA==
-X-Google-Smtp-Source: ABdhPJxHK138V7xdthbOM/r50ZwxEuEj74h4Lzz/gR3nYuyED/sZUGnftpJWsS5S79icVa1ZtiR+5Q==
-X-Received: by 2002:a17:90a:f198:: with SMTP id bv24mr2204169pjb.230.1603190002895;
-        Tue, 20 Oct 2020 03:33:22 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id h5sm1888227pfh.9.2020.10.20.03.33.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 20 Oct 2020 03:33:22 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] opp: Fix early exit from dev_pm_opp_register_set_opp_helper()
-Date:   Tue, 20 Oct 2020 16:03:15 +0530
-Message-Id: <be911bcddc1dbf4a152513cb3d83f8eed7d2574c.1603189831.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lzpOtrfPfcWZHMhbxVFAso3zmbyoevosVU5DoDXv9Mo=;
+        b=Bkdnk5/bumfNC08Z0/aY4NGawY8STF+AM5IGvmbZIMtjooJT5oQdATT5+tyFP51rxm
+         RwcqVkud0iU/PyKkuTaXqnGOn/Nap1rTYgJ99yJDumcuiuIMq+Lyn2urrKd/+pDDH4qe
+         dXgQ5sdIaTrIDGFHuDtEkdhuY+CG72n2aYRDzdl1FIgsXzUZEDt2KSJnBKjhXdPrly3r
+         eVXwq3BsV4CAp1hMC57L0PDBYD+eTrv+5yJy+6ga3csjazfN5TF3IpjjScQO2zaExdiv
+         LZTpowRkKo6YSCQvvHZ9F3tfa6TJQBn1z5W4Ddpp7VXYI5tmEucDAQ7YybJLKi5FKsy/
+         DYGQ==
+X-Gm-Message-State: AOAM531Ni//iDmGYvw+tgXmQf/jrIjA+YTUsAJKSj+F9w0Zk9eq2qDZM
+        V3G5Eza+oy6grXY/h6/fmi6jMnaTv01P7LZ4xQvVlg==
+X-Google-Smtp-Source: ABdhPJz4n96xfPtY7Qq/t0m+t19dxP/ixRJkoSC+czGLraIr6/v6So2kOZ1/BVGLeGlkn+Rba/TOHCWRGEho0Ld2KC4=
+X-Received: by 2002:a17:90a:58f:: with SMTP id i15mr49869pji.19.1603190051635;
+ Tue, 20 Oct 2020 03:34:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201018125237.16717-1-kholk11@gmail.com> <20201018125237.16717-6-kholk11@gmail.com>
+In-Reply-To: <20201018125237.16717-6-kholk11@gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 20 Oct 2020 12:34:00 +0200
+Message-ID: <CAG3jFyv33Y+sD20Wm21kBhogO0BORw4n00U1e3Ts2hZabGQ+jA@mail.gmail.com>
+Subject: Re: [PATCH 5/6] media: dt-bindings: media: qcom,camss: Add bindings
+ for SDM660 camss
+To:     kholk11@gmail.com
+Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
+        konradybcio@gmail.com, martin.botka1@gmail.com,
+        linux-arm-msm@vger.kernel.org,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We returned earlier by mistake even when there were no failures. Fix it.
+Looks good to me.
 
-Fixes: dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER")
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
-Rafael: Please pick up this one as well for 5.10-rc1/2 once Naresh gives
-his tested by. Thanks.
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
 
- drivers/opp/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 2483e765318a..4ac4e7ce6b8b 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -1930,7 +1930,7 @@ struct opp_table *dev_pm_opp_register_set_opp_helper(struct device *dev,
- 		return ERR_PTR(-EINVAL);
- 
- 	opp_table = dev_pm_opp_get_opp_table(dev);
--	if (!IS_ERR(opp_table))
-+	if (IS_ERR(opp_table))
- 		return opp_table;
- 
- 	/* This should be called before OPPs are initialized */
--- 
-2.25.0.rc1.19.g042ed3e048af
-
+On Sun, 18 Oct 2020 at 14:53, <kholk11@gmail.com> wrote:
+>
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+>
+> Add bindings for qcom,sdm660-camss in order to support the camera
+> subsystem on SDM630/660 and SDA variants.
+>
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/media/qcom,camss.txt | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/media/qcom,camss.txt b/Documentation/devicetree/bindings/media/qcom,camss.txt
+> index 09eb6ed99114..498234629e21 100644
+> --- a/Documentation/devicetree/bindings/media/qcom,camss.txt
+> +++ b/Documentation/devicetree/bindings/media/qcom,camss.txt
+> @@ -8,6 +8,7 @@ Qualcomm Camera Subsystem
+>         Definition: Should contain one of:
+>                 - "qcom,msm8916-camss"
+>                 - "qcom,msm8996-camss"
+> +               - "qcom,sdm660-camss"
+>  - reg:
+>         Usage: required
+>         Value type: <prop-encoded-array>
+> @@ -64,30 +65,36 @@ Qualcomm Camera Subsystem
+>         Value type: <stringlist>
+>         Definition: Should contain the following entries:
+>                 - "top_ahb"
+> +               - "throttle_axi"        (660 only)
+>                 - "ispif_ahb"
+>                 - "csiphy0_timer"
+>                 - "csiphy1_timer"
+>                 - "csiphy2_timer"       (8996 only)
+> +               - "csiphy_ahb2crif"     (660 only)
+>                 - "csi0_ahb"
+>                 - "csi0"
+>                 - "csi0_phy"
+>                 - "csi0_pix"
+>                 - "csi0_rdi"
+> +               - "cphy_csid0"          (660 only)
+>                 - "csi1_ahb"
+>                 - "csi1"
+>                 - "csi1_phy"
+>                 - "csi1_pix"
+>                 - "csi1_rdi"
+> +               - "cphy_csid1"          (660 only)
+>                 - "csi2_ahb"            (8996 only)
+>                 - "csi2"                (8996 only)
+>                 - "csi2_phy"            (8996 only)
+>                 - "csi2_pix"            (8996 only)
+>                 - "csi2_rdi"            (8996 only)
+> +               - "cphy_csid2"          (660 only)
+>                 - "csi3_ahb"            (8996 only)
+>                 - "csi3"                (8996 only)
+>                 - "csi3_phy"            (8996 only)
+>                 - "csi3_pix"            (8996 only)
+>                 - "csi3_rdi"            (8996 only)
+> +               - "cphy_csid3"          (660 only)
+>                 - "ahb"
+>                 - "vfe0"
+>                 - "csi_vfe0"
+> --
+> 2.28.0
+>
