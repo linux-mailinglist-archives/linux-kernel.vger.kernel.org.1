@@ -2,107 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9124F2940F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7E22940FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 19:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395021AbgJTQ5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 12:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389033AbgJTQ5E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 12:57:04 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D16C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:57:04 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id m20so2793646ljj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:57:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bq8GoxVyo7gYf7b14RQXOf1f0F80lNlq4H2QZVhqpxs=;
-        b=GlmFnKSun8DV43nTlPdV+XO2Gf5tvurJdBjQjMLyLJc7GzalEIG6ugrLcrOYrvLNVL
-         eI5ABURDeNtLlU9DzOsIDes1PDJPHBqJqWO4J/+b/mL4oAoA+ps0nCFliPaCVagdn0VK
-         VeVW0OmGjSuAT3AUYEc6lveH9NPknQ95fx20WayIvbHHE/D6wCDfBmlEWHhgEPV7xBDW
-         qCnqbqc3SlT6jIC261l88VcYxFYzPZTvSFKbRdW0lURyl9ADY2a2SGJkmDeiJKXhmpRn
-         IxqCFW+Z225MyB+sKga38zg1TqgidiuYm0cfcCRV1K7LJqct8Rp5DhUNHjWFF8SRldiK
-         1+Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bq8GoxVyo7gYf7b14RQXOf1f0F80lNlq4H2QZVhqpxs=;
-        b=Mtc3WNzBPX11pj9hfnNahfSocHaX3H1JChHDUVakoB6PJL1qsMlLTbXnAln8nuiYZw
-         IreaZLQBCUFp+gp7E0VShabt5gzKj1grT5K5T8V81A22d0DHVAsj8nC8p7t/zzsoEV+U
-         NxmPWwIgXcM6Slwbs48wyO/PiFkGgC2y+Dv/DHQWQ6LMYWynux+tVZEMyuCynepGWwAn
-         vz5bdPSoYCH2WSWjSqkgYJKbRrw8zXdfURSAB3yVi8uBJ/G9o6xeGUJ9lRLm/p5GSaJJ
-         IwvnIuC1gCoOENDtiZZxidrnC/yFJ0XUrTGVHTRGOhScyQRPq7JWR/HwUEUmV3da9k9j
-         1J6A==
-X-Gm-Message-State: AOAM533vAkaN2SuVPI/BVBmK1dm1lu6AsRui0Z42LNGniCUyTDA1+Ajv
-        W8LJ4RKvd6GakpO+LIMNdIYHFcOlmjEO1iQJSUeeOw==
-X-Google-Smtp-Source: ABdhPJyP/DA7JLtU7l6FFKLqDzXFS9L6C8jNSI7xsOJZaUVquq/DPfMLt8k9HTf5vT6Xt1piKgc+oG8QTp5H3VgE7F4=
-X-Received: by 2002:a2e:91c8:: with SMTP id u8mr1475971ljg.192.1603213022378;
- Tue, 20 Oct 2020 09:57:02 -0700 (PDT)
+        id S2395090AbgJTRAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 13:00:31 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:12741 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395021AbgJTRAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 13:00:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603213229; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=UvDGTaz8J2/Cnaz46As0MAOMJxrv3yTPNC6RTt8QiVA=; b=fW8SfExNRhXio+QRY4J83nbDEUUBfSzPsQw2bkOypij/sElrsh1T/EsMEtw0PrN1qOeR3uzU
+ fT3p5SCtOLls5FoRfq2WJYxQhaZ5rdqRkhgF3ABWqlKJrDYIB+3uWUPijGl0O7omaG2khofy
+ 3ZTY4+hisie2hTzj3DFEwCGd3II=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f8f179fef891f1ee26aa2b1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Oct 2020 17:00:15
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 73E81C433FF; Tue, 20 Oct 2020 17:00:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B748EC433FE;
+        Tue, 20 Oct 2020 17:00:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B748EC433FE
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: skip checking LINK_STATUS_UPDATED bit
+Date:   Tue, 20 Oct 2020 09:59:59 -0700
+Message-Id: <20201020165959.7441-1-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <87lfg2ob83.fsf@suse.de> <20201019095812.25710-1-rpalethorpe@suse.com>
- <CALvZod6FNH3cZfZxLSFXtQR5bV_2Tese0793Ve9rd1YNW22MKg@mail.gmail.com>
- <87mu0hwik7.fsf@suse.de> <87eeltvwg4.fsf@suse.de>
-In-Reply-To: <87eeltvwg4.fsf@suse.de>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 20 Oct 2020 09:56:51 -0700
-Message-ID: <CALvZod45mAzyo9LNR4YtX_3J0gZJDagYTNv8NbJAuXzwK5A2DA@mail.gmail.com>
-Subject: Re: [PATCH v3] mm: memcg/slab: Stop reparented obj_cgroups from
- charging root
-To:     rpalethorpe@suse.de
-Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        LTP List <ltp@lists.linux.it>, Roman Gushchin <guro@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 6:49 AM Richard Palethorpe <rpalethorpe@suse.de> wrote:
->
-> Hello,
->
-> Richard Palethorpe <rpalethorpe@suse.de> writes:
->
-> > Hello Shakeel,
-> >
-> > Shakeel Butt <shakeelb@google.com> writes:
-> >>>
-> >>> V3: Handle common case where use_hierarchy=1 and update description.
-> >>>
-> >>>  mm/memcontrol.c | 7 +++++--
-> >>>  1 file changed, 5 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >>> index 6877c765b8d0..34b8c4a66853 100644
-> >>> --- a/mm/memcontrol.c
-> >>> +++ b/mm/memcontrol.c
-> >>> @@ -291,7 +291,7 @@ static void obj_cgroup_release(struct percpu_ref *ref)
-> >>>
-> >>>         spin_lock_irqsave(&css_set_lock, flags);
-> >>>         memcg = obj_cgroup_memcg(objcg);
-> >>> -       if (nr_pages)
-> >>> +       if (nr_pages && (!mem_cgroup_is_root(memcg) || memcg->use_hierarchy))
-> >>
-> >> If we have non-root memcg with use_hierarchy as 0 and this objcg was
-> >> reparented then this __memcg_kmem_uncharge() can potentially underflow
-> >> the page counter and give the same warning.
-> >
-> > Yes, although the kernel considers such a config to be broken, and
-> > prints a warning to the log, it does allow it.
->
-> Actually this can not happen because if use_hierarchy=0 then the objcg
-> will be reparented to root.
->
+No need to check LINK_STATuS_UPDATED bit before
+return 6 bytes of link status during link training.
+This patch also fix phy compliance test link rate
+conversion error.
 
-Yup, you are right. I do wonder if we should completely deprecate
-use_hierarchy=0.
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_ctrl.c | 20 ++++++--------------
+ drivers/gpu/drm/msm/dp/dp_link.c | 24 +++++++++++-------------
+ 2 files changed, 17 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index 6bdaec778c4c..76e891c91c6e 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1061,23 +1061,15 @@ static bool dp_ctrl_train_pattern_set(struct dp_ctrl_private *ctrl,
+ static int dp_ctrl_read_link_status(struct dp_ctrl_private *ctrl,
+ 				    u8 *link_status)
+ {
+-	int len = 0;
+-	u32 const offset = DP_LANE_ALIGN_STATUS_UPDATED - DP_LANE0_1_STATUS;
+-	u32 link_status_read_max_retries = 100;
+-
+-	while (--link_status_read_max_retries) {
+-		len = drm_dp_dpcd_read_link_status(ctrl->aux,
+-			link_status);
+-		if (len != DP_LINK_STATUS_SIZE) {
+-			DRM_ERROR("DP link status read failed, err: %d\n", len);
+-			return len;
+-		}
++	int ret = 0, len;
+ 
+-		if (!(link_status[offset] & DP_LINK_STATUS_UPDATED))
+-			return 0;
++	len = drm_dp_dpcd_read_link_status(ctrl->aux, link_status);
++	if (len != DP_LINK_STATUS_SIZE) {
++		DRM_ERROR("DP link status read failed, err: %d\n", len);
++		ret = len;
+ 	}
+ 
+-	return -ETIMEDOUT;
++	return ret;
+ }
+ 
+ static int dp_ctrl_link_train_1(struct dp_ctrl_private *ctrl,
+diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
+index c811da515fb3..58d65daae3b3 100644
+--- a/drivers/gpu/drm/msm/dp/dp_link.c
++++ b/drivers/gpu/drm/msm/dp/dp_link.c
+@@ -773,7 +773,8 @@ static int dp_link_process_link_training_request(struct dp_link_private *link)
+ 			link->request.test_lane_count);
+ 
+ 	link->dp_link.link_params.num_lanes = link->request.test_lane_count;
+-	link->dp_link.link_params.rate = link->request.test_link_rate;
++	link->dp_link.link_params.rate =
++		drm_dp_bw_code_to_link_rate(link->request.test_link_rate);
+ 
+ 	return 0;
+ }
+@@ -939,20 +940,17 @@ static u8 get_link_status(const u8 link_status[DP_LINK_STATUS_SIZE], int r)
+  */
+ static int dp_link_process_link_status_update(struct dp_link_private *link)
+ {
+-	if (!(get_link_status(link->link_status,
+-				DP_LANE_ALIGN_STATUS_UPDATED) &
+-				DP_LINK_STATUS_UPDATED) ||
+-			(drm_dp_clock_recovery_ok(link->link_status,
+-					link->dp_link.link_params.num_lanes) &&
+-			drm_dp_channel_eq_ok(link->link_status,
+-					link->dp_link.link_params.num_lanes)))
+-		return -EINVAL;
++	bool channel_eq_done = drm_dp_channel_eq_ok(link->link_status,
++			link->dp_link.link_params.num_lanes);
++
++	bool clock_recovery_done = drm_dp_clock_recovery_ok(link->link_status,
++			link->dp_link.link_params.num_lanes);
+ 
+ 	DRM_DEBUG_DP("channel_eq_done = %d, clock_recovery_done = %d\n",
+-			drm_dp_clock_recovery_ok(link->link_status,
+-			link->dp_link.link_params.num_lanes),
+-			drm_dp_clock_recovery_ok(link->link_status,
+-			link->dp_link.link_params.num_lanes));
++			channel_eq_done, clock_recovery_done);
++
++	if (channel_eq_done && clock_recovery_done)
++		return -EINVAL;
+ 
+ 	return 0;
+ }
+
+base-commit: 0855cb4b31953b8c539e57b970da8146bcd4405a
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
