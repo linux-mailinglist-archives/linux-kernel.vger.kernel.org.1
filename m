@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C8B29387F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3F1293886
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404451AbgJTJwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:52:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:48822 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731041AbgJTJwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:52:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47554101E;
-        Tue, 20 Oct 2020 02:52:11 -0700 (PDT)
-Received: from bogus (unknown [10.57.22.167])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3AB383F66E;
-        Tue, 20 Oct 2020 02:52:08 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 10:52:05 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Len Brown <len.brown@intel.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
-        georgi.djakov@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
- -EPROBE_DEFER
-Message-ID: <20201020095205.GB10604@bogus>
-References: <20201019045827.kl6qnx6gidhzjkrs@vireshk-i7>
- <20201019091723.GA12087@bogus>
- <20201019092411.b3znjxebay3puq2j@vireshk-i7>
- <20201019101241.GB12908@bogus>
- <20201019103535.ksp5ackoihamam4g@vireshk-i7>
- <20201019141007.GA6358@bogus>
- <20201020050557.a3b2nk33eeyxnvl2@vireshk-i7>
- <20201020055431.ln7d57x76f7z6j5k@vireshk-i7>
- <20201020093745.GA10604@bogus>
- <20201020094134.natqnyp4zpfw3p5p@vireshk-i7>
+        id S2404532AbgJTJyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:54:31 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:10346 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731331AbgJTJya (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 05:54:30 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09K9l0lR029671;
+        Tue, 20 Oct 2020 11:54:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=C0BcOftOWBwuZGMoyfRN+7GMxA2YfKOUlmU5M++0b3k=;
+ b=1cpjFFgiGoBFPgUPaiuUXid1C8J7trnua3w5ByXie73XNnt4vESLcaeyEh32cPtn2GU8
+ xlP/hD8VgV1pwqm6m5oM4E03DKqJZqNz8MSxNkFZ+AT9AxaK7/6lvhtNyE7ZEUIX379t
+ zGJYkgYqgqF/Ot+pgxcJEOLaX4M7rnjLLozP/bsHVPePs/Q4YhqJyIFz2llPT5z4t4R0
+ e6VKHZw2uh2zpOIQ/gHfzstcKVtENwvSuo4owFQ49zgp6cGcStOiY8P8Q1X/7OCH0ov1
+ ROiYMm6yU0h9KJNF9dkwLJQerqSORXshXzid3c3rZeT32PCjgapqB3TmPxB81jQoMuyC +Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 347nr8atgy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 11:54:18 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D4D6510002A;
+        Tue, 20 Oct 2020 11:54:17 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag1node1.st.com [10.75.127.1])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BEDF72C41FA;
+        Tue, 20 Oct 2020 11:54:17 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG1NODE1.st.com (10.75.127.1)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct 2020 11:54:17
+ +0200
+From:   Hugues Fruchet <hugues.fruchet@st.com>
+To:     Alexandre Torgue <alexandre.torgue@st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>,
+        Alain Volmat <alain.volmat@st.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>
+Subject: [PATCH v2 0/2] DCMI BT656 parallel bus mode support
+Date:   Tue, 20 Oct 2020 11:54:04 +0200
+Message-ID: <1603187646-13184-1-git-send-email-hugues.fruchet@st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020094134.natqnyp4zpfw3p5p@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG1NODE1.st.com
+ (10.75.127.1)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-20_04:2020-10-20,2020-10-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 03:11:34PM +0530, Viresh Kumar wrote:
-> On 20-10-20, 10:37, Sudeep Holla wrote:
-> > On Tue, Oct 20, 2020 at 11:24:32AM +0530, Viresh Kumar wrote:
-> > > On 20-10-20, 10:35, Viresh Kumar wrote:
-> > > > On 19-10-20, 15:10, Sudeep Holla wrote:
-> > > > > On Mon, Oct 19, 2020 at 04:05:35PM +0530, Viresh Kumar wrote:
-> > > > > > On 19-10-20, 11:12, Sudeep Holla wrote:
-> > > > > > > Yes it has clocks property but used by SCMI(for CPUFreq/DevFreq) and not
-> > > > > > > by any clock provider driver. E.g. the issue you will see if "clocks"
-> > > > > > > property is used instead of "qcom,freq-domain" on Qcom parts.
-> > > > > > 
-> > > > > > Okay, I understand. But what I still don't understand is why it fails
-> > > > > > for you. You have a clocks property in DT for the CPU, the OPP core
-> > > > > > tries to get it and will get deferred-probed, which will try probing
-> > > > > > at a later point of time and it shall work then. Isn't it ?
-> > > > > >
-> > > > > 
-> > > > > Nope unfortunately. We don't have clock provider, so clk_get will
-> > > > > never succeed and always return -EPROBE_DEFER.
-> > > > 
-> > > > Now this is really bad, you have a fake clocks property, how is the
-> > > > OPP core supposed to know it ? Damn.
-> > > 
-> > > What about instead of fixing the OPP core, which really is doing the
-> > > right thing, we fix your driver (as you can't fix the DT) and add a
-> > > dummy CPU clk to make it all work ?
-> > >
-> > 
-> > I really would avoid that. I would rather change the binding as there is
-> > no single official users of that binding in the upstream tree.
-> 
-> But how will you solve backward compatibility thing then ?
-> 
+Add support of BT656 embedded synchronization bus.
+This mode allows to save hardware synchro lines hsync & vsync
+by replacing them with synchro codes embedded in data stream.
+This mode is enabled when hsync-active & vsync-active
+fields are not specified in devicetree.
 
-I am just betting on the fact that no users upstream means no backward
-compatibility needed. If someone raises issue we need to add backward
-compatibility with dummy clk as you suggested.
+===========
+= history =
+===========
+version 2:
+  - As per Sakari remark, revisit commit message and document
+    BT656 parallel bus mode in bindings
+
+version 1:
+  - Initial submission
+
+Hugues Fruchet (2):
+  media: stm32-dcmi: add support of BT656 bus
+  media: dt-bindings: media: st,stm32-dcmi: Add support of BT656
+
+ .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 30 ++++++++++++++++++
+ drivers/media/platform/stm32/stm32-dcmi.c          | 37 ++++++++++++++++++++--
+ 2 files changed, 65 insertions(+), 2 deletions(-)
 
 -- 
-Regards,
-Sudeep
+2.7.4
+
