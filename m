@@ -2,100 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A884293300
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B69293302
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390536AbgJTCT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 22:19:56 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:56616 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390516AbgJTCT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 22:19:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603160395; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=5BVsSY0ox/S3zztq9B7f3z1X/K1uDSUzg2BONZtv+90=;
- b=vsjG8QGVg5znGOccJU/cJP1I/PGGiwlXAQ/Tiq58WFsmRjqXN42uMFV+UUYmCxIhPy31uKeH
- 7YIcn3bZ7CO2XIDyZfQmPbF3bszx+Uy/kPZxL1GAJ7ftIlAtNlSOHmbBOoQ7QQtcmitifRFF
- YuAUQUWns4NiH7l9yVCHMD5qjSc=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f8e494a319d4e9cb595aeb2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Oct 2020 02:19:54
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6ABFEC433FF; Tue, 20 Oct 2020 02:19:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S2390548AbgJTCUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 22:20:03 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:35222 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390538AbgJTCUC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 22:20:02 -0400
+Received: from mailhost.synopsys.com (sv2-mailhost2.synopsys.com [10.205.2.134])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C0AE6C433C9;
-        Tue, 20 Oct 2020 02:19:53 +0000 (UTC)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id C20CEC00A7;
+        Tue, 20 Oct 2020 02:20:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1603160402; bh=Y5kCe7twpvpAVlRszOPR/AKOY980wsss/eMlLX4vYD0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BBmBAqsYTIqhj205PkATalZZvP46q05w9Z39AokxS6jNjbgwvyI6Vp5ICtTOZMHW2
+         0qUkxeL4fMoGxP/Jdz8+l+3iL6xSgiG9p5zw0yfKAUG39pKhDk+IoDTRrcZTizKeSu
+         dpCvP+pWz1uF/wEVqcQYvKGwxVShiXpUJc1OXj2H6Cl7qi+EaCa9855TS7VoTH9FXt
+         quDzntNpYJFjy4FKAOLJheRDcmY8NS5OE1ffGKq2DIqVGhbOIO8BxRathzGgwWF8lw
+         CBiZlknCU56RX58qXSCUnsbtLGJymWZaT2MTKbMtG0UQFmk4yagUtdropjiNoCZqI0
+         IfqEhmCvC3ctw==
+Received: from vineetg-Latitude-7400.internal.synopsys.com (unknown [10.13.183.89])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 37221A0099;
+        Tue, 20 Oct 2020 02:19:58 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     stable@vger.kernel.org
+Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        Waldemar Brodkorb <wbx@uclibc-ng.org>
+Subject: [PATCH] Revert "ARC: entry: fix potential EFA clobber when TIF_SYSCALL_TRACE"
+Date:   Mon, 19 Oct 2020 19:19:57 -0700
+Message-Id: <20201020021957.1260521-1-vgupta@synopsys.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 20 Oct 2020 10:19:53 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, Jaegeuk Kim <jaegeuk@google.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: Re: [PATCH 3/4] scsi: ufs: use WQ_HIGHPRI for gating work
-In-Reply-To: <20201005223635.2922805-3-jaegeuk@kernel.org>
-References: <20201005223635.2922805-1-jaegeuk@kernel.org>
- <20201005223635.2922805-3-jaegeuk@kernel.org>
-Message-ID: <5c383fd90a0e97dbd1fffc35574133c9@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-06 06:36, Jaegeuk Kim wrote:
-> From: Jaegeuk Kim <jaegeuk@google.com>
-> 
-> Must have WQ_MEM_RECLAIM
-> ``WQ_MEM_RECLAIM``
->   All wq which might be used in the memory reclaim paths **MUST**
->   have this flag set.  The wq is guaranteed to have at least one
->   execution context regardless of memory pressure.
-> 
+This reverts commit 00fdec98d9881bf5173af09aebd353ab3b9ac729.
+(but only from 5.2 and prior kernels)
 
-The commit msg is not telling the same story as the change/title does.
+The original commit was a preventive fix based on code-review and was
+auto-picked for stable back-port (for better or worse).
+It was OK for v5.3+ kernels, but turned up needing an implicit change
+68e5c6f073bcf70 "(ARC: entry: EV_Trap expects r10 (vs. r9) to have
+ exception cause)" merged in v5.3 which itself was not backported.
+So to summarize the stable backport of this patch for v5.2 and prior
+kernels is busted and it won't boot.
 
-Regards,
+The obvious solution is backport 68e5c6f073bcf70 but that is a pain as
+it doesn't revert cleanly and each of affected kernels (so far v4.19,
+v4.14, v4.9, v4.4) needs a slightly different massaged varaint.
+So the easier fix is to simply revert the backport from 5.2 and prior.
+The issue was not a big deal as it would cause strace to sporadically
+not work correctly.
 
-Can Guo.
+Waldemar Brodkorb first reported this when running ARC uClibc regressions
+on latest stable kernels (with offending backport). Once he bisected it,
+the analysis was trivial, so thx to him for this.
 
-> Cc: Alim Akhtar <alim.akhtar@samsung.com>
-> Cc: Avri Altman <avri.altman@wdc.com>
-> Cc: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 0bb07b50bd23e..76e95963887be 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1849,7 +1849,7 @@ static void ufshcd_init_clk_gating(struct ufs_hba 
-> *hba)
->  	snprintf(wq_name, ARRAY_SIZE(wq_name), "ufs_clk_gating_%d",
->  		 hba->host->host_no);
->  	hba->clk_gating.clk_gating_workq = alloc_ordered_workqueue(wq_name,
-> -							   WQ_MEM_RECLAIM);
-> +					WQ_MEM_RECLAIM | WQ_HIGHPRI);
-> 
->  	hba->clk_gating.is_enabled = true;
+Reported-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
+Bisected-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
+Cc: stable <stable@vger.kernel.org> # 5.2 and prior
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+---
+ arch/arc/kernel/entry.S | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arc/kernel/entry.S b/arch/arc/kernel/entry.S
+index ea00c8a17f07..60406ec62eb8 100644
+--- a/arch/arc/kernel/entry.S
++++ b/arch/arc/kernel/entry.S
+@@ -165,6 +165,7 @@ END(EV_Extension)
+ tracesys:
+ 	; save EFA in case tracer wants the PC of traced task
+ 	; using ERET won't work since next-PC has already committed
++	lr  r12, [efa]
+ 	GET_CURR_TASK_FIELD_PTR   TASK_THREAD, r11
+ 	st  r12, [r11, THREAD_FAULT_ADDR]	; thread.fault_address
+ 
+@@ -207,9 +208,15 @@ tracesys_exit:
+ ; Breakpoint TRAP
+ ; ---------------------------------------------
+ trap_with_param:
+-	mov r0, r12	; EFA in case ptracer/gdb wants stop_pc
++
++	; stop_pc info by gdb needs this info
++	lr  r0, [efa]
+ 	mov r1, sp
+ 
++	; Now that we have read EFA, it is safe to do "fake" rtie
++	;   and get out of CPU exception mode
++	FAKE_RET_FROM_EXCPN
++
+ 	; Save callee regs in case gdb wants to have a look
+ 	; SP will grow up by size of CALLEE Reg-File
+ 	; NOTE: clobbers r12
+@@ -236,10 +243,6 @@ ENTRY(EV_Trap)
+ 
+ 	EXCEPTION_PROLOGUE
+ 
+-	lr  r12, [efa]
+-
+-	FAKE_RET_FROM_EXCPN
+-
+ 	;============ TRAP 1   :breakpoints
+ 	; Check ECR for trap with arg (PROLOGUE ensures r10 has ECR)
+ 	bmsk.f 0, r10, 7
+@@ -247,6 +250,9 @@ ENTRY(EV_Trap)
+ 
+ 	;============ TRAP  (no param): syscall top level
+ 
++	; First return from Exception to pure K mode (Exception/IRQs renabled)
++	FAKE_RET_FROM_EXCPN
++
+ 	; If syscall tracing ongoing, invoke pre-post-hooks
+ 	GET_CURR_THR_INFO_FLAGS   r10
+ 	btst r10, TIF_SYSCALL_TRACE
+-- 
+2.25.1
+
