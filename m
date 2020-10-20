@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37DB2932D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 03:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8D32932CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 03:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390237AbgJTBod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 21:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
+        id S2390226AbgJTBo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 21:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390205AbgJTBoU (ORCPT
+        with ESMTP id S2390215AbgJTBoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 21:44:20 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DAAC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:19 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id t12so321013ilh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:19 -0700 (PDT)
+        Mon, 19 Oct 2020 21:44:22 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9389DC0613D4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:22 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id p9so331877ilr.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 18:44:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=N1NCExe7zByQd0h6uT7zTBe3uiNk1NVn7Gv7bd05NqM=;
-        b=UlPWdY7Jc8qwqpfm8ulAujaCH2joJvqGOWp0ApyXCbHPgu/p0yFHokIFHjAXx5jkxJ
-         11yJ7yPmF7p4ooU9t+BhT9H3aEVjRQGcRj2Lo0Poec+0bXgJjK+ajEnQhRjID1x/Qnnd
-         KptyiWiX6eef2rzL3d7zWSrqcXwUYFCRH5m2U=
+        bh=DnyYMXiGicOgLWW4phC2Gw+5nqSVkiAGa5vUTQsEwIA=;
+        b=yF2XdoLiolRC88u+ugatoOiHN6RUHJzJjikVUp8TsQe3Lc/bNWSi2NGEY3/ws6M8pd
+         YHVt7xQE+0jcZF8UPLKmORTL5eLW6J/+Pd+m5UMJtsP3xlDezONG/SgI8sZM3vG9cbIN
+         zjvhuqT/ffLGyrlb/R0O+xzqhJYaoDJjFhcOI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=N1NCExe7zByQd0h6uT7zTBe3uiNk1NVn7Gv7bd05NqM=;
-        b=HahfnICvqwWgjfXoYUHHao0ml+0xOZoIyjzghSWoBuma2FPdeYgoXCUHC6CdQBVGa2
-         gI3Jl+6HYO+3ubEvXfz0HS3xZbNhSWlSvUJ4PxJ+H3AbbtZqb4EpO4Dv1BIMTehTq6vc
-         Xtr83oWZNyNaPqu9FvtY4ootgXt0vK3oohfcd/6vDZz8PD3tTuUnPz3W8s4HJUbDMLw+
-         4Ezo9m2kScwthv5hMJqpWhb3ZfucMVvEbPFPBm9uwCotdDt4SlzBGIum/hKVrCYOeCoE
-         9ET0NqSPysFB5+S0mvGBOEXRwaFhJZV9PMxhZFPitl7gm7lGs2MTj/Mykg2gra9t9xPh
-         UC3w==
-X-Gm-Message-State: AOAM5312I0LgWOrD5Xt0IvOAfWr7M6ituo+3V8BCO7zD9LjrdIkfT2Hh
-        /YTEYJFKrjmKB74Y9t8NxCVNog==
-X-Google-Smtp-Source: ABdhPJyF9tJUPfo6D35CecdO9Aw4K1gnV7FQdNfcpfoYcT8HAzr5xZ6DFjJgnh4oKtWmGDdjt1cyEg==
-X-Received: by 2002:a92:512:: with SMTP id q18mr222744ile.147.1603158259105;
-        Mon, 19 Oct 2020 18:44:19 -0700 (PDT)
+        bh=DnyYMXiGicOgLWW4phC2Gw+5nqSVkiAGa5vUTQsEwIA=;
+        b=RSwwt9f2w8hVJjXcgBRSV1SyruE6i+ViRsRSBIgkvyhC4FIyDVg/hQf0O2ilrDRcho
+         7h1Fa9IqFlWGM0nV/uzDWtUeBPyukIVXYFmyOCUtC3zut0J7axYT2B+INECrICKIayy7
+         eOh/HmXA0zWQV4AG16FqLl240bAuvewZlPlIhTZAp6v1Fxa4HAeFRA8EXLbPW5UoSEsv
+         oD5Kk7N3PkJ4bnTTK5PPh6bMKQbYWyk6wn3PECqAnclVIsDoyZ+e0oY4mGiVdixB/gwb
+         EYPTFV3gGv4GbBr41ZffmEA70Zk54E7Cljppan2awm8alKVkWtHNOppF6uoT0YBoJoMz
+         C7MQ==
+X-Gm-Message-State: AOAM533CldxYDzPgkjUXqaBuOI0S0GLpcsWZljROYlKq0qNfokKBUZp/
+        ONp90Eprxc2TCEIRfvkbDPwGTg==
+X-Google-Smtp-Source: ABdhPJxi/xEF5CDSBDy4Nr2zisFTlP9HPr9WE7i6YB9vhXjDR2AQOVxRiZJo4MS/9c55Dhcx1MQJ3Q==
+X-Received: by 2002:a92:cd0e:: with SMTP id z14mr232657iln.135.1603158261952;
+        Mon, 19 Oct 2020 18:44:21 -0700 (PDT)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id t22sm485306ili.9.2020.10.19.18.44.16
+        by smtp.gmail.com with ESMTPSA id t22sm485306ili.9.2020.10.19.18.44.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 18:44:18 -0700 (PDT)
+        Mon, 19 Oct 2020 18:44:21 -0700 (PDT)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -75,9 +75,9 @@ Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
         chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Tim Chen <tim.c.chen@intel.com>
-Subject: [PATCH v8 -tip 11/26] irq_work: Cleanup
-Date:   Mon, 19 Oct 2020 21:43:21 -0400
-Message-Id: <20201020014336.2076526-12-joel@joelfernandes.org>
+Subject: [PATCH v8 -tip 12/26] arch/x86: Add a new TIF flag for untrusted tasks
+Date:   Mon, 19 Oct 2020 21:43:22 -0400
+Message-Id: <20201020014336.2076526-13-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 In-Reply-To: <20201020014336.2076526-1-joel@joelfernandes.org>
 References: <20201020014336.2076526-1-joel@joelfernandes.org>
@@ -87,278 +87,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+Add a new TIF flag to indicate whether the kernel needs to be careful
+and take additional steps to mitigate micro-architectural issues during
+entry into user or guest mode.
 
-Get rid of the __call_single_node union and clean up the API a little
-to avoid external code relying on the structure layout as much.
-
-(Needed for irq_work_is_busy() API in core-scheduling series).
+This new flag will be used by the series to determine if waiting is
+needed or not, during exit to user or guest mode.
 
 Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- drivers/gpu/drm/i915/i915_request.c |  4 ++--
- include/linux/irq_work.h            | 33 ++++++++++++++++++-----------
- include/linux/irqflags.h            |  4 ++--
- kernel/bpf/stackmap.c               |  2 +-
- kernel/irq_work.c                   | 18 ++++++++--------
- kernel/printk/printk.c              |  6 ++----
- kernel/rcu/tree.c                   |  3 +--
- kernel/time/tick-sched.c            |  6 ++----
- kernel/trace/bpf_trace.c            |  2 +-
- 9 files changed, 41 insertions(+), 37 deletions(-)
+ arch/x86/include/asm/thread_info.h | 2 ++
+ kernel/sched/sched.h               | 6 ++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
-index 0e813819b041..5385b081a376 100644
---- a/drivers/gpu/drm/i915/i915_request.c
-+++ b/drivers/gpu/drm/i915/i915_request.c
-@@ -197,7 +197,7 @@ __notify_execute_cb(struct i915_request *rq, bool (*fn)(struct irq_work *wrk))
+diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
+index c448fcfa1b82..45b6dbdf116e 100644
+--- a/arch/x86/include/asm/thread_info.h
++++ b/arch/x86/include/asm/thread_info.h
+@@ -99,6 +99,7 @@ struct thread_info {
+ #define TIF_SPEC_FORCE_UPDATE	23	/* Force speculation MSR update in context switch */
+ #define TIF_FORCED_TF		24	/* true if TF in eflags artificially */
+ #define TIF_BLOCKSTEP		25	/* set when we want DEBUGCTLMSR_BTF */
++#define TIF_UNSAFE_RET   	26	/* On return to process/guest, perform safety checks. */
+ #define TIF_LAZY_MMU_UPDATES	27	/* task is updating the mmu lazily */
+ #define TIF_SYSCALL_TRACEPOINT	28	/* syscall tracepoint instrumentation */
+ #define TIF_ADDR32		29	/* 32-bit address space on 64 bits */
+@@ -129,6 +130,7 @@ struct thread_info {
+ #define _TIF_SPEC_FORCE_UPDATE	(1 << TIF_SPEC_FORCE_UPDATE)
+ #define _TIF_FORCED_TF		(1 << TIF_FORCED_TF)
+ #define _TIF_BLOCKSTEP		(1 << TIF_BLOCKSTEP)
++#define _TIF_UNSAFE_RET 	(1 << TIF_UNSAFE_RET)
+ #define _TIF_LAZY_MMU_UPDATES	(1 << TIF_LAZY_MMU_UPDATES)
+ #define _TIF_SYSCALL_TRACEPOINT	(1 << TIF_SYSCALL_TRACEPOINT)
+ #define _TIF_ADDR32		(1 << TIF_ADDR32)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index d0c7a7f87d73..f7e2d8a3be8e 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2769,3 +2769,9 @@ static inline bool is_per_cpu_kthread(struct task_struct *p)
  
- 	llist_for_each_entry_safe(cb, cn,
- 				  llist_del_all(&rq->execute_cb),
--				  work.llnode)
-+				  work.node.llist)
- 		fn(&cb->work);
- }
- 
-@@ -460,7 +460,7 @@ __await_execution(struct i915_request *rq,
- 	 * callback first, then checking the ACTIVE bit, we serialise with
- 	 * the completed/retired request.
- 	 */
--	if (llist_add(&cb->work.llnode, &signal->execute_cb)) {
-+	if (llist_add(&cb->work.node.llist, &signal->execute_cb)) {
- 		if (i915_request_is_active(signal) ||
- 		    __request_in_flight(signal))
- 			__notify_execute_cb_imm(signal);
-diff --git a/include/linux/irq_work.h b/include/linux/irq_work.h
-index 30823780c192..ec2a47a81e42 100644
---- a/include/linux/irq_work.h
-+++ b/include/linux/irq_work.h
-@@ -14,28 +14,37 @@
-  */
- 
- struct irq_work {
--	union {
--		struct __call_single_node node;
--		struct {
--			struct llist_node llnode;
--			atomic_t flags;
--		};
--	};
-+	struct __call_single_node node;
- 	void (*func)(struct irq_work *);
- };
- 
-+#define __IRQ_WORK_INIT(_func, _flags) (struct irq_work){	\
-+	.node = { .u_flags = (_flags), },			\
-+	.func = (_func),					\
-+}
+ void swake_up_all_locked(struct swait_queue_head *q);
+ void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
 +
-+#define IRQ_WORK_INIT(_func) __IRQ_WORK_INIT(_func, 0)
-+#define IRQ_WORK_INIT_LAZY(_func) __IRQ_WORK_INIT(_func, IRQ_WORK_LAZY)
-+#define IRQ_WORK_INIT_HARD(_func) __IRQ_WORK_INIT(_func, IRQ_WORK_HARD_IRQ)
-+
-+#define DEFINE_IRQ_WORK(name, _f)				\
-+	struct irq_work name = IRQ_WORK_INIT(_f)
-+
- static inline
- void init_irq_work(struct irq_work *work, void (*func)(struct irq_work *))
- {
--	atomic_set(&work->flags, 0);
--	work->func = func;
-+	*work = IRQ_WORK_INIT(func);
- }
- 
--#define DEFINE_IRQ_WORK(name, _f) struct irq_work name = {	\
--		.flags = ATOMIC_INIT(0),			\
--		.func  = (_f)					\
-+static inline bool irq_work_is_pending(struct irq_work *work)
-+{
-+	return atomic_read(&work->node.a_flags) & IRQ_WORK_PENDING;
- }
- 
-+static inline bool irq_work_is_busy(struct irq_work *work)
-+{
-+	return atomic_read(&work->node.a_flags) & IRQ_WORK_BUSY;
-+}
- 
- bool irq_work_queue(struct irq_work *work);
- bool irq_work_queue_on(struct irq_work *work, int cpu);
-diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
-index 3ed4e8771b64..fef2d43a7a1d 100644
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -109,12 +109,12 @@ do {						\
- 
- # define lockdep_irq_work_enter(__work)					\
- 	  do {								\
--		  if (!(atomic_read(&__work->flags) & IRQ_WORK_HARD_IRQ))\
-+		  if (!(atomic_read(&__work->node.a_flags) & IRQ_WORK_HARD_IRQ))\
- 			current->irq_config = 1;			\
- 	  } while (0)
- # define lockdep_irq_work_exit(__work)					\
- 	  do {								\
--		  if (!(atomic_read(&__work->flags) & IRQ_WORK_HARD_IRQ))\
-+		  if (!(atomic_read(&__work->node.a_flags) & IRQ_WORK_HARD_IRQ))\
- 			current->irq_config = 0;			\
- 	  } while (0)
- 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 06065fa27124..599041cd0c8a 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -298,7 +298,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
- 	if (irqs_disabled()) {
- 		if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
- 			work = this_cpu_ptr(&up_read_work);
--			if (atomic_read(&work->irq_work.flags) & IRQ_WORK_BUSY) {
-+			if (irq_work_is_busy(&work->irq_work)) {
- 				/* cannot queue more up_read, fallback */
- 				irq_work_busy = true;
- 			}
-diff --git a/kernel/irq_work.c b/kernel/irq_work.c
-index eca83965b631..fbff25adb574 100644
---- a/kernel/irq_work.c
-+++ b/kernel/irq_work.c
-@@ -31,7 +31,7 @@ static bool irq_work_claim(struct irq_work *work)
- {
- 	int oflags;
- 
--	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED | CSD_TYPE_IRQ_WORK, &work->flags);
-+	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED | CSD_TYPE_IRQ_WORK, &work->node.a_flags);
- 	/*
- 	 * If the work is already pending, no need to raise the IPI.
- 	 * The pairing atomic_fetch_andnot() in irq_work_run() makes sure
-@@ -53,12 +53,12 @@ void __weak arch_irq_work_raise(void)
- static void __irq_work_queue_local(struct irq_work *work)
- {
- 	/* If the work is "lazy", handle it from next tick if any */
--	if (atomic_read(&work->flags) & IRQ_WORK_LAZY) {
--		if (llist_add(&work->llnode, this_cpu_ptr(&lazy_list)) &&
-+	if (atomic_read(&work->node.a_flags) & IRQ_WORK_LAZY) {
-+		if (llist_add(&work->node.llist, this_cpu_ptr(&lazy_list)) &&
- 		    tick_nohz_tick_stopped())
- 			arch_irq_work_raise();
- 	} else {
--		if (llist_add(&work->llnode, this_cpu_ptr(&raised_list)))
-+		if (llist_add(&work->node.llist, this_cpu_ptr(&raised_list)))
- 			arch_irq_work_raise();
- 	}
- }
-@@ -102,7 +102,7 @@ bool irq_work_queue_on(struct irq_work *work, int cpu)
- 	if (cpu != smp_processor_id()) {
- 		/* Arch remote IPI send/receive backend aren't NMI safe */
- 		WARN_ON_ONCE(in_nmi());
--		__smp_call_single_queue(cpu, &work->llnode);
-+		__smp_call_single_queue(cpu, &work->node.llist);
- 	} else {
- 		__irq_work_queue_local(work);
- 	}
-@@ -142,7 +142,7 @@ void irq_work_single(void *arg)
- 	 * to claim that work don't rely on us to handle their data
- 	 * while we are in the middle of the func.
- 	 */
--	flags = atomic_fetch_andnot(IRQ_WORK_PENDING, &work->flags);
-+	flags = atomic_fetch_andnot(IRQ_WORK_PENDING, &work->node.a_flags);
- 
- 	lockdep_irq_work_enter(work);
- 	work->func(work);
-@@ -152,7 +152,7 @@ void irq_work_single(void *arg)
- 	 * no-one else claimed it meanwhile.
- 	 */
- 	flags &= ~IRQ_WORK_PENDING;
--	(void)atomic_cmpxchg(&work->flags, flags, flags & ~IRQ_WORK_BUSY);
-+	(void)atomic_cmpxchg(&work->node.a_flags, flags, flags & ~IRQ_WORK_BUSY);
- }
- 
- static void irq_work_run_list(struct llist_head *list)
-@@ -166,7 +166,7 @@ static void irq_work_run_list(struct llist_head *list)
- 		return;
- 
- 	llnode = llist_del_all(list);
--	llist_for_each_entry_safe(work, tmp, llnode, llnode)
-+	llist_for_each_entry_safe(work, tmp, llnode, node.llist)
- 		irq_work_single(work);
- }
- 
-@@ -198,7 +198,7 @@ void irq_work_sync(struct irq_work *work)
- {
- 	lockdep_assert_irqs_enabled();
- 
--	while (atomic_read(&work->flags) & IRQ_WORK_BUSY)
-+	while (irq_work_is_busy(work))
- 		cpu_relax();
- }
- EXPORT_SYMBOL_GPL(irq_work_sync);
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index fe64a49344bf..9ef23d4b07c7 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3025,10 +3025,8 @@ static void wake_up_klogd_work_func(struct irq_work *irq_work)
- 		wake_up_interruptible(&log_wait);
- }
- 
--static DEFINE_PER_CPU(struct irq_work, wake_up_klogd_work) = {
--	.func = wake_up_klogd_work_func,
--	.flags = ATOMIC_INIT(IRQ_WORK_LAZY),
--};
-+static DEFINE_PER_CPU(struct irq_work, wake_up_klogd_work) =
-+	IRQ_WORK_INIT_LAZY(wake_up_klogd_work_func);
- 
- void wake_up_klogd(void)
- {
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 06895ef85d69..a41e84f1b55a 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1311,8 +1311,6 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- 		if (IS_ENABLED(CONFIG_IRQ_WORK) &&
- 		    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
- 		    (rnp->ffmask & rdp->grpmask)) {
--			init_irq_work(&rdp->rcu_iw, rcu_iw_handler);
--			atomic_set(&rdp->rcu_iw.flags, IRQ_WORK_HARD_IRQ);
- 			rdp->rcu_iw_pending = true;
- 			rdp->rcu_iw_gp_seq = rnp->gp_seq;
- 			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
-@@ -3964,6 +3962,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
- 	rdp->cpu_no_qs.b.norm = true;
- 	rdp->core_needs_qs = false;
- 	rdp->rcu_iw_pending = false;
-+	rdp->rcu_iw = IRQ_WORK_INIT_HARD(rcu_iw_handler);
- 	rdp->rcu_iw_gp_seq = rdp->gp_seq - 1;
- 	trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuonl"));
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 81632cd5e3b7..1b734070f028 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -243,10 +243,8 @@ static void nohz_full_kick_func(struct irq_work *work)
- 	/* Empty, the tick restart happens on tick_nohz_irq_exit() */
- }
- 
--static DEFINE_PER_CPU(struct irq_work, nohz_full_kick_work) = {
--	.func = nohz_full_kick_func,
--	.flags = ATOMIC_INIT(IRQ_WORK_HARD_IRQ),
--};
-+static DEFINE_PER_CPU(struct irq_work, nohz_full_kick_work) =
-+	IRQ_WORK_INIT_HARD(nohz_full_kick_func);
- 
- /*
-  * Kick this CPU if it's full dynticks in order to force it to
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 4517c8b66518..a6903912f7a0 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1086,7 +1086,7 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
- 			return -EINVAL;
- 
- 		work = this_cpu_ptr(&send_signal_work);
--		if (atomic_read(&work->irq_work.flags) & IRQ_WORK_BUSY)
-+		if (irq_work_is_busy(&work->irq_work))
- 			return -EBUSY;
- 
- 		/* Add the current task, which is the target of sending signal,
++#ifdef CONFIG_SCHED_CORE
++#ifndef TIF_UNSAFE_RET
++#define TIF_UNSAFE_RET (0)
++#endif
++#endif
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
