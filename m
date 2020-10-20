@@ -2,265 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5179329356C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BF9293572
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404740AbgJTHEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:04:25 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:59411 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404723AbgJTHEZ (ORCPT
+        id S2404792AbgJTHF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:05:28 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:52172 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404784AbgJTHF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:04:25 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09K6vsKH026983;
-        Tue, 20 Oct 2020 09:04:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=s4nQYuoqPavXoCqW23JwfVqDR5D4+8KScwo2N9KV8wg=;
- b=q5L/vYhEdiBYHOSHhr4tyO2eD7crs5PTT1ztsz1qRJAeGhSBnxnrBjIfW2rEHRC7CWq4
- DSNlPmtdBZmgR4RKAqthw4pcHA65N9TNGmHDGejEOHbjV4h5KlUWnkEIR4EzJBI8hWlS
- Uam5CH3Ht5IvXPxSClKOGV08/hQ/TiibAA8MD/9fSdl9jgcbdqybsFDVENFWVW1dG9GD
- GQrfdoMGMXp7VkdUbWRQ1Xq6dzqi1vJFBuhzEA91okVUAtS0kX0ImLvwbJznCYYRa31a
- b+UzisTseTsvG4mLE5FsLbZ4Nk45HbKsdWRLzxoVjlvg1Ry+2sls9NiCjW0MED47j0e8 Dw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 347p30gmrc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Oct 2020 09:04:19 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 20FBB10002A;
-        Tue, 20 Oct 2020 09:04:18 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0BF892ADA0E;
-        Tue, 20 Oct 2020 09:04:18 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.46) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
- 2020 09:04:17 +0200
-Subject: Re: [PATCH v3 1/8] rpmsg: Introduce __rpmsg{16|32|64} types
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
-CC:     "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201019203438.501174-1-mathieu.poirier@linaro.org>
- <20201019203438.501174-2-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <d3fe9b33-ea92-a3d2-e801-bf3d823b108d@st.com>
-Date:   Tue, 20 Oct 2020 09:04:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 20 Oct 2020 03:05:27 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201020070525epoutp02863b803cc3a2c302fe0d13adf04f2f95~-oXcjluKr2790627906epoutp02d
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:05:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201020070525epoutp02863b803cc3a2c302fe0d13adf04f2f95~-oXcjluKr2790627906epoutp02d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603177525;
+        bh=lz40hHps79hqNfcnD+cI3oHpIVLgeD6CDqiBeBo/A8M=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=stwK0OviaweTFSwolWPfyyffNR3bnL648FfkGNSaVmudvE6NNA+7zYQNO+Qlk6Hi0
+         0rnLAdMhoLqd0CGUClyPyAxwH2IY8zc+8dqIcIaq2ern5GKRAgwdsAZ27YITOMT6ka
+         m0WrLdgRJd8wPeU2eVbqZlmlVSG+UjnCDpYnkiWk=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20201020070525epcas2p49eb6cc2621c08aa65df0b14235df06b4~-oXcOPvH21677716777epcas2p4r;
+        Tue, 20 Oct 2020 07:05:25 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.182]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4CFl4y4DSdzMqYkr; Tue, 20 Oct
+        2020 07:05:22 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5F.9A.09588.13C8E8F5; Tue, 20 Oct 2020 16:05:22 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d~-oXXbkF4G0868808688epcas2p2C;
+        Tue, 20 Oct 2020 07:05:19 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201020070519epsmtrp11d1d02b0f52fdcfb924fba2933fc18a2~-oXXape6_1391713917epsmtrp1g;
+        Tue, 20 Oct 2020 07:05:19 +0000 (GMT)
+X-AuditID: b6c32a45-36bff70000002574-c7-5f8e8c311e37
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        57.32.08745.F2C8E8F5; Tue, 20 Oct 2020 16:05:19 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.229.9.51]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201020070519epsmtip161a3e009d658aad5260cf63c88ae6d7f~-oXXNZSlV2165121651epsmtip1n;
+        Tue, 20 Oct 2020 07:05:19 +0000 (GMT)
+From:   Chanho Park <chanho61.park@samsung.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chanho Park <chanho61.park@samsung.com>
+Subject: [PATCH] scsi: ufs: make sure scan sequence for multiple hosts
+Date:   Tue, 20 Oct 2020 16:05:16 +0900
+Message-Id: <20201020070516.129273-1-chanho61.park@samsung.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201019203438.501174-2-mathieu.poirier@linaro.org>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHKsWRmVeSWpSXmKPExsWy7bCmqa5RT1+8wbsrTBYP5m1js3j58yqb
+        xeX92haLbmxjsri8aw6bRff1HWwWy4//Y3Jg95iw6ACjx8ent1g8+rasYvT4vEnOo/1AN1MA
+        a1SOTUZqYkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QFUoK
+        ZYk5pUChgMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAkPDAr3ixNzi0rx0veT8XCtDAwMjU6DK
+        hJyMD2++sBdcFqyY+PUOYwPjXr4uRk4OCQETiaNPFrF3MXJxCAnsYJTY8vMmK4TziVHi2eqX
+        rCBVQgKfGSX2X2OG6Xjx7iFUxy5GiY2n2xghnI+MEgs+trCBVLEJ6Epsef4KKMHBISJgJHFt
+        lSdIDbPAdEaJgys/gtUIC7hJ7Nx/DmwDi4CqxNHHC8HqeQXsJV42eEEsk5d42rscbDGvgKDE
+        yZlPWEBsZqB489bZzCAzJQTOsUvce93JBtHgInH7Qj/UpcISr45vYYewpSRe9rdB2fUSKx41
+        QTX3MEq8nPYPqsFeYubTpUwgRzALaEqs36UPYkoIKEscuQW1l0+i4/Bfdogwr0RHmxBEo7rE
+        ge3TWSBsWYnuOZ9ZIWwPidX7TjJBwjBWYsWq6cwTGOVnIflmFpJvZiHsXcDIvIpRLLWgODc9
+        tdiowBA5TjcxghOilusOxslvP+gdYmTiYDzEKMHBrCTCO4G1L16INyWxsiq1KD++qDQntfgQ
+        oykweCcyS4km5wNTcl5JvKGpkZmZgaWphamZkYWSOK+KXke8kEB6YklqdmpqQWoRTB8TB6dU
+        A1OZ4Bzfd3erpl85Nflf3iPJmNCDx5/dPrhXsdDq9MSGIC5dbYlTTzoft8b5F/ouXHZ5cesH
+        8TPTuL5w+fzZsar8y/9Lb4vUH03+mVjU1sz5ttivQMdGNsfmTqNai8/3qp6z/kYpp0R+qS02
+        WRbb++TWq+OPTlVuO33LhT8sTS6p4YTsP36mJht2/4XVbYvvM1l0u3Zr3FW7KXO0RXGzZ8Sq
+        IkUJB3aezSz73cTNA2+Y/Dwr1ffQeheTraJj3WnBJLYJ3Rt5rffumejkcvYhD9ui3Rf2vvp2
+        UNdlB0fmMf5rJh2HihZUmi0ITQvceMh1Td2NUx6qk8VtGYtPT6zS6np7LvjirTkKGeqzMnzF
+        q5RYijMSDbWYi4oTAeAcpcIRBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLLMWRmVeSWpSXmKPExsWy7bCSnK5+T1+8wdPjhhYP5m1js3j58yqb
+        xeX92haLbmxjsri8aw6bRff1HWwWy4//Y3Jg95iw6ACjx8ent1g8+rasYvT4vEnOo/1AN1MA
+        axSXTUpqTmZZapG+XQJXxoc3X9gLLgtWTPx6h7GBcS9fFyMnh4SAicSLdw/Zuxi5OIQEdjBK
+        HHy8hhUiISvx7N0OdghbWOJ+yxGwuJDAe0aJd3dFQWw2AV2JLc9fMYLYIkCDZtx6xwoyiFlg
+        NqPEnuOLwRLCAm4SO/efA2tmEVCVOPp4IVCcg4NXwF7iZYMXxHx5iae9y5lBbF4BQYmTM5+w
+        gNjMQPHmrbOZJzDyzUKSmoUktYCRaRWjZGpBcW56brFhgVFearlecWJucWleul5yfu4mRnCI
+        amntYNyz6oPeIUYmDsZDjBIczEoivBNY++KFeFMSK6tSi/Lji0pzUosPMUpzsCiJ836dtTBO
+        SCA9sSQ1OzW1ILUIJsvEwSnVwNSo1MhqULM3SeishajfqX0Nr6/cq/bjDirhP9z8aOvh+QzH
+        r10sbzhaErheM+0Yv42L1S+f1z38xpujjT5MVuKXFb2SzX5D3izzSOwjpYR9tsnvKxsFrb9w
+        O08OvaZe/H9e/cfX6v8dVNlU0hkm+hwobxQW3fRTag2z/4RQvQI+nXsx3W5LphWyqDxXbzzZ
+        udl07ocN1ddZbmhKXL5elC34UPXMh/MuEVpF00q9Xoe9DTK5p9q1imcWd7+Njvr3yTN1t1zZ
+        vaDr1Jcraru7+T2T+bne8lf5HFrYuHH9wx3b5utuW1cdMInZji/CTCph5pEtW1q4Z2+ecOXu
+        rSz3p+37JORuWwWvvvqz/U3/ESWW4oxEQy3mouJEAACj59XAAgAA
+X-CMS-MailID: 20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d
+X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-20_03:2020-10-16,2020-10-20 signatures=0
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d
+References: <CGME20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d@epcas2p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+By doing scan as asynchronous way, scsi device scannning can be out of
+order execution. It is no problem if there is a ufs host but the scsi
+device name of each host can be changed according to the scan sequences.
 
+Ideal Case) host0 scan first
+host0 will be started from /dev/sda
+ -> /dev/sdb (BootLUN0 of host0)
+ -> /dev/sdc (BootLUN1 of host1)
+host1 will be started from /dev/sdd
 
-On 10/19/20 10:34 PM, Mathieu Poirier wrote:
-> Introduce __rpmsg{16|32|64} types along with byte order conversion
-> functions based on an rpmsg_device operation as a foundation to
-> make RPMSG modular and transport agnostic.
-> 
-> Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+This might be an ideal case and we can easily find the host device by
+this mappinng.
 
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+However, Abnormal Case) host1 scan first,
+host1 will be started from /dev/sda and host0 will be followed later.
 
-Thanks,
-Arnaud
+To make sure the scan sequences according to the host, we can use a
+bitmap which hosts are scanned and wait until previous hosts are
+finished to scan.
 
-> ---
->  include/linux/rpmsg.h            | 51 ++++++++++++++++++++++++
->  include/linux/rpmsg_byteorder.h  | 67 ++++++++++++++++++++++++++++++++
->  include/uapi/linux/rpmsg_types.h | 11 ++++++
->  3 files changed, 129 insertions(+)
->  create mode 100644 include/linux/rpmsg_byteorder.h
->  create mode 100644 include/uapi/linux/rpmsg_types.h
-> 
-> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-> index 9fe156d1c018..97098a90c496 100644
-> --- a/include/linux/rpmsg.h
-> +++ b/include/linux/rpmsg.h
-> @@ -17,6 +17,7 @@
->  #include <linux/kref.h>
->  #include <linux/mutex.h>
->  #include <linux/poll.h>
-> +#include <linux/rpmsg_byteorder.h>
->  
->  #define RPMSG_ADDR_ANY		0xFFFFFFFF
->  
-> @@ -46,6 +47,7 @@ struct rpmsg_channel_info {
->   * @dst: destination address
->   * @ept: the rpmsg endpoint of this channel
->   * @announce: if set, rpmsg will announce the creation/removal of this channel
-> + * @little_endian: True if transport is using little endian byte representation
->   */
->  struct rpmsg_device {
->  	struct device dev;
-> @@ -55,6 +57,7 @@ struct rpmsg_device {
->  	u32 dst;
->  	struct rpmsg_endpoint *ept;
->  	bool announce;
-> +	bool little_endian;
->  
->  	const struct rpmsg_device_ops *ops;
->  };
-> @@ -111,6 +114,54 @@ struct rpmsg_driver {
->  	int (*callback)(struct rpmsg_device *, void *, int, void *, u32);
->  };
->  
-> +static inline u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, __rpmsg16 val)
-> +{
-> +	if (!rpdev)
-> +		return __rpmsg16_to_cpu(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __rpmsg16_to_cpu(rpdev->little_endian, val);
-> +}
-> +
-> +static inline __rpmsg16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val)
-> +{
-> +	if (!rpdev)
-> +		return __cpu_to_rpmsg16(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __cpu_to_rpmsg16(rpdev->little_endian, val);
-> +}
-> +
-> +static inline u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, __rpmsg32 val)
-> +{
-> +	if (!rpdev)
-> +		return __rpmsg32_to_cpu(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __rpmsg32_to_cpu(rpdev->little_endian, val);
-> +}
-> +
-> +static inline __rpmsg32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val)
-> +{
-> +	if (!rpdev)
-> +		return __cpu_to_rpmsg32(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __cpu_to_rpmsg32(rpdev->little_endian, val);
-> +}
-> +
-> +static inline u64 rpmsg64_to_cpu(struct rpmsg_device *rpdev, __rpmsg64 val)
-> +{
-> +	if (!rpdev)
-> +		return __rpmsg64_to_cpu(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __rpmsg64_to_cpu(rpdev->little_endian, val);
-> +}
-> +
-> +static inline __rpmsg64 cpu_to_rpmsg64(struct rpmsg_device *rpdev, u64 val)
-> +{
-> +	if (!rpdev)
-> +		return __cpu_to_rpmsg64(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __cpu_to_rpmsg64(rpdev->little_endian, val);
-> +}
-> +
->  #if IS_ENABLED(CONFIG_RPMSG)
->  
->  int register_rpmsg_device(struct rpmsg_device *dev);
-> diff --git a/include/linux/rpmsg_byteorder.h b/include/linux/rpmsg_byteorder.h
-> new file mode 100644
-> index 000000000000..c0f565dbad6d
-> --- /dev/null
-> +++ b/include/linux/rpmsg_byteorder.h
-> @@ -0,0 +1,67 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Follows implementation found in linux/virtio_byteorder.h
-> + */
-> +#ifndef _LINUX_RPMSG_BYTEORDER_H
-> +#define _LINUX_RPMSG_BYTEORDER_H
-> +#include <linux/types.h>
-> +#include <uapi/linux/rpmsg_types.h>
-> +
-> +static inline bool rpmsg_is_little_endian(void)
-> +{
-> +#ifdef __LITTLE_ENDIAN
-> +	return true;
-> +#else
-> +	return false;
-> +#endif
-> +}
-> +
-> +static inline u16 __rpmsg16_to_cpu(bool little_endian, __rpmsg16 val)
-> +{
-> +	if (little_endian)
-> +		return le16_to_cpu((__force __le16)val);
-> +	else
-> +		return be16_to_cpu((__force __be16)val);
-> +}
-> +
-> +static inline __rpmsg16 __cpu_to_rpmsg16(bool little_endian, u16 val)
-> +{
-> +	if (little_endian)
-> +		return (__force __rpmsg16)cpu_to_le16(val);
-> +	else
-> +		return (__force __rpmsg16)cpu_to_be16(val);
-> +}
-> +
-> +static inline u32 __rpmsg32_to_cpu(bool little_endian, __rpmsg32 val)
-> +{
-> +	if (little_endian)
-> +		return le32_to_cpu((__force __le32)val);
-> +	else
-> +		return be32_to_cpu((__force __be32)val);
-> +}
-> +
-> +static inline __rpmsg32 __cpu_to_rpmsg32(bool little_endian, u32 val)
-> +{
-> +	if (little_endian)
-> +		return (__force __rpmsg32)cpu_to_le32(val);
-> +	else
-> +		return (__force __rpmsg32)cpu_to_be32(val);
-> +}
-> +
-> +static inline u64 __rpmsg64_to_cpu(bool little_endian, __rpmsg64 val)
-> +{
-> +	if (little_endian)
-> +		return le64_to_cpu((__force __le64)val);
-> +	else
-> +		return be64_to_cpu((__force __be64)val);
-> +}
-> +
-> +static inline __rpmsg64 __cpu_to_rpmsg64(bool little_endian, u64 val)
-> +{
-> +	if (little_endian)
-> +		return (__force __rpmsg64)cpu_to_le64(val);
-> +	else
-> +		return (__force __rpmsg64)cpu_to_be64(val);
-> +}
-> +
-> +#endif /* _LINUX_RPMSG_BYTEORDER_H */
-> diff --git a/include/uapi/linux/rpmsg_types.h b/include/uapi/linux/rpmsg_types.h
-> new file mode 100644
-> index 000000000000..36e3b9404391
-> --- /dev/null
-> +++ b/include/uapi/linux/rpmsg_types.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +#ifndef _UAPI_LINUX_RPMSG_TYPES_H
-> +#define _UAPI_LINUX_RPMSG_TYPES_H
-> +
-> +#include <linux/types.h>
-> +
-> +typedef __u16 __bitwise __rpmsg16;
-> +typedef __u32 __bitwise __rpmsg32;
-> +typedef __u64 __bitwise __rpmsg64;
-> +
-> +#endif /* _UAPI_LINUX_RPMSG_TYPES_H */
-> 
+Signed-off-by: Chanho Park <chanho61.park@samsung.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index b8f573a02713..1ced5996e988 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -13,6 +13,7 @@
+ #include <linux/devfreq.h>
+ #include <linux/nls.h>
+ #include <linux/of.h>
++#include <linux/bitmap.h>
+ #include <linux/bitfield.h>
+ #include <linux/blk-pm.h>
+ #include <linux/blkdev.h>
+@@ -214,6 +215,10 @@ static struct ufs_dev_fix ufs_fixups[] = {
+ 	END_FIX
+ };
+ 
++/* Ordered scan host */
++static unsigned long scanned_hosts = 0;
++static wait_queue_head_t scan_wq = __WAIT_QUEUE_HEAD_INITIALIZER(scan_wq);
++
+ static irqreturn_t ufshcd_tmc_handler(struct ufs_hba *hba);
+ static void ufshcd_async_scan(void *data, async_cookie_t cookie);
+ static int ufshcd_reset_and_restore(struct ufs_hba *hba);
+@@ -7709,8 +7714,13 @@ static void ufshcd_async_scan(void *data, async_cookie_t cookie)
+ 	if (ret)
+ 		goto out;
+ 
+-	/* Probe and add UFS logical units  */
++	/* Probe and add UFS logical units. Sequential scan by host_no */
++	wait_event(scan_wq,
++		   find_first_zero_bit(&scanned_hosts, hba->host->max_id) ==
++		   hba->host->host_no);
+ 	ret = ufshcd_add_lus(hba);
++	set_bit(hba->host->host_no, &scanned_hosts);
++	wake_up(&scan_wq);
+ out:
+ 	/*
+ 	 * If we failed to initialize the device or the device is not
+-- 
+2.28.0
+
