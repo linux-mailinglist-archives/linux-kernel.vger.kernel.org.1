@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58150293589
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F00B2935A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730008AbgJTHNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728706AbgJTHNA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:13:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0A0C061755;
-        Tue, 20 Oct 2020 00:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WCNIsXqbUXOzIVXmiOYfRO/Rzg9TJllAtewiaSP3GKM=; b=ZxA8J6JPfMDUEAIlDegD6VN7Mw
-        kTiSBVZpDoHIFc4FUAK5xxpb0h6osBndnpMCaK/V1S6gc0r57wzZp9JD6kkTt+hkDnUGLeZCVRIVP
-        IKEFiR3euGhM133RXC6Fp3cWuP6Oml7l8/eoDxl361J46PF0VmzPOtnnImaWoSmmmyDGhIjNqpL+x
-        5s7tw6oaMt3QnNrabjpPBEfwikdlJBvW9w7+fapOwvAHAj6CRWWlY230ozrl2jLS1CnOmgtU7cuU+
-        QQVzmuM2RoJrYg5qyKb0gyilwxREcsCLvLj4/LkszvTE0hBeN6YQ+NXqSlRqODdHQowUqhPJQn8Wc
-        LApoqxOw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kUloh-0002R6-8F; Tue, 20 Oct 2020 07:12:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 914613011FE;
-        Tue, 20 Oct 2020 09:12:17 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 807E02038FA06; Tue, 20 Oct 2020 09:12:17 +0200 (CEST)
-Date:   Tue, 20 Oct 2020 09:12:17 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFCv2 15/16] KVM: Unmap protected pages from direct mapping
-Message-ID: <20201020071217.GU2611@hirez.programming.kicks-ass.net>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
- <20201020061859.18385-16-kirill.shutemov@linux.intel.com>
+        id S1731209AbgJTHT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:19:27 -0400
+Received: from mx4.wp.pl ([212.77.101.12]:28271 "EHLO mx4.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730922AbgJTHT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 03:19:27 -0400
+Received: (wp-smtpd smtp.wp.pl 23164 invoked from network); 20 Oct 2020 09:12:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1603177964; bh=bKNUhCp6Y3F9Grr1XEkYQ03EStU0/rfn+PwEs2KyPKA=;
+          h=From:To:Cc:Subject;
+          b=c+EQ7Y0LEOD6Pr/K1g9JrE43o4R2TECEMP0WOLIOL9WwxeQyHrTeUT8tKaMdlokqB
+           O198Pebob99V7btr1P/FtqqI3RYIqXjGFb7i8ChjwBd2F/9HCHsYTPcVyKMvvKwEzn
+           JNnbonHnv/mqMabP2lgVmuPjAuNZotNN/bTrn/Bs=
+Received: from ip4-46-39-164-203.cust.nbox.cz (HELO localhost) (stf_xl@wp.pl@[46.39.164.203])
+          (envelope-sender <stf_xl@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <markov.mikhail@itmh.ru>; 20 Oct 2020 09:12:44 +0200
+Date:   Tue, 20 Oct 2020 09:12:43 +0200
+From:   Stanislaw Gruszka <stf_xl@wp.pl>
+To:     =?utf-8?B?0JzQsNGA0LrQvtCyINCc0LjRhdCw0LjQuyDQkNC70LXQutGB0LDQvdC00YA=?=
+         =?utf-8?B?0L7QstC40Yc=?= <markov.mikhail@itmh.ru>
+Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        Helmut Schaa <helmut.schaa@googlemail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "\"David S. Miller\"" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "illumin@yandex.ru" <illumin@yandex.ru>
+Subject: Re: [PATCH] rt2x00: save survey for every channel visited
+Message-ID: <20201020071243.GA302394@wp.pl>
+References: <1603134408870.78805@itmh.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201020061859.18385-16-kirill.shutemov@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1603134408870.78805@itmh.ru>
+X-WP-MailID: 7f530163ad75dcce13db46f787cfd916
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000002 [YeH0]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 09:18:58AM +0300, Kirill A. Shutemov wrote:
-> If the protected memory feature enabled, unmap guest memory from
-> kernel's direct mappings.
-> 
-> Migration and KSM is disabled for protected memory as it would require a
-> special treatment.
+On Mon, Oct 19, 2020 at 07:06:47PM +0000, Марков Михаил Александрович wrote:
+> rt2800 only gives you survey for current channel.
+<snip>
+>      .watchdog        = rt2800_watchdog,
+> +    .update_survey        = rt2800_update_survey,
 
-How isn't disabling migration a problem? Are we going to back allocation
-by CMA instead?
+Since this feature is rt2800 specific, I would do not add new generic
+callback. It could be fully done in rt2800* code, i.e ...
+
+> diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c b/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
+> index 8c6d3099b19d..8eff57132154 100644
+> --- a/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
+> +++ b/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
+> @@ -1026,6 +1026,12 @@ static int rt2x00lib_probe_hw_modes(struct rt2x00_dev *rt2x00dev,
+>      if (!rates)
+>          goto exit_free_channels;
+> 
+> +    rt2x00dev->chan_survey =
+> +        kcalloc(spec->num_channels, sizeof(struct rt2x00_chan_survey),
+> +            GFP_KERNEL);
+> +    if (!rt2x00dev->chan_survey)
+> +        goto exit_free_rates;
+... this could be placed in rt2800_probe_hw_mode() just after
+channel info array allocation ... 
+
+> @@ -316,6 +316,15 @@ int rt2x00mac_config(struct ieee80211_hw *hw, u32 changed)
+>      if (!test_bit(DEVICE_STATE_PRESENT, &rt2x00dev->flags))
+>          return 0;
+> 
+> +    /*
+> +     * To provide correct survey data for survey-based ACS algorithm
+> +     * we have to save survey data for current channel before switching.
+> +     */
+> +    if (rt2x00dev->ops->lib->update_survey &&
+> +        (changed & IEEE80211_CONF_CHANGE_CHANNEL)) {
+... and this in rt2800_config()
+
+Thanks
+Stanislaw
