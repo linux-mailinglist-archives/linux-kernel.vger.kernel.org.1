@@ -2,119 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D40C293687
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C733729368B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387545AbgJTIOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 04:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387535AbgJTIOj (ORCPT
+        id S2388101AbgJTIPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 04:15:16 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13890 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387546AbgJTIPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:14:39 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB92C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:14:39 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id p11so625376pld.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=AFcda7odfwIZRJuvG5/lff365X7of50KQS00c7xL62M=;
-        b=lYlNHSoBH+9JCTy1oF/Nvg3QjMqJKkS0Y0Wg5/hEI7JGHvnMxWb3fO3AQzVZITZ5iV
-         QiRtOe9z566LUsqKPo5YCIg+9L0dJj1mIdfdLWp9G7SJG4ACW2HJREI7QouUiT+2b0tV
-         +nhNVd+wOhdokwAbNEU127DDdZIhneVoQRbbreLCcWZCLolU8U7obang7SiyD/1/iJ5g
-         oRytI5jMU6DDgge4f46zcPqlNpVvMfWQEsYh1TkaD1qBkBWol6KKOY2LfXvFXHsY9aDb
-         1pzu/a6U/v7hMtp3pY17GVvuYO9rv7hXxi39Snc3w3Hafun+c+pIUDcFQ1p2PgMYRXqU
-         iUHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=AFcda7odfwIZRJuvG5/lff365X7of50KQS00c7xL62M=;
-        b=Obx/A8/TUnm6V6RBZOqStAqXY7AEjb+/5o3o3aYpLp5qEjZvimL4v6eMBiCc8xBzp1
-         DmHssDsZdq+160lsjewKka16FxevMYKT0o2jAaCPR3YraSkqILJZgtv8hNm6F+2Dx1Cm
-         35cUzhPDhHAcrh5oS2qwj72PWwxKh0SURSk0PT7X4sbwAiJM5QpAx/3npPBSAgEnh4iH
-         5meSsJSJGKuIiS5StJhg2bX1wUS7u8BBGvzwXVfYPh0wZPRHd2d4I3BJzS/tysEMg/fI
-         W3tiWhokff1518BFR79WoYTfg4OJsEExjQ7Mj+psr2QH8r7q6aDYbJ2F6k0oPYwIk7GN
-         d80A==
-X-Gm-Message-State: AOAM533uLmV/CIqIBPgIhUBjwDdnyrQT1EZ8dlr/82uJP3YPwfamx8Cg
-        gLf4565EbUBfXTVhw9J/HZrfP+4+Rp/tPpmQn8Y=
-X-Google-Smtp-Source: ABdhPJy8A9Hz0zH9f3HSDE6WuZzp5z+XAhZFDKStme3Qn7v9MuY3fe+ZqKzI8kv7vBrFKCGbt+Z+LQ==
-X-Received: by 2002:a17:90b:19c9:: with SMTP id nm9mr1802606pjb.6.1603181678759;
-        Tue, 20 Oct 2020 01:14:38 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([64.120.119.108])
-        by smtp.gmail.com with ESMTPSA id c17sm1404415pfj.220.2020.10.20.01.14.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 20 Oct 2020 01:14:38 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 16:14:32 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Tue, 20 Oct 2020 04:15:14 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09K81qwV005935;
+        Tue, 20 Oct 2020 04:15:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=aCB9TXIhILyunqqd/Q2+KsybLjU1sdD+0hm6Re3a0x8=;
+ b=LGSuxCNm8EjoJQ9W+HU+oe1EF1Ln9Ua/HnL6AMzUJ3kJrFFNxIjVGBqvleqT9Nu6/fQ8
+ HVN/rRsThyn+qDAiidc55Tu4z0OHthoC1ozpzVaHZYKHbQi3+0ZWapTqb58r4c0uJm2L
+ iUfC1ggJSoBGIj/suPsUza47ISLvwfqKUk+JmuyOPq6DZ1lusKRGVuiv/bCmd2OVe543
+ uhxCmXTjOTGfxuBCcM4o5LIM9+nO9LhlQoM7/htJjRJ+VglMICb5x0trdeQgc8cnpuEX
+ vIl3oSmO9VM6tBBQv/ix5XVbGG5+Eqi4p4DIaj+5q87yfjNsjwozcGATw9D5mOcOxib6 DQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 349u4928an-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 04:15:00 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09K82OaS008711;
+        Tue, 20 Oct 2020 04:15:00 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 349u49289h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 04:14:59 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09K8Cqtk014692;
+        Tue, 20 Oct 2020 08:14:58 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma03wdc.us.ibm.com with ESMTP id 347r88x8mr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 08:14:58 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09K8EvgP57082336
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Oct 2020 08:14:57 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B2F82C6057;
+        Tue, 20 Oct 2020 08:14:57 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B0B43C6066;
+        Tue, 20 Oct 2020 08:14:52 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.43.175])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Oct 2020 08:14:52 +0000 (GMT)
+Subject: Re: [PATCH 1/2] perf jevents: Tidy error handling
+To:     Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Joe Mario <jmario@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
-        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 7/8] perf c2c: Add option '-d llc' for sorting with
- LLC load
-Message-ID: <20201020081432.GD13630@leoy-ThinkPad-X240s>
-References: <20201015145041.10953-1-leo.yan@linaro.org>
- <20201015145041.10953-8-leo.yan@linaro.org>
- <20201020072603.GD2084117@krava>
+        Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
+        Yao Jin <yao.jin@linux.intel.com>, yeyunfeng@huawei.com,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+References: <1603121908-53543-1-git-send-email-john.garry@huawei.com>
+ <1603121908-53543-2-git-send-email-john.garry@huawei.com>
+ <CAM9d7cg0j3j-EXY2MULYWpyMri5_GxBnHVNvrHN4UG0pwsa=mw@mail.gmail.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <eb3073cd-7184-58f3-f03f-b094abaff007@linux.ibm.com>
+Date:   Tue, 20 Oct 2020 13:44:50 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <CAM9d7cg0j3j-EXY2MULYWpyMri5_GxBnHVNvrHN4UG0pwsa=mw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201020072603.GD2084117@krava>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-20_03:2020-10-16,2020-10-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ impostorscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999 phishscore=0
+ bulkscore=0 spamscore=0 priorityscore=1501 adultscore=0 suspectscore=2
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010200048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 09:26:03AM +0200, Jiri Olsa wrote:
-> On Thu, Oct 15, 2020 at 03:50:40PM +0100, Leo Yan wrote:
-> > Except the existed three display options 'tot', 'rmt', 'lcl', this patch
-> > adds option 'llc' so that can sort on LLC load metrics.  The new
-> > introduced option can work as a choice if the memory event doesn't
-> > contain HITM tags.
-> > 
-> > For the display with option 'llc', both the "Shared Data Cache Line
-> > Table" and "Shared Cache Line Distribution Pareto" have difference
-> > comparing to other three display options.
-> > 
-> > For the "Shared Data Cache Line Table", instead of sorting HITM metrics,
-> > it sorts with the LLC hit metrics "tot_llchit".  In this case, users
-> > should be interested in LLC related statistics, so the dimensions of
-> > total LLC hit is used to replace HITM related dimensions.
-> > 
-> > For Pareto, every single cache line shows the metrics "cl_llc_hit"
-> > instead of "cl_rmt_hitm", and the single cache line view is sorted by
-> > metrics "tot_llchit".
-> 
-> hi,
-> I'm getting compilation error on newer gcc:
-> 
->   CC       builtin-c2c.o
-> builtin-c2c.c: In function ‘perf_c2c__report’:
-> builtin-c2c.c:1979:9: error: ‘sort_str’ may be used uninitialized in this function [-Werror=maybe-uninitialized]
->  1979 |  return hpp_list__parse(&c2c_hists->list, output, sort);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> builtin-c2c.c:2900:27: note: ‘sort_str’ was declared here
->  2900 |  const char *output_str, *sort_str;
->       |                           ^~~~~~~~
 
-Sorry for this building error.  I didn't detect this error on both
-Arm64 and x86;  will fix it.
+
+On 10/20/20 11:13 AM, Namhyung Kim wrote:
+> Hello,
+> 
+> On Tue, Oct 20, 2020 at 12:42 AM John Garry <john.garry@huawei.com> wrote:
+>>
+>> There is much duplication in the error handling for directory traversing
+>> for processing JSONs.
+>>
+>> Factor out the common code to tidy a bit.
+>>
+>> Signed-off-by: John Garry <john.garry@huawei.com>
+>> ---
+> [SNIP]
+>> -empty_map:
+>> +err_processing_std_arch_event_dir:
+>> +       err_string_ext = " for std arch event";
+>> +err_processing_dir:
+>> +       if (verbose || rc > 0) {
+>> +               pr_info("%s: Error walking file tree %s%s\n", prog, ldirname,
+>> +                       err_string_ext);
+> 
+> This was printed only if verbose is set but now changed.
+
+Hi John,
+   Yes I agree with Namhyung.
+So, this is our original checks
+
+if (rc && verbose) {
+		pr_info("%s: Error walking file tree %s\n", prog, ldirname);
+		goto empty_map;
+	} else if (rc < 0) {
+		/* Make build fail */
+		fclose(eventsfp);
+		free_arch_std_events();
+		ret = 1;
+		goto out_free_mapfile;
+	} else if (rc) {
+		goto empty_map;
+	}
+
+May be we can use similar checks:
+
+if( verbose)
+  pr_info("%s: Error walking file tree %s%s\n", prog, ldirname,err_string_ext);
+if(rc > 0)
+   empty_map = 1;
+else
+  ret = 1;
 
 Thanks,
-Leo
+Kajol Jain
+  
+> 
+> Thanks
+> Namhyung
+> 
+> 
+>> +               empty_map = 1;
+>> +       } else {
+>> +               ret = 1;
+>> +       }
+>> +err_close_eventsfp:
+>>         fclose(eventsfp);
+>> -       create_empty_mapping(output_file);
+>> +       if (empty_map)
+>> +               create_empty_mapping(output_file);
+>> +err_out:
+>>         free_arch_std_events();
+>> -out_free_mapfile:
+>>         free(mapfile);
+>>         return ret;
+>>  }
+>> --
+>> 2.26.2
+>>
