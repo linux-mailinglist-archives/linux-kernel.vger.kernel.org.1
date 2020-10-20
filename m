@@ -2,146 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BEB293DA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B05F293DAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407685AbgJTNt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
+        id S2407701AbgJTNtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407630AbgJTNt2 (ORCPT
+        with ESMTP id S2407689AbgJTNtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:49:28 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB29C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:49:27 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id c141so2185807lfg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:49:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1o8TpeHhno8OE2SrDdQUqRsdXAVOC0TzkDg0pRysRCg=;
-        b=cicVnczstWRFH9gw+EuYx/lkIIBZzIw/xFGQDmuS3kVvj7vDkCCzApdH1mGBpMoiA9
-         UtpBzyMmwiraaOs2MZMRvwTopaDFxaacSqLiI/IFdi8hKKrlZORdjZIJsLS3cLypFks/
-         Bda/wOENIgPWwOMRaDoliBIRfRwHPiY6madPv88jbUecOdIdC863Zw3wYV4k28/eBqGi
-         W2EDYSVlOfa6oSB3jXwakuWfGlTrNxPtkIc3sHP4hip+5nDyO4AZhVF1W7eZd1S7ISnM
-         q/XrxAC2qb0wuhsp5epuANvG0/N4WWTpFeq7y8QxSVLZcING1Hvt56ZqLKl9e4GR5Zim
-         1olw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1o8TpeHhno8OE2SrDdQUqRsdXAVOC0TzkDg0pRysRCg=;
-        b=EHIHHlMtupJ2bDBWIZAguY9VPBg+rwWBvExdTMuZAEP5LidMcnrUUPY9HkYVT/8kT7
-         eTLIPXvWmup2WmOJIqKTOllAB4hsdLXZ2gCoGlTh4tdlPuj/1S0dJhjPOQ/GMxUQhblS
-         nbCb5CFF9pi2ToRoLDqG8GDZvAUfS+iZcyEzbQfOfV7rnbttiAJHb1fP4TmTfJ+KPZz7
-         nPPKmRX73J7zlFt6G18mJvYxVgLvzh1FbvM2w1a5KpFukqVukqH8tZxZ4AbB4pPlQzb/
-         I95JJv60Q1s0qDsspSn0XpVOnAu5qUCSofdcKndADGsHzw+5KYAr1EM7aFxQQp2zXT3E
-         NtOg==
-X-Gm-Message-State: AOAM5334+c3hkltKHDPhKWYe9EW1DdJlFpU2nOk7ZqYtzyKFrnU8xuT/
-        L9S4xFusk2W8Zi/WwIXeVuq8VA==
-X-Google-Smtp-Source: ABdhPJwzV88aVC3wAh1fZRh2Qt1Fuvww50QbPS9U7q8Lm6OYo/M98+w8nswpqWagGg+ahtm5dpfxOw==
-X-Received: by 2002:ac2:5a05:: with SMTP id q5mr976885lfn.592.1603201766368;
-        Tue, 20 Oct 2020 06:49:26 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id o17sm319166lfb.55.2020.10.20.06.49.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 06:49:25 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 2039A102328; Tue, 20 Oct 2020 16:49:24 +0300 (+03)
-Date:   Tue, 20 Oct 2020 16:49:24 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [RFCv2 00/16] KVM protected memory extension
-Message-ID: <20201020134924.2i4z4kp6bkiheqws@box>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
- <87ft6949x8.fsf@vitty.brq.redhat.com>
+        Tue, 20 Oct 2020 09:49:45 -0400
+Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8B4C061755;
+        Tue, 20 Oct 2020 06:49:45 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id 4EAF413FC95;
+        Tue, 20 Oct 2020 15:49:42 +0200 (CEST)
+Date:   Tue, 20 Oct 2020 15:49:40 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com, olteanv@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] net: dsa: mv88e6xxx: Don't force link when using
+ in-band-status
+Message-ID: <20201020154940.60357b6c@nic.cz>
+In-Reply-To: <20201020101552.GB1551@shell.armlinux.org.uk>
+References: <20201020034558.19438-1-chris.packham@alliedtelesis.co.nz>
+        <20201020034558.19438-2-chris.packham@alliedtelesis.co.nz>
+        <20201020101552.GB1551@shell.armlinux.org.uk>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87ft6949x8.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 09:46:11AM +0200, Vitaly Kuznetsov wrote:
-> "Kirill A. Shutemov" <kirill@shutemov.name> writes:
+On Tue, 20 Oct 2020 11:15:52 +0100
+Russell King - ARM Linux admin <linux@armlinux.org.uk> wrote:
+
+> On Tue, Oct 20, 2020 at 04:45:56PM +1300, Chris Packham wrote:
+> > When a port is configured with 'managed = "in-band-status"' don't force
+> > the link up, the switch MAC will detect the link status correctly.
+> > 
+> > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>  
 > 
-> > == Background / Problem ==
-> >
-> > There are a number of hardware features (MKTME, SEV) which protect guest
-> > memory from some unauthorized host access. The patchset proposes a purely
-> > software feature that mitigates some of the same host-side read-only
-> > attacks.
-> >
-> >
-> > == What does this set mitigate? ==
-> >
-> >  - Host kernel ”accidental” access to guest data (think speculation)
-> >
-> >  - Host kernel induced access to guest data (write(fd, &guest_data_ptr, len))
-> >
-> >  - Host userspace access to guest data (compromised qemu)
-> >
-> >  - Guest privilege escalation via compromised QEMU device emulation
-> >
-> > == What does this set NOT mitigate? ==
-> >
-> >  - Full host kernel compromise.  Kernel will just map the pages again.
-> >
-> >  - Hardware attacks
-> >
-> >
-> > The second RFC revision addresses /most/ of the feedback.
-> >
-> > I still didn't found a good solution to reboot and kexec. Unprotect all
-> > the memory on such operations defeat the goal of the feature. Clearing up
-> > most of the memory before unprotecting what is required for reboot (or
-> > kexec) is tedious and error-prone.
-> > Maybe we should just declare them unsupported?
+> I thought we had issues with the 88E6390 where the PCS does not
+> update the MAC with its results. Isn't this going to break the
+> 6390? Andrew?
 > 
-> Making reboot unsupported is a hard sell. Could you please elaborate on
-> why you think that "unprotect all" hypercall (or rather a single
-> hypercall supporting both protecting/unprotecting) defeats the purpose
-> of the feature?
 
-If guest has some data that it prefers not to leak to the host and use the
-feature for the purpose, share all the memory to get through reboot is a
-very weak point.
+Russell, I tested this patch on Turris MOX with 6390 on port 9 (cpu
+port) which is configured in devicetree as 2500base-x, in-band-status,
+and it works...
 
-> 
-> clean up *all* its memory upon reboot, however:
-> - It may only clean up the most sensitive parts. This should probably be
-> done even without this new feature and even on bare metal (think about
-> next boot target being malicious).
-> - The attack window shrinks significantly. "Speculative" bugs require
-> time to exploit and it will only remain open until it boots up again
-> (few seconds).
-
-Maybe it would be cleaner to handle reboot in userspace? If we got the VM
-rebooted, just reconstruct it from scratch as if it would be new boot.
-
--- 
- Kirill A. Shutemov
+Or will this break on user ports?
