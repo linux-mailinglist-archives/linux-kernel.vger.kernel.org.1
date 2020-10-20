@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4483B293795
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB3D293782
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390679AbgJTJGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:06:37 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:2889 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390674AbgJTJGg (ORCPT
+        id S2392335AbgJTJEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:04:08 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:35118 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390480AbgJTJEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:06:36 -0400
+        Tue, 20 Oct 2020 05:04:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1603184794; x=1634720794;
+  t=1603184647; x=1634720647;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=tdNdw6IfHLO/vMz+dCnfV6saHBkcPkuM1L7pDo6BFss=;
-  b=vixnYMm3BlrXeaZPw31sjE0m1un5f0cc0iw2F6xgbk259ZjIlb4VhQ5S
-   L2ufD3S93Q2nXXuYkr4PCkJJTdy1MhvB2yYHD+3PUZxtCNBu/nVPQ7AaH
-   TW+VkQbMfo4gzT3Bkv90c10c9SGM0Uv/1rVjLrpZx8BtGbe8rLHsM0cFr
-   U=;
+  bh=ex0dyR52pQlWbtLTi7+DCeRnQUrgwEcr4wvrGWXwkYQ=;
+  b=N59dxQVRDLccHIXz4MUOX2nfa18sYFbSmM+pQtqWZqBY6HncOF4l/nXw
+   JYKnnx6PahFQQI4nmB254NV3lOX3rgjmrwn5vvPN+5kcJhPwYn50qTA5M
+   31GixShz6c6a1UhLBGj7m5Wp31wz+yJYoQSIfI8Z2mq7YfKvM6tOBA8Ne
+   o=;
 X-IronPort-AV: E=Sophos;i="5.77,396,1596499200"; 
-   d="scan'208";a="60708464"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 20 Oct 2020 09:06:30 +0000
+   d="scan'208";a="85042254"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 20 Oct 2020 09:04:07 +0000
 Received: from EX13D31EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com (Postfix) with ESMTPS id D1604A1EED;
-        Tue, 20 Oct 2020 09:03:22 +0000 (UTC)
+        by email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com (Postfix) with ESMTPS id B46DAA88A7;
+        Tue, 20 Oct 2020 09:04:02 +0000 (UTC)
 Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.237) by
  EX13D31EUB001.ant.amazon.com (10.43.166.210) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 20 Oct 2020 09:03:03 +0000
+ id 15.0.1497.2; Tue, 20 Oct 2020 09:03:44 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -53,9 +53,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v22 07/18] mm/page_idle: Avoid interferences from concurrent users
-Date:   Tue, 20 Oct 2020 10:59:29 +0200
-Message-ID: <20201020085940.13875-8-sjpark@amazon.com>
+Subject: [PATCH v22 08/18] mm/damon/primitives: Make coexistable with Idle Page Tracking
+Date:   Tue, 20 Oct 2020 10:59:30 +0200
+Message-ID: <20201020085940.13875-9-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201020085940.13875-1-sjpark@amazon.com>
 References: <20201020085940.13875-1-sjpark@amazon.com>
@@ -70,147 +70,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-Concurrent Idle Page Tracking users can interfere each other because the
-interface doesn't provide a central rule for synchronization between the
-users.  Users could implement their own synchronization rule, but even
-in that case, applications developed by different users would not know
-how to synchronize with others.  To help this situation, this commit
-introduces a centralized synchronization infrastructure of Idle Page
+DAMON's reference 'primitives' internally use 'PG_Idle' flag.  Because
+the flag is also used by Idle Page Tracking but there was no way to
+synchronize with it, the 'primitives' were configured to be exclusive
+with Idle Page Tracking before.  However, as we can now synchronize with
+Idle Page Tracking using 'idle_page_lock', this commit makes the
+primitives to do the synchronization and coexistable with Idle Page
 Tracking.
 
-In detail, this commit introduces a mutex lock for Idle Page Tracking,
-called 'page_idle_lock'.  It is exposed to user space via a new bool
-sysfs file, '/sys/kernel/mm/page_idle/lock'.  By writing to and reading
-from the file, users can hold/release and read status of the mutex.
-Writes to the Idle Page Tracking 'bitmap' file fails if the lock is not
-held, while reads of the file can be done regardless of the lock status.
-
-Note that users could still interfere each other if they abuse this
-locking rule.  Nevertheless, this change will let them notice the rule.
+Note that the 'primitives' only require the users to do the
+synchronization by themselves.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- .../admin-guide/mm/idle_page_tracking.rst     | 22 +++++++---
- mm/page_idle.c                                | 40 +++++++++++++++++++
- 2 files changed, 56 insertions(+), 6 deletions(-)
+ include/linux/page_idle.h | 2 ++
+ mm/damon/Kconfig          | 2 +-
+ mm/damon/primitives.c     | 7 +++++++
+ mm/page_idle.c            | 2 +-
+ 4 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/mm/idle_page_tracking.rst b/Documentation/admin-guide/mm/idle_page_tracking.rst
-index df9394fb39c2..3f5e7a8b5b78 100644
---- a/Documentation/admin-guide/mm/idle_page_tracking.rst
-+++ b/Documentation/admin-guide/mm/idle_page_tracking.rst
-@@ -21,13 +21,13 @@ User API
- ========
+diff --git a/include/linux/page_idle.h b/include/linux/page_idle.h
+index d8a6aecf99cb..bcbb965b566c 100644
+--- a/include/linux/page_idle.h
++++ b/include/linux/page_idle.h
+@@ -8,6 +8,8 @@
  
- The idle page tracking API is located at ``/sys/kernel/mm/page_idle``.
--Currently, it consists of the only read-write file,
--``/sys/kernel/mm/page_idle/bitmap``.
-+Currently, it consists of two read-write file,
-+``/sys/kernel/mm/page_idle/bitmap`` and ``/sys/kernel/mm/page_idle/lock``.
+ #ifdef CONFIG_PAGE_IDLE_FLAG
  
--The file implements a bitmap where each bit corresponds to a memory page. The
--bitmap is represented by an array of 8-byte integers, and the page at PFN #i is
--mapped to bit #i%64 of array element #i/64, byte order is native. When a bit is
--set, the corresponding page is idle.
-+The ``bitmap`` file implements a bitmap where each bit corresponds to a memory
-+page. The bitmap is represented by an array of 8-byte integers, and the page at
-+PFN #i is mapped to bit #i%64 of array element #i/64, byte order is native.
-+When a bit is set, the corresponding page is idle.
- 
- A page is considered idle if it has not been accessed since it was marked idle
- (for more details on what "accessed" actually means see the :ref:`Implementation
-@@ -74,6 +74,16 @@ See :ref:`Documentation/admin-guide/mm/pagemap.rst <pagemap>` for more
- information about ``/proc/pid/pagemap``, ``/proc/kpageflags``, and
- ``/proc/kpagecgroup``.
- 
-+The ``lock`` file is for avoidance of interference from concurrent users.  If
-+the content of the ``lock`` file is ``1``, it means the ``bitmap`` file is
-+currently being used by someone.  While the content of the ``lock`` file is
-+``1``, writing ``1`` to the file fails.  Therefore, users should first
-+successfully write ``1`` to the ``lock`` file before starting use of ``bitmap``
-+file and write ``0`` to the ``lock`` file after they finished use of the
-+``bitmap`` file.  If a user writes the ``bitmap`` file while the ``lock`` is
-+``0``, the write fails.  Meanwhile, reads of the ``bitmap`` file success
-+regardless of the ``lock`` status.
++extern struct mutex page_idle_lock;
 +
- .. _impl_details:
+ #ifdef CONFIG_64BIT
+ static inline bool page_is_young(struct page *page)
+ {
+diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
+index 0d2a18ddb9d8..63b9c905b548 100644
+--- a/mm/damon/Kconfig
++++ b/mm/damon/Kconfig
+@@ -14,7 +14,7 @@ config DAMON
  
- Implementation Details
+ config DAMON_PRIMITIVES
+ 	bool "Monitoring primitives for virtual address spaces monitoring"
+-	depends on DAMON && MMU && !IDLE_PAGE_TRACKING
++	depends on DAMON && MMU
+ 	select PAGE_EXTENSION if !64BIT
+ 	select PAGE_IDLE_FLAG
+ 	help
+diff --git a/mm/damon/primitives.c b/mm/damon/primitives.c
+index 9b603ac0077c..59f4de703413 100644
+--- a/mm/damon/primitives.c
++++ b/mm/damon/primitives.c
+@@ -15,6 +15,10 @@
+ #include <linux/sched/mm.h>
+ #include <linux/slab.h>
+ 
++#ifndef CONFIG_IDLE_PAGE_TRACKING
++DEFINE_MUTEX(page_idle_lock);
++#endif
++
+ /* Minimal region size.  Every damon_region is aligned by this. */
+ #define MIN_REGION PAGE_SIZE
+ 
+@@ -552,6 +556,9 @@ bool damon_va_target_valid(struct damon_target *t)
+ {
+ 	struct task_struct *task;
+ 
++	if (!mutex_is_locked(&page_idle_lock))
++		return false;
++
+ 	task = damon_get_task_struct(t);
+ 	if (task) {
+ 		put_task_struct(task);
 diff --git a/mm/page_idle.c b/mm/page_idle.c
-index 144fb4ed961d..0aa45f848570 100644
+index 0aa45f848570..958dcc18f6cd 100644
 --- a/mm/page_idle.c
 +++ b/mm/page_idle.c
-@@ -16,6 +16,8 @@
+@@ -16,7 +16,7 @@
  #define BITMAP_CHUNK_SIZE	sizeof(u64)
  #define BITMAP_CHUNK_BITS	(BITMAP_CHUNK_SIZE * BITS_PER_BYTE)
  
-+static DEFINE_MUTEX(page_idle_lock);
-+
+-static DEFINE_MUTEX(page_idle_lock);
++DEFINE_MUTEX(page_idle_lock);
+ 
  /*
   * Idle page tracking only considers user memory pages, for other types of
-  * pages the idle flag is always unset and an attempt to set it is silently
-@@ -169,6 +171,9 @@ static ssize_t page_idle_bitmap_write(struct file *file, struct kobject *kobj,
- 	unsigned long pfn, end_pfn;
- 	int bit;
- 
-+	if (!mutex_is_locked(&page_idle_lock))
-+		return -EPERM;
-+
- 	if (pos % BITMAP_CHUNK_SIZE || count % BITMAP_CHUNK_SIZE)
- 		return -EINVAL;
- 
-@@ -197,17 +202,52 @@ static ssize_t page_idle_bitmap_write(struct file *file, struct kobject *kobj,
- 	return (char *)in - buf;
- }
- 
-+static ssize_t page_idle_lock_show(struct kobject *kobj,
-+		struct kobj_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%d\n", mutex_is_locked(&page_idle_lock));
-+}
-+
-+static ssize_t page_idle_lock_store(struct kobject *kobj,
-+		struct kobj_attribute *attr, const char *buf, size_t count)
-+{
-+	bool do_lock;
-+	int ret;
-+
-+	ret = kstrtobool(buf, &do_lock);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (do_lock) {
-+		if (!mutex_trylock(&page_idle_lock))
-+			return -EBUSY;
-+	} else {
-+		mutex_unlock(&page_idle_lock);
-+	}
-+
-+	return count;
-+}
-+
- static struct bin_attribute page_idle_bitmap_attr =
- 		__BIN_ATTR(bitmap, 0600,
- 			   page_idle_bitmap_read, page_idle_bitmap_write, 0);
- 
-+static struct kobj_attribute page_idle_lock_attr =
-+		__ATTR(lock, 0600, page_idle_lock_show, page_idle_lock_store);
-+
- static struct bin_attribute *page_idle_bin_attrs[] = {
- 	&page_idle_bitmap_attr,
- 	NULL,
- };
- 
-+static struct attribute *page_idle_lock_attrs[] = {
-+	&page_idle_lock_attr.attr,
-+	NULL,
-+};
-+
- static const struct attribute_group page_idle_attr_group = {
- 	.bin_attrs = page_idle_bin_attrs,
-+	.attrs = page_idle_lock_attrs,
- 	.name = "page_idle",
- };
- 
 -- 
 2.17.1
 
