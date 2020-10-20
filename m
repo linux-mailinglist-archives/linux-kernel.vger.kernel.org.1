@@ -2,122 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B82C29333D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BE8293342
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 04:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730574AbgJTCf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 22:35:56 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:62653 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730415AbgJTCfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 22:35:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603161354; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7V0ug32c1j1PP+hx2W4Yh8PnNSTX3h6faSFkylQvda0=;
- b=eywAp/bzcf6xLmnT8DVIciT6wPjO73Z780V5fzkAMxmESyxoaVyiAApDbXfPnICOZCDEjVIV
- Z4zH7I7HFhUp1767zub88j2OF/e0/icqfpDQx+UKRaXr+Y4ic12uUFp6AKK0nxml2WkCFASR
- OBdaFldpM4J5E9QgXgjBY4Rptyc=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f8e4d0aaad2c3cd1c610815 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Oct 2020 02:35:54
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DAA79C43382; Tue, 20 Oct 2020 02:35:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31967C433FE;
-        Tue, 20 Oct 2020 02:35:53 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 20 Oct 2020 10:35:53 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        id S2390665AbgJTCk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 22:40:29 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:49206 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730780AbgJTCk3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 22:40:29 -0400
+X-UUID: ad8473ebd3514293850944dea07671c5-20201020
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=9qdaSxV26zZu3QrywMo2JZVF3/nZ2dvuX52dR6NpWeI=;
+        b=k73eDhOuIws2pqVkxx6EvpKCO3pm7LBEg/1L9rUBQeL83/SXby8aC6vIxf+kV4RWMYGIQLNw+0MUUF+FyCc7s+U4UQZXuTGACpLw+upemREOYfsxeAIyabMgKfxtKVFzWeOq7i3cGDLQEHISu/o3DE+GYRy4Ic7AjdI3vxuBfTo=;
+X-UUID: ad8473ebd3514293850944dea07671c5-20201020
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1217428539; Tue, 20 Oct 2020 10:40:12 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Oct
+ 2020 10:40:10 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 20 Oct 2020 10:40:09 +0800
+Message-ID: <1603161609.29336.146.camel@mhfsdcap03>
+Subject: Re: [PATCH v2 6/8] dt-bindings: usb: convert mediatek,mtk-xhci.txt
+ to YAML schema
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        "CK Hu" <ck.hu@mediatek.com>,
         Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: ufs: Make sure clk scaling happens only when hba is
- runtime ACTIVE
-In-Reply-To: <1600758548-28576-1-git-send-email-cang@codeaurora.org>
-References: <1600758548-28576-1-git-send-email-cang@codeaurora.org>
-Message-ID: <67c4ae5998765daa674a4df696d8d673@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Min Guo <min.guo@mediatek.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-usb@vger.kernel.org>
+Date:   Tue, 20 Oct 2020 10:40:09 +0800
+In-Reply-To: <20201016171433.GA1585924@bogus>
+References: <20201013085207.17749-1-chunfeng.yun@mediatek.com>
+         <20201013085207.17749-6-chunfeng.yun@mediatek.com>
+         <20201016171433.GA1585924@bogus>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 34B521366DE8A616231CE0BCC44138238C9955C08BE4B4D6C2C353042FDD209B2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stanley,
+T24gRnJpLCAyMDIwLTEwLTE2IGF0IDEyOjE0IC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gVHVlLCBPY3QgMTMsIDIwMjAgYXQgMDQ6NTI6MDVQTSArMDgwMCwgQ2h1bmZlbmcgWXVuIHdy
+b3RlOg0KPiA+IENvbnZlcnQgbWVkaWF0ZWssbXRrLXhoY2kudHh0IHRvIFlBTUwgc2NoZW1hIG1l
+ZGlhdGVrLG10ay14aGNpLnlhbWwNCj4gPiANCj4gDQo+IFRoZXJlJ3Mgc29tZSByZWZhY3Rvcmlu
+ZyBvZiB1c2ItaGNkLnlhbWwgYW5kIFhIQ0kgc2NoZW1hIHVuZGVyIHJldmlldyANCj4gYW5kIHRo
+aXMgbWF5IG5lZWQgc29tZSByZWZhY3RvcmluZyBvbiB0b3Agb2YgaXQuDQpPaywgd2lsbCBkbyBp
+dCANCj4gDQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVk
+aWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+IHYyOiBuZXcgcGF0Y2gNCj4gPiAtLS0NCj4gPiAgLi4u
+L2JpbmRpbmdzL3VzYi9tZWRpYXRlayxtdGsteGhjaS50eHQgICAgICAgIHwgMTIxIC0tLS0tLS0t
+LS0tLQ0KPiA+ICAuLi4vYmluZGluZ3MvdXNiL21lZGlhdGVrLG10ay14aGNpLnlhbWwgICAgICAg
+fCAxODAgKysrKysrKysrKysrKysrKysrDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMTgwIGluc2Vy
+dGlvbnMoKyksIDEyMSBkZWxldGlvbnMoLSkNCj4gPiAgZGVsZXRlIG1vZGUgMTAwNjQ0IERvY3Vt
+ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy91c2IvbWVkaWF0ZWssbXRrLXhoY2kudHh0DQo+
+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+dXNiL21lZGlhdGVrLG10ay14aGNpLnlhbWwNCj4gDQo+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL21lZGlhdGVrLG10ay14aGNpLnlhbWwg
+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL21lZGlhdGVrLG10ay14aGNp
+LnlhbWwNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4u
+ZWE2OTZjOGYxMjY5DQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy91c2IvbWVkaWF0ZWssbXRrLXhoY2kueWFtbA0KPiA+IEBAIC0w
+LDAgKzEsMTgwIEBADQo+ID4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wLW9u
+bHkgT1IgQlNELTItQ2xhdXNlKQ0KPiA+ICsjIENvcHlyaWdodCAoYykgMjAyMCBNZWRpYVRlaw0K
+PiA+ICslWUFNTCAxLjINCj4gPiArLS0tDQo+ID4gKyRpZDogaHR0cDovL2RldmljZXRyZWUub3Jn
+L3NjaGVtYXMvdXNiL21lZGlhdGVrLG10ay14aGNpLnlhbWwjDQo+ID4gKyRzY2hlbWE6IGh0dHA6
+Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KPiA+ICsNCj4gPiArdGl0
+bGU6IE1lZGlhVGVrIFVTQjMgeEhDSSBEZXZpY2UgVHJlZSBCaW5kaW5ncw0KPiA+ICsNCj4gPiAr
+bWFpbnRhaW5lcnM6DQo+ID4gKyAgLSBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRl
+ay5jb20+DQo+ID4gKw0KPiA+ICthbGxPZjoNCj4gPiArICAtICRyZWY6ICJ1c2ItaGNkLnlhbWwi
+DQo+ID4gKw0KPiA+ICtkZXNjcmlwdGlvbjogfA0KPiA+ICsgIFRoZXJlIGFyZSB0d28gc2NlbmFy
+aW9zOg0KPiA+ICsgIGNhc2UgMTogb25seSBzdXBwb3J0cyB4SENJIGRyaXZlcjsNCj4gPiArICBj
+YXNlIDI6IHN1cHBvcnRzIGR1YWwtcm9sZSBtb2RlLCBhbmQgdGhlIGhvc3QgaXMgYmFzZWQgb24g
+eEhDSSBkcml2ZXIuDQo+ID4gKw0KPiA+ICtwcm9wZXJ0aWVzOg0KPiA+ICsgICNjb21tb24gcHJv
+cGVydGllcyBmb3IgYm90aCBjYXNlIDEgYW5kIGNhc2UgMg0KPiA+ICsgIGNvbXBhdGlibGU6DQo+
+ID4gKyAgICBpdGVtczoNCj4gPiArICAgICAgLSBlbnVtOg0KPiA+ICsgICAgICAgICAgLSBtZWRp
+YXRlayxtdDI3MTIteGhjaQ0KPiA+ICsgICAgICAgICAgLSBtZWRpYXRlayxtdDc2MjIteGhjaQ0K
+PiA+ICsgICAgICAgICAgLSBtZWRpYXRlayxtdDc2MjkteGhjaQ0KPiA+ICsgICAgICAgICAgLSBt
+ZWRpYXRlayxtdDgxNzMteGhjaQ0KPiA+ICsgICAgICAgICAgLSBtZWRpYXRlayxtdDgxODMteGhj
+aQ0KPiA+ICsgICAgICAtIGNvbnN0OiBtZWRpYXRlayxtdGsteGhjaQ0KPiA+ICsNCj4gPiArICBy
+ZWc6DQo+ID4gKyAgICBtaW5JdGVtczogMQ0KPiA+ICsgICAgbWF4SXRlbXM6IDINCj4gPiArICAg
+IGl0ZW1zOg0KPiA+ICsgICAgICAtIGRlc2NyaXB0aW9uOiB0aGUgcmVnaXN0ZXJzIG9mIHhIQ0kg
+TUFDDQo+ID4gKyAgICAgIC0gZGVzY3JpcHRpb246IHRoZSByZWdpc3RlcnMgb2YgSVAgUG9ydCBD
+b250cm9sDQo+ID4gKw0KPiA+ICsgIHJlZy1uYW1lczoNCj4gPiArICAgIG1pbkl0ZW1zOiAxDQo+
+ID4gKyAgICBtYXhJdGVtczogMg0KPiA+ICsgICAgaXRlbXM6DQo+ID4gKyAgICAgIC0gY29uc3Q6
+IG1hYw0KPiA+ICsgICAgICAtIGNvbnN0OiBpcHBjICAjb3B0aW9uYWwsIG9ubHkgbmVlZGVkIGZv
+ciBjYXNlIDEuDQo+ID4gKw0KPiA+ICsgIGludGVycnVwdHM6DQo+ID4gKyAgICBtYXhJdGVtczog
+MQ0KPiA+ICsNCj4gPiArICBwb3dlci1kb21haW5zOg0KPiA+ICsgICAgZGVzY3JpcHRpb246IEEg
+cGhhbmRsZSB0byBVU0IgcG93ZXIgZG9tYWluIG5vZGUgdG8gY29udHJvbCBVU0IncyBNVENNT1MN
+Cj4gPiArICAgIG1heEl0ZW1zOiAxDQo+ID4gKw0KPiA+ICsgIGNsb2NrczoNCj4gPiArICAgIG1p
+bkl0ZW1zOiAxDQo+ID4gKyAgICBtYXhJdGVtczogNQ0KPiA+ICsgICAgaXRlbXM6DQo+ID4gKyAg
+ICAgIC0gZGVzY3JpcHRpb246IENvbnRyb2xsZXIgY2xvY2sgdXNlZCBieSBub3JtYWwgbW9kZQ0K
+PiA+ICsgICAgICAtIGRlc2NyaXB0aW9uOiBSZWZlcmVuY2UgY2xvY2sgdXNlZCBieSBsb3cgcG93
+ZXIgbW9kZSBldGMNCj4gPiArICAgICAgLSBkZXNjcmlwdGlvbjogTWN1IGJ1cyBjbG9jayBmb3Ig
+cmVnaXN0ZXIgYWNjZXNzDQo+ID4gKyAgICAgIC0gZGVzY3JpcHRpb246IERNQSBidXMgY2xvY2sg
+Zm9yIGRhdGEgdHJhbnNmZXINCj4gPiArICAgICAgLSBkZXNjcmlwdGlvbjogY29udHJvbGxlciBj
+bG9jaw0KPiA+ICsNCj4gPiArICBjbG9jay1uYW1lczoNCj4gPiArICAgIG1pbkl0ZW1zOiAxDQo+
+ID4gKyAgICBtYXhJdGVtczogNQ0KPiA+ICsgICAgaXRlbXM6DQo+ID4gKyAgICAgIC0gY29uc3Q6
+IHN5c19jayAgI3JlcXVpcmVkLCB0aGUgZm9sbG93aW5nIG9uZXMgYXJlIG9wdGlvbmFsDQo+ID4g
+KyAgICAgIC0gY29uc3Q6IHJlZl9jaw0KPiA+ICsgICAgICAtIGNvbnN0OiBtY3VfY2sNCj4gPiAr
+ICAgICAgLSBjb25zdDogZG1hX2NrDQo+ID4gKyAgICAgIC0gY29uc3Q6IHhoY2lfY2sNCj4gPiAr
+DQo+ID4gKyAgcGh5czoNCj4gPiArICAgICRyZWY6IC91c2IvdXNiLWhjZC55YW1sIw0KPiANCj4g
+VGhhdCBkb2Vzbid0IGxvb2sgcmlnaHQuLi4NCk5vIG5lZWQgcmVmZXIgdG8gaXQgYWdhaW4/DQoN
+CnVzYi1oY2QueWFtbCBkZXNjcmliZXMgaG93IHRvIHVzZSBwaHlzL3BoeS1uYW1lcw0KDQo+IA0K
+PiA+ICsNCj4gPiArICB2dXNiMzMtc3VwcGx5Og0KPiA+ICsgICAgZGVzY3JpcHRpb246IFJlZ3Vs
+YXRvciBvZiBVU0IgQVZERDMuM3YNCj4gPiArDQo+ID4gKyAgdmJ1cy1zdXBwbHk6DQo+ID4gKyAg
+ICBkZXNjcmlwdGlvbjogUmVndWxhdG9yIG9mIFVTQiBWQlVTNXYNCj4gPiArDQo+ID4gKyAgdXNi
+My1scG0tY2FwYWJsZToNCj4gPiArICAgIGRlc2NyaXB0aW9uOiBzdXBwb3J0cyBVU0IzLjAgTFBN
+DQo+ID4gKyAgICB0eXBlOiBib29sZWFuDQo+ID4gKw0KPiA+ICsgIGltb2QtaW50ZXJ2YWwtbnM6
+DQo+ID4gKyAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzIN
+Cj4gPiArICAgIGRlc2NyaXB0aW9uOiB8DQo+ID4gKyAgICAgIEludGVycnVwdCBtb2RlcmF0aW9u
+IGludGVydmFsIHZhbHVlLCBpdCBpcyA4IHRpbWVzIGFzIG11Y2ggYXMgdGhhdA0KPiA+ICsgICAg
+ICBkZWZpbmVkIGluIHRoZSB4SENJIHNwZWMgb24gTVRLJ3MgY29udHJvbGxlci4NCj4gPiArICAg
+IGRlZmF1bHQ6IDUwMDANCj4gPiArDQo+ID4gKyAgI3RoZSBmb2xsb3dpbmcgcHJvcGVydGllcyBh
+cmUgb25seSB1c2VkIGZvciBjYXNlIDENCj4gPiArICBwaW5jdHJsLTA6DQo+ID4gKyAgICBkZXNj
+cmlwdGlvbjogQSBwaGFuZGxlIHRvIHRoZSBkZWZhdWx0IHBpbmN0cmwgc3RhdGUuDQo+ID4gKw0K
+PiA+ICsgIHBpbmN0cmwtbmFtZXM6DQo+ID4gKyAgICBkZXNjcmlwdGlvbjogQSBwaW5jdHJsIHN0
+YXRlIG5hbWVkICJkZWZhdWx0IiBtdXN0IGJlIGRlZmluZWQuDQo+ID4gKyAgICAgIFNlZSBwaW5j
+dHJsL3BpbmN0cmwtYmluZGluZ3MudHh0DQo+ID4gKyAgICBjb25zdDogZGVmYXVsdA0KPiANCj4g
+RG9uJ3QgbmVlZCBwaW5jdHJsLSogcHJvcGVydGllcy4gVGhleSBhcmUgYWx3YXlzIGFsbG93ZWQu
+DQpPaw0KPiANCj4gPiArDQo+ID4gKyAgd2FrZXVwLXNvdXJjZToNCj4gPiArICAgIGRlc2NyaXB0
+aW9uOiBlbmFibGUgVVNCIHJlbW90ZSB3YWtldXAsIHNlZSBwb3dlci93YWtldXAtc291cmNlLnR4
+dA0KPiA+ICsgICAgdHlwZTogYm9vbGVhbg0KPiA+ICsNCj4gPiArICBtZWRpYXRlayxzeXNjb24t
+d2FrZXVwOg0KPiA+ICsgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMv
+cGhhbmRsZS1hcnJheQ0KPiA+ICsgICAgbWF4SXRlbXM6IDENCj4gPiArICAgIGRlc2NyaXB0aW9u
+OiB8DQo+ID4gKyAgICAgIEEgcGhhbmRsZSB0byBzeXNjb24gdXNlZCB0byBhY2Nlc3MgdGhlIHJl
+Z2lzdGVyIG9mIHRoZSBVU0Igd2FrZXVwIGdsdWUNCj4gPiArICAgICAgbGF5ZXIgYmV0d2VlbiB4
+SENJIGFuZCBTUE0sIHRoZSBmaWVsZCBzaG91bGQgYWx3YXlzIGJlIGEgbXVsdGlwbGUgb2YNCj4g
+PiArICAgICAgMyBjZWxscyBsb25nLg0KPiANCj4gQSBtdWx0aXBsZSBvZiAzPw0KU2VlbXMgd3Jv
+bmcsIG9ubHkgc3VwcG9ydCBvbmUsIHdpbGwgbW9kaWZ5IGl0DQo+ICBIb3cgd291bGQgdGhlcmUg
+YmUgbW9yZSB0aGFuIDMgY2VsbHM/DQpvdGhlcnMgd2lsbCBiZSBpZ25vcmVkDQoNCj4gDQo+ID4g
+Kw0KPiA+ICsgICAgICBpdGVtczoNCj4gPiArICAgICAgICAtIGRlc2NyaXB0aW9uOg0KPiA+ICsg
+ICAgICAgICAgICBUaGUgZmlyc3QgY2VsbCByZXByZXNlbnRzIGEgcGhhbmRsZSB0byBzeXNjb24N
+Cj4gPiArICAgICAgICAtIGRlc2NyaXB0aW9uOg0KPiA+ICsgICAgICAgICAgICBUaGUgc2Vjb25k
+IGNlbGwgcmVwcmVzZW50cyB0aGUgcmVnaXN0ZXIgYmFzZSBhZGRyZXNzIG9mIHRoZSBnbHVlDQo+
+ID4gKyAgICAgICAgICAgIGxheWVyIGluIHN5c2Nvbg0KPiA+ICsgICAgICAgIC0gZGVzY3JpcHRp
+b246DQo+ID4gKyAgICAgICAgICAgIFRoZSB0aGlyZCBjZWxsIHJlcHJlc2VudHMgdGhlIGhhcmR3
+YXJlIHZlcnNpb24gb2YgdGhlIGdsdWUgbGF5ZXIsDQo+ID4gKyAgICAgICAgICAgIDEgaXMgdXNl
+ZCBieSBtdDgxNzMgZXRjLCAyIGlzIHVzZWQgYnkgbXQyNzEyIGV0Yw0KPiA+ICsgICAgICAgICAg
+ZW51bTogWzEsIDJdDQo+ID4gKw0KPiA+ICsgIG1lZGlhdGVrLHUzcC1kaXMtbXNrOg0KPiA+ICsg
+ICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyDQo+ID4gKyAg
+ICBkZXNjcmlwdGlvbjogVGhlIG1hc2sgdG8gZGlzYWJsZSB1M3BvcnRzLCBiaXQwIGZvciB1M3Bv
+cnQwLA0KPiA+ICsgICAgICBiaXQxIGZvciB1M3BvcnQxLCAuLi4gZXRjDQo+ID4gKw0KPiA+ICsg
+ICIjYWRkcmVzcy1jZWxscyI6DQo+ID4gKyAgICBjb25zdDogMQ0KPiA+ICsNCj4gPiArICAiI3Np
+emUtY2VsbHMiOg0KPiA+ICsgICAgY29uc3Q6IDANCj4gPiArDQo+ID4gK3BhdHRlcm5Qcm9wZXJ0
+aWVzOg0KPiA+ICsgICJeW2EtZl0rQFswLTlhLWZdKyQiOg0KPiA+ICsgICAgJHJlZjogL3VzYi91
+c2ItaGNkLnlhbWwjDQo+ID4gKyAgICB0eXBlOiBvYmplY3QNCj4gPiArICAgIGRlc2NyaXB0aW9u
+OiBUaGUgaGFyZCB3aXJlZCBVU0IgZGV2aWNlcy4NCj4gPiArDQo+ID4gK2RlcGVuZGVuY2llczoN
+Cj4gPiArICB3YWtldXAtc291cmNlOiBbICdtZWRpYXRlayxzeXNjb24td2FrZXVwJyBdDQo+ID4g
+Kw0KPiA+ICtyZXF1aXJlZDoNCj4gPiArICAtIGNvbXBhdGlibGUNCj4gPiArICAtIHJlZw0KPiA+
+ICsgIC0gcmVnLW5hbWVzDQo+ID4gKyAgLSBpbnRlcnJ1cHRzDQo+ID4gKyAgLSBjbG9ja3MNCj4g
+PiArICAtIGNsb2NrLW5hbWVzDQo+ID4gKw0KPiA+ICthZGRpdGlvbmFsUHJvcGVydGllczogZmFs
+c2UNCj4gPiArDQo+ID4gK2V4YW1wbGVzOg0KPiA+ICsgIC0gfA0KPiA+ICsgICAgI2luY2x1ZGUg
+PGR0LWJpbmRpbmdzL2Nsb2NrL210ODE3My1jbGsuaD4NCj4gPiArICAgICNpbmNsdWRlIDxkdC1i
+aW5kaW5ncy9pbnRlcnJ1cHQtY29udHJvbGxlci9hcm0tZ2ljLmg+DQo+ID4gKyAgICAjaW5jbHVk
+ZSA8ZHQtYmluZGluZ3MvaW50ZXJydXB0LWNvbnRyb2xsZXIvaXJxLmg+DQo+ID4gKyAgICAjaW5j
+bHVkZSA8ZHQtYmluZGluZ3MvcGh5L3BoeS5oPg0KPiA+ICsgICAgI2luY2x1ZGUgPGR0LWJpbmRp
+bmdzL3Bvd2VyL210ODE3My1wb3dlci5oPg0KPiA+ICsNCj4gPiArICAgIHVzYjM6IHVzYkAxMTI3
+MDAwMCB7DQo+ID4gKyAgICAgICAgY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMteGhjaSIs
+ICJtZWRpYXRlayxtdGsteGhjaSI7DQo+ID4gKyAgICAgICAgcmVnID0gPDB4MTEyNzAwMDAgMHgx
+MDAwPiwgPDB4MTEyODA3MDAgMHgwMTAwPjsNCj4gPiArICAgICAgICByZWctbmFtZXMgPSAibWFj
+IiwgImlwcGMiOw0KPiA+ICsgICAgICAgIGludGVycnVwdHMgPSA8R0lDX1NQSSAxMTUgSVJRX1RZ
+UEVfTEVWRUxfTE9XPjsNCj4gPiArICAgICAgICBwb3dlci1kb21haW5zID0gPCZzY3BzeXMgTVQ4
+MTczX1BPV0VSX0RPTUFJTl9VU0I+Ow0KPiA+ICsgICAgICAgIGNsb2NrcyA9IDwmdG9wY2tnZW4g
+Q0xLX1RPUF9VU0IzMF9TRUw+LCA8JmNsazI2bT47DQo+ID4gKyAgICAgICAgY2xvY2stbmFtZXMg
+PSAic3lzX2NrIiwgInJlZl9jayI7DQo+ID4gKyAgICAgICAgcGh5cyA9IDwmdTNwb3J0MCBQSFlf
+VFlQRV9VU0IzPiwgPCZ1MnBvcnQxIFBIWV9UWVBFX1VTQjI+Ow0KPiA+ICsgICAgICAgIHZ1c2Iz
+My1zdXBwbHkgPSA8Jm10NjM5N192dXNiX3JlZz47DQo+ID4gKyAgICAgICAgdmJ1cy1zdXBwbHkg
+PSA8JnVzYl9wMV92YnVzPjsNCj4gPiArICAgICAgICBpbW9kLWludGVydmFsLW5zID0gPDEwMDAw
+PjsNCj4gPiArICAgICAgICBtZWRpYXRlayxzeXNjb24td2FrZXVwID0gPCZwZXJpY2ZnIDB4NDAw
+IDE+Ow0KPiA+ICsgICAgICAgIHdha2V1cC1zb3VyY2U7DQo+ID4gKyAgICAgICAgdXNiMy1scG0t
+Y2FwYWJsZTsNCj4gPiArICAgIH07DQo+ID4gKy4uLg0KPiA+IC0tIA0KPiA+IDIuMTguMA0KDQo=
 
-On 2020-09-22 15:09, Can Guo wrote:
-> If someone plays with the UFS clk scaling devfreq governor through 
-> sysfs,
-> ufshcd_devfreq_scale may be called even when hba is not runtime ACTIVE,
-> which can lead to unexpected error. We cannot just protect it by 
-> calling
-> pm_runtime_get_sync, because that may cause racing problem since hba
-> runtime suspend ops needs to suspend clk scaling. In order to fix it, 
-> call
-> pm_runtime_get_noresume and check hba's runtime status, then only 
-> proceed
-> if hba is runtime ACTIVE, otherwise just bail.
-> 
-> governor_store
->  devfreq_performance_handler
->   update_devfreq
->    devfreq_set_target
->     ufshcd_devfreq_target
->      ufshcd_devfreq_scale
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index e4cb994..847f355 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1294,8 +1294,15 @@ static int ufshcd_devfreq_target(struct device 
-> *dev,
->  	}
->  	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
-> 
-> +	pm_runtime_get_noresume(hba->dev);
-> +	if (!pm_runtime_active(hba->dev)) {
-> +		pm_runtime_put_noidle(hba->dev);
-> +		ret = -EAGAIN;
-> +		goto out;
-> +	}
->  	start = ktime_get();
->  	ret = ufshcd_devfreq_scale(hba, scale_up);
-> +	pm_runtime_put(hba->dev);
-> 
->  	trace_ufshcd_profile_clk_scaling(dev_name(hba->dev),
->  		(scale_up ? "up" : "down"),
-
-Could you please review this one since we may be the only two
-users of clk scaling?
-
-Thanks,
-
-Can Guo.
