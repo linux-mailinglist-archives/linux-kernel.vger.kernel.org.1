@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3282937EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391322937ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392757AbgJTJVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:21:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392347AbgJTJVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:21:14 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E96BF22283;
-        Tue, 20 Oct 2020 09:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603185673;
-        bh=xJBPcxy4dg9fBmvpcO8v9x+85PkwUhOcKInV6wGeUMc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n7CvHIR6EtuUnzq8D48VufpuZuKI5klitmeGyGXQhW+ymLcLPeTI1d77twcfyDOPl
-         kdtqqqRaBa8m4Oh/2fcKlyl/CfAp5uHI3wETp8eCcn4OPQnrpzbjGFRxKmcDq8ZeSF
-         ue1MxRK+sj2+lgZQsJkrmpL8j35I750onFD57yIg=
-Date:   Tue, 20 Oct 2020 11:21:55 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH 1/2] fpga: dfl: add driver_override support
-Message-ID: <20201020092155.GA3879567@kroah.com>
-References: <1602828151-24784-1-git-send-email-yilun.xu@intel.com>
- <1602828151-24784-2-git-send-email-yilun.xu@intel.com>
- <63d7730b-d9b8-c75d-16f6-3ebb507aabaa@redhat.com>
- <20201019040612.GA16172@yilunxu-OptiPlex-7050>
- <f767b9a0-1db8-7ced-6bd9-5ee1f58d40da@redhat.com>
- <20201020071158.GC28746@yilunxu-OptiPlex-7050>
- <20201020073259.GA3803984@kroah.com>
- <20201020085723.GE16172@yilunxu-OptiPlex-7050>
+        id S2392766AbgJTJW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391402AbgJTJW5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 05:22:57 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821D2C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:22:56 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id g7so1282134ilr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:22:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wWmw1NV7gbWNc2BoUTFwu8FGKZUBcJpPXw0NA4jr4Bk=;
+        b=EDKxuR4EF785e5FhWc5bAAo35H3YMcr75neMvBR5SA6OpTLU2UxaqTvB+dzjheFuUY
+         nSSCIdMUg7u2EmPyHfEHbo/cPxAuyDUZs7GJXMkSjGh4pj4RIw3jnWZ1v2vGeFS9PYpQ
+         qHvuMAe2n+UHlnsZCBRMqLyqlrP4Lfu8fcUNdFoB5VwXEooCom3oAO5jcYK9PwS8lCNk
+         L3U2o6TFqod2uOs9IcWezcd1bB78LvJKEllgAHnBtVQFJV2qwIMtwANCOJ4AXlnyqxHI
+         i2XJSXhDYZAG08oos6LHJxlMq29f+GB+Wn7Z+ydeeGurwT6JunzkwQ4f8ANe0qwONtpV
+         9FHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wWmw1NV7gbWNc2BoUTFwu8FGKZUBcJpPXw0NA4jr4Bk=;
+        b=hsACK/R2tLvYLk6gE7h4gbzj9g937Ss7fYsiFufmRKliTwN/5PdougUEMDyMjTwLrD
+         KwN8L+LnpbvxfgccBmXdzVJRN+1+rhvHijiIcNkItfcXPTlx8URcf3A4anT/qmuPvSAs
+         S11DJ5slXshK515t51NOXGN1xYed533MZZXhvsB/Gae5eATZxttpYu8XLpDu5SF4EdDb
+         e45YpxWAqv0q09n1pAJOSN9UqkoYgy8nDMP3YNRzmONYhO1SKf168goAPKIUdnfy/EMw
+         FzN2tfvIaFlV9XTaVthXCRnFNS0uOPWYESms9yKXYaXXa01s725keFufVzbCAsorY7IV
+         wo3w==
+X-Gm-Message-State: AOAM532v9F/zoQnlCiDTArcMWRXHUG7xtjPuvJ664sDPUQKnbL6o/kpd
+        uLREW15ZpxlBnpNZ0in//8/H1EfAxWRdcNbp0EY=
+X-Google-Smtp-Source: ABdhPJxC+ot7T75FkO1+J7+MSBrDulfWIWZX0EZ1N+ymQwTAx7MbhOvrWo8aFRRXyJXXAYSqJ7JWigVNX8dWGt9hUYo=
+X-Received: by 2002:a92:180b:: with SMTP id 11mr1207045ily.89.1603185775910;
+ Tue, 20 Oct 2020 02:22:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020085723.GE16172@yilunxu-OptiPlex-7050>
+References: <20201012125323.17509-1-david@redhat.com> <20201012125323.17509-8-david@redhat.com>
+In-Reply-To: <20201012125323.17509-8-david@redhat.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Tue, 20 Oct 2020 11:22:45 +0200
+Message-ID: <CAM9Jb+iiLy-7BB7J3S2yiEhWpn1VxKG_VuwGK82gq0+=8QvQKw@mail.gmail.com>
+Subject: Re: [PATCH v1 07/29] virtio-mem: generalize virtio_mem_overlaps_range()
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 04:57:23PM +0800, Xu Yilun wrote:
-> On Tue, Oct 20, 2020 at 09:32:59AM +0200, Greg KH wrote:
-> > On Tue, Oct 20, 2020 at 03:11:58PM +0800, Xu Yilun wrote:
-> > > I think it is normal case that a driver is successfully registered but
-> > > doesn't match any device because it provides no id_table.
-> > 
-> > How is that "normal"?  What would ever cause that driver to be bound to
-> > a device then?
-> 
-> This patchset adds the driver_override sysfs node, to let userspace
-> specify which driver (by name matching) to be bound to a device. The
-> driver "dfl-uio-pdev" doesn't provide an id_table, it could only be
-> bound to a device whose driver_override is set to "dfl-uio-pdev".
-> 
-> Sorry, this is actually not "normal". Usually dfl drivers with valid id_table
-> should be used to drive the dfl devices. But we also want to give an option
-> for userspace to take full control of the device, some IP blocks in FPGA are
-> written for specific purposes by FPGA user so a userspace driver may
-> serve them better.
-> 
-> > 
-> > And you better not say userspace is responsible for it...
-> 
-> Actually it is the userspace's decision which device they want to
-> access directly ...
-> 
-> I'm not sure if this idea is OK. I see similar implementation for
-> pci/platform devices.
+> Avoid using memory block ids. While at it, use uint64_t for
+> address/size.
+>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  drivers/virtio/virtio_mem.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+> index 821143db14fe..37a0e338ae4a 100644
+> --- a/drivers/virtio/virtio_mem.c
+> +++ b/drivers/virtio/virtio_mem.c
+> @@ -489,14 +489,10 @@ static int virtio_mem_translate_node_id(struct virtio_mem *vm, uint16_t node_id)
+>   * Test if a virtio-mem device overlaps with the given range. Can be called
+>   * from (notifier) callbacks lockless.
+>   */
+> -static bool virtio_mem_overlaps_range(struct virtio_mem *vm,
+> -                                     unsigned long start, unsigned long size)
+> +static bool virtio_mem_overlaps_range(struct virtio_mem *vm, uint64_t start,
+> +                                     uint64_t size)
+>  {
+> -       unsigned long dev_start = virtio_mem_mb_id_to_phys(vm->first_mb_id);
+> -       unsigned long dev_end = virtio_mem_mb_id_to_phys(vm->last_mb_id) +
+> -                               memory_block_size_bytes();
+> -
+> -       return start < dev_end && dev_start < start + size;
+> +       return start < vm->addr + vm->region_size && vm->addr < start + size;
+>  }
 
-That is there for debugging and for being able to support things when
-the kernel is not updated with a new device id yet.
-
-The virtio people took this to a new extreme and use it to bind real
-devices through to virtual machines, but really, that's horrid.  And
-they have problems with it as is seen in random patches at times.
-
-Don't make this the only way to support this, that's not an ok api.
-
-greg k-h
+Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
