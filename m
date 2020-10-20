@@ -2,129 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E1C29353F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED3A293542
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731186AbgJTGwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:52:36 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:33526 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbgJTGwf (ORCPT
+        id S2404620AbgJTGxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:53:09 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:54874 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbgJTGxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:52:35 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 09K6qMwL5009206, This message is accepted by code: ctloc85258
-Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 09K6qMwL5009206
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 20 Oct 2020 14:52:23 +0800
-Received: from RSEXMBS02.realsil.com.cn (172.29.17.196) by
- RSEXMBS01.realsil.com.cn (172.29.17.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Tue, 20 Oct 2020 14:52:22 +0800
-Received: from RSEXMBS02.realsil.com.cn ([fe80::f8fc:93be:88f4:52ef]) by
- RSEXMBS02.realsil.com.cn ([fe80::f8fc:93be:88f4:52ef%7]) with mapi id
- 15.01.2044.004; Tue, 20 Oct 2020 14:52:22 +0800
-From:   =?utf-8?B?5Yav6ZSQ?= <rui_feng@realsil.com.cn>
-To:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggMy8zXSBtbWM6IHJ0c3g6IEFkZCBTRCBFeHByZXNz?= =?utf-8?Q?_mode_support_for_RTS5261?=
-Thread-Topic: [PATCH 3/3] mmc: rtsx: Add SD Express mode support for RTS5261
-Thread-Index: AQHWkt9BwBVjFlHHd0at7hFkgpI9BamgM6Uw
-Date:   Tue, 20 Oct 2020 06:52:22 +0000
-Message-ID: <663240cd069644d0b5fdae7aec9d4597@realsil.com.cn>
-References: <1600999061-13669-1-git-send-email-rui_feng@realsil.com.cn>
-In-Reply-To: <1600999061-13669-1-git-send-email-rui_feng@realsil.com.cn>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.29.40.150]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 20 Oct 2020 02:53:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1603176789; x=1634712789;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=dXSxBx299KAyWuywlNRaoGYohwze7++miMcdncpgXw4=;
+  b=NgtqsZASIyNGQTWJdAlGxY05H+Scs03uhnnqnP7hcCjDWyC7WIbSZon2
+   TjqQnADcq/eiUuB73C82MH2G5oAQYJPjeLisgpf141F5bYNKRodHVr5GC
+   MSbvmD9MswpOl2Ag6NeSVGHkTxON7XWVXFQxftmvrX2mHF28VI1yisZDp
+   8=;
+X-IronPort-AV: E=Sophos;i="5.77,396,1596499200"; 
+   d="scan'208";a="85008753"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-cc689b93.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 20 Oct 2020 06:52:51 +0000
+Received: from EX13D31EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-cc689b93.us-west-2.amazon.com (Postfix) with ESMTPS id 12D79120E7B;
+        Tue, 20 Oct 2020 06:52:50 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.146) by
+ EX13D31EUB001.ant.amazon.com (10.43.166.210) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 20 Oct 2020 06:52:45 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     SeongJae Park <sjpark@amazon.com>
+CC:     <brendanhiggins@google.com>, SeongJae Park <sjpark@amazon.de>,
+        <skhan@linuxfoundation.org>, <linux-kselftest@vger.kernel.org>,
+        <kunit-dev@googlegroups.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] kunit: tool: Mark 'kunittest_config' as constant again
+Date:   Tue, 20 Oct 2020 08:52:31 +0200
+Message-ID: <20201020065231.24263-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201012102621.32226-2-sjpark@amazon.com>
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.146]
+X-ClientProxiedBy: EX13D34UWA004.ant.amazon.com (10.43.160.177) To
+ EX13D31EUB001.ant.amazon.com (10.43.166.210)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQWxsLA0KDQpBIG1vbnRoIGhhcyBwYXNzZWQsIGRvIEkgbmVlZCB0byBtb2RpZnkgdGhlc2Ug
-cGF0Y2hlcz8NCg0KVGhhbmtzDQoNCj4gDQo+IEZyb206IFJ1aSBGZW5nIDxydWlfZmVuZ0ByZWFs
-c2lsLmNvbS5jbj4NCj4gDQo+IFJUUzUyNjEgc3VwcG9ydCBsZWdhY3kgU0QgbW9kZSBhbmQgU0Qg
-RXhwcmVzcyBtb2RlLg0KPiBJbiBTRDcueCwgU0QgYXNzb2NpYXRpb24gaW50cm9kdWNlIFNEIEV4
-cHJlc3MgYXMgYSBuZXcgbW9kZS4NCj4gVGhpcyBwYXRjaCBtYWtlcyBSVFM1MjYxIHN1cHBvcnQg
-U0QgRXhwcmVzcyBtb2RlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogUnVpIEZlbmcgPHJ1aV9mZW5n
-QHJlYWxzaWwuY29tLmNuPg0KPiAtLS0NCj4gIGRyaXZlcnMvbW1jL2hvc3QvcnRzeF9wY2lfc2Rt
-bWMuYyB8IDU5DQo+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBj
-aGFuZ2VkLCA1OSBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tbWMv
-aG9zdC9ydHN4X3BjaV9zZG1tYy5jDQo+IGIvZHJpdmVycy9tbWMvaG9zdC9ydHN4X3BjaV9zZG1t
-Yy5jDQo+IGluZGV4IDI3NjNhMzc2YjA1NC4uZWZkZTM3NGE0YTVlIDEwMDY0NA0KPiAtLS0gYS9k
-cml2ZXJzL21tYy9ob3N0L3J0c3hfcGNpX3NkbW1jLmMNCj4gKysrIGIvZHJpdmVycy9tbWMvaG9z
-dC9ydHN4X3BjaV9zZG1tYy5jDQo+IEBAIC04OTUsNyArODk1LDkgQEAgc3RhdGljIGludCBzZF9z
-ZXRfYnVzX3dpZHRoKHN0cnVjdCByZWFsdGVrX3BjaV9zZG1tYw0KPiAqaG9zdCwgIHN0YXRpYyBp
-bnQgc2RfcG93ZXJfb24oc3RydWN0IHJlYWx0ZWtfcGNpX3NkbW1jICpob3N0KSAgew0KPiAgCXN0
-cnVjdCBydHN4X3BjciAqcGNyID0gaG9zdC0+cGNyOw0KPiArCXN0cnVjdCBtbWNfaG9zdCAqbW1j
-ID0gaG9zdC0+bW1jOw0KPiAgCWludCBlcnI7DQo+ICsJdTMyIHZhbDsNCj4gDQo+ICAJaWYgKGhv
-c3QtPnBvd2VyX3N0YXRlID09IFNETU1DX1BPV0VSX09OKQ0KPiAgCQlyZXR1cm4gMDsNCj4gQEAg
-LTkyMiw2ICs5MjQsMTQgQEAgc3RhdGljIGludCBzZF9wb3dlcl9vbihzdHJ1Y3QgcmVhbHRla19w
-Y2lfc2RtbWMNCj4gKmhvc3QpDQo+ICAJaWYgKGVyciA8IDApDQo+ICAJCXJldHVybiBlcnI7DQo+
-IA0KPiArCWlmIChQQ0lfUElEKHBjcikgPT0gUElEXzUyNjEpIHsNCj4gKwkJdmFsID0gcnRzeF9w
-Y2lfcmVhZGwocGNyLCBSVFNYX0JJUFIpOw0KPiArCQlpZiAodmFsICYgU0RfV1JJVEVfUFJPVEVD
-VCkgew0KPiArCQkJcGNyLT5leHRyYV9jYXBzICY9IH5FWFRSQV9DQVBTX1NEX0VYUFJFU1M7DQo+
-ICsJCQltbWMtPmNhcHMyICY9IH4oTU1DX0NBUDJfU0RfRVhQIHwNCj4gTU1DX0NBUDJfU0RfRVhQ
-XzFfMlYpOw0KPiArCQl9DQo+ICsJfQ0KPiArDQo+ICAJaG9zdC0+cG93ZXJfc3RhdGUgPSBTRE1N
-Q19QT1dFUl9PTjsNCj4gIAlyZXR1cm4gMDsNCj4gIH0NCj4gQEAgLTExMjcsNiArMTEzNyw4IEBA
-IHN0YXRpYyBpbnQgc2RtbWNfZ2V0X2NkKHN0cnVjdCBtbWNfaG9zdCAqbW1jKQ0KPiAgCWlmICh2
-YWwgJiBTRF9FWElTVCkNCj4gIAkJY2QgPSAxOw0KPiANCj4gKwlpZiAocGNyLT5leHRyYV9jYXBz
-ICYgRVhUUkFfQ0FQU19TRF9FWFBSRVNTKQ0KPiArCQltbWMtPmNhcHMyIHw9IE1NQ19DQVAyX1NE
-X0VYUCB8IE1NQ19DQVAyX1NEX0VYUF8xXzJWOw0KPiAgCW11dGV4X3VubG9jaygmcGNyLT5wY3Jf
-bXV0ZXgpOw0KPiANCj4gIAlyZXR1cm4gY2Q7DQo+IEBAIC0xMzA4LDYgKzEzMjAsNTAgQEAgc3Rh
-dGljIGludCBzZG1tY19leGVjdXRlX3R1bmluZyhzdHJ1Y3QNCj4gbW1jX2hvc3QgKm1tYywgdTMy
-IG9wY29kZSkNCj4gIAlyZXR1cm4gZXJyOw0KPiAgfQ0KPiANCj4gK3N0YXRpYyBpbnQgc2RtbWNf
-aW5pdF9zZF9leHByZXNzKHN0cnVjdCBtbWNfaG9zdCAqbW1jLCBzdHJ1Y3QgbW1jX2lvcw0KPiAr
-Kmlvcykgew0KPiArCXUzMiByZWxpbmtfdGltZSwgdmFsOw0KPiArCXN0cnVjdCByZWFsdGVrX3Bj
-aV9zZG1tYyAqaG9zdCA9IG1tY19wcml2KG1tYyk7DQo+ICsJc3RydWN0IHJ0c3hfcGNyICpwY3Ig
-PSBob3N0LT5wY3I7DQo+ICsNCj4gKwkvKg0KPiArCSAqIElmIGNhcmQgaGFzIFBDSWUgYXZhaWxh
-YmlsaXR5IGFuZCBXUCBpZiBvZmYsDQo+ICsJICogcmVhZGVyIHN3aXRjaCB0byBQQ0llIG1vZGUu
-DQo+ICsJICovDQo+ICsJdmFsID0gcnRzeF9wY2lfcmVhZGwocGNyLCBSVFNYX0JJUFIpOw0KPiAr
-CWlmICghKHZhbCAmIFNEX1dSSVRFX1BST1RFQ1QpKSB7DQo+ICsJCS8qIFNldCByZWxpbmtfdGlt
-ZSBmb3IgY2hhbmdpbmcgdG8gUENJZSBjYXJkICovDQo+ICsJCXJlbGlua190aW1lID0gMHg4RkZG
-Ow0KPiArDQo+ICsJCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgMHhGRjAxLCAweEZGLCBy
-ZWxpbmtfdGltZSk7DQo+ICsJCXJ0c3hfcGNpX3dyaXRlX3JlZ2lzdGVyKHBjciwgMHhGRjAyLCAw
-eEZGLCByZWxpbmtfdGltZSA+PiA4KTsNCj4gKwkJcnRzeF9wY2lfd3JpdGVfcmVnaXN0ZXIocGNy
-LCAweEZGMDMsIDB4MDEsIHJlbGlua190aW1lID4+IDE2KTsNCj4gKw0KPiArCQlydHN4X3BjaV93
-cml0ZV9yZWdpc3RlcihwY3IsIFBFVFhDRkcsIDB4ODAsIDB4ODApOw0KPiArCQlydHN4X3BjaV93
-cml0ZV9yZWdpc3RlcihwY3IsIExET19WQ0NfQ0ZHMCwNCj4gKwkJCVJUUzUyNjFfTERPMV9PQ1Bf
-VEhEX01BU0ssDQo+ICsJCQlwY3ItPm9wdGlvbi5zZF84MDBtQV9vY3BfdGhkKTsNCj4gKw0KPiAr
-CQlpZiAocGNyLT5vcHMtPmRpc2FibGVfYXV0b19ibGluaykNCj4gKwkJCXBjci0+b3BzLT5kaXNh
-YmxlX2F1dG9fYmxpbmsocGNyKTsNCj4gKw0KPiArCQkvKiBGb3IgUENJZS9OVk1lIG1vZGUgY2Fu
-J3QgZW50ZXIgZGVsaW5rIGlzc3VlICovDQo+ICsJCXBjci0+aHdfcGFyYW0uaW50ZXJydXB0X2Vu
-ICY9IH4oU0RfSU5UX0VOKTsNCj4gKwkJcnRzeF9wY2lfd3JpdGVsKHBjciwgUlRTWF9CSUVSLCBw
-Y3ItPmh3X3BhcmFtLmludGVycnVwdF9lbik7DQo+ICsNCj4gKwkJcnRzeF9wY2lfd3JpdGVfcmVn
-aXN0ZXIocGNyLCBSVFM1MjYwX0FVVE9MT0FEX0NGRzQsDQo+ICsJCQlSVFM1MjYxX0FVWF9DTEtf
-MTZNX0VOLCBSVFM1MjYxX0FVWF9DTEtfMTZNX0VOKTsNCj4gKwkJcnRzeF9wY2lfd3JpdGVfcmVn
-aXN0ZXIocGNyLCBSVFM1MjYxX0ZXX0NGRzAsDQo+ICsJCQlSVFM1MjYxX0ZXX0VOVEVSX0VYUFJF
-U1MsIFJUUzUyNjFfRldfRU5URVJfRVhQUkVTUyk7DQo+ICsJCXJ0c3hfcGNpX3dyaXRlX3JlZ2lz
-dGVyKHBjciwgUlRTNTI2MV9GV19DRkcxLA0KPiArCQkJUlRTNTI2MV9NQ1VfQlVTX1NFTF9NQVNL
-IHwNCj4gUlRTNTI2MV9NQ1VfQ0xPQ0tfU0VMX01BU0sNCj4gKwkJCXwgUlRTNTI2MV9NQ1VfQ0xP
-Q0tfR0FUSU5HIHwNCj4gUlRTNTI2MV9EUklWRVJfRU5BQkxFX0ZXLA0KPiArCQkJUlRTNTI2MV9N
-Q1VfQ0xPQ0tfU0VMXzE2TSB8DQo+IFJUUzUyNjFfTUNVX0NMT0NLX0dBVElORw0KPiArCQkJfCBS
-VFM1MjYxX0RSSVZFUl9FTkFCTEVfRlcpOw0KPiArCX0NCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4g
-Kw0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBtbWNfaG9zdF9vcHMgcmVhbHRla19wY2lfc2RtbWNf
-b3BzID0gew0KPiAgCS5wcmVfcmVxID0gc2RtbWNfcHJlX3JlcSwNCj4gIAkucG9zdF9yZXEgPSBz
-ZG1tY19wb3N0X3JlcSwNCj4gQEAgLTEzMTcsNiArMTM3Myw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1
-Y3QgbW1jX2hvc3Rfb3BzDQo+IHJlYWx0ZWtfcGNpX3NkbW1jX29wcyA9IHsNCj4gIAkuZ2V0X2Nk
-ID0gc2RtbWNfZ2V0X2NkLA0KPiAgCS5zdGFydF9zaWduYWxfdm9sdGFnZV9zd2l0Y2ggPSBzZG1t
-Y19zd2l0Y2hfdm9sdGFnZSwNCj4gIAkuZXhlY3V0ZV90dW5pbmcgPSBzZG1tY19leGVjdXRlX3R1
-bmluZywNCj4gKwkuaW5pdF9zZF9leHByZXNzID0gc2RtbWNfaW5pdF9zZF9leHByZXNzLA0KPiAg
-fTsNCj4gDQo+ICBzdGF0aWMgdm9pZCBpbml0X2V4dHJhX2NhcHMoc3RydWN0IHJlYWx0ZWtfcGNp
-X3NkbW1jICpob3N0KSBAQCAtMTMzOCw2DQo+ICsxMzk1LDggQEAgc3RhdGljIHZvaWQgaW5pdF9l
-eHRyYV9jYXBzKHN0cnVjdCByZWFsdGVrX3BjaV9zZG1tYyAqaG9zdCkNCj4gIAkJbW1jLT5jYXBz
-IHw9IE1NQ19DQVBfOF9CSVRfREFUQTsNCj4gIAlpZiAocGNyLT5leHRyYV9jYXBzICYgRVhUUkFf
-Q0FQU19OT19NTUMpDQo+ICAJCW1tYy0+Y2FwczIgfD0gTU1DX0NBUDJfTk9fTU1DOw0KPiArCWlm
-IChwY3ItPmV4dHJhX2NhcHMgJiBFWFRSQV9DQVBTX1NEX0VYUFJFU1MpDQo+ICsJCW1tYy0+Y2Fw
-czIgfD0gTU1DX0NBUDJfU0RfRVhQIHwgTU1DX0NBUDJfU0RfRVhQXzFfMlY7DQo+ICB9DQo+IA0K
-PiAgc3RhdGljIHZvaWQgcmVhbHRla19pbml0X2hvc3Qoc3RydWN0IHJlYWx0ZWtfcGNpX3NkbW1j
-ICpob3N0KQ0KPiAtLQ0KPiAyLjE3LjENCg0K
+ping
+
+On Mon, 12 Oct 2020 12:26:21 +0200 SeongJae Park <sjpark@amazon.com> wrote:
+
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> 'kunit_kernel.kunittest_config' was constant at first, and therefore it
+> used UPPER_SNAKE_CASE naming convention that usually means it is
+> constant in Python world.  But, commit e3212513a8f0 ("kunit: Create
+> default config in '--build_dir'") made it modifiable to fix a use case
+> of the tool and thus the naming also changed to lower_snake_case.
+> However, this resulted in a confusion.  As a result, some successing
+> changes made the tool unittest fail, and a fix[1] of it again incurred
+> the '--build_dir' use case failure.
+> 
+> As the previous commit fixed the '--build_dir' use case without
+> modifying the variable again, this commit marks the variable as constant
+> again with UPPER_SNAKE_CASE, to reduce future confusions.
+> 
+> [1] Commit d43c7fb05765 ("kunit: tool: fix improper treatment of file location")
+> 
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>  tools/testing/kunit/kunit.py        | 4 ++--
+>  tools/testing/kunit/kunit_kernel.py | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> index 611c23e178f8..0a58c1fb87d9 100755
+> --- a/tools/testing/kunit/kunit.py
+> +++ b/tools/testing/kunit/kunit.py
+> @@ -44,9 +44,9 @@ class KunitStatus(Enum):
+>  	TEST_FAILURE = auto()
+>  
+>  def create_default_kunitconfig():
+> -	if not os.path.exists(kunit_kernel.kunitconfig_path):
+> +	if not os.path.exists(kunit_kernel.KUNITCONFIG_PATH):
+>  		shutil.copyfile('arch/um/configs/kunit_defconfig',
+> -				kunit_kernel.kunitconfig_path)
+> +				kunit_kernel.KUNITCONFIG_PATH)
+>  
+>  def get_kernel_root_path():
+>  	parts = sys.argv[0] if not __file__ else __file__
+> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+> index 16a997504317..42dca0163479 100644
+> --- a/tools/testing/kunit/kunit_kernel.py
+> +++ b/tools/testing/kunit/kunit_kernel.py
+> @@ -18,7 +18,7 @@ import kunit_config
+>  import kunit_parser
+>  
+>  KCONFIG_PATH = '.config'
+> -kunitconfig_path = '.kunitconfig'
+> +KUNITCONFIG_PATH = '.kunitconfig'
+>  BROKEN_ALLCONFIG_PATH = 'tools/testing/kunit/configs/broken_on_uml.config'
+>  
+>  class ConfigError(Exception):
+> @@ -106,7 +106,7 @@ class LinuxSourceTree(object):
+>  
+>  	def __init__(self, build_dir):
+>  		self._kconfig = kunit_config.Kconfig()
+> -		self._kconfig.read_from_file(os.path.join(build_dir, kunitconfig_path))
+> +		self._kconfig.read_from_file(os.path.join(build_dir, KUNITCONFIG_PATH))
+>  		self._ops = LinuxSourceTreeOperations()
+>  		signal.signal(signal.SIGINT, self.signal_handler)
+>  
+> -- 
+> 2.17.1
+> 
