@@ -2,131 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94A72935B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E022935C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405110AbgJTH1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:27:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731189AbgJTH1H (ORCPT
+        id S2405113AbgJTHbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731247AbgJTHbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:27:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603178826;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JXfk9bvQNtcUwvRwOlj5eknnkdmx+lgFsSH9b/xK0bg=;
-        b=XfQiGV3spMGDOo3lYcNH5Q1E50ZMUHXmxS/HIPARBnRDOedouXh/+s0E+oegr3xwrroYry
-        NmGc6m4cKHkQGtFNY9mOoWb2KMRFH8bLjDb62cI9gFu4YHZBe7ATkDuFiQcqMicgL7AL9/
-        WZx6o/sDOfXTFJKZfM3DX0N7E2T0ZdI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-178-V3yXrWZUN4GIRsEVg1KYVw-1; Tue, 20 Oct 2020 03:27:04 -0400
-X-MC-Unique: V3yXrWZUN4GIRsEVg1KYVw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DA2E8030C4;
-        Tue, 20 Oct 2020 07:27:02 +0000 (UTC)
-Received: from krava (unknown [10.40.192.162])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 94FD75D9D2;
-        Tue, 20 Oct 2020 07:26:58 +0000 (UTC)
-Date:   Tue, 20 Oct 2020 09:26:57 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Joe Mario <jmario@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
-        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 8/8] perf c2c: Update documentation for display option
- 'llc'
-Message-ID: <20201020072657.GE2084117@krava>
-References: <20201015145041.10953-1-leo.yan@linaro.org>
- <20201015145041.10953-9-leo.yan@linaro.org>
+        Tue, 20 Oct 2020 03:31:14 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084D5C061755;
+        Tue, 20 Oct 2020 00:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0jpAo9lbXaLZETK0hjbBwDIDeTjw7Zq4maw1xDTUWIc=; b=tQbpYEWMgnzikItrfiwfOOp1g+
+        Hd3DMlLkRHGio/v1DuIL4w/ZAhR1TJaN9LYf5L9MLZ37bm77a22hC17TpTZQLpR8akbcFs+xqgZ5N
+        9P7q1PoT3Yt9VbmxA6H9h4ifUl+hXWPZd2n1Rw4RIe/iX9qAGgrNo+n7k90EQWCbdOwmll3sd5oSh
+        TGTLXFWSqvLTMB0Ta413MhP6c/DZP5f8UfC2VqJ4C86Rj85LEzIuyBrGUxES/j9yVcek8fmgiaQXj
+        8kES1fOrNourzGZJ9CJhi4cPcQr0LgPKv6zmLw1n0E4SmQkhKRMS76Fyz2qeteH2DEblFpN8J3rfE
+        2VGekPFA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kUm6j-0000je-1t; Tue, 20 Oct 2020 07:30:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4DF333011FE;
+        Tue, 20 Oct 2020 09:30:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3617E2B785033; Tue, 20 Oct 2020 09:30:55 +0200 (CEST)
+Date:   Tue, 20 Oct 2020 09:30:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, lgoncalv@redhat.com
+Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to
+ housekeeping CPUs
+Message-ID: <20201020073055.GY2611@hirez.programming.kicks-ass.net>
+References: <20200928183529.471328-1-nitesh@redhat.com>
+ <20200928183529.471328-5-nitesh@redhat.com>
+ <20201016122046.GP2611@hirez.programming.kicks-ass.net>
+ <79f382a7-883d-ff42-394d-ec4ce81fed6a@redhat.com>
+ <20201019111137.GL2628@hirez.programming.kicks-ass.net>
+ <20201019140005.GB17287@fuller.cnet>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201015145041.10953-9-leo.yan@linaro.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20201019140005.GB17287@fuller.cnet>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 03:50:41PM +0100, Leo Yan wrote:
-> Since the new display option 'llc' is introduced, this patch is to
-> update the documentation to reflect it.
+On Mon, Oct 19, 2020 at 11:00:05AM -0300, Marcelo Tosatti wrote:
+> > So I think it is important to figure out what that driver really wants
+> > in the nohz_full case. If it wants to retain N interrupts per CPU, and
+> > only reduce the number of CPUs, the proposed interface is wrong.
 > 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/Documentation/perf-c2c.txt | 18 ++++++++++++++----
->  1 file changed, 14 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/perf/Documentation/perf-c2c.txt b/tools/perf/Documentation/perf-c2c.txt
-> index c81d72e3eecf..eadce62ecd28 100644
-> --- a/tools/perf/Documentation/perf-c2c.txt
-> +++ b/tools/perf/Documentation/perf-c2c.txt
-> @@ -109,7 +109,8 @@ REPORT OPTIONS
->  
->  -d::
->  --display::
-> -	Switch to HITM type (rmt, lcl) to display and sort on. Total HITMs as default.
-> +	Switch to HITM type (rmt, lcl) or LLC load access (llc) to display
-> +	and sort on. Total HITMs as default.
+> It wants N interrupts per non-isolated (AKA housekeeping) CPU.
 
-ok, forget the doc update I asked in previous reply ;-)
-
-thanks,
-jirka
-
->  
->  --stitch-lbr::
->  	Show callgraph with stitched LBRs, which may have more complete
-> @@ -174,12 +175,18 @@ For each cacheline in the 1) list we display following data:
->    Cacheline
->    - cacheline address (hex number)
->  
-> -  Rmt/Lcl Hitm
-> +  Rmt/Lcl Hitm (For display with HITM types)
->    - cacheline percentage of all Remote/Local HITM accesses
->  
-> -  LLC Load Hitm - Total, LclHitm, RmtHitm
-> +  LLC Load Hitm - Total, LclHitm, RmtHitm (For display with HITM types)
->    - count of Total/Local/Remote load HITMs
->  
-> +  LLC Hit Pct (For display 'llc')
-> +  - cacheline percentage of all LLC load accesses
-> +
-> +  LLC Hit Total (For display 'llc')
-> +  - sum of all LLC load accesses
-> +
->    Total records
->    - sum of all cachelines accesses
->  
-> @@ -207,9 +214,12 @@ For each cacheline in the 1) list we display following data:
->  
->  For each offset in the 2) list we display following data:
->  
-> -  HITM - Rmt, Lcl
-> +  HITM - Rmt, Lcl (For display with HITM types)
->    - % of Remote/Local HITM accesses for given offset within cacheline
->  
-> +  LLC LD - LclHit, LclHitm (For display 'llc')
-> +  - % of LLC hits and LLC HITMs accesses for given offset within cacheline
-> +
->    Store Refs - L1 Hit, L1 Miss
->    - % of store accesses that hit/missed L1 for given offset within cacheline
->  
-> -- 
-> 2.17.1
-> 
-
+Then the patch is wrong and the interface needs changing from @min_vecs,
+@max_vecs to something that expresses the N*nr_cpus relation.
