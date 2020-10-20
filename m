@@ -2,111 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841212933B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 05:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6FA2933B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 05:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391199AbgJTDmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 23:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52762 "EHLO
+        id S2391236AbgJTDqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 23:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391172AbgJTDmE (ORCPT
+        with ESMTP id S2391199AbgJTDqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 23:42:04 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF942C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 20:42:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=7Kkfr9DELie+hza5hnjVEJ8RrhQuKsRDtDHENuyGRTg=; b=BVUKpXXDDIxma3oBhedB12GUPL
-        jPFLKu9uecc1tHQ0aeUnnFbXvTPO6GpNEtHX3Ub2bBG39Qm1+j1md6Y44ficsp/GThVXawIay8rZf
-        Xl+wf0aBkR0xtlb23VvK6xrpHfOBe72cwmbN6v3gCmJduX6aTm4C6SonFIF0cvzzVcM4opv6dnAfu
-        mGs56jKso0xBvxeCjwlaAKTT+j3LAAMCowzvovi1BLNxMUwrIq4qwVMCVFQXPYSlFdolHsR2VVkPp
-        PDnIUhdZkcRIcsMmJ9ov38UrvbCIeiNJuAE5YT+kpAt9Vzynxg4l0T5oGivPdjbIC4Lb/RbrOmW5g
-        XrC2Z4Hw==;
-Received: from [2601:1c0:6280:3f0::9850] (helo=dragon.site)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kUiWT-0002Mp-9t; Tue, 20 Oct 2020 03:41:17 +0000
-Subject: Re: [PATCH v8 -tip 13/26] kernel/entry: Add support for core-wide
- protection of kernel-mode
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org
-Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-References: <20201020014336.2076526-1-joel@joelfernandes.org>
- <20201020014336.2076526-14-joel@joelfernandes.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <13fac0b7-37cb-7313-efb6-ebe166121f8f@infradead.org>
-Date:   Mon, 19 Oct 2020 20:41:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 19 Oct 2020 23:46:08 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F534C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 20:46:08 -0700 (PDT)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id D7747806B5;
+        Tue, 20 Oct 2020 16:46:02 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1603165562;
+        bh=zzxOcIuFi0MxWpOQTLXjFZSqkuicDStOBOZPTA20Zds=;
+        h=From:To:Cc:Subject:Date;
+        b=TmAr+hm/2ku13ZWIcywAj4TTh+T+YkjX0tsm2n4wF+lx6Wn1D1wJguSuhpLrka86b
+         MMXwd4dr4NKxidmavpRHQaoMi5GJZdJhsFlU7pdXM+VVHJ2E9uiAQ1/M6a/gjYVujJ
+         F070jfEAHzeILrTFUtxOyUXJSJ10cCbAhpXYdmOQsAdVZRIb+AMqyzXfxJXK+B5huC
+         twXy2IlujAmw9tEK9+3K3wDtEms7FZY2gYWJFQuubY/LF2hN+F8QXkPL/Fk/5Pdfb7
+         Fnt/+2sYx10V3SakKdt9aAHqR+6xGiXh3VYIgS1L3Y7Rha2IOsovDyxhJ0SUwPhnVZ
+         Y/GI/y77A6J2w==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f8e5d7a0000>; Tue, 20 Oct 2020 16:46:02 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 4F69613EEBB;
+        Tue, 20 Oct 2020 16:46:02 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 972F6283A9C; Tue, 20 Oct 2020 16:46:02 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v3 0/3] net: dsa: mv88e6xxx: serdes link without phy
+Date:   Tue, 20 Oct 2020 16:45:55 +1300
+Message-Id: <20201020034558.19438-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201020014336.2076526-14-joel@joelfernandes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/20 6:43 PM, Joel Fernandes (Google) wrote:
-> 
-> ---
->   .../admin-guide/kernel-parameters.txt         |   7 +
->   include/linux/entry-common.h                  |   2 +-
->   include/linux/sched.h                         |  12 +
->   kernel/entry/common.c                         |  25 +-
->   kernel/sched/core.c                           | 229 ++++++++++++++++++
->   kernel/sched/sched.h                          |   3 +
->   6 files changed, 275 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 3236427e2215..48567110f709 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4678,6 +4678,13 @@
->   
->   	sbni=		[NET] Granch SBNI12 leased line adapter
->   
-> +	sched_core_protect_kernel=
+This small series gets my hardware into a working state. The key points a=
+re to
+make sure we don't force the link and that we ask the MAC for the link st=
+atus.
+I also have updated my dts to say `phy-mode =3D "1000base-x";` and `manag=
+ed =3D
+"in-band-status";`
 
-Needs a list of possible values after '=', along with telling us
-what the default value/setting is.
+I've included patch #3 in this series but I don't have anything to test i=
+t on.
+It's just a guess based on the datasheets. I'd suggest applying patch 1 &=
+ 2
+and leaving 3 for the mailing list archives.
 
+Chris Packham (3):
+  net: dsa: mv88e6xxx: Don't force link when using in-band-status
+  net: dsa: mv88e6xxx: Support serdes ports on MV88E6097/6095/6185
+  net: dsa: mv88e6xxx: Support serdes ports on MV88E6123/6131
 
-> +			[SCHED_CORE] Pause SMT siblings of a core running in
-> +			user mode, if at least one of the siblings of the core
-> +			is running in kernel mode. This is to guarantee that
-> +			kernel data is not leaked to tasks which are not trusted
-> +			by the kernel.
-> +
+ drivers/net/dsa/mv88e6xxx/chip.c   |  26 ++++++-
+ drivers/net/dsa/mv88e6xxx/serdes.c | 106 +++++++++++++++++++++++++++++
+ drivers/net/dsa/mv88e6xxx/serdes.h |   9 +++
+ 3 files changed, 139 insertions(+), 2 deletions(-)
 
+--=20
+2.28.0
 
-thanks.
