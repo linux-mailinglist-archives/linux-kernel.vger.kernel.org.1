@@ -2,150 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135EA293D08
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3AE293D15
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407091AbgJTNN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406919AbgJTNN0 (ORCPT
+        id S2407171AbgJTNOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:14:25 -0400
+Received: from mail.efficios.com ([167.114.26.124]:56014 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406356AbgJTNOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:13:26 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A87C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:13:24 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id d81so1729896wmc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:13:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/bOW84mx2W/6cuiWIRBgbizZhs0ZkEGlfJQ1O97P0Lk=;
-        b=fdNfdL58k6u8rACoS6oyEZS/UrQybQQILdQoePUT8MumU9pAj7diz0fvhHVcM4KblP
-         Bas5XpnN1Bq6BmzhD/5jOoKrYRIsvDV/WXduAjZAfEKUJZpzZWAOm8WLq6CxbenKlQ3/
-         pyg0iu1clPB6QDCbTUIcUhM15kqDB+uFtdyZGVIm3l/wBrXppySwvsU0XGQcmjl4VrhM
-         mxCjT9Q/qiR4qIwExieMMLdRhrVXIRwYlTFcdXQvWR3MW1CEdWY0y6an3pDQI6/O/Ydo
-         DmKZ1WDd0NMPYpLF4QlsgVVoDvwVIuGSGdSukJmDdPxwppHSV7P/1YaY+POdfHCh83Xj
-         LfZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=/bOW84mx2W/6cuiWIRBgbizZhs0ZkEGlfJQ1O97P0Lk=;
-        b=RMycPlHWldZVGaxp7GBeci5t3uwLc56nkoA/7tuosGbZSnQEru6RpwmXCtNUwRyrRP
-         5DfSopCIWC1Z7e0zGYe9TK8SL4xnnP9Zs+StouW2WQZGXnZgNv62R7Fq09JIH4UXUmJe
-         5Iq6HZ1sT4jWj0dzBq8FRVJ1D0Ij4o23sEodsz8K92Sjjv5aP8E4EkjqPfEIe7LzYOzI
-         b3ThCbR+YjAoNJe8oXdjP9kdCfxD2EOgueAFl0oFmVg01irFC7DOiEtcMhQdr7IELkmM
-         dkP0sm7EC/qA3KaIkLzPoDYiXXn+WTdFkZ9QHofGnl16hY0nh0L/IBf+ae2n5Get7hAG
-         osLQ==
-X-Gm-Message-State: AOAM532yTdPzmPDSY61xWLNvwmqz8oHn1Lt+CuUuF3U0+/QDbF1JzM4L
-        CfbX+Id9fuPH2wE1PKHak9esdw==
-X-Google-Smtp-Source: ABdhPJyDE2oEsfxurrAGlYz0RWZ5oZB5Bj6HplPfiPT4GwQNP4VpUJQpr2te7iGwJJEa+cEpkAGAXA==
-X-Received: by 2002:a7b:c3d3:: with SMTP id t19mr1211467wmj.139.1603199603237;
-        Tue, 20 Oct 2020 06:13:23 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:218e:7be8:b4e2:8030? ([2a01:e35:2ec0:82b0:218e:7be8:b4e2:8030])
-        by smtp.gmail.com with ESMTPSA id o3sm3120560wru.15.2020.10.20.06.13.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 06:13:22 -0700 (PDT)
-Subject: Re: [PATCH] arm64: meson: ship only the necessary clock controllers
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Kevin Hilman <khilman@baylibre.com>,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20201020075034.172825-1-jbrunet@baylibre.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- mQENBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAG0KE5laWwgQXJtc3Ryb25nIDxuYXJtc3Ryb25nQGJheWxpYnJlLmNvbT6JATsEEwEKACUC
- GyMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheABQJXDO2CAhkBAAoJEBaat7Gkz/iubGIH/iyk
- RqvgB62oKOFlgOTYCMkYpm2aAOZZLf6VKHKc7DoVwuUkjHfIRXdslbrxi4pk5VKU6ZP9AKsN
- NtMZntB8WrBTtkAZfZbTF7850uwd3eU5cN/7N1Q6g0JQihE7w4GlIkEpQ8vwSg5W7hkx3yQ6
- 2YzrUZh/b7QThXbNZ7xOeSEms014QXazx8+txR7jrGF3dYxBsCkotO/8DNtZ1R+aUvRfpKg5
- ZgABTC0LmAQnuUUf2PHcKFAHZo5KrdO+tyfL+LgTUXIXkK+tenkLsAJ0cagz1EZ5gntuheLD
- YJuzS4zN+1Asmb9kVKxhjSQOcIh6g2tw7vaYJgL/OzJtZi6JlIW5AQ0ETVkGzwEIALyKDN/O
- GURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYpQTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXM
- coJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hi
- SvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY4yG6xI99NIPEVE9lNBXBKIlewIyVlkOa
- YvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoMMtsyw18YoX9BqMFInxqYQQ3j/HpVgTSv
- mo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUXoUk33HEAEQEAAYkBHwQYAQIACQUCTVkG
- zwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfnM7IbRuiSZS1unlySUVYu3SD6YBYnNi3G
- 5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa33eDIHu/zr1HMKErm+2SD6PO9umRef8V8
- 2o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCSKmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+
- RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJ
- C3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTTQbM0WUIBIcGmq38+OgUsMYu4NzLu7uZF
- Acmp6h8guQINBFYnf6QBEADQ+wBYa+X2n/xIQz/RUoGHf84Jm+yTqRT43t7sO48/cBW9vAn9
- GNwnJ3HRJWKATW0ZXrCr40ES/JqM1fUTfiFDB3VMdWpEfwOAT1zXS+0rX8yljgsWR1UvqyEP
- 3xN0M/40Zk+rdmZKaZS8VQaXbveaiWMEmY7sBV3QvgOzB7UF2It1HwoCon5Y+PvyE3CguhBd
- 9iq5iEampkMIkbA3FFCpQFI5Ai3BywkLzbA3ZtnMXR8Qt9gFZtyXvFQrB+/6hDzEPnBGZOOx
- zkd/iIX59SxBuS38LMlhPPycbFNmtauOC0DNpXCv9ACgC9tFw3exER/xQgSpDVc4vrL2Cacr
- wmQp1k9E0W+9pk/l8S1jcHx03hgCxPtQLOIyEu9iIJb27TjcXNjiInd7Uea195NldIrndD+x
- 58/yU3X70qVY+eWbqzpdlwF1KRm6uV0ZOQhEhbi0FfKKgsYFgBIBchGqSOBsCbL35f9hK/JC
- 6LnGDtSHeJs+jd9/qJj4WqF3x8i0sncQ/gszSajdhnWrxraG3b7/9ldMLpKo/OoihfLaCxtv
- xYmtw8TGhlMaiOxjDrohmY1z7f3rf6njskoIXUO0nabun1nPAiV1dpjleg60s3OmVQeEpr3a
- K7gR1ljkemJzM9NUoRROPaT7nMlNYQL+IwuthJd6XQqwzp1jRTGG26J97wARAQABiQM+BBgB
- AgAJBQJWJ3+kAhsCAikJEBaat7Gkz/iuwV0gBBkBAgAGBQJWJ3+kAAoJEHfc29rIyEnRk6MQ
- AJDo0nxsadLpYB26FALZsWlN74rnFXth5dQVQ7SkipmyFWZhFL8fQ9OiIoxWhM6rSg9+C1w+
- n45eByMg2b8H3mmQmyWztdI95OxSREKwbaXVapCcZnv52JRjlc3DoiiHqTZML5x1Z7lQ1T3F
- 8o9sKrbFO1WQw1+Nc91+MU0MGN0jtfZ0Tvn/ouEZrSXCE4K3oDGtj3AdC764yZVq6CPigCgs
- 6Ex80k6QlzCdVP3RKsnPO2xQXXPgyJPJlpD8bHHHW7OLfoR9DaBNympfcbQJeekQrTvyoASw
- EOTPKE6CVWrcQIztUp0WFTdRGgMK0cZB3Xfe6sOp24PQTHAKGtjTHNP/THomkH24Fum9K3iM
- /4Wh4V2eqGEgpdeSp5K+LdaNyNgaqzMOtt4HYk86LYLSHfFXywdlbGrY9+TqiJ+ZVW4trmui
- NIJCOku8SYansq34QzYM0x3UFRwff+45zNBEVzctSnremg1mVgrzOfXU8rt+4N1b2MxorPF8
- 619aCwVP7U16qNSBaqiAJr4e5SNEnoAq18+1Gp8QsFG0ARY8xp+qaKBByWES7lRi3QbqAKZf
- yOHS6gmYo9gBmuAhc65/VtHMJtxwjpUeN4Bcs9HUpDMDVHdfeRa73wM+wY5potfQ5zkSp0Jp
- bxnv/cRBH6+c43stTffprd//4Hgz+nJcCgZKtCYIAPkUxABC85ID2CidzbraErVACmRoizhT
- KR2OiqSLW2x4xdmSiFNcIWkWJB6Qdri0Fzs2dHe8etD1HYaht1ZhZ810s7QOL7JwypO8dscN
- KTEkyoTGn6cWj0CX+PeP4xp8AR8ot4d0BhtUY34UPzjE1/xyrQFAdnLd0PP4wXxdIUuRs0+n
- WLY9Aou/vC1LAdlaGsoTVzJ2gX4fkKQIWhX0WVk41BSFeDKQ3RQ2pnuzwedLO94Bf6X0G48O
- VsbXrP9BZ6snXyHfebPnno/te5XRqZTL9aJOytB/1iUna+1MAwBxGFPvqeEUUyT+gx1l3Acl
- ZaTUOEkgIor5losDrePdPgE=
-Organization: Baylibre
-Message-ID: <124ff599-62ba-1c59-6fcc-5deab5012528@baylibre.com>
-Date:   Tue, 20 Oct 2020 15:13:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 20 Oct 2020 09:14:24 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id DD10B2D90A9;
+        Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id btWyCFkNN-w8; Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 681AA2D9203;
+        Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 681AA2D9203
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1603199662;
+        bh=RoS4rPfU2u/tfMg7hbLKT1RRo0ZxH9EU5RKB+8Fbfzo=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=h7srYtYZpww321ht16yIrXnqb3MLoN1fNJYbztRAheglOZSNQoOUvBULqjvx2RdMT
+         EHpNWkWmU33FqcQ1gyfFH4hzaQkXxveTtC0tfJlNg3eZuILmPO3CVZGNq/XBzkSYea
+         WV2TBmAykJ9vhFE3P6ZLnlOp7JHQE0qTi6/86MTZ3loXOq3Y3nvyFDF04Giq7ucyt4
+         9AI4TAXrktNEyCx/U8VRMoKaBkOZeAW4S9hYGyNo7g8PjG8K44D5A4JWZFADK04C6d
+         DtfH9vyYqgPxmEkChZLrwt4GHTagh8ULte70e9ZxYW1j6JOBnJbl5kfgU/laWk6c+Y
+         52f/L/5TufB/A==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id rtFVh_JWgtH5; Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 54CAE2D8EC4;
+        Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
+Date:   Tue, 20 Oct 2020 09:14:22 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Cc:     Rong Chen <rong.a.chen@intel.com>,
+        Anton Blanchard <anton@au.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        0day robot <lkp@intel.com>, lkp <lkp@lists.01.org>,
+        zhengjun xing <zhengjun.xing@intel.com>,
+        aubrey li <aubrey.li@linux.intel.com>,
+        yu c chen <yu.c.chen@intel.com>
+Message-ID: <510309749.29852.1603199662203.JavaMail.zimbra@efficios.com>
+In-Reply-To: <7131f8f9-68d1-0277-c770-c10f98a062ec@linux.intel.com>
+References: <20201002083311.GK393@shao2-debian> <1183082664.11002.1602082242482.JavaMail.zimbra@efficios.com> <7131f8f9-68d1-0277-c770-c10f98a062ec@linux.intel.com>
+Subject: Re: [LKP] Re: [sched] bdfcae1140: will-it-scale.per_thread_ops
+ -37.0% regression
 MIME-Version: 1.0
-In-Reply-To: <20201020075034.172825-1-jbrunet@baylibre.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
+Thread-Topic: bdfcae1140: will-it-scale.per_thread_ops -37.0% regression
+Thread-Index: A5GaeQYvMp8BfdfxguQDCHYcc/gonQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/2020 09:50, Jerome Brunet wrote:
-> There now the menu entries for the amlogic clock controllers.
-> Do not select these when ARM64 is enabled so it possible to ship only the
-> required.
-> 
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> ---
->  arch/arm64/Kconfig.platforms | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-> index cd58f8495c45..b22d1bdd6eb6 100644
-> --- a/arch/arm64/Kconfig.platforms
-> +++ b/arch/arm64/Kconfig.platforms
-> @@ -154,9 +154,6 @@ config ARCH_MESON
->  	bool "Amlogic Platforms"
->  	select PINCTRL
->  	select PINCTRL_MESON
-> -	select COMMON_CLK_GXBB
-> -	select COMMON_CLK_AXG
-> -	select COMMON_CLK_G12A
->  	select MESON_IRQ_GPIO
->  	help
->  	  This enables support for the arm64 based Amlogic SoCs
-> 
+----- On Oct 19, 2020, at 11:24 PM, Xing Zhengjun zhengjun.xing@linux.intel=
+.com wrote:
 
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+> On 10/7/2020 10:50 PM, Mathieu Desnoyers wrote:
+>> ----- On Oct 2, 2020, at 4:33 AM, Rong Chen rong.a.chen@intel.com wrote:
+>>=20
+>>> Greeting,
+>>>
+>>> FYI, we noticed a -37.0% regression of will-it-scale.per_thread_ops due=
+ to
+>>> commit:
+>>>
+>>>
+>>> commit: bdfcae11403e5099769a7c8dc3262e3c4193edef ("[RFC PATCH 2/3] sche=
+d:
+>>> membarrier: cover kthread_use_mm (v3)")
+>>> url:
+>>> https://github.com/0day-ci/linux/commits/Mathieu-Desnoyers/Membarrier-u=
+pdates/20200925-012549
+>>> base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git
+>>> 848785df48835eefebe0c4eb5da7690690b0a8b7
+>>>
+>>> in testcase: will-it-scale
+>>> on test machine: 104 threads Skylake with 192G memory
+>>> with following parameters:
+>>>
+>>> =09nr_task: 50%
+>>> =09mode: thread
+>>> =09test: context_switch1
+>>> =09cpufreq_governor: performance
+>>> =09ucode: 0x2006906
+>>>
+>>> test-description: Will It Scale takes a testcase and runs it from 1 thr=
+ough to n
+>>> parallel copies to see if the testcase will scale. It builds both a pro=
+cess and
+>>> threads based test in order to see any differences between the two.
+>>> test-url: https://github.com/antonblanchard/will-it-scale
+>>>
+>>=20
+>> Hi,
+>>=20
+>> I would like to report what I suspect is a random thread placement issue=
+ in the
+>> context_switch1 test used by the 0day bot when running on a machine with
+>> hyperthread
+>> enabled.
+>>=20
+>> AFAIU the test code uses hwloc for thread placement which should theoret=
+ically
+>> ensure
+>> that each thread is placed on same processing unit, core and numa node b=
+etween
+>> runs.
+>>=20
+>> We can find the test code here:
+>>=20
+>> https://github.com/antonblanchard/will-it-scale/blob/master/tests/contex=
+t_switch1.c
+>>=20
+>> And the main file containing thread setup is here:
+>>=20
+>> https://github.com/antonblanchard/will-it-scale/blob/master/main.c
+>>=20
+>> AFAIU, the test is started without the "-m" switch, which therefore affi=
+nitizes
+>> tasks on cores rather than on processing units (SMT threads).
+>>=20
+>> When testcase() creates the child thread with new_task(), it basically i=
+ssues:
+>>=20
+>>    pthread_create(&threads[nr_threads++], NULL, func, arg);
+>>=20
+>> passing a NULL pthread_attr_t, and not executing any pre_trampoline on t=
+he
+>> child.
+>> The pre_trampoline would have issued hwloc_set_thread_cpubind if it were
+>> executed on
+>> the child, but it's not. Therefore, we expect the cpu affinity mask of t=
+he
+>> parent to
+>> be copied on clone and used by the child.
+>>=20
+>> A quick test on a machine with hyperthreading enabled shows that the cpu
+>> affinity mask
+>> for the parent and child has two bits set:
+>>=20
+>> taskset -p 1868607
+>> pid 1868607's current affinity mask: 10001
+>> taskset -p 1868606
+>> pid 1868606's current affinity mask: 10001
+>>=20
+>> So AFAIU the placement of the parent and child will be random on either =
+the same
+>> processing unit, or on separate processing units within the same core.
+>>=20
+>> I suspect this randomness can significantly affect the performance numbe=
+r
+>> between
+>> runs, and trigger unwarranted performance regression warnings.
+>>=20
+>> Thanks,
+>>=20
+>> Mathieu
+>>=20
+> Yes, the randomness may happen in some special cases.  But in 0-day, we
+> test multi times (>=3D3), the report is the average number.
+> For this case, we test 4 times, it is stable, the wave is =C2=B1  2%.
+> So I don't think the -37.0% regression is caused by the randomness.
+>=20
+> 0/stats.json:  "will-it-scale.per_thread_ops": 105228,
+> 1/stats.json:  "will-it-scale.per_thread_ops": 100443,
+> 2/stats.json:  "will-it-scale.per_thread_ops": 98786,
+> 3/stats.json:  "will-it-scale.per_thread_ops": 102821,
+>=20
+> c2daff748f0ea954 bdfcae11403e5099769a7c8dc32
+> ---------------- ---------------------------
+>          %stddev     %change         %stddev
+>              \          |                \
+>     161714 =C2=B1  2%     -37.0%     101819 =C2=B1  2%  will-it-scale.per=
+_thread_ops
+
+Arguing whether this specific instance of the test is indeed a performance
+regression or not is not relevant to this discussion.
+
+What I am pointing out here is that the test needs fixing because it genera=
+tes
+noise due to a random thread placement configuration. This issue is about w=
+hether
+we can trust the results of those tests as kernel maintainers.
+
+So on one hand, you can fix the test. This is simple to do: make sure the t=
+hread
+affinity does not allow for this randomness on SMT.
+
+But you seem to argue that the test does not need to be fixed, because the =
+0day
+infrastructure in which it runs will cover for this randomness. I really do=
+ubt
+about this.
+
+If you indeed choose to argue that the test does not need fixing, then here=
+ is the
+statistical analysis I am looking for:
+
+- With the 4 runs, what are the odds that the average result for one class =
+significantly
+  differs from the other class due to this randomness. It may be small, but=
+ it is certainly
+  not zero,
+- Based on those odds, and on the number of performance regression tests pe=
+rformed by 0day
+  each year, how frequently does 0day end up spamming kernel developers wit=
+h random results
+  because of this randomness ?
+
+That being said, I would really find more productive that we work together =
+on fixing the
+test rather than justifying why it can stay broken. Let me know if you have=
+ specific
+questions on how to fix the test, and I'll be happy to help out.
+
+Thanks,
+
+Mathieu
+
+--=20
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
