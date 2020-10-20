@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3732934D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674B22934D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404010AbgJTGUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48574 "EHLO
+        id S2404031AbgJTGVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403863AbgJTGTL (ORCPT
+        with ESMTP id S2403842AbgJTGTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Oct 2020 02:19:11 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00CBC0613DB
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EF3C0613D4
         for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:19:10 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id p15so737318ljj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:19:10 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id l2so689995lfk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:19:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vaud5LDoCMN7VYhH4oLnzKJ275PDylYsQEFgwO7dM1A=;
-        b=uRxBxRP022DKNAknogcT1hVjFyXYSFc3HjPH/yHkhWIPPZ5/a2m0cy+pO6EHn8x+pC
-         cQccGGl77VGFHrSaBgF+dCQv80xDnzvt3ORVquoJbp2plCK9KYKacYaCn7Neqkm4B/oD
-         Mk6URhr1Qqhh+mYOKukSQtQDPQXG6MeJ6XHh1md445K+c2dAh4xTMEIdBd8bBqtmOkoO
-         N8KVTNaKjDwZsA2HgAIOOPvnPvR33QIlN1BUfsiBOvcOUnrulKXPrMyZnAwoH6v9AQrT
-         /jXZ+Yj6YnnKzR2FB/soZsY6Ey6nxbP1P2AfmLn38McxO4SUWVgzzZmVm2UilsP0hTxY
-         2sjQ==
+        bh=AaYRj6xxvmS8+RSQnvAq9Jrn29IaqjqNuI5uDDknTs8=;
+        b=Mx8Loju0ToSqHftzzoqfzPESbc1/N5hRz2KdNGw6KMMpjbYco5/VUfE0YsDuD/OBDB
+         JpJ/p+fJo/oJLR6hyaQ81Ij7sV1JyaGGX4cvNalQc+/Smhjx6MWeJvV+7MmRii4qI9lr
+         iLtnSPtkcNN9ChtzzeCEBk/GWIthMl995KtwZndE+McBnOElURh1YWLGLm9290oiKyzQ
+         gs85KEQcShl9Na88mBkbryY9v93NrKHgz3fPWpqALkn/h2k8+gSjUvqBxaO5z39uQ/p4
+         H2s7AwoLkEmDssTQesbwtQiJXlxCDVAw3vhvG35bXeapUXA2tBY8eSngavhDBqnymtbB
+         Rmeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vaud5LDoCMN7VYhH4oLnzKJ275PDylYsQEFgwO7dM1A=;
-        b=oJVYqltvhSYEZA2UL21jPeobWBix39BSN6XkCRlDL+OHACj+bvKT7HPTKOJ/IltwPN
-         /vxri3z70Ja0iPI6Wn9uwA/NLugoTVDJfD2rqxtNxyZGyunU4JxF9E5/KaEUL0ZQEctb
-         wnc2G7l5qNLn/2Aa1v132mcfYFrzO3nt2V0BCtQjljraWCbh/cOvawIbCJSX3Wh73wwc
-         YsJaDvYXUEXhhiEYE94nLnbZ7HjheNObLzmO2hi3Ee/U2mIUuBBlGsgjJ1uqw9I7sLaw
-         3Ik6BfmUwC5qHq1xwCIaAu4z3m709agRnK9HHk2bbWEFa28dLHyOBxe/0SQSodHXoU0O
-         8tEA==
-X-Gm-Message-State: AOAM533tHdip4lgzgSPz6ZxxHO9Q1weQYlkBKezC8KkYmgbx/NrL/0fz
-        tm1fVfBBfJU2zsYQeHmQQTSJZg==
-X-Google-Smtp-Source: ABdhPJywmvEpa7Ydh3L77EwVrCq7+3fO4YdtEd4vP4JBqRv2DbR3YE4NZhPbQkl4Hp+GW9rY1xZDOQ==
-X-Received: by 2002:a2e:9f49:: with SMTP id v9mr512286ljk.369.1603174749329;
-        Mon, 19 Oct 2020 23:19:09 -0700 (PDT)
+        bh=AaYRj6xxvmS8+RSQnvAq9Jrn29IaqjqNuI5uDDknTs8=;
+        b=NiO0r3EN7iQGYKWPcNkNE9iif6k7sP84MZDzu7nbtKbat05EFmzDSP1YNLZrcwjT8p
+         z4ywRF3iMJjUt/5PSEivDiHtBSYzS2Rt2jbwm71tvnv/EGEvcMdYjAQlilkYOifLUEou
+         akj3oZQMgAyh2pmzWB54TzmIcJDucpobYIJBqsGKXD3HxGCAwKA0ZC1/ih862YnqhiEf
+         9yss5KnZm6xjuPsIZloQUWh8UStqt1pH+88rg9qFc+/kL7UfrWYKGrnzjZ04FhO2Pk3y
+         sRza7vPKa4e0/TYe16MaGmuGSUW76cE375igwjEFJR03q1l7etT/HVZCxhjseGuS5Oc8
+         Y89g==
+X-Gm-Message-State: AOAM531y5OsM4KaEiBVf/xpOF0ngRuUP92NRTZkre62Afzhpk6pUGjIq
+        2mrz8z8pdEtOYHh/K/WIqtpEnA==
+X-Google-Smtp-Source: ABdhPJzbVM30/ELO/VgPUbztIkJyCxcT3aLv3ozPYXAT3IE2iadH3MCBuaGjih+qQs0NlZhBazcvPQ==
+X-Received: by 2002:a19:8988:: with SMTP id l130mr405110lfd.126.1603174748490;
+        Mon, 19 Oct 2020 23:19:08 -0700 (PDT)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id k19sm194793ljg.88.2020.10.19.23.19.06
+        by smtp.gmail.com with ESMTPSA id s17sm135242lfp.292.2020.10.19.23.19.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 19 Oct 2020 23:19:07 -0700 (PDT)
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Received: by box.localdomain (Postfix, from userid 1000)
-        id E7995102F66; Tue, 20 Oct 2020 09:19:01 +0300 (+03)
+        id EF98B102F67; Tue, 20 Oct 2020 09:19:01 +0300 (+03)
 To:     Dave Hansen <dave.hansen@linux.intel.com>,
         Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -72,9 +72,9 @@ Cc:     David Rientjes <rientjes@google.com>,
         kvm@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [RFCv2 07/16] x86/realmode: Share trampoline area if KVM memory protection enabled
-Date:   Tue, 20 Oct 2020 09:18:50 +0300
-Message-Id: <20201020061859.18385-8-kirill.shutemov@linux.intel.com>
+Subject: [RFCv2 08/16] KVM: Use GUP instead of copy_from/to_user() to access guest memory
+Date:   Tue, 20 Oct 2020 09:18:51 +0300
+Message-Id: <20201020061859.18385-9-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
 References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
@@ -84,41 +84,208 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If KVM memory protection is active, the trampoline area will need to be
-in shared memory.
+New helpers copy_from_guest()/copy_to_guest() to be used if KVM memory
+protection feature is enabled.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- arch/x86/realmode/init.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ include/linux/kvm_host.h |  4 ++
+ virt/kvm/kvm_main.c      | 90 +++++++++++++++++++++++++++++++---------
+ 2 files changed, 75 insertions(+), 19 deletions(-)
 
-diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
-index 1ed1208931e0..7392940a7f96 100644
---- a/arch/x86/realmode/init.c
-+++ b/arch/x86/realmode/init.c
-@@ -9,6 +9,7 @@
- #include <asm/realmode.h>
- #include <asm/tlbflush.h>
- #include <asm/crash.h>
-+#include <asm/kvm_para.h>
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 05e3c2fb3ef7..380a64613880 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -504,6 +504,7 @@ struct kvm {
+ 	struct srcu_struct irq_srcu;
+ 	pid_t userspace_pid;
+ 	unsigned int max_halt_poll_ns;
++	bool mem_protected;
+ };
  
- struct real_mode_header *real_mode_header;
- u32 *trampoline_cr4_features;
-@@ -55,11 +56,11 @@ static void __init setup_real_mode(void)
- 	base = (unsigned char *)real_mode_header;
+ #define kvm_err(fmt, ...) \
+@@ -728,6 +729,9 @@ void kvm_set_pfn_dirty(kvm_pfn_t pfn);
+ void kvm_set_pfn_accessed(kvm_pfn_t pfn);
+ void kvm_get_pfn(kvm_pfn_t pfn);
  
- 	/*
--	 * If SME is active, the trampoline area will need to be in
--	 * decrypted memory in order to bring up other processors
-+	 * If SME or KVM memory protection is active, the trampoline area will
-+	 * need to be in decrypted memory in order to bring up other processors
- 	 * successfully. This is not needed for SEV.
- 	 */
--	if (sme_active())
-+	if (sme_active() || kvm_mem_protected())
- 		set_memory_decrypted((unsigned long)base, size >> PAGE_SHIFT);
++int copy_from_guest(void *data, unsigned long hva, int len, bool protected);
++int copy_to_guest(unsigned long hva, const void *data, int len, bool protected);
++
+ void kvm_release_pfn(kvm_pfn_t pfn, bool dirty, struct gfn_to_pfn_cache *cache);
+ int kvm_read_guest_page(struct kvm *kvm, gfn_t gfn, void *data, int offset,
+ 			int len);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index cf88233b819a..a9884cb8c867 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -2313,19 +2313,70 @@ static int next_segment(unsigned long len, int offset)
+ 		return len;
+ }
  
- 	memcpy(base, real_mode_blob, size);
++int copy_from_guest(void *data, unsigned long hva, int len, bool protected)
++{
++	int offset = offset_in_page(hva);
++	struct page *page;
++	int npages, seg;
++
++	if (!protected)
++		return __copy_from_user(data, (void __user *)hva, len);
++
++	might_fault();
++	kasan_check_write(data, len);
++	check_object_size(data, len, false);
++
++	while ((seg = next_segment(len, offset)) != 0) {
++		npages = get_user_pages_unlocked(hva, 1, &page, 0);
++		if (npages != 1)
++			return -EFAULT;
++		memcpy(data, page_address(page) + offset, seg);
++		put_page(page);
++		len -= seg;
++		hva += seg;
++		offset = 0;
++	}
++
++	return 0;
++}
++
++int copy_to_guest(unsigned long hva, const void *data, int len, bool protected)
++{
++	int offset = offset_in_page(hva);
++	struct page *page;
++	int npages, seg;
++
++	if (!protected)
++		return __copy_to_user((void __user *)hva, data, len);
++
++	might_fault();
++	kasan_check_read(data, len);
++	check_object_size(data, len, true);
++
++	while ((seg = next_segment(len, offset)) != 0) {
++		npages = get_user_pages_unlocked(hva, 1, &page, FOLL_WRITE);
++		if (npages != 1)
++			return -EFAULT;
++		memcpy(page_address(page) + offset, data, seg);
++		put_page(page);
++		len -= seg;
++		hva += seg;
++		offset = 0;
++	}
++
++	return 0;
++}
++
+ static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
+-				 void *data, int offset, int len)
++				 void *data, int offset, int len,
++				 bool protected)
+ {
+-	int r;
+ 	unsigned long addr;
+ 
+ 	addr = gfn_to_hva_memslot_prot(slot, gfn, NULL);
+ 	if (kvm_is_error_hva(addr))
+ 		return -EFAULT;
+-	r = __copy_from_user(data, (void __user *)addr + offset, len);
+-	if (r)
+-		return -EFAULT;
+-	return 0;
++	return copy_from_guest(data, addr + offset, len, protected);
+ }
+ 
+ int kvm_read_guest_page(struct kvm *kvm, gfn_t gfn, void *data, int offset,
+@@ -2333,7 +2384,8 @@ int kvm_read_guest_page(struct kvm *kvm, gfn_t gfn, void *data, int offset,
+ {
+ 	struct kvm_memory_slot *slot = gfn_to_memslot(kvm, gfn);
+ 
+-	return __kvm_read_guest_page(slot, gfn, data, offset, len);
++	return __kvm_read_guest_page(slot, gfn, data, offset, len,
++				     kvm->mem_protected);
+ }
+ EXPORT_SYMBOL_GPL(kvm_read_guest_page);
+ 
+@@ -2342,7 +2394,8 @@ int kvm_vcpu_read_guest_page(struct kvm_vcpu *vcpu, gfn_t gfn, void *data,
+ {
+ 	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+ 
+-	return __kvm_read_guest_page(slot, gfn, data, offset, len);
++	return __kvm_read_guest_page(slot, gfn, data, offset, len,
++				     vcpu->kvm->mem_protected);
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_read_guest_page);
+ 
+@@ -2415,7 +2468,8 @@ int kvm_vcpu_read_guest_atomic(struct kvm_vcpu *vcpu, gpa_t gpa,
+ EXPORT_SYMBOL_GPL(kvm_vcpu_read_guest_atomic);
+ 
+ static int __kvm_write_guest_page(struct kvm_memory_slot *memslot, gfn_t gfn,
+-			          const void *data, int offset, int len)
++			          const void *data, int offset, int len,
++				  bool protected)
+ {
+ 	int r;
+ 	unsigned long addr;
+@@ -2423,7 +2477,8 @@ static int __kvm_write_guest_page(struct kvm_memory_slot *memslot, gfn_t gfn,
+ 	addr = gfn_to_hva_memslot(memslot, gfn);
+ 	if (kvm_is_error_hva(addr))
+ 		return -EFAULT;
+-	r = __copy_to_user((void __user *)addr + offset, data, len);
++
++	r = copy_to_guest(addr + offset, data, len, protected);
+ 	if (r)
+ 		return -EFAULT;
+ 	mark_page_dirty_in_slot(memslot, gfn);
+@@ -2435,7 +2490,8 @@ int kvm_write_guest_page(struct kvm *kvm, gfn_t gfn,
+ {
+ 	struct kvm_memory_slot *slot = gfn_to_memslot(kvm, gfn);
+ 
+-	return __kvm_write_guest_page(slot, gfn, data, offset, len);
++	return __kvm_write_guest_page(slot, gfn, data, offset, len,
++				      kvm->mem_protected);
+ }
+ EXPORT_SYMBOL_GPL(kvm_write_guest_page);
+ 
+@@ -2444,7 +2500,8 @@ int kvm_vcpu_write_guest_page(struct kvm_vcpu *vcpu, gfn_t gfn,
+ {
+ 	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
+ 
+-	return __kvm_write_guest_page(slot, gfn, data, offset, len);
++	return __kvm_write_guest_page(slot, gfn, data, offset, len,
++				      vcpu->kvm->mem_protected);
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_write_guest_page);
+ 
+@@ -2560,7 +2617,7 @@ int kvm_write_guest_offset_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
+ 	if (unlikely(!ghc->memslot))
+ 		return kvm_write_guest(kvm, gpa, data, len);
+ 
+-	r = __copy_to_user((void __user *)ghc->hva + offset, data, len);
++	r = copy_to_guest(ghc->hva + offset, data, len, kvm->mem_protected);
+ 	if (r)
+ 		return -EFAULT;
+ 	mark_page_dirty_in_slot(ghc->memslot, gpa >> PAGE_SHIFT);
+@@ -2581,7 +2638,6 @@ int kvm_read_guest_offset_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
+ 				 unsigned long len)
+ {
+ 	struct kvm_memslots *slots = kvm_memslots(kvm);
+-	int r;
+ 	gpa_t gpa = ghc->gpa + offset;
+ 
+ 	BUG_ON(len + offset > ghc->len);
+@@ -2597,11 +2653,7 @@ int kvm_read_guest_offset_cached(struct kvm *kvm, struct gfn_to_hva_cache *ghc,
+ 	if (unlikely(!ghc->memslot))
+ 		return kvm_read_guest(kvm, gpa, data, len);
+ 
+-	r = __copy_from_user(data, (void __user *)ghc->hva + offset, len);
+-	if (r)
+-		return -EFAULT;
+-
+-	return 0;
++	return copy_from_guest(data, ghc->hva + offset, len, kvm->mem_protected);
+ }
+ EXPORT_SYMBOL_GPL(kvm_read_guest_offset_cached);
+ 
 -- 
 2.26.2
 
