@@ -2,128 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66AD294371
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DBD8294373
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438320AbgJTTp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 15:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
+        id S2438330AbgJTTqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 15:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438310AbgJTTp7 (ORCPT
+        with ESMTP id S2438322AbgJTTqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 15:45:59 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527A0C0613CE;
-        Tue, 20 Oct 2020 12:45:59 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id b11so1481636qvr.9;
-        Tue, 20 Oct 2020 12:45:59 -0700 (PDT)
+        Tue, 20 Oct 2020 15:46:36 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F2CC0613CE;
+        Tue, 20 Oct 2020 12:46:35 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id dt13so4487243ejb.12;
+        Tue, 20 Oct 2020 12:46:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sK1elVQQ2NrMHu7mvagLbiYZu4C55oZZTQPkobK5nAA=;
-        b=FIVPt1C3GPLD58Aht5yhIbLIJzNX1qLh/+8Y2D5jFcbJl2GUjJEul+B2u4Keysi+Ky
-         Iuh/wpq2xu1ui3HpmYredW8rivQt7akCpk0zKxvOoNMgUW25Y2d3paLZ8M1ycZf3qIs7
-         avn7T9rIG7z+VrDrkEbD2GKZiQqm+4u7k8Dxi8tIB+HKs/LjjtNSbzx1EuH7/x3QzDig
-         gKhbkPbTPSV7Gm10JqoQZIKw4B71WL9jJCTMdgTIFn10CZOofjF3hyPMVhoautKpzc1G
-         tPOKDXSlCFdnhOKIJIblN6LMGHeN8/pDAlP3dhn9iddLufrTnXv80QunczIh8o5GteTX
-         Krgw==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xQdN4e8sb8e85GEPtGpigBDe2ADdz+RJ3oBJUBCMZjg=;
+        b=gIhnws7aM+fhvCkD1Dt/BHUVIFG6DroGv/rxfklooMW5vCWf482Gu4p8ckgMuW8WcL
+         eLD+e+KpW5LIimgMB656uVSMROGYZno9RdNzIH4at6TFo+cSt7PkpaNY7LqUNCgj5zMQ
+         B/1Pgcy0N2mTbMCBGqfmFyLoBZuRyFi7ralUj1ZeIWdFvvFq9KyoBDRL72gpxtl9HvtQ
+         sae1IKwYGdNOWPpRVrhwirqxPHFpkTfc3NCs1qVvKQmCe0UklDV25OL7/F1IlXw3XrQw
+         vN0yCy88mDOmbWf0wiXa3QiJh9DkjZSljx6wv5HuofImAbTiNhqRmT48yFQ1+d+uAESJ
+         GALQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=sK1elVQQ2NrMHu7mvagLbiYZu4C55oZZTQPkobK5nAA=;
-        b=jOlzJf3Mh44Lya107tG9aTgtsCcsODz9Q3/mXQfkmPEBskGSc88dhNn8uNZ0otiCa7
-         9DOkcD61AqPseXHemIp3RO86QnBwujA06pWvNPQw4ukibCyLvnwKPlYcyF/Uov6XytV/
-         zNN5KBMeQbguZBAoX0r77gUi94S9VH/veoX+xJ6rdC3EzAcBRc3m4bGkogv0a/T2gihd
-         iNl4QTVn/U+CQiJZ/588Q7Rx8PmQzCYubSxPdsMKo1qlZrbEFZyZ8a2zNhkV7bx4Re9I
-         4B0wFCIqAQpxFB/N+QMyt0eph8siZ9xIR2Rr2Ir9KnMaWOUQxVOh6nmQiJR0Z63/AEfY
-         6PIw==
-X-Gm-Message-State: AOAM531T880ck/WvSdtezjtKOyPGbWPr9QtyEPT+etx5Z9rIg+dVJ/W4
-        2bHaC1FaPd0tRELrt5R96nAs6SEFu82RDg==
-X-Google-Smtp-Source: ABdhPJxELK7oZ0oYWJ0WnphNoAGjBJqnGvEKQxdUVArKHywaT4exP6kWtSzC21mDExeS+Ye2rbpHMA==
-X-Received: by 2002:ad4:4701:: with SMTP id k1mr5058780qvz.47.1603223158412;
-        Tue, 20 Oct 2020 12:45:58 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id z26sm1276353qtb.85.2020.10.20.12.45.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 12:45:57 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 20 Oct 2020 15:45:55 -0400
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Arvind Sankar' <nivedita@alum.mit.edu>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/5] crypto: lib/sha256 - Unroll SHA256 loop 8 times
- intead of 64
-Message-ID: <20201020194555.GA3464628@rani.riverdale.lan>
-References: <20201019153016.2698303-1-nivedita@alum.mit.edu>
- <20201019153016.2698303-5-nivedita@alum.mit.edu>
- <1324eb3519d54ddd9469d30a94c11823@AcuMS.aculab.com>
- <20201020140726.GB2996696@rani.riverdale.lan>
- <6ee12f8fa3914fbcb5e4a1388e430acd@AcuMS.aculab.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xQdN4e8sb8e85GEPtGpigBDe2ADdz+RJ3oBJUBCMZjg=;
+        b=Ck2olbJqO1m60YRgiRRFAJ6k29aSoM8lJSGH4LlWfXcCXd7zNNIMDFrC6WE7OH6SpD
+         /WfJG0G16ftKTAmN6reTvr6/AG1CMLhfagz7hwiNFurruwY8jF2cKDMFn8nNFR8XCWuM
+         6zV+u34/G9Xet5TJJqnDjFKTWwGwpROCofk6foQLpwfRU9kAXsiIOILM2JtaKeDKeFqZ
+         MzwpfU9KcOI/vquvrzN2rfN1Y0YCbAEejN5rt49/NXD8kEQPWYIrpevU7gk4Kl/+fkQd
+         +StPjdqWnBpG3GO3QNyUhe5fccZnoxPzh9wnmuaAkTNTCzVPffpMmW7xh2K3bC9K+OJh
+         oHaQ==
+X-Gm-Message-State: AOAM530AWwcldgJxXxaSj7Lao6rv68xF81QIROqjzzDoQ19htPAB8JkY
+        TBwR5vvm5FiH4TUf86rwOCcpkfxhmAAq2GyOxPTfx3Q2TOQ=
+X-Google-Smtp-Source: ABdhPJx2MHroFdlTmNDtbUWu1ZhlQB87fZC12HOSohcHqgvy9QoA5Wfe/eetl1ZUEH7sy6RelMfaj7TmigG+twnT48s=
+X-Received: by 2002:a17:906:1a10:: with SMTP id i16mr4812341ejf.162.1603223194667;
+ Tue, 20 Oct 2020 12:46:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <6ee12f8fa3914fbcb5e4a1388e430acd@AcuMS.aculab.com>
+References: <20201020120141.298240-1-jbrunet@baylibre.com>
+In-Reply-To: <20201020120141.298240-1-jbrunet@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 20 Oct 2020 21:46:23 +0200
+Message-ID: <CAFBinCBCxROWP2a1QG8Vuqr4x6U7ZkDb+Kdifv-M+06QN49GNg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: amlogic: add missing ethernet reset ID
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        Anand Moon <linux.amoon@gmail.com>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 02:55:47PM +0000, David Laight wrote:
-> From: Arvind Sankar
-> > Sent: 20 October 2020 15:07
-> > To: David Laight <David.Laight@ACULAB.COM>
-> > 
-> > On Tue, Oct 20, 2020 at 07:41:33AM +0000, David Laight wrote:
-> > > From: Arvind Sankar> Sent: 19 October 2020 16:30
-> > > > To: Herbert Xu <herbert@gondor.apana.org.au>; David S. Miller <davem@davemloft.net>; linux-
-> > > > crypto@vger.kernel.org
-> > > > Cc: linux-kernel@vger.kernel.org
-> > > > Subject: [PATCH 4/5] crypto: lib/sha256 - Unroll SHA256 loop 8 times intead of 64
-> > > >
-> > > > This reduces code size substantially (on x86_64 with gcc-10 the size of
-> > > > sha256_update() goes from 7593 bytes to 1952 bytes including the new
-> > > > SHA256_K array), and on x86 is slightly faster than the full unroll.
-> > >
-> > > The speed will depend on exactly which cpu type is used.
-> > > It is even possible that the 'not unrolled at all' loop
-> > > (with the all the extra register moves) is faster on some x86-64 cpu.
-> > 
-> > Yes, I should have mentioned this was tested on a Broadwell Xeon, at
-> > least on that processor, no unrolling is a measurable performance loss.
-> > But the hope is that 8x unroll should be generally enough unrolling that
-> > 64x is unlikely to speed it up more, and so has no advantage over 8x.
-> 
-> (I've just looked at the actual code, not just the patch.)
-> 
-> Yes I doubt the 64x unroll was ever a significant gain.
-> Unrolling completely requires a load of register moves/renames;
-> probably too many to be 'zero cost'.
-> 
-> With modern cpu you can often get the loop control instructions
-> 'for free' so unrolling just kills the I-cache.
-> Some of the cpu have loop buffers for decoded instructions,
-> unroll beyond that size and you suddenly get the decoder costs
-> hitting you again.
-> 
-> ...
-> > > If you can put SHA256_K[] and W[] into a struct then the
-> > > compiler can use the same register to address into both
-> > > arrays (using an offset of 64*4 for the second one).
-> > > (ie keep the two arrays, not an array of struct).
-> > > This should reduce the register pressure slightly.
-> > 
-> > I can try that, could copy the data in sha256_update() so it's amortized
-> > over the whole input.
-> 
-> Having looked more closely the extra copy needed is probably
-> bigger than any saving.
-> 
+On Tue, Oct 20, 2020 at 2:10 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
+>
+> From: Anand Moon <linux.amoon@gmail.com>
+>
+> Add reset external reset of the ethernet mac controller
+>
+> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-On x86-64 it doesn't make much difference, but it speeds up x86-32 by
-around 10% (on long inputs).
+note to self:
+we're using the Ethernet reset on Meson8b and Meson8m2 for a long time
+and I don't remember any problems with it *knocks on wood*
