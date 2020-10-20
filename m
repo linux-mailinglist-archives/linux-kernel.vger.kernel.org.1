@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BC6293F90
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96DC8293F8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408631AbgJTP2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 11:28:47 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:52160 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731618AbgJTP2q (ORCPT
+        id S1731678AbgJTP21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 11:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731319AbgJTP20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 11:28:46 -0400
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 09KFSUwW006246;
-        Wed, 21 Oct 2020 00:28:30 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 09KFSUwW006246
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1603207711;
-        bh=fLFRzEvvNzfFsNVp4IIsqKfXSgcuY+m+zTzeT0OEPHc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pzCyoBVn02DG7/NlIu2Y7SoRNq6iGpFJIufs6FxVWD9sz0hgWqeK9BM66FNBVDurh
-         Azk7xWTbIA+9YlHk6UI6O5g1DEWB5i4KhSsRYf7HhA/r26zNO2Pv291LEdlZJfsyBM
-         +90XRWhSzARfHhCaQ9rHFHPeZ0QbFdYjtfrvd5djqPGis51zgaGi9RvBNUbJCnT7kv
-         J4vC0sVX+6LKapQ4pG4ovQTgq0+dCZB5yMW+K1j3TF+90CULVPAKP4rYXgY2hHTzr1
-         dqbyo7h2P+M7bpsRhE/LeTVF943yazbz2kGccPIE5mkOhk2348c1+eHqWH5lI/ZKW7
-         dhBMjm8b9Fjiw==
-X-Nifty-SrcIP: [209.85.215.169]
-Received: by mail-pg1-f169.google.com with SMTP id b23so1297500pgb.3;
-        Tue, 20 Oct 2020 08:28:30 -0700 (PDT)
-X-Gm-Message-State: AOAM531pgIzzfxcais/kbB852twjqXfCr5XVYvktCHoZD+kFmMNRm1NG
-        vfxddVgSs4pk3MPitrvtqOV8SvoB4RvEaFBHXss=
-X-Google-Smtp-Source: ABdhPJwv00rwCOxn6r3kEx5Nwh11Wij9Tdiv85e+WfZh6WfKUKKNqrY8psass3JjliDhHTNcnc5iXw64s1fBklyCJOo=
-X-Received: by 2002:aa7:90cf:0:b029:156:2bff:5a87 with SMTP id
- k15-20020aa790cf0000b02901562bff5a87mr3233217pfk.63.1603207709884; Tue, 20
- Oct 2020 08:28:29 -0700 (PDT)
+        Tue, 20 Oct 2020 11:28:26 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23958C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 08:28:25 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id a72so2222524wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 08:28:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=Uni4zU2UKq83r3GssjKIzqKjG0Dp20lSmVCKXMSU8kM=;
+        b=nozQxSm8nIYAYkI27iZ/rdaOTggYEMik8PvvYYJ8mB2YwC3yotFQs6IvxosEXi5rkG
+         hQzJQDdkzwQIQ5G411496IXZ6k0kCnUPOg4kGPDy29+RvsogwkrQfekFEH4tSX7VEfky
+         aZZZS0vdg87DzaSG11NYZoxPz2iho6R3M/UW/iROR4cmE+9FXdaQj4ArDFY5yjQcL84s
+         Wj2xFOSUVhWWChyb3G/lwt0aY97YpFY7qJ3Z4vCB2Odm+W0vhLu/fiZOt1CIeoRgOYBQ
+         TyX3yPYBD8CteAmiChWok1jlWeXxjYUOUlHeKYg44u+oTS+7ogJOBn8IfnSFPcT1cJOt
+         FOpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=Uni4zU2UKq83r3GssjKIzqKjG0Dp20lSmVCKXMSU8kM=;
+        b=HcuRfYTZVf84wADQhmezF/JxdGQYK9qqFy9xjFsnTP3yLzmbIO4dh12o85DAHTWrvr
+         +CXy0l+SbkhFV//QVwNW4MJ5qsuUkDG5Did8/mCmO1Rz3SPaBPOWUmD0RGPlQgTuHsgL
+         C52g5H3dp02XC0gVGjqYp7AJxvjtGfb5A9YTtX61rIM4cZftA5XRCUD/ETE81xB5ljdN
+         YiZL6gAcUhquZz920lF28rgXtbIPesnFC+iDidbUPTq+aXo28+YcyIFCj0Tzct82WC65
+         bzuN67UIZgxZR9aId6wOtwjUD/luVU1Ul2fPqNSebvnRDHKGHqN2z0183LuA+lS2kexm
+         raWw==
+X-Gm-Message-State: AOAM532FBtSFwz1Cezicler2aSMpkYgz3c0v5Ptv7PAwq888oJLH/Vsa
+        IsmWdmYQc/DCnXMKyN8ppMok3g==
+X-Google-Smtp-Source: ABdhPJwogFQKebYSRpB5PhLi5QRgWT6BJZxuYP49ltOyGEszk0WxYbYVl7uKMV8tweFiKjYhTLJIFg==
+X-Received: by 2002:a1c:cc:: with SMTP id 195mr2068187wma.52.1603207703778;
+        Tue, 20 Oct 2020 08:28:23 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id s1sm2943781wmh.22.2020.10.20.08.28.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 08:28:23 -0700 (PDT)
+References: <20201020075034.172825-1-jbrunet@baylibre.com> <7hblgxkki3.fsf@baylibre.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Kevin Hilman <khilman@baylibre.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: meson: ship only the necessary clock controllers
+In-reply-to: <7hblgxkki3.fsf@baylibre.com>
+Date:   Tue, 20 Oct 2020 17:28:22 +0200
+Message-ID: <1jimb4nch5.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-References: <20201014110132.2680-1-mark@klomp.org> <20201017120135.4004-1-mark@klomp.org>
-In-Reply-To: <20201017120135.4004-1-mark@klomp.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 21 Oct 2020 00:27:52 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATi5X_UjeEwP_+BJETOoVHZTxdh3e=e2SJZbvH69MHM+g@mail.gmail.com>
-Message-ID: <CAK7LNATi5X_UjeEwP_+BJETOoVHZTxdh3e=e2SJZbvH69MHM+g@mail.gmail.com>
-Subject: Re: [PATCH V2] Only add -fno-var-tracking-assignments workaround for
- old GCC versions.
-To:     Mark Wielaard <mark@klomp.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        linux-toolchains@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 9:02 PM Mark Wielaard <mark@klomp.org> wrote:
->
-> Some old GCC versions between 4.5.0 and 4.9.1 might miscompile code
-> with -fvar-tracking-assingments (which is enabled by default with -g -O2).
-> commit 2062afb4f added -fno-var-tracking-assignments unconditionally to
-> work around this. But newer versions of GCC no longer have this bug, so
-> only add it for versions of GCC before 5.0. This allows various tools
-> such as a perf probe or gdb debuggers or systemtap to resolve variable
-> locations using dwarf locations in more code.
->
-> Changes in V2:
-> - Update commit message explaining purpose.
-> - Explicitly mention GCC version in comment.
-> - Wrap workaround in ifdef CONFIG_CC_IS_GCC
->
-> Signed-off-by: Mark Wielaard <mark@klomp.org>
-> Acked-by: Ian Rogers <irogers@google.com>
-> Reviewed-by: Andi Kleen <andi@firstfloor.org>
-> Cc: linux-toolchains@vger.kernel.org
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Segher Boessenkool <segher@kernel.crashing.org>
-> Cc: Florian Weimer <fw@deneb.enyo.de>
-> Cc: Sedat Dilek <sedat.dilek@gmail.com>
-> ---
 
-Applied to linux-kbuild. Thanks.
+On Tue 20 Oct 2020 at 17:03, Kevin Hilman <khilman@baylibre.com> wrote:
 
-
-
->  Makefile | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> Jerome Brunet <jbrunet@baylibre.com> writes:
 >
-> diff --git a/Makefile b/Makefile
-> index 51540b291738..964754b4cedf 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -813,7 +813,11 @@ KBUILD_CFLAGS      += -ftrivial-auto-var-init=zero
->  KBUILD_CFLAGS  += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
->  endif
+>> There now the menu entries for the amlogic clock controllers.
+>> Do not select these when ARM64 is enabled so it possible to ship only the
+>> required.
+>>
+>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+>> ---
+>>  arch/arm64/Kconfig.platforms | 3 ---
+>>  1 file changed, 3 deletions(-)
+>>
+>> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+>> index cd58f8495c45..b22d1bdd6eb6 100644
+>> --- a/arch/arm64/Kconfig.platforms
+>> +++ b/arch/arm64/Kconfig.platforms
+>> @@ -154,9 +154,6 @@ config ARCH_MESON
+>>  	bool "Amlogic Platforms"
+>>  	select PINCTRL
+>>  	select PINCTRL_MESON
+>> -	select COMMON_CLK_GXBB
+>> -	select COMMON_CLK_AXG
+>> -	select COMMON_CLK_G12A
 >
-> -DEBUG_CFLAGS   := $(call cc-option, -fno-var-tracking-assignments)
-> +# Workaround for GCC versions < 5.0
-> +# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
-> +ifdef CONFIG_CC_IS_GCC
-> +DEBUG_CFLAGS   := $(call cc-ifversion, -lt, 0500, $(call cc-option, -fno-var-tracking-assignments))
-> +endif
+> This patch alone will break boot when using the default, upstream
+> defconfig because these options will all now be disabled and we'll have
+> no clock providers.
 >
->  ifdef CONFIG_DEBUG_INFO
->  ifdef CONFIG_DEBUG_INFO_SPLIT
-> --
-> 2.18.4
+> I think you also need a default value (e.g. `default y`) in
+> drivers/clk/meson/Kconfig for each of these entries to keep the same
+> defaults.   But these defaults could be overridden by SoC-specific
+> defconfigs leading to more flexibilty.
 >
+> So, assuming you queue up a drivers/clk patch to go in when this
+> lands...
 
+Indeed.
+Please wait till the clock PR lands during the merge window, you'll see
+that it is already taken care of.
 
--- 
-Best Regards
-Masahiro Yamada
+I was not expecting you to look at it so soon ;)
+
+>
+> Acked-by: Kevin Hilman <khilman@baylibre.com>
+
