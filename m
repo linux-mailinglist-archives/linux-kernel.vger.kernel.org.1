@@ -2,166 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E8E29395A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561E4293963
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393304AbgJTKsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:48:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390218AbgJTKsy (ORCPT
+        id S2393364AbgJTKv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 06:51:26 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:18270 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392281AbgJTKvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:48:54 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0FDC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:48:53 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id l18so859432pgg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:48:53 -0700 (PDT)
+        Tue, 20 Oct 2020 06:51:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1603191086; x=1634727086;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=6usQxq//2DwEFtCcu/rRmdfWXYgOivb6/+q1LY/UY5g=;
+  b=d9/Bg7GzWMNk5I0i6wIayB6z6aXkkD+Yuuw4rt4FK6Mhn5zGZEfpx+sD
+   6t9a0/EEZUf3MTq7hz1NonQ3bvUSsXr5fjKguOA8Dtsoo2d9oEg4GAdOz
+   skb8DH6UNSnR6VW5CxplHlxQKnIYCjdYwgJTfuUCL/HRKYky1bLDEBhWf
+   Y/utdTvHe9OQBpbriy9aZ3t/Tc5Am0zLL6DZf1SC9QtDXyx7/QSdEqLBo
+   euMGsGJCWmm8gYl0wClPP96jGtL0YBvcZfM5xofKBsZMnrd9yqP+WCz8e
+   Ux2zcK9eNFwZI6opm5LP7SPafbYpTmYlRKkD4eKaZ4SCO3P7A6AJ4YTuH
+   Q==;
+IronPort-SDR: 0ugat5/Z02aJJnMd1KbBDv5Gd/YYAQS0Hvu3JLdlammKcCZ+OGD9Gxi8wjE2yqy/4lpKu3SG6Y
+ a29088HLrjfsX9E2WnpwBbnK29ZnGd0reGMATJmoSWuW0VDCTtcge2xv8jMnw7vVjbVdVNdxeP
+ VCPQ3Nx/SnzkfCtJ2i942/hsO5PNP6ZAcCGPgOewXw9rSIZbeBT1XkAHNnnTcDgDOH28CBAUFY
+ 6vArbCm7Li7onsqojdDcZllT9n/7e4vpqiKDNfvQrZMo6qNe9Yw1Ev6Pr1uhEiWvTL9DkVTQF/
+ hBM=
+X-IronPort-AV: E=Sophos;i="5.77,396,1596470400"; 
+   d="scan'208";a="154839337"
+Received: from mail-co1nam11lp2170.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.170])
+  by ob1.hgst.iphmx.com with ESMTP; 20 Oct 2020 18:51:25 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LTvGM8/3VRzbc/A0FT2/Xh2n7MNxmgE7asnq4ndC27Nh4FiNynkVy/7T08LOKve7zkwmcFPVVaadva5zxG8h56h5i4c4m3w2lP3HbVi8yOgDcw2H/NXFJuAezOEhShbkHMOdSJdtthGsq2gi16qqdOc+rgpAY1xtJ0RjaF4y50Js3NTM3kLRbgGJTe8K6iH60v6Bk1/2Fi3/m8iPCmmUZQvXo3d51sLHMFHvYKdxSQcBXa4aIkCECNheIcee9cvocApsFzEX+TxXyr1Cf6ZdLVG7oqBFf+pk8fJRMvfDbWfC66KG1/m6PgIfUL2NYjVTxVsYQ+zGsyG8vlhcXW6o1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6usQxq//2DwEFtCcu/rRmdfWXYgOivb6/+q1LY/UY5g=;
+ b=Ev3lAa39+e03iwGuxTjdrm+PZkotyTU2sghrcxGuM7pdi5CHEerWTCkPjpdvTzAMePU/QksX4f5/K9H4EgUZ3Vo1/fMMSRvv8SmGHUQe0SXUFdjm4wD0fm2uXldwhWjtWMRzHHOcnRG3//XgNXhotjCGr2a0VxiLN3O+vSdfg/kDpFxuPHy7RtCv1ZOeaeQ65lpNlVEeBg1ooreXyFdenRfB90K640h/B/fvM4xAXhtzfTXXgoW/sj9afYYBtx4gFU+ifnSkmtcabULmhlM98ghUud9hAggAkJxZeXbeauDqME+fMoaThR8QPMZahzxyXF3v0YkWDbcRXi2G8C2EDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=h3csrAd1jky9coyQEUbNeul9O9JSQ+GT/yRMQvwVlRM=;
-        b=MOvMlkKIsU6yWtu6fAoRdXZqQmwKbFRGPzNPt7EIow+NWzRVTfWnoJMkb4id5xG+9Z
-         nJdblopJrWREVTQzC32ssLnNCvh79+bgD+En93s6UUXb+cWsfU0QGVYDeTZokuWfucGM
-         qaUkEcjKk9rAaiWSxQqqYAihvB9Q0Q6n3KfgFYr5qX47wDwxf57ddG7wNZIcKo0hgZTD
-         FgV5+HWg3Xt5rTso+qIcJQvlWTLoAS7RczcRiyEP0L+Xn57EZ7VWWeY66OL8XSTqC5Zf
-         Cjvc7mIId/NUeHFGu19k5Htu63MbgSNOGsL1GZdvCGJzHS4iB/t7g/YP55hjZ2ktX2wk
-         2s8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=h3csrAd1jky9coyQEUbNeul9O9JSQ+GT/yRMQvwVlRM=;
-        b=UEWYc8lsdlpQskq21AQJ/0CIYoXn62lGZR1apKHTcVeGmXi8dDEIsDPApXV3J8P2Hy
-         ckqnTBZuIvLz46DRFmUQM5cGhKVJq86UxbNf75rZ6nlHehuEq/kp3SR5LslRGaJ2B187
-         IF87iqEJ0q4vi71t1Ucy7x/oXDTcjYFpC9sQqxBfx6jzTi4xqzHQeaJeo1Fw6avHUgrn
-         Ur0jMBeiihyO2M5kNJ1V8oM11sblM5LpuFf1+i14IfXn8to7f1AzSuuFb2K3tgvir3Vs
-         mTLjL/wI9U45zoxDfeLTcqBjMkW9udLI+pa9zeYLZoK4g0l/1f8OZFLIkPAIk23GfAYd
-         y2vw==
-X-Gm-Message-State: AOAM5338BZnQ+UijTiPcaXVwy3BwsjHzoIUahyGRocCq2u9qCAxQtiFz
-        dE+SqD9+u8g8ZF+fFDKWsCm/7w==
-X-Google-Smtp-Source: ABdhPJyYDuvahYkU1IUub/PaLxmkTTPYqoYoyfGPonplDkCIKP9bIbjkkmWOPnvsvKP8u2DD0SQXww==
-X-Received: by 2002:a63:504b:: with SMTP id q11mr2076091pgl.17.1603190932800;
-        Tue, 20 Oct 2020 03:48:52 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id b5sm1827560pgi.55.2020.10.20.03.48.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 20 Oct 2020 03:48:51 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 16:18:49 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        chris.redpath@arm.com, morten.rasmussen@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-Message-ID: <20201020104849.xh4prj4az5islmpt@vireshk-i7>
-References: <20201008150317.GB20268@arm.com>
- <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
- <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
- <20201012154915.GD16519@bogus>
- <20201012165219.GA3573@arm.com>
- <17819d4d-9e7e-9a38-4227-d0d10a0749f1@arm.com>
- <20201014042531.r7iykzygkvmpsqck@vireshk-i7>
- <503af305-77a4-964a-ed17-8df8b4e3a546@arm.com>
- <20201019094633.m3yvxurfm2xwsb6a@vireshk-i7>
- <e3b3a583-5e0f-f512-85e6-81c55a0e6db5@arm.com>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6usQxq//2DwEFtCcu/rRmdfWXYgOivb6/+q1LY/UY5g=;
+ b=LJCWao/rvUV6iGpTpBtyhtDuR2UfzFNfKFqohuY4E19BdbfZ0KbExcA/dRKxqWSb8u58BKV0TwCIHqsNXXggiRtf5tEEE+NBIfPPvGDoy6nPiSHF4B0/QYNr/jMoA3YTpl1wgK57AYC1HluNmWjzWRO1aW8/UVPqHpzau6YZ0lQ=
+Received: from CH2PR04MB6710.namprd04.prod.outlook.com (2603:10b6:610:93::10)
+ by CH2PR04MB7048.namprd04.prod.outlook.com (2603:10b6:610:98::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.24; Tue, 20 Oct
+ 2020 10:51:23 +0000
+Received: from CH2PR04MB6710.namprd04.prod.outlook.com
+ ([fe80::89c9:1384:f052:530b]) by CH2PR04MB6710.namprd04.prod.outlook.com
+ ([fe80::89c9:1384:f052:530b%6]) with mapi id 15.20.3455.037; Tue, 20 Oct 2020
+ 10:51:22 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Can Guo <cang@codeaurora.org>, Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Jaegeuk Kim <jaegeuk@google.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Subject: RE: [PATCH 4/4] scsi: add more contexts in the ufs tracepoints
+Thread-Topic: [PATCH 4/4] scsi: add more contexts in the ufs tracepoints
+Thread-Index: AQHWm2f/I0ejIh2QaUeberVOQ/pxIqmf19WAgACO0tA=
+Date:   Tue, 20 Oct 2020 10:51:22 +0000
+Message-ID: <CH2PR04MB6710F6367C3862F3107A78F5FC1F0@CH2PR04MB6710.namprd04.prod.outlook.com>
+References: <20201005223635.2922805-1-jaegeuk@kernel.org>
+ <20201005223635.2922805-4-jaegeuk@kernel.org>
+ <f55c7b379283bfb90e884e9b1bdf170e@codeaurora.org>
+In-Reply-To: <f55c7b379283bfb90e884e9b1bdf170e@codeaurora.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0c15e6e2-e20e-420a-4481-08d874e615cc
+x-ms-traffictypediagnostic: CH2PR04MB7048:
+x-microsoft-antispam-prvs: <CH2PR04MB7048B4E6BF47A31BDA8DA2CDFC1F0@CH2PR04MB7048.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3173;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kSfLo8eomctpKVL5IVjtSudfEqA28zrxbIOAIM9byEtV2/lbakGI0kHc6ePeACHo//fGKNt55nlIXIJIn5BJ/Ew8eGtOBCeWC/oYsPegLRV3/AM5V/CFUGEBYhLFLCOT/ZLtxg1SEbbwuH8XvH67evPKPNZPKtafx2QnRRORDvL3ZOCVSiZJsRSP88/y384OkUFjNe6D5EnIc98Xgtx7QOotTdwDbek+v94Qdl5ObmukkpDcbCEhQA/mCM0ZFFkGyRO0aToQxlLtYdOnyyGc1YCT4eOmrtibk3ge8PR8tntmA33a2dSUQ5WYFok6lHPcJaDLyh7UkeHUaeF1aDWf3g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR04MB6710.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(366004)(396003)(346002)(5660300002)(52536014)(83380400001)(558084003)(9686003)(6506007)(54906003)(186003)(33656002)(8676002)(66946007)(26005)(66476007)(66556008)(66446008)(64756008)(86362001)(53546011)(7696005)(478600001)(76116006)(2906002)(4326008)(110136005)(55016002)(316002)(8936002)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: bDFievUX8Qe0ofkQJGi0UOQhClMKSCEG3nDMY4ZFHnhqiB7uhQQoZtpDWwyPHAW5HZVQ8hiI2k920H2XaCq11aHU4786LmbEMir1ZVIybW1ZNgtBvPhyhBPeKIip0EphP8GEd9IxayDXuCqq8GViAX8kKV78YAaO97N+nuZ4gYmzRYMk6cQ6Cs0MjOjV8c46rsaAdKbBXINA0B3HzFWdvSKUyCN6zSZwYmug2rEzWMlnlBS0ETUZMrPFBe1i4VMHNjG/v9rKOfe1FnyZuCYhuSjiHKVxyxUBRRfcUkOipF/XC4oN4QYQdAxKPTkY1zw77xKV86Xukq/L4c3kSy4cPE+xFuvIHu4CN0HbMrelcgDZxEwYMDvKnmMxqIcxfl/BmdTuwuj80K14dJNjkNIDW2QjWkQv3Ry5zpccKeR5ZxWjnGKA18eg6vXnBNEjXpiMXxC3HFqutlj2MGlWd2NxQoLzwikARVTxJwW5acL11f3zXcMAuqQGye42cykhGl99BR7zuPFFptu8PF863ywVSg5AStFQ/tsqKltCmKPl4xGlQ+yWyuKZySbbWR+lc6ZtmoLBImcKfcN1ar4bLWvI6b3n9E/mD37cJJtnLzFWudl1VuguOd2KH4sa14D7I+HTtq8iZaQwPQ8JWLjCDBlSjw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3b3a583-5e0f-f512-85e6-81c55a0e6db5@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR04MB6710.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c15e6e2-e20e-420a-4481-08d874e615cc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2020 10:51:22.8589
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CMe6avAUnxcLkYAPZGIgrnysA/1y41OFfJoI8AKlak291ckD2w7yMWuYSwxU7HGyd9k85Dm7m2iBK345oUosbA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB7048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-10-20, 14:36, Nicola Mazzucato wrote:
-> Hi Viresh,
-> 
-> 
-> On 10/19/20 10:46 AM, Viresh Kumar wrote:
-> > On 19-10-20, 09:50, Nicola Mazzucato wrote:
-> >> Hi Viresh,
-> >>
-> >> thank you for your suggestion on using 'opp-shared'.
-> >> I think it could work for most of the cases we explained earlier.
-> >>
-> >> Summarising, there are two parts of this entire proposal:
-> >> 1) where/how to get the information: now we are focusing on taking advantage of
-> >> 'opp-shared' within an empty opp table
-> >> 2) and how/where this information will be consumed
-> >>
-> >> Further details below:
-> >>
-> >> 1) a CPUFreq driver that takes the OPPs from firmware, can call
-> >> dev_pm_opp_of_get_sharing_cpus like you suggested. When doing so, a provided
-> >> cpumaksk will be populated with the corresponding cpus that share the same
-> >> (empty) table opp in DT.
-> >> All good so far.
-> > 
-> > Great.
-> > 
-> >> The current opp core is not expecting an empty table and therefore some errors
-> >> are thrown when this happens.
-> >> Since we are now allowing this corner-case, I am presenting below where I think
-> >> some minor corrections may be needed:
-> >>
-> >> --- a/drivers/opp/of.c
-> >> +++ b/drivers/opp/of.c
-> >> @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
-> >>         struct device_node *required_np, *np;
-> >>         int count, i;
-> >>
-> >>         /* Traversing the first OPP node is all we need */
-> >>         np = of_get_next_available_child(opp_np, NULL);
-> >>         if (!np) {
-> >> -               dev_err(dev, "Empty OPP table\n");
-> >> +               dev_warn(dev, "Empty OPP table\n");
-> >> +
-> >> +               /*
-> >> +                * With empty table we remove shared_opp. This is to leave the
-> >> +                * responsibility to decide which opp are shared to the opp users
-> >> +                */
-> >> +               opp_table->shared_opp = OPP_TABLE_ACCESS_EXCLUSIVE;
-> >> +
-> >>                 return;
-> >>         }
-> >>
-> >> @@ int dev_pm_opp_of_find_icc_paths(struct device *dev,
-> >>         int ret, i, count, num_paths;
-> >>         struct icc_path **paths;
-> >>
-> >>         ret = _bandwidth_supported(dev, opp_table);
-> >> -       if (ret <= 0)
-> >> +       if (ret == -EINVAL)
-> >> +               return 0; /* Empty OPP table is a valid corner-case, let's not
-> >> fail */
-> >> +       else if (ret <= 0)
-> >>                 return ret;
-> >>
-> >> The above are not 'strictly' necessary to achieve the intended goal, but they
-> >> make clearer that an empty table is now allowed and not an error anymore.
-> >> What it is your point of view on this?
-> > 
-> > Why is this stuff getting called in your case ? We shouldn't be trying
-> > to create an OPP table here and it should still be an error in the
-> > code if we are asked to parse an empty OPP table.
-> 
-> A driver that gets a set of opp-points from f/w needs to add them to each
-> device. To do so, it will call dev_pm_opp_add(). If an opp_table struct for this
-> device is not found, one will be created and the opp-point will be added to it.
-> When allocation a new opp_table the opp will try to initialise it by parsing the
-> values in DT. It will also try to find_icc_paths.
-> 
-> Everything happens silently if we don't have a table in DT.
+>=20
+> On 2020-10-06 06:36, Jaegeuk Kim wrote:
+> > From: Jaegeuk Kim <jaegeuk@google.com>
+> >
+> > This adds user-friendly tracepoints with group id.
+You have the entire cdb as part of the upiu trace,
+Can't you parse what you need from there?
 
-Right, you need something like your patch here.
-
--- 
-viresh
+Thanks,
+Avri
