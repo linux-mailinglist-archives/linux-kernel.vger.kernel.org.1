@@ -2,238 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0812944F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA2A2944F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410390AbgJTWJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 18:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410337AbgJTWJ4 (ORCPT
+        id S2410401AbgJTWKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 18:10:47 -0400
+Received: from kernel.crashing.org ([76.164.61.194]:43522 "EHLO
+        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393563AbgJTWKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 18:09:56 -0400
-Received: from lithium.sammserver.com (lithium.sammserver.com [IPv6:2a01:4f8:c2c:b7df::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA07EC0613CE;
-        Tue, 20 Oct 2020 15:09:55 -0700 (PDT)
-Received: from mail.sammserver.com (sammserver.wg [10.32.40.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by lithium.sammserver.com (Postfix) with ESMTPS id AC979312B5A9;
-        Wed, 21 Oct 2020 00:09:53 +0200 (CEST)
-Received: by mail.sammserver.com (Postfix, from userid 5011)
-        id 6ADE11131A2F; Wed, 21 Oct 2020 00:09:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
-        t=1603231793; bh=ScXfsn7DKD+h9XykNzeXRwR/8NwVOc6Xb7EsCRwcLnc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=P6bxgFWElAsgU/wCkou6Rpsdet73BakcN3KfOQnj4rsv33cFQ1W7l/y4P6hEcrlka
-         7Io4tEDfRjwPrxUju3WmXa+9C9issDXCdTrNRQx5Lwg5md48fjw4aiR7HYEjU3J62r
-         QDXsQEpDspbX9qbwRewyvbHvPrcoI4drV6fkJcoo=
-Received: from fastboi.localdomain (fastboi.wg [10.32.40.5])
-        by mail.sammserver.com (Postfix) with ESMTP id 1798B1131A2C;
-        Wed, 21 Oct 2020 00:09:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
-        t=1603231793; bh=ScXfsn7DKD+h9XykNzeXRwR/8NwVOc6Xb7EsCRwcLnc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=P6bxgFWElAsgU/wCkou6Rpsdet73BakcN3KfOQnj4rsv33cFQ1W7l/y4P6hEcrlka
-         7Io4tEDfRjwPrxUju3WmXa+9C9issDXCdTrNRQx5Lwg5md48fjw4aiR7HYEjU3J62r
-         QDXsQEpDspbX9qbwRewyvbHvPrcoI4drV6fkJcoo=
-Received: by fastboi.localdomain (Postfix, from userid 1000)
-        id F383F14209CF; Wed, 21 Oct 2020 00:09:52 +0200 (CEST)
-From:   =?UTF-8?q?Samuel=20=C4=8Cavoj?= <samuel@cavoj.net>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Corentin Chary <corentin.chary@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Samuel=20=C4=8Cavoj?= <samuel@cavoj.net>
-Subject: [PATCH v3] platform/x86: asus-wmi: Add support for SW_TABLET_MODE on UX360
-Date:   Wed, 21 Oct 2020 00:09:44 +0200
-Message-Id: <20201020220944.1075530-1-samuel@cavoj.net>
-X-Mailer: git-send-email 2.29.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS autolearn=no autolearn_force=no
-        version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on sammserver.tu
+        Tue, 20 Oct 2020 18:10:47 -0400
+Received: from localhost (gate.crashing.org [63.228.1.57])
+        (authenticated bits=0)
+        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 09KMA9S4006827
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 20 Oct 2020 17:10:14 -0500
+Message-ID: <32bfb619bbb3cd6f52f9e5da205673702fed228f.camel@kernel.crashing.org>
+Subject: Re: [PATCH] net: ftgmac100: Fix missing TX-poll issue
+From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Dylan Hung <dylan_hung@aspeedtech.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Date:   Wed, 21 Oct 2020 09:10:02 +1100
+In-Reply-To: <CAK8P3a2pEfbLDWTppVHmGxXduOWPCwBw-8bMY9h3EbEecsVfTA@mail.gmail.com>
+References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
+         <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
+         <20201019120040.3152ea0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <PS1PR0601MB1849166CBF6D1678E6E1210C9C1F0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+         <CAK8P3a2pEfbLDWTppVHmGxXduOWPCwBw-8bMY9h3EbEecsVfTA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The UX360CA has a WMI device id 0x00060062, which reports whether the
-lid is flipped in tablet mode (1) or in normal laptop mode (0).
+On Tue, 2020-10-20 at 21:49 +0200, Arnd Bergmann wrote:
+> On Tue, Oct 20, 2020 at 11:37 AM Dylan Hung <dylan_hung@aspeedtech.com> wrote:
+> > > +1 @first is system memory from dma_alloc_coherent(), right?
+> > > 
+> > > You shouldn't have to do this. Is coherent DMA memory broken on your
+> > > platform?
+> > 
+> > It is about the arbitration on the DRAM controller.  There are two queues in the dram controller, one is for the CPU access and the other is for the HW engines.
+> > When CPU issues a store command, the dram controller just acknowledges cpu's request and pushes the request into the queue.  Then CPU triggers the HW MAC engine, the HW engine starts to fetch the DMA memory.
+> > But since the cpu's request may still stay in the queue, the HW engine may fetch the wrong data.
 
-Add a quirk (quirk_asus_use_lid_flip_devid) for devices on which this
-WMI device should be used to figure out the SW_TABLET_MODE state, as
-opposed to the quirk_asus_use_kbd_dock_devid.
+Actually, I take back what I said earlier, the above seems to imply
+this is more generic.
 
-Additionally, the device needs to be queried on resume and restore
-because the firmware does not generate an event if the laptop is put to
-sleep while in tablet mode, flipped to normal mode, and later awoken.
+Dylan, please confirm, does this affect *all* DMA capable devices ? If
+yes, then it's a really really bad design bug in your chips
+unfortunately and the proper fix is indeed to make dma_wmb() do a dummy
+read of some sort (what address though ? would any dummy non-cachable
+page do ?) to force the data out as *all* drivers will potentially be
+affected.
 
-It is assumed other UX360* models have the same WMI device. As such, the
-quirk is applied to devices with DMI_MATCH(DMI_PRODUCT_NAME, "UX360").
-More devices with this feature need to be tested and added accordingly.
+I was under the impression that it was a specific timing issue in the
+vhub and ethernet parts, but if it's more generic then it needs to be
+fixed globally.
 
-The reason for using an allowlist via the quirk mechanism is that the new
-WMI device (0x00060062) is also present on some models which do not have
-a 360 degree hinge (at least FX503VD and GL503VD from Hans' DSTS
-collection) and therefore its presence cannot be relied on.
+> There is still something missing in the explanation: The iowrite32()
+> only tells the
+> device that it should check the queue, but not where the data is. I would expect
+> the device to either see the correct data that was marked valid by the
+> 'dma_wmb();first->txdes0 = cpu_to_le32(f_ctl_stat);' operation, or it would see
+> the old f_ctl_stat value telling it that the data is not yet valid and
+> not look at
+> the rest of the descriptor. In the second case you would see the data
+> not getting sent out until the next start_xmit(), but the device should not
+> fetch wrong data.
+> 
+> There are two possible scenarios in which your patch would still help:
+> 
+> a) the dma_wmb() does not serialize the stores as seen by DMA the
+>     way it is supposed to, so the device can observe the new value of txdec0
+>     before it observes the correct data.
+> 
+> b) The txdes0 field sometimes contains stale data that marks the
+>     descriptor as valid before the correct data is written. This field
+>     should have been set in ftgmac100_tx_complete_packet() earlier
+> 
+> If either of the two is the case, then the READ_ONCE() would just
+> introduce a long delay before the iowrite32() that makes it more likely
+> that the data is there, but the inconsistent state would still be observable
+> by the device if it is still working on previous frames.
 
-Signed-off-by: Samuel Čavoj <samuel@cavoj.net>
-Cc: Hans de Goede <hdegoede@redhat.com>
----
-changed v2 -> v3:
-    - added check on resume from sleep and restore
----
- drivers/platform/x86/asus-nb-wmi.c         | 15 +++++++++
- drivers/platform/x86/asus-wmi.c            | 38 ++++++++++++++++++++++
- drivers/platform/x86/asus-wmi.h            |  1 +
- include/linux/platform_data/x86/asus-wmi.h |  1 +
- 4 files changed, 55 insertions(+)
+I think it just get stuck until we try another packet, ie, it doesn't
+see the new descriptor valid bit. But Dylan can elaborate.
 
-diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
-index 1d9fbabd02fb..d41d7ad14be0 100644
---- a/drivers/platform/x86/asus-nb-wmi.c
-+++ b/drivers/platform/x86/asus-nb-wmi.c
-@@ -119,6 +119,11 @@ static struct quirk_entry quirk_asus_use_kbd_dock_devid = {
- 	.use_kbd_dock_devid = true,
- };
- 
-+static struct quirk_entry quirk_asus_use_lid_flip_devid = {
-+	.wmi_backlight_set_devstate = true,
-+	.use_lid_flip_devid = true,
-+};
-+
- static int dmi_matched(const struct dmi_system_id *dmi)
- {
- 	pr_info("Identified laptop model '%s'\n", dmi->ident);
-@@ -520,6 +525,16 @@ static const struct dmi_system_id asus_quirks[] = {
- 		},
- 		.driver_data = &quirk_asus_use_kbd_dock_devid,
- 	},
-+	{
-+		.callback = dmi_matched,
-+		.ident = "ASUS ZenBook Flip UX360",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+			/* Match UX360* */
-+			DMI_MATCH(DMI_PRODUCT_NAME, "UX360"),
-+		},
-+		.driver_data = &quirk_asus_use_lid_flip_devid,
-+	},
- 	{},
- };
- 
-diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index 39e1a6396e08..864c608ad569 100644
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -63,6 +63,7 @@ MODULE_LICENSE("GPL");
- #define NOTIFY_KBD_BRTTOGGLE		0xc7
- #define NOTIFY_KBD_FBM			0x99
- #define NOTIFY_KBD_TTP			0xae
-+#define NOTIFY_LID_FLIP			0xfa
- 
- #define ASUS_WMI_FNLOCK_BIOS_DISABLED	BIT(0)
- 
-@@ -375,6 +376,20 @@ static int asus_wmi_input_init(struct asus_wmi *asus)
- 		}
- 	}
- 
-+	if (asus->driver->quirks->use_lid_flip_devid) {
-+		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
-+        if (result < 0)
-+			asus->driver->quirks->use_lid_flip_devid = 0;
-+		if (result >= 0) {
-+			input_set_capability(asus->inputdev, EV_SW, SW_TABLET_MODE);
-+			input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
-+		} else if (result == -ENODEV) {
-+			pr_err("This device has lid_flip quirk but got ENODEV checking it. This is a bug.");
-+		} else {
-+			pr_err("Error checking for lid-flip: %d\n", result);
-+		}
-+	}
-+
- 	err = input_register_device(asus->inputdev);
- 	if (err)
- 		goto err_free_dev;
-@@ -394,6 +409,16 @@ static void asus_wmi_input_exit(struct asus_wmi *asus)
- 	asus->inputdev = NULL;
- }
- 
-+/* Tablet mode ****************************************************************/
-+
-+static void lid_flip_tablet_mode_get_state(struct asus_wmi *asus) {
-+	int result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
-+	if (result >= 0) {
-+		input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
-+		input_sync(asus->inputdev);
-+	}
-+}
-+
- /* Battery ********************************************************************/
- 
- /* The battery maximum charging percentage */
-@@ -2128,6 +2153,11 @@ static void asus_wmi_handle_event_code(int code, struct asus_wmi *asus)
- 		return;
- 	}
- 
-+	if (asus->driver->quirks->use_lid_flip_devid && code == NOTIFY_LID_FLIP) {
-+		lid_flip_tablet_mode_get_state(asus);
-+		return;
-+	}
-+
- 	if (asus->fan_boost_mode_available && code == NOTIFY_KBD_FBM) {
- 		fan_boost_mode_switch_next(asus);
- 		return;
-@@ -2719,6 +2749,10 @@ static int asus_hotk_resume(struct device *device)
- 
- 	if (asus_wmi_has_fnlock_key(asus))
- 		asus_wmi_fnlock_update(asus);
-+
-+	if (asus->driver->quirks->use_lid_flip_devid)
-+		lid_flip_tablet_mode_get_state(asus);
-+
- 	return 0;
- }
- 
-@@ -2757,6 +2791,10 @@ static int asus_hotk_restore(struct device *device)
- 
- 	if (asus_wmi_has_fnlock_key(asus))
- 		asus_wmi_fnlock_update(asus);
-+
-+	if (asus->driver->quirks->use_lid_flip_devid)
-+		lid_flip_tablet_mode_get_state(asus);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/platform/x86/asus-wmi.h b/drivers/platform/x86/asus-wmi.h
-index 1a95c172f94b..b302415bf1d9 100644
---- a/drivers/platform/x86/asus-wmi.h
-+++ b/drivers/platform/x86/asus-wmi.h
-@@ -34,6 +34,7 @@ struct quirk_entry {
- 	bool wmi_backlight_set_devstate;
- 	bool wmi_force_als_set;
- 	bool use_kbd_dock_devid;
-+	bool use_lid_flip_devid;
- 	int wapf;
- 	/*
- 	 * For machines with AMD graphic chips, it will send out WMI event
-diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
-index 897b8332a39f..2f274cf52805 100644
---- a/include/linux/platform_data/x86/asus-wmi.h
-+++ b/include/linux/platform_data/x86/asus-wmi.h
-@@ -62,6 +62,7 @@
- 
- /* Misc */
- #define ASUS_WMI_DEVID_CAMERA		0x00060013
-+#define ASUS_WMI_DEVID_LID_FLIP		0x00060062
- 
- /* Storage */
- #define ASUS_WMI_DEVID_CARDREADER	0x00080013
--- 
-2.29.0
+Cheers,
+Ben.
+
 
