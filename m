@@ -2,161 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB5C2940BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C472940C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394804AbgJTQpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 12:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394795AbgJTQpT (ORCPT
+        id S2394886AbgJTQqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 12:46:23 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33438 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394856AbgJTQqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 12:45:19 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95EBC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:45:18 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id x1so2569554eds.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:45:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kqizJSkHLOLzXDwR4VjspCggxCD/0uuJQy5O12nu08k=;
-        b=BmIYSpKF/wewx0pVBHz6bZcXrLxTE2fKY4HLv9yuHgYyrVaSOjigVXmPBzjrL7xlIJ
-         VTgmWossfUJOX/R5TaQ+ThmgHs7V088hEugn6EEuVzD/i0Mli23AsWnNcCV6nPAvruje
-         F8zSJL9OrB+vYfUPJGshGRDYZZbQ5xmn8vNXZK+D5zD9Q/CK0ctQOc6Rs0mEBFP5o0/d
-         PhSgjDfQUGBz1DmDrMJIxw5Y5kbLSJR7dfiosoYWpS+q6Eak6PkMWQcdf6VwrukRYC3o
-         1O0qQK+rwTBeroItujJc/douFayUtk7GHO/94F4IrPakPrGcHx9YrIEAWapdv0fMl6Wa
-         bVtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kqizJSkHLOLzXDwR4VjspCggxCD/0uuJQy5O12nu08k=;
-        b=I2hzIiSRdXsUepbtEZQKiQj43ZkbSXnAytnnrLvKTAjAiVyTfUUjhfC7hjw/GzhvaC
-         b40j0J9Ze0uiGWS8Pq/gOAD92LXzPcJ57BHV/N7+tdql/AtlqvxXn44FqvKAIgadqdSX
-         4vRMU3XrLRUNy2uUQnkZW6b5WMloPunQWGAKbDoSzCep69xGI29VlE6WO5NLPgX4u5rL
-         fhdBRQe/3gJrl74ijncLudnRpFaoj7efoXTkFKh3uyshFjoefwezk5ecaAMRXYWgDxnG
-         FvoqJk3KwxYp4r49+KJHqGaGr6HnFYEgtFgatBzBf9NvqFwXW6z5UlxPGOqb6cJ20p2u
-         /jSg==
-X-Gm-Message-State: AOAM530bq0IcPKTr4U0eUmtRWjax4bjOPr2A9gA+TG4Tet16i6xIyFvB
-        DF0SPR7Lp9dAb6CyQbB2U94/m8sWL3e3GK04QrPRMQ==
-X-Google-Smtp-Source: ABdhPJxJASQSBwjhvefIlXIgCa/J5q/z9s2/DT+6DEol2B5uWOlQJq+h4CQt7XBa7XYqaVTkAW7wHOWBvDNOrEZfs2I=
-X-Received: by 2002:aa7:c7d9:: with SMTP id o25mr3843066eds.318.1603212317220;
- Tue, 20 Oct 2020 09:45:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201013003203.4168817-1-samitolvanen@google.com>
- <20201013003203.4168817-23-samitolvanen@google.com> <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
- <20201015102216.GB2611@hirez.programming.kicks-ass.net> <20201015203942.f3kwcohcwwa6lagd@treble>
-In-Reply-To: <20201015203942.f3kwcohcwwa6lagd@treble>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 20 Oct 2020 09:45:06 -0700
-Message-ID: <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 20 Oct 2020 12:46:22 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09KGijJJ011295;
+        Tue, 20 Oct 2020 16:46:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=0xbHYWfx1qsUJtKvtGxxhzbbAgoheE44Yomg5cvr3Ag=;
+ b=Zci+qb4yadT5XHBTFYvxPzWJ9dHRjjMJ471c1KkIAJJWc7+d+C0/7PrXrBNaHdwIjXTR
+ n12EudbVQuSKIB7c4OZA0fa3vFFKh02UFLY+60FuqPCXlFVEEW8Poap9FQXuJSYiPhXJ
+ nDdgIl+o+qv1PumeLIV03fz4+VhbFJ25dp8s1bb6/jzr/0x9nAHiAU81sMNZsgXqXrd5
+ ngG9916doQiO8qRfsFJorZ+6g3cHrnE6gy4RFuS2EcfqW+RK8rWoVQTP63HAiH1zZJyp
+ AFTsfxbVaB+zCpQQ6Vb9S+uusNwfLMMcA62xE6lOCVlgLazdV+mchKKEserc3tXMHrQQ 3A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 349jrpmb75-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 20 Oct 2020 16:46:01 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09KGeuDs170853;
+        Tue, 20 Oct 2020 16:46:00 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 348ahwggky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Oct 2020 16:46:00 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09KGjwGZ025270;
+        Tue, 20 Oct 2020 16:45:58 GMT
+Received: from smirzamo-mac.lan (/136.52.113.136)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 20 Oct 2020 09:45:58 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH linux-5.9 1/1] net: netfilter: fix KASAN:
+ slab-out-of-bounds Read in nft_flow_rule_create
+From:   Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+In-Reply-To: <20201020115047.GA15628@salvia>
+Date:   Tue, 20 Oct 2020 09:45:57 -0700
+Cc:     linux-kernel@vger.kernel.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <28C74722-8F35-4397-B567-FA5BCF525891@oracle.com>
+References: <20201019172532.3906-1-saeed.mirzamohammadi@oracle.com>
+ <20201020115047.GA15628@salvia>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9779 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010200112
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9780 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 spamscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010200112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 1:39 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Thu, Oct 15, 2020 at 12:22:16PM +0200, Peter Zijlstra wrote:
-> > On Thu, Oct 15, 2020 at 01:23:41AM +0200, Jann Horn wrote:
-> >
-> > > It would probably be good to keep LTO and non-LTO builds in sync about
-> > > which files are subjected to objtool checks. So either you should be
-> > > removing the OBJECT_FILES_NON_STANDARD annotations for anything that
-> > > is linked into the main kernel (which would be a nice cleanup, if that
-> > > is possible),
-> >
-> > This, I've had to do that for a number of files already for the limited
-> > vmlinux.o passes we needed for noinstr validation.
->
-> Getting rid of OBJECT_FILES_NON_STANDARD is indeed the end goal, though
-> I'm not sure how practical that will be for some of the weirder edge
-> case.
->
-> On a related note, I have some old crypto cleanups which need dusting
-> off.
+Thanks! Yes, that looks good to me.
 
-Building allyesconfig with this series and LTO enabled, I still see
-the following objtool warnings for vmlinux.o, grouped by source file:
+Saeed
 
-arch/x86/entry/entry_64.S:
-__switch_to_asm()+0x0: undefined stack state
-.entry.text+0xffd: sibling call from callable instruction with
-modified stack frame
-.entry.text+0x48: stack state mismatch: cfa1=7-8 cfa2=-1+0
+> On Oct 20, 2020, at 4:50 AM, Pablo Neira Ayuso <pablo@netfilter.org> =
+wrote:
+>=20
+> On Mon, Oct 19, 2020 at 10:25:32AM -0700, =
+saeed.mirzamohammadi@oracle.com wrote:
+>> From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+>>=20
+>> This patch fixes the issue due to:
+>>=20
+>> BUG: KASAN: slab-out-of-bounds in nft_flow_rule_create+0x622/0x6a2
+>> net/netfilter/nf_tables_offload.c:40
+>> Read of size 8 at addr ffff888103910b58 by task syz-executor227/16244
+>>=20
+>> The error happens when expr->ops is accessed early on before =
+performing the boundary check and after nft_expr_next() moves the expr =
+to go out-of-bounds.
+>>=20
+>> This patch checks the boundary condition before expr->ops that fixes =
+the slab-out-of-bounds Read issue.
+>=20
+> Thanks. I made a slight variant of your patch.
+>=20
+> I'm attaching it, it is also fixing the problem but it introduced
+> nft_expr_more() and use it everywhere.
+>=20
+> Let me know if this looks fine to you.
+> <0001-netfilter-fix-KASAN-slab-out-of-bounds-Read-in-nft_f.patch>
 
-arch/x86/entry/entry_64_compat.S:
-.entry.text+0x1754: unsupported instruction in callable function
-.entry.text+0x1634: redundant CLD
-.entry.text+0x15fd: stack state mismatch: cfa1=7-8 cfa2=-1+0
-.entry.text+0x168c: stack state mismatch: cfa1=7-8 cfa2=-1+0
-
-arch/x86/kernel/head_64.S:
-.head.text+0xfb: unsupported instruction in callable function
-
-arch/x86/kernel/acpi/wakeup_64.S:
-do_suspend_lowlevel()+0x116: sibling call from callable instruction
-with modified stack frame
-
-arch/x86/crypto/camellia-aesni-avx2-asm_64.S:
-camellia_cbc_dec_32way()+0xb3: stack state mismatch: cfa1=7+520 cfa2=7+8
-camellia_ctr_32way()+0x1a: stack state mismatch: cfa1=7+520 cfa2=7+8
-
-arch/x86/crypto/aesni-intel_avx-x86_64.S:
-aesni_gcm_init_avx_gen2()+0x12: unsupported stack pointer realignment
-aesni_gcm_enc_update_avx_gen2()+0x12: unsupported stack pointer realignment
-aesni_gcm_dec_update_avx_gen2()+0x12: unsupported stack pointer realignment
-aesni_gcm_finalize_avx_gen2()+0x12: unsupported stack pointer realignment
-aesni_gcm_init_avx_gen4()+0x12: unsupported stack pointer realignment
-aesni_gcm_enc_update_avx_gen4()+0x12: unsupported stack pointer realignment
-aesni_gcm_dec_update_avx_gen4()+0x12: unsupported stack pointer realignment
-aesni_gcm_finalize_avx_gen4()+0x12: unsupported stack pointer realignment
-
-arch/x86/crypto/sha1_avx2_x86_64_asm.S:
-sha1_transform_avx2()+0xc: unsupported stack pointer realignment
-
-arch/x86/crypto/sha1_ni_asm.S:
-sha1_ni_transform()+0x7: unsupported stack pointer realignment
-
-arch/x86/crypto/sha256-avx2-asm.S:
-sha256_transform_rorx()+0x13: unsupported stack pointer realignment
-
-arch/x86/crypto/sha512-ssse3-asm.S:
-sha512_transform_ssse3()+0x14: unsupported stack pointer realignment
-
-arch/x86/crypto/sha512-avx-asm.S:
-sha512_transform_avx()+0x14: unsupported stack pointer realignment
-
-arch/x86/crypto/sha512-avx2-asm.S:
-sha512_transform_rorx()+0x7: unsupported stack pointer realignment
-
-arch/x86/lib/retpoline.S:
-__x86_retpoline_rdi()+0x10: return with modified stack frame
-__x86_retpoline_rdi()+0x0: stack state mismatch: cfa1=7+32 cfa2=7+8
-__x86_retpoline_rdi()+0x0: stack state mismatch: cfa1=7+32 cfa2=-1+0
-
-Josh, Peter, any thoughts on what would be the preferred way to fix
-these, or how to tell objtool to ignore this code?
-
-Sami
