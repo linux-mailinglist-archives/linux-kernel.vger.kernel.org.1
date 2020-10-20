@@ -2,85 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BDE2938EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296F22938F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404056AbgJTKMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
+        id S1733094AbgJTKNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 06:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728448AbgJTKMW (ORCPT
+        with ESMTP id S1729921AbgJTKNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:12:22 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C69C061755;
-        Tue, 20 Oct 2020 03:12:21 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id h6so1420521lfj.3;
-        Tue, 20 Oct 2020 03:12:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0NVDAJwiCNsVNKZWhlOY3xhwUPk6NysTziyLS+bYwFA=;
-        b=jkXrMeQBqT/RqdDiE/ziEbQ5Vs7eQ61+qAhI3VUOkmHvyGC/j6q66S3suiTy7Ednr0
-         2i+mzVSBxZLV8A/YRtAbUcRCAT8+tjy2NUxWPwVGYWSF40eEUoYrt/CxjPCx4Z75k7CE
-         jb0+kOr29dZO4JjlS9PscvaW5UEr/iKfMC9Ij8AruYaifqDw10hVcdkrcmBXDEuqCkW9
-         NzHkLM2Py0Y6sX52YaFEtoqcT3Z3OpRI8DqhfHrdQc2VbXBSuHoZfIxd83ZqZX0lAEkQ
-         1DNHIgrnWAOqftqW3rvLM4TiyPbpSvEhH2VVQW0chvMs+ktnLxmtb1mZLNxgEl3wE7A1
-         2w2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0NVDAJwiCNsVNKZWhlOY3xhwUPk6NysTziyLS+bYwFA=;
-        b=gGbI2zBrxQxFW0Et5BWPC9LszjdBZUrCHKMeWiSObYkIHIrppw8YY0F/F5uDdmGmmJ
-         lboxFlVg6II7FdoXHk3Brcmav88q1vT2V0fLJIUjLg0eJDCAanFfubjofuiUIVDpYWWU
-         0XSmJYzFvQPAvsGAqvYnL/cICFoEEN+A4nfiFb2ih+lxL3FSGNs/zGcwNtiTClF51+AB
-         2BsafWlT8nD1I5jvWfTYwXlo2fXC8mWiVyNeZf28a8NNWyNsKGLtO3Yc05p7oebYj1AP
-         pmRFXRBWajsobmyNonfRSaLKoODn0C83too3hwRLBZgLrF3dJP0Sd+i7UCJAZeVtWRyC
-         npng==
-X-Gm-Message-State: AOAM532fR2IxGmKokl+TfL5utMZqcT5OiD14QZcyR+W9tkAvbZr906FF
-        0h+tm13YpVP2mLZ0KA45WozwRAI8RhlrDlYuEus=
-X-Google-Smtp-Source: ABdhPJyej+E8dxCY3kF9aWuYxbiwlWYLZCQe5GPTfsUoqsFL6pH6jps6tpEdavOizby7t0Hjq+mlkEvj0D9dlUdkA7E=
-X-Received: by 2002:a19:7e8d:: with SMTP id z135mr747618lfc.158.1603188740418;
- Tue, 20 Oct 2020 03:12:20 -0700 (PDT)
+        Tue, 20 Oct 2020 06:13:40 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B73C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 03:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=ulf1b4scapw8ctjjAAz+4kLXfTbjmbhJeEFBO0fcNVE=; b=bW/0XvzFz0jzLulc5aAH1fFri
+        e3xmMJmksLdSUc7UG9xzd2z49GU6JCPdz/3zV3CvN8dtLpUt0iGWkfEhTA6rqzDughAlLRWSAnSB5
+        unVgdLOzvO8oTTE7bnWIYQMuZ/yDXSBH0hKYz38Hpj/myzEUaocO6GvD3pzo310ORPuzNKuyqedlA
+        yZSnSgnWuUT/vMFBs5fQPcNsY5ZxJ4FTUksoTuMxin/nq8R5qEhQPJZnEAnLD0X0P2EX0QGyGuLU6
+        OOMYtgg5bIlRC+atsL9HS6HOKnw5Kt43gdxikf/QqeN1/1tFAf09brxvRTgHtRV0e/ngKV10TbyMZ
+        rrtXBEwtA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48618)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kUodz-00076j-FI; Tue, 20 Oct 2020 11:13:27 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kUodw-0005CL-QC; Tue, 20 Oct 2020 11:13:24 +0100
+Date:   Tue, 20 Oct 2020 11:13:24 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Andrew Jeffery <andrew@aj.id.au>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        mhiramat@kernel.org, labbott@redhat.com,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luka Oreskovic <luka.oreskovic@sartura.hr>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Subject: Re: [PATCH v2] ARM: kprobes: Avoid fortify_panic() when copying
+ optprobe template
+Message-ID: <20201020101324.GA1551@shell.armlinux.org.uk>
+References: <20201001042927.2147800-1-andrew@aj.id.au>
+ <CACPK8XcFhnnY8Q_DYRGo-AuRMxnVzUfCyjxRyAuFO=RSGyK=Sg@mail.gmail.com>
+ <CACPK8XeJzHOH-ErWB8ZZS1rMVcPJx0exjnB-va-vhuvGvwFWCQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201019090657.131-1-zhenzhong.duan@gmail.com>
- <20201019090657.131-2-zhenzhong.duan@gmail.com> <7eec99d5-e36b-ee5b-5b6c-1486e453a083@redhat.com>
-In-Reply-To: <7eec99d5-e36b-ee5b-5b6c-1486e453a083@redhat.com>
-From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Date:   Tue, 20 Oct 2020 18:12:08 +0800
-Message-ID: <CAFH1YnNZ2WPbNOCnFGPaL=L7TrSUXhzVT_kGpskXj=CTnZPHvQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] KVM: not link irqfd with a fake IRQ bypass producer
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        mst@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACPK8XeJzHOH-ErWB8ZZS1rMVcPJx0exjnB-va-vhuvGvwFWCQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 2:32 PM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> On 2020/10/19 =E4=B8=8B=E5=8D=885:06, Zhenzhong Duan wrote:
-> > In case failure to setup Post interrupt for an IRQ, it make no sense
-> > to assign irqfd->producer to the producer.
+On Tue, Oct 20, 2020 at 05:32:26AM +0000, Joel Stanley wrote:
+> On Fri, 9 Oct 2020 at 05:20, Joel Stanley <joel@jms.id.au> wrote:
 > >
-> > This change makes code more robust.
->
->
-> It's better to describe what issue we will get without this patch.
+> > On Thu, 1 Oct 2020 at 04:30, Andrew Jeffery <andrew@aj.id.au> wrote:
+> > >
+> > > Setting both CONFIG_KPROBES=y and CONFIG_FORTIFY_SOURCE=y on ARM leads
+> > > to a panic in memcpy() when injecting a kprobe despite the fixes found
+> > > in commit e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with
+> > > FORTIFY_SOURCE") and commit 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes:
+> > > optimized kprobes illegal instruction").
+> > >
+> > > arch/arm/include/asm/kprobes.h effectively declares
+> > > the target type of the optprobe_template_entry assembly label as a u32
+> > > which leads memcpy()'s __builtin_object_size() call to determine that
+> > > the pointed-to object is of size four. However, the symbol is used as a handle
+> > > for the optimised probe assembly template that is at least 96 bytes in size.
+> > > The symbol's use despite its type blows up the memcpy() in ARM's
+> > > arch_prepare_optimized_kprobe() with a false-positive fortify_panic() when it
+> > > should instead copy the optimised probe template into place:
+> > >
+> > > ```
+> > > $ sudo perf probe -a aspeed_g6_pinctrl_probe
+> > > [  158.457252] detected buffer overflow in memcpy
+> > >
+> > > Fixes: e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with FORTIFY_SOURCE")
+> > > Fixes: 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes: optimized kprobes illegal instruction")
+> > > Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
+> > > Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+> > > Suggested-by: Kees Cook <keescook@chromium.org>
+> > > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> >
+> > Tested-by: Joel Stanley <joel@jms.id.au>
+> > Reviewed-by: Joel Stanley <joel@jms.id.au>
+> >
+> > Thanks Andrew.
+> >
+> > > ---
+> > > v1 was sent some time back, in May:
+> > >
+> > > https://lore.kernel.org/linux-arm-kernel/20200517153959.293224-1-andrew@aj.id.au/
+> 
+> Russell, are you picking this fix up?
 
-I didn't see an issue without this patch.
+Sorry, but I don't "pick" patches off the mailing list. See my
+signature.
 
-Regards
-Zhenzhong
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
