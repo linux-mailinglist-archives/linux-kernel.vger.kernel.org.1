@@ -2,64 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA452943F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2FA2943FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409568AbgJTUhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 16:37:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409556AbgJTUhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:37:38 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8816F2224A;
-        Tue, 20 Oct 2020 20:37:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603226258;
-        bh=XBAXsJHUIh/+mN7SPuRDyEtONViRC+xODcGlgkYavhs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=d7vR50K2xNLEXigSR6Frzb+C625m+1+FGiXuZmFRBMN1q5EhhXx2s+itZpOJfMBKy
-         tmKTjd79POBrhA9xwn8f46h67fIolwcRsXuLTfMVg0lNZ4gy7CFIBMLJfdPzmlCYq1
-         ypCJg32++eRsqgayiVnCeW9O1uvU6ynExv+5TcYU=
-Date:   Tue, 20 Oct 2020 13:37:32 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, allan.nielsen@microchip.com,
-        joergen.andreasen@microchip.com, UNGLinuxDriver@microchip.com,
-        vinicius.gomes@intel.com, michael.chan@broadcom.com,
-        vishal@chelsio.com, saeedm@mellanox.com, jiri@mellanox.com,
-        idosch@mellanox.com, alexandre.belloni@bootlin.com, po.liu@nxp.com,
-        claudiu.manoil@nxp.com, alexandru.marginean@nxp.com,
-        vladimir.oltean@nxp.com, leoyang.li@nxp.com, mingkai.hu@nxp.com
-Subject: Re: [PATCH v1 net-next 0/5] net: dsa: felix: psfp support on
-Message-ID: <20201020133732.035d8df4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201020072321.36921-1-xiaoliang.yang_1@nxp.com>
-References: <20201020072321.36921-1-xiaoliang.yang_1@nxp.com>
+        id S2438577AbgJTUkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 16:40:02 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:41556 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438558AbgJTUkC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 16:40:02 -0400
+Received: by mail-qv1-f67.google.com with SMTP id t20so1609568qvv.8;
+        Tue, 20 Oct 2020 13:40:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fySJMPCABR3H70rEvYBVacbPjL+hPWAsa/DU0+SQkpE=;
+        b=ozsZoXq1ZCd04UVJoaS2V2/zwHh9f+FtcFN1RYXXIZO4+6pfT6IJnkgHXFOiVdYp5d
+         e8tEiFT/7rrRAH8TTjb7MqTGab92O0EOvEWy0gZgJ9pnpK32JIE8nhzJgsBcCq/OxwHi
+         pM3t1k2+X8s3uk3SW4FK/4e87VcBoyVTNNbk26mok3xzaKbxBJQ/Qq7jVBY1EpJXyCo9
+         lxSjrFOvaJyhnPUFJnbRHNdGXt7+ojOzjW0QVLSH/+IcYv0NJr8sX8gcNgyeMTeDDG3O
+         XydHe1RfBudnJUx+A/Yw1/twzlsQTi9WT3z42NKvmlijOOF0ilqjkXl1/8LkCJfh/LBq
+         Qjgg==
+X-Gm-Message-State: AOAM532Mm9A0LuNghgKzafCySolAdtcJMduNmdYC96OPeSPAJZu8FhzH
+        xD6HiGUlYMra4EDhzJlsroY=
+X-Google-Smtp-Source: ABdhPJyt4OYVx3p2QTs6voQLUquQTJV1czab5xLFmamkDBKLU9F04lhH6AIQIveNIE2AZx8bBceQAA==
+X-Received: by 2002:a05:6214:180d:: with SMTP id o13mr5310427qvw.34.1603226399526;
+        Tue, 20 Oct 2020 13:39:59 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id m18sm1411165qkk.102.2020.10.20.13.39.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 13:39:58 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        David Laight <David.Laight@ACULAB.COM>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] crypto: lib/sha256 - cleanup/optimization
+Date:   Tue, 20 Oct 2020 16:39:51 -0400
+Message-Id: <20201020203957.3512851-1-nivedita@alum.mit.edu>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020 15:23:16 +0800 Xiaoliang Yang wrote:
-> This patch series add gate and police action for tc flower offload to
-> support Per-Stream Filtering and Policing(PSFP), which is defined in
-> IEEE802.1Qci.
-> 
-> There is also a TC flower offload to set up VCAPs on ocelot driver.
-> Because VCAPs use chain 10000-21255, we set chain 30000 to offload to
-> gate and police action to run PSFP module.
+Patch 1 -- Use memzero_explicit() instead of structure assignment/plain
+memset() to clear sensitive state.
 
-We have already sent a pull request for 5.10 and therefore net-next 
-is closed for new drivers, features, and code refactoring.
+Patch 2 -- I am not sure about this one: currently the temporary
+variables used in the generic sha256 implementation are cleared, but the
+clearing is optimized away due to lack of compiler barriers. I don't
+think it's really necessary to clear them, but I'm not a cryptanalyst,
+so I would like comment on whether it's indeed safe not to, or we should
+instead add the required barriers to force clearing.
 
-Please repost when net-next reopens after 5.10-rc1 is cut.
+The last four patches are optimizations for generic sha256.
 
-(http://vger.kernel.org/~davem/net-next.html will not be up to date 
- this time around, sorry about that).
+v2:
+- Add patch to combine K and W arrays, suggested by David
+- Reformat SHA256_ROUND() macro a little
 
-RFC patches sent for review only are obviously welcome at any time.
+Arvind Sankar (6):
+  crypto: Use memzero_explicit() for clearing state
+  crypto: lib/sha256 - Don't clear temporary variables
+  crypto: lib/sha256 - Clear W[] in sha256_update() instead of
+    sha256_transform()
+  crypto: lib/sha256 - Unroll SHA256 loop 8 times intead of 64
+  crypto: lib/sha256 - Unroll LOAD and BLEND loops
+  crypto: lib/sha - Combine round constants and message schedule
+
+ include/crypto/sha1_base.h   |   3 +-
+ include/crypto/sha256_base.h |   3 +-
+ include/crypto/sha512_base.h |   3 +-
+ include/crypto/sm3_base.h    |   3 +-
+ lib/crypto/sha256.c          | 211 +++++++++++------------------------
+ 5 files changed, 71 insertions(+), 152 deletions(-)
+
+-- 
+2.26.2
+
