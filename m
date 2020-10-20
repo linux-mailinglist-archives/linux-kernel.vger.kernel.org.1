@@ -2,102 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1636293E1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C395293E19
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407842AbgJTOGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407779AbgJTOGE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:06:04 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17825C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:06:04 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1kUsGy-0003id-GA; Tue, 20 Oct 2020 16:05:56 +0200
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1kUsGw-0000KI-My; Tue, 20 Oct 2020 16:05:54 +0200
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     kernel@pengutronix.de, Yann Gautier <yann.gautier@st.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Ludovic Barre <ludovic.barre@st.com>,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: stm32: update sdmmc IP version for STM32MP157 SOC
-Date:   Tue, 20 Oct 2020 16:04:51 +0200
-Message-Id: <20201020140450.29158-1-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
+        id S2407832AbgJTOFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:05:53 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:36698 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407816AbgJTOFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 10:05:53 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kUsGd-002ftA-OS; Tue, 20 Oct 2020 16:05:35 +0200
+Date:   Tue, 20 Oct 2020 16:05:35 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com, olteanv@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] net: dsa: mv88e6xxx: Don't force link when using
+ in-band-status
+Message-ID: <20201020140535.GE139700@lunn.ch>
+References: <20201020034558.19438-1-chris.packham@alliedtelesis.co.nz>
+ <20201020034558.19438-2-chris.packham@alliedtelesis.co.nz>
+ <20201020101552.GB1551@shell.armlinux.org.uk>
+ <20201020154940.60357b6c@nic.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020154940.60357b6c@nic.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yann Gautier <yann.gautier@st.com>
+On Tue, Oct 20, 2020 at 03:49:40PM +0200, Marek Behun wrote:
+> On Tue, 20 Oct 2020 11:15:52 +0100
+> Russell King - ARM Linux admin <linux@armlinux.org.uk> wrote:
+> 
+> > On Tue, Oct 20, 2020 at 04:45:56PM +1300, Chris Packham wrote:
+> > > When a port is configured with 'managed = "in-band-status"' don't force
+> > > the link up, the switch MAC will detect the link status correctly.
+> > > 
+> > > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> > > Reviewed-by: Andrew Lunn <andrew@lunn.ch>  
+> > 
+> > I thought we had issues with the 88E6390 where the PCS does not
+> > update the MAC with its results. Isn't this going to break the
+> > 6390? Andrew?
+> > 
+> 
+> Russell, I tested this patch on Turris MOX with 6390 on port 9 (cpu
+> port) which is configured in devicetree as 2500base-x, in-band-status,
+> and it works...
+> 
+> Or will this break on user ports?
 
-Update the IP version to v2.0, which supports linked lists in internal DMA,
-and is present in STM32MP1 SoCs.
+User ports is what needs testing, ideally with an SFP.
 
-The mmci driver supports the v2.0 periph id since 7a2a98be672b ("mmc: mmci:
-Add support for sdmmc variant revision 2.0"), so it's now Ok to add it into
-the SoC device tree to benefit from the improved DMA support.
+There used to be explicit code which when the SERDES reported link up,
+the MAC was configured in software with the correct speed etc. With
+the move to pcs APIs, it is less obvious how this works now, does it
+still software configure the MAC, or do we have the right magic so
+that the hardware updates itself.
 
-Signed-off-by: Ludovic Barre <ludovic.barre@st.com>
-Signed-off-by: Yann Gautier <yann.gautier@st.com>
-[afa: cherry-picked from https://github.com/STMicroelectronics/linux/commit/31e2a6bc8]
-[afa: extended commit message with reference to driver patch]
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
-Cc: Ludovic Barre <ludovic.barre@st.com>
----
- arch/arm/boot/dts/stm32mp151.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index bfe29023fbd5..b8d996d32dc0 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1040,7 +1040,7 @@ adc2: adc@100 {
- 
- 		sdmmc3: sdmmc@48004000 {
- 			compatible = "arm,pl18x", "arm,primecell";
--			arm,primecell-periphid = <0x10153180>;
-+			arm,primecell-periphid = <0x00253180>;
- 			reg = <0x48004000 0x400>;
- 			interrupts = <GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names = "cmd_irq";
-@@ -1338,7 +1338,7 @@ qspi: spi@58003000 {
- 
- 		sdmmc1: sdmmc@58005000 {
- 			compatible = "arm,pl18x", "arm,primecell";
--			arm,primecell-periphid = <0x10153180>;
-+			arm,primecell-periphid = <0x00253180>;
- 			reg = <0x58005000 0x1000>;
- 			interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names = "cmd_irq";
-@@ -1353,7 +1353,7 @@ sdmmc1: sdmmc@58005000 {
- 
- 		sdmmc2: sdmmc@58007000 {
- 			compatible = "arm,pl18x", "arm,primecell";
--			arm,primecell-periphid = <0x10153180>;
-+			arm,primecell-periphid = <0x00253180>;
- 			reg = <0x58007000 0x1000>;
- 			interrupts = <GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names = "cmd_irq";
--- 
-2.28.0
-
+     Andrew
