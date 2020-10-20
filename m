@@ -2,265 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F859294363
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66AD294371
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 21:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409262AbgJTTnQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Oct 2020 15:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
+        id S2438320AbgJTTp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 15:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405175AbgJTTnQ (ORCPT
+        with ESMTP id S2438310AbgJTTp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 15:43:16 -0400
-X-Greylist: delayed 88583 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 20 Oct 2020 12:43:14 PDT
-Received: from pechkin.mail.miralogic.ru (pechkin.mail.miralogic.ru [IPv6:2a02:17d0:8006:2::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A52A9C0613CE;
-        Tue, 20 Oct 2020 12:43:14 -0700 (PDT)
-Received: from mail.itmh.ru (unknown [IPv6:2a02:17d0:810a:100::2])
-        by pechkin.mail.miralogic.ru (Postfix) with ESMTP id 95EB044DCC;
-        Wed, 21 Oct 2020 00:43:12 +0500 (YEKT)
-Received: from arden.corp.itmh.ru (2a02:17d0:810a:100::2) by
- arden.corp.itmh.ru (2a02:17d0:810a:100::2) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 21 Oct 2020 00:43:12 +0500
-Received: from arden.corp.itmh.ru ([fe80::a5a9:460a:d0d8:f5cb]) by
- arden.corp.itmh.ru ([fe80::a5a9:460a:d0d8:f5cb%12]) with mapi id
- 15.00.1497.000; Wed, 21 Oct 2020 00:43:12 +0500
-From:   =?koi8-r?B?7cHSy8/XIO3JyMHJzCDhzMXL08HOxNLP18ne?= 
-        <markov.mikhail@itmh.ru>
-To:     Stanislaw Gruszka <stf_xl@wp.pl>
-CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "Helmut Schaa" <helmut.schaa@googlemail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "\"David S. Miller\"" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "illumin@yandex.ru" <illumin@yandex.ru>
-Subject: [PATCH v2] rt2x00: save survey for every channel visited
-Thread-Topic: [PATCH v2] rt2x00: save survey for every channel visited
-Thread-Index: AQHWpxk+BXXDNxt6q0e4vzZbkNLD9Q==
-Date:   Tue, 20 Oct 2020 19:43:12 +0000
-Message-ID: <1603222991841.29674@itmh.ru>
-References: <1603134408870.78805@itmh.ru>,<20201020071243.GA302394@wp.pl>
-In-Reply-To: <20201020071243.GA302394@wp.pl>
-Accept-Language: ru-RU, en-US
-Content-Language: ru-RU
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [2a02:17d0:8118:10a::2]
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: 8BIT
+        Tue, 20 Oct 2020 15:45:59 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527A0C0613CE;
+        Tue, 20 Oct 2020 12:45:59 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id b11so1481636qvr.9;
+        Tue, 20 Oct 2020 12:45:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sK1elVQQ2NrMHu7mvagLbiYZu4C55oZZTQPkobK5nAA=;
+        b=FIVPt1C3GPLD58Aht5yhIbLIJzNX1qLh/+8Y2D5jFcbJl2GUjJEul+B2u4Keysi+Ky
+         Iuh/wpq2xu1ui3HpmYredW8rivQt7akCpk0zKxvOoNMgUW25Y2d3paLZ8M1ycZf3qIs7
+         avn7T9rIG7z+VrDrkEbD2GKZiQqm+4u7k8Dxi8tIB+HKs/LjjtNSbzx1EuH7/x3QzDig
+         gKhbkPbTPSV7Gm10JqoQZIKw4B71WL9jJCTMdgTIFn10CZOofjF3hyPMVhoautKpzc1G
+         tPOKDXSlCFdnhOKIJIblN6LMGHeN8/pDAlP3dhn9iddLufrTnXv80QunczIh8o5GteTX
+         Krgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=sK1elVQQ2NrMHu7mvagLbiYZu4C55oZZTQPkobK5nAA=;
+        b=jOlzJf3Mh44Lya107tG9aTgtsCcsODz9Q3/mXQfkmPEBskGSc88dhNn8uNZ0otiCa7
+         9DOkcD61AqPseXHemIp3RO86QnBwujA06pWvNPQw4ukibCyLvnwKPlYcyF/Uov6XytV/
+         zNN5KBMeQbguZBAoX0r77gUi94S9VH/veoX+xJ6rdC3EzAcBRc3m4bGkogv0a/T2gihd
+         iNl4QTVn/U+CQiJZ/588Q7Rx8PmQzCYubSxPdsMKo1qlZrbEFZyZ8a2zNhkV7bx4Re9I
+         4B0wFCIqAQpxFB/N+QMyt0eph8siZ9xIR2Rr2Ir9KnMaWOUQxVOh6nmQiJR0Z63/AEfY
+         6PIw==
+X-Gm-Message-State: AOAM531T880ck/WvSdtezjtKOyPGbWPr9QtyEPT+etx5Z9rIg+dVJ/W4
+        2bHaC1FaPd0tRELrt5R96nAs6SEFu82RDg==
+X-Google-Smtp-Source: ABdhPJxELK7oZ0oYWJ0WnphNoAGjBJqnGvEKQxdUVArKHywaT4exP6kWtSzC21mDExeS+Ye2rbpHMA==
+X-Received: by 2002:ad4:4701:: with SMTP id k1mr5058780qvz.47.1603223158412;
+        Tue, 20 Oct 2020 12:45:58 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id z26sm1276353qtb.85.2020.10.20.12.45.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 12:45:57 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 20 Oct 2020 15:45:55 -0400
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Arvind Sankar' <nivedita@alum.mit.edu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/5] crypto: lib/sha256 - Unroll SHA256 loop 8 times
+ intead of 64
+Message-ID: <20201020194555.GA3464628@rani.riverdale.lan>
+References: <20201019153016.2698303-1-nivedita@alum.mit.edu>
+ <20201019153016.2698303-5-nivedita@alum.mit.edu>
+ <1324eb3519d54ddd9469d30a94c11823@AcuMS.aculab.com>
+ <20201020140726.GB2996696@rani.riverdale.lan>
+ <6ee12f8fa3914fbcb5e4a1388e430acd@AcuMS.aculab.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6ee12f8fa3914fbcb5e4a1388e430acd@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rt2800 only gives you survey for current channel.
+On Tue, Oct 20, 2020 at 02:55:47PM +0000, David Laight wrote:
+> From: Arvind Sankar
+> > Sent: 20 October 2020 15:07
+> > To: David Laight <David.Laight@ACULAB.COM>
+> > 
+> > On Tue, Oct 20, 2020 at 07:41:33AM +0000, David Laight wrote:
+> > > From: Arvind Sankar> Sent: 19 October 2020 16:30
+> > > > To: Herbert Xu <herbert@gondor.apana.org.au>; David S. Miller <davem@davemloft.net>; linux-
+> > > > crypto@vger.kernel.org
+> > > > Cc: linux-kernel@vger.kernel.org
+> > > > Subject: [PATCH 4/5] crypto: lib/sha256 - Unroll SHA256 loop 8 times intead of 64
+> > > >
+> > > > This reduces code size substantially (on x86_64 with gcc-10 the size of
+> > > > sha256_update() goes from 7593 bytes to 1952 bytes including the new
+> > > > SHA256_K array), and on x86 is slightly faster than the full unroll.
+> > >
+> > > The speed will depend on exactly which cpu type is used.
+> > > It is even possible that the 'not unrolled at all' loop
+> > > (with the all the extra register moves) is faster on some x86-64 cpu.
+> > 
+> > Yes, I should have mentioned this was tested on a Broadwell Xeon, at
+> > least on that processor, no unrolling is a measurable performance loss.
+> > But the hope is that 8x unroll should be generally enough unrolling that
+> > 64x is unlikely to speed it up more, and so has no advantage over 8x.
+> 
+> (I've just looked at the actual code, not just the patch.)
+> 
+> Yes I doubt the 64x unroll was ever a significant gain.
+> Unrolling completely requires a load of register moves/renames;
+> probably too many to be 'zero cost'.
+> 
+> With modern cpu you can often get the loop control instructions
+> 'for free' so unrolling just kills the I-cache.
+> Some of the cpu have loop buffers for decoded instructions,
+> unroll beyond that size and you suddenly get the decoder costs
+> hitting you again.
+> 
+> ...
+> > > If you can put SHA256_K[] and W[] into a struct then the
+> > > compiler can use the same register to address into both
+> > > arrays (using an offset of 64*4 for the second one).
+> > > (ie keep the two arrays, not an array of struct).
+> > > This should reduce the register pressure slightly.
+> > 
+> > I can try that, could copy the data in sha256_update() so it's amortized
+> > over the whole input.
+> 
+> Having looked more closely the extra copy needed is probably
+> bigger than any saving.
+> 
 
-Survey-based ACS algorithms are failing to perform their job when working
-with rt2800.
-
-Make rt2800 save survey for every channel visited and be able to give away
-that information.
-
-There is a bug registered https://dev.archive.openwrt.org/ticket/19081 and
-this patch solves the issue.
-
-Signed-off-by: Markov Mikhail <markov.mikhail@itmh.ru>
-
----
-Changes are now aggregated in rt2800lib.c.
----
- .../net/wireless/ralink/rt2x00/rt2800lib.c    | 61 ++++++++++++++-----
- drivers/net/wireless/ralink/rt2x00/rt2x00.h   | 10 +++
- 2 files changed, 56 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/net/wireless/ralink/rt2x00/rt2800lib.c b/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
-index a779fe771a55..12a709d99e44 100644
---- a/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
-+++ b/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
-@@ -1228,6 +1228,17 @@ static int rt2800_check_hung(struct data_queue *queue)
- 	return queue->wd_count > 16;
- }
- 
-+static void rt2800_update_survey(struct rt2x00_dev *rt2x00dev)
-+{
-+	struct ieee80211_channel *chan = rt2x00dev->hw->conf.chandef.chan;
-+	struct rt2x00_chan_survey *chan_survey =
-+		   &rt2x00dev->chan_survey[chan->hw_value];
-+
-+	chan_survey->time_idle += rt2800_register_read(rt2x00dev, CH_IDLE_STA);
-+	chan_survey->time_busy += rt2800_register_read(rt2x00dev, CH_BUSY_STA);
-+	chan_survey->time_ext_busy += rt2800_register_read(rt2x00dev, CH_BUSY_STA_SEC);
-+}
-+
- void rt2800_watchdog(struct rt2x00_dev *rt2x00dev)
- {
- 	struct data_queue *queue;
-@@ -1237,6 +1248,8 @@ void rt2800_watchdog(struct rt2x00_dev *rt2x00dev)
- 	if (test_bit(DEVICE_STATE_SCANNING, &rt2x00dev->flags))
- 		return;
- 
-+	rt2800_update_survey(rt2x00dev);
-+
- 	queue_for_each(rt2x00dev, queue) {
- 		switch (queue->qid) {
- 		case QID_AC_VO:
-@@ -5553,6 +5566,12 @@ void rt2800_config(struct rt2x00_dev *rt2x00dev,
- 	rt2800_config_lna_gain(rt2x00dev, libconf);
- 
- 	if (flags & IEEE80211_CONF_CHANGE_CHANNEL) {
-+		/*
-+		 * To provide correct survey data for survey-based ACS algorithm
-+		 * we have to save survey data for current channel before switching.
-+		 */
-+		rt2800_update_survey(rt2x00dev);
-+
- 		rt2800_config_channel(rt2x00dev, libconf->conf,
- 				      &libconf->rf, &libconf->channel);
- 		rt2800_config_txpower(rt2x00dev, libconf->conf->chandef.chan,
-@@ -10111,12 +10130,20 @@ static int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
- 	}
- 
- 	/*
--	 * Create channel information array
-+	 * Create channel information and survey arrays
- 	 */
- 	info = kcalloc(spec->num_channels, sizeof(*info), GFP_KERNEL);
- 	if (!info)
- 		return -ENOMEM;
- 
-+	rt2x00dev->chan_survey =
-+		kcalloc(spec->num_channels, sizeof(struct rt2x00_chan_survey),
-+			GFP_KERNEL);
-+	if (!rt2x00dev->chan_survey) {
-+		kfree(info);
-+		return -ENOMEM;
-+	}
-+
- 	spec->channels_info = info;
- 
- 	default_power1 = rt2800_eeprom_addr(rt2x00dev, EEPROM_TXPOWER_BG1);
-@@ -10504,26 +10531,30 @@ int rt2800_get_survey(struct ieee80211_hw *hw, int idx,
- {
- 	struct rt2x00_dev *rt2x00dev = hw->priv;
- 	struct ieee80211_conf *conf = &hw->conf;
--	u32 idle, busy, busy_ext;
-+	struct rt2x00_chan_survey *chan_survey =
-+		   &rt2x00dev->chan_survey[idx];
-+	enum nl80211_band band = NL80211_BAND_2GHZ;
- 
--	if (idx != 0)
-+	if (idx >= rt2x00dev->bands[band].n_channels) {
-+		idx -= rt2x00dev->bands[band].n_channels;
-+		band = NL80211_BAND_5GHZ;
-+	}
-+
-+	if (idx >= rt2x00dev->bands[band].n_channels)
- 		return -ENOENT;
- 
--	survey->channel = conf->chandef.chan;
-+	if (idx == 0)
-+		rt2800_update_survey(rt2x00dev);
- 
--	idle = rt2800_register_read(rt2x00dev, CH_IDLE_STA);
--	busy = rt2800_register_read(rt2x00dev, CH_BUSY_STA);
--	busy_ext = rt2800_register_read(rt2x00dev, CH_BUSY_STA_SEC);
-+	survey->channel = &rt2x00dev->bands[band].channels[idx];
- 
--	if (idle || busy) {
--		survey->filled = SURVEY_INFO_TIME |
--				 SURVEY_INFO_TIME_BUSY |
--				 SURVEY_INFO_TIME_EXT_BUSY;
-+	survey->filled = SURVEY_INFO_TIME |
-+			 SURVEY_INFO_TIME_BUSY |
-+			 SURVEY_INFO_TIME_EXT_BUSY;
- 
--		survey->time = (idle + busy) / 1000;
--		survey->time_busy = busy / 1000;
--		survey->time_ext_busy = busy_ext / 1000;
--	}
-+	survey->time = div_u64(chan_survey->time_idle + chan_survey->time_busy, 1000);
-+	survey->time_busy = div_u64(chan_survey->time_busy, 1000);
-+	survey->time_ext_busy = div_u64(chan_survey->time_ext_busy, 1000);
- 
- 	if (!(hw->conf.flags & IEEE80211_CONF_OFFCHANNEL))
- 		survey->filled |= SURVEY_INFO_IN_USE;
-diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00.h b/drivers/net/wireless/ralink/rt2x00/rt2x00.h
-index ecc60d8cbb01..ae0c76067c4a 100644
---- a/drivers/net/wireless/ralink/rt2x00/rt2x00.h
-+++ b/drivers/net/wireless/ralink/rt2x00/rt2x00.h
-@@ -181,6 +181,15 @@ struct rf_channel {
- 	u32 rf4;
- };
- 
-+/*
-+ * Information structure for channel survey.
-+ */
-+struct rt2x00_chan_survey {
-+	u64 time_idle;
-+	u64 time_busy;
-+	u64 time_ext_busy;
-+};
-+
- /*
-  * Channel information structure
-  */
-@@ -752,6 +761,7 @@ struct rt2x00_dev {
- 	 */
- 	struct ieee80211_hw *hw;
- 	struct ieee80211_supported_band bands[NUM_NL80211_BANDS];
-+	struct rt2x00_chan_survey *chan_survey;
- 	enum nl80211_band curr_band;
- 	int curr_freq;
- 
--- 
-2.17.1
-
-________________________________________
-От: Stanislaw Gruszka <stf_xl@wp.pl>
-Отправлено: 20 октября 2020 г. 12:12
-Кому: Марков Михаил Александрович
-Копия: linux-wireless@vger.kernel.org; Helmut Schaa; Kalle Valo; "David S. Miller"; Jakub Kicinski; netdev@vger.kernel.org; linux-kernel@vger.kernel.org; illumin@yandex.ru
-Тема: Re: [PATCH] rt2x00: save survey for every channel visited
-
-On Mon, Oct 19, 2020 at 07:06:47PM +0000, Марков Михаил Александрович wrote:
-> rt2800 only gives you survey for current channel.
-<snip>
->      .watchdog        = rt2800_watchdog,
-> +    .update_survey        = rt2800_update_survey,
-
-Since this feature is rt2800 specific, I would do not add new generic
-callback. It could be fully done in rt2800* code, i.e ...
-
-> diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c b/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
-> index 8c6d3099b19d..8eff57132154 100644
-> --- a/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
-> +++ b/drivers/net/wireless/ralink/rt2x00/rt2x00dev.c
-> @@ -1026,6 +1026,12 @@ static int rt2x00lib_probe_hw_modes(struct rt2x00_dev *rt2x00dev,
->      if (!rates)
->          goto exit_free_channels;
->
-> +    rt2x00dev->chan_survey =
-> +        kcalloc(spec->num_channels, sizeof(struct rt2x00_chan_survey),
-> +            GFP_KERNEL);
-> +    if (!rt2x00dev->chan_survey)
-> +        goto exit_free_rates;
-.. this could be placed in rt2800_probe_hw_mode() just after
-channel info array allocation ...
-
-> @@ -316,6 +316,15 @@ int rt2x00mac_config(struct ieee80211_hw *hw, u32 changed)
->      if (!test_bit(DEVICE_STATE_PRESENT, &rt2x00dev->flags))
->          return 0;
->
-> +    /*
-> +     * To provide correct survey data for survey-based ACS algorithm
-> +     * we have to save survey data for current channel before switching.
-> +     */
-> +    if (rt2x00dev->ops->lib->update_survey &&
-> +        (changed & IEEE80211_CONF_CHANGE_CHANNEL)) {
-.. and this in rt2800_config()
-
-Thanks
-Stanislaw
+On x86-64 it doesn't make much difference, but it speeds up x86-32 by
+around 10% (on long inputs).
