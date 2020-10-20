@@ -2,170 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F30D29339C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 05:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCCAB29339E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 05:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729456AbgJTDXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 23:23:53 -0400
-Received: from mga02.intel.com ([134.134.136.20]:10173 "EHLO mga02.intel.com"
+        id S1729588AbgJTDYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 23:24:32 -0400
+Received: from mga03.intel.com ([134.134.136.65]:60181 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729346AbgJTDXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 23:23:53 -0400
-IronPort-SDR: h8UAzYuhmLmhYbk6ZPpgX/3T333nalc9vtH1op/NBl3u2CD9Q++CHgCOLIOmAzwiR9STgzrkZM
- ZlHgCxygBpNw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="154089733"
+        id S1729465AbgJTDYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 23:24:32 -0400
+IronPort-SDR: dXzpkTWv80qlebdTP+s2dzkv1A5eQD+c3ugFTo9XEUyKS5M+pL9C+VoYMkyXIjns4utzs0Yj19
+ kgprpUIk1YYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="167238033"
 X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
-   d="scan'208";a="154089733"
+   d="scan'208";a="167238033"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 20:23:51 -0700
-IronPort-SDR: +LcHWsiq6IHLvlbZjWST0bURP7HfMPuEuRrUDQwJCa8XLpzn4FOMJYZeTMaY+lWyDtRZHC04Tq
- Eq/1vGbDgk9A==
-X-ExtLoop1: 1
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 20:24:29 -0700
+IronPort-SDR: CkMnhQ7SUHOq66eAovhaW1JX0Leekf+ZHqrmhCENY1E+hn+UtZ3oMeMO1Ckzs11c8Mfqoh4gB5
+ IcFUTA4kD29Q==
 X-IronPort-AV: E=Sophos;i="5.77,396,1596524400"; 
-   d="scan'208";a="523337389"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.65])
-  by fmsmga005.fm.intel.com with ESMTP; 19 Oct 2020 20:23:47 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     David Rientjes <rientjes@google.com>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+   d="scan'208";a="532875707"
+Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.68]) ([10.238.4.68])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 20:24:26 -0700
+Subject: Re: [LKP] Re: [sched] bdfcae1140: will-it-scale.per_thread_ops -37.0%
+ regression
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Anton Blanchard <anton@au.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Jeremy Cline <jcline@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com
-Subject: Re: [mm, thp] 85b9f46e8e: vm-scalability.throughput -8.7% regression
-References: <20201004132838.GU393@shao2-debian>
-        <alpine.DEB.2.23.453.2010041157270.3597796@chino.kir.corp.google.com>
-Date:   Tue, 20 Oct 2020 11:23:47 +0800
-In-Reply-To: <alpine.DEB.2.23.453.2010041157270.3597796@chino.kir.corp.google.com>
-        (David Rientjes's message of "Sun, 4 Oct 2020 12:05:21 -0700 (PDT)")
-Message-ID: <87a6whh96k.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        0day robot <lkp@intel.com>, lkp@lists.01.org,
+        zhengjun xing <zhengjun.xing@intel.com>,
+        aubrey li <aubrey.li@linux.intel.com>,
+        yu c chen <yu.c.chen@intel.com>
+References: <20201002083311.GK393@shao2-debian>
+ <1183082664.11002.1602082242482.JavaMail.zimbra@efficios.com>
+From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Message-ID: <7131f8f9-68d1-0277-c770-c10f98a062ec@linux.intel.com>
+Date:   Tue, 20 Oct 2020 11:24:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1183082664.11002.1602082242482.JavaMail.zimbra@efficios.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Rientjes <rientjes@google.com> writes:
 
-> On Sun, 4 Oct 2020, kernel test robot wrote:
->
+
+On 10/7/2020 10:50 PM, Mathieu Desnoyers wrote:
+> ----- On Oct 2, 2020, at 4:33 AM, Rong Chen rong.a.chen@intel.com wrote:
+> 
 >> Greeting,
->> 
->> FYI, we noticed a -8.7% regression of vm-scalability.throughput due to commit:
->> 
->> 
->> commit: 85b9f46e8ea451633ccd60a7d8cacbfff9f34047 ("mm, thp: track fallbacks due to failed memcg charges separately")
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
->> 
->> 
->> in testcase: vm-scalability
+>>
+>> FYI, we noticed a -37.0% regression of will-it-scale.per_thread_ops due to
+>> commit:
+>>
+>>
+>> commit: bdfcae11403e5099769a7c8dc3262e3c4193edef ("[RFC PATCH 2/3] sched:
+>> membarrier: cover kthread_use_mm (v3)")
+>> url:
+>> https://github.com/0day-ci/linux/commits/Mathieu-Desnoyers/Membarrier-updates/20200925-012549
+>> base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git
+>> 848785df48835eefebe0c4eb5da7690690b0a8b7
+>>
+>> in testcase: will-it-scale
 >> on test machine: 104 threads Skylake with 192G memory
 >> with following parameters:
->> 
->> 	runtime: 300s
->> 	size: 1T
->> 	test: lru-shm
+>>
+>> 	nr_task: 50%
+>> 	mode: thread
+>> 	test: context_switch1
 >> 	cpufreq_governor: performance
 >> 	ucode: 0x2006906
->> 
->> test-description: The motivation behind this suite is to exercise functions and regions of the mm/ of the Linux kernel which are of interest to us.
->> test-url: https://git.kernel.org/cgit/linux/kernel/git/wfg/vm-scalability.git/
->> 
->> 
->> 
->> If you fix the issue, kindly add following tag
->> Reported-by: kernel test robot <rong.a.chen@intel.com>
->> 
->> 
->> Details are as below:
->> -------------------------------------------------------------------------------------------------->
->> 
->> 
->> To reproduce:
->> 
->>         git clone https://github.com/intel/lkp-tests.git
->>         cd lkp-tests
->>         bin/lkp install job.yaml  # job file is attached in this email
->>         bin/lkp run     job.yaml
->> 
->> =========================================================================================
->> compiler/cpufreq_governor/kconfig/rootfs/runtime/size/tbox_group/test/testcase/ucode:
->>   gcc-9/performance/x86_64-rhel-8.3/debian-10.4-x86_64-20200603.cgz/300s/1T/lkp-skl-fpga01/lru-shm/vm-scalability/0x2006906
->> 
->> commit: 
->>   dcdf11ee14 ("mm, shmem: add vmstat for hugepage fallback")
->>   85b9f46e8e ("mm, thp: track fallbacks due to failed memcg charges separately")
->> 
->> dcdf11ee14413332 85b9f46e8ea451633ccd60a7d8c 
->> ---------------- --------------------------- 
->>        fail:runs  %reproduction    fail:runs
->>            |             |             |    
->>           1:4           24%           2:4     perf-profile.calltrace.cycles-pp.sync_regs.error_entry.do_access
->>           3:4           53%           5:4     perf-profile.calltrace.cycles-pp.error_entry.do_access
->>           9:4          -27%           8:4     perf-profile.children.cycles-pp.error_entry
->>           4:4          -10%           4:4     perf-profile.self.cycles-pp.error_entry
->>          %stddev     %change         %stddev
->>              \          |                \  
->>     477291            -9.1%     434041        vm-scalability.median
->>   49791027            -8.7%   45476799        vm-scalability.throughput
->>     223.67            +1.6%     227.36        vm-scalability.time.elapsed_time
->>     223.67            +1.6%     227.36        vm-scalability.time.elapsed_time.max
->>      50364 ±  6%     +24.1%      62482 ± 10%  vm-scalability.time.involuntary_context_switches
->>       2237            +7.8%       2412        vm-scalability.time.percent_of_cpu_this_job_got
->>       3084           +18.2%       3646        vm-scalability.time.system_time
->>       1921            -4.2%       1839        vm-scalability.time.user_time
->>      13.68            +2.2       15.86        mpstat.cpu.all.sys%
->>      28535 ± 30%     -47.0%      15114 ± 79%  numa-numastat.node0.other_node
->>     142734 ± 11%     -19.4%     115000 ± 17%  numa-meminfo.node0.AnonPages
->>      11168 ±  3%      +8.8%      12150 ±  5%  numa-meminfo.node1.PageTables
->>      76.00            -1.6%      74.75        vmstat.cpu.id
->>       3626            -1.9%       3555        vmstat.system.cs
->>    2214928 ±166%     -96.6%      75321 ±  7%  cpuidle.C1.usage
->>     200981 ±  7%     -18.0%     164861 ±  7%  cpuidle.POLL.time
->>      52675 ±  3%     -16.7%      43866 ± 10%  cpuidle.POLL.usage
->>      35659 ± 11%     -19.4%      28754 ± 17%  numa-vmstat.node0.nr_anon_pages
->>    1248014 ±  3%     +10.9%    1384236        numa-vmstat.node1.nr_mapped
->>       2722 ±  4%     +10.6%       3011 ±  5%  numa-vmstat.node1.nr_page_table_pages
->
-> I'm not sure that I'm reading this correctly, but I suspect that this just 
-> happens because of NUMA: memory affinity will obviously impact 
-> vm-scalability.throughput quite substantially, but I don't think the 
-> bisected commit can be to be blame.  Commit 85b9f46e8ea4 ("mm, thp: track 
-> fallbacks due to failed memcg charges separately") simply adds new 
-> count_vm_event() calls in a couple areas to track thp fallback due to 
-> memcg limits separate from fragmentation.
->
-> It's likely a question about the testing methodology in general: for 
-> memory intensive benchmarks, I suggest it is configured in a manner that 
-> we can expect consistent memory access latency at the hardware level when 
-> running on a NUMA system.
+>>
+>> test-description: Will It Scale takes a testcase and runs it from 1 through to n
+>> parallel copies to see if the testcase will scale. It builds both a process and
+>> threads based test in order to see any differences between the two.
+>> test-url: https://github.com/antonblanchard/will-it-scale
+>>
+> 
+> Hi,
+> 
+> I would like to report what I suspect is a random thread placement issue in the
+> context_switch1 test used by the 0day bot when running on a machine with hyperthread
+> enabled.
+> 
+> AFAIU the test code uses hwloc for thread placement which should theoretically ensure
+> that each thread is placed on same processing unit, core and numa node between runs.
+> 
+> We can find the test code here:
+> 
+> https://github.com/antonblanchard/will-it-scale/blob/master/tests/context_switch1.c
+> 
+> And the main file containing thread setup is here:
+> 
+> https://github.com/antonblanchard/will-it-scale/blob/master/main.c
+> 
+> AFAIU, the test is started without the "-m" switch, which therefore affinitizes
+> tasks on cores rather than on processing units (SMT threads).
+> 
+> When testcase() creates the child thread with new_task(), it basically issues:
+> 
+>    pthread_create(&threads[nr_threads++], NULL, func, arg);
+> 
+> passing a NULL pthread_attr_t, and not executing any pre_trampoline on the child.
+> The pre_trampoline would have issued hwloc_set_thread_cpubind if it were executed on
+> the child, but it's not. Therefore, we expect the cpu affinity mask of the parent to
+> be copied on clone and used by the child.
+> 
+> A quick test on a machine with hyperthreading enabled shows that the cpu affinity mask
+> for the parent and child has two bits set:
+> 
+> taskset -p 1868607
+> pid 1868607's current affinity mask: 10001
+> taskset -p 1868606
+> pid 1868606's current affinity mask: 10001
+> 
+> So AFAIU the placement of the parent and child will be random on either the same
+> processing unit, or on separate processing units within the same core.
+> 
+> I suspect this randomness can significantly affect the performance number between
+> runs, and trigger unwarranted performance regression warnings.
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+Yes, the randomness may happen in some special cases.  But in 0-day, we 
+test multi times (>=3), the report is the average number.
+For this case, we test 4 times, it is stable, the wave is ±  2%.
+So I don't think the -37.0% regression is caused by the randomness.
 
-So you think it's better to bind processes to NUMA node or CPU?  But we
-want to use this test case to capture NUMA/CPU placement/balance issue
-too.
+0/stats.json:  "will-it-scale.per_thread_ops": 105228,
+1/stats.json:  "will-it-scale.per_thread_ops": 100443,
+2/stats.json:  "will-it-scale.per_thread_ops": 98786,
+3/stats.json:  "will-it-scale.per_thread_ops": 102821,
 
-0day solve the problem in another way.  We run the test case
-multiple-times and calculate the average and standard deviation, then
-compare.
+c2daff748f0ea954 bdfcae11403e5099769a7c8dc32
+---------------- ---------------------------
+          %stddev     %change         %stddev
+              \          |                \
+     161714 ±  2%     -37.0%     101819 ±  2%  will-it-scale.per_thread_ops
 
-For this specific regression, I found something strange,
 
-     10.93 ± 15%     +10.8       21.78 ± 10%  perf-profile.calltrace.cycles-pp._raw_spin_lock_irqsave.pagevec_lru_move_fn.__lru_cache_add.shmem_getpage_gfp.shmem_fault
-
-It appears the lock contention becomes heavier with the patch.  But I
-cannot understand why too.
-
-Best Regards,
-Huang, Ying
+-- 
+Zhengjun Xing
