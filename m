@@ -2,50 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD0B29364D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5D829365D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730524AbgJTH6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728385AbgJTH6N (ORCPT
+        id S1733092AbgJTIFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 04:05:53 -0400
+Received: from pio-pvt-msa2.bahnhof.se ([79.136.2.41]:39914 "EHLO
+        pio-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733050AbgJTIFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:58:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57071C061755;
-        Tue, 20 Oct 2020 00:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8cjwyMNC5wKWzE2wjj/VJutVXiTsFmR9iUtdzOodivQ=; b=k1FvfVs9fYjGP2z5GITVz8r8pE
-        1djSWaYoskUYFXCOhHKHJFRZgpaAxOz4CL/+n/fFcq8mR4LzjgFDkAYik19KOYCGdAGEQJ/8trtFh
-        foEn3s1maAzTGANNvC/nwqcoz41Bba2mIiF6Tt+Utn1qprxxZeQwVK5HDNhapJNwL0+sO7faJjHc5
-        T1wFoMEIWWWmmtp01fkRlklXwNDTjppkwF1Fs6Js2zDCr7oTO6v4B066zhvbzZgssnLNIEgMvfS6L
-        mIuNyuLD/+YXLgRTWU4teb4NUoUPZWquCYAPWeNRJj/o+o5ppIIT6iZfgpOoJkZgVHRFskrrBZNHJ
-        IQJLS8gQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kUmX7-0005GI-Re; Tue, 20 Oct 2020 07:58:13 +0000
-Date:   Tue, 20 Oct 2020 08:58:13 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        akpm@linux-foundation.org, sfrench@samba.org,
-        linux-cifs@vger.kernel.org
-Subject: Re: [PATCH 1/2] cifs: convert to add_to_page_cache()
-Message-ID: <20201020075813.GA18793@infradead.org>
-References: <20201019185911.2909471-1-kent.overstreet@gmail.com>
+        Tue, 20 Oct 2020 04:05:34 -0400
+X-Greylist: delayed 384 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Oct 2020 04:05:33 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 10CCE3F683;
+        Tue, 20 Oct 2020 09:59:02 +0200 (CEST)
+Authentication-Results: pio-pvt-msa2.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=flawful.org header.i=@flawful.org header.b=Zb2hyLbn;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.1
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NO_RELAYS=-0.001,
+        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from pio-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id xiSkbJdUV73x; Tue, 20 Oct 2020 09:59:01 +0200 (CEST)
+Received: by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 3CA853F583;
+        Tue, 20 Oct 2020 09:58:59 +0200 (CEST)
+Received: by flawful.org (Postfix, from userid 1001)
+        id F3569D0F; Tue, 20 Oct 2020 09:59:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flawful.org; s=mail;
+        t=1603180745; bh=1Z/yOBJ1mwXulVdv8ofe3B4igKsGHtOc+5x58n5IEvo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zb2hyLbn/gJvJFvkYr6UkWqQ9xK/ivXJw17cJS4jw6tdmFajLzLH1i3Ayo8jHXhXW
+         oavZOJ/PGWs2py9Q8yJ7l1TN+3VxU5JlFVPwhwrZwvRKrve3LdKxN/vmh4PYL8/a9p
+         2b1NbAquSoH7iwFMZDxfltVNnP4yXJ1Cby7AMPKA=
+Date:   Tue, 20 Oct 2020 09:59:04 +0200
+From:   Niklas Cassel <nks@flawful.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Nishanth Menon <nm@ti.com>, linux-pm@vger.kernel.org,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Kevin Hilman <khilman@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 1/4] power: avs: qcom-cpr: Move the driver to the qcom
+ specific drivers
+Message-ID: <20201020075904.GA2575@flawful.org>
+References: <20201006160516.319830-1-ulf.hansson@linaro.org>
+ <20201006160516.319830-2-ulf.hansson@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201019185911.2909471-1-kent.overstreet@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201006160516.319830-2-ulf.hansson@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	rc = add_to_page_cache(page, mapping,
-> +			       page->index, gfp);
+On Tue, Oct 06, 2020 at 06:05:13PM +0200, Ulf Hansson wrote:
+> The avs drivers are all SoC specific drivers that doesn't share any code.
+> Instead they are located in a directory, mostly to keep similar
+> functionality together. From a maintenance point of view, it makes better
+> sense to collect SoC specific drivers like these, into the SoC specific
+> directories.
+> 
+> Therefore, let's move the qcom-cpr driver to the qcom directory.
+> 
+> Cc: Niklas Cassel <nks@flawful.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
 
-This trivially fits onto a single line.
+Acked-by: Niklas Cassel <nks@flawful.org>
