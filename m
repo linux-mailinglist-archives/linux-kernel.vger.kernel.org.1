@@ -2,84 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F43293480
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123E8293482
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391849AbgJTGCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391797AbgJTGCM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:02:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9A3C061755;
-        Mon, 19 Oct 2020 23:02:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=E0coMztM2M48VT3IbLwBeTLJRP2K4p9f4EU9akewdLo=; b=J02CnMATiiRo87r424+sCz9MWg
-        nPSqEVj+KVht9H9bgQJLl4Rn4iNc+oilbv4xk8Xl1gO2hvYmaNQaQRvoQFVbgephE0OMnouNIN2fp
-        R8dAlaFCE30smHAriPv0BOUCOWogxHexR/K4VYR8/5P2i9Jl0ITuiBrnOgRnhFyliSBM2TazMghJ6
-        7512jCpwM7ri7rOPnHqUhyc1GCWFoa/k8Lp2D4DY7xLuZ6o6MBouTcrQDhji6WgqFIPv/xYErQfI/
-        n6dwdQNFt50waHtkRxI92mmpx1g9qv5cpixQzj6LZj+djyW6PNhQkPs/7irB3GFmf3WvljfRL6JWF
-        ojXYvEHw==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kUkik-0006mr-S3; Tue, 20 Oct 2020 06:02:07 +0000
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] media/platform/marvell-ccic: fix warnings when CONFIG_PM is
- not enabled
-Message-ID: <9a586496-0d62-f246-19ec-d17b6f47e200@infradead.org>
-Date:   Mon, 19 Oct 2020 23:02:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2391859AbgJTGCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:02:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391803AbgJTGCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 02:02:21 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5E6C2225F;
+        Tue, 20 Oct 2020 06:02:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603173741;
+        bh=JNP6a7auUSQFkVTghiv41qtMzt+jLfZdbM/n0v1EWh8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yr7jdYfY2x9Sc0ZYUeYPHpTpL1KeoxMQglirmYr2xnsSR74INaZGRPsbTCEurZXxO
+         q5qgaYmAySf6QHKK0OuBS53QcWKCZiGgRU5nJB7SV/XkZ6ma+/OpgPeYPymMu3KmgO
+         SNzw/+5Bzp2aZPSOCjMWkslTxD6h0Yt1pFIrp8hU=
+Date:   Tue, 20 Oct 2020 08:03:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Samuel Iglesias =?iso-8859-1?Q?Gons=E1lvez?= 
+        <siglesias@igalia.com>
+Cc:     trix@redhat.com, jens.taprogge@taprogge.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org,
+        industrypack-devel@lists.sourceforge.net
+Subject: Re: [Industrypack-devel] [PATCH] ipack: iopctal: remove unneeded
+ break
+Message-ID: <20201020060304.GA3794112@kroah.com>
+References: <20201019193227.12738-1-trix@redhat.com>
+ <82a6b8eee085b0e6df7c89d64721c3fb6719ba89.camel@igalia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <82a6b8eee085b0e6df7c89d64721c3fb6719ba89.camel@igalia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On Tue, Oct 20, 2020 at 07:50:39AM +0200, Samuel Iglesias Gonsálvez wrote:
+> Hi Tom,
+> 
+> Thanks for the patch!
+> 
+> Patch is,
+> 
+> Acked-by: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
+> 
+> Greg, Would you mind picking this patch through your char-misc
+> tree?
 
-Fix build warnings when CONFIG_PM is not set/enabled:
+Will do after -rc1 is out.
 
-../drivers/media/platform/marvell-ccic/mmp-driver.c:324:12: warning: 'mmpcam_runtime_suspend' defined but not used [-Wunused-function]
-  324 | static int mmpcam_runtime_suspend(struct device *dev)
-../drivers/media/platform/marvell-ccic/mmp-driver.c:310:12: warning: 'mmpcam_runtime_resume' defined but not used [-Wunused-function]
-  310 | static int mmpcam_runtime_resume(struct device *dev)
+thanks,
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-media@vger.kernel.org
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
----
- drivers/media/platform/marvell-ccic/mmp-driver.c |    2 ++
- 1 file changed, 2 insertions(+)
-
---- linux-next-20201009.orig/drivers/media/platform/marvell-ccic/mmp-driver.c
-+++ linux-next-20201009/drivers/media/platform/marvell-ccic/mmp-driver.c
-@@ -307,6 +307,7 @@ static int mmpcam_platform_remove(struct
-  * Suspend/resume support.
-  */
- 
-+#ifdef CONFIG_PM
- static int mmpcam_runtime_resume(struct device *dev)
- {
- 	struct mmp_camera *cam = dev_get_drvdata(dev);
-@@ -352,6 +353,7 @@ static int __maybe_unused mmpcam_resume(
- 		return mccic_resume(&cam->mcam);
- 	return 0;
- }
-+#endif
- 
- static const struct dev_pm_ops mmpcam_pm_ops = {
- 	SET_RUNTIME_PM_OPS(mmpcam_runtime_suspend, mmpcam_runtime_resume, NULL)
-
+greg k-h
