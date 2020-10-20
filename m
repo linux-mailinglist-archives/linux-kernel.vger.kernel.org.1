@@ -2,121 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582602937B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7545E2937BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392601AbgJTJNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:13:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46645 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392600AbgJTJNO (ORCPT
+        id S2392625AbgJTJOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391111AbgJTJOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:13:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603185193;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oOEy9aT9NtMMFJrshH7arUKD1nGqLIA4h6tvbyg+cCQ=;
-        b=LCJZi89OrGNkFFIHRJT7lbuv04P3ML8t+Pe2kekJ6UiDtw25zVTe9Wnp2HJdXqTMxbcXQ+
-        v+9O7rZBg/SQlEbJLiimyh3BrThehMSkK/Pj/uZdvnYowHMxJ4mYMRWtH0RAkkKC+gAZh0
-        yvvUK+JEpzoh06eIeLINPyUXFwDjcB8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-C38QvdgHMOeCldvmUPxklg-1; Tue, 20 Oct 2020 05:13:12 -0400
-X-MC-Unique: C38QvdgHMOeCldvmUPxklg-1
-Received: by mail-wr1-f72.google.com with SMTP id q15so550847wrw.8
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:13:11 -0700 (PDT)
+        Tue, 20 Oct 2020 05:14:08 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08232C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:14:08 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h20so1218618lji.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1XILf1TitNgPwZdU8rNRrEBNDtKYyonEO028htn0pzI=;
+        b=nB2l+1HXl3dOaS2PZrVTIcr3p5/9SMKS8f12EVEk7KK23Q+s0Xc9TgNw3iFzlgyVUq
+         Znoapr+g0WvqnuBYbdFI1pM0Q2X6tN3NVfT0Po1XlaJqlwdKkFrPglO8vupj8OxQCSIe
+         RuGDF6Awfnk5mBBfiDmPUMsPJnE4bQTgqzYguiozr6cLJ7AUxqHgeDPJ3FEieaubUptE
+         KxEHOGIrcTsktonxP6s7JNZnMJ86c4NSpDGVjHeWLp8jX69PFHLMOyLzWpWlv9IYnItt
+         EPdpKOIielY7CU8G/xn3Sh2zNfmPWK2E1He8hcxekBTXBCzYgChe7WcISBFSUsBtVRJN
+         bPoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oOEy9aT9NtMMFJrshH7arUKD1nGqLIA4h6tvbyg+cCQ=;
-        b=cqXPJ+5Xrt5Y0uWqcWbmFdMifMAbDE9sSMNBTj3Z8WK8E+X7aXwh5/SNWNCHnAMnPK
-         gu35EEfukal6eyOqpXSViIazcgMC0Hi8TlJwdSgHo8qgWQr0r7xSz2od3gm1TtnQ4rPc
-         WQ13dCs9KxnOvZbugXpYCTOQc0l0YbK2TAHACbBFczM+B7ySQZZSqdy9I9pHjet80c6x
-         liSzdRL/XcOASr6AQuwM90TSZ7I4G6J74p61y26hs0jL6uv0khXl7qOmXgW2WYhkkbj3
-         m0sii8WCwdyPmhLxfGQAZ2L5UZDO8GOVS2mjG3Yk37fhqa+htJho100kGNTG/XYqWgmD
-         TOMg==
-X-Gm-Message-State: AOAM533huMf1tiKDkG+/j79P8AP8rsdGS7nN55OoAeyICV8/5eBQwG7Z
-        Hfsh4Fbb78ywoul49KyUdZdcCVABcRN0ePg9eLpMBKA83NQHskYuvE0gu0tPWeoLshoD4CUARsO
-        SEysu1ijRHNohYBYn2YBs5EU7
-X-Received: by 2002:a1c:7f14:: with SMTP id a20mr1869321wmd.95.1603185190640;
-        Tue, 20 Oct 2020 02:13:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwYLeXYXKL0aEWIz3HPFIHkZmIWRXrsEo41r73AgTQ1N4YxYXVrI7Ur44rryYm+YqVyWuwqUA==
-X-Received: by 2002:a1c:7f14:: with SMTP id a20mr1869301wmd.95.1603185190434;
-        Tue, 20 Oct 2020 02:13:10 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j7sm1942145wrn.81.2020.10.20.02.13.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 02:13:09 -0700 (PDT)
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>
-References: <20200930041659.28181-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 0/5] KVM: x86: Handle reserved CR4 bit interception in VMX
-Message-ID: <8bf5e849-3a7d-a30a-061b-0a67a57de865@redhat.com>
-Date:   Tue, 20 Oct 2020 11:13:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1XILf1TitNgPwZdU8rNRrEBNDtKYyonEO028htn0pzI=;
+        b=VzkvpS3uOELs025FxoDXoCoBpAWQPI+8PAxdoULq9iRhvs0UpwMu5oyUN0F0FABshP
+         RHVNrA/b1pQiy+csIwZMeNlN9BBQ40orxUqHBPHmzszUpEj+NcwmMvdJcRTQDPLE3edb
+         Bqf71rszCUXRL10v17n+2yrPhFq3FRTVTJ5S1/PyLmx6CvDsczD7JoJj2aWZTLKiHaVx
+         duT4Vn/g9g2QVpDX49Ii4DU3+dN2EjEyw/sPguvxVYobOENMbZkuw+3VhaZ5ykNxsVYe
+         c1eWy0IkJBHPBU/urc1KNjTdFNaoRqrISti80UQgBx5PPcQ9lU40kc46R0Xo3ebbHNR2
+         mIbg==
+X-Gm-Message-State: AOAM530cTQeMKjP31JOs1YADPDCzUn5iE80QRoqUvgUmG+501p60ohYT
+        k5P/nZp7hp3G9hplsB2pygulxOk2ux8st29wTY5IdQ==
+X-Google-Smtp-Source: ABdhPJwqIdRN9gUyRMuuZtvq5jmDOe1lXpoqg4zoq+txYg23wb/Fm+E3mLWSHk4kXm2XfRq0c7Icy4j5w+05FLzl6IE=
+X-Received: by 2002:a2e:a41b:: with SMTP id p27mr835731ljn.30.1603185246494;
+ Tue, 20 Oct 2020 02:14:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200930041659.28181-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1602673931-28782-1-git-send-email-sumit.garg@linaro.org>
+ <1602673931-28782-6-git-send-email-sumit.garg@linaro.org> <d4a4a37b93f34da79b87519181bffb97@kernel.org>
+In-Reply-To: <d4a4a37b93f34da79b87519181bffb97@kernel.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 20 Oct 2020 14:43:54 +0530
+Message-ID: <CAFA6WYMe02J6Laa0PWDW4849KGnw8Hu2H5d6UfppeaaE4-Z0vw@mail.gmail.com>
+Subject: Re: [PATCH v5 5/5] arm64: ipi_nmi: Add support for NMI backtrace
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Mark Rutland <mark.rutland@arm.com>,
+        julien.thierry.kdev@gmail.com,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 06:16, Sean Christopherson wrote:
-> This series stems from Lai's RFC patches to intercept LA57 and let the
-> guest own FSGSBASE[*].  Discussion and inspection revealed that KVM does
-> not handle the case where LA57 is supported in hardware but not exposed to
-> the guest.  This is actually true for all CR4 bits, but LA57 is currently
-> the only bit that can be reserved and also owned by the guest.  I have
-> a unit test for this that I'll post separately.
-> 
-> Intercepting LA57 was by far the easiest fix for the immedidate bug, and
-> is likely the right change in the long term as there's no justification
-> for letting the guest own LA57.
-> 
-> The middle three patches adjust VMX's CR4 guest/host mask to intercept
-> reserved bits.  This required reworking CPUID updates to also refresh said
-> mask at the correct time.
-> 
-> The last past is Lai's, which let's the guest own FSGSBASE.  This depends
-> on the reserved bit handling being in place.
-> 
-> Ran everything through unit tests, and ran the kernel's FSGSBASE selftests
-> in a VM.
-> 
-> [*] https://lkml.kernel.org/r/20200928083047.3349-1-jiangshanlai@gmail.com
-> 
-> Lai Jiangshan (2):
->   KVM: x86: Intercept LA57 to inject #GP fault when it's reserved
->   KVM: x86: Let the guest own CR4.FSGSBASE
-> 
-> Sean Christopherson (3):
->   KVM: x86: Invoke vendor's vcpu_after_set_cpuid() after all common
->     updates
->   KVM: x86: Move call to update_exception_bitmap() into VMX code
->   KVM: VMX: Intercept guest reserved CR4 bits to inject #GP fault
-> 
->  arch/x86/kvm/cpuid.c          |  6 +++---
->  arch/x86/kvm/kvm_cache_regs.h |  2 +-
->  arch/x86/kvm/vmx/vmx.c        | 18 +++++++++++++-----
->  3 files changed, 17 insertions(+), 9 deletions(-)
-> 
+On Mon, 19 Oct 2020 at 17:50, Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2020-10-14 12:12, Sumit Garg wrote:
+> > Enable NMI backtrace support on arm64 using IPI turned as an NMI
+> > leveraging pseudo NMIs support. It is now possible for users to get a
+> > backtrace of a CPU stuck in hard-lockup using magic SYSRQ.
+> >
+> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  arch/arm64/include/asm/irq.h |  6 ++++++
+> >  arch/arm64/kernel/ipi_nmi.c  | 12 +++++++++++-
+> >  2 files changed, 17 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/include/asm/irq.h
+> > b/arch/arm64/include/asm/irq.h
+> > index b2b0c64..e840bf1 100644
+> > --- a/arch/arm64/include/asm/irq.h
+> > +++ b/arch/arm64/include/asm/irq.h
+> > @@ -6,6 +6,12 @@
+> >
+> >  #include <asm-generic/irq.h>
+> >
+> > +#ifdef CONFIG_SMP
+> > +extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
+> > +                                        bool exclude_self);
+> > +#define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
+> > +#endif
+> > +
+> >  struct pt_regs;
+> >
+> >  static inline int nr_legacy_irqs(void)
+> > diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
+> > index e0a9e03..e1dc19d 100644
+> > --- a/arch/arm64/kernel/ipi_nmi.c
+> > +++ b/arch/arm64/kernel/ipi_nmi.c
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/interrupt.h>
+> >  #include <linux/irq.h>
+> >  #include <linux/kgdb.h>
+> > +#include <linux/nmi.h>
+> >  #include <linux/smp.h>
+> >
+> >  #include <asm/nmi.h>
+> > @@ -25,12 +26,21 @@ void arch_send_call_nmi_func_ipi_mask(cpumask_t
+> > *mask)
+> >       __ipi_send_mask(ipi_desc, mask);
+> >  }
+> >
+> > +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool
+> > exclude_self)
+> > +{
+> > +     nmi_trigger_cpumask_backtrace(mask, exclude_self,
+> > +                                   arch_send_call_nmi_func_ipi_mask);
+> > +}
+> > +
+> >  static irqreturn_t ipi_nmi_handler(int irq, void *data)
+> >  {
+> >       unsigned int cpu = smp_processor_id();
+> >
+> > -     ipi_kgdb_nmicallback(cpu, get_irq_regs());
+> > +     if (nmi_cpu_backtrace(get_irq_regs()))
+> > +             goto out;
+> >
+> > +     ipi_kgdb_nmicallback(cpu, get_irq_regs());
+> > +out:
+> >       return IRQ_HANDLED;
+> >  }
+>
+> Can't you have *both* a request for a backtrace and a KGDB call?
+> It really shouldn't be either/or. It also outlines how well shared
+> interrupts work with edge triggered signalling...
 
-Queued, thanks.
+Unfortunately, NMIs doesn't seem to support shared mode [1].
 
-Paolo
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/irq/manage.c#n1480
 
+-Sumit
+
+>
+>          M.
+> --
+> Jazz is not dead. It just smells funny...
