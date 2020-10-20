@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F14322943F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB932943F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409541AbgJTUhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 16:37:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:55924 "EHLO foss.arm.com"
+        id S2409549AbgJTUhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 16:37:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:55930 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409477AbgJTUhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:37:18 -0400
+        id S2409539AbgJTUhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 16:37:19 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A693331B;
-        Tue, 20 Oct 2020 13:37:17 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB7CCD6E;
+        Tue, 20 Oct 2020 13:37:18 -0700 (PDT)
 Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BCE6C3F719;
-        Tue, 20 Oct 2020 13:37:16 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D66F93F719;
+        Tue, 20 Oct 2020 13:37:17 -0700 (PDT)
 From:   Sudeep Holla <sudeep.holla@arm.com>
 To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 Cc:     Sudeep Holla <sudeep.holla@arm.com>,
         linux-arm-kernel@lists.infradead.org,
         Rob Herring <robh+dt@kernel.org>,
         Viresh Kumar <viresh.kumar@linaro.org>
-Subject: [PATCH 1/2] dt-bindings: arm,scmi: Do not use clocks for SCMI performance domains
-Date:   Tue, 20 Oct 2020 21:37:09 +0100
-Message-Id: <20201020203710.10100-1-sudeep.holla@arm.com>
+Subject: [PATCH 2/2] firmware: arm_scmi: Move away from clock devicetree bindings
+Date:   Tue, 20 Oct 2020 21:37:10 +0100
+Message-Id: <20201020203710.10100-2-sudeep.holla@arm.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201020203710.10100-1-sudeep.holla@arm.com>
+References: <20201020203710.10100-1-sudeep.holla@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -36,84 +38,40 @@ Commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
 _allocate_opp_table() which is called from dev_pm_opp_add and it
 now propagates the error back to the caller.
 
-SCMI performance domain re-used clock bindings to keep it simple. However
-with the above mentioned change, if clock property is present in a device
-node, opps can't be added until clk_get succeeds. So in order to fix the
-issue, we can register dummy clocks which is completely ugly.
+This breaks SCMI performance domains as we will never succeed to add any
+OPPs. A quick fix would be to register dummy clocks which is completely
+ugly and bigger fix which may break with some other change in future.
 
-Since there are no upstream users for the SCMI performance domain clock
-bindings, let us introduce separate performance domain bindings for the
-same.
+It is better to add separate binding for the same and use it. A separate
+SCMI performance domain binding is introduced and let us use it here.
 
 Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 ---
- .../devicetree/bindings/arm/arm,scmi.txt      | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ drivers/firmware/arm_scmi/perf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Hi Rob/Viresh,
+diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+index 3e1e87012c95..e2a47b3eead1 100644
+--- a/drivers/firmware/arm_scmi/perf.c
++++ b/drivers/firmware/arm_scmi/perf.c
+@@ -629,13 +629,13 @@ static void scmi_perf_domain_init_fc(const struct scmi_handle *handle,
+ /* Device specific ops */
+ static int scmi_dev_domain_id(struct device *dev)
+ {
+-	struct of_phandle_args clkspec;
++	struct of_phandle_args spec;
 
-This is actually a fix for the regression I reported here[1].
-I am not adding fixes tag as I am targeting in the same release and
-also because it is not directly related.
+-	if (of_parse_phandle_with_args(dev->of_node, "clocks", "#clock-cells",
+-				       0, &clkspec))
++	if (of_parse_phandle_with_args(dev->of_node, "arm,scmi-perf-domain",
++				       "#perf-domain-cells", 0, &spec))
+ 		return -EINVAL;
 
-Regards,
-Sudeep
+-	return clkspec.args[0];
++	return spec.args[0];
+ }
 
-[1] https://lore.kernel.org/r/20201015180555.gacdzkofpibkdn2e@bogus
-
-P.S.:/me records that this binding needs to be moved to yaml in v5.11
-
-diff --git a/Documentation/devicetree/bindings/arm/arm,scmi.txt b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-index 55deb68230eb..0a6c1b495403 100644
---- a/Documentation/devicetree/bindings/arm/arm,scmi.txt
-+++ b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-@@ -44,7 +44,7 @@ as described in the following sections. If the platform supports dedicated
- mboxes, mbox-names and shmem shall be present in the sub-node corresponding
- to that protocol.
-
--Clock/Performance bindings for the clocks/OPPs based on SCMI Message Protocol
-+Clock bindings for the clocks based on SCMI Message Protocol
- ------------------------------------------------------------
-
- This binding uses the common clock binding[1].
-@@ -52,6 +52,19 @@ This binding uses the common clock binding[1].
- Required properties:
- - #clock-cells : Should be 1. Contains the Clock ID value used by SCMI commands.
-
-+Performance bindings for the OPPs based on SCMI Message Protocol
-+------------------------------------------------------------
-+
-+Required properties:
-+- #perf-domain-cells: Should be 1. Contains the performance domain ID value
-+		      used by SCMI commands.
-+
-+* Property arm,scmi-perf-domain
-+
-+Devices supporting SCMI performance domain must set their "arm,scmi-perf-domain"
-+property with phandle to a SCMI performance domain controller followed by the
-+performance domain.
-+
- Power domain bindings for the power domains based on SCMI Message Protocol
- ------------------------------------------------------------
-
-@@ -152,7 +165,7 @@ firmware {
-
- 		scmi_dvfs: protocol@13 {
- 			reg = <0x13>;
--			#clock-cells = <1>;
-+			#perf-domain-cells = <1>;
- 		};
-
- 		scmi_clk: protocol@14 {
-@@ -175,7 +188,7 @@ firmware {
- cpu@0 {
- 	...
- 	reg = <0 0>;
--	clocks = <&scmi_dvfs 0>;
-+	arm,scmi-perf-domain = <&scmi_dvfs 0>;
- };
-
- hdlcd@7ff60000 {
+ static int scmi_dvfs_device_opps_add(const struct scmi_handle *handle,
 --
 2.17.1
 
