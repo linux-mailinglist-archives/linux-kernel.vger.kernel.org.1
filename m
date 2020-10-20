@@ -2,212 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5222B293BBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E90D3293BC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406230AbgJTMgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406096AbgJTMgC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:36:02 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D572C061755;
-        Tue, 20 Oct 2020 05:36:02 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a4so1780035lji.12;
-        Tue, 20 Oct 2020 05:36:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GO41J3t+KQGcluoAbDTnlHbfgoWPQDfGQT8R7UnC7l8=;
-        b=aWKiIpAiI4UNEZRlivP8LuNmuEu8i0b+vHdxlTSCrJM/f/jilILMrxlgBUC6iROYLO
-         vOpNBiEHo+uODaQWiw6aDMcCxkkq3yLMlzGUrq4ebvWRFRiTGPQbL3047NTbKp6wmIdp
-         dHkL0cXCoG+Sc6nDwRDjIoNEvvbxof6sFjMA/gqfEcmcj8OR41m3D4FvXSADoyq8+Dzx
-         iwYibug6fLLDYT/U8wWq05Soa5NHAxLYmf9jCmNeE4mqeXkkU680Wg5rlyzo08QwXBnt
-         t5uqodM15WvGLpu5nFH6rGhXUK/imVSw4SsoqS/dl5sEWMqqRbtlQKZDScUdwMzUur5V
-         qgzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GO41J3t+KQGcluoAbDTnlHbfgoWPQDfGQT8R7UnC7l8=;
-        b=KvvIzf3PpSCohb5xvANr3/Bo3f7T2SRfvH8aTpidSRB1hZ/oAO21gPMmPo62e0ooZS
-         c2dsRe/vgh/opI601JD5/WaSWdLmDJ0Eg2CneSHeRxPnU0LED4TBIAjkNgYHhvCmvm+c
-         nC1EjphjigH7L2WcutCzP9FHIIANv0y1uZ/AIWOvcSYi3gLyURnnmZHmputS8ONnzzwO
-         FPTsyz0iC/9XHuRsy+CXIFR1mHRDf1chnfqNHVekklDh44PWWfNwUWnjbCfn0SOzwphP
-         vFDLX6IL/3v75m1VGTD9+i67OC8NFIOZKIQ6ZiIUVe1w36jF/VSpOon4k0atSMMJbdPM
-         KAJQ==
-X-Gm-Message-State: AOAM533Hpy2YyX92df0Oi8ISEHZa+Ew3j/nY08gINCFaaj26eJZhARn4
-        bqTMvh8qRlmHd11Hlp9M+Q0eHCOECAkGpSK9Xj4a1r7gFY97
-X-Google-Smtp-Source: ABdhPJw56zrDQL6MB1dg8E6Ffo4qbDfVRREhzJy+lsYhtFQeLBGqK4FkSwTIwKqXvgBLjIilDGov6oIcRIS09lEai6o=
-X-Received: by 2002:a2e:b4d0:: with SMTP id r16mr1083832ljm.470.1603197360543;
- Tue, 20 Oct 2020 05:36:00 -0700 (PDT)
+        id S2406242AbgJTMgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:36:07 -0400
+Received: from mga11.intel.com ([192.55.52.93]:59053 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406224AbgJTMgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:36:05 -0400
+IronPort-SDR: gSr6Pm71mDYsPgPBo9u30U1GgYT5G7+ESPCiW1tzkkHdGV1iVthWkxt5lLMDGiRiPtRk+x5lan
+ PQc422Dk9K4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="163708585"
+X-IronPort-AV: E=Sophos;i="5.77,397,1596524400"; 
+   d="scan'208";a="163708585"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 05:36:05 -0700
+IronPort-SDR: /9wSKmWd89sh63M0JAy9prc4dBuCTaGVJlTnT1uERqSEdS8hxgj00ZGmAtYDf6vLN56H0TYQTO
+ 7xaNfXLKosIw==
+X-IronPort-AV: E=Sophos;i="5.77,397,1596524400"; 
+   d="scan'208";a="533042490"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 05:35:58 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id BADDE2062D; Tue, 20 Oct 2020 15:35:56 +0300 (EEST)
+Date:   Tue, 20 Oct 2020 15:35:56 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
+        andriy.shevchenko@linux.intel.com, sergey.senozhatsky@gmail.com,
+        rostedt@goodmis.org, pmladek@suse.com, mchehab@kernel.org,
+        tian.shu.qiu@intel.com, bingbu.cao@intel.com, yong.zhi@intel.com,
+        rafael@kernel.org, gregkh@linuxfoundation.org, kitakar@gmail.com,
+        dan.carpenter@oracle.org
+Subject: Re: [RFC PATCH v3 4/9] software_node: Add support for
+ fwnode_graph*() family of functions
+Message-ID: <20201020123556.GW13341@paasikivi.fi.intel.com>
+References: <20201019225903.14276-1-djrscally@gmail.com>
+ <20201019225903.14276-5-djrscally@gmail.com>
 MIME-Version: 1.0
-References: <20201015082119.68287-1-rejithomas@juniper.net>
- <20201018160147.6b3c940a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAA8Zg7Gcua1=6CgSkJ-z8uKJneDjedB4z6zm2a+DcYt-_YcmSQ@mail.gmail.com>
- <20201020112829.d689c849c85f4d5448c8f62d@gmail.com> <20201020113413.9413e2910e549a5722911004@gmail.com>
-In-Reply-To: <20201020113413.9413e2910e549a5722911004@gmail.com>
-From:   Reji Thomas <rejithomas.d@gmail.com>
-Date:   Tue, 20 Oct 2020 18:05:47 +0530
-Message-ID: <CAA8Zg7HEpWrhaWrJ0Zf==Gf0fuDKH6E-zczb5aUUtMR8x7tBCA@mail.gmail.com>
-Subject: Re: [PATCH v2] IPv6: sr: Fix End.X nexthop to use oif.
-To:     Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Mathieu Xhonneux <m.xhonneux@gmail.com>,
-        andrea.mayer@uniroma2.it
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019225903.14276-5-djrscally@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ahmed,
+Hi Daniel, Heikki,
 
+Thanks for the patch.
 
-On Tue, Oct 20, 2020 at 3:04 PM Ahmed Abdelsalam <ahabdels.dev@gmail.com> wrote:
->
-> We are submitting the patch for End.DT4. End.DX4 is already there.
->
-> So the optional parameter and OIF applies directly to End.X/End.DX6/End.DX4.
->
-The only catch is OIF cannot be an optional parameter for linklocal address.
-For global address, it can be made to depend on user specifying the
-oif in which case
-code can enforce the lookup with oif and in other cases  do an "any"
-interface lookup.
-That would also solve Jakub's concern in breaking any existing
-implementations(using global address)
-thereby passing the onus to the control plane to enforce the interface
-behavior as
-needed for global address.
+On Mon, Oct 19, 2020 at 11:58:58PM +0100, Daniel Scally wrote:
+> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> 
+> This implements the remaining .graph_* callbacks in the
+> fwnode operations vector for the software nodes. That makes
+> the fwnode_graph*() functions available in the drivers also
+> when software nodes are used.
+> 
+> The implementation tries to mimic the "OF graph" as much as
+> possible, but there is no support for the "reg" device
+> property. The ports will need to have the index in their
+> name which starts with "port" (for example "port0", "port1",
+> ...) and endpoints will use the index of the software node
+> that is given to them during creation. The port nodes can
+> also be grouped under a specially named "ports" subnode,
+> just like in DT, if necessary.
+> 
+> The remote-endpoints are reference properties under the
+> endpoint nodes that are named "remote-endpoint". 
+> 
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Co-developed-by: Daniel Scally <djrscally@gmail.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> changes in v3:
+> 	- removed software_node_device_is_available
+> 	- moved the change to software_node_get_next_child to a separate
+> 	patch
+> 	- switched to use fwnode_handle_put() in graph_get_next_endpoint()
+> 	instead of software_node_put()
+> 
+> changes in v2:
+> 	- added software_node_device_is_available
+> 	- altered software_node_get_next_child to get references
+> 	- altered software_node_get_next_endpoint to release references
+> 	to ports and avoid passing invalid combinations of swnodes to
+> 	software_node_get_next_child
+> 	- altered swnode_graph_find_next_port to release port rather than
+> 	old
+>  drivers/base/swnode.c | 120 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 119 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 741149b90..3732530ce 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -536,6 +536,120 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
+>  	return 0;
+>  }
+>  
+> +static struct fwnode_handle *
+> +swnode_graph_find_next_port(const struct fwnode_handle *parent,
+> +			    struct fwnode_handle *port)
+> +{
+> +	struct fwnode_handle *old = port;
+> +
+> +	while ((port = software_node_get_next_child(parent, old))) {
 
-I will wait for the patch. Hope there will be a way to enforce the oif
-for linklocal address..
+software_node_get_next_child() doesn't drop the reference of the old child
+nor gets a reference to the returned node. Should it?
 
+The function to get a named child node does.
 
+It'd be nice if this was aligned. Or am I missing something?
 
->
-> On Tue, 20 Oct 2020 11:28:29 +0200
-> Ahmed Abdelsalam <ahabdels.dev@gmail.com> wrote:
->
-> > Jakub, Reji,
-> >
-> > Andrea (CC'ed) and I have been working on a patch that could solve this issue.
-> > The patch allows to provide optional parameters to when SRv6 behavior.
-> > The OIF can be provided as an optional parameter when configuring SRv6 End.X,
-> > End.DX6 or End.DX4 (we are submiting in the next couple of days to support End.DX4).
-> >
-> > We can submit the optional parameter again. Then Reji can leverage this to provide OIF
-> > as an optional parameters.
-> >
-> > Would you agree ?
-> >
-> > Thanks
-> > Ahmed
-> >
-> >
-> >
-> > On Mon, 19 Oct 2020 09:25:12 +0530
-> > Reji Thomas <rejithomas.d@gmail.com> wrote:
-> >
-> > > Hi,
-> > >
-> > > Please find my replies inline below.
-> > >
-> > > Regards
-> > > Reji
-> > >
-> > > On Mon, Oct 19, 2020 at 4:31 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> > > >
-> > > > On Thu, 15 Oct 2020 13:51:19 +0530 Reji Thomas wrote:
-> > > > > Currently End.X action doesn't consider the outgoing interface
-> > > > > while looking up the nexthop.This breaks packet path functionality
-> > > > > specifically while using link local address as the End.X nexthop.
-> > > > > The patch fixes this by enforcing End.X action to have both nh6 and
-> > > > > oif and using oif in lookup.It seems this is a day one issue.
-> > > > >
-> > > > > Fixes: 140f04c33bbc ("ipv6: sr: implement several seg6local actions")
-> > > > > Signed-off-by: Reji Thomas <rejithomas@juniper.net>
-> > > >
-> > > > David, Mathiey - any comments?
-> > > >
-> > > > > @@ -239,6 +250,8 @@ static int input_action_end(struct sk_buff *skb, struct seg6_local_lwt *slwt)
-> > > > >  static int input_action_end_x(struct sk_buff *skb, struct seg6_local_lwt *slwt)
-> > > > >  {
-> > > > >       struct ipv6_sr_hdr *srh;
-> > > > > +     struct net_device *odev;
-> > > > > +     struct net *net = dev_net(skb->dev);
-> > > >
-> > > > Order longest to shortest.
-> > > Sorry. Will fix it.
-> > >
-> > > >
-> > > >
-> > > > >
-> > > > >       srh = get_and_validate_srh(skb);
-> > > > >       if (!srh)
-> > > > > @@ -246,7 +259,11 @@ static int input_action_end_x(struct sk_buff *skb, struct seg6_local_lwt *slwt)
-> > > > >
-> > > > >       advance_nextseg(srh, &ipv6_hdr(skb)->daddr);
-> > > > >
-> > > > > -     seg6_lookup_nexthop(skb, &slwt->nh6, 0);
-> > > > > +     odev = dev_get_by_index_rcu(net, slwt->oif);
-> > > > > +     if (!odev)
-> > > > > +             goto drop;
-> > > >
-> > > > Are you doing this lookup just to make sure that oif exists?
-> > > > Looks a little wasteful for fast path, but more importantly
-> > > > it won't be backward compatible, right? See below..
-> > > >
-> > > Please see reply below.
-> > >
-> > > > > +
-> > > > > +     seg6_strict_lookup_nexthop(skb, &slwt->nh6, odev->ifindex, 0);
-> > > > >
-> > > > >       return dst_input(skb);
-> > > > >
-> > > >
-> > > > > @@ -566,7 +583,8 @@ static struct seg6_action_desc seg6_action_table[] = {
-> > > > >       },
-> > > > >       {
-> > > > >               .action         = SEG6_LOCAL_ACTION_END_X,
-> > > > > -             .attrs          = (1 << SEG6_LOCAL_NH6),
-> > > > > +             .attrs          = ((1 << SEG6_LOCAL_NH6) |
-> > > > > +                                (1 << SEG6_LOCAL_OIF)),
-> > > > >               .input          = input_action_end_x,
-> > > > >       },
-> > > > >       {
-> > > >
-> > > > If you set this parse_nla_action() will reject all
-> > > > SEG6_LOCAL_ACTION_END_X without OIF.
-> > > >
-> > > > As you say the OIF is only required for using link local addresses,
-> > > > so this change breaks perfectly legitimate configurations.
-> > > >
-> > > > Can we instead only warn about the missing OIF, and only do that when
-> > > > nh is link local?
-> > > >
-> > > End.X is defined as an adjacency-sid and is used to select a specific link to a
-> > > neighbor for both global and link-local addresses. The intention was
-> > > to drop the
-> > > packet even for global addresses if the route via the specific
-> > > interface is not found.
-> > > Alternatively(believe semantically correct for End.X definition) I
-> > > could do a neighbor lookup
-> > > for nexthop address over specific interface and send the packet out.
-> > >
-> > > > Also doesn't SEG6_LOCAL_ACTION_END_DX6 need a similar treatment?
-> > >
-> > > Yes. I will update the patch for End.DX6 based on the patch finalized for End.X.
-> >
-> >
-> > --
-> > Ahmed Abdelsalam <ahabdels.dev@gmail.com>
->
->
-> --
-> Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+This isn't really a comment on this patch though.
+
+-- 
+Kind regards,
+
+Sakari Ailus
