@@ -2,116 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91DE1293E05
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF62D293E0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407768AbgJTOAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:00:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58286 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407728AbgJTOAu (ORCPT
+        id S2407781AbgJTOBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407773AbgJTOBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:00:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603202449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4sctD9GroQPGmZjA5ubyMJz3ARe9p1/I2rVYIjHWBII=;
-        b=VD3vvc6VrqpjpLg2ThF+0/inu3ys/nbvDygFtp5w/bKc8002/TDjR0xZdfMIuLOXDCzzK5
-        /k4XFChgk5NtJPP+q2dl6Ovmy3BGZrKCDFe6+xVGysiEYoLrRCglHwMdMPOz3nmS+j8ZKQ
-        xFxa9z1W/emSuS+vGf+8taWgUGyjp4I=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-468-mAYyRZ4jNbetWLzpOBp6OQ-1; Tue, 20 Oct 2020 10:00:46 -0400
-X-MC-Unique: mAYyRZ4jNbetWLzpOBp6OQ-1
-Received: by mail-il1-f197.google.com with SMTP id e3so2266045ilq.18
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:00:46 -0700 (PDT)
+        Tue, 20 Oct 2020 10:01:10 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0315C061755;
+        Tue, 20 Oct 2020 07:01:08 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id c77so1904858wmd.4;
+        Tue, 20 Oct 2020 07:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=suu/wcJskTNf+M7IZEIF/kdVRarp7s92n9POLrtQNtQ=;
+        b=FemxbPyzEmVU3hGtQqhvq06hD536ltfBzkMus+28Rh+BhyzRwIwVHTlf2PsRSwBeVQ
+         QZfOw1+kY8dUn6CxkofwFHw7cdX130vAu2TY9iz57/EaX6az/A5YN+DSDFdJAKf9jqiW
+         DVPa42gU8iSzyfuydn5IfrjBE3kOE6afAY9pphb9iMkWJlfsSkS1+WuObe9TfzRbNpf6
+         cSer68ywzQYYnTGIz95iA1xEgQMpss42vVtTSJkEnK6vKhpdKZVa3c03GjXtQ+EmwQih
+         oHttvAJsCaIlX0UXVZSe52ET8lsl87U2erbauVrbS/1EzX6uhsIZNcOosUPo83MauLCH
+         nyow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=4sctD9GroQPGmZjA5ubyMJz3ARe9p1/I2rVYIjHWBII=;
-        b=BqKYstzcGs7ZNwRhJjAeV2EQVCx1lAhwAzHJksf05G/H4SNQ/A8GAKF5f9mxWI9h2z
-         6dQQ/MKoBrkmjyJlgTsE6tanjygJdTWlsRc2+mBTVyMxfhjOKp1RTjpnouSY3bS/Eibd
-         l+7pWkcx6EPP3DRlo7E5bTqcpoPTteSDZmxOA+KeLWRBG9ogHNAPBAunEUAvBCg4KCGr
-         rGzMAua/hgnBqf9z0vmrkMQ/ik+QHkVVtkVwXes+L+hzNooUBQH3R1KQCpX29L7oScc4
-         f5W3mUYpwQ0Q14CJ1IWSiUxsf3X41BJyDJQFUBr9B1jGfne1BI/u5FblaJPEG0cVQ182
-         aiYA==
-X-Gm-Message-State: AOAM531BwrXCT/K6gorAsUyIgP/3AfLWPRM8gQbw0pZ3KXQS2IdR9UQR
-        ChrnoTIaBshXsL50XqKYdz2Nyl0EGYv0SKQplU6pb9sfzflRHfqhOiGcqbXLnRbhFx66SfibBXA
-        Tq1Yvn7USxklerVj1aVdkzFJb
-X-Received: by 2002:a92:d84a:: with SMTP id h10mr2186984ilq.39.1603202445101;
-        Tue, 20 Oct 2020 07:00:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyf1jwBZUSK30L5Aua9DPGWks1GPDv4iyrEdkxaagg/LMxe0yoJf/NaKWNohG7sDyMtkGoHgQ==
-X-Received: by 2002:a92:d84a:: with SMTP id h10mr2186961ilq.39.1603202444880;
-        Tue, 20 Oct 2020 07:00:44 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id p4sm1960555ilg.79.2020.10.20.07.00.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 07:00:44 -0700 (PDT)
-Subject: Re: [PATCH] mtd: remove unneeded break
-To:     Richard Weinberger <richard.weinberger@gmail.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-References: <20201019191631.9604-1-trix@redhat.com>
- <CAFLxGvwAVbpUe221N-qS19aFSaJ4hM=J=veHfi+4wAkNTNGAog@mail.gmail.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <fef9fb1c-30ee-14fb-a9bd-4f4a554a8bbc@redhat.com>
-Date:   Tue, 20 Oct 2020 07:00:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=suu/wcJskTNf+M7IZEIF/kdVRarp7s92n9POLrtQNtQ=;
+        b=aCfNIpRt31ZD1hKpM1uBzBoh+l/WA8PcwkBx9jg509uGx3N4tAFLGzTkciTu+950Gi
+         Tzhy6p7w9qhXnuGYf+ewQYq6LvfJFiinLfq18hvpRi22peYDu4rGphccJYQcAztRQl0j
+         Q7c//boYF0Y2fYINzBXV3AgoHgh9Qtono/fSpBAoIoX9JtA9tYvqL9vqObUQEPMhXgQB
+         OQcLOlYas3GjPlSchxy9otkfGX3Kaxfbj1HAedIB+FUpoOmevFF4yNTCSVl5h7F3fMol
+         gZwKveCFbeu5mgWsd1R4jzr5ceksw2wwpRB6kza/xoK2M/GcHhnvip6NUJbqMf5T/O5I
+         nr6w==
+X-Gm-Message-State: AOAM532vScvuWeuIAMYDexXOQ3loQhfHpEWd0GPzB6YCxyhpFfP8owtV
+        21o8ohAyIK20zTWA7ubT4GVlBp3UhTRq8pTnf1U=
+X-Google-Smtp-Source: ABdhPJya1qVEt8EOAfxUHYvr2OXktAROHxkx3oO2mjvd8SCCQHeKX9EHRe9JFEusx/bdcwxXE3k/iMXGm0nuZ/bSYUc=
+X-Received: by 2002:a1c:3243:: with SMTP id y64mr3071202wmy.175.1603202467274;
+ Tue, 20 Oct 2020 07:01:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvwAVbpUe221N-qS19aFSaJ4hM=J=veHfi+4wAkNTNGAog@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201019211101.143327-1-robdclark@gmail.com> <20201020082404.GJ401619@phenom.ffwll.local>
+In-Reply-To: <20201020082404.GJ401619@phenom.ffwll.local>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 20 Oct 2020 07:00:55 -0700
+Message-ID: <CAF6AEGuT6ZSpitNS0eBcjKhAVW1QBg+uPJQQkBLckOk=_GBx=A@mail.gmail.com>
+Subject: Re: [PATCH 0/3] drm/msm: kthread_worker conversion
+To:     Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Roy Spliet <nouveau@spliet.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        tongtiangen <tongtiangen@huawei.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Drew Davenport <ddavenport@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/19/20 1:04 PM, Richard Weinberger wrote:
-> On Mon, Oct 19, 2020 at 9:23 PM <trix@redhat.com> wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> A break is not needed if it is preceded by a return
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>  drivers/mtd/mtdchar.c | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
->> index b40f46a43fc6..323035d4f2d0 100644
->> --- a/drivers/mtd/mtdchar.c
->> +++ b/drivers/mtd/mtdchar.c
->> @@ -881,7 +881,6 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
->>                 if (copy_from_user(&offs, argp, sizeof(loff_t)))
->>                         return -EFAULT;
->>                 return mtd_block_isbad(mtd, offs);
->> -               break;
->>         }
->>
->>         case MEMSETBADBLOCK:
->> @@ -891,7 +890,6 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
->>                 if (copy_from_user(&offs, argp, sizeof(loff_t)))
->>                         return -EFAULT;
->>                 return mtd_block_markbad(mtd, offs);
->> -               break;
-> Acked-by: Richard Weinberger <richard@nod.at>
+On Tue, Oct 20, 2020 at 1:24 AM Daniel Vetter <daniel@ffwll.ch> wrote:
 >
-> Do you want to route this patch through mtd or do you carry it?
-
-Not sure if this question is for me.
-
-I do not maintain a subsystem/branch, so through mtd is what i was assuming.
-
-Tom
-
+> On Mon, Oct 19, 2020 at 02:10:50PM -0700, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > In particular, converting the async atomic commit (for cursor updates,
+> > etc) to SCHED_FIFO kthread_worker helps with some cases where we
+> > wouldn't manage to flush the updates within the 1ms-before-vblank
+> > deadline resulting in fps drops when there is cursor movement.
+> >
+> > Rob Clark (3):
+> >   drm/msm/gpu: Convert retire/recover work to kthread_worker
+> >   drm/msm/kms: Update msm_kms_init/destroy
+> >   drm/msm/atomic: Convert to per-CRTC kthread_work
 >
+> So i915 has it's own commit worker already for $reasons, but I don't think
+> that's a good path to go down with more drivers. And the problem seems
+> entirely generic in nature ...
 
+I'm not *entirely* sure what your point is here?  This is just
+migrating away from a shared ordered wq to per-crtc kthread so that we
+don't miss vblank deadlines for silly reasons (and then stall on the
+next frame's pageflip because we are still waiting for the cursor
+update to latch).  Kind of like vblank-work but scheduled prior to,
+rather than after, vblank.
+
+And you're right that the problem is partially generic.. hw that (a)
+doesn't have true async (cursor and/or otherwise) updates, and (b) has
+various flush bits that latch register updates on vblank, is not that
+uncommon.  But the current atomic helper API would have to be a bit
+redesigned to look more like the interface between msm_atomic and the
+display backend.  That is a fair bit of churn for re-using a small bit
+of code.
+
+BR,
+-R
+
+> -Daniel
+>
+> >
+> >  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |  3 +--
+> >  drivers/gpu/drm/msm/adreno/a5xx_preempt.c |  6 ++---
+> >  drivers/gpu/drm/msm/adreno/a6xx_gmu.c     |  4 +--
+> >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 +--
+> >  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c   |  8 +++++-
+> >  drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c  |  8 +++++-
+> >  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c  | 11 ++++++---
+> >  drivers/gpu/drm/msm/disp/mdp_kms.h        |  9 +++++--
+> >  drivers/gpu/drm/msm/msm_atomic.c          | 25 +++++++++++++++----
+> >  drivers/gpu/drm/msm/msm_drv.h             |  3 ++-
+> >  drivers/gpu/drm/msm/msm_gpu.c             | 30 +++++++++++++++--------
+> >  drivers/gpu/drm/msm/msm_gpu.h             | 13 +++++++---
+> >  drivers/gpu/drm/msm/msm_kms.h             | 23 ++++++++++++++---
+> >  13 files changed, 104 insertions(+), 43 deletions(-)
+> >
+> > --
+> > 2.26.2
+> >
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
