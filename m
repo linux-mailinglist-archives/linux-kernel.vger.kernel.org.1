@@ -2,98 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCC52944BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 23:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D832944BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 23:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392342AbgJTVxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 17:53:10 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:40023 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392249AbgJTVxK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 17:53:10 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-213-FDpc4XWSONmUnr5iOVCXlw-1; Tue, 20 Oct 2020 22:53:05 +0100
-X-MC-Unique: FDpc4XWSONmUnr5iOVCXlw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 20 Oct 2020 22:53:04 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 20 Oct 2020 22:53:04 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Dafna Hirschfeld' <dafna.hirschfeld@collabora.com>,
-        'Colin King' <colin.king@canonical.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] media: staging: rkisp1: rsz: make const array static,
- makes object smaller
-Thread-Topic: [PATCH] media: staging: rkisp1: rsz: make const array static,
- makes object smaller
-Thread-Index: AQHWpu/g1aA4z1vvvE6vSt76+nNaDamgnL6wgAAMVoCAAF2rAA==
-Date:   Tue, 20 Oct 2020 21:53:04 +0000
-Message-ID: <c4cc1bd62e52419eb00631e539a6e703@AcuMS.aculab.com>
-References: <20201020144655.53251-1-colin.king@canonical.com>
- <d5663dec063440129bf6c373aa252d51@AcuMS.aculab.com>
- <cec23fd3-15c1-8e52-3f4d-300d6149d89c@collabora.com>
-In-Reply-To: <cec23fd3-15c1-8e52-3f4d-300d6149d89c@collabora.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S2392361AbgJTVyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 17:54:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:56448 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390508AbgJTVyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 17:54:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C56091FB;
+        Tue, 20 Oct 2020 14:54:11 -0700 (PDT)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 15DC43F66B;
+        Tue, 20 Oct 2020 14:54:09 -0700 (PDT)
+Subject: Re: [PATCH v2 08/14] perf arm-spe: Refactor context packet handling
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
+References: <20200929133917.9224-1-leo.yan@linaro.org>
+ <20200929133917.9224-9-leo.yan@linaro.org>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
+ xsFNBFNPCKMBEAC+6GVcuP9ri8r+gg2fHZDedOmFRZPtcrMMF2Cx6KrTUT0YEISsqPoJTKld
+ tPfEG0KnRL9CWvftyHseWTnU2Gi7hKNwhRkC0oBL5Er2hhNpoi8x4VcsxQ6bHG5/dA7ctvL6
+ kYvKAZw4X2Y3GTbAZIOLf+leNPiF9175S8pvqMPi0qu67RWZD5H/uT/TfLpvmmOlRzNiXMBm
+ kGvewkBpL3R2clHquv7pB6KLoY3uvjFhZfEedqSqTwBVu/JVZZO7tvYCJPfyY5JG9+BjPmr+
+ REe2gS6w/4DJ4D8oMWKoY3r6ZpHx3YS2hWZFUYiCYovPxfj5+bOr78sg3JleEd0OB0yYtzTT
+ esiNlQpCo0oOevwHR+jUiaZevM4xCyt23L2G+euzdRsUZcK/M6qYf41Dy6Afqa+PxgMEiDto
+ ITEH3Dv+zfzwdeqCuNU0VOGrQZs/vrKOUmU/QDlYL7G8OIg5Ekheq4N+Ay+3EYCROXkstQnf
+ YYxRn5F1oeVeqoh1LgGH7YN9H9LeIajwBD8OgiZDVsmb67DdF6EQtklH0ycBcVodG1zTCfqM
+ AavYMfhldNMBg4vaLh0cJ/3ZXZNIyDlV372GmxSJJiidxDm7E1PkgdfCnHk+pD8YeITmSNyb
+ 7qeU08Hqqh4ui8SSeUp7+yie9zBhJB5vVBJoO5D0MikZAODIDwARAQABzS1BbmRyZSBQcnp5
+ d2FyYSAoQVJNKSA8YW5kcmUucHJ6eXdhcmFAYXJtLmNvbT7CwXsEEwECACUCGwMGCwkIBwMC
+ BhUIAgkKCwQWAgMBAh4BAheABQJTWSV8AhkBAAoJEAL1yD+ydue63REP/1tPqTo/f6StS00g
+ NTUpjgVqxgsPWYWwSLkgkaUZn2z9Edv86BLpqTY8OBQZ19EUwfNehcnvR+Olw+7wxNnatyxo
+ D2FG0paTia1SjxaJ8Nx3e85jy6l7N2AQrTCFCtFN9lp8Pc0LVBpSbjmP+Peh5Mi7gtCBNkpz
+ KShEaJE25a/+rnIrIXzJHrsbC2GwcssAF3bd03iU41J1gMTalB6HCtQUwgqSsbG8MsR/IwHW
+ XruOnVp0GQRJwlw07e9T3PKTLj3LWsAPe0LHm5W1Q+euoCLsZfYwr7phQ19HAxSCu8hzp43u
+ zSw0+sEQsO+9wz2nGDgQCGepCcJR1lygVn2zwRTQKbq7Hjs+IWZ0gN2nDajScuR1RsxTE4WR
+ lj0+Ne6VrAmPiW6QqRhliDO+e82riI75ywSWrJb9TQw0+UkIQ2DlNr0u0TwCUTcQNN6aKnru
+ ouVt3qoRlcD5MuRhLH+ttAcmNITMg7GQ6RQajWrSKuKFrt6iuDbjgO2cnaTrLbNBBKPTG4oF
+ D6kX8Zea0KvVBagBsaC1CDTDQQMxYBPDBSlqYCb/b2x7KHTvTAHUBSsBRL6MKz8wwruDodTM
+ 4E4ToV9URl4aE/msBZ4GLTtEmUHBh4/AYwk6ACYByYKyx5r3PDG0iHnJ8bV0OeyQ9ujfgBBP
+ B2t4oASNnIOeGEEcQ2rjzsFNBFNPCKMBEACm7Xqafb1Dp1nDl06aw/3O9ixWsGMv1Uhfd2B6
+ it6wh1HDCn9HpekgouR2HLMvdd3Y//GG89irEasjzENZPsK82PS0bvkxxIHRFm0pikF4ljIb
+ 6tca2sxFr/H7CCtWYZjZzPgnOPtnagN0qVVyEM7L5f7KjGb1/o5EDkVR2SVSSjrlmNdTL2Rd
+ zaPqrBoxuR/y/n856deWqS1ZssOpqwKhxT1IVlF6S47CjFJ3+fiHNjkljLfxzDyQXwXCNoZn
+ BKcW9PvAMf6W1DGASoXtsMg4HHzZ5fW+vnjzvWiC4pXrcP7Ivfxx5pB+nGiOfOY+/VSUlW/9
+ GdzPlOIc1bGyKc6tGREH5lErmeoJZ5k7E9cMJx+xzuDItvnZbf6RuH5fg3QsljQy8jLlr4S6
+ 8YwxlObySJ5K+suPRzZOG2+kq77RJVqAgZXp3Zdvdaov4a5J3H8pxzjj0yZ2JZlndM4X7Msr
+ P5tfxy1WvV4Km6QeFAsjcF5gM+wWl+mf2qrlp3dRwniG1vkLsnQugQ4oNUrx0ahwOSm9p6kM
+ CIiTITo+W7O9KEE9XCb4vV0ejmLlgdDV8ASVUekeTJkmRIBnz0fa4pa1vbtZoi6/LlIdAEEt
+ PY6p3hgkLLtr2GRodOW/Y3vPRd9+rJHq/tLIfwc58ZhQKmRcgrhtlnuTGTmyUqGSiMNfpwAR
+ AQABwsFfBBgBAgAJBQJTTwijAhsMAAoJEAL1yD+ydue64BgP/33QKczgAvSdj9XTC14wZCGE
+ U8ygZwkkyNf021iNMj+o0dpLU48PIhHIMTXlM2aiiZlPWgKVlDRjlYuc9EZqGgbOOuR/pNYA
+ JX9vaqszyE34JzXBL9DBKUuAui8z8GcxRcz49/xtzzP0kH3OQbBIqZWuMRxKEpRptRT0wzBL
+ O31ygf4FRxs68jvPCuZjTGKELIo656/Hmk17cmjoBAJK7JHfqdGkDXk5tneeHCkB411p9WJU
+ vMO2EqsHjobjuFm89hI0pSxlUoiTL0Nuk9Edemjw70W4anGNyaQtBq+qu1RdjUPBvoJec7y/
+ EXJtoGxq9Y+tmm22xwApSiIOyMwUi9A1iLjQLmngLeUdsHyrEWTbEYHd2sAM2sqKoZRyBDSv
+ ejRvZD6zwkY/9nRqXt02H1quVOP42xlkwOQU6gxm93o/bxd7S5tEA359Sli5gZRaucpNQkwd
+ KLQdCvFdksD270r4jU/rwR2R/Ubi+txfy0dk2wGBjl1xpSf0Lbl/KMR5TQntELfLR4etizLq
+ Xpd2byn96Ivi8C8u9zJruXTueHH8vt7gJ1oax3yKRGU5o2eipCRiKZ0s/T7fvkdq+8beg9ku
+ fDO4SAgJMIl6H5awliCY2zQvLHysS/Wb8QuB09hmhLZ4AifdHyF1J5qeePEhgTA+BaUbiUZf
+ i4aIXCH3Wv6K
+Organization: ARM Ltd.
+Message-ID: <94b559ce-8239-efb4-7e28-b648e3ff5170@arm.com>
+Date:   Tue, 20 Oct 2020 22:53:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200929133917.9224-9-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRGFmbmEgSGlyc2NoZmVsZA0KPiBTZW50OiAyMCBPY3RvYmVyIDIwMjAgMTg6MTANCj4g
-DQo+IEFtIDIwLjEwLjIwIHVtIDE3OjI5IHNjaHJpZWIgRGF2aWQgTGFpZ2h0Og0KPiA+IEZyb206
-IENvbGluIEtpbmcNCj4gPj4gU2VudDogMjAgT2N0b2JlciAyMDIwIDE1OjQ3DQo+ID4+DQo+ID4+
-IEZyb206IENvbGluIElhbiBLaW5nIDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+DQo+ID4+DQou
-Li4NCj4gPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3RhZ2luZy9tZWRpYS9ya2lzcDEvcmtpc3Ax
-LXJlc2l6ZXIuYyBiL2RyaXZlcnMvc3RhZ2luZy9tZWRpYS9ya2lzcDEvcmtpc3AxLQ0KPiA+PiBy
-ZXNpemVyLmMNCj4gPj4gaW5kZXggMTY4N2Q4MmU2YzY4Li43Y2E1YjQ3YzViZjUgMTAwNjQ0DQo+
-ID4+IC0tLSBhL2RyaXZlcnMvc3RhZ2luZy9tZWRpYS9ya2lzcDEvcmtpc3AxLXJlc2l6ZXIuYw0K
-PiA+PiArKysgYi9kcml2ZXJzL3N0YWdpbmcvbWVkaWEvcmtpc3AxL3JraXNwMS1yZXNpemVyLmMN
-Cj4gPj4gQEAgLTc2Myw4ICs3NjMsMTAgQEAgc3RhdGljIHZvaWQgcmtpc3AxX3Jzel91bnJlZ2lz
-dGVyKHN0cnVjdCBya2lzcDFfcmVzaXplciAqcnN6KQ0KPiA+Pg0KPiA+PiAgIHN0YXRpYyBpbnQg
-cmtpc3AxX3Jzel9yZWdpc3RlcihzdHJ1Y3Qgcmtpc3AxX3Jlc2l6ZXIgKnJzeikNCj4gPj4gICB7
-DQo+ID4+IC0JY29uc3QgY2hhciAqIGNvbnN0IGRldl9uYW1lc1tdID0ge1JLSVNQMV9SU1pfTVBf
-REVWX05BTUUsDQo+ID4+IC0JCQkJCSAgUktJU1AxX1JTWl9TUF9ERVZfTkFNRX07DQo+ID4+ICsJ
-c3RhdGljIGNvbnN0IGNoYXIgKiBjb25zdCBkZXZfbmFtZXNbXSA9IHsNCj4gPj4gKwkJUktJU1Ax
-X1JTWl9NUF9ERVZfTkFNRSwNCj4gPj4gKwkJUktJU1AxX1JTWl9TUF9ERVZfTkFNRQ0KPiA+PiAr
-CX07DQo+ID4+ICAgCXN0cnVjdCBtZWRpYV9wYWQgKnBhZHMgPSByc3otPnBhZHM7DQo+ID4+ICAg
-CXN0cnVjdCB2NGwyX3N1YmRldiAqc2QgPSAmcnN6LT5zZDsNCj4gPj4gICAJaW50IHJldDsNCj4g
-Pg0KPiA+IERvbid0IGxvb2sgYXQgd2hhdCB0aGF0IGNvZGUgaXMgYWN0dWFsbHkgZG9pbmcuLi4u
-DQo+ID4gSXQgaXMgcmF0aGVyIGhvcnJpZC4NCj4gPiBya2lzcDFfcnN6X3JlZ2lzdGVyKCkgaXMg
-Y2FsbGVkIGZvciBlYWNoIGVudHJ5IGluIGFuIGFycmF5ICh0d2ljZSkuDQo+ID4gVGhlIGFycmF5
-IGluZGV4IGlzIHdyaXR0ZW4gaW50byByc3otPmlkLg0KPiA+IFRoZSB2YWx1ZSBpcyB0aGVuIHVz
-ZWQgdG8gc2VsZWN0IG9uZSBvZiB0aGUgdHdvIHN0cmluZ3MuDQo+ID4gQnV0IHJzei0+aWQgaXMg
-YWN0dWFsbHkgYW4gZW51bSB0eXBlLg0KPiANCj4gSGksDQo+IElzIGl0IHRoYXQgYmFkIHRvIHVz
-ZSBlbnVtIGFzIGFuIGFycmF5IGluZGV4Pw0KPiB3ZSB1c2UgaXQgaW4gbWFueSBwbGFjZXMgaW4g
-dGhlIGRyaXZlci4NCg0KWW91J2Qgbm9ybWFsbHkgdXNlIGEgY29uc3RhbnQgZnJvbSB0aGUgZW51
-bSB0byBzaXplIHRoZSBhcnJheSBkZWZpbml0aW9uLg0KSW4gdGhpcyBjYXNlIHlvdSd2ZSBhbiBl
-bnVtLCBhbiBhcnJheSBbMl0gYW5kIHRoZSBkZXZfbmFtZXNbXQ0KYWxsIG9mIHdoaWNoIGhhdmUg
-dG8gbWF0Y2ggJ2J5IG1hZ2ljJy4NCg0KVGhlcmUgaXMgYSBsb29wIHRoYXQgaGFsZiBpbXBsaWVz
-IHlvdSBtaWdodCBhZGQgYSB0aGlyZCB0eXBlLg0KYnV0IHRoZW4gdGhlIGZvbGxvd2luZyBjb2Rl
-IG9ubHkgd29ya3MgZm9yIHRoZSB0d28gdHlwZXMuDQpZb3UndmUgY29tcGxleCBlcnJvciByZWNv
-dmVyeSBpbiBjYXNlIG9uZSBvZiB0aGUgY2FsbHMgdG8gDQpya2lzcDFfcnN6X3JlZ2lzdGVyKCkg
-ZmFpbHMgLSBidXQgc2luY2UgdGhlcmUgY2FuIG9ubHkgZXZlcg0KYmUgdHdvIGNhbGxzIHRoZSBj
-b2RlIGNvdWxkIGJlIG11Y2ggc2ltcGxlci4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRk
-cmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBN
-SzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On 29/09/2020 14:39, Leo Yan wrote:
+> Minor refactoring to use macro for index mask.
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+
+Cheers,
+Andre
+
+> ---
+>  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 2 +-
+>  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h | 3 +++
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index b51a2207e4a0..00a2cd1af422 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -134,7 +134,7 @@ static int arm_spe_get_context(const unsigned char *buf, size_t len,
+>  			       struct arm_spe_pkt *packet)
+>  {
+>  	packet->type = ARM_SPE_CONTEXT;
+> -	packet->index = buf[0] & 0x3;
+> +	packet->index = buf[0] & SPE_CTX_PKT_HDR_INDEX_MASK;
+>  	return arm_spe_get_payload(buf, len, 0, packet);
+>  }
+>  
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> index 88d2231c76da..62db4ff91832 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> @@ -86,6 +86,9 @@ struct arm_spe_pkt {
+>  #define SPE_ADDR_PKT_INST_VA_EL2		(2)
+>  #define SPE_ADDR_PKT_INST_VA_EL3		(3)
+>  
+> +/* Context packet header */
+> +#define SPE_CTX_PKT_HDR_INDEX_MASK		GENMASK_ULL(1, 0)
+> +
+>  const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
+>  
+>  int arm_spe_get_packet(const unsigned char *buf, size_t len,
+> 
 
