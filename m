@@ -2,234 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F03B293DF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AAB293DF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407738AbgJTN5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:57:23 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:28214 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407637AbgJTN5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:57:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603202241; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=sFsR7M8X8a+NGk5pENhxehQ5yW7VE3tjrETpgs/Etbg=; b=FdMjJnhp9pW47qQA+fjbEVDYy3RxWAr5GD4eTUlxR4zbOQv5ov4FjPn4cYVWi85dV63CH3ln
- i1yoUmK4WiCmVqs37wYZQ7mSPZgPysGeK8bQQitnWNBtvV8MazI2eIFr4gKJQ3dB4S8+uev+
- PiSKdWnUQFL7pnDn3k3PKv+/cqs=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f8eecc057b88ccb5660c99f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Oct 2020 13:57:20
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C645FC43382; Tue, 20 Oct 2020 13:57:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.9] (unknown [117.210.179.63])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84A3AC433CB;
-        Tue, 20 Oct 2020 13:57:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 84A3AC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH 2/2] drm/msm: Fix duplicate gpu node in icc summary
-To:     freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org, robdclark@gmail.com, dianders@chromium.org
-References: <1603113558-23330-1-git-send-email-akhilpo@codeaurora.org>
- <1603113558-23330-2-git-send-email-akhilpo@codeaurora.org>
- <20201019145922.GB31882@jcrouse1-lnx.qualcomm.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <e9e72bd7-0048-6e9f-8ca0-f5163c1b05f5@codeaurora.org>
-Date:   Tue, 20 Oct 2020 19:27:14 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S2407752AbgJTN6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407709AbgJTN6V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 09:58:21 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69CDC061755;
+        Tue, 20 Oct 2020 06:58:19 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id s22so1113961pga.9;
+        Tue, 20 Oct 2020 06:58:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EmCwFwYFjJcvvPvj3xW9hTTGW6kw0jqSI7/0U5V6eHs=;
+        b=cp5VAVaMHDGMFzM/Z+dznDq+aZrfTiTq49OJfy8GgMksWaU3P6Llj6OiGy2bZIbYdW
+         8eaLvUGB0w5JhhCN26QOLvU4GadGhk6IyoEn7HZlzE/i49t0bC+L9hx5FxqGCM/5Sg2t
+         IhxZNeotSS+4Ev0mTtg2anJe0otGP6zYFXX/BO5C1UDzbHU64ajM1ymfF6Uhq1n/gRE1
+         oSzpyPIaxZfiAzjEsKnpxgWjQkivRm9f3RpyR4Gr9ss1qWtOLHssWoE6dqWB5Zr7IPWv
+         ykOykdKB7EmuykNQ1lpN4/Jado+KMMxyRLgKpIp6qYtDHUsyCBrP7QwX6fHkV+H+Cnw9
+         JANQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EmCwFwYFjJcvvPvj3xW9hTTGW6kw0jqSI7/0U5V6eHs=;
+        b=rnGy8WyCzyo6Tcl16qRWitwjCIL/Wd1IBWVkVK4qATKJDR8PmM5PfGIjU0yZ+YGK0B
+         k9bhKH4dy+ZoG4JxCA5q4LrggWJicnIH21vKX/FETJ4fq1EM8xAXZkeEB2vj4U2Lerzm
+         saTmvsrmM97ctRw+VyLJXzboj8IcYrPlfYRjvua1SwOKaZj/tZ1KFe34KFs7Nsiok79h
+         gUC4Yora4fgRsPN23haY9XM6m7C0KGCqmJuSXxYTK9rSXIohzisZmjrfEgeOM73Q5bA0
+         dD6gjp6UxilNCVKGoJDJk+H2QRH5y0jByyfXwLELxWpqXiKUiosgdY2CCP4WrWlaj0SN
+         izyw==
+X-Gm-Message-State: AOAM533EgKVeGG8Q7l7L8uRwBpPy1uKQyuDkkjtYNi2HanauDZZ0i0wO
+        u/7sligEEsxAYy7D3UmfJqU=
+X-Google-Smtp-Source: ABdhPJxJLo1PIJSDILFyteEqF3PzPkVvEcsif5St8OgZbwYJPZQMLcfSubH5aQF2F7L/IlLkObdQ6g==
+X-Received: by 2002:a63:8c49:: with SMTP id q9mr2834921pgn.427.1603202299376;
+        Tue, 20 Oct 2020 06:58:19 -0700 (PDT)
+Received: from localhost (23.83.240.116.16clouds.com. [23.83.240.116])
+        by smtp.gmail.com with ESMTPSA id s23sm2196668pgl.47.2020.10.20.06.58.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 20 Oct 2020 06:58:18 -0700 (PDT)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Subject: [PATCH v3] usb: dwc3: core: fix a issue about clear connect state
+Date:   Tue, 20 Oct 2020 21:58:06 +0800
+Message-Id: <20201020135806.30268-1-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20201019145922.GB31882@jcrouse1-lnx.qualcomm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/19/2020 8:29 PM, Jordan Crouse wrote:
-> On Mon, Oct 19, 2020 at 06:49:18PM +0530, Akhil P Oommen wrote:
->> On targets with a6xx gpu, there is a duplicate gpu icc node listed in
->> the interconnect summary. On these targets, calling
-> 
-> This first sentence is confusing to me. I think the following few sentences do
-> a better job of explaining what you are trying to do.
-I can just remove that line.
-> 
->> dev_pm_opp_of_add_table() api initializes the icc nodes for gpu indirectly.
->> So we should avoid using of_icc_get() api in the common probe path. To fix
->> this, we can move of_icc_get() to target specific code where it is
->> required.
-> 
->> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
->> ---
->>   drivers/gpu/drm/msm/adreno/a3xx_gpu.c   | 21 +++++++++++++++++++--
->>   drivers/gpu/drm/msm/adreno/a4xx_gpu.c   | 20 ++++++++++++++++++--
->>   drivers/gpu/drm/msm/adreno/adreno_gpu.c | 29 +----------------------------
->>   3 files changed, 38 insertions(+), 32 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
->> index f29c77d..93da668 100644
->> --- a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
->> +++ b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
->> @@ -519,6 +519,8 @@ struct msm_gpu *a3xx_gpu_init(struct drm_device *dev)
->>   	struct msm_gpu *gpu;
->>   	struct msm_drm_private *priv = dev->dev_private;
->>   	struct platform_device *pdev = priv->gpu_pdev;
->> +	struct icc_path *ocmem_icc_path;
->> +	struct icc_path *icc_path;
->>   	int ret;
->>   
->>   	if (!pdev) {
->> @@ -566,13 +568,28 @@ struct msm_gpu *a3xx_gpu_init(struct drm_device *dev)
->>   		goto fail;
->>   	}
->>   
->> +	icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
->> +	ret = IS_ERR(icc_path);
->> +	if (ret)
->> +		goto fail;
->> +
->> +	ocmem_icc_path = devm_of_icc_get(&pdev->dev, "ocmem");
->> +	ret = IS_ERR(ocmem_icc_path);
->> +	if (ret) {
->> +		/* allow -ENODATA, ocmem icc is optional */
->> +		if (ret != -ENODATA)
->> +			goto fail;
->> +		ocmem_icc_path = NULL;
->> +	}
->> +
->> +
->>   	/*
->>   	 * Set the ICC path to maximum speed for now by multiplying the fastest
->>   	 * frequency by the bus width (8). We'll want to scale this later on to
->>   	 * improve battery life.
->>   	 */
->> -	icc_set_bw(gpu->icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
->> -	icc_set_bw(gpu->ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
->> +	icc_set_bw(icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
->> +	icc_set_bw(ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
-> 
-> This seems reasonable but I hope we can get somebody to sign off on a real a3xx
-> part.
-> 
->>   
->>   	return gpu;
->>   
->> diff --git a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
->> index 2b93b33..c0be3a0 100644
->> --- a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
->> +++ b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
->> @@ -648,6 +648,8 @@ struct msm_gpu *a4xx_gpu_init(struct drm_device *dev)
->>   	struct msm_gpu *gpu;
->>   	struct msm_drm_private *priv = dev->dev_private;
->>   	struct platform_device *pdev = priv->gpu_pdev;
->> +	struct icc_path *ocmem_icc_path;
->> +	struct icc_path *icc_path;
->>   	int ret;
->>   
->>   	if (!pdev) {
->> @@ -694,13 +696,27 @@ struct msm_gpu *a4xx_gpu_init(struct drm_device *dev)
->>   		goto fail;
->>   	}
->>   
->> +	icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
->> +	ret = IS_ERR(icc_path);
->> +	if (ret)
->> +		goto fail;
->> +
->> +	ocmem_icc_path = devm_of_icc_get(&pdev->dev, "ocmem");
->> +	ret = IS_ERR(ocmem_icc_path);
->> +	if (ret) {
->> +		/* allow -ENODATA, ocmem icc is optional */
->> +		if (ret != -ENODATA)
->> +			goto fail;
->> +		ocmem_icc_path = NULL;
->> +	}
->> +
->>   	/*
->>   	 * Set the ICC path to maximum speed for now by multiplying the fastest
->>   	 * frequency by the bus width (8). We'll want to scale this later on to
->>   	 * improve battery life.
->>   	 */
->> -	icc_set_bw(gpu->icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
->> -	icc_set_bw(gpu->ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
->> +	icc_set_bw(icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
->> +	icc_set_bw(ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
-> 
-> Less confident we can find any 4xx fans to test this, but if a3xx works then so
-> should this (in theory).
-> 
->>   	return gpu;
->>   
->> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> index fd8f491..6e3b820 100644
->> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> @@ -920,35 +920,8 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->>   
->>   	ret = msm_gpu_init(drm, pdev, &adreno_gpu->base, &funcs->base,
->>   			adreno_gpu->info->name, &adreno_gpu_config);
->> -	if (ret)
->> -		return ret;
->> -
->> -	/*
->> -	 * The legacy case, before "interconnect-names", only has a
->> -	 * single interconnect path which is equivalent to "gfx-mem"
->> -	 */
->> -	if (!of_find_property(dev->of_node, "interconnect-names", NULL)) {
->> -		gpu->icc_path = of_icc_get(dev, NULL);
->> -	} else {
->> -		gpu->icc_path = of_icc_get(dev, "gfx-mem");
->> -		gpu->ocmem_icc_path = of_icc_get(dev, "ocmem");
->> -	}
->>   
->> -	if (IS_ERR(gpu->icc_path)) {
->> -		ret = PTR_ERR(gpu->icc_path);
->> -		gpu->icc_path = NULL;
->> -		return ret;
->> -	}
->> -
->> -	if (IS_ERR(gpu->ocmem_icc_path)) {
->> -		ret = PTR_ERR(gpu->ocmem_icc_path);
->> -		gpu->ocmem_icc_path = NULL;
->> -		/* allow -ENODATA, ocmem icc is optional */
->> -		if (ret != -ENODATA)
->> -			return ret;
->> -	}
->> -
->> -	return 0;
->> +	return ret;
-> 
-> This could go even further:
-> 
-> return msm_gpu_init(...);
-> 
-Yep, we can do that. Thanks for the feedback.
+According to Synopsys Programming Guide chapter 2.2 Register Resets,
+it cannot reset the DCTL register by setting DCTL.CSFTRST for core soft
+reset, if DWC3 controller as a slave device and stay connected with a usb
+host, then, while rebooting linux, it will fail to reinitialize dwc3 as a
+slave device when the DWC3 controller did not power off. because the
+connection status is incorrect, so we also need to clear DCTL.RUN_STOP
+bit for disabling connect when doing core soft reset. There will still
+be other stale configuration in DCTL, so reset the other fields of DCTL
+to the default value 0.
 
---Akhil
->>   }
->>   
->>   void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
->> -- 
->> 2.7.4
->>
-> 
+Fixes: f59dcab176293b6 ("usb: dwc3: core: improve reset sequence")
+Suggested-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+---
+v2 -> v3:
+	* Reset all fields of DCTL register by Thinh's suggest,
+	  Thanks for Thinh's help!
+v1 -> v2:
+	* modify some commit messages by Sergei's suggest, Thanks
+	  very much for Sergei's help!
+
+ drivers/usb/dwc3/core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index 2eb34c8b4065..86375cfd9481 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -254,9 +254,7 @@ static int dwc3_core_soft_reset(struct dwc3 *dwc)
+ 	if (dwc->current_dr_role == DWC3_GCTL_PRTCAP_HOST)
+ 		return 0;
+ 
+-	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
+-	reg |= DWC3_DCTL_CSFTRST;
+-	dwc3_writel(dwc->regs, DWC3_DCTL, reg);
++	dwc3_writel(dwc->regs, DWC3_DCTL, DWC3_DCTL_CSFTRST);
+ 
+ 	/*
+ 	 * For DWC_usb31 controller 1.90a and later, the DCTL.CSFRST bit
+-- 
+2.25.0
 
