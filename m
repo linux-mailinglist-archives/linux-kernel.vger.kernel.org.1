@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3388F2944BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 23:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9842944C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 23:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409959AbgJTVyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 17:54:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:56464 "EHLO foss.arm.com"
+        id S2410022AbgJTVzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 17:55:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:56486 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390254AbgJTVyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 17:54:39 -0400
+        id S2392428AbgJTVzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 17:55:10 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C0F821FB;
-        Tue, 20 Oct 2020 14:54:38 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B03A21FB;
+        Tue, 20 Oct 2020 14:55:08 -0700 (PDT)
 Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C18703F66B;
-        Tue, 20 Oct 2020 14:54:36 -0700 (PDT)
-Subject: Re: [PATCH v2 09/14] perf arm-spe: Refactor counter packet handling
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A2CC43F66B;
+        Tue, 20 Oct 2020 14:55:06 -0700 (PDT)
+Subject: Re: [PATCH v2 10/14] perf arm-spe: Refactor event type handling
 To:     Leo Yan <leo.yan@linaro.org>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -31,7 +31,7 @@ To:     Leo Yan <leo.yan@linaro.org>,
         Dave Martin <Dave.Martin@arm.com>,
         linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
 References: <20200929133917.9224-1-leo.yan@linaro.org>
- <20200929133917.9224-10-leo.yan@linaro.org>
+ <20200929133917.9224-11-leo.yan@linaro.org>
 From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
 Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
  xsFNBFNPCKMBEAC+6GVcuP9ri8r+gg2fHZDedOmFRZPtcrMMF2Cx6KrTUT0YEISsqPoJTKld
@@ -77,12 +77,12 @@ Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
  fDO4SAgJMIl6H5awliCY2zQvLHysS/Wb8QuB09hmhLZ4AifdHyF1J5qeePEhgTA+BaUbiUZf
  i4aIXCH3Wv6K
 Organization: ARM Ltd.
-Message-ID: <6080472e-a117-e36d-ec4a-80f7ef93b3fb@arm.com>
-Date:   Tue, 20 Oct 2020 22:53:47 +0100
+Message-ID: <2605044c-8172-00cf-e924-ece5a0b70e2c@arm.com>
+Date:   Tue, 20 Oct 2020 22:54:16 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200929133917.9224-10-leo.yan@linaro.org>
+In-Reply-To: <20200929133917.9224-11-leo.yan@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -94,91 +94,210 @@ On 29/09/2020 14:39, Leo Yan wrote:
 
 Hi,
 
-> This patch defines macros for counter packet header, and uses macro to
-> replace hard code values for packet parsing.
+> Use macros instead of the enum values for event types, this is more
+> directive and without bit shifting when parse packet.
 > 
 > Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > ---
->  .../util/arm-spe-decoder/arm-spe-pkt-decoder.c  | 17 ++++++++++-------
->  .../util/arm-spe-decoder/arm-spe-pkt-decoder.h  |  9 +++++++++
->  2 files changed, 19 insertions(+), 7 deletions(-)
+>  .../util/arm-spe-decoder/arm-spe-decoder.c    | 16 +++++++-------
+>  .../util/arm-spe-decoder/arm-spe-decoder.h    | 17 --------------
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 22 +++++++++----------
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 16 ++++++++++++++
+>  4 files changed, 35 insertions(+), 36 deletions(-)
 > 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> index 9d3de163d47c..ac66e7f42a58 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+> @@ -168,31 +168,31 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+>  		case ARM_SPE_OP_TYPE:
+>  			break;
+>  		case ARM_SPE_EVENTS:
+> -			if (payload & BIT(EV_L1D_REFILL))
+> +			if (payload & SPE_EVT_PKT_L1D_REFILL)
+
+Not sure this (and the others below) are an improvement? I liked the
+enum below, and reading BIT() here tells me that it's a bitmask.
+
+>  				decoder->record.type |= ARM_SPE_L1D_MISS;
+>  
+> -			if (payload & BIT(EV_L1D_ACCESS))
+> +			if (payload & SPE_EVT_PKT_L1D_ACCESS)
+>  				decoder->record.type |= ARM_SPE_L1D_ACCESS;
+>  
+> -			if (payload & BIT(EV_TLB_WALK))
+> +			if (payload & SPE_EVT_PKT_TLB_WALK)
+>  				decoder->record.type |= ARM_SPE_TLB_MISS;
+>  
+> -			if (payload & BIT(EV_TLB_ACCESS))
+> +			if (payload & SPE_EVT_PKT_TLB_ACCESS)
+>  				decoder->record.type |= ARM_SPE_TLB_ACCESS;
+>  
+>  			if ((idx == 2 || idx == 4 || idx == 8) &&
+> -			    (payload & BIT(EV_LLC_MISS)))
+> +			    (payload & SPE_EVT_PKT_LLC_MISS))
+>  				decoder->record.type |= ARM_SPE_LLC_MISS;
+>  
+>  			if ((idx == 2 || idx == 4 || idx == 8) &&
+> -			    (payload & BIT(EV_LLC_ACCESS)))
+> +			    (payload & SPE_EVT_PKT_LLC_ACCESS))
+>  				decoder->record.type |= ARM_SPE_LLC_ACCESS;
+>  
+>  			if ((idx == 2 || idx == 4 || idx == 8) &&
+> -			    (payload & BIT(EV_REMOTE_ACCESS)))
+> +			    (payload & SPE_EVT_PKT_REMOTE_ACCESS))
+>  				decoder->record.type |= ARM_SPE_REMOTE_ACCESS;
+>  
+> -			if (payload & BIT(EV_MISPRED))
+> +			if (payload & SPE_EVT_PKT_MISPREDICTED)
+>  				decoder->record.type |= ARM_SPE_BRANCH_MISS;
+>  
+>  			break;
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+> index a5111a8d4360..24727b8ca7ff 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
+> @@ -13,23 +13,6 @@
+>  
+>  #include "arm-spe-pkt-decoder.h"
+>  
+> -enum arm_spe_events {
+> -	EV_EXCEPTION_GEN	= 0,
+> -	EV_RETIRED		= 1,
+> -	EV_L1D_ACCESS		= 2,
+> -	EV_L1D_REFILL		= 3,
+> -	EV_TLB_ACCESS		= 4,
+> -	EV_TLB_WALK		= 5,
+> -	EV_NOT_TAKEN		= 6,
+> -	EV_MISPRED		= 7,
+> -	EV_LLC_ACCESS		= 8,
+> -	EV_LLC_MISS		= 9,
+> -	EV_REMOTE_ACCESS	= 10,
+> -	EV_ALIGNMENT		= 11,
+> -	EV_PARTIAL_PREDICATE	= 17,
+> -	EV_EMPTY_PREDICATE	= 18,
+> -};
+
+So what about keeping this, but moving it into the other header file?
+coding-style.rst says: "Enums are preferred when defining several
+related constants."
+
+> -
+>  enum arm_spe_sample_type {
+>  	ARM_SPE_L1D_ACCESS	= 1 << 0,
+>  	ARM_SPE_L1D_MISS	= 1 << 1,
 > diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> index 00a2cd1af422..ed0f4c74dfc5 100644
+> index ed0f4c74dfc5..b8f343320abf 100644
 > --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
 > +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> @@ -150,10 +150,13 @@ static int arm_spe_get_counter(const unsigned char *buf, size_t len,
->  			       const unsigned char ext_hdr, struct arm_spe_pkt *packet)
->  {
->  	packet->type = ARM_SPE_COUNTER;
-> -	if (ext_hdr)
-> -		packet->index = ((buf[0] & 0x3) << 3) | (buf[1] & 0x7);
-> -	else
-> -		packet->index = buf[0] & 0x7;
-> +	if (ext_hdr) {
-> +		packet->index  = (buf[1] & SPE_CNT_PKT_HDR_INDEX_MASK);
-> +		packet->index |= ((buf[0] & SPE_CNT_PKT_HDR_EXT_INDEX_MASK)
-> +			<< SPE_CNT_PKT_HDR_EXT_INDEX_SHIFT);
-> +	} else {
-> +		packet->index = buf[0] & SPE_CNT_PKT_HDR_INDEX_MASK;
-
-That looks suspiciously similar to the extended header in the address
-packet. Can you use the same name for that?
-And, similar to the address packet, what about:
-	packet->index |= SPE_PKT_EXT_HEADER_INDEX(buf[0]);
-
-(merging the mask and the shift in the macro definition)
-
-> +	}
->  
->  	return arm_spe_get_payload(buf, len, ext_hdr, packet);
->  }
-> @@ -431,17 +434,17 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+> @@ -284,58 +284,58 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+>  		if (ret < 0)
 >  			return ret;
 >  
->  		switch (idx) {
-> -		case 0:
-> +		case SPE_CNT_PKT_HDR_INDEX_TOTAL_LAT:
->  			ret = arm_spe_pkt_snprintf(&buf, &blen, "TOT");
->  			if (ret < 0)
->  				return ret;
->  			break;
-> -		case 1:
-> +		case SPE_CNT_PKT_HDR_INDEX_ISSUE_LAT:
->  			ret = arm_spe_pkt_snprintf(&buf, &blen, "ISSUE");
->  			if (ret < 0)
->  				return ret;
->  			break;
-> -		case 2:
-> +		case SPE_CNT_PKT_HDR_INDEX_TRANS_LAT:
->  			ret = arm_spe_pkt_snprintf(&buf, &blen, "XLAT");
->  			if (ret < 0)
->  				return ret;
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> index 62db4ff91832..18667a63f5ba 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> @@ -89,6 +89,15 @@ struct arm_spe_pkt {
->  /* Context packet header */
->  #define SPE_CTX_PKT_HDR_INDEX_MASK		GENMASK_ULL(1, 0)
->  
-> +/* Counter packet header */
-> +#define SPE_CNT_PKT_HDR_INDEX_MASK		GENMASK_ULL(2, 0)
-> +#define SPE_CNT_PKT_HDR_INDEX_TOTAL_LAT		(0x0)
-> +#define SPE_CNT_PKT_HDR_INDEX_ISSUE_LAT		(0x1)
-> +#define SPE_CNT_PKT_HDR_INDEX_TRANS_LAT		(0x2)
+> -		if (payload & 0x1) {
+> +		if (payload & SPE_EVT_PKT_GEN_EXCEPTION) {
 
-I think the Linux kernel coding style does not mention parentheses just
-around numbers, so just 0x2 would suffice, for instance.
-See section 12) in Documentation/process/coding-style.rst
+Having the bitmask here directly is indeed not very nice and error
+prone. But I would rather see the above solution:
+		if (payload & BIT(EV_EXCEPTION_GEN)) {
+
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " EXCEPTION-GEN");
+>  			if (ret < 0)
+>  				return ret;
+>  		}
+> -		if (payload & 0x2) {
+> +		if (payload & SPE_EVT_PKT_ARCH_RETIRED) {
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " RETIRED");
+>  			if (ret < 0)
+>  				return ret;
+>  		}
+> -		if (payload & 0x4) {
+> +		if (payload & SPE_EVT_PKT_L1D_ACCESS) {
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " L1D-ACCESS");
+>  			if (ret < 0)
+>  				return ret;
+>  		}
+> -		if (payload & 0x8) {
+> +		if (payload & SPE_EVT_PKT_L1D_REFILL) {
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " L1D-REFILL");
+>  			if (ret < 0)
+>  				return ret;
+>  		}
+> -		if (payload & 0x10) {
+> +		if (payload & SPE_EVT_PKT_TLB_ACCESS) {
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " TLB-ACCESS");
+>  			if (ret < 0)
+>  				return ret;
+>  		}
+> -		if (payload & 0x20) {
+> +		if (payload & SPE_EVT_PKT_TLB_WALK) {
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " TLB-REFILL");
+>  			if (ret < 0)
+>  				return ret;
+>  		}
+> -		if (payload & 0x40) {
+> +		if (payload & SPE_EVT_PKT_NOT_TAKEN) {
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " NOT-TAKEN");
+>  			if (ret < 0)
+>  				return ret;
+>  		}
+> -		if (payload & 0x80) {
+> +		if (payload & SPE_EVT_PKT_MISPREDICTED) {
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " MISPRED");
+>  			if (ret < 0)
+>  				return ret;
+>  		}
+>  		if (idx > 1) {
+
+Do you know what the purpose of this comparison is? Surely payload would
+not contain more bits than would fit in "idx" bytes? So is this some
+attempt of an optimisation? If so, I doubt it's really useful, the
+compiler might find a smarter solution to the problem. Just continuing
+with the bit mask comparison would make it look nicer, I think.
 
 Cheers,
 Andre
 
-
-> +
-> +#define SPE_CNT_PKT_HDR_EXT_INDEX_MASK		GENMASK_ULL(1, 0)
-> +#define SPE_CNT_PKT_HDR_EXT_INDEX_SHIFT		(3)
+> -			if (payload & 0x100) {
+> +			if (payload & SPE_EVT_PKT_LLC_ACCESS) {
+>  				ret = arm_spe_pkt_snprintf(&buf, &blen, " LLC-ACCESS");
+>  				if (ret < 0)
+>  					return ret;
+>  			}
+> -			if (payload & 0x200) {
+> +			if (payload & SPE_EVT_PKT_LLC_MISS) {
+>  				ret = arm_spe_pkt_snprintf(&buf, &blen, " LLC-REFILL");
+>  				if (ret < 0)
+>  					return ret;
+>  			}
+> -			if (payload & 0x400) {
+> +			if (payload & SPE_EVT_PKT_REMOTE_ACCESS) {
+>  				ret = arm_spe_pkt_snprintf(&buf, &blen, " REMOTE-ACCESS");
+>  				if (ret < 0)
+>  					return ret;
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> index 18667a63f5ba..e9a88cf685bb 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> @@ -98,6 +98,22 @@ struct arm_spe_pkt {
+>  #define SPE_CNT_PKT_HDR_EXT_INDEX_MASK		GENMASK_ULL(1, 0)
+>  #define SPE_CNT_PKT_HDR_EXT_INDEX_SHIFT		(3)
+>  
+> +/* Event packet payload */
+> +#define SPE_EVT_PKT_SVE_EMPTY_PREDICATE		BIT(18)
+> +#define SPE_EVT_PKT_SVE_PARTIAL_PREDICATE	BIT(17)
+> +#define SPE_EVT_PKT_ALIGNMENT			BIT(11)
+> +#define SPE_EVT_PKT_REMOTE_ACCESS		BIT(10)
+> +#define SPE_EVT_PKT_LLC_MISS			BIT(9)
+> +#define SPE_EVT_PKT_LLC_ACCESS			BIT(8)
+> +#define SPE_EVT_PKT_MISPREDICTED		BIT(7)
+> +#define SPE_EVT_PKT_NOT_TAKEN			BIT(6)
+> +#define SPE_EVT_PKT_TLB_WALK			BIT(5)
+> +#define SPE_EVT_PKT_TLB_ACCESS			BIT(4)
+> +#define SPE_EVT_PKT_L1D_REFILL			BIT(3)
+> +#define SPE_EVT_PKT_L1D_ACCESS			BIT(2)
+> +#define SPE_EVT_PKT_ARCH_RETIRED		BIT(1)
+> +#define SPE_EVT_PKT_GEN_EXCEPTION		BIT(0)
 > +
 >  const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
 >  
