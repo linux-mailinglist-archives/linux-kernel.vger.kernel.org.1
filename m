@@ -2,117 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD41C29451E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4300C29451A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439043AbgJTW0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 18:26:22 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:54267 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392461AbgJTW0W (ORCPT
+        id S2392454AbgJTWYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 18:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390360AbgJTWYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 18:26:22 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2D30C580304;
-        Tue, 20 Oct 2020 18:26:21 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Tue, 20 Oct 2020 18:26:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=tHKl5ShHGM26aw0ab4WfiwYyOOZYZHB
-        qMfpsajmzAwM=; b=QLbpD3tPmAXiqlMlcnfoj1G+xvLNn4/Nil+G0dtaCoqPso7
-        QEkIrTRQuRs8Km6UVvFRpYUNI03y9qluqo6feuVeoPHjTTeJTIgMDGNtMA+fiNvw
-        RtVrsUjJha8Y6NR2hLP1KmSDVXxgTJXNsq6J3G0PrgCoporAxbxdpLAG3weXfil0
-        shG7VOfkOIktACzcB6KYGxbUy0ZoIYR6kBRje2xaUUD4Vwfe039cu/h+N3QXYKjW
-        zUCVM7d6VTgaawPkFLCUw0MqdVjAz3U+IyBGZQlXPKcx33WTFemMgG9ccyQMgXyG
-        rJOiU82qSLpb4c2sqkTqsiOcL9Jl4G9st8mE1ug==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=tHKl5S
-        hHGM26aw0ab4WfiwYyOOZYZHBqMfpsajmzAwM=; b=Pcp4fBRN5WzP53LIltbB6A
-        RCrwHSFFMcxtRgZyn22cxfBD91KT8CTJvw3ZtYltd5h/lAyoAUSZPJUrOEdDIMJk
-        KKwDkTnH6JV/hTrCWUUDO0PjgXyqcVO89PZXZNTX0hlAajaW60vx3K/CqDEKNjvu
-        NVIi9VUWnH4bLux9YCeflHx4Skvcn+xJP8NPXrC71cTwAi3DWZTVzMVPlF2zooOj
-        60Qvc9tSMv/L2Kmj5jllocNWH4Iwf3YIuKJyI1G52K46oW8Klf128ZK5KVlSA/UK
-        dLibWFO2uyW0LJJZGVN/SP+DjLmfLCXFoJgPhXBntr3fBJFtEgXRsGx9APOtPtjg
-        ==
-X-ME-Sender: <xms:CmSPX_gUf-L1UPw6y0av5ordukPIdNck0PfKlIYSwmESyfRk08GIew>
-    <xme:CmSPX8DZiEmgGvf7Oc820uirfWnojZHJyRFQOhuEYYQF5BukLg4U4E98PRdRaBSc3
-    N2FsoFe_8wR4EONZg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeeggddtlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:CmSPX_GOR3cRj2vqHIcdQJUZ8TvuLGcNgOdnM5p9MrSwci86sD5Jvw>
-    <xmx:CmSPX8TO8xxC0Rq-MyJObu17quBCzefrUmDTX6Kqgt6Nxf4yV_lZ5w>
-    <xmx:CmSPX8zlhjASxVZPkCHcmni-ywKMYJTRCAO48365DZLpAJoJE2rLeg>
-    <xmx:DWSPX7kVLDW7DdFt4yw0_iOMwebenGfQEr8O1GLoOqclRx2XDpWerw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 36A4BE00A8; Tue, 20 Oct 2020 18:26:17 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-502-gfef6c88-fm-20201019.001-gfef6c888
-Mime-Version: 1.0
-Message-Id: <529612e1-c6c4-4d33-91df-2a30bf2e1675@www.fastmail.com>
-In-Reply-To: <32bfb619bbb3cd6f52f9e5da205673702fed228f.camel@kernel.crashing.org>
-References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
- <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
- <20201019120040.3152ea0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <PS1PR0601MB1849166CBF6D1678E6E1210C9C1F0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
- <CAK8P3a2pEfbLDWTppVHmGxXduOWPCwBw-8bMY9h3EbEecsVfTA@mail.gmail.com>
- <32bfb619bbb3cd6f52f9e5da205673702fed228f.camel@kernel.crashing.org>
-Date:   Wed, 21 Oct 2020 08:55:58 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
-        "Arnd Bergmann" <arnd@arndb.de>,
-        "Dylan Hung" <dylan_hung@aspeedtech.com>
-Cc:     BMC-SW <BMC-SW@aspeedtech.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "Po-Yu Chuang" <ratbert@faraday-tech.com>,
-        netdev <netdev@vger.kernel.org>,
-        "OpenBMC Maillist" <openbmc@lists.ozlabs.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "David Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] net: ftgmac100: Fix missing TX-poll issue
-Content-Type: text/plain
+        Tue, 20 Oct 2020 18:24:32 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DA8C0613CE;
+        Tue, 20 Oct 2020 15:24:30 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id kk5so90256pjb.1;
+        Tue, 20 Oct 2020 15:24:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OmjtnWyk38ZBX1D8MavpXL10VCl/FwBII1zAmAlKY9s=;
+        b=Awop/oxHP1NDOcP0KnWp5FWHkrltx2DjbBqr7tobJcMxu4Ei7uqjExLbcyvm7SYfmD
+         aTC06k45zMNEUfhCm2PQwnTAsv1vwHUXXzO5sYSFgyj00L1rnJB1dv9MQUUcMmlc94wB
+         23UuqEnat7si/49sUfgx87zNuyahxeqf0gWGKX27jUpi0eDf2wj+eJWxv1W6O7qeji2N
+         iy782NcFvHIrIR3HTQEXIr0RDMcFk+xzJt1oM599ZKmSniBgczX31zjhvC9itH9+imp4
+         4Dz7so2eEpAvFfXxXVPWbn8aUJPALFL3sG8JebTcK4cIXCgdVCfnXYkUMG7elJqBd2pr
+         axug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OmjtnWyk38ZBX1D8MavpXL10VCl/FwBII1zAmAlKY9s=;
+        b=rM3ICxdaCUE8gILZw3EVpxgObrPJ0S7Ko1TuQOjM7E1FmRydq7WJiAJnUiNsSJ6H3G
+         FxnIbyZuYwx3ZnRGRjYTERqXG6Tx1QkhJH4GvImMmUMcW6L8EYlEnJU831Y5MjwU11LX
+         4CIhULfETG8gZ9OQ7rePSO9l3tf7a4RKbavIfw8KhfknTfzefLJZaaMHVdftKlEi/Oy/
+         xap5YfYZbF8GCRYODK8pDskBn+KtTTm0aaw4gy0LjXMB3Dm7Qflh/iV26FsviaUOtZ6I
+         lpXIW/gLIKBCZV5XdpBRUu4sXj718TKxtCa9VLV+pywAoGsHua9zTToDHalZpIeVgEe3
+         MZyQ==
+X-Gm-Message-State: AOAM531M9mJBWS2CWRb2zxzDcQgUfoiodO2FJRZo6Wq+2BM5oAIWcTIf
+        Dh5SXgbmXHg5BFpWJE8K3u1iSk2VqJB6iw==
+X-Google-Smtp-Source: ABdhPJxIXbNsMsSh0dWfqwmYT1q1f863Oej76OZAU7iVStwx6Wktb0HzU61GvcvkkulTBDT3epizqA==
+X-Received: by 2002:a17:90a:6b0a:: with SMTP id v10mr237477pjj.141.1603232669947;
+        Tue, 20 Oct 2020 15:24:29 -0700 (PDT)
+Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
+        by smtp.gmail.com with ESMTPSA id c12sm147612pgd.57.2020.10.20.15.24.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 15:24:28 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm/atomic: Drop per-CRTC locks in reverse order
+Date:   Tue, 20 Oct 2020 15:26:00 -0700
+Message-Id: <20201020222600.264876-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rob Clark <robdclark@chromium.org>
 
+lockdep dislikes seeing locks unwound in a non-nested fashion.
 
-On Wed, 21 Oct 2020, at 08:40, Benjamin Herrenschmidt wrote:
-> On Tue, 2020-10-20 at 21:49 +0200, Arnd Bergmann wrote:
-> > On Tue, Oct 20, 2020 at 11:37 AM Dylan Hung <dylan_hung@aspeedtech.com> wrote:
-> > > > +1 @first is system memory from dma_alloc_coherent(), right?
-> > > > 
-> > > > You shouldn't have to do this. Is coherent DMA memory broken on your
-> > > > platform?
-> > > 
-> > > It is about the arbitration on the DRAM controller.  There are two queues in the dram controller, one is for the CPU access and the other is for the HW engines.
-> > > When CPU issues a store command, the dram controller just acknowledges cpu's request and pushes the request into the queue.  Then CPU triggers the HW MAC engine, the HW engine starts to fetch the DMA memory.
-> > > But since the cpu's request may still stay in the queue, the HW engine may fetch the wrong data.
-> 
-> Actually, I take back what I said earlier, the above seems to imply
-> this is more generic.
-> 
-> Dylan, please confirm, does this affect *all* DMA capable devices ? If
-> yes, then it's a really really bad design bug in your chips
-> unfortunately and the proper fix is indeed to make dma_wmb() do a dummy
-> read of some sort (what address though ? would any dummy non-cachable
-> page do ?) to force the data out as *all* drivers will potentially be
-> affected.
-> 
-> I was under the impression that it was a specific timing issue in the
-> vhub and ethernet parts, but if it's more generic then it needs to be
-> fixed globally.
-> 
+Fixes: 37c2016e3608 ("drm/msm: Fix race condition in msm driver with async layer updates")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_atomic.c |  2 +-
+ drivers/gpu/drm/msm/msm_kms.h    |  4 ++++
+ include/drm/drm_crtc.h           | 10 ++++++++++
+ 3 files changed, 15 insertions(+), 1 deletion(-)
 
-We see a similar issue in the XDMA engine where it can transfer stale data to 
-the host. I think the driver ended up using memcpy_toio() to work around that 
-despite using a DMA reserved memory region.
+diff --git a/drivers/gpu/drm/msm/msm_atomic.c b/drivers/gpu/drm/msm/msm_atomic.c
+index b03d6ab6b19b..6a326761dc4a 100644
+--- a/drivers/gpu/drm/msm/msm_atomic.c
++++ b/drivers/gpu/drm/msm/msm_atomic.c
+@@ -67,7 +67,7 @@ static void unlock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
+ {
+ 	struct drm_crtc *crtc;
+ 
+-	for_each_crtc_mask(kms->dev, crtc, crtc_mask)
++	for_each_crtc_mask_reverse(kms->dev, crtc, crtc_mask)
+ 		mutex_unlock(&kms->commit_lock[drm_crtc_index(crtc)]);
+ }
+ 
+diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
+index 8d3e626c9fee..d8151a89e163 100644
+--- a/drivers/gpu/drm/msm/msm_kms.h
++++ b/drivers/gpu/drm/msm/msm_kms.h
+@@ -211,4 +211,8 @@ int dpu_mdss_init(struct drm_device *dev);
+ 	drm_for_each_crtc(crtc, dev) \
+ 		for_each_if (drm_crtc_mask(crtc) & (crtc_mask))
+ 
++#define for_each_crtc_mask_reverse(dev, crtc, crtc_mask) \
++	drm_for_each_crtc_reverse(crtc, dev) \
++		for_each_if (drm_crtc_mask(crtc) & (crtc_mask))
++
+ #endif /* __MSM_KMS_H__ */
+diff --git a/include/drm/drm_crtc.h b/include/drm/drm_crtc.h
+index dfdb04619b0d..25f5958f2882 100644
+--- a/include/drm/drm_crtc.h
++++ b/include/drm/drm_crtc.h
+@@ -1274,4 +1274,14 @@ static inline struct drm_crtc *drm_crtc_find(struct drm_device *dev,
+ #define drm_for_each_crtc(crtc, dev) \
+ 	list_for_each_entry(crtc, &(dev)->mode_config.crtc_list, head)
+ 
++/**
++ * drm_for_each_crtc_reverse - iterate over all CRTCs in reverse order
++ * @crtc: a &struct drm_crtc as the loop cursor
++ * @dev: the &struct drm_device
++ *
++ * Iterate over all CRTCs of @dev.
++ */
++#define drm_for_each_crtc_reverse(crtc, dev) \
++	list_for_each_entry_reverse(crtc, &(dev)->mode_config.crtc_list, head)
++
+ #endif /* __DRM_CRTC_H__ */
+-- 
+2.26.2
+
