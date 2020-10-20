@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9604E294073
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A475294075
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394586AbgJTQ0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 12:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732863AbgJTQ0J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 12:26:09 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B934C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:26:09 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id p15so4374932ioh.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 09:26:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GA3j4kL10BVeDDcoWRy/1ddShG8Wsfa1YVT0x2H+ZOs=;
-        b=JAzRiB+Q67Qeq63BJsuNSLCLiTTP3Cuh2tGhJTCSK0jYz1kG0qC/Dme68yg6slYozM
-         HHqNEp3v+7xeIX3nF8g0fZkrVku+ySr5VoHHA1JD8zro0lO6ROEnxE1iuK/wHUAhsp93
-         Wy+LR8sTNxjvHnbo+Glnd1m4FxVF+fsy8l12P2sE2vyYZ5ZFES2MDT3wdh3s9+lBMlJx
-         XM9/UsEdxKHt6iHW1EcUBi3v+DjoVF3Fh2zpbmObf/hjWPNNVDgAjJnpZm1dNqIK0cx7
-         SIRx4Dbm4vy10R6O3XXknUwwooRDohyUqaj7NxZuQ9FwIYzlOH79vPqVmOiZgLkNPO79
-         vPag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GA3j4kL10BVeDDcoWRy/1ddShG8Wsfa1YVT0x2H+ZOs=;
-        b=cFOPnSHuY1ZYpekcVFjVPezqFDRpC5+V1oVD6c+y2EMkUziTQSif/XE6qr6zkyxQlA
-         Z2Gyg6k5yL3zh66lTkpczmotM6XudCPayF8oDTeh2ljFHRS7Q/ipUpSnBoI+eywno0RE
-         ocj39VUD3cDD4282z8nX4K7CrRIy92aODkCSBIj7zx8sSDQCfFty1tJ68e1UcWWfhGQk
-         Z8FXQ6dQn23+h9f46rZtgBPTg1c1LU6jCZwYs3gVeRYB31+9t7PiFT7iKGWluz7Y8AXd
-         RgXhuykYtTPrw0WE7Ixdcam6swhv9AtjDXMEw8bnLmtghemjncc2Q+ShWryqA86vVf+i
-         2SfQ==
-X-Gm-Message-State: AOAM531mUtGde/u3J14NApSquX2v5OL6+cCzTcm3p1GTEoK3mbJaXuns
-        0SBFOO1EmfZWpwMbSQ8mIelKdHWbrEI/eQ==
-X-Google-Smtp-Source: ABdhPJxDRUmDtKje3/MxFEcDY1rDJAW0z8CPJEXUYDVHt2ApMbzOFndmAckvl4Bece0h3x7+1W/JSQ==
-X-Received: by 2002:a02:cd9a:: with SMTP id l26mr2808011jap.116.1603211168086;
-        Tue, 20 Oct 2020 09:26:08 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id n138sm1936558iod.40.2020.10.20.09.26.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 09:26:07 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: Re: dmar compile failure in -git
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     joro@8bytes.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <d090c378-bfb4-34bc-7091-64e2b83925de@kernel.dk>
- <D8207C14-26C9-420D-9AA4-1E6D3F2F2191@infradead.org>
-Message-ID: <5646206e-ca52-4b1f-6182-4cb760ba712a@kernel.dk>
-Date:   Tue, 20 Oct 2020 10:26:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2394595AbgJTQ1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 12:27:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55126 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394585AbgJTQ1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 12:27:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603211236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yzYcROWuVOVd8ipDDT9hgv+k46oTwcfYxWb+oVaSXs4=;
+        b=DV8KuQTmR4sinkZeP4ARKfFF8Bl8hg/X3enbY0qekdkeaQ11/ycvVkPD4pXcHOdhRS3u+A
+        oAfX1zi0UJxQLjnRh52dyEYDQwa+d9jeVM80QfpUfNmiGfRp/8xZApxEVQMtjz7vuIe8a4
+        /D1zbogUDlWk8Vjhce4CutBBjoNtRaM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5B27EAC82;
+        Tue, 20 Oct 2020 16:27:16 +0000 (UTC)
+Date:   Tue, 20 Oct 2020 18:27:14 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from
+ charging root
+Message-ID: <20201020162714.GC46039@blackbook>
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201016094702.GA95052@blackbook>
+ <20201016145308.GA312010@cmpxchg.org>
+ <20201016171502.GA102311@blackbook>
+ <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <D8207C14-26C9-420D-9AA4-1E6D3F2F2191@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="JgQwtEuHJzHdouWu"
+Content-Disposition: inline
+In-Reply-To: <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 1:03 AM David Woodhouse <dwmw2@infradead.org> wrote:
-> On 16 October 2020 22:23:46 BST, Jens Axboe <axboe@kernel.dk> wrote:
-> >Hi,
-> >
-> >Ran into this one yesterday:
-> >
-> >drivers/iommu/intel/dmar.c: In function ‘free_iommu’:
-> >drivers/iommu/intel/dmar.c:1139:41: error: ‘struct iommu_device’ has no
-> >member named ‘ops’
-> > 1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
-> >      |                                         ^
-> >make[3]: *** [scripts/Makefile.build:283: drivers/iommu/intel/dmar.o]
-> >Error 1
-> >make[3]: *** Waiting for unfinished jobs....
-> >make[2]: *** [scripts/Makefile.build:500: drivers/iommu/intel] Error 2
-> >make[1]: *** [scripts/Makefile.build:500: drivers/iommu] Error 2
-> >make: *** [Makefile:1777: drivers] Error 2
-> >
-> >which is due to the config I use:
->
-> Thanks. Should be fixed by
-> https://www.mail-archive.com/iommu@lists.linux-foundation.org/msg45697.html
 
-Can we please get this known build breakage fix upstream? It keeps
-breaking my test box compiles, which is pretty annoying.
+--JgQwtEuHJzHdouWu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Jens Axboe
+Hi.
 
+On Mon, Oct 19, 2020 at 03:28:45PM -0700, Roman Gushchin <guro@fb.com> wrote:
+> Currently the root memory cgroup is never charged directly, but
+> if an ancestor cgroup is charged, the charge is propagated up to the
+s/ancestor/descendant/
+
+> The root memory cgroup doesn't show the charge to a user, neither it
+> does allow to set any limits/protections.
+An appealing claim, I'd like this to be true...
+
+> Please, note, that cgroup v1 provides root level memory.usage_in_bytes.
+> However, it's not based on page counters (refer to mem_cgroup_usage()).
+...and it almost is. But there are still exposed kmem and tcpmem counters.
+
+
+> To avoid multiple identical checks over the page counters
+> code, for_each_nonroot_ancestor() macro is introduced.
+If the assumptions behind this patch's idea were true, I think the
+implementation would be simpler by merely (not)connecting the root
+counters and keep the traversal as is.
+
+> direct ascendants of the corresponding root memory cgroup's page
+s/asc/desc/ ;-)
+
+Michal
+
+--JgQwtEuHJzHdouWu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl+PD90ACgkQia1+riC5
+qSjDuA//Wm7T97tLWHY64gjWUvx1R3ROAlPEceShGwKYdOE93BUbmeIK33gh+JlF
+XS9K7//xLTozIipTH4yA0+Yo+8WaxvdE+MCBSKjyzTGCs/YlZRcVUZQTLQlXztVM
++jOOnQ49nznWYrbsPBh16/FzHm/MYAiZk4ZZXlZtbGzKemH+bwkPfy/E5XkxlFm7
+EFqagyTdT53oaec7llA85f0O7RHZzHbfiWQx3LVBi21cEtf/Drui1gNjlRP5Q2S0
+qz2DgfKBhUgOhtQa2pFznJtQTtjNlPYaP7XLL2HiXDjHgN+S+q/Z/yZuYYRjZdyL
+xy017aWL24RCCtHqOmS58/i1yPGAraxVl1SJnL+0/6Mib1/7dT1XvnNqW7HzrZxW
+WKZihtdr2Zgaj9i+gJmc3QUdHiGu4TFYYM2VYwSdEVGoD2oqWGn19XG+oo7Zwold
+mnJc6Gc6/ASNnVuNsukqoTbkT66pOLL7JFqK8ehsVH+NEfIDmElAykEvBbhEIiIu
+mqeV5H0GztrQ1FQsq99Ov43bbO/acdgcFi3SX0/XCWQK4G5rmtWYFj40fsuHfYVX
+JUgjPa5wGHXd/pmKrcrodA0FRhBJSAsEVDT9AzzVEnU/TnDdMmYz123Fgh3fyLr1
+BM2eBYT/iM4b9F5f+CHQNNQfKaHdtLdvtUwt/H2JLq/eUtySExk=
+=xnZY
+-----END PGP SIGNATURE-----
+
+--JgQwtEuHJzHdouWu--
