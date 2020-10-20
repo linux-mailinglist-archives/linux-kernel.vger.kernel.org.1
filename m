@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E212935FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AADF293602
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 09:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405341AbgJTHmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 03:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727226AbgJTHmp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 03:42:45 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE5DC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:42:44 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id j7so579705pgk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 00:42:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KP7TO4IqJs2R6VQkkfsXXAMpoJtd3P3We64dmLRZJCY=;
-        b=gYhhlBYuG5dxeeCxQ3KKWcxYK2CKCEO+HlA60wyby2cM7UwcBEcE44b7yo6tKoq1Kw
-         Z2vepaTJb+1YnmCsegFajb8NsSElZbO9K0DLJeuidKx96r7fZm3Ftz9xo5jWSZFiuqp+
-         zQiFjRAfk0xa7R/yiM26thD0wbp+lOy2qZAxyZaI9HDK4u/kunlcj64rXkuJmcCzyfq/
-         4a/aobS9oEPlY+TG6+v11hAu33RWwPKEJZ6jAau00pvVDkVsphuLbcqDz4SCdtpFmO2E
-         5UieukcmFpcwZ+JzLgpUD8N1JZzQB5eMLgtYCuXSmFT2llHxsA+2fTl7HPR6+Bn8Ee0F
-         fiag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KP7TO4IqJs2R6VQkkfsXXAMpoJtd3P3We64dmLRZJCY=;
-        b=XBbQ8TTMVfH+Hj1NwB1PA8ytCP9iIy/PLMvvoWgLvmdGZswSso+Nhph5xiiFctnvQp
-         3qrdS6QgYiquRmvfXCQwuGF73PSwhrF28FbpebZCNmQtCiaQ2bjJqCI7JyiRe2sP4o+Y
-         ISeRA/0Ib9JTg566bDY/1NsbDjHQMenzGN2C4dbhsBKD/TEWLl+oWr1847r0LKVVU7Tp
-         DbFgu7pTR55A/DeD8fiLsxtQfGmtKpWYBeQZOOAdccRJWuxd70th0GjS33R0GXNhkRM6
-         gEfPhaYuxD0JsRco7MYm/skBR4OPCWsMN+kDgknSXgUVxb8fwaHMHeWmepWvdsGVfGCI
-         7Ozw==
-X-Gm-Message-State: AOAM5329hyVdVgGbIsNQYFSa1Q4g7GszbtjS0S5H2P3hgnWe41o4ew4n
-        nm3HJJbthVLm4urlmnWmePXLeg==
-X-Google-Smtp-Source: ABdhPJylUfKQEed6xGiGgP22ggEP0jO91vz907NqWzyJo1lCZax5hOvdSlNlX6AUWBeYqJE3a7niEA==
-X-Received: by 2002:aa7:96f8:0:b029:152:94c0:7e5 with SMTP id i24-20020aa796f80000b029015294c007e5mr1619215pfq.76.1603179764068;
-        Tue, 20 Oct 2020 00:42:44 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id z26sm1407060pfq.131.2020.10.20.00.42.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 20 Oct 2020 00:42:43 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 13:12:40 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Defang Bo <bodefang@126.com>
-Cc:     rjw@rjwysocki.net, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: ti-cpufreq: fix memory leak in
- ti_cpufreq_probe()
-Message-ID: <20201020074240.p2d3fhirer4sflom@vireshk-i7>
-References: <1603113151-5219-1-git-send-email-bodefang@126.com>
+        id S2405417AbgJTHon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 03:44:43 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:4714 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405401AbgJTHom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 03:44:42 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CFlyG5qpvz9tydG;
+        Tue, 20 Oct 2020 09:44:38 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 3IHYRQHHVAoQ; Tue, 20 Oct 2020 09:44:38 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CFlyG4bXJz9tydK;
+        Tue, 20 Oct 2020 09:44:38 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9F4BB8B7CB;
+        Tue, 20 Oct 2020 09:44:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id WzI1CAHp3OTQ; Tue, 20 Oct 2020 09:44:39 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B868F8B767;
+        Tue, 20 Oct 2020 09:44:38 +0200 (CEST)
+Subject: Re: [PATCH 3/3] powerpc: Fix pre-update addressing in inline assembly
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <5ffcb064f695d5285bf1faab91bffa3f9245fc26.1603109522.git.christophe.leroy@csgroup.eu>
+ <fbcdb173cc42da62f00285dfef8c2f7d4960b5c7.1603109522.git.christophe.leroy@csgroup.eu>
+ <20201019202441.GU2672@gate.crashing.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ff158583-4e25-a5e6-5131-359423037e4f@csgroup.eu>
+Date:   Tue, 20 Oct 2020 09:44:33 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603113151-5219-1-git-send-email-bodefang@126.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20201019202441.GU2672@gate.crashing.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-10-20, 21:12, Defang Bo wrote:
-> Similar to commit<05829d9431df>("cpufreq: ti-cpufreq: kfree opp_data when failure"), opp_data needs to be freed when failure, including fail_put_node.
 
-This is allocated using devm_kzalloc() and so we don't need to free it
-explicitly.
 
-> Signed-off-by: Defang Bo <bodefang@126.com>
-> ---
->  drivers/cpufreq/ti-cpufreq.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+Le 19/10/2020 à 22:24, Segher Boessenkool a écrit :
+> On Mon, Oct 19, 2020 at 12:12:48PM +0000, Christophe Leroy wrote:
+>> In several places, inline assembly uses the "%Un" modifier
+>> to enable the use of instruction with pre-update addressing,
 > 
-> diff --git a/drivers/cpufreq/ti-cpufreq.c b/drivers/cpufreq/ti-cpufreq.c
-> index ab0de27..f23be8f 100644
-> --- a/drivers/cpufreq/ti-cpufreq.c
-> +++ b/drivers/cpufreq/ti-cpufreq.c
-> @@ -342,7 +342,8 @@ static int ti_cpufreq_probe(struct platform_device *pdev)
->  	opp_data->cpu_dev = get_cpu_device(0);
->  	if (!opp_data->cpu_dev) {
->  		pr_err("%s: Failed to get device for CPU0\n", __func__);
-> -		return -ENODEV;
-> +		ret = ENODEV;
-> +		goto free_opp_data;
->  	}
->  
->  	opp_data->opp_node = dev_pm_opp_of_get_opp_desc_node(opp_data->cpu_dev);
-> @@ -404,7 +405,8 @@ static int ti_cpufreq_probe(struct platform_device *pdev)
->  
->  fail_put_node:
->  	of_node_put(opp_data->opp_node);
-> -
-> +free_opp_data:
-> +	kfree(opp_data)
+> Calling this "pre-update" is misleading: the register is not updated
+> before the address is generated (or the memory access done!), and the
+> addressing is exactly the same as the "non-u" insn would use.  It is
+> called an "update form" instruction, because (at the same time as doing
+> the memory access, logically anyway) it writes back the address used to
+> the base register.
+> 
+>> but the associated "<>" constraint is missing.
+> 
+> But that is just fine.  Pointless, sure, but not a bug.
 
-Did you even try to compile this code ?
+Most of those are from prehistoric code. So at some point in time it was effective. Then one day GCC 
+changed it's way and they became pointless. So, not a software bug, but still a regression at some 
+point.
 
->  	return ret;
->  }
->  
-> -- 
-> 1.9.1
+> 
+>> Use UPD_CONSTR macro everywhere %Un modifier is used.
+> 
+> Eww.  My poor stomach.
 
--- 
-viresh
+There are not that many :)
+
+> 
+> Have you verified that update form is *correct* in all these, and that
+> we even *want* this there?
+
+I can't see anything that would militate against it, do you ?
+
+I guess if the elders have put %Us there, it was wanted.
+
+Christophe
