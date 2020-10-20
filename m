@@ -2,187 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A0B294267
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1E429426E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 20:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437623AbgJTSnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 14:43:10 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:48495 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437612AbgJTSnF (ORCPT
+        id S2437709AbgJTSrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 14:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437595AbgJTSry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 14:43:05 -0400
-Received: from [192.168.100.1] ([82.252.146.14]) by mrelayeu.kundenserver.de
- (mreue011 [213.165.67.103]) with ESMTPSA (Nemesis) id
- 1MhULz-1jzTKE2NYB-00eZ1L; Tue, 20 Oct 2020 20:42:57 +0200
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Joshua Thompson <funaho@jurai.org>,
-        linux-serial@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <20201020162303.1730562-1-laurent@vivier.eu>
- <20201020162844.GA865546@kroah.com>
- <468bbbef-4745-3b16-b6f4-30b46ebcdc33@vivier.eu>
- <20201020173745.GA882703@kroah.com>
- <387fd2aa-b181-c41f-0581-0a7e79a44e41@vivier.eu>
- <20201020183246.GA912431@kroah.com>
-From:   Laurent Vivier <laurent@vivier.eu>
-Autocrypt: addr=laurent@vivier.eu; prefer-encrypt=mutual; keydata=
- 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
-Subject: Re: [PATCH] serial: pmac_zilog: don't init if zilog is not available
-Message-ID: <b52e7fde-8874-3c53-ca13-7709656b69fb@vivier.eu>
-Date:   Tue, 20 Oct 2020 20:42:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20201020183246.GA912431@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:LVCUWwI+zZFntH1rA8fpDbRR/bSvaB+7jWvNS3VeIVPYSoK+F6m
- JuuCEfwpoYL/yZQxVJB2T2pEddNPCzJV0xjLW1xjMCUdkTG3OZyFcBmJN7PO+f4/FowZfOq
- ydyovoc921qx4v7T2Qlro5v2cR4mhaifPurXJokMNxmiJQtGUBZDAMqvm0El5oqo+/AQBQh
- h/ojDU62zlOB+wfNYnR0Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QdXngQqRe+g=:SbR9BTlVBSHinTuH6lbPjh
- 6TO5+RyMEFWvq9nOsq15h0WNYsVBkGjeI4ZY3lvKcajZowcVxPYlOXS/spT047i0RJa8KXlrg
- pxvVg1FJVixv+9gFj2YnUj1lTC51tL83G6Ce2wP2Pc7Qg70sEO9Wmlv03s/bVTvb3H22wFfSn
- JoYHw3xl5cJ76HP3zY8tu0hGK7vXpM/r8ynYa3upH/8KMfdl+HlF5u5eHU0h1T85q+zdvIZ6x
- ptCqYtexf36rH8RRWYOu/0WJEa1BZKH3OO+5G6ZAia6LpB5GsxyQ0WwTIoIiY2xAHK0gAhdno
- P7bc6ZmcXN18i6nYPIIJBkqGAF1Gduf7wTktbase426oWqyGhwNiGJiiuiHrb0qS7P/oHkt6m
- Kp7RRuTD6FQ6mFKdUNxst/S6r3OLKvxl0eXXrzFbeEgrXeLF/Obx7Jw2riO4J
+        Tue, 20 Oct 2020 14:47:54 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79216C0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 11:47:54 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id r4so2443299qta.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 11:47:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=hwnYnS0POYRKONpfl5Y/Ys+jEoJH3m03NmNt0RevWsM=;
+        b=TP8nBRSJfRaWqME65iqiGRIlVlXhcRSvbMSO86q9MoZTkrF/wWlSA+9upwZFM1gvlR
+         CCvfLshAR2LVEvn66ld821KN8/GjNIdQCqQjqHjq7rp2/eDFoFUT2xErzYwV2djd0OVv
+         rvI68TGZh4lb6eqBy6N08w+i7aH7duC/sRio3sG8Kro0VcTSEPrQ8HlHXvjy5CZFksLH
+         jGxRqK1RRCIpuNvhnDIHdMXXDTcs6v+7ZlZnTqppifOe/VpyWFLbOnzQzYt14NY54I7m
+         8ErTbjQGMfcZWqWT08dMBwT7UvMgh8nrdT+Wsr2uSWxOHd5iZPGDW0elfyWozr0YbL/b
+         uYKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=hwnYnS0POYRKONpfl5Y/Ys+jEoJH3m03NmNt0RevWsM=;
+        b=cqoKEh/97fd9++96ioqfzlCusqXpFwPWJdapG/wj78WjkQs26j67OBuNMkftV3+OzL
+         u2PIIACxqUg4rXKt9Po5LR1003rI5O1Ad7urL4wrqYNXLXSj3nSEIg0IJ53ArBjzBYTI
+         DnHyyvlu5uQbZ+dhBWONneBBpU1OJ4Q5pZ0mU4iXsW7zs43NODRDRyiipkhvJ8xzEPG3
+         OTw7CkOrveA0U6r0tCFd3qUYLo1Ae5PUOHlwenDMCoEuj+khG5rBacyeSyd50eilvGG+
+         QCqKBMDBuHLh1lDPJ/DccefKbBubEZPuWRKKoA19Cwazqh8rlEQXHYIuHXS4UUcUviab
+         Hg+Q==
+X-Gm-Message-State: AOAM532cV3R2wzqIso9wbhA4SuR9Wuv0N9MXhCeyXzK8foB1K9Q3s1yx
+        +E7CJ4atjI4kuJJFrWFMlk5iVafyqNvWUrFXb00C
+X-Google-Smtp-Source: ABdhPJyPGryQh7+sHevmE+5QyU3RZQJX1SAfmqe3elp4FKyFyMr2/mmFVZyf4fMf8ctbiW8Jmw3yeXI2qnquFg1Kuun3
+Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:f693:9fff:feef:c8f8])
+ (user=axelrasmussen job=sendgmr) by 2002:ad4:4e47:: with SMTP id
+ eb7mr4932129qvb.34.1603219673444; Tue, 20 Oct 2020 11:47:53 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 11:47:45 -0700
+Message-Id: <20201020184746.300555-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+Subject: [PATCH v4 0/1] Add tracepoints around mmap_lock acquisition
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michel Lespinasse <walken@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        David Rientjes <rientjes@google.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 20/10/2020 à 20:32, Greg KH a écrit :
-> On Tue, Oct 20, 2020 at 08:19:26PM +0200, Laurent Vivier wrote:
->> Le 20/10/2020 à 19:37, Greg KH a écrit :
->>> On Tue, Oct 20, 2020 at 06:37:41PM +0200, Laurent Vivier wrote:
->>>> Le 20/10/2020 à 18:28, Greg KH a écrit :
->>>>> On Tue, Oct 20, 2020 at 06:23:03PM +0200, Laurent Vivier wrote:
->>>>>> We can avoid to probe for the Zilog device (and generate ugly kernel warning)
->>>>>> if kernel is built for Mac but not on a Mac.
->>>>>>
->>>>>> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
->>>>>> ---
->>>>>>  drivers/tty/serial/pmac_zilog.c | 11 +++++++++++
->>>>>>  1 file changed, 11 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
->>>>>> index 063484b22523..d1d2e55983c3 100644
->>>>>> --- a/drivers/tty/serial/pmac_zilog.c
->>>>>> +++ b/drivers/tty/serial/pmac_zilog.c
->>>>>> @@ -1867,6 +1867,12 @@ static struct platform_driver pmz_driver = {
->>>>>>  static int __init init_pmz(void)
->>>>>>  {
->>>>>>  	int rc, i;
->>>>>> +
->>>>>> +#ifdef CONFIG_MAC
->>>>>> +	if (!MACH_IS_MAC)
->>>>>> +		return -ENODEV;
->>>>>> +#endif
->>>>>
->>>>> Why is the #ifdef needed?
->>>>>
->>>>> We don't like putting #ifdef in .c files for good reasons.  Can you make
->>>>> the api check for this work with and without that #ifdef needed?
->>>>
->>>> The #ifdef is needed because this file can be compiled for PowerMac and
->>>> m68k Mac. For PowerMac, the MACH_IS_MAC is not defined, so we need the
->>>> #ifdef.
->>>>
->>>> We need the MAC_IS_MAC because the same kernel can be used with several
->>>> m68k machines, so the init_pmz can be called on a m68k machine without
->>>> the zilog device (it's a multi-targets kernel).
->>>>
->>>> You can check it's the good way to do by looking inside:
->>>>
->>>>     drivers/video/fbdev/valkyriefb.c +317
->>>>     drivers/macintosh/adb.c +316
->>>>
->>>> That are two files used by both, mac and pmac.
->>>
->>> Why not fix it to work properly like other arch checks are done
->> I would be happy to do the same.
->>
->>> Put it in a .h file and do the #ifdef there.  Why is this "special"?
->>
->> I don't know.
->>
->> Do you mean something like:
->>
->> drivers/tty/serial/pmac_zilog.h
->> ...
->> #ifndef MACH_IS_MAC
->> #define MACH_IS_MAC (0)
->> #endif
->> ...
->>
->> drivers/tty/serial/pmac_zilog.c
->> ...
->> static int __init pmz_console_init(void)
->> {
->>         if (!MACH_IS_MAC)
->>                 return -ENODEV;
->> ...
-> 
-> Yup, that would be a good start, but why is the pmac_zilog.h file
-> responsible for this?  Shouldn't this be in some arch-specific file
-> somewhere?
+This patchset adds tracepoints around mmap_lock acquisition. This is useful so
+we can measure the latency of lock acquisition, in order to detect contention.
 
-For m68k, MACH_IS_MAC is defined in arch/m68k/include/asm/setup.h
+This version is based upon linux-next (since it depends on some recently-merged
+patches [1] [2]).
 
-If I want to define it for any other archs I don't know in which file we
-can put it.
+Changes since v3:
 
-But as m68k mac is only sharing drivers with pmac perhaps we can put
-this in arch/powerpc/include/asm/setup.h?
+- Switched EXPORT_SYMBOL to EXPORT_TRACEPOINT_SYMBOL, removed comment.
 
-Thanks,
-Laurent
+- Removed redundant trace_..._enabled() check.
+
+- Defined the three TRACE_EVENTs separately, instead of sharing an event class.
+  The tradeoff is 524 more bytes in .text, but the start_locking and released
+  events no longer have a vestigial "success" field, so they're simpler +
+  faster.
+
+Changes since v2:
+
+- Refactored tracing helper functions so the helpers are simper, but the locking
+  functinos are slightly more verbose. Overall, this decreased the delta to
+  mmap_lock.h slightly.
+
+- Fixed a typo in a comment. :)
+
+Changes since v1:
+
+- Functions renamed to reserve the "trace_" prefix for actual tracepoints.
+
+- We no longer measure the duration directly. Instead, users are expected to
+  construct a synthetic event which computes the interval between "start
+  locking" and "acquire returned".
+
+- The new helper for checking if tracepoints are enabled in a header is used to
+  avoid un-inlining any of the lock wrappers. This yields ~zero overhead if the
+  tracepoints aren't enabled, and therefore obviates the need for a Kconfig for
+  this change.
+
+[1] https://lore.kernel.org/patchwork/patch/1316922/
+[2] https://lore.kernel.org/patchwork/patch/1311996/
+
+Axel Rasmussen (1):
+  mmap_lock: add tracepoints around lock acquisition
+
+ include/linux/mmap_lock.h        | 93 ++++++++++++++++++++++++++++--
+ include/trace/events/mmap_lock.h | 98 ++++++++++++++++++++++++++++++++
+ mm/Makefile                      |  2 +-
+ mm/mmap_lock.c                   | 80 ++++++++++++++++++++++++++
+ 4 files changed, 267 insertions(+), 6 deletions(-)
+ create mode 100644 include/trace/events/mmap_lock.h
+ create mode 100644 mm/mmap_lock.c
+
+--
+2.29.0.rc1.297.gfa9743e501-goog
 
