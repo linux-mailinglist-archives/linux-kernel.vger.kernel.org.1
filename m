@@ -2,132 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4300C29451A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D091294524
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 00:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392454AbgJTWYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 18:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390360AbgJTWYc (ORCPT
+        id S2439058AbgJTW3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 18:29:17 -0400
+Received: from lithium.sammserver.com ([168.119.122.30]:33762 "EHLO
+        lithium.sammserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392454AbgJTW3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 18:24:32 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DA8C0613CE;
-        Tue, 20 Oct 2020 15:24:30 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id kk5so90256pjb.1;
-        Tue, 20 Oct 2020 15:24:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OmjtnWyk38ZBX1D8MavpXL10VCl/FwBII1zAmAlKY9s=;
-        b=Awop/oxHP1NDOcP0KnWp5FWHkrltx2DjbBqr7tobJcMxu4Ei7uqjExLbcyvm7SYfmD
-         aTC06k45zMNEUfhCm2PQwnTAsv1vwHUXXzO5sYSFgyj00L1rnJB1dv9MQUUcMmlc94wB
-         23UuqEnat7si/49sUfgx87zNuyahxeqf0gWGKX27jUpi0eDf2wj+eJWxv1W6O7qeji2N
-         iy782NcFvHIrIR3HTQEXIr0RDMcFk+xzJt1oM599ZKmSniBgczX31zjhvC9itH9+imp4
-         4Dz7so2eEpAvFfXxXVPWbn8aUJPALFL3sG8JebTcK4cIXCgdVCfnXYkUMG7elJqBd2pr
-         axug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OmjtnWyk38ZBX1D8MavpXL10VCl/FwBII1zAmAlKY9s=;
-        b=rM3ICxdaCUE8gILZw3EVpxgObrPJ0S7Ko1TuQOjM7E1FmRydq7WJiAJnUiNsSJ6H3G
-         FxnIbyZuYwx3ZnRGRjYTERqXG6Tx1QkhJH4GvImMmUMcW6L8EYlEnJU831Y5MjwU11LX
-         4CIhULfETG8gZ9OQ7rePSO9l3tf7a4RKbavIfw8KhfknTfzefLJZaaMHVdftKlEi/Oy/
-         xap5YfYZbF8GCRYODK8pDskBn+KtTTm0aaw4gy0LjXMB3Dm7Qflh/iV26FsviaUOtZ6I
-         lpXIW/gLIKBCZV5XdpBRUu4sXj718TKxtCa9VLV+pywAoGsHua9zTToDHalZpIeVgEe3
-         MZyQ==
-X-Gm-Message-State: AOAM531M9mJBWS2CWRb2zxzDcQgUfoiodO2FJRZo6Wq+2BM5oAIWcTIf
-        Dh5SXgbmXHg5BFpWJE8K3u1iSk2VqJB6iw==
-X-Google-Smtp-Source: ABdhPJxIXbNsMsSh0dWfqwmYT1q1f863Oej76OZAU7iVStwx6Wktb0HzU61GvcvkkulTBDT3epizqA==
-X-Received: by 2002:a17:90a:6b0a:: with SMTP id v10mr237477pjj.141.1603232669947;
-        Tue, 20 Oct 2020 15:24:29 -0700 (PDT)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id c12sm147612pgd.57.2020.10.20.15.24.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 15:24:28 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm/atomic: Drop per-CRTC locks in reverse order
-Date:   Tue, 20 Oct 2020 15:26:00 -0700
-Message-Id: <20201020222600.264876-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 20 Oct 2020 18:29:16 -0400
+Received: from mail.sammserver.com (sammserver.wg [10.32.40.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by lithium.sammserver.com (Postfix) with ESMTPS id 54DDE312B5A9;
+        Wed, 21 Oct 2020 00:29:15 +0200 (CEST)
+Received: by mail.sammserver.com (Postfix, from userid 5011)
+        id 07EB61131C4F; Wed, 21 Oct 2020 00:29:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
+        t=1603232955; bh=ReitwSbZ/fEJxIhaeb16wIu56zn2EFv30T8ySvSFH0w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jfhnUco5osuGZc32XXNMB5dvr+eQJWCyJPhgYcDi0GhEpkJDMy9sq8Bq3ZSMIs6/N
+         Np5j+X/juEh7J8xYH3fT7uQ2OmWN+3I0SGn6gsF6p7g9pTFX480G5oSvpO5L+unmfp
+         clbyixbMjyufHyeSUqHah6qfzhuY6LopQ1hzsSe4=
+Received: from fastboi.localdomain (fastboi.wg [10.32.40.5])
+        by mail.sammserver.com (Postfix) with ESMTP id DBF521131C4C;
+        Wed, 21 Oct 2020 00:29:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
+        t=1603232955; bh=ReitwSbZ/fEJxIhaeb16wIu56zn2EFv30T8ySvSFH0w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jfhnUco5osuGZc32XXNMB5dvr+eQJWCyJPhgYcDi0GhEpkJDMy9sq8Bq3ZSMIs6/N
+         Np5j+X/juEh7J8xYH3fT7uQ2OmWN+3I0SGn6gsF6p7g9pTFX480G5oSvpO5L+unmfp
+         clbyixbMjyufHyeSUqHah6qfzhuY6LopQ1hzsSe4=
+Received: by fastboi.localdomain (Postfix, from userid 1000)
+        id C3CB714209CF; Wed, 21 Oct 2020 00:29:14 +0200 (CEST)
+Date:   Wed, 21 Oct 2020 00:29:14 +0200
+From:   Samuel =?utf-8?B?xIxhdm9q?= <samuel@cavoj.net>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] platform/x86: asus-wmi: Add support for
+ SW_TABLET_MODE on UX360
+Message-ID: <20201020222914.6k2pkxiirzbefjml@fastboi.localdomain>
+References: <20201020220944.1075530-1-samuel@cavoj.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201020220944.1075530-1-samuel@cavoj.net>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS autolearn=no autolearn_force=no
+        version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on sammserver.tu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Hi,
 
-lockdep dislikes seeing locks unwound in a non-nested fashion.
+naturally I notice this right after I send the patch, but my whitespace
+is wrong. Time to set a pre-commit hook up. I guess that means a v4,
+unless you would fix it on your end? It's just a single line.
 
-Fixes: 37c2016e3608 ("drm/msm: Fix race condition in msm driver with async layer updates")
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_atomic.c |  2 +-
- drivers/gpu/drm/msm/msm_kms.h    |  4 ++++
- include/drm/drm_crtc.h           | 10 ++++++++++
- 3 files changed, 15 insertions(+), 1 deletion(-)
+Sorry about all the noise,
+Sam
 
-diff --git a/drivers/gpu/drm/msm/msm_atomic.c b/drivers/gpu/drm/msm/msm_atomic.c
-index b03d6ab6b19b..6a326761dc4a 100644
---- a/drivers/gpu/drm/msm/msm_atomic.c
-+++ b/drivers/gpu/drm/msm/msm_atomic.c
-@@ -67,7 +67,7 @@ static void unlock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
- {
- 	struct drm_crtc *crtc;
- 
--	for_each_crtc_mask(kms->dev, crtc, crtc_mask)
-+	for_each_crtc_mask_reverse(kms->dev, crtc, crtc_mask)
- 		mutex_unlock(&kms->commit_lock[drm_crtc_index(crtc)]);
- }
- 
-diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
-index 8d3e626c9fee..d8151a89e163 100644
---- a/drivers/gpu/drm/msm/msm_kms.h
-+++ b/drivers/gpu/drm/msm/msm_kms.h
-@@ -211,4 +211,8 @@ int dpu_mdss_init(struct drm_device *dev);
- 	drm_for_each_crtc(crtc, dev) \
- 		for_each_if (drm_crtc_mask(crtc) & (crtc_mask))
- 
-+#define for_each_crtc_mask_reverse(dev, crtc, crtc_mask) \
-+	drm_for_each_crtc_reverse(crtc, dev) \
-+		for_each_if (drm_crtc_mask(crtc) & (crtc_mask))
-+
- #endif /* __MSM_KMS_H__ */
-diff --git a/include/drm/drm_crtc.h b/include/drm/drm_crtc.h
-index dfdb04619b0d..25f5958f2882 100644
---- a/include/drm/drm_crtc.h
-+++ b/include/drm/drm_crtc.h
-@@ -1274,4 +1274,14 @@ static inline struct drm_crtc *drm_crtc_find(struct drm_device *dev,
- #define drm_for_each_crtc(crtc, dev) \
- 	list_for_each_entry(crtc, &(dev)->mode_config.crtc_list, head)
- 
-+/**
-+ * drm_for_each_crtc_reverse - iterate over all CRTCs in reverse order
-+ * @crtc: a &struct drm_crtc as the loop cursor
-+ * @dev: the &struct drm_device
-+ *
-+ * Iterate over all CRTCs of @dev.
-+ */
-+#define drm_for_each_crtc_reverse(crtc, dev) \
-+	list_for_each_entry_reverse(crtc, &(dev)->mode_config.crtc_list, head)
-+
- #endif /* __DRM_CRTC_H__ */
--- 
-2.26.2
+On 21.10.2020 00:09, Samuel Čavoj wrote:
+> @@ -375,6 +376,20 @@ static int asus_wmi_input_init(struct asus_wmi *asus)
+>  		}
+>  	}
+>  
+> +	if (asus->driver->quirks->use_lid_flip_devid) {
+> +		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
+> +        if (result < 0)
 
+Right ^here.
+
+> +			asus->driver->quirks->use_lid_flip_devid = 0;
+> +		if (result >= 0) {
+> +			input_set_capability(asus->inputdev, EV_SW, SW_TABLET_MODE);
+> +			input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
+> +		} else if (result == -ENODEV) {
+> +			pr_err("This device has lid_flip quirk but got ENODEV checking it. This is a bug.");
+> +		} else {
+> +			pr_err("Error checking for lid-flip: %d\n", result);
+> +		}
+> +	}
