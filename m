@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AB22933CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 06:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89492933C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 06:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389778AbgJTEKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 00:10:48 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:52500 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728339AbgJTEKr (ORCPT
+        id S1725926AbgJTEDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 00:03:17 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17794 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgJTEDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 00:10:47 -0400
-X-UUID: 3e2d6fcab1294f4da06361514eed91eb-20201020
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=zp5jLGm63aQhYRoDx4NhNAPU064r5IJUGVEyCltzIJE=;
-        b=kBvbM70DagvRjbW3mi7d0FSxDlN41jckXJgaVjydMg/NC46nnZNb9WLl3zsddtr9APmd9TsLj1puwWXnkCOwCRwodsYpcgpFg7DiqgVM18Xw+3TVp8eMl644PKOxyjXLV+RjlipXHvv9BlA9FREJqujStiC9R3PoivXB8bFeoFs=;
-X-UUID: 3e2d6fcab1294f4da06361514eed91eb-20201020
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1822166561; Tue, 20 Oct 2020 12:00:22 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 20 Oct 2020 12:00:20 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 20 Oct 2020 12:00:21 +0800
-Message-ID: <1603166421.26597.1.camel@mtksdaap41>
-Subject: Re: [PATCH v4 1/2] dt-bindings: spmi: document binding for the
- Mediatek SPMI controller
-From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-Date:   Tue, 20 Oct 2020 12:00:21 +0800
-In-Reply-To: <20201019195207.GA3499610@bogus>
-References: <1602864634-23489-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <1602864634-23489-2-git-send-email-hsin-hsiung.wang@mediatek.com>
-         <20201019195207.GA3499610@bogus>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 20 Oct 2020 00:03:17 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8e61280000>; Mon, 19 Oct 2020 21:01:44 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct
+ 2020 04:03:16 +0000
+Received: from skomatineni-linux.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Tue, 20 Oct 2020 04:03:16 +0000
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <digetx@gmail.com>, <skomatineni@nvidia.com>
+CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>
+Subject: [PATCH v1] i2c: tegra: Fix i2c_writesl() to use writel() instead of writesl()
+Date:   Mon, 19 Oct 2020 21:03:54 -0700
+Message-ID: <1603166634-13639-1-git-send-email-skomatineni@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603166504; bh=k0OpCwKOIS1mzOf9rDffepCbD0hVHg+ZBxopLq0hOT0=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=msQieKyHswBsMpmzAhUyhwrV5hazjv2iGfCMdcVaXmfLWmKaAFqarqmmRaHim6pWs
+         9X94Mx2vHymB0IfZcIvOAoIAp76+PFnbktb0uOcUEwCSSELvoZj2u6FgHxxAsLGENl
+         dXQhXIKj6oLi3VDiwqWbku/9nms2fcrr6WSaNla8EuAHTF/EClR+hfeEOeuXsyxrbY
+         u/mdUaEMed9caeh59PuuTrbiK5AjIp/0hZs/7bXw+D0ILTTtvB1DEijE+4tjJ2i8Si
+         RrKLbzi5FDhy07SNMzFqjY9xGNkBOrVaXTwClJVp2hi/7jjq9XV/PFaTPbdDVMavJY
+         sOO46WV/ufKOg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCk9uIE1vbiwgMjAyMC0xMC0xOSBhdCAxNDo1MiAtMDUwMCwgUm9iIEhlcnJpbmcgd3Jv
-dGU6DQo+IE9uIFNhdCwgMTcgT2N0IDIwMjAgMDA6MTA6MzMgKzA4MDAsIEhzaW4tSHNpdW5nIFdh
-bmcgd3JvdGU6DQo+ID4gVGhpcyBhZGRzIGRvY3VtZW50YXRpb24gZm9yIHRoZSBTUE1JIGNvbnRy
-b2xsZXIgZm91bmQgb24gTWVkaWF0ZWsgU29Dcy4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBI
-c2luLUhzaXVuZyBXYW5nIDxoc2luLWhzaXVuZy53YW5nQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0N
-Cj4gPiAgLi4uL2JpbmRpbmdzL3NwbWkvbXRrLHNwbWktbXRrLXBtaWYueWFtbCAgICAgIHwgNzAg
-KysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNzAgaW5zZXJ0aW9ucygr
-KQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL3NwbWkvbXRrLHNwbWktbXRrLXBtaWYueWFtbA0KPiA+IA0KPiANCj4gDQo+IE15IGJvdCBm
-b3VuZCBlcnJvcnMgcnVubmluZyAnbWFrZSBkdF9iaW5kaW5nX2NoZWNrJyBvbiB5b3VyIHBhdGNo
-Og0KPiANCj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwbWkvbXRrLHNwbWkt
-bXRrLXBtaWYuZXhhbXBsZS5kdHM6MTk6MTg6IGZhdGFsIGVycm9yOiBkdC1iaW5kaW5ncy9jbG9j
-ay9tdDgxOTItY2xrLmg6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkNCj4gICAgMTkgfCAgICAg
-ICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9jbG9jay9tdDgxOTItY2xrLmg+DQo+ICAgICAgIHwg
-ICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KPiBjb21w
-aWxhdGlvbiB0ZXJtaW5hdGVkLg0KPiBtYWtlWzFdOiAqKiogW3NjcmlwdHMvTWFrZWZpbGUubGli
-OjM0MjogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwbWkvbXRrLHNwbWktbXRr
-LXBtaWYuZXhhbXBsZS5kdC55YW1sXSBFcnJvciAxDQo+IG1ha2VbMV06ICoqKiBXYWl0aW5nIGZv
-ciB1bmZpbmlzaGVkIGpvYnMuLi4uDQo+IG1ha2U6ICoqKiBbTWFrZWZpbGU6MTM2NjogZHRfYmlu
-ZGluZ19jaGVja10gRXJyb3IgMg0KPiANCj4gDQo+IFNlZSBodHRwczovL3BhdGNod29yay5vemxh
-YnMub3JnL3BhdGNoLzEzODM0NDENCj4gDQo+IElmIHlvdSBhbHJlYWR5IHJhbiAnbWFrZSBkdF9i
-aW5kaW5nX2NoZWNrJyBhbmQgZGlkbid0IHNlZSB0aGUgYWJvdmUNCj4gZXJyb3IocyksIHRoZW4g
-bWFrZSBzdXJlIGR0LXNjaGVtYSBpcyB1cCB0byBkYXRlOg0KPiANCj4gcGlwMyBpbnN0YWxsIGdp
-dCtodHRwczovL2dpdGh1Yi5jb20vZGV2aWNldHJlZS1vcmcvZHQtc2NoZW1hLmdpdEBtYXN0ZXIg
-LS11cGdyYWRlDQo+IA0KPiBQbGVhc2UgY2hlY2sgYW5kIHJlLXN1Ym1pdC4NCj4gDQoNClNvcnJ5
-LCBJIGRvbid0IGFkZCB0aGUgbmVjZXNzYXJ5IHNlcmllc1sxXSBpbnRvIHRoZSBjb21taXQgbWVz
-c2FnZS4NCkkgd2lsbCB1cGRhdGUgaXQgaW4gdGhlIG5leHQgcGF0Y2gsIHRoYW5rcyBmb3IgdGhl
-IHJldmlldy4NCg0KWzFdDQpodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbGlu
-dXgtbWVkaWF0ZWsvbGlzdC8/c2VyaWVzPTM0MjU5Mw0K
+VI I2C don't have DMA support and uses PIO mode all the time.
+
+Current driver uses writesl() to fill TX FIFO based on available
+empty slots and with this seeing strange silent hang during any I2C
+register access after filling TX FIFO with 8 words.
+
+Using writel() followed by i2c_readl() in a loop to write all words
+to TX FIFO instead of using writesl() helps for large transfers in
+PIO mode.
+
+So, this patch updates i2c_writesl() API to use writel() in a loop
+instead of writesl().
+
+Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+---
+ drivers/i2c/busses/i2c-tegra.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
+index 6f08c0c..274bf3a 100644
+--- a/drivers/i2c/busses/i2c-tegra.c
++++ b/drivers/i2c/busses/i2c-tegra.c
+@@ -333,10 +333,13 @@ static u32 i2c_readl(struct tegra_i2c_dev *i2c_dev, unsigned int reg)
+ 	return readl_relaxed(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
+ }
+ 
+-static void i2c_writesl(struct tegra_i2c_dev *i2c_dev, void *data,
++static void i2c_writesl(struct tegra_i2c_dev *i2c_dev, u32 *data,
+ 			unsigned int reg, unsigned int len)
+ {
+-	writesl(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg), data, len);
++	while (len--) {
++		writel(*data++, i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
++		i2c_readl(i2c_dev, I2C_INT_STATUS);
++	}
+ }
+ 
+ static void i2c_readsl(struct tegra_i2c_dev *i2c_dev, void *data,
+@@ -811,7 +814,7 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_dev *i2c_dev)
+ 		i2c_dev->msg_buf_remaining = buf_remaining;
+ 		i2c_dev->msg_buf = buf + words_to_transfer * BYTES_PER_FIFO_WORD;
+ 
+-		i2c_writesl(i2c_dev, buf, I2C_TX_FIFO, words_to_transfer);
++		i2c_writesl(i2c_dev, (u32 *)buf, I2C_TX_FIFO, words_to_transfer);
+ 
+ 		buf += words_to_transfer * BYTES_PER_FIFO_WORD;
+ 	}
+-- 
+2.7.4
 
