@@ -2,119 +2,448 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EAB293FE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD53D293FE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 17:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436797AbgJTPtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 11:49:01 -0400
-Received: from mga18.intel.com ([134.134.136.126]:32368 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728506AbgJTPtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 11:49:01 -0400
-IronPort-SDR: itw46L9F+aq+ZEb/oJ2iYjjG+4W0HL9LNz9o8aKKosIz+mRWBB2f5syAmAX4vC+BgQLhOCTdtO
- YIfzQ3xlqsDg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="155014925"
-X-IronPort-AV: E=Sophos;i="5.77,397,1596524400"; 
-   d="scan'208";a="155014925"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 08:48:55 -0700
-IronPort-SDR: Gh+XBK5oxzwAcfqGGNh3U4p6RFy1RLZkcgwi1pOImGREShle7jDBdRvOl+M2RKvppisjK8jtfo
- uqKDfbhENF3A==
-X-IronPort-AV: E=Sophos;i="5.77,397,1596524400"; 
-   d="scan'208";a="522421669"
-Received: from pnaik-mobl.amr.corp.intel.com (HELO [10.213.163.220]) ([10.213.163.220])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 08:48:55 -0700
-Subject: Re: [PATCH v39 15/24] x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <91637b13-c0ee-82bd-05cd-5ce848004eae@intel.com>
-Date:   Tue, 20 Oct 2020 08:48:54 -0700
+        id S2436866AbgJTPvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 11:51:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730101AbgJTPvE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 11:51:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95232C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 08:51:04 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kUtuW-0006hF-U5; Tue, 20 Oct 2020 17:50:53 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:c351:f59d:74d9:d207] (unknown [IPv6:2a03:f580:87bc:d400:c351:f59d:74d9:d207])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 41E6D57E557;
+        Tue, 20 Oct 2020 15:50:51 +0000 (UTC)
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
+        linux-can@vger.kernel.org, pankaj.bansal@nxp.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
+ <20201020155402.30318-11-qiangqing.zhang@nxp.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Subject: Re: [PATCH V3 10/10] can: flexcan: add CAN wakeup function for
+ i.MX8QM
+Message-ID: <b334edc4-cdaa-e7e6-5f1c-9bc046cbb255@pengutronix.de>
+Date:   Tue, 20 Oct 2020 17:50:47 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201020155402.30318-11-qiangqing.zhang@nxp.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="gRoJHpvHipkIHg2UxeKi9VIujwNMEK2qJ"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  int __init sgx_drv_init(void)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--gRoJHpvHipkIHg2UxeKi9VIujwNMEK2qJ
+Content-Type: multipart/mixed; boundary="NwKCTYajUq4t6f3dnUVQmrIBqaqtZoCHx";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
+ shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc: kernel@pengutronix.de, linux-imx@nxp.com, victor.liu@nxp.com,
+ linux-can@vger.kernel.org, pankaj.bansal@nxp.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <b334edc4-cdaa-e7e6-5f1c-9bc046cbb255@pengutronix.de>
+Subject: Re: [PATCH V3 10/10] can: flexcan: add CAN wakeup function for
+ i.MX8QM
+References: <20201020155402.30318-1-qiangqing.zhang@nxp.com>
+ <20201020155402.30318-11-qiangqing.zhang@nxp.com>
+In-Reply-To: <20201020155402.30318-11-qiangqing.zhang@nxp.com>
+
+--NwKCTYajUq4t6f3dnUVQmrIBqaqtZoCHx
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 10/20/20 5:54 PM, Joakim Zhang wrote:
+> The System Controller Firmware (SCFW) is a low-level system function
+> which runs on a dedicated Cortex-M core to provide power, clock, and
+> resource management. It exists on some i.MX8 processors. e.g. i.MX8QM
+> (QM, QP), and i.MX8QX (QXP, DX). SCU driver manages the IPC interface
+> between host CPU and the SCU firmware running on M4.
+>=20
+> For i.MX8QM, stop mode request is controlled by System Controller Unit(=
+SCU)
+> firmware, this patch introduces FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW quir=
+k
+> for this function.
+>=20
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> ---
+>  drivers/net/can/flexcan.c | 127 +++++++++++++++++++++++++++++++++-----=
+
+>  1 file changed, 110 insertions(+), 17 deletions(-)
+>=20
+> diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+> index 8f578c867493..97840b3e0a8a 100644
+> --- a/drivers/net/can/flexcan.c
+> +++ b/drivers/net/can/flexcan.c
+> @@ -9,6 +9,7 @@
+>  //
+>  // Based on code originally by Andrey Volkov <avolkov@varma-el.com>
+> =20
+> +#include <dt-bindings/firmware/imx/rsrc.h>
+>  #include <linux/bitfield.h>
+>  #include <linux/can.h>
+>  #include <linux/can/dev.h>
+> @@ -17,6 +18,7 @@
+>  #include <linux/can/rx-offload.h>
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+> +#include <linux/firmware/imx/sci.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+>  #include <linux/mfd/syscon.h>
+> @@ -242,6 +244,8 @@
+>  #define FLEXCAN_QUIRK_SUPPORT_FD BIT(9)
+>  /* support memory detection and correction */
+>  #define FLEXCAN_QUIRK_SUPPORT_ECC BIT(10)
+> +/* Setup stop mode with SCU firmware to support wakeup */
+> +#define FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW BIT(11)
+> =20
+>  /* Structure of the message buffer */
+>  struct flexcan_mb {
+> @@ -347,6 +351,7 @@ struct flexcan_priv {
+>  	u8 mb_count;
+>  	u8 mb_size;
+>  	u8 clk_src;	/* clock source of CAN Protocol Engine */
+> +	u8 can_idx;
+
+please name it like the DT property, scu_index.
+
+> =20
+>  	u64 rx_mask;
+>  	u64 tx_mask;
+> @@ -358,6 +363,9 @@ struct flexcan_priv {
+>  	struct regulator *reg_xceiver;
+>  	struct flexcan_stop_mode stm;
+> =20
+> +	/* IPC handle when setup stop mode by System Controller firmware(scfw=
+) */
+> +	struct imx_sc_ipc *sc_ipc_handle;
+> +
+>  	/* Read and Write APIs */
+>  	u32 (*read)(void __iomem *addr);
+>  	void (*write)(u32 val, void __iomem *addr);
+> @@ -387,7 +395,7 @@ static const struct flexcan_devtype_data fsl_imx6q_=
+devtype_data =3D {
+>  static const struct flexcan_devtype_data fsl_imx8qm_devtype_data =3D {=
+
+>  	.quirks =3D FLEXCAN_QUIRK_DISABLE_RXFG | FLEXCAN_QUIRK_ENABLE_EACEN_R=
+RS |
+>  		FLEXCAN_QUIRK_USE_OFF_TIMESTAMP | FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+> -		FLEXCAN_QUIRK_SUPPORT_FD,
+> +		FLEXCAN_QUIRK_SUPPORT_FD | FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW,
+>  };
+> =20
+>  static struct flexcan_devtype_data fsl_imx8mp_devtype_data =3D {
+> @@ -546,18 +554,42 @@ static void flexcan_enable_wakeup_irq(struct flex=
+can_priv *priv, bool enable)
+>  	priv->write(reg_mcr, &regs->mcr);
+>  }
+> =20
+> +static int flexcan_stop_mode_enable_scfw(struct flexcan_priv *priv, bo=
+ol enabled)
+> +{
+> +	u8 idx =3D priv->can_idx;
+> +	u32 rsrc_id, val;
+> +
+> +	rsrc_id =3D IMX_SC_R_CAN(idx);
+> +
+> +	if (enabled)
+> +		val =3D 1;
+> +	else
+> +		val =3D 0;
+> +
+> +	/* stop mode request via scu firmware */
+> +	return imx_sc_misc_set_control(priv->sc_ipc_handle, rsrc_id,
+> +				       IMX_SC_C_IPG_STOP, val);
+> +}
+> +
+>  static inline int flexcan_enter_stop_mode(struct flexcan_priv *priv)
 >  {
->  	unsigned int eax, ebx, ecx, edx;
-> @@ -181,5 +192,12 @@ int __init sgx_drv_init(void)
->  		return ret;
->  	}
->  
-> +	ret = misc_register(&sgx_dev_provision);
-> +	if (ret) {
-> +		pr_err("Creating /dev/sgx/provision failed with %d.\n", ret);
-> +		misc_deregister(&sgx_dev_enclave);
+>  	struct flexcan_regs __iomem *regs =3D priv->regs;
+>  	u32 reg_mcr;
+> +	int ret;
+> =20
+>  	reg_mcr =3D priv->read(&regs->mcr);
+>  	reg_mcr |=3D FLEXCAN_MCR_SLF_WAK;
+>  	priv->write(reg_mcr, &regs->mcr);
+> =20
+>  	/* enable stop request */
+> -	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+> -			   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
+> +	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW) =
+{
+> +		ret =3D flexcan_stop_mode_enable_scfw(priv, true);
+> +		if (ret < 0)
+> +			return ret;
+> +	} else {
+> +		regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+> +				   1 << priv->stm.req_bit, 1 << priv->stm.req_bit);
+> +	}
+> =20
+>  	return flexcan_low_power_enter_ack(priv);
+>  }
+> @@ -566,10 +598,17 @@ static inline int flexcan_exit_stop_mode(struct f=
+lexcan_priv *priv)
+>  {
+>  	struct flexcan_regs __iomem *regs =3D priv->regs;
+>  	u32 reg_mcr;
+> +	int ret;
+> =20
+>  	/* remove stop request */
+> -	regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+> -			   1 << priv->stm.req_bit, 0);
+> +	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW) =
+{
+> +		ret =3D flexcan_stop_mode_enable_scfw(priv, false);
+> +		if (ret < 0)
+> +			return ret;
+> +	} else {
+> +		regmap_update_bits(priv->stm.gpr, priv->stm.req_gpr,
+> +				   1 << priv->stm.req_bit, 0);
+> +	}
+> =20
+>  	reg_mcr =3D priv->read(&regs->mcr);
+>  	reg_mcr &=3D ~FLEXCAN_MCR_SLF_WAK;
+> @@ -1838,7 +1877,7 @@ static void unregister_flexcandev(struct net_devi=
+ce *dev)
+>  	unregister_candev(dev);
+>  }
+> =20
+> -static int flexcan_setup_stop_mode(struct platform_device *pdev)
+> +static int flexcan_setup_stop_mode_gpr(struct platform_device *pdev)
+>  {
+>  	struct net_device *dev =3D platform_get_drvdata(pdev);
+>  	struct device_node *np =3D pdev->dev.of_node;
+> @@ -1883,11 +1922,6 @@ static int flexcan_setup_stop_mode(struct platfo=
+rm_device *pdev)
+>  		"gpr %s req_gpr=3D0x02%x req_bit=3D%u\n",
+>  		gpr_np->full_name, priv->stm.req_gpr, priv->stm.req_bit);
+> =20
+> -	device_set_wakeup_capable(&pdev->dev, true);
+> -
+> -	if (of_property_read_bool(np, "wakeup-source"))
+> -		device_set_wakeup_enable(&pdev->dev, true);
+> -
+>  	return 0;
+> =20
+>  out_put_node:
+> @@ -1895,6 +1929,62 @@ static int flexcan_setup_stop_mode(struct platfo=
+rm_device *pdev)
+>  	return ret;
+>  }
+> =20
+> +static int flexcan_setup_stop_mode_scfw(struct platform_device *pdev)
+> +{
+> +	struct net_device *dev =3D platform_get_drvdata(pdev);
+> +	struct flexcan_priv *priv;
+> +	u8 can_idx;
+> +	int ret;
+> +
+> +	ret =3D of_property_read_u8(pdev->dev.of_node, "fsl,scu-index", &can_=
+idx);
+> +	if (ret < 0) {
+> +		dev_dbg(&pdev->dev, "failed to get scu index\n");
 > +		return ret;
 > +	}
 > +
+> +	priv =3D netdev_priv(dev);
+> +	priv->can_idx =3D can_idx;
+> +
+> +	/* this function could be defered probe, return -EPROBE_DEFER */
+> +	ret =3D imx_scu_get_handle(&priv->sc_ipc_handle);
 
-Isn't it a *bit* too specific to say that a device file failed to be
-created?  Do other misc devices use this kind of message?
+return imx_scu_get_handle(&priv->sc_ipc_handle);
+
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+> +
+> +/* flexcan_setup_stop_mode - Setup stop mode for wakeup
+> + *
+> + * Return: =3D 0 setup stop mode successfully or doesn't support this =
+feature
+> + *         < 0 fail to setup stop mode (could be defered probe)
+> + */
+> +static int flexcan_setup_stop_mode(struct platform_device *pdev)
+> +{
+> +	struct net_device *dev =3D platform_get_drvdata(pdev);
+> +	struct flexcan_priv *priv;
+> +	int ret;
+> +
+> +	priv =3D netdev_priv(dev);
+> +
+> +	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_SCFW)
+> +		ret =3D flexcan_setup_stop_mode_scfw(pdev);
+> +	else if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_G=
+PR)
+> +		ret =3D flexcan_setup_stop_mode_gpr(pdev);
+> +	else
+> +		/* return 0 directly if doesn't support stop mode feature */
+> +		return 0;
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	device_set_wakeup_capable(&pdev->dev, true);
+> +
+> +	if (of_property_read_bool(pdev->dev.of_node, "wakeup-source"))
+> +		device_set_wakeup_enable(&pdev->dev, true);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct of_device_id flexcan_of_match[] =3D {
+>  	{ .compatible =3D "fsl,imx8qm-flexcan", .data =3D &fsl_imx8qm_devtype=
+_data, },
+>  	{ .compatible =3D "fsl,imx8mp-flexcan", .data =3D &fsl_imx8mp_devtype=
+_data, },
+> @@ -2040,17 +2130,20 @@ static int flexcan_probe(struct platform_device=
+ *pdev)
+>  		goto failed_register;
+>  	}
+> =20
+> +	err =3D flexcan_setup_stop_mode(pdev);
+> +	if (err < 0) {
+> +		if (err !=3D -EPROBE_DEFER)
+> +			dev_err(&pdev->dev, "setup stop mode failed\n");
+> +		goto failed_canregister;
+
+better name this failed_setup_stop_mode
+
+> +	}
+> +
+>  	of_can_transceiver(dev);
+>  	devm_can_led_init(dev);
+> =20
+> -	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SETUP_STOP_MODE_GPR) {=
+
+> -		err =3D flexcan_setup_stop_mode(pdev);
+> -		if (err)
+> -			dev_dbg(&pdev->dev, "failed to setup stop-mode\n");
+> -	}
+> -
+>  	return 0;
+> =20
+> + failed_canregister:
+> +	unregister_flexcandev(dev);
+>   failed_register:
+>  	pm_runtime_put_noidle(&pdev->dev);
+>  	pm_runtime_disable(&pdev->dev);
+>=20
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--NwKCTYajUq4t6f3dnUVQmrIBqaqtZoCHx--
+
+--gRoJHpvHipkIHg2UxeKi9VIujwNMEK2qJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+PB1cACgkQqclaivrt
+76lcPQf/W3PbVrGVUGO7mylRjf62nGEETpX4iyGVH4PFTTOu4y8RhjrU6ybOd1t3
+tvQFLPSWhK0+/qKorsaup1X1NhPiC1On9JpLgLXBlbLBeiNwaIvQwOVwowcN+LUX
+Xy2kTxBglcwOigfQUFlMTMk3a8+WdB2sjGJXg5+6tlisJ6uz1gsd66gItREiCSj1
+meFzxC2QsrZckeYpS01MWBeNb7x7XHzxkDQZ47VDZdeD5I4P1cks4tjQbB7I+FMo
+w+UoqwXnAM2o+mwH/rBtQACOS4tXpfGF6n/sREQp3UjOCXDYSGHHTcf9zVggKBaE
+pnvhsYtqhyZhbnRlN4WXVOinBfC6lQ==
+=yHL8
+-----END PGP SIGNATURE-----
+
+--gRoJHpvHipkIHg2UxeKi9VIujwNMEK2qJ--
