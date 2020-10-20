@@ -2,274 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDB6294423
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240F629442D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 23:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409688AbgJTU5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 16:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409679AbgJTU5d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:57:33 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E44CC0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 13:57:33 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id m126so3027181qkd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 13:57:33 -0700 (PDT)
+        id S2409702AbgJTVBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 17:01:25 -0400
+Received: from mail-bn8nam12on2101.outbound.protection.outlook.com ([40.107.237.101]:6593
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2409676AbgJTVBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 17:01:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QDcYgw3dhAG0QK3oKSm4AT3XxIDlGs49V7BCOd57rYEEGV5e3zjuheY9L+T6OIEQUkL1CXF9Dw6s2rYVJMXtgdYqUcx3FpuVxi40XzAs5ZPT0h+wclF0lJyNHepUuoTHE8Y/ZZza+lmII6TSA70rRyX+HonGhoDXrC4+bMwhwcLz7rB/GQ6w2c+PNqF5NRL3OKwABol2FOrCAH2sHnPNSf9ky/6k1fiifh22mWOFx13UTbe3L+UoFPte1B0Qugvs1xIGVGUvLpToBGq5Kh8qbmRCQ5W2bsd9WgLGFQqAz5g8HR317990SD5iLhqpOlyb/dhqNUuoTbiVCVYJF8HplA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f5XqRGO2XU+6eDMGrcZXWY96UFB67CIDbxFStqSp/l4=;
+ b=CE82iT4A7xElFZ1noeXrjatq3bSP7DPImV8zbOjGbtIJ+p0vlyI3mNkGLvqc7iNneNWzu8r/37+x/Zajruu1g4sTJqpxGK+7U5ma+eFKr0Xt5fhYP7WqzOhWLuAwQ+hkAQFaxNj8OHysamA6eNcWQ2FeKCtx/DJkthuN9cOSgrISsWjy/1BRKqwG+Ch157ZvCq7KQhZGmJAIc0lmfFvxYIDJuDE7XAttx1FdZ5ZY1s3xpS+/8nusJCjlQV3TEf/ZYLd8DFdt15q7EhROIDMCdaeY2KNpR6WFb0h87lnp2Izh7lidPy83qAETTGu32H3+t/ABnDzFjVWFGTX2lAJ4Aw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=amperemail.onmicrosoft.com; dkim=pass
+ header.d=amperemail.onmicrosoft.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=3ETZGj7tP4LPJJX3gTbO22rzqGgKjA0wOd4KtHhuByU=;
-        b=Mg4pnpFgFKZZJBLzQ1qKeZ2YNGqf4bRkQY1L7o+R+QJz9nj32CjbBqYnEXUkMAG1/b
-         RQdeScZhFceccdfmq704FhXDQy9EYIYrKqq+EYLWiDOwYVGRALkSda67+K4nO8W59eNA
-         Cr7CzzReKIblPFw7QHq2oGrxpSvARlvTLBgqZJxqZT/X7/A88nWkK+sZzHpTKXraD9Og
-         Lq8rduExp4/1hNA6DT+vxslpt2uK/VMz1TpBQ4OWEA2D6mLYS7mYLCcUUNTJNgIpZR/N
-         TciwuTSfnGOldH4VlfhI7pnSvLobOEwidC6TBx9efvCwU5iHfBPiuRJreB4VbCtK4IKL
-         tS0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=3ETZGj7tP4LPJJX3gTbO22rzqGgKjA0wOd4KtHhuByU=;
-        b=mo/Hp1rqCbwSlRsPvgAt69cJOxjxeTwaLN7z8wuQXjm46sfjBpDCSgogrd1uTqHfF/
-         Tl4nrJpApGrlrPhJMEE9C/2/K3N0pBIE0XR4/cI+Bmj5IdJBPeMT96l+MD7PlalUudcl
-         eb5+hGVTxWiuzIzi/z39i99y1r9qifgwzNX1g/6cQbxDc5dvbDIwi/+jsVnnUQBf4QMh
-         0Ao4BEVGCq3Io7HxNukpxTSLL1QpvKJx9f5HjXfp2idwdXfTkkHV2Nkws3uS7Rc6LvCl
-         NNoLar66SRsQW+M2lQPPmVAyZqmk7r0E6toT4DU4SsHjBQaHWtmoYN6o6aKS5Tg03VEx
-         Uj4A==
-X-Gm-Message-State: AOAM530+xalH5NMHi9GGe3+937wi+/6HCwJIzzx4Us8c10KFdXszxnpX
-        EUeLjNpB+Pc2xPvaJ9KKpY9Ir54=
-X-Google-Smtp-Source: ABdhPJwDW3clQJXKUnWrBisMrcF+iUX4tXxHX7jKs1d7Buc4OsKLzobJUjJHBgyfRWM7iXfyloX8fXE=
-Sender: "xii via sendgmr" <xii@hvdc.svl.corp.google.com>
-X-Received: from hvdc.svl.corp.google.com ([2620:15c:2cd:202:cad3:ffff:feb5:feb4])
- (user=xii job=sendgmr) by 2002:a0c:90f1:: with SMTP id p104mr5553548qvp.15.1603227452413;
- Tue, 20 Oct 2020 13:57:32 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 13:57:04 -0700
-In-Reply-To: <20201020205704.1741543-1-xii@google.com>
-Message-Id: <20201020205704.1741543-2-xii@google.com>
-Mime-Version: 1.0
-References: <20201020205704.1741543-1-xii@google.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH v2 1/1] sched: watchdog: Touch kernel watchdog with sched count
-From:   Xi Wang <xii@google.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Don <joshdon@google.com>, linux-kernel@vger.kernel.org,
-        Xi Wang <xii@google.com>, Paul Turner <pjt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+ d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f5XqRGO2XU+6eDMGrcZXWY96UFB67CIDbxFStqSp/l4=;
+ b=p+RcPQdGS0WLE0GXAzhIBtTOd87PP1wnSu4AUYzkDNutcpmpA0cMlT3+i9uA2OzMjLsfjsTGeqoxIa34TrRANYwT7hB3FttgODJ1M+zLs705vo39YQdZ0C+STDZ8BdTP05oGNdJq4CMbAlEZjzeZxD/ZMlmVjKciGq1BUpm7VDk=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none
+ header.from=amperemail.onmicrosoft.com;
+Received: from BYAPR01MB4598.prod.exchangelabs.com (2603:10b6:a03:8a::18) by
+ BY5PR01MB5810.prod.exchangelabs.com (2603:10b6:a03:1ca::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3477.27; Tue, 20 Oct 2020 21:01:22 +0000
+Received: from BYAPR01MB4598.prod.exchangelabs.com
+ ([fe80::419e:edaf:d4b1:3b29]) by BYAPR01MB4598.prod.exchangelabs.com
+ ([fe80::419e:edaf:d4b1:3b29%4]) with mapi id 15.20.3477.028; Tue, 20 Oct 2020
+ 21:01:21 +0000
+Content-Type: text/plain;
+        charset=us-ascii
+Subject: Re: [PATCH v3] driver/perf: Add PMU driver for the ARM DMC-620 memory
+ controller
+From:   Tuan Phan <tuanphan@amperemail.onmicrosoft.com>
+In-Reply-To: <c2a14d58-e18f-ca93-4a56-0de11a41ed73@arm.com>
+Date:   Tue, 20 Oct 2020 14:01:19 -0700
+Cc:     Tuan Phan <tuanphan@os.amperecomputing.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        patches@amperecomputing.com, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <03C33FD7-EED5-41BE-8EB3-CA2AB46D4143@amperemail.onmicrosoft.com>
+References: <1598033450-30145-1-git-send-email-tuanphan@os.amperecomputing.com>
+ <c2a14d58-e18f-ca93-4a56-0de11a41ed73@arm.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+X-Mailer: Apple Mail (2.3654.0.3.2.82)
+X-Originating-IP: [73.151.56.145]
+X-ClientProxiedBy: CY4PR07CA0007.namprd07.prod.outlook.com
+ (2603:10b6:903:165::17) To BYAPR01MB4598.prod.exchangelabs.com
+ (2603:10b6:a03:8a::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.148] (73.151.56.145) by CY4PR07CA0007.namprd07.prod.outlook.com (2603:10b6:903:165::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Tue, 20 Oct 2020 21:01:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5abce23c-20b5-4cb5-0b49-08d8753b4c2c
+X-MS-TrafficTypeDiagnostic: BY5PR01MB5810:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR01MB581030EE885B94CB9C924633E01F0@BY5PR01MB5810.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: H//GYmgXYvYBy6L0vjlkGwGHK96TmpZFvcTWy8Ei+P8gTYl41gzvmsukKUvpFS1rMvPxukCvfJJNYqRx7ZY8rLvA7X+kKG8GCf8HCsG1WrYIPLD/374GabXulBUL9NGm4Y/MtA7kVdfkP9Rtezb8QUqLuZe5Th1W8Bprr2ZLKhFKRZgctLa6mIe/gymuC9lgfWjhqeclTNAig9GqUx5Z3KGVfLHkEICzc5jB5qEdyPb+bsaWNs/mHjPWjHW96p0UYhfeQRgDvhtc+8TYASRrqnpBALvl2F3JeoXPDpUeqOqvXLRGTVvJSGDKv29Mb5jGdXK0ce+Te8C89sZu93w8IA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4598.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(376002)(136003)(366004)(346002)(396003)(16576012)(54906003)(4326008)(186003)(16526019)(478600001)(53546011)(26005)(316002)(2906002)(2616005)(956004)(42882007)(33656002)(8936002)(5660300002)(66476007)(6486002)(8676002)(6916009)(83380400001)(558084003)(66946007)(66556008)(83170400001)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: zOvhsm9JKJPqU9jLwK/i2pdWGgtouTDDMSVt6cpRVih01RagpjSRJyLECkvof93sBh4Jr7kBFrr0N1SnZ/piMJXzlC7AOF2YRbE1qhwlKgftFTe1Mm4eYp4bacyOt4TmscF70Uq4kH2qZDYUhaAYJFY8dcSTWZb0iY0RAykdQDvz+EvqT9LwK7R4yyLRQlnfj7XzDYV8LUDiHf5jsV1k6Akbh5vwx0CT+gVSu4TQ/+Cka/xUXyJ/v5faE0RNM1JiACDMAYjCjY9ku8qHbYCouwP0Cjfex6Yf2/UpWyjP8rEcriFYMR1uGtCtuc8BTsybetDqh9wI/yyUYcMrWWh4kR9W78KNel+x6MhEdepL+rfNVJsH+veSx+3iFnu+FQb1wvh+s/V80drsI8uGeQWOw71rpgQGunQNnY79MPlYchbHaOf0+cN7wsw8DbFwSH6Cn6fdyQ7SoiEg/jN6ztBK6VWua5IRW4ShauSJHBPzvtOn5ukcFZ2xDYg+x1JG2Rz6iby2+99BvJ54+bOHqffbUy+4UOYxJJ6LzTYbzsx2EQhIb/mvMI8lJqLiC2xei8QWAVd3IfKXmEZGPnYDFnt1msWBNbmAqG6Xzph0RAyPtb5RqxRhI08eIms3+d1Znudl5OXT5HeOO7AeRgCyJ1IXPg==
+X-OriginatorOrg: amperemail.onmicrosoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5abce23c-20b5-4cb5-0b49-08d8753b4c2c
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB4598.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2020 21:01:21.8118
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XQO2K8j5Q1Zy7gWjjrmnQC7KPhfww+Mk8K4oVv2AUHCI8l5B6S6iQVjHjYpyhYhvXR6qH2iT5VwWfP8Zwu+hncjVxy2x2c9WPz9frSO4KuC8xhfNUFo16uoukpkfd2Sg
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR01MB5810
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The main purpose of kernel watchdog is to test whether scheduler can
-still schedule tasks on a cpu. In order to reduce latency / jitter
-from periodically invoking watchdog reset in thread context, we can
-simply test if pick_next_task can run. This is done by forcing resched
-and checking rq->sched_count. Compared to actually resetting watchdog
-from cpu stop / migration threads, we lose coverage on: a migration
-thread actually get picked and we actually context switch to the
-migration thread. These steps are unlikely to silently fail. The
-change would provide nearly the same level of protection with less
-overhead.
+Hi Robin,
+Somehow this email account received no content. However, I managed to addre=
+ss your comments and will post another patch.
+Thanks for very detail comments.
 
-With this patch we can still switch back to the old method with the
-boot option watchdog_touch_with_thread. However code for the old
-method can be completely removed in the future.
-
-Suggested-by: Paul Turner <pjt@google.com>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Xi Wang <xii@google.com>
----
- include/linux/sched.h |  4 ++++
- kernel/sched/core.c   | 23 ++++++++++++++++++++--
- kernel/sched/sched.h  |  6 +++++-
- kernel/watchdog.c     | 44 +++++++++++++++++++++++++++++++++++++------
- 4 files changed, 68 insertions(+), 9 deletions(-)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index d383cf09e78f..1e3bef9a9cdb 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1662,6 +1662,10 @@ extern int sched_setattr(struct task_struct *, const struct sched_attr *);
- extern int sched_setattr_nocheck(struct task_struct *, const struct sched_attr *);
- extern struct task_struct *idle_task(int cpu);
- 
-+#ifdef CONFIG_SOFTLOCKUP_DETECTOR
-+extern unsigned int sched_get_count(int cpu);
-+#endif
-+
- /**
-  * is_idle_task - is the specified task an idle task?
-  * @p: the task in question.
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8160ab5263f8..378f0f36c402 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4293,8 +4293,6 @@ static inline void schedule_debug(struct task_struct *prev, bool preempt)
- 	rcu_sleep_check();
- 
- 	profile_hit(SCHED_PROFILING, __builtin_return_address(0));
--
--	schedstat_inc(this_rq()->sched_count);
- }
- 
- static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
-@@ -4492,6 +4490,12 @@ static void __sched notrace __schedule(bool preempt)
- 	clear_tsk_need_resched(prev);
- 	clear_preempt_need_resched();
- 
-+#ifdef CONFIG_SOFTLOCKUP_DETECTOR
-+	this_rq()->sched_count++; /* sched count is also used by watchdog */
-+#else
-+	schedstat_inc(this_rq()->sched_count);
-+#endif
-+
- 	if (likely(prev != next)) {
- 		rq->nr_switches++;
- 		/*
-@@ -5117,6 +5121,21 @@ struct task_struct *idle_task(int cpu)
- 	return cpu_rq(cpu)->idle;
- }
- 
-+#ifdef CONFIG_SOFTLOCKUP_DETECTOR
-+
-+/**
-+ * sched_get_count - get the sched count of a CPU.
-+ * @cpu: the CPU in question.
-+ *
-+ * Return: sched count.
-+ */
-+unsigned int sched_get_count(int cpu)
-+{
-+	return cpu_rq(cpu)->sched_count;
-+}
-+
-+#endif
-+
- /**
-  * find_process_by_pid - find a process with a matching PID value.
-  * @pid: the pid in question.
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 28709f6b0975..f23255981d52 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -959,6 +959,11 @@ struct rq {
- 	u64			clock_pelt;
- 	unsigned long		lost_idle_time;
- 
-+#if defined(CONFIG_SCHEDSTATS) || defined(CONFIG_SOFTLOCKUP_DETECTOR)
-+	/* Also used by watchdog - no longer grouping with other sched stats */
-+	unsigned int		sched_count;
-+#endif
-+
- 	atomic_t		nr_iowait;
- 
- #ifdef CONFIG_MEMBARRIER
-@@ -1036,7 +1041,6 @@ struct rq {
- 	unsigned int		yld_count;
- 
- 	/* schedule() stats */
--	unsigned int		sched_count;
- 	unsigned int		sched_goidle;
- 
- 	/* try_to_wake_up() stats */
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 5abb5b22ad13..df7f7e585502 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -170,6 +170,7 @@ static bool softlockup_initialized __read_mostly;
- static u64 __read_mostly sample_period;
- 
- static DEFINE_PER_CPU(unsigned long, watchdog_touch_ts);
-+static DEFINE_PER_CPU(unsigned int, watchdog_sched_prev);
- static DEFINE_PER_CPU(struct hrtimer, watchdog_hrtimer);
- static DEFINE_PER_CPU(bool, softlockup_touch_sync);
- static DEFINE_PER_CPU(bool, soft_watchdog_warn);
-@@ -177,6 +178,12 @@ static DEFINE_PER_CPU(unsigned long, hrtimer_interrupts);
- static DEFINE_PER_CPU(unsigned long, hrtimer_interrupts_saved);
- static unsigned long soft_lockup_nmi_warn;
- 
-+/*
-+ * Touch watchdog if __schedule and pick_next_task can run - avoid actual
-+ * context switch and associated latency for most cases
-+ */
-+int __read_mostly watchdog_touch_with_sched = 1;
-+
- static int __init nowatchdog_setup(char *str)
- {
- 	watchdog_user_enabled = 0;
-@@ -198,6 +205,13 @@ static int __init watchdog_thresh_setup(char *str)
- }
- __setup("watchdog_thresh=", watchdog_thresh_setup);
- 
-+static int __init watchdog_touch_with_thread_setup(char *str)
-+{
-+	watchdog_touch_with_sched = 0;
-+	return 1;
-+}
-+__setup("watchdog_touch_with_thread", watchdog_touch_with_thread_setup);
-+
- static void __lockup_detector_cleanup(void);
- 
- /*
-@@ -239,6 +253,9 @@ static void set_sample_period(void)
- static void __touch_watchdog(void)
- {
- 	__this_cpu_write(watchdog_touch_ts, get_timestamp());
-+	if (watchdog_touch_with_sched)
-+		__this_cpu_write(watchdog_sched_prev,
-+				 sched_get_count(smp_processor_id()));
- }
- 
- /**
-@@ -351,12 +368,14 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 	/* kick the hardlockup detector */
- 	watchdog_interrupt_count();
- 
--	/* kick the softlockup detector */
--	if (completion_done(this_cpu_ptr(&softlockup_completion))) {
--		reinit_completion(this_cpu_ptr(&softlockup_completion));
--		stop_one_cpu_nowait(smp_processor_id(),
--				softlockup_fn, NULL,
--				this_cpu_ptr(&softlockup_stop_work));
-+	if (!watchdog_touch_with_sched) {
-+		/* kick the softlockup detector */
-+		if (completion_done(this_cpu_ptr(&softlockup_completion))) {
-+			reinit_completion(this_cpu_ptr(&softlockup_completion));
-+			stop_one_cpu_nowait(smp_processor_id(),
-+					softlockup_fn, NULL,
-+					this_cpu_ptr(&softlockup_stop_work));
-+		}
- 	}
- 
- 	/* .. and repeat */
-@@ -378,6 +397,19 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		return HRTIMER_RESTART;
- 	}
- 
-+	if (watchdog_touch_with_sched) {
-+		/* Trigger reschedule for the next round */
-+		set_tsk_need_resched(current);
-+		set_preempt_need_resched();
-+		/* sched_count increase in __schedule is taken as watchdog touched */
-+		if (sched_get_count(smp_processor_id()) -
-+		    __this_cpu_read(watchdog_sched_prev)) {
-+			__touch_watchdog();
-+			__this_cpu_write(soft_watchdog_warn, false);
-+			return HRTIMER_RESTART;
-+		}
-+	}
-+
- 	/* check for a softlockup
- 	 * This is done by making sure a high priority task is
- 	 * being scheduled.  The task touches the watchdog to
--- 
-2.29.0.rc1.297.gfa9743e501-goog
+> On Sep 21, 2020, at 5:57 AM, Robin Murphy <robin.murphy@arm.com> wrote:
+>=20
 
