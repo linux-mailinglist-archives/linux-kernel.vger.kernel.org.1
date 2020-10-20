@@ -2,107 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED75C293CF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE3C293CF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 15:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407303AbgJTNHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 09:07:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57446 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406825AbgJTNHT (ORCPT
+        id S2407327AbgJTNJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 09:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406360AbgJTNJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:07:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603199238;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=2anAzapiudNNR8XpuCb8etqjbkocHf/cArg3i1fKpjA=;
-        b=IfHSCzaczjPDzxsQr/fSGCHJe6b7l1sgRT3CtMjusiJywR4LMvUNuh/+TNz2kw0BiS17bU
-        5iIyVzfgPyRbNrNzj6E03/soonZVYrMYk/ccVr9dvazpGEJtXFjkjA3nNbxNxwhMVfKaX+
-        RXfMh8ggM7IgISr8k8kvEZX+LFhHVeM=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-qv_3k5RiMTy5BoVC12cbVQ-1; Tue, 20 Oct 2020 09:07:16 -0400
-X-MC-Unique: qv_3k5RiMTy5BoVC12cbVQ-1
-Received: by mail-qv1-f69.google.com with SMTP id h12so1255798qvk.22
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:07:16 -0700 (PDT)
+        Tue, 20 Oct 2020 09:09:03 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B548EC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:09:01 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id h7so1170153pfn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 06:09:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ITF5JclwspjIVhEI/makUWBTrmHam62Yza4T+6BNq5w=;
+        b=mdxaoKWh+3gz8T9lGzDzOEXWt/zO3loiddpJYHXv040n51bqawqJpJ0gp5x5P9zBvg
+         EUoRIkG1UvLYFTEQx5RDAtfQC00sUg19zGitphqtn71Y4l6a9KoekDNRasPt+VrN1mRC
+         HXKripL5MgSXWDSQiijRI6qFpbyJGjFcakPaf8wpXU/3W3DEkHVejgmCBU3u7QvViVsA
+         0gFj+1QVp+7f9aCTMG7GMfVgTEPGTErZL/jVNtG3bBvIGHR3dGih2DmMzC9JmF/xWeTH
+         lwu7jPYgDbRZuqQQB7GOV0mGjPtpMKXHHo0NL4niXTYiryMLRY1E4plZuivxDvZ9hc3G
+         gCjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=2anAzapiudNNR8XpuCb8etqjbkocHf/cArg3i1fKpjA=;
-        b=hEsBz8dWF+pNLDXt9gayjaQRGSj81wXlbTLHvH1iHIJDlkVvGolK3508o1qoFbRIjb
-         qLe75FEBvuPkdncDBhe5cGU8O0IjbEvojNJZCUcURRd41kkD1cyd2n6pT0velqvsXzOJ
-         izXwLhxXYoZRVN3stzaAaaHlhb/rnPcaRBwpHoM29GrlYbkTGSW2jxwHYy/lQ3uYbV48
-         +rqnAEmhD/4JvpUuEhFd/+WZD/IECDqxKD678T4uZM+Qjanu7yyYTr6zYTCfpdniCNxi
-         dVXnKcXfM9Apii8muoc+3rCrg8rlfDBtssQZi9oUHBSYiusrmq0/6fJsaA0njv3Mkpi7
-         ms0Q==
-X-Gm-Message-State: AOAM531fT8wb2LwKYC5CjPFrNkF9+ZLPA2vvToMl58qQQm/Uhsr0vxU3
-        OjHbUsF7ywS/byFP/GwJtnlmVGOX0TVXKIa8LT6c9JNKg4+KMKcNTAwomJ/Sw7HI5ttrI1AxnUm
-        6wT0pZ9X3C15c51nKEXIGqQET
-X-Received: by 2002:aed:216b:: with SMTP id 98mr2299347qtc.233.1603199234956;
-        Tue, 20 Oct 2020 06:07:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxqNg7p1DO3AxkYDn6Hv+sy3YgDE6VecvNiBWMxgWFr77Yf6Q7cXLbaArbHxGEA5CBuDcGZyg==
-X-Received: by 2002:aed:216b:: with SMTP id 98mr2299314qtc.233.1603199234669;
-        Tue, 20 Oct 2020 06:07:14 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 8sm760540qkm.0.2020.10.20.06.07.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 06:07:14 -0700 (PDT)
-From:   trix@redhat.com
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com
-Cc:     linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH v2] tty: serial: imx: remove unneeded break
-Date:   Tue, 20 Oct 2020 06:07:09 -0700
-Message-Id: <20201020130709.28096-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ITF5JclwspjIVhEI/makUWBTrmHam62Yza4T+6BNq5w=;
+        b=bFZt2+2pO6moofMMb6AB27DwhISq/9hSoINEDXt2sPEwnKfqybL8K6bhuKWTEhFqVj
+         QDkMrht1Gt4TOsZNt4QcfH7/uNDpsL9ZxUzVkLheZb6w43maVOxzAyQnWfMOSZSXL/43
+         BqlLAMz7Z+4t0KBLkDnmluJG51ITteQtbsMui0ajWGMOp4ISa/pu7hhytiRGZudRwD3L
+         OgiPmL/olJVpGRHFLrJYJl7m/2+N2es7VY+W8V2vbyGZFfZIWp9hFXFp2JCqJ2Yzdy9z
+         BDwYpoSKK3k0aH223GmhSHzFnOubOibVSrDcCJQrO5ZQW6vfKWVSWgZOOGDSQ4bgiaQT
+         laPQ==
+X-Gm-Message-State: AOAM533MbO99Zy4yuS5GyR2wW+IOObdk+orpaa8r3YTu+yKxXQ8O9s5d
+        xbsahp5h1zn6dOjVtJxcYPUf4aCdZQ0qBjR7O6R8mg==
+X-Google-Smtp-Source: ABdhPJxabMb2qd9lo31jJKqCx7rg2FeGmCHQDAGFjsaMcfo4CLQwDJY4kd0+ooqXExTvQ+VeQbb0b6k0LnrYe2EwGBs=
+X-Received: by 2002:a63:313:: with SMTP id 19mr2529541pgd.341.1603199341306;
+ Tue, 20 Oct 2020 06:09:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201019101520.12283-1-songmuchun@bytedance.com>
+ <20201019123137.GG27114@dhcp22.suse.cz> <CAMZfGtVa7n_W2QYA1a8xM3HFtPne8XcWDObytEujO47CBkwYWw@mail.gmail.com>
+ <1b5198a5-247c-23aa-3be7-f5821a672cc2@windriver.com>
+In-Reply-To: <1b5198a5-247c-23aa-3be7-f5821a672cc2@windriver.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 20 Oct 2020 21:08:25 +0800
+Message-ID: <CAMZfGtVJb1HJLGEYH2aFgDvjES80UYm11cYadLo0jrmUTsy0eg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm/memory.c: Introduce non-atomic __{Set,Clear}PageSwapCache
+To:     "Xu, Yanfei" <yanfei.xu@windriver.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, osalvador@suse.de,
+        alexander.h.duyck@linux.intel.com, yang.shi@linux.alibaba.com,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hugh Dickins <hughd@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Tue, Oct 20, 2020 at 7:51 PM Xu, Yanfei <yanfei.xu@windriver.com> wrote:
+>
+>
+>
+> On 10/19/20 10:58 PM, Muchun Song wrote:
+> > On Mon, Oct 19, 2020 at 8:31 PM Michal Hocko <mhocko@suse.com> wrote:
+> >>
+> >> On Mon 19-10-20 18:15:20, Muchun Song wrote:
+> >>> For the exclusive reference page, the non-atomic operations is enough=
+,
+> >>> so replace them to non-atomic operations.
+> >>
+> >> I do expect you do not see any difference in runtime and this is mostl=
+y
+> >> driven by the code reading, right? Being explicit about this in the co=
+de
+> >> would be preferred.
+> >
+> > Yeah, just code reading.And the set_bit and __set_bit is actually diffe=
+rent
+> > on some architectures. Thanks.
+> >
+> >>
+> >> No objection to the change.
+> >>
+> >>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >>
+> >> With an improved changelog
+> >> Acked-by: Michal Hocko <mhocko@suse.com>
+> >>
+> >>> ---
+> >>>   include/linux/page-flags.h | 2 ++
+> >>>   mm/memory.c                | 4 ++--
+> >>>   2 files changed, 4 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> >>> index fbbb841a9346..ec039dde5e4b 100644
+> >>> --- a/include/linux/page-flags.h
+> >>> +++ b/include/linux/page-flags.h
+> >>> @@ -401,6 +401,8 @@ static __always_inline int PageSwapCache(struct p=
+age *page)
+> >>>   }
+> >>>   SETPAGEFLAG(SwapCache, swapcache, PF_NO_TAIL)
+> >>>   CLEARPAGEFLAG(SwapCache, swapcache, PF_NO_TAIL)
+> >>> +__SETPAGEFLAG(SwapCache, swapcache, PF_NO_TAIL)
+> >>> +__CLEARPAGEFLAG(SwapCache, swapcache, PF_NO_TAIL)
+> >>>   #else
+> >>>   PAGEFLAG_FALSE(SwapCache)
+> >>>   #endif
+> >>> diff --git a/mm/memory.c b/mm/memory.c
+> >>> index 2d267ef6621a..02dd62da26e0 100644
+> >>> --- a/mm/memory.c
+> >>> +++ b/mm/memory.c
+> >>> @@ -3128,10 +3128,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> >>>                                set_page_private(page, entry.val);
+> >>>
+> >>>                                /* Tell memcg to use swap ownership re=
+cords */
+> >>> -                             SetPageSwapCache(page);
+> >>> +                             __SetPageSwapCache(page);
+>
+> Good evening, Muchun. I found there are still some places could be
+> replaced with __SetPageSwapCache=EF=BC=88=EF=BC=89. Such as shmem_replace=
+_page=EF=BC=88=EF=BC=89, why
 
-A break is not needed if it is preceded by a return
+Yeah, thanks for your suggestion.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
+> PG_locked has been set before SetPageSwapCache=EF=BC=88=EF=BC=89 is invol=
+ved.
 
-v2: improve commit log
+In this case, It doesn't matter whether PG_locked is set before
+SetPageSwapCache.
 
----
- drivers/tty/serial/imx.c | 5 -----
- 1 file changed, 5 deletions(-)
+>
+> Would you please to check the rest places? :)
 
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 1731d9728865..09703079db7b 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -320,7 +320,6 @@ static u32 imx_uart_readl(struct imx_port *sport, u32 offset)
- 	switch (offset) {
- 	case UCR1:
- 		return sport->ucr1;
--		break;
- 	case UCR2:
- 		/*
- 		 * UCR2_SRST is the only bit in the cached registers that might
-@@ -331,16 +330,12 @@ static u32 imx_uart_readl(struct imx_port *sport, u32 offset)
- 		if (!(sport->ucr2 & UCR2_SRST))
- 			sport->ucr2 = readl(sport->port.membase + offset);
- 		return sport->ucr2;
--		break;
- 	case UCR3:
- 		return sport->ucr3;
--		break;
- 	case UCR4:
- 		return sport->ucr4;
--		break;
- 	case UFCR:
- 		return sport->ufcr;
--		break;
- 	default:
- 		return readl(sport->port.membase + offset);
- 	}
--- 
-2.18.1
+Ok, I'll take a look. Thanks.
 
+>
+> Thanks
+>
+> Acked-by: Yanfei Xu <yanfei.xu@windriver.com>
+>
+> >>>                                err =3D mem_cgroup_charge(page, vma->v=
+m_mm,
+> >>>                                                        GFP_KERNEL);
+> >>> -                             ClearPageSwapCache(page);
+> >>> +                             __ClearPageSwapCache(page);
+> >>>                                if (err) {
+> >>>                                        ret =3D VM_FAULT_OOM;
+> >>>                                        goto out_page;
+> >>> --
+> >>> 2.20.1
+> >>>
+> >>
+> >> --
+> >> Michal Hocko
+> >> SUSE Labs
+> >
+> >
+> >
+
+
+
+--
+Yours,
+Muchun
