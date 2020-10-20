@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2723C2943E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171262943EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438489AbgJTU21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 16:28:27 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:37929 "EHLO ozlabs.org"
+        id S2409465AbgJTU3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 16:29:15 -0400
+Received: from mga18.intel.com ([134.134.136.126]:63437 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438468AbgJTU20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:28:26 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CG4vX3h3lz9s0b;
-        Wed, 21 Oct 2020 07:28:24 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603225704;
-        bh=tNVlJUFOHwr3aC1tc2NAjXj72G5LieGth3FCcA8rD1Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=k8SQZUuMffHmSX+zpmFBU8f/t/BpPNVjxLSLzRVPdpjMbWT4vmzo9Jh1Lr9t9ysu7
-         nfQ/rSKhigXH59xyMW28NQS+Pn1NKjauGzJWSCLxJ6BKjQfSS4OWibbtLdbrVY976K
-         s2FspxeDZrh8rULE9rFk4SB69MaS6o10rOeq4GpcxAZsnEHQDySnps81mHKqTtJAJ9
-         nxfVGACK3/P9xA43axCZy0Fbjg0cVv4iSYCuCpqH5iVs2Z6bPEtjV9XWjDkwuMCr6X
-         nQPibmfIuhLmEmi7nnWSnznolbMAM973fVmY6gK2V+uBb8mWL27GV3aYqALlG2SvYy
-         1YrP1itE+pmkA==
-Date:   Wed, 21 Oct 2020 07:28:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the ext4 tree
-Message-ID: <20201021072813.524b9af2@canb.auug.org.au>
+        id S1729043AbgJTU3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 16:29:15 -0400
+IronPort-SDR: fEUDugv1nyYhPtYS6tusqzkj92W8+9ImKPJb1yhwCDUQE1S8jNenRLd9jIGd47SNgp1SXziBWF
+ ivPCVYx9N6CA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="155058814"
+X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
+   d="scan'208";a="155058814"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 13:29:14 -0700
+IronPort-SDR: 8UlM6QoB4Cha/TQLxBcu+GBUwJpDUcClXtoLykjmGNpdtIBzSvsS1eU2RYPL6M7vH76YujtI7q
+ c+loA2epoNqg==
+X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
+   d="scan'208";a="392498035"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 13:29:14 -0700
+Date:   Tue, 20 Oct 2020 13:29:13 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 02/15] perf report: output trace file name in raw
+ trace dump
+Message-ID: <20201020202913.GN466880@tassilo.jf.intel.com>
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+ <87e2050b-37e6-8ed8-e1e0-cfa074b030fa@linux.intel.com>
+ <20201012160144.GA466880@tassilo.jf.intel.com>
+ <42d5395a-71f5-63e1-f7c9-fd76e2b8bee4@linux.intel.com>
+ <a1c21077-0383-aa29-cc79-a8921916c63f@linux.intel.com>
+ <19dd0fa0-c236-6042-8ba6-48b4696e66bb@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/jdLAbczzAawsPgqrrZNo56s";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19dd0fa0-c236-6042-8ba6-48b4696e66bb@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/jdLAbczzAawsPgqrrZNo56s
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+> > After brief evaluation it still doesn't look easy. The simplest thing
+> > I could imagine is to probably combine file_path and file_offset at a
+> > struct object on stack and then pass the object by the reference along
+> > function calls. I expect it will roughly cause the same amount of changes
+> > in the code and saves one argument (GP register). It is not that much
+> > but still. However I don't see issues with passing even 6 args on stack.
+> 
+> Sorry - "passing 6 args to a function call"
 
-Hi all,
+Ah it wasn't about code efficiency, just maintainability. Function calls
+with too many arguments are generally hard to maintain, and typically
+at some point have to be refactored anyways because they tend to grow
+even more over time.
 
-In commit
+But if it's too difficult, ok.
 
-  0e6895ba00b7 ("ext4: implement swap_activate aops using iomap")
-
-Fixes tag
-
-  Fixes: ac58e4fb03f ("ext4: move ext4 bmap to use iomap infrastructure")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/jdLAbczzAawsPgqrrZNo56s
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+PSF0ACgkQAVBC80lX
-0GyZAgf+KMlmn14A3PUKub4EQ62HM7D5Imcx/9QUnUDFprJA/PucMHrU7tNHG3B+
-PAlLDIBuw1PoyHYUboshGLcyAWoQqvXHY7cfIU9qHLvZdnF54n36IyTrJ6tZ2Gzd
-vZ5zhmhy2NDLmj4vJDHZ2ORKFxiwJdFTAyp1v4SOxIDrqm0R6gmF2nVzcSarA71z
-Psxzw90VCPewMO5Wp9JYmYAm7QWUgxcZNrQGgVAymoFt0tG8wdxhDtFtvB38D08F
-DBncAUTD6xvmgf86B9/d2grstDCsrsS28S4itNaU/Gkv0y5qZXv6yLDrwCi2T+5f
-4z4XmJVPoeMFT8llZgoUvkDnsQy0rw==
-=elS8
------END PGP SIGNATURE-----
-
---Sig_/jdLAbczzAawsPgqrrZNo56s--
+-Andi
