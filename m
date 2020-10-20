@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292B22943D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2723C2943E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 22:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438430AbgJTU0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 16:26:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56616 "EHLO mail.kernel.org"
+        id S2438489AbgJTU21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 16:28:27 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:37929 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409465AbgJTU0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 16:26:51 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2438468AbgJTU20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 16:28:26 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF11B2225F;
-        Tue, 20 Oct 2020 20:26:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603225611;
-        bh=CoUtfiz1kJOgqm2tXEx9S/5pbvU3UpVwAFCiJ9qXS8s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=xddF3ZR8ii5p//dq8dMtng4XHR7pnWAxY/TjbVcfI+6bRFtOtq1UAN1VpXQLh/mYZ
-         xExhtl03serbIOClQrXJMMTsjdvJp03tbDbU9tOxhto0W6y1NSsKpEWFR6D8l/AEuC
-         RMdjjeg5JHpmsxEoQd4tlYSuAqkmdDlaVvmMfawE=
-Date:   Tue, 20 Oct 2020 15:26:49 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jon Derrick <jonathan.derrick@intel.com>
-Cc:     linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrzej Jakowski <andrzej.jakowski@linux.intel.com>,
-        Sushma Kalakota <sushmax.kalakota@intel.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@intel.com>
-Subject: Re: [PATCH 5/6] x86/apic/msi: Use Real PCI DMA device when
- configuring IRTE
-Message-ID: <20201020202649.GA394225@bjorn-Precision-5520>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CG4vX3h3lz9s0b;
+        Wed, 21 Oct 2020 07:28:24 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1603225704;
+        bh=tNVlJUFOHwr3aC1tc2NAjXj72G5LieGth3FCcA8rD1Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=k8SQZUuMffHmSX+zpmFBU8f/t/BpPNVjxLSLzRVPdpjMbWT4vmzo9Jh1Lr9t9ysu7
+         nfQ/rSKhigXH59xyMW28NQS+Pn1NKjauGzJWSCLxJ6BKjQfSS4OWibbtLdbrVY976K
+         s2FspxeDZrh8rULE9rFk4SB69MaS6o10rOeq4GpcxAZsnEHQDySnps81mHKqTtJAJ9
+         nxfVGACK3/P9xA43axCZy0Fbjg0cVv4iSYCuCpqH5iVs2Z6bPEtjV9XWjDkwuMCr6X
+         nQPibmfIuhLmEmi7nnWSnznolbMAM973fVmY6gK2V+uBb8mWL27GV3aYqALlG2SvYy
+         1YrP1itE+pmkA==
+Date:   Wed, 21 Oct 2020 07:28:13 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the ext4 tree
+Message-ID: <20201021072813.524b9af2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728194945.14126-6-jonathan.derrick@intel.com>
+Content-Type: multipart/signed; boundary="Sig_/jdLAbczzAawsPgqrrZNo56s";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 01:49:44PM -0600, Jon Derrick wrote:
-> VMD retransmits child device MSI/X with the VMD endpoint's requester-id.
-> In order to support direct interrupt remapping of VMD child devices,
-> ensure that the IRTE is programmed with the VMD endpoint's requester-id
-> using pci_real_dma_dev().
-> 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> Signed-off-by: Jon Derrick <jonathan.derrick@intel.com>
+--Sig_/jdLAbczzAawsPgqrrZNo56s
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-As Thomas (and Stephen) pointed out, this conflicts with 7ca435cf857d
-("x86/irq: Cleanup the arch_*_msi_irqs() leftovers"), which removes
-native_setup_msi_irqs().
+Hi all,
 
-Stephen resolved the conflict by dropping this hunk.  I would rather
-just drop this patch completely from the PCI tree.  If I keep the
-patch, (1) Linus will have to resolve the conflict, and worse, (2)
-it's not clear what happened to the use of pci_real_dma_dev() here.
-It will just vanish into the ether with no explanation other than
-"this function was removed."
+In commit
 
-Is dropping this patch the correct thing to do?  Or do you need to add
-pci_real_dma_dev() elsewhere to compensate?
+  0e6895ba00b7 ("ext4: implement swap_activate aops using iomap")
 
-> ---
->  arch/x86/kernel/apic/msi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/apic/msi.c b/arch/x86/kernel/apic/msi.c
-> index c2b2911feeef..7ca271b8d891 100644
-> --- a/arch/x86/kernel/apic/msi.c
-> +++ b/arch/x86/kernel/apic/msi.c
-> @@ -189,7 +189,7 @@ int native_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
->  
->  	init_irq_alloc_info(&info, NULL);
->  	info.type = X86_IRQ_ALLOC_TYPE_MSI;
-> -	info.msi_dev = dev;
-> +	info.msi_dev = pci_real_dma_dev(dev);
->  
->  	domain = irq_remapping_get_irq_domain(&info);
->  	if (domain == NULL)
-> -- 
-> 2.27.0
-> 
+Fixes tag
+
+  Fixes: ac58e4fb03f ("ext4: move ext4 bmap to use iomap infrastructure")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/jdLAbczzAawsPgqrrZNo56s
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+PSF0ACgkQAVBC80lX
+0GyZAgf+KMlmn14A3PUKub4EQ62HM7D5Imcx/9QUnUDFprJA/PucMHrU7tNHG3B+
+PAlLDIBuw1PoyHYUboshGLcyAWoQqvXHY7cfIU9qHLvZdnF54n36IyTrJ6tZ2Gzd
+vZ5zhmhy2NDLmj4vJDHZ2ORKFxiwJdFTAyp1v4SOxIDrqm0R6gmF2nVzcSarA71z
+Psxzw90VCPewMO5Wp9JYmYAm7QWUgxcZNrQGgVAymoFt0tG8wdxhDtFtvB38D08F
+DBncAUTD6xvmgf86B9/d2grstDCsrsS28S4itNaU/Gkv0y5qZXv6yLDrwCi2T+5f
+4z4XmJVPoeMFT8llZgoUvkDnsQy0rw==
+=elS8
+-----END PGP SIGNATURE-----
+
+--Sig_/jdLAbczzAawsPgqrrZNo56s--
