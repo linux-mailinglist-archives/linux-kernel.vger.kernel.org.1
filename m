@@ -2,102 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD98029351A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540FA293517
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 08:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404450AbgJTGl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 02:41:56 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:49823 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2404440AbgJTGlz (ORCPT
+        id S2404438AbgJTGlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 02:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404421AbgJTGla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 02:41:55 -0400
-X-UUID: 106dd9294fcd431cb2c5a23ffead6e1c-20201020
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=5oMkIsGFoLQ4IdBLm/vtbnr97rCI7oTjafuD1B2qYpM=;
-        b=UhARNXEKXnk9UU42lTNFm6DiylUDMdw51fyJGTpz4PSPDMmzqFPy+9t+iSumF/Ciw0sCFymNrREWWc8OuREu0E5eAxH2kzqSQKMDvUEviBhm88ziTlPlp4ACrLQ2UQ65+yquenhDLCUF5v+b+08Fau5AX8cYdE+F/uK6NcnOJj8=;
-X-UUID: 106dd9294fcd431cb2c5a23ffead6e1c-20201020
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1294043086; Tue, 20 Oct 2020 14:36:40 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 20 Oct 2020 14:36:38 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 20 Oct 2020 14:36:39 +0800
-Message-ID: <1603175799.19799.6.camel@mtkswgap22>
-Subject: Re: [PATCH v2] usb: gadget: configfs: Fix use-after-free issue with
- udc_name
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        Macpaul Lin <macpaul.lin@gmail.com>,
-        Eddie Hung =?UTF-8?Q?=28=E6=B4=AA=E6=AD=A3=E9=91=AB=29?= 
-        <Eddie.Hung@mediatek.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Date:   Tue, 20 Oct 2020 14:36:39 +0800
-In-Reply-To: <1595040303-23046-1-git-send-email-macpaul.lin@mediatek.com>
-References: <1594881666-8843-1-git-send-email-macpaul.lin@mediatek.com>
-         <1595040303-23046-1-git-send-email-macpaul.lin@mediatek.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 20 Oct 2020 02:41:30 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CD8C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:41:30 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id w25so192457oos.10
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:41:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i5LGZ4Z5//+lRNXTDf6tlbBsdMMt7/nvH3Q3EoFvv7s=;
+        b=Seh8wX3yNDbz2GaumO8yPfsIcVs44ueyV8duc/RD0O/2j5QVWjxuAfj7ov8QrLl/1t
+         2Ifriom0ENn+iNMhZNB38+XJdOd0Lla1+8RFcFXYGYJPlJJCLLJU0QjBQXyS1HYKM7Bf
+         L7/yRX2oScLVkIun/Ob1qL4X33j2g8VWH/kRA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i5LGZ4Z5//+lRNXTDf6tlbBsdMMt7/nvH3Q3EoFvv7s=;
+        b=JLljKF8ZBzNd/OQPr0mrA99qD7oI/bj6MyXFUcErcl0Ro1B87F2Kor2P8rSl/lwWXE
+         7z6uBUxgNpzwKaqHqUDUrycawvnMQIRmlBvOJEI7vK9+OwliGHWk+eQL+fs0iML/RB4c
+         d+cr+ACnjUF6E5K39AR/EYss8iEPLPHzIfQrQI182NMr2dVThGAk40X/nkOEOFOmkWZK
+         KfXL5ad3+TOJvkCH1uDRAIuROUsEOIoJusctvmw2BOWPvtTFbocy0MC35UBJtqbSsLOB
+         HiVV6xhBBMk71c6ksoHsFUVyTWuf8ldwrXtxqvlDKqbaNtiaaWo3Ac4t9JMLrsv8O5fY
+         CfIg==
+X-Gm-Message-State: AOAM533RsccU7BABUhHUqHDycfPJpMYPsQbwLN0Nr1sNuIyPiB2DoJzQ
+        +YyDVedB96ewX8GI73F3B30rERPjImEvwQ==
+X-Google-Smtp-Source: ABdhPJyhsN5uaMKvlXQl5Y5oQReHnCySzG4ZVTobVuwwGV6Ep5uJo6bmBKs5B8dvR8IKWK+MJalxOA==
+X-Received: by 2002:a4a:95cb:: with SMTP id p11mr758950ooi.89.1603176089538;
+        Mon, 19 Oct 2020 23:41:29 -0700 (PDT)
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com. [209.85.167.181])
+        by smtp.gmail.com with ESMTPSA id d64sm289431oia.11.2020.10.19.23.41.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 23:41:28 -0700 (PDT)
+Received: by mail-oi1-f181.google.com with SMTP id q136so1060766oic.8
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 23:41:28 -0700 (PDT)
+X-Received: by 2002:a05:6808:8c:: with SMTP id s12mr808474oic.55.1603176087864;
+ Mon, 19 Oct 2020 23:41:27 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20201009084533.2405320-1-acourbot@chromium.org> <CAMfZQbw4wFzcocXXGavYdt+o8ydUoW4rSw4QnnrbZgwWUnp7Nw@mail.gmail.com>
+In-Reply-To: <CAMfZQbw4wFzcocXXGavYdt+o8ydUoW4rSw4QnnrbZgwWUnp7Nw@mail.gmail.com>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Tue, 20 Oct 2020 15:41:16 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MV=hyZ=yOv++ivd2peGyRntGB4iwgDNwF4RGORFYXRNWQ@mail.gmail.com>
+Message-ID: <CAPBb6MV=hyZ=yOv++ivd2peGyRntGB4iwgDNwF4RGORFYXRNWQ@mail.gmail.com>
+Subject: Re: [PATCH] venus: vdec: return parsed crop information from stream
+To:     Fritz Koenig <frkoenig@chromium.org>
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIwLTA3LTE4IGF0IDEwOjQ1ICswODAwLCBNYWNwYXVsIExpbiB3cm90ZToNCj4g
-RnJvbTogRWRkaWUgSHVuZyA8ZWRkaWUuaHVuZ0BtZWRpYXRlay5jb20+DQo+IFRoZXJlIGlzIGEg
-dXNlLWFmdGVyLWZyZWUgaXNzdWUsIGlmIGFjY2VzcyB1ZGNfbmFtZQ0KPiBpbiBmdW5jdGlvbiBn
-YWRnZXRfZGV2X2Rlc2NfVURDX3N0b3JlIGFmdGVyIGFub3RoZXIgY29udGV4dA0KPiBmcmVlIHVk
-Y19uYW1lIGluIGZ1bmN0aW9uIHVucmVnaXN0ZXJfZ2FkZ2V0Lg0KPiANCj4gQ29udGV4dCAxOg0K
-PiBnYWRnZXRfZGV2X2Rlc2NfVURDX3N0b3JlKCktPnVucmVnaXN0ZXJfZ2FkZ2V0KCktPg0KPiBm
-cmVlIHVkY19uYW1lLT5zZXQgdWRjX25hbWUgdG8gTlVMTA0KPiANCj4gQ29udGV4dCAyOg0KPiBn
-YWRnZXRfZGV2X2Rlc2NfVURDX3Nob3coKS0+IGFjY2VzcyB1ZGNfbmFtZQ0KPiANCj4gQ2FsbCB0
-cmFjZToNCj4gZHVtcF9iYWNrdHJhY2UrMHgwLzB4MzQwDQo+IHNob3dfc3RhY2srMHgxNC8weDFj
-DQo+IGR1bXBfc3RhY2srMHhlNC8weDEzNA0KPiBwcmludF9hZGRyZXNzX2Rlc2NyaXB0aW9uKzB4
-NzgvMHg0NzgNCj4gX19rYXNhbl9yZXBvcnQrMHgyNzAvMHgyZWMNCj4ga2FzYW5fcmVwb3J0KzB4
-MTAvMHgxOA0KPiBfX2FzYW5fcmVwb3J0X2xvYWQxX25vYWJvcnQrMHgxOC8weDIwDQo+IHN0cmlu
-ZysweGY0LzB4MTM4DQo+IHZzbnByaW50ZisweDQyOC8weDE0ZDANCj4gc3ByaW50ZisweGU0LzB4
-MTJjDQo+IGdhZGdldF9kZXZfZGVzY19VRENfc2hvdysweDU0LzB4NjQNCj4gY29uZmlnZnNfcmVh
-ZF9maWxlKzB4MjEwLzB4M2EwDQo+IF9fdmZzX3JlYWQrMHhmMC8weDQ5Yw0KPiB2ZnNfcmVhZCsw
-eDEzMC8weDJiNA0KPiBTeVNfcmVhZCsweDExNC8weDIwOA0KPiBlbDBfc3ZjX25ha2VkKzB4MzQv
-MHgzOA0KPiANCj4gQWRkIG11dGV4X2xvY2sgdG8gcHJvdGVjdCB0aGlzIGtpbmQgb2Ygc2NlbmFy
-aW8uDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBFZGRpZSBIdW5nIDxlZGRpZS5odW5nQG1lZGlhdGVr
-LmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogTWFjcGF1bCBMaW4gPG1hY3BhdWwubGluQG1lZGlhdGVr
-LmNvbT4NCj4gUmV2aWV3ZWQtYnk6IFBldGVyIENoZW4gPHBldGVyLmNoZW5AbnhwLmNvbT4NCj4g
-Q2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gLS0tDQo+IENoYW5nZXMgZm9yIHYyOg0KPiAg
-IC0gRml4IHR5cG8gJXMvY29udGV4L2NvbnRleHQsIFRoYW5rcyBQZXRlci4NCj4gDQo+ICBkcml2
-ZXJzL3VzYi9nYWRnZXQvY29uZmlnZnMuYyB8IDExICsrKysrKysrKy0tDQo+ICAxIGZpbGUgY2hh
-bmdlZCwgOSBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvdXNiL2dhZGdldC9jb25maWdmcy5jIGIvZHJpdmVycy91c2IvZ2FkZ2V0L2NvbmZp
-Z2ZzLmMNCj4gaW5kZXggOWRjMDZhNGUxYjMwLi4yMTExMGIyODY1YjkgMTAwNjQ0DQo+IC0tLSBh
-L2RyaXZlcnMvdXNiL2dhZGdldC9jb25maWdmcy5jDQo+ICsrKyBiL2RyaXZlcnMvdXNiL2dhZGdl
-dC9jb25maWdmcy5jDQo+IEBAIC0yMjEsOSArMjIxLDE2IEBAIHN0YXRpYyBzc2l6ZV90IGdhZGdl
-dF9kZXZfZGVzY19iY2RVU0Jfc3RvcmUoc3RydWN0IGNvbmZpZ19pdGVtICppdGVtLA0KPiAgDQo+
-ICBzdGF0aWMgc3NpemVfdCBnYWRnZXRfZGV2X2Rlc2NfVURDX3Nob3coc3RydWN0IGNvbmZpZ19p
-dGVtICppdGVtLCBjaGFyICpwYWdlKQ0KPiAgew0KPiAtCWNoYXIgKnVkY19uYW1lID0gdG9fZ2Fk
-Z2V0X2luZm8oaXRlbSktPmNvbXBvc2l0ZS5nYWRnZXRfZHJpdmVyLnVkY19uYW1lOw0KPiArCXN0
-cnVjdCBnYWRnZXRfaW5mbyAqZ2kgPSB0b19nYWRnZXRfaW5mbyhpdGVtKTsNCj4gKwljaGFyICp1
-ZGNfbmFtZTsNCj4gKwlpbnQgcmV0Ow0KPiArDQo+ICsJbXV0ZXhfbG9jaygmZ2ktPmxvY2spOw0K
-PiArCXVkY19uYW1lID0gZ2ktPmNvbXBvc2l0ZS5nYWRnZXRfZHJpdmVyLnVkY19uYW1lOw0KPiAr
-CXJldCA9IHNwcmludGYocGFnZSwgIiVzXG4iLCB1ZGNfbmFtZSA/OiAiIik7DQo+ICsJbXV0ZXhf
-dW5sb2NrKCZnaS0+bG9jayk7DQo+ICANCj4gLQlyZXR1cm4gc3ByaW50ZihwYWdlLCAiJXNcbiIs
-IHVkY19uYW1lID86ICIiKTsNCj4gKwlyZXR1cm4gcmV0Ow0KPiAgfQ0KPiAgDQo+ICBzdGF0aWMg
-aW50IHVucmVnaXN0ZXJfZ2FkZ2V0KHN0cnVjdCBnYWRnZXRfaW5mbyAqZ2kpDQoNCkp1c3Qgd2Fu
-dCB0byByZW1pbmQgd2UgaGF2ZSBhIGZpeCBoZXJlIGZvciB1c2IvZ2FkZ2V0L2NvbmZpZ2ZzLmMu
-DQpJZiB0aGUgcGF0Y2ggbmVlZCB0byBiZSBmdXJ0aGVyIHJldmlzZWQsIHBsZWFzZSBsZXQgdXMg
-a25vdy4NCg0KVGhhbmtzIQ0KTWFjcGF1bCBMaW4NCg==
+On Mon, Oct 19, 2020 at 7:19 AM Fritz Koenig <frkoenig@chromium.org> wrote:
+>
+> It looks like only h.264 streams are populating the event.input_crop
+> struct when receiving the HFI_INDEX_EXTRADATA_INPUT_CROP message in
+> event_seq_changed().  vp8/vp9 streams end up with the struct filled
+> with 0.
 
+Indeed. :( I guess we can fallback to the previous behavior of using
+the coded resolution as visible rect when the reported visible rect's
+area is 0. That will preserve the previous behavior until the firmware
+starts reporting this information for all encoded streams.
+
+>
+> On Fri, Oct 9, 2020 at 1:45 AM Alexandre Courbot <acourbot@chromium.org> wrote:
+> >
+> > Per the stateful codec specification, VIDIOC_G_SELECTION with a target
+> > of V4L2_SEL_TGT_COMPOSE is supposed to return the crop area of capture
+> > buffers containing the decoded frame. Until now the driver did not get
+> > that information from the firmware and just returned the dimensions of
+> > CAPTURE buffers.
+> >
+> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> > ---
+> >  drivers/media/platform/qcom/venus/core.h |  1 +
+> >  drivers/media/platform/qcom/venus/vdec.c | 21 ++++++++++++++++-----
+> >  2 files changed, 17 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> > index 7b79a33dc9d6..3bc129a4f817 100644
+> > --- a/drivers/media/platform/qcom/venus/core.h
+> > +++ b/drivers/media/platform/qcom/venus/core.h
+> > @@ -361,6 +361,7 @@ struct venus_inst {
+> >         unsigned int streamon_cap, streamon_out;
+> >         u32 width;
+> >         u32 height;
+> > +       struct v4l2_rect crop;
+> >         u32 out_width;
+> >         u32 out_height;
+> >         u32 colorspace;
+> > diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> > index ea13170a6a2c..ee74346f0cae 100644
+> > --- a/drivers/media/platform/qcom/venus/vdec.c
+> > +++ b/drivers/media/platform/qcom/venus/vdec.c
+> > @@ -325,6 +325,10 @@ static int vdec_s_fmt(struct file *file, void *fh, struct v4l2_format *f)
+> >
+> >         inst->width = format.fmt.pix_mp.width;
+> >         inst->height = format.fmt.pix_mp.height;
+> > +       inst->crop.top = 0;
+> > +       inst->crop.left = 0;
+> > +       inst->crop.width = inst->width;
+> > +       inst->crop.height = inst->height;
+> >
+> >         if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+> >                 inst->fmt_out = fmt;
+> > @@ -343,6 +347,9 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
+> >             s->type != V4L2_BUF_TYPE_VIDEO_OUTPUT)
+> >                 return -EINVAL;
+> >
+> > +       s->r.top = 0;
+> > +       s->r.left = 0;
+> > +
+> >         switch (s->target) {
+> >         case V4L2_SEL_TGT_CROP_BOUNDS:
+> >         case V4L2_SEL_TGT_CROP_DEFAULT:
+> > @@ -363,16 +370,12 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
+> >         case V4L2_SEL_TGT_COMPOSE:
+> >                 if (s->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
+> >                         return -EINVAL;
+> > -               s->r.width = inst->out_width;
+> > -               s->r.height = inst->out_height;
+> > +               s->r = inst->crop;
+> >                 break;
+> >         default:
+> >                 return -EINVAL;
+> >         }
+> >
+> > -       s->r.top = 0;
+> > -       s->r.left = 0;
+> > -
+> >         return 0;
+> >  }
+> >
+> > @@ -1309,6 +1312,10 @@ static void vdec_event_change(struct venus_inst *inst,
+> >
+> >         inst->width = format.fmt.pix_mp.width;
+> >         inst->height = format.fmt.pix_mp.height;
+> > +       inst->crop.left = ev_data->input_crop.left;
+> > +       inst->crop.top = ev_data->input_crop.top;
+> > +       inst->crop.width = ev_data->input_crop.width;
+> > +       inst->crop.height = ev_data->input_crop.height;
+> >
+> >         inst->out_width = ev_data->width;
+> >         inst->out_height = ev_data->height;
+> > @@ -1412,6 +1419,10 @@ static void vdec_inst_init(struct venus_inst *inst)
+> >         inst->fmt_cap = &vdec_formats[0];
+> >         inst->width = frame_width_min(inst);
+> >         inst->height = ALIGN(frame_height_min(inst), 32);
+> > +       inst->crop.left = 0;
+> > +       inst->crop.top = 0;
+> > +       inst->crop.width = inst->width;
+> > +       inst->crop.height = inst->height;
+> >         inst->out_width = frame_width_min(inst);
+> >         inst->out_height = frame_height_min(inst);
+> >         inst->fps = 30;
+> > --
+> > 2.28.0.1011.ga647a8990f-goog
+> >
