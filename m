@@ -2,126 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0934293B17
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87257293B19
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394335AbgJTMTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394309AbgJTMTK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:19:10 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3CEC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 05:19:10 -0700 (PDT)
-Received: from cap.home.8bytes.org (p549add56.dip0.t-ipconnect.de [84.154.221.86])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        id S2394365AbgJTMT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:19:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394348AbgJTMTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:19:24 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 919502AA;
-        Tue, 20 Oct 2020 14:19:07 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] x86/sev-es: Do not support MMIO to/from encrypted memory
-Date:   Tue, 20 Oct 2020 14:18:56 +0200
-Message-Id: <20201020121856.19427-6-joro@8bytes.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201020121856.19427-1-joro@8bytes.org>
-References: <20201020121856.19427-1-joro@8bytes.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 427942222F;
+        Tue, 20 Oct 2020 12:19:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603196363;
+        bh=v6hvzZnm5fO2LRuaf67yjm5Dmk41dAfQBo695kCsG/c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZJJ/FkLcr/+ezJTlcNE93HVLZFVLAgVCweDitu6Xjjt0lx+j8u2muD2BZeJ5OKhWC
+         F/KlgfG/e+ktLqHgxyHqT+l5ubxWadGxHAgHIGncHt3ye3W4AT6Lo4pKaqTEUvnLor
+         29xF8Osd83iq1oX9q5S63X53T3HoF89FKQDuSJiU=
+Date:   Tue, 20 Oct 2020 13:19:13 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Olivier Moysan <olivier.moysan@st.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alexandre.torgue@st.com, arnaud.patard@rtp-net.org,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com
+Subject: Re: [PATCH] ASoC: cs42l51: manage mclk shutdown delay
+Message-ID: <20201020121913.GB9448@sirena.org.uk>
+References: <20201020090457.340-1-olivier.moysan@st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eAbsdosE1cNLO4uF"
+Content-Disposition: inline
+In-Reply-To: <20201020090457.340-1-olivier.moysan@st.com>
+X-Cookie: The people rule.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
 
-MMIO memory is usually not mapped encrypted, so there is no reason to
-support emulated MMIO when it is mapped encrypted.
+--eAbsdosE1cNLO4uF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This prevents a possible hypervisor attack where it maps a RAM page as
-an MMIO page in the nested page-table, so that any guest access to it
-will trigger a #VC exception and leak the data on that page to the
-hypervisor or allows the hypervisor to inject data into the guest.
+On Tue, Oct 20, 2020 at 11:04:57AM +0200, Olivier Moysan wrote:
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/kernel/sev-es.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+> +static int mclk_event(struct snd_soc_dapm_widget *w,
+> +		      struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
+> +	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(comp);
+> +
+> +	if (SND_SOC_DAPM_EVENT_ON(event))
+> +		return clk_prepare_enable(cs42l51->mclk_handle);
+> +
+> +	/* Delay mclk shutdown to fulfill power-down sequence requirements */
+> +	msleep(20);
+> +	clk_disable_unprepare(cs42l51->mclk_handle);
 
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 4a96726fbaf8..421fe0203c68 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -374,8 +374,8 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
- 	return ES_EXCEPTION;
- }
- 
--static bool vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
--				 unsigned long vaddr, phys_addr_t *paddr)
-+static enum es_result vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
-+					   unsigned long vaddr, phys_addr_t *paddr)
- {
- 	unsigned long va = (unsigned long)vaddr;
- 	unsigned int level;
-@@ -394,15 +394,19 @@ static bool vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- 		if (user_mode(ctxt->regs))
- 			ctxt->fi.error_code |= X86_PF_USER;
- 
--		return false;
-+		return ES_EXCEPTION;
- 	}
- 
-+	if (unlikely(WARN_ON_ONCE(pte_val(*pte) & _PAGE_ENC)))
-+		/* Emulated MMIO to/from encrypted memory not supported */
-+		return ES_UNSUPPORTED;
-+
- 	pa = (phys_addr_t)pte_pfn(*pte) << PAGE_SHIFT;
- 	pa |= va & ~page_level_mask(level);
- 
- 	*paddr = pa;
- 
--	return true;
-+	return ES_OK;
- }
- 
- /* Include code shared with pre-decompression boot stage */
-@@ -731,6 +735,7 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- {
- 	u64 exit_code, exit_info_1, exit_info_2;
- 	unsigned long ghcb_pa = __pa(ghcb);
-+	enum es_result res;
- 	phys_addr_t paddr;
- 	void __user *ref;
- 
-@@ -740,11 +745,12 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- 
- 	exit_code = read ? SVM_VMGEXIT_MMIO_READ : SVM_VMGEXIT_MMIO_WRITE;
- 
--	if (!vc_slow_virt_to_phys(ghcb, ctxt, (unsigned long)ref, &paddr)) {
--		if (!read)
-+	res = vc_slow_virt_to_phys(ghcb, ctxt, (unsigned long)ref, &paddr);
-+	if (res != ES_OK) {
-+		if (res == ES_EXCEPTION && !read)
- 			ctxt->fi.error_code |= X86_PF_WRITE;
- 
--		return ES_EXCEPTION;
-+		return res;
- 	}
- 
- 	exit_info_1 = paddr;
--- 
-2.28.0
+Why not use a switch statement here?  The control flow is a bit odd with
+what's basically an if/else done with only one branch in the if - this
+isn't idiomatic for DAPM stuff apart from anything else.
 
+--eAbsdosE1cNLO4uF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+O1cAACgkQJNaLcl1U
+h9A/vAf+JYXtEW1+AAEACgq9gDYA589X13HKVS73HAERhV2VefPqsSWHlF+UhKx1
+YUOU94GV71Ch7RLyaoFfQhaxVZghyjDXxWeqsMe1mJwxVfBCAxq5N6Q/Mm/hyORl
+fA62L8BHyO2iDoJX72VoaGN0HLxTzqWvHXvnhU7tfaaTAVVVdNpBPSya+pbU8EM6
+Ya6XwOejv7Rr3wcO1OsmVJfxW+n4xjyrM06oM+Ld7VSVTXKxdaAgltBthCPxD9pO
+Km4xA9vhbo76xXiER2/arnWKgqSsXAT8bJbK5oipa/RlpnpFXZvokhd0bxBmkOop
+xss2mjf+rEEkN3hJS2irSUZb0/X5sw==
+=Yz7U
+-----END PGP SIGNATURE-----
+
+--eAbsdosE1cNLO4uF--
