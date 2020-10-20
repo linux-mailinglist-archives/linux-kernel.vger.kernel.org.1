@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44D3294473
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 23:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD2C29447F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 23:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409831AbgJTVT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 17:19:29 -0400
-Received: from mga01.intel.com ([192.55.52.88]:50755 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733310AbgJTVT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 17:19:28 -0400
-IronPort-SDR: WOe5jOZrilEgJPr8XJHqznDM2eWczTVZl34U/8EKBb6uBurc1IX7VTXpazzynmU5RN7D3aJhYC
- zg0MYifVSQNA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="184925427"
-X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
-   d="scan'208";a="184925427"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 14:19:27 -0700
-IronPort-SDR: zTwQ0ohRTre5wEy/VJPXFe03vEBCHq4ekeAgNJVc3A05eGKWJE/QUNRfLHjuFiT+xUQVL4FMdX
- mEIr+7A/GdYg==
-X-IronPort-AV: E=Sophos;i="5.77,398,1596524400"; 
-   d="scan'208";a="522512927"
-Received: from pnaik-mobl.amr.corp.intel.com (HELO [10.213.163.220]) ([10.213.163.220])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 14:19:26 -0700
-Subject: Re: [PATCH v39 15/24] x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <7bb4ff7b-0778-ad70-1fe0-6e1db284d45a@intel.com>
-Date:   Tue, 20 Oct 2020 14:19:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+        id S2409891AbgJTVYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 17:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727238AbgJTVYH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 17:24:07 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF1EC0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 14:24:07 -0700 (PDT)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 52B6B806B7;
+        Wed, 21 Oct 2020 10:24:05 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1603229045;
+        bh=0ivsRHeT+t3HrWxbqemy5pdAuw1H/86srNARdUIHiP4=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=rGL0GJJRZLZFLUzqci7nUrRLxmykpLbs+lJrl25qAnxUZveMn805gX8DuitX4AYI3
+         L7l93PhYXfnlKPyKMxPum8whdiywVkHhBqVpWm9YaB5jySK3AQ2t8vc7XYBbDdtnIl
+         jCfISaCVUD+kcQcZY7BIlq/+MiuuSfzFpTCbBdChng7R30N4LFWGSu0hRsSFl7qarS
+         DPdUlBGoxPkVLSYSK/k0HLtXodPFY0O0VkZjPy5wTK9An+pTrJMKbRaJL0m9l/4ZQ1
+         l1/2elykpFFV1G5yBKHjoAxWVmZknZ3JvGj6PLpWbVegVv7dpvIDIf1rtyPa6jwO5W
+         SM1nKtFGQVo0g==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f8f55760001>; Wed, 21 Oct 2020 10:24:06 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
+ by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
+ Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 21 Oct 2020 10:24:04 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.006; Wed, 21 Oct 2020 10:24:04 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+CC:     "andrew@lunn.ch" <andrew@lunn.ch>,
+        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "olteanv@gmail.com" <olteanv@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 3/3] net: dsa: mv88e6xxx: Support serdes ports on
+ MV88E6123/6131
+Thread-Topic: [PATCH v3 3/3] net: dsa: mv88e6xxx: Support serdes ports on
+ MV88E6123/6131
+Thread-Index: AQHWppOIHo6sjfIsxk6UhS3TBwc3O6mfbbqAgAC53AA=
+Date:   Tue, 20 Oct 2020 21:24:04 +0000
+Message-ID: <d4f6fab0-8099-7cc2-dfce-bd7a3363c131@alliedtelesis.co.nz>
+References: <20201020034558.19438-1-chris.packham@alliedtelesis.co.nz>
+ <20201020034558.19438-4-chris.packham@alliedtelesis.co.nz>
+ <20201020101851.GC1551@shell.armlinux.org.uk>
+In-Reply-To: <20201020101851.GC1551@shell.armlinux.org.uk>
+Accept-Language: en-NZ, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <46F921CF8320284AB2383F39140BC84E@atlnz.lc>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/20 9:50 PM, Jarkko Sakkinen wrote:
-> + * Failure to explicitly request access to a restricted attribute will cause
-> + * sgx_ioc_enclave_init() to fail.  Currently, the only restricted attribute
-> + * is access to the PROVISION_KEY.
-
-Could we also justify why access is restricted, please?  Maybe:
-
-	Access is restricted because PROVISION_KEY is burned uniquely
-	into each each processor, making it a perfect unique identifier
-	with privacy and fingerprinting implications.
-
-Are there any other reasons for doing it this way?
+DQpPbiAyMC8xMC8yMCAxMToxOCBwbSwgUnVzc2VsbCBLaW5nIC0gQVJNIExpbnV4IGFkbWluIHdy
+b3RlOg0KPiBPbiBUdWUsIE9jdCAyMCwgMjAyMCBhdCAwNDo0NTo1OFBNICsxMzAwLCBDaHJpcyBQ
+YWNraGFtIHdyb3RlOg0KPj4gK3ZvaWQgbXY4OGU2MTIzX3NlcmRlc19nZXRfcmVncyhzdHJ1Y3Qg
+bXY4OGU2eHh4X2NoaXAgKmNoaXAsIGludCBwb3J0LCB2b2lkICpfcCkNCj4+ICt7DQo+PiArCXUx
+NiAqcCA9IF9wOw0KPj4gKwl1MTYgcmVnOw0KPj4gKwlpbnQgaTsNCj4+ICsNCj4+ICsJaWYgKG12
+ODhlNnh4eF9zZXJkZXNfZ2V0X2xhbmUoY2hpcCwgcG9ydCkgPT0gMCkNCj4+ICsJCXJldHVybjsN
+Cj4+ICsNCj4+ICsJZm9yIChpID0gMDsgaSA8IDI2OyBpKyspIHsNCj4+ICsJCW12ODhlNnh4eF9w
+aHlfcmVhZChjaGlwLCBwb3J0LCBpLCAmcmVnKTsNCj4gU2hvdWxkbid0IHRoaXMgZGVhbCB3aXRo
+IGEgZmFpbGVkIHJlYWQgaW4gc29tZSB3YXksIHJhdGhlciB0aGFuIGp1c3QNCj4gYXNzaWduaW5n
+IHRoZSBsYXN0IG9yIHBvc3NpYmx5IHVuaW5pdGlhbGlzZWQgdmFsdWUgdG8gcFtpXSA/DQoNCm12
+ODhlNjM5MF9zZXJkZXNfZ2V0X3JlZ3MoKSBhbmQgbXY4OGU2MzUyX3NlcmRlc19nZXRfcmVncygp
+IGFsc28gaWdub3JlIA0KdGhlIGVycm9yLiBUaGUgZ2VuZXJpYyBtdjg4ZTZ4eHhfZ2V0X3JlZ3Mo
+KSBtZW1zZXRzIHBbXSB0byAweGZmIHNvIGlmIA0KdGhlIHNlcmRlc19nZXRfcmVncyBmdW5jdGlv
+bnMganVzdCBsZWZ0IGl0IGFsb25lIHdlJ2QgcmV0dXJuIDB4ZmZmZiANCndoaWNoIGlzIHByb2Jh
+Ymx5IGJldHRlciB0aGFuIHJlcGVhdGluZyB0aGUgbGFzdCB2YWx1ZSBhbHRob3VnaCBpdCdzIA0K
+c3RpbGwgYW1iaWd1b3VzIGJlY2F1c2UgMHhmZmZmIGlzIGEgdmFsaWQgdmFsdWUgZm9yIHBsZW50
+eSBvZiB0aGVzZSANCnJlZ2lzdGVycy4NCg0KU2luY2UgaXQgbG9va3MgbGlrZSBJIG5lZWQgdG8g
+Y29tZSB1cCB3aXRoIGFuIGFsdGVybmF0aXZlIHRvIHBhdGNoICMxIA0KSSdsbCBjb25jZW50cmF0
+ZSBvbiB0aGF0IGJ1dCBtYWtpbmcgdGhlIHNlcmRlc19nZXRfcmVncygpIGEgbGl0dGxlIG1vcmUg
+DQplcnJvciB0b2xlcmFudCBpcyBhIGNsZWFudXAgSSBjYW4gZWFzaWx5IHRhY2sgb24gb250byB0
+aGlzIHNlcmllcy4NCg==
