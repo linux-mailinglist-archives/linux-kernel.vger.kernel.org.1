@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD1829407B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDB4294081
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 18:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394606AbgJTQ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 12:28:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43358 "EHLO mail.kernel.org"
+        id S2394634AbgJTQ3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 12:29:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727812AbgJTQ2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 12:28:03 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1733161AbgJTQ3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 12:29:09 -0400
+Received: from kernel.org (unknown [104.132.1.79])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E06E122242;
-        Tue, 20 Oct 2020 16:28:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9773022242;
+        Tue, 20 Oct 2020 16:29:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603211282;
-        bh=Q3yKsQuTMrcCf0pwDqkIgVljF9mzA/TS1grr6L4FtrU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R+iOUOOr2Xrs9zjFAHwZ8brvdqar2y0zqIlt8H+D3GRTfTAjnUfC7mA5Z7eJ5BCiK
-         bLWvQfZZtncflquf6cgbIS33mqTyw3vEc8Wkwkm9PS1Uw/llJ6sZzwc+KsBuB7SWQ2
-         aCra1cHp0/IoYh0qA2M1Y8Hm7eE/g8SsUNkZsaA8=
-Date:   Tue, 20 Oct 2020 18:28:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Laurent Vivier <laurent@vivier.eu>
-Cc:     linux-kernel@vger.kernel.org, Joshua Thompson <funaho@jurai.org>,
-        linux-serial@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH] serial: pmac_zilog: don't init if zilog is not available
-Message-ID: <20201020162844.GA865546@kroah.com>
-References: <20201020162303.1730562-1-laurent@vivier.eu>
+        s=default; t=1603211348;
+        bh=pRBeQL/a5RpVRZarAG306C8c1NuJIWYfe0ySwmJTqGA=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=i2fiDW4JUPUQYMopwJeW41lkYqEGGsqhK8lkx7Mn/TSBJxouQki64PWOV5CKQNIvF
+         cD2zH+Fd+oc2iTQMw2mF5ZbHNlAuzU7oED0ELXKymj42lp/prq7IER9qJtY6lROtS2
+         SW/lEi+T9G6eYaaDIsFbbYOhunmyDv0hQALhKMC8=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020162303.1730562-1-laurent@vivier.eu>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201017020137.1251319-1-sboyd@kernel.org>
+References: <20201017020137.1251319-1-sboyd@kernel.org>
+Subject: Re: [PATCH] clk: qcom: gdsc: Keep RETAIN_FF bit set if gdsc is already on
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Date:   Tue, 20 Oct 2020 09:29:07 -0700
+Message-ID: <160321134713.884498.3399615301658198835@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 06:23:03PM +0200, Laurent Vivier wrote:
-> We can avoid to probe for the Zilog device (and generate ugly kernel warning)
-> if kernel is built for Mac but not on a Mac.
-> 
-> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+Quoting Stephen Boyd (2020-10-16 19:01:37)
+> If the GDSC is enabled out of boot but doesn't have the retain ff bit
+> set we will get confusing results where the registers that are powered
+> by the GDSC lose their contents on the first power off of the GDSC but
+> thereafter they retain their contents. This is because gdsc_init() fails
+> to make sure the RETAIN_FF bit is set when it probes the GDSC the first
+> time and thus powering off the GDSC causes the register contents to be
+> reset. We do set the RETAIN_FF bit the next time we power on the GDSC,
+> see gdsc_enable(), so that subsequent GDSC power off's don't lose
+> register contents state.
+>=20
+> Forcibly set the bit at device probe time so that the kernel's assumed
+> view of the GDSC is consistent with the state of the hardware. This
+> fixes a problem where the audio PLL doesn't work on sc7180 when the
+> bootloader leaves the lpass_core_hm GDSC enabled at boot (e.g. to make a
+> noise) but critically doesn't set the RETAIN_FF bit.
+>=20
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Taniya Das <tdas@codeaurora.org>
+> Cc: Rajendra Nayak <rnayak@codeaurora.org>
+> Fixes: 173722995cdb ("clk: qcom: gdsc: Add support to enable retention of=
+ GSDCR")
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 > ---
->  drivers/tty/serial/pmac_zilog.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
-> index 063484b22523..d1d2e55983c3 100644
-> --- a/drivers/tty/serial/pmac_zilog.c
-> +++ b/drivers/tty/serial/pmac_zilog.c
-> @@ -1867,6 +1867,12 @@ static struct platform_driver pmz_driver = {
->  static int __init init_pmz(void)
->  {
->  	int rc, i;
-> +
-> +#ifdef CONFIG_MAC
-> +	if (!MACH_IS_MAC)
-> +		return -ENODEV;
-> +#endif
 
-Why is the #ifdef needed?
-
-We don't like putting #ifdef in .c files for good reasons.  Can you make
-the api check for this work with and without that #ifdef needed?
-
-thanks,
-
-greg k-h
+Applied to clk-next
