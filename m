@@ -2,109 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8BE293E60
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3D3293E62
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 16:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407924AbgJTONb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 10:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407885AbgJTONb (ORCPT
+        id S2407930AbgJTONk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 10:13:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45167 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407926AbgJTONj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 10:13:31 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F04C061755;
-        Tue, 20 Oct 2020 07:13:31 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id n15so2362196wrq.2;
-        Tue, 20 Oct 2020 07:13:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lPduyuxLbnNllpgP2V2Es26ID1Kul6jDVcjp8m/z5tY=;
-        b=QcseFjYifB/nVwGx8PCygt1Vws+vwLnAZoZnY7eb+iBfLZPjf+93MuL4oIrSF3TqfC
-         t69uXmycEpmZ8Azg+sKG9GWz/Am2OTJu/qeKLFSlY9WSSG1cfk2uOPA9NiCPb4DQMqYl
-         6fapEZnNZXGx8L+uJXYUcMlF5Hyeqsy9sMoB1D8noPcM7CejcLlnPih2gDvfpZPepWwl
-         7vpQT6YplrXfqnr3EkcipvsyhOeZjoxjrC3zt6VHeuH+YO6rdtoy9c8ozGhzw158resj
-         12A2r+FvK90i6Alpn0wYzxLn7zMstl6o+V1AyDsy0DMZwitTVKQxEBQdxNMC7jqOspGy
-         2hAw==
+        Tue, 20 Oct 2020 10:13:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603203218;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R16EbEDXYLBuqh4nIdDbRp7O0oRY2wnv3lXnFRIbqKI=;
+        b=XFRswQp4/zXOXJyqNLYjXAGHiIgOZ6vHdBYyP5Y7Xw8h+xFOwyu0r88s5v1vqhrvyd21Z5
+        wjBbqCL+z/0uA1TZdfbX9NtaSrVYi1ND2PKpYKPeo+iZQDR3OvrAPFZUgTUmbNI3dRo5bf
+        ernnHQ0I/8pavyxjrjlPviwJb2dCtnE=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-170-FHT61r7qPqKo-a9wwil6ow-1; Tue, 20 Oct 2020 10:13:35 -0400
+X-MC-Unique: FHT61r7qPqKo-a9wwil6ow-1
+Received: by mail-qv1-f70.google.com with SMTP id t13so1438297qvm.14
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 07:13:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lPduyuxLbnNllpgP2V2Es26ID1Kul6jDVcjp8m/z5tY=;
-        b=TQmw1he6hDyWz6Z2RgBHxaiQ9xodeGo0KOaqjyTBYFMBHO1T9hy1fwpi6vC+6stWoi
-         PGPSJCTScQ2iOhccZ851yF43ySjBVyGTj4VIFX4TUL1z1V8TH4MHGAISmUPsw0LJ5at2
-         F6BNH245vtyMdcyJaKoGtuH5IDmP6vJbFdJbegbKXMwZSMIVzZF5vbA5rO75UbS61hTO
-         sIcVhubXsoH2G5YuQ1bABklHwD5EUFrrzAHbinrIt0ItuO6SS8d1bTsJjsr6GKmdxoXE
-         cCoXxez/EEIOwQScYbJ3fBsaOW7L4dqZijbaynnb4Jq30zB1MLD1Q9Vpy5REWui3RmSc
-         5B1Q==
-X-Gm-Message-State: AOAM531ZP1eI/qevIZO2q+SrzoqoAH0WA5o2HogYqQ7EcStAbfy7sRAc
-        Jo2kbUovIDbs2UUxXiyJ32Wc2zATHDYQAlT7NHU=
-X-Google-Smtp-Source: ABdhPJwiIFJyn3Q5AIFqYLZqNCyx2EQe+Sgocwvo1SpEVzuITf+JiH5ahXbfSyscCtrJiTVAeTVSlYpIvlkgFI7GjVc=
-X-Received: by 2002:a5d:640d:: with SMTP id z13mr3657378wru.28.1603203208025;
- Tue, 20 Oct 2020 07:13:28 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=R16EbEDXYLBuqh4nIdDbRp7O0oRY2wnv3lXnFRIbqKI=;
+        b=MeL9aLTTX4BNewr4rd9E/zmv/1TIO8GFI0LMy+2AuDTZUN5nfS5SA3ADWqNIL6SaQ1
+         q7yjSYzMkjfA4TjIYVb4xw363Z7gsUD7hPu/85yndJymGgVWBCb1PLPLQ9IYcWsd9ISV
+         TohRlIO6EPGz6PshALMBgqVS5CUOes73KGeEZD9y7yhsqh3V8tgrxFyeMtL7bsomNdjJ
+         8s17EMKVMg7ZwrM77QETEKz3nIC0F0rRmbIb3aPeDM0JxLnArM3JsEG8rHm8pVCYN1H4
+         F64efyMR4v01gCsZNjIE1JDHzRq+g7LOSsN1bmC6gvwFNmywky7urE4J39+OwYeVS3dN
+         FC6g==
+X-Gm-Message-State: AOAM533dBalpAmUn5KM/OYgV8n8/5votTnprCbiyhvnfsdWG42+XbJOa
+        4wEEOYtLcePHCjmMAVhzhFSe00OYmQcmS7HYWLFkEW08LH5P7V6/AEJcRLz+5MK5kx2dnutExbQ
+        cyrfbnQat/21SeN6ojsDySMkp
+X-Received: by 2002:a37:4244:: with SMTP id p65mr994615qka.141.1603203214566;
+        Tue, 20 Oct 2020 07:13:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz+u0NYgPuykSbBGly8cM+QOe6I8vZ8CSK1Vl+thq2i8Y9RMNBefXkQTQxBeCh/pM8txDvIng==
+X-Received: by 2002:a37:4244:: with SMTP id p65mr994602qka.141.1603203214330;
+        Tue, 20 Oct 2020 07:13:34 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id e19sm806862qkl.94.2020.10.20.07.13.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Oct 2020 07:13:33 -0700 (PDT)
+Subject: Re: [PATCH 1/2] fpga: dfl: add driver_override support
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        lgoncalv@redhat.com, hao.wu@intel.com
+References: <1602828151-24784-1-git-send-email-yilun.xu@intel.com>
+ <1602828151-24784-2-git-send-email-yilun.xu@intel.com>
+ <63d7730b-d9b8-c75d-16f6-3ebb507aabaa@redhat.com>
+ <20201019040612.GA16172@yilunxu-OptiPlex-7050>
+ <f767b9a0-1db8-7ced-6bd9-5ee1f58d40da@redhat.com>
+ <20201020071158.GC28746@yilunxu-OptiPlex-7050>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <48cc1b5f-4bb1-260d-7b8b-9484d3f0a6ba@redhat.com>
+Date:   Tue, 20 Oct 2020 07:13:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20201012020958.229288-1-robdclark@gmail.com> <20201012020958.229288-8-robdclark@gmail.com>
- <20201012143555.GA438822@phenom.ffwll.local> <CAF6AEGstGtBswUUiyHxT2cCm8NwZekDnMzD0J_pQH37GwS=LiA@mail.gmail.com>
- <20201020090729.qgqish5kqamhvatj@vireshk-i7> <CAKMK7uHAgVUPHOPxDdt3LeAWqokxfuzqjZj4qqFkoKxFbRbRrg@mail.gmail.com>
- <20201020112413.xbk2vow2kgjky3pb@vireshk-i7>
-In-Reply-To: <20201020112413.xbk2vow2kgjky3pb@vireshk-i7>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 20 Oct 2020 07:13:16 -0700
-Message-ID: <CAF6AEGsCj-AtFozn8d1xiNNFNbuMJ0UxS-eMhBVXiQ7rKahKnQ@mail.gmail.com>
-Subject: Re: [PATCH v2 07/22] drm/msm: Do rpm get sooner in the submit path
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Menon, Nishanth" <nm@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201020071158.GC28746@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 4:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 20-10-20, 12:56, Daniel Vetter wrote:
-> > Yeah that's bad practice. Generally you shouldn't need to hold locks
-> > in setup/teardown code, since there's no other thread which can
-> > possible hold a reference to anything your touching anymore. Ofc
-> > excluding quickly grabbing/dropping a lock to insert/remove objects
-> > into lists and stuff.
-> >
-> > The other reason is that especially with anything related to sysfs or
-> > debugfs, the locking dependencies you're pulling in are enormous: vfs
-> > locks pull in mm locks (due to mmap) and at that point there's pretty
-> > much nothing left you're allowed to hold while acquiring such a lock.
-> > For simple drivers this is no issue, but for fancy drivers (like gpu
-> > drivers) which need to interact with core mm) this means your
-> > subsystem is a major pain to use.
-> >
-> > Usually the correct fix is to only hold your subsystem locks in
-> > setup/teardown when absolutely required, and fix any data
-> > inconsistency issues by reordering your setup/teardown code: When you
-> > register as the last step and unregister as the first step, there's no
-> > need for any additional locking. And hence no need to call debugfs
-> > functions while holding your subsystem locks.
-> >
-> > The catch phrase I use for this is "don't solve object lifetime issues
-> > with locking". Instead use refcounting and careful ordering in
-> > setup/teardown code.
->
-> This is exactly what I have done in the OPP core, the locks were taken
-> only when really necessary, though as we have seen now I have missed
-> that at a single place and that should be fixed as well. Will do that,
-> thanks.
 
-I do have an easy enough way to repro the issue, so if you have a
-patch I can certainly test it.
+On 10/20/20 12:11 AM, Xu Yilun wrote:
+>>>>>  int __dfl_driver_register(struct dfl_driver *dfl_drv, struct module *owner)
+>>>>>  {
+>>>>> -	if (!dfl_drv || !dfl_drv->probe || !dfl_drv->id_table)
+>>>>> +	if (!dfl_drv || !dfl_drv->probe)
+>>>> id_table is still needed for the normal case.
+>>>>
+>>>> Instead of removing this check, could you add something like
+>>>>
+>>>> || (!dfl_drv->is_override && !dfl_drv->id_table)
+>>> I don't think it is needed. Seems is_override and !id_table are duplicated
+>>> conditions for this implementation. And it may make confusing, e.g. could
+>>> a driver been force matched when is_override is not set?
+>>>
+>>> I think we could make it simple, if the dfl driver didn't provide the
+>>> id_table, normally it could not match any device. I think it could be
+>>> easily understood by dfl driver developers.
+>>>
+>> Then an ASSERT should be added in dfl_bus_match() for id_entry.
+> I didn't get your idea. What Assertion should be added for id_entry?
+> BUG_ON(id_entry == NULL)? Then dfl-uio-pdev can't be inserted before
+> driver_override is set.
+>
+> I think it is normal case that a driver is successfully registered but
+> doesn't match any device because it provides no id_table.
 
-BR,
--R
+Ok, i see your point.
+
+Thanks for the explanation.
+
+Tom
+
+
+>
+> Thanks,
+> Yilun.
+>
+
