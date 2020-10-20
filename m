@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32218293B13
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC0B293B1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394287AbgJTMSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:18:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47744 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2394170AbgJTMSz (ORCPT
+        id S2394355AbgJTMT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394298AbgJTMTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:18:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603196334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pRFnW5gWRuNF8oIJWmD5GYqoHTlkBEqfo58HkD0f8TY=;
-        b=W+wZU3uqsZjbO3V+Tg5z1dVevAvzbTE0HiWu+RH4HGSf1QwfTASbse8iGyEFZ9I5AkTeOJ
-        oNVBZRKcd92r+4nWHPjq24Xp/xWCsG+FNv3gl1Uu2WFrkqxmgk9yBjX8x9SExmOoVmSPd7
-        kwoaBOwoVVbw6vxp+M89vn7no0pbj2c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-2PWSTa4ePPS2qoetoKllmg-1; Tue, 20 Oct 2020 08:18:52 -0400
-X-MC-Unique: 2PWSTa4ePPS2qoetoKllmg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 20 Oct 2020 08:19:08 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D338C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 05:19:08 -0700 (PDT)
+Received: from cap.home.8bytes.org (p549add56.dip0.t-ipconnect.de [84.154.221.86])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74C3F8049DB;
-        Tue, 20 Oct 2020 12:18:49 +0000 (UTC)
-Received: from [10.36.114.141] (ovpn-114-141.ams2.redhat.com [10.36.114.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A3C896EF44;
-        Tue, 20 Oct 2020 12:18:43 +0000 (UTC)
-Subject: Re: [RFCv2 15/16] KVM: Unmap protected pages from direct mapping
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        by theia.8bytes.org (Postfix) with ESMTPSA id 92F12272;
+        Tue, 20 Oct 2020 14:19:05 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
         Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
- <20201020061859.18385-16-kirill.shutemov@linux.intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <f153ef1a-a758-dec7-b39c-9990aac9d653@redhat.com>
-Date:   Tue, 20 Oct 2020 14:18:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] x86/sev-es: Mitigate some HV attack vectors
+Date:   Tue, 20 Oct 2020 14:18:51 +0200
+Message-Id: <20201020121856.19427-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201020061859.18385-16-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.10.20 08:18, Kirill A. Shutemov wrote:
-> If the protected memory feature enabled, unmap guest memory from
-> kernel's direct mappings.
+From: Joerg Roedel <jroedel@suse.de>
 
-Gah, ugly. I guess this also defeats compaction, swapping, ... oh gosh.
-As if all of the encrypted VM implementations didn't bring us enough
-ugliness already (SEV extensions also don't support reboots, but can at
-least kexec() IIRC).
+Hi,
 
-Something similar is done with secretmem [1]. And people don't seem to
-like fragmenting the direct mapping (including me).
+here are some enhancements to the SEV(-ES) code in the Linux kernel to
+self-protect it against some newly detected hypervisor attacks. There
+are 3 attacks addressed here:
 
-[1] https://lkml.kernel.org/r/20200924132904.1391-1-rppt@kernel.org
+	1) Hypervisor does not present the SEV-enabled bit via CPUID
 
--- 
+	2) The Hypervisor presents the wrong C-bit position via CPUID
+
+	3) An encrypted RAM page is mapped as MMIO in the nested
+	   page-table, causing #VC exceptions and possible leak of the
+	   data to the hypervisor or data/code injection from the
+	   Hypervisor.
+
+The attacks are described in more detail in this paper:
+
+	https://arxiv.org/abs/2010.07094
+
+Please review.
+
 Thanks,
 
-David / dhildenb
+	Joerg
+
+Changes to v1:
+
+	- Disable CR4.PGE during C-bit test
+
+	- Do not safe/restore caller-safed registers in
+	  set_sev_encryption_mask()
+
+Joerg Roedel (5):
+  x86/boot/compressed/64: Introduce sev_status
+  x86/boot/compressed/64: Add CPUID sanity check to early #VC handler
+  x86/boot/compressed/64: Check SEV encryption in 64-bit boot-path
+  x86/head/64: Check SEV encryption before switching to kernel
+    page-table
+  x86/sev-es: Do not support MMIO to/from encrypted memory
+
+ arch/x86/boot/compressed/ident_map_64.c |  1 +
+ arch/x86/boot/compressed/mem_encrypt.S  | 14 +++-
+ arch/x86/boot/compressed/misc.h         |  2 +
+ arch/x86/kernel/head_64.S               | 14 +++-
+ arch/x86/kernel/sev-es-shared.c         | 26 +++++++
+ arch/x86/kernel/sev-es.c                | 20 ++++--
+ arch/x86/kernel/sev_verify_cbit.S       | 91 +++++++++++++++++++++++++
+ arch/x86/mm/mem_encrypt.c               |  1 +
+ 8 files changed, 160 insertions(+), 9 deletions(-)
+ create mode 100644 arch/x86/kernel/sev_verify_cbit.S
+
+-- 
+2.28.0
 
