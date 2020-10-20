@@ -2,246 +2,481 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14820293744
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA160293759
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392186AbgJTI5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 04:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392179AbgJTI5l (ORCPT
+        id S2392187AbgJTJAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:00:47 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:58199 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728575AbgJTJAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:57:41 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7049AC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:57:41 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id 32so1098526otm.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:57:41 -0700 (PDT)
+        Tue, 20 Oct 2020 05:00:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uT0NXS//qb947TsojT9yUxidX+OMPncJLo1H0INLQEM=;
-        b=msWlPbdDZxBNc5Qy14JyQkFhY4XUh6YKd8wwOYJnYzqM31bknOgjJsUbNU6mAWxqaf
-         vhnn3M/aVFdvVe9tQ3Re9ykUg7U4/o6acqsj5lzpFlaPJfthQd1AVIwWtmSK+lV6oFoj
-         dZ/+4WjPM1HVIZfM1/A/pt6HSCxSYNW8SpCdk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uT0NXS//qb947TsojT9yUxidX+OMPncJLo1H0INLQEM=;
-        b=rYAnp+Iih2DVCI0zkr5EXOS3OMyWpocTRyIgKiI7Tr1Qc8pHL0ZysIw+JG5SozewF4
-         d1L2CdbpO78Q/l9dsmzNurg491BDciPJgwYPFS15S8WpRwvDkB6//y94ox9N2UEkj/35
-         cET/TCPUrWdRJ5aYUkNbybObq6b/MZgoR58v8wM0XLHgy3eP46GPJQrkjRFngIXJM90m
-         9M2habeRn0VxF+VeQmMuaZ0x0D/I+04iKMZ4G67a90F5ovSQgyDHX8tWaLletMrT0xF4
-         pUMuRkXulbTYsir1moPEps78QWOscOMLRB2BY1+8TNUHK7ajP0AgHXW7fYuVRQh9nO1I
-         hLvw==
-X-Gm-Message-State: AOAM532XoRbEgzjj5q1omh1mch9Fyj3ckjq8es3vHUc4FVDpp3lasMVq
-        sqhKZo9fytzgkVR6vqc4AJJE6Oqx/6ILxA==
-X-Google-Smtp-Source: ABdhPJzcIZMNOJQph1cbLXu0dCtLjSK8Oq3a6r0sIQoDrq39bPJFBaU5O/A3VYmSw3s4yN3moM6Dbw==
-X-Received: by 2002:a9d:f03:: with SMTP id 3mr988566ott.21.1603184260298;
-        Tue, 20 Oct 2020 01:57:40 -0700 (PDT)
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com. [209.85.210.47])
-        by smtp.gmail.com with ESMTPSA id e76sm376634oib.16.2020.10.20.01.57.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 01:57:39 -0700 (PDT)
-Received: by mail-ot1-f47.google.com with SMTP id f10so1085351otb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:57:39 -0700 (PDT)
-X-Received: by 2002:a9d:7313:: with SMTP id e19mr961207otk.97.1603184258633;
- Tue, 20 Oct 2020 01:57:38 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1603184443; x=1634720443;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=gJhuhJ955jW/Qf0etCJftL4gN7gWU3ru6SnVkeCCQ5I=;
+  b=XEN/Q/3FkgwKKkL4qmt8YJD44iMXS7ZMjWq2UvalLkbXOdUyFfZFc0SN
+   Zh+SIVkfLLTtkcDwfpZLV3Du7hWhp1ABX9gLIxZb+Ijhgg871fKtMbAWr
+   sxXox8G7rH8FZ7Afylae62RNWoqkxNGcFr8B1tiSH1bILYSp/ku9jFCzS
+   A=;
+X-IronPort-AV: E=Sophos;i="5.77,396,1596499200"; 
+   d="scan'208";a="78101944"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 20 Oct 2020 09:00:35 +0000
+Received: from EX13D31EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id F042FA216F;
+        Tue, 20 Oct 2020 09:00:31 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.237) by
+ EX13D31EUB001.ant.amazon.com (10.43.166.210) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 20 Oct 2020 09:00:11 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
+        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v22 00/18] Introduce Data Access MONitor (DAMON)
+Date:   Tue, 20 Oct 2020 10:59:22 +0200
+Message-ID: <20201020085940.13875-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <1603117737-16965-1-git-send-email-dikshita@codeaurora.org>
-In-Reply-To: <1603117737-16965-1-git-send-email-dikshita@codeaurora.org>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Tue, 20 Oct 2020 17:57:26 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MVPmW7MVveAKYzBXm=g=Ou4xviv5DjqMG+n0ax4OR7O0A@mail.gmail.com>
-Message-ID: <CAPBb6MVPmW7MVveAKYzBXm=g=Ou4xviv5DjqMG+n0ax4OR7O0A@mail.gmail.com>
-Subject: Re: [PATCH] venus: venc: add handling for VIDIOC_ENCODER_CMD
-To:     Dikshita Agarwal <dikshita@codeaurora.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        Vikash Garodia <vgarodia@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.237]
+X-ClientProxiedBy: EX13D41UWC001.ant.amazon.com (10.43.162.107) To
+ EX13D31EUB001.ant.amazon.com (10.43.166.210)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dikshita,
+From: SeongJae Park <sjpark@amazon.de>
 
-On Mon, Oct 19, 2020 at 11:29 PM Dikshita Agarwal
-<dikshita@codeaurora.org> wrote:
->
-> Add handling for below commands in encoder:
-> 1. V4L2_ENC_CMD_STOP
-> 2. V4L2_ENC_CMD_START
+Changes from Previous Version (v21)
+===================================
 
-I suspect this can be implemented more easily (and more safely) using
-the m2m encoder helpers introduced recently. Please see this commit
-for details:
+This version contains below minor changes.
 
-https://github.com/torvalds/linux/commit/2b48e113866a6735de3a99531183afb6217c2a60
+- Fix build warnings and errors (kernel test robot)
+- Fix a memory leak (kmemleak)
+- Respect KUNIT_ALL_TESTS
+- Rebase on v5.9
+- Update the evaluation results
 
-By making use of this you can probably get rid of venus_enc_state
-entirely. Also this generic implementation should take care of corner
-cases that this patch does not address (like streaming off while a
-drain is in progress).
+Introduction
+============
 
->
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> ---
->  drivers/media/platform/qcom/venus/core.h |  9 +++++
->  drivers/media/platform/qcom/venus/venc.c | 64 +++++++++++++++++++++++++++++++-
->  2 files changed, 72 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-> index e30eeaf..5c46936 100644
-> --- a/drivers/media/platform/qcom/venus/core.h
-> +++ b/drivers/media/platform/qcom/venus/core.h
-> @@ -276,6 +276,14 @@ enum venus_dec_state {
->         VENUS_DEC_STATE_DRC             = 7,
->  };
->
-> +enum venus_enc_state {
-> +       VENUS_ENC_STATE_DEINIT          = 0,
-> +       VENUS_ENC_STATE_INIT            = 1,
-> +       VENUS_ENC_STATE_ENCODING        = 2,
-> +       VENUS_ENC_STATE_STOPPED         = 3,
-> +       VENUS_ENC_STATE_DRAIN           = 4,
-> +};
-> +
->  struct venus_ts_metadata {
->         bool used;
->         u64 ts_ns;
-> @@ -367,6 +375,7 @@ struct venus_inst {
->         u8 quantization;
->         u8 xfer_func;
->         enum venus_dec_state codec_state;
-> +       enum venus_enc_state enc_state;
->         wait_queue_head_t reconf_wait;
->         unsigned int subscriptions;
->         int buf_count;
-> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-> index f7fb6e3..c6143b0 100644
-> --- a/drivers/media/platform/qcom/venus/venc.c
-> +++ b/drivers/media/platform/qcom/venus/venc.c
-> @@ -498,6 +498,46 @@ static int venc_enum_frameintervals(struct file *file, void *fh,
->         return 0;
->  }
->
-> +static int
-> +venc_encoder_cmd(struct file *file, void *fh, struct v4l2_encoder_cmd *cmd)
-> +{
-> +       struct venus_inst *inst = to_inst(file);
-> +       struct hfi_frame_data fdata = {0};
-> +       int ret = 0;
-> +
-> +       ret = v4l2_m2m_ioctl_try_encoder_cmd(file, fh, cmd);
-> +       if (ret)
-> +               return ret;
-> +
-> +       mutex_lock(&inst->lock);
-> +
-> +       if (cmd->cmd == V4L2_ENC_CMD_STOP &&
-> +           inst->enc_state == VENUS_ENC_STATE_ENCODING) {
-> +               /*
-> +                * Implement V4L2_ENC_CMD_STOP by enqueue an empty buffer on
-> +                * encoder input to signal EOS.
-> +                */
-> +               if (!(inst->streamon_out && inst->streamon_cap))
-> +                       goto unlock;
-> +
-> +               fdata.buffer_type = HFI_BUFFER_INPUT;
-> +               fdata.flags |= HFI_BUFFERFLAG_EOS;
-> +               fdata.device_addr = 0xdeadb000;
-> +
-> +               ret = hfi_session_process_buf(inst, &fdata);
-> +
-> +               inst->enc_state = VENUS_ENC_STATE_DRAIN;
-> +       } else if (cmd->cmd == V4L2_ENC_CMD_START &&
-> +               inst->enc_state == VENUS_ENC_STATE_STOPPED) {
-> +               vb2_clear_last_buffer_dequeued(&inst->fh.m2m_ctx->cap_q_ctx.q);
-> +               inst->enc_state = VENUS_ENC_STATE_ENCODING;
-> +       }
-> +
-> +unlock:
-> +       mutex_unlock(&inst->lock);
-> +       return ret;
-> +}
-> +
->  static const struct v4l2_ioctl_ops venc_ioctl_ops = {
->         .vidioc_querycap = venc_querycap,
->         .vidioc_enum_fmt_vid_cap = venc_enum_fmt,
-> @@ -525,6 +565,7 @@ static int venc_enum_frameintervals(struct file *file, void *fh,
->         .vidioc_enum_frameintervals = venc_enum_frameintervals,
->         .vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
->         .vidioc_unsubscribe_event = v4l2_event_unsubscribe,
-> +       .vidioc_encoder_cmd = venc_encoder_cmd,
->  };
->
->  static int venc_set_properties(struct venus_inst *inst)
-> @@ -884,6 +925,8 @@ static int venc_start_streaming(struct vb2_queue *q, unsigned int count)
->         if (ret)
->                 goto deinit_sess;
->
-> +       inst->enc_state = VENUS_ENC_STATE_ENCODING;
-> +
->         mutex_unlock(&inst->lock);
->
->         return 0;
-> @@ -903,8 +946,19 @@ static int venc_start_streaming(struct vb2_queue *q, unsigned int count)
->  static void venc_vb2_buf_queue(struct vb2_buffer *vb)
->  {
->         struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
-> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
->
->         mutex_lock(&inst->lock);
-> +
-> +       if (inst->enc_state == VENUS_ENC_STATE_STOPPED) {
-> +               vbuf->sequence = inst->sequence_cap++;
-> +               vbuf->field = V4L2_FIELD_NONE;
-> +               vb2_set_plane_payload(vb, 0, 0);
-> +               v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_DONE);
-> +               mutex_unlock(&inst->lock);
-> +               return;
-> +       }
-> +
->         venus_helper_vb2_buf_queue(vb);
->         mutex_unlock(&inst->lock);
->  }
-> @@ -943,6 +997,11 @@ static void venc_buf_done(struct venus_inst *inst, unsigned int buf_type,
->                 vb->planes[0].data_offset = data_offset;
->                 vb->timestamp = timestamp_us * NSEC_PER_USEC;
->                 vbuf->sequence = inst->sequence_cap++;
-> +
-> +               if ((vbuf->flags & V4L2_BUF_FLAG_LAST) &&
-> +                   inst->enc_state == VENUS_ENC_STATE_DRAIN) {
-> +                       inst->enc_state = VENUS_ENC_STATE_STOPPED;
-> +               }
->         } else {
->                 vbuf->sequence = inst->sequence_out++;
->         }
-> @@ -1041,6 +1100,9 @@ static int venc_open(struct file *file)
->         inst->clk_data.core_id = VIDC_CORE_ID_DEFAULT;
->         inst->core_acquired = false;
->
-> +       if (inst->enc_state == VENUS_ENC_STATE_DEINIT)
-> +               inst->enc_state = VENUS_ENC_STATE_INIT;
-> +
->         venus_helper_init_instance(inst);
->
->         ret = pm_runtime_get_sync(core->dev_enc);
-> @@ -1105,7 +1167,7 @@ static int venc_close(struct file *file)
->         mutex_destroy(&inst->lock);
->         v4l2_fh_del(&inst->fh);
->         v4l2_fh_exit(&inst->fh);
-> -
-> +       inst->enc_state = VENUS_ENC_STATE_DEINIT;
->         pm_runtime_put_sync(inst->core->dev_enc);
->
->         kfree(inst);
-> --
-> 1.9.1
->
+DAMON is a data access monitoring framework for the Linux kernel.  The core
+mechanisms of DAMON called 'region based sampling' and 'adaptive regions
+adjustment' (refer to 'mechanisms.rst' in the 11th patch of this patchset for
+the detail) make it
+
+ - accurate (The monitored information is useful for DRAM level memory
+   management. It might not appropriate for Cache-level accuracy, though.),
+ - light-weight (The monitoring overhead is low enough to be applied online
+   while making no impact on the performance of the target workloads.), and
+ - scalable (the upper-bound of the instrumentation overhead is controllable
+   regardless of the size of target workloads.).
+
+Using this framework, therefore, several memory management mechanisms such as
+reclamation and THP can be optimized to aware real data access patterns.
+Experimental access pattern aware memory management optimization works that
+incurring high instrumentation overhead will be able to have another try.
+
+Though DAMON is for kernel subsystems, it can be easily exposed to the user
+space by writing a DAMON-wrapper kernel subsystem.  Then, user space users who
+have some special workloads will be able to write personalized tools or
+applications for deeper understanding and specialized optimizations of their
+systems.
+
+Evaluations
+===========
+
+We evaluated DAMON's overhead, monitoring quality and usefulness using 24
+realistic workloads on my QEMU/KVM based virtual machine running a kernel that
+v22 DAMON patchset is applied.
+
+DAMON is lightweight.  It increases system memory usage by 0.25% and slows
+target workloads down by 0.89%.
+
+DAMON is accurate and useful for memory management optimizations.  An
+experimental DAMON-based operation scheme for THP, 'ethp', removes 81.73% of
+THP memory overheads while preserving 95.29% of THP speedup.  Another
+experimental DAMON-based 'proactive reclamation' implementation, 'prcl',
+reduces 91.30% of residential sets and 23.45% of system memory footprint while
+incurring only 2.08% runtime overhead in the best case (parsec3/freqmine).
+
+NOTE that the experimentail THP optimization and proactive reclamation are not
+for production but only for proof of concepts.
+
+Please refer to the official document[1] or "Documentation/admin-guide/mm: Add
+a document for DAMON" patch in this patchset for detailed evaluation setup and
+results.
+
+[1] https://damonitor.github.io/doc/html/latest-damon/admin-guide/mm/damon/eval.html
+
+Comparison with Idle Page Tracking
+==================================
+
+Idle Page Tracking allows users to set and read idleness of pages using a
+bitmap file which represents each page with each bit of the file.  One
+recommended usage of it is working set size detection.  Users can do that by
+
+    1. find PFN of each page for workloads in interest,
+    2. set all the pages as idle by doing writes to the bitmap file,
+    3. wait until the workload accesses its working set, and
+    4. read the idleness of the pages again and count pages became not idle.
+
+NOTE: While Idle Page Tracking is for user space users, DAMON is primarily
+designed for kernel subsystems though it can easily exposed to the user space.
+Hence, this section only assumes such user space use of DAMON.
+
+For what use cases Idle Page Tracking would be better?
+------------------------------------------------------
+
+1. Page granularity working set size detection.
+
+DAMON maintains additional metadata for each of the monitoring target regions.
+So, in the page granularity working set size detection use case, DAMON would
+incur (number of monitoring target pages * size of metadata) memory overhead.
+Size of the single metadata item is about 54 bytes, so assuming 4KB pages,
+about 1.3% of monitoring target pages will be additionally used.
+
+All essential metadata for Idle Page Tracking are embedded in 'struct page' and
+page table entries.  Therefore, in this use case, only one counter variable for
+working set size accounting is required if Idle Page Tracking is used.
+
+There are more details to consider, but roughly speaking, this is true in most
+cases.
+
+2. Physical memory monitoring.
+
+Idle Page Tracking receives PFN range as input, so natively supports physical
+memory monitoring.
+
+DAMON is instead designed to be extensible for multiple address spaces and use
+cases by implementing and using primitives for the given use case.  Therefore,
+by theory, DAMON has no limitation in the type of target address space as long
+as primitives for the given address space exists.  However, this patchset
+provides only one implementation of primitives for virtual address spaces.
+
+Therefore, for physical memory monitoring, you should implement your own
+primitives and use it, or simply use Idle Page Tracking.
+
+Nonetheless, RFC patchsets[1] for the physical memory address space primitives
+is already available.  It also supports user memory same to Idle Page Tracking.
+
+[1] https://lore.kernel.org/linux-mm/20200831104730.28970-1-sjpark@amazon.com/
+
+For what use cases DAMON is better?
+-----------------------------------
+
+1. Hotness Monitoring.
+
+Idle Page Tracking let users know only if a page frame is accessed or not.  For
+hotness check, the user should write more code and use more memory.  DAMON do
+that by itself.
+
+2. Low Monitoring Overhead
+
+DAMON receives user's monitoring request with one step and then provide the
+results.  So, roughly speaking, DAMON require only O(1) user/kernel context
+switches.
+
+In case of Idle Page Tracking, however, because the interface receives
+contiguous page frames, the number of user/kernel context switches increases as
+the monitoring target becomes complex and huge.  As a result, the context
+switch overhead could be not negligible.
+
+Moreover, DAMON is born to handle with the monitoring overhead.  Because the
+core mechanism is pure logical, Idle Page Tracking users might be able to
+implement the mechanism on thier own, but it would be time consuming and the
+user/kernel context switching will still more frequent than that of DAMON.
+Also, the kernel subsystems cannot use the logic in this case.
+
+3. More future usecases
+
+While Idle Page Tracking has tight coupling with base primitives (PG_Idle and
+page table Accessed bits), DAMON is designed to be extensible for many use
+cases and address spaces.  If you need some special address type or want to use
+special h/w access check primitives, you can write your own primitives for that
+and configure DAMON to use those.  Therefore, if your use case could be changed
+a lot in future, using DAMON could be better.
+
+Can I use both Idle Page Tracking and DAMON?
+--------------------------------------------
+
+Yes, this patchset makes Idle Page Tracking and DAMON to be safely used on
+single system while synchronizing with each other to prevent any interference.
+So, you can choose whatever you want depending on the characteristics of your
+use cases.
+
+More Information
+================
+
+We prepared a showcase web site[1] that you can get more information.  There
+are
+
+- the official documentations[2],
+- the heatmap format dynamic access pattern of various realistic workloads for
+  heap area[3], mmap()-ed area[4], and stack[5] area,
+- the dynamic working set size distribution[6] and chronological working set
+  size changes[7], and
+- the latest performance test results[8].
+
+[1] https://damonitor.github.io/_index
+[2] https://damonitor.github.io/doc/html/latest-damon
+[3] https://damonitor.github.io/test/result/visual/latest/rec.heatmap.0.png.html
+[4] https://damonitor.github.io/test/result/visual/latest/rec.heatmap.1.png.html
+[5] https://damonitor.github.io/test/result/visual/latest/rec.heatmap.2.png.html
+[6] https://damonitor.github.io/test/result/visual/latest/rec.wss_sz.png.html
+[7] https://damonitor.github.io/test/result/visual/latest/rec.wss_time.png.html
+[8] https://damonitor.github.io/test/result/perf/latest/html/index.html
+
+Baseline and Complete Git Trees
+===============================
+
+The patches are based on the v5.9.  You can also clone the complete git
+tree:
+
+    $ git clone git://github.com/sjp38/linux -b damon/patches/v22
+
+The web is also available:
+https://github.com/sjp38/linux/releases/tag/damon/patches/v22
+
+There are a couple of trees for entire DAMON patchset series.  It includes
+future features.  The first one[1] contains the changes for latest release,
+while the other one[2] contains the changes for next release.
+
+[1] https://github.com/sjp38/linux/tree/damon/master
+[2] https://github.com/sjp38/linux/tree/damon/next
+
+Sequence Of Patches
+===================
+
+First four patches implement the core logics of DAMON.  The 1st patch
+introduces DAMON data structures and functions for manipulation of the
+structures.  Following three patches (2nd to 4th) implement the core mechanisms
+of DAMON, namely regions based sampling (patch 2), adaptive regions adjustment
+(patch 3), and dynamic memory mapping change adoption (patch 4).
+
+Now the essential parts of DAMON is complete, but it cannot work unless someone
+provides primitives for a specific use case.  The following two patches make it
+just work for virtual address spaces monitoring.  The 5th patch makes 'PG_idle'
+can be used by DAMON and the 6th patch implements the virtual memory address
+space specific low primitives using page table Accessed bits and the 'PG_idle'
+page flag.  As use of 'PG_idle' could interfere Idle Page Tracking, the
+primitives are configured to be exclusive with Idle Page Tracking.
+
+As there are some cases Idle Page Tracking could do better, next two patches
+make DAMON coexistable with Idle Page Tracking.  The 7th patch introduces a
+synchronization primitives for concurrent PG_Idle users, and the 8th patch
+makes the primitives for DAMON to synchronize with Idle Page Tracking using
+it.
+
+Now DAMON just works for virtual address space monitoring via the kernel space
+api.  To let the user space users can use DAMON, following six patches add
+interfaces for them.  The 9th patch adds a tracepoint for other tracepoints
+supporting tracers.  The 10th patch implements a DAMON application kernel
+module, namely damon-dbgfs, that simply wraps DAMON and exposes DAMON interface
+to the user space via the debugfs interface.  To let the user space get the
+monitoring results more easily, the 11th patch implements a simple recording
+feature in 'damon-dbgfs'.  The 12nd patch further exports pid of monitoring
+thread (kdamond) to user space for easier cpu usage accounting, and the 13rd
+patch makes the debugfs interface to support multiple contexts.  Then, the 14th
+patch implements an user space tool to provide a minimal reference to the
+debugfs interface and for high level use/tests of the DAMON.
+
+Three patches for maintainability follows.  The 15th patch adds documentations
+for both the user space and the kernel space.  The 16th patch provides unit
+tests (based on the kunit) while the 17th patch adds user space tests (based on
+the kselftest).
+
+Finally, the last patch (18th) updates the MAINTAINERS file.
+
+Patch History
+=============
+
+Changes from v21
+(https://lore.kernel.org/linux-doc/20201005105522.23841-1-sjpark@amazon.com/)
+- Fix build warnings and errors (kernel test robot)
+- Fix a memory leak (kmemleak)
+- Respect KUNIT_ALL_TESTS
+- Rebase on v5.9
+- Update the evaluation results
+
+Changes from v20
+(https://lore.kernel.org/linux-mm/20200817105137.19296-1-sjpark@amazon.com/)
+- s/snprintf()/scnprintf() (Marco Elver)
+- Support multiple contexts for user space users (Shakeel Butt)
+- Export pid of monitoring thread to user space (Shakeel Butt)
+- Let coexistable with Idle Page Tracking
+- Place three parts of DAMON (core, primitives, and dbgfs) in different files
+
+Changes from v19
+(https://lore.kernel.org/linux-mm/20200804091416.31039-1-sjpark@amazon.com/)
+- Place 'CREATE_TRACE_POINTS' after '#include' statements (Steven Rostedt)
+- Support large record file (Alkaid)
+- Place 'put_pid()' of virtual monitoring targets in 'cleanup' callback
+- Avoid conflict between concurrent DAMON users
+- Update evaluation result document
+
+Changes from v18
+(https://lore.kernel.org/linux-mm/20200713084144.4430-1-sjpark@amazon.com/)
+- Drop loadable module support (Mike Rapoport)
+- Select PAGE_EXTENSION if !64BIT for 'set_page_young()'
+- Take care of the MMU notification subscribers (Shakeel Butt)
+- Substitute 'struct damon_task' with 'struct damon_target' for better abstract
+- Use 'struct pid' instead of 'pid_t' as the target (Shakeel Butt)
+- Support pidfd from the debugfs interface (Shakeel Butt)
+- Fix typos (Greg Thelen)
+- Properly isolate DAMON from other pmd/pte Accessed bit users (Greg Thelen)
+- Rebase on v5.8
+
+Changes from v17
+(https://lore.kernel.org/linux-mm/20200706115322.29598-1-sjpark@amazon.com/)
+- Reorganize the doc and remove png blobs (Mike Rapoport)
+- Wordsmith mechnisms doc and commit messages
+- tools/wss: Set default working set access frequency threshold
+- Avoid race in damon deamon start
+
+Changes from v16
+(https://lore.kernel.org/linux-mm/20200615161927.12637-1-sjpark@amazon.com/)
+ - Wordsmith/cleanup the documentations and the code
+ - user space tool: Simplify the code and add wss option for reuse histogram
+ - recording: Check disablement condition properly
+ - recording: Force minimal recording buffer size (1KB)
+
+Changes from v15
+(https://lore.kernel.org/linux-mm/20200608114047.26589-1-sjpark@amazon.com/)
+ - Refine commit messages (David Hildenbrand)
+ - Optimizes three vma regions search (Varad Gautam)
+ - Support static granularity monitoring (Shakeel Butt)
+ - Cleanup code and re-organize the sequence of patches
+
+Please refer to the v15 patchset to get older history.
+
+SeongJae Park (18):
+  mm: Introduce Data Access MONitor (DAMON)
+  mm/damon: Implement region based sampling
+  mm/damon: Adaptively adjust regions
+  mm/damon: Track dynamic monitoring target regions update
+  mm/idle_page_tracking: Make PG_(idle|young) reusable
+  mm/damon: Implement primitives for the virtual memory address spaces
+  mm/page_idle: Avoid interferences from concurrent users
+  mm/damon/primitives: Make coexistable with Idle Page Tracking
+  mm/damon: Add a tracepoint
+  mm/damon: Implement a debugfs-based user space interface
+  mm/damon/dbgfs: Implement recording feature
+  mm/damon/dbgfs: Export kdamond pid to the user space
+  mm/damon/dbgfs: Support multiple contexts
+  tools: Introduce a minimal user-space tool for DAMON
+  Documentation: Add documents for DAMON
+  mm/damon: Add kunit tests
+  mm/damon: Add user space selftests
+  MAINTAINERS: Update for DAMON
+
+ Documentation/admin-guide/mm/damon/guide.rst  | 157 +++
+ Documentation/admin-guide/mm/damon/index.rst  |  15 +
+ Documentation/admin-guide/mm/damon/plans.rst  |  29 +
+ Documentation/admin-guide/mm/damon/start.rst  |  96 ++
+ Documentation/admin-guide/mm/damon/usage.rst  | 302 ++++++
+ .../admin-guide/mm/idle_page_tracking.rst     |  22 +-
+ Documentation/admin-guide/mm/index.rst        |   1 +
+ Documentation/vm/damon/api.rst                |  20 +
+ Documentation/vm/damon/design.rst             | 166 ++++
+ Documentation/vm/damon/eval.rst               | 227 +++++
+ Documentation/vm/damon/faq.rst                |  58 ++
+ Documentation/vm/damon/index.rst              |  31 +
+ Documentation/vm/index.rst                    |   1 +
+ MAINTAINERS                                   |  12 +
+ include/linux/damon.h                         | 257 +++++
+ include/linux/page-flags.h                    |   4 +-
+ include/linux/page_ext.h                      |   2 +-
+ include/linux/page_idle.h                     |   8 +-
+ include/trace/events/damon.h                  |  43 +
+ include/trace/events/mmflags.h                |   2 +-
+ mm/Kconfig                                    |  10 +
+ mm/Makefile                                   |   1 +
+ mm/damon/Kconfig                              |  70 ++
+ mm/damon/Makefile                             |   5 +
+ mm/damon/core-test.h                          | 253 +++++
+ mm/damon/core.c                               | 711 ++++++++++++++
+ mm/damon/dbgfs-test.h                         | 209 ++++
+ mm/damon/dbgfs.c                              | 922 ++++++++++++++++++
+ mm/damon/primitives-test.h                    | 328 +++++++
+ mm/damon/primitives.c                         | 595 +++++++++++
+ mm/page_ext.c                                 |  12 +-
+ mm/page_idle.c                                |  50 +-
+ tools/damon/.gitignore                        |   1 +
+ tools/damon/_damon.py                         | 130 +++
+ tools/damon/_dist.py                          |  35 +
+ tools/damon/_recfile.py                       |  23 +
+ tools/damon/bin2txt.py                        |  67 ++
+ tools/damon/damo                              |  37 +
+ tools/damon/heats.py                          | 362 +++++++
+ tools/damon/nr_regions.py                     |  91 ++
+ tools/damon/record.py                         | 135 +++
+ tools/damon/report.py                         |  45 +
+ tools/damon/wss.py                            | 100 ++
+ tools/testing/selftests/damon/Makefile        |   7 +
+ .../selftests/damon/_chk_dependency.sh        |  28 +
+ tools/testing/selftests/damon/_chk_record.py  | 109 +++
+ .../testing/selftests/damon/debugfs_attrs.sh  | 161 +++
+ .../testing/selftests/damon/debugfs_record.sh |  50 +
+ 48 files changed, 5976 insertions(+), 24 deletions(-)
+ create mode 100644 Documentation/admin-guide/mm/damon/guide.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/index.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/plans.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/start.rst
+ create mode 100644 Documentation/admin-guide/mm/damon/usage.rst
+ create mode 100644 Documentation/vm/damon/api.rst
+ create mode 100644 Documentation/vm/damon/design.rst
+ create mode 100644 Documentation/vm/damon/eval.rst
+ create mode 100644 Documentation/vm/damon/faq.rst
+ create mode 100644 Documentation/vm/damon/index.rst
+ create mode 100644 include/linux/damon.h
+ create mode 100644 include/trace/events/damon.h
+ create mode 100644 mm/damon/Kconfig
+ create mode 100644 mm/damon/Makefile
+ create mode 100644 mm/damon/core-test.h
+ create mode 100644 mm/damon/core.c
+ create mode 100644 mm/damon/dbgfs-test.h
+ create mode 100644 mm/damon/dbgfs.c
+ create mode 100644 mm/damon/primitives-test.h
+ create mode 100644 mm/damon/primitives.c
+ create mode 100644 tools/damon/.gitignore
+ create mode 100644 tools/damon/_damon.py
+ create mode 100644 tools/damon/_dist.py
+ create mode 100644 tools/damon/_recfile.py
+ create mode 100644 tools/damon/bin2txt.py
+ create mode 100755 tools/damon/damo
+ create mode 100644 tools/damon/heats.py
+ create mode 100644 tools/damon/nr_regions.py
+ create mode 100644 tools/damon/record.py
+ create mode 100644 tools/damon/report.py
+ create mode 100644 tools/damon/wss.py
+ create mode 100644 tools/testing/selftests/damon/Makefile
+ create mode 100644 tools/testing/selftests/damon/_chk_dependency.sh
+ create mode 100644 tools/testing/selftests/damon/_chk_record.py
+ create mode 100755 tools/testing/selftests/damon/debugfs_attrs.sh
+ create mode 100755 tools/testing/selftests/damon/debugfs_record.sh
+
+-- 
+2.17.1
+
