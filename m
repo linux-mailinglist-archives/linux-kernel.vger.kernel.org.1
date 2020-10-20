@@ -2,85 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25E9293473
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 07:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E330293476
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 07:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391772AbgJTFy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 01:54:27 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:54258 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2391765AbgJTFy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 01:54:27 -0400
-Received: by ajax-webmail-mail-app3 (Coremail) ; Tue, 20 Oct 2020 13:53:59
- +0800 (GMT+08:00)
-X-Originating-IP: [210.32.148.79]
-Date:   Tue, 20 Oct 2020 13:53:59 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Maxime Ripard" <maxime@cerno.tech>
-Cc:     kjlu@umn.edu, "Alessandro Zummo" <a.zummo@towertech.it>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        "Chen-Yu Tsai" <wens@csie.org>, linux-rtc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] [v2] rtc: sun6i: Fix memleak in sun6i_rtc_clk_init
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.12 build 20200616(0f5d8152)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <20201019080202.kgjoksz27dgyov7q@gilmour.lan>
-References: <20201018072810.4249-1-dinghao.liu@zju.edu.cn>
- <20201019080202.kgjoksz27dgyov7q@gilmour.lan>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S2391784AbgJTFyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 01:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391775AbgJTFyg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 01:54:36 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39A6C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 22:54:35 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id h2so427193pll.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 22:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nxPLYxHdSRuqO69/xXr8NI7f9DVIeX37mXrRDJrlqP4=;
+        b=hTFFYg068bv/W8wuD+QXGdT0tMoV6sqmmj4MLZrSIA7P/6xmFIUQRjMjh5ixEuk9+s
+         bnL+AhKmOrliT6pyNsBC6gnLAROnpdS5jTPDG1uWo7jKcREf9Ef+g4w6ypu8Q4e2vKSi
+         WMXD01+vNIqSPzTbJ6r3aCTbzTeJ8xrzw6rckG4G/b87xYNnD9o8WTTf9Qse37xk0dpw
+         8lj66QqurDpcCyjh3V2xc3uoZN894smzqIMx6JTjJ0avH/v7VrmhSBNX9W4Ptc9epfUs
+         PUEncy4LDJq/ktDFWCXuQaG6BKsbM+i0lNT2ycElQvwdJcpPXIMIZYNrnNW4kI6bDO0H
+         Svfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nxPLYxHdSRuqO69/xXr8NI7f9DVIeX37mXrRDJrlqP4=;
+        b=Fmm8WH2b+T9ltQC3tT9El6fBSgrhKm3mLL6HBzV7WMESaCO+xBdBDHwaMb1+Ue29ay
+         AmDyPeecw6rTuPJE1UG/nKNvbW/IpdE2wQsLIaxu/4X6Hz1JPTVG8tTAWPF3Tf8v4JMP
+         aCwwCcru5k8nYc5pBrbkH6SoAYd9CQ58oTYmwyrwy36UbEuCIvxPMFlGGUknpDB9GrRI
+         fDrtio86oeqpR2ziYmOtGgFLpCHGhuYtZYAsycxJqzZBNzueCbS1ivQSzyDdNQx2/c1f
+         zGBgGA2wEVWbHbj6ZUMSmsGD80mhdTJ5IArakE29DpLMy0OejWKUkppl+o4cKoGA5Kkl
+         ZoUg==
+X-Gm-Message-State: AOAM5308FIp7WDwDQJq2Z+vvcOg4PjACJT6B4bSsLllG6Ntt6+oGDYpS
+        O2MGhy8xzig6IWX2+JN9ZcawCw==
+X-Google-Smtp-Source: ABdhPJyo5+ib86HP6QctLhVLOcHST10R0jSm+p+v6mWQ6N+gPW2j3hELPp5nmsZQE2rwzQDKZp+OMQ==
+X-Received: by 2002:a17:90a:420b:: with SMTP id o11mr1392148pjg.142.1603173275044;
+        Mon, 19 Oct 2020 22:54:35 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id c12sm654902pgd.57.2020.10.19.22.54.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 19 Oct 2020 22:54:34 -0700 (PDT)
+Date:   Tue, 20 Oct 2020 11:24:32 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
+        georgi.djakov@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
+ -EPROBE_DEFER
+Message-ID: <20201020055431.ln7d57x76f7z6j5k@vireshk-i7>
+References: <20201016042434.org6ibdqsqbzcdww@vireshk-i7>
+ <20201016060021.sotk72u4hioctg7o@bogus>
+ <20201016111222.lvakbmjhlrocpogt@bogus>
+ <20201019045827.kl6qnx6gidhzjkrs@vireshk-i7>
+ <20201019091723.GA12087@bogus>
+ <20201019092411.b3znjxebay3puq2j@vireshk-i7>
+ <20201019101241.GB12908@bogus>
+ <20201019103535.ksp5ackoihamam4g@vireshk-i7>
+ <20201019141007.GA6358@bogus>
+ <20201020050557.a3b2nk33eeyxnvl2@vireshk-i7>
 MIME-Version: 1.0
-Message-ID: <7821f744.b49c.17544924954.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgAHPxR3e45fLn05AA--.7567W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgATBlZdtQf4pwAAsx
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbGCS07vEb7Iv0x
-        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
-        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
-        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
-        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlV2xY628EF7xvwVC2z280aVAFwI0_Gc
-        CE3s1lV2xY628EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wCS07vEe2I262IYc4CY6c8I
-        j28IcVAaY2xG8wCS07vE5I8CrVACY4xI64kE6c02F40Ex7xfMIAIbVAv7VC0I7IYx2IY67
-        AKxVWUJVWUGwCS07vEYx0Ex4A2jsIE14v26r1j6r4UMIAIbVAm72CE4IkC6x0Yz7v_Jr0_
-        Gr1lV2xY6x02cVAKzwCS07vEc2xSY4AK67AK6r4rMIAIbVCY0x0Ix7I2Y4AK64vIr41lV2
-        xY6xAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCS07vE4x8a6x804xWlV2xY6xC20s026xCa
-        FVCjc4AY6r1j6r4UMIAIbVC20s026c02F40E14v26r1j6r18MIAIbVC20s026x8GjcxK67
-        AKxVWUGVWUWwCS07vEx4CE17CEb7AF67AKxVWUtVW8ZwCS07vEIxAIcVC0I7IYx2IY67AK
-        xVWUJVWUCwCS07vEIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIAIbVCI42IY6xAIw2
-        0EY4v20xvaj40_WFyUJVCq3wCS07vEIxAIcVC2z280aVAFwI0_Jr0_Gr1lV2xY6IIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020050557.a3b2nk33eeyxnvl2@vireshk-i7>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBIaSwKPiAKPiBPbiBTdW4sIE9jdCAxOCwgMjAyMCBhdCAwMzoyODoxMFBNICswODAwLCBEaW5n
-aGFvIExpdSB3cm90ZToKPiA+IFdoZW4gY2xrX2h3X3JlZ2lzdGVyX2ZpeGVkX3JhdGVfd2l0aF9h
-Y2N1cmFjeSgpIGZhaWxzLAo+ID4gY2xrX2RhdGEgc2hvdWxkIGJlIGZyZWVkLiBJdCdzIHRoZSBz
-YW1lIGZvciB0aGUgc3Vic2VxdWVudAo+ID4gdHdvIGVycm9yIHBhdGhzLCBidXQgd2Ugc2hvdWxk
-IGFsc28gdW5yZWdpc3RlciB0aGUgYWxyZWFkeQo+ID4gcmVnaXN0ZXJlZCBjbG9ja3MgaW4gdGhl
-bS4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogRGluZ2hhbyBMaXUgPGRpbmdoYW8ubGl1QHpqdS5l
-ZHUuY24+Cj4gPiAtLS0KPiA+IAo+ID4gQ2hhbmdlbG9nOgo+ID4gCj4gPiB2MjogLSBVbnJlZ2lz
-dGVyIHRoZSBhbHJlYWR5IHJlZ2lzdGVyZWQgY2xvY2tzIG9uIGZhaWx1cmUuCj4gPiAtLS0KPiA+
-ICBkcml2ZXJzL3J0Yy9ydGMtc3VuNmkuYyB8IDggKysrKystLS0KPiA+ICAxIGZpbGUgY2hhbmdl
-ZCwgNSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9ydGMvcnRjLXN1bjZpLmMgYi9kcml2ZXJzL3J0Yy9ydGMtc3VuNmkuYwo+ID4gaW5k
-ZXggZTJiOGIxNTBiY2I0Li42ZGUwZDNhZDczNmEgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL3J0
-Yy9ydGMtc3VuNmkuYwo+ID4gKysrIGIvZHJpdmVycy9ydGMvcnRjLXN1bjZpLmMKPiA+IEBAIC0y
-NzIsNyArMjcyLDcgQEAgc3RhdGljIHZvaWQgX19pbml0IHN1bjZpX3J0Y19jbGtfaW5pdChzdHJ1
-Y3QgZGV2aWNlX25vZGUgKm5vZGUsCj4gPiAgCQkJCQkJCQkzMDAwMDAwMDApOwo+ID4gIAlpZiAo
-SVNfRVJSKHJ0Yy0+aW50X29zYykpIHsKPiA+ICAJCXByX2NyaXQoIkNvdWxkbid0IHJlZ2lzdGVy
-IHRoZSBpbnRlcm5hbCBvc2NpbGxhdG9yXG4iKTsKPiA+IC0JCXJldHVybjsKPiA+ICsJCWdvdG8g
-ZXJyOwo+ID4gIAl9Cj4gPiAgCj4gPiAgCXBhcmVudHNbMF0gPSBjbGtfaHdfZ2V0X25hbWUocnRj
-LT5pbnRfb3NjKTsKPiA+IEBAIC0yOTAsNyArMjkwLDggQEAgc3RhdGljIHZvaWQgX19pbml0IHN1
-bjZpX3J0Y19jbGtfaW5pdChzdHJ1Y3QgZGV2aWNlX25vZGUgKm5vZGUsCj4gPiAgCXJ0Yy0+bG9z
-YyA9IGNsa19yZWdpc3RlcihOVUxMLCAmcnRjLT5odyk7Cj4gPiAgCWlmIChJU19FUlIocnRjLT5s
-b3NjKSkgewo+ID4gIAkJcHJfY3JpdCgiQ291bGRuJ3QgcmVnaXN0ZXIgdGhlIExPU0MgY2xvY2tc
-biIpOwo+ID4gLQkJcmV0dXJuOwo+ID4gKwkJY2xrX2h3X3VucmVnaXN0ZXJfZml4ZWRfcmF0ZShy
-dGMtPmludF9vc2MpOwo+ID4gKwkJZ290byBlcnI7Cj4gPiAgCX0KPiAKPiBUaGUgcG9pbnQgb2Yg
-aGF2aW5nIGxhYmVscyBmb3IgdGhlIGVycm9yIHNlcXVlbmNlIGlzIHRvIGF2b2lkIHRvCj4gZHVw
-bGljYXRlIHRoZSBlcnJvciBoYW5kbGluZyBjb2RlIGluIGVhY2ggYW5kIGV2ZXJ5IGVycm9yIGNv
-ZGUgcGF0aC4KPiAKPiBZb3Ugc2hvdWxkIGFkZCBhbm90aGVyIGxhYmVsIGZvciB0aGUgZml4ZWQg
-cmF0ZSBjbG9jayB1bnJlZ2lzdHJhdGlvbgo+IAoKRmluZSwgSSB3aWxsIGZpeCB0aGlzIHNvb24u
-CgpSZWdhcmRzLApEaW5naGFvCg==
+On 20-10-20, 10:35, Viresh Kumar wrote:
+> On 19-10-20, 15:10, Sudeep Holla wrote:
+> > On Mon, Oct 19, 2020 at 04:05:35PM +0530, Viresh Kumar wrote:
+> > > On 19-10-20, 11:12, Sudeep Holla wrote:
+> > > > Yes it has clocks property but used by SCMI(for CPUFreq/DevFreq) and not
+> > > > by any clock provider driver. E.g. the issue you will see if "clocks"
+> > > > property is used instead of "qcom,freq-domain" on Qcom parts.
+> > > 
+> > > Okay, I understand. But what I still don't understand is why it fails
+> > > for you. You have a clocks property in DT for the CPU, the OPP core
+> > > tries to get it and will get deferred-probed, which will try probing
+> > > at a later point of time and it shall work then. Isn't it ?
+> > >
+> > 
+> > Nope unfortunately. We don't have clock provider, so clk_get will
+> > never succeed and always return -EPROBE_DEFER.
+> 
+> Now this is really bad, you have a fake clocks property, how is the
+> OPP core supposed to know it ? Damn.
+
+What about instead of fixing the OPP core, which really is doing the
+right thing, we fix your driver (as you can't fix the DT) and add a
+dummy CPU clk to make it all work ?
+
+-- 
+viresh
