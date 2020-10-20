@@ -2,121 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7832936EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B8B2936F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 10:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392091AbgJTIkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 04:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
+        id S2392106AbgJTIop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 04:44:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726763AbgJTIkB (ORCPT
+        with ESMTP id S2389334AbgJTIoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:40:01 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3198DC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:40:01 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id e17so1058256wru.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:40:01 -0700 (PDT)
+        Tue, 20 Oct 2020 04:44:44 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D10C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:44:43 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id v22so441296ply.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 01:44:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SUh/HgM+ua4NwVRYsXhIRglonIVZJrlor5QZYC9gpY4=;
-        b=V77vpMhwIw+3HwH8CM2qAFK9RNuXrN0WlM5hHqoxwPYWYnGcsQZLYmrHXsTwC/b2tB
-         sfBDlilU4lbEbEX0u1ypCLPJb9Y1vSL45IUIFn7+B2TZetoF/mN44NgeDciJrq+K7hmy
-         08M4MO7L0ZPiEaqz/cJbv+Wm8KnaO9sXrd1VXJ2nPkQuUVCDqE2hBMRokScAToTyxKDC
-         xFKQSkiQ4RzVCFK2qnolRi0rcSNYvrWhV4/zej+NrE7pHpX3sH/iZ2DbVx1K/trt4sCk
-         oY+qr4BwzBVx7M0SpACF/9PglsL8rUUtZt8amrflzFponix3FEhAa9dWoqZ/+eobe535
-         Qebw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=npY3XpZ1WJkzBlC4QeIItPlhppwYJDvN6wAnSiJqkk4=;
+        b=d5KRK+lAAduNlPfivlmVntV0dRiwGVstNHD1SoFQZHyAOFWdms/0ESHmFRguL1oZUm
+         r+6bsMs2s4+1J5By+h70CKYpgUOxZjJ7Sut+HyUehkBqzQ28jeVk44gTMPvxWONy+Bdy
+         xLah6x21WHRc3sYeE2hXGEmHGfMwZurhJuz6fpoeWY7t+1JZ2eg8K8fVU2ugcYlNyS/D
+         gHCNKqnmSvcK7Tm38y4xjmy6EX4Ouv1L8LfkcF/OFoxSYIMkkYemAxLeXUrjX4r/VGbp
+         LeRdyoSoCWGPi4w8coabO6F1a9Am6Ul6rdMd4VKa8YRwzh+oOBPYf/eyb6nsgAfkMDBT
+         6Shg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SUh/HgM+ua4NwVRYsXhIRglonIVZJrlor5QZYC9gpY4=;
-        b=pl4I8zFaK3JuPf4+LzRJ8AAkpuuZwmZZ+y3cmvcIs6f+ItXA4LHk02VfeTf4Rd4E9Z
-         urdu9wJlnW59hfC0Zjv5eUfG+dMnN+HIS3zja8IKm/NiWAQyIcI/Q/TBX7wrarGHMroP
-         9jwVqJDsAzaW2lv0nJKkuEczS53T/bNFsvtdlV7wyStdnxNCxHyWLg2izp4+24mFToek
-         La3DWvzQEcXuuwPxM78zo1BG/Qw2ntuy2F5t63h5X+jYP5Ffm+aqoIcmAIOTCK/u20Vy
-         jiVwvyZ8fFuh8GA8c/gpNiEy8oN0f7rkbg9woWaFJ/IgDMrAUnncfNFTnRsLinopJWkT
-         WeVw==
-X-Gm-Message-State: AOAM533eyRqoue3EDTVMgdlIxKDbmv2qPxOYIztm2/zrfFUVh74kP1pl
-        PaEF24/l8bjNFId6B4UWPgb8zt2OV5LnutINb0KCIw==
-X-Google-Smtp-Source: ABdhPJy0EL3UjDDNNuZAniLHen9U7rto6vYZuH3dFUFv/RgLwXnsa/7SzTYVK7flT9RIxnMIfo0tzicZLcvmsBWzegA=
-X-Received: by 2002:adf:80cb:: with SMTP id 69mr2124137wrl.325.1603183199773;
- Tue, 20 Oct 2020 01:39:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=npY3XpZ1WJkzBlC4QeIItPlhppwYJDvN6wAnSiJqkk4=;
+        b=d8MkS5icow1brvHq1xrmFlTFupmtRyGTqr86fn/7S2fsh9/0SUyrwSHiCb/dq814SY
+         1aKEUUxQpcOvMGdy02gozGUipKCLiQPQyf2KfsfjgPzsxT17Pvmog7FwHoomxBOv1bGI
+         IwUJxPAHSZDv6kJErSq3Uj63EY5b2vUWobMjPjKH1nSPqcvJdL/7IQEy2EjKqnppaR26
+         oxc9t7mChfnvrWcsVlVfWHfvKEhsD7K+wMWb+J6PsBMhw/0l2nuZLw2cK25BxJgHcjQV
+         n99bmH7S+RZwIGHV5Ys+jclEeC0e0PGMeMXyytqOhcsXRV5Yo4LGcOuW/L/TsRCyz0pk
+         WW9g==
+X-Gm-Message-State: AOAM532QimLcD3uhIn/Tgp4m3/Mmr+zKUouzGG28YC3Oz2Qfp36mrgMb
+        Ik8UlUmpIbnMM/jfPbIuTa4=
+X-Google-Smtp-Source: ABdhPJy0KshjnIva7Meea2Ko5m0iAPPCsedajlu8jwqMHPL+ziWAx64CDJM9j0yWa1K0yNDQIx/SDw==
+X-Received: by 2002:a17:90a:678a:: with SMTP id o10mr1902383pjj.180.1603183482568;
+        Tue, 20 Oct 2020 01:44:42 -0700 (PDT)
+Received: from localhost.localdomain ([117.246.150.152])
+        by smtp.googlemail.com with ESMTPSA id y15sm1241581pjt.41.2020.10.20.01.44.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 01:44:41 -0700 (PDT)
+From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+Cc:     dmugil2000@gmail.com, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Karol Herbst <karolherbst@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        nouveau@lists.freedesktop.org
+Subject: [PATCH] x86/mm/kmmio: correctly handle kzalloc return
+Date:   Tue, 20 Oct 2020 14:13:44 +0530
+Message-Id: <20201020084345.96823-1-dmugil2000@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201020081532.2377-1-greentime.hu@sifive.com>
-In-Reply-To: <20201020081532.2377-1-greentime.hu@sifive.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 20 Oct 2020 14:09:48 +0530
-Message-ID: <CAAhSdy0kQBHvOirK1haPajEXS5X4e6KGE1kx2YwtoK2k+aVsLg@mail.gmail.com>
-Subject: Re: [PATCH] irqchip/sifive-plic: Fix broken irq_set_affinity() callback
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 1:45 PM Greentime Hu <greentime.hu@sifive.com> wrote:
->
-> It will always enable the interrupt after calling plic_set_affinity()
-> however it should set to it previous setting. Staying disabled or enabled.
->
-> This patch can also fix this pwm hang issue in Unleashed board.
->
-> [  919.015783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-> [  919.020922] rcu:     0-...0: (0 ticks this GP)
-> idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=105807
-> [  919.030295]  (detected by 1, t=225825 jiffies, g=1561, q=3496)
-> [  919.036109] Task dump for CPU 0:
-> [  919.039321] kworker/0:1     R  running task        0    30      2 0x00000008
-> [  919.046359] Workqueue: events set_brightness_delayed
-> [  919.051302] Call Trace:
-> [  919.053738] [<ffffffe000930d92>] __schedule+0x194/0x4de
-> [  982.035783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-> [  982.040923] rcu:     0-...0: (0 ticks this GP)
-> idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=113325
-> [  982.050294]  (detected by 1, t=241580 jiffies, g=1561, q=3509)
-> [  982.056108] Task dump for CPU 0:
-> [  982.059321] kworker/0:1     R  running task        0    30      2 0x00000008
-> [  982.066359] Workqueue: events set_brightness_delayed
-> [  982.071302] Call Trace:
-> [  982.073739] [<ffffffe000930d92>] __schedule+0x194/0x4de
-> [..]
->
-> Fixes: bb0fed1c60cc ("irqchip/sifive-plic: Switch to fasteoi flow")
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> ---
->  drivers/irqchip/irq-sifive-plic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> index eaa3e9fe54e9..4048657ece0a 100644
-> --- a/drivers/irqchip/irq-sifive-plic.c
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -151,7 +151,7 @@ static int plic_set_affinity(struct irq_data *d,
->                 return -EINVAL;
->
->         plic_irq_toggle(&priv->lmask, d, 0);
-> -       plic_irq_toggle(cpumask_of(cpu), d, 1);
-> +       plic_irq_toggle(cpumask_of(cpu), d, !irqd_irq_masked(d));
->
->         irq_data_update_effective_affinity(d, cpumask_of(cpu));
->
-> --
-> 2.28.0
->
+Replacing return value -1 to error code
 
-Looks good to me.
+Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+---
+ arch/x86/mm/kmmio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+diff --git a/arch/x86/mm/kmmio.c b/arch/x86/mm/kmmio.c
+index be020a7bc414..15430520c232 100644
+--- a/arch/x86/mm/kmmio.c
++++ b/arch/x86/mm/kmmio.c
+@@ -386,7 +386,7 @@ static int add_kmmio_fault_page(unsigned long addr)
+ 
+ 	f = kzalloc(sizeof(*f), GFP_ATOMIC);
+ 	if (!f)
+-		return -1;
++		return -ENOMEN;
+ 
+ 	f->count = 1;
+ 	f->addr = addr;
+-- 
+2.25.1
 
-Regards,
-Anup
