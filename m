@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9F12938BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AC42938C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 12:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405852AbgJTKCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 06:02:14 -0400
-Received: from wind.enjellic.com ([76.10.64.91]:57434 "EHLO wind.enjellic.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727697AbgJTKCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 06:02:14 -0400
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 09KA1J3d007162;
-        Tue, 20 Oct 2020 05:01:19 -0500
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 09KA1IIc007161;
-        Tue, 20 Oct 2020 05:01:18 -0500
-Date:   Tue, 20 Oct 2020 05:01:18 -0500
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20201020100118.GA6957@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20200924230501.GA20095@linux.intel.com> <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com> <20200925000052.GA20333@linux.intel.com> <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com> <20200925194304.GE31528@linux.intel.com> <230ce6da-7820-976f-f036-a261841d626f@intel.com> <20200928005347.GB6704@linux.intel.com> <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com> <20201018084920.GA19255@wind.enjellic.com> <20201019213105.GE23072@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019213105.GE23072@linux.intel.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Tue, 20 Oct 2020 05:01:19 -0500 (CDT)
+        id S2405864AbgJTKCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 06:02:47 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:37584 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728719AbgJTKCr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 06:02:47 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09K9lgqw020208;
+        Tue, 20 Oct 2020 12:02:36 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=JsMBxHUR3TyEsbIKx2nG3z57ppPOW5UA7QwvTV532t8=;
+ b=kbnNLxlqWbCjkY2Bwk0VDNN5S51L8KJaqAsybrNqqn4MPRN6hweKMm3x/WeIaxeanjY5
+ 9CF9BDosAefuWyWh5aFekhyECx8mSNReU/0sM/o0C8CZdH/YIAWj7OMxQhMQ6Z6CoIO1
+ I337pfElzXt2rOHPv0x2KzvGkyWFweeFm/QaqLqx0PS9qPcKTxfoYL1HmW0p07FgG5LF
+ UdAKhZWeD5964qXhZSkxiAZskzAOrCkBefx+AKUL1MFo16v1tAGVwRA3CWOODrYXTBqz
+ qHVQEpBTERjNVfu4lKw4kJ96UeRcdtK1Dak9kqR3GiW7gxaHoYXwCnYpYRxZIJDTg22o MA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 347qgg2e16-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 12:02:36 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B8F74100034;
+        Tue, 20 Oct 2020 12:02:35 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag1node1.st.com [10.75.127.1])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A1D6A2C41F8;
+        Tue, 20 Oct 2020 12:02:35 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG1NODE1.st.com (10.75.127.1)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Oct 2020 12:02:35
+ +0200
+From:   Hugues Fruchet <hugues.fruchet@st.com>
+To:     Alexandre Torgue <alexandre.torgue@st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>,
+        Alain Volmat <alain.volmat@st.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>
+Subject: [PATCH v3 0/2] DCMI BT656 parallel bus mode support
+Date:   Tue, 20 Oct 2020 12:02:30 +0200
+Message-ID: <1603188152-22783-1-git-send-email-hugues.fruchet@st.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG1NODE1.st.com
+ (10.75.127.1)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-20_04:2020-10-20,2020-10-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 02:31:05PM -0700, Sean Christopherson wrote:
+Add support of BT656 embedded synchronization bus.
+This mode allows to save hardware synchro lines hsync & vsync
+by replacing them with synchro codes embedded in data stream.
+This mode is enabled when hsync-active & vsync-active
+fields are not specified in devicetree.
 
-Good morning, I hope the day is starting well for everyone.
+===========
+= history =
+===========
+version 3:
+  - Fix bus_width print to %u as per Sakari comment
 
-> On Sun, Oct 18, 2020 at 03:49:20AM -0500, Dr. Greg wrote:
-> > Is this even a relevant control if we cede the notion of dynamically
-> > loadable enclave code, which is the objective of SGX2 hardware, which
-> > will in all likelihood be the only relevant hardware implementation in
-> > the future?
+version 2:
+  - As per Sakari remark, revisit commit message and document
+    BT656 parallel bus mode in bindings
 
-> Yes, it's still relevant.  Giving the thumbs up to dynamically
-> loadable code is not a purely binary decision, e.g. a user/admin can
-> allow RW->RX transitions but still disallow full RWX permissions.
+version 1:
+  - Initial submission
 
-With respect to the security issue at hand, the only relevant issue
-would seem to be if a page had write permissions at one time in its
-trajectory to having execute permisions, isn't this correct?
+Hugues Fruchet (2):
+  media: stm32-dcmi: add support of BT656 bus
+  media: dt-bindings: media: st,stm32-dcmi: Add support of BT656
 
-The next paragraph of my reply wasn't included in your reply, but I
-did state that the mprotect hook would be relevant if its purpose was
-to disallow this permission trajectory and in the process disable
-enclave dynamic code loading and execution.
+ .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 30 ++++++++++++++++++
+ drivers/media/platform/stm32/stm32-dcmi.c          | 37 ++++++++++++++++++++--
+ 2 files changed, 65 insertions(+), 2 deletions(-)
 
-So to assist everyone in understanding this issue and the security
-implications involved, is the ultimate purpose of the mprotect hook to
-disable dynamic code loading?
+-- 
+2.7.4
 
-Have a good day.
-
-Dr. Greg
-
-As always,
-Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
-Enjellic Systems Development, LLC     IOT platforms and edge devices.
-4206 N. 19th Ave.
-Fargo, ND  58102
-PH: 701-281-1686                      EMAIL: dg@enjellic.com
-------------------------------------------------------------------------------
-"Those who will not study history are doomed to debug it."
-                                -- Barry Shein
