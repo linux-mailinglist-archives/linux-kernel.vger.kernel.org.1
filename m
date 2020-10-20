@@ -2,24 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBB5293B16
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F79293B18
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 14:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394326AbgJTMTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 08:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394300AbgJTMTJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:19:09 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91F2C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 05:19:08 -0700 (PDT)
+        id S2394311AbgJTMTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 08:19:10 -0400
+Received: from 8bytes.org ([81.169.241.247]:34848 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394290AbgJTMTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 08:19:08 -0400
 Received: from cap.home.8bytes.org (p549add56.dip0.t-ipconnect.de [84.154.221.86])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id F204B28D;
-        Tue, 20 Oct 2020 14:19:05 +0200 (CEST)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 5D3A8295;
+        Tue, 20 Oct 2020 14:19:06 +0200 (CEST)
 From:   Joerg Roedel <joro@8bytes.org>
 To:     x86@kernel.org
 Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
@@ -34,9 +30,9 @@ Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
         Martin Radev <martin.b.radev@gmail.com>,
         Tom Lendacky <thomas.lendacky@amd.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/5] x86/boot/compressed/64: Introduce sev_status
-Date:   Tue, 20 Oct 2020 14:18:52 +0200
-Message-Id: <20201020121856.19427-2-joro@8bytes.org>
+Subject: [PATCH v2 2/5] x86/boot/compressed/64: Add CPUID sanity check to early #VC handler
+Date:   Tue, 20 Oct 2020 14:18:53 +0200
+Message-Id: <20201020121856.19427-3-joro@8bytes.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201020121856.19427-1-joro@8bytes.org>
 References: <20201020121856.19427-1-joro@8bytes.org>
@@ -48,40 +44,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Joerg Roedel <jroedel@suse.de>
 
-Introduce sev_status and initialize it together with sme_me_mask to have
-an indicator which SEV features are enabled.
+The early #VC handler which doesn't have a GHCB can only handle CPUID
+exit codes. It is needed by the early boot code to handle #VC
+exceptions raised in verify_cpu() and to get the position of the C
+bit.
+
+But the CPUID information comes from the hypervisor, which is untrusted
+and might return results which trick the guest into the no-SEV boot path
+with no C bit set in the page-tables. All data written to memory would
+then be unencrypted and could leak sensitive data to the hypervisor.
+
+Add sanity checks to the early #VC handlers to make sure the hypervisor
+can not pretend that SEV is disabled.
 
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- arch/x86/boot/compressed/mem_encrypt.S | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ arch/x86/kernel/sev-es-shared.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/arch/x86/boot/compressed/mem_encrypt.S b/arch/x86/boot/compressed/mem_encrypt.S
-index dd07e7b41b11..2192b3bd78d8 100644
---- a/arch/x86/boot/compressed/mem_encrypt.S
-+++ b/arch/x86/boot/compressed/mem_encrypt.S
-@@ -81,6 +81,13 @@ SYM_FUNC_START(set_sev_encryption_mask)
+diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
+index 5f83ccaab877..48bb14563dcd 100644
+--- a/arch/x86/kernel/sev-es-shared.c
++++ b/arch/x86/kernel/sev-es-shared.c
+@@ -178,6 +178,32 @@ void __init do_vc_no_ghcb(struct pt_regs *regs, unsigned long exit_code)
+ 		goto fail;
+ 	regs->dx = val >> 32;
  
- 	bts	%rax, sme_me_mask(%rip)	/* Create the encryption mask */
- 
-+	/* Read sev_status */
-+	movl	$MSR_AMD64_SEV, %ecx
-+	rdmsr
-+	shlq	$32, %rdx
-+	orq	%rdx, %rax
-+	movq	%rax, sev_status(%rip)
++	/*
++	 * This is a VC handler and it is only raised when SEV-ES is active,
++	 * which means SEV must be active too. Do sanity checks on the CPUID
++	 * results to make sure the hypervisor does not trick the kernel into
++	 * the no-sev path. This could map sensitive data unencrypted and make
++	 * it accessible to the hypervisor.
++	 *
++	 * In particular, check for:
++	 *	- Hypervisor CPUID bit
++	 *	- Availability of CPUID leaf 0x8000001f
++	 *	- SEV CPUID bit.
++	 *
++	 * The hypervisor might still report the wrong C-bit position, but this
++	 * can't be checked here.
++	 */
 +
- .Lno_sev_mask:
- 	movq	%rbp, %rsp		/* Restore original stack pointer */
++	if ((fn == 1 && !(regs->cx & BIT(31))))
++		/* Hypervisor Bit */
++		goto fail;
++	else if (fn == 0x80000000 && (regs->ax < 0x8000001f))
++		/* SEV Leaf check */
++		goto fail;
++	else if ((fn == 0x8000001f && !(regs->ax & BIT(1))))
++		/* SEV Bit */
++		goto fail;
++
+ 	/* Skip over the CPUID two-byte opcode */
+ 	regs->ip += 2;
  
-@@ -96,5 +103,6 @@ SYM_FUNC_END(set_sev_encryption_mask)
- 
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- 	.balign	8
--SYM_DATA(sme_me_mask, .quad 0)
-+SYM_DATA(sme_me_mask,		.quad 0)
-+SYM_DATA(sev_status,		.quad 0)
- #endif
 -- 
 2.28.0
 
