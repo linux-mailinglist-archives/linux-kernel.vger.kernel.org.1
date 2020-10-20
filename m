@@ -2,182 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBA629326F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 02:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D83293285
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 02:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389604AbgJTAv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Oct 2020 20:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389595AbgJTAv2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Oct 2020 20:51:28 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7F1C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 17:51:28 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id y14so1012903pgf.12
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Oct 2020 17:51:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FN81eBNlNFruprGp0OC1kMRsX4PP7l7eO1LNzVYzBVY=;
-        b=bH9ODpiM2P0UpI7DcxMTKSXtnD8+H/7eGD+d+hxtx43JIXJkJ1DXly60MvRPTl/Upu
-         FhkvfXC2CH7DU+04/yfdWWb0pXvxUGSRw67QEN5OLEFFs4E1VG4PlLmg9ttMKK/1RNvc
-         xvJcI8nwVliy+lnyGqBIM8M7upm+Tpr9kdmd8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FN81eBNlNFruprGp0OC1kMRsX4PP7l7eO1LNzVYzBVY=;
-        b=PTVTgWAi1ch/s/WsnNAgHX8weQq0a5jLaDi2I0/0k4qhgsL+tnm+rmSu62rax78CVm
-         i1cWG7yHQtlJyraTUCLAGnfZsZkujdg2sfe6trdfFHEGAaZMafRXt9yUP9ig9KVSIlKs
-         77Y1kKdGcT9WEJ09PUZwuBwSbul8R8guZrBvNMSgUhqbvuZz8hR/XjijoZ81Rp6DGDkp
-         XBw2nQ7q9yZ38m4TJ4THrpk6XzH2t3by+UyBJAYjdT3rT0BcSjb8V1HeUP7fVooL8/2t
-         JdlvaUvK/nRO7VUvua5DTGDcXRQLlvTz/wvzCPV6JrFH6NRBLuhrbYQiounFKcKwZ8ZC
-         zGTQ==
-X-Gm-Message-State: AOAM532/zFykRRGw7xLYf6pmuezrn2Z5RKNpSZuowBP0dNxNpGYFMv8u
-        qQWfA7f0VjVcKElKL/qpCHcAZ3Ecsna/n0Au
-X-Google-Smtp-Source: ABdhPJyQA4Jd2pPiM9AnYwf5OQHO+diZVIGPUTiNtAPZILlWMxFxS8mRsQkG/Lq2diVVkF+mYsLzBw==
-X-Received: by 2002:aa7:9f88:0:b029:152:80df:4c52 with SMTP id z8-20020aa79f880000b029015280df4c52mr242447pfr.54.1603155088096;
-        Mon, 19 Oct 2020 17:51:28 -0700 (PDT)
-Received: from kuabhs-cdev.c.googlers.com.com (56.4.82.34.bc.googleusercontent.com. [34.82.4.56])
-        by smtp.gmail.com with ESMTPSA id h20sm142904pfo.168.2020.10.19.17.51.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 17:51:27 -0700 (PDT)
-From:   Abhishek Kumar <kuabhs@chromium.org>
-To:     kvalo@codeaurora.org
-Cc:     ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, kuabhs@chromium.org
-Subject: [PATCH] ath10k: add option for chip-id based BDF selection
-Date:   Tue, 20 Oct 2020 00:51:00 +0000
-Message-Id: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+        id S2389729AbgJTA7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Oct 2020 20:59:35 -0400
+Received: from mga01.intel.com ([192.55.52.88]:28385 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389721AbgJTA7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Oct 2020 20:59:33 -0400
+IronPort-SDR: nsE4OjVmrlwQ9Noj/TZzTVCrUnHGX3Xqj2BV8ufzSOqh8O7I0w7onv8R+t2qlGDYZDN7gL8jo0
+ 802YmxSedspw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9779"; a="184750426"
+X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
+   d="scan'208";a="184750426"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 17:59:29 -0700
+IronPort-SDR: y2bhiDTElEd/tbWCJaH2tOhg6qMOVMLXC/AcIjf/9KhQjX1lmeAj6jRsHlRCkDgi867okATlMa
+ bMDJRwajUL6Q==
+X-IronPort-AV: E=Sophos;i="5.77,395,1596524400"; 
+   d="scan'208";a="359004321"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2020 17:59:29 -0700
+Date:   Mon, 19 Oct 2020 17:59:25 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] x86/boot/compressed/64: Introduce sev_status
+Message-ID: <20201020005925.GA24596@linux.intel.com>
+References: <20201019151121.826-1-joro@8bytes.org>
+ <20201019151121.826-2-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019151121.826-2-joro@8bytes.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some devices difference in chip-id should be enough to pick
-the right BDF. Add another support for chip-id based BDF selection.
-With this new option, ath10k supports 2 fallback options.
+On Mon, Oct 19, 2020 at 05:11:17PM +0200, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> Introduce sev_status and initialize it together with sme_me_mask to have
+> an indicator which SEV features are enabled.
+> 
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  arch/x86/boot/compressed/mem_encrypt.S | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/boot/compressed/mem_encrypt.S b/arch/x86/boot/compressed/mem_encrypt.S
+> index dd07e7b41b11..0effd58f0095 100644
+> --- a/arch/x86/boot/compressed/mem_encrypt.S
+> +++ b/arch/x86/boot/compressed/mem_encrypt.S
+> @@ -71,6 +71,8 @@ SYM_FUNC_END(get_sev_encryption_bit)
+>  SYM_FUNC_START(set_sev_encryption_mask)
+>  #ifdef CONFIG_AMD_MEM_ENCRYPT
+>  	push	%rbp
+> +	push	%rax
+> +	push	%rcx
 
-The board name with chip-id as option looks as follows
-board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
+There's no need to save/restore RAX and RCX, they are callee save.  This
+function is only called from C, so I doubt it's using a custom ABI.
 
-Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
----
-
- drivers/net/wireless/ath/ath10k/core.c | 45 +++++++++++++++++++-------
- 1 file changed, 34 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index a3f15cc89a10..767bb9d6a197 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1343,7 +1343,8 @@ static int ath10k_core_search_bd(struct ath10k *ar,
- 
- static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- 					      const char *boardname,
--					      const char *fallback_boardname,
-+					      const char *fallback_boardname1,
-+					      const char *fallback_boardname2,
- 					      const char *filename)
- {
- 	size_t len, magic_len;
-@@ -1392,8 +1393,11 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- 	ret = ath10k_core_search_bd(ar, boardname, data, len);
- 
- 	/* if we didn't find it and have a fallback name, try that */
--	if (ret == -ENOENT && fallback_boardname)
--		ret = ath10k_core_search_bd(ar, fallback_boardname, data, len);
-+	if (ret == -ENOENT && fallback_boardname1)
-+		ret = ath10k_core_search_bd(ar, fallback_boardname1, data, len);
-+
-+	if (ret == -ENOENT && fallback_boardname2)
-+		ret = ath10k_core_search_bd(ar, fallback_boardname2, data, len);
- 
- 	if (ret == -ENOENT) {
- 		ath10k_err(ar,
-@@ -1413,7 +1417,8 @@ static int ath10k_core_fetch_board_data_api_n(struct ath10k *ar,
- }
- 
- static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
--					 size_t name_len, bool with_variant)
-+					 size_t name_len, bool with_variant,
-+					 bool with_chip_id)
- {
- 	/* strlen(',variant=') + strlen(ar->id.bdf_ext) */
- 	char variant[9 + ATH10K_SMBIOS_BDF_EXT_STR_LENGTH] = { 0 };
-@@ -1432,12 +1437,17 @@ static int ath10k_core_create_board_name(struct ath10k *ar, char *name,
- 	}
- 
- 	if (ar->id.qmi_ids_valid) {
--		if (with_variant && ar->id.bdf_ext[0] != '\0')
-+		if (with_variant && ar->id.bdf_ext[0] != '\0' && with_chip_id)
- 			scnprintf(name, name_len,
- 				  "bus=%s,qmi-board-id=%x,qmi-chip-id=%x%s",
- 				  ath10k_bus_str(ar->hif.bus),
- 				  ar->id.qmi_board_id, ar->id.qmi_chip_id,
- 				  variant);
-+		else if (with_chip_id)
-+			scnprintf(name, name_len,
-+				  "bus=%s,qmi-board-id=%x,qmi-chip-id=%x",
-+				  ath10k_bus_str(ar->hif.bus),
-+				  ar->id.qmi_board_id, ar->id.qmi_chip_id);
- 		else
- 			scnprintf(name, name_len,
- 				  "bus=%s,qmi-board-id=%x",
-@@ -1476,21 +1486,33 @@ static int ath10k_core_create_eboard_name(struct ath10k *ar, char *name,
- 
- int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type)
- {
--	char boardname[100], fallback_boardname[100];
-+	char boardname[100], fallback_boardname1[100], fallback_boardname2[100];
- 	int ret;
- 
- 	if (bd_ie_type == ATH10K_BD_IE_BOARD) {
-+		/* With variant and chip id */
- 		ret = ath10k_core_create_board_name(ar, boardname,
--						    sizeof(boardname), true);
-+						sizeof(boardname), true, true);
- 		if (ret) {
- 			ath10k_err(ar, "failed to create board name: %d", ret);
- 			return ret;
- 		}
- 
--		ret = ath10k_core_create_board_name(ar, fallback_boardname,
--						    sizeof(boardname), false);
-+		/* Without variant and only chip-id */
-+		ret = ath10k_core_create_board_name(ar, fallback_boardname1,
-+						    sizeof(boardname), false,
-+						    true);
-+		if (ret) {
-+			ath10k_err(ar, "failed to create 1st fallback board name: %d", ret);
-+			return ret;
-+		}
-+
-+		/* Without variant and without chip-id */
-+		ret = ath10k_core_create_board_name(ar, fallback_boardname2,
-+						    sizeof(boardname), false,
-+						    false);
- 		if (ret) {
--			ath10k_err(ar, "failed to create fallback board name: %d", ret);
-+			ath10k_err(ar, "failed to create 2nd fallback board name: %d", ret);
- 			return ret;
- 		}
- 	} else if (bd_ie_type == ATH10K_BD_IE_BOARD_EXT) {
-@@ -1504,7 +1526,8 @@ int ath10k_core_fetch_board_file(struct ath10k *ar, int bd_ie_type)
- 
- 	ar->bd_api = 2;
- 	ret = ath10k_core_fetch_board_data_api_n(ar, boardname,
--						 fallback_boardname,
-+						 fallback_boardname1,
-+						 fallback_boardname2,
- 						 ATH10K_BOARD_API2_FILE);
- 	if (!ret)
- 		goto success;
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+>  	push	%rdx
+>  
+>  	movq	%rsp, %rbp		/* Save current stack pointer */
+> @@ -81,10 +83,19 @@ SYM_FUNC_START(set_sev_encryption_mask)
+>  
+>  	bts	%rax, sme_me_mask(%rip)	/* Create the encryption mask */
+>  
+> +	/* Read sev_status */
+> +	movl	$MSR_AMD64_SEV, %ecx
+> +	rdmsr
+> +	shlq	$32, %rdx
+> +	orq	%rdx, %rax
+> +	movq	%rax, sev_status(%rip)
+> +
+>  .Lno_sev_mask:
+>  	movq	%rbp, %rsp		/* Restore original stack pointer */
+>  
+>  	pop	%rdx
+> +	pop	%rcx
+> +	pop	%rax
+>  	pop	%rbp
+>  #endif
+>  
+> @@ -96,5 +107,6 @@ SYM_FUNC_END(set_sev_encryption_mask)
+>  
+>  #ifdef CONFIG_AMD_MEM_ENCRYPT
+>  	.balign	8
+> -SYM_DATA(sme_me_mask, .quad 0)
+> +SYM_DATA(sme_me_mask,		.quad 0)
+> +SYM_DATA(sev_status,		.quad 0)
+>  #endif
+> -- 
+> 2.28.0
+> 
