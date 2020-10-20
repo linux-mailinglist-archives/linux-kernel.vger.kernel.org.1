@@ -2,97 +2,550 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1C0293874
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0347E293876
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404001AbgJTJsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:48:22 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:11609 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728775AbgJTJsV (ORCPT
+        id S2404041AbgJTJsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 05:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404013AbgJTJsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:48:21 -0400
+        Tue, 20 Oct 2020 05:48:35 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D1EC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:48:34 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id q1so1384983ilt.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 02:48:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1603187301; x=1634723301;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=j/NUF3xtHrXDreYAVOkD2ynQtHTp+nkCsES1G/39Yp8=;
-  b=RzZ/YSEFx3pj0UWOC//+73Diu6STOJ00lg1MTkXI3R0uhGrsNzj22fnI
-   HkAVx2jmGtWnlS/0KfkfFdwX9ElKrENqmgpnlqSZ8PQwK/Dijn42rYoeZ
-   zJCsPQxO8RQGafkzf8MvTAq97BhDFtzkV7I48btp+uxPpHOyRpHYz/du0
-   M=;
-X-IronPort-AV: E=Sophos;i="5.77,396,1596499200"; 
-   d="scan'208";a="78118472"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-42f764a0.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 20 Oct 2020 09:48:14 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1e-42f764a0.us-east-1.amazon.com (Postfix) with ESMTPS id 31173BA6E4;
-        Tue, 20 Oct 2020 09:48:11 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 20 Oct 2020 09:48:11 +0000
-Received: from Alexanders-MacBook-Air.local (10.43.162.231) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 20 Oct 2020 09:48:10 +0000
-Subject: Re: [PATCH] KVM: VMX: Forbid userspace MSR filters for x2APIC
-To:     Paolo Bonzini <pbonzini@redhat.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <20201019170519.1855564-1-pbonzini@redhat.com>
- <618E2129-7AB5-4F0D-A6C9-E782937FE935@amazon.de>
- <c9dd6726-2783-2dfd-14d1-5cec6f69f051@redhat.com>
-From:   Alexander Graf <graf@amazon.de>
-Message-ID: <bce2aee1-bfac-0640-066b-068fa5f12cf8@amazon.de>
-Date:   Tue, 20 Oct 2020 11:48:07 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.3
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k84Khocx0ZeVgGCTzcUL144r1CMjlHe/VQ5Kuw40mGc=;
+        b=uKTlebJKJn08z6AEAm+CBz83LAsp98TUKJnSoRdSoBGF4QRTD4fbGbCNbKeNSJUMpj
+         RASEqmPVaW+euCLhQ0nNxePbU6OGdjNyoXO+vBI/VR5GN7EWZm1X4g/Z9b1QTheA7owP
+         V4dYKoj1elVlG0gIC51oLeqjVx2A/OObmkK2fdW7tkjTgiloLBLMGTYk8mKKve5a6l0y
+         CFIKFuplTEwN11/KJlrMpYFKDEUKbNAtQyZxvV8TRgLs/8B82gw/9O867F8VMbPoGu3S
+         DURVsEzGhFJrTG6n7eD/qemfHwuzwTVu1B1tLdY71Mi7VcixtSGoRpGsQhjX0wtbMnjP
+         fFqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k84Khocx0ZeVgGCTzcUL144r1CMjlHe/VQ5Kuw40mGc=;
+        b=jMEHuD/F+BynEbQBUUP3lGnkifAB/ByEXZkGnNNz7PVfQC7GE8DCcEnBHM1Y/TY3nr
+         dNRsUwfyKTb0FSwIuP2PKjtQ0By+TEMtYMH3L4ApiNDhfEK9rSXG77+bm01qnXNTsX0J
+         vwyl/7qmdEAmx8+coPbbGHy9V+A50zDs0aVKAx87S5S3Dze7PAQloJuuv9m8MXUyoxJY
+         DP72WUiDaRDzrnU6s19EYBNgx/bbuh5U5SqHW4ZXaBFT5RkdZ+9WQKMwLckCAvB599fx
+         qfW4AvCZl55NL68oxNPc3UUwxUe1RDWjJZ97w3MAuTmA5X5v0pZuOIiB4NcjSeruXE8x
+         Ghbw==
+X-Gm-Message-State: AOAM5339rGjKstpLenmzJjI37wBmxLAZEU3JOeSYGd41mpUVryx7KNqh
+        M8eQQcOTbjRc06VIkBC4kCJvqRfVMBgMf/TkTBf6ovDmMhVAqA==
+X-Google-Smtp-Source: ABdhPJyeV/ta56KW9jbxhukt5SRqeLS/Qq6BWQ1aDeKW/uRTMyyaVmsKYBKZMmYkcX02rW8iWlE/zqnpcrSS2xvuSRQ=
+X-Received: by 2002:a92:9a1d:: with SMTP id t29mr1278519ili.85.1603187313387;
+ Tue, 20 Oct 2020 02:48:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c9dd6726-2783-2dfd-14d1-5cec6f69f051@redhat.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.231]
-X-ClientProxiedBy: EX13D44UWB001.ant.amazon.com (10.43.161.32) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+References: <20201012125323.17509-1-david@redhat.com> <20201012125323.17509-17-david@redhat.com>
+In-Reply-To: <20201012125323.17509-17-david@redhat.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Tue, 20 Oct 2020 11:48:21 +0200
+Message-ID: <CAM9Jb+iaXHJfrUxzOhhxBCdS=F+Pk6DSVfC4HNkWTN6AGJu24g@mail.gmail.com>
+Subject: Re: [PATCH v1 16/29] virtio-mem: memory block states are specific to
+ Sub Block Mode (SBM)
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAyMC4xMC4yMCAxMToyNywgUGFvbG8gQm9uemluaSB3cm90ZToKPiAKPiBPbiAxOS8xMC8y
-MCAxOTo0NSwgR3JhZiAoQVdTKSwgQWxleGFuZGVyIHdyb3RlOgo+Pj4gKyAgICAgICAgKiBJbiBw
-cmluY2lwbGUgaXQgd291bGQgYmUgcG9zc2libGUgdG8gdHJhcCB4MmFwaWMgcmFuZ2VzCj4+PiAr
-ICAgICAgICAqIGlmICFsYXBpY19pbl9rZXJuZWwuICBUaGlzIGhvd2V2ZXIgd291bGQgYmUgY29t
-cGxpY2F0ZWQKPj4+ICsgICAgICAgICogYmVjYXVzZSBLVk1fWDg2X1NFVF9NU1JfRklMVEVSIGNh
-biBiZSBjYWxsZWQgYmVmb3JlCj4+PiArICAgICAgICAqIEtWTV9DUkVBVEVfSVJRQ0hJUCBvciBL
-Vk1fRU5BQkxFX0NBUC4KPj4+ICsgICAgICAgICovCj4+PiArICAgICAgIGZvciAoaSA9IDA7IGkg
-PCBBUlJBWV9TSVpFKGZpbHRlci5yYW5nZXMpOyBpKyspCj4+PiArICAgICAgICAgICAgICAgaWYg
-KHJhbmdlX292ZXJsYXBzX3gyYXBpYygmZmlsdGVyLnJhbmdlc1tpXSkpCj4+PiArICAgICAgICAg
-ICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsKPj4KPj4gV2hhdCBpZiB0aGUgZGVmYXVsdCBh
-Y3Rpb24gb2YgdGhlIGZpbHRlciBpcyB0byAiZGVueSI/IFRoZW4gb25seSBhbgo+PiBNU1IgZmls
-dGVyIHRvIGFsbG93IGFjY2VzcyB0byB4MmFwaWMgTVNScyB3b3VsZCBtYWtlIHRoZSBmdWxsCj4+
-IGZpbHRlcmluZyBsb2dpYyBhZGhlcmUgdG8gdGhlIGNvbnN0cmFpbnRzLCBubz8KPiAKPiBSaWdo
-dDsgb3IgbW9yZSBwcmVjaXNlbHksIHRoYXQgaXMgaGFuZGxlZCBieSBTZWFuJ3MgcGF0Y2ggdGhh
-dCBoZSBoYWQKPiBwb3N0ZWQgZWFybGllci4gIFRoaXMgcGF0Y2ggb25seSBtYWtlcyBpdCBpbXBv
-c3NpYmxlIHRvIHNldCB1cCBzdWNoIGEKPiBmaWx0ZXIuCgpXaGF0IEknbSBzYXlpbmcgaXMgdGhh
-dCBhICJmaWx0ZXIgcnVsZSIgY2FuIGVpdGhlciBtZWFuICJhbGxvdyIgb3IgCiJkZW55Ii4gSGVy
-ZSB5b3UncmUgb25seSBjaGVja2luZyBpZiB0aGVyZSBpcyBhIHJ1bGUuIFdoYXQgeW91IHdhbnQg
-dG8gCmZpbHRlciBmb3IgaXMgd2hldGhlciB0aGVyZSBpcyBhIGRlbnlpbmcgcnVsZSAoaW5jbHVk
-aW5nIGRlZmF1bHQgCmZhbGxiYWNrKSBmb3IgeDJhcGljIGFmdGVyIGFsbCBydWxlcyBhcmUgaW4g
-cGxhY2UuCgpJbWFnaW5lIHlvdSBhZGQgdGhlIGZvbGxvd2luZyBmaWx0ZXI6Cgp7CiAgICAgY291
-bnQ6IDEsCiAgICAgZGVmYXVsdF9hbGxvdzogZmFsc2UsCiAgICAgcmFuZ2VzOiBbCiAgICAgICAg
-IHsKICAgICAgICAgICAgIGZsYWdzOiBLVk1fTVNSX0ZJTFRFUl9SRUFELAogICAgICAgICAgICAg
-bm1zcnM6IDEsCiAgICAgICAgICAgICBiYXNlOiBNU1JfRUZFUiwKICAgICAgICAgICAgIGJpdG1h
-cDogeyAxIH0sCiAgICAgICAgIH0sCiAgICAgXSwKfQoKVGhhdCBmaWx0ZXIgd291bGQgc2V0IGFs
-bCB4MmFwaWMgcmVnaXN0ZXJzIHRvICJkZW55IiwgYnV0IHdvdWxkIG5vdCBiZSAKY2F1Z2h0IGJ5
-IHRoZSBjb2RlIGFib3ZlLiBDb252ZXJzZWx5LCBhIHJhbmdlIHRoYXQgZXhwbGljaXRseSBhbGxv
-d3MgCngyYXBpYyByYW5nZXMgd2l0aCBkZWZhdWx0X2FsbG93PTAgd291bGQgYmUgcmVqZWN0ZWQg
-YnkgdGhpcyBwYXRjaC4KCgpBbGV4CgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgR2VybWFu
-eSBHbWJICktyYXVzZW5zdHIuIDM4CjEwMTE3IEJlcmxpbgpHZXNjaGFlZnRzZnVlaHJ1bmc6IENo
-cmlzdGlhbiBTY2hsYWVnZXIsIEpvbmF0aGFuIFdlaXNzCkVpbmdldHJhZ2VuIGFtIEFtdHNnZXJp
-Y2h0IENoYXJsb3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMgQgpTaXR6OiBCZXJsaW4KVXN0LUlE
-OiBERSAyODkgMjM3IDg3OQoKCg==
+> let's use a new "sbm" sub-struct to hold SBM-specific state and rename +
+> move applicable definitions, frunctions, and variables (related to
+> memory block states).
+>
+> While at it:
+> - Drop the "_STATE" part from memory block states
+> - Rename "nb_mb_state" to "mb_count"
+> - "set_mb_state" / "get_mb_state" vs. "mb_set_state" / "mb_get_state"
+> - Don't use lengthy "enum virtio_mem_smb_mb_state", simply use "uint8_t"
+>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  drivers/virtio/virtio_mem.c | 215 ++++++++++++++++++------------------
+>  1 file changed, 109 insertions(+), 106 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+> index fd8685673fe4..e76d6f769aa5 100644
+> --- a/drivers/virtio/virtio_mem.c
+> +++ b/drivers/virtio/virtio_mem.c
+> @@ -42,20 +42,23 @@ MODULE_PARM_DESC(unplug_online, "Try to unplug online memory");
+>   * onlined to the same zone - virtio-mem relies on this behavior.
+>   */
+>
+> -enum virtio_mem_mb_state {
+> +/*
+> + * State of a Linux memory block in SBM.
+> + */
+> +enum virtio_mem_sbm_mb_state {
+>         /* Unplugged, not added to Linux. Can be reused later. */
+> -       VIRTIO_MEM_MB_STATE_UNUSED = 0,
+> +       VIRTIO_MEM_SBM_MB_UNUSED = 0,
+>         /* (Partially) plugged, not added to Linux. Error on add_memory(). */
+> -       VIRTIO_MEM_MB_STATE_PLUGGED,
+> +       VIRTIO_MEM_SBM_MB_PLUGGED,
+>         /* Fully plugged, fully added to Linux, offline. */
+> -       VIRTIO_MEM_MB_STATE_OFFLINE,
+> +       VIRTIO_MEM_SBM_MB_OFFLINE,
+>         /* Partially plugged, fully added to Linux, offline. */
+> -       VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL,
+> +       VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL,
+>         /* Fully plugged, fully added to Linux, online. */
+> -       VIRTIO_MEM_MB_STATE_ONLINE,
+> +       VIRTIO_MEM_SBM_MB_ONLINE,
+>         /* Partially plugged, fully added to Linux, online. */
+> -       VIRTIO_MEM_MB_STATE_ONLINE_PARTIAL,
+> -       VIRTIO_MEM_MB_STATE_COUNT
+> +       VIRTIO_MEM_SBM_MB_ONLINE_PARTIAL,
+> +       VIRTIO_MEM_SBM_MB_COUNT
+>  };
+>
+>  struct virtio_mem {
+> @@ -113,9 +116,6 @@ struct virtio_mem {
+>          */
+>         const char *resource_name;
+>
+> -       /* Summary of all memory block states. */
+> -       unsigned long nb_mb_state[VIRTIO_MEM_MB_STATE_COUNT];
+> -
+>         /*
+>          * We don't want to add too much memory if it's not getting onlined,
+>          * to avoid running OOM. Besides this threshold, we allow to have at
+> @@ -125,27 +125,29 @@ struct virtio_mem {
+>         atomic64_t offline_size;
+>         uint64_t offline_threshold;
+>
+> -       /*
+> -        * One byte state per memory block.
+> -        *
+> -        * Allocated via vmalloc(). When preparing new blocks, resized
+> -        * (alloc+copy+free) when needed (crossing pages with the next mb).
+> -        * (when crossing pages).
+> -        *
+> -        * With 128MB memory blocks, we have states for 512GB of memory in one
+> -        * page.
+> -        */
+> -       uint8_t *mb_state;
+> +       struct {
+> +               /* Summary of all memory block states. */
+> +               unsigned long mb_count[VIRTIO_MEM_SBM_MB_COUNT];
+> +
+> +               /*
+> +                * One byte state per memory block. Allocated via vmalloc().
+> +                * Resized (alloc+copy+free) on demand.
+> +                *
+> +                * With 128 MiB memory blocks, we have states for 512 GiB of
+> +                * memory in one 4 KiB page.
+> +                */
+> +               uint8_t *mb_states;
+> +       } sbm;
+>
+>         /*
+> -        * $nb_sb_per_mb bit per memory block. Handled similar to mb_state.
+> +        * $nb_sb_per_mb bit per memory block. Handled similar to sbm.mb_states.
+>          *
+>          * With 4MB subblocks, we manage 128GB of memory in one page.
+>          */
+>         unsigned long *sb_bitmap;
+>
+>         /*
+> -        * Mutex that protects the nb_mb_state, mb_state, and sb_bitmap.
+> +        * Mutex that protects the sbm.mb_count, sbm.mb_states, and sb_bitmap.
+>          *
+>          * When this lock is held the pointers can't change, ONLINE and
+>          * OFFLINE blocks can't change the state and no subblocks will get
+> @@ -254,70 +256,70 @@ static unsigned long virtio_mem_phys_to_sb_id(struct virtio_mem *vm,
+>  /*
+>   * Set the state of a memory block, taking care of the state counter.
+>   */
+> -static void virtio_mem_mb_set_state(struct virtio_mem *vm, unsigned long mb_id,
+> -                                   enum virtio_mem_mb_state state)
+> +static void virtio_mem_sbm_set_mb_state(struct virtio_mem *vm,
+> +                                       unsigned long mb_id, uint8_t state)
+>  {
+>         const unsigned long idx = mb_id - vm->first_mb_id;
+> -       enum virtio_mem_mb_state old_state;
+> +       uint8_t old_state;
+>
+> -       old_state = vm->mb_state[idx];
+> -       vm->mb_state[idx] = state;
+> +       old_state = vm->sbm.mb_states[idx];
+> +       vm->sbm.mb_states[idx] = state;
+>
+> -       BUG_ON(vm->nb_mb_state[old_state] == 0);
+> -       vm->nb_mb_state[old_state]--;
+> -       vm->nb_mb_state[state]++;
+> +       BUG_ON(vm->sbm.mb_count[old_state] == 0);
+> +       vm->sbm.mb_count[old_state]--;
+> +       vm->sbm.mb_count[state]++;
+>  }
+>
+>  /*
+>   * Get the state of a memory block.
+>   */
+> -static enum virtio_mem_mb_state virtio_mem_mb_get_state(struct virtio_mem *vm,
+> -                                                       unsigned long mb_id)
+> +static uint8_t virtio_mem_sbm_get_mb_state(struct virtio_mem *vm,
+> +                                          unsigned long mb_id)
+>  {
+>         const unsigned long idx = mb_id - vm->first_mb_id;
+>
+> -       return vm->mb_state[idx];
+> +       return vm->sbm.mb_states[idx];
+>  }
+>
+>  /*
+>   * Prepare the state array for the next memory block.
+>   */
+> -static int virtio_mem_mb_state_prepare_next_mb(struct virtio_mem *vm)
+> +static int virtio_mem_sbm_mb_states_prepare_next_mb(struct virtio_mem *vm)
+>  {
+>         unsigned long old_bytes = vm->next_mb_id - vm->first_mb_id;
+>         unsigned long new_bytes = old_bytes + 1;
+>         int old_pages = PFN_UP(old_bytes);
+>         int new_pages = PFN_UP(new_bytes);
+> -       uint8_t *new_mb_state;
+> +       uint8_t *new_array;
+>
+> -       if (vm->mb_state && old_pages == new_pages)
+> +       if (vm->sbm.mb_states && old_pages == new_pages)
+>                 return 0;
+>
+> -       new_mb_state = vzalloc(new_pages * PAGE_SIZE);
+> -       if (!new_mb_state)
+> +       new_array = vzalloc(new_pages * PAGE_SIZE);
+> +       if (!new_array)
+>                 return -ENOMEM;
+>
+>         mutex_lock(&vm->hotplug_mutex);
+> -       if (vm->mb_state)
+> -               memcpy(new_mb_state, vm->mb_state, old_pages * PAGE_SIZE);
+> -       vfree(vm->mb_state);
+> -       vm->mb_state = new_mb_state;
+> +       if (vm->sbm.mb_states)
+> +               memcpy(new_array, vm->sbm.mb_states, old_pages * PAGE_SIZE);
+> +       vfree(vm->sbm.mb_states);
+> +       vm->sbm.mb_states = new_array;
+>         mutex_unlock(&vm->hotplug_mutex);
+>
+>         return 0;
+>  }
+>
+> -#define virtio_mem_for_each_mb_state(_vm, _mb_id, _state) \
+> +#define virtio_mem_sbm_for_each_mb(_vm, _mb_id, _state) \
+>         for (_mb_id = _vm->first_mb_id; \
+> -            _mb_id < _vm->next_mb_id && _vm->nb_mb_state[_state]; \
+> +            _mb_id < _vm->next_mb_id && _vm->sbm.mb_count[_state]; \
+>              _mb_id++) \
+> -               if (virtio_mem_mb_get_state(_vm, _mb_id) == _state)
+> +               if (virtio_mem_sbm_get_mb_state(_vm, _mb_id) == _state)
+>
+> -#define virtio_mem_for_each_mb_state_rev(_vm, _mb_id, _state) \
+> +#define virtio_mem_sbm_for_each_mb_rev(_vm, _mb_id, _state) \
+>         for (_mb_id = _vm->next_mb_id - 1; \
+> -            _mb_id >= _vm->first_mb_id && _vm->nb_mb_state[_state]; \
+> +            _mb_id >= _vm->first_mb_id && _vm->sbm.mb_count[_state]; \
+>              _mb_id--) \
+> -               if (virtio_mem_mb_get_state(_vm, _mb_id) == _state)
+> +               if (virtio_mem_sbm_get_mb_state(_vm, _mb_id) == _state)
+>
+>  /*
+>   * Mark all selected subblocks plugged.
+> @@ -573,9 +575,9 @@ static bool virtio_mem_contains_range(struct virtio_mem *vm, uint64_t start,
+>  static int virtio_mem_notify_going_online(struct virtio_mem *vm,
+>                                           unsigned long mb_id)
+>  {
+> -       switch (virtio_mem_mb_get_state(vm, mb_id)) {
+> -       case VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL:
+> -       case VIRTIO_MEM_MB_STATE_OFFLINE:
+> +       switch (virtio_mem_sbm_get_mb_state(vm, mb_id)) {
+> +       case VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL:
+> +       case VIRTIO_MEM_SBM_MB_OFFLINE:
+>                 return NOTIFY_OK;
+>         default:
+>                 break;
+> @@ -588,14 +590,14 @@ static int virtio_mem_notify_going_online(struct virtio_mem *vm,
+>  static void virtio_mem_notify_offline(struct virtio_mem *vm,
+>                                       unsigned long mb_id)
+>  {
+> -       switch (virtio_mem_mb_get_state(vm, mb_id)) {
+> -       case VIRTIO_MEM_MB_STATE_ONLINE_PARTIAL:
+> -               virtio_mem_mb_set_state(vm, mb_id,
+> -                                       VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL);
+> +       switch (virtio_mem_sbm_get_mb_state(vm, mb_id)) {
+> +       case VIRTIO_MEM_SBM_MB_ONLINE_PARTIAL:
+> +               virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                           VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL);
+>                 break;
+> -       case VIRTIO_MEM_MB_STATE_ONLINE:
+> -               virtio_mem_mb_set_state(vm, mb_id,
+> -                                       VIRTIO_MEM_MB_STATE_OFFLINE);
+> +       case VIRTIO_MEM_SBM_MB_ONLINE:
+> +               virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                           VIRTIO_MEM_SBM_MB_OFFLINE);
+>                 break;
+>         default:
+>                 BUG();
+> @@ -605,13 +607,14 @@ static void virtio_mem_notify_offline(struct virtio_mem *vm,
+>
+>  static void virtio_mem_notify_online(struct virtio_mem *vm, unsigned long mb_id)
+>  {
+> -       switch (virtio_mem_mb_get_state(vm, mb_id)) {
+> -       case VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL:
+> -               virtio_mem_mb_set_state(vm, mb_id,
+> -                                       VIRTIO_MEM_MB_STATE_ONLINE_PARTIAL);
+> +       switch (virtio_mem_sbm_get_mb_state(vm, mb_id)) {
+> +       case VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL:
+> +               virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                       VIRTIO_MEM_SBM_MB_ONLINE_PARTIAL);
+>                 break;
+> -       case VIRTIO_MEM_MB_STATE_OFFLINE:
+> -               virtio_mem_mb_set_state(vm, mb_id, VIRTIO_MEM_MB_STATE_ONLINE);
+> +       case VIRTIO_MEM_SBM_MB_OFFLINE:
+> +               virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                           VIRTIO_MEM_SBM_MB_ONLINE);
+>                 break;
+>         default:
+>                 BUG();
+> @@ -1160,7 +1163,7 @@ static int virtio_mem_prepare_next_mb(struct virtio_mem *vm,
+>                 return -ENOSPC;
+>
+>         /* Resize the state array if required. */
+> -       rc = virtio_mem_mb_state_prepare_next_mb(vm);
+> +       rc = virtio_mem_sbm_mb_states_prepare_next_mb(vm);
+>         if (rc)
+>                 return rc;
+>
+> @@ -1169,7 +1172,7 @@ static int virtio_mem_prepare_next_mb(struct virtio_mem *vm,
+>         if (rc)
+>                 return rc;
+>
+> -       vm->nb_mb_state[VIRTIO_MEM_MB_STATE_UNUSED]++;
+> +       vm->sbm.mb_count[VIRTIO_MEM_SBM_MB_UNUSED]++;
+>         *mb_id = vm->next_mb_id++;
+>         return 0;
+>  }
+> @@ -1203,16 +1206,16 @@ static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
+>          * so the memory notifiers will find the block in the right state.
+>          */
+>         if (count == vm->nb_sb_per_mb)
+> -               virtio_mem_mb_set_state(vm, mb_id,
+> -                                       VIRTIO_MEM_MB_STATE_OFFLINE);
+> +               virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                           VIRTIO_MEM_SBM_MB_OFFLINE);
+>         else
+> -               virtio_mem_mb_set_state(vm, mb_id,
+> -                                       VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL);
+> +               virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                           VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL);
+>
+>         /* Add the memory block to linux - if that fails, try to unplug. */
+>         rc = virtio_mem_mb_add(vm, mb_id);
+>         if (rc) {
+> -               enum virtio_mem_mb_state new_state = VIRTIO_MEM_MB_STATE_UNUSED;
+> +               int new_state = VIRTIO_MEM_SBM_MB_UNUSED;
+>
+>                 dev_err(&vm->vdev->dev,
+>                         "adding memory block %lu failed with %d\n", mb_id, rc);
+> @@ -1222,8 +1225,8 @@ static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
+>                  * where adding of memory failed - especially on -ENOMEM.
+>                  */
+>                 if (virtio_mem_mb_unplug_sb(vm, mb_id, 0, count))
+> -                       new_state = VIRTIO_MEM_MB_STATE_PLUGGED;
+> -               virtio_mem_mb_set_state(vm, mb_id, new_state);
+> +                       new_state = VIRTIO_MEM_SBM_MB_PLUGGED;
+> +               virtio_mem_sbm_set_mb_state(vm, mb_id, new_state);
+>                 return rc;
+>         }
+>
+> @@ -1276,11 +1279,11 @@ static int virtio_mem_mb_plug_any_sb(struct virtio_mem *vm, unsigned long mb_id,
+>
+>         if (virtio_mem_mb_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+>                 if (online)
+> -                       virtio_mem_mb_set_state(vm, mb_id,
+> -                                               VIRTIO_MEM_MB_STATE_ONLINE);
+> +                       virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                                   VIRTIO_MEM_SBM_MB_ONLINE);
+>                 else
+> -                       virtio_mem_mb_set_state(vm, mb_id,
+> -                                               VIRTIO_MEM_MB_STATE_OFFLINE);
+> +                       virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                                   VIRTIO_MEM_SBM_MB_OFFLINE);
+>         }
+>
+>         return 0;
+> @@ -1302,8 +1305,8 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+>         mutex_lock(&vm->hotplug_mutex);
+>
+>         /* Try to plug subblocks of partially plugged online blocks. */
+> -       virtio_mem_for_each_mb_state(vm, mb_id,
+> -                                    VIRTIO_MEM_MB_STATE_ONLINE_PARTIAL) {
+> +       virtio_mem_sbm_for_each_mb(vm, mb_id,
+> +                                  VIRTIO_MEM_SBM_MB_ONLINE_PARTIAL) {
+>                 rc = virtio_mem_mb_plug_any_sb(vm, mb_id, &nb_sb, true);
+>                 if (rc || !nb_sb)
+>                         goto out_unlock;
+> @@ -1311,8 +1314,8 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+>         }
+>
+>         /* Try to plug subblocks of partially plugged offline blocks. */
+> -       virtio_mem_for_each_mb_state(vm, mb_id,
+> -                                    VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL) {
+> +       virtio_mem_sbm_for_each_mb(vm, mb_id,
+> +                                  VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
+>                 rc = virtio_mem_mb_plug_any_sb(vm, mb_id, &nb_sb, false);
+>                 if (rc || !nb_sb)
+>                         goto out_unlock;
+> @@ -1326,7 +1329,7 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+>         mutex_unlock(&vm->hotplug_mutex);
+>
+>         /* Try to plug and add unused blocks */
+> -       virtio_mem_for_each_mb_state(vm, mb_id, VIRTIO_MEM_MB_STATE_UNUSED) {
+> +       virtio_mem_sbm_for_each_mb(vm, mb_id, VIRTIO_MEM_SBM_MB_UNUSED) {
+>                 if (!virtio_mem_could_add_memory(vm, memory_block_size_bytes()))
+>                         return -ENOSPC;
+>
+> @@ -1375,8 +1378,8 @@ static int virtio_mem_mb_unplug_any_sb_offline(struct virtio_mem *vm,
+>
+>         /* some subblocks might have been unplugged even on failure */
+>         if (!virtio_mem_mb_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb))
+> -               virtio_mem_mb_set_state(vm, mb_id,
+> -                                       VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL);
+> +               virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                           VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL);
+>         if (rc)
+>                 return rc;
+>
+> @@ -1387,8 +1390,8 @@ static int virtio_mem_mb_unplug_any_sb_offline(struct virtio_mem *vm,
+>                  * unplugged. Temporarily drop the mutex, so
+>                  * any pending GOING_ONLINE requests can be serviced/rejected.
+>                  */
+> -               virtio_mem_mb_set_state(vm, mb_id,
+> -                                       VIRTIO_MEM_MB_STATE_UNUSED);
+> +               virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                           VIRTIO_MEM_SBM_MB_UNUSED);
+>
+>                 mutex_unlock(&vm->hotplug_mutex);
+>                 rc = virtio_mem_mb_remove(vm, mb_id);
+> @@ -1426,8 +1429,8 @@ static int virtio_mem_mb_unplug_sb_online(struct virtio_mem *vm,
+>                 return rc;
+>         }
+>
+> -       virtio_mem_mb_set_state(vm, mb_id,
+> -                               VIRTIO_MEM_MB_STATE_ONLINE_PARTIAL);
+> +       virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                   VIRTIO_MEM_SBM_MB_ONLINE_PARTIAL);
+>         return 0;
+>  }
+>
+> @@ -1487,8 +1490,8 @@ static int virtio_mem_mb_unplug_any_sb_online(struct virtio_mem *vm,
+>                 rc = virtio_mem_mb_offline_and_remove(vm, mb_id);
+>                 mutex_lock(&vm->hotplug_mutex);
+>                 if (!rc)
+> -                       virtio_mem_mb_set_state(vm, mb_id,
+> -                                               VIRTIO_MEM_MB_STATE_UNUSED);
+> +                       virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                                   VIRTIO_MEM_SBM_MB_UNUSED);
+>         }
+>
+>         return 0;
+> @@ -1514,8 +1517,8 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+>         mutex_lock(&vm->hotplug_mutex);
+>
+>         /* Try to unplug subblocks of partially plugged offline blocks. */
+> -       virtio_mem_for_each_mb_state_rev(vm, mb_id,
+> -                                        VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL) {
+> +       virtio_mem_sbm_for_each_mb_rev(vm, mb_id,
+> +                                      VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
+>                 rc = virtio_mem_mb_unplug_any_sb_offline(vm, mb_id,
+>                                                          &nb_sb);
+>                 if (rc || !nb_sb)
+> @@ -1524,8 +1527,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+>         }
+>
+>         /* Try to unplug subblocks of plugged offline blocks. */
+> -       virtio_mem_for_each_mb_state_rev(vm, mb_id,
+> -                                        VIRTIO_MEM_MB_STATE_OFFLINE) {
+> +       virtio_mem_sbm_for_each_mb_rev(vm, mb_id, VIRTIO_MEM_SBM_MB_OFFLINE) {
+>                 rc = virtio_mem_mb_unplug_any_sb_offline(vm, mb_id,
+>                                                          &nb_sb);
+>                 if (rc || !nb_sb)
+> @@ -1539,8 +1541,8 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+>         }
+>
+>         /* Try to unplug subblocks of partially plugged online blocks. */
+> -       virtio_mem_for_each_mb_state_rev(vm, mb_id,
+> -                                        VIRTIO_MEM_MB_STATE_ONLINE_PARTIAL) {
+> +       virtio_mem_sbm_for_each_mb_rev(vm, mb_id,
+> +                                      VIRTIO_MEM_SBM_MB_ONLINE_PARTIAL) {
+>                 rc = virtio_mem_mb_unplug_any_sb_online(vm, mb_id,
+>                                                         &nb_sb);
+>                 if (rc || !nb_sb)
+> @@ -1551,8 +1553,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+>         }
+>
+>         /* Try to unplug subblocks of plugged online blocks. */
+> -       virtio_mem_for_each_mb_state_rev(vm, mb_id,
+> -                                        VIRTIO_MEM_MB_STATE_ONLINE) {
+> +       virtio_mem_sbm_for_each_mb_rev(vm, mb_id, VIRTIO_MEM_SBM_MB_ONLINE) {
+>                 rc = virtio_mem_mb_unplug_any_sb_online(vm, mb_id,
+>                                                         &nb_sb);
+>                 if (rc || !nb_sb)
+> @@ -1578,11 +1579,12 @@ static int virtio_mem_unplug_pending_mb(struct virtio_mem *vm)
+>         unsigned long mb_id;
+>         int rc;
+>
+> -       virtio_mem_for_each_mb_state(vm, mb_id, VIRTIO_MEM_MB_STATE_PLUGGED) {
+> +       virtio_mem_sbm_for_each_mb(vm, mb_id, VIRTIO_MEM_SBM_MB_PLUGGED) {
+>                 rc = virtio_mem_mb_unplug(vm, mb_id);
+>                 if (rc)
+>                         return rc;
+> -               virtio_mem_mb_set_state(vm, mb_id, VIRTIO_MEM_MB_STATE_UNUSED);
+> +               virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                           VIRTIO_MEM_SBM_MB_UNUSED);
+>         }
+>
+>         return 0;
+> @@ -1974,11 +1976,12 @@ static void virtio_mem_remove(struct virtio_device *vdev)
+>          * After we unregistered our callbacks, user space can online partially
+>          * plugged offline blocks. Make sure to remove them.
+>          */
+> -       virtio_mem_for_each_mb_state(vm, mb_id,
+> -                                    VIRTIO_MEM_MB_STATE_OFFLINE_PARTIAL) {
+> +       virtio_mem_sbm_for_each_mb(vm, mb_id,
+> +                                  VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
+>                 rc = virtio_mem_mb_remove(vm, mb_id);
+>                 BUG_ON(rc);
+> -               virtio_mem_mb_set_state(vm, mb_id, VIRTIO_MEM_MB_STATE_UNUSED);
+> +               virtio_mem_sbm_set_mb_state(vm, mb_id,
+> +                                           VIRTIO_MEM_SBM_MB_UNUSED);
+>         }
+>         /*
+>          * After we unregistered our callbacks, user space can no longer
+> @@ -2003,7 +2006,7 @@ static void virtio_mem_remove(struct virtio_device *vdev)
+>         }
+>
+>         /* remove all tracking data - no locking needed */
+> -       vfree(vm->mb_state);
+> +       vfree(vm->sbm.mb_states);
+>         vfree(vm->sb_bitmap);
+>
+>         /* reset the device and cleanup the queues */
 
+Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
