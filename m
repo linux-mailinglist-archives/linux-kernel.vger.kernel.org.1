@@ -2,92 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40722952C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9619B2952D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504784AbgJUTLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 15:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409009AbgJUTLW (ORCPT
+        id S2504824AbgJUTOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 15:14:39 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:63870 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504797AbgJUTOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 15:11:22 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF818C0613CE;
-        Wed, 21 Oct 2020 12:11:21 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id a7so4469944lfk.9;
-        Wed, 21 Oct 2020 12:11:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RCshK3M4udSA0kpWWZPjCFazMoUFiZb71kFWv+5y9v8=;
-        b=ubX1axnYMdBQbOxOqFsPd4Ij95x5LYE09iUx3I/KyZjjJLGGgndmXabyt/7rvqdmiQ
-         dJb1V8skO+QLh7IAOWyI2XajqSsn36nBE1lxWGzcWM5zVx//cg+imwggm4baYKqUXjjn
-         pjlVltvfc2ud2jvFeo7VzdzA4d531saIqV9fbKz/h4D/UqWr3BhdDrHAy2ICC77SnWvd
-         5Y5A4Ped/zrRY1KQN+0iE7hJ1nlFxxhlglTDtbTHiEB3z0/o4NyFNMDME88reOuu+nz/
-         TZN4BX+EPQ4QxN/GyFokS1ClQNsqjdGPnUrvYSlxvrSCtVCoS2NuunkT5YqQYP2wqgEt
-         C/kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RCshK3M4udSA0kpWWZPjCFazMoUFiZb71kFWv+5y9v8=;
-        b=KCWsKXIKZuDGdI4JYOl160FL+LoDqfElcR3Qzf4JuK2c4jhaKWJMUfWxyzMzRAFfgU
-         gxq+Je9o5Bua6gzQMAsVwMM7F7muzSnxMpvnJVLacNwMW6LpWvnHnKkt+pimjqeR7hAx
-         q3f/3mey7z4rvUoQEg4SBFT6IuXCILF+AupT+jzP29X1q4w7dhvyjL0/hMv8zgoTX9qB
-         QHmZLjMjnz8Rkk5ZH4YbhA3Uu1kw4QClgQKrECMtWLxKZhjB7d23Sv9U2hhKiPqJ2ZR4
-         xsYZf31GO4Cy5K/ULuZAN2ZTNTuIDNqGvuI3ZDXKM/hPrRSRNbjCIM/k87JFAaCZc3Ac
-         xa5w==
-X-Gm-Message-State: AOAM53218dqiUON3rDauWH6VkihfuYfzGxAF0pwFWDAykmCTYwHFuXSC
-        qQ0+NS6ZlkN8uwSPZEQSkl1KIoLL6tYXDCIgLoI=
-X-Google-Smtp-Source: ABdhPJwJeuIx13ndXi6SItY4Tf2f4ob7L0nOMpL8/Dkwxx7ppk/31oDfLYa21E4D7Rtdez4WzQ3rBSgufTnUo1Me7kU=
-X-Received: by 2002:ac2:44a4:: with SMTP id c4mr1833700lfm.365.1603307480086;
- Wed, 21 Oct 2020 12:11:20 -0700 (PDT)
+        Wed, 21 Oct 2020 15:14:36 -0400
+Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.491)
+ id 030494657aca0941; Wed, 21 Oct 2020 21:14:32 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        Saravana Kannan <saravanak@google.com>,
+        Xiang Chen <chenxiang66@hisilicon.com>
+Subject: [PATCH 1/3] PM: runtime: Drop runtime PM references to supplier on link removal
+Date:   Wed, 21 Oct 2020 21:12:15 +0200
+Message-ID: <1682736.0MbBAd5gSP@kreacher>
+In-Reply-To: <6543936.FbWAdBN1tG@kreacher>
+References: <6543936.FbWAdBN1tG@kreacher>
 MIME-Version: 1.0
-References: <20201019130532.19959-1-jandryuk@gmail.com>
-In-Reply-To: <20201019130532.19959-1-jandryuk@gmail.com>
-From:   Jason Andryuk <jandryuk@gmail.com>
-Date:   Wed, 21 Oct 2020 15:11:07 -0400
-Message-ID: <CAKf6xptMj9VdS8oo_pQcJT1zRPZ2fXJR7_ifiSXo=TqtBgnc2Q@mail.gmail.com>
-Subject: Re: [PATCH] hid-mt: Fix Cirque 121f touch release
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>
-Cc:     stable@vger.kernel.org, linux-input@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 9:05 AM Jason Andryuk <jandryuk@gmail.com> wrote:
->
-> We're seeing the touchpad not send all the touch release events.  This
-> can result in the cursor getting stuck generating scroll events instead
-> of cursor movement for single finger motion.  With the cursor not
-> moving, users think the trackpad is broken.  With libinput-record, you
-> can see that it doesn't always get to a neutral state when there are no
-> fingers on the touchpad.
->
-> MT_QUIRK_STICKY_FINGERS was insufficient alone.  The timer often didn't
-> fire to release all the contacts.  MT_QUIRK_NOT_SEEN_MEANS_UP seems to
-> help with tracking the touches, and allows the timer to fire properly
-> when needed.
->
-> You can reproduce by touching the trackpad with 4 fingers spread out,
-> then pulling them all together and removing from the track pad.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-<snip>
+While removing a device link, drop the supplier device's runtime PM
+usage counter as many times as needed to drop all of the runtime PM
+references to it from the consumer in addition to dropping the
+consumer's link count.
 
-> ---
-> This is developed and tested against 5.4 and forward ported to latest
-> upstream.
+Fixes: baa8809f6097 ("PM / runtime: Optimize the use of device links")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: 5.1+ <stable@vger.kernel.org> # 5.1+
+---
+ drivers/base/core.c          |    6 ++----
+ drivers/base/power/runtime.c |   21 ++++++++++++++++++++-
+ include/linux/pm_runtime.h   |    4 ++--
+ 3 files changed, 24 insertions(+), 7 deletions(-)
 
-I installed Fedora 32 with kernel 5.6.6 to test out some other stuff,
-and it is not reproducing with the steps above.  Is there some other
-change that may have fixed the release tracking?  I was definitely
-seeing it with 5.4.72.
+Index: linux-pm/drivers/base/power/runtime.c
+===================================================================
+--- linux-pm.orig/drivers/base/power/runtime.c
++++ linux-pm/drivers/base/power/runtime.c
+@@ -1729,7 +1729,7 @@ void pm_runtime_new_link(struct device *
+ 	spin_unlock_irq(&dev->power.lock);
+ }
+ 
+-void pm_runtime_drop_link(struct device *dev)
++static void pm_runtime_drop_link_count(struct device *dev)
+ {
+ 	spin_lock_irq(&dev->power.lock);
+ 	WARN_ON(dev->power.links_count == 0);
+@@ -1737,6 +1737,25 @@ void pm_runtime_drop_link(struct device
+ 	spin_unlock_irq(&dev->power.lock);
+ }
+ 
++/**
++ * pm_runtime_drop_link - Prepare for device link removal.
++ * @link: Device link going away.
++ *
++ * Drop the link count of the consumer end of @link and decrement the supplier
++ * device's runtime PM usage counter as many times as needed to drop all of the
++ * PM runtime reference to it from the consumer.
++ */
++void pm_runtime_drop_link(struct device_link *link)
++{
++	if (!(link->flags & DL_FLAG_PM_RUNTIME))
++		return;
++
++	pm_runtime_drop_link_count(link->consumer);
++
++	while (refcount_dec_not_one(&link->rpm_active))
++		pm_runtime_put(link->supplier);
++}
++
+ static bool pm_runtime_need_not_resume(struct device *dev)
+ {
+ 	return atomic_read(&dev->power.usage_count) <= 1 &&
+Index: linux-pm/include/linux/pm_runtime.h
+===================================================================
+--- linux-pm.orig/include/linux/pm_runtime.h
++++ linux-pm/include/linux/pm_runtime.h
+@@ -58,7 +58,7 @@ extern void pm_runtime_clean_up_links(st
+ extern void pm_runtime_get_suppliers(struct device *dev);
+ extern void pm_runtime_put_suppliers(struct device *dev);
+ extern void pm_runtime_new_link(struct device *dev);
+-extern void pm_runtime_drop_link(struct device *dev);
++extern void pm_runtime_drop_link(struct device_link *link);
+ 
+ /**
+  * pm_runtime_get_if_in_use - Conditionally bump up runtime PM usage counter.
+@@ -280,7 +280,7 @@ static inline void pm_runtime_clean_up_l
+ static inline void pm_runtime_get_suppliers(struct device *dev) {}
+ static inline void pm_runtime_put_suppliers(struct device *dev) {}
+ static inline void pm_runtime_new_link(struct device *dev) {}
+-static inline void pm_runtime_drop_link(struct device *dev) {}
++static inline void pm_runtime_drop_link(struct device_link *link) {}
+ 
+ #endif /* !CONFIG_PM */
+ 
+Index: linux-pm/drivers/base/core.c
+===================================================================
+--- linux-pm.orig/drivers/base/core.c
++++ linux-pm/drivers/base/core.c
+@@ -763,8 +763,7 @@ static void __device_link_del(struct kre
+ 	dev_dbg(link->consumer, "Dropping the link to %s\n",
+ 		dev_name(link->supplier));
+ 
+-	if (link->flags & DL_FLAG_PM_RUNTIME)
+-		pm_runtime_drop_link(link->consumer);
++	pm_runtime_drop_link(link);
+ 
+ 	list_del_rcu(&link->s_node);
+ 	list_del_rcu(&link->c_node);
+@@ -778,8 +777,7 @@ static void __device_link_del(struct kre
+ 	dev_info(link->consumer, "Dropping the link to %s\n",
+ 		 dev_name(link->supplier));
+ 
+-	if (link->flags & DL_FLAG_PM_RUNTIME)
+-		pm_runtime_drop_link(link->consumer);
++	pm_runtime_drop_link(link);
+ 
+ 	list_del(&link->s_node);
+ 	list_del(&link->c_node);
 
-Regards,
-Jason
+
+
