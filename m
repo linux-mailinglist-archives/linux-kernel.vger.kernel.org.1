@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5FC2953E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82F12953E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505828AbgJUVM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 17:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505356AbgJUVM2 (ORCPT
+        id S2505838AbgJUVMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 17:12:34 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:55576 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2505830AbgJUVMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 17:12:28 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0EBC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 14:12:26 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id l2so1788313pjt.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 14:12:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OCU6tWIdopaiVv+58WWDommA6fymksvXM1Yi91pMvd4=;
-        b=KMdjtGlHNR2a7z7DBuzUrrpqyNnWfv/OEsmeDLlwn+7pzE+rymVcwPM+k/TwonlLha
-         js6srf9Ss9b+kDHCUWBOLnEWDWIwpVmoBpnTvFAWFGuvcoFMx0iCmoYytHb3zDufSmrR
-         keqggjQIJzKflNiV0TaUJ6k8qzFC3e4BXC2RfDC/hKZB/r9w3h9OYuipkWkHlwkE65nN
-         1Xfy6iH3GzDfjplGS4M1qcsh8n7dmPzS1YWKTsmCmpgZL8W4E2osUpQSI9biZHKv8QHa
-         rCnjtnSW0ELtdukpDZRDtuW0kc1e5ZSi61i4v6GWDpZGsFCkfxqGFoMjbR25nXhTWE5q
-         98LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OCU6tWIdopaiVv+58WWDommA6fymksvXM1Yi91pMvd4=;
-        b=CHIRfvMoylY8+cbqeIHXIjSj1vMUJBT4o+5XJp6yALOiBN5ftgDiV+X6TIVo04zc3Y
-         QL4xYOLCdbSzlxTZuOBLpwShx84xtEOizce/04hp/G2Dhdd6+Ty9QSH+V7Jw3NgVtzpJ
-         ru1+BLnHe81gAwpxJhG0CQ808QR0cltY3GdajaffNG89GmCK+gq/PnSOYx5GszbjJpcf
-         CQ9IMUWpQYP2H9llbpLlOc7TG8T2KSQ8Q40ObfqfuVkGDYWDk3wmzDCsFMNukUQaOb32
-         yqx72bGSW2GhqgLA1ze7OS4N9Ux5rMRRsjNDdVQSLgNIMo7qQQq4+Sjn6Y8GyKPiIDPc
-         TEHw==
-X-Gm-Message-State: AOAM530tx5KIjCWT97/mBOpMRC/+2WSMtYA0hUbZE0Z+IE0TziSBX8gh
-        YY2HtEbpa4cfcmrj27zSpELlMJ6tZiKi8QJ6fNxD2w==
-X-Google-Smtp-Source: ABdhPJxr5dOe0lFEswg9i4kcGmddMd7ptohz6vXxVGc5KE6gmcsXkRzZ90TFtTcjP59cf+I4hsAgsT+HlQMx9cd6xBY=
-X-Received: by 2002:a17:90a:3e4e:: with SMTP id t14mr5069350pjm.217.1603314745961;
- Wed, 21 Oct 2020 14:12:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1603282193.git.mchehab+huawei@kernel.org> <1c36d295423c5c20c21a7edede0eb29e338dd62a.1603282193.git.mchehab+huawei@kernel.org>
-In-Reply-To: <1c36d295423c5c20c21a7edede0eb29e338dd62a.1603282193.git.mchehab+huawei@kernel.org>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 21 Oct 2020 14:12:14 -0700
-Message-ID: <CAFd5g47ZbyiXLMNJ6-BZH1rVpsjK4WSuUph4wS=W=3dVoLeSFQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] kunit: test: fix remaining kernel-doc warnings
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 21 Oct 2020 17:12:33 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id ACA014017F;
+        Wed, 21 Oct 2020 21:12:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1603314752; bh=d1zs99Yld9s2RHCZmSsagEGcX6j+DDeOamZ2x71qpRA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZSInftFpwvUMRUx14/xl4CsFWgoK19XF47WJ2gpENTe3BXSluldHFCTqiiWTGqifc
+         r9JEn/RcdaQFlyud9jEIhz3s9mwxHCoaG78fpi6cgJCBICdDP3HILm7rVeLFDJ18be
+         i2QpHvQpz6nHoPp10EjBaTpFS5pA82yvi6L8DYZkH8AmbwuBwFb8LkPQSP5UXJRkkv
+         YapIYIzqnclsEV2NlQQrq0RV3M0LKS148z9CXUYJI+La1E+aD1LlSovWJVDOh5a2Oy
+         UTQbeB2y7cyVATYP0fRW8bRj7HyLLMmsDNUmJME6scwPA+CI2LeqsvX/Qx1ahGzO+i
+         Q7BSLHyUn+1og==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id D44A8A01F0;
+        Wed, 21 Oct 2020 21:12:28 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Cc:     Joao Pinto <Joao.Pinto@synopsys.com>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARC: bitops: Remove unecessary operation and value
+Date:   Wed, 21 Oct 2020 23:12:20 +0200
+Message-Id: <21124fbdd2ebfe150cc750f673a31e89d6fe5752.1603314740.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 5:17 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> test.h still produce three warnings:
->
->         include/kunit/test.h:282: warning: Function parameter or member '__suites' not described in 'kunit_test_suites_for_module'
->         include/kunit/test.h:282: warning: Excess function parameter 'suites_list' description in 'kunit_test_suites_for_module'
->         include/kunit/test.h:314: warning: Excess function parameter 'suites' description in 'kunit_test_suites'
->
-> They're all due to errors at kernel-doc markups. Update them.
->
-> It should be noticed that this patch moved a kernel-doc
-> markup that were located at the wrong place, and using a wrong
-> name. Kernel-doc only supports kaving the markup just before the
-> function/macro declaration. Placing it elsewhere will make it do
-> wrong assumptions.
->
-> Fixes: aac35468ca20 ("kunit: test: create a single centralized executor for all tests")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+The 1-bit shift rotation to the left on x variable located on
+4   last if statement can be removed because the computed value is will
+not be used afront.
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
+Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+---
+ arch/arc/include/asm/bitops.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/arc/include/asm/bitops.h b/arch/arc/include/asm/bitops.h
+index 50eb3f6..8cddddc 100644
+--- a/arch/arc/include/asm/bitops.h
++++ b/arch/arc/include/asm/bitops.h
+@@ -297,10 +297,8 @@ static inline int constant_fls(unsigned int x)
+ 		x <<= 2;
+ 		r -= 2;
+ 	}
+-	if (!(x & 0x80000000u)) {
+-		x <<= 1;
++	if (!(x & 0x80000000u))
+ 		r -= 1;
+-	}
+ 	return r;
+ }
+ 
+-- 
+2.7.4
+
