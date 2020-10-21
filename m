@@ -2,185 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73F5295455
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B6729545A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506315AbgJUVlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 17:41:05 -0400
-Received: from mga01.intel.com ([192.55.52.88]:54841 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506305AbgJUVlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 17:41:05 -0400
-IronPort-SDR: iDCnjjIjotc8Pv2Za8fnFciouGGEDKAPlJgR0XthBaJMiTuahmjKNWMLflprrjETyr2SILG6CX
- 9u2iPr3SmJFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="185110865"
-X-IronPort-AV: E=Sophos;i="5.77,402,1596524400"; 
-   d="scan'208";a="185110865"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 14:41:05 -0700
-IronPort-SDR: PAoDCxdHU0d23K3I4PsydeIL0k1YJM+cza2tMcFM0R/hIMaekgzpZ4j+tb9gKWXugqKueZTl4b
- 1evJguTXcycw==
-X-IronPort-AV: E=Sophos;i="5.77,402,1596524400"; 
-   d="scan'208";a="359031374"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 14:41:00 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 660D7209D9; Thu, 22 Oct 2020 00:40:58 +0300 (EEST)
-Date:   Thu, 22 Oct 2020 00:40:58 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Hugues FRUCHET <hugues.fruchet@st.com>
-Cc:     Alexandre TORGUE <alexandre.torgue@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Alain VOLMAT <alain.volmat@st.com>,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Subject: Re: [PATCH v4 2/2] media: dt-bindings: media: st,stm32-dcmi: Add
- support of BT656
-Message-ID: <20201021214058.GJ2703@paasikivi.fi.intel.com>
-References: <1603188889-23664-1-git-send-email-hugues.fruchet@st.com>
- <1603188889-23664-3-git-send-email-hugues.fruchet@st.com>
- <20201021130033.GI2703@paasikivi.fi.intel.com>
- <657634eb-690a-53a6-2ac1-de3c06a1cec4@st.com>
+        id S2506334AbgJUVlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 17:41:14 -0400
+Received: from smtprelay0210.hostedemail.com ([216.40.44.210]:52098 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2506318AbgJUVlK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 17:41:10 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id A250518002A38;
+        Wed, 21 Oct 2020 21:41:09 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2894:2895:2909:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3874:4250:4321:5007:6742:8568:10004:10400:10450:10455:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:13618:14096:14097:14181:14659:14721:19904:19999:21080:21627:30016:30029:30054:30060:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: debt45_550e0712724b
+X-Filterd-Recvd-Size: 2443
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 21 Oct 2020 21:41:07 +0000 (UTC)
+Message-ID: <12bc8364008f797324097fb1974da1c0f75776b0.camel@perches.com>
+Subject: Re: [GIT PULL] prandom32 changes for v5.10
+From:   Joe Perches <joe@perches.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Marc Plumb <lkml.mplumb@gmail.com>, Willy Tarreau <w@1wt.eu>,
+        Amit Klein <aksecurity@gmail.com>,
+        George Spelvin <lkml@sdf.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>, Florian Westphal <fw@strlen.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Wed, 21 Oct 2020 14:41:06 -0700
+In-Reply-To: <CAHk-=wi9Oe=NCG_S1X-rSFwkWe=vK7GYUHp22PFWa2W47WnzKA@mail.gmail.com>
+References: <20201012203226.GA11861@1wt.eu>
+         <CANEQ_+Jyf-MZEsvT5iMu0a=waJCiAKdLaOfLHe_py6AXOt-hjQ@mail.gmail.com>
+         <CAHk-=wioF37gX6iMCguGi7XrpBQqMiJ_5HjQ=dJQas_np8_MyQ@mail.gmail.com>
+         <20201021032725.GB396@1wt.eu>
+         <6700002d-e775-4c6b-5ebc-2d6a872f1a62@gmail.com>
+         <432132f9c678dc5093fd85055e5b708584018a0d.camel@perches.com>
+         <CAHk-=wi9Oe=NCG_S1X-rSFwkWe=vK7GYUHp22PFWa2W47WnzKA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <657634eb-690a-53a6-2ac1-de3c06a1cec4@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hugues,
-
-On Wed, Oct 21, 2020 at 02:24:08PM +0000, Hugues FRUCHET wrote:
-> Hi Sakari,
+On Wed, 2020-10-21 at 14:35 -0700, Linus Torvalds wrote:
+> On Wed, Oct 21, 2020 at 2:20 PM Joe Perches <joe@perches.com> wrote:
+> > While secure solutions are useful, I really wonder if
+> > "George Spelvin" is a real person.
 > 
-> On 10/21/20 3:00 PM, Sakari Ailus wrote:
-> > Hi Hugues,
-> > 
-> > On Tue, Oct 20, 2020 at 12:14:49PM +0200, Hugues Fruchet wrote:
-> >> Add support of BT656 parallel bus mode in DCMI.
-> >> This mode is enabled when hsync-active & vsync-active
-> >> fields are not specified.
-> >>
-> >> Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
-> >> ---
-> >>   .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 30 ++++++++++++++++++++++
-> >>   1 file changed, 30 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-> >> index 3fe778c..1ee521a 100644
-> >> --- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-> >> +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-> >> @@ -44,6 +44,36 @@ properties:
-> >>         bindings defined in
-> >>         Documentation/devicetree/bindings/media/video-interfaces.txt.
-> >>   
-> >> +    properties:
-> >> +      endpoint:
-> >> +        type: object
-> >> +
-> >> +        properties:
-> >> +          bus-width: true
-> >> +
-> >> +          hsync-active:
-> >> +            description:
-> >> +              If both HSYNC and VSYNC polarities are not specified, BT656
-> >> +              embedded synchronization is selected.
-> >> +            default: 0
-> >> +
-> >> +          vsync-active:
-> >> +            description:
-> >> +              If both HSYNC and VSYNC polarities are not specified, BT656
-> >> +              embedded synchronization is selected.
-> >> +            default: 0
-> > 
-> > Should I understand this as if the polarities were not specified, BT.656
-> > will be used?
+> It's not his real name, no, but he's a real person.
 > 
-> Yes, this is what is documented in video-interfaces.txt:
-> "
->    Note, that if HSYNC and VSYNC polarities are not specified, embedded
->    synchronization may be required, where supported.
-> "
-> and
-> "
-> 				/* If hsync-active/vsync-active are missing,
-> 				   embedded BT.656 sync is used */
-> 				hsync-active = <0>;	/* Active low */
-> 				vsync-active = <0>;	/* Active low */
-> "
-> and I found also this in 
-> Documentation/devicetree/bindings/media/renesas,vin.yaml
-> "
->            hsync-active:
->              description:
->                If both HSYNC and VSYNC polarities are not specified, 
-> embedded
->                synchronization is selected.
->              default: 1
+> I do have his real name from years ago when I needed to confirm his
+> identity for sign-offs (I forget what for, I think it was some dcache
+> name hashing thing).
 > 
->            vsync-active:
->              description:
->                If both HSYNC and VSYNC polarities are not specified, 
-> embedded
->                synchronization is selected.
->              default: 1
+> So I can confirm he's a real person who just wants to keep private,
+> and is competent when it comes to hashing and security.
 
-Having the defaults leads to somewhat weird behaviour: specifying the
-default value on either property changes the bus type.
+I hope that real name is in some escrow somewhere and
+not just in some long thrown away spinning rust disk.
 
-> "
-> 
-> In the other hand I've found few occurences of "bus-type" 
-> (marvell,mmp2-ccic.yaml), it is why I asked you if "bus-type" is the new 
-> way to go versus previous way to signal BT656 (without hsync/vsync) ?
-> As explained previously, I prefer this last way for backward compatibility.
+And because George isn't a real name and contributions
+by him have been accepted, the DCO should be updated
+to show how pseudonymous contributions can be made.
 
-If you have a default for bus-type (BT.601), this won't be a problem.
 
-The old DT bindings were somewhat, well, opportunistic. The v4l2-of
-framework-let did its best and sometimes it worked. The behaviour is still
-supported but not encouraged in new bindings.
-
-> 
-> 
-> The bindings previously documented BT.601 (parallel) only, so
-> > it was somewhat ambigious to begin with. Is there a risk of interpreting
-> > old BT.601 bindings as BT.656?
-> I don't think so.
-> 
-> With bus-type property, I believe you could
-> > avoid at least that risk.
-> yes but as explained, I'll prefer not to amend current boards device 
-> tree files.
-
-I don't think it matters from this point of view --- you can have a
-default bus-type.
-
-> 
-> > 
-> > Also not specifying at least one of the default values leads to BT.656
-> > without bus-type. That could be addressed by removing the defaults.
-> > 
-> I'm new to yaml, I've taken that from renesas,vin.yaml. Should I just 
-> drop the "default: 1" lines ?
-
-That's one option, yes. Then you have to have those for BT.601 and it's no
-longer ambiguous.
-
--- 
-Regards,
-
-Sakari Ailus
