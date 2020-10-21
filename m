@@ -2,187 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4332294886
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE1729488C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395269AbgJUG6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 02:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51960 "EHLO mail.kernel.org"
+        id S2395384AbgJUHDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 03:03:00 -0400
+Received: from ozlabs.org ([203.11.71.1]:51759 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395250AbgJUG6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 02:58:47 -0400
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2395355AbgJUHC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 03:02:59 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA82C222C8;
-        Wed, 21 Oct 2020 06:58:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603263525;
-        bh=HCDpOlkrYf0tu+Yw3iNnrhQSsyD2BzFg+xP/8bkolfQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=0NQCd3AGi9iCQKjo3ZNpvM4mePupcTendX306htMlGVoSO78PvLm//8ebF4HVOfoI
-         VyZUSFqB3SHW+rYz6BobqKyklsms3KNr/0tQ0+mDJDhHNaljIGDAX9/c5ukx6sMoKa
-         ig0jO+m8JzyuCgxfjB6RhP+bS23mLuKYy36YhbYQ=
-Received: by mail-ot1-f54.google.com with SMTP id m22so957323ots.4;
-        Tue, 20 Oct 2020 23:58:45 -0700 (PDT)
-X-Gm-Message-State: AOAM533eKB+XyGMLUJRewUwdR25CIsPcSbPlIbT0dV5SspsJo3DBLUs9
-        JCNp6YQBQpottw84KFHPwx4rWool8X+Mww8r44M=
-X-Google-Smtp-Source: ABdhPJz6uJtrb0cIGFFNcmG4KnX5jyMXa2EzIi1iD/nYWLK0PRV6ntqXzi8mQm+LdfoKfUWvF20/3xvaaE9KiQlEooI=
-X-Received: by 2002:a9d:6c92:: with SMTP id c18mr1505523otr.108.1603263524916;
- Tue, 20 Oct 2020 23:58:44 -0700 (PDT)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CGLzh00cgz9sPB;
+        Wed, 21 Oct 2020 18:02:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1603263777;
+        bh=PBo18bQKtsF/lO3vizK4a5rRM+ztOs+GYX1rmNeAeZM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LuIUW6QYG39994r4W76fkSK5APvTR1wFV2MvHbHfgeu0NxBwaOjDHXGNMeV0LYvZ6
+         kSkL/QT9iItuNBJJ0jrXoW9AIHYNxKttjbvGxl1j6CKNJKGZHKQLkdBRjNxXaphxOJ
+         vq3l3kCe3E6UPsjdbcptnvmSiNmSZAgObAN6o44Y7xBIGQUfV/r5uaM2y69gimVe+m
+         Nk/2uLOLKf/LDTQj9S20PhpBqH2UCYTWeyJ30LulE3qcBZklhloNfu3ueHXRmdXyrg
+         OPn7mQd0mS2s/WG2aTii/nkMA3/850SoMK7g3RPCL+wzp1gpND/HFKLQ4y+se/EpT7
+         O53ief7ySLY7Q==
+Date:   Wed, 21 Oct 2020 18:02:55 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Howells <dhowells@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: Re: linux-next: manual merge of the notifications tree with Linus'
+ tree
+Message-ID: <20201021180255.5673c548@canb.auug.org.au>
+In-Reply-To: <20201021124733.344e5107@canb.auug.org.au>
+References: <20201021124733.344e5107@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201016175339.2429280-1-ndesaulniers@google.com>
- <160319373854.2175971.17968938488121846972.b4-ty@kernel.org> <CAKwvOd=ZJjYOVubjHN6DFuopMP7jg9PAxGHhOPVu6KefPMNfkg@mail.gmail.com>
-In-Reply-To: <CAKwvOd=ZJjYOVubjHN6DFuopMP7jg9PAxGHhOPVu6KefPMNfkg@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 21 Oct 2020 08:58:34 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXF-PFjG7sfdgCsnW-u-bd5yg+j3EiZUO8jYHMnb7bDttw@mail.gmail.com>
-Message-ID: <CAMj1kXF-PFjG7sfdgCsnW-u-bd5yg+j3EiZUO8jYHMnb7bDttw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Smith <Peter.Smith@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/RuvA/c3QoF.woLzySkf7l_P";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020 at 22:16, Nick Desaulniers <ndesaulniers@google.com> wrote:
+--Sig_/RuvA/c3QoF.woLzySkf7l_P
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Wed, 21 Oct 2020 12:47:33 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> On Tue, Oct 20, 2020 at 10:57 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Fri, 16 Oct 2020 10:53:39 -0700, Nick Desaulniers wrote:
-> > > With CONFIG_EXPERT=y, CONFIG_KASAN=y, CONFIG_RANDOMIZE_BASE=n,
-> > > CONFIG_RELOCATABLE=n, we observe the following failure when trying to
-> > > link the kernel image with LD=ld.lld:
-> > >
-> > > error: section: .exit.data is not contiguous with other relro sections
-> > >
-> > > ld.lld defaults to -z relro while ld.bfd defaults to -z norelro. This
-> > > was previously fixed, but only for CONFIG_RELOCATABLE=y.
-> >
-> > Applied to arm64 (for-next/core), thanks!
-> >
-> > [1/1] arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
-> >       https://git.kernel.org/arm64/c/3b92fa7485eb
->
-> IF we wanted to go further and remove `-z norelro`, or even enable `-z
-> relro` for aarch64, then we would have to detangle some KASAN/GCOV
-> generated section discard spaghetti.
+> diff --cc include/uapi/asm-generic/unistd.h
+> index 2056318988f7,fcdca8c7d30a..000000000000
+> --- a/include/uapi/asm-generic/unistd.h
+> +++ b/include/uapi/asm-generic/unistd.h
+> @@@ -857,8 -857,8 +857,10 @@@ __SYSCALL(__NR_openat2, sys_openat2
+>   __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
+>   #define __NR_faccessat2 439
+>   __SYSCALL(__NR_faccessat2, sys_faccessat2)
+>  -#define __NR_watch_mount 440
+>  +#define __NR_process_madvise 440
+>  +__SYSCALL(__NR_process_madvise, sys_process_madvise)
+> ++#define __NR_watch_mount 441
+> + __SYSCALL(__NR_watch_mount, sys_watch_mount)
+>  =20
+>   #undef __NR_syscalls
+>   #define __NR_syscalls 441
 
-Why on earth would we want that?
+I missed updating __NR_syscalls to 442 which I will in tomorrow's merge
+resolution.
 
-> Fangrui did some more digging
-> and found that .fini_array.* sections were relro (read only after
-> relocations, IIUC), so adding them to EXIT_DATA
-> (include/asm-generic/vmlinux.lds.h) was causing them to get included
-> in .exit.data (arch/arm64/kernel/vmlinux.lds.S) making that relro.
-> There's some history here with commits:
->
-> - e41f501d39126 ("vmlinux.lds: account for destructor sections")
-> - 8dcf86caa1e3da ("vmlinux.lds.h: Fix incomplete .text.exit discards")
-> - d812db78288d7 ("vmlinux.lds.h: Avoid KASAN and KCSAN's unwanted sections")
->
-> It seems the following works for quite a few different
-> configs/toolchains I played with, but the big IF is whether enabling
-> `-z relro` is worthwhile?  If the kernel does respect that mapping,
-> then I assume that's a yes, but I haven't checked yet whether relro is
-> respected within the kernel (`grep -rn RELRO` turns up nothing
-> interesting).  I also haven't checked yet whether all supported
-> versions of GNU ld.bfd support -z relro (guessing not, since a quick
-> test warns: `aarch64-linux-gnu-ld: warning: -z relro ignored` for
-> v2.34.90.20200706, may be holding it wrong).
->
+--=20
+Cheers,
+Stephen Rothwell
 
-RELRO just moves statically initialized const pointers into a separate
-section so we can place it in a way that allows us to easily map it
-r/w during load, and switch it over to r/o once the relocations have
-been applied.
+--Sig_/RuvA/c3QoF.woLzySkf7l_P
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-On AArch64, we don't even use -fpic to build the kernel, and load time
-relocations may appear everywhere in .text, .rodata etc etc, which is
-absolutely fine given that we apply the relocations way before we
-finalize the kernel mappings. This means that, in our case, statically
-initialized const pointers will be mapped r/o already, and we don't
-need RELRO.
+-----BEGIN PGP SIGNATURE-----
 
-In general, we should ensure that the 'relocatable bare metal' case
-doesn't get snowed under, as toolchain development is [understandably]
-very focused on hosted binaries that use shared libraries, where
-things like CoW footprint, ELF symbol preemption, text relocations and
-RELRO sections actually matter. For bare metal, it is quite the
-opposite: text relocations are fine, there is no CoW so minimizing the
-footprint of the .so pages that are modified due to relocations is
-unnecessary, and symbols cannot be preempted either. So many of the
-shared library tricks actually make things worse for us, because we
-have to work around them while they have no benefit for us.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+P3R8ACgkQAVBC80lX
+0GyjGwgAlbpa+CAULtYzB8uAAjIjKRVUSatUih/+oAx+0dtGf6FZOx9pfASqM9Kx
+p26cIT69HGHgsjKh5t0K4C60hPlk2lVwpReTBQdDNAuQKvzlKnRceuz2tv6eMkfq
+rLyIXATbnd8/1/WWX1ZGrA49+SXhWfT++oDpBMHVKQ7tAMraKT4msfAvDKUDgimC
+cRJDRxlC6uBWbRQohhIbHChfEPEJ36F488ODzqudnQpqrI2vjMUKl5KZlBIIW/OP
+uvq/7DjQjPMxtF3qd84VMwqEnVvuAGKaxU7c0Erz6LoMNY0IQflb9MhZjw1b7OCC
+hm9SaDMOSj4VVlqabnebMooFcvLcqw==
+=/995
+-----END PGP SIGNATURE-----
 
-I have suggested this before, but perhaps we should have a
--mcmodel=kernel (like x86 does) that takes these things into account?
-As a start, it could imply -cmodel=small (which we rely on today), but
-with guarantees that the generated code is position independent, but
-without GOT indirections, and that the resulting object code can be
-linked with -pie (so that we have access to the load time relocations
-in the bare metal binary itself). This is something we rely on today,
-and happens to work in practice, but this could easily break in the
-future.
-
-
-
-
-> (Fangrui also filed https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97507
-> in regards to GCOV+GCC)
->
-> diff --git a/include/asm-generic/vmlinux.lds.h
-> b/include/asm-generic/vmlinux.lds.h
-> index cd14444bf600..64578c998e53 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -744,7 +744,6 @@
->
->  #define EXIT_DATA                                                      \
->         *(.exit.data .exit.data.*)                                      \
-> -       *(.fini_array .fini_array.*)                                    \
->         *(.dtors .dtors.*)                                              \
->         MEM_DISCARD(exit.data*)                                         \
->         MEM_DISCARD(exit.rodata*)
-> @@ -995,6 +994,7 @@
->  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KCSAN)
->  # ifdef CONFIG_CONSTRUCTORS
->  #  define SANITIZER_DISCARDS                                           \
-> +       *(.fini_array .fini_array.*)                                    \
->         *(.eh_frame)
->  # else
->  #  define SANITIZER_DISCARDS                                           \
-> @@ -1005,8 +1005,16 @@
->  # define SANITIZER_DISCARDS
->  #endif
->
-> +#if defined(CONFIG_GCOV_KERNEL) && defined(CONFIG_CC_IS_GCC)
-> +# define GCOV_DISCARDS                                                 \
-> +       *(.fini_array .fini_array.*)
-> +#else
-> +# define GCOV_DISCARDS
-> +#endif
-> +
->  #define COMMON_DISCARDS
->          \
->         SANITIZER_DISCARDS                                              \
-> +       GCOV_DISCARDS                                                   \
->         *(.discard)                                                     \
->         *(.discard.*)                                                   \
->         *(.modinfo)                                                     \
-> --
-> Thanks,
-> ~Nick Desaulniers
+--Sig_/RuvA/c3QoF.woLzySkf7l_P--
