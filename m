@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AAC294D17
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC04294D18
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442699AbgJUMzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:55:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441063AbgJUMzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:55:47 -0400
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E182222E9
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:55:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603284946;
-        bh=2ota0tuSECP/POEB9s7yw5RlmTdDGLvF9Qw/hydbkIs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fomtG/vA94iAz6gal8vl+5Y6sJD3c/0eOtMKQ03pimhpKbL4YaNRRUqSVX37Bb2e8
-         La2pS4HHrWuu2mr0fPA7d7u30i/9RS3NU3NtAhG58uMS5bjE/DhbImZTJZPXDTvMWQ
-         tjaq1VJP4fN3AxvcWa/5gGBP5ZRIl+VDxN3NXbOs=
-Received: by mail-qt1-f173.google.com with SMTP id m9so1915326qth.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:55:46 -0700 (PDT)
-X-Gm-Message-State: AOAM531/12q3dEWg0ZI8Xm5i6KRlTbkAYFak0pgQ1smeIXIjVdapA5Fw
-        TR/L8Vo99oSJJnaLTp5uJXRkn4jB7dZUMlqB0Pk=
-X-Google-Smtp-Source: ABdhPJzCfz0Fe73QJEi4Maut0n+4vGAmpoVRE8bEWwXuF87kXP1H6zN2f/VKK2rHH/cn7OdDIo2Q8wcq3XcdqCX6PKg=
-X-Received: by 2002:ac8:1ba6:: with SMTP id z35mr2880105qtj.204.1603284945616;
- Wed, 21 Oct 2020 05:55:45 -0700 (PDT)
+        id S2441097AbgJUMzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:55:51 -0400
+Received: from sonic307-53.consmr.mail.ir2.yahoo.com ([87.248.110.30]:33837
+        "EHLO sonic307-53.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2441103AbgJUMzt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:55:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603284944; bh=sTPe8ZyzoohU+dH6WLO8xT9jxZB2XadCqVZVCpoFGIY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=PAqdgiUboBzIBJfKVRIzt0L7dB7wAELjktsM3Taf1TCDsFw1IBqONfSo0fyWYbZjEUtXMyDw+7v5tTozZg0VLFcLQ5LzyQPu2QFoIONLGaOWyjQ3lfHhktQbbc9n8lH1m6/jlUJlDbdlpu+I8tFKjlstvy8kqx16aJiReMgWYmM9IEUBhlbh9pEDmtFdkAJZc1MVzNnJ2/3IZlmp/fDFmQ6/vbzF3ULgyro89Rcup5h1PHE67EnMch5Dga4DxX0wFU4PW5tkdFd1waHE4IJ0E0lI5eUUZ56QNbVk7wWMlWx5NsyeMOHb3/QI0H0RtBi5xe3f2pxNEQ4k4eO69bNTyg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603284944; bh=yk5+wa+Tge+gIfNXS81iEzBz7+Ymp6ImJ77HifjXR9F=; h=Date:From:Subject; b=ct7pzwkvHBGVGcnMhzvwMlibKdmUfe8ccFyDqNK+yrD7SYxYNWxIUDiNHO3RUzorVZDmQ0pyS1c/tvWvnQ1jAhNFFSkPhN4Dv1PqgdhmZqLzio3PcvpkXjA4QtQA67tOvOT9AL8LrNtcOb6I+D3gpoM86Gt88RARQ5RObX0m/L95TktpZ1VFWmrrA7iDTuS83pWjzUt5g8xaXKe+bqXYldcV2nOcBPQAJ+VLA8aFIp7NRQ118JfQyH7ppnivq5RVS9Z/UdbTpuqD1y59QTRRcCEhPtQ2G/FmshroEq3rO869YkWl6wB9W9Oc0zFBkHvfLJoJOkqTGyQMZ9nra0dXVg==
+X-YMail-OSG: To.fVUIVM1kidiei9oMSWvcIiCvbJIxgkXLOaxea6atr3xp5I2zPJ7mGp5T_pwd
+ k18B.pEbKiyqw4pQFS1GU.1z80J5bErQffuizKbCGyMHcaFQlihSWJMxTxmsmIpdca9etkEQtmZU
+ 76J4HWF2fa2FAzFb4aJl2XyVGDk9hh42.TvnTiLr3loanzg2j9zPhFPgDHcOCmwnP1Jn4FfTqzk2
+ j1v4h189sKTv.3eBVwZgTioIVb3AmxeHQX.A5J_RQNqC1lkY1YmHFvrYbNuVmdltYr4tlyGxDi02
+ oMHofoOXlropT3ekAnzlW7_BNTp8x270quS1a7gh8pLEfHpp4hi4ki5YHnqTQFAGrbXOrZFUWWFO
+ T3Gg1DlURztkSgY2LwugXwSWt1.atXaQppRAVtUrjRFix9GuYipDxV0xpC4BlkdIhrwoR2VkAd4o
+ VtKqHIuMEBkjVxhPqnhXVIrAiQZ.WB8CI3GLf6c5Nq9mkwTDr0zRUCTaCrve6mXD8eVmCe8TFwgl
+ mKOq1rDbnQITwQ7tNw0wKUTDu0I5LOQIfIVZr8WteGhp2Lljk1n77OMDnrM_r5Vzu6YOKnqZDPJ3
+ W8EWMibwh_.b2RBP8qyOTSnwqpDFgUAJ3MSsILhGI1tOmmGUJpjEIG8nC9bOcnt94_a5ONHIXJqP
+ qIue2h63dJ7fKyjiGI0kzRFYRmMJI0pHCyMrLw5HpwHwYjqs2QanY21mvdR8..GWIh_Mc6zCFKv2
+ o8hym8s4.gDMoGKTIsMHzd4JykkNRo01ZeitFQHPv5ja0yjQ.H7k0.VFTkZw7VFyreDAHC96vRDf
+ eu0R8tzswNmMbMg6loyHG0qpOS8P9J9CfajO5E9Z9Akqg86L14dPDQ2YNbn5naG_fPSBt8m9V1Xf
+ HF_FluwA48ib5X5OMSTBTXRt_qNbAeefMcXu4NAdL7lSwFEPkX1eF3hwEllC.rw6AMcYklTrwxcQ
+ RRFyttN8StW6uv3gL5aus2hjkLJHuI9NImnAboUs8mm25m04.neAQoDM6lQbnE3WEoQqrNA57QgE
+ Yyrp11jcuhBIX8ojvGffSqCA6fsvIt8vaSMW5q305v6DQ8JANIK0giqSZeYUEw8RgS9xx8_F6s_r
+ lFosXMxL6umYgxgMYfBnagcI2Vy5rALirEC6qtF4Mtcz.EFvCt4S83JZtUspqNOnsSFw.TJ0ur6n
+ G2ZdepXavToi3jGJ8VuCrHA9hOStUb7_AcCWDJ3pruVD9f7WeBEEQgtnciQ4s7FYO5TzN_5ffjVs
+ mWeFL7rU8oXIXaKw.bDSwdbxAxIc_0piO_oW7AhJnWzk8ChWc8Mt7qQ29RUO7_.HA.WbrxkPLETv
+ v_8xKgq7TU055KjhmS.arB4bCuMha9t.I5K7C4pCUUqkjaekUfbpXNLYH6P8FGAR17r0Pwx7DwB3
+ HsPgSzdXKUGMBJPhj8WmDrfi0HzeppkHkxkCXf64Hq0n59TfO5XehjIra1lyFnBBO8c4jVQXrz9g
+ exIBhjhtGWeuvipmU7gh_hCrqkr6.jlE_QHcE4GXP9lwIF6YKq9OlupaDGBAM7YahbPUVDbNoPmy
+ jcuWk_fdrQQGs0JhRhHfK0E.Wnzw0ssPzXw9sFAY6mCeceHuJqagr_ASWeRNjoEJgJf_Rgz.BOS4
+ hN7OLMIuYl1xPaWvROmCzO84kGgH.bPHVFJzt6uwhR_ayMX_wTeo9iyr_8iph5zF9by0cdBqe3Pg
+ 5wG09vQQO2zzqKUmedyh2pKyHxii5PYI5RY5FiSg8cps7bvMG4_ZsHyMVSCKd.ZAs1eYpJ09jmcV
+ Ce3ErYTMP2_EN4CC_HPg6q.lp2hR7fEX9fVnK.Yj3QWOTymtFS1RWFaxFmEeWZXkFS.1vFK_oIjA
+ fSyJcbfG040fA1TRfBE6sl4ymJiHLBXCIQK._g77tBYnLwJhe5n3852kYZzLNb6IMaIXPHq13tTc
+ XNu5FKjEWOE0cVtXee_iOkXbegJt7SD7xSy4r1TsvypBAhsvMaYUUQ5tGJ_F3S4V4ohJutf5UwqH
+ Om8Qzcvv2FRo1x3uE6qidnX8dzCnMcMRm6Nub50_GZj2faIvKnVWHCsu9frm4.idU8dF.x3UQYY3
+ ntaaiISaYLtDh2qu6JeIDS168XSzfu3r80dhE.E3YguVdVx4zzK6Ak_KZSxrfiKdAxtGdTdF7hm5
+ T_1Tt5nltn8rElUhqDEMbcBf8oHvV5xti_jpds6ke3Sd6MSNCgKt3x9kPAfl3PKOVLJeIPRSUwEd
+ afmFR5RxMqrnzxWaozYOtysoncC5LhDnKEVSv7i4igapY29Gt_nOzpzvVgYYwyl1kVssjkwruSLx
+ Ze0Ydr9AeCNPpKlullQX_RA5fjX9gKIDTY2qXQSx8MphV7OX8nNXOm70YMbrOqmLvjASmex_qdTq
+ Xfx6fl3ndWhAoKWD.XXdcpv4V.LcZxyOfrLpxnzxV.5vsOQWzzpmYEp1h5B60lsUCQjwjMztDbWj
+ vhmR9NrQkAK44tZJeB5JpMavDR2dz0mAtwvNGZQ5CV8MiZU_OT1SlCTX2.AEhuK9.0ZcCNbxLH2v
+ BQzioXVTJ4v0O5.581AhWZ28hyB4xSeWNhIaLqoemZng3LKEkeobzVQafOTWRs4wM6Nil1k1qOcs
+ HoOk4DPsobDfhtpBlvNgABwD6x6MKs0cculfoUcwU7hc9fMJUplV9T8VXDFsBOLJb1iOmQL_.oPV
+ CbhlQqimCCUswR1FDCYUUuDQhiYWthO5cXGu5sQyl3qXeinsPa15EV23hL7a7i137p_fBoeejK_v
+ r_Eh3iAu.th2uOGU0i9aKnHj7x63lHHHELfVpcdpzDPhq8KVyln2xP.A9QK9B82jIflUjxsVusE3
+ hemC_12FobLYTNZ6Ah8H57TXHDMoCi__y4gE7O9g7LyTCyVrLVQ9aYQweB4UMj6RiNitz0fxgmEU
+ zLEJTZPMINtlEPjGxXCpwAlvTFSKFRW9qC2Cns55mau0XulH2RWL.sa5erV0qGUpA2Ezm5NQ.B2V
+ DpNPJkK0mhskxGF3aBGdPizfA.pTi8kesrziJABVgBBKX3M_Dk78EEeZg6wOFLEVC9GgvVDB8Lq_
+ .8pk709DIXmvNaFDffeaGfwVZZx5z17HXQL.BupneaOWBcJ7PXc7CvDeOW.7BLMl_Oq.iL33OG.b
+ o2SmYzcQiHJAKRmG0JHe9s8IVcYcouGmVLRlwtp0ekMHPDGJWB3y9j1mqA84Y.TDAUIfSLiAt46V
+ qYcwAmraoz0W6As3blp2sIfReflRAQ6JTL8mEJhhg39rBzPfpcZ8CpFJ7VfSpIqsiSXCoEbylDeW
+ Qqp_UDMIUgp3CIpr7ctyM5g6BtmNtcTOTANErSFrHvAvtK9TVK92SxSF3ckAojuIz1JdXDOYQCxB
+ G8l0tNN9PCZBOdY2az8M2jwSYhAmYSUVlWH1YwlOAH.9UEf8TsfaRHpAIWWIb5DZVz2YCn7VMDZg
+ pXLsAAZUK1nxpB7xvH7mFf11KuOpIEhn2.z5M0eb8xgSoU2uaAMm4YNgun0NVfO4n0l8CKKlMkYZ
+ CfDnsFaQmkDMQ3a3Sfat01oJQKZY6EnKDC1Bh.9Ic709AxDv.bbpinkgfZB89VljgtQ47VHj.Foq
+ sk_OkJLCEU_okaEkk8aE4Jcft1Af9OJukPQ5lfrFt5zNqhcYZzT.oqzdxKwdypiFDFbPzF8NklwS
+ x7qIuNhM.39avImMckwaEplJp0p7zumF1.rCr3t9wVT80HMSpwNqAlM8rQCQHTyXith7uTYWRwEy
+ PPVUMcXtTavqdFPhnuzSj7Tb7YWSKrk0U1e4XS12iN7sg.lg7J9vwwhI5gsZhzAJuZ8CaL7zPXqM
+ p785YB2BiC3p8Y.99g3wFJExCh7exJ4wrSnfFZ.qmfg5a3z1alOMrsFAwKfht4VU_1w6ynKX_89q
+ BYKVP.1J0bfXPyX.TmoN4lR3brgMHL92zHwOafQKP6ZIq0Acb8hBM16GNSEoARjbM6BRoXLvp7mt
+ YsMEm.xhoZeMPGBqXD1cePlHc3xUNi5UlJhczEbf.0ETO7dhsKCWng.rmqJ1nsbdeefH5Byw9my.
+ QehVkmFqPFuHR.nmR6LrxV6zztghjewqDdc0sF64IsmCuLhiUfSz8LR3qyfIsAK4GwB10vYjSjwG
+ 9nWMGt_I6jijkCrueApi3opuHi_0Hixs0goL80lOae0ZzRIzb6hr9WRHtX.Pm6qg7gsq8lBRhiyN
+ Bo5YTEuqYmvwSHNnCpEtcihClzstsd4fgeYrR39.3Pzkw5QZzr2fDeX8K5gAD4D_agV6C5odT.D1
+ TnSZzpnPOfD1hdIPCstwt.lrDCDdvEmrPPo3l0ME2Nl3bEHTAMcqrKrrEOwt8lulo0DNEbRW.6A_
+ ..S41YIY68z9N1_t59B5uSy7uIVuNskq.1ehNaCPMAdkVCwWHJAg5U4ynRhZVw4N19OPj01YCFXD
+ vP7SVHTzRJzzaVnzynQaIiB5ktuKD_Rq0JuhUhTJW.u4wZxC1aPrDSkV2_pxh_A0dWFLf64tBZ.B
+ 5cQ078Vrm29TqYUQoqR53gEVkARrgD9AJhbiMOB5BrOeuT0mBcEzHJOXKI8VFOYge_fSN2JfIhb9
+ rrc733vCZz5ZVZeTg9bU4ogN58TfZIxdTpPsQRDJ_aKTi79S4rAAM6vpPeRf7LjUhQ7rOiz6vBJF
+ zsN8Nq.H8dZFkt2Z7DfFWnkMjIIrW9.I9nycZGRgyOncGpu98wWZrv_MIdzYFi3WDS3fjC_rQ3Zx
+ CjeOGM2Z.7ZweDHU7xm2MShlt8JtX2iA9OwpuowOdBA3IHJ8Emxo0Id.D4SI6QXPy1G1NU7mIpZe
+ W188trlf1osQMaJ_hCfgbhnXt0TuRy6hc6zIcHhwVKmOaNZe1hfRBYhEYEOxUVHgpK8nj_w9sOql
+ CdRruDdXcv9EEqmPMFEZ5jmFIgM_G48V5MuFJRlooGrLa689qXEdwSM_JlSCsM1yyXRc3YBFFyyV
+ 6MBZbDEbRIx4jgFGGz6I3zd0QYGjT.gMhoSShIDyro5wrIJxbLHrk3EPxMAyhjyCFwV0oDVwoMV.
+ _ZqH0hZI_gmv6nqwXdAe.lAgAXvidZwvx28FIrHCGoTkXFo5LFbjZ32YDRtSo.w1gvu.cGJDC826
+ qDep3g6vXOS2mX26keyMzCYS4aV0v047ywgMNihNrzix.ogVD06RnUBSyL8Q-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ir2.yahoo.com with HTTP; Wed, 21 Oct 2020 12:55:44 +0000
+Date:   Wed, 21 Oct 2020 12:55:41 +0000 (UTC)
+From:   Kuban Manfi <nolanbraten4@gmail.com>
+Reply-To: fadiansi55@gmail.com
+Message-ID: <1885321893.2945239.1603284942000@mail.yahoo.com>
+Subject: VERY CONFIDENTIAL.
 MIME-Version: 1.0
-References: <CGME20201008071639epcas5p465f13d992a25936ba63436baf1fb6f83@epcas5p4.samsung.com>
- <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
- <1602141333-17822-3-git-send-email-maninder1.s@samsung.com>
- <CAK8P3a2RYeNiTy9QmwFVKtFifXxWc9XfAT6ThPoSH9wGYsKGpA@mail.gmail.com>
- <CAK8P3a3eZjBVSuhv=Cx4aYC+E9tex+BbJH1b6YyMMief-mO7kQ@mail.gmail.com> <20201021124542.GL1551@shell.armlinux.org.uk>
-In-Reply-To: <20201021124542.GL1551@shell.armlinux.org.uk>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 21 Oct 2020 14:55:29 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a12DXAP6NhHxf9Fr9pxJ-yjE5L7KsAMNEtSJ01xR6asXw@mail.gmail.com>
-Message-ID: <CAK8P3a12DXAP6NhHxf9Fr9pxJ-yjE5L7KsAMNEtSJ01xR6asXw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm: introduce IRQ stacks
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Maninder Singh <maninder1.s@samsung.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Nathan Huckleberry <nhuck@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Will Deacon <will@kernel.org>, v.narang@samsung.com,
-        a.sahrawat@samsung.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1885321893.2945239.1603284942000.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16868 YMailNodin Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 2:45 PM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
-> On Wed, Oct 21, 2020 at 02:42:48PM +0200, Arnd Bergmann wrote:
-> > >
-> > > - define 'current' as 'this_cpu_read_stable(current_task);'
-> > > - convert to CONFIG_THREAD_INFO_IN_TASK
->
-> That means we need to also code that up in assembly - remember, we
-> need to access thread_info from assembly code.
 
-Are there any obvious places that need patching aside from
-.macro get_thread_info? I did expect the above conversion to
-be somewhat more complicated than Maninder's original patch,
-but that part seems easy enough.
 
-       Arnd
+Compliment of the season,
+
+My names are Mr. Kuban Manfi, i work as a department manager in one of the reputable banks here in Africa.
+
+I have a lucrative and profitable business which i would like to introduce to you. Please this is very confidential and if you are interested kindly get back to me for more details.
+
+Thanks
+Mr.Kuban Manfi
