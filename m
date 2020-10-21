@@ -2,183 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAED29555B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 01:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCF129555E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 01:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507350AbgJUX5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 19:57:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2507273AbgJUX5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 19:57:05 -0400
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3721D23A65;
-        Wed, 21 Oct 2020 23:57:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603324624;
-        bh=HuPgG/EpMuudB6wgOjUMyK3yRkdusBP6RAcW9Z00jTg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IxJScN2DN41Z2gF+TVA10G6719EgpV6E9wMAUNfwpWkNmZIuytf3rYtnfWllGKW8E
-         vpws50Xd+oUoKJfaztb42PhvZqxlrVwT9hjXiFHqe3PLWTC0dQyVNTu0ZLK0M+b2dR
-         Rv3/6nhBV8yT6RIl28nsGMnEdP/U//jB1yUR/xpc=
-Received: by mail-ej1-f50.google.com with SMTP id k3so79821ejj.10;
-        Wed, 21 Oct 2020 16:57:04 -0700 (PDT)
-X-Gm-Message-State: AOAM531kN2aaxzERnICRaAliBh5eFeyF07ZvTqIdJfXfMC8hsLJHwDns
-        qDcV8mXnb27wq+f/nBQlEMbfBg54l/m48OQxPQ==
-X-Google-Smtp-Source: ABdhPJw8wh74mYS0cNZ7CtZqEbM8YS6eHI1BZzuScIJU3AknqOhCN6b9uRO9FnG0S+bXoDdfAVZRlnZpG95G07AeejA=
-X-Received: by 2002:a17:906:7fd7:: with SMTP id r23mr5676868ejs.310.1603324622646;
- Wed, 21 Oct 2020 16:57:02 -0700 (PDT)
+        id S2507362AbgJUX7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 19:59:11 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:56196 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2507354AbgJUX7L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 19:59:11 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09LNsmm4104771;
+        Wed, 21 Oct 2020 23:59:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=ia1bvcLIGRlULe3HUUv1lS8YCwcY+Jyv65hKmvu1yYo=;
+ b=T+mPkrULepGxEyQ+/ozMIxARHfBx1kgMxaNvSMGMmxaAPv19uO3pCsUhIFHIdaPQlJua
+ Dz+efSUQ3HiZ2ExKj7c9rRko9VWVnYFu/UFUwqN23SoVSIFwyjCzciO5Qhql8VHhzFEU
+ ol9ZFqhXQkokyJQ2D716Vbq6G+1u6bJmtHLDrWru8wBpL/ZYM1kIQR+eIN5SykFiP8//
+ k1qNNQM9FY5hvRjy0Y8jZAozeRV7my956gX9Lei4ENt/zsPh5bxSqycZlMr51CIdHsPL
+ jBrwZ0K2dgPYwqIW1ICC30GImMIO1EraDqQmBZga87GkOnmQpFrsFY0i5R0HYphniJKm hA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 34ak16kky0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 21 Oct 2020 23:58:59 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09LNtheh114258;
+        Wed, 21 Oct 2020 23:58:59 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 348ah086yt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 21 Oct 2020 23:58:59 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09LNwwIj119041;
+        Wed, 21 Oct 2020 23:58:58 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
+        by aserp3020.oracle.com with ESMTP id 348ah086yg-1;
+        Wed, 21 Oct 2020 23:58:58 +0000
+From:   saeed.mirzamohammadi@oracle.com
+To:     linux-kernel@vger.kernel.org
+Cc:     b.zolnierkie@samsung.com, akpm@linux-foundation.org,
+        rppt@kernel.org, daniel.vetter@ffwll.ch, jani.nikula@intel.com,
+        gustavoars@kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Subject: [PATCH 1/1] video: fbdev: fix divide error in fbcon_switch
+Date:   Wed, 21 Oct 2020 16:57:58 -0700
+Message-Id: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201020174253.3757771-1-fparent@baylibre.com> <20201020174253.3757771-8-fparent@baylibre.com>
-In-Reply-To: <20201020174253.3757771-8-fparent@baylibre.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 22 Oct 2020 07:56:51 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8V9JRwTFEZWHi9iRFhM1LnTAW1Mf40ZOAV7NC4UJosuw@mail.gmail.com>
-Message-ID: <CAAOTY_8V9JRwTFEZWHi9iRFhM1LnTAW1Mf40ZOAV7NC4UJosuw@mail.gmail.com>
-Subject: Re: [PATCH 7/8] drm/mediatek: add DDP support for MT8167
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ priorityscore=1501 clxscore=1011 malwarescore=0 mlxscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 spamscore=0 mlxlogscore=999
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010210166
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Fabien:
+From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
 
-Fabien Parent <fparent@baylibre.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8821=
-=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=881:43=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Add DDP support for MT8167 SoC.
->
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp.c | 50 ++++++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c b/drivers/gpu/drm/med=
-iatek/mtk_drm_ddp.c
-> index 014c1bbe1df2..bb62fdcf3d71 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-> @@ -25,6 +25,19 @@
->
->  #define INT_MUTEX                              BIT(1)
->
-> +#define MT8167_MUTEX_MOD_DISP_PWM              1
-> +#define MT8167_MUTEX_MOD_DISP_OVL0             6
-> +#define MT8167_MUTEX_MOD_DISP_OVL1             7
-> +#define MT8167_MUTEX_MOD_DISP_RDMA0            8
-> +#define MT8167_MUTEX_MOD_DISP_RDMA1            9
-> +#define MT8167_MUTEX_MOD_DISP_WDMA0            10
-> +#define MT8167_MUTEX_MOD_DISP_CCORR            11
-> +#define MT8167_MUTEX_MOD_DISP_COLOR            12
-> +#define MT8167_MUTEX_MOD_DISP_AAL              13
-> +#define MT8167_MUTEX_MOD_DISP_GAMMA            14
-> +#define MT8167_MUTEX_MOD_DISP_DITHER           15
-> +#define MT8167_MUTEX_MOD_DISP_UFOE             16
-> +
->  #define MT8173_MUTEX_MOD_DISP_OVL0             11
->  #define MT8173_MUTEX_MOD_DISP_OVL1             12
->  #define MT8173_MUTEX_MOD_DISP_RDMA0            13
-> @@ -73,6 +86,8 @@
->  #define MUTEX_SOF_DPI1                 4
->  #define MUTEX_SOF_DSI2                 5
->  #define MUTEX_SOF_DSI3                 6
-> +#define MT8167_MUTEX_SOF_DPI0          2
-> +#define MT8167_MUTEX_SOF_DPI1          3
->
->
->  struct mtk_disp_mutex {
-> @@ -135,6 +150,21 @@ static const unsigned int mt2712_mutex_mod[DDP_COMPO=
-NENT_ID_MAX] =3D {
->         [DDP_COMPONENT_WDMA1] =3D MT2712_MUTEX_MOD_DISP_WDMA1,
->  };
->
-> +static const unsigned int mt8167_mutex_mod[DDP_COMPONENT_ID_MAX] =3D {
-> +       [DDP_COMPONENT_AAL0] =3D MT8167_MUTEX_MOD_DISP_AAL,
-> +       [DDP_COMPONENT_CCORR] =3D MT8167_MUTEX_MOD_DISP_CCORR,
-> +       [DDP_COMPONENT_COLOR0] =3D MT8167_MUTEX_MOD_DISP_COLOR,
-> +       [DDP_COMPONENT_DITHER] =3D MT8167_MUTEX_MOD_DISP_DITHER,
-> +       [DDP_COMPONENT_GAMMA] =3D MT8167_MUTEX_MOD_DISP_GAMMA,
-> +       [DDP_COMPONENT_OVL0] =3D MT8167_MUTEX_MOD_DISP_OVL0,
-> +       [DDP_COMPONENT_OVL1] =3D MT8167_MUTEX_MOD_DISP_OVL1,
-> +       [DDP_COMPONENT_PWM0] =3D MT8167_MUTEX_MOD_DISP_PWM,
-> +       [DDP_COMPONENT_RDMA0] =3D MT8167_MUTEX_MOD_DISP_RDMA0,
-> +       [DDP_COMPONENT_RDMA1] =3D MT8167_MUTEX_MOD_DISP_RDMA1,
-> +       [DDP_COMPONENT_UFOE] =3D MT8167_MUTEX_MOD_DISP_UFOE,
-> +       [DDP_COMPONENT_WDMA0] =3D MT8167_MUTEX_MOD_DISP_WDMA0,
-> +};
-> +
->  static const unsigned int mt8173_mutex_mod[DDP_COMPONENT_ID_MAX] =3D {
->         [DDP_COMPONENT_AAL0] =3D MT8173_MUTEX_MOD_DISP_AAL,
->         [DDP_COMPONENT_COLOR0] =3D MT8173_MUTEX_MOD_DISP_COLOR0,
-> @@ -163,6 +193,16 @@ static const unsigned int mt2712_mutex_sof[DDP_MUTEX=
-_SOF_DSI3 + 1] =3D {
->         [DDP_MUTEX_SOF_DSI3] =3D MUTEX_SOF_DSI3,
->  };
->
-> +static const unsigned int mt8167_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] =3D {
-> +       [DDP_MUTEX_SOF_SINGLE_MODE] =3D MUTEX_SOF_SINGLE_MODE,
-> +       [DDP_MUTEX_SOF_DSI0] =3D MUTEX_SOF_DSI0,
-> +       [DDP_MUTEX_SOF_DSI1] =3D MUTEX_SOF_DSI1,
+This patch fixes the issue due to:
 
-MUTEX_SOF_DSI1 =3D MT8167_MUTEX_SOF_DPI0 =3D 2, this is conflict. If
-MT8167 has no dsi1, just drop setting for dsi1. Ditto for other
-non-exist sof.
+[   89.572883] divide_error: 0000 [#1] SMP KASAN PTI
+[   89.572897] CPU: 3 PID: 16083 Comm: repro Not tainted 5.9.0-rc7.20200930.rc1.allarch-19-g3e32d0d.syzk #5
+[   89.572902] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.5.1 01/01/2011
+[   89.572934] RIP: 0010:cirrusfb_check_var+0x84/0x1260
 
-Regards,
-Chun-Kuang.
+The error happens when the pixels value is calculated before performing the sanity checks on bits_per_pixel.
+A bits_per_pixel set to zero causes divide by zero error.
 
-> +       [DDP_MUTEX_SOF_DPI0] =3D MT8167_MUTEX_SOF_DPI0,
-> +       [DDP_MUTEX_SOF_DPI1] =3D MT8167_MUTEX_SOF_DPI1,
-> +       [DDP_MUTEX_SOF_DSI2] =3D MUTEX_SOF_DSI2,
-> +       [DDP_MUTEX_SOF_DSI3] =3D MUTEX_SOF_DSI3,
-> +};
-> +
->  static const struct mtk_ddp_data mt2701_ddp_driver_data =3D {
->         .mutex_mod =3D mt2701_mutex_mod,
->         .mutex_sof =3D mt2712_mutex_sof,
-> @@ -177,6 +217,14 @@ static const struct mtk_ddp_data mt2712_ddp_driver_d=
-ata =3D {
->         .mutex_sof_reg =3D MT2701_DISP_MUTEX0_SOF0,
->  };
->
-> +static const struct mtk_ddp_data mt8167_ddp_driver_data =3D {
-> +       .mutex_mod =3D mt8167_mutex_mod,
-> +       .mutex_sof =3D mt8167_mutex_sof,
-> +       .mutex_mod_reg =3D MT2701_DISP_MUTEX0_MOD0,
-> +       .mutex_sof_reg =3D MT2701_DISP_MUTEX0_SOF0,
-> +       .no_clk =3D true,
-> +};
-> +
->  static const struct mtk_ddp_data mt8173_ddp_driver_data =3D {
->         .mutex_mod =3D mt8173_mutex_mod,
->         .mutex_sof =3D mt2712_mutex_sof,
-> @@ -400,6 +448,8 @@ static const struct of_device_id ddp_driver_dt_match[=
-] =3D {
->           .data =3D &mt2701_ddp_driver_data},
->         { .compatible =3D "mediatek,mt2712-disp-mutex",
->           .data =3D &mt2712_ddp_driver_data},
-> +       { .compatible =3D "mediatek,mt8167-disp-mutex",
-> +         .data =3D &mt8167_ddp_driver_data},
->         { .compatible =3D "mediatek,mt8173-disp-mutex",
->           .data =3D &mt8173_ddp_driver_data},
->         {},
-> --
-> 2.28.0
->
+This patch moves the calculation after the sanity check.
+
+Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+Tested-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+---
+ drivers/video/fbdev/cirrusfb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/video/fbdev/cirrusfb.c b/drivers/video/fbdev/cirrusfb.c
+index 15a9ee7cd734..a7749101b094 100644
+--- a/drivers/video/fbdev/cirrusfb.c
++++ b/drivers/video/fbdev/cirrusfb.c
+@@ -531,7 +531,7 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
+ {
+ 	int yres;
+ 	/* memory size in pixels */
+-	unsigned pixels = info->screen_size * 8 / var->bits_per_pixel;
++	unsigned int pixels;
+ 	struct cirrusfb_info *cinfo = info->par;
+ 
+ 	switch (var->bits_per_pixel) {
+@@ -573,6 +573,7 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
+ 		return -EINVAL;
+ 	}
+ 
++	pixels = info->screen_size * 8 / var->bits_per_pixel;
+ 	if (var->xres_virtual < var->xres)
+ 		var->xres_virtual = var->xres;
+ 	/* use highest possible virtual resolution */
+-- 
+2.27.0
+
