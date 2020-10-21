@@ -2,141 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A77F294F76
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549F1294F78
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443932AbgJUPDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:03:53 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:38715 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2443567AbgJUPDw (ORCPT
+        id S2443977AbgJUPEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2443970AbgJUPEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:03:52 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id D535EB56;
-        Wed, 21 Oct 2020 11:03:51 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 21 Oct 2020 11:03:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=qxb2dhapqEcV1wlUzpI50HpbL56
-        z//q+bmCX0zPuRWk=; b=iuWAIt2XcaEtAHn23qs5m92uT1vkZNTgIK12LRSyAqR
-        XoIF76zW0AhIBPocwKxxyGc6912NVKR1TUWLIqsdiGKxOSGW1DUawXkVXosY+UkO
-        sNqAhHBd8M/cOYU8UsGWbtT1QVUjNBGkKg2Gn7L2kVc/YbyFrmUFZ9RhW4gtTrBt
-        g1fyOIV5+1zHjEqdCDNqkyDwGaoUW7W6e/5K0p2AlMRbKpj1g9pBgr/qHOotCZRK
-        tuY74vNKth41EoVZj0VEWWe98Nt2rCJqcKDUaqXIxx2gxDu/elm6BuKSKk9u2xSO
-        F3EXmrOgtDGxXrt4jyB/63AED0uI5+r+bnHjjr1Ksrg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=qxb2dh
-        apqEcV1wlUzpI50HpbL56z//q+bmCX0zPuRWk=; b=iU2dQe7Qx7Wu8kCpHOCyig
-        FGNSeeIWoVYLqRsDiq5p3rdSeWvD18xiV2gbm7SCoQHF5eBPp2tc62WgSsevE0pf
-        IKiK0DYdkQvZG4YyH2nUmmTLewIZUCrU1d223IFBwq9ZcvBjHpJy5cY7YHt5vN3w
-        DCYe9E4I/uvJLK+ptxuVxDH7rVFrrnv4OGJD85XEPH9/r65en9c+dcrZl+tmM7/w
-        2+HcbvCC4k/wL7UFJ9F/cGnpQKc4jiPCxcK6ypZm4eUx6E+CQ95tihIT3Dsa7kYP
-        YuGMmznmxatXIH3JbiObiR4YzaKKPm2o/siZuK3cIPehVUjfU9Og0lMx0EtKo0Pw
-        ==
-X-ME-Sender: <xms:1k2QX7P03KAusWuHx7Aw6TxTdtCRN4P-zA6TkawjfBmJ9Of-is_pSA>
-    <xme:1k2QX18e5xif-7xmDVXtF2BsGF4NKbw5i7aodd-6D0B3JDZi9Tg2l_gyqAQZcPgsZ
-    gVyyETTELbFo-z2pqg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeehgdekhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelvefggfevhfdvueejkefguedtleeujeevjeevhfdvvdefgefgffdtgfelgfdt
-    hfenucffohhmrghinhepphhinhgvieegrdhorhhgnecukfhppeeltddrkeelrdeikedrje
-    einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgr
-    gihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:1k2QX6SgpZiECmRQYw4XcbsZSp2f5IPaTU3OZ1ghF6hflwUsap5UoA>
-    <xmx:1k2QX_sp7GAO4HUqGSz3v_V1S7UPkPNDZiaNG5QCK23_c3oLrMk7XA>
-    <xmx:1k2QXzcm7Qs_B9MJa7LJSsJoUDtij6C8k1p4w3MXhxE2bUCMGacpWw>
-    <xmx:102QX_6LFvDtvFdjW8hy6H45ggFZX1VjddmyK_UUzrftSjX3ED7s4A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 48FE13064610;
-        Wed, 21 Oct 2020 11:03:50 -0400 (EDT)
-Date:   Wed, 21 Oct 2020 17:03:48 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     Alexander Kochetkov <al.kochet@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] spi: spi-sun6i: implement DMA-based transfer mode
-Message-ID: <20201021150348.g2anzbqalhrmypdl@gilmour.lan>
-References: <20201015154740.20825-1-al.kochet@gmail.com>
- <20201019082129.myxpxla5xwoqwldo@gilmour.lan>
- <4EC91DD5-5611-4B48-B6FC-00690B400584@gmail.com>
- <CAGb2v64ruUf7Lv-cHZTRPs-U-gOboGtTwOB3+qtxZTFyLVFLjg@mail.gmail.com>
+        Wed, 21 Oct 2020 11:04:55 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CC3C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:04:54 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id l6so1415479vsr.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:04:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dzgLsgCTYOoyXtg4GLPym4wvQbbYONF/GbyEZFTSaRI=;
+        b=GiK0rUGUM8Iyel1222R06KxkHEx7522HigzM2nIp1vrbHedtQk5DtzewghFTQ1uWh+
+         8hpdIK2ci3EqOJ4aebheWDH7n9aFs9B7ZWMCq3Tj4kQtw5g8TvDtXcIRaiQMB0YH9AkM
+         CEpWHMJb7ULIL2yBbPaDFTMtuufsrayLGDe6phmjJibM6RRtR+wnTGCidaqmeHcMOd9t
+         +7OGKFXKzL5rIBYBjEmL9C2KHETastA/mjzEGbhWAT5xmEv2bCGitTLI4mlXPs997J0P
+         qgNaHCRg9z6slTMZoJD/AWxEz9gJcZLCn6Bv/aKXSgM3a67rFDqsVIiGA9X5z/COp26z
+         G8dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dzgLsgCTYOoyXtg4GLPym4wvQbbYONF/GbyEZFTSaRI=;
+        b=HcPLlS4AsTzGYJbpX6dGfjvtD7GOfzgEk/VCfsvSu/BpSK9f3P6kOhtWLEGwnHERYb
+         YGsKvoszjAOpcuTXMXXyMAFz0WqmNRxYBRa8TIQzA04oW1+TQ0abZxJY4T7h99kfTN9u
+         g2u+JlF3JyRuXBeQD1PpNEH8oXxmCE725NL55z9yeGfJLWj27BulxTBOVIawOdJIlCcr
+         sA6/fPxB8iUTf2p+w45iYmuC5VnV2M5dlXzy5VLoTvUMrUqxnYXtx8mBzOnaHWpeK4xr
+         ChjmFlWkxNwGIMAPWH/VPKFSW3m5qNtOYDdkBu9OJ3My7gwsgq/44AoMKqLba9iS0EII
+         ebaw==
+X-Gm-Message-State: AOAM531SvHDRPdfNHezSapxv1GCGa0/3moGLe8ff+MR6FUQZ6LChodZm
+        kRkux85liXVGFFcxXWB1X9m03ZYn7E07X50aNgvkiA==
+X-Google-Smtp-Source: ABdhPJz2gVsQSrOjXkKxkYZTLE6/2tB/tghJjnbhDN2I691tZxvmaTlSNyIz8WfNnfT2P9ZQ2XexnhLHUi78Mw0YJyA=
+X-Received: by 2002:a67:8794:: with SMTP id j142mr2433640vsd.19.1603292694006;
+ Wed, 21 Oct 2020 08:04:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cswefexiyy5rohzg"
-Content-Disposition: inline
-In-Reply-To: <CAGb2v64ruUf7Lv-cHZTRPs-U-gOboGtTwOB3+qtxZTFyLVFLjg@mail.gmail.com>
+References: <20201015231149.9333-1-michael@walle.cc> <CAPDyKFoMmsYhwvNDdprtWiY+EMjXQx5uFvn4+fHmCG8zj6aryQ@mail.gmail.com>
+ <7051c929a585bf7b1f62561f0ea91193@walle.cc>
+In-Reply-To: <7051c929a585bf7b1f62561f0ea91193@walle.cc>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 21 Oct 2020 17:04:17 +0200
+Message-ID: <CAPDyKFrLtYmPpVumSMr0TAqSWx8+vc2Hzhfw-14aiJudPw7xeA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-of-esdhc: set timeout to max before tuning
+To:     Michael Walle <michael@walle.cc>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---cswefexiyy5rohzg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Oct 20, 2020 at 11:52:34AM +0800, Chen-Yu Tsai wrote:
-> On Tue, Oct 20, 2020 at 1:43 AM Alexander Kochetkov <al.kochet@gmail.com>=
- wrote:
+On Fri, 16 Oct 2020 at 14:50, Michael Walle <michael@walle.cc> wrote:
+>
+> Am 2020-10-16 12:53, schrieb Ulf Hansson:
+> > On Fri, 16 Oct 2020 at 01:12, Michael Walle <michael@walle.cc> wrote:
+> >>
+> >> On rare occations there is the following error:
+> >>
+> >>   mmc0: Tuning timeout, falling back to fixed sampling clock
+> >>
+> >> There are SD cards which takes a significant longer time to reply to
+> >> the
+> >> first CMD19 command. The eSDHC takes the data timeout value into
+> >> account
+> >> during the tuning period. The SDHCI core doesn't explicitly set this
+> >> timeout for the tuning procedure. Thus on the slow cards, there might
+> >> be
+> >> a spurious "Buffer Read Ready" interrupt, which in turn triggers a
+> >> wrong
+> >> sequence of events. In the end this will lead to an unsuccessful
+> >> tuning
+> >> procedure and to the above error.
+> >>
+> >> To workaround this, set the timeout to the maximum value (which is the
+> >> best we can do) and the SDHCI core will take care of the proper
+> >> timeout
+> >> handling.
+> >>
+> >> Signed-off-by: Michael Walle <michael@walle.cc>
 > >
-> >
-> >
-> > > 19 =D0=BE=D0=BA=D1=82. 2020 =D0=B3., =D0=B2 11:21, Maxime Ripard <max=
-ime@cerno.tech> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BB(=D0=B0):
-> > >
-> > > Hi!
-> > >
-> > > On Thu, Oct 15, 2020 at 06:47:40PM +0300, Alexander Kochetkov wrote:
-> > >> DMA-based transfer will be enabled if data length is larger than FIF=
-O size
-> > >> (64 bytes for A64). This greatly reduce number of interrupts for
-> > >> transferring data.
-> > >>
-> > >> For smaller data size PIO mode will be used. In PIO mode whole buffe=
-r will
-> > >> be loaded into FIFO.
-> > >>
-> > >> If driver failed to request DMA channels then it fallback for PIO mo=
-de.
-> > >>
-> > >> Tested on SOPINE (https://www.pine64.org/sopine/)
-> > >>
-> > >> Signed-off-by: Alexander Kochetkov <al.kochet@gmail.com>
-> > >
-> > > Thanks for working on this, it's been a bit overdue
-> >
-> > Hi, Maxime!
-> >
-> > We did custom A64 based computation module for our product.
-> > Do you mean that A64 is obsolete or EOL product?
-> > If so, can you recommend active replacement for A64 from Allwinner same=
- price?
->=20
-> I believe what Maxime meant was that DMA transfer for SPI is a long
-> sought-after feature, but no one had finished it.
+> > Sound like this should be tagged for stable, right?
+>
+> Yes, but I was unsure about that. I didn't find a lot of Fixes: tags in
+> the history of this driver (eg. for errata etc.)
+>
+> I could repost a v2 with a fixes tag if you like.
 
-Yeah, that's what I meant :)
+If this is regression and you can point to a specific commit it fixes,
+then please yes!
 
-Maxime
-
---cswefexiyy5rohzg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5BN1AAKCRDj7w1vZxhR
-xeajAQDDQfn/PTTmGCss/aqPhvUim5gLLSaV4p3P4gdxSpylWQEAkHNQa448LP1N
-bvAej+dehNCy7akUYd7zXzYe3O5QNwM=
-=CuAY
------END PGP SIGNATURE-----
-
---cswefexiyy5rohzg--
+Kind regards
+Uffe
