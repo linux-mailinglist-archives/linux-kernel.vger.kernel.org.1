@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0595D29461B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 02:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E6329461F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 02:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439776AbgJUAuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 20:50:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41642 "EHLO mail.kernel.org"
+        id S2439786AbgJUA5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 20:57:50 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:22387 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439768AbgJUAuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 20:50:18 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2393991AbgJUA5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 20:57:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603241870; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=qGge+OiVZHcS6eMn06MDb+HUQOh85jgQH0fDblnbuxQ=;
+ b=rCt9JVOe2J5hge8PP1c9/aMRc9Wny8v5IrQGQD3DnPSjywRVRqKexIv7wyG1G2XID1Y2bN0N
+ KgWFxFoAmOYI9ZK9hT70yPRyaWQ3YW4PkCqOEgEoBhm0fXogJ3za/r+tQUfmI+WsDhTsO7T0
+ pTRMoSV0rwcXiA44tmBj9jAihaI=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f8f877eef891f1ee27b93c2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Oct 2020 00:57:34
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8C044C433F1; Wed, 21 Oct 2020 00:57:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C42822251;
-        Wed, 21 Oct 2020 00:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603241417;
-        bh=78hBHfbHX9Dr+4BC7F/fPvXdyozvyE0CdvpMQRY51q0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hXdZcIPsC6TJdY5qBUVp6ZNx+wcnt7qUAwP/YkuvwtT2mMSMKsHRquW/KWDx7xSV2
-         t4sMlXbpVTgcyU6BNy6w9ZG/XPKWP7IxZITf3piNAR9GaoHPRiRxRScFdHvK5NsCA0
-         eyWOCebYkJZS36zRVVXTBNcqX8YSvB9Ab0C58+RE=
-Date:   Wed, 21 Oct 2020 09:50:13 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86-ml <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] Have insn decoder functions return success/failure
-Message-Id: <20201021095013.d82637f84af564ae4363189d@kernel.org>
-In-Reply-To: <20201020143746.GG11583@zn.tnic>
-References: <20201020120232.GD11583@zn.tnic>
-        <20201020232700.5510c236d810b7f8a66779e2@kernel.org>
-        <20201020143746.GG11583@zn.tnic>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9950AC433C9;
+        Wed, 21 Oct 2020 00:57:32 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 21 Oct 2020 08:57:32 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Jaegeuk Kim <jaegeuk@google.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: Re: [PATCH v2 3/5] scsi: ufs: use WQ_HIGHPRI for gating work
+In-Reply-To: <20201020195258.2005605-4-jaegeuk@kernel.org>
+References: <20201020195258.2005605-1-jaegeuk@kernel.org>
+ <20201020195258.2005605-4-jaegeuk@kernel.org>
+Message-ID: <d6e794548891f81a579cda138cd1529e@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020 16:37:46 +0200
-Borislav Petkov <bp@alien8.de> wrote:
-
-> On Tue, Oct 20, 2020 at 11:27:00PM +0900, Masami Hiramatsu wrote:
-> > So, if this return value is optional, it is OK to me. But the success
-> > return value does NOT mean it a correctly encoded instruction.
+On 2020-10-21 03:52, Jaegeuk Kim wrote:
+> From: Jaegeuk Kim <jaegeuk@google.com>
 > 
-> Ok, so what is the correct way to find out whether the decoding was
-> successful?
+> Must have WQ_MEM_RECLAIM
+> ``WQ_MEM_RECLAIM``
+>   All wq which might be used in the memory reclaim paths **MUST**
+>   have this flag set.  The wq is guaranteed to have at least one
+>   execution context regardless of memory pressure.
 > 
-> Because as it is now, it is confusing:
+
+You misunderstood my point. I meant you need to give more info about why
+we are adding WQ_HIGHPRI flag but not why WQ_MEM_RECLAIM must be there.
+
+Thanks,
+
+Can Guo.
+
+> Cc: Alim Akhtar <alim.akhtar@samsung.com>
+> Cc: Avri Altman <avri.altman@wdc.com>
+> Cc: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> - Which ->got field do you check?
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index feb10ebf7a35..0858c0b55eac 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -1867,7 +1867,7 @@ static void ufshcd_init_clk_gating(struct ufs_hba 
+> *hba)
+>  	snprintf(wq_name, ARRAY_SIZE(wq_name), "ufs_clk_gating_%d",
+>  		 hba->host->host_no);
+>  	hba->clk_gating.clk_gating_workq = alloc_ordered_workqueue(wq_name,
+> -							   WQ_MEM_RECLAIM);
+> +					WQ_MEM_RECLAIM | WQ_HIGHPRI);
 > 
-> - Do you check all got fields like insn_complete() does?
-> 
-> And the return value can be made non-optional to denote that the
-> *function* that was called, was successful or not. The thing is, one
-> needs to designate one function to call and say, if this function
-> returns successfully, then the decode was ok.
-
-Agreed. So I'm OK for returning the result of "decoding".
-But we also need to note that the returning success doesn't
-mean the instruction is valid. That needs another validator.
-
-> If we want to look at only some aspects of some insn bytes, we can
-> definitely make the functions which do, like insn_get_length(),
-> insn_get_immediate() and all those return a value to denote that *they*
-> were successful or not.
-
-OK.
-
-> 
-> All I'm trying to say is, *how* this insn decoder *should* be used,
-> is not really entirely clear, at least to me it isn't, and we need to
-> define that so that callers know what to expect.
-> 
-> Does that make more sense?
-
-Yes, so let's add the return value (with a note, so that someone
-does not try to use it for validation).
-
-Thank you,
-
-> 
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+>  	hba->clk_gating.is_enabled = true;
