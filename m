@@ -2,116 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D7229519B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B8A2951A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503623AbgJURhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 13:37:06 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:40948 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404713AbgJURhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:37:01 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7CDDB1A0598;
-        Wed, 21 Oct 2020 19:36:59 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6F9C01A1293;
-        Wed, 21 Oct 2020 19:36:59 +0200 (CEST)
-Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 0B8AD2033F;
-        Wed, 21 Oct 2020 19:36:59 +0200 (CEST)
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Abel Vesa <abel.vesa@nxp.com>
-Subject: [RFC 4/4] clk: imx8m: Use dram variant registration for dram clocks
-Date:   Wed, 21 Oct 2020 20:36:55 +0300
-Message-Id: <1603301815-24670-5-git-send-email-abel.vesa@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603301815-24670-1-git-send-email-abel.vesa@nxp.com>
-References: <1603301815-24670-1-git-send-email-abel.vesa@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2503654AbgJURjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 13:39:07 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:52530 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405345AbgJURjG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 13:39:06 -0400
+X-IronPort-AV: E=Sophos;i="5.77,401,1596492000"; 
+   d="scan'208";a="473731042"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 19:39:03 +0200
+Date:   Wed, 21 Oct 2020 19:39:02 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Mel Gorman <mgorman@suse.de>
+cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>
+Subject: Re: [PATCH] sched/fair: check for idle core
+In-Reply-To: <20201021170050.GI32041@suse.de>
+Message-ID: <alpine.DEB.2.22.394.2010211937150.8475@hadrien>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr> <20201021112038.GC32041@suse.de> <20201021122532.GA30733@vingu-book> <20201021124700.GE32041@suse.de> <alpine.DEB.2.22.394.2010211452100.8475@hadrien> <20201021131827.GF32041@suse.de>
+ <alpine.DEB.2.22.394.2010211522340.57356@hadrien> <20201021150800.GG32041@suse.de> <CAKfTPtDs1t6mt7fPgoGg+fT-JKmaqWybNVBN3kZhag6M4+8RUg@mail.gmail.com> <20201021170050.GI32041@suse.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both dram_apb and dram_alt are controlled by EL3. Using the dram
-variant registration of the composite-8m clock, the mux and the
-divider will be read only. Do this for all i.MX8M platforms.
 
-Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
----
- drivers/clk/imx/clk-imx8mm.c | 4 ++--
- drivers/clk/imx/clk-imx8mn.c | 4 ++--
- drivers/clk/imx/clk-imx8mp.c | 4 ++--
- drivers/clk/imx/clk-imx8mq.c | 4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/imx/clk-imx8mm.c b/drivers/clk/imx/clk-imx8mm.c
-index cd807fa..7f9ef21 100644
---- a/drivers/clk/imx/clk-imx8mm.c
-+++ b/drivers/clk/imx/clk-imx8mm.c
-@@ -477,8 +477,8 @@ static int imx8mm_clocks_probe(struct platform_device *pdev)
- 	 * DRAM clocks are manipulated from TF-A outside clock framework.
- 	 * Mark with GET_RATE_NOCACHE to always read div value from hardware
- 	 */
--	hws[IMX8MM_CLK_DRAM_ALT] = __imx8m_clk_hw_composite("dram_alt", imx8mm_dram_alt_sels, base + 0xa000, CLK_GET_RATE_NOCACHE);
--	hws[IMX8MM_CLK_DRAM_APB] = __imx8m_clk_hw_composite("dram_apb", imx8mm_dram_apb_sels, base + 0xa080, CLK_IS_CRITICAL | CLK_GET_RATE_NOCACHE);
-+	hws[IMX8MM_CLK_DRAM_ALT] = imx8m_clk_hw_composite_dram("dram_alt", imx8mm_dram_alt_sels, base + 0xa000);
-+	hws[IMX8MM_CLK_DRAM_APB] = imx8m_clk_hw_composite_dram("dram_apb", imx8mm_dram_apb_sels, base + 0xa080);
- 
- 	/* IP */
- 	hws[IMX8MM_CLK_VPU_G1] = imx8m_clk_hw_composite("vpu_g1", imx8mm_vpu_g1_sels, base + 0xa100);
-diff --git a/drivers/clk/imx/clk-imx8mn.c b/drivers/clk/imx/clk-imx8mn.c
-index b65f60d..d8000ee 100644
---- a/drivers/clk/imx/clk-imx8mn.c
-+++ b/drivers/clk/imx/clk-imx8mn.c
-@@ -459,8 +459,8 @@ static int imx8mn_clocks_probe(struct platform_device *pdev)
- 	 * DRAM clocks are manipulated from TF-A outside clock framework.
- 	 * Mark with GET_RATE_NOCACHE to always read div value from hardware
- 	 */
--	hws[IMX8MN_CLK_DRAM_ALT] = __imx8m_clk_hw_composite("dram_alt", imx8mn_dram_alt_sels, base + 0xa000, CLK_GET_RATE_NOCACHE);
--	hws[IMX8MN_CLK_DRAM_APB] = __imx8m_clk_hw_composite("dram_apb", imx8mn_dram_apb_sels, base + 0xa080, CLK_IS_CRITICAL | CLK_GET_RATE_NOCACHE);
-+	hws[IMX8MN_CLK_DRAM_ALT] = imx8m_clk_hw_composite_dram("dram_alt", imx8mn_dram_alt_sels, base + 0xa000);
-+	hws[IMX8MN_CLK_DRAM_APB] = imx8m_clk_hw_composite_dram("dram_apb", imx8mn_dram_apb_sels, base + 0xa080);
- 
- 	hws[IMX8MN_CLK_DISP_PIXEL] = imx8m_clk_hw_composite("disp_pixel", imx8mn_disp_pixel_sels, base + 0xa500);
- 	hws[IMX8MN_CLK_SAI2] = imx8m_clk_hw_composite("sai2", imx8mn_sai2_sels, base + 0xa600);
-diff --git a/drivers/clk/imx/clk-imx8mp.c b/drivers/clk/imx/clk-imx8mp.c
-index 5b9026b..bf13566 100644
---- a/drivers/clk/imx/clk-imx8mp.c
-+++ b/drivers/clk/imx/clk-imx8mp.c
-@@ -846,8 +846,8 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
- 	hws[IMX8MP_CLK_IPG_ROOT] = imx_clk_hw_divider2("ipg_root", "ahb_root", ccm_base + 0x9080, 0, 1);
- 	hws[IMX8MP_CLK_IPG_AUDIO_ROOT] = imx_clk_hw_divider2("ipg_audio_root", "audio_ahb", ccm_base + 0x9180, 0, 1);
- 
--	hws[IMX8MP_CLK_DRAM_ALT] = imx8m_clk_hw_composite("dram_alt", imx8mp_dram_alt_sels, ccm_base + 0xa000);
--	hws[IMX8MP_CLK_DRAM_APB] = imx8m_clk_hw_composite_critical("dram_apb", imx8mp_dram_apb_sels, ccm_base + 0xa080);
-+	hws[IMX8MP_CLK_DRAM_ALT] = imx8m_clk_hw_composite_dram("dram_alt", imx8mp_dram_alt_sels, ccm_base + 0xa000);
-+	hws[IMX8MP_CLK_DRAM_APB] = imx8m_clk_hw_composite_dram("dram_apb", imx8mp_dram_apb_sels, ccm_base + 0xa080);
- 	hws[IMX8MP_CLK_VPU_G1] = imx8m_clk_hw_composite("vpu_g1", imx8mp_vpu_g1_sels, ccm_base + 0xa100);
- 	hws[IMX8MP_CLK_VPU_G2] = imx8m_clk_hw_composite("vpu_g2", imx8mp_vpu_g2_sels, ccm_base + 0xa180);
- 	hws[IMX8MP_CLK_CAN1] = imx8m_clk_hw_composite("can1", imx8mp_can1_sels, ccm_base + 0xa200);
-diff --git a/drivers/clk/imx/clk-imx8mq.c b/drivers/clk/imx/clk-imx8mq.c
-index e5d2da4..57db0cc 100644
---- a/drivers/clk/imx/clk-imx8mq.c
-+++ b/drivers/clk/imx/clk-imx8mq.c
-@@ -473,8 +473,8 @@ static int imx8mq_clocks_probe(struct platform_device *pdev)
- 	 * Mark with GET_RATE_NOCACHE to always read div value from hardware
- 	 */
- 	hws[IMX8MQ_CLK_DRAM_CORE] = imx_clk_hw_mux2_flags("dram_core_clk", base + 0x9800, 24, 1, imx8mq_dram_core_sels, ARRAY_SIZE(imx8mq_dram_core_sels), CLK_IS_CRITICAL);
--	hws[IMX8MQ_CLK_DRAM_ALT] = __imx8m_clk_hw_composite("dram_alt", imx8mq_dram_alt_sels, base + 0xa000, CLK_GET_RATE_NOCACHE);
--	hws[IMX8MQ_CLK_DRAM_APB] = __imx8m_clk_hw_composite("dram_apb", imx8mq_dram_apb_sels, base + 0xa080, CLK_IS_CRITICAL | CLK_GET_RATE_NOCACHE);
-+	hws[IMX8MQ_CLK_DRAM_ALT] = imx8m_clk_hw_composite_dram("dram_alt", imx8mq_dram_alt_sels, base + 0xa000);
-+	hws[IMX8MQ_CLK_DRAM_APB] = imx8m_clk_hw_composite_dram("dram_apb", imx8mq_dram_apb_sels, base + 0xa080);
- 
- 	/* IP */
- 	hws[IMX8MQ_CLK_VPU_G1] = imx8m_clk_hw_composite("vpu_g1", imx8mq_vpu_g1_sels, base + 0xa100);
--- 
-2.7.4
+On Wed, 21 Oct 2020, Mel Gorman wrote:
 
+> On Wed, Oct 21, 2020 at 05:19:53PM +0200, Vincent Guittot wrote:
+> > On Wed, 21 Oct 2020 at 17:08, Mel Gorman <mgorman@suse.de> wrote:
+> > >
+> > > On Wed, Oct 21, 2020 at 03:24:48PM +0200, Julia Lawall wrote:
+> > > > > I worry it's overkill because prev is always used if it is idle even
+> > > > > if it is on a node remote to the waker. It cuts off the option of a
+> > > > > wakee moving to a CPU local to the waker which is not equivalent to the
+> > > > > original behaviour.
+> > > >
+> > > > But it is equal to the original behavior in the idle prev case if you go
+> > > > back to the runnable load average days...
+> > > >
+> > >
+> > > It is similar but it misses the sync treatment and sd->imbalance_pct part of
+> > > wake_affine_weight which has unpredictable consequences. The data
+> > > available is only on the fully utilised case.
+> >
+> > In fact It's the same because runnable_load_avg was null when cpu is idle, so
+> > if prev_cpu was idle, we were selecting prev_idle
+> >
+>
+> Sync wakeups may only consider this_cpu and the load of the waker but
+> in that case, it was probably selected already by the sync check in
+> wake_affine_idle which will pass except when the domain is overloaded.
+> Fair enough, I'll withdraw any concerns. It could have done with a
+> comment :/
+
+Sure, I'll resend the patch and extend the log message with this issue.
+
+Otherwise, I was wondering are there any particular kinds of applications
+where gathering the threads back with the waker is a good idea?  I've been
+looking more at applications with N threads on N cores, where it would be
+best for the threads to remain where they are.
+
+thanks,
+julia
