@@ -2,341 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A1929465A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 03:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55BE29465E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 03:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439886AbgJUBrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 21:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439875AbgJUBro (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 21:47:44 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A46C0613CE;
-        Tue, 20 Oct 2020 18:47:44 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CGCzv6gJ9z9sSG;
-        Wed, 21 Oct 2020 12:47:39 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603244861;
-        bh=v9rVB+Nesdc+q52L+L2XnNtNmWYruvACC1Nf5mx47bk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fhsN/SMVlgKR+evQF8GfkX8Wml9U2RlpuhJ36JGRwvt/1HuOteYwSu+3wKsrlwbk0
-         68VU/FgMBM5k7CM+gn8ucpot0SXV7+Xz7WbyThIaTQlYK7+ADZCVc3iHpqm9F9TbAA
-         f58n7Wq32uxASZqP1J0qqpmW5wAhkFKnnWw9DTO+otsc/PS0Pmf53pEOt95MVeV15A
-         jksHe6Or9DclPDHvtBRwIWJ06y61ZMkgaup/GEKrkw64f1+HUEdHabLROtna4fZEx8
-         hFdlFXO8GrHZyak91RyzPmnLKlhiT+RLGvlvBeT0ITXLkRerT7asJ2k4hXb+FZ0fGG
-         Pi/rhvuE6gNag==
-Date:   Wed, 21 Oct 2020 12:47:33 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: linux-next: manual merge of the notifications tree with Linus' tree
-Message-ID: <20201021124733.344e5107@canb.auug.org.au>
+        id S2439900AbgJUBya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 21:54:30 -0400
+Received: from mga18.intel.com ([134.134.136.126]:25772 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393577AbgJUBy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 21:54:29 -0400
+IronPort-SDR: jk+pfnkSEZUlAyty8mbFpTH5XAkzwo0OWVFQkm6w+HU+WES4UXqU4Kx5qLAwvManxQx61B/IvX
+ KQfW4fn39cwQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="155087768"
+X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
+   d="scan'208";a="155087768"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 18:54:27 -0700
+IronPort-SDR: jzO2Hn1HUeoyHTzBN/rMrFgevmxW87SiTCKzGls9MNlYUFE3IACGmZaZX6xgfBALbZ95+4H0G1
+ y4lHVkSWApCg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
+   d="scan'208";a="348108496"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Oct 2020 18:54:27 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 20 Oct 2020 18:54:27 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 20 Oct 2020 18:54:27 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.106)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 20 Oct 2020 18:54:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FXi4zh1TE3yH2jP/NNpM9JwrlhKXPRPIyiMZxqc2AeZdKqR5PbyGIf/6QJ/avM0iNCOPjdRrNt8ZKB1HA1Q1Q8HSEU+ZepIxSDeNL/rjcopF19XA4Q/hX+wLz4eusdVUe6BOSUK19ShYChN2gXikoFnh2xVBRi8j21k+MdJiXPdj3QQM6783XmgY/FS2pSR0eUplSYnXqxuazxBMUjJs4IRwT3S2SXXYj80O0QA8JzXzYOzJQKvp7YRzgi2mnwDeEWSB50ziTtp3Flz9/jYWuDJeZ14VCYpNPrXNhabkf9dZiyiDbq8r0E8bXsqUkr4iLQAIMs55OabounDMzB/W3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7onvSJlM++lXFHjWEUXIaano53MSHTShnZLwE1aP43c=;
+ b=YlRgbo5HXLtz/st3a9ff/hYQzlMrvOn2DjG2LOcPsA43Cf43pnBtyxITL8d4oK5peHapzx82XrD4eu4PyZvpktOPVFPEguacJHMaKMOwDGA8FeBl5o9aLs+nfSuIDGqwG7eV4stJcPs1MiVfHnKrkDedNRgNdDwNbatrldoCzwBmWDPCo86+i8pHh+5aHlO2B4ano7VuaVR/S+F+gLUTUiX+BV7WoSC/rv4ek5Q+e9DtuSvlSUUM9aWy5i9CeuLxIOWzYYnFIiwr6Y2pUCqpTcOid4wxz0AcOvi/pm3gpTfhU7tAjaQd8Id+on845leOEmOLt3duAj59dkp79o37Aw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7onvSJlM++lXFHjWEUXIaano53MSHTShnZLwE1aP43c=;
+ b=Or8wiG/0khQYivp29UnoD5ph66zh4x725nZcmrgOnhxE50K7Yy43eTw0THZj0NXYXx7IcTj1KQMxTKIx08yqFhJz7+6StST3/UKLUc8YWeeKj3NfTWWxfSD5TQN4oDWi36JggpyOiZQcI8diJf26rV+QHv6I16kQ+vGWahxPob0=
+Received: from DM5PR1101MB2218.namprd11.prod.outlook.com (2603:10b6:4:4f::12)
+ by DM6PR11MB3164.namprd11.prod.outlook.com (2603:10b6:5:58::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 21 Oct
+ 2020 01:54:26 +0000
+Received: from DM5PR1101MB2218.namprd11.prod.outlook.com
+ ([fe80::49ce:b38c:2ee:128f]) by DM5PR1101MB2218.namprd11.prod.outlook.com
+ ([fe80::49ce:b38c:2ee:128f%10]) with mapi id 15.20.3477.028; Wed, 21 Oct 2020
+ 01:54:26 +0000
+From:   "Sia, Jee Heng" <jee.heng.sia@intel.com>
+To:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>
+CC:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        Alexey Brodkin <Alexey.Brodkin@synopsys.com>
+Subject: RE: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
+ AxiDMA
+Thread-Topic: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
+ AxiDMA
+Thread-Index: AQHWo8vT4R/NJ+ZUxUWa9ym9koIG+6meI5ZQgACtxoCAAoCPgA==
+Date:   Wed, 21 Oct 2020 01:54:25 +0000
+Message-ID: <DM5PR1101MB2218BD33F1310EC42F3ED871DA1C0@DM5PR1101MB2218.namprd11.prod.outlook.com>
+References: <20201012042200.29787-1-jee.heng.sia@intel.com>
+ <MWHPR12MB18065E87CEE3FD28868EBB9BDE030@MWHPR12MB1806.namprd12.prod.outlook.com>
+ <DM5PR1101MB22185FFAE24516B90B13D255DA1E0@DM5PR1101MB2218.namprd11.prod.outlook.com>
+ <20201019113917.GM4077@smile.fi.intel.com>
+In-Reply-To: <20201019113917.GM4077@smile.fi.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [210.186.89.31]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 64bed84a-82af-4dd6-50f2-08d875643d6b
+x-ms-traffictypediagnostic: DM6PR11MB3164:
+x-microsoft-antispam-prvs: <DM6PR11MB31646D5229B1D547B2DC1D73DA1C0@DM6PR11MB3164.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TtFhHqckqntn+DO9ZsedNUVJXgaEJgCjTfmW12OiF+VJ3s3D+6h2OXsZ+r3gbSDcr/tpxTE5G0WAj/2AfMaplp+6KXR6q0apRvHdJM0VUISbWONOwjKkW/7GxCo6bVRMF43JBOK2ZeBZqkejIfugQVYRQrBEkq16fP+6bsrdzAWhZyHHRBoYTUI0yWzc9xi+r7nHIp11sVvGw3XhwabiM2fL8O95mq2jRVLbSI+z4sZRE6cLAcT+zTMoAkFu7zPSkxo82GqU6OIqhtl7JZ1X3sCUh+vwgVHnmWFyB1vMr3eE/oupZ+959OO+LfPYm9qa6J0LUyURXHvc/05FKrNLzknTs8odFsCZ7fKSPdIvKHrQrQylvyMbm4eGaMKnqRpQcEou7cN2qVXKTvjJngXJaw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1101MB2218.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(64756008)(66946007)(66556008)(76116006)(54906003)(66476007)(52536014)(5660300002)(86362001)(55016002)(6916009)(316002)(4326008)(478600001)(66446008)(186003)(83380400001)(966005)(9686003)(8936002)(33656002)(6506007)(53546011)(8676002)(7696005)(71200400001)(2906002)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: oFsuGBhhADpLG3Pnb6hSVClq1/+4QwHIOdQQA/o72ewf3OKR6pGsnNUDlYvCEJWP/k2MHQRmH5uNsnjiEjVv4t3gjFTZeiXyxq7PcFw5YCcvdJc40LHlw/D4O1y5aV9t4zDRyAhxUEmmFBwEEPMhcB7SEG++1aPhlfYuUzMdeMU9vde57WuIXOyO5qBhDLmEBc6N4HfzcDeDJYPdj4dUL4W/m9gwcbyHRN1NSgud1scfggF0bTNGWmh9tQ9R3JYmTmQ4nrniAxQczeSgc4+jT/+4I5O5yYdEKLEgU85zOStIbY1rXNEdjuPmozBLDtCc+fHSEGknQpi04Ijk9fgaojCEU3qK4z3SE9ldgESsess4d6M/zZJQf3j3bfCxQyqg2xhFMhJWsRrB4kMuneP2lShSL5mPgyCDFoLjdGjmH4Igqip587daXOjQRe0bpu1JwlRLwWgOL8ZF4yWBvy5itk+XpLvjD5nGht17tIVc0pGkkRckWOVGc24rb/47M1ZjF1cpqi9WhL13PTIEcFjMRTKgwVI99B7VNCgzijWIEXjCG9rpA2Nx8VV1oTs2TWnB9ophAQ7No0LGHggYYtS5VLlZDCiBu+KxLZShJuzQ4vHCLlILzjx7wCVMQoVn+svoj/tBdLPOO3erD8ikE5w1Kg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I_vE3GrcmGPVy9Ufzbz/r7W";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1101MB2218.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 64bed84a-82af-4dd6-50f2-08d875643d6b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2020 01:54:25.9428
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5MDEeGs4vTBK5Ot3QgHrP2ST1oHkNZTVOB95wSt2oLct8W7CZd2RxUZkT+M1M8ZmUuRPrlgJtOU+3PF9bjIqIw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3164
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/I_vE3GrcmGPVy9Ufzbz/r7W
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the notifications tree got conflicts in:
+> -----Original Message-----
+> From: andriy.shevchenko@linux.intel.com
+> <andriy.shevchenko@linux.intel.com>
+> Sent: 19 October 2020 7:39 PM
+> To: Sia, Jee Heng <jee.heng.sia@intel.com>
+> Cc: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>;
+> dmaengine@vger.kernel.org; linux-kernel@vger.kernel.org; vkoul@kernel.org=
+;
+> Alexey Brodkin <Alexey.Brodkin@synopsys.com>
+> Subject: Re: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
+> AxiDMA
+>=20
+> On Mon, Oct 19, 2020 at 01:22:03AM +0000, Sia, Jee Heng wrote:
+> > > From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+> > > Sent: 16 October 2020 10:51 PM
+>=20
+> > > Hi Sia,
+> > >
+> > > Is this patch series available in some public git repo?
+> > [>>] We do not have public git repo, but the patch series are tested
+> > on kernel v5.9
+>=20
+> Sia, can you fork a kernel repository on GitHub or GitLab and create ther=
+e a
+> branch with this series based on v5.9?
+[>>] Thanks Andy to help to create branch at https://gitlab.com/andy-shev/n=
+ext/-/tree/topic/dw-dma-axi.
+Eugeniy, you can start to use this branch and I shall learn to create a pub=
+lic repo. Do let me know if you need anything else.
+>=20
+> > > I want to test it on our HW with DW AXI DMAC.
+>=20
+> Eugeniy, to be honest, it's not a big deal to create one either with help=
+ of
+> lore.kernel.org or patchwork [1].
+>=20
+> For your convenience (disclaimer, I can't guarantee I haven't missed some=
+thing
+> here) I published it here [2]. Note, I didn't compile it.
+>=20
+> [1]: https://patchwork.kernel.org/project/linux-
+> dmaengine/cover/20201012042200.29787-1-jee.heng.sia@intel.com/
+> [2]: https://gitlab.com/andy-shev/next/-/tree/topic/dw-dma-axi
+>=20
+> --
+> With Best Regards,
+> Andy Shevchenko
+>=20
 
-  arch/alpha/kernel/syscalls/syscall.tbl
-  arch/arm/tools/syscall.tbl
-  arch/arm64/include/asm/unistd32.h
-  arch/ia64/kernel/syscalls/syscall.tbl
-  arch/m68k/kernel/syscalls/syscall.tbl
-  arch/microblaze/kernel/syscalls/syscall.tbl
-  arch/mips/kernel/syscalls/syscall_n32.tbl
-  arch/mips/kernel/syscalls/syscall_n64.tbl
-  arch/mips/kernel/syscalls/syscall_o32.tbl
-  arch/parisc/kernel/syscalls/syscall.tbl
-  arch/powerpc/kernel/syscalls/syscall.tbl
-  arch/s390/kernel/syscalls/syscall.tbl
-  arch/sh/kernel/syscalls/syscall.tbl
-  arch/sparc/kernel/syscalls/syscall.tbl
-  arch/x86/entry/syscalls/syscall_32.tbl
-  arch/x86/entry/syscalls/syscall_64.tbl
-  arch/xtensa/kernel/syscalls/syscall.tbl
-  include/uapi/asm-generic/unistd.h
-
-between commit:
-
-  ecb8ac8b1f14 ("mm/madvise: introduce process_madvise() syscall: an extern=
-al memory hinting API")
-
-from Linus' tree and commit:
-
-  4cd92d064cb0 ("watch_queue: Implement mount topology and attribute change=
- notifications")
-
-from the notifications tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/alpha/kernel/syscalls/syscall.tbl
-index ee7b01bb7346,b6cf8403da35..000000000000
---- a/arch/alpha/kernel/syscalls/syscall.tbl
-+++ b/arch/alpha/kernel/syscalls/syscall.tbl
-@@@ -479,4 -478,4 +479,5 @@@
-  547	common	openat2				sys_openat2
-  548	common	pidfd_getfd			sys_pidfd_getfd
-  549	common	faccessat2			sys_faccessat2
- -550	common	watch_mount			sys_watch_mount
- +550	common	process_madvise			sys_process_madvise
-++551	common	watch_mount			sys_watch_mount
-diff --cc arch/arm/tools/syscall.tbl
-index d056a548358e,27cc1f53f4a0..000000000000
---- a/arch/arm/tools/syscall.tbl
-+++ b/arch/arm/tools/syscall.tbl
-@@@ -453,4 -452,4 +453,5 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
-++441	common	watch_mount			sys_watch_mount
-diff --cc arch/arm64/include/asm/unistd32.h
-index 107f08e03b9f,4f9cf98cdf0f..000000000000
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@@ -887,8 -885,8 +887,10 @@@ __SYSCALL(__NR_openat2, sys_openat2
-  __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
-  #define __NR_faccessat2 439
-  __SYSCALL(__NR_faccessat2, sys_faccessat2)
- -#define __NR_watch_mount 440
- +#define __NR_process_madvise 440
- +__SYSCALL(__NR_process_madvise, sys_process_madvise)
-++#define __NR_watch_mount 441
-+ __SYSCALL(__NR_watch_mount, sys_watch_mount)
- =20
-  /*
-   * Please add new compat syscalls above this comment and update
-diff --cc arch/ia64/kernel/syscalls/syscall.tbl
-index b96ed8b8a508,fc6d87903781..000000000000
---- a/arch/ia64/kernel/syscalls/syscall.tbl
-+++ b/arch/ia64/kernel/syscalls/syscall.tbl
-@@@ -360,4 -359,4 +360,5 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
-++441	common	watch_mount			sys_watch_mount
-diff --cc arch/m68k/kernel/syscalls/syscall.tbl
-index 625fb6d32842,c671aa0e4d25..000000000000
---- a/arch/m68k/kernel/syscalls/syscall.tbl
-+++ b/arch/m68k/kernel/syscalls/syscall.tbl
-@@@ -439,4 -438,4 +439,5 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
-++441	common	watch_mount			sys_watch_mount
-diff --cc arch/microblaze/kernel/syscalls/syscall.tbl
-index aae729c95cf9,65cc53f129ef..000000000000
---- a/arch/microblaze/kernel/syscalls/syscall.tbl
-+++ b/arch/microblaze/kernel/syscalls/syscall.tbl
-@@@ -445,4 -444,4 +445,5 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
-++441	common	watch_mount			sys_watch_mount
-diff --cc arch/mips/kernel/syscalls/syscall_n32.tbl
-index 32817c954435,7f034a239930..000000000000
---- a/arch/mips/kernel/syscalls/syscall_n32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
-@@@ -378,4 -377,4 +378,5 @@@
-  437	n32	openat2				sys_openat2
-  438	n32	pidfd_getfd			sys_pidfd_getfd
-  439	n32	faccessat2			sys_faccessat2
- -440	n32	watch_mount			sys_watch_mount
- +440	n32	process_madvise			sys_process_madvise
-++441	n32	watch_mount			sys_watch_mount
-diff --cc arch/mips/kernel/syscalls/syscall_n64.tbl
-index 9e4ea3c31b1c,d39b90de3642..000000000000
---- a/arch/mips/kernel/syscalls/syscall_n64.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
-@@@ -354,4 -353,4 +354,5 @@@
-  437	n64	openat2				sys_openat2
-  438	n64	pidfd_getfd			sys_pidfd_getfd
-  439	n64	faccessat2			sys_faccessat2
- -440	n64	watch_mount			sys_watch_mount
- +440	n64	process_madvise			sys_process_madvise
-++441	n64	watch_mount			sys_watch_mount
-diff --cc arch/mips/kernel/syscalls/syscall_o32.tbl
-index 29f5f28cf5ce,09f426cb45b1..000000000000
---- a/arch/mips/kernel/syscalls/syscall_o32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
-@@@ -427,4 -426,4 +427,5 @@@
-  437	o32	openat2				sys_openat2
-  438	o32	pidfd_getfd			sys_pidfd_getfd
-  439	o32	faccessat2			sys_faccessat2
- -440	o32	watch_mount			sys_watch_mount
- +440	o32	process_madvise			sys_process_madvise
-++441	o32	watch_mount			sys_watch_mount
-diff --cc arch/parisc/kernel/syscalls/syscall.tbl
-index 38c63e5404bc,52ff3454baa1..000000000000
---- a/arch/parisc/kernel/syscalls/syscall.tbl
-+++ b/arch/parisc/kernel/syscalls/syscall.tbl
-@@@ -437,4 -436,4 +437,5 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
-++441	common	watch_mount			sys_watch_mount
-diff --cc arch/powerpc/kernel/syscalls/syscall.tbl
-index 1275daec7fec,10b7ed3c7a1b..000000000000
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@@ -529,4 -528,4 +529,5 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
-++441	common	watch_mount			sys_watch_mount
-diff --cc arch/s390/kernel/syscalls/syscall.tbl
-index 28c168000483,86f317bf52df..000000000000
---- a/arch/s390/kernel/syscalls/syscall.tbl
-+++ b/arch/s390/kernel/syscalls/syscall.tbl
-@@@ -442,4 -441,4 +442,5 @@@
-  437  common	openat2			sys_openat2			sys_openat2
-  438  common	pidfd_getfd		sys_pidfd_getfd			sys_pidfd_getfd
-  439  common	faccessat2		sys_faccessat2			sys_faccessat2
- -440	common	watch_mount		sys_watch_mount			sys_watch_mount
- +440  common	process_madvise		sys_process_madvise		sys_process_madvise
-++441	common	watch_mount		sys_watch_mount			sys_watch_mount
-diff --cc arch/sh/kernel/syscalls/syscall.tbl
-index 783738448ff5,0bb0f0b372c7..000000000000
---- a/arch/sh/kernel/syscalls/syscall.tbl
-+++ b/arch/sh/kernel/syscalls/syscall.tbl
-@@@ -442,4 -441,4 +442,5 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
-++441	common	watch_mount			sys_watch_mount
-diff --cc arch/sparc/kernel/syscalls/syscall.tbl
-index 78160260991b,369ab65c1e9a..000000000000
---- a/arch/sparc/kernel/syscalls/syscall.tbl
-+++ b/arch/sparc/kernel/syscalls/syscall.tbl
-@@@ -485,4 -484,4 +485,5 @@@
-  437	common	openat2			sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
-++441	common	watch_mount			sys_watch_mount
-diff --cc arch/x86/entry/syscalls/syscall_32.tbl
-index 0d0667a9fbd7,e760ba92c58d..000000000000
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@@ -444,4 -443,4 +444,5 @@@
-  437	i386	openat2			sys_openat2
-  438	i386	pidfd_getfd		sys_pidfd_getfd
-  439	i386	faccessat2		sys_faccessat2
- -440	i386	watch_mount		sys_watch_mount
- +440	i386	process_madvise		sys_process_madvise
-++441	i386	watch_mount		sys_watch_mount
-diff --cc arch/x86/entry/syscalls/syscall_64.tbl
-index 379819244b91,5b58621d4f75..000000000000
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@@ -361,13 -360,13 +361,14 @@@
-  437	common	openat2			sys_openat2
-  438	common	pidfd_getfd		sys_pidfd_getfd
-  439	common	faccessat2		sys_faccessat2
- -440	common	watch_mount		sys_watch_mount
- +440	common	process_madvise		sys_process_madvise
-++441	common	watch_mount		sys_watch_mount
- =20
-  #
- -# x32-specific system call numbers start at 512 to avoid cache impact
- -# for native 64-bit operation. The __x32_compat_sys stubs are created
- -# on-the-fly for compat_sys_*() compatibility system calls if X86_X32
- -# is defined.
- +# Due to a historical design error, certain syscalls are numbered differe=
-ntly
- +# in x32 as compared to native x86_64.  These syscalls have numbers 512-5=
-47.
- +# Do not add new syscalls to this range.  Numbers 548 and above are avail=
-able
- +# for non-x32 use.
-  #
-  512	x32	rt_sigaction		compat_sys_rt_sigaction
-  513	x32	rt_sigreturn		compat_sys_x32_rt_sigreturn
-diff --cc arch/xtensa/kernel/syscalls/syscall.tbl
-index b070f272995d,5b28ee39f70f..000000000000
---- a/arch/xtensa/kernel/syscalls/syscall.tbl
-+++ b/arch/xtensa/kernel/syscalls/syscall.tbl
-@@@ -410,4 -409,4 +410,5 @@@
-  437	common	openat2				sys_openat2
-  438	common	pidfd_getfd			sys_pidfd_getfd
-  439	common	faccessat2			sys_faccessat2
- -440	common	watch_mount			sys_watch_mount
- +440	common	process_madvise			sys_process_madvise
-++441	common	watch_mount			sys_watch_mount
-diff --cc include/uapi/asm-generic/unistd.h
-index 2056318988f7,fcdca8c7d30a..000000000000
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@@ -857,8 -857,8 +857,10 @@@ __SYSCALL(__NR_openat2, sys_openat2
-  __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
-  #define __NR_faccessat2 439
-  __SYSCALL(__NR_faccessat2, sys_faccessat2)
- -#define __NR_watch_mount 440
- +#define __NR_process_madvise 440
- +__SYSCALL(__NR_process_madvise, sys_process_madvise)
-++#define __NR_watch_mount 441
-+ __SYSCALL(__NR_watch_mount, sys_watch_mount)
- =20
-  #undef __NR_syscalls
-  #define __NR_syscalls 441
-
---Sig_/I_vE3GrcmGPVy9Ufzbz/r7W
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+PkzUACgkQAVBC80lX
-0Gxjywf+Isf+jWkca2hL10a3si0fbAsg8EQso1TfjehpTLKIbJWDVlJ+m5ip/vLn
-ce64WHzQd/J/cWhak7Y8h67B33p1Sxsyepl0lk0RPT3YgJ4SoYD3i3p+JpOTWXDj
-o7Q4h3Y1PlSB9u4+36G+t1nG1Sz2cEGRBx5NcHP3XIoVNHhid+f7DIWL3equfYEW
-kSp8yj09JpaIDocwy17GX4MpXOxK1rMcgVGoI9fLXsUBaek9f56PXLHN1Twup2lk
-+ESqOHlNOXTwkIV//vpKDh0ZHKhhVTaJdL6t0+GipmKyZT7+xrabkKICvW99LRKB
-iOHwBjMjoDu5RDLUcSb8ud4fE09mjw==
-=lXLL
------END PGP SIGNATURE-----
-
---Sig_/I_vE3GrcmGPVy9Ufzbz/r7W--
