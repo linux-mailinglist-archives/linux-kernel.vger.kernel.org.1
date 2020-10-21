@@ -2,384 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA832951DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9A62951DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503807AbgJURyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 13:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404712AbgJURyx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:54:53 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB9FAC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:54:53 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id k1so3337090ilc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:54:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CXh4HataGnM9TFfiUIFt654vuQFfGER0GCLLlZTQXjI=;
-        b=a+2NkJEmh9Mdd9OM8OjjNOOepLYmOXxBDXJ3PL3QEBHhc9sB6rX0N4QiIaYFvh6JsA
-         jbx1Gl65Tg3E9Dre01SbCjn/Y5CK7SOqLGSy9vvy2DXH9vJGXCfc4ScV7OCu01Fdnr2D
-         8xh0Odn7Iq9dTBZ9hNu2bQFZJiuLEiEj7RMLamYCPhJ3Tf8ROzJM9lG1i7Ih+ojq9Yfm
-         1vU5RfsEaliE9cL+qo3/w3K3NSOpfluA1Tx5F69A4DzkT4AO3Nha6trQ+Y876bYxsX2X
-         BWeI3LRyNGcdJCsxmmDAjo+Af1S7r8h+TFksQLfR6J2xM+N4Ymh7VSVV/ypbWkcJBtiZ
-         eVFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CXh4HataGnM9TFfiUIFt654vuQFfGER0GCLLlZTQXjI=;
-        b=BMe7mi308ozwfKQBvxu766FxLrVQLye/iK4aoI4DwDXESUGYPrjLrVHRV7J5RO/1fP
-         7sSBGWKA3lz7jmQjYxdcN6o8qyzsde29/6WhA62DkDh285npWUMajQkYs4DgIzalL5hz
-         e788fVoG774eUWccozNNnTfykuigZzhwyIL2APIwsE6woPHJ4KDR3Qv27Gea2sxMTuvL
-         zJtqib4TTA5Uz1ddWeePMtoDcunS3LKOBCfvLErPA723ZhWsM+50xdnpNDGtrbNQYRLK
-         xBln7jEMN8sRoDlByqkchIaA4j6aCw2ViWC/Db42he6i4IDq5rXdRjjud1TyiilgYTO4
-         8Tsw==
-X-Gm-Message-State: AOAM532KgMT/hyw9XC+/J+IU6k/j0YuWT2TBr9G/30CyqYEIrV7Z/GJj
-        xneDO2k/wTUO3ss8WKVcvnmvfeHywWVEeyz3AyYKWA==
-X-Google-Smtp-Source: ABdhPJxWhmoP3ySjUAWXaCo5WbN6wvzwH0jlbGxYpG7jb+wd7gAbMCHYXGXJ2nILePtAfi6HzKuDg1dZSm9Qv087xSI=
-X-Received: by 2002:a92:5b02:: with SMTP id p2mr3297905ilb.283.1603302892670;
- Wed, 21 Oct 2020 10:54:52 -0700 (PDT)
+        id S2409265AbgJURzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 13:55:04 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:29484 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391138AbgJURzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 13:55:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603302903; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=LRMUirYzhYY9YlK5k5r6P0ZepRcjoq/tviwqExz3pxk=; b=reyVjsuActxvxHCTAYDI9wO5Ucnl3e7xnAXNhG1uL9jVKrUkDBgmx50qL/GOD57Fq0bEiw/5
+ 7jVsZ1IVgxUGztJ48YhYeTgCvrxuU6+rXdRFShj18WyW750wdE6osW8Dq7VBHhdJF3fO+5Dm
+ NM5LoYboULW2ypvLmQWONevWiOI=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f9075f6aad2c3cd1c7975f1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Oct 2020 17:55:02
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EB34DC43385; Wed, 21 Oct 2020 17:55:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4153C433C9;
+        Wed, 21 Oct 2020 17:55:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D4153C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v7 1/4] bus: mhi: core: Add helper API to return number of
+ free TREs
+To:     Loic Poulain <loic.poulain@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+References: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
+ <1602907457-13680-2-git-send-email-hemantk@codeaurora.org>
+ <20201021152714.GD3334@Mani-XPS-13-9360>
+ <CAMZdPi8xcsrKx2eV5da98fsGt2zO3f6ARMz7WJsyDSb3CnM0FA@mail.gmail.com>
+ <20201021162540.GG3334@Mani-XPS-13-9360>
+ <CAMZdPi-SY-r2H7RBLKoNk9yfu5umrrwYMr0ckJoxSx-iqYXdQg@mail.gmail.com>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <891914f1-13f2-abf8-46a6-d52218d67094@codeaurora.org>
+Date:   Wed, 21 Oct 2020 10:55:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201014182700.2888246-1-bgardon@google.com> <20201014182700.2888246-5-bgardon@google.com>
- <20201021150917.xkiq74pbb63rqxvu@linux.intel.com>
-In-Reply-To: <20201021150917.xkiq74pbb63rqxvu@linux.intel.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 21 Oct 2020 10:54:41 -0700
-Message-ID: <CANgfPd_YpHUat5psxPfewz2bQgNXpVZUpLnpP-2VjYsYS_q0Sw@mail.gmail.com>
-Subject: Re: [PATCH v2 04/20] kvm: x86/mmu: Allocate and free TDP MMU roots
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMZdPi-SY-r2H7RBLKoNk9yfu5umrrwYMr0ckJoxSx-iqYXdQg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 8:09 AM Yu Zhang <yu.c.zhang@linux.intel.com> wrote:
->
-> On Wed, Oct 14, 2020 at 11:26:44AM -0700, Ben Gardon wrote:
-> > The TDP MMU must be able to allocate paging structure root pages and track
-> > the usage of those pages. Implement a similar, but separate system for root
-> > page allocation to that of the x86 shadow paging implementation. When
-> > future patches add synchronization model changes to allow for parallel
-> > page faults, these pages will need to be handled differently from the
-> > x86 shadow paging based MMU's root pages.
-> >
-> > Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
-> > machine. This series introduced no new failures.
-> >
-> > This series can be viewed in Gerrit at:
-> >       https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
-> >
-> > Signed-off-by: Ben Gardon <bgardon@google.com>
-> > ---
-> >  arch/x86/include/asm/kvm_host.h |   1 +
-> >  arch/x86/kvm/mmu/mmu.c          |  29 +++++---
-> >  arch/x86/kvm/mmu/mmu_internal.h |  24 +++++++
-> >  arch/x86/kvm/mmu/tdp_mmu.c      | 114 ++++++++++++++++++++++++++++++++
-> >  arch/x86/kvm/mmu/tdp_mmu.h      |   5 ++
-> >  5 files changed, 162 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > index 6b6dbc20ce23a..e0ec1dd271a32 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -989,6 +989,7 @@ struct kvm_arch {
-> >        * operations.
-> >        */
-> >       bool tdp_mmu_enabled;
-> > +     struct list_head tdp_mmu_roots;
-> >  };
-> >
-> >  struct kvm_vm_stat {
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index f53d29e09367c..a3340ed59ad1d 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -144,11 +144,6 @@ module_param(dbg, bool, 0644);
-> >  #define PT64_PERM_MASK (PT_PRESENT_MASK | PT_WRITABLE_MASK | shadow_user_mask \
-> >                       | shadow_x_mask | shadow_nx_mask | shadow_me_mask)
-> >
-> > -#define ACC_EXEC_MASK    1
-> > -#define ACC_WRITE_MASK   PT_WRITABLE_MASK
-> > -#define ACC_USER_MASK    PT_USER_MASK
-> > -#define ACC_ALL          (ACC_EXEC_MASK | ACC_WRITE_MASK | ACC_USER_MASK)
-> > -
-> >  /* The mask for the R/X bits in EPT PTEs */
-> >  #define PT64_EPT_READABLE_MASK                       0x1ull
-> >  #define PT64_EPT_EXECUTABLE_MASK             0x4ull
-> > @@ -209,7 +204,7 @@ struct kvm_shadow_walk_iterator {
-> >            __shadow_walk_next(&(_walker), spte))
-> >
-> >  static struct kmem_cache *pte_list_desc_cache;
-> > -static struct kmem_cache *mmu_page_header_cache;
-> > +struct kmem_cache *mmu_page_header_cache;
-> >  static struct percpu_counter kvm_total_used_mmu_pages;
-> >
-> >  static u64 __read_mostly shadow_nx_mask;
-> > @@ -3588,9 +3583,13 @@ static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
-> >               return;
-> >
-> >       sp = to_shadow_page(*root_hpa & PT64_BASE_ADDR_MASK);
-> > -     --sp->root_count;
-> > -     if (!sp->root_count && sp->role.invalid)
-> > -             kvm_mmu_prepare_zap_page(kvm, sp, invalid_list);
-> > +
-> > +     if (kvm_mmu_put_root(sp)) {
-> > +             if (sp->tdp_mmu_page)
-> > +                     kvm_tdp_mmu_free_root(kvm, sp);
-> > +             else if (sp->role.invalid)
-> > +                     kvm_mmu_prepare_zap_page(kvm, sp, invalid_list);
-> > +     }
-> >
-> >       *root_hpa = INVALID_PAGE;
-> >  }
-> > @@ -3680,8 +3679,16 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
-> >       hpa_t root;
-> >       unsigned i;
-> >
-> > -     if (shadow_root_level >= PT64_ROOT_4LEVEL) {
-> > -             root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level, true);
-> > +     if (vcpu->kvm->arch.tdp_mmu_enabled) {
-> > +             root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
-> > +
-> > +             if (!VALID_PAGE(root))
-> > +                     return -ENOSPC;
-> > +             vcpu->arch.mmu->root_hpa = root;
-> > +     } else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
-> > +             root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level,
-> > +                                   true);
-> > +
-> >               if (!VALID_PAGE(root))
-> >                       return -ENOSPC;
-> >               vcpu->arch.mmu->root_hpa = root;
-> > diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> > index 74ccbf001a42e..6cedf578c9a8d 100644
-> > --- a/arch/x86/kvm/mmu/mmu_internal.h
-> > +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> > @@ -43,8 +43,12 @@ struct kvm_mmu_page {
-> >
-> >       /* Number of writes since the last time traversal visited this page.  */
-> >       atomic_t write_flooding_count;
-> > +
-> > +     bool tdp_mmu_page;
-> >  };
-> >
-> > +extern struct kmem_cache *mmu_page_header_cache;
-> > +
-> >  static inline struct kvm_mmu_page *to_shadow_page(hpa_t shadow_page)
-> >  {
-> >       struct page *page = pfn_to_page(shadow_page >> PAGE_SHIFT);
-> > @@ -96,6 +100,11 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
-> >       (PT64_BASE_ADDR_MASK & ((1ULL << (PAGE_SHIFT + (((level) - 1) \
-> >                                               * PT64_LEVEL_BITS))) - 1))
-> >
-> > +#define ACC_EXEC_MASK    1
-> > +#define ACC_WRITE_MASK   PT_WRITABLE_MASK
-> > +#define ACC_USER_MASK    PT_USER_MASK
-> > +#define ACC_ALL          (ACC_EXEC_MASK | ACC_WRITE_MASK | ACC_USER_MASK)
-> > +
-> >  /* Functions for interpreting SPTEs */
-> >  static inline bool is_mmio_spte(u64 spte)
-> >  {
-> > @@ -126,4 +135,19 @@ static inline kvm_pfn_t spte_to_pfn(u64 pte)
-> >       return (pte & PT64_BASE_ADDR_MASK) >> PAGE_SHIFT;
-> >  }
-> >
-> > +static inline void kvm_mmu_get_root(struct kvm_mmu_page *sp)
-> > +{
-> > +     BUG_ON(!sp->root_count);
-> > +
-> > +     ++sp->root_count;
-> > +}
-> > +
-> > +static inline bool kvm_mmu_put_root(struct kvm_mmu_page *sp)
-> > +{
-> > +     --sp->root_count;
-> > +
-> > +     return !sp->root_count;
-> > +}
-> > +
-> > +
-> >  #endif /* __KVM_X86_MMU_INTERNAL_H */
-> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> > index b3809835e90b1..09a84a6e157b6 100644
-> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> > @@ -1,5 +1,7 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >
-> > +#include "mmu.h"
-> > +#include "mmu_internal.h"
-> >  #include "tdp_mmu.h"
-> >
-> >  static bool __read_mostly tdp_mmu_enabled = false;
-> > @@ -29,10 +31,122 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
-> >
-> >       /* This should not be changed for the lifetime of the VM. */
-> >       kvm->arch.tdp_mmu_enabled = true;
-> > +
-> > +     INIT_LIST_HEAD(&kvm->arch.tdp_mmu_roots);
-> >  }
-> >
-> >  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
-> >  {
-> >       if (!kvm->arch.tdp_mmu_enabled)
-> >               return;
-> > +
-> > +     WARN_ON(!list_empty(&kvm->arch.tdp_mmu_roots));
-> > +}
-> > +
-> > +#define for_each_tdp_mmu_root(_kvm, _root)                       \
-> > +     list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)
-> > +
-> > +bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
-> > +{
-> > +     struct kvm_mmu_page *sp;
-> > +
-> > +     sp = to_shadow_page(hpa);
-> > +
-> > +     return sp->tdp_mmu_page && sp->root_count;
-> > +}
-> > +
-> > +void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
-> > +{
-> > +     lockdep_assert_held(&kvm->mmu_lock);
-> > +
-> > +     WARN_ON(root->root_count);
-> > +     WARN_ON(!root->tdp_mmu_page);
-> > +
-> > +     list_del(&root->link);
-> > +
-> > +     free_page((unsigned long)root->spt);
-> > +     kmem_cache_free(mmu_page_header_cache, root);
-> > +}
-> > +
-> > +static void put_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
-> > +{
-> > +     if (kvm_mmu_put_root(root))
-> > +             kvm_tdp_mmu_free_root(kvm, root);
-> > +}
-> > +
-> > +static void get_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
-> > +{
-> > +     lockdep_assert_held(&kvm->mmu_lock);
-> > +
-> > +     kvm_mmu_get_root(root);
-> > +}
-> > +
-> > +static union kvm_mmu_page_role page_role_for_level(struct kvm_vcpu *vcpu,
-> > +                                                int level)
-> > +{
-> > +     union kvm_mmu_page_role role;
-> > +
-> > +     role = vcpu->arch.mmu->mmu_role.base;
-> > +     role.level = vcpu->arch.mmu->shadow_root_level;
->
-> role.level = level;
-> The role will be calculated for non root pages later.
+Hi Loic,
 
-Thank you for catching that Yu, that was definitely an error!
-I'm guessing this never showed up in my testing because I don't think
-the TDP MMU actually uses role.level for anything other than root
-pages.
-
->
-> > +     role.direct = true;
-> > +     role.gpte_is_8_bytes = true;
-> > +     role.access = ACC_ALL;
-> > +
-> > +     return role;
-> > +}
-> > +
-> > +static struct kvm_mmu_page *alloc_tdp_mmu_page(struct kvm_vcpu *vcpu, gfn_t gfn,
-> > +                                            int level)
-> > +{
-> > +     struct kvm_mmu_page *sp;
-> > +
-> > +     sp = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_page_header_cache);
-> > +     sp->spt = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_shadow_page_cache);
-> > +     set_page_private(virt_to_page(sp->spt), (unsigned long)sp);
-> > +
-> > +     sp->role.word = page_role_for_level(vcpu, level).word;
-> > +     sp->gfn = gfn;
-> > +     sp->tdp_mmu_page = true;
-> > +
-> > +     return sp;
-> > +}
-> > +
-> > +static struct kvm_mmu_page *get_tdp_mmu_vcpu_root(struct kvm_vcpu *vcpu)
-> > +{
-> > +     union kvm_mmu_page_role role;
-> > +     struct kvm *kvm = vcpu->kvm;
-> > +     struct kvm_mmu_page *root;
-> > +
-> > +     role = page_role_for_level(vcpu, vcpu->arch.mmu->shadow_root_level);
-> > +
-> > +     spin_lock(&kvm->mmu_lock);
-> > +
-> > +     /* Check for an existing root before allocating a new one. */
-> > +     for_each_tdp_mmu_root(kvm, root) {
-> > +             if (root->role.word == role.word) {
-> > +                     get_tdp_mmu_root(kvm, root);
-> > +                     spin_unlock(&kvm->mmu_lock);
-> > +                     return root;
-> > +             }
-> > +     }
-> > +
-> > +     root = alloc_tdp_mmu_page(vcpu, 0, vcpu->arch.mmu->shadow_root_level);
-> > +     root->root_count = 1;
-> > +
-> > +     list_add(&root->link, &kvm->arch.tdp_mmu_roots);
-> > +
-> > +     spin_unlock(&kvm->mmu_lock);
-> > +
-> > +     return root;
-> > +}
-> > +
-> > +hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
-> > +{
-> > +     struct kvm_mmu_page *root;
-> > +
-> > +     root = get_tdp_mmu_vcpu_root(vcpu);
-> > +     if (!root)
-> > +             return INVALID_PAGE;
-> > +
-> > +     return __pa(root->spt);
-> >  }
-> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> > index cd4a562a70e9a..ac0ef91294420 100644
-> > --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> > +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> > @@ -7,4 +7,9 @@
-> >
-> >  void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
-> >  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
-> > +
-> > +bool is_tdp_mmu_root(struct kvm *kvm, hpa_t root);
-> > +hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
-> > +void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root);
-> > +
-> >  #endif /* __KVM_X86_MMU_TDP_MMU_H */
-> > --
-> > 2.28.0.1011.ga647a8990f-goog
-> >
->
-> Thanks
-> Yu
+On 10/21/20 9:51 AM, Loic Poulain wrote:
+> On Wed, 21 Oct 2020 at 18:25, Manivannan Sadhasivam
+> <manivannan.sadhasivam@linaro.org> wrote:
+>>
+>> On Wed, Oct 21, 2020 at 05:43:14PM +0200, Loic Poulain wrote:
+>>> On Wed, 21 Oct 2020 at 17:27, Manivannan Sadhasivam <
+>>> manivannan.sadhasivam@linaro.org> wrote:
+>>>
+>>>> On Fri, Oct 16, 2020 at 09:04:14PM -0700, Hemant Kumar wrote:
+>>>>> Introduce mhi_get_free_desc_count() API to return number
+>>>>
+>>>
+>>> Would it not be a good idea to have naming aligned with other methods?
+>>> Like mhi_queue_num_free() or mhi_queue_no_free_elem...
+>>>
+>>
+>> 'queue_num_free' doesn't sound like getting the number of available
+>> descriptors...
+> 
+> Right, TBH, just wanted the function to start with mhi_queue since
+> it's about getting info about remaining size of the DL or UL 'virtual
+> queue'. But AFAIU, this is the number of available ring elements that
+> is returned here, not the number of transfer descriptors (that can be
+> composed of one or more ring elements), so maybe
+> mhi_queue_num_free_elements or something similar, I don't want to be
+mhi_get_free_desc_count is the number of TREs available which queue APIs 
+can use to queue an transfer ring element. My only concern is if we get 
+confused with the name mhi_queue_ part of as number of TREs queued ? 
+Transfer ring element is indeed a transfer descriptor.
+> picky here.
+> 
+> Regards,
+> Loic
+> 
+Thanks,
+Hemant
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
