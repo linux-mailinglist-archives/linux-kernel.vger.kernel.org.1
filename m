@@ -2,160 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343772950A1
+	by mail.lfdr.de (Postfix) with ESMTP id A6C0B2950A2
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444539AbgJUQVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        id S2444549AbgJUQV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444530AbgJUQVz (ORCPT
+        with ESMTP id S2444530AbgJUQV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:21:55 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FF5C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:21:55 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id f10so2357703otb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:21:55 -0700 (PDT)
+        Wed, 21 Oct 2020 12:21:56 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46481C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:21:54 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id ce10so4107409ejc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:21:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UddkOGHhdOnx8gO073FR4GFAl/3VCv5YzyVjZQV2kTY=;
-        b=RIn4Zs4JYb0ISiXDMhZlmVBOs1H92Pt/XfcOik/Zg/T/AiT59oDR6E6T5SDcjzTyRs
-         eAWYWSM4i+f7uWB7VRuSCm9Jrdq296pt5JTJS922HYjL88+A46XjTj3fpTl38Ep3XlBL
-         04L1LlzfVPY85rukqCmQ94emlE4UB9GxAGhkI=
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UI2P/yyao6EznjeZr1h9V5wwTm/lr2jsyR7CYvPpJn8=;
+        b=sGEe0ZSsBq2hxXtN4AppUO1Zi4qpE8rjaTwX9Wi5YMoUpfkKpWDeC8/ptxqAH7PVfT
+         W2Wm/iYiW8Gy1hphh3YxpoKfkJS4qpIFENQQtiX5j6O5Lu/vCGSyezztx/pWVwrbOR7y
+         FEsYm1MaFmx0ioASrEdPyTgGZ8i49rzkz3JDUnjItBHliozJJrO7da0ibDypAqBVKKik
+         fObm9XdOL1ZOsJRzednQvcOqJw1q34CsvIsayRX3amK+jvKt/S9StRra6V+I0s5WbUcj
+         9LJORutEbazY+hbuHPmEtbhKBdvVkBNksZgc9QFUMkpkc3O6XisHdQ3W0kl0fKWKi+4M
+         Wp/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UddkOGHhdOnx8gO073FR4GFAl/3VCv5YzyVjZQV2kTY=;
-        b=UhBUqziQiiMQDWsuX05uJYKPIJCEaPunJU9VQ6lcWOytVX5QlhGbk/h1nlgVH8mAjT
-         UTENJLu3lOjYAFtd/0KjddGwuy7irLEt++OSKBw0ocFXY1+/O8MBOFTAWMciIzTZPy4s
-         7tNuGuLXh13QRPDobEQR7QTLR5PGCQ8/p3pM86UuOZtrqS3vUjSTFr/wulANzZx37Akz
-         TbgZJVYjz/qIZ7bYDFgZXHS3UJvWn/9LGiehAQhAOk2CdX1WUTNE0TrVJYiAoUaFX9RL
-         k5WlV6WNtK3Zkr03cXPX6kEm50u8+E6+GrOcoHSDWDfo8pC6JTN3IvnyboxRnSxWF62T
-         ecJg==
-X-Gm-Message-State: AOAM533PMSGU9QpNN5tfDnybjHWj23r+6yd3HxpSYDe5pPL5AxDiQKTa
-        Q2HsEb5uXH1b8Y3NxO1Gn7Sy3JcEdSYRzDbs6kS/WY2EjeE=
-X-Google-Smtp-Source: ABdhPJyhDSe/eiZWRQHoq2OJ75BzNcjQUtJNhB808EgRv7a7Ztp1KxflWeSaTmjVrkIq6HE7s9hSEQtv61z3NhA52us=
-X-Received: by 2002:a05:6830:4033:: with SMTP id i19mr3357774ots.127.1603297314353;
- Wed, 21 Oct 2020 09:21:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UI2P/yyao6EznjeZr1h9V5wwTm/lr2jsyR7CYvPpJn8=;
+        b=pb76NKGXgiF8pUcZ0DYvCsrAwFJSSUCI4JxKsFfWCR4J2VthPMxAN2JKQ/VMZ0BAC4
+         FYiTWWX7u2EoUrgh4/n5WbG7Xh4923ubqwlWY619WsOAUBRSvdc3q5T6ZawrNOdf5pco
+         ckCruftyXHnDhrBGa+hUoVKwsPzYr//Q71bfPUvAzpygyXOr8Off3ymh0j0MhDs2Gili
+         gpUfzK8c8BVC9VvlPNPMjr62AYQ6A/vGJLTLfbAYLNn4c1dVdV+NzlxS6K3G3SD8NtYY
+         PCVWLZ3wHOWM7qknktJn/sav61xnnYvpYk1yMsDxK2uSuvfHDlbtqCN1FooBnPcHc1Lk
+         fUMA==
+X-Gm-Message-State: AOAM531UbLD76d3JUrNIVujwPWoyqOC3iDXMBPqL1/g2FOWbdTqMWivM
+        EmrvmkRzfLHn8g9rwEtcU4TjRg==
+X-Google-Smtp-Source: ABdhPJz01d9oIMCTPrSm5ZUKeD22XQbYSH9b+dNijavQFdQQWBxIif4CrZRFLBUmfLd4R+zYnk+Azg==
+X-Received: by 2002:a17:907:2089:: with SMTP id pv9mr4460227ejb.427.1603297312942;
+        Wed, 21 Oct 2020 09:21:52 -0700 (PDT)
+Received: from starbuck.lan (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.googlemail.com with ESMTPSA id 11sm2566667ejy.19.2020.10.21.09.21.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 09:21:52 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>
+Subject: [PATCH v2 0/3] clk: add api to get clk consumer from clk_hw
+Date:   Wed, 21 Oct 2020 18:21:44 +0200
+Message-Id: <20201021162147.563655-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20201021150458.GA139977@rlk>
-In-Reply-To: <20201021150458.GA139977@rlk>
-From:   David Riley <davidriley@chromium.org>
-Date:   Wed, 21 Oct 2020 09:21:43 -0700
-Message-ID: <CAASgrz2ZMBubM6Q8C0MD=TcCqAS62j_W4JQ4PzPjYEc3Mb6VaQ@mail.gmail.com>
-Subject: Re: [PATCH v2] tools/time: access /sys/kernel/debug/udelay_test
- before test
-To:     Hui Su <sh_def@163.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: David Riley <davidriley@chromium.org>
+This patchset a call in CCF to get "struct clk*" from "struct clk_hw*"
 
-On Wed, Oct 21, 2020 at 8:05 AM Hui Su <sh_def@163.com> wrote:
->
-> before(when i did not compile udelay_test.ko):
-> sh@ubuntu:~/workspace/compile/tools/time$ sudo ./udelay_test.sh
-> ./udelay_test.sh: line 25: /sys/kernel/debug/udelay_test: Permission denied
-> ./udelay_test.sh: line 26: /sys/kernel/debug/udelay_test: No such file or directory
-> ./udelay_test.sh: line 25: /sys/kernel/debug/udelay_test: Permission denied
-> ./udelay_test.sh: line 26: /sys/kernel/debug/udelay_test: No such file or directory
-> ...
-> about two hundreds lines.
->
-> we access '/sys/kernel/debug/udelay_test' the before starting the
-> udelay_test.
->
-> now(when i did not compile udelay_test.ko):
-> sh@ubuntu:~/workspace/linux-stable/tools/time$ sudo ./udelay_test.sh
-> modprobe: FATAL: Module udelay_test not found in directory /lib/modules/5.4.44
-> ERROR, can not access /sys/kernel/debug/udelay_test.
-> modprobe: FATAL: Module udelay_test not found.
->
-> ---
-> v1->v2: remove the debug_file_exist().
->
-> Signed-off-by: Hui Su <sh_def@163.com>
-> ---
->  tools/time/udelay_test.sh | 42 ++++++++++++++++++++++-----------------
->  1 file changed, 24 insertions(+), 18 deletions(-)
->
-> diff --git a/tools/time/udelay_test.sh b/tools/time/udelay_test.sh
-> index 6779d7e55d85..c8458d5b7fcd 100755
-> --- a/tools/time/udelay_test.sh
-> +++ b/tools/time/udelay_test.sh
-> @@ -12,10 +12,11 @@
->
->  MODULE_NAME=udelay_test
->  UDELAY_PATH=/sys/kernel/debug/udelay_test
-> +retcode=0
->
->  setup()
->  {
-> -       /sbin/modprobe -q $MODULE_NAME
-> +       /sbin/modprobe $MODULE_NAME
->         tmp_file=`mktemp`
->  }
->
-> @@ -31,29 +32,34 @@ cleanup()
->         if [ -f $tmp_file ]; then
->                 rm $tmp_file
->         fi
-> -       /sbin/modprobe -q -r $MODULE_NAME
-> +       /sbin/modprobe -r $MODULE_NAME
->  }
->
->  trap cleanup EXIT
->  setup
->
-> -# Delay for a variety of times.
-> -# 1..200, 200..500 (by 10), 500..2000 (by 100)
-> -for (( delay = 1; delay < 200; delay += 1 )); do
-> -       test_one $delay
-> -done
-> -for (( delay = 200; delay < 500; delay += 10 )); do
-> -       test_one $delay
-> -done
-> -for (( delay = 500; delay <= 2000; delay += 100 )); do
-> -       test_one $delay
-> -done
-> -
-> -# Search for failures
-> -count=`grep -c FAIL $tmp_file`
-> -if [ $? -eq "0" ]; then
-> -       echo "ERROR: $count delays failed to delay long enough"
-> +if [ ! -d "$UDELAY_PATH" ]; then
->         retcode=1
-> +       echo "ERROR, can not access $UDELAY_PATH."
-> +else
-> +       # Delay for a variety of times.
-> +       # 1..200, 200..500 (by 10), 500..2000 (by 100)
-> +       for (( delay = 1; delay < 200; delay += 1 )); do
-> +               test_one $delay
-> +       done
-> +       for (( delay = 200; delay < 500; delay += 10 )); do
-> +               test_one $delay
-> +       done
-> +       for (( delay = 500; delay <= 2000; delay += 100 )); do
-> +               test_one $delay
-> +       done
-> +
-> +       # Search for failures
-> +       count=`grep -c FAIL $tmp_file`
-> +       if [ $? -eq "0" ]; then
-> +               echo "ERROR: $count delays failed to delay long enough"
-> +               retcode=1
-> +       fi
->  fi
->
->  exit $retcode
-> --
-> 2.25.1
->
->
+Changes since v1: [0]
+* Add a con_id string to help keep track of the consumer
+* Add devm variant:
+ - Following our discussion on V1, I choose to have the dev as
+   argument as most devm function do. However, as Stephen pointed out
+   we don't expect this to differ from the one linked to clk_hw. In
+   this case a warning is thrown.
+* Add a first usage of this in the amlogic clock driver.
+
+[0]: https://lore.kernel.org/r/20200519170440.294601-1-jbrunet@baylibre.com
+
+Jerome Brunet (3):
+  clk: avoid devm_clk_release name clash
+  clk: add api to get clk consumer from clk_hw
+  clk: meson: g12: drop use of __clk_lookup()
+
+ drivers/clk/clk.c            | 73 +++++++++++++++++++++++++++++++++---
+ drivers/clk/meson/g12a.c     | 68 ++++++++++++++++-----------------
+ include/linux/clk-provider.h |  5 +++
+ 3 files changed, 104 insertions(+), 42 deletions(-)
+
+-- 
+2.25.4
+
