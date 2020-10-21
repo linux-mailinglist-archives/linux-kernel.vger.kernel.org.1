@@ -2,129 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD3829504D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BDA29504E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444320AbgJUQAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:00:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53060 "EHLO mail.kernel.org"
+        id S2444330AbgJUQAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:00:54 -0400
+Received: from mga14.intel.com ([192.55.52.115]:7416 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2444313AbgJUQAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:00:07 -0400
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 172202225F
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 16:00:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603296006;
-        bh=QoW86WhFQn8bUmhAjXtoqolAxbKLRswZa59WiwSGldo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=j/l41rnNU22CF8GwbzOOeLOd/CyxWz9S6ZQhXJFsUlClt/j/QzNYrT4UcJgRIqMxJ
-         fBpjgWyoTF/vnbrmmBS9Pl+lZKkVmkapAgwYtot4WVI1jPYcaFRWqyEU7HIrg4FslT
-         kvitJ66u3e3joasdU4eEHgerixiH9oBoM14dRdtc=
-Received: by mail-qv1-f49.google.com with SMTP id bl9so1346706qvb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:00:06 -0700 (PDT)
-X-Gm-Message-State: AOAM531eDZIpoJT7gAqyPXs+8/aMHRn4m4ZLMeciCfCaqZiJJJ4hB7ow
-        Ae03lgs3o+PfQCo/8v03JylfOGq7BdMlwPV5mbA=
-X-Google-Smtp-Source: ABdhPJyrcP2RxvXJZwS1rb6oe2/md7i5qoS4Dmvrwv7o/Fo8jHHIPWbwxWc5p3uNKu4NRpm+Inh9WVCV6cxQDpQga8M=
-X-Received: by 2002:a0c:f447:: with SMTP id h7mr2307199qvm.7.1603296005031;
- Wed, 21 Oct 2020 09:00:05 -0700 (PDT)
+        id S2444323AbgJUQAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 12:00:54 -0400
+IronPort-SDR: KA9Wh5MMkeeF4Im4wo8ONAnZBj1TLlV+C3PXRDtaJq/5618bpwfwrajJbjWx3UVg92xeckLsUS
+ bBn3assm+WNQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="166613549"
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="166613549"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 09:00:34 -0700
+IronPort-SDR: JGNosnvwsmzI1DYofw4J6jZHXntvyUgkpjmeFa2kSwx/b74Ou+Ko3gdw5TEFp+SzzV4CzZf30W
+ V/WiKWFXn8sg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="522790278"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 21 Oct 2020 09:00:34 -0700
+Received: from [10.249.231.46] (abudanko-mobl.ccr.corp.intel.com [10.249.231.46])
+        by linux.intel.com (Postfix) with ESMTP id ADDC5580720;
+        Wed, 21 Oct 2020 09:00:31 -0700 (PDT)
+Subject: [PATCH v2 05/15] perf session: introduce decompressor into trace
+ reader object
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <b3c73389-7b4c-89cd-423c-68b00fcc61c9@linux.intel.com>
+Date:   Wed, 21 Oct 2020 19:00:30 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <CGME20201008071639epcas5p465f13d992a25936ba63436baf1fb6f83@epcas5p4.samsung.com>
- <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
- <1602141333-17822-3-git-send-email-maninder1.s@samsung.com>
- <CAK8P3a2RYeNiTy9QmwFVKtFifXxWc9XfAT6ThPoSH9wGYsKGpA@mail.gmail.com>
- <CAK8P3a3eZjBVSuhv=Cx4aYC+E9tex+BbJH1b6YyMMief-mO7kQ@mail.gmail.com>
- <20201021124542.GL1551@shell.armlinux.org.uk> <20201021125740.GM1551@shell.armlinux.org.uk>
-In-Reply-To: <20201021125740.GM1551@shell.armlinux.org.uk>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 21 Oct 2020 17:59:48 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3s9JJpeBpH38utw9aA1VaEkcBqKEGtwcmoP1zS6xDj5Q@mail.gmail.com>
-Message-ID: <CAK8P3a3s9JJpeBpH38utw9aA1VaEkcBqKEGtwcmoP1zS6xDj5Q@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm: introduce IRQ stacks
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@kernel.org>, v.narang@samsung.com,
-        a.sahrawat@samsung.com, Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Maninder Singh <maninder1.s@samsung.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nathan Huckleberry <nhuck@google.com>,
-        Will Deacon <will@kernel.org>, Jian Cai <caij2003@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 2:57 PM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
-> On Wed, Oct 21, 2020 at 01:45:42PM +0100, Russell King - ARM Linux admin wrote:
-> > > > - define 'current' as 'this_cpu_read_stable(current_task);'
-> > > > - convert to CONFIG_THREAD_INFO_IN_TASK
-> >
-> > That means we need to also code that up in assembly - remember, we
-> > need to access thread_info from assembly code.
->
-> Note also that there is a circular dependency involved. If you make
-> thread_info accessible via per-cpu, then:
->
-> #ifndef __my_cpu_offset
-> #define __my_cpu_offset per_cpu_offset(raw_smp_processor_id())
-> #endif
-> #ifdef CONFIG_DEBUG_PREEMPT
-> #define my_cpu_offset per_cpu_offset(smp_processor_id())
-> #else
-> #define my_cpu_offset __my_cpu_offset
-> #endif
 
-Right, I had missed the fallback path using asm-generic/percpu.h
-that is used with CONFIG_SMP && CONFIG_CPU_V6
-Almost everything either uses fixed percpu data (on UP builds)
-or TPIDRPRW when building a v7-only or v6k/v7 kernel without
-v6 support.
+Introduce decompressor to trace reader object so that decompression
+could be executed on per trace file basis separately for every
+trace file located in trace directory.
 
-> smp_processor_id() ultimately ends up as raw_smp_processor_id() which
-> is:
->
-> #define raw_smp_processor_id() (current_thread_info()->cpu)
->
-> and if current_thread_info() itself involves reading from per-cpu data,
-> we end up recursing... infinitely.
->
-> This is why I said in the other thread:
->
-> "We don't do it because we don't have a separate register to be able
-> to store the thread_info pointer, and copying that lump between the
-> SVC and IRQ stack will add massively to IRQ latency, especially for
-> older machines."
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/perf/util/session.c | 4 +++-
+ tools/perf/util/session.h | 1 +
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-As discussed on IRC, I think it can still be done in one of these
-ways, though admittedly none of them are perfect:
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index 911b2dbcd0ac..6afc670fdf0c 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -44,6 +44,8 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+ 	u64 decomp_last_rem = 0;
+ 	size_t mmap_len, decomp_len = session->header.env.comp_mmap_len;
+ 	struct decomp *decomp, *decomp_last = session->decomp_last;
++	struct zstd_data *zstd_data = session->reader ?
++		&(session->reader->zstd_data) : &(session->zstd_data);
+ 
+ 	if (decomp_last) {
+ 		decomp_last_rem = decomp_last->size - decomp_last->head;
+@@ -71,7 +73,7 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+ 	src = (void *)event + sizeof(struct perf_record_compressed);
+ 	src_size = event->pack.header.size - sizeof(struct perf_record_compressed);
+ 
+-	decomp_size = zstd_decompress_stream(&(session->zstd_data), src, src_size,
++	decomp_size = zstd_decompress_stream(zstd_data, src, src_size,
+ 				&(decomp->data[decomp_last_rem]), decomp_len - decomp_last_rem);
+ 	if (!decomp_size) {
+ 		munmap(decomp, mmap_len);
+diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
+index abdb8518a81f..4fc9ccdf7970 100644
+--- a/tools/perf/util/session.h
++++ b/tools/perf/util/session.h
+@@ -42,6 +42,7 @@ struct reader {
+ 	u64		 data_size;
+ 	u64		 data_offset;
+ 	reader_cb_t	 process;
++	struct zstd_data zstd_data;
+ };
+ 
+ struct perf_session {
+-- 
+2.24.1
 
-a) add runtime patching for __my_cpu_offset() when
-  CONFIG_SMP_ON_UP is set. This adds complexity but avoids the
-  fallback for for SMP&&CPU_V6. It possibly also speeds up
-  running on single-cpu systems if the TPIDRPRW access adds
-  any measurable runtime overhead compared to patching it out.
 
-b) If irq stacks are left as a compile-time option, that could be
-  made conditional on "!(SMP&&CPU_V6)". Presumably very
-  few people still run kernels built that way any more. The only
-  supported platforms are i.MX3, OMAP2 and Realview-eb, all of
-  which are fairly uncommon these days and would usually
-  run v6-only non-SMP kernels.
-
-c) If we decide that we no longer care about that configuration
-  at all, we could decide to just make SMP depend on !CPU_V6,
-  and possibly kill off the entire SMP_ON_UP patching logic.
-  I suspect we still want to keep SMP_ON_UP for performance
-  reasons, but I don't know how significant they are to start with.
-
-       Arnd
