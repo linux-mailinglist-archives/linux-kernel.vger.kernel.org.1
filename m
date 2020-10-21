@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD0129477A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 06:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2752829477E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 06:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440234AbgJUEo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 00:44:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440223AbgJUEo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 00:44:26 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4792220870;
-        Wed, 21 Oct 2020 04:44:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603255465;
-        bh=NSD15rPO3YaMhGoJDEWcp2TNY4YumkkVq4v93a7kYbQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pLNhDJKWCSBY93whNOy21YCe8QrEvk+XkjDh7CQW0aWQuGVOkANEbhDX/C1O3QCpI
-         hvrYzTl4IgOqcE3pjjhmXII7NhsF6TrETV8pxZ7wSSI3QmUTeoWCIpaf7eA04intdN
-         zwCIXQm9N/J1GsvjZ1Plh3SgHIQ0Y6ywNdsMIDcA=
-Date:   Tue, 20 Oct 2020 21:44:23 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Satya Tangirala <satyat@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Mike Snitzer <snitzer@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH v2 1/4] block: keyslot-manager: Introduce passthrough
- keyslot manager
-Message-ID: <20201021044423.GB3939@sol.localdomain>
-References: <20201015214632.41951-1-satyat@google.com>
- <20201015214632.41951-2-satyat@google.com>
- <20201016072044.GB14885@infradead.org>
+        id S2440261AbgJUEva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 00:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440253AbgJUEva (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 00:51:30 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF23C0613CE;
+        Tue, 20 Oct 2020 21:51:30 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 188so1114764qkk.12;
+        Tue, 20 Oct 2020 21:51:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7S+Ge/DxkH9CUYM5ngdE9w4BnrCUgNRtxj8SJF7Zxcs=;
+        b=S1A9iVzO/2CwZAsuuw7v7Aqajmblbv1ifw6clkwdsI1ijOdOXrZFuNSbOtNdwJ/Jr4
+         mM6fvJs1Hig3zUMTj+a8yxATwbVR5KgdPHEo3vre+qW6OUYbKwwGs4IDwei77DacrDM5
+         29K2oTYfrsFgGi0p6JCTnfqW2uwtlmKWz2kHw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7S+Ge/DxkH9CUYM5ngdE9w4BnrCUgNRtxj8SJF7Zxcs=;
+        b=EuoDIkSySp8e5kjUCRJ1n6TNQIRtf5bUoaJum0bzi0FkoW4mn9l8fc/o15LWpDdWDI
+         /wppV6iMwrCoY3Iw+5qAew1XQWgxo68cTPcZ3Bmi6EV5lEWJoOLWpLoEM6iJtFuGHi/Z
+         1Zg19wIqAnMaEM1xq1hu8w201Ub5sbg4unRkBYIWWKe++6UyFX+vaG4fz4oCCcGFBmGN
+         5kAi29/8AncygxFGswKbx/ki1wwJDytD8IfSNaFqVymV3xmXwIkb6HijET0xmhoiEvFl
+         Y7azKHQRONIhLsmfPn6hgxQAWC1CXxUpJWWRORU2opeKyU9JZA89553PaiALeaShGNoY
+         4yug==
+X-Gm-Message-State: AOAM532vc0yff+gQc7XkQJEll2ygev8/Uuvs+IlgyoSy9JxlRspoPRll
+        zDFp8SJ6th8P035ZLyrDDWnvfaG8dUvMcBa7SvE=
+X-Google-Smtp-Source: ABdhPJyOqiPlkiXcnTLhnLMYTXkl6P2IifPhUM7Ht1EKmmNBup3yA5+KgVfY5MS0R33Hwo6up58TM91d0R+UyZiMm7E=
+X-Received: by 2002:a05:620a:1e7:: with SMTP id x7mr1512189qkn.465.1603255889394;
+ Tue, 20 Oct 2020 21:51:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016072044.GB14885@infradead.org>
+References: <20201016043513.119841-1-andrew@aj.id.au>
+In-Reply-To: <20201016043513.119841-1-andrew@aj.id.au>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 21 Oct 2020 04:51:17 +0000
+Message-ID: <CACPK8Xf1=YEApovVOCbE5dkM3uK0Lsx2iXnVK6nK3mx=+q4jpw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] ARM: dts: Enable ramoops for Rainier and Tacoma
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 08:20:44AM +0100, Christoph Hellwig wrote:
-> And this just validates my argument that calling the inline crypto work
-> directly from the block layer instead of just down below in blk-mq was
-> wrong.  We should not require any support from stacking drivers at the
-> keyslot manager level.
+On Fri, 16 Oct 2020 at 04:36, Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+> Hi,
+>
+> We're looking to improve our crash data capture for the BMC on some IBM
+> platforms. This small series enables ramoops for Rainier and Tacoma.
+>
+> Please review.
 
-I'm not sure what you're referring to here; could you clarify?
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-It's true that device-mapper devices don't need the actual keyslot management.
-But they do need the ability to expose crypto capabilities as well as a key
-eviction function.  And those are currently handled by
-"struct blk_keyslot_manager".  Hence the need for a "passthrough keyslot
-manager" that does those other things but not the actual keyslot management.
-
-FWIW, I suggested splitting these up, but you disagreed and said you wanted the
-crypto capabilities to remain part of the blk_keyslot_manager
-(https://lkml.kernel.org/linux-block/20200327170047.GA24682@infradead.org/).
-If you've now changed your mind, please be clear about it.
-
-- Eric
+>
+> Andrew
+>
+> Andrew Jeffery (2):
+>   ARM: dts: rainier: Add reserved memory for ramoops
+>   ARM: dts: tacoma: Add reserved memory for ramoops
+>
+>  arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 9 +++++++++
+>  arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts  | 9 +++++++++
+>  2 files changed, 18 insertions(+)
+>
+> --
+> 2.25.1
+>
