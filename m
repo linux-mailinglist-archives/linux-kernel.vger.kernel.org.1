@@ -2,222 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08ADB295135
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726D6295138
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503267AbgJUQ6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503258AbgJUQ6i (ORCPT
+        id S2503286AbgJUQ6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:58:47 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:39322 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503273AbgJUQ6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:58:38 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D667C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:58:36 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id g7so3156734ilr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:58:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=qgxb83JHD/Tk385y5UPYGzutMkiNL5jV5+4Vfni0TYw=;
-        b=EWYTm/LYwVJy9ysDsTaB/HXzK3tXvOACX3FKHBKv0jTIRE4/y0p7cIpHe7Rfy9EIRy
-         qFvLUvg5XMaGPWna4ktpQJKC8yzP1nGqUqg7ti7R+h6K/+BDvynwZJAP81J3s8ANs9UA
-         eWacgETIvpOM5hzVXAYu7gpInggAAHkU3UtmwFnLq3YJaM8t8Yz9dY6D4FFlFt9AMheO
-         Trll6z4bMfztApf/+1hY6XctG5k8hacRCA9A7KTIuBBQSIefIWKrBjhhBQT2G3sEfP4N
-         VOzq7g0OfkJQ+WMl+VEWaQDd98NSPmfOv4bowSLRglgMIsdHZuLk3t5rmYT292RQTbML
-         xiwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=qgxb83JHD/Tk385y5UPYGzutMkiNL5jV5+4Vfni0TYw=;
-        b=kEomTDkCfTl1v2C3NkUFBFLzOcUmVg1TFGb7p338uWhtKCU/yteqXn4a99/dXDNxN9
-         0jRy73A3mWR1PpxBD+DOgOlRHIIclehAnwSELKR+i24Ix5iZMEF7j8ZBkGNFizETPD8v
-         3v7raHpM9lZdaOLhfMGS2V5kkL6zBkZWRmibFWXcmmsiDdtsIMc9AR9fbirvKwfXp6Ip
-         dnN6+poe7RnuBNSS0agEfdOGAteWNmBcnXxTMDTm+9on0HkxXhfQHSgbK88PVmkWoDaA
-         BC5UQhLRWtz5j7Dn2gHPlEsS9/vpRVnfb6DM8YSAEw6fLSaQrLwfZD3i8cMJqrxwoGlX
-         SpmQ==
-X-Gm-Message-State: AOAM533GF5Pf1uebYTrQsZpO3FJNSYixDU3idzs43+u55v+sKnhaZ4rR
-        uiOaV0rbbtXl5Hugv/FER7zuhVyPquRbASWA/8CSXIAFKY346qpl
-X-Google-Smtp-Source: ABdhPJyFZf3mbpRcwfdOpKB1Uy/3lvfEtljL64okW2zfHcwy8Lm6mQskbjaISDXF6IQ0hUcLX83Ec88t9FvduMFEJwI=
-X-Received: by 2002:a92:9944:: with SMTP id p65mr3095346ili.127.1603299515027;
- Wed, 21 Oct 2020 09:58:35 -0700 (PDT)
+        Wed, 21 Oct 2020 12:58:42 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09LGssuE087714;
+        Wed, 21 Oct 2020 16:58:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=St6NbUuetB4WWahignxQ8U4PRoP0SojmI+uST7Q/AiQ=;
+ b=zkgyUFyh879JxQkM0hgpKjbPDQIMYy3pyZVIj98XKui70FhOOzzclZrN5NNyxQtl4Khy
+ 2qulsexTFlyVco9x8KNR3L9hnyEhJ08hTKFR+TEJGFH0EEfyDSSWbTAZcKMDdKYxazy/
+ vVn9Z8GVxbC+B0nuR2brqgPo30zTUClFFbni4LBB4RZnYZkCmo1njxLTBPSbxb+6ZMom
+ dt2f7kmmpgnU9NZ1Bi8BGnsU8p3BGu44xDC+MBHOShH9J/+FBZvr+j05xHRuO4+yf/OQ
+ WJChPtdEdrfmTAMWRoprfFzESMUf/cj0PkgunpFDw5jlfdyN1YR5MF3oQk72ceDtAudg tQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 347p4b1rwd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 21 Oct 2020 16:58:29 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09LGte6e125398;
+        Wed, 21 Oct 2020 16:58:29 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 348agyw3k3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Oct 2020 16:58:28 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09LGwQhU023106;
+        Wed, 21 Oct 2020 16:58:26 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 21 Oct 2020 09:58:26 -0700
+Subject: Re: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at
+ mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
+To:     David Hildenbrand <david@redhat.com>,
+        Michal Privoznik <mprivozn@redhat.com>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Tejun Heo <tj@kernel.org>
+References: <c1ea7548-622c-eda7-66f4-e4ae5b6ee8fc@redhat.com>
+ <563d1eef-b780-835a-ebf0-88ae111b20c2@redhat.com>
+ <CAHS8izPEHZunoeXYS5ONfRoSRMpC7DQwtpjJ8g4nXiddTfNoaA@mail.gmail.com>
+ <65a1946f-dbf9-5767-5b51-9c1b786051d1@redhat.com>
+ <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
+ <c78634ee-0d6f-c98c-3c2a-8cb500c0ae47@oracle.com>
+ <b24380ad-b87c-a3a1-d25e-ee30c10ed0d2@redhat.com>
+ <312246f4-4e5f-1425-1bc2-1b356db0fbad@oracle.com>
+ <df406c04-b0f4-367f-d675-87e0231500d0@redhat.com>
+ <9ad697d7-ed64-24f3-17cf-fa8dbbdcf86a@redhat.com>
+ <bcbe71c9-f6a4-be19-329c-2fb0b675ae89@redhat.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <be1e53c3-262c-e6f5-d68b-ab41c40d11ac@oracle.com>
+Date:   Wed, 21 Oct 2020 09:58:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 21 Oct 2020 22:28:23 +0530
-Message-ID: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
-Subject: mmstress[1309]: segfault at 7f3d71a36ee8 ip 00007f3d77132bdf sp
- 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux-m68k@lists.linux-m68k.org, X86 ML <x86@kernel.org>,
-        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, kasan-dev@googlegroups.com
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        zenglg.jy@cn.fujitsu.com, Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <bcbe71c9-f6a4-be19-329c-2fb0b675ae89@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9780 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010210123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9780 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ clxscore=1015 malwarescore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010210123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LTP mm mtest05 (mmstress), mtest06_3 and mallocstress01 (mallocstress) tested on
-x86 KASAN enabled build. But tests are getting PASS on Non KASAN builds.
-This regression started happening from next-20201015 nowards
+> On 21.10.20 15:11, David Hildenbrand wrote:
+>> On 21.10.20 14:57, Michal Privoznik wrote:
+>>> On 10/21/20 5:35 AM, Mike Kravetz wrote:
+>>>> On 10/20/20 6:38 AM, David Hildenbrand wrote:
+>>>>
+>>>> It would be good if Mina (at least) would look these over.  Would also
+>>>> be interesting to know if these fixes address the bug seen with the qemu
+>>>> use case.
+>>>>
+>>>> I'm still doing more testing and code inspection to look for other issues.
+>>>>
+...
+...
+>>>
+>>> I've applied, rebuilt and tested, but unfortunately I still hit the problem:
+>>> [ 6472.719047] ------------[ cut here ]------------
+>>> [ 6472.719052] WARNING: CPU: 6 PID: 11773 at mm/page_counter.c:57 
+...
+...
+>>
+>> Agreed, same over here. :(
+>>
+> 
+> I *think* the following on top makes it fly
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 67fc6383995b..5cf7f6a6c1a6 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -656,6 +656,9 @@ static long region_del(struct resv_map *resv, long
+> f, long t)
+> 
+>                         del += t - f;
+> 
+> +                       hugetlb_cgroup_uncharge_file_region(
+> +                               resv, rg, t - f);
+> +
+>                         /* New entry for end of split region */
+>                         nrg->from = t;
+>                         nrg->to = rg->to;
+> @@ -667,9 +670,6 @@ static long region_del(struct resv_map *resv, long
+> f, long t)
+>                         /* Original entry is trimmed */
+>                         rg->to = f;
+> 
+> -                       hugetlb_cgroup_uncharge_file_region(
+> -                               resv, rg, nrg->to - nrg->from);
+> -
+>                         list_add(&nrg->link, &rg->link);
+>                         nrg = NULL;
+>                         break;
+> 
+> 
 
-There are few more regression on linux next,
-  ltp-cve-tests:
-    * cve-2015-7550
-  ltp-math-tests:
-    * float_bessel
-    * float_exp_log
-    * float_iperb
-    * float_power
-    * float_trigo
-  ltp-mm-tests:
-    * mallocstress01
-    * mtest05
-    * mtest06_3
-  ltp-syscalls-tests:
-    * clone08
-    * clone301
-    * fcntl34
-    * fcntl34_64
-    * fcntl36
-    * fcntl36_64
-    * keyctl02
-    * rt_tgsigqueueinfo01
+Thanks, yes that certainly does look like a bug in that code.
 
-metadata:
-  git branch: master
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git describe: next-20201015
-  kernel-config:
-https://builds.tuxbuild.com/SCI7Xyjb7V2NbfQ2lbKBZw/kernel.config
+Does that resolve the issue with quemu?
 
-steps to reproduce:
-  # boot x86_64 with KASAN enabled kernel and run tests
-  # cd /opt/ltp/testcases/bin
-  # ./mmstress
-  # ./mmap3 -x 0.002 -p
-  # ./mallocstress
-
-mtest05  (mmstress) :
---------------------
-mmstress    0  TINFO  :  run mmstress -h for all options
-mmstress    0  TINFO  :  test1: Test case tests the race condition
-between simultaneous read faults in the same address space.
-[  279.469207] mmstress[1309]: segfault at 7f3d71a36ee8 ip
-00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in
-libc-2.27.so[7f3d77058000+1aa000]
-[  279.469305] audit: type=1701 audit(1602818315.656:3):
-auid=4294967295 uid=0 gid=0 ses=4294967295 subj=kernel pid=1307
-comm=\"mmstress\" exe=\"/opt/ltp/testcases/bin/mmstress\" sig=11 res=1
-[  279.481636] Code: 2d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f
-84 00 00 00 00 00 0f 1f 44 00 00 b8 18 00 00 00 0f 05 48 3d 01 f0 ff
-ff 73 01 <c3> 48 8b 0d 91 22 2d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e
-0f 1f
-[  279.498212] mmstress[1311]: segfault at 7f3d70a34ee8 ip
-00007f3d77132bdf sp 00007f3d70a34ee8 error 4 in
-libc-2.27.so[7f3d77058000+1aa000]
-[  279.516839] Code: 2d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f
-84 00 00 00 00 00 0f 1f 44 00 00 b8 18 00 00 00 0f 05 48 3d 01 f0 ff
-ff 73 01 <c3> 48 8b 0d 91 22 2d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e
-0f 1f
-tst_test.c:1246: INFO: Timeout per run is 0h 15m 00s
-tst_test.c:1246: INFO: Timeout per run is 0h 09m 00s
-tst_test.c:1291: BROK: Test killed by SIGBUS!
-
-mtest06_3 (mmap3 -x 0.002 -p) :
--------------------------------
-mmap3.c:154: INFO: Seed 22
-mmap3.c:155: INFO: Number of loops 1000
-mmap3.c:156: INFO: Number of threads 40
-mmap3.c:157: INFO: MAP[  286.657788] mmap3[1350]: segfault at
-7f12179d4680 ip 00007f121859951d sp 00007f12179d1e10 error 6 in
-libpthread-2.27.so[7f1218589000+19000]
-_PRIVATE = 1
-mm[  286.671184] Code: c4 10 5b 5d 41 5c c3 66 0f 1f 44 00 00 48 8b 15
-99 8a 20 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 48 8b 15 85 8a 20
-00 f7 d8 <64> 89 02 48 c7 c0 ff ff ff ff eb b6 0f 1f 80 00 00 00 00 b8
-01 00
-[  286.677386] audit: type=1701 audit(1602818322.844:6):
-auid=4294967295 uid=0 gid=0 ses=4294967295 subj=kernel pid=1348
-comm=\"mmap3\" exe=\"/opt/ltp/testcases/bin/mmap3\" sig=11 res=1
-ap3.c:158: INFO: Execution time 0.002000H
-
-mallocstress01 (mallocstress) :
-------------------------------
-pid[1496]: shmat_rd_wr(): shmget():success got segment id 32830
-pid[1496]: do_shmat_shmadt(): got shmat address = 0x7f301eae9000
-pid[1496]: shmat_rd_wr(): shmget():success got segment id 328[
-291.851376] mallocstress[1502]: segfault at 0 ip 0000000000000000 sp
-00007f80dea3ec50 error 14
-30
-pid[1496]: d[  291.851466] mallocstress[1507]: segfault at
-7f80dc239c98 ip 00007f80df2bf81c sp 00007f80dc239c98 error 4
-o_shmat_shmadt()[  291.851485] mallocstress[1505]: segfault at
-7f80dd23bc38 ip 00007f80df33fe93 sp 00007f80dd23bc38 error 4
-[  291.851490] Code: 00 00 00 00 0f 1f 00 41 52 52 4d 31 d2 ba 02 00
-00 00 be 80 00 00 00 39 d0 75 07 b8 ca 00 00 00 0f 05 89 d0 87 07 85
-c0 75 f1 <5a> 41 5a c3 66 0f 1f 84 00 00 00 00 00 56 52 c7 07 00 00 00
-00 be
-: got shmat addr[  291.851565] audit: type=1701
-audit(1602818328.038:7): auid=4294967295 uid=0 gid=0 ses=4294967295
-subj=kernel pid=1500 comm=\"mallocstress\"
-exe=\"/opt/ltp/testcases/bin/mallocstress\" sig=11 res=1
-[  291.852984] mallocstress[1504]: segfault at 7f80dda3cc38 ip
-00007f80df33fe93 sp 00007f80dda3cc38 error 4
-ess = 0x7f301e85[  291.852988] Code: 00 00 00 00 0f 1f 00 41 52 52 4d
-31 d2 ba 02 00 00 00 be 80 00 00 00 39 d0 75 07 b8 ca 00 00 00 0f 05
-89 d0 87 07 85 c0 75 f1 <5a> 41 5a c3 66 0f 1f 84 00 00 00 00 00 56 52
-c7 07 00 00 00 00 be
-[  291.853045] audit: type=1701 audit(1602818328.040:8):
-auid=4294967295 uid=0 gid=0 ses=4294967295 subj=kernel pid=1500
-comm=\"mallocstress\" exe=\"/opt/ltp/testcases/bin/mallocstress\"
-sig=11 res=1
-5000
-tst_test.c[  291.860373] Code: Unable to access opcode bytes at RIP
-0xffffffffffffffd6.
-[  291.860453] mallocstress[1506]: segfault at 7f80dca3ac98 ip
-00007f80df2bf81c sp 00007f80dca3ac98 error 4
-:1246: INFO: Tim[  291.860654] audit: type=1701
-audit(1602818328.047:9): auid=4294967295 uid=0 gid=0 ses=4294967295
-subj=kernel pid=1500 comm=\"mallocstress\"
-exe=\"/opt/ltp/testcases/bin/mallocstress\" sig=11 res=1
-[  291.871350]
-eout per run is [  291.871397] mallocstress[1501]: segfault at 0 ip
-0000000000000000 sp 00007f80df23fc50 error 14
-[  291.871401] Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-0h 30m 00s
-[  291.871467] audit: type=1701 audit(1602818328.058:10):
-auid=4294967295 uid=0 gid=0 ses=4294967295 subj=kernel pid=1500
-comm=\"mallocstress\" exe=\"/opt/ltp/testcases/bin/mallocstress\"
-sig=11 res=1
-[  291.882113]  in libc-2.27.so[7f80df241000+1aa000]
-[  291.900984] Code: ff 48 85 c0 75 d8 0f 1f 84 00 00 00 00 00 8b 35
-26 11 33 00 48 83 c1 10 85 f6 0f 85 42 01 00 00 48 81 c4 88 00 00 00
-48 89 c8 <5b> 5d 41 5c 41 5d 41 5e 41 5f c3 66 0f 1f 84 00 00 00 00 00
-4c 8b
-[  291.919351] Code: ff 48 85 c0 75 d8 0f 1f 84 00 00 00 00 00 8b 35
-26 11 33 00 48 83 c1 10 85 f6 0f 85 42 01 00 00 48 81 c4 88 00 00 00
-48 89 c8 <5b> 5d 41 5c 41 5d 41 5e 41 5f c3 66 0f 1f 84 00 00 00 00 00
-4c 8b
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-full test log link,
-https://lkft.validation.linaro.org/scheduler/job/1844090
-
+I want to do a little more testing/research before sending a patch later
+today.
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+Mike Kravetz
