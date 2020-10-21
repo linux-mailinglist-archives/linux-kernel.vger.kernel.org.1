@@ -2,97 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E334295373
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCE9295375
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505290AbgJUU0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 16:26:05 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:43714 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504936AbgJUU0D (ORCPT
+        id S2505303AbgJUU2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 16:28:08 -0400
+Received: from mailoutvs41.siol.net ([185.57.226.232]:50333 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2438637AbgJUU2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 16:26:03 -0400
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.491)
- id 209d3efdcc2be77e; Wed, 21 Oct 2020 22:26:00 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        viresh.kumar@linaro.org, srinivas.pandruvada@linux.intel.com
-Subject: Re: [PATCH] sched/fair: check for idle core
-Date:   Wed, 21 Oct 2020 22:25:59 +0200
-Message-ID: <2376963.UiH3HBYXtl@kreacher>
-In-Reply-To: <alpine.DEB.2.22.394.2010212147230.8475@hadrien>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr> <20581608.8Dxr8OdOFj@kreacher> <alpine.DEB.2.22.394.2010212147230.8475@hadrien>
+        Wed, 21 Oct 2020 16:28:07 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Zimbra) with ESMTP id 72205527E38;
+        Wed, 21 Oct 2020 22:28:04 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at psrvmta12.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta12.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 6EpMvPOddic6; Wed, 21 Oct 2020 22:28:04 +0200 (CEST)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Zimbra) with ESMTPS id 1F8D0527E43;
+        Wed, 21 Oct 2020 22:28:04 +0200 (CEST)
+Received: from kista.localdomain (cpe1-5-97.cable.triera.net [213.161.5.97])
+        (Authenticated sender: 031275009)
+        by mail.siol.net (Zimbra) with ESMTPSA id 5A2AD527E38;
+        Wed, 21 Oct 2020 22:28:03 +0200 (CEST)
+From:   Jernej Skrabec <jernej.skrabec@siol.net>
+To:     mripard@kernel.org, paul.kocialkowski@bootlin.com
+Cc:     mchehab@kernel.org, wens@csie.org, ezequiel@collabora.com,
+        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: cedrus: h264: Fix check for presence of scaling matrix
+Date:   Wed, 21 Oct 2020 22:33:25 +0200
+Message-Id: <20201021203325.543189-1-jernej.skrabec@siol.net>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, October 21, 2020 9:47:51 PM CEST Julia Lawall wrote:
-> 
-> On Wed, 21 Oct 2020, Rafael J. Wysocki wrote:
-> 
-> > On Wednesday, October 21, 2020 2:42:20 PM CEST Julia Lawall wrote:
-> > >
-> > > On Wed, 21 Oct 2020, Peter Zijlstra wrote:
-> > >
-> > > > On Wed, Oct 21, 2020 at 01:56:55PM +0200, Julia Lawall wrote:
-> > > > > Prior to 5.8, my machine was using intel_pstate and had few background
-> > > > > tasks.  Thus the problem wasn't visible in practice.  Starting with 5.8
-> > > > > the kernel decided that intel_cpufreq would be more appropriate, which
-> > > > > introduced kworkers every 0.004 seconds on all cores.
-> > > >
-> > > > That still doesn't make any sense. Are you running the legacy on-demand
-> > > > thing or something?
-> > > >
-> > > > Rafael, Srinivas, Viresh, how come it defaults to that?
-> > >
-> > > The relevant commits are 33aa46f252c7, and 39a188b88332 that fixes a small
-> > > bug.  I have a Intel(R) Xeon(R) CPU E7-8870 v4 @ 2.10GHz that does not
-> > > have the HWP feature, even though the cores seemed to be able to change
-> > > their frequencies at the hardware level.
-> >
-> > That's in the range of "turbo" P-states (if a P-state above a certain threshold
-> > is requested by the governor, the processor has a license to choose P-states
-> > in the range above this threshold by itself).
-> 
-> Sorry, but I don't understand this answer at all.
+If scaling matrix control is present, VPU should not use default matrix.
+Fix that.
 
-Well, sorry about that and let me rephrase then.
+Fixes: b3a23db0e2f8 ("media: cedrus: Use H264_SCALING_MATRIX only when re=
+quired")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+---
+ drivers/staging/media/sunxi/cedrus/cedrus_h264.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Contemporary CPUs have two ranges of P-states, the so called "guaranteed
-performance" range and the "turbo" range.
-
-In the "guaranteed performance" range the CPU runs in the P-state requested
-by the governor, unless a higher P-state has been requested for another CPU in
-its frequency domain (usually covering the entire processor package) , in which
-case that higher P-state will be used (the effective P-state for all CPUs in the
-frequency domain is the maximum of all P-states requested for individual CPUs).
-
-However, if the governor requests a P-state from the "turbo" range, the
-processor is not required to take that request literally and the PM unit in it may
-override the governor's choice and cause the CPU to run in a different P-state
-(also from the "turbo" range), even if lower P-states have been requested for
-the other CPUs in the processor package.
-
-This is also explained in Documentation/admin-guide/pm/intel_pstate.rst (in the
-Turbo P-states Support section), in more detail and hopefully more clearly.
-
-Cheers!
-
-
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/s=
+taging/media/sunxi/cedrus/cedrus_h264.c
+index 28319351e909..781c84a9b1b7 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
+@@ -446,7 +446,7 @@ static void cedrus_set_params(struct cedrus_ctx *ctx,
+ 	reg |=3D (pps->second_chroma_qp_index_offset & 0x3f) << 16;
+ 	reg |=3D (pps->chroma_qp_index_offset & 0x3f) << 8;
+ 	reg |=3D (pps->pic_init_qp_minus26 + 26 + slice->slice_qp_delta) & 0x3f=
+;
+-	if (pps->flags & V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT)
++	if (!(pps->flags & V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT))
+ 		reg |=3D VE_H264_SHS_QP_SCALING_MATRIX_DEFAULT;
+ 	cedrus_write(dev, VE_H264_SHS_QP, reg);
+=20
+--=20
+2.29.0
 
