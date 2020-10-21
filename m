@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACD72949DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 10:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139B92949D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 10:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502446AbgJUI6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 04:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41474 "EHLO
+        id S2502367AbgJUI6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 04:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502366AbgJUI5V (ORCPT
+        with ESMTP id S2502374AbgJUI5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 04:57:21 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B74C0613E1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 01:57:21 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h7so2131291wre.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 01:57:21 -0700 (PDT)
+        Wed, 21 Oct 2020 04:57:23 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98875C0613E3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 01:57:22 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id j7so2058619wrt.9
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 01:57:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7XJE+hSH/S5sf+J2AcmYCFMIcTxnQzpOZqEdbmMuzFE=;
-        b=GUK8bAu/rOwhstjfCCL4jyz79EWKlxKCEPzbQk67yqQgL5JdMMK9qYFAwYpDisTw7I
-         i418204vlPkRGtUhsDK0/5TGt4bPzoR91GVgS9OWMA2nj4HmDeVE9XWPk7FPp7l7XoFa
-         ZYmkpZjMTP6Ea3nY9tfKU2e09YncWgauHxbSA=
+        bh=uPFBW3zdBbgXKQwmFhj6n2htyRlDiIM2JKOjMDR2Svk=;
+        b=Q5xIQ5ZZYYOT58QTfrI5br9Ppx/bLZ105j8P0fIicibYOu5IC1Sg/+iyIB7NDvjNKa
+         v8dXdU35mjbOyyP8u0IJ7eEZ+vL/X1lNG63n9af15UXY4ydu5XizX8BQwljv+vmiyhWM
+         HFmJ5amWKsGB1BdrFdTO0WHgPqyFGMOuvguGg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7XJE+hSH/S5sf+J2AcmYCFMIcTxnQzpOZqEdbmMuzFE=;
-        b=kKqjkHU8Rhjla/wPECVsIsXG3S4ea9lo1GFClGWWleoRbghtjaTvbBpiqYYSdLMQSB
-         RnHymqmdrfmwG/vzCwAbstQffObVMRPFvxj9aZIEjmBKRdTpS2VgWv8Vj1NoQJG+9uOr
-         ualiniBsBRDCHKcSttDB2sEPV+Eu5XuNF4OZyV8BEflaefV2nGhzvHfAj1d1GkJpHUg2
-         YPmywawvMPhaMNxkHngVZRyeRfcBMeawWlKjd9M1VLNhWDySxBkJCweUu1B4N9N0tOU8
-         4Lvz7ZL5E9ftwOeVej7jD7p8AFLZe3uq7hd46yvdp/8kj4kejNHb3inykAF2asMz4mt+
-         RyJw==
-X-Gm-Message-State: AOAM530ic2p6Q7qgZtENKnsV3kBCtmCRqc0jOzXMw77OAkwz+raXayEa
-        /ADyD8uW/SoWrhemALcWZkJYeQ==
-X-Google-Smtp-Source: ABdhPJx37Cjmlb4fgq/grqKCCp37y8t5Mz28eOZMNIB2vWtdgu/4b448hmjy5S8hmkcygKAt/hypYw==
-X-Received: by 2002:a5d:5009:: with SMTP id e9mr3539688wrt.104.1603270640046;
-        Wed, 21 Oct 2020 01:57:20 -0700 (PDT)
+        bh=uPFBW3zdBbgXKQwmFhj6n2htyRlDiIM2JKOjMDR2Svk=;
+        b=oG77RssesO8Ezsu0/NWXDQJCKUQJNNDqtzXKEC8kTo4xuClH2SGueqz101rMRP7f6r
+         E0BC+Yjfdp/lbabAoX81NWJb+5nFkg0gOtblKPZd0aL4pXkYBrdxNhf8Julh5ESlDZPH
+         uDZas78DH0kqVv87IUPhH9vEAEeiJ13Ya9PylkRlRFJl3uS1BvFTSbdfMFwbNpKNDJh4
+         F8vEyr4L7ifhBMA91AomMFVWwRVARgIMOPu9TBPmT9syeu8nvFbCFT9njyhwZaTJxqB+
+         VEr71IbS6HJllW1T6NLks1Qsu3vtnq/yN+v76dw4wZz+T0U7Pwe4CQ4OQF1BeM26tYcC
+         PXXQ==
+X-Gm-Message-State: AOAM5321sJ6l3gmrxWoSfaixSaYGoLt8uhVNMgHXoWuMSrMiaUIIOefk
+        t1814AHPm5GP1Oz+FE1tFZFSZQ==
+X-Google-Smtp-Source: ABdhPJy8GRdMv9VFxpslmlWygSQvuKUEKPEZC0G0JfmHSUQJEjAtWYN/WzAaxZWK8SwF8l2Bb92lIg==
+X-Received: by 2002:a5d:6a85:: with SMTP id s5mr3550223wru.90.1603270641395;
+        Wed, 21 Oct 2020 01:57:21 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id q8sm2675939wro.32.2020.10.21.01.57.18
+        by smtp.gmail.com with ESMTPSA id q8sm2675939wro.32.2020.10.21.01.57.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 01:57:19 -0700 (PDT)
+        Wed, 21 Oct 2020 01:57:20 -0700 (PDT)
 From:   Daniel Vetter <daniel.vetter@ffwll.ch>
 To:     DRI Development <dri-devel@lists.freedesktop.org>,
         LKML <linux-kernel@vger.kernel.org>
@@ -59,11 +59,11 @@ Cc:     kvm@vger.kernel.org, linux-mm@kvack.org,
         Andrew Morton <akpm@linux-foundation.org>,
         John Hubbard <jhubbard@nvidia.com>,
         =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.com>
-Subject: [PATCH v3 12/16] PCI: Obey iomem restrictions for procfs mmap
-Date:   Wed, 21 Oct 2020 10:56:51 +0200
-Message-Id: <20201021085655.1192025-13-daniel.vetter@ffwll.ch>
+        Jan Kara <jack@suse.cz>,
+        Daniel Vetter <daniel.vetter@ffwll.com>
+Subject: [PATCH v3 13/16] /dev/mem: Only set filp->f_mapping
+Date:   Wed, 21 Oct 2020 10:56:52 +0200
+Message-Id: <20201021085655.1192025-14-daniel.vetter@ffwll.ch>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
 References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
@@ -74,16 +74,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's three ways to access PCI BARs from userspace: /dev/mem, sysfs
-files, and the old proc interface. Two check against
-iomem_is_exclusive, proc never did. And with CONFIG_IO_STRICT_DEVMEM,
-this starts to matter, since we don't want random userspace having
-access to PCI BARs while a driver is loaded and using it.
+When we care about pagecache maintenance, we need to make sure that
+both f_mapping and i_mapping point at the right mapping.
 
-Fix this by adding the same iomem_is_exclusive() check we already have
-on the sysfs side in pci_mmap_resource().
+But for iomem mappings we only care about the virtual/pte side of
+things, so f_mapping is enough. Also setting inode->i_mapping was
+confusing me as a driver maintainer, since in e.g. drivers/gpu we
+don't do that. Per Dan this seems to be copypasta from places which do
+care about pagecache consistency, but not needed. Hence remove it for
+slightly less confusion.
 
-References: 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
 Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Kees Cook <keescook@chromium.org>
@@ -97,31 +97,23 @@ Cc: linux-mm@kvack.org
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-samsung-soc@vger.kernel.org
 Cc: linux-media@vger.kernel.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org
 Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.com>
---
-v2: Improve commit message (Bjorn)
 ---
- drivers/pci/proc.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/char/mem.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
-index d35186b01d98..3a2f90beb4cb 100644
---- a/drivers/pci/proc.c
-+++ b/drivers/pci/proc.c
-@@ -274,6 +274,11 @@ static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
- 		else
- 			return -EINVAL;
- 	}
-+
-+	if (dev->resource[i].flags & IORESOURCE_MEM &&
-+	    iomem_is_exclusive(dev->resource[i].start))
-+		return -EINVAL;
-+
- 	ret = pci_mmap_page_range(dev, i, vma,
- 				  fpriv->mmap_state, write_combine);
- 	if (ret < 0)
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index abd4ffdc8cde..5502f56f3655 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -864,7 +864,6 @@ static int open_port(struct inode *inode, struct file *filp)
+ 	 * revocations when drivers want to take over a /dev/mem mapped
+ 	 * range.
+ 	 */
+-	inode->i_mapping = devmem_inode->i_mapping;
+ 	filp->f_mapping = inode->i_mapping;
+ 
+ 	return 0;
 -- 
 2.28.0
 
