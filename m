@@ -2,114 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9A62951DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 455252951E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409265AbgJURzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 13:55:04 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:29484 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391138AbgJURzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:55:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603302903; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=LRMUirYzhYY9YlK5k5r6P0ZepRcjoq/tviwqExz3pxk=; b=reyVjsuActxvxHCTAYDI9wO5Ucnl3e7xnAXNhG1uL9jVKrUkDBgmx50qL/GOD57Fq0bEiw/5
- 7jVsZ1IVgxUGztJ48YhYeTgCvrxuU6+rXdRFShj18WyW750wdE6osW8Dq7VBHhdJF3fO+5Dm
- NM5LoYboULW2ypvLmQWONevWiOI=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f9075f6aad2c3cd1c7975f1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Oct 2020 17:55:02
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EB34DC43385; Wed, 21 Oct 2020 17:55:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4153C433C9;
-        Wed, 21 Oct 2020 17:55:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D4153C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v7 1/4] bus: mhi: core: Add helper API to return number of
- free TREs
-To:     Loic Poulain <loic.poulain@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-References: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
- <1602907457-13680-2-git-send-email-hemantk@codeaurora.org>
- <20201021152714.GD3334@Mani-XPS-13-9360>
- <CAMZdPi8xcsrKx2eV5da98fsGt2zO3f6ARMz7WJsyDSb3CnM0FA@mail.gmail.com>
- <20201021162540.GG3334@Mani-XPS-13-9360>
- <CAMZdPi-SY-r2H7RBLKoNk9yfu5umrrwYMr0ckJoxSx-iqYXdQg@mail.gmail.com>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <891914f1-13f2-abf8-46a6-d52218d67094@codeaurora.org>
-Date:   Wed, 21 Oct 2020 10:55:00 -0700
+        id S2438275AbgJUR4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 13:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409079AbgJUR4F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 13:56:05 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F63C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:56:05 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id a17so1550640pju.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lzul3FMJv/xeo11nXKkbOk4KrDGxaWV8W5UIU+yj0Ho=;
+        b=qeNKjMskhs9+4r5kftT5Vpo+Ajd7JYFyChtNH3JmBV4t0pAXc30t/kemLfEu+5SAAm
+         QBZ72+1/7uvSRdIiIpkF6EtyBMuwLxS5ZvH+Wkm+WYmToXIZFk89LxX2K1mPP7t+Gnb9
+         7Nl/Jf42bt/EeN5W/LqXejB/77GJMRgUn08SWaPhU0nMWNMrmEizaGPwNI6IRu/1IXXx
+         Fqj8LnFf8X2rmWF5s0llNbwB3QpaL/ELcdWZgfPnBqLzshjyjFWS3dppHrQKfbo8VtpP
+         Bu04su66eGOeb89hxi3plNlmdHwAD+TbaCTli8mccjhSzFTEQh1xBQVrfAe4YDj3y9E5
+         wpeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lzul3FMJv/xeo11nXKkbOk4KrDGxaWV8W5UIU+yj0Ho=;
+        b=QgPamVu36JxhIfOTY7Ee4NZsO9P/zuZDgI4JunN0KO/5uuPvyQ2SgF7xDoOJrQybjv
+         Sy9rjCkaNQH/HNku5ovWE2QcbEUKkdadc2KJPEnwWqNsjDLBcE61+2pCHEAFiHnKtbmd
+         L/X8cWNhmlEkUtIiGhgZrx67NJLvGlmLbwooKTG/ZxMAptcHXyCvMaYnhMleCSm0hyLo
+         CpWvyTK/kTHnx+LDZZQPzmMNxZCwzP56svEovEAKDL8ZA+rr0nNYEXezl9cetpI8XUIc
+         +j96bppu46sDhxpgxX9bwIPlqUxMJdfK2pXuTfxUJBtZbmRe/7ufRvXST16x8IBF4rUB
+         zHtQ==
+X-Gm-Message-State: AOAM533lJLGEpOlpdZ2k6CqwqCRUgdJ4w539Yr1OHtKQpj8FgjQZguVX
+        wPEUY3rJbDFom3L58cOhhIacm1mRqyqLQxC1
+X-Google-Smtp-Source: ABdhPJwl5z0xbugm0cEBUmWGWhiuC5cxC7/geDf7Ue2PpHCiJvhOkm/0ua8/MZIQWF73DJHS8nUdZA==
+X-Received: by 2002:a17:90b:1096:: with SMTP id gj22mr4538856pjb.183.1603302964786;
+        Wed, 21 Oct 2020 10:56:04 -0700 (PDT)
+Received: from ?IPv6:2402:3a80:431:7ac0:8cb2:c45f:197:35d9? ([2402:3a80:431:7ac0:8cb2:c45f:197:35d9])
+        by smtp.gmail.com with ESMTPSA id s20sm2947231pfc.201.2020.10.21.10.56.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Oct 2020 10:56:04 -0700 (PDT)
+Subject: Re: [PATCH] checkpatch: fix false positive for REPEATED_WORD warning
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com
+References: <20201021150120.29920-1-yashsri421@gmail.com>
+ <f073750511750336de5f82600600ba6cb3ddbec0.camel@perches.com>
+ <26647abf8cf14595a0dd22f10ec1c32e3dc2a8c0.camel@perches.com>
+ <40ca3f0f9a960799ad0e534b77d778c90119e468.camel@perches.com>
+From:   Aditya <yashsri421@gmail.com>
+Message-ID: <c4f8aae0-d805-8d09-1a87-ba64bc01c29a@gmail.com>
+Date:   Wed, 21 Oct 2020 23:25:56 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAMZdPi-SY-r2H7RBLKoNk9yfu5umrrwYMr0ckJoxSx-iqYXdQg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <40ca3f0f9a960799ad0e534b77d778c90119e468.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Loic,
+On 21/10/20 10:20 pm, Joe Perches wrote:
+> On Wed, 2020-10-21 at 08:28 -0700, Joe Perches wrote:
+>> On Wed, 2020-10-21 at 08:18 -0700, Joe Perches wrote:
+>>> I might add that check to the line below where
+>>> the repeated words are checked against long
+>> []
+>>> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+>> []
+>>> @@ -3062,6 +3062,7 @@ sub process {
+>>>  
+>>>  				next if ($first ne $second);
+>>>  				next if ($first eq 'long');
+>>> +				next if ($first =~ /^$Hex$/;
+>>
+>> oops.  with a close parenthesis added of course...
+> 
+> That doesn't work as $Hex expects a leading 0x.
+> 
+> But this does...
+> 
+> The negative of this approach is it would also not emit
+> a warning on these repeated words: (doesn't seem too bad)
+> 
+> $ grep -P '^[0-9a-f]{2,}$' /usr/share/dict/words
+> abed
+> accede
+> acceded
+> ace
+> aced
+> ad
+> add
+> added
+> baa
+> baaed
+> babe
+> bad
+> bade
+> be
+> bead
+> beaded
+> bed
+> bedded
+> bee
+> beef
+> beefed
+> cab
+> cabbed
+> cad
+> cede
+> ceded
+> dab
+> dabbed
+> dad
+> dead
+> deaf
+> deb
+> decade
+> decaf
+> deed
+> deeded
+> deface
+> defaced
+> ebb
+> ebbed
+> efface
+> effaced
+> fa
+> facade
+> face
+> faced
+> fad
+> fade
+> faded
+> fed
+> fee
+> feed
+> ---
+>  scripts/checkpatch.pl | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index fab38b493cef..79d7a4cba19e 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3062,6 +3062,7 @@ sub process {
+>  
+>  				next if ($first ne $second);
+>  				next if ($first eq 'long');
+> +				next if ($first =~ /^[0-9a-f]+$/i);
+>  
+>  				if (WARN("REPEATED_WORD",
+>  					 "Possible repeated word: '$first'\n" . $herecurr) &&
+> 
+> 
+> 
 
-On 10/21/20 9:51 AM, Loic Poulain wrote:
-> On Wed, 21 Oct 2020 at 18:25, Manivannan Sadhasivam
-> <manivannan.sadhasivam@linaro.org> wrote:
->>
->> On Wed, Oct 21, 2020 at 05:43:14PM +0200, Loic Poulain wrote:
->>> On Wed, 21 Oct 2020 at 17:27, Manivannan Sadhasivam <
->>> manivannan.sadhasivam@linaro.org> wrote:
->>>
->>>> On Fri, Oct 16, 2020 at 09:04:14PM -0700, Hemant Kumar wrote:
->>>>> Introduce mhi_get_free_desc_count() API to return number
->>>>
->>>
->>> Would it not be a good idea to have naming aligned with other methods?
->>> Like mhi_queue_num_free() or mhi_queue_no_free_elem...
->>>
->>
->> 'queue_num_free' doesn't sound like getting the number of available
->> descriptors...
-> 
-> Right, TBH, just wanted the function to start with mhi_queue since
-> it's about getting info about remaining size of the DL or UL 'virtual
-> queue'. But AFAIU, this is the number of available ring elements that
-> is returned here, not the number of transfer descriptors (that can be
-> composed of one or more ring elements), so maybe
-> mhi_queue_num_free_elements or something similar, I don't want to be
-mhi_get_free_desc_count is the number of TREs available which queue APIs 
-can use to queue an transfer ring element. My only concern is if we get 
-confused with the name mhi_queue_ part of as number of TREs queued ? 
-Transfer ring element is indeed a transfer descriptor.
-> picky here.
-> 
-> Regards,
-> Loic
-> 
-Thanks,
-Hemant
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Hi Sir,
+Thanks for your feedback. I ran a manual check using this approach
+over v5.6..v5.8.
+The negatives occurring with this approach are for the word 'be'
+(Frequency 5) and 'add'(Frequency 1). For eg.
+
+WARNING:REPEATED_WORD: Possible repeated word: 'be'
+#278: FILE: drivers/net/ethernet/intel/ice/ice_flow.c:388:
++ * @seg: index of packet segment whose raw fields are to be be extracted
+
+WARNING:REPEATED_WORD: Possible repeated word: 'add'
+#21:
+Let's also add add a note about using only the l3 access without l4
+
+Apart from these, it works as expected. It also takes into account the
+cases for multiple occurrences of hex, as you mentioned. For eg.
+
+WARNING:REPEATED_WORD: Possible repeated word: 'ffff'
+#15:
+	0x0040:  ffff ffff ffff ffff ffff ffff ffff ffff
+
+These cases were getting missed with my approach.
+
+Also, it is able to detect warnings for hex sequences which are
+occurring less than 4 times(frequency 2), for eg,
+
+WARNING:REPEATED_WORD: Possible repeated word: 'ff'
+#38:
+ Code: ff ff 48 (...)
+
+I'll try to combine both methods and come up with a better approach.
+
+Aditya
