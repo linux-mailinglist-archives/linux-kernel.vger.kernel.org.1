@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56596294B76
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4EB294B79
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439038AbgJUKul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 06:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439018AbgJUKul (ORCPT
+        id S2439052AbgJUKvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 06:51:13 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:38280 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439039AbgJUKvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 06:50:41 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002A7C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:50:40 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t18so1034964plo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:50:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=z1ROSdysWAJRA35AhGES/43NRpXVq6YDaJOz7zl7nL8=;
-        b=w9jC/C5ogypGG2B4CHyrIKLiagWGjJugRQu6KmvufLSpIJmf6uviAuPsQimJcsygWy
-         aO2hQ/4vFZjPo/PXF0CCYPQ5lxPB6DlokTEK4DWWokxVd43Fak9M3m1kaEHOxNB5ID1U
-         017H9CQfaQ2gmp4maSOT/Rkq7peo9+QycbvGsmxkmrrRPmDgb3XJt/4NK0ub0lP4MwKk
-         rO+ZRJmZTKAEpDaIBJyNviGP7cxH/ZjFO5Xe2aoCjUAFWIxeZCXFzy40LTiXyFgpBuMj
-         fYs5i2W0ECR/j/Agl43miVh2mhxycJZkd6vTVyMk8VBxvFW4hVtulqK1KMJ5UJE+Xj2P
-         K5/w==
+        Wed, 21 Oct 2020 06:51:13 -0400
+Received: by mail-wm1-f65.google.com with SMTP id b127so1603465wmb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:51:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=z1ROSdysWAJRA35AhGES/43NRpXVq6YDaJOz7zl7nL8=;
-        b=W1CJSnnn+AKTCHAUEh/ro8kHPh1lP5etc6fevTfG2oiM88sFI1QRc9rFPg3KDJPUKM
-         K/QKhBJYBKdbfw25rFhMg/fZseJ3P2TdRKazNDGvV8zVFviXn76YLEgTdX7Asm6oV0MW
-         ASLpayy9GWQ9XyC+hyxeX4rZOdfu0jBV0a4jeXR/0ihZOEU34m/Zq7UYDx9C1yhsUDYo
-         HIcuUuZQOyLbcUmckpa5yt3QU20aLdGmYAJx3jt/ukeOP7sYhUaPUAaqMmG1XCwqZ9qE
-         N+al3YF27BxX2XVfsZN9GlwsgCqdU7OaX7usH5Ty85gdw2cNcboLtxPLYaql3JYs9FL3
-         nArg==
-X-Gm-Message-State: AOAM532U7LmeNoB5Qlt8gCbH0L0p2ghKHUYc2BJARc0niXWC5nfwJ/x3
-        USm8Voe8JwYDaPrtai2HGnxGhQ==
-X-Google-Smtp-Source: ABdhPJxwgr3r5rDb2EwR7ApDlfOTIHsXkLRSCBwfkQlQC2nu8iBeNlICjuUksRIYaFtg91h3GN0GUA==
-X-Received: by 2002:a17:902:d896:b029:d2:288e:bafc with SMTP id b22-20020a170902d896b02900d2288ebafcmr3097921plz.43.1603277440281;
-        Wed, 21 Oct 2020 03:50:40 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id e21sm2018906pfl.22.2020.10.21.03.50.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Oct 2020 03:50:39 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 16:20:37 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Hector Yuan <hector.yuan@mediatek.com>, rjw@rjwysocki.net,
-        robh+dt@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm: cpus: Document
- 'qcom,freq-domain' property
-Message-ID: <20201021105037.vrqgmvbxxhccch33@vireshk-i7>
-References: <20201020153944.18047-1-manivannan.sadhasivam@linaro.org>
- <1603247803.20224.5.camel@mtkswgap22>
- <20201021095916.GA3334@Mani-XPS-13-9360>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PqFvCGU23iOTh/yBXkLIt0ccOeDmnu1NCfHunqJygNg=;
+        b=B+iZLcKv24lrAvgNmf7GCutuA0vw6Y9b3zIorTochjgohW4k90PM4Ve1rIB6Vjix4L
+         EioH0SImKmlOmV1OzuUnMWXehVx84QX6i0ndTH1GgtP9ljVmzpxV0gm51bwIkMBoGT5b
+         mA3fkLb7iSRe4RSUmqI8kSJlDfhJ3mWRTej0TotVh8bcvJDUi7195/n8Vu7wmlhwNK98
+         dSEasdJ803e4Rzs8ZqrF9ulSULnQ2+3t4p33Vz0+Zr9g+U0BOzFr8b2K9vd5lqp86AfN
+         hRDRrC5HS5QJKzIdKE2x6LhkJkvtG+o53SgMThfFoITb8FsFBuJfMayB6BRo2ILiyByU
+         xjRw==
+X-Gm-Message-State: AOAM531B5cjoq2LEgcQ+lMXEQaAl83Ss+nSptDMOIZTM2YCEsXHpg4Z8
+        G2H9Exba4TMEPwGqnaA3GtzfH7qqtXH76F8pn4s=
+X-Google-Smtp-Source: ABdhPJy/NU27eYs3btzW8/3QqsE/seCuUieRCi/YAkBIHa03STxPMM1g9uhxO4e/EdBVuZCfKfCmpufeMaXphqKD8wk=
+X-Received: by 2002:a1c:7e82:: with SMTP id z124mr2876159wmc.8.1603277471120;
+ Wed, 21 Oct 2020 03:51:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021095916.GA3334@Mani-XPS-13-9360>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+ <0652b8dd-e753-7c10-27e9-af9524e7ccc5@linux.intel.com> <CAM9d7cgrXsiPWuAYjg1og0N=03-mfx075-n7KUrvYyAMLZ8_7A@mail.gmail.com>
+ <81ffefab-ac4e-c51c-809a-b9ba96d6d867@linux.intel.com> <CAM9d7cggG7yL3iaH_9-ibBgw4k+NLSU14uQSJHuaskLnv2sD_A@mail.gmail.com>
+ <0dd08c91-f48d-28db-92ed-a2b014bdcb05@linux.intel.com>
+In-Reply-To: <0dd08c91-f48d-28db-92ed-a2b014bdcb05@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 21 Oct 2020 19:51:00 +0900
+Message-ID: <CAM9d7cjc5yMSCsHCOEa6UGrkpBUK3eBq2n5bNXTJExkKZ5aavA@mail.gmail.com>
+Subject: Re: [PATCH v1 08/15] perf record: write trace data into mmap trace files
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-10-20, 15:29, Manivannan Sadhasivam wrote:
-> Hi,
-> 
-> On Wed, Oct 21, 2020 at 10:36:43AM +0800, Hector Yuan wrote:
-> > Hi, Manivannan
-> > 
-> > On Tue, 2020-10-20 at 21:09 +0530, Manivannan Sadhasivam wrote:
-> > > Add devicetree documentation for 'qcom,freq-domain' property specific
-> > > to Qualcomm CPUs. This property is used to reference the CPUFREQ node
-> > > along with Domain ID (0/1).
-> > > 
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/arm/cpus.yaml | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
-> > > index 1222bf1831fa..f40564bf004f 100644
-> > > --- a/Documentation/devicetree/bindings/arm/cpus.yaml
-> > > +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
-> > > @@ -290,6 +290,12 @@ properties:
-> > >  
-> > >        * arm/msm/qcom,kpss-acc.txt
-> > >  
-> > > +  qcom,freq-domain:
-> > Do you mind to change "qcom, freq-domain" to common naming? or drop the
-> > prefix. So that we can use this CPU node and map it to each freq-domain.
-> > Thanks a lot. 
-> 
-> I can do that but did the domain value match for other platforms as well?
+On Wed, Oct 21, 2020 at 7:25 PM Alexey Budankov
+<alexey.budankov@linux.intel.com> wrote:
+>
+>
+> On 21.10.2020 10:34, Namhyung Kim wrote:
+> > On Wed, Oct 14, 2020 at 9:09 PM Alexey Budankov
+> > <alexey.budankov@linux.intel.com> wrote:
+> >>
+> >> Hi,
+> >>
+> >> On 14.10.2020 13:52, Namhyung Kim wrote:
+> >>> Hi,
+> >>>
+> >>> On Mon, Oct 12, 2020 at 6:01 PM Alexey Budankov
+> >>> <alexey.budankov@linux.intel.com> wrote:
+> >>>>
+> >>>>
+> >>>> Write trace data into per mmap trace files located
+> >>>> at data directory. Streaming thread adjusts its affinity
+> >>>> according to mask of the buffer being processed.
+> >>>>
+> >>>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> >>>> ---
+> >>> [SNIP]
+> >>>> @@ -1184,8 +1203,12 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
+> >>>>         /*
+> >>>>          * Mark the round finished in case we wrote
+> >>>>          * at least one event.
+> >>>> +        *
+> >>>> +        * No need for round events in directory mode,
+> >>>> +        * because per-cpu maps and files have data
+> >>>> +        * sorted by kernel.
+> >>>>          */
+> >>>> -       if (bytes_written != rec->bytes_written)
+> >>>> +       if (!record__threads_enabled(rec) && bytes_written != rec->bytes_written)
+> >>>>                 rc = record__write(rec, NULL, &finished_round_event, sizeof(finished_round_event));
+> >>>
+> >>> This means it needs to keep all events in the ordered events queue
+> >>> when perf report processes the data, right?
+> >>
+> >> Looks so.
+> >
+> > Maybe it's not related to this directly. But we need to think about
+> > how to make perf report faster and more efficient as well.
+>
+> Makes sense. Agreed.
+>
+> >
+> > In my previous attempt, I separated samples from other events
+> > to be in different mmaps so they were saved to different files
+> > (or in a separate part of the data file).
+> >
+> > And perf report processes the meta events (FORK/MMAP/...)
+> > first to construct the system image and then processes samples
+> > with multi-threads.
+>
+> Looks like separation to global, per-process events and per-thread
+> ones. Alternative algorithm could possibly be multi-passing of trace
+> data. First pass is to capture global events and build process state
+> overtime progress picture. Second pass is to capture and map per-thread
+> samples and/or other events into process state according to samples
+> and events time.
 
-I am not sure if you can. The code needs to be backward compatible so it can
-support all devices shipped with older bootloaders and latest kernels. And so
-changing the bindings isn't a good idea normally.
+Yep, it seems basically the same approach.  But it'd be better if
+we could do it in a single pass (with some modification in the data
+collection).
 
-> 
-> > 
-> > > +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
-> > > +    description: |
-> > > +      CPUs supporting freq-domain must set their "qcom,freq-domain" property
-> > > +      with phandle to a cpufreq_hw node followed by the Domain ID(0/1).
-> > > +
-> > >    rockchip,pmu:
-> > >      $ref: '/schemas/types.yaml#/definitions/phandle'
-> > >      description: |
-> > 
-
--- 
-viresh
+Thanks
+Namhyung
