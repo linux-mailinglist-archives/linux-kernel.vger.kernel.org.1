@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632412946A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 04:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE3F29469C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 04:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406317AbgJUCmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 22:42:01 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:58216 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2406204AbgJUCmA (ORCPT
+        id S2440095AbgJUCht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 22:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440082AbgJUChs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 22:42:00 -0400
-X-UUID: a457063f822147cea73cedba0c250a5e-20201021
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=CSIWOHWW2k4Oo3UJnDOr2pHEoV0FdN/U4oXEDqdqb88=;
-        b=sxDFD1SU++hQNCnDprupw9n8xBuN8i3ZswaP6qXpBo9osNBcjqU79dG0HGWHQDf7YOMCoGm73xjsy3Xr8Y2nCKg5ZlxVZwQo4rtLM5UYxZyypjn45PNWv6FH4xuMK2LdV2IA7RjVaMC4HZyBnuYxzBRKuYu3P984ncUhAtR1Dio=;
-X-UUID: a457063f822147cea73cedba0c250a5e-20201021
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <hector.yuan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2143814347; Wed, 21 Oct 2020 10:36:44 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 21 Oct 2020 10:36:43 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by mtkcas08.mediatek.inc
- (172.21.101.126) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 21 Oct
- 2020 10:36:42 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 21 Oct 2020 10:36:42 +0800
-Message-ID: <1603247803.20224.5.camel@mtkswgap22>
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm: cpus: Document
- 'qcom,freq-domain' property
-From:   Hector Yuan <hector.yuan@mediatek.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-CC:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
-        <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bjorn.andersson@linaro.org>, <linux-arm-msm@vger.kernel.org>
-Date:   Wed, 21 Oct 2020 10:36:43 +0800
-In-Reply-To: <20201020153944.18047-1-manivannan.sadhasivam@linaro.org>
-References: <20201020153944.18047-1-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 20 Oct 2020 22:37:48 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE2EC0613CE;
+        Tue, 20 Oct 2020 19:37:46 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id i5so851128edr.5;
+        Tue, 20 Oct 2020 19:37:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=y3k7r6MRALM8QYMM8r4V3Z5YJ0zPqyut63Xahu5+4sw=;
+        b=a4cJ1bkdtV7u42x/LEoQn8WDnK3R06Chgjyw8HVEiPOawX1nAM532Oj2NGzqU/PYq1
+         iHlJRsH9/LxcUoX/WRpJAaVWbF8C2Sk/BDx8fOcDHZSVZD1JRXDKgvvSNUKIRDkq+Z3r
+         qoJJfb748p5vcVkATXh/rKb+ghirS1gclZMRTAnXUi7g4xjpZsC8sH/KAsqWOP+5gTL1
+         sWtNnRZiuLdK64Rodb69OT4hHswR/JgHKcxvDDDLw6KJnPi0nXHRQp2lGGsNU0JjvFSN
+         NvVRRQeR7qflZOaaVZ3bWB+q5jDy5SyCjtpCeV593CnHC+ANCsBIWW7kA5foaWBSGUJL
+         UJfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=y3k7r6MRALM8QYMM8r4V3Z5YJ0zPqyut63Xahu5+4sw=;
+        b=lCyV9NaJzQcx33DWEIi1Mdg4o0RPlJr3yiXGaJazTE1eEtjx0vjuOB2xjOOHAdZ8aZ
+         aV/j47ADu9FUKdeaFSd0Z0JbpyvVz/OPX6CfpkEr5HBOJdbsfDBxWwrLUNBGeg8aB0OH
+         iB6RNOpPwi8Mla718i/b9t5zdsSGXW6An3ETNV5gqfRNBeBJN2uDTIl6xNRKpL/llQm9
+         BcUta6ByrVEiMzuCZAdc4R7VIQL9QpA9wYc78GTZldSX2Ikyx0wMyvxtnQ/jXkCVf9tR
+         joKPUjIfcjwdVJfw8+S/4i4NWddmlswr1KBVc6ijF2LCc96U5QH2S3jQUfAXGiipDFlo
+         MRfQ==
+X-Gm-Message-State: AOAM532b1AUeW7+5046fg05Zj12aWYRlIXbO7jqbdvoLVMFj6ztC/7B4
+        ZGwNEInCvcGwzpR9GH8EZsiG0e6FEfuQKt54f0s=
+X-Google-Smtp-Source: ABdhPJx8Ke+fSB76kZaruZsNhiqb4vwaXpNG/8cynM3eDnwxnamN3L9gEKlyb2buUHK8mOtte0EArdln9NXREw2+lE0=
+X-Received: by 2002:a05:6402:1a43:: with SMTP id bf3mr936992edb.8.1603247865582;
+ Tue, 20 Oct 2020 19:37:45 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-X-TM-SNTS-SMTP: 1B414A6A3F0B5D498705D291968F6E6255C1E00CDD4FB37AB222F7A638D801F62000:8
-Content-Transfer-Encoding: base64
+References: <cover.1603102503.git.geliangtang@gmail.com> <20201020163923.6feef9ef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201020163923.6feef9ef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Geliang Tang <geliangtang@gmail.com>
+Date:   Wed, 21 Oct 2020 10:37:33 +0800
+Message-ID: <CA+WQbwuHpxpSLK1Y4bTArNm1QxMQ28WQiFT+gyJoN_Neid3sow@mail.gmail.com>
+Subject: Re: [MPTCP][PATCH net-next 0/2] init ahmac and port of mptcp_options_received
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Krystad <peter.krystad@linux.intel.com>,
+        netdev@vger.kernel.org, mptcp <mptcp@lists.01.org>,
+        "To: Phillip Lougher <phillip@squashfs.org.uk>, Andrew Morton
+        <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, Coly Li
+        <colyli@suse.de>, linux-fsdevel@vger.kernel.org," 
+        <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIE1hbml2YW5uYW4NCg0KT24gVHVlLCAyMDIwLTEwLTIwIGF0IDIxOjA5ICswNTMwLCBNYW5p
-dmFubmFuIFNhZGhhc2l2YW0gd3JvdGU6DQo+IEFkZCBkZXZpY2V0cmVlIGRvY3VtZW50YXRpb24g
-Zm9yICdxY29tLGZyZXEtZG9tYWluJyBwcm9wZXJ0eSBzcGVjaWZpYw0KPiB0byBRdWFsY29tbSBD
-UFVzLiBUaGlzIHByb3BlcnR5IGlzIHVzZWQgdG8gcmVmZXJlbmNlIHRoZSBDUFVGUkVRIG5vZGUN
-Cj4gYWxvbmcgd2l0aCBEb21haW4gSUQgKDAvMSkuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBNYW5p
-dmFubmFuIFNhZGhhc2l2YW0gPG1hbml2YW5uYW4uc2FkaGFzaXZhbUBsaW5hcm8ub3JnPg0KPiAt
-LS0NCj4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vY3B1cy55YW1sIHwg
-NiArKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYg
-LS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2NwdXMueWFtbCBi
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vY3B1cy55YW1sDQo+IGluZGV4
-IDEyMjJiZjE4MzFmYS4uZjQwNTY0YmYwMDRmIDEwMDY0NA0KPiAtLS0gYS9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2NwdXMueWFtbA0KPiArKysgYi9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2NwdXMueWFtbA0KPiBAQCAtMjkwLDYgKzI5MCwxMiBA
-QCBwcm9wZXJ0aWVzOg0KPiAgDQo+ICAgICAgICAqIGFybS9tc20vcWNvbSxrcHNzLWFjYy50eHQN
-Cj4gIA0KPiArICBxY29tLGZyZXEtZG9tYWluOg0KRG8geW91IG1pbmQgdG8gY2hhbmdlICJxY29t
-LCBmcmVxLWRvbWFpbiIgdG8gY29tbW9uIG5hbWluZz8gb3IgZHJvcCB0aGUNCnByZWZpeC4gU28g
-dGhhdCB3ZSBjYW4gdXNlIHRoaXMgQ1BVIG5vZGUgYW5kIG1hcCBpdCB0byBlYWNoIGZyZXEtZG9t
-YWluLg0KVGhhbmtzIGEgbG90LiANCg0KPiArICAgICRyZWY6ICcvc2NoZW1hcy90eXBlcy55YW1s
-Iy9kZWZpbml0aW9ucy9waGFuZGxlLWFycmF5Jw0KPiArICAgIGRlc2NyaXB0aW9uOiB8DQo+ICsg
-ICAgICBDUFVzIHN1cHBvcnRpbmcgZnJlcS1kb21haW4gbXVzdCBzZXQgdGhlaXIgInFjb20sZnJl
-cS1kb21haW4iIHByb3BlcnR5DQo+ICsgICAgICB3aXRoIHBoYW5kbGUgdG8gYSBjcHVmcmVxX2h3
-IG5vZGUgZm9sbG93ZWQgYnkgdGhlIERvbWFpbiBJRCgwLzEpLg0KPiArDQo+ICAgIHJvY2tjaGlw
-LHBtdToNCj4gICAgICAkcmVmOiAnL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvcGhh
-bmRsZScNCj4gICAgICBkZXNjcmlwdGlvbjogfA0KDQo=
+Hi Jakub,
 
+Jakub Kicinski <kuba@kernel.org> =E4=BA=8E2020=E5=B9=B410=E6=9C=8821=E6=97=
+=A5=E5=91=A8=E4=B8=89 =E4=B8=8A=E5=8D=887:39=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Mon, 19 Oct 2020 18:23:14 +0800 Geliang Tang wrote:
+> > This patchset deals with initializations of mptcp_options_received's tw=
+o
+> > fields, ahmac and port.
+>
+> Applied, but two extra comments:
+>  - please make sure the commit messages are in imperative form
+>    e.g. "Initialize x..." rather than "This patches initializes x.."
+>  - I dropped the Fixes tag from patch 2, and only queued patch 1 for
+>    stable - patch 2 is a minor clean up, right?
+
+Yes, that's right. Thanks for applying and updating the patches.
+
+-Geliang
+
+>
+> Thanks!
