@@ -2,135 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A5A2946DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 05:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06172946E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 05:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411594AbgJUDMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 23:12:21 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:42397 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411587AbgJUDMU (ORCPT
+        id S2411615AbgJUDPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 23:15:18 -0400
+Received: from mail-pg1-f169.google.com ([209.85.215.169]:43493 "EHLO
+        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406162AbgJUDPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 23:12:20 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201021031218epoutp01b9466f06bc219fc937ad864fa6428b18~-41M4g3Ic3225032250epoutp015
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:12:18 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201021031218epoutp01b9466f06bc219fc937ad864fa6428b18~-41M4g3Ic3225032250epoutp015
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603249938;
-        bh=6UAabylJqz87M04J55ohv4SkzPKemiXY8kaIy1S+zFA=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=ghk+deIZMO61nOMzS6HWTJIDhMdaUszif1M4585hLUQ6+Wg+KRdyK+oX4BLHerizg
-         DWT/2VMTtkxluRaM2BNsvi+cyCHHLeq0eWL8Wn4ZISHLlNqHY6wJjCz7WZ0xDsGzmE
-         EuRf2JjOWPDvtuda1xeJsLOWZFde4v5fRIu6s3/I=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20201021031218epcas1p43efec3ce831fc57cfc62133c0b545073~-41Ma3TEZ1675516755epcas1p4Q;
-        Wed, 21 Oct 2020 03:12:18 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4CGFsY3mHVzMqYkb; Wed, 21 Oct
-        2020 03:12:17 +0000 (GMT)
-X-AuditID: b6c32a37-8afff7000000256e-61-5f8fa710a864
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D5.2E.09582.017AF8F5; Wed, 21 Oct 2020 12:12:16 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH] FROMLIST: input: add 2 kind of switch
-Reply-To: hj2.im@samsung.com
-Sender: HyungJae Im <hj2.im@samsung.com>
-From:   HyungJae Im <hj2.im@samsung.com>
-To:     "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "rydberg@bitmath.org" <rydberg@bitmath.org>,
-        "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>
-CC:     HyungJae Im <hj2.im@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20201021031216epcms1p556d8d7d5d763ec47f67cd8cbe3972935@epcms1p5>
-Date:   Wed, 21 Oct 2020 12:12:16 +0900
-X-CMS-MailID: 20201021031216epcms1p556d8d7d5d763ec47f67cd8cbe3972935
+        Tue, 20 Oct 2020 23:15:18 -0400
+Received: by mail-pg1-f169.google.com with SMTP id r10so584998pgb.10;
+        Tue, 20 Oct 2020 20:15:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zLK0ORafK0KDpva8BzNX2/lsIVw44lu8GrUhiNwTfW8=;
+        b=kxlQCY4nmfmQzjd3W1R6V0BojSYmM2uiqBZHxVyMS/p12vSdT8/yqIv/z7T60kLLNB
+         0OLUPqp+0HNjJ7iawvZtZldvsGbGkc/I9uaeHCqf69i8r5p04eN8dumAGCIU6wkMdkE6
+         3RtMs2CpeWYm5MfKtzKxsVLAC0NXn7wRFSFVDLLL5GAdxxwi1CPZxaklf6CgdJYHElpI
+         Gl+zp08rODIleOthIvWqG/4DI4429h3m4J8P6jVejWx2YYbtC/4NEZx0MGpAcg5uHDfj
+         LZJqNFhiVpbUGHHDsa9pbH1jRKuW75M6X3adrxLyWMoaMiNjkeHKkp/ZzFBcoVXoUlZl
+         sbnw==
+X-Gm-Message-State: AOAM530xlSlDYeBjUx7tixSuE6YZIvCL8olP001/c9sdrf5h6SDPTV8g
+        cvlIXE5H+4muEm4BY1TDK5Mhol6E4oMDyw==
+X-Google-Smtp-Source: ABdhPJzG/0VYHS2eerxHf9q9IwkM45s/NnCsva7zXxw9WRxmdfOLjU4TkhshqtlRQCbphLoYb7WgrQ==
+X-Received: by 2002:aa7:9a4a:0:b029:155:323e:adae with SMTP id x10-20020aa79a4a0000b0290155323eadaemr1138878pfj.70.1603250117184;
+        Tue, 20 Oct 2020 20:15:17 -0700 (PDT)
+Received: from [192.168.3.218] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id m13sm443682pjl.45.2020.10.20.20.15.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Oct 2020 20:15:15 -0700 (PDT)
+Subject: Re: [PATCH] scsi: ufs: make sure scan sequence for multiple hosts
+To:     Chanho Park <chanho61.park@samsung.com>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CGME20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d@epcas2p2.samsung.com>
+ <20201020070516.129273-1-chanho61.park@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <7fafcc82-2c42-8ef5-14a6-7906b5956363@acm.org>
+Date:   Tue, 20 Oct 2020 20:15:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
+MIME-Version: 1.0
+In-Reply-To: <20201020070516.129273-1-chanho61.park@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdljTQFdgeX+8wZJ34haHF71gtGhevJ7N
-        YsF0O4ubn76xWlzeNYfN4m5LJ6vFiW/TmBzYPT6vesXqsXPWXXaPO9f2sHnsn7uG3aNvyypG
-        j8+b5ALYonJsMlITU1KLFFLzkvNTMvPSbZW8g+Od403NDAx1DS0tzJUU8hJzU22VXHwCdN0y
-        c4BOUVIoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUWpOQUGBoU6BUn5haX5qXrJefnWhka
-        GBiZAlUm5GT82TGXqeANX8XSrd1sDYx7eLoYOTgkBEwktmxV6mLk4hAS2MEo8eDaHGaQOK+A
-        oMTfHcJdjJwcwgJmEmtWHGIBCQsJyEh07TGCCGtILG35zAhiswmoSfxes4cNZIyIwAcmiQPf
-        XoMlmAVUJPo2dYPZEgK8EjPan7JA2NIS25dvhYqLStxc/ZYdxn5/bD5UXESi9d5ZZghbUOLB
-        z92MML1LryxmAlkmIdDOKHHx5i9WCKeFUWLB0sNsEFX6Elf6ZzKB2LwCvhIvZv8A62YRUJU4
-        uXMWVI2LxOyvf9ggLpWX2P4W4nlmAU2J9bv0IUoUJXb+ngv1DJ/Eu689rDDP7Jj3hAnCVpDY
-        uOgT1EgxiVnzbkM96SGx9PRJsBohgUCJky+OMU5glJ+FCN5ZSBbPQli8gJF5FaNYakFxbnpq
-        sWGBMXKEbmIEJ0Ut8x2M095+0DvEyMTBeIhRgoNZSYR3AmtfvBBvSmJlVWpRfnxRaU5q8SFG
-        U6CXJzJLiSbnA9NyXkm8oamRsbGxhYmZuZmpsZI47x/tjnghgfTEktTs1NSC1CKYPiYOTqkG
-        puUObj7MaxlX/V/wPTZ8wsVze7uniue6BXHp3l7854B6d/K0yT3Hv0RNmLQzfMO0pTbzT9tW
-        VKxvW6R2eJ9yaXH6s4d3uItVbJ+f+7mT4fuLu8wVy0wt3hqqJNzTjP60pea5zObaE5fDOC8x
-        LLQumCz4PWDFDxkh3TaWinlPOZdIyTFETu/WKN3d6FGg/aHihalIyUyV7lcrnV+8lDrGFHKo
-        i0X+14IGhvdLpggtn/Wtr/Ds299fv1rGzdzpmbr9XcZGmzd/jqROKov/x777hMirr0fu5usF
-        7u0szd2589GFBXfdfl0MFDfOeDprz79WdW2WUwwnHNwOXO6e3Le8vcrSXJP/vuZhxdO6KmVd
-        QkuUWIozEg21mIuKEwFb32trEwQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201021031216epcms1p556d8d7d5d763ec47f67cd8cbe3972935
-References: <CGME20201021031216epcms1p556d8d7d5d763ec47f67cd8cbe3972935@epcms1p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From ec9859ee01b7bc0e04255971e0fe97348847dab7 Mon Sep 17 00:00:00 2001
-From: "hj2.im" <hj2.im@samsung.com>
-Date: Tue, 20 Oct 2020 16:57:04 +0900
-Subject: [PATCH] FROMLIST: input: add 2 kind of switch
+On 10/20/20 12:05 AM, Chanho Park wrote:
+> By doing scan as asynchronous way, scsi device scannning can be out of
+> order execution. It is no problem if there is a ufs host but the scsi
+> device name of each host can be changed according to the scan sequences.
+> 
+> Ideal Case) host0 scan first
+> host0 will be started from /dev/sda
+>  -> /dev/sdb (BootLUN0 of host0)
+>  -> /dev/sdc (BootLUN1 of host1)
+> host1 will be started from /dev/sdd
+> 
+> This might be an ideal case and we can easily find the host device by
+> this mappinng.
+> 
+> However, Abnormal Case) host1 scan first,
+> host1 will be started from /dev/sda and host0 will be followed later.
+> 
+> To make sure the scan sequences according to the host, we can use a
+> bitmap which hosts are scanned and wait until previous hosts are
+> finished to scan.
 
-We need support to various accessories on the device,
-some switch does not exist in switch list.
-So added switch for the following purpose.
+This sounds completely wrong to me. No code should depend on the order in
+which LUNs are scanned. Please use the soft links created by udev instead
+of serializing LUN scanning.
 
-SW_COVER_ATTACHED is for the checking the cover
-attached or not on the device. SW_EXT_PEN_ATTACHED is for the
-checking the external pen attached or not on the device
+Thanks,
 
-Signed-off-by: hj2.im <hj2.im@samsung.com>
----
- include/linux/mod_devicetable.h        | 2 +-
- include/uapi/linux/input-event-codes.h | 4 +++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index 5b08a473cdba..897f5a3e7721 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -320,7 +320,7 @@ struct pcmcia_device_id {
- #define INPUT_DEVICE_ID_LED_MAX		0x0f
- #define INPUT_DEVICE_ID_SND_MAX		0x07
- #define INPUT_DEVICE_ID_FF_MAX		0x7f
--#define INPUT_DEVICE_ID_SW_MAX		0x10
-+#define INPUT_DEVICE_ID_SW_MAX		0x12
- #define INPUT_DEVICE_ID_PROP_MAX	0x1f
- 
- #define INPUT_DEVICE_ID_MATCH_BUS	1
-diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
-index 0c2e27d28e0a..8ca2acee1f92 100644
---- a/include/uapi/linux/input-event-codes.h
-+++ b/include/uapi/linux/input-event-codes.h
-@@ -889,7 +889,9 @@
- #define SW_MUTE_DEVICE		0x0e  /* set = device disabled */
- #define SW_PEN_INSERTED		0x0f  /* set = pen inserted */
- #define SW_MACHINE_COVER	0x10  /* set = cover closed */
--#define SW_MAX			0x10
-+#define SW_COVER_ATTACHED	0x11  /* set = cover attached */
-+#define SW_EXT_PEN_ATTACHED	0x12  /* set = external pen attached */
-+#define SW_MAX			0x12
- #define SW_CNT			(SW_MAX+1)
- 
- /*
--- 
-2.11.0
+Bart.
