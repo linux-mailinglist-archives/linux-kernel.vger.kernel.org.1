@@ -2,52 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43389294C5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F33294C66
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442272AbgJUMRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:17:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59076 "EHLO mail.kernel.org"
+        id S2442309AbgJUMRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:17:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411471AbgJUMRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:17:32 -0400
+        id S2406831AbgJUMRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:17:31 -0400
 Received: from mail.kernel.org (ip5f5ad5a8.dynamic.kabel-deutschland.de [95.90.213.168])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA0E122249;
+        by mail.kernel.org (Postfix) with ESMTPSA id B58E920BED;
         Wed, 21 Oct 2020 12:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603282650;
-        bh=FP8ZUMYMOzdH37ufj3BXgTpg3gpGoQi9b6ZHc9JyKsE=;
+        bh=LxyizouARpcsGPhJfNF7r+NNp7creLgIhK9Meaty+zs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cs9qL6POj9tQbHN8t8+tVOqAAcXrr7CobM3XQ4j7ccaaIjrfjdn6rKHC1ZR5WOmcc
-         ybtoQyJkrE9OcdW3Di5GGcXjXDhkpiIoC99pdwlXP8VH2G2gn7b9LkHeXoKPfesAO7
-         T5s+S0oRlDzJNpIygpmTyTENV9AhebbAMUkgAKpM=
+        b=LfHARTSoAtcCyEmEFsD6cjPH48NC1aJicFYtVje6CQ1VOW/OfNGwGLGcev0T7tYwa
+         6CaVGZYymYbKAON7m7Rk1xlo9RnOtUBfVel1EtY+3/DjprKjShJtFsUAJMNGc23567
+         MJLvMSPv5Oo/Q8Ur1kt5YssZX2cETL5R2pffxI4U=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kVD3Y-001U2Z-9W; Wed, 21 Oct 2020 14:17:28 +0200
+        id 1kVD3Y-001U2b-Av; Wed, 21 Oct 2020 14:17:28 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Bernard Zhao <bernard@vivo.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Colton Lewis <colton.w.lewis@protonmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>, Dennis Li <Dennis.Li@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/6] drm: amdgpu: kernel-doc: update some adev parameters
-Date:   Wed, 21 Oct 2020 14:17:22 +0200
-Message-Id: <8245658e2c6fb724e2ffbe6ead43b75bbdf8818d.1603282193.git.mchehab+huawei@kernel.org>
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/6] docs: lockdep-design: fix some warning issues
+Date:   Wed, 21 Oct 2020 14:17:23 +0200
+Message-Id: <ef8a80c3250dcbea64c6dda2b9b25f81f93da4eb.1603282193.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603282193.git.mchehab+huawei@kernel.org>
 References: <cover.1603282193.git.mchehab+huawei@kernel.org>
@@ -58,231 +47,201 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running "make htmldocs: produce lots of warnings on those files:
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'p_size' description in 'amdgpu_gtt_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:134: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_fini'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'p_size' description in 'amdgpu_gtt_mgr_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:134: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_fini'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
-	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
+There are several warnings caused by a recent change
+224ec489d3cd ("lockdep/Documention: Recursive read lock detection reasoning")
 
-They're related to the repacement of some parameters by adev,
-and due to a few renamed parameters.
+Those are reported by htmldocs build:
 
-While here, uniform the name of the parameter for it to be
-the same on all functions using a pointer to struct amdgpu_device.
+    Documentation/locking/lockdep-design.rst:429: WARNING: Definition list ends without a blank line; unexpected unindent.
+    Documentation/locking/lockdep-design.rst:452: WARNING: Block quote ends without a blank line; unexpected unindent.
+    Documentation/locking/lockdep-design.rst:453: WARNING: Unexpected indentation.
+    Documentation/locking/lockdep-design.rst:453: WARNING: Blank line required after table.
+    Documentation/locking/lockdep-design.rst:454: WARNING: Block quote ends without a blank line; unexpected unindent.
+    Documentation/locking/lockdep-design.rst:455: WARNING: Unexpected indentation.
+    Documentation/locking/lockdep-design.rst:455: WARNING: Blank line required after table.
+    Documentation/locking/lockdep-design.rst:456: WARNING: Block quote ends without a blank line; unexpected unindent.
+    Documentation/locking/lockdep-design.rst:457: WARNING: Unexpected indentation.
+    Documentation/locking/lockdep-design.rst:457: WARNING: Blank line required after table.
 
-Update the kernel-doc documentation accordingly.
+Besides the reported issues, there are some missing blank
+lines that ended producing wrong html output, and some
+literals are not properly identified.
 
+Also, the symbols used at the irq enabled/disable table
+are not displayed as expected, as they're not literals.
+Also, on another table they're using a different notation.
+
+Fixes: 224ec489d3cd ("lockdep/Documention: Recursive read lock detection reasoning")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c   | 28 ++++++++++----------
- drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c  |  6 ++---
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c |  7 +++--
- 3 files changed, 20 insertions(+), 21 deletions(-)
+ Documentation/locking/lockdep-design.rst | 51 ++++++++++++++----------
+ 1 file changed, 31 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index e8b41756c9f9..f8785bdec79c 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -705,7 +705,7 @@ void amdgpu_device_indirect_wreg64(struct amdgpu_device *adev,
- /**
-  * amdgpu_invalid_rreg - dummy reg read function
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  * @reg: offset of register
-  *
-  * Dummy register read function.  Used for register blocks
-@@ -722,7 +722,7 @@ static uint32_t amdgpu_invalid_rreg(struct amdgpu_device *adev, uint32_t reg)
- /**
-  * amdgpu_invalid_wreg - dummy reg write function
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  * @reg: offset of register
-  * @v: value to write to the register
-  *
-@@ -739,7 +739,7 @@ static void amdgpu_invalid_wreg(struct amdgpu_device *adev, uint32_t reg, uint32
- /**
-  * amdgpu_invalid_rreg64 - dummy 64 bit reg read function
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  * @reg: offset of register
-  *
-  * Dummy register read function.  Used for register blocks
-@@ -756,7 +756,7 @@ static uint64_t amdgpu_invalid_rreg64(struct amdgpu_device *adev, uint32_t reg)
- /**
-  * amdgpu_invalid_wreg64 - dummy reg write function
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  * @reg: offset of register
-  * @v: value to write to the register
-  *
-@@ -773,7 +773,7 @@ static void amdgpu_invalid_wreg64(struct amdgpu_device *adev, uint32_t reg, uint
- /**
-  * amdgpu_block_invalid_rreg - dummy reg read function
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  * @block: offset of instance
-  * @reg: offset of register
-  *
-@@ -793,7 +793,7 @@ static uint32_t amdgpu_block_invalid_rreg(struct amdgpu_device *adev,
- /**
-  * amdgpu_block_invalid_wreg - dummy reg write function
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  * @block: offset of instance
-  * @reg: offset of register
-  * @v: value to write to the register
-@@ -813,7 +813,7 @@ static void amdgpu_block_invalid_wreg(struct amdgpu_device *adev,
- /**
-  * amdgpu_device_asic_init - Wrapper for atom asic_init
-  *
-- * @dev: drm_device pointer
-+ * @adev: amdgpu_device pointer
-  *
-  * Does any asic specific work and then calls atom asic init.
-  */
-@@ -827,7 +827,7 @@ static int amdgpu_device_asic_init(struct amdgpu_device *adev)
- /**
-  * amdgpu_device_vram_scratch_init - allocate the VRAM scratch page
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  *
-  * Allocates a scratch page of VRAM for use by various things in the
-  * driver.
-@@ -844,7 +844,7 @@ static int amdgpu_device_vram_scratch_init(struct amdgpu_device *adev)
- /**
-  * amdgpu_device_vram_scratch_fini - Free the VRAM scratch page
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  *
-  * Frees the VRAM scratch page.
-  */
-@@ -3011,7 +3011,7 @@ bool amdgpu_device_asic_has_dc_support(enum amd_asic_type asic_type)
- /**
-  * amdgpu_device_has_dc_support - check if dc is supported
-  *
-- * @adev: amdgpu_device_pointer
-+ * @adev: amdgpu_device pointer
-  *
-  * Returns true for supported, false for not supported
-  */
-@@ -4045,7 +4045,7 @@ static int amdgpu_device_recover_vram(struct amdgpu_device *adev)
- /**
-  * amdgpu_device_reset_sriov - reset ASIC for SR-IOV vf
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  * @from_hypervisor: request from hypervisor
-  *
-  * do VF FLR and reinitialize Asic
-@@ -4100,7 +4100,7 @@ static int amdgpu_device_reset_sriov(struct amdgpu_device *adev,
- /**
-  * amdgpu_device_has_job_running - check if there is any job in mirror list
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  *
-  * check if there is any job in mirror list
-  */
-@@ -4128,7 +4128,7 @@ bool amdgpu_device_has_job_running(struct amdgpu_device *adev)
- /**
-  * amdgpu_device_should_recover_gpu - check if we should try GPU recovery
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  *
-  * Check amdgpu_gpu_recovery and SRIOV status to see if we should try to recover
-  * a hung GPU.
-@@ -4477,7 +4477,7 @@ static int amdgpu_device_suspend_display_audio(struct amdgpu_device *adev)
- /**
-  * amdgpu_device_gpu_recover - reset the asic and recover scheduler
-  *
-- * @adev: amdgpu device pointer
-+ * @adev: amdgpu_device pointer
-  * @job: which job trigger hang
-  *
-  * Attempt to reset the GPU if it has hung (all asics).
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-index f203e4a6a3f2..731f3aa2e6ba 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
-@@ -81,8 +81,8 @@ static const struct ttm_resource_manager_func amdgpu_gtt_mgr_func;
- /**
-  * amdgpu_gtt_mgr_init - init GTT manager and DRM MM
-  *
-- * @man: TTM memory type manager
-- * @p_size: maximum size of GTT
-+ * @adev: amdgpu_device pointer
-+ * @gtt_size: maximum size of GTT
-  *
-  * Allocate and initialize the GTT manager.
-  */
-@@ -123,7 +123,7 @@ int amdgpu_gtt_mgr_init(struct amdgpu_device *adev, uint64_t gtt_size)
- /**
-  * amdgpu_gtt_mgr_fini - free and destroy GTT manager
-  *
-- * @man: TTM memory type manager
-+ * @adev: amdgpu_device pointer
-  *
-  * Destroy and free the GTT manager, returns -EBUSY if ranges are still
-  * allocated inside it.
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-index 01c1171afbe0..0c6b7c5ecfec 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-@@ -168,8 +168,7 @@ static const struct ttm_resource_manager_func amdgpu_vram_mgr_func;
- /**
-  * amdgpu_vram_mgr_init - init VRAM manager and DRM MM
-  *
-- * @man: TTM memory type manager
-- * @p_size: maximum size of VRAM
-+ * @adev: amdgpu_device pointer
-  *
-  * Allocate and initialize the VRAM manager.
-  */
-@@ -199,7 +198,7 @@ int amdgpu_vram_mgr_init(struct amdgpu_device *adev)
- /**
-  * amdgpu_vram_mgr_fini - free and destroy VRAM manager
-  *
-- * @man: TTM memory type manager
-+ * @adev: amdgpu_device pointer
-  *
-  * Destroy and free the VRAM manager, returns -EBUSY if ranges are still
-  * allocated inside it.
-@@ -229,7 +228,7 @@ void amdgpu_vram_mgr_fini(struct amdgpu_device *adev)
- /**
-  * amdgpu_vram_mgr_vis_size - Calculate visible node size
-  *
-- * @adev: amdgpu device structure
-+ * @adev: amdgpu_device pointer
-  * @node: MM node structure
-  *
-  * Calculate how many bytes of the MM node are inside visible VRAM
+diff --git a/Documentation/locking/lockdep-design.rst b/Documentation/locking/lockdep-design.rst
+index cec03bd1294a..9f3cfca9f8a4 100644
+--- a/Documentation/locking/lockdep-design.rst
++++ b/Documentation/locking/lockdep-design.rst
+@@ -42,6 +42,7 @@ The validator tracks lock-class usage history and divides the usage into
+ (4 usages * n STATEs + 1) categories:
+ 
+ where the 4 usages can be:
++
+ - 'ever held in STATE context'
+ - 'ever held as readlock in STATE context'
+ - 'ever held with STATE enabled'
+@@ -49,10 +50,12 @@ where the 4 usages can be:
+ 
+ where the n STATEs are coded in kernel/locking/lockdep_states.h and as of
+ now they include:
++
+ - hardirq
+ - softirq
+ 
+ where the last 1 category is:
++
+ - 'ever used'                                       [ == !unused        ]
+ 
+ When locking rules are violated, these usage bits are presented in the
+@@ -96,9 +99,9 @@ exact case is for the lock as of the reporting time.
+   +--------------+-------------+--------------+
+   |              | irq enabled | irq disabled |
+   +--------------+-------------+--------------+
+-  | ever in irq  |      ?      |       -      |
++  | ever in irq  |     '?'     |      '-'     |
+   +--------------+-------------+--------------+
+-  | never in irq |      +      |       .      |
++  | never in irq |     '+'     |      '.'     |
+   +--------------+-------------+--------------+
+ 
+ The character '-' suggests irq is disabled because if otherwise the
+@@ -216,7 +219,7 @@ looks like this::
+        BD_MUTEX_PARTITION
+   };
+ 
+-mutex_lock_nested(&bdev->bd_contains->bd_mutex, BD_MUTEX_PARTITION);
++  mutex_lock_nested(&bdev->bd_contains->bd_mutex, BD_MUTEX_PARTITION);
+ 
+ In this case the locking is done on a bdev object that is known to be a
+ partition.
+@@ -334,7 +337,7 @@ Troubleshooting:
+ ----------------
+ 
+ The validator tracks a maximum of MAX_LOCKDEP_KEYS number of lock classes.
+-Exceeding this number will trigger the following lockdep warning:
++Exceeding this number will trigger the following lockdep warning::
+ 
+ 	(DEBUG_LOCKS_WARN_ON(id >= MAX_LOCKDEP_KEYS))
+ 
+@@ -420,7 +423,8 @@ the critical section of another reader of the same lock instance.
+ 
+ The difference between recursive readers and non-recursive readers is because:
+ recursive readers get blocked only by a write lock *holder*, while non-recursive
+-readers could get blocked by a write lock *waiter*. Considering the follow example:
++readers could get blocked by a write lock *waiter*. Considering the follow
++example::
+ 
+ 	TASK A:			TASK B:
+ 
+@@ -448,20 +452,22 @@ There are simply four block conditions:
+ 
+ Block condition matrix, Y means the row blocks the column, and N means otherwise.
+ 
+-	    | E | r | R |
+ 	+---+---+---+---+
+-	  E | Y | Y | Y |
++	|   | E | r | R |
+ 	+---+---+---+---+
+-	  r | Y | Y | N |
++	| E | Y | Y | Y |
++	+---+---+---+---+
++	| r | Y | Y | N |
++	+---+---+---+---+
++	| R | Y | Y | N |
+ 	+---+---+---+---+
+-	  R | Y | Y | N |
+ 
+ 	(W: writers, r: non-recursive readers, R: recursive readers)
+ 
+ 
+ acquired recursively. Unlike non-recursive read locks, recursive read locks
+ only get blocked by current write lock *holders* other than write lock
+-*waiters*, for example:
++*waiters*, for example::
+ 
+ 	TASK A:			TASK B:
+ 
+@@ -491,7 +497,7 @@ Recursive locks don't block each other, while non-recursive locks do (this is
+ even true for two non-recursive read locks). A non-recursive lock can block the
+ corresponding recursive lock, and vice versa.
+ 
+-A deadlock case with recursive locks involved is as follow:
++A deadlock case with recursive locks involved is as follow::
+ 
+ 	TASK A:			TASK B:
+ 
+@@ -510,7 +516,7 @@ because there are 3 types for lockers, there are, in theory, 9 types of lock
+ dependencies, but we can show that 4 types of lock dependencies are enough for
+ deadlock detection.
+ 
+-For each lock dependency:
++For each lock dependency::
+ 
+ 	L1 -> L2
+ 
+@@ -525,20 +531,25 @@ same types).
+ With the above combination for simplification, there are 4 types of dependency edges
+ in the lockdep graph:
+ 
+-1) -(ER)->: exclusive writer to recursive reader dependency, "X -(ER)-> Y" means
++1) -(ER)->:
++	    exclusive writer to recursive reader dependency, "X -(ER)-> Y" means
+ 	    X -> Y and X is a writer and Y is a recursive reader.
+ 
+-2) -(EN)->: exclusive writer to non-recursive locker dependency, "X -(EN)-> Y" means
++2) -(EN)->:
++	    exclusive writer to non-recursive locker dependency, "X -(EN)-> Y" means
+ 	    X -> Y and X is a writer and Y is either a writer or non-recursive reader.
+ 
+-3) -(SR)->: shared reader to recursive reader dependency, "X -(SR)-> Y" means
++3) -(SR)->:
++	    shared reader to recursive reader dependency, "X -(SR)-> Y" means
+ 	    X -> Y and X is a reader (recursive or not) and Y is a recursive reader.
+ 
+-4) -(SN)->: shared reader to non-recursive locker dependency, "X -(SN)-> Y" means
++4) -(SN)->:
++	    shared reader to non-recursive locker dependency, "X -(SN)-> Y" means
+ 	    X -> Y and X is a reader (recursive or not) and Y is either a writer or
+ 	    non-recursive reader.
+ 
+-Note that given two locks, they may have multiple dependencies between them, for example:
++Note that given two locks, they may have multiple dependencies between them,
++for example::
+ 
+ 	TASK A:
+ 
+@@ -592,11 +603,11 @@ circles that won't cause deadlocks.
+ 
+ Proof for sufficiency (Lemma 1):
+ 
+-Let's say we have a strong circle:
++Let's say we have a strong circle::
+ 
+ 	L1 -> L2 ... -> Ln -> L1
+ 
+-, which means we have dependencies:
++, which means we have dependencies::
+ 
+ 	L1 -> L2
+ 	L2 -> L3
+@@ -633,7 +644,7 @@ a lock held by P2, and P2 is waiting for a lock held by P3, ... and Pn is waitin
+ for a lock held by P1. Let's name the lock Px is waiting as Lx, so since P1 is waiting
+ for L1 and holding Ln, so we will have Ln -> L1 in the dependency graph. Similarly,
+ we have L1 -> L2, L2 -> L3, ..., Ln-1 -> Ln in the dependency graph, which means we
+-have a circle:
++have a circle::
+ 
+ 	Ln -> L1 -> L2 -> ... -> Ln
+ 
 -- 
 2.26.2
 
