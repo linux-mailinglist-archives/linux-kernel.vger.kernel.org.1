@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8B629513D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6727929513F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503299AbgJUQ7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503290AbgJUQ7K (ORCPT
+        id S2503313AbgJUQ7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:59:19 -0400
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:2831 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503290AbgJUQ7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:59:10 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69187C0613CE;
-        Wed, 21 Oct 2020 09:59:10 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id d3so3362566wma.4;
-        Wed, 21 Oct 2020 09:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZOAwZaaZ/beDzvPjh4DfLLmuqS+BF1EdS0841cgpzLs=;
-        b=KrcsCvPHQglJCf7oeEF5m7FV7XdFHt9x7F3gW8Rhm9Z1S0QRti2sdPhJRUd8nmCeIQ
-         3nz8sdNk6BgUkY8f1F5JlMV1K0uL8nFfwxgu05ZF+h8mNRaCen+I8fHu2qwMEhXuoHxQ
-         JTFVDgrFTd80wy7wECZ8QX6wcnuGl9kt13IUQGXxcIPJSeOsOY5kwp/AW1iyvLdjBvlE
-         jfDbRMYRgpFMEECXiY7u070ca2FPFZbUC3+HpA7VTRRHbRF3eJzCfaBym6LyQzle5fXa
-         WaSBCbwTh+MoUYuuOsfK7FkiK03/r7t6PaZbFWgBBPbVE14yW1uU1GbLQtr2syg0vJUc
-         CNHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZOAwZaaZ/beDzvPjh4DfLLmuqS+BF1EdS0841cgpzLs=;
-        b=iB2R1K7JXYlyT2k9TSrEiHIWv31cg2SFk9Fplt7alzw4/P8ChSTbzQA75brvk9ErSn
-         PnOv6TtX5z4NhY93SfeEYo55a7ly55Ls4HVQV0xW1ZG2goEVnOZv15sllXJ4g7vo6/QL
-         C9XNBTN0hXzjFiKPlMSI6RC4UdMEr4juLhAw2/Gq2aL1Q25KFULuWXIHmVtPYRAQMcn5
-         7q0dPJ2mhcI9lcnG8uKa/9JrC4nfEx9v+t3Xg1S71F+cVWuL9DLzUQMGTG5yGEQ1Oi64
-         0PjFlVI3ST5Sw5uYphgkLBHf0L4oXXX1By3SzF8Yya+niz8OBtjnLyCumzvkWRnUezGk
-         2Rpw==
-X-Gm-Message-State: AOAM530AO6RkDHjpSdp4iBjwlqTp6kM/Umw0TprW4tM0qn/Dvie65xdK
-        Kq1FqsO+IzgUTzneUiPxHMLCtrW9bYcNrqtoa0Y=
-X-Google-Smtp-Source: ABdhPJwu3PAB+EK3ul320vHDvWKoXxQTAQwJyBX44XCUJZtWcWL6PCNBwIxZExqEpwyJy/GoRVJba0GldZXaq6LR/GQ=
-X-Received: by 2002:a05:600c:2241:: with SMTP id a1mr4787948wmm.49.1603299549106;
- Wed, 21 Oct 2020 09:59:09 -0700 (PDT)
+        Wed, 21 Oct 2020 12:59:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1603299553; x=1634835553;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Gv8zeiN6SuGFQ/VMgl/Nsqse/mSIqJnzICPQ/4DBg5s=;
+  b=c9gl3B+SHHx7ybySDydQdIY1gSJ9+ZMuwgbUBULGclA3ekgya+qKiCKD
+   3bbz8JLrHtF4uou833tQoc40w6NC7wdUQQua6I3xPAD00dk+CsENnVI7M
+   +r7ZXOA9QFrhjAGAAhneR/CCHA7FmH82NGvOHJ+1G4ktX1hplPLMZymF2
+   Yiqwnck9vDqi4jykcYaYyNUisDZnoTHqint5K4A9sshybJNy8WCh2crsr
+   TWaTu+2kjuwheiu5gMM7N+TP1adiUPdKrFfF0bbzrxFLHAhzgvvAnu0dV
+   qv3UBtK0c11qRvg0I4lROKL0Ao99tXQuYcGDubRSfRKakrxMRAEpkmy03
+   Q==;
+IronPort-SDR: YqqHvhrwDSHLgjLdGmxCgE61Mb2GDH/LRpkDT5+Gr73l2iB1wqW2pYIMkENCazJyWJHN0GEkn2
+ 1WH2Ad/x0U2Z9eJ3Hu0mjhFMgHCvoC8xpeYZkkg9hTdIK6zZ5l89ZT+ZB2t/Y524m99rgqQzV6
+ IYMGp9C3lz1XEUMS/E0sduJFv9htxivZbE8GBZN2mXxO1INPI/6dt9N/tyDh1INfl9UQDb8Q3c
+ qtUP3EyUCD+dZ9Vo7ee6vOIA0GSjs9IgZDfVPHNeFBXs3JsTqPny6X1iApw1JeC4Qlrf0BunBW
+ UJU=
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="90945691"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Oct 2020 09:59:12 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 21 Oct 2020 09:59:12 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 21 Oct 2020 09:59:12 -0700
+Date:   Wed, 21 Oct 2020 18:59:11 +0200
+From:   "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+CC:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+        "vishal@chelsio.com" <vishal@chelsio.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "kuba@kernel.org" <kuba@kernel.org>, Po Liu <po.liu@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "Alexandru Marginean" <alexandru.marginean@nxp.com>,
+        Leo Li <leoyang.li@nxp.com>, "Mingkai Hu" <mingkai.hu@nxp.com>
+Subject: Re: [PATCH v1 net-next 2/5] net: mscc: ocelot: set vcap IS2 chain to
+ goto PSFP chain
+Message-ID: <20201021165911.7aj4ksqqj4cof2tb@soft-dev16>
+References: <20201020072321.36921-1-xiaoliang.yang_1@nxp.com>
+ <20201020072321.36921-3-xiaoliang.yang_1@nxp.com>
+ <20201020232713.vyu3afhnhicf6xn2@skbuf>
 MIME-Version: 1.0
-References: <cover.1598594714.git.viresh.kumar@linaro.org> <6e4110032f8711e8bb0acbeccfe66dec3b09d5c1.1598594714.git.viresh.kumar@linaro.org>
- <20201005062633.ejpehkpeuwksrx3e@vireshk-i7> <20201021072404.y43tjzd2ehclrejp@vireshk-i7>
-In-Reply-To: <20201021072404.y43tjzd2ehclrejp@vireshk-i7>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 21 Oct 2020 09:58:57 -0700
-Message-ID: <CAF6AEGvAK_mAxJB32vvPOD3jumpYprRtUBPT8GRBV8gty7fxFQ@mail.gmail.com>
-Subject: Re: [PATCH V2 3/8] drm/msm: Unconditionally call dev_pm_opp_of_remove_table()
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Sean Paul <sean@poorly.run>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20201020232713.vyu3afhnhicf6xn2@skbuf>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 12:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 05-10-20, 11:56, Viresh Kumar wrote:
-> > On 28-08-20, 11:37, Viresh Kumar wrote:
-> > > dev_pm_opp_of_remove_table() doesn't report any errors when it fails to
-> > > find the OPP table with error -ENODEV (i.e. OPP table not present for
-> > > the device). And we can call dev_pm_opp_of_remove_table()
-> > > unconditionally here.
-> > >
-> > > While at it, also create a label to put clkname.
-> > >
-> > > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+The 10/20/2020 23:27, Vladimir Oltean wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On Tue, Oct 20, 2020 at 03:23:18PM +0800, Xiaoliang Yang wrote:
+> > VSC9959 supports Per-Stream Filtering and Policing(PSFP), which is
+> > processing after VCAP blocks. We set this block on chain 30000 and
+> > set vcap IS2 chain to goto PSFP chain if hardware support.
 > >
-> > Can someone please apply this and the other drm patch (2/8) ?
->
-> Rob/Rajendra, can someone please have a look at these patches ?
+> > An example set is:
+> >       > tc filter add dev swp0 ingress chain 21000 flower
+> >               skip_sw action goto chain 30000
+> >
+> > Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+> > ---
+> 
+> I will defer to Microchip people whether 30000 is a good chain number
+> for TSN offloads. Do you have other ingress VCAPs that you would like to
+> number 30000?
 
-Oh, sorry I missed that, could someone re-send it and CC
-freedreno@lists.freedesktop.org so it shows up in patchworks.. that is
-more reliable counting on me to not overlook something in my mail
-
-BR,
--R
+We see no problems with using ingress chain 30000 for PSFP.
+-- 
+Joergen Andreasen, Microchip
