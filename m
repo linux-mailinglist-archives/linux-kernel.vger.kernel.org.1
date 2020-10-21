@@ -2,108 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8092947E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 07:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB232947E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 07:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408101AbgJUFde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 01:33:34 -0400
-Received: from mail-eopbgr80054.outbound.protection.outlook.com ([40.107.8.54]:42820
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        id S2440606AbgJUFhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 01:37:23 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:58454 "EHLO zju.edu.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731295AbgJUFde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 01:33:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O/dRGVv/QaF6mLXAoxGTDq/WwJj0DEMFi6JK6N9eR5ahE809LZH8/rKfooFGbyBi1ZmHcqkqCgX/ETiS+JyDCotHbBw1nVZdJkgc0Ex+jxGvPrWDqWIINd8rohxOGtntKNqZYWI2PkgGS+PwaUO7t2QtRVVw1JAElV39Y8h8uWzxWHfC4wtKidrka49I77XI0+fs2y8on+lrJ/CvFmVbJ7xgmQ4Kbpksd8oGCEqd0YaHgLlPf1qTxZchOcAS0zTLKrw8vem21DMHZZN5JbB4/pn72rbgvmdlh4bigvIbApdQQh/swG07fxoaRuzCGq9PmogIF5WNix+as4QkPqsglQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O3Sr8JjE9FbXixLIg6T7siY8V8DhuGbwScB9quX2DOE=;
- b=Dc08S4LVXC9qDvpsgMJG6WJv7b16b+YsnwPp5lPy0fig57t/9fMWi2U6JCscxnubMdPuzkeWQfsZJAYTacJ7fkBXl13bXDdBshrlyUS31uO+c/Ijlmy0QtQvz2dCHe9pwfDe2Q3/CMwkRxbGTFGFirfYvYqkzh9tSrarRSCQ2kWoUBr1eEv6KyVixp91lUNw0slchAs17AZ5cNZ71e/SctfEijL+NJtuOWyZOXRAfrqFZUV9eNBB6r48PaV00Tag5F6F2zIvlGEl7BRTOk5aEoHmJN5PItS43o5s0OLg38OpZN3kmsK7s9Xq/KqwxDNP9D6z2IUYqgDJXsOrVUE3Rg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O3Sr8JjE9FbXixLIg6T7siY8V8DhuGbwScB9quX2DOE=;
- b=FoI9iowjReDRO53gZVzdyPzEdKu70obJhBDge7YPQMnV6rBXJ8het4V7zgUbM63suemXdYXGHgjq2LO6DYHkF12gmt0UEZ5hSnV4AaAteAMzZYk7AYsqLW/jSURaO4jn/qL8D6VweTNRWRPu+IiivAdXpIspeQONyCq51I8MfS0=
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB7PR04MB3964.eurprd04.prod.outlook.com (2603:10a6:5:17::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 21 Oct
- 2020 05:33:29 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3c3a:58b9:a1cc:cbcc]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3c3a:58b9:a1cc:cbcc%9]) with mapi id 15.20.3477.028; Wed, 21 Oct 2020
- 05:33:29 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     "mkl@pengutronix.de" <mkl@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, Ying Liu <victor.liu@nxp.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH V4 0/6] can: flexcan: add stop mode support for i.MX8QM
-Thread-Topic: [PATCH V4 0/6] can: flexcan: add stop mode support for i.MX8QM
-Thread-Index: AQHWp2pf20/YUdBzdkWpWOmwjarHMamhhkvQ
-Date:   Wed, 21 Oct 2020 05:33:29 +0000
-Message-ID: <DB8PR04MB6795A27E2E3D66186A8720DCE61C0@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <20201021052437.3763-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20201021052437.3763-1-qiangqing.zhang@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: cde945fc-14da-4b99-cd26-08d87582d772
-x-ms-traffictypediagnostic: DB7PR04MB3964:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB39649344E5F95C59994B2EDBE61C0@DB7PR04MB3964.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2sLP9ln/p7BNxhA4vwNI8oVp1fN1lIgMJ1PyKO8NW9iFbWLF4vhFQEhCg/n0SgLyLAj2QuN4ZO0MX+wxBueAC69s6qyU5sEi01nzxkj0VH49F3aGbzpI+6al/GlpNVIJQGKHW6uHDgzuVFGObz++zpLW+rAud2R/XP81ryilhlazZV9qzSEnRbtb+WcdCuQ+VgK5qBuMFdEd7r9HMKM6W0pYXzeMWlFyPb1KxPicNOazuYwp29ax2xrAykXDewtmu+gTzv7ZaVyNbzAEunZ3uLajrYu50HYzLXMJVVON1ro+ycE1V7+qIRz8UMICcp4e
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(396003)(39860400002)(346002)(5660300002)(9686003)(6506007)(8936002)(478600001)(64756008)(66476007)(66446008)(66556008)(66946007)(76116006)(4326008)(26005)(54906003)(110136005)(71200400001)(33656002)(316002)(52536014)(83380400001)(2906002)(186003)(86362001)(53546011)(8676002)(7696005)(4744005)(55016002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 9wvF9VAxk9b3Ifj1tI8thQQgzlef0N+54s7KtiMgzr2d7AoQ+jgiiIOO7W3V66jJHqiR6hPIEJLsFs1uhwiBzDF0QBVS60kgfcf+dx0LXrkN+phfzmhTLFlk0xuVxQaDMJKTSGPPJbIcjOGL72K9c0HaCAv1rgYGeYkabQkGXeFMJuVjQo6lP6l0kWWqXnYX9n7EJOzLXnS5x4XIKbHOATrJp+BGUPhlkPOH2c8/5sLTdo/XRhh5amS0yt1W5H+dqKLLb+rzWwLdCix332wlleKXwDrS6IA8hwo0ABh70WMUpTUIRozI2ttwGqWIYxnGNNUvoia8EDf6GdASvnoF8BhRYlRgp0ueNEBtKC9yTlmTchb/5X7D3h4Ff4gk8kLzium51nxvx/iuJgtf9S9ldHzQnT19a4PQBrtCFYKHRjY+PL8yEFqXElwXUoE8pVRtaxAWkg+CL7SLy6zmfuc78QaS29A0CmTX1fvhpYzigowS5izwKkEl7NR8XbBMbAJtq7Er3W5+YoALRM5tOOAbkQvJcqUl2mj9CP3qE/G6tgny6JEC/iUg6m/QNbdbNzXDDFq8V0LAPpe6S7BZSu7+5T9FCnFyqAeNUy/WNgL/v0sBGTsIUPgvli/l7l21vjpo1+1LRxZwhxFQFDqiL/uw+A==
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cde945fc-14da-4b99-cd26-08d87582d772
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2020 05:33:29.1737
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Y10GA+7IU6VFqhvm6hOzwf+dVDxc6HPIPl2M/4Pjt8FIrv5TTYFSy6ITACR+YPhw1FZSYl/tFyEbC3/hpzqrEQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB3964
+        id S2408265AbgJUFhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 01:37:23 -0400
+Received: from localhost.localdomain (unknown [210.32.148.79])
+        by mail-app3 (Coremail) with SMTP id cC_KCgAXT5z4yI9fbU9RAA--.37365S4;
+        Wed, 21 Oct 2020 13:37:00 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: ref-verify: Fix memleak in btrfs_ref_tree_mod
+Date:   Wed, 21 Oct 2020 13:36:55 +0800
+Message-Id: <20201021053655.28624-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgAXT5z4yI9fbU9RAA--.37365S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrAFyftrW5AF4UCF4kur1xZrb_yoWxWFbEka
+        97Ary8ur1UZr1fua18Ka1ktrZYywnYgr4xXwn2kF1jkw42yFyrX393Jrn8ta45JrW7WFnx
+        CFWSqrn8CwnrujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIkFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48J
+        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
+        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x0JUP5rcUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgATBlZdtQf4pwAFs0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvYWtpbSBaaGFuZyA8cWlh
-bmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IFNlbnQ6IDIwMjDE6jEw1MIyMcjVIDEzOjI1DQo+IFRv
-OiBta2xAcGVuZ3V0cm9uaXguZGU7IHJvYmgrZHRAa2VybmVsLm9yZzsgc2hhd25ndW9Aa2VybmVs
-Lm9yZzsNCj4gcy5oYXVlckBwZW5ndXRyb25peC5kZQ0KPiBDYzoga2VybmVsQHBlbmd1dHJvbml4
-LmRlOyBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsgWWluZyBMaXUNCj4gPHZpY3Rv
-ci5saXVAbnhwLmNvbT47IGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtl
-cm5lbC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogW1BB
-VENIIFY0IDAvNl0gY2FuOiBmbGV4Y2FuOiBhZGQgc3RvcCBtb2RlIHN1cHBvcnQgZm9yIGkuTVg4
-UU0NCj4gDQo+IFRoZSBmaXJzdCBwYXRjaCBmcm9tIExpdSBZaW5nIGFpbXMgdG8gZXhwb3J0IFND
-VSBzeW1ib2xzIGZvciBTb0NzIHcvd28gU0NVLCBzbw0KPiB0aGF0IG5vIG5lZWQgdG8gY2hlY2sg
-Q09ORklHX0lNWF9TQ1UgaW4gdGhlIHNwZWNpZmljIGRyaXZlci4NCj4gDQo+IFRoZSBmb2xsb3dp
-bmcgcGF0Y2hlcyBhcmUgZmxleGNhbiBmaXhlcyBhbmQgYWRkIHN0b3AgbW9kZSBzdXBwb3J0IGZv
-cg0KPiBpLk1YOFFNLg0KDQpIaSBTaGF3bmd1bywNCg0KQ291bGQgeW91IHBsZWFzZSBoZWxwIHJl
-dmlldyBwYXRjaCAxLzYgYW5kIDUvNj8gU2luY2UgZmxleGNhbiBkcml2ZXIgZGVwZW5kcyBvbiB0
-aGVzZS4gVGhhbmtzLg0KDQpGb3IgcGF0Y2ggMS82LCBpdCB3aWxsIGJlbmVmaXQgb3RoZXIgZHJp
-dmVycyB3aGljaCBjb3ZlciBTb0NzIHcvd28gU0NVLCBzdWNoIGFzIGkuTVggRXRoZXJuZXQgQ29u
-dHJvbGxlciBkcml2ZXIgKGRyaXZlcnMvbmV0L2V0aGVybmV0L2ZyZWVzY2FsZS9mZWNfbWFpbi5j
-KS4NCg0KQmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQoNCg==
+There is one error handling path does not free ref,
+which may cause a memory leak.
+
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ fs/btrfs/ref-verify.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
+index 7f03dbe5b609..78693d3dd15b 100644
+--- a/fs/btrfs/ref-verify.c
++++ b/fs/btrfs/ref-verify.c
+@@ -860,6 +860,7 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
+ "dropping a ref for a root that doesn't have a ref on the block");
+ 			dump_block_entry(fs_info, be);
+ 			dump_ref_action(fs_info, ra);
++			kfree(ref);
+ 			kfree(ra);
+ 			goto out_unlock;
+ 		}
+-- 
+2.17.1
+
