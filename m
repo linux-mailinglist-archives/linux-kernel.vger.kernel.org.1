@@ -2,103 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC13294DED
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D888C294DF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443064AbgJUNtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 09:49:02 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:52344 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2439375AbgJUNtC (ORCPT
+        id S2443096AbgJUNts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 09:49:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439619AbgJUNtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 09:49:02 -0400
-X-IronPort-AV: E=Sophos;i="5.77,401,1596492000"; 
-   d="scan'208";a="473693564"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 15:48:59 +0200
-Date:   Wed, 21 Oct 2020 15:48:59 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mel Gorman <mgorman@suse.de>
-cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles.Muller@inria.fr
-Subject: Re: [PATCH] sched/fair: check for idle core
-In-Reply-To: <20201021131827.GF32041@suse.de>
-Message-ID: <alpine.DEB.2.22.394.2010211547190.57356@hadrien>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr> <20201021112038.GC32041@suse.de> <20201021122532.GA30733@vingu-book> <20201021124700.GE32041@suse.de> <alpine.DEB.2.22.394.2010211452100.8475@hadrien> <20201021131827.GF32041@suse.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Wed, 21 Oct 2020 09:49:47 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45C1C0613CE;
+        Wed, 21 Oct 2020 06:49:47 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id b19so1261134pld.0;
+        Wed, 21 Oct 2020 06:49:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zVrTZQ3G6uTKScVNQhhmJVPbctK32CmRiu3rVC+ChtI=;
+        b=ZRtxDexzbtJrgyhr/682KnNDoyjRKja050S44Bvdo3xw/F+XIuAMEE0GwDbprQe4z4
+         C7VajrC1noMwnt7jb6Ue0z04io4DPMQ8vdhL8FkF3Wpi09VRe+aJjt5QGR1A3r8MurPQ
+         xW4vM2zdOUy9ay3uAqodmjB15oz5pHv8qyTzWetRw8bbEGSWDJV5viMo9GR38LEK8OaA
+         3mJkideOGWlUMI1OMrasHSiPkZLTnKkOpZjCaVkQxbCHWcyiOugHWDy3nXB4zIvAd4id
+         ehwoW7XVfpNfsE8p5dM1r7hs5IzypiDmkKV7VbKLhUNeKGexrWh0StHSm1YdpY0/AVMM
+         9Z5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zVrTZQ3G6uTKScVNQhhmJVPbctK32CmRiu3rVC+ChtI=;
+        b=ak4h6F48XN2f7qBsrMX2U3aW+3Nu32uhMxNRymRMHkP7LhaRqp5prus4T6+3ZmIf2t
+         6M+mM+uYd89X1Wsxwh0aWv2j+8mItMxZw078FosYGOGiGWPIvBLeww419XjBrqcwmgvp
+         3z0T7FREhl9/UTaePCzidpHsDdEpATVq5Jh4pddp8HZZKmh3QQfRT0MLEChNoMYGuQCj
+         pJqlviPgv73KKjrC+hfJK6b+O//RdSOONEoROHShR6BfGCBZEDG0+Uer0lX2we3NqJgj
+         F+WEuqqguWehtTy/CMtmF01sVrpDJwzangA70LYuDX4dqW+B7iCqMcXZUkHdTkFp9rSG
+         YqUw==
+X-Gm-Message-State: AOAM533i7Xm+Ay+Sb54C/ffI5UyRHvtd2tq8y/08DydTq1rNG4WZ0393
+        EeBV33iVPGIKwk5266MVQYOrE2+OCcQNoQ==
+X-Google-Smtp-Source: ABdhPJydzMyQuSuKSbd5W2xeT2ChmT5WNH8SkMgGWnGj6eAEnGQ5b8hIoP1pyxxIpCX4EuuQyb9PfA==
+X-Received: by 2002:a17:90b:4a83:: with SMTP id lp3mr3548856pjb.107.1603288186824;
+        Wed, 21 Oct 2020 06:49:46 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id y14sm2425475pfe.107.2020.10.21.06.49.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 06:49:46 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+To:     linux-input@vger.kernel.org
+Cc:     Helmut Stult <helmut.stult@schinfo.de>,
+        =?UTF-8?q?Barnab=C3=A1s=20P=C5=91cze?= <pobrn@protonmail.com>,
+        stable@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3] HID: i2c-hid: add polling mode based on connected GPIO chip's pin status
+Date:   Wed, 21 Oct 2020 21:49:31 +0800
+Message-Id: <20201021134931.462560-1-coiby.xu@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-484522562-1603288140=:57356"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+For a broken touchpad, it may take several months or longer to be fixed.
+Polling mode could be a fallback solution for enthusiastic Linux users
+when they have a new laptop. It also acts like a debugging feature. If
+polling mode works for a broken touchpad, we can almost be certain
+the root cause is related to the interrupt or power setting.
 
---8323329-484522562-1603288140=:57356
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8BIT
+When polling mode is enabled, an I2C device can't wake up the suspended
+system since enable/disable_irq_wake is invalid for polling mode.
 
+Three module parameters are added to i2c-hid,
+    - polling_mode: by default set to 0, i.e., polling is disabled
+    - polling_interval_idle_ms: the polling internal when the touchpad
+      is idle, default to 10ms
+    - polling_interval_active_us: the polling internal when the touchpad
+      is active, default to 4000us
 
+User can change the last two runtime polling parameter by writing to
+/sys/module/i2c_hid/parameters/polling_interval_{idle_ms,active_us}.
 
-On Wed, 21 Oct 2020, Mel Gorman wrote:
+Cc: <stable@vger.kernel.org>
+Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
+Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+---
+ drivers/hid/i2c-hid/i2c-hid-core.c | 145 +++++++++++++++++++++++++++--
+ 1 file changed, 135 insertions(+), 10 deletions(-)
 
-> On Wed, Oct 21, 2020 at 02:56:06PM +0200, Julia Lawall wrote:
-> >
-> >
-> > On Wed, 21 Oct 2020, Mel Gorman wrote:
-> >
-> > > On Wed, Oct 21, 2020 at 02:25:32PM +0200, Vincent Guittot wrote:
-> > > > > I see Vincent already agreed with the patch so I could be wrong.  Vincent,
-> > > > > did I miss something stupid?
-> > > >
-> > > > This patch fixes the problem that we don't favor anymore the prev_cpu when it is idle since
-> > > > commit 11f10e5420f6ce because load is not null when cpu is idle whereas runnable_load was
-> > > > And this is important because this will then decide in which LLC we will looks for a cpu
-> > > >
-> > >
-> > > Ok, that is understandable but I'm still concerned that the fix simply
-> > > trades one problem for another by leaving related tasks remote to each
-> > > other and increasing cache misses and remote data accesses.
-> > >
-> > > wake_affine_weight is a giant pain because really we don't care about the
-> > > load on the waker CPU or its available, we care about whether it has idle
-> > > siblings that can be found quickly. As tempting as ripping it out is,
-> > > it never happened because sometimes it makes the right decision.
-> >
-> > My goal was to restore the previous behavior, when runnable load was used.
-> > The patch removing the use of runnable load (11f10e5420f6) presented it
-> > basically as that load balancing was using it, so wakeup should use it
-> > too, and any way it didn't matter because idle CPUS were checked for
-> > anyway.
-> >
->
-> Which is fair.
->
-> > Is your point of view that the proposed change is overkill?  Or is it that
-> > the original behavior was not desirable?
-> >
->
-> I worry it's overkill because prev is always used if it is idle even
-> if it is on a node remote to the waker. It cuts off the option of a
-> wakee moving to a CPU local to the waker which is not equivalent to the
-> original behaviour.
+diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+index 786e3e9af1c9..e44237562068 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -36,6 +36,8 @@
+ #include <linux/hid.h>
+ #include <linux/mutex.h>
+ #include <linux/acpi.h>
++#include <linux/kthread.h>
++#include <linux/gpio/driver.h>
+ #include <linux/of.h>
+ #include <linux/regulator/consumer.h>
 
-Could it be possible to check p->recent_used_cpu?  If that is prev (or on
-the same socket?), then prev could be a good choice.  If that is on the
-same socket as the waker, then maybe the waker would be better.
+@@ -60,6 +62,25 @@
+ #define I2C_HID_PWR_ON		0x00
+ #define I2C_HID_PWR_SLEEP	0x01
 
-julia
---8323329-484522562-1603288140=:57356--
++/* polling mode */
++#define I2C_HID_POLLING_DISABLED 0
++#define I2C_HID_POLLING_GPIO_PIN 1
++#define I2C_HID_POLLING_INTERVAL_ACTIVE_US 4000
++#define I2C_HID_POLLING_INTERVAL_IDLE_MS 10
++
++static u8 polling_mode;
++module_param(polling_mode, byte, 0444);
++MODULE_PARM_DESC(polling_mode, "How to poll - 0 disabled; 1 based on GPIO pin's status");
++
++static unsigned int polling_interval_active_us = I2C_HID_POLLING_INTERVAL_ACTIVE_US;
++module_param(polling_interval_active_us, uint, 0644);
++MODULE_PARM_DESC(polling_interval_active_us,
++		 "Poll every {polling_interval_active_us} us when the touchpad is active. Default to 4000 us");
++
++static unsigned int polling_interval_idle_ms = I2C_HID_POLLING_INTERVAL_IDLE_MS;
++module_param(polling_interval_idle_ms, uint, 0644);
++MODULE_PARM_DESC(polling_interval_idle_ms,
++		 "Poll every {polling_interval_idle_ms} ms when the touchpad is idle. Default to 10 ms");
+ /* debug option */
+ static bool debug;
+ module_param(debug, bool, 0444);
+@@ -158,6 +179,8 @@ struct i2c_hid {
+
+ 	struct i2c_hid_platform_data pdata;
+
++	struct task_struct *polling_thread;
++
+ 	bool			irq_wake_enabled;
+ 	struct mutex		reset_lock;
+ };
+@@ -772,7 +795,9 @@ static int i2c_hid_start(struct hid_device *hid)
+ 		i2c_hid_free_buffers(ihid);
+
+ 		ret = i2c_hid_alloc_buffers(ihid, bufsize);
+-		enable_irq(client->irq);
++
++		if (polling_mode == I2C_HID_POLLING_DISABLED)
++			enable_irq(client->irq);
+
+ 		if (ret)
+ 			return ret;
+@@ -814,6 +839,91 @@ struct hid_ll_driver i2c_hid_ll_driver = {
+ };
+ EXPORT_SYMBOL_GPL(i2c_hid_ll_driver);
+
++static int get_gpio_pin_state(struct irq_desc *irq_desc)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(&irq_desc->irq_data);
++
++	return gc->get(gc, irq_desc->irq_data.hwirq);
++}
++
++static bool interrupt_line_active(struct i2c_client *client)
++{
++	unsigned long trigger_type = irq_get_trigger_type(client->irq);
++	struct irq_desc *irq_desc = irq_to_desc(client->irq);
++	ssize_t	status = get_gpio_pin_state(irq_desc);
++
++	if (status < 0) {
++		dev_warn(&client->dev,
++			 "Failed to get GPIO Interrupt line status for %s",
++			 client->name);
++		return false;
++	}
++	/*
++	 * According to Windows Precsiontion Touchpad's specs
++	 * https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/windows-precision-touchpad-device-bus-connectivity,
++	 * GPIO Interrupt Assertion Leve could be either ActiveLow or
++	 * ActiveHigh.
++	 */
++	if (trigger_type & IRQF_TRIGGER_LOW)
++		return !status;
++
++	return status;
++}
++
++static int i2c_hid_polling_thread(void *i2c_hid)
++{
++	struct i2c_hid *ihid = i2c_hid;
++	struct i2c_client *client = ihid->client;
++	unsigned int polling_interval_idle;
++
++	while (1) {
++		if (kthread_should_stop())
++			break;
++
++		while (interrupt_line_active(client) &&
++		       !test_bit(I2C_HID_READ_PENDING, &ihid->flags) &&
++		       !kthread_should_stop()) {
++			i2c_hid_get_input(ihid);
++			usleep_range(polling_interval_active_us,
++				     polling_interval_active_us + 100);
++		}
++		/*
++		 * re-calculate polling_interval_idle
++		 * so the module parameters polling_interval_idle_ms can be
++		 * changed dynamically through sysfs as polling_interval_active_us
++		 */
++		polling_interval_idle = polling_interval_idle_ms * 1000;
++		usleep_range(polling_interval_idle,
++			     polling_interval_idle + 1000);
++	}
++
++	do_exit(0);
++	return 0;
++}
++
++static int i2c_hid_init_polling(struct i2c_hid *ihid)
++{
++	struct i2c_client *client = ihid->client;
++
++	if (!irq_get_trigger_type(client->irq)) {
++		dev_warn(&client->dev,
++			 "Failed to get GPIO Interrupt Assertion Level, could not enable polling mode for %s",
++			 client->name);
++		return -EINVAL;
++	}
++
++	ihid->polling_thread = kthread_create(i2c_hid_polling_thread, ihid,
++					      "I2C HID polling thread");
++
++	if (!IS_ERR(ihid->polling_thread)) {
++		pr_info("I2C HID polling thread created");
++		wake_up_process(ihid->polling_thread);
++		return 0;
++	}
++
++	return PTR_ERR(ihid->polling_thread);
++}
++
+ static int i2c_hid_init_irq(struct i2c_client *client)
+ {
+ 	struct i2c_hid *ihid = i2c_get_clientdata(client);
+@@ -1007,6 +1117,15 @@ static void i2c_hid_fwnode_probe(struct i2c_client *client,
+ 		pdata->post_power_delay_ms = val;
+ }
+
++static void free_irq_or_stop_polling(struct i2c_client *client,
++				     struct i2c_hid *ihid)
++{
++	if (polling_mode != I2C_HID_POLLING_DISABLED)
++		kthread_stop(ihid->polling_thread);
++	else
++		free_irq(client->irq, ihid);
++}
++
+ static int i2c_hid_probe(struct i2c_client *client,
+ 			 const struct i2c_device_id *dev_id)
+ {
+@@ -1102,7 +1221,11 @@ static int i2c_hid_probe(struct i2c_client *client,
+ 	if (ret < 0)
+ 		goto err_regulator;
+
+-	ret = i2c_hid_init_irq(client);
++	if (polling_mode != I2C_HID_POLLING_DISABLED)
++		ret = i2c_hid_init_polling(ihid);
++	else
++		ret = i2c_hid_init_irq(client);
++
+ 	if (ret < 0)
+ 		goto err_regulator;
+
+@@ -1141,7 +1264,7 @@ static int i2c_hid_probe(struct i2c_client *client,
+ 	hid_destroy_device(hid);
+
+ err_irq:
+-	free_irq(client->irq, ihid);
++	free_irq_or_stop_polling(client, ihid);
+
+ err_regulator:
+ 	regulator_bulk_disable(ARRAY_SIZE(ihid->pdata.supplies),
+@@ -1158,7 +1281,7 @@ static int i2c_hid_remove(struct i2c_client *client)
+ 	hid = ihid->hid;
+ 	hid_destroy_device(hid);
+
+-	free_irq(client->irq, ihid);
++	free_irq_or_stop_polling(client, ihid);
+
+ 	if (ihid->bufsize)
+ 		i2c_hid_free_buffers(ihid);
+@@ -1174,7 +1297,7 @@ static void i2c_hid_shutdown(struct i2c_client *client)
+ 	struct i2c_hid *ihid = i2c_get_clientdata(client);
+
+ 	i2c_hid_set_power(client, I2C_HID_PWR_SLEEP);
+-	free_irq(client->irq, ihid);
++	free_irq_or_stop_polling(client, ihid);
+ }
+
+ #ifdef CONFIG_PM_SLEEP
+@@ -1195,15 +1318,16 @@ static int i2c_hid_suspend(struct device *dev)
+ 	/* Save some power */
+ 	i2c_hid_set_power(client, I2C_HID_PWR_SLEEP);
+
+-	disable_irq(client->irq);
++	if (polling_mode == I2C_HID_POLLING_DISABLED)
++		disable_irq(client->irq);
+
+-	if (device_may_wakeup(&client->dev)) {
++	if (device_may_wakeup(&client->dev) && polling_mode == I2C_HID_POLLING_DISABLED) {
+ 		wake_status = enable_irq_wake(client->irq);
+ 		if (!wake_status)
+ 			ihid->irq_wake_enabled = true;
+ 		else
+ 			hid_warn(hid, "Failed to enable irq wake: %d\n",
+-				wake_status);
++				 wake_status);
+ 	} else {
+ 		regulator_bulk_disable(ARRAY_SIZE(ihid->pdata.supplies),
+ 				       ihid->pdata.supplies);
+@@ -1220,7 +1344,7 @@ static int i2c_hid_resume(struct device *dev)
+ 	struct hid_device *hid = ihid->hid;
+ 	int wake_status;
+
+-	if (!device_may_wakeup(&client->dev)) {
++	if (!device_may_wakeup(&client->dev) || polling_mode != I2C_HID_POLLING_DISABLED) {
+ 		ret = regulator_bulk_enable(ARRAY_SIZE(ihid->pdata.supplies),
+ 					    ihid->pdata.supplies);
+ 		if (ret)
+@@ -1237,7 +1361,8 @@ static int i2c_hid_resume(struct device *dev)
+ 				wake_status);
+ 	}
+
+-	enable_irq(client->irq);
++	if (polling_mode == I2C_HID_POLLING_DISABLED)
++		enable_irq(client->irq);
+
+ 	/* Instead of resetting device, simply powers the device on. This
+ 	 * solves "incomplete reports" on Raydium devices 2386:3118 and
+--
+2.28.0
+
