@@ -2,125 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D79294AD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B14D294AD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441553AbgJUJyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 05:54:04 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:6649 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438305AbgJUJyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 05:54:03 -0400
+        id S2441565AbgJUJyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 05:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441556AbgJUJyW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 05:54:22 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235ADC0613CE;
+        Wed, 21 Oct 2020 02:54:21 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id q5so1253128wmq.0;
+        Wed, 21 Oct 2020 02:54:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=2143; q=dns/txt; s=axis-central1;
-  t=1603274042; x=1634810042;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=NSbevEXTgIx+UMlnZ8PIyoKqiQwTyuCv3R4hhUP++P8=;
-  b=nkmC+WSkozn0rOGbtBB7x9k68w5ID1RwAhdyAOT6yYxUVN+munfLHHY2
-   uR7o0EuL2FQfUi7+8LUyfIRI/slc/xlVg5NdzLi/WAQ5z83tpOhNvJDa6
-   oF9aOEad4CZ2LgpV8WuUz2MaTvLpJ3cG0Tw2z7FRYrLKBkge4XzS8SC2O
-   fdRzrSwtTDwyq5BnoEmhtrzsboNVDAuXV1Qsdd4LH89tj9LFxI/U+vUJQ
-   YoIY7vap9iFHNT5W+Lz/Z13Hm1CWqTJuiuVaPgSZS77T3IEYC1kUGUGRP
-   3de64mcDnue6+pWQrWMgMy58i89L2kdWI9T+nw6hehdkCU+shF94ooFDu
-   Q==;
-IronPort-SDR: W6IQyZIfg03bY8KZ5uBQP74nsU09xCAsI7+Kos4fsRcuqFadbXwA4vmCmPJ7jO7ncHJWli9GnZ
- FuLAgZvU7/TLbninsMBHA0l5Ge2kLJBljNJ1dnJu5MVobuV5vRTFdi5i3IWsqv7m4TMcu2gW5R
- DjylUgA8Xhni5tz7wKQqOMOPurZOtXdP3IIusIwhcnD6X8vnK+OdnJXE3/63Ukp4XKl9zJPdrU
- pgaQnKlDj8FYGQrpoDwuwJDgY5CvHm4eYkwkKCnbIjC06xq61YTCzv3s98iQEpOE199Xr1SmOa
- mKI=
-X-IronPort-AV: E=Sophos;i="5.77,401,1596492000"; 
-   d="scan'208";a="14246820"
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-CC:     <kernel@axis.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] of: Fix reserved-memory overlap detection
-Date:   Wed, 21 Oct 2020 11:53:59 +0200
-Message-ID: <ded6fd6b47b58741aabdcc6967f73eca6a3f311e.1603273666.git-series.vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Z9a3sRtdNxxaFiVBqwayqZ+oN23gxM+2axS4HiJMes8=;
+        b=pUuU0k9mFKEX9wMMQ5iyDNYru5ANgwJ4Eqy6628CwaAFJwl+foADy5NnEUB0UH38df
+         on40DQFJEMGMf8dyYHzAM1jornXZampzXrffaJ1jwDKEE4HKU65O1LBj50QVDK6JtwWH
+         7UncU2LRtn2biyRCbylvZpV8sXNe6Am0LI3niU8/R4+uhotexHya6C1Z3r+Dlxwplcg6
+         so77IgtHICoWww+aGfcG6tLTZWHIB5eN10RViVUhnTxIW3Vo0dzmgqOyvHJa+aCWgUM8
+         RQ166UWoyIzmFW5KuqyukGbDI1D5EJEGSYjjg3BAlE5dJ/btgQli7XS/A+piZJNPx+ZG
+         jQaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Z9a3sRtdNxxaFiVBqwayqZ+oN23gxM+2axS4HiJMes8=;
+        b=XP0mP6pDXPvzE9VkfYJuTNxccR0zrCm8iQO1uGWKhelcVm86ek/M4YxnUd0hWKmhm3
+         KV4u7hawOXR5cwFkLvAAnX5cS7YLKWxgqwsCN1MNsptc0JumDltX2tt+w3zqxh6KViFQ
+         xHib/kLW/x2Cjr04aL4q+W3SeFQxtI3fgM/VR3RHg7Y0CUrJthbEHsZrFd7faYIht3Mz
+         PmgTH64an0nRHDwxMOpmJWw0an+WzOKtfZIjS0weaANj6bC5GmJMGUn814Z08NlRvYbQ
+         NfSK59g043zPD1gnabB1sCfLH9YGsS9c0NK2cCqhRDrgVXFID18Ad392++yNK5ipzjzM
+         EHKg==
+X-Gm-Message-State: AOAM533+GCNPyBLnMhx7mFVkMhn7rrYWD1M2TqxsV3B/BtWA2yJGW9Ld
+        R2iFWuicwtLJxFJnDfbQAjE=
+X-Google-Smtp-Source: ABdhPJxxEfQqaUy9cbuNvOzUciAoSeQnN/ip6m8iEkbMUZIwfo6hu6MbDl5ga2fsA5dd0+/l8DeHqQ==
+X-Received: by 2002:a1c:bd57:: with SMTP id n84mr2703221wmf.126.1603274057861;
+        Wed, 21 Oct 2020 02:54:17 -0700 (PDT)
+Received: from [192.168.1.211] ([2.26.187.29])
+        by smtp.gmail.com with ESMTPSA id x22sm2938041wmj.25.2020.10.21.02.54.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Oct 2020 02:54:17 -0700 (PDT)
+Subject: Re: [RFC PATCH v3 1/9] software_node: Add helper function to
+ unregister arrays of software_nodes ordered parent to child
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
+        pmladek@suse.com, mchehab@kernel.org, tian.shu.qiu@intel.com,
+        bingbu.cao@intel.com, yong.zhi@intel.com, rafael@kernel.org,
+        gregkh@linuxfoundation.org, kitakar@gmail.com,
+        dan.carpenter@oracle.org
+References: <20201019225903.14276-1-djrscally@gmail.com>
+ <20201019225903.14276-2-djrscally@gmail.com>
+ <20201020100510.GS13341@paasikivi.fi.intel.com>
+ <b6909e37-cd8f-2c1a-126c-40e34ba2a560@gmail.com>
+ <20201021094009.GN4077@smile.fi.intel.com>
+From:   Dan Scally <djrscally@gmail.com>
+Message-ID: <5db7bd75-eff7-b902-9312-421077b897ba@gmail.com>
+Date:   Wed, 21 Oct 2020 10:54:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20201021094009.GN4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reserved-memory overlap detection code fails to detect overlaps if
-either of the regions starts at address 0x0.  The code explicitly checks
-for and ignores such regions, apparently in order to ignore dynamically
-allocated regions which have an address of 0x0 at this point.  These
-dynamically allocated regions also have a size of 0x0 at this point, so
-fix this by removing the check and sorting the dynamically allocated
-regions ahead of any static regions at address 0x0.
-
-For example, there are two overlaps in this case but they are not
-currently reported:
-
-	foo@0 {
-	        reg = <0x0 0x2000>;
-	};
-
-	bar@0 {
-	        reg = <0x0 0x1000>;
-	};
-
-	baz@1000 {
-	        reg = <0x1000 0x1000>;
-	};
-
-	quux {
-	        size = <0x1000>;
-	};
-
-but they are after this patch:
-
- OF: reserved mem: OVERLAP DETECTED!
- bar@0 (0x00000000--0x00001000) overlaps with foo@0 (0x00000000--0x00002000)
- OF: reserved mem: OVERLAP DETECTED!
- foo@0 (0x00000000--0x00002000) overlaps with baz@1000 (0x00001000--0x00002000)
-
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
-v2: Fix handling of dynamically allocated regions.
-
- drivers/of/of_reserved_mem.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-index 46b9371..6530b8b 100644
---- a/drivers/of/of_reserved_mem.c
-+++ b/drivers/of/of_reserved_mem.c
-@@ -200,6 +200,16 @@ static int __init __rmem_cmp(const void *a, const void *b)
- 	if (ra->base > rb->base)
- 		return 1;
- 
-+	/*
-+	 * Put the dynamic allocations (address == 0, size == 0) before static
-+	 * allocations at address 0x0 so that overlap detection works
-+	 * correctly.
-+	 */
-+	if (ra->size < rb->size)
-+		return -1;
-+	if (ra->size > rb->size)
-+		return 1;
-+
- 	return 0;
- }
- 
-@@ -217,8 +227,7 @@ static void __init __rmem_check_for_overlap(void)
- 
- 		this = &reserved_mem[i];
- 		next = &reserved_mem[i + 1];
--		if (!(this->base && next->base))
--			continue;
-+
- 		if (this->base + this->size > next->base) {
- 			phys_addr_t this_end, next_end;
- 
-
-base-commit: 270315b8235e3d10c2e360cff56c2f9e0915a252
--- 
-git-series 0.9.1
+On 21/10/2020 10:40, Andy Shevchenko wrote:
+> On Tue, Oct 20, 2020 at 11:52:56PM +0100, Dan Scally wrote:
+>> On 20/10/2020 11:05, Sakari Ailus wrote:
+>>> On Mon, Oct 19, 2020 at 11:58:55PM +0100, Daniel Scally wrote:
+>>>> Software nodes that are children of another software node should be
+>>>> unregistered before their parent. To allow easy unregistering of an array
+>>>> of software_nodes ordered parent to child, add a helper function to loop
+>>>> over and unregister nodes in such an array in reverse order.
+> ...
+>
+>>>> + * software_node_unregister_nodes_reverse - Unregister an array of software
+>>>> + * nodes in reverse order.
+>>>> + * @nodes: Array of software nodes to be unregistered.
+>>>> + *
+>>>> + * NOTE: The same warning applies as with software_node_unregister_nodes.
+>>>> + * Unless you are _sure_ that the array of nodes is ordered parent to child
+>>>> + * it is wiser to remove them individually in the correct order.
+>>> Could the default order in software_node_unregister_nodes() be reversed
+>>> instead? There are no users so this should be easy to change.
+>>>
+>>> Doing this only one way may require enforcing the registration order in
+>>> software_node_register_nodes(), but the end result would be safer.
+>>>
+>>> What do you think?
+>> Yeah fine by me. We can just use software_node_to_swnode(node->parent)
+>> within software_node_unregister_nodes() to check that children come
+>> after their parents have already been processed. I'll add a patch to do
+>> that in the next version of this series, and another changing the
+>> ordering of software_node_unregister_node_group() as Andy suggests for
+>> consistency.
+> I remember it was a big discussion between Rafael, Heikki and Greg KH about
+> child-parent release in kobjects. That ended up with few patches to device
+> object handling along with one that reversed the order of swnode unregistering
+> in test_printf.c. So here is the question who is maintaining the order: a kref
+> (via kobject) or a caller?
+I would expect the caller to maintain the order correctly, and just have
+the register() function validate that the ordering is good and complain
+if not.
