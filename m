@@ -2,351 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C6E294815
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8BB294817
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408653AbgJUGRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 02:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408616AbgJUGRW (ORCPT
+        id S2408716AbgJUGWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 02:22:45 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:39113 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408696AbgJUGWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 02:17:22 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93A2C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 23:17:20 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id o135so1417297ybc.16
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 23:17:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=LpVIGd5HIuX+qLRAJrr12jqUKjRV3zOFha5ePu1lKMs=;
-        b=XJZLHIVVr78b5gQtRZoyfofdEFSxz7eksjGKiWtpfTiXxanvywbWMgSsdqBpJVAbYT
-         zj0UvL0dayGuVixjCYRrIOte6O8gHi68xFn9ZAWufzltHelG+M89QIUMuU1IYkJFs0oo
-         c8fLxQxfoSUIoN3NKQU2Wb+Djy4l6IhMf6t7FlrgY36IZkjLEv6tIQqNiNKZn65HPzs/
-         g05+xSAeA76Hp0X97UDWqm5m13q/yUTSYL6ZlcB45sIZtoNi2tL5U9c74NUUIzh9GXL0
-         drrICeVV5L9MbpWnsAGpUvIkGGKpSenB4Qlm58kkb66SX+0/EAFcgwxqMXYWEbbieB9B
-         twCQ==
+        Wed, 21 Oct 2020 02:22:44 -0400
+Received: by mail-ed1-f67.google.com with SMTP id t21so1353989eds.6;
+        Tue, 20 Oct 2020 23:22:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=LpVIGd5HIuX+qLRAJrr12jqUKjRV3zOFha5ePu1lKMs=;
-        b=eRyjdhkCC/k13vtNpvZdpviQgEbm/yzM3VHNJdyZT8oG14qp4DlDkV8MnBy35DGeUY
-         NsiJPNWJ42NkYyhjmeSnR/M9x6wNc/lq1EmWGedsfdxg/7aGPEXupJoSEFgDcLXgC2DN
-         fyp944pYNovatBbdjI43o6/OxqBcE5GNU90KjM9QZuNFYde/8hxdffrpLmkENo2rkJ+g
-         +fgvPTONIZDXHWYj/vyuVxCB/m/6S/XZ3js60rVzwFKVXD1e2mJbd9excMNP7cgK7UcH
-         Un93ruXFH6BGmXGObfzygkn1XJwXD/AgE34WUaQKtcyMPLAvCxNDM1Y4oQIvPjaqGMdW
-         PavQ==
-X-Gm-Message-State: AOAM532xmjGMjympSKttgkzXLb2XH3EkS9foTRjoHaoF5ImNd2+HO1wc
-        +zjpdIOfExSbjk4cUxxYxUrnAUjjLTBxng==
-X-Google-Smtp-Source: ABdhPJy+0T6e13GUud3Sb7WLqPqfHI7lfqHvkesUYYEdbp/sA0eepH4W4uc2EehWwxwD2QkDZfmkkEHBD8RA6Q==
-Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
- (user=davidgow job=sendgmr) by 2002:a25:a224:: with SMTP id
- b33mr3158364ybi.109.1603261039492; Tue, 20 Oct 2020 23:17:19 -0700 (PDT)
-Date:   Tue, 20 Oct 2020 23:17:13 -0700
-Message-Id: <20201021061713.1545931-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH v3] fat: Add KUnit tests for checksums and timestamps
-From:   David Gow <davidgow@google.com>
-To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Brendan Higgins <brendanhiggins@google.com>, shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KK0puVMylKVFsz5Ij2GE7BsLqagR7c/6Vy0xC2TGpG0=;
+        b=asJIKksmwn0jI5iEpl5/z3mvnPDC9BCC2S8YMU4ihFvBEi8eWBVDMqXxeYWnIQUzSU
+         akez2B2unHbkMH/bDcAzft/cHGkSZHr02nBpV9zCpkYdXt+WPqs8Vo6DbY2FXKdQ+gw5
+         R/m/cZ9RFW9GslwH8qkZoOxPLtP2fUch9vJFi+XL1N+ngKsFiEPsSuxT4PiWeORHJpPk
+         9hN/CpP3/X4tie3zMEn/s5/HPAbrFwC88abF/cETyGrw9qiGdx9WgJA1J2THmy35ZhDW
+         qADmCrEpRmA8oYS5Zi7BJ8xr6KKuGSIiUlR/1/KJG0LhoMBsEWb5QQ1NWOfImQ7dP7xd
+         SK4g==
+X-Gm-Message-State: AOAM5330NZ5lObOSTxNTEemR9s7fjvRcnzNGvu2LuXRSYuWX/ihXz0VI
+        5TWivphjXp7Ud72AcR5S25GP/1uQ0vU=
+X-Google-Smtp-Source: ABdhPJxlUnn8a6oyuaMRlV0coVtB13jakU2hgR+Y2a5ysNTvNh/6mbDi2LniGdEfPIOCUSxmH1lrYQ==
+X-Received: by 2002:a50:ef0e:: with SMTP id m14mr1537840eds.5.1603261362691;
+        Tue, 20 Oct 2020 23:22:42 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id t15sm1352835edr.27.2020.10.20.23.22.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Oct 2020 23:22:41 -0700 (PDT)
+Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     =?UTF-8?Q?=c3=89rico_Rolim?= <erico.erc@gmail.com>,
+        dwarves@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Hao Luo <haoluo@google.com>, Andrii Nakryiko <andriin@fb.com>
+References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
+ <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org>
+ <20201020122015.GH2294271@kernel.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <f7246cb6-901e-0bc3-eb18-194d1754da53@kernel.org>
+Date:   Wed, 21 Oct 2020 08:22:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <20201020122015.GH2294271@kernel.org>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some basic sanity-check tests for the fat_checksum() function and
-the fat_time_unix2fat() and fat_time_fat2unix() functions. These unit
-tests verify these functions return correct output for a number of test
-inputs.
+On 20. 10. 20, 14:20, Arnaldo Carvalho de Melo wrote:
+>> Yeah, I observe the very same. I reported it at:
+>> https://bugzilla.suse.com/show_bug.cgi?id=1177921
+> 
+> Would it be possible to try with
+> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=tmp.libbtf_encoder
+> ?
 
-These tests were inspored by -- and serve a similar purpose to -- the
-timestamp parsing KUnit tests in ext4[1].
+Yes, that branch fixes the crashes and the kernel build finishes. The 
+zero-sized symbol error remains.
 
-Note that, unlike fat_time_unix2fat, fat_time_fat2unix wasn't previously
-exported, so this patch exports it as well. This is required for the
-case where we're building the fat and fat_test as modules.
+So what should distributions do now -- should we switch to a pahole 
+snapshot for a while?
 
-[1]:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/inode-test.c
-
-Signed-off-by: David Gow <davidgow@google.com>
-Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
----
-
-Changes since v2:
-https://lore.kernel.org/linux-kselftest/20201020055856.1270482-1-davidgow@google.com/
-- Comment that the export for fat_time_fat2unix() function is for KUnit
-  tests.
-
-Changes since v1:
-https://lore.kernel.org/linux-kselftest/20201017064107.375174-1-davidgow@google.com/
-- Now export fat_time_fat2unix() so that the test can access it when
-  built as a module.
-
-Cheers,
--- David
-
- fs/fat/Kconfig    |  13 +++
- fs/fat/Makefile   |   2 +
- fs/fat/fat_test.c | 196 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/fat/misc.c     |   2 +
- 4 files changed, 213 insertions(+)
- create mode 100644 fs/fat/fat_test.c
-
-diff --git a/fs/fat/Kconfig b/fs/fat/Kconfig
-index 66532a71e8fd..fdef03b79c69 100644
---- a/fs/fat/Kconfig
-+++ b/fs/fat/Kconfig
-@@ -115,3 +115,16 @@ config FAT_DEFAULT_UTF8
- 	  Say Y if you use UTF-8 encoding for file names, N otherwise.
- 
- 	  See <file:Documentation/filesystems/vfat.rst> for more information.
-+
-+config FAT_KUNIT_TEST
-+	tristate "Unit Tests for FAT filesystems" if !KUNIT_ALL_TESTS
-+	select FAT_FS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  This builds the FAT KUnit tests
-+
-+	  For more information on KUnit and unit tests in general, please refer
-+	  to the KUnit documentation in Documentation/dev-tools/kunit
-+
-+	  If unsure, say N
-diff --git a/fs/fat/Makefile b/fs/fat/Makefile
-index 70645ce2f7fc..2b034112690d 100644
---- a/fs/fat/Makefile
-+++ b/fs/fat/Makefile
-@@ -10,3 +10,5 @@ obj-$(CONFIG_MSDOS_FS) += msdos.o
- fat-y := cache.o dir.o fatent.o file.o inode.o misc.o nfs.o
- vfat-y := namei_vfat.o
- msdos-y := namei_msdos.o
-+
-+obj-$(CONFIG_FAT_KUNIT_TEST) += fat_test.o
-diff --git a/fs/fat/fat_test.c b/fs/fat/fat_test.c
-new file mode 100644
-index 000000000000..c99bfbdf89bb
---- /dev/null
-+++ b/fs/fat/fat_test.c
-@@ -0,0 +1,196 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit tests for FAT filesystems.
-+ *
-+ * Copyright (C) 2020 Google LLC.
-+ * Author: David Gow <davidgow@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+
-+#include "fat.h"
-+
-+static void fat_checksum_test(struct kunit *test)
-+{
-+	/* With no extension. */
-+	KUNIT_EXPECT_EQ(test, fat_checksum("VMLINUX    "), 44);
-+	/* With 3-letter extension. */
-+	KUNIT_EXPECT_EQ(test, fat_checksum("README  TXT"), 115);
-+	/* With short (1-letter) extension. */
-+	KUNIT_EXPECT_EQ(test, fat_checksum("ABCDEFGHA  "), 98);
-+}
-+
-+
-+struct fat_timestamp_testcase {
-+	const char *name;
-+	struct timespec64 ts;
-+	__le16 time;
-+	__le16 date;
-+	u8 cs;
-+	int time_offset;
-+};
-+
-+const static struct fat_timestamp_testcase time_test_cases[] = {
-+	{
-+		.name = "Earliest possible UTC (1980-01-01 00:00:00)",
-+		.ts = {.tv_sec = 315532800LL, .tv_nsec = 0L},
-+		.time = 0,
-+		.date = 33,
-+		.cs = 0,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "Latest possible UTC (2107-12-31 23:59:58)",
-+		.ts = {.tv_sec = 4354819198LL, .tv_nsec = 0L},
-+		.time = 49021,
-+		.date = 65439,
-+		.cs = 0,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "Earliest possible (UTC-11) (== 1979-12-31 13:00:00 UTC)",
-+		.ts = {.tv_sec = 315493200LL, .tv_nsec = 0L},
-+		.time = 0,
-+		.date = 33,
-+		.cs = 0,
-+		.time_offset = 11 * 60,
-+	},
-+	{
-+		.name = "Latest possible (UTC+11) (== 2108-01-01 10:59:58 UTC)",
-+		.ts = {.tv_sec = 4354858798LL, .tv_nsec = 0L},
-+		.time = 49021,
-+		.date = 65439,
-+		.cs = 0,
-+		.time_offset = -11 * 60,
-+	},
-+	{
-+		.name = "Leap Day / Year (1996-02-29 00:00:00)",
-+		.ts = {.tv_sec = 825552000LL, .tv_nsec = 0L},
-+		.time = 0,
-+		.date = 8285,
-+		.cs = 0,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "Year 2000 is leap year (2000-02-29 00:00:00)",
-+		.ts = {.tv_sec = 951782400LL, .tv_nsec = 0L},
-+		.time = 0,
-+		.date = 10333,
-+		.cs = 0,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "Year 2100 not leap year (2100-03-01 00:00:00)",
-+		.ts = {.tv_sec = 4107542400LL, .tv_nsec = 0L},
-+		.time = 0,
-+		.date = 61537,
-+		.cs = 0,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "Leap year + timezone UTC+1 (== 2004-02-29 00:30:00 UTC)",
-+		.ts = {.tv_sec = 1078014600LL, .tv_nsec = 0L},
-+		.time = 48064,
-+		.date = 12380,
-+		.cs = 0,
-+		.time_offset = -60,
-+	},
-+	{
-+		.name = "Leap year + timezone UTC-1 (== 2004-02-29 23:30:00 UTC)",
-+		.ts = {.tv_sec = 1078097400LL, .tv_nsec = 0L},
-+		.time = 960,
-+		.date = 12385,
-+		.cs = 0,
-+		.time_offset = 60,
-+	},
-+	{
-+		.name = "VFAT odd-second resolution (1999-12-31 23:59:59)",
-+		.ts = {.tv_sec = 946684799LL, .tv_nsec = 0L},
-+		.time = 49021,
-+		.date = 10143,
-+		.cs = 100,
-+		.time_offset = 0,
-+	},
-+	{
-+		.name = "VFAT 10ms resolution (1980-01-01 00:00:00:0010)",
-+		.ts = {.tv_sec = 315532800LL, .tv_nsec = 10000000L},
-+		.time = 0,
-+		.date = 33,
-+		.cs = 1,
-+		.time_offset = 0,
-+	},
-+};
-+
-+static void fat_time_fat2unix_test(struct kunit *test)
-+{
-+	struct msdos_sb_info fake_sb;
-+	int i;
-+	struct timespec64 ts;
-+
-+	for (i = 0; i < ARRAY_SIZE(time_test_cases); ++i) {
-+		fake_sb.options.tz_set = 1;
-+		fake_sb.options.time_offset = time_test_cases[i].time_offset;
-+
-+		fat_time_fat2unix(&fake_sb, &ts,
-+				  time_test_cases[i].time,
-+				  time_test_cases[i].date,
-+				  time_test_cases[i].cs);
-+		KUNIT_EXPECT_EQ_MSG(test,
-+				    time_test_cases[i].ts.tv_sec,
-+				    ts.tv_sec,
-+				    "Timestamp mismatch (seconds) in case \"%s\"\n",
-+				    time_test_cases[i].name);
-+		KUNIT_EXPECT_EQ_MSG(test,
-+				    time_test_cases[i].ts.tv_nsec,
-+				    ts.tv_nsec,
-+				    "Timestamp mismatch (nanoseconds) in case \"%s\"\n",
-+				    time_test_cases[i].name);
-+	}
-+}
-+
-+static void fat_time_unix2fat_test(struct kunit *test)
-+{
-+	struct msdos_sb_info fake_sb;
-+	int i;
-+	__le16 date, time;
-+	u8 cs;
-+
-+	for (i = 0; i < ARRAY_SIZE(time_test_cases); ++i) {
-+		fake_sb.options.tz_set = 1;
-+		fake_sb.options.time_offset = time_test_cases[i].time_offset;
-+
-+		fat_time_unix2fat(&fake_sb, &time_test_cases[i].ts,
-+				  &time, &date, &cs);
-+		KUNIT_EXPECT_EQ_MSG(test,
-+				    time_test_cases[i].time,
-+				    time,
-+				    "Time mismatch in case \"%s\"\n",
-+				    time_test_cases[i].name);
-+		KUNIT_EXPECT_EQ_MSG(test,
-+				    time_test_cases[i].date,
-+				    date,
-+				    "Date mismatch in case \"%s\"\n",
-+				    time_test_cases[i].name);
-+		KUNIT_EXPECT_EQ_MSG(test,
-+				    time_test_cases[i].cs,
-+				    cs,
-+				    "Centisecond mismatch in case \"%s\"\n",
-+				    time_test_cases[i].name);
-+	}
-+}
-+
-+static struct kunit_case fat_test_cases[] = {
-+	KUNIT_CASE(fat_checksum_test),
-+	KUNIT_CASE(fat_time_fat2unix_test),
-+	KUNIT_CASE(fat_time_unix2fat_test),
-+	{},
-+};
-+
-+static struct kunit_suite fat_test_suite = {
-+	.name = "fat_test",
-+	.test_cases = fat_test_cases,
-+};
-+
-+kunit_test_suites(&fat_test_suite);
-+
-+MODULE_LICENSE("GPL v2");
-diff --git a/fs/fat/misc.c b/fs/fat/misc.c
-index f1b2a1fc2a6a..3eabd07b38e2 100644
---- a/fs/fat/misc.c
-+++ b/fs/fat/misc.c
-@@ -229,6 +229,8 @@ void fat_time_fat2unix(struct msdos_sb_info *sbi, struct timespec64 *ts,
- 		ts->tv_nsec = 0;
- 	}
- }
-+/* Export fat_time_fat2unix() for the fat_test KUnit tests. */
-+EXPORT_SYMBOL_GPL(fat_time_fat2unix);
- 
- /* Convert linear UNIX date to a FAT time/date pair. */
- void fat_time_unix2fat(struct msdos_sb_info *sbi, struct timespec64 *ts,
-
-base-commit: c4d6fe7311762f2e03b3c27ad38df7c40c80cc93
+thanks,
 -- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+js
