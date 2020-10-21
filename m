@@ -2,113 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF68294F9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E1A294FA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444098AbgJUPMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443877AbgJUPMy (ORCPT
+        id S2444111AbgJUPNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:13:53 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35062 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2443906AbgJUPNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:12:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5A2C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:12:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iSoFOvDlIVqg+iDRJQH/i23SM8RP8IS427tENd0HYBY=; b=maa8g6ikUW8D4cABNj3Hz5NDM+
-        v3K9gPktpt3FD17B9smtwikJARJaMtjt07rNFPpNmOKI8G7VIGuVNHWLpco9EomoXyheYT1YjHDV4
-        Z/TrPIPhF7Sd6+MGCImgex4+V5BPNJ2jEnXR/kvrn1PtgjkuxDUfHsIZccBKa0N3VFdgDWbr3rF6P
-        Nib1dSealW4PmapB3s3Nc4bUzXTMhY7lBABJ1ka/ZxVQU6XQFs+f0/2z/3i96qCw18K9pzfMwyL3r
-        N9A40hiuXJ7NIPLotXwljkMgayzcZHrvAsb929Ti2Sf4j0AR2MaF4HBXHPPiT56qe0F4Okd7/QdEk
-        R6WWEIZA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVFn6-0001ca-PJ; Wed, 21 Oct 2020 15:12:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1C7E13035D4;
-        Wed, 21 Oct 2020 17:12:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D022B2BAC4B0D; Wed, 21 Oct 2020 17:12:37 +0200 (CEST)
-Date:   Wed, 21 Oct 2020 17:12:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     syzbot <syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: BUG: using __this_cpu_read() in preemptible code in
- trace_hardirqs_on
-Message-ID: <20201021151237.GK2628@hirez.programming.kicks-ass.net>
-References: <000000000000e921b305b18ba0a7@google.com>
- <20201013091743.12c371a8@gandalf.local.home>
- <20201021131733.GH2628@hirez.programming.kicks-ass.net>
- <20201021103433.38fed220@gandalf.local.home>
+        Wed, 21 Oct 2020 11:13:53 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09LFDVs8113882;
+        Wed, 21 Oct 2020 10:13:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603293211;
+        bh=3wSeAduo54FZJAeg21M6ZmUHKkp0796GqW6JPL5m2s8=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=aIktxFzxQ69nNQVzokofgflbN7y2X1rCHTocosMVZmGXQgsfRkd4cOcJ24/KOHJpj
+         zvlJXJQHsNoXjh6lQC9XYiNmr/jVupeotNVmULAphUfG5dwV2uE6uLm0Bo4HVZ7Cuw
+         CjGOES18Me0eyqjy3cqPTxSkMr9TrFLokBT1RiZM=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09LFDVbV089314
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 21 Oct 2020 10:13:31 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 21
+ Oct 2020 10:13:31 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 21 Oct 2020 10:13:31 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09LFDU9o122395;
+        Wed, 21 Oct 2020 10:13:30 -0500
+Date:   Wed, 21 Oct 2020 20:43:29 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+CC:     <vigneshr@ti.com>, <tudor.ambarus@microchip.com>,
+        <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <miquel.raynal@bootlin.com>,
+        <simon.k.r.goldschmidt@gmail.com>, <dinguyen@kernel.org>,
+        <richard@nod.at>, <cheol.yong.kim@intel.com>,
+        <qi-ming.wu@intel.com>
+Subject: Re: [PATCH v2 3/6] spi: cadence-quadspi: Add multi-chipselect
+ support for Intel LGM SoC
+Message-ID: <20201021151329.t24cli4rnk6esttm@ti.com>
+References: <20201021025507.51001-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201021025507.51001-4-vadivel.muruganx.ramuthevar@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201021103433.38fed220@gandalf.local.home>
+In-Reply-To: <20201021025507.51001-4-vadivel.muruganx.ramuthevar@linux.intel.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 10:34:33AM -0400, Steven Rostedt wrote:
-> On Wed, 21 Oct 2020 15:17:33 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > > And I'm also guessing that we can call this with interrupts enabled (based
-> > > on the comment).
-> > > 
-> > > And we have this:
-> > > 
-> > >    local_irq_enable()
-> > >       trace_hardirqs_on()
-> > >          lockdep_hardirqs_on()
-> > >              __this_cpu_read()  
-> > 
-> > Moo, two threads..
-> > 
-> > 20201019183355.GS2611@hirez.programming.kicks-ass.net
-> 
-> But this one's much older ;-)
+Hi,
 
-Yeah, my mailbox is a trainwreck :/
-
-> > 
-> > ---
-> > 
-> > On Tue, Oct 20, 2020 at 12:55:46AM +0800, kernel test robot wrote:
-> > > [   92.898145] BUG: using __this_cpu_read() in preemptible [00000000] code: trinity-c6/526  
-> > 
-> > > [   92.903305] Call Trace:
-> > > [   92.905182]  __this_cpu_preempt_check+0xf/0x11
-> > > [   92.905968]  lockdep_hardirqs_on_prepare+0x2c/0x18f
-> > > [   92.906853]  trace_hardirqs_on+0x49/0x53
-> > > [   92.907578]  __bad_area_nosemaphore+0x3a/0x134  
-> > 
-> > Hurph, that's a spurious local_irq_enable(). I suppose this'll fix it.
-> > 
-> > ---
-> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> > index 3e99dfef8408..9f818145ef7d 100644
-> > --- a/kernel/locking/lockdep.c
-> > +++ b/kernel/locking/lockdep.c
-> > @@ -4057,9 +4057,6 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
-> >  	if (unlikely(in_nmi()))
-> >  		return;
-> >  
-> > -	if (unlikely(__this_cpu_read(lockdep_recursion)))
-> > -		return;
-> > -
-> >  	if (unlikely(lockdep_hardirqs_enabled())) {
+On 21/10/20 10:55AM, Ramuthevar,Vadivel MuruganX wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 > 
-> Hmm, would moving the recursion check below the check of the
-> lockdep_hardirqs_enable() cause a large skew in the spurious enable stats?
-> May not be an issue, but something we should check to make sure that
-> there's not a path that constantly hits this.
+> Add multiple chipselect support for Intel LGM SoCs,
+> currently QSPI-NOR and QSPI-NAND supported.
+> 
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> ---
+>  drivers/spi/spi-cadence-quadspi.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+> index 3d017b484114..3bf6d3697631 100644
+> --- a/drivers/spi/spi-cadence-quadspi.c
+> +++ b/drivers/spi/spi-cadence-quadspi.c
+> @@ -38,6 +38,7 @@
+>  
+>  /* Capabilities */
+>  #define CQSPI_SUPPORTS_OCTAL		BIT(0)
+> +#define CQSPI_SUPPORTS_MULTI_CHIPSELECT BIT(1)
+>  
+>  struct cqspi_st;
+>  
+> @@ -75,6 +76,7 @@ struct cqspi_st {
+>  	bool			is_decoded_cs;
+>  	u32			fifo_depth;
+>  	u32			fifo_width;
+> +	u32			num_chipselect;
+>  	bool			rclk_en;
+>  	u32			trigger_address;
+>  	u32			wr_delay;
+> @@ -1070,6 +1072,14 @@ static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
+>  		return -ENXIO;
+>  	}
+>  
+> +	if (!cqspi->use_direct_mode) {
 
-Anything that sets recursion will have interrupts disabled.
+Shouldn't this be guarded by CQSPI_SUPPORTS_MULTI_CHIPSELECT instead of 
+cqspi->use_direct_mode?
+
+Also, cqspi->use_direct_mode would always be false here because 
+cqspi_of_get_pdata() is called before we set it...
+
+> +		if (of_property_read_u32(np, "num-chipselect",
+> +					 &cqspi->num_chipselect)) {
+> +			dev_err(dev, "couldn't determine number of cs\n");
+> +			return -ENXIO;
+
+... so even if someone doesn't want to use multiple chip selects they 
+would have to specify this property or the probe will fail, which is the 
+case on J721E EVM for example.
+
+> +		}
+> +	}
+> +
+>  	cqspi->rclk_en = of_property_read_bool(np, "cdns,rclk-en");
+>  
+>  	return 0;
+> @@ -1307,6 +1317,9 @@ static int cqspi_probe(struct platform_device *pdev)
+>  	cqspi->current_cs = -1;
+>  	cqspi->sclk = 0;
+>  
+> +	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT)
+> +		master->num_chipselect = cqspi->num_chipselect;
+> +
+>  	ret = cqspi_setup_flash(cqspi);
+>  	if (ret) {
+>  		dev_err(dev, "failed to setup flash parameters %d\n", ret);
+> @@ -1396,6 +1409,7 @@ static const struct cqspi_driver_platdata am654_ospi = {
+>  };
+>  
+>  static const struct cqspi_driver_platdata intel_lgm_qspi = {
+> +	.hwcaps_mask = CQSPI_SUPPORTS_MULTI_CHIPSELECT,
+>  	.quirks = CQSPI_DISABLE_DAC_MODE,
+>  };
+>  
+> -- 
+> 2.11.0
+> 
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
