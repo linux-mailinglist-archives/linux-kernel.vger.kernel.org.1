@@ -2,150 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E1A294FA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B828A294FAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444111AbgJUPNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:13:53 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:35062 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443906AbgJUPNx (ORCPT
+        id S2444126AbgJUPN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2444114AbgJUPN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:13:53 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09LFDVs8113882;
-        Wed, 21 Oct 2020 10:13:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603293211;
-        bh=3wSeAduo54FZJAeg21M6ZmUHKkp0796GqW6JPL5m2s8=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=aIktxFzxQ69nNQVzokofgflbN7y2X1rCHTocosMVZmGXQgsfRkd4cOcJ24/KOHJpj
-         zvlJXJQHsNoXjh6lQC9XYiNmr/jVupeotNVmULAphUfG5dwV2uE6uLm0Bo4HVZ7Cuw
-         CjGOES18Me0eyqjy3cqPTxSkMr9TrFLokBT1RiZM=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09LFDVbV089314
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 21 Oct 2020 10:13:31 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 21
- Oct 2020 10:13:31 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 21 Oct 2020 10:13:31 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09LFDU9o122395;
-        Wed, 21 Oct 2020 10:13:30 -0500
-Date:   Wed, 21 Oct 2020 20:43:29 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-CC:     <vigneshr@ti.com>, <tudor.ambarus@microchip.com>,
-        <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <miquel.raynal@bootlin.com>,
-        <simon.k.r.goldschmidt@gmail.com>, <dinguyen@kernel.org>,
-        <richard@nod.at>, <cheol.yong.kim@intel.com>,
-        <qi-ming.wu@intel.com>
-Subject: Re: [PATCH v2 3/6] spi: cadence-quadspi: Add multi-chipselect
- support for Intel LGM SoC
-Message-ID: <20201021151329.t24cli4rnk6esttm@ti.com>
-References: <20201021025507.51001-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201021025507.51001-4-vadivel.muruganx.ramuthevar@linux.intel.com>
+        Wed, 21 Oct 2020 11:13:56 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD38C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:13:55 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id h19so2389771qtq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:13:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9cFTuFdatbaYuigk9l9CABG/jzUgOpY0t/i9Osy6B3k=;
+        b=Dq8HyCXnjlFLiivieMejfqNvFko0IRtuvvtRMPLqBJU503Zw8AdmXj9PAYUvq+vrGw
+         tLWr/P2KX0xliFL4v7zLPYR93TGo1limVOCOZFomvItA47uQ8nJhdHWU27ngiu6ooAYG
+         WjN4a1HHzcaoYLAcnuo5e5/2eLC1r22+kDR6gTWfx0ZcGZTpX8rwEwqmUSs71ZqiLJX+
+         OUQrP6EnxmCsgNh+3+fwOT/kOJSDKYJueSTL+OCpFozN4nNmHro2xix1p70w/08ytcHi
+         qOQrid57zrk+FvzkIWYUgPoh4k6ET94WA33BXpQ3Dtpr1Jlt52u7OEBqAEPaddsrqv0i
+         gSbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9cFTuFdatbaYuigk9l9CABG/jzUgOpY0t/i9Osy6B3k=;
+        b=SNG1VsmlUOXMpm/iQdQmeN9fe/8econwqus4Nn3bZNh1cieoS0Xdqfbb8c4cco00qu
+         r8wQmU+YJyqnupm6bR1myrP8vxc5iQ/y1GY6pncj3KOci4G3pSXZGAi0b/OvvWiJgWWF
+         CFfSX0EU+BAdAlrDhVMlk9gqpY3P4q6r1b3O5bciMOaLNUo3O8DhauXqxcZ21Lh2eonT
+         QX7HIStvNGLFJfgE36cQ9yHrWoah8BryKbGGMvBaBIH+6C4tk3lt9hbXcgjfGhMPMw9Z
+         CwhgTW7D+Yg8gOdZm6D8LBXMYCuXyAD0+lmj0vLekbT7SYEg0zQFa4usbpuWvne7Szoi
+         FvYg==
+X-Gm-Message-State: AOAM5329Mlhb1w8HtkCk92iCmAk6r6x6LNCAdrOb6imfeb9J629A42yJ
+        tIJViJ12lthpbPkCc7ogUb3RTg==
+X-Google-Smtp-Source: ABdhPJxKUYsuh5jtMPkvFgL62ClnoaVVE83XzZ8FQCHOArCd8sBp94Ul/GCOzlaoYcDR7rbZz0mkwQ==
+X-Received: by 2002:ac8:8c7:: with SMTP id y7mr3515722qth.278.1603293234456;
+        Wed, 21 Oct 2020 08:13:54 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id b14sm1405612qkn.123.2020.10.21.08.13.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 08:13:53 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kVFoG-003XHy-SZ; Wed, 21 Oct 2020 12:13:52 -0300
+Date:   Wed, 21 Oct 2020 12:13:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.com>
+Subject: Re: [PATCH v3 12/16] PCI: Obey iomem restrictions for procfs mmap
+Message-ID: <20201021151352.GL36674@ziepe.ca>
+References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
+ <20201021085655.1192025-13-daniel.vetter@ffwll.ch>
+ <20201021125030.GK36674@ziepe.ca>
+ <CAKMK7uEWe8CaT7zjcZ6dJAKHxtxtqzjVB35fCFviwhcnqksDfw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201021025507.51001-4-vadivel.muruganx.ramuthevar@linux.intel.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CAKMK7uEWe8CaT7zjcZ6dJAKHxtxtqzjVB35fCFviwhcnqksDfw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Oct 21, 2020 at 04:42:11PM +0200, Daniel Vetter wrote:
 
-On 21/10/20 10:55AM, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> Uh yes. In drivers/gpu this isn't a problem because we only install
+> ptes from the vm_ops->fault handler. So no races. And I don't think
+> you can fix this otherwise through holding locks: mmap_sem we can't
+> hold because before vma_link we don't even know which mm_struct is
+> involved, so can't solve the race. Plus this would be worse that
+> mm_take_all_locks used by mmu notifier. And the address_space
+> i_mmap_lock is also no good since it's not held during the ->mmap
+> callback, when we write the ptes. And the resource locks is even less
+> useful, since we're not going to hold that at vma_link() time for
+> sure.
 > 
-> Add multiple chipselect support for Intel LGM SoCs,
-> currently QSPI-NOR and QSPI-NAND supported.
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> ---
->  drivers/spi/spi-cadence-quadspi.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-> index 3d017b484114..3bf6d3697631 100644
-> --- a/drivers/spi/spi-cadence-quadspi.c
-> +++ b/drivers/spi/spi-cadence-quadspi.c
-> @@ -38,6 +38,7 @@
->  
->  /* Capabilities */
->  #define CQSPI_SUPPORTS_OCTAL		BIT(0)
-> +#define CQSPI_SUPPORTS_MULTI_CHIPSELECT BIT(1)
->  
->  struct cqspi_st;
->  
-> @@ -75,6 +76,7 @@ struct cqspi_st {
->  	bool			is_decoded_cs;
->  	u32			fifo_depth;
->  	u32			fifo_width;
-> +	u32			num_chipselect;
->  	bool			rclk_en;
->  	u32			trigger_address;
->  	u32			wr_delay;
-> @@ -1070,6 +1072,14 @@ static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
->  		return -ENXIO;
->  	}
->  
-> +	if (!cqspi->use_direct_mode) {
+> Hence delaying the pte writes after the vma_link, which means ->fault
+> time, looks like the only way to close this gap.
 
-Shouldn't this be guarded by CQSPI_SUPPORTS_MULTI_CHIPSELECT instead of 
-cqspi->use_direct_mode?
+> Trouble is I have no idea how to do this cleanly ...
 
-Also, cqspi->use_direct_mode would always be false here because 
-cqspi_of_get_pdata() is called before we set it...
+How about add a vm_ops callback 'install_pages'/'prefault_pages' ?
 
-> +		if (of_property_read_u32(np, "num-chipselect",
-> +					 &cqspi->num_chipselect)) {
-> +			dev_err(dev, "couldn't determine number of cs\n");
-> +			return -ENXIO;
+Call it after vm_link() - basically just move the remap_pfn, under
+some other lock, into there.
 
-... so even if someone doesn't want to use multiple chip selects they 
-would have to specify this property or the probe will fail, which is the 
-case on J721E EVM for example.
-
-> +		}
-> +	}
-> +
->  	cqspi->rclk_en = of_property_read_bool(np, "cdns,rclk-en");
->  
->  	return 0;
-> @@ -1307,6 +1317,9 @@ static int cqspi_probe(struct platform_device *pdev)
->  	cqspi->current_cs = -1;
->  	cqspi->sclk = 0;
->  
-> +	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT)
-> +		master->num_chipselect = cqspi->num_chipselect;
-> +
->  	ret = cqspi_setup_flash(cqspi);
->  	if (ret) {
->  		dev_err(dev, "failed to setup flash parameters %d\n", ret);
-> @@ -1396,6 +1409,7 @@ static const struct cqspi_driver_platdata am654_ospi = {
->  };
->  
->  static const struct cqspi_driver_platdata intel_lgm_qspi = {
-> +	.hwcaps_mask = CQSPI_SUPPORTS_MULTI_CHIPSELECT,
->  	.quirks = CQSPI_DISABLE_DAC_MODE,
->  };
->  
-> -- 
-> 2.11.0
-> 
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+Jason
