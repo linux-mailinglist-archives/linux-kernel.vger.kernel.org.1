@@ -2,186 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1694129487D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29EE729487E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395145AbgJUGwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 02:52:06 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38764 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395119AbgJUGwG (ORCPT
+        id S2395161AbgJUGyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 02:54:43 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:43812 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390644AbgJUGyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 02:52:06 -0400
-From:   Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603263123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3DA2W6vONxoN9s5vqfqOZvlKIoZcBviB17UCXqX1bAs=;
-        b=Ysv1FtWcKnStFkLJTmaKmAgtMdkcyomNhjq6a4E3Z8bkYXirbAQZHFmnfMnqvL1McoQCTj
-        zTp1GUKEAhU0ah9royDWEdtYYkD+wMhdvqVBixvOg77GgVdadX6q7pownaagZ84QR4+yX4
-        uR1VI8OMIYmbOU1HPierMyjVU2++MW3Jcqi61D1uQHaDVjD0tdQAa0fMdBi8Hx9qq7pnEX
-        C38+dbWdPURHWOcEWSPKlnZjkUna8rQ33sbbdnnXhJRODph8I3RL1ZWo9/Eis0i3wb92Qp
-        dc6xEJWuxZCAjrdYMPNqcSD/ehP8g2z2UCyUxNDCLJegFzF/8ZN/41flK1GVYw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603263123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3DA2W6vONxoN9s5vqfqOZvlKIoZcBviB17UCXqX1bAs=;
-        b=SlXCOLUz2Iai99z6ip9Z/Q0xwi/TZd3X1DRnW1jfKUzRzQF2GTF975mqjZOjwEtQDAC8AT
-        1Ebz6vXCIxjfOjCw==
-To:     Christian Eggers <ceggers@arri.de>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Christian Eggers <ceggers@arri.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next 1/9] dt-bindings: net: dsa: convert ksz bindings document to yaml
-In-Reply-To: <20201019172435.4416-2-ceggers@arri.de>
-References: <20201019172435.4416-1-ceggers@arri.de> <20201019172435.4416-2-ceggers@arri.de>
-Date:   Wed, 21 Oct 2020 08:52:01 +0200
-Message-ID: <87lfg0rrzi.fsf@kurt>
+        Wed, 21 Oct 2020 02:54:43 -0400
+Received: by mail-wr1-f67.google.com with SMTP id g12so1588581wrp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 23:54:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u8by5sRUZeB9uCP5ORX+kwVQI8eEL0WmXBTs0Dd1dsw=;
+        b=GcPuaCDRKW4KFTxgNvACa3K4KdG1ET73aYlW4ZEqbsnD+vV/QfCr2BBPDxNARNazun
+         7kGZjd+FnClTLrtn4zGSfyDYJAcFqRN/fCNCQytLpvPoPEO2CaljHAUevpRfy3vHzbO4
+         mlLoIItkzEN2Dz5E3DeKQCBjovwGbPbOdXDtAGmBK+cmfbpZGpIBx9sLNFTFpHKq7hMb
+         1DxbH9px8t1SqRTeOK9eUTZAC/oMYSFnQybNiXZuYJhRLHombSAfs0pnxKVic2CqAlQT
+         dSnxpArtXoiRf+aI5TgrZXngHBY9LW37Z01V5lf8pArdMORtlCE/fg+wt5z4C3j/tPjy
+         ZYBw==
+X-Gm-Message-State: AOAM530EHNaibV35j8UQadRwdKoTlAhtztrRw/eMowjrxeYT6OfY3bTc
+        w0wQ6nLIoVMk+96xk66yyd9Sw2Hxdsf+r8GlP5A=
+X-Google-Smtp-Source: ABdhPJxH2WJKqCsu/qm/UXrsRj+AMZLOlj0/PBt1DkGxxsgR8MTUboGzixFJSXeqOg4zcF2T2ysWtFm0MkOVP73LSpA=
+X-Received: by 2002:adf:bb43:: with SMTP id x3mr2770588wrg.250.1603263280202;
+ Tue, 20 Oct 2020 23:54:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+ <39cf6164-f3be-ae34-292a-94faef32fdb9@linux.intel.com> <20201012160921.GD466880@tassilo.jf.intel.com>
+ <8f90c785-8bdc-e7cd-a6d9-7eed0fb2c6b3@linux.intel.com> <7216a411-a635-4fcc-b10d-afe1f75509d3@linux.intel.com>
+In-Reply-To: <7216a411-a635-4fcc-b10d-afe1f75509d3@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 21 Oct 2020 15:54:29 +0900
+Message-ID: <CAM9d7cjJzHr7BZ2LVFuG4dnk=i+LmP_TCb9J8FTO0w1w=KG1WQ@mail.gmail.com>
+Subject: Re: [PATCH v1 06/15] perf session: load data directory into tool
+ process memory
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+Hi,
 
-On Mon Oct 19 2020, Christian Eggers wrote:
-> Convert the bindings document for Microchip KSZ Series Ethernet switches
-> from txt to yaml.
+On Tue, Oct 13, 2020 at 8:30 PM Alexey Budankov
+<alexey.budankov@linux.intel.com> wrote:
+> On 12.10.2020 19:49, Alexey Budankov wrote:
+> > On 12.10.2020 19:09, Andi Kleen wrote:
+> >> On Mon, Oct 12, 2020 at 11:58:58AM +0300, Alexey Budankov wrote:
+> >>> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> >>> index 6afc670fdf0c..0752eec19813 100644
+> >>> --- a/tools/perf/util/session.c
+> >>> +++ b/tools/perf/util/session.c
+> >>> @@ -2212,6 +2212,17 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+> >>>             goto more;
+> >>>
+> >>>  out:
+> >>> +   if (rd->unmap_file) {
+> >>> +           int i;
+> >>> +
+> >>> +           for (i = 0; i < NUM_MMAPS; i++) {
+> >>> +                   if (mmaps[i]) {
+> >>> +                           munmap(mmaps[i], mmap_size);
+> >>> +                           mmaps[i] = NULL;
+> >>
+> >> Okay so where is the mmap? Would make more sense to put that
+> >> into the same patch as who adds the mmap. Or is the mmap
+> >> code already in the perf source? In that case it should
+> >> probably be some common helper with the existing users.
+> >
+> > That mmap is already in the code. Agree, this part of the patch
+> > can be applied prior the whole patch set.
+>
+> I take it back. Single trace file can't be unmapped yet since it also
+> contains not only compressed records but also other records backing
+> the data for aggregated analysis.
 
-A few comments/questions below.
+Are you talking about the auxtrace?
 
-> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> new file mode 100644
-> index 000000000000..f93c3bdd0b83
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+I thought everything will be compressed when it's enabled.
+But if it's only for the auxtrace, maybe we can unmap them
+with checking it as it's not the common case?
 
-Currently the bindings don't have the company names in front of it.
-
-> @@ -0,0 +1,147 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/dsa/microchip,ksz.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip KSZ Series Ethernet switches
-> +
-> +maintainers:
-> +  - Marek Vasut <marex@denx.de>
-> +  - Woojung Huh <Woojung.Huh@microchip.com>
-> +
-> +properties:
-> +  # See Documentation/devicetree/bindings/net/dsa/dsa.yaml for a list of additional
-> +  # required and optional properties.
-
-Don't you need to reference the dsa.yaml binding somehow?
-
-> +  compatible:
-> +    enum:
-> +      - "microchip,ksz8765"
-> +      - "microchip,ksz8794"
-> +      - "microchip,ksz8795"
-> +      - "microchip,ksz9477"
-> +      - "microchip,ksz9897"
-> +      - "microchip,ksz9896"
-> +      - "microchip,ksz9567"
-> +      - "microchip,ksz8565"
-> +      - "microchip,ksz9893"
-> +      - "microchip,ksz9563"
-> +      - "microchip,ksz8563"
-> +
-> +  reset-gpios:
-> +    description:
-> +      Should be a gpio specifier for a reset line.
-> +    maxItems: 1
-> +
-> +  microchip,synclko-125:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      Set if the output SYNCLKO frequency should be set to 125MHz instead of 25MHz.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    // Ethernet switch connected via SPI to the host, CPU port wired to eth0:
-> +    eth0 {
-> +        fixed-link {
-> +            speed = <1000>;
-> +            full-duplex;
-> +        };
-> +    };
-> +
-> +    spi0 {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        pinctrl-0 = <&pinctrl_spi_ksz>;
-> +        cs-gpios = <&pioC 25 0>;
-> +        id = <1>;
-> +
-> +        ksz9477: ksz9477@0 {
-
-The node names should be switch. See dsa.yaml.
-
-> +            compatible = "microchip,ksz9477";
-> +            reg = <0>;
-> +            reset-gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
-> +
-> +            spi-max-frequency = <44000000>;
-> +            spi-cpha;
-> +            spi-cpol;
-> +
-> +            ports {
-
-ethernet-ports are preferred.
-
-Thanks,
-Kurt
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAl+P2pEACgkQeSpbgcuY
-8KaczA/6AzfALZkpZ9DZNbpbtJpFlf1VULgRs+Dya20BxFssdpsN6f3PzJZUQ109
-HzYIE6/24kmWuG4LZS+y8MvZMXia1fndb6jjraKsUsMgCOvDs5wruUMvNjohHVZC
-4q0N8h0jPuw62aW2BLB6OL//h7+EKA3FrYaPW+1WTZ7z/VrcIAESOp2EP1szwucz
-VEoE3kZVltQQYUDDxr8/UdTujpVF4/1gck3iM1wrAmIHH5i3XMy3VDLqM4msRkF1
-LtEqAkniRxqAXPrM5ibhQZPBxNXr93kHrmr6KnmcOxzVZYojB01Lu8kDUbpSF0p7
-PWh8FM9hj2DpeTjISgj3amH9knCcVa5duBMPSAXHlcYpXW0jEt9b0GCW2j6ec+wm
-zxlPwhS2LYE6DSmQSwzDhJQw2Oc7zIyt4B5kSfPk4IPhLv7KHqRJOd7+FN6wFyFP
-kmjGRXCruqz2pxlZFSDtCno5FoiMZy1/E49Sy+vRAaK2cEXkTPs1di8Zb50wyiJV
-OnPDjfA7YP+v+YrDDStj5Odc6BpYwgQC3widdMLguLbQyvj9w9hnX2C2vKhGTqho
-DK6SUts2p+OqJF+aDAOqqcU0r9yPqweF1tqJPWXdgPMF+r4I68MzOW9AhwQqzDsD
-Qk2J9lMADEJxELGL4s+6qqxIQlezRgy9pziZ+x+7da64DqEITJA=
-=jU8i
------END PGP SIGNATURE-----
---=-=-=--
+Thanks
+Namhyung
