@@ -2,190 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4822948E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4F52948E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440916AbgJUH3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 03:29:39 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:38626 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407717AbgJUH3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 03:29:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603265377; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=C02hDgWV8WL/Mgowwhjuc5XmmX/v8fdfGLciqHxcx6w=;
- b=bq/dt6KbVFM3mzetXOi3jwHJHgiYNSZtyAOuh2fmN8iVdh9cPy0RCsitINsmh8sd5oJo7sq+
- pUDmUSkFZoWoeix3P+zvLGnlTDB47hcb7yS8xQIPDpzaw2+DnvKj+noWYYUmnpj5l4Lpnpsp
- keWjNDpfzjmXh0KWv97OH9sFQN0=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f8fe361bfed2afaa6722298 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Oct 2020 07:29:37
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 68022C43385; Wed, 21 Oct 2020 07:29:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7E393C433CB;
-        Wed, 21 Oct 2020 07:29:35 +0000 (UTC)
+        id S2440973AbgJUHaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 03:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440965AbgJUHaB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 03:30:01 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96B0C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 00:29:59 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id r127so1745581lff.12
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 00:29:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b4/I+nUkpd8aiLL/7Bk57Oeqd7wJz8LYc62JJnA1ZR4=;
+        b=xhJXXga76rwDz1EEm8aXKo5AmlQ4at+1BklAz0WL2j9ZvKLfhZbYZ4IhuHrnZZKyqm
+         rw8lDoxCDSuMVuitJ+iktm4/ujRyQl1soYKdmw6KFKGeUQF8UsmD023CfQH3gx6VtIuZ
+         PAUttnVDId/I+jKBJ4VpIsVl4NbqU6Sez2n3kw4IZIMa4s16m0g1YQFTgD7Nl438GH2C
+         HFZih0ZXak9vbwD7eyHk7rR3bznCCIqbqurSY9zFMQPHJEWd2zI7QzG+9IIzktkEVuiv
+         HnmH3gJQ3hemAAp9nsaT1rROwSOTj60Uzbn1cXseaSttyYdEYKUCmmp+sYQkpsUrmoBB
+         107w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b4/I+nUkpd8aiLL/7Bk57Oeqd7wJz8LYc62JJnA1ZR4=;
+        b=YpYb+YBa6sMVpC7uaVmQ47cwo/WucfEo450dGgoufRelrV+FzxjaM41S3qZitzPdSM
+         +VslRlGGyBJ2qL3/eEwwXNtmPRJs9MEZoVOPPYjnMfY1Z/GJpQiKue6mET0533mWZXoN
+         gbtrsH9J78/+5uEAnzL32IMq6BV13r70lTnFbKlLjMVPp3lOJdyGelV7aQBHU2A7JOsL
+         NxfimupxK9yWMixZmRZh/mzfNlOy4otW78R2BB4ODwqllvNUg0VPhdEJBO7lUV/uvObf
+         ToZ4k5nA3YNIOhAXTlpk//PBkMZ851mXUoGhjHPL5pk/7m62rEf89MnYmQc96l5cjPHl
+         X3XA==
+X-Gm-Message-State: AOAM532U18SDfwtES7mxBPUCc5MxqXjl6rz6R/TVbI27iJ8c3idBOPLi
+        mdGMGkiSy5Sh1iHTta5ZZcq1GYd4qefdHuR8MF6cQg==
+X-Google-Smtp-Source: ABdhPJwXWd4wsHdDJkFYzbt6LBUhiADRG/pB6O4X11PD74be3EVcFM2GkICwtNKKHM8AGX6sxX7L3A7c5Y9ETsF8L+M=
+X-Received: by 2002:a19:4a88:: with SMTP id x130mr658503lfa.31.1603265398035;
+ Wed, 21 Oct 2020 00:29:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 21 Oct 2020 12:59:35 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     mike.leach@linaro.org, coresight@lists.linaro.org,
-        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        denik@google.com, leo.yan@linaro.org, peterz@infradead.org
-Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-In-Reply-To: <8affc09d4045812e2f5a065695b375de@codeaurora.org>
-References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
- <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
- <707b7860-0daa-d3e3-1f0f-17e1b05feae2@arm.com>
- <5ad6acdc69c1c2e1e17f5c701a09b7e1@codeaurora.org>
- <8affc09d4045812e2f5a065695b375de@codeaurora.org>
-Message-ID: <0ee3566e50143bac5b662b2edf551b89@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+In-Reply-To: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 21 Oct 2020 09:29:46 +0200
+Message-ID: <CAKfTPtB41JopBq0CZVvo16N1u+2Smmc1TamJXkbTVj-pRJeHzA@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: check for idle core
+To:     Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     Ingo Molnar <mingo@redhat.com>, kernel-janitors@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-20 21:40, Sai Prakash Ranjan wrote:
-> On 2020-10-14 21:29, Sai Prakash Ranjan wrote:
->> On 2020-10-14 18:46, Suzuki K Poulose wrote:
->>> On 10/14/2020 10:36 AM, Sai Prakash Ranjan wrote:
->>>> On 2020-10-13 22:05, Suzuki K Poulose wrote:
->>>>> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
->>>>>> There was a report of NULL pointer dereference in ETF enable
->>>>>> path for perf CS mode with PID monitoring. It is almost 100%
->>>>>> reproducible when the process to monitor is something very
->>>>>> active such as chrome and with ETF as the sink and not ETR.
->>>>>> Currently in a bid to find the pid, the owner is dereferenced
->>>>>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
->>>>>> owner being NULL, we get a NULL pointer dereference.
->>>>>> 
->>>>>> Looking at the ETR and other places in the kernel, ETF and the
->>>>>> ETB are the only places trying to dereference the task(owner)
->>>>>> in tmc_enable_etf_sink_perf() which is also called from the
->>>>>> sched_in path as in the call trace. Owner(task) is NULL even
->>>>>> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
->>>>>> cache the PID in alloc_buffer() callback and it is done as part
->>>>>> of etm_setup_aux() when allocating buffer for ETR sink, we never
->>>>>> dereference this NULL pointer and we are safe. So lets do the
->>>>> 
->>>>> The patch is necessary to fix some of the issues. But I feel it is
->>>>> not complete. Why is it safe earlier and not later ? I believe we 
->>>>> are
->>>>> simply reducing the chances of hitting the issue, by doing this 
->>>>> earlier than
->>>>> later. I would say we better fix all instances to make sure that 
->>>>> the
->>>>> event->owner is valid. (e.g, I can see that the for kernel events
->>>>> event->owner == -1 ?)
->>>>> 
->>>>> struct task_struct *tsk = READ_ONCE(event->owner);
->>>>> 
->>>>> if (!tsk || is_kernel_event(event))
->>>>>    /* skip ? */
->>>>> 
->>>> 
->>>> Looking at it some more, is_kernel_event() is not exposed
->>>> outside events core and probably for good reason. Why do
->>>> we need to check for this and not just tsk?
->>> 
->>> Because the event->owner could be :
->>> 
->>>  = NULL
->>>  = -1UL  // kernel event
->>>  = valid.
->>> 
->> 
->> Yes I understood that part, but here we were trying to
->> fix the NULL pointer dereference right and hence the
->> question as to why we need to check for kernel events?
->> I am no expert in perf but I don't see anywhere in the
->> kernel checking for is_kernel_event(), so I am a bit
->> skeptical if exporting that is actually right or not.
->> 
-> 
-> I have stress tested with the original patch many times
-> now, i.e., without a check for event->owner and is_kernel_event()
-> and didn't observe any crash. Plus on ETR where this was already
-> done, no crashes were reported till date and with ETF, the issue
-> was quickly reproducible, so I am fairly confident that this
-> doesn't just delay the original issue but actually fixes
-> it. I will run an overnight test again to confirm this.
-> 
+Hi Julia,
 
-I ran the overnight test which collected aroung 4G data(see below),
-with the following small change to see if the two cases
-(event->owner=NULL and is_kernel_event()) are triggered
-with suggested changes and it didn't trigger at all.
-Do we still need those additional checks?
+On Tue, 20 Oct 2020 at 19:21, Julia Lawall <Julia.Lawall@inria.fr> wrote:
+>
+> On a thread wakeup, the change [1] from runnable load average to load
+> average for comparing candidate cores means that recent short-running
+> daemons on the core where a thread ran previously can be considered to
+> have a higher load than the core performing the wakeup, even when the
+> core where the thread ran previously is currently idle.  This can
+> cause a thread to migrate, taking the place of some other thread that
+> is about to wake up, and so on.  To avoid unnecessary migrations,
+> extend wake_affine_idle to check whether the core where the thread
+> previously ran is currently idle, and if so return that core as the
+> target.
+>
+> [1] commit 11f10e5420f6ce ("sched/fair: Use load instead of runnable
+> load in wakeup path")
+>
+> This particularly has an impact when using passive (intel_cpufreq)
+> power management, where kworkers run every 0.004 seconds on all cores,
+> increasing the likelihood that an idle core will be considered to have
+> a load.
+>
+> The following numbers were obtained with the benchmarking tool
+> hyperfine (https://github.com/sharkdp/hyperfine) on the NAS parallel
+> benchmarks (https://www.nas.nasa.gov/publications/npb.html).  The
+> tests were run on an 80-core Intel(R) Xeon(R) CPU E7-8870 v4 @
+> 2.10GHz.  Active (intel_pstate) and passive (intel_cpufreq) power
+> management were used.  Times are in seconds.  All experiments use all
+> 160 hardware threads.
+>
+>         v5.9/active             v5.9+patch/active
+> bt.C.c  24.725724+-0.962340     23.349608+-1.607214
+> lu.C.x  29.105952+-4.804203     25.249052+-5.561617
+> sp.C.x  31.220696+-1.831335     30.227760+-2.429792
+> ua.C.x  26.606118+-1.767384     25.778367+-1.263850
+>
+>         v5.9/passive            v5.9+patch/passive
+> bt.C.c  25.330360+-1.028316     23.544036+-1.020189
+> lu.C.x  35.872659+-4.872090     23.719295+-3.883848
+> sp.C.x  32.141310+-2.289541     29.125363+-0.872300
+> ua.C.x  29.024597+-1.667049     25.728888+-1.539772
+>
+> On the smaller data sets (A and B) and on the other NAS benchmarks
+> there is no impact on performance.
+>
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-[ perf record: Captured and wrote 4677.989 MB perf.data ]
+Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
 
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c 
-b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-index 989d965f3d90..123c446ce585 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-@@ -13,6 +13,13 @@
-  #include "coresight-tmc.h"
-  #include "coresight-etm-perf.h"
-
-+#define TASK_TOMBSTONE ((void *)-1L)
-+
-+static bool is_kernel_event2(struct perf_event *event)
-+{
-+       return READ_ONCE(event->owner) == TASK_TOMBSTONE;
-+}
-+
-  static int tmc_set_etf_buffer(struct coresight_device *csdev,
-                               struct perf_output_handle *handle);
-
-@@ -392,6 +399,15 @@ static void *tmc_alloc_etf_buffer(struct 
-coresight_device *csdev,
-  {
-         int node;
-         struct cs_buffers *buf;
-+       struct task_struct *task = READ_ONCE(event->owner);
-+
-+       if (!task) {
-+               pr_info("**sai in task=NULL**\n");
-+               return NULL;
-+       }
-+
-+       if (is_kernel_event2(event))
-+               pr_info("**sai in is_kernel_event**\n");
-
-         node = (event->cpu == -1) ? NUMA_NO_NODE : 
-cpu_to_node(event->cpu);
-
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+>
+> ---
+>  kernel/sched/fair.c |    3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index aa4c6227cd6d..9b23dad883ee 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5804,6 +5804,9 @@ wake_affine_idle(int this_cpu, int prev_cpu, int sync)
+>         if (sync && cpu_rq(this_cpu)->nr_running == 1)
+>                 return this_cpu;
+>
+> +       if (available_idle_cpu(prev_cpu))
+> +               return prev_cpu;
+> +
+>         return nr_cpumask_bits;
+>  }
+>
+>
