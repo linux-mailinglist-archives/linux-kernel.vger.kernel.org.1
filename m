@@ -2,399 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D080295072
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C08295074
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502859AbgJUQMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52890 "EHLO
+        id S2502867AbgJUQMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:12:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502848AbgJUQMG (ORCPT
+        with ESMTP id S2502860AbgJUQMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Oct 2020 12:12:06 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4ABDC0613CE
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20635C0613CF
         for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:12:05 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id a17so1397497pju.1
+Received: by mail-pf1-x443.google.com with SMTP id y14so1731287pfp.13
         for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:12:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MDZI3EK3idwd//KAW51RS4zI7bvU+JrWVheI3N5Vli8=;
-        b=UW+bDTHTXOH6mMqR88Vb/0LZeZAcx0Zr23g+Uzd1QenSq2ZtyU+4NdWSxv/rwTgfyE
-         CtMAeDbK0vGNAkz8gVC4sPA8tJoS7CBoubnK1zgjZrgQUj3m9kLQ88eDrzc2sK0k2mmm
-         h2fQFMZXii9d6hO4AYbya2tHk1GIznP/dtXJZujjJzipQrxX7ejUzJ3p3cnD84ryD4gn
-         udU5odmKZ/bg1CCCbSjwoaOKoYkQ1bwVZdjTR1fFV/rPWJx36K3VVfEu6LARJ8BLqFX7
-         Z1dcl+UZ3BsnwuyW+7+mbkkigyFWZzJ0+Gjog+lCdd34qNIwpuD9F1+ZzeRd1M57RXiM
-         1DFw==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=pjUFlnUt0sVqVNyXUeX+2nYGGLuzFr1RFnAsc9/hEZc=;
+        b=JCger6du92m4uwhDkZiF26D9g8XCS3IORIK1mOhO1qFNmYhHtF/mFbu6yQx24U7B2z
+         FzYMJ03BMOmbBWbWA2VbdvUVXqQJXNn1nzcKmD0NoRL8k/0iL7k7toPtuTTYLOOCH6pt
+         cIUfsq6GHJPz94pdNX9yQU2rrmUpxApasi2uw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MDZI3EK3idwd//KAW51RS4zI7bvU+JrWVheI3N5Vli8=;
-        b=lxsWMq9hI1c9lZOzq/1517syOzOD8lne2N9/tC0P/g6FPLqwwK9kWYjCApEwnTknfG
-         pWrdoq/RrJ4V4vW/gzNYyUalzqb3Vi5agfKTieD1Xwu12hnT15VAmJ+5zGZnlex/GCZ7
-         GwAUhi646/A4CxkYHnB2uiZNHrTVKTzo/diP4UAVp+QA7JE5KFBM1LwMMHeYqaQvHZrZ
-         bfI2DJ0GsORehGAl7MsTMO1MRcuS7fCowGLrgAGhCaU04585z6Dnqakrifj9xKJfYAIi
-         +Nt1/ZkA7Qv8H6ppObllbWtqWzMUUyUmUd+L8ZwxMygrkBpucsLXrAEzXMSsiK984EOX
-         gq/w==
-X-Gm-Message-State: AOAM531PBDMBQBe/v0c/EL0YAvpB1X0nOR2TBlcD5DCG8FQhD5gO1+g2
-        jF8WKFQnwlY9nyxf+aX6znw0eKQ2GEW0
-X-Google-Smtp-Source: ABdhPJwoz3DXXi6YFin4kd6ltOyMtuScqTHAArcv92fclbXARZigMypKM4H7MLAg7uEgR70zR8BHOw==
-X-Received: by 2002:a17:902:a704:b029:d3:b2d4:a847 with SMTP id w4-20020a170902a704b02900d3b2d4a847mr4215652plq.77.1603296725159;
-        Wed, 21 Oct 2020 09:12:05 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:70e:2a27:314a:6d22:ec47:a603])
-        by smtp.gmail.com with ESMTPSA id x19sm1494179pjk.25.2020.10.21.09.11.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=pjUFlnUt0sVqVNyXUeX+2nYGGLuzFr1RFnAsc9/hEZc=;
+        b=Es/5q4VLYmdBnrN6LBGGZD3EG/sRtLt9OtG1sP3b5p/FXe6gzmf9GOhDUY5hdUVCjo
+         xnYnItM9+s7qc7OC99WUJnBMpZYLzEPvHkUWsarhRxY7JQ58VrfjHsSE8589nAvN2F8F
+         hFDbbBj6Iry5y/4XWqKtyCxRYPyxXp9YkNz7vBSiRaojkIVGSKPz8CNSZ+ZSaj8e6R6z
+         LIVSBCygfdlxe2/OjBwyzk50YV2t4tfXpDtRnnKqa+R1bcOrkIPRdRixbu6TuclVlum0
+         7IR/04JKn410AdicSBHQF6qpvsZc7gOctsFujlg/5ezfhdQh3r7wXscpic+i3kuVs7AI
+         271w==
+X-Gm-Message-State: AOAM531HsRNceAk01D6eWbiLpCTTssc5Mp1v6XfSmHtcVhKNAl0e9QUE
+        5XgqJFd3gPni7B7/8RGS2p1VPw==
+X-Google-Smtp-Source: ABdhPJy2tdWNalf6KEessz3fjq5gBCehPaa8JHjz83PsXY3krrxY+BLqr8tr8gywsLgOTQFh/BGoWg==
+X-Received: by 2002:a62:8c55:0:b029:152:b326:9558 with SMTP id m82-20020a628c550000b0290152b3269558mr4171999pfd.72.1603296724583;
+        Wed, 21 Oct 2020 09:12:04 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id g15sm2881355pgi.89.2020.10.21.09.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 21 Oct 2020 09:12:03 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 21:41:56 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Hemant Kumar <hemantk@codeaurora.org>
-Cc:     gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jhugo@codeaurora.org,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org
-Subject: Re: [PATCH v7 4/4] bus: mhi: Add userspace client interface driver
-Message-ID: <20201021161156.GE3334@Mani-XPS-13-9360>
-References: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
- <1602907457-13680-5-git-send-email-hemantk@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602907457-13680-5-git-send-email-hemantk@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201021154909.GD18071@willie-the-truck>
+References: <20201020214544.3206838-1-swboyd@chromium.org> <20201020214544.3206838-2-swboyd@chromium.org> <20201021075722.GA17230@willie-the-truck> <160329383454.884498.3396883189907056188@swboyd.mtv.corp.google.com> <20201021154909.GD18071@willie-the-truck>
+Subject: Re: [PATCH 1/2] arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return SMCCC_RET_NOT_REQUIRED
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Andre Przywara <andre.przywara@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, stable@vger.kernel.org
+To:     Will Deacon <will@kernel.org>
+Date:   Wed, 21 Oct 2020 09:12:02 -0700
+Message-ID: <160329672229.884498.3370140649393072677@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 09:04:17PM -0700, Hemant Kumar wrote:
-> This MHI client driver allows userspace clients to transfer
-> raw data between MHI device and host using standard file operations.
-> Driver instantiates uci device object which is associated to device
-> file node. uci device object instantiates uci channel object when device
-> file node is opened. uci channel object is used to manage MHI channels
-> by calling MHI core APIs for read and write operations. MHI channels
-> are started as part of device open(). MHI channels remain in start
-> state until last release() is called on uci device file node. Device
-> file node is created with format
-> 
-> /dev/mhi_<controller_name>_<mhi_device_name>
-> 
-> Currently it supports LOOPBACK channel.
-> 
-> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> ---
->  drivers/bus/mhi/Kconfig  |  13 +
->  drivers/bus/mhi/Makefile |   4 +
->  drivers/bus/mhi/uci.c    | 656 +++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 673 insertions(+)
->  create mode 100644 drivers/bus/mhi/uci.c
-> 
-> diff --git a/drivers/bus/mhi/Kconfig b/drivers/bus/mhi/Kconfig
-> index e841c10..3891b31 100644
-> --- a/drivers/bus/mhi/Kconfig
-> +++ b/drivers/bus/mhi/Kconfig
-> @@ -20,3 +20,16 @@ config MHI_BUS_DEBUG
->  	  Enable debugfs support for use with the MHI transport. Allows
->  	  reading and/or modifying some values within the MHI controller
->  	  for debug and test purposes.
-> +
-> +config MHI_UCI
-> +	tristate "MHI UCI"
-> +	depends on MHI_BUS
-> +	help
-> +	  MHI based userspace client interface driver is used for transferring
+Quoting Will Deacon (2020-10-21 08:49:09)
+> On Wed, Oct 21, 2020 at 08:23:54AM -0700, Stephen Boyd wrote:
+> >=20
+> > If I'm reading the TF-A code correctly it looks like this will return
+> > SMC_UNK if the platform decides that "This flag can be set to 0 by the
+> > platform if none of the PEs in the system need the workaround." Where
+> > the flag is WORKAROUND_CVE_2017_5715 and the call handler returns 1 if
+> > the errata doesn't apply but the config is enabled, 0 if the errata
+> > applies and the config is enabled, or SMC_UNK (I guess this is
+> > NOT_SUPPORTED?) if the config is disabled[2].
+> >=20
+> > So TF-A could disable this config and then the kernel would think it is
+> > vulnerable when it actually isn't? The spec is a pile of ectoplasma
+> > here.
+>=20
+> Yes, but there's not a lot we can do in that case as we rely on the
+> firmware to tell us whether or not we're affected. We do have the
+> "safelist" as a last resort, but that's about it.
 
-Userspace Client Interface (UCI)
+There are quite a few platforms that set this config to 0. Should they
+be setting it to 1?
 
-And please use the caps form UCI in comments throughout the driver.
+ tf-a $ git grep WORKAROUND_CVE_2017_5715 -- **/platform.mk | wc -l
+ 17
 
-> +	  raw data between host and device using standard file operations from
-> +	  userspace. Open, read, write, and close operations are supported
-> +	  by this driver. Please check mhi_uci_match_table for all supported
-> +	  channels that are exposed to userspace.
-> +
-> +	  To compile this driver as a module, choose M here: the module will be
-> +	  called mhi_uci.
-> diff --git a/drivers/bus/mhi/Makefile b/drivers/bus/mhi/Makefile
-> index 19e6443..80feefb 100644
-> --- a/drivers/bus/mhi/Makefile
-> +++ b/drivers/bus/mhi/Makefile
-> @@ -1,2 +1,6 @@
->  # core layer
->  obj-y += core/
-> +
-> +# MHI client
-> +mhi_uci-y := uci.o
-> +obj-$(CONFIG_MHI_UCI) += mhi_uci.o
-> diff --git a/drivers/bus/mhi/uci.c b/drivers/bus/mhi/uci.c
-> new file mode 100644
-> index 0000000..8334836
-> --- /dev/null
-> +++ b/drivers/bus/mhi/uci.c
-> @@ -0,0 +1,656 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.*/
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/mhi.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/poll.h>
-> +
-> +#define DEVICE_NAME "mhi"
-> +#define MHI_UCI_DRIVER_NAME "mhi_uci"
-> +#define MAX_UCI_MINORS (128)
+This looks like a disconnect between kernel and TF-A but I'm not aware
+of all the details here.
 
-No need of ().
+>=20
+> >=20
+> > Does the kernel implement a workaround in the case that no guest PE is
+> > affected? If so then returning 1 sounds OK to me, but otherwise
+> > NOT_SUPPORTED should work per the spec.
+>=20
+> I don't follow you here. The spec says that "SMCCC_RET_NOT_SUPPORTED" is
+> valid return code in the case that "The system contains at least 1 PE
+> affected by CVE-2017-5715 that has no firmware mitigation available."
+> and do the guest would end up in the "vulnerable" state.
+>=20
 
-> +
-> +static DEFINE_IDR(uci_idr);
-> +static DEFINE_MUTEX(uci_drv_mutex);
-> +static struct class *uci_dev_class;
-> +static int uci_dev_major;
-> +
-> +/**
-> + * struct uci_chan - MHI channel for a uci device
-> + * @udev: associated uci device object
-> + * @ul_wq: wait queue for writer
-> + * @write_lock: mutex write lock for ul channel
-> + * @dl_wq: wait queue for reader
-> + * @read_lock: mutex read lock for dl channel
-> + * @dl_lock: spin lock
-> + * @pending: list of dl buffers userspace is waiting to read
-> + * @cur_buf: current buffer userspace is reading
-> + * @dl_size: size of the current dl buffer userspace is reading
-> + * @ref_count: uci_chan reference count
-> + */
-> +struct uci_chan {
-> +	struct uci_dev *udev;
-> +	wait_queue_head_t ul_wq;
-> +
-> +	/* ul channel lock to synchronize multiple writes */
+Returning 1 says "SMCCC_ARCH_WORKAROUND_1 can be invoked safely on all
+PEs in the system" so I am not sure that invoking it is from a guest is
+safe on systems that don't require the workaround? If it is always safe
+to invoke the call from guest to host then returning 1 should be fine
+here.
 
-Please move these inline comments to Kdoc.
-
-> +	struct mutex write_lock;
-> +
-> +	wait_queue_head_t dl_wq;
-> +
-> +	/* dl channel lock to synchronize multiple reads */
-> +	struct mutex read_lock;
-> +
-> +	/*
-> +	 * protects pending and cur_buf members in bh context, channel release,
-> +	 * read and poll
-> +	 */
-> +	spinlock_t dl_lock;
-> +
-> +	struct list_head pending;
-> +	struct uci_buf *cur_buf;
-> +	size_t dl_size;
-> +	struct kref ref_count;
-> +};
-> +
-> +/**
-> + * struct uci_buf - uci buffer
-> + * @data: data buffer
-> + * @len: length of data buffer
-> + * @node: list node of the uci buffer
-> + */
-> +struct uci_buf {
-> +	void *data;
-> +	size_t len;
-> +	struct list_head node;
-> +};
-> +
-> +/**
-> + * struct uci_dev - MHI uci device
-> + * @minor: uci device node minor number
-> + * @mhi_dev: associated mhi device object
-> + * @uchan: uci uplink and downlink channel object
-> + * @mtu: max TRE buffer length
-> + * @enabled: uci device probed
-
-Use something like, "Flag to track the state of the UCI device".
-
-> + * @lock: mutex lock to manage uchan object
-> + * @ref_count: uci_dev reference count
-> + */
-> +struct uci_dev {
-> +	unsigned int minor;
-> +	struct mhi_device *mhi_dev;
-> +	struct uci_chan *uchan;
-> +	size_t mtu;
-> +	bool enabled;
-> +
-> +	/* synchronize open, release and driver remove */
-> +	struct mutex lock;
-> +	struct kref ref_count;
-> +};
-> +
-
-[...]
-
-> +
-> +static int mhi_uci_dev_start_chan(struct uci_dev *udev)
-> +{
-> +	int ret = 0;
-> +	struct uci_chan *uchan;
-> +
-> +	mutex_lock(&udev->lock);
-> +	if (!udev->uchan || !kref_get_unless_zero(&udev->uchan->ref_count)) {
-> +		uchan = kzalloc(sizeof(*uchan), GFP_KERNEL);
-> +		if (!uchan) {
-> +			ret = -ENOMEM;
-> +			goto error_chan_start;
-> +		}
-> +
-> +		udev->uchan = uchan;
-> +		uchan->udev = udev;
-> +		init_waitqueue_head(&uchan->ul_wq);
-> +		init_waitqueue_head(&uchan->dl_wq);
-> +		mutex_init(&uchan->write_lock);
-> +		mutex_init(&uchan->read_lock);
-> +		spin_lock_init(&uchan->dl_lock);
-> +		INIT_LIST_HEAD(&uchan->pending);
-> +
-> +		ret = mhi_prepare_for_transfer(udev->mhi_dev);
-> +		if (ret) {
-> +			dev_err(&udev->mhi_dev->dev, "Error starting transfer channels\n");
-> +			goto error_chan_cleanup;
-> +		}
-> +
-> +		ret = mhi_queue_inbound(udev);
-> +		if (ret)
-> +			goto error_chan_cleanup;
-> +
-> +		kref_init(&uchan->ref_count);
-> +	}
-> +
-> +	mutex_unlock(&udev->lock);
-
-Please leave a new line before return.
-
-> +	return 0;
-> +
-> +error_chan_cleanup:
-> +	mhi_uci_dev_chan_release(&uchan->ref_count);
-> +error_chan_start:
-> +	mutex_unlock(&udev->lock);
-> +	return ret;
-> +}
-> +
-
-[...]
-
-> +
-> +static int mhi_uci_probe(struct mhi_device *mhi_dev,
-> +			 const struct mhi_device_id *id)
-> +{
-> +	struct uci_dev *udev;
-> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-> +	struct device *dev;
-> +	int index;
-> +
-> +	udev = kzalloc(sizeof(*udev), GFP_KERNEL);
-> +	if (!udev)
-> +		return -ENOMEM;
-> +
-> +	kref_init(&udev->ref_count);
-> +	mutex_init(&udev->lock);
-> +	udev->mhi_dev = mhi_dev;
-> +
-> +	mutex_lock(&uci_drv_mutex);
-
-Do we really need the lock here?
-
-> +	index = idr_alloc(&uci_idr, udev, 0, MAX_UCI_MINORS, GFP_KERNEL);
-> +	mutex_unlock(&uci_drv_mutex);
-> +	if (index < 0) {
-> +		kfree(udev);
-> +		return index;
-> +	}
-> +
-> +	udev->minor = index;
-> +
-> +	udev->mtu = min_t(size_t, id->driver_data, MHI_MAX_MTU);
-> +	dev_set_drvdata(&mhi_dev->dev, udev);
-> +	udev->enabled = true;
-> +
-> +	/* create device file node /dev/mhi_<cntrl_dev_name>_<mhi_dev_name> */
-> +	dev = device_create(uci_dev_class, &mhi_dev->dev,
-> +			    MKDEV(uci_dev_major, index), udev,
-> +			    DEVICE_NAME "_%s_%s",
-> +			    dev_name(mhi_cntrl->cntrl_dev), mhi_dev->name);
-> +	if (IS_ERR(dev)) {
-> +		mutex_lock(&uci_drv_mutex);
-> +		idr_remove(&uci_idr, udev->minor);
-> +		mutex_unlock(&uci_drv_mutex);
-> +		dev_set_drvdata(&mhi_dev->dev, NULL);
-> +		kfree(udev);
-> +		return PTR_ERR(dev);
-> +	}
-> +
-> +	dev_dbg(&mhi_dev->dev, "probed uci dev: minor %d\n", index);
-> +
-> +	return 0;
-> +};
-> +
-> +static void mhi_uci_remove(struct mhi_device *mhi_dev)
-> +{
-> +	struct uci_dev *udev = dev_get_drvdata(&mhi_dev->dev);
-> +
-> +	/* disable the node */
-> +	mutex_lock(&udev->lock);
-> +	udev->enabled = false;
-> +
-> +	/* delete the node to prevent new opens */
-> +	device_destroy(uci_dev_class, MKDEV(uci_dev_major, udev->minor));
-> +
-> +	/* return error for any blocked read or write */
-> +	if (udev->uchan) {
-> +		wake_up(&udev->uchan->ul_wq);
-> +		wake_up(&udev->uchan->dl_wq);
-> +	}
-> +	mutex_unlock(&udev->lock);
-> +
-> +	mutex_lock(&uci_drv_mutex);
-> +	idr_remove(&uci_idr, udev->minor);
-> +	kref_put(&udev->ref_count, mhi_uci_dev_release);
-> +	mutex_unlock(&uci_drv_mutex);
-> +}
-> +
-> +/* .driver_data stores max mtu */
-> +static const struct mhi_device_id mhi_uci_match_table[] = {
-> +	{ .chan = "LOOPBACK", .driver_data = 0x1000},
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(mhi, mhi_uci_match_table);
-> +
-> +static struct mhi_driver mhi_uci_driver = {
-> +	.id_table = mhi_uci_match_table,
-> +	.remove = mhi_uci_remove,
-> +	.probe = mhi_uci_probe,
-> +	.ul_xfer_cb = mhi_ul_xfer_cb,
-> +	.dl_xfer_cb = mhi_dl_xfer_cb,
-> +	.driver = {
-> +		.name = MHI_UCI_DRIVER_NAME,
-> +	},
-> +};
-> +
-> +static int mhi_uci_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = register_chrdev(0, MHI_UCI_DRIVER_NAME, &mhidev_fops);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	uci_dev_major = ret;
-> +	uci_dev_class = class_create(THIS_MODULE, MHI_UCI_DRIVER_NAME);
-> +	if (IS_ERR(uci_dev_class)) {
-> +		unregister_chrdev(uci_dev_major, MHI_UCI_DRIVER_NAME);
-
-Use an error path for cleaning this.
-
-Thanks,
-Mani
+My read of the spec was that the intent is to remove the call at some
+point and have the removal of the call mean that it isn't vulnerable.
+Because NOT_SUPPORTED per the spec means "not needed", "maybe needed",
+or "firmware doesn't know". Aha maybe they wanted us to make the call on
+each CPU (i.e. PE) and then if any of them return 0 we should consider
+it vulnerable and if they return NOT_SUPPORTED we should keep calling
+for each CPU until we are sure we don't see a 0 and only see a 1 or
+NOT_SUPPORTED? Looks like a saturating value sort of thing, across CPUs
+that we care/know about.
