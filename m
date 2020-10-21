@@ -2,174 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55BE29465E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 03:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09536294662
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 04:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439900AbgJUBya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 21:54:30 -0400
-Received: from mga18.intel.com ([134.134.136.126]:25772 "EHLO mga18.intel.com"
+        id S2439942AbgJUCBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 22:01:06 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:16471 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393577AbgJUBy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 21:54:29 -0400
-IronPort-SDR: jk+pfnkSEZUlAyty8mbFpTH5XAkzwo0OWVFQkm6w+HU+WES4UXqU4Kx5qLAwvManxQx61B/IvX
- KQfW4fn39cwQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="155087768"
-X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
-   d="scan'208";a="155087768"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 18:54:27 -0700
-IronPort-SDR: jzO2Hn1HUeoyHTzBN/rMrFgevmxW87SiTCKzGls9MNlYUFE3IACGmZaZX6xgfBALbZ95+4H0G1
- y4lHVkSWApCg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
-   d="scan'208";a="348108496"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Oct 2020 18:54:27 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 20 Oct 2020 18:54:27 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 20 Oct 2020 18:54:27 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.106)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 20 Oct 2020 18:54:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FXi4zh1TE3yH2jP/NNpM9JwrlhKXPRPIyiMZxqc2AeZdKqR5PbyGIf/6QJ/avM0iNCOPjdRrNt8ZKB1HA1Q1Q8HSEU+ZepIxSDeNL/rjcopF19XA4Q/hX+wLz4eusdVUe6BOSUK19ShYChN2gXikoFnh2xVBRi8j21k+MdJiXPdj3QQM6783XmgY/FS2pSR0eUplSYnXqxuazxBMUjJs4IRwT3S2SXXYj80O0QA8JzXzYOzJQKvp7YRzgi2mnwDeEWSB50ziTtp3Flz9/jYWuDJeZ14VCYpNPrXNhabkf9dZiyiDbq8r0E8bXsqUkr4iLQAIMs55OabounDMzB/W3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7onvSJlM++lXFHjWEUXIaano53MSHTShnZLwE1aP43c=;
- b=YlRgbo5HXLtz/st3a9ff/hYQzlMrvOn2DjG2LOcPsA43Cf43pnBtyxITL8d4oK5peHapzx82XrD4eu4PyZvpktOPVFPEguacJHMaKMOwDGA8FeBl5o9aLs+nfSuIDGqwG7eV4stJcPs1MiVfHnKrkDedNRgNdDwNbatrldoCzwBmWDPCo86+i8pHh+5aHlO2B4ano7VuaVR/S+F+gLUTUiX+BV7WoSC/rv4ek5Q+e9DtuSvlSUUM9aWy5i9CeuLxIOWzYYnFIiwr6Y2pUCqpTcOid4wxz0AcOvi/pm3gpTfhU7tAjaQd8Id+on845leOEmOLt3duAj59dkp79o37Aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7onvSJlM++lXFHjWEUXIaano53MSHTShnZLwE1aP43c=;
- b=Or8wiG/0khQYivp29UnoD5ph66zh4x725nZcmrgOnhxE50K7Yy43eTw0THZj0NXYXx7IcTj1KQMxTKIx08yqFhJz7+6StST3/UKLUc8YWeeKj3NfTWWxfSD5TQN4oDWi36JggpyOiZQcI8diJf26rV+QHv6I16kQ+vGWahxPob0=
-Received: from DM5PR1101MB2218.namprd11.prod.outlook.com (2603:10b6:4:4f::12)
- by DM6PR11MB3164.namprd11.prod.outlook.com (2603:10b6:5:58::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 21 Oct
- 2020 01:54:26 +0000
-Received: from DM5PR1101MB2218.namprd11.prod.outlook.com
- ([fe80::49ce:b38c:2ee:128f]) by DM5PR1101MB2218.namprd11.prod.outlook.com
- ([fe80::49ce:b38c:2ee:128f%10]) with mapi id 15.20.3477.028; Wed, 21 Oct 2020
- 01:54:26 +0000
-From:   "Sia, Jee Heng" <jee.heng.sia@intel.com>
-To:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>
-CC:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        Alexey Brodkin <Alexey.Brodkin@synopsys.com>
-Subject: RE: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
- AxiDMA
-Thread-Topic: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
- AxiDMA
-Thread-Index: AQHWo8vT4R/NJ+ZUxUWa9ym9koIG+6meI5ZQgACtxoCAAoCPgA==
-Date:   Wed, 21 Oct 2020 01:54:25 +0000
-Message-ID: <DM5PR1101MB2218BD33F1310EC42F3ED871DA1C0@DM5PR1101MB2218.namprd11.prod.outlook.com>
-References: <20201012042200.29787-1-jee.heng.sia@intel.com>
- <MWHPR12MB18065E87CEE3FD28868EBB9BDE030@MWHPR12MB1806.namprd12.prod.outlook.com>
- <DM5PR1101MB22185FFAE24516B90B13D255DA1E0@DM5PR1101MB2218.namprd11.prod.outlook.com>
- <20201019113917.GM4077@smile.fi.intel.com>
-In-Reply-To: <20201019113917.GM4077@smile.fi.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [210.186.89.31]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 64bed84a-82af-4dd6-50f2-08d875643d6b
-x-ms-traffictypediagnostic: DM6PR11MB3164:
-x-microsoft-antispam-prvs: <DM6PR11MB31646D5229B1D547B2DC1D73DA1C0@DM6PR11MB3164.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TtFhHqckqntn+DO9ZsedNUVJXgaEJgCjTfmW12OiF+VJ3s3D+6h2OXsZ+r3gbSDcr/tpxTE5G0WAj/2AfMaplp+6KXR6q0apRvHdJM0VUISbWONOwjKkW/7GxCo6bVRMF43JBOK2ZeBZqkejIfugQVYRQrBEkq16fP+6bsrdzAWhZyHHRBoYTUI0yWzc9xi+r7nHIp11sVvGw3XhwabiM2fL8O95mq2jRVLbSI+z4sZRE6cLAcT+zTMoAkFu7zPSkxo82GqU6OIqhtl7JZ1X3sCUh+vwgVHnmWFyB1vMr3eE/oupZ+959OO+LfPYm9qa6J0LUyURXHvc/05FKrNLzknTs8odFsCZ7fKSPdIvKHrQrQylvyMbm4eGaMKnqRpQcEou7cN2qVXKTvjJngXJaw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1101MB2218.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(64756008)(66946007)(66556008)(76116006)(54906003)(66476007)(52536014)(5660300002)(86362001)(55016002)(6916009)(316002)(4326008)(478600001)(66446008)(186003)(83380400001)(966005)(9686003)(8936002)(33656002)(6506007)(53546011)(8676002)(7696005)(71200400001)(2906002)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: oFsuGBhhADpLG3Pnb6hSVClq1/+4QwHIOdQQA/o72ewf3OKR6pGsnNUDlYvCEJWP/k2MHQRmH5uNsnjiEjVv4t3gjFTZeiXyxq7PcFw5YCcvdJc40LHlw/D4O1y5aV9t4zDRyAhxUEmmFBwEEPMhcB7SEG++1aPhlfYuUzMdeMU9vde57WuIXOyO5qBhDLmEBc6N4HfzcDeDJYPdj4dUL4W/m9gwcbyHRN1NSgud1scfggF0bTNGWmh9tQ9R3JYmTmQ4nrniAxQczeSgc4+jT/+4I5O5yYdEKLEgU85zOStIbY1rXNEdjuPmozBLDtCc+fHSEGknQpi04Ijk9fgaojCEU3qK4z3SE9ldgESsess4d6M/zZJQf3j3bfCxQyqg2xhFMhJWsRrB4kMuneP2lShSL5mPgyCDFoLjdGjmH4Igqip587daXOjQRe0bpu1JwlRLwWgOL8ZF4yWBvy5itk+XpLvjD5nGht17tIVc0pGkkRckWOVGc24rb/47M1ZjF1cpqi9WhL13PTIEcFjMRTKgwVI99B7VNCgzijWIEXjCG9rpA2Nx8VV1oTs2TWnB9ophAQ7No0LGHggYYtS5VLlZDCiBu+KxLZShJuzQ4vHCLlILzjx7wCVMQoVn+svoj/tBdLPOO3erD8ikE5w1Kg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2439934AbgJUCBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 22:01:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603245666; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=zyQrrIYeM8WlrQpdLihvwXOYbE+MNA1bdfNcUHt5uuQ=;
+ b=lzIUaJlZOaNRGHporuK7r8KgfL4QX3nyWYvSKPshGwzbIGXHiWQU6Evz9Wt4gHxC9Pp7h6+V
+ Tcy98zFekdYIozBQsdNE544tOWR3EGynwaOj8ev5HjOHE3ZKPm34K+whfdbsSjjro5a4IP87
+ 1SbwEFNvEtz+p5rDT/1JNiEss8U=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f8f96560764f13b00745aa3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Oct 2020 02:00:54
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3B4D1C433F1; Wed, 21 Oct 2020 02:00:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2B33C433CB;
+        Wed, 21 Oct 2020 02:00:52 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1101MB2218.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64bed84a-82af-4dd6-50f2-08d875643d6b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2020 01:54:25.9428
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5MDEeGs4vTBK5Ot3QgHrP2ST1oHkNZTVOB95wSt2oLct8W7CZd2RxUZkT+M1M8ZmUuRPrlgJtOU+3PF9bjIqIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3164
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 21 Oct 2020 10:00:52 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: Re: [PATCH v2 5/5] scsi: ufs: fix clkgating on/off correctly
+In-Reply-To: <20201020195258.2005605-6-jaegeuk@kernel.org>
+References: <20201020195258.2005605-1-jaegeuk@kernel.org>
+ <20201020195258.2005605-6-jaegeuk@kernel.org>
+Message-ID: <2a8ecc4185b3a5411077f4e3fc66000f@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-10-21 03:52, Jaegeuk Kim wrote:
+> The below call stack prevents clk_gating at every IO completion.
+> We can remove the condition, ufshcd_any_tag_in_use(), since 
+> clkgating_work
+> will check it again.
+> 
 
+I think checking ufshcd_any_tag_in_use() in either ufshcd_release() or
+gate_work() can break UFS clk gating's functionality.
 
-> -----Original Message-----
-> From: andriy.shevchenko@linux.intel.com
-> <andriy.shevchenko@linux.intel.com>
-> Sent: 19 October 2020 7:39 PM
-> To: Sia, Jee Heng <jee.heng.sia@intel.com>
-> Cc: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>;
-> dmaengine@vger.kernel.org; linux-kernel@vger.kernel.org; vkoul@kernel.org=
-;
-> Alexey Brodkin <Alexey.Brodkin@synopsys.com>
-> Subject: Re: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
-> AxiDMA
->=20
-> On Mon, Oct 19, 2020 at 01:22:03AM +0000, Sia, Jee Heng wrote:
-> > > From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
-> > > Sent: 16 October 2020 10:51 PM
->=20
-> > > Hi Sia,
-> > >
-> > > Is this patch series available in some public git repo?
-> > [>>] We do not have public git repo, but the patch series are tested
-> > on kernel v5.9
->=20
-> Sia, can you fork a kernel repository on GitHub or GitLab and create ther=
-e a
-> branch with this series based on v5.9?
-[>>] Thanks Andy to help to create branch at https://gitlab.com/andy-shev/n=
-ext/-/tree/topic/dw-dma-axi.
-Eugeniy, you can start to use this branch and I shall learn to create a pub=
-lic repo. Do let me know if you need anything else.
->=20
-> > > I want to test it on our HW with DW AXI DMAC.
->=20
-> Eugeniy, to be honest, it's not a big deal to create one either with help=
- of
-> lore.kernel.org or patchwork [1].
->=20
-> For your convenience (disclaimer, I can't guarantee I haven't missed some=
-thing
-> here) I published it here [2]. Note, I didn't compile it.
->=20
-> [1]: https://patchwork.kernel.org/project/linux-
-> dmaengine/cover/20201012042200.29787-1-jee.heng.sia@intel.com/
-> [2]: https://gitlab.com/andy-shev/next/-/tree/topic/dw-dma-axi
->=20
-> --
-> With Best Regards,
-> Andy Shevchenko
->=20
+ufshcd_any_tag_in_use() was introduced to replace hba->lrb_in_use. 
+However,
+they are not exactly same - ufshcd_any_tag_in_use() returns true if any 
+tag
+assigned from block layer is still in use, but tags are released 
+asynchronously
+(through block softirq), meaning it does not reflect the real occupation 
+of UFS host.
+That is after UFS host finishes all tasks, ufshcd_any_tag_in_use() can 
+still return true.
 
+This change only removes the check of ufshcd_any_tag_in_use() in 
+ufshcd_release(),
+but having the check of it in gate_work() can still prevent gating from 
+happening.
+The current change works for you maybe because the tags are release 
+before
+hba->clk_gating.delay_ms expires, but if hba->clk_gating.delay_ms is 
+shorter or
+somehow block softirq is retarded, gate_work() may have chance to see 
+ufshcd_any_tag_in_use()
+returns true. What do you think?
+
+Thanks,
+
+Can Guo.
+
+In __ufshcd_transfer_req_compl
+Ihba->lrb_in_use is cleared immediately when UFS driver
+finishes all tasks
+
+> ufshcd_complete_requests(struct ufs_hba *hba)
+>   ufshcd_transfer_req_compl()
+>     __ufshcd_transfer_req_compl()
+>       __ufshcd_release(hba)
+>         if (ufshcd_any_tag_in_use() == 1)
+>            return;
+>   ufshcd_tmc_handler(hba);
+>     blk_mq_tagset_busy_iter();
+> 
+> Cc: Alim Akhtar <alim.akhtar@samsung.com>
+> Cc: Avri Altman <avri.altman@wdc.com>
+> Cc: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index b5ca0effe636..cecbd4ace8b4 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -1746,7 +1746,7 @@ static void __ufshcd_release(struct ufs_hba *hba)
+> 
+>  	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended ||
+>  	    hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL ||
+> -	    ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks ||
+> +	    hba->outstanding_tasks ||
+>  	    hba->active_uic_cmd || hba->uic_async_done)
+>  		return;
