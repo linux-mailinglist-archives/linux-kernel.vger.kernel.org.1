@@ -2,81 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482992948FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B40A2948F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501928AbgJUHiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 03:38:02 -0400
-Received: from mga02.intel.com ([134.134.136.20]:35030 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2501920AbgJUHiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 03:38:02 -0400
-IronPort-SDR: DH0DtN9xbt3Gt1kBz8dbgqkFrpiKfL6aWHPJCNZt9iDfRmEt+wilMxUIIvHbugnfAyc2RCoy9v
- x4ClL68pcBXA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="154279337"
-X-IronPort-AV: E=Sophos;i="5.77,400,1596524400"; 
-   d="scan'208";a="154279337"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 00:37:58 -0700
-IronPort-SDR: 08o/ogkN8JaVAoo7XISqQiD8L4Uyt8Gif7lA1S3DPv610Flkkzv5obdRQg175n2LF13+cjRu8D
- EFq4dhovEyaQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,400,1596524400"; 
-   d="scan'208";a="348206927"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Oct 2020 00:37:53 -0700
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Dharageswari R <dharageswari.r@intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Brent Lu <brent.lu@intel.com>
-Subject: [PATCH] ASoC: Intel: sof_rt5682: update quirk for cml boards
-Date:   Wed, 21 Oct 2020 15:26:46 +0800
-Message-Id: <20201021072646.7980-1-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S2501895AbgJUHeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 03:34:46 -0400
+Received: from mail-m964.mail.126.com ([123.126.96.4]:58896 "EHLO
+        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441002AbgJUHeq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 03:34:46 -0400
+X-Greylist: delayed 1733 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Oct 2020 03:34:45 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=eictmf52OPpcOGd4A4
+        gKYbSSk3VTWSCn1R/rLn4YWto=; b=Kd0PXqQDD3NT49s1aE7PIISCuzbmjOoUiL
+        dyY/RzBnXOLZTHhYc8DUWIGJLK0BSSFsBAGLQolPWe1emQxXFPpehPxGUow4cBES
+        a3+jUzr8cRTp4R8JqMGh9yJIIbeWlW9IrMlYsQ0O4iqysB//m5kt9aJonb9RF2Wj
+        U4SSIBog0=
+Received: from localhost.localdomain (unknown [36.112.86.14])
+        by smtp9 (Coremail) with SMTP id NeRpCgAXEgRO5I9fcz9fMQ--.11117S2;
+        Wed, 21 Oct 2020 15:33:35 +0800 (CST)
+From:   Defang Bo <bodefang@126.com>
+To:     siva.kallam@broadcom.com
+Cc:     prashant@broadcom.com, mchan@broadcom.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Defang Bo <bodefang@126.com>
+Subject: [PATCH v2] tg3: Avoid NULL pointer dereference in netif_device_attach()
+Date:   Wed, 21 Oct 2020 15:33:22 +0800
+Message-Id: <1603265602-8887-1-git-send-email-bodefang@126.com>
+X-Mailer: git-send-email 1.9.1
+X-CM-TRANSID: NeRpCgAXEgRO5I9fcz9fMQ--.11117S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKF17trW7Jw17GFy5Kr1xZrb_yoW3CFX_KF
+        1UZrZ3Gr4UGry2kr4Ykr43Ar98Kan0vayF9F1Iv3yaqrZF9r1UJFWkZryfArnrWrWUtF9r
+        tr13tFWfGw4jkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8PKsUUUUUU==
+X-Originating-IP: [36.112.86.14]
+X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbitArE11pEBwQX1QAAsy
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default quirk data of sof_rt5682 is for tgl platform. For cml
-platforms to reuse this driver, the flag SOF_RT5682_MCLK_24MHZ is
-necessary to setup codec asrc correctly.
+Similar to commit<1b0ff89852d7>("tg3: Avoid NULL pointer dereference in tg3_io_error_detected()")
+This patch avoids NULL pointer dereference add a check for netdev being NULL on tg3_resume().
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
+Signed-off-by: Defang Bo <bodefang@126.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/broadcom/tg3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index ddbb9fe7cc06..fa2c226a444a 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -768,6 +768,11 @@ static int sof_audio_probe(struct platform_device *pdev)
- 		/* default number of HDMI DAI's */
- 		if (!hdmi_num)
- 			hdmi_num = 3;
-+
-+		if (soc_intel_is_cml()) {
-+			/* default quirk for sof_rt5682 is for tgl platform */
-+			sof_rt5682_quirk |= SOF_RT5682_MCLK_24MHZ;
-+		}
- 	}
+diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
+index ae756dd..345c6aa 100644
+--- a/drivers/net/ethernet/broadcom/tg3.c
++++ b/drivers/net/ethernet/broadcom/tg3.c
+@@ -18099,7 +18099,7 @@ static int tg3_resume(struct device *device)
  
- 	/* need to get main clock from pmc */
+ 	rtnl_lock();
+ 
+-	if (!netdev || !netif_running(dev))
++	if (!dev || !netif_running(dev))
+ 		goto unlock;
+ 
+ 	netif_device_attach(dev);
 -- 
-2.17.1
+1.9.1
 
