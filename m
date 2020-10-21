@@ -2,144 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F6E295186
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97325295187
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503499AbgJURab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 13:30:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40675 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2503481AbgJURab (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:30:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603301429;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xK14QpL3GKUFjkKdFe713G5PD83aAbMCe1sf9+K+cAY=;
-        b=QHMQlF4aiUGKCjCTbx2aXsQ25qn7uaCpu8E9OHpjthE3YnLFlAqAwcW+2dOeFGCIHrx8rH
-        S4Vnrp8YzB2oZr4cBsp1d620BrcztjXXXoEc18d85e3zT1GHJcWDgbkdYUhtoUn0ZrFO2y
-        fQ6/n/a0GD3eXGrcZ4AvhXVCU5vll2U=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218-gJIZswkmMJyU9LG23CgfxA-1; Wed, 21 Oct 2020 13:30:28 -0400
-X-MC-Unique: gJIZswkmMJyU9LG23CgfxA-1
-Received: by mail-ej1-f69.google.com with SMTP id k23so2088441ejx.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:30:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:mime-version:subject
-         :from:in-reply-to:cc:date:message-id:references:to;
-        bh=xK14QpL3GKUFjkKdFe713G5PD83aAbMCe1sf9+K+cAY=;
-        b=mk2APZ/rahDOthMhwz0XnkXCH9N0m9wgcMVLNxGRKJhka7X154HXJjSm23kDYdg59T
-         mRaP7snfoa91laC18LTgVAVscKez2zCm/27BAFibC4FDmhRZo096HtUojj8kwHdMd9G4
-         SEEI10k7MOqriAL6j7/yr5/VbJn/J7Ewi4tfAVLaL38jQxFHowZn6PlYQneqU6UKPqSK
-         L+RpYQiZ4E77U+BO1LZmvpsEsX775MQ6bxogKH3hrI3BF6vE3zT/SrK2Al+/Pcy4mCoY
-         Gy5yCB9nj5TtKRkV/iPCnqrH7VIoj0MHcynLB38gVfeqNHbGyiizaEr5yR82V7DvuPB5
-         kJtw==
-X-Gm-Message-State: AOAM532UAW4cEdm2aCyyE1e13yx4qd4GIXdqBywTPP7c2l4si/OzHw5E
-        iT0voTe6kliEGCEhmJxGtBqfmsEP7IH0JvVTWOgl5hwrVaJwed7ISSJBTZBgsyktD7XKnLkHJDF
-        BZjLfiFzoiv7/rgwNP/KJ6e4o
-X-Received: by 2002:a17:907:2677:: with SMTP id ci23mr4533765ejc.270.1603301426536;
-        Wed, 21 Oct 2020 10:30:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyobCl+n+APRhXGQt2eHe0a4Q2vF6QNKErLZWR3alp3ZaOvMbaPB4TyHk35mQfTA2Ucqh8G6g==
-X-Received: by 2002:a17:907:2677:: with SMTP id ci23mr4533750ejc.270.1603301426337;
-        Wed, 21 Oct 2020 10:30:26 -0700 (PDT)
-Received: from [192.168.3.114] (p5b0c6a39.dip0.t-ipconnect.de. [91.12.106.57])
-        by smtp.gmail.com with ESMTPSA id f26sm2604346ejx.23.2020.10.21.10.30.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 10:30:25 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (1.0)
-Subject: Re: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
-From:   David Hildenbrand <david@redhat.com>
-In-Reply-To: <be1e53c3-262c-e6f5-d68b-ab41c40d11ac@oracle.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Privoznik <mprivozn@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Tejun Heo <tj@kernel.org>
-Date:   Wed, 21 Oct 2020 19:30:23 +0200
-Message-Id: <FF106FE1-E3DD-4A9B-B844-B04D0C26C403@redhat.com>
-References: <be1e53c3-262c-e6f5-d68b-ab41c40d11ac@oracle.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-X-Mailer: iPhone Mail (18A393)
+        id S2503510AbgJURag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 13:30:36 -0400
+Received: from mga09.intel.com ([134.134.136.24]:55205 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503481AbgJURaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 13:30:35 -0400
+IronPort-SDR: SnpLRIDV6AAcw66rVsR9LFT48sqPkfolHJxsC0s1F3++E7FtOiRtMwrASojj7PB7GOzEZVVAPc
+ men8N+/L3cwQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="167528331"
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="167528331"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 10:30:33 -0700
+IronPort-SDR: Ho1F3WZ9LkCFAXZXxjdX/55nZ4weSfnlIi0NCIGKEyEPXn3I6s20+t+OmQcwO3bvWDkWsURx48
+ pgSjfGVo7hiA==
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="353748758"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 10:30:32 -0700
+Date:   Wed, 21 Oct 2020 10:30:30 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/10] KVM: VMX: Explicitly check for
+ hv_remote_flush_tlb when loading pgd
+Message-ID: <20201021173030.GD14155@linux.intel.com>
+References: <20201020215613.8972-1-sean.j.christopherson@intel.com>
+ <20201020215613.8972-8-sean.j.christopherson@intel.com>
+ <87r1pr4q8z.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r1pr4q8z.fsf@vitty.brq.redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 21, 2020 at 04:18:04PM +0200, Vitaly Kuznetsov wrote:
+> Sean Christopherson <sean.j.christopherson@intel.com> writes:
+> 
+> > Explicitly check that kvm_x86_ops.tlb_remote_flush() points at Hyper-V's
+> > implementation for PV flushing instead of assuming that a non-NULL
+> > implementation means running on Hyper-V.  Wrap the related logic in
+> > ifdeffery as hv_remote_flush_tlb() is defined iff CONFIG_HYPERV!=n.
+> >
+> > Short term, the explicit check makes it more obvious why a non-NULL
+> > tlb_remote_flush() triggers EPTP shenanigans.  Long term, this will
+> > allow TDX to define its own implementation of tlb_remote_flush() without
+> > running afoul of Hyper-V.
+> >
+> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > ---
+> >  arch/x86/kvm/vmx/vmx.c | 23 ++++++++++++++++-------
+> >  1 file changed, 16 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index e6569bafacdc..55d6b699d8e3 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -560,6 +560,21 @@ static int hv_enable_direct_tlbflush(struct kvm_vcpu *vcpu)
+> >  
+> >  #endif /* IS_ENABLED(CONFIG_HYPERV) */
+> >  
+> > +static void hv_load_mmu_eptp(struct kvm_vcpu *vcpu, u64 eptp)
+> > +{
+> > +#if IS_ENABLED(CONFIG_HYPERV)
+> > +	struct kvm_vmx *kvm_vmx = to_kvm_vmx(vcpu->kvm);
+> > +
+> > +	if (kvm_x86_ops.tlb_remote_flush == hv_remote_flush_tlb) {
+> > +		spin_lock(&kvm_vmx->ept_pointer_lock);
+> > +		to_vmx(vcpu)->ept_pointer = eptp;
+> > +		if (eptp != kvm_vmx->hv_tlb_eptp)
+> > +			kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
+> > +		spin_unlock(&kvm_vmx->ept_pointer_lock);
+> > +	}
+> > +#endif
+> > +}
+> > +
+> >  /*
+> >   * Comment's format: document - errata name - stepping - processor name.
+> >   * Refer from
+> > @@ -3040,13 +3055,7 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long pgd,
+> >  		eptp = construct_eptp(vcpu, pgd, pgd_level);
+> >  		vmcs_write64(EPT_POINTER, eptp);
+> >  
+> > -		if (kvm_x86_ops.tlb_remote_flush) {
+> > -			spin_lock(&to_kvm_vmx(kvm)->ept_pointer_lock);
+> > -			to_vmx(vcpu)->ept_pointer = eptp;
+> > -			if (eptp != to_kvm_vmx(kvm)->hv_tlb_eptp)
+> > -				to_kvm_vmx(kvm)->hv_tlb_eptp = INVALID_PAGE;
+> > -			spin_unlock(&to_kvm_vmx(kvm)->ept_pointer_lock);
+> > -		}
+> > +		hv_load_mmu_eptp(vcpu, eptp);
+> 
+> So when TDX comes around, will we need to add something to
+> hv_load_mmu_eptp() and rename it or there's nothing to do for TDX when
+> PGD changes? I'm just wondering if it would make sense to rename
+> hv_load_mmu_eptp() to something else right away.
 
-> Am 21.10.2020 um 18:58 schrieb Mike Kravetz <mike.kravetz@oracle.com>:
-> =EF=BB=BF
->>=20
->>> On 21.10.20 15:11, David Hildenbrand wrote:
->>> On 21.10.20 14:57, Michal Privoznik wrote:
->>>> On 10/21/20 5:35 AM, Mike Kravetz wrote:
->>>>> On 10/20/20 6:38 AM, David Hildenbrand wrote:
->>>>> It would be good if Mina (at least) would look these over.  Would also=
+Short answer, it's a non-issue.
 
->>>>> be interesting to know if these fixes address the bug seen with the qe=
-mu
->>>>> use case.
->>>>> I'm still doing more testing and code inspection to look for other iss=
-ues.
-> ...
-> ...
->>>> I've applied, rebuilt and tested, but unfortunately I still hit the pro=
-blem:
->>>> [ 6472.719047] ------------[ cut here ]------------
->>>> [ 6472.719052] WARNING: CPU: 6 PID: 11773 at mm/page_counter.c:57
-> ...
-> ...
->>> Agreed, same over here. :(
->>=20
->> I *think* the following on top makes it fly
->>=20
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index 67fc6383995b..5cf7f6a6c1a6 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -656,6 +656,9 @@ static long region_del(struct resv_map *resv, long
->> f, long t)
->>=20
->>                        del +=3D t - f;
->>=20
->> +                       hugetlb_cgroup_uncharge_file_region(
->> +                               resv, rg, t - f);
->> +
->>                        /* New entry for end of split region */
->>                        nrg->from =3D t;
->>                        nrg->to =3D rg->to;
->> @@ -667,9 +670,6 @@ static long region_del(struct resv_map *resv, long
->> f, long t)
->>                        /* Original entry is trimmed */
->>                        rg->to =3D f;
->>=20
->> -                       hugetlb_cgroup_uncharge_file_region(
->> -                               resv, rg, nrg->to - nrg->from);
->> -
->>                        list_add(&nrg->link, &rg->link);
->>                        nrg =3D NULL;
->>                        break;
->=20
-> Thanks, yes that certainly does look like a bug in that code.
->=20
-> Does that resolve the issue with quemu?
+There are things to do for TDX guests when PGD changes, but it's a completely
+different flow than VMX.  For TDX, the Secure/Private EPTP is set in stone,
+i.e. it's per-VM and cannot be changed.  The Shared/Public EPTP can be changed,
+and this is what's handled in TDX's implementaiton of .load_mmu_pgd().
 
-I was not able to reproduce, so I guess we found all issues!
+As for why .tlb_remote_flush() is relevant...
 
-Thanks!
+For TDX, because the VMM is untrusted, the actual INVEPTP on the Secure EPTP
+must be done by the TDX-Module; there is state tracking in TDX-Module that
+enforces this, e.g. operations on the S-EPT tables that rely on a previous
+flush will fail if the flush wasn't performed.
 
->=20
-> I want to do a little more testing/research before sending a patch later
-> today.
-> --=20
-> Mike Kravetz
+That's why KVM hooks .tlb_remote_flush for TDX; KVM needs to do INVEPT on the
+shared/public/untrusted EPTP, and then do a SEAMCALL to invoke TDX-Module's
+tracking and flushing.
 
+The collision on the VMX side occurs because VMX and TDX code shared the same
+kvm_x86_ops (in our proposed implementation), i.e. VMX would get a false
+positive for "am I running on Hyper-V" if it only checked for a non-null
+callback.
+
+For "real" TDX, KVM will be running on bare metal, i.e. KVM won't be an L1
+running on Hyper-V.  It's certainly possible emulate the functional bits of TDX
+in L0, i.e. to run/load KVM+TDX in L1, but the odds of that colliding with
+Hyper-V's L1 GPA PV TLB flushing in upstream KVM are *extremely* tiny.  The
+main use case of TDX is to take the platform owner, e.g. CSP, out of the TCB,
+i.e. running KVM+TDX in L1 in production would wipe out the value provided by
+TDX as doing so would mean trusting L0 to do the right thing.
+
+There is value in running KVM+TDX in L1 from a development/debug perspective,
+but (a) I'd be quite surprised if Microsoft publicly released a version of
+Hyper-V that emulated SEAM+TDX, and (b) even if a publicly available VMM
+emulates SEAM+TDX, it would not want to enlighten L1 KVM as the goal behind
+running nested would be for development/debug, i.e. it'd want to provide an
+environment as close to the real thing as possible.
