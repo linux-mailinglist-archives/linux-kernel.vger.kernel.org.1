@@ -2,123 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17910294CF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3617294CFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408288AbgJUMpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391392AbgJUMpv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:45:51 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344D0C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:45:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=erzJ45tZHdKCSwUlwbFLZ5SMRuQ10sfHSD1kkcO8798=; b=ji/Ur4W6kHAQmPf9pVvtEVVOt
-        7qTVDx1mFFg2hqbRgRZ1vWccUK//PT2Z62JXuJrBfNC+UEjpw5PmaY7uBxmvnCTtp5aDRPH9GpqyE
-        HoozeZXGqq7dsYN/tkXI+po+S+r8fho6K5FNOLkloKFtFFUIvy5iUP9Kal5OwsfOKa6cCKuKF0UBD
-        4MSmdamUvEFKZTvYsexkmH9rMYeWZvGCLzyfiR0RBG6Folq4zAG0WWqgUFVl9Jv70ol+lomhp5+qt
-        h9SWfQoUeTPD/r+zON2nCjMW5g4LmwocAf+MwWPKJlPT467yRg/+j5WpJiLOv7SeESBDDV5NBerx3
-        BQUsNDwdQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49094)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kVDUu-0000YA-5g; Wed, 21 Oct 2020 13:45:44 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kVDUs-0006Oi-G8; Wed, 21 Oct 2020 13:45:42 +0100
-Date:   Wed, 21 Oct 2020 13:45:42 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Maninder Singh <maninder1.s@samsung.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Nathan Huckleberry <nhuck@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Will Deacon <will@kernel.org>, v.narang@samsung.com,
-        a.sahrawat@samsung.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 2/3] arm: introduce IRQ stacks
-Message-ID: <20201021124542.GL1551@shell.armlinux.org.uk>
-References: <CGME20201008071639epcas5p465f13d992a25936ba63436baf1fb6f83@epcas5p4.samsung.com>
- <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
- <1602141333-17822-3-git-send-email-maninder1.s@samsung.com>
- <CAK8P3a2RYeNiTy9QmwFVKtFifXxWc9XfAT6ThPoSH9wGYsKGpA@mail.gmail.com>
- <CAK8P3a3eZjBVSuhv=Cx4aYC+E9tex+BbJH1b6YyMMief-mO7kQ@mail.gmail.com>
+        id S2440859AbgJUMqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:46:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437025AbgJUMqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:46:46 -0400
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A3909223BF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:46:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603284405;
+        bh=ttXp3ovL74pvsFHzn70xAtSuQ5PCnDzGKQbu4q5Oj+g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bWwHqUVe7SwWjbBhWQfnc1gNPHZxfTBeszYdkfWpiqaHp1Ub1JrfyZPkblZzAErMt
+         8+FbAjYbP14i4MZiJxhgGe/KZE6xBWhqJAfMAcOA+LqCXNbYBDntywVRcfW8xjqbwg
+         SFAAiAHU7qxorTJqRAASlmvTaBR4kuH7G7jTGaEc=
+Received: by mail-qt1-f173.google.com with SMTP id m9so1884992qth.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:46:45 -0700 (PDT)
+X-Gm-Message-State: AOAM533Gh8devLGAq/tNNrbrAccTvnAyjb0BD0406A+zh3zp6vkTjs7w
+        xkEBDGDb3dzZc+3kqgw7Asnq/89stg/swdd3ftI=
+X-Google-Smtp-Source: ABdhPJyAmqnWKXXVYMHBrBwQ8vRAy5SXr0Z8q5x0gqYcFsbtiIr0nZUN9iiiouSsLjFc5Rif7/kUhm+TwOPAM49mtw4=
+X-Received: by 2002:ac8:1ba6:: with SMTP id z35mr2845432qtj.204.1603284404668;
+ Wed, 21 Oct 2020 05:46:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3eZjBVSuhv=Cx4aYC+E9tex+BbJH1b6YyMMief-mO7kQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <CGME20201008071628epcas5p24d196a6023a47a3b0bfa7b7f231ec811@epcas5p2.samsung.com>
+ <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
+ <20201008083015.GK1551@shell.armlinux.org.uk> <CAK8P3a0h=D8_Kn_fpHbsik_jf4to2jayxj7K7B7=HaNFzKqNnw@mail.gmail.com>
+ <CAK8P3a2tmRo0voZJLqYbNQGG9FZCGuKzMj8Zo8f+WL+dvOourw@mail.gmail.com> <20201021123400.GK1551@shell.armlinux.org.uk>
+In-Reply-To: <20201021123400.GK1551@shell.armlinux.org.uk>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 21 Oct 2020 14:46:28 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1U9=4G-8CPQRsvVWXYX91hGUbos77amMR+FH_pq9OegQ@mail.gmail.com>
+Message-ID: <CAK8P3a1U9=4G-8CPQRsvVWXYX91hGUbos77amMR+FH_pq9OegQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] IRQ stack support for ARM
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Maninder Singh <maninder1.s@samsung.com>, v.narang@samsung.com,
+        a.sahrawat@samsung.com, Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nathan Huckleberry <nhuck@google.com>,
+        Will Deacon <will@kernel.org>, Jian Cai <caij2003@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 02:42:48PM +0200, Arnd Bergmann wrote:
-> (also resending this reply from @kernel.org)
-> 
-> On Fri, Oct 16, 2020 at 12:19 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Thu, Oct 8, 2020 at 9:20 AM Maninder Singh <maninder1.s@samsung.com> wrote:
-> > >
-> > > This patch adds code for switching to IRQ stack.
-> > > IRQ stack and Kernel SVC stack have below design.
-> > >
-> > > IRQ STACK:-
-> > >                     ------------ IRQ stack top
-> > >                     |          |
-> > >                     ------------
-> > >                     .          .
-> > >                     .          .
-> > >                     .          .
-> > >                     ------------
-> > >                     |    sp    | <- irq_stack_base + 0x8
-> > >                     ------------
-> > >                     |    fp    | <- irq_stack_base + 0x4
-> > >                     ------------
-> > >                     |tinfo_ptr | /* pointer to thread info */
-> > > irq_stack_ptr -->   ------------ IRQ stack base
-> > >
-> > > Kernel SVC stack:-
-> > >                     ------------  Kernel stack top
-> > >                     |          |
-> > >                     ------------
-> > >                     .          .
-> > >                     .          .
-> > >                     .          .
-> > >                     ------------
-> > >                     |          |
-> > >                     |          |
-> > >                     ------------
-> > >                     |tinfo_ptr |  /* pointer to thread info */
-> > >                     ------------ Kernel stack base
-> >
-> > The extra indirection doesn't look great, and I don't see any of the
-> > other architectures need that. Since we can access percpu data
-> > without going through thread_info, maybe doing the same as
-> > x86 would work here:
-> >
-> > - define 'current' as 'this_cpu_read_stable(current_task);'
-> > - convert to CONFIG_THREAD_INFO_IN_TASK
+On Wed, Oct 21, 2020 at 2:34 PM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> We don't do it because we don't have a separate register to be able
+> to store the thread_info pointer, and copying that lump between the
+> SVC and IRQ stack will add massively to IRQ latency, especially for
+> older machines.
 
-That means we need to also code that up in assembly - remember, we
-need to access thread_info from assembly code.
+I forwarded my other reply as well, in which I suggested using
+CONFIG_THREAD_INFO_IN_TASK, wouldn't that solve the problem?
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+      Arnd
