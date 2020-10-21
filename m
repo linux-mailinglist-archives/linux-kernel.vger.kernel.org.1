@@ -2,72 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4737D294BCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8DB294BD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442009AbgJUL3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 07:29:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42246 "EHLO mail.kernel.org"
+        id S2442026AbgJULfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 07:35:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:34006 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442001AbgJUL3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 07:29:03 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A7E121D43;
-        Wed, 21 Oct 2020 11:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603279742;
-        bh=mb6gxbYo4kXZH1EqgEcFGVGcbOdWMouSl83SoB7CbN8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ouxnjBqFjS90eFacvshDol1iQ1mKPcm8mdUGtt6o6xjXnrAcxak7KD06xczu2vION
-         vKExABZsGdPkIqmLOJLOvkUuSAfhmn0JpL28txIpFix3TUO5QtoAkQu1eFUciRO90t
-         +VY19LKbI2pBbJFrC2a7dt8cbbeHg8oiQotKSaLo=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6F434403C2; Wed, 21 Oct 2020 08:29:00 -0300 (-03)
-Date:   Wed, 21 Oct 2020 08:29:00 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     =?iso-8859-1?Q?=C9rico?= Rolim <erico.erc@gmail.com>,
-        dwarves@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Hao Luo <haoluo@google.com>, Andrii Nakryiko <andriin@fb.com>
-Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
-Message-ID: <20201021112900.GN2342001@kernel.org>
-References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
- <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org>
- <20201020122015.GH2294271@kernel.org>
- <f7246cb6-901e-0bc3-eb18-194d1754da53@kernel.org>
+        id S2410786AbgJULfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 07:35:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 193021FB;
+        Wed, 21 Oct 2020 04:35:09 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 99F013F66E;
+        Wed, 21 Oct 2020 04:35:07 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 12:35:05 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH 10/11] [DEBUG] firmware: arm_scmi: add custom_dummy SCMI
+ devname
+Message-ID: <20201021113505.GD20482@e120937-lin>
+References: <20201014150545.44807-1-cristian.marussi@arm.com>
+ <20201014150545.44807-11-cristian.marussi@arm.com>
+ <c0a300b7-7589-bfb1-6731-f07fdd7391fd@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f7246cb6-901e-0bc3-eb18-194d1754da53@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <c0a300b7-7589-bfb1-6731-f07fdd7391fd@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Oct 21, 2020 at 08:22:40AM +0200, Jiri Slaby escreveu:
-> On 20. 10. 20, 14:20, Arnaldo Carvalho de Melo wrote:
-> > > Yeah, I observe the very same. I reported it at:
-> > > https://bugzilla.suse.com/show_bug.cgi?id=1177921
+On Tue, Oct 20, 2020 at 10:49:23PM -0400, Thara Gopinath wrote:
+> 
+> 
+> On 10/14/20 11:05 AM, Cristian Marussi wrote:
+> > Add custom_dummy SCMI devname.
+> > 
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> >   drivers/firmware/arm_scmi/driver.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > index 55df134c2338..5c39a738866a 100644
+> > --- a/drivers/firmware/arm_scmi/driver.c
+> > +++ b/drivers/firmware/arm_scmi/driver.c
+> > @@ -993,6 +993,7 @@ static struct scmi_prot_devnames devnames[] = {
+> >   	{ SCMI_PROTOCOL_CLOCK,  { "clocks" },},
+> >   	{ SCMI_PROTOCOL_SENSOR, { "hwmon" },},
+> >   	{ SCMI_PROTOCOL_RESET,  { "reset" },},
+> > +	{ SCMI_PROTOCOL_CUSTOM_DUMMY,  { "custom_dummy" },},
+> 
+> Hi Cristian,
+> 
+> Thanks for the sample dummy custom protocol and driver!
+> The problem with adding scmi devname into the array is that every time a
+> custom vendor protocol is added, the array has to be extended. Instead since
+> the scmi spec supports the range 0x80-0xff for custom protocols, why not
+> check for that range in scmi_create_protocol_devices and go ahead with
+> registering the creating the protocol device via
+> scmi_create_protocol_device?
+> 
 
-> > Would it be possible to try with
-> > https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=tmp.libbtf_encoder
-> > ?
- 
-> Yes, that branch fixes the crashes and the kernel build finishes. The
-> zero-sized symbol error remains.
- 
-> So what should distributions do now -- should we switch to a pahole snapshot
-> for a while?
+Hi,
 
-That would do the trick, I just completed my testing and pushed to the
-master branch on kernel.org and github, tests detailed at:
+so this is really a good point, and in fact in some earlier (non-public)
+iterations I had a mechanism to just get rid of these device tables,
+thinking that if you want to enable custom protocols loading, it seemed
+better to let the related devices being created dynamically at will, so
+that an SCMI driver can just 'declare' its own device name and that will
+be created if the corresponding protocol is found in the DT and
+implemented in fw.
 
-https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=040fd7f585c9b9fcf4475d294b3f5ddf78405297
+Anyway this complicated the code a lot in some dubious ways.
 
-There are some minor bug reports I want to address but my ETA right now
-is the end of this week to release v1.19.
+In a built-in scenario you end up with your driver being probe before the
+platform SCMI driver, so you cannot create the device straight away in
+your driver (there's not even an SCMI bus still) and you anyway need the
+platform SCMI driver to be up and running to check the DT and initialize
+basic transport to talk to the fw and check the protocol is supported by
+fw before creating the device itself: so I ended up basically having the
+SCMI driver just 'requesting' some device name to the core and then having
+the core creating the device later on when the SCMI platform was probed
+iff the DT and the fw supported that protocol (or immediately if your
+driver was a module and the SCMI platform was already initialized)
 
-- Arnaldo
+All of the above, even if working, led to a lot of machinery to track all
+these requested devices properly and properly create/destroy them, and
+also it does not seem the right thing to do, since it's basically
+mimicing/duplicating all the usual probe deferring standard mechanism.
+
+Maybe this could have been addressed in different ways but I've not
+explored further.
+
+So at the end I removed such dynamic device creation support from this
+series.
+
+Now you proposal would be, if I understood correctly, to just create
+straight away a custom device whenever its protocol is defined in the DT
+and supported by fw, so that the custom driver above would not have to
+declare anything statically, and it will just be associated with some
+"dev_proto_99" matching just on protocol number.
+
+I'd like this option because it simplifies a lot the above issues, but
+I don't think it is viable because in this way you are no more able to
+define 2 distinct SCMI drivers for the same protocol (like you
+can do now defining multiple names in the match table: as an example you
+could not create a different "custom_dummy_2" SCMI driver using the
+custom protocol 0x99, because there;s only one single "dev_proto_99"
+device created and already probed for "custom_dummy".
+
+So the problem is again that if you want to support multiple SCMI
+drivers they have to be able to declare their own devname, against which
+the platform SCMI driver can match and initialized if needed the
+underlying device.
+
+In short, I want certainly to explore the dynamic device creation
+further, but for the moment I put it apart trying to consolidate
+all the rest.
+
+Maybe I could re-introduce something better later on in future versions
+of this series, or maybe just address this a distinct series later on.
+
+Sorry for the flood-style email :D
+
+Thanks
+
+Cristian
+
+> 
+> >   };
+> >   static inline void
+> > 
+> 
+> -- 
+> Warm Regards
+> Thara
