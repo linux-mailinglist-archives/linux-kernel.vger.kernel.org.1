@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C518F294872
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2FE294879
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394968AbgJUGp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 02:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38434 "EHLO mail.kernel.org"
+        id S2395109AbgJUGui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 02:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394966AbgJUGp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 02:45:27 -0400
-Received: from coco.lan (ip5f5ad5a8.dynamic.kabel-deutschland.de [95.90.213.168])
+        id S2395092AbgJUGui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 02:50:38 -0400
+Received: from localhost (unknown [122.179.16.52])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B8222075B;
-        Wed, 21 Oct 2020 06:45:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EDF9221FC;
+        Wed, 21 Oct 2020 06:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603262726;
-        bh=Wyw5We1ji398r6jEKsyOv1d233CBQmez+NyANTjly/w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yIfZmq8tDOVAVBY0McNrJzGl5Swv/H/EpWWIBkmQCxhCiH+eVKyXKJITzMWcvTRlt
-         SmbXzzl3/YB4iZjdBJJj4+VO6ZOmzpbh1EfiQSS6N4VjPgEog4Pf0qQpWpKGc0NLA4
-         OJsKcl8Z86Ihu0x+0Kjf/jw7WNL/2KnPTV0d5f9Y=
-Date:   Wed, 21 Oct 2020 08:45:18 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Mackerras <paulus@samba.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-sh@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH 2/2] dt: Remove booting-without-of.rst
-Message-ID: <20201021084518.1eab6481@coco.lan>
-In-Reply-To: <20201008142420.2083861-2-robh@kernel.org>
-References: <20201008142420.2083861-1-robh@kernel.org>
-        <20201008142420.2083861-2-robh@kernel.org>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        s=default; t=1603263037;
+        bh=ylP3DH3tY3xM8SDYc3rNdp/fQn48+oKGksLcmWHXyP8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SCnGUa5dYGw+bFVe+4u4NQx3ppKUYoobyTkAtTIjxKRLWNx8P7Fw+CnDOQb9X/XSR
+         RdY8+0cXP2ixUcwX2BR0bjzDJGZbNbGMPw87HjsOazzeiH+vrN6u9CKrx7EYYRt5dT
+         9GIqnKk2D0dmcN5Dp+kJXT1PiH3WXkjg3pzrb0fg=
+Date:   Wed, 21 Oct 2020 12:20:33 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFT PATCH] arm64: dts: sdm845: Add iommus property to qup
+Message-ID: <20201021065033.GC9746@vkoul-mobl>
+References: <20201020150301.3259814-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020150301.3259814-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hi Bjorn, Steve,
 
-Em Thu,  8 Oct 2020 09:24:20 -0500
-Rob Herring <robh@kernel.org> escreveu:
-
-> booting-without-of.rstt is an ancient document that first outlined
-> Flattened DeviceTree on PowerPC initially. The DT world has evolved a
-> lot in the 15 years since and booting-without-of.rst is pretty stale.
-> The name of the document itself is confusing if you don't understand the
-> evolution from real 'OpenFirmware'. Most of what booting-without-of.rst
-> contains is now in the DT specification (which evolved out of the
-> ePAPR). The few things that weren't documented in the DT specification
-> are now.
+On 20-10-20, 08:03, Bjorn Andersson wrote:
+> From: Stephen Boyd <swboyd@chromium.org>
 > 
-> All that remains is the boot entry details, so let's move these to arch
-> specific documents. The exception is arm which already has the same
-> details documented.
+> The SMMU that sits in front of the QUP needs to be programmed properly
+> so that the i2c geni driver can allocate DMA descriptors. Failure to do
+> this leads to faults when using devices such as an i2c touchscreen where
+> the transaction is larger than 32 bytes and we use a DMA buffer.
 
-Removing this document caused a warning at Documentation/arm/booting.rst:
+So I tried this and results in reboot for me when I use it in GSI
+driver in RB3. I seem to already have the iommu properties [1] but values
+are different
 
-	$ ./scripts/documentation-file-ref-check 
-	Documentation/arm/booting.rst: Documentation/devicetree/booting-without-of.rst
+[1]: https://git.linaro.org/people/vinod.koul/kernel.git/commit/?h=topic/gsi3-db&id=385edef08d55432a40fc9a8ae1f49248d5417a92
 
-as it mentions that the DTB format is described on booting-without-of.rst:
+> arm-smmu 15000000.iommu: Unexpected global fault, this could be serious
+> arm-smmu 15000000.iommu:         GFSR 0x00000002, GFSYNR0 0x00000002, GFSYNR1 0x000006c0, GFSYNR2 0x00000000
+> 
+> Add the right SID and mask so this works.
+> 
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> [bjorn: Define for second QUP as well]
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index 8eb5a31346d2..7d635bc919cb 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -811,6 +811,7 @@ qupv3_id_0: geniqup@8c0000 {
+>  			clock-names = "m-ahb", "s-ahb";
+>  			clocks = <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
+>  				 <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
+> +			iommus = <&apps_smmu 0x0 0x3>;
+>  			#address-cells = <2>;
+>  			#size-cells = <2>;
+>  			ranges;
+> @@ -1119,6 +1120,7 @@ qupv3_id_1: geniqup@ac0000 {
+>  			clock-names = "m-ahb", "s-ahb";
+>  			clocks = <&gcc GCC_QUPV3_WRAP_1_M_AHB_CLK>,
+>  				 <&gcc GCC_QUPV3_WRAP_1_S_AHB_CLK>;
+> +			iommus = <&apps_smmu 0x6c0 0x3>;
+>  			#address-cells = <2>;
+>  			#size-cells = <2>;
+>  			ranges;
+> -- 
+> 2.28.0
 
-	4b. Setup the device tree
-	-------------------------
-
-	The boot loader must load a device tree image (dtb) into system ram
-	at a 64bit aligned address and initialize it with the boot data.  The
-	dtb format is documented in Documentation/devicetree/booting-without-of.rst.
-	The kernel will look for the dtb magic value of 0xd00dfeed at the dtb
-	physical address to determine if a dtb has been passed instead of a
-	tagged list.
-
-So, I guess that such part of the document needs to be moved to booting.rst.
-
-Thanks,
-Mauro
+-- 
+~Vinod
