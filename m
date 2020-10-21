@@ -2,151 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2384C29547B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E80E295492
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506472AbgJUVuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 17:50:05 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:58132 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506455AbgJUVuD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 17:50:03 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201021214945euoutp018ea911c1c9dd123ff1b5da19e1aac903~AIE3MBqlb2806228062euoutp01U
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:49:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201021214945euoutp018ea911c1c9dd123ff1b5da19e1aac903~AIE3MBqlb2806228062euoutp01U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603316985;
-        bh=4fyCws4IJ/FYfmeubIZmsDv7F8YQu+sqPMRSahhjyO0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uAQUeTsL3EV4oM9D6VUkYaW6z1pJZhWXvTLlx/PZ0N0tTPtCq+EvqZlXLsqXJt9uh
-         L3rE2Mu8IR7cw6ZqZ2CVsjTp/OhRb2wBg5+0gbNNN/QbQoY6l6unCDsv1aamehOnRB
-         gi9bErd95kWU9NwkXcZ/L6nMLklKTzynPZRvqt1I=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201021214935eucas1p1f148e949b29a1c5c480a10aa3d499110~AIEth_NXj2935129351eucas1p1d;
-        Wed, 21 Oct 2020 21:49:35 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 11.9C.06318.FECA09F5; Wed, 21
-        Oct 2020 22:49:35 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201021214934eucas1p2d4acc48c40f37763c276d8d275fa9c15~AIEsqgsWh1618216182eucas1p2q;
-        Wed, 21 Oct 2020 21:49:34 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201021214934eusmtrp1efb67b1efe137dacb88fd856555ffccc~AIEsp5GPb1537015370eusmtrp1l;
-        Wed, 21 Oct 2020 21:49:34 +0000 (GMT)
-X-AuditID: cbfec7f5-371ff700000018ae-c8-5f90acef9fc5
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id CC.E4.06017.EECA09F5; Wed, 21
-        Oct 2020 22:49:34 +0100 (BST)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201021214934eusmtip1bd463710d90630bc5f3d5abb9db7709d~AIEsd4jUo0629906299eusmtip1c;
-        Wed, 21 Oct 2020 21:49:34 +0000 (GMT)
-From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-To:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-Subject: [PATCH v3 5/5] ARM: defconfig: Enable ax88796c driver
-Date:   Wed, 21 Oct 2020 23:49:10 +0200
-Message-Id: <20201021214910.20001-6-l.stelmach@samsung.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201021214910.20001-1-l.stelmach@samsung.com>
+        id S2438046AbgJUVxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 17:53:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409453AbgJUVxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 17:53:07 -0400
+Received: from localhost (cha74-h07-176-172-165-167.dsl.sta.abo.bbox.fr [176.172.165.167])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DA4F24178;
+        Wed, 21 Oct 2020 21:53:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603317187;
+        bh=RO7qplhzXpq4aft0tyU5ptA9YB6dGOGm8R6A3toExu4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jciVwd5BoGiyb+REu47mAAuRFB0SXa8PHq3hn6CbLsAnnsU4bg/jgapMvMZuxhV5o
+         CbY+ZAuAyvVdARrBQfwg6o/5bQY5kB/s8tqXje3RLK+eCkgokSAEwM8Gw7fO7ZaSY3
+         /6IuFdFjrB7qukWm1/rrVcqPPoHqkPgLuZ/24Ruc=
+Date:   Wed, 21 Oct 2020 23:53:04 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     joel@joelfernandes.org
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+Subject: Re: [PATCH v7 2/6] rcu/segcblist: Add counters to segcblist
+ datastructure
+Message-ID: <20201021215304.GB78735@lothringen>
+References: <20201015002301.101830-1-joel@joelfernandes.org>
+ <20201015002301.101830-3-joel@joelfernandes.org>
+ <20201015122158.GA127222@lothringen>
+ <20201021153314.GB2828884@google.com>
 MIME-Version: 1.0
-Organization: Samsung R&D Institute Poland
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHeXd2tjNpdpyiTxYaI4sEtTL0DVNU+nCgIA2FEktXHlfopmxp
-        2YcUy2umywvZHGVe0IZ5d94HDrPScoZmCSmS0cU0C4tyhuR2lPz2XH7/5/88Ly9FSKZJV+qS
-        8jKrUsoSpQI7vmFoxey11KCJOTBlAWyeNhG4pbyJxDrzTT5+MDhK4qqlchJPLr4jcdHcVwKb
-        zc1CPGYoJPGUqR7h1rlJEo/36AS43GzkYVNZP8KPB6eFeKjSGWf1DwqDHZjxyVcE0/5oisd0
-        a6eFTKs+T8C01aQz3V3LPKawXY+Y5Va3MCrK7mgcm3gplVX5BMXaXSzoHRMkZ4muNmvqiQy0
-        KsxHIgrowzCpfYjykR0loesR6EwrAi75iaDxllbIJcsIZi1PBJuSlU+fbbGErkNQ/WMvB31C
-        ULvQz7c2BHQIFNU+I60NJ3qGgKacWZsJQRsRdM+UElbKkQ6CzCGDTcGnPaDYsGCri+kAqOha
-        3bBzh5y6Tlssoo/C+LdmkmMc4Pm9DzbtdtoTGjLf2GJinb/RUUFYzYC+Q0H28BovH1HryTGY
-        +H2Gm+kI80/bN15gF4yUFPA5JB1Kiv04aQECg+4Pn2MC4N2oRWBlCHo/NPX4cOUQqPncgDip
-        PbxddOA2sF+/5C7BlcWQmy3h6D3QWNS3MdAVbs/XIw2Sarfcot2yv/a/VyUi9MiFTVEr5Kza
-        V8le8VbLFOoUpdz7QpKiFa1/upG1p7+6kPHveROiKSTdJv5+QhMjIWWp6jSFCQFFSJ3EoS9H
-        zknEcbK0a6wqKUaVksiqTWgnxZe6iH2rvpyV0HLZZTaBZZNZ1WaXR4lcM5B+NpX45e0fKZqX
-        TxREeATGV/fGuqgGvNx2HLJkxp16fz3d+cZoZ/YBxvH+wnFGbhmOivccyFdWa8L8oltm5mry
-        DLs9/PuQBtyNVbnG7iRFYHRhhyrTfKTtIx3cpjvpXHo6/LW+bJEKXXuR4BZZ3Tk45eK5Mzxi
-        cSbFfZ8iXiflqy/KDnoSKrXsH1aueBpwAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHIsWRmVeSWpSXmKPExsVy+t/xu7rv1kyIN5i6Xcbi/N1DzBYbZ6xn
-        tZhzvoXFYv6Rc6wWi97PYLW49vYOq0X/49fMFufPb2C3uLCtj9Xi5qEVjBabHl9jtbi8aw6b
-        xYzz+5gsDk3dy2ix9shddotjC8QsWvceYXcQ9Lh87SKzx5aVN5k8ds66y+6xaVUnm8fmJfUe
-        O3d8ZvLo27KK0ePzJrkAjig9m6L80pJUhYz84hJbpWhDCyM9Q0sLPSMTSz1DY/NYKyNTJX07
-        m5TUnMyy1CJ9uwS9jJ7dF9gKWjkrNkxYwdzA+Ju9i5GTQ0LAROLn8xdsILaQwFJGiVn/07sY
-        OYDiUhIr56ZDlAhL/LnWBVTCBVTylFFi0Yz1YL1sAo4S/UtPsIIkRATeMEs03XvLDuIwC+xj
-        lNh/dDFYlbCAnUTTsW0sIDaLgKrEpG1vmEFsXgFridk7frNBrJCXaF++HczmFLCRuPxuAyvE
-        RdYSl95NZoSoF5Q4OfMJC8h1zALqEuvnCYGE+QW0JNY0XQcbzww0pnnrbOYJjEKzkHTMQuiY
-        haRqASPzKkaR1NLi3PTcYiO94sTc4tK8dL3k/NxNjMC43nbs55YdjF3vgg8xCnAwKvHwfvCZ
-        EC/EmlhWXJl7iFGCg1lJhNfp7Ok4Id6UxMqq1KL8+KLSnNTiQ4ymQG9OZJYSTc4Hppy8knhD
-        U0NzC0tDc2NzYzMLJXHeDoGDMUIC6YklqdmpqQWpRTB9TBycUg2MG1fIXlhqHHDJ1v38ognv
-        tqxwWu9pe3lfnfOZ/Kzzl00bvts+uzWJ1XHD9LXZNWlZto0WtpkZJx8+yFP1DTtTeWpu2//P
-        UuLCmqH9KfmFPa6cXhfdTy6TcWDd0+Rx5+xH15gl65jldbfzGk2oOCl7dqfBWVndm+r3k/NN
-        2ZfckGTzmau0SnSyEktxRqKhFnNRcSIAdD4W+AEDAAA=
-X-CMS-MailID: 20201021214934eucas1p2d4acc48c40f37763c276d8d275fa9c15
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201021214934eucas1p2d4acc48c40f37763c276d8d275fa9c15
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201021214934eucas1p2d4acc48c40f37763c276d8d275fa9c15
-References: <20201021214910.20001-1-l.stelmach@samsung.com>
-        <CGME20201021214934eucas1p2d4acc48c40f37763c276d8d275fa9c15@eucas1p2.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201021153314.GB2828884@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable ax88796c driver for the ethernet chip on Exynos3250-based
-ARTIK5 boards.
+On Wed, Oct 21, 2020 at 11:33:14AM -0400, joel@joelfernandes.org wrote:
+> On Thu, Oct 15, 2020 at 02:21:58PM +0200, Frederic Weisbecker wrote:
+> > On Wed, Oct 14, 2020 at 08:22:57PM -0400, Joel Fernandes (Google) wrote:
+> > > Add counting of segment lengths of segmented callback list.
+> > > 
+> > > This will be useful for a number of things such as knowing how big the
+> > > ready-to-execute segment have gotten. The immediate benefit is ability
+> > > to trace how the callbacks in the segmented callback list change.
+> > > 
+> > > Also this patch remove hacks related to using donecbs's ->len field as a
+> > > temporary variable to save the segmented callback list's length. This cannot be
+> > > done anymore and is not needed.
+> > > 
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > ---
+> > >  include/linux/rcu_segcblist.h |   2 +
+> > >  kernel/rcu/rcu_segcblist.c    | 133 +++++++++++++++++++++++-----------
+> > >  kernel/rcu/rcu_segcblist.h    |   2 -
+> > >  3 files changed, 92 insertions(+), 45 deletions(-)
+> > > 
+> > > diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+> > > index b36afe7b22c9..d462ae5e340a 100644
+> > > --- a/include/linux/rcu_segcblist.h
+> > > +++ b/include/linux/rcu_segcblist.h
+> > > @@ -69,8 +69,10 @@ struct rcu_segcblist {
+> > >  	unsigned long gp_seq[RCU_CBLIST_NSEGS];
+> > >  #ifdef CONFIG_RCU_NOCB_CPU
+> > >  	atomic_long_t len;
+> > > +	atomic_long_t seglen[RCU_CBLIST_NSEGS];
+> > 
+> > Also does it really need to be atomic?
+> 
+> Yes, it need not be. I will make the change for ->seglen.
+> 
+> BTW, for the existing ->len field, doesn't the following need to acquire nocb
+> lock?
+> rcu_nocb_try_bypass -> rcu_segcblist_inc_len
+> 
+> It seems that will do a lock-less non-atomic RMW on a nocb offloaded list,
+> otherwise.
 
-Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
----
- arch/arm/configs/exynos_defconfig   | 2 ++
- arch/arm/configs/multi_v7_defconfig | 2 ++
- 2 files changed, 4 insertions(+)
+I believe it shouldn't be necessary. That's an atomic add and the kthreads
+manipulating it shouldn't have any trouble concurrently. None that I can
+imagine tonight at least...
 
-diff --git a/arch/arm/configs/exynos_defconfig b/arch/arm/configs/exynos_defconfig
-index cf82c9d23a08..1ee902d01eef 100644
---- a/arch/arm/configs/exynos_defconfig
-+++ b/arch/arm/configs/exynos_defconfig
-@@ -107,6 +107,8 @@ CONFIG_MD=y
- CONFIG_BLK_DEV_DM=y
- CONFIG_DM_CRYPT=m
- CONFIG_NETDEVICES=y
-+CONFIG_NET_VENDOR_ASIX=y
-+CONFIG_SPI_AX88796C=y
- CONFIG_SMSC911X=y
- CONFIG_USB_RTL8150=m
- CONFIG_USB_RTL8152=y
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index e731cdf7c88c..dad53846f58f 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -243,6 +243,8 @@ CONFIG_SATA_HIGHBANK=y
- CONFIG_SATA_MV=y
- CONFIG_SATA_RCAR=y
- CONFIG_NETDEVICES=y
-+CONFIG_NET_VENDOR_ASIX=y
-+CONFIG_SPI_AX88796C=m
- CONFIG_VIRTIO_NET=y
- CONFIG_B53_SPI_DRIVER=m
- CONFIG_B53_MDIO_DRIVER=m
--- 
-2.26.2
+> Certainly rcu_nocb_do_flush_bypass() does do it so maybe it was missed?
 
+I believe it increments under the lock here because the inc happens to be on the way
+to the insertion of the callbacks :o)
