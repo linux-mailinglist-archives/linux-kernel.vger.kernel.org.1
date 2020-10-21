@@ -2,310 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519E7295021
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EA529501D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502679AbgJUPqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:46:36 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:35092 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731484AbgJUPqe (ORCPT
+        id S2502667AbgJUPqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502659AbgJUPqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:46:34 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 17456803071B;
-        Wed, 21 Oct 2020 15:46:25 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ZiKsyjYYXhBF; Wed, 21 Oct 2020 18:46:24 +0300 (MSK)
-Date:   Wed, 21 Oct 2020 18:46:21 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 01/16] dt-bindings: usb: usb-hcd: Convert generic USB
- properties to DT schema
-Message-ID: <20201021154621.a3vtoa4lriwkpnfo@mobilestation>
-References: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
- <20201020112101.19077-2-Sergey.Semin@baikalelectronics.ru>
- <1603249236.31607.9.camel@mhfsdcap03>
+        Wed, 21 Oct 2020 11:46:31 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4069FC0613CE;
+        Wed, 21 Oct 2020 08:46:31 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id h24so3916879ejg.9;
+        Wed, 21 Oct 2020 08:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=7ehyNgQOK7CqueR6HFQ7GOu3HkZtQCthPvOvqzAFJr4=;
+        b=pa58BoU72nD8x9JfH451BnGeVPr1/EavTuLx1ixWLIIHKCOdAbi0TsleJ8QgwtYtdR
+         pVfbW+ZjFM0p/OfkmkmleB1vi02LILpQ39OUKcyFXwKvgEiqBNS79pKmHNjtXEiKBhSi
+         pohh7n4Yxke93I+gZCjIV5wCyHdFtGPwaZ4wZ3OHkEGNhYWNJdFwMYL6qfvb2VE+62oN
+         ZxXtfGDbfUDax+mMdUWG+5mkU9ttXSXnEs9ALgEismZxYFTCOI4w/fG+/FNNF15M4Sr/
+         lfgvbD48CWNKTykdVeGRjDX4rWs9to+6qq09zRudfEkVDGLqvuYuALoOCVMf+BrCl7on
+         +gbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:references:date
+         :in-reply-to:message-id:user-agent:mime-version;
+        bh=7ehyNgQOK7CqueR6HFQ7GOu3HkZtQCthPvOvqzAFJr4=;
+        b=I+j7nSnpbmYpI8fmLKJ9T1R/dea6ydELSGtApdDGlCZb7eSD+53vM8yySkIzSMvqRa
+         aAzSl7VPyEENrHH0T4a43kX5wWJ+wzmEp/Krd0/Vzt9/HZF91RF2Eq0504VWiLlxsrSc
+         VuXocjznRY+wyeUABHi1/yhMsrrbld3jD/lwykmzAPKXgAysEKyHER60xYgR5O/1d1O6
+         KzjweF3PGPOtlgfbQBrRYKAcbwIt652c7TOxsYb2Y4eK9yl+ObWJJzM4XkcY+pM6kxKX
+         JpdKGSTUA3UAZlTk2kY5tZJjNU1A2bRfUhtE0FGnPsj4Wr2RKYb6kom5XGCdJX1ntpPj
+         bIag==
+X-Gm-Message-State: AOAM5316UGHd/X0Q5qKcCdHA0dDxxEsEvVi3jRr13fGJgbVS25L5Zznu
+        8k5RPGpEuqcUIAJblzC4OJ8=
+X-Google-Smtp-Source: ABdhPJwbEgmR444iU3kT5iZcp7WU4/X4Lu7XdAZleSkjQR6OG1NcykLs2li3WctaKTzJEciB0GzWfg==
+X-Received: by 2002:a17:906:3cd:: with SMTP id c13mr4062189eja.25.1603295189979;
+        Wed, 21 Oct 2020 08:46:29 -0700 (PDT)
+Received: from dell.be.48ers.dk (d51A5BC31.access.telenet.be. [81.165.188.49])
+        by smtp.gmail.com with ESMTPSA id ss7sm2445870ejb.28.2020.10.21.08.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 08:46:28 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+Received: from peko by dell.be.48ers.dk with local (Exim 4.92)
+        (envelope-from <peter@korsgaard.com>)
+        id 1kVGJn-0008Er-Pi; Wed, 21 Oct 2020 17:46:27 +0200
+From:   Peter Korsgaard <peter@korsgaard.com>
+To:     Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-i2c@vger.kernel.org, andrew@lunn.ch,
+        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+Subject: Re: [PATCH v4 1/1] i2c: ocores: fix polling mode workaround on FU540-C000 SoC
+References: <1603291814-240377-1-git-send-email-sagar.kadam@sifive.com>
+        <1603291814-240377-2-git-send-email-sagar.kadam@sifive.com>
+Date:   Wed, 21 Oct 2020 17:46:27 +0200
+In-Reply-To: <1603291814-240377-2-git-send-email-sagar.kadam@sifive.com>
+        (Sagar Shrikant Kadam's message of "Wed, 21 Oct 2020 07:50:14 -0700")
+Message-ID: <87k0vjk2ek.fsf@dell.be.48ers.dk>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1603249236.31607.9.camel@mhfsdcap03>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 11:00:36AM +0800, Chunfeng Yun wrote:
-> On Tue, 2020-10-20 at 14:20 +0300, Serge Semin wrote:
-> > The generic USB HCD properties have been described in the legacy bindings
-> > text file: Documentation/devicetree/bindings/usb/generic.txt . Let's
-> > convert it' content into the USB HCD DT schema properties so all USB DT
->           ^ its?
-> > nodes would be validated to have them properly utilized.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > 
-> > ---
-> > 
-> > Changelog v2:
-> > - Discard '|' in all the new properties, since we don't need to preserve
-> >   the text formatting.
-> > - Convert abbreviated form of the "maximum-speed" enum restriction into
-> >   the multi-lined version of the list.
-> > - Drop quotes from around the string constants.
-> > ---
-> >  .../devicetree/bindings/usb/generic.txt       | 57 ------------
-> >  .../devicetree/bindings/usb/usb-hcd.yaml      | 88 +++++++++++++++++++
+>>>>> "Sagar" == Sagar Shrikant Kadam <sagar.kadam@sifive.com> writes:
 
-> Do we need change the file name or modify it's title?
-> the title is "Generic USB Host Controller Device Tree Bindings", but
-> some generic properties, such as, dr_mode, usb-role-switch, otg related
-> ones, are usually used by DRD controller, this may cause some confusion.
+ > The FU540-C000 has a broken IRQ and support was added earlier
+ > so that it will operate in polling mode, but seems to work only
+ > in case interrupts property is missing from the i2c0 dt-node.
+ > This should not be the case and the driver should handle polling
+ > mode with the interrupt property present in i2c0 node of the
+ > device tree.
+ > So check if it's the FU540-C000 soc and enable polling mode master
+ > xfers, as the IRQ for this chip is broken.
 
-Hm, good question. A problem of the naming and the properties inclusion do
-exist here. I haven't thought that through when moved all the generic
-properties into the usb-hcd.yaml bindings file. But I don't think it's a good
-idea to rename the file. Most likely the best solution would be to split the
-functionality up as follows:
+ > Fixes commit c45d4ba86731 ("i2c: ocores: add polling mode workaround
+ > for Sifive FU540-C000 SoC")
 
-1) usb.yaml - common USB controller with generic properties for all USB modes (host, peripheral, otg):
-   + $nodename
-   + phys
-   + phy-names
-   + usb-phy
-   + maximum-speed
-   + phy_type
-2) usb-hcd.yaml - DT schema for USB host controllers (EHCI/OHCI/UHCI):
-   + allOf: [usb.yaml#]
-   + companion
-3) usb-xhci.yaml - DT schema for USB host controllers (xHCI):
-   + allOf: [usb-hcd.yaml#]
-   + usb2-lpm-disable
-   + usb3-lpm-capable
-   + quirk-broken-port-ped
-   + imod-interval-ns
-4) usb-drd.yaml - DT schema for USB OTG controllers:
-   + otg-rev
-   + hnp-disable
-   + srp-disable
-   + adp-disable
-   + usb-role-switch
-   + role-switch-default-mode
-   + tpl-support
-   + dr_mode: [host, peripheral, otg]
+ > Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
 
-So in case if an USB controller is DRD with EHCI host, then it will need
-to pass evaluation of allOf: [usb-hcd.yaml#, usb-drd.yaml#]. If an USB
-controller is DRD with xHCI host, then the next schema can be applied:
-[usb-xhci.yaml#, usb-drd.yaml#]. A conditional schema is also applicable
-here, like this:
-allOf:
-  - $ref: usb-drd.yaml#
-  - if:
-      properties:
-        dr_mode:
-          const: host
-    then:
-      $ref: usb-hcd.yaml# (or usb-xhci.yaml#)
-    else:
-      #ref: usb.yaml#
+LGTM, thanks.
 
-What do you think? @Rob, @Greg, we need your opinion here.
+Acked-by: Peter Korsgaard <peter@korsgaard.com>
 
--Sergey
-
-> 
-> >  2 files changed, 88 insertions(+), 57 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/usb/generic.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/usb/generic.txt b/Documentation/devicetree/bindings/usb/generic.txt
-> > deleted file mode 100644
-> > index ba472e7aefc9..000000000000
-> > --- a/Documentation/devicetree/bindings/usb/generic.txt
-> > +++ /dev/null
-> > @@ -1,57 +0,0 @@
-> > -Generic USB Properties
-> > -
-> > -Optional properties:
-> > - - maximum-speed: tells USB controllers we want to work up to a certain
-> > -			speed. Valid arguments are "super-speed-plus",
-> > -			"super-speed", "high-speed", "full-speed" and
-> > -			"low-speed". In case this isn't passed via DT, USB
-> > -			controllers should default to their maximum HW
-> > -			capability.
-> > - - dr_mode: tells Dual-Role USB controllers that we want to work on a
-> > -			particular mode. Valid arguments are "host",
-> > -			"peripheral" and "otg". In case this attribute isn't
-> > -			passed via DT, USB DRD controllers should default to
-> > -			OTG.
-> > - - phy_type: tells USB controllers that we want to configure the core to support
-> > -			a UTMI+ PHY with an 8- or 16-bit interface if UTMI+ is
-> > -			selected. Valid arguments are "utmi" and "utmi_wide".
-> > -			In case this isn't passed via DT, USB controllers should
-> > -			default to HW capability.
-> > - - otg-rev: tells usb driver the release number of the OTG and EH supplement
-> > -			with which the device and its descriptors are compliant,
-> > -			in binary-coded decimal (i.e. 2.0 is 0200H). This
-> > -			property is used if any real OTG features(HNP/SRP/ADP)
-> > -			is enabled, if ADP is required, otg-rev should be
-> > -			0x0200 or above.
-> > - - companion: phandle of a companion
-> > - - hnp-disable: tells OTG controllers we want to disable OTG HNP, normally HNP
-> > -			is the basic function of real OTG except you want it
-> > -			to be a srp-capable only B device.
-> > - - srp-disable: tells OTG controllers we want to disable OTG SRP, SRP is
-> > -			optional for OTG device.
-> > - - adp-disable: tells OTG controllers we want to disable OTG ADP, ADP is
-> > -			optional for OTG device.
-> > - - usb-role-switch: boolean, indicates that the device is capable of assigning
-> > -			the USB data role (USB host or USB device) for a given
-> > -			USB connector, such as Type-C, Type-B(micro).
-> > -			see connector/usb-connector.yaml.
-> > - - role-switch-default-mode: indicating if usb-role-switch is enabled, the
-> > -			device default operation mode of controller while usb
-> > -			role is USB_ROLE_NONE. Valid arguments are "host" and
-> > -			"peripheral". Defaults to "peripheral" if not
-> > -			specified.
-> > -
-> > -
-> > -This is an attribute to a USB controller such as:
-> > -
-> > -dwc3@4a030000 {
-> > -	compatible = "synopsys,dwc3";
-> > -	reg = <0x4a030000 0xcfff>;
-> > -	interrupts = <0 92 4>
-> > -	usb-phy = <&usb2_phy>, <&usb3,phy>;
-> > -	maximum-speed = "super-speed";
-> > -	dr_mode = "otg";
-> > -	phy_type = "utmi_wide";
-> > -	otg-rev = <0x0200>;
-> > -	adp-disable;
-> > -};
-> > diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-> > index 7263b7f2b510..ee7ea205c71d 100644
-> > --- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-> > @@ -22,9 +22,97 @@ properties:
-> >      description:
-> >        Name specifier for the USB PHY
-> >  
-> > +  maximum-speed:
-> > +   description:
-> > +     Tells USB controllers we want to work up to a certain speed. In case this
-> > +     isn't passed via DT, USB controllers should default to their maximum HW
-> > +     capability.
-> > +   $ref: /schemas/types.yaml#/definitions/string
-> > +   enum:
-> > +     - low-speed
-> > +     - full-speed
-> > +     - high-speed
-> > +     - super-speed
-> > +     - super-speed-plus
-> > +
-> > +  dr_mode:
-> > +    description:
-> > +      Tells Dual-Role USB controllers that we want to work on a particular
-> > +      mode. In case this attribute isn't passed via DT, USB DRD controllers
-> > +      should default to OTG.
-> > +    $ref: /schemas/types.yaml#/definitions/string
-> > +    enum: [host, peripheral, otg]
-> > +
-> > +  phy_type:
-> > +    description:
-> > +      Tells USB controllers that we want to configure the core to support a
-> > +      UTMI+ PHY with an 8- or 16-bit interface if UTMI+ is selected. In case
-> > +      this isn't passed via DT, USB controllers should default to HW
-> > +      capability.
-> > +    $ref: /schemas/types.yaml#/definitions/string
-> > +    enum: [utmi, utmi_wide]
-> > +
-> > +  otg-rev:
-> > +    description:
-> > +      Tells usb driver the release number of the OTG and EH supplement with
-> > +      which the device and its descriptors are compliant, in binary-coded
-> > +      decimal (i.e. 2.0 is 0200H). This property is used if any real OTG
-> > +      features (HNP/SRP/ADP) is enabled. If ADP is required, otg-rev should be
-> > +      0x0200 or above.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +
-> > +  companion:
-> > +    description: Phandle of a companion device
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +
-> > +  hnp-disable:
-> > +    description:
-> > +      Tells OTG controllers we want to disable OTG HNP. Normally HNP is the
-> > +      basic function of real OTG except you want it to be a srp-capable only B
-> > +      device.
-> > +    type: boolean
-> > +
-> > +  srp-disable:
-> > +    description:
-> > +      Tells OTG controllers we want to disable OTG SRP. SRP is optional for OTG
-> > +      device.
-> > +    type: boolean
-> > +
-> > +  adp-disable:
-> > +    description:
-> > +      Tells OTG controllers we want to disable OTG ADP. ADP is optional for OTG
-> > +      device.
-> > +    type: boolean
-> > +
-> > +  usb-role-switch:
-> > +    description:
-> > +      Indicates that the device is capable of assigning the USB data role
-> > +      (USB host or USB device) for a given USB connector, such as Type-C,
-> > +      Type-B(micro). See connector/usb-connector.yaml.
-> > +
-> > +  role-switch-default-mode:
-> > +    description:
-> > +      Indicates if usb-role-switch is enabled, the device default operation
-> > +      mode of controller while usb role is USB_ROLE_NONE.
-> > +    $ref: /schemas/types.yaml#/definitions/string
-> > +    enum: [host, peripheral]
-> > +    default: peripheral
-> > +
-> >  examples:
-> >    - |
-> >      usb {
-> >          phys = <&usb2_phy1>, <&usb3_phy1>;
-> >          phy-names = "usb";
-> >      };
-> > +  - |
-> > +    usb@4a030000 {
-> > +        compatible = "snps,dwc3";
-> > +        reg = <0x4a030000 0xcfff>;
-> > +        interrupts = <0 92 4>;
-> > +        usb-phy = <&usb2_phy>, <&usb3_phy>;
-> > +        maximum-speed = "super-speed";
-> > +        dr_mode = "otg";
-> > +        phy_type = "utmi_wide";
-> > +        otg-rev = <0x0200>;
-> > +        adp-disable;
-> > +    };
-> 
+-- 
+Bye, Peter Korsgaard
