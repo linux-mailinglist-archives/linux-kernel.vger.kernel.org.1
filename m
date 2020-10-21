@@ -2,94 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2FE294879
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1694129487D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395109AbgJUGui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 02:50:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395092AbgJUGui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 02:50:38 -0400
-Received: from localhost (unknown [122.179.16.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EDF9221FC;
-        Wed, 21 Oct 2020 06:50:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603263037;
-        bh=ylP3DH3tY3xM8SDYc3rNdp/fQn48+oKGksLcmWHXyP8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SCnGUa5dYGw+bFVe+4u4NQx3ppKUYoobyTkAtTIjxKRLWNx8P7Fw+CnDOQb9X/XSR
-         RdY8+0cXP2ixUcwX2BR0bjzDJGZbNbGMPw87HjsOazzeiH+vrN6u9CKrx7EYYRt5dT
-         9GIqnKk2D0dmcN5Dp+kJXT1PiH3WXkjg3pzrb0fg=
-Date:   Wed, 21 Oct 2020 12:20:33 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFT PATCH] arm64: dts: sdm845: Add iommus property to qup
-Message-ID: <20201021065033.GC9746@vkoul-mobl>
-References: <20201020150301.3259814-1-bjorn.andersson@linaro.org>
+        id S2395145AbgJUGwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 02:52:06 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38764 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395119AbgJUGwG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 02:52:06 -0400
+From:   Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603263123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3DA2W6vONxoN9s5vqfqOZvlKIoZcBviB17UCXqX1bAs=;
+        b=Ysv1FtWcKnStFkLJTmaKmAgtMdkcyomNhjq6a4E3Z8bkYXirbAQZHFmnfMnqvL1McoQCTj
+        zTp1GUKEAhU0ah9royDWEdtYYkD+wMhdvqVBixvOg77GgVdadX6q7pownaagZ84QR4+yX4
+        uR1VI8OMIYmbOU1HPierMyjVU2++MW3Jcqi61D1uQHaDVjD0tdQAa0fMdBi8Hx9qq7pnEX
+        C38+dbWdPURHWOcEWSPKlnZjkUna8rQ33sbbdnnXhJRODph8I3RL1ZWo9/Eis0i3wb92Qp
+        dc6xEJWuxZCAjrdYMPNqcSD/ehP8g2z2UCyUxNDCLJegFzF/8ZN/41flK1GVYw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603263123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3DA2W6vONxoN9s5vqfqOZvlKIoZcBviB17UCXqX1bAs=;
+        b=SlXCOLUz2Iai99z6ip9Z/Q0xwi/TZd3X1DRnW1jfKUzRzQF2GTF975mqjZOjwEtQDAC8AT
+        1Ebz6vXCIxjfOjCw==
+To:     Christian Eggers <ceggers@arri.de>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Christian Eggers <ceggers@arri.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next 1/9] dt-bindings: net: dsa: convert ksz bindings document to yaml
+In-Reply-To: <20201019172435.4416-2-ceggers@arri.de>
+References: <20201019172435.4416-1-ceggers@arri.de> <20201019172435.4416-2-ceggers@arri.de>
+Date:   Wed, 21 Oct 2020 08:52:01 +0200
+Message-ID: <87lfg0rrzi.fsf@kurt>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020150301.3259814-1-bjorn.andersson@linaro.org>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn, Steve,
+--=-=-=
+Content-Type: text/plain
 
-On 20-10-20, 08:03, Bjorn Andersson wrote:
-> From: Stephen Boyd <swboyd@chromium.org>
-> 
-> The SMMU that sits in front of the QUP needs to be programmed properly
-> so that the i2c geni driver can allocate DMA descriptors. Failure to do
-> this leads to faults when using devices such as an i2c touchscreen where
-> the transaction is larger than 32 bytes and we use a DMA buffer.
+On Mon Oct 19 2020, Christian Eggers wrote:
+> Convert the bindings document for Microchip KSZ Series Ethernet switches
+> from txt to yaml.
 
-So I tried this and results in reboot for me when I use it in GSI
-driver in RB3. I seem to already have the iommu properties [1] but values
-are different
+A few comments/questions below.
 
-[1]: https://git.linaro.org/people/vinod.koul/kernel.git/commit/?h=topic/gsi3-db&id=385edef08d55432a40fc9a8ae1f49248d5417a92
+> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> new file mode 100644
+> index 000000000000..f93c3bdd0b83
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
 
-> arm-smmu 15000000.iommu: Unexpected global fault, this could be serious
-> arm-smmu 15000000.iommu:         GFSR 0x00000002, GFSYNR0 0x00000002, GFSYNR1 0x000006c0, GFSYNR2 0x00000000
-> 
-> Add the right SID and mask so this works.
-> 
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> [bjorn: Define for second QUP as well]
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sdm845.dtsi | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> index 8eb5a31346d2..7d635bc919cb 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -811,6 +811,7 @@ qupv3_id_0: geniqup@8c0000 {
->  			clock-names = "m-ahb", "s-ahb";
->  			clocks = <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
->  				 <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
-> +			iommus = <&apps_smmu 0x0 0x3>;
->  			#address-cells = <2>;
->  			#size-cells = <2>;
->  			ranges;
-> @@ -1119,6 +1120,7 @@ qupv3_id_1: geniqup@ac0000 {
->  			clock-names = "m-ahb", "s-ahb";
->  			clocks = <&gcc GCC_QUPV3_WRAP_1_M_AHB_CLK>,
->  				 <&gcc GCC_QUPV3_WRAP_1_S_AHB_CLK>;
-> +			iommus = <&apps_smmu 0x6c0 0x3>;
->  			#address-cells = <2>;
->  			#size-cells = <2>;
->  			ranges;
-> -- 
-> 2.28.0
+Currently the bindings don't have the company names in front of it.
 
--- 
-~Vinod
+> @@ -0,0 +1,147 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/dsa/microchip,ksz.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip KSZ Series Ethernet switches
+> +
+> +maintainers:
+> +  - Marek Vasut <marex@denx.de>
+> +  - Woojung Huh <Woojung.Huh@microchip.com>
+> +
+> +properties:
+> +  # See Documentation/devicetree/bindings/net/dsa/dsa.yaml for a list of additional
+> +  # required and optional properties.
+
+Don't you need to reference the dsa.yaml binding somehow?
+
+> +  compatible:
+> +    enum:
+> +      - "microchip,ksz8765"
+> +      - "microchip,ksz8794"
+> +      - "microchip,ksz8795"
+> +      - "microchip,ksz9477"
+> +      - "microchip,ksz9897"
+> +      - "microchip,ksz9896"
+> +      - "microchip,ksz9567"
+> +      - "microchip,ksz8565"
+> +      - "microchip,ksz9893"
+> +      - "microchip,ksz9563"
+> +      - "microchip,ksz8563"
+> +
+> +  reset-gpios:
+> +    description:
+> +      Should be a gpio specifier for a reset line.
+> +    maxItems: 1
+> +
+> +  microchip,synclko-125:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Set if the output SYNCLKO frequency should be set to 125MHz instead of 25MHz.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    // Ethernet switch connected via SPI to the host, CPU port wired to eth0:
+> +    eth0 {
+> +        fixed-link {
+> +            speed = <1000>;
+> +            full-duplex;
+> +        };
+> +    };
+> +
+> +    spi0 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        pinctrl-0 = <&pinctrl_spi_ksz>;
+> +        cs-gpios = <&pioC 25 0>;
+> +        id = <1>;
+> +
+> +        ksz9477: ksz9477@0 {
+
+The node names should be switch. See dsa.yaml.
+
+> +            compatible = "microchip,ksz9477";
+> +            reg = <0>;
+> +            reset-gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
+> +
+> +            spi-max-frequency = <44000000>;
+> +            spi-cpha;
+> +            spi-cpol;
+> +
+> +            ports {
+
+ethernet-ports are preferred.
+
+Thanks,
+Kurt
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAl+P2pEACgkQeSpbgcuY
+8KaczA/6AzfALZkpZ9DZNbpbtJpFlf1VULgRs+Dya20BxFssdpsN6f3PzJZUQ109
+HzYIE6/24kmWuG4LZS+y8MvZMXia1fndb6jjraKsUsMgCOvDs5wruUMvNjohHVZC
+4q0N8h0jPuw62aW2BLB6OL//h7+EKA3FrYaPW+1WTZ7z/VrcIAESOp2EP1szwucz
+VEoE3kZVltQQYUDDxr8/UdTujpVF4/1gck3iM1wrAmIHH5i3XMy3VDLqM4msRkF1
+LtEqAkniRxqAXPrM5ibhQZPBxNXr93kHrmr6KnmcOxzVZYojB01Lu8kDUbpSF0p7
+PWh8FM9hj2DpeTjISgj3amH9knCcVa5duBMPSAXHlcYpXW0jEt9b0GCW2j6ec+wm
+zxlPwhS2LYE6DSmQSwzDhJQw2Oc7zIyt4B5kSfPk4IPhLv7KHqRJOd7+FN6wFyFP
+kmjGRXCruqz2pxlZFSDtCno5FoiMZy1/E49Sy+vRAaK2cEXkTPs1di8Zb50wyiJV
+OnPDjfA7YP+v+YrDDStj5Odc6BpYwgQC3widdMLguLbQyvj9w9hnX2C2vKhGTqho
+DK6SUts2p+OqJF+aDAOqqcU0r9yPqweF1tqJPWXdgPMF+r4I68MzOW9AhwQqzDsD
+Qk2J9lMADEJxELGL4s+6qqxIQlezRgy9pziZ+x+7da64DqEITJA=
+=jU8i
+-----END PGP SIGNATURE-----
+--=-=-=--
