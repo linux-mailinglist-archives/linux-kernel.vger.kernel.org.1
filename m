@@ -2,131 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F8E2952A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB222952B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504626AbgJUTDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 15:03:21 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:39395 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504617AbgJUTDV (ORCPT
+        id S2503490AbgJUTHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 15:07:38 -0400
+Received: from smtprelay0071.hostedemail.com ([216.40.44.71]:37686 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2502340AbgJUTHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 15:03:21 -0400
-Received: by mail-io1-f69.google.com with SMTP id 2so2327689iob.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:03:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=UZ+enrykDZn0RBAehZWXA0bKtfaNR6wmh3gkDAdQ0qU=;
-        b=MbcZt+n8EoS0fxbtVGyXIeUsTJ3tfz8tg2pfIIzv4clXOXws7OQKooe6kuqDiunoqg
-         LMW1dlraI59kJTaj0ShiMPOICDNhioY1qzqmoK1Nadwqe2sfeFiSlwzdbJASdEo4lFSH
-         /QgQqrIcotLLkL7iBQWaEC+Z2Z0AWTf1uvbft+aNGqpV1ZkXTzy1BvOZgIo25tAmLyMe
-         ENFhHyG2plxqdTpwSIMo0MSQl6FYw8KLpZtjFw3KzFYG+szVJA98cdnV3Nd7mtnF1JQ4
-         LhoqfkhTRx42uJJx3FErZTUwR6uxyvPRYxXJp6gWpzjw1upQ0RJQn+5tnDEtG0w6KK5w
-         Et9Q==
-X-Gm-Message-State: AOAM5323mPoYa567O2jOyqSWc+xdqMU2gvkaxMz+bPbkhhKwrLvlz5U9
-        Qk4/Fzxn+rtEdGauhZcQxgi9xHEAQQH5K1ZwHAFiPtf4I18Q
-X-Google-Smtp-Source: ABdhPJz2DS8buf571WovUNMKHuSLSF76DGgezNV/agArJmCbhllMoFPN7q2PFS7kA5XVwafLNLZkSOV+4eJYXHkyl2WL1jnLWRkI
+        Wed, 21 Oct 2020 15:07:38 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 28C0A180A885F;
+        Wed, 21 Oct 2020 19:07:37 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1593:1594:1711:1714:1730:1747:1777:1792:2198:2199:2393:2525:2553:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3351:3622:3865:3867:3868:3870:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6742:8985:9025:10004:10400:10848:11232:11658:11914:12043:12219:12297:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21451:21611:21627:21788:30029:30054:30060:30074:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:28,LUA_SUMMARY:none
+X-HE-Tag: roof84_28176e32724a
+X-Filterd-Recvd-Size: 2172
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 21 Oct 2020 19:07:33 +0000 (UTC)
+Message-ID: <1cecfbfc853b2e71a96ab58661037c28a2f9280e.camel@perches.com>
+Subject: Re: [PATCH -next] treewide: Remove stringification from __alias
+ macro definition
+From:   Joe Perches <joe@perches.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Date:   Wed, 21 Oct 2020 12:07:32 -0700
+In-Reply-To: <CAMj1kXHe0hEDiGNMM_fg3_RYjM6B6mbKJ+1R7tsnA66ZzsiBgw@mail.gmail.com>
+References: <e9b1ba517f06b81bd24e54c84f5e44d81c27c566.camel@perches.com>
+         <CAMj1kXHe0hEDiGNMM_fg3_RYjM6B6mbKJ+1R7tsnA66ZzsiBgw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-X-Received: by 2002:a02:8661:: with SMTP id e88mr4055127jai.43.1603306999991;
- Wed, 21 Oct 2020 12:03:19 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 12:03:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000335adc05b23300f6@google.com>
-Subject: WARNING in dma_map_page_attrs
-From:   syzbot <syzbot+34dc2fea3478e659af01@syzkaller.appspotmail.com>
-To:     christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
-        hch@lst.de, iommu@lists.linux-foundation.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, sumit.semwal@linaro.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 2020-10-21 at 21:02 +0200, Ard Biesheuvel wrote:
+> On Wed, 21 Oct 2020 at 20:58, Joe Perches <joe@perches.com> wrote:
+> > Like the __section macro, the __alias macro uses
+> > macro # stringification to create quotes around
+> > the section name used in the __attribute__.
+> > 
+> > Remove the stringification and add quotes or a
+> > stringification to the uses instead.
+> > 
+> 
+> Why?
 
-syzbot found the following issue on:
+Using quotes in __section caused/causes differences
+between clang and gcc.
 
-HEAD commit:    c4d6fe73 Merge tag 'xarray-5.9' of git://git.infradead.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14862ff0500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7d790573d3e379c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=34dc2fea3478e659af01
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+https://lkml.org/lkml/2020/9/29/2187
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+34dc2fea3478e659af01@syzkaller.appspotmail.com
-
-infiniband syz1: set active
-infiniband syz1: added vcan0
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 9851 at kernel/dma/mapping.c:149 dma_map_page_attrs+0x493/0x700 kernel/dma/mapping.c:149
-Modules linked in:
-CPU: 1 PID: 9851 Comm: syz-executor.1 Not tainted 5.9.0-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:dma_map_page_attrs+0x493/0x700 kernel/dma/mapping.c:149
-Code: 80 3c 10 00 0f 85 ed 01 00 00 48 8b 1d 36 c3 fa 0c e9 2d fc ff ff 48 89 c3 e9 d1 fd ff ff e8 04 12 12 00 0f 0b e8 fd 11 12 00 <0f> 0b 49 c7 c4 ff ff ff ff e9 d5 fd ff ff e8 ea 11 12 00 48 8d 7b
-RSP: 0018:ffffc90001546c68 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffffffff894d0040 RCX: ffffc9000dbe4000
-RDX: 0000000000040000 RSI: ffffffff815d3b03 RDI: ffff88806a988b00
-RBP: ffff8880236cc400 R08: 0000000000000002 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000000 R12: ffffea00008db300
-R13: ffff88806a9886e8 R14: 00000000000004b8 R15: 0000000000000002
-FS:  00007f678fae2700(0000) GS:ffff88802ce00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f299a39b190 CR3: 0000000069f31000 CR4: 0000000000350ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- dma_map_single_attrs include/linux/dma-mapping.h:279 [inline]
- ib_dma_map_single include/rdma/ib_verbs.h:3967 [inline]
- ib_mad_post_receive_mads+0x23f/0xd60 drivers/infiniband/core/mad.c:2715
- ib_mad_port_start drivers/infiniband/core/mad.c:2862 [inline]
- ib_mad_port_open drivers/infiniband/core/mad.c:3016 [inline]
- ib_mad_init_device+0x72b/0x1400 drivers/infiniband/core/mad.c:3092
- add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:680
- enable_device_and_get+0x1d5/0x3c0 drivers/infiniband/core/device.c:1301
- ib_register_device drivers/infiniband/core/device.c:1376 [inline]
- ib_register_device+0x7a7/0xa40 drivers/infiniband/core/device.c:1335
- rxe_register_device+0x46d/0x570 drivers/infiniband/sw/rxe/rxe_verbs.c:1182
- rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
- rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:507
- rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
- rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
- nldev_newlink+0x30e/0x540 drivers/infiniband/core/nldev.c:1555
- rdma_nl_rcv_msg+0x367/0x690 drivers/infiniband/core/netlink.c:195
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x2f2/0x440 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45d9f9
-Code: bd b1 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b b1 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f678fae1c88 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000071f480 RCX: 000000000045d9f9
-RDX: 0000000000000000 RSI: 0000000020000200 RDI: 0000000000000003
-RBP: 00000000004aab13 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000075bf00
-R13: 00007ffc6f9b8bbf R14: 00007f678fac2000 R15: 0000000000000003
+Using common styles for details like this is good.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
