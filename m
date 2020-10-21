@@ -2,262 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3101294C39
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FEBE294C3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442196AbgJUMGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:06:13 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:54838 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439997AbgJUMGN (ORCPT
+        id S2440029AbgJUMHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394263AbgJUMHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:06:13 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201021120555euoutp027607d090b4fb1fc831d47416b982f712~AAHGycnIB2687726877euoutp02L
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:05:55 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201021120555euoutp027607d090b4fb1fc831d47416b982f712~AAHGycnIB2687726877euoutp02L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603281955;
-        bh=X3kWCN2insXbfhyivHExtQ0c0hScyZQ29grQTMC6Jd4=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=aOViI/kkTaT+jTJcQIuMumypOe+Wg6z860rGnh25YkPjkTfmtqJ19Xm0ZTa4pkz0O
-         SXRZ5guRZEFLHPKQzvjLZ+bggHQVFer/K5GLq3XeLdz0sB/FqLVIMVd2m+ia6G3qqg
-         fn+KnF0ydNrJ/gG99Vt2tUr/YuMzblGbQ8Woaoxs=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201021120543eucas1p223b9fc6bcdd09141054312b4a0db507f~AAG7YIkMY1838718387eucas1p2b;
-        Wed, 21 Oct 2020 12:05:43 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id A8.95.06318.714209F5; Wed, 21
-        Oct 2020 13:05:43 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201021120543eucas1p29d4affba97d6143a9e2f725c2f561ed9~AAG7A7ABU2093620936eucas1p2C;
-        Wed, 21 Oct 2020 12:05:43 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201021120542eusmtrp12cb67e97e361efc4e23c768176845e2c~AAG690Bso0226702267eusmtrp1J;
-        Wed, 21 Oct 2020 12:05:42 +0000 (GMT)
-X-AuditID: cbfec7f5-38bff700000018ae-52-5f9024171eeb
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 5A.9C.06314.314209F5; Wed, 21
-        Oct 2020 13:05:39 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201021120538eusmtip2e5d03d4cb5af5004b03051d7e7d31960~AAG2mj0ma0530205302eusmtip2d;
-        Wed, 21 Oct 2020 12:05:38 +0000 (GMT)
-Subject: Re: [PATCH 2/6] Documetation: dt-bindings: add the
- samsung,exynos-pcie binding
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <b85e65bc-5a76-e9af-db59-6ea7539668ef@samsung.com>
-Date:   Wed, 21 Oct 2020 14:05:37 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.3.3
+        Wed, 21 Oct 2020 08:07:35 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0DAC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:07:35 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id h6so1375242pgk.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:07:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=renYeGFy+byovKS92mhx+JvqyqsOEhO2ATHuCg5tTi8=;
+        b=K9VGQj6ulHMm3bTaCkxIHUoh3/hNg65KK9p3fGBfY5wVnOM9whj7Tbjth1hYYZVpv7
+         jd3FSvvu5rGOQHyYIIEJDLrBSLGq0xyWclqzu+g8AkM/lam1exqkr5N0hp3T94TcJutd
+         Gs+zbx8NoKrg69NU3nyY5lZUlrlwkkR/UlP1T4RR36xN35tRnwjVXRHGxRQcO0L+I2PZ
+         L8KokFmjGhy20HJRZF9NtV0Yh1YxqtfNA2FI1hZdTqywZ92TK7ygF0lNKACG+Mpf1uAX
+         lPXGz3cwi7ow3CEVPE/JTr2R5JX2bHBy9/1PrlU9kAZvW9QJ2S4kmaNZdedU3+OL9P4k
+         XOGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=renYeGFy+byovKS92mhx+JvqyqsOEhO2ATHuCg5tTi8=;
+        b=UkPgRStcT1PjMYiOck6XQumVWL86ZTXv/lqykCGh4hIvd28ozdncN8x/R9LvZHNfs8
+         yxM1FAVWnXUg7rApz5X5Dm+B4+3I0vQ8r5FamZQYM7KSOkYO0AlYBpwHeO5EecK4dHRk
+         NeBBxYiCeBNS/1qGCC8VmmXUIsSk/EM0kiWnXbPJqpbH3a7+sZqGP2J+LtS1vlg1BFj5
+         ldaCdGp1FXvLIqA8F3jWfRfJavXNAyH/c6zvy+17bstwe8RWUKFSryOQT6QtIvcVGgTp
+         44jSmZTYjPej/9a3p1z0rsSG4phnlCD1gVyO/8TgjGIgZoJovu1x7/9BJmt1LyoZAg90
+         JjCA==
+X-Gm-Message-State: AOAM530yvoCgWI082xmKgTS1LBJ+OShjRh5W9ew9V33Ywusyhsw9CB08
+        fqSJndg1t3R3NrIDehBKwfvoj5brYR4fpA==
+X-Google-Smtp-Source: ABdhPJwo8qGuoJxbH7a3pubNFBv4Mar/AFVZevkcLKo9gH1fVyuDgwomRnOjXA9GKl62VhL5YiVUqg==
+X-Received: by 2002:a63:1c4e:: with SMTP id c14mr3034455pgm.98.1603282054928;
+        Wed, 21 Oct 2020 05:07:34 -0700 (PDT)
+Received: from nebulus.mtv.corp.google.com ([2620:15c:211:200:4a0f:cfff:fe35:d61b])
+        by smtp.googlemail.com with ESMTPSA id f21sm2183491pfn.173.2020.10.21.05.07.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Oct 2020 05:07:34 -0700 (PDT)
+Subject: Re: [PATCH v17 1/4] Add flags option to get xattr method paired to
+ __vfs_getxattr
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Jan Kara <jack@suse.cz>, Jeff Layton <jlayton@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+References: <20201020191732.4049987-1-salyzyn@android.com>
+ <20201020191732.4049987-2-salyzyn@android.com>
+ <CAHC9VhTZitGFRCnRgLJLNUnFEhM0kp7E_51No1aam3CRf-WCpg@mail.gmail.com>
+From:   Mark Salyzyn <salyzyn@android.com>
+Message-ID: <ba6516a2-0d7a-3733-f974-943d296a1c15@android.com>
+Date:   Wed, 21 Oct 2020 05:07:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+X3w=1-_SpXPTdO_UGg5er9vU-XETT-NbS96LSfNLUVQ@mail.gmail.com>
+In-Reply-To: <CAHC9VhTZitGFRCnRgLJLNUnFEhM0kp7E_51No1aam3CRf-WCpg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUhTYRTm3b279youXpexg33R0r5IrezHhaIs+nFJotJILMpm3lTUJbta
-        OYLWSrMxdBiVLUuRKFtqtkalqeiyVgw3MxbDTAlWaTaLZkVfVvNq+e+c54PnPHAYQu6URjLZ
-        6gJeo1blKqlQ8s6jb+4YRZQpbYWvV8Fe0Wex1V0uKev9XiJl68Yu0GzPayPFut1NNPuspYpi
-        uy87KLbS3S5h3/8Yotniti6abe5/TCSEcfWX6xHXbH5JczXWQs5qOU1xZTYL4hzeuxIuYJ23
-        jd4VujaDz80+xGvi1u0LzfKUj9P5ZxcduXErWYea5hpQCAN4NQx8O0MbUCgjx3UIfIGPlLiM
-        IbC57k0uAQQPbg/QU5YObx0pEtcQ3O+4Kg0ScvwBwZBxpwExzEycCn0Ps4NwBI6Cprd9RFBP
-        YBcBrZ9GyCBB4ZVg8Buo4CzD6+DHb89EAImjwT/SMKGZhdOhd1BPi5pweHLBN4GH4O0w6NRN
-        eAk8H+76qwhxVkCfr1oSDAM8TMMlkx6JV2+C3hEbJc4z4Z3DNtlmDjjPGEnRcALBK1cDLS5G
-        BM/0lZPuNdDv+k4FqxF4KdxsiRPhDVB/akwShAHPAK8/XDxiBlTcOU+IsAxKS+SiehGYHY3/
-        Yjt7egkTUpqnVTNPq2OeVsf8P7cGkRak4AuFvExeiFfzh2MFVZ5QqM6M3X8wz4r+vphz3PH5
-        Hmr/mW5HmEHKMFkPWZ4ml6oOCUV5dgQMoYyQbex27pXLMlRFWl5zME1TmMsLdjSbIZUKWXzt
-        8B45zlQV8Dk8n89rplgJExKpQ+nxozlt8oLk19Efvy4v73rBJ110XB94078iIcmTs2fzuQj9
-        +q2a0d3aDJOs+mzigYr0yt+lmvwyqqHVbdrL3Rw/HhPwQc2qxTuFRHttJ5fiO/Yp5fCv21rD
-        lpNlv2xHn4dZFnTv0I1rl3zxpDztjhLeFju1C6skm7Y2ShNT6ztblaSQpVq5jNAIqj9jIiFP
-        XgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHIsWRmVeSWpSXmKPExsVy+t/xe7rCKhPiDXacZbFY0pRhMf/IOVaL
-        G7/aWC1WfJnJbnHhaQ+bxfnzG9gtLu+aw2Zxdt5xNosZ5/cxWbz5/YLdonXvEXaLnXdOMDvw
-        eKyZt4bRY+esu+weCzaVemxa1cnm0bdlFaPH8RvbmTw+b5ILYI/SsynKLy1JVcjILy6xVYo2
-        tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy7ja/4+9YKpaxeqNwQ2MG2S7GDk5
-        JARMJA7cWMHSxcjFISSwlFFi77u/TBAJGYmT0xpYIWxhiT/Xutggit4ySvRMbwLq4OAQFoiU
-        uHU0E6RGREBFYsPzW8wgNcwC55glTn29wAjR0MMk8XnWfDaQKjYBQ4mut11gNq+AncTv/1fZ
-        QWwWAVWJt6/XsoDYogJJEvtP3GSBqBGUODnzCZjNKRAocf90A1gvs4CZxLzND5khbHmJ7W/n
-        QNniEreezGeawCg0C0n7LCQts5C0zELSsoCRZRWjSGppcW56brGhXnFibnFpXrpecn7uJkZg
-        3G479nPzDsZLG4MPMQpwMCrx8F5g6Y8XYk0sK67MPcQowcGsJMLrdPZ0nBBvSmJlVWpRfnxR
-        aU5q8SFGU6DnJjJLiSbnA1NKXkm8oamhuYWlobmxubGZhZI4b4fAwRghgfTEktTs1NSC1CKY
-        PiYOTqkGxmkPDBe+P5xprPnV9kjuuxUct85td+rJuCl3vz+2POSuoeyN60xqc5SO26yb9XH/
-        za3Ht0e6c0aqd7ZPvX5g72yfLSr8B5eyMn5bct5838LaG2YC76TXPLCeup7VdKFSTse35mQ+
-        HTV+s8PzHnLdZ38ketf0wTQvvoVaOltWPT0qtmiRc2mGWYwSS3FGoqEWc1FxIgASbYMc8QIA
-        AA==
-X-CMS-MailID: 20201021120543eucas1p29d4affba97d6143a9e2f725c2f561ed9
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201019094739eucas1p18cd4c7e5a0197393d2e7c5c6fcc2777d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201019094739eucas1p18cd4c7e5a0197393d2e7c5c6fcc2777d
-References: <CGME20201019094739eucas1p18cd4c7e5a0197393d2e7c5c6fcc2777d@eucas1p1.samsung.com>
-        <20201019094715.15343-1-m.szyprowski@samsung.com>
-        <20201019094715.15343-3-m.szyprowski@samsung.com>
-        <CAL_Jsq+X3w=1-_SpXPTdO_UGg5er9vU-XETT-NbS96LSfNLUVQ@mail.gmail.com>
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 19.10.2020 15:38, Rob Herring wrote:
-> On Mon, Oct 19, 2020 at 4:47 AM Marek Szyprowski
-> <m.szyprowski@samsung.com> wrote:
->> From: Jaehoon Chung <jh80.chung@samsung.com>
+On 10/20/20 6:17 PM, Paul Moore wrote:
+> On Tue, Oct 20, 2020 at 3:17 PM Mark Salyzyn <salyzyn@android.com> wrote:
+>> Add a flag option to get xattr method that could have a bit flag of
+>> XATTR_NOSECURITY passed to it.  XATTR_NOSECURITY is generally then
+>> set in the __vfs_getxattr path when called by security
+>> infrastructure.
 >>
->> Add dt-bindings for the Samsung Exynos PCIe controller (Exynos5433
->> variant).
+>> This handles the case of a union filesystem driver that is being
+>> requested by the security layer to report back the xattr data.
 >>
->> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
->> [mszyprow: updated the binding to latest driver changes, rewrote it in yaml,
->>             rewrote commit message]
->> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
->> ---
->>   .../bindings/pci/samsung,exynos-pcie.yaml     | 106 ++++++++++++++++++
->>   1 file changed, 106 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
+>> For the use case where access is to be blocked by the security layer.
 >>
->> diff --git a/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
->> new file mode 100644
->> index 000000000000..48fb569c238c
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
->> @@ -0,0 +1,104 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: https://protect2.fireeye.com/v1/url?k=3dfd0348-6067aaeb-3dfc8807-002590f5b904-a68fd848316a7cc4&q=1&e=261ae2d1-4457-43b7-8727-35f3cfbc45c0&u=http%3A%2F%2Fdevicetree.org%2Fschemas%2Fpci%2Fsamsung%2Cexynos-pcie.yaml%23
->> +$schema: https://protect2.fireeye.com/v1/url?k=ab825ba1-f618f202-ab83d0ee-002590f5b904-4aba44c12cb70753&q=1&e=261ae2d1-4457-43b7-8727-35f3cfbc45c0&u=http%3A%2F%2Fdevicetree.org%2Fmeta-schemas%2Fcore.yaml%23
->> +
->> +title: Samsung SoC series PCIe Host Controller Device Tree Bindings
->> +
->> +maintainers:
->> +  - Jaehoon Chung <jh80.chung@samsung.com>
->> +
->> +description: |+
->> +  Exynos5433 SoC PCIe host controller is based on the Synopsys DesignWare
->> +  PCIe IP and thus inherits all the common properties defined in
->> +  designware-pcie.txt.
->> +
->> +allOf:
->> +  - $ref: /schemas/pci/pci-bus.yaml#
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - samsung,exynos5433-pcie
->> +
->> +  reg:
->> +    items:
->> +      - description: External Local Bus interface (ELBI) registers.
->> +      - description: Data Bus Interface (DBI) registers.
->> +      - description: PCIe configuration space region.
->> +
->> +  reg-names:
->> +    items:
->> +      - const: elbi
->> +      - const: bdi
-> dbi
+>> The path then could be security(dentry) ->
+>> __vfs_getxattr(dentry...XATTR_NOSECURITY) ->
+>> handler->get(dentry...XATTR_NOSECURITY) ->
+>> __vfs_getxattr(lower_dentry...XATTR_NOSECURITY) ->
+>> lower_handler->get(lower_dentry...XATTR_NOSECURITY)
+>> which would report back through the chain data and success as
+>> expected, the logging security layer at the top would have the
+>> data to determine the access permissions and report back the target
+>> context that was blocked.
+>>
+>> Without the get handler flag, the path on a union filesystem would be
+>> the errant security(dentry) -> __vfs_getxattr(dentry) ->
+>> handler->get(dentry) -> vfs_getxattr(lower_dentry) -> nested ->
+>> security(lower_dentry, log off) -> lower_handler->get(lower_dentry)
+>> which would report back through the chain no data, and -EACCES.
+>>
+>> For selinux for both cases, this would translate to a correctly
+>> determined blocked access. In the first case with this change a correct avc
+>> log would be reported, in the second legacy case an incorrect avc log
+>> would be reported against an uninitialized u:object_r:unlabeled:s0
+>> context making the logs cosmetically useless for audit2allow.
+>>
+>> This patch series is inert and is the wide-spread addition of the
+>> flags option for xattr functions, and a replacement of __vfs_getxattr
+>> with __vfs_getxattr(...XATTR_NOSECURITY).
+>>
+>> Signed-off-by: Mark Salyzyn <salyzyn@android.com>
+>> Reviewed-by: Jan Kara <jack@suse.cz>
+>> Acked-by: Jan Kara <jack@suse.cz>
+>> Acked-by: Jeff Layton <jlayton@kernel.org>
+>> Acked-by: David Sterba <dsterba@suse.com>
+>> Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
+>> Acked-by: Mike Marshall <hubcap@omnibond.com>
+>> To: linux-fsdevel@vger.kernel.org
+>> To: linux-unionfs@vger.kernel.org
+>> Cc: Stephen Smalley <sds@tycho.nsa.gov>
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: linux-security-module@vger.kernel.org
+>> Cc: kernel-team@android.com
+> ...
 >
->> +      - const: config
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    items:
->> +      - description: PCIe bridge clock
->> +      - description: PCIe bus clock
->> +
->> +  clock-names:
->> +    items:
->> +      - const: pcie
->> +      - const: pcie_bus
->> +
->> +  phys:
->> +    maxItems: 1
->> +
->> +  phy-names:
->> +    const: pcie-phy
-> Kind of a pointless name.
+>> <snip>
+> [NOTE: added the SELinux list to the CC line]
 
-Most of the other PCI(e) drivers uses such:
 
-# git grep "phy-names =" Documentation/devicetree/bindings/pci/
+Thanks and <ooops>
 
-Do you want me to change it to simple "pcie"?
-
->> +
->> +  vdd10-supply:
->> +    description:
->> +      Phandle to a regulator that provides 1.0V power to the PCIe block.
->> +
->> +  vdd18-supply:
->> +    description:
->> +      Phandle to a regulator that provides 1.8V power to the PCIe block.
->> +
->> +required:
->> +  - reg
->> +  - reg-names
->> +  - interrupts
->> +  - interrupt-names
->> +  - clocks
->> +  - clock-names
->> +  - phys
->> +  - phy-names
->> +  - vdd10-supply
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/interrupt-controller/irq.h>
->> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> +    #include <dt-bindings/clock/exynos5433.h>
->> +
->> +    pcie: pcie@15700000 {
->> +        compatible = "samsung,exynos5433-pcie";
->> +        reg = <0x156b0000 0x1000>, <0x15700000 0x1000>, <0x0c000000 0x1000>;
->> +        reg-names = "elbi", "dbi", "config";
->> +        #address-cells = <3>;
->> +        #size-cells = <2>;
->> +        #interrupt-cells = <1>;
->> +        device_type = "pci";
->> +        interrupts = <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>;
->> +        clocks = <&cmu_fsys CLK_PCIE>, <&cmu_fsys CLK_PCLK_PCIE_PHY>;
->> +        clock-names = "pcie", "pcie_bus";
->> +        phys = <&pcie_phy>;
->> +        phy-names = "pcie-phy";
->> +        pinctrl-names = "default";
->> +        pinctrl-0 = <&pcie_bus &pcie_wlanen>;
->> +        num-lanes = <1>;
->> +        bus-range = <0x00 0xff>;
->> +        ranges = <0x81000000 0 0         0x0c001000 0 0x00010000>,
->> +                 <0x82000000 0 0x0c011000 0x0c011000 0 0x03feefff>;
->> +        vdd10-supply = <&ldo6_reg>;
->> +        vdd18-supply = <&ldo7_reg>;
->> +        iterrupt-map-mask = <0 0 0 0>;
-> typo
 >
->> +        interrupt-map = <0 0 0 0 &gic GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>;
->> +    };
->> --
->> 2.17.1
->>
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+> I'm looking at this patchset in earnest for the first time and I'm a
+> little uncertain about the need for the new XATTR_NOSECURITY flag;
+> perhaps you can help me understand it better.  Looking over this
+> patch, and quickly looking at the others in the series, it seems as
+> though XATTR_NOSECURITY is basically used whenever a filesystem has to
+> call back into the vfs layer (e.g. overlayfs, ecryptfs, etc).  Am I
+> understanding that correctly?  If that assumption is correct, I'm not
+> certain why the new XATTR_NOSECURITY flag is needed; why couldn't
+> _vfs_getxattr() be used by all of the callers that need to bypass
+> DAC/MAC with vfs_getxattr() continuing to perform the DAC/MAC checks?
+> If for some reason _vfs_getxattr() can't be used, would it make more
+> sense to create a new stripped/special getxattr function for use by
+> nested filesystems?  Based on the number of revisions to this
+> patchset, I'm sure it can't be that simple so please educate me :)
+>
+It is hard to please everyone :-}
+
+Yes, calling back through the vfs layer.
+
+I was told not to change or remove the __vfs_getxattr default behaviour, 
+but use the flag to pass through the new behavior. Security concerns 
+requiring the _key_ of the flag to be passed through rather than a 
+blanket bypass. This was also the similar security reasoning not to have 
+a special getxattr call.
+
+[TL;DR]
+
+history and details
+
+When it goes down through the layers again, and into the underlying 
+filesystems, to get the getxattr, the xattributes are blocked, then the 
+selinux _context_ will not be copied into the buffer leaving the caller 
+looking at effectively u:r:unknown:s0. Well, they were blocked, so from 
+the security standpoint that part was accurate, but the evaluation of 
+the context is using the wrong rules and an (cosmetically) incorrect avc 
+report. This also poisons the cache layers that may hold on to the 
+context for future calls (+/- bugs) disturbing the future decisions (we 
+saw that in 4.14 and earlier vintage kernels without this patch, later 
+kernels appeared to clear up the cache bug).
+
+The XATTR_NOSECURITY is used in the overlayfs driver for a substantial 
+majority of the calls for getxattr only if the data is private (ie: on 
+the stack, not returned to the caller) as simplification. A _real_ 
+getxattr is performed when the data is returned to the caller. I expect 
+that subtlety will get lost in the passage of time though.
+
+I had a global in_security flag set when selinux was requesting the 
+xattrs to evaluate security context, denied as a security risk since 
+someone could set the global flag. I had a separate special getxattr 
+function in the earlier patches, denied for security issues as well, and 
+others took issue with an additional confusing call site. I added the 
+flag parameter, and that satisfied the security concerns because the 
+value was only temporarily on the stack parameters and could not be 
+attacked to bypass xattr security. This flag passed to __vfs_getxattr 
+was also preferred from the security standpoint so that __vfs_getxattr 
+got the _key_ to bypass the xattr security checks. There was a brief 
+moment where the get_xattr and set_xattr calls shared a similar single 
+argument that pointed to a common call structure, but th as requested by 
+a few, but then denied once it was seen by stakeholders.
 
