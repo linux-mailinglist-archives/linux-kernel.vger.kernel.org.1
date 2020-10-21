@@ -2,220 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F14294E11
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CEF294E1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443103AbgJUNye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 09:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59660 "EHLO
+        id S2442152AbgJUN5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 09:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411322AbgJUNye (ORCPT
+        with ESMTP id S2411763AbgJUN5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 09:54:34 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2459BC0613CE;
-        Wed, 21 Oct 2020 06:54:34 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id 454921F459CF
-Subject: Re: [PATCH v5 5/9] media: staging: rkisp1: remove unecessary clocks
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mark Rutland <mark.rutland@arm.com>, karthik.poduval@gmail.com,
-        Johan Jonker <jbx6244@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Eddie Cai <eddie.cai.linux@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20200722155533.252844-1-helen.koike@collabora.com>
- <20200722155533.252844-6-helen.koike@collabora.com>
- <CAL_Jsq+qB=yUtHKKujiUWrsq+W-3ggM3B_SuuDzfYEheczn=8g@mail.gmail.com>
- <2dcdda41-bdb4-55a8-557f-8175983effb5@collabora.com>
- <CAL_Jsq+-8Jyms3LJBjTxABcuTa5GduXtJ1jdOgp7xcPoQzdtGQ@mail.gmail.com>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <c0da2c06-4838-2bb3-004e-799e196cb35c@collabora.com>
-Date:   Wed, 21 Oct 2020 10:54:23 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Wed, 21 Oct 2020 09:57:13 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461D2C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 06:57:13 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id x13so1521386pgp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 06:57:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z1TFCsmXkqBmOtz+uaqdsKb+MHZorZoWKpRfZG7ZHGM=;
+        b=X08JwVL1cCeksgkrlhPS+uFit5zsmhWE6bFuGKC8PR4jIo2Ih18r1Ye4h077ZNFYvP
+         qn4Dz32MLoyTKUreATfqvBENShseRy/7OoBzYxQm+Y+XoUUa/ARHE8GGWHD0jYCQzvwU
+         EUFqb4xj5MVejfU3Wb00WIWIfe3PLewaAqfhw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z1TFCsmXkqBmOtz+uaqdsKb+MHZorZoWKpRfZG7ZHGM=;
+        b=Uraqmo7FDgiUNmnfWUDo9erw+gl0a+ZGCctTHIPxKTxnnujeFzGCGiZrRxxS3Kubnd
+         I5RmDhWq9L1qdLGvdLeN36OX9RBfbb4De8mUlm1JUiKNWRpkChR7GYAj9fL+O+TCEf6n
+         UbNUo7BHbNNwJgDqbRWriRGPERL0pb5Ve4wCjcR0EEdbye/CUzy56mrH9vPwbLzjfBH1
+         elVeFR7wWLWvsJnuFkox3qxCPUxmDvXPTdn3b5eHjRlg5RUVMPLl5/UYHBaIkPjwSLXc
+         DxQllMX7VyJN6CoZ88D4PIsBmTmAonVkKu/6SQ96OCDbwratKU2Rc0wA2Uz3atvTGuQn
+         GVZw==
+X-Gm-Message-State: AOAM531FvwkQxwBRLX+hpfA832XbJlac2EjkYq7JPPA6gRgXNAtGeBiX
+        dwhiurVspHI0qi+pIY77I05PUIHXHYa8dfZp
+X-Google-Smtp-Source: ABdhPJz9a2D9o0OoDQ03Q6V0fqHnxXPLve39qPkepO1yaqCtP2+AE1AKwo6KADu1Oz0er7nGSTQYrQ==
+X-Received: by 2002:a63:e354:: with SMTP id o20mr3615284pgj.317.1603288632284;
+        Wed, 21 Oct 2020 06:57:12 -0700 (PDT)
+Received: from kolhar.mtv.corp.google.com ([2620:15c:202:201:7220:84ff:fe09:2d4e])
+        by smtp.gmail.com with ESMTPSA id z10sm2317808pjz.49.2020.10.21.06.57.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 06:57:11 -0700 (PDT)
+From:   Harry Cutts <hcutts@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Harry Cutts <hcutts@chromium.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        linux-input@vger.kernel.org
+Subject: [PATCH] HID: logitech-hidpp: Add PID for MX Anywhere 2
+Date:   Wed, 21 Oct 2020 06:56:12 -0700
+Message-Id: <20201021135612.258558-1-hcutts@chromium.org>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+-8Jyms3LJBjTxABcuTa5GduXtJ1jdOgp7xcPoQzdtGQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+It seems that the PID 0x4072 was missing from the list Logitech gave me
+for this mouse, as I found one with it in the wild (with which I tested
+this patch).
 
-On 10/20/20 12:14 PM, Rob Herring wrote:
-> On Wed, Oct 14, 2020 at 11:46 AM Helen Koike <helen.koike@collabora.com> wrote:
->>
->> Hi Rob,
->>
->> Thnaks for your reply.
->>
->> On 9/22/20 11:24 AM, Rob Herring wrote:
->>> On Wed, Jul 22, 2020 at 9:56 AM Helen Koike <helen.koike@collabora.com> wrote:
->>>>
->>>> aclk_isp_wrap is a child of aclk_isp, and hclk_isp_wrap is a child of
->>>> hclk_isp, thus we can remove parents from the list.
->>>>
->>>> Also, for the isp0, we only need the ISP clock, ACLK and HCLK.
->>>> In the future we'll need a pixel clock for RK3288 and RK3399, and a JPEG
->>>> clock for RK3288.
->>>>
->>>> So with the goal to cleanup the dt-bindings and remove it from staging,
->>>> simplify clock names to isp, aclk and hclk.
->>>>
->>>> Assigned clocks are meant to refer to the full path in the clock tree,
->>>> i.e. the leaf in the tree.
->>>> For instance, in RK3399, the clock responsible for ACLK (ISP AXI CLOCK)
->>>> is aclk_isp0_wrapper.
->>>>
->>>> For reference, this is the isp clock topology on RK3399:
->>>>
->>>>  xin24m
->>>>     pll_npll
->>>>        npll
->>>>           clk_isp1
->>>>           clk_isp0
->>>>     pll_cpll
->>>>        cpll
->>>>           aclk_isp1
->>>>              aclk_isp1_noc
->>>>              hclk_isp1
->>>>                 aclk_isp1_wrapper
->>>>                 hclk_isp1_noc
->>>>           aclk_isp0
->>>>              hclk_isp1_wrapper
->>>>              aclk_isp0_wrapper
->>>>              aclk_isp0_noc
->>>>              hclk_isp0
->>>>                 hclk_isp0_wrapper
->>>>                 hclk_isp0_noc
->>>>  pclkin_isp1_wrapper
->>>>
->>>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
->>>>
->>>> ---
->>>> Changes in V5:
->>>> - Use if/then schema as suggested by Rob Herring on
->>>> https://patchwork.linuxtv.org/project/linux-media/patch/20200702191322.2639681-6-helen.koike@collabora.com/#119729
->>>>
->>>> Changes in V4:
->>>> - update binding according to suggestion by Robin Murphy
->>>> on https://patchwork.kernel.org/patch/11475007/
->>>>
->>>> Changes in V3:
->>>> - this is a new patch in the series
->>>> ---
->>>>  .../bindings/media/rockchip-isp1.yaml         | 50 ++++++++++++-------
->>>>  drivers/staging/media/rkisp1/rkisp1-dev.c     |  8 ++-
->>>>  2 files changed, 36 insertions(+), 22 deletions(-)
->>>>
->>>> diff --git a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
->>>> index 62a6b9c959498..23c677d15037a 100644
->>>> --- a/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
->>>> +++ b/drivers/staging/media/rkisp1/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
->>>> @@ -24,20 +24,10 @@ properties:
->>>>      maxItems: 1
->>>>
->>>>    clocks:
->>>> -    items:
->>>> -      - description: ISP clock
->>>> -      - description: ISP AXI clock clock
->>>> -      - description: ISP AXI clock  wrapper clock
->>>> -      - description: ISP AHB clock clock
->>>> -      - description: ISP AHB wrapper clock
->>>> +    minItems: 3
->>>
->>> You need maxItems here too or it will always be 3.
->>>
->>>>
->>>>    clock-names:
->>>> -    items:
->>>> -      - const: clk_isp
->>>> -      - const: aclk_isp
->>>> -      - const: aclk_isp_wrap
->>>> -      - const: hclk_isp
->>>> -      - const: hclk_isp_wrap
->>>> +    minItems: 3
->>>>
->>>>    iommus:
->>>>      maxItems: 1
->>>> @@ -116,6 +106,34 @@ required:
->>>>    - power-domains
->>>>    - ports
->>>>
->>>> +if:
->>>> +  properties:
->>>> +    compatible:
->>>> +      contains:
->>>> +        const: rockchip,rk3399-cif-isp
->>>> +then:
->>>> +  properties:
->>>> +    clocks:
->>>> +      maxItems: 4
->>>> +      minItems: 3
->>>
->>> For a single compatible you shouldn't really have a variable number of clocks.
->>
->> I'm not entirely sure how to make this separation, since isp0 and isp1 (not yet supported)
->> would use the same compatible.
->> Unless if we separate in two compatibles, but maybe this is an overhead just for an extra clock.
->> What do you think?
-> 
-> In that case, it's fine.
-> 
->>
->>>
->>>> +      items:
->>>> +        # isp0 and isp1
->>>> +        - description: ISP clock
->>>> +        - description: ISP AXI clock
->>>> +        - description: ISP AHB clock
->>>> +        # only for isp1
->>>> +        - description: ISP Pixel clock
->>>> +    clock-names:
->>>> +      maxItems: 4
->>>> +      minItems: 3
->>>> +      items:
->>>> +        # isp0 and isp1
->>>> +        - const: isp
->>>> +        - const: aclk
->>>> +        - const: hclk
->>>> +        # only for isp1
->>>> +        - const: pclk_isp
->>>
->>> Don't you need an 'else' clause. For not rockchip,rk3399-cif-isp,
->>> there's no definition of what clocks there are.
->>
->> There is only one compatible defined for now, rk3288 will be added later.
->> The idea to add if/then is to make it easier to add rk3288:
->>
->> https://patchwork.kernel.org/project/linux-media/patch/20200406073017.19462-4-karthik.poduval@gmail.com/
-> 
-> Hopefully, the clock names will be aligned? Looks like they are the
-> same with just 1 additional clock. Ideally, you define them all at the
-> top level and the if/then schema just defines how many clocks for each
-> compatible.
+Fixes: 4435ff2f09a2 ("HID: logitech: Enable high-resolution scrolling on Logitech mice")
+Signed-off-by: Harry Cutts <hcutts@chromium.org>
+---
 
-I submitted another version, where I try to capture what you suggested here,
-please check if I got it right this time (or not).
-Maybe I misunderstood which kind of alignment you are expecting for the clock names,
-should they be each in a different line?
+ drivers/hid/hid-logitech-hidpp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-https://patchwork.linuxtv.org/project/linux-media/patch/20201020193850.1460644-6-helen.koike@collabora.com/
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index b8b53dc95e86b..730036650f7df 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -3947,6 +3947,7 @@ static const struct hid_device_id hidpp_devices[] = {
+ 	  LDJ_DEVICE(0x405e), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
+ 	{ /* Mouse Logitech MX Anywhere 2 */
+ 	  LDJ_DEVICE(0x404a), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
++	{ LDJ_DEVICE(0x4072), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
+ 	{ LDJ_DEVICE(0xb013), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
+ 	{ LDJ_DEVICE(0xb018), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
+ 	{ LDJ_DEVICE(0xb01f), .driver_data = HIDPP_QUIRK_HI_RES_SCROLL_X2121 },
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
 
-Thanks
-Helen
