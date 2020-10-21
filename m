@@ -2,192 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6F9294C20
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6A5294C23
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439879AbgJUMBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
+        id S2439899AbgJUMBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439773AbgJUMBA (ORCPT
+        with ESMTP id S2411036AbgJUMBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:01:00 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC520C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:00:58 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id c77so1800593wmd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:00:58 -0700 (PDT)
+        Wed, 21 Oct 2020 08:01:35 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536E7C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:01:35 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id i129so2129863ybc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:01:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2fJBIpEa92kQMJ5/9beWt+N555m7+v1D1vPnkJrcT60=;
-        b=SenAqoqlLi2aW37fpwhuD9srFzhLzrEbBnol9BebPsYEEI+KDFkpx8T7/egwqBcrXA
-         VKXMHj3+b41FIQ4eI7Myj0Na0a6bAyVKcAbDSlj32qMfgAeqpfHG++isqgO4Ii89gzJ4
-         JdpTeaZZGUhg4QPD0sGFy9Z/DF5jWisVimMRkRKV/T6oPAt4/20N1owP7yvOCZriHz6X
-         MlMQSoxh+Jwwv/iMBlIRdYWmeReU1RJKhiIFKPGCzvTcp2zrd+oHDfQmGvVCJFr7YPR+
-         vQuoHN7O+rf4SXzK+HkSZwxDxt11IINm8k11O5XS/rsp4h9RtxIkDu8YGDJoy3daSq3j
-         kHew==
+        d=google.com; s=20161025;
+        h=sender:mime-version:message-id:date:subject:from:to:cc;
+        bh=NtX8N0ZwPWqt161nUJghfJ5S9WiPRYMaStD0fa9b8Ls=;
+        b=Qrz/UTHr2eqVfhRfH2KPLorwzlHcbr0qKCdVsYnS7EnQ03y8QCwwUapjiqO24UTUXj
+         pi3VchcUQubLIXagI+RejWFr/+kk6Zpx83iVgi7xKOuD12lDcW3X7Pm3u3GFCwieEruA
+         ct4q8quNID6A1eubQmdbnnCVha+x9I+X//qh06tOzqOHxs7m5KwDIWOW8LFGhQjvYwO/
+         bbQ1U2AfIPhN9LQVSd/XOkOGGi8/mR+7DmApZqWIHcTOGylaUyHkOZki3wt8vPWKCyNy
+         MsEfkOwWcrz3M+pPdUI3ozZU/R02tmVJiDF+Dnb+HxbKOtWA1D6iWpeVqJwU8uJEwpEh
+         Zs9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2fJBIpEa92kQMJ5/9beWt+N555m7+v1D1vPnkJrcT60=;
-        b=nslGCGKqNpI0x3ccy80SxTPRhwScUxhX2E1lEugeoqJiQYVBXuZWZY7elLwr0ADb9g
-         Lpg0nyEirLbTsPKDXgV0uqrP7HgjvRYLPI94Zqy7/PdZZhP27pHf4EvopnE/uNlIEYbv
-         JNKCK73Zk+/ZngnwqV1UEBEILAZjOLVbNUMUefMIKdfOCdGFNxNz9JFrveQ8vdVevWx3
-         mecyqvG62//ggkeElBGUhaVixoLaNTS6DHjsuEyvraO6M/XOWZAyzW9FCp6TP9OsXG0m
-         T6OF0XB17ovdxyExQD6C5QOL3V7wahA00WdZzHYMxzRieqQnb5plq8ySPqczFkwmUAKF
-         MaGA==
-X-Gm-Message-State: AOAM532Ydds79c/JRPXHyIJSvmZYiGhS950Ne7d93kqpeAnrUYx0WgHT
-        u/807edp4eFICRY5HnFyZ4k5+g==
-X-Google-Smtp-Source: ABdhPJyBuNQJw//BB7VhJ/IyfJhB0D0zjEufDlMEYNH8dKwZxjKPNA+bODFYfmYhr9qj+l9595JgRg==
-X-Received: by 2002:a05:600c:d3:: with SMTP id u19mr3261018wmm.150.1603281657485;
-        Wed, 21 Oct 2020 05:00:57 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id h16sm3896356wre.87.2020.10.21.05.00.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Oct 2020 05:00:56 -0700 (PDT)
-Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine
- bindings
-To:     Cheng-yi Chiang <cychiang@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Srinivasa Rao <srivasam@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Dylan Reid <dgreid@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-References: <20200914080619.4178587-1-cychiang@chromium.org>
- <20200914080619.4178587-3-cychiang@chromium.org>
- <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
- <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
- <20201015161251.GF4390@sirena.org.uk>
- <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
- <20201020143711.GC9448@sirena.org.uk>
- <63f1a29c-0758-97b8-ce80-fe43d91630fa@linaro.org>
- <CAFv8NwJ-+f146Ss9Mk=nEXjm1B--ZwhAgnfx-cTi7DGEKqC1-Q@mail.gmail.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <e876421c-dfeb-e853-1b65-53a786e9bcf9@linaro.org>
-Date:   Wed, 21 Oct 2020 13:00:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:sender:mime-version:message-id:date:subject:from
+         :to:cc;
+        bh=NtX8N0ZwPWqt161nUJghfJ5S9WiPRYMaStD0fa9b8Ls=;
+        b=QjZ3mRCHQVKtqNtTwQ/Ss1Z2ZB7rpccXy+9n3Ren2u7MiCu92npi1ui4txO/Zgr6zF
+         NXoKTP3ZicM7xL696l3YUm0uuE0QARpA7qg96yZY+/a5NscNttG1Bbn5NQQrxMzLWtYZ
+         ZhdIEiaX9JAbepO7zEs3n63JLvupfg/UHe46mYYPdS3/uOKgixRQ/Vf21WRcu4NAhSMc
+         Cvyc7sNtUNlYRURkyJGfzUuoUvWC2G93WW48xnoi194BAhrnIr1XQyn/hwp3xWDPDJjT
+         cy4aMFZvR7147xJbdke87ZV8XXqW87nKs+nt+pSpTCCBaVtmsU5jXqeRQGeeYzUuwqPz
+         ysAQ==
+X-Gm-Message-State: AOAM531tTeutuZgFc3U6Dto58GqF0LRIiSEdqsx5mLpEH1albQnRfyao
+        EoCoFMPAz+vbLcaG++QIgH5JAgr4vJgtBFWh
+X-Google-Smtp-Source: ABdhPJywhhG1/GpKfHVj3dBZHUog+H4MQCzTB5fIVSlGEud95Ro60tjNLFPwdzENLHk8x6JWSo6SOw5zs0ijrKYm
+Sender: "josephjang via sendgmr" 
+        <josephjang@josephjang-p920.ntc.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFv8NwJ-+f146Ss9Mk=nEXjm1B--ZwhAgnfx-cTi7DGEKqC1-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:7220:84ff:fe09:41e0])
+ (user=josephjang job=sendgmr) by 2002:a25:cbc7:: with SMTP id
+ b190mr4537165ybg.288.1603281694224; Wed, 21 Oct 2020 05:01:34 -0700 (PDT)
+Message-ID: <000000000000dc600005b22d1bea@google.com>
+Date:   Wed, 21 Oct 2020 12:01:34 +0000
+Subject: [PATCH v2] power: suspend: Replace dpm_watchdog by sleep timer
+From:   <josephjang@google.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org, rjw@rjwysocki.net,
+        pavel@ucw.cz, len.brown@intel.com, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        jonglin@google.com, woodylin@google.com, markcheng@google.com,
+        josephjang@google.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> > On Wed, Oct 21, 2020 at 4:09 AM Joseph Jang <josephjang@google.com>  
+> wrote:
+> > >
+> > > Since dpm_watchdog just cover device power management, we proposed  
+> sleep
+> > > timer to cover not only device power management hang issues, but also
+> > > core power management hand issue.
+> > >
+> > > Add sleep timer and timeout handler to prevent device stuck during  
+> suspend/
+> > > resume process. The timeout handler will dump disk sleep task at first
+> > > round timeout and trigger kernel panic at second round timeout.
+> > > The default timer for each round is defined in
+> > > CONFIG_PM_SLEEP_TIMER_TIMEOUT.
+> >
+> > Let me repeat the point that Greg has made already: Please don't
+> > replace the existing watchdog with something else, but try to extend
+> > it to cover your use case.
+> >
+> > As it stands, the patch is not applicable IMV.
+> >
+> > Thanks!
+
+> Thank you Rafael's promptly response.
+> Since dmp_watchdog was implement in drivers/base/power/main.c and it use  
+> stack memory for timer struct.
+> It is a little bit hard to use its API in kernel/power/suspend.c.
+> And from the call flow, we prefer to start/stop watchog timer in  
+> suspend.c only. It will also cover device
+> power management as well.
+
+> If you don't want to change Kconfig, I can keep original DPM_WATCHDOG.
+> But it is not easy to extend driver base API into core power base. Am I  
+> correct?
+
+> If you have some suggestion, please feel free to let me know, I will  
+> follow up.
+
+> Thank you,
+> Joseph.
 
 
-On 20/10/2020 19:54, Cheng-yi Chiang wrote:
->> Not with the compatible string!
->>
->> Currently card name, and long name are exactly same in all Qualcomm
->> soundcards, which makes it very difficult to identify how those boards
->> re wired up at UCM2 level. So the plan is to properly populate card long
->> name with "model" property which can include details on how things are
->> wiredup on that board.
->>
->> --srini
-> Hi Srini,
-> Thanks for taking a look.
-> Let me try to clarify your comments in case there is any misunderstanding.
-> 
-> I understand your request on having different board variations using
-> different sound card names through model property, and I totally agree
-> with that.
-> As for compatible strings, do you insist on having all the board
-> variations using exactly the same compatible string ?
+Let me try to explain why cannot use current dpm_watchdog API, because it  
+use stack memory and has limitation.
+
+/**
+  * dpm_watchdog_set - Enable pm watchdog for given device.
+  * @wd: Watchdog. Must be allocated on the stack.
+  * @dev: Device to handle.
+  */
+static void dpm_watchdog_set(struct dpm_watchdog *wd, struct device *dev)
+{
+	struct timer_list *timer = &wd->timer;
+
+	wd->dev = dev;
+	wd->tsk = current;
+
+	timer_setup_on_stack(timer, dpm_watchdog_handler, 0);  <== setup timer on  
+stack memory ....
+	/* use same timeout value for both suspend and resume */
+	timer->expires = jiffies + HZ * CONFIG_DPM_WATCHDOG_TIMEOUT;
+	add_timer(timer);
+}
 
 
-For example if we set below property for sound card in Device tree
-model = "RB5";
+If you could take a look at my patch again, you can see we need to start  
+watchdog at end of function like s2idle_enter().
+We cannot use stack memory for timer because it will be free when go back  
+to caller.
+That is why I am creating new API to start/stop watchdog timer which use  
+global memory.
 
-We will end up with
+  /**
+   * pm_suspend_default_s2idle - Check if suspend-to-idle is the default  
+suspend.
+   *
+@@ -89,6 +92,8 @@ static void s2idle_enter(void)
+  {
+  	trace_suspend_resume(TPS("machine_suspend"), PM_SUSPEND_TO_IDLE, true);
 
-#   cat /proc/asound/cards
-  0 [RB5            ]: RB5 - RB5
-                       RB5
++	stop_sleep_timer(&st);
++
+  	raw_spin_lock_irq(&s2idle_lock);
+  	if (pm_wakeup_pending())
+  		goto out;
+@@ -114,6 +119,8 @@ static void s2idle_enter(void)
+  	s2idle_state = S2IDLE_STATE_NONE;
+  	raw_spin_unlock_irq(&s2idle_lock);
 
-This is totally not very useful w.r.t UCM2 and makes it very difficult 
-to common up parts of the configs.
-
-
-My suggestions are.
-1. set card->driver_name to something more sensible in your sound card 
-driver.
-
-ex:
-	card->driver_name = "SM8250";
-
-2. set long name in model DT property and set it as card long name
-ex:
-in DT:
-	model = "Qualcomm-RB5-WSA8815-Speakers-DMIC0";
-
-in sound driver or common.c:
-
-of_property_read_string_index(np, "model", 0, &card->long_name);
-
-With this set:
-
-now
-#   cat /proc/asound/cards
-  0 [QualcommRB5WSA8]: SM8250 - Qualcomm-RB5-WSA8815-Speakers-D
-                       Qualcomm-RB5-WSA8815-Speakers-DMIC0
-
-This also means that in UCM2 we can have a top level SM8250 directory 
-which can contain other board variants something like:
-
-ucm2/Qualcomm/sm8250/Qualcomm-RB5-WSA8815-Speakers-DMIC0.conf
-ucm2/Qualcomm/sm8250/Qualcomm-RB5-WSA8810-Speakers-DMIC123.conf
-and so on!
-
-Finally Only comment I had regarding compatible was not to encapsulate 
-the connection details in it!. these can be made more sensible, 
-something like
-"qcom,sc7180-trogdor-v1", "qcom,sc7180-trogdor-v2".. and so on.
-
-This compatible has nothing to do with driver or card short and long name.
-
-Does that makes sense?
++	start_sleep_timer(&st);
++
+  	trace_suspend_resume(TPS("machine_suspend"), PM_SUSPEND_TO_IDLE, false);
+  }
 
 
-Thanks,
-srini
+Base on that, could you help to review if we could create new API to  
+start/stop watchdog timer for core power management?
 
-
-with
-
-
-
-
-Currently if
+Thank you,
+Joseph.
