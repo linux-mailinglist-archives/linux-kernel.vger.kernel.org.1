@@ -2,135 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CACB294D0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCCC294D0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442667AbgJUMvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:51:31 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:32157 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442652AbgJUMva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:51:30 -0400
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f902ed00001>; Wed, 21 Oct 2020 20:51:28 +0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 21 Oct
- 2020 12:51:28 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 21 Oct 2020 12:51:28 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FRw8/EytkfcUBldJuP/BUuxxIDH9Cjfkp7Nmm09svP82seUUZfOU/ahD2Ulz4L2wWbcVan/0CdFMo6RobnpIzM27wU2MFgf3UZNaFMDAqPgUzu2xEisqqJiXSZxE4/RdsmqwQcsSpZ8B1Rd/qPPrQ5JuL/7rotO1Z38dlgYW0XBnhzqD02IOt67LgNrMdo07HikgJ298nvGqMcHoDGbwSDMF6E54RLYQnEjjTeGkeYscYrmTL2ImCgq3KPEZx6eOpBYeBO1VO73nlTHK3vTTcwDa+vjSVtO8l3Obv+UKChkK7HgpAhty9SbHgUzvWKb9ijXIetg/l+t9+zATfsE6Zg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yh/1ZhTxXHD1YXbmPcINfY1BXvQtNEnRPtNoRP9PEH4=;
- b=MeXBi/FsegQ4Ozc+o9nqHqApf9xo37Zq7fkpRtw8dnhIsQf/36ff6syWd4R3od1pGpPh/H3vP/RuPutpklaZoDu3aBKB8c2rys5z9vLqvptYiP63DDyWBOjniy46NJjGgep0pKrZ3QyLnxznLFlDP/PqxAs1iGAME1qzEQqfVJra/s8urs/k+BUxQp+uLasxIQjPMPRm+bciVVfol61EgyKjQOkBPk0GLtsTvHaz0GXmnD/T9n54Eeor/x+Qprk0olGD2IK2LFtyCdXevIy4b8X05lIdUSJroNjV49dy81c/1pyr9TtkkrEwEr1Ra/rlitUC0mY3whPauKPOIqSrag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4498.namprd12.prod.outlook.com (2603:10b6:5:2a2::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Wed, 21 Oct
- 2020 12:51:26 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Wed, 21 Oct 2020
- 12:51:26 +0000
-Date:   Wed, 21 Oct 2020 09:51:24 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-CC:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>
-Subject: Re: [PATCH v3 00/16] follow_pfn and other iomap races
-Message-ID: <20201021125124.GA827089@nvidia.com>
-References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
-X-ClientProxiedBy: MN2PR08CA0025.namprd08.prod.outlook.com
- (2603:10b6:208:239::30) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2442675AbgJUMw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440686AbgJUMw2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:52:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB12C0613CE;
+        Wed, 21 Oct 2020 05:52:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Uq5uoGCfFjFseaKYtetVeX6eT0EP/TsERuBq6LOZk28=; b=Viwr+En7j03ibYqEEkgIXLWjwm
+        uoFtHwXEVjyaPwD5mUXxPpH/k55ZSM2o+5sGbVHB477cW8yBE2SigNf+qDScZPo9e5HT4fDjzbODM
+        KQ84HwFNcF3jovtgNhIV/gYosM632W3GCdZGJVDpCEkItzhZ9dXCmMvOK6iU99AQwXB4aCbDsqi+n
+        0Qj88YRBZV+rjtuuWW2IeGyyLavF1iszNTKlyVwfQEBSf1Bs4c4y2yyUghgoFNKOiOWrxdtaL2FSv
+        eeHD/W66+MnL/9vzKvoBJAw0at/KEAy/cQltrbMHyzIpZG1DA8mh16lATxDCSTJZyUV53r9BGPkWq
+        lew1craw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVDb3-0007Bh-1V; Wed, 21 Oct 2020 12:52:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A5619302753;
+        Wed, 21 Oct 2020 14:52:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 717C82BA9E6D3; Wed, 21 Oct 2020 14:52:03 +0200 (CEST)
+Date:   Wed, 21 Oct 2020 14:52:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, viresh.kumar@linaro.org,
+        srinivas.pandruvada@linux.intel.com
+Subject: Re: [PATCH] sched/fair: check for idle core
+Message-ID: <20201021125203.GG2628@hirez.programming.kicks-ass.net>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <20201021112038.GC32041@suse.de>
+ <alpine.DEB.2.22.394.2010211336410.8475@hadrien>
+ <20201021121950.GF2628@hirez.programming.kicks-ass.net>
+ <alpine.DEB.2.22.394.2010211422230.8475@hadrien>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR08CA0025.namprd08.prod.outlook.com (2603:10b6:208:239::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.24 via Frontend Transport; Wed, 21 Oct 2020 12:51:25 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kVDaO-003UBS-Qb; Wed, 21 Oct 2020 09:51:24 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603284689; bh=yh/1ZhTxXHD1YXbmPcINfY1BXvQtNEnRPtNoRP9PEH4=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=C7xYU0fDsha18ThIXlmRE40GkYuRAFPxCvdB3o1nMvhmU+vNu/rWItr/hyVsI9JH9
-         fOswYgLrZ1ZCdIq3o74WRdiiwn36I+f089K2bd5TwpCAN88YO70quRsJez5AumELr1
-         rUSxhC1RAFOXp/GeUnJ89506tos7uvcJw1UAIv6ruwvgDQgeI9UdjilJv1BO6pVzHs
-         voW1qRPuxMuaDc5hOEpSvzFbPi+5E52IQsBge0a0DfxAsa6VhbITJG8CQ4ZD4w6A0O
-         0U0LE7MYwwqgIITuqPz4Q6uMmb+s1eOV3pscqtu/o7GoBFJpxWCQpWJhazPnrKwrXa
-         XsZ5x/vGm+/Rg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2010211422230.8475@hadrien>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 10:56:39AM +0200, Daniel Vetter wrote:
-> Hi all,
+On Wed, Oct 21, 2020 at 02:42:20PM +0200, Julia Lawall wrote:
 > 
-> Round 3 of my patch series to clamp down a bunch of races and gaps
-> around follow_pfn and other access to iomem mmaps. Previous version:
 > 
-> v1: https://lore.kernel.org/dri-devel/20201007164426.1812530-1-daniel.vetter@ffwll.ch/
-> v2: https://lore.kernel.org/dri-devel/20201009075934.3509076-1-daniel.vetter@ffwll.ch
+> On Wed, 21 Oct 2020, Peter Zijlstra wrote:
 > 
-> And the discussion that sparked this journey:
+> > On Wed, Oct 21, 2020 at 01:56:55PM +0200, Julia Lawall wrote:
+> > > Prior to 5.8, my machine was using intel_pstate and had few background
+> > > tasks.  Thus the problem wasn't visible in practice.  Starting with 5.8
+> > > the kernel decided that intel_cpufreq would be more appropriate, which
+> > > introduced kworkers every 0.004 seconds on all cores.
+> >
+> > That still doesn't make any sense. Are you running the legacy on-demand
+> > thing or something?
+> >
+> > Rafael, Srinivas, Viresh, how come it defaults to that?
 > 
-> https://lore.kernel.org/dri-devel/20201007164426.1812530-1-daniel.vetter@ffwll.ch/
-> 
-> I was waiting for the testing result for habanalabs from Oded, but I guess
-> Oded was waiting for my v3.
-> 
-> Changes in v3:
-> - Bunch of polish all over, no functional changes aside from one barrier
->   in the resource code, for consistency.
-> - A few more r-b tags.
-> 
-> Changes in v2:
-> - tons of small polish&fixes all over, thanks to all the reviewers who
->   spotted issues
-> - I managed to test at least the generic_access_phys and pci mmap revoke
->   stuff with a few gdb sessions using our i915 debug tools (hence now also
->   the drm/i915 patch to properly request all the pci bar regions)
-> - reworked approach for the pci mmap revoke: Infrastructure moved into
->   kernel/resource.c, address_space mapping is now set up at open time for
->   everyone (which required some sysfs changes). Does indeed look a lot
->   cleaner and a lot less invasive than I feared at first.
-> 
-> The big thing I can't test are all the frame_vector changes in habanalbas,
-> exynos and media. Gerald has given the s390 patch a spin already.
-> 
-> Review, testing, feedback all very much welcome.
-> 
-> Daniel Vetter (16):
->   drm/exynos: Stop using frame_vector helpers
->   drm/exynos: Use FOLL_LONGTERM for g2d cmdlists
->   misc/habana: Stop using frame_vector helpers
->   misc/habana: Use FOLL_LONGTERM for userptr
->   mm/frame-vector: Use FOLL_LONGTERM
->   media: videobuf2: Move frame_vector into media subsystem
->   mm: Close race in generic_access_phys
->   s390/pci: Remove races against pte updates
->   mm: Add unsafe_follow_pfn
->   media/videbuf1|2: Mark follow_pfn usage as unsafe
->   vfio/type1: Mark follow_pfn as unsafe
->   PCI: Obey iomem restrictions for procfs mmap
->   /dev/mem: Only set filp->f_mapping
->   resource: Move devmem revoke code to resource framework
->   sysfs: Support zapping of binary attr mmaps
->   PCI: Revoke mappings like devmem
+> The relevant commits are 33aa46f252c7, and 39a188b88332 that fixes a small
+> bug.  I have a Intel(R) Xeon(R) CPU E7-8870 v4 @ 2.10GHz that does not
+> have the HWP feature, even though the cores seemed to be able to change
+> their frequencies at the hardware level.
 
-The whole thing looks like a great improvement!
+That just makes intel_pstate not prefer active mode. With the clear
+intent that it should then go use schedutil, but somehow it looks like
+you landed on ondemand, which is absolutely atrocious.
 
-Thanks,
-Jason
+What's:
+
+  $ for i in /sys/devices/system/cpu/cpu0/cpufreq/scaling_*; do echo -n $i ": "; cat $i; done
+
+say, for you? And if you do:
+
+  $ for i in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor ; do echo schedutil > $i; done
+
+Are the kworkers gone?
+
+
