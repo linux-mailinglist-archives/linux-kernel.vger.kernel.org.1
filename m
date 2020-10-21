@@ -2,138 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1060029511E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0D2295110
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503182AbgJUQvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:51:03 -0400
-Received: from smtprelay0011.hostedemail.com ([216.40.44.11]:58960 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2444579AbgJUQvD (ORCPT
+        id S2503146AbgJUQqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404882AbgJUQqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:51:03 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 13750182CED28;
-        Wed, 21 Oct 2020 16:51:02 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2689:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3871:3872:3874:4321:5007:10007:10128:10400:10848:11232:11658:11914:12295:12297:12555:12740:12760:12895:13019:13069:13161:13229:13311:13357:13439:14181:14659:14721:14799:21080:21222:21326:21627:21660:21740:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: ink53_4217b0127249
-X-Filterd-Recvd-Size: 2566
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 21 Oct 2020 16:51:00 +0000 (UTC)
-Message-ID: <40ca3f0f9a960799ad0e534b77d778c90119e468.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: fix false positive for REPEATED_WORD warning
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com
-Date:   Wed, 21 Oct 2020 09:50:59 -0700
-In-Reply-To: <26647abf8cf14595a0dd22f10ec1c32e3dc2a8c0.camel@perches.com>
-References: <20201021150120.29920-1-yashsri421@gmail.com>
-         <f073750511750336de5f82600600ba6cb3ddbec0.camel@perches.com>
-         <26647abf8cf14595a0dd22f10ec1c32e3dc2a8c0.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 21 Oct 2020 12:46:15 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732B4C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:46:13 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id dn5so3222420edb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8NUOfNpYzEL3LD+5zJArE8vgQr+8xwXTLaDNDtvbDwA=;
+        b=Wfq8T3EqHqQ8lWbnZHAcop1pwmrgYSGiQ8y+QBQzhgJvWkUVddeQVTARpQt+C6qHMN
+         5CtfwdzNoX4TezJ3KM0QNKJZr+VQgbetsV+XnfEDlSw+QeXvGl4lOITQBjJU6WSH+LhM
+         qFASZk18S1La+NfdRIrQ+wzrhK1Zy71XWZbv7KDb5bi9sHqiD97UjlSsB5wixNS/qxhj
+         B/IEMSp8o5UuBuKJQl/P2Myf4dtM2v9NQXi81OwJsba/BaHV6mbraD5k8uev40GziwWb
+         u/S6IxYevQLa41WHjF5FwPMjMZkg5le/zLXkRWoEHoHxeIIJntihdeN6k1sDu6ndFV1H
+         /nLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8NUOfNpYzEL3LD+5zJArE8vgQr+8xwXTLaDNDtvbDwA=;
+        b=KPV71UZV1zP45H48gwhVw6XXpyiZVqUPfp+OEFnr7U7yA795dLVlxDXjQAB82luFmd
+         MJupGRC2QGrFDcsNXGGvkdn6Mk+Qw1TLQXJ71i2KEqxnYe4HKQStVJ3IJOYr/vJoBqCj
+         0ZkxbORVlFNi9yPjPUgZ28m8eONcv9+x5wWmm/4DFZcq2vlircM0kmE8zB8UsI8h7ffJ
+         Cn32zGuLLlIG1e0Tc0S9nvHJ5JkDPicgRGejIjBbwiBLL+K/YEj63TwIqxeKcvdGI9Xo
+         JnUZ+7XTgBl77fT8z0uvCyyAKXmkUYw5hFbmjIBk1SbLPEmeJz2iBlHW3jNWE84D93A7
+         3kxg==
+X-Gm-Message-State: AOAM533YfueIdmp7lm3wqbc5ZGKx5YkCdWciy8pmAl+8DCqNf4NP+ewU
+        tCAvTeiVRNgYaIET+UAA1XGySLzZFVFUyJvj1wjxhA==
+X-Google-Smtp-Source: ABdhPJxFG7eP6jPrXMEObBNGYCEE//beJ2SGdl4GivAzZsysEUsSAlvo+98dcFhiemFVn4SHy/ry0C68roOSK/sZv+Q=
+X-Received: by 2002:a05:6402:1158:: with SMTP id g24mr3799631edw.323.1603298771874;
+ Wed, 21 Oct 2020 09:46:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
+ <1602907457-13680-2-git-send-email-hemantk@codeaurora.org>
+ <20201021152714.GD3334@Mani-XPS-13-9360> <CAMZdPi8xcsrKx2eV5da98fsGt2zO3f6ARMz7WJsyDSb3CnM0FA@mail.gmail.com>
+ <20201021162540.GG3334@Mani-XPS-13-9360>
+In-Reply-To: <20201021162540.GG3334@Mani-XPS-13-9360>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Wed, 21 Oct 2020 18:51:36 +0200
+Message-ID: <CAMZdPi-SY-r2H7RBLKoNk9yfu5umrrwYMr0ckJoxSx-iqYXdQg@mail.gmail.com>
+Subject: Re: [PATCH v7 1/4] bus: mhi: core: Add helper API to return number of
+ free TREs
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Hemant Kumar <hemantk@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-21 at 08:28 -0700, Joe Perches wrote:
-> On Wed, 2020-10-21 at 08:18 -0700, Joe Perches wrote:
-> > I might add that check to the line below where
-> > the repeated words are checked against long
-> []
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
-> > @@ -3062,6 +3062,7 @@ sub process {
-> >  
-> >  				next if ($first ne $second);
-> >  				next if ($first eq 'long');
-> > +				next if ($first =~ /^$Hex$/;
-> 
-> oops.  with a close parenthesis added of course...
+On Wed, 21 Oct 2020 at 18:25, Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
+>
+> On Wed, Oct 21, 2020 at 05:43:14PM +0200, Loic Poulain wrote:
+> > On Wed, 21 Oct 2020 at 17:27, Manivannan Sadhasivam <
+> > manivannan.sadhasivam@linaro.org> wrote:
+> >
+> > > On Fri, Oct 16, 2020 at 09:04:14PM -0700, Hemant Kumar wrote:
+> > > > Introduce mhi_get_free_desc_count() API to return number
+> > >
+> >
+> > Would it not be a good idea to have naming aligned with other methods?
+> > Like mhi_queue_num_free() or mhi_queue_no_free_elem...
+> >
+>
+> 'queue_num_free' doesn't sound like getting the number of available
+> descriptors...
 
-That doesn't work as $Hex expects a leading 0x.
+Right, TBH, just wanted the function to start with mhi_queue since
+it's about getting info about remaining size of the DL or UL 'virtual
+queue'. But AFAIU, this is the number of available ring elements that
+is returned here, not the number of transfer descriptors (that can be
+composed of one or more ring elements), so maybe
+mhi_queue_num_free_elements or something similar, I don't want to be
+picky here.
 
-But this does...
-
-The negative of this approach is it would also not emit
-a warning on these repeated words: (doesn't seem too bad)
-
-$ grep -P '^[0-9a-f]{2,}$' /usr/share/dict/words
-abed
-accede
-acceded
-ace
-aced
-ad
-add
-added
-baa
-baaed
-babe
-bad
-bade
-be
-bead
-beaded
-bed
-bedded
-bee
-beef
-beefed
-cab
-cabbed
-cad
-cede
-ceded
-dab
-dabbed
-dad
-dead
-deaf
-deb
-decade
-decaf
-deed
-deeded
-deface
-defaced
-ebb
-ebbed
-efface
-effaced
-fa
-facade
-face
-faced
-fad
-fade
-faded
-fed
-fee
-feed
----
- scripts/checkpatch.pl | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index fab38b493cef..79d7a4cba19e 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3062,6 +3062,7 @@ sub process {
- 
- 				next if ($first ne $second);
- 				next if ($first eq 'long');
-+				next if ($first =~ /^[0-9a-f]+$/i);
- 
- 				if (WARN("REPEATED_WORD",
- 					 "Possible repeated word: '$first'\n" . $herecurr) &&
-
-
-
+Regards,
+Loic
