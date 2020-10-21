@@ -2,116 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654EF29530D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD90295312
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438571AbgJUTnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 15:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
+        id S2505072AbgJUTpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 15:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409773AbgJUTnA (ORCPT
+        with ESMTP id S2438786AbgJUTpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 15:43:00 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7013AC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:43:00 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 77so4662916lfl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:43:00 -0700 (PDT)
+        Wed, 21 Oct 2020 15:45:24 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54D8C0613CE;
+        Wed, 21 Oct 2020 12:45:24 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id j6so833262oot.3;
+        Wed, 21 Oct 2020 12:45:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=y84p6tfQj5a5ufC8cVAYYecBEzVsSbhLXjpiNjIVQbQ=;
-        b=MfyZo6Or8kl6lV16zl9GfMos/tof+E3Zn3bakSOq9Tb7OStRvHEzNwAiG55wyV05y2
-         Fz3XC5t3tV1VDRDA0a3zvEBJP9eKAnBbN/1bPG2tr3ZQRqw5ZaLuWDcleI9zjBRx16Vq
-         bsEsHp//RVAUbkYuFG6d4uDa82fs3sLv+O0O+vVGkSYDGz8WeKVqzar66LnU8CFrzc2z
-         ibmKyLRuwChKcpzoi/5c5QQYG/FMRATcoA2nnD7vlPlC/feDJAEniIWJGsTtSFkDt+Za
-         ijyZgqUuGM8JisvtDlTNz7gqmY6N2S0W2JKs9Gt3VM0qU74JPMQ88JLneYWVuVtGb4Fk
-         vctg==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=v0iK/cV72UNiwB5XBenTai9sOdiim2LZ9CpHGg2+i4Y=;
+        b=gtHnwaCCQDA7vrlBp6DaFMbU7Dy9JQ5t2J28uDXHa71Q3oPwKst66bkUxieJjipnmQ
+         Pe8YmMcb9hVn4TB0kA9JY2exDGR7WubLdX3ofIEkIpmYYuYRxHPU6qdH0Bx3wXoLFuN5
+         u7Zqbia33X+8YYerN1tQjTlp+yPSFyVv5TuuncpfZ2XFNcTybtL2mpDCBbEatMeLYBFp
+         Wp4oLTFG7u9DJBrUR69FonpvYhZv97ZXzgLfmsQcmwQ4OtODw9cbxqQwct2M65Kg7eMf
+         iH+cAxWsngb1P3pFDNPIbv95Uu7kNHVCoHJMn0xJNnpZ35M4qx4QClwnjkjDjV9YDMIq
+         pTiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=y84p6tfQj5a5ufC8cVAYYecBEzVsSbhLXjpiNjIVQbQ=;
-        b=H578mjPtGhKRi7UWbEfcsXPXddLcMGjnxfJQ4TdtWI1W+OE6MOFlewgOV3/n3bdpmr
-         vKM6CXzX19nRrREPSjtZ5kaK7tXgCpWtMRrclGf3g5HHtITQY5M+bime+EtEro9G2zBy
-         akhfC82BCAwlehELfqqNHDNhfRP+fB+JYmmw07VIg/tbZOobsOd9CbghovKnpfj4j8zA
-         xXEeDbXklMXblSae9uWEdK6aZCVWPhTpr4HHt+xTz6w6WlYF2tnUPqE/nuDlkJJhHezL
-         pnWxXUxt/DfQaH9EN4u9NvRvqanjedxRksGMDg5MR9vD7ar5HcObz6th0ZrktqZ07Doz
-         +Edw==
-X-Gm-Message-State: AOAM532pA4e5nWbM1dqDUAajuFqwPxOi8yk2najZ0PGTQmPijMLO8mx2
-        GKicwjJEG9Vjn8WoCMsgeTdH+g==
-X-Google-Smtp-Source: ABdhPJzZiQXKD29K8yjK+gf68pdWVoqABf52guyMOgucOEfOY+MwhLpz2ehLBTkBKz41U4RwuW/HnA==
-X-Received: by 2002:a19:4ac8:: with SMTP id x191mr1655063lfa.155.1603309378893;
-        Wed, 21 Oct 2020 12:42:58 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id f129sm527344lfd.201.2020.10.21.12.42.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 12:42:57 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 21:42:57 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] thermal: replace spin_lock_irqsave by spin_lock in hard
- IRQ
-Message-ID: <20201021194257.GC2158081@oden.dyn.berto.se>
-References: <1603249530-25218-1-git-send-email-tiantao6@hisilicon.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=v0iK/cV72UNiwB5XBenTai9sOdiim2LZ9CpHGg2+i4Y=;
+        b=dVnGKu6/2TmScXJFbsfwaQl8nIqNjXe43dsbGN0SXWfRCZE5hgnwFppejnpWNpvp3G
+         BdtMZZRbv6uFyiiwrho2SS2kcu5xXwx4G4xzXTFe3gWhnDd3K2G3HTD+sz+3X50Twk+A
+         wQh61C/Kueb9eqzKo/S3iDxa1qZsv9Q01jomFFQdi2syAcTbz6r8UtAt/3vd3YnmeIug
+         Ssz0fGwfAgBilOEZ3BiqlKr4YnuGJhENPf2lK64n5qf2cL7kerSsUXFq1ybMOryQpigj
+         QoIxiNjXHZLPEHfbjawLLChNwe3Bp+jqvJLdl4RnTsBBLnkzoewdMPl5TxDkxE5viD1c
+         rf6w==
+X-Gm-Message-State: AOAM533ENRWRaQ7rxvktIJJPYSrxrA5Xx4t5AqtKJj+6zaEXYUD2HZtf
+        35sS8oSIXWze8Zic3r3WtkOMvxaRx5EZllZ0Xo4=
+X-Google-Smtp-Source: ABdhPJzJL5CqKmGI9mY3iOQcT4fjT9UfTQeTDtRqkSxMQaxbob7iglOXLrVsz8WK7WSCXek9YQhYIFHLtdp8TDN3jkY=
+X-Received: by 2002:a4a:ea4b:: with SMTP id j11mr3737030ooe.56.1603309524072;
+ Wed, 21 Oct 2020 12:45:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1603249530-25218-1-git-send-email-tiantao6@hisilicon.com>
+From:   Albert Netymk <albertnetymk@gmail.com>
+Date:   Wed, 21 Oct 2020 21:45:13 +0200
+Message-ID: <CAKEGsXR_ZDwydz2Ed3gvqCbnVA_vT3PZG0a2RLbgj5q4fP5LuQ@mail.gmail.com>
+Subject: Imprecise definition for proportional set size in documentation
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tian,
+From https://www.kernel.org/doc/html/latest/filesystems/proc.html
+```
+The =E2=80=9Cproportional set size=E2=80=9D (PSS) of a process is the count=
+ of pages
+it has in memory, where each page is divided by the number of
+processes sharing it.
+```
+The definition is a bit imprecise if a process uses multiple-mapping.
+A real example is ZGC in OpenJDK, as asked at
+https://superuser.com/questions/1485370/linux-misreports-process-size-with-=
+heap-multi-mapping
 
-Thanks for your work.
+A more precise wording could be something like `..., where each page
+is divided by the number of mappings associated with it.`
 
-On 2020-10-21 11:05:30 +0800, Tian Tao wrote:
-> The code has been in a irq-disabled context since it is hard IRQ. There
-> is no necessity to do it again.
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+PS: I have read
+https://www.kernel.org/doc/html/latest/admin-guide/reporting-bugs.html,
+but it's still unclear to me whether a mail or a ticket in bugzilla is
+preferred.  Since this is just a documentation issue, maybe a mail is
+fine.
 
-Tested-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-
-> ---
->  drivers/thermal/rcar_thermal.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/thermal/rcar_thermal.c b/drivers/thermal/rcar_thermal.c
-> index 5c2a13b..6ae757d 100644
-> --- a/drivers/thermal/rcar_thermal.c
-> +++ b/drivers/thermal/rcar_thermal.c
-> @@ -409,16 +409,15 @@ static irqreturn_t rcar_thermal_irq(int irq, void *data)
->  {
->  	struct rcar_thermal_common *common = data;
->  	struct rcar_thermal_priv *priv;
-> -	unsigned long flags;
->  	u32 status, mask;
->  
-> -	spin_lock_irqsave(&common->lock, flags);
-> +	spin_lock(&common->lock);
->  
->  	mask	= rcar_thermal_common_read(common, INTMSK);
->  	status	= rcar_thermal_common_read(common, STR);
->  	rcar_thermal_common_write(common, STR, 0x000F0F0F & mask);
->  
-> -	spin_unlock_irqrestore(&common->lock, flags);
-> +	spin_unlock(&common->lock);
->  
->  	status = status & ~mask;
->  
-> -- 
-> 2.7.4
-> 
-
--- 
-Regards,
-Niklas Söderlund
+/Albert
