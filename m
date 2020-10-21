@@ -2,157 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD2B294EA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26802294EA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443472AbgJUOZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:25:52 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36580 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2441119AbgJUOZw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:25:52 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09LE3RrJ122996;
-        Wed, 21 Oct 2020 10:25:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=DL04KC57DYhStT+elOirXhVnkDXKA/W9W+m5Q9WWhcg=;
- b=qcsnyblpXYmW3lpC3fHzaT1j4dzx595DdTYfGlPAqR1N9ygcTfW/A13GxVQ2+0+18EmN
- hKkSTZ6H4VxLR6c4R4NkLDT5wMjaKK3Nbbs4VwxSds4raeSEXTS2jqpZvZVpNg1NfCz8
- mTC82qXXrVzx8IsRFaMUedetQuaZhZBv6MHsISn46wKkcn4yvCbfegml2B0XSJD3N+N5
- ySNGQJ5eqqb1uYvbiO/XlXNFPkJD/DCaFxjzNoptdf6O0LieE2GsbKhSIcFgBOGcTchY
- Z76yVzsVFgvDHQObIYmE7IO7lKmM7Db/h3D9/Yzt+TQKaDUaperwN76LPHAefI5M70Oq +Q== 
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34apcx8vyn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Oct 2020 10:25:18 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09LEHFia019299;
-        Wed, 21 Oct 2020 14:25:17 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma05wdc.us.ibm.com with ESMTP id 347r890ma5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Oct 2020 14:25:17 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09LEPHXF49414552
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Oct 2020 14:25:17 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5D3102805C;
-        Wed, 21 Oct 2020 14:25:17 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2D49D28059;
-        Wed, 21 Oct 2020 14:25:15 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.85.82.214])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Oct 2020 14:25:14 +0000 (GMT)
-X-Mailer: emacs 28.0.50 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] powerpc/mm: Add mask of always present MMU features
-In-Reply-To: <4bc99005-f3c0-045b-e0d5-f8b6f2b2e90d@csgroup.eu>
-References: <06bf0e094463533e7aec6900bddd435171e9f44f.1602517171.git.christophe.leroy@csgroup.eu>
- <4bc99005-f3c0-045b-e0d5-f8b6f2b2e90d@csgroup.eu>
-Date:   Wed, 21 Oct 2020 19:55:11 +0530
-Message-ID: <871rhrejw8.fsf@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-21_06:2020-10-20,2020-10-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- phishscore=0 clxscore=1015 impostorscore=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 priorityscore=1501 adultscore=0
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010210107
+        id S2443478AbgJUO0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:26:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395019AbgJUO0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 10:26:18 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E2912224E;
+        Wed, 21 Oct 2020 14:26:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603290377;
+        bh=l35jTotqmPVpGqH3vFD7Rm4q/ta0Ol+Pocoe3l+xzZk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FLElJiCfd/SO4lEx/Ikc9/UFCRupmdwtM/+ReBybVLucQIbBk+D82xsmKiqKGKtNu
+         2lL+X7GKJ/15W2kbfJbspgXu1MGlAh34VYRGGPRfLeyqSpj/gwrGuOKzTUjnJimWJe
+         ZMFuC2PauCD+4A49wEgQXHMpFtttcvTHVFzwMeUE=
+Date:   Wed, 21 Oct 2020 23:26:13 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86-ml <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] Have insn decoder functions return success/failure
+Message-Id: <20201021232613.e40c1daef4b567e0e29044a4@kernel.org>
+In-Reply-To: <20201021092750.GA4050@zn.tnic>
+References: <20201020120232.GD11583@zn.tnic>
+        <20201020232700.5510c236d810b7f8a66779e2@kernel.org>
+        <20201020143746.GG11583@zn.tnic>
+        <20201021095013.d82637f84af564ae4363189d@kernel.org>
+        <20201021092750.GA4050@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+On Wed, 21 Oct 2020 11:27:50 +0200
+Borislav Petkov <bp@alien8.de> wrote:
 
-> Le 12/10/2020 =C3=A0 17:39, Christophe Leroy a =C3=A9crit=C2=A0:
->> On the same principle as commit 773edeadf672 ("powerpc/mm: Add mask
->> of possible MMU features"), add mask for MMU features that are
->> always there in order to optimise out dead branches.
->>=20
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->> v2: Features must be anded with MMU_FTRS_POSSIBLE instead of ~0, otherwi=
-se
->>      MMU_FTRS_ALWAYS is ~0 when no #ifdef matches.
->
-> This is still not enough. For BOOK3S/32, MMU_FTRS_POSSIBLE is still too m=
-uch.
-> We need a #ifdef CONFIG_PPC_BOOK3S_32 with 0.
->
-> Christophe
->
->> ---
->>   arch/powerpc/include/asm/mmu.h | 25 +++++++++++++++++++++++++
->>   1 file changed, 25 insertions(+)
->>=20
->> diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/m=
-mu.h
->> index 255a1837e9f7..64e7e7f7cda9 100644
->> --- a/arch/powerpc/include/asm/mmu.h
->> +++ b/arch/powerpc/include/asm/mmu.h
->> @@ -201,8 +201,30 @@ enum {
->>   		0,
->>   };
->>=20=20=20
->> +enum {
->> +	MMU_FTRS_ALWAYS =3D
->> +#ifdef CONFIG_PPC_8xx
->> +		MMU_FTR_TYPE_8xx &
->> +#endif
->> +#ifdef CONFIG_40x
->> +		MMU_FTR_TYPE_40x &
->> +#endif
->> +#ifdef CONFIG_PPC_47x
->> +		MMU_FTR_TYPE_47x &
->> +#elif defined(CONFIG_44x)
->> +		MMU_FTR_TYPE_44x &
->> +#endif
->> +#if defined(CONFIG_E200) || defined(CONFIG_E500)
->> +		MMU_FTR_TYPE_FSL_E &
->> +#endif
->> +		MMU_FTRS_POSSIBLE,
->> +};
+> On Wed, Oct 21, 2020 at 09:50:13AM +0900, Masami Hiramatsu wrote:
+> > Agreed. So I'm OK for returning the result of "decoding".
+> > But we also need to note that the returning success doesn't
+> > mean the instruction is valid. That needs another validator.
+> >
+> ...
+> 
+> >
+> > Yes, so let's add the return value (with a note, so that someone
+> > does not try to use it for validation).
+> 
+> Ok, I'm unclear on that "validation" you talk about. What exactly do
+> you mean? Can you give an example of how one would determine whether an
+> instruction is valid? And valid how?
 
-Will it be simpler if we make it a #define like below?
+Hmm, I meant someone might think it can be used for filtering the
+instruction something like,
 
-#ifdef CONFIG_PPC_8XX
-#define MMU_FTR_ALWAYS  MMU_FTR_TYPE_8XX & MMU_FTR_POSSIBLE
-#endif
+insn_init(insn, buf, buflen, 1);
+ret = insn_get_length(insn);
+if (!ret) {
+	/* OK, this is safe */
+	patch_text(buf, trampoline);
+}
+
+No, we need another validator for such usage.
+
+Thank you,
+ 
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
 
-
->> +
->>   static inline bool early_mmu_has_feature(unsigned long feature)
->>   {
->> +	if (MMU_FTRS_ALWAYS & feature)
->> +		return true;
->> +
->>   	return !!(MMU_FTRS_POSSIBLE & cur_cpu_spec->mmu_features & feature);
->>   }
->>=20=20=20
->> @@ -231,6 +253,9 @@ static __always_inline bool mmu_has_feature(unsigned=
- long feature)
->>   	}
->>   #endif
->>=20=20=20
->> +	if (MMU_FTRS_ALWAYS & feature)
->> +		return true;
->> +
->>   	if (!(MMU_FTRS_POSSIBLE & feature))
->>   		return false;
->>=20=20=20
->>=20
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
