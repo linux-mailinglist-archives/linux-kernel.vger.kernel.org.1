@@ -2,202 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455252951E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72D72951E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438275AbgJUR4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 13:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409079AbgJUR4F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:56:05 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F63C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:56:05 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a17so1550640pju.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:56:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lzul3FMJv/xeo11nXKkbOk4KrDGxaWV8W5UIU+yj0Ho=;
-        b=qeNKjMskhs9+4r5kftT5Vpo+Ajd7JYFyChtNH3JmBV4t0pAXc30t/kemLfEu+5SAAm
-         QBZ72+1/7uvSRdIiIpkF6EtyBMuwLxS5ZvH+Wkm+WYmToXIZFk89LxX2K1mPP7t+Gnb9
-         7Nl/Jf42bt/EeN5W/LqXejB/77GJMRgUn08SWaPhU0nMWNMrmEizaGPwNI6IRu/1IXXx
-         Fqj8LnFf8X2rmWF5s0llNbwB3QpaL/ELcdWZgfPnBqLzshjyjFWS3dppHrQKfbo8VtpP
-         Bu04su66eGOeb89hxi3plNlmdHwAD+TbaCTli8mccjhSzFTEQh1xBQVrfAe4YDj3y9E5
-         wpeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lzul3FMJv/xeo11nXKkbOk4KrDGxaWV8W5UIU+yj0Ho=;
-        b=QgPamVu36JxhIfOTY7Ee4NZsO9P/zuZDgI4JunN0KO/5uuPvyQ2SgF7xDoOJrQybjv
-         Sy9rjCkaNQH/HNku5ovWE2QcbEUKkdadc2KJPEnwWqNsjDLBcE61+2pCHEAFiHnKtbmd
-         L/X8cWNhmlEkUtIiGhgZrx67NJLvGlmLbwooKTG/ZxMAptcHXyCvMaYnhMleCSm0hyLo
-         CpWvyTK/kTHnx+LDZZQPzmMNxZCwzP56svEovEAKDL8ZA+rr0nNYEXezl9cetpI8XUIc
-         +j96bppu46sDhxpgxX9bwIPlqUxMJdfK2pXuTfxUJBtZbmRe/7ufRvXST16x8IBF4rUB
-         zHtQ==
-X-Gm-Message-State: AOAM533lJLGEpOlpdZ2k6CqwqCRUgdJ4w539Yr1OHtKQpj8FgjQZguVX
-        wPEUY3rJbDFom3L58cOhhIacm1mRqyqLQxC1
-X-Google-Smtp-Source: ABdhPJwl5z0xbugm0cEBUmWGWhiuC5cxC7/geDf7Ue2PpHCiJvhOkm/0ua8/MZIQWF73DJHS8nUdZA==
-X-Received: by 2002:a17:90b:1096:: with SMTP id gj22mr4538856pjb.183.1603302964786;
-        Wed, 21 Oct 2020 10:56:04 -0700 (PDT)
-Received: from ?IPv6:2402:3a80:431:7ac0:8cb2:c45f:197:35d9? ([2402:3a80:431:7ac0:8cb2:c45f:197:35d9])
-        by smtp.gmail.com with ESMTPSA id s20sm2947231pfc.201.2020.10.21.10.56.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 10:56:04 -0700 (PDT)
-Subject: Re: [PATCH] checkpatch: fix false positive for REPEATED_WORD warning
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com
-References: <20201021150120.29920-1-yashsri421@gmail.com>
- <f073750511750336de5f82600600ba6cb3ddbec0.camel@perches.com>
- <26647abf8cf14595a0dd22f10ec1c32e3dc2a8c0.camel@perches.com>
- <40ca3f0f9a960799ad0e534b77d778c90119e468.camel@perches.com>
-From:   Aditya <yashsri421@gmail.com>
-Message-ID: <c4f8aae0-d805-8d09-1a87-ba64bc01c29a@gmail.com>
-Date:   Wed, 21 Oct 2020 23:25:56 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2503748AbgJUR7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 13:59:39 -0400
+Received: from mga01.intel.com ([192.55.52.88]:36564 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391484AbgJUR7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 13:59:38 -0400
+IronPort-SDR: b1kNW4n2MmYoogQ58rPm4cbDLJie/PkwMu2TqFNWa3ymyo9U7aREKHLaJgqwiFw89460TmXuyt
+ VFefypTe1dHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="185078294"
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="185078294"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 10:59:38 -0700
+IronPort-SDR: M1X2/Q4NORS2/pe6ohTAXWSUEUhr2K+e/HgqGAqcQXdnjUJNX5bdfYZuzXbCmsmgm8AcPypDgl
+ DgnnallRxBVg==
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="359587284"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 10:59:37 -0700
+Date:   Wed, 21 Oct 2020 10:59:36 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/10] KVM: VMX: Track PGD instead of EPTP for
+ paravirt Hyper-V TLB flush
+Message-ID: <20201021175935.GE14155@linux.intel.com>
+References: <20201020215613.8972-1-sean.j.christopherson@intel.com>
+ <20201020215613.8972-11-sean.j.christopherson@intel.com>
+ <87imb34p9b.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <40ca3f0f9a960799ad0e534b77d778c90119e468.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87imb34p9b.fsf@vitty.brq.redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/20 10:20 pm, Joe Perches wrote:
-> On Wed, 2020-10-21 at 08:28 -0700, Joe Perches wrote:
->> On Wed, 2020-10-21 at 08:18 -0700, Joe Perches wrote:
->>> I might add that check to the line below where
->>> the repeated words are checked against long
->> []
->>> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
->> []
->>> @@ -3062,6 +3062,7 @@ sub process {
->>>  
->>>  				next if ($first ne $second);
->>>  				next if ($first eq 'long');
->>> +				next if ($first =~ /^$Hex$/;
->>
->> oops.  with a close parenthesis added of course...
+On Wed, Oct 21, 2020 at 04:39:28PM +0200, Vitaly Kuznetsov wrote:
+> Sean Christopherson <sean.j.christopherson@intel.com> writes:
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index e0fea09a6e42..89019e6476b3 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -478,18 +478,13 @@ static int kvm_fill_hv_flush_list_func(struct hv_guest_mapping_flush_list *flush
+> >  			range->pages);
+> >  }
+> >  
+> > -static inline int hv_remote_flush_eptp(u64 eptp, struct kvm_tlb_range *range)
+> > +static inline int hv_remote_flush_pgd(u64 pgd, struct kvm_tlb_range *range)
+> >  {
+> > -	/*
+> > -	 * FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE hypercall needs address
+> > -	 * of the base of EPT PML4 table, strip off EPT configuration
+> > -	 * information.
+> > -	 */
+> >  	if (range)
+> > -		return hyperv_flush_guest_mapping_range(eptp & PAGE_MASK,
+> > +		return hyperv_flush_guest_mapping_range(pgd,
+> >  				kvm_fill_hv_flush_list_func, (void *)range);
+> >  	else
+> > -		return hyperv_flush_guest_mapping(eptp & PAGE_MASK);
+> > +		return hyperv_flush_guest_mapping(pgd);
+> >  }
 > 
-> That doesn't work as $Hex expects a leading 0x.
+> (I'm probably missing something, please bear with me -- this is the last
+> patch of the series after all :-) but PGD which comes from
+> kvm_mmu_load_pgd() has PCID bits encoded and you're dropping
+> '&PAGE_MASK' here ...
+
+...
+
+> > @@ -564,17 +559,17 @@ static int hv_enable_direct_tlbflush(struct kvm_vcpu *vcpu)
+> >  
+> >  #endif /* IS_ENABLED(CONFIG_HYPERV) */
+> >  
+> > -static void hv_load_mmu_eptp(struct kvm_vcpu *vcpu, u64 eptp)
+> > +static void hv_load_mmu_pgd(struct kvm_vcpu *vcpu, u64 pgd)
+> >  {
+> >  #if IS_ENABLED(CONFIG_HYPERV)
+> >  	struct kvm_vmx *kvm_vmx = to_kvm_vmx(vcpu->kvm);
+> >  
+> >  	if (kvm_x86_ops.tlb_remote_flush == hv_remote_flush_tlb) {
+> > -		spin_lock(&kvm_vmx->ept_pointer_lock);
+> > -		to_vmx(vcpu)->ept_pointer = eptp;
+> > -		if (eptp != kvm_vmx->hv_tlb_eptp)
+> > -			kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
+> > -		spin_unlock(&kvm_vmx->ept_pointer_lock);
+> > +		spin_lock(&kvm_vmx->hv_tlb_pgd_lock);
+> > +		to_vmx(vcpu)->hv_tlb_pgd = pgd;
+> > +		if (pgd != kvm_vmx->hv_tlb_pgd)
+> > +			kvm_vmx->hv_tlb_pgd = INVALID_PAGE;
+> > +		spin_unlock(&kvm_vmx->hv_tlb_pgd_lock);
+> >  	}
+> >  #endif
+> >  }
+> > @@ -3059,7 +3054,7 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long pgd,
+> >  		eptp = construct_eptp(vcpu, pgd, pgd_level);
+> >  		vmcs_write64(EPT_POINTER, eptp);
+> >  
+> > -		hv_load_mmu_eptp(vcpu, eptp);
+> > +		hv_load_mmu_pgd(vcpu, pgd);
 > 
-> But this does...
-> 
-> The negative of this approach is it would also not emit
-> a warning on these repeated words: (doesn't seem too bad)
-> 
-> $ grep -P '^[0-9a-f]{2,}$' /usr/share/dict/words
-> abed
-> accede
-> acceded
-> ace
-> aced
-> ad
-> add
-> added
-> baa
-> baaed
-> babe
-> bad
-> bade
-> be
-> bead
-> beaded
-> bed
-> bedded
-> bee
-> beef
-> beefed
-> cab
-> cabbed
-> cad
-> cede
-> ceded
-> dab
-> dabbed
-> dad
-> dead
-> deaf
-> deb
-> decade
-> decaf
-> deed
-> deeded
-> deface
-> defaced
-> ebb
-> ebbed
-> efface
-> effaced
-> fa
-> facade
-> face
-> faced
-> fad
-> fade
-> faded
-> fed
-> fee
-> feed
-> ---
->  scripts/checkpatch.pl | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index fab38b493cef..79d7a4cba19e 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3062,6 +3062,7 @@ sub process {
->  
->  				next if ($first ne $second);
->  				next if ($first eq 'long');
-> +				next if ($first =~ /^[0-9a-f]+$/i);
->  
->  				if (WARN("REPEATED_WORD",
->  					 "Possible repeated word: '$first'\n" . $herecurr) &&
-> 
-> 
-> 
+> ... and not adding it here. (construct_eptp() seems to drop PCID bits
+> but add its own stuff). Is this on purpose?
 
-Hi Sir,
-Thanks for your feedback. I ran a manual check using this approach
-over v5.6..v5.8.
-The negatives occurring with this approach are for the word 'be'
-(Frequency 5) and 'add'(Frequency 1). For eg.
+No, I completely forgot KVM crams the PCID bits into pgd.  I'll think I'll add
+a patch to rework .load_mmu_pgd() to move the PCID bits to a separate param,
+and change construct_eptp() to do WARN_ON_ONCE(pgd & ~PAGE_MASK).
 
-WARNING:REPEATED_WORD: Possible repeated word: 'be'
-#278: FILE: drivers/net/ethernet/intel/ice/ice_flow.c:388:
-+ * @seg: index of packet segment whose raw fields are to be be extracted
+Actually, I think it makes more sense to have VMX and SVM, grab the PCID via
+kvm_get_active_pcid(vcpu) when necessary.  For EPTP, getting the PCID bits may
+unnecessarily read CR3 from the VMCS.
 
-WARNING:REPEATED_WORD: Possible repeated word: 'add'
-#21:
-Let's also add add a note about using only the l3 access without l4
+Ugh, which brings up another issue.  I'm pretty sure the "vmcs01.GUEST_CR3 is
+already up-to-date" is dead code:
 
-Apart from these, it works as expected. It also takes into account the
-cases for multiple occurrences of hex, as you mentioned. For eg.
+		if (!enable_unrestricted_guest && !is_paging(vcpu))
+			guest_cr3 = to_kvm_vmx(kvm)->ept_identity_map_addr;
+		else if (test_bit(VCPU_EXREG_CR3, (ulong *)&vcpu->arch.regs_avail))
+			guest_cr3 = vcpu->arch.cr3;
+		else /* vmcs01.GUEST_CR3 is already up-to-date. */
+			update_guest_cr3 = false;
+		vmx_ept_load_pdptrs(vcpu);
 
-WARNING:REPEATED_WORD: Possible repeated word: 'ffff'
-#15:
-	0x0040:  ffff ffff ffff ffff ffff ffff ffff ffff
+The sole caller of .load_mmu_pgd() always invokes kvm_get_active_pcid(), which
+in turn always does kvm_read_cr3(), i.e. CR3 will always be available.
 
-These cases were getting missed with my approach.
+So yeah, I think moving kvm_get_active_pcid() in VMX/SVM is the right approach.
+I'll rename "pgd" to "root_hpa" and "pgd_level" to "root_level" so that we
+don't end up with inconsistencies, e.g. where pgd may or may not contain PCID
+bits.
 
-Also, it is able to detect warnings for hex sequences which are
-occurring less than 4 times(frequency 2), for eg,
-
-WARNING:REPEATED_WORD: Possible repeated word: 'ff'
-#38:
- Code: ff ff 48 (...)
-
-I'll try to combine both methods and come up with a better approach.
-
-Aditya
+Nice catch!
