@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2299C2951C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725D62951D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503724AbgJURsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 13:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503717AbgJURsh (ORCPT
+        id S2503761AbgJURxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 13:53:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47398 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2503752AbgJURx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:48:37 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30433C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:48:37 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id w23so2798250edl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:48:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wz+eFQ9E3XaBY60yIiY6/7ACNu1JGiJC/eGXK+f1jPc=;
-        b=DVzkzBJthtEEE9BytDByy1Zyi6AvIrMMfqilJKnpXorOKZpcoMkmRc0+51O1rnlt68
-         bMY0od0cPkgr22Fq/K+EKbRk9QUUZlKvr9mGhIHdkRS+RFdmguKEoaDMpwVT2MTekysU
-         aICew+9IVF+RRyoiu/PaGJVFHpxpM2ZfnviDOpSraD9hqMuMque7/usM9pzF/eaK9iyi
-         qZF3JdUTjmf2nLs5oVUYf43A1aDD3wYoYI9oxDRZY55ia14p0XqJNtzi/CDl0A92VIsH
-         Ytn7i5HZw9HsfFtKjUgs2Sf+IlYn4ti3aGTMDIrNugvXoKAtZI0M50rVaCu67NNkO/yB
-         jfiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wz+eFQ9E3XaBY60yIiY6/7ACNu1JGiJC/eGXK+f1jPc=;
-        b=XPbs9kjiyGHEzwd3wbnEgfyWUtptByVeSPxJGVBdZZfJHA2Hj3L/plp33DE8pKzTQO
-         U0SauI4+XUxY+Dp3ktHtsjW6/DuA/XSKetCJr5/JlFtvhzLhZW74fcOU+7oTiPqIIgZ9
-         MmBiuowwvPo99QylzhRMb97gfVQT221FaV5iPFrJCVs1eE6AD8hxu5sTmEjymM1kVFEc
-         u8oVaAZWX8mYVpyg4Alg/QjpSKjp9P84Nin50UMK4K9/qLHSfpHdelqRiT8pjGMLzZkx
-         dwoITm75GYh5FMSrp+5/e5XT3i3AhqgPMJO1YqZQqvEFAakCZSmk+Z1/2p7R5sjh+liV
-         xEwA==
-X-Gm-Message-State: AOAM531bYVp/A4mIlD69dhup4gzsca2/iHEUjNSXB/u/wBjeMtxE6PbL
-        6y8FVEdxbcR4+/irOLvMVeAO5QEpD0gLArO2mp65iw==
-X-Google-Smtp-Source: ABdhPJyjfO8m3iOuqLFtlf+FomXd1BC4F7cQcApVrqZXlZQ1jUukEoyZcjOKoq++KT+r97hpdUtXqWK1yOAZ0wQ8O8o=
-X-Received: by 2002:a05:6402:31b3:: with SMTP id dj19mr4292662edb.210.1603302515911;
- Wed, 21 Oct 2020 10:48:35 -0700 (PDT)
+        Wed, 21 Oct 2020 13:53:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603302808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0aM6MG+N6GRh+zh31VWFPduo2rgWm3emASszSAw8inM=;
+        b=U0/4Mb5fklpftAKcRTvs5J4QNyh7WJkxazNleIkTfYT1ojDcgU7Jvza3xqN/pUyfJ++Gg3
+        VxJwwOKPwWsrsCfYPvvQTy6meaHtKMW/EqJbY8XdPfn6FCzGtlXFpufKx/DrFkiK7v6Oyg
+        uG7HZNcykkT32tt4lzdMm6ffBifyrGA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-0BAAGVqzMda2Ab5lMPFbVA-1; Wed, 21 Oct 2020 13:53:23 -0400
+X-MC-Unique: 0BAAGVqzMda2Ab5lMPFbVA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 57DDD804B66;
+        Wed, 21 Oct 2020 17:53:20 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E934B5D9EF;
+        Wed, 21 Oct 2020 17:53:06 +0000 (UTC)
+Date:   Wed, 21 Oct 2020 13:53:03 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Steve Grubb <sgrubb@redhat.com>
+Cc:     Paul Moore <paul@paul-moore.com>, linux-audit@redhat.com,
+        nhorman@tuxdriver.com, linux-api@vger.kernel.org,
+        containers@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
+        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
+        simo@redhat.com, netdev@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>
+Subject: Re: [PATCH ghak90 V9 05/13] audit: log container info of syscalls
+Message-ID: <20201021175303.GH2882171@madcap2.tricolour.ca>
+References: <cover.1593198710.git.rgb@redhat.com>
+ <20201002195231.GH2882171@madcap2.tricolour.ca>
+ <20201021163926.GA3929765@madcap2.tricolour.ca>
+ <2174083.ElGaqSPkdT@x2>
 MIME-Version: 1.0
-References: <20201012162736.65241-1-nmeeramohide@micron.com>
- <20201015080254.GA31136@infradead.org> <SN6PR08MB420880574E0705BBC80EC1A3B3030@SN6PR08MB4208.namprd08.prod.outlook.com>
- <CAPcyv4j7a0gq++rL--2W33fL4+S0asYjYkvfBfs+hY+3J=c_GA@mail.gmail.com>
- <SN6PR08MB420843C280D54D7B5B76EB78B31E0@SN6PR08MB4208.namprd08.prod.outlook.com>
- <CAPcyv4iYOk3i0pPgXxDTy47BxWCXqqXS0J6mrY5o+1M_41XoAw@mail.gmail.com> <SN6PR08MB4208A22F5C94AB05439A2703B31C0@SN6PR08MB4208.namprd08.prod.outlook.com>
-In-Reply-To: <SN6PR08MB4208A22F5C94AB05439A2703B31C0@SN6PR08MB4208.namprd08.prod.outlook.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 21 Oct 2020 10:48:24 -0700
-Message-ID: <CAPcyv4gOGi392Q3knF=cAuvKONnmp2AoKX82VQEQJU0c7o7AKA@mail.gmail.com>
-Subject: Re: [EXT] Re: [PATCH v2 00/22] add Object Storage Media Pool (mpool)
-To:     "Nabeel Meeramohideen Mohamed (nmeeramohide)" 
-        <nmeeramohide@micron.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "Steve Moyer (smoyer)" <smoyer@micron.com>,
-        "Greg Becker (gbecker)" <gbecker@micron.com>,
-        "Pierre Labat (plabat)" <plabat@micron.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2174083.ElGaqSPkdT@x2>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 10:11 AM Nabeel Meeramohideen Mohamed
-(nmeeramohide) <nmeeramohide@micron.com> wrote:
->
-> On Tuesday, October 20, 2020 3:36 PM, Dan Williams <dan.j.williams@intel.com> wrote:
-> >
-> >     What does Linux get from merging mpool?
-> >
->
-> What Linux gets from merging mpool is a generic object store target with some
-> unique and beneficial features:
+On 2020-10-21 12:49, Steve Grubb wrote:
+> On Wednesday, October 21, 2020 12:39:26 PM EDT Richard Guy Briggs wrote:
+> > > I think I have a way to generate a signal to multiple targets in one
+> > > syscall...  The added challenge is to also give those targets different
+> > > audit container identifiers.
+> > 
+> > Here is an exmple I was able to generate after updating the testsuite
+> > script to include a signalling example of a nested audit container
+> > identifier:
+> > 
+> > ----
+> > type=PROCTITLE msg=audit(2020-10-21 10:31:16.655:6731) :
+> > proctitle=/usr/bin/perl -w containerid/test type=CONTAINER_ID
+> > msg=audit(2020-10-21 10:31:16.655:6731) :
+> > contid=7129731255799087104^3333941723245477888 type=OBJ_PID
+> > msg=audit(2020-10-21 10:31:16.655:6731) : opid=115583 oauid=root ouid=root
+> > oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+> > ocomm=perl type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) :
+> > contid=3333941723245477888 type=OBJ_PID msg=audit(2020-10-21
+> > 10:31:16.655:6731) : opid=115580 oauid=root ouid=root oses=1
+> > obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 ocomm=perl
+> > type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) :
+> > contid=8098399240850112512^3333941723245477888 type=OBJ_PID
+> > msg=audit(2020-10-21 10:31:16.655:6731) : opid=115582 oauid=root ouid=root
+> > oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+> > ocomm=perl type=SYSCALL msg=audit(2020-10-21 10:31:16.655:6731) :
+> > arch=x86_64 syscall=kill success=yes exit=0 a0=0xfffe3c84 a1=SIGTERM
+> > a2=0x4d524554 a3=0x0 items=0 ppid=115564 pid=115567 auid=root uid=root
+> > gid=root euid=root suid=root fsuid=root egid=root sgid=root fsgid=root
+> > tty=ttyS0 ses=1 comm=perl exe=/usr/bin/perl
+> > subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+> > key=testsuite-1603290671-AcLtUulY ----
+> > 
+> > There are three CONTAINER_ID records which need some way of associating
+> > with OBJ_PID records.  An additional CONTAINER_ID record would be present
+> > if the killing process itself had an audit container identifier.  I think
+> > the most obvious way to connect them is with a pid= field in the
+> > CONTAINER_ID record.
+> 
+> pid is the process sending the signal, opid is the process receiving the 
+> signal. I think you mean opid?
 
-I'll try to make the point a different way. Mpool points out places
-where the existing apis fail to scale. Rather than attempt to fix that
-problem it proposes to replace the old apis. However, the old apis are
-still there. So now upstream has 2 maintenance burdens when it could
-have just had one. So when I ask "what does Linux get" it is in
-reference to the fact that Linux gets a compounded maintenance problem
-and whether the benefits of mpool outweigh that burden. Historically
-Linux has been able to evolve to meet the scaling requirements of new
-applications, so I am asking whether you have tried to solve the
-application problem by evolving rather than replacing existing
-infrastructure? The justification to replace rather than evolve is
-high because that's how core Linux stays relevant.
+If the process sending the signal (it has a pid= field) has an audit
+container identifier, it will generate a CONTAINER_ID record.  Each
+process being signalled (each has an opid= field) that has an audit
+container identifier will also generate a CONTAINER_ID record.  The
+former will be much more common.  Which do we use in the CONTAINER_ID
+record?  Having swinging fields, pid vs opid does not seem like a
+reasonable solution.  Do we go back to "ref=pid=..." vs "ref=opid=..."?
+
+> -Steve
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
