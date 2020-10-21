@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B828A294FAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C211294FB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444126AbgJUPN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43852 "EHLO
+        id S2502104AbgJUPPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444114AbgJUPN4 (ORCPT
+        with ESMTP id S2502062AbgJUPPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:13:56 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD38C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:13:55 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id h19so2389771qtq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:13:55 -0700 (PDT)
+        Wed, 21 Oct 2020 11:15:23 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680D6C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:15:22 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t22so1359177plr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:15:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9cFTuFdatbaYuigk9l9CABG/jzUgOpY0t/i9Osy6B3k=;
-        b=Dq8HyCXnjlFLiivieMejfqNvFko0IRtuvvtRMPLqBJU503Zw8AdmXj9PAYUvq+vrGw
-         tLWr/P2KX0xliFL4v7zLPYR93TGo1limVOCOZFomvItA47uQ8nJhdHWU27ngiu6ooAYG
-         WjN4a1HHzcaoYLAcnuo5e5/2eLC1r22+kDR6gTWfx0ZcGZTpX8rwEwqmUSs71ZqiLJX+
-         OUQrP6EnxmCsgNh+3+fwOT/kOJSDKYJueSTL+OCpFozN4nNmHro2xix1p70w/08ytcHi
-         qOQrid57zrk+FvzkIWYUgPoh4k6ET94WA33BXpQ3Dtpr1Jlt52u7OEBqAEPaddsrqv0i
-         gSbA==
+        d=android.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=zttj1zOgAeqHtbpowWFcTKsPI3yWy0/E6Ffy28P8rgY=;
+        b=cqRcwWSDCV94TH7wsbd/I3JRZP5thpF4OqYwCQbYH4w8hHYpGk2mtbyf+csTKB8PcF
+         C3KuSDSSBnfjBKQS205o3FYaelrym19tcJLpre4+ntQ2hHO+/eRZvQ8IqwkNhq0fd2wE
+         ILY0NuYIH985IlIDBEW11aPNVnFLj/W+REhui78sgPe0X9psm4kiUjaD595h5pzE53pq
+         SKHhRmXj+xpuB5yXYVEYsFUrP13gnusj6fiH+Wnf/0pMIWfpJLf1Z1NUzkV9oDkCzCdK
+         jngwPokG5VijdCl187JxGtwXlnywZoyk3CWPq7EUS3Ff85tRR1j99RPzbA8IwQOnndMC
+         dWmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9cFTuFdatbaYuigk9l9CABG/jzUgOpY0t/i9Osy6B3k=;
-        b=SNG1VsmlUOXMpm/iQdQmeN9fe/8econwqus4Nn3bZNh1cieoS0Xdqfbb8c4cco00qu
-         r8wQmU+YJyqnupm6bR1myrP8vxc5iQ/y1GY6pncj3KOci4G3pSXZGAi0b/OvvWiJgWWF
-         CFfSX0EU+BAdAlrDhVMlk9gqpY3P4q6r1b3O5bciMOaLNUo3O8DhauXqxcZ21Lh2eonT
-         QX7HIStvNGLFJfgE36cQ9yHrWoah8BryKbGGMvBaBIH+6C4tk3lt9hbXcgjfGhMPMw9Z
-         CwhgTW7D+Yg8gOdZm6D8LBXMYCuXyAD0+lmj0vLekbT7SYEg0zQFa4usbpuWvne7Szoi
-         FvYg==
-X-Gm-Message-State: AOAM5329Mlhb1w8HtkCk92iCmAk6r6x6LNCAdrOb6imfeb9J629A42yJ
-        tIJViJ12lthpbPkCc7ogUb3RTg==
-X-Google-Smtp-Source: ABdhPJxKUYsuh5jtMPkvFgL62ClnoaVVE83XzZ8FQCHOArCd8sBp94Ul/GCOzlaoYcDR7rbZz0mkwQ==
-X-Received: by 2002:ac8:8c7:: with SMTP id y7mr3515722qth.278.1603293234456;
-        Wed, 21 Oct 2020 08:13:54 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id b14sm1405612qkn.123.2020.10.21.08.13.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 08:13:53 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kVFoG-003XHy-SZ; Wed, 21 Oct 2020 12:13:52 -0300
-Date:   Wed, 21 Oct 2020 12:13:52 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.com>
-Subject: Re: [PATCH v3 12/16] PCI: Obey iomem restrictions for procfs mmap
-Message-ID: <20201021151352.GL36674@ziepe.ca>
-References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
- <20201021085655.1192025-13-daniel.vetter@ffwll.ch>
- <20201021125030.GK36674@ziepe.ca>
- <CAKMK7uEWe8CaT7zjcZ6dJAKHxtxtqzjVB35fCFviwhcnqksDfw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=zttj1zOgAeqHtbpowWFcTKsPI3yWy0/E6Ffy28P8rgY=;
+        b=pzgOo+3a1bkaGLwQNk9XJebKiac0upiLbPhqOotqBVsKDfG/4ioZ8blekErvFKpwJ2
+         S8vNDDPPxUpESWCPKmoyqMHWWpYRX/MWJj1rf93GEFJvXi/DI3V+IyZIcvKVxmqLOsI0
+         pv1mQG7nBQbLIbycT9J1cc2cusaHJX8zWNshZ2gxL5ZyG8cjblMbBr5AIPXgiQjAqF+4
+         wkHdXcisktwSMYjODvAMnYa/Y2l1zi/xrMXpj+bcwZYU2LQzHY3C9ilO9yr/o7zdTNwe
+         SUIQBG+6iTBIElHW6qyvQE4ZXZOqGRb7YtiPHUzJKnXragtBQnwi0nikIZkQ3Nm49gHx
+         wN+Q==
+X-Gm-Message-State: AOAM5334SMgxg7X1WJjYyvWqspb6ob1nVBHXfaKXkVZHM41en0H/Fol3
+        17KU7/hGaenx1r6/fCji0j+IDw==
+X-Google-Smtp-Source: ABdhPJwmR/mHGuXuR8nUMxAsudxKjKgx1xONcweM/atqFJKzEp/H+FaQjRw2jwBq+oKd2WL2y34/Tg==
+X-Received: by 2002:a17:902:9347:b029:d3:7c08:86c6 with SMTP id g7-20020a1709029347b02900d37c0886c6mr4034273plp.84.1603293321958;
+        Wed, 21 Oct 2020 08:15:21 -0700 (PDT)
+Received: from nebulus.mtv.corp.google.com ([2620:15c:211:200:4a0f:cfff:fe35:d61b])
+        by smtp.googlemail.com with ESMTPSA id f15sm2714562pfk.21.2020.10.21.08.15.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Oct 2020 08:15:21 -0700 (PDT)
+Subject: Re: [PATCH v18 0/4] overlayfs override_creds=off & nested get xattr
+ fix
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-doc@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+References: <20201021143533.115895-1-salyzyn@android.com>
+ <87wnzj6305.fsf@x220.int.ebiederm.org>
+From:   Mark Salyzyn <salyzyn@android.com>
+Message-ID: <c6ca6eea-2fb2-2278-bc4a-39c43e984657@android.com>
+Date:   Wed, 21 Oct 2020 08:15:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uEWe8CaT7zjcZ6dJAKHxtxtqzjVB35fCFviwhcnqksDfw@mail.gmail.com>
+In-Reply-To: <87wnzj6305.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 04:42:11PM +0200, Daniel Vetter wrote:
+On 10/21/20 7:57 AM, Eric W. Biederman wrote:
+> Is there any reason why the cc list from the body of the email does not
+> match the people who have been cc'd on the email.  Skipping the
+> linux-unionfs list (which seems to be the mail list for overlayfs)
+> seems like a pretty big oversight.
+>
+>> Signed-off-by: Mark Salyzyn <salyzyn@android.com>
+>> Cc: Miklos Szeredi <miklos@szeredi.hu>
+>> Cc: Jonathan Corbet <corbet@lwn.net>
+>> Cc: Vivek Goyal <vgoyal@redhat.com>
+>> Cc: Eric W. Biederman <ebiederm@xmission.com>
+>> Cc: Amir Goldstein <amir73il@gmail.com>
+>> Cc: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Stephen Smalley <sds@tycho.nsa.gov>
+>> Cc: John Stultz <john.stultz@linaro.org>
+>> Cc: linux-doc@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> To: linux-fsdevel@vger.kernel.org
+>> To: linux-unionfs@vger.kernel.org
+>> Cc: linux-security-module@vger.kernel.org
+>> Cc: kernel-team@android.com
+>> Cc: selinux@vger.kernel.org
+> Eric
+>
+I used git send-email to do the heavy lifting of sending the submission, 
+minus the obligatory maintainers script because it adds 100s of 
+recipients and breaks entry into several of the lists. AFAICT send-email 
+appears to not add To: entries found in the body, only Cc: entries :-(.
 
-> Uh yes. In drivers/gpu this isn't a problem because we only install
-> ptes from the vm_ops->fault handler. So no races. And I don't think
-> you can fix this otherwise through holding locks: mmap_sem we can't
-> hold because before vma_link we don't even know which mm_struct is
-> involved, so can't solve the race. Plus this would be worse that
-> mm_take_all_locks used by mmu notifier. And the address_space
-> i_mmap_lock is also no good since it's not held during the ->mmap
-> callback, when we write the ptes. And the resource locks is even less
-> useful, since we're not going to hold that at vma_link() time for
-> sure.
-> 
-> Hence delaying the pte writes after the vma_link, which means ->fault
-> time, looks like the only way to close this gap.
+I will resend with everything as Cc: entries shortly.
 
-> Trouble is I have no idea how to do this cleanly ...
+Sincerely -- Mark Salyzyn
 
-How about add a vm_ops callback 'install_pages'/'prefault_pages' ?
-
-Call it after vm_link() - basically just move the remap_pfn, under
-some other lock, into there.
-
-Jason
