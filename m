@@ -2,60 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A38294D01
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E293294D06
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442612AbgJUMty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49716 "EHLO
+        id S2442636AbgJUMue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442605AbgJUMty (ORCPT
+        with ESMTP id S2442626AbgJUMud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:49:54 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5C9C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:49:54 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 165ED249; Wed, 21 Oct 2020 14:49:53 +0200 (CEST)
-Date:   Wed, 21 Oct 2020 14:49:46 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Joerg Roedel <jroedel@suse.de>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Wed, 21 Oct 2020 08:50:33 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DCEC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:50:32 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id s17so974482qvr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:50:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=VkhhJyafoy36fds4PnCfWF9LNV9fC1i6gyayD/bdTsE=;
+        b=Bjric0h8k3E5nVSnyA3y8syn5qJbzN5IRzuOHR0d7uEDz69w1rKEdQtJjX2klnSD2f
+         HQcTpKD5D3V7kWLlToHxrM8UOfbUsM4NGMyxmaL4cJNWPBOlwy7SSVlgAu3fXQNgW/tm
+         E/Z154bHNIDfOdfpW4c0/FAD/DUsAoEBg7tdzOhHMjGwZ1srI5ZzmyHw1kqTbOA20Zsr
+         6FkTvbFUFtQy26Mpkg7JM8b/jc3WZ4zNCmcMh6GqroRxUEuzzQjwRRq/1rm+GvI0lwIa
+         yqkLIFnQ0gQqj71OpMsdVbj1j0y2lESP0Xm+nHN0pfprmhEnmw6kFUQw4XnnGYDmJyHR
+         D1HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=VkhhJyafoy36fds4PnCfWF9LNV9fC1i6gyayD/bdTsE=;
+        b=bg6QC9Ap4ffsDx3Kwm4OXfzMuCMbwJri3v2vwEtdD5OnfOzYjBm4MXFXJb26o+M3X8
+         su4Guiop4dLMYob99o7kEWiw20SlMenwt4n7lTrGVp5o1nCOi6v4le7KnF5ig/YcfjqL
+         1tCUIIXLMDmR5+pSwQ4uPu97i+lbhqcTvuV/5uAKi7pKOTe84NHMcubHa1LLCE1cRyoO
+         wQI1D+acY331Ny+HIgX5JFLxKilJ8uIEb6tN1VetcpKZgLzlFByWld/ZD1eaPUMFAo0P
+         UscVTCCK/9lUIcKU1rd4ezW1ZJAgIQhvfMLGmQwKz0n+OMR0F0pEigL9NsNLTL/VLUEx
+         IBhw==
+X-Gm-Message-State: AOAM533Xp49HPzDK2iLOG6cWiR8joav2jMSInqn+G6TxlIeaGdybICT3
+        o066ZS12GmDUT+9cAQRE2jGanQ==
+X-Google-Smtp-Source: ABdhPJylgNYamo6kqGCWkyezTruGMIXv95IBuM/bFST1jOCSfo3IMWIRoN2J3LwPyBiAPIKaTroxlw==
+X-Received: by 2002:ad4:52c6:: with SMTP id p6mr2781869qvs.38.1603284631882;
+        Wed, 21 Oct 2020 05:50:31 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id r11sm1016060qtw.47.2020.10.21.05.50.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 05:50:31 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kVDZW-003UAg-0q; Wed, 21 Oct 2020 09:50:30 -0300
+Date:   Wed, 21 Oct 2020 09:50:30 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
         Kees Cook <keescook@chromium.org>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] x86/boot/compressed/64: Check SEV encryption in
- 64-bit boot-path
-Message-ID: <20201021124946.GA30514@8bytes.org>
-References: <20201020121856.19427-1-joro@8bytes.org>
- <20201020121856.19427-4-joro@8bytes.org>
- <20201020141259.GC2996696@rani.riverdale.lan>
- <20201020154812.GB22179@suse.de>
- <20201020160428.GA3233355@rani.riverdale.lan>
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.com>
+Subject: Re: [PATCH v3 12/16] PCI: Obey iomem restrictions for procfs mmap
+Message-ID: <20201021125030.GK36674@ziepe.ca>
+References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
+ <20201021085655.1192025-13-daniel.vetter@ffwll.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201020160428.GA3233355@rani.riverdale.lan>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201021085655.1192025-13-daniel.vetter@ffwll.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 12:04:28PM -0400, Arvind Sankar wrote:
-> This is called from both assembly and C, but anyway, you're already
-> assuming r10 and r11 can be clobbered safely, and you just took out the
-> save/restores in set_sev_encryption_mask, which is actually called only
-> from assembly.
+On Wed, Oct 21, 2020 at 10:56:51AM +0200, Daniel Vetter wrote:
+> There's three ways to access PCI BARs from userspace: /dev/mem, sysfs
+> files, and the old proc interface. Two check against
+> iomem_is_exclusive, proc never did. And with CONFIG_IO_STRICT_DEVMEM,
+> this starts to matter, since we don't want random userspace having
+> access to PCI BARs while a driver is loaded and using it.
+> 
+> Fix this by adding the same iomem_is_exclusive() check we already have
+> on the sysfs side in pci_mmap_resource().
+> 
+> References: 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Jérôme Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: linux-pci@vger.kernel.org
+> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.com>
 
-Alright, maybe I was a bit too caucious. I changed the CR4 handling to
-use %r8 and %r9 instead, which are also clobbered.
+Maybe not for fixing in this series, but this access to
+IORESOURCE_BUSY doesn't have any locking.
 
-Regards,
+The write side holds the resource_lock at least..
 
-	Joerg
+>  	ret = pci_mmap_page_range(dev, i, vma,
+>  				  fpriv->mmap_state, write_combine);
+
+At this point the vma isn't linked into the address space, so doesn't
+this happen?
+
+     CPU 0                                  CPU1
+ mmap_region()
+   vma = vm_area_alloc
+   proc_bus_pci_mmap
+    iomem_is_exclusive
+    pci_mmap_page_range
+                                            revoke_devmem
+                                             unmap_mapping_range()
+     // vma is not linked to the address space here,
+     // unmap doesn't find it
+  vma_link() 
+  !!! The VMA gets mapped with the revoked PTEs
+
+I couldn't find anything that prevents it at least, no mmap_sem on the
+unmap side, just the i_mmap_lock
+
+Not seeing how address space and pre-populating during mmap work
+together? Did I miss locking someplace?
+
+Not something to be fixed for this series, this is clearly an
+improvement, but seems like another problem to tackle?
+
+Jason
