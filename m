@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CE3295343
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A8629534A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505097AbgJUUJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 16:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33126 "EHLO
+        id S2505124AbgJUULt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 16:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505090AbgJUUJD (ORCPT
+        with ESMTP id S2438832AbgJUULt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 16:09:03 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29238C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:09:03 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id b23so2159399pgb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:09:03 -0700 (PDT)
+        Wed, 21 Oct 2020 16:11:49 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAF4C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:11:48 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id u127so3441816oib.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:11:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=QmgTEKwAstprmqCLOa3+RIlsgOb3vaDpc+a/kqXMeho=;
-        b=kF5lPFe40b1By22pyNf/QSD4ROD/TqtxRsGYCI+6UAvkwJBnp0Bv7hekYoZDC4YPyh
-         TuXjh9jmqmmtmR5MePoh8VDkwqjC1qIEF7FhZepb+nHrVfXKuvGAs3v6eEhHOdkTt1a9
-         bSFpMSFITiNN8MPP2KQPWrwup5YiohRy88eb4=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zFNQ+PC2ugn0ZH4XH+Yai9nfPHIHh9+q2qTiKV5XAG8=;
+        b=aqYmhFx9BHVizqNDFb6BG2m5tnEfevj676TZ9bpuleaMRde1k9xWNV+wakhrM4lfAf
+         LQisUNSFT3kNIQTYxbdpWuN/y5v1Vwz6gVndOPD7ZKXwk1/6Gb9FFk08j1NMucWxmN9p
+         5/t15bTw0eOYLHeW2aXbxDqMX9I+Wr8KAh4OHY7moFOOS+9EKLUSaitpRCzvt7YkMuaU
+         IznhxycJbjcyMt0jlKq6HMEVTTRVKuG8W36QlJib8zlAROiP1nyY9JY2VneoEQ5J5FbG
+         v16zfFvWPUsXUFBXBJZ48F/euM2HYf7ttqP6/6kwJBEwF2jwa0j4pr5zcB/uGiVqUXhJ
+         bl4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QmgTEKwAstprmqCLOa3+RIlsgOb3vaDpc+a/kqXMeho=;
-        b=GnNtV9uDS6UjQ3Msf+XzDtqPsDAUwlmgEU0jVOzGWWkXxnXyWbTVc/2xsO3YjGLnyY
-         Q79sQbf6LWo6yG4iGvWtcQ4BZ2Y2+oXQXqq8Lj5PJCKL7OcJU2AYmLEJJBP8bXVpg7Zl
-         uU73gOut4wGJ4y+sa/8qO4tIsdnXysaeuV4RkVurPxwGtPjVtw9lMtX40Z4CS6WG1/Ws
-         E4Dj1RxYaLcXn8HhRaXtPJv+1WKajzbQ+6bC1tuvBQ9oawfYgYMnXgR9//FKW9djUueM
-         nqmI7Si8upWV1bD9WOTC0dUMGBVisMrsRzZCh9yfEk2wkVSL20iIOWDbEUxFrnCFOAp7
-         gHfw==
-X-Gm-Message-State: AOAM531El1Cx9T7lYEObZL9mimsexbE6FtjFGgf9lkEU8WS9p3QiXA5K
-        5ufZ8xGk3b6SfxcZGavQVBjuOQ==
-X-Google-Smtp-Source: ABdhPJwF6UJKBwTECYtqFLHEK03D4HsXg0oUtonpAoLfp1B5T3WseAaxjF8pc8BipCQz2P7yrf81yw==
-X-Received: by 2002:aa7:95a6:0:b029:155:336c:3494 with SMTP id a6-20020aa795a60000b0290155336c3494mr4884846pfk.17.1603310942592;
-        Wed, 21 Oct 2020 13:09:02 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y10sm3344623pff.119.2020.10.21.13.09.01
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zFNQ+PC2ugn0ZH4XH+Yai9nfPHIHh9+q2qTiKV5XAG8=;
+        b=nC932uDlsNyz7hilLgRKP+Bj6H7Zm8qm5y4Wlpj1Fw25Vt0Jhdrkp5uLnmpWpK8KCN
+         SlzMRDRpcMeqnRslYZ5vqoaYrkJFRHmw7PIstvYJnTlyCxyHFvVNR31BnsxqDE3CXQSK
+         NdCVmlgNYB66hQ+QS09KnjFRJ9q3+3/JHzpUven+uv/CKOUei3FV8WhQIqxXlzA0wOcg
+         wcBdFNrax4o/+OFvMfn15LUd8YqtIwM/HX0B22kg/w534tmq2nqCasLy9HNKethVqTLF
+         j5MoHJbkYWmiMH+QXKPc9pXrDpYq3aKAg/O0O8UjzcPhPpI62YsEqxjGLIqvTb+08PdJ
+         1C0w==
+X-Gm-Message-State: AOAM532zSm4JpOExaI/2TSUTzPHPU8blKLmM3Om15m+2QZoL+8PxSlCe
+        KULd4x/EhpDl4RLnCpGcd1ZBnA==
+X-Google-Smtp-Source: ABdhPJy9RuxoB4C2z7/dCyMDWvpZbU2MPiLTAl2SFifNjPspHhgQndQrDVvF5JxrEHSiIetovgujlA==
+X-Received: by 2002:a05:6808:3bc:: with SMTP id n28mr3224777oie.171.1603311108171;
+        Wed, 21 Oct 2020 13:11:48 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t5sm838166otl.22.2020.10.21.13.11.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 13:09:01 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 13:09:00 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>
-Subject: Re: [PATCH v2] vmlinux.lds.h: Keep .ctors.* with .ctors
-Message-ID: <202010211304.60EF97AF2@keescook>
-References: <20201005025720.2599682-1-keescook@chromium.org>
- <202010141603.49EA0CE@keescook>
- <CAFP8O3LvTkqUK3rp9Q17fmyN+xApZXA8Cs=MNvxrZ3SDCDRX3A@mail.gmail.com>
+        Wed, 21 Oct 2020 13:11:47 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Martin Botka <martin.botka1@gmail.com>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: [PATCH v6 0/4] Qualcomm Light Pulse Generator
+Date:   Wed, 21 Oct 2020 13:12:20 -0700
+Message-Id: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFP8O3LvTkqUK3rp9Q17fmyN+xApZXA8Cs=MNvxrZ3SDCDRX3A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 09:53:39PM -0700, Fāng-ruì Sòng wrote:
-> On Wed, Oct 14, 2020 at 4:04 PM Kees Cook <keescook@chromium.org> wrote:
-> > > index 5430febd34be..b83c00c63997 100644
-> > > --- a/include/asm-generic/vmlinux.lds.h
-> > > +++ b/include/asm-generic/vmlinux.lds.h
-> > > @@ -684,6 +684,7 @@
-> > >  #ifdef CONFIG_CONSTRUCTORS
-> > >  #define KERNEL_CTORS()       . = ALIGN(8);                      \
-> > >                       __ctors_start = .;                 \
-> > > +                     KEEP(*(SORT(.ctors.*)))            \
-> > >                       KEEP(*(.ctors))                    \
-> > >                       KEEP(*(SORT(.init_array.*)))       \
-> > >                       KEEP(*(.init_array))               \
-> > > --
-> > > 2.25.1
-> 
-> I think it would be great to figure out why these .ctors.* .dtors.* are generated.
+This series introduces a generic pattern interface in the LED class and
+a driver for the Qualcomm Light Pulse Generator.
 
-I haven't had the time to investigate. This patch keeps sfr's builds
-from regressing, so we need at least this first.
+It seems like it's been almost 3 years since I posted v3, which was hung
+up on the lack of conclusion on the hw_pattern and multicolor support.
+Now that those are concluded I hope we can make some progress on the LPG
+support again.
 
-> ~GCC 4.7 switched to default to .init_array/.fini_array if libc
-> supports it. I have some refactoring in this area of Clang as well
-> (e.g. https://reviews.llvm.org/D71393)
-> 
-> And I am not sure SORT(.init_array.*) or SORT(.ctors.*) will work. The
-> correct construct is SORT_BY_INIT_PRIORITY(.init_array.*)
+The dts patches are included in the series as "examples", ultimately my
+expectation is that the dt binding and driver patches are picked up
+through the leds tree, while Andy or myself take the dts patches.
 
-The kernel doesn't seem to use the init_priority attribute at all. Are
-you saying the cause of the .ctors.* names are a result of some internal
-use of init_priority by the compiler here?
+Bjorn Andersson (4):
+  dt-bindings: leds: Add Qualcomm Light Pulse Generator binding
+  leds: Add driver for Qualcomm LPG
+  arm64: dts: qcom: pm(i)8994: Add mpp and lpg blocks
+  arm64: dts: qcom: Add user LEDs on db820c
+
+ .../bindings/leds/leds-qcom-lpg.yaml          |  170 +++
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi  |   49 +
+ arch/arm64/boot/dts/qcom/pm8994.dtsi          |    9 +
+ arch/arm64/boot/dts/qcom/pmi8994.dtsi         |   20 +
+ drivers/leds/Kconfig                          |    9 +
+ drivers/leds/Makefile                         |    1 +
+ drivers/leds/leds-qcom-lpg.c                  | 1190 +++++++++++++++++
+ 7 files changed, 1448 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+ create mode 100644 drivers/leds/leds-qcom-lpg.c
 
 -- 
-Kees Cook
+2.28.0
+
