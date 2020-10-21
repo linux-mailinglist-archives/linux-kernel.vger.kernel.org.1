@@ -2,104 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549F1294F78
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E67B294F80
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443977AbgJUPEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443970AbgJUPEz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:04:55 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CC3C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:04:54 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id l6so1415479vsr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:04:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dzgLsgCTYOoyXtg4GLPym4wvQbbYONF/GbyEZFTSaRI=;
-        b=GiK0rUGUM8Iyel1222R06KxkHEx7522HigzM2nIp1vrbHedtQk5DtzewghFTQ1uWh+
-         8hpdIK2ci3EqOJ4aebheWDH7n9aFs9B7ZWMCq3Tj4kQtw5g8TvDtXcIRaiQMB0YH9AkM
-         CEpWHMJb7ULIL2yBbPaDFTMtuufsrayLGDe6phmjJibM6RRtR+wnTGCidaqmeHcMOd9t
-         +7OGKFXKzL5rIBYBjEmL9C2KHETastA/mjzEGbhWAT5xmEv2bCGitTLI4mlXPs997J0P
-         qgNaHCRg9z6slTMZoJD/AWxEz9gJcZLCn6Bv/aKXSgM3a67rFDqsVIiGA9X5z/COp26z
-         G8dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dzgLsgCTYOoyXtg4GLPym4wvQbbYONF/GbyEZFTSaRI=;
-        b=HcPLlS4AsTzGYJbpX6dGfjvtD7GOfzgEk/VCfsvSu/BpSK9f3P6kOhtWLEGwnHERYb
-         YGsKvoszjAOpcuTXMXXyMAFz0WqmNRxYBRa8TIQzA04oW1+TQ0abZxJY4T7h99kfTN9u
-         g2u+JlF3JyRuXBeQD1PpNEH8oXxmCE725NL55z9yeGfJLWj27BulxTBOVIawOdJIlCcr
-         sA6/fPxB8iUTf2p+w45iYmuC5VnV2M5dlXzy5VLoTvUMrUqxnYXtx8mBzOnaHWpeK4xr
-         ChjmFlWkxNwGIMAPWH/VPKFSW3m5qNtOYDdkBu9OJ3My7gwsgq/44AoMKqLba9iS0EII
-         ebaw==
-X-Gm-Message-State: AOAM531SvHDRPdfNHezSapxv1GCGa0/3moGLe8ff+MR6FUQZ6LChodZm
-        kRkux85liXVGFFcxXWB1X9m03ZYn7E07X50aNgvkiA==
-X-Google-Smtp-Source: ABdhPJz2gVsQSrOjXkKxkYZTLE6/2tB/tghJjnbhDN2I691tZxvmaTlSNyIz8WfNnfT2P9ZQ2XexnhLHUi78Mw0YJyA=
-X-Received: by 2002:a67:8794:: with SMTP id j142mr2433640vsd.19.1603292694006;
- Wed, 21 Oct 2020 08:04:54 -0700 (PDT)
+        id S2444007AbgJUPGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:06:45 -0400
+Received: from m12-18.163.com ([220.181.12.18]:54398 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2443805AbgJUPGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 11:06:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=1atr3
+        BLVdaGJxWg6977cnjBb5WwJUusbaUuC1v5T6Ls=; b=VqQN1Xx9unlXBvjRKjEun
+        YX+SqmB4iTYGj3lAgi+5NLhndgl+wrZCx9uH5vQolntMdGNPOSdcMiMySuCTcM6/
+        oeIi62YY6KR3io6b+eArZ2QyrcDErwbEBAKcmfNEqQSszxw8JD9ppyZD9cG28LdO
+        CSbvfexFVSHtErhrfC/kR4=
+Received: from localhost (unknown [101.86.214.18])
+        by smtp14 (Coremail) with SMTP id EsCowABn1aoaTpBfMsfWUQ--.1355S2;
+        Wed, 21 Oct 2020 23:04:58 +0800 (CST)
+Date:   Wed, 21 Oct 2020 23:04:58 +0800
+From:   Hui Su <sh_def@163.com>
+To:     davidriley@chromium.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, sh_def@163.com
+Subject: [PATCH v2] tools/time: access /sys/kernel/debug/udelay_test before
+ test
+Message-ID: <20201021150458.GA139977@rlk>
 MIME-Version: 1.0
-References: <20201015231149.9333-1-michael@walle.cc> <CAPDyKFoMmsYhwvNDdprtWiY+EMjXQx5uFvn4+fHmCG8zj6aryQ@mail.gmail.com>
- <7051c929a585bf7b1f62561f0ea91193@walle.cc>
-In-Reply-To: <7051c929a585bf7b1f62561f0ea91193@walle.cc>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 21 Oct 2020 17:04:17 +0200
-Message-ID: <CAPDyKFrLtYmPpVumSMr0TAqSWx8+vc2Hzhfw-14aiJudPw7xeA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-of-esdhc: set timeout to max before tuning
-To:     Michael Walle <michael@walle.cc>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: EsCowABn1aoaTpBfMsfWUQ--.1355S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJFWfJrW5Wr1kArWDGF48Zwb_yoW5XF15pF
+        y5Gr4SyFWqgrnxArWxJFs7uFnxA3ykJ3WUC3y0yw1rur4avwn8JF12qryUJrW8Xr4a9a4j
+        ka1q9F1rK3WSva7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRqg4DUUUUU=
+X-Originating-IP: [101.86.214.18]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbBDhvEX1rbKvo2MwAAsa
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 at 14:50, Michael Walle <michael@walle.cc> wrote:
->
-> Am 2020-10-16 12:53, schrieb Ulf Hansson:
-> > On Fri, 16 Oct 2020 at 01:12, Michael Walle <michael@walle.cc> wrote:
-> >>
-> >> On rare occations there is the following error:
-> >>
-> >>   mmc0: Tuning timeout, falling back to fixed sampling clock
-> >>
-> >> There are SD cards which takes a significant longer time to reply to
-> >> the
-> >> first CMD19 command. The eSDHC takes the data timeout value into
-> >> account
-> >> during the tuning period. The SDHCI core doesn't explicitly set this
-> >> timeout for the tuning procedure. Thus on the slow cards, there might
-> >> be
-> >> a spurious "Buffer Read Ready" interrupt, which in turn triggers a
-> >> wrong
-> >> sequence of events. In the end this will lead to an unsuccessful
-> >> tuning
-> >> procedure and to the above error.
-> >>
-> >> To workaround this, set the timeout to the maximum value (which is the
-> >> best we can do) and the SDHCI core will take care of the proper
-> >> timeout
-> >> handling.
-> >>
-> >> Signed-off-by: Michael Walle <michael@walle.cc>
-> >
-> > Sound like this should be tagged for stable, right?
->
-> Yes, but I was unsure about that. I didn't find a lot of Fixes: tags in
-> the history of this driver (eg. for errata etc.)
->
-> I could repost a v2 with a fixes tag if you like.
+before(when i did not compile udelay_test.ko):
+sh@ubuntu:~/workspace/compile/tools/time$ sudo ./udelay_test.sh
+./udelay_test.sh: line 25: /sys/kernel/debug/udelay_test: Permission denied
+./udelay_test.sh: line 26: /sys/kernel/debug/udelay_test: No such file or directory
+./udelay_test.sh: line 25: /sys/kernel/debug/udelay_test: Permission denied
+./udelay_test.sh: line 26: /sys/kernel/debug/udelay_test: No such file or directory
+...
+about two hundreds lines.
 
-If this is regression and you can point to a specific commit it fixes,
-then please yes!
+we access '/sys/kernel/debug/udelay_test' the before starting the
+udelay_test.
 
-Kind regards
-Uffe
+now(when i did not compile udelay_test.ko):
+sh@ubuntu:~/workspace/linux-stable/tools/time$ sudo ./udelay_test.sh
+modprobe: FATAL: Module udelay_test not found in directory /lib/modules/5.4.44
+ERROR, can not access /sys/kernel/debug/udelay_test.
+modprobe: FATAL: Module udelay_test not found.
+
+---
+v1->v2: remove the debug_file_exist().
+
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ tools/time/udelay_test.sh | 42 ++++++++++++++++++++++-----------------
+ 1 file changed, 24 insertions(+), 18 deletions(-)
+
+diff --git a/tools/time/udelay_test.sh b/tools/time/udelay_test.sh
+index 6779d7e55d85..c8458d5b7fcd 100755
+--- a/tools/time/udelay_test.sh
++++ b/tools/time/udelay_test.sh
+@@ -12,10 +12,11 @@
+ 
+ MODULE_NAME=udelay_test
+ UDELAY_PATH=/sys/kernel/debug/udelay_test
++retcode=0
+ 
+ setup()
+ {
+-	/sbin/modprobe -q $MODULE_NAME
++	/sbin/modprobe $MODULE_NAME
+ 	tmp_file=`mktemp`
+ }
+ 
+@@ -31,29 +32,34 @@ cleanup()
+ 	if [ -f $tmp_file ]; then
+ 		rm $tmp_file
+ 	fi
+-	/sbin/modprobe -q -r $MODULE_NAME
++	/sbin/modprobe -r $MODULE_NAME
+ }
+ 
+ trap cleanup EXIT
+ setup
+ 
+-# Delay for a variety of times.
+-# 1..200, 200..500 (by 10), 500..2000 (by 100)
+-for (( delay = 1; delay < 200; delay += 1 )); do
+-	test_one $delay
+-done
+-for (( delay = 200; delay < 500; delay += 10 )); do
+-	test_one $delay
+-done
+-for (( delay = 500; delay <= 2000; delay += 100 )); do
+-	test_one $delay
+-done
+-
+-# Search for failures
+-count=`grep -c FAIL $tmp_file`
+-if [ $? -eq "0" ]; then
+-	echo "ERROR: $count delays failed to delay long enough"
++if [ ! -d "$UDELAY_PATH" ]; then
+ 	retcode=1
++	echo "ERROR, can not access $UDELAY_PATH."
++else
++	# Delay for a variety of times.
++	# 1..200, 200..500 (by 10), 500..2000 (by 100)
++	for (( delay = 1; delay < 200; delay += 1 )); do
++		test_one $delay
++	done
++	for (( delay = 200; delay < 500; delay += 10 )); do
++		test_one $delay
++	done
++	for (( delay = 500; delay <= 2000; delay += 100 )); do
++		test_one $delay
++	done
++
++	# Search for failures
++	count=`grep -c FAIL $tmp_file`
++	if [ $? -eq "0" ]; then
++		echo "ERROR: $count delays failed to delay long enough"
++		retcode=1
++	fi
+ fi
+ 
+ exit $retcode
+-- 
+2.25.1
+
+
