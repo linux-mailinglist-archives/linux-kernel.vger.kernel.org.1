@@ -2,235 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E875D294C13
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CBC294C10
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442130AbgJUL7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 07:59:54 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:53643 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442123AbgJUL7x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 07:59:53 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201021115935euoutp01cb299cdae6bf7045c34eeff28128cc42~AABlFRD_V0860908609euoutp01j
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 11:59:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201021115935euoutp01cb299cdae6bf7045c34eeff28128cc42~AABlFRD_V0860908609euoutp01j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603281575;
-        bh=Dus0WFKWgtG3RUO35nNgNF6eLTL0Ew2Rvz62kIDSHnw=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=HG6LlQMaxhn274r3LRlwEpP7DaTFR33sYPUBx9M1uNE2vDXIpAyiNVHeQSbCBazO9
-         DmU8cRWn4E/e08/bYqBqxbLmp9VEyTD3cxYvHggfpAA/q6zNmYqITv+w+0frbAw/Sm
-         4rVtDH4qrYaAjpZHTTxI4DXxSLAeXZzpk1UuRxnU=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201021115927eucas1p12cf0c2125a7dccbcf6fe1329ad4ef4a3~AABdYpZx71597615976eucas1p1a;
-        Wed, 21 Oct 2020 11:59:27 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 0F.A6.06456.F92209F5; Wed, 21
-        Oct 2020 12:59:27 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201021115927eucas1p15b4a43b951fe67b69374c87c97fdfdf9~AABc_p73D1597615976eucas1p1W;
-        Wed, 21 Oct 2020 11:59:27 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201021115927eusmtrp1a5fd2918287d0dde791d195a4aeec1f7~AABc9yNuS3047130471eusmtrp1H;
-        Wed, 21 Oct 2020 11:59:27 +0000 (GMT)
-X-AuditID: cbfec7f2-809ff70000001938-b2-5f90229f6a38
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 00.BB.06314.E92209F5; Wed, 21
-        Oct 2020 12:59:26 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201021115926eusmtip15186f6fcb609855a43f53997117081a1~AABb6V0BI2328223282eusmtip1S;
-        Wed, 21 Oct 2020 11:59:25 +0000 (GMT)
-Subject: Re: [PATCH 2/6] Documetation: dt-bindings: add the
- samsung,exynos-pcie binding
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <50b13de0-168b-3fad-1e84-cc86f1a376d8@samsung.com>
-Date:   Wed, 21 Oct 2020 13:59:25 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.3.3
+        id S2442115AbgJUL7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 07:59:42 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:39122 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439708AbgJUL7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 07:59:42 -0400
+Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9022ac0000>; Wed, 21 Oct 2020 19:59:40 +0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 21 Oct
+ 2020 11:59:37 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.105)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 21 Oct 2020 11:59:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CZESJMpycdnJIL6YqafdDVOygA0Ft/SbSDYTMZ5TSNOoHy+T34z9CFNZtP581x4ppBf2NbSxYgbkxjAsWICs3AfLXXjuLHK/thsVu53udmyvdpq80sucLN/1IYLLlw5E5rgyuV1af9Dbd2ubRMdTHSbghYjcH9aBPNjXpLMG9kNIzucZuTBmBGI8tb7xnlqhUbmRt407No3b0X5+msomptk80x4OGuW+0B+PMtbfL8MCBC3rl6/0UV3PCXESH8MUEXi5jutx9cQCRJM3YR4YQcx89fbu5iRyF3/9iNMRX1VAPyXnqdEolPmHNCydUSDvuctLB/oCqvmEB/SJH46K4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MSxuzY8mRCeGGk4B7dZgaFlLp9Sygp3sC0Z94j1H5hg=;
+ b=QqRoY2rzWStrMR1Mgr5YaNaPJWDzVUiWh2PE/jR/5aqggMBx0YOMfxUzAkEtf+2G6lZvB99R8ItuCa7qsh8sVjagxOnO58S3K9j7rrkXenJ9jLfZa+DSHaWiD2ZABsdEV3EyDtZgFYeruUI1HRcawriSoCyc7CmacLTj6dsG/ked6t3gGQnWZktS19QFkQyYKyMpDWdNEZY2ZxW9+oqMAaLKXoNHE0egC5eTHVjmDP+1YovHIpK5nlXizWbYcFx/App0mjvHfQGmrO2M7aIlrEp/BC0OT4ib3ZnaGn9bvpZQ7T6q2lXfkBHgGF8zXav0i93X4yxXcI8yzXn2zjC6IA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3306.namprd12.prod.outlook.com (2603:10b6:5:186::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Wed, 21 Oct
+ 2020 11:59:34 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Wed, 21 Oct 2020
+ 11:59:34 +0000
+Date:   Wed, 21 Oct 2020 08:59:33 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+CC:     <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kvm@vger.kernel.org>,
+        Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        "Konrad Rzeszutek Wilk" <konrad.wilk@oracle.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Alexander Potapenko <glider@google.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Rik van Riel" <riel@redhat.com>,
+        Larry Woodman <lwoodman@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Toshimitsu Kani <toshi.kani@hpe.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: AMD SME encrpytion and PCI BAR pages to user space
+Message-ID: <20201021115933.GS6219@nvidia.com>
+References: <20201019152556.GA560082@nvidia.com>
+ <4b9f13bf-3f82-1aed-c7be-0eaecebc5d82@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4b9f13bf-3f82-1aed-c7be-0eaecebc5d82@amd.com>
+X-ClientProxiedBy: BL1PR13CA0258.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::23) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <CAJKOXPcyruYQxcioPxGE8J8jS0Yey+09HpXxFgQm4f2w98s5cg@mail.gmail.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SfyyUcRze99737n3dHK9DPqlJZxU2v1Lr3TShbPdPW7bW0vLj5N2xHLpz
-        fvWPCXGZH2XiJgwbSTEZTqPYcdnhjIWZMiZhifkxXIucl/Lf53mez/N9Ps/2JTHhANeejI5N
-        YOSxkhgRj4+39u0Y3CpEBWGejXoRXZMeRVdoh7j0hDGLS9dtlBL08PdcHm0wNBH0aEcZjx4s
-        1/HoEkMXh/75e4GgMzu1BK2Z+oz5mYsbyhuQWKP+Sogrm5Xi5vocnjivpR6JdRNtHPF6s8Mt
-        4h7/aiQTE53IyD18w/lRK9vzeHyVY3JR9yqehtZOqpAZCdQlmP3RilSITwqpOgRv8nYxFmwg
-        6JzUc1mwjqBYY8SOLPkfxg+FWgR7+d0EC1YQzE7XcVSIJK2pYJjsjTYZbCgXGP+zdWDAqC8Y
-        dBe1cEwCj/IC1bKKZ5oFlC/sqYzINOPUOcguLzngbakIGJlOJ9gdK+gvncNN75tRQVDdGmKi
-        MeoMtC2XYexsB5NzFRxTFlCLBPTPFxLs1Tfg1/uNwwbWsKRrOeRPg/5FLs4aniCYGXpLsCAX
-        wWh6CWK3fGBqyMgzJWP7dRo7PFjaHxqebhwUBsoCJpat2CMs4HnrS4ylBZCdJWS3z4Na9+5f
-        bPfwCFaAROpjzdTH6qiP1VH/z61EeD2yY5QKmZRReMUySe4KiUyhjJW6P4iTNaP9P6bf1a21
-        o82RiB5EkUhkLkjm5IcJuZJERYqsBwGJiWwEAYP6UKEgUpKSysjjwuTKGEbRg06RuMhO4F21
-        GCKkpJIE5iHDxDPyI5VDmtmnocguT//CHaKg7bY2xMG9xuoxXRpUPeaRtGWLZC4fBeG9jTnK
-        4uATwXcGiq9l7G56YzNI2ZS54NxQ5rt55dPYK41rp4NfvfHsIx8nLClGquG33Hyd7nu9b6na
-        LdCR0+6UvSoJjdB6XXT6VnsryyL5vuflC/2WGXdTA1eeOesDLLdFuCJK4uWKyRWSv17fhwFf
-        AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLIsWRmVeSWpSXmKPExsVy+t/xu7rzlSbEG7Su5LBY0pRhMf/IOVaL
-        G7/aWC1WfJnJbnHhaQ+bxfnzG9gtLu+aw2Zxdt5xNosZ5/cxWbz5/YLdonXvEXaLnXdOMDvw
-        eKyZt4bRY+esu+weCzaVemxa1cnm0bdlFaPH8RvbmTw+b5ILYI/SsynKLy1JVcjILy6xVYo2
-        tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy3j/4xlLwSKFiikHP7A0MH6S7GLk
-        5JAQMJHo332dtYuRi0NIYCmjxK8d75ggEjISJ6c1sELYwhJ/rnWxgdhCAm8ZJY48T+pi5OAQ
-        FoiUuHU0EyQsIqApcf3vd7A5zALXmSXudK1nhhi6kUli+b25LCBVbAKGEl1vIQbxCthJ/O/6
-        xQhiswioSnTMmwEWFxVIkth/4iYLRI2gxMmZT1hAlnEKBEos3hYLEmYWMJOYt/khM4QtL7H9
-        7RwoW1zi1pP5TBMYhWYh6Z6FpGUWkpZZSFoWMLKsYhRJLS3OTc8tNtQrTswtLs1L10vOz93E
-        CIzabcd+bt7BeGlj8CFGAQ5GJR7eCyz98UKsiWXFlbmHGCU4mJVEeJ3Ono4T4k1JrKxKLcqP
-        LyrNSS0+xGgK9NtEZinR5HxgQskriTc0NTS3sDQ0NzY3NrNQEuftEDgYIySQnliSmp2aWpBa
-        BNPHxMEp1cCoJvXt95OKWo3/TfsESv+bvzixa5roq3tzzl6TKXx54yoTX9Yh6f9WYhP3Pqmf
-        bfD37gtLAXUH794che01nv+M+E0Y7UTFzwvMz98/RzVvjZHGe6lA2SlFPtNrZiQGNC9fcrd1
-        /a+bCrumbPyftuO3eJzDq419/akbT29tiNHWPp2nM3PtbaZgJZbijERDLeai4kQADjeQvfAC
-        AAA=
-X-CMS-MailID: 20201021115927eucas1p15b4a43b951fe67b69374c87c97fdfdf9
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201019094739eucas1p18cd4c7e5a0197393d2e7c5c6fcc2777d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201019094739eucas1p18cd4c7e5a0197393d2e7c5c6fcc2777d
-References: <20201019094715.15343-1-m.szyprowski@samsung.com>
-        <CGME20201019094739eucas1p18cd4c7e5a0197393d2e7c5c6fcc2777d@eucas1p1.samsung.com>
-        <20201019094715.15343-3-m.szyprowski@samsung.com>
-        <20201019101233.GB51073@kozik-lap>
-        <CAJKOXPcyruYQxcioPxGE8J8jS0Yey+09HpXxFgQm4f2w98s5cg@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0258.namprd13.prod.outlook.com (2603:10b6:208:2ba::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.11 via Frontend Transport; Wed, 21 Oct 2020 11:59:34 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kVCmD-003Szc-77; Wed, 21 Oct 2020 08:59:33 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603281580; bh=MSxuzY8mRCeGGk4B7dZgaFlLp9Sygp3sC0Z94j1H5hg=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=IrA7CaLTHVGX0oWXirOHZZc3xlLWh6yRMqhBGqbVOxHxlgalGGuLBjNk2xRQGsi2H
+         z8RNubckHE6YOATdhjHsHSV+AtJEB/+gQ1+EqEj84vw2uXojvl08UhqAtcLp4wkrTL
+         UEJMPUnRnXOAx064aHiGUaqYlNYIM/254Jr7PQnPr/onSwHwr75hBAXppQ7sMc8/D9
+         N2+HxcBWbZQ6IQmRWYY1cQdL1RNeoxvz/OmthOMKrdSHw2MNGYuMQCj4Ow6QsRF9B7
+         kBaN3sVbmDSBCziZCKNA1DAIuiJfSGhUd9XIGPn62EjVUd9arhZvG/sR4EnEIcfyjy
+         H6hHwnpXXsBxQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Mon, Oct 19, 2020 at 11:36:16AM -0500, Tom Lendacky wrote:
 
-On 19.10.2020 12:18, Krzysztof Kozlowski wrote:
-> On Mon, 19 Oct 2020 at 12:12, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->> On Mon, Oct 19, 2020 at 11:47:11AM +0200, Marek Szyprowski wrote:
->>> From: Jaehoon Chung <jh80.chung@samsung.com>
->>>
->>> Add dt-bindings for the Samsung Exynos PCIe controller (Exynos5433
->>> variant).
->> The title has typo and actually entire "Doc" should be dropped. Just
->> "dt-bindings: pci:".  This applies to all DT patches.
->>
->>> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
->>> [mszyprow: updated the binding to latest driver changes, rewrote it in yaml,
->>>           rewrote commit message]
->> If you wrote them in YAML it should be a new patch of yours. It is the
->> same then as converting TXT to YAML.
->>
->>> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
->>> ---
->>>   .../bindings/pci/samsung,exynos-pcie.yaml     | 106 ++++++++++++++++++
->>>   1 file changed, 106 insertions(+)
->>>   create mode 100644 Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
->>> new file mode 100644
->>> index 000000000000..48fb569c238c
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/pci/samsung,exynos-pcie.yaml
->>> @@ -0,0 +1,104 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id: https://protect2.fireeye.com/v1/url?k=a6caf3f8-fb18e55d-a6cb78b7-0cc47a31bee8-bb3776dee0a03bbb&q=1&e=5f1b0c1e-e4d1-4ae2-b527-8cd5ec52695f&u=http%3A%2F%2Fdevicetree.org%2Fschemas%2Fpci%2Fsamsung%2Cexynos-pcie.yaml%23
->>> +$schema: https://protect2.fireeye.com/v1/url?k=591573a2-04c76507-5914f8ed-0cc47a31bee8-bd08b2eac7a5040d&q=1&e=5f1b0c1e-e4d1-4ae2-b527-8cd5ec52695f&u=http%3A%2F%2Fdevicetree.org%2Fmeta-schemas%2Fcore.yaml%23
->>> +
->>> +title: Samsung SoC series PCIe Host Controller Device Tree Bindings
->>> +
->>> +maintainers:
->>> +  - Jaehoon Chung <jh80.chung@samsung.com>
->>> +
->>> +description: |+
->>> +  Exynos5433 SoC PCIe host controller is based on the Synopsys DesignWare
->>> +  PCIe IP and thus inherits all the common properties defined in
->>> +  designware-pcie.txt.
->>> +
->>> +allOf:
->>> +  - $ref: /schemas/pci/pci-bus.yaml#
->>> +
->>> +properties:
->>> +  compatible:
->>> +    enum:
->>> +      - samsung,exynos5433-pcie
->> const, not enum
->>
->>> +
->>> +  reg:
->>> +    items:
->>> +      - description: External Local Bus interface (ELBI) registers.
->>> +      - description: Data Bus Interface (DBI) registers.
->>> +      - description: PCIe configuration space region.
->>> +
->>> +  reg-names:
->>> +    items:
->>> +      - const: elbi
->>> +      - const: bdi
->>> +      - const: config
->>> +
->>> +  interrupts:
->>> +    maxItems: 1
->>> +
->>> +  clocks:
->>> +    items:
->>> +      - description: PCIe bridge clock
->>> +      - description: PCIe bus clock
->>> +
->>> +  clock-names:
->>> +    items:
->>> +      - const: pcie
->>> +      - const: pcie_bus
->>> +
->>> +  phys:
->>> +    maxItems: 1
->>> +
->>> +  phy-names:
->>> +    const: pcie-phy
->>> +
->>> +  vdd10-supply:
->>> +    description:
->>> +      Phandle to a regulator that provides 1.0V power to the PCIe block.
->>> +
->>> +  vdd18-supply:
->>> +    description:
->>> +      Phandle to a regulator that provides 1.8V power to the PCIe block.
->>> +
->>> +required:
->>> +  - reg
->>> +  - reg-names
->>> +  - interrupts
->>> +  - interrupt-names
->>> +  - clocks
->>> +  - clock-names
->>> +  - phys
->>> +  - phy-names
->>> +  - vdd10-supply
->> additionalProperties: false
-> This can be unevaluatedProperties, since you include pci-bus schema.
-> However still you should either include designware schema or include
-> it's properties here.
+> > io_remap_pfn_range()? Is there use cases where a caller actually wants
+> > encrypted io memory?
+> 
+> As long as you never have physical memory / ram being mapped in this path,
+> it seems that applying pgprot_decrypted() would be ok.
 
-Frankly, I would like to include designware-pci bindling/schema, but it 
-has not been converted to yaml yet. I don't feel that I know PCI enough 
-to do that conversion...
+I made a patch along these lines:
 
-Best regards
+https://github.com/jgunthorpe/linux/commits/amd_sme_fix
 
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Just waiting for the 0-day bots to check it
 
+I now have a report that SME works OK but when the same test is done
+inside a VM with SEV it fails again - is there something else needed
+for the SEV case?
+
+This would be using VFIO with qemu and KVM to assign the PCI device to
+the guest, it seems the guest kernel driver is able to use the device
+but the guest userspace fails.
+
+Regards,
+Jason
