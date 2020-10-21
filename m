@@ -2,184 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349F3294A9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A67294AA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438058AbgJUJgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 05:36:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48052 "EHLO mail.kernel.org"
+        id S2438119AbgJUJha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 05:37:30 -0400
+Received: from mx4.veeam.com ([104.41.138.86]:52582 "EHLO mx4.veeam.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438044AbgJUJgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 05:36:44 -0400
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2438077AbgJUJha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 05:37:30 -0400
+Received: from mail.veeam.com (spbmbx01.amust.local [172.17.17.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DED8122249
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:36:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603273004;
-        bh=LNLKZJM7UFxNS9cuiAgGeoRdvzrcnEtPRcGM7ajvqHo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=L5mOnR/wK3Po9WOPO7UZ9QPVXRr2B4oiOkxD1f/T/d3L9jSCxq5ZAK2P/mGx/sOoD
-         K60hFiQQX3POh7LAM3LiQezLVp8xFChoHFMlzRyZ7P6EVb7XPCzKz98Jq/rVjO7gfp
-         ibD6wSufcCsX5qPHja+nsEjIE5x0Ct35bgw+eYr8=
-Received: by mail-oi1-f180.google.com with SMTP id n3so1459799oie.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 02:36:43 -0700 (PDT)
-X-Gm-Message-State: AOAM532cpqC7OrxtYYXKjzwa9RZM0H3/W9lKi1qpaxirhoakWucCIjxn
-        LlLwm4FGuBvXPdTg+UfrgtbhjOiEU1M4bSejVZo=
-X-Google-Smtp-Source: ABdhPJxJFU0ZTKBsXkxXb4U0ckcudWfn/aib6IhmMJUiCE1l44kg0iCD/e0lDFjAv1myzHORV3GxJGo+uuOeooMJkaQ=
-X-Received: by 2002:aca:4085:: with SMTP id n127mr1609361oia.33.1603273003020;
- Wed, 21 Oct 2020 02:36:43 -0700 (PDT)
+        by mx4.veeam.com (Postfix) with ESMTPS id 6A17487A40;
+        Wed, 21 Oct 2020 12:37:27 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
+        t=1603273047; bh=tJsAbN1NcN6TjebUf8UeNi+/vIRbD2jLAJixwRT20K8=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+        b=ay80zau7ICyWOBC+G2DwpixnFknBiDy5+6dEvpL4XpdbZgFFslkrAPD9wxGbRqltw
+         ksPnnHFiVxwIhsUDq3NvqSCgKYiqAIKUTYFUw2yf/42/oZkyaQgFkEeiEvr7qipqnr
+         zOtxh6nD0E5MN6dCti9ZZUc3rYiMPrV95xlqFXPo=
+Received: from veeam.com (172.24.14.5) by spbmbx01.amust.local (172.17.17.171)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.595.3; Wed, 21 Oct 2020
+ 12:37:25 +0300
+Date:   Wed, 21 Oct 2020 12:37:27 +0300
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+To:     Pavel Machek <pavel@ucw.cz>
+CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "len.brown@intel.com" <len.brown@intel.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "jack@suse.cz" <jack@suse.cz>, "tj@kernel.org" <tj@kernel.org>,
+        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "osandov@fb.com" <osandov@fb.com>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH 2/2] blk-snap - snapshots and change-tracking for block
+ devices
+Message-ID: <20201021093727.GA20749@veeam.com>
+References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
+ <1603271049-20681-3-git-send-email-sergei.shtepa@veeam.com>
+ <20201021090837.GA30282@duo.ucw.cz>
 MIME-Version: 1.0
-References: <20201021050141.377787-1-furquan@google.com> <20201021051931.GA967331@kroah.com>
- <CAMj1kXHpTNoYgzm+-SEs8Kddr+rVy7n5DOqf+QM8jAJXmDh3kA@mail.gmail.com>
- <CAEGmHFFYuAqqcPEw7UkVSPokAr74ktDcovOPzB74j9dyUYapGw@mail.gmail.com> <20201021085227.GA1102039@kroah.com>
-In-Reply-To: <20201021085227.GA1102039@kroah.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 21 Oct 2020 11:36:31 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGLYafB3_8bAbA=8hOSUF0e0JXcNh6_E_KkGSzOv4jjzw@mail.gmail.com>
-Message-ID: <CAMj1kXGLYafB3_8bAbA=8hOSUF0e0JXcNh6_E_KkGSzOv4jjzw@mail.gmail.com>
-Subject: Re: [PATCH] firmware: gsmi: Drop the use of dma_pool_* API functions
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Furquan Shaikh <furquan@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        Arthur Heymans <arthur@aheymans.xyz>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Duncan Laurie <dlaurie@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20201021090837.GA30282@duo.ucw.cz>
+X-Originating-IP: [172.24.14.5]
+X-ClientProxiedBy: spbmbx02.amust.local (172.17.17.172) To
+ spbmbx01.amust.local (172.17.17.171)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A295605D26A677562
+X-Veeam-MMEX: True
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 at 10:51, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Oct 21, 2020 at 12:37:52AM -0700, Furquan Shaikh wrote:
-> > On Tue, Oct 20, 2020 at 11:37 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > On Wed, 21 Oct 2020 at 07:18, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Tue, Oct 20, 2020 at 10:01:41PM -0700, Furquan Shaikh wrote:
-> > > > > GSMI driver uses dma_pool_* API functions for buffer allocation
-> > > > > because it requires that the SMI buffers are allocated within 32-bit
-> > > > > physical address space. However, this does not work well with IOMMU
-> > > > > since there is no real device and hence no domain associated with the
-> > > > > device.
-> > > > >
-> > > > > Since this is not a real device, it does not require any device
-> > > > > address(IOVA) for the buffer allocations. The only requirement is to
-> > > > > ensure that the physical address allocated to the buffer is within
-> > > > > 32-bit physical address space. This change allocates a page using
-> > > > > `get_zeroed_page()` and passes in GFP_DMA32 flag to ensure that the
-> > > > > page allocation is done in the DMA32 zone. All the buffer allocation
-> > > > > requests for gsmi_buf are then satisfed using this pre-allocated page
-> > > > > for the device.
-> > > >
-> > > > Are you sure that "GFP_DMA32" really does what you think it does?  A
-> > > > "normal" call with GFP_KERNEL" will give you memory that is properly
-> > > > dma-able.
-> > > >
-> > > > We should not be adding new GFP_DMA* users in the kernel in these days,
-> > > > just call dma_alloc*() and you should be fine.
-> > > >
-> > >
-> > > The point seems to be that this is not about DMA at all, and so there
-> > > is no device associated with the DMA allocation.
-> > >
-> > > The other 'master' is the CPU running firmware in an execution mode
-> > > where it can only access the bottom 4 GB of memory, and GFP_DMA32
-> > > happens to allocate from a zone which is guaranteed to be accessible
-> > > to the firmware.
-> >
-> > Ard captured the context and requirement perfectly. GFP_DMA32
-> > satisfies the requirement for allocating memory from a zone which is
-> > accessible to the firmware in SMI mode. This seems to be one of the
-> > common ways  how other drivers and common code in the kernel currently
-> > allocate physical memory below the 4G boundary. Hence, I used the same
-> > mechanism in GSMI driver.
->
-> Then can you please document this a bit better in the changelog,
-> explaining why this is ok to use this obsolete api, and also in the code
-> itself so that no one tries to clean it up in the future?
->
-
-Wouldn't it be simpler to switch to a SLAB cache created with SLAB_CACHE_DMA32?
-
-
-I.e., something like the below (whitespace mangling courtesy of gmail)
-
-diff --git a/drivers/firmware/google/gsmi.c b/drivers/firmware/google/gsmi.c
-index 7d9367b22010..d932284f970c 100644
---- a/drivers/firmware/google/gsmi.c
-+++ b/drivers/firmware/google/gsmi.c
-@@ -85,7 +85,6 @@
- struct gsmi_buf {
-        u8 *start;                      /* start of buffer */
-        size_t length;                  /* length of buffer */
--       dma_addr_t handle;              /* dma allocation handle */
-        u32 address;                    /* physical address of buffer */
- };
-
-@@ -97,7 +96,7 @@ static struct gsmi_device {
-        spinlock_t lock;                /* serialize access to SMIs */
-        u16 smi_cmd;                    /* SMI command port */
-        int handshake_type;             /* firmware handler interlock type */
--       struct dma_pool *dma_pool;      /* DMA buffer pool */
-+       struct kmem_cache *mem_pool;    /* buffer pool */
- } gsmi_dev;
-
- /* Packed structures for communicating with the firmware */
-@@ -157,8 +156,7 @@ static struct gsmi_buf *gsmi_buf_alloc(void)
-        }
-
-        /* allocate buffer in 32bit address space */
--       smibuf->start = dma_pool_alloc(gsmi_dev.dma_pool, GFP_KERNEL,
--                                      &smibuf->handle);
-+       smibuf->start = kmem_cache_zalloc(gsmi_dev.mem_pool, GFP_KERNEL);
-        if (!smibuf->start) {
-                printk(KERN_ERR "gsmi: failed to allocate name buffer\n");
-                kfree(smibuf);
-@@ -176,8 +174,7 @@ static void gsmi_buf_free(struct gsmi_buf *smibuf)
- {
-        if (smibuf) {
-                if (smibuf->start)
--                       dma_pool_free(gsmi_dev.dma_pool, smibuf->start,
--                                     smibuf->handle);
-+                       kmem_cache_free(gsmi_dev.mem_pool, smibuf->start);
-                kfree(smibuf);
-        }
- }
-@@ -914,9 +911,10 @@ static __init int gsmi_init(void)
-        spin_lock_init(&gsmi_dev.lock);
-
-        ret = -ENOMEM;
--       gsmi_dev.dma_pool = dma_pool_create("gsmi", &gsmi_dev.pdev->dev,
--                                            GSMI_BUF_SIZE, GSMI_BUF_ALIGN, 0);
--       if (!gsmi_dev.dma_pool)
-+       gsmi_dev.mem_pool = kmem_cache_create("gsmi", GSMI_BUF_SIZE,
-+                                             GSMI_BUF_ALIGN, SLAB_CACHE_DMA32,
-+                                             NULL);
-+       if (!gsmi_dev.mem_pool)
-                goto out_err;
-
-        /*
-@@ -1032,7 +1030,7 @@ static __init int gsmi_init(void)
-        gsmi_buf_free(gsmi_dev.param_buf);
-        gsmi_buf_free(gsmi_dev.data_buf);
-        gsmi_buf_free(gsmi_dev.name_buf);
--       dma_pool_destroy(gsmi_dev.dma_pool);
-+       kmem_cache_destroy(gsmi_dev.mem_pool);
-        platform_device_unregister(gsmi_dev.pdev);
-        pr_info("gsmi: failed to load: %d\n", ret);
- #ifdef CONFIG_PM
-@@ -1057,7 +1055,7 @@ static void __exit gsmi_exit(void)
-        gsmi_buf_free(gsmi_dev.param_buf);
-        gsmi_buf_free(gsmi_dev.data_buf);
-        gsmi_buf_free(gsmi_dev.name_buf);
--       dma_pool_destroy(gsmi_dev.dma_pool);
-+       kmem_cache_destroy(gsmi_dev.mem_pool);
-        platform_device_unregister(gsmi_dev.pdev);
- #ifdef CONFIG_PM
-        platform_driver_unregister(&gsmi_driver_info);
+#pragma once still banned? I think need to add a check for this ./scripts/checkpatch.pl.
+Comment code style - ok, thank you.
+-- 
+Sergei Shtepa
+Veeam Software developer.
