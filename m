@@ -2,138 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5E1294D2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34D4294D34
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442803AbgJUNCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 09:02:08 -0400
-Received: from mga17.intel.com ([192.55.52.151]:30673 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436655AbgJUNCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 09:02:08 -0400
-IronPort-SDR: 0CieSr7bZzgiFuF6T6f9q8RFE6vGuRf8a9W6eVESfpbZCDY2ONPgngHaNMJRROwfB8U62F9gxQ
- oDYX5xB3WJhg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="147218500"
-X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
-   d="scan'208";a="147218500"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 06:01:53 -0700
-IronPort-SDR: ipvoXnmWSFnE/aqd0cSCrICD5g7Ye0Igemz0t31O2yWPHkzDS8RX7DyeDU7Sz2NUMjn7H17Puf
- iyLtV49iY6Fw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
-   d="scan'208";a="533519579"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 21 Oct 2020 06:01:52 -0700
-Received: from [10.249.231.46] (abudanko-mobl.ccr.corp.intel.com [10.249.231.46])
-        by linux.intel.com (Postfix) with ESMTP id 59FBC580720;
-        Wed, 21 Oct 2020 06:01:50 -0700 (PDT)
-Subject: Re: [PATCH v1 06/15] perf session: load data directory into tool
- process memory
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
- <39cf6164-f3be-ae34-292a-94faef32fdb9@linux.intel.com>
- <20201012160921.GD466880@tassilo.jf.intel.com>
- <8f90c785-8bdc-e7cd-a6d9-7eed0fb2c6b3@linux.intel.com>
- <7216a411-a635-4fcc-b10d-afe1f75509d3@linux.intel.com>
- <CAM9d7cjJzHr7BZ2LVFuG4dnk=i+LmP_TCb9J8FTO0w1w=KG1WQ@mail.gmail.com>
- <351d6f3a-7c2a-85d7-4b07-4b0468e6c887@linux.intel.com>
- <CAM9d7ciRu09bRNLbR19m2BjuM46vN6ubf7CUFELeR5-W61O3yA@mail.gmail.com>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <d4829840-d765-0aee-2314-c4c2292f3386@linux.intel.com>
-Date:   Wed, 21 Oct 2020 16:01:49 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S2442797AbgJUNIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 09:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441152AbgJUNIB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 09:08:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DE2C0613CE;
+        Wed, 21 Oct 2020 06:08:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+ADGY6lUGFmeFYihjY6pvVYGb53tiaxI+m52PCdpV6o=; b=ValVWrF82iOnfhZJWq+OXSlUA4
+        Bp6JHUMpHs4bxa4Nqsd4U+O/qKSp3dCjwhD0i+Sw/ZSemSXVkyVcYUuqsOFQUhkTCj2DRw89BmCvq
+        simA6KOcCspTWlzzKiTt5we7CqK3NrRvndVvw9uPLhsx8OkaLdG+O5MCApjBrs/lZkpFbujY9gLie
+        Il9EURdEdW+VUIUNCF3njnXzP88c0wV3mubpN8fGiEE5s7DpwAZ0a+PSh1BoiMxQZrRwcqvR00DOd
+        uQx2atMCd446mt6+ZYKx2kx2aYRcQUe/3XjESH2lfjMSx0coQ8Fwy4LXsI1/Hf5F6bNcF1MzVyC3O
+        d3cYBlSQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVDqL-00088e-4V; Wed, 21 Oct 2020 13:07:53 +0000
+Date:   Wed, 21 Oct 2020 14:07:53 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>
+Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "len.brown@intel.com" <len.brown@intel.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "jack@suse.cz" <jack@suse.cz>, "tj@kernel.org" <tj@kernel.org>,
+        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "osandov@fb.com" <osandov@fb.com>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH 1/2] Block layer filter - second version
+Message-ID: <20201021130753.GM20115@casper.infradead.org>
+References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
+ <1603271049-20681-2-git-send-email-sergei.shtepa@veeam.com>
+ <BL0PR04MB65141320C7BF75B7142CA30CE71C0@BL0PR04MB6514.namprd04.prod.outlook.com>
+ <20201021114438.GK20115@casper.infradead.org>
+ <20201021125555.GE20749@veeam.com>
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7ciRu09bRNLbR19m2BjuM46vN6ubf7CUFELeR5-W61O3yA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201021125555.GE20749@veeam.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 21.10.2020 13:57, Namhyung Kim wrote:
-> On Wed, Oct 21, 2020 at 7:25 PM Alexey Budankov
-> <alexey.budankov@linux.intel.com> wrote:
->>
->>
->> On 21.10.2020 9:54, Namhyung Kim wrote:
->>> Hi,
->>>
->>> On Tue, Oct 13, 2020 at 8:30 PM Alexey Budankov
->>> <alexey.budankov@linux.intel.com> wrote:
->>>> On 12.10.2020 19:49, Alexey Budankov wrote:
->>>>> On 12.10.2020 19:09, Andi Kleen wrote:
->>>>>> On Mon, Oct 12, 2020 at 11:58:58AM +0300, Alexey Budankov wrote:
->>>>>>> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
->>>>>>> index 6afc670fdf0c..0752eec19813 100644
->>>>>>> --- a/tools/perf/util/session.c
->>>>>>> +++ b/tools/perf/util/session.c
->>>>>>> @@ -2212,6 +2212,17 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->>>>>>>             goto more;
->>>>>>>
->>>>>>>  out:
->>>>>>> +   if (rd->unmap_file) {
->>>>>>> +           int i;
->>>>>>> +
->>>>>>> +           for (i = 0; i < NUM_MMAPS; i++) {
->>>>>>> +                   if (mmaps[i]) {
->>>>>>> +                           munmap(mmaps[i], mmap_size);
->>>>>>> +                           mmaps[i] = NULL;
->>>>>>
->>>>>> Okay so where is the mmap? Would make more sense to put that
->>>>>> into the same patch as who adds the mmap. Or is the mmap
->>>>>> code already in the perf source? In that case it should
->>>>>> probably be some common helper with the existing users.
->>>>>
->>>>> That mmap is already in the code. Agree, this part of the patch
->>>>> can be applied prior the whole patch set.
->>>>
->>>> I take it back. Single trace file can't be unmapped yet since it also
->>>> contains not only compressed records but also other records backing
->>>> the data for aggregated analysis.
->>>
->>> Are you talking about the auxtrace?
->>>
->>> I thought everything will be compressed when it's enabled.
->>> But if it's only for the auxtrace, maybe we can unmap them
->>> with checking it as it's not the common case?
->>
->> I am about primary trace file. Together with PERF_RECORD_COMPRESSED
->> records it contains the other records with uncompressed data (MMAP,
->> FORk, COMM etc.) so it is still unsafe to unmap the trace file after
->> loading.
+On Wed, Oct 21, 2020 at 03:55:55PM +0300, Sergei Shtepa wrote:
+> The 10/21/2020 14:44, Matthew Wilcox wrote:
+> > I don't understand why O_DIRECT gets to bypass the block filter.  Nor do
+> > I understand why anybody would place a block filter on the swap device.
+> > But if somebody did place a filter on the swap device, why should swap
+> > be able to bypass the filter?
 > 
-> Oh, I think all the events coming from the kernel share the mmap
-> buffer so they will be compressed with SAMPLEs.  Note that
-> synthesized events have 0 timestamp which means that they
-> are not queued in the ordered events and processed immediately.
-
-Yes, they are and it will work as expected with this patch changes.
-
+> Yes, intercepting the swap partition is absurd. But we can't guarantee
+> that the filter won't intercept swap.
 > 
-> IIUC, here we unmap the original mmap buffer and the actual data
-> in MMAP/FORK/... is kept in the decomp data buffer, no?
+> Swap operation is related to the memory allocation logic. If a swap on
+> the block device are accessed during memory allocation from filter,
+> a deadlock occurs. We can allow filters to occasionally shoot off their
+> feet, especially under high load. But I think it's better not to do it.
 
-Correct. It unmaps trace file from memory after COMPRESSED records
-are decompressed into separately allocated decomp objects.
+We already have logic to prevent this in Linux.  Filters need to
+call memalloc_noio_save() while they might cause swap to happen and
+memalloc_noio_restore() once it's safe for them to cause swap again.
 
-Alexei
-
+> "directly access" - it is not O_DIRECT. This means (I think) direct
+> reading from the device file, like "dd if=/dev/sda1".
+> As for intercepting direct reading, I don't know how to do the right thing.
 > 
-> Thanks
-> Namhyung
+> The problem here is that in fs/block_dev.c in function __blkdev_direct_IO()
+> uses the qc - value returned by the submit_bio() function.
+> This value is used below when calling 
+> blk_poll(bdev_get_queue(dev), qc, true).
+> The filter cannot return a meaningful value of the blk_qc_t type when
+> intercepting a request, because at that time it does not know which queue
+> the request will fall into.
 > 
+> If function submit_bio() will always return BLK_QC_T_NONE - I think the
+> algorithm of the __blk dev_direct_IO() will not work correctly.
+> If we need to intercept direct access to a block device, we need to at
+> least redo the __blkdev_direct_IO function, getting rid of blk_pool.
+> I'm not sure it's necessary yet.
+
+This isn't part of the block layer that I'm familiar with, so I can't
+help solve this problem, but allowing O_DIRECT to bypass the block filter
+is a hole that needs to be fixed before these patches can be considered.
