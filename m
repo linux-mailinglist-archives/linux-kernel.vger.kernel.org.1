@@ -2,110 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655BC294D5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3726E294D5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437419AbgJUNQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 09:16:59 -0400
-Received: from mail-eopbgr30046.outbound.protection.outlook.com ([40.107.3.46]:27877
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2408965AbgJUNQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 09:16:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JsLrENxOhOxdgBs4swpOUczxhmcZX53HV2HXq+7NdehyM2IyuiT/AbCyeA81R59gbyx9ZiDeBGc28Wes4rmlr60Zr01XRcINkAw/5F1qf8DWEiKzKelXlryvFqzyMwq5ZSeZhU1oOJnVGwgY06E0vHHa5yZ9PbNxx1n1pSh5/E3jt6AmuTG3Kl2yRmIXEgoLtithgWberA56E1DAcDCKPRZykc+Y6tLmfj2n13NhyFLsXlEl1KrasjSjZvZ1atBh9S5XyeuRnRwbXvIx1ivExZbWuNcy+yaI66Y3JP8cMrzwzwUFu1pgJLQPrV9PGdKd1Qjr4RVBNijkJBCowDPapw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JpxflisEqQMcqxtKTRFK+Ek7o12UFGQU2UrjBiRXWvE=;
- b=lQMU6JUx63UNtjrxzIG4PAbLrKhzcMM3pWu+Q+rw5Znpt5PWe7n4hvOt8rVQpHzKlUD1QQ+pLCUoAda83Qaihyc/mLUlnai5SYYaj9ELMOzDfEQvSTL2K4NtzZr62Epv+wiUZcScrtlRELd9nLn/C53M/gt+XxxpJkgmEu9IjYgwlCmQHcNV09mjSoyCIdHPlCkNAu2XAXxFSzxHV0Ri3I3Az4XxD8ml7rAzAxr7+HgoVbTYKhIp4bn0paDchgcClUk8NdGR/hCSyynPFAqHZwpuwonKI9NbbcWN+ELZtwZiRdh8i9WoflQeiMFoHnV80834s/FIk9qL+R89WYiHdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JpxflisEqQMcqxtKTRFK+Ek7o12UFGQU2UrjBiRXWvE=;
- b=bFlpW/EVQ/spwTHU5Nohdk6gJ2cj+bPKiwP/Zz5R7+mWVWoAq32jU2FywsdkWQgvDgxjAw6srs2BK9OcfJ18V0L1L1oigHCjiVkTJ7GxZRQciv4vwh+DWJsL7J+zWcDMvikTUXjkx5CtUOq3aor1dRe11je9uGt0Nz3Msqb970M=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB7PR04MB5995.eurprd04.prod.outlook.com (2603:10a6:10:8e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.26; Wed, 21 Oct
- 2020 13:16:55 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::ec42:b6d0:7666:19ef]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::ec42:b6d0:7666:19ef%8]) with mapi id 15.20.3477.028; Wed, 21 Oct 2020
- 13:16:55 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Fabio Estevam <festevam@gmail.com>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH] arm64: defconfig: enable CONFIG_GPIO_MXC
-Thread-Topic: [PATCH] arm64: defconfig: enable CONFIG_GPIO_MXC
-Thread-Index: AQHWp3TUPFchaVuKy0e9Uvrmqtjbo6mh5usAgAAi3iA=
-Date:   Wed, 21 Oct 2020 13:16:54 +0000
-Message-ID: <DB6PR0402MB27608BD2A711D7A5748B826F881C0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <1603262006-28217-1-git-send-email-peng.fan@nxp.com>
- <CAOMZO5DJ==aRqZAg8hmBZeBy3yeHKxTd08Vmym=meW31hqtWBg@mail.gmail.com>
-In-Reply-To: <CAOMZO5DJ==aRqZAg8hmBZeBy3yeHKxTd08Vmym=meW31hqtWBg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [114.217.181.5]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 527d83f0-f109-43b7-ceff-08d875c394f2
-x-ms-traffictypediagnostic: DB7PR04MB5995:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB59952BCA1A5E868BFC1B2A90881C0@DB7PR04MB5995.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KkoR/SXpmQAQsfjHPvAf7cBS1pLQzUV9Y26mQld5ml1k6Rigs/sT11m9NEYqj4IttLQNBksaaY49pPGcaNAKC9x3TY+HzI5R9+rsERS0IfhpYEoQH1LGpVqeX5jaVWNWRZnKKjJD3yexYpCF6H1DnUwezrdZiPhbX/1WF2UV0IAdkSGLfvKMSip/mNTGdmxZA0rdMVNIfIDtXdE2HvI5YSRCGmsrXsUusCrMrc06b3ahp5ZVMWwrDd/MPvdPm1366gja7l2Z79jisHKIr5dTrvd7P4O+xzuwL2JAsSeS+jcgb47Gh4/PhMLjiuP6nGcFnku69OvbrHjkpzAe2/L8QCxiRC0ACnjs26N62Vv4THfoMRI/Vgc5f/drwkQOoECyYIlVwq6Cd8MKX2mekq453w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(136003)(39860400002)(366004)(8936002)(33656002)(5660300002)(66946007)(52536014)(6916009)(4326008)(478600001)(45080400002)(316002)(8676002)(66556008)(64756008)(66446008)(66476007)(86362001)(966005)(4744005)(6506007)(76116006)(2906002)(53546011)(44832011)(9686003)(55016002)(186003)(7696005)(26005)(71200400001)(54906003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: bmSAtjmyepKg5/oOhUPKjznHg7ntyvWln7TpWUEKGnGjTOdOSUHvSHCaY7MGQ5edt7fY0ebeZVQ0AzVK/5eL1YKqklM6ge+l5hyGOsjacR3euLD2qiQkYQSQ2+OwHP2ItCEZLi0nTl8DoEZ8q+8tm2t3MMt2p7bW+vBChxOBYo4liAp0LlPxRGBUK7h5UwiLKz8s86menkafY1lPu0ONgtZlACOfn8+DFSrLfRSDfvoPyD/WIbiXMFZWclmyywAxlR68lW2NXc6+vpFbCM9NdKajYsxOApXEH/OgBWL565z3u8YnxOoxR33GC5AECQ0Wtf/NRnwGXTvs3R0OD9Sp/Akj21ReLBZNOhXL7EscOzqZyqsF/a1dGZUNiu5kN30AdidshS/8amX/PaIO3fuiEaTPgfY1kfE4KK0sYix6vvga+4XFk4HSMkURxdm2quGnSt8Zb594oEZjBOv0aSQ9GxG4H+ec/kRok1vhzOw1yTDAE4RleORzVOsnl7eA/+Q6M2UEsfHqdsR3Ell80CX75WIvXK/iCutqzo36oGKyKbaHzjrEQbB8vnopPma5WUg47rvxN5TY1foe4F6MPULkBQWsAMX6zWgIhiR3iAeiae8vSfmTlGWWueVc4LQV1cL4dnh/VSCc7CscdP0c3dUcKg==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S2437435AbgJUNRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 09:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394958AbgJUNRn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 09:17:43 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BFAC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 06:17:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UwnRjfY5BPNMzLgUrGTLpEuYrfE7DEf2HGxX68JRo1o=; b=OcCoIj6ShzR1fGH5JYU3M0kTni
+        LjQQ/G+403InTFLUfYrDc7P/GeAb+FCQfaj1eQGwrGEtjC+Vw1QiKEooMCz8znAsRP1jKtzBDzf6v
+        +eN9CYiNpTPYl1JDorkStoIqEzakolyAApN9jXbKKKg3oc+e7I7GCoYHwQ3ReGVpNyloEMa32LfkF
+        VyvMPEheBkRlUDV0Z9+iyQy0L6CWmbrkiwfbGzi/lZC82gbuzxlG4OK+cfMTp9ThqfgKESGipV9ex
+        gZ7qfisxv1Cs1iJqqbbNTi6nbHny9Ilmj/CO4WMobVuXPJDmOXWYpeFNQf+tj1YIxnM9dT0dX3FHX
+        5zxvkalQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVDzi-0003ya-V8; Wed, 21 Oct 2020 13:17:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A169A30377D;
+        Wed, 21 Oct 2020 15:17:33 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5C0BE203CC4BF; Wed, 21 Oct 2020 15:17:33 +0200 (CEST)
+Date:   Wed, 21 Oct 2020 15:17:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     syzbot <syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: BUG: using __this_cpu_read() in preemptible code in
+ trace_hardirqs_on
+Message-ID: <20201021131733.GH2628@hirez.programming.kicks-ass.net>
+References: <000000000000e921b305b18ba0a7@google.com>
+ <20201013091743.12c371a8@gandalf.local.home>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 527d83f0-f109-43b7-ceff-08d875c394f2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2020 13:16:54.9559
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PmrPmQxdTB3Ql9K4DQNjDiQOmOlcM1XUYogNKOshiESklr4UCJ9Q49Df+uKrnARUfibVA5BQpQN64fgIBp+8uA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5995
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201013091743.12c371a8@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTdWJqZWN0OiBSZTogW1BBVENIXSBhcm02NDogZGVmY29uZmlnOiBlbmFibGUgQ09ORklHX0dQ
-SU9fTVhDDQo+IA0KPiBIaSBQZW5nLA0KPiANCj4gT24gV2VkLCBPY3QgMjEsIDIwMjAgYXQgMzoz
-OCBBTSA8cGVuZy5mYW5AbnhwLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBGcm9tOiBQZW5nIEZhbiA8
-cGVuZy5mYW5AbnhwLmNvbT4NCj4gPg0KPiA+IFRvIGkuTVg4TVAsIGFsd2F5cyBtZXQgIldhaXRp
-bmcgZm9yIHJvb3QgZGV2aWNlIC9kZXYvbW1jYmxrMXAyLi4uIiwgaXQNCj4gPiBpcyBiZWNhdXNl
-IHRoZSBncGlvIGRyaXZlciBub3QgZW5hYmxlZC4gU28gZW5hYmxlIENPTkZJR19HUElPX01YQyB0
-bw0KPiA+IG1ha2Ugc3VyZSBpdCBjb3VsZCBib290IHdlbGwuDQo+ID4NCj4gPiBTaWduZWQtb2Zm
-LWJ5OiBQZW5nIEZhbiA8cGVuZy5mYW5AbnhwLmNvbT4NCj4gDQo+IEFuc29uIGhhcyBhbHJlYWR5
-IHN1Ym1pdHRlZCB0aGlzIGNoYW5nZToNCg0KVGhhbmtzIGZvciB0aGUgaW5mby4gTm90IHNhdyB0
-aGUgcGF0Y2ggaW4gbmV4dCB0cmVlLiBTbyBwbGVhc2UgaWdub3JlIHRoaXMgcGF0Y2guDQoNClRo
-YW5rcywNClBlbmcuDQoNCj4gaHR0cHM6Ly9ldXIwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRs
-b29rLmNvbS8/dXJsPWh0dHBzJTNBJTJGJTJGcGF0Y2gNCj4gd29yay5vemxhYnMub3JnJTJGcHJv
-amVjdCUyRmxpbnV4LWdwaW8lMkZwYXRjaCUyRjE2MDAzMjA4MjktMTQ1My0yLWdpDQo+IHQtc2Vu
-ZC1lbWFpbC1BbnNvbi5IdWFuZyU0MG54cC5jb20lMkYmYW1wO2RhdGE9MDQlN0MwMSU3Q3Blbmcu
-ZmENCj4gbiU0MG54cC5jb20lN0MyNzRhZDk5ZTNhN2Y0ZGQwOGVhZjA4ZDg3NWIyMTNmZSU3QzY4
-NmVhMWQzYmMyYjQNCj4gYzZmYTkyY2Q5OWM1YzMwMTYzNSU3QzAlN0MwJTdDNjM3Mzg4NzU0OTg4
-Mjc1ODg4JTdDVW5rbm93biUNCj4gN0NUV0ZwYkdac2IzZDhleUpXSWpvaU1DNHdMakF3TURBaUxD
-SlFJam9pVjJsdU16SWlMQ0pCVGlJNklrMWhhVw0KPiB3aUxDSlhWQ0k2TW4wJTNEJTdDMTAwMCZh
-bXA7c2RhdGE9RmZrSUx2N3lDU0Jta3o5bTFUN1hGTDR0N2NHYkkNCj4gVks2QkRXallzdFBaVUEl
-M0QmYW1wO3Jlc2VydmVkPTANCg==
+On Tue, Oct 13, 2020 at 09:17:43AM -0400, Steven Rostedt wrote:
+> On Tue, 13 Oct 2020 04:22:21 -0700
+> syzbot <syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com> wrote:
+> 
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    865c50e1 x86/uaccess: utilize CONFIG_CC_HAS_ASM_GOTO_OUTPUT
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=15112ef0500000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c829313274207568
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=53f8ce8bbc07924b6417
+> > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> > 
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com
+> > 
+> > BUG: using __this_cpu_read() in preemptible [00000000] code: syz-executor.0/8265
+> > caller is lockdep_hardirqs_on_prepare+0x56/0x620 kernel/locking/lockdep.c:4060
+> > CPU: 0 PID: 8265 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:77 [inline]
+> >  dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+> >  check_preemption_disabled+0x13c/0x140 lib/smp_processor_id.c:48
+> >  lockdep_hardirqs_on_prepare+0x56/0x620 kernel/locking/lockdep.c:4060
+> >  trace_hardirqs_on+0x6f/0x80 kernel/trace/trace_preemptirq.c:49
+> >  __bad_area_nosemaphore+0x89/0x510 arch/x86/mm/fault.c:797
+> >  handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+> >  exc_page_fault+0x129/0x240 arch/x86/mm/fault.c:1482
+> >  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+> > RIP: 0033:0x402d28
+> > Code: 00 00 48 89 7c 24 f8 48 89 74 24 f0 48 89 54 24 e8 48 89 4c 24 e0 48 8b 74 24 f8 4c 8b 4c 24 f0 48 8b 4c 24 e8 48 8b 54 24 e0 <8b> 86 0c 01 00 00 44 8b 86 08 01 00 00 c1 e0 04 8d b8 7f 01 00 00
+> > RSP: 002b:00007fce5827ec68 EFLAGS: 00010216
+> > RAX: 0000000000402d00 RBX: 000000000118bfc8 RCX: 0000000020000200
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > RBP: 000000000118c010 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bfd4
+> > R13: 00007ffea2de495f R14: 00007fce5827f9c0 R15: 000000000118bfd4
+> > BUG: using __this_cpu_read() in preemptible [00000000] code: syz-executor.0/8265
+> > caller is lockdep_hardirqs_on+0x36/0x110 kernel/locking/lockdep.c:4129
+> > CPU: 0 PID: 8265 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:77 [inline]
+> >  dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+> >  check_preemption_disabled+0x13c/0x140 lib/smp_processor_id.c:48
+> >  lockdep_hardirqs_on+0x36/0x110 kernel/locking/lockdep.c:4129
+> >  __bad_area_nosemaphore+0x89/0x510 arch/x86/mm/fault.c:797
+> 
+> Peter,
+> 
+> I'm guessing the above is:
+> 
+> static void
+> __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+> 		       unsigned long address, u32 pkey, int si_code)
+> {
+> 	struct task_struct *tsk = current;
+> 
+> 	/* User mode accesses just cause a SIGSEGV */
+> 	if (user_mode(regs) && (error_code & X86_PF_USER)) {
+> 		/*
+> 		 * It's possible to have interrupts off here:
+> 		 */
+> 		local_irq_enable();
+> 
+> 
+> And I'm also guessing that we can call this with interrupts enabled (based
+> on the comment).
+> 
+> And we have this:
+> 
+>    local_irq_enable()
+>       trace_hardirqs_on()
+>          lockdep_hardirqs_on()
+>              __this_cpu_read()
+
+Moo, two threads..
+
+20201019183355.GS2611@hirez.programming.kicks-ass.net
+
+---
+
+On Tue, Oct 20, 2020 at 12:55:46AM +0800, kernel test robot wrote:
+> [   92.898145] BUG: using __this_cpu_read() in preemptible [00000000] code: trinity-c6/526
+
+> [   92.903305] Call Trace:
+> [   92.905182]  __this_cpu_preempt_check+0xf/0x11
+> [   92.905968]  lockdep_hardirqs_on_prepare+0x2c/0x18f
+> [   92.906853]  trace_hardirqs_on+0x49/0x53
+> [   92.907578]  __bad_area_nosemaphore+0x3a/0x134
+
+Hurph, that's a spurious local_irq_enable(). I suppose this'll fix it.
+
+---
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 3e99dfef8408..9f818145ef7d 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -4057,9 +4057,6 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
+ 	if (unlikely(in_nmi()))
+ 		return;
+ 
+-	if (unlikely(__this_cpu_read(lockdep_recursion)))
+-		return;
+-
+ 	if (unlikely(lockdep_hardirqs_enabled())) {
+ 		/*
+ 		 * Neither irq nor preemption are disabled here
+@@ -4070,6 +4067,9 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
+ 		return;
+ 	}
+ 
++	if (unlikely(__this_cpu_read(lockdep_recursion)))
++		return;
++
+ 	/*
+ 	 * We're enabling irqs and according to our state above irqs weren't
+ 	 * already enabled, yet we find the hardware thinks they are in fact
+@@ -4126,9 +4126,6 @@ void noinstr lockdep_hardirqs_on(unsigned long ip)
+ 		goto skip_checks;
+ 	}
+ 
+-	if (unlikely(__this_cpu_read(lockdep_recursion)))
+-		return;
+-
+ 	if (lockdep_hardirqs_enabled()) {
+ 		/*
+ 		 * Neither irq nor preemption are disabled here
+@@ -4139,6 +4136,9 @@ void noinstr lockdep_hardirqs_on(unsigned long ip)
+ 		return;
+ 	}
+ 
++	if (unlikely(__this_cpu_read(lockdep_recursion)))
++		return;
++
+ 	/*
+ 	 * We're enabling irqs and according to our state above irqs weren't
+ 	 * already enabled, yet we find the hardware thinks they are in fact
+
