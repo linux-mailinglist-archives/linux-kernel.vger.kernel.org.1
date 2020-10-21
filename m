@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751DB294B44
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA580294B51
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441765AbgJUKaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 06:30:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:33236 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410020AbgJUKaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 06:30:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F306A1FB;
-        Wed, 21 Oct 2020 03:30:11 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 526433F66E;
-        Wed, 21 Oct 2020 03:30:10 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 11:30:08 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-Subject: Re: [PATCH 06/11] firmware: arm_scmi: add support for protocol
- modularization
-Message-ID: <20201021103008.GC20482@e120937-lin>
-References: <20201014150545.44807-1-cristian.marussi@arm.com>
- <20201014150545.44807-7-cristian.marussi@arm.com>
- <c52f9598-eb33-767c-8181-6e839c884313@linaro.org>
+        id S2441788AbgJUKfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 06:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441780AbgJUKfA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 06:35:00 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42656C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:35:00 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1kVBSG-0006i7-8U; Wed, 21 Oct 2020 12:34:52 +0200
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1kVBSE-00024Q-MQ; Wed, 21 Oct 2020 12:34:50 +0200
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Christophe Roullier <christophe.roullier@st.com>
+Cc:     kernel@pengutronix.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] dt-bindings: arm: stm32: add simple-mfd compatible for tamp node
+Date:   Wed, 21 Oct 2020 12:28:55 +0200
+Message-Id: <20201021102855.18026-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c52f9598-eb33-767c-8181-6e839c884313@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 10:47:28PM -0400, Thara Gopinath wrote:
-> 
-> 
-> On 10/14/20 11:05 AM, Cristian Marussi wrote:
-> > Modify protocol initialization callback adding a new parameter representing
-> > a reference to the available xfer core operations and introduce a macro to
-> > simply register with the core new protocols as loadable drivers.
-> > Keep standard protocols as builtin.
-> > 
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > ---
-> >   drivers/firmware/arm_scmi/base.c    | 56 ++++++++++--------
-> >   drivers/firmware/arm_scmi/bus.c     | 14 ++++-
-> >   drivers/firmware/arm_scmi/clock.c   | 56 +++++++++---------
-> >   drivers/firmware/arm_scmi/common.h  | 42 +++++++++-----
-> >   drivers/firmware/arm_scmi/driver.c  | 50 ++++++++++------
-> >   drivers/firmware/arm_scmi/perf.c    | 88 +++++++++++++++--------------
-> >   drivers/firmware/arm_scmi/power.c   | 46 ++++++++-------
-> >   drivers/firmware/arm_scmi/reset.c   | 46 ++++++++-------
-> >   drivers/firmware/arm_scmi/sensors.c | 52 +++++++++--------
-> >   drivers/firmware/arm_scmi/system.c  | 16 ++++--
-> >   include/linux/scmi_protocol.h       | 18 +++++-
-> >   11 files changed, 288 insertions(+), 196 deletions(-)
-> > 
-> > diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
-> > index f40821eeb103..8d7214fd2187 100644
-> > --- a/drivers/firmware/arm_scmi/base.c
-> > +++ b/drivers/firmware/arm_scmi/base.c
-> > @@ -15,6 +15,8 @@
-> >   #define SCMI_BASE_NUM_SOURCES		1
-> >   #define SCMI_BASE_MAX_CMD_ERR_COUNT	1024
-> > +static const struct scmi_xfer_ops *ops;
-> 
-> Minor nit. I would consider renaming ops to something more
-> meaningful like xfer_ops (or anything that makes sense). ops by
-> itself leads to confusion with ops in scmo_protocol and  in
-> scmi_protocol_events.
-> 
-> Same suggestion for all other declarations of ops in this patch.
-> 
-I agree, but I'm in fact reworking deeply the interface for protocols
-initialization (following some idea from Florian) in order to pass down
-a protocol object including the xfer_ops instead of a handle+ops like
-now, so this hopefully will solve also this concern.
+The stm32mp1 TAMP (Tamper and backup registers) does tamper detection
+and features 32 backup registers that, being in the RTC domain, may
+survive even with Vdd switched off.
 
-Thanks
+This makes it suitable for use to communicate a reboot mode from OS
+to bootloader via the syscon-reboot-mode binding. Add a "simple-mfd"
+to support probing such a child node. The actual reboot mode
+node could then be defined in a board.dts or fixed up by the bootloader.
 
-Cristian
-> -- 
-> Warm Regards
-> Thara
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+v1 available here:
+https://lore.kernel.org/linux-arm-kernel/20200916142216.25142-1-a.fatoum@pengutronix.de/
+
+v1 -> v2:
+ - new patch, rebased on top of
+   https://lore.kernel.org/r/20201014125441.2457-1-arnaud.pouliquen@st.com
+---
+ .../devicetree/bindings/arm/stm32/st,stm32-syscon.yaml       | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+index 6634b3e0853e..4684017a42e4 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+@@ -19,8 +19,11 @@ properties:
+               - st,stm32mp151-pwr-mcu
+               - st,stm32-syscfg
+               - st,stm32-power-config
+-              - st,stm32-tamp
+           - const: syscon
++      - items:
++          - const: st,stm32-tamp
++          - const: syscon
++          - const: simple-mfd
+ 
+   reg:
+     maxItems: 1
+-- 
+2.28.0
+
