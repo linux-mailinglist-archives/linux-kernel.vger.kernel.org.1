@@ -2,77 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582D4294BA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061BB294BA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441896AbgJULMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 07:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
+        id S2441905AbgJULNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 07:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441884AbgJULMP (ORCPT
+        with ESMTP id S2441897AbgJULN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 07:12:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF755C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 04:12:14 -0700 (PDT)
+        Wed, 21 Oct 2020 07:13:26 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFBCC0613CE;
+        Wed, 21 Oct 2020 04:13:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=J062tuoslxNIr5Exk1gMbJFrpEyifl3qGCa0Wcwm4Gw=; b=tIrj9FsxgpkEJ7p8GoYLhM4Qxb
-        O6/muOhWKfwnQwUDWm5GoVA2wmRO/phVg7Tq2TtXVuTofIWSE7RKBN0AEEZZr+FTpBWhLLJnYaXaf
-        IrOQ5tzhwutxhkzbVgLjZk6Yk05PMQGP4MUw9BBiDF4x0EsMFNKhP5N7MloHxCYvnI61UBQF42JEt
-        EOs8vTf0+fy1v+lhkbV2wUjUSgRCIG5X5SeCf8JDb2H//5azK1fSUGHA5a/R5eekI2jFlDPtf1SuY
-        QSyNOLNFprmCAqowmi+FYTj5miyWkLiAgObKGsk00UsvrKCDyMId7VYzr1vXO7wuoMsseXlzK49aT
-        DsucPvug==;
+        bh=M9dHPSWj6ASAnLe8jPNKeEHpWxTp7ZV5PW9ImiYS4AQ=; b=L02IjIUU63CtVTY+C4TQkG/6YY
+        bhhaJ79aD5K2tJkhx/SlgCu3TQax8SogIjjybNT63WDCcn2NV6aKGYl6HxgXH3YZwdZCet98B5jgO
+        VV4B8yRLRAum5BQBLkHFRh2Ejf6hrWSBeoVdBy4mjpO1jzo0ETq3oNZjo3+NEi0DQB/RGJoQiPP/0
+        eDHo5w5SvwrdbLdGbBe3uaVRNrydZwvSygtyF4C7uPBgNZpwf4HBzw0vMZ0aesvkoS0aA5DUnotnT
+        WQY0rD9vyS1MMBSgeeywnwGwVT4UJgp3LBoNQHVLIuTpXqCwNwQ00n3p1lIY3sr0NwKTqTAc6dIRA
+        q0fo3Qig==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVC29-00014e-Gz; Wed, 21 Oct 2020 11:11:57 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVC3K-00039R-AW; Wed, 21 Oct 2020 11:13:10 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4882B304D28;
-        Wed, 21 Oct 2020 13:11:56 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 12F2730377D;
+        Wed, 21 Oct 2020 13:13:05 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 174BC203CC49B; Wed, 21 Oct 2020 13:11:56 +0200 (CEST)
-Date:   Wed, 21 Oct 2020 13:11:56 +0200
+        id D7E942B7DB3F1; Wed, 21 Oct 2020 13:13:05 +0200 (CEST)
+Date:   Wed, 21 Oct 2020 13:13:05 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Xi Wang <xii@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
         Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Josh Don <joshdon@google.com>, linux-kernel@vger.kernel.org,
-        Paul Turner <pjt@google.com>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: [PATCH v2 1/1] sched: watchdog: Touch kernel watchdog with sched
- count
-Message-ID: <20201021111156.GX2651@hirez.programming.kicks-ass.net>
-References: <20201020205704.1741543-1-xii@google.com>
- <20201020205704.1741543-2-xii@google.com>
- <20201021101257.GC2628@hirez.programming.kicks-ass.net>
- <20201021102420.GW2651@hirez.programming.kicks-ass.net>
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>
+Subject: Re: [PATCH] sched/fair: check for idle core
+Message-ID: <20201021111305.GD2628@hirez.programming.kicks-ass.net>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <CAKfTPtB41JopBq0CZVvo16N1u+2Smmc1TamJXkbTVj-pRJeHzA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201021102420.GW2651@hirez.programming.kicks-ass.net>
+In-Reply-To: <CAKfTPtB41JopBq0CZVvo16N1u+2Smmc1TamJXkbTVj-pRJeHzA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 12:24:20PM +0200, Peter Zijlstra wrote:
-> +void resched_current_from_IRQ(void)
-> +{
-> +	struct pt_regs *regs = get_irq_regs();
-> +
-> +	WARN_ON_ONCE(!in_irq());
-> +	WARN_ON_ONCE(user_mode(regs) || IS_ENABLED(CONFIG_PREEMPTION));
+On Wed, Oct 21, 2020 at 09:29:46AM +0200, Vincent Guittot wrote:
+> Hi Julia,
+> 
+> On Tue, 20 Oct 2020 at 19:21, Julia Lawall <Julia.Lawall@inria.fr> wrote:
+> >
+> > On a thread wakeup, the change [1] from runnable load average to load
+> > average for comparing candidate cores means that recent short-running
+> > daemons on the core where a thread ran previously can be considered to
+> > have a higher load than the core performing the wakeup, even when the
+> > core where the thread ran previously is currently idle.  This can
+> > cause a thread to migrate, taking the place of some other thread that
+> > is about to wake up, and so on.  To avoid unnecessary migrations,
+> > extend wake_affine_idle to check whether the core where the thread
+> > previously ran is currently idle, and if so return that core as the
+> > target.
+> >
+> > [1] commit 11f10e5420f6ce ("sched/fair: Use load instead of runnable
+> > load in wakeup path")
+> >
+> > This particularly has an impact when using passive (intel_cpufreq)
+> > power management, where kworkers run every 0.004 seconds on all cores,
+> > increasing the likelihood that an idle core will be considered to have
+> > a load.
+> >
+> > The following numbers were obtained with the benchmarking tool
+> > hyperfine (https://github.com/sharkdp/hyperfine) on the NAS parallel
+> > benchmarks (https://www.nas.nasa.gov/publications/npb.html).  The
+> > tests were run on an 80-core Intel(R) Xeon(R) CPU E7-8870 v4 @
+> > 2.10GHz.  Active (intel_pstate) and passive (intel_cpufreq) power
+> > management were used.  Times are in seconds.  All experiments use all
+> > 160 hardware threads.
+> >
+> >         v5.9/active             v5.9+patch/active
+> > bt.C.c  24.725724+-0.962340     23.349608+-1.607214
+> > lu.C.x  29.105952+-4.804203     25.249052+-5.561617
+> > sp.C.x  31.220696+-1.831335     30.227760+-2.429792
+> > ua.C.x  26.606118+-1.767384     25.778367+-1.263850
+> >
+> >         v5.9/passive            v5.9+patch/passive
+> > bt.C.c  25.330360+-1.028316     23.544036+-1.020189
+> > lu.C.x  35.872659+-4.872090     23.719295+-3.883848
+> > sp.C.x  32.141310+-2.289541     29.125363+-0.872300
+> > ua.C.x  29.024597+-1.667049     25.728888+-1.539772
+> >
+> > On the smaller data sets (A and B) and on the other NAS benchmarks
+> > there is no impact on performance.
+> >
+> > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> 
+> Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
 
-! that, obviously :/
-
-> +
-> +	set_tsk_need_resched(tsk);
-> +	set_preempt_need_resched();
-> +}
+Thanks!
