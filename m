@@ -2,97 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EC9294A5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8ED8294A5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441263AbgJUJTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 05:19:00 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:61420 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437569AbgJUJTA (ORCPT
+        id S2441065AbgJUJSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 05:18:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56035 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2437623AbgJUJSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 05:19:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1603271939; x=1634807939;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+rVpCXr52dnGbmc7Y9HfkgfgWTlzu8JQ4Bcf4/Mlfb4=;
-  b=BD4riH1AWyNHwErYYV5N1xuAtNzKOQM5k1N5TmF2fWSCAOO0J7K17N99
-   aFHs0WrJsDxErYy5GlM8jKNOvWuIEslaqIfmdjTYXBhJhoyIECZe6C9IO
-   S7FN5s3WYF3b4N5FG0j/Ntaxd5XS7LLU5cB0OdDX/PcLHDTdOuE9b+eHS
-   CrfxZXAnTE6MwMAKg/ynjH3UhxiekTvYaOP88ax8EWNIUJy+PtGonMc9P
-   vFN5ofwWWfCeA/8qu0cNLYVBCzcVsYONYgiZ/oH5/D31F6fjpkfQAldft
-   Tmr5Op+zPr+wa6zKyTce+4DjZLFu97POdBzwVXFd0mwPtS1bGHNlFna53
-   Q==;
-IronPort-SDR: ifd+PM8WlqYDzsrG7H1uCjR08Q9aQWKZa34JgqBZuyNrHqiuXfx8QaadFSmhnks9/QiFDnGJMq
- fdVKydKlRSNg3ZslmwsLCUR7vRZtaI7EzPQJhAbFKpjnKge9rm1hgqGGIZ04L36Nk4xVx4Aa3Z
- /1zVm9SmCs6ckMiZ+r+9IzIUyWbQXcltDRnQ8OanlV7gPrWF/odULI+wBAskxjYpNFF292GTyU
- AvygR5gMmrYYdEou1wSeultoMHMyj6sbHaWxgc4V9sUnDXEQmr+TrAs0QTbQs7ZSaoBk/T6Ero
- DxI=
-X-IronPort-AV: E=Sophos;i="5.77,400,1596524400"; 
-   d="scan'208";a="93389639"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Oct 2020 02:18:59 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 21 Oct 2020 02:18:58 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 21 Oct 2020 02:18:58 -0700
-Date:   Wed, 21 Oct 2020 09:17:29 +0000
-From:   Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <roopa@nvidia.com>, <nikolay@nvidia.com>,
-        <jiri@mellanox.com>, <idosch@mellanox.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>,
-        <UNGLinuxDriver@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: Re: [PATCH net-next v6 07/10] bridge: cfm: Netlink SET configuration
- Interface.
-Message-ID: <20201021091729.a6wlccjlin5muejt@soft-test08>
-References: <20201015115418.2711454-1-henrik.bjoernlund@microchip.com>
- <20201015115418.2711454-8-henrik.bjoernlund@microchip.com>
- <20201015103431.25d66c8b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201019085104.2hkz2za2o2juliab@soft-test08>
- <20201019092143.258cb256@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Wed, 21 Oct 2020 05:18:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603271910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BuwkUAjLlfFrMB6xaXRKIQfvGDBRzOXmT/8rwImt4Tc=;
+        b=XGDROQ2b9LP9Auj2eouSrz4DmFP7lvxWAc+sQybxzUzXLsry73PzfpnsUX1m26f43VwqgJ
+        AnQ06kPP1Yc6sKmNQeDRo3JPTFcujNgY+HLm+jtKuTjQR322AS/2JRSEhy6cANeV2mJjEH
+        80jkP5cJLyKuVSIG0EzUmcGbxMvz5y4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-XMsFoiQYNgehE3m6EyhvNw-1; Wed, 21 Oct 2020 05:18:28 -0400
+X-MC-Unique: XMsFoiQYNgehE3m6EyhvNw-1
+Received: by mail-ej1-f69.google.com with SMTP id p19so1518556ejy.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 02:18:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=BuwkUAjLlfFrMB6xaXRKIQfvGDBRzOXmT/8rwImt4Tc=;
+        b=e6KuYCvpw11bvPl4vH0s8Vt5+2lwlmQxSepsLfeV8fo9wOMqxIngCSw+QlLllvVf34
+         yCqyCOFEH+OPXGaLzmfoVImaQ1Ar34/cOHmk7nLIB4ngEhZzuXjR0wMcyF0dHjRbBLqd
+         UvSQh/CBLf7drw00jEuuZF/o3cE6aoZSuYBm6h13ASghhtpBeT4jdY3DlvIgFHNoOOf+
+         YRI2RUYMJDt1TtHlNX0SOJBjqMUhsxOCSjyfp3yj5o+6vtTqLU7o3+Vf6lssX1PygWiy
+         /lOxwM/wQKs/NRehWMWEN4Ypb17ThsCfj43SWiZNXppua/eZkKwK1lRWjJ0aWkjVBgWR
+         kESQ==
+X-Gm-Message-State: AOAM531MkaX9VEgCvrIfuImaS3bk8tH/VDVRWj0pL9ymAyi2TgDYxZuC
+        JhZw3KnR8CAmHkC8CBBDCnthlXMAUeeBrQOfkAVmGhPiDWrdrEn81istu6R/KKS3qFl0dvBXh7/
+        RJLVCaIuqLVJni4nbvocc0N5H
+X-Received: by 2002:a17:906:395a:: with SMTP id g26mr2442206eje.147.1603271907185;
+        Wed, 21 Oct 2020 02:18:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz1RxSS64rCEGcYTuA52gSqVnQYMuyREEUaL2hSk8fLqQi1kllGDBnahWJqHS7C19HXqY1pOg==
+X-Received: by 2002:a17:906:395a:: with SMTP id g26mr2442191eje.147.1603271906947;
+        Wed, 21 Oct 2020 02:18:26 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id e17sm1886517ejh.64.2020.10.21.02.18.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 02:18:26 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 00/10] KVM: VMX: Clean up Hyper-V PV TLB flush
+In-Reply-To: <20201020215613.8972-1-sean.j.christopherson@intel.com>
+References: <20201020215613.8972-1-sean.j.christopherson@intel.com>
+Date:   Wed, 21 Oct 2020 11:18:25 +0200
+Message-ID: <87d01c544e.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20201019092143.258cb256@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for the review. Comments below.
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
-The 10/19/2020 09:21, Jakub Kicinski wrote:> 
-> On Mon, 19 Oct 2020 08:51:04 +0000 Henrik Bjoernlund wrote:
-> > Thank you for the review. Comments below.
-> >
-> > The 10/15/2020 10:34, Jakub Kicinski wrote:
-> > >
-> > > On Thu, 15 Oct 2020 11:54:15 +0000 Henrik Bjoernlund wrote:
-> > > > +     [IFLA_BRIDGE_CFM_MEP_CONFIG_MDLEVEL]     = {
-> > > > +     .type = NLA_U32, .validation_type = NLA_VALIDATE_MAX, .max = 7 },
-> > >
-> > >         NLA_POLICY_MAX(NLA_U32, 7)
-> >
-> > I will change as requested.
-> >
-> > >
-> > > Also why did you keep the validation in the code in patch 4?
-> >
-> > In patch 4 there is no CFM NETLINK so I desided to keep the validation in the
-> > code until NETLINK was added that is now doing the check.
-> > I this a problem?
-> 
-> Nothing calls those functions until patch 7, so there's no need for
-> that code to be added.
+> Clean up KVM's PV TLB flushing when running with EPT on Hyper-V, i.e. as
+> a nested VMM.  
 
-I will change as requested.
+The terminology we use is a bit confusing and I'd like to use the
+opportunity to enlighten myself on how to call "PV TLB flushing"
+properly :-)
+
+Hyper-V supports two types of 'PV TLB flushing':
+
+HvFlushVirtualAddressSpace/HvFlushVirtualAddressList[,Ex] which is
+described in TLFS as ".. hypercall invalidates ... virtual TLB entries
+that belong to a specified address space."
+
+HvFlushGuestPhysicalAddressSpace/HvFlushGuestPhysicalAddressList which
+in TLFS is referred to as "... hypercall invalidates cached L2 GPA to
+GPA mappings within a second level address space... hypercall is like
+the execution of an INVEPT instruction with type “single-context” on all
+processors" and INVEPT is defined in SDM as "Invalidates mappings in the
+translation lookaside buffers (TLBs) and paging-structure caches that
+were derived from extended page tables (EPT)." (and that's what this
+series is about)
+
+and every time I see e.g. 'hv_remote_flush_tlb.*' it takes me some time
+to recall which flushing is this related to. Do you by any chance have
+any suggestions on how things can be improved?
+
+> No real goal in mind other than the sole patch in v1, which
+> is a minor change to avoid a future mixup when TDX also wants to define
+> .remote_flush_tlb.  Everything else is opportunistic clean up.
+>
+
+Looks like a nice cleanup, thanks!
+
+> Ran Hyper-V KVM unit tests (if those are even relevant?)
+
+No, they aren't. KVM doesn't currently implement
+HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_LIST so we can't test this feature
+outside of a real Hyper-V environment. We also don't yet test KVM-on-KVM
+with Enlightened VMCS ...
+
+> but haven't actually tested on top of Hyper-V.
+
+Just in case you are interested in doing so and there's no Hyper-V
+server around, you can either search for a Win10 desktop around or just
+spin an Azure VM where modern instance types (e.g. Dv3/v4, Ev3/v4
+families, Intel only - so no Ea/Da/...) have VMX and PV Hyper-V features
+exposed.
+
+I'm going to give this a try today and I will also try to review
+individual patches, thanks again!
+
+>
+> v2: Rewrite everything.
+>
+> Sean Christopherson (10):
+>   KVM: VMX: Track common EPTP for Hyper-V's paravirt TLB flush
+>   KVM: VMX: Stash kvm_vmx in a local variable for Hyper-V paravirt TLB
+>     flush
+>   KVM: VMX: Fold Hyper-V EPTP checking into it's only caller
+>   KVM: VMX: Do Hyper-V TLB flush iff vCPU's EPTP hasn't been flushed
+>   KVM: VMX: Invalidate hv_tlb_eptp to denote an EPTP mismatch
+>   KVM: VMX: Don't invalidate hv_tlb_eptp if the new EPTP matches
+>   KVM: VMX: Explicitly check for hv_remote_flush_tlb when loading pgd
+>   KVM: VMX: Define Hyper-V paravirt TLB flush fields iff Hyper-V is
+>     enabled
+>   KVM: VMX: Skip additional Hyper-V TLB EPTP flushes if one fails
+>   KVM: VMX: Track PGD instead of EPTP for paravirt Hyper-V TLB flush
+>
+>  arch/x86/kvm/vmx/vmx.c | 102 ++++++++++++++++++++---------------------
+>  arch/x86/kvm/vmx/vmx.h |  16 +++----
+>  2 files changed, 57 insertions(+), 61 deletions(-)
 
 -- 
-/Henrik
+Vitaly
+
