@@ -2,168 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8003E294C07
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCE3294C0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442090AbgJUL47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 07:56:59 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:10222 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2439702AbgJUL46 (ORCPT
+        id S2442100AbgJUL5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 07:57:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44400 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2439761AbgJUL5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 07:56:58 -0400
-X-IronPort-AV: E=Sophos;i="5.77,401,1596492000"; 
-   d="scan'208";a="473669743"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 13:56:55 +0200
-Date:   Wed, 21 Oct 2020 13:56:55 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mel Gorman <mgorman@suse.de>
-cc:     Ingo Molnar <mingo@redhat.com>, kernel-janitors@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>
-Subject: Re: [PATCH] sched/fair: check for idle core
-In-Reply-To: <20201021112038.GC32041@suse.de>
-Message-ID: <alpine.DEB.2.22.394.2010211336410.8475@hadrien>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr> <20201021112038.GC32041@suse.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Wed, 21 Oct 2020 07:57:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603281430;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/RxSo6Za9Zh17GRqA0yhWs2BuTTbXHz6xaIsxqoVi38=;
+        b=bpMcpeJh2Z51oKskkQMqkBLNDXtql5c6sE0mb3U5ufV7aA3//xKaShabZyMR/eNCnnz/9c
+        RRISNcDvYuV7JUVe2qeXr84fbu7S3CLLraAYLh6DL6o+bAGKujS0AHs6xnx+g03/fgEgRH
+        hg9zEvTsIptgnaG5MM7d73qhDmhkufQ=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-lytZSuTVMiGZn7_pPKj9Qw-1; Wed, 21 Oct 2020 07:57:08 -0400
+X-MC-Unique: lytZSuTVMiGZn7_pPKj9Qw-1
+Received: by mail-wm1-f72.google.com with SMTP id z7so1298562wme.8
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 04:57:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=/RxSo6Za9Zh17GRqA0yhWs2BuTTbXHz6xaIsxqoVi38=;
+        b=DQsLpGgB5w8lDLa9Ky73frF6kriPO5v4d8aPp6v2MARlzzhaATs1+3T/9ceqqXGu9/
+         8cFK74hXB5kEL7Qjaoe4WP6IzVaTSayf0qE03u4J99/tae4ZFp2Q6cRFM0h/hwFxjcjo
+         jCvUciPBcxZ8/mcjvnJKf4/D37LgkS3OqDvYnV6HtAXOnRdsXxrlScICd4Iz/BneVF15
+         Hkc2bS4QO/CFN/jUwGaYIWOv3kTxyWmcHXI2DI9YNdL6JlabW7B7y88apYetVi7H/GsF
+         UMgU0DgAAA6qTHPlk/8nuHF/rNRPljz/4+jwl2hsLkl06OeZ0KJ/NHYX/Ztnf3V2/DpC
+         nQ2g==
+X-Gm-Message-State: AOAM531GF7dT9LBnS8P7c8NC4N6LOI2tDaFPqE6bJBLF1WtiRdVKogs2
+        QL+B0piyDw0+QtXyqoVChn+7ldA8yjdg6uTY7Dq1UOVLrGvQiuDsEymZf7zHr4JMsvH1751Z6ob
+        H58OraIxThXCMzwAvuEa189qE
+X-Received: by 2002:adf:fd49:: with SMTP id h9mr4572869wrs.115.1603281427231;
+        Wed, 21 Oct 2020 04:57:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzeaI37j337V9Ikj6xAF4TEL4WvSaEgGS1E9R+Awg6FvjdxGLoUG3XxA2gCENMvzXR18kyq6Q==
+X-Received: by 2002:adf:fd49:: with SMTP id h9mr4572844wrs.115.1603281426990;
+        Wed, 21 Oct 2020 04:57:06 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id c130sm3166716wma.17.2020.10.21.04.57.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 04:57:06 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/10] KVM: VMX: Track common EPTP for Hyper-V's paravirt TLB flush
+In-Reply-To: <20201020215613.8972-2-sean.j.christopherson@intel.com>
+References: <20201020215613.8972-1-sean.j.christopherson@intel.com> <20201020215613.8972-2-sean.j.christopherson@intel.com>
+Date:   Wed, 21 Oct 2020 13:57:05 +0200
+Message-ID: <878sbz6bce.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
-
-On Wed, 21 Oct 2020, Mel Gorman wrote:
-
-> On Tue, Oct 20, 2020 at 06:37:59PM +0200, Julia Lawall wrote:
-> > On a thread wakeup, the change [1] from runnable load average to load
-> > average for comparing candidate cores means that recent short-running
-> > daemons on the core where a thread ran previously can be considered to
-> > have a higher load than the core performing the wakeup, even when the
-> > core where the thread ran previously is currently idle.  This can
-> > cause a thread to migrate, taking the place of some other thread that
-> > is about to wake up, and so on.  To avoid unnecessary migrations,
-> > extend wake_affine_idle to check whether the core where the thread
-> > previously ran is currently idle, and if so return that core as the
-> > target.
-> >
-> > [1] commit 11f10e5420f6ce ("sched/fair: Use load instead of runnable
-> > load in wakeup path")
-> >
-> > This particularly has an impact when using passive (intel_cpufreq)
-> > power management, where kworkers run every 0.004 seconds on all cores,
-> > increasing the likelihood that an idle core will be considered to have
-> > a load.
-> >
-> > The following numbers were obtained with the benchmarking tool
-> > hyperfine (https://github.com/sharkdp/hyperfine) on the NAS parallel
-> > benchmarks (https://www.nas.nasa.gov/publications/npb.html).  The
-> > tests were run on an 80-core Intel(R) Xeon(R) CPU E7-8870 v4 @
-> > 2.10GHz.  Active (intel_pstate) and passive (intel_cpufreq) power
-> > management were used.  Times are in seconds.  All experiments use all
-> > 160 hardware threads.
-> >
-> > 	v5.9/active		v5.9+patch/active
-> > bt.C.c	24.725724+-0.962340	23.349608+-1.607214
-> > lu.C.x	29.105952+-4.804203	25.249052+-5.561617
-> > sp.C.x	31.220696+-1.831335	30.227760+-2.429792
-> > ua.C.x	26.606118+-1.767384	25.778367+-1.263850
-> >
-> > 	v5.9/passive		v5.9+patch/passive
-> > bt.C.c	25.330360+-1.028316	23.544036+-1.020189
-> > lu.C.x	35.872659+-4.872090	23.719295+-3.883848
-> > sp.C.x	32.141310+-2.289541	29.125363+-0.872300
-> > ua.C.x	29.024597+-1.667049	25.728888+-1.539772
-> >
-> > On the smaller data sets (A and B) and on the other NAS benchmarks
-> > there is no impact on performance.
-> >
-> > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> Explicitly track the EPTP that is common to all vCPUs instead of
+> grabbing vCPU0's EPTP when invoking Hyper-V's paravirt TLB flush.
+> Tracking the EPTP will allow optimizing the checks when loading a new
+> EPTP and will also allow dropping ept_pointer_match, e.g. by marking
+> the common EPTP as invalid.
 >
-> I suspect that the benefit of this patch is due to avoiding the overhead
-> of wake_affine_weight() check because the following check exists in
-> select_idle_sibling
-
-I'm running 160 threads on 160 cores (80 physical cores).  All of the
-threads are thus best off to just stay where they are.  If one thread
-moves to the socket of prev, then they will be displacing other threads
-that also expect to return to where they were previously located.
-
-You can see this in the traces shown here:
-
-https://pages.lip6.fr/Julia.Lawall/uas.pdf
-
-Prior to 5.8, my machine was using intel_pstate and had few background
-tasks.  Thus the problem wasn't visible in practice.  Starting with 5.8
-the kernel decided that intel_cpufreq would be more appropriate, which
-introduced kworkers every 0.004 seconds on all cores.  In the graphs for
-early versions, sometimes the whole benchmark runs with the threads just
-staying on their cores, or a few migrations.  Starting with 5.8, after 5
-seconds where there are a number of synchronizations, all of the threads
-move around between all of the cores.  Typically, one bad placement leads
-to 10-15 threads moving around, until one ends up on the idle core where
-the original thread was intended to be.
-
+> This also technically fixes a bug where KVM could theoretically flush an
+> invalid GPA if all vCPUs have an invalid root.  In practice, it's likely
+> impossible to trigger a remote TLB flush in such a scenario.  In any
+> case, the superfluous flush is completely benign.
 >
->         /*
->          * If the previous CPU is cache affine and idle, don't be stupid:
->          */
->         if (prev != target && cpus_share_cache(prev, target) &&
->             (available_idle_cpu(prev) || sched_idle_cpu(prev)))
->                 return prev;
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 19 ++++++++-----------
+>  arch/x86/kvm/vmx/vmx.h |  1 +
+>  2 files changed, 9 insertions(+), 11 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index bcc097bb8321..6d53bcc4a1a9 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -486,6 +486,7 @@ static void check_ept_pointer_match(struct kvm *kvm)
+>  		}
+>  	}
+>  
+> +	to_kvm_vmx(kvm)->hv_tlb_eptp = tmp_eptp;
 
-This isn't triggered in the problematic case, because the problematic case
-is where the prev core and the waker core are on different sockets.
+I was going to suggest you reset hv_tlb_eptp to INVALID_PAGE in case
+this check fails (couple lines above) but this function is gone later in
+the series and the replacement code in hv_remote_flush_tlb_with_range()
+does exactly that.
 
-To my understanding, when the runnable load was used and prev was idle,
-wake_affine_weight would fail, and then wake_affine would return prev.
-With the load average, in the case where there is a thread on the waker
-core and there has recently been a daemon on the prev core, the comparison
-between the cores is a bit random.  The patch thus tries to restore the
-previous behavior.
+>  	to_kvm_vmx(kvm)->ept_pointers_match = EPT_POINTERS_MATCH;
+>  }
+>  
+> @@ -498,21 +499,18 @@ static int kvm_fill_hv_flush_list_func(struct hv_guest_mapping_flush_list *flush
+>  			range->pages);
+>  }
+>  
+> -static inline int __hv_remote_flush_tlb_with_range(struct kvm *kvm,
+> -		struct kvm_vcpu *vcpu, struct kvm_tlb_range *range)
+> +static inline int hv_remote_flush_eptp(u64 eptp, struct kvm_tlb_range *range)
+>  {
+> -	u64 ept_pointer = to_vmx(vcpu)->ept_pointer;
+> -
+>  	/*
+>  	 * FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE hypercall needs address
+>  	 * of the base of EPT PML4 table, strip off EPT configuration
+>  	 * information.
+>  	 */
+>  	if (range)
+> -		return hyperv_flush_guest_mapping_range(ept_pointer & PAGE_MASK,
+> +		return hyperv_flush_guest_mapping_range(eptp & PAGE_MASK,
+>  				kvm_fill_hv_flush_list_func, (void *)range);
+>  	else
+> -		return hyperv_flush_guest_mapping(ept_pointer & PAGE_MASK);
+> +		return hyperv_flush_guest_mapping(eptp & PAGE_MASK);
+>  }
+>  
+>  static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
+> @@ -530,12 +528,11 @@ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
+>  		kvm_for_each_vcpu(i, vcpu, kvm) {
+>  			/* If ept_pointer is invalid pointer, bypass flush request. */
+>  			if (VALID_PAGE(to_vmx(vcpu)->ept_pointer))
+> -				ret |= __hv_remote_flush_tlb_with_range(
+> -					kvm, vcpu, range);
+> +				ret |= hv_remote_flush_eptp(to_vmx(vcpu)->ept_pointer,
+> +							    range);
+>  		}
+> -	} else {
+> -		ret = __hv_remote_flush_tlb_with_range(kvm,
+> -				kvm_get_vcpu(kvm, 0), range);
+> +	} else if (VALID_PAGE(to_kvm_vmx(kvm)->hv_tlb_eptp)) {
+> +		ret = hv_remote_flush_eptp(to_kvm_vmx(kvm)->hv_tlb_eptp, range);
 
-julia
+I assume Hyper-V will swallow IVALID_PAGE without complaining much but
+it seems pointless to do anything in this case indeed.
 
-> Still, the concept makes some sense to avoid wake_affine_weight but look
-> at the earlier part of wake_affine_idle()
->
->         if (available_idle_cpu(this_cpu) && cpus_share_cache(this_cpu, prev_cpu))
->                 return available_idle_cpu(prev_cpu) ? prev_cpu : this_cpu;
->
-> This thing is almost completely useless because this_cpu is only going to
-> be idle if it's a wakeup from interrupt context when the CPU was otherwise
-> idle *but* it takes care to only use the CPU if this and prev share LLC.
->
-> The patch as it stands may leave a task on a remote node when it should
-> have been pulled local to the waker because prev happened to be idle. This
-> is not guaranteed because a node could have multiple LLCs and prev is
-> still appropriate but that's a different problem entirely and requires
-> much deeper surgery. Still, not pulling a task from a remote node is
-> a change in expected behaviour. While it's possible that NUMA domains
-> will not even reach this path, it depends on the NUMA distance as can
-> be seen in sd_init() for the setting of SD_WAKE_AFFINE so I think the
-> cpus_share_cache check is necessary.
->
-> I think it would be more appropriate to rework that block that checks
-> this_cpu to instead check if the CPUs share cache first and then return one
-> of them (preference to prev based on the comment above it about avoiding
-> a migration) if either one is idle.
->
-> I see Vincent already agreed with the patch so I could be wrong.  Vincent,
-> did I miss something stupid?
->
-> --
-> Mel Gorman
-> SUSE Labs
->
+>  	}
+>  
+>  	spin_unlock(&to_kvm_vmx(kvm)->ept_pointer_lock);
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 5961cb897125..3d557a065c01 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -301,6 +301,7 @@ struct kvm_vmx {
+>  	bool ept_identity_pagetable_done;
+>  	gpa_t ept_identity_map_addr;
+>  
+> +	hpa_t hv_tlb_eptp;
+>  	enum ept_pointers_status ept_pointers_match;
+>  	spinlock_t ept_pointer_lock;
+>  };
+
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+-- 
+Vitaly
+
