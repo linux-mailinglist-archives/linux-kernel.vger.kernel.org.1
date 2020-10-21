@@ -2,141 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF692947B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 07:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A373E2947B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 07:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440395AbgJUFRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 01:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440388AbgJUFRD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 01:17:03 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE701C0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 22:17:03 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id g29so785336pgl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 22:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=j6Ur/gsET9allS69C/SwfChyOM+T3pg318AITvWNDuA=;
-        b=g4TTsKvaowv7/wr+VS3Ku6rtExc5x8W7HPbEQU6zpWz2X8OuSv+1OkckKYcm/1M2m/
-         aOHbG4yr78TMHC7Wj89rdtWl0ZIMgcEc6utPG445aqpDXT6BGq4nnqVx8W1o7vzmvmRv
-         u8zSvmt7K99e2goVnUUsfj32YKv/K3NSPlhNk5cWPqzoVW8/1S8+ofXcByA3uhZBkxbF
-         aM9e706gA8R31S3+pMccLDMYA2y63A7aJNhPNgKTkQsGAWNONzzOBjErvoeys72msFNU
-         gCKeSLbIMdPPKYh9SX0ZIJ258S/3CM2o2I3bJwOPcrk89b9EMf7JeY0ANNHCuLF1ff81
-         ToLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=j6Ur/gsET9allS69C/SwfChyOM+T3pg318AITvWNDuA=;
-        b=W82mtLSRK0mQebvHt7Ec6RmeGoKLMGG/EM3Gj7w3EKOZl+39yxZSEdNOG9d7V5VTs2
-         l6s39lGWYieSmP4Go8yZFdXvK+1oYER5nyl+Nxew4keQiSSv8X+/IYma+uB7ZFj9UPgw
-         ri70vBNh0YquQQNBBTOEv0q8MH9jplbh7Tgm/9ydyYbVmq9ELVZ/mnSlzAQjfXAXv7xy
-         hhHrZ7Aqt/7/ao2IzfKTENhLx7v5M8SC8/EMcmXXY2DTn+iqIIzTUIvgl6s0K18S6jc6
-         QKVC+EywdpgtWbn6/4wpLyorhHKGflmEDWuZaOmX0ZpGVj0vCnSqyqiiq/8YF2byEUUm
-         XjBw==
-X-Gm-Message-State: AOAM531i5zXidtYp0Pj7kQ383NexoBKBnoP9gWtFFf4Z9dQ4KWhxhL/k
-        Esh98Zy+8v/szOjqAMhucvtawQ==
-X-Google-Smtp-Source: ABdhPJycofoRoqzjnkg5UtG2FjiPsM6yWwwsNijvUU0TgcTdxc24SnVc8wv/Uvir4pfHYajHkyAWtA==
-X-Received: by 2002:aa7:854a:0:b029:154:f2fd:c70a with SMTP id y10-20020aa7854a0000b0290154f2fdc70amr1601089pfn.39.1603257423084;
-        Tue, 20 Oct 2020 22:17:03 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([14.192.49.12])
-        by smtp.gmail.com with ESMTPSA id l18sm725024pfd.210.2020.10.20.22.16.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 20 Oct 2020 22:17:02 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 13:16:56 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
-Subject: Re: [PATCH v2 12/14] perf arm-spe: Add more sub classes for
- operation packet
-Message-ID: <20201021051656.GF7226@leoy-ThinkPad-X240s>
-References: <20200929133917.9224-1-leo.yan@linaro.org>
- <20200929133917.9224-13-leo.yan@linaro.org>
- <de7d783c-29c6-0f71-922d-bcefe8f1962a@arm.com>
+        id S2440405AbgJUFSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 01:18:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440398AbgJUFSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 01:18:51 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5701D21D6C;
+        Wed, 21 Oct 2020 05:18:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603257531;
+        bh=C8dQdkv3mlE3dSkLdyzKxia49yjugNb94xNvwlhOYvs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uxBPJcrsFjytd1NxCXM4vBfjEbsNA5N+NXUBfjDsBTKdc1Y0tikAgrL6fTKwG2v+c
+         i08g7msZHFBkOiEc14xz9jKKmRpx7MUaBMn6CIDoCVHFcshuLrVcVeIeqeWFDYLuot
+         1dzDNThqqMXy1z6r0x5nlmEvoTxAE0op1DIZh1Kw=
+Date:   Wed, 21 Oct 2020 07:19:31 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Furquan Shaikh <furquan@google.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Prashant Malani <pmalani@chromium.org>,
+        Arthur Heymans <arthur@aheymans.xyz>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Ard Biesheuvel <ardb@kernel.org>, dlaurie@google.com
+Subject: Re: [PATCH] firmware: gsmi: Drop the use of dma_pool_* API functions
+Message-ID: <20201021051931.GA967331@kroah.com>
+References: <20201021050141.377787-1-furquan@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <de7d783c-29c6-0f71-922d-bcefe8f1962a@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201021050141.377787-1-furquan@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 10:54:57PM +0100, André Przywara wrote:
-> On 29/09/2020 14:39, Leo Yan wrote:
+On Tue, Oct 20, 2020 at 10:01:41PM -0700, Furquan Shaikh wrote:
+> GSMI driver uses dma_pool_* API functions for buffer allocation
+> because it requires that the SMI buffers are allocated within 32-bit
+> physical address space. However, this does not work well with IOMMU
+> since there is no real device and hence no domain associated with the
+> device.
 > 
-> Hi,
-> 
-> > For the operation type packet payload with load/store class, it misses
-> > to support these sub classes:
-> > 
-> >   - A load/store targeting the general-purpose registers;
-> >   - A load/store targeting unspecified registers;
-> >   - The ARMv8.4 nested virtualisation extension can redirect system
-> >     register accesses to a memory page controlled by the hypervisor.
-> >     The SPE profiling feature in newer implementations can tag those
-> >     memory accesses accordingly.
-> > 
-> > Add the bit pattern describing load/store sub classes, so that the perf
-> > tool can decode it properly.
-> > 
-> > Inspired by Andre Przywara, refined the commit log and code for more
-> > clear description.
-> > 
-> > Co-developed-by: Andre Przywara <andre.przywara@arm.com>
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > ---
-> >  .../util/arm-spe-decoder/arm-spe-pkt-decoder.c    | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> > 
-> > diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > index a848c784f4cf..57a2d5494838 100644
-> > --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > @@ -378,6 +378,21 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
-> >  				ret = arm_spe_pkt_snprintf(&buf, &blen, " SIMD-FP");
-> >  				if (ret < 0)
-> >  					return ret;
-> > +			} else if ((payload & SPE_OP_PKT_LDST_SUBCLASS_MASK) ==
-> 
-> These three and the one above use the same mask, should this go into a
-> switch case? Move this block to the end, then do:
-> 	switch (payload & SPE_OP_PKT_LDST_SUBCLASS_MASK) {
-> 	case SPE_OP_PKT_LDST_SUBCLASS_GP_REG:
-> 		...
-> 	case SPE_OP_PKT_LDST_SUBCLASS_UNSPEC_REG:
-> 		...
-> Maybe even assign just a string pointer inside, then have one snprintf.
-> Haven't checked it that *really* looks better, though.
+> Since this is not a real device, it does not require any device
+> address(IOVA) for the buffer allocations. The only requirement is to
+> ensure that the physical address allocated to the buffer is within
+> 32-bit physical address space. This change allocates a page using
+> `get_zeroed_page()` and passes in GFP_DMA32 flag to ensure that the
+> page allocation is done in the DMA32 zone. All the buffer allocation
+> requests for gsmi_buf are then satisfed using this pre-allocated page
+> for the device.
 
-Good point, will follow up this suggestion.
+Are you sure that "GFP_DMA32" really does what you think it does?  A
+"normal" call with GFP_KERNEL" will give you memory that is properly
+dma-able.
 
-> Also those later checks are quite indented, shall those be moved to
-> helper functions? Again just an idea ....
+We should not be adding new GFP_DMA* users in the kernel in these days,
+just call dma_alloc*() and you should be fine.
 
-Yeah, I also considered to divide into small functions to handle
-different types of packets so can avoid deep indention.  Will tweak
-patches for this.
+thanks,
 
-Very appreciate for your detailed reviewing and suggestions throughout
-the patch set!
-
-Leo
+greg k-h
