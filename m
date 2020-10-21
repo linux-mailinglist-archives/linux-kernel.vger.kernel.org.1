@@ -2,213 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B5B294C86
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F2B294C81
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442343AbgJUM0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:26:05 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8858 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725791AbgJUM0E (ORCPT
+        id S2411808AbgJUMZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:25:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725764AbgJUMZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:26:04 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09LC3ZMk115791;
-        Wed, 21 Oct 2020 08:25:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=bvSsPq3wOmmtOX1az4xCyTfWApYvcQkBAvmNyM4Gu/k=;
- b=jDOgf0Qi/Sfe+6zHOdryNDHp6PEAoQIUv6TAVYN7AN285iFKam5UdOLQ1rLc2u59HXdO
- qg8wMwH6KEvRao0u/p/Gn5/JnkCxOqU8bYpsMJib1LZPjfxzMgCH8UdqmvZI6mrDFZBJ
- psJuJMBJVwMkuDPePGZnuPboeSizU2G648FNjJV/aUsVynXGY/J8gsWJB9rRtcnkOudB
- NhUXSzPevHWifnim3vTckQy27ecypWvuQoaL11zQ2F7SyapPGwvu/L47c5PM2csZx65T
- NtHUILzQEqxFqIa+MrnDnoOedaMn021bLHv2yhV4lH9haaHUK4iS0rdULyz4gv5i2PxX dA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34ak37krm8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Oct 2020 08:25:41 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09LC5592123886;
-        Wed, 21 Oct 2020 08:25:41 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34ak37krkj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Oct 2020 08:25:41 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09LCCH5h010636;
-        Wed, 21 Oct 2020 12:25:39 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 347qvhca8x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Oct 2020 12:25:38 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09LCPa9t28901750
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Oct 2020 12:25:36 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 883C04C050;
-        Wed, 21 Oct 2020 12:25:36 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 709A94C040;
-        Wed, 21 Oct 2020 12:25:32 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.92.86])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Oct 2020 12:25:32 +0000 (GMT)
-Message-ID: <7b2ccd620a9de5c2fd57b8e8aeb41d5476f83b28.camel@linux.ibm.com>
-Subject: Re: [PATCH v7 1/4] KEYS: trusted: Add generic trusted keys framework
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Markus Wamser <Markus.Wamser@mixed-mode.de>,
-        Luke Hinds <lhinds@redhat.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org
-Date:   Wed, 21 Oct 2020 08:25:31 -0400
-In-Reply-To: <CAFA6WYM7aJwP9j_ayGvbJPu-cyv87rsm9N4Wj2OCOMnmfDx+Rw@mail.gmail.com>
-References: <1602065268-26017-1-git-send-email-sumit.garg@linaro.org>
-         <1602065268-26017-2-git-send-email-sumit.garg@linaro.org>
-         <8e07f9401c9f7e18fb1453b7b290472c0049c6e6.camel@linux.ibm.com>
-         <CAFA6WYM7aJwP9j_ayGvbJPu-cyv87rsm9N4Wj2OCOMnmfDx+Rw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-21_05:2020-10-20,2020-10-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999 mlxscore=0
- phishscore=0 adultscore=0 suspectscore=2 bulkscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010210096
+        Wed, 21 Oct 2020 08:25:37 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A82C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:25:37 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id c16so2205804wmd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=N0d0xDJJJQW0QSV6ErmpnDaHVLNafog1H67g3oPgro4=;
+        b=HeSR5nl1OLm6pdOfxwlW+srunJfuG8TQPoEgsFRUxvO5HvO2Qf2sB8F1LnTqa91Que
+         YkjMBg5sHNjPVOz8ERAnG4VJ1jHBeR+7kDmy7lREYwnVeT1hSC1S3k3NJf8eyk9Wd+ac
+         1X8niv888wjCPUkc0sJxwueaW/rEYD5o2lTx2kMnD9BkVNYHG335O3kHHHjUDljq8b2E
+         bXCGXA+0Pzh9ePm3aywkaycrnvipoYnS9+mwmIQZAOkCV/obbqsJ/1bZo3E3c8woM/Qe
+         8iZdcabeMwtkjLFwjQCroZ+ujVPNQz+A7p0xr9S3RPQzwIHbI8NAWk9Z/GHEeyUcqe8e
+         Vsog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=N0d0xDJJJQW0QSV6ErmpnDaHVLNafog1H67g3oPgro4=;
+        b=AYKC8ufLzt3g7LMgfvV0vy1l6SzGlQW/Tu7z+8t5PQzT4F6erOVmBoD5zGBOwOirBi
+         Z1EBQ82A79FdMQiUw7uIXCcPwvRTUxZNZOBEkeP4yiYEI7MGoclWKJ1k6VBe/j8UA2ZY
+         RtuyeWqgg9RTD5jVF34ZGMzbMLpE1156+9hTPK9IBvTTD9NfnEHDQChe8wRUXimeusi3
+         uSptLzI8L9PdZIOoBCXvOC8PEuSzfJZDaMucasNO0PcEMm2EhIUkja40dHARy9Okef9a
+         8UdKLMT6u5NqZrTi4KujVeBht77NRrRxbi/RyMDrpsEO3h9KiE1+WCwuTZlUr0gCn3oo
+         q6gw==
+X-Gm-Message-State: AOAM530Y9EFYuojTe5ROpjKPmrBJpImqkPfSjbf+Qv2FZRq61GyI4K3y
+        3xv0w+FsfMewmnhOJrUlwutuKA==
+X-Google-Smtp-Source: ABdhPJxD+m3O6OrhK0aPrfbMtmzbuwyZJl8rPeRIg2kgWMmPmGtsSBdIN8NJ6WX1oI+47TA+NJNb6A==
+X-Received: by 2002:a1c:3503:: with SMTP id c3mr3243896wma.43.1603283135669;
+        Wed, 21 Oct 2020 05:25:35 -0700 (PDT)
+Received: from vingu-book ([2a01:e0a:f:6020:c12c:e34b:8d3a:d26d])
+        by smtp.gmail.com with ESMTPSA id v11sm3075632wml.26.2020.10.21.05.25.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 21 Oct 2020 05:25:34 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 14:25:32 +0200
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles.Muller@inria.fr
+Subject: Re: [PATCH] sched/fair: check for idle core
+Message-ID: <20201021122532.GA30733@vingu-book>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <20201021112038.GC32041@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201021112038.GC32041@suse.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-21 at 11:16 +0530, Sumit Garg wrote:
-> Thanks Mimi for your comments.
+Le mercredi 21 oct. 2020 à 12:20:38 (+0100), Mel Gorman a écrit :
+> On Tue, Oct 20, 2020 at 06:37:59PM +0200, Julia Lawall wrote:
+> > On a thread wakeup, the change [1] from runnable load average to load
+> > average for comparing candidate cores means that recent short-running
+> > daemons on the core where a thread ran previously can be considered to
+> > have a higher load than the core performing the wakeup, even when the
+> > core where the thread ran previously is currently idle.  This can
+> > cause a thread to migrate, taking the place of some other thread that
+> > is about to wake up, and so on.  To avoid unnecessary migrations,
+> > extend wake_affine_idle to check whether the core where the thread
+> > previously ran is currently idle, and if so return that core as the
+> > target.
+> > 
+> > [1] commit 11f10e5420f6ce ("sched/fair: Use load instead of runnable
+> > load in wakeup path")
+> > 
+> > This particularly has an impact when using passive (intel_cpufreq)
+> > power management, where kworkers run every 0.004 seconds on all cores,
+> > increasing the likelihood that an idle core will be considered to have
+> > a load.
+> > 
+> > The following numbers were obtained with the benchmarking tool
+> > hyperfine (https://github.com/sharkdp/hyperfine) on the NAS parallel
+> > benchmarks (https://www.nas.nasa.gov/publications/npb.html).  The
+> > tests were run on an 80-core Intel(R) Xeon(R) CPU E7-8870 v4 @
+> > 2.10GHz.  Active (intel_pstate) and passive (intel_cpufreq) power
+> > management were used.  Times are in seconds.  All experiments use all
+> > 160 hardware threads.
+> > 
+> > 	v5.9/active		v5.9+patch/active
+> > bt.C.c	24.725724+-0.962340	23.349608+-1.607214
+> > lu.C.x	29.105952+-4.804203	25.249052+-5.561617
+> > sp.C.x	31.220696+-1.831335	30.227760+-2.429792
+> > ua.C.x	26.606118+-1.767384	25.778367+-1.263850
+> > 
+> > 	v5.9/passive		v5.9+patch/passive
+> > bt.C.c	25.330360+-1.028316	23.544036+-1.020189
+> > lu.C.x	35.872659+-4.872090	23.719295+-3.883848
+> > sp.C.x	32.141310+-2.289541	29.125363+-0.872300
+> > ua.C.x	29.024597+-1.667049	25.728888+-1.539772
+> > 
+> > On the smaller data sets (A and B) and on the other NAS benchmarks
+> > there is no impact on performance.
+> > 
+> > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 > 
-> On Wed, 21 Oct 2020 at 08:51, Mimi Zohar <zohar@linux.ibm.com> wrote:
-> >
-> > On Wed, 2020-10-07 at 15:37 +0530, Sumit Garg wrote:
-> >
-> > > +/*
-> > > + * trusted_destroy - clear and free the key's payload
-> > > + */
-> > > +static void trusted_destroy(struct key *key)
-> > > +{
-> > > +     kfree_sensitive(key->payload.data[0]);
-> > > +}
-> > > +
-> > > +struct key_type key_type_trusted = {
-> > > +     .name = "trusted",
-> > > +     .instantiate = trusted_instantiate,
-> > > +     .update = trusted_update,
-> > > +     .destroy = trusted_destroy,
-> > > +     .describe = user_describe,
-> > > +     .read = trusted_read,
-> > > +};
-> > > +EXPORT_SYMBOL_GPL(key_type_trusted);
-> > > +
-> > > +static int __init init_trusted(void)
-> > > +{
-> > > +     int i, ret = 0;
-> > > +
-> > > +     for (i = 0; i < ARRAY_SIZE(trusted_key_sources); i++) {
-> > > +             if (trusted_key_source &&
-> > > +                 strncmp(trusted_key_source, trusted_key_sources[i].name,
-> > > +                         strlen(trusted_key_sources[i].name)))
-> > > +                     continue;
-> > > +
-> > > +             trusted_key_ops = trusted_key_sources[i].ops;
-> > > +
-> > > +             ret = trusted_key_ops->init();
-> > > +             if (!ret)
-> > > +                     break;
-> > > +     }
-> >
-> > In the case when the module paramater isn't specified and both TPM and
-> > TEE are enabled, trusted_key_ops is set to the last source initialized.
+> I suspect that the benefit of this patch is due to avoiding the overhead
+> of wake_affine_weight() check because the following check exists in
+> select_idle_sibling
 > 
-> I guess there is some misunderstanding. Here it's only a single trust
-> source (TPM *or* TEE) is initialized and only that trust source would
-> be active at runtime. And trusted_key_ops would be initialized to the
-> first trust source whose initialization is successful (see check: "if
-> (!ret)").
+>         /*
+>          * If the previous CPU is cache affine and idle, don't be stupid:
+>          */
+>         if (prev != target && cpus_share_cache(prev, target) &&
+>             (available_idle_cpu(prev) || sched_idle_cpu(prev)))
+>                 return prev;
+> 
+> Still, the concept makes some sense to avoid wake_affine_weight but look
+> at the earlier part of wake_affine_idle()
+> 
+>         if (available_idle_cpu(this_cpu) && cpus_share_cache(this_cpu, prev_cpu))
+>                 return available_idle_cpu(prev_cpu) ? prev_cpu : this_cpu;
+> 
+> This thing is almost completely useless because this_cpu is only going to
+> be idle if it's a wakeup from interrupt context when the CPU was otherwise
+> idle *but* it takes care to only use the CPU if this and prev share LLC.
+> 
+> The patch as it stands may leave a task on a remote node when it should
+> have been pulled local to the waker because prev happened to be idle. This
+> is not guaranteed because a node could have multiple LLCs and prev is
+> still appropriate but that's a different problem entirely and requires
+> much deeper surgery. Still, not pulling a task from a remote node is
+> a change in expected behaviour. While it's possible that NUMA domains
+> will not even reach this path, it depends on the NUMA distance as can
+> be seen in sd_init() for the setting of SD_WAKE_AFFINE so I think the
+> cpus_share_cache check is necessary.
+> 
+> I think it would be more appropriate to rework that block that checks
+> this_cpu to instead check if the CPUs share cache first and then return one
+> of them (preference to prev based on the comment above it about avoiding
+> a migration) if either one is idle.
+> 
+> I see Vincent already agreed with the patch so I could be wrong.  Vincent,
+> did I miss something stupid?
 
-My mistake.
+This patch fixes the problem that we don't favor anymore the prev_cpu when it is idle since
+commit 11f10e5420f6ce because load is not null when cpu is idle whereas runnable_load was
+And this is important because this will then decide in which LLC we will looks for a cpu
 
 > 
-> > After patch 2/4, the last trusted source initialized is TEE.  If the
-> > intention is to limit it to either TPM or TEE, then trusted_key_ops
-> > should have a default value, which could be overwritten at runtime.
-> > That would address Luke Hind's concerns of making the decision at
-> > compile time.
-> 
-> I think traversing the trust source list with the initial value being
-> TPM would be default value.
-
-Agreed
-> 
-> >
-> > trusted_key_ops should be defined as __ro_after_init, like is currently
-> > done for other LSM structures.
-> 
-> Sure, will do.
-
-Thanks
-> 
-> >
-> > > +
-> > > +     /*
-> > > +      * encrypted_keys.ko depends on successful load of this module even if
-> > > +      * trusted key implementation is not found.
-> > > +      */
-> > > +     if (ret == -ENODEV)
-> > > +             return 0;
-> > > +
-> > > +     return ret;
-> > > +}
-> > > +
-> > > +static void __exit cleanup_trusted(void)
-> > > +{
-> > > +     trusted_key_ops->exit();
-> >
-> > If the intention is really to support both TPM and TEE trusted keys at
-> > the same time, as James suggested, then the same "for" loop as in
-> > init_trusted() is needed here and probably elsewhere.
-> 
-> Current intention is to only support a single trust source (TPM or
-> TEE) at runtime. But in future if there are use-cases then framework
-> can be extended to support multiple trust sources at runtime as well.
-
-Ok, the last sentence of the patch description, "Also, add a module
-parameter in order to select a particular trust source in case a
-platform support multiple trust sources.", needs to be expanded to:
-- indicate only one trust source at a time is supported
-- indicate the default, if the module_param is not specified
-
-I would also change the word from "add" to "define".   The new "source"
-module parameter needs to be added to the admin-guide/kernel-parameters 
-documentation.
-
-thanks,
-
-Mimi   
-
-
+> -- 
+> Mel Gorman
+> SUSE Labs
