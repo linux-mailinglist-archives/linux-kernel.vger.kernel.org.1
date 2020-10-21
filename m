@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6F22953A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542F22953A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505543AbgJUUw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 16:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
+        id S2505558AbgJUUxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 16:53:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505533AbgJUUw4 (ORCPT
+        with ESMTP id S2505512AbgJUUxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 16:52:56 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55CD4C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:52:55 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id n16so2191925pgv.13
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:52:55 -0700 (PDT)
+        Wed, 21 Oct 2020 16:53:31 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F724C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:53:31 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id lw2so1774515pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:53:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=ClZ+itAYHP1SxYy/1eiELkqdER63iI6Fwa0ilWU8UeI=;
-        b=ajPWpU9RuEZH1Nq7OAbOr8zwHPWVHRVda1XVCpTMTHC0uH84EVv/0zw4i1wJqg0RwH
-         ZP1393V/uJq6KtTlF+DVb4yoW+f5v+pRiOonR8ZEwNsyR3QcNXXRasCX3G5opO+p/DUB
-         ikCHO/JqWzdljdTyiMxkVM6V6NF5Jrr7eaAJ2XULS3flxlQcWyEtrATUhwrolbUXccJQ
-         snPgvtUKevn7KWVmmMXnG4p3ghzTfSMsrWsXOxUGNWdVnEOx1uds5GVZ6uNXCMz2XQm0
-         pk9dMkyPgQ3coELRuQJWhkz32cnRdBw74+UCB8Fgp3vM+ASmgzAJMbDcT61+rWf0P4eB
-         E87A==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/NAPX8jIgb+PzaCcJ6Ca8FCBjRX5Gtd81LQpD/A3Zyc=;
+        b=ftRWqytil+d61ywUdpNfKAharhMRv6i81bxlnqdoP8jgYyJiq+rGb+3kSVLxsIMfwO
+         zO1QopRsM1qkS1ZOEYA6U7gla4qrOsQr4OiOTjp8ZUvStup0BglNZvd9H5q9OffpObyM
+         7hgjX6vYmg8nhrRBycEDW5YqQxUsPN3HiOtmA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ClZ+itAYHP1SxYy/1eiELkqdER63iI6Fwa0ilWU8UeI=;
-        b=q+0seSMNzhPS+gsccAC6z61HAPR+etX2mrGs0bggMY7hqM3GfAaDB477qg/P9ot+Mr
-         Q0Py8VvGPrvsID4IfojV8vBEpipSH1O28pfBwFn7EO92dHAWAURUnn83uRJbHd2Uxidq
-         zQpTh8ORP1W4/Y0++Vou26P192ebGtc8uZ/WcUhZW0qGpAW3DBGWbH0d+gVaeiFhfia9
-         7si4UdGA6pY2lCeERQ3tHHIh7cZy3FGIEwON84IfXLOxbrBRYO9h30Q0lA/UTERjio83
-         cmrQTklnEgYOhJ98oZBlOYtFzbYXuZRFQKTb6eeobK3/6MeeDbo0+kxxXXvgJPL7h1pa
-         cFJQ==
-X-Gm-Message-State: AOAM530iiTbGrFpK0dVd9meX1pNgbWkw9wcMBvreI3cgPJM7j3XYW4b+
-        ZSBSerDMIu2Cq63LXahBATniR8pWzyw=
-X-Google-Smtp-Source: ABdhPJzGiQjpDY7gnJz5NDNIw8J0GXIiHlu6sw/bX/hGeZ8qcxeakjhDS/kDcaI2mEbnZoR3WxwIWQ==
-X-Received: by 2002:a63:e443:: with SMTP id i3mr5032148pgk.289.1603313573881;
-        Wed, 21 Oct 2020 13:52:53 -0700 (PDT)
-Received: from ?IPv6:2001:569:7f0b:ce00:d8dc:3b8:20f5:171f? (node-1w7jr9qweqixwcgii8kjz0x7j.ipv6.telus.net. [2001:569:7f0b:ce00:d8dc:3b8:20f5:171f])
-        by smtp.gmail.com with ESMTPSA id q8sm3333768pff.18.2020.10.21.13.52.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 13:52:53 -0700 (PDT)
-Subject: Re: [GIT PULL] prandom32 changes for v5.10
-To:     Willy Tarreau <w@1wt.eu>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Amit Klein <aksecurity@gmail.com>, George Spelvin <lkml@sdf.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>, Florian Westphal <fw@strlen.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201012203226.GA11861@1wt.eu>
- <CANEQ_+Jyf-MZEsvT5iMu0a=waJCiAKdLaOfLHe_py6AXOt-hjQ@mail.gmail.com>
- <CAHk-=wioF37gX6iMCguGi7XrpBQqMiJ_5HjQ=dJQas_np8_MyQ@mail.gmail.com>
- <20201021032725.GB396@1wt.eu>
-From:   Marc Plumb <lkml.mplumb@gmail.com>
-Message-ID: <6700002d-e775-4c6b-5ebc-2d6a872f1a62@gmail.com>
-Date:   Wed, 21 Oct 2020 13:52:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/NAPX8jIgb+PzaCcJ6Ca8FCBjRX5Gtd81LQpD/A3Zyc=;
+        b=uRRsbNrNi5XN3TSOz+S6OP/9M+LJZgmMgvE2DrSHOeU6fEmpfowTHghek+hyFwbQ9k
+         IU6zGjg9pKEiwscQ+DlgSodzjZW9pybWw04jNGFvPi4bJRSNv57UTeErS96UE8bYsv/E
+         L9EsYkut7plhbe11jkPn6M3bwmCtT9tgABR4MTfDsGtUyIXexHg0M2xaT/kv5nVNZr8o
+         zLKGY9Iqj91SfI52voEnQHipaF+53mP+4TT/YzPuCNxuDiIgSiH3QsEwj3XiRC24HjvP
+         olF4CgOFEOnEf3KsdtlT2pJ3lvzAWFTJSC+WCZ2O7UqjocFi5qw6pSy/gMLxMgkWXJbF
+         3rWQ==
+X-Gm-Message-State: AOAM533p1r88aSpFiVazL88xU/FFXnLLsJqRdQO1D3zoWIw021Wop13C
+        9sIXwolrUpLpwWuzpVVpsQ28H6OP2cAniA==
+X-Google-Smtp-Source: ABdhPJxACGSm4NH9Y6ocSP7W5KBPqh81+f97uCbHv88OYRKKDFTKl5gNH6DQ3mzrSvmX8qeI2qktMw==
+X-Received: by 2002:a17:90a:9f8c:: with SMTP id o12mr5199057pjp.67.1603313609001;
+        Wed, 21 Oct 2020 13:53:29 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id q8sm3178087pfg.118.2020.10.21.13.53.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 13:53:28 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com,
+        Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>
+Subject: [PATCH 0/7] platform/chrome: cros_ec_typec: Register partner PD information
+Date:   Wed, 21 Oct 2020 13:53:08 -0700
+Message-Id: <20201021205317.708008-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
-In-Reply-To: <20201021032725.GB396@1wt.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As one of the participants, I mostly backed off when Spelvin seemed to 
-be more aggressively driving a secure solution. I still think that this 
-is an important change, both to fix the original network vulnerability 
-and to avoid harming dev/random while doing it. I greatly appreciate 
-your time and effort on this but didn't want too much chatter on the DL.
+This series adds support to retrieve Type C PD(Power Delivery) Discovery
+information from the Chrome OS EC, and register this information with
+the Type C connector class framework.
 
+There are also a couple of patches which fix minor bugs with the
+existing cros-ec-typec driver.
 
-On 2020-10-20 8:27 p.m., Willy Tarreau wrote:
-> Hi Linus,
->
-> On Tue, Oct 20, 2020 at 04:08:03PM -0700, Linus Torvalds wrote:
->> On Tue, Oct 20, 2020 at 12:26 PM Amit Klein <aksecurity@gmail.com> wrote:
->>> Quick question: is this patch still planned for inclusion in 5.10-rc1?
->> It doesn't even build for me, so no. It clearly hasn't been in
->> linux-next or anything like that.
->>
->> Hint: grep for prandom_seed_early.
-> I'm a bit surprised, as it worked for me, but thanks for checking. Given
-> the lack of responses from many participants on these patches, on several
-> occations I feel that this series is really not welcome. Initially I just
-> tried to test and fix Spelvin's patch, but if there's not that much
-> interest in it, or even reluctance, I'd rather stop. If it's just that
-> the current state is ugly with the two PRNGs side by side, I can get
-> back to completely removing the original one as I did in my first series,
-> and propose a larger series. Or if nobody's interested, I'd rather know
-> so that I don't have to put more time on it :-/
->
-> Thanks for letting me know,
-> Willy
+Prashant Malani (7):
+  platform/chrome: cros_ec_typec: Relocate set_port_params_v*()
+    functions
+  platform/chrome: cros_ec_typec: Fix remove partner logic
+  platform/chrome: cros_ec_typec: Clear partner identity on device
+    removal
+  platform/chrome: cros_ec: Import Type C host commands
+  platform/chrome: cros_ec_typec: Introduce TYPEC_STATUS
+  platform/chrome: cros_ec_typec: Parse partner PD ID VDOs
+  platform/chrome: cros_ec_typec: Register partner altmodes
+
+ drivers/platform/chrome/cros_ec_typec.c       | 331 ++++++++++++++----
+ .../linux/platform_data/cros_ec_commands.h    | 155 ++++++++
+ 2 files changed, 417 insertions(+), 69 deletions(-)
+
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
+
