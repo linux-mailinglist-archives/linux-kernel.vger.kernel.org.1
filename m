@@ -2,114 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C35295548
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 01:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CAB429554A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 01:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442289AbgJUXm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 19:42:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56302 "EHLO mail.kernel.org"
+        id S2507164AbgJUXoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 19:44:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:42682 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404943AbgJUXm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 19:42:28 -0400
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE08724197;
-        Wed, 21 Oct 2020 23:42:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603323748;
-        bh=BESI+542e7zfS3UEqo6HAOXoKEmppsFmRI/GraPxDPQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=1unrDcjabHeLDDqS/apsiljcFHGIO18AqDTOVKbU+vvALlFaGbNzUssIB6t1VFqK7
-         EGSjXx5bDIFwmnNpkGTQxnF1O7La4nHIbZXzKKHB6W+idmBfQytHpuwMZmrYXuRjy+
-         Z2GVPU9PeH5FzPjjkFzFe6tAI9Y2170ZsxaPz7zk=
-Received: by mail-ej1-f49.google.com with SMTP id k3so44101ejj.10;
-        Wed, 21 Oct 2020 16:42:27 -0700 (PDT)
-X-Gm-Message-State: AOAM530Ne4UZvd+Q0VlHEcOP/O4VSpn7T4sjI6Q/Lrx5p9mxt82duxBF
-        7QHNIavoqUVW4mjKyvG3yYrCcGVWCuRpLPbsvA==
-X-Google-Smtp-Source: ABdhPJwgMVbl3VYJeXaSvXiI9nwXO3E9FGk9CZ7wEou8onpN28BE+CNBywsvzb2a+LmZGUfNobLk6I2nGy6MQrV80nI=
-X-Received: by 2002:a17:906:3b8e:: with SMTP id u14mr5725503ejf.127.1603323746144;
- Wed, 21 Oct 2020 16:42:26 -0700 (PDT)
+        id S2439942AbgJUXoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 19:44:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 09DC5D6E;
+        Wed, 21 Oct 2020 16:44:18 -0700 (PDT)
+Received: from [10.57.50.191] (unknown [10.57.50.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E0BD03F66B;
+        Wed, 21 Oct 2020 16:44:16 -0700 (PDT)
+Subject: Re: [PATCH] arm64: NUMA: Kconfig: Increase max number of nodes
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-kernel@vger.kernel.org, patches@amperecomputing.com,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+References: <20201020173409.1266576-1-vanshikonda@os.amperecomputing.com>
+ <jhj7drkrcpr.mognet@arm.com> <9e14c0d3-9204-fb32-31db-5b3f98639cba@arm.com>
+ <20201021110201.00002092@Huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <da1b140c-fdd9-5970-fe83-02f33c3d8251@arm.com>
+Date:   Thu, 22 Oct 2020 00:44:15 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-References: <20201020174253.3757771-1-fparent@baylibre.com> <20201020174253.3757771-4-fparent@baylibre.com>
-In-Reply-To: <20201020174253.3757771-4-fparent@baylibre.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 22 Oct 2020 07:42:14 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8vDopCaJ+=kZwhTPgM0ioTL=PdCdQLjgWMdyJHkyD=Pw@mail.gmail.com>
-Message-ID: <CAAOTY_8vDopCaJ+=kZwhTPgM0ioTL=PdCdQLjgWMdyJHkyD=Pw@mail.gmail.com>
-Subject: Re: [PATCH 3/8] drm/mediatek: add disp-color MT8167 support
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201021110201.00002092@Huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Fabien:
+On 2020-10-21 12:02, Jonathan Cameron wrote:
+> On Wed, 21 Oct 2020 09:43:21 +0530
+> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> 
+>> On 10/20/2020 11:39 PM, Valentin Schneider wrote:
+>>>
+>>> Hi,
+>>>
+>>> Nit on the subject: this only increases the default, the max is still 2¹⁰.
+>>
+>> Agreed.
+>>
+>>>
+>>> On 20/10/20 18:34, Vanshidhar Konda wrote:
+>>>> The current arm64 max NUMA nodes default to 4. Today's arm64 systems can
+>>>> reach or exceed 16. Increase the number to 64 (matching x86_64).
+>>>>
+>>>> Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+>>>> ---
+>>>>   arch/arm64/Kconfig | 2 +-
+>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>>>> index 893130ce1626..3e69d3c981be 100644
+>>>> --- a/arch/arm64/Kconfig
+>>>> +++ b/arch/arm64/Kconfig
+>>>> @@ -980,7 +980,7 @@ config NUMA
+>>>>   config NODES_SHIFT
+>>>>        int "Maximum NUMA Nodes (as a power of 2)"
+>>>>        range 1 10
+>>>> -	default "2"
+>>>> +	default "6"
+>>>
+>>> This leads to more statically allocated memory for things like node to CPU
+>>> maps (see uses of MAX_NUMNODES), but that shouldn't be too much of an
+>>> issue.
+>>
+>> The smaller systems should not be required to waste those memory in
+>> a default case, unless there is a real and available larger system
+>> with those increased nodes.
+>>
+>>>
+>>> AIUI this also directly correlates to how many more page->flags bits are
+>>> required: are we sure the max 10 works on any aarch64 platform? I'm
+>>
+>> We will have to test that. Besides 256 (2 ^ 8) is the first threshold
+>> to be crossed here.
+>>
+>>> genuinely asking here, given that I'm mostly a stranger to the mm
+>>> world. The default should be something we're somewhat confident works
+>>> everywhere.
+>>
+>> Agreed. Do we really need to match X86 right now ? Do we really have
+>> systems that has 64 nodes ? We should not increase the default node
+>> value and then try to solve some new problems, when there might not
+>> be any system which could even use that. I would suggest increase
+>> NODES_SHIFT value upto as required by a real and available system.
+> 
+> I'm not going to give precise numbers on near future systems but it is public
+> that we ship 8 NUMA node ARM64 systems today.  Things will get more
+> interesting as CXL and CCIX enter the market on ARM systems,
+> given chances are every CXL device will look like another NUMA
+> node (CXL spec says they should be presented as such) and you
+> may be able to rack up lots of them.
+> 
+> So I'd argue minimum that makes sense today is 16 nodes, but looking forward
+> even a little and 64 is not a great stretch.
+> I'd make the jump to 64 so we can forget about this again for a year or two.
+> People will want to run today's distros on these new machines and we'd
+> rather not have to go around all the distros asking them to carry a patch
+> increasing this count (I assume they are already carrying such a patch
+> due to those 8 node systems)
 
-Fabien Parent <fparent@baylibre.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8821=
-=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=881:43=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Add support for disp-color on MT8167 SoC.
+Nit: I doubt any sane distro is going to carry a patch to adjust the 
+*default* value of a Kconfig option. They might tune the actual value in 
+their config, but, well, isn't that the whole point of configs? ;)
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Robin.
 
->
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_disp_color.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_color.c b/drivers/gpu/drm/=
-mediatek/mtk_disp_color.c
-> index 3ae9c810845b..a1227cefbf31 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_disp_color.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_disp_color.c
-> @@ -16,6 +16,7 @@
->
->  #define DISP_COLOR_CFG_MAIN                    0x0400
->  #define DISP_COLOR_START_MT2701                        0x0f00
-> +#define DISP_COLOR_START_MT8167                        0x0400
->  #define DISP_COLOR_START_MT8173                        0x0c00
->  #define DISP_COLOR_START(comp)                 ((comp)->data->color_offs=
-et)
->  #define DISP_COLOR_WIDTH(comp)                 (DISP_COLOR_START(comp) +=
- 0x50)
-> @@ -148,6 +149,10 @@ static const struct mtk_disp_color_data mt2701_color=
-_driver_data =3D {
->         .color_offset =3D DISP_COLOR_START_MT2701,
->  };
->
-> +static const struct mtk_disp_color_data mt8167_color_driver_data =3D {
-> +       .color_offset =3D DISP_COLOR_START_MT8167,
-> +};
-> +
->  static const struct mtk_disp_color_data mt8173_color_driver_data =3D {
->         .color_offset =3D DISP_COLOR_START_MT8173,
->  };
-> @@ -155,6 +160,8 @@ static const struct mtk_disp_color_data mt8173_color_=
-driver_data =3D {
->  static const struct of_device_id mtk_disp_color_driver_dt_match[] =3D {
->         { .compatible =3D "mediatek,mt2701-disp-color",
->           .data =3D &mt2701_color_driver_data},
-> +       { .compatible =3D "mediatek,mt8167-disp-color",
-> +         .data =3D &mt8167_color_driver_data},
->         { .compatible =3D "mediatek,mt8173-disp-color",
->           .data =3D &mt8173_color_driver_data},
->         {},
-> --
-> 2.28.0
->
+> 
+> Jonathan
+> 
+>>
+>>>    
+>>>>        depends on NEED_MULTIPLE_NODES
+>>>>        help
+>>>>          Specify the maximum number of NUMA Nodes available on the target
+>>>   
+>>
+>> _______________________________________________
+>> linux-arm-kernel mailing list
+>> linux-arm-kernel@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
