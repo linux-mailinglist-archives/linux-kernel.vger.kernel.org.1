@@ -2,187 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5FB294B8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E49B294B90
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441830AbgJUK4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 06:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410439AbgJUK4V (ORCPT
+        id S2441839AbgJUK6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 06:58:07 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:34522 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410469AbgJUK6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 06:56:21 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA073C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:56:20 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kVBmx-0000ty-9f; Wed, 21 Oct 2020 12:56:15 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kVBmw-0007ZX-5t; Wed, 21 Oct 2020 12:56:14 +0200
-Date:   Wed, 21 Oct 2020 12:56:14 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v1] Input: ads7846: do not overwrite spi->mode flags set
- by spi framework
-Message-ID: <20201021105614.tc3jnv5g62hvl5vg@pengutronix.de>
-References: <20201021090434.16387-1-o.rempel@pengutronix.de>
- <DM6PR03MB44110236C07B05C243009E4CF91C0@DM6PR03MB4411.namprd03.prod.outlook.com>
+        Wed, 21 Oct 2020 06:58:07 -0400
+Received: by mail-wr1-f66.google.com with SMTP id i1so2633288wro.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:58:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PDU9OtKKx2cuis6ZYr3lGtMOcs2YpkAp530qhMluO7Q=;
+        b=YBkZyaot2gYd1NHgSGKKmNd1bcFdJTrVn002Cj9z9pEMXQHviAVLsdPc6sXgJ1nZuz
+         +h2/UkB1KM4Q8LzffkdcnO6AjtFIrYYozTdqILVdkRdqDUeTeXhaHJaHIzZoNRdfqYcY
+         S9edAaDbU5RcZOsi86XR4nHDlEy7l61jET1NIF74VAQHifJZmkWu2at99dzE1k7baxbi
+         WBSB1Cjr2NNHlu4I5ckIHg0xPAZMVLUfAyerguX4Zce5X6dC/o5Ayng1FeG/dKAtU40R
+         CcuYzyYxP/8+DY1VZ7MxLdOumhgEDQAzr50lEe2DgwSjV3892cu/iOppxZ/UVJrkOSIp
+         ssqA==
+X-Gm-Message-State: AOAM532VGTLqxl+vtU94d92e61ut0YFqb0udTggVQGtGiJFLLMprgGTn
+        YjPRSuXkE//VwZIB+Tmprqxor1XZeZr8FeXR0WM=
+X-Google-Smtp-Source: ABdhPJwZAOeEzOH5IRxGiajee4MGN6XXXrAjQChyGALO2OUjS+vCNOR6PqaIPiMEIdD8TYQNpTPtJIn+34Y+dAA2bH8=
+X-Received: by 2002:adf:94c6:: with SMTP id 64mr4000495wrr.8.1603277884771;
+ Wed, 21 Oct 2020 03:58:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <DM6PR03MB44110236C07B05C243009E4CF91C0@DM6PR03MB4411.namprd03.prod.outlook.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:34:48 up 341 days, 53 min, 372 users,  load average: 0.04, 0.06,
- 0.06
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+ <39cf6164-f3be-ae34-292a-94faef32fdb9@linux.intel.com> <20201012160921.GD466880@tassilo.jf.intel.com>
+ <8f90c785-8bdc-e7cd-a6d9-7eed0fb2c6b3@linux.intel.com> <7216a411-a635-4fcc-b10d-afe1f75509d3@linux.intel.com>
+ <CAM9d7cjJzHr7BZ2LVFuG4dnk=i+LmP_TCb9J8FTO0w1w=KG1WQ@mail.gmail.com> <351d6f3a-7c2a-85d7-4b07-4b0468e6c887@linux.intel.com>
+In-Reply-To: <351d6f3a-7c2a-85d7-4b07-4b0468e6c887@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 21 Oct 2020 19:57:53 +0900
+Message-ID: <CAM9d7ciRu09bRNLbR19m2BjuM46vN6ubf7CUFELeR5-W61O3yA@mail.gmail.com>
+Subject: Re: [PATCH v1 06/15] perf session: load data directory into tool
+ process memory
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 09:29:35AM +0000, Ardelean, Alexandru wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Oleksij Rempel <o.rempel@pengutronix.de>
-> > Sent: Wednesday, October 21, 2020 12:05 PM
-> > To: Dmitry Torokhov <dmitry.torokhov@gmail.com>; Ardelean, Alexandru
-> > <alexandru.Ardelean@analog.com>
-> > Cc: Oleksij Rempel <o.rempel@pengutronix.de>; kernel@pengutronix.de; linux-
-> > kernel@vger.kernel.org; linux-input@vger.kernel.org; David Jander
-> > <david@protonic.nl>
-> > Subject: [PATCH v1] Input: ads7846: do not overwrite spi->mode flags set by spi
-> > framework
-> > 
-> > [External]
-> > 
-> > Do not overwrite spi->mode flags set by spi framework, otherwise the chip
-> > select polarity will get lost.
-> > 
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> >  drivers/input/touchscreen/ads7846.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/input/touchscreen/ads7846.c
-> > b/drivers/input/touchscreen/ads7846.c
-> > index 8fd7fc39c4fd..ea31956f3a90 100644
-> > --- a/drivers/input/touchscreen/ads7846.c
-> > +++ b/drivers/input/touchscreen/ads7846.c
-> > @@ -1288,7 +1288,7 @@ static int ads7846_probe(struct spi_device *spi)
-> >  	 * may not.  So we stick to very-portable 8 bit words, both RX and TX.
-> >  	 */
-> >  	spi->bits_per_word = 8;
-> > -	spi->mode = SPI_MODE_0;
-> 
-> I think the patch is incorrect.
-> The initial version is correct; assuming that the datasheet says that this driver operates in mode 0.
-> If the initial mode is incorrect, maybe we need to change that.
-> 
-> What is unfortunate, is that you cannot [yet] override the mode parameters [polarity & phase] from the device-tree, in case there are some things in-between the SPI controller & SPI chip [level inverters for example].
-> I was planning to do something for this.
+On Wed, Oct 21, 2020 at 7:25 PM Alexey Budankov
+<alexey.budankov@linux.intel.com> wrote:
+>
+>
+> On 21.10.2020 9:54, Namhyung Kim wrote:
+> > Hi,
+> >
+> > On Tue, Oct 13, 2020 at 8:30 PM Alexey Budankov
+> > <alexey.budankov@linux.intel.com> wrote:
+> >> On 12.10.2020 19:49, Alexey Budankov wrote:
+> >>> On 12.10.2020 19:09, Andi Kleen wrote:
+> >>>> On Mon, Oct 12, 2020 at 11:58:58AM +0300, Alexey Budankov wrote:
+> >>>>> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> >>>>> index 6afc670fdf0c..0752eec19813 100644
+> >>>>> --- a/tools/perf/util/session.c
+> >>>>> +++ b/tools/perf/util/session.c
+> >>>>> @@ -2212,6 +2212,17 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+> >>>>>             goto more;
+> >>>>>
+> >>>>>  out:
+> >>>>> +   if (rd->unmap_file) {
+> >>>>> +           int i;
+> >>>>> +
+> >>>>> +           for (i = 0; i < NUM_MMAPS; i++) {
+> >>>>> +                   if (mmaps[i]) {
+> >>>>> +                           munmap(mmaps[i], mmap_size);
+> >>>>> +                           mmaps[i] = NULL;
+> >>>>
+> >>>> Okay so where is the mmap? Would make more sense to put that
+> >>>> into the same patch as who adds the mmap. Or is the mmap
+> >>>> code already in the perf source? In that case it should
+> >>>> probably be some common helper with the existing users.
+> >>>
+> >>> That mmap is already in the code. Agree, this part of the patch
+> >>> can be applied prior the whole patch set.
+> >>
+> >> I take it back. Single trace file can't be unmapped yet since it also
+> >> contains not only compressed records but also other records backing
+> >> the data for aggregated analysis.
+> >
+> > Are you talking about the auxtrace?
+> >
+> > I thought everything will be compressed when it's enabled.
+> > But if it's only for the auxtrace, maybe we can unmap them
+> > with checking it as it's not the common case?
+>
+> I am about primary trace file. Together with PERF_RECORD_COMPRESSED
+> records it contains the other records with uncompressed data (MMAP,
+> FORk, COMM etc.) so it is still unsafe to unmap the trace file after
+> loading.
 
-Current kernel (v5.9) is doing following work:
+Oh, I think all the events coming from the kernel share the mmap
+buffer so they will be compressed with SAMPLEs.  Note that
+synthesized events have 0 timestamp which means that they
+are not queued in the ordered events and processed immediately.
 
-  of_register_spi_device()
-    of_spi_parse_dt()
-      /* this will parse dt and set different flags in spi->mode
-       * all of this flags are dropped by this driver
-       */
+IIUC, here we unmap the original mmap buffer and the actual data
+in MMAP/FORK/... is kept in the decomp data buffer, no?
 
-        ...... and here we parse gpio properties ......
-
-	/*
-	 * For descriptors associated with the device, polarity inversion is
-	 * handled in the gpiolib, so all gpio chip selects are "active high"
-	 * in the logical sense, the gpiolib will invert the line if need be.
-	 */
-	if ((ctlr->use_gpio_descriptors) && ctlr->cs_gpiods &&
-	    ctlr->cs_gpiods[spi->chip_select])
-		spi->mode |= SPI_CS_HIGH;
-        -------->  ^^^^^^^^
-	as you can see, if we use gpio as chip select, then the SPI_CS_HIGH
-	flag is set. And gpiolib make all needed level conversation.
-
-Since this diver is removing SPI_CS_HIGH flag, we have fallowing call
-sequence:
-
-spi_set_cs(, enable)                                        <---- 1
-  ....
-  if (spi->cs_gpiod || gpio_is_valid(spi->cs_gpio)) {
-     ....
-     gpiod_set_value_cansleep(, !enable);                   <---- 0
-       gpiod_set_value_nocheck()
-         if (test_bit(FLAG_ACTIVE_LOW, &desc->flags))
-	   value = !value;                                  <---- 1
-
-
-So, at the end, we set GPIO to 1, even if DTS configured it as ACTIVE_LOW.
-You may probably suggest to set gpio in DTS to active ACTIVE_HIGH. In
-this case we would run it to following snippet:
-of_get_named_gpiod_flags()
-  of_gpio_flags_quirks()
-    if (IS_ENABLED(CONFIG_SPI_MASTER) && !strcmp(propname, "cs-gpios")..
-	/*
-	 * SPI children have active low chip selects
-	 * by default. This can be specified negatively
-	 * by just omitting "spi-cs-high" in the
-	 * device node, or actively by tagging on
-	 * GPIO_ACTIVE_LOW as flag in the device
-	 * tree. If the line is simultaneously
-	 * tagged as active low in the device tree
-	 * and has the "spi-cs-high" set, we get a
-	 * conflict and the "spi-cs-high" flag will
-	 * take precedence.
-	 */
-	if (of_property_read_bool(child, "spi-cs-high")) {
-		if (*flags & OF_GPIO_ACTIVE_LOW) {
-			pr_warn("%s GPIO handle specifies active low - ignored\n",
-				of_node_full_name(child));
-			*flags &= ~OF_GPIO_ACTIVE_LOW;
-		}
-	} else {
-		if (!(*flags & OF_GPIO_ACTIVE_LOW))
-			pr_info("%s enforce active low on chipselect handle\n",
-				of_node_full_name(child));
-		*flags |= OF_GPIO_ACTIVE_LOW;
-	}
-
-As you can see, I would need to configure my dts with spi-cs-high flag,
-even if the hardware is actually ACTIVE_LOW. If I will go this way, I
-would risk a regression as soon as this issue is fixed.
-
-Since the spi framework is already parsing devicetree and set all needed
-flags, I assume it is wrong to blindly drop all this flags in the
-driver.
-
-> > +	spi->mode |= SPI_MODE_0;
-> >  	err = spi_setup(spi);
-> >  	if (err < 0)
-> >  		return err;
-> > --
-> > 2.28.0
-
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thanks
+Namhyung
