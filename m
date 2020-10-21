@@ -2,150 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1FB294EBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1CC294EBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443560AbgJUOeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443539AbgJUOeT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:34:19 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19144C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:34:19 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id m3so535579vki.12
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:34:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VmRKVQeRsF5XXdxrVGzoz/VPiQ1G/DrEd5eWr/793iM=;
-        b=IhHKSipK6sX/mITywnB42dvTSeILc1wMT0ISsC1r4OnOF6ON6M5yEkOw+PaQOM9i2I
-         WUdUr89l2WpLNCmW8VRTMoCNBFqXMihiNngIpZ+HiVJdr1jFuGVjjCMEOUifu3pRAAbh
-         DFfed1lcby+zWbYVttxksMQHFcR6OQcHEFfWxnTHj5CN5tY0a3w1tTWEhofIwP8N5NNT
-         7RIMn4q+dDYJ6Y11WLpE/nUXKyHMeAdB/FvPlfGXD8YDmzS0J5PqWmI1B1VvUPiVwS3S
-         1+mQPdhK93QDmCExjEHzN4QTkzwgE/mxWhmWXdkrmMQDSFYh3wrBvfsOlQlbZ4Z31hpD
-         M3Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VmRKVQeRsF5XXdxrVGzoz/VPiQ1G/DrEd5eWr/793iM=;
-        b=sAuK2cUFdYx2T+SrO5lEgB9Ci/v8ECT8/O/0UifflLvGNMvpsq0HYCnnC5qdkOGe/f
-         571oRWlFQs2nGwRav/xQ88cDQnay99Zw4AKrU2bCCnfiEJSKQ75AhBEBnBuO80CqzqFs
-         LkXh9w3+8mW2KPQB0+/b8l0MxO92UQNF6V1A32EZnSri/HUiKSclsPPlpcnc0LfPTaGa
-         vxVMA+6mIQQNDfaZks8RI1WoS7ve+XQWpDLX3RcKVY53oNTN/0Uwdpd6VNDCZFm0P2bz
-         frLdNLhrIAnDM9NSymJi4h84hfpgBTg9mbm/H/VxNEUB/s9W7Q/ShuIM7KVoNcr94Aug
-         qFjw==
-X-Gm-Message-State: AOAM531Hyq/yFqdo5s0mTbb0ABjl6GHpK4tXNN8wjUGDM6mdDaOpf/ie
-        jWLrRuhZLgiJZjn97UxEmJW8ZOS9tWg=
-X-Google-Smtp-Source: ABdhPJwyE0yTLwnQIAmEnDRrDzOufS9CMgU5Rc+vPAYdgJLcRN06yGnSgaOEl7stE86RurjbHpJdGg==
-X-Received: by 2002:a1f:f2c1:: with SMTP id q184mr2099970vkh.11.1603290857375;
-        Wed, 21 Oct 2020 07:34:17 -0700 (PDT)
-Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com. [209.85.217.49])
-        by smtp.gmail.com with ESMTPSA id e125sm308192vkh.44.2020.10.21.07.34.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 07:34:14 -0700 (PDT)
-Received: by mail-vs1-f49.google.com with SMTP id b3so1354337vsc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:34:13 -0700 (PDT)
-X-Received: by 2002:a67:7704:: with SMTP id s4mr2165928vsc.51.1603290853086;
- Wed, 21 Oct 2020 07:34:13 -0700 (PDT)
+        id S2443573AbgJUOeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:34:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2443566AbgJUOeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 10:34:36 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6171422249;
+        Wed, 21 Oct 2020 14:34:35 +0000 (UTC)
+Date:   Wed, 21 Oct 2020 10:34:33 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     syzbot <syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: BUG: using __this_cpu_read() in preemptible code in
+ trace_hardirqs_on
+Message-ID: <20201021103433.38fed220@gandalf.local.home>
+In-Reply-To: <20201021131733.GH2628@hirez.programming.kicks-ass.net>
+References: <000000000000e921b305b18ba0a7@google.com>
+        <20201013091743.12c371a8@gandalf.local.home>
+        <20201021131733.GH2628@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201021142944.13615-1-mst@redhat.com>
-In-Reply-To: <20201021142944.13615-1-mst@redhat.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 21 Oct 2020 10:33:37 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSdG=mPvSWpGLqoQ1YB0duQQvOkkV+KPW3BBTHGStS5_Qg@mail.gmail.com>
-Message-ID: <CA+FuTSdG=mPvSWpGLqoQ1YB0duQQvOkkV+KPW3BBTHGStS5_Qg@mail.gmail.com>
-Subject: Re: [PATCH v4] Revert "virtio-net: ethtool configurable RXCSUM"
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 10:30 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> This reverts commit 3618ad2a7c0e78e4258386394d5d5f92a3dbccf8.
->
-> When control vq is not negotiated, that commit causes a crash:
->
-> [   72.229171] kernel BUG at drivers/net/virtio_net.c:1667!
-> [   72.230266] invalid opcode: 0000 [#1] PREEMPT SMP
-> [   72.231172] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc8-02934-g3618ad2a7c0e7 #1
-> [   72.231172] EIP: virtnet_send_command+0x120/0x140
-> [   72.231172] Code: 00 0f 94 c0 8b 7d f0 65 33 3d 14 00 00 00 75 1c 8d 65 f4 5b 5e 5f 5d c3 66 90 be 01 00 00 00 e9 6e ff ff ff 8d b6 00
-> +00 00 00 <0f> 0b e8 d9 bb 82 00 eb 17 8d b4 26 00 00 00 00 8d b4 26 00 00 00
-> [   72.231172] EAX: 0000000d EBX: f72895c0 ECX: 00000017 EDX: 00000011
-> [   72.231172] ESI: f7197800 EDI: ed69bd00 EBP: ed69bcf4 ESP: ed69bc98
-> [   72.231172] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010246
-> [   72.231172] CR0: 80050033 CR2: 00000000 CR3: 02c84000 CR4: 000406f0
-> [   72.231172] Call Trace:
-> [   72.231172]  ? __virt_addr_valid+0x45/0x60
-> [   72.231172]  ? ___cache_free+0x51f/0x760
-> [   72.231172]  ? kobject_uevent_env+0xf4/0x560
-> [   72.231172]  virtnet_set_guest_offloads+0x4d/0x80
-> [   72.231172]  virtnet_set_features+0x85/0x120
-> [   72.231172]  ? virtnet_set_guest_offloads+0x80/0x80
-> [   72.231172]  __netdev_update_features+0x27a/0x8e0
-> [   72.231172]  ? kobject_uevent+0xa/0x20
-> [   72.231172]  ? netdev_register_kobject+0x12c/0x160
-> [   72.231172]  register_netdevice+0x4fe/0x740
-> [   72.231172]  register_netdev+0x1c/0x40
-> [   72.231172]  virtnet_probe+0x728/0xb60
-> [   72.231172]  ? _raw_spin_unlock+0x1d/0x40
-> [   72.231172]  ? virtio_vdpa_get_status+0x1c/0x20
-> [   72.231172]  virtio_dev_probe+0x1c6/0x271
-> [   72.231172]  really_probe+0x195/0x2e0
-> [   72.231172]  driver_probe_device+0x26/0x60
-> [   72.231172]  device_driver_attach+0x49/0x60
-> [   72.231172]  __driver_attach+0x46/0xc0
-> [   72.231172]  ? device_driver_attach+0x60/0x60
-> [   72.231172]  bus_add_driver+0x197/0x1c0
-> [   72.231172]  driver_register+0x66/0xc0
-> [   72.231172]  register_virtio_driver+0x1b/0x40
-> [   72.231172]  virtio_net_driver_init+0x61/0x86
-> [   72.231172]  ? veth_init+0x14/0x14
-> [   72.231172]  do_one_initcall+0x76/0x2e4
-> [   72.231172]  ? rdinit_setup+0x2a/0x2a
-> [   72.231172]  do_initcalls+0xb2/0xd5
-> [   72.231172]  kernel_init_freeable+0x14f/0x179
-> [   72.231172]  ? rest_init+0x100/0x100
-> [   72.231172]  kernel_init+0xd/0xe0
-> [   72.231172]  ret_from_fork+0x1c/0x30
-> [   72.231172] Modules linked in:
-> [   72.269563] ---[ end trace a6ebc4afea0e6cb1 ]---
->
-> The reason is that virtnet_set_features now calls virtnet_set_guest_offloads
-> unconditionally, it used to only call it when there is something
-> to configure.
->
-> If device does not have a control vq, everything breaks.
->
-> Revert the original commit for now.
->
-> Cc: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> Cc: Willem de Bruijn <willemb@google.com>
-> Fixes: 3618ad2a7c0e7 ("virtio-net: ethtool configurable RXCSUM")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+On Wed, 21 Oct 2020 15:17:33 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Acked-by: Willem de Bruijn <willemb@google.com>
+> > And I'm also guessing that we can call this with interrupts enabled (based
+> > on the comment).
+> > 
+> > And we have this:
+> > 
+> >    local_irq_enable()
+> >       trace_hardirqs_on()
+> >          lockdep_hardirqs_on()
+> >              __this_cpu_read()  
+> 
+> Moo, two threads..
+> 
+> 20201019183355.GS2611@hirez.programming.kicks-ass.net
 
-Thanks Michael.
+But this one's much older ;-)
+
+> 
+> ---
+> 
+> On Tue, Oct 20, 2020 at 12:55:46AM +0800, kernel test robot wrote:
+> > [   92.898145] BUG: using __this_cpu_read() in preemptible [00000000] code: trinity-c6/526  
+> 
+> > [   92.903305] Call Trace:
+> > [   92.905182]  __this_cpu_preempt_check+0xf/0x11
+> > [   92.905968]  lockdep_hardirqs_on_prepare+0x2c/0x18f
+> > [   92.906853]  trace_hardirqs_on+0x49/0x53
+> > [   92.907578]  __bad_area_nosemaphore+0x3a/0x134  
+> 
+> Hurph, that's a spurious local_irq_enable(). I suppose this'll fix it.
+> 
+> ---
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index 3e99dfef8408..9f818145ef7d 100644
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -4057,9 +4057,6 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
+>  	if (unlikely(in_nmi()))
+>  		return;
+>  
+> -	if (unlikely(__this_cpu_read(lockdep_recursion)))
+> -		return;
+> -
+>  	if (unlikely(lockdep_hardirqs_enabled())) {
+
+Hmm, would moving the recursion check below the check of the
+lockdep_hardirqs_enable() cause a large skew in the spurious enable stats?
+May not be an issue, but something we should check to make sure that
+there's not a path that constantly hits this.
+
+-- Steve
+
+>  		/*
+>  		 * Neither irq nor preemption are disabled here
+> @@ -4070,6 +4067,9 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
+>  		return;
+>  	}
+>  
+> +	if (unlikely(__this_cpu_read(lockdep_recursion)))
+> +		return;
+> +
