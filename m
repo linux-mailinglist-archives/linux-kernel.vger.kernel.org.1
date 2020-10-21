@@ -2,124 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707CD294C0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE6C294C0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439832AbgJUL6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 07:58:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51524 "EHLO mail.kernel.org"
+        id S2442108AbgJUL7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 07:59:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393832AbgJUL6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 07:58:39 -0400
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2439720AbgJUL7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 07:59:11 -0400
+Received: from coco.lan (ip5f5ad5a8.dynamic.kabel-deutschland.de [95.90.213.168])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA41122251
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 11:58:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B5B821789;
+        Wed, 21 Oct 2020 11:59:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603281519;
-        bh=wsmfCYJA1G5W18rhe1i3zWsYQ3eg08pCP9xHDplvS6A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=srKfKdqrcpEmy/AMoOlSfXqIxVMzQpvZSnQrGmRq5zPV4JwMBMSeURkdtbYDTKylB
-         4O2RtKuAAOeX2lyGjdAyjzpgXoPAYf93jMtuPSetIWXNoUL/iepVPgAjWiKBvOhUm7
-         kn7XprIS4XIHFMPNg+PWQ9drNOdMFppItuGB1scU=
-Received: by mail-qk1-f181.google.com with SMTP id r7so2035709qkf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 04:58:38 -0700 (PDT)
-X-Gm-Message-State: AOAM533wf5Yr/NYTckcn8NzTmqLLB1ui4mca/p6M78+pfHWOA3nwOqym
-        PkagqwFRc25TDlMqIqdGeIZImPIjoIOI5HPheQk=
-X-Google-Smtp-Source: ABdhPJwQnCJxyRlYwunWKYMG17jGLNNqbGCZFz9Dt5WiF3EjZocsWix1T+MBVzPCNZLrOsbIuguORdkSjMuA7cezmC4=
-X-Received: by 2002:a37:2dc6:: with SMTP id t189mr2722030qkh.394.1603281517886;
- Wed, 21 Oct 2020 04:58:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <CGME20201008071628epcas5p24d196a6023a47a3b0bfa7b7f231ec811@epcas5p2.samsung.com>
- <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
- <20201008083015.GK1551@shell.armlinux.org.uk> <CAK8P3a0h=D8_Kn_fpHbsik_jf4to2jayxj7K7B7=HaNFzKqNnw@mail.gmail.com>
-In-Reply-To: <CAK8P3a0h=D8_Kn_fpHbsik_jf4to2jayxj7K7B7=HaNFzKqNnw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 21 Oct 2020 13:58:21 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2tmRo0voZJLqYbNQGG9FZCGuKzMj8Zo8f+WL+dvOourw@mail.gmail.com>
-Message-ID: <CAK8P3a2tmRo0voZJLqYbNQGG9FZCGuKzMj8Zo8f+WL+dvOourw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] IRQ stack support for ARM
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Maninder Singh <maninder1.s@samsung.com>, v.narang@samsung.com,
-        a.sahrawat@samsung.com, Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
+        s=default; t=1603281550;
+        bh=iQJKeOcoMrfxe0TxGMxnR3EtyZpzJ7uGLe3SYzav/XE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZDZvY6VTcDEWY3Z84x64jvN/zuBBALzRdBdE/WC7iisi8XILmGmnGe0j0vGffSEp6
+         9Si6RtmBX8SaGQqIAKYYxz7WQ/HIn/Z1KglUjbcqqHh2xPDm06Gu4ct0Us6619xpsn
+         C0TCVI6uBoCgwkbTpuIIHtKv3clALLT/bgwIXIII=
+Date:   Wed, 21 Oct 2020 13:59:03 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Nathan Huckleberry <nhuck@google.com>,
-        Will Deacon <will@kernel.org>, Jian Cai <caij2003@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        William Kucharski <william.kucharski@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/24] mm: pagemap.h: fix two kernel-doc markups
+Message-ID: <20201021135903.719e1f30@coco.lan>
+In-Reply-To: <20201021112819.GJ20115@casper.infradead.org>
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+        <54ea6dd0fc37c48aef3fc3ae454c54a80db313dc.1602590106.git.mchehab+huawei@kernel.org>
+        <20201013122654.GE20115@casper.infradead.org>
+        <20201021115557.24c83c35@coco.lan>
+        <20201021112819.GJ20115@casper.infradead.org>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(replying to my own mail, apparently my normal outgoing email server is
-blacklisted, so resending from @kernel.org)
+Em Wed, 21 Oct 2020 12:28:19 +0100
+Matthew Wilcox <willy@infradead.org> escreveu:
 
-On Fri, Oct 16, 2020 at 12:09 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Oct 8, 2020 at 10:32 AM Russell King - ARM Linux admin
-> <linux@armlinux.org.uk> wrote:
-> > On Thu, Oct 08, 2020 at 12:45:30PM +0530, Maninder Singh wrote:
-> > > Observed Stack Overflow on 8KB kernel stack on ARM specially
-> > > incase on network interrupts, which results in undeterministic behavi=
-our.
-> > > So there is need for per cpu dedicated IRQ stack for ARM.
-> > >
-> > > As ARm does not have extra co-processor register
-> > > to save thread info pointer, IRQ stack will be at some
-> > > performance cost, so code is under CONFIG_IRQ_STACK.
-> > >
-> > > and we don't have much knowledge and set up for CLANG
-> > > and ARM_UNWIND, so dependency added for both cases.
-> > >
-> > > Tested patch set with QEMU for latest kernel
-> > > and 4.1 kernel for ARM target with same patch set.
-> >
-> > You need to investigate and show where and why this is happening. My
-> > guess is you have a network driver that uses a lot of kernel stack
-> > space, which itself would be a bug.
->
-> Agreed.
->
-> > Note that there are compiler versions out there that mis-optimise and
-> > eat stack space - the kernel build should be warning if a function
-> > uses a large amount of stack.
->
-> Some more ideas for figuring it out:
->
-> CONFIG_DEBUG_STACK_USAGE may also be helpful in identifying
-> code paths that are deeply nested with multiple functions taking a
-> lot of stack space, but each one staying under the limit.
->
-> CONFIG_DEBUG_STACKOVERFLOW would also help here but
-> is not supported on Arm at the moment. There was a patch[1] from
-> Uwe Kleine-K=C3=B6nig to add this, and I suppose we should still add
-> that, in particular if it helps debug this problem.
->
-> CONFIG_VMAP_STACK is probably the best way to debug
-> random runtime stack overflows because using a guard page
-> turns random memory corruption into an immediate oops,
-> but I don't think there is an implementation for Arm yet and
-> using a lot of vmalloc space means we might not be able to
-> default to this.
->
-> Regardless of identifying and fixing the bug Maninder found, I
-> also think that supporting separate async stacks on Arm is useful
-> for determinism. Most of the popular architectures use irqstack
-> for this reason, and I was actually surprised that we don't do it
-> on arch/arm/.
->
->      Arnd
->
-> [1] https://lore.kernel.org/linux-arm-kernel/20200108082913.29710-1-u.kle=
-ine-koenig@pengutronix.de/
+> On Wed, Oct 21, 2020 at 11:55:57AM +0200, Mauro Carvalho Chehab wrote:
+> > Hi Matthew,
+> > 
+> > Em Tue, 13 Oct 2020 13:26:54 +0100
+> > Matthew Wilcox <willy@infradead.org> escreveu:
+> >   
+> > > On Tue, Oct 13, 2020 at 02:14:37PM +0200, Mauro Carvalho Chehab wrote:  
+> > > > Changeset 6c8adf8446a3 ("mm: add find_lock_head") renamed the
+> > > > index parameter, but forgot to update the kernel-doc markups
+> > > > accordingly.    
+> > > 
+> > > The patch is correct (thank you!), but the description here references
+> > > a git commit id that's only found in the -next tree and is unstable.
+> > > 
+> > > Andrew, can you fold this into the offending commit?  
+> > 
+> > Patch already reached upstream. So, it gained a stable reference.
+> > 
+> > So, I'm changing its description to:
+> > 
+> >   Author: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> >   Date:   Thu Sep 10 08:38:07 2020 +0200
+> > 
+> >     locking/refcount: move kernel-doc markups to the proper place  
+> 
+> This is the wrong changelog?
+
+Sorry! Yeah, that was the wrong one. I'm enclosing the right one
+with the complete patch.
+
+Thanks,
+Mauro
+
+[PATCH] mm: pagemap.h: fix two kernel-doc markups
+
+Changeset a8cf7f272b5a ("mm: add find_lock_head") renamed the
+index parameter, but forgot to update the kernel-doc markups
+accordingly.
+
+Fixes: a8cf7f272b5a ("mm: add find_lock_head")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index c77b7c31b2e4..e1e19c1f9ec9 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -344,9 +344,9 @@ static inline struct page *find_get_page_flags(struct address_space *mapping,
+ /**
+  * find_lock_page - locate, pin and lock a pagecache page
+  * @mapping: the address_space to search
+- * @offset: the page index
++ * @index: the page index
+  *
+- * Looks up the page cache entry at @mapping & @offset.  If there is a
++ * Looks up the page cache entry at @mapping & @index.  If there is a
+  * page cache page, it is returned locked and with an increased
+  * refcount.
+  *
+@@ -363,9 +363,9 @@ static inline struct page *find_lock_page(struct address_space *mapping,
+ /**
+  * find_lock_head - Locate, pin and lock a pagecache page.
+  * @mapping: The address_space to search.
+- * @offset: The page index.
++ * @index: The page index.
+  *
+- * Looks up the page cache entry at @mapping & @offset.  If there is a
++ * Looks up the page cache entry at @mapping & @index.  If there is a
+  * page cache page, its head page is returned locked and with an increased
+  * refcount.
+  *
