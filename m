@@ -2,101 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B49F294FB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B46294FBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502126AbgJUPQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502113AbgJUPQH (ORCPT
+        id S2502163AbgJUPSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:18:02 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35998 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2501934AbgJUPSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:16:07 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A79BC0613CE;
-        Wed, 21 Oct 2020 08:16:07 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id s14so2764821qkg.11;
-        Wed, 21 Oct 2020 08:16:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9MM2vEZBw6tjXUDyjGU6HmX8YCJo6rvFJY1GE/amDAw=;
-        b=AiMDdQAiKYq+RAmX5cSS6Cn/89NjZLdcc9W3Vo9eFLejakE/Iu8RDxTcaYOgQM53iw
-         dSl0L9KJMzvkoMY3V+veK9yAJRKMs9ZPfvzd2hljEutjRsVhL5lWWlaGAFqCIGdtyp4H
-         vUQ2Zdjor3oywHO1+4Nw7FJC1Zt5Xj8c0p7ecDXtKya5IObozbbkOSaG9aHz4oH1T3RC
-         dpIsojEilh3a4VfVoe35w0g2AbHlyrpzFpyiqXetUGM7kd79K1qGdWBMzcY4ikdXR41v
-         yVkE1Bd7qGwzS3L70aFhRZCuB0XPpL3nLHklmAj9ciceE8W2A9Xdn3jGGzYfZsJ5KWmq
-         CkOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=9MM2vEZBw6tjXUDyjGU6HmX8YCJo6rvFJY1GE/amDAw=;
-        b=F1MN+QX1WarzBFJ8FBwKu6JDgBUJxHn8N0wTivLblvmUl3cDHk9lLVhWKcMKhBcMcN
-         2bbhJHLTZRoex9YM731SvOc8X7kLHnjB83ZeevbbChpmtswsrLJ9CohP9l3VqFH4dNWx
-         Thkd/Mduv7tNOStEmRcFcBnLeegfuhnZ9QA+mh6VDAxHopkzNm8UBnhGIKpP49gwydQh
-         oFJg6zPq2T3HH7jDWqNgSi4w5x+Ipb7n5FInaLCTe/MA/CAYSKMOaNpYw5ZY504XkJUc
-         974MVnD8Z0BwfR0MhcYLfLP47K0IdKpjPRfWwClBIbVnSLf51B8S+B/vuO3pzhd9jytR
-         PyIQ==
-X-Gm-Message-State: AOAM531DxpatJd5v0OiVvE/AL2kBb1I3QChsPfKt46lHoeIVvJoioNqz
-        BSlafAWaQaA30k6aWL/JFEQ=
-X-Google-Smtp-Source: ABdhPJx85NH8Q8Qnh3+FEQses7EhMqZQ1HiCXdrHQOBc0QBn+Wu6ZfGIFkGCdL7ZFZOFFM+co2Lycw==
-X-Received: by 2002:a37:9f0a:: with SMTP id i10mr3484421qke.61.1603293366700;
-        Wed, 21 Oct 2020 08:16:06 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id 67sm1472106qkd.14.2020.10.21.08.16.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 08:16:05 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Wed, 21 Oct 2020 11:16:04 -0400
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Arvind Sankar' <nivedita@alum.mit.edu>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 6/6] crypto: lib/sha - Combine round constants and
- message schedule
-Message-ID: <20201021151604.GA3750362@rani.riverdale.lan>
-References: <20201020203957.3512851-1-nivedita@alum.mit.edu>
- <20201020203957.3512851-7-nivedita@alum.mit.edu>
- <d8c1750ffcef4236904919321b872cd2@AcuMS.aculab.com>
+        Wed, 21 Oct 2020 11:18:02 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09LFHcw8115681;
+        Wed, 21 Oct 2020 10:17:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603293458;
+        bh=FIbHw4Dh5k6YKwhGIHiMGFdq5N3EVz29tjQGUrHK7QA=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=ASxhJRViw9M4pQ4dGLhrJ4xEpNJchfRqy6Y67crgwSl50Z1xc3vMkH7eWj287HgiI
+         ve5is4iI4r1/EbXwmuUPP0Bf3tW5efJAXOpdlhImXa4VJqfFugPK4TcjZQVMpU8VQl
+         gay8UX1RIf3owYK6Qd58+D2PqU/cHr+WbQrv5ZEE=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09LFHcb0097185
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 21 Oct 2020 10:17:38 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 21
+ Oct 2020 10:17:38 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 21 Oct 2020 10:17:38 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09LFHbuO010849;
+        Wed, 21 Oct 2020 10:17:37 -0500
+Date:   Wed, 21 Oct 2020 20:47:36 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+CC:     <vigneshr@ti.com>, <tudor.ambarus@microchip.com>,
+        <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <miquel.raynal@bootlin.com>,
+        <simon.k.r.goldschmidt@gmail.com>, <dinguyen@kernel.org>,
+        <richard@nod.at>, <cheol.yong.kim@intel.com>,
+        <qi-ming.wu@intel.com>
+Subject: Re: [PATCH v2 2/6] spi: cadence-quadspi: Disable the DAC for Intel
+ LGM SoC
+Message-ID: <20201021140015.3ldwk4az5nlzhnvr@ti.com>
+References: <20201021025507.51001-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201021025507.51001-3-vadivel.muruganx.ramuthevar@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <d8c1750ffcef4236904919321b872cd2@AcuMS.aculab.com>
+In-Reply-To: <20201021025507.51001-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 09:36:00PM +0000, David Laight wrote:
-> From: Arvind Sankar
-> > Sent: 20 October 2020 21:40
-> > 
-> > Putting the round constants and the message schedule arrays together in
-> > one structure saves one register, which can be a significant benefit on
-> > register-constrained architectures. On x86-32 (tested on Broadwell
-> > Xeon), this gives a 10% performance benefit.
-> 
-> I'm actually stunned it makes that much difference.
-> The object code must be truly horrid (before and after).
-> 
-> There are probably other strange tweaks that give a similar
-> improvement.
-> 
-> 	David
-> 
+Hi,
 
-Hm yes, I took a closer look at the generated code, and gcc seems to be
-doing something completely braindead. Before this change, it actually
-copies 8 words at a time from SHA256_K onto the stack, and uses those
-stack temporaries for the calculation. So this patch is giving a benefit
-just because it only does the copy once instead of every time around the
-loop.
+On 21/10/20 10:55AM, Ramuthevar,Vadivel MuruganX wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> 
+> On Intel Lightning Mountain(LGM) SoCs QSPI controller do not use
+> Direct Access Controller(DAC).
+> 
+> This patch adds a quirk to disable the Direct Access Controller
+> for data transfer instead it uses indirect data transfer.
+> 
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> ---
+>  drivers/spi/spi-cadence-quadspi.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+> index d7b10c46fa70..3d017b484114 100644
+> --- a/drivers/spi/spi-cadence-quadspi.c
+> +++ b/drivers/spi/spi-cadence-quadspi.c
+> @@ -1106,6 +1106,13 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
+>  	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
+>  	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
+>  
+> +	/* Disable direct access controller */
+> +	if (!cqspi->use_direct_mode) {
+> +		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
+> +		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
+> +		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
+> +	}
+> +
 
-It doesn't even really need a register to hold SHA256_K since this isn't
-PIC code, it could just access it directly as SHA256_K(%ecx) if it just
-multiplied the loop counter i by 4.
+Do you really need to disable the DAC controller? cqspi_read() and 
+cqspi_write() already check for cqspi->use_direct_mode and avoid using 
+direct mode if it is false. While I don't think it would do any harm I'm 
+curious what prompted you to do this instead of just setting the quirk 
+like cdns_qspi does.
+
+Anyway, if you do insist on doing it, it does not make any sense to set 
+a bit and then unset it immediately after. The datasheet I have says 
+this bit resets to 1 so the block above the code you added should be 
+removed.
+
+>  	cqspi_controller_enable(cqspi, 1);
+>  }
+>  
+> @@ -1388,6 +1395,10 @@ static const struct cqspi_driver_platdata am654_ospi = {
+>  	.quirks = CQSPI_NEEDS_WR_DELAY,
+>  };
+>  
+> +static const struct cqspi_driver_platdata intel_lgm_qspi = {
+> +	.quirks = CQSPI_DISABLE_DAC_MODE,
+> +};
+> +
+>  static const struct of_device_id cqspi_dt_ids[] = {
+>  	{
+>  		.compatible = "cdns,qspi-nor",
+> @@ -1403,6 +1414,7 @@ static const struct of_device_id cqspi_dt_ids[] = {
+>  	},
+>  	{
+>  		.compatible = "intel,lgm-qspi",
+> +		.data = &intel_lgm_qspi,
+>  	},
+>  	{ /* end of table */ }
+>  };
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
