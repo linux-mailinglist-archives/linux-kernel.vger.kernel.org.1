@@ -2,304 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B2F294F58
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 307EA294F5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443632AbgJUO6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442789AbgJUO6X (ORCPT
+        id S2443822AbgJUO6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:58:40 -0400
+Received: from sonic311-13.consmr.mail.bf2.yahoo.com ([74.6.131.123]:35803
+        "EHLO sonic311-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2443106AbgJUO6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:58:23 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40715C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:58:21 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id cq12so2922076edb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:58:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=974kBlJ63qD5EYogdaxTOFg/LSMsXr6xzzQDrgDmhVo=;
-        b=TdPu+ofWfrp0hwZWxhUq2KJS2zjbi8MrOCRcvRVvru7pOPrruypz9/Jga2crVESF3W
-         Sgd6gNwn7b7g9HAdaUgq69DALhZenDShkEzj4sDr70Ktq2eS4TH9j3nCiZ+Ibr20uv48
-         2HdetkUPnrVr5uz+ySBJQPe84nLfS3V5hAPiynmVgfOx/+drK4mGICmVHXYFm89vTnmV
-         bRqtXTZEi2o4y8N/WmwOj1JlaunStuLcIkFSdWKD+ZTiThH7GDgkq+hlLcz6bgp+gVb5
-         JbOCGDSRnGNAFRWdG7pgjKtDmuvnG3YvittRYtVL7MSYHQsNN/WjH7tiKbJ23OMmJSV2
-         0qbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=974kBlJ63qD5EYogdaxTOFg/LSMsXr6xzzQDrgDmhVo=;
-        b=WwffmNzaVZEuDY5x1jn+vZc49KH4PQR16FfqqNPg6pXcVhvFpWdVJ0b4wCVKEPd3st
-         tZtLq2SicnZ0yHNXe1pfQ8i4fjeU1uN1/hg4cRWC2RFPAnLrnpGWOkqS6paWvPzW1KUn
-         NeskHMGkvbwwNZuqtqE8DJVRu1G64rqXdzjiE3FcYJsc/th4FniQb7ODKxJ2xikwzCkD
-         kWpipUGNwxxJ2b8VxqRuGcR8wnRzKwmid9BVmTGSp9yFpoP0VGVxISLdzTd9tEqQZxJY
-         hce9Dic9ptMyc7lS3eUh9j677VKj/6DJWCr3l+1xKnzCly+VY99gHqSQaYV2rvvbnpr8
-         Y/gQ==
-X-Gm-Message-State: AOAM532f20fREF+UtjkkifO6cAwITR4lFPZ0ybgjToY9gg6uZ5iH1Rn+
-        5bCohwnp9WnF57EMSLd0dEizrw==
-X-Google-Smtp-Source: ABdhPJyd8qNnKzXbBi18/h0hVzpH2outHPyVpO68TJvh4T7AJopg7XFZjjhKPN7GZcGnnukbpphClw==
-X-Received: by 2002:a05:6402:3191:: with SMTP id di17mr3387453edb.376.1603292299867;
-        Wed, 21 Oct 2020 07:58:19 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id n25sm2377864ejd.114.2020.10.21.07.58.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 07:58:19 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 16:58:00 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Jacob Pan <jacob.pan.linux@gmail.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-api@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
-        Yi Sun <yi.y.sun@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v3 08/14] iommu/ioasid: Add reference couting functions
-Message-ID: <20201021145800.GF1653231@myrica>
-References: <1601329121-36979-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1601329121-36979-9-git-send-email-jacob.jun.pan@linux.intel.com>
+        Wed, 21 Oct 2020 10:58:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1603292319; bh=FfoGMgqq9iBFymLti3II/7ynCTQfh4+5RrgyGRqeUvs=; h=Date:From:Reply-To:Subject:References:From:Subject; b=PbvOA+7bb9iGepLKetRlhrDlj+TX28OQZ+hYH40F96ht6D3p/uUUnnlTc2tEs4vxerONI1rjT5tIi6k7QnWpHVOrxmy/F6r1RNb+TzOniq04Ab/4fcgCyNKyZ3oYiNz4bTu5Phiq5O8PBJobAS5XjmhxZGAnlbB3XjziVxcallhjXmhHkZD95hVtA+9nBiL3XIsr2a4BXBy1hZ3UDmvU5Fu2yQ8BUnZBpqxO2wsRPuTVCDSxgajfOTXhMsKD/6gZ7yWftA01betMJWp6ypGtp/ZB3OTbRqEPo0do0G3t/n90j4a24VlqXHGxFU70VO65iybkLkO7+A6RjE6YoTd5Mg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1603292319; bh=zE3ATCAJGQqjPfVg1n6ZEa9UvYgoOVhdW4l/IXexwqH=; h=Date:From:Subject; b=BaCmMoctl+kdkoxmUyUauansjxE1DmQ5RAFbJlS/vepu16YiPyE8Z69uqT4Fy18vlOst/GZ22Z5HcDt12gGgxm/ftalDReDspFIfthSnfgbufrT82thmGj6MxzH9DRDeXEoNDw3Rz6e8kyjYbvwbF/sa7pxVQGbnsKhz1AoT3FDP/1MIVAi0aaed03J1gTbMtDEARQld6TV03WhsEQHBdMnGDDGK51Hy1J0Pmhy+QZ0Alb8m46s5zIl6pPx9RZIshRrsQ5pyvsgV3VDeB0aIs6PeofUNVl9cAALY8n+8r4FLzAat3rEq9CjB2lf3yxacg6FQ6uW2TnZEuRnMx6UOAQ==
+X-YMail-OSG: 9U4TGGsVM1liTPZQX6bw1OIGqEwVNY1PjCZGsz6h.nC5A9GA5x1SpTuFuLqA.tF
+ 6JIoD1x0eFULrAhm8CEBeaxc6C0BVv8t7WAgEjykanQZPks5.vfN0ndFwOTSkOak56DuKZ7gcA0V
+ 19FnPT5AxqwQWFu_uOMbzMmi6itPwV6laufviA58A6jARHBKq8uml55W6_gvYS2SLelQ6wLaeqW2
+ NZgzGXNYBkoTyZGdGabuJfwHUWZj6jI2BtHfmiulNLMjzCl61tv8phlsTQ8tz_fsl9ZY2NyyKQUS
+ bLZscZcw5GlLzKY8VhBtdtwyYnholJ4X2pyZyZtSiACFioC8esZ6bUrhRrcxVoWDW3WFQCRRQdT4
+ BWHNm6rDGYLFEllWWT93VoitF_jSBetbhwpp3pIOO3uZYYA54Ly0AtX6gzc4GdG8ZvGxFnyekEgv
+ pX80huI5vSwpf6qjWlRJDZHftASHEeTqhbIVKvq43yzWLayw0mgW54mqRB0u13aCukBxUGYdx986
+ byTK_OoKP7mXHnwGofIa0hOnJ16_qErJlY92mAAD.aG2qkwrCRueVMDvD5Ub02Q4ilZw.2m_33PL
+ cwrNa_V.y6cRf7BRiRJBI6izBUyKikGdFsnsU1hDL3ri01flAhRu.bathOQSoaq5ynFGqJ67m0Xk
+ bcaUNw_HPaT_oQ05040waUD05sd.d2S_6lUTB.0YX.Tpc80P240t0wNlglLVH.xfXRMuAZZ_5JTk
+ C41b8UEVFo7XqhQUBhUBIwZEXT_Qf3_fv._upfvDPKRzgP7qNPjGYyi4wFunQRgibaWJ71vCsqkh
+ 94k7eEYNK166.SVrz2uX2vwkJhCi80lWOqjYAxHafOQ.DYjjXeDJrtaT0NCzY.SOJK4DLJ8O0PxH
+ e9OF9wn536XSQNyyxlc.F3k6HpAUyGZ6lXIdvsl5WgSSxyxS4vXvRchDGaq8qB6eir_I6DmkD4xE
+ aOYP4GWRde6TWtPyR8Qp10kRmPezFBegTcg71Hzsd2rThvEtMLI14IDvzvAmdmz2czYm1GAz3KA.
+ N0KFx.pKZhQ5Kb325CrLol51CVsQUak1h7JI.8fhg_tW2KP8._XV8r.qAd.jNV0f1XobFSnMsqJY
+ k9d0NFqaoEpzf__k_nQLfVsn5Kdh1d5IFStnAriNGk8dd05boQgFzhO7oTKzJxeL2GSlyaooPMRG
+ HAc0XfTM5e5W4UCQCtooVB76N1HyVmpCeoVCRly1CQU.sX86ekUXTY0k9SBdg8hKqrrFIi2IsLLB
+ dO4KCjThm4.kHx3BdHgp5mr4sjwIyitO.s3HM_YzJL0OtYbjGjUrsqiVn2KpIrhBXBYRCdNtCkD7
+ DSWObAPIvWJ.ctN0.cYIPAIdO_gbdKe3NGDJ6ZbepyoGfN0oBzIBZ_Q8sggaBmOqSNL5RFeZrfQm
+ aXRa3a2afVkgpAJ1bnlQ7rCj4ahgrbSUBzcaD26akrTU-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.bf2.yahoo.com with HTTP; Wed, 21 Oct 2020 14:58:39 +0000
+Date:   Wed, 21 Oct 2020 14:58:37 +0000 (UTC)
+From:   Rassaq Rasmane <rasmanerassaq@aol.com>
+Reply-To: princerassaqrasmane20@gmail.com
+Message-ID: <1904400120.1397798.1603292317452@mail.yahoo.com>
+Subject: Greetings
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1601329121-36979-9-git-send-email-jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1904400120.1397798.1603292317452.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16868 YMailNodin Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 02:38:35PM -0700, Jacob Pan wrote:
-> There can be multiple users of an IOASID, each user could have hardware
-> contexts associated with the IOASID. In order to align lifecycles,
-> reference counting is introduced in this patch. It is expected that when
-> an IOASID is being freed, each user will drop a reference only after its
-> context is cleared.
-> 
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> ---
->  drivers/iommu/ioasid.c | 117 +++++++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/ioasid.h |  24 ++++++++++
->  2 files changed, 141 insertions(+)
-> 
-> diff --git a/drivers/iommu/ioasid.c b/drivers/iommu/ioasid.c
-> index 9628e78b2ab4..828cc44b1b1c 100644
-> --- a/drivers/iommu/ioasid.c
-> +++ b/drivers/iommu/ioasid.c
-> @@ -16,8 +16,26 @@ static ioasid_t ioasid_capacity = PCI_PASID_MAX;
->  static ioasid_t ioasid_capacity_avail = PCI_PASID_MAX;
->  static DEFINE_XARRAY_ALLOC(ioasid_sets);
->  
-> +enum ioasid_state {
-> +	IOASID_STATE_INACTIVE,
-> +	IOASID_STATE_ACTIVE,
-> +	IOASID_STATE_FREE_PENDING,
-> +};
-> +
-> +/**
-> + * struct ioasid_data - Meta data about ioasid
-> + *
-> + * @id:		Unique ID
-> + * @users:	Number of active users
-> + * @state:	Track state of the IOASID
-> + * @set:	ioasid_set of the IOASID belongs to
-> + * @private:	Private data associated with the IOASID
-> + * @rcu:	For free after RCU grace period
-> + */
->  struct ioasid_data {
->  	ioasid_t id;
-> +	refcount_t users;
-> +	enum ioasid_state state;
->  	struct ioasid_set *set;
->  	void *private;
->  	struct rcu_head rcu;
-> @@ -511,6 +529,8 @@ ioasid_t ioasid_alloc(struct ioasid_set *set, ioasid_t min, ioasid_t max,
->  		goto exit_free;
->  	}
->  	data->id = id;
-> +	data->state = IOASID_STATE_ACTIVE;
-> +	refcount_set(&data->users, 1);
->  
->  	/* Store IOASID in the per set data */
->  	if (xa_err(xa_store(&set->xa, id, data, GFP_ATOMIC))) {
-> @@ -560,6 +580,14 @@ static void ioasid_free_locked(struct ioasid_set *set, ioasid_t ioasid)
->  	if (WARN_ON(!xa_load(&ioasid_sets, data->set->id)))
->  		return;
->  
-> +	/* Free is already in progress */
-> +	if (data->state == IOASID_STATE_FREE_PENDING)
-> +		return;
+Greetings,
 
-But the previous call to ioasid_free_locked() dropped a reference, then
-returned because more refs where held. Shouldn't this call also
-dec_and_test() the reference and call ioasid_do_free_locked() if
-necessary?
+I am delighted to write you this mail. Nowadays internet has been highly ab=
+used. But i can assure you my claims are real and genuine. I am Prince Rass=
+aq Rasmane, a young African who is passionate about the living standards of=
+ his people. I am contacting you on behalf of my father the king of my vill=
+age by name HRH. king Abdoul Rasmane 11th of Obokoma village, Bittuh west A=
+frica, located around the border of Ghana and the eastern part of Burkina F=
+aso.
 
-> +
-> +	data->state = IOASID_STATE_FREE_PENDING;
-> +	if (!refcount_dec_and_test(&data->users))
-> +		return;
-> +
->  	ioasid_do_free_locked(data);
->  }
->  
-> @@ -717,6 +745,95 @@ void ioasid_set_for_each_ioasid(struct ioasid_set *set,
->  }
->  EXPORT_SYMBOL_GPL(ioasid_set_for_each_ioasid);
->  
-> +int ioasid_get_locked(struct ioasid_set *set, ioasid_t ioasid)
-> +{
-> +	struct ioasid_data *data;
-> +
-> +	data = xa_load(&active_allocator->xa, ioasid);
-> +	if (!data) {
-> +		pr_err("Trying to get unknown IOASID %u\n", ioasid);
-> +		return -EINVAL;
-> +	}
-> +	if (data->state == IOASID_STATE_FREE_PENDING) {
-> +		pr_err("Trying to get IOASID being freed%u\n", ioasid);
+There is a British/American buyer who is a business man and a dealer in Afr=
+ican antiquities who initially expressed interest through his agent who cam=
+e to Africa in 2011 in buying some antiquities which are our village herita=
+ge of 470 years old but only for the objection of the village head.
 
-Strange placement of the %u
+Now, the concerned people in the village, e.g. the notables, the elders and=
+ the villagers have spoken to the village king and a willingness to dispose=
+ the antiquities for sale has been expressed. This is to raise fund that wi=
+ll be realized from the sales for community development and also to put in =
+place some social amenities like good hospitals, good schools, bridges and =
+good roads that will improve the living conditions of the people in the vil=
+lage.
 
-> +		return -EBUSY;
-> +	}
-> +
-> +	/* Check set ownership if the set is non-null */
-> +	if (set && data->set != set) {
-> +		pr_err("Trying to get IOASID %u outside the set\n", ioasid);
-> +		/* data found but does not belong to the set */
-> +		return -EACCES;
-> +	}
-> +	refcount_inc(&data->users);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(ioasid_get_locked);
+Our village contacted the British buyer and he expressed his readiness to m=
+ake payment against these antiquities if it is shipped out of Africa. He fu=
+rther briefed us that he does not want to come down to Africa for any reaso=
+n at the moment because he is so tight down now with his businesses and als=
+o considering the issue of Corona virus.
 
-If this is a public facing let's add a lockdep_assert_held() to make sure
-they do hold the right lock. Same for ioasid_put_locked().
+He equally denied disclosing his buying price to us so long as the antiquit=
+ies are still in Africa. That if seller should get this antiques out of Afr=
+ica through a representative or facilitator he will sign a business contrac=
+t with him and buy from him, maybe visit his country to confirm objects and=
+ pay. This is a 100% legal rare vintage Artifacts that is worth millions of=
+ dollars in the international market but we only ask for a reduced sum.
 
-Thanks,
-Jean
+Dear, if you are interested we will forward you the address of the British =
+buyer and photographs of these antiquities so that you can contact the buye=
+r on our behalf and negotiate the price with him as here in the village we =
+don=E2=80=99t have the opportunity to be exposed to international market.
 
-> +
-> +/**
-> + * ioasid_get - Obtain a reference to an ioasid
-> + * @set:	the ioasid_set to check permission against if not NULL
-> + * @ioasid:	the ID to remove
-> + *
-> + *
-> + * Return: 0 on success, error if failed.
-> + */
-> +int ioasid_get(struct ioasid_set *set, ioasid_t ioasid)
-> +{
-> +	int ret;
-> +
-> +	spin_lock(&ioasid_allocator_lock);
-> +	ret = ioasid_get_locked(set, ioasid);
-> +	spin_unlock(&ioasid_allocator_lock);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(ioasid_get);
-> +
-> +bool ioasid_put_locked(struct ioasid_set *set, ioasid_t ioasid)
-> +{
-> +	struct ioasid_data *data;
-> +
-> +	data = xa_load(&active_allocator->xa, ioasid);
-> +	if (!data) {
-> +		pr_err("Trying to put unknown IOASID %u\n", ioasid);
-> +		return false;
-> +	}
-> +	if (set && data->set != set) {
-> +		pr_err("Trying to drop IOASID %u outside the set\n", ioasid);
-> +		return false;
-> +	}
-> +	if (!refcount_dec_and_test(&data->users))
-> +		return false;
-> +
-> +	ioasid_do_free_locked(data);
-> +
-> +	return true;
-> +}
-> +EXPORT_SYMBOL_GPL(ioasid_put_locked);
-> +
-> +/**
-> + * ioasid_put - Release a reference to an ioasid
-> + * @set:	the ioasid_set to check permission against if not NULL
-> + * @ioasid:	the ID to remove
-> + *
-> + * Put a reference to the IOASID, free it when the number of references drops to
-> + * zero.
-> + *
-> + * Return: %true if the IOASID was freed, %false otherwise.
-> + */
-> +bool ioasid_put(struct ioasid_set *set, ioasid_t ioasid)
-> +{
-> +	bool ret;
-> +
-> +	spin_lock(&ioasid_allocator_lock);
-> +	ret = ioasid_put_locked(set, ioasid);
-> +	spin_unlock(&ioasid_allocator_lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(ioasid_put);
-> +
->  /**
->   * ioasid_find - Find IOASID data
->   * @set: the IOASID set
-> diff --git a/include/linux/ioasid.h b/include/linux/ioasid.h
-> index aab58bc26714..16d421357173 100644
-> --- a/include/linux/ioasid.h
-> +++ b/include/linux/ioasid.h
-> @@ -73,6 +73,10 @@ void *ioasid_find(struct ioasid_set *set, ioasid_t ioasid,
->  		  bool (*getter)(void *));
->  int ioasid_register_allocator(struct ioasid_allocator_ops *allocator);
->  void ioasid_unregister_allocator(struct ioasid_allocator_ops *allocator);
-> +int ioasid_get(struct ioasid_set *set, ioasid_t ioasid);
-> +int ioasid_get_locked(struct ioasid_set *set, ioasid_t ioasid);
-> +bool ioasid_put(struct ioasid_set *set, ioasid_t ioasid);
-> +bool ioasid_put_locked(struct ioasid_set *set, ioasid_t ioasid);
->  int ioasid_attach_data(ioasid_t ioasid, void *data);
->  void ioasid_detach_data(ioasid_t ioasid);
->  void ioasid_set_for_each_ioasid(struct ioasid_set *sdata,
-> @@ -112,6 +116,26 @@ static inline void ioasid_set_put(struct ioasid_set *set)
->  {
->  }
->  
-> +static inline int ioasid_get(struct ioasid_set *set, ioasid_t ioasid)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +
-> +static inline int ioasid_get_locked(struct ioasid_set *set, ioasid_t ioasid)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +
-> +static inline bool ioasid_put(struct ioasid_set *set, ioasid_t ioasid)
-> +{
-> +	return false;
-> +}
-> +
-> +static inline bool ioasid_put_locked(struct ioasid_set *set, ioasid_t ioasid)
-> +{
-> +	return false;
-> +}
-> +
->  static inline void *ioasid_find(struct ioasid_set *set, ioasid_t ioasid, bool (*getter)(void *))
->  {
->  	return NULL;
-> -- 
-> 2.7.4
-> 
+Once you have reached agreement with the buyer we shall begin arrangements =
+to immediately ship the three status collection Antiques to you so that buy=
+er may conclude the transaction with you. Once sold, you are to deduct your=
+ 20% commission and transfer rest fund to us so we can begin our community =
+projects. We will take a lot of delight if you treat this business with ser=
+iousness and give it an esteem position. We await your prompt response rega=
+rding this issue.
+
+Please contact me through the above email (princerassaqrasmane20@gmail.com)
+
+Best regards,
+Prince Rassaq Rasmane
