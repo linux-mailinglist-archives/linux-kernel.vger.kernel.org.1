@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA91295124
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB37729512A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503187AbgJUQxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:53:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40188 "EHLO mail.kernel.org"
+        id S2503232AbgJUQ4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:56:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:37780 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502955AbgJUQxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:53:34 -0400
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B6022173E
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 16:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603299213;
-        bh=tysafz95EGrDRAd4koiebqQvSihPyKOlLcDwNX9+/pI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Nd2u+8mcPJFj67p+FKZqC9bf8zyoXyKNuleNaz2o3D31Mb+PFWuxazOaqZBcAmSKG
-         /lUrkLr5YixxzONPBEsAAduba0ND2P5zQy2SVOVui0KddeRU/uuJUzhgbapF6BUjkE
-         rGxxTL3kEyG1x8l0t+f7XznXMBvd3PvqxopdMV0g=
-Received: by mail-ej1-f46.google.com with SMTP id z5so4231308ejw.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:53:33 -0700 (PDT)
-X-Gm-Message-State: AOAM530zO/JVhv0kv9gLAeSJYUMT9cQr5cNRCPT9J8KvNafiTIgr07ls
-        /nbXaannxQxx/Th7oeTFHIPC/GKqcN/3ueW0jA==
-X-Google-Smtp-Source: ABdhPJxYbs5q0DLX41jjFeTCIyysgme2FgAo9xaY3pF7NcxvbRkwTiWrHViLgF5ogY6yUTJoIVQ1f8qIeUuK06BO6Ek=
-X-Received: by 2002:a17:906:7fd7:: with SMTP id r23mr4284124ejs.310.1603299211543;
- Wed, 21 Oct 2020 09:53:31 -0700 (PDT)
+        id S2395372AbgJUQ4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 12:56:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 764FF31B;
+        Wed, 21 Oct 2020 09:56:08 -0700 (PDT)
+Received: from [10.57.50.191] (unknown [10.57.50.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B24073F719;
+        Wed, 21 Oct 2020 09:56:03 -0700 (PDT)
+Subject: Re: [PATCH 2/4] iommu/mediatek: Add iotlb_sync_range() support
+To:     Chao Hao <chao.hao@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Jun Wen <jun.wen@mediatek.com>, FY Yang <fy.yang@mediatek.com>,
+        wsd_upstream@mediatek.com, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Mingyuan Ma <mingyuan.ma@mediatek.com>
+References: <20201019113100.23661-1-chao.hao@mediatek.com>
+ <20201019113100.23661-3-chao.hao@mediatek.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <7fbe0305-91e4-949e-7d84-bf91e81d6b27@arm.com>
+Date:   Wed, 21 Oct 2020 17:55:58 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-References: <20201020152639.21950-1-matthias.bgg@kernel.org>
-In-Reply-To: <20201020152639.21950-1-matthias.bgg@kernel.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 22 Oct 2020 00:53:20 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__MegNwaUGphYNpnKrC_y8SX-_rDNXGxsaBJ6FDBKsQ_w@mail.gmail.com>
-Message-ID: <CAAOTY__MegNwaUGphYNpnKrC_y8SX-_rDNXGxsaBJ6FDBKsQ_w@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: change mediatek wiki page
-To:     matthias.bgg@kernel.org
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        kuohong.wang@mediatek.com, yh.chen@mediatek.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miles.Chen@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, Yingjoe.Chen@mediatek.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201019113100.23661-3-chao.hao@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Matthias:
+On 2020-10-19 12:30, Chao Hao wrote:
+> MTK_IOMMU driver writes one page entry and does tlb flush at a time
+> currently. More optimal would be to aggregate the writes and flush
+> BUS buffer in the end.
 
-<matthias.bgg@kernel.org> =E6=96=BC 2020=E5=B9=B410=E6=9C=8820=E6=97=A5 =E9=
-=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8811:27=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> From: Matthias Brugger <matthias.bgg@gmail.com>
->
-> The old wiki page unfortunately got lost by server crash.
-> The new wiki can be found on the kernel.org infrastructure
->
+That's exactly what iommu_iotlb_gather_add_page() is meant to achieve. 
+Rather than jumping straight into hacking up a new API to go round the 
+back of the existing API design, it would be far better to ask the 
+question of why that's not behaving as expected.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> For 50MB buffer mapping, if mtk_iommu driver use iotlb_sync_range()
+> instead of tlb_add_range() and tlb_flush_walk/leaf(), it can increase
+> 50% performance or more(depending on size of every page size) in
+> comparison to flushing after each page entry update. So we prefer to
+> use iotlb_sync_range() to replace iotlb_sync(), tlb_add_range() and
+> tlb_flush_walk/leaf() for MTK platforms.
 
-> Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+In the case of mapping, it sounds like what you actually want to do is 
+hook up .iotlb_sync_map and generally make IO_PGTABLE_QUIRK_TLBI_ON_MAP 
+cleverer, because the current implementation is as dumb as it could 
+possibly be. In fact if we simply passed an address range to 
+.iotlb_sync_map, io-pgtable probably wouldn't need to be involved at all 
+any more.
+
+Robin.
+
+> Signed-off-by: Chao Hao <chao.hao@mediatek.com>
 > ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 14b8ec0bb58b..7d0088782a9f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2067,7 +2067,7 @@ M:        Matthias Brugger <matthias.bgg@gmail.com>
->  L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribe=
-rs)
->  L:     linux-mediatek@lists.infradead.org (moderated for non-subscribers=
-)
->  S:     Maintained
-> -W:     https://mtk.bcnfs.org/
-> +W:     https://mtk.wiki.kernel.org/
->  C:     irc://chat.freenode.net/linux-mediatek
->  F:     arch/arm/boot/dts/mt6*
->  F:     arch/arm/boot/dts/mt7*
-> --
-> 2.28.0
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+>   drivers/iommu/mtk_iommu.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index 785b228d39a6..d3400c15ff7b 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -224,6 +224,11 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
+>   	}
+>   }
+>   
+> +static void __mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size)
+> +{
+> +	mtk_iommu_tlb_flush_range_sync(iova, size, 0, NULL)
+> +}
+> +
+>   static void mtk_iommu_tlb_flush_page_nosync(struct iommu_iotlb_gather *gather,
+>   					    unsigned long iova, size_t granule,
+>   					    void *cookie)
+> @@ -536,6 +541,7 @@ static const struct iommu_ops mtk_iommu_ops = {
+>   	.map		= mtk_iommu_map,
+>   	.unmap		= mtk_iommu_unmap,
+>   	.flush_iotlb_all = mtk_iommu_flush_iotlb_all,
+> +	.iotlb_sync_range = __mtk_iommu_tlb_flush_range_sync,
+>   	.iotlb_sync	= mtk_iommu_iotlb_sync,
+>   	.iova_to_phys	= mtk_iommu_iova_to_phys,
+>   	.probe_device	= mtk_iommu_probe_device,
+> 
