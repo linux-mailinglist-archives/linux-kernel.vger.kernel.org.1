@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228B4295042
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364A3295044
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444234AbgJUP4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444228AbgJUP4P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:56:15 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082A9C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:56:14 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id c15so2877741ejs.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:56:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X0lTiqb5J9sY8vV0icb54lwEDBUajV0UVIORKH6LrNY=;
-        b=pw6V1cbzdJ6aAPDs4ytDbsD7675deQrBlDE7Zfjq8ZmOkksqk1Hx+ZLxaKQ9ApsYk2
-         ajf9p1fq9yHfime7IrTKw1XLB3KQWxS2WZ1IPfIRysWMvnO4SZPiXJYVjgKjpsJIhcLy
-         nqO0C17hJVeFPG2QqUw/R4TlWfwCkRQG+gQH5TDieG98d4rNzIqDJXpwspF0hMWJQ1od
-         msS/DrstME+3k0Ay4CZqSH4h6vDXu6POv2WgeFrDmPlU0G1AioBxDMofuqAm2vELfMBp
-         Zbv+8AUvs7r+LYacrB3m3zdapjqTB7LpxaCKR1XC/TfCokDx8fzN8FuALYgSbGG+Z0Ju
-         QYug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X0lTiqb5J9sY8vV0icb54lwEDBUajV0UVIORKH6LrNY=;
-        b=euVNrJQhsq/iaksli2mKC4bUzCT5T/SH0XXHuzn0emonXDERuF+HW5N7zRXiY7u6SS
-         rXsP62rZ26YKrdZw5DoLvNLhwM7xsfaM3UrBOwpI141gCC5OD1EnFqYc6fgtoGMmTRCp
-         n8WHbRg51h8q+CB62wwf5QBVucoB+zpB3s3sx/pip42yPSisM+NrxfsDOKNDjOI31bhD
-         th2jlnFrmrJRx9y4UCSDPAZ8uEazTDTRVNU0+SMdV4QtPhnsyiruGr6IL0mhpj5ll6nS
-         NodTfyzcQMe41jqyfEILkxwz0LlWQTfiQCTXBFDzuO8s5Nvapue508CzvLPo/QZT1oyi
-         LrzQ==
-X-Gm-Message-State: AOAM532vY9ohrZeu3gLOotEYCCGo3AGTtVA5lAA5rJ3UbO/NaiDZ5r5a
-        dmF9I/Eea8KfLtRO40W7Q8TZ3Q==
-X-Google-Smtp-Source: ABdhPJySolT9z3HzmY7EyNWZ4ApJyxy/nC5R12XAm8kPOgoop3cN8exiEFcaAdXQ91v6+lomcP7ybA==
-X-Received: by 2002:a17:906:d159:: with SMTP id br25mr4414045ejb.155.1603295772516;
-        Wed, 21 Oct 2020 08:56:12 -0700 (PDT)
-Received: from tsr-vdi-mbaerts.nix.tessares.net (static.23.216.130.94.clients.your-server.de. [94.130.216.23])
-        by smtp.gmail.com with ESMTPSA id k1sm2342278edl.0.2020.10.21.08.56.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 08:56:11 -0700 (PDT)
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net] selftests: mptcp: depends on built-in IPv6
-Date:   Wed, 21 Oct 2020 17:55:49 +0200
-Message-Id: <20201021155549.933731-1-matthieu.baerts@tessares.net>
-X-Mailer: git-send-email 2.27.0
+        id S2444243AbgJUP4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:56:47 -0400
+Received: from mga17.intel.com ([192.55.52.151]:50751 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394589AbgJUP4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 11:56:47 -0400
+IronPort-SDR: iv+OuUIligen+mIezkzdpbnXKmRP2ZwslMvY86VC5lesdoAkH9rzp5rwpJ0fzicaIX3FVUPrJ5
+ ipZBK9/0YO/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="147247476"
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="147247476"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 08:56:30 -0700
+IronPort-SDR: zYWuLHGqn2a8UF1KBhxglIOdg+1BVELJn5Q9ds1YC4lNOHHsIzT6MEsNZ/YNnfDCoCdXBl1ica
+ 4KVdCu2P1/Aw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="522788886"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 21 Oct 2020 08:56:30 -0700
+Received: from [10.249.231.46] (abudanko-mobl.ccr.corp.intel.com [10.249.231.46])
+        by linux.intel.com (Postfix) with ESMTP id D414A580720;
+        Wed, 21 Oct 2020 08:56:27 -0700 (PDT)
+Subject: [PATCH v2 01/15] perf session: introduce trace file path to be shown
+ in raw trace dump
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <e73eba79-9c3d-8894-7540-7329bd3c09da@linux.intel.com>
+Date:   Wed, 21 Oct 2020 18:56:26 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently, CONFIG_MPTCP_IPV6 no longer selects CONFIG_IPV6. As a
-consequence, if CONFIG_MPTCP_IPV6=y is added to the kconfig, it will no
-longer ensure CONFIG_IPV6=y. If it is not enabled, CONFIG_MPTCP_IPV6
-will stay disabled and selftests will fail.
 
-We also need CONFIG_IPV6 to be built-in. For more details, please see
-commit 0ed37ac586c0 ("mptcp: depends on IPV6 but not as a module").
+Extend reader, ordered_event and decomp objects to contain path
+of a trace file being displayed.
 
-Note that 'make kselftest-merge' will take all 'config' files found in
-'tools/testsing/selftests'. Because some of them already set
-CONFIG_IPV6=y, MPTCP selftests were still passing. But they will fail if
-MPTCP selftests are launched manually after having executed this command
-to prepare the kernel config:
-
-  ./scripts/kconfig/merge_config.sh -m .config \
-      ./tools/testing/selftests/net/mptcp/config
-
-Fixes: 010b430d5df5 ("mptcp: MPTCP_IPV6 should depend on IPV6 instead of selecting it")
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/testing/selftests/net/mptcp/config | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/util/ordered-events.h | 1 +
+ tools/perf/util/session.c        | 2 ++
+ tools/perf/util/session.h        | 1 +
+ 3 files changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/net/mptcp/config b/tools/testing/selftests/net/mptcp/config
-index 8df5cb8f71ff..741a1c4f4ae8 100644
---- a/tools/testing/selftests/net/mptcp/config
-+++ b/tools/testing/selftests/net/mptcp/config
-@@ -1,4 +1,5 @@
- CONFIG_MPTCP=y
-+CONFIG_IPV6=y
- CONFIG_MPTCP_IPV6=y
- CONFIG_INET_DIAG=m
- CONFIG_INET_MPTCP_DIAG=m
+diff --git a/tools/perf/util/ordered-events.h b/tools/perf/util/ordered-events.h
+index 75345946c4b9..42c9764c6b5b 100644
+--- a/tools/perf/util/ordered-events.h
++++ b/tools/perf/util/ordered-events.h
+@@ -9,6 +9,7 @@ struct perf_sample;
+ struct ordered_event {
+ 	u64			timestamp;
+ 	u64			file_offset;
++	const char		*file_path;
+ 	union perf_event	*event;
+ 	struct list_head	list;
+ };
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index 7a5f03764702..4478ddae485b 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -2119,6 +2119,7 @@ typedef s64 (*reader_cb_t)(struct perf_session *session,
+ 
+ struct reader {
+ 	int		 fd;
++	const char	 *path;
+ 	u64		 data_size;
+ 	u64		 data_offset;
+ 	reader_cb_t	 process;
+@@ -2241,6 +2242,7 @@ static int __perf_session__process_events(struct perf_session *session)
+ 		.data_size	= session->header.data_size,
+ 		.data_offset	= session->header.data_offset,
+ 		.process	= process_simple,
++		.path		= session->data->file.path,
+ 	};
+ 	struct ordered_events *oe = &session->ordered_events;
+ 	struct perf_tool *tool = session->tool;
+diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
+index f76480166d38..378ffc3e2809 100644
+--- a/tools/perf/util/session.h
++++ b/tools/perf/util/session.h
+@@ -46,6 +46,7 @@ struct perf_session {
+ struct decomp {
+ 	struct decomp *next;
+ 	u64 file_pos;
++	const char *file_path;
+ 	size_t mmap_len;
+ 	u64 head;
+ 	size_t size;
 -- 
-2.27.0
+2.24.1
+
 
