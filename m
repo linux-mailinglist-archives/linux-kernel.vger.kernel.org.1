@@ -2,156 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025DC294C40
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C26294C44
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440036AbgJUMIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:08:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59111 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406204AbgJUMIh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:08:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603282115;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JSRIhOa2ZboDQdRZ4wZoNo9M9MMQM9K6TVUIYNZpopo=;
-        b=JzOMxz83TVkOpZCdEeCBdsE58BsR/EkqA4VFXAIGRTt4BEjl4fh4C7OQpM+z64OCCAh0KR
-        IgyO4qxbt0By0cpXClZJVD/FvPHvpe1amZIJ38Pib7mOJIbFN9mF1wGAMKQMlPUWeo6tga
-        hLxqjC7jc3nXFyxvcawIENnc1hqXU2Y=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-428-8F4iwGlQOAW5i3A3NhFYvQ-1; Wed, 21 Oct 2020 08:08:33 -0400
-X-MC-Unique: 8F4iwGlQOAW5i3A3NhFYvQ-1
-Received: by mail-wr1-f70.google.com with SMTP id 33so2355360wrf.22
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:08:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=JSRIhOa2ZboDQdRZ4wZoNo9M9MMQM9K6TVUIYNZpopo=;
-        b=rZwT9rEws7wZpsBDMiGfjJ/aFsdGqT3gKkf/zsnJj89NXabFi+U17UosSUM7QwXgtW
-         F4/ip9HHm/Rt7lx/4/EPqWaPSIevCmuDZGcgQuswIahb0RHzbOWmmyxWQ2hngXpXWrLa
-         bk5VFk9VlGO7WTCXHMGDnK0UXmimKYCmr9HrkYmXwYRFomU4ERj9EpionG1cJ58Bofsi
-         rDH50P6PVi2+PERuZ+93pvGgI1BsK/dHGQGOZUMUv785BwkPP8zFsDBRxZ1X0wgXkZ6k
-         nESRaDMZppOpeMDtkGWMjzclLHRFHIntnfY48p/muR+ZINw9l9XBVzM51FYZT+tNAEmp
-         RKqg==
-X-Gm-Message-State: AOAM533wTgUNjXTOzz/sUsGjbHTxaWJG6+IRUBnXlZXHU/icKv846Ipq
-        tT9E4rIyxqR26PuHYcLIhVgmkwxLkozEUuODfYLWijdlfrqpBL4mgwe3sLXHqGX+4AB2NE49Ezb
-        f+b8lLU56owgwixenXnFiSDmA
-X-Received: by 2002:adf:bb07:: with SMTP id r7mr4655719wrg.150.1603282112106;
-        Wed, 21 Oct 2020 05:08:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyIR6bSM2D0fd0B1XmtAvNAMAmeNT8HwaO9i0Blwri6gPmOW2YLQWRfTbK6wrZIdBprVA+r0w==
-X-Received: by 2002:adf:bb07:: with SMTP id r7mr4655696wrg.150.1603282111899;
-        Wed, 21 Oct 2020 05:08:31 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id s1sm3052094wmh.22.2020.10.21.05.08.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 05:08:30 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/10] KVM: VMX: Fold Hyper-V EPTP checking into it's only caller
-In-Reply-To: <20201020215613.8972-4-sean.j.christopherson@intel.com>
-References: <20201020215613.8972-1-sean.j.christopherson@intel.com> <20201020215613.8972-4-sean.j.christopherson@intel.com>
-Date:   Wed, 21 Oct 2020 14:08:29 +0200
-Message-ID: <8736276ate.fsf@vitty.brq.redhat.com>
+        id S2440039AbgJUMMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:12:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2411318AbgJUMMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:12:00 -0400
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10031223C6;
+        Wed, 21 Oct 2020 12:11:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603282319;
+        bh=QsMYkMa6PBVVYYZ7BTm9Ize/SeOd8e2vqy0LlM9MFOQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cuU/fpuIroFdhhVAc7BKKuZeFmsO9VcqwQRKV60RYWHQaz0Sf4sr1L4MIXaZDnmZR
+         L+WBd++xvTvAtSFrmgPo3CLWxUrrufM1n03l+pI9Bnt9TH7IcjlNlYIQnUNSLg7S5n
+         kCCIwzQ0RAo6dFEx/7rYS1Vegyn7712A7XZvqkmI=
+Received: by mail-qk1-f178.google.com with SMTP id z6so2078991qkz.4;
+        Wed, 21 Oct 2020 05:11:59 -0700 (PDT)
+X-Gm-Message-State: AOAM530Sk/Zu2/Kmy/Yvjghi32Yn/Ewmr9t4ux99dgwvpfhqvZ21gbC2
+        GTJTv0u9i6BLDpzAlD6SEJ4gdFSX71Y8QYvJ5MI=
+X-Google-Smtp-Source: ABdhPJzuJ99P/Tgb6oBO1lZhiTXqGsC7ijBifM7xSa9Zqm87Br7mScbgBLmXTiOZUtDsedSZPfFOS3X0xvSz2ceCStI=
+X-Received: by 2002:a05:620a:215d:: with SMTP id m29mr2890521qkm.138.1603282317961;
+ Wed, 21 Oct 2020 05:11:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
+ <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
+ <20201019120040.3152ea0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <PS1PR0601MB1849166CBF6D1678E6E1210C9C1F0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+ <CAK8P3a2pEfbLDWTppVHmGxXduOWPCwBw-8bMY9h3EbEecsVfTA@mail.gmail.com>
+ <32bfb619bbb3cd6f52f9e5da205673702fed228f.camel@kernel.crashing.org> <CAK8P3a2j7fV5EFmC8UvSyvXixU8=Nmp6hrJco-fdP2Z+w8bLnA@mail.gmail.com>
+In-Reply-To: <CAK8P3a2j7fV5EFmC8UvSyvXixU8=Nmp6hrJco-fdP2Z+w8bLnA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 21 Oct 2020 14:11:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0qzyb0z-OH-hGNJ8iQoLckVkkz4DQfYpFFd=UuXP3gwA@mail.gmail.com>
+Message-ID: <CAK8P3a0qzyb0z-OH-hGNJ8iQoLckVkkz4DQfYpFFd=UuXP3gwA@mail.gmail.com>
+Subject: Re: [PATCH] net: ftgmac100: Fix missing TX-poll issue
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Dylan Hung <dylan_hung@aspeedtech.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <sean.j.christopherson@intel.com> writes:
+(replying to my own mail from a different address to deal with the
+regular one being blacklisted somewhere, sorry for any duplicates)
 
-> Fold check_ept_pointer_match() into hv_remote_flush_tlb_with_range() in
-> preparation for combining the kvm_for_each_vcpu loops of the ==CHECK and
-> !=MATCH statements.
+On Wed, Oct 21, 2020 at 9:16 AM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> No functional change intended.
+> On Wed, Oct 21, 2020 at 12:10 AM Benjamin Herrenschmidt
+> <benh@kernel.crashing.org> wrote:
+> > On Tue, 2020-10-20 at 21:49 +0200, Arnd Bergmann wrote:
+> > > On Tue, Oct 20, 2020 at 11:37 AM Dylan Hung <dylan_hung@aspeedtech.com> wrote:
+> > > > > +1 @first is system memory from dma_alloc_coherent(), right?
+> > > > >
+> > > > > You shouldn't have to do this. Is coherent DMA memory broken on your
+> > > > > platform?
+> > > >
+> > > > It is about the arbitration on the DRAM controller.  There are two queues in the dram controller, one is for the CPU access and the other is for the HW engines.
+> > > > When CPU issues a store command, the dram controller just acknowledges cpu's request and pushes the request into the queue.  Then CPU triggers the HW MAC engine, the HW engine starts to fetch the DMA memory.
+> > > > But since the cpu's request may still stay in the queue, the HW engine may fetch the wrong data.
+> >
+> > Actually, I take back what I said earlier, the above seems to imply
+> > this is more generic.
+> >
+> > Dylan, please confirm, does this affect *all* DMA capable devices ? If
+> > yes, then it's a really really bad design bug in your chips
+> > unfortunately and the proper fix is indeed to make dma_wmb() do a dummy
+> > read of some sort (what address though ? would any dummy non-cachable
+> > page do ?) to force the data out as *all* drivers will potentially be
+> > affected.
+> >
+> > I was under the impression that it was a specific timing issue in the
+> > vhub and ethernet parts, but if it's more generic then it needs to be
+> > fixed globally.
 >
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 42 +++++++++++++++++++-----------------------
->  1 file changed, 19 insertions(+), 23 deletions(-)
+> We have CONFIG_ARM_HEAVY_MB for SoCs with similar problems,
+> it turns mb() and wmb() into a platform specific function call, though it
+> doesn't do that for dma_wmb() and smp_wmb(), which should not
+> be affected if the problem is only missing serialization between DMA
+> and CPU writes.
 >
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 6d41c99c70c4..bba6d91f1fe1 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -469,27 +469,6 @@ static const u32 vmx_uret_msrs_list[] = {
->  static bool __read_mostly enlightened_vmcs = true;
->  module_param(enlightened_vmcs, bool, 0444);
->  
-> -/* check_ept_pointer() should be under protection of ept_pointer_lock. */
-> -static void check_ept_pointer_match(struct kvm *kvm)
-> -{
-> -	struct kvm_vcpu *vcpu;
-> -	u64 tmp_eptp = INVALID_PAGE;
-> -	int i;
-> -
-> -	kvm_for_each_vcpu(i, vcpu, kvm) {
-> -		if (!VALID_PAGE(tmp_eptp)) {
-> -			tmp_eptp = to_vmx(vcpu)->ept_pointer;
-> -		} else if (tmp_eptp != to_vmx(vcpu)->ept_pointer) {
-> -			to_kvm_vmx(kvm)->ept_pointers_match
-> -				= EPT_POINTERS_MISMATCH;
-> -			return;
-> -		}
-> -	}
-> -
-> -	to_kvm_vmx(kvm)->hv_tlb_eptp = tmp_eptp;
-> -	to_kvm_vmx(kvm)->ept_pointers_match = EPT_POINTERS_MATCH;
-> -}
-> -
->  static int kvm_fill_hv_flush_list_func(struct hv_guest_mapping_flush_list *flush,
->  		void *data)
->  {
-> @@ -519,11 +498,28 @@ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
->  	struct kvm_vmx *kvm_vmx = to_kvm_vmx(kvm);
->  	struct kvm_vcpu *vcpu;
->  	int ret = 0, i;
-> +	u64 tmp_eptp;
->  
->  	spin_lock(&kvm_vmx->ept_pointer_lock);
->  
-> -	if (kvm_vmx->ept_pointers_match == EPT_POINTERS_CHECK)
-> -		check_ept_pointer_match(kvm);
-> +	if (kvm_vmx->ept_pointers_match == EPT_POINTERS_CHECK) {
-> +		kvm_vmx->ept_pointers_match = EPT_POINTERS_MATCH;
-> +		kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
-> +
-> +		kvm_for_each_vcpu(i, vcpu, kvm) {
-> +			tmp_eptp = to_vmx(vcpu)->ept_pointer;
-> +			if (!VALID_PAGE(tmp_eptp))
-> +				continue;
-> +
-> +			if (!VALID_PAGE(kvm_vmx->hv_tlb_eptp)) {
-> +				kvm_vmx->hv_tlb_eptp = tmp_eptp;
-> +			} else if (kvm_vmx->hv_tlb_eptp != tmp_eptp) {
-> +				kvm_vmx->ept_pointers_match
-> +					= EPT_POINTERS_MISMATCH;
-> +				break;
-
-Actually no (scratch my comment on PATCH1), in case pointers differ
-kvm_vmx->hv_tlb_eptp remains set to the last matched EPTP. This likely
-doesn't matter as we're not going to use it but maybe sacrificing couple
-instructions and resetting it here to INVALID_PAGE (or actually setting
-it only in case of EPT_POINTERS_MATCH after the loop)?
-
-> +			}
-> +		}
-> +	}
->  
->  	if (kvm_vmx->ept_pointers_match != EPT_POINTERS_MATCH) {
->  		kvm_for_each_vcpu(i, vcpu, kvm) {
-
--- 
-Vitaly
-
+> > > If either of the two is the case, then the READ_ONCE() would just
+> > > introduce a long delay before the iowrite32() that makes it more likely
+> > > that the data is there, but the inconsistent state would still be observable
+> > > by the device if it is still working on previous frames.
+> >
+> > I think it just get stuck until we try another packet, ie, it doesn't
+> > see the new descriptor valid bit. But Dylan can elaborate.
+>
+> Ok, that would point to an insufficient barrier in iowrite32() as well,
+> not in dma_wmb().
+>
+> At the moment, the only chips that need the heavy barrier are
+> omap4 and mstar_v7, and early l2 cache controllers (not the one
+> on Cortex-A7) have another synchronization callback that IIRC
+> is used for streaming mappings.
+>
+> These are the two implementations of soc_mb() we have:
+>
+> /*
+>  * This may need locking to deal with situations where an interrupt
+>  * happens while we are in here and mb() gets called by the interrupt handler.
+>  *
+>  * The vendor code did have a spin lock but it doesn't seem to be needed and
+>  * removing it hasn't caused any side effects so far.
+> *
+>  * [writel|readl]_relaxed have to be used here because otherwise
+>  * we'd end up right back in here.
+>  */
+> static void mstarv7_mb(void)
+> {
+>        /* toggle the flush miu pipe fire bit */
+>        writel_relaxed(0, l3bridge + MSTARV7_L3BRIDGE_FLUSH);
+>        writel_relaxed(MSTARV7_L3BRIDGE_FLUSH_TRIGGER, l3bridge
+>                        + MSTARV7_L3BRIDGE_FLUSH);
+>        while (!(readl_relaxed(l3bridge + MSTARV7_L3BRIDGE_STATUS)
+>                        & MSTARV7_L3BRIDGE_STATUS_DONE)) {
+>                /* wait for flush to complete */
+>        }
+> }
+> /*
+>  * OMAP4 interconnect barrier which is called for each mb() and wmb().
+>  * This is to ensure that normal paths to DRAM (normal memory, cacheable
+>  * accesses) are properly synchronised with writes to DMA coherent memory
+>  * (normal memory, uncacheable) and device writes.
+>  *
+>  * The mb() and wmb() barriers only operate only on the MPU->MA->EMIF
+>  * path, as we need to ensure that data is visible to other system
+>  * masters prior to writes to those system masters being seen.
+>  *
+>  * Note: the SRAM path is not synchronised via mb() and wmb().
+>  */
+> static void omap4_mb(void)
+> {
+>        if (dram_sync)
+>                writel_relaxed(0, dram_sync);
+> }
+>
+> Obviously, adding one of these for ast2600 would slow down every
+> mb() and writel() a lot, but if it is a chip-wide problem rather than
+> one isolated to the network device, it would be the correct solution,
+> provided that a correct code sequence can be found.
+>
+>       Arnd
