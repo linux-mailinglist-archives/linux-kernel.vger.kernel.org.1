@@ -2,96 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B18294ACD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D79294AD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441540AbgJUJwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 05:52:35 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:43906 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441494AbgJUJwf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 05:52:35 -0400
-Received: by mail-ot1-f68.google.com with SMTP id k68so1274909otk.10;
-        Wed, 21 Oct 2020 02:52:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kJkrnozfaMLpPcgeu/Q+YTzE8Ukz50ZnvbK5wInOKOU=;
-        b=hsJrxhB23aYwgW88F304oLcUlluJ1SHAZKZYo5o2QyOv31yqelwKHXh2NbMutyrvxI
-         cRjsqXAIErONu+pOtQiWApXhHPXNxjXbx5Sthe8Uu+jXuUwRw9lwLwVVxMgRNgplgo9A
-         ZIepRsbEFh4R3999oOFGA5X/d2b3BVQpOposPMK7k1LZzjSMmvOa9tfzqMvsKXOuECDF
-         0T/7GYMS9SIxDeIgVVzQtRCHw7W6XN/gu0yDVl5PVzLU4p9JygUfhYGXdfcvtbkFpM7i
-         io4kOo9hmGm0173yA3gaflTQ5GFrrSMKpmDJaEfqz+B0gZhg0WQOaRAR1nCjY7G5qAb6
-         0tyg==
-X-Gm-Message-State: AOAM531JHpCpafpqIECIK2IUcMbiBzHfQh0s5+yFYupKyG4Zq+11W9Uc
-        jlqZ7hvePWEyJsdciAO5jV4RO8ZlbXL9V+0mHME=
-X-Google-Smtp-Source: ABdhPJxRL1fZFFVN/iPeCd5oyAHWxUtsED20zwFi/bX4gbl91pWAbXJ1nSc2fCMrLdWhZW8medycvhcheAmarhLGqVM=
-X-Received: by 2002:a9d:3b76:: with SMTP id z109mr2017856otb.250.1603273952560;
- Wed, 21 Oct 2020 02:52:32 -0700 (PDT)
+        id S2441553AbgJUJyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 05:54:04 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:6649 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438305AbgJUJyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 05:54:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=2143; q=dns/txt; s=axis-central1;
+  t=1603274042; x=1634810042;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NSbevEXTgIx+UMlnZ8PIyoKqiQwTyuCv3R4hhUP++P8=;
+  b=nkmC+WSkozn0rOGbtBB7x9k68w5ID1RwAhdyAOT6yYxUVN+munfLHHY2
+   uR7o0EuL2FQfUi7+8LUyfIRI/slc/xlVg5NdzLi/WAQ5z83tpOhNvJDa6
+   oF9aOEad4CZ2LgpV8WuUz2MaTvLpJ3cG0Tw2z7FRYrLKBkge4XzS8SC2O
+   fdRzrSwtTDwyq5BnoEmhtrzsboNVDAuXV1Qsdd4LH89tj9LFxI/U+vUJQ
+   YoIY7vap9iFHNT5W+Lz/Z13Hm1CWqTJuiuVaPgSZS77T3IEYC1kUGUGRP
+   3de64mcDnue6+pWQrWMgMy58i89L2kdWI9T+nw6hehdkCU+shF94ooFDu
+   Q==;
+IronPort-SDR: W6IQyZIfg03bY8KZ5uBQP74nsU09xCAsI7+Kos4fsRcuqFadbXwA4vmCmPJ7jO7ncHJWli9GnZ
+ FuLAgZvU7/TLbninsMBHA0l5Ge2kLJBljNJ1dnJu5MVobuV5vRTFdi5i3IWsqv7m4TMcu2gW5R
+ DjylUgA8Xhni5tz7wKQqOMOPurZOtXdP3IIusIwhcnD6X8vnK+OdnJXE3/63Ukp4XKl9zJPdrU
+ pgaQnKlDj8FYGQrpoDwuwJDgY5CvHm4eYkwkKCnbIjC06xq61YTCzv3s98iQEpOE199Xr1SmOa
+ mKI=
+X-IronPort-AV: E=Sophos;i="5.77,401,1596492000"; 
+   d="scan'208";a="14246820"
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+CC:     <kernel@axis.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] of: Fix reserved-memory overlap detection
+Date:   Wed, 21 Oct 2020 11:53:59 +0200
+Message-ID: <ded6fd6b47b58741aabdcc6967f73eca6a3f311e.1603273666.git-series.vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201020073839.29226-1-geert@linux-m68k.org> <5dddd3fe-86d7-d07f-dbc9-51b89c7c8173@tessares.net>
- <20201020205647.20ab7009@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAMuHMdW=1LfE8UoGRVBvrvrintQMNKUdTe5PPQz=PN3=gJmw=Q@mail.gmail.com> <619601b2-40c1-9257-ef2a-2c667361aa75@tessares.net>
-In-Reply-To: <619601b2-40c1-9257-ef2a-2c667361aa75@tessares.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 21 Oct 2020 11:52:21 +0200
-Message-ID: <CAMuHMdXUs_2DodcYva8bP+Df979TMrmRD=+LUiVVzdH0zmxK1Q@mail.gmail.com>
-Subject: Re: [PATCH] mptcp: MPTCP_IPV6 should depend on IPV6 instead of
- selecting it
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Florian Westphal <fw@strlen.de>,
-        Peter Krystad <peter.krystad@linux.intel.com>,
-        netdev <netdev@vger.kernel.org>, mptcp@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthieu,
+The reserved-memory overlap detection code fails to detect overlaps if
+either of the regions starts at address 0x0.  The code explicitly checks
+for and ignores such regions, apparently in order to ignore dynamically
+allocated regions which have an address of 0x0 at this point.  These
+dynamically allocated regions also have a size of 0x0 at this point, so
+fix this by removing the check and sorting the dynamically allocated
+regions ahead of any static regions at address 0x0.
 
-On Wed, Oct 21, 2020 at 11:47 AM Matthieu Baerts
-<matthieu.baerts@tessares.net> wrote:
-> On 21/10/2020 11:43, Geert Uytterhoeven wrote:
-> > On Wed, Oct 21, 2020 at 5:56 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> >> On Tue, 20 Oct 2020 11:26:34 +0200 Matthieu Baerts wrote:
-> >>> On 20/10/2020 09:38, Geert Uytterhoeven wrote:
-> >>>> MPTCP_IPV6 selects IPV6, thus enabling an optional feature the user may
-> >>>> not want to enable.  Fix this by making MPTCP_IPV6 depend on IPV6, like
-> >>>> is done for all other IPv6 features.
-> >>>
-> >>> Here again, the intension was to select IPv6 from MPTCP but I understand
-> >>> the issue: if we enable MPTCP, we will select IPV6 as well by default.
-> >>> Maybe not what we want on some embedded devices with very limited memory
-> >>> where IPV6 is already off. We should instead enable MPTCP_IPV6 only if
-> >>> IPV6=y. LGTM then!
-> >>>
-> >>> Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> >>
-> >> Applied, thanks!
-> >
-> > My apologies, this fails for the CONFIG_IPV6=m and CONFIG_MPTCP=y
-> > case:
->
-> Good point, MPTCP cannot be compiled as a module (like TCP). It should
-> then depends on IPV6=y. I thought it would be the case.
->
-> Do you want me to send a patch or do you already have one?
+For example, there are two overlaps in this case but they are not
+currently reported:
 
-I don't have a patch yet, so feel free to send one.
+	foo@0 {
+	        reg = <0x0 0x2000>;
+	};
 
-Gr{oetje,eeting}s,
+	bar@0 {
+	        reg = <0x0 0x1000>;
+	};
 
-                        Geert
+	baz@1000 {
+	        reg = <0x1000 0x1000>;
+	};
 
+	quux {
+	        size = <0x1000>;
+	};
+
+but they are after this patch:
+
+ OF: reserved mem: OVERLAP DETECTED!
+ bar@0 (0x00000000--0x00001000) overlaps with foo@0 (0x00000000--0x00002000)
+ OF: reserved mem: OVERLAP DETECTED!
+ foo@0 (0x00000000--0x00002000) overlaps with baz@1000 (0x00001000--0x00002000)
+
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+v2: Fix handling of dynamically allocated regions.
+
+ drivers/of/of_reserved_mem.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+index 46b9371..6530b8b 100644
+--- a/drivers/of/of_reserved_mem.c
++++ b/drivers/of/of_reserved_mem.c
+@@ -200,6 +200,16 @@ static int __init __rmem_cmp(const void *a, const void *b)
+ 	if (ra->base > rb->base)
+ 		return 1;
+ 
++	/*
++	 * Put the dynamic allocations (address == 0, size == 0) before static
++	 * allocations at address 0x0 so that overlap detection works
++	 * correctly.
++	 */
++	if (ra->size < rb->size)
++		return -1;
++	if (ra->size > rb->size)
++		return 1;
++
+ 	return 0;
+ }
+ 
+@@ -217,8 +227,7 @@ static void __init __rmem_check_for_overlap(void)
+ 
+ 		this = &reserved_mem[i];
+ 		next = &reserved_mem[i + 1];
+-		if (!(this->base && next->base))
+-			continue;
++
+ 		if (this->base + this->size > next->base) {
+ 			phys_addr_t this_end, next_end;
+ 
+
+base-commit: 270315b8235e3d10c2e360cff56c2f9e0915a252
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+git-series 0.9.1
