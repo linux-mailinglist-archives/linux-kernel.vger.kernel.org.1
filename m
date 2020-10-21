@@ -2,58 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B532948DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285BF2948FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440943AbgJUH1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 03:27:05 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:42666 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2440929AbgJUH1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 03:27:03 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 68F164B146190227E8A9;
-        Wed, 21 Oct 2020 15:26:58 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 21 Oct 2020 15:26:51 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <m@bues.ch>
-CC:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jingxiangfeng@huawei.com>
-Subject: [PATCH] ssb: Fix error return in ssb_bus_scan()
-Date:   Wed, 21 Oct 2020 15:33:05 +0800
-Message-ID: <20201021073305.4400-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+        id S2501916AbgJUHhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 03:37:39 -0400
+Received: from mail-m964.mail.126.com ([123.126.96.4]:40196 "EHLO
+        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2501907AbgJUHhi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 03:37:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=p03GQ3/3M5H2l6FbiI
+        2Wsg8qkYfOo4GdiyO4pQ0cRiI=; b=DnInzNMqK54g8JOg39d3hXqaGbnwCpyjvY
+        JFMufgMvnXKtRe2UKXlCGaE/GAR4cARv1mvfGbOWsUXm5uDYSK/OtyKwxtc7pF1D
+        167z+2ZXYAfSUIzzwjGiwZSpjzMxzwxrpDtC1SX5DARj2AooivblnbAgQuSBIAti
+        TlFaXGphQ=
+Received: from localhost.localdomain (unknown [36.112.86.14])
+        by smtp9 (Coremail) with SMTP id NeRpCgBHXxeR3Y9fD5tdMQ--.10747S2;
+        Wed, 21 Oct 2020 15:04:49 +0800 (CST)
+From:   Defang Bo <bodefang@126.com>
+To:     broonie@kernel.org, perex@perex.cz
+Cc:     tiwai@suse.com, lgirdwood@gmail.com,
+        Vishnuvardhanrao.Ravulapati@amd.com, akshu.agrawal@amd.com,
+        weiyongjun1@huawei.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Defang Bo <bodefang@126.com>
+Subject: [PATCH v2] ASoC: amd: move the call to devm_kzalloc below platform_get_resource()
+Date:   Wed, 21 Oct 2020 15:04:27 +0800
+Message-Id: <1603263867-8754-1-git-send-email-bodefang@126.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <broonie@kernel.org>
+References: <broonie@kernel.org>
+X-CM-TRANSID: NeRpCgBHXxeR3Y9fD5tdMQ--.10747S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtFW7try7tr13WryxAr48tFb_yoWfKwb_ta
+        yDu34qgryUWr1agry8Cr43Arn5K3ZIkrn5G34agryav348uws3Ca1UZrZruFZruws2kFWU
+        Xw1v9rWay343AjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUngo2UUUUUU==
+X-Originating-IP: [36.112.86.14]
+X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbikhHE11pEBlwrewAAsE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return error code -EINVAL from the error handling case instead
-of 0.
+Just as the commit <4cb79ef9c6c4>("ASoC: amd: Fix potential NULL pointer dereference"),it makes no sense to allocate any resources if platform_get_resource fails,so move the call to devm_kzalloc() below the mentioned code.
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Defang Bo <bodefang@126.com>
 ---
- drivers/ssb/scan.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/amd/raven/acp3x-i2s.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/ssb/scan.c b/drivers/ssb/scan.c
-index f49ab1aa2149..4161e5d1f276 100644
---- a/drivers/ssb/scan.c
-+++ b/drivers/ssb/scan.c
-@@ -325,6 +325,7 @@ int ssb_bus_scan(struct ssb_bus *bus,
- 	if (bus->nr_devices > ARRAY_SIZE(bus->devices)) {
- 		pr_err("More than %d ssb cores found (%d)\n",
- 		       SSB_MAX_NR_CORES, bus->nr_devices);
-+		err = -EINVAL;
- 		goto err_unmap;
+diff --git a/sound/soc/amd/raven/acp3x-i2s.c b/sound/soc/amd/raven/acp3x-i2s.c
+index c9c69eb..04ec603 100644
+--- a/sound/soc/amd/raven/acp3x-i2s.c
++++ b/sound/soc/amd/raven/acp3x-i2s.c
+@@ -307,9 +307,11 @@ static int acp3x_dai_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
+ 		return -ENOMEM;
  	}
- 	if (bus->bustype == SSB_BUSTYPE_SSB) {
++
+ 	adata = devm_kzalloc(&pdev->dev, sizeof(struct i2s_dev_data), GFP_KERNEL);
+ 	if (!adata)
+ 		return -ENOMEM;
++
+ 	adata->acp3x_base = devm_ioremap(&pdev->dev, res->start,
+ 						resource_size(res));
+ 	if (!adata->acp3x_base)
 -- 
-2.17.1
+1.9.1
 
