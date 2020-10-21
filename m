@@ -2,221 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3430A295475
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EE829547D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506447AbgJUVql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 17:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441081AbgJUVql (ORCPT
+        id S2506482AbgJUVuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 17:50:10 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:58136 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506467AbgJUVuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 17:46:41 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC92C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 14:46:39 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id m16so4198466ljo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 14:46:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JZnssu7dN+UPcR904sfP3lgizuu1vYH3MPWkKP6Pntc=;
-        b=Sh8Z+WwFSt5fo4PnuNrdfG8N4xL03nwCmId3tckXDI90iV2uHD813WHXEyAVSiuJt2
-         PmZZA4QXnGTbJ2buZs0Cxl4uEQJS++9UhVWKgVJOFyQC/dH5GSjM2gnVs91xYz0IHxGT
-         5paaVNwXOeOzyIYMAJBXnGGA8f7gih090+tlaFCCLdbdxp5e34J4H2a5TFPQUegIXa1y
-         XnhXYMq4HP1pxHMv8BqixRdfwwovl/fZ16YcMZO1GV1A1/l1clqVFYMBJQWWy1FfFc9W
-         FlpG+m+KkZm5Yb/rK8eVSj2OPXVG4iKwK7XrOysDB0xm3yH49FMpas7PP9+C4U1iFtuz
-         3wfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JZnssu7dN+UPcR904sfP3lgizuu1vYH3MPWkKP6Pntc=;
-        b=P54dbVsN9p4oruIiMtrZPDqrX9JlHouNo4T8Yr5Floj1GVfCdsqVg7YNrbqJ/3tzGa
-         7KGTN+3tcCWUi4KKN7lgiZwCJYKCePYzN4lNhbU5gE15ITpcwGTUvjfCNZX9gHBekLTc
-         +0BH4o+QCjogn4vS05m/9Xbv6qZrnaAQZzjtSiWbnuSJykn7AQs6dNWWtX+5YZeO6aIL
-         sVUivAtUiGre8m7yuek3jcdWxoJVNyoAfYR+u58maVLmEX6lFgESuBXgEeQO7Gl8vZ57
-         4PuPbU5TOjwASvP+cxP8I+Md+JOagMOhEc7POAjpwI3uqI+UlgYvE5FWehHShWP/7T3o
-         ZsuA==
-X-Gm-Message-State: AOAM530aoX5yP++DLg6Sc2NxFqxQX2nOttG4KMFmu2t1OpqaJCayu4FU
-        1WtaKnn7ec3Fu1ZeElqWiy6qNMX2XmcPLlgxiNfIoQ==
-X-Google-Smtp-Source: ABdhPJxiD0VJU2Ur1VFHFu8n9UVRoT0btlLhbyqMerz4UjKE0bKBfUZ7hEvHbhKhWpajjN1nEcKiksFkcO0PyHy8DtQ=
-X-Received: by 2002:a05:651c:11d2:: with SMTP id z18mr2081060ljo.423.1603316797165;
- Wed, 21 Oct 2020 14:46:37 -0700 (PDT)
+        Wed, 21 Oct 2020 17:50:06 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201021214948euoutp019e70de29de7429e85beddcb634acee55~AIE5dkjO41499614996euoutp01d
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:49:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201021214948euoutp019e70de29de7429e85beddcb634acee55~AIE5dkjO41499614996euoutp01d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603316988;
+        bh=gwwjrxfgxaNZsPGAiCkyHWUSc8RJJJ8snj/08cO1Z50=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Sdnur8e6dTvVzluZCMXTGpTE4aP1FIud+eZFO19zm4I/IlKOW4qs7vntwizm1xn/j
+         g3nv+xEfVmV+H5mWmH3+Z/MQ3JXrVMQFmt86H/6miajWvtGM85yZ1d+KOWoLcQcuoJ
+         RI2U47B7VOAKG/B71GwXidjaFoecqSXrWHsbQGLA=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201021214930eucas1p2b04707283fdede67307472138e90bbea~AIEpPsHsR2056620566eucas1p29;
+        Wed, 21 Oct 2020 21:49:30 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id DE.8C.06318.AECA09F5; Wed, 21
+        Oct 2020 22:49:30 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201021214930eucas1p1cf406b35bbe4b643db287643e4a5b85b~AIEotzf4G2857528575eucas1p1j;
+        Wed, 21 Oct 2020 21:49:30 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201021214930eusmtrp296fba8512128bc2a40ca96c9d81700b6~AIEotDWwj0512505125eusmtrp2Z;
+        Wed, 21 Oct 2020 21:49:30 +0000 (GMT)
+X-AuditID: cbfec7f5-371ff700000018ae-c2-5f90aceafb82
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 34.69.06314.AECA09F5; Wed, 21
+        Oct 2020 22:49:30 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201021214930eusmtip21f5d911bee91a8bab67933a9fa891fe5~AIEoj7gXE0505105051eusmtip2o;
+        Wed, 21 Oct 2020 21:49:30 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v3 0/5] AX88796C SPI Ethernet Adapter
+Date:   Wed, 21 Oct 2020 23:49:05 +0200
+Message-Id: <20201021214910.20001-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20201021050141.377787-1-furquan@google.com> <20201021051931.GA967331@kroah.com>
- <CAMj1kXHpTNoYgzm+-SEs8Kddr+rVy7n5DOqf+QM8jAJXmDh3kA@mail.gmail.com>
- <CAEGmHFFYuAqqcPEw7UkVSPokAr74ktDcovOPzB74j9dyUYapGw@mail.gmail.com>
- <20201021085227.GA1102039@kroah.com> <CAMj1kXGLYafB3_8bAbA=8hOSUF0e0JXcNh6_E_KkGSzOv4jjzw@mail.gmail.com>
-In-Reply-To: <CAMj1kXGLYafB3_8bAbA=8hOSUF0e0JXcNh6_E_KkGSzOv4jjzw@mail.gmail.com>
-From:   Furquan Shaikh <furquan@google.com>
-Date:   Wed, 21 Oct 2020 14:46:20 -0700
-Message-ID: <CAEGmHFGDLvySk83Y8n_NdPEqAvNSVCnjt++eWQ5sMFRuzJ19dA@mail.gmail.com>
-Subject: Re: [PATCH] firmware: gsmi: Drop the use of dma_pool_* API functions
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        Arthur Heymans <arthur@aheymans.xyz>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Duncan Laurie <dlaurie@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SeUhUURTGu/PmLYlTz1HyYGE5VqDghhkXDCkTekVQFIgYpmM+l3JjxiUl
+        UNLUxNSsyGxIMU0Tl1IzFZ10MrUsxxb3NY2sCSsybbeceSP53++e8333OwcOQ0hHSSsmLDKG
+        V0TKw2WUibih80evg64y19+5+6Yr1o5rCHw3v4bEKm2qGBd29JK4+FM+iQfmxkicM/OBwFrt
+        HRr3NWSTeFhTjnDtzACJXzarKJyvVYuw5korwlUd4zTuLNqAz7V20LvNuJcDzwmu/vawiGsq
+        GKe52orzFFdXksQ1Nc6LuOz6CsTN11ofZnxNdgXx4WFxvMLJI8Ak9NZiQnSK9emMwQ4qGakt
+        M9FaBtgdkK4bpPUsZcsRfCtzFvgrgpHFvZnIZJnnEfxRz4tXDCMvSkmhUYYg9W+J0T2LIG/I
+        W88UuwdySrsNIgt2goCa9CmkfxCsGkHTxGVCrzJn3WC6ONngFrPboGu81RAhYd0h79ckJcRt
+        hvSy+5RQN4PH194YNOtZe6g8O2hgYlmTcu86oQ8A9gcNVUtLxlm9oDLtPS2wOei66o28Cf42
+        FYoyEbPMSXApb6fgzULQoPpu9LrDWO9PSq8hWDuoaXYSynvgQdkIIVjXwdCcmTDCOshruGos
+        SyAjTSqot0J1TovxQyu4oCtHAnNQ1TZH5yKbglWLFaxapuB/bhEiKpAlH6uMCOGVrpF8vKNS
+        HqGMjQxxPBEVUYuWT65nqWuhEal/B2oQyyCZqeTzwVx/KSmPUyZEaBAwhMxC4vms57hUEiRP
+        SOQVUf6K2HBeqUEbGbHMUuJa/N5PyobIY/hTPB/NK1a6ImatVTJSpLZken3pPPLoULu9xtb3
+        zfnSydxQyZbK6UPuFqFv7Ux9qh3WePq4Dets6mbpsKNBD7P7nZ7GZ/m8a/945phbYMCTNr+u
+        /bOy0ZgAxoeSebp7Jk68XkhOfBTc7b1vKt6jP7iPiz1w0sU2yWUuxeaT6mKdXyq3/VWzavHa
+        w4sZH27MysTKULmLPaFQyv8BPuhlfm4DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrKIsWRmVeSWpSXmKPExsVy+t/xe7qv1kyIN5j1QsDi/N1DzBYbZ6xn
+        tZhzvoXFYv6Rc6wWi97PYLW49vYOq0X/49fMFufPb2C3uLCtj9Xi5qEVjBabHl9jtbi8aw6b
+        xYzz+5gsDk3dy2ix9shddotjC8QsWvceYXcQ9Lh87SKzx5aVN5k8ds66y+6xaVUnm8fmJfUe
+        O3d8ZvLo27KK0ePzJrkAjig9m6L80pJUhYz84hJbpWhDCyM9Q0sLPSMTSz1DY/NYKyNTJX07
+        m5TUnMyy1CJ9uwS9jGXfKgua5So6rh9ha2DcJ97FyMkhIWAicevSUlYQW0hgKaPE9XPpXYwc
+        QHEpiZVz0yFKhCX+XOti62LkAip5yiixZH8rI0iCTcBRon/pCVaQhIjAG2aJpntv2UEcZoF9
+        jBL7jy5mB6kSFjCVeLSoAcxmEVCVOH53LwuIzStgLTHp9302iBXyEu3Lt7NBxAUlTs58wgJy
+        BbOAusT6eUIgYX4BLYk1TdfBWpmBypu3zmaewCgwC0nHLISOWUiqFjAyr2IUSS0tzk3PLTbU
+        K07MLS7NS9dLzs/dxAiM0m3Hfm7ewXhpY/AhRgEORiUe3g8+E+KFWBPLiitzDzFKcDArifA6
+        nT0dJ8SbklhZlVqUH19UmpNafIjRFOidicxSosn5wASSVxJvaGpobmFpaG5sbmxmoSTO2yFw
+        MEZIID2xJDU7NbUgtQimj4mDU6qB0XjnZv0p9dcWH2fa6v7q7a3sEu3vmSwvN+fEyDz6/S9l
+        3iO70/fmWjBHuqya0fI680NHc72bTrFo+sZpPKFbc5xPv9H+k5dk1d1+5+55br05xhG9pb4m
+        1aVS+6XMpy7p3aI0jY9hdnf8zbWr1rT5FJY57XQJDV9kVrdhQyv3PROhoFubz504osRSnJFo
+        qMVcVJwIANX6vZPoAgAA
+X-CMS-MailID: 20201021214930eucas1p1cf406b35bbe4b643db287643e4a5b85b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201021214930eucas1p1cf406b35bbe4b643db287643e4a5b85b
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201021214930eucas1p1cf406b35bbe4b643db287643e4a5b85b
+References: <CGME20201021214930eucas1p1cf406b35bbe4b643db287643e4a5b85b@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 2:36 AM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Wed, 21 Oct 2020 at 10:51, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Oct 21, 2020 at 12:37:52AM -0700, Furquan Shaikh wrote:
-> > > On Tue, Oct 20, 2020 at 11:37 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > >
-> > > > On Wed, 21 Oct 2020 at 07:18, Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Tue, Oct 20, 2020 at 10:01:41PM -0700, Furquan Shaikh wrote:
-> > > > > > GSMI driver uses dma_pool_* API functions for buffer allocation
-> > > > > > because it requires that the SMI buffers are allocated within 32-bit
-> > > > > > physical address space. However, this does not work well with IOMMU
-> > > > > > since there is no real device and hence no domain associated with the
-> > > > > > device.
-> > > > > >
-> > > > > > Since this is not a real device, it does not require any device
-> > > > > > address(IOVA) for the buffer allocations. The only requirement is to
-> > > > > > ensure that the physical address allocated to the buffer is within
-> > > > > > 32-bit physical address space. This change allocates a page using
-> > > > > > `get_zeroed_page()` and passes in GFP_DMA32 flag to ensure that the
-> > > > > > page allocation is done in the DMA32 zone. All the buffer allocation
-> > > > > > requests for gsmi_buf are then satisfed using this pre-allocated page
-> > > > > > for the device.
-> > > > >
-> > > > > Are you sure that "GFP_DMA32" really does what you think it does?  A
-> > > > > "normal" call with GFP_KERNEL" will give you memory that is properly
-> > > > > dma-able.
-> > > > >
-> > > > > We should not be adding new GFP_DMA* users in the kernel in these days,
-> > > > > just call dma_alloc*() and you should be fine.
-> > > > >
-> > > >
-> > > > The point seems to be that this is not about DMA at all, and so there
-> > > > is no device associated with the DMA allocation.
-> > > >
-> > > > The other 'master' is the CPU running firmware in an execution mode
-> > > > where it can only access the bottom 4 GB of memory, and GFP_DMA32
-> > > > happens to allocate from a zone which is guaranteed to be accessible
-> > > > to the firmware.
-> > >
-> > > Ard captured the context and requirement perfectly. GFP_DMA32
-> > > satisfies the requirement for allocating memory from a zone which is
-> > > accessible to the firmware in SMI mode. This seems to be one of the
-> > > common ways  how other drivers and common code in the kernel currently
-> > > allocate physical memory below the 4G boundary. Hence, I used the same
-> > > mechanism in GSMI driver.
-> >
-> > Then can you please document this a bit better in the changelog,
-> > explaining why this is ok to use this obsolete api, and also in the code
-> > itself so that no one tries to clean it up in the future?
+This is a driver for AX88796C Ethernet Adapter connected in SPI mode as
+found on ARTIK5 evaluation board. The driver has been ported from a
+v3.10.9 vendor kernel for ARTIK5 board.
 
-I will do that and send out a newer revision of the patch. Thanks!
+Changes in v3:
+  - modify vendor-prefixes.yaml in a separate patch
+  - fix several problems in the dt binding
+    - removed unnecessary descriptions and properties
+    - changed the order of entries
+    - fixed problems with missing defines in the example
+  - change (1 << N) to BIT(N), left a few (0 << N)
+  - replace ax88796c_get_link(), ax88796c_get_link_ksettings(),
+    ax88796c_set_link_ksettings(), ax88796c_nway_reset(),
+    ax88796c_set_mac_address() with appropriate kernel functions.
+  - disable PHY auto-polling in MAC and use PHYLIB to track the state
+    of PHY and configure MAC
+  - propagate return values instead of returning constants in several
+    places
+  - add WARN_ON() for unlocked mutex
+  - remove local work queue and use the system_wq
+  - replace phy_connect_direct() with phy_connect() and move
+    devm_register_netdev() to the end of ax88796c_probe()
+    (Unlike phy_connect_direct() phy_connect() does not crash if the
+    network device isn't registered yet.)
+  - remove error messages on ENOMEM
+  - move free_irq() to the end of ax88796c_close() to avoid race
+    condition
+  - implement flow-control
 
->
-> >
->
-> Wouldn't it be simpler to switch to a SLAB cache created with SLAB_CACHE_DMA32?
+Changes in v2:
+  - use phylib
+  - added DT bindings
+  - moved #includes to *.c files
+  - used mutex instead of a semaphore for locking
+  - renamed some constants
+  - added error propagation for several functions
+  - used ethtool for dumping registers
+  - added control over checksum offloading
+  - remove vendor specific PM
+  - removed macaddr module parameter and added support for reading a MAC
+    address from platform data (e.g. DT)
+  - removed dependency on SPI from NET_VENDOR_ASIX
+  - added an entry in the MAINTAINERS file
+  - simplified logging with appropriate netif_* and netdev_* helpers
+  - lots of style fixes
 
-I considered doing that, but there is some weirdness around use of
-GFP_DMA32 in `kmem_cache_zalloc` i.e. you can allocate slab cache
-using SLAB_CACHE_DMA32, however you cannot pass in GFP_DMA32 flag when
-using `kmem_cache_zalloc`, else it hits GFP_SLAB_BUG_MASK. If the
-GFP_DMA32 flag is skipped, then `kmem_cache_zalloc` is happy and
-provides an allocation under the 4G boundary.
+Łukasz Stelmach (5):
+  dt-bindings: vendor-prefixes: Add asix prefix
+  dt-bindings: net: Add bindings for AX88796C SPI Ethernet Adapter
+  net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Driver
+  ARM: dts: exynos: Add Ethernet to Artik 5 board
+  ARM: defconfig: Enable ax88796c driver
 
-Since this driver really just needs to allocate space for 3 buffers, I
-went with allocating a page and handing out space for the buffers from
-the page. If the SLAB_CACHE_DMA32 seems like a cleaner way to do this,
-I can update the patch to use that.
+ .../bindings/net/asix,ax88796c.yaml           |   69 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    6 +
+ arch/arm/boot/dts/exynos3250-artik5-eval.dts  |   29 +
+ arch/arm/configs/exynos_defconfig             |    2 +
+ arch/arm/configs/multi_v7_defconfig           |    2 +
+ drivers/net/ethernet/Kconfig                  |    1 +
+ drivers/net/ethernet/Makefile                 |    1 +
+ drivers/net/ethernet/asix/Kconfig             |   22 +
+ drivers/net/ethernet/asix/Makefile            |    6 +
+ drivers/net/ethernet/asix/ax88796c_ioctl.c    |  197 +++
+ drivers/net/ethernet/asix/ax88796c_ioctl.h    |   27 +
+ drivers/net/ethernet/asix/ax88796c_main.c     | 1144 +++++++++++++++++
+ drivers/net/ethernet/asix/ax88796c_main.h     |  578 +++++++++
+ drivers/net/ethernet/asix/ax88796c_spi.c      |  111 ++
+ drivers/net/ethernet/asix/ax88796c_spi.h      |   69 +
+ 16 files changed, 2266 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c.yaml
+ create mode 100644 drivers/net/ethernet/asix/Kconfig
+ create mode 100644 drivers/net/ethernet/asix/Makefile
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.h
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_main.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_main.h
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.h
 
-Thanks,
-Furquan
-
->
->
->
-> I.e., something like the below (whitespace mangling courtesy of gmail)
->
-> diff --git a/drivers/firmware/google/gsmi.c b/drivers/firmware/google/gsmi.c
-> index 7d9367b22010..d932284f970c 100644
-> --- a/drivers/firmware/google/gsmi.c
-> +++ b/drivers/firmware/google/gsmi.c
-> @@ -85,7 +85,6 @@
->  struct gsmi_buf {
->         u8 *start;                      /* start of buffer */
->         size_t length;                  /* length of buffer */
-> -       dma_addr_t handle;              /* dma allocation handle */
->         u32 address;                    /* physical address of buffer */
->  };
->
-> @@ -97,7 +96,7 @@ static struct gsmi_device {
->         spinlock_t lock;                /* serialize access to SMIs */
->         u16 smi_cmd;                    /* SMI command port */
->         int handshake_type;             /* firmware handler interlock type */
-> -       struct dma_pool *dma_pool;      /* DMA buffer pool */
-> +       struct kmem_cache *mem_pool;    /* buffer pool */
->  } gsmi_dev;
->
->  /* Packed structures for communicating with the firmware */
-> @@ -157,8 +156,7 @@ static struct gsmi_buf *gsmi_buf_alloc(void)
->         }
->
->         /* allocate buffer in 32bit address space */
-> -       smibuf->start = dma_pool_alloc(gsmi_dev.dma_pool, GFP_KERNEL,
-> -                                      &smibuf->handle);
-> +       smibuf->start = kmem_cache_zalloc(gsmi_dev.mem_pool, GFP_KERNEL);
->         if (!smibuf->start) {
->                 printk(KERN_ERR "gsmi: failed to allocate name buffer\n");
->                 kfree(smibuf);
-> @@ -176,8 +174,7 @@ static void gsmi_buf_free(struct gsmi_buf *smibuf)
->  {
->         if (smibuf) {
->                 if (smibuf->start)
-> -                       dma_pool_free(gsmi_dev.dma_pool, smibuf->start,
-> -                                     smibuf->handle);
-> +                       kmem_cache_free(gsmi_dev.mem_pool, smibuf->start);
->                 kfree(smibuf);
->         }
->  }
-> @@ -914,9 +911,10 @@ static __init int gsmi_init(void)
->         spin_lock_init(&gsmi_dev.lock);
->
->         ret = -ENOMEM;
-> -       gsmi_dev.dma_pool = dma_pool_create("gsmi", &gsmi_dev.pdev->dev,
-> -                                            GSMI_BUF_SIZE, GSMI_BUF_ALIGN, 0);
-> -       if (!gsmi_dev.dma_pool)
-> +       gsmi_dev.mem_pool = kmem_cache_create("gsmi", GSMI_BUF_SIZE,
-> +                                             GSMI_BUF_ALIGN, SLAB_CACHE_DMA32,
-> +                                             NULL);
-> +       if (!gsmi_dev.mem_pool)
->                 goto out_err;
->
->         /*
-> @@ -1032,7 +1030,7 @@ static __init int gsmi_init(void)
->         gsmi_buf_free(gsmi_dev.param_buf);
->         gsmi_buf_free(gsmi_dev.data_buf);
->         gsmi_buf_free(gsmi_dev.name_buf);
-> -       dma_pool_destroy(gsmi_dev.dma_pool);
-> +       kmem_cache_destroy(gsmi_dev.mem_pool);
->         platform_device_unregister(gsmi_dev.pdev);
->         pr_info("gsmi: failed to load: %d\n", ret);
->  #ifdef CONFIG_PM
-> @@ -1057,7 +1055,7 @@ static void __exit gsmi_exit(void)
->         gsmi_buf_free(gsmi_dev.param_buf);
->         gsmi_buf_free(gsmi_dev.data_buf);
->         gsmi_buf_free(gsmi_dev.name_buf);
-> -       dma_pool_destroy(gsmi_dev.dma_pool);
-> +       kmem_cache_destroy(gsmi_dev.mem_pool);
->         platform_device_unregister(gsmi_dev.pdev);
->  #ifdef CONFIG_PM
->         platform_driver_unregister(&gsmi_driver_info);
+-- 
+2.26.2
