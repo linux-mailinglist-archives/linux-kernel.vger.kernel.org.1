@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885F92948F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA62B2948FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501902AbgJUHfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 03:35:08 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:34903 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441006AbgJUHfI (ORCPT
+        id S2501937AbgJUHiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 03:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2501930AbgJUHiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 03:35:08 -0400
-Received: by mail-wr1-f65.google.com with SMTP id n15so1854749wrq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 00:35:07 -0700 (PDT)
+        Wed, 21 Oct 2020 03:38:09 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD5BC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 00:38:09 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id e20so1002037otj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 00:38:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=myViQlnJdU12ruMwYNPrFwznxkGVyWFC1aXL8UgqRCU=;
+        b=E94QQznauWa6apAy3Zuid3ZW+xcVNSqVFdbe8rM5dA/bzlr/HetsE79d2kmM89UakQ
+         M4wIf167FaShpRGEEXGbkIny4NcBflT9cUpQcRIliL7I6PFynYMW7NtsLy3s4fwC5Igz
+         W/xW+Kof2Ruw2brtdUzjfABnTZrBaS95IaXIfCrrUZJQt6emJDryWEWgXpyWxfnyvaPB
+         ZMyayxgQDe+vo3GOGTO9K8xkLGRoO/34kh7USroT0AtA4qwyol/H3C8DGhmEQX3m4tBa
+         rO7mgTavIi0w2Pu7vYdtXeD501cy4Nq2cys4FgA2YbYoTXeWU8tKVW1aWmG+gLeP4OeM
+         z3lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jVONTDolj4MDBS/GViWgsApTFkBxojD1bi5r7Oc5t8Y=;
-        b=Wpq730NME9B1iMn+lLn2d8GqCstjIUb+lxLJGyqKiXe8dDqbZo3IMpcy/UZrri2RBl
-         WuSlcURqGiWM0br51Hv/7yEC7JbAqBdi6dCthroZag8j6FGtA0du3DUnGJlZlbyJrgOZ
-         8h4XemSHWwegYdvIuEPoPELIUzxWgDEa5A/QuBVZRx4+L+0iGylNgacNmQd/njUvxyTn
-         TVaic02LIX8X0T6q7vMHFPqaAQyRl3eH+U2lJkpwpgtBJU+ZOXj/4S9IwhCjlBIG/28X
-         niT/Uv/lAinb5C1gbjv224FajjunDeOPVae/meVorMCDnSk0Qp5tJ1NMzg/FVMYAq1pk
-         pPWw==
-X-Gm-Message-State: AOAM532QuAjNiPjpU6fv8R4e33BdCKD0lN8b8OErOU7TbZP3QwjA9qE/
-        0bbMjvyauasd8AWSXt/+ZmJ558HcgQNOx43a7Vk=
-X-Google-Smtp-Source: ABdhPJym0tQFT9ydIxfvheDs1zM1w74bQ3a4zxoo8fvB+HGLyit7OXDNUjooHSVppR6Kse3j/m5JBcHtwLHsv30w/ko=
-X-Received: by 2002:adf:bb43:: with SMTP id x3mr2994127wrg.250.1603265707061;
- Wed, 21 Oct 2020 00:35:07 -0700 (PDT)
+        bh=myViQlnJdU12ruMwYNPrFwznxkGVyWFC1aXL8UgqRCU=;
+        b=loGd+uyPj4r6S/0cvAXBPr75TyFEhL7cjZcbxeRURZnOrettt31AcX1x67F6+sdeQV
+         dSEu3IHokVK5H1dASCEofX+29iiFmHTHZlpNXBCCagw2vLMvBeCk0D+KSAwpQ5T1ROjN
+         J/6Jt8WO44OeAo35Azm+lyzWriSKI/F3FlzYOjat5Jq3HjvyuCKGfdPjrhMs4umwbhT8
+         fkxQWnZJ/yZPZW+6q+4hn2AZrdS08TEy9X5TojDIyDLQ0W4uIHyPOsyKBdHNhLGOIiTU
+         FbTJisw4zKd+nqc/a9GzuiWZVZmgFKQPnooMh1+KTbjoVwMaZRdI4w1c4ISIvTdH7T1u
+         AJmA==
+X-Gm-Message-State: AOAM533lKcm6o15/m/G2xqe21U1M7wQ4jpuS7QYf6oQZAn2w53OByWfa
+        d9Kyru9D8JSH28S44EFh3du99s41G4sCeN8ht4ZlPHfkkIQ=
+X-Google-Smtp-Source: ABdhPJw8SyWRyRpep9/aPFwfVP26kH1mgTSaEMS/bSzijnoybLynnzyd/M+0AnMoJ0MpxI6R+GGAcg+vzL+/kXuW0os=
+X-Received: by 2002:a9d:3d06:: with SMTP id a6mr1544203otc.368.1603265888364;
+ Wed, 21 Oct 2020 00:38:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
- <0652b8dd-e753-7c10-27e9-af9524e7ccc5@linux.intel.com> <CAM9d7cgrXsiPWuAYjg1og0N=03-mfx075-n7KUrvYyAMLZ8_7A@mail.gmail.com>
- <81ffefab-ac4e-c51c-809a-b9ba96d6d867@linux.intel.com>
-In-Reply-To: <81ffefab-ac4e-c51c-809a-b9ba96d6d867@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 21 Oct 2020 16:34:55 +0900
-Message-ID: <CAM9d7cggG7yL3iaH_9-ibBgw4k+NLSU14uQSJHuaskLnv2sD_A@mail.gmail.com>
-Subject: Re: [PATCH v1 08/15] perf record: write trace data into mmap trace files
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201021050141.377787-1-furquan@google.com> <20201021051931.GA967331@kroah.com>
+ <CAMj1kXHpTNoYgzm+-SEs8Kddr+rVy7n5DOqf+QM8jAJXmDh3kA@mail.gmail.com>
+In-Reply-To: <CAMj1kXHpTNoYgzm+-SEs8Kddr+rVy7n5DOqf+QM8jAJXmDh3kA@mail.gmail.com>
+From:   Furquan Shaikh <furquan@google.com>
+Date:   Wed, 21 Oct 2020 00:37:52 -0700
+Message-ID: <CAEGmHFFYuAqqcPEw7UkVSPokAr74ktDcovOPzB74j9dyUYapGw@mail.gmail.com>
+Subject: Re: [PATCH] firmware: gsmi: Drop the use of dma_pool_* API functions
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        Arthur Heymans <arthur@aheymans.xyz>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Duncan Laurie <dlaurie@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 9:09 PM Alexey Budankov
-<alexey.budankov@linux.intel.com> wrote:
+On Tue, Oct 20, 2020 at 11:37 PM Ard Biesheuvel <ardb@kernel.org> wrote:
 >
-> Hi,
->
-> On 14.10.2020 13:52, Namhyung Kim wrote:
-> > Hi,
+> On Wed, 21 Oct 2020 at 07:18, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
 > >
-> > On Mon, Oct 12, 2020 at 6:01 PM Alexey Budankov
-> > <alexey.budankov@linux.intel.com> wrote:
-> >>
-> >>
-> >> Write trace data into per mmap trace files located
-> >> at data directory. Streaming thread adjusts its affinity
-> >> according to mask of the buffer being processed.
-> >>
-> >> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-> >> ---
-> > [SNIP]
-> >> @@ -1184,8 +1203,12 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
-> >>         /*
-> >>          * Mark the round finished in case we wrote
-> >>          * at least one event.
-> >> +        *
-> >> +        * No need for round events in directory mode,
-> >> +        * because per-cpu maps and files have data
-> >> +        * sorted by kernel.
-> >>          */
-> >> -       if (bytes_written != rec->bytes_written)
-> >> +       if (!record__threads_enabled(rec) && bytes_written != rec->bytes_written)
-> >>                 rc = record__write(rec, NULL, &finished_round_event, sizeof(finished_round_event));
+> > On Tue, Oct 20, 2020 at 10:01:41PM -0700, Furquan Shaikh wrote:
+> > > GSMI driver uses dma_pool_* API functions for buffer allocation
+> > > because it requires that the SMI buffers are allocated within 32-bit
+> > > physical address space. However, this does not work well with IOMMU
+> > > since there is no real device and hence no domain associated with the
+> > > device.
+> > >
+> > > Since this is not a real device, it does not require any device
+> > > address(IOVA) for the buffer allocations. The only requirement is to
+> > > ensure that the physical address allocated to the buffer is within
+> > > 32-bit physical address space. This change allocates a page using
+> > > `get_zeroed_page()` and passes in GFP_DMA32 flag to ensure that the
+> > > page allocation is done in the DMA32 zone. All the buffer allocation
+> > > requests for gsmi_buf are then satisfed using this pre-allocated page
+> > > for the device.
 > >
-> > This means it needs to keep all events in the ordered events queue
-> > when perf report processes the data, right?
+> > Are you sure that "GFP_DMA32" really does what you think it does?  A
+> > "normal" call with GFP_KERNEL" will give you memory that is properly
+> > dma-able.
+> >
+> > We should not be adding new GFP_DMA* users in the kernel in these days,
+> > just call dma_alloc*() and you should be fine.
+> >
 >
-> Looks so.
+> The point seems to be that this is not about DMA at all, and so there
+> is no device associated with the DMA allocation.
+>
+> The other 'master' is the CPU running firmware in an execution mode
+> where it can only access the bottom 4 GB of memory, and GFP_DMA32
+> happens to allocate from a zone which is guaranteed to be accessible
+> to the firmware.
 
-Maybe it's not related to this directly. But we need to think about
-how to make perf report faster and more efficient as well.
+Ard captured the context and requirement perfectly. GFP_DMA32
+satisfies the requirement for allocating memory from a zone which is
+accessible to the firmware in SMI mode. This seems to be one of the
+common ways  how other drivers and common code in the kernel currently
+allocate physical memory below the 4G boundary. Hence, I used the same
+mechanism in GSMI driver.
 
-In my previous attempt, I separated samples from other events
-to be in different mmaps so they were saved to different files
-(or in a separate part of the data file).
-
-And perf report processes the meta events (FORK/MMAP/...)
-first to construct the system image and then processes samples
-with multi-threads.
-
-Once it has the image, it could bypass the ordered events queue
-entirely.
-
-Thanks
-
-Namhyung
+Thanks,
+Furquan
