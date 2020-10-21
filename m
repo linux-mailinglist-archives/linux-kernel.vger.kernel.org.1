@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01C62954F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 00:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1668F2954FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 01:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506979AbgJUW57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 18:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
+        id S2507000AbgJUXCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 19:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441796AbgJUW57 (ORCPT
+        with ESMTP id S2439276AbgJUXCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 18:57:59 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7FACC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 15:57:58 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id 33so4166490edq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 15:57:58 -0700 (PDT)
+        Wed, 21 Oct 2020 19:02:06 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C968C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 16:02:06 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h7so5012899wre.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 16:02:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F+ZoVNjv91OFnQPk8TxICeY1F8FEXDM/PpIvwrVAr3A=;
-        b=G1B3B1S+r+GXukOnw5FSJ8HgL8jIehIscl4Tlfg0CeTQt4PRNr/DjaNj2srG+1BhDj
-         uBgkPfe5DEisi46kYZiHeJca/PksiTESFUWTqOGVGK+IvNdHG8NYMVIY9axXLHurqRBr
-         bv6R+ErJWPtQhlk/J9FrIaFHCry0ukhFnaBXtd2qwxu4gnUUUIdZcAjXLjIFMHUOFldb
-         bJFXYqSfBmqmc+9wBdDkiEh5beRVmtWcdaomabn+9GdNzIVfvCRHIwEqnuOOMUyxRzUi
-         t/LaJfteBGtl5fxEeZQkAWk3oY3Jdd/4Zi8rl9sd2UBJHB+oh0mudy6d0RYpRc8MT2te
-         9aMQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jGdInkciuraxCObjCq4PSMBKIp6zsKH4I8SuIMPE9Zk=;
+        b=AAwAXUqN9gjf8RPzGGH/2ISx8DmBKTgBggHLY5b5tASJHU3avDG/ZnOAgMDElULgSm
+         T59Fu6WCOszK9oyWkgbYKoOWswNWQ+Z9l2j7qey19J70mNdDorIuL37GTd3c9iho1QGd
+         xWu47O6BBkbp2ptRA0tCDMiPyUxkdic1FD/SMY6KJ5eiopl/qxB4A69Re+eSkrLpENFg
+         0aZ5CsEdmFgU+k166rICYKRK55hKRLoU6XwpaTVvAnK8+eF20ZCTFOGzXOEr/jPK9WZz
+         YwXnLjKnuC4bYN185joLIxCrI7kBaqHS0BAPO2EiNCRFqBSwKGD8oOMzBg1ZT5pgRmVz
+         RU5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F+ZoVNjv91OFnQPk8TxICeY1F8FEXDM/PpIvwrVAr3A=;
-        b=ofKCbprF+JrheA1QCRaYqnimvT0eG6lyV7/GW2qfmZXoNvbXDbBTILotIXHJYE/y7R
-         72wg3EJiRlUKfeMPGOvoth/0HEXVv4qvH4te/66GVAAkbqhVBpC+yQJ9z4AT9Q3OCyPd
-         oS4ptbmmzyaXjfYqXV8McXS+R4HnZYj5MdVQp0D2pomXCEq18nsq11m+Qi4Cy6jK/8jh
-         4AZM4wQy9nO6jEIvkSAK17UaZWRR30bVKrFuIjHwIJWlrJsW/U0x+gjp014q9bIHhmce
-         gYf5fBQrDezLDQ5a3ddTyotHndJevHAzvOWk2b4H0EqXq7QFHhvxNkjhs99beBM6ag/X
-         fQww==
-X-Gm-Message-State: AOAM532pPvwPdbimusAmZojoLl2mXhVvN4KTysXo6uFr+FgittocQjnM
-        7zTPyuXwyjs2RiAxG9GvzUJcF4WienRBKQsCfHFpUw==
-X-Google-Smtp-Source: ABdhPJx44KVeOQcByi3BEORCM/h/9NgIXKn+hQctd5AD6XDpE/sC5/8DyV9N8D4AwjyzkqGnraPNO72FIBpzD0bp/MI=
-X-Received: by 2002:a50:d0d0:: with SMTP id g16mr5150002edf.18.1603321077446;
- Wed, 21 Oct 2020 15:57:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jGdInkciuraxCObjCq4PSMBKIp6zsKH4I8SuIMPE9Zk=;
+        b=Q/MZsX8yE4IxO0mkYuODTBDptJFOULFjb+pCdc0Idca+80C7tHtJBil8gluCzXSawK
+         E6RSwSYkrZ8M/mbBLQ99AaF/Pqs3I3EefdHZcDHJSKAi18Fa4CkGr+XHGBAsDU1y6r7W
+         dOrUaS3z5tP3eeAFcvn2QFPXxUFNXPYFoK+JJ3aWuZV82/i3wsE4/Ly44hIzOnLiXwuK
+         2cVfgwJrT3Pi4XWho2WyXQTyKc4VNtco7IWp28uJvKO46H5lmsG+bXmTwnEzi8BBc4Ip
+         L66d2gU2PKSBs6UHRuLz2D6CFinSazvdhaOCUHMHKBZ4tAM+cqbbBxhDiLHF9YIjDiwM
+         TFWw==
+X-Gm-Message-State: AOAM530VfZwwsHLulIJwQ9XdJEmzMlkK369zW4q+v/xsuB/qSZbtpz5W
+        z5WyHQaWMxf2+t73+VxpXxM=
+X-Google-Smtp-Source: ABdhPJzcRi0tEGKPaq+nPEfJC/eKvHR7Aug0gdH2/i73DOWJzSRgOLFjKDuvH4kfWy3SauZhs33IXA==
+X-Received: by 2002:adf:9f0a:: with SMTP id l10mr6614763wrf.427.1603321324750;
+        Wed, 21 Oct 2020 16:02:04 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
+        by smtp.gmail.com with ESMTPSA id d30sm6458263wrc.19.2020.10.21.16.02.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 16:02:04 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel compilation error
+Date:   Thu, 22 Oct 2020 01:57:37 +0300
+Message-Id: <20201021225737.739-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200908200950.1368e71b@canb.auug.org.au> <23624101c03e9f60e66bac5c9739769931968c32.camel@intel.com>
- <CAJfpegsFb6SB74ezwqD=5YUw_8XaREm1q88ontkpWzQ+9V0OxQ@mail.gmail.com>
-In-Reply-To: <CAJfpegsFb6SB74ezwqD=5YUw_8XaREm1q88ontkpWzQ+9V0OxQ@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 21 Oct 2020 15:57:46 -0700
-Message-ID: <CAPcyv4ifFfASkdSG7cjT7FdVC5x8hxFEnMhHpjnGPz_pkMYd9Q@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the akpm-current tree
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "bo.liu@linux.alibaba.com" <bo.liu@linux.alibaba.com>,
-        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-        "stefanha@redhat.com" <stefanha@redhat.com>,
-        "roger.pau@citrix.com" <roger.pau@citrix.com>,
-        "vgoyal@redhat.com" <vgoyal@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dgilbert@redhat.com" <dgilbert@redhat.com>,
-        "Boeuf, Sebastien" <sebastien.boeuf@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 12:45 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
-[..]
-> > This is broken... it needs to be converted to 'struct range'. I'll take
-> > care of that when I respin the series. Sorry for the thrash it seems
-> > this is a new memremap_pages() user since the conversion patches
-> > landed.
->
-> Hi Dan,
->
-> I'd like to send this upstream and this conflict needs to be dealt
-> with some way or another.   Can you send the correct fixup against
->
-> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git#for-next
+The vfp_kmode_exception() function now is unreachable using relative
+branching in THUMB2 kernel configuration, resulting in a "relocation
+truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode_exception'"
+linker error. Let's use long jump in order to fix the issue.
 
-Sorry, I just circled back to this and found your for-next branch is
-already merged. The resolution looks good. Apologies for not taking a
-look earlier.
+Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input sections")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ arch/arm/vfp/vfphw.S | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
+index 4fcff9f59947..6e2b29f0c48d 100644
+--- a/arch/arm/vfp/vfphw.S
++++ b/arch/arm/vfp/vfphw.S
+@@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
+ 	ldr	r3, [sp, #S_PSR]	@ Neither lazy restore nor FP exceptions
+ 	and	r3, r3, #MODE_MASK	@ are supported in kernel mode
+ 	teq	r3, #USR_MODE
+-	bne	vfp_kmode_exception	@ Returns through lr
++	ldr	r1, =vfp_kmode_exception
++	bxne	r1			@ Returns through lr
+ 
+ 	VFPFMRX	r1, FPEXC		@ Is the VFP enabled?
+ 	DBGSTR1	"fpexc %08x", r1
+-- 
+2.27.0
+
