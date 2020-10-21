@@ -2,171 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4055E294B26
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F4A294B28
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409895AbgJUKR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 06:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409812AbgJUKR4 (ORCPT
+        id S2438693AbgJUKUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 06:20:25 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:20212 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2409949AbgJUKUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 06:17:56 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4D6C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:17:55 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id o7so1210501pgv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:17:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=TOGN6/95XVOYasVET4TPHsdfeoSJXlss37vDWxfvwiE=;
-        b=Ude9OQLN5X+h7VdE1vy1/p8AF9higk3UfJCg+7iBv68ZmegidJwzpTFQ6v4cgdetMA
-         hQbJhYdknBqBJypJ5YBF/IK/a2d2Uqta9OKcU6SyAbjdFCa1gtRNsAzJH5HfNvR8D4cn
-         36AtX6gdTEHNEV3ygLSmRueyciqV09l9u3j+THo3AuglIiD4B83sR/RRx6yxjtAFrPxy
-         k4IA8BOwe4u9EZ1wm+aMOVD8oAHrfZyLnigQeH6oa9k5ka2PetaTHYDqHCEN1RNf+hgH
-         sxITHlvCFrMbIWVvUXsKpI9MCESLjLEdWVZMvvLnOdv0RQY0uO5GlK/tITQtwJ0gGMNd
-         QleQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=TOGN6/95XVOYasVET4TPHsdfeoSJXlss37vDWxfvwiE=;
-        b=R7otkunzDBTpP1JT3Gdd7bLycLp2km0eXztgI4FWal8a29Nbzft9gctyHRZwu2K3RH
-         BGYghnBHDZheibh+ljDSnDgx2J3FPiqfzsYN5Y5e9gkttoFTBNQq88+NiWouA4/KfDAu
-         vh9xZhdG0EKtBqxJ+5iT1E93dWYptlq3VAosdgBJzgbKiNdQiKHwePNp/kh8Sjmbe7SU
-         CJFXBqPXDg3zHBraN20+XvgNRGvLmm2cpQbhjAAosOre2UVkQw+biepoNM3rRNT0RcYp
-         nKFwlPdWLP9UWrKoqLyvjJAwaLyOAxtwGrUdZWbMI4I1qE7F3v+3GGA/2K0m8v+ho4Bj
-         7HHA==
-X-Gm-Message-State: AOAM531A5pq9JEVPOV8eP5ATOUAtecusXN7VpatV9K+75Fu/uQo09/NA
-        dcjzMU/+Gb4t5gKs4LaHPfoVM2q2IpRxB0Fb7XQ=
-X-Google-Smtp-Source: ABdhPJy0/1EEEjO9umjfWyHQ7y2iShiNHMnldyB9wXhCT0WMr2ycfeng98rQiA27sFfmo8O2EdjBHg==
-X-Received: by 2002:a65:68c6:: with SMTP id k6mr2731585pgt.231.1603275474575;
-        Wed, 21 Oct 2020 03:17:54 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([14.192.49.12])
-        by smtp.gmail.com with ESMTPSA id e11sm1967645pfm.160.2020.10.21.03.17.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 21 Oct 2020 03:17:53 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 18:17:48 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
-Subject: Re: [PATCH v2 14/14] perf arm-spe: Add support for ARMv8.3-SPE
-Message-ID: <20201021101748.GB3194@leoy-ThinkPad-X240s>
-References: <20200929133917.9224-1-leo.yan@linaro.org>
- <20200929133917.9224-15-leo.yan@linaro.org>
- <9c74082b-fccf-7713-b98d-50da76c5d7af@arm.com>
- <20201021051031.GE7226@leoy-ThinkPad-X240s>
- <df1faa9b-d8cb-ebcf-b70f-3672a6d8db1f@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        Wed, 21 Oct 2020 06:20:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1603275623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lvA6JH2s+U6ObZG8b4tCXCs08lgAevTFwjtqnmIE4ig=;
+        b=i04+RrcMM80s2/1iad+f0abiziMmIkne/DQV5tipoDa45pJg1TctXXE3+x9aILCf840jb0
+        TglfAvgBMr7hbitI40ji0Uj1S+kqUkdX3Gu+tE5of4qsSnRkOaCUogxTVPt3R2ENbm5Ab1
+        lBG1tbM0uB2K93ZZurGBFVnHE9WHAFs=
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur04lp2054.outbound.protection.outlook.com [104.47.13.54]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-15-Zz5w17R4NpOzeD96Hjkj_Q-1; Wed, 21 Oct 2020 12:20:21 +0200
+X-MC-Unique: Zz5w17R4NpOzeD96Hjkj_Q-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OwHqKIoGhw+9/ax4VP4g6Wvu6xIbwEkSP8rWCdeJCWma6/hbCyA4eOMqfRa6Vn5tyx/xxXQpQRQcat8+0UW0WCFXUXpFUtuj4ER+QAsJs+vD7InAOhWq5fsWusoUVtO73HCVcAWmcszOTGAvBeHJ2zzbym/H5lJK1fA9DzAC1U/hdZ3c8EVaJqYsmWVk3NawxRBIF+YQQssCQCLUTAyD05K5ORYP85ooZoYU2BlM6szL0k5Q7ltxyKf6jaabJ8jdtdwVqyiXMFjT+Eq0YovFIdFvz6vEvxD6wf76z0kFmiP/S66A71YvUqRl4xvcxSoXDmrfPQrGSGEKbud5ru6+kA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lvA6JH2s+U6ObZG8b4tCXCs08lgAevTFwjtqnmIE4ig=;
+ b=adXdfJeE27HdLgUoLKCH2/JCDdvNaCTp3hb0vhIz4cx/GwnIlCoUvZTNtfq1LOy18dl5WGEiYwYA9+uJ+qfN2A0ln2i2d9RFId/h+iosMEog5frdpiXRG6Go8AdAjSdFB2siRuyRp2rGR+0ad8eNf82mINyr/d1eziJoLVUNzV6f7ZXrTA317VcyekwrlR3gxrtOKFbBTmhX4TnZDA96mWzQpek7j2+SRS5amBjlTI1MRuMPp/DlBTMNqWTwv6DZvyEmdco3De3k1hCCJY2jGbRzP6IsvFaEpoxAQj4ohiBW3aheDd19ZmRd0Q4rcNN8Bn+67eIexbconpOxkw/9jw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB7102.eurprd04.prod.outlook.com (2603:10a6:800:124::12)
+ by VI1PR04MB5247.eurprd04.prod.outlook.com (2603:10a6:803:55::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Wed, 21 Oct
+ 2020 10:20:19 +0000
+Received: from VI1PR04MB7102.eurprd04.prod.outlook.com
+ ([fe80::4850:c5a:699b:e466]) by VI1PR04MB7102.eurprd04.prod.outlook.com
+ ([fe80::4850:c5a:699b:e466%9]) with mapi id 15.20.3499.018; Wed, 21 Oct 2020
+ 10:20:19 +0000
+Date:   Wed, 21 Oct 2020 18:20:07 +0800
+From:   joeyli <jlee@suse.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     list.lkml.keyrings@me.benboeckel.net,
+        "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] PKCS#7: Check codeSigning EKU for kernel module
+ and kexec pe verification
+Message-ID: <20201021102007.GB13854@linux-l9pv.suse>
+References: <20201020065001.13836-1-jlee@suse.com>
+ <20201020065001.13836-3-jlee@suse.com>
+ <20201020134208.GA297878@erythro.dev.benboeckel.internal>
+ <885f1b81-6141-a3be-1dc0-92c1fc825e3c@infradead.org>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <df1faa9b-d8cb-ebcf-b70f-3672a6d8db1f@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <885f1b81-6141-a3be-1dc0-92c1fc825e3c@infradead.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [124.11.22.254]
+X-ClientProxiedBy: HKAPR04CA0009.apcprd04.prod.outlook.com
+ (2603:1096:203:d0::19) To VI1PR04MB7102.eurprd04.prod.outlook.com
+ (2603:10a6:800:124::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-l9pv.suse (124.11.22.254) by HKAPR04CA0009.apcprd04.prod.outlook.com (2603:1096:203:d0::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 21 Oct 2020 10:20:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a404e30a-304b-4c7a-0778-08d875aae989
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5247:
+X-Microsoft-Antispam-PRVS: <VI1PR04MB52478D6737E1F3C6BEC6962AA31C0@VI1PR04MB5247.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +S7nLE7YfTHR2aoOgWFXiBH6p5hrOuA4M3DJ078FMiqbqIXniSL5EZOmW6S16u5REZKoQ0laHyokIuCRp/8ofkaCbqVR93ohQAomcoCbplwPl2GM2F4RPP15bh2j0CZPufaaHUsts1RIYZg8kdYbBBQIviqqYSXptPYPQzdMzBOYmcZONVEYn1CkIRBgcAfDNSt+FQMY8a5yyLp1IdNoiJn0STKlvNmp9WLCfOIJQpHc7xydenLKpU2QRvTWR56PLVSD0Tr3Qw2etr2o/Irlkl3rK3mYYVF2/pXArijSAIwAj/lGUEuikFDCJqpI17K6i/nvMlJtUjFtFaLEjWCp9lBnsQWYPJZAjJeB6EbvGdQ68T1zXQ0mPUR7EU821AKL
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB7102.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39860400002)(396003)(346002)(136003)(316002)(66556008)(36756003)(8886007)(186003)(52116002)(956004)(26005)(8936002)(7696005)(66946007)(66476007)(33656002)(83380400001)(16526019)(9686003)(478600001)(1076003)(15650500001)(4744005)(54906003)(86362001)(55016002)(6916009)(2906002)(5660300002)(8676002)(53546011)(4326008)(6506007)(6666004)(43062003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 4tS76mOfTlFjlg/1VDLIi/ukv/nzz/QfYLZS4rMRGfRz+pQzMN+WFzSFzXcq3PAGUz8FBtx82mX6kUNz7UwqR3NMA55Z8m9NYW1kQAJY+zs6OLQesc554PtFzyjurxfm64CB7oV4wehK37eJHJUAYWYtqX8SQ/C0aBqWbWF325138diND0F8joJEbqWd4TnRXGaf6NH5SUVz3ulQfoq3oeDStvYgn/AfTPVMk2nbin0KYvL+u3q30/hXW5KL+UE8Bc/1Mn4wJJdvS+82n3cqSV17DxoJpuNG5IhKi1WEeLNeZcyPiKqH/Am3NvUwPDQP+Yrr5PCkql0oQMLXDPR17xAfWWfGXlyjVA9GIj3E3YjIR8i7f474QOZuruKV3dhZYUEkgmMknK3bt8DMQAgghcFGjcq0i3E5elRK5D5M9C5hRPrVcNQ4biHCa+6UEdyz3sGeGHNbmCmhnF2wfCqAgAbf7zPVJpxrAAyc/f1omE92pNd6IDH1IjPs90/UZaPsyhOZOmlXkLaNZFAkr1eRP7yaOXwlWYzsmMtQl4zEOE4H1VEudBhu09VldkPoc1G3t8V86fJY/1CRMm8pDHx2Xb6eKncB1Fx/qdc0xSSCrDpyqQsQGwI0fEZmL2WzUQo7y1PTq5bLM9exXLX+Se72jQ==
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a404e30a-304b-4c7a-0778-08d875aae989
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB7102.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2020 10:20:19.7022
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gsZsrSK9bowhHqamB3wjrbGRtg98iFIQLgUV8FflxjzOVflNwLYmaOyRA040DZe+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5247
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 10:26:07AM +0100, André Przywara wrote:
-> On 21/10/2020 06:10, Leo Yan wrote:
-> 
-> Hi,
-> 
-> > On Tue, Oct 20, 2020 at 10:54:44PM +0100, Andrï¿½ Przywara wrote:
-> >> On 29/09/2020 14:39, Leo Yan wrote:
-> >>
-> >> Hi,
-> >>
-> >>> From: Wei Li <liwei391@huawei.com>
-> >>>
-> >>> This patch is to support Armv8.3 extension for SPE, it adds alignment
-> >>> field in the Events packet and it supports the Scalable Vector Extension
-> >>> (SVE) for Operation packet and Events packet with two additions:
-> >>>
-> >>>   - The vector length for SVE operations in the Operation Type packet;
-> >>>   - The incomplete predicate and empty predicate fields in the Events
-> >>>     packet.
-> >>>
-> >>> Signed-off-by: Wei Li <liwei391@huawei.com>
-> >>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> >>> ---
-> >>>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 84 ++++++++++++++++++-
-> >>>  .../arm-spe-decoder/arm-spe-pkt-decoder.h     |  6 ++
-> >>>  2 files changed, 87 insertions(+), 3 deletions(-)
-> >>>
-> >>> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> >>> index 05a4c74399d7..3ec381fddfcb 100644
-> >>> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> >>> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> >>> @@ -342,14 +342,73 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
-> >>>  					return ret;
-> >>>  			}
-> >>>  		}
-> >>> +		if (idx > 2) {
-> >>
-> >> As I mentioned in the other patch, I doubt this extra comparison is
-> >> useful. Does that protect us from anything?
-> > 
-> > It's the same reason with Event packet which have explained for replying
-> > patch 10, the condition is to respect the SPE specifiction:
-> > 
-> >   E[11], byte 1, bit [11], when SZ == 0b10 , or SZ == 0b11
-> >      Alignment.
-> >      ...
-> >      Otherwise this bit reads-as-zero.
-> > 
-> > So we gives higher priority for checking payload size than the Event
-> > bit setting; if you have other thinking for this, please let me know.
-> 
-> Ah, thanks for pointing this out. It looks like a bug in the manual
-> then, because I don't see why bit 11 should be any different from bits
-> [10:8] and bits [15:12] in this respect. And in the diagrams above you
-> clearly see bit 11 being shown even when SZ == 0b01.
-> 
-> I will try to follow this up here.
+Hi Randy,
 
-Thanks for following up!
-
-> >>> +			if (payload & SPE_EVT_PKT_ALIGNMENT) {
-> >>
-> >> Mmh, but this is bit 11, right?
-> > 
-> > Yes.
-> > 
-> >> So would need to go into the (idx > 1)
-> >> section (covering bits 8-15)? Another reason to ditch this comparison above.
-> > 
-> > As has explained in patch 10, idx is not the same thing with "sz"
-> > field; "idx" stands for payload length in bytes, so:
-> > 
-> >   idx = 1 << sz
-> > 
-> > The spec defines the sz is 2 or 3, thus idx is 4 or 8; so this is why
-> > here use the condition "(idx > 2)".
-> > 
-> > I think here need to refine code for more explict expression so can
-> > avoid confusion.  So I think it's better to condition such like:
-> > 
-> >   if (payload_len >= 4) {
+On Tue, Oct 20, 2020 at 07:56:29AM -0700, Randy Dunlap wrote:
+> On 10/20/20 6:42 AM, Ben Boeckel wrote:
+> > On Tue, Oct 20, 2020 at 14:50:01 +0800, Lee, Chun-Yi wrote:
+> >> +config CHECK_CODESIGN_EKU
+> >> +	bool "Check codeSigning extended key usage"
+> >> +	depends on PKCS7_MESSAGE_PARSER=y
+> >> +	depends on SYSTEM_DATA_VERIFICATION
+> >> +	help
+> >> +	  This option provides support for checking the codeSigning extended
+> >> +	  key usage extension when verifying the signature in PKCS#7. It
 > 
-> Yes, that would be (or have been) more helpful, but as mentioned in the
-> other patch, I'd rather see those comparisons go entirely.
+> 	  extended ... extension.
+> Can we drop one of those or reword it?
 
-Agree.  Will remove comparisons in next version.
+I will remove the _extension_ word in next version. Thanks for your review!
 
-Thanks,
-Leo
+Joey Lee
+
