@@ -2,154 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F06294705
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 05:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBB1294703
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 05:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411782AbgJUDhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 23:37:20 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:35272 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411775AbgJUDhT (ORCPT
+        id S2411772AbgJUDhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 23:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406750AbgJUDhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 23:37:19 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09L3TYE6123389;
-        Wed, 21 Oct 2020 03:37:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=qppGELAd/QVZQdRXML5jn5r4+rkgBkW65YyLU9TSwGs=;
- b=XE6ui6XzjXQMGn8nQTp+PLiwSZG7YviHRb6DNM9Bov2ZwbYoKFrJyShaU4S5f0Kk/fEe
- BaqL8p0U7UJsHZ7oxM6EgqhykQMPWg8j93S8MHoy+lJwCluFo5iW6c9yXZJpYBsTyld1
- FZSJWOyfgoEXYXIwKnT9UraBKpIEe2Fq2xOl6frVv8l+xp2+XE4MLnLlGTCGZPrY4CaT
- chyUjE7UkcwoxoEP1PfePu7yZbT+V4fSWGnLgM0PZH0wF8cVPplDja8axJlaPQwHa7bg
- CE/W2qJWwPmTNHYpggkJ+RgfLrOuKOIhdsFalLl56WuXTR3qRxjB1D99NuPhdwSNzbbS 7A== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 347p4axd5k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 21 Oct 2020 03:37:07 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09L3TuNn056326;
-        Wed, 21 Oct 2020 03:35:06 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 348acrjbbp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Oct 2020 03:35:06 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09L3Z5QM009755;
-        Wed, 21 Oct 2020 03:35:05 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 20 Oct 2020 20:35:04 -0700
-Subject: Re: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at
- mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
-To:     David Hildenbrand <david@redhat.com>,
-        Mina Almasry <almasrymina@google.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Michal Privoznik <mprivozn@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Tejun Heo <tj@kernel.org>
-References: <c1ea7548-622c-eda7-66f4-e4ae5b6ee8fc@redhat.com>
- <563d1eef-b780-835a-ebf0-88ae111b20c2@redhat.com>
- <CAHS8izPEHZunoeXYS5ONfRoSRMpC7DQwtpjJ8g4nXiddTfNoaA@mail.gmail.com>
- <65a1946f-dbf9-5767-5b51-9c1b786051d1@redhat.com>
- <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
- <c78634ee-0d6f-c98c-3c2a-8cb500c0ae47@oracle.com>
- <b24380ad-b87c-a3a1-d25e-ee30c10ed0d2@redhat.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <312246f4-4e5f-1425-1bc2-1b356db0fbad@oracle.com>
-Date:   Tue, 20 Oct 2020 20:35:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 20 Oct 2020 23:37:15 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B027FC0613CE;
+        Tue, 20 Oct 2020 20:37:15 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id r7so1085203qkf.3;
+        Tue, 20 Oct 2020 20:37:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TvMvPvEIzkDzHLBTHLVaGKI3I8TYc8uxn0Gzgfn1fYM=;
+        b=S0yF5moQ3zgsfWshFIIAsq+ESTQkQc+axIoz5jeRWLvLrMvOEWoRrIYk4T4LJdCota
+         Mi8kln4clBqAqESVvBTY8RSFa3TGx4K3La5VVj6r9HCs3TuCtwtuR5aSGEIGs46CyE+T
+         ISl0n2RWmR8iN+HDOkSz6srw3eWvcuLDJZhdg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TvMvPvEIzkDzHLBTHLVaGKI3I8TYc8uxn0Gzgfn1fYM=;
+        b=U3MKmyIJKsBO4KwquvBN3CbFB3y+89qP7qXtAWXh9tBcI4HrfFzl5DpXlZQoQA1XDX
+         5JQo9KRBAf9E2FxeBVRmTcOURX7K9hME0xoN+8nwc6lF76Pwh2rr9JVF/fbDiiHqdyFt
+         tswmFGcRQ7JUlyswJwa9WIa2p4WYS/qQXE8jbCG4xyT6N0HkkNELRqIAGyL+D5VesCfE
+         xhEJLWy6qlqaMHHIyDS0zPlDQyRK6rDZrL35YKl/9ippxk38MDdbuPmTs9J9tGObVexO
+         If85BtTu37e5LCRChmv+nsB3c7wmTUP1hzF55ZkjK13vWAsvzlKjJ7vye9+M3ch8/MO9
+         fI9w==
+X-Gm-Message-State: AOAM531rV4gZekktj0rGzSB9ep66NkZhYswwf5Nd2nPO21G/kV/q7WOK
+        cNPeer4j6V+VuUe01Xq5mUyElOZVeN1peO+YjHSYUL+gSJs=
+X-Google-Smtp-Source: ABdhPJy50X7s92E4yQURmrw0y3qAXYcHTHBJ+PGZaS5kTRxKsjzOAJtZumbrwf36JRnsvarnNvoJ5csQLlmSLnGY/1o=
+X-Received: by 2002:a37:48cc:: with SMTP id v195mr1446238qka.66.1603251434714;
+ Tue, 20 Oct 2020 20:37:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b24380ad-b87c-a3a1-d25e-ee30c10ed0d2@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9780 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 adultscore=0
- mlxscore=0 malwarescore=0 suspectscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010210028
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9780 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
- clxscore=1015 malwarescore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010210028
+References: <20201020220639.130696-1-joel@jms.id.au> <86480db3977cfbf6750209c34a28c8f042be55fb.camel@kernel.crashing.org>
+In-Reply-To: <86480db3977cfbf6750209c34a28c8f042be55fb.camel@kernel.crashing.org>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 21 Oct 2020 03:37:02 +0000
+Message-ID: <CACPK8XfmdUdoke8q=z02ijk89=3ZezTfjOmcr9PX3jnpmvAZPw@mail.gmail.com>
+Subject: Re: [PATCH] net: ftgmac100: Ensure tx descriptor updates are visible
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Dylan Hung <dylan_hung@aspeedtech.com>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/20 6:38 AM, David Hildenbrand wrote:
-> 
-> I'm bisecting the warning right now. Looks like it was introduced in v5.7.
+On Wed, 21 Oct 2020 at 00:00, Benjamin Herrenschmidt
+<benh@kernel.crashing.org> wrote:
+>
+> On Wed, 2020-10-21 at 08:36 +1030, Joel Stanley wrote:
+> > We must ensure the tx descriptor updates are visible before updating
+> > the tx pointer.
+> >
+> > This resolves the tx hangs observed on the 2600 when running iperf:
+>
+> To clarify the comment here. This doesn't ensure they are visible to
+> the hardware but to other CPUs. This is the ordering vs start_xmit and
+> tx_complete.
 
-I found the following bugs in the cgroup reservation accounting.  The ones
-in region_del are pretty obvious as the number of pages to uncharge would
-always be zero.  The one on alloc_huge_page needs racing code to expose.
+Thanks. Let me know if this makes sense, or if I'm completely off the mark.
 
-With these fixes, my testing is showing consistent/correct results for
-hugetlb reservation cgroup accounting.
+How is this for the commit message:
 
-It would be good if Mina (at least) would look these over.  Would also
-be interesting to know if these fixes address the bug seen with the qemu
-use case.
+This resolves the tx hangs observed on the 2600 when running iperf.
+This is ensuring the setting of the OWN bit in txdes0 of the
+descriptor is visible to other CPUs before updating the pointer. Doing
+this provides ordering between start_xmit and tx_complete.
 
-I'm still doing more testing and code inspection to look for other issues.
+and then I'll put:
 
-From 861bcd7d0443f18a5fed3c3ddc5f1c71e78c4ef4 Mon Sep 17 00:00:00 2001
-From: Mike Kravetz <mike.kravetz@oracle.com>
-Date: Tue, 20 Oct 2020 20:21:42 -0700
-Subject: [PATCH] hugetlb_cgroup: fix reservation accounting
+        /* Ensure the descriptor config is visible to other CPUs before setting
+         * the tx pointer. This ensures ordering against start_xmit which checks
+          * the OWN bit before proceeding.
+         */
 
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
----
- mm/hugetlb.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+and similar for tx_complete?
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 67fc6383995b..c92366313780 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -685,17 +685,17 @@ static long region_del(struct resv_map *resv, long f, long t)
- 		}
- 
- 		if (f <= rg->from) {	/* Trim beginning of region */
--			del += t - rg->from;
--			rg->from = t;
--
- 			hugetlb_cgroup_uncharge_file_region(resv, rg,
- 							    t - rg->from);
--		} else {		/* Trim end of region */
--			del += rg->to - f;
--			rg->to = f;
- 
-+			del += t - rg->from;
-+			rg->from = t;
-+		} else {		/* Trim end of region */
- 			hugetlb_cgroup_uncharge_file_region(resv, rg,
- 							    rg->to - f);
-+
-+			del += rg->to - f;
-+			rg->to = f;
- 		}
- 	}
- 
-@@ -2454,6 +2454,9 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
- 
- 		rsv_adjust = hugepage_subpool_put_pages(spool, 1);
- 		hugetlb_acct_memory(h, -rsv_adjust);
-+		if (deferred_reserve)
-+			hugetlb_cgroup_uncharge_page_rsvd(hstate_index(h),
-+					pages_per_huge_page(h), page);
- 	}
- 	return page;
- 
--- 
-2.25.4
-
+>
+> Cheers,
+> Ben.
+>
+> > root@ast2600:~# iperf3 -c 192.168.86.146 -R
+> > Connecting to host 192.168.86.146, port 5201
+> > Reverse mode, remote host 192.168.86.146 is sending
+> > [  5] local 192.168.86.173 port 43886 connected to 192.168.86.146
+> > port 5201
+> > [ ID] Interval           Transfer     Bitrate
+> > [  5]   0.00-1.00   sec  90.7 MBytes   760 Mbits/sec
+> > [  5]   1.00-2.00   sec  91.7 MBytes   769 Mbits/sec
+> > [  5]   2.00-3.00   sec  91.7 MBytes   770 Mbits/sec
+> > [  5]   3.00-4.00   sec  91.7 MBytes   769 Mbits/sec
+> > [  5]   4.00-5.00   sec  91.8 MBytes   771 Mbits/sec
+> > [  5]   5.00-6.00   sec  91.8 MBytes   771 Mbits/sec
+> > [  5]   6.00-7.00   sec  91.9 MBytes   771 Mbits/sec
+> > [  5]   7.00-8.00   sec  91.4 MBytes   767 Mbits/sec
+> > [  5]   8.00-9.00   sec  91.3 MBytes   766 Mbits/sec
+> > [  5]   9.00-10.00  sec  91.9 MBytes   771 Mbits/sec
+> > [  5]  10.00-11.00  sec  91.8 MBytes   770 Mbits/sec
+> > [  5]  11.00-12.00  sec  91.8 MBytes   770 Mbits/sec
+> > [  5]  12.00-13.00  sec  90.6 MBytes   761 Mbits/sec
+> > [  5]  13.00-14.00  sec  45.2 KBytes   370 Kbits/sec
+> > [  5]  14.00-15.00  sec  0.00 Bytes  0.00 bits/sec
+> > [  5]  15.00-16.00  sec  0.00 Bytes  0.00 bits/sec
+> > [  5]  16.00-17.00  sec  0.00 Bytes  0.00 bits/sec
+> > [  5]  17.00-18.00  sec  0.00 Bytes  0.00 bits/sec
+> > [   67.031671] ------------[ cut here ]------------
+> > [   67.036870] WARNING: CPU: 1 PID: 0 at net/sched/sch_generic.c:442
+> > dev_watchdog+0x2dc/0x300
+> > [   67.046123] NETDEV WATCHDOG: eth2 (ftgmac100): transmit queue 0
+> > timed out
+> >
+> > Fixes: 52c0cae87465 ("ftgmac100: Remove tx descriptor accessors")
+> > Signed-off-by: Joel Stanley <joel@jms.id.au>
+> > ---
+> >  drivers/net/ethernet/faraday/ftgmac100.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/faraday/ftgmac100.c
+> > b/drivers/net/ethernet/faraday/ftgmac100.c
+> > index 331d4bdd4a67..15cdfeb135b0 100644
+> > --- a/drivers/net/ethernet/faraday/ftgmac100.c
+> > +++ b/drivers/net/ethernet/faraday/ftgmac100.c
+> > @@ -653,6 +653,11 @@ static bool ftgmac100_tx_complete_packet(struct
+> > ftgmac100 *priv)
+> >       ftgmac100_free_tx_packet(priv, pointer, skb, txdes, ctl_stat);
+> >       txdes->txdes0 = cpu_to_le32(ctl_stat & priv-
+> > >txdes0_edotr_mask);
+> >
+> > +     /* Ensure the descriptor config is visible before setting the
+> > tx
+> > +      * pointer.
+> > +      */
+> > +     smp_wmb();
+> > +
+> >       priv->tx_clean_pointer = ftgmac100_next_tx_pointer(priv,
+> > pointer);
+> >
+> >       return true;
+> > @@ -806,6 +811,11 @@ static netdev_tx_t
+> > ftgmac100_hard_start_xmit(struct sk_buff *skb,
+> >       dma_wmb();
+> >       first->txdes0 = cpu_to_le32(f_ctl_stat);
+> >
+> > +     /* Ensure the descriptor config is visible before setting the
+> > tx
+> > +      * pointer.
+> > +      */
+> > +     smp_wmb();
+> > +
+> >       /* Update next TX pointer */
+> >       priv->tx_pointer = pointer;
+> >
+>
