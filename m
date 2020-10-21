@@ -2,131 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB68E295147
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5266129514C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408974AbgJURCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 13:02:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390114AbgJURB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:01:59 -0400
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05C282242F;
-        Wed, 21 Oct 2020 17:01:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603299719;
-        bh=IJgP+WkiF3CiHKbL4th8n+DlWtgkXJlshw3WQkre9Vo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Tuba3q90fK5U2WA7mvzxLgOqxbPw/EQZoiVM3r5oWZCEuU5rF7+NGJdnskc6nPf4P
-         HBHRKlBTeJm40ahzN5JXhWl5uIbupAXdR6yLJ23bbQb6iU71gxNBxPSFLkmnNElDuX
-         498wJme6ornfQfWRav8E0bI5Ldoo7TWtVy4SJh08=
-Received: by mail-ed1-f49.google.com with SMTP id v19so3276863edx.9;
-        Wed, 21 Oct 2020 10:01:58 -0700 (PDT)
-X-Gm-Message-State: AOAM5314KgKBAo3KVcwpp+PQwBSWH6xbS01iwLcpPDkKo+J0Zlf0/sU+
-        0kVVodts0lxvsSZEVoCMmc3PV5Sy5ZKboFg2Tw==
-X-Google-Smtp-Source: ABdhPJxNYB5JrbgWoRZWM5b1UPk2c0NH+oFqgGIXB/umtBUJcVJOEuxHlHRZ5MwpQlcJDN+lPwb7BOCwm2vT1B8hJaw=
-X-Received: by 2002:aa7:c3ca:: with SMTP id l10mr4071238edr.72.1603299717347;
- Wed, 21 Oct 2020 10:01:57 -0700 (PDT)
+        id S2503360AbgJURFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 13:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503353AbgJURF3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 13:05:29 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40619C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:05:29 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id a5so3368577ljj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:05:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jZ8rX4nMXu9yVxF6VhEpyRT/HJL/yeSOHN33lmmqE3Q=;
+        b=d6nJua3ZU/+MbORwAQIhOyj2afUAGnde4GMpRV2HxlMNrYs0QlTInEU5dTEigbF5Df
+         dmv41P9p05B6BQtvCcM2OmGGKAdgaTWy1b42EvZb4/P124a6kJRtmA9iy0DRhNfGxKOc
+         95gwtWQc4/Bu6Cew4ZrJmy92LVxyerHew+FaU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jZ8rX4nMXu9yVxF6VhEpyRT/HJL/yeSOHN33lmmqE3Q=;
+        b=V4SHsdm/scpguZGjqslY7CNaspLtNbltXzeJsZurSI0vU8kp7ii+RqcANz3kFWlZbC
+         VO+OiOvOTkjrShCF2DGrziNyxsWW8ngGtBxcbbRUHTzO7yRpIRcj9ppARQKbm9o3R/Ax
+         CxL9SZgms4IAzlq2srdUrgRACu8HvT7+raJoOE/iYfQQFipz4jy1RIV29/QWLttegK3E
+         8MLJdHOMBhqNDRJmy+dAR8u/DGvcN7hu1YWLEf0y57OGXimEPLvnLeCtC2Ukh3tSS4+6
+         8kDf4fBWl/r8QDEnDZ64/MWrxJN7rZ9fJXS6re5OOfughu+EVys+1xgUfNMSHzI4SjBr
+         gUKw==
+X-Gm-Message-State: AOAM533/ppDeNAEWAQtbbhhwIRo4lodtAwQTJEORRfhSyqVQLsRNzVI6
+        k07/yKUuCdYmZM+0c3+nStI1t0GsZVa6rQ==
+X-Google-Smtp-Source: ABdhPJyBrRy0khjijyZ4dBqfVOwxwDHhHGrSaZJekBmG9auxprxx8EmxfZhIJ+QXOZAqVm9svYOqqg==
+X-Received: by 2002:a2e:9689:: with SMTP id q9mr1727715lji.434.1603299927424;
+        Wed, 21 Oct 2020 10:05:27 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id o21sm478410lff.265.2020.10.21.10.05.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Oct 2020 10:05:24 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id j30so4053956lfp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:05:22 -0700 (PDT)
+X-Received: by 2002:a19:c703:: with SMTP id x3mr1474665lff.105.1603299922233;
+ Wed, 21 Oct 2020 10:05:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201020174253.3757771-1-fparent@baylibre.com> <20201020174253.3757771-3-fparent@baylibre.com>
-In-Reply-To: <20201020174253.3757771-3-fparent@baylibre.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 22 Oct 2020 01:01:46 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9m-nqCe1HanPv5xa3mVLpyG6mC1pF1FRAFJdU1jqza_A@mail.gmail.com>
-Message-ID: <CAAOTY_9m-nqCe1HanPv5xa3mVLpyG6mC1pF1FRAFJdU1jqza_A@mail.gmail.com>
-Subject: Re: [PATCH 2/8] dt-bindings: display: mediatek: dsi: add
- documentation for MT8167 SoC
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
+In-Reply-To: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 21 Oct 2020 10:05:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
+Message-ID: <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
+Subject: Re: mmstress[1309]: segfault at 7f3d71a36ee8 ip 00007f3d77132bdf sp
+ 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        X86 ML <x86@kernel.org>, LTP List <ltp@lists.linux.it>,
+        lkft-triage@lists.linaro.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        zenglg.jy@cn.fujitsu.com, Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Dmitry Vyukov <dvyukov@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Fabien:
-
-Fabien Parent <fparent@baylibre.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8821=
-=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=881:43=E5=AF=AB=E9=81=93=EF=BC=
-=9A
+On Wed, Oct 21, 2020 at 9:58 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
 >
-> Add binding documentation for the MT8167 SoC. The SoC needs
-> an additional clock compared to the already supported SoC: mipi26m.
->
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
->  .../devicetree/bindings/display/mediatek/mediatek,dsi.txt  | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-dsi.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.t=
-xt
-> index f06f24d405a5..10ae6be7225e 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.txt
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.txt
-> @@ -7,12 +7,13 @@ channel output.
->
->  Required properties:
->  - compatible: "mediatek,<chip>-dsi"
-> -- the supported chips are mt2701, mt7623, mt8173 and mt8183.
-> +- the supported chips are mt2701, mt7623, mt8167, mt8173 and mt8183.
->  - reg: Physical base address and length of the controller's registers
->  - interrupts: The interrupt signal from the function block.
->  - clocks: device clocks
->    See Documentation/devicetree/bindings/clock/clock-bindings.txt for det=
-ails.
-> -- clock-names: must contain "engine", "digital", and "hs"
-> +- clock-names: must contain "engine", "digital", "hs"
-> +  Can optionnally also contain "mipi26m"
+> LTP mm mtest05 (mmstress), mtest06_3 and mallocstress01 (mallocstress) tested on
+> x86 KASAN enabled build. But tests are getting PASS on Non KASAN builds.
+> This regression started happening from next-20201015 nowards
 
-It seems that mipi26m is the clock of mipi-tx. In mt8173.dtsi [1],
-mipi-tx's clock is 26m.
+Is it repeatable enough to be bisectable?
 
-mipi_tx0: mipi-dphy@10215000 {
-compatible =3D "mediatek,mt8173-mipi-tx";
-reg =3D <0 0x10215000 0 0x1000>;
-clocks =3D <&clk26m>;
-clock-output-names =3D "mipi_tx0_pll";
-#clock-cells =3D <0>;
-#phy-cells =3D <0>;
-status =3D "disabled";
-};
-
-If this is the clock of mipi-tx, it should be controlled by mipi-tx driver.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/arch/arm64/boot/dts/mediatek/mt8173.dtsi?h=3Dv5.9
-
-Regards,
-Chun-Kuang.
-
->  - phys: phandle link to the MIPI D-PHY controller.
->  - phy-names: must contain "dphy"
->  - port: Output port node with endpoint definitions as described in
-> @@ -26,7 +27,7 @@ The MIPI TX configuration module controls the MIPI D-PH=
-Y.
->
->  Required properties:
->  - compatible: "mediatek,<chip>-mipi-tx"
-> -- the supported chips are mt2701, 7623, mt8173 and mt8183.
-> +- the supported chips are mt2701, 7623, mt8167, mt8173 and mt8183.
->  - reg: Physical base address and length of the controller's registers
->  - clocks: PLL reference clock
->  - clock-output-names: name of the output clock line to the DSI encoder
-> --
-> 2.28.0
->
+             Linus
