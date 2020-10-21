@@ -2,149 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E4C2954A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 00:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7452954BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 00:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441938AbgJUWIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 18:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505705AbgJUWIg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 18:08:36 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B2EC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 15:08:36 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id 2so2675394qtb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 15:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=56A4/uXKp2ANLOenIvW/0T3oiOKTm1VKFJfUcaUWi9M=;
-        b=FMVT3FHn4J20UdJyjTP6MFLRhQnzgJp5ouP7VVWZjiYmkY+80Nqn8yXK66p2cVR/97
-         yAXFyeasyq1mnAzbhMrRd5t652PIjYngeuq8VOB3VdRHPHzbfUQ3Oc0P55bPa8J7Z91D
-         W+P1/msf16vZu9Ksbuhy7E4xBe1FlLNzDzD/fIn9Lxl9jZYmFrQ7uOGoTRRAh8emiIeC
-         g85Zlbp/O5TBMsltGjs4nSNLixxF/5Q1bdHy+/F3hm0J9+LfaayHZwXXVt9YrMrJvAGz
-         rfKcV1iP06DSFENI7KzmVvth5idobbP+VIFyZbZqnwWeq7+b0vr9EGRNqgH5qw0LbIrn
-         WyWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=56A4/uXKp2ANLOenIvW/0T3oiOKTm1VKFJfUcaUWi9M=;
-        b=Y7r/Czk3HyaDaFM6//vHkQJmUWMqkT5wQkl0LEdVRVjKNojVIS9kCb+vxNaXJIb0s8
-         pmJ+YRpCWG2AyMixj/Ukuj36vosZzRvLjiqiUDO5NXwBCL97JW63D9obcH7gBHEI/S+s
-         Baz8I+c0FlI+CAkTvhPbmvn2hCkI5u9ZslDtX93/qIlmvU3S07EVIZwiw6g1kxjDsMxW
-         VGuvYQt3BjLnOId2HMZxS0E+w8PrARwgxIrGf6CXyrIH2MziKICggrVRRP60yz3U5G+x
-         T+ppSb5ASesgq2SFCo7XZBdJ8AVCw3urkWlOpm+uT9N272pEtiQLdQ6oL/gmD5ur3K8V
-         K5PQ==
-X-Gm-Message-State: AOAM533X1wu4o4VXT6sl3wt3yHZdD9drbDb7BkK6VjABRUD4uNM3k3wI
-        4lXmXgjFX7OT4RJDhcOgFToEwes9JwXWXw==
-X-Google-Smtp-Source: ABdhPJxYLkfjuAGVW5ShixgfveXCts2WCoTlefH4kZnCexwFOh7oM1J9fOe2fbJnH0WvCROnSAITx7JI1FWzmg==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a0c:fd4c:: with SMTP id
- j12mr4973308qvs.22.1603318115082; Wed, 21 Oct 2020 15:08:35 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 15:07:52 -0700
-Message-Id: <20201021220752.418832-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH] kunit: tool: fix pre-existing python type annotation errors
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2506619AbgJUWTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 18:19:46 -0400
+Received: from ms.lwn.net ([45.79.88.28]:37812 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2506611AbgJUWTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 18:19:46 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 89EC12C8;
+        Wed, 21 Oct 2020 22:19:45 +0000 (UTC)
+Date:   Wed, 21 Oct 2020 16:19:44 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Fam Zheng <famzheng@amazon.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the jc_docs
+ tree
+Message-ID: <20201021161944.14fb7d9f@lwn.net>
+In-Reply-To: <20201022085542.0abc028d@canb.auug.org.au>
+References: <20201022085542.0abc028d@canb.auug.org.au>
+Organization: LWN.net
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code uses annotations, but they aren't accurate.
-Note that type checking in python is a separate process, running
-`kunit.py run` will not check and complain about invalid types at
-runtime.
+On Thu, 22 Oct 2020 08:55:42 +1100
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-Fix pre-existing issues found by running a type checker
-$ mypy *.py
+> Commit
+> 
+>   9467739c239d ("docs: Add two missing entries in vm sysctl index")
+> 
+> is missing a Signed-off-by from its author.
 
-All but one of these were returning `None` without denoting this
-properly (via `Optional[Type]`).
+Argh, I should have caught that.  I'd blame wildfires, but that would be
+lame.
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- tools/testing/kunit/kunit_parser.py | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Offending commit removed; Fam, can you send a properly signed-off
+replacement?  Meanwhile I'm going to go look at my tooling so this doesn't
+happen again...
 
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index 8019e3dd4c32..d3bc0f197682 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -12,7 +12,7 @@ from collections import namedtuple
- from datetime import datetime
- from enum import Enum, auto
- from functools import reduce
--from typing import List
-+from typing import List, Optional, Tuple
- 
- TestResult = namedtuple('TestResult', ['status','suites','log'])
- 
-@@ -152,7 +152,7 @@ def parse_diagnostic(lines: List[str], test_case: TestCase) -> bool:
- 	else:
- 		return False
- 
--def parse_test_case(lines: List[str]) -> TestCase:
-+def parse_test_case(lines: List[str]) -> Optional[TestCase]:
- 	test_case = TestCase()
- 	save_non_diagnositic(lines, test_case)
- 	while parse_diagnostic(lines, test_case):
-@@ -164,7 +164,7 @@ def parse_test_case(lines: List[str]) -> TestCase:
- 
- SUBTEST_HEADER = re.compile(r'^[\s]+# Subtest: (.*)$')
- 
--def parse_subtest_header(lines: List[str]) -> str:
-+def parse_subtest_header(lines: List[str]) -> Optional[str]:
- 	consume_non_diagnositic(lines)
- 	if not lines:
- 		return None
-@@ -177,7 +177,7 @@ def parse_subtest_header(lines: List[str]) -> str:
- 
- SUBTEST_PLAN = re.compile(r'[\s]+[0-9]+\.\.([0-9]+)')
- 
--def parse_subtest_plan(lines: List[str]) -> int:
-+def parse_subtest_plan(lines: List[str]) -> Optional[int]:
- 	consume_non_diagnositic(lines)
- 	match = SUBTEST_PLAN.match(lines[0])
- 	if match:
-@@ -231,7 +231,7 @@ def bubble_up_test_case_errors(test_suite: TestSuite) -> TestStatus:
- 	max_test_case_status = bubble_up_errors(lambda x: x.status, test_suite.cases)
- 	return max_status(max_test_case_status, test_suite.status)
- 
--def parse_test_suite(lines: List[str], expected_suite_index: int) -> TestSuite:
-+def parse_test_suite(lines: List[str], expected_suite_index: int) -> Optional[TestSuite]:
- 	if not lines:
- 		return None
- 	consume_non_diagnositic(lines)
-@@ -272,7 +272,7 @@ def parse_tap_header(lines: List[str]) -> bool:
- 
- TEST_PLAN = re.compile(r'[0-9]+\.\.([0-9]+)')
- 
--def parse_test_plan(lines: List[str]) -> int:
-+def parse_test_plan(lines: List[str]) -> Optional[int]:
- 	consume_non_diagnositic(lines)
- 	match = TEST_PLAN.match(lines[0])
- 	if match:
-@@ -311,7 +311,7 @@ def parse_test_result(lines: List[str]) -> TestResult:
- 	else:
- 		return TestResult(TestStatus.NO_TESTS, [], lines)
- 
--def print_and_count_results(test_result: TestResult) -> None:
-+def print_and_count_results(test_result: TestResult) -> Tuple[int, int, int]:
- 	total_tests = 0
- 	failed_tests = 0
- 	crashed_tests = 0
+Thanks for the heads-up,
 
-base-commit: c4d6fe7311762f2e03b3c27ad38df7c40c80cc93
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+jon
