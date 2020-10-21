@@ -2,85 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2752829477E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 06:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9724294781
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 06:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440261AbgJUEva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 00:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440253AbgJUEva (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 00:51:30 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF23C0613CE;
-        Tue, 20 Oct 2020 21:51:30 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id 188so1114764qkk.12;
-        Tue, 20 Oct 2020 21:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7S+Ge/DxkH9CUYM5ngdE9w4BnrCUgNRtxj8SJF7Zxcs=;
-        b=S1A9iVzO/2CwZAsuuw7v7Aqajmblbv1ifw6clkwdsI1ijOdOXrZFuNSbOtNdwJ/Jr4
-         mM6fvJs1Hig3zUMTj+a8yxATwbVR5KgdPHEo3vre+qW6OUYbKwwGs4IDwei77DacrDM5
-         29K2oTYfrsFgGi0p6JCTnfqW2uwtlmKWz2kHw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7S+Ge/DxkH9CUYM5ngdE9w4BnrCUgNRtxj8SJF7Zxcs=;
-        b=EuoDIkSySp8e5kjUCRJ1n6TNQIRtf5bUoaJum0bzi0FkoW4mn9l8fc/o15LWpDdWDI
-         /wppV6iMwrCoY3Iw+5qAew1XQWgxo68cTPcZ3Bmi6EV5lEWJoOLWpLoEM6iJtFuGHi/Z
-         1Zg19wIqAnMaEM1xq1hu8w201Ub5sbg4unRkBYIWWKe++6UyFX+vaG4fz4oCCcGFBmGN
-         5kAi29/8AncygxFGswKbx/ki1wwJDytD8IfSNaFqVymV3xmXwIkb6HijET0xmhoiEvFl
-         Y7azKHQRONIhLsmfPn6hgxQAWC1CXxUpJWWRORU2opeKyU9JZA89553PaiALeaShGNoY
-         4yug==
-X-Gm-Message-State: AOAM532vc0yff+gQc7XkQJEll2ygev8/Uuvs+IlgyoSy9JxlRspoPRll
-        zDFp8SJ6th8P035ZLyrDDWnvfaG8dUvMcBa7SvE=
-X-Google-Smtp-Source: ABdhPJyOqiPlkiXcnTLhnLMYTXkl6P2IifPhUM7Ht1EKmmNBup3yA5+KgVfY5MS0R33Hwo6up58TM91d0R+UyZiMm7E=
-X-Received: by 2002:a05:620a:1e7:: with SMTP id x7mr1512189qkn.465.1603255889394;
- Tue, 20 Oct 2020 21:51:29 -0700 (PDT)
+        id S2440269AbgJUEwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 00:52:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2411687AbgJUEwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 00:52:14 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C788D22200;
+        Wed, 21 Oct 2020 04:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603255933;
+        bh=Uxranx5I3OGhkPHJfsPFLNiWaCpoSwTMv15+EX3IyVg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2RG30yAT64+MikDZWgfeUXZeTbDEo6N56hFWAK5sLWxFvpVhyL8Dpgf9GRL2ASc+s
+         w2WVwgIIXqVuZ0qTH3KxBqDN2HkWvQdmmKcg81cfrjS2RqLJ0KtmwXTMnv/kdeYavk
+         nzVMccfgvlCvP2FEQd/2e7k7pn0RdOHv6FMUE+y8=
+Date:   Tue, 20 Oct 2020 21:52:13 -0700
+From:   jaegeuk@kernel.org
+To:     Can Guo <cang@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: Re: [PATCH v2 5/5] scsi: ufs: fix clkgating on/off correctly
+Message-ID: <20201021045213.GB3004521@google.com>
+References: <20201020195258.2005605-1-jaegeuk@kernel.org>
+ <20201020195258.2005605-6-jaegeuk@kernel.org>
+ <2a8ecc4185b3a5411077f4e3fc66000f@codeaurora.org>
 MIME-Version: 1.0
-References: <20201016043513.119841-1-andrew@aj.id.au>
-In-Reply-To: <20201016043513.119841-1-andrew@aj.id.au>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 21 Oct 2020 04:51:17 +0000
-Message-ID: <CACPK8Xf1=YEApovVOCbE5dkM3uK0Lsx2iXnVK6nK3mx=+q4jpw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] ARM: dts: Enable ramoops for Rainier and Tacoma
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2a8ecc4185b3a5411077f4e3fc66000f@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 at 04:36, Andrew Jeffery <andrew@aj.id.au> wrote:
->
-> Hi,
->
-> We're looking to improve our crash data capture for the BMC on some IBM
-> platforms. This small series enables ramoops for Rainier and Tacoma.
->
-> Please review.
+On 10/21, Can Guo wrote:
+> On 2020-10-21 03:52, Jaegeuk Kim wrote:
+> > The below call stack prevents clk_gating at every IO completion.
+> > We can remove the condition, ufshcd_any_tag_in_use(), since
+> > clkgating_work
+> > will check it again.
+> > 
+> 
+> I think checking ufshcd_any_tag_in_use() in either ufshcd_release() or
+> gate_work() can break UFS clk gating's functionality.
+> 
+> ufshcd_any_tag_in_use() was introduced to replace hba->lrb_in_use. However,
+> they are not exactly same - ufshcd_any_tag_in_use() returns true if any tag
+> assigned from block layer is still in use, but tags are released
+> asynchronously
+> (through block softirq), meaning it does not reflect the real occupation of
+> UFS host.
+> That is after UFS host finishes all tasks, ufshcd_any_tag_in_use() can still
+> return true.
+> 
+> This change only removes the check of ufshcd_any_tag_in_use() in
+> ufshcd_release(),
+> but having the check of it in gate_work() can still prevent gating from
+> happening.
+> The current change works for you maybe because the tags are release before
+> hba->clk_gating.delay_ms expires, but if hba->clk_gating.delay_ms is shorter
+> or
+> somehow block softirq is retarded, gate_work() may have chance to see
+> ufshcd_any_tag_in_use()
+> returns true. What do you think?
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+I don't think this breaks clkgating, but fix the wrong condition check which
+prevented gate_work at all. As you mentioned, even if this schedules gate_work
+by racy conditions, gate_work will handle it as a last resort.
 
->
-> Andrew
->
-> Andrew Jeffery (2):
->   ARM: dts: rainier: Add reserved memory for ramoops
->   ARM: dts: tacoma: Add reserved memory for ramoops
->
->  arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 9 +++++++++
->  arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts  | 9 +++++++++
->  2 files changed, 18 insertions(+)
->
-> --
-> 2.25.1
->
+> 
+> Thanks,
+> 
+> Can Guo.
+> 
+> In __ufshcd_transfer_req_compl
+> Ihba->lrb_in_use is cleared immediately when UFS driver
+> finishes all tasks
+> 
+> > ufshcd_complete_requests(struct ufs_hba *hba)
+> >   ufshcd_transfer_req_compl()
+> >     __ufshcd_transfer_req_compl()
+> >       __ufshcd_release(hba)
+> >         if (ufshcd_any_tag_in_use() == 1)
+> >            return;
+> >   ufshcd_tmc_handler(hba);
+> >     blk_mq_tagset_busy_iter();
+> > 
+> > Cc: Alim Akhtar <alim.akhtar@samsung.com>
+> > Cc: Avri Altman <avri.altman@wdc.com>
+> > Cc: Can Guo <cang@codeaurora.org>
+> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > ---
+> >  drivers/scsi/ufs/ufshcd.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> > index b5ca0effe636..cecbd4ace8b4 100644
+> > --- a/drivers/scsi/ufs/ufshcd.c
+> > +++ b/drivers/scsi/ufs/ufshcd.c
+> > @@ -1746,7 +1746,7 @@ static void __ufshcd_release(struct ufs_hba *hba)
+> > 
+> >  	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended ||
+> >  	    hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL ||
+> > -	    ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks ||
+> > +	    hba->outstanding_tasks ||
+> >  	    hba->active_uic_cmd || hba->uic_async_done)
+> >  		return;
