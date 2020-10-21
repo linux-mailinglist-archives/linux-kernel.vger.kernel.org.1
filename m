@@ -2,88 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E8D294D89
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD87294DA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441711AbgJUNcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 09:32:08 -0400
-Received: from sonic312-23.consmr.mail.ne1.yahoo.com ([66.163.191.204]:33474
-        "EHLO sonic312-23.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2441697AbgJUNcH (ORCPT
+        id S2441764AbgJUNeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 09:34:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47382 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2410028AbgJUNeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 09:32:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603287126; bh=0PX+jxJZorH33AooMJbhSejVjcLg4jW80tUvecFvT9o=; h=Date:From:Reply-To:Subject:References:From:Subject; b=uUcyuqSRZg5svK5+6uyhLwBw1ZHJRnQdwLoE6+QOdsCv7Txr9RmYjU/fV9d9W+gYvaH+Kf+ONzkORGYKqAjRdIOKahx13TDukuMmLdxj3EWC5NJBUXC76j3gZhkVyFeIcaZHKqRTpX3GvvGd5WP1kZH6nSjcinbGMuRuLY+UzwxvbjCFRApuHX8rAlds1MKrP+r2JkyqJETWA6q88MW+HslHio9mKgcwTtMYVkTjfikR229tHN2uVXpUZRzE6qzPkYDElJMuMtMMQRPAhgzJ2kTWtihbFhlVm+JLd5rZtjiNJ/hkZDTNLhnlCHcRv1huD4jiw4slFxL+RDt53WpTBA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603287126; bh=NIPPTs7sadiZrNxVkydGV0Nw0QUDjyGJ/DEZhoHOJQr=; h=Date:From:Subject; b=lohzdoHfVkngpO/6HtPSI6cgKnxJf0m374VyhEayKH1c4LWXFd6gGrd2sRgabIwW//tCvIpSaCpFVZKJOQ5GpC6zxCYqqz/JYTbwbQSnrY2ygfm67e7A8k0n/oh5LFEAFdiZyUmPCq5xixC+1DTg93HPuLwmSL7wC3wzRTvi7SnyIyHx65l4X/W6RHXOL8xL9KE4otgCqzAkCX5ZY9gZMv1+pTtRLmvYtnMUjgGjorxNeE8WhhDYRsCFvOVnillFAbhDmFO0KylKIBT84tGHwI+unBDDgxQF7afkaKqooxyXMZZxkIj5UBLeJeEfScNv4AfsYJiBAkGUZlqHwytlrg==
-X-YMail-OSG: db47lD4VM1mR2Big18p6id70BtkqoEq6qLxwiD5Q.XwILK4CR7KwqxmrN30rhZG
- aje3U5M2zvhpfvHx6blaaNSNbgajp.Sq2zEh87EWo6phXZl.VC95XaTCGg7v_qa8pP4As8_1CK7c
- BQCC0qjUfQ177.rMXPIwK3IVjmGiBQTHaC7G6vfwn060QiHd9BKu97VCYfc1lzcXClmp7Zp9ZdNX
- XsRYKdg4B6l8531DwTSVpnzTNYhEfBspLnAFTQOq.WX.q5s8Z1uAWa0.2.LA4woo2fdSrXjls1BF
- sQhuJU5BXBkS2RerDDVda_nkiL7SVuJr6gcfXX1G0eAGZFjDIbf8iZIVvFju7tki0mEZpbZN3Lp4
- t8nzcGcYyvezOuXtTpfrhnP0VZE8bjevTgJQ8qSnVYcxmJXK.jCmtes.Z9w2MRoBFJ1XpDyx00ys
- bJu8297R2mNmp3Pns1upAn8OxwtLJGyAgC.Uno_T0BWS0GI9cuLXz3QNOaNrSv_nAG3ZZSGIRbu1
- sFxNMApH1X8VrHmicpyH2l4rdDP_n_zwLYvfZwYaSJ2i3RT7Dyu2Z0gcjhI2qAwFFubRC4slgTSO
- n40oS0_4G4ycDRlkeYBXJv5be1oCyieZ2GxaF8fr1FgJKPve4CP2tLiwW1hP0mKz.QkDfNJNo5bt
- 58vm52saNA_Lgru14cz6h9OB7X6eGCDqdCMALCq5jPj0Bcj10eLy8P3QIY5L7fvq920muRHR_GgV
- N7CB6N25UkcutduKg862kAr6833jJKv2gMW.GleoijBp4YCm.yEStE2QwqRmbmahZ6zIgVCpmsuf
- gBRatascymk_BivrmX6qJrgWrnFCGrJrDVZGkqSl3DoGDIRQkiFYQ_5okXieoOZUC1T8wdifT5L5
- hrGgDSQxPeavAqM0bQ1WPPNwzwNIuSikc8pTOsfWjP7jncY2lHNI0rA9djyXpG9fVHNCjZp6SuzQ
- 9waHi8RaxKGO6ID6ef0RAkT0msXIRt7dS1XNrsCFZ4SOQ0z.wtYPNJXzEYXpEGyfxBi7k4npfwrw
- CWckOmxxoSvlUD3ERwEhKXCsuwWRSZg67sB4uo3XQdU5WmsclkmzpMXm2rUFX6g.GgPu8SZL5MuL
- lFtRe.almhiTTgPVadqYPLpMMhS1FOvB0Hg1NE20PjXLvnzNz2OcZOIs_88dGUAnRw0PrLh2igBq
- 6xGMDUje1ZK1FY1leBCo6bT1wzL44TXUh.s_.cSSvpaWB6J9YWJE0s8fNJM2tekzTDP7wNNCrg.o
- Dq4RogzzeFeBDrxnochpd4UikYX3DjMhH7nHa.1mlr79i5SkZ2IbL6mIE07QxwhpK5.BBUj0pP5B
- xqsKSg6kBEgnz7NXrgMZlcSJApr9wcOS.zeLgWs7ciaFjyFDmnXS2ZHVVelY1_byddCLCrsXUneo
- OimRiTTRf1Gpvd66GfvcuGC_bfCAGUy.GNeLShYDUG6e1
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Wed, 21 Oct 2020 13:32:06 +0000
-Date:   Wed, 21 Oct 2020 13:32:03 +0000 (UTC)
-From:   rita <ritarichard330@gmail.com>
-Reply-To: ritarichardr03@gmail.com
-Message-ID: <322150120.1903069.1603287123092@mail.yahoo.com>
-Subject: Dear friend
+        Wed, 21 Oct 2020 09:34:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603287263;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rLTpemrkuRfa4jL3PNt6EQsWInIqT24aPjXRkrxi9pg=;
+        b=FQ/qonSly5EIOa4X4rnunYPLifppCEx3W8iHin0s/TX9gCQKMAqmTajCpgZUw6suhJ8l/t
+        eBUm8lF6PI2b9FA3fRsugn6rrW3KQDH2M6cw2d6NmXZsTZBKa+xq6xfroVAoDDybrWEX8o
+        fepslFVlC0SV+K0yiZlVUKtiCEwGj+4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-196--sEWxGffPDyLQ-zzSqsXtg-1; Wed, 21 Oct 2020 09:34:19 -0400
+X-MC-Unique: -sEWxGffPDyLQ-zzSqsXtg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E44AEDBC9;
+        Wed, 21 Oct 2020 13:34:17 +0000 (UTC)
+Received: from [10.36.114.138] (ovpn-114-138.ams2.redhat.com [10.36.114.138])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EEC215D9CA;
+        Wed, 21 Oct 2020 13:34:11 +0000 (UTC)
+Subject: Re: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at
+ mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
+From:   David Hildenbrand <david@redhat.com>
+To:     Michal Privoznik <mprivozn@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Tejun Heo <tj@kernel.org>
+References: <c1ea7548-622c-eda7-66f4-e4ae5b6ee8fc@redhat.com>
+ <563d1eef-b780-835a-ebf0-88ae111b20c2@redhat.com>
+ <CAHS8izPEHZunoeXYS5ONfRoSRMpC7DQwtpjJ8g4nXiddTfNoaA@mail.gmail.com>
+ <65a1946f-dbf9-5767-5b51-9c1b786051d1@redhat.com>
+ <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
+ <c78634ee-0d6f-c98c-3c2a-8cb500c0ae47@oracle.com>
+ <b24380ad-b87c-a3a1-d25e-ee30c10ed0d2@redhat.com>
+ <312246f4-4e5f-1425-1bc2-1b356db0fbad@oracle.com>
+ <df406c04-b0f4-367f-d675-87e0231500d0@redhat.com>
+ <9ad697d7-ed64-24f3-17cf-fa8dbbdcf86a@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <bcbe71c9-f6a4-be19-329c-2fb0b675ae89@redhat.com>
+Date:   Wed, 21 Oct 2020 15:34:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <9ad697d7-ed64-24f3-17cf-fa8dbbdcf86a@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-References: <322150120.1903069.1603287123092.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16868 YMailMini Mozilla/5.0 (Android 8.1.0; Mobile; rv:81.0) Gecko/81.0 Firefox/81.0
-To:     unlisted-recipients:; (no To-header on input)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21.10.20 15:11, David Hildenbrand wrote:
+> On 21.10.20 14:57, Michal Privoznik wrote:
+>> On 10/21/20 5:35 AM, Mike Kravetz wrote:
+>>> On 10/20/20 6:38 AM, David Hildenbrand wrote:
+>>>>
+>>>> I'm bisecting the warning right now. Looks like it was introduced in v5.7.
+>>>
+>>> I found the following bugs in the cgroup reservation accounting.  The ones
+>>> in region_del are pretty obvious as the number of pages to uncharge would
+>>> always be zero.  The one on alloc_huge_page needs racing code to expose.
+>>>
+>>> With these fixes, my testing is showing consistent/correct results for
+>>> hugetlb reservation cgroup accounting.
+>>>
+>>> It would be good if Mina (at least) would look these over.  Would also
+>>> be interesting to know if these fixes address the bug seen with the qemu
+>>> use case.
+>>>
+>>> I'm still doing more testing and code inspection to look for other issues.
+>>>
+>>>  From 861bcd7d0443f18a5fed3c3ddc5f1c71e78c4ef4 Mon Sep 17 00:00:00 2001
+>>> From: Mike Kravetz <mike.kravetz@oracle.com>
+>>> Date: Tue, 20 Oct 2020 20:21:42 -0700
+>>> Subject: [PATCH] hugetlb_cgroup: fix reservation accounting
+>>>
+>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>> ---
+>>>   mm/hugetlb.c | 15 +++++++++------
+>>>   1 file changed, 9 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>>> index 67fc6383995b..c92366313780 100644
+>>> --- a/mm/hugetlb.c
+>>> +++ b/mm/hugetlb.c
+>>> @@ -685,17 +685,17 @@ static long region_del(struct resv_map *resv, long f, long t)
+>>>   		}
+>>>   
+>>>   		if (f <= rg->from) {	/* Trim beginning of region */
+>>> -			del += t - rg->from;
+>>> -			rg->from = t;
+>>> -
+>>>   			hugetlb_cgroup_uncharge_file_region(resv, rg,
+>>>   							    t - rg->from);
+>>> -		} else {		/* Trim end of region */
+>>> -			del += rg->to - f;
+>>> -			rg->to = f;
+>>>   
+>>> +			del += t - rg->from;
+>>> +			rg->from = t;
+>>> +		} else {		/* Trim end of region */
+>>>   			hugetlb_cgroup_uncharge_file_region(resv, rg,
+>>>   							    rg->to - f);
+>>> +
+>>> +			del += rg->to - f;
+>>> +			rg->to = f;
+>>>   		}
+>>>   	}
+>>>   
+>>> @@ -2454,6 +2454,9 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
+>>>   
+>>>   		rsv_adjust = hugepage_subpool_put_pages(spool, 1);
+>>>   		hugetlb_acct_memory(h, -rsv_adjust);
+>>> +		if (deferred_reserve)
+>>> +			hugetlb_cgroup_uncharge_page_rsvd(hstate_index(h),
+>>> +					pages_per_huge_page(h), page);
+>>>   	}
+>>>   	return page;
+>>>   
+>>>
+>>
+>> I've applied, rebuilt and tested, but unfortunately I still hit the problem:
+>> [ 6472.719047] ------------[ cut here ]------------
+>> [ 6472.719052] WARNING: CPU: 6 PID: 11773 at mm/page_counter.c:57 
+>> page_counter_uncharge+0x33/0x40
+>> [ 6472.719052] Modules linked in: kvm_amd amdgpu kvm btusb sp5100_tco 
+>> btrtl watchdog k10temp btbcm btintel mfd_core gpu_sched ttm
+>> [ 6472.719057] CPU: 6 PID: 11773 Comm: CPU 3/KVM Not tainted 
+>> 5.9.1-gentoo-x86_64 #1
+>> [ 6472.719057] Hardware name: System manufacturer System Product 
+>> Name/PRIME X570-PRO, BIOS 1005 08/01/2019
+>> [ 6472.719059] RIP: 0010:page_counter_uncharge+0x33/0x40
+>> [ 6472.719060] Code: 48 85 ff 74 24 4c 89 c8 f0 48 0f c1 07 4c 29 c0 48 
+>> 89 c1 48 89 c6 e8 7c fe ff ff 48 85 c9 78 0a 48 8b 7f 28 48 85 ff 75 dc 
+>> c3 <0f> 0b eb f2 66 0f 1f 84 00 00 00 00 00 48 8b 17 48 39 d6 72 41 41
+>> [ 6472.719061] RSP: 0018:ffffc90000b77b40 EFLAGS: 00010286
+>> [ 6472.719061] RAX: fffffffffffe9200 RBX: ffff888fb3b97b40 RCX: 
+>> fffffffffffe9200
+>> [ 6472.719062] RDX: 0000000000000221 RSI: fffffffffffe9200 RDI: 
+>> ffff888fd8451dd0
+>> [ 6472.719062] RBP: ffff888fb6990420 R08: 0000000000044200 R09: 
+>> fffffffffffbbe00
+>> [ 6472.719062] R10: ffff888fb3b97b40 R11: 000000000000000a R12: 
+>> 0000000000000001
+>> [ 6472.719063] R13: 00000000000005df R14: 00000000000005de R15: 
+>> ffff888fb3b97b40
+>> [ 6472.719063] FS:  00007fbd175fe700(0000) GS:ffff888fde980000(0000) 
+>> knlGS:0000000000000000
+>> [ 6472.719064] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 6472.719064] CR2: 00007fbd825101f0 CR3: 0000000fb5e41000 CR4: 
+>> 0000000000350ee0
+>> [ 6472.719065] Call Trace:
+>> [ 6472.719067]  hugetlb_cgroup_uncharge_file_region+0x46/0x70
+>> [ 6472.719069]  region_del+0x1ae/0x270
+>> [ 6472.719070]  hugetlb_unreserve_pages+0x32/0xa0
+>> [ 6472.719072]  remove_inode_hugepages+0x19d/0x3a0
+>> [ 6472.719079]  ? writeback_registers+0x45/0x60 [kvm]
+>> [ 6472.719080]  hugetlbfs_fallocate+0x3f2/0x4a0
+>> [ 6472.719081]  ? __mod_lruvec_state+0x1d/0x40
+>> [ 6472.719081]  ? __mod_memcg_lruvec_state+0x1b/0xe0
+>> [ 6472.719083]  ? __seccomp_filter+0x75/0x6a0
+>> [ 6472.719084]  vfs_fallocate+0x122/0x260
+>> [ 6472.719085]  __x64_sys_fallocate+0x39/0x60
+>> [ 6472.719086]  do_syscall_64+0x2d/0x40
+>> [ 6472.719088]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> [ 6472.719089] RIP: 0033:0x7fbe3cefcde7
+>> [ 6472.719089] Code: 89 7c 24 08 48 89 4c 24 18 e8 45 fc f8 ff 41 89 c0 
+>> 4c 8b 54 24 18 48 8b 54 24 10 b8 1d 01 00 00 8b 74 24 0c 8b 7c 24 08 0f 
+>> 05 <48> 3d 00 f0 ff ff 77 41 44 89 c7 89 44 24 08 e8 75 fc f8 ff 8b 44
+>> [ 6472.719090] RSP: 002b:00007fbd175fc7a0 EFLAGS: 00000293 ORIG_RAX: 
+>> 000000000000011d
+>> [ 6472.719090] RAX: ffffffffffffffda RBX: 00000000bbe00000 RCX: 
+>> 00007fbe3cefcde7
+>> [ 6472.719091] RDX: 00000000bbc00000 RSI: 0000000000000003 RDI: 
+>> 000000000000001d
+>> [ 6472.719091] RBP: 00007fbd175fc800 R08: 0000000000000000 R09: 
+>> 0000000000000000
+>> [ 6472.719091] R10: 0000000000200000 R11: 0000000000000293 R12: 
+>> 00007ffeea066d2e
+>> [ 6472.719092] R13: 00007ffeea066d2f R14: 00007fbd175fe700 R15: 
+>> 00007fbd175fcdc0
+>> [ 6472.719092] ---[ end trace c97dc6281a861980 ]---
+> 
+> Agreed, same over here. :(
+> 
+
+I *think* the following on top makes it fly
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 67fc6383995b..5cf7f6a6c1a6 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -656,6 +656,9 @@ static long region_del(struct resv_map *resv, long
+f, long t)
+
+                        del += t - f;
+
++                       hugetlb_cgroup_uncharge_file_region(
++                               resv, rg, t - f);
++
+                        /* New entry for end of split region */
+                        nrg->from = t;
+                        nrg->to = rg->to;
+@@ -667,9 +670,6 @@ static long region_del(struct resv_map *resv, long
+f, long t)
+                        /* Original entry is trimmed */
+                        rg->to = f;
+
+-                       hugetlb_cgroup_uncharge_file_region(
+-                               resv, rg, nrg->to - nrg->from);
+-
+                        list_add(&nrg->link, &rg->link);
+                        nrg = NULL;
+                        break;
 
 
-Dear friend,
+-- 
+Thanks,
 
-Can you have time to do this?
+David / dhildenb
 
-It is a pleasure to have contact with you, based on the critical
-condition I find myself, however, is not a financial problem, but my
-health, you may have known that cancer is not what to talk about at
-home I have been in the hospital for 5 months now, My name is Mrs
-Rita Richard I am married to Mr.Abaul, who worked with
-the Tunisian embassy in Burkina Faso for nine years before he died in
-2008. We were married for eleven years without Children. He died after
-a brief illness that lasted five days.
-
-I am Mrs.Rita Richard, please I want you to help me use this money
-US $ 8.2 million (Eight million two hundred thousand dollars) for
-orphans and poor old people who have nothing to eat In your
-community it is my spirit direction that I choose you to help me
-complete this offer i really need sincere and honest person.
-
-I am a cancer patient and now my doctors told me that I do not have a
-long time to live because of the cancer problem and I don't want to
-live this money in the bank Instead I decided to use it for older
-people who can't work again and orphans who have nothing to eat,
-
-Can you have time to do this? On your return i will tell you more on
-what i want you to do. please send me a message in my Email box and here is
-
-my ritarichardr03@gmail.com
-
-
-I wait your answer.
-
-My greetings,
-
-Mrs.Rita Richard
