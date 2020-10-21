@@ -2,339 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67761294E1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF646294E1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439893AbgJUN4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 09:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411512AbgJUN4g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 09:56:36 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A78BC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 06:56:35 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id r7so563547ool.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 06:56:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Kl9QoUs/s2cbTR+FmSfk48r32CM/2qV2pwhju+ujgqs=;
-        b=Zy8jQTBlNs5TQa4PO6+FLGvNQo2yMvMWMuHBmJ+fNQEWt0uMnr71ZMI2bpycNRIRQ3
-         KB/443iCclBVyREB3SmlS+YWdLKGHcc7IIZT4YKgogh2jrhpVHfuxxMo4sF0KXYOxqn9
-         T98EDFVto3adCqdupGjGINQypIKb7P4JxqzsU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Kl9QoUs/s2cbTR+FmSfk48r32CM/2qV2pwhju+ujgqs=;
-        b=mfGqBabL58psUTSrzmfTWYVuumLo0tMYmnjecp/J0SDL7Tknp79hvuyuP+sx9YwzQ3
-         H3RUnzRqucyM4loXVbzo+uXen7gbbgvzGmwNEjgsPHpPe+Y6Mk/J086IP6QSNqp7dr5x
-         IxDKCmjuHOG6gnJikujjim6loAYLSjroPmkL+DOZrNkLasWI5EKNULYsp0fDYrR25aL+
-         B0VZjGuGtkkUpR91TrVWDVgZX+2Pn5QSqxgtD4u0vcY7Wpz1XZ7EYJt7qYD3gFtuxsMb
-         6tJtJWonJFh8goZXxV7j8nrYjHY812ZjdqV5OeOglj2KKQqNyx144c5Ntnz8KEzrjMe5
-         OeTw==
-X-Gm-Message-State: AOAM532BXH9nT+XbS3fp5ZXWZsc1WVN2Koa9QDjBQrmz1Efc2m78Qlb6
-        50AThX4op2YghoqLi1qlJr9aY3ND+ywJw3lNKnbhng==
-X-Google-Smtp-Source: ABdhPJx73JOBFoAP2CVJQE/fpi2znYbj8Bpg/x5C+PPasilswqQzkmytZ9f5UvJqWOkdysL0kT2eE/qyk/y3R7xEcws=
-X-Received: by 2002:a4a:95cb:: with SMTP id p11mr2640699ooi.89.1603288594554;
- Wed, 21 Oct 2020 06:56:34 -0700 (PDT)
+        id S2442101AbgJUN5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 09:57:03 -0400
+Received: from mga02.intel.com ([134.134.136.20]:6099 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439905AbgJUN5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 09:57:02 -0400
+IronPort-SDR: Oq0sDMVrIudI8O93+H+ZrrhkPicZigtGmx5vmpr+twH3jwK3I2CyTMymCXagtYaZBK0XkOECCS
+ d3SS/OOsaRNA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="154321003"
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="154321003"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 06:57:01 -0700
+IronPort-SDR: +z4CzkPOiPBawPgQkw9gwBfe67D38Br9kiPriXxcYZHhPvrv2ncEb0lSuSJyM3vXi7Klfs94VJ
+ pGVl9K7BzyGQ==
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="353681561"
+Received: from gyelchur-mobl1.amr.corp.intel.com (HELO [10.252.136.114]) ([10.252.136.114])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 06:56:59 -0700
+Subject: Re: [PATCH] ASoC: Intel: sof_rt5682: update quirk for cml boards
+To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Dharageswari R <dharageswari.r@intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>, linux-kernel@vger.kernel.org
+References: <20201021072646.7980-1-brent.lu@intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9ae005e9-4cd9-31ef-56cb-504edc4cd503@linux.intel.com>
+Date:   Wed, 21 Oct 2020 08:56:57 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
- <20201021085655.1192025-9-daniel.vetter@ffwll.ch> <07557af4-32b5-7610-292c-9fd3bbfe9229@linux.ibm.com>
-In-Reply-To: <07557af4-32b5-7610-292c-9fd3bbfe9229@linux.ibm.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 21 Oct 2020 15:56:23 +0200
-Message-ID: <CAKMK7uEBv9y1mLAyo8ypV=bW=TMNky-QvhCTxcMe4O65WtmMZQ@mail.gmail.com>
-Subject: Re: [PATCH v3 08/16] s390/pci: Remove races against pte updates
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201021072646.7980-1-brent.lu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 11:38 AM Niklas Schnelle <schnelle@linux.ibm.com> w=
-rote:
->
->
->
-> On 10/21/20 10:56 AM, Daniel Vetter wrote:
-> > Way back it was a reasonable assumptions that iomem mappings never
-> > change the pfn range they point at. But this has changed:
-> >
-> > - gpu drivers dynamically manage their memory nowadays, invalidating
-> > ptes with unmap_mapping_range when buffers get moved
-> >
-> > - contiguous dma allocations have moved from dedicated carvetouts to
-> > cma regions. This means if we miss the unmap the pfn might contain
-> > pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
-> >
-> > - even /dev/mem now invalidates mappings when the kernel requests that
-> > iomem region when CONFIG_IO_STRICT_DEVMEM is set, see commit
-> > 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims the
-> > region")
-> >
-> > Accessing pfns obtained from ptes without holding all the locks is
-> > therefore no longer a good idea. Fix this.
-> >
-> > Since zpci_memcpy_from|toio seems to not do anything nefarious with
-> > locks we just need to open code get_pfn and follow_pfn and make sure
-> > we drop the locks only after we're done. The write function also needs
-> > the copy_from_user move, since we can't take userspace faults while
-> > holding the mmap sem.
-> >
-> > v2: Move VM_IO | VM_PFNMAP checks around so they keep returning EINVAL
-> > like before (Gerard)
-> >
-> > v3: Polish commit message (Niklas)
-> >
-> > Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > Cc: Dan Williams <dan.j.williams@intel.com>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: John Hubbard <jhubbard@nvidia.com>
-> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> > Cc: Jan Kara <jack@suse.cz>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: linux-samsung-soc@vger.kernel.org
-> > Cc: linux-media@vger.kernel.org
-> > Cc: Niklas Schnelle <schnelle@linux.ibm.com>
-> > Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> > Cc: linux-s390@vger.kernel.org
-> > Cc: Niklas Schnelle <schnelle@linux.ibm.com>
-> > Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.com>
->                                                    ^^^^
-> This should be ".ch", but since this is clearly a typo and you also send =
-from @ffwll.ch,
-> I took the liberty and fixed it for this commit and applied your patch to=
- our internal
-> branch, Heiko or Vasily will then pick it up for the s390 tree.
-
-Uh yes, and I've copypasted this to all patches :-/
-
-Thanks for picking this up, I'll drop it here from my series.
-
-Cheers, Daniel
-
->
-> Thanks!
->
-> > ---
-> >  arch/s390/pci/pci_mmio.c | 98 +++++++++++++++++++++++-----------------
-> >  1 file changed, 57 insertions(+), 41 deletions(-)
-> >
-> > diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
-> > index 401cf670a243..1a6adbc68ee8 100644
-> > --- a/arch/s390/pci/pci_mmio.c
-> > +++ b/arch/s390/pci/pci_mmio.c
-> > @@ -119,33 +119,15 @@ static inline int __memcpy_toio_inuser(void __iom=
-em *dst,
-> >       return rc;
-> >  }
-> >
-> > -static long get_pfn(unsigned long user_addr, unsigned long access,
-> > -                 unsigned long *pfn)
-> > -{
-> > -     struct vm_area_struct *vma;
-> > -     long ret;
-> > -
-> > -     mmap_read_lock(current->mm);
-> > -     ret =3D -EINVAL;
-> > -     vma =3D find_vma(current->mm, user_addr);
-> > -     if (!vma)
-> > -             goto out;
-> > -     ret =3D -EACCES;
-> > -     if (!(vma->vm_flags & access))
-> > -             goto out;
-> > -     ret =3D follow_pfn(vma, user_addr, pfn);
-> > -out:
-> > -     mmap_read_unlock(current->mm);
-> > -     return ret;
-> > -}
-> > -
-> >  SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long, mmio_addr,
-> >               const void __user *, user_buffer, size_t, length)
-> >  {
-> >       u8 local_buf[64];
-> >       void __iomem *io_addr;
-> >       void *buf;
-> > -     unsigned long pfn;
-> > +     struct vm_area_struct *vma;
-> > +     pte_t *ptep;
-> > +     spinlock_t *ptl;
-> >       long ret;
-> >
-> >       if (!zpci_is_enabled())
-> > @@ -158,7 +140,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long,=
- mmio_addr,
-> >        * We only support write access to MIO capable devices if we are =
-on
-> >        * a MIO enabled system. Otherwise we would have to check for eve=
-ry
-> >        * address if it is a special ZPCI_ADDR and would have to do
-> > -      * a get_pfn() which we don't need for MIO capable devices.  Curr=
-ently
-> > +      * a pfn lookup which we don't need for MIO capable devices.  Cur=
-rently
-> >        * ISM devices are the only devices without MIO support and there=
- is no
-> >        * known need for accessing these from userspace.
-> >        */
-> > @@ -176,21 +158,37 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned lon=
-g, mmio_addr,
-> >       } else
-> >               buf =3D local_buf;
-> >
-> > -     ret =3D get_pfn(mmio_addr, VM_WRITE, &pfn);
-> > +     ret =3D -EFAULT;
-> > +     if (copy_from_user(buf, user_buffer, length))
-> > +             goto out_free;
-> > +
-> > +     mmap_read_lock(current->mm);
-> > +     ret =3D -EINVAL;
-> > +     vma =3D find_vma(current->mm, mmio_addr);
-> > +     if (!vma)
-> > +             goto out_unlock_mmap;
-> > +     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
-> > +             goto out_unlock_mmap;
-> > +     ret =3D -EACCES;
-> > +     if (!(vma->vm_flags & VM_WRITE))
-> > +             goto out_unlock_mmap;
-> > +
-> > +     ret =3D follow_pte_pmd(vma->vm_mm, mmio_addr, NULL, &ptep, NULL, =
-&ptl);
-> >       if (ret)
-> > -             goto out;
-> > -     io_addr =3D (void __iomem *)((pfn << PAGE_SHIFT) |
-> > +             goto out_unlock_mmap;
-> > +
-> > +     io_addr =3D (void __iomem *)((pte_pfn(*ptep) << PAGE_SHIFT) |
-> >                       (mmio_addr & ~PAGE_MASK));
-> >
-> > -     ret =3D -EFAULT;
-> >       if ((unsigned long) io_addr < ZPCI_IOMAP_ADDR_BASE)
-> > -             goto out;
-> > -
-> > -     if (copy_from_user(buf, user_buffer, length))
-> > -             goto out;
-> > +             goto out_unlock_pt;
-> >
-> >       ret =3D zpci_memcpy_toio(io_addr, buf, length);
-> > -out:
-> > +out_unlock_pt:
-> > +     pte_unmap_unlock(ptep, ptl);
-> > +out_unlock_mmap:
-> > +     mmap_read_unlock(current->mm);
-> > +out_free:
-> >       if (buf !=3D local_buf)
-> >               kfree(buf);
-> >       return ret;
-> > @@ -274,7 +272,9 @@ SYSCALL_DEFINE3(s390_pci_mmio_read, unsigned long, =
-mmio_addr,
-> >       u8 local_buf[64];
-> >       void __iomem *io_addr;
-> >       void *buf;
-> > -     unsigned long pfn;
-> > +     struct vm_area_struct *vma;
-> > +     pte_t *ptep;
-> > +     spinlock_t *ptl;
-> >       long ret;
-> >
-> >       if (!zpci_is_enabled())
-> > @@ -287,7 +287,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_read, unsigned long, =
-mmio_addr,
-> >        * We only support read access to MIO capable devices if we are o=
-n
-> >        * a MIO enabled system. Otherwise we would have to check for eve=
-ry
-> >        * address if it is a special ZPCI_ADDR and would have to do
-> > -      * a get_pfn() which we don't need for MIO capable devices.  Curr=
-ently
-> > +      * a pfn lookup which we don't need for MIO capable devices.  Cur=
-rently
-> >        * ISM devices are the only devices without MIO support and there=
- is no
-> >        * known need for accessing these from userspace.
-> >        */
-> > @@ -306,22 +306,38 @@ SYSCALL_DEFINE3(s390_pci_mmio_read, unsigned long=
-, mmio_addr,
-> >               buf =3D local_buf;
-> >       }
-> >
-> > -     ret =3D get_pfn(mmio_addr, VM_READ, &pfn);
-> > +     mmap_read_lock(current->mm);
-> > +     ret =3D -EINVAL;
-> > +     vma =3D find_vma(current->mm, mmio_addr);
-> > +     if (!vma)
-> > +             goto out_unlock_mmap;
-> > +     if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
-> > +             goto out_unlock_mmap;
-> > +     ret =3D -EACCES;
-> > +     if (!(vma->vm_flags & VM_WRITE))
-> > +             goto out_unlock_mmap;
-> > +
-> > +     ret =3D follow_pte_pmd(vma->vm_mm, mmio_addr, NULL, &ptep, NULL, =
-&ptl);
-> >       if (ret)
-> > -             goto out;
-> > -     io_addr =3D (void __iomem *)((pfn << PAGE_SHIFT) | (mmio_addr & ~=
-PAGE_MASK));
-> > +             goto out_unlock_mmap;
-> > +
-> > +     io_addr =3D (void __iomem *)((pte_pfn(*ptep) << PAGE_SHIFT) |
-> > +                     (mmio_addr & ~PAGE_MASK));
-> >
-> >       if ((unsigned long) io_addr < ZPCI_IOMAP_ADDR_BASE) {
-> >               ret =3D -EFAULT;
-> > -             goto out;
-> > +             goto out_unlock_pt;
-> >       }
-> >       ret =3D zpci_memcpy_fromio(buf, io_addr, length);
-> > -     if (ret)
-> > -             goto out;
-> > -     if (copy_to_user(user_buffer, buf, length))
-> > +
-> > +out_unlock_pt:
-> > +     pte_unmap_unlock(ptep, ptl);
-> > +out_unlock_mmap:
-> > +     mmap_read_unlock(current->mm);
-> > +
-> > +     if (!ret && copy_to_user(user_buffer, buf, length))
-> >               ret =3D -EFAULT;
-> >
-> > -out:
-> >       if (buf !=3D local_buf)
-> >               kfree(buf);
-> >       return ret;
-> >
 
 
+On 10/21/20 2:26 AM, Brent Lu wrote:
+> The default quirk data of sof_rt5682 is for tgl platform. For cml
+> platforms to reuse this driver, the flag SOF_RT5682_MCLK_24MHZ is
+> necessary to setup codec asrc correctly.
+> 
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> ---
+>   sound/soc/intel/boards/sof_rt5682.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+> index ddbb9fe7cc06..fa2c226a444a 100644
+> --- a/sound/soc/intel/boards/sof_rt5682.c
+> +++ b/sound/soc/intel/boards/sof_rt5682.c
+> @@ -768,6 +768,11 @@ static int sof_audio_probe(struct platform_device *pdev)
+>   		/* default number of HDMI DAI's */
+>   		if (!hdmi_num)
+>   			hdmi_num = 3;
+> +
+> +		if (soc_intel_is_cml()) {
+> +			/* default quirk for sof_rt5682 is for tgl platform */
+> +			sof_rt5682_quirk |= SOF_RT5682_MCLK_24MHZ;
+> +		}
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+That setting is not wrong, but is it sufficient?
+
+see e.g. what we set for existing platforms which need 24 Mhz in this 
+driver:
+
+DMI quirks:
+
+	{
+		.callback = sof_rt5682_quirk_cb,
+		.matches = {
+			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Hatch"),
+		},
+		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
+					SOF_RT5682_MCLK_24MHZ |
+					SOF_RT5682_SSP_CODEC(0) |
+					SOF_SPEAKER_AMP_PRESENT |
+					SOF_RT5682_SSP_AMP(1)),
+	},
+
+Board-id quirks:
+
+	{
+		.name = "jsl_rt5682_rt1015",
+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+					SOF_RT5682_MCLK_24MHZ |
+					SOF_RT5682_SSP_CODEC(0) |
+					SOF_SPEAKER_AMP_PRESENT |
+					SOF_RT1015_SPEAKER_AMP_PRESENT |
+					SOF_RT5682_SSP_AMP(1)),
+	},
+
+You probably need a board-id quirk dedicated to CML, rather than 
+override the TGL one?
