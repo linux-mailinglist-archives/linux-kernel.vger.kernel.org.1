@@ -2,85 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C18A295309
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654EF29530D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505030AbgJUTjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 15:39:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409544AbgJUTja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 15:39:30 -0400
-Received: from tleilax.com (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74D1824171;
-        Wed, 21 Oct 2020 19:39:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603309170;
-        bh=JfNSHQVgtLi5ZPQULQA1L2A3faL8Q2GF5AGfEShV/H8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JdYJCpmuybrj5SG5GibFZFTFFQT/qjT3K3SpGvdDJkUMf203MutJUq3lfV+EvnwH0
-         lA2Rz7TkpoyfZg5z4nwLbkkJfL/RTg4h/oYoxI/zuaDmaC0fvjPxxs7unibTBBuqsh
-         dlhYuo911DKM0iddlOK/yBU7NAijU7iuZvE9ljEc=
-From:   Jeff Layton <jlayton@kernel.org>
-To:     akpm@linux-foundation.org
-Cc:     willy@infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH] mm: remove pagevec_lookup_range_nr_tag
-Date:   Wed, 21 Oct 2020 15:39:26 -0400
-Message-Id: <20201021193926.101474-1-jlayton@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S2438571AbgJUTnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 15:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409773AbgJUTnA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 15:43:00 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7013AC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:43:00 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id 77so4662916lfl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=y84p6tfQj5a5ufC8cVAYYecBEzVsSbhLXjpiNjIVQbQ=;
+        b=MfyZo6Or8kl6lV16zl9GfMos/tof+E3Zn3bakSOq9Tb7OStRvHEzNwAiG55wyV05y2
+         Fz3XC5t3tV1VDRDA0a3zvEBJP9eKAnBbN/1bPG2tr3ZQRqw5ZaLuWDcleI9zjBRx16Vq
+         bsEsHp//RVAUbkYuFG6d4uDa82fs3sLv+O0O+vVGkSYDGz8WeKVqzar66LnU8CFrzc2z
+         ibmKyLRuwChKcpzoi/5c5QQYG/FMRATcoA2nnD7vlPlC/feDJAEniIWJGsTtSFkDt+Za
+         ijyZgqUuGM8JisvtDlTNz7gqmY6N2S0W2JKs9Gt3VM0qU74JPMQ88JLneYWVuVtGb4Fk
+         vctg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=y84p6tfQj5a5ufC8cVAYYecBEzVsSbhLXjpiNjIVQbQ=;
+        b=H578mjPtGhKRi7UWbEfcsXPXddLcMGjnxfJQ4TdtWI1W+OE6MOFlewgOV3/n3bdpmr
+         vKM6CXzX19nRrREPSjtZ5kaK7tXgCpWtMRrclGf3g5HHtITQY5M+bime+EtEro9G2zBy
+         akhfC82BCAwlehELfqqNHDNhfRP+fB+JYmmw07VIg/tbZOobsOd9CbghovKnpfj4j8zA
+         xXEeDbXklMXblSae9uWEdK6aZCVWPhTpr4HHt+xTz6w6WlYF2tnUPqE/nuDlkJJhHezL
+         pnWxXUxt/DfQaH9EN4u9NvRvqanjedxRksGMDg5MR9vD7ar5HcObz6th0ZrktqZ07Doz
+         +Edw==
+X-Gm-Message-State: AOAM532pA4e5nWbM1dqDUAajuFqwPxOi8yk2najZ0PGTQmPijMLO8mx2
+        GKicwjJEG9Vjn8WoCMsgeTdH+g==
+X-Google-Smtp-Source: ABdhPJzZiQXKD29K8yjK+gf68pdWVoqABf52guyMOgucOEfOY+MwhLpz2ehLBTkBKz41U4RwuW/HnA==
+X-Received: by 2002:a19:4ac8:: with SMTP id x191mr1655063lfa.155.1603309378893;
+        Wed, 21 Oct 2020 12:42:58 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id f129sm527344lfd.201.2020.10.21.12.42.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 12:42:57 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 21:42:57 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] thermal: replace spin_lock_irqsave by spin_lock in hard
+ IRQ
+Message-ID: <20201021194257.GC2158081@oden.dyn.berto.se>
+References: <1603249530-25218-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1603249530-25218-1-git-send-email-tiantao6@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the merge of 2e1692966034 (ceph: have ceph_writepages_start call
-pagevec_lookup_range_tag), nothing calls this anymore.
+Hi Tian,
 
-Cc: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- include/linux/pagevec.h | 3 ---
- mm/swap.c               | 9 ---------
- 2 files changed, 12 deletions(-)
+Thanks for your work.
 
-diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
-index 081d934eda64..ad4ddc17d403 100644
---- a/include/linux/pagevec.h
-+++ b/include/linux/pagevec.h
-@@ -43,9 +43,6 @@ static inline unsigned pagevec_lookup(struct pagevec *pvec,
- unsigned pagevec_lookup_range_tag(struct pagevec *pvec,
- 		struct address_space *mapping, pgoff_t *index, pgoff_t end,
- 		xa_mark_t tag);
--unsigned pagevec_lookup_range_nr_tag(struct pagevec *pvec,
--		struct address_space *mapping, pgoff_t *index, pgoff_t end,
--		xa_mark_t tag, unsigned max_pages);
- static inline unsigned pagevec_lookup_tag(struct pagevec *pvec,
- 		struct address_space *mapping, pgoff_t *index, xa_mark_t tag)
- {
-diff --git a/mm/swap.c b/mm/swap.c
-index 47a47681c86b..1aca4b9c97fe 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -1164,15 +1164,6 @@ unsigned pagevec_lookup_range_tag(struct pagevec *pvec,
- }
- EXPORT_SYMBOL(pagevec_lookup_range_tag);
- 
--unsigned pagevec_lookup_range_nr_tag(struct pagevec *pvec,
--		struct address_space *mapping, pgoff_t *index, pgoff_t end,
--		xa_mark_t tag, unsigned max_pages)
--{
--	pvec->nr = find_get_pages_range_tag(mapping, index, end, tag,
--		min_t(unsigned int, max_pages, PAGEVEC_SIZE), pvec->pages);
--	return pagevec_count(pvec);
--}
--EXPORT_SYMBOL(pagevec_lookup_range_nr_tag);
- /*
-  * Perform any setup for the swap system
-  */
+On 2020-10-21 11:05:30 +0800, Tian Tao wrote:
+> The code has been in a irq-disabled context since it is hard IRQ. There
+> is no necessity to do it again.
+> 
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+
+Tested-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+
+> ---
+>  drivers/thermal/rcar_thermal.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/thermal/rcar_thermal.c b/drivers/thermal/rcar_thermal.c
+> index 5c2a13b..6ae757d 100644
+> --- a/drivers/thermal/rcar_thermal.c
+> +++ b/drivers/thermal/rcar_thermal.c
+> @@ -409,16 +409,15 @@ static irqreturn_t rcar_thermal_irq(int irq, void *data)
+>  {
+>  	struct rcar_thermal_common *common = data;
+>  	struct rcar_thermal_priv *priv;
+> -	unsigned long flags;
+>  	u32 status, mask;
+>  
+> -	spin_lock_irqsave(&common->lock, flags);
+> +	spin_lock(&common->lock);
+>  
+>  	mask	= rcar_thermal_common_read(common, INTMSK);
+>  	status	= rcar_thermal_common_read(common, STR);
+>  	rcar_thermal_common_write(common, STR, 0x000F0F0F & mask);
+>  
+> -	spin_unlock_irqrestore(&common->lock, flags);
+> +	spin_unlock(&common->lock);
+>  
+>  	status = status & ~mask;
+>  
+> -- 
+> 2.7.4
+> 
+
 -- 
-2.26.2
-
+Regards,
+Niklas Söderlund
