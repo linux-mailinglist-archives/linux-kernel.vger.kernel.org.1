@@ -2,113 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47608294ABD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B223D294AC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441493AbgJUJrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 05:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409060AbgJUJrN (ORCPT
+        id S2441515AbgJUJvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 05:51:41 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:46997 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409054AbgJUJvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 05:47:13 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4E9C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 02:47:13 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id x1so1950024eds.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 02:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Q2JZXcMsiqhOVACNal6zJDus/P1Z6WAf7fS1Bz0hNkI=;
-        b=KORecj9n6tC7SyrGgbd3uu0KV3vj8KCaVpRx6eZA8pmF7WPBa9RsXsMKScqPGhBbEj
-         zYgBKstEoZks+SzU9cpsEcbtsHF0btC6DpNwZlKrnoNFbPRL3DEaB9Zr2fUsifiqJCec
-         ZH/2eGWSRUtPiTSInDbhEihvdrFLt6Q83g5pkBksX+V+shYMVWJhfTxFrjwnCxAHzmwa
-         Q710KqRoS/tC2U31tPgVv5+Mu6HT/FNyztVhFMze/E5Nf/mpF5+zDFFkU4yAiM+MfESF
-         Mwtf6FYXi7+5WzAoKt/YYaF4vGtePkz/6YA7Iw3q8o3bcbzoVnD2pLGodvMKV/b+TW/x
-         Tfww==
+        Wed, 21 Oct 2020 05:51:40 -0400
+Received: by mail-oi1-f194.google.com with SMTP id l4so1437240oii.13;
+        Wed, 21 Oct 2020 02:51:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q2JZXcMsiqhOVACNal6zJDus/P1Z6WAf7fS1Bz0hNkI=;
-        b=SRSfJYQ22SRLabFfpBwDb5x/+B5yxE0HtjKsOzw6W8iJRSFLjvL80+e7JIXQ7iRIpG
-         8Z/uR2Os5Jaaz9swVIXy2g5dC8bx7kRlNToARoL6VNhj9N7Hb8KZrb+Q3QL9aeKmfNQV
-         jD9ihUdRUXlvsLGDUiyrg9jipAHMJwPU2Hb80DdnmmMWKsjnjUUKBGECQZ9mjSCfrvKa
-         bpD2ewGXbCSVWLlTeicLdnvtcUEC27xuTuLkoixn6Al32wOOSwPzLy8U+VAsk1JZer9u
-         NmsV6HQ9vI8DYVOwSxbVVv9nmYa6zF2eKuB0BHsKn90eigOf7rgNgo254lXB0oI3FWgX
-         6dNA==
-X-Gm-Message-State: AOAM532jlxlVHHa4RWAzXc8L5lhat8PfslCbzl0dCJZXLGBupDdCbatg
-        McP+9nSYSr26TtIEgtYwfEoW8amDNBmfdFPj
-X-Google-Smtp-Source: ABdhPJzCtIFyre0b5Cvtx3BC0AfCbS+f/8OMggrhT+/NOWLwOxWt+YZQ/dBaioQ+3p/xupccUTxPVQ==
-X-Received: by 2002:aa7:dcc2:: with SMTP id w2mr2202967edu.121.1603273631631;
-        Wed, 21 Oct 2020 02:47:11 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:9bd7:d012:64eb:ce81])
-        by smtp.gmail.com with ESMTPSA id i14sm1965436ejp.2.2020.10.21.02.47.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 02:47:11 -0700 (PDT)
-Subject: Re: [PATCH] mptcp: MPTCP_IPV6 should depend on IPV6 instead of
- selecting it
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Florian Westphal <fw@strlen.de>,
-        Peter Krystad <peter.krystad@linux.intel.com>,
-        netdev <netdev@vger.kernel.org>, mptcp@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201020073839.29226-1-geert@linux-m68k.org>
- <5dddd3fe-86d7-d07f-dbc9-51b89c7c8173@tessares.net>
- <20201020205647.20ab7009@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAMuHMdW=1LfE8UoGRVBvrvrintQMNKUdTe5PPQz=PN3=gJmw=Q@mail.gmail.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Message-ID: <619601b2-40c1-9257-ef2a-2c667361aa75@tessares.net>
-Date:   Wed, 21 Oct 2020 11:47:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aHwcObPuWf2kMl9N8xINOLanTJv1EDYL2WCahfPUuSg=;
+        b=CkgkjhUOGkzvYEadCdIes8jCvHNddDHkd0ChDois8J5jURx0RlpOYG/57KjBmYj86L
+         oEsRRvHNAd8JpCaObfby7MKSGGpne63hfFVnrfHuK2TM0TYIDY8T8b578h+wg80A7XBM
+         LOnSiESQfRO8yG4tE8d4XJU4SZCcRh6M2VXXX4KZsquU1mqLUYlagbpiCiEwUoF5rsi+
+         r09VbIClHvT/rAp10hXDjy4KAub4Yo2p1UXKaIf01qZot1wiLLwwtGSb2oTXTuDpKHoM
+         0lXgdmn2EcfsP6ndTNw5fH9ErixlROo3Bx0aqZSOhpa08cOA1doAHlYHDejWf/Ay4TdU
+         aFwg==
+X-Gm-Message-State: AOAM533J2N493andyHxg2ToQJfw1iEyWp4LXAh0lzvQCP2abspsFlQaP
+        9cX74RYcSEY5h1ZMbY8NoladEjEdOFrufWfCluA=
+X-Google-Smtp-Source: ABdhPJzzVmJGhYxpqlx3tO8gD6zynDrvHEkDFMkcfmY5gW+1Q/gFOtgY3QaC8yuWY+fPgQwFCgRnEnh44A2ZnSft1n0=
+X-Received: by 2002:aca:724a:: with SMTP id p71mr1640718oic.157.1603273900242;
+ Wed, 21 Oct 2020 02:51:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdW=1LfE8UoGRVBvrvrintQMNKUdTe5PPQz=PN3=gJmw=Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20201021020947.2069441-1-josephjang@google.com>
+In-Reply-To: <20201021020947.2069441-1-josephjang@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 21 Oct 2020 11:51:29 +0200
+Message-ID: <CAJZ5v0hBkJ5VMQ1PYg7n=kdrwx1s3nMXN95coKfmMDsg4F=L2g@mail.gmail.com>
+Subject: Re: [PATCH v2] power: suspend: Replace dpm_watchdog by sleep timer
+To:     Joseph Jang <josephjang@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>, jonglin@google.com,
+        woodylin@google.com, Mark Cheng <markcheng@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Wed, Oct 21, 2020 at 4:09 AM Joseph Jang <josephjang@google.com> wrote:
+>
+> Since dpm_watchdog just cover device power management, we proposed sleep
+> timer to cover not only device power management hang issues, but also
+> core power management hand issue.
+>
+> Add sleep timer and timeout handler to prevent device stuck during suspend/
+> resume process. The timeout handler will dump disk sleep task at first
+> round timeout and trigger kernel panic at second round timeout.
+> The default timer for each round is defined in
+> CONFIG_PM_SLEEP_TIMER_TIMEOUT.
 
-On 21/10/2020 11:43, Geert Uytterhoeven wrote:
-> Hi Jakub,
-> 
-> On Wed, Oct 21, 2020 at 5:56 AM Jakub Kicinski <kuba@kernel.org> wrote:
->> On Tue, 20 Oct 2020 11:26:34 +0200 Matthieu Baerts wrote:
->>> On 20/10/2020 09:38, Geert Uytterhoeven wrote:
->>>> MPTCP_IPV6 selects IPV6, thus enabling an optional feature the user may
->>>> not want to enable.  Fix this by making MPTCP_IPV6 depend on IPV6, like
->>>> is done for all other IPv6 features.
->>>
->>> Here again, the intension was to select IPv6 from MPTCP but I understand
->>> the issue: if we enable MPTCP, we will select IPV6 as well by default.
->>> Maybe not what we want on some embedded devices with very limited memory
->>> where IPV6 is already off. We should instead enable MPTCP_IPV6 only if
->>> IPV6=y. LGTM then!
->>>
->>> Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
->>
->> Applied, thanks!
-> 
-> My apologies, this fails for the CONFIG_IPV6=m and CONFIG_MPTCP=y
-> case:
+Let me repeat the point that Greg has made already: Please don't
+replace the existing watchdog with something else, but try to extend
+it to cover your use case.
 
-Good point, MPTCP cannot be compiled as a module (like TCP). It should 
-then depends on IPV6=y. I thought it would be the case.
+As it stands, the patch is not applicable IMV.
 
-Do you want me to send a patch or do you already have one?
-
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+Thanks!
