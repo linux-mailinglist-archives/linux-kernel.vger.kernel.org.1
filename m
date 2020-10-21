@@ -2,135 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A73295024
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F89F29502B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502691AbgJUPq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:46:58 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56706 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731418AbgJUPq5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:46:57 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09LFZYYf156719;
-        Wed, 21 Oct 2020 11:46:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=eSg8TA/oMOmSlb52iatw5KngnYQc5Vgzaw+Vw2aADeI=;
- b=CUZzVTFoft7gpvSW9lNDiZR09SgQf0JXwpEWb5K9MpfWKLY7M2Md/BtB8dzc79ABqftr
- 2q3gFmriJcSQrhGU1Xdf+6sFfwaBuKGQuxOQXxikWVPbyIrwwQbLui5togRtCYCAZpDK
- 9VsYGGaTTkgyqvyL78VbyojX3jlyjKjqKvS8L2c5dKUjJe+kWsavlHN9s6EEvyztLkTi
- ukPKkZUfqcfell1HGPwg7f1EuVw77XUC8RmuSmlHj1mnSFOGR2VzVHscnilJAHIhk5d9
- US0x8RPTgobEuPjKlxKwu8AHgzJWRWIdxM2JXFhdznOFyQkC+GVunLzhPFUlUrBUOKJv xQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34aqft8tsu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Oct 2020 11:46:52 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09LFahPu161103;
-        Wed, 21 Oct 2020 11:46:52 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 34aqft8tsg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Oct 2020 11:46:52 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09LFW7VT030031;
-        Wed, 21 Oct 2020 15:46:51 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma03dal.us.ibm.com with ESMTP id 347r89hc99-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Oct 2020 15:46:51 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09LFko9B49086876
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Oct 2020 15:46:50 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ADACF124058;
-        Wed, 21 Oct 2020 15:46:50 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2DFD6124053;
-        Wed, 21 Oct 2020 15:46:50 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.170.177])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Oct 2020 15:46:50 +0000 (GMT)
-Subject: Re: [PATCH] s390/vfio-ap: fix unregister GISC when KVM is already
- gone results in OOPS
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     pmorel@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, cohuck@redhat.com,
-        kwankhede@nvidia.com, borntraeger@de.ibm.com
-References: <20200918170234.5807-1-akrowiak@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <f3d21bbf-4d25-eac8-cc88-c654b8406316@linux.ibm.com>
-Date:   Wed, 21 Oct 2020 11:46:49 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S2443876AbgJUPtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:49:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436657AbgJUPtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 11:49:15 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7324B2177B;
+        Wed, 21 Oct 2020 15:49:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603295355;
+        bh=rySyaPMonK0bqxfFaAUtQ7LAHYi4FnVE4UcUlHXiTls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vsk6Suxjr7k7JPvQTveIDd8YChDcEAo8OCCWDFRLcy01l8vZnqCkSi7DFxHBx/CRY
+         w1UgbwsC0oL/nU94eID2Hz+iM+hCKRUQtWLF2ELjwM1CwG0MJGAf6iJhXV6nNEj/xK
+         qNUFC9UIlm5LN84eQtqZ+DgPb6r1G2xr1VulrV/E=
+Date:   Wed, 21 Oct 2020 16:49:09 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Andre Przywara <andre.przywara@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return
+ SMCCC_RET_NOT_REQUIRED
+Message-ID: <20201021154909.GD18071@willie-the-truck>
+References: <20201020214544.3206838-1-swboyd@chromium.org>
+ <20201020214544.3206838-2-swboyd@chromium.org>
+ <20201021075722.GA17230@willie-the-truck>
+ <160329383454.884498.3396883189907056188@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200918170234.5807-1-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-21_06:2020-10-20,2020-10-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=2 clxscore=1015
- adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 impostorscore=0 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010210113
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160329383454.884498.3396883189907056188@swboyd.mtv.corp.google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In trying to recreate this problem in order to get a stack trace, I 
-discovered that
-it only occurs within a local repository that has several new patches 
-applied,
-so the problem is not part of the base code and will be fixed via this 
-new set
-of patches forthcoming.
+On Wed, Oct 21, 2020 at 08:23:54AM -0700, Stephen Boyd wrote:
+> Quoting Will Deacon (2020-10-21 00:57:23)
+> > On Tue, Oct 20, 2020 at 02:45:43PM -0700, Stephen Boyd wrote:
+> > > According to the SMCCC spec (7.5.2 Discovery) the
+> > > ARM_SMCCC_ARCH_WORKAROUND_1 function id only returns 0, 1, and
+> > > SMCCC_RET_NOT_SUPPORTED corresponding to "workaround required",
+> > > "workaround not required but implemented", and "who knows, you're on
+> > > your own" respectively. For kvm hypercalls (hvc), we've implemented this
+> > > function id to return SMCCC_RET_NOT_SUPPORTED, 1, and
+> > > SMCCC_RET_NOT_REQUIRED. The SMCCC_RET_NOT_REQUIRED return value is not a
+> > > thing for this function id, and is probably copy/pasted from the
+> > > SMCCC_ARCH_WORKAROUND_2 function id that does support it.
+> > > 
+> > > Clean this up by returning 0, 1, and SMCCC_RET_NOT_SUPPORTED
+> > > appropriately. Changing this exposes the problem that
+> > > spectre_v2_get_cpu_fw_mitigation_state() assumes a
+> > > SMCCC_RET_NOT_SUPPORTED return value means we are vulnerable, but really
+> > > it means we have no idea and should assume we can't do anything about
+> > > mitigation. Put another way, it better be unaffected because it can't be
+> > > mitigated in the firmware (in this case kvm) as the call isn't
+> > > implemented!
+> > > 
+> > > Cc: Andre Przywara <andre.przywara@arm.com>
+> > > Cc: Steven Price <steven.price@arm.com>
+> > > Cc: Marc Zyngier <maz@kernel.org>
+> > > Cc: stable@vger.kernel.org
+> > > Fixes: c118bbb52743 ("arm64: KVM: Propagate full Spectre v2 workaround state to KVM guests")
+> > > Fixes: 73f381660959 ("arm64: Advertise mitigation of Spectre-v2, or lack thereof")
+> > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > > ---
+> > > 
+> > > This will require a slightly different backport to stable kernels, but
+> > > at least it looks like this is a problem given that this return value
+> > > isn't valid per the spec and we've been going around it by returning
+> > > something invalid for some time.
+> > > 
+> > >  arch/arm64/kernel/proton-pack.c | 3 +--
+> > >  arch/arm64/kvm/hypercalls.c     | 2 +-
+> > >  2 files changed, 2 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/kernel/proton-pack.c b/arch/arm64/kernel/proton-pack.c
+> > > index 68b710f1b43f..00bd54f63f4f 100644
+> > > --- a/arch/arm64/kernel/proton-pack.c
+> > > +++ b/arch/arm64/kernel/proton-pack.c
+> > > @@ -149,10 +149,9 @@ static enum mitigation_state spectre_v2_get_cpu_fw_mitigation_state(void)
+> > >       case SMCCC_RET_SUCCESS:
+> > >               return SPECTRE_MITIGATED;
+> > >       case SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED:
+> > > +     case SMCCC_RET_NOT_SUPPORTED: /* Good luck w/ the Gatekeeper of Gozer */
+> > >               return SPECTRE_UNAFFECTED;
+> > 
+> > Hmm, I'm not sure this is correct. The SMCCC spec is terrifically
+> > unhelpful:
+> > 
+> >   NOT_SUPPORTED:
+> >   Either:
+> >   * None of the PEs in the system require firmware mitigation for CVE-2017-5715.
+> >   * The system contains at least 1 PE affected by CVE-2017-5715 that has no firmware
+> >     mitigation available.
+> >   * The firmware does not provide any information about whether firmware mitigation is
+> >     required.
+> > 
+> > so we can't tell whether the thing is vulnerable or not in this case, and
+> > have to assume that it is.
+> 
+> If I'm reading the TF-A code correctly it looks like this will return
+> SMC_UNK if the platform decides that "This flag can be set to 0 by the
+> platform if none of the PEs in the system need the workaround." Where
+> the flag is WORKAROUND_CVE_2017_5715 and the call handler returns 1 if
+> the errata doesn't apply but the config is enabled, 0 if the errata
+> applies and the config is enabled, or SMC_UNK (I guess this is
+> NOT_SUPPORTED?) if the config is disabled[2].
+> 
+> So TF-A could disable this config and then the kernel would think it is
+> vulnerable when it actually isn't? The spec is a pile of ectoplasma
+> here.
 
-On 9/18/20 1:02 PM, Tony Krowiak wrote:
-> Attempting to unregister Guest Interruption Subclass (GISC) when the
-> link between the matrix mdev and KVM has been removed results in the
-> following:
->
->     "Kernel panic -not syncing: Fatal exception: panic_on_oops"
->
-> This patch fixes this bug by verifying the matrix mdev and KVM are still
-> linked prior to unregistering the GISC.
->
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->   drivers/s390/crypto/vfio_ap_ops.c | 14 +++++++++-----
->   1 file changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index e0bde8518745..847a88642644 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -119,11 +119,15 @@ static void vfio_ap_wait_for_irqclear(int apqn)
->    */
->   static void vfio_ap_free_aqic_resources(struct vfio_ap_queue *q)
->   {
-> -	if (q->saved_isc != VFIO_AP_ISC_INVALID && q->matrix_mdev)
-> -		kvm_s390_gisc_unregister(q->matrix_mdev->kvm, q->saved_isc);
-> -	if (q->saved_pfn && q->matrix_mdev)
-> -		vfio_unpin_pages(mdev_dev(q->matrix_mdev->mdev),
-> -				 &q->saved_pfn, 1);
-> +	if (q->matrix_mdev) {
-> +		if (q->saved_isc != VFIO_AP_ISC_INVALID && q->matrix_mdev->kvm)
-> +			kvm_s390_gisc_unregister(q->matrix_mdev->kvm,
-> +						 q->saved_isc);
-> +		if (q->saved_pfn)
-> +			vfio_unpin_pages(mdev_dev(q->matrix_mdev->mdev),
-> +					 &q->saved_pfn, 1);
-> +	}
-> +
->   	q->saved_pfn = 0;
->   	q->saved_isc = VFIO_AP_ISC_INVALID;
->   }
+Yes, but there's not a lot we can do in that case as we rely on the
+firmware to tell us whether or not we're affected. We do have the
+"safelist" as a last resort, but that's about it.
 
+> > >       default:
+> > > -             fallthrough;
+> > > -     case SMCCC_RET_NOT_SUPPORTED:
+> > >               return SPECTRE_VULNERABLE;
+> > >       }
+> > >  }
+> > > diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+> > > index 9824025ccc5c..868486957808 100644
+> > > --- a/arch/arm64/kvm/hypercalls.c
+> > > +++ b/arch/arm64/kvm/hypercalls.c
+> > > @@ -31,7 +31,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+> > >                               val = SMCCC_RET_SUCCESS;
+> > >                               break;
+> > >                       case SPECTRE_UNAFFECTED:
+> > > -                             val = SMCCC_RET_NOT_REQUIRED;
+> > > +                             val = SMCCC_RET_NOT_SUPPORTED;
+> > 
+> > Which means we need to return SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED here, I
+> > suppose?
+> > 
+> 
+> Does the kernel implement a workaround in the case that no guest PE is
+> affected? If so then returning 1 sounds OK to me, but otherwise
+> NOT_SUPPORTED should work per the spec.
+
+I don't follow you here. The spec says that "SMCCC_RET_NOT_SUPPORTED" is
+valid return code in the case that "The system contains at least 1 PE
+affected by CVE-2017-5715 that has no firmware mitigation available."
+and do the guest would end up in the "vulnerable" state.
+
+Will
