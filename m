@@ -2,116 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7018294CD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D049294CDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408412AbgJUMj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:39:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394282AbgJUMjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:39:25 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2EE1422249;
-        Wed, 21 Oct 2020 12:39:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603283964;
-        bh=mWU0XX6TP23oXRtNhUtKZR9PQ/87umOD4p89GJOQWxo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZkxgulnNF2NFH9jo07oDU4EUHcw6hfl48FCyYKMbN/fSIbwuhDeBZjNQiRP4WeJVn
-         B8QXAA2jbjmKiJc96KJ/3h4MnZ5r7rEFwrOTx6tdj9oAJl7UOSCPeJ3t17BykafjTz
-         Zzm1hizSASBgt/k0uj2D29o+8bUuTp2GI6pY/12Q=
-Date:   Wed, 21 Oct 2020 13:39:13 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Cheng-yi Chiang <cychiang@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Srinivasa Rao <srivasam@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Dylan Reid <dgreid@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine
- bindings
-Message-ID: <20201021123913.GD4497@sirena.org.uk>
-References: <20200914080619.4178587-1-cychiang@chromium.org>
- <20200914080619.4178587-3-cychiang@chromium.org>
- <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
- <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
- <20201015161251.GF4390@sirena.org.uk>
- <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
- <20201020143711.GC9448@sirena.org.uk>
- <63f1a29c-0758-97b8-ce80-fe43d91630fa@linaro.org>
- <CAFv8NwJ-+f146Ss9Mk=nEXjm1B--ZwhAgnfx-cTi7DGEKqC1-Q@mail.gmail.com>
- <e876421c-dfeb-e853-1b65-53a786e9bcf9@linaro.org>
+        id S2408697AbgJUMja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:39:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51067 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407970AbgJUMj2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:39:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603283967;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c7EH/NJ6Fg/m8L/HBnnaHt/LKhGAw4sqP6ejYqOggwk=;
+        b=NwxEkHYt08mjksklLk9IF/PULUeLl4oqwOjD6907Cp3sEBflZTxxsD+gBRdFzwz0hDx43f
+        3x6wQRjzl0GqydFf/RpmbzzIPAwV7K/92DVQd3mD2BPf4SzNfJQJMVk0GYB9yGffcRMr7P
+        33ai9b+jHC+iOVwz5nUJbIJcMInGInc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-9FTZFJpMPDqYCKVsgcF40A-1; Wed, 21 Oct 2020 08:39:24 -0400
+X-MC-Unique: 9FTZFJpMPDqYCKVsgcF40A-1
+Received: by mail-wr1-f70.google.com with SMTP id b11so2573336wrm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:39:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=c7EH/NJ6Fg/m8L/HBnnaHt/LKhGAw4sqP6ejYqOggwk=;
+        b=WcvQpk4LboxZFmWLOYc029sRk2kUNjl5omBpZfJ/BxlKJICPlapJTIREGJyXDDDQ/7
+         qLDTCf+cUwLz2ynvZlO2EIItac+UGqRbJkCSK6t22tgHYhHMg7eGMDqGQ+rJmax+EL7z
+         MT2JQovekyLwOBNCrzMiAJgsJ6VZ7t+dBhAb3pmPt/87GkgLO3rJ5WmX7fznjZVPLbqM
+         SN6yDumQBVmieDJ5ttb7qBssvqU7skIfaa1cSmAms/CVUv/SxGLgHOWmC+Ng3gPOgjXO
+         dHfMoma0B5wW80tbYmyPXH5UxJNdwrGFe0oFPwv+ozFXLnPNWYqOXuy5EM4LDGi47EFr
+         FsrA==
+X-Gm-Message-State: AOAM533T+v284UoVsOpQwQEjNMwzsGwfVWXGCpsJI+JWC3xLqSmaMbX8
+        2NPnPbvN4T8ff8oDBxxTGCrm0Y9uUS3csUe0zZPyDPOXueNuchLA3ggxGsBEhjEoOkKr4MsBihw
+        64X0x0MgWE5qfYQ8osFTJ6sAZ
+X-Received: by 2002:adf:80c8:: with SMTP id 66mr4650721wrl.415.1603283962840;
+        Wed, 21 Oct 2020 05:39:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwpiPbbJK4AX5vO6QZtccwjQuHYrMpWSENlh7dEYIreZ7TRkNyQ+Z5nk41eW0foiBgy0TF1oQ==
+X-Received: by 2002:adf:80c8:: with SMTP id 66mr4650696wrl.415.1603283962631;
+        Wed, 21 Oct 2020 05:39:22 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id x64sm3593660wmg.33.2020.10.21.05.39.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 05:39:21 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 05/10] KVM: VMX: Invalidate hv_tlb_eptp to denote an EPTP mismatch
+In-Reply-To: <20201020215613.8972-6-sean.j.christopherson@intel.com>
+References: <20201020215613.8972-1-sean.j.christopherson@intel.com> <20201020215613.8972-6-sean.j.christopherson@intel.com>
+Date:   Wed, 21 Oct 2020 14:39:20 +0200
+Message-ID: <87wnzj4utj.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
-Content-Disposition: inline
-In-Reply-To: <e876421c-dfeb-e853-1b65-53a786e9bcf9@linaro.org>
-X-Cookie: That does not compute.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
---/3yNEOqWowh/8j+e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Drop the dedicated 'ept_pointers_match' field in favor of stuffing
+> 'hv_tlb_eptp' with INVALID_PAGE to mark it as invalid, i.e. to denote
+> that there is at least one EPTP mismatch.  Use a local variable to
+> track whether or not a mismatch is detected so that hv_tlb_eptp can be
+> used to skip redundant flushes.
+>
+> No functional change intended.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 16 ++++++++--------
+>  arch/x86/kvm/vmx/vmx.h |  7 -------
+>  2 files changed, 8 insertions(+), 15 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 52cb9eec1db3..4dfde8b64750 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -498,13 +498,13 @@ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
+>  	struct kvm_vmx *kvm_vmx = to_kvm_vmx(kvm);
+>  	struct kvm_vcpu *vcpu;
+>  	int ret = 0, i;
+> +	bool mismatch;
+>  	u64 tmp_eptp;
+>  
+>  	spin_lock(&kvm_vmx->ept_pointer_lock);
+>  
+> -	if (kvm_vmx->ept_pointers_match != EPT_POINTERS_MATCH) {
+> -		kvm_vmx->ept_pointers_match = EPT_POINTERS_MATCH;
+> -		kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
+> +	if (!VALID_PAGE(kvm_vmx->hv_tlb_eptp)) {
+> +		mismatch = false;
+>  
+>  		kvm_for_each_vcpu(i, vcpu, kvm) {
+>  			tmp_eptp = to_vmx(vcpu)->ept_pointer;
+> @@ -515,12 +515,13 @@ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
+>  			if (!VALID_PAGE(kvm_vmx->hv_tlb_eptp))
+>  				kvm_vmx->hv_tlb_eptp = tmp_eptp;
+>  			else
+> -				kvm_vmx->ept_pointers_match
+> -					= EPT_POINTERS_MISMATCH;
+> +				mismatch = true;
+>  
+>  			ret |= hv_remote_flush_eptp(tmp_eptp, range);
+>  		}
+> -	} else if (VALID_PAGE(kvm_vmx->hv_tlb_eptp)) {
+> +		if (mismatch)
+> +			kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
+> +	} else {
+>  		ret = hv_remote_flush_eptp(kvm_vmx->hv_tlb_eptp, range);
+>  	}
 
-On Wed, Oct 21, 2020 at 01:00:54PM +0100, Srinivas Kandagatla wrote:
+Personally, I find double negations like 'mismatch = false' hard to read
+:-). What if we write this all like 
 
-> This is totally not very useful w.r.t UCM2 and makes it very difficult to
-> common up parts of the configs.
+if (!VALID_PAGE(kvm_vmx->hv_tlb_eptp)) {
+	kvm_vmx->hv_tlb_eptp = to_vmx(vcpu0)->ept_pointer;
+	kvm_for_each_vcpu() {
+		tmp_eptp = to_vmx(vcpu)->ept_pointer;
+		if (!VALID_PAGE(tmp_eptp) || tmp_eptp != kvm_vmx->hv_tlb_eptp)
+			kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
 
-> My suggestions are.
-> 1. set card->driver_name to something more sensible in your sound card
-> driver.
+		if (VALID_PAGE(tmp_eptp))
+			ret |= hv_remote_flush_eptp(tmp_eptp, range);
+	}
+} else {
+	ret = hv_remote_flush_eptp(kvm_vmx->hv_tlb_eptp, range);
+}
 
-> 2. set long name in model DT property and set it as card long name
+(not tested and I've probably missed something)
 
-It's also worth taking a look at what Intel are doing here with their
-cards.
+>  
+> @@ -3042,8 +3043,7 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long pgd,
+>  		if (kvm_x86_ops.tlb_remote_flush) {
+>  			spin_lock(&to_kvm_vmx(kvm)->ept_pointer_lock);
+>  			to_vmx(vcpu)->ept_pointer = eptp;
+> -			to_kvm_vmx(kvm)->ept_pointers_match
+> -				= EPT_POINTERS_CHECK;
+> +			to_kvm_vmx(kvm)->hv_tlb_eptp = INVALID_PAGE;
+>  			spin_unlock(&to_kvm_vmx(kvm)->ept_pointer_lock);
+>  		}
+>  
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 3d557a065c01..e8d7d07b2020 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -288,12 +288,6 @@ struct vcpu_vmx {
+>  	} shadow_msr_intercept;
+>  };
+>  
+> -enum ept_pointers_status {
+> -	EPT_POINTERS_CHECK = 0,
+> -	EPT_POINTERS_MATCH = 1,
+> -	EPT_POINTERS_MISMATCH = 2
+> -};
+> -
+>  struct kvm_vmx {
+>  	struct kvm kvm;
+>  
+> @@ -302,7 +296,6 @@ struct kvm_vmx {
+>  	gpa_t ept_identity_map_addr;
+>  
+>  	hpa_t hv_tlb_eptp;
+> -	enum ept_pointers_status ept_pointers_match;
+>  	spinlock_t ept_pointer_lock;
+>  };
 
---/3yNEOqWowh/8j+e
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+Vitaly
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+QK/AACgkQJNaLcl1U
-h9BbUwf/eOnrTlDEbw+QGCrFiYUmnzBGx64NN4D6F6QHebJyBsYrT6PB95nEpzei
-/il7qT8KENMbMgMUSN4N3vMUVWAkrFYjtI5TXCjDvYy1h790B9UIPXyrq+1+hr3U
-+KuyJJ4+adkM1dYEH904ynqdFapjo8DfVcD0YNZ2DstV8UdOnegpQP06Fygn7Vm8
-7diV0uAnJrtMX74ezClTiKcTB6/Nl0B/ve5m9o8usTa9H1LL9v6HgGrqjrFhMS/p
-6h8MzEw2zJS6+kAU//U8MNVBYAmhR7Urw93XHEx7gisLq3STJgnW0580I4lLHd0i
-9/H/UCdqrnIcE7b8lByvQDy/V2Ydhw==
-=jQZx
------END PGP SIGNATURE-----
-
---/3yNEOqWowh/8j+e--
