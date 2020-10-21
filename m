@@ -2,95 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96AC294AE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BACE0294AF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438425AbgJUJ6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 05:58:23 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:2804 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438399AbgJUJ6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 05:58:22 -0400
+        id S2441617AbgJUJ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 05:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441528AbgJUJ7h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 05:59:37 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A77C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 02:59:37 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g29so1197081pgl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 02:59:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1614; q=dns/txt; s=axis-central1;
-  t=1603274302; x=1634810302;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0uunYDarLOCJQZDPzFnBlNCfPwBebHlyjXfwWLNZ7OI=;
-  b=RW+g6QTHNS1SONtKPLNRev6bD/KX3Yh2Rld7xF59CtbjAYr9D2PHsIFR
-   6YtE8NrIwm9bHTy7tqAyUHoLnfdfIHdGo7UkuW15XLU/iTg5rFUve7+Pi
-   gXrQ4d+j4MirRqA7kJPx5jfm0/tyco8zHr5xptGYJvRo8+rVD5UoXrj4j
-   sTFXEx3O09wPYSBGnq99SaOL7f04TJDl5LBhGAnrkXQRIaQG2VasQSM9E
-   GWaycAbxjg2grzOE3RtWJwnFC1ozIgEH9l1XB29PazpipTYvMVPjAYgUR
-   e+X/8LwaMU8HB18w9p8CW6LvLGS1GlvbCSAFI50UapgqkwVUPKh9boKMa
-   A==;
-IronPort-SDR: nYtZPDdCJr/zt644280jfPTyAlH8CnViDMCXXT1IT8lWHG3AWvXTfddGXf0rVQLU3z3r7xsjQI
- DNaOLhdKuW1NwONjVFoiv2OP817H6hij+lfZVsVDPYFr+koVodZtLvOwdQTTcdsmWFh3WQsWvi
- q1BxWLFgXIdjIEjtE5v7ONYbEGUaT359iTVgZ6tgLAOp+7QcuvnVqGnb0A+Fvvqf39fy2Xl7xz
- lRGa+efHe31sXwSZbrkCZEmuIqsEUi2wt15W9POCAjOppufLUI3QVLKeQm1n5XAI4pF2dV2p4b
- M8A=
-X-IronPort-AV: E=Sophos;i="5.77,401,1596492000"; 
-   d="scan'208";a="13744378"
-Date:   Wed, 21 Oct 2020 11:58:20 +0200
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Rob Herring <robh+dt@kernel.org>
-CC:     Frank Rowand <frowand.list@gmail.com>, kernel <kernel@axis.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] of: Fix reserved-memory overlap detection
-Message-ID: <20201021095820.fe2u5cecxtkupqko@axis.com>
-References: <20201020073558.3582-1-vincent.whitchurch@axis.com>
- <CAL_JsqL=mpw9KxiYe_bMa+y4mU8ybrRnJ2LcO8jRco9C3N_n_w@mail.gmail.com>
- <20201020134633.3vv7hyvodg4tbro2@axis.com>
- <CAL_JsqJrM4mS+tRDjipEQ8HBGgoevWHzGBWCiioMAFLnBRb63Q@mail.gmail.com>
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6g5Wjf/Nb7mrOf2N+gasC/3n4iYiNKVe8hMPUVCsdXk=;
+        b=pl4L5uLrIG2AC2pOMAF9iYUtxRJeC0QvSwINA5kD4cRVPjkl8rzyz4Bw27kVKJWNdW
+         GUQ9YWiMl1kRjgcqsmt9EJJv09BuzyDGKjfTbHrt1v6iq2yx4HvnLf5+mF4cJXq/5NBI
+         8hGr/ZJT1FuuQaemP2XsVNkWUSidqwFasE6hHexJH+oKOL6TBdl71NNW/yRK3SJOIrMg
+         pj4kgs0BrV45Xep3q2jxNgmGSF9/2mpjl34aEJYM8hUavdbOGuQphR67Nx+cxY3p8Ufn
+         HTLtVkUQDiWq+PJSs8zDAN04r8lKId6xRlFdefu6LNA1knxqjmibq1Jzz47mScDYjuZy
+         lIgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6g5Wjf/Nb7mrOf2N+gasC/3n4iYiNKVe8hMPUVCsdXk=;
+        b=BaoaQAmCWghKOo+ZA6Kboj/JtFD89dG8AHylgvNOgrSDXvuW8VUKp4xgPevsvYS3wz
+         gw4UVjv1HXnZytQCRJBCsn+WxFpW898rS4p5P4riDcMRWvNw6T6bbMqNFe/LQLzcrfTP
+         slEdVZQllTIKJHJ5dEmT6sGVNHswY6mX+7Ohr52cadn8oRSBrUA+cp/u9X8Ek3kstoq2
+         +ypPLagQKoSUNykaYA2qQrRD+SBoa8ScT8exubxo8wOuPl+CqYGzDTtvd2hO9/HIpn0P
+         Z02ik9KFyTzb5Y+mPQk0kRlPg7gB3ria0N3M8LdZNipw0yqwaeKcwZ6W7Q/bLIF7YTd7
+         b8gg==
+X-Gm-Message-State: AOAM533yxBRAGCH9pL3BLMsHeTkTHHyefQ0nKljkx5GmatdX5KTW/rLQ
+        BamrqNf4gQA77YHR6dFuXuDL
+X-Google-Smtp-Source: ABdhPJxP2Kn+MEpvl705bs5Z93XJfav12KiJJnx4b8wd07fJsxZAqpSHT86pHcQuv/MG0pqtM3Oopg==
+X-Received: by 2002:a63:1357:: with SMTP id 23mr2628992pgt.13.1603274376376;
+        Wed, 21 Oct 2020 02:59:36 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:70e:2a27:314a:6d22:ec47:a603])
+        by smtp.gmail.com with ESMTPSA id 198sm1673121pfy.41.2020.10.21.02.59.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 21 Oct 2020 02:59:35 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 15:29:16 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org, robh+dt@kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: arm: cpus: Document
+ 'qcom,freq-domain' property
+Message-ID: <20201021095916.GA3334@Mani-XPS-13-9360>
+References: <20201020153944.18047-1-manivannan.sadhasivam@linaro.org>
+ <1603247803.20224.5.camel@mtkswgap22>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqJrM4mS+tRDjipEQ8HBGgoevWHzGBWCiioMAFLnBRb63Q@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <1603247803.20224.5.camel@mtkswgap22>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 04:17:27PM +0200, Rob Herring wrote:
-> On Tue, Oct 20, 2020 at 8:46 AM Vincent Whitchurch
-> <vincent.whitchurch@axis.com> wrote:
-> > On Tue, Oct 20, 2020 at 03:00:14PM +0200, Rob Herring wrote:
-> > > On Tue, Oct 20, 2020 at 2:36 AM Vincent Whitchurch
-> > > <vincent.whitchurch@axis.com> wrote:
-> > > >
-> > > > The reserved-memory overlap detection code fails to detect overlaps if
-> > > > either of the regions starts at address 0x0.  For some reason the code
-> > > > explicitly checks for and ignores such regions, but this check looks
-> > > > invalid.  Remove the check and fix this detection.
-> > >
-> > > Wouldn't 'base' be 0 for nodes that have a 'size' and no address? The
-> > > base in those cases isn't set until later when
-> > > __reserved_mem_alloc_size() is called.
-> >
-> > Ah, yes, I guess that's why the check was there.  I see that those
-> > entries have both a zero address and a zero size, so this seems to work:
+Hi,
+
+On Wed, Oct 21, 2020 at 10:36:43AM +0800, Hector Yuan wrote:
+> Hi, Manivannan
 > 
-> Yes, I think it should work.
+> On Tue, 2020-10-20 at 21:09 +0530, Manivannan Sadhasivam wrote:
+> > Add devicetree documentation for 'qcom,freq-domain' property specific
+> > to Qualcomm CPUs. This property is used to reference the CPUFREQ node
+> > along with Domain ID (0/1).
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  Documentation/devicetree/bindings/arm/cpus.yaml | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
+> > index 1222bf1831fa..f40564bf004f 100644
+> > --- a/Documentation/devicetree/bindings/arm/cpus.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
+> > @@ -290,6 +290,12 @@ properties:
+> >  
+> >        * arm/msm/qcom,kpss-acc.txt
+> >  
+> > +  qcom,freq-domain:
+> Do you mind to change "qcom, freq-domain" to common naming? or drop the
+> prefix. So that we can use this CPU node and map it to each freq-domain.
+> Thanks a lot. 
 
-Thanks, I've tested it a bit more and sent it out as a v2 now.
+I can do that but did the domain value match for other platforms as well?
 
-> > diff --git a/arch/arm/boot/dts/vexpress-v2p-ca9.dts b/arch/arm/boot/dts/vexpress-v2p-ca9.dts
-> > index 623246f37448..6627e71c7283 100644
-> > --- a/arch/arm/boot/dts/vexpress-v2p-ca9.dts
-> > +++ b/arch/arm/boot/dts/vexpress-v2p-ca9.dts
-> > @@ -81,6 +81,18 @@ vram: vram@4c000000 {
-> >                         reg = <0x4c000000 0x00800000>;
-> >                         no-map;
-> >                 };
-> > +
-> > +               foo@0 {
-> > +                       reg = <0x0 0x2000>;
-> > +               };
-> > +
-> > +               bar@1000 {
-> > +                       reg = <0x0 0x1000>;
+Thanks,
+Mani
+
 > 
-> 0x1000 base?
-
-I've corrected this in the example in the commit message for v2.
+> > +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
+> > +    description: |
+> > +      CPUs supporting freq-domain must set their "qcom,freq-domain" property
+> > +      with phandle to a cpufreq_hw node followed by the Domain ID(0/1).
+> > +
+> >    rockchip,pmu:
+> >      $ref: '/schemas/types.yaml#/definitions/phandle'
+> >      description: |
+> 
