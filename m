@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A9F294F93
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3785D294F9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444073AbgJUPJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:09:48 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:19078 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2444002AbgJUPJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:09:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603292987; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=yFmWiNHekQ4RHIngpO670iO7r5SStQl0dA1bVHiwHmY=;
- b=Fi9n+p3HJGBTTjLxn5P+kYnLhQdYDLClwS9VhUdXdkgqPGrP/CtTVODLzVdLdN5zJadUXzdI
- ln/pDTHSioq4l8RutvO4U+UUJOKA+vSlKJFh7NZQfSriW3i1v31GXdGNFigFqY2WxlL+rPH6
- OYQ0c4K66AO8JAMnJYVTAzBQylE=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f904f28a03b63d673b685ca (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Oct 2020 15:09:28
- GMT
-Sender: kgunda=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1888DC433FF; Wed, 21 Oct 2020 15:09:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kgunda)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6775BC433CB;
-        Wed, 21 Oct 2020 15:09:27 +0000 (UTC)
+        id S2444086AbgJUPMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2444029AbgJUPMG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 11:12:06 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B7EC0613CE;
+        Wed, 21 Oct 2020 08:12:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=QRmeq+WhhmJFQx9ptzkESWhLkZL0448bxepNUGUOWXM=; b=sjFBa4jL1qJ+CEJeH03Xwxxk6e
+        kuNFWgpIshoWVHEx/rq5Jx9hLUNKt/gdaTaUGZQLnFS2ETWD6gd417JHritOq1mzxCaLbV29n5Aoi
+        2FAs94ESvUe8q1G9lCdeKgB3zPw/Ve2EBKfeN8+sALcVjdAY4090snwd+T/V3umbd0IMWT+lfo/DR
+        4OECSXEF1A/MhrpaIoG/8dZcG1JZQH7CDN3IEeYBy4cvu/e1z1vqraOFlwQ3p0j8HS6vDjmMhoMnB
+        hRyiuMSHHeLbr3n+EBgGHmZVPdNsRcE4t26ZtnopA6lMEoCLsHnQcJeHcyctFKwCzEDkUDS6DvsMA
+        kh7Tjo6w==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVFmU-0003zU-Dg; Wed, 21 Oct 2020 15:12:02 +0000
+Subject: Re: [PATCH 2/2] blk-snap - snapshots and change-tracking for block
+ devices
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>, axboe@kernel.dk,
+        viro@zeniv.linux.org.uk, hch@infradead.org,
+        darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, rjw@rjwysocki.net,
+        len.brown@intel.com, pavel@ucw.cz, akpm@linux-foundation.org,
+        johannes.thumshirn@wdc.com, ming.lei@redhat.com, jack@suse.cz,
+        tj@kernel.org, gustavo@embeddedor.com, bvanassche@acm.org,
+        osandov@fb.com, koct9i@gmail.com, damien.lemoal@wdc.com,
+        steve@sk2.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-mm@kvack.org
+References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
+ <1603271049-20681-3-git-send-email-sergei.shtepa@veeam.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e11c8a85-9d51-2668-53ec-f2795024c762@infradead.org>
+Date:   Wed, 21 Oct 2020 08:11:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <1603271049-20681-3-git-send-email-sergei.shtepa@veeam.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 21 Oct 2020 20:39:27 +0530
-From:   kgunda@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rnayak@codeaurora.org, linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [PATCH V3 1/2] mfd: qcom-spmi-pmic: Convert bindings to .yaml
- format
-In-Reply-To: <160167515893.310579.11853207494346374403@swboyd.mtv.corp.google.com>
-References: <1580997328-16365-1-git-send-email-kgunda@codeaurora.org>
- <5e3c63d0.1c69fb81.c2bba.0957@mx.google.com>
- <b638e342aae1f6866cad33ff408f2894@codeaurora.org>
- <160167515893.310579.11853207494346374403@swboyd.mtv.corp.google.com>
-Message-ID: <e0ad4c3df21eb2dd2095adfa3f8ba37a@codeaurora.org>
-X-Sender: kgunda@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-03 03:15, Stephen Boyd wrote:
-> Quoting kgunda@codeaurora.org (2020-02-06 21:57:49)
->> On 2020-02-07 00:36, Stephen Boyd wrote:
->> > Quoting Kiran Gunda (2020-02-06 05:55:26)
->> >> Convert the bindings from .txt to .yaml format.
->> >>
->> >> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
->> >> ---
->> >
->> > Did something change? Is there a cover letter?
->> >
->> Other than converting the bindings to .yaml not much changed from the
->> previous post.
->> I will log the per patch changes in next post.
-> 
-> What happened to this series? It never got resent.
-Couldn't get the chance to work on it. Will work on it and post the next 
-patch in couple weeks.
+On 10/21/20 2:04 AM, Sergei Shtepa wrote:
+> diff --git a/drivers/block/blk-snap/Kconfig b/drivers/block/blk-snap/Kconfig
+> new file mode 100644
+> index 000000000000..7a2db99a80dd
+> --- /dev/null
+> +++ b/drivers/block/blk-snap/Kconfig
+> @@ -0,0 +1,24 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# blk-snap block io layer filter module configuration
+> +#
+> +#
+> +#select BLK_FILTER
+> +
+> +config BLK_SNAP
+> +	tristate "Block device snapshot filter"
+> +	depends on BLK_FILTER
+> +	help
+> +
+
+No blank line here.
+
+> +	  Allow to create snapshots and track block changes for a block
+
+	                                                    for block
+
+> +	  devices. Designed for creating backups for any block devices
+> +	  (without device mapper). Snapshots are temporary and are released
+> +	  then backup is completed. Change block tracking allows you to
+
+	  when
+
+> +	  create incremental or differential backups.
+> +
+> +config BLK_SNAP_SNAPSTORE_MULTIDEV
+> +	bool "Multi device snapstore configuration support"
+> +	depends on BLK_SNAP
+> +	help
+> +
+No blank line here.
+
+> +	  Allow to create snapstore on multiple block devices.
+
+
+thanks.
+-- 
+~Randy
+
