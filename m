@@ -2,111 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471EF294991
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 10:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CAF294A01
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 10:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441155AbgJUI4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 04:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
+        id S2502169AbgJUI5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 04:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731692AbgJUI4i (ORCPT
+        with ESMTP id S2436472AbgJUI5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 04:56:38 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16D5C0613CE;
-        Wed, 21 Oct 2020 01:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=T1Nj/VgNWnCwEdvHUApSGaEXo57LUFa1cim9ekP5a3o=; b=IperxMxdTeX+UHkUFxSw1fMdlu
-        rlbTj19FdMfMoz6UhXjdK2RVwZsCTVMWAqChFfg6+HksSPrab3vbiLxM3xJboJLwdKTRCwl+dV3yy
-        FnFo08yjI3ShP0Rba4/XVo8zQs9Pvs1cVqm3gByp5GDlehXtegWETrwr3UuFg9ebpFM/HxNAQJZ+K
-        Q68kD1WYDLVrH684E3zFsJk+840g1R1gh18JH0wVUpo+BepzK3sIFR7WI8HXsBSxdonfW/heQaspw
-        uT/Xp8qTHxz3hGqlStk7V1XL+657bHp6vrpU9uivEael1tRQheorfv8cjTFEh98Pn9rwWTRZCbSMV
-        3BqUoHLA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kV9uj-0000lf-BR; Wed, 21 Oct 2020 08:56:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D00FE304BAE;
-        Wed, 21 Oct 2020 10:56:06 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C3AF5203CC497; Wed, 21 Oct 2020 10:56:06 +0200 (CEST)
-Date:   Wed, 21 Oct 2020 10:56:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, Jann Horn <jannh@google.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-Message-ID: <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
-References: <20201013003203.4168817-1-samitolvanen@google.com>
- <20201013003203.4168817-23-samitolvanen@google.com>
- <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
- <20201015102216.GB2611@hirez.programming.kicks-ass.net>
- <20201015203942.f3kwcohcwwa6lagd@treble>
- <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
- <20201020185217.ilg6w5l7ujau2246@treble>
- <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
+        Wed, 21 Oct 2020 04:57:04 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1D8C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 01:57:03 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id c16so893085wmd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 01:57:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Gont0CCKnHMdGa6wrKlYRfieb2OHeQGvhAdNIYmokXs=;
+        b=VVnDgmxWGYk+ZwdNbZx6Qfo0t6kaRkEL0VNWUHATbLIt3jMjgaYOfdtnMpPlXBmHJZ
+         gFnQDrMYEk/gKZHAwJOELTKxwsgwZW/CWn+u6zaKjIMCN9lm18HqsVeG9jRC0MGVpVvf
+         8q8WCf23NrfOC9Q0xk18B4qoZ/OnP3rTMfyrA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Gont0CCKnHMdGa6wrKlYRfieb2OHeQGvhAdNIYmokXs=;
+        b=WIdplRMzxzNVhXPx3UB1cP4fQzJresWlEnpbxmVytmHrURzB7ownkQCTZTsgtCOlE/
+         qA5pdmEuiln26ZURtUv15+6tiPhRpd15Z4NzHMwOfJDL+yMv7AGk+K0n9MVXuPFOFJ2Y
+         i0Uvup9d3xCoxIC7m2MURqeKPkV+BtVBFc8Wn0YknYWaGCx3egdv9u8kjDA320M0wlfr
+         0ewizZe9qotLvEFMCWlE34Nrcs+49X+F7OvGjICQYD5pwdptuQRFY9Y0LwY7HtFkvQfP
+         9djxoFkMbaUmUxmvGPeXqMD30GEPZ8TEyNNUoBGC08sgu0JMJgTk09FWKysV/2fDSYoZ
+         OA2A==
+X-Gm-Message-State: AOAM533VnEi31mzk/HXCrYIXs1w8rAZr9SprKVnlyS4LbX8SsCKiBtNe
+        G4W5lB3/CWaUkxASmLdi4c+oeg==
+X-Google-Smtp-Source: ABdhPJyYzWpMyeyH5q5wodO7eI820GbpOZirLgvPnOfJ1Y9pegsPCbV57mxWuzvlDgRCukgCBprgLQ==
+X-Received: by 2002:a1c:dc8b:: with SMTP id t133mr2490486wmg.151.1603270621770;
+        Wed, 21 Oct 2020 01:57:01 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q8sm2675939wro.32.2020.10.21.01.57.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 01:57:00 -0700 (PDT)
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-s390@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH v3 00/16] follow_pfn and other iomap races
+Date:   Wed, 21 Oct 2020 10:56:39 +0200
+Message-Id: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 12:24:37PM -0700, Sami Tolvanen wrote:
-> > > Building allyesconfig with this series and LTO enabled, I still see
-> > > the following objtool warnings for vmlinux.o, grouped by source file:
-> > >
-> > > arch/x86/entry/entry_64.S:
-> > > __switch_to_asm()+0x0: undefined stack state
-> > > .entry.text+0xffd: sibling call from callable instruction with
-> > > modified stack frame
-> > > .entry.text+0x48: stack state mismatch: cfa1=7-8 cfa2=-1+0
-> >
-> > Not sure what this one's about, there's no OBJECT_FILES_NON_STANDARD?
-> 
-> Correct, because with LTO, we won't have an ELF binary to process
-> until we compile everything into vmlinux.o, and at that point we can
-> no longer skip individual object files.
+Hi all,
 
-I think what Josh was trying to say is; this file is subject to objtool
-on a normal build and does not generate warnings. So why would it
-generate warnings when subject to objtool as result of a vmlinux run
-(due to LTO or otherwise).
+Round 3 of my patch series to clamp down a bunch of races and gaps
+around follow_pfn and other access to iomem mmaps. Previous version:
 
-In fact, when I build a x86_64-defconfig and then run:
+v1: https://lore.kernel.org/dri-devel/20201007164426.1812530-1-daniel.vetter@ffwll.ch/
+v2: https://lore.kernel.org/dri-devel/20201009075934.3509076-1-daniel.vetter@ffwll.ch
 
-  $ objtool check -barf defconfig-build/vmlinux.o
+And the discussion that sparked this journey:
 
-I do not see these in particular, although I do see a lot of:
+https://lore.kernel.org/dri-devel/20201007164426.1812530-1-daniel.vetter@ffwll.ch/
 
-  "sibling call from callable instruction with modified stack frame"
-  "falls through to next function"
+I was waiting for the testing result for habanalabs from Oded, but I guess
+Oded was waiting for my v3.
 
-that did not show up in the individual objtool runs during the build.
+Changes in v3:
+- Bunch of polish all over, no functional changes aside from one barrier
+  in the resource code, for consistency.
+- A few more r-b tags.
 
-The "falls through to next function" seems to be limited to things like:
+Changes in v2:
+- tons of small polish&fixes all over, thanks to all the reviewers who
+  spotted issues
+- I managed to test at least the generic_access_phys and pci mmap revoke
+  stuff with a few gdb sessions using our i915 debug tools (hence now also
+  the drm/i915 patch to properly request all the pci bar regions)
+- reworked approach for the pci mmap revoke: Infrastructure moved into
+  kernel/resource.c, address_space mapping is now set up at open time for
+  everyone (which required some sysfs changes). Does indeed look a lot
+  cleaner and a lot less invasive than I feared at first.
 
-  warning: objtool: setup_vq() falls through to next function setup_vq.cold()
-  warning: objtool: e1000_xmit_frame() falls through to next function e1000_xmit_frame.cold()
+The big thing I can't test are all the frame_vector changes in habanalbas,
+exynos and media. Gerald has given the s390 patch a spin already.
 
-So something's weird with the .cold thing on vmlinux.o runs.
+Review, testing, feedback all very much welcome.
+
+Cheers, Daniel
+Daniel Vetter (16):
+  drm/exynos: Stop using frame_vector helpers
+  drm/exynos: Use FOLL_LONGTERM for g2d cmdlists
+  misc/habana: Stop using frame_vector helpers
+  misc/habana: Use FOLL_LONGTERM for userptr
+  mm/frame-vector: Use FOLL_LONGTERM
+  media: videobuf2: Move frame_vector into media subsystem
+  mm: Close race in generic_access_phys
+  s390/pci: Remove races against pte updates
+  mm: Add unsafe_follow_pfn
+  media/videbuf1|2: Mark follow_pfn usage as unsafe
+  vfio/type1: Mark follow_pfn as unsafe
+  PCI: Obey iomem restrictions for procfs mmap
+  /dev/mem: Only set filp->f_mapping
+  resource: Move devmem revoke code to resource framework
+  sysfs: Support zapping of binary attr mmaps
+  PCI: Revoke mappings like devmem
+
+ arch/s390/pci/pci_mmio.c                      |  98 ++++++++++-------
+ drivers/char/mem.c                            |  86 +--------------
+ drivers/gpu/drm/exynos/Kconfig                |   1 -
+ drivers/gpu/drm/exynos/exynos_drm_g2d.c       |  48 ++++-----
+ drivers/media/common/videobuf2/Kconfig        |   1 -
+ drivers/media/common/videobuf2/Makefile       |   1 +
+ .../media/common/videobuf2}/frame_vector.c    |  54 ++++------
+ drivers/media/platform/omap/Kconfig           |   1 -
+ drivers/media/v4l2-core/videobuf-dma-contig.c |   2 +-
+ drivers/misc/habanalabs/Kconfig               |   1 -
+ drivers/misc/habanalabs/common/habanalabs.h   |   6 +-
+ drivers/misc/habanalabs/common/memory.c       |  50 ++++-----
+ drivers/pci/pci-sysfs.c                       |   4 +
+ drivers/pci/proc.c                            |   6 ++
+ drivers/vfio/vfio_iommu_type1.c               |   4 +-
+ fs/sysfs/file.c                               |  11 ++
+ include/linux/ioport.h                        |   6 +-
+ include/linux/mm.h                            |  47 +-------
+ include/linux/sysfs.h                         |   2 +
+ include/media/frame_vector.h                  |  47 ++++++++
+ include/media/videobuf2-core.h                |   1 +
+ kernel/resource.c                             | 101 +++++++++++++++++-
+ mm/Kconfig                                    |   3 -
+ mm/Makefile                                   |   1 -
+ mm/memory.c                                   |  76 ++++++++++++-
+ mm/nommu.c                                    |  17 +++
+ security/Kconfig                              |  13 +++
+ 27 files changed, 403 insertions(+), 285 deletions(-)
+ rename {mm => drivers/media/common/videobuf2}/frame_vector.c (85%)
+ create mode 100644 include/media/frame_vector.h
+
+-- 
+2.28.0
+
