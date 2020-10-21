@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C592295068
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98B829506B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502806AbgJUQIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:08:52 -0400
-Received: from mga14.intel.com ([192.55.52.115]:8295 "EHLO mga14.intel.com"
+        id S2502834AbgJUQKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:10:45 -0400
+Received: from mga02.intel.com ([134.134.136.20]:20965 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502799AbgJUQIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:08:51 -0400
-IronPort-SDR: Rv74zu4G7mmjRrv9AZr9sklUqbXYeBMCxuxvyvfWW8sofUiS9cz6QYXK/UEFlBN+srnU4iucOO
- vzVXTKjD0gew==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="166615350"
+        id S2387937AbgJUQKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 12:10:44 -0400
+IronPort-SDR: cQDjEmGRcTs0zy/+9B5Q5dR+fi12V5jacNJbagJ+5ns8H+IZk0ez94Le8Weklf5lOoMsi8C8un
+ 0/ViPLSbwddA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="154345050"
 X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
-   d="scan'208";a="166615350"
+   d="scan'208";a="154345050"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 09:08:50 -0700
-IronPort-SDR: 5FcaEDjs9+1cG767U5gSLlizsH8fyLquw9xuXG+POVFcZnjuTFasFEpl5AmO1Tw7QKGEh0QnwL
- ZheqI+NfCQlg==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 09:10:18 -0700
+IronPort-SDR: 0TaBEWzZ552jendrPKjttEc3JnVanL2EXe8kfbmeJQMGbsaKO/lJCVyT897E9StLnjFAbidQhS
+ N7L4yJE0DseA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
-   d="scan'208";a="359545450"
+   d="scan'208";a="392768497"
 Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 21 Oct 2020 09:08:50 -0700
+  by orsmga001.jf.intel.com with ESMTP; 21 Oct 2020 09:10:13 -0700
 Received: from [10.249.231.46] (abudanko-mobl.ccr.corp.intel.com [10.249.231.46])
-        by linux.intel.com (Postfix) with ESMTP id 602B5580720;
-        Wed, 21 Oct 2020 09:08:48 -0700 (PDT)
-Subject: [PATCH v2 13/15] perf record: stop threads in the end of trace
+        by linux.intel.com (Postfix) with ESMTP id 36F77580720;
+        Wed, 21 Oct 2020 09:10:10 -0700 (PDT)
+Subject: [PATCH v2 14/15] perf record: start threads in the beginning of trace
  streaming
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -44,8 +44,8 @@ Cc:     Namhyung Kim <namhyung@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <76431e0e-a758-a262-61ea-97e05f433f44@linux.intel.com>
-Date:   Wed, 21 Oct 2020 19:08:47 +0300
+Message-ID: <0584888b-17b3-7a62-e585-8582d8a2d439@linux.intel.com>
+Date:   Wed, 21 Oct 2020 19:10:09 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.1
 MIME-Version: 1.0
@@ -58,121 +58,221 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Close write fd of comm.msg pipe to signal thread to terminate
-and receive THREAD_MSG__READY confirmation on termination.
-Accumulate thread stats into global stats to be correctly
-calculated and displayed in perf tool output.
+Start threads in detached state because its management is possible
+via messaging. Block signals prior the threads start so only main
+tool thread would be notified on external async signals during data
+collection. Streaming threads connect one-to-one to mapped data
+buffers and write into per-CPU trace files located at data directory.
+Data buffers and threads are affined to local NUMA nodes and monitored
+CPUs according to system topology. --cpu option can be used to specify
+CPUs to be monitored.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/perf/builtin-record.c | 64 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 60 insertions(+), 4 deletions(-)
+ tools/perf/builtin-record.c | 128 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 120 insertions(+), 8 deletions(-)
 
 diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 3b7e9026f25b..a15642656066 100644
+index a15642656066..1d41e996a994 100644
 --- a/tools/perf/builtin-record.c
 +++ b/tools/perf/builtin-record.c
-@@ -85,6 +85,16 @@ struct switch_output {
- 	int		 cur_file;
- };
- 
-+enum thread_msg {
-+	THREAD_MSG__UNSUPPORTED = 0,
-+	THREAD_MSG__READY,
-+	THREAD_MSG__MAX,
-+};
-+
-+static const char *thread_msg_tags[THREAD_MSG__MAX] = {
-+	"UNSUPPORTED", "READY"
-+};
-+
- struct thread_data {
- 	pid_t		   tid;
- 	struct {
-@@ -1796,6 +1806,50 @@ static void hit_auxtrace_snapshot_trigger(struct record *rec)
- 	}
+@@ -56,6 +56,7 @@
+ #include <poll.h>
+ #include <pthread.h>
+ #include <unistd.h>
++#include <sys/syscall.h>
+ #include <sched.h>
+ #include <signal.h>
+ #ifdef HAVE_EVENTFD_SUPPORT
+@@ -1377,6 +1378,62 @@ static void record__thread_munmap_filtered(struct fdarray *fda, int fd,
+ 		perf_mmap__put(map);
  }
  
-+static int record__terminate_thread(struct thread_data *thread_data)
++static void *record__thread(void *arg)
 +{
-+	int res;
-+	enum thread_msg ack = THREAD_MSG__UNSUPPORTED;
-+	pid_t tid = thread_data->tid;
++	enum thread_msg msg = THREAD_MSG__READY;
++	bool terminate = false;
++	struct fdarray *pollfd;
++	int err, ctlfd_pos;
 +
-+	close(thread_data->comm.msg[1]);
-+	res = read(thread_data->comm.ack[0], &ack, sizeof(ack));
-+	if (res != -1)
-+		pr_debug("threads: %d -> %s\n", tid, thread_msg_tags[ack]);
-+	else
-+		pr_err("threads: failed to recv msg=%s from %d\n",
-+		       thread_msg_tags[ack], tid);
++	thread = arg;
++	thread->tid = syscall(SYS_gettid);
 +
-+	return 0;
++	err = write(thread->comm.ack[1], &msg, sizeof(msg));
++	if (err == -1)
++		pr_err("threads: %d failed to notify on start. Error %m", thread->tid);
++
++	pollfd = &(thread->pollfd);
++	ctlfd_pos = thread->ctlfd_pos;
++
++	for (;;) {
++		unsigned long long hits = thread->samples;
++
++		if (record__mmap_read_all(thread->rec, false) < 0 || terminate)
++			break;
++
++		if (hits == thread->samples) {
++
++			err = fdarray__poll(pollfd, -1);
++			/*
++			 * Propagate error, only if there's any. Ignore positive
++			 * number of returned events and interrupt error.
++			 */
++			if (err > 0 || (err < 0 && errno == EINTR))
++				err = 0;
++			thread->waking++;
++
++			if (fdarray__filter(pollfd, POLLERR | POLLHUP,
++					    record__thread_munmap_filtered, NULL) == 0)
++				break;
++		}
++
++		if (pollfd->entries[ctlfd_pos].revents & POLLHUP) {
++			terminate = true;
++			close(thread->comm.msg[0]);
++			pollfd->entries[ctlfd_pos].fd = -1;
++			pollfd->entries[ctlfd_pos].events = 0;
++		}
++
++		pollfd->entries[ctlfd_pos].revents = 0;
++	}
++
++	err = write(thread->comm.ack[1], &msg, sizeof(msg));
++	if (err == -1)
++		pr_err("threads: %d failed to notify on termination. Error %m", thread->tid);
++
++	return NULL;
 +}
 +
-+static int record__stop_threads(struct record *rec, unsigned long *waking)
+ static void record__init_features(struct record *rec)
+ {
+ 	struct perf_session *session = rec->session;
+@@ -1823,6 +1880,58 @@ static int record__terminate_thread(struct thread_data *thread_data)
+ 	return 0;
+ }
+ 
++static int record__start_threads(struct record *rec)
 +{
-+	int i, j, nr_thread_data = rec->nr_thread_data;
++	int i, j, ret = 0;
++	sigset_t full, mask;
++	pthread_t handle;
++	pthread_attr_t attrs;
++	int nr_thread_data = rec->nr_thread_data;
 +	struct thread_data *thread_data = rec->thread_data;
 +
 +	if (!record__threads_enabled(rec))
 +		return 0;
 +
-+	for (i = 1; i < nr_thread_data; i++)
-+		record__terminate_thread(&thread_data[i]);
-+
-+	for (i = 0; i < nr_thread_data; i++) {
-+		pr_debug("threads: %d : samples %lld, wakes %ld\n",
-+			 thread_data[i].tid, thread_data[i].samples,
-+			 thread_data[i].waking);
-+
-+		rec->samples += thread_data[i].samples;
-+		*waking      += thread_data[i].waking;
-+		for (j = 0; j < thread_data[i].nr_mmaps; j++) {
-+			rec->session->bytes_transferred += thread_data[i].maps[j].bytes_transferred;
-+			rec->session->bytes_compressed  += thread_data[i].maps[j].bytes_compressed;
-+		}
++	sigfillset(&full);
++	if (sigprocmask(SIG_SETMASK, &full, &mask)) {
++		pr_err("Failed to block signals on threads start. Error: %m\n");
++		return -1;
 +	}
 +
-+	return 0;
++	pthread_attr_init(&attrs);
++	pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_DETACHED);
++
++	for (i = 1; i < nr_thread_data; i++) {
++		int res = 0;
++		enum thread_msg msg = THREAD_MSG__UNSUPPORTED;
++
++		if (pthread_create(&handle, &attrs, record__thread, &thread_data[i])) {
++			for (j = 1; j < i; j++)
++				record__terminate_thread(&thread_data[i]);
++			pr_err("Failed to start threads. Error: %m\n");
++			ret = -1;
++			goto out_err;
++		}
++
++		res = read(thread_data[i].comm.ack[0], &msg, sizeof(msg));
++		if (res > 0)
++			pr_debug("threads: %d -> %s\n", rec->thread_data[i].tid,
++				 thread_msg_tags[msg]);
++	}
++
++	thread = &thread_data[0];
++	thread->tid = syscall(SYS_gettid);
++	pr_debug("threads: %d -> %s\n", thread->tid, thread_msg_tags[THREAD_MSG__READY]);
++
++out_err:
++	if (sigprocmask(SIG_SETMASK, &mask, NULL)) {
++		pr_err("Failed to unblock signals on threads start. Error: %m\n");
++		ret = -1;
++	}
++
++	return ret;
 +}
 +
- static int __cmd_record(struct record *rec, int argc, const char **argv)
+ static int record__stop_threads(struct record *rec, unsigned long *waking)
  {
- 	int err;
-@@ -1903,7 +1957,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	int i, j, nr_thread_data = rec->nr_thread_data;
+@@ -1965,7 +2074,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		err = record__kcore_copy(&session->machines.host, data);
+ 		if (err) {
+ 			pr_err("ERROR: Failed to copy kcore\n");
+-			goto out_child;
++			goto out_free_threads;
+ 		}
+ 	}
  
- 	if (record__open(rec) != 0) {
- 		err = -1;
+@@ -1976,7 +2085,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		bpf__strerror_apply_obj_config(err, errbuf, sizeof(errbuf));
+ 		pr_err("ERROR: Apply config to BPF failed: %s\n",
+ 			 errbuf);
 -		goto out_child;
 +		goto out_free_threads;
  	}
- 	session->header.env.comp_mmap_len = session->evlist->core.mmap_len;
  
-@@ -2203,18 +2257,20 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		goto out_child;
+ 	/*
+@@ -1994,11 +2103,11 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	if (data->is_pipe) {
+ 		err = perf_header__write_pipe(fd);
+ 		if (err < 0)
+-			goto out_child;
++			goto out_free_threads;
+ 	} else {
+ 		err = perf_session__write_header(session, rec->evlist, fd, false);
+ 		if (err < 0)
+-			goto out_child;
++			goto out_free_threads;
  	}
  
--	if (!quiet)
--		fprintf(stderr, "[ perf record: Woken up %ld times to write data ]\n", waking);
--
- 	if (target__none(&rec->opts.target))
- 		record__synthesize_workload(rec, true);
+ 	err = -1;
+@@ -2006,16 +2115,16 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	    && !perf_header__has_feat(&session->header, HEADER_BUILD_ID)) {
+ 		pr_err("Couldn't generate buildids. "
+ 		       "Use --no-buildid to profile anyway.\n");
+-		goto out_child;
++		goto out_free_threads;
+ 	}
  
- out_child:
-+	record__stop_threads(rec, &waking);
-+out_free_threads:
- 	record__free_thread_data(rec);
- 	evlist__finalize_ctlfd(rec->evlist);
- 	record__mmap_read_all(rec, true);
- 	record__aio_mmap_read_sync(rec);
+ 	err = record__setup_sb_evlist(rec);
+ 	if (err)
+-		goto out_child;
++		goto out_free_threads;
  
-+	if (!quiet)
-+		fprintf(stderr, "[ perf record: Woken up %ld times to write data ]\n", waking);
+ 	err = record__synthesize(rec, false);
+ 	if (err < 0)
+-		goto out_child;
++		goto out_free_threads;
+ 
+ 	if (rec->realtime_prio) {
+ 		struct sched_param param;
+@@ -2024,10 +2133,13 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		if (sched_setscheduler(0, SCHED_FIFO, &param)) {
+ 			pr_err("Could not set realtime priority.\n");
+ 			err = -1;
+-			goto out_child;
++			goto out_free_threads;
+ 		}
+ 	}
+ 
++	if (record__start_threads(rec))
++		goto out_free_threads;
 +
- 	if (rec->session->bytes_transferred && rec->session->bytes_compressed) {
- 		ratio = (float)rec->session->bytes_transferred/(float)rec->session->bytes_compressed;
- 		session->header.env.comp_ratio = ratio + 0.5;
+ 	/*
+ 	 * When perf is starting the traced process, all the events
+ 	 * (apart from group members) have enable_on_exec=1 set,
 -- 
 2.24.1
 
