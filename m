@@ -2,52 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCF0295392
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E490295396
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439292AbgJUUnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 16:43:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
+        id S2504400AbgJUUof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 16:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405621AbgJUUnf (ORCPT
+        with ESMTP id S2440812AbgJUUoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 16:43:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12042C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:43:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Lu+hGrdqeWMftTlTMobTvofpTtHSyJ0i3sN8+ViuhWw=; b=pLs6Fw24U1S/xJW6kT9LgOdc9c
-        PWDGagljMAqzy5KHOnNjTRQcryrg5kVEes3Zg606P5R9ZYCCgiq+txRfD1azjEtzpXUO9hJhmRX1B
-        UsVa2NlBMR3PqHSgkVzNMAHgcGb78y0WuxEYZEREcf5Drnwgd5ZNqQorfvh29IFvDye5TnXTQgSB0
-        xj9oQHf3+awaZoPT4GvbpHrlHiI1+SgKals5HFonQRbLu1ujJAjupODb3G41ETA/IVz395xT4rT2X
-        RHag7AJBAv8F7XetNQn583a7t9reBkHsk1yVbBfB9bwOdg0V2fK6vhwD9f7maJcMUmaPN0EeGpey6
-        wlUSVVbA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVKxI-0006Cw-GM; Wed, 21 Oct 2020 20:43:32 +0000
-Date:   Wed, 21 Oct 2020 21:43:32 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm: remove pagevec_lookup_range_nr_tag
-Message-ID: <20201021204332.GN20115@casper.infradead.org>
-References: <20201021193926.101474-1-jlayton@kernel.org>
+        Wed, 21 Oct 2020 16:44:34 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A8AC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:44:34 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id h6so2213676pgk.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:44:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ToNH8GJuZ5rTdifevtZT8GFNBviH6s2F8SrsK2qyVY0=;
+        b=eR/u85b/Zu/amsL8sCxSY2DnlP2Ehk3lIHJnhKz0Lo/gM0vBBdbixGiQlZ5J0xQZlv
+         yODucoIDiS4Ab48gtTtCHB/X3vsuT6qGAxVE24qmG8mbpb6olpl5oVeertMysd1tJsGh
+         AiYx01TeIjGW48ApOv7+VvBCHqaW4SXpJafYy+HNJhciEPo/XjPuL6fthVdBi039Qcyq
+         PBxp/I+h/ujkmKG9JRqjH7UWvXIamXWIJhcfBYz7fdH/cv8hti7OXrGpzkcNYmmeRDK4
+         N0nIw3DY+7L0dnJmCLkbJmOC4ie0iYQ0L2VxBD2aac7T10/NYiRhHhY8z5gujzDp6yS2
+         srNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ToNH8GJuZ5rTdifevtZT8GFNBviH6s2F8SrsK2qyVY0=;
+        b=WB+kvIbdGAVysSnCKVheW8S2xKksa8l991t/ObVcMJdZs7nDOJ/ePChj/Y00qHln1H
+         PdnbJDtltrT4HeE2QaQSHozIJ38Gv0FxNY3+z5k1s8S8GLbkoF9kIPw3D18W8d3yV6fH
+         godc5r6BU4aeC1yD0OcPNP+ekz+ZTllC5f0Tbr3KTBW69amnRVxXS96jjQl1y4L8khA7
+         I2Vpve96RG2Nf89IzcU8tKayqtHNHNInu70+2eoYZexDqF2cjIM7XY9c6KnS9XiZSgXU
+         Oo50qTNNx3dcK2UEFijDaoRLCPAHyui1U2wFqQ11qCT71Lbnmvr2sFZQhAK/X1nkEtVa
+         3YHg==
+X-Gm-Message-State: AOAM532UeZUg6YqtWagQxYRcV4+G7nVMcV3FP7JAkFPgBdC/FyPRe85Y
+        7GDmpdZCJNjR0mb16I83+u3eE1bwc25colzMnWdepA==
+X-Google-Smtp-Source: ABdhPJxCBzWvlDptnlUC4y/kkY4UVyb3az9b3ad04JiC78/1Nkpox0BI5W6rCZyYsH1x3/hNf+ty4ao55Bww36Fop0U=
+X-Received: by 2002:a62:d44d:0:b029:152:ebc:77f8 with SMTP id
+ u13-20020a62d44d0000b02901520ebc77f8mr5394843pfl.14.1603313073426; Wed, 21
+ Oct 2020 13:44:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021193926.101474-1-jlayton@kernel.org>
+References: <20201021192518.31187-1-sjpark@amazon.com>
+In-Reply-To: <20201021192518.31187-1-sjpark@amazon.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 21 Oct 2020 13:44:22 -0700
+Message-ID: <CAFd5g45cz=8ytDt+xC_kkF19j0rU2TvkM2siiGCpG4nXxe6CEQ@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kunit: Update Kconfig parts for KUNIT's
+ module support
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sjpark@amazon.de>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        David Gow <davidgow@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 03:39:26PM -0400, Jeff Layton wrote:
-> With the merge of 2e1692966034 (ceph: have ceph_writepages_start call
-> pagevec_lookup_range_tag), nothing calls this anymore.
-> 
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+On Wed, Oct 21, 2020 at 12:32 PM SeongJae Park <sjpark@amazon.com> wrote:
+>
+> From: SeongJae Park <sjpark@amazon.de>
+>
+> If 'CONFIG_KUNIT=m', letting kunit tests that do not support loadable
+> module build depends on 'KUNIT' instead of 'KUNIT=y' result in compile
+> errors.  This commit updates the document for this.
+>
+> Fixes: 9fe124bf1b77 ("kunit: allow kunit to be loaded as a module")
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> Reviewed-by: David Gow <davidgow@google.com>
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
