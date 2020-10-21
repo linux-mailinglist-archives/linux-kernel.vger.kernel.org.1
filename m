@@ -2,58 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637CE294FFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085DD295000
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502519AbgJUP21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:28:27 -0400
-Received: from smtprelay0031.hostedemail.com ([216.40.44.31]:37200 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2502468AbgJUP20 (ORCPT
+        id S2502540AbgJUP3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:29:21 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:44872 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502354AbgJUP3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:28:26 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 94D72100E7B43;
-        Wed, 21 Oct 2020 15:28:25 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3653:3865:3866:3867:3874:4321:5007:10004:10400:10848:11232:11658:11914:12295:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:21080:21627:21660:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: fear64_59177f727249
-X-Filterd-Recvd-Size: 1373
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 21 Oct 2020 15:28:24 +0000 (UTC)
-Message-ID: <26647abf8cf14595a0dd22f10ec1c32e3dc2a8c0.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: fix false positive for REPEATED_WORD warning
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com
-Date:   Wed, 21 Oct 2020 08:28:23 -0700
-In-Reply-To: <f073750511750336de5f82600600ba6cb3ddbec0.camel@perches.com>
-References: <20201021150120.29920-1-yashsri421@gmail.com>
-         <f073750511750336de5f82600600ba6cb3ddbec0.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 21 Oct 2020 11:29:20 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09LF8qWh058622;
+        Wed, 21 Oct 2020 15:28:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=B7vBvfn8227zOvfWtf1187wJychX5h3pcBxw5mG5iYY=;
+ b=X6zMf9Xi2Nhtuztf53wsLdasGvRSaNrdSwtdk0H5jxCIp7uGXo5xlPJWX1r7M4AuZuLD
+ Iqyx98UMniAE5riHIMSf59eu/Im4D4CEVKzGyvFzCO3nbqaIc5/z0kxzbB3JUbOe+eoP
+ 52fCf1sMcPZojl3fU4aVvno8NFXr+lbkxH0wsSGtSqeiuCQfsrzqEPljqHKjA5HR5dDR
+ 1fztRgqDS/MrP4K1UMRheNCz8ggVQiMt5SC+hbIrgj3+xn7GnRmb7IDtYVylS7MEF5Fq
+ 9G1xpuUENS4IlNSoXuRgw3gJ+7YAHFiLNgLSR/r+gB4K75agxGEVmLGVmWSK7/Rg5BFn sw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 349jrps9ev-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 21 Oct 2020 15:28:54 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09LF9u6s011436;
+        Wed, 21 Oct 2020 15:28:53 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 34ak18syk3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Oct 2020 15:28:53 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09LFSdnw002429;
+        Wed, 21 Oct 2020 15:28:39 GMT
+Received: from tomti.i.net-space.pl (/10.175.162.2)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 21 Oct 2020 08:28:38 -0700
+Date:   Wed, 21 Oct 2020 17:28:33 +0200
+From:   Daniel Kiper <daniel.kiper@oracle.com>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Ross Philipson <ross.philipson@oracle.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
+        linux-doc@vger.kernel.org, dpsmith@apertussolutions.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        luto@amacapital.net, trenchboot-devel@googlegroups.com
+Subject: Re: [PATCH 07/13] x86: Secure Launch kernel early boot stub
+Message-ID: <20201021152833.b3oys643ckcl5evq@tomti.i.net-space.pl>
+References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
+ <1600959521-24158-8-git-send-email-ross.philipson@oracle.com>
+ <20200924173801.GA103726@rani.riverdale.lan>
+ <c9ab2edf-1aaf-a1c9-92d5-2d37382a3163@oracle.com>
+ <20200925191842.GA643740@rani.riverdale.lan>
+ <d34c189c-4528-0458-0b84-cfd36dc068b3@oracle.com>
+ <20201015182654.lgtht5fd2aaunczu@tomti.i.net-space.pl>
+ <20201016205151.GA1618249@rani.riverdale.lan>
+ <20201019145153.7b6cg3rzj7g4njz6@tomti.i.net-space.pl>
+ <20201019171822.GD2701355@rani.riverdale.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019171822.GD2701355@rani.riverdale.lan>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9780 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ spamscore=0 adultscore=0 mlxlogscore=999 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010210114
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9780 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 spamscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010210114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-21 at 08:18 -0700, Joe Perches wrote:
-> I might add that check to the line below where
-> the repeated words are checked against long
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3062,6 +3062,7 @@ sub process {
->  
->  				next if ($first ne $second);
->  				next if ($first eq 'long');
-> +				next if ($first =~ /^$Hex$/;
+On Mon, Oct 19, 2020 at 01:18:22PM -0400, Arvind Sankar wrote:
+> On Mon, Oct 19, 2020 at 04:51:53PM +0200, Daniel Kiper wrote:
+> > On Fri, Oct 16, 2020 at 04:51:51PM -0400, Arvind Sankar wrote:
+> > > On Thu, Oct 15, 2020 at 08:26:54PM +0200, Daniel Kiper wrote:
+> > > >
+> > > > I am discussing with Ross the other option. We can create
+> > > > .rodata.mle_header section and put it at fixed offset as
+> > > > kernel_info is. So, we would have, e.g.:
+> > > >
+> > > > arch/x86/boot/compressed/vmlinux.lds.S:
+> > > >         .rodata.kernel_info KERNEL_INFO_OFFSET : {
+> > > >                 *(.rodata.kernel_info)
+> > > >         }
+> > > >         ASSERT(ABSOLUTE(kernel_info) == KERNEL_INFO_OFFSET, "kernel_info at bad address!")
+> > > >
+> > > >         .rodata.mle_header MLE_HEADER_OFFSET : {
+> > > >                 *(.rodata.mle_header)
+> > > >         }
+> > > >         ASSERT(ABSOLUTE(mle_header) == MLE_HEADER_OFFSET, "mle_header at bad address!")
+> > > >
+> > > > arch/x86/boot/compressed/sl_stub.S:
+> > > > #define mleh_rva(X) (((X) - mle_header) + MLE_HEADER_OFFSET)
+> > > >
+> > > >         .section ".rodata.mle_header", "a"
+> > > >
+> > > > SYM_DATA_START(mle_header)
+> > > >         .long   0x9082ac5a    /* UUID0 */
+> > > >         .long   0x74a7476f    /* UUID1 */
+> > > >         .long   0xa2555c0f    /* UUID2 */
+> > > >         .long   0x42b651cb    /* UUID3 */
+> > > >         .long   0x00000034    /* MLE header size */
+> > > >         .long   0x00020002    /* MLE version 2.2 */
+> > > >         .long   mleh_rva(sl_stub_entry)    /* Linear entry point of MLE (virt. address) */
+> > > >         .long   0x00000000    /* First valid page of MLE */
+> > > >         .long   0x00000000    /* Offset within binary of first byte of MLE */
+> > > >         .long   0x00000000    /* Offset within binary of last byte + 1 of MLE */
+> > > >         .long   0x00000223    /* Bit vector of MLE-supported capabilities */
+> > > >         .long   0x00000000    /* Starting linear address of command line (unused) */
+> > > >         .long   0x00000000    /* Ending linear address of command line (unused) */
+> > > > SYM_DATA_END(mle_header)
+> > > >
+> > > > Of course MLE_HEADER_OFFSET has to be defined as a constant somewhere.
+> > > > Anyway, is it acceptable?
+> >
+> > What do you think about my MLE_HEADER_OFFSET and related stuff proposal?
+> >
+>
+> I'm wondering if it would be easier to just allow relocations in these
+> special "header" sections. I need to check how easy/hard it is to do
+> that without triggering linker warnings.
 
-oops.  with a close parenthesis added of course...
+Ross and I still bouncing some ideas. We came to the conclusion that
+putting mle_header into kernel .rodata.kernel_info section or even
+arch/x86/boot/compressed/kernel_info.S file would be the easiest thing
+to do at this point. Of course I would suggest some renaming too. E.g.
+.rodata.kernel_info to .rodata.kernel_headers, etc. Does it make sense
+for you?
 
-
+Daniel
