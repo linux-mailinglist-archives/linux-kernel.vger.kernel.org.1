@@ -2,127 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B2D2947E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 07:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B992947EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 07:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440609AbgJUFnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 01:43:21 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:36201 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2408381AbgJUFnV (ORCPT
+        id S2440629AbgJUFqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 01:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408424AbgJUFqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 01:43:21 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id EDD745C0100;
-        Wed, 21 Oct 2020 01:43:19 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Wed, 21 Oct 2020 01:43:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=tIgDNnG5snpYSQp0kAt2AdCdiGSp2Gs
-        1VIoKFmFsA5M=; b=qkG/q41a7iniJkupVewamRCA0NtPXMrcdZp9KfF4ht5qLoq
-        s3t9ZrpD3kEWd4bkoe6Q9uBGfMRrsKzSq3+ejGpd9eTNnRcNWFaY+IGhACL9lvWD
-        KfNiW9MPeLhmNx43+55CZ3co4UA8hrC7kOvpmWSunBuSUQJZPUGoaJuiG07DwLgN
-        7e4Q+NaqhlcvNC0ZqkG+2PIgO4xAgXgW3JFerpm4ndxEGUiLpAQyvptrz66EKNl5
-        9YsALU8Yh6zY3mJHe8WFw4p9wGADoOEhxs+3iXRBlDcArz9SNJc5N61uvprBnj/7
-        bpiGNwqMk5J4/mJ0xhK1G5dYwtlbxd43WypQ9Eg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=tIgDNn
-        G5snpYSQp0kAt2AdCdiGSp2Gs1VIoKFmFsA5M=; b=ICBjoYSiqT3BZxu4o4XSSW
-        ZF0Iagj1x4vRzInlR3N77HPKlqIvG6wnlnjNgDr+E/VE//hMzdl+hZkV0UBHhnMM
-        LbE5FanF5PEcuScEHWW/+M7i6pW4qXXkki2l3tLZTDD6Ql7AamEFHgTIepMBJw8u
-        GgJmO1Ns2ucOuJOTk3fM0dN9nOc42vX+qUQcaLn9Ff4S1ZXxyvnO4WWUDuIxeMqv
-        pVg1d9EMbeDPQtclWk7rvBSJkLAnkYCZVoU+FboYqi8fcM9159e+RzVamQUDgTsW
-        4g34XM6ehpAyj5pgklHk8RQA9dvBn+xP/OalJgLqLIwoXTMqhRZ5eAa7K0iOhVhg
-        ==
-X-ME-Sender: <xms:dsqPXywn4L4MW3q8FD0bMLhosqeB4LvMYsIEq81R_fEjqxSNzfV-RQ>
-    <xme:dsqPX-RRKDU5puLhKT3MBYJhZCuVF1XwU4xlPmLT621wdP76ZyVv_Od9E0WLDMH-9
-    v5-4kdcDn7Oz6imnw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeeggdeljecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:dsqPX0UOTgnBSYFJeIlK7b1sAmgflf-DRuXoW-3GD-NtKb9Kvqdf4A>
-    <xmx:dsqPX4h9jVneVErTX32YRPtna0ZUs-hNPXWRT0c3qtrBw4ZOWwOe0A>
-    <xmx:dsqPX0BnqiWWXRtXm-xBv2oI0_P5hDuTN06Dnv5UBGNa2FNyVsTjVg>
-    <xmx:d8qPX3N4ha_KwCmDiDDmeI1m9lVPwY1PqCksn-vUHupVAvAc8PNXvw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A58C9E011E; Wed, 21 Oct 2020 01:43:16 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-502-gfef6c88-fm-20201019.001-gfef6c888
-Mime-Version: 1.0
-Message-Id: <1a5c7370-164c-4a58-a08c-d81e4b6ce419@www.fastmail.com>
-In-Reply-To: <CACPK8XeiPBPyLu5pvjCgYquCKh+PynVKGyibUSAi+W_xw0Awfg@mail.gmail.com>
-References: <20201016043513.119841-1-andrew@aj.id.au>
- <20201016043513.119841-3-andrew@aj.id.au>
- <CACPK8XeiPBPyLu5pvjCgYquCKh+PynVKGyibUSAi+W_xw0Awfg@mail.gmail.com>
-Date:   Wed, 21 Oct 2020 16:12:49 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Joel Stanley" <joel@jms.id.au>
-Cc:     "Rob Herring" <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] ARM: dts: tacoma: Add reserved memory for ramoops
-Content-Type: text/plain
+        Wed, 21 Oct 2020 01:46:46 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00675C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 22:46:45 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id a7so1398846lfk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 22:46:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WerPUVIarQXcsPG2PPEIuIxUpZ3fOzaM0sErZC8Uvj8=;
+        b=Pz25AI/ZgGEoYZmJG/KQ/6e9wJOYkEcM3fU4cxTMhwpnGFVW//s2gikrdXVqqErNVr
+         zD9FmFDCaFYR1Obikt6RE99ezJMB6Nf8WZgVS2L2VJfcQ+DQcdEkh+xmbFetH/l0FvsM
+         U7csmAljt5FECfKyfs0iXyZp5gz0E4Gl1MqBsnXQq7EPBjlYFF96SpG686vJfM76aMOC
+         IM/v4hslOheQCHYYkKLp7gccz1LORYE0fflkTU13vk8YRqO5L4O8erpR/qT0z5qdVZ5y
+         CiXeRKaOlNFZdzO15SN513O8dfYcldrkbSWYA0g+QDU26HzaJ6g+8Wyjb03fiR22qpap
+         vwHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WerPUVIarQXcsPG2PPEIuIxUpZ3fOzaM0sErZC8Uvj8=;
+        b=qmyKQxtiLl6B4ebiEsoCGP203q9oSZANIn7RDJ2crOlH8Br8N6+r749t9VYxpnZydf
+         kihv1TQKah3nwxJPgJduM4Wp58EuV8SQ5cVnZO/v1uk49EDfAgYciJ2T/7ZROEh4Kj85
+         pLas1k8+xxc8W2GgEVlkQWHpS6ARJivHF3WHULFvcXlcDqepoivOp8Nm0ljhh/YBikTY
+         dtAjQkRh+GguWa/Tu4kUcoAwRuMj5FsdZ29dwtpQ4WEDJyLXo+GUYW742yC19VSymgiv
+         bqrRIrotIiXwOGAd84TziDpdYvjLaRcwr+dwVAmLzPRw9x+fA9Q5mYw4yjW6cKZ6rQG/
+         IQrA==
+X-Gm-Message-State: AOAM531OJs3Lemad9UBocvGg4ZgU7228xZVKJ4MA4O6Xj5tBbUp6mJsu
+        xu5IPIyZd6P+osFNF/yq5yLtWhkBGAzlgKNX1hIYIQ==
+X-Google-Smtp-Source: ABdhPJwDV2L1MFODb6ucOjs+0es8WlLMWrbz8e2HdBKFq1wq79tkl40AoAJdlcTyrjoren7MlXPnsTlS6MAnVD3VB0s=
+X-Received: by 2002:a19:c88c:: with SMTP id y134mr497757lff.283.1603259204205;
+ Tue, 20 Oct 2020 22:46:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <1602065268-26017-1-git-send-email-sumit.garg@linaro.org>
+ <1602065268-26017-2-git-send-email-sumit.garg@linaro.org> <8e07f9401c9f7e18fb1453b7b290472c0049c6e6.camel@linux.ibm.com>
+In-Reply-To: <8e07f9401c9f7e18fb1453b7b290472c0049c6e6.camel@linux.ibm.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Wed, 21 Oct 2020 11:16:33 +0530
+Message-ID: <CAFA6WYM7aJwP9j_ayGvbJPu-cyv87rsm9N4Wj2OCOMnmfDx+Rw@mail.gmail.com>
+Subject: Re: [PATCH v7 1/4] KEYS: trusted: Add generic trusted keys framework
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Markus Wamser <Markus.Wamser@mixed-mode.de>,
+        Luke Hinds <lhinds@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks Mimi for your comments.
 
-
-On Wed, 21 Oct 2020, at 15:35, Joel Stanley wrote:
-> On Fri, 16 Oct 2020 at 04:36, Andrew Jeffery <andrew@aj.id.au> wrote:
-> >
-> > Reserve a 1.5MiB region of memory to record kmsg dumps, console and
-> > userspace message state into 16kiB ring-buffer slots. The sizing allows
-> > for up to 32 dumps to be captured and read out.
-> >
-> > Set max-reason to KMSG_DUMP_EMERG to capture bad-path reboots.
-> >
-> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> > ---
-> >  arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >
-> > diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-> > index 46f2f538baba..4f7e9b490e1a 100644
-> > --- a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-> > +++ b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-> > @@ -26,6 +26,15 @@ reserved-memory {
-> >                 #size-cells = <1>;
-> >                 ranges;
-> >
-> > +               ramoops@b9e80000 {
-> > +                       compatible = "ramoops";
-> > +                       reg = <0xb9e80000 0x180000>;
-> 
-> I take that r-b back. When booting, we see:
-> 
-> [    0.000000] region@ba000000 (0xb8000000--0xbc000000) overlaps with
-> ramoops@b9e80000 (0xb9e80000--0xba000000)
-> 
-> Which appears to be a true statement.
-
-Yep:
-
-> 
-> > +                       record-size = <0x4000>;
-> > +                       console-size = <0x4000>;
-> > +                       pmsg-size = <0x4000>;
-> > +                       max-reason = <3>; /* KMSG_DUMP_EMERG */
-> > +               };
+On Wed, 21 Oct 2020 at 08:51, Mimi Zohar <zohar@linux.ibm.com> wrote:
+>
+> On Wed, 2020-10-07 at 15:37 +0530, Sumit Garg wrote:
+>
+> > +/*
+> > + * trusted_destroy - clear and free the key's payload
+> > + */
+> > +static void trusted_destroy(struct key *key)
+> > +{
+> > +     kfree_sensitive(key->payload.data[0]);
+> > +}
 > > +
-> >                 flash_memory: region@ba000000 {
-> >                         no-map;
-> >                         reg = <0xb8000000 0x4000000>; /* 64M */
+> > +struct key_type key_type_trusted = {
+> > +     .name = "trusted",
+> > +     .instantiate = trusted_instantiate,
+> > +     .update = trusted_update,
+> > +     .destroy = trusted_destroy,
+> > +     .describe = user_describe,
+> > +     .read = trusted_read,
+> > +};
+> > +EXPORT_SYMBOL_GPL(key_type_trusted);
+> > +
+> > +static int __init init_trusted(void)
+> > +{
+> > +     int i, ret = 0;
+> > +
+> > +     for (i = 0; i < ARRAY_SIZE(trusted_key_sources); i++) {
+> > +             if (trusted_key_source &&
+> > +                 strncmp(trusted_key_source, trusted_key_sources[i].name,
+> > +                         strlen(trusted_key_sources[i].name)))
+> > +                     continue;
+> > +
+> > +             trusted_key_ops = trusted_key_sources[i].ops;
+> > +
+> > +             ret = trusted_key_ops->init();
+> > +             if (!ret)
+> > +                     break;
+> > +     }
+>
+> In the case when the module paramater isn't specified and both TPM and
+> TEE are enabled, trusted_key_ops is set to the last source initialized.
 
-Looks like I derived the ramoops address from the flash_memory node label, but 
-that's mismatched with its reg value.
+I guess there is some misunderstanding. Here it's only a single trust
+source (TPM *or* TEE) is initialized and only that trust source would
+be active at runtime. And trusted_key_ops would be initialized to the
+first trust source whose initialization is successful (see check: "if
+(!ret)").
+
+> After patch 2/4, the last trusted source initialized is TEE.  If the
+> intention is to limit it to either TPM or TEE, then trusted_key_ops
+> should have a default value, which could be overwritten at runtime.
+> That would address Luke Hind's concerns of making the decision at
+> compile time.
+
+I think traversing the trust source list with the initial value being
+TPM would be default value.
+
+>
+> trusted_key_ops should be defined as __ro_after_init, like is currently
+> done for other LSM structures.
+
+Sure, will do.
+
+>
+> > +
+> > +     /*
+> > +      * encrypted_keys.ko depends on successful load of this module even if
+> > +      * trusted key implementation is not found.
+> > +      */
+> > +     if (ret == -ENODEV)
+> > +             return 0;
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static void __exit cleanup_trusted(void)
+> > +{
+> > +     trusted_key_ops->exit();
+>
+> If the intention is really to support both TPM and TEE trusted keys at
+> the same time, as James suggested, then the same "for" loop as in
+> init_trusted() is needed here and probably elsewhere.
+
+Current intention is to only support a single trust source (TPM or
+TEE) at runtime. But in future if there are use-cases then framework
+can be extended to support multiple trust sources at runtime as well.
+
+-Sumit
+
+>
+> thanks,
+>
+> Mimi
+>
