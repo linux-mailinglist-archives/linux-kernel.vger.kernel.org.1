@@ -2,189 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9F7295130
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08ADB295135
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503183AbgJUQ5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:57:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408853AbgJUQ5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:57:41 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C88722249;
-        Wed, 21 Oct 2020 16:57:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603299459;
-        bh=lV/Q3JfadUm+TEjJJgiQ2XapWVprYd5h6OE3xBSuXak=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zUQNdfeqYhqzl0SmpumWfFo/hMRF+5R4PINrvdY6fuSXadQ1qxS5odjIUEI3iN6yJ
-         9Y9hm/zlpVsI+bX72W6pj9SJ3jGeHrnwV/L5eU9VvlOoHs6tENgaBEx7J8FA8AcpZX
-         dAwBig62reZpX8g4cCEH0tY1WpGyUycoQgvJ0gjM=
-Date:   Wed, 21 Oct 2020 18:58:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Shimahara <akira215corp@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Evgeny Boger <boger@wirenboard.com>
-Subject: Re: Adding ABI to htmldocs - Was: Re: [PATCH 2/2] w1: w1_therm: Add
- support for GXCAS GX20MH01 device.
-Message-ID: <20201021165819.GA1361645@kroah.com>
-References: <20200904160004.87710-1-ivan.zaentsev@wirenboard.ru>
- <20200904160004.87710-2-ivan.zaentsev@wirenboard.ru>
- <20201006151915.77d044a4@coco.lan>
- <1561045277.20201007103227@wirenboard.ru>
- <20201007105702.67988846@coco.lan>
- <20201007090619.GA613204@kroah.com>
- <20201007130549.6ca57af0@coco.lan>
- <20201007114359.GA2167293@kroah.com>
- <20201007135934.4b6e598e@coco.lan>
- <20201021182843.522dd7e7@coco.lan>
+        id S2503267AbgJUQ6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:58:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503258AbgJUQ6i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 12:58:38 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D667C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:58:36 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id g7so3156734ilr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=qgxb83JHD/Tk385y5UPYGzutMkiNL5jV5+4Vfni0TYw=;
+        b=EWYTm/LYwVJy9ysDsTaB/HXzK3tXvOACX3FKHBKv0jTIRE4/y0p7cIpHe7Rfy9EIRy
+         qFvLUvg5XMaGPWna4ktpQJKC8yzP1nGqUqg7ti7R+h6K/+BDvynwZJAP81J3s8ANs9UA
+         eWacgETIvpOM5hzVXAYu7gpInggAAHkU3UtmwFnLq3YJaM8t8Yz9dY6D4FFlFt9AMheO
+         Trll6z4bMfztApf/+1hY6XctG5k8hacRCA9A7KTIuBBQSIefIWKrBjhhBQT2G3sEfP4N
+         VOzq7g0OfkJQ+WMl+VEWaQDd98NSPmfOv4bowSLRglgMIsdHZuLk3t5rmYT292RQTbML
+         xiwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=qgxb83JHD/Tk385y5UPYGzutMkiNL5jV5+4Vfni0TYw=;
+        b=kEomTDkCfTl1v2C3NkUFBFLzOcUmVg1TFGb7p338uWhtKCU/yteqXn4a99/dXDNxN9
+         0jRy73A3mWR1PpxBD+DOgOlRHIIclehAnwSELKR+i24Ix5iZMEF7j8ZBkGNFizETPD8v
+         3v7raHpM9lZdaOLhfMGS2V5kkL6zBkZWRmibFWXcmmsiDdtsIMc9AR9fbirvKwfXp6Ip
+         dnN6+poe7RnuBNSS0agEfdOGAteWNmBcnXxTMDTm+9on0HkxXhfQHSgbK88PVmkWoDaA
+         BC5UQhLRWtz5j7Dn2gHPlEsS9/vpRVnfb6DM8YSAEw6fLSaQrLwfZD3i8cMJqrxwoGlX
+         SpmQ==
+X-Gm-Message-State: AOAM533GF5Pf1uebYTrQsZpO3FJNSYixDU3idzs43+u55v+sKnhaZ4rR
+        uiOaV0rbbtXl5Hugv/FER7zuhVyPquRbASWA/8CSXIAFKY346qpl
+X-Google-Smtp-Source: ABdhPJyFZf3mbpRcwfdOpKB1Uy/3lvfEtljL64okW2zfHcwy8Lm6mQskbjaISDXF6IQ0hUcLX83Ec88t9FvduMFEJwI=
+X-Received: by 2002:a92:9944:: with SMTP id p65mr3095346ili.127.1603299515027;
+ Wed, 21 Oct 2020 09:58:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021182843.522dd7e7@coco.lan>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 21 Oct 2020 22:28:23 +0530
+Message-ID: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
+Subject: mmstress[1309]: segfault at 7f3d71a36ee8 ip 00007f3d77132bdf sp
+ 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
+To:     open list <linux-kernel@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org, X86 ML <x86@kernel.org>,
+        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, kasan-dev@googlegroups.com
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        zenglg.jy@cn.fujitsu.com, Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 06:28:43PM +0200, Mauro Carvalho Chehab wrote:
-> Hi greg,
-> 
-> Em Wed, 7 Oct 2020 13:59:34 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
-> 
-> > Em Wed, 7 Oct 2020 13:43:59 +0200
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> > 
-> > > On Wed, Oct 07, 2020 at 01:05:49PM +0200, Mauro Carvalho Chehab wrote:  
-> > > > Em Wed, 7 Oct 2020 11:06:19 +0200
-> > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> > > >     
-> > > > > On Wed, Oct 07, 2020 at 10:57:02AM +0200, Mauro Carvalho Chehab wrote:    
-> > > > > > Em Wed, 7 Oct 2020 10:32:27 +0300
-> > > > > > Ivan Zaentsev <ivan.zaentsev@wirenboard.ru> escreveu:
-> > > > > >       
-> > > > > > > Tuesday, October 6, 2020, 4:19:15 PM, Mauro Carvalho Chehab wrote:
-> > > > > > >       
-> > > > > > > >> diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
-> > > > > > > >> index f1148181f53e..00376501a5ef 100644
-> > > > > > > >> --- a/Documentation/w1/slaves/w1_therm.rst
-> > > > > > > >> +++ b/Documentation/w1/slaves/w1_therm.rst        
-> > > > > > >       
-> > > > > > > >>  
-> > > > > > > >> @@ -130,4 +131,12 @@ conversion and temperature reads 85.00 (powerup value) or 127.94 (insufficient
-> > > > > > > >>  power), the driver returns a conversion error. Bit mask ``2`` enables poll for
-> > > > > > > >>  conversion completion (normal power only) by generating read cycles on the bus
-> > > > > > > >>  after conversion starts. In parasite power mode this feature is not available.
-> > > > > > > >> -Feature bit masks may be combined (OR).
-> > > > > > > >> +Feature bit masks may be combined (OR). See accompanying sysfs documentation:
-> > > > > > > >> +:ref:`Documentation/w1/slaves/w1_therm.rst <w1_therm>`
-> > > > > > > >> +        
-> > > > > > >       
-> > > > > > > > As warned by Sphinx, this cross-reference is broken:        
-> > > > > > >       
-> > > > > > > >         .../Documentation/w1/slaves/w1_therm.rst:125: WARNING:
-> > > > > > > > undefined label: w1_therm (if the link has no caption the label must precede a section header)        
-> > > > > > > 
-> > > > > > > Would this be ok?      
-> > > > > > 
-> > > > > > Yeah, sure!
-> > > > > >       
-> > > > > > > 
-> > > > > > > "More details in Documentation/ABI/testing/sysfs-driver-w1_therm"
-> > > > > > >       
-> > > > > > > > Not sure what you wanted to point here.        
-> > > > > > > 
-> > > > > > > A link to a driver's sysfs interface, but sysfs docs are text
-> > > > > > > files and seem to not be included in Sphynx Docs.      
-> > > > > > 
-> > > > > > I sent upstream sometime ago a patch series adding ABI to Sphinx, but I 
-> > > > > > was not merged, not sure why:
-> > > > > > 
-> > > > > > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v5.6      
-> > > > > 
-> > > > > I think the raft of different patches floating around at the time made
-> > > > > me totally confused as to what was, and was not, the latest versions.    
-> > > > 
-> > > > Yeah, there were lots of patches floating around that time.
-> > > > 
-> > > > I also recall that someone (Jeni?) asked if the best wouldn't be to
-> > > > just convert the ABI files to ReST directly.
-> > > >     
-> > > > > I'll be glad to look at them again, if you want to rebase after 5.10-rc1
-> > > > > is out and resend them, as I think this should be showing up in the
-> > > > > documentation.    
-> > > > 
-> > > > Surely. I'll rebase them after 5.10-rc1 and re-submit. 
-> > > > 
-> > > > What strategy do you prefer? Keep the files with the same format as
-> > > > today (allowing them to optionally have ReST markups) or to convert
-> > > > them to .rst directly?
-> > > > 
-> > > > In the latter case, the best would be to apply it as early as possible
-> > > > after 5.10-rc1, as it may cause conflicts with other patches being
-> > > > submitted for 5.11.    
-> > > 
-> > > The existing format if at all possible, doing wholesale changes is a
-> > > mess and wouldn't be recommended.  
-> > 
-> > Yeah, merging it would indeed be a mess. At long term, though, it could 
-> > be easier to maintain.
-> > 
-> > > I think you already fixed up the entries that had problems being parsed
-> > > in the past, if not, we can resolve those as well.  
-> > 
-> > Yes. The series start with fixes. I suspect several of them
-> > (if not all) were already merged, but if anything is missing, I can fix 
-> > at the upcoming rebased series.
-> 
-> Rebasing the patch series was easier than what I expected:
-> 
-> 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v6
-> 
-> Yet, while fixing one build issue, I noticed that there are multiple
-> files defining the same ABI, with different contents.
-> 
-> Right now, scripts/get_abi.pl assumes that "what" is unique. Well, sorts
-> of. When it finds a duplicated entry, it merges the description, 
-> preserving the fields from the last parsed entry.
-> 
-> I ended adding a patch to detect those ABI duplication:
-> 
-> 	https://git.linuxtv.org/mchehab/experimental.git/commit/?h=abi_patches_v6&id=6868914605cb0ebffe3fd07d344c246e1e4cd94e
-> 
-> I'm enclosing the results.
-> 
-> One such example is this one:
-> 
-> 	3 duplicated entries for /sys/class/leds/<led>/hw_pattern: on file(s) sysfs-class-led-trigger-pattern sysfs-class-led-driver-sc27xx sysfs-class-led-driver-el15203000
-> 
-> It sounds that different drivers define and use this ABI, but
-> each one with different meanings. 
-> 
-> There are even some cases where the same file define the same ABI twice:
-> 
-> 	2 duplicated entries for /sys/class/power_supply/<supply_name>/temp_alert_min: on file(s) sysfs-class-power
-> 
-> Not sure what's the best way to document things like that, or if
-> the fix would be to drop/merge those.
-> 
-> Any ideas?
+LTP mm mtest05 (mmstress), mtest06_3 and mallocstress01 (mallocstress) tested on
+x86 KASAN enabled build. But tests are getting PASS on Non KASAN builds.
+This regression started happening from next-20201015 nowards
 
-We should merge them to be the correct representation.  The
-driver-specific ones for LED should just be dropped to use the
-class-generic one.
+There are few more regression on linux next,
+  ltp-cve-tests:
+    * cve-2015-7550
+  ltp-math-tests:
+    * float_bessel
+    * float_exp_log
+    * float_iperb
+    * float_power
+    * float_trigo
+  ltp-mm-tests:
+    * mallocstress01
+    * mtest05
+    * mtest06_3
+  ltp-syscalls-tests:
+    * clone08
+    * clone301
+    * fcntl34
+    * fcntl34_64
+    * fcntl36
+    * fcntl36_64
+    * keyctl02
+    * rt_tgsigqueueinfo01
 
-I guess just take them one at a time :)
+metadata:
+  git branch: master
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git describe: next-20201015
+  kernel-config:
+https://builds.tuxbuild.com/SCI7Xyjb7V2NbfQ2lbKBZw/kernel.config
 
-thanks,
+steps to reproduce:
+  # boot x86_64 with KASAN enabled kernel and run tests
+  # cd /opt/ltp/testcases/bin
+  # ./mmstress
+  # ./mmap3 -x 0.002 -p
+  # ./mallocstress
 
-greg k-h
+mtest05  (mmstress) :
+--------------------
+mmstress    0  TINFO  :  run mmstress -h for all options
+mmstress    0  TINFO  :  test1: Test case tests the race condition
+between simultaneous read faults in the same address space.
+[  279.469207] mmstress[1309]: segfault at 7f3d71a36ee8 ip
+00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in
+libc-2.27.so[7f3d77058000+1aa000]
+[  279.469305] audit: type=1701 audit(1602818315.656:3):
+auid=4294967295 uid=0 gid=0 ses=4294967295 subj=kernel pid=1307
+comm=\"mmstress\" exe=\"/opt/ltp/testcases/bin/mmstress\" sig=11 res=1
+[  279.481636] Code: 2d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f
+84 00 00 00 00 00 0f 1f 44 00 00 b8 18 00 00 00 0f 05 48 3d 01 f0 ff
+ff 73 01 <c3> 48 8b 0d 91 22 2d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e
+0f 1f
+[  279.498212] mmstress[1311]: segfault at 7f3d70a34ee8 ip
+00007f3d77132bdf sp 00007f3d70a34ee8 error 4 in
+libc-2.27.so[7f3d77058000+1aa000]
+[  279.516839] Code: 2d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f
+84 00 00 00 00 00 0f 1f 44 00 00 b8 18 00 00 00 0f 05 48 3d 01 f0 ff
+ff 73 01 <c3> 48 8b 0d 91 22 2d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e
+0f 1f
+tst_test.c:1246: INFO: Timeout per run is 0h 15m 00s
+tst_test.c:1246: INFO: Timeout per run is 0h 09m 00s
+tst_test.c:1291: BROK: Test killed by SIGBUS!
+
+mtest06_3 (mmap3 -x 0.002 -p) :
+-------------------------------
+mmap3.c:154: INFO: Seed 22
+mmap3.c:155: INFO: Number of loops 1000
+mmap3.c:156: INFO: Number of threads 40
+mmap3.c:157: INFO: MAP[  286.657788] mmap3[1350]: segfault at
+7f12179d4680 ip 00007f121859951d sp 00007f12179d1e10 error 6 in
+libpthread-2.27.so[7f1218589000+19000]
+_PRIVATE = 1
+mm[  286.671184] Code: c4 10 5b 5d 41 5c c3 66 0f 1f 44 00 00 48 8b 15
+99 8a 20 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 48 8b 15 85 8a 20
+00 f7 d8 <64> 89 02 48 c7 c0 ff ff ff ff eb b6 0f 1f 80 00 00 00 00 b8
+01 00
+[  286.677386] audit: type=1701 audit(1602818322.844:6):
+auid=4294967295 uid=0 gid=0 ses=4294967295 subj=kernel pid=1348
+comm=\"mmap3\" exe=\"/opt/ltp/testcases/bin/mmap3\" sig=11 res=1
+ap3.c:158: INFO: Execution time 0.002000H
+
+mallocstress01 (mallocstress) :
+------------------------------
+pid[1496]: shmat_rd_wr(): shmget():success got segment id 32830
+pid[1496]: do_shmat_shmadt(): got shmat address = 0x7f301eae9000
+pid[1496]: shmat_rd_wr(): shmget():success got segment id 328[
+291.851376] mallocstress[1502]: segfault at 0 ip 0000000000000000 sp
+00007f80dea3ec50 error 14
+30
+pid[1496]: d[  291.851466] mallocstress[1507]: segfault at
+7f80dc239c98 ip 00007f80df2bf81c sp 00007f80dc239c98 error 4
+o_shmat_shmadt()[  291.851485] mallocstress[1505]: segfault at
+7f80dd23bc38 ip 00007f80df33fe93 sp 00007f80dd23bc38 error 4
+[  291.851490] Code: 00 00 00 00 0f 1f 00 41 52 52 4d 31 d2 ba 02 00
+00 00 be 80 00 00 00 39 d0 75 07 b8 ca 00 00 00 0f 05 89 d0 87 07 85
+c0 75 f1 <5a> 41 5a c3 66 0f 1f 84 00 00 00 00 00 56 52 c7 07 00 00 00
+00 be
+: got shmat addr[  291.851565] audit: type=1701
+audit(1602818328.038:7): auid=4294967295 uid=0 gid=0 ses=4294967295
+subj=kernel pid=1500 comm=\"mallocstress\"
+exe=\"/opt/ltp/testcases/bin/mallocstress\" sig=11 res=1
+[  291.852984] mallocstress[1504]: segfault at 7f80dda3cc38 ip
+00007f80df33fe93 sp 00007f80dda3cc38 error 4
+ess = 0x7f301e85[  291.852988] Code: 00 00 00 00 0f 1f 00 41 52 52 4d
+31 d2 ba 02 00 00 00 be 80 00 00 00 39 d0 75 07 b8 ca 00 00 00 0f 05
+89 d0 87 07 85 c0 75 f1 <5a> 41 5a c3 66 0f 1f 84 00 00 00 00 00 56 52
+c7 07 00 00 00 00 be
+[  291.853045] audit: type=1701 audit(1602818328.040:8):
+auid=4294967295 uid=0 gid=0 ses=4294967295 subj=kernel pid=1500
+comm=\"mallocstress\" exe=\"/opt/ltp/testcases/bin/mallocstress\"
+sig=11 res=1
+5000
+tst_test.c[  291.860373] Code: Unable to access opcode bytes at RIP
+0xffffffffffffffd6.
+[  291.860453] mallocstress[1506]: segfault at 7f80dca3ac98 ip
+00007f80df2bf81c sp 00007f80dca3ac98 error 4
+:1246: INFO: Tim[  291.860654] audit: type=1701
+audit(1602818328.047:9): auid=4294967295 uid=0 gid=0 ses=4294967295
+subj=kernel pid=1500 comm=\"mallocstress\"
+exe=\"/opt/ltp/testcases/bin/mallocstress\" sig=11 res=1
+[  291.871350]
+eout per run is [  291.871397] mallocstress[1501]: segfault at 0 ip
+0000000000000000 sp 00007f80df23fc50 error 14
+[  291.871401] Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+0h 30m 00s
+[  291.871467] audit: type=1701 audit(1602818328.058:10):
+auid=4294967295 uid=0 gid=0 ses=4294967295 subj=kernel pid=1500
+comm=\"mallocstress\" exe=\"/opt/ltp/testcases/bin/mallocstress\"
+sig=11 res=1
+[  291.882113]  in libc-2.27.so[7f80df241000+1aa000]
+[  291.900984] Code: ff 48 85 c0 75 d8 0f 1f 84 00 00 00 00 00 8b 35
+26 11 33 00 48 83 c1 10 85 f6 0f 85 42 01 00 00 48 81 c4 88 00 00 00
+48 89 c8 <5b> 5d 41 5c 41 5d 41 5e 41 5f c3 66 0f 1f 84 00 00 00 00 00
+4c 8b
+[  291.919351] Code: ff 48 85 c0 75 d8 0f 1f 84 00 00 00 00 00 8b 35
+26 11 33 00 48 83 c1 10 85 f6 0f 85 42 01 00 00 48 81 c4 88 00 00 00
+48 89 c8 <5b> 5d 41 5c 41 5d 41 5e 41 5f c3 66 0f 1f 84 00 00 00 00 00
+4c 8b
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+full test log link,
+https://lkft.validation.linaro.org/scheduler/job/1844090
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
