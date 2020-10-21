@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9085929522E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 20:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CABD295230
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 20:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504073AbgJUS0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 14:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45486 "EHLO
+        id S2504075AbgJUS2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 14:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438829AbgJUS0P (ORCPT
+        with ESMTP id S2438881AbgJUS2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 14:26:15 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB967C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 11:26:15 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x13so1973948pfa.9
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 11:26:15 -0700 (PDT)
+        Wed, 21 Oct 2020 14:28:01 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECDDC0613CE;
+        Wed, 21 Oct 2020 11:28:01 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id g16so1599303pjv.3;
+        Wed, 21 Oct 2020 11:28:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=1FO9M9j075wuOALfoXxDUJe5XnERWTNac+Lhpl+//0M=;
-        b=Gs0RQUdBzH+ye2gZxvGyB0vM44Vo1uzip3av9KXrzGiFzj6YVV0VumoXinNm+HrTGF
-         a41sMv9p0md1kZicJUhprFfUc2BB4N5GTHHfL2/53CllymaxHzYWG3QlNvGhsWXHM1pO
-         HVTwVuGQpK6iQIswHqk4r/fLpwesA1BVIPVKhHlesT4AYpwXtVOTZ5PYgNdMz0m4Cb0i
-         wordHDyvWIPqUWCOjd7BYH0vG6llIyahcJ+PaLnLGlGlKtkBrCEO2OwG1EcFGudjEb4S
-         DyyBwT22QxYCsC1524F991wBE4KrUgar6bkJqGLUz53wW0YbQAuEZvUKOIj57R/49kYh
-         Cepw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IF/s4Bj/loImFjDigWUw9owchow7UQ79UQNQgh6UzFU=;
+        b=mYy+DTpA/zpKYrmSP0rCC3VF3r7kLugwuWaaW9U6Nj6OOWiIJJaFKRyMfKd+6TVOHz
+         rc0+MrbnMSIYD/dTk0vY+KEoWLo33qrD38IvVZ1IPhF9v+RnhZ/OqTmsW1nEr7j7ameu
+         Yi8aAzjUL9dQMqDKYdycSdJp0TbKsfZR25M9XWk22T6ccN2B+xrV2Ib8qZAI4Omn1qew
+         8+pI81y1YJ86oyG4S4l84E5+4dGHpMMCNDbIGX71vssDlBnwfPgm+gmObNLaVVOJCod4
+         RBesT/2QQfw+Ty8bAZsOUFXDOyK1r9J+ULmRq0x0hkFdLOgcAWsDsMCyH2/7Kg5V1u2M
+         m9SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=1FO9M9j075wuOALfoXxDUJe5XnERWTNac+Lhpl+//0M=;
-        b=Jw6sKEuwpYcYgoxb3CO0MgYxIk3Az0kuwuvK2RJQG2M7sgTYA7c3z1eOA9OOH7WYzY
-         xNUFU09Zsoe3Vi0LOv2mrm4b+OK5zXeprMjeG+zVqp/usSmuIm+vu3uedZTzAedAxpg7
-         N6jD9D9ytiFOo2h0/MoBxJ1blSDqaTDEktIf32MNUvCn2X1wL13wrh6kTNnemd0Zb3Yd
-         IlkH4XmmjZ8VITuyYNfKw328r11T7SzMrmKpUtLbhRtR4jGXssO8K2x/a+keTqdY7bUW
-         IBY0ic7s+4jaHEGmg/tbCXsArrD/MXJaV2Rt4c/8okCUF/eCiIxBUd7mxCEljeAwU0sv
-         nqhg==
-X-Gm-Message-State: AOAM532I6HyZLtuX2kAd6fPJp4braoXP+Rdyffq3x+DV1L/TCxNXrsDR
-        xajvvlYPaGiQs7wXrZCyepk=
-X-Google-Smtp-Source: ABdhPJwP7EAt/uDM8x/2lBeocMVF3gYnnutiOkf68MN0f4x419/TMu9i75QIWYZrPndftnu7GsLn+g==
-X-Received: by 2002:a63:5d03:: with SMTP id r3mr4341644pgb.2.1603304775269;
-        Wed, 21 Oct 2020 11:26:15 -0700 (PDT)
-Received: from adolin ([49.207.215.109])
-        by smtp.gmail.com with ESMTPSA id a22sm3074560pfk.29.2020.10.21.11.26.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IF/s4Bj/loImFjDigWUw9owchow7UQ79UQNQgh6UzFU=;
+        b=Pz/ZSIfsSlJljiTkUXheQ5d2qBSafpDSZk64a27vKWbIQUdTlb5jiq+E7kpusFJ8fO
+         TPYj79Zhomy9HXx4q/5lyw7fjE1CqQFOjlrZmhVZQS2+LeqG2whpTYfSKHIK5cMyu+9d
+         bReYszvI7+70OR5B5XbMxNWNxXYscDsxJTErENoQMn2JxB7xOxaGmrWzj46RLUEO8PRw
+         jOXaX/+9wp8GvLJDqz+Lgh3sNdDYZcOo+ni+GX6zQxm1X5wfFm163DD+1Hp8hCWvSInO
+         Yw+4OwaOO3ODk9S6EUbwDDxwq7py9XQrTiaywEJZXZlhVFrkPx/nlH4VbET5LNmlCLYb
+         s4Xw==
+X-Gm-Message-State: AOAM533GC8B9GoUVUY65o8O1njYlJRI1AKZVbMnPXSoTG1pC8bT2q5a/
+        edepvNB1m7H5pcAR6xemXlU=
+X-Google-Smtp-Source: ABdhPJxcXuN5vS1Tk10DKp8I3dnGMQmPkDCBMWXEVEz7wmXQug/nIK37OBzW4xxP6A0ADofqwaFMaA==
+X-Received: by 2002:a17:90b:38f:: with SMTP id ga15mr4497112pjb.33.1603304880771;
+        Wed, 21 Oct 2020 11:28:00 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id b21sm3113638pfb.97.2020.10.21.11.27.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 11:26:14 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 23:56:10 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, christian.koenig@amd.com,
-        Felix.Kuehling@amd.com, alexander.deucher@amd.com,
-        melissa.srw@gmail.com
-Subject: [Outreachy kernel][PATCH] gpu: amd: Return boolean types instead of
- integer values
-Message-ID: <20201021182610.4l65yg3y3nhzcac4@adolin>
+        Wed, 21 Oct 2020 11:27:59 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 11:27:57 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v1] Input: ads7846: do not overwrite spi->mode flags set
+ by spi framework
+Message-ID: <20201021182757.GA444962@dtor-ws>
+References: <20201021090434.16387-1-o.rempel@pengutronix.de>
+ <DM6PR03MB44110236C07B05C243009E4CF91C0@DM6PR03MB4411.namprd03.prod.outlook.com>
+ <20201021105614.tc3jnv5g62hvl5vg@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20201021105614.tc3jnv5g62hvl5vg@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return statements for functions returning bool should use truth
-and false instead of 1 and 0 respectively.
+On Wed, Oct 21, 2020 at 12:56:14PM +0200, Oleksij Rempel wrote:
+> 
+> As you can see, I would need to configure my dts with spi-cs-high flag,
+> even if the hardware is actually ACTIVE_LOW. If I will go this way, I
+> would risk a regression as soon as this issue is fixed.
+> 
+> Since the spi framework is already parsing devicetree and set all needed
+> flags, I assume it is wrong to blindly drop all this flags in the
+> driver.
 
-Modify cik_event_interrupt.c to return false instead of 0.
+Yes, but I wonder if the devices can only work in mode 0 we should be
+doing:
 
-Issue found with Coccinelle.
+	spi->mode &= ~SPI_MODE_MASK; // to be defined as 0x03 in spi.h
+	spi->mode |= SPI_MODE_0;
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
----
- drivers/gpu/drm/amd/amdkfd/cik_event_interrupt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+as we can't simply "or" mode value as is (well, mode 0 is kind of
+working, but just on accident).
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/cik_event_interrupt.c b/drivers/gpu/drm/amd/amdkfd/cik_event_interrupt.c
-index 24b471734117..8e64c01565ac 100644
---- a/drivers/gpu/drm/amd/amdkfd/cik_event_interrupt.c
-+++ b/drivers/gpu/drm/amd/amdkfd/cik_event_interrupt.c
-@@ -66,12 +66,12 @@ static bool cik_event_interrupt_isr(struct kfd_dev *dev,
- 	vmid  = (ihre->ring_id & 0x0000ff00) >> 8;
- 	if (vmid < dev->vm_info.first_vmid_kfd ||
- 	    vmid > dev->vm_info.last_vmid_kfd)
--		return 0;
-+		return false;
- 
- 	/* If there is no valid PASID, it's likely a firmware bug */
- 	pasid = (ihre->ring_id & 0xffff0000) >> 16;
- 	if (WARN_ONCE(pasid == 0, "FW bug: No PASID in KFD interrupt"))
--		return 0;
-+		return false;
- 
- 	/* Interrupt types we care about: various signals and faults.
- 	 * They will be forwarded to a work queue (see below).
+Thanks.
+
 -- 
-2.25.1
-
+Dmitry
